@@ -1,0 +1,89 @@
+{
+  "kind": "INDEPENDENT_PROC_VISIBILITY_OBSERVATION",
+  "observedUtc": "2026-10-18T10:47:42.375951+00:00",
+  "observerPid": 11006,
+  "uid": 1000,
+  "euid": 1000,
+  "observations": [
+    {
+      "pid": 10366,
+      "argv": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-File",
+        "scripts/test-csharp.ps1",
+        "-ValidateCatalog"
+      ],
+      "exeError": {
+        "type": "PermissionError",
+        "errno": 13
+      },
+      "stat": "10366 (pwsh) S 10340 10339 10339 0 -1 4194560 63418 53979 0 0 1573 286 1828 368 20 0 21 0 476938 68669595648 72687 18446744073709551615 1 1 0 0 0 0 0 4096 214270 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "status": [
+        "Name:\tpwsh",
+        "State:\tS (sleeping)",
+        "PPid:\t10340",
+        "TracerPid:\t0",
+        "Uid:\t1000\t1000\t1000\t1000",
+        "Gid:\t1000\t1000\t1000\t1000",
+        "NSpid:\t10366"
+      ]
+    },
+    {
+      "pid": 10433,
+      "argv": [
+        "/tmp/1536-cloud-tools/dotnet/dotnet",
+        "/tmp/1536-cloud-tools/dotnet/sdk/10.0.402/MSBuild.dll",
+        "/noautoresponse",
+        "/nologo",
+        "/nodemode:1",
+        "/nodeReuse:true",
+        "/low:false"
+      ],
+      "exeError": {
+        "type": "PermissionError",
+        "errno": 13
+      },
+      "stat": "10433 (dotnet) S 1 10339 10339 0 -1 4194560 47668 0 0 0 1919 428 0 0 20 0 24 0 477854 69089132544 56621 18446744073709551615 1 1 0 0 0 0 0 4096 214270 0 0 0 17 1 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "status": [
+        "Name:\tdotnet",
+        "State:\tS (sleeping)",
+        "PPid:\t1",
+        "TracerPid:\t0",
+        "Uid:\t1000\t1000\t1000\t1000",
+        "Gid:\t1000\t1000\t1000\t1000",
+        "NSpid:\t10433"
+      ]
+    },
+    {
+      "pid": 10984,
+      "argv": [
+        "dotnet",
+        "test",
+        "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+        "--no-build",
+        "--no-restore",
+        "--list-tests",
+        "--verbosity",
+        "quiet"
+      ],
+      "exeError": {
+        "type": "PermissionError",
+        "errno": 13
+      },
+      "stat": "10984 (dotnet) S 10366 10339 10339 0 -1 4194560 13578 0 0 0 107 26 0 0 20 0 15 0 506907 68188758016 25737 18446744073709551615 1 1 0 0 0 0 0 4096 148734 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "status": [
+        "Name:\tdotnet",
+        "State:\tS (sleeping)",
+        "PPid:\t10366",
+        "TracerPid:\t0",
+        "Uid:\t1000\t1000\t1000\t1000",
+        "Gid:\t1000\t1000\t1000\t1000",
+        "NSpid:\t10984"
+      ]
+    }
+  ],
+  "unreadableCmdline": [],
+  "unreadableStatCount": 0
+}

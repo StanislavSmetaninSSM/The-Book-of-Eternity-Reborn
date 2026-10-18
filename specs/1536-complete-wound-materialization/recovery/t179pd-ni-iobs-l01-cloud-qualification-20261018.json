@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "CORRECTION_SOURCE_ACCEPTED_NAMED_ZERO4_RELEASED_ACTUAL_HELD",
+  "status": "CORRECTED_ZERO4_ORIGINAL_NATIVE0_OBSERVER_V2_AND_INDEPENDENT_PREP_PENDING_ACTUAL_HELD",
   "sourceCheckpoint": "a0da72f2c21fca66193314954cfdf87992752876",
   "sourcePinDigest": "b29c971342ee772b13cd123a954d7afa8937e1f50a7e5f4c4c14403e4de4c347",
   "sourcePinCount": 98,
@@ -584,7 +584,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "After exactremote/clean GitHub recovery, only four separately named ZERO phases below may run on saved acceptance SHA; fresh independent PREP before any actual.",
+  "next": "Push/exactremote/cleanGitHub recovery of originalZERO4+supplement artifacts. Independent observerv2 SOURCE and corrected PREP acceptance with fresh mandatory boundary census before separately named close2 corrective regression.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -760,14 +760,14 @@
     "phase": "HISTORICAL_COMPILED_6AB43F6A_ZERO3_PRE_CORRECTION_INELIGIBLE_FOR_CORRECTED_ACTUALS"
   },
   "release": {
-    "status": "NONE_ACTUAL_HELD_PENDING_CORRECTION_SOURCE_AND_FRESH_PREP",
+    "status": "NONE_ACTUAL_HELD_PENDING_OBSERVER_V2_AND_INDEPENDENT_FRESH_PREP",
     "mode": null
   },
   "newOriginalObservedPassingCases": 4,
   "lastAcceptanceRecovery": {
-    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-acceptance-recovery-5687e0e6-20261018.json",
-    "sha256": "a23c6c35a739e713168b0aa14a23a0eae2dc5961e6af717af566927c5139740f",
-    "bytes": 3112
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-acceptance-recovery-cf52201c-20261018.json",
+    "sha256": "0ebfb45489ea26c9aa0e2f9c7d9fae080709e34748a7042c10a43ad047d2b8e9",
+    "bytes": 3852
   },
   "lastOutcomeCarrierRecovery": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-legacy3-carrier-recovery-61e712e3-20261018.json",
@@ -786,7 +786,7 @@
   },
   "historicalSourceCheckpointBeforeDiagnosticCorrection": "2e0463ff3b5e52510e86f1c8b53bd714923e156d",
   "diagnosticCorrection": {
-    "status": "INDEPENDENT_SOURCE_ACCEPTED_UNCOMPILED_FRESH_ZERO4_REQUIRED",
+    "status": "SOURCE_ACCEPTED_FRESH_ZERO4_ORIGINAL_NATIVE0_INDEPENDENT_PREP_PENDING",
     "causalReview": [
       {
         "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-causal-review-20261018.json",
@@ -835,7 +835,103 @@
       "methods": 7,
       "cases": 15
     },
-    "freshPreparation": "REQUIRED_ZERO4_BEFORE_ANY_ACTUAL",
+    "freshPreparation": {
+      "status": "ORIGINAL_NATIVE0_ZERO4_CANDIDATE_NOT_INDEPENDENT_PREP",
+      "actualSource": "cf52201ca165d24c971018251ef9723a8e493384",
+      "compiledSource": "cf52201ca165d24c971018251ef9723a8e493384",
+      "records": [
+        {
+          "mode": "catalog",
+          "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-diag-cloud-813f1057/record.json",
+          "sha256": "493a9ce1d9f6738df4718afad1bbaf9c0cd035b053cb3b4621491f8a60df44bf",
+          "nativeExit": 0,
+          "actualTestsExecuted": 0,
+          "seconds": 374.2383788799998,
+          "descriptors": 16,
+          "methods": 33,
+          "cases": 57,
+          "resultDirectories": [
+            "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-104245-392-10366-4f2c019a9f4d4a94b435d3baa8050e8c-categories"
+          ]
+        },
+        {
+          "mode": "plan",
+          "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-whole-plan-diag-cloud-813f1057/record.json",
+          "sha256": "819b64c9acd25217acf783a62257f8a4affee61c98983d7bf3c83cc786effaf9",
+          "nativeExit": 0,
+          "actualTestsExecuted": 0,
+          "seconds": 40.65711218399974,
+          "descriptors": 16,
+          "methods": 33,
+          "cases": 57,
+          "resultDirectories": [
+            "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-104928-411-11312-45949fbf316c4c92b0c333ca3ecabdad-categories"
+          ]
+        },
+        {
+          "mode": "corrective-plan",
+          "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-diag-cloud-813f1057/record.json",
+          "sha256": "2a20dac89741ce9ab3d87dbc22912d06e8c32ef94918f0ce2cdfccfa5917735d",
+          "nativeExit": 0,
+          "actualTestsExecuted": 0,
+          "seconds": 19.86374154799978,
+          "descriptors": 1,
+          "methods": 2,
+          "cases": 2,
+          "resultDirectories": [
+            "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-105224-280-11624-99ea4993c38c45688dae970bc431e42a-categories"
+          ]
+        },
+        {
+          "mode": "remaining-plan",
+          "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-diag-cloud-813f1057/record.json",
+          "sha256": "a6d4b5e2cf14b930347e0f2dda0ee1b4ffbab199f8dff52278d72029b7053d3f",
+          "nativeExit": 0,
+          "actualTestsExecuted": 0,
+          "seconds": 41.59974905499985,
+          "descriptors": 5,
+          "methods": 7,
+          "cases": 15,
+          "resultDirectories": [
+            "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-105256-881-11787-09a499f560854a30b2ad74cbfd5e5551-categories"
+          ]
+        }
+      ],
+      "archive": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic-preparation-813f1057-files-20261018/archive.json",
+        "sha256": "671ba66a881c6755e07197f3cdaa5608d9e80d217b1fc16afdccbf44a69b5f9f",
+        "bytes": 22711,
+        "rawChains": 43
+      },
+      "sourcePinCount": 98,
+      "sourcePinDigest": "b29c971342ee772b13cd123a954d7afa8937e1f50a7e5f4c4c14403e4de4c347",
+      "binaryCopies": 9,
+      "completeOutputFiles": 1575,
+      "catalog": {
+        "categories": 808,
+        "methods": 11800,
+        "executed": 0
+      },
+      "whole": {
+        "descriptors": 16,
+        "methods": 33,
+        "cases": 57,
+        "executed": 0
+      },
+      "corrective": {
+        "descriptors": 1,
+        "methods": 2,
+        "cases": 2,
+        "executed": 0
+      },
+      "remaining": {
+        "descriptors": 5,
+        "methods": 7,
+        "cases": 15,
+        "executed": 0
+      },
+      "cleanup": "Native owned-tree cleanup complete and roots absent. Original exe-link-dependent process arrays are incomplete observer outputs; supplemental dated boundary gates required. No retrospective complete census claim."
+    },
     "sourceReview": {
       "verdict": "ACCEPT_MINIMAL_CLOSE_DIAGNOSTIC_SOURCE_AND_NAMED_ZERO4_PLAN",
       "model": "gpt-6-astra",
@@ -891,5 +987,124 @@
       "conditions": "Separate explicit controller invocations only. Each prior original native0/ZERO plus inventory/namespace/process checks must pass before next. Failure freezes without retry/advance. catalog fresh BOTH build; plans depend on exact catalog record/source/9DLL/fulloutput continuity.",
       "actualRelease": false
     }
+  },
+  "processCensusScopeCorrection": {
+    "status": "MANDATORY_SUPPLEMENT_SOURCE_V2_AND_PREP_ASSESSMENT_PENDING",
+    "finding": "exe symlink PermissionError can cause original controller processes() to omit readable live identities. Preserve all original arrays unchanged; no complete global process-absence inference from them.",
+    "effect": "Telemetry qualification gap, not product RED. Historical semantic PASS and original owned-child exit/join/EOF/containment proofs unchanged; no replay/reconstruction.",
+    "decisionAndIndependentArtifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-proc-census-independent-decision-20261018.json",
+        "sha256": "19d3c2015e5bd22875ccab338dfcc93784c9ac6cb413ed248f05dec95bad8afa",
+        "bytes": 6734
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-proc-census-independent-decision-20261018.md",
+        "sha256": "70811232e47a47ace62ec366b0d231fdd1b806b6e5e32027d3e438411f89eaf3",
+        "bytes": 1983
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-proc-visibility-observation-20261018.json",
+        "sha256": "81c13bb4cfe5b2b9d4578d01c3f1f8fcf3e703513dcb59c1898b2a1702161cb2",
+        "bytes": 2646
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v1-independent-check-20261018.json",
+        "sha256": "1c05b7554ed16c5c2a8c46ea564764c82f3472d5dbd87490a79c8db2955333b1",
+        "bytes": 1861
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v1-independent-review-20261018.md",
+        "sha256": "54e0c1dfe7c906e14be029d1d4b837c1df2b357947b7eb11b60056a0d077d5f9",
+        "bytes": 2793
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-acceptance-metadata-readback-cf52201c-20261018.json",
+        "sha256": "8b523f445c4edc242512162c204cd39a083e3e1d32e2392cb5c045576b0a8403",
+        "bytes": 948
+      }
+    ],
+    "observerSources": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v1-20261018.py",
+        "sha256": "6b83a2ad35fe762164fe50e0f42974442c4fb12f20489b01449c770cb570d13a",
+        "bytes": 6785
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-20261018.py",
+        "sha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
+        "bytes": 7410
+      }
+    ],
+    "boundaryObservations": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-after-whole-before-corrective-813f1057.json",
+        "sha256": "de7c55114f89c0f95c472705101b25cf57cacedb0ae861c620c8085cc7a8c31e",
+        "bytes": 39536,
+        "phase": "after-whole-zero-before-corrective-zero",
+        "observerVersion": 1,
+        "cleanBoundary": true,
+        "knownVisibility": [
+          {
+            "pid": 10433,
+            "expectedStartTick": 477854,
+            "status": "MATCH",
+            "classification": "build-infrastructure"
+          },
+          {
+            "pid": 11534,
+            "expectedStartTick": 530730,
+            "status": "MATCH",
+            "classification": "observer-self"
+          }
+        ]
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-after-corrective-before-remaining-813f1057.json",
+        "sha256": "10bc52fa29fb6f1ab33b4708d87f9209070750636fd854b8fe9cb3d6bc338ccd",
+        "bytes": 40685,
+        "phase": "after-corrective-zero-before-remaining-zero",
+        "observerVersion": 1,
+        "cleanBoundary": true,
+        "knownVisibility": [
+          {
+            "pid": 10433,
+            "expectedStartTick": 477854,
+            "status": "MATCH",
+            "classification": "build-infrastructure"
+          },
+          {
+            "pid": 11755,
+            "expectedStartTick": 537459,
+            "status": "MATCH",
+            "classification": "observer-self"
+          }
+        ]
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-after-remaining-prep-candidate-813f1057.json",
+        "sha256": "29be173e827bcad2c74f8b8a570f7ea094563114ae2ddfd187fc71787ba1d003",
+        "bytes": 40699,
+        "phase": "after-remaining-zero-prep-candidate",
+        "observerVersion": 2,
+        "cleanBoundary": true,
+        "knownVisibility": [
+          {
+            "pid": 10433,
+            "expectedStartTick": 477854,
+            "status": "MATCH",
+            "classification": "build-infrastructure"
+          },
+          {
+            "pid": 11945,
+            "expectedStartTick": 543513,
+            "status": "MATCH",
+            "classification": "observer-self"
+          }
+        ]
+      }
+    ],
+    "mandatoryGate": "After independently accepted observer source: clean dated cmdline/stat census at PREP acceptance and immediately before/after each named actual. Stable PID+kernelstarttick; optional exe; any live UNKNOWN/active task/test/game/root blocks without kill/retry. Build infrastructure separate. Existing9DLL/fulloutput/strong child assertions mandatory.",
+    "limitations": "Firstv1snapshot independentlyaccepted onlyitsdatedboundary. V2smallcorrections sourceassessmentpending. No complete pre-catalog/old37/legacy/close snapshot is recovered or retrospectively asserted."
   }
 }

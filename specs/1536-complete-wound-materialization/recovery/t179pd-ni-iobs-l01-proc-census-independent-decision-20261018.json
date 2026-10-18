@@ -1,0 +1,69 @@
+{
+  "kind": "INDEPENDENT_NEW_CLOUD_PROCESS_CENSUS_VISIBILITY_DECISION",
+  "reviewedUtc": "2026-10-18T10:49:50.608440+00:00",
+  "sourceCarrier": "cf52201ca165d24c971018251ef9723a8e493384",
+  "verdict": "SUPPLEMENTAL_READONLY_CENSUS_GATE_REQUIRED_BEFORE_ACTUAL; CURRENT_CATALOG_ORIGINAL_MUST_BE_PRESERVED",
+  "evidence": {
+    "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-proc-visibility-observation-20261018.json",
+    "bytes": 2646,
+    "sha256": "81c13bb4cfe5b2b9d4578d01c3f1f8fcf3e703513dcb59c1898b2a1702161cb2",
+    "observedPids": [
+      10366,
+      10433,
+      10984
+    ],
+    "exeErrors": [
+      {
+        "pid": 10366,
+        "error": {
+          "type": "PermissionError",
+          "errno": 13
+        }
+      },
+      {
+        "pid": 10433,
+        "error": {
+          "type": "PermissionError",
+          "errno": 13
+        }
+      },
+      {
+        "pid": 10984,
+        "error": {
+          "type": "PermissionError",
+          "errno": 13
+        }
+      }
+    ],
+    "unreadableCmdline": []
+  },
+  "finding": {
+    "class": "VERIFICATION_TELEMETRY_FALSE_NEGATIVE_RISK_NOT_PRODUCT_RED",
+    "source": "Both pinned controllers processes() resolve /proc/PID/exe before reading cmdline and silently skip OSError/ValueError.",
+    "observation": "Independent read-only observation at10:47:42UTC found owned catalog pwsh10366, MSBuild dotnet10433 and dotnet list-tests10984 alive with readable cmdline/stat and exe resolution PermissionError13. No actual game process was observed. These examples demonstrate visibility denial; pwsh/build/list-tests are not themselves proof that the original game-DLL predicate missed an actual game process.",
+    "impact": "Any relevant target suffering the same exe denial can be omitted without an error in processes[]. Thus empty original arrays cannot independently prove a complete empty game-process census in this sandbox. No conclusion is drawn about the kernel/sandbox mechanism causing EACCES.",
+    "unaffected": "No observed product fault, extra game operation, failed child join, fixture assertion weakening, source drift or duplicate operation. Product SOURCE causal acceptance, exact98 pins, retained historical semantic results and independently recorded own-child exit/join/EOF/containment evidence are unchanged."
+  },
+  "decision": [
+    "Let the current named catalog reach its own original native outcome. Preserve its unmodified record/log/process/source/inventory evidence. Do not interrupt, relabel, retry or repeat a build because of this observer defect.",
+    "A versioned, independently checked supplementary read-only census can serve as the authoritative absence gate without editing the two controllers or recompiling product. It must be mandatory at fresh PREP acceptance and immediately before/after every separately named actual, with source/hash, observation time, observed candidate/inventories and phase recorded alongside original evidence.",
+    "For remaining ZERO phases, capture the supplementary boundary census as well. The catalog/build/discovery result remains usable if its own native/zero/inventory checks pass and the complete supplementary census is clean at the qualification boundary. A later observation is not represented as recovery of an absent earlier complete snapshot.",
+    "Mark existing controller processesBefore/processesAfter as executable-link-dependent and incomplete where visibility was not independently established. Add this scope correction to the earlier SOURCE/PREP/cleanup wording; do not replace original arrays or claim they were complete.",
+    "If a reliable supplementary census cannot be obtained or enforced, keep actuals held and minimally fix the shared census implementation instead. Such a tool/pin change requires focused affected SOURCE and preparation-binding review; it is not grounds to replay accepted cases. Do not silently use the known-incomplete helper as the only preflight gate."
+  ],
+  "supplementRequirements": [
+    "Read NUL-delimited argv and kernel stat directly for process identity; exe symlink resolution is optional corroboration with explicit success/error fields, never a prerequisite to classify or include a process.",
+    "Preserve PID and Linux stat field22 start tick (parse after the final closing parenthesis), raw argv/stat or their original evidence, read timestamps, and PPID. Re-read identity around collection to detect disappearance/reuse; confirmed exited transient PIDs may be recorded as gone, not confused with live unknowns.",
+    "Classify managed test/game DLL and direct apphost argv identities, plus known task runner/owned child PID-start identities and their descendants. An argv-based check must also see the dotnet test/list-tests launcher and retained runner until it exits; do not rely solely on the old DLL regex or executable-link name.",
+    "Retained build infrastructure such as MSBuild/VBCSCompiler is recorded separately from game/test execution; its presence alone is not an instruction to terminate it or evidence of a game leak.",
+    "Enumerate all relevant visible process entries. Any live identity whose argv/stat cannot be read or safely classified is an explicit UNKNOWN and blocks a clean absence verdict. Do not silently discard PermissionError, parsing errors or unresolved PID reuse.",
+    "Validate visibility against already running, known task processes such as this catalog launcher/runner using their recorded PID/start identity; no new game/test process or synthetic runtime is needed for this check.",
+    "Before each actual: no active prior task runner/game/test process or unresolved child identity, empty owned fixture namespaces, unchanged prepared nine copies and complete outputs. After join: repeat the authoritative census and preserve all original child/EOF/root assertions. Unexpected match/UNKNOWN freezes further modes, without kill/retry.",
+    "A census is a dated boundary observation, not proof of every instant or new authority to access external state. Continue serialized finite modes, disposable GUID fixtures, and previously accepted isolation; never touch user saves or the lost old environment."
+  ],
+  "scopeCorrection": "Prior raw empty process arrays are observationally incomplete by themselves. Original semantic outcomes and own-child evidence are not changed, erased or re-run; no retroactive global process-absence claim is made.",
+  "actualRelease": false,
+  "freshPrepAcceptance": false,
+  "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED",
+  "reviewerActions": "Read-only /proc and source inspection plus reports written only under /tmp/1536-cloud-tools/review; no build/discovery/tests, controller/source edits, process intervention or old-environment access."
+}
