@@ -1,3 +1,16 @@
+## L01 D01 — independent PLAN ACCEPT; helper/non-live preparation only (2026-10-18)
+
+[Independent AstraXHigh PLAN](recovery/l01-live-delivery-plan-independent-review-20261018.md)
+accepts exactb411999b,30 static checks, no open findings. Root verified report hashes
+and source/gate criteria. After this acceptance save/recovery/readback, next finite
+step: implement the bounded test-only helper and non-live in-memory reader witness.
+The isolated harness host command/native exit is recorded honestly; it starts no
+fixture/worker/game subprocess or attach/API. Real owned child0/7 require later
+SOURCE/PREP plus separately saved named synthetic release. Existing raw reader cannot
+be replaced after reading starts; health is independent of queue and exact typed
+control markers are required. No gameplay/snapshot/crash5 release. All52/57/UNKNOWN/
+M01/S01/platform/broader holds unchanged. Older sections preserve historical gates.
+
 ## L01 D01 — live diagnostic delivery PLAN candidate (2026-10-18)
 
 User accepts S01 and authorizes the next bounded test-only delivery/preparation and

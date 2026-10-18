@@ -1,0 +1,129 @@
+{
+  "kind": "D01_INDEPENDENT_PLAN_STATIC_CHECKS",
+  "reviewedCarrier": "b411999b4c1c4cd55c96f8d3edfc608c99f15dd7",
+  "checks": [
+    {
+      "check": "exact independent clean recovery receipt",
+      "passed": true
+    },
+    {
+      "check": "exact clean checkout /workspace/The-Book-of-Eternity-Reborn",
+      "passed": true
+    },
+    {
+      "check": "exact clean checkout /workspace/1536-cloud-clean-restore",
+      "passed": true
+    },
+    {
+      "check": "only four plan docs since accepted S01",
+      "passed": true
+    },
+    {
+      "check": "affected correction only exact D01 plan",
+      "passed": true
+    },
+    {
+      "check": "saved recovered doc specs/1536-complete-wound-materialization/design/l01-live-delivery-plan-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "saved recovered doc specs/1536-complete-wound-materialization/spec.md",
+      "passed": true
+    },
+    {
+      "check": "saved recovered doc specs/1536-complete-wound-materialization/plan.md",
+      "passed": true
+    },
+    {
+      "check": "saved recovered doc specs/1536-complete-wound-materialization/tasks.md",
+      "passed": true
+    },
+    {
+      "check": "baseline no real target",
+      "passed": true
+    },
+    {
+      "check": "post-source-prep native",
+      "passed": true
+    },
+    {
+      "check": "no inline consumer",
+      "passed": true
+    },
+    {
+      "check": "no invisible channel drop",
+      "passed": true
+    },
+    {
+      "check": "live pre-exit access",
+      "passed": true
+    },
+    {
+      "check": "health outside queue",
+      "passed": true
+    },
+    {
+      "check": "equal-time distinct events",
+      "passed": true
+    },
+    {
+      "check": "known accepted marker",
+      "passed": true
+    },
+    {
+      "check": "clock honesty",
+      "passed": true
+    },
+    {
+      "check": "bounded tracked uncertainty",
+      "passed": true
+    },
+    {
+      "check": "unchanged game budgets",
+      "passed": true
+    },
+    {
+      "check": "source unchanged BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+      "passed": true
+    },
+    {
+      "check": "source unchanged BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrashDiagnostic.cs",
+      "passed": true
+    },
+    {
+      "check": "source unchanged tests/categories.json",
+      "passed": true
+    },
+    {
+      "check": "source unchanged tests/selection.json",
+      "passed": true
+    },
+    {
+      "check": "historical packet/ledger/control unchanged t179pd-ni-iobs-l01-source-packet-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "historical packet/ledger/control unchanged t179pd-ni-iobs-l01-cloud-qualification-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "historical packet/ledger/control unchanged t179pd-ni-iobs-l01-method-row-ledger-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "historical packet/ledger/control unchanged t148-m01-source-packet-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "historical packet/ledger/control unchanged l01-managed-stack-capability-control-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "actual planned historical exception membership",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "findings": [],
+  "scope": "Read-only files/Git/hash review. No C# host, compiler, test, target, diagnostic or process inspection/control executed by reviewer."
+}

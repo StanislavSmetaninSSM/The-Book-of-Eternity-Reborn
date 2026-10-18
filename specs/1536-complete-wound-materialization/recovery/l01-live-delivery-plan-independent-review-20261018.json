@@ -1,0 +1,144 @@
+{
+  "kind": "D01_INDEPENDENT_PLAN_REVIEW",
+  "reviewedAtUtc": "2026-10-18T20:29:22.637305+00:00",
+  "reviewer": "Independent Astra XHigh",
+  "verdict": "ACCEPT_PLAN_MINIMAL_TEST_ONLY_IMPLEMENTATION_NO_NATIVE_CHILD_RELEASE",
+  "openFindings": [],
+  "reviewedCarrier": "b411999b4c1c4cd55c96f8d3edfc608c99f15dd7",
+  "originalPlanCarrier": "cc2cba8a75529ecc248831a223d0ddf129695b89",
+  "acceptedBase": "1817ae5814f06a45cd6df975a9211c380a256df8",
+  "reviewedFiles": [
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/design/l01-live-delivery-plan-20261018.md",
+      "bytes": 10718,
+      "sha256": "3cf38f97813348966a82f79f77675e99e4f9cc103d7f509a9c810f73d2437f5c"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/spec.md",
+      "bytes": 242644,
+      "sha256": "db323f3d1a47d2129b907166fed56e7795b415409b911f60b9dc8205bbaf62bb"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 2474294,
+      "sha256": "a0f353c1063edb4986b73d3ec29e64ec9f26d9a56a30255f18eb920fe2028648"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/tasks.md",
+      "bytes": 1610636,
+      "sha256": "75435c9034e210d11a3a7d9733e7e3b8932ed2917e05ec97e92eef61dc403549"
+    }
+  ],
+  "readOnlySourceInputs": [
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+      "bytes": 42643,
+      "sha256": "b34615c6e74ca26145f75fe7d1244c276983b05551bc6e271989e0e2a80c2c1e"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrashDiagnostic.cs",
+      "bytes": 3043,
+      "sha256": "c4909c88decc51ac95b2d3ef8e74c35e23625da051d732c324080c270d4d2804"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/tests/categories.json",
+      "bytes": 2015172,
+      "sha256": "e1fce3f722777efb741dbc8edd85277f702c2a3e205c62b7fa4265e20154d696"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/tests/selection.json",
+      "bytes": 777,
+      "sha256": "8ed0e422dc7464252758fbc126fec536477392d6300c26d353009daf14c62578"
+    }
+  ],
+  "recoveryReceipt": {
+    "path": "/tmp/1536-cloud-tools/m01-carrier-recovery-b411999b.json",
+    "bytes": 22879,
+    "sha256": "9b7a25635c8232e837fa93912b75c25e168251ed816aaa80ac9731688fa2998f"
+  },
+  "checks": {
+    "path": "/tmp/1536-cloud-tools/review/l01-live-delivery-plan-focused-checks-20261018.json",
+    "bytes": 3479,
+    "sha256": "cf23a173349656e8f3b511ed9bc4fc3aff702dbce1630116a7c3d4b183be321d"
+  },
+  "conclusion": "One parent-owned stdout drain plus bounded nonblocking observation queue is a sufficient minimal design for D01. It makes current flushed events available before exit while preserving decoded stdout and existing native/cleanup authority. This is a plan acceptance, not an implementation, transport, safety or gameplay qualification.",
+  "sourceBackedFindings": [
+    {
+      "reference": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:37-65",
+      "finding": "The parent creates a private container and nonce, verifies original PID/kernel birth/nonce, establishes contained current root and launches the resumed role. Expected observer identity must originate here, not from untrusted received JSON."
+    },
+    {
+      "reference": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:107-155",
+      "finding": "Current stdout is consumed once using ReadToEndAsync128; the owner waits220s and preserves join/EOF in finally. Raw stdout and join observation appear144-150 only after completion. A post-join event list alone would not meet D01."
+    },
+    {
+      "reference": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrashDiagnostic.cs:24-43",
+      "finding": "The existing child emits one JSON line with exact Boundary, Stage, Utc, ElapsedMilliseconds, Pid, BirthTick, Cut, Root, Nonce and Detail, then flushes. Child diagnostic schema need not change. Its millisecond clock is relative, not a proven parent monotonic epoch."
+    },
+    {
+      "reference": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:247-264,357-359,419",
+      "finding": "Existing exact controls are finalization-return/MortalJointCustodyCaptureCompletedBeforePreparation; cancellation already at finalization-enter/AcceptedOutcomeValidatedBeforeMaterialization and its return, late-first-return, exit/terminal health. There is no separate accepted-outcome stage."
+    },
+    {
+      "reference": "tests/categories.json:22-49",
+      "finding": "Existing fr063-joint-interface-crash-diagnostic selects only GuaranteedTreatment_DiagnoseCurrentResumeAfterInterfaceMemberProcessLoss, one Fact/descriptor/case with15min category bound. D01 needs build/discovery/PlanOnly only, no game actual or new target family."
+    }
+  ],
+  "resolvedPlanFindings": [
+    {
+      "id": "D01-P01",
+      "original": "cc2cba8a task2 placed a real baseline child before independent helper SOURCE/PREP.",
+      "resolution": "b411999b task2 is in-memory TextReader/EOF witness; all real native0/native7 children belong to one named finite post-SOURCE/PREP selection."
+    },
+    {
+      "id": "D01-P02",
+      "original": "Generic bounded Channel/TryWrite omitted explicit overflow and continuation policy.",
+      "resolution": "FullMode=Wait, TryWrite(false) recorded local loss, AllowSynchronousContinuations=false and single writer/reader are explicit; no callback or awaited observer on drain."
+    },
+    {
+      "id": "D01-P03",
+      "original": "LIVE access, full-queue health visibility, equal-millisecond order and exact cancellation vocabulary needed explicit acceptance constraints.",
+      "resolution": "b411999b specifies pre-exit Reader/health, sticky independent health/gap/EOF, guarded observer construction/finalization, exact duplicate fingerprint vs equal milliseconds, and source-real marker pairs."
+    }
+  ],
+  "sourceAcceptanceCriteria": [
+    "Exactly one TextReader owner. Preserve every decoded character/newline/Unicode/trailing fragment in the existing stdout result; no raw-byte fidelity claim. Non-diagnostic and original-producer routes remain on unchanged ReadToEndAsync. Only diagnostic=true + resume role selects helper, after independent live PID/starttick is obtained.",
+    "Expose actual live Reader and bounded health before WaitForExit; do not reduce this to a returned after-join summary. Synthetic must consume custody while child alive and before sending its STOP. Future consumer code is absent in D01 and must not be called inline by publication.",
+    "Queue64/line8192, bounded parser/tracking/counters, FullMode.Wait, TryWrite only, AllowSynchronousContinuations=false. No per-line file write, callback, awaited observer, silent DropWrite/DropOldest success or unbounded extra event/history list. Existing full raw stdout retention remains the stated separate unbounded output contract.",
+    "Positive candidate requires exact Boundary=iobs_current_resume_diagnostic, typed identity fields and exact source Stage/Detail for control markers. Other stdout is never custody/accepted. Identity mismatches cannot trigger; oversize/malformed/incomplete/unclassifiable candidates are conservative gaps/UNKNOWN with raw text retained. Do not coerce invalid identity or trust received identity as expectation.",
+    "Detect exact duplicate fingerprints and elapsed regression conservatively; equal elapsed for distinct events is valid. Bounded fingerprint exhaustion and health counter overflow must become explicit uncertainty. Parent ordinals/offsets show local drain order only; child has no guaranteed gap-free sequence.",
+    "Sticky health/gap/raw EOF or raw fault is available outside the queue, including when cancellation enqueue fails. Consumer must recheck this health for any future admission. Local enqueue/dequeue residence is measurable; source→receive age is UNKNOWN and child Utc is not an age clock.",
+    "Recoverable observer construction failure before any read may disable observation and use the sole old raw reader. Once reading starts, no replacement/second reader. Parse/publication/observer failures latch health and continue the same drain. Raw TextReader failure remains the original raw fault, never successful empty stdout or claimed EOF.",
+    "Guard optional observer summary serialization/emission; never replace native nonzero, timeout, existing primary exception or native0 with an observer-derived native result. Record native and observer disposition separately. Preserve original cleanup/owned root retention, WaitForExit220s/join/EOF and all strong game assertions. Fatal resource/process failure is outside a survivability promise.",
+    "Run meaningful source-bound cases for decoded chunk/CRLF/Unicode/trailing equality, live-before-STOP, exact identities, malformed/oversize/incomplete, true duplicate vs equal-time distinct events, regression, overflow plus out-of-queue health, tracking exhaustion, queue residence, no inline continuation, raw-read error and observer errors/native priority. Gated native0 and native7 are predeclared synthetic expectations, not gameplay retries.",
+    "New current D01 packet pins helper, synthetic/controller/recovery and all relevant inputs explicitly. Historical L01101/M0193 packets, ledgers and runtime evidence remain unchanged. D01 planned L01 exceptions are Crash.cs plus already-diverged catalog/selection (three total, remaining98 unchanged); M01 exceptions catalog/selection only (remaining91 unchanged). Pin the new helper in D01 closure; do not repin old evidence or claim old/current binary equality. S01 eleven pins/product23 remain unchanged."
+  ],
+  "executionBoundary": {
+    "afterSavedPlanAcceptance": "May implement minimal test-only helper/wiring and non-live source-bound preparation witness. User already authorized this bounded work; no additional routine human approval is required.",
+    "nonLiveBaseline": "An ordinary isolated .NET harness host may run the in-memory gated TextReader/EOF witness after PLAN acceptance. Record its actual host command/native exit and bounded expected assertion before releasing EOF. This does not mean zero OS processes. No fixture/worker subprocess targets, Process.Start in the witness, game assemblies/saves, attach or diagnostic API; no separate SOURCE/PREP cycle is needed solely for this non-live witness.",
+    "sourceGate": "Save/push/exact recovery of helper/source packet and independently accept SOURCE before the native-child admission pathway. Preserve any first failed checks and source history; do not silently retry.",
+    "preparationGate": "Fresh affected integration/dependency build and catalog discovery under runner requirements, exact existing diagnostic1/1/1 PlanOnly with zero tests, pinned external helper compile/source-bound non-live checks. Save/recover originals and independent PREP before native child selection.",
+    "syntheticActual": "Exactly one separately named finite owned synthetic selection after SOURCE/PREP acceptance save/recovery/readback, with declared native0/native7 children, fresh isolated roots/nonces, live parent/self PID/starttick checks, external bounded watchdog, private stop/join/EOF and outcome/observer separation. No actual release is granted by this plan report.",
+    "afterActual": "Preserve first outcomes/raw identities/hashes and cleanup evidence, independent EVIDENCE and final saved/recovered checkpoint. Failures freeze dependent release; only a concrete source correction with affected gates may justify further work."
+  },
+  "futureSnapshotProposal": {
+    "status": "DOCUMENTATION_ONLY; no collector implementation or game run released",
+    "shape": "One separately considered exact owned diagnostic cut1, one60s timer after exact custody return, cancel on accepted-enter/return/late-first-return/exit or health delay/gap/stale/unknown; preserve220/900 and unchanged assertions.",
+    "limits": "Receipt is not capture time or continuous phase proof. CapturePhase remains UNKNOWN unless actual ordered evidence establishes its position. One snapshot can locate a physical operation/wait site, not useful-work remainder, lock ownership/deadlock, async causality or completion bound. No extra sampling/retry/budget increase/original-five qualification.",
+    "requiredGate": "Separate capture implementation/SOURCE/PREP/ownership review and future user gameplay decision. Existing S01 and exhausted diagnostic2 permits do not authorize it."
+  },
+  "retainedHolds": [
+    "L01 remains52/57 at original provenance; original five crash scenarios unqualified",
+    "old66529 UNKNOWN/unavailable/recoveryClaim=false; all original failures preserved",
+    "M01/S01 accepted narrow evidence unchanged; S01 permit consumed, release NONE",
+    "No production/child schema/game assertions/budgets/GM contract change",
+    "No Windows/CI/install/security change/dump publication/gameplay",
+    "Future Windows-five/native identity and artifact403/no-retry remain distinct",
+    "E01/T148/Phase10/fullNI/HOT/F1/M3/T197 open/incomplete; A3 NO-PROCEED"
+  ],
+  "acceptanceSaveConditions": [
+    "Save this exact plan verdict with correctedb411999b provenance and preserve originalcc2cba8a history.",
+    "Current metadata may admit bounded implementation/non-live preparation only; native child selection remains pending SOURCE/PREP and separately named release.",
+    "Carry source acceptance criteria above into concrete implementation review. No new product architecture, new xUnit family or game runtime evidence is required or admitted by this PLAN."
+  ]
+}
