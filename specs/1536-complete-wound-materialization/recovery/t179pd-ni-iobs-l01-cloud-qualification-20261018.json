@@ -2,7 +2,7 @@
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
   "status": "QUALIFIED52_DIAGNOSTIC1_FIXTURE_SOURCE_WIP_UNCOMPILED_UNRUN",
   "sourceCheckpoint": "fed1f7789db0145de866cd4d73b97ab030871509",
-  "sourcePinDigest": "e319d75fce820bb4b309b4806d5f87ce32f263ca6695378e49a420c64cb4a2b2",
+  "sourcePinDigest": "ccae22922742a45cac69e9b35a4df4ad1f99ebe83977f6ec05e47b765cd02ebf",
   "sourcePinCount": 101,
   "environment": {
     "kind": "NEW_CLOUD_ENVIRONMENT_QUALIFICATION_IDENTITY",
@@ -3886,7 +3886,12 @@
       "productPaths": 23
     },
     "implementation": "New dedicated Fact/selection; original theory, semantic assertions, child supervision/220s and original crash5/900s unchanged. Readonly stdout scalar stages/live logger wrapper; original boundedlogger unchanged. No production source change, no actual now.",
-    "sourcePinDigest": "e319d75fce820bb4b309b4806d5f87ce32f263ca6695378e49a420c64cb4a2b2"
+    "sourcePinDigest": "ccae22922742a45cac69e9b35a4df4ad1f99ebe83977f6ec05e47b765cd02ebf",
+    "sourceReviewCorrection": {
+      "finding": "New unrun5min diagnostic category could interrupt original220s child timeout/diagnostic flush/join before the useful event record",
+      "remedy": "Preserve original900s outer category ceiling for singleton, child220unchanged; no native run on5min proposal",
+      "candidateBeforeCorrection": "8ba3ddbfd448119328f7ec7c0a321a0d943feaf0"
+    }
   },
   "historicalMaterialReviewHoldBeforeCrash5": {
     "kind": "CURRENT_RESUME_NESTED_CANONICAL_LEASE",

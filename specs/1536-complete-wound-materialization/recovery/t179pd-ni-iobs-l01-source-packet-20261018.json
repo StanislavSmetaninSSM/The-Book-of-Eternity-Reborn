@@ -774,9 +774,9 @@
     },
     {
       "path": "tests/categories.json",
-      "bytes": 2014077,
-      "sha256": "1b3d4eab990645fa2d63e0442309f1fd4d9fcb5ac1f98b1eca8aed755111767d",
-      "gitBlob": "582e3403037cb97b35957a21204462d69e6a5442",
+      "bytes": 2014078,
+      "sha256": "08bfb226bb044544e992996c241abbe61a87d0a3ab543a9e30e71479b85ed480",
+      "gitBlob": "ac85ce283143079f475a0297d25e1d73366a8a9f",
       "mode": "100644",
       "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
     },
@@ -814,7 +814,7 @@
     }
   ],
   "sourcePinCount": 101,
-  "pinDigest": "e319d75fce820bb4b309b4806d5f87ce32f263ca6695378e49a420c64cb4a2b2",
+  "pinDigest": "ccae22922742a45cac69e9b35a4df4ad1f99ebe83977f6ec05e47b765cd02ebf",
   "ledger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-method-row-ledger-20261018.json",
     "sha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",

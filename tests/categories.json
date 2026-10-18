@@ -20,7 +20,7 @@
     "exclusive": true,
     "ciRunner": "ubuntu-24.04"
   },
-  "timeoutMinutes": 5,
+  "timeoutMinutes": 15,
   "expectedSeconds": null,
   "selectors": [
     {
