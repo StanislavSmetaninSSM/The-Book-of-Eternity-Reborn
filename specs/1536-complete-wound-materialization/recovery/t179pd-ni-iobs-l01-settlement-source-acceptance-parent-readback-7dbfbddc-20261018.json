@@ -1,0 +1,18 @@
+{
+  "kind": "PARENT_METADATA_READBACK_NOT_INDEPENDENT_SOURCE_OR_PREP",
+  "utc": "2026-10-18T12:39:45.002875+00:00",
+  "actualSource": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
+  "sourceCandidate": "c79cdea9c29a513863439966685c99fdddb8ca3e",
+  "threeMetadataConditions": true,
+  "priorReadyRecordsUnchangedExceptExplicitHistoricalPhase": true,
+  "pinsUnchanged": true,
+  "qualified44Unchanged": true,
+  "labels": {
+    "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-settlement-fixture-cloud-813f1057",
+    "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-settlement-fixture-cloud-813f1057",
+    "corrective-plan": "t179pd-ni-iobs-l01-process-prep-first-corrective-plan-settlement-fixture-cloud-813f1057",
+    "remaining-plan": "t179pd-ni-iobs-l01-process-prep-first-remaining-plan-settlement-fixture-cloud-813f1057"
+  },
+  "actualRelease": false,
+  "recoveryReceiptSha256": "ff393ea0803180c3914d5fd2492dd1a18420c7cbe4c259a42744d2c8e685d09e"
+}

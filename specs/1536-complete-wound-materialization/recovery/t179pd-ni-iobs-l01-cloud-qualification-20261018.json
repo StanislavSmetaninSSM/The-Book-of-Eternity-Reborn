@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "SETTLEMENT_FIXTURE_SOURCE_ACCEPTED_FRESH_ZERO4_ONLY_PENDING_RECOVERY_READBACK",
+  "status": "SETTLEMENT_FIXTURE_ZERO4_NATIVE0_INDEPENDENT_PREP_PENDING_ACTUAL_HELD",
   "sourceCheckpoint": "Uncompiled settlement fixture candidate based on67e143b2; exact carrier assigned after commit",
   "sourcePinDigest": "304a7e8beb3174246ac3db792c6aa63319fa8ead9f3bab62f91346d4f204248d",
   "sourcePinCount": 98,
@@ -907,7 +907,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Exact remote/full clean GitHub recovery and metadata condition readback, then only four individually named ZERO preparations. No actual before saved originals and independent fresh PREP.",
+  "next": "Save/push/exactremote/clean GitHub recovery, then independent fresh PREP. Only later saved/recovered PREP acceptance and a clean immediate v2 preflight may release separately named corrective settlement3. Retain44; remaining10 unrun; old crash UNKNOWN unchanged.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -1083,7 +1083,7 @@
     "phase": "HISTORICAL_COMPILED_6AB43F6A_ZERO3_PRE_CORRECTION_INELIGIBLE_FOR_CORRECTED_ACTUALS"
   },
   "release": {
-    "status": "NONE_ACTUAL_HELD_PENDING_CURRENT_FRESH_ZERO4_AND_INDEPENDENT_PREP",
+    "status": "NONE_ACTUAL_HELD_PENDING_INDEPENDENT_SETTLEMENT_FIXTURE_PREP",
     "mode": null
   },
   "newOriginalObservedPassingCases": 4,
@@ -1875,7 +1875,7 @@
   },
   "sourcePinDigestBeforeSettlementFixtureCorrection": "f5c13d343de221bc86aaf3ec100869ea6e1cafdaae59b3006baa5642de328e8e",
   "settlementFixtureCorrection": {
-    "status": "SOURCE_ACCEPTED_FRESH_ZERO4_PENDING",
+    "status": "SOURCE_ACCEPTED_FRESH_ZERO4_ORIGINAL_NATIVE0_INDEPENDENT_PREP_PENDING",
     "sourceBase": "67e143b24645e0a5b25829b17cb27e80edf3f000",
     "scope": {
       "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSettlement.cs",
@@ -1925,7 +1925,200 @@
       },
       "catalog": "Fresh BOTH build/discovery, zero tests; exact nine managed copies and full output inventory bind all NoBuild plans/actuals."
     },
-    "freshPreparation": "REQUIRED_ZERO4_AND_INDEPENDENT_PREP_BEFORE_ANY_ACTUAL",
+    "freshPreparation": {
+      "status": "ORIGINAL_NATIVE0_ZERO4_CANDIDATE_NOT_INDEPENDENT_PREP",
+      "actualSource": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
+      "compiledSource": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
+      "sourcePinCount": 98,
+      "sourcePinDigest": "304a7e8beb3174246ac3db792c6aa63319fa8ead9f3bab62f91346d4f204248d",
+      "productDeltaCount": 21,
+      "records": [
+        {
+          "mode": "catalog",
+          "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-settlement-fixture-cloud-813f1057/record.json",
+          "sha256": "3ea532bcfd3caa93b9df1f69f74d559fe7022230e3d925c597ece0399f99d8eb",
+          "nativeExit": 0,
+          "actualTestsExecuted": 0,
+          "seconds": 462.440106095999,
+          "descriptors": 16,
+          "methods": 33,
+          "cases": 57,
+          "resultDirectories": [
+            "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-124059-820-25718-e10582ac84f94a42ae75454e840458fc-categories"
+          ]
+        },
+        {
+          "mode": "plan",
+          "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-whole-plan-settlement-fixture-cloud-813f1057/record.json",
+          "sha256": "9c3f30305bccd3b099811c9271dea5c30ce0aaf20c4432820db96e215031c1e9",
+          "nativeExit": 0,
+          "actualTestsExecuted": 0,
+          "seconds": 49.51695959600147,
+          "descriptors": 16,
+          "methods": 33,
+          "cases": 57,
+          "resultDirectories": [
+            "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-124944-722-26371-dfed1909c6eb4c5ab41af257b7815c69-categories"
+          ]
+        },
+        {
+          "mode": "corrective-plan",
+          "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-settlement-fixture-cloud-813f1057/record.json",
+          "sha256": "7ed48419621c0f0d778c6aed35ba7611444de1a3f753d475ef07df372dadbab1",
+          "nativeExit": 0,
+          "actualTestsExecuted": 0,
+          "seconds": 21.70957649400043,
+          "descriptors": 1,
+          "methods": 2,
+          "cases": 3,
+          "resultDirectories": [
+            "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-125131-536-26622-a4ab98ca6ff94783b66bebbaa4c4a6dd-categories"
+          ]
+        },
+        {
+          "mode": "remaining-plan",
+          "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-settlement-fixture-cloud-813f1057/record.json",
+          "sha256": "2536796c17257853b72940736ad92763443c7727597e9915a32f28ae9b87fa5f",
+          "nativeExit": 0,
+          "actualTestsExecuted": 0,
+          "seconds": 24.214534347000154,
+          "descriptors": 3,
+          "methods": 3,
+          "cases": 10,
+          "resultDirectories": [
+            "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-125249-994-26859-dde207be151a415996a435f51992580b-categories"
+          ]
+        }
+      ],
+      "archive": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-settlement-fixture-preparation-813f1057-files-20261018/archive.json",
+        "sha256": "8727f23c6a026d714ef916d0e5e90cc58d58389b80eec7c45b01ebff18cf4bef",
+        "bytes": 23060,
+        "rawChains": 43
+      },
+      "binaryCopies": 9,
+      "completeOutputFiles": 1575,
+      "catalog": {
+        "categories": 808,
+        "methods": 11800,
+        "unmapped": [],
+        "staleSelectors": [],
+        "executed": 0
+      },
+      "whole": {
+        "descriptors": 16,
+        "methods": 33,
+        "cases": 57,
+        "executed": 0
+      },
+      "corrective": {
+        "descriptors": 1,
+        "methods": 2,
+        "cases": 3,
+        "executed": 0
+      },
+      "remaining": {
+        "descriptors": 3,
+        "methods": 3,
+        "cases": 10,
+        "executed": 0
+      },
+      "supplementalBoundaries": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-settlement-fixture-catalog-before-813f1057.json",
+          "sha256": "b75fc8de1e9dafdb77ce3968c6a4e4c44696c46056e10ae707b4b3865970f81b",
+          "bytes": 66954,
+          "phase": "settlement-fixture-catalog-before",
+          "cleanBoundary": true,
+          "entries": 74,
+          "datedBoundaryGapSeconds": 2.558112
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-settlement-fixture-catalog-after-813f1057.json",
+          "sha256": "7f27a6a3cfd1a8c3227041bab0491c27249474e214ae0a75a5416d8a7fcd327b",
+          "bytes": 79621,
+          "phase": "settlement-fixture-catalog-after",
+          "cleanBoundary": true,
+          "entries": 79,
+          "datedBoundaryGapSeconds": 1.592656
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-settlement-fixture-whole-before-813f1057.json",
+          "sha256": "426c76b8ca0129abe5225ef486e5bc82a5283342289f87291fdccf425b515853",
+          "bytes": 76374,
+          "phase": "settlement-fixture-whole-before",
+          "cleanBoundary": true,
+          "entries": 78,
+          "datedBoundaryGapSeconds": 17.952184
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-settlement-fixture-whole-after-813f1057.json",
+          "sha256": "ab5ee690fddb788ba69325d345c1def252e3cbabf3bcb41490711820f84c431d",
+          "bytes": 77531,
+          "phase": "settlement-fixture-whole-after",
+          "cleanBoundary": true,
+          "entries": 79,
+          "datedBoundaryGapSeconds": 0.569165
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-settlement-fixture-corrective-before-813f1057.json",
+          "sha256": "7c23c3d2da32fa667fd0516c30d98dc47dc76bb6cd80537a8513c373f4dd0513",
+          "bytes": 76375,
+          "phase": "settlement-fixture-corrective-before",
+          "cleanBoundary": true,
+          "entries": 78,
+          "datedBoundaryGapSeconds": 2.786927
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-settlement-fixture-corrective-after-813f1057.json",
+          "sha256": "26319c97ebde767923b7d21be9849a0afb9071ac564edf93b749ffd0c9511c6c",
+          "bytes": 77536,
+          "phase": "settlement-fixture-corrective-after",
+          "cleanBoundary": true,
+          "entries": 79,
+          "datedBoundaryGapSeconds": 0.647784
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-settlement-fixture-remaining-before-813f1057.json",
+          "sha256": "3956eac3988041869cfb9c76d9fc65f8d88cf72b1f0272d741c16e78606d2633",
+          "bytes": 76374,
+          "phase": "settlement-fixture-remaining-before",
+          "cleanBoundary": true,
+          "entries": 78,
+          "datedBoundaryGapSeconds": 3.278601
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-settlement-fixture-remaining-after-813f1057.json",
+          "sha256": "00c859776c6f1ff19592093f8bbffa68f4cb8312d74467388c5dccd37e5c29c0",
+          "bytes": 77535,
+          "phase": "settlement-fixture-remaining-after",
+          "cleanBoundary": true,
+          "entries": 79,
+          "datedBoundaryGapSeconds": 1.019565
+        }
+      ],
+      "prepQualificationBoundary": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-settlement-fixture-prep-qualification-813f1057.json",
+        "sha256": "5bc8856dafff35087a5f6791dbce0566657dce0c75a0b27d64b889a2fac8fbcb",
+        "bytes": 76376
+      },
+      "sourceAcceptanceReadback": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement-source-acceptance-readback-7dbfbddc-20261018.json",
+        "sha256": "85bd7e10bf351a985f9d2d1a64d0bfdf22f7fbb436adc75e3b58b7c452f1902a",
+        "bytes": 3793
+      },
+      "sourceAcceptanceRecovery": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement-source-acceptance-recovery-7dbfbddc-20261018.json",
+        "sha256": "ff393ea0803180c3914d5fd2492dd1a18420c7cbe4c259a42744d2c8e685d09e",
+        "bytes": 3469
+      },
+      "sourceAcceptanceParentReadback": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement-source-acceptance-parent-readback-7dbfbddc-20261018.json",
+        "sha256": "93ca6ce19be4d8923716a52b83443f585a5bc99e744dccb0155069a5cb310db5",
+        "bytes": 964
+      },
+      "cleanup": "Native owned-tree cleanup and empty owned roots. Original exe-dependent arrays remain incomplete; accepted v2 dated boundaries are separate evidence, not continuous/instantaneous absence."
+    },
     "causalVerdict": "ACCEPT_SHARED_FIXTURE_CAUSE_AND_MINIMAL_CORRECTION_PLAN_ONLY_RUNTIME_HELD",
     "wipRecovery": {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-cbb11398-20261018.json",

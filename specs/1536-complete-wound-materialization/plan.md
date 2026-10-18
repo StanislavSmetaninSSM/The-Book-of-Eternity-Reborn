@@ -1,3 +1,9 @@
+## T179-Pd-NI-IOBS-L01 — settlement fixture fresh ZERO4 native0; PREP pending (2026-10-18)
+
+Fresh actual/compiled7dbfbddc: catalog native0/ZERO 462.440s, plan native0/ZERO 49.517s, corrective-plan native0/ZERO 21.710s, remaining-plan native0/ZERO 24.215s. Whole16/33/57, corrective1/2/3 and remaining3/3/10 plans match exact identities. All43 original raw chains, nine managed copies/full output inventories, eight dated before/after boundaries and fresh qualification census saved. [Original archive](recovery/t179pd-ni-iobs-l01-cloud-settlement-fixture-preparation-813f1057-files-20261018/archive.json). No actual tests executed.
+
+Save/recover this candidate and obtain independent PREP before any actual. Qualified44/57 and frozen original settlement1PASS2FAIL remain unchanged. New corrective settlement3 and remaining10 require separate releases; old crashUNKNOWN is unavailable and unchanged. All broader holds remain. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — settlement fixture SOURCE accepted; ZERO4 only (2026-10-18)
 
 [Independent SOURCE](recovery/t179pd-ni-iobs-l01-settlement-fixture-source-independent-review-20261018.md) accepts the one-line fixture classification and bounded tools, code/binding findings empty. Three required metadata clarifications are included: fixed-ledger pointer selects current settlementFixtureCorrection; new crash gate requires current fresh1/2/3+3/3/10 PREP; previous ReadyDrift SOURCE/PREP explicitly historical with all records preserved. Source98 pins/product21/unchanged assertions and retention44 verified. No production change.
