@@ -1,7 +1,7 @@
 {
   "kind": "T179PD_CUT01_TESTS_ONLY_CURRENT_SOURCE_PACKET",
   "base": "08119f36c66464913e94d4bd5d23221073e0d48d",
-  "status": "PRODUCT_LATE2_FIRST_RAW_SAVED_EVIDENCE_PENDING_NEW3_HELD",
+  "status": "PRODUCT_SOURCE_AND_PROTECTED_LATE2_EVIDENCE_ACCEPTED_NEW3_UNRUN_HELD_FOR_NAMED_ACTIVATION",
   "sourcePins": [
     {
       "path": "AGENTS.md",
@@ -286,7 +286,7 @@
   "sourcePinDigest": "d2166163295ea183719e3a51f65a0c795a238bfeb83faf5e1109c0fb4aacb77f",
   "currentLedger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-method-row-ledger-20261018.json",
-    "sha256": "5cd650bafbc5903e4d9cc00de2d7b02c7c86babf4d5b89c0d2a26f998746ad2c"
+    "sha256": "9d7f07bbcec98d3f062f4cf5dc96802257c37f9eb34c078678b9c5ddb644dcf7"
   },
   "productDelta": [
     "BookOfEternityClient/Core/GameEngine.cs",
@@ -465,7 +465,7 @@
     "scope": "Only append enum + await existing nullable dispatcher after current capture/before preparation; no NI semantics",
     "inverse": "Both exact08119 whole source restored by removing exact2edits",
     "freshProductPrep": "COMPLETED_FIRST_ZERO_3D195F2F; new9copies/335managed, not actual acceptance",
-    "actuals": "ProtectedLate2 original raw saved; separate EVIDENCE pending. New3 UNRUN/HELD.",
+    "actuals": "ProtectedLate2 exact2 qualifiedPASS independently accepted. New3 UNRUN/HELD pending saved/recovered decision + Root named activation.",
     "preparationControllers": [
       {
         "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-product-preparation-run.py",
@@ -614,7 +614,13 @@
       "archive": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-first-product-late2-files-20261018/archive.json",
       "archiveSha256": "bc077e8b71f2ea25b0d0aa9d43bb4fd19387cbf12097f5e78827a92846b0c45a",
       "rawChains": 9,
-      "independentEvidence": "PENDING_NOT_YET_QUALIFIED",
+      "independentEvidence": {
+        "md": "recovery/t179pd-cut01-product-late2-evidence-independent-review-20261018.md",
+        "json": "recovery/t179pd-cut01-product-late2-evidence-independent-review-20261018.json",
+        "support": "recovery/t179pd-cut01-product-late2-evidence-independent-check-20261018.json",
+        "root": "recovery/t179pd-cut01-root-product-late2-evidence-acceptance-f7988570-20261018.json",
+        "verdict": "ACCEPT_AFFECTED_LEGACY_LATE2_EXACT_2PASS_ONLY"
+      },
       "scope": "Exact named current product outcome only. Native0/PASS is raw observation pending separate EVIDENCE; not NI or broader family qualification.",
       "namedAuthorization": {
         "source": "Root named activation message, copied as derived metadata AFTER terminal; no separate pre-run activation file existed",

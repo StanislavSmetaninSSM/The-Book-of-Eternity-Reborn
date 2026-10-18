@@ -1,0 +1,45 @@
+{
+  "kind": "INDEPENDENT_CUT01_PRODUCT_PROTECTED_LATE2_EVIDENCE_REVIEW",
+  "date": "2026-10-18",
+  "verdict": "ACCEPT_NEW_AFFECTED_PROTECTED_LATE2_2PASS",
+  "carrier": "f798857062a3316b907c13516a71308dbfaecc2f",
+  "actualSource": "127d3cf73f99f676af8b7cb46df0f8930b5682f6",
+  "compiledProduct": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
+  "native": {
+    "exit": 0,
+    "seconds": 120.28117616300005,
+    "planned": 2,
+    "executed": 2,
+    "passed": 2,
+    "failed": 0,
+    "descriptors": 1,
+    "complete": true,
+    "duplicates": 0,
+    "skipped": 0,
+    "underfill": 0,
+    "timedOut": false
+  },
+  "materialFindings": [],
+  "qualifiedSemantics": [
+    "Both exact existing target methods, genuine source42/original43 and current generation/request/snapshot crosslinks.",
+    "Held III severity repaired to II; create ordinal2/treat ordinal3 on distinct wounds; actual damage3 before charge2, exact resource/history state.",
+    "Zero and nonzero progression preserve frozen source/control/mutation; matching report consumed through named physical transactions only, exact applied acknowledgement.",
+    "Each case independently verifies66 manifest snapshot hashes,142 terminal cleanup paths,691-byte reconstructed story and84-image inert repeat.",
+    "Two distinct strict removedtrue/nullfailure roots physically absent; canonical cleanup and original process termination verified."
+  ],
+  "bindings": {
+    "rawChains": 9,
+    "sourcePins": 31,
+    "freshBinaryCopies": 9,
+    "managedFilesChecked": 335,
+    "actualContextExact": true,
+    "descriptorOrdinalRenumbering": "003 in full plan to001 in standalone is legitimate; semantic row equality verified"
+  },
+  "limits": [
+    "This is only the affected legacy Late2 result, not the new callback stop/no-op observations.",
+    "New3 remains UNRUN and held until Root saves/reads this decision, recovers the carrier and separately names new3 activation.",
+    "No full NI, precommon implementation, wider HOT/F1/M3/Windows/CI/ZIP/A3 qualification; older accepted results are not replayed/recounted.",
+    "Final computed raw body not separately frozen; retain source assertion/digest/inert equality limits."
+  ],
+  "supportPath": "/tmp/t179pd-cut01-product-late2-evidence-independent-check-20261018.json"
+}

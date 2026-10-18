@@ -1,0 +1,54 @@
+{
+  "kind": "ROOT_CUT01_PRODUCT_LATE2_EVIDENCE_ACCEPTANCE_AND_CONDITIONAL_NEW3_RELEASE",
+  "createdUtc": "2026-10-18T04:00:29.321461+00:00",
+  "carrier": "f798857062a3316b907c13516a71308dbfaecc2f",
+  "actualSource": "127d3cf73f99f676af8b7cb46df0f8930b5682f6",
+  "compiledProduct": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
+  "verdict": "ACCEPT_AFFECTED_LEGACY_LATE2_EXACT_2PASS",
+  "artifacts": [
+    {
+      "path": "/tmp/t179pd-cut01-product-late2-evidence-independent-review-20261018.md",
+      "bytes": 1670,
+      "sha256": "71f47ed0a64ffdf8202e9cda778b32003a3e461a30e340de5f92bd39eb2f3844"
+    },
+    {
+      "path": "/tmp/t179pd-cut01-product-late2-evidence-independent-review-20261018.json",
+      "bytes": 2270,
+      "sha256": "02afdff741c1642a42e8e01c6f1926d27fbe46fdc4f75f6205a99cc70264ac67"
+    },
+    {
+      "path": "/tmp/t179pd-cut01-product-late2-evidence-independent-check-20261018.json",
+      "bytes": 22200,
+      "sha256": "c2bcd2b07cce39f4696fc275895ef95e0c76d233f43e82bcc3d42e294660ebf0"
+    },
+    {
+      "path": "/tmp/t179pd-cut01-product-late2-delta-github-f7988570-20261018.json",
+      "bytes": 17125,
+      "sha256": "0c24afe3e79589bff5ad9dff52ec321bc304c9834aec93eef6e7e386ab2454df"
+    },
+    {
+      "path": "/tmp/t179pd3d-root-recovery-composition-f7988570-20261017.json",
+      "bytes": 26759,
+      "sha256": "cad47571e82c931a1fefaf4e91a6186892645430b0334d05888ae9340bfb08a2"
+    }
+  ],
+  "rootChecks": [
+    "Read/hashverified independent review pair and semantic support; independently inspected new summary/TRX and all9 original/gzip chains previously.",
+    "Exact2 existing methods PASS/native0/120.281176s; complete1descriptor, no skip/duplicate/underfill/timeout; namespace/binaries/source unchanged.",
+    "Independently verified saved raw physical GitHub delta and full7a+77 consecutive deltas/55,266 trackedpaths; exactremote cleanf798 and main unchanged."
+  ],
+  "scope": "Only affected legacy2, never seam/new3 or NI completion. Preserve baseline causalRED1FAIL and separate source/evidence verdicts.",
+  "new3Gate": {
+    "conditionalRelease": "Persist exact independent3 + thisRoot + f798receipt/77composition and derived metadata only, nonforcepush/exactremote/GitHub delta; Root independently verifies then names one new3 actual. No code/test/tool/build changes.",
+    "plannedCases": 3,
+    "methods": {
+      "GuaranteedTreatment_CurrentCaptureStopPrecedesPreparationAndExpiresActualOwner": 1,
+      "GuaranteedTreatment_CurrentCaptureObservationPreservesOrdinaryCompletion": 2
+    },
+    "recorderSha256": "a4eaa9ac8618ea251e61bedef572a79b628726243279d283d440b8485230f0a1",
+    "archiverSha256": "65cdda7af386a200f3f675572d72702f9b853e58962ac6fdc95387535f1b5fef",
+    "preparation": "/tmp/t179pd-cut01-implementation-tools/t179pd-cut01-product-prep-first-plan-3d195f2f-20261018/record.json",
+    "noAutorunRetryAdvance": true
+  },
+  "remaining": "NI-IOBS-L01 and actual NI/common origin implementation/qualification remain open; child2 DESIGN only; no held HOT/fullNI/CI/ZIP/A3/main activation."
+}
