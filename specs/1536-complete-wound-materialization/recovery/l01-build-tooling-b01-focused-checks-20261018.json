@@ -1,0 +1,230 @@
+{
+  "kind": "B01_FOCUSED_CORRECTED_SOURCE_CHECKS",
+  "candidate": "7f6bb5c6250b107b2f943a7531ea3fcfbd623966",
+  "buildScriptSha256": "b8182fb480ad46452010e31f395e9d2deac63c11d5e1e90d0c08c273e8387e6f",
+  "passed": 42,
+  "checks": [
+    {
+      "check": "corrected exact runner hash",
+      "passed": true
+    },
+    {
+      "check": "helper guard before root/import",
+      "passed": true
+    },
+    {
+      "check": "accepted helper hash exact",
+      "passed": true
+    },
+    {
+      "check": "resource guard before root/launch",
+      "passed": true
+    },
+    {
+      "check": "proc exact executable+fallback double identity",
+      "passed": true
+    },
+    {
+      "check": "unresolved PID absence is not skipped",
+      "passed": true
+    },
+    {
+      "check": "resource errors propagate and numeric fields validated",
+      "passed": true
+    },
+    {
+      "check": "raw mount membership/node limits recorded",
+      "passed": true
+    },
+    {
+      "check": "samples and terminal failures hold observer scope",
+      "passed": true
+    },
+    {
+      "check": "raw signal outcome retained",
+      "passed": true
+    },
+    {
+      "check": "raw/native/controller None/False",
+      "passed": true
+    },
+    {
+      "check": "raw/native/controller None/True",
+      "passed": true
+    },
+    {
+      "check": "raw/native/controller 0/False",
+      "passed": true
+    },
+    {
+      "check": "raw/native/controller 0/True",
+      "passed": true
+    },
+    {
+      "check": "raw/native/controller 7/False",
+      "passed": true
+    },
+    {
+      "check": "raw/native/controller 7/True",
+      "passed": true
+    },
+    {
+      "check": "raw/native/controller -9/False",
+      "passed": true
+    },
+    {
+      "check": "raw/native/controller -9/True",
+      "passed": true
+    },
+    {
+      "check": "exact unchanged build command and timeout limits",
+      "passed": true
+    },
+    {
+      "check": "no manual signal added",
+      "passed": true
+    },
+    {
+      "check": "one-shot root and review binding",
+      "passed": true
+    },
+    {
+      "check": "saved source-bound read-only probe",
+      "passed": true
+    },
+    {
+      "check": "149 pins packet byte unchanged",
+      "passed": true
+    },
+    {
+      "check": "only bounded ten paths",
+      "passed": true
+    },
+    {
+      "check": "original review copy l01-build-tooling-b01-original-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "original review copy l01-build-tooling-b01-original-independent-review-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "original review copy l01-build-tooling-b01-original-checks-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "original review copy l01-build-tooling-b01-independent-observations-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "original review copy check_b01_original_source.py",
+      "passed": true
+    },
+    {
+      "check": "corrected carrier receipt",
+      "passed": true
+    },
+    {
+      "check": "recovered specs/1536-complete-wound-materialization/design/l01-build-tooling-unit-diagnostic-plan-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "recovered specs/1536-complete-wound-materialization/plan.md",
+      "passed": true
+    },
+    {
+      "check": "recovered specs/1536-complete-wound-materialization/recovery/check_b01_original_source.py",
+      "passed": true
+    },
+    {
+      "check": "recovered specs/1536-complete-wound-materialization/recovery/l01-build-tooling-b01-independent-observations-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered specs/1536-complete-wound-materialization/recovery/l01-build-tooling-b01-original-checks-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered specs/1536-complete-wound-materialization/recovery/l01-build-tooling-b01-original-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered specs/1536-complete-wound-materialization/recovery/l01-build-tooling-b01-original-independent-review-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "recovered specs/1536-complete-wound-materialization/recovery/l01-build-tooling-corrected-preflight-probe-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered specs/1536-complete-wound-materialization/recovery/l01-build-tooling-observations-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered specs/1536-complete-wound-materialization/recovery/l01-build-tooling-unit-once-20261018.py",
+      "passed": true
+    },
+    {
+      "check": "writer and restore clean exact",
+      "passed": true
+    },
+    {
+      "check": "one-shot diagnostic root not consumed",
+      "passed": true
+    }
+  ],
+  "findings": [],
+  "rawExitProof": [
+    {
+      "rawWrapperReturnCode": null,
+      "observerError": false,
+      "controllerExit": 2
+    },
+    {
+      "rawWrapperReturnCode": null,
+      "observerError": true,
+      "controllerExit": 2
+    },
+    {
+      "rawWrapperReturnCode": 0,
+      "observerError": false,
+      "controllerExit": 0
+    },
+    {
+      "rawWrapperReturnCode": 0,
+      "observerError": true,
+      "controllerExit": 2
+    },
+    {
+      "rawWrapperReturnCode": 7,
+      "observerError": false,
+      "controllerExit": 7
+    },
+    {
+      "rawWrapperReturnCode": 7,
+      "observerError": true,
+      "controllerExit": 7
+    },
+    {
+      "rawWrapperReturnCode": -9,
+      "observerError": false,
+      "controllerExit": 137
+    },
+    {
+      "rawWrapperReturnCode": -9,
+      "observerError": true,
+      "controllerExit": 137
+    }
+  ],
+  "scope": "Static source/hash/Git/recovery checks plus AST-exact finalizer/return expression with fake records. No main, new census, build, runtime target, timeout or signals executed.",
+  "receipt": {
+    "path": "/tmp/1536-cloud-tools/d01-carrier-recovery-7f6bb5c6.json",
+    "bytes": 40602,
+    "sha256": "b07478c3e11d92e766c1251043a7a0652c4a4d39cece229c0278765a91b01b58"
+  },
+  "probe": {
+    "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-build-tooling-corrected-preflight-probe-20261018.json",
+    "bytes": 1720,
+    "sha256": "2b96d1973a04fb6945f4559f4a7d885920d3455995f50c4dbcb51a8ae96e0340"
+  }
+}

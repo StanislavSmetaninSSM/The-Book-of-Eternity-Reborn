@@ -1,7 +1,7 @@
 ## L01 B01 — build tooling/environment diagnosis (2026-10-18)
 
 - [x] Preserve old124 and collect read-only resource/tool/process/project graph observations; no resource-cause claim.
-- [ ] Independent diagnosis + review of [one isolated unit build plan](design/l01-build-tooling-unit-diagnostic-plan-20261018.md) and single-purpose observer, then saved/recovered build-only admission.
+- [x] Independent diagnosis + [one isolated unit build plan](design/l01-build-tooling-unit-diagnostic-plan-20261018.md)/observer SOURCE accepted7f6bb5c6,42focused checks, all4findings resolved; one build only after acceptance recovery/fresh guards.
 - [ ] One justified build-only operation with ordinary600s bound/private outputs/normal logs/process observations; preserve new outcome separately, no gameplay/synthetic.
 - [ ] Independent EVIDENCE and durable checkpoint; old catalog/PREP/game gates remain unchanged.
 

@@ -1,0 +1,122 @@
+{
+  "kind": "B01_INDEPENDENT_CORRECTED_PLAN_SOURCE_REVIEW",
+  "candidate": "7f6bb5c6250b107b2f943a7531ea3fcfbd623966",
+  "originalCandidate": "5f82a65318a3845418ddb1966d00095c78f511e3",
+  "verdict": "ACCEPT_ONE_FINITE_BUILD_ONLY_DIAGNOSTIC",
+  "buildOnlyAdmission": "ACCEPT_ONE_ISOLATED_UNIT_BUILD_ONLY",
+  "buildScriptSha256": "b8182fb480ad46452010e31f395e9d2deac63c11d5e1e90d0c08c273e8387e6f",
+  "findings": [],
+  "resolvedFindings": [
+    {
+      "id": "B01-S01",
+      "status": "RESOLVED",
+      "evidence": "Accepted S01 SHA is checked before runpy and one-shot root creation; nested M01 finalizer remains bound by unchanged149 D01 pins."
+    },
+    {
+      "id": "B01-S02",
+      "status": "RESOLVED_WITH_EXPLICIT_VISIBILITY_LIMIT",
+      "evidence": "Stat-first census includes exact executable or declared exact argv0 fallback with repeated kernel birth identity. Still-present missing reads/reuse/unreadable relevant identity raise, positively vanished PIDs are separately counted. Initial/terminal guards reject active tool matches or unresolved reads.",
+      "limit": "Match-based same-UID dated census is not proof against arbitrary argv/executable spoofing, no continuous absence or reconstruction of old process ancestry. The legitimate old tooling routes plus prior successful owned cleanup and absent old roots justify this bounded task."
+    },
+    {
+      "id": "B01-S03",
+      "status": "RESOLVED",
+      "evidence": "Required numeric resource reads and mount/membership/node identity precede root creation/launch. Later read failures become observer errors and prevent success acceptance. Effective per-build quota/ancestor attribution remains explicitly unproved."
+    },
+    {
+      "id": "B01-S04",
+      "status": "RESOLVED",
+      "evidence": "Raw Popen negative return and signal are retained. Only final external controller status maps to128+signal; exact fake nativeNone/0/7/-9 cases preserve nonzero priority with or without observer error. GNU timeout descendant limitations and terminal residual-process HOLD are explicit."
+    }
+  ],
+  "admittedOperation": {
+    "root": "/tmp/l01bd-772d38df9b5b4cf8",
+    "count": 1,
+    "mode": "Pure dotnet build of BookOfEternityClient.Tests.csproj and complete five-project reference graph",
+    "buildOptions": [
+      "--verbosity minimal",
+      "--artifacts-path <private root>/artifacts",
+      "--disable-build-servers",
+      "-p:GenerateDocumentationFile=true",
+      "-p:NoWarn=1591",
+      "-p:NuGetAudit=false",
+      "-p:RestoreSources=/tmp/1536-cloud-tools/nuget",
+      "-clp:PerformanceSummary;Summary"
+    ],
+    "bound": "Installed GNU timeout in a fresh session/process group:600s then TERM, conditional10s kill-after. No manually selected PID/global signal or server shutdown.",
+    "observations": "Nominal2s same-session CPU/RSS/identity samples, ordinary performance-summary/build logs, shared mounted-cgroup counters and separately limited waited-child rusage.",
+    "privateOutputs": "Fresh one-shot root with sanitized CLI/XDG/tmp paths and SDK artifacts output; shared existing local package cache is read as the declared restore source."
+  },
+  "admissionConditions": [
+    "Save/push/recover this exact report and source before invocation. The acceptance carrier may add only review/acceptance metadata; the reviewed runner, project inputs and all149 D01 pins must remain unchanged. Pass the actual clean acceptance HEAD plus exact report path/hash to the runner.",
+    "Run its immediate preflight once: exact review/script and S01 hash,149 pins,172 installed inputs, absent old root PIDs97377/97402, no active tool match or unresolved identity, readable numeric resource observations and tmp free>2GiB. If a guard fails, do not launch or consume a substitute root/permit.",
+    "The single private root is initially absent and mkdir prevents reuse. At most one standard timeout-wrapped full unit build is admitted. No test, discovery, game fixture, D01 synthetic, S01, dump, sampling of gameplay, Windows/CI or installation/security-policy change.",
+    "Retain native raw status, derived controller status, command, original stdout/stderr, available samples and read errors. Known nonzero native has priority; native0 with observer errors, unresolved identity or live residual session/tool processes is held. Do not signal unrelated processes or retry after failure.",
+    "Archive/save/recover the first outcome and obtain independent EVIDENCE before any conclusion or next action. This permit ends with that single outcome or preflight blocker; no automatic catalog/PlanOnly/Live/synthetic execution follows."
+  ],
+  "reasonedPlanDecision": [
+    "A standalone unit build is informative because the original unit phase only received the remainder of the aggregate catalog budget; the full5-node graph and cached61 package versions are preserved. New private outputs and disabled servers are declared changed conditions, so this is capability observation rather than controlled identification of the original cause.",
+    "Original124/137/global600 failure remains immutable. Independent dated readings show no active exact tool match and no old root PIDs,35 exited dotnet zombies and adequate observed disk headroom. Nothing presently establishes persistent cloud degradation or requires a fresh-cloud substitution.",
+    "Current mounted-node counters, including lifetime memory/max/throttle values, cannot attribute the old slowdown or guarantee future resource availability. Effective ancestor limits remain UNKNOWN. The ordinary600s diagnostic bound is not a larger catalog or gameplay budget."
+  ],
+  "evidenceDurabilityLimit": "Samples and wrapper identity are retained in RAM until terminal record publication. Append-only sampling/owned-start would be optional resilience, not required for this bounded admission. If the observer/environment is lost, missing samples/identity/native/cleanup facts stay UNKNOWN; raw build logs and started command may remain, root/one-run permit remain consumed, and no retry is inferred. GNU timeout is independent of observer progress but normal wrapper exit alone never proves all descendants gone.",
+  "validation": {
+    "checks": {
+      "path": "/tmp/1536-cloud-tools/review/l01-build-tooling-b01-focused-checks-20261018.json",
+      "bytes": 6304,
+      "sha256": "3473fda71880c6dbeb1ba9f828293cd0d3709f7411ac6025c0c44272067b1194"
+    },
+    "checker": {
+      "path": "/tmp/1536-cloud-tools/review/check_b01_focused_correction.py",
+      "bytes": 7358,
+      "sha256": "37e5b462723c5c2f537fdf7d78b52ae0f8ff464198e3e1bf6c224f5999ff3dd1"
+    },
+    "passed": 42,
+    "scope": "Focused static/recovery/hash checks and8 exact-AST fake finalizer/controller outcome cases. No current preflight function replay, new proc census, main, build, compiler, timeout, game or signal action by reviewer."
+  },
+  "bindings": {
+    "script": {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-build-tooling-unit-once-20261018.py",
+      "bytes": 10676,
+      "sha256": "b8182fb480ad46452010e31f395e9d2deac63c11d5e1e90d0c08c273e8387e6f"
+    },
+    "plan": {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/design/l01-build-tooling-unit-diagnostic-plan-20261018.md",
+      "bytes": 6389,
+      "sha256": "43b31f442d18895402abadaa664d35dac23be6a00b2a0029c89f4d3b72e347e3"
+    },
+    "savedReadOnlyProbe": {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-build-tooling-corrected-preflight-probe-20261018.json",
+      "bytes": 1720,
+      "sha256": "2b96d1973a04fb6945f4559f4a7d885920d3455995f50c4dbcb51a8ae96e0340"
+    },
+    "recovery": {
+      "path": "/tmp/1536-cloud-tools/d01-carrier-recovery-7f6bb5c6.json",
+      "bytes": 40602,
+      "sha256": "b07478c3e11d92e766c1251043a7a0652c4a4d39cece229c0278765a91b01b58"
+    },
+    "originalHold": {
+      "path": "/tmp/1536-cloud-tools/review/l01-build-tooling-b01-original-independent-review-20261018.json",
+      "bytes": 8010,
+      "sha256": "f097e03249e60fb0ba6ffb0e0c9ddbd57f8ac4ce19af3f4aa423cb5390710faf"
+    },
+    "originalHoldMarkdown": {
+      "path": "/tmp/1536-cloud-tools/review/l01-build-tooling-b01-original-independent-review-20261018.md",
+      "bytes": 1918,
+      "sha256": "5c822be485f8daed70f41a546b3c424afe78433c742677bf98cbb11e1784b15b"
+    },
+    "originalChecks": {
+      "path": "/tmp/1536-cloud-tools/review/l01-build-tooling-b01-original-checks-20261018.json",
+      "bytes": 11432,
+      "sha256": "60a6ec0d177c7f53273129f25c344d44d8cf3468f79f89dd293bfd942ae8004e"
+    }
+  },
+  "qualificationLimits": [
+    "A successful isolated unit build does not qualify the missing full catalog, D01 PREP or live delivery; partial historical binaries are not reclassified.",
+    "L01 remains52/57 and five original crash targets remain unqualified; old66529 UNKNOWN/unavailable, all original failures and narrow M01/S01 evidence are retained.",
+    "No gameplay/snapshot/crash5/synthetic release or broader fullNI/HOT/F1/M3/T197/E01/T148/Phase10/A3/platform closure. Cloud, future Windows-five and artifact403 holds remain separate."
+  ],
+  "catalogPrepRelease": "NONE",
+  "syntheticRelease": "NONE",
+  "gameplayRelease": "NONE"
+}
