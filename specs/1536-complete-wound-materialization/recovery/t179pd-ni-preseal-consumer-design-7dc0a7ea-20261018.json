@@ -1,0 +1,658 @@
+{
+  "kind": "SOURCE_DESIGN_ONE_FULL_NI_PRESEAL_CONSUMER_ROUTE_WITH_EXPLICIT_COLD_DEPENDENCY",
+  "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+  "utc": "2026-10-18T02:34:30.525193+00:00",
+  "status": "DRAFT_UNREVIEWED__NO_REPO_NATIVE_OR_TESTS_ONLY_ACTIVATION",
+  "markdown": {
+    "path": "/tmp/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.md",
+    "bytes": 15453,
+    "sha256": "93d7d3b4a351b1271bad19b4279f785e6489da44c6ff96a8b577f68975bceb27"
+  },
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "d7db9fb558d5c412edc06c22b98fb0cec9c29074",
+      "bytes": 505887,
+      "sha256": "5de57a4290615baba4ec71ad70ed5bcbd8f60bdad6491fc1aea99a6c80087c92"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalQteWoundDecision.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "4d0b2376f867e3dce5a6a7b3ba561ac1efac50f6",
+      "bytes": 23854,
+      "sha256": "1c4b0d32477c34517b26081fe2140cdb05a1d9477e64ee64029e1208fbf349ab"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairAdmission.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "2667120919343a1040863b25efc9e5bfec219269",
+      "bytes": 15559,
+      "sha256": "c36c94e014d429c6629343695b1d938e0bf62283ab5f88ce6f94e0be3bbb80ed"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "770578be4fd4f3284036431e8c3192b1f27bd3c2",
+      "bytes": 10347,
+      "sha256": "2882510dad3a8ad27e9331ad8f157884e569c851507749b8ed502b74c39901fb"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "e8b1bf5c0b9940a730e0750ab2ec029e4ec5a63a",
+      "bytes": 10987,
+      "sha256": "6ef2bfae95ff93b15168d9317b7852fa29bda0b446f1eac601697c2f63ee4996"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "2284d41c68c561a61fda1a6afbd7a66419fca4a4",
+      "bytes": 10819,
+      "sha256": "c89d5c40509819aef230ea7ba16fc2d4dcc53049db0adf5d93d86d17820177f9"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "d3f2e5463749daaa329bfe66f0c5eae3a705ccf6",
+      "bytes": 19194,
+      "sha256": "29ab610001cba30b13b23f8dae26b70f4c3cc2364f18c100ecf93906674631d1"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
+      "bytes": 241886,
+      "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "022181b24c6e33e1be5d79cb6f705808a87c595a",
+      "bytes": 13822,
+      "sha256": "094d4d2f2c2cf7abbf959165c9f2722f4057902f9ec0f78edc4b9ed9bc87a148"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305",
+      "bytes": 19220,
+      "sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "3f892cc44d59d81d49d1cba3b4f8199c5d92d33a",
+      "bytes": 20796,
+      "sha256": "384f9f65d33e1c70c6f7e337d96aec6e71664d142612546139345bf274923a14"
+    },
+    {
+      "path": "BookOfEternityClient/Core/ReversibleFilePublication.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "544ee7a0fccf3530473ba04b35e7d03b060e5bd1",
+      "bytes": 72348,
+      "sha256": "6796cdc7cd328e469bf5124f35ecbdfba0b77256cae1438c9068ad29d6916805"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "99081f43140f8f59511d26666e19a6fa57544983",
+      "bytes": 33582,
+      "sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ValidationService.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "3c8031105d1404e0c86e15a4f190b67eb5d7d364",
+      "bytes": 5130,
+      "sha256": "c4d59b540983be5d5e4d1a9329d4f1ca3e200a0e5d0b998600e7bea92af6040a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "6de2ed172122c51a621631c9520d51189dac9e3e",
+      "bytes": 438284,
+      "sha256": "8a8c5a41f1541856af4e0b80a074e4c61b437dc4972c8e6384c3c1810b1e3d0a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NarrativeInterfacePolicy.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "4ce3aaa625d08efebc84d3951a31a3417ada4402",
+      "bytes": 7617,
+      "sha256": "694d40779dcc117a798c1578e351601e8b173de7750e0d2188ef3856c9eb2409"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "af5a298ffe5bd009de1bdc8088b4e40b35ba3184",
+      "bytes": 431342,
+      "sha256": "b04ec022135f62fd7336156a340dcc37bf3afef05bd5d8a4f25d1921ae788f0e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnOutputProjector.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "3c604feb824fa8d552371f5c2484ffd521342718",
+      "bytes": 9590,
+      "sha256": "e31a87fa150b9787494713c89ba0a25028b9f8567594ee32c80d52670a8cd0b5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "9af6bf96b38e545e90dabe4fa5f4f11f14e71368",
+      "bytes": 4496,
+      "sha256": "2eb8d2358beb75b1a1d718e455f2926faa34c1d58c22a03a607ce178529e1861"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "7e75b1b754db9f688c01727a61a9e77c7b9e8faa",
+      "bytes": 23806,
+      "sha256": "18a6dabe883dfcf25c784d3b5148e923eb578e9047ade724a8adb7bb6161bf7f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "2ddc3af014dc8ff98d1ebe84622836b154234a5d",
+      "bytes": 33754,
+      "sha256": "87dfeec71e98188a10dbfcfcd48ceaf73fd6aca191468a50d7de4e9ec2f950c2"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "eda2e5c8fb8187957a0049f780fdd404d3ccdabe",
+      "bytes": 21662,
+      "sha256": "90e3b3d316b4f531be33485157f1e79be51fbdce0e63e4df8a744a7f34e94435"
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.Observed.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "7c31d28d6fdd22fa6b1b7aee635d9a8774860311",
+      "bytes": 17581,
+      "sha256": "297de7484cde7aac727572b6a790cdf798be12c35ddc779785365d025e7c1e16"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "76f8de97faedf0764b4826a1d036946fb1002dea",
+      "bytes": 83808,
+      "sha256": "ae204fea5522e57f91788cd9557701dc9f046053ef6fb0356436085f010ae2e0"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointOutputBinding.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "0b6bc17626d8727dcf06223a3b220c4b2b26bbc3",
+      "bytes": 7463,
+      "sha256": "0636a52487d746f6678da4f146ac9f01137e2fe76eb29695b56d51c7a4e7ceb8"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/AcceptedTurnNarrativeInterfaceOrdinaryTests.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "6e098ce708294a1d5b8fc5bf50a41919bdf7ef41",
+      "bytes": 22042,
+      "sha256": "5fb7fbe7ba119b8b14e4eee40d424f78a3ffebe9cf33d6f9a1140bcc7e772f5c"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-narrative-interface-policy-engineering-design-20261016.md",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "30458a6dbcf43026becae6863154e9daf28b9876",
+      "bytes": 25246,
+      "sha256": "989e1972b2eb7b71e2dae4154cea34a29502808265ba0f3e5e28c396f1a57055"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-route-source-independent-review-20261017.json",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "365188380bf012bbe754662759404cfea7c9906e",
+      "bytes": 4237,
+      "sha256": "f8e3610d268a206690e34a6b85d5ba94197f551abf42a17ca5b4b2f9ab629a4c"
+    }
+  ],
+  "sourcePinDigest": "efac83b6e32ecf70276642f1339cda5a39bc11ea43136e41beba0d8be1949f8a",
+  "projections": [
+    {
+      "id": "existingNandErrorconsumer",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalQteWoundDecision.cs",
+      "firstLine": 38,
+      "lastLine": 46,
+      "bytes": 648,
+      "sha256": "947703752ae4622802847d8ee2dcc92611e0f6c0f01251e66e9591d51b1f928a",
+      "firstLineText": "    private async Task<IReadOnlyList<ValidationIssue>> ValidateResourceAndMortalQteDecisionCoreAsync(",
+      "lastLineText": "        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();"
+    },
+    {
+      "id": "Nguardleasecloses",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairAdmission.cs",
+      "firstLine": 70,
+      "lastLine": 99,
+      "bytes": 2223,
+      "sha256": "fe08360648eb78c832d3c3ed17bf2c111332a74ab14958a83c8b81eb71a8ca22",
+      "firstLineText": "    // Ordinary narrative normalization owns its existing separately leased write.",
+      "lastLineText": "    }"
+    },
+    {
+      "id": "rawintakeguards",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairAdmission.cs",
+      "firstLine": 101,
+      "lastLine": 171,
+      "bytes": 7118,
+      "sha256": "240b457b20b5961a2f742bbccc8ec00837b14d735c981b781adac4d605377e39",
+      "firstLineText": "    private async Task<MortalJointRepairRawAdmission> InspectOrdinaryMortalJointRepairAsync(",
+      "lastLineText": "        { return Result(MortalJointRepairRawDisposition.Rejected, null, JointRepairAdmissionIssue(error.Message)); }"
+    },
+    {
+      "id": "rawcorrectioniteration",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "firstLine": 542,
+      "lastLine": 574,
+      "bytes": 2168,
+      "sha256": "c827b35ce8deeadf630a139eefe0118f9e39e78139dec3f5fbb550b11e7195c3",
+      "firstLineText": "        while (true)",
+      "lastLineText": "            if (spiritualAdmission == SpiritualContinuationAdmission.RequiresInitialResourceValidation &&"
+    },
+    {
+      "id": "Inewslotbeforecanonicalrefresh",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "firstLine": 798,
+      "lastLine": 812,
+      "bytes": 568,
+      "sha256": "d597b9598d193abc6314b377f71f0ddbf60c27a09d2bf6072eb54074fba8b2d8",
+      "firstLineText": "                lastCriticalRepairStartedAtUtc = rawRepairStartedAtUtc;",
+      "lastLineText": "            }"
+    },
+    {
+      "id": "jointbypasseslaterNI",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "firstLine": 847,
+      "lastLine": 858,
+      "bytes": 1002,
+      "sha256": "3d5bbf08c5455fea58d413ce176c1b5a1a6512a173a9568d9c9e9233c3926a00",
+      "firstLineText": "            await using var treatmentResourcePublicationTransaction =",
+      "lastLineText": "                return await ValidateMortalJointPostPublicationAsync(source, activeSnapshotContext, jointPublication);"
+    },
+    {
+      "id": "ordinaryNIowner",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "firstLine": 240,
+      "lastLine": 251,
+      "bytes": 900,
+      "sha256": "bdd7053dd0bcc59c91db91c8a8d7fd52cf9bb4d71e990a1410568a5138b00fe5",
+      "firstLineText": "                issues = await _validator.ValidateGameStateAsync();",
+      "lastLineText": "                issues.AddRange(await _validator.ValidateAcceptedTurnMortalLevelUpMaterializationAsync());"
+    },
+    {
+      "id": "correctionrefreshpublisher",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "firstLine": 2271,
+      "lastLine": 2288,
+      "bytes": 1054,
+      "sha256": "60b65ed383b48aeb3ee9ce8d114b553f0beb8fddea572f5c1a549a4e69fb21b3",
+      "firstLineText": "    private async Task<AcceptedTurnCanonicalRefreshResult>",
+      "lastLineText": "        var refresh = await RefreshCanonicalStateAsync(snapshot);"
+    },
+    {
+      "id": "actualattemptbeforepreparation",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "firstLine": 33,
+      "lastLine": 59,
+      "bytes": 2235,
+      "sha256": "99b9c90e74409b2ad66d655bded49591485ecca937ed219835d4575e33cb5cbd",
+      "firstLineText": "        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())",
+      "lastLineText": "                var prepared = await AcceptedTurnAuthorityRegistry.GetOrBuildWoundJointRepairPreparedValidatedAsync("
+    },
+    {
+      "id": "attemptExpiresbeforelate",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "firstLine": 128,
+      "lastLine": 139,
+      "bytes": 609,
+      "sha256": "097152428f5ab2e5e39a49cdf3feedf1f7cee6ac0331cb06349e85a52210961d",
+      "firstLineText": "        finally",
+      "lastLineText": "            _mortalJointRepairCanonicalRefresh = value with { Frame = frame };"
+    },
+    {
+      "id": "actualCapturingowner",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs",
+      "firstLine": 30,
+      "lastLine": 89,
+      "bytes": 4319,
+      "sha256": "74eeee24649d673f48b07095363221b6d5a47e01f50d9030501751ebf3875070",
+      "firstLineText": "        internal MortalJointPublicationAttempt(object issuer, GameEngine engine, FileSystemManager files,",
+      "lastLineText": "        internal void RetainStage(object issuer, JointAttemptStage stage, object actualResult)"
+    },
+    {
+      "id": "strictCustodyClose",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs",
+      "firstLine": 159,
+      "lastLine": 178,
+      "bytes": 928,
+      "sha256": "4dffec608c1c806d7cd52262a9e7e4a3c676b2e8a18506ff0b9ffe4a12504c2c",
+      "firstLineText": "    private async Task CaptureCurrentHotCustodyAsync(MortalJointPublicationAttempt attempt,",
+      "lastLineText": "    }"
+    },
+    {
+      "id": "Readycurrentfootprint",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
+      "firstLine": 12,
+      "lastLine": 24,
+      "bytes": 743,
+      "sha256": "001d3e64c93da38b49858c774b62f41a5386260f94ae64e420db7ce7b94b6fc7",
+      "firstLineText": "    private static readonly string[] HotInputPaths =",
+      "lastLineText": "    ];"
+    },
+    {
+      "id": "Readyfreshcaptures",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
+      "firstLine": 200,
+      "lastLine": 240,
+      "bytes": 2962,
+      "sha256": "8c725cd299d5f2697932a2949312c1b395d42496f61144a4f7889385f90a9f9f",
+      "firstLineText": "    private async Task<HotSourceObservation> ReadHotSourceAsync(FileSystemManager.CanonicalWriteLease lease,",
+      "lastLineText": "            if (!HotBytesEqual(bytes, await _fs.ReadFileBytesAsync(lease, path)))"
+    },
+    {
+      "id": "Readystrictrecheck",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
+      "firstLine": 244,
+      "lastLine": 260,
+      "bytes": 1358,
+      "sha256": "a880263679ec96ce3295abd92375e4d3a4ebcfcee894c91b0a06bd29aae776b8",
+      "firstLineText": "    private async Task RecheckHotReadySourceAsync(FileSystemManager.CanonicalWriteLease lease, HotRepairReadyRead read,",
+      "lastLineText": "        read.Source = fresh;"
+    },
+    {
+      "id": "coldbypass",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+      "firstLine": 25,
+      "lastLine": 47,
+      "bytes": 1826,
+      "sha256": "ed9ba988a0984a023e2233f442935140f6af60ec03121e9fa4017d519707124a",
+      "firstLineText": "    // This entry runs before old finalized-treatment quarantine, raw admission,",
+      "lastLineText": "        return await ValidateMortalJointPostPublicationAsync(source, frame, _mortalJointRepairCanonicalRefresh!, output);"
+    },
+    {
+      "id": "lateNIreaders",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+      "firstLine": 90,
+      "lastLine": 115,
+      "bytes": 2035,
+      "sha256": "995a089879f0c99a51da782c06866b57e234631b9004692be2db954050ab6082",
+      "firstLineText": "        // Use the real ordinary READ APIs, not the repair helper: that helper",
+      "lastLineText": "        if (issues.Any(row => row.Severity == IssueSeverity.Error) || !output.Success)"
+    },
+    {
+      "id": "ordinaryN",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "firstLine": 78,
+      "lastLine": 150,
+      "bytes": 3843,
+      "sha256": "ecdc64161bea6e64c85c3fcd1f49149005d307d9a99869c331973591bd6529c0",
+      "firstLineText": "    private async Task<List<ValidationIssue>> ValidateAcceptedTurnNarrativePayloadInternalAsync(bool readOnly = false)",
+      "lastLineText": "        return issues;"
+    },
+    {
+      "id": "ordinaryI",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "firstLine": 519,
+      "lastLine": 605,
+      "bytes": 4434,
+      "sha256": "1fda900e1f8a83e9be19f63b707a4e7f239f70ac626ed2f0717fec742624d850",
+      "firstLineText": "    private async Task<List<ValidationIssue>> ValidateAcceptedTurnInterfacePayloadInternalAsync()",
+      "lastLineText": "    }"
+    },
+    {
+      "id": "publicReadfollowup",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "firstLine": 1319,
+      "lastLine": 1357,
+      "bytes": 1510,
+      "sha256": "cb97aaad7d67178eb847e73bf9b2900b98d49261b49c15b0d144489e2d08a984",
+      "firstLineText": "    public async Task<string?> ReadFileAsync(string relativePath)",
+      "lastLineText": "#endif"
+    },
+    {
+      "id": "publicWriteandbranches",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "firstLine": 840,
+      "lastLine": 885,
+      "bytes": 1672,
+      "sha256": "e487bc3aab683deb11d48ab1ae209fe0e8131060c6eb462db4f8599d93adc40b",
+      "firstLineText": "    public async Task WriteFileAtomicBytesAsync(string relativePath, byte[] content)",
+      "lastLineText": "    }"
+    },
+    {
+      "id": "trustedActualbefore",
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "firstLine": 317,
+      "lastLine": 333,
+      "bytes": 1014,
+      "sha256": "3e112a5d288163eac36064906ca938c1933af8bf35c4ae8c525124f9d21fd5aa",
+      "firstLineText": "    private async Task WriteTrustedLocalFileAsync(CanonicalWriteLease lease, string relativePath, byte[]? desired)",
+      "lastLineText": "    }"
+    },
+    {
+      "id": "writerPublishedOnlyResult",
+      "path": "BookOfEternityClient/Core/ReversibleFilePublication.cs",
+      "firstLine": 27,
+      "lastLine": 29,
+      "bytes": 141,
+      "sha256": "71a2a6764aa08f35573adf5eb5b78683fd34bf554e61601902c96e01a0eea459",
+      "firstLineText": "    internal sealed record PublicationResult(",
+      "lastLineText": "        string PublishedSha256);"
+    },
+    {
+      "id": "writerActualDestination",
+      "path": "BookOfEternityClient/Core/ReversibleFilePublication.cs",
+      "firstLine": 438,
+      "lastLine": 462,
+      "bytes": 1100,
+      "sha256": "be36583b4bef79c024edd792e5c9b8cf1742a07f3555945321ecfba72b1a7f82",
+      "firstLineText": "        var committed = false;",
+      "lastLineText": "                    authorityName + \" prior destination\");"
+    },
+    {
+      "id": "writerPriorIntent",
+      "path": "BookOfEternityClient/Core/ReversibleFilePublication.cs",
+      "firstLine": 507,
+      "lastLine": 519,
+      "bytes": 659,
+      "sha256": "13f3a3165fc940af0d10ee5da4fe3a19ce267c830190f3e863d37c82f7a80550",
+      "firstLineText": "            intent = new PublicationIntent(",
+      "lastLineText": "                DestinationSha256: destinationSha256);"
+    },
+    {
+      "id": "trustedBeforeChecks",
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "firstLine": 271,
+      "lastLine": 307,
+      "bytes": 2136,
+      "sha256": "e1d1d463fd9b7706986fe55dc837785c69706a7648a2912d7e2cc337f89b1a00",
+      "firstLineText": "        ValidateJournal(journal);",
+      "lastLineText": "            Observe(lease, observer, TrustedLocalPublicationPhase.MemberPublished, index);"
+    },
+    {
+      "id": "onePassProjector",
+      "path": "BookOfEternityClient/Services/AcceptedTurnOutputProjector.cs",
+      "firstLine": 98,
+      "lastLine": 142,
+      "bytes": 2191,
+      "sha256": "c6375e0b2b84bfa5d6db54c1bed0ae3c6289b7beb10af5185be6902abb1763f5",
+      "firstLineText": "            if (root.TryGetPropertyValue(\"dialogueOptions\", out var choices) && choices is JsonArray options)",
+      "lastLineText": "            return changed ? new(Serialize(root), true) : new(json, false);"
+    },
+    {
+      "id": "strictNarrativeOnlyBasis",
+      "path": "BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs",
+      "firstLine": 11,
+      "lastLine": 47,
+      "bytes": 2744,
+      "sha256": "1567d50743fbeead95708b7c7deaf8e6fcb4ade98bfc64e220dc97495eaa92d7",
+      "firstLineText": "internal sealed class MortalJointAcceptedOutputBasis",
+      "lastLineText": "        }"
+    },
+    {
+      "id": "parentV2dispatch",
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+      "firstLine": 207,
+      "lastLine": 218,
+      "bytes": 1151,
+      "sha256": "192d58f5add25067a8dc954b01c1a3922e4bff4ed1584177d9f6fe37f5b08dd6",
+      "firstLineText": "    private static async Task<CompletedProof> ReadCompletedProofAsync(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease,",
+      "lastLineText": "        if (Text(root, \"fingerprint\") != Fingerprint(payload) || !fs.IsCurrentSessionGeneration(lease, Text(root, \"generation\")))"
+    },
+    {
+      "id": "markerCreatesBasis",
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+      "firstLine": 171,
+      "lastLine": 183,
+      "bytes": 1251,
+      "sha256": "1206a88469482d54e5db80f7e64aee0e7bc02a422f550ac514db4273bb945aee",
+      "firstLineText": "        var basis = taken.Authority.OutputBasis;",
+      "lastLineText": "            [\"repairCheckpointFingerprint\"] = taken.Authority.RepairCheckpointFingerprint, [\"treatmentHistoryOrdinal\"] = transition.Ordinal };"
+    },
+    {
+      "id": "markerStrictRead",
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+      "firstLine": 203,
+      "lastLine": 220,
+      "bytes": 1825,
+      "sha256": "7b842667e5a09f0141e5a605a9e50e7fb8e2b3b68efef8baa2736b67fde68493",
+      "firstLineText": "    private static async Task<CompletedProof> ReadJointCompletedProofAsync(FileSystemManager fs,",
+      "lastLineText": "            Text(root, \"manifestHash\") != Digest(await fs.ReadFileBytesAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath)) ||"
+    },
+    {
+      "id": "markerOutputChecks",
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+      "firstLine": 310,
+      "lastLine": 330,
+      "bytes": 1774,
+      "sha256": "726b596e38cf596f2bd0af5ce8a2f91b52a727102b445c4e1157767940dde8d3",
+      "firstLineText": "        var treatment = ClosedMap(proof.Root[\"jointTreatment\"], JointTreatmentFields);",
+      "lastLineText": "            throw Invalid(\"joint_continuation_changed_decision\");"
+    },
+    {
+      "id": "basisInCommonSeal",
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs",
+      "firstLine": 52,
+      "lastLine": 90,
+      "bytes": 3423,
+      "sha256": "334cfe7deb3ee337f70087bde53710a341abfc9eb679c086cee8bafe6685264b",
+      "firstLineText": "            OutputBasis = MortalJointAcceptedOutputBasis.Capture(localRef, creates[0].WoundId,",
+      "lastLineText": "            Baseline.HasValidSeal && Progression.HasValidSeal && ComputeFingerprint() == Fingerprint;"
+    },
+    {
+      "id": "NIAuthorizedObservationContract",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-narrative-interface-policy-engineering-design-20261016.md",
+      "firstLine": 68,
+      "lastLine": 99,
+      "bytes": 7398,
+      "sha256": "a94e906fd9a147b6d9b23965edea91245cdf99d6ab6ef2e5d9713048f2e663cd",
+      "firstLineText": "A private closed source reader with named roles, privately constructed only from the actual validator’s files and either its ordinary invocation or a genuine HOT Capturing owner/live lease. Suggested methods:",
+      "lastLineText": "## Finite causal TDD sequence, all FUTURE_UNRUN"
+    },
+    {
+      "id": "genuineFixtureControls",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnNarrativeInterfaceOrdinaryTests.cs",
+      "firstLine": 54,
+      "lastLine": 148,
+      "bytes": 5066,
+      "sha256": "34451a0c7040cf2ccba801bda4db3cf26533c7655dc65d4519a55215ebfc8cf6",
+      "firstLineText": "    public async Task Changed_PublicWriterReturnsThenPreservesExistingEncodingAndSinglePass(string owner)",
+      "lastLineText": "        // A matching afterimage is not a successful operation-return/history observation."
+    },
+    {
+      "id": "firstAndCorrectionBinding",
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "firstLine": 519,
+      "lastLine": 548,
+      "bytes": 2964,
+      "sha256": "79cd0db189b04265cf5f414eeab0508148f2e89b672ccae4bb779b3302d74641",
+      "firstLineText": "                        if (normalizeNarrativeBeforeCheckpoint)",
+      "lastLineText": "                            File.WriteAllBytes(_fs.ResolvePath(publicOutput.Key), publicOutput.Value);"
+    }
+  ],
+  "selectedRoute": {
+    "N": "Existing Admission98 actual ordinary N, after guardlease close",
+    "I": "New same-correction association actual ordinary I at VR806 before refresh809, after rawintake lease returned",
+    "consumer": "Actual Attempt Capturing after Publisher44/before Capture177 Close, no preparation48/reservation/cache/effect/common before availability",
+    "late": "Separate immutable non-capability exact committed data replaces Completion98 I call; actual attempt expires, never revived",
+    "normal": "Ordinary non-joint call sequence unchanged",
+    "cold": "Required NI-COLD01 existing outputBinding strict version distinction before lost-memory path can avoid second projection"
+  },
+  "states": [
+    "EngineSkipped is no invocation, not Passed",
+    "N warning-only omitted outward; N Error return unchanged",
+    "NReturned->IReturned ordinary data is not fullS",
+    "Writer beforeimage mismatch SourceChanged even ordinary write succeeds",
+    "No publicReturned before actual owning-release; outer finalization separate",
+    "Current-only/oldv2 cold is not retrospective NI history"
+  ],
+  "requiredJoins": [
+    {
+      "id": "NI-WRITE01",
+      "status": "REQUIRED_NOT_IMPLEMENTED",
+      "owner": "FS840 actual publicwrite branch evidence under its own lease; TLS331 before + outcome and Reversible438 old identity/hash before cleanup",
+      "effect": "Compare actual publication preimage with consumed snapshot; no new CAS/refusal/branch switch"
+    },
+    {
+      "id": "NI-READY01",
+      "status": "REQUIRED_NOT_IMPLEMENTED",
+      "owner": "actual Capturing consumer uses immutable Ready source + separate ordered N/I own-write chain",
+      "effect": "No Ready rewrite/reseed, no global strictRecheck weakening, original/control/G exact"
+    },
+    {
+      "id": "NI-LATE01",
+      "status": "REQUIRED_NOT_IMPLEMENTED",
+      "owner": "canonicalrefresh committed result carries non-capability data afterattemptExpire",
+      "effect": "No second I projection/sample/write; preserve actual late N diagnostics and explicitly qualify changed relative I order"
+    },
+    {
+      "id": "NI-COLD01",
+      "status": "REQUIRED_DURABLE_CONTRACT_SCOPE_NOT_YET_ACCEPTED",
+      "owner": "Existing MortalJointAcceptedOutputBasis/common authority + marker create/read/readback/currentproof + cold consumer",
+      "effect": "Prospective discriminated child2 exact I afterimage/closed owner association; oldchild1 legacyroute preserved; do not treat hash/currentfixedpoint as earlierpass. Exactfields/authentication/semantics needconcreteclosure; no newbackend/path."
+    }
+  ],
+  "testsOnlyEligibility": "NOT_ADMITTED_ON_THIS_DRAFT: exact cold codec/physical proof contract and actual write/read/Ready/late associations need SOURCE closure; future semantic order/drift/preimage oracles specified, not absentAPI",
+  "futureCausalOracles": [
+    "Actual one-pass I before first preparation/common; zero second live/coldNew projection/write/sample with oldCold contrast",
+    "New NI dependency drift after actual N read, at later I read; actual consumer refuses before preparation/common, unchanged counterpart",
+    "Actual publication preimage differs after public-read-hook mutation despite projected final match; no owned exemption",
+    "Errors/warnings/skipped/nullable original/G/frame/iteration/writeclose/finalization/lateN diagnostics"
+  ],
+  "priorEvidence": "All existing accepted ordinary3d/3e/RP01 SOURCE/EVIDENCE and FIRSTfail history immutable; no new execution/counts",
+  "exclusions": [
+    "No product/test/catalog/selection/tool/repo edit yet",
+    "No build/discovery/native/CI/ZIP403",
+    "No new backend/parallel journal/generic F1",
+    "No committed common/effect/time/action replay",
+    "No fullS/B/D9/M3/F1/T197/newQTE/A3 activation",
+    "Windowsraw/HOTqualification separate held technical gates"
+  ]
+}

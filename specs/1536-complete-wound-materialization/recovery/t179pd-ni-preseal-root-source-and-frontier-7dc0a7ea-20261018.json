@@ -1,0 +1,33 @@
+{
+  "kind": "ROOT_NI_PRESEAL_DRAFT_SOURCE_CHECK_AND_SINGLE_VARIANT_REFINEMENT",
+  "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+  "authorMarkdownSha256": "93d7d3b4a351b1271bad19b4279f785e6489da44c6ff96a8b577f68975bceb27",
+  "authorJsonSha256": "9826463dcd29583bc64b46edb0d994820a0fb00c4d935337dd1a5b169f42a449",
+  "verifiedPins": 28,
+  "verifiedRanges": 36,
+  "supplementaryWhitespaceSource": {
+    "path": "BookOfEternityClient/Services/Validation/ValidationService.MetaCodexAndAchievements.cs",
+    "bytes": 84042,
+    "sha256": "f00e8249aa9561971dff1d3aadcf99b0de2e1321b2588c6acf860bbd38d97f4d",
+    "mode": "100644",
+    "gitBlob": "a7ac75403ea26423545a62b02186c00956f6195c",
+    "firstLine": 744,
+    "lastLine": 802,
+    "rangeBytes": 2514,
+    "rangeSha256": "7fa4540c96f454ca80cc56fcf78f8121f84d74ffa5d7a9c12c37cfd0dcd6b725"
+  },
+  "changedPinnedPathsAtCheck": [],
+  "sourceFindings": [
+    "Corrected N already outside inspectionlease; I can run after successful raw gate and before canonicalrefresh; actualframe must be fresh565–566 beforeN572, not previous loopstate.",
+    "Actual Capturing owner exists only inside publicationlease44 and closes beforepreparation48; outsideN/I needs trueengineiteration owner and later sameowner attachment.",
+    "Currentwrite path permits overwriting an interleavedcurrent image; genuinewriteleasepreimage/outcome/owningrelease required, preserving ordinarybehavior; no newCASrefusal.",
+    "Ready strictpreimage cannotberewritten/reseeded orfaultcleared; typedclosedNIownedtransitionjoin needed.",
+    "Attempt expires beforelateI; closedpublicationdata association needed, not revivedliveauthority.",
+    "Currentoutputbindingchild1 hasnoIproof/discriminator, so oldcoldfallback can normalizeNEWearlyI secondtime. Newchildcommon/take/physicalproof closure is real durablecontractdependency, notWindows."
+  ],
+  "singleDerivedChoice": "For proposed NI-aware child select genuine persisted CLOSED-publication returned-I data only, joined to same commoncandidate/frame/G and exactIafterimage. Do not select alternative current-only reader to synthesize historical semantics or silently projectagain. Old-child1 currentv2 cold route remains unchanged. Exactchildfields/fingerprint/physicalauthentication remain unclosed NI-COLD01; no child is implemented/accepted.",
+  "causalOracleRefinement": "AfteractualnonemptyN reads presentcurrentachievements, appendonelegaltrailingJSONspace when actualI call starts (notNsowninterfaceprose read); distincttext/bytes,sameJSON/semantics,originalunchanged,outside3b6/3/5. ActualCapturingconsumer mustrejectSourceChanged beforepreparation/take/effects; baselineactualreachedbranch remains futurefixtureSOURCE/FIRSTgate, notnewPASS.",
+  "designDisposition": "COHERENT_ROUTE_AND_REQUIRED_DEPENDENCIES_ONLY; full NI once-only/cold design NOT_READY; no tests-only/native admission pending independentreview and NI-COLD01 closure.",
+  "execution": "No new build/discovery/tests/CI/ZIP; existing accepted proof not replayed",
+  "utc": "2026-10-18T02:36:43.229237+00:00"
+}
