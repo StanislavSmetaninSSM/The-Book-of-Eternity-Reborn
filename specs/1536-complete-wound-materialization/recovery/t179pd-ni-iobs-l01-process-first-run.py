@@ -15,7 +15,7 @@ def h(b):return hashlib.sha256(b).hexdigest()
 def now():return datetime.datetime.now(datetime.timezone.utc).isoformat()
 assert git('rev-parse','HEAD').decode().strip()==actual and not git('status','--porcelain')
 p=R/'specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json';raw=p.read_bytes();binding=json.loads(raw)
-assert len(binding['sourcePins'])==98 and len(binding['productDelta'])==20
+assert len(binding['sourcePins'])==98 and len(binding['productDelta'])==21
 for pin in binding['sourcePins']:
  b=(R/pin['path']).read_bytes();assert len(b)==pin['bytes'] and h(b)==pin['sha256'],pin['path']
 assert h(json.dumps(binding['sourcePins'],sort_keys=True,separators=(',',':')).encode())==binding['pinDigest']

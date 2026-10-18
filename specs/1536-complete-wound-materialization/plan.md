@@ -1,3 +1,7 @@
+## ReadyDrift SOURCE binding correction — ZERO not run (2026-10-18)
+
+Independent SOURCE review found that the new logging file adds a21st product path relative to productBase447bc; the packet and two guards still expected20. The sorted product delta and both guards are now21; affected tool hashes/pins/digest were regenerated. This corrects verification binding only. The three-line production patch, tests, fixtures and assertions are unchanged. No ZERO, build or actual was launched on the rejected binding; independent review of the saved corrected candidate is required. Qualified42 and all frozen outcomes remain unchanged.
+
 ## T179-Pd-NI-IOBS-L01 — ReadyDrift diagnostic fix WIP; SOURCE/PREP pending (2026-10-18)
 
 Квалифицированы 42/57 targets: прежние 37, cloud legacy3 и corrected close2, каждый на исходном actual/compiled provenance. [Точный recovery checkpoint40920dab](recovery/t179pd-ni-iobs-l01-qualified42-recovery-40920dab-20261018.json) сохранён. [Независимая диагностика races2](recovery/t179pd-ni-iobs-l01-races2-causal-review-20261018.md) подтвердила отдельный product diagnostic omission: original exception превращается в точный retained Issue, затем non-Committed gate возвращает Held до логирования. Это не logger truncation.
