@@ -1,0 +1,262 @@
+{
+  "kind": "INDEPENDENT_CORRECTED_RACES2_EVIDENCE_CHECK",
+  "checkedUtc": "2026-10-18T12:19:39.677148+00:00",
+  "carrier": "f0bfcda832db851a2768d6af13ce60695c24a9cd",
+  "actualSource": "1e2bdb75d51bd7ee549ed399d5a744b366beceff",
+  "compiledSource": "e2d0a10f6b12cc1947ef9c9f71fd600146fcec2d",
+  "recordSha256": "59d772bb17a915158a1140ae4c41434ca179e5db463e93f369bb75f66295510a",
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-races2-corrected-813f1057-files-20261018/archive.json",
+    "sha256": "e6717c30e673e77d02b0d634e1b24a776d432b3d9ad6b2f4c36ab0713ec9a4a9",
+    "rawChains": 11,
+    "rawBytes": 14163554,
+    "completeOriginalCoverage": true,
+    "originalStoredIndependentRestoreBytesMatched": true
+  },
+  "sourcePins": 98,
+  "sourcePinDigest": "f5c13d343de221bc86aaf3ec100869ea6e1cafdaae59b3006baa5642de328e8e",
+  "productDelta": 21,
+  "unchangedTestFixtureSupportCatalogSelectionPins": [
+    "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCloseRetention.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceConsumerRefusals.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLegacy.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSettlement.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSourceRaces.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MusingsActualCrash.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
+    "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Remaining.cs",
+    "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+    "BookOfEternityClient.TestSupport/TrustedLocalPublicationCrashFixture.cs",
+    "BookOfEternityClient.Tests/MortalJointInterfacePublicationTests.cs",
+    "BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs",
+    "tests/categories.json",
+    "tests/selection.json"
+  ],
+  "tests": {
+    "Total": 2,
+    "Executed": 2,
+    "Passed": 2,
+    "Failed": 0
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 2,
+    "CompletedCases": 2,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "nativeExit": 0,
+  "wallSeconds": 188.27205169899935,
+  "categorySeconds": 142.629409,
+  "categoryBudgetSeconds": 900,
+  "noTimeout": true,
+  "noBuild": true,
+  "cases": [
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualReturnedReadCannotHideChangedWriterPreimage",
+      "testId": "07b87e46-1859-b413-6f0c-4d99c12ff02d",
+      "outcome": "Passed",
+      "durationSeconds": 77.3397473,
+      "diagnosticRows": 38,
+      "boundaries": {
+        "fr063_guaranteed_native_pre_original_npc_shape": 1,
+        "qte_story_actual_client_append": 1,
+        "qte_story_actual_engine_result": 1,
+        "qte_physical_actual_occurrence": 1,
+        "fr063_joint_actual_prior42_inactive_tail": 1,
+        "fr063_joint_original_progression_reader_before_owner": 1,
+        "fr063_joint_signed_original_schedule_before_owner": 1,
+        "fr063_joint_natural_stage43_image_before_assert": 19,
+        "fr063_joint_original_inventory_structural_absence_before_assert": 2,
+        "iobs_actual_original_omits_interface_snapshot": 1,
+        "fr063_confirmed_claim_inspection": 1,
+        "fr063_joint_completion_actual_prerequisites": 1,
+        "iobs_actual_public_correction_before_ready": 1,
+        "iobs_actual_returned_read_physical_preimage_fault": 1,
+        "fr063_joint_in_memory_owner_snapshot_before_filesystem": 1,
+        "fr063_joint_completion_actual_owner_outcome": 1,
+        "iobs_actual_source_race_held_no_repair": 1,
+        "iobs_actual_direct_and_outer_restore_retention": 1
+      },
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-f13ba891e2544170ac44ef9b2d404ee8",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_PublishedInterfaceCannotExcuseOtherImmutableReadyDrift",
+      "testId": "886fd2ba-76fb-b5ee-2038-82221eaea0b2",
+      "outcome": "Passed",
+      "durationSeconds": 49.0993535,
+      "diagnosticRows": 40,
+      "boundaries": {
+        "fr063_guaranteed_native_pre_original_npc_shape": 1,
+        "qte_story_actual_client_append": 1,
+        "qte_story_actual_engine_result": 1,
+        "qte_physical_actual_occurrence": 1,
+        "fr063_joint_actual_prior42_inactive_tail": 1,
+        "fr063_joint_original_progression_reader_before_owner": 1,
+        "fr063_joint_signed_original_schedule_before_owner": 1,
+        "fr063_joint_natural_stage43_image_before_assert": 19,
+        "fr063_joint_original_inventory_structural_absence_before_assert": 2,
+        "fr063_confirmed_claim_inspection": 1,
+        "fr063_joint_completion_actual_prerequisites": 1,
+        "iobs_actual_public_correction_before_ready": 1,
+        "iobs_actual_result_commit": 2,
+        "iobs_actual_published_ready_noninterface_drift": 1,
+        "iobs_actual_committed_member": 1,
+        "fr063_joint_in_memory_owner_snapshot_before_filesystem": 1,
+        "fr063_joint_completion_actual_owner_outcome": 1,
+        "iobs_actual_source_race_held_no_repair": 1,
+        "iobs_actual_direct_and_outer_restore_retention": 1
+      },
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-2587333efd584a8bb6199ca9581611c5",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    }
+  ],
+  "semanticOracles": {
+    "ReadRace": {
+      "originalInterfaceSnapshotAbsent": true,
+      "actualReturnedReadAfterLeasedPreimage": true,
+      "readyDeleteAndReleaseReturned": true,
+      "freshConsumed": true,
+      "physicalInterfaceWhitespaceFaultRetained": true,
+      "interfaceMtimeUnchangedByReachedAssertion": true,
+      "noPreparedOrPublishedRecord": true,
+      "noFreshDataAndPreparationHeldByReachedAssertions": true,
+      "outerWrapperInvoked": true,
+      "outerWrapperDisposition": "MortalJointRepairPublicationHeldBlocked",
+      "physicalMutationCount": 1,
+      "heldAtTurn42": true,
+      "noCompletedCaptureOrCommonMarker": true,
+      "finalMechanicalForeachReached": true,
+      "mechanicalPaths": 15,
+      "mechanicalBytesEqualExpectedOriginalOrInjectedFault": true,
+      "directActualStageBackupRestoreReached": true,
+      "directRestoreHold": true,
+      "directBeforeAfterPaths": 220,
+      "directBeforeAfterBytesEqual": true,
+      "diagnosticSha256": "a1dc73a8e371a30df16af3eab80a96c3249ed6902bf54fa3696733870e261af2",
+      "diagnosticReason": "joint_interface_consumed_read_preimage_changed"
+    },
+    "ReadyDrift": {
+      "realPreparedThenPublished": true,
+      "exactPublishedPendingAndInterfaceRetained": true,
+      "onlyInterfaceOwnedTransitionPermitted": true,
+      "foreignExperienceWhitespaceRetained": true,
+      "readySourceOriginalNotReseededByReachedAssertion": true,
+      "attemptNotLiveOrDelegatedAndNoContinuationReservationStagesByReachedAssertions": true,
+      "capabilitiesExpiredByReachedAssertion": true,
+      "originalExceptionLoggedExactlyOnce": true,
+      "retainedIssueUnchangedFromOriginalFailure": true,
+      "inMemoryDisposition": "PublicationUncertain",
+      "outerWrapperInvoked": false,
+      "physicalMutationCount": 1,
+      "heldAtTurn42": true,
+      "noCompletedCaptureOrCommonMarker": true,
+      "finalMechanicalForeachReached": true,
+      "mechanicalPaths": 15,
+      "mechanicalBytesEqualExpectedOriginalOrInjectedFault": true,
+      "directActualStageBackupRestoreReached": true,
+      "directRestoreHold": true,
+      "directBeforeAfterPaths": 222,
+      "directBeforeAfterBytesEqual": true,
+      "diagnosticSha256": "4c7a1d805bbe7b7ebc624ea62fd360ca8f02f722092632af6f89dabab9f4d283",
+      "diagnosticReason": "joint_interface_ready_submitted_source_changed"
+    }
+  },
+  "rawImageLengthShaChecks": 1914,
+  "embeddedImageShaChecks": 10,
+  "binaries": {
+    "selectedCopies": 9,
+    "completeOutputFiles": 1575,
+    "originalBeforeAfterPrepAndCurrentPhysicalExact": true,
+    "clientSha256": "eb0b35ec8993dc65d5d6f280663415e97d9067f275de693b17867309e9387d98"
+  },
+  "launch": {
+    "pid": 20448,
+    "startTick": 966261,
+    "argvMatchesController": true,
+    "immediateCmdlineEmpty": true
+  },
+  "cleanup": {
+    "perCaseOwnedRootsRemoved": true,
+    "nativeRunnerCleanupSucceeded": true,
+    "originalExeDependentProcessArraysNotCompleteCensus": true,
+    "censuses": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-races2corrected-before-census-20261018.json",
+        "sha256": "3e8dcc87432cf1f3db61b00d3bae6f7440ca7bc831123ece0fcd81a2677a9c4c",
+        "startedUtc": "2026-10-18T12:03:26.925190+00:00",
+        "finishedUtc": "2026-10-18T12:03:26.940295+00:00",
+        "entries": 62,
+        "clean": true,
+        "knownVisibility": [
+          {
+            "pid": 10433,
+            "expectedStartTick": 477854,
+            "status": "MATCH",
+            "classification": "exited-nonexecuting"
+          },
+          {
+            "pid": 20413,
+            "expectedStartTick": 961484,
+            "status": "MATCH",
+            "classification": "observer-self"
+          }
+        ]
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-races2corrected-after-census-20261018.json",
+        "sha256": "8e3b14b7379bcceac7dc1f8aed6646306f8283ad6848fada104e6616ba18119d",
+        "startedUtc": "2026-10-18T12:10:03.555978+00:00",
+        "finishedUtc": "2026-10-18T12:10:03.568330+00:00",
+        "entries": 62,
+        "clean": true,
+        "knownVisibility": [
+          {
+            "pid": 10433,
+            "expectedStartTick": 477854,
+            "status": "MATCH",
+            "classification": "exited-nonexecuting"
+          },
+          {
+            "pid": 20852,
+            "expectedStartTick": 1001145,
+            "status": "MATCH",
+            "classification": "observer-self"
+          }
+        ]
+      }
+    ],
+    "beforeSnapshotToStartSeconds": 47.661597,
+    "finishToAfterSnapshotSeconds": 160.682168,
+    "afterGapDecision": "Disclosed departure from planned immediate capture. Finite dated boundary evidence accepted with native own-tree/runtime cleanup, reached per-case cleanup assertions and stable inventories. Parent reports no intervening actual or process/root action; this is not independently continuous observation. No instantaneous or continuous absence claim and no gap reconstruction. No concrete settlement3 gate blocker from delay alone; settlement requires its own explicit release and clean fresh preflight.",
+    "noCurrentGlobalCensusPerformed": true
+  },
+  "restoredCarrier": {
+    "paths": 19,
+    "bytesSha256GitBlobsModesVerified": true
+  },
+  "preserved": {
+    "originalRaces2Native1Immutable": true,
+    "retained42HistoricalProvenanceUnchanged": true,
+    "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE",
+    "noOldRuntimeReplay": true
+  },
+  "findings": [],
+  "scope": "Only the two corrected races2 methods. Adds two distinct qualified cases to retained42 after saving acceptance, yielding44/57. Does not qualify settlement3 or other remaining13, cold child/common completion, or whole runtime."
+}

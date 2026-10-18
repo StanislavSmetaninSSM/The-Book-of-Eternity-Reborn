@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "SETTLEMENT3_ORIGINAL_FROZEN",
+  "status": "44_OF_57_QUALIFIED_SETTLEMENT3_ORIGINAL_FAILURES_FROZEN_DIAGNOSIS_REQUIRED",
   "sourceCheckpoint": "7cad7e3b22df9e06e045bbde9068599906041bc1",
   "sourcePinDigest": "f5c13d343de221bc86aaf3ec100869ea6e1cafdaae59b3006baa5642de328e8e",
   "sourcePinCount": 98,
@@ -392,7 +392,7 @@
           "cases": 1
         }
       ],
-      "status": "NEW_ORIGINAL_NATIVE_PASS_EVIDENCE_PENDING"
+      "status": "NEW_CORRECTED_INDEPENDENT_EVIDENCE_ACCEPTED_2PASS"
     },
     {
       "mode": "settlement3",
@@ -723,7 +723,7 @@
       "failureScope": "Reached exact pending/Published/I, foreign experience bytes, immutable Ready before source and expired attempt/no capture/common. Final mechanical foreach and direct restore NOT reached after failing line117. Independent15-image raw comparison is separate evidence, not PASS."
     },
     "races2Corrected": {
-      "status": "ORIGINAL_NATIVE_PASS_INDEPENDENT_EVIDENCE_PENDING",
+      "status": "INDEPENDENT_EVIDENCE_ACCEPTED_2PASS",
       "actualSource": "1e2bdb75d51bd7ee549ed399d5a744b366beceff",
       "compiledSource": "e2d0a10f6b12cc1947ef9c9f71fd600146fcec2d",
       "nativeExit": 0,
@@ -781,7 +781,36 @@
         "sha256": "88977c172275f1402330bd7e9f709381384b7bc27a6265b48a0f089bb252ad10"
       },
       "censusBeforeToNativeLaunchSeconds": 47.661597,
-      "censusTimingLimit": "Dated snapshots only. Before census to native launch includes controller source/Git/9-DLL/full-output preflight. No intervening repository, fixture or process mutation or actual was performed; continuous or instantaneous absence is not claimed. After census started 160.682168s after recorded native completion; monitor delivery did not provide an instantaneous boundary. Native owned-tree/runtime cleanup and empty owned namespace are separate evidence. No intervening actual or process/root intervention occurred; the gap is not reconstructed."
+      "censusTimingLimit": "Dated snapshots only. Before census to native launch includes controller source/Git/9-DLL/full-output preflight. No intervening repository, fixture or process mutation or actual was performed; continuous or instantaneous absence is not claimed. After census started 160.682168s after recorded native completion; monitor delivery did not provide an instantaneous boundary. Native owned-tree/runtime cleanup and empty owned namespace are separate evidence. No intervening actual or process/root intervention occurred; the gap is not reconstructed.",
+      "evidenceReview": {
+        "verdict": "ACCEPT_CORRECTED_RACES2_EVIDENCE_WITH_EXPLICIT_DATED_CENSUS_TIMING_LIMITS",
+        "model": "gpt-6-astra",
+        "reasoningEffort": "xhigh",
+        "findings": [],
+        "artifacts": [
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-races2-corrected-independent-review-20261018.json",
+            "sha256": "e2fb4435d7ae9cda60649342cce98506d181477e77957bb28335d67660280f3e",
+            "bytes": 13669
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-races2-corrected-independent-review-20261018.md",
+            "sha256": "1171ed2bacce4cad45f8d5465c77baea5609f008705bc11b34797399917d11a2",
+            "bytes": 3293
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-races2-corrected-independent-check-f0bfcda8-20261018.json",
+            "sha256": "848edc80be9e0248e54209c77a0c11e585753ceda6d65fa9a73d3f300ae0f251",
+            "bytes": 12417
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-races2-corrected-evidence-checker-20261018.py",
+            "sha256": "39e08c59983a7eed028eab2950ff3e50b008d47685d9d88b14f0017590fe73ac",
+            "bytes": 22732
+          }
+        ],
+        "censusTimingLimits": "The after-census delay is a disclosed departure from the planned immediate capture, accepted as a finite dated observation limit. No contract supplies an arbitrary snapshot cutoff; strong own-tree/runtime cleanup, reached per-case cleanup, empty recorded namespaces and the later clean 62-entry authoritative census remain separate evidence. The delay alone is not a native failure or a concrete blocker to the then separately released settlement3."
+      }
     },
     "settlement3": {
       "status": "ORIGINAL_UNEXPECTED_OUTCOME_FROZEN_INDEPENDENT_DIAGNOSIS_REQUIRED",
@@ -850,7 +879,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Independent causal diagnosis before anysource/actual/retry.",
+  "next": "Independent causal diagnosis of both frozen settlement3 failures before any source change, retry or next actual; retain44 accepted targets and original provenance. Integrity4/uncertain1/newcrash5 remain UNRUN. Old crash5 UNKNOWN unchanged.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -1041,10 +1070,10 @@
   },
   "qualifiedCases": {
     "retainedOriginal": 37,
-    "newQualified": 5,
-    "totalDistinctTargets": 42,
+    "newQualified": 7,
+    "totalDistinctTargets": 44,
     "wholeTarget": 57,
-    "limits": "Retained37+independentlyacceptedcloudlegacy3+correctedclose2. Originalclose2RED andoldsevenfixtureFAIL immutable. Races2native1/1PASS1FAIL frozen; ReadRacePASSnotseparatelyqualified. Lostoldcorrectedcrash5UNKNOWN."
+    "limits": "Retained37 plus independently accepted new legacy3, corrected close2 and corrected races2. Each retains original actual/compiled provenance; no retained-case replay or cross-build equivalence claim. Original fixture failures, original cloud close2/races2 RED and lost old corrected crash5 UNKNOWN remain immutable. Settlement3 native1 with1PASS2FAIL is not qualified; remaining10 are unrun."
   },
   "lastFreezeCarrierRecovery": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-freeze-recovery-f647853f-20261018.json",
@@ -1450,6 +1479,16 @@
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-races2-freeze-recovery-8f94b4b2-20261018.json",
       "sha256": "8635f34b6476d9262dde4e93b7da16ac7478bae7da2104879a1f16608db1cef3",
       "bytes": 7118
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-f0bfcda8-20261018.json",
+      "sha256": "6190a5c3ff104e0482263f6decb704466492c2c5b8d4757c238299b68a5bbc36",
+      "bytes": 7538
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-4406e723-20261018.json",
+      "sha256": "a9128fba7df2576d16c730ab40f5b9bf19d3fcb8c965ae7322a96f78b7944a5f",
+      "bytes": 7199
     }
   ],
   "sourcePinDigestBeforeReadyDriftCorrection": "b29c971342ee772b13cd123a954d7afa8937e1f50a7e5f4c4c14403e4de4c347",
