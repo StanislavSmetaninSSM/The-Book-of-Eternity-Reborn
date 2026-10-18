@@ -1,3 +1,5 @@
+> G01 current boundary: purepolicy23PASS after independently diagnosed timestamp correction; affected review pending. Whole capture orchestration remains WIP/unimplemented, fresh affected integration PREP UNRUN. Phase-admission wording requires clarification versus D01 permanent CapturePhaseUNKNOWN; no game/collector/API/dump occurred, all actual gates NONE. See G01control/currentplan.
+
 ## L01 G01 — one managed snapshot after new SOURCE/PREP (2026-10-18)
 
 - [ ] Minimal test-only orchestration and policy/observer-fault RED/GREEN; lifecycle retention/private publication, original assertions/budgets unchanged.

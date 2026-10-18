@@ -1,0 +1,46 @@
+{
+  "kind": "G01_PENDING_CAPTURE_ORCHESTRATION_CONTROL",
+  "base": "c1668efba8ccf9bb041e8b764d561fe7bed0bc6f",
+  "status": "WIP_PHASE_ADMISSION_CONTRACT_CLARIFICATION_REQUIRED",
+  "sourceReview": "NONE_WHOLE_ORCHESTRATION_NOT_IMPLEMENTED",
+  "affectedIntegrationPrep": "UNRUN",
+  "gameplayRelease": "NONE",
+  "snapshotRelease": "NONE",
+  "crash5Release": "NONE",
+  "actualGameCasesExecuted": 0,
+  "diagnosticRequests": 0,
+  "dumpArtifactsCreated": 0,
+  "purePolicy": {
+    "initialRedSource": "57afc2cc7e160fd72a3a76c1bf8de41c07dbc759",
+    "firstGreenFailureSource": "17684f613fea24d9236105e43be0709001cc7744",
+    "correctedSource": "c2be74b2171481bb06e82264510e1a09117a92e2",
+    "correctedCases": 23,
+    "correctedPassed": 23,
+    "correctedNativeExit": 0,
+    "independentAffectedReview": "PENDING"
+  },
+  "phaseClarification": {
+    "latestInstruction": "health/identity/phase uncertainty cancels capture",
+    "existingSource": "JointInterfaceDiagnosticDelivery.Health.CapturePhase => UNKNOWN; receipt is a discrete marker, source-emission completeness UNKNOWN",
+    "pendingQuestion": "Does healthy exact custody receipt permit one request while continuous capture phase stays UNKNOWN, or must any CapturePhase UNKNOWN prohibit capture?",
+    "dependentActualBlocked": true
+  },
+  "dumpLifecycle": {
+    "root": "New private disposable own/capture only",
+    "retention": "Through independent minimal sanitized EVIDENCE and final run report; uncertain ownership/cleanup retains root",
+    "commitAttachArchive": "FORBIDDEN_CORE_OR_RAW_REPORT",
+    "automaticDeletion": "NONE"
+  },
+  "unimplemented": [
+    "C# parent consumer/wiring/retention",
+    "external request watchdog",
+    "source/current binding packet and one-shot phase controller",
+    "affected build/catalog/PlanOnly/mapper compilation",
+    "whole SOURCE/PREP/game/EVIDENCE"
+  ],
+  "unrunWipSources": [
+    "Collect.ps1",
+    "MapFrames.cs"
+  ],
+  "allOldOutcomesAndBroaderHoldsUnchanged": true
+}
