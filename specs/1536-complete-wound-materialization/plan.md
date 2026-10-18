@@ -1,3 +1,7 @@
+## T179-Pd-NI-IOBS-L01 — diagnostic2 fresh ZERO3 native0; PREP pending (2026-10-18)
+
+catalog native0/ZERO 412.972s, plan native0/ZERO 27.565s, diagnostic-plan native0/ZERO 15.627s. Whole16/33/57 and separate diagnostic Fact1/1/1 for diagnostic2 accounting;32 exact rawchains,101pins/product23,nine/full inventory and six dated boundaries retained.809categories/11801methods; no actual tests executed. Frozen prior two roots remain unchanged/outside new mutable namespace. Independent PREP/recovery/readback and separate named gate required before one diagnostic run. Qualified52/alloriginals/old66529UNKNOWN and broader holds unchanged. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — diagnostic2 external SOURCE accepted; fresh ZERO3 only (2026-10-18)
 
 [Independent SOURCE](recovery/t179pd-ni-iobs-l01-diagnostic2-source-independent-review-20261018.md) accepts corrected native-priority external accounting/wrapper/newde0f environment/discriminators/fake-proc83 at5aaf15107897ab5f217107e4e1a3ca1a52a98284. Existing101closure/product23/C#/assertions/220900 remain byte-identical. Prior9d SOURCE feedback and25proof retained; no game/native. Save/recover/readback acceptance then new fresh BOTH/catalog+whole16/33/57+same diagnosticFact1/1/1 ZERO3 only. Independent PREP and separately saved/recovered one-run release before diagnostic2. Qualified52/alloriginals/oldUNKNOWN/broaderholds unchanged. After this one profile joint concrete verdict; no automatic diagnostic chain. Following sections historical.
