@@ -4,7 +4,9 @@ Independent SOURCE HOLD33cb9a07 found3 observer/accounting defects, not a game o
 synthetic failure. Guarded closes now retain native outcomes; request count derives
 from actual collector stages; API success/failure is separate from output failure.
 Fake proofs:8 original AST close failures,16 corrected teardown cases,8 PowerShell
-API/emit cases, zero diagnostic targets/calls. [Affected preparation binding](recovery/l01-managed-stack-affected-preparation-20261018.json)
+API/emit cases and10 native0/7 collector-observation cases, zero diagnostic targets/calls.
+Missing/empty/truncated output stays UNKNOWN/None, never a false zero; complete
+preflight/collector UNREACHED evidence is required for zero. [Affected preparation binding](recovery/l01-managed-stack-affected-preparation-20261018.json)
 proposes exact Python+Collect observer deltas only. Original compiler/metadata0 and
 all13 raw chains/MVID/config/C#/163refs/loadedABI/outputs stay byte-exact; no native
 PREP replay. Focused SOURCE/PREP pending, S01 UNRUN, gameplay release NONE.

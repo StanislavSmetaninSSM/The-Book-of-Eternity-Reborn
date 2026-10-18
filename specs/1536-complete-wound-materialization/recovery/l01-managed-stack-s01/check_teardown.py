@@ -45,11 +45,34 @@ for site, form in forms.items():
             assert record['nativeExit'] == native and bool(record['observerErrors']) == close_fails
             assert calls == ['close'] and saved[-1] == record
             corrected.append(dict(site=site, nativeExit=native, closeFails=close_fails, controllerExit=code, recordPersisted=True))
+observations = []
+start_line = 'L01_COLLECTOR ' + json.dumps(dict(Stage='request_started')) + '\n'
+for native in [0, 7]:
+    for case in ['truncated_after_entry', 'empty', 'missing', 'unreached', 'returned']:
+        record = dict(nativeExit=native, observerErrors=[], diagnosticRequests=0, apiOutcome='UNREACHED')
+        def read_text():
+            if case == 'missing': raise FileNotFoundError('fake missing collector output')
+            if case == 'empty': return ''
+            if case == 'truncated_after_entry': return start_line + 'L01_COLLECTOR {"Stage":"api_outcome"'
+            if case == 'unreached': return 'L01_COLLECTOR ' + json.dumps(dict(Stage='collector_exit', ApiOutcome='UNREACHED', ApiStatus=None))
+            return start_line + 'L01_COLLECTOR ' + json.dumps(dict(Stage='api_outcome', ApiOutcome='RETURNED', ApiStatus=0))
+        current['observe_collector'](record, read_text)
+        assert record['nativeExit'] == native
+        if case in ['truncated_after_entry', 'empty', 'missing']:
+            assert record['apiOutcome'].startswith('UNKNOWN') and record['diagnosticRequests'] is None
+        elif case == 'unreached':
+            assert record['apiOutcome'] == 'UNREACHED' and record['diagnosticRequests'] == 0
+        else:
+            assert record['apiOutcome'] == 'RETURNED' and record['diagnosticRequests'] == 1
+        if case == 'truncated_after_entry':
+            assert record['admittedRequestStages'] == 1 and record['collectorParseError'] and record['observerErrors']
+        observations.append(dict(case=case, nativeExit=native, apiOutcome=record['apiOutcome'],
+                                 diagnosticRequests=record['diagnosticRequests'], observerErrors=record['observerErrors']))
 report = dict(kind='L01_S01_FAKE_TEARDOWN_PROOF', baselineSource=source,
               baselineSourceSha256=hashlib.sha256(old.encode()).hexdigest(),
               currentSourceSha256=hashlib.sha256((here / 'smoke.py').read_bytes()).hexdigest(),
-              baseline=baseline, corrected=corrected, outcome='PASS',
-              limits='8 original AST reproductions,16 corrected callback cases; zero synthetic/diagnostic API calls. No original native result is changed.')
+              baseline=baseline, corrected=corrected, collectorObservationCases=observations, outcome='PASS',
+              limits='8 original AST reproductions,16 corrected close callbacks and10 collector-observation cases; zero synthetic/diagnostic API calls. No original native result is changed.')
 destination = here.parent / 'l01-managed-stack-teardown-proof-20261018.json'
 destination.write_text(json.dumps(report, indent=2) + '\n')
-print(json.dumps(dict(outcome='PASS', original=len(baseline), corrected=len(corrected))))
+print(json.dumps(dict(outcome='PASS', original=len(baseline), corrected=len(corrected), observations=len(observations))))

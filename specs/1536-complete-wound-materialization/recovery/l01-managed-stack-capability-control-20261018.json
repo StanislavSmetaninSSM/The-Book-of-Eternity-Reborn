@@ -5,8 +5,8 @@
   "sourcePins": [
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-affected-preparation-20261018.json",
-      "bytes": 4086,
-      "sha256": "b0a35ab80dd06bdc6f2572791f36c2d6d5d8e911e6e7133d5ff2dd3c6b808c62"
+      "bytes": 4357,
+      "sha256": "e903faa9b07bbedbe97f610baf777a557c0c4d05d7b4da60099dfeae4ee397ec"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-api-observer-proof-20261018.json",
@@ -40,18 +40,18 @@
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/check_teardown.py",
-      "bytes": 3129,
-      "sha256": "93b9f70c00e3dd88f94c19cfe0d75385a3c9acc7b0a69a2a549cbc935b19ddd6"
+      "bytes": 4971,
+      "sha256": "4484ad592dff8924f303b91ca21b5b0156a275ad80138bc22274f28adc0c075f"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
-      "bytes": 23669,
-      "sha256": "aa06d2374c2337176254671fa116e1d455bb72590b1890bcadbc4ab9f349a168"
+      "bytes": 24445,
+      "sha256": "d121731cff4867acf993d034962c9f5591fdcb496307a5fe0e9642b8392da333"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-teardown-proof-20261018.json",
-      "bytes": 3801,
-      "sha256": "ef97982c6cbccb1dd5ccda5df8bad9987650be3d12243c4311d0910ceb2ab57d"
+      "bytes": 5967,
+      "sha256": "93feceddb97740bb9b896fa28d0119d6f0f70420e16dbba260e1bb8356101b34"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-run-phase-20261018.py",
@@ -67,7 +67,7 @@
   "sourceScope": "Three external helper sources, exact installed inventory and accepted review; reused M01 observer finalizer unchanged. No game code/category/runtime selection changes.",
   "proposedAffectedPreparation": {
     "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-affected-preparation-20261018.json",
-    "sha256": "b0a35ab80dd06bdc6f2572791f36c2d6d5d8e911e6e7133d5ff2dd3c6b808c62",
+    "sha256": "e903faa9b07bbedbe97f610baf777a557c0c4d05d7b4da60099dfeae4ee397ec",
     "sourcePinExceptions": [
       {
         "original": {
@@ -89,8 +89,8 @@
         },
         "current": {
           "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
-          "bytes": 23669,
-          "sha256": "aa06d2374c2337176254671fa116e1d455bb72590b1890bcadbc4ab9f349a168"
+          "bytes": 24445,
+          "sha256": "d121731cff4867acf993d034962c9f5591fdcb496307a5fe0e9642b8392da333"
         }
       }
     ]

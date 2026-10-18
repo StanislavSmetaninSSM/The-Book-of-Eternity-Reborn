@@ -2,7 +2,7 @@
   "kind": "L01_S01_FAKE_TEARDOWN_PROOF",
   "baselineSource": "33cb9a07180dd90046d17bb23043cd401cf38695",
   "baselineSourceSha256": "e16e1df1b0257459c5753c5e01571d535abae5596390156c0c608ccbfe1d76f9",
-  "currentSourceSha256": "aa06d2374c2337176254671fa116e1d455bb72590b1890bcadbc4ab9f349a168",
+  "currentSourceSha256": "d121731cff4867acf993d034962c9f5591fdcb496307a5fe0e9642b8392da333",
   "baseline": [
     {
       "site": "stdin",
@@ -167,6 +167,86 @@
       "recordPersisted": true
     }
   ],
+  "collectorObservationCases": [
+    {
+      "case": "truncated_after_entry",
+      "nativeExit": 0,
+      "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+      "diagnosticRequests": null,
+      "observerErrors": [
+        "Collector observation: JSONDecodeError(\"Expecting ',' delimiter: line 1 column 23 (char 22)\")"
+      ]
+    },
+    {
+      "case": "empty",
+      "nativeExit": 0,
+      "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+      "diagnosticRequests": null,
+      "observerErrors": []
+    },
+    {
+      "case": "missing",
+      "nativeExit": 0,
+      "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+      "diagnosticRequests": null,
+      "observerErrors": [
+        "Collector observation: FileNotFoundError('fake missing collector output')"
+      ]
+    },
+    {
+      "case": "unreached",
+      "nativeExit": 0,
+      "apiOutcome": "UNREACHED",
+      "diagnosticRequests": 0,
+      "observerErrors": []
+    },
+    {
+      "case": "returned",
+      "nativeExit": 0,
+      "apiOutcome": "RETURNED",
+      "diagnosticRequests": 1,
+      "observerErrors": []
+    },
+    {
+      "case": "truncated_after_entry",
+      "nativeExit": 7,
+      "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+      "diagnosticRequests": null,
+      "observerErrors": [
+        "Collector observation: JSONDecodeError(\"Expecting ',' delimiter: line 1 column 23 (char 22)\")"
+      ]
+    },
+    {
+      "case": "empty",
+      "nativeExit": 7,
+      "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+      "diagnosticRequests": null,
+      "observerErrors": []
+    },
+    {
+      "case": "missing",
+      "nativeExit": 7,
+      "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+      "diagnosticRequests": null,
+      "observerErrors": [
+        "Collector observation: FileNotFoundError('fake missing collector output')"
+      ]
+    },
+    {
+      "case": "unreached",
+      "nativeExit": 7,
+      "apiOutcome": "UNREACHED",
+      "diagnosticRequests": 0,
+      "observerErrors": []
+    },
+    {
+      "case": "returned",
+      "nativeExit": 7,
+      "apiOutcome": "RETURNED",
+      "diagnosticRequests": 1,
+      "observerErrors": []
+    }
+  ],
   "outcome": "PASS",
-  "limits": "8 original AST reproductions,16 corrected callback cases; zero synthetic/diagnostic API calls. No original native result is changed."
+  "limits": "8 original AST reproductions,16 corrected close callbacks and10 collector-observation cases; zero synthetic/diagnostic API calls. No original native result is changed."
 }

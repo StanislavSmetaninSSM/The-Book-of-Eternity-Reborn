@@ -145,6 +145,36 @@ def prefixed(path, prefix):
     return [json.loads(line[len(prefix):]) for line in Path(path).read_text().splitlines() if line.startswith(prefix)]
 
 
+def observe_collector(record, read_text):
+    record.update(apiOutcome='UNKNOWN_COLLECTOR_OBSERVATION', apiNativeStatus=None, diagnosticRequests=None)
+    rows = []
+    try:
+        for line in read_text().splitlines():
+            if line.startswith('L01_COLLECTOR '):
+                row = json.loads(line[len('L01_COLLECTOR '):])
+                assert isinstance(row, dict)
+                rows.append(row)
+        outcomes = [e for e in rows if e.get('Stage') == 'api_outcome']
+        exits = [e for e in rows if e.get('Stage') == 'collector_exit']
+        started = [e for e in rows if e.get('Stage') == 'request_started']
+        assert len(started) <= 1 and len(outcomes) <= 1 and len(exits) <= 1
+        outcome = outcomes[-1] if outcomes else exits[-1] if exits else None
+        if outcome is not None:
+            assert outcome['ApiOutcome'] in ['RETURNED', 'FAILED', 'UNREACHED']
+            record['apiOutcome'] = outcome['ApiOutcome']
+            record['apiNativeStatus'] = outcome.get('ApiStatus')
+            record['diagnosticRequests'] = 1 if record['apiOutcome'] in ['RETURNED', 'FAILED'] else 0
+        elif started:
+            record['apiOutcome'] = 'UNKNOWN_AFTER_ENTRY_STAGE'
+    except BaseException as error:
+        record.update(apiOutcome='UNKNOWN_COLLECTOR_OBSERVATION', apiNativeStatus=None, diagnosticRequests=None,
+                      collectorParseError=repr(error))
+        record['observerErrors'].append('Collector observation: ' + repr(error))
+    finally:
+        record['collectorEvents'] = rows
+        record['admittedRequestStages'] = sum(e.get('Stage') == 'request_started' for e in rows)
+
+
 def decode(report, ready, expected_mvid):
     frames = []
     threads = report['payload']['threads']
@@ -323,29 +353,16 @@ def smoke(root, control, inventory, source):
         write(manifest, m)
         assert identity(target.pid) == owned and target.poll() is None
         record['collectorLaunches'] = 1
+        record.update(apiOutcome='UNKNOWN_COLLECTOR_OBSERVATION', diagnosticRequests=None)
         before = time.monotonic()
         record['collector'] = run_owned([PWSH, '-NoLogo', '-NoProfile', '-NonInteractive', '-File', str(HERE / 'Collect.ps1'),
                                          '-Manifest', str(manifest)], phase, 'collector', env, 20)
         record['nativeExit'] = record['collector']['nativeExit']
         record['requestSeconds'] = time.monotonic() - before
-        collector_events = prefixed(phase / 'collector.stdout', 'L01_COLLECTOR ')
-        record['collectorEvents'] = collector_events
-        outcomes = [e for e in collector_events if e.get('Stage') == 'api_outcome']
-        exits = [e for e in collector_events if e.get('Stage') == 'collector_exit']
-        started = [e for e in collector_events if e.get('Stage') == 'request_started']
-        record['admittedRequestStages'] = len(started)
-        assert len(started) <= 1 and len(outcomes) <= 1 and len(exits) <= 1
-        outcome = outcomes[-1] if outcomes else exits[-1] if exits else None
-        if outcome is not None:
-            record['apiOutcome'] = outcome.get('ApiOutcome', 'UNREACHED')
-            record['apiNativeStatus'] = outcome.get('ApiStatus')
-        elif started:
-            record['apiOutcome'] = 'UNKNOWN_AFTER_ENTRY_STAGE'
-        record['diagnosticRequests'] = (1 if record['apiOutcome'] in ['RETURNED', 'FAILED'] else
-                                        None if record['apiOutcome'] == 'UNKNOWN_AFTER_ENTRY_STAGE' else 0)
+        observe_collector(record, lambda: (phase / 'collector.stdout').read_text())
         cleanup_createdump()
         assert record['collector']['nativeExit'] == 0 and not record['collector']['observerErrors'] and not record['childrenAfterRequest']
-        assert record['apiOutcome'] == 'RETURNED' and record['apiNativeStatus'] == 0 and record['diagnosticRequests'] == len(started) == 1
+        assert record['apiOutcome'] == 'RETURNED' and record['apiNativeStatus'] == 0 and record['diagnosticRequests'] == record['admittedRequestStages'] == 1
         report_path = phase / 'synthetic-normal.core.crashreport.json'
         report = json.loads(report_path.read_text())
         record['managedFrames'] = decode(report, ready, prep['abi']['TargetMvid'])
