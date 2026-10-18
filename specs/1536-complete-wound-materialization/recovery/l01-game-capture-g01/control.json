@@ -17,7 +17,11 @@
     "correctedCases": 23,
     "correctedPassed": 23,
     "correctedNativeExit": 0,
-    "independentAffectedReview": "PENDING"
+    "independentAffectedReview": "ACCEPT_RAW_TIMESTAMP_FIX_AND_FIRST_PURE23_ONLY_G01_BLOCKED",
+    "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-policy-corrected-affected-independent-review-20261018.json",
+    "reviewSha256": "b3b4da02b7860142fcfc463495bd021756ad01b071d10ef2c0b257d8223faaf7",
+    "reviewedCarrier": "307f8663c9f334d0e452fddc35c094fe4714bed3",
+    "correctedRecordSha256": "ef57bcd8dacf2b19dbbcf8a8f70bddb86b286889ababb2bde2e095fc39d75305"
   },
   "phaseClarification": {
     "latestInstruction": "health/identity/phase uncertainty cancels capture",
@@ -42,5 +46,6 @@
     "Collect.ps1",
     "MapFrames.cs"
   ],
-  "allOldOutcomesAndBroaderHoldsUnchanged": true
+  "allOldOutcomesAndBroaderHoldsUnchanged": true,
+  "currentNextAction": "RESOLVE_PHASE_ADMISSION_CONTRACT_BEFORE_DEPENDENT_IMPLEMENTATION_SOURCE_PREP_GAME"
 }

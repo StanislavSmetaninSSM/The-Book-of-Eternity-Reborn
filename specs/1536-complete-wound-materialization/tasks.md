@@ -1,3 +1,5 @@
+> G01 saved WIP boundary: independent affected policy review32checks ACCEPT, firstcorrectedpure23PASS. This qualifies only the rawtimestamp correction/purecases. Phase-admission contract stillawaitsclarification; wholeorchestrationSOURCE/PREP unavailable, actualgame0/API0/dump0. Parent/watchdog/currentbindings incomplete; Collect/Map uncompiled/unrun. Nextstepresolveguard thenfinish SOURCE/PREP beforeonecase.
+
 > G01 current boundary: purepolicy23PASS after independently diagnosed timestamp correction; affected review pending. Whole capture orchestration remains WIP/unimplemented, fresh affected integration PREP UNRUN. Phase-admission wording requires clarification versus D01 permanent CapturePhaseUNKNOWN; no game/collector/API/dump occurred, all actual gates NONE. See G01control/currentplan.
 
 ## L01 G01 — one managed snapshot after new SOURCE/PREP (2026-10-18)

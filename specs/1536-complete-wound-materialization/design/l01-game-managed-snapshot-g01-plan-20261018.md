@@ -78,3 +78,12 @@ ownership/cleanup retains root and is reported. No new archival/deletion mechani
 All previous outcomes and L0152/57/old66529UNKNOWN remain original provenance.
 Cloud Linux game, futureWindowsfive and artifact403 holds are distinct. FullNI/
 HOT/F1/M3/T197/E01/T148/Phase10 incomplete; A3NO-PROCEED. No Windows/403/CI action.
+
+## Current bounded checkpoint
+
+Pure policy23 checks pass after independently diagnosed rawtimestamp-order fix;
+independent affected review32checks accepts only that narrow scope. Initial
+expectedRED and firstGREEN failure remain immutable. Full capture implementation
+is incomplete and all runtime gates remain NONE. The user phase-uncertainty
+wording versus permanent D01 CapturePhaseUNKNOWN is awaiting explicit
+clarification; no dependent game/collector action before resolving it.
