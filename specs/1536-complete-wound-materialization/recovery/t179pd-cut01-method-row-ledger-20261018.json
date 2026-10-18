@@ -2,7 +2,7 @@
   "kind": "T179PD_CUT01_FINITE_METHOD_ROW_LEDGER",
   "task": "#1536 T179-Pd-CUT01",
   "base": "08119f36c66464913e94d4bd5d23221073e0d48d",
-  "status": "CONCRETE_SOURCE_PREP_ACCEPTED_FIRST_STOP1_ELIGIBLE_ALL_ACTUALS_UNRUN",
+  "status": "FIRST_STOP1_FAILED_ORIGINAL_RAW_PENDING_INDEPENDENT_CAUSAL_EVIDENCE",
   "plan": "recovery/t179pd-ni-capture-cut-plan-08119f36-20261018-v2.md",
   "planReview": "recovery/t179pd-ni-capture-cut-plan-independent-review-20261018.md",
   "newRows": [
@@ -12,7 +12,7 @@
       "rows": 1,
       "kind": "Fact",
       "intendedRed": "Actual old engine route completes real prerequisites and misses semantic callback/held cut; not setup/NotNull",
-      "status": "SOURCE_ELIGIBLE_FIRST_STOP1_UNRUN"
+      "status": "FIRST_EXECUTED_1FAIL_PENDING_CAUSAL_EVIDENCE"
     },
     {
       "category": "fr063-joint-capture-cut-transparency",
@@ -51,8 +51,56 @@
     "planMethods": 4,
     "planCases": 5,
     "buildBothCompleted": true,
-    "executed": 0,
-    "traces": "NO_TRX; planned-but-unexecuted descriptors are intentional PlanOnly state, not a runtime underfill"
+    "executed": 1,
+    "traces": "NO_TRX; planned-but-unexecuted descriptors are intentional PlanOnly state, not a runtime underfill",
+    "firstStop": {
+      "kind": "FIRST_STOP1_ORIGINAL_RAW_PENDING_INDEPENDENT_CAUSAL_EVIDENCE",
+      "actualSource": "558c7ec0a683dad0586a1dd599676fd291193ef2",
+      "compiledSource": "3579d8e21db039dbabc6050a175024cf6c08f79b",
+      "nativeExit": 1,
+      "wallSeconds": 65.74984875301016,
+      "descriptorsPlanned": 1,
+      "descriptorsCompleted": 1,
+      "casesPlanned": 1,
+      "executed": 1,
+      "passed": 0,
+      "failed": 1,
+      "underfill": [],
+      "timedOut": false,
+      "failure": "Assert.Equal at JointCaptureCut.cs175: expected callback1/actual0, after genuine shared prerequisites",
+      "observed": {
+        "callbacks": 0,
+        "preparationPresentWaveReads": 4,
+        "retainedPreparation": 1,
+        "retainedPrepared": 1,
+        "retainedEffects": 1,
+        "retainedFinal": 1,
+        "retainedCommon": 1,
+        "retainedPreflight": 1,
+        "reservationObjectsObserved": 1,
+        "openTakeObjectsObserved": 1,
+        "committedMarkerContainingCohorts": 2,
+        "turn": 43,
+        "actualDisposition": null
+      },
+      "limits": [
+        "ActualDisposition is literally null; no nonnull Committed claim from that field.",
+        "PostCut counters0 were unarmed because callback missing; they are NOT no-work evidence.",
+        "Marker-containing cohorts may include progression; not exactly2 common invocations.",
+        "Source/publication/physical state and genuine old work still require separate independent causal qualification.",
+        "No GREEN, NI, new held behavior or remaining4 actuals claimed."
+      ],
+      "runnerOwnedCleanup": true,
+      "runnerRuntimeCleanup": true,
+      "namespaceBefore": [],
+      "namespaceAfter": [],
+      "binaryBeforeAfterSame9": true,
+      "archive": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-first-stop-files-20261018/archive.json",
+      "archiveSha256": "3a362efd062ed37c3b02f30a912f93ce1b4ef70f77d26f6cd408f86bbff1dcbb",
+      "rawChains": 9,
+      "authorization": "Root named exact558c FIRST stop1 after saved Source/PREP decision and complete72-delta readback; recorded original helper/actual context carries exact invocation.",
+      "independentCausalVerdict": "PENDING"
+    }
   },
   "rulings": [
     {

@@ -1,7 +1,7 @@
 {
   "kind": "T179PD_CUT01_TESTS_ONLY_CURRENT_SOURCE_PACKET",
   "base": "08119f36c66464913e94d4bd5d23221073e0d48d",
-  "status": "CONCRETE_SOURCE_PREP_ACCEPTED_FIRST_STOP1_ELIGIBLE_ALL_ACTUALS_UNRUN",
+  "status": "FIRST_STOP1_FAILED_ORIGINAL_RAW_PENDING_INDEPENDENT_CAUSAL_EVIDENCE",
   "sourcePins": [
     {
       "path": "AGENTS.md",
@@ -286,14 +286,14 @@
   "sourcePinDigest": "4e51099287cebfc111fd8035b219ee361d0208a54cfcba5cccab1c9039932435",
   "currentLedger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-method-row-ledger-20261018.json",
-    "sha256": "9744d21eb9406f9a59440accf8c26aef943fb1879590bf049e79c570519483a7"
+    "sha256": "95e62b2cdda209c5c289884d4f37a7236fb30df47d20a0e45893f59794007fdc"
   },
   "productDelta": [],
   "fixture": "Original accepted full source base+69 consecutive deltas retained; changed actual fixture and new probe pinned here. No fullclone/old evidence replay.",
-  "firstEligibleActual": "ONLY new stop1 after concrete SOURCE/PREP saved and Root named; all now UNRUN",
+  "firstEligibleActual": "FIRST named stop1 already executed once on558c; original raw preserved pending independent causal EVIDENCE. No rerun/remaining4/product release.",
   "planCorrections": "Preserve v1 initial absent-file proposed probe and exact v2 source correction, not native failure. Literal guaranteed present read at Reconstruct88/preparation146–147.",
   "precommonDesign": "t179pd-cut01-method-row-ledger-20261018.json precommon: accepted DESIGN only, NI-IOBS-L01 and origin bridge open",
-  "noRuntime": "ZERO CASE_EXECUTION; two actual native zero-test preparation commands only",
+  "noRuntime": "Exactly1 actual stop case executed:1FAIL/raw only. Preparation0/0 remains historical; other4 actuals UNRUN.",
   "preparation": {
     "compiledSource": "3579d8e21db039dbabc6050a175024cf6c08f79b",
     "productSource": "08119f36c66464913e94d4bd5d23221073e0d48d",
@@ -379,7 +379,7 @@
     {
       "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-stop-first-run.py",
       "sha256": "2946a501dc52d593c5d3c0bde417b07e0ff8487f324433c13bdec8136e073950",
-      "status": "UNRUN_NO_ACTUAL_RELEASE"
+      "status": "USED_ONCE_FIRST_STOP1_NATIVE1_RAW_PENDING_CAUSAL_EVIDENCE"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-archive-stop.py",
@@ -389,7 +389,7 @@
     {
       "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-archive-stop-v2.py",
       "sha256": "4e23bf8570402faf74245118a1e022fee1e843141916d16ccaf8ebfd15d11c38",
-      "status": "UNRUN_CURRENT_READ_ONLY_FIRST_STOP_ARCHIVER"
+      "status": "READ_ONLY_FROZE_FIRST_STOP1_EXACT9_RAW_CHAINS"
     }
   ],
   "toolAuthoringCorrection": {
@@ -404,5 +404,53 @@
     "root": "recovery/t179pd-cut01-root-source-prep-acceptance-172455c2-20261018.json",
     "scope": "Only FIRST stop1 eligibility after saved decision and Root named exact source activation. All test cases still UNRUN; remaining4 held.",
     "counterPrecision": "JointMarkerCommonPublications is marker-containing committed cohort observations (possibly progression), not exact firstcommon invocation count."
+  },
+  "firstStopActual": {
+    "kind": "FIRST_STOP1_ORIGINAL_RAW_PENDING_INDEPENDENT_CAUSAL_EVIDENCE",
+    "actualSource": "558c7ec0a683dad0586a1dd599676fd291193ef2",
+    "compiledSource": "3579d8e21db039dbabc6050a175024cf6c08f79b",
+    "nativeExit": 1,
+    "wallSeconds": 65.74984875301016,
+    "descriptorsPlanned": 1,
+    "descriptorsCompleted": 1,
+    "casesPlanned": 1,
+    "executed": 1,
+    "passed": 0,
+    "failed": 1,
+    "underfill": [],
+    "timedOut": false,
+    "failure": "Assert.Equal at JointCaptureCut.cs175: expected callback1/actual0, after genuine shared prerequisites",
+    "observed": {
+      "callbacks": 0,
+      "preparationPresentWaveReads": 4,
+      "retainedPreparation": 1,
+      "retainedPrepared": 1,
+      "retainedEffects": 1,
+      "retainedFinal": 1,
+      "retainedCommon": 1,
+      "retainedPreflight": 1,
+      "reservationObjectsObserved": 1,
+      "openTakeObjectsObserved": 1,
+      "committedMarkerContainingCohorts": 2,
+      "turn": 43,
+      "actualDisposition": null
+    },
+    "limits": [
+      "ActualDisposition is literally null; no nonnull Committed claim from that field.",
+      "PostCut counters0 were unarmed because callback missing; they are NOT no-work evidence.",
+      "Marker-containing cohorts may include progression; not exactly2 common invocations.",
+      "Source/publication/physical state and genuine old work still require separate independent causal qualification.",
+      "No GREEN, NI, new held behavior or remaining4 actuals claimed."
+    ],
+    "runnerOwnedCleanup": true,
+    "runnerRuntimeCleanup": true,
+    "namespaceBefore": [],
+    "namespaceAfter": [],
+    "binaryBeforeAfterSame9": true,
+    "archive": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-first-stop-files-20261018/archive.json",
+    "archiveSha256": "3a362efd062ed37c3b02f30a912f93ce1b4ef70f77d26f6cd408f86bbff1dcbb",
+    "rawChains": 9,
+    "authorization": "Root named exact558c FIRST stop1 after saved Source/PREP decision and complete72-delta readback; recorded original helper/actual context carries exact invocation.",
+    "independentCausalVerdict": "PENDING"
   }
 }
