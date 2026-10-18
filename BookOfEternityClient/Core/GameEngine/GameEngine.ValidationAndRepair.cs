@@ -855,7 +855,17 @@ public partial class GameEngine
             }
             catch (Exception exception)
             {
-                await beforeDestructiveRefusal();
+                try
+                {
+                    await beforeDestructiveRefusal();
+                }
+                catch (MortalJointRepairPublicationHoldException)
+                {
+                    _logger.LogError(
+                        exception,
+                        "The source-bound joint repair owner is blocked; outer rollback is suppressed.");
+                    throw;
+                }
                 await FailClosedAcceptedTurnCanonicalRefreshAsync(
                     source,
                     exception,

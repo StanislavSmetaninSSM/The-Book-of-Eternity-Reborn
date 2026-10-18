@@ -1,0 +1,134 @@
+{
+  "kind": "INDEPENDENT_CLOSE2_FROZEN_FAILURE_CAUSAL_REVIEW_AND_MINIMAL_CORRECTION_PLAN",
+  "reviewedUtc": "2026-10-18T10:30:31.899804+00:00",
+  "decision": "CONFIRMED_PRODUCT_DIAGNOSTIC_LOSS; ALL_FURTHER_ACTUALS_HOLD",
+  "finding": {
+    "priority": "P2",
+    "location": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs:856",
+    "title": "Retention guard replaces canonical-refresh failure before the failure is logged",
+    "trigger": "Selected NI Published result survives actual I-owning lease close; disposal throws the injected IOException after release of its authority/resources.",
+    "actual": "State correctly remains held at turn42 with exact Published pending/I, no fresh DATA and no common/capture/mechanical change; original IOException is absent from owning diagnostics.",
+    "expected": "Preserve the same held/retention outcome and deliver the original owning failure through engine diagnostics, satisfying the unchanged assertion at JointInterfaceCloseRetention.cs105.",
+    "causalPath": [
+      "InitialInterfaceThrowingClose.Dispose throws exact _initialCloseFailure. CanonicalWriteLease.DisposeAsync records it, releases resources, then ExceptionDispatchInfo.Throw preserves it (FileSystemManager.cs324-367).",
+      "PrepareAndPublishWithOwningReleaseAsync uses ReleaseOwnedLeaseAsync(completed:false,operationFailure:null) at MortalJointInterfacePublication.cs106, so its closing exception propagates; outer preparation catch58 sets sticky held; assignment of _mortalJointInterfaceData at54 is never reached.",
+      "RefreshAcceptedTurnCanonicalStateForValidationAsync2302 propagates that preparation error into generic canonical-refresh catch856.",
+      "Catch856 awaits beforeDestructiveRefusal at858 before FailClosedAcceptedTurnCanonicalRefreshAsync/logging. The guard444 first invokes RequireNoMortalJointInterfaceRestoreAsync, whose retained result check at MortalJointInterfaceResume.cs148 throws a fresh MortalJointRepairPublicationHoldException.",
+      "That hold replaces the original exception and is consumed by wrapper catch509 with a Held return and no diagnostic. Generic wrapper logging catch513/522 and FailClosed logger2565 are never reached."
+    ],
+    "collectorExclusion": "The actual injected SpiritualLifecycleTestLogger accepts Information+, formats state and supplied exception, retains24 messages of2000 chars; failure raw has exactly one short generic message and zero original fault text. Logger is passed to CreateGameEngine and assigned directly to GameEngine._logger. Neither truncation, eviction, wrong logger, timing budget nor source/binary drift explains this path.",
+    "evidenceLimits": "Runtime establishes the original exception-producing close executed once and every preceding assertion passed. The exact exception substitution is a static causal conclusion from pinned source, not a separately instrumented rerun. The downstream direct Stage-backup restore oracle follows the failed Contains assertion and DID NOT execute."
+  },
+  "originalFailure": {
+    "carrier": "f647853f41051025969d83a5fa251d3b592a23c0",
+    "actualSource": "61e712e319e8f480b77755aebae4c2db69e1423c",
+    "compiledSource": "6ab43f6add261d90628fc07d6aacf42dfbae0561",
+    "nativeExit": 1,
+    "seconds": 338.778737054,
+    "tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 1,
+      "Failed": 1
+    },
+    "selectionComplete": true,
+    "timeout": false,
+    "failureCaseSeconds": 34.5502955,
+    "recordSha256": "44bd4147341b6590ecd5867a0c1719989dd4b02f7480641b1b134f6037a59219",
+    "archiveSha256": "82477104f4dc7b6e2c68b7b56300223b6d44075f811b57f0ffbded33d1e04319",
+    "verifiedRawChains": 11,
+    "sourcePinsVerified": 98,
+    "freshBinaryAndFullOutputInventoryUnchanged": true,
+    "cleanupVerified": true,
+    "restoredCarrierPathsVerified": 16,
+    "immutable": "Keep original1PASS/1FAIL and full raw bytes unchanged; no relabel, overwrite, hidden retry or inference of complete close2 acceptance."
+  },
+  "minimalCorrection": {
+    "status": "RECOMMENDED_SCOPE_ONLY_NOT_IMPLEMENTED_OR_SOURCE_ACCEPTED",
+    "file": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+    "scope": "Only the existing generic canonical-refresh catch856. Wrap its existing await beforeDestructiveRefusal() in try/catch(MortalJointRepairPublicationHoldException); in that catch LogError the ORIGINAL captured exception with existing source-bound joint owner/rollback-suppressed diagnostic, then throw; to rethrow the SAME hold.",
+    "preserve": [
+      "Retention guard runs before any generic failure bookkeeping/restore.",
+      "Same hold exception transport, Held disposition, exact original state/bytes, no canonical mutation or report fabrication.",
+      "No changed public interfaces, logger/test assertions, fixture bodies, projector/normalizer or 220s/900s budgets.",
+      "No catch based on test message; original exception object is supplied to ILogger.",
+      "Other guard failures and non-held generic failures retain existing paths."
+    ],
+    "reviewRisks": "Recheck catch ordering, correct exception variable, bare throw and no accidental call to FailClosed on hold. This targeted diagnostics change must not claim success of the interrupted owner."
+  },
+  "affectedSelection": {
+    "decision": "USE_EXISTING_CLOSE2_CATEGORY_ONLY_FOR_CORRECTIVE_REGRESSION; NO_RETAINED_FIRSTINSTALL_REPLAY_OR_NEW_CATEGORY_REQUIRED",
+    "category": "fr063-joint-interface-close-retention",
+    "methods": [
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceOwningCloseRetainsPublishedButCannotDeliverFreshResult",
+        "cases": 1,
+        "reason": "Actual failing path, unchanged Contains and all later direct restore assertions must now complete."
+      },
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LaterOuterFinalizationDoesNotUnemitCommittedInterfaceOrReplay",
+        "cases": 1,
+        "reason": "Existing companion distinguishes later outer-finalization exception from I-owning release. Same unchanged smallest supported category; explicit post-change regression result is separate from original observed pass."
+      }
+    ],
+    "directlyAffectedPendingCategory": "fr063-joint-interface-source-races",
+    "pendingReason": "Both pending read-preimage/Ready-drift diagnostics use the same guarded canonical-refresh failure path. Keep as its own separately named first run, not as a pre-gate probe.",
+    "excludedRetainedMethod": {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_FirstInstallOwningCloseCannotArmInterfacePermission",
+      "reason": "Initial install-close occurs in RestoreMortalJointRepairBaselineAsync → SessionAndSnapshots2140 → WaitForContractRepairAsync3352 → raw-error branch796. This is BEFORE the canonical-refresh try825/catch856. It reaches existing outer generic logging catch513/522 directly; the proposed856-only patch does not execute on this path. Family resemblance is not a dependency.",
+      "originalArchive": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-refusal9-files-20261018/archive.json",
+      "trxRawSha256": "3e2ff21331d1a66af97b6beea5b0758a761fc26c3c10df6b2c58c49471546b16",
+      "originalOutcome": "Passed",
+      "originalActualSource": [
+        "1611b5c720a627a3582481db2d9419fc488f518c"
+      ],
+      "originalCompiledSource": [
+        "4c6d8334b441193cbda6de539347bcf7998d4db6"
+      ],
+      "existingDiagnosticContainsOriginalFailure": true,
+      "diagnosticExcerpt": "The source-bound joint repair owner is blocked; outer rollback is suppressed. / System.IO.IOException: L01 actual FIRST2 initial owning release failure."
+    },
+    "counts": {
+      "wholeUnchanged": {
+        "descriptors": 16,
+        "methods": 33,
+        "cases": 57
+      },
+      "remainingFirstExecution": {
+        "descriptors": 5,
+        "methods": 7,
+        "cases": 15,
+        "partition": "10UNRUN + separate newcrash5"
+      },
+      "correctiveClose2": {
+        "descriptors": 1,
+        "methods": 2,
+        "cases": 2
+      },
+      "combinedAffectedAndRemainingPlan": {
+        "descriptors": 6,
+        "methods": 9,
+        "cases": 17
+      }
+    },
+    "gates": [
+      "Save original frozen failure and independent diagnosis remotely before correction.",
+      "Independent SOURCE of the one-file product delta and exact revised pins/product/controller bindings; dependency retention37 and newlegacy3 remain original provenance without cross-build equality.",
+      "Fresh build/BOTH catalog ZERO, whole57 and exact corrective-close2 plus remaining15 ZERO plans; verify exact case bijection/no duplication, fresh9 copies and complete output inventory, environment, cleanup and full original archives. No actual tests in PREP.",
+      "Save and independently accept PREP before one newly named corrective-close2 actual at the NEW compiled/source identity. Existing FIRST sentinel/original record must remain immutable.",
+      "Any unexpected result freezes again. Only after accepted original corrected evidence may separately named remaining modes resume; crash5 still requires its separate new-run gate and never represents lost session66529."
+    ]
+  },
+  "timingConsult": "Prior legacy3 timing conclusion stands: no concrete900s crash/integrity batch blocker was established. The close2 failure is semantic diagnostics at34.550s with no timeout, not evidence for budget growth or repartition. No timing experiment is requested.",
+  "artifacts": {
+    "checkPath": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-cloud-close2-failure-independent-check-20261018.json",
+    "checkSha256": "04046b5002396c38e551b869ec8db91b111255642e83401e82758ce3da44f6b9",
+    "checkerPath": "/tmp/1536-cloud-tools/review/check_l01_cloud_close2_failure.py",
+    "checkerSha256": "a8f53131a037fb960b9ce7a5a2451289340206ae69d988ef00c6b7b96cb9e140"
+  },
+  "limits": [
+    "No native runtime replay, build, discovery, process intervention or repository edit performed by reviewer.",
+    "No new independent runtime acceptance beyond legacy3; close2 remains original native1 with one observed passing companion.",
+    "Old37, original fixture failures and lost correctedcrash5UNKNOWN retained. Broader FullNI/HOT/F1/M3/T197/A3/Windows/CI holds unchanged."
+  ]
+}

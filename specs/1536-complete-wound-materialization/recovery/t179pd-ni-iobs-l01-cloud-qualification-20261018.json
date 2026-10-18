@@ -1,8 +1,8 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "CLOSE2_ORIGINAL_1PASS1FAIL_FROZEN_ALL_EXECUTION_HELD",
-  "sourceCheckpoint": "2e0463ff3b5e52510e86f1c8b53bd714923e156d",
-  "sourcePinDigest": "1f11670a1e063bed010e2e03585fb6e8b5ad4da64157a5ce877317475d3c7bc4",
+  "status": "MINIMAL_DIAGNOSTIC_SOURCE_CANDIDATE_INDEPENDENT_SOURCE_AND_FRESH_PREP_PENDING",
+  "sourceCheckpoint": "Diagnostic-preservation candidate based on5687e0e6; WIP SHA assigned after commit",
+  "sourcePinDigest": "b29c971342ee772b13cd123a954d7afa8937e1f50a7e5f4c4c14403e4de4c347",
   "sourcePinCount": 98,
   "environment": {
     "kind": "NEW_CLOUD_ENVIRONMENT_QUALIFICATION_IDENTITY",
@@ -360,7 +360,7 @@
           "cases": 1
         }
       ],
-      "status": "EXECUTED_ORIGINAL_NATIVE_PASS_INDEPENDENT_EVIDENCE_PENDING"
+      "status": "INDEPENDENT_EVIDENCE_ACCEPTED_3PASS_RETAINED_NO_REPLAY"
     },
     {
       "mode": "close2",
@@ -376,7 +376,7 @@
           "cases": 1
         }
       ],
-      "status": "EXECUTED_ORIGINAL_1PASS1FAIL_FROZEN_UNQUALIFIED"
+      "status": "ORIGINAL_1PASS1FAIL_FROZEN_PRODUCT_DIAGNOSTIC_LOSS_CORRECTIVE_NEW_RUN_REQUIRES_SOURCE_PREP"
     },
     {
       "mode": "races2",
@@ -584,7 +584,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Independent causal diagnosis of close2 diagnostic failure and bounded remedy plan. Preserve original3 legacy PASS and close2 1PASS1FAIL unchanged; remaining10 UNRUN plus separate new crash5 HELD.",
+  "next": "Push/readback/clean GitHub recovery, independent SOURCE on minimal patch/bindings/tools/exact selection/retention40, then named ZERO4 fresh PREP; no actual before independent PREP acceptance.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -758,14 +758,14 @@
     }
   },
   "release": {
-    "status": "NONE_ALL_EXECUTION_FROZEN_AFTER_UNEXPECTED_CLOSE2_FAILURE",
-    "mode": null,
-    "scope": "No other actual, retry, source or assertion change before independent diagnosis; any accepted source fix requires affected SOURCE/PREP before new named execution."
+    "status": "NONE_ACTUAL_HELD_PENDING_CORRECTION_SOURCE_AND_FRESH_PREP",
+    "mode": null
   },
   "newOriginalObservedPassingCases": 4,
   "lastAcceptanceRecovery": {
-    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-acceptance-recovery-9acc5708-20261018.json",
-    "sha256": "0169b9dc0a8cd326ae9537577986ccf3f2597f6b7fc134c86a94d01c90d98e1a"
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-acceptance-recovery-5687e0e6-20261018.json",
+    "sha256": "a23c6c35a739e713168b0aa14a23a0eae2dc5961e6af717af566927c5139740f",
+    "bytes": 3112
   },
   "lastOutcomeCarrierRecovery": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-legacy3-carrier-recovery-61e712e3-20261018.json",
@@ -781,5 +781,58 @@
   "lastFreezeCarrierRecovery": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-freeze-recovery-f647853f-20261018.json",
     "sha256": "11fd427f0556b5991d6c80c960f34925a7d22ee3c66d1269fd6ae8440604a5e9"
+  },
+  "historicalSourceCheckpointBeforeDiagnosticCorrection": "2e0463ff3b5e52510e86f1c8b53bd714923e156d",
+  "diagnosticCorrection": {
+    "status": "WRITTEN_UNCOMPILED_SOURCE_REVIEW_PENDING",
+    "causalReview": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-causal-review-20261018.json",
+        "sha256": "efbea4589d5c87201e8e056aa21c74257b74cc77d1fede8ed97796efa90bc6d2",
+        "bytes": 10422
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-causal-review-20261018.md",
+        "sha256": "4284f42826d1bac680bdfd102d41a108d5566599c5647f4b40cf2f482bbac1c5",
+        "bytes": 2523
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-failure-independent-check-20261018.json",
+        "sha256": "04046b5002396c38e551b869ec8db91b111255642e83401e82758ce3da44f6b9",
+        "bytes": 6465
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-causal-checker-20261018.py",
+        "sha256": "a8f53131a037fb960b9ce7a5a2451289340206ae69d988ef00c6b7b96cb9e140",
+        "bytes": 9371
+      }
+    ],
+    "sourcePacket": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
+      "sha256": "66f5bdb8b609758bbc76e8f0c7caae127114b3ecf0fde4a48678234cf0d21163",
+      "bytes": 43847
+    },
+    "scope": {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "scope": "Only canonical-refresh catch856 wraps existing destructive-refusal guard; on MortalJointRepairPublicationHoldException log ORIGINAL exception through existing logger/message, then bare throw SAME hold. No state, transport, owner, publication, normalization, compensation, result, return or assertion change.",
+      "red": "Frozen close2 original native1/1PASS1FAIL at61e712e3 compiled6ab43f6a. Final diagnostic containment assertion line105 failed; all preceding Published/pending/I/no-DATA/no-common/no-effects assertions reached. Not a fixture failure.",
+      "retention": "Retain original37 plus independently accepted cloud legacy3 at original actual/compiled provenance. FirstInstall1 takes earlier raw-repair branch and already logs exact original exception; no dependency replay."
+    },
+    "whole": {
+      "descriptors": 16,
+      "methods": 33,
+      "cases": 57
+    },
+    "corrective": {
+      "descriptors": 1,
+      "methods": 2,
+      "cases": 2
+    },
+    "remaining": {
+      "descriptors": 5,
+      "methods": 7,
+      "cases": 15
+    },
+    "freshPreparation": "REQUIRED_ZERO4_BEFORE_ANY_ACTUAL"
   }
 }
