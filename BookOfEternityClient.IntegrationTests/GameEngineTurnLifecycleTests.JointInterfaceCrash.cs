@@ -62,7 +62,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(0, atCut["CommonCallbacks"]!.GetValue<int>()); Assert.Equal(42, atCut["Turn"]!.GetValue<int>());
         Assert.NotNull(atCut["JournalBase64"]); Assert.Equal(cut, atCut["Cut"]!.GetValue<int>());
         var output = Path.Combine(own, "resume.json");
-        var resumed = await RunJointInterfaceNativeChildAsync("engine-joint-interface-resume", root, output, cut, own, owned);
+        var resumed = await RunJointInterfaceNativeChildAsync("engine-joint-interface-resume", root, output, cut, own, owned,
+            observeLive: diagnostic, deliveryNonce: nonce);
         var raw = File.Exists(output) ? File.ReadAllText(output) : null;
         WritePhysicalInjuryDiagnostic("iobs_actual_current_resume_exit", new
         { Original = original, Cut = atCut, Resume = resumed, ResultRaw = raw,
@@ -105,7 +106,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     }
 
     private async Task<JointInterfaceNativeOutcome> RunJointInterfaceNativeChildAsync(string role, string root, string output, int cut, string own,
-        JointInterfaceCrashOwnedContainer ownership)
+        JointInterfaceCrashOwnedContainer ownership, bool observeLive = false, string? deliveryNonce = null)
     {
         var paths = MortalArchiveDependencyPaths();
         var executable = Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!, "dotnet");
@@ -120,12 +121,21 @@ public sealed partial class GameEngineTurnLifecycleTests
         DateTime birth = default;
         ulong birthTick = 0;
         Task<string>? stdout = null, stderr = null;
+        JointInterfaceDiagnosticDelivery? delivery = null;
+        JointInterfaceDiagnosticDelivery.Health? deliveryHealth = null;
+        string? deliveryObserverFailure = null;
         Exception? failure = null;
         try
         {
             birth = child.StartTime.ToUniversalTime();
             birthTick = ReadJointInterfaceLinuxBirthTick(child.Id); // live owned child, independent of child-self record
-            stdout = child.StandardOutput.ReadToEndAsync(); stderr = child.StandardError.ReadToEndAsync();
+            if (observeLive && role == "engine-joint-interface-resume")
+                stdout = JointInterfaceDiagnosticDelivery.Start(child.StandardOutput,
+                    new(child.Id, birthTick, root, deliveryNonce ?? "", cut), out delivery, out deliveryObserverFailure);
+            else stdout = child.StandardOutput.ReadToEndAsync();
+            stderr = child.StandardError.ReadToEndAsync();
+            // Reader/ReadHealth are live here in this original owning parent, before exit.
+            // No snapshot observer is attached/released by D01; a future consumer must recheck sticky health.
             await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(220));
         }
         catch (Exception error) { failure = error; throw; }
@@ -141,6 +151,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                 ownership.Joined(child.Id); // only positive terminal+join+EOF can permit container deletion
             }
             catch (Exception error) { cleanupFailure = error; if (failure is not null) failure.Data["JointInterfaceChildCleanupFailure"] = error; }
+            try { deliveryHealth = delivery?.ReadHealth(); }
+            catch (Exception observerError) when (observerError is not OutOfMemoryException and not StackOverflowException)
+            { deliveryObserverFailure ??= observerError.GetType().Name; }
             if (stdout?.IsCompletedSuccessfully == true) File.WriteAllText(output + ".stdout", stdout.Result);
             if (stderr?.IsCompletedSuccessfully == true) File.WriteAllText(output + ".stderr", stderr.Result);
             WritePhysicalInjuryDiagnostic("iobs_actual_native_join", new
@@ -149,6 +162,18 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Dependencies = MortalArchiveDependencyContext(), RawStdout = stdout?.IsCompletedSuccessfully == true ? stdout.Result : null,
                 RawStderr = stderr?.IsCompletedSuccessfully == true ? stderr.Result : null, CleanupFailure = cleanupFailure?.ToString(),
                 RetainedOwnedContainer = ownership.HasUnsettledChildren ? own : null });
+            if (observeLive && role == "engine-joint-interface-resume")
+            {
+                try { WritePhysicalInjuryDiagnostic("iobs_parent_live_delivery_health", new
+                    { child.Id, BirthTick = birthTick, Root = root, Nonce = deliveryNonce, Cut = cut,
+                        Health = deliveryHealth, ConstructionFailure = deliveryObserverFailure,
+                        SourceEmissionCompleteness = "UNKNOWN", CapturePhase = "UNKNOWN" }); }
+                catch (Exception observerError) when (observerError is not OutOfMemoryException and not StackOverflowException)
+                {
+                    // A missing observer report is UNKNOWN to the future observer, never native failure.
+                    deliveryObserverFailure ??= observerError.GetType().Name;
+                }
+            }
             if (cleanupFailure is not null && failure is null) throw cleanupFailure;
         }
         return new(child.Id, birth, birthTick, child.ExitCode, await stdout!, await stderr!, executable, arguments,

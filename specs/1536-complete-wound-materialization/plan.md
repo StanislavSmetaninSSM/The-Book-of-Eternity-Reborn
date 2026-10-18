@@ -1,3 +1,18 @@
+## L01 D01 — diagnostic-only wiring and real synthetic source WIP (2026-10-18)
+
+Added diagnostic-resume-only Start/queue/guarded health publication to the owning
+native runner before its unchanged220s wait. Non-diagnostic/original ReadToEndAsync,
+original native outcome shape and all assertions/finally/join/EOF remain. No snapshot
+consumer is attached. Added separate genuine child0/7 synthetic source (UNCOMPILED/
+UNRUN); external owned-family supervisor/controller is still required before SOURCE/
+PREP release. Helper bytes/non-live20 source/proof remain unchanged. Added current
+D01 source packet and exact recovery tool with explicit historical deltas; old
+L01/M01 packets/ledgers are not repinned. At this WIP, L0198+3 and M0193 unchanged;
+later diagnostic catalog/selection preparation will add M01's explicit metadata2.
+Next finite step: complete owned synthetic/controller and zero preparation commands,
+then independent whole SOURCE/fresh PREP before any real child. No game/52/UNKNOWN/
+platform/broader gate opened. All current source uncompiled except accepted nonlive20.
+
 ## L01 D01 — first non-live helper20 PASS, wiring pending (2026-10-18)
 
 Actual/source81619574: first helper/check compilation native0; one non-live host
