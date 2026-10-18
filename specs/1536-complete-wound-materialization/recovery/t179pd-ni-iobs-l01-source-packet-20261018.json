@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_SETTLEMENT_FIXTURE_CLASSIFICATION_SOURCE_CANDIDATE",
-  "status": "SETTLEMENT_FIXTURE_ZERO4_NATIVE0_INDEPENDENT_PREP_PENDING_ACTUAL_HELD",
+  "status": "SETTLEMENT_FIXTURE_SOURCE_AND_FRESH_PREP_ACCEPTED_CORRECTIVE_SETTLEMENT3_ELIGIBLE_AFTER_SAVED_RECOVERY_PREFLIGHT",
   "sourceBase": "67e143b24645e0a5b25829b17cb27e80edf3f000",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
   "sourcePins": [
@@ -902,10 +902,28 @@
   "gmDisposition": "Fixture-only fault classification. No production behavior, GM-authored schema/prompt/example/manifest/daemon or documentation contract change.",
   "oldCorrectedCrash": "Old environment session66529 remainsUNKNOWN, bytes unavailable. Separate new qualification only after corrected SOURCE/fresh PREP/named release, independent disposable fixtures/new genuine children; no old environment/process or real save operation.",
   "namedActualRelease": {
-    "status": "NONE_ACTUAL_HELD_PENDING_INDEPENDENT_SETTLEMENT_FIXTURE_PREP",
-    "mode": null
+    "status": "SEPARATELY_NAMED_FIRST_CORRECTIVE_SETTLEMENT3_AFTER_SAVED_ACCEPTANCE_RECOVERY_AND_NEW_CLEAN_V2_PREFLIGHT",
+    "mode": "settlement3",
+    "label": "t179pd-ni-iobs-l01-process-first-settlement3-fixture-corrected-cloud-813f1057",
+    "compiledSource": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
+    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-settlement-fixture-cloud-813f1057/record.json",
+    "expectedCases": 3,
+    "category": "fr063-joint-interface-settlement",
+    "methods": [
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CommonMemberCompensationRetainsPublishedInterfaceWithoutReplay",
+        "cases": 1
+      },
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate",
+        "cases": 2
+      }
+    ],
+    "observerPath": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-20261018.py",
+    "observerSourceSha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
+    "conditions": "Exactremote/full clean GitHub recovery of this acceptance; current pins and9/full1575 inventories unchanged; new clean v2 before-census; only one serial NoBuild/FIRST actual with new disposable roots. Same-shell after-census on any return, original native/stdout/TRX/cleanup/inventories frozen before qualification. No retained44 replay, source/assertion change, automatic retry/advance or concurrent actual. Any unexpected failure/material finding freezes. Old original settlement1PASS2FAIL and lost old crashUNKNOWN immutable."
   },
-  "next": "Save/push/exactremote/clean GitHub recovery, then independent fresh PREP. Only later saved/recovered PREP acceptance and a clean immediate v2 preflight may release separately named corrective settlement3. Retain44; remaining10 unrun; old crash UNKNOWN unchanged.",
+  "next": "Save/exactremote/recover acceptance and new clean v2 preflight, then only separately named corrective settlement3. Qualified44 unchanged; later integrity4 is not released, conditional serial/read-only-review overlap requires positive settlement3 original saved/recovered and its own explicit gate.",
   "sourceReview": {
     "verdict": "ACCEPT_MINIMAL_SETTLEMENT_FIXTURE_SOURCE_AND_NAMED_ZERO4_PLAN_WITH_METADATA_SAVE_CONDITIONS",
     "candidate": "c79cdea9c29a513863439966685c99fdddb8ca3e",
@@ -950,7 +968,8 @@
       "remaining-plan"
     ],
     "conditions": "Only four explicit separate invocations at saved/recovered SOURCE acceptance SHA after metadata condition readback. Previous original native0/ZERO and inventories/censuses verified before next. Fresh BOTH/catalog then whole16/33/57, corrective settlement1/2/3, remaining3/3/10 PlanOnly-NoBuild. Any unexpected failure freezes. Fresh independent PREP before any actual.",
-    "actualRelease": false
+    "actualRelease": false,
+    "status": "COMPLETED_ORIGINAL_NATIVE0_ZERO4_INDEPENDENT_PREP_ACCEPTED_NO_REPEAT"
   },
   "freshPreparationCandidate": {
     "status": "ORIGINAL_NATIVE0_ZERO4_CANDIDATE_NOT_INDEPENDENT_PREP",
@@ -1145,5 +1164,38 @@
       "bytes": 964
     },
     "cleanup": "Native owned-tree cleanup and empty owned roots. Original exe-dependent arrays remain incomplete; accepted v2 dated boundaries are separate evidence, not continuous/instantaneous absence."
+  },
+  "freshPreparationAcceptance": {
+    "verdict": "ACCEPT_SETTLEMENT_FIXTURE_ZERO4_PREPARATION_CORRECTIVE_SETTLEMENT3_ELIGIBLE_AFTER_SAVED_ACCEPTANCE_AND_NEW_CLEAN_PREFLIGHT",
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "findings": [],
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement-fixture-prep-independent-review-20261018.json",
+        "sha256": "fef6e8f8250fcb767d57b3b8db05d77afbb23f8d80a9152d89fb86455fea5871",
+        "bytes": 15314
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement-fixture-prep-independent-review-20261018.md",
+        "sha256": "16ae27fcc9d643aad7d049d65e1ac432b3688860479bd7f41636a84082173197",
+        "bytes": 2429
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement-fixture-prep-independent-check-e5d130e3-20261018.json",
+        "sha256": "31ecdb57c7618b7c92c22cfe4bb33fc70154563984ba27ecb60e1f86643203c0",
+        "bytes": 18211
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement-fixture-prep-checker-20261018.py",
+        "sha256": "bacc0ae95a584f247f3999fcdfd475ddcf09fc9b52730ef9fed3e567702835d3",
+        "bytes": 22503
+      }
+    ],
+    "candidateRecovery": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement-fixture-prep-candidate-recovery-e5d130e3-20261018.json",
+      "sha256": "ff00b951c0af4e03e005fffd8faa97fad9c6137f6d09df292c25dd7a0e957598",
+      "bytes": 22694
+    }
   }
 }

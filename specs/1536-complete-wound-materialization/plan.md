@@ -1,3 +1,11 @@
+## T179-Pd-NI-IOBS-L01 — settlement fixture PREP accepted; corrective settlement3 gate (2026-10-18)
+
+[Independent PREP](recovery/t179pd-ni-iobs-l01-settlement-fixture-prep-independent-review-20261018.md) accepts fresh ZERO4 on compiled7dbfbddc, findings empty:43 chains,98 pins/product21,9 fresh managed copies/full1575 outputs, exact whole16/33/57/corrective1/2/3/remaining3/3/10, dated censuses and clean full GitHub recovery. Source/fixture assertions unchanged. No actual has run on this new source.
+
+After this acceptance is saved/exactremote/recovered and a new clean v2 preflight, only separately named FIRST settlement3-fixture-corrected may run with accepted corrective-plan. Strong three-case semantic oracles remain unchanged; original settlement3 native1/1PASS2FAIL is immutable. Any unexpected failure freezes before correction/retry/next. Later integrity4 overlap with read-only settlement EVIDENCE is conditional on positive complete settlement3, inventories/cleanup/censuses and saved/recovered originals, then its separate explicit release; integrity4 is not released now.
+
+Qualified44/57 unchanged. Old corrected crash5 staysUNKNOWN and unavailable; new crash5 still requires a distinct named release under accepted isolation. All broader holds/Windows403/noCI/A3 remain. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — settlement fixture fresh ZERO4 native0; PREP pending (2026-10-18)
 
 Fresh actual/compiled7dbfbddc: catalog native0/ZERO 462.440s, plan native0/ZERO 49.517s, corrective-plan native0/ZERO 21.710s, remaining-plan native0/ZERO 24.215s. Whole16/33/57, corrective1/2/3 and remaining3/3/10 plans match exact identities. All43 original raw chains, nine managed copies/full output inventories, eight dated before/after boundaries and fresh qualification census saved. [Original archive](recovery/t179pd-ni-iobs-l01-cloud-settlement-fixture-preparation-813f1057-files-20261018/archive.json). No actual tests executed.

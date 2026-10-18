@@ -1,0 +1,590 @@
+{
+  "kind": "INDEPENDENT_SETTLEMENT_FIXTURE_ZERO4_PREPARATION_CHECK",
+  "checkedUtc": "2026-10-18T12:56:35.944521+00:00",
+  "carrier": "e5d130e38c13bdf42f6d8ba0dbb53d1fc6cbf548",
+  "compiledSource": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
+  "sourcePinCount": 98,
+  "sourcePinDigest": "304a7e8beb3174246ac3db792c6aa63319fa8ead9f3bab62f91346d4f204248d",
+  "ledgerSha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-settlement-fixture-preparation-813f1057-files-20261018/archive.json",
+    "sha256": "8727f23c6a026d714ef916d0e5e90cc58d58389b80eec7c45b01ebff18cf4bef",
+    "rawChains": 43,
+    "completeRawCoverage": true,
+    "allOriginalStoredRestoredBytesMatched": true
+  },
+  "records": [
+    {
+      "mode": "catalog",
+      "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-settlement-fixture-cloud-813f1057/record.json",
+      "sha256": "3ea532bcfd3caa93b9df1f69f74d559fe7022230e3d925c597ece0399f99d8eb",
+      "nativeExit": 0,
+      "executed": 0,
+      "seconds": 462.440106095999,
+      "nativeWallSeconds": 453.5820548,
+      "timeoutMinutes": 10,
+      "phaseExits": [
+        [
+          "Revision",
+          "0"
+        ],
+        [
+          "Changed-paths",
+          "0"
+        ],
+        [
+          "New-paths",
+          "0"
+        ],
+        [
+          "Build-integration",
+          "0"
+        ],
+        [
+          "integration-discovery",
+          "0"
+        ],
+        [
+          "Build-unit",
+          "0"
+        ],
+        [
+          "unit-discovery",
+          "0"
+        ]
+      ]
+    },
+    {
+      "mode": "plan",
+      "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-whole-plan-settlement-fixture-cloud-813f1057/record.json",
+      "sha256": "9c3f30305bccd3b099811c9271dea5c30ce0aaf20c4432820db96e215031c1e9",
+      "nativeExit": 0,
+      "executed": 0,
+      "seconds": 49.51695959600147,
+      "nativeWallSeconds": 37.5810558,
+      "timeoutMinutes": 30,
+      "phaseExits": [
+        [
+          "Revision",
+          "0"
+        ],
+        [
+          "Changed-paths",
+          "0"
+        ],
+        [
+          "New-paths",
+          "0"
+        ],
+        [
+          "integration-discovery",
+          "0"
+        ],
+        [
+          "unit-discovery",
+          "0"
+        ]
+      ]
+    },
+    {
+      "mode": "corrective-plan",
+      "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-settlement-fixture-cloud-813f1057/record.json",
+      "sha256": "7ed48419621c0f0d778c6aed35ba7611444de1a3f753d475ef07df372dadbab1",
+      "nativeExit": 0,
+      "executed": 0,
+      "seconds": 21.70957649400043,
+      "nativeWallSeconds": 15.3463888,
+      "timeoutMinutes": 20,
+      "phaseExits": [
+        [
+          "Revision",
+          "0"
+        ],
+        [
+          "Changed-paths",
+          "0"
+        ],
+        [
+          "New-paths",
+          "0"
+        ],
+        [
+          "integration-discovery",
+          "0"
+        ]
+      ]
+    },
+    {
+      "mode": "remaining-plan",
+      "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-settlement-fixture-cloud-813f1057/record.json",
+      "sha256": "2536796c17257853b72940736ad92763443c7727597e9915a32f28ae9b87fa5f",
+      "nativeExit": 0,
+      "executed": 0,
+      "seconds": 24.214534347000154,
+      "nativeWallSeconds": 17.0282146,
+      "timeoutMinutes": 30,
+      "phaseExits": [
+        [
+          "Revision",
+          "0"
+        ],
+        [
+          "Changed-paths",
+          "0"
+        ],
+        [
+          "New-paths",
+          "0"
+        ],
+        [
+          "integration-discovery",
+          "0"
+        ]
+      ]
+    }
+  ],
+  "catalog": {
+    "Valid": true,
+    "Methods": 11800,
+    "Categories": 808,
+    "Unmapped": [],
+    "StaleSelectors": []
+  },
+  "builds": {
+    "Build-integration": {
+      "warnings": 148,
+      "errors": 0,
+      "codes": {
+        "CS8604": 9,
+        "xUnit1031": 4,
+        "xUnit2031": 34,
+        "xUnit1013": 18,
+        "xUnit2029": 7,
+        "xUnit2030": 1,
+        "CS8602": 37,
+        "CS1573": 15,
+        "xUnit2013": 2,
+        "CS0219": 1,
+        "xUnit2012": 2,
+        "xUnit2009": 1,
+        "CA1416": 3,
+        "CS9124": 1,
+        "CS1587": 3,
+        "CS8629": 1,
+        "CS8618": 2,
+        "CS8601": 2,
+        "CS1572": 5
+      }
+    },
+    "Build-unit": {
+      "warnings": 37,
+      "errors": 0,
+      "codes": {
+        "xUnit2031": 12,
+        "xUnit1031": 3,
+        "CA1416": 4,
+        "CS4014": 1,
+        "xUnit2009": 2,
+        "CS8600": 1,
+        "CS0649": 12,
+        "CS8602": 2
+      }
+    }
+  },
+  "plans": {
+    "plan": {
+      "descriptors": 16,
+      "methods": 33,
+      "cases": 57,
+      "executed": 0
+    },
+    "corrective-plan": {
+      "descriptors": 1,
+      "methods": 2,
+      "cases": 3,
+      "executed": 0
+    },
+    "remaining-plan": {
+      "descriptors": 3,
+      "methods": 3,
+      "cases": 10,
+      "executed": 0
+    }
+  },
+  "retained": {
+    "methods": 28,
+    "cases": 44,
+    "exactPriorProvenancePreserved": true
+  },
+  "binaries": {
+    "copies": 9,
+    "completeFiles": 1575,
+    "allPhysicalPathsSizesHashesMatch": true,
+    "allPlansNoBuildExactContinuity": true,
+    "fourClientCopiesEqual": true,
+    "twoSupportCopiesEqual": true,
+    "correctedClientSha256": "2da34865a700f8a2b1ec240a9038490e7f76583a65df18aa8cd0305d80c96478",
+    "selectedCopiesChangedDuringFreshCatalog": [
+      "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll"
+    ]
+  },
+  "processLaunchRecords": [
+    {
+      "mode": "catalog",
+      "pid": 25718,
+      "startTick": 1186381,
+      "cmdlineCaptured": false,
+      "launchAndResultDirectoryBound": true
+    },
+    {
+      "mode": "plan",
+      "pid": 26371,
+      "startTick": 1238237,
+      "cmdlineCaptured": true,
+      "launchAndResultDirectoryBound": true
+    },
+    {
+      "mode": "corrective-plan",
+      "pid": 26622,
+      "startTick": 1249509,
+      "cmdlineCaptured": true,
+      "launchAndResultDirectoryBound": true
+    },
+    {
+      "mode": "remaining-plan",
+      "pid": 26859,
+      "startTick": 1257224,
+      "cmdlineCaptured": false,
+      "launchAndResultDirectoryBound": true
+    }
+  ],
+  "originalProcessArrayLimitation": "exe-link-dependent arrays preserved; not complete process-absence evidence",
+  "nativeRunnerCleanup": true,
+  "ownedFixtureRootsEmpty": true,
+  "censuses": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-settlement-fixture-catalog-before-813f1057.json",
+      "sha256": "b75fc8de1e9dafdb77ce3968c6a4e4c44696c46056e10ae707b4b3865970f81b",
+      "version": 2,
+      "phase": "settlement-fixture-catalog-before",
+      "startedUtc": "2026-10-18T12:40:53.225408+00:00",
+      "finishedUtc": "2026-10-18T12:40:53.243726+00:00",
+      "entries": 74,
+      "classes": {
+        "other-readable": 8,
+        "exited-nonexecuting": 65,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 25684,
+          "expectedStartTick": 1186111,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-settlement-fixture-catalog-after-813f1057.json",
+      "sha256": "7f27a6a3cfd1a8c3227041bab0491c27249474e214ae0a75a5416d8a7fcd327b",
+      "version": 2,
+      "phase": "settlement-fixture-catalog-after",
+      "startedUtc": "2026-10-18T12:48:39.834510+00:00",
+      "finishedUtc": "2026-10-18T12:48:39.847119+00:00",
+      "entries": 79,
+      "classes": {
+        "other-readable": 9,
+        "exited-nonexecuting": 65,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 26317,
+          "expectedStartTick": 1232775,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-settlement-fixture-whole-before-813f1057.json",
+      "sha256": "426c76b8ca0129abe5225ef486e5bc82a5283342289f87291fdccf425b515853",
+      "version": 2,
+      "phase": "settlement-fixture-whole-before",
+      "startedUtc": "2026-10-18T12:49:16.383116+00:00",
+      "finishedUtc": "2026-10-18T12:49:16.403279+00:00",
+      "entries": 78,
+      "classes": {
+        "other-readable": 8,
+        "exited-nonexecuting": 65,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 26337,
+          "expectedStartTick": 1236416,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-settlement-fixture-whole-after-813f1057.json",
+      "sha256": "ab5ee690fddb788ba69325d345c1def252e3cbabf3bcb41490711820f84c431d",
+      "version": 2,
+      "phase": "settlement-fixture-whole-after",
+      "startedUtc": "2026-10-18T12:50:24.441586+00:00",
+      "finishedUtc": "2026-10-18T12:50:24.457804+00:00",
+      "entries": 79,
+      "classes": {
+        "other-readable": 9,
+        "exited-nonexecuting": 65,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 26568,
+          "expectedStartTick": 1243236,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-settlement-fixture-corrective-before-813f1057.json",
+      "sha256": "7c23c3d2da32fa667fd0516c30d98dc47dc76bb6cd80537a8513c373f4dd0513",
+      "version": 2,
+      "phase": "settlement-fixture-corrective-before",
+      "startedUtc": "2026-10-18T12:51:24.267072+00:00",
+      "finishedUtc": "2026-10-18T12:51:24.294573+00:00",
+      "entries": 78,
+      "classes": {
+        "other-readable": 8,
+        "exited-nonexecuting": 65,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 26588,
+          "expectedStartTick": 1249212,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-settlement-fixture-corrective-after-813f1057.json",
+      "sha256": "26319c97ebde767923b7d21be9849a0afb9071ac564edf93b749ffd0c9511c6c",
+      "version": 2,
+      "phase": "settlement-fixture-corrective-after",
+      "startedUtc": "2026-10-18T12:51:49.438781+00:00",
+      "finishedUtc": "2026-10-18T12:51:49.455167+00:00",
+      "entries": 79,
+      "classes": {
+        "other-readable": 9,
+        "exited-nonexecuting": 65,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 26768,
+          "expectedStartTick": 1251736,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-settlement-fixture-remaining-before-813f1057.json",
+      "sha256": "3956eac3988041869cfb9c76d9fc65f8d88cf72b1f0272d741c16e78606d2633",
+      "version": 2,
+      "phase": "settlement-fixture-remaining-before",
+      "startedUtc": "2026-10-18T12:52:40.930817+00:00",
+      "finishedUtc": "2026-10-18T12:52:40.948538+00:00",
+      "entries": 78,
+      "classes": {
+        "other-readable": 8,
+        "exited-nonexecuting": 65,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 26792,
+          "expectedStartTick": 1256879,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-settlement-fixture-remaining-after-813f1057.json",
+      "sha256": "00c859776c6f1ff19592093f8bbffa68f4cb8312d74467388c5dccd37e5c29c0",
+      "version": 2,
+      "phase": "settlement-fixture-remaining-after",
+      "startedUtc": "2026-10-18T12:53:09.461152+00:00",
+      "finishedUtc": "2026-10-18T12:53:09.498096+00:00",
+      "entries": 79,
+      "classes": {
+        "other-readable": 9,
+        "exited-nonexecuting": 65,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 26991,
+          "expectedStartTick": 1259735,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-settlement-fixture-prep-qualification-813f1057.json",
+      "sha256": "5bc8856dafff35087a5f6791dbce0566657dce0c75a0b27d64b889a2fac8fbcb",
+      "version": 2,
+      "phase": "settlement-fixture-prep-qualification",
+      "startedUtc": "2026-10-18T12:53:40.906654+00:00",
+      "finishedUtc": "2026-10-18T12:53:40.921392+00:00",
+      "entries": 78,
+      "classes": {
+        "other-readable": 8,
+        "exited-nonexecuting": 65,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 27007,
+          "expectedStartTick": 1262880,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    }
+  ],
+  "observerV2": {
+    "sha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
+    "bytes": 7410,
+    "exactReviewedSource": true,
+    "mandatoryBeforeAfterEveryActual": true
+  },
+  "recovery": [
+    {
+      "carrier": "e5d130e38c13bdf42f6d8ba0dbb53d1fc6cbf548",
+      "base": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
+      "changedPaths": 59,
+      "receiptSha256": "ff00b951c0af4e03e005fffd8faa97fad9c6137f6d09df292c25dd7a0e957598",
+      "bytesHashesBlobsModesVerified": true
+    }
+  ],
+  "environment": {
+    "envSha256": "5d61c19c1341cf9a26b9d361c81da8c89d09924381791c4108d968555f899c53",
+    "privateRuntime": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/runtime",
+    "uid": 1000,
+    "mode": "0700",
+    "homeUnchanged": true,
+    "sameBoot": true
+  },
+  "boundaryGaps": {
+    "catalog": {
+      "beforeFinishToStartSeconds": 2.558112,
+      "finishToAfterStartSeconds": 1.592656
+    },
+    "plan": {
+      "beforeFinishToStartSeconds": 17.952184,
+      "finishToAfterStartSeconds": 0.569165
+    },
+    "corrective-plan": {
+      "beforeFinishToStartSeconds": 2.786927,
+      "finishToAfterStartSeconds": 0.647784
+    },
+    "remaining-plan": {
+      "beforeFinishToStartSeconds": 3.278601,
+      "finishToAfterStartSeconds": 1.019565
+    }
+  },
+  "metadataObservation": "Current settlement fixture SOURCE accepted; all four originals ZERO with dated v2 boundaries; independent PREP pending until this decision is saved.",
+  "eligibility": "After saved/recovered independent PREP acceptance and immediate authoritative clean before-census, ONLY separately named settlement3 corrective NoBuild regression label t179pd-ni-iobs-l01-process-first-settlement3-fixture-corrected-cloud-813f1057 using corrective-plan. Other modes separately gated.",
+  "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE",
+  "actualExecuted": 0,
+  "findings": [],
+  "limits": "Evidence/hash/source reads only. No builds/discovery/tests/controller/observer execution, process intervention or repo writes. No product runtime PASS or cross-build equivalence for retained44."
+}

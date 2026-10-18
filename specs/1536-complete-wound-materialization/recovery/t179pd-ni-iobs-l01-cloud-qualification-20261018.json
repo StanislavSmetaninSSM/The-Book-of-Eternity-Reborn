@@ -1,7 +1,7 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "SETTLEMENT_FIXTURE_ZERO4_NATIVE0_INDEPENDENT_PREP_PENDING_ACTUAL_HELD",
-  "sourceCheckpoint": "Uncompiled settlement fixture candidate based on67e143b2; exact carrier assigned after commit",
+  "status": "SETTLEMENT_FIXTURE_SOURCE_AND_FRESH_PREP_ACCEPTED_CORRECTIVE_SETTLEMENT3_ELIGIBLE_AFTER_SAVED_RECOVERY_PREFLIGHT",
+  "sourceCheckpoint": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
   "sourcePinDigest": "304a7e8beb3174246ac3db792c6aa63319fa8ead9f3bab62f91346d4f204248d",
   "sourcePinCount": 98,
   "environment": {
@@ -408,7 +408,7 @@
           "cases": 2
         }
       ],
-      "status": "NEW_ORIGINAL_UNEXPECTED_OUTCOME_FROZEN"
+      "status": "ORIGINAL_1PASS2FAIL_FROZEN_FIXTURE_CORRECTION_SOURCE_PREP_ACCEPTED_NEW_RUN_UNRUN"
     },
     {
       "mode": "integrity4",
@@ -448,7 +448,7 @@
     }
   ],
   "crashRequalificationPlan": {
-    "status": "ISOLATION_PLAN_RETAINED_SETTLEMENT_FIXTURE_SOURCE_ACCEPTED_FRESH_PREP_REQUIRED_NEW_CRASH5_SEPARATELY_GATED",
+    "status": "CURRENT_SETTLEMENT_FIXTURE_SOURCE_AND_FRESH_PREP_ACCEPTED_NEW_CRASH5_STILL_SEPARATELY_GATED",
     "purpose": "Separate new fixture qualification; preserve old UNKNOWN. No recovery or blind retry of old result.",
     "rootIsolation": "Fresh environmentId and GUID TMPDIR; each fixture constructs a new GUID own container/parent nonce and child-local tmp. No imported old root, checkpoint, live owner, save or real game operation.",
     "processIsolation": "Only newly started genuine child Process handles; independent parent/self PID+kernel starttick and nonce, exit73, new resume PID, join+EOF, strict containment. Retain owned container if termination/join/EOF unresolved; no old process query/kill.",
@@ -907,7 +907,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Save/push/exactremote/clean GitHub recovery, then independent fresh PREP. Only later saved/recovered PREP acceptance and a clean immediate v2 preflight may release separately named corrective settlement3. Retain44; remaining10 unrun; old crash UNKNOWN unchanged.",
+  "next": "Save/exactremote/recover acceptance and new clean v2 preflight, then only separately named corrective settlement3. Qualified44 unchanged; later integrity4 is not released, conditional serial/read-only-review overlap requires positive settlement3 original saved/recovered and its own explicit gate.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -1083,8 +1083,26 @@
     "phase": "HISTORICAL_COMPILED_6AB43F6A_ZERO3_PRE_CORRECTION_INELIGIBLE_FOR_CORRECTED_ACTUALS"
   },
   "release": {
-    "status": "NONE_ACTUAL_HELD_PENDING_INDEPENDENT_SETTLEMENT_FIXTURE_PREP",
-    "mode": null
+    "status": "SEPARATELY_NAMED_FIRST_CORRECTIVE_SETTLEMENT3_AFTER_SAVED_ACCEPTANCE_RECOVERY_AND_NEW_CLEAN_V2_PREFLIGHT",
+    "mode": "settlement3",
+    "label": "t179pd-ni-iobs-l01-process-first-settlement3-fixture-corrected-cloud-813f1057",
+    "compiledSource": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
+    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-settlement-fixture-cloud-813f1057/record.json",
+    "expectedCases": 3,
+    "category": "fr063-joint-interface-settlement",
+    "methods": [
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CommonMemberCompensationRetainsPublishedInterfaceWithoutReplay",
+        "cases": 1
+      },
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate",
+        "cases": 2
+      }
+    ],
+    "observerPath": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-20261018.py",
+    "observerSourceSha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
+    "conditions": "Exactremote/full clean GitHub recovery of this acceptance; current pins and9/full1575 inventories unchanged; new clean v2 before-census; only one serial NoBuild/FIRST actual with new disposable roots. Same-shell after-census on any return, original native/stdout/TRX/cleanup/inventories frozen before qualification. No retained44 replay, source/assertion change, automatic retry/advance or concurrent actual. Any unexpected failure/material finding freezes. Old original settlement1PASS2FAIL and lost old crashUNKNOWN immutable."
   },
   "newOriginalObservedPassingCases": 4,
   "lastAcceptanceRecovery": {
@@ -1875,7 +1893,7 @@
   },
   "sourcePinDigestBeforeSettlementFixtureCorrection": "f5c13d343de221bc86aaf3ec100869ea6e1cafdaae59b3006baa5642de328e8e",
   "settlementFixtureCorrection": {
-    "status": "SOURCE_ACCEPTED_FRESH_ZERO4_ORIGINAL_NATIVE0_INDEPENDENT_PREP_PENDING",
+    "status": "SOURCE_AND_FRESH_PREP_ACCEPTED_CORRECTIVE_SETTLEMENT3_UNRUN",
     "sourceBase": "67e143b24645e0a5b25829b17cb27e80edf3f000",
     "scope": {
       "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSettlement.cs",
@@ -1926,7 +1944,7 @@
       "catalog": "Fresh BOTH build/discovery, zero tests; exact nine managed copies and full output inventory bind all NoBuild plans/actuals."
     },
     "freshPreparation": {
-      "status": "ORIGINAL_NATIVE0_ZERO4_CANDIDATE_NOT_INDEPENDENT_PREP",
+      "status": "INDEPENDENT_PREP_ACCEPTED_ZERO4",
       "actualSource": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
       "compiledSource": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
       "sourcePinCount": 98,
@@ -2175,6 +2193,52 @@
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-c79cdea9-20261018.json",
       "sha256": "608d5f4293ebc47134590acda4716854fafa1f18f223de31354aa93282cd231d",
       "bytes": 3418
+    },
+    "freshPreparationAcceptance": {
+      "verdict": "ACCEPT_SETTLEMENT_FIXTURE_ZERO4_PREPARATION_CORRECTIVE_SETTLEMENT3_ELIGIBLE_AFTER_SAVED_ACCEPTANCE_AND_NEW_CLEAN_PREFLIGHT",
+      "model": "gpt-6-astra",
+      "reasoningEffort": "xhigh",
+      "findings": [],
+      "artifacts": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement-fixture-prep-independent-review-20261018.json",
+          "sha256": "fef6e8f8250fcb767d57b3b8db05d77afbb23f8d80a9152d89fb86455fea5871",
+          "bytes": 15314
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement-fixture-prep-independent-review-20261018.md",
+          "sha256": "16ae27fcc9d643aad7d049d65e1ac432b3688860479bd7f41636a84082173197",
+          "bytes": 2429
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement-fixture-prep-independent-check-e5d130e3-20261018.json",
+          "sha256": "31ecdb57c7618b7c92c22cfe4bb33fc70154563984ba27ecb60e1f86643203c0",
+          "bytes": 18211
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement-fixture-prep-checker-20261018.py",
+          "sha256": "bacc0ae95a584f247f3999fcdfd475ddcf09fc9b52730ef9fed3e567702835d3",
+          "bytes": 22503
+        }
+      ],
+      "candidateRecovery": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement-fixture-prep-candidate-recovery-e5d130e3-20261018.json",
+        "sha256": "ff00b951c0af4e03e005fffd8faa97fad9c6137f6d09df292c25dd7a0e957598",
+        "bytes": 22694
+      }
+    },
+    "laterIntegrity4OverlapDecision": {
+      "verdict": "CONDITIONAL_READONLY_EVIDENCE_OVERLAP_ALLOWED_NO_CURRENT_RELEASE",
+      "reason": "The accepted SOURCE/remaining-plan already covers exact integrity4; the fixture-only change is outside its selected fault scenarios. No current finding requires the immutable settlement EVIDENCE review to finish before a separately authorized later serial actual. Concurrent read-only review does not mutate source, fixtures, inventories or native ownership.",
+      "requiredBeforeRelease": [
+        "Settlement3 original native0, exactly3/3PASS, complete descriptor/no timeout and unchanged strong source assertions actually reached.",
+        "Parent checks CommonFault RetryableHeld with exact retained Published pending/I, no common/turn42/mechanical effects and actual direct restore; TerminalFault PublicationUncertain with full before/after/pending retention; no-fault terminal whole owned release/readback and unaffected-byte retention.",
+        "9/full1575 inventories, native cleanup/owned-root assertions and authoritative dated after-census pass; original evidence is archived, saved, exact-remote verified and recovered.",
+        "No unresolved semantic/source/evidence concern from parent or independent reviewer.",
+        "A separate explicit FIRST integrity4 release uses the accepted remaining-plan/NoBuild, unchanged compiled source and a new clean authoritative preflight. Actual invocations remain serial; original evidence review is read-only.",
+        "Keep source/checkpoint HEAD clean during each actual. If a new concern appears while native is already running, freeze progression and preserve its original outcome; do not invent a result or interrupt owned runtime without its established containment rules."
+      ],
+      "notAuthorized": "No automatic integrity4 run, no concurrent actual groups, no settlement qualification from counters alone, no replay of retained44 and no release of uncertain1/newcrash5."
     }
   }
 }
