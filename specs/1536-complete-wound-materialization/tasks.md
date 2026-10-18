@@ -1,10 +1,11 @@
-## T179-Pd-CUT01 changed-product ZERO preparation complete; actuals held (2026-10-18)
+## T179-Pd-CUT01 product SOURCE/PREP accepted; named Late2 pending (2026-10-18)
 
 - [x] Bounded plan/tests WIP3579, original catalog/PlanOnly ZERO and concrete first-stop eligibility saved/recovered.
 - [x] Named558c genuine missing-cut RED1 executed once and saved7f0b; [independent causal EVIDENCE](recovery/t179pd-cut01-first-stop-evidence-independent-review-20261018.md) accepted. Original raw/failure/NULL/unarmed-counter limits remain immutable.
 - [x] Minimal product3d195f2f saved/recovered: enum append plus one await inside unchanged catch/lease/finally; exact08119 whole-file inverse. Tests/fixture/catalog/selectors unchanged.
 - [x] FIRST changed-product catalog BOTH native0/89.878408s and stage PlanOnly-NoBuild0/3.263149s:795categories/11772methods,3owners/4methods/5planned, ZERO executed, new9copies/335files/empty namespace/cleanup. [Exact19chains](recovery/t179pd-cut01-first-product-preparation-files-20261018/archive.json) and UNRUN fixed actual tools frozen for product SOURCE/PREP.
-- [ ] Affected product SOURCE/PREP accepted decision saved/recovered; separately named protectedLate2 FIRST/EVIDENCE before separately named new3. All5 current product actuals UNRUN/HELD.
+- [x] Affected product SOURCE/PREP independently accepted; exact reports/Root decision preserved in this saved-decision checkpoint.
+- [ ] Exact decision remote/recovery + Root named protectedLate2 FIRST/EVIDENCE before separately named new3. All5 product actuals UNRUN/HELD.
 - [ ] Bounded seam completion only after qualified new3 and separate2 evidence plus saved remote checkpoint. No NI/pre-common/HOT activation.
 
 [Current plan](plan.md), ledger and source packet distinguish historical3579/558c from current compiled3d. Parallel NI pre-common lifecycle v2 remains DESIGN ONLY/NI-IOBS-L01 implementation open; broader fullNI/HOT/Windows/A3 holds unchanged. Following task blocks are historical.

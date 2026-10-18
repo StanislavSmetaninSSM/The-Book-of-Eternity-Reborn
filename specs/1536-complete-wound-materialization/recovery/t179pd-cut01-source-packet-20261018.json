@@ -1,7 +1,7 @@
 {
   "kind": "T179PD_CUT01_TESTS_ONLY_CURRENT_SOURCE_PACKET",
   "base": "08119f36c66464913e94d4bd5d23221073e0d48d",
-  "status": "MINIMAL_PRODUCT_FRESH_BOTH_CATALOG_PLAN_ZERO_SOURCE_REVIEW_PENDING_ALL_PRODUCT_ACTUALS_HELD",
+  "status": "PRODUCT_SOURCE_PREP_ACCEPTED_ALL_PRODUCT_ACTUALS_UNRUN_HELD_FOR_NAMED_LATE2",
   "sourcePins": [
     {
       "path": "AGENTS.md",
@@ -286,7 +286,7 @@
   "sourcePinDigest": "d2166163295ea183719e3a51f65a0c795a238bfeb83faf5e1109c0fb4aacb77f",
   "currentLedger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-method-row-ledger-20261018.json",
-    "sha256": "c2241edc231ad050473928b25d34baed207f5f877530e33d787d5a7f3a72992f"
+    "sha256": "7fb0170bb6b0521fcec715f724f50aec296bf64a721fe1273631bffd352b79da"
   },
   "productDelta": [
     "BookOfEternityClient/Core/GameEngine.cs",
@@ -465,7 +465,7 @@
     "scope": "Only append enum + await existing nullable dispatcher after current capture/before preparation; no NI semantics",
     "inverse": "Both exact08119 whole source restored by removing exact2edits",
     "freshProductPrep": "COMPLETED_FIRST_ZERO_3D195F2F; new9copies/335managed, not actual acceptance",
-    "actuals": "ALL_HELD until product SOURCE/PREP decision saved/recovered then separate named protectedLate2 FIRST/EVIDENCE before new3",
+    "actuals": "ALL5_UNRUN_HELD_FOR_NAMED_PROTECTED_LATE2_FIRST; new3 held until separateLate2EVIDENCE accepted/saved/recovered",
     "preparationControllers": [
       {
         "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-product-preparation-run.py",
@@ -567,7 +567,15 @@
         "sha256": "65cdda7af386a200f3f675572d72702f9b853e58962ac6fdc95387535f1b5fef",
         "status": "UNRUN_REQUIRES_SAVED_PRODUCT_SOURCE_AND_SEPARATE_NAMED_MODE"
       }
-    ]
+    ],
+    "sourceReview": {
+      "md": "recovery/t179pd-cut01-product-source-independent-review-20261018.md",
+      "json": "recovery/t179pd-cut01-product-source-independent-review-20261018.json",
+      "support": "recovery/t179pd-cut01-product-source-independent-check-20261018.json",
+      "root": "recovery/t179pd-cut01-root-product-source-prep-acceptance-072dc47b-20261018.json",
+      "status": "ACCEPTED_AFFECTED_PRODUCT_SOURCE_FIXTURE_SELECTION_PREP_ONLY",
+      "scope": "Exact2source inverse/current31/unchangedtests/currentfresh9/new19raw/fixedUNRUNactualtools qualified. All product actuals remainUNRUN until named exactRoot activation; separate protectedLate2 FIRST/EVIDENCE before new3."
+    }
   },
   "causalEvidence": {
     "md": "recovery/t179pd-cut01-first-stop-evidence-independent-review-20261018.md",

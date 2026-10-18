@@ -1,0 +1,68 @@
+{
+  "kind": "ROOT_CUT01_AFFECTED_PRODUCT_SOURCE_PREP_ACCEPTANCE_PROTECTED_LATE2_FIRST",
+  "createdUtc": "2026-10-18T03:52:42.006154+00:00",
+  "preparedCarrier": "072dc47bff266a1ac2b189c2eb5b06cf5a440396",
+  "compiledProductSource": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
+  "verdict": "ACCEPT_AFFECTED_PRODUCT_SOURCE_FIXTURE_SELECTION_PREP_PROTECTED_LATE2_FIRST",
+  "artifacts": [
+    {
+      "path": "/tmp/t179pd-cut01-product-source-independent-review-20261018.md",
+      "bytes": 2290,
+      "sha256": "a552aa4597d0bd88387b08a52659e59fb980878361c2857a0e746a85cbdb7d11"
+    },
+    {
+      "path": "/tmp/t179pd-cut01-product-source-independent-review-20261018.json",
+      "bytes": 4016,
+      "sha256": "182f4b43497f0f785943ecefad4d9225a137d9b45b2f4f3a03e826503e4754c0"
+    },
+    {
+      "path": "/tmp/t179pd-cut01-product-source-independent-check-20261018.json",
+      "bytes": 28845,
+      "sha256": "21f79a67e490ec2a66f0e1ee8f1913c28999626dd82ce7cd0846471c87056847"
+    },
+    {
+      "path": "/tmp/t179pd-cut01-product-preparation-delta-github-072dc47b-20261018.json",
+      "bytes": 26184,
+      "sha256": "a754bf1263fed4d3f40d138f2ef1cc268f6c2d27d6c922b2d2a3e279c75362c7"
+    },
+    {
+      "path": "/tmp/t179pd3d-root-recovery-composition-072dc47b-20261017.json",
+      "bytes": 26076,
+      "sha256": "96b1d0383ae1e2bfa1cc1409084d40da4a162574a4d8b60e1b4a17453307612a"
+    },
+    {
+      "path": "/tmp/t179pd-cut01-product-first-run.py",
+      "bytes": 7953,
+      "sha256": "a4eaa9ac8618ea251e61bedef572a79b628726243279d283d440b8485230f0a1"
+    },
+    {
+      "path": "/tmp/t179pd-cut01-archive-product.py",
+      "bytes": 1865,
+      "sha256": "65cdda7af386a200f3f675572d72702f9b853e58962ac6fdc95387535f1b5fef"
+    }
+  ],
+  "product": "Exactly appended enum member plus one await existing nullable instance dispatcher after real current Capture return/before preparation. Both literal whole-file inverses restore08119; no catch/lease/expiry/phase/owner/validator/projector/NI change. Prior test/fixture/TestSupport/catalog/selector source unchanged.",
+  "rootChecks": [
+    "Read/hashverified independentSOURCE3; direct literal forward+inverse for both complete product files and expected2newSHA.",
+    "Read fresh product catalog/BOTH0 and PlanOnly0 records/summaries; zeroexecutions,3descriptors4methods5planned,9copies/335inventory/ns0.",
+    "Verified all19 NEW original/stored compressed productpreparation chains, no oldpackage/native replay.",
+    "Independently verified physicalGitHub33files/all29metadata paths/full7a+75deltas55,248; current072dc clean, metadata-only sincecompiled3d.",
+    "Read exact fixed a4eaa9 recorder/65cdda archiver and hash-verified/tmp-to-repo copies."
+  ],
+  "actualGate": {
+    "firstEligibleScope": "protected-late2",
+    "category": "fr063-joint-late-completion",
+    "methods": {
+      "GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression": 1,
+      "GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce": 1
+    },
+    "cases": 2,
+    "reason": "Actual same publisher changed by seam and shared fixture; source dependency, not DLL adjacency.",
+    "conditionalRelease": "First persist exactSOURCE3/thisRoot/priorpreparedrecovery75composition/currentderivedstatus metadata-only; nonforcepush/exactremote/newGitHubdelta. Then Root names exactly one protectedLate2 actual from that clean metadata-only descendant with compiled3d/fresh9 unchanged.",
+    "execution": "Fixed recorder a4eaa9 modeprotected-late2; canonical -Category fr063-joint-late-completion -NoBuild. Preserve originalnative/outcome/FIRST/process/runner/TRX/strict unique-root cleanup and exactsource/binary/namespace binding; readonlyarchive65cdda, saveWIP/recovery before independentEVIDENCE.",
+    "qualification": "Exact semantic method/category/2case identity, complete selection/no duplicate/underfill/timeout; actual source-owned assertions and cleanup. Descriptor ordinal suffix can renumber in singleton scope.",
+    "new3": "HELD pending independently accepted current Late2 EVIDENCE and separate savedRoot/named activation. No auto-advance or retry."
+  },
+  "remainingScope": "Only current custody observation seam qualification. No NI-complete claim. Child1/oldv2 unchanged, child2 DESIGN only; precommon v2 lifecycle direction accepted but NI-IOBS-L01 implementation/origin gate remains OPEN.",
+  "constraints": "No fullNI/HOT/newQTE/Windows/CI/ZIP/A3/main/merge/forcepush/branch deletion/credentials/security changes. Preserve originalcausalRED1FAIL and all history."
+}

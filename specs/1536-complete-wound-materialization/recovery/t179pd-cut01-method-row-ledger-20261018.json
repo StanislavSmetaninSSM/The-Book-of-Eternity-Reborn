@@ -2,7 +2,7 @@
   "kind": "T179PD_CUT01_FINITE_METHOD_ROW_LEDGER",
   "task": "#1536 T179-Pd-CUT01",
   "base": "08119f36c66464913e94d4bd5d23221073e0d48d",
-  "status": "MINIMAL_PRODUCT_FRESH_BOTH_CATALOG_PLAN_ZERO_SOURCE_REVIEW_PENDING_ALL_PRODUCT_ACTUALS_HELD",
+  "status": "PRODUCT_SOURCE_PREP_ACCEPTED_ALL_PRODUCT_ACTUALS_UNRUN_HELD_FOR_NAMED_LATE2",
   "plan": "recovery/t179pd-ni-capture-cut-plan-08119f36-20261018-v2.md",
   "planReview": "recovery/t179pd-ni-capture-cut-plan-independent-review-20261018.md",
   "newRows": [
@@ -160,7 +160,7 @@
     "scope": "Only append enum + await existing nullable dispatcher after current capture/before preparation; no NI semantics",
     "inverse": "Both exact08119 whole source restored by removing exact2edits",
     "freshProductPrep": "COMPLETED_FIRST_ZERO_3D195F2F; new9copies/335managed, not actual acceptance",
-    "actuals": "ALL_HELD until product SOURCE/PREP decision saved/recovered then separate named protectedLate2 FIRST/EVIDENCE before new3",
+    "actuals": "ALL5_UNRUN_HELD_FOR_NAMED_PROTECTED_LATE2_FIRST; new3 held until separateLate2EVIDENCE accepted/saved/recovered",
     "preparation": {
       "compiledSource": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
       "productSource": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
@@ -262,6 +262,14 @@
         "sha256": "a0a54d44ff94c1ba581a5d1af6d3af2fc5ad31bded9727e58a908cb78e44a834",
         "status": "READ_ONLY_FROZE_TWO_PREP_RECORDS_EXACT19CHAINS"
       }
-    ]
+    ],
+    "sourceReview": {
+      "md": "recovery/t179pd-cut01-product-source-independent-review-20261018.md",
+      "json": "recovery/t179pd-cut01-product-source-independent-review-20261018.json",
+      "support": "recovery/t179pd-cut01-product-source-independent-check-20261018.json",
+      "root": "recovery/t179pd-cut01-root-product-source-prep-acceptance-072dc47b-20261018.json",
+      "status": "ACCEPTED_AFFECTED_PRODUCT_SOURCE_FIXTURE_SELECTION_PREP_ONLY",
+      "scope": "Exact2source inverse/current31/unchangedtests/currentfresh9/new19raw/fixedUNRUNactualtools qualified. All product actuals remainUNRUN until named exactRoot activation; separate protectedLate2 FIRST/EVIDENCE before new3."
+    }
   }
 }
