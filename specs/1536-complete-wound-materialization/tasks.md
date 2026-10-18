@@ -1,3 +1,11 @@
+## L01 D01 continuation — composite PREP and own synthetic0/7 (2026-10-18)
+
+- [x] [Minimal reuse plan](design/l01-delivery-composite-prep-plan-20261018.md), read-only independent consultation and frozen separate integration460/unit439 closures; original124 unchanged, per-project provenance explicit. Four pure staging safety checks, no native work.
+- [ ] Independent whole bounded controller/bindings SOURCE and saved/recovered ZERO admission; no production/assertion/149pin change.
+- [ ] FIRST property/import binding + fresh composite catalog ZERO/NoBuild, exact diagnostic PlanOnly1/1/1 and direct Live60s preparation; independent PREP and durable checkpoint.
+- [ ] Only after PREP acceptance, FIRST genuine own synthetic0/7 with unchanged D01 assertions, separate native/observer outcomes, original artifacts and independent EVIDENCE.
+- [ ] Final saved one-game-snapshot plan; STOP before gameplay/crash5. Windows/CI/budgets/broader holds unchanged.
+
 ## L01 B01 — build tooling/environment diagnosis (2026-10-18)
 
 - [x] Preserve old124 and collect read-only resource/tool/process/project graph observations; no resource-cause claim.

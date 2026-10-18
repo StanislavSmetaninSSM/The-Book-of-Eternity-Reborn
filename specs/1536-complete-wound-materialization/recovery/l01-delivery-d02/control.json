@@ -1,0 +1,9 @@
+{
+  "kind": "D02_COMPOSITE_CONTINUATION_CONTROL",
+  "source": {"status": "HOLD_SOURCE_REQUIRED"},
+  "synthetic": {"status": "HOLD_PREP_REQUIRED"},
+  "gameplayRelease": "NONE",
+  "crash5Release": "NONE",
+  "originalCatalog124Replaced": false,
+  "authority": "Latest explicit user delegation continues D01 PREP and own synthetic0/7 after independent reviews without extra user approval; STOP before gameplay snapshot."
+}
