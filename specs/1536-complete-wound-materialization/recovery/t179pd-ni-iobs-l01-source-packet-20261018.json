@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_SELECTED_CURRENT_RESUME_ROUTING_SOURCE_CANDIDATE",
-  "status": "SELECTED_ROUTING_ZERO4_NATIVE0_FRESH_INDEPENDENT_PREP_PENDING",
+  "status": "QUALIFIED51_OF57_SELECTED_ROUTING_PREP_ACCEPTED",
   "sourceBase": "f390eb0602a99f5a2387ab7dc6ef52571e856b26",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
   "sourcePins": [
@@ -894,10 +894,23 @@
   "gmDisposition": "Client-owned routing of existing selected checkpoint2/Published I into existing owner; no GM-authored capability/schema/field/prompt/example/manifest/daemon contract change.",
   "oldCorrectedCrash": "Old environment session66529 remainsUNKNOWN, bytes unavailable. Separate new qualification only after corrected SOURCE/fresh PREP/named release, independent disposable fixtures/new genuine children; no old environment/process or real save operation.",
   "namedActualRelease": {
-    "status": "NONE_FRESH_INDEPENDENT_PREP_PENDING",
-    "mode": null
+    "status": "SEPARATELY_NAMED_AFTER_SAVED_ACCEPTANCE_RECOVERY_AND_IMMEDIATE_CLEAN_V2_CENSUS",
+    "mode": "uncertain1",
+    "label": "t179pd-ni-iobs-l01-process-first-uncertain1-selected-routing-cloud-813f1057",
+    "compiledSource": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
+    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-selected-routing-cloud-813f1057/record.json",
+    "expectedCases": 1,
+    "category": "fr063-joint-interface-uncertain-current",
+    "methods": [
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic",
+        "cases": 1
+      }
+    ],
+    "conditions": "After acceptance saved/pushed/exactremote/fullcleanGitHub recovery and metadata readback, immediate clean authoritative v2 preflight then one fixed NoBuild/FIRST invocation. Preserve original outcome then immediate after-boundary/whole archive/inventories/cleanup. Unexpected outcome freezes affected set for independent diagnosis; no automatic next/retry; no repo mutation during actual. Disposable per-test GUID root/new nonce/genuine children only.",
+    "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED_NOT_RECOVERED_OR_RETRIED"
   },
-  "next": "Save/recover ZERO4 originals and independent PREP, then only newly named uncertain1 and later distinct newcrash5. Retain51/allFAIL/oldUNKNOWN.",
+  "next": "Save/recover acceptance and readback; only separately named uncertain1 after clean v2 preflight.",
   "sourceReview": {
     "verdict": "ACCEPT_SOURCE_AND_NAMED_ZERO4_ONLY_SUBJECT_TO_METADATA_SAVE_READBACK",
     "candidate": "fed1f7789db0145de866cd4d73b97ab030871509",
@@ -1225,11 +1238,45 @@
     ]
   },
   "freshPreparationAcceptance": {
-    "status": "PENDING_FOR_SELECTED_ROUTING_CANDIDATE",
-    "previousOriginal": {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-before-selected-routing-20261018.json",
-      "sha256": "1ba30bc53c9ca64c84a0ea844047e7f141e3b84309342dd9a2f317882d8ace92",
-      "bytes": 64451
+    "verdict": "ACCEPT_PREP_FOR_SEPARATELY_NAMED_UNCERTAIN1_ONLY_AFTER_SAVED_RECOVERY_AND_CLEAN_PREFLIGHT",
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/check_l01_selected_routing_prep.py",
+        "sha256": "9a9aace70d88b9fd89d7598be69ed2d431799f04d73a99b4788a5923a78be5a7",
+        "bytes": 24521
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-prep-checker-ready-20261018.json",
+        "sha256": "927f7bf77b1b4f79affb6d893f9c46f9afe1cfc94e405b39ada878744a443e42",
+        "bytes": 1709
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-prep-independent-check-225d3d8d-20261018.json",
+        "sha256": "4b199f44c9a27041b4b0a5032619541bb25ede229dde070e6378048b6aa3282e",
+        "bytes": 18967
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-prep-independent-review-20261018.json",
+        "sha256": "b2704812890389caad234b5c54cd771fac613a4e57660370f5a1aa2373341a61",
+        "bytes": 15232
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-prep-independent-review-20261018.md",
+        "sha256": "ea16a1d35e04416e50806d8676a593634ee1f66cfa4aed3e5d98da77a9073411",
+        "bytes": 2366
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-prep-warning-comparison-20261018.json",
+        "sha256": "464633601347bf959f000d4e19039df1f6d3920772f1720c773b29d9840092d6",
+        "bytes": 585
+      }
+    ],
+    "candidateRecovery": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-prep-candidate-recovery-225d3d8d-20261018.json",
+      "sha256": "f95248d3787ca2a3590ccc0c64e66ac917c8424ae2a453349264b3de077734b8",
+      "bytes": 22630
     }
   },
   "currentBlockerHandoff": [

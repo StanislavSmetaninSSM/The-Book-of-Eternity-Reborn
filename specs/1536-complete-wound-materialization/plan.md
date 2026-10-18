@@ -1,3 +1,7 @@
+## T179-Pd-NI-IOBS-L01 — prep independent acceptance; qualified51/57 (2026-10-18)
+
+Independent Astra XHigh prep verdict: ACCEPT_PREP_FOR_SEPARATELY_NAMED_UNCERTAIN1_ONLY_AFTER_SAVED_RECOVERY_AND_CLEAN_PREFLIGHT. Original evidence and actual/compiled bindings retained. Save/recover acceptance and readback; only separately named uncertain1 after clean v2 preflight. Original integrity4 unqualified4PASS / both original uncertain1 FAILs, seven old fixture failures and old66529 UNKNOWN/unavailable immutable. Ready/once-only/exact owned transition and unchanged budgets preserved. All broader holds remain. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — direct routing fresh ZERO4 native0; PREP pending (2026-10-18)
 
 catalog native0/ZERO 366.010s, plan native0/ZERO 35.834s, corrective-plan native0/ZERO 19.594s, remaining-plan native0/ZERO 19.095s. Whole16/33/57, corrective1/1/1, separatecrash1/1/5;43 rawchains/all inventories and dated v2 boundaries saved.99pins/product23. No actual tests executed; retain51/all originalFAIL/old66529 UNKNOWN. Independent fresh PREP before separate actual gate; all broader holds remain. Following sections historical.

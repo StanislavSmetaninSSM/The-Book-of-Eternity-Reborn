@@ -1,0 +1,47 @@
+{
+  "kind": "INDEPENDENT_SELECTED_ROUTING_PREP_CHECKER_READY_NOT_EXECUTED",
+  "preparedUtc": "2026-10-18T15:14:57.387244+00:00",
+  "checker": {
+    "path": "/tmp/1536-cloud-tools/review/check_l01_selected_routing_prep.py",
+    "bytes": 24521,
+    "sha256": "9a9aace70d88b9fd89d7598be69ed2d431799f04d73a99b4788a5923a78be5a7"
+  },
+  "sourceAcceptanceReadback": {
+    "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-selected-routing-source-acceptance-readback-c391c030-20261018.json",
+    "bytes": 2576,
+    "sha256": "f9b523a17fee26ac2e682f1d874443d1849a3f6ac80f50e9d4d9c897b6d2e359"
+  },
+  "compiled": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
+  "sourcePins": 99,
+  "productDelta": 23,
+  "expected": {
+    "rawChains": 43,
+    "nineManagedCopies": 9,
+    "fullOutputInventory": 1575,
+    "whole": [
+      16,
+      33,
+      57
+    ],
+    "corrective": [
+      1,
+      1,
+      1
+    ],
+    "remaining": [
+      1,
+      1,
+      5
+    ],
+    "retainedTargets": 51,
+    "datedV2Boundaries": 8,
+    "qualificationBoundaries": 1
+  },
+  "syntaxParsed": true,
+  "executed": false,
+  "readOnlyInputs": "Frozen ZERO/archive/plan/TRX-absence/cleanup/source and saved census evidence; current build outputs may be read only after completed saved/recovered packet arrives. No controller/test/build/discovery/observer/process/root actions.",
+  "usage": "python /tmp/1536-cloud-tools/review/check_l01_selected_routing_prep.py SAVED_PREP_CARRIER c391c03012e48c4e2395bdb288f0d763d2c0cf7f [CONTINUOUS_RECOVERY_RECEIPTS...]",
+  "eligibility": "Await completed, saved and independently recovered ZERO4 request. No PREP verdict or actual release.",
+  "oldCrash": "UNKNOWN_UNAVAILABLE",
+  "newCrash": "UNRUN_HELD"
+}
