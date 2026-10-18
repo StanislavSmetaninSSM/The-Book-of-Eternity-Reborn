@@ -25,7 +25,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         string? refusalScenario = null, bool newPhysicalRootForCold = false, string? activeTailScenario = null,
         bool useLiveCaller = false, bool recoverRetainedStoryRow = false, bool normalizeNarrativeBeforeCheckpoint = false,
         Action<AcceptedMechanicsPlan?>? observeSettledCommonPlan = null,
-        bool postOriginalAutomaticSubmission = false, Action<GameEngine>? attachActualOwnerProbe = null)
+        bool postOriginalAutomaticSubmission = false, Action<GameEngine>? attachActualOwnerProbe = null,
+        JointCaptureCutProbe? currentCaptureProbe = null)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         IDisposable? sourceInput = null;
@@ -131,6 +132,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 }
             }, logger: logger);
         attachActualOwnerProbe?.Invoke(engine);
+        currentCaptureProbe?.Attach(engine);
         GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(source.Source!.SessionId, 42);
         await GetPrivateField<StateManager>(engine, "_stateManager").RefreshGameStateAsync();
         if (!useLiveCaller)
@@ -309,7 +311,11 @@ public sealed partial class GameEngineTurnLifecycleTests
         var reportRemovalHistory = new List<object>();
         var milestones = new List<(string Path, string Raw, Dictionary<string, byte[]?> Images)>();
         Exception? observerFailure = null;
-        _consolePublicationObserver = ObserveActualRepair;
+        _consolePublicationObserver = currentCaptureProbe is null ? ObserveActualRepair : (phase, index) =>
+        {
+            ObserveActualRepair(phase, index);
+            currentCaptureProbe.ObservePublication(phase, index);
+        };
         Exception? failure;
         var handled = false;
         var liveCallerReturned = false;
@@ -399,6 +405,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal(before[path], dispatch.Images[path]);
         Assert.Equal(signedOriginalSchedule, dispatch.Images[ProgressionScheduleService.SchedulePath]);
         Assert.Equal(1, repairReplies);
+        if (currentCaptureProbe is { StopRequested: true })
+        {
+            currentCaptureProbe.AssertStopped(engine);
+            return; // New deliberate held-cut branch only; default completion oracles remain below.
+        }
         if (normalizeNarrativeBeforeCheckpoint)
         {
             var correctedNarrative = Assert.IsType<byte[]>(correctedNarrativeForBinding);

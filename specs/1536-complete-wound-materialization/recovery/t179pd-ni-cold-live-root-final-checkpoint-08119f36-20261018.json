@@ -1,0 +1,114 @@
+{
+  "kind": "ROOT_FINAL_VERIFIED_NI_COMMITTED_COMMON_COLD_DESIGN_AND_LIVE_SOURCE_CHECKPOINT",
+  "createdUtc": "2026-10-18T03:05:33.570960+00:00",
+  "head": "08119f36c66464913e94d4bd5d23221073e0d48d",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "remoteReadback": "08119f36c66464913e94d4bd5d23221073e0d48d\trefs/heads/1536-wound-b2-cloud-20261012\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n",
+  "mainUnchanged": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4",
+  "clean": true,
+  "verdicts": {
+    "coldCommittedCommonNICold01": "CLOSED_DESIGN_ONLY_ACCEPTED_TRUSTED_LOCAL_CONTRACT",
+    "liveExecutableTestsOnly": "NOT_ADMITTED_CURRENT_STRICT_CUT",
+    "fullNIImplementation": "OPEN",
+    "runtimeEvidence": "NONE_NEW"
+  },
+  "exactArtifactChecks": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-cold-trusted-local-proposal-f40f222c-20261018.md",
+      "bytes": 16528,
+      "sha256": "4b871d45fae9839e046ebd11b41226b74a02e913d4709bd1d47fe160bac2a90f",
+      "physicalRecoveredOrigin": "/tmp/t179pd-ni-cold-wip-recovered-4fc9264b-20261018/specs/1536-complete-wound-materialization/recovery/t179pd-ni-cold-trusted-local-proposal-f40f222c-20261018.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-cold-trusted-local-proposal-f40f222c-20261018.json",
+      "bytes": 22059,
+      "sha256": "e975feb2f3f4f931f5d29d8577373edae2fae90fc1a7df5542e6b2dc8ea04103",
+      "physicalRecoveredOrigin": "/tmp/t179pd-ni-cold-wip-recovered-4fc9264b-20261018/specs/1536-complete-wound-materialization/recovery/t179pd-ni-cold-trusted-local-proposal-f40f222c-20261018.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-live-prefix-source-f40f222c-20261018.md",
+      "bytes": 3888,
+      "sha256": "35a551881365c408f8a3bd55238c081c91b55f3b1ffe8676b46c570464515331",
+      "physicalRecoveredOrigin": "/tmp/t179pd-ni-cold-wip-recovered-4fc9264b-20261018/specs/1536-complete-wound-materialization/recovery/t179pd-ni-live-prefix-source-f40f222c-20261018.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-live-prefix-source-f40f222c-20261018.json",
+      "bytes": 10354,
+      "sha256": "87c298dc39ea2866151239587fd9ab7ab10943550c467e4caf80f4b63a2f2514",
+      "physicalRecoveredOrigin": "/tmp/t179pd-ni-cold-wip-recovered-4fc9264b-20261018/specs/1536-complete-wound-materialization/recovery/t179pd-ni-live-prefix-source-f40f222c-20261018.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-trusted-local-model-source-correction-f40f222c-20261018.json",
+      "bytes": 3985,
+      "sha256": "439015b16f840b4f19325ff587d05aeff36db9766ada01256efa5e55a57717e6",
+      "physicalRecoveredOrigin": "/tmp/t179pd-ni-cold-wip-recovered-4fc9264b-20261018/specs/1536-complete-wound-materialization/recovery/t179pd-ni-trusted-local-model-source-correction-f40f222c-20261018.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-cold-live-source-design-independent-review-20261018.md",
+      "bytes": 4036,
+      "sha256": "4e822e9beac95a55d8fd8bb39f37f88fe9ebf31aeb748c944f75b01b96034052",
+      "physicalRecoveredOrigin": "/tmp/t179pd-ni-cold-final-recovered-08119f36-20261018/specs/1536-complete-wound-materialization/recovery/t179pd-ni-cold-live-source-design-independent-review-20261018.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-cold-live-source-design-independent-review-20261018.json",
+      "bytes": 6302,
+      "sha256": "0c486ee704f8aa6f90a00fd2faf4cfdd81ec74a8a9e1ada87c8395f6b95ea815",
+      "physicalRecoveredOrigin": "/tmp/t179pd-ni-cold-final-recovered-08119f36-20261018/specs/1536-complete-wound-materialization/recovery/t179pd-ni-cold-live-source-design-independent-review-20261018.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-cold-live-source-design-independent-check-20261018.json",
+      "bytes": 46666,
+      "sha256": "6a02bda2de139f46950e7a14e218e08589e0c408b1584766b57a8fa29fa951d5",
+      "physicalRecoveredOrigin": "/tmp/t179pd-ni-cold-final-recovered-08119f36-20261018/specs/1536-complete-wound-materialization/recovery/t179pd-ni-cold-live-source-design-independent-check-20261018.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-cold-finalization-temporal-clarification-20261018.json",
+      "bytes": 1844,
+      "sha256": "fbd2b11b3cccd235f55b14ed3cd8c53292df08ee1899fc0dc2f507c6e58043d8",
+      "physicalRecoveredOrigin": "/tmp/t179pd-ni-cold-final-recovered-08119f36-20261018/specs/1536-complete-wound-materialization/recovery/t179pd-ni-cold-finalization-temporal-clarification-20261018.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-cold-live-root-acceptance-4fc9264b-20261018.json",
+      "bytes": 7577,
+      "sha256": "2fe2b1f3219428e61293e6091a15836858ad419778fa4dc0afb406779ccd15c6",
+      "physicalRecoveredOrigin": "/tmp/t179pd-ni-cold-final-recovered-08119f36-20261018/specs/1536-complete-wound-materialization/recovery/t179pd-ni-cold-live-root-acceptance-4fc9264b-20261018.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-cold-wip-delta-github-4fc9264b-20261018.json",
+      "bytes": 12433,
+      "sha256": "9da4c72d1c2af2375b41f51a933a3ce19a4d3b97101f6f9969de3a4c9615864f",
+      "physicalRecoveredOrigin": "/tmp/t179pd-ni-cold-final-recovered-08119f36-20261018/specs/1536-complete-wound-materialization/recovery/t179pd-ni-cold-wip-delta-github-4fc9264b-20261018.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-4fc9264b-20261017.json",
+      "bytes": 23670,
+      "sha256": "a2cadc18f81b3962060d20d9ebe44a110cb940a9b7f05ec92e759869d1077517",
+      "physicalRecoveredOrigin": "/tmp/t179pd-ni-cold-final-recovered-08119f36-20261018/specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-4fc9264b-20261017.json"
+    }
+  ],
+  "changedPathCount": 10,
+  "onlyHeaders3AndExactCopies7": true,
+  "threeHistoricalHeaderTailsUnchanged": true,
+  "sourceTestsToolsRawUnchangedSinceF40": true,
+  "recovery": {
+    "newReceipt": "/tmp/t179pd-ni-cold-final-delta-github-08119f36-20261018.json",
+    "sha256": "66aafc5cc22048ac8b53f5857016660359606b20f4d3090e8fd5f0c4021d5ef0",
+    "newPhysicalGitHubFiles": 14,
+    "allChangedPathsRecovered": 10,
+    "composition": "/tmp/t179pd3d-root-recovery-composition-08119f36-20261017.json",
+    "compositionSha256": "23d48017a75a00860dc90cad79bb6b765af5f359e79a502cf86ccf7774df41b7",
+    "fullBase": "7a9eca35af13fe48c959b8d431087e9c058a45dc",
+    "consecutiveDeltas": 69,
+    "trackedPaths": 55147,
+    "noCloneOrPriorBaseSourceReplay": true
+  },
+  "knownRemainingWindows": [
+    "Full NI actual producer/WRITE/READY/Capturing/LATE and codec/common/recovery/current-proof integration not implemented or qualified",
+    "Pre-common lost-I observation remains separately held; missing child2 never authorizes projector retry",
+    "Later outer finalization fault preserves committed proof and actual held outcome; child2 alone grants no resume authority",
+    "Live post-decision/pre-preparation observation seam absent; no runnable tests authored",
+    "Broader HOT/S/B/D9/M3/F1/T197/newQTE/Windows/A3 holds unchanged"
+  ],
+  "noRuntimeBuildDiscoveryCIOrZIP": true,
+  "noSelfReceiptCommit": true
+}

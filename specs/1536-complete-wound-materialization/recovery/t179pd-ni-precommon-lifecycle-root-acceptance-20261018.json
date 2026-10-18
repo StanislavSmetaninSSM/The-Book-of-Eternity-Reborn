@@ -1,0 +1,51 @@
+{
+  "kind": "ROOT_BOUNDED_PRECOMMON_RESULT_LIFECYCLE_DESIGN_ACCEPTANCE",
+  "createdUtc": "2026-10-18T03:20:19.951118+00:00",
+  "sourceBase": "08119f36c66464913e94d4bd5d23221073e0d48d",
+  "verdict": "ACCEPT_BOUNDED_PRECOMMON_LIFECYCLE_DESIGN_DIRECTION",
+  "artifacts": [
+    {
+      "path": "/tmp/t179pd-ni-precommon-result-lifecycle-08119f36-20261018.md",
+      "bytes": 12006,
+      "sha256": "f402131608ca20a8aa9acfc63e0df6c0a679c4c01a05b85e8d7cb4fb20a44693"
+    },
+    {
+      "path": "/tmp/t179pd-ni-precommon-result-lifecycle-08119f36-20261018.json",
+      "bytes": 10194,
+      "sha256": "f9333837bd5d5a86d007497e164c06260b11c7bfe975ae8e7591325e3334d071"
+    },
+    {
+      "path": "/tmp/t179pd-ni-precommon-result-lifecycle-08119f36-20261018-v2.md",
+      "bytes": 14216,
+      "sha256": "c470399bbde36073f96c5b15cfeb121c2881eca41688e583118bca958d0491a8"
+    },
+    {
+      "path": "/tmp/t179pd-ni-precommon-result-lifecycle-08119f36-20261018-v2.json",
+      "bytes": 12257,
+      "sha256": "f7f177f10635551a6e63b029e00a855c917fd3ab3bdec2e38757d9f17bdcf7f6"
+    },
+    {
+      "path": "/tmp/t179pd-ni-precommon-lifecycle-independent-review-20261018.md",
+      "bytes": 2650,
+      "sha256": "efe14ecca678e19125b98358051527fb64ff3a7bbbd21e41fb4e03402b331db0"
+    },
+    {
+      "path": "/tmp/t179pd-ni-precommon-lifecycle-independent-review-20261018.json",
+      "bytes": 5406,
+      "sha256": "732579ddfe8ed8326461722663ac0991cc29d243c6533180de874f1e61582681"
+    },
+    {
+      "path": "/tmp/t179pd-ni-precommon-lifecycle-independent-check-20261018.json",
+      "bytes": 14543,
+      "sha256": "a5a6fa3914ffd62f3af261f8ba9d3566663dd46b87b5943181370c9652f880bd"
+    }
+  ],
+  "designChoice": "ONE joint-only NI-IOBS-L01 lifecycle: immutable protocol checkpoint2 selected by actual FIRST-wave issuer and durably installed through existing initial wave cohort before corrected Ready; then commit Prepared exact result in existing pending envelope before I; then I(ifChanged)+Published receipt in SAME second existing journal cohort. No new path/journal/secret/backend.",
+  "findingDisposition": "NI-IOBS-D01 missing-result/legacy ambiguity resolved at design level in v2. v1 report immutable. Existingcheckpoint1/oldcommonparent2-child1 routes unchanged; never adopt or upgrade existing Ready/checkpoint. Newcheckpoint2+missingresult restart holds.",
+  "recovery": "Existing journal recovery first. Uncommitted second cohort restores Prepared and exact I-before; committed second cohort retains Published and exact I-after. Qualified resume uses frozen bytes/diagnostics/fallback without projector or clock. I poststate never proves history; stored receipt never invents historical public return.",
+  "compatibilityPrice": "Two existing-journal publications before common; explicit new immutable checkpoint2 protocol discriminator and strict pending result extension; joint diagnostics prepared before write; receipt precedence over generic restore/retry and exact terminal/common consumption; honest new result-origin bridge still required. Ordinary I and accepted old paths remain unchanged.",
+  "engineeringGate": "NI-IOBS-L01: actual fresh issuer and resume owner, strict codecs/fullgraph/beforeimage/Ready joins, definitive phasecommit+readback+owning release vs outerfailure, no-write rawbytes/mtime, recovery/compensation/terminal/common precedence and honest common/cold/late origin bridge plus finite causal SOURCE/EVIDENCE qualification. This is concrete necessary change, not generic absence-of-seam or Windows blocker.",
+  "acceptedChild2": "Existing accepted committed-common child2 remains DESIGN ONLY and immutable; Prepared/Published alone cannot satisfy ReturnedNoError/original writer return. No child2 or lifecycle code activated by this record.",
+  "scope": "Persist candidatev1/v2, independentreview/support and this disposition with current #1536 tasks/header. Seam tests-first is independently authorized; all precommon code/tests/native, fullNI/HOT/Windows/CI/ZIP/A3 remain outside this decision.",
+  "rootVerification": "Read/hashverified formalreview and fixedcandidatev2; independently inspected actual publication/recovery, initial admission/restore/installation, pending strictparsing/checkpointreconstruction and original I ordering. No native run or repository edit by Root."
+}

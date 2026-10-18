@@ -1,0 +1,13 @@
+# NI pre-common lifecycle: independent design review
+
+**ACCEPT_BOUNDED_PRECOMMON_LIFECYCLE_DESIGN_DIRECTION** at `08119f36c66464913e94d4bd5d23221073e0d48d`. This accepts the selected joint-only mechanism and its explicit compatibility cost, not implementation, runtime or full NI readiness. Fixed v2 MD SHA `c470399bbde36073f96c5b15cfeb121c2881eca41688e583118bca958d0491a8`; JSON SHA `f7f177f10635551a6e63b029e00a855c917fd3ab3bdec2e38757d9f17bdcf7f6`.
+
+The two publications address the concrete loss window. Committed Prepared retains the computed result before any I effect; it is the second cohort's before-image. Uncommitted second-cohort recovery restores Prepared and I-before, while committed recovery retains Published and I-after. Resume may publish those stored bytes after qualified recovery; it must not project, resample time, or infer a historical return. Current ordinary one-file publication cannot supply that history.
+
+**NI-IOBS-D01 is closed at design level in v2:** the existing actual first-wave issuer selects immutable checkpoint2 before corrected Ready/I. This distinguishes new missing-result restart (hold) from unchanged legacy v1. Receipt absence alone cannot select a legacy fallback; existing v1 is never upgraded in place. The actual admission → baseline/pending installation source edge supports this without another selection-only batch.
+
+`NI-IOBS-L01` remains the concrete engineering gate: strict checkpoint/receipt codecs and complete graph comparison; actual fresh/resume and WRITE/READY ownership; committed/readback sequencing with cleanup debt; no-write byte/mtime behavior; precedence over generic restore/retry; exact terminal/common consumption and compensation; and an honest common/cold/late result-origin bridge. The new prepare-before-write order has explicit joint-only diagnostic/failure consequences. Stored Published data does not satisfy the accepted child2 historical returned-result contract by itself, and later outer-close failure cannot uncommit an established cohort.
+
+Future finite tests must qualify those real owners and crash cuts. No tests or product are admitted by this design report alone. The separately accepted CUT01 seam can progress independently; full NI/HOT/Windows remain open. No repository or runtime mutation occurred.
+
+Independent static binding: **16 whole files /24 candidate ranges**, plus the existing publisher callback/retry range in an already pinned file; all bytes/SHA/blob/mode/Git-show/live comparisons exact. [Support](/tmp/t179pd-ni-precommon-lifecycle-independent-check-20261018.json) SHA `a5a6fa3914ffd62f3af261f8ba9d3566663dd46b87b5943181370c9652f880bd`.

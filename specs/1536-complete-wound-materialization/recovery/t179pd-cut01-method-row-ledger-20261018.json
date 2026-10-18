@@ -1,0 +1,71 @@
+{
+  "kind": "T179PD_CUT01_FINITE_METHOD_ROW_LEDGER",
+  "task": "#1536 T179-Pd-CUT01",
+  "base": "08119f36c66464913e94d4bd5d23221073e0d48d",
+  "status": "AUTHORED_TESTS_ONLY_UNCOMPILED_UNRUN",
+  "plan": "recovery/t179pd-ni-capture-cut-plan-08119f36-20261018-v2.md",
+  "planReview": "recovery/t179pd-ni-capture-cut-plan-independent-review-20261018.md",
+  "newRows": [
+    {
+      "category": "fr063-joint-capture-cut-stop",
+      "method": "GuaranteedTreatment_CurrentCaptureStopPrecedesPreparationAndExpiresActualOwner",
+      "rows": 1,
+      "kind": "Fact",
+      "intendedRed": "Actual old engine route completes real prerequisites and misses semantic callback/held cut; not setup/NotNull"
+    },
+    {
+      "category": "fr063-joint-capture-cut-transparency",
+      "method": "GuaranteedTreatment_CurrentCaptureObservationPreservesOrdinaryCompletion",
+      "rows": 2,
+      "kind": "Theory",
+      "data": [
+        false,
+        true
+      ],
+      "meaning": "No additional capture observer vs no-op, essential fixture hook remains"
+    }
+  ],
+  "predicted": {
+    "newOwners": 2,
+    "newMethods": 2,
+    "newCases": 3,
+    "postProductWithSeparateLate2": {
+      "owners": 3,
+      "methods": 4,
+      "cases": 5
+    }
+  },
+  "actual": {
+    "build": null,
+    "catalog": null,
+    "plan": null,
+    "executed": 0
+  },
+  "rulings": [
+    {
+      "id": "CUT01-PROBE01",
+      "finding": "v1 planned absent Resource.CommandPath read could lack initial-validation observer",
+      "decision": "v2 guarantees present PendingResolution read in Reconstruct88 via real preparation146–147",
+      "classification": "PRE_NATIVE_AUTHORING_CORRECTION_NOT_TEST_FAILURE"
+    },
+    {
+      "id": "CUT01-NULL01",
+      "decision": "Keep essential original/setup hook; false transparency means no extra cut observer. Existing null dispatcher body/source inverse covers truly absent global handler, no fake runtime claim."
+    }
+  ],
+  "scope": "Current capture boundary only; no NI producer/family completeness",
+  "precommon": "v2 independently accepted bounded DESIGN: NI-IOBS-D01 resolved; NI-IOBS-L01 implementation and child2 origin bridge OPEN. Originalv1 retained, no code/test/native admission.",
+  "gates": [
+    "Saved WIP/exactremote/GitHub changed path recovery",
+    "Fresh bounded BOTH/catalog/PlanOnly ZERO",
+    "Concrete SOURCE/FIXTURE/SELECTION/PREP + named stop1",
+    "Accepted original causal missing-cut evidence before product",
+    "Only 2 product edits/inverse + new fresh preparation/SOURCE",
+    "Separate protectedLate2 and new3 actual/EVIDENCE"
+  ],
+  "holds": [
+    "All native and production until their named gates",
+    "Full NI/HOT/precommon/cold implementation untouched",
+    "Windows ZIP/CI/no retry/old families/A3 NO-PROCEED unchanged"
+  ]
+}

@@ -1,6 +1,69 @@
 {
     "schemaVersion": 1,
     "categories": [
+{
+  "id": "fr063-joint-capture-cut-stop",
+  "responsibility": "Real current joint capture returns then a configured typed IO observation stop must run BEFORE preparation. Genuine Stage43/correction/Ready prerequisites, actual present pending-wave prep-entry witness, existing owner/lease/expiry and exact held physical images. FIRST causal singleton only.",
+  "excludes": "No NI producer/family availability/HOT/cold/precommon activation or writer/Ready changes; no enum-existence/NotNull RED; no broad historical family replay. Stop fixture errors/cleanup/timeout never qualify as causal RED.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointCaptureCut.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+    "BookOfEternityClient/Core/GameEngine.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-late-completion",
+      "when": "After product seam changes this SAME publisher and shared actual fixture, separately qualify exact protectedLate2 before new3; no unchanged Late2 before tests-only RED."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentCaptureStopPrecedesPreparationAndExpiresActualOwner"
+      ]
+    }
+  ]
+},{
+  "id": "fr063-joint-capture-cut-transparency",
+  "responsibility": "Two genuine current joint completion rows: no additional capture observer and passive no-op observer, retaining the essential original/setup hook. Existing full completion+inert repeat outcome; current custody only, never NI proof.",
+  "excludes": "No NI producer/family availability/HOT/cold/precommon activation or writer/Ready changes; no enum-existence/NotNull RED; no broad historical family replay. Stop fixture errors/cleanup/timeout never qualify as causal RED.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointCaptureCut.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+    "BookOfEternityClient/Core/GameEngine.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-late-completion",
+      "when": "After product seam changes this SAME publisher and shared actual fixture, separately qualify exact protectedLate2 before new3; no unchanged Late2 before tests-only RED."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentCaptureObservationPreservesOrdinaryCompletion"
+      ]
+    }
+  ]
+},
     {
       "id": "fr063-reasoning-prefix-boundary",
       "responsibility": "Real public Full, seeded byte/presence and successful prefix/tail prerequisites before final missing named document-policy seam. Only structural RED1 is predicted.",

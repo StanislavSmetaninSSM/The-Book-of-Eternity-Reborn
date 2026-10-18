@@ -1,0 +1,45 @@
+{
+  "kind": "INDEPENDENT_CUT01_SOURCE_DESIGN_PLAN_REVIEW",
+  "base": "08119f36c66464913e94d4bd5d23221073e0d48d",
+  "candidate": [
+    {
+      "path": "/tmp/t179pd-ni-capture-cut-plan-08119f36-20261018-v2.md",
+      "bytes": 14161,
+      "sha256": "d4f2ba1e7f1dea80f2e84550592475ebd284fb85587cc38b2274ca135949e072"
+    },
+    {
+      "path": "/tmp/t179pd-ni-capture-cut-plan-08119f36-20261018-v2.json",
+      "bytes": 23171,
+      "sha256": "1d736fb2a89f737a6fc417ae8dd806b97060cb2440f358936a7db1f344e78720"
+    }
+  ],
+  "verdict": "ACCEPT_PLAN_FOR_TESTS_ONLY_AUTHORING",
+  "materialFindings": [],
+  "scope": "One nullable observation checkpoint after actual current custody capture returns and before first preparation call; not NI activation.",
+  "support": {
+    "path": "/tmp/t179pd-ni-capture-cut-plan-independent-check-20261018.json",
+    "bytes": 21073,
+    "sha256": "b97f8b69f66cd544444cd063bc8d8abee978326c4c6fad9962faba317896e4ad"
+  },
+  "decisions": {
+    "sourceDesign": "ACCEPT_BOUNDED_SEAM_PLAN",
+    "fixture": "SUFFICIENT_TO_AUTHOR; concrete changed fixture not yet reviewed",
+    "selection": "PROVISIONALLY_SUFFICIENT: new stop1 + transparency2; protected Late2 after product; discovery pending",
+    "preparation": "NOT_PERFORMED_BY_REVIEWER; future fresh BOTH/catalog/PlanOnly required",
+    "runtime": "NOT_AUTHORIZED_BY_REPORT"
+  },
+  "requiredConcreteGates": [
+    "Track CUT01 and publish/recover tests-only WIP before concrete SOURCE/FIXTURE/SELECTION/PREP review.",
+    "Default fixture path and essential Stage43 hook remain intact; chain/reset observers in finally. New branch preserves genuine prerequisites and records actual old completion before its missing-cut assertion.",
+    "First eligible intended actual is only stop1 after saved acceptance and Root named release. Setup/import/cleanup/timeout failures are not causal RED.",
+    "At cut require real owner/lease, exact physical cut→held-return image equality, no later writes/publications, actual preparation present-file witness zero, no retained continuation/reservation/take/common, real expiry and strict cleanup. Zero counters alone are insufficient without exact source ordering.",
+    "Product after qualified RED is append enum + awaited call only, with exact inverse of both files and unchanged catch/dispatcher/registry/validators.",
+    "Post-product fresh selected build/plan and affected SOURCE precede separate protected Late2 and new3; no broad historical replay."
+  ],
+  "precision": [
+    "False transparency row means no additional capture observer; essential fixture hook remains. Truly absent dispatcher is protected by existing source identity, not claimed as a runtime row.",
+    "The pending read anchor is ReconstructAsync88; its preparation call is146–147. Candidate nearby coordinates do not alter the exact source anchors.",
+    "PublicationUncertain/UnavailableNotReserved is held result without a close receipt. Public write completion and outer Main/session finalization remain distinct."
+  ],
+  "noEvidenceClaims": true
+}
