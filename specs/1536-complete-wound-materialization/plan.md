@@ -1,3 +1,26 @@
+## T148 M01 — QUALIFIED: historical audit-state survival only (2026-10-18)
+
+[Independent EVIDENCE ACCEPT](recovery/t148-m01-evidence-independent-review-20261018.md)
+принимает exactaf52fa6f, все55 focused checks. Actual2f8bb248/compiled9eb672ea:
+1 executed/1 PASS/0 FAIL, complete1/1 selection, no timeout/observer errors.
+Genuine Mortal heal at44 сохранил exact2467 original audit bytes через все4
+physical stage images; pre-sign/source-completion hashes совпадают. Source-bound
+unchanged assertions подтверждают healed wound/carrier/history и exact owned-root
+expiry; отдельные raw wound/effect snapshots не заявляются. Оба disposable roots
+удалены,899 outputs и93 source pins неизменны. [Оригинальные артефакты](recovery/t148-m01-actual-evidence-20261018.json)
+и все SOURCE/PREP/EVIDENCE reports сохранены. FIRST permit consumed, release NONE;
+повторный runtime не нужен. Финальный carrier требует exact remote SHA и clean
+GitHub recovery/readback перед передачей.
+
+Scope: только historical audit-state. Non-Saref guardian/worldtime validation Errors,
+две XML-param warnings и adapter timestamp inconsistency сохранены; global validation
+или performance улучшение не заявляются. Production/GM contract не менялся, поэтому
+GM prompt/example updates не требуются. E01 runtime effect/spiritual proof BLOCKED,
+T148/Phase10/#1536 OPEN. L01 остаётся52/57 на исходной compiled provenance;
+original crash5 unqualified, старый66529 UNKNOWN/unavailable/recoveryClaim=false.
+FullNI/HOT/F1/M3/T197 incomplete, A3 NO-PROCEED, Windows403 blocked/no retry;
+no CI/crash/sampling. Следующие разделы — сохранённая история gates и outcomes.
+
 ## T148 M01 — first actual native PASS; EVIDENCE pending (2026-10-18)
 
 One original actual at2f8bb248, compiled9eb672ea: native0,1executed/1passed/0failed,

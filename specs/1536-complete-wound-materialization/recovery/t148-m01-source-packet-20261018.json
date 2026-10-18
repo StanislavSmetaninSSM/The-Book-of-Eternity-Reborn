@@ -542,7 +542,7 @@
       "scope": "One original ZERO phase; no native retry; actual requires separate PREP."
     },
     "actual": {
-      "status": "M01_FIRST_SINGLETON_CONSUMED_EVIDENCE_PENDING",
+      "status": "M01_FIRST_SINGLETON_CONSUMED_EVIDENCE_ACCEPTED",
       "prepCatalogRecordSha256": "4fc8812e59e9d6798ca8720f0485708c7aafe40aa872ddcdc7264534bbf970cb",
       "prepPlanRecordSha256": "4e378d39c0a6f8961534a542b5d93fc960032ab8c6f12417141f884b981a5ebe",
       "releaseName": "M01_FIRST_ACTUAL_20261018_EDB63309",
@@ -556,5 +556,50 @@
       "nativeExit": 0
     }
   },
-  "sourcePinDigestEncoding": "SHA256 UTF8 json.dumps(sourcePins, sort_keys=True, separators=(comma,colon)), no newline"
+  "sourcePinDigestEncoding": "SHA256 UTF8 json.dumps(sourcePins, sort_keys=True, separators=(comma,colon)), no newline",
+  "currentM01Handoff": {
+    "status": "QUALIFIED_HISTORICAL_AUDIT_STATE_SURVIVAL_ONLY",
+    "reviewedEvidenceCarrier": "af52fa6ffdc7dec82f6714252454506a1fe916b0",
+    "actualSource": "2f8bb248f654997c1970554283a284f9a7f49647",
+    "compiledSource": "9eb672ea62870c6ff1890821d7d8745085616866",
+    "sourcePinDigest": "84503e9eb22c08940d328a4c8be34464684fc6f0947a00fb04d99ab1df9066d2",
+    "reviewPath": "specs/1536-complete-wound-materialization/recovery/t148-m01-evidence-independent-review-20261018.json",
+    "reviewSha256": "ac48275d548a221bfd9b986cf64d8de833f5fdaee28b50eda0e66c7204e90856",
+    "actualEvidence": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-actual-evidence-20261018.json",
+      "sha256": "1e2639f5feeb6a6ee2794214fd71d092354c0e758a9a08f1d44a00b87d4ac59b"
+    },
+    "actualArchive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-actual-originals-20261018.zip",
+      "bytes": 245310,
+      "sha256": "d6170db07781497b2de5fe410134bcf9c5450ab0d280a5b519d6b21660c07179",
+      "files": 8,
+      "scope": "All entry lengths/hashes/original bytes, complete runner directory and ZIP integrity verified."
+    },
+    "acceptedCounts": {
+      "category": "saref-audit-mortal-heal-preservation",
+      "method": "BookOfEternityClient.Tests.MortalWoundRecoveryTests.Publication_TerminalHealingPreservesExistingSarefMemorySuppressionAudit",
+      "nativeExit": 0,
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "completedDescriptors": 1,
+      "completedCases": 1,
+      "selectionComplete": true,
+      "timedOut": false,
+      "firstRelease": "M01_FIRST_ACTUAL_20261018_EDB63309",
+      "releaseConsumed": true,
+      "furtherRuntimeRelease": "NONE"
+    },
+    "furtherRuntimeRelease": "NONE",
+    "productionChanges": false,
+    "GMUpdateRationale": "Test-only historical audit coverage; no gameplay/GM contract changed, no prompt/example change required.",
+    "limitations": [
+      "Audit-state survival only; no runtime Saref effect or spiritual/E01 proof.",
+      "Non-Saref validation Errors and adapter timestamp inconsistency retained; no global validation/performance claim.",
+      "L01 remains52/57 at original compiled provenance; original crash5 unqualified, old66529 UNKNOWN/unavailable/recoveryClaim=false.",
+      "E01/T148/Phase10/fullNI/HOT/F1/M3/T197 open/incomplete; A3 NO-PROCEED; Windows403 blocked/no retry; no CI/crash/sampling."
+    ],
+    "nextSelection": "M01 bounded goal complete; no further runtime released. Full task1536 remains open."
+  }
 }

@@ -10,7 +10,9 @@ Saref runtime effect, spiritual healing, E01, full T148 or Phase10.
 **Base:** `0292234faa8eb1cd405ade611057be07bafa5e19`, existing task branch
 `1536-wound-b2-cloud-20261012`; #1536/T148. User authorizes implementation after
 independent plan/route review. [PLAN ACCEPTED](../recovery/t148-m01-plan-independent-review-20261018.md)
-at reviewed `b5f6ab881fa80cdea260a6dccde968dea5f1383d`; SOURCE/PREP/runtime pending.
+at reviewed `b5f6ab881fa80cdea260a6dccde968dea5f1383d`. SOURCE/PREP/EVIDENCE accepted;
+[qualified first actual](../recovery/t148-m01-evidence-independent-review-20261018.md)
+at2f8bb248/compiled9eb672ea,1/1 PASS, historical audit-state scope only.
 
 **Architecture:** call production `SarefMainStoryState.ApplyUpdate` with valid
 historical `record_defeat_outcome` inputs, persist its canonical output before the
@@ -113,12 +115,12 @@ fixture caches. No production change, new route, effect or carrier.
   and raw output preserved. Then singleton
   `-Category saref-audit-mortal-heal-preservation -PlanOnly -NoBuild`:
   exactly1 descriptor/method/Fact, no actual tests. Independent PREP before actual.
-- [ ] Exactly one first actual via the same category and `-NoBuild`, in a new M01
+- [x] Exactly one first actual via the same category and `-NoBuild`, in a new M01
   TMPDIR/XDG namespace. Never source a prior L01 diagnostic environment script.
   Preserve native exit, stdout/stderr, record/summary, TRX complete counts/duration,
   discovery/selection, phase source/binary identities and cleanup witness. A PASS
   requires1 executed/1passed/0failed with all strong assertions; no partial promotion.
-- [ ] Save/recover original actual outcome before independent EVIDENCE review.
+- [x] Save/recover original actual outcome before independent EVIDENCE review.
   Failure/incomplete result: freeze, diagnose independently, do not change assertions,
   widen budgets or retry automatically. Source corrections require affected SOURCE/PREP.
   After accepted evidence, final commit/push/exact remote SHA/clean recovery/readback.
