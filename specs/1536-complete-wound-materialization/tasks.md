@@ -4,7 +4,7 @@
 - [x] Independent whole bounded controller/bindings SOURCE: original60checks/HOLD retained, minimal existingFINALIZE correction accepted5efddae5/19focused/12fakePASS. SOURCE-only acceptance must be pushed/recovered before ZERO; no production/assertion/149pin change, syntheticHOLD.
 - [x] FIRST corrected property/import binding + composite catalog0/42.663s (810/11802), PlanOnly0/19.166s exact1/1/1 ZERO, directLivecompile0/10.729s. [Independent PREP](recovery/l01-delivery-d02-composite-prep-independent-review-20261018.md) accepts74105ae6/122checks/findings[],50raw/fouroutputs; one original synthetic0/7 only after acceptance recovery. No rebuild/restore; firstfailure/nativeprovenance preserved.
 - [x] FIRST genuine own synthetic0/7 actual237a26c3, after saved/recovered PREP admission; original18chains saved/recoveredbe89497c. [Independent EVIDENCE](recovery/l01-delivery-d02-synthetic-independent-review-20261018.md):73checks/findings[], native targets0/7/readers0/0, exact live/raw/health/EOF/join; expected malformed1/Uncertain retained. D01 delivery only, permit consumed/no retry.
-- [ ] Final saved one-game-snapshot plan; STOP before gameplay/crash5. Windows/CI/budgets/broader holds unchanged.
+- [x] Final conditional [one-game-snapshot plan](design/l01-future-custody-accepted-single-run-plan-20261018.md): independent documentation review38checks/findings[] acceptsf2f835c1. Root read/copied exact4artifacts, status/citation137–139 correction only. Final carrier requires remote readback/clean recovery, then STOP before gameplay/snapshot/crash5. Windows/CI/budgets/broader holds unchanged.
 
 ## L01 B01 — build tooling/environment diagnosis (2026-10-18)
 
@@ -17,7 +17,7 @@
 
 - [x] [Independent PLAN](design/l01-live-delivery-plan-20261018.md) and test-only helper/wiring SOURCE accepted4810d2ad:711static checks, retained original helper20PASS; native/identity/order and explicit loss/delay/stale/unknown semantics reviewed.
 - [x] Complete bounded D01 delivery qualification: accepted SOURCE711/current149pins, retained helper20, new composite PREP122checks plus first own synthetic0/7 EVIDENCE73checks. Distinct integrationd53/unitd3/Live3a compilation provenance; original catalog124/unit137 and [PREP_HOLD](recovery/l01-delivery-d01-first-prep-failure-independent-review-20261018.md) preserved. No game timing/snapshot/L01-five qualification; all execution permits consumed.
-- [x] [Reviewed conditional plan of one future distinguishing snapshot](design/l01-future-custody-accepted-single-run-plan-20261018.md), stop/evidence limits accepted as documentation only. D01 composite PREP and own-synthetic EVIDENCE now accepted; final focused plan review pending. Future capture SOURCE/PREP and single-run admission remain required; gameplay/crash5 CLOSED.
+- [x] [Reviewed conditional plan of one future distinguishing snapshot](design/l01-future-custody-accepted-single-run-plan-20261018.md), stop/evidence limits accepted as documentation only. D01 composite PREP/own-synthetic EVIDENCE and final conditional plan documentation review now accepted. Future capture SOURCE/PREP and single-run admission remain required; gameplay/crash5 CLOSED.
 
 ## L01 — cloud managed-stack diagnostic capability (2026-10-18)
 

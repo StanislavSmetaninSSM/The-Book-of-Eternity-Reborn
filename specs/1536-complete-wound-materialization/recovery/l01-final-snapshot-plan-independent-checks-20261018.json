@@ -1,0 +1,175 @@
+{
+  "kind": "D02_FINAL_CONDITIONAL_SNAPSHOT_PLAN_DOCUMENTATION_CHECKS",
+  "candidate": "f2f835c13056c87df5c25faf85ba053f560a2079",
+  "base": "be89497c746d8393470d2ff9789c262c1d60ed5a",
+  "planPath": "specs/1536-complete-wound-materialization/design/l01-future-custody-accepted-single-run-plan-20261018.md",
+  "planSha256": "d92dda57efddd32f1537b3d46bbd8b5a1b8b846a43cad3bef43fd619ffb402a0",
+  "passed": 38,
+  "findings": [],
+  "checks": [
+    {
+      "name": "exact reviewed plan11321B/SHA",
+      "passed": true
+    },
+    {
+      "name": "both current HEADs exact clean",
+      "passed": true
+    },
+    {
+      "name": "exact independent GitHub recovery receipt",
+      "passed": true
+    },
+    {
+      "name": "ten metadata/review-only changed paths",
+      "passed": true
+    },
+    {
+      "name": "all ten changed paths exact Git/independent clone",
+      "passed": true
+    },
+    {
+      "name": "byte-exact accepted artifact l01-delivery-d02-synthetic-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "name": "byte-exact accepted artifact l01-delivery-d02-synthetic-independent-review-20261018.md",
+      "passed": true
+    },
+    {
+      "name": "byte-exact accepted artifact l01-delivery-d02-synthetic-independent-checks-20261018.json",
+      "passed": true
+    },
+    {
+      "name": "byte-exact accepted artifact check_d02_synthetic_evidence.py",
+      "passed": true
+    },
+    {
+      "name": "accepted73 checks and narrow verdict retained",
+      "passed": true
+    },
+    {
+      "name": "EVIDENCE control binds exact report and consumed no retry",
+      "passed": true
+    },
+    {
+      "name": "all native gates closed and doc review only",
+      "passed": true
+    },
+    {
+      "name": "149 current pins exact and source packet unchanged",
+      "passed": true
+    },
+    {
+      "name": "original evidence/tool unchanged l01-delivery-d02-synthetic-first-20261018.json",
+      "passed": true
+    },
+    {
+      "name": "original evidence/tool unchanged l01-delivery-d02-synthetic-first-originals-20261018.zip",
+      "passed": true
+    },
+    {
+      "name": "original evidence/tool unchanged l01-delivery-d02/phase.py",
+      "passed": true
+    },
+    {
+      "name": "original evidence/tool unchanged l01-delivery-d02/bindings.json",
+      "passed": true
+    },
+    {
+      "name": "exact real argument slots113/114",
+      "passed": true
+    },
+    {
+      "name": "nonce originates in parent file45/46 and independent context",
+      "passed": true
+    },
+    {
+      "name": "comment137 and unchanged220 wait139 source anchors",
+      "passed": true
+    },
+    {
+      "name": "exact diagnostic Fact is separate cut1 entry",
+      "passed": true
+    },
+    {
+      "name": "available queue/health/residence APIs",
+      "passed": true
+    },
+    {
+      "name": "typed source custody/accepted/late controls and sticky flags",
+      "passed": true
+    },
+    {
+      "name": "plan is conditional future implementation not admission",
+      "passed": true
+    },
+    {
+      "name": "exact existing cut1 only and outside original57",
+      "passed": true
+    },
+    {
+      "name": "owning parent consumer concurrent unchanged deadline",
+      "passed": true
+    },
+    {
+      "name": "real nonce/argv role predicate not S01 substitution",
+      "passed": true
+    },
+    {
+      "name": "typed custody identity and zero unhealthy counters",
+      "passed": true
+    },
+    {
+      "name": "60 timer uses receipt and1s local residence not source age",
+      "passed": true
+    },
+    {
+      "name": "sticky cancellation before arming and admission",
+      "passed": true
+    },
+    {
+      "name": "single CAS and25s remaining preserve20/5/220/900",
+      "passed": true
+    },
+    {
+      "name": "external watchdog exact createdump accounting and retained blocker",
+      "passed": true
+    },
+    {
+      "name": "native/observer/API reach/cleanup independent existing accounting",
+      "passed": true
+    },
+    {
+      "name": "capture race and suspension/latency epistemic limits",
+      "passed": true
+    },
+    {
+      "name": "useful bounded evidence and privacy/no causal overclaim",
+      "passed": true
+    },
+    {
+      "name": "one original outcome then STOP no diagnostic chain",
+      "passed": true
+    },
+    {
+      "name": "top handoff synthetic only and original holds intact",
+      "passed": true
+    },
+    {
+      "name": "final plan task remains incomplete pending this review",
+      "passed": true
+    }
+  ],
+  "copiedArtifacts": {
+    "l01-delivery-d02-synthetic-independent-review-20261018.json": "1bdc0c5b159b4b27f2f6ffa99e68d4ce184401f2230a57384cac990428a25cef",
+    "l01-delivery-d02-synthetic-independent-review-20261018.md": "b7283bd493d52fbaf955443f1088c0efc4c84128f5634bcef40a3506d48d3e1b",
+    "l01-delivery-d02-synthetic-independent-checks-20261018.json": "0d3e6c0c226e71cc098c27c263e4595402aa4615e87a40b3660a1d6bb69b2cd7",
+    "check_d02_synthetic_evidence.py": "a4aff5df945f4107fef2aee02a3512bfe32bb3aad3e9a30ecd89a0de94e35c31"
+  },
+  "sourceAnchorClarification": "Crash.cs137 is the live-consumer comment;139 is WaitForExit. Change citation to137\u2013139 in acceptance metadata save.",
+  "nativeActions": 0,
+  "procfsReads": 0,
+  "repositoryWrites": 0,
+  "recoveryReceiptSha256": "ce9fe93dafc3a951a4bb2c38f5a1b40db3c4de71626c603d87c3fd35b5aad804",
+  "checkerSha256": "566ed2aed65cd9a82d6909d29f0d76165df54704bbc7915a0c95668f45f82ece"
+}

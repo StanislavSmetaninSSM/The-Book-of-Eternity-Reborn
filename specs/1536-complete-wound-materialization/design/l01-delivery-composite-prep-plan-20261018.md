@@ -106,8 +106,14 @@ this PREP acceptance is saved/recovered may one original synthetic0/7 run procee
   and findings[] accept only D01 own synthetic delivery. Root read exact report,
   checks/hashes and native0/7 versus reader0/0; expected malformed1/Uncertain in7
   remains. Permit consumed/no retry, normal899/149pins exact; no game/API.
-- [ ] Finalize the existing conditional one-game-snapshot plan with focused
-  documentation review, save/recover final checkpoint and STOP before snapshot/game.
+- [x] Finalize the existing conditional one-game-snapshot plan: independent
+  documentation review acceptsf2f835c1/38checks/findings[]. Root read exact proof
+  and copied4artifacts; acceptance-save only status and approved citation137–139.
+  Final checkpoint must be pushed/read back/recovered; then STOP before snapshot/game.
+
+All bounded implementation/PREP/own-synthetic/plan-review stages are complete.
+No execution permit remains. The final remote recovery is a metadata check, not
+new SOURCE/PREP or a game/snapshot/crash5 admission.
 
 ## Refusal and review focus
 

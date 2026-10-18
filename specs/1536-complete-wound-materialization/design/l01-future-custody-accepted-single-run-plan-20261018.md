@@ -1,6 +1,12 @@
-> FINAL PLAN CANDIDATE, DOCUMENTATION ONLY; GAMEPLAY CLOSED. D01 SOURCE and separately named composite PREP are accepted; first own synthetic0/7 EVIDENCE is independently accepted; this final plan candidate awaits focused documentation review. This document releases no gameplay, snapshot API or crash5. Future capture tooling requires separate SOURCE/fresh affected PREP and an explicitly authorized single run.
+> FINAL REVIEWED CONDITIONAL PLAN, DOCUMENTATION ONLY; GAMEPLAY CLOSED. D01 SOURCE and separately named composite PREP are accepted; first own synthetic0/7 EVIDENCE is independently accepted; conditional plan documentation review is independently accepted. This document releases no gameplay, snapshot API or crash5. Future capture tooling requires separate SOURCE/fresh affected PREP and an explicitly authorized single run.
 
 # One future custody→accepted distinguishing run — PLAN, STOP BEFORE GAMEPLAY
+
+Independent [final documentation review](../recovery/l01-final-snapshot-plan-independent-review-20261018.md):
+38checks PASS/findings[], reviewed candidate `f2f835c13056c87df5c25faf85ba053f560a2079`,
+plan SHA256 `d92dda57efddd32f1537b3d46bbd8b5a1b8b846a43cad3bef43fd619ffb402a0`.
+Acceptance-save changes only status/review metadata and the approved parent
+comment/wait citation137–139. No implementation or runtime admission.
 
 Task #1536, cloud Linux only. The current continuation ends at independent D01
 synthetic EVIDENCE plus review of this plan. It implements no capture orchestration
@@ -35,7 +41,7 @@ No original-five theory, other cut, full suite, Windows, CI or real saves.
 A future test-parent consumer uses `JointInterfaceDiagnosticDelivery.Reader` and
 `ReadHealth()` in the original owning parent, immediately before its existing
 `WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(220))`
-(`GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:137`). It continues consuming events while
+(`GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:137–139`). It continues consuming events while
 capture runs; collector work never blocks raw draining or the event consumer.
 The unchanged220s wait starts promptly and runs concurrently with the consumer;
 never await the collector before starting it, reset it per phase, or establish a

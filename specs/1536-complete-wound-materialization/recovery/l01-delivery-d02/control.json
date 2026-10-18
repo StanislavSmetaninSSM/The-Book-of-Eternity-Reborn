@@ -49,5 +49,12 @@
   "prepStatus": "ACCEPTED_COMPOSITE_PER_PROJECT_PROVENANCE_ONLY",
   "snapshotRelease": "NONE",
   "deliveryQualification": "ACCEPTED_OWN_SYNTHETIC_0_7_ONLY",
-  "futureSnapshotPlanStatus": "DOCUMENTATION_CANDIDATE_PENDING_FOCUSED_REVIEW"
+  "futureSnapshotPlanStatus": "FINAL_REVIEWED_CONDITIONAL_DOCUMENTATION_ONLY_STOP",
+  "futureSnapshotPlanReviewPath": "specs/1536-complete-wound-materialization/recovery/l01-final-snapshot-plan-independent-review-20261018.json",
+  "futureSnapshotPlanReviewSha256": "0e0e367c14b8076960a05391a9acda73895fe508d626a32ad3c4c61221106adb",
+  "futureSnapshotPlanReviewedCandidate": "f2f835c13056c87df5c25faf85ba053f560a2079",
+  "futureSnapshotPlanReviewedSha256": "d92dda57efddd32f1537b3d46bbd8b5a1b8b846a43cad3bef43fd619ffb402a0",
+  "futureSnapshotPlanFinalSha256": "b691ef26d7889150c5905297530e3a22e9544a9207ce1e2d4d5621a38c4a1769",
+  "futureSnapshotPlanAcceptanceOnlyDelta": "Status/review metadata and approved comment/wait citation137\u2013139; reviewed bytes remain atf2f835c1.",
+  "currentNextAction": "STOP_BEFORE_GAMEPLAY_SNAPSHOT_CRASH5"
 }
