@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_SELECTED_CURRENT_RESUME_ROUTING_SOURCE_CANDIDATE",
-  "status": "QUALIFIED52_DIAGNOSTIC2_EXTERNAL_SOURCE_WIP_UNRUN",
+  "status": "QUALIFIED52_DIAGNOSTIC2_EXTERNAL_SOURCE_CORRECTED_UNRUN",
   "sourceBase": "f390eb0602a99f5a2387ab7dc6ef52571e856b26",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
   "sourcePins": [
@@ -819,7 +819,18 @@
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-method-row-ledger-20261018.json",
     "sha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
     "phase": "CURRENT_PROCESS_FIXTURE_BUILD_ENTRY_SOURCE_INVENTORY_HASH_UNCHANGED_FROM_C4C0_AUTHORING",
-    "currentRuntimePointer": "Fixed original authored inventory/hash unchanged. Current diagnostic1 SOURCE/PREP in packet.currentVerificationContract/cloud.crashDiagnostic1; diagnostic Fact excluded from original57/coverage. Original builds/evidence retain original actual/compiled bindings."
+    "currentRuntimePointer": {
+      "phase": "cloud.crashDiagnostic2",
+      "source": {
+        "status": "DIAGNOSTIC2_EXTERNAL_SOURCE_PENDING",
+        "original101ClosureUnchanged": true
+      },
+      "orchestration": "diagnostic2Orchestration",
+      "freshPreparation": "freshPreparationCandidate",
+      "qualification": "cloud-qualification-20261018.json:crashDiagnostic2",
+      "limits": "External diagnostic2 only, all101 original pins/ledger bytes unchanged, outside57; one final profiling invocation afterSOURCE/PREP."
+    },
+    "historicalDiagnostic1RuntimePointer": "Fixed original authored inventory/hash unchanged. Current diagnostic1 SOURCE/PREP in packet.currentVerificationContract/cloud.crashDiagnostic1; diagnostic Fact excluded from original57/coverage. Original builds/evidence retain original actual/compiled bindings."
   },
   "productDelta": [
     "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
@@ -966,7 +977,7 @@
     "status": "NONE_DIAGNOSTIC2_PLAN_REQUIRES_EXTERNAL_SOURCE_FRESH_PREP_AND_SEPARATE_RELEASE",
     "mode": null
   },
-  "next": "Save/recover external source+fake-proc checks+predeclared discriminators; independent SOURCE before fresh ZERO3/PREP and separate one-run release. Exactly one final profiling diagnostic; then joint concrete verdict, no automatic additional chain.",
+  "next": "Save/recover external wrapper native-priority/cgroup-scope correction; affected independent SOURCE then fresh ZERO3/PREP and separately named one-run release. No native yet.",
   "sourceReview": {
     "status": "DIAGNOSTIC2_EXTERNAL_SOURCE_PENDING",
     "original101ClosureUnchanged": true
@@ -2073,13 +2084,13 @@
   "diagnostic2Orchestration": {
     "sampler": {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-process-accounting-20261018.py",
-      "sha256": "fbfb06927ebf3a27c7538c2f47a7a096abec7e829d7b94ca2d22685dc308883a",
-      "bytes": 12279
+      "sha256": "2d538bb97b4f1205038f91682a9cdce7ee93196ab6963a73eebffa0709b83019",
+      "bytes": 15006
     },
     "wrapper": {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-crash-accounting-phase-20261018.py",
-      "sha256": "fd0af867d603d81b7601744db05ad6c18af571cb9c65c2545c6ea3dc7e3c5dbe",
-      "bytes": 6731
+      "sha256": "2d568172614762f3b8c2d5040022ad45bdba2dfbda40f6ff03c8050eb196072f",
+      "bytes": 5867
     },
     "environmentShell": {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-env-de0f3e20-20261018.sh",
@@ -2093,16 +2104,67 @@
     },
     "fakeProcChecker": {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-check-accounting-fake-proc-20261018.py",
-      "sha256": "96296209bc3934cd7efb320598ab782a024b917551ead00310fc3f578d57a8e3",
-      "bytes": 8564
+      "sha256": "9514f92b14ff9a80b2eb3076b5ac154ad502e064199bed1fd2ade6678191ebd8",
+      "bytes": 11225
     },
     "fakeProcProof": {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-writer-fake-proc-check-20261018.json",
-      "sha256": "bbe9978766b3272727e1376c11fdc11d1b112347ef0232269de814da7de1783a",
-      "bytes": 1406
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-writer-fake-proc-control-corrected-check-20261018.json",
+      "sha256": "abcb788ab2f541e068a243e21645681265c5b40aaf522142f81121a9da2b3798",
+      "bytes": 4170
     },
     "sourceClosure": "Separate external executable/observation closure; original101 C#/FIRST/PREP/catalog/selection pins byte-identical. No product change or target replay.",
-    "status": "SOURCE_WIP_UNRUN",
-    "sourceBase": "7816b0c85290cdbb1a4d7820eede601b130ad60e"
-  }
+    "status": "NATIVE_PRIORITY_SCOPE_CORRECTED_SOURCE_WIP_UNRUN",
+    "sourceBase": "9d72351aaeb404e81936bb28c2362eeca5a317a3"
+  },
+  "historicalDiagnostic2ExternalSourceAt9d72351a": {
+    "candidate": "9d72351aaeb404e81936bb28c2362eeca5a317a3",
+    "orchestration": {
+      "sampler": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-process-accounting-20261018.py",
+        "sha256": "fbfb06927ebf3a27c7538c2f47a7a096abec7e829d7b94ca2d22685dc308883a",
+        "bytes": 12279
+      },
+      "wrapper": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-crash-accounting-phase-20261018.py",
+        "sha256": "fd0af867d603d81b7601744db05ad6c18af571cb9c65c2545c6ea3dc7e3c5dbe",
+        "bytes": 6731
+      },
+      "environmentShell": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-env-de0f3e20-20261018.sh",
+        "sha256": "221116fc7534c2265e936efe59d603e758ef0ad78615b94da171395cc6583910",
+        "bytes": 902
+      },
+      "discriminators": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-discriminators-20261018.json",
+        "sha256": "30a6be598329173c97a0091249611b7551e5260df319ce38808a44f55d5d505a",
+        "bytes": 5041
+      },
+      "fakeProcChecker": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-check-accounting-fake-proc-20261018.py",
+        "sha256": "96296209bc3934cd7efb320598ab782a024b917551ead00310fc3f578d57a8e3",
+        "bytes": 8564
+      },
+      "fakeProcProof": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-writer-fake-proc-check-20261018.json",
+        "sha256": "bbe9978766b3272727e1376c11fdc11d1b112347ef0232269de814da7de1783a",
+        "bytes": 1406
+      },
+      "sourceClosure": "Separate external executable/observation closure; original101 C#/FIRST/PREP/catalog/selection pins byte-identical. No product change or target replay.",
+      "status": "SOURCE_WIP_UNRUN",
+      "sourceBase": "7816b0c85290cdbb1a4d7820eede601b130ad60e"
+    },
+    "status": "INDEPENDENT_SOURCE_HELD_WRAPPER_NATIVE_OUTCOME_PRECEDENCE_NO_NATIVE"
+  },
+  "diagnostic2SourceFeedback": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-feedback-9d72351a-20261018.json",
+      "sha256": "38739120f5ece5fb4347a7a1d9b224739d48537a117f7e2ee289935b6219511a",
+      "bytes": 4218
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-independent-check-9d72351a-20261018.json",
+      "sha256": "b83f33cfdefc17f441e78275822efef81ff209bc96e8fedcde195718ef73f1f5",
+      "bytes": 10179
+    }
+  ]
 }

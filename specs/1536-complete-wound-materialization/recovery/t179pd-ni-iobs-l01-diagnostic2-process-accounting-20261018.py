@@ -1,6 +1,6 @@
 """Bounded read-only OS accounting for one L01 diagnostic controller; no process intervention."""
 from pathlib import Path
-import datetime as dt, hashlib, json, os, time
+import datetime as dt, hashlib, json, os, time, subprocess
 
 ROLES = {'engine-joint-interface-original-crash', 'engine-joint-interface-resume'}
 
@@ -61,9 +61,13 @@ class Sampler:
 
     def read_header(self):
         values = {}; gaps = []
-        for key, path in [('bootId', self.proc/'sys/kernel/random/boot_id'), ('cpuMax', self.cgroup/'cpu.max'), ('memoryMax', self.cgroup/'memory.max')]:
-            try: values[key] = path.read_text()
+        for key, path in [('bootId', self.proc/'sys/kernel/random/boot_id'), ('cpuMax', self.cgroup/'cpu.max'), ('memoryMax', self.cgroup/'memory.max'), ('samplerCgroup', self.proc/'self/cgroup'), ('cgroupMountMapping',self.proc/'self/mountinfo')]:
+            try:
+                text=path.read_text()
+                values[key]='\n'.join(line for line in text.splitlines()if ' - cgroup2 'in line) if key=='cgroupMountMapping' else text
             except (OSError, ValueError) as error: self.gap(gaps, 'header-' + key, error)
+        values['sampledCgroupNode']=dict(path=str(self.cgroup.resolve()),device=self.cgroup.stat().st_dev,inode=self.cgroup.stat().st_ino)
+        values['cgroupScope']='Raw mount/membership evidence must establish target governance before attributing this shared node quota/pressure to a child.'
         self.emit(dict(kind='PROFILE_ENVIRONMENT', utc=utc(), values=values, gaps=gaps))
 
     def missing(self, base, pid, stage, gaps, tid=None, prior_tick=None):
@@ -87,7 +91,7 @@ class Sampler:
         binding = target(args, self.mutable_root, self.dotnet_root, self.repo)
         if binding is None: return None
         result = dict(identity=dict(pid=pid, startTick=first['startTick']), binding=binding, statBefore=first)
-        for key, path in [('io', base/'io'), ('status', base/'status'), ('leaderWchan', base/'wchan')]:
+        for key, path in [('io', base/'io'), ('status', base/'status'), ('leaderWchan', base/'wchan'),('cgroupMembership',base/'cgroup')]:
             try:
                 text = path.read_text()
                 result[key] = '\n'.join(x for x in text.splitlines() if x.split(':',1)[0] in {'Name','State','Tgid','Pid','PPid','Threads','VmRSS','voluntary_ctxt_switches','nonvoluntary_ctxt_switches'}) if key=='status' else text
@@ -167,3 +171,39 @@ class Sampler:
                      gaps=self.gaps,status='OBSERVATION_GAPS_FREEZE_NEXT_RELEASE' if self.gaps else 'OBSERVATIONS_SAVED_REQUIRES_INDEPENDENT_CAUSAL_REVIEW',
                      countsToward57=False,noNativeIntervention=True)
         self.emit(summary);self.file.close();return summary
+
+def run_one_controller(invoke, after_census, sampler=None, save_status=None, emit=print):
+    """One callback invocation. Observer failures never replace a known native failure."""
+    native=None;after=None;errors=[];summary=None
+    def failure(stage,error):errors.append(dict(stage=stage,error=repr(error)))
+    def report(value):
+        try:emit(json.dumps(value))
+        except Exception as error:failure('summary-output',error)
+    try:
+        child=invoke()
+        if sampler is not None:
+            deadline=time.monotonic()
+            try:
+                while child.poll()is None:
+                    sampler.capture(deadline)
+                    deadline=max(deadline+1,time.monotonic()+0.001)
+                    try:child.wait(timeout=max(0.001,deadline-time.monotonic()))
+                    except subprocess.TimeoutExpired:pass
+            except Exception as error:failure('sampler-capture',error)
+        native=child.wait()
+    except Exception as error:failure('controller-start-or-wait',error)
+    # Native outcome is retained/emitted before any census/profile/status can fail.
+    report(dict(kind='ORIGINAL_CONTROLLER_EXIT_INDEPENDENT_OF_OBSERVERS',controllerExit=native))
+    try:after=after_census()
+    except Exception as error:failure('after-census',error)
+    if sampler is not None:
+        try:
+            summary=sampler.finish(native,errors or None)
+            if summary.get('gaps'):failure('sampler-observation-gaps',ValueError(str(len(summary['gaps']))+' recorded gaps'))
+        except Exception as error:failure('sampler-finish',error)
+    if save_status is not None:
+        try:save_status(native,after,summary,list(errors))
+        except Exception as error:failure('profile-read-or-status-write',error)
+    report(dict(kind='ONE_CONTROLLER_OBSERVATION_STATUS_NOT_VERDICT',controllerExit=native,afterCensusExit=after,observationErrors=errors,countsToward57=False))
+    # Preserve original nonzero native. A native0 with any observation failure is held.
+    return native if native not in {None,0} else (after if after not in {None,0} else 2 if native is None or after is None or errors else 0)

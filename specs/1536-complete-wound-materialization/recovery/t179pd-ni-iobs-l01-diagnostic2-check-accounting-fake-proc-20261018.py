@@ -12,6 +12,7 @@ class Fixture:
  def __init__(self,base,name):
   self.root=base/name;self.root.mkdir();self.proc=self.root/'proc';self.proc.mkdir();self.cg=self.root/'cgroup';self.cg.mkdir();self.mutable=self.root/'mutable';self.mutable.mkdir();self.own=self.mutable/'boe-joint-interface-crash-fake';self.own.mkdir();self.childroot=self.own/'tmp'/'fixture';self.childroot.mkdir(parents=True);self.dotnet=self.root/'dotnet';self.repo=self.root/'repo';self.out=self.root/'samples.jsonl';self.pid=self.proc/'123';self.pid.mkdir();self.task=self.pid/'task'/'123';self.task.mkdir(parents=True)
   boot=self.proc/'sys/kernel/random';boot.mkdir(parents=True);(boot/'boot_id').write_text('fake-boot\n')
+  (self.proc/'self').mkdir();(self.proc/'self/cgroup').write_text('0::/fake\n');(self.proc/'self/mountinfo').write_text('1 0 0:1 /fake /sys/fs/cgroup rw - cgroup2 cgroup rw\n');(self.pid/'cgroup').write_text('0::/fake\n')
   for n,v in {'cpu.max':'400000 100000\n','cpu.stat':'usage_usec 10\nnr_throttled 0\nthrottled_usec 0\n','memory.max':'999999\n','memory.current':'100\n','memory.events':'high 0\nmax 0\noom 0\noom_kill 0\n'}.items():(self.cg/n).write_text(v)
   self.parent=dict(Nonce='a'*32,ParentPid=99,Cut=1,Fault=None,Diagnostic=True);self.saveparent();self.argv=self.makeargv();self.saveargv();self.setstat()
   for p in [self.pid,self.task]:(p/'wchan').write_text('futex_wait_queue\n')
@@ -75,5 +76,39 @@ with tempfile.TemporaryDirectory(prefix='l01-fake-proc-check-')as tmp:
   return original(p)
  with mock.patch.object(Path,'read_bytes',remove_task):a=x.capture()
  require(a['entries'][0]['tasks'][0]['observation']=='confirmed-absent-on-stat-reprobe' and any(z['stage']=='incomplete-task-sample'for z in a['gaps']),'actual task disappearance retained as explicit gap');x.close()
+ x=Fixture(base,'missingmembership');(x.pid/'cgroup').unlink();a=x.capture();require(len(a['entries'])==1 and any(z['stage']=='cgroupMembership'for z in a['gaps']),'target cgroup read gap retained');x.close()
+ x=Fixture(base,'headermapping');(x.proc/'self/mountinfo').unlink()
+ # The initial header is captured at construction; a second sampler sees the injected missing mapping.
+ x.s.finish(0);x.out=x.root/'missing-mapping.jsonl';s2=m.Sampler(x.mutable,x.dotnet,x.repo,x.out,x.proc,x.cg);require(any(z['stage']=='header-cgroupMountMapping'for z in s2.gaps),'missing cgroup mount mapping retained');s2.finish(0)
+ # Inject observer failures into the exact callback control loop, no native child starts.
+ class FakeChild:
+  def __init__(self,code,events):self.code=code;self.events=events;self.active=True
+  def poll(self):return None if self.active else self.code
+  def wait(self,timeout=None):self.events.append('wait');self.active=False;return self.code
+ class FakeSampler:
+  def __init__(self,events,point=None):self.events=events;self.point=point
+  def capture(self,deadline):
+   self.events.append('capture')
+   if self.point=='capture':raise OSError('injected capture failure')
+  def finish(self,native,error):
+   self.events.append('finish')
+   if self.point=='finish':raise OSError('injected finish failure')
+   return dict(native=native,gaps=[dict(stage='fake-gap')]if self.point=='gaps'else[])
+ for point in ['capture','finish','after','profileRead','statusWrite','gaps',None]:
+  for code in [0,7]:
+   events=[];outputs=[]
+   def invoke():events.append('invoke');return FakeChild(code,events)
+   def after():
+    events.append('after')
+    if point=='after':raise OSError('injected after census failure')
+    return 0
+   def save(native,after,summary,errors):
+    events.append('status')
+    if point in {'profileRead','statusWrite'}:raise OSError('injected '+point)
+   result=m.run_one_controller(invoke,after,FakeSampler(events,point),save,outputs.append)
+   require(events.count('invoke')==1,'one invocation '+str(point)+' native'+str(code))
+   require(events.index('after')<events.index('finish')<events.index('status'),'after census before drain '+str(point)+' native'+str(code))
+   require(result==(7 if code==7 else 2 if point else 0),'native priority/observer hold '+str(point)+' native'+str(code))
+   require(json.loads(outputs[0])['controllerExit']==code,'native independently emitted '+str(point)+' native'+str(code))
 report=dict(kind='WRITER_FAKE_PROC_ACCOUNTING_CHECK_NOT_NATIVE_OR_INDEPENDENT_ACCEPTANCE',source=str(source),sourceSha256=hashlib.sha256(source.read_bytes()).hexdigest(),checkerSha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),checksPassed=len(checks),checks=checks,findings=[],gameNativeExecuted=False)
 out=Path(sys.argv[2]);assert not out.exists();out.write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))

@@ -1,3 +1,9 @@
+## T179-Pd-NI-IOBS-L01 — external wrapper SOURCE finding corrected; no native (2026-10-18)
+
+Independent9d SOURCE passed551staticbindings but held wrapper observation failures masking externally returned nativeexit. New callback control loop retains/emits known native first, after-census before profile drain, catches census/finish/read/write errors separately, preserves nativefailure and makes native0+observererrors/gaps explicitHOLD. Added raw sampler/child cgroup membership+mount mapping/samplednode identity; attribution remains bounded.83 meaningful fake-proc/control checks pass, no game/native. Prior25proof/9d sourcefeedback saved;101closure/product23/assertions/220900 unchanged. Current ledger runtime pointer corrected with priorpointer preserved.
+
+Save/recover WIP and affected independent SOURCE before fresh ZERO3/PREP/separate one-run release. Latest user one-run/joint-verdict stoprule and predeclared discriminators unchanged. Qualified52/originaloutcomes/oldUNKNOWN/broaderholds unchanged. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — external diagnostic2 SOURCE WIP; predeclared one-run decision (2026-10-18)
 
 Only separately versioned external readonly sampler/wrapper/newde0f environment/fake-proc checker/discriminator supplement added. All101 C#/FIRST/PREP/catalog/selection pins and product23 byte-identical. Writer fake-proc25 checks pass: CPU parsing/identity/nonce/escape/FNF-live/confirmed exit/reuse/IO denial/thread gaps/malformed/truncation, no game/native. Sampler nominal1Hz process+task birth reprobes/CPU/wait/IO/cgroupmemory, explicit gaps/overhead; one native continues unchanged on observer failure, immediate after-census before profile drain. SOURCE pending; no native/discovery/build yet.

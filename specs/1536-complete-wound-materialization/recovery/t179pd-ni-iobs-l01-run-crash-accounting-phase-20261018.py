@@ -31,39 +31,20 @@ observer=d/f'{stem}process-census-v2-20261018.py'
 def census(side):
  out=t/f'census-crash-diagnostic2-{mode}-{side}-{suffix}.json';assert not out.exists();return subprocess.run([sys.executable,str(observer),'--phase',f'crash-diagnostic2-{mode}-{side}','--fixture-temp',root,'--known','10433:477854','--out',str(out)],cwd=r).returncode
 assert census('before')==0,'No native on active/UNKNOWN/new mutable roots'
-sampler=None;sample_error=None;profile_summary=None
+tools=p['diagnostic2Orchestration']
+for name in ['sampler','wrapper','environmentShell','discriminators','fakeProcChecker','fakeProcProof']:
+ entry=tools[name];data=(r/entry['path']).read_bytes();assert len(data)==entry['bytes'] and hashlib.sha256(data).hexdigest()==entry['sha256']
+assert (r/tools['wrapper']['path']).resolve()==Path(__file__).resolve()
+spec=importlib.util.spec_from_file_location('l01_readonly_accounting',r/tools['sampler']['path']);module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+sampler=None
 if kind=='actual':
- tools=p['diagnostic2Orchestration']
- for name in ['sampler','wrapper','environmentShell','discriminators']:
-  entry=tools[name];data=(r/entry['path']).read_bytes();assert len(data)==entry['bytes'] and hashlib.sha256(data).hexdigest()==entry['sha256']
- assert (r/tools['wrapper']['path']).resolve()==Path(__file__).resolve()
- spec=importlib.util.spec_from_file_location('l01_readonly_accounting',r/tools['sampler']['path']);module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
  profile_out=t/f'diagnostic2-{mode}-accounting-{suffix}.jsonl';assert not profile_out.exists()
- # Sampler construction precedes native: a startup failure cannot accidentally start it.
+ # A sampler startup failure precedes and blocks native creation.
  sampler=module.Sampler(root,os.environ['DOTNET_ROOT'],r,profile_out)
-try:
- child=subprocess.Popen([sys.executable,str(controller),*args],cwd=r)
- if sampler is None:native=child.wait()
- else:
-  deadline=time.monotonic()
-  try:
-   while child.poll() is None:
-    sampler.capture(deadline)
-    # Skip expired intervals, never issue catch-up scans. Wait only on this controller.
-    deadline=max(deadline+1,time.monotonic()+0.001)
-    try:child.wait(timeout=max(0.001,deadline-time.monotonic()))
-    except subprocess.TimeoutExpired:pass
-  except Exception as error:
-   sample_error=error # read/parse/output failures never kill/replace original native
-  native=child.wait()
-finally:
- after=census('after') # ahead of profile close/serialization/drain
-if sampler is not None:
+def save_status(native,after,summary,errors):
  status_out=t/f'diagnostic2-{mode}-accounting-status-{suffix}.json';assert not status_out.exists()
- try:profile_summary=sampler.finish(native,sample_error)
- except Exception as error:profile_summary=dict(status='PROFILE_FINALIZATION_FAILED_FREEZE_NEXT_RELEASE',error=repr(error),priorError=repr(sample_error),countsToward57=False)
  data=profile_out.read_bytes()
- status=dict(kind='ONE_DIAGNOSTIC2_EXTERNAL_READONLY_ACCOUNTING_STATUS_NOT_VERDICT',actualSource=actual,compiledSource=release['compiledSource'],label=label,mode=mode,controllerMode='diagnostic1',controllerExit=native,afterCensusExit=after,profile=dict(path=str(profile_out),bytes=len(data),sha256=hashlib.sha256(data).hexdigest()),summary=profile_summary,tools=tools,countsToward57=False,limits='One original only; preserve every gap/timeout/failure, independent causal review before any action. Never sum process plus thread CPU. No old timeout cause reconstructed.')
+ status=dict(kind='ONE_DIAGNOSTIC2_EXTERNAL_READONLY_ACCOUNTING_STATUS_NOT_VERDICT',actualSource=actual,compiledSource=release['compiledSource'],label=label,mode=mode,controllerMode='diagnostic1',controllerExit=native,afterCensusExit=after,profile=dict(path=str(profile_out),bytes=len(data),sha256=hashlib.sha256(data).hexdigest()),summary=summary,observationErrors=errors,tools=tools,countsToward57=False,limits='One original only; preserve every gap/timeout/failure, independent causal review before any action. Never sum process plus thread CPU. No old timeout cause reconstructed.')
  with status_out.open('x')as f:json.dump(status,f,indent=2);f.write('\n')
-print(json.dumps(dict(kind=kind,mode=mode,label=label,controllerExit=native,afterCensusExit=after)),flush=True)
-sys.exit(native if native else after)
+result=module.run_one_controller(lambda:subprocess.Popen([sys.executable,str(controller),*args],cwd=r),lambda:census('after'),sampler,save_status if kind=='actual'else None)
+sys.exit(result)
