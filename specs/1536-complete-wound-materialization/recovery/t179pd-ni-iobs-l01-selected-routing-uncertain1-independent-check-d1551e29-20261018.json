@@ -1,0 +1,339 @@
+{
+  "kind": "INDEPENDENT_SELECTED_ROUTING_ORIGINAL_EVIDENCE_CHECK_ONLY",
+  "checkedUtc": "2026-10-18T15:36:56.978163+00:00",
+  "mode": "uncertain1",
+  "carrier": "d1551e29ec72771b74f0e66c7ff10dd2332c4e16",
+  "actualSource": "24c958f6f7936e20275412e95cb3c0d26df6480b",
+  "compiledSource": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
+  "recordSha256": "a21109a2d73df9097103159d65b119463452db021285a6ee67098d1258acf850",
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-uncertain1-813f1057-files-20261018/archive.json",
+    "sha256": "1c1810cab21061e37751e694e3c3351533b0ba735017102a94782fe5524818d6",
+    "rawChains": 11,
+    "rawBytes": 11229396,
+    "completeOriginalCoverage": true,
+    "storedRawRestoredExact": true
+  },
+  "sourcePinCount": 99,
+  "sourcePinDigest": "70aa551ca427bb9c28b18e205bcbe2e10d1ebb88487309bb73b4a31426e37eb5",
+  "productDeltaPaths": 23,
+  "nativeExit": 0,
+  "tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 1,
+    "Failed": 0
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 1,
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "categoryResult": {
+    "Category": "fr063-joint-interface-uncertain-current",
+    "Seconds": 302.4359676,
+    "BudgetMinutes": 10,
+    "Completed": true
+  },
+  "wallSeconds": 370.3263706409998,
+  "nineAndFull1575OutputsExact": true,
+  "sourceReadback": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+      "sha256": "680813fd5769128cfc9ce11d0adf3065f41ca2419f94febe30ea8f5c2ed4179f",
+      "bytes": 40433
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs",
+      "sha256": "aab939b29c80b947784adf8e8ed759ca8e17654c1013ed77a1da8d7e1d2deb88",
+      "bytes": 27309
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs",
+      "sha256": "2ccdf58fedf0128b3ebfcfa8cf494de29669ffaf2fdb003f8f5cfb010c195d16",
+      "bytes": 61445
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+      "sha256": "cc19ea786b8bce8c96e84a07091b8384c3fcbeab570f19ccbd2818ecd36fa86e",
+      "bytes": 16023
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
+      "sha256": "e924254499238ca86e56abcaaa130b3cc82a11425ca3582ec265c79c59186139",
+      "bytes": 11186
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "sha256": "fc60121279af569d0c2e32b6429e96326bc262bc6ba584afe57156432b024483",
+      "bytes": 509720
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
+      "sha256": "70f4e54f5e36f3fbeeb10b418183fcbc4a7a66f61dea79db298ffb88633dac96",
+      "bytes": 57379
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointInterfacePublication.cs",
+      "sha256": "44aeb6751c0146ef636a4f3743b28cac87078baeb815089c7bfebb6e54f7a08e",
+      "bytes": 20647
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
+      "bytes": 241886
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.SpiritualContinuation.cs",
+      "sha256": "6dd6124f66cad4857ce09356aa529d975afabb528ab38fe87c32bdd8da5f2c0a",
+      "bytes": 39315
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs",
+      "sha256": "deadc153a51e5ddd0d001904737ee74e287f970553bee0c8fd698a225cba780e",
+      "bytes": 9682
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+      "sha256": "c0c9b094b2696d7481fb6ed99d6c19a2b8f6a9a77c1dcb71b410ef9b0961e344",
+      "bytes": 13672
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "sha256": "24032f1654c9c0851fd115e1c0343d074dc7939dab47c0bb9e195efeb47229b9",
+      "bytes": 296492
+    }
+  ],
+  "currentPrepPhase": "selectedResumeRoutingCorrection",
+  "prepRecordSha256": "b4be1de2490fbc66029ce0821b71601500849732e87474f42121214fbb439535",
+  "releaseBoundToActualSource": true,
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic",
+      "duration": "00:04:51.9212483",
+      "initialDisposition": "PublicationUncertain",
+      "initialDirectRestoreRetainedPaths": 222,
+      "oldAttemptExpired": true,
+      "newFullProofReached": true,
+      "newSelectedRoutingCompletedLogExactlyOnce": true,
+      "actualLateCallerReturnedFalseOnCompleted": true,
+      "diagnosticClearedOnlyAfterCurrentOwner": true,
+      "turn": 43,
+      "unchangedPublishedInterface": true,
+      "captureCallbacks": 2,
+      "mechanics": {
+        "energy": [
+          2,
+          0
+        ],
+        "health": [
+          5,
+          2
+        ],
+        "targetTurn": 43,
+        "woundSuffix": [
+          "create",
+          "treat"
+        ],
+        "requestFingerprint": "sha256:abd944456902c7833b3d8dceeb952ce1d03e675440145ea3d9e7ab9dceefa65b"
+      },
+      "settled": {
+        "Boundary": "iobs_actual_current_common_claim_settled",
+        "Root": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-e2856fc4b14b405084014f49cab65a15",
+        "ActualState": "BookOfEternityClient.Services.AcceptedTurnAuthorityRegistry+AcceptedTurnAuthorityState",
+        "ReservationAbsent": true,
+        "OpenTakeAbsent": true,
+        "Meaning": "Actual completed physical proof precedes this read of existing owner state, not a fabricated receipt or old-process claim"
+      },
+      "helperDiagnosticsLocation": "TRX ResultSummary/Output/StdOut, exactly one selected case; exact root and request fingerprint bound",
+      "commonChild3ExactPublishedRecord": true,
+      "appliedPhase": true,
+      "oneExactAppendedStoryRow": {
+        "requestId": "d905a93421db437f88029ddb380c01a0",
+        "sessionGeneration": "bb7ea06fe7aa4f19b5e30d77876bdcf0",
+        "turn": 43,
+        "timestamp": "2026-10-18T15:28:42.7466696Z",
+        "realm": "Mortal World",
+        "player": "Осмотреть ушиб.",
+        "narrative": "The exact treatment stabilizes the wound without losing its held resource. Край камня оставляет поверхностный порез на боку.",
+        "location": "T070-B.3 field clinic"
+      },
+      "completeBeforePaths": 223,
+      "completeAfterPaths": 84,
+      "terminalArtifactsAbsent": [
+        "game_state/wounds/wound_commands.json",
+        "game_state/control/pending_wound_resolutions.json",
+        "output/mortal_wound_decisions.json",
+        "game_state/control/pending_turn_snapshot.json",
+        "game_state/control/pending_turn_snapshot.authority.json",
+        "input/turn_request.json",
+        "ready/turn_complete.json"
+      ],
+      "inertRepeat": true,
+      "postCallTelemetry": {
+        "Handled": false,
+        "CurrentDiagnostics": "Engine diagnostics:\nCritical accepted-turn raw state corruption after обработки хода: 1 errors\nJoint canonical publication retained PublicationUncertain after an exception.\nSystem.IO.IOException: L01 one-shot existing completed capture checkpoint; preparation not entered.\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.<>c__DisplayClass85_0.<<Attach>b__0>d.MoveNext() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 127\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Core.GameEngine.PublishCurrentMortalJointRepairAsync(ValidatedPendingTurnSnapshotContext frame, Int32 expectedTurn, IReadOnlyDictionary`2 backups) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs:line 49\nJoint story and runtime turn 43 completed once after late joint completion; owned terminal cleanup verified.",
+        "Turn": 43,
+        "CurrentProof": {
+          "version": 1,
+          "state": "Published",
+          "binding": {
+            "sessionGeneration": "bb7ea06fe7aa4f19b5e30d77876bdcf0",
+            "sessionId": "session_qte_story_append",
+            "requestId": "d905a93421db437f88029ddb380c01a0",
+            "snapshotToken": "87BB3AECA3E28BA4DE87EC1A291071B2B3C008F5E767AAECF1A0D88D2B02DCF5",
+            "turnNumber": 43,
+            "realm": "mortal_world",
+            "stageOrdinal": 1,
+            "readyOrdinal": 1,
+            "iterationOrdinal": 2,
+            "checkpointFingerprint": "sha256:bd0255da287530f4c107e3d29bf8085e69b11809c10c754a97a7722d4bd14213",
+            "operationKey": "operation_fr063_joint_completion",
+            "attemptId": "wound_treatment_attempt_135c6d8b86e38a5ad2d6cd1b023d995ad15333e17acf5a9350d443c33d2520fa",
+            "requestFingerprint": "sha256:abd944456902c7833b3d8dceeb952ce1d03e675440145ea3d9e7ab9dceefa65b"
+          },
+          "legacyPendingFingerprint": "sha256:7194171ef7ce78117b12264ef5821245022346190406db0e68e9dacd27abb3ef",
+          "sourceAssociationFingerprint": "sha256:f1882cbb14333f115812883d958935ef769ea545df50ea52168988123b1b3195",
+          "beforeImage": {
+            "present": true,
+            "base64": "ewogICJkaWFsb2d1ZU9wdGlvbnMiOiBbCiAgICB7CiAgICAgICJ0ZXh0IjogIltOSV9BQ1RJT046Zmlyc3RdW05JX0NPTlRST0w6c2Vjb25kXdCf0YDQvtC00L7Qu9C20LjRgtGMINC+0LHRi9GH0L3Ri9C5INC+0YLQstC10YIuIgogICAgfQogIF0KfQ==",
+            "sha256": "3EC7AFF43FF10F02429E2BD89EBF4ED5BA1BD19800ED6B9778DAC6938308E674"
+          },
+          "afterImage": {
+            "present": true,
+            "base64": "77u/ewogICJkaWFsb2d1ZU9wdGlvbnMiOiBbCiAgICB7CiAgICAgICJ0ZXh0IjogIltOSV9DT05UUk9MOnNlY29uZF3Qn9GA0L7QtNC+0LvQttC40YLRjCDQvtCx0YvRh9C90YvQuSDQvtGC0LLQtdGCLiIsCiAgICAgICJpbnB1dFZhbHVlIjogIltOSV9BQ1RJT046Zmlyc3RdW05JX0NPTlRST0w6c2Vjb25kXdCf0YDQvtC00L7Qu9C20LjRgtGMINC+0LHRi9GH0L3Ri9C5INC+0YLQstC10YIuIgogICAgfQogIF0sCiAgInRpbWVzdGFtcCI6ICIyMDI2LTEwLTE4VDE1OjI4OjI1LjYzMTgyNTUrMDA6MDAiCn0=",
+            "sha256": "27BC6F36E55D792ACAA6503B5DDBE60E6D127D15D5390E2C07EFB9EFFEC3EF9C"
+          },
+          "normalization": "Changed",
+          "fallback": {
+            "required": true,
+            "sampled": true,
+            "value": "2026-10-18T15:28:25.6318255+00:00"
+          },
+          "timestampCheck": {
+            "document": "Object",
+            "timestamp": "ParseAccepted"
+          },
+          "issues": [],
+          "resultFingerprint": "sha256:a5f21b30646efebe8460d1203e16735f3e20b7e056de7fc06edef45f6129e276",
+          "fingerprint": "sha256:1d14a22d9131b803bc620203d3ee0ef7e4262fdeb115528c2363809f6d2855a3"
+        },
+        "CaptureCallbacks": 2,
+        "Disposition": null,
+        "Issues": null,
+        "OldAttempt": {
+          "Live": false,
+          "Delegated": false,
+          "ContinuationAbsent": true,
+          "ReservationAbsent": true
+        },
+        "Trace": [
+          {
+            "Sequence": 1,
+            "TransactionId": "d35b329a7ea74c95b0e9708573de06e3",
+            "InterfaceChanged": true,
+            "MarkerCommitted": false,
+            "Before": {
+              "Bytes": "ewogICJkaWFsb2d1ZU9wdGlvbnMiOiBbCiAgICB7CiAgICAgICJ0ZXh0IjogIltOSV9BQ1RJT046Zmlyc3RdW05JX0NPTlRST0w6c2Vjb25kXdCf0YDQvtC00L7Qu9C20LjRgtGMINC+0LHRi9GH0L3Ri9C5INC+0YLQstC10YIuIgogICAgfQogIF0KfQ==",
+              "Length": 142,
+              "Sha256": "3EC7AFF43FF10F02429E2BD89EBF4ED5BA1BD19800ED6B9778DAC6938308E674"
+            },
+            "After": {
+              "Bytes": "77u/ewogICJkaWFsb2d1ZU9wdGlvbnMiOiBbCiAgICB7CiAgICAgICJ0ZXh0IjogIltOSV9DT05UUk9MOnNlY29uZF3Qn9GA0L7QtNC+0LvQttC40YLRjCDQvtCx0YvRh9C90YvQuSDQvtGC0LLQtdGCLiIsCiAgICAgICJpbnB1dFZhbHVlIjogIltOSV9BQ1RJT046Zmlyc3RdW05JX0NPTlRST0w6c2Vjb25kXdCf0YDQvtC00L7Qu9C20LjRgtGMINC+0LHRi9GH0L3Ri9C5INC+0YLQstC10YIuIgogICAgfQogIF0sCiAgInRpbWVzdGFtcCI6ICIyMDI2LTEwLTE4VDE1OjI4OjI1LjYzMTgyNTUrMDA6MDAiCn0=",
+              "Length": 287,
+              "Sha256": "27BC6F36E55D792ACAA6503B5DDBE60E6D127D15D5390E2C07EFB9EFFEC3EF9C"
+            }
+          },
+          {
+            "Sequence": 2,
+            "TransactionId": "687c2eed826244bab09d4f9d6dfa5629",
+            "InterfaceChanged": false,
+            "MarkerCommitted": true,
+            "Before": null,
+            "After": null
+          },
+          {
+            "Sequence": 3,
+            "TransactionId": "a9e6d10cc5f94149a1ccca6444bdf4fb",
+            "InterfaceChanged": false,
+            "MarkerCommitted": true,
+            "Before": null,
+            "After": null
+          }
+        ],
+        "Meaning": "New runtime observation only; original failed run had no post-call log"
+      },
+      "rawObservationReadErrors": false,
+      "originalMissingDiagnosticsNotReconstructed": true
+    }
+  ],
+  "childIdentities": [],
+  "jsonDiagnosticParseErrors": 0,
+  "rawImageShaChecks": 950,
+  "journalImageShaChecks": 0,
+  "embeddedImageShaChecks": 12,
+  "plainBase64Decodes": 341,
+  "censuses": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-uncertain1-before-census-20261018.json",
+      "sha256": "1611d46544ef4c4179c6b0efa66219cbab559ed33432c086257c9a9e2694fce6",
+      "entries": 128,
+      "startedUtc": "2026-10-18T15:26:22.115660+00:00",
+      "finishedUtc": "2026-10-18T15:26:22.141112+00:00",
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 50624,
+          "expectedStartTick": 2179004,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-uncertain1-after-census-20261018.json",
+      "sha256": "4f69db19646e59b6bb2d4c1b41eba11e9a9fc0d8ed4663519005880f20ff7a77",
+      "entries": 127,
+      "startedUtc": "2026-10-18T15:32:36.104236+00:00",
+      "finishedUtc": "2026-10-18T15:32:36.123673+00:00",
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 51160,
+          "expectedStartTick": 2216404,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    }
+  ],
+  "beforeGapSeconds": 2.414912,
+  "afterGapSeconds": 1.221967,
+  "recovery": {
+    "receiptPath": "/tmp/1536-cloud-tools/carrier-recovery-d1551e29.json",
+    "receiptSha256": "37e5dc9ee572c6925243147212f8c7c2029959a39aa10d77bc60e3a9d3dd8dc0",
+    "changedPaths": 19,
+    "bytesHashesBlobsModesVerified": true,
+    "completeSavedGitTreeMatchesIndependentClone": true
+  },
+  "qualifiedRecorded": 51,
+  "additionalQualifiedByChecker": 0,
+  "findings": [],
+  "verdict": "CHECKS_ONLY_REQUIRES_INDEPENDENT_SEMANTIC_REVIEW_NO_AUTOMATIC_ADMISSION_OR_NEXT_MODE",
+  "limits": "Saved original/source/Git/archive/build-output/census reads only. No native/build/discovery/controller/observer execution, current fixture-root or process inspection/control, repository edit or retry. Dated snapshots do not prove continuous absence. Old original failures and lost corrected crash UNKNOWN unchanged. Positive serialization checks are source-derived and must be reconciled against original observations without weakening native assertions; checker failure alone is not a product result."
+}

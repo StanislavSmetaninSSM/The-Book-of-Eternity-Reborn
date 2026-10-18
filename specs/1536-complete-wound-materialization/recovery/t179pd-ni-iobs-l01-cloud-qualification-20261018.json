@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "UNCERTAIN1SELECTEDROUTING_PASS_EVIDENCE_PENDING",
+  "status": "QUALIFIED52_OF57_SELECTED_ROUTING_UNCERTAIN1_ACCEPTED",
   "sourceCheckpoint": "fed1f7789db0145de866cd4d73b97ab030871509",
   "sourcePinDigest": "70aa551ca427bb9c28b18e205bcbe2e10d1ebb88487309bb73b4a31426e37eb5",
   "sourcePinCount": 99,
@@ -432,7 +432,7 @@
           "cases": 1
         }
       ],
-      "status": "NEW_BORROWED_LEASE_NATIVE_PASS_EVIDENCE_PENDING"
+      "status": "INDEPENDENT_EVIDENCE_ACCEPTED_NEW_SELECTED_ROUTING_QUALIFICATION"
     },
     {
       "mode": "crash5",
@@ -448,14 +448,19 @@
     }
   ],
   "crashRequalificationPlan": {
-    "status": "ISOLATION_PLAN_RETAINED_SELECTED_ROUTING_SOURCE_AND_FRESH_PREP_REQUIRED",
+    "status": "ISOLATION_SOURCE_AND_FRESH_PREP_ACCEPTED_DISTINCT_NEWCRASH5_PENDING_SAVED_RELEASE_RECOVERY_PREFLIGHT",
     "purpose": "Separate new fixture qualification; preserve old UNKNOWN. No recovery or blind retry of old result.",
     "rootIsolation": "Fresh environmentId and GUID TMPDIR; each fixture constructs a new GUID own container/parent nonce and child-local tmp. No imported old root, checkpoint, live owner, save or real game operation.",
     "processIsolation": "Only newly started genuine child Process handles; independent parent/self PID+kernel starttick and nonce, exit73, new resume PID, join+EOF, strict containment. Retain owned container if termination/join/EOF unresolved; no old process query/kill.",
     "stateIsolation": "Read immutable repository templates into independent writable fixture roots; existing installed production route/strong assertions unchanged. Reviewer must reject if shared mutable/external state or duplicate real operation is possible.",
     "assertions": "Retain exact cut bytes before identity checks, FIRST2/Prepared/I-member/Published/ErrorPrepared boundaries, exact I/result/binding/Ready/once-only mechanics, culture contrast, current child3/common/take/late/cold DATA proofs and complete cleanup.",
     "gates": "After current99/product23 SOURCE acceptance save/recovery/readback, fresh BOTH/catalog +whole16/33/57 +corrective1/1/1 +remaining1/1/5 ZERO/PREP, clean v2 boundaries and distinct named newcrash5 release. Old66529 UNKNOWN unchanged; no actual now.",
-    "historicalGatesBeforeSelectedRouting": "After reviewed remedy, new independent SOURCE and fresh BOTH/catalog, whole16/33/57, corrective2/2/5, remaining1/1/5 ZERO/PREP; exact saved recovery, clean v2 boundaries and separate named newcrash5 release. No current actual release; oldUNKNOWN unchanged."
+    "historicalGatesBeforeSelectedRouting": "After reviewed remedy, new independent SOURCE and fresh BOTH/catalog, whole16/33/57, corrective2/2/5, remaining1/1/5 ZERO/PREP; exact saved recovery, clean v2 boundaries and separate named newcrash5 release. No current actual release; oldUNKNOWN unchanged.",
+    "newRunLabel": "t179pd-ni-iobs-l01-process-first-crash5-selected-routing-cloud-813f1057",
+    "newCompiledSource": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
+    "restorationOfOldResult": false,
+    "oldOutcome": "UNKNOWN_UNAVAILABLE_UNCHANGED",
+    "scope": "Disposable per-case new GUID roots/new nonces/new genuine supervised producer-resumer processes only. No shared mutable old state or real game operation; unchanged strong assertions and900s budget. No old environment/process access."
   },
   "actuals": {
     "legacy3": {
@@ -1341,7 +1346,7 @@
         "sha256": "87a2679e675f9cdd6f0a25e1bbe23f910d06c472c4f4dfbc8d70853f3fdb9270",
         "bytes": 4153
       },
-      "status": "ORIGINAL_NATIVE_PASS_INDEPENDENT_EVIDENCE_PENDING",
+      "status": "INDEPENDENT_EVIDENCE_ACCEPTED_1PASS",
       "actualSource": "24c958f6f7936e20275412e95cb3c0d26df6480b",
       "compiledSource": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
       "nativeExit": 0,
@@ -1395,7 +1400,69 @@
       },
       "originalProcessesAfter": [],
       "processArrayLimitation": "Original exe-link arrays incomplete. V2 argv/stat census is dated boundary only.",
-      "limits": "Observed native outcome is not independent EVIDENCE acceptance. Historical originals including old66529 UNKNOWN unchanged."
+      "limits": "Observed native outcome is not independent EVIDENCE acceptance. Historical originals including old66529 UNKNOWN unchanged.",
+      "independentReview": {
+        "verdict": "ACCEPT_EVIDENCE_ONE_UNCERTAIN1_TARGET",
+        "model": "gpt-6-astra",
+        "reasoningEffort": "xhigh",
+        "artifacts": [
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/check_l01_selected_routing_evidence-v1-test-stdout-only.py",
+            "sha256": "8866ee8d674ba875005b460819b24bd78c9dd13b8e11c8a8786a0859038eeb6e",
+            "bytes": 37676
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/check_l01_selected_routing_evidence.py",
+            "sha256": "c26a6564db4725a53f9653c9e14488f605cda6c338fd07b4a7c4a952ee8a23da",
+            "bytes": 40453
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/selected-routing-uncertain1-evidence-check-run-v1.log",
+            "sha256": "939f38e4fdf971cc696df81ed345855fa72f9b57e64da3555ac587dc3011d025",
+            "bytes": 788
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/selected-routing-uncertain1-evidence-check-run-v2.log",
+            "sha256": "a9b1a73e1ab71ac643fe6c3037dbd8cddf7e79fa2dd8feb903a3cc3fcf9815a6",
+            "bytes": 259
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-evidence-checker-ready-20261018.json",
+            "sha256": "e7ecd5a85b6b900e9a65b61dbce777752c3fe58f0c163b7f18521e04384c9a85",
+            "bytes": 2713
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-uncertain1-carrier-readback-d1551e29-20261018.json",
+            "sha256": "1e08ff9cbb9b1bdc4d8ff555e1eeee30cb28e7c4652611d2c268d32ff719b795",
+            "bytes": 1037
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-uncertain1-independent-check-d1551e29-20261018.json",
+            "sha256": "eaa8b4289493087501f5568eafc0e123887932a8af4c9a2cca19217decb71ec5",
+            "bytes": 15982
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-uncertain1-independent-review-20261018.json",
+            "sha256": "3d61da2f36f34c0a8c22501c01f3caeda48253329ab682d60f9376e337c74449",
+            "bytes": 10429
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-uncertain1-independent-review-20261018.md",
+            "sha256": "a3a87ce9df6704fdbcd46d145edc46d1799e048accb2f8f475869ef77bd06d0b",
+            "bytes": 2404
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-uncertain1-review-reader-history-20261018.json",
+            "sha256": "783bde732ce40692da2528b24eab3a5d2ae1f9564dfa0c963a041915179406a9",
+            "bytes": 2048
+          }
+        ],
+        "candidateRecovery": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-uncertain1-candidate-recovery-d1551e29-20261018.json",
+          "sha256": "37e5dc9ee572c6925243147212f8c7c2029959a39aa10d77bc60e3a9d3dd8dc0",
+          "bytes": 7739
+        }
+      }
     }
   },
   "holds": [
@@ -1409,7 +1476,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Save/recover original outcome then independent EVIDENCE; no next actual released.",
+  "next": "Save/recover acceptance and readback; only separately named crash5 after clean v2 preflight.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -1585,8 +1652,21 @@
     "phase": "HISTORICAL_COMPILED_6AB43F6A_ZERO3_PRE_CORRECTION_INELIGIBLE_FOR_CORRECTED_ACTUALS"
   },
   "release": {
-    "status": "NONE_PENDING_INDEPENDENT_EVIDENCE",
-    "mode": null
+    "status": "SEPARATELY_NAMED_AFTER_SAVED_ACCEPTANCE_RECOVERY_AND_IMMEDIATE_CLEAN_V2_CENSUS",
+    "mode": "crash5",
+    "label": "t179pd-ni-iobs-l01-process-first-crash5-selected-routing-cloud-813f1057",
+    "compiledSource": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
+    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-selected-routing-cloud-813f1057/record.json",
+    "expectedCases": 5,
+    "category": "fr063-joint-interface-crash-current",
+    "methods": [
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection",
+        "cases": 5
+      }
+    ],
+    "conditions": "After acceptance saved/pushed/exactremote/fullcleanGitHub recovery and metadata readback, immediate clean authoritative v2 preflight then one fixed NoBuild/FIRST invocation. Preserve original outcome then immediate after-boundary/whole archive/inventories/cleanup. Unexpected outcome freezes affected set for independent diagnosis; no automatic next/retry; no repo mutation during actual. Disposable per-test GUID root/new nonce/genuine children only.",
+    "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED_NOT_RECOVERED_OR_RETRIED"
   },
   "newOriginalObservedPassingCases": 4,
   "lastAcceptanceRecovery": {
@@ -1600,10 +1680,10 @@
   },
   "qualifiedCases": {
     "retainedOriginal": 37,
-    "newQualified": 14,
-    "totalDistinctTargets": 51,
+    "newQualified": 15,
+    "totalDistinctTargets": 52,
     "wholeTarget": 57,
-    "limits": "Original37 + independently accepted new legacy3/corrected close2/races2/settlement3 plus new borrowed-lease groups, each at original actual/compiled provenance. No original failures reclassified and old66529 permanently UNKNOWN/unavailable."
+    "limits": "Original37 + independently accepted new legacy3/corrected close2/races2/settlement3/borrowed-lease integrity4 plus selected-routing uncertain1/newcrash5 groups, each at original actual/compiled provenance. No original failures reclassified and old66529 permanently UNKNOWN/unavailable."
   },
   "lastFreezeCarrierRecovery": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-freeze-recovery-f647853f-20261018.json",

@@ -1,3 +1,7 @@
+## T179-Pd-NI-IOBS-L01 — uncertain1 independent acceptance; qualified52/57 (2026-10-18)
+
+Independent Astra XHigh uncertain1 verdict: ACCEPT_EVIDENCE_ONE_UNCERTAIN1_TARGET. Original evidence and actual/compiled bindings retained. Save/recover acceptance and readback; only separately named crash5 after clean v2 preflight. Original integrity4 unqualified4PASS / both original uncertain1 FAILs, seven old fixture failures and old66529 UNKNOWN/unavailable immutable. Ready/once-only/exact owned transition and unchanged budgets preserved. All broader holds remain. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — uncertain1SelectedRouting original outcome saved (2026-10-18)
 
 Actual 24c958f6f7936e20275412e95cb3c0d26df6480b/compiled c391c03012e48c4e2395bdb288f0d763d2c0cf7f: native0, 1 executed/1PASS/0FAIL, 370.326s. Original 11 raw chains, native inventory/cleanup and dated v2 boundaries saved. Observed positive=True; independent EVIDENCE pending, qualified count remains51. All historical outcomes and old66529 UNKNOWN/unavailable immutable. Save/recover original outcome then independent EVIDENCE; no next actual released. All broader holds remain. Following sections historical.

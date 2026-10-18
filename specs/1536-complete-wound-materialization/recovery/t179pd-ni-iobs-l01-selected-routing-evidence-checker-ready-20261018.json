@@ -1,0 +1,36 @@
+{
+  "kind": "INDEPENDENT_SELECTED_ROUTING_EVIDENCE_CHECKER_READY_NOT_EXECUTED",
+  "preparedUtc": "2026-10-18T15:30:42.583025+00:00",
+  "checker": {
+    "path": "/tmp/1536-cloud-tools/review/check_l01_selected_routing_evidence.py",
+    "bytes": 37676,
+    "sha256": "8866ee8d674ba875005b460819b24bd78c9dd13b8e11c8a8786a0859038eeb6e"
+  },
+  "priorChecker": {
+    "path": "/tmp/1536-cloud-tools/review/check_l01_borrowed_lease_evidence.py",
+    "bytes": 43084,
+    "sha256": "6af2e6141a8f4fb18f4d93fcb931bcd62387ced256eefea228527bc140ac33b7"
+  },
+  "compiledSource": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
+  "sourcePins": 99,
+  "productDelta": 23,
+  "keys": {
+    "uncertain1": "uncertain1SelectedRouting",
+    "crash5": "crash5SelectedRouting"
+  },
+  "expectedLabels": "t179pd-ni-iobs-l01-process-first-<mode>-selected-routing-cloud-813f1057",
+  "expectedArchives": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-<mode>-813f1057-files-20261018/archive.json",
+  "sourcePinDigest": "70aa551ca427bb9c28b18e205bcbe2e10d1ebb88487309bb73b4a31426e37eb5",
+  "changes": [
+    "Restrict modes to uncertain1 and separately named crash5; bind actual release, accepted selectedResumeRoutingCorrection preparation,99pins/product23,c391 DLL hashes and immutable originals.",
+    "uncertain1 demands source-bound full precleanup DATA proof, completed actual late StoryTurn log exactly once, turn43, obsolete diagnostic retired, expired old attempt, unchanged published I, actual energy/health/wound outcomes, exact raw-after mechanical observations, absent owned terminal artifacts and final repeat oracle.",
+    "crash5 retains five original cuts, ten distinct producer/resumer PID+kernel identities, nonce/root containment, actual exit73/0, join/EOF, stored images/recovery/current proof/once-only and held/error cases.",
+    "Source-derived parser corrections distinguish AsPublished record resealing from immutable result contents and default serialized ValidationIssue fields from stored record shape; original native assertions remain unchanged."
+  ],
+  "syntaxParsed": true,
+  "executed": false,
+  "positiveOriginalsRequired": true,
+  "noCurrentFixtureOrProcessInspection": true,
+  "limits": "Prepared utility only. No native/observer/controller/build/discovery action or semantic acceptance. Positive-branch serialization remains to be checked against the recovered originals; a utility mismatch is not automatically a product failure. No actual progression or crash release.",
+  "usage": "python /tmp/1536-cloud-tools/review/check_l01_selected_routing_evidence.py {uncertain1|crash5} SAVED_CARRIER RECOVERY_RECEIPT --compiled c391c03012e48c4e2395bdb288f0d763d2c0cf7f"
+}

@@ -1,0 +1,22 @@
+{
+  "kind": "INDEPENDENT_SELECTED_ROUTING_UNCERTAIN1_CARRIER_READBACK",
+  "checkedUtc": "2026-10-18T15:37:24.273243+00:00",
+  "carrier": "d1551e29ec72771b74f0e66c7ff10dd2332c4e16",
+  "remote": "d1551e29ec72771b74f0e66c7ff10dd2332c4e16\trefs/heads/1536-wound-b2-cloud-20261012",
+  "cleanBothTrees": true,
+  "noLocalAlternates": true,
+  "qualifiedBeforeAcceptance": 51,
+  "supportingRefsExact": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-uncertain1-actual-source-recovery-24c958f6-20261018.json",
+      "sha256": "87a2679e675f9cdd6f0a25e1bbe23f910d06c472c4f4dfbc8d70853f3fdb9270",
+      "bytes": 4153
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-uncertain1-parent-inspection-20261018.json",
+      "sha256": "6616541f6f52ead7e17372f3c0d43cbea57ba202abe6dc4ee7aade4f7a8d6d4f",
+      "bytes": 2870
+    }
+  ],
+  "limits": "Immutable read-only metadata/Git; no native/observer/root/process intervention."
+}
