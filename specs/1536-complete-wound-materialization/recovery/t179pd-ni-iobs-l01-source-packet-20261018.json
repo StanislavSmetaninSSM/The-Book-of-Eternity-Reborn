@@ -1,8 +1,8 @@
 {
-  "kind": "NI_IOBS_L01_CORRECTED_INTAKE_SOURCE_ACCEPTED_FRESH_ZERO_PENDING",
+  "kind": "NI_IOBS_L01_CORRECTED_INTAKE_FRESH_ZERO3_RAW_SAVED",
   "sourceBase": "eaea2dde3fd5381d27e86ab9e87c782cd97d9ae0",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
-  "status": "ACCEPTED_DELTA_SOURCE_RETENTION26_CURRENT_PREPARATION_AND31ACTUALS_HELD",
+  "status": "OBSERVED_PREP_ZERO3_98PINS_WHOLE57_PENDING31_NO_CURRENT_ACTUAL",
   "sourcePins": [
     {
       "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
@@ -925,7 +925,7 @@
       "sha256": "f24fcc1960551abba6ef2489decb38e485d51b42a3b08d8ec39ca69cf74b9cfb",
       "bytes": 10099,
       "role": "Three separately named ZERO modes only: fresh BOTH/catalog, dependent whole16/33/57 plan, dependent remaining9/17/31 plan with exact selection archived.",
-      "status": "UNRUN_SOURCE_ONLY_NAMED_RELEASE_REQUIRED"
+      "status": "EXECUTED_ONCE_EACH_CATALOG_WHOLE_PLAN_REMAINING_PLAN_ZERO_NO_ACTUAL"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-first-run.py",
@@ -939,10 +939,10 @@
       "sha256": "bf6503ecb8b1006842e66313da7c72fc185b217e54cd44d4ff5a62b864c36c3f",
       "bytes": 2342,
       "role": "Unchanged read-only complete raw archiver reused with new phase/source fields; historical eight invocations retained, no runtime from archiving",
-      "status": "HISTORICAL_EIGHT_INVOCATIONS_NEW_PHASE_UNRUN"
+      "status": "READ_ONLY_NINE_TOTAL_INVOCATIONS_ORIGINAL_HISTORY8_PLUS_CURRENT3RECORD_ARCHIVE1_NO_TEST_EXECUTION"
     }
   ],
-  "next": "Root resolves this saved clean metadata HEAD and names catalog-only fresh BOTH/discovery. Root separately names whole16/33/57 and remaining9/17/31 plans after successful raw readback. Archive all3 original ZERO records once; no automatic actual/retry.",
+  "next": "Independent PREP qualification on this recovered raw carrier, then Root names repaired2 actual separately; no native/build/retry or remaining-group automatic advance.",
   "sourcePinBindingMeaning": "Active authored-source hashes including necessary new helper definitions, not compiled qualification. Old44/9DLL/preparation/first RED context is retained separately. Verification tools are frozen historical source and cannot be reused unchanged for current bindings.",
   "firstActual": {
     "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
@@ -1117,7 +1117,7 @@
     }
   },
   "runtime": {
-    "currentFixtureCompiled": false,
+    "currentFixtureCompiled": true,
     "currentFixtureActualCases": 0,
     "retainedQualifiedCases": 26,
     "originalFixtureFailures": 2,
@@ -1137,7 +1137,9 @@
       "uncertain1"
     ],
     "scope": "Historical26qualified+2fixtureFAIL preserved at compiled45cc. Current corrected2 are new changed-fixture verification, not same-body replay; remaining29 untouched unrun. No current native permission or whole qualification.",
-    "retentionStatus": "INDEPENDENT_SOURCE_ACCEPTED26_OLD_PROVENANCE_NO_NEW_BINARY_EQUIVALENCE_CLAIM"
+    "retentionStatus": "INDEPENDENT_SOURCE_ACCEPTED26_OLD_PROVENANCE_NO_NEW_BINARY_EQUIVALENCE_CLAIM",
+    "currentFixtureDiscovery": "808categories11800methods_FRESH_BOTH_ZERO",
+    "currentPreparation": "Fresh catalog0/wholePlan0/remainingPlan0; Rootreadback accepted, independent PREP qualification pending."
   },
   "currentImplementation": {
     "sourceBase": "afb5a3bb6a2dd7e066946258cbf64334bf965048",
@@ -1379,93 +1381,117 @@
     "limits": "Only named ZERO preparation eligibility; no native release or production change. S09 closed in source only; L02 phase wording reconciled without ledger/source edits."
   },
   "preparationCurrent": {
-    "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
-    "sourcePinCount": 97,
-    "sourcePinDigest": "3e2bf2b2e6e890222ae8cbf7ceaeb4d203b41a6aab68ec879e6e88723f70bb57",
+    "status": "FRESH_ZERO3_OBSERVED_ROOT_READBACK_QUALIFIED_INDEPENDENT_PREP_REVIEW_PENDING",
+    "compiledSource": "4c6d8334b441193cbda6de539347bcf7998d4db6",
+    "sourceBindingSha256": "b1b460708a407717d07928546a557762310d313a115e78d3efcd99b96b69f706",
+    "sourcePinCount": 98,
+    "sourcePinDigest": "1315ce330e8767b6c6b64b62c686f3df41506114fcde12076ab58799db1dda1f",
+    "ledgerContextSha256": "7ac13b5d22d94a8a953590071e4c824b5e566486033de059966ed453b6d88509",
     "catalog": {
-      "nativeExit": 0,
-      "seconds": 89.66554022199125,
-      "categories": 807,
+      "native": 0,
+      "seconds": 89.93683192000026,
+      "categories": 808,
       "methods": 11800,
-      "unmapped": 0,
-      "staleSelectors": 0,
-      "discoveryOnly": true,
-      "actualCases": 0,
-      "record": "/tmp/t179pd-ni-iobs-l01-whole-implementation-tools/t179pd-ni-iobs-l01-whole-prep-first-catalog-current/record.json"
+      "executed": 0,
+      "bothProjectsBuilt": true
     },
-    "plan": {
-      "nativeExit": 0,
-      "seconds": 5.9918686380115105,
-      "descriptors": 15,
+    "wholePlan": {
+      "native": 0,
+      "seconds": 6.165224523996585,
+      "descriptors": 16,
       "methods": 33,
-      "plannedCases": 57,
-      "actualCases": 0,
-      "record": "/tmp/t179pd-ni-iobs-l01-whole-implementation-tools/t179pd-ni-iobs-l01-whole-prep-first-plan-current/record.json"
+      "planned": 57,
+      "executed": 0
     },
-    "archives": [
+    "remainingPlan": {
+      "native": 0,
+      "seconds": 3.6233674279937986,
+      "descriptors": 9,
+      "methods": 17,
+      "planned": 31,
+      "executed": 0,
+      "selection": "/tmp/t179pd-ni-iobs-l01-intake-implementation-tools/t179pd-ni-iobs-l01-intake-prep-first-remaining-plan-current/exact-selected-scope.json"
+    },
+    "records": [
       {
         "mode": "catalog",
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-catalog-files-20261018/archive.json",
-        "sha256": "9bac6bf16b5ea335df0e48e6a7b9d814ef41669a91e7d3e924da40d8025ad034",
-        "rawChains": 11
+        "path": "/tmp/t179pd-ni-iobs-l01-intake-implementation-tools/t179pd-ni-iobs-l01-intake-prep-first-catalog-current/record.json",
+        "sha256": "039fd9c43eb78f6224832b79e1fe519d6ffaae4866fb70dd3e9957bda9ea1dcf",
+        "native": 0,
+        "seconds": 89.93683192000026,
+        "executed": 0
       },
       {
         "mode": "plan",
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-plan-files-20261018/archive.json",
-        "sha256": "b36b4963837af0978e6c3968dd2f170dc18496b9b3361f59b35bcf2cc672a7fa",
-        "rawChains": 10
+        "path": "/tmp/t179pd-ni-iobs-l01-intake-implementation-tools/t179pd-ni-iobs-l01-intake-prep-first-whole-plan-current/record.json",
+        "sha256": "38c0fdb2049e66728e481b258024525c3597310e70c8104f818fd20ff2149afb",
+        "native": 0,
+        "seconds": 6.165224523996585,
+        "executed": 0
+      },
+      {
+        "mode": "remaining-plan",
+        "path": "/tmp/t179pd-ni-iobs-l01-intake-implementation-tools/t179pd-ni-iobs-l01-intake-prep-first-remaining-plan-current/record.json",
+        "sha256": "f2a6ba1980854e5a8ba99cedeab6b66396601911e1cc603062df1d9d0b46f212",
+        "native": 0,
+        "seconds": 3.6233674279937986,
+        "executed": 0
       }
     ],
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-preparation-files-20261018/archive.json",
+      "sha256": "a6aec52f129b0b02a331db83d20f39d74b59a2eee12987841f83d55243705dd5",
+      "rawChains": 32
+    },
     "rootReadback": {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-whole-prep-readback-45cc99ab-20261018.json",
-      "sha256": "4aad74ce3f7ff7db43963157e93bcb2e4f174625d299d75ea1ca5c687e2e6958",
-      "scope": "Root literal raw/source/9copies/all1575 current exact-file-set proof; independent PREP qualification remains pending"
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-intake-prep-readback-4c6d8334-20261018.json",
+      "sha256": "1e09c796aca5ffe12c0adf2bcef7f795102481d8b0fbe284155bd2170bdafa96"
     },
     "binaryAfter": [
       {
         "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
         "bytes": 26266624,
-        "sha256": "f336aa613a1412a68e032011265e1693b6e00a5b2c7374f209ac75b86d7fe50f"
+        "sha256": "72cd04d17d981ce3aacab3eb54cd1c7b7f0cdf5ba20c23620a235c77e879c6c1"
       },
       {
         "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
-        "bytes": 29457920,
-        "sha256": "76fcdc838fe9223db4a3ac209237dd67456237d5a7ebc2803c1a4e2440fe4ea1"
+        "bytes": 29464064,
+        "sha256": "beb5c22e798691c43aabbfba2f08dce950805a368834593341184b73f2212c36"
       },
       {
         "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
         "bytes": 1831424,
-        "sha256": "ec9f65789e30c555d9300fc225e09a31c33f9199dcaaa60723f23ff6e3b3d294"
+        "sha256": "e5c8def50db4cee072c6f2fcc11cdd68035bfc5769b1af32440bbc26bc44df24"
       },
       {
         "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
         "bytes": 26266624,
-        "sha256": "f336aa613a1412a68e032011265e1693b6e00a5b2c7374f209ac75b86d7fe50f"
+        "sha256": "72cd04d17d981ce3aacab3eb54cd1c7b7f0cdf5ba20c23620a235c77e879c6c1"
       },
       {
         "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
         "bytes": 1831424,
-        "sha256": "ec9f65789e30c555d9300fc225e09a31c33f9199dcaaa60723f23ff6e3b3d294"
+        "sha256": "e5c8def50db4cee072c6f2fcc11cdd68035bfc5769b1af32440bbc26bc44df24"
       },
       {
         "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
         "bytes": 9609216,
-        "sha256": "f019838837fc5a5de2a02f2b5fef2c7c5c9c67fd467ce50de15777e8749221e0"
+        "sha256": "0e4c9eaee6e682cc858454ddc2c531eda4f5853acbba139ed9f52aad8c980c42"
       },
       {
         "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
         "bytes": 26266624,
-        "sha256": "f336aa613a1412a68e032011265e1693b6e00a5b2c7374f209ac75b86d7fe50f"
+        "sha256": "72cd04d17d981ce3aacab3eb54cd1c7b7f0cdf5ba20c23620a235c77e879c6c1"
       },
       {
         "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
         "bytes": 26266624,
-        "sha256": "f336aa613a1412a68e032011265e1693b6e00a5b2c7374f209ac75b86d7fe50f"
+        "sha256": "72cd04d17d981ce3aacab3eb54cd1c7b7f0cdf5ba20c23620a235c77e879c6c1"
       },
       {
         "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
         "bytes": 248832,
-        "sha256": "77f05ce964adf18e2e0c6699bb3c40fe2f600239a8f634f42245b14254f3fc7e"
+        "sha256": "d2123ab468271343a1afd20c76ca424a6e1a8e3100c6e378846d713625155704"
       }
     ],
     "allOutputInventory": [
@@ -1482,12 +1508,12 @@
       {
         "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
         "bytes": 26266624,
-        "sha256": "f336aa613a1412a68e032011265e1693b6e00a5b2c7374f209ac75b86d7fe50f"
+        "sha256": "72cd04d17d981ce3aacab3eb54cd1c7b7f0cdf5ba20c23620a235c77e879c6c1"
       },
       {
         "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.pdb",
-        "bytes": 5902432,
-        "sha256": "d4ef663a3491a44425f363f8846b86eab92f8aab2653cb32669819118434a114"
+        "bytes": 5902436,
+        "sha256": "af2328c7c162b4655ec3a909dc1f966c5e72c8831c3686733321f35489d4866e"
       },
       {
         "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.runtimeconfig.json",
@@ -3161,13 +3187,13 @@
       },
       {
         "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
-        "bytes": 29457920,
-        "sha256": "76fcdc838fe9223db4a3ac209237dd67456237d5a7ebc2803c1a4e2440fe4ea1"
+        "bytes": 29464064,
+        "sha256": "beb5c22e798691c43aabbfba2f08dce950805a368834593341184b73f2212c36"
       },
       {
         "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.pdb",
-        "bytes": 4713096,
-        "sha256": "e4dd79c5030a62c9047a415bcbb410ab927e8fa44aa11e85c86c505f233452db"
+        "bytes": 4714076,
+        "sha256": "8cf9a913093b6cc9a8cc1dea5161408c3740f807ca4cdd5f0ccf4146a798fedd"
       },
       {
         "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
@@ -3192,12 +3218,12 @@
       {
         "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
         "bytes": 1831424,
-        "sha256": "ec9f65789e30c555d9300fc225e09a31c33f9199dcaaa60723f23ff6e3b3d294"
+        "sha256": "e5c8def50db4cee072c6f2fcc11cdd68035bfc5769b1af32440bbc26bc44df24"
       },
       {
         "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb",
         "bytes": 310228,
-        "sha256": "1d3e1fc1cfb73e612e306f69d8bab1e0d54d40158e6909992b5429302d47bac4"
+        "sha256": "44898de729ced97da9bab36ebddd22786bea4e4be2fa1aea224a0dba2ce1df36"
       },
       {
         "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.runtimeconfig.json",
@@ -3217,12 +3243,12 @@
       {
         "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
         "bytes": 26266624,
-        "sha256": "f336aa613a1412a68e032011265e1693b6e00a5b2c7374f209ac75b86d7fe50f"
+        "sha256": "72cd04d17d981ce3aacab3eb54cd1c7b7f0cdf5ba20c23620a235c77e879c6c1"
       },
       {
         "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.pdb",
-        "bytes": 5902432,
-        "sha256": "d4ef663a3491a44425f363f8846b86eab92f8aab2653cb32669819118434a114"
+        "bytes": 5902436,
+        "sha256": "af2328c7c162b4655ec3a909dc1f966c5e72c8831c3686733321f35489d4866e"
       },
       {
         "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.runtimeconfig.json",
@@ -5467,12 +5493,12 @@
       {
         "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
         "bytes": 1831424,
-        "sha256": "ec9f65789e30c555d9300fc225e09a31c33f9199dcaaa60723f23ff6e3b3d294"
+        "sha256": "e5c8def50db4cee072c6f2fcc11cdd68035bfc5769b1af32440bbc26bc44df24"
       },
       {
         "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb",
         "bytes": 310228,
-        "sha256": "1d3e1fc1cfb73e612e306f69d8bab1e0d54d40158e6909992b5429302d47bac4"
+        "sha256": "44898de729ced97da9bab36ebddd22786bea4e4be2fa1aea224a0dba2ce1df36"
       },
       {
         "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.runtimeconfig.json",
@@ -5492,12 +5518,12 @@
       {
         "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
         "bytes": 9609216,
-        "sha256": "f019838837fc5a5de2a02f2b5fef2c7c5c9c67fd467ce50de15777e8749221e0"
+        "sha256": "0e4c9eaee6e682cc858454ddc2c531eda4f5853acbba139ed9f52aad8c980c42"
       },
       {
         "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.pdb",
         "bytes": 1897888,
-        "sha256": "1d3918d0c3dab0dfafc644d403bb343162a9e4522813e2c48898bd7de9b2a2f2"
+        "sha256": "fb5cc310c73f37b05fc31746011e3bd2156d996c6e70bc6ba21f740e98d5183b"
       },
       {
         "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.runtimeconfig.json",
@@ -5517,12 +5543,12 @@
       {
         "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
         "bytes": 26266624,
-        "sha256": "f336aa613a1412a68e032011265e1693b6e00a5b2c7374f209ac75b86d7fe50f"
+        "sha256": "72cd04d17d981ce3aacab3eb54cd1c7b7f0cdf5ba20c23620a235c77e879c6c1"
       },
       {
         "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.pdb",
-        "bytes": 5902432,
-        "sha256": "d4ef663a3491a44425f363f8846b86eab92f8aab2653cb32669819118434a114"
+        "bytes": 5902436,
+        "sha256": "af2328c7c162b4655ec3a909dc1f966c5e72c8831c3686733321f35489d4866e"
       },
       {
         "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.runtimeconfig.json",
@@ -5712,12 +5738,12 @@
       {
         "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/PortableStorageCrashHost.dll",
         "bytes": 7168,
-        "sha256": "6dfe4aad3bbb9f90c1269b6f42ae1357b183a44a0574d4c159ddaaf26702bdf0"
+        "sha256": "d6aaa65c4d3b821c316aede0f59fef9ce59255c5988a8327ba56ad9e26de9cdf"
       },
       {
         "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/PortableStorageCrashHost.pdb",
         "bytes": 21668,
-        "sha256": "f8223d421f751236a4f3337ad8560535a2b8f68d33d2d53e50f3834222acbbbb"
+        "sha256": "6b9e5d65ce52947d3dedabb4b0e7992613cdeead8b5a7b5fbe3b70dd5f61d209"
       },
       {
         "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/PortableStorageCrashHost.runtimeconfig.json",
@@ -7652,12 +7678,12 @@
       {
         "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
         "bytes": 26266624,
-        "sha256": "f336aa613a1412a68e032011265e1693b6e00a5b2c7374f209ac75b86d7fe50f"
+        "sha256": "72cd04d17d981ce3aacab3eb54cd1c7b7f0cdf5ba20c23620a235c77e879c6c1"
       },
       {
         "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.pdb",
-        "bytes": 5902432,
-        "sha256": "d4ef663a3491a44425f363f8846b86eab92f8aab2653cb32669819118434a114"
+        "bytes": 5902436,
+        "sha256": "af2328c7c162b4655ec3a909dc1f966c5e72c8831c3686733321f35489d4866e"
       },
       {
         "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.runtimeconfig.json",
@@ -7682,12 +7708,12 @@
       {
         "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
         "bytes": 248832,
-        "sha256": "77f05ce964adf18e2e0c6699bb3c40fe2f600239a8f634f42245b14254f3fc7e"
+        "sha256": "d2123ab468271343a1afd20c76ca424a6e1a8e3100c6e378846d713625155704"
       },
       {
         "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.pdb",
         "bytes": 76884,
-        "sha256": "ae727cf468c8a1f6dc4493d97b6bfb5ca2e21a6c63a02d430a67a945b121defd"
+        "sha256": "e40a5b7e12ecd31e682abdc837b2e8d9d99137ba846ba5131f476af8ac99bdbb"
       },
       {
         "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.runtimeconfig.json",
@@ -9345,38 +9371,12 @@
         "sha256": "fad4c6838f4fd0df4d53e480b67e6f2ca6994663e25ce58b3bef3823509e35c6"
       }
     ],
-    "namespaceBefore": {
-      "ownedRoots": []
-    },
+    "inventoryCount": 1575,
     "namespaceAfter": {
       "ownedRoots": []
     },
-    "processesBefore": [],
     "processesAfter": [],
-    "namedActivation": "Root separately named catalog-only45cc and dependent Plan-only45cc by literal messages after each predecessor readback; no separate named activation file was created or claimed.",
-    "scope": "Independently accepted original fresh BOTH/catalog and exact PlanOnly-NoBuild ZERO preparation, raw/recovery and Root readback. No actual mode has run.",
-    "independentAcceptance": {
-      "verdict": "ACCEPT_FRESH_ZERO_PREPARATION_ONLY",
-      "carrier": "8d00ba291d16af98b56a8932630d87cab3bade2f",
-      "reports": [
-        {
-          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-prep-independent-review-8d00ba29-20261018.md",
-          "sha256": "4c0e5b525a3ba1b1fdc6c2a948624f3786a3c1ef171bab424c0c480aefb89253"
-        },
-        {
-          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-prep-independent-review-8d00ba29-20261018.json",
-          "sha256": "66087a312bf3d3b8db545c848ce2ccc0329daba0c94d849ab5519d8dbbb5f4f3"
-        },
-        {
-          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-prep-independent-check-8d00ba29-20261018.json",
-          "sha256": "840ebdce085ac56494d59eb29b4b2709ffb55982cec9516996571af18fc8d360"
-        }
-      ],
-      "rootDecision": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-prep-acceptance-protected-release-8d00ba29-20261018.json",
-      "rootDecisionSha256": "79e6287e6cd4aad44cba379599f1ca0a44e112ddf9833787bd8c87d8ac5a10ec",
-      "actualCases": 0
-    },
-    "bindingStatus": "HISTORICAL_COMPILED45CC_ZERO_FOR_PRE_CORRECTION97PINS15DESCRIPTORS_NOT_CURRENT_FIXTURE"
+    "limits": "Three new ZERO phases only; no actual case. Prior26 stay at old compiled45cc identities, not relabeled current4c6d. Original45cc97-pin and first6 live raw remain immutable at original context."
   },
   "actualScopes": {
     "protected-late2": {
