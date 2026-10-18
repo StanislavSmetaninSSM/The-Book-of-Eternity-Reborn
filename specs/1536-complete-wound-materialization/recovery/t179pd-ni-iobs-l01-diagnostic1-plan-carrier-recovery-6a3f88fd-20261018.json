@@ -1,0 +1,136 @@
+{
+  "kind": "CLOUD_CARRIER_EXACT_GITHUB_RECOVERY",
+  "sha": "6a3f88fd4aa5d155fd971ba144cc823adc06941b",
+  "base": "5479e8c29732c06bca1c2dad778f5ee18c472109",
+  "checkedUtc": "2026-10-18T16:12:07.400029+00:00",
+  "directory": "/workspace/1536-cloud-clean-restore",
+  "remoteShaVerified": true,
+  "clean": true,
+  "localSourceOrObjectReuse": false,
+  "changedPathsVerified": 17,
+  "files": [
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 2425166,
+      "sha256": "dfadc43b4446c5e9b6b4c1ce71f22b1e35731d6c6d86e2202f8b797f3e26e24d",
+      "gitBlob": "1afce168fe0f8b904287d16e9e18c1f04b3afacb",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/check_l01_selected_routing_crash5_causal-v1-wide-excerpt.py",
+      "bytes": 10459,
+      "sha256": "572045f3c6ebf25fe49fdbf6341f5e5077426e3322e7e3781006f11fbdbbe66e",
+      "gitBlob": "7270b48445e187cb244956700d5cbcf1524de457",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/check_l01_selected_routing_crash5_causal.py",
+      "bytes": 10508,
+      "sha256": "e106b20274603fbfc675df6eb981197e33b3d96387407b4faa1fdc824bd2fe45",
+      "gitBlob": "e65f406d24de8fb9a4847063328ba9ca425bc6c6",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/selected-routing-crash5-causal-check-format-history.json",
+      "bytes": 834,
+      "sha256": "85feb89e6f97055e336afd19e203f714f760ce7fea355ff6d2a82994adfe03e7",
+      "gitBlob": "0a9a0aa7559e04b5d9a1650e80cfafdf7839ebbe",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/selected-routing-crash5-causal-check-run-v1.log",
+      "bytes": 250,
+      "sha256": "1bb58d917d4610ee7e91072f1168e336def5534d735200457cfed28c2aedd0ab",
+      "gitBlob": "2484480d0554d2ba9ec051c7f4e3e3a9f15757df",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-qualification-20261018.json",
+      "bytes": 210110,
+      "sha256": "b34b9efca291396decf35078499c6d69a1c171b346a52fe7c91fae757cb9c7c9",
+      "gitBlob": "127e1aa3e7e098144fd6c89b3dafdd3253dfddbd",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-qualification-before-crash-diagnostic1-20261018.json",
+      "bytes": 201221,
+      "sha256": "9ba9ab9fc403760ec103c56e9c5e0ba167d84ec4e7082446acf5110a115467a0",
+      "gitBlob": "8a1dcc5e83c0c8dbdcca1bedcbbb5fe7e751d544",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-crash5-frozen-carrier-recovery-5479e8c2-20261018.json",
+      "bytes": 97480,
+      "sha256": "94a98644ac1db43a696ce3afca04265e6b0aa7fde7d168492d3b03c521f40c37",
+      "gitBlob": "12d587def5ec76a5d460f27de0c135f09e1e9f24",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-crash5-causal-independent-check-5479e8c2-20261018.json",
+      "bytes": 13049,
+      "sha256": "2e302f0eedd8de09c53c885984db0e7853d851b2c527ff5430e2f138bfecf5e7",
+      "gitBlob": "df352a391d116928245287546a46f5599347bba4",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-crash5-causal-independent-review-20261018.json",
+      "bytes": 17524,
+      "sha256": "0f23af9d339e393956252d6d3650884804190c03073fcce837d7cf6a81124678",
+      "gitBlob": "68bdc1f0dcd2ab70a0c62418eb5ee0aa995856cc",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-crash5-causal-independent-review-20261018.md",
+      "bytes": 2967,
+      "sha256": "9c5826d87ef023166e474a2d7aa44e54561eba97fc870eedd3dfd5c6a9a3aff0",
+      "gitBlob": "981444e9a5f5a515b86daff15afbbfb567c3ed92",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-uncertain1-acceptance-parent-readback-85bab6db-20261018.json",
+      "bytes": 2033,
+      "sha256": "78d67c3893e9387a2355e7b7e3d6631d34b4fe86587b45933a884ade2e12bbc9",
+      "gitBlob": "3f8a0a7dd9ce98b0540924cc079c5b2acab4e665",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
+      "bytes": 64993,
+      "sha256": "86f1f78f321d45114fc147996519e13532b1f6f41d294ab71b6e8f317fe4e27e",
+      "gitBlob": "a30fa80b4d417a7ad0651b22dfc6e0ca8c804591",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-before-crash-diagnostic1-20261018.json",
+      "bytes": 65384,
+      "sha256": "9ce45f224854c59e7ba59f344992c2f3525528805a3fc1562d182b1040264382",
+      "gitBlob": "e7618512f086a14225aa4aec4bea2dfc350370c9",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/write_selected_routing_crash5_causal_review.py",
+      "bytes": 13417,
+      "sha256": "fa62a02446f38f75fe92c5b3dff47472d13aef3d1336b8265a2a76c4d4c8497e",
+      "gitBlob": "2281407f0a45bf41c20bbd946184a9c1c109d114",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "bytes": 239784,
+      "sha256": "e0c511823526cf805568c66b0863e7de1d22182f346ac7a7f39ae14e38c1007a",
+      "gitBlob": "1fc39963503706b6fdc7593e98c21dfe5173d801",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "bytes": 1601719,
+      "sha256": "2cd55820e50afa423d08441d7e2c562b4cefe876716431f36595152e2b80b401",
+      "gitBlob": "84a2fe0cf35fec44dcc7285affba5532743a55ae",
+      "mode": "100644"
+    }
+  ],
+  "sourcePinsVerified": 99,
+  "sourcePinDigest": "70aa551ca427bb9c28b18e205bcbe2e10d1ebb88487309bb73b4a31426e37eb5",
+  "method": "Fetch exact task branch directly from GitHub into independent originally empty-directory GitHub clone, checkout exact SHA, clean tree, verify every changed file bytes/SHA256/blob/mode and all current source pins",
+  "limits": "Source/evidence recovery only. No test/build execution here; no lost corrected-crash bytes recovered."
+}

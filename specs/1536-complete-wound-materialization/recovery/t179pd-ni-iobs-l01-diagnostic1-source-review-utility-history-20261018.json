@@ -1,0 +1,20 @@
+{
+  "kind": "INDEPENDENT_REVIEW_UTILITY_HISTORY_NOT_NATIVE_RESULT",
+  "firstCandidate": "8ba3ddbfd448119328f7ec7c0a321a0d943feaf0",
+  "firstCheck": {
+    "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-source-independent-check-8ba3ddbf-20261018.json",
+    "bytes": 3488,
+    "sha256": "22d0d9450c16a0d6b067ad649c9792b181888ef262b52e4eab308db4b7a63099"
+  },
+  "firstLog": {
+    "path": "/tmp/1536-cloud-tools/review/diagnostic1-source-check-8ba3ddbf.log",
+    "bytes": 711,
+    "sha256": "9e17432c7980edb69e6a4ad76487a39f0f977daa946901a26424b35e20e2d577"
+  },
+  "preservedV1Checker": {
+    "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic1_source-v1-assert-count.py",
+    "bytes": 12508,
+    "sha256": "c1233885363043e676fd81dd48d36eff214cbf43e74fcec7cd17a44594a4ede0"
+  },
+  "explanation": "First candidate had real5-minute category blocker. Concurrent authorized correction advanced working/restore files while first-candidate comparison ran, producing expected current-file mismatches. Reviewer also hardcoded120 statements as Assert invocation count; full source has124 invocations (nested calls). Fixed count check to original+1 and kept exact whole-file inverse equivalence. All original assertions unchanged. Final corrected candidate check passed145 checks. No native/build/discovery/observer/retry or repository write by reviewer."
+}

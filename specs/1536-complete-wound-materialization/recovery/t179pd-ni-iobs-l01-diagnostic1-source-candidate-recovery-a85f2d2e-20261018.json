@@ -1,0 +1,45 @@
+{
+  "kind": "CLOUD_CARRIER_EXACT_GITHUB_RECOVERY",
+  "sha": "a85f2d2e05b7c8acb644408c4cd1a8f86e272e3b",
+  "base": "8ba3ddbfd448119328f7ec7c0a321a0d943feaf0",
+  "checkedUtc": "2026-10-18T16:20:37.331349+00:00",
+  "directory": "/workspace/1536-cloud-clean-restore",
+  "remoteShaVerified": true,
+  "clean": true,
+  "localSourceOrObjectReuse": false,
+  "changedPathsVerified": 4,
+  "files": [
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 2427537,
+      "sha256": "c34bfa12622674cd7f927065144ebc8de7e475f25d10b04dcdf443e744e54789",
+      "gitBlob": "3be4b248d1d0c6152fd72e378642790c505ae6b8",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-qualification-20261018.json",
+      "bytes": 212676,
+      "sha256": "ba50c9a388cf232583e553b22f75a7e9ae7f73b90514d76e5fd73e2674e0db4f",
+      "gitBlob": "204bbbcad3ffcf0864b294b707de88136c145bcb",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
+      "bytes": 73288,
+      "sha256": "788405b0f4a4b5065d82a9bdb995cc925aefd101571e4d592e1c61bcc367b197",
+      "gitBlob": "f103aaa204939eb5d2c0c9553677783bf8af6758",
+      "mode": "100644"
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 2014078,
+      "sha256": "08bfb226bb044544e992996c241abbe61a87d0a3ab543a9e30e71479b85ed480",
+      "gitBlob": "ac85ce283143079f475a0297d25e1d73366a8a9f",
+      "mode": "100644"
+    }
+  ],
+  "sourcePinsVerified": 101,
+  "sourcePinDigest": "ccae22922742a45cac69e9b35a4df4ad1f99ebe83977f6ec05e47b765cd02ebf",
+  "method": "Fetch exact task branch directly from GitHub into independent originally empty-directory GitHub clone, checkout exact SHA, clean tree, verify every changed file bytes/SHA256/blob/mode and all current source pins",
+  "limits": "Source/evidence recovery only. No test/build execution here; no lost corrected-crash bytes recovered."
+}

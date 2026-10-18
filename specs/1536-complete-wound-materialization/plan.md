@@ -1,3 +1,7 @@
+## T179-Pd-NI-IOBS-L01 — diagnostic1 SOURCE accepted; ZERO3 only (2026-10-18)
+
+[Independent SOURCE](recovery/t179pd-ni-iobs-l01-diagnostic1-source-independent-review-20261018.md) accepts fixture-only instrumentation/diagnostic Fact/exact selection and isolation/tool gates at candidatea85f2d2e05b7c8acb644408c4cd1a8f86e272e3b.101pins/product23, original assertions/whole57/ledger/220s child/900s crash5 limits unchanged. Qualified52/original native124/directtimeouts/two frozen roots/old66529 UNKNOWN retained. Save/recover/readback acceptance then named fresh BOTH/catalog+whole16/33/57+diagnostic1/1/1 ZERO3 only. No actual until saved/recovered original preparation and independent PREP plus separate named gate. All broader holds unchanged. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — current diagnostic phase labels clarified (2026-10-18)
 
 Prior selected-routing causal/source/PREP acceptance objects are retained explicitly as historical at original bindings. Current packet fields now point to diagnostic1 SOURCE101/product23 and UNRUN ZERO3 with52 retained; prior99/ZERO4 acceptance does not authorize current native. Original snapshots/raw records/ledger unchanged. This satisfies independent SOURCE metadata feedback; no code/native change. Following sections historical.

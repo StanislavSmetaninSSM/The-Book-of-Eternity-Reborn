@@ -1,0 +1,13 @@
+{
+  "kind": "PARENT_DIAGNOSTIC1_PLAN_READBACK_NOT_RUNTIME_RELEASE",
+  "checkedUtc": "2026-10-18T16:12:29.174125+00:00",
+  "sha": "6a3f88fd4aa5d155fd971ba144cc823adc06941b",
+  "qualified": 52,
+  "currentPins": 99,
+  "proposedPins": 101,
+  "product": 23,
+  "noActualRelease": true,
+  "oldCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED",
+  "frozenNewCrash": "native124/247rawchains/retainedroots",
+  "next": "fixture-only implementation then SOURCE and fresh PREP"
+}

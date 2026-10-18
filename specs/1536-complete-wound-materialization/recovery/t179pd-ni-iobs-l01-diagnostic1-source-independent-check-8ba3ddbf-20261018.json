@@ -1,0 +1,70 @@
+{
+  "kind": "INDEPENDENT_DIAGNOSTIC1_STATIC_SOURCE_CHECK",
+  "candidate": "8ba3ddbfd448119328f7ec7c0a321a0d943feaf0",
+  "base": "6a3f88fd4aa5d155fd971ba144cc823adc06941b",
+  "sourcePins": 101,
+  "pinDigest": "e319d75fce820bb4b309b4806d5f87ce32f263ca6695378e49a420c64cb4a2b2",
+  "productDelta": 23,
+  "newPinnedPaths": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrashDiagnostic.cs",
+    "tests/selections/1536-joint-interface-crash-diagnostic1.json"
+  ],
+  "changedExistingPinnedPaths": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-first-run.py",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-preparation-run.py",
+    "tests/categories.json"
+  ],
+  "exactCrashInverse": true,
+  "originalAssertCalls": 124,
+  "newAssertCalls": 125,
+  "whole": [
+    16,
+    33,
+    57
+  ],
+  "diagnostic": [
+    1,
+    1,
+    1
+  ],
+  "diagnosticCountsToward57": false,
+  "categorySeconds": 300,
+  "childSeconds": 220,
+  "recovery": {
+    "path": "/tmp/1536-cloud-tools/carrier-recovery-8ba3ddbf.json",
+    "bytes": 4893,
+    "sha256": "e696d0daa229e5159ae5aae17c6cf76535f26ca098046723a96f922347d10464"
+  },
+  "recoveryChangedPaths": 13,
+  "remoteScope": "Remote verification attested by saved receipt; restored bytes independently checked here.",
+  "orchestration": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-crash-diagnostic-phase-20261018.py",
+    "bytes": 3721,
+    "sha256": "5ab4e4f4d4c59842179f5a6ef41bb96d0bd5f164a081a6a86da2283d67a3d805",
+    "scope": "One explicit phase, exact clean SHA, new TMPDIR identity, archived frozen-root bytes/file-set unchanged before each phase, immediate dated authoritative v2 global/new-namespace boundaries; no automatic next/retry.",
+    "environmentShell": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-env-f57baaa8-20261018.sh",
+      "bytes": 1276,
+      "sha256": "230eb604a1556c5196a8fe41027419dff8db0d49706e03a91bec996680c9b991",
+      "scope": "Exact task-only toolchain variables/newGUID TMPDIR/runtime/CLI/XDG namespace; HOME untouched; NuGet dependency cache shared only as tooling input."
+    }
+  },
+  "qualifiedTargets": 52,
+  "nativeExecutedByReviewer": false,
+  "checksPassed": 147,
+  "findings": [
+    "pin tests/categories.json",
+    "all original120 asserts retained plus1 diagnostic-output check",
+    "diagnostic preserves agreed900-second outer ceiling",
+    "recovered specs/1536-complete-wound-materialization/plan.md",
+    "recovered specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-qualification-20261018.json",
+    "recovered specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
+    "recovered tests/categories.json"
+  ],
+  "metadataAcceptanceConditions": [
+    "Current causal/correction handoff must point to frozen crash5 and diagnostic1; retain old objects as explicitly historical.",
+    "Prior selected-routing SOURCE/PREP/next-contract fields must be historical, with current101/product23 ZERO3 and NONE actual release clear.",
+    "After review, save/push/exactremote/recover/read back only named catalog/whole-plan/diagnostic-plan ZERO3 labels before any ZERO; actual needs independent fresh PREP and a separate one-mode release."
+  ]
+}
