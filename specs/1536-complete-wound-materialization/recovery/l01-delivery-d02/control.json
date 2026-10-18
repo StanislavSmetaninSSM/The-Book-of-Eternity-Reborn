@@ -1,9 +1,22 @@
 {
   "kind": "D02_COMPOSITE_CONTINUATION_CONTROL",
-  "source": {"status": "HOLD_SOURCE_REQUIRED"},
-  "synthetic": {"status": "HOLD_PREP_REQUIRED"},
+  "source": {
+    "status": "SOURCE_ACCEPTED_COMPOSITE_ZERO_ONLY",
+    "candidate": "5efddae52f18d723b8e8365127ef88aac6b04bfb",
+    "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-source-independent-review-20261018.json",
+    "reviewSha256": "18666d3b02908c64d3c9801f8e020fd7a9eda7658bc8ea2e95afebf02e73fea8",
+    "allowedOnceModes": [
+      "catalog",
+      "plan",
+      "prepare"
+    ]
+  },
+  "synthetic": {
+    "status": "HOLD_PREP_REQUIRED"
+  },
   "gameplayRelease": "NONE",
   "crash5Release": "NONE",
   "originalCatalog124Replaced": false,
-  "authority": "Latest explicit user delegation continues D01 PREP and own synthetic0/7 after independent reviews without extra user approval; STOP before gameplay snapshot."
+  "authority": "Latest explicit user delegation continues D01 PREP and own synthetic0/7 after independent reviews without extra user approval; STOP before gameplay snapshot.",
+  "accountingPattern": "Existing pinned M01/S01 FINALIZE for known-native record/summary publication; existing capture_native where native execution/output-close handling is needed. No new framework or accounting variant."
 }

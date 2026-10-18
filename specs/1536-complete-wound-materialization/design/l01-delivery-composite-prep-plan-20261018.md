@@ -53,7 +53,7 @@ B01's hash-bound read-only tool census. No general instrumentation framework.
 
 - [x] Freeze bindings and minimal controller; validate copy/hash/path refusal with
   disposable pure checks. No SDK/native/game work in these checks.
-- [ ] Save/push/recover WIP, independent whole bounded SOURCE/plan and then saved
+- [x] Save/push/recover WIP, independent whole bounded SOURCE/plan and then saved
   acceptance with exact controller/bindings hashes. Recheck149pins and172installed
   inputs, exact helper hashes before imports, source-tree equivalence, available
   retained roots and no active exact tool match before each native phase.
@@ -95,7 +95,16 @@ then returns the same result. No new accounting policy/framework is introduced.
 fakes: original8PASS/4expected persistence FAIL, corrected12PASS for0/7/124/-9
 across ordinary/output-close/record-fault paths; no native actions. The original
 four copy checks retain their96f08 source provenance; their function ASTs did not
-change and they are not replayed. Focused affected SOURCE is still required.
+change and they are not replayed. Independent affected SOURCE accepts5efddae5:
+19focused checks/12independent fake cases, findings[]. Root verified exact report
+hashes and SOURCE-only gate. Acceptance is pushed/read back/recovered before ZERO.
+
+Why this recurred: the new owned wrapper reused launch handling but added a final
+record write outside the existing native/observer finalization path; staging-only
+checks did not exercise that added boundary. The local prevention is to reuse
+`capture_native` for native/output-close accounting where applicable and `FINALIZE`
+for known-native record/summary publication, with the small boundary regression.
+The existing pattern is sufficient; no architectural or common framework refactor.
 
 Property routing/import mismatch, absent source/tool/dependency binding, hash
 drift, failure/UNKNOWN or live tool/session residue freezes that first outcome.

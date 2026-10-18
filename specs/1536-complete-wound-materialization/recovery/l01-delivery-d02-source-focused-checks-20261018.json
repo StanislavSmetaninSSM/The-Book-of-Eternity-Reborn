@@ -1,0 +1,91 @@
+{
+  "kind": "D02_FOCUSED_PUBLICATION_CORRECTION_CHECKS",
+  "candidate": "5efddae52f18d723b8e8365127ef88aac6b04bfb",
+  "originalCandidate": "96f08c8bb2d534c00bcbca4ff5a279554445d58d",
+  "checks": [
+    {
+      "name": "exact accepted correction bytes",
+      "passed": true
+    },
+    {
+      "name": "exact inverse restores entire original controller",
+      "passed": true
+    },
+    {
+      "name": "only run_owned function changed",
+      "passed": true
+    },
+    {
+      "name": "bindings unchanged",
+      "passed": true
+    },
+    {
+      "name": "149 pins and source packet untouched",
+      "passed": true
+    },
+    {
+      "name": "preserved original l01-delivery-d02-source-original-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "name": "preserved original l01-delivery-d02-source-original-independent-review-20261018.md",
+      "passed": true
+    },
+    {
+      "name": "preserved original l01-delivery-d02-source-original-checks-20261018.json",
+      "passed": true
+    },
+    {
+      "name": "preserved original check_d02_original_source.py",
+      "passed": true
+    },
+    {
+      "name": "independent fake replay exactly matches saved green",
+      "passed": true
+    },
+    {
+      "name": "original red eight successes/four persistence failures retained",
+      "passed": true
+    },
+    {
+      "name": "actual pinned M01 finalizer used",
+      "passed": true
+    },
+    {
+      "name": "known nonzero native priority all faults",
+      "passed": true
+    },
+    {
+      "name": "native zero observer failure holds",
+      "passed": true
+    },
+    {
+      "name": "negative raw signal preserved",
+      "passed": true
+    },
+    {
+      "name": "zero gates still closed until saved acceptance",
+      "passed": true
+    },
+    {
+      "name": "corrected recovery exact141paths149pins",
+      "passed": true
+    },
+    {
+      "name": "changed files exact saved/GitHub restore",
+      "passed": true
+    },
+    {
+      "name": "writer and restored HEAD clean",
+      "passed": true
+    }
+  ],
+  "passed": 19,
+  "failed": [],
+  "pureRegressionCases": 12,
+  "nativeActions": 0,
+  "controllerSha256": "fc8a9f070f20528b3942584ca2248cb1b25f4ca3168cd5ba9414791d84c5986e",
+  "bindingsSha256": "a7d62aae8152516210aec579d12ac0d01bf990880b1650f6cd4ba8445a98e12e",
+  "recoveryReceiptSha256": "ea274fbe37d4e4e8a8807893961bc78601f127d51ccdf3b2a356c468d1587fc0",
+  "checkerSha256": "2b8f0b2175d053ad87c2d8bce6a8acad719f1d91440f9672cc2672622446e231"
+}

@@ -1,0 +1,121 @@
+{
+  "kind": "D02_COMPOSITE_CONSOLIDATED_SOURCE_INDEPENDENT_REVIEW",
+  "candidate": "5efddae52f18d723b8e8365127ef88aac6b04bfb",
+  "originalCandidate": "96f08c8bb2d534c00bcbca4ff5a279554445d58d",
+  "verdict": "ACCEPT_D02_COMPOSITE_SOURCE_ZERO_ONLY",
+  "controllerSha256": "fc8a9f070f20528b3942584ca2248cb1b25f4ca3168cd5ba9414791d84c5986e",
+  "bindingsSha256": "a7d62aae8152516210aec579d12ac0d01bf990880b1650f6cd4ba8445a98e12e",
+  "findings": [],
+  "resolvedFindings": [
+    {
+      "id": "D02-S01",
+      "resolution": "The sole functional replacement routes per-command record persistence through the existing pinned M01/S01 FINALIZE, with no-op emit, then returns the same result. Known native/raw/signal values survive persistence failure; observerErrors hold native0. No accounting-policy variant or framework change was introduced.",
+      "proof": "Independent replay of the source-bound fake matrix exactly matches saved GREEN12/12. Saved original RED8/12 retains all four record-persistence failures.19focused checks pass, including exact inverse bytes and all-other-function AST identity."
+    }
+  ],
+  "wholeScopeBasis": "The original bounded SOURCE review checked60static/proof obligations and found only D02-S01. That review, checker and results are preserved byte-exact in this carrier. The corrected controller differs only at the final publication call; staging/main/helper/Live/actual_case/bindings and149original pins are unchanged. No unchanged manifests, helper20 or historical runtime suites were rerun.",
+  "zeroAdmission": {
+    "status": "ELIGIBLE_AFTER_SAVED_RECOVERED_SOURCE_ACCEPTANCE",
+    "controlStatus": "SOURCE_ACCEPTED_COMPOSITE_ZERO_ONLY",
+    "root": "/tmp/l01d02-cd3d584b5e27457f",
+    "modes": [
+      {
+        "mode": "catalog",
+        "once": true,
+        "scope": "Stage exact separate integration460/unit439 retained closures and own metadata; property-only evaluation/preprocessed import checks; fresh -ValidateCatalog -NoBuild discovery/audit, ZERO test methods.",
+        "budget": "One aggregate600s from phase start, with existing GNU timeout conditional10s cleanup and original runner protective budget."
+      },
+      {
+        "mode": "plan",
+        "once": true,
+        "requires": "Exact successful catalog record, same controller/bindings and unchanged staged bytes.",
+        "scope": "Existing diagnostic singleton -PlanOnly -NoBuild: exactly1descriptor/1method/1case, ZERO tests.",
+        "budget": "External600s cap; existing runner budget unchanged."
+      },
+      {
+        "mode": "prepare",
+        "once": true,
+        "requires": "Successful catalog and singleton plan, staged/hash bindings unchanged.",
+        "scope": "Original direct D01 Live/helper csc compilation with pinned net8reference inputs and runtimeconfig. No target or reader child execution.",
+        "budget": "Original60s compile limit."
+      }
+    ]
+  },
+  "admissionConditions": [
+    "Root copies this report and supporting proof byte-exact, saves/pushes/readbacks/recovers acceptance metadata, then sets only the source ZERO gate to the exact reviewed controller/bindings.",
+    "Each mode is explicitly invoked once. Fresh root/phase mkdir, clean exact source, unchanged149pins, installed-input hashes, original-root/output retention and existing before/after ownership/visibility checks remain mandatory. Any mismatch/nonzero/UNKNOWN/observer error freezes the first outcome; no automatic retry, restore, rebuild, timeout increase or fallback.",
+    "Catalog must actually establish exact private TargetPath/ProjectAssetsFile/extensions/test/configuration/import bindings before discovery. Static SOURCE acceptance does not claim those UNRUN evaluations succeeded.",
+    "Preserve compilation provenance separately: integration d53e61e5 and B01unit d3a1ddcf. No merged DLL closure, no current-HEAD compilation claim, no original124/137 rehabilitation, no promotion of B01 alone to PREP.",
+    "Archive all original ZERO records/commands/native results/paths/imports/manifests/audit/plan/compiled outputs and obtain independent PREP. The later synthetic gate must bind exact catalog,plan,prepare record hashes and outputs before any target0/7 run."
+  ],
+  "syntheticRelease": "HOLD_PREP_REQUIRED",
+  "gameplayRelease": "NONE",
+  "crash5Release": "NONE",
+  "repeatCauseAndLocalPrevention": "The new wrapper added a final record write outside the existing native/observer accounting path. The correction reuses FINALIZE at publication. For future bounded wrappers, use the existing capture_native for native execution/output-close accounting where applicable, and FINALIZE for record/summary publication; retain a small fault regression at the added boundary. This does not call for a general refactor or another accounting implementation.",
+  "validation": {
+    "originalSourceChecks": 60,
+    "focusedChecks": 19,
+    "independentlyReplayedFakeCases": 12,
+    "failedChecks": 0,
+    "nativeSdkBuildDiscoveryTestProcessActions": 0,
+    "unchangedHelpersNotRerun": true
+  },
+  "unchangedHolds": [
+    "Original catalog124/unit137 retained, B01 consumed with build-only scope.",
+    "L0152/57; original five unqualified; old66529permanentlyUNKNOWN/unavailable; M01/S01 narrow provenance unchanged.",
+    "Current user endpoint is D01 synthetic0/7 after independent PREP/EVIDENCE and a final future snapshot PLAN, followed by STOP before gameplay/crash5.",
+    "Windows/CI/403 and all broader holds remain as previously recorded."
+  ],
+  "bindings": [
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-delivery-d02/phase.py",
+      "bytes": 18311,
+      "sha256": "fc8a9f070f20528b3942584ca2248cb1b25f4ca3168cd5ba9414791d84c5986e"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-delivery-d02/bindings.json",
+      "bytes": 321614,
+      "sha256": "a7d62aae8152516210aec579d12ac0d01bf990880b1650f6cd4ba8445a98e12e"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-delivery-d02/native-accounting-check.py",
+      "bytes": 3001,
+      "sha256": "7bcdf94da48eec3d3abe3c474be8a127f423ea4fe7b19083dc727c5524559f67"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-delivery-d02/native-accounting-red.json",
+      "bytes": 3449,
+      "sha256": "7eb5b4552c650b413ceb0606f30d29c79637562421b3b5bdd586ef2717fd313e"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-delivery-d02/native-accounting-green.json",
+      "bytes": 3335,
+      "sha256": "fb5d7079c2ef7ce283450fcd153aab23a0e84a5912918792713b6c0136508ce2"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/d02-corrected-native-accounting-independent-20261018.json",
+      "bytes": 3335,
+      "sha256": "fb5d7079c2ef7ce283450fcd153aab23a0e84a5912918792713b6c0136508ce2"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/l01-delivery-d02-source-focused-checks-20261018.json",
+      "bytes": 2487,
+      "sha256": "5646571cae00cf190bc36a1c9a8fd6f41bfb00b496757c1c40802cff735fcd3d"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_d02_focused_correction.py",
+      "bytes": 5810,
+      "sha256": "2b8f0b2175d053ad87c2d8bce6a8acad719f1d91440f9672cc2672622446e231"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-source-original-independent-review-20261018.json",
+      "bytes": 8090,
+      "sha256": "51c4b4afb23d13f6ef6d4dfd8ac72307d0a6e02c37a6943a77ff582992ef8079"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/d01-carrier-recovery-5efddae5.json",
+      "bytes": 47863,
+      "sha256": "ea274fbe37d4e4e8a8807893961bc78601f127d51ccdf3b2a356c468d1587fc0"
+    }
+  ]
+}
