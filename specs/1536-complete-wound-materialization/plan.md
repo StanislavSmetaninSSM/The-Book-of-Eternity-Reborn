@@ -1,3 +1,7 @@
+## T179-Pd-NI-IOBS-L01 — integrity4 independent acceptance; qualified51/57 (2026-10-18)
+
+Independent Astra XHigh integrity4 verdict: ACCEPT_INTEGRITY4_NEW_ORIGINAL_ONLY. Original evidence and actual/compiled bindings retained. Save/recover acceptance and readback; only separately named uncertain1 after clean v2 preflight. Original integrity4 unqualified4PASS / uncertain1 FAIL, seven old fixture failures and old66529 UNKNOWN/unavailable immutable. Ready/once-only/exact owned transition and unchanged budgets preserved. All broader holds remain. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — integrity4BorrowedLease original outcome saved (2026-10-18)
 
 Actual 52a163d0d06b7d1b762d0a5f5a7d81168eb2d728/compiled 3ed6a8f3c0b944777ef05f2a0095431ec63f6664: native0, 4 executed/4PASS/0FAIL, 386.205s. Original 11 raw chains, native inventory/cleanup and dated v2 boundaries saved. Observed positive=True; independent EVIDENCE pending, qualified count remains47. All historical outcomes and old66529 UNKNOWN/unavailable immutable. Save/recover original outcome then independent EVIDENCE; no next actual released. All broader holds remain. Following sections historical.

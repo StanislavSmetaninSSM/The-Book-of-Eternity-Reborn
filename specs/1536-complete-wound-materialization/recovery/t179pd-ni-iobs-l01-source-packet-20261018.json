@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_BORROWED_LEASE_SOURCE_CANDIDATE",
-  "status": "INTEGRITY4BORROWEDLEASE_PASS_EVIDENCE_PENDING",
+  "status": "QUALIFIED51_OF57_BORROWED_LEASE_INTEGRITY4_ACCEPTED",
   "sourceBase": "bb99804e8c7124e4c625ea7557d61cdaa93a8035",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
   "sourcePins": [
@@ -895,10 +895,23 @@
   "gmDisposition": "Client-owned lease composition and fixture oracle/observation only; no GM-authored capability, schema, prompt, example, manifest or daemon contract changes.",
   "oldCorrectedCrash": "Old environment session66529 remainsUNKNOWN, bytes unavailable. Separate new qualification only after corrected SOURCE/fresh PREP/named release, independent disposable fixtures/new genuine children; no old environment/process or real save operation.",
   "namedActualRelease": {
-    "status": "NONE_PENDING_INDEPENDENT_EVIDENCE",
-    "mode": null
+    "status": "SEPARATELY_NAMED_AFTER_SAVED_ACCEPTANCE_RECOVERY_AND_IMMEDIATE_CLEAN_V2_CENSUS",
+    "mode": "uncertain1",
+    "label": "t179pd-ni-iobs-l01-process-first-uncertain1-borrowed-lease-cloud-813f1057",
+    "compiledSource": "3ed6a8f3c0b944777ef05f2a0095431ec63f6664",
+    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-borrowed-lease-cloud-813f1057/record.json",
+    "expectedCases": 1,
+    "category": "fr063-joint-interface-uncertain-current",
+    "methods": [
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic",
+        "cases": 1
+      }
+    ],
+    "conditions": "After acceptance saved/pushed/exactremote/fullcleanGitHub recovery and metadata readback, immediate clean authoritative v2 preflight then one fixed NoBuild/FIRST invocation. Preserve original outcome then immediate after-boundary/whole archive/inventories/cleanup. Unexpected outcome freezes affected set for independent diagnosis; no automatic next/retry; no repo mutation during actual. Disposable per-test GUID root/new nonce/genuine children only.",
+    "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED_NOT_RECOVERED_OR_RETRIED"
   },
-  "next": "Save/recover original outcome then independent EVIDENCE; no next actual released.",
+  "next": "Save/recover acceptance and readback; only separately named uncertain1 after clean v2 preflight.",
   "sourceReview": {
     "verdict": "ACCEPT_BORROWED_LEASE_SOURCE_AND_NAMED_ZERO4_ONLY",
     "model": "gpt-6-astra",

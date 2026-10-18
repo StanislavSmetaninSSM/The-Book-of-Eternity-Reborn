@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "INTEGRITY4BORROWEDLEASE_PASS_EVIDENCE_PENDING",
+  "status": "QUALIFIED51_OF57_BORROWED_LEASE_INTEGRITY4_ACCEPTED",
   "sourceCheckpoint": "9fdecef3fd79614b9eb13b5609c99b9457d51af4",
   "sourcePinDigest": "b4e01729c1a4df935f79e7407e6aafe52bf9394d4f6e1ddab6f83a40893f02d5",
   "sourcePinCount": 98,
@@ -420,7 +420,7 @@
           "cases": 4
         }
       ],
-      "status": "NEW_BORROWED_LEASE_NATIVE_PASS_EVIDENCE_PENDING"
+      "status": "INDEPENDENT_EVIDENCE_ACCEPTED_NEW_BORROWED_LEASE_QUALIFICATION"
     },
     {
       "mode": "uncertain1",
@@ -1164,7 +1164,7 @@
         "sha256": "bb9a3acd44647e094153309dfe26577ba236bed9f87e59893683a3f2209ce15b",
         "bytes": 3783
       },
-      "status": "ORIGINAL_NATIVE_PASS_INDEPENDENT_EVIDENCE_PENDING",
+      "status": "INDEPENDENT_EVIDENCE_ACCEPTED_4PASS",
       "actualSource": "52a163d0d06b7d1b762d0a5f5a7d81168eb2d728",
       "compiledSource": "3ed6a8f3c0b944777ef05f2a0095431ec63f6664",
       "nativeExit": 0,
@@ -1218,7 +1218,59 @@
       },
       "originalProcessesAfter": [],
       "processArrayLimitation": "Original exe-link arrays incomplete. V2 argv/stat census is dated boundary only.",
-      "limits": "Observed native outcome is not independent EVIDENCE acceptance. Historical originals including old66529 UNKNOWN unchanged."
+      "limits": "Observed native outcome is not independent EVIDENCE acceptance. Historical originals including old66529 UNKNOWN unchanged.",
+      "independentReview": {
+        "verdict": "ACCEPT_INTEGRITY4_NEW_ORIGINAL_ONLY",
+        "model": "gpt-6-astra",
+        "reasoningEffort": "xhigh",
+        "artifacts": [
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/borrowed-lease-integrity4-check-run-v2.log",
+            "sha256": "c7977119270adda5e4aea3c80c487c88bbecd24a8bc6e3051b4a48f249a5ff6d",
+            "bytes": 257
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/borrowed-lease-integrity4-check-run.log",
+            "sha256": "47bd54b914129b6ccb1a4f3ad8a2567ca93f14b942b6155519694c862c6e05cc",
+            "bytes": 280
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/check_l01_borrowed_lease_evidence-v1-cli-shadow.py",
+            "sha256": "6a6759b63bf8251062be09b792e5d92ac47bee1bcb94203077795d8f0478081c",
+            "bytes": 43068
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/check_l01_borrowed_lease_evidence.py",
+            "sha256": "6af2e6141a8f4fb18f4d93fcb931bcd62387ced256eefea228527bc140ac33b7",
+            "bytes": 43084
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-evidence-checker-ready-20261018.json",
+            "sha256": "bcc1c17e927eabea6f6352126ac3b60881dd88cc210cdbdcd4eb6a2eb07606f5",
+            "bytes": 3451
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-integrity4-independent-check-2fcc1a49-20261018.json",
+            "sha256": "7815f61a23ebc931698a8d95b641e0ec02ad5fef95e520a837dc129918e24e7c",
+            "bytes": 31490
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-integrity4-independent-review-20261018.json",
+            "sha256": "c3ffa1666186b820f29dd71f18ff2536430a134424f184fc2e6efe453e727799",
+            "bytes": 17107
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-integrity4-independent-review-20261018.md",
+            "sha256": "c6f1e0e7cc27174e51240f912e17ecf30e93902ecf39f3934a1e5e9bd353895d",
+            "bytes": 2946
+          }
+        ],
+        "candidateRecovery": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-integrity4-candidate-recovery-2fcc1a49-20261018.json",
+          "sha256": "016c302612b82a755f8302cee71e0f628eb4e3afd82952eb2b91b941d3913347",
+          "bytes": 7688
+        }
+      }
     }
   },
   "holds": [
@@ -1232,7 +1284,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Save/recover original outcome then independent EVIDENCE; no next actual released.",
+  "next": "Save/recover acceptance and readback; only separately named uncertain1 after clean v2 preflight.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -1408,8 +1460,21 @@
     "phase": "HISTORICAL_COMPILED_6AB43F6A_ZERO3_PRE_CORRECTION_INELIGIBLE_FOR_CORRECTED_ACTUALS"
   },
   "release": {
-    "status": "NONE_PENDING_INDEPENDENT_EVIDENCE",
-    "mode": null
+    "status": "SEPARATELY_NAMED_AFTER_SAVED_ACCEPTANCE_RECOVERY_AND_IMMEDIATE_CLEAN_V2_CENSUS",
+    "mode": "uncertain1",
+    "label": "t179pd-ni-iobs-l01-process-first-uncertain1-borrowed-lease-cloud-813f1057",
+    "compiledSource": "3ed6a8f3c0b944777ef05f2a0095431ec63f6664",
+    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-borrowed-lease-cloud-813f1057/record.json",
+    "expectedCases": 1,
+    "category": "fr063-joint-interface-uncertain-current",
+    "methods": [
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic",
+        "cases": 1
+      }
+    ],
+    "conditions": "After acceptance saved/pushed/exactremote/fullcleanGitHub recovery and metadata readback, immediate clean authoritative v2 preflight then one fixed NoBuild/FIRST invocation. Preserve original outcome then immediate after-boundary/whole archive/inventories/cleanup. Unexpected outcome freezes affected set for independent diagnosis; no automatic next/retry; no repo mutation during actual. Disposable per-test GUID root/new nonce/genuine children only.",
+    "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED_NOT_RECOVERED_OR_RETRIED"
   },
   "newOriginalObservedPassingCases": 4,
   "lastAcceptanceRecovery": {
@@ -1423,10 +1488,10 @@
   },
   "qualifiedCases": {
     "retainedOriginal": 37,
-    "newQualified": 10,
-    "totalDistinctTargets": 47,
+    "newQualified": 14,
+    "totalDistinctTargets": 51,
     "wholeTarget": 57,
-    "limits": "Retained37 + independently accepted new legacy3/corrected close2/corrected races2/corrected settlement3 =47, original actual/compiled provenance. New integrity4 native4PASS remains unqualified due CurrentInterface early lock-refusal evidence gap; uncertain1 native1/0PASS1FAIL frozen; new crash5 UNRUN. Lost old corrected crash5 UNKNOWN unchanged."
+    "limits": "Original37 + independently accepted new legacy3/corrected close2/races2/settlement3 plus new borrowed-lease groups, each at original actual/compiled provenance. No original failures reclassified and old66529 permanently UNKNOWN/unavailable."
   },
   "lastFreezeCarrierRecovery": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-freeze-recovery-f647853f-20261018.json",

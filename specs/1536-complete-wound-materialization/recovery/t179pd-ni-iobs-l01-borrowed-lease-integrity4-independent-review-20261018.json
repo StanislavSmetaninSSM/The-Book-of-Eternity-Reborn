@@ -1,0 +1,314 @@
+{
+  "kind": "INDEPENDENT_BORROWED_LEASE_INTEGRITY4_EVIDENCE_REVIEW",
+  "reviewedUtc": "2026-10-18T14:39:12.524049+00:00",
+  "verdict": "ACCEPT_INTEGRITY4_NEW_ORIGINAL_ONLY",
+  "findings": [],
+  "carrier": "2fcc1a49e4b2dd1b7a5a1ace9ec64aa122219980",
+  "actualSource": "52a163d0d06b7d1b762d0a5f5a7d81168eb2d728",
+  "compiledSource": "3ed6a8f3c0b944777ef05f2a0095431ec63f6664",
+  "recordSha256": "3ac8313027fd7a59c2f6ae49928d962ec2534bb6e8915738685a96097eb6d1d6",
+  "sourcePinCount": 98,
+  "sourcePinDigest": "b4e01729c1a4df935f79e7407e6aafe52bf9394d4f6e1ddab6f83a40893f02d5",
+  "productDeltaPaths": 22,
+  "decision": "Accept the four newly executed integrity target rows at actual 52a163d0 / compiled 3ed6a8f3. The CurrentInterface row now proves both intended production refusals directly. Preserve all original outcomes and prior qualification provenance. This review adds four distinct target cases, from 47 to 51, when incorporated into the durable qualification ledger.",
+  "evidence": {
+    "checker": {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_borrowed_lease_evidence.py",
+      "bytes": 43084,
+      "sha256": "6af2e6141a8f4fb18f4d93fcb931bcd62387ced256eefea228527bc140ac33b7"
+    },
+    "checkerResult": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-borrowed-lease-integrity4-independent-check-2fcc1a49-20261018.json",
+      "bytes": 31490,
+      "sha256": "7815f61a23ebc931698a8d95b641e0ec02ad5fef95e520a837dc129918e24e7c"
+    },
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-borrowed-lease-integrity4-813f1057-files-20261018/archive.json",
+      "sha256": "b7d6b3aad2ac8d83c80d6d3aac5cc8838b212ecc19a2b74c8872f9cbafe01653",
+      "rawChains": 11,
+      "rawBytes": 31538699,
+      "completeOriginalCoverage": true,
+      "storedRawRestoredExact": true
+    },
+    "recovery": {
+      "receiptPath": "/tmp/1536-cloud-tools/carrier-recovery-2fcc1a49.json",
+      "receiptSha256": "016c302612b82a755f8302cee71e0f628eb4e3afd82952eb2b91b941d3913347",
+      "changedPaths": 19,
+      "bytesHashesBlobsModesVerified": true,
+      "completeSavedGitTreeMatchesIndependentClone": true
+    }
+  },
+  "runtime": {
+    "nativeExit": 0,
+    "tests": {
+      "Total": 4,
+      "Executed": 4,
+      "Passed": 4,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 4,
+      "CompletedCases": 4,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "wallSeconds": 386.20491197900265,
+    "categoryResult": {
+      "Category": "fr063-joint-interface-current-integrity",
+      "Seconds": 359.6731393,
+      "BudgetMinutes": 15,
+      "Completed": true
+    },
+    "noTimeout": true,
+    "nineManagedCopiesAnd1575OutputsExact": true,
+    "freshClientSha256": "56253ece2b2bd986dbc3217bc14fa1bc008d94010b1e88244417d84443cc1192",
+    "sourceAndFixturesUnchangedFromAcceptedSource": true
+  },
+  "semanticAssessment": {
+    "CurrentInterface": "The physical current I differs from the genuine producer preimage by exactly one appended space. Pending/result/original provenance is otherwise retained. Entry 1 independently records exact reason count 0→1; entry 2 records 1→2. Counts recomputed from immutable before/after logger strings match both emitted stdout entries and the final result entries. The original nested-lock refusal is absent. Both stacks directly reach RequireImagesAsync line 240 from the prepublication callback at line 228, CommitPublishedAsync and the real current-resume caller. The prepared publication is refused before any changing-I/common commit, with all 223 captured paths unchanged after each real entry.",
+    "currentInterfaceReason": "joint_interface_actual_publication_preimage_or_readback_changed",
+    "currentInterfaceReasonDeltas": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        2
+      ]
+    ],
+    "Version": "Only checkpoint schemaVersion is changed from 2 to 7. The invalid checkpoint is held before result admission; no later guard claim is inferred from its empty diagnostics.",
+    "RecordFingerprint": "Only the stored result fingerprint is replaced by 64 zeros. Both entries report joint_interface_required_fingerprint; the genuine prepared result is retained for comparison.",
+    "OriginalManifest": "Only one space is appended to the signed original manifest. The resulting physical hash differs from the checkpoint hash and both entries report mortal_joint_checkpoint_provenance_changed.",
+    "sharedPhysicalAndOwnership": "For each row the actual new producer reaches a committed Prepared journal at turn 42, before common capture/publication, then exits 73. A genuine new resumer recovers that journal and enters the current owner with fresh authority fields absent. Both real entries remain held; no normalizer/fallback publication, new changing-I commit or common commit is observed. All 223 captured images are byte-identical before/after/repeat, including all 15 mechanical images. The assertions retain the current damaged bytes instead of manufacturing authority or repairing the fault.",
+    "childIsolation": "Eight distinct PID/kernel-birth identities, four distinct owned containers/nonces, proper parent separation, exact loaded dependency hashes and actual producer exit73/resumer exit0 were verified. Every child joined and reached EOF without cleanup failure. Each row has two parent owned-root cleanups plus its child auxiliary-root cleanup; no unresolved-child retention is hidden.",
+    "caseRows": [
+      {
+        "fault": "CurrentInterface",
+        "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback(fault: \"CurrentInterface\")",
+        "duration": "00:01:41.4418576",
+        "producer": {
+          "pid": 42165,
+          "birthTick": 1858496,
+          "exit": 73
+        },
+        "resumer": {
+          "pid": 42247,
+          "birthTick": 1866955,
+          "exit": 0
+        },
+        "cutTransaction": "bae6eea07a434a429667c3eeaed1c161",
+        "completePhysicalImagesCompared": 223,
+        "beforeAfterRepeatedDigest": "d94e79fda4525c533730e6b96a648429132d648fd19c0018fcb01a8f023e8332",
+        "mechanicalImagesUnchanged": 15,
+        "physicalFaultPath": "output/interface_updates.json",
+        "faultBeforeSha256": "3ec7aff43ff10f02429e2bd89ebf4ed5ba1bd19800ed6b9778dac6938308e674",
+        "faultAfterSha256": "86eaa82bd1f23bd51ee96c871baa0f9909737a5baab3bdb27fbbad69bf825db6",
+        "freshAuthorityAbsent": true,
+        "actualCallerAndSecondEntryHeld": true,
+        "changingI": 0,
+        "commonPublications": 0,
+        "parentOwnedCleanups": 2,
+        "childAuxiliaryCleanup": true,
+        "dependenciesAndLoadedHashesExact": true,
+        "targetReach": "Both real current calls independently newly emit the exact actual-publication preimage/readback-change refusal; snapshots and occurrence deltas agree."
+      },
+      {
+        "fault": "OriginalManifest",
+        "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback(fault: \"OriginalManifest\")",
+        "duration": "00:01:37.3743885",
+        "producer": {
+          "pid": 41980,
+          "birthTick": 1841480,
+          "exit": 73
+        },
+        "resumer": {
+          "pid": 42016,
+          "birthTick": 1850087,
+          "exit": 0
+        },
+        "cutTransaction": "1dbd809d3fd5412ca797fded7518da04",
+        "completePhysicalImagesCompared": 223,
+        "beforeAfterRepeatedDigest": "1a60f6bc91b17f258b793b539332c7e37f6dff39c37485c622904460c89451f4",
+        "mechanicalImagesUnchanged": 15,
+        "physicalFaultPath": "game_state/control/pending_turn_snapshot.json",
+        "faultBeforeSha256": "71ee70e236706ba55308302b3b4515fe4709ab9b7b508e3d56ab9d325195ce74",
+        "faultAfterSha256": "aa7216ada0b9146c4a3e96e516445348bc94ef62cf41544ea4f293b088f17190",
+        "freshAuthorityAbsent": true,
+        "actualCallerAndSecondEntryHeld": true,
+        "changingI": 0,
+        "commonPublications": 0,
+        "parentOwnedCleanups": 2,
+        "childAuxiliaryCleanup": true,
+        "dependenciesAndLoadedHashesExact": true,
+        "targetReach": "Signed-original byte provenance differs after exactly one appended space; current rejected-capture reconstruction refuses it on both entries."
+      },
+      {
+        "fault": "RecordFingerprint",
+        "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback(fault: \"RecordFingerprint\")",
+        "duration": "00:01:16.1079754",
+        "producer": {
+          "pid": 41823,
+          "birthTick": 1833883,
+          "exit": 73
+        },
+        "resumer": {
+          "pid": 41961,
+          "birthTick": 1840856,
+          "exit": 0
+        },
+        "cutTransaction": "6af91e6fca654bed889113c7dbe19694",
+        "completePhysicalImagesCompared": 223,
+        "beforeAfterRepeatedDigest": "f8aeb26e1ab8ab3f22b18a287980d837bdf81394394d4f5239ca7780a50528f1",
+        "mechanicalImagesUnchanged": 15,
+        "physicalFaultPath": "game_state/control/pending_wound_resolutions.json",
+        "faultBeforeSha256": "89053b0194b40939a1d3d02b1c3fad359330a49c2f8e51a1605a8920409bcf8f",
+        "faultAfterSha256": "08a522125455e08ddfa01bf4ae0bb74d48e4e4d2822063896f745057ffb0b996",
+        "freshAuthorityAbsent": true,
+        "actualCallerAndSecondEntryHeld": true,
+        "changingI": 0,
+        "commonPublications": 0,
+        "parentOwnedCleanups": 2,
+        "childAuxiliaryCleanup": true,
+        "dependenciesAndLoadedHashesExact": true,
+        "targetReach": "The all-zero record fingerprint is rejected by RequireFingerprint on each entry before original/canonical admission."
+      },
+      {
+        "fault": "Version",
+        "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback(fault: \"Version\")",
+        "duration": "00:01:12.7605274",
+        "producer": {
+          "pid": 42037,
+          "birthTick": 1851224,
+          "exit": 73
+        },
+        "resumer": {
+          "pid": 42145,
+          "birthTick": 1857845,
+          "exit": 0
+        },
+        "cutTransaction": "99b9dd74fe924a72a0c7f3cb83108db8",
+        "completePhysicalImagesCompared": 223,
+        "beforeAfterRepeatedDigest": "75724a4b9a30e96cf75bfc4179cd3327e6cce6a984fdba53cd0c6f53016d071c",
+        "mechanicalImagesUnchanged": 15,
+        "physicalFaultPath": "game_state/control/pending_wound_resolutions.json",
+        "faultBeforeSha256": "3d820d26c8976226e5ce8b7614017b4c0aa1b5d6fd9c36c01c54dcd30c72947f",
+        "faultAfterSha256": "d405c49fdaa07c32fea15f3b35cb97b92aa8efa8c98e4d4f7564cead9319e1fe",
+        "freshAuthorityAbsent": true,
+        "actualCallerAndSecondEntryHeld": true,
+        "changingI": 0,
+        "commonPublications": 0,
+        "parentOwnedCleanups": 2,
+        "childAuxiliaryCleanup": true,
+        "dependenciesAndLoadedHashesExact": true,
+        "targetReach": "Malformed checkpoint schema7 is held at Parse before result admission; no frozen-error diagnostic contract applies."
+      }
+    ]
+  },
+  "cleanupAndDatedBoundaries": {
+    "nativeOwnedTreeAndRuntimeCleanup": true,
+    "savedOwnedNamespacesEmpty": true,
+    "censuses": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-integrity4-before-census-20261018.json",
+        "sha256": "829570141b2ec74b5faa60683289194087bc672c67e8d354a07faa394e000d28",
+        "entries": 108,
+        "startedUtc": "2026-10-18T14:28:18.755240+00:00",
+        "finishedUtc": "2026-10-18T14:28:18.821427+00:00",
+        "clean": true,
+        "knownVisibility": [
+          {
+            "pid": 10433,
+            "expectedStartTick": 477854,
+            "status": "MATCH",
+            "classification": "exited-nonexecuting"
+          },
+          {
+            "pid": 41627,
+            "expectedStartTick": 1830656,
+            "status": "MATCH",
+            "classification": "observer-self"
+          }
+        ]
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-integrity4-after-census-20261018.json",
+        "sha256": "5c2627af2d848dd092d7c1d2d90457a91ea933d882e07dca5d248714168a7bfa",
+        "entries": 108,
+        "startedUtc": "2026-10-18T14:34:49.428818+00:00",
+        "finishedUtc": "2026-10-18T14:34:49.455739+00:00",
+        "clean": true,
+        "knownVisibility": [
+          {
+            "pid": 10433,
+            "expectedStartTick": 477854,
+            "status": "MATCH",
+            "classification": "exited-nonexecuting"
+          },
+          {
+            "pid": 42303,
+            "expectedStartTick": 1869732,
+            "status": "MATCH",
+            "classification": "observer-self"
+          }
+        ]
+      }
+    ],
+    "beforeGapSeconds": 2.851919,
+    "afterGapSeconds": 1.550652,
+    "limit": "The 108-entry before and after v2 observations are clean at their saved times; gaps are 2.851919 and 1.550652 seconds relative to recorded controller boundaries. No continuous/instantaneous absence claim. Original exe-link process arrays retain their completeness limit."
+  },
+  "qualification": {
+    "previous": 47,
+    "added": 4,
+    "resultAfterDurableAcceptance": 51,
+    "totalTargets": 57,
+    "remainingUnqualifiedTargets": 6,
+    "remainingModes": [
+      "uncertain1BorrowedLease",
+      "crash5NewCloudBorrowedLease"
+    ],
+    "retained47": "Original build/outcome provenance unchanged; no replay or cross-build equivalence claim.",
+    "oldIntegrity4": "Original native 4PASS remains immutable and unqualified; these four accepted rows come from this separately named new original.",
+    "oldUncertain1": "Original FAIL and missing post-call diagnostic limit unchanged.",
+    "oldCorrectedCrash5": "UNKNOWN_UNAVAILABLE unchanged; no recovery or retry.",
+    "newCrash5": "UNRUN and separately gated."
+  },
+  "nextEligibility": {
+    "mode": "uncertain1",
+    "label": "t179pd-ni-iobs-l01-process-first-uncertain1-borrowed-lease-cloud-813f1057",
+    "compiledSource": "3ed6a8f3c0b944777ef05f2a0095431ec63f6664",
+    "prepMode": "corrective-plan",
+    "prepRecordSha256": "11492d33c30fb4031bbd4b3dc1ed2b55c5ffa2b700c8cf3af844f1566120f471",
+    "cases": 1,
+    "categoryBudgetMinutes": 10,
+    "conditions": "After saving/pushing/exactly recovering this acceptance and its evidence references, make a separate named one-mode release with immediate clean authoritative v2 preflight. Use accepted NoBuild preparation and unchanged source/assertions/budgets. Preserve first outcome and same-invocation after-census; unexpected outcome or material concern freezes progression. Require the full positive current proof, turn43, mechanics, terminal cleanup and inert-repeat oracles. No automatic advance/retry. New crash5 still needs its distinct later release and isolation gate."
+  },
+  "reviewUtilityHistory": {
+    "preservedInitialChecker": {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_borrowed_lease_evidence-v1-cli-shadow.py",
+      "bytes": 43068,
+      "sha256": "6a6759b63bf8251062be09b792e5d92ac47bee1bcb94203077795d8f0478081c"
+    },
+    "initialReadOnlyRunLog": {
+      "path": "/tmp/1536-cloud-tools/review/borrowed-lease-integrity4-check-run.log",
+      "bytes": 280,
+      "sha256": "47bd54b914129b6ccb1a4f3ad8a2567ca93f14b942b6155519694c862c6e05cc"
+    },
+    "completedReadOnlyRunLog": {
+      "path": "/tmp/1536-cloud-tools/review/borrowed-lease-integrity4-check-run-v2.log",
+      "bytes": 257,
+      "sha256": "c7977119270adda5e4aea3c80c487c88bbecd24a8bc6e3051b4a48f249a5ff6d"
+    },
+    "correction": "After passing all semantic cases, the first read-only checker encountered CLI variable shadowing at recovery readback. Renamed only the CLI namespace variable and reran the read-only checker to completion. No native retry, source/assertion change or product finding. Parent also disclosed an earlier read-only parser wrapper-level KeyError; original native evidence remained unchanged."
+  },
+  "limits": [
+    "This negative-integrity acceptance does not prove positive completion for uncertain1 or any new crash5 cut.",
+    "Captured-image equivalence covers the exact 223-image scope, not an inferred continuous filesystem observation.",
+    "Logger policy remains bounded; the complete exact reason and relevant stack entry are visible in each dated snapshot. Truncated downstream stack tails are not reconstructed.",
+    "Broader FullNI/HOT/F1/M3/T197 and A3/Windows/CI holds remain unchanged."
+  ],
+  "execution": "Read-only original/source/Git/archive/build-output and saved-census inspection; review artifacts only under /tmp/1536-cloud-tools/review. No native/build/discovery/controller/observer execution, current fixture-root/process inspection/control or repository mutation."
+}
