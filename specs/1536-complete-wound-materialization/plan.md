@@ -1,3 +1,9 @@
+## T179-Pd-NI-IOBS-L01 — independent integrity HOLD saved (2026-10-18)
+
+[Independent integrity4 review](recovery/t179pd-ni-iobs-l01-integrity4-independent-review-20261018.md) blocks qualification with finding L01-INTEGRITY-CURRENTI-001. Native four PASS remain immutable, but CurrentInterface reaches a nested canonical lock refusal before the target I preimage guard; no additional targets are accepted. Three other rows are not separately qualified. Qualified count stays47/57.
+
+Uncertain1 original failure is archived and recovered at4dbdb144. A joint diagnosis must distinguish its directly observed null current proof from source-inferred cause where the final diagnostic was never emitted. No source/assertion edit, retry or new crash5 execution. Minimal proposed next work is borrowed existing lease through collector/item helper, preserved existing no-argument ownership paths and a stronger CurrentInterface guard oracle, followed by independent SOURCE and affected fresh PREP. This proposal is not an actual release. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — 47/57 qualified; current-resume material blocker, all actuals frozen (2026-10-18)
 
 Independent integrity EVIDENCE review found a material gap in the unchanged native4PASS original: CurrentInterface resumes into canonical-write.lock IOException before the intended I preimage guard. Current-resume holds its lease then upstream raw item validation attempts another lease. The original four PASS remain immutable but unqualified; no claim that this lock refusal establishes interface-integrity protection.

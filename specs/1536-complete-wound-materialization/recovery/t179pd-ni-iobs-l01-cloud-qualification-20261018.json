@@ -1061,7 +1061,46 @@
         "bytes": 3701
       },
       "censusTimingLimit": "Before-to-launch2.538864s; completion-to-after1.077795s. Finite dated boundaries only.",
-      "materialReviewConcern": "Independent reviewer traced CurrentInterface raw logs to two canonical-write.lock IOExceptions, while current-resume holds the canonical lease and upstream item validation unconditionally reacquires it. Intended physical I mismatch guard occurs later and is not evidenced as reached. Other3 original rows remain unaccepted; native4PASS is not changed to a qualified result."
+      "materialReviewConcern": "Independent reviewer traced CurrentInterface raw logs to two canonical-write.lock IOExceptions, while current-resume holds the canonical lease and upstream item validation unconditionally reacquires it. Intended physical I mismatch guard occurs later and is not evidenced as reached. Other3 original rows remain unaccepted; native4PASS is not changed to a qualified result.",
+      "evidenceReview": {
+        "verdict": "HOLD_INTEGRITY4_QUALIFICATION_NATIVE4PASS_PRESERVED_CURRENT_INTERFACE_TARGET_GUARD_UNPROVEN",
+        "model": "gpt-6-astra",
+        "reasoningEffort": "xhigh",
+        "findings": [
+          {
+            "id": "L01-INTEGRITY-CURRENTI-001",
+            "severity": "blocking",
+            "case": "CurrentInterface",
+            "classification": "UNRELATED_NESTED_CANONICAL_LEASE_FAILURE_SATISFIES_BROAD_REFUSAL_ORACLE",
+            "evidence": "Both resumed calls log canonical-write.lock IOException; logger truncates each exception message at2000 chars. Current I was genuinely changed by one space and all223 captured images retained, but no target I preimage mismatch diagnosis or reached guard is recorded.",
+            "sourceCause": "Resume.cs59 holds one canonical lease; Resume.cs67 calls CollectAcceptedTurnUpstreamRawStateIssuesAsync; ValidationAndRepair.cs1730 calls ValidateAcceptedTurnUpstreamRawItemsAsync; SpiritualContinuation.cs60 acquires another canonical lease. Physical FileShare.None acquisition exhausts retries and is caught by selected hold catch at Resume.cs124-129 before CommitPublishedAsync/RequireImagesAsync.",
+            "impact": "Native4PASS unchanged; intended CurrentInterface integrity refusal is not qualified. Hold entire integrity4 group, retain qualified47, freeze further progression including newcrash5; preserve any already-running uncertain1 original. Other three native passes are not separately accepted here."
+          }
+        ],
+        "artifacts": [
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-integrity4-independent-review-20261018.json",
+            "sha256": "de53818c9c07832bf38ebcd5877ef31c6d3aff11eb382cd41e6bf0737fb3a589",
+            "bytes": 24263
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-integrity4-independent-review-20261018.md",
+            "sha256": "4967c16e44ca826f43c962df1919f87be7877f428a076f2e99ac711738ae6941",
+            "bytes": 3598
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-integrity4-independent-check-90fbb068-20261018.json",
+            "sha256": "05d0efbd495a77d658ba84e4a6fe89c0e8cb6e3e3cfd0fe9cb2c4ec8aaea07fc",
+            "bytes": 23763
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-integrity4-evidence-checker-20261018.py",
+            "sha256": "64811c878086031c32672bb051f3d09a9a5711084f8d33787e0cf7fd1333d780",
+            "bytes": 27732
+          }
+        ],
+        "additionalQualifiedTargets": 0
+      }
     },
     "uncertain1": {
       "status": "ORIGINAL_UNEXPECTED_OUTCOME_FROZEN_INDEPENDENT_DIAGNOSIS_REQUIRED",
@@ -1746,6 +1785,16 @@
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-c82b8a09-20261018.json",
       "sha256": "e3850b9656b88ec00d799a4330d6768a5d5c70c9250ce47ce9c407d065fa59cd",
       "bytes": 8658
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-90fbb068-20261018.json",
+      "sha256": "c1d3c09f735ea55e7f73589138144237d85aae0de3f21703e80ec4ad5d2701d1",
+      "bytes": 9140
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-4dbdb144-20261018.json",
+      "sha256": "9b075795138f41e5679a348e39b6108bff637c3d71fc6f71a7ce015632c20642",
+      "bytes": 7190
     }
   ],
   "sourcePinDigestBeforeReadyDriftCorrection": "b29c971342ee772b13cd123a954d7afa8937e1f50a7e5f4c4c14403e4de4c347",
@@ -2460,6 +2509,29 @@
     "unqualifiedCases": 10,
     "newCrash5": "UNRUN_BLOCKED",
     "oldCrash5": "UNKNOWN_UNAVAILABLE_UNCHANGED",
-    "sourceChangesAfterFinding": 0
+    "sourceChangesAfterFinding": 0,
+    "independentIntegrityReview": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-integrity4-independent-review-20261018.json",
+        "sha256": "de53818c9c07832bf38ebcd5877ef31c6d3aff11eb382cd41e6bf0737fb3a589",
+        "bytes": 24263
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-integrity4-independent-review-20261018.md",
+        "sha256": "4967c16e44ca826f43c962df1919f87be7877f428a076f2e99ac711738ae6941",
+        "bytes": 3598
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-integrity4-independent-check-90fbb068-20261018.json",
+        "sha256": "05d0efbd495a77d658ba84e4a6fe89c0e8cb6e3e3cfd0fe9cb2c4ec8aaea07fc",
+        "bytes": 23763
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-integrity4-evidence-checker-20261018.py",
+        "sha256": "64811c878086031c32672bb051f3d09a9a5711084f8d33787e0cf7fd1333d780",
+        "bytes": 27732
+      }
+    ],
+    "uncertain1JointDiagnosis": "PENDING_INDEPENDENT_FROZEN_ORIGINAL_REPORT"
   }
 }

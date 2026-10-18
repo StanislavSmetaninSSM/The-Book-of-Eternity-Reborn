@@ -1,0 +1,337 @@
+{
+  "kind": "INDEPENDENT_INTEGRITY4_EVIDENCE_AND_NESTED_LEASE_CAUSAL_REVIEW",
+  "reviewedUtc": "2026-10-18T13:32:31.865601+00:00",
+  "verdict": "HOLD_INTEGRITY4_QUALIFICATION_NATIVE4PASS_PRESERVED_CURRENT_INTERFACE_TARGET_GUARD_UNPROVEN",
+  "findings": [
+    {
+      "id": "L01-INTEGRITY-CURRENTI-001",
+      "severity": "blocking",
+      "case": "CurrentInterface",
+      "classification": "UNRELATED_NESTED_CANONICAL_LEASE_FAILURE_SATISFIES_BROAD_REFUSAL_ORACLE",
+      "evidence": "Both resumed calls log canonical-write.lock IOException; logger truncates each exception message at2000 chars. Current I was genuinely changed by one space and all223 captured images retained, but no target I preimage mismatch diagnosis or reached guard is recorded.",
+      "sourceCause": "Resume.cs59 holds one canonical lease; Resume.cs67 calls CollectAcceptedTurnUpstreamRawStateIssuesAsync; ValidationAndRepair.cs1730 calls ValidateAcceptedTurnUpstreamRawItemsAsync; SpiritualContinuation.cs60 acquires another canonical lease. Physical FileShare.None acquisition exhausts retries and is caught by selected hold catch at Resume.cs124-129 before CommitPublishedAsync/RequireImagesAsync.",
+      "impact": "Native4PASS unchanged; intended CurrentInterface integrity refusal is not qualified. Hold entire integrity4 group, retain qualified47, freeze further progression including newcrash5; preserve any already-running uncertain1 original. Other three native passes are not separately accepted here."
+    }
+  ],
+  "carrier": "90fbb068817257a670c0ac99f6d1bbfd6cbfc19b",
+  "actualSource": "c82b8a095fb200ae5f02d3f920edb2181a531a19",
+  "compiledSource": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
+  "recordSha256": "aba7ad1dc1301329ef926b3616f32e94f88b7af754f03a6dbbb4990f7931fa34",
+  "independentCheck": {
+    "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-integrity4-independent-check-90fbb068-20261018.json",
+    "bytes": 23763,
+    "sha256": "05d0efbd495a77d658ba84e4a6fe89c0e8cb6e3e3cfd0fe9cb2c4ec8aaea07fc"
+  },
+  "checker": {
+    "path": "/tmp/1536-cloud-tools/review/check_l01_integrity4.py",
+    "bytes": 27732,
+    "sha256": "64811c878086031c32672bb051f3d09a9a5711084f8d33787e0cf7fd1333d780"
+  },
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-integrity4-813f1057-files-20261018/archive.json",
+    "sha256": "48f53f9d0c73ed0459bf8ac5c9ea5c1bc96fa6521ff52e48008b9e4591cb5e43",
+    "rawChains": 11,
+    "rawBytes": 31504295,
+    "completeOriginalCoverage": true,
+    "storedRawRestoredExact": true
+  },
+  "nativeOutcome": {
+    "exit": 0,
+    "tests": {
+      "Total": 4,
+      "Executed": 4,
+      "Passed": 4,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 4,
+      "CompletedCases": 4,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "category": {
+      "Category": "fr063-joint-interface-current-integrity",
+      "Seconds": 388.8808518,
+      "BudgetMinutes": 15,
+      "Completed": true
+    },
+    "wallSeconds": 422.74216070700095,
+    "NoBuild": true,
+    "timeout": false,
+    "immutable": true
+  },
+  "verifiedProvenance": {
+    "sourcePins": 98,
+    "sourcePinDigest": "304a7e8beb3174246ac3db792c6aa63319fa8ead9f3bab62f91346d4f204248d",
+    "productDeltaPaths": 21,
+    "sameAcceptedSourceAndPrep": true,
+    "nineManagedCopiesAndFull1575OutputsExact": true,
+    "recordedActualHeadAndWorkingTreeClean": true,
+    "all11RawGzipOriginalChains": true,
+    "completeRawBytes": 31504295,
+    "recoveredPaths": 24,
+    "completeSavedGitTreeMatchesIndependentClone": true,
+    "remoteProvenance": "Exact remote/full independent GitHub recovery is recorded in the parent receipt; independently checked saved object bytes/blobs/modes and restored paths. No new remote fetch or native run by reviewer.",
+    "settlement3AcceptedArtifactsCopiedVerbatim": true
+  },
+  "genuineProcessEvidence": {
+    "distinctNewChildPidBirthPairs": 8,
+    "distinctOwnedGuidContainersAndNonces": 4,
+    "cases": [
+      {
+        "fault": "Version",
+        "producer": {
+          "pid": 29229,
+          "birthTick": 1405018,
+          "exit": 73
+        },
+        "resumer": {
+          "pid": 30234,
+          "birthTick": 1411463,
+          "exit": 0
+        },
+        "parentTestHostPid": 29027,
+        "ownedContainer": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-76b367eafd6044b595c8088f85eef791",
+        "nonce": "f30e996bf5714cad9977d2a61c047965",
+        "duration": "00:01:10.6962056"
+      },
+      {
+        "fault": "OriginalManifest",
+        "producer": {
+          "pid": 29176,
+          "birthTick": 1397256,
+          "exit": 73
+        },
+        "resumer": {
+          "pid": 29207,
+          "birthTick": 1403397,
+          "exit": 0
+        },
+        "parentTestHostPid": 29027,
+        "ownedContainer": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-19c94d95a5ee4d7ebcfb52549fefe16e",
+        "nonce": "c4c461a94721458fa2b248ffecb76499",
+        "duration": "00:01:17.6265135"
+      },
+      {
+        "fault": "CurrentInterface",
+        "producer": {
+          "pid": 30352,
+          "birthTick": 1412091,
+          "exit": 73
+        },
+        "resumer": {
+          "pid": 30996,
+          "birthTick": 1420685,
+          "exit": 0
+        },
+        "parentTestHostPid": 29027,
+        "ownedContainer": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-878edd4e312e430f9eb93c7ba1a05140",
+        "nonce": "0905abe24942495e9f075a16d390fff5",
+        "duration": "00:01:59.3301970"
+      },
+      {
+        "fault": "RecordFingerprint",
+        "producer": {
+          "pid": 29052,
+          "birthTick": 1386500,
+          "exit": 73
+        },
+        "resumer": {
+          "pid": 29156,
+          "birthTick": 1396536,
+          "exit": 0
+        },
+        "parentTestHostPid": 29027,
+        "ownedContainer": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-73d35c3ce2ae4e239f569353f33a11e5",
+        "nonce": "cdb3ec3001f943589c183d858c35018a",
+        "duration": "00:01:47.8506798"
+      }
+    ],
+    "identity": "Parent-observed child PID and kernel field22 birth tick match each child-self record; original/resumer differ, all eight PIDs/birth identities are distinct. Actual arguments bind dotnet exec, pinned integration/TestSupport/runtimeconfig/depsfile and each owned root. Loaded integration/TestSupport/Immutable identities, paths and hashes match the fresh build inventory in default context.",
+    "abruptCut": "Each original actually reaches committed Prepared (cut0) after a genuine live caller/confirmed held42/natural original43, with zero completed-common callbacks and no marker, then Environment.Exit(73). Journal one-member pending after-image equals actual pending and the sealed Prepared record; I remains its exact before-image. All15 mechanical images are unchanged at the cut.",
+    "containmentAndCleanup": "Every original exit73 and resumed exit0 has positive join/EOF, no harness/cleanup failure and no unresolved-child retention. Each outer case records its container and class-root cleanup; resumed child additionally records its auxiliary-root cleanup. Only the original root remains inside the container before parent cleanup. Source retains unresolved roots if child terminal/join/EOF cannot be proven. No root/process was inspected or operated by reviewer."
+  },
+  "physicalRefusalEvidence": {
+    "perCaseCapturedImageCount": 223,
+    "beforeAfterRepeatedByteEqual": true,
+    "includesSessionGeneration": true,
+    "faults": "Exactly one physical mutation follows genuine recovered Prepared: schemaVersion7; all-zero record fingerprint; one appended ASCII space to original manifest; or one appended ASCII space to current I. No result reseal, capability seeding, copied execution root or old Ready resurrection.",
+    "allRows": "Actual late owner entered; fresh checkpoint/Ready authority fields absent before entry; both entry and repeat return handled/held, turn42 source assertions reached, zero changing-I commits, zero common publications, no completion. All223 captured images and15 mechanical paths remain equal after the injected fault through both entries. These physical facts alone do not identify the refusal cause.",
+    "reachByFault": [
+      {
+        "fault": "Version",
+        "nativeOutcome": "Passed",
+        "targetReach": "Malformed checkpoint schema7 is held at Parse before result admission; no frozen-error diagnostic contract applies.",
+        "independentlyQualified": false
+      },
+      {
+        "fault": "OriginalManifest",
+        "nativeOutcome": "Passed",
+        "targetReach": "Signed-original byte provenance differs after exactly one appended space; current rejected-capture reconstruction refuses it on both entries.",
+        "independentlyQualified": false
+      },
+      {
+        "fault": "CurrentInterface",
+        "nativeOutcome": "Passed",
+        "targetReach": "NOT PROVEN: both entries stop at nested canonical-write lock IOException; unchanged/held is compatible with unrelated early refusal. Intended I preimage check is downstream.",
+        "independentlyQualified": false
+      },
+      {
+        "fault": "RecordFingerprint",
+        "nativeOutcome": "Passed",
+        "targetReach": "The all-zero record fingerprint is rejected by RequireFingerprint on each entry before original/canonical admission.",
+        "independentlyQualified": false
+      }
+    ],
+    "qualifiedScope": "No four-case aggregate or three-case subset is accepted in this report. The first three expected refusal paths are supported by originals/source; preserve them as unaccepted observations while the coherent integrity category is held."
+  },
+  "currentInterfaceCausalFinding": {
+    "rawFacts": {
+      "producer": {
+        "pid": 30352,
+        "birthTick": 1412091,
+        "exit": 73
+      },
+      "resumer": {
+        "pid": 30996,
+        "birthTick": 1420685,
+        "exit": 0
+      },
+      "faultBeforeSha256": "3ec7aff43ff10f02429e2bd89ebf4ed5ba1bd19800ed6b9778dac6938308e674",
+      "faultAfterSha256": "86eaa82bd1f23bd51ee96c871baa0f9909737a5baab3bdb27fbbad69bf825db6",
+      "beforeAfterRepeatedDigest": "5398f014e7e7e3c5cfad3adbb16f11163f751fe4f27b5f2e05cad2532ee9b834",
+      "completeRetainedImages": 223,
+      "loggedLockFailures": 2,
+      "logs": "Engine diagnostics:\nSelected joint I result retained; no ordinary normalization/restore fallback.\nSystem.IO.IOException: The process cannot access the file '/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-878edd4e312e430f9eb93c7ba1a05140/tmp/boe-gameengine-turnlifecycle-c3c988417bdf49d3b3a4b528f31cc434/.boe_runtime/locks/canonical-write.lock' because it is being used by another process.\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64& fileLength, UnixFileMode& filePermissions)\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64& fileLength, UnixFileMode& filePermissions, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)\n   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)\n   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options)\n   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.cs:line 3819\n   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose, MainAdmission mainAdmission) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.cs:line 3783\n   at BookOfEternityClient.Core.GameEngine.ValidateAcc\nSelected joint I result retained; no ordinary normalization/restore fallback.\nSystem.IO.IOException: The process cannot access the file '/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-878edd4e312e430f9eb93c7ba1a05140/tmp/boe-gameengine-turnlifecycle-c3c988417bdf49d3b3a4b528f31cc434/.boe_runtime/locks/canonical-write.lock' because it is being used by another process.\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64& fileLength, UnixFileMode& filePermissions)\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64& fileLength, UnixFileMode& filePermissions, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)\n   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)\n   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options)\n   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.cs:line 3819\n   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose, MainAdmission mainAdmission) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.cs:line 3783\n   at BookOfEternityClient.Core.GameEngine.ValidateAcc"
+    },
+    "controlFlow": [
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
+        "line": 59,
+        "fact": "Selected new-current resume acquires a canonical write lease and retains it for current original/correction/raw admission and eventual stored I publication."
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
+        "line": 67,
+        "fact": "Inside that lease, it calls CollectAcceptedTurnUpstreamRawStateIssuesAsync without passing the existing lease."
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "line": 1730,
+        "fact": "The upstream collector invokes ValidateAcceptedTurnUpstreamRawItemsAsync after the other upstream reads."
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
+        "line": 60,
+        "fact": "The item helper unconditionally acquires another canonical write lease instead of using the existing owner."
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "line": 3819,
+        "fact": "The second physical acquisition opens the same canonical-write.lock with FileShare.None; retries cannot free the lease held by its awaiting caller. Raw diagnostics identify this IOException."
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
+        "line": 124,
+        "fact": "The selected exception catch maps IOException to preparation-held/held-blocked, allowing the broad held/no-write fixture checks to pass."
+      },
+      {
+        "path": "BookOfEternityClient/Services/MortalJointInterfacePublication.cs",
+        "line": 232,
+        "fact": "The intended exact I preimage/readback check lies later inside CommitPublishedAsync/RequireImagesAsync; its refusal is not evidenced by this run."
+      }
+    ],
+    "diagnosticLimit": "The existing SpiritualLifecycleTestLogger truncates each message to2000 characters. Both complete retained entries identify canonical lock IOException; their stack tails end at GameEngine.ValidateAcc. The exact item-helper call chain is independently established from the unchanged source, not reconstructed from missing stack text. This is not missing original crash evidence or an old process collision.",
+    "classification": "Product selected-resume lease composition defect, plus a fixture positive-reach gap. The fixture correctly proves safe held bytes for an unrelated exception but does not require the intended current-I integrity guard. No toolchain/environment fault, timeout, insufficient budget, stale binary or user-save operation explains this evidence.",
+    "reached": [
+      "Genuine Prepared producer and abrupt process exit",
+      "new independent child/current engine, matching identities/dependencies",
+      "physical current-I append-space fault after valid recovered baseline",
+      "actual late current caller and repeated entry",
+      "selected catch reports two canonical lock failures",
+      "held42/no I-changing/common commit/full223 images unchanged/repeat/cleanup"
+    ],
+    "unprovenOrUnreached": [
+      "intended CurrentInterface preimage/readback mismatch refusal",
+      "successful completion of current raw item/resource admission on this path",
+      "stored Prepared→Published publication",
+      "common take/settlement/effects or cold successful resume"
+    ],
+    "qualificationImpact": "Native4PASS remains immutable. Add0 targets; retained47 stays47/57. All further progression is frozen, especially separate newcrash5. An already-running uncertain1 must finish under its original containment and be archived/recovered without retry or intervention."
+  },
+  "smallestSafeCorrectionRecommendation": {
+    "status": "PLAN_RECOMMENDATION_ONLY_NO_SOURCE_OR_NATIVE_CHANGE_BY_REVIEWER",
+    "production": "Pass the exact already-owned canonical lease from selected resume through the upstream collector into an item-validation core/overload that uses that lease. Preserve existing no-argument collector/item entry semantics by acquiring and disposing a lease only for those existing callers, delegating to the same unchanged validation/claim branches. Verify the borrowed lease is active and belongs to this FileSystemManager using established checks. The caller owns disposal; borrowed path must neither reacquire nor dispose it.",
+    "invariants": [
+      "Keep all raw upstream/N/resource checks and complete original/current ownership readbacks before I publication.",
+      "Do not make global locks reentrant, release/reacquire the selected owning fence to avoid the symptom, skip item admission, seed authority, move I before upstream validation, modify caller ownership semantics or extend retry/budget limits.",
+      "Leave held/error handling and all existing physical-image/identity/EOF/containment/cleanup assertions intact."
+    ],
+    "fixture": "Add a narrow positive CurrentInterface target-reach assertion, verifying the specific current-I preimage/readback mismatch diagnosis for the first actual entry and repeat rather than accepting a generic held result. The present intended downstream error code is joint_interface_actual_publication_preimage_or_readback_changed; confirm its final path in SOURCE review. Preserve all existing before/after/repeat and no-publication assertions. Do not weaken checks or fabricate success by selecting another failure.",
+    "sourceBindings": "This narrow production shape touches Resume, ValidationAndRepair and SpiritualContinuation. SpiritualContinuation is already in the98-pin set but is absent from productDelta21, so the actual delta would become22; update the sorted packet and both controller guards consistently, regenerate affected pins/digest, and preserve the old packet and original native outcome.",
+    "affectedSelection": "Keep the existing exact integrity4 category (one method/four rows) as affected corrective coverage; its three other rows are not already accepted. The shared new-current success path also affects uncertain1 and the separately named newcrash5. Determine the exact corrective/remaining plan split after the already-running uncertain1 original is saved/recovered; do not infer or overwrite that result. Retain47 with original provenance; no blanket replay or cross-build equivalence. SOURCE review must confirm preserved no-argument behavior and any concrete accepted-case dependency before proposing a replay.",
+    "requiredGates": "Save/recover a concrete candidate, independent SOURCE including ownership/helper behavior, exact assertion and selection/pin/product delta, fresh BOTH/catalog→whole16/33/57→affected corrective plan→remaining plan as separately named original native0/ZERO attempts, fresh9/full inventories and v2 dated boundaries, then independent PREP. Only then separately release a named corrective actual once. Preserve all original passes/failures/UNKNOWN; no automatic advance."
+  },
+  "censuses": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-integrity4-before-census-20261018.json",
+      "sha256": "fe40318b80e8de4df77da745bfa080b8edabf88887eeef469ccb12218698f6cf",
+      "entries": 83,
+      "startedUtc": "2026-10-18T13:13:34.146871+00:00",
+      "finishedUtc": "2026-10-18T13:13:34.164624+00:00",
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 28816,
+          "expectedStartTick": 1382198,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-integrity4-after-census-20261018.json",
+      "sha256": "68dd0f964b6b562589d013ff709e7661eda5c64c54871e83655c74654610de81",
+      "entries": 84,
+      "startedUtc": "2026-10-18T13:20:40.523379+00:00",
+      "finishedUtc": "2026-10-18T13:20:40.544535+00:00",
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 31052,
+          "expectedStartTick": 1424846,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    }
+  ],
+  "boundaryGapsSeconds": {
+    "before": 2.538864,
+    "after": 1.077795
+  },
+  "recovery": {
+    "receiptPath": "/tmp/1536-cloud-tools/carrier-recovery-90fbb068.json",
+    "receiptSha256": "c1d3c09f735ea55e7f73589138144237d85aae0de3f21703e80ec4ad5d2701d1",
+    "changedPaths": 24,
+    "bytesHashesBlobsModesVerified": true,
+    "completeGitTreeMatchesIndependentClone": true
+  },
+  "qualifiedCases": 47,
+  "additionalQualifiedTargets": 0,
+  "preservationAndLimits": "Original integrity native4PASS, settlement original1PASS2FAIL/corrected acceptance, all prior observed outcomes and lost old corrected crash5 UNKNOWN/unavailable are unchanged. Saved process censuses are finite dated boundaries only; original exe-link arrays remain incomplete. FullNI/HOT/F1/M3/T197 incomplete, A3 NO-PROCEED, Windows403 blocked/no retry and CI prohibition remain. Reviewer performed no tests/build/discovery/controller/observer execution, current-root/process inspection/intervention or repository edits. Early conditional uncertain1 overlap guidance was superseded by the material finding and freeze notification as soon as discovered."
+}
