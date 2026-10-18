@@ -446,14 +446,24 @@
       "sha256": "5d465225bde76c5286a1b4a25cdef16a3e891bc8993c975f1252a538917be45d"
     },
     {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-controller-proof-20261018.json",
+      "bytes": 10200,
+      "sha256": "91c6fcf15078e7db660f5c6d905de1715f8f6777f31ac94f759c32ba10aa86a5"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-controller-proof-20261018.py",
+      "bytes": 5064,
+      "sha256": "77bd7410aaf6d795d94c53a0dc482740cb7a408fb005beec84f8bdbfeb55480b"
+    },
+    {
       "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-recover-20261018.py",
       "bytes": 3466,
       "sha256": "2d8213fb9bd306c19ed332935fed0ae24ec9da79d4c4c46151ac6d9d84b860b2"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-run-phase-20261018.py",
-      "bytes": 5989,
-      "sha256": "b94a7da8b3d20981e5c2c1ebeca717528265d5f89cc6df509f4abeb7bc582531"
+      "bytes": 7435,
+      "sha256": "c52f7b5243c209ab4a9fc1fe1e0f3294e05a932e97539dfd49e712ad9d93f5b5"
     },
     {
       "path": "tests/categories.json",
@@ -466,7 +476,7 @@
       "sha256": "8ed0e422dc7464252758fbc126fec536477392d6300c26d353009daf14c62578"
     }
   ],
-  "sourcePinDigest": "ddddb4ea17fce7e0cfacf46cece99da9062f21aa4ebd8723fee39b5716b9a3e2",
+  "sourcePinDigest": "84503e9eb22c08940d328a4c8be34464684fc6f0947a00fb04d99ab1df9066d2",
   "sourcePinScope": "Exact direct test/preparation/publication/recovery dependencies and runner/catalog inputs; full compilation is additionally bound to clean Git commit and fresh binary inventory, not claimed from this list alone.",
   "historicalL01": {
     "qualified": 52,
@@ -526,5 +536,6 @@
     "actual": {
       "status": "PREP_REVIEW_PENDING"
     }
-  }
+  },
+  "sourcePinDigestEncoding": "SHA256 UTF8 json.dumps(sourcePins, sort_keys=True, separators=(comma,colon)), no newline"
 }

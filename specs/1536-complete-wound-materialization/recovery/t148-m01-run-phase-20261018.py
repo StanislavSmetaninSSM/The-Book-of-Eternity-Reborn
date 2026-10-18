@@ -1,5 +1,6 @@
 """Run one explicitly admitted M01 phase; retain its original native outcome, never auto retry."""
 from pathlib import Path
+from contextlib import contextmanager
 import datetime
 import hashlib
 import json
@@ -30,6 +31,43 @@ def binaries():
                 data = file.read_bytes()
                 rows.append(dict(path=str(file.relative_to(REPO)), bytes=len(data), sha256=sha(data)))
     return rows
+
+
+def capture_native(record, outputs, launch):
+    """Keep a known native status even if closing its output files fails."""
+    try:
+        with outputs() as streams:
+            record['nativeExit'] = launch(*streams)
+    except BaseException as error:
+        record['launchOrControllerError'] = repr(error)
+        record['observerErrors'].append('Native launch/output observer: ' + repr(error))
+
+
+def finalize(record, persist, emit):
+    """Observer failures hold native success; they never replace a native failure."""
+    try:
+        persist(record)
+    except BaseException as error:
+        record['observerErrors'].append('Record persistence: ' + repr(error))
+    try:
+        emit(record)
+    except BaseException as error:
+        record['observerErrors'].append('Summary emission: ' + repr(error))
+        # Bounded record update only; never relaunch a native phase.
+        try:
+            persist(record)
+        except BaseException as persistence_error:
+            record['observerErrors'].append('Record update: ' + repr(persistence_error))
+    native = record['nativeExit']
+    return native if native is not None and native != 0 else (2 if native is None or record['observerErrors'] else 0)
+
+
+def emit_summary(record):
+    payload = (json.dumps({key: record.get(key) for key in
+                         ['mode', 'nativeExit', 'durationSeconds', 'resultDirectories', 'observerErrors']}) + '\n').encode()
+    # No buffered stdout flush at interpreter shutdown can override the native exit.
+    if os.write(1, payload) != len(payload):
+        raise OSError('Incomplete summary write')
 
 
 def main():
@@ -81,11 +119,15 @@ def main():
                   phaseRoot=str(phase), fixtureTemp=env['TMPDIR'], nativeExit=None, observerErrors=[])
     (phase / 'started.json').write_text(json.dumps(record, indent=2) + '\n')
     start = time.monotonic()
-    try:
+
+    @contextmanager
+    def outputs():
         with (phase / 'stdout.txt').open('wb') as out, (phase / 'stderr.txt').open('wb') as err:
-            record['nativeExit'] = subprocess.run(cmd, cwd=REPO, env=env, stdout=out, stderr=err).returncode
-    except BaseException as error:
-        record['launchOrControllerError'] = repr(error)
+            yield out, err
+
+    try:
+        capture_native(record, outputs, lambda out, err:
+                       subprocess.run(cmd, cwd=REPO, env=env, stdout=out, stderr=err).returncode)
     finally:
         record['durationSeconds'] = time.monotonic() - start
         record['endedUtc'] = datetime.datetime.now(datetime.timezone.utc).isoformat()
@@ -101,11 +143,9 @@ def main():
             record['binaryInventory'] = binaries()
         except BaseException as error:
             record['observerErrors'].append(repr(error))
-        (phase / 'record.json').write_text(json.dumps(record, indent=2) + '\n')
-    print(json.dumps({key: record.get(key) for key in ['mode', 'nativeExit', 'durationSeconds', 'resultDirectories', 'observerErrors']}), flush=True)
-    if record['nativeExit'] is None:
-        return 2
-    return record['nativeExit'] if record['nativeExit'] != 0 else (2 if record['observerErrors'] else 0)
+    return finalize(record,
+                    lambda value: (phase / 'record.json').write_text(json.dumps(value, indent=2) + '\n'),
+                    emit_summary)
 
 
 if __name__ == '__main__':

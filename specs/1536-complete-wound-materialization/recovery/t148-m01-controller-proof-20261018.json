@@ -1,0 +1,378 @@
+{
+  "kind": "M01_CONTROLLER_FAKE_CALLBACK_PROOF",
+  "baselineSource": "8b1b80f76603a11fd6280e20246262019da8b85f",
+  "baselineRunnerSha256": "b94a7da8b3d20981e5c2c1ebeca717528265d5f89cc6df509f4abeb7bc582531",
+  "correctedRunnerSha256": "c52f7b5243c209ab4a9fc1fe1e0f3294e05a932e97539dfd49e712ad9d93f5b5",
+  "baseline": [
+    {
+      "nativeExit": 0,
+      "persistFails": false,
+      "emitFails": false,
+      "returned": 0,
+      "unhandled": null
+    },
+    {
+      "nativeExit": 0,
+      "persistFails": false,
+      "emitFails": true,
+      "returned": null,
+      "unhandled": "BrokenPipeError"
+    },
+    {
+      "nativeExit": 0,
+      "persistFails": true,
+      "emitFails": false,
+      "returned": null,
+      "unhandled": "OSError"
+    },
+    {
+      "nativeExit": 0,
+      "persistFails": true,
+      "emitFails": true,
+      "returned": null,
+      "unhandled": "OSError"
+    },
+    {
+      "nativeExit": 7,
+      "persistFails": false,
+      "emitFails": false,
+      "returned": 7,
+      "unhandled": null
+    },
+    {
+      "nativeExit": 7,
+      "persistFails": false,
+      "emitFails": true,
+      "returned": null,
+      "unhandled": "BrokenPipeError"
+    },
+    {
+      "nativeExit": 7,
+      "persistFails": true,
+      "emitFails": false,
+      "returned": null,
+      "unhandled": "OSError"
+    },
+    {
+      "nativeExit": 7,
+      "persistFails": true,
+      "emitFails": true,
+      "returned": null,
+      "unhandled": "OSError"
+    }
+  ],
+  "originalCloseFailureIncorrectlyReturned": 0,
+  "corrected": [
+    {
+      "nativeExit": null,
+      "closeFails": false,
+      "persistFails": false,
+      "emitFails": false,
+      "returned": 2,
+      "observerErrors": [
+        "Native launch/output observer: OSError('fake pre-native launch failure')"
+      ],
+      "nativeCalls": 1,
+      "savedRecords": 1
+    },
+    {
+      "nativeExit": null,
+      "closeFails": false,
+      "persistFails": false,
+      "emitFails": true,
+      "returned": 2,
+      "observerErrors": [
+        "Native launch/output observer: OSError('fake pre-native launch failure')",
+        "Summary emission: BrokenPipeError('fake summary failure')"
+      ],
+      "nativeCalls": 1,
+      "savedRecords": 2
+    },
+    {
+      "nativeExit": null,
+      "closeFails": false,
+      "persistFails": true,
+      "emitFails": false,
+      "returned": 2,
+      "observerErrors": [
+        "Native launch/output observer: OSError('fake pre-native launch failure')",
+        "Record persistence: OSError('fake record failure')"
+      ],
+      "nativeCalls": 1,
+      "savedRecords": 0
+    },
+    {
+      "nativeExit": null,
+      "closeFails": false,
+      "persistFails": true,
+      "emitFails": true,
+      "returned": 2,
+      "observerErrors": [
+        "Native launch/output observer: OSError('fake pre-native launch failure')",
+        "Record persistence: OSError('fake record failure')",
+        "Summary emission: BrokenPipeError('fake summary failure')",
+        "Record update: OSError('fake record failure')"
+      ],
+      "nativeCalls": 1,
+      "savedRecords": 0
+    },
+    {
+      "nativeExit": null,
+      "closeFails": true,
+      "persistFails": false,
+      "emitFails": false,
+      "returned": 2,
+      "observerErrors": [
+        "Native launch/output observer: OSError('fake pre-native launch failure')"
+      ],
+      "nativeCalls": 1,
+      "savedRecords": 1
+    },
+    {
+      "nativeExit": null,
+      "closeFails": true,
+      "persistFails": false,
+      "emitFails": true,
+      "returned": 2,
+      "observerErrors": [
+        "Native launch/output observer: OSError('fake pre-native launch failure')",
+        "Summary emission: BrokenPipeError('fake summary failure')"
+      ],
+      "nativeCalls": 1,
+      "savedRecords": 2
+    },
+    {
+      "nativeExit": null,
+      "closeFails": true,
+      "persistFails": true,
+      "emitFails": false,
+      "returned": 2,
+      "observerErrors": [
+        "Native launch/output observer: OSError('fake pre-native launch failure')",
+        "Record persistence: OSError('fake record failure')"
+      ],
+      "nativeCalls": 1,
+      "savedRecords": 0
+    },
+    {
+      "nativeExit": null,
+      "closeFails": true,
+      "persistFails": true,
+      "emitFails": true,
+      "returned": 2,
+      "observerErrors": [
+        "Native launch/output observer: OSError('fake pre-native launch failure')",
+        "Record persistence: OSError('fake record failure')",
+        "Summary emission: BrokenPipeError('fake summary failure')",
+        "Record update: OSError('fake record failure')"
+      ],
+      "nativeCalls": 1,
+      "savedRecords": 0
+    },
+    {
+      "nativeExit": 0,
+      "closeFails": false,
+      "persistFails": false,
+      "emitFails": false,
+      "returned": 0,
+      "observerErrors": [],
+      "nativeCalls": 1,
+      "savedRecords": 1
+    },
+    {
+      "nativeExit": 0,
+      "closeFails": false,
+      "persistFails": false,
+      "emitFails": true,
+      "returned": 2,
+      "observerErrors": [
+        "Summary emission: BrokenPipeError('fake summary failure')"
+      ],
+      "nativeCalls": 1,
+      "savedRecords": 2
+    },
+    {
+      "nativeExit": 0,
+      "closeFails": false,
+      "persistFails": true,
+      "emitFails": false,
+      "returned": 2,
+      "observerErrors": [
+        "Record persistence: OSError('fake record failure')"
+      ],
+      "nativeCalls": 1,
+      "savedRecords": 0
+    },
+    {
+      "nativeExit": 0,
+      "closeFails": false,
+      "persistFails": true,
+      "emitFails": true,
+      "returned": 2,
+      "observerErrors": [
+        "Record persistence: OSError('fake record failure')",
+        "Summary emission: BrokenPipeError('fake summary failure')",
+        "Record update: OSError('fake record failure')"
+      ],
+      "nativeCalls": 1,
+      "savedRecords": 0
+    },
+    {
+      "nativeExit": 0,
+      "closeFails": true,
+      "persistFails": false,
+      "emitFails": false,
+      "returned": 2,
+      "observerErrors": [
+        "Native launch/output observer: OSError('fake output close failure')"
+      ],
+      "nativeCalls": 1,
+      "savedRecords": 1
+    },
+    {
+      "nativeExit": 0,
+      "closeFails": true,
+      "persistFails": false,
+      "emitFails": true,
+      "returned": 2,
+      "observerErrors": [
+        "Native launch/output observer: OSError('fake output close failure')",
+        "Summary emission: BrokenPipeError('fake summary failure')"
+      ],
+      "nativeCalls": 1,
+      "savedRecords": 2
+    },
+    {
+      "nativeExit": 0,
+      "closeFails": true,
+      "persistFails": true,
+      "emitFails": false,
+      "returned": 2,
+      "observerErrors": [
+        "Native launch/output observer: OSError('fake output close failure')",
+        "Record persistence: OSError('fake record failure')"
+      ],
+      "nativeCalls": 1,
+      "savedRecords": 0
+    },
+    {
+      "nativeExit": 0,
+      "closeFails": true,
+      "persistFails": true,
+      "emitFails": true,
+      "returned": 2,
+      "observerErrors": [
+        "Native launch/output observer: OSError('fake output close failure')",
+        "Record persistence: OSError('fake record failure')",
+        "Summary emission: BrokenPipeError('fake summary failure')",
+        "Record update: OSError('fake record failure')"
+      ],
+      "nativeCalls": 1,
+      "savedRecords": 0
+    },
+    {
+      "nativeExit": 7,
+      "closeFails": false,
+      "persistFails": false,
+      "emitFails": false,
+      "returned": 7,
+      "observerErrors": [],
+      "nativeCalls": 1,
+      "savedRecords": 1
+    },
+    {
+      "nativeExit": 7,
+      "closeFails": false,
+      "persistFails": false,
+      "emitFails": true,
+      "returned": 7,
+      "observerErrors": [
+        "Summary emission: BrokenPipeError('fake summary failure')"
+      ],
+      "nativeCalls": 1,
+      "savedRecords": 2
+    },
+    {
+      "nativeExit": 7,
+      "closeFails": false,
+      "persistFails": true,
+      "emitFails": false,
+      "returned": 7,
+      "observerErrors": [
+        "Record persistence: OSError('fake record failure')"
+      ],
+      "nativeCalls": 1,
+      "savedRecords": 0
+    },
+    {
+      "nativeExit": 7,
+      "closeFails": false,
+      "persistFails": true,
+      "emitFails": true,
+      "returned": 7,
+      "observerErrors": [
+        "Record persistence: OSError('fake record failure')",
+        "Summary emission: BrokenPipeError('fake summary failure')",
+        "Record update: OSError('fake record failure')"
+      ],
+      "nativeCalls": 1,
+      "savedRecords": 0
+    },
+    {
+      "nativeExit": 7,
+      "closeFails": true,
+      "persistFails": false,
+      "emitFails": false,
+      "returned": 7,
+      "observerErrors": [
+        "Native launch/output observer: OSError('fake output close failure')"
+      ],
+      "nativeCalls": 1,
+      "savedRecords": 1
+    },
+    {
+      "nativeExit": 7,
+      "closeFails": true,
+      "persistFails": false,
+      "emitFails": true,
+      "returned": 7,
+      "observerErrors": [
+        "Native launch/output observer: OSError('fake output close failure')",
+        "Summary emission: BrokenPipeError('fake summary failure')"
+      ],
+      "nativeCalls": 1,
+      "savedRecords": 2
+    },
+    {
+      "nativeExit": 7,
+      "closeFails": true,
+      "persistFails": true,
+      "emitFails": false,
+      "returned": 7,
+      "observerErrors": [
+        "Native launch/output observer: OSError('fake output close failure')",
+        "Record persistence: OSError('fake record failure')"
+      ],
+      "nativeCalls": 1,
+      "savedRecords": 0
+    },
+    {
+      "nativeExit": 7,
+      "closeFails": true,
+      "persistFails": true,
+      "emitFails": true,
+      "returned": 7,
+      "observerErrors": [
+        "Native launch/output observer: OSError('fake output close failure')",
+        "Record persistence: OSError('fake record failure')",
+        "Summary emission: BrokenPipeError('fake summary failure')",
+        "Record update: OSError('fake record failure')"
+      ],
+      "nativeCalls": 1,
+      "savedRecords": 0
+    }
+  ],
+  "checkedCases": 24,
+  "outcome": "PASS",
+  "scope": "Observer source harness only; zero game/test/build/native-phase launches; no M01/L01 runtime qualification."
+}

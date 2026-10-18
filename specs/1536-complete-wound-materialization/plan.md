@@ -12,7 +12,12 @@ Ruling: этот узкий test-helper getter нужен для source-completi
 одна-фаза runner и отдельный recovery с exact2 historical pin exceptions. Все старые
 catalog entries семантически неизменны; packet/ledgers прежнего L01 byte-exact,
 остальные99/product23 unchanged. Production diff пуст; build/discovery/actual ещё
-не запускались. Independent SOURCE review требуется до fresh ZERO PREP; M01 UNRUN.
+не запускались. Initial SOURCE HOLD at8b1b80f7: M01-01 observer failure could mask native exit
+or accept native0 after output close failure. External runner correction retains native
+status, holds success on observer errors; fake callbacks reproduce8 original combinations
+and verify24 corrected combinations with one fake invocation each. No game/native phase
+ran. [Original HOLD](recovery/t148-m01-source-original-hold-20261018.md) retained.
+Affected independent SOURCE review required before fresh ZERO PREP; M01 UNRUN.
 
 ## T148 M01 — PLAN принят; test-only SOURCE следующий (2026-10-18)
 
