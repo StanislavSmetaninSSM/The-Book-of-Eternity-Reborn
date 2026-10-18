@@ -10,6 +10,106 @@ The last of 20 bound scalars is custody checkpoint return at 15.304 seconds. No 
 
 All earlier failures, the incomplete native-124 crash run and old session 66529 UNKNOWN/unavailable remain unchanged; recoveryClaim stays false and no intervention occurred. Full L01/57, full NI, HOT, F1, M3 and T197 remain incomplete. A3 NO-PROCEED; Windows403 remains blocked without retry; no CI. Current handoff: this entry, cloud.currentHandoff and sourcepacket.currentL01Handoff. Older current-named handoff artifacts retain their historical bytes. Final checkpoint requires push, exact remote SHA, independent GitHub recovery and readback. Following sections are historical.
 
+### Следующий независимый cloud участок — предложение после 631cff24 (2026-10-18)
+
+Задача #1536; база `631cff24a4841557bdf0445763aef578fb35b0c4`, ветка
+`1536-wound-b2-cloud-20261012`. Текущий проход — чтение плана, исходников и
+доступности инструментов. Код, бюджеты, assertions, ledger, source packet и frozen
+evidence не изменены. Независимое ревью предложения ожидается; реализация и новый
+runtime не допускаются.
+
+**Рекомендация: ограниченный SOURCE-аудит T148 — фактическая независимость
+`memory_suppression` Сарефа от лечения ран.** Следующий результат: карта
+producer → source/identity → carrier → lifecycle/consumer с вердиктом «полный
+независимый эффект / только audit metadata / точный пробел доказательств» и
+минимальным последующим test contract. Не добавлять механизм подавления памяти
+или новые source kinds в рамках аудита.
+
+| Проверенная зависимость | Вывод для выбора участка |
+| --- | --- |
+| L01 52/57; пять crash не квалифицированы; diagnostic permit исчерпан | BOUNDED_BLOCKER сохраняется; нет повторов, sampling или увеличения 220/900. |
+| NI-COLD01 — accepted design; реализация/полная NI открыты; RP01 требует реального consumer closure | Downstream NI не является независимым завершением. |
+| US5-RO1/RO2 приняты в своих границах; полный US5 требует lawful ACTIVE; US6 зависит от US4/US5 | Readonly проекции не доказывают guided treatment/provider flow. |
+| F1/T197 DEP-C/I/L открыты; A3 NO-PROCEED; Windows403 blocked | Эти holds не обходятся; Windows не является доказанным решением CPU timeout. |
+| T148 открыт; FR-028 и отдельный Saref audit уже входят в спецификацию | SOURCE-аудит существующей цепочки не требует crash closure, Windows или новой архитектуры. |
+| Final conclusions Phase10/T148–T166 зависят от T167–T177 и всех нужных stories | Bounded audit не закрывает T148/T177/Phase10; независимые аудиты T148–T152 отдельно предусмотрены планом. |
+
+**Source evidence кандидата:** `EffectSourceAuthority.SourceKinds` не содержит
+`saref`; это само по себе не исключает другого законного source kind.
+`SarefMainStoryState.ApplyDefeatOutcomeUpdate` переносит `memorySuppressionAudit`
+в `defeatOutcomes`; `ValidateSarefMemorySuppressionDefeat` проверяет
+scope/severity/summary. Тест
+`WoundConsequenceEnvelopeTests.IndependentEffects_ArePreservedAndNeverConsumeSlotsOrEnterProfileValidation`
+сохраняет синтетический независимый payload при проверке envelope; реальный
+producer, runtime carrier и переживание лечения этим не доказаны. Названный в
+T148 `SarefMemorySuppressionWoundIsolationTests.cs` отсутствует. Это основание
+проследить всю цепочку, а не готовый глобальный вывод «metadata-only».
+[Точные входные hashes и статическая инвентаризация](recovery/independent-next-slice-diagnostics-availability-20261018.json)
+сняты на базе 631cff24 до правки плана; это не новый build/PREP.
+
+**Приёмка предлагаемого следующего задания:**
+
+1. Дать file/member/branch evidence для реального Saref producer, постоянной
+   identity, source definition/instance, carrier/index, consumers и lifetime;
+   явно отметить отсутствующие звенья. Проверить альтернативные законные source
+   kinds; одного отсутствия строки `saref` недостаточно.
+2. Проследить реальные wound heal/retire/legacy cleanup branches: какие exact
+   owned эффекты удаляются и почему независимый Saref state/effect не входит в
+   набор. Синтетический envelope не подменяет accepted treatment proof.
+3. Сформулировать минимальную будущую проверку на disposable root: genuine
+   production materialization и лечение, сохранность независимой identity,
+   payload/carrier и поведения, без fake carrier/ослабленных assertions.
+   Если законного producer нет, зафиксировать отсутствие и подготовить текст
+   linked follow-up, без создания issue или новой архитектуры. Спецификация
+   требует linked issue при metadata-only результате **до закрытия #1536**.
+4. В SOURCE-аудите не менять код/каталог/selection и не запускать тесты.
+   Для будущего теста отдельно определить точную category ownership/selection;
+   соседние существующие owners — `mortal-wounds-effects`, `narrative-world`,
+   но их полный запуск не допускается этим предложением. Нужны независимое
+   SOURCE review и GitHub recovery. T148 открыт до настоящего independent-survival
+   evidence и выполнения остальных условий задачи.
+
+**Какие новые данные могли бы изменить L01 blocker — без получения их сейчас:**
+
+- Предпочтительный будущий путь — EventPipe того же cloud fixture процесса:
+  bounded managed stack samples с module/method resolution, PID+kernel starttick/
+  nonce, TID, source/binary hashes и monotonic custody→accepted interval.
+  Нужны также source-backed operation counts/progress или terminal/completed-work
+  bound. Повторяющийся stack не доказывает отсутствие прогресса, sampled thread
+  time не равен on-CPU времени.
+  [DiagnosticsClient](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/diagnostics-client-library)
+  поддерживает EventPipe; [актуальная документация dotnet-trace](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-trace)
+  уточняет семантику thread sampling. Версию/providers/decoder/symbols/формат
+  нужно закрепить до будущего SOURCE/PREP.
+- По чтению PATH и трёх перечисленных tool roots сейчас не найдены `dotnet-trace`,
+  `dotnet-stack`, `dotnet-dump`, `dotnet-counters`, `perf`, `gdb`, `lldb`.
+  Найдены SDK10.0.402 `Microsoft.Diagnostics.NETCore.Client.dll` и три `createdump`
+  (.NET8.0.32, .NET10.0.13, pwsh); TraceEvent, ClrMD и SOS в этих roots не найдены.
+  DLL позволяет рассмотреть маленький отдельный collector, но готового проверенного
+  collector/decoder нет. Установка, сборка collector и attach не выполнялись и
+  текущим поручением не допускаются. Отсутствие вне проверенных roots не заявляется.
+- [dotnet-stack](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-stack)
+  может дать managed stacks, но здесь не найден. `createdump` не заменяет
+  анализатор; dump требует отдельной проверки ptrace/диска/паузы target и matching
+  runtime/DAC/symbols. [Официальные ограничения containers](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/diagnostics-in-containers)
+  требуют учитывать permissions и стоимость collection. CapEff=0, NoNewPrivs=1,
+  Seccomp=2 у читающего процесса не доказывают разрешение или запрет attach.
+  IPC/ptrace/декодирование здесь **не проверены**; ослабление sandbox/capabilities
+  не предлагается.
+- Точный managed дефект мог бы обосновать narrow fix с affected SOURCE/PREP;
+  доказанная конечная работа при proven allocation — отдельный budget/semantic-
+  selection proposal с exact five-case mapping и performance hold. Нынешняя CPU
+  activity не доказывает ни то, ни другое. Получение данных требует отдельного
+  допуска: старый permit исчерпан. Только новые disposable fixtures/genuine owned
+  children; никаких старой среды или пользовательских saves. Windows автоматически
+  не выбирается; Windows403 не повторяется.
+
+52/57, session66529 UNKNOWN/bytes unavailable/recoveryClaim=false, исходные failures,
+frozen evidence, once-only/no double-I/Ready immutable/exact owned transition/
+oldv1-child1 сохраняются. Full L01/NI/HOT/F1/M3/T197 не завершены; A3 NO-PROCEED,
+Windows403 blocked, no CI. GM/runtime контракт не меняется; новые GM examples/
+prompts для этого документального предложения не нужны.
+
 ## T179-Pd-NI-IOBS-L01 — one diagnostic2 original outcome saved; causal review pending (2026-10-18)
 
 Actual52dc426673a14ce718ab85481234109063be0317/compiled5aa8673ec128d808b3fdc3d3fd244946e2ae7df6: native1,400.779s, native summary{'Total': 1, 'Executed': 1, 'Passed': 0, 'Failed': 1}, complete=True, timeout=False. Original11rawchains, identity/stage/logger/cleanup and dated boundaries retained. Diagnostic1 is excluded from original57/coverage; qualified52/alloriginals/old66529UNKNOWN remain unchanged. Save/recover original then independent causal review before any remedy or requalification; no next actual released. All broader holds unchanged. Following sections historical.

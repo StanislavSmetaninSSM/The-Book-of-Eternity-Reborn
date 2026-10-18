@@ -1,0 +1,133 @@
+{
+  "kind": "STATIC_AVAILABILITY_AND_NEXT_SLICE_INPUTS",
+  "base": "631cff24a4841557bdf0445763aef578fb35b0c4",
+  "checkedUtc": "2026-10-18T18:03:27.123049+00:00",
+  "scope": "Filesystem/PATH/source reads only; no diagnostic executable, attach, installation, build, discovery, test, crash, sampling or runtime capability probe.",
+  "pathTools": {
+    "dotnet-trace": null,
+    "dotnet-stack": null,
+    "dotnet-dump": null,
+    "dotnet-counters": null,
+    "perf": null,
+    "gdb": null,
+    "lldb": null
+  },
+  "enumeratedRoots": [
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet",
+      "exists": true
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/pwsh",
+      "exists": true
+    },
+    {
+      "path": "/home/agent/.dotnet/tools",
+      "exists": false
+    }
+  ],
+  "fileMatches": [
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/shared/Microsoft.NETCore.App/8.0.32/createdump",
+      "bytes": 108832,
+      "sha256": "66d08da0cf937e3a126f3c41f9030bc876ebd869db35e9f6cba4e44ea68b14b6",
+      "executable": true
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/shared/Microsoft.NETCore.App/10.0.13/createdump",
+      "bytes": 110376,
+      "sha256": "af012f1adb29bfe3fc866887071ae4d58fb1ba97fd3be400edb007e482f3260f",
+      "executable": true
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk/10.0.402/Extensions/Microsoft.Diagnostics.NETCore.Client.dll",
+      "bytes": 359720,
+      "sha256": "c3efd282927d88d404802a0d89abe82998c926970d8bb4b45861d800f78f90a6",
+      "executable": false
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/pwsh/createdump",
+      "bytes": 110376,
+      "sha256": "498cd8a4dfd9fe67630d913926a7096547dcb4b76644097cf3d2f268b03ae6c6",
+      "executable": true
+    }
+  ],
+  "notFoundInEnumeratedRoots": [
+    "Microsoft.Diagnostics.Tracing.TraceEvent.dll",
+    "Microsoft.Diagnostics.Runtime.dll",
+    "libsos.so",
+    "sos.dll",
+    "dotnet-trace",
+    "dotnet-stack",
+    "dotnet-dump",
+    "dotnet-counters",
+    "perf",
+    "gdb",
+    "lldb"
+  ],
+  "selfSecurityStatus": {
+    "Uid": "1000\t1000\t1000\t1000",
+    "Gid": "1000\t1000\t1000\t1000",
+    "CapEff": "0000000000000000",
+    "NoNewPrivs": "1",
+    "Seccomp": "2"
+  },
+  "yamaPtraceScopeFileExists": false,
+  "capabilityConclusion": "UNPROVEN: file presence does not prove compatible/allowed diagnostics IPC, ptrace, symbolication or successful collection; absent tools means PATH and enumerated roots only.",
+  "sourceInputsAtBase": [
+    {
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "bytes": 242141,
+      "sha256": "a90d70d67e3a052218091eb2b2a11b942c30736e5c2440c0663db7ddc3703fde"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 2443213,
+      "sha256": "6b6b6e12939953f51302f7741348ddbac3b0ace008965c712f8468bfee7c971b"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "bytes": 1604688,
+      "sha256": "545de16ee2f8512c475031414eceb673365214b8ecf88504393ebbc96b522138"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectSourceAuthority.cs",
+      "bytes": 97492,
+      "sha256": "3fe3208487a96ebc861721502562a35219ba361a0d566e23fc5b9fca2e88bd86"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SarefMainStoryState.cs",
+      "bytes": 58841,
+      "sha256": "e0fceb10f412b90fd07a696d55362c66da4272a730b6095a9f9e09e516861d2c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs",
+      "bytes": 208572,
+      "sha256": "a0f42912f0714e163a6a56147a19a8d7ef2c51849c5eba4fcfe48c947ff4c3f3"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/WoundConsequenceEnvelopeTests.cs",
+      "bytes": 133383,
+      "sha256": "64facc5def2cbad35c11cb629bc4589a3cfb5b1f5e208332dee188eb82437de0"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/SarefMainStoryStateValidationTests.cs",
+      "bytes": 120010,
+      "sha256": "76062ac53074cd11a6d036e0eff873c8ec36eaf70e09c1dd3041868d0d369833"
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 2014078,
+      "sha256": "08bfb226bb044544e992996c241abbe61a87d0a3ab543a9e30e71479b85ed480"
+    }
+  ],
+  "plannedMissingTestPath": "BookOfEternityClient.IntegrationTests/SarefMemorySuppressionWoundIsolationTests.cs",
+  "plannedMissingTestPathExists": false,
+  "qualification": {
+    "accepted": 52,
+    "total": 57,
+    "originalCrash5": "UNQUALIFIED",
+    "oldSession66529": "UNKNOWN / bytes unavailable / recoveryClaim false",
+    "release": "NONE"
+  }
+}
