@@ -1,0 +1,933 @@
+{
+  "kind": "L01_MANAGED_STACK_CAPABILITY_READ_ONLY_INVENTORY",
+  "checkedUtc": "2026-10-18T19:24:58.178900+00:00",
+  "base": "39cafe9e9595730929efb7b7450b4cc260b5bafc",
+  "syntheticStatus": "PLAN_REVIEW_PENDING_UNRUN",
+  "gameplayRelease": "NONE",
+  "plannedRunRoot": "/tmp/l01-managed-stack-smoke-20261018-e41ea38d29f24bf5b8e56f5d98298e80",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "architecture": "x86_64",
+  "security": {
+    "Uid": "1000\t1000\t1000\t1000",
+    "Gid": "1000\t1000\t1000\t1000",
+    "CapEff": "0000000000000000",
+    "NoNewPrivs": "1",
+    "Seccomp": "2"
+  },
+  "unavailableReadOnlySettings": [
+    "/proc/sys/kernel/yama/ptrace_scope: ENOENT",
+    "/sys/kernel/security/lsm: ENOENT"
+  ],
+  "permissionInference": "No effective capabilities and seccomp2 do not prove denial. Exact authorization is untested; no security/ptrace settings changed.",
+  "availableFiles": [
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/dotnet",
+      "bytes": 68360,
+      "sha256": "59249cdece2b3eb8586bf991346b80f8c8ecde3e9569e00605c1eaecc11764ad"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk/10.0.402/Roslyn/bincore/csc.dll",
+      "bytes": 141096,
+      "sha256": "d89b65774122b1e5c51e30253db50066dccd8fa37f169f9aaf7b905b6c09f000"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk/10.0.402/Extensions/Microsoft.Diagnostics.NETCore.Client.dll",
+      "bytes": 359720,
+      "sha256": "c3efd282927d88d404802a0d89abe82998c926970d8bb4b45861d800f78f90a6"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/shared/Microsoft.NETCore.App/8.0.32/createdump",
+      "bytes": 108832,
+      "sha256": "66d08da0cf937e3a126f3c41f9030bc876ebd869db35e9f6cba4e44ea68b14b6"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/shared/Microsoft.NETCore.App/8.0.32/libmscordaccore.so",
+      "bytes": 2442912,
+      "sha256": "a75cfb07eab28fb57c91bb718302a5fc2c500599f56c598b9e61ad5b52e9198d"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/shared/Microsoft.NETCore.App/8.0.32/libcoreclr.so",
+      "bytes": 6916456,
+      "sha256": "a8a81fc0cbed0c3c3cc94b4daa3a4435c8e37eb579df64bd5afc333e626dfa46"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/pwsh/pwsh",
+      "bytes": 78192,
+      "sha256": "873de21f04b6a0269c220f9c8396ff5cd639e8deb058a32cc26df54b69bbff8d"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/pwsh/Microsoft.Bcl.AsyncInterfaces.dll",
+      "bytes": 20808,
+      "sha256": "7f8cab0fb60e136b85efe0f6ef990690f2de72bfee90728e821297ba493f1aae"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk/10.0.402/Microsoft.Extensions.Logging.Abstractions.dll",
+      "bytes": 137000,
+      "sha256": "37fdc8f5bb27f85eb2e69317408081f4446a0cf7b802fecd3441422d2518b497"
+    }
+  ],
+  "net8ReferenceInputs": [
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/Microsoft.CSharp.dll",
+      "bytes": 18256,
+      "sha256": "d00e70992e95c912079710ac87c16f1fe058ee9f687a79411867265a37d59a26"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/Microsoft.VisualBasic.Core.dll",
+      "bytes": 59216,
+      "sha256": "3e364a427a89878b9f45fb632f536f587ba0a2d7772d4f4c8e5891c0634c4fcb"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/Microsoft.VisualBasic.dll",
+      "bytes": 17232,
+      "sha256": "8cb8d685c81cca2ba20e54b8211160f625d85c53e5f6fad8a43549a2c45c8e19"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/Microsoft.Win32.Primitives.dll",
+      "bytes": 16168,
+      "sha256": "c1ebd6097b3fec6f8d04250dfa20d23a7a8905220a3822c8b2ba926d69ecbd2f"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/Microsoft.Win32.Registry.dll",
+      "bytes": 21288,
+      "sha256": "9cfa8c1f6f62a365216e2730f52422d3b904782c81c1a5c159a50db3ded5cdc7"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.AppContext.dll",
+      "bytes": 15144,
+      "sha256": "b7b1d115a707ca5ac6e819f969ee4281fe813ff1da2b219edcef915d94a7d302"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Buffers.dll",
+      "bytes": 15184,
+      "sha256": "d1222b8642c75039e3408beddd7f2ca7753683af1a894d11322a896ca94bf428"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Collections.Concurrent.dll",
+      "bytes": 26408,
+      "sha256": "a86c998a1bb1047719905b81546ee89a9d519eabc766383abfda868a0ee2a59a"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Collections.Immutable.dll",
+      "bytes": 73000,
+      "sha256": "bed670784f73db87fa03840c1bce4a45a8dd8671013c96e788e7a672368e9b5f"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Collections.NonGeneric.dll",
+      "bytes": 22824,
+      "sha256": "3f049177affc67207d173ffe57b0c9a544018676ce8f9dafff1b70007c76cddd"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Collections.Specialized.dll",
+      "bytes": 25896,
+      "sha256": "d3ad5e787f8ad6d894f5e99025b1411b429f72a6bac506933a8f6cc0cc23d536"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Collections.dll",
+      "bytes": 45864,
+      "sha256": "9a433d8f1cfe00fe5fe5c62a49123dce9202f2bebacfaa58ac552a150ea9dbb9"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.ComponentModel.Annotations.dll",
+      "bytes": 31528,
+      "sha256": "349e78eede4300f75f023cfc8c6658049bf19a9dca3311637faaebb08e44d56c"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.ComponentModel.DataAnnotations.dll",
+      "bytes": 16720,
+      "sha256": "3ba174aa522a0e6c43e87b59709df2919d29b77571aa62d4e121d9228f00b8a6"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.ComponentModel.EventBasedAsync.dll",
+      "bytes": 19240,
+      "sha256": "0abc6cd13c99766df4e69e60d86e133297aff4aec2a67ca67068920b56d426f3"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.ComponentModel.Primitives.dll",
+      "bytes": 25896,
+      "sha256": "78f03a29f957a1e3e5f6d2ea57d2ec14e6af129982e8a8334f43c6801fdd5af0"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.ComponentModel.TypeConverter.dll",
+      "bytes": 103208,
+      "sha256": "c28c5b9310b86169c46f08e3edf12e139ee5276a2b5438bfbc25acc83e63c78d"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.ComponentModel.dll",
+      "bytes": 15656,
+      "sha256": "6a66562a0c7c034af01b7b77e4d380d052e9fd63563942a67f7aaa4759ee84dd"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Configuration.dll",
+      "bytes": 19240,
+      "sha256": "7094342509bb169a9fd2e96d110eeba4935069da317061acd0c36e3add23e0e7"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Console.dll",
+      "bytes": 25896,
+      "sha256": "ec535d3a3f74319ca0c00099c61d114585c5cbbc6b63c30024cb003a3ba70821"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Core.dll",
+      "bytes": 23376,
+      "sha256": "6af7bfd04f29ed0acb14443f480e81f543ea6ec586e99ad4ddff0bb2aa63e72a"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Data.Common.dll",
+      "bytes": 153896,
+      "sha256": "e31dddec77d5faf6bf56aa64800cd23efb4db02185f8e093113a12857d5950a1"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Data.DataSetExtensions.dll",
+      "bytes": 15656,
+      "sha256": "735c6543a16f6a700903a09d7bea815b9143b9f679af4a2a112f056835b1dfd9"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Data.dll",
+      "bytes": 23848,
+      "sha256": "642c39b0811bfed3986e7e91d48015dee8fab0ff8b2094a1e7f7087f217c8718"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Diagnostics.Contracts.dll",
+      "bytes": 19752,
+      "sha256": "d44b636071917482993c10e514ad21d0fcb160f1333a89d178b281cb3937adcb"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Diagnostics.Debug.dll",
+      "bytes": 15656,
+      "sha256": "f6b686611906a6eecad54f9af505f3eae03c4a604a9154361e4ac8cdf13e9250"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Diagnostics.DiagnosticSource.dll",
+      "bytes": 40232,
+      "sha256": "5927103e74e769a277dd09c75323345a4d1930401f6f53feb5447547e2da6047"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Diagnostics.FileVersionInfo.dll",
+      "bytes": 16720,
+      "sha256": "db9b4d6ee8397a887e78e08884e300341ca6648697e4d8553c6944ce86e75821"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Diagnostics.Process.dll",
+      "bytes": 31016,
+      "sha256": "a6b513ba31b7a8dd62d6abca5125b6e775fc625ce142f2d23a27b52ca1b43b59"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Diagnostics.StackTrace.dll",
+      "bytes": 22864,
+      "sha256": "90c1410d94f4e468e834cc50190abc7a421e5e7b463111671096ae79543e5614"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Diagnostics.TextWriterTraceListener.dll",
+      "bytes": 17744,
+      "sha256": "4a56aeac40a5f0cb6f32b4930297d84ec4113988a3fbc93ccaeaab8b7686b5de"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Diagnostics.Tools.dll",
+      "bytes": 15144,
+      "sha256": "b8f9ea78eaca682d30807e105e8cc26d63ac4ec725fc61267f3617e27372c1fa"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Diagnostics.TraceSource.dll",
+      "bytes": 27944,
+      "sha256": "7163933a4a496e49362405979b1e08e134b16bf5e47ff094d8166807e6d971c0"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Diagnostics.Tracing.dll",
+      "bytes": 29008,
+      "sha256": "db558fe57e5571930da0455fbede78f6d5908abb17f317ee8273489544aec7f6"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Drawing.Primitives.dll",
+      "bytes": 35624,
+      "sha256": "04e980296cc4ecfb9c88685d94bc8353efa59b919e33928a202ac26b0b2aa426"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Drawing.dll",
+      "bytes": 20264,
+      "sha256": "eaecb3e17bc11a4fdc82c8558267e4282ad1ad952c31e0941eeabe040410b716"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Dynamic.Runtime.dll",
+      "bytes": 16168,
+      "sha256": "2511e513f1f3260be23edeeb1fd4f0fff36b8e94317a9ab3caecacb27bc619de"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Formats.Asn1.dll",
+      "bytes": 25896,
+      "sha256": "7dde0c8e8617620d1cf4d85284e0757c1347e119b706941e8fa855814ee3a6a4"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Formats.Tar.dll",
+      "bytes": 19792,
+      "sha256": "7afbd3fd113ae5bbdd1a013768473b72c199f2ae01fa6767523186fee7f43ca0"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Globalization.Calendars.dll",
+      "bytes": 15696,
+      "sha256": "29431cfd2dcbb00dfeb5741a9780bf1b4dbcb56408a6d3b4126caa9191a2642a"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Globalization.Extensions.dll",
+      "bytes": 15144,
+      "sha256": "3fcef2b02dfa1c9cbadc2605695cb39d0fabc80b699751e9fd83647c33078625"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Globalization.dll",
+      "bytes": 15656,
+      "sha256": "af9e738b239ae0c50c96d9d880568ea476541f03e63273f345d33f18a3addd5f"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.Compression.Brotli.dll",
+      "bytes": 17704,
+      "sha256": "2e2fbd6ea6d1347706f819077e363f913e768effff6b2aaf08037014f5296a7f"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.Compression.FileSystem.dll",
+      "bytes": 15184,
+      "sha256": "ae562081c19665c492648114187e99e2b208c0097fc1ac8a68b0cc2c7a303ff1"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.Compression.ZipFile.dll",
+      "bytes": 16680,
+      "sha256": "482adf9eb430549d8b5453b04d3b60baf0055dbf57293b45d2d95db1be2543fa"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.Compression.dll",
+      "bytes": 20776,
+      "sha256": "44206a9d3708b7e7d4f5b188e6771d0c7d96095065a8e82de2d5088117360d6e"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.FileSystem.AccessControl.dll",
+      "bytes": 20264,
+      "sha256": "6262fe2f923c55ad0a80ac9e13461ec638e4a29aecb82cfaf5f3775449666bf7"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.FileSystem.DriveInfo.dll",
+      "bytes": 17192,
+      "sha256": "49c8be88757645d4f06a419a4fd33d155e9a66a34c41b076ce3f4499fead4ce3"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.FileSystem.Primitives.dll",
+      "bytes": 15144,
+      "sha256": "91c28d44b18d039f319d5433229fd9003b24fe07199ce861935a2651482e31dc"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.FileSystem.Watcher.dll",
+      "bytes": 20776,
+      "sha256": "e46e1703c467eb042df372f5090f869e695531a7d6b30de8554da5fe600d1edc"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.FileSystem.dll",
+      "bytes": 15696,
+      "sha256": "0388b935578e434c400cf29513cfe0445ae4e5ce6f16cef4151405907931509e"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.IsolatedStorage.dll",
+      "bytes": 22352,
+      "sha256": "1e0237c68ae0c0703bd3de15fbbf2a22214dfb5edd55b6cf813fb7d633179fcc"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.MemoryMappedFiles.dll",
+      "bytes": 18216,
+      "sha256": "5dcd72deb8c90391ca8f1a4d64746f811cf595c9b8cedc49ac4e0e713cd9f42d"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.Pipes.AccessControl.dll",
+      "bytes": 18728,
+      "sha256": "fec58dca95933f8f7798b9772015ca929786a5e6d2ac23df396c2030693b9f7c"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.Pipes.dll",
+      "bytes": 21328,
+      "sha256": "b9e0dfb2f175dd0228b63391f889a4c1ffb2cfd874e8c42688cbac66de3ba137"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.UnmanagedMemoryStream.dll",
+      "bytes": 15184,
+      "sha256": "b7e31eef62e2e81e42f6fa592bbc0344ed5ec29fb8cd539e8121e0dfa8011785"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.dll",
+      "bytes": 15696,
+      "sha256": "c09e39a8b39c8f0d54907a8bb7f0a95ce380a912a80a42c90a61fe7479eaf185"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Linq.Expressions.dll",
+      "bytes": 62760,
+      "sha256": "2f98e67d75a5f78a4d05d39757547d9d5bdbf219a0d4d6ae0926d703a269c5b8"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Linq.Parallel.dll",
+      "bytes": 31016,
+      "sha256": "128494958661ae2552ef19585319c47ae7382cf03976af73c2d2a2c33b8a27bc"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Linq.Queryable.dll",
+      "bytes": 30504,
+      "sha256": "a97863c9ae85ec27a54a9300d9c3cd2a791086ef5b80dc98ca82fcfcb758d975"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Linq.dll",
+      "bytes": 32080,
+      "sha256": "32fcc47b4c286fa57c9967f96739c7934cdae59a976c5acf6e213bb1406bc3f1"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Memory.dll",
+      "bytes": 53032,
+      "sha256": "dc720c49c93d443e23053a6373f19fe8c600dc86d52c3c63342b64d7ba1213ef"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.Http.Json.dll",
+      "bytes": 23336,
+      "sha256": "1a0c2bc80a20b74854fade27364ebab934940f3a75fb47545bab8bb498383e66"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.Http.dll",
+      "bytes": 59728,
+      "sha256": "20030622dc19ecdcb28cd88209dd8f7743a415a17306f33d50f85c99a597688b"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.HttpListener.dll",
+      "bytes": 25384,
+      "sha256": "0fa00cb2993fb9d7cdd609cffa8bb7a1576177cb1226230e4ee58d9517a70d4c"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.Mail.dll",
+      "bytes": 31528,
+      "sha256": "3d02bd4198ff1abb9242ea03867ef03fcd5d044b3e300431941db46de417d8bd"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.NameResolution.dll",
+      "bytes": 17744,
+      "sha256": "8ccd2ca531d64924525d372b2077891eaaeeb93ab34b7cc2a7f8379622e49d30"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.NetworkInformation.dll",
+      "bytes": 33576,
+      "sha256": "478a2430420426a5cd338fd9de0e5f0f4dd9b0917e91bdefcc21f62506beea57"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.Ping.dll",
+      "bytes": 20264,
+      "sha256": "8f4b293cbba7f0e540366779b7248c37af01fffd7d29953000cff2e65fc70265"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.Primitives.dll",
+      "bytes": 35624,
+      "sha256": "5ca94d0475fab64fb46c0f13b31fd8408e899b23bfcbead9095f0a7796faa93f"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.Quic.dll",
+      "bytes": 21800,
+      "sha256": "930bd57fea5a829184b885b5feb8f0386c0e54e423f7aae8cea28b987f49eb9c"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.Requests.dll",
+      "bytes": 37200,
+      "sha256": "5e46bcb37ec185895abfbe5bf0acb8b8823d3978e7d6dcb9465eff000309081b"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.Security.dll",
+      "bytes": 52520,
+      "sha256": "cfc6c8da1b6cd2036c92932370cb1133f11b43e4c5a0425a5082134f6a5851c1"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.ServicePoint.dll",
+      "bytes": 19752,
+      "sha256": "c35647307d94a0212d5d58c85aedffc4b71ca007d8223f2306e486ca760a31c2"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.Sockets.dll",
+      "bytes": 47400,
+      "sha256": "c25c65ada93956e924409c4ae0b4c474e96afd4df2f5b0edf927a8df62c71762"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.WebClient.dll",
+      "bytes": 27432,
+      "sha256": "4926e1dc6917a5ae42714e06ae310d2cd3946e49bf53822cdebd02e271ee1986"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.WebHeaderCollection.dll",
+      "bytes": 19280,
+      "sha256": "347c20e17525488762b8768ad64c63819f854c0d08e7742f0ea10e7848f545e6"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.WebProxy.dll",
+      "bytes": 17704,
+      "sha256": "fe7c06040591d3a87213fbff65456449260ebf2573f4ddddf1e5b9f4be0e284d"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.WebSockets.Client.dll",
+      "bytes": 19240,
+      "sha256": "1b326ede8590a09b8978d62df3f4e0c259c969635c5821927d8da0bdf23a3e12"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.WebSockets.dll",
+      "bytes": 22352,
+      "sha256": "8808879e5e7a13e769ed3363ee78ad8722832cfec3a35d4933ccf2dccaace6d4"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.dll",
+      "bytes": 17192,
+      "sha256": "92833a473e5409a73219b5daa10fa215300fe29ac44fdfe747d91e30675604c0"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Numerics.Vectors.dll",
+      "bytes": 40784,
+      "sha256": "a4bb7c834ac9c78946e675be4f41450679ae04a8a72dbd99b53376e6c4af543b"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Numerics.dll",
+      "bytes": 15144,
+      "sha256": "0dc62e3cee7ae47c063801cb2a0d058cb64cf7e6e17b494d351f65cf1856e25d"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.ObjectModel.dll",
+      "bytes": 23336,
+      "sha256": "f86239f31a462cfb61aa4e6c2488cc2599678b241e7eb216d55e73d0a77ae922"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Reflection.DispatchProxy.dll",
+      "bytes": 15656,
+      "sha256": "e783cd2e638e3c7980da0ba4e32cbf3d696cb92cfc65079f3649d032306bdfb3"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Reflection.Emit.ILGeneration.dll",
+      "bytes": 20264,
+      "sha256": "aaa4853e7c5fc0aaa53f26c8b0471ab55d3aa734ae6b7886f85e109b654aa3f6"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Reflection.Emit.Lightweight.dll",
+      "bytes": 19240,
+      "sha256": "8247a0dadcee75daab965ad868405c47d88f341c84f35b2b0a1b9afd3cf3fc54"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Reflection.Emit.dll",
+      "bytes": 42792,
+      "sha256": "f3ceb6f86b015bf148849cd74302200819874cce909160f919789be219e316cc"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Reflection.Extensions.dll",
+      "bytes": 15144,
+      "sha256": "81de7b9ac0ca4473c2c951cbe45dfe8502468cd9ff4488822d4aefcf6d405e4b"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Reflection.Metadata.dll",
+      "bytes": 120144,
+      "sha256": "24bffba109a64dbacc22aaa42534f1ffef18076f0adb9c0825fdc5842e9ccb41"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Reflection.Primitives.dll",
+      "bytes": 21800,
+      "sha256": "c88317aeeebc77be607f92f31e2ac0f8e0fc2edd6585ccbc0e6900b5f6a81b9a"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Reflection.TypeExtensions.dll",
+      "bytes": 19280,
+      "sha256": "a0da040ecd6eac9cbb7307c57d0ff34c6c627f1da302d513418c8c8d680a4616"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Reflection.dll",
+      "bytes": 16168,
+      "sha256": "abbbd5f095403c3b51fe671f6315daa8153c2d277de497f654b7a9ac4fb46f3f"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Resources.Reader.dll",
+      "bytes": 15144,
+      "sha256": "0d145d99ff948fb5a30e6193f593dc55fcbc2bd3aea7bd5e0a515ebba0223410"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Resources.ResourceManager.dll",
+      "bytes": 15696,
+      "sha256": "c0e4c2c1552d8dfe52a22787eefa612eb4b84679cc2cd6cc3732f7ad98c4738b"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Resources.Writer.dll",
+      "bytes": 16168,
+      "sha256": "50e7b2456760812fde55fda6b6c452b84edc885daecd1a52d4bceb63f317553f"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.CompilerServices.Unsafe.dll",
+      "bytes": 15144,
+      "sha256": "ea1985572f996da445c7b8d236886f890ff64caac0851d542c6e366b4cf475ea"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.CompilerServices.VisualC.dll",
+      "bytes": 17192,
+      "sha256": "1d59424e80da4bfa657eadfff78363ffbe050d62b696c215a9c4c6edf484b7c8"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.Extensions.dll",
+      "bytes": 17704,
+      "sha256": "67bc281769ba0a81e7d725ee0329d221f9827b2805988e62e91e72cf32c5549c"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.Handles.dll",
+      "bytes": 15184,
+      "sha256": "b2260d6f30cd9bd12e9fb8c2d433d2b04749a670823a23a6549ab3482d19dbdb"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.InteropServices.JavaScript.dll",
+      "bytes": 25936,
+      "sha256": "3a95caf850462deaa96c78fa1077a091257a32de3e692a07741085ece45f5a69"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.InteropServices.RuntimeInformation.dll",
+      "bytes": 15144,
+      "sha256": "0a5b800566f00cf9e5f063b6240150e2441d4f52746dba260068901326bf8302"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.InteropServices.dll",
+      "bytes": 97104,
+      "sha256": "29e1b3f00028a176aa0e62a04ca2ea876abced183650c7f095dd973e53edf0ab"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.Intrinsics.dll",
+      "bytes": 276264,
+      "sha256": "b74bea29767f9d0ba29a989fa6e99053e5fc67fa4c4df26a5157f5ddaf622355"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.Loader.dll",
+      "bytes": 19240,
+      "sha256": "301336f62330737b7a620d31a7dbacbff670287d61acc1f4bd6d21c6dffbeedd"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.Numerics.dll",
+      "bytes": 36136,
+      "sha256": "2ede21e2d51d2cdc3f1acaeb0dd8d59fe354d9507ff6f6302d57045875d1e9d6"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.Serialization.Formatters.dll",
+      "bytes": 23336,
+      "sha256": "86a684b78a484b5583eadebb344adf7081cfdbb7fd41940714c99f4ca99e8cfc"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.Serialization.Json.dll",
+      "bytes": 20776,
+      "sha256": "049aa9dd7d19ac3dd3714f6fb4ac44d9a7045a317e82c3be2d77b2eef7971aed"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.Serialization.Primitives.dll",
+      "bytes": 19792,
+      "sha256": "e37a14b2004c5310e8115276734e44e8427b489e3f6d0823a9852949042f6896"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.Serialization.Xml.dll",
+      "bytes": 39720,
+      "sha256": "9d5ec2c1e68a8c0749e68e5c4a659c656b03b6aa7efebd87a208d87bf4ac0c73"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.Serialization.dll",
+      "bytes": 16680,
+      "sha256": "c19537522408a91cc82195dfac95960275fab4ccb845c8f4f405b2b9709f8fb2"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.dll",
+      "bytes": 828712,
+      "sha256": "6eba233b466fbc8854361e88dd603e756458bdc99e0bd4b88615e17c331bcef8"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.AccessControl.dll",
+      "bytes": 37160,
+      "sha256": "e0a86152a060d29a2860fb7b668c36119c1082102a1d5942abf9d7b68ac336ef"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.Claims.dll",
+      "bytes": 32040,
+      "sha256": "ce13ddea9035160ad5bed4df0dd0241cc8da01c7b40061d81beb9ee9fa63dabe"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.Cryptography.Algorithms.dll",
+      "bytes": 17192,
+      "sha256": "2606a842244b54e9f0570e690a64c56eb2b9beea1165efb0a905e87893f89371"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.Cryptography.Cng.dll",
+      "bytes": 16168,
+      "sha256": "0588b9db131f749f0ba0f766714320a2b426616cff70eb688b85fe1894b16b5c"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.Cryptography.Csp.dll",
+      "bytes": 15696,
+      "sha256": "a2b17f45461e2acd99cf18165cf19eb5880bd3a2df7f416e2302941619bc6a50"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.Cryptography.Encoding.dll",
+      "bytes": 15696,
+      "sha256": "42f08361253c11391602bb3a340d5a965cb9ace48510112997ab4f30c60c7d47"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.Cryptography.OpenSsl.dll",
+      "bytes": 15144,
+      "sha256": "21c46ce3805ac6a3244c0d013e77f6b8353ee38b694a4f357d079ed2cab72cdc"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.Cryptography.Primitives.dll",
+      "bytes": 15696,
+      "sha256": "174d7d2a4beb1f1939ada8c4736803ace662a502fb862999f48f9f7c0fc1c409"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.Cryptography.X509Certificates.dll",
+      "bytes": 16680,
+      "sha256": "4e830c798c51766a5ac2c5befdfefe8bec48d7417bff8fcf359d3bad0b5eda18"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.Cryptography.dll",
+      "bytes": 133456,
+      "sha256": "fca53f9c4312186df1485f5b215c37de00641621b859d6206b7ee951bbcf803f"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.Principal.Windows.dll",
+      "bytes": 26920,
+      "sha256": "47f354d7deafcdfe6ed2a881bfeb2107e77deec76c108ac6fc4f05ea76f175f0"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.Principal.dll",
+      "bytes": 15144,
+      "sha256": "46fe40f5f195b614a4e9f58f04ffc976837a4e4649eb1b514b1209f6e0fb8e6e"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.SecureString.dll",
+      "bytes": 15144,
+      "sha256": "efb94a3b5f774eeffabc2fb2b3b3b64262c390dfe2641cc2267156ab48dba42d"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.dll",
+      "bytes": 18216,
+      "sha256": "82a02dd492366f6f36d1620783749b5e0f471e85fe1c34a5c554741dac48fcbb"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.ServiceModel.Web.dll",
+      "bytes": 16680,
+      "sha256": "e8e62b9ee550bbcc3271e98358177dd29ac30e9258242c5e11353d5c2f7a9401"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.ServiceProcess.dll",
+      "bytes": 15656,
+      "sha256": "58a589a7e6316449a8f42905d0c60272e88ec5e588e664c31c605ae8eb6817dc"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Text.Encoding.CodePages.dll",
+      "bytes": 15656,
+      "sha256": "973d7076bb7eb957f4d4b3c2656319cd1d9895c3186e720bdef70a88fa9b895a"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Text.Encoding.Extensions.dll",
+      "bytes": 20776,
+      "sha256": "e0ca518a8d9d67b507dbba3bd67bc92d05aea941808b38d933bfcb74ba9ad093"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Text.Encoding.dll",
+      "bytes": 15656,
+      "sha256": "c45c1b5945b0003440d918ab031401991850d0f7c3c479213259eb756e1906a5"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Text.Encodings.Web.dll",
+      "bytes": 25896,
+      "sha256": "4cc613563e66298f855a16e30b40e0eb950c6db38b24ed5f2a2404551a5c7849"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Text.Json.dll",
+      "bytes": 73512,
+      "sha256": "0ec88008d434367a774a3d82c59e3029b4bca6fa4bedea553b359d95a019c4cb"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Text.RegularExpressions.dll",
+      "bytes": 35664,
+      "sha256": "8a226597342bb8394b72ae1188852d5049d97c7c21c4308130f8afb1d1483559"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Threading.Channels.dll",
+      "bytes": 18728,
+      "sha256": "f82ab8f7cf86790e9f3c777aed0454e1551ad5472909b9433baf82b864afc129"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Threading.Overlapped.dll",
+      "bytes": 18728,
+      "sha256": "7f2f5a8c77bf22c5d4acb458399f94f12b47300409540488bef67cbfd608eca1"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Threading.Tasks.Dataflow.dll",
+      "bytes": 31528,
+      "sha256": "7b4f45aeee3503827d32a5988fbef92e0b5e0b4ea058994b0c9cc6ddaa420fec"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Threading.Tasks.Extensions.dll",
+      "bytes": 15656,
+      "sha256": "7d03dd463f9446b199af9e33131004e35959e0985b0bb0df481e6b955064bc07"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Threading.Tasks.Parallel.dll",
+      "bytes": 19752,
+      "sha256": "983d7243c166815bb1dfe5eab3bc60b8bb2e58e69b2205b13c6e0cce7c92b403"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Threading.Tasks.dll",
+      "bytes": 16680,
+      "sha256": "761fc15d6982272bf690b25d63b473021bbe6f00e55556077e1bacaee9340591"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Threading.Thread.dll",
+      "bytes": 22824,
+      "sha256": "2504800fbc12e62ba166c76f9e3602a8f1bd7e41a5e1a63163a8837c9539c708"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Threading.ThreadPool.dll",
+      "bytes": 18216,
+      "sha256": "fb658608ffbe72ca305d9aaccf61e67a136f9710f9c6a3d4869d34dc943ea790"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Threading.Timer.dll",
+      "bytes": 15144,
+      "sha256": "08a43ac40a8e4c0110688209d9fe03b1d4fea94b8ace6ad5797b32176da8f2f3"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Threading.dll",
+      "bytes": 32080,
+      "sha256": "7403da550b5dcd7b7da513c1d6a89592386137d37c743216b2fea66407148d14"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Transactions.Local.dll",
+      "bytes": 25896,
+      "sha256": "f24e196cbce6b86d8d996f6c15b78552e74708e4bc73d43c243d930123517dc6"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Transactions.dll",
+      "bytes": 16208,
+      "sha256": "96884aa9d725c3ff25ce34b347e08a2642cc6082da31e892c6df1bad909e8e56"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.ValueTuple.dll",
+      "bytes": 15144,
+      "sha256": "a144a0e9780c808b6bf82b4fa9185de2eedbbf638e6cc6cf8dd19049bfc9b26a"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Web.HttpUtility.dll",
+      "bytes": 17192,
+      "sha256": "af4d064c8183bb2ec43dfa39851d6eee032b8fff8da5ef7cde8314cc038a404f"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Web.dll",
+      "bytes": 15144,
+      "sha256": "760d8d57a9fc4f8701fad2524355bb702e96ecea45bac45fcd6a29837f050659"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Windows.dll",
+      "bytes": 15656,
+      "sha256": "354a1e77a180c0785b74e4c37270e9480aa18b9cbf6a5744e0f99549e6373013"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Xml.Linq.dll",
+      "bytes": 15656,
+      "sha256": "26c46868a5858796ece01d569aa7a8d225511127480cedfd42e463b50116ef2a"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Xml.ReaderWriter.dll",
+      "bytes": 115496,
+      "sha256": "80d5d7e62af182bce81d015f5ac5d44fb9dfa945501d096ee1d10bd878c6f0e3"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Xml.Serialization.dll",
+      "bytes": 16168,
+      "sha256": "d2ea99f530d94390d7be1a978ef3c73adf4ce6a2e8cde8e4ba211a32fe7d4435"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Xml.XDocument.dll",
+      "bytes": 34088,
+      "sha256": "13a30cb8531708b2b2040ec30d57b7cb54206525bb2628b70c325fefaae97c0e"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Xml.XPath.XDocument.dll",
+      "bytes": 16168,
+      "sha256": "97eee2677962ffd9a49199b4dbdcf25941f4d4be18c7329f3aeedc39ab41e621"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Xml.XPath.dll",
+      "bytes": 16680,
+      "sha256": "5e86f514c3d4dd99bb955365b3beb9f7fca4c689182f2c8e4b24e3af9968c3c6"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Xml.XmlDocument.dll",
+      "bytes": 15696,
+      "sha256": "3ca525e8114113bc6c808ab8e68dae4e3c966e81dcd930e9ccd55ae2570f1d1a"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Xml.XmlSerializer.dll",
+      "bytes": 50512,
+      "sha256": "c7c67e66235db3b5544bcaecf76ea5dfee19524d09f39704f0d3a69819626a05"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Xml.dll",
+      "bytes": 23376,
+      "sha256": "d720384c0eea1185f6b8ed595cdd3abe9b9e1ed485855df58cc896f830617a4c"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.dll",
+      "bytes": 49448,
+      "sha256": "8c8d25fc3972ebee3d971e7f793cb55de83ab51678630fe2fb289674c025e3d2"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/WindowsBase.dll",
+      "bytes": 16168,
+      "sha256": "ab364bae5092de933b0a6cf61b37e904758b0caa70e8492327fa8215d670ce60"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/mscorlib.dll",
+      "bytes": 55632,
+      "sha256": "6b02d13e22c0c95bb0313ab109792242200bb2d1047745e4fbb756c90008129b"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/netstandard.dll",
+      "bytes": 100688,
+      "sha256": "c5edb40c726a5a60db6018962821e84ec60b91186df65660a1a0ecbb67ef6dc4"
+    }
+  ],
+  "net8ReferenceInputCount": 163,
+  "DiagnosticsClient": {
+    "assemblyVersion": "0.2.15.611",
+    "targetFramework": ".NETStandard,Version=v2.0",
+    "api": [
+      "WriteDump(DumpType,string,bool)",
+      "WriteDump(DumpType,string,WriteDumpFlags)",
+      "WriteDumpAsync corresponding CancellationToken overloads"
+    ],
+    "writeDumpFlags": {
+      "None_": 0,
+      "LoggingEnabled": 1,
+      "VerboseLoggingEnabled": 2,
+      "CrashReportEnabled": 4
+    }
+  },
+  "createdumpHelp": {
+    "nativeExit": 255,
+    "scope": "--help only, no pid; reports --crashreport and --crashreportonly",
+    "targetRuntime": "8.0.32"
+  },
+  "decoderSearch": {
+    "roots": [
+      "/tmp/1536-cloud-tools",
+      "/workspace/.onboarding/tools",
+      "/usr/bin",
+      "/usr/local/bin",
+      "/usr/local/swift/usr/bin",
+      "/opt"
+    ],
+    "notFound": [
+      "dotnet-dump",
+      "dotnet-stack",
+      "dotnet-trace",
+      "ClrMD/Microsoft.Diagnostics.Runtime",
+      "TraceEvent",
+      "SOS/lldb/gdb"
+    ],
+    "qualification": "Bounded file/PATH search, not universal absence proof. Runtime DAC/crash-report writer remains possible built-in name decoder."
+  },
+  "metadataReflection": {
+    "initialExit": 134,
+    "initialError": "PowerShell startup could not create /home/agent/.cache/powershell on read-only filesystem; no diagnostic API/attach was reached.",
+    "correctedExit": 0,
+    "correction": "Existing pwsh with private /tmp/l01-diagnostic-inventory-20261018 XDG paths; no installation/escalation. Reflected ABI and references only, not a diagnostic smoke."
+  },
+  "limits": "Read-only metadata/help/inventory only; no synthetic/gameplay target, no dump/trace/attach, no process enumeration of diagnostic endpoints or unrelated process data. Old lost environment untouched."
+}

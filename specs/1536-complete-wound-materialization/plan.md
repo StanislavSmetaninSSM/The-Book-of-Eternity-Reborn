@@ -1,3 +1,16 @@
+## L01 — managed-stack capability inquiry; gameplay release NONE (2026-10-18)
+
+User requests cloud Linux diagnostic feasibility after accepted M01.
+[Minimal synthetic plan](design/l01-managed-stack-capability-plan-20261018.md)
+and [read-only inventory](recovery/l01-managed-stack-capability-inventory-20261018.json)
+are PLAN_REVIEW_PENDING. Installed SDK DiagnosticsClient and .NET8 createdump/DAC
+may yield named managed stacks via built-in crash-report JSON; capability UNPROVED.
+No installs/security changes/unrelated targets/gameplay runs. Only after independent
+plan and helper SOURCE/PREP review may one own synthetic smoke run.
+Future one custody→accepted snapshot is a proposal, NOT released. Linux cloud and
+future Windows crash5 qualifications are separate holds; Windows not requested and
+403/CI restrictions unchanged. L0152/57, M01 accepted and all broader holds retained.
+
 ## T148 M01 — QUALIFIED: historical audit-state survival only (2026-10-18)
 
 [Independent EVIDENCE ACCEPT](recovery/t148-m01-evidence-independent-review-20261018.md)

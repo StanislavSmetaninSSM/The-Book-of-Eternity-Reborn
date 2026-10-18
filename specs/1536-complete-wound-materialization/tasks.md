@@ -1,3 +1,8 @@
+## L01 — cloud managed-stack diagnostic capability (2026-10-18)
+
+- [ ] [Read-only inventory → independent minimal-plan review → safe owned synthetic S01](design/l01-managed-stack-capability-plan-20261018.md): prove actual named managed stacks or exact access/component blocker. No install/security changes/gameplay release.
+- [ ] Review one future custody→accepted observation proposal; actual gameplay is NOT authorized. Keep cloud Linux crash5 and future Windows-five-case qualification separate; Windows not requested, artifact403/CI holds unchanged.
+
 ## T148 M01 — historical audit-state survival QUALIFIED (2026-10-18)
 
 - [x] [Independent PLAN/route review](recovery/t148-m01-plan-independent-review-20261018.md) exact b5f6ab88 принимает законный historical producer/pre-sign uncached fixture/actual Mortal heal без L01 crash5; raw item authority до Compose и current pre-heal root oracle закреплены. Save/recovery до test-only реализации.
