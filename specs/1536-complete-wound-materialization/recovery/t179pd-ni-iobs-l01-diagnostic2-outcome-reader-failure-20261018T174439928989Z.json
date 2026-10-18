@@ -1,0 +1,47 @@
+{
+  "kind": "DIAGNOSTIC2_READER_FAILURE_NOT_NATIVE_RESULT",
+  "utc": "2026-10-18T17:44:39.928648+00:00",
+  "reader": {
+    "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic2_outcome.py",
+    "bytes": 36508,
+    "sha256": "e16cf8b97462c2b1b7706201cad21c6c17c7a22bfefd67f3cc2d6f4b37a12bfa"
+  },
+  "arguments": [
+    "d65035c392163a00925b6e88b667e9efe0b36b70",
+    "--archive",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic2-original-de0f3e20-files-20261018/archive.json",
+    "--archive-sha256",
+    "693c876bfbf731b885e530640db22ae95a004d5da6d97af36e9d94e38be7a8e8",
+    "--accounting-archive",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic2-accounting-de0f3e20-files-20261018/archive.json",
+    "--accounting-sha256",
+    "5bd3d3b0643b3aa3bce066e393eba2f949df3abe6b2a1b7fcd55f95dedf6df26",
+    "--before",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-actual-before-census-de0f3e20-20261018.json",
+    "--after",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-actual-after-census-de0f3e20-20261018.json",
+    "--frozen-separation",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-actual-frozen-separation-de0f3e20-20261018.json",
+    "--recovery",
+    "/tmp/1536-cloud-tools/carrier-recovery-d65035c3.json"
+  ],
+  "exception": "CalledProcessError",
+  "message": "Command '['git', 'ls-remote', 'origin', 'refs/heads/1536-wound-b2-cloud-20261012']' returned non-zero exit status 128.",
+  "completedChecks": [
+    {
+      "check": "carrier format",
+      "passed": true
+    },
+    {
+      "check": "clean saved HEAD /workspace/The-Book-of-Eternity-Reborn",
+      "passed": true
+    },
+    {
+      "check": "clean saved HEAD /workspace/1536-cloud-clean-restore",
+      "passed": true
+    }
+  ],
+  "evidenceFindings": [],
+  "parseErrors": [],
+  "scope": "Preserve this utility failure before any reader correction; no runtime result or verdict inferred."
+}

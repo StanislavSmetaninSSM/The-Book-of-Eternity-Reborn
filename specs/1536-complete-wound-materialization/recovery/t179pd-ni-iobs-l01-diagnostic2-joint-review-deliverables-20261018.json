@@ -1,0 +1,76 @@
+{
+  "verdict": "JOINT_BOUNDED_BLOCKER",
+  "carrier": "d65035c392163a00925b6e88b667e9efe0b36b70",
+  "files": [
+    {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic2-outcome-causal-independent-review-20261018.json",
+      "bytes": 26013,
+      "sha256": "3bb9a545563a514320aefad3bf57482e1ae047f0642af4f27783748b3311c3bb"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic2-outcome-causal-independent-review-20261018.md",
+      "bytes": 3577,
+      "sha256": "aa4970c1dc733e0b439748c27667e731512e623e5f5662940bda7c22c0484f94"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic2-outcome-independent-check-d65035c3-20261018.json",
+      "bytes": 47614,
+      "sha256": "c5a482e9f9cfc6fe4f39f922788320ed218a5d8d50bf490b7101fd624430a114"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic2-accounting-scope-corrected-independent-check-d65035c3-20261018.json",
+      "bytes": 917319,
+      "sha256": "74a2957d9a9155b27e6da8979b3742343bad166bbabe953926b041abb1325621"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic2-joint-metrics-independent-check-20261018.json",
+      "bytes": 7327,
+      "sha256": "eeaff82b089ffd1521fb974254779f65458f1fa0ad78422bfdf0eed91868c603"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic2-original-reader-history-20261018.json",
+      "bytes": 2459,
+      "sha256": "e07e2d9a335b6ac7c37920af84e53f5f51eb7dc94635540adfd8df1701d69070"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic2_joint_metrics.py",
+      "bytes": 5797,
+      "sha256": "e2526eed696f3a967f18e2e476971436dc02bf9af96741cd7ea59dae6fa8b8e6"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/write_diagnostic2_joint_review.py",
+      "bytes": 17345,
+      "sha256": "6b423f04030d991f9537f9ac3d1917f49f99fc27b7ad64657b21fab6ff98e635"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic2_outcome.py",
+      "bytes": 36508,
+      "sha256": "e16cf8b97462c2b1b7706201cad21c6c17c7a22bfefd67f3cc2d6f4b37a12bfa"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic2_accounting.py",
+      "bytes": 14773,
+      "sha256": "1efb187093a0c69e5000ee1e69a8647694124aef54f22c7fcb5a737095680ddf"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic2_accounting-v1-normalized-mount-root.py",
+      "bytes": 14773,
+      "sha256": "1efb187093a0c69e5000ee1e69a8647694124aef54f22c7fcb5a737095680ddf"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic2_accounting_scope_corrected.py",
+      "bytes": 15012,
+      "sha256": "78859feafe152ee2628745f8fd9da72165e7b55737d605b2011bde48d317c43d"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic2-accounting-independent-check-d65035c3-20261018.json",
+      "bytes": 918043,
+      "sha256": "deff6efbe18856523b59c4471c05bbbe7aac5ee5cac2b473a8340e88a82a81a3"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic2-outcome-reader-failure-20261018T174439928989Z.json",
+      "bytes": 2073,
+      "sha256": "3deecfc8bfb53469bb3be7f0b06a6721b8c025057f39d02222c3951a39192a98"
+    }
+  ]
+}
