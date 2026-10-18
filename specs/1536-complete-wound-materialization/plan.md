@@ -1,3 +1,16 @@
+## L01 D01 — bounded delivery helper source WIP, uncompiled (2026-10-18)
+
+Added only BCL test utility `JointInterfaceDiagnosticDelivery.cs`: single decoded
+raw drain, bounded Channel64/line8192/fingerprint256, exact typed control markers,
+independent sticky health/EOF/control flags, local drop/identity/duplicate/regression/
+queue-residence distinctions. No producer/production/child schema or existing game
+file changed; no wiring yet. Baseline original at876324e3 preserved. Helper has NOT
+compiled or run; SOURCE/PREP and all real child/snapshot/game admissions remain NONE.
+Next finite step: source-bound non-live helper checks, then minimal diagnostic-only
+wiring and explicit current packet/recovery before SOURCE/affected fresh PREP.
+This WIP saves current source promptly after the environment notification; old
+L01/M01/S01 packets/pins/evidence remain unchanged. All52/UNKNOWN/broader holds stay.
+
 ## L01 D01 — original non-live baseline gap observed and saved (2026-10-18)
 
 Actual/sourcec947bf92: installed csc compile native0; one isolated non-live .NET
