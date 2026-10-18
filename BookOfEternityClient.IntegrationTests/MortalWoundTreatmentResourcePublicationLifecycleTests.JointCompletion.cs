@@ -301,6 +301,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 ConfirmedHeldBeforeEntry = true, EnergyBefore = 2, HealthBefore = 5, NoPrecomposedCommonPlan = true,
                 Before = MortalArchiveDigests(before), Ready = MortalArchiveText(before["ready/turn_complete.json"]!)
             });
+            if (interfaceLifecycleProbe is { UsesGenuineLegacyProducer: true })
+                await interfaceLifecycleProbe.InstallGenuineLegacyWaveAsync(engine, original);
             jointOriginalAuthored = true;
         }
 
@@ -454,6 +456,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             await RunJointAppliedBeforeStoryColdAsync(engine, original, request.RequestFingerprint, before, scene,
                 expectedPhase: pauseUnappliedForCold ? "unapplied" : "applied", refusalScenario: refusalScenario,
                 newPhysicalRoot: newPhysicalRootForCold, recoverRetainedStoryRow: recoverRetainedStoryRow);
+            interfaceLifecycleProbe?.ObserveCompletionBeforeCleanup();
             return;
         }
         await AssertJointCompletionPhysicalOutcomeAsync(engine, original, request, occurrence, before, scene, milestones);
@@ -479,6 +482,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.False(repeat);
         Assert.Equal(43, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
         interfaceLifecycleProbe?.ObserveCompletionBeforeCleanup();
+        if (interfaceLifecycleProbe is not null) await interfaceLifecycleProbe.ObserveNewOrdinaryBeforeCleanupAsync(engine);
 
         void ObserveActualRepair(TrustedLocalPublicationPhase phase, int index)
         {

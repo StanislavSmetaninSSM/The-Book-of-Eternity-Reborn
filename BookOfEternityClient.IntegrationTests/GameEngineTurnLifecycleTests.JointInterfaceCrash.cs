@@ -1,0 +1,316 @@
+using System.Diagnostics;
+using System.Globalization;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Core;
+using BookOfEternityClient.IO;
+using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
+using Xunit;
+using Xunit.Abstractions;
+
+namespace BookOfEternityClient.Tests;
+
+public sealed partial class GameEngineTurnLifecycleTests
+{
+    [Theory]
+    [InlineData(0)] // Prepared committed; I not published
+    [InlineData(1)] // I member physically applied; second cohort not committed
+    [InlineData(2)] // Published committed; cleanup/ack/owning release did not return, later culture rejects
+    [InlineData(3)] // actual FIRST2 graph installed; no result, missing-result restart must hold
+    [InlineData(4)] // ErrorPrepared committed; restart must report frozen errors and hold
+    public async Task GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection(int cut)
+    {
+        Assert.True(OperatingSystem.IsLinux());
+        using var classOwned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        var own = Path.Combine(Path.GetTempPath(), "boe-joint-interface-crash-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(Path.Combine(own, "tmp"));
+        using var owned = new CleanupOwnedFixture(own, line => _directGachaOutput?.WriteLine(line));
+        var nonce = Guid.NewGuid().ToString("N");
+        File.WriteAllText(Path.Combine(own, "parent.json"), JsonSerializer.Serialize(new
+        { Nonce = nonce, ParentPid = Environment.ProcessId, Cut = cut }));
+        var cutPath = Path.Combine(own, "cut.json");
+        var original = await RunJointInterfaceNativeChildAsync("engine-joint-interface-original-crash", own, cutPath, cut, own);
+        WritePhysicalInjuryDiagnostic("iobs_actual_abrupt_original_exit", original);
+        Assert.Equal(73, original.ExitCode); // Environment.Exit, not an exception/catch/compensation surrogate
+        Assert.True(original.Eof); Assert.True(original.Joined);
+        var atCut = ParseJsonObjectBytes(File.ReadAllBytes(cutPath));
+        Assert.Equal(original.Pid, atCut["Pid"]!.GetValue<int>()); Assert.Equal(nonce, atCut["Nonce"]!.GetValue<string>());
+        Assert.Equal(original.BirthUtc, atCut["BirthUtc"]!.GetValue<DateTime>());
+        var root = atCut["Root"]!.GetValue<string>();
+        Assert.StartsWith(Path.GetFullPath(Path.Combine(own, "tmp")) + Path.DirectorySeparatorChar, Path.GetFullPath(root));
+        Assert.True(Directory.Exists(root)); // abrupt original did not run managed fixture disposal
+        Assert.Equal(0, atCut["CommonCallbacks"]!.GetValue<int>()); Assert.Equal(42, atCut["Turn"]!.GetValue<int>());
+        Assert.NotNull(atCut["JournalBase64"]); Assert.Equal(cut, atCut["Cut"]!.GetValue<int>());
+        var output = Path.Combine(own, "resume.json");
+        var resumed = await RunJointInterfaceNativeChildAsync("engine-joint-interface-resume", root, output, cut, own);
+        var raw = File.Exists(output) ? File.ReadAllText(output) : null;
+        WritePhysicalInjuryDiagnostic("iobs_actual_current_resume_exit", new
+        { Original = original, Cut = atCut, Resume = resumed, ResultRaw = raw,
+            OwnedContainer = own, ActualContainedRoots = Directory.EnumerateDirectories(Path.Combine(own, "tmp")).ToArray() });
+        Assert.Equal(0, resumed.ExitCode); Assert.NotEqual(original.Pid, resumed.Pid);
+        Assert.True(resumed.Eof); Assert.True(resumed.Joined);
+        var result = JsonNode.Parse(Assert.IsType<string>(raw))!.AsObject();
+        Assert.Equal(resumed.Pid, result["Pid"]!.GetValue<int>()); Assert.Equal(nonce, result["Nonce"]!.GetValue<string>());
+        Assert.True(result["ActualCallerEntered"]!.GetValue<bool>()); Assert.Null(result["Failure"]);
+        Assert.Equal(cut < 3, result["Completed"]!.GetValue<bool>());
+        Assert.Equal(cut >= 3, result["Held"]!.GetValue<bool>());
+        Assert.Equal(cut < 2 ? 1 : 0, result["NewChangingICommits"]!.GetValue<int>());
+        Assert.True(result["InertRepeatBytesEqual"]!.GetValue<bool>());
+        Assert.True(result["FreshAuthorityFieldsAbsentBeforeEntry"]!.GetValue<bool>());
+        if (cut == 2)
+        {
+            Assert.True(atCut["AmbientParseAccepted"]!.GetValue<bool>());
+            Assert.False(result["AmbientParseAccepted"]!.GetValue<bool>());
+            Assert.True(result["IndependentOrdinaryPolicyRejected"]!.GetValue<bool>());
+            Assert.Equal("ParseAccepted", result["Result"]!["timestampCheck"]!["timestamp"]!.GetValue<string>());
+        }
+    }
+
+    private sealed record JointInterfaceNativeOutcome(int Pid, DateTime BirthUtc, int ExitCode, string Stdout, string Stderr,
+        string Executable, string[] Arguments, object Dependencies, bool Eof, bool Joined);
+
+    private async Task<JointInterfaceNativeOutcome> RunJointInterfaceNativeChildAsync(string role, string root, string output, int cut, string own)
+    {
+        var paths = MortalArchiveDependencyPaths();
+        var executable = Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!, "dotnet");
+        string[] arguments = ["exec", "--runtimeconfig", paths["runtimeconfig"], "--depsfile", paths["depsfile"], paths["support"],
+            role, paths["integration"], root, output, cut.ToString(CultureInfo.InvariantCulture), own];
+        var start = new ProcessStartInfo(executable) { UseShellExecute = false, RedirectStandardOutput = true,
+            RedirectStandardError = true, WorkingDirectory = own };
+        foreach (var argument in arguments) start.ArgumentList.Add(argument);
+        start.Environment["TMPDIR"] = Path.Combine(own, "tmp"); // child-only owned namespace, no global environment mutation
+        using var child = Process.Start(start) ?? throw new InvalidOperationException("Actual joint engine child was not started.");
+        var birth = child.StartTime.ToUniversalTime();
+        var stdout = child.StandardOutput.ReadToEndAsync(); var stderr = child.StandardError.ReadToEndAsync();
+        Exception? failure = null;
+        try { await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(220)); }
+        catch (Exception error) { failure = error; throw; }
+        finally
+        {
+            if (!child.HasExited) child.Kill(entireProcessTree: true); // only this original owned child tree
+            await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
+            await Task.WhenAll(stdout, stderr).WaitAsync(TimeSpan.FromSeconds(10));
+            File.WriteAllText(output + ".stdout", await stdout); File.WriteAllText(output + ".stderr", await stderr);
+            WritePhysicalInjuryDiagnostic("iobs_actual_native_join", new
+            { child.Id, BirthUtc = birth, child.ExitCode, Eof = stdout.IsCompletedSuccessfully && stderr.IsCompletedSuccessfully,
+                Joined = child.HasExited, Failure = failure?.ToString(), Executable = executable, Arguments = arguments,
+                Dependencies = MortalArchiveDependencyContext(), RawStdout = await stdout, RawStderr = await stderr });
+        }
+        return new(child.Id, birth, child.ExitCode, await stdout, await stderr, executable, arguments,
+            MortalArchiveDependencyContext(), stdout.IsCompletedSuccessfully && stderr.IsCompletedSuccessfully, child.HasExited);
+    }
+
+    public static async Task WriteJointInterfaceOriginalCrashAsync(string ignoredRoot, string output, int cut, string own)
+    {
+        Assert.InRange(cut, 0, 4);
+        CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-GB");
+        using var fixture = new GameEngineTurnLifecycleTests(new JointInterfaceConsoleOutput());
+        var scenario = cut == 2 ? "Crash:PublishedCulture" : cut == 4 ? "Crash:Error" : "Crash:Changed";
+        using var probe = new JointInterfaceLifecycleProbe(fixture, scenario);
+        probe.ConfigureActualCrash(cut, output, own);
+        await fixture.RunJointCompletionControlAsync(false, useLiveCaller: true, interfaceLifecycleProbe: probe);
+        // An unarmed/missing cut must fail after actual old/new work, never write
+        // a synthetic cut file or claim that an exception simulated process loss.
+        throw new InvalidOperationException("Actual requested joint publication crash boundary did not execute.");
+    }
+
+    public static async Task WriteJointInterfaceCurrentResumeAsync(string root, string output, int cut, string own)
+    {
+        CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+        var parent = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "parent.json")))!.AsObject();
+        var atCut = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "cut.json")))!.AsObject();
+        Assert.Equal(root, atCut["Root"]!.GetValue<string>()); Assert.Equal(cut, atCut["Cut"]!.GetValue<int>());
+        Assert.NotEqual(atCut["Pid"]!.GetValue<int>(), Environment.ProcessId);
+        using var factory = new GameEngineTurnLifecycleTests(new JointInterfaceConsoleOutput());
+        using var auxiliaryOwned = new CleanupOwnedFixture(factory._rootPath, Console.WriteLine);
+        var policyRejected = false;
+        if (cut == 2)
+        {
+            var contrast = factory.CreateGameEngine(new QueuedConsoleInputSource([]), InertRealmSettings);
+            await using var contrastAudio = GetPrivateField<AudioService>(contrast, "_audioService");
+            var raw = new JsonObject { ["dialogueOptions"] = new JsonArray("Продолжить разговор."), ["timestamp"] = "13/02/2026" };
+            await factory._fs.WriteFileAtomicAsync(MortalJointInterfacePublication.InterfacePath, raw.ToJsonString());
+            var issues = await GetPrivateField<ValidationService>(contrast, "_validator").ValidateAcceptedTurnInterfacePayloadAsync();
+            policyRejected = issues.Any(issue => issue.Code == "interface_updates_invalid_timestamp" && issue.Severity == IssueSeverity.Error);
+            Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "iobs_independent_ordinary_policy_contrast", Culture = CultureInfo.CurrentCulture.Name,
+                Raw = raw, Issues = issues, SeparateOwnedRoot = factory._rootPath }));
+            Assert.True(policyRejected);
+        }
+        FileSystemManager files = null!;
+        var changingI = 0; var actualCaller = false;
+        var publications = new List<object>(); var recovery = new List<object>();
+        files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+        {
+            LocalPublicationRecoveryObserver = (phase, index) => recovery.Add(new { Phase = phase.ToString(), Index = index }),
+            LocalPublicationObserver = (phase, index) =>
+            {
+                if (phase != TrustedLocalPublicationPhase.Committed) return;
+                using var journal = CleanupPublicationCut.Metadata(File.ReadAllBytes(Path.Combine(files.RuntimeRootPath, "trusted-local-publication-v1", "active.json")));
+                foreach (var member in journal.RootElement.GetProperty("Members").EnumerateArray())
+                {
+                    if (member.GetProperty("Path").GetString() == files.ResolvePath(MortalJointInterfacePublication.InterfacePath) &&
+                        !JointInterfaceLifecycleProbe.ImagesEqual(JointInterfaceLifecycleProbe.Image(member, "Before"), JointInterfaceLifecycleProbe.Image(member, "After"))) changingI++;
+                    if (member.GetProperty("Path").GetString() == files.ResolvePath(MortalQteDecisionPublication.StatePath))
+                        publications.Add(new { Marker = JointInterfaceLifecycleProbe.Image(member, "After"), Journal = journal.RootElement.Clone() });
+                }
+            }
+        });
+        var log = new SpiritualLifecycleTestLogger();
+        var engine = factory.CreateGameEngine(new QueuedConsoleInputSource([]), settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },
+            fileSystem: files, logger: log, finalizationHooks: new GameEngineSessionFinalizationHooks
+            { AtCheckpointAsync = point => { if (point == SessionFinalizationCheckpoint.LateTerminalAndIdleOperationBound) actualCaller = true; return Task.CompletedTask; } });
+        await using var audio = GetPrivateField<AudioService>(engine, "_audioService");
+        var noFresh = GetPrivateFieldValue<object?>(engine, "_mortalJointRepairCheckpoint") is null &&
+            GetPrivateFieldValue<string?>(engine, "_mortalJointInterfaceFreshCheckpoint") is null &&
+            GetPrivateFieldValue<object?>(engine, "_mortalJointInterfaceReady") is null;
+        Assert.True(noFresh);
+        MortalJointInterfacePublication.Record? result = null;
+        Dictionary<string, byte[]?>? before = null, after = null, repeated = null;
+        byte[]? recoveredPending = null, recoveredI = null;
+        bool? handled = null, second = null;
+        Exception? failure = null;
+        var completed = false;
+        try
+        {
+            PendingTurnSnapshotReadAuthority original;
+            await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+            {
+                // This actual new ordinary lease recovers the original journal
+                // BEFORE the original/result proof. No copied root or old Ready.
+                original = MortalQteWoundOpportunityProjection.ReadSnapshot(files, lease);
+                Assert.Equal(43, original.TurnNumber);
+                recoveredPending = await files.ReadFileBytesAsync(lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
+                var pending = ParseJsonObjectBytes(Assert.IsType<byte[]>(recoveredPending));
+                var parsed = MortalJointRepairCheckpoint.Parse(JsonSerializer.SerializeToElement(pending["jointRepairCheckpoint"]));
+                Assert.True(parsed.IsValid, DescribeValidationIssues(parsed.Issues)); Assert.True(parsed.Checkpoint!.UsesInterfacePublication);
+                if (cut != 3)
+                {
+                    result = MortalJointInterfacePublication.Read(JsonSerializer.SerializeToElement(pending[MortalJointInterfacePublication.PendingField]));
+                    result.RequireCheckpoint(parsed.Checkpoint.ToJsonObject()); result.RequireLegacyPending(pending);
+                    Assert.True(JsonNode.DeepEquals(atCut["Result"]!["binding"], result.Binding));
+                    Assert.Equal(cut == 2 ? "Published" : "Prepared", result.State);
+                    recoveredI = await files.ReadFileBytesAsync(lease, MortalJointInterfacePublication.InterfacePath);
+                    Assert.Equal(cut == 2 ? result.AfterBytes : result.BeforeBytes, recoveredI);
+                }
+                else Assert.False(pending.ContainsKey(MortalJointInterfacePublication.PendingField));
+                await GetPrivateField<StateManager>(engine, "_stateManager").RefreshGameStateReadOnlyAsync(lease);
+                Assert.Equal(42, GetPrivateField<StateManager>(engine, "_stateManager").CurrentState.TurnNumber);
+                GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(original.SessionId, 42);
+                before = await CaptureConfirmedClaimReadImagesAsync(files, lease);
+            }
+            handled = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
+            await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+            {
+                after = await CaptureConfirmedClaimReadImagesAsync(files, lease);
+                if (cut < 3)
+                {
+                    var current = await MortalQteDecisionPublication.ReadCurrentJointInterfaceDataAsync(files, lease,
+                        original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber);
+                    Assert.NotNull(current); Assert.Equal("Published", current.State); Assert.False(current.HasErrors);
+                    Assert.True(JsonNode.DeepEquals(result!.AsPublished().ToJson(), current.ToJson()));
+                    Assert.Equal(result.AfterBytes, await files.ReadFileBytesAsync(lease, MortalJointInterfacePublication.InterfacePath));
+                    var image = ParseJsonObjectBytes(Assert.IsType<byte[]>(result.AfterBytes));
+                    var option = Assert.IsType<JsonObject>(Assert.Single(image["dialogueOptions"]!.AsArray()));
+                    Assert.Equal("[NI_CONTROL:second]Продолжить обычный ответ.", option["text"]!.GetValue<string>());
+                    Assert.Equal("[NI_ACTION:first][NI_CONTROL:second]Продолжить обычный ответ.", option["inputValue"]!.GetValue<string>());
+                    Assert.Equal(43, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
+                    result = current; completed = true;
+                }
+                else
+                {
+                    Assert.Equal(42, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
+                    Assert.Equal(recoveredPending, await files.ReadFileBytesAsync(lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath));
+                    foreach (var (path, bytes) in before) Assert.Equal(bytes, after[path]);
+                    if (result is not null)
+                    {
+                        Assert.True(result.HasErrors);
+                        foreach (var issue in result.Issues) Assert.Contains(JsonSerializer.Serialize(issue), log.Describe());
+                    }
+                }
+            }
+            second = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
+            await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+            {
+                repeated = await CaptureConfirmedClaimReadImagesAsync(files, lease);
+                await AssertConfirmedClaimReadImagesAsync(files, lease, after);
+            }
+            Assert.Equal(cut < 2 ? 1 : 0, changingI); Assert.True(actualCaller);
+            if (completed) Assert.False(second!.Value); else Assert.True(GetPrivateFieldValue<bool>(engine, "_mortalJointInterfacePreparationHeld"));
+        }
+        catch (Exception error) { failure = error; throw; }
+        finally
+        {
+            File.WriteAllText(output, JsonSerializer.Serialize(new
+            { Pid = Environment.ProcessId, BirthUtc = Process.GetCurrentProcess().StartTime.ToUniversalTime(), Nonce = parent["Nonce"]!.GetValue<string>(),
+                Root = root, AuxiliaryRoot = factory._rootPath, ActualCallerEntered = actualCaller, Handled = handled, Second = second,
+                Completed = completed, Held = !completed && failure is null, Failure = failure?.ToString(),
+                NewChangingICommits = changingI, InertRepeatBytesEqual = repeated is not null && after is not null &&
+                    repeated.Count == after.Count && repeated.All(row => after.TryGetValue(row.Key, out var bytes) && MortalJointInterfacePublication.BytesEqual(row.Value, bytes)),
+                FreshAuthorityFieldsAbsentBeforeEntry = noFresh, AmbientParseAccepted = DateTimeOffset.TryParse("13/02/2026", out _),
+                IndependentOrdinaryPolicyRejected = policyRejected, Culture = CultureInfo.CurrentCulture.Name,
+                Result = result?.ToJson(), RecoveredPending = recoveredPending, RecoveredI = recoveredI,
+                Before = before, After = after, Repeated = repeated, Publications = publications, Recovery = recovery, Logs = log.Describe(),
+                Dependencies = MortalArchiveDependencyContext(), Loaded = MortalArchiveLoadedDependencyBindings() }));
+        }
+    }
+
+    private sealed partial class JointInterfaceLifecycleProbe
+    {
+        private int? _actualCrashCut;
+        private string? _crashOutput, _crashOwn;
+        internal void ConfigureActualCrash(int cut, string output, string own)
+        { Assert.Null(_actualCrashCut); _actualCrashCut = cut; _crashOutput = output; _crashOwn = own; }
+
+        private void ObserveActualCrashCut(TrustedLocalPublicationPhase phase, int index)
+        {
+            if (_actualCrashCut is not { } cut || (cut != 3 && !_configured) ||
+                phase is not (TrustedLocalPublicationPhase.Committed or TrustedLocalPublicationPhase.MemberPublished)) return;
+            var journalBytes = File.ReadAllBytes(Path.Combine(fixture._fs.RuntimeRootPath, "trusted-local-publication-v1", "active.json"));
+            using var journal = CleanupPublicationCut.Metadata(journalBytes);
+            var members = journal.RootElement.GetProperty("Members").EnumerateArray().ToArray();
+            var member = members.FirstOrDefault(row => row.GetProperty("Path").GetString() == fixture._fs.ResolvePath(WoundAcceptedTurnSnapshotContract.PendingResolutionPath));
+            if (member.ValueKind == JsonValueKind.Undefined || Image(member, "After") is not { } pendingBytes) return;
+            var pending = ParseJsonObjectBytes(pendingBytes);
+            if (pending["jointRepairCheckpoint"] is not JsonObject checkpoint || checkpoint["schemaVersion"]?.GetValue<int>() != 2) return;
+            var record = pending[MortalJointInterfacePublication.PendingField] is { } value
+                ? MortalJointInterfacePublication.Read(JsonSerializer.SerializeToElement(value)) : null;
+            var reached = cut switch
+            {
+                0 => phase == TrustedLocalPublicationPhase.Committed && record is { State: "Prepared", HasErrors: false },
+                1 => phase == TrustedLocalPublicationPhase.MemberPublished && record is { State: "Published", HasErrors: false } &&
+                    members[index].GetProperty("Path").GetString() == fixture._fs.ResolvePath(InterfacePath),
+                2 => phase == TrustedLocalPublicationPhase.Committed && record is { State: "Published", HasErrors: false },
+                3 => phase == TrustedLocalPublicationPhase.Committed && record is null,
+                4 => phase == TrustedLocalPublicationPhase.Committed && record is { State: "Prepared", HasErrors: true },
+                _ => false
+            };
+            if (!reached) return;
+            var parent = JsonNode.Parse(File.ReadAllText(Path.Combine(_crashOwn!, "parent.json")))!;
+            Assert.Equal(0, _captureCallbacks); Assert.Null(_firstMarker);
+            if (cut == 1) Assert.False(journal.RootElement.GetProperty("Committed").GetBoolean());
+            else Assert.True(journal.RootElement.GetProperty("Committed").GetBoolean());
+            foreach (var (path, bytes) in _mechanicalBefore) Assert.Equal(bytes, ReadPhysical(path));
+            File.WriteAllText(_crashOutput!, JsonSerializer.Serialize(new
+            { Pid = Environment.ProcessId, BirthUtc = Process.GetCurrentProcess().StartTime.ToUniversalTime(), Nonce = parent["Nonce"]!.GetValue<string>(),
+                ParentPid = parent["ParentPid"]!.GetValue<int>(), Root = fixture._fs.BasePath, Cut = cut,
+                Phase = phase.ToString(), Index = index, JournalBase64 = Convert.ToBase64String(journalBytes),
+                ActualPending = ReadPhysical(WoundAcceptedTurnSnapshotContract.PendingResolutionPath), PendingMemberAfter = pendingBytes,
+                Interface = ReadPhysical(InterfacePath), InterfaceMtime = Mtime(), Result = record?.ToJson(), Checkpoint = checkpoint,
+                CommonCallbacks = _captureCallbacks, FirstMarker = _firstMarker, Turn = GetPrivateField<GameLoop>(_engine!, "_gameLoop").TurnNumber,
+                MechanicalBefore = _mechanicalBefore, MechanicalAtCut = _mechanicalBefore.Keys.ToDictionary(path => path, ReadPhysical),
+                AmbientParseAccepted = DateTimeOffset.TryParse("13/02/2026", out _), Culture = CultureInfo.CurrentCulture.Name,
+                Dependencies = MortalArchiveDependencyContext(), Loaded = MortalArchiveLoadedDependencyBindings() }));
+            Console.Out.Flush(); Console.Error.Flush();
+            Environment.Exit(73); // actual abrupt process exit; no catch, finally, release or compensation
+        }
+    }
+
+    private sealed class JointInterfaceConsoleOutput : ITestOutputHelper
+    {
+        public void WriteLine(string message) => Console.WriteLine(message);
+        public void WriteLine(string format, params object[] args) => Console.WriteLine(format, args);
+    }
+}

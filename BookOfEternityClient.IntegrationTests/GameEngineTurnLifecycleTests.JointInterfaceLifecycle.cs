@@ -130,7 +130,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 { ["text"] = ChangesInterface ? TwoTags : "Продолжить обычный ответ." })
             };
             if (!ChangesInterface) value["timestamp"] = "2026-10-18T00:00:00.0000000+00:00";
-            if (scenario == "Error") value["unsupported_result_field"] = true;
+            if (scenario is "Error" or "Crash:Error") value["unsupported_result_field"] = true;
+            if (scenario == "Crash:PublishedCulture") value["timestamp"] = "13/02/2026";
             var text = value.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
             _submitted = scenario switch
             {
@@ -171,6 +172,7 @@ public sealed partial class GameEngineTurnLifecycleTests
 
         internal void ObservePublication(TrustedLocalPublicationPhase phase, int index)
         {
+            ObserveActualCrashCut(phase, index);
             ObserveInitialInstallation(phase);
             if (!_configured || phase != TrustedLocalPublicationPhase.Committed) return;
             var journalPath = Path.Combine(fixture._fs.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
@@ -309,12 +311,12 @@ public sealed partial class GameEngineTurnLifecycleTests
         private DateTime? Mtime() => File.Exists(fixture._fs.ResolvePath(InterfacePath))
             ? File.GetLastWriteTimeUtc(fixture._fs.ResolvePath(InterfacePath)) : null;
 
-        private static byte[]? Image(JsonElement member, string side)
+        internal static byte[]? Image(JsonElement member, string side)
         {
             var image = member.GetProperty(side);
             return image.GetProperty("Exists").GetBoolean() ? image.GetProperty("Bytes").GetBytesFromBase64() : null;
         }
-        private static bool ImagesEqual(byte[]? left, byte[]? right) =>
+        internal static bool ImagesEqual(byte[]? left, byte[]? right) =>
             left is null ? right is null : right is not null && left.AsSpan().SequenceEqual(right);
         private static object? Raw(byte[]? bytes) => bytes is null ? null : new
         { Bytes = Convert.ToBase64String(bytes), Length = bytes.LongLength, Sha256 = Convert.ToHexString(SHA256.HashData(bytes)) };

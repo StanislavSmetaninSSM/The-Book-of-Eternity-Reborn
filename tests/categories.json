@@ -2,6 +2,70 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-interface-legacy-current",
+  "responsibility": "Genuine existing CaptureAsync v1 installs the complete actual held graph with original-backed reconstruction; real engine child1 live/cold consumers; separate actual new Stage44 original covers exact prior marker and generic I ignores old cached DATA.",
+  "excludes": "No route downgrade flag, v2 mutation/private authority seeding, old save promise beyond explicit accepted v1/child1 operation contract, or crash qualification.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLegacy.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
+    "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-interface-lifecycle-order",
+      "when": "Actual ordering/common producer prerequisite; distinct finite consumer/cold disposition."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 15,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCompletesWithoutProtocolUpgrade",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCommittedColdKeepsLegacyConsumer",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewOrdinaryOriginalUsesPriorMarkerSourceInsteadOfCachedData"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-interface-crash-current",
+  "responsibility": "Actual separate engine process Environment.Exit at Prepared-commit, I-member uncommitted, Published-commit-before-ack, initial missing-result and ErrorPrepared. New process/ordinary Main/current frame resumes stored publication or holds, exact I/fallback bytes, actual public en-GB/en-US policy contrast, inert mechanical images and owned native child/container cleanup.",
+  "excludes": "No exception-only crash surrogate, direct-publisher-only child, old Ready/capability resurrection, Bridge WorkerRelease/Windows backend, or generic journal redesign. Source fixtures remain uncompiled/unrun.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
+    "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-interface-lifecycle-order",
+      "when": "Actual ordering/common producer prerequisite; distinct finite consumer/cold disposition."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 15,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-interface-current-owner-refusal",
   "responsibility": "Actual genuine child3 generic-slot DATA positive then five partial marker faults; actual FIRST2 installation owning-close failure with real hoisted lease; new late Main owns matching Ready independently of closed Stage ConsoleOwner/optional HOT.",
   "excludes": "No crash/restart, legacy producer, I-owning-close/outer-finalization or new ordinary-frame fallback proof. These remain separate finite controls.",

@@ -1,17 +1,17 @@
 ## T179-Pd-NI-IOBS-L01 current frontier (2026-10-18)
 
-- [x] Historical real ordering RED accepted and preserved before implementation.
-- [ ] Current Ready-owner/refusal integration and16methods29staticrows, uncompiled/unrun; connected SOURCE pending.
-- [ ] Complete genuine legacy/crash/new-owner-resume/culture/close/retention/GM finite controls, then final affected selection/SOURCE.
-- [ ] Separately named fresh preparation/actual EVIDENCE; no current build or native release.
+- [x] Historical real ordering RED independently qualified and preserved.
+- [ ] Integrated production +20methods37staticrows/6owners finite source WIP, all uncompiled/unrun.
+- [ ] Finish remaining close/race/retention/common/GM and actual final selection/controllers/connected SOURCE.
+- [ ] Named fresh preparation/actual EVIDENCE. No current build/discovery/native release.
 
-## T179-Pd-NI-IOBS-L01 — current NI Ready owner/refusal WIP, finite qualification OPEN (2026-10-18)
+## T179-Pd-NI-IOBS-L01 — genuine legacy/current and abrupt-child fixture WIP (2026-10-18)
 
-The uncompiled whole draft now gives selected FIRST2 its own current-Main corrected-Ready/source observation, actual deletion/owning-release acknowledgments and immutable source/I-before→after checks. It preserves the actual historical Stage coordinates without reviving the closed Stage ConsoleOwner, weakening HOT ownership, inventing a Stage or deriving permission from stored DATA. Existing protectedLate2 staging/caller sources remain unchanged. S03 is a source-derived draft finding/correction, not a native failure or accepted result. S04 fresh ErrorPrepared now emits its full defensive frozen issue vector through the same noninteractive selected-refusal reporter as resume; its real held control observes delivered diagnostics and unchanged images.
+Current uncompiled finite source now includes explicit real CaptureAsync v1 complete-graph installation/readback and actual engine live/committed-cold compatibility, plus a genuine new original44/generic-I fallback while old DATA remains cached. No v2 version edit, caller protocol flag or private authority field selects legacy; existing protectedLate2 remains the unchanged current-FIRST2 regression witness.
 
-New actual-owner controls cover five partial marker faults after genuine child3/common and positive generic DATA consumption, the original FIRST install owning-close failure, and the new late Main versus closed old ConsoleOwner. The Warning control now observes the actual late returned issue list and two independent generic returned vectors, each once; ambient-policy no-replay remains a separate future process/culture control. Current static inventory is16methods29rows/4owners, **uncompiled/unrun and not discovered**. An uncompiled test-only value-reflection helper mismatch was corrected before any build; original WIP history remains.
+Five new abrupt-child rows target actual Prepared commit, I-member uncommitted, Published commit-before-ack, initial missing result and ErrorPrepared. The original process runs the genuine full fixture and exits abruptly inside the actual TrustedLocal publisher; a separate current engine/Main recovers first and then executes the real late consumer. Parent owns process/birth/nonce/stdio/join and child-local TMPDIR cleanup. Exact one-pass/fallback bytes, negative/inert mechanics and independent actual en-GB→en-US ordinary-policy contrast are authored assertions, **not executed proof**. Current inventory20methods37staticrows/6owners is uncompiled/unrun and has not been discovered.
 
-Original S01/S02/S03 source findings, authoring corrections and qualified first ordering RED are distinct and immutable in their saved contexts. Whole final SOURCE/finite crash, legacy, error-resume, I-close/outer-finalization, retention/terminal/Ready race/common/GM qualification stays OPEN. Continue under existing whole implementation authorization; no new build/discovery/native, old passing-family replay or broader NI/HOT/platform/A3 activation. Following sections are historical.
+Connected S01–S04 findings/source-addressed continuity and historical qualified ordering RED remain exact in their own saved phases. Final SOURCE and remaining I-close/outer-finalization, Ready/preimage race, graph/refusal/retention/common/GM controls remain OPEN. Continue whole implementation under existing authorization; no build/discovery/native or broader NI/HOT/platform/A3 activation. Following sections are historical.
 
 ## T179-Pd-CUT01 bounded implementation/source/EVIDENCE complete (2026-10-18)
 
