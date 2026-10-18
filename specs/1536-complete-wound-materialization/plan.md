@@ -1,3 +1,9 @@
+## T179-Pd-NI-IOBS-L01 — close2Corrected original outcome saved; next gate explicit (2026-10-18)
+
+Новый отдельно именованныйclose2: actualb5d9bece/compiledcf52201c, native0, 2executed/2PASS/0FAIL, 468.043s. [Original11rawchains](t179pd-ni-iobs-l01-cloud-close2-corrected-813f1057-files-20261018/archive.json) и exactbefore/afterauthoritativecensuses сохранены; observedpositive=True. Это originaloutcome, independentEVIDENCE ещё pending, qualifiedcount пока40. Frozenoriginalclose2FAIL/семьстарыхfixtureFAIL/oldcorrectedcrashUNKNOWN неизменны.
+
+After outcome recovery, independent EVIDENCE forclose2Corrected; separately named FIRSTraces2 only after immediate clean authoritative census and no unresolved finding. Qualified count unchanged until acceptance. Все исходные assertions и once-only/Ready/ownedtransition contracts неизменны. Noactual/retry приunexpectedfailure; всеbroaderholds/Windows403/CI/A3 сохраняются. Следующие sections исторические.
+
 ## T179-Pd-NI-IOBS-L01 — corrected PREP accepted; named close2 only (2026-10-18)
 
 [Independent Astra XHigh corrected PREP](recovery/t179pd-ni-iobs-l01-corrected-prep-independent-review-eb8f31a3-20261018.md) accepted без findings:43originalrawchains,98pins, fresh BOTH/catalog808/11800, whole16/33/57+corrective1/2/2+remaining5/7/15 ZERO,9freshcopies/full1575outputs/NoBuildcontinuity,58+6recoveredpaths и acceptedv2mandatorycensus. Native build warnings148+37/errors0. Actualtests0; qualified40targets unchanged.

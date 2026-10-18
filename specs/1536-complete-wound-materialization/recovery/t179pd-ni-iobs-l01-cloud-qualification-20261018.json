@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "CORRECTED_SOURCE_AND_PREP_ACCEPTED_NAMED_CLOSE2_ONLY",
+  "status": "CLOSE2CORRECTED_NATIVE_PASS_EVIDENCE_PENDING_NEXT_RACES2_SEPARATELY_NAMED",
   "sourceCheckpoint": "a0da72f2c21fca66193314954cfdf87992752876",
   "sourcePinDigest": "b29c971342ee772b13cd123a954d7afa8937e1f50a7e5f4c4c14403e4de4c347",
   "sourcePinCount": 98,
@@ -376,7 +376,7 @@
           "cases": 1
         }
       ],
-      "status": "ORIGINAL_1PASS1FAIL_FROZEN_PRODUCT_DIAGNOSTIC_LOSS_CORRECTIVE_NEW_RUN_REQUIRES_SOURCE_PREP"
+      "status": "NEW_CORRECTED_NATIVE_PASS_EVIDENCE_PENDING"
     },
     {
       "mode": "races2",
@@ -571,6 +571,72 @@
       },
       "processesAfter": [],
       "retry": "NONE"
+    },
+    "close2Corrected": {
+      "status": "ORIGINAL_NATIVE_PASS_INDEPENDENT_EVIDENCE_PENDING",
+      "actualSource": "b5d9becea7e1e802dc362dfab78791f25e0889d3",
+      "compiledSource": "cf52201ca165d24c971018251ef9723a8e493384",
+      "nativeExit": 0,
+      "seconds": 468.0428018350003,
+      "tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "recordPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-first-close2-diag-cloud-813f1057/record.json",
+      "recordSha256": "d8ed64a23966ba4150f8c6438714ab43332bc19c1f781625575c77d4231e6d37",
+      "archive": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-corrected-813f1057-files-20261018/archive.json",
+        "sha256": "66862a2d5556dc5245eff0f4fa0dcd2b75d4012ae43d67db6a8a4dd24fbbfdc8",
+        "bytes": 7902,
+        "rawChains": 11
+      },
+      "parentInspection": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-close2corrected-parent-inspection-20261018.json",
+        "sha256": "937d0128fac35ec2c9130988cc0383e185469d8b5507ecdcfb33658d76f1332a",
+        "bytes": 4593
+      },
+      "supplementalAuthoritativeCensuses": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-close2corrected-before-census-20261018.json",
+          "sha256": "65e86e29058c8e1e6bed9eb77b38b0aa806e7a85113d28fd34b7c4aeb8583d30",
+          "bytes": 38092
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-close2corrected-after-census-20261018.json",
+          "sha256": "5b52e4680899f40d601481cd196318b9acb489f76ad9d9ede8e5e2af48485549",
+          "bytes": 38097
+        }
+      ],
+      "nineBinariesUnchanged": true,
+      "all1575OutputsUnchanged": true,
+      "namespaceAfter": {
+        "ownedRoots": []
+      },
+      "originalProcessesAfter": [],
+      "processArrayLimitation": "Original exe-link-dependent arrays are incomplete observer output. Dated independently accepted argv/stat census is authoritative boundary only.",
+      "limits": "Observed native outcome is not independent EVIDENCE acceptance or additional qualified targets; original frozen failures and oldUNKNOWN remain unchanged.",
+      "acceptanceRecoveryAndIndependentPreflight": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-corrected-prep-acceptance-recovery-b5d9bece-20261018.json",
+          "sha256": "b48e09638e7ebaec1983fa6e5b8d721dc8e302884da0b4d6e13c9094979c535c",
+          "bytes": 3807
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-prep-acceptance-close2-preflight-readback-b5d9bece-20261018.json",
+          "sha256": "543edeacd8d391dda8a951cb2199bf6892eba721ed2500cf48fff5d59aec5c30",
+          "bytes": 1872
+        }
+      ]
     }
   },
   "holds": [
@@ -584,7 +650,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Recover savedPREPacceptance and capture immediate clean v2 before-census; execute ONLYnamedclose2corrective regression, saveoriginaloutcome+aftercensus+archive, freeze if unexpected. Remaining15 separately gated.",
+  "next": "After outcome recovery, independent EVIDENCE forclose2Corrected; separately named FIRSTraces2 only after immediate clean authoritative census and no unresolved finding. Qualified count unchanged until acceptance.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -760,16 +826,27 @@
     "phase": "HISTORICAL_COMPILED_6AB43F6A_ZERO3_PRE_CORRECTION_INELIGIBLE_FOR_CORRECTED_ACTUALS"
   },
   "release": {
-    "status": "NAMED_CLOSE2_ONLY_AFTER_SAVED_ACCEPTANCE_AND_IMMEDIATE_CLEAN_V2_CENSUS",
-    "mode": "close2",
-    "label": "t179pd-ni-iobs-l01-process-first-close2-diag-cloud-813f1057",
+    "status": "SEPARATELY_NAMED_FIRST_AFTER_SAVED_OUTCOME_RECOVERY_AND_IMMEDIATE_CLEAN_V2_CENSUS",
+    "mode": "races2",
+    "label": "t179pd-ni-iobs-l01-process-first-races2-diag-cloud-813f1057",
     "compiledSource": "cf52201ca165d24c971018251ef9723a8e493384",
-    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-diag-cloud-813f1057/record.json",
+    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-diag-cloud-813f1057/record.json",
+    "expectedCases": 2,
+    "category": "fr063-joint-interface-source-races",
+    "methods": [
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualReturnedReadCannotHideChangedWriterPreimage",
+        "cases": 1
+      },
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_PublishedInterfaceCannotExcuseOtherImmutableReadyDrift",
+        "cases": 1
+      }
+    ],
     "observerPath": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-20261018.py",
     "observerSourceSha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
-    "conditions": "Push/exactremote/cleanGitHub recovery, then immediate authoritative clean before-census; existingNoBuild FIRST controller exact2methods,9DLL/full1575continuity, no active/unknown/roots; immediate authoritative after-census; original outcome frozen/archived before utility/EVIDENCE/nextmode. Anyunexpectedfailure freezes. This is post-source-change regression, distinct from frozenoriginal; no automatic retry/advance.",
-    "otherModes": "HELD_SEPARATE_NAMED_RELEASE_REQUIRED",
-    "lostOldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED"
+    "conditions": "Save exactremote/cleanGitHub recovery; independent SOURCE/PREP unchanged; no unresolved semantic concern; immediate clean v2 before-census; NoBuild/FIRST/new disposable roots only; mandatory originaloutcome+aftercensus/inventories/save. Anyunexpectedfailure/materialreviewfinding freezes. No concurrent actual or automaticadvance/retry. PriorpositiveEVIDENCEreview may read immutable files concurrently; no repo mutation duringactual.",
+    "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED"
   },
   "newOriginalObservedPassingCases": 4,
   "lastAcceptanceRecovery": {
