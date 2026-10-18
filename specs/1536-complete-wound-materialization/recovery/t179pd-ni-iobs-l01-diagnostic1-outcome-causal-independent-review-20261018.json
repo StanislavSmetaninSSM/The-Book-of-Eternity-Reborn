@@ -1,0 +1,310 @@
+{
+  "kind": "INDEPENDENT_DIAGNOSTIC1_ORIGINAL_EVIDENCE_CAUSAL_REVIEW_AND_FINITE_NEXT_PLAN",
+  "reviewedUtc": "2026-10-18T17:07:00.575261+00:00",
+  "model": "gpt-6-astra",
+  "reasoningEffort": "xhigh",
+  "verdict": "ACCEPT_DIAGNOSTIC1_ORIGINAL_EVIDENCE_ONLY_CAUSE_UNRESOLVED; ACCEPT_BOUNDED_DIAGNOSTIC2_PLAN_SUBJECT_TO_SOURCE_AND_PREP",
+  "candidate": "9793e320bef881462ef7dbac847f748e645ab324",
+  "actualSource": "801229a1d301cc3526b451c95cc71953f89f1f62",
+  "compiledSource": "8f8f534304e3672df5d42c9ab31e7055235bfaca",
+  "sourcePins": 101,
+  "productPaths": 23,
+  "pinDigest": "2c144b7734708f8c02a3924d4d12a885384f05a1437021afd2845827c761c616",
+  "evidenceFindings": [],
+  "evidence": {
+    "reader": {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic1_outcome.py",
+      "bytes": 31428,
+      "sha256": "973d7c89ecd0d31028893a38c529bd15ecba0c2eb81b68f48493598a79cc0024"
+    },
+    "originalOutcomeCheck": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-outcome-independent-check-9793e320-20261018.json",
+      "bytes": 190341,
+      "sha256": "6bdb3c006f16176b0f4009a1ae4dfeace21e81e8f41a4402a192a429be7f2da9"
+    },
+    "semanticReader": {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic1_semantic_reach.py",
+      "bytes": 10519,
+      "sha256": "ba55a20499e40f8778187c16971b9fb67158dbcb8277b6b730d9a112aaae3dfc"
+    },
+    "semanticCheck": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-semantic-reach-independent-check-9793e320-20261018.json",
+      "bytes": 1662,
+      "sha256": "5834499877df8f54c33bab27cd4a024aaf370a958d6e182bfce8a646f7dba2e4"
+    },
+    "utilityHistory": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-outcome-reader-history-20261018.json",
+      "bytes": 1943,
+      "sha256": "4f1b3dffd3a9d08b9672e53fabc15523ae89d568c2e0bf290a06e8834999042a"
+    },
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic1-original-b51375ba-files-20261018/archive.json",
+      "sha256": "4f7b0c58394cd180717bc0328f8791601d0238a944476846f4d278a2ed2bf1f9",
+      "chains": 11,
+      "allGzipRawOriginalNonfixtureAndCloneBytesMatch": true,
+      "retainedRootBytesFromArchiveOnly": true
+    },
+    "recordSha256": "8ee08e8da2633949252bd609b3057c28056ba9cce6c1cd487295b5e586d5d81e",
+    "recovery": [
+      {
+        "receipt": {
+          "path": "/tmp/1536-cloud-tools/carrier-recovery-9793e320.json",
+          "bytes": 7995,
+          "sha256": "bbb6a52fe51af9a9730ede4d5b57223acd2a3d23f0de68d16530c30d0ba6c369"
+        },
+        "base": "801229a1d301cc3526b451c95cc71953f89f1f62",
+        "sha": "9793e320bef881462ef7dbac847f748e645ab324",
+        "paths": 20
+      }
+    ],
+    "sourceRefs": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+        "sha256": "b34615c6e74ca26145f75fe7d1244c276983b05551bc6e271989e0e2a80c2c1e",
+        "lines": "cut1/220-second supervision at35-152; current preflight/late calls/assertions at185-455; real abrupt journal cut at513-566"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrashDiagnostic.cs",
+        "sha256": "c4909c88decc51ac95b2d3ef8e74c35e23625da051d732c324080c270d4d2804",
+        "lines": "Fact and readonly scalar/logger observer"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+        "sha256": "6cb404f53890549ca051c20b7fc6dd358f7c9a24451903e471b6aa589581198c",
+        "lines": "custody hook49, preparation/reservation/stages/common/preflight/owning publish50-109, close/refresh afterwards"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
+        "sha256": "e924254499238ca86e56abcaaa130b3cc82a11425ca3582ec265c79c59186139",
+        "lines": "new selected admission/publication/own release/current common dispatch"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+        "sha256": "c0c9b094b2696d7481fb6ed99d6c19a2b8f6a9a77c1dcb71b410ef9b0961e344",
+        "lines": "AcceptedOutcome checkpoint91 before materialization/story/cleanup"
+      }
+    ]
+  },
+  "observed": {
+    "nativeExit": 0,
+    "trxTests": {
+      "executed": 1,
+      "passed": 1,
+      "failed": 0
+    },
+    "exactMethod": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_DiagnoseCurrentResumeAfterInterfaceMemberProcessLoss",
+    "completeDescriptor": true,
+    "timeout": false,
+    "controllerSeconds": 296.52162327399856,
+    "trxDuration": "00:04:28.9711367",
+    "originalEvidence": "All11 raw/gzip/original/independent-clone chains,20 changed carrier paths,101 pins/product23, exact accepted one-case release and diagnostic-plan, nine/full1575 unchanged NoBuild outputs verified. Native primary and cleanup exceptions absent.",
+    "identities": {
+      "producer": {
+        "pid": 61993,
+        "birthTick": 2702213,
+        "exit": 73
+      },
+      "resumer": {
+        "pid": 62089,
+        "birthTick": 2707440,
+        "exit": 0
+      },
+      "nonce": "76c9d879718047dc85b229bba3af89e6",
+      "root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+      "bothExitJoinEof": true,
+      "bothStderrEmpty": true,
+      "dependencyClosureAndDefaultLoadBindingsExact": true
+    },
+    "semanticReach": {
+      "kind": "INDEPENDENT_DIAGNOSTIC1_SEMANTIC_REACH_NOT_TARGET_QUALIFICATION",
+      "carrier": "9793e320bef881462ef7dbac847f748e645ab324",
+      "recordSha256": "8ee08e8da2633949252bd609b3057c28056ba9cce6c1cd487295b5e586d5d81e",
+      "readerSha256": "ba55a20499e40f8778187c16971b9fb67158dbcb8277b6b730d9a112aaae3dfc",
+      "checksPassed": 121,
+      "findings": [],
+      "producer": {
+        "pid": 61993,
+        "birthTick": 2702213,
+        "exit": 73
+      },
+      "resumer": {
+        "pid": 62089,
+        "birthTick": 2707440,
+        "exit": 0
+      },
+      "cut": 1,
+      "nonce": "76c9d879718047dc85b229bba3af89e6",
+      "root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+      "requestFingerprint": "sha256:9892abc388b0144650a32dc5733daf532d79a4656bcf460d45fe0d3de478eb1b",
+      "originalCut": "I member applied, journal uncommitted, no common/callback; actual ordinary recovery restores Prepared and I preimage",
+      "observedCurrent": "New current owner readback/owning publication/common proof, same exact Published result, one new changing-I cohort, origin child3, applied progression, one story row, energy2->0/health5->2/create+treat, all terminal cleanup, inert repeat",
+      "snapshots": {
+        "before": 223,
+        "after": 84,
+        "repeat": 84
+      },
+      "cleanupRoots": 3,
+      "originalStrongCut1AssertionsReached": true,
+      "otherCutsOrCurrent57Qualified": false,
+      "qualifiedRemains": 52,
+      "limits": "Only this instrumented isolated diagnostic1 original. No attribution of old timeout cause or historical return; original failures and oldUNKNOWN unchanged."
+    },
+    "diagnostics": {
+      "events": 35,
+      "everyScalarBoundToSingleResumerCut1RootNonce": true,
+      "elapsedAndUtcMonotonic": true,
+      "unreturnedObservedStagePairs": [],
+      "lastEvent": {
+        "stage": "resume-finally",
+        "detail": null,
+        "elapsedMilliseconds": 214269,
+        "utc": "2026-10-18T16:58:00.8530057+00:00"
+      },
+      "selectedTimeline": [
+        {
+          "stage": "preflight-lease-release-return",
+          "detail": null,
+          "elapsedMilliseconds": 2006,
+          "utc": "2026-10-18T16:54:28.590244+00:00"
+        },
+        {
+          "stage": "late-first-enter",
+          "detail": null,
+          "elapsedMilliseconds": 2006,
+          "utc": "2026-10-18T16:54:28.5907292+00:00"
+        },
+        {
+          "stage": "finalization-enter",
+          "detail": "MortalJointCustodyCaptureCompletedBeforePreparation",
+          "elapsedMilliseconds": 9857,
+          "utc": "2026-10-18T16:54:36.4408565+00:00"
+        },
+        {
+          "stage": "finalization-return",
+          "detail": "MortalJointCustodyCaptureCompletedBeforePreparation",
+          "elapsedMilliseconds": 9857,
+          "utc": "2026-10-18T16:54:36.4410092+00:00"
+        },
+        {
+          "stage": "finalization-enter",
+          "detail": "AcceptedOutcomeValidatedBeforeMaterialization",
+          "elapsedMilliseconds": 194742,
+          "utc": "2026-10-18T16:57:41.326233+00:00"
+        },
+        {
+          "stage": "finalization-return",
+          "detail": "AcceptedOutcomeValidatedBeforeMaterialization",
+          "elapsedMilliseconds": 195061,
+          "utc": "2026-10-18T16:57:41.6453728+00:00"
+        },
+        {
+          "stage": "late-first-return",
+          "detail": "False",
+          "elapsedMilliseconds": 213629,
+          "utc": "2026-10-18T16:58:00.2136038+00:00"
+        },
+        {
+          "stage": "late-second-enter",
+          "detail": null,
+          "elapsedMilliseconds": 213912,
+          "utc": "2026-10-18T16:58:00.4965082+00:00"
+        },
+        {
+          "stage": "late-second-return",
+          "detail": "False",
+          "elapsedMilliseconds": 214031,
+          "utc": "2026-10-18T16:58:00.6153439+00:00"
+        },
+        {
+          "stage": "resume-finally",
+          "detail": null,
+          "elapsedMilliseconds": 214269,
+          "utc": "2026-10-18T16:58:00.8530057+00:00"
+        }
+      ]
+    },
+    "cleanup": {
+      "parentAndAuxiliaryOwnedRootsRemoved": 3,
+      "nativeOwnedTreeAndRuntimeCleanup": true,
+      "afterNamespaceEmpty": true,
+      "censuses": {
+        "before": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-actual-before-census-b51375ba-20261018.json",
+          "sha256": "cc952e6c5739ca44feeb9fe4db3f526475799c2fdfcfeed86b8874f010993cad",
+          "entries": 159,
+          "cleanBoundary": true,
+          "gapSeconds": 1.812668
+        },
+        "after": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-actual-after-census-b51375ba-20261018.json",
+          "sha256": "b5f0e68a10e000324b88e5481b7f84427a232103322ebd1bf3672a4081f47258",
+          "entries": 159,
+          "cleanBoundary": true,
+          "gapSeconds": 5.740139
+        }
+      },
+      "frozenOriginalFilesVerifiedBefore": 237,
+      "samePhysicalCloudNewB513Namespace": true
+    }
+  },
+  "causalDecision": {
+    "directlyProven": [
+      "This newly spawned instrumented cut1 child completes all existing strong semantic assertions under the original220-second child supervision; no unmatched diagnostic enter remains.",
+      "Preflight lease acquire/recovery/snapshot/refresh/images finishes at2.006s. The first real late call runs from2.006s to213.629s. The largest observed interval is184.885s between custody return9.857s and accepted-outcome entry194.742s.",
+      "Completed-proof lease acquires in14ms in this run; actual late caller returns, second call is inert, and resume-finally is emitted at214.269s. These observations locate where this successful run spent wall time."
+    ],
+    "sourceInference": [
+      "The184.885-second interval spans preparation, reservation, multiple validated mechanics stages, common/preflight/owning publication and subsequent validation/refresh before the accepted-outcome hook. The existing markers do not isolate one awaited operation.",
+      "The near-limit completion makes ordinary timing variation or workload a plausible explanation for earlier220-second timeouts; it does not prove that explanation."
+    ],
+    "notEstablished": [
+      "The cause or last awaited operation of either frozen original cut1/cut2 timeout. Their missing stage bytes remain missing.",
+      "A deterministic deadlock on all instrumented cut1 executions: this run completes. It does not exclude an intermittent deadlock or instrumentation-sensitive ordering in the uninstrumented historical run.",
+      "CPU saturation/throttling, scheduler delay, I/O wait or lock contention during this or the old run. No interval CPU/accounting samples were captured. A current cpu.max or cumulative cgroup counter cannot retroactively establish them.",
+      "A reliable safety margin under220s or completion of the original five-case category under900s. The214.269s timer begins inside the child and ends before result serialization/disposal/exit;5.731s is only the difference to220 on that clock, not measured supervisor slack."
+    ],
+    "presentAction": "No product optimization/remedy, budget increase, assertion relaxation, original crash5 retry or method/row repartition is justified by this diagnostic alone."
+  },
+  "nextFinitePlan": {
+    "verdict": "ACCEPT_PLAN_FOR_ONE_NEW_DIAGNOSTIC_WITH_EXTERNAL_READ_ONLY_ACCOUNTING_SUBJECT_TO_SOURCE_PREP_AND_SEPARATE_RELEASE",
+    "proposal": {
+      "path": "/tmp/1536-cloud-tools/diagnostic2-plan-20261018.json",
+      "bytes": 4976,
+      "sha256": "29a30d676e3e53db05ee569cd792d779b2dae7859a84256304913984a0fa54d8"
+    },
+    "identity": "ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892",
+    "tmpdir": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892",
+    "samePhysicalCloudBoot": true,
+    "scope": "Exactly one same cut1 diagnostic Fact with unchanged C# production/fixture/assertions and220/900 limits, external fixed nominal1Hz accounting, newGUID, no increment to57. No lower-level product timing hooks for this first profile.",
+    "binding": "Retain exact101 product/controller pins if unchanged; separately hash/version sampler, orchestration and environment and bind every executable input in current packet. Fresh actual/compiled identity supplies a new FIRST sentinel; retain old801 invocation and all histories.",
+    "requiredSourceDetails": [
+      "Sampler positively selects only exact dependency argv/role/cut/new canonical owned container and immutable nonce; every process/thread sample is bounded by stable PID/TID plus kernel birth before/after reads. Reject ambiguous or reused identities; record confirmed exits distinctly.",
+      "Record actual monotonic/UTC scan intervals, clock tick frequency and raw counters. No catch-up bursts. Preserve permission failures, malformed/partial reads, missing fields, disappearing threads and256-thread truncation as explicit gaps, never fabricated zeros.",
+      "Keep process aggregate CPU, per-thread CPU and shared cgroup accounting separate; do not double-count them. Leader wchan is not an all-thread wait oracle. Samples can distinguish CPU progress from waiting only within their observed scope.",
+      "Record sampler own CPU/elapsed work or equivalent overhead evidence so sampling perturbation is visible. Use bounded non-overlapping reads; no signal/ptrace/debugger attach, affinity/scheduler/cgroup change, canonical lease or game-state access/mutation.",
+      "On controller return, preserve immediate authoritative after-census before any potentially prolonged sampler drain. Sampler failure/gaps must not kill or alter the original native child; retain the original outcome and freeze further progression.",
+      "Exercise meaningful fake-proc parsing/identity-reuse/read-error/disappearance/truncation cases before SOURCE acceptance. These checks must not involve game processes."
+    ],
+    "gates": [
+      "Save/recover diagnostic1 original and independent causal report/plan acceptance.",
+      "Save/recover new sampler/orchestrator/environment exact bytes outside unchanged101 source closure; independent SOURCE including meaningful fake-proc parser/identity-gap verification without game processes.",
+      "New GUID mutable TMPDIR/runtime/CLI/XDG. Original frozen237files unchanged, old66529 never accessed. Shared immutable toolchain and NuGet dependencies declared.",
+      "Fresh BOTH build/discovery/catalog and whole16/33/57 + separate diagnostic1/1/1 PlanOnly ZERO3 at exact new source; independent affected PREP.",
+      "Save/recover/readback PREP acceptance and separately named one-run release; immediate clean global/newroot v2 boundary and frozen237file set/byte check.",
+      "Invoke exactly once; capture immediate after-census in same wrapper; archive original native evidence and every profile byte/gap/status before independent causal reading.",
+      "No product remedy, timeout increase, assertion change, original crash5 retry or coverage increment automatically follows; next action requires saved independent causal verdict."
+    ],
+    "prepClarification": "Fresh BOTH/catalog809/11801 plus whole16/33/57 and diagnostic1/1/1 ZERO; exact nine/full output inventories, accepted code/tool bindings and dated isolation evidence. With unchanged C# deterministic assembly hashes may legitimately remain identical; successful fresh build logs and inventory binding establish PREP.",
+    "stopRule": "Exactly one new diagnostic original, including failure/timeout or incomplete sampling, is archived/saved/recovered and independently reviewed. No automatic repeat, next diagnostic, original target run, product change or performance conclusion.",
+    "nativeReleaseByThisReport": false
+  },
+  "preservation": {
+    "qualifiedRemains": 52,
+    "diagnosticCountsToward57": false,
+    "newCrash5": "Original native124/incomplete/noTRX, direct cut1/cut2 timeouts and cut0 interrupted remain frozen; no partial accepted targets.",
+    "oldCorrectedCrash66529": "UNKNOWN/unavailable, recoveryClaim false; no intervention",
+    "otherOriginals": "All prior failures, original vacuousPASS and compiler-native1/ZERO remain immutable.",
+    "broaderHolds": "FullNI/HOT/F1/M3/T197 incomplete, A3 NO-PROCEED, Windows403 no retry, CI prohibited; no main/merge/force/delete/issues/secrets."
+  },
+  "reviewScope": "Read-only saved originals/source/archive/Git/build outputs. No native/tests/builds/discovery/observer/process control/live retained-root reads or repository writes; reports/checkers only under/tmp/review."
+}

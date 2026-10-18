@@ -1,3 +1,5 @@
+> **Current L01:52/57; diagnostic1 original independently accepted outside57; old timeout cause unresolved (2026-10-18).** [Plan](plan.md) and cloud ledger allow implementation of one external read-only diagnostic2 profiling plan only, with SOURCE/fresh ZERO3/PREP and separately saved/recovered gate before native. Original crash5 held; all originals/old66529 UNKNOWN and broader holds unchanged. Following sections historical.
+
 > **Current L01:52/57; diagnostic1 SOURCE and fresh ZERO3 PREP independently accepted (2026-10-18).** [Plan](plan.md) and current cloud ledger permit only one separately named diagnostic1 after acceptance save/recovery/readback, frozen237 check and fresh clean preflight. Diagnostic1 adds no target and does not release crash5. All original outcomes/oldUNKNOWN and broader holds remain. Following sections are historical.
 
 ## T179-Pd-NI-IOBS-L01 current frontier — diagnostic SOURCE/fresh ZERO3 complete; PREP pending (2026-10-18)

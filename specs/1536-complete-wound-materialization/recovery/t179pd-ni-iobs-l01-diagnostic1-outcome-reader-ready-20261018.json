@@ -1,0 +1,17 @@
+{
+  "kind": "DIAGNOSTIC1_ORIGINAL_OUTCOME_READER_READY_UNRUN",
+  "createdUtc": "2026-10-18T16:57:39.764216+00:00",
+  "reader": {
+    "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic1_outcome.py",
+    "bytes": 31415,
+    "sha256": "8500647339f793c47123544e6d8e2e6de0745a12689823d066245d45f66701c5"
+  },
+  "actualSource": "801229a1d301cc3526b451c95cc71953f89f1f62",
+  "compiledSource": "8f8f534304e3672df5d42c9ab31e7055235bfaca",
+  "sourcePins": 101,
+  "productPaths": 23,
+  "status": "SYNTAX_VERIFIED_ONLY_WAIT_FOR_SAVED_ARCHIVED_RECOVERED_ORIGINAL",
+  "usage": "python /tmp/1536-cloud-tools/review/check_l01_diagnostic1_outcome.py SAVED_CARRIER --archive REPO_REL_ARCHIVE --archive-sha256 SHA256 --before REPO_REL_BEFORE_CENSUS --after REPO_REL_AFTER_CENSUS --frozen-separation REPO_REL_SEPARATION_RECEIPT --recovery CONTINUOUS_RECOVERY_RECEIPT [--recovery NEXT_RECEIPT]",
+  "scope": "Neutral original PASS/FAIL/timeout extraction, exact sources/archive/inventory/selection/identities, child-root-cut-nonce attribution, streamed stage chronology and missing returns, primary errors, typed cleanup and dated census; no automatic causal verdict/remedy/retry/coverage increment. Original and existing readers untouched. No outcome reader execution or active artifact/root inspection.",
+  "preparationOnly": "Prepared from accepted source and existing historical reader schemas; no current native outcome files were opened and no outcome reader execution occurred. No native reader failure or model/result change."
+}

@@ -1,0 +1,37 @@
+{
+  "kind": "DIAGNOSTIC1_READER_UTILITY_HISTORY_ONLY",
+  "originalReader": {
+    "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic1_outcome-v1-path-order.py",
+    "bytes": 31415,
+    "sha256": "8500647339f793c47123544e6d8e2e6de0745a12689823d066245d45f66701c5"
+  },
+  "originalReadiness": {
+    "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-outcome-reader-ready-20261018.json",
+    "bytes": 1523,
+    "sha256": "92a4ac21886abc213aac5720fe99ac51fad2253392718c5e32f0ffc2a623c5ce"
+  },
+  "originalFailure": {
+    "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-outcome-reader-failure-20261018T165930603045Z.json",
+    "bytes": 39134,
+    "sha256": "fc240b786f9fd72db7697f2d1766a89f4fbbd7fff595584a070c632ede1b83a8"
+  },
+  "correctedReader": {
+    "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic1_outcome.py",
+    "bytes": 31428,
+    "sha256": "973d7c89ecd0d31028893a38c529bd15ecba0c2eb81b68f48493598a79cc0024"
+  },
+  "cause": "Reader sorted serialized path strings; controller sorts pathlib.Path components. Read-only comparison found identical1575-file sets with no additions/missing files and exact controller Path order.",
+  "change": {
+    "before": "current_paths=sorted(str(p.relative_to(R))for root in output_roots for p in root.rglob('*')if p.is_file())",
+    "after": "current_paths=[str(p.relative_to(R))for p in sorted(p for root in output_roots for p in root.rglob('*')if p.is_file())]",
+    "exactInverseRestoresOriginalBytes": true
+  },
+  "correctedRead": {
+    "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-outcome-independent-check-9793e320-20261018.json",
+    "bytes": 190341,
+    "sha256": "6bdb3c006f16176b0f4009a1ae4dfeace21e81e8f41a4402a192a429be7f2da9"
+  },
+  "semanticChecksUnchanged": true,
+  "nativeRetryOrSourceChange": false,
+  "scope": "One utility reader failure only; original native result, evidence and assertions unchanged."
+}
