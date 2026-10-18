@@ -1,7 +1,7 @@
 {
   "kind": "T179PD_CUT01_TESTS_ONLY_CURRENT_SOURCE_PACKET",
   "base": "08119f36c66464913e94d4bd5d23221073e0d48d",
-  "status": "AUTHORED_TESTS_ONLY_UNCOMPILED_UNRUN",
+  "status": "FRESH_COMPILED_DISCOVERED_PREPARED_ACTUALS_UNRUN_PENDING_CONCRETE_SOURCE",
   "sourcePins": [
     {
       "path": "AGENTS.md",
@@ -286,12 +286,115 @@
   "sourcePinDigest": "4e51099287cebfc111fd8035b219ee361d0208a54cfcba5cccab1c9039932435",
   "currentLedger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-method-row-ledger-20261018.json",
-    "sha256": "3fef3ef2705ee12d31b87574762f071f88099cc52e53b567d0ac955b60b4f7c2"
+    "sha256": "29a8b1b534dcfd3262b9a89e31c86b0113291c992feb1e2f46b53f94bc8c88c0"
   },
   "productDelta": [],
   "fixture": "Original accepted full source base+69 consecutive deltas retained; changed actual fixture and new probe pinned here. No fullclone/old evidence replay.",
   "firstEligibleActual": "ONLY new stop1 after concrete SOURCE/PREP saved and Root named; all now UNRUN",
   "planCorrections": "Preserve v1 initial absent-file proposed probe and exact v2 source correction, not native failure. Literal guaranteed present read at Reconstruct88/preparation146–147.",
   "precommonDesign": "t179pd-cut01-method-row-ledger-20261018.json precommon: accepted DESIGN only, NI-IOBS-L01 and origin bridge open",
-  "noRuntime": true
+  "noRuntime": "ZERO CASE_EXECUTION; two actual native zero-test preparation commands only",
+  "preparation": {
+    "compiledSource": "3579d8e21db039dbabc6050a175024cf6c08f79b",
+    "productSource": "08119f36c66464913e94d4bd5d23221073e0d48d",
+    "archivePath": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-first-preparation-files-20261018/archive.json",
+    "archiveSha256": "778898f096128a582102e738f2684e4968d5cc0102df5a9252f5288807592f31",
+    "rawChains": 19,
+    "catalogNative": 0,
+    "catalogMethods": 11772,
+    "catalogCategories": 795,
+    "catalogSeconds": 89.49147019498923,
+    "stagePlanNative": 0,
+    "stagePlanSeconds": 3.400628739007516,
+    "stagePlannedOwners": 3,
+    "stagePlannedDescriptors": 3,
+    "stagePlannedMethods": 4,
+    "stagePlannedCases": 5,
+    "actualCasesExecuted": 0,
+    "bothBuilds": true,
+    "binaryPins": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "9252a27248143e88499fe6759b17c99035b394fc06288dc5f0d2062c22f70590"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9601024,
+        "sha256": "b6086fcd2c83bfac368b48a0490414b9b1a2bf1d53367cb9143e97b7a5600a0a"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "9252a27248143e88499fe6759b17c99035b394fc06288dc5f0d2062c22f70590"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 29208576,
+        "sha256": "2452dd9db86ee33ff542daaf0d94126584b8eb74c91c0880a4a726ad0a576464"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "ef42fb5967df95dae90ab44b95081d97132a457c2a72134536e6fedfe179621e"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "ef42fb5967df95dae90ab44b95081d97132a457c2a72134536e6fedfe179621e"
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "9252a27248143e88499fe6759b17c99035b394fc06288dc5f0d2062c22f70590"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+        "bytes": 248832,
+        "sha256": "ba249c1ff84a3e6bdcfe62bfc5ece077496215c6afb830a633d5970a1b9069af"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "9252a27248143e88499fe6759b17c99035b394fc06288dc5f0d2062c22f70590"
+      }
+    ],
+    "managedOutputCount": 335,
+    "namespace": {
+      "ownedRoots": []
+    },
+    "compiledContext": "Original source-binding/ledger bytes inside FIRST raw remain immutable uncompiled-phase snapshots; current derived metadata updated without replay."
+  },
+  "controllers": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-preparation-run.py",
+      "sha256": "a1d9d5496afc876bcc97aa97a91f8eeb6b5dc2e103a2b6ded5e293b4d69b5bab",
+      "status": "USED_FOR_CATALOG_AND_PLAN_ZERO"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-archive-preparation.py",
+      "sha256": "4eddaa0fdb4a61e0498da44072ff0f5e2630bea54af7f5175c03c167d573e8e0",
+      "status": "READ_ONLY_FROZE_TWO_PREP_RECORDS"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-stop-first-run.py",
+      "sha256": "2946a501dc52d593c5d3c0bde417b07e0ff8487f324433c13bdec8136e073950",
+      "status": "UNRUN_NO_ACTUAL_RELEASE"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-archive-stop.py",
+      "sha256": "31c494516c04f2a4c9a0b56727a032ccd00a9cd0530f9ea34b7e66f12a9e78ee",
+      "status": "SUPERSEDED_UNRUN_ARCHIVE_KIND_LABEL_ONLY_NO_RUNTIME_FAILURE"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-archive-stop-v2.py",
+      "sha256": "4e23bf8570402faf74245118a1e022fee1e843141916d16ccaf8ebfd15d11c38",
+      "status": "UNRUN_CURRENT_READ_ONLY_FIRST_STOP_ARCHIVER"
+    }
+  ],
+  "toolAuthoringCorrection": {
+    "oldSha256": "31c494516c04f2a4c9a0b56727a032ccd00a9cd0530f9ea34b7e66f12a9e78ee",
+    "newSha256": "4e23bf8570402faf74245118a1e022fee1e843141916d16ccaf8ebfd15d11c38",
+    "fact": "Root source review corrected leftover prior-task output archive kind only before any actual/archive invocation; preserve original UNRUN tool, use explicit v2. No runtime or preparation replay."
+  }
 }

@@ -2,7 +2,7 @@
   "kind": "T179PD_CUT01_FINITE_METHOD_ROW_LEDGER",
   "task": "#1536 T179-Pd-CUT01",
   "base": "08119f36c66464913e94d4bd5d23221073e0d48d",
-  "status": "AUTHORED_TESTS_ONLY_UNCOMPILED_UNRUN",
+  "status": "FRESH_COMPILED_DISCOVERED_PREPARED_ACTUALS_UNRUN_PENDING_CONCRETE_SOURCE",
   "plan": "recovery/t179pd-ni-capture-cut-plan-08119f36-20261018-v2.md",
   "planReview": "recovery/t179pd-ni-capture-cut-plan-independent-review-20261018.md",
   "newRows": [
@@ -11,7 +11,8 @@
       "method": "GuaranteedTreatment_CurrentCaptureStopPrecedesPreparationAndExpiresActualOwner",
       "rows": 1,
       "kind": "Fact",
-      "intendedRed": "Actual old engine route completes real prerequisites and misses semantic callback/held cut; not setup/NotNull"
+      "intendedRed": "Actual old engine route completes real prerequisites and misses semantic callback/held cut; not setup/NotNull",
+      "status": "FRESH_PREPARED_DISCOVERED_UNRUN"
     },
     {
       "category": "fr063-joint-capture-cut-transparency",
@@ -22,7 +23,8 @@
         false,
         true
       ],
-      "meaning": "No additional capture observer vs no-op, essential fixture hook remains"
+      "meaning": "No additional capture observer vs no-op, essential fixture hook remains",
+      "status": "FRESH_PREPARED_DISCOVERED_UNRUN"
     }
   ],
   "predicted": {
@@ -36,10 +38,21 @@
     }
   },
   "actual": {
-    "build": null,
-    "catalog": null,
-    "plan": null,
-    "executed": 0
+    "catalogNative": 0,
+    "catalogSeconds": 89.49147019498923,
+    "catalogMethods": 11772,
+    "catalogCategories": 795,
+    "catalogUnmapped": [],
+    "catalogStale": [],
+    "planNative": 0,
+    "planSeconds": 3.400628739007516,
+    "planOwners": 3,
+    "planDescriptors": 3,
+    "planMethods": 4,
+    "planCases": 5,
+    "buildBothCompleted": true,
+    "executed": 0,
+    "traces": "NO_TRX; planned-but-unexecuted descriptors are intentional PlanOnly state, not a runtime underfill"
   },
   "rulings": [
     {
@@ -67,5 +80,14 @@
     "All native and production until their named gates",
     "Full NI/HOT/precommon/cold implementation untouched",
     "Windows ZIP/CI/no retry/old families/A3 NO-PROCEED unchanged"
-  ]
+  ],
+  "preparation": {
+    "compiledSource": "3579d8e21db039dbabc6050a175024cf6c08f79b",
+    "archive": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-first-preparation-files-20261018/archive.json",
+    "archiveSha256": "778898f096128a582102e738f2684e4968d5cc0102df5a9252f5288807592f31",
+    "rawChains": 19,
+    "nineFreshCopies": true,
+    "namespaceEmptyBoth": true,
+    "firstStopRecorder": "tools/t179pd-cut01-stop-first-run.py UNRUN; separate named actual release required"
+  }
 }
