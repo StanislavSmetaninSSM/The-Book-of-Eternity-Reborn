@@ -1,7 +1,7 @@
 {
   "kind": "D02_NEW_COMPOSITE_RETAINED_COMPILATION_BINDINGS",
   "base": "e56782962f6620584c59566381c22d813d409896",
-  "root": "/tmp/l01d02-cd3d584b5e27457f",
+  "root": "/tmp/l01d02-b796a0e4bf514a62",
   "trackedNonFeatureTree": {
     "count": 47432,
     "sha256": "6f3b260b155745bd9e76a746e0d459719679cafff30ebac16a6f7c87fa53c349"
@@ -1807,6 +1807,86 @@
       "path": "/tmp/1536-cloud-tools/nuget/xunit.runner.visualstudio/2.8.2/build/net6.0/xunit.runner.visualstudio.props",
       "bytes": 993,
       "sha256": "cf90bb98f5f8f073848edf54a7b8b0c4baeee8f1a6387a6b21b2d57756daf637"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.sdk.android/36.1.2/WorkloadManifest.targets",
+      "bytes": 1155,
+      "sha256": "8bef6ff47a81a7145d6a5743b9b64645b6949338e092cf63f1ed75bd2a57497c"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.sdk.ios/26.0.11017/WorkloadManifest.targets",
+      "bytes": 3175,
+      "sha256": "99a2b26dfb4c898b3542b5eb862eba657b7f5eccb50644ea60ae6e1399b13e12"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.sdk.maccatalyst/26.0.11017/WorkloadManifest.targets",
+      "bytes": 2613,
+      "sha256": "ecc2c65a5435f4ae28a71cd224250dfba5d8b1cec342a24e032bbd6970cad79b"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.sdk.macos/26.0.11017/WorkloadManifest.targets",
+      "bytes": 2523,
+      "sha256": "adfac98c6e2cfd41b4eb9b4f1e076edff64b0b7b99f65b82252a432f9f7e036e"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.sdk.maui/10.0.0/WorkloadManifest.targets",
+      "bytes": 2696,
+      "sha256": "406fa2fe316cde8ce5da9878a3e68a81e33fcd194850626155f045ee18887a2b"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.sdk.tvos/26.0.11017/WorkloadManifest.targets",
+      "bytes": 2508,
+      "sha256": "b816016bda1f80d0b0e5b53f8bde074f715a99224681f33333952e2cc4f74cd2"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.workload.emscripten.current/10.0.113/WorkloadManifest.targets",
+      "bytes": 2585,
+      "sha256": "fdb968488afb9f50e880d2a461476aaba48f0f0aefe1a4f829d96008766a22ca"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.workload.emscripten.net6/10.0.113/WorkloadManifest.targets",
+      "bytes": 576,
+      "sha256": "9b273ac98144ab6cf19feca2dc271a474eeab1534e39115f6496bdb4b07ffc67"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.workload.emscripten.net7/10.0.113/WorkloadManifest.targets",
+      "bytes": 748,
+      "sha256": "fb7d1aa700cf41cbde4864fb70aaa6d3a75eebdb0d5bf51e7c0447587f5b6b8e"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.workload.emscripten.net8/10.0.113/WorkloadManifest.targets",
+      "bytes": 836,
+      "sha256": "50a3cbc4713594f9d58b47fc44073f024cefdf03afd4a620f38f0a8f84a12ea6"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.workload.emscripten.net9/10.0.113/WorkloadManifest.targets",
+      "bytes": 836,
+      "sha256": "be057de236be34bbafa0382f3d622bc31b9e36cabeb95a7f1c178472132c59f6"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.workload.mono.toolchain.current/10.0.113/WorkloadManifest.targets",
+      "bytes": 18568,
+      "sha256": "0bee1c299ed7faf3b744e4588fd136f52c0e6b928e713fbf17addb5d7f7bb5d5"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.workload.mono.toolchain.net6/10.0.113/WorkloadManifest.targets",
+      "bytes": 5764,
+      "sha256": "3d418368ebf2bf593fb3d6fab01fd033ad8038ea92edc13a89ef8684c3f2f0f6"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.workload.mono.toolchain.net7/10.0.113/WorkloadManifest.targets",
+      "bytes": 5696,
+      "sha256": "e91ca1277b7930d2a15906f0c95787298cf50e9b877a786128e8337ed7451b28"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.workload.mono.toolchain.net8/10.0.113/WorkloadManifest.targets",
+      "bytes": 5747,
+      "sha256": "c3ec35eff46045c63e1166cb10380fe1beee5e3de219d179b619268a13943ecd"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.workload.mono.toolchain.net9/10.0.113/WorkloadManifest.targets",
+      "bytes": 7120,
+      "sha256": "f4fe8a31200874a8c75e13caa173c33b10ea42a5257917db9640d9deddcc9449"
     }
   ],
   "projects": [

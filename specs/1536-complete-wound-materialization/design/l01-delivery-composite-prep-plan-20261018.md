@@ -42,6 +42,15 @@ IsTestProject/TFM/configuration/imports in that exact namespace. A SOURCE-review
 property-only query supplies it; wrong paths, missing imports or changed hashes
 freeze the first composite attempt. No silent fallback to old normal unit bins.
 
+The first namespace was consumed at82da1cda: property/preprocess0/0, then missing
+installed SDK manifest bindings stopped before discovery. The11raw originals and
+first outcome are immutable. Independent [diagnosis/minimal correction plan](../recovery/l01-delivery-d02-binding-failure-independent-review-20261018.md)
+accepts only16exact already installed WorkloadManifest.targets additions to360pins
+and new unused `/tmp/l01d02-b796a0e4bf514a62`. Functions/accounting/closure rows/
+149pins/budgets stay unchanged; unknown imports still HOLD. This is an affected
+SOURCE candidate, not execution or PREP acceptance. No rebuild/install/restore is
+justified; unit binding and complete catalog are still unobserved.
+
 ## Bounded source and stages
 
 Files: new `recovery/l01-delivery-d02/phase.py` owns this finite continuation;

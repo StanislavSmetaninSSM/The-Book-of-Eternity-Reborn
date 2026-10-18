@@ -1,0 +1,384 @@
+{
+  "kind": "D02_FIRST_BINDING_FAILURE_INDEPENDENT_DIAGNOSIS",
+  "candidate": "77dabfb227209c625158193aa7dd370c62c8861b",
+  "actualSource": "82da1cdaed7fa593c2c217cecdb9abb8ba77b727",
+  "verdict": "ACCEPT_FAILURE_DIAGNOSIS_AND_MINIMAL_BINDING_CORRECTION_PLAN",
+  "currentPrepVerdict": "HOLD_BEFORE_DISCOVERY",
+  "findings": [
+    {
+      "id": "D02-BIND-01",
+      "cause": "Incomplete frozen external import inventory:360inputs covered sdk/10.0.402 and package props/targets, but not16installed sibling sdk-manifests/10.0.100 WorkloadManifest.targets files actually named in the original integration preprocessed project.",
+      "directEvidence": "Property-only query0 and preprocessing0/joined precede the strict input_map lookup KeyError. Exact integration private paths/test properties were observed. This is a binding guard failure, not a compiler, workload installation, dependency binary or gameplay failure.",
+      "sourceLocation": "recovery/l01-delivery-d02/phase.py:168-184; input_map[str(path)] at184 in corrected source.",
+      "scopeLimit": "The first missing path stopped verification of the sorted import set. Independent read-only comparison enumerates all16unbound external paths in that saved integration document. Unit property/import evaluation and catalog discovery were never reached."
+    }
+  ],
+  "originalOutcome": {
+    "nativeCommands": [
+      0,
+      0
+    ],
+    "catalogNativeExit": null,
+    "controllerExit": 2,
+    "controllerSeconds": 9.72533515500254,
+    "catalog": "UNREACHED",
+    "unitBinding": "UNREACHED",
+    "plan": "UNRUN",
+    "prepare": "UNRUN",
+    "synthetic": "UNRUN",
+    "afterLiveTools": [],
+    "observationLimit": "Original dated census only; no new procfs observation. Original phase has no after-manifest flag because failure preceded that line; this review independently hashes the retained staged and normal files."
+  },
+  "checks": {
+    "passed": 51,
+    "failed": [],
+    "rows": [
+      {
+        "name": "11 original raw members and archive hash",
+        "passed": true
+      },
+      {
+        "name": "original bytes bind-integration.project.xml",
+        "passed": true
+      },
+      {
+        "name": "original bytes bind-integration.record.json",
+        "passed": true
+      },
+      {
+        "name": "original bytes bind-integration.started.json",
+        "passed": true
+      },
+      {
+        "name": "original bytes bind-integration.stderr",
+        "passed": true
+      },
+      {
+        "name": "original bytes bind-integration.stdout",
+        "passed": true
+      },
+      {
+        "name": "original bytes imports-integration.record.json",
+        "passed": true
+      },
+      {
+        "name": "original bytes imports-integration.started.json",
+        "passed": true
+      },
+      {
+        "name": "original bytes imports-integration.stderr",
+        "passed": true
+      },
+      {
+        "name": "original bytes imports-integration.stdout",
+        "passed": true
+      },
+      {
+        "name": "original bytes record.json",
+        "passed": true
+      },
+      {
+        "name": "original bytes started.json",
+        "passed": true
+      },
+      {
+        "name": "index and archive exact GitHub restored copies",
+        "passed": true
+      },
+      {
+        "name": "exact reviewed controller and binding bytes",
+        "passed": true
+      },
+      {
+        "name": "actual source/per-project provenance retained",
+        "passed": true
+      },
+      {
+        "name": "two successful owned metadata-only commands",
+        "passed": true
+      },
+      {
+        "name": "child records exactly retained in phase",
+        "passed": true
+      },
+      {
+        "name": "native outcome distinction precise",
+        "passed": true
+      },
+      {
+        "name": "short failure before aggregate deadline",
+        "passed": true
+      },
+      {
+        "name": "dated terminal census clean only",
+        "passed": true
+      },
+      {
+        "name": "later phases unrun and old outcomes retained",
+        "passed": true
+      },
+      {
+        "name": "observed integration staged property bindings",
+        "passed": true
+      },
+      {
+        "name": "exact observed import set and omissions",
+        "passed": true
+      },
+      {
+        "name": "original error names first missing binding",
+        "passed": true
+      },
+      {
+        "name": "both staged NuGet imports observed",
+        "passed": true
+      },
+      {
+        "name": "installed regular XML input microsoft.net.sdk.android",
+        "passed": true
+      },
+      {
+        "name": "installed regular XML input microsoft.net.sdk.ios",
+        "passed": true
+      },
+      {
+        "name": "installed regular XML input microsoft.net.sdk.maccatalyst",
+        "passed": true
+      },
+      {
+        "name": "installed regular XML input microsoft.net.sdk.macos",
+        "passed": true
+      },
+      {
+        "name": "installed regular XML input microsoft.net.sdk.maui",
+        "passed": true
+      },
+      {
+        "name": "installed regular XML input microsoft.net.sdk.tvos",
+        "passed": true
+      },
+      {
+        "name": "installed regular XML input microsoft.net.workload.emscripten.current",
+        "passed": true
+      },
+      {
+        "name": "installed regular XML input microsoft.net.workload.emscripten.net6",
+        "passed": true
+      },
+      {
+        "name": "installed regular XML input microsoft.net.workload.emscripten.net7",
+        "passed": true
+      },
+      {
+        "name": "installed regular XML input microsoft.net.workload.emscripten.net8",
+        "passed": true
+      },
+      {
+        "name": "installed regular XML input microsoft.net.workload.emscripten.net9",
+        "passed": true
+      },
+      {
+        "name": "installed regular XML input microsoft.net.workload.mono.toolchain.current",
+        "passed": true
+      },
+      {
+        "name": "installed regular XML input microsoft.net.workload.mono.toolchain.net6",
+        "passed": true
+      },
+      {
+        "name": "installed regular XML input microsoft.net.workload.mono.toolchain.net7",
+        "passed": true
+      },
+      {
+        "name": "installed regular XML input microsoft.net.workload.mono.toolchain.net8",
+        "passed": true
+      },
+      {
+        "name": "installed regular XML input microsoft.net.workload.mono.toolchain.net9",
+        "passed": true
+      },
+      {
+        "name": "exact16 additions cover observed external import set",
+        "passed": true
+      },
+      {
+        "name": "metadata-only calls have no restore/build targets",
+        "passed": true
+      },
+      {
+        "name": "source failure site is strict frozen input lookup",
+        "passed": true
+      },
+      {
+        "name": "integration full staged closure retained unchanged",
+        "passed": true
+      },
+      {
+        "name": "integration own metadata retained unchanged",
+        "passed": true
+      },
+      {
+        "name": "unit full staged closure retained unchanged",
+        "passed": true
+      },
+      {
+        "name": "unit own metadata retained unchanged",
+        "passed": true
+      },
+      {
+        "name": "original normal899 unchanged after failure",
+        "passed": true
+      },
+      {
+        "name": "exact clean GitHub recovery/149pins",
+        "passed": true
+      },
+      {
+        "name": "source gate frozen",
+        "passed": true
+      }
+    ],
+    "reviewerNativeActions": 0
+  },
+  "observedImportCount": 129,
+  "originalInputCount": 360,
+  "proposedInputCount": 376,
+  "missingInstalledInputPins": [
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.sdk.android/36.1.2/WorkloadManifest.targets",
+      "bytes": 1155,
+      "sha256": "8bef6ff47a81a7145d6a5743b9b64645b6949338e092cf63f1ed75bd2a57497c",
+      "mode": 448
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.sdk.ios/26.0.11017/WorkloadManifest.targets",
+      "bytes": 3175,
+      "sha256": "99a2b26dfb4c898b3542b5eb862eba657b7f5eccb50644ea60ae6e1399b13e12",
+      "mode": 448
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.sdk.maccatalyst/26.0.11017/WorkloadManifest.targets",
+      "bytes": 2613,
+      "sha256": "ecc2c65a5435f4ae28a71cd224250dfba5d8b1cec342a24e032bbd6970cad79b",
+      "mode": 448
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.sdk.macos/26.0.11017/WorkloadManifest.targets",
+      "bytes": 2523,
+      "sha256": "adfac98c6e2cfd41b4eb9b4f1e076edff64b0b7b99f65b82252a432f9f7e036e",
+      "mode": 448
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.sdk.maui/10.0.0/WorkloadManifest.targets",
+      "bytes": 2696,
+      "sha256": "406fa2fe316cde8ce5da9878a3e68a81e33fcd194850626155f045ee18887a2b",
+      "mode": 448
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.sdk.tvos/26.0.11017/WorkloadManifest.targets",
+      "bytes": 2508,
+      "sha256": "b816016bda1f80d0b0e5b53f8bde074f715a99224681f33333952e2cc4f74cd2",
+      "mode": 448
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.workload.emscripten.current/10.0.113/WorkloadManifest.targets",
+      "bytes": 2585,
+      "sha256": "fdb968488afb9f50e880d2a461476aaba48f0f0aefe1a4f829d96008766a22ca",
+      "mode": 384
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.workload.emscripten.net6/10.0.113/WorkloadManifest.targets",
+      "bytes": 576,
+      "sha256": "9b273ac98144ab6cf19feca2dc271a474eeab1534e39115f6496bdb4b07ffc67",
+      "mode": 384
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.workload.emscripten.net7/10.0.113/WorkloadManifest.targets",
+      "bytes": 748,
+      "sha256": "fb7d1aa700cf41cbde4864fb70aaa6d3a75eebdb0d5bf51e7c0447587f5b6b8e",
+      "mode": 384
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.workload.emscripten.net8/10.0.113/WorkloadManifest.targets",
+      "bytes": 836,
+      "sha256": "50a3cbc4713594f9d58b47fc44073f024cefdf03afd4a620f38f0a8f84a12ea6",
+      "mode": 384
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.workload.emscripten.net9/10.0.113/WorkloadManifest.targets",
+      "bytes": 836,
+      "sha256": "be057de236be34bbafa0382f3d622bc31b9e36cabeb95a7f1c178472132c59f6",
+      "mode": 384
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.workload.mono.toolchain.current/10.0.113/WorkloadManifest.targets",
+      "bytes": 18568,
+      "sha256": "0bee1c299ed7faf3b744e4588fd136f52c0e6b928e713fbf17addb5d7f7bb5d5",
+      "mode": 384
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.workload.mono.toolchain.net6/10.0.113/WorkloadManifest.targets",
+      "bytes": 5764,
+      "sha256": "3d418368ebf2bf593fb3d6fab01fd033ad8038ea92edc13a89ef8684c3f2f0f6",
+      "mode": 384
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.workload.mono.toolchain.net7/10.0.113/WorkloadManifest.targets",
+      "bytes": 5696,
+      "sha256": "e91ca1277b7930d2a15906f0c95787298cf50e9b877a786128e8337ed7451b28",
+      "mode": 384
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.workload.mono.toolchain.net8/10.0.113/WorkloadManifest.targets",
+      "bytes": 5747,
+      "sha256": "c3ec35eff46045c63e1166cb10380fe1beee5e3de219d179b619268a13943ecd",
+      "mode": 384
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.workload.mono.toolchain.net9/10.0.113/WorkloadManifest.targets",
+      "bytes": 7120,
+      "sha256": "f4fe8a31200874a8c75e13caa173c33b10ea42a5257917db9640d9deddcc9449",
+      "mode": 384
+    }
+  ],
+  "minimalPlan": [
+    "Preserve current77dab outcome/index/archive and old cd3d root unchanged. Add exactly these16existing file path/size/SHA bindings; keep all existing360rows and strict unknown-import/hash refusal. No skip, catch-and-ignore, resolver-disable flag, install or restore.",
+    "Use a new unused private root identity for all corrected staging/property/catalog/plan/prepare/synthetic paths; change only ROOT/bindings-root/control/current metadata required for this identity. Preserve source functions, exact accounting FINALIZE,149pins, separate retained compilation provenance, closure rows and600/60budgets.",
+    "Save/push/recover the affected candidate and obtain focused SOURCE acceptance of exact16additions/new-root change before a separately named corrected first catalog ZERO. No prior root reuse or relabelled success.",
+    "Re-evaluate both projects and preserve all original outputs. The16additions cover only the observed integration import set; any new unit/conditional unbound import still freezes. Fresh catalog and PlanOnly completeness, then direct Live preparation and independent PREP remain necessary.",
+    "No rebuild is justified by this failure: both retained compilation closures remain exact and the failed operations only evaluated metadata. No fresh BOTH fallback or repeated diagnostic chain is authorized by this report."
+  ],
+  "strongerBlocker": "None established by the current raw/source evidence beyond the exact missing binding closure. Successful future unit binding/catalog is not predicted or claimed.",
+  "executionRelease": "NONE_PENDING_AFFECTED_SOURCE",
+  "syntheticRelease": "HOLD_PREP_REQUIRED",
+  "gameplayRelease": "NONE",
+  "crash5Release": "NONE",
+  "oldOutcomes": "Original124/137 unchanged; L0152/57 and old66529UNKNOWN/unavailable plus all broader/platform holds retained.",
+  "bindings": [
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-first-binding-failure-20261018.json",
+      "bytes": 6146,
+      "sha256": "73b9c478d35908ebfb88e1709ec913d887fb20cf39a15fd9ad7617576d791d8a"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-first-binding-failure-originals-20261018.zip",
+      "bytes": 231945,
+      "sha256": "f11b6aa284d6fb8b9e3e0310b0c93db77c66ce4790b9c6f8c5a77dba3bc47ebc"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-delivery-d02/phase.py",
+      "bytes": 18311,
+      "sha256": "fc8a9f070f20528b3942584ca2248cb1b25f4ca3168cd5ba9414791d84c5986e"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-delivery-d02/bindings.json",
+      "bytes": 321614,
+      "sha256": "a7d62aae8152516210aec579d12ac0d01bf990880b1650f6cd4ba8445a98e12e"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/d01-carrier-recovery-77dabfb2.json",
+      "bytes": 49798,
+      "sha256": "0f0aea7c7b0855d1d0aa9003506c6fd29086cbc4218adb3a82fcd093911d99e8"
+    }
+  ]
+}

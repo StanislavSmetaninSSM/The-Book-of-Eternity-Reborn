@@ -15,7 +15,7 @@ import zipfile
 HERE=Path(__file__).resolve().parent
 REPO=HERE.parents[3]
 RECOVERY=HERE.parent
-ROOT=Path('/tmp/l01d02-cd3d584b5e27457f')
+ROOT=Path('/tmp/l01d02-b796a0e4bf514a62')
 DOTNET='/tmp/1536-cloud-tools/dotnet/dotnet'
 PW='/tmp/1536-cloud-tools/pwsh/pwsh'
 sha=lambda b:hashlib.sha256(b).hexdigest()
