@@ -2,7 +2,7 @@
   "kind": "T179PD_CUT01_FINITE_METHOD_ROW_LEDGER",
   "task": "#1536 T179-Pd-CUT01",
   "base": "08119f36c66464913e94d4bd5d23221073e0d48d",
-  "status": "PRODUCT_SOURCE_PREP_ACCEPTED_ALL_PRODUCT_ACTUALS_UNRUN_HELD_FOR_NAMED_LATE2",
+  "status": "PRODUCT_LATE2_FIRST_RAW_SAVED_EVIDENCE_PENDING_NEW3_HELD",
   "plan": "recovery/t179pd-ni-capture-cut-plan-08119f36-20261018-v2.md",
   "planReview": "recovery/t179pd-ni-capture-cut-plan-independent-review-20261018.md",
   "newRows": [
@@ -160,7 +160,7 @@
     "scope": "Only append enum + await existing nullable dispatcher after current capture/before preparation; no NI semantics",
     "inverse": "Both exact08119 whole source restored by removing exact2edits",
     "freshProductPrep": "COMPLETED_FIRST_ZERO_3D195F2F; new9copies/335managed, not actual acceptance",
-    "actuals": "ALL5_UNRUN_HELD_FOR_NAMED_PROTECTED_LATE2_FIRST; new3 held until separateLate2EVIDENCE accepted/saved/recovered",
+    "actuals": "ProtectedLate2 original raw saved; separate EVIDENCE pending. New3 UNRUN/HELD.",
     "preparation": {
       "compiledSource": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
       "productSource": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
@@ -243,12 +243,12 @@
       {
         "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-product-first-run.py",
         "sha256": "a4eaa9ac8618ea251e61bedef572a79b628726243279d283d440b8485230f0a1",
-        "status": "UNRUN_REQUIRES_SAVED_PRODUCT_SOURCE_AND_SEPARATE_NAMED_MODE"
+        "status": "USED_NAMED_PROTECTED_LATE2_ONCE; NEW3_UNRUN_HELD"
       },
       {
         "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-archive-product.py",
         "sha256": "65cdda7af386a200f3f675572d72702f9b853e58962ac6fdc95387535f1b5fef",
-        "status": "UNRUN_REQUIRES_SAVED_PRODUCT_SOURCE_AND_SEPARATE_NAMED_MODE"
+        "status": "READ_ONLY_FROZE_PROTECTED_LATE2_ORIGINAL_RAW"
       }
     ],
     "preparationControllers": [
@@ -270,6 +270,52 @@
       "root": "recovery/t179pd-cut01-root-product-source-prep-acceptance-072dc47b-20261018.json",
       "status": "ACCEPTED_AFFECTED_PRODUCT_SOURCE_FIXTURE_SELECTION_PREP_ONLY",
       "scope": "Exact2source inverse/current31/unchangedtests/currentfresh9/new19raw/fixedUNRUNactualtools qualified. All product actuals remainUNRUN until named exactRoot activation; separate protectedLate2 FIRST/EVIDENCE before new3."
+    },
+    "late2Actual": {
+      "kind": "FIRST_CURRENT_PRODUCT_ORIGINAL_RAW_PENDING_SEPARATE_INDEPENDENT_EVIDENCE",
+      "actualSource": "127d3cf73f99f676af8b7cb46df0f8930b5682f6",
+      "compiledSource": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
+      "nativeExit": 0,
+      "wallSeconds": 120.28117616300005,
+      "categories": [
+        "fr063-joint-late-completion"
+      ],
+      "expectedCases": 2,
+      "tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "timedOut": false,
+      "duplicateTests": [],
+      "runnerOwnedCleanup": true,
+      "runnerRuntimeCleanup": true,
+      "namespaceBefore": {
+        "ownedRoots": []
+      },
+      "namespaceAfter": {
+        "ownedRoots": []
+      },
+      "binaryBeforeAfterSame9": true,
+      "archive": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-first-product-late2-files-20261018/archive.json",
+      "archiveSha256": "bc077e8b71f2ea25b0d0aa9d43bb4fd19387cbf12097f5e78827a92846b0c45a",
+      "rawChains": 9,
+      "independentEvidence": "PENDING_NOT_YET_QUALIFIED",
+      "scope": "Exact named current product outcome only. Native0/PASS is raw observation pending separate EVIDENCE; not NI or broader family qualification.",
+      "namedAuthorization": {
+        "source": "Root named activation message, copied as derived metadata AFTER terminal; no separate pre-run activation file existed",
+        "text": "NAMED PRODUCT ACTUAL RELEASE: ONLYprotectedLate2 onclean127d3cf73f99f676af8b7cb46df0f8930b5682f6 /compiled3d195f2f52f1f5dd4b71c248921f9609d4b9738e. Rootindepdelta15/all11/full7a+76deltas55,254+exactremote/main confirmed. InvokeONCE /tmp/t179pd-cut01-product-first-run.py SHAa4eaa9 modeprotected-late2 labelt179pd-cut01-product-late2-first-127d3cf7-20261018 actualfull127dSHA prep/tmp/t179pd-cut01-implementation-tools/t179pd-cut01-product-prep-first-plan-3d195f2f-20261018/record.json. Exactfr063-joint-late-completion2cases/NoBuild; descriptorordinal003→001 allowedsemanticmethods/categories2counts. Preserveoriginaloutcome/FIRST/source/process/runner/TRX/cleanup+beforeafter9/ns, readonlyarchive65cddaNEWdir thenWIPpush/exactremote/recover BEFOREindepEVIDENCE. No sourceedit/build/retry/new3/autoadvance. Unexpectedrawheld. Proceed.",
+        "actualRecord": "/tmp/t179pd-cut01-implementation-tools/t179pd-cut01-product-late2-first-127d3cf7-20261018/record.json"
+      }
     }
   }
 }
