@@ -130,11 +130,28 @@ timer for60s after that observed return. If accepted-outcome/late return or exit
 arrives first, cancel and record NOT_OBSERVED (no second target or earlier retry).
 If still between custody and accepted, revalidate root/nonce/PID/starttick, source,
 runtime/DAC and private socket, then request exactly one Normal+crash-report snapshot.
-One request is not periodic stack/CPU sampling. Measure request/suspend interval and
-observer elapsed/CPU cost; retain all original events and timeout outcome. Never
+One request is not periodic stack/CPU sampling. Record the whole collector envelope
+(including startup/preflight/API/exit/join/close), available runtime-reported dump
+duration and observer elapsed/CPU cost separately. API-only duration and actual
+thread-suspension duration remain UNKNOWN without separately reviewed measurements;
+collector elapsed and createdump-reported duration do not establish them. Retain all
+original events and timeout outcome. Never
 pause/reset/extend the220s clock or convert a perturbed timeout into a baseline result.
 The future external observer needs separate implementation/review; do not silently
 reuse the exhausted diagnostic2 sampler or old environment shell.
+
+Race disposition is mandatory in the separate future delivery/observer design:
+cancel when the ordered accepted/late-return/exit event arrives before request.
+The cancellation check does not freeze the target; it may advance during startup,
+preflight or capture. Retain source-bound child event order, monotonic receipt times,
+collector start/end and original output, including events that arrive during/after
+collection. Assert capture inside custody→accepted only if the separately reviewed
+ordering evidence actually proves the phase of capture. If accepted arrives during
+the envelope, delivery may lag, ordering is lost, or the actual capture position
+cannot be established, record capturePhase=UNKNOWN (or a positively established
+later phase); never infer the blocked interval from a stale last-seen custody event.
+Raw named frames can still identify an operation at capture with that phase limit.
+This rule is proposal documentation only; no tee/observer/game execution is released.
 
 Expected discriminators from all named managed thread stacks:
 

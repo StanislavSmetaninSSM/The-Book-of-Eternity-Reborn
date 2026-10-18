@@ -184,9 +184,13 @@
     "publicApiRequestReach": 1,
     "requestCountScope": "Public API invocation reach, not an independently counted IPC wire command or createdump launch.",
     "collectorLaunches": 1,
-    "requestWallSeconds": 1.7287690419980208,
     "phaseWallSeconds": 1.9989599859982263,
-    "createdumpReportedDurationMilliseconds": 136
+    "createdumpReportedDurationMilliseconds": 136,
+    "collectorEnvelopeWallSeconds": 1.7287690419980208,
+    "collectorEnvelopeScope": "Original record.requestSeconds times the entire run_owned collector envelope: stdout/stderr opens, PowerShell startup, ownership/preflight, public API request, native exit/join and output/handle close; not isolated WriteDump duration.",
+    "apiOnlyDurationSeconds": null,
+    "actualThreadSuspensionDurationSeconds": null,
+    "durationLimits": "createdumpReportedDurationMilliseconds is original createdump text, not independently measured suspension. API-only and actual suspension durations UNKNOWN. No game pause/budget inference."
   },
   "interpretation": "Real managed KnownWaitLeaf/Outer mapped to independently reported native wait TID/private stdin; real KnownCpuLeaf/Outer mapped to independently reported worker TID and actual progressing Interlocked work. Exact prepared module MVID and nonzero MethodDef tokens/IL offsets retained in raw JSON.",
   "scope": "Installed DiagnosticsClient normal runtime request plus matching createdump/DAC can obtain and interpret these own synthetic managed stacks under this cloud Linux context. No installation/manual security policy change. No gameplay capture or claim of general dump/heap/async decoding, game causality, pause budget or qualification.",
@@ -200,5 +204,13 @@
     "WindowsArtifact403": "BLOCKED_NO_RETRY",
     "CI": "NOT_RUN",
     "A3": "NO_PROCEED"
+  },
+  "metricLabelCorrection": {
+    "originalEvidenceCarrier": "32cfa9ce156a8e5bc5e41c60ad4b1b0e605bfd94",
+    "originalDerivedLabel": "requestWallSeconds",
+    "correctedDerivedLabel": "collectorEnvelopeWallSeconds",
+    "originalRecordUnchanged": true,
+    "originalZipUnchanged": true,
+    "reason": "Independent review located the stopwatch around whole run_owned collector; values unchanged."
   }
 }

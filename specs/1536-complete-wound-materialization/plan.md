@@ -8,8 +8,10 @@ retains all8 raw files in a hashed ZIP, including real crash-report JSON. Core
 8237056bytes stays private/excluded; no full-core recovery claim. Known wait and
 CPU leaf→outer chains match independent nativeTIDs87058/87068, exact compiledMVID,
 MethodDef tokens and IL offsets. API/collector/target0, one publicAPI reach,
-join/EOF, no observer errors or remaining owned child. Phase1.999s, request1.729s;
-createdump's own136ms is not a game pause budget. First permit consumed, no retry.
+join/EOF, no observer errors or remaining owned child. Phase1.999s; collector
+envelope1.729s includes PowerShell startup/preflight/API/exit/join/close. Original
+record.requestSeconds is retained unchanged. API-only and actual suspension
+durations UNKNOWN; createdump's reported136ms is not a game pause budget. First permit consumed, no retry.
 
 WIP outcome preservation only; next finite step is independent AstraXHigh EVIDENCE
 of this exact saved carrier, including managed-frame interpretation and held future
