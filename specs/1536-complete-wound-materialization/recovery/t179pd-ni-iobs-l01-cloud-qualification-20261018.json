@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "UNCOMPILED_FIXTURE_CORRECTION_FORMAL_DIAGNOSIS_AND_SOURCE_REVIEW_PENDING",
+  "status": "SETTLEMENT_FIXTURE_CAUSAL_REVIEW_SAVED_SOURCE_REVIEW_PENDING",
   "sourceCheckpoint": "Uncompiled settlement fixture candidate based on67e143b2; exact carrier assigned after commit",
   "sourcePinDigest": "304a7e8beb3174246ac3db792c6aa63319fa8ead9f3bab62f91346d4f204248d",
   "sourcePinCount": 98,
@@ -865,7 +865,35 @@
       "originalProcessesAfter": [],
       "processArrayLimitation": "Original exe-link-dependent arrays are incomplete observer output. Dated independently accepted argv/stat census is authoritative boundary only.",
       "censusAfterGapSeconds": 2.914252,
-      "limits": "Observed native outcome is not independent EVIDENCE acceptance or additional qualified targets; original frozen failures and oldUNKNOWN remain unchanged."
+      "limits": "Observed native outcome is not independent EVIDENCE acceptance or additional qualified targets; original frozen failures and oldUNKNOWN remain unchanged.",
+      "causalReview": {
+        "verdict": "ACCEPT_SHARED_FIXTURE_CAUSE_AND_MINIMAL_CORRECTION_PLAN_ONLY_RUNTIME_HELD",
+        "model": "gpt-6-astra",
+        "reasoningEffort": "xhigh",
+        "artifacts": [
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-causal-review-20261018.json",
+            "sha256": "e09c84f4d9f6fd2364f05bd322581a055800aec321ed6f61c6ba51213f2eb680",
+            "bytes": 14627
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-causal-review-20261018.md",
+            "sha256": "bbe52b8e1ea3236e5db0282d4dd88268c8c252a3a829b43b331a28e510223974",
+            "bytes": 3776
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-failure-independent-check-4406e723-20261018.json",
+            "sha256": "7c9d26438c0de0d0b91b5ec3a8c25c307084ecc6c779c0a7c46047868a9b3bb8",
+            "bytes": 20056
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-causal-checker-20261018.py",
+            "sha256": "8f79949119f461bc945adf498dca55573cb5068596d4807b062d382d1002d4bd",
+            "bytes": 24885
+          }
+        ],
+        "limits": "Selection.Complete true covers all3 executed cases; failed CategoryResults.Completed is false. No owning compensation PASS inferred. Original TerminalFault has no post-terminal raw snapshot after the failing disposition assertion."
+      }
     }
   },
   "holds": [
@@ -879,7 +907,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Save formal frozen-original diagnosis, exact remote/clean GitHub recovery and independent SOURCE on one-line fixture classification and tools/bindings/retention44. Then separately named fresh ZERO4 and independent PREP before any corrective settlement3 or unrun actual.",
+  "next": "Independent SOURCE on saved/recovered one-line fixture classification, exact98/product21 bindings, corrected settlement1/2/3 and remaining3/3/10 ZERO tools, retention44 and separate crash isolation. No native before SOURCE acceptance; then fresh ZERO4 and independent PREP before any actual.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -1845,7 +1873,7 @@
   },
   "sourcePinDigestBeforeSettlementFixtureCorrection": "f5c13d343de221bc86aaf3ec100869ea6e1cafdaae59b3006baa5642de328e8e",
   "settlementFixtureCorrection": {
-    "status": "UNCOMPILED_FIXTURE_CORRECTION_FORMAL_DIAGNOSIS_AND_SOURCE_REVIEW_PENDING",
+    "status": "SETTLEMENT_FIXTURE_CAUSAL_REVIEW_SAVED_SOURCE_REVIEW_PENDING",
     "sourceBase": "67e143b24645e0a5b25829b17cb27e80edf3f000",
     "scope": {
       "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSettlement.cs",
@@ -1855,7 +1883,28 @@
       "failureScope": "CommonFault reached faultCount1/capture1 then fails refreshNotNull, so remaining RetryableHeld/Published/I/mechanics/restore assertions not reached. TerminalFault reached pre-terminal ErrorPrepared and direct+outer retention, then faultCount1; fails disposition before post-terminal images/pending assertions and diagnostic. Terminal(false) PASS not independently qualified.",
       "retention": "Retain qualified44 at original actual/compiled provenance. Fixture field only used by settlement probes; no accepted44 dependency change. Corrective unchanged category1/2/3, remaining3/3/10; old37 not repeated."
     },
-    "causalReview": [],
+    "causalReview": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-causal-review-20261018.json",
+        "sha256": "e09c84f4d9f6fd2364f05bd322581a055800aec321ed6f61c6ba51213f2eb680",
+        "bytes": 14627
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-causal-review-20261018.md",
+        "sha256": "bbe52b8e1ea3236e5db0282d4dd88268c8c252a3a829b43b331a28e510223974",
+        "bytes": 3776
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-failure-independent-check-4406e723-20261018.json",
+        "sha256": "7c9d26438c0de0d0b91b5ec3a8c25c307084ecc6c779c0a7c46047868a9b3bb8",
+        "bytes": 20056
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-causal-checker-20261018.py",
+        "sha256": "8f79949119f461bc945adf498dca55573cb5068596d4807b062d382d1002d4bd",
+        "bytes": 24885
+      }
+    ],
     "verificationContract": {
       "whole": {
         "descriptors": 16,
@@ -1874,6 +1923,12 @@
       },
       "catalog": "Fresh BOTH build/discovery, zero tests; exact nine managed copies and full output inventory bind all NoBuild plans/actuals."
     },
-    "freshPreparation": "REQUIRED_ZERO4_AND_INDEPENDENT_PREP_BEFORE_ANY_ACTUAL"
+    "freshPreparation": "REQUIRED_ZERO4_AND_INDEPENDENT_PREP_BEFORE_ANY_ACTUAL",
+    "causalVerdict": "ACCEPT_SHARED_FIXTURE_CAUSE_AND_MINIMAL_CORRECTION_PLAN_ONLY_RUNTIME_HELD",
+    "wipRecovery": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-cbb11398-20261018.json",
+      "sha256": "e9d6d227a99b7e1be9a57dc6caf051af82ff8e9cc848e847a51bf39a25e0a60d",
+      "bytes": 3036
+    }
   }
 }

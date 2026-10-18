@@ -1,0 +1,366 @@
+{
+  "kind": "INDEPENDENT_SETTLEMENT3_FROZEN_FAILURE_CAUSAL_CHECK",
+  "checkedUtc": "2026-10-18T12:29:08.258329+00:00",
+  "carrier": "4406e7238ae254f74e516e67dc3d7bec7db9b295",
+  "actualSource": "f0bfcda832db851a2768d6af13ce60695c24a9cd",
+  "compiledSource": "e2d0a10f6b12cc1947ef9c9f71fd600146fcec2d",
+  "recordSha256": "dc135269fb73456f61e1e508d3031df0f25793a237398f029649e649bf3d18ab",
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-settlement3-frozen-813f1057-files-20261018/archive.json",
+    "sha256": "764ef854f6c66cb6804452954d36c80746efd3cd734068f25791a722ed8e47b2",
+    "rawChains": 11,
+    "rawBytes": 62406039,
+    "completeOriginalCoverage": true,
+    "originalStoredRestoredExact": true
+  },
+  "sourcePinCount": 98,
+  "sourcePinDigest": "f5c13d343de221bc86aaf3ec100869ea6e1cafdaae59b3006baa5642de328e8e",
+  "sourceReadback": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSettlement.cs",
+      "sha256": "977c9b0802c31635e5a0a349c7dc5547c7a33e196b80666a4f5c0b7137c86c5f",
+      "bytes": 9567
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs",
+      "sha256": "d8fa7b3004266329f313834bf5c2c75187b327addd74f458715dc9eef1fd1766",
+      "bytes": 27240
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCloseRetention.cs",
+      "sha256": "4d6c1d08949055d66bd4b7091b6daedac6ce7d4776bb18476800521bd3bea94e",
+      "bytes": 9166
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
+      "bytes": 19220
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
+      "bytes": 241886
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+      "bytes": 33582
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalJointRepair.cs",
+      "sha256": "a121aebacc17b814f17ada92d528c04c09492be0383e680b2b7f4b36cdfc8762",
+      "bytes": 10937
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointRepairPublicationTransaction.cs",
+      "sha256": "3f3f486c2c39550034609a96f0467a6f892ff4ff0acdb214a64f2253837fdbed",
+      "bytes": 9959
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairTerminalRelease.cs",
+      "sha256": "ce622ac731e2d9aa8b532928b105ebc19df982603cea2eda1d7e856782b27e99",
+      "bytes": 7710
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointRepairRelease.cs",
+      "sha256": "942f35af66b8c441e2bac83347d63b4df964cfd8bc82c4385e838c5f16ee725d",
+      "bytes": 21798
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+      "sha256": "e7029de3f464396d8f677e2d112d28b5ff10b072f08f78318eed01828fd72350",
+      "bytes": 10421
+    }
+  ],
+  "nativeExit": 1,
+  "tests": {
+    "Total": 3,
+    "Executed": 3,
+    "Passed": 1,
+    "Failed": 2
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 3,
+    "CompletedCases": 3,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "categoryResult": {
+    "Category": "fr063-joint-interface-settlement",
+    "Seconds": 419.9442425,
+    "BudgetMinutes": 15,
+    "Completed": false
+  },
+  "wallSeconds": 440.25795118099995,
+  "noTimeout": true,
+  "binaries9Full1575Unchanged": true,
+  "jsonDiagnosticParseErrors": 0,
+  "rawImageLengthShaChecks": 1905,
+  "embeddedImageShaChecks": 12,
+  "journalImageShaChecks": 107,
+  "cases": [
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate(fault: False)",
+      "scenario": "Terminal",
+      "nativeOutcome": "Passed",
+      "duration": "00:00:42.9044690",
+      "diagnosticRows": 38,
+      "boundaries": {
+        "fr063_guaranteed_native_pre_original_npc_shape": 1,
+        "qte_story_actual_client_append": 1,
+        "qte_story_actual_engine_result": 1,
+        "qte_physical_actual_occurrence": 1,
+        "fr063_joint_actual_prior42_inactive_tail": 1,
+        "fr063_joint_original_progression_reader_before_owner": 1,
+        "fr063_joint_signed_original_schedule_before_owner": 1,
+        "fr063_joint_natural_stage43_image_before_assert": 19,
+        "fr063_joint_original_inventory_structural_absence_before_assert": 2,
+        "fr063_confirmed_claim_inspection": 1,
+        "fr063_joint_completion_actual_prerequisites": 1,
+        "iobs_actual_public_correction_before_ready": 1,
+        "iobs_actual_result_commit": 1,
+        "fr063_joint_in_memory_owner_snapshot_before_filesystem": 1,
+        "fr063_joint_completion_actual_owner_outcome": 1,
+        "iobs_actual_error_prepared_held": 1,
+        "iobs_actual_direct_and_outer_restore_retention": 1,
+        "iobs_actual_whole_terminal_settlement": 1
+      },
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-19436ceab09e43eda9d388eb8be1a017",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate(fault: True)",
+      "scenario": "TerminalFault",
+      "nativeOutcome": "Failed",
+      "duration": "00:01:02.6369181",
+      "diagnosticRows": 38,
+      "boundaries": {
+        "fr063_guaranteed_native_pre_original_npc_shape": 1,
+        "qte_story_actual_client_append": 1,
+        "qte_story_actual_engine_result": 1,
+        "qte_physical_actual_occurrence": 1,
+        "fr063_joint_actual_prior42_inactive_tail": 1,
+        "fr063_joint_original_progression_reader_before_owner": 1,
+        "fr063_joint_signed_original_schedule_before_owner": 1,
+        "fr063_joint_natural_stage43_image_before_assert": 19,
+        "fr063_joint_original_inventory_structural_absence_before_assert": 2,
+        "fr063_confirmed_claim_inspection": 1,
+        "fr063_joint_completion_actual_prerequisites": 1,
+        "iobs_actual_public_correction_before_ready": 1,
+        "iobs_actual_result_commit": 1,
+        "fr063_joint_in_memory_owner_snapshot_before_filesystem": 1,
+        "fr063_joint_completion_actual_owner_outcome": 1,
+        "iobs_actual_error_prepared_held": 1,
+        "iobs_actual_direct_and_outer_restore_retention": 1,
+        "iobs_actual_owning_member_fault": 1
+      },
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-5f8bf1202e8144fdb657e9b0cf67ead2",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CommonMemberCompensationRetainsPublishedInterfaceWithoutReplay",
+      "scenario": "CommonFault",
+      "nativeOutcome": "Failed",
+      "duration": "00:04:58.9562583",
+      "diagnosticRows": 41,
+      "boundaries": {
+        "fr063_guaranteed_native_pre_original_npc_shape": 1,
+        "qte_story_actual_client_append": 1,
+        "qte_story_actual_engine_result": 1,
+        "qte_physical_actual_occurrence": 1,
+        "fr063_joint_actual_prior42_inactive_tail": 1,
+        "fr063_joint_original_progression_reader_before_owner": 1,
+        "fr063_joint_signed_original_schedule_before_owner": 1,
+        "fr063_joint_natural_stage43_image_before_assert": 19,
+        "fr063_joint_original_inventory_structural_absence_before_assert": 2,
+        "fr063_confirmed_claim_inspection": 1,
+        "fr063_joint_completion_actual_prerequisites": 1,
+        "iobs_actual_public_correction_before_ready": 1,
+        "iobs_actual_result_commit": 2,
+        "iobs_actual_committed_member": 3,
+        "iobs_actual_completed_capture": 1,
+        "iobs_actual_owning_member_fault": 1,
+        "fr063_joint_in_memory_owner_snapshot_before_filesystem": 1,
+        "fr063_joint_completion_actual_owner_outcome": 1
+      },
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-8fb94ef5423e4a4984ef0628a4bbf2ea",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    }
+  ],
+  "diagnoses": {
+    "Terminal": {
+      "nativeOutcome": "Passed",
+      "independentlyQualifiedAsNewTarget": false,
+      "observedTerminalReturn": "TerminalReleased",
+      "faults": 0,
+      "terminalMembers": 6,
+      "beforePaths": 222,
+      "afterPaths": 219,
+      "unchangedNonmembersVerified": true,
+      "reason": "Coherent failed settlement category is frozen; companion PASS is retained only as original diagnostic evidence, not counted independently."
+    },
+    "TerminalFault": {
+      "failure": "Assert.Equal() Failure: Values differ\nExpected: PublicationUncertain\nActual:   TerminalReleased",
+      "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertWholeTerminalAsync(GameEngine engine) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSettlement.cs:line 115\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertHeldAsync(GameEngine engine, String owningDiagnostics) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 407\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow, Boolean normalizeNarrativeBeforeCheckpoint, Action`1 observeSettledCommonPlan, Boolean postOriginalAutomaticSubmission, Action`1 attachActualOwnerProbe, JointCaptureCutProbe currentCaptureProbe, JointInterfaceLifecycleProbe interfaceLifecycleProbe) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 439\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate(Boolean fault) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSettlement.cs:line 24\n--- End of stack trace from previous location ---",
+      "faultTransaction": "3549e227d26c4c65b3f111e47a16ad52",
+      "faultMembers": 6,
+      "appliedMemberIndex": 0,
+      "initialErrorPreparedAndHeldTurn42": true,
+      "preTerminalDirectAndOuterRestorePaths": 222,
+      "preTerminalBytesUnchanged": true,
+      "observedTerminalReturn": "TerminalReleased",
+      "reached": [
+        "ErrorPrepared exact issue/before-I/mtime/no-common/turn42/mechanical assertions",
+        "actual Stage direct and outer restore retention",
+        "actual terminal owner invoked with actual backup/checkpoint",
+        "non-null settlement and nonempty real member cohort",
+        "after capture executed",
+        "one injected terminal member fault"
+      ],
+      "unreached": [
+        "expected PublicationUncertain equality",
+        "post-terminal before/after key equality",
+        "post-terminal full byte equality",
+        "post-terminal pending still present",
+        "whole-terminal diagnostic emission"
+      ],
+      "classification": "FIXTURE_TRANSIENT_FAULT_RETRIED_BELOW_OWNING_COMPENSATION",
+      "sourceExplanation": "Initial uncommitted removal recovers to exact before-images, then one-shot IOException qualifies for storage retry. On subsequent success, the actual terminal owner checks complete cohort/original/readback and prepared claim before returning TerminalReleased. Original assertion reports that return; no owning failure reaches its compensation catch.",
+      "limits": "The generic owner-outcome image snapshot precedes the explicit terminal invocation. The failed assertion prevents emission of its captured post-terminal Before/After and trace. No independent post-terminal raw full-inventory or rollback/compensation success is claimed."
+    },
+    "CommonFault": {
+      "failure": "Assert.NotNull() Failure: Value is null",
+      "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertCompensatedCommonAsync(GameEngine engine) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSettlement.cs:line 65\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertHeldAsync(GameEngine engine, String owningDiagnostics) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 369\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow, Boolean normalizeNarrativeBeforeCheckpoint, Action`1 observeSettledCommonPlan, Boolean postOriginalAutomaticSubmission, Action`1 attachActualOwnerProbe, JointCaptureCutProbe currentCaptureProbe, JointInterfaceLifecycleProbe interfaceLifecycleProbe) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 439\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CommonMemberCompensationRetainsPublishedInterfaceWithoutReplay() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSettlement.cs:line 15\n--- End of stack trace from previous location ---",
+      "faultTransaction": "8501fd1a9b4143a2b02e49778660bd79",
+      "faultMembers": 16,
+      "appliedMemberIndex": 0,
+      "committedInterfaceOnce": true,
+      "completedCaptureOnce": true,
+      "laterCommittedMarkerTransactions": [
+        "99da10d73bbf490db389cbcf26689c57",
+        "59a3b55bc3724d788c35191cc793240e"
+      ],
+      "observedRuntimeTurn": 43,
+      "refreshAndCheckpointCleared": true,
+      "finalInterfaceMatchesPublished": true,
+      "independentFinalMechanicalDigestComparison": [
+        {
+          "path": "game_state/resources/resource_definitions.json",
+          "unchanged": false
+        },
+        {
+          "path": "game_state/resources/resource_state.json",
+          "unchanged": false
+        },
+        {
+          "path": "game_state/resources/resource_history.json",
+          "unchanged": false
+        },
+        {
+          "path": "game_state/player/wounds.json",
+          "unchanged": false
+        },
+        {
+          "path": "game_state/wounds/wound_identity_index.json",
+          "unchanged": false
+        },
+        {
+          "path": "game_state/wounds/wound_history.json",
+          "unchanged": false
+        },
+        {
+          "path": "game_state/effects/effect_identity_index.json",
+          "unchanged": false
+        },
+        {
+          "path": "game_state/player/effects.json",
+          "unchanged": false
+        },
+        {
+          "path": "game_state/control/pending_mortal_wound_occurrences.json",
+          "unchanged": false
+        },
+        {
+          "path": "game_state/wounds/wound_opportunity_receipts.json",
+          "unchanged": false
+        },
+        {
+          "path": "game_state/world/world_time.json",
+          "unchanged": true
+        },
+        {
+          "path": "game_state/player/status_changes.json",
+          "unchanged": true
+        },
+        {
+          "path": "game_state/player/experience.json",
+          "unchanged": true
+        },
+        {
+          "path": "game_state/core/player_status.json",
+          "unchanged": true
+        },
+        {
+          "path": "game_state/player/stat_points.json",
+          "unchanged": true
+        }
+      ],
+      "reached": [
+        "genuine prerequisites",
+        "one injected real member fault",
+        "one completed capture"
+      ],
+      "unreached": [
+        "non-null refresh",
+        "RetryableHeld disposition",
+        "retained Published pending/record/exact I assertions",
+        "no common marker",
+        "turn42",
+        "mechanical-before retention foreach",
+        "actual Stage direct restore",
+        "common-compensation diagnostic emission"
+      ],
+      "classification": "FIXTURE_TRANSIENT_FAULT_RETRIED_BELOW_OWNING_COMPENSATION",
+      "sourceExplanation": "Known RolledBack IOException is retried with the same frozen member set/current lease. One-shot fault is disarmed; storage commits. Normal common/turn completion clears the refresh at GameEngine.MortalJointStoryTurn.cs108. This is not null-refresh evidence of lost held state.",
+      "limits": "Raw evidence contains the initial fault journal and later committed marker observations. It does not contain an explicit RolledBack callback/count; rollback/retry linkage is established by the actual storage control flow. The failed test did not execute the ordinary full completion assertions or compensation assertions; no new runtime qualification is inferred."
+    }
+  },
+  "censuses": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-before-census-20261018.json",
+      "sha256": "b31ab2712c0f25bdfb9f60e5292f68c89099405b2d244bd7c66d84fdd7024109",
+      "entries": 64,
+      "startedUtc": "2026-10-18T12:13:11.882503+00:00",
+      "finishedUtc": "2026-10-18T12:13:11.902130+00:00",
+      "clean": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-after-census-20261018.json",
+      "sha256": "cd2dbf5da301491a11150a5fa8bb3cf94de34061262e9a8069a96bfd1a5b0267",
+      "entries": 65,
+      "startedUtc": "2026-10-18T12:20:37.750555+00:00",
+      "finishedUtc": "2026-10-18T12:20:37.763681+00:00",
+      "clean": true
+    }
+  ],
+  "beforeGapSeconds": 2.676426,
+  "afterGapSeconds": 2.914252,
+  "cleanup": "Native owned-tree/runtime cleanup and three GUID-root cleanup succeeded. Original exe-dependent arrays remain incomplete; saved v2 observations are finite dated boundaries only.",
+  "restoredCarrierPaths": 18,
+  "classification": "ONE_SHARED_FIXTURE_FAULT_CLASSIFICATION_ERROR_TWO_DISTINCT_OWNING_PATHS",
+  "recommendedCorrection": "Change only the one-shot injected _settlementFailure from IOException to InvalidDataException, same message/phase/counters/journal/assertions. Existing storage explicitly excludes this type from retry and both owning catches already handle it. No product or retry-policy change, persistent fault, assertion weakening or fallback.",
+  "requiredGates": "Fresh SOURCE plus BOTH/catalog, whole16/33/57, corrective settlement1/2/3 and remaining3/3/10 ZERO; independent PREP before a newly named corrective settlement3 actual. Retain44; no accepted-target replay. All actuals remain frozen now.",
+  "qualification": "No settlement target is independently accepted; Terminal(false) PASS is diagnostic only. Old failures and old corrected crashUNKNOWN remain.",
+  "execution": "Read-only source/raw/inventory/clone checks and /tmp/review artifacts only. No build/discovery/tests/observer/process intervention or repository edits."
+}

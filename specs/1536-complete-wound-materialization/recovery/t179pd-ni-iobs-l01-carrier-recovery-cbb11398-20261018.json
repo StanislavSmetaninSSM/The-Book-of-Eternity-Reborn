@@ -1,0 +1,66 @@
+{
+  "kind": "CLOUD_CARRIER_EXACT_GITHUB_RECOVERY",
+  "sha": "cbb11398c4a9e564a8ecdefb3db997073366f916",
+  "base": "67e143b24645e0a5b25829b17cb27e80edf3f000",
+  "checkedUtc": "2026-10-18T12:30:42.487961+00:00",
+  "directory": "/workspace/1536-cloud-clean-restore",
+  "remoteShaVerified": true,
+  "clean": true,
+  "localSourceOrObjectReuse": false,
+  "changedPathsVerified": 7,
+  "files": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSettlement.cs",
+      "bytes": 9576,
+      "sha256": "f8617f0908bb54f28c81e43925c23e49cc254711763bd8d002a312bfcec0a945",
+      "gitBlob": "e4a5af70aae74fbe661b78f0f78c1597b6347293",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 2397698,
+      "sha256": "a445151f8ab5297d79201e3593736b686b4da9f42153f28fd137c7a2e329cbd0",
+      "gitBlob": "f47180af6ee8887e3087e1c1454b6bfd53b8d4dc",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-before-settlement-fixture-source-packet-20261018.json",
+      "bytes": 49419,
+      "sha256": "11cb25a11b0b9a57fff30f6b8b5a0ddaf07be19f01e56ed812758f84cbe971fd",
+      "gitBlob": "4cd129816b8e4dfbfb11faba205bda52c2725e7a",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-qualification-20261018.json",
+      "bytes": 99474,
+      "sha256": "299b719eaab4d30dce2ceddfc374662ca9943f0670da193df45c29e13fe6a331",
+      "gitBlob": "9c646a706883087f9cee7d6a3734e1d2b8f56752",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-first-run.py",
+      "bytes": 9299,
+      "sha256": "412fb97acade15307facb390a36626d16a7c86fc08cafb16ec6490e098ef5c8d",
+      "gitBlob": "fe8e493b06631f9f43a7d6df2fb8e508cad12d9a",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-preparation-run.py",
+      "bytes": 10102,
+      "sha256": "6e11550bf330bdf7dfd4774e826c3b0c90a75d43cf1ee0a4c401b8f87bd1c728",
+      "gitBlob": "21d01c1745f5c6f137fd81c8b60aabf586a95ff8",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
+      "bytes": 44289,
+      "sha256": "624875e8c849c9c7454dc9fedd9d83f95bb49a128bdce8af1e2c40964484a5c9",
+      "gitBlob": "ad6dbc7a9764d36ed6446d101e2be26496b9afb8",
+      "mode": "100644"
+    }
+  ],
+  "sourcePinsVerified": 98,
+  "sourcePinDigest": "304a7e8beb3174246ac3db792c6aa63319fa8ead9f3bab62f91346d4f204248d",
+  "method": "Fetch exact task branch directly from GitHub into independent originally empty-directory GitHub clone, checkout exact SHA, clean tree, verify every changed file bytes/SHA256/blob/mode and98pins",
+  "limits": "Source/evidence recovery only. No test/build execution here; no lost corrected-crash bytes recovered."
+}

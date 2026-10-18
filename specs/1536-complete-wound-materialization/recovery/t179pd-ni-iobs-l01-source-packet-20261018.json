@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_SETTLEMENT_FIXTURE_CLASSIFICATION_SOURCE_CANDIDATE",
-  "status": "UNCOMPILED_FIXTURE_CORRECTION_FORMAL_DIAGNOSIS_AND_SOURCE_REVIEW_PENDING",
+  "status": "SETTLEMENT_FIXTURE_CAUSAL_REVIEW_SAVED_SOURCE_REVIEW_PENDING",
   "sourceBase": "67e143b24645e0a5b25829b17cb27e80edf3f000",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
   "sourcePins": [
@@ -825,8 +825,29 @@
     "bytes": 49419,
     "sha256": "11cb25a11b0b9a57fff30f6b8b5a0ddaf07be19f01e56ed812758f84cbe971fd"
   },
-  "causalReview": [],
-  "causalDecision": "Independent Astra XHigh explicitly confirmed transient retry cause and the one-line nonretryable fixture classification, unchanged strong assertions and bounded3+10 plan. Formal frozen-original report pending durable save; no SOURCE or PREP acceptance inferred.",
+  "causalReview": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-causal-review-20261018.json",
+      "sha256": "e09c84f4d9f6fd2364f05bd322581a055800aec321ed6f61c6ba51213f2eb680",
+      "bytes": 14627
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-causal-review-20261018.md",
+      "sha256": "bbe52b8e1ea3236e5db0282d4dd88268c8c252a3a829b43b331a28e510223974",
+      "bytes": 3776
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-failure-independent-check-4406e723-20261018.json",
+      "sha256": "7c9d26438c0de0d0b91b5ec3a8c25c307084ecc6c779c0a7c46047868a9b3bb8",
+      "bytes": 20056
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-causal-checker-20261018.py",
+      "sha256": "8f79949119f461bc945adf498dca55573cb5068596d4807b062d382d1002d4bd",
+      "bytes": 24885
+    }
+  ],
+  "causalDecision": "ACCEPT_SHARED_FIXTURE_CAUSE_AND_MINIMAL_CORRECTION_PLAN_ONLY_RUNTIME_HELD",
   "correction": {
     "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSettlement.cs",
     "scope": "Exactly one injected exception type IOException→InvalidDataException, same message. One actual MemberPublished injection, counter/journal, assertions, callbacks, roots and production code unchanged. Inverse replacement exactly restores previous file bytes.",
@@ -884,5 +905,5 @@
     "status": "NONE_HELD_PENDING_FIXTURE_SOURCE_AND_FRESH_PREP",
     "mode": null
   },
-  "next": "Save formal frozen-original diagnosis, exact remote/clean GitHub recovery and independent SOURCE on one-line fixture classification and tools/bindings/retention44. Then separately named fresh ZERO4 and independent PREP before any corrective settlement3 or unrun actual."
+  "next": "Independent SOURCE on saved/recovered one-line fixture classification, exact98/product21 bindings, corrected settlement1/2/3 and remaining3/3/10 ZERO tools, retention44 and separate crash isolation. No native before SOURCE acceptance; then fresh ZERO4 and independent PREP before any actual."
 }

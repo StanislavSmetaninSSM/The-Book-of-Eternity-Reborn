@@ -1,3 +1,9 @@
+## T179-Pd-NI-IOBS-L01 — settlement diagnosis saved; SOURCE gate (2026-10-18)
+
+[Independent frozen-original causal review](recovery/t179pd-ni-iobs-l01-settlement3-causal-review-20261018.md) accepts shared transient-retry fixture cause and the one-line nonretryable injected-fault correction plan only. It does not qualify either failed row or Terminal(false). Selection.Complete=true means all3 cases ran; the failed category has CategoryResults.Completed=false. No post-terminal compensation byte proof is inferred after the TerminalFault disposition failure.
+
+Fixture/tool WIPcbb11398 was pushed and fully recovered from GitHub:7 changed paths/98 pins. Current patch remains one exception type only; no production/assertion/schema/selection change. Formal diagnosis is now durably included for independent SOURCE; no ZERO or actual release. Qualified44/57, original failures and old crashUNKNOWN unchanged. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — settlement fixture classification WIP; SOURCE/PREP pending (2026-10-18)
 
 Qualified44/57 at recovered67e143b2; original37 unchanged and not replayed. Frozen settlement3 actualf0bfcda8/compilede2d0a10f remains native1/1PASS2FAIL, archive764ef854, recovered4406e723. Independent Astra XHigh confirmed shared fixture classification: known compensated IOException is retried by existing storage policy; one-shot injection then permits successful storage publication. This does not demonstrate a production compensation defect. Formal original diagnosis report is pending durable save.
