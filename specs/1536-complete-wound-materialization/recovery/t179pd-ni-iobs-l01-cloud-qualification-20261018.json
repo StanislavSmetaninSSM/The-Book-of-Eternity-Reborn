@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "WIP_SOURCE_RESTORED_FRESH_PREPARATION_PENDING",
+  "status": "WIP_FRESH_ZERO_ENVIRONMENT_PREREQUISITE_FAILURE_FROZEN",
   "sourceCheckpoint": "2e0463ff3b5e52510e86f1c8b53bd714923e156d",
   "sourcePinDigest": "1f11670a1e063bed010e2e03585fb6e8b5ad4da64157a5ce877317475d3c7bc4",
   "sourcePinCount": 98,
@@ -461,5 +461,18 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Fresh catalog/build and whole/pending PlanOnly ZERO, then independent SOURCE/PREP review. No tests yet."
+  "next": "Independent environment prerequisite diagnosis; no PlanOnly or actual execution.",
+  "preparationAttempts": [
+    {
+      "mode": "catalog",
+      "nativeExit": 1,
+      "actualSource": "bb156d0d84d4f2911f356ad79205a3f2697c1cf9",
+      "actualTestsExecuted": 0,
+      "error": "System.IO.IOException opening NuGet-Migrations named mutex during .NET first-time configuration, before build/discovery",
+      "archive": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-prep-failed-813f1057-files-20261018/archive.json",
+      "archiveSha256": "e4998c89be71089625bf4d1a65b613889b358fa8746366df8eaa4a9b0b63e1f8",
+      "diagnosis": "INDEPENDENT_PENDING",
+      "retry": "NOT_AUTHORIZED_BY_REVIEW_YET"
+    }
+  ]
 }
