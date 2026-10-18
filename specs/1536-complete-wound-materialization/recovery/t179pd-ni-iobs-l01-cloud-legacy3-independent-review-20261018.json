@@ -1,0 +1,148 @@
+{
+  "kind": "INDEPENDENT_NEW_CLOUD_LEGACY3_EVIDENCE_AND_BOUNDED_RUNTIME_PLANNING_REVIEW",
+  "reviewedUtc": "2026-10-18T10:23:50.233305+00:00",
+  "reviewer": "Independent GPT-6 Astra XHigh sub-agent; no repository writes or native test/build/process intervention",
+  "decision": "ACCEPT_LEGACY3_ORIGINAL_NEW_CLOUD_EVIDENCE_ONLY",
+  "findings": [],
+  "evidence": {
+    "carrier": "61e712e319e8f480b77755aebae4c2db69e1423c",
+    "actualSource": "9acc5708e6f2e752fd43ae917b8357ed9ce98e1f",
+    "compiledSource": "6ab43f6add261d90628fc07d6aacf42dfbae0561",
+    "checkPath": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-cloud-legacy3-independent-check-61e712e3-20261018.json",
+    "checkSha256": "077567e9dab6ed536fd055753fa2f0d99fefe3af8530affd54922e8e14e2ebf7",
+    "checkerPath": "/tmp/1536-cloud-tools/review/check_l01_cloud_legacy3.py",
+    "checkerSha256": "00bbe36ddee40f5f48b4ab0c952b03a5c3f7721839ac30cf53dfe3aed5d412fd",
+    "archive": {
+      "sha256": "9858024f7ba343a82f0667c65bd8d33079e709ec6463b5575e02fbad4fec57c8",
+      "gzipRawChains": 11,
+      "rawBytes": 23948933,
+      "completeOriginalCoverage": true,
+      "restoredAndOriginalBytesMatch": true
+    },
+    "sourcePins": 98,
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 3,
+      "CompletedCases": 3,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "tests": {
+      "Total": 3,
+      "Executed": 3,
+      "Passed": 3,
+      "Failed": 0
+    },
+    "categorySeconds": 848.806039,
+    "categoryBudgetSeconds": 900,
+    "wallSeconds": 869.1273030290001,
+    "freshNineAnd1575Unchanged": true,
+    "originalCleanupVerified": true,
+    "restoredCarrier": {
+      "changedPaths": 16,
+      "sha256GitBlobsBytesVerified": true,
+      "independentCloneCarrierObject": "61e712e319e8f480b77755aebae4c2db69e1423c",
+      "observedHeads": {
+        "working": "f647853f41051025969d83a5fa251d3b592a23c0",
+        "restore": "61e712e319e8f480b77755aebae4c2db69e1423c",
+        "remote": "f647853f41051025969d83a5fa251d3b592a23c0"
+      },
+      "remoteDescendsFromCarrier": true
+    }
+  },
+  "semanticQualification": [
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewOrdinaryOriginalUsesPriorMarkerSourceInsteadOfCachedData",
+      "checks": [
+        "Actual live repair owner, complete create+treat union, energy2to0/health5to2, canonical validators, exact one story suffix, progression and inert-repeat assertions passed",
+        "Actual Stage44 signed prior marker coverage and non-null old cache precondition; public generic-slot I normalized from two tags to one with retained inputValue; prior marker unchanged by source assertion"
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCompletesWithoutProtocolUpgrade",
+      "checks": [
+        "Actual live repair owner, complete create+treat union, energy2to0/health5to2, canonical validators, exact one story suffix, progression and inert-repeat assertions passed",
+        "Genuine existing CaptureAsync schema1 producer, exact installed/readback pending graph and original-backed reconstruction; child1 live/cold consumption without schema upgrade, result publication or I rewrite"
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCommittedColdKeepsLegacyConsumer",
+      "checks": [
+        "Genuine existing CaptureAsync schema1 producer, exact installed/readback pending graph and original-backed reconstruction; child1 live/cold consumption without schema upgrade, result publication or I rewrite",
+        "Separate actual native child with empty common cache and official original reader; exact dependency bytes, exit0/join/bothEOF; old finalized mechanics unchanged, exact story+turn43 and inert-repeat; owned auxiliary removed"
+      ]
+    }
+  ],
+  "coldChild": {
+    "parentPid": 6175,
+    "childPid": 6366,
+    "nativeExit": 0,
+    "bothEof": true,
+    "freshCommonCacheEmpty": true,
+    "actualOfficialOriginalReader": true,
+    "completedTurn": 43,
+    "afterEqualsRepeatedEntries": 84,
+    "dependencyHashesMatched": true,
+    "auxiliaryCleanupVerified": true,
+    "childExitWaitSeconds": 45,
+    "childWaitLimitEnforcedAt": "GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs:596 / BrowserInputRecovery.cs:219"
+  },
+  "timingPlanning": {
+    "decision": "NO_CONCRETE_BUDGET_BLOCKER_ESTABLISHED; KEEP_EXISTING_FIXED_MODES_AND_BOUNDS_ON_TIMING_EVIDENCE",
+    "evidence": [
+      "Full legacy cases include common publication, terminal completion, broad post-owner snapshot/oracle work, inert repeat and cleanup; original crash child exits before the common phase, and integrity resumes refuse/hold rather than complete it.",
+      "V1 cold actual child exited successfully within existing 45-second WaitForExitAsync deadline, with both EOFs and no timeout. This is positive evidence against equating the 321.855-second parent total to native child duration. It is not a direct bound on NI resume, which starts earlier than legacy applied-cold.",
+      "Saved current public-I correction mtimes occur about40/43/53 seconds after inferred case begins; actual common-plan preparedAt values occur about57/59/67 seconds after those begins. Original crash cuts precede the common preparation path. These phase observations are diagnostic estimates, not strict measured bounds or equality across legacy/NI variants.",
+      "Crash5 has three positive resumes and two held resumes; integrity4 has four held resumes after genuine Prepared cuts. Multiplying five or four full legacy durations overstates their shared executed work. Existing220-second per-native-child wait and900-second category bound remain unchanged."
+    ],
+    "timingObservations": [
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewOrdinaryOriginalUsesPriorMarkerSourceInsteadOfCachedData",
+        "durationSeconds": 259.0742765,
+        "reportedEndTime": "2026-10-18T10:10:30.6984931+00:00",
+        "reportedStartTime": "2026-10-18T10:10:30.6984925+00:00",
+        "inferredBeginFromResultEventMinusDuration": "2026-10-18T10:06:11.624217+00:00",
+        "correctedPublicIMtime": "2026-10-18T10:06:54.213477+00:00",
+        "commonProgressionPreparedUtc": "2026-10-18T10:07:10.789338+00:00",
+        "inferredBeginToCorrectionSeconds": 42.58926,
+        "inferredBeginToCommonPreparationSeconds": 59.165121,
+        "commonPreparationToResultEventSeconds": 199.909155
+      },
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCompletesWithoutProtocolUpgrade",
+        "durationSeconds": 257.8435214,
+        "reportedEndTime": "2026-10-18T10:06:11.5456155+00:00",
+        "reportedStartTime": "2026-10-18T10:06:11.5456150+00:00",
+        "inferredBeginFromResultEventMinusDuration": "2026-10-18T10:01:53.702094+00:00",
+        "correctedPublicIMtime": "2026-10-18T10:02:33.317136+00:00",
+        "commonProgressionPreparedUtc": "2026-10-18T10:02:50.405557+00:00",
+        "inferredBeginToCorrectionSeconds": 39.615042,
+        "inferredBeginToCommonPreparationSeconds": 56.703463,
+        "commonPreparationToResultEventSeconds": 201.140058
+      },
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCommittedColdKeepsLegacyConsumer",
+        "durationSeconds": 321.8548116,
+        "reportedEndTime": "2026-10-18T10:01:53.6826215+00:00",
+        "reportedStartTime": "2026-10-18T10:01:53.6825989+00:00",
+        "inferredBeginFromResultEventMinusDuration": "2026-10-18T09:56:31.827809+00:00",
+        "correctedPublicIMtime": "2026-10-18T09:57:24.502925+00:00",
+        "commonProgressionPreparedUtc": "2026-10-18T09:57:38.469895+00:00",
+        "inferredBeginToCorrectionSeconds": 52.675116,
+        "inferredBeginToCommonPreparationSeconds": 66.642086,
+        "commonPreparationToResultEventSeconds": 255.212726
+      }
+    ],
+    "limitations": "TRX startTime/endTime are result events with nearly zero delta despite nonzero duration; inferred begins subtract duration from end event, consistent with sequential neighboring case completion but not direct stopwatch phase measurements. PreparedAt is actual plan timestamp, not publication completion time. No extrapolated runtime PASS or hard timing bound.",
+    "repartition": "No semantic repartition is justified by the evidence reviewed. No budget increase, selector/oracle change, extra timing experiment or replay is recommended. If an original future run produces a concrete bound failure, preserve it and independently review only the smallest affected exact-case partition with SOURCE/affected-PREP before another named run.",
+    "release": "NO RELEASE: parent has since reported an unexpected close2 failure; all further actual modes remain frozen pending independent causal diagnosis and any accepted correction gates."
+  },
+  "limits": [
+    "Exactly3 independently qualified new-cloud passes at actual9acc/compiled6ab. Old37 remain at original45cc/4c6d provenance without replay or cross-build equivalence.",
+    "The original lost corrected crash5 session66529 remains UNKNOWN and unavailable; no restoration or runtime result inferred.",
+    "Original intake2FAIL/crash5FAIL and failed new-cloud catalog remain immutable.",
+    "No whole-runtime/fullNI/HOT/F1/M3/T197/A3/Windows/CI qualification.",
+    "Checker initially stopped on concurrent HEAD advance from parent close2 freeze save, then a wrong assumption that preparation expectedDescriptors was a list; read-only checker corrected to immutable-carrier objects and original plan. No runtime was rerun."
+  ]
+}
