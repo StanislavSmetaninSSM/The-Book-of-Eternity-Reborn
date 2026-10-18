@@ -1,17 +1,17 @@
 ## T179-Pd-NI-IOBS-L01 current frontier (2026-10-18)
 
 - [x] Original genuine ordering RED independently accepted and frozen.
-- [x] Connected whole implementation/fixture/selection SOURCE accepted at520e; exact97+supplemental CUT01 pins.
-- [ ] Separately named catalog/BOTH ZERO, dependent exact PlanOnly ZERO and independent fresh PREP qualification.
-- [ ] ProtectedLate2 first affected actual, then named finite actual/EVIDENCE; current actual cases zero.
+- [x] Connected implementation/fixture/selection SOURCE accepted;97+retained CUT01 support unchanged.
+- [x] Original fresh BOTH/catalog and exact PlanOnly ZERO completed;21raw chains saved,9copies/all1575 outputs stable.
+- [ ] Independent fresh PREP qualification and recovered raw; protectedLate2 first named actual, then finite actual/EVIDENCE.
 
-## T179-Pd-NI-IOBS-L01 — connected SOURCE/FIXTURE/SELECTION accepted (2026-10-18)
+## T179-Pd-NI-IOBS-L01 — original fresh ZERO preparation saved (2026-10-18)
 
-[Independent final SOURCE](recovery/t179pd-ni-iobs-l01-connected-final-source-review-520e66e4-20261018.md) and [Root decision](recovery/t179pd-ni-iobs-l01-root-source-acceptance-zero-release-520e66e4-20261018.json) accept the bounded whole implementation and finite fixture/selection source at520e. S01–S08 and actual fixture/diagnostic/observer corrections are SOURCE-addressed; they were not compiler/native failures. Exact97pins/digest/tool bytes and an explicit unchanged supplemental CUT01 dependency remain bound. Static15owners/33methods57cases (51new+six affected existing) are not runtime counts.
+Fresh named catalog and dependent exact PlanOnly completed **native0/0, ZERO tests executed**, compiled45cc. Catalog discovered807categories/11800methods, no unmapped/stale selectors, with genuine BOTH builds (integration71.564899s/unit11.2885126s). Exact selected PlanOnly is15descriptors/33methods57planned cases, no actual cases. Nine copied binaries and the complete observed1575-file output set/hashes are stable catalog→Plan→current; owned namespaces/processes are empty. [Root literal readback](recovery/t179pd-ni-iobs-l01-root-whole-prep-readback-45cc99ab-20261018.json) independently checks these facts.
 
-Current product is **UNCOMPILED/UNRUN**, with no qualified fresh discovery or preparation. Root will name ONLY catalog/BOTH discovery ZERO on the saved metadata decision head, then separately name dependent PlanOnly; no automatic Plan or actual. Fresh exact selection/managed inventory/source/namespace/raw/recovery qualification must precede protectedLate2 as first affected actual and later individually named finite scopes. Fixed tools remain UNRUN. The original qualified causal RED, old44pin tools/raw and earlier authoring/source-review history stay exact; intermediate five-marker/ambient-policy-open annotations are explicitly historical, not current unresolved source scope.
+Two immutable original raw archives retain21exact gzip/raw/live-original chains (catalog11 +Plan10), original source/ledger context, process/sentinel/stdout/discovery/runner artifacts. No rerun, source/tool/selector/binary edit or actual test occurred. The active97pin set/digest and source-acceptance ledger bytes remain unchanged; its build-entry phase labels are historical, with current compilation status in the packet's preparationCurrent/runtime fields.
 
-GM joint mirrors/worked continuation and exact guidance guard are source-accepted; private protocol remains client-owned, public response schema and afterlife rules unchanged. No build/discovery/native/CI/ZIP, package replay or broader NI/HOT/platform/A3 activation occurred in this metadata decision. Following checkpoint sections are historical.
+Independent fresh PREP qualification and durable recovery must precede Root's separately named protectedLate2 first affected actual, then each finite mode. All57 planned cases remain actual-UNRUN; no GREEN/crash/cleanup/whole-NI/HOT/platform/Windows/A3 qualification follows. Historical source findings/qualified original RED/raw are unchanged. Following scopes are historical.
 
 ## T179-Pd-CUT01 bounded implementation/source/EVIDENCE complete (2026-10-18)
 

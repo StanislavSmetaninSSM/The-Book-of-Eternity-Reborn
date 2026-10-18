@@ -1,0 +1,113 @@
+{
+  "kind": "ROOT_FIRST_WHOLE_PREPARATION_RAW_READBACK_NOT_RUNTIME_VERDICT",
+  "createdUtc": "2026-10-18T07:06:12.328360+00:00",
+  "actualSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+  "records": [
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-whole-implementation-tools/t179pd-ni-iobs-l01-whole-prep-first-catalog-current/record.json",
+      "sha256": "77d8b7ad953859412208e8891c9e766c924b48a6f21d1d95e3ebaf8acdb8246a"
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-whole-implementation-tools/t179pd-ni-iobs-l01-whole-prep-first-plan-current/record.json",
+      "sha256": "68be58135d23b586cc311cca25fe7301df2107cfd5121f4008fc6a25de5600d4"
+    }
+  ],
+  "nativeExits": [
+    0,
+    0
+  ],
+  "seconds": [
+    89.66554022199125,
+    5.9918686380115105
+  ],
+  "freshBothBuild": [
+    {
+      "Name": "Build-integration",
+      "Seconds": 71.564899,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 11.2885126,
+      "Completed": true
+    }
+  ],
+  "catalogAudit": {
+    "Valid": true,
+    "Methods": 11800,
+    "Categories": 807,
+    "Unmapped": [],
+    "StaleSelectors": []
+  },
+  "actualTestsExecuted": 0,
+  "descriptors": 15,
+  "methods": 33,
+  "plannedCases": 57,
+  "nineCopies": [
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26266624,
+      "sha256": "f336aa613a1412a68e032011265e1693b6e00a5b2c7374f209ac75b86d7fe50f"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 29457920,
+      "sha256": "76fcdc838fe9223db4a3ac209237dd67456237d5a7ebc2803c1a4e2440fe4ea1"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1831424,
+      "sha256": "ec9f65789e30c555d9300fc225e09a31c33f9199dcaaa60723f23ff6e3b3d294"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26266624,
+      "sha256": "f336aa613a1412a68e032011265e1693b6e00a5b2c7374f209ac75b86d7fe50f"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1831424,
+      "sha256": "ec9f65789e30c555d9300fc225e09a31c33f9199dcaaa60723f23ff6e3b3d294"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9609216,
+      "sha256": "f019838837fc5a5de2a02f2b5fef2c7c5c9c67fd467ce50de15777e8749221e0"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26266624,
+      "sha256": "f336aa613a1412a68e032011265e1693b6e00a5b2c7374f209ac75b86d7fe50f"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26266624,
+      "sha256": "f336aa613a1412a68e032011265e1693b6e00a5b2c7374f209ac75b86d7fe50f"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+      "bytes": 248832,
+      "sha256": "77f05ce964adf18e2e0c6699bb3c40fe2f600239a8f634f42245b14254f3fc7e"
+    }
+  ],
+  "allCurrentOutputFilesIndependentlyHashed": 1575,
+  "exactOutputFileSet": true,
+  "outputInventorySha256": "9dbac13b3488b6c21726cfd7a391d43b2ce664df3c14fe3e1a7cc64a499bd958",
+  "sourcePinCount": 97,
+  "sourcePinDigest": "3e2bf2b2e6e890222ae8cbf7ceaeb4d203b41a6aab68ec879e6e88723f70bb57",
+  "namespaceAndProcessesEmpty": true,
+  "sourceHeadClean": true,
+  "archives": [
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-whole-catalog-archive-first-45cc99ab-20261018/archive.json",
+      "sha256": "9bac6bf16b5ea335df0e48e6a7b9d814ef41669a91e7d3e924da40d8025ad034",
+      "rawChains": 11
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-whole-plan-archive-first-45cc99ab-20261018/archive.json",
+      "sha256": "b36b4963837af0978e6c3968dd2f170dc18496b9b3361f59b35bcf2cc672a7fa",
+      "rawChains": 10
+    }
+  ],
+  "limits": "Original fresh ZERO only; does not qualify any actual product behavior. Independent PREP verdict and durable carrier recovery then named protectedLate2 actual still required."
+}
