@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging;
 
 namespace BookOfEternityClient.Core;
 
@@ -26,6 +27,7 @@ public partial class GameEngine
         _mortalJointInterfacePreparationHeld = false;
         _mortalJointInterfaceResumeCheckpoint = null;
         _mortalJointInterfaceData = null;
+        _mortalJointInterfaceReady = null;
     }
 
     private async Task<MortalJointInterfacePublication.Record?> PrepareCurrentMortalJointInterfaceAsync(
@@ -63,18 +65,18 @@ public partial class GameEngine
                 RequireOrdinaryJointRepairLease(lease);
                 var capture = await ReadCurrentJointRejectedCaptureAsync(lease, expected);
                 _ = await MortalJointRepairCheckpoint.RevalidateCorrectionAsync(_fs, lease, capture);
-                var ready = _hotRepairReady;
-                if (ready is not { Faulted: false, Status: "ConsumedReadyMatched", ReadyDeleteReturned: true,
-                        ReadyReleaseReturned: true, Origin: { } origin, Source: { } source })
+                var ready = _mortalJointInterfaceReady;
+                if (ready is not { Faulted: false, DeleteReturned: true, ReleaseReturned: true })
                     throw new InvalidDataException("joint_interface_fresh_requires_actual_consumed_ready");
-                await RecheckHotReadySourceAsync(lease, ready, requireReadyAbsent: true);
+                await RecheckMortalJointInterfaceReadyAsync(lease, ready, requireReadyAbsent: true);
+                var source = ready.Source;
                 if (_mortalJointInterfaceValidationIteration <= 0) throw new InvalidDataException("joint_interface_iteration_missing");
                 var binding = new JsonObject
                 {
                     ["sessionGeneration"] = expected["sessionGeneration"]!.DeepClone(), ["sessionId"] = frame.SessionId,
                     ["requestId"] = frame.RequestId, ["snapshotToken"] = frame.Payload.ManifestPayloadHash,
-                    ["turnNumber"] = frame.TurnNumber, ["realm"] = "mortal_world", ["stageOrdinal"] = origin.Ordinal,
-                    ["readyOrdinal"] = ready.Ordinal, ["iterationOrdinal"] = _mortalJointInterfaceValidationIteration,
+                    ["turnNumber"] = frame.TurnNumber, ["realm"] = "mortal_world", ["stageOrdinal"] = ready.StageOrdinal,
+                    ["readyOrdinal"] = ready.ReadyOrdinal, ["iterationOrdinal"] = _mortalJointInterfaceValidationIteration,
                     ["checkpointFingerprint"] = fingerprint, ["operationKey"] = expected["operationKey"]!.DeepClone(),
                     ["attemptId"] = expected["attemptId"]!.DeepClone(), ["requestFingerprint"] = expected["requestFingerprint"]!.DeepClone()
                 };
@@ -90,7 +92,7 @@ public partial class GameEngine
                     ThrowIfRepairSessionReplaced(lease, expected["sessionGeneration"]!.GetValue<string>());
                     await RequireJointOriginalBytesAsync(lease, expected);
                     _ = await ReadCurrentJointRejectedCaptureAsync(lease, expected);
-                    await RecheckHotReadySourceAsync(lease, ready, requireReadyAbsent: true);
+                    await RecheckMortalJointInterfaceReadyAsync(lease, ready, requireReadyAbsent: true);
                 }
                 var preparedBytes = await MortalJointInterfacePublication.CommitPreparedAsync(_fs, lease, pending, prepared, RequireOwner);
                 if (prepared.HasErrors) return prepared; // frozen error/I-before; no I/common/recompute
@@ -116,13 +118,16 @@ public partial class GameEngine
     }
 
     private bool IsOwnedMortalJointInterfaceReadyTransition(HotRepairReadyRead ready, byte[]? original, byte[]? current)
+        => ready.Origin is { } origin && IsOwnedMortalJointInterfaceReadyTransition(origin.Ordinal, ready.Ordinal, original, current);
+
+    private bool IsOwnedMortalJointInterfaceReadyTransition(long stageOrdinal, long readyOrdinal, byte[]? original, byte[]? current)
     {
         if (_mortalJointInterfaceData is not { State: "Published", HasErrors: false } result ||
             _mortalJointRepairCheckpoint is not { UsesInterfacePublication: true } checkpoint) return false;
         var binding = result.Binding;
         return binding["checkpointFingerprint"]!.GetValue<string>() == checkpoint.ToJsonObject()["fingerprint"]!.GetValue<string>() &&
-            ready.Origin is { } origin && binding["stageOrdinal"]!.GetValue<long>() == origin.Ordinal &&
-            binding["readyOrdinal"]!.GetValue<long>() == ready.Ordinal &&
+            binding["stageOrdinal"]!.GetValue<long>() == stageOrdinal &&
+            binding["readyOrdinal"]!.GetValue<long>() == readyOrdinal &&
             binding["iterationOrdinal"]!.GetValue<long>() == _mortalJointInterfaceValidationIteration &&
             HotBytesEqual(original, result.BeforeBytes) && HotBytesEqual(current, result.AfterBytes);
     }
@@ -158,12 +163,13 @@ public partial class GameEngine
         await RequireMortalJointInterfacePendingAsync(lease, result, frame);
         if (_mortalJointInterfaceResumeCheckpoint == checkpoint.ToJsonObject()["fingerprint"]!.GetValue<string>())
             return; // new current admission, not reconstructed old Ready/HOT availability
-        if (_hotRepairReady is not { Faulted: false, Source: { } source } ready ||
-            !IsOwnedMortalJointInterfaceReadyTransition(ready, source.Current[MortalJointInterfacePublication.InterfacePath], result.AfterBytes))
+        if (_mortalJointInterfaceReady is not { Faulted: false, DeleteReturned: true, ReleaseReturned: true } ready ||
+            !IsOwnedMortalJointInterfaceReadyTransition(ready.StageOrdinal, ready.ReadyOrdinal,
+                ready.Source.Current[MortalJointInterfacePublication.InterfacePath], result.AfterBytes))
             throw new InvalidDataException("joint_interface_ready_transition_missing");
-        if (result.SourceAssociationFingerprint != MortalJointInterfaceSourceFingerprint(source))
+        if (result.SourceAssociationFingerprint != MortalJointInterfaceSourceFingerprint(ready.Source))
             throw new InvalidDataException("joint_interface_actual_ready_source_association_changed");
-        await RecheckHotReadySourceAsync(lease, ready, requireReadyAbsent: true);
+        await RecheckMortalJointInterfaceReadyAsync(lease, ready, requireReadyAbsent: true);
     }
 
     private async Task<IReadOnlyList<ValidationIssue>> ReadMortalJointInterfaceAtLateSlotAsync(
@@ -188,5 +194,12 @@ public partial class GameEngine
         }
         if (current is not null) return current.Issues;
         return await _validator.ValidateAcceptedTurnInterfacePayloadAsync(); // original public owning lease after inspection closed
+    }
+
+    private void ReportMortalJointInterfaceFrozenIssues(IReadOnlyList<ValidationIssue> issues)
+    {
+        foreach (var issue in issues)
+            _logger.LogWarning("Selected joint I owning refusal, frozen issue: {Issue}",
+                JsonSerializer.Serialize(WoundAcceptedTurnData.CloneIssue(issue)));
     }
 }

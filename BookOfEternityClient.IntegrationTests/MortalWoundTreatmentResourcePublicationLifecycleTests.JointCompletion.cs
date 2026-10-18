@@ -366,6 +366,13 @@ public sealed partial class GameEngineTurnLifecycleTests
                 heldCommand, milestones, repairReplies, entered, handled, failure, observerFailure);
             return;
         }
+        if (interfaceLifecycleProbe is { ExpectsInitialClose: true })
+        {
+            Assert.Null(observerFailure); Assert.True(entered); Assert.True(jointOriginalAuthored);
+            Assert.True(useLiveCaller); Assert.True(liveWaitEntered);
+            interfaceLifecycleProbe.AssertInitialCloseHeld(engine, failure);
+            return; // explicit owning-close case, not the ordinary repair-dispatch/completion branch
+        }
         Assert.Null(observerFailure);
         Assert.Null(failure);
         Assert.True(entered);
@@ -416,7 +423,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         }
         if (interfaceLifecycleProbe is { ExpectsHeld: true })
         {
-            interfaceLifecycleProbe.AssertHeld(engine);
+            interfaceLifecycleProbe.AssertHeld(engine, logger.Describe());
             return; // genuine prerequisites above; selected ErrorPrepared cannot enter ordinary completion
         }
         if (normalizeNarrativeBeforeCheckpoint)

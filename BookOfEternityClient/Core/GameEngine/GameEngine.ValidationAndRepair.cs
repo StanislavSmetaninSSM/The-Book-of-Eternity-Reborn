@@ -2289,6 +2289,7 @@ public partial class GameEngine
             var interfaceResult = await PrepareCurrentMortalJointInterfaceAsync(activeSnapshotContext);
             if (interfaceResult?.HasErrors == true)
             {
+                ReportMortalJointInterfaceFrozenIssues(interfaceResult.Issues);
                 var held = new MortalJointRepairCanonicalRefresh(MortalJointRepairPublicationDisposition.PublicationUncertain,
                     null, interfaceResult.Issues, Frame: activeSnapshotContext);
                 _mortalJointRepairCanonicalRefresh = held;
@@ -3580,6 +3581,7 @@ public partial class GameEngine
             }
 
             await CaptureMatchingHotRepairReadyAsync(hotReadyRead, ready, pendingSnapshot, repairSessionGeneration, hotWorkerRoute);
+            await CaptureMatchingMortalJointInterfaceReadyAsync(hotReadyRead, ready, pendingSnapshot, repairSessionGeneration, hotWorkerRoute);
             await AppendAcceptedValidationRepairTrajectoryAsync(
                 source,
                 errors,
@@ -8374,21 +8376,27 @@ public partial class GameEngine
                     catch (Exception error) when (IsOptionalHotFailure(error)) { hotRead.Fail("SourceChanged"); }
                 }
             }
+            if (_mortalJointInterfaceReady is { } interfaceReady && ReferenceEquals(interfaceReady.ActualRead, hotRead))
+                await RecheckMortalJointInterfaceReadyAsync(writeLease, interfaceReady, requireReadyAbsent: false);
             _fs.DeleteFile(writeLease, ValidationRepairReadyPath);
             if (hotRead is not null) hotRead.ReadyDeleteReturned = true;
+            if (_mortalJointInterfaceReady is { } consumed && ReferenceEquals(consumed.ActualRead, hotRead)) consumed.DeleteReturned = true;
         }
         catch (CoordinatedStatePublicationUncertainException failure)
         {
+            FailMortalJointInterfaceReady(hotRead);
             hotRead?.Fail("ReadyDeletionUncertain");
             uncertainty = failure;
             throw;
         }
-        catch { hotRead?.Fail("ReadyDeletionDidNotReturn"); throw; }
+        catch { FailMortalJointInterfaceReady(hotRead); hotRead?.Fail("ReadyDeletionDidNotReturn"); throw; }
         finally
         {
             try { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty); }
-            catch { hotRead?.Fail("ReadyReleaseDidNotReturn"); throw; }
+            catch { FailMortalJointInterfaceReady(hotRead); hotRead?.Fail("ReadyReleaseDidNotReturn"); throw; }
         }
+        if (_mortalJointInterfaceReady is { DeleteReturned: true } released && ReferenceEquals(released.ActualRead, hotRead))
+            released.ReleaseReturned = true;
         if (hotRead is not null)
         {
             hotRead.ReadyReleaseReturned = true;

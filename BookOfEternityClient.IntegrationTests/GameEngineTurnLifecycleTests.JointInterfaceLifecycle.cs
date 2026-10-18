@@ -62,8 +62,12 @@ public sealed partial class GameEngineTurnLifecycleTests
 
     // Test-only observation and public-response authoring. It never constructs a
     // result/Ready/capability, changes protocol versions or invokes a publisher.
-    private sealed class JointInterfaceLifecycleProbe(GameEngineTurnLifecycleTests fixture, string scenario = "Changed") : IDisposable
+    private sealed partial class JointInterfaceLifecycleProbe : IDisposable
     {
+        private readonly GameEngineTurnLifecycleTests fixture;
+        private readonly string scenario;
+        internal JointInterfaceLifecycleProbe(GameEngineTurnLifecycleTests fixture, string scenario = "Changed")
+        { this.fixture = fixture; this.scenario = scenario; }
         private const string InterfacePath = "output/interface_updates.json";
         private const string TwoTags = "[NI_ACTION:first][NI_CONTROL:second]Продолжить обычный ответ.";
         private const string OneTag = "[NI_CONTROL:second]Продолжить обычный ответ.";
@@ -92,11 +96,17 @@ public sealed partial class GameEngineTurnLifecycleTests
                 AtCheckpointAsync = async checkpoint =>
                 {
                     if (_priorHooks?.AtCheckpointAsync is { } prior) await prior(checkpoint);
+                    if (checkpoint == SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization &&
+                        scenario.StartsWith("Selector:", StringComparison.Ordinal))
+                        await ObserveActualGenericSelectorAsync(engine);
+                    if (checkpoint == SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization && scenario == "Warning")
+                        await ObserveFrozenWarningConsumersAsync(engine);
                     if (checkpoint.ToString() != "MortalJointCustodyCaptureCompletedBeforePreparation") return;
                     _captureCallbacks++;
                     _interfaceAtCapture = _publications.Count(p => p.InterfaceChanged);
                     _atCapture = File.Exists(fixture._fs.ResolvePath(InterfacePath))
                         ? File.ReadAllBytes(fixture._fs.ResolvePath(InterfacePath)) : null;
+                    if (scenario == "LateCurrent") ObserveNewLateReadyOwner(engine);
                     fixture.WritePhysicalInjuryDiagnostic("iobs_actual_completed_capture", new
                     {
                         Callback = _captureCallbacks, InterfaceCommittedCohorts = _interfaceAtCapture,
@@ -105,6 +115,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     });
                 }
             });
+            AttachInitialCloseObservation();
         }
 
         internal void ConfigureCorrectedOutputs(Dictionary<string, byte[]> outputs)
@@ -116,9 +127,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             var value = new JsonObject
             {
                 ["dialogueOptions"] = new JsonArray(new JsonObject
-                { ["text"] = scenario is "Changed" or "Error" ? TwoTags : "Продолжить обычный ответ." })
+                { ["text"] = ChangesInterface ? TwoTags : "Продолжить обычный ответ." })
             };
-            if (scenario is not ("Changed" or "Error")) value["timestamp"] = "2026-10-18T00:00:00.0000000+00:00";
+            if (!ChangesInterface) value["timestamp"] = "2026-10-18T00:00:00.0000000+00:00";
             if (scenario == "Error") value["unsupported_result_field"] = true;
             var text = value.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
             _submitted = scenario switch
@@ -160,6 +171,7 @@ public sealed partial class GameEngineTurnLifecycleTests
 
         internal void ObservePublication(TrustedLocalPublicationPhase phase, int index)
         {
+            ObserveInitialInstallation(phase);
             if (!_configured || phase != TrustedLocalPublicationPhase.Committed) return;
             var journalPath = Path.Combine(fixture._fs.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
             using var journal = CleanupPublicationCut.Metadata(File.ReadAllBytes(journalPath));
@@ -263,9 +275,10 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal("Warning", warning["severity"]!.GetValue<string>());
             Assert.Equal("accepted_turn_stale_interface_updates", warning["code"]!.GetValue<string>());
             Assert.True(JsonNode.DeepEquals(_resultCommits[0]["issues"], _resultCommits[1]["issues"]));
+            Assert.Equal(1, _lateWarningCount); Assert.Equal(new[] { 1, 1 }, _genericWarningCounts);
         }
 
-        internal void AssertHeld(GameEngine engine)
+        internal void AssertHeld(GameEngine engine, string owningDiagnostics)
         {
             var pendingBytes = ReadPhysical(WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
             var pending = ParseJsonObjectBytes(Assert.IsType<byte[]>(pendingBytes));
@@ -275,18 +288,19 @@ public sealed partial class GameEngineTurnLifecycleTests
             { scenario, Result = result.ToJson(), Interface = Raw(ReadPhysical(InterfacePath)), Mtime = Mtime(),
                 MechanicalBefore = _mechanicalBefore.ToDictionary(row => row.Key, row => Raw(row.Value)),
                 MechanicalAfter = after.ToDictionary(row => row.Key, row => Raw(row.Value)), Trace = _publications,
-                ActualTurn = GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber });
+                ActualTurn = GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber, OwningDiagnostics = owningDiagnostics });
             Assert.Equal("Prepared", result.State); Assert.True(result.HasErrors);
             var error = Assert.Single(result.Issues.Where(issue => issue.Severity == IssueSeverity.Error));
             Assert.Equal("interface_updates_unknown_field", error.Code);
+            foreach (var issue in result.Issues) Assert.Contains(JsonSerializer.Serialize(issue), owningDiagnostics);
             Assert.Single(_resultCommits); Assert.Empty(_publications);
             Assert.Equal(_submitted, result.BeforeBytes);
             Assert.False(Assert.IsType<byte[]>(_submitted).AsSpan().SequenceEqual(Assert.IsType<byte[]>(result.AfterBytes)));
             Assert.Equal(_submitted, ReadPhysical(InterfacePath)); Assert.Equal(_submittedMtime, Mtime());
             Assert.Equal(0, _captureCallbacks); // Prepared is positive reach evidence; capture/preparation did not begin
             Assert.Equal(42, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
-            Assert.True(GetPrivateField<bool>(engine, "_mortalJointInterfaceFreshConsumed"));
-            Assert.True(GetPrivateField<bool>(engine, "_mortalJointInterfacePreparationHeld"));
+            Assert.True(GetPrivateFieldValue<bool>(engine, "_mortalJointInterfaceFreshConsumed"));
+            Assert.True(GetPrivateFieldValue<bool>(engine, "_mortalJointInterfacePreparationHeld"));
             foreach (var (path, before) in _mechanicalBefore) Assert.Equal(before, after[path]);
         }
 
@@ -309,6 +323,7 @@ public sealed partial class GameEngineTurnLifecycleTests
 
         public void Dispose()
         {
+            DisposeInitialCloseObservation();
             if (_engine is not null) _engine.ConfigureSessionFinalizationHooksForTesting(_priorHooks);
         }
     }

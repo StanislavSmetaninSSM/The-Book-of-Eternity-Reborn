@@ -125,7 +125,7 @@ public partial class GameEngine
         AcceptedTurnValidationDisposition HeldWithFrozenIssues(IReadOnlyList<ValidationIssue> issues)
         {
             _mortalJointInterfacePreparationHeld = true;
-            foreach (var issue in issues) _logger.LogWarning("Selected joint I owning refusal: {Issue}", issue);
+            ReportMortalJointInterfaceFrozenIssues(issues);
             return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;
         }
     }

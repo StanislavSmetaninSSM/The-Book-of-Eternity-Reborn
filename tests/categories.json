@@ -2,6 +2,43 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-interface-current-owner-refusal",
+  "responsibility": "Actual genuine child3 generic-slot DATA positive then five partial marker faults; actual FIRST2 installation owning-close failure with real hoisted lease; new late Main owns matching Ready independently of closed Stage ConsoleOwner/optional HOT.",
+  "excludes": "No crash/restart, legacy producer, I-owning-close/outer-finalization or new ordinary-frame fallback proof. These remain separate finite controls.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceConsumerRefusals.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceReady.cs",
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointInterface.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-interface-lifecycle-live",
+      "when": "Same whole current producer, distinct encoding/error/warning controls."
+    },
+    {
+      "id": "fr063-joint-late-completion",
+      "when": "Unchanged real protected late caller stages under one Main then completes under another; actual default FIRST2 affects it."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 15,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualGenericInterfaceConsumerRefusesSelectedMarkerDamage",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_FirstInstallOwningCloseCannotArmInterfacePermission",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewLateMainConsumesOwnReadyWithoutRevivingHotOwner"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-interface-lifecycle-live",
   "responsibility": "Real Stage43/held TREAT/correlated corrected Ready and actual new I lifecycle: unchanged raw UTF8/BOM/UTF16 images and mtime, absent I, frozen warning vector through common, ErrorPrepared retaining original I and mechanical byte images without common.",
   "excludes": "No crash/restart/legacy producer proof, no policy-replay inference from no-write, no initial/I-owning/outer close failure qualification, no missing/corrupt selector coverage or full NI/HOT. Those finite controls remain separate.",
