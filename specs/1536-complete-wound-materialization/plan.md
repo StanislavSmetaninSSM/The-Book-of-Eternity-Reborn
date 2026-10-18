@@ -1,3 +1,15 @@
+## T148 M01 — ZERO PREP originals saved; independent PREP pending (2026-10-18)
+
+Fresh source9eb672ea: catalog native0/400.443s, both projects built with errors0
+(warnings150 integration/37 unit), 11802 discovered methods/810 categories,
+no unmapped/stale selectors; executed0. Singleton PlanOnly native0/18.475s:
+exact1 descriptor/1 method/1 Fact, executed0, same899 binary inventory entries.
+Both originals have no observer errors, successful owned/runtime cleanup and no
+remaining owned fixture roots. [Raw archive/index](recovery/t148-m01-prep-evidence-20261018.json)
+preserves complete controller and native runner bytes. Actual UNRUN and
+PREP_REVIEW_PENDING; independent PREP must precede separately saved FIRST release.
+No source change after fresh build, production/L01 evidence unchanged.
+
 ## T148 M01 — SOURCE принят; ZERO PREP следующий (2026-10-18)
 
 Реализован один Fact `Publication_TerminalHealingPreservesExistingSarefMemorySuppressionAudit`,
