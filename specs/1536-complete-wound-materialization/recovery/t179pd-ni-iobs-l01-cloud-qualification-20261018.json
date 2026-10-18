@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "UNCERTAIN1BORROWEDLEASE_ORIGINAL_FROZEN",
+  "status": "QUALIFIED51_OF57_SELECTED_ROUTING_PLAN_ACCEPTED_SOURCE_PREP_REQUIRED",
   "sourceCheckpoint": "9fdecef3fd79614b9eb13b5609c99b9457d51af4",
   "sourcePinDigest": "b4e01729c1a4df935f79e7407e6aafe52bf9394d4f6e1ddab6f83a40893f02d5",
   "sourcePinCount": 98,
@@ -1346,7 +1346,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Freeze affected selection; save/recover originals, independent diagnosis, then continue authorized in-scope fixes with SOURCE/fresh affected PREP.",
+  "next": "Implement saved independent minimal direct-routing plan, independent SOURCE, fresh ZERO4/PREP; only later newly named uncertain1 qualification and separate newcrash5. Preserve both frozen uncertain1 FAILs and old66529 UNKNOWN.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -1522,7 +1522,7 @@
     "phase": "HISTORICAL_COMPILED_6AB43F6A_ZERO3_PRE_CORRECTION_INELIGIBLE_FOR_CORRECTED_ACTUALS"
   },
   "release": {
-    "status": "NONE_FROZEN_PENDING_INDEPENDENT_DIAGNOSIS",
+    "status": "NONE_SOURCE_AND_FRESH_PREP_REQUIRED_NO_NATIVE_RETRY",
     "mode": null
   },
   "newOriginalObservedPassingCases": 4,
@@ -3207,5 +3207,68 @@
         "bytes": 23866
       }
     }
+  },
+  "selectedResumeRoutingCorrection": {
+    "status": "INDEPENDENT_CAUSE_AND_MINIMAL_PLAN_ACCEPTED_NO_IMPLEMENTATION_OR_RUNTIME_YET",
+    "baseline": "f390eb0602a99f5a2387ab7dc6ef52571e856b26",
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/borrowed-lease-uncertain1-failure-check-run-v2.log",
+        "sha256": "e71cb5f5e536822086c3979e11c2db5758743f7f0474289b0d665f35c9c9e75f",
+        "bytes": 262
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/borrowed-lease-uncertain1-failure-check-run.log",
+        "sha256": "2658f6f9e1bc78f798a95342d6a111bbeab1f1ee2bb749b22f1152c659f5ba6b",
+        "bytes": 624
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-uncertain1-causal-independent-review-20261018.json",
+        "sha256": "d77c7aca96a49c693df77fd5090d8eacf92d87adad96764bbdd61c315c5701b3",
+        "bytes": 19801
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-uncertain1-causal-independent-review-20261018.md",
+        "sha256": "88046d0ec5b11bbf9edf8104423553d4662793d487aa4be61788cb1c9d78920e",
+        "bytes": 3770
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-uncertain1-failure-independent-check-f390eb06-20261018.json",
+        "sha256": "c20d28ed3c9ecd1446a1b8ed99423bd11ab32cbe6c24dd9d43a323854bbdd705",
+        "bytes": 15056
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/check_l01_borrowed_lease_uncertain1_failure-v1-absence.py",
+        "bytes": 28988,
+        "sha256": "6b6e7321919cc65bc1a6fec414c75b3fdf8d03f0ff699ef39bb4538cb47a3d2f"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/check_l01_borrowed_lease_uncertain1_failure.py",
+        "bytes": 29025,
+        "sha256": "520c28d87ebe3f01b401da2ec2fc8a7918b8547d9ddf1f5e8ae2f3cca762b8ea"
+      }
+    ],
+    "scope": "StoryTurn missing-marker same-frame PublicationUncertain direct routing only after NotCommitted/original_baseline, valid selected checkpoint2/Published-no-error/currentframe/generation/pending/I/prior runtime/Ready. Preserve claimed and diagnostic. Release existinglease then existingvalidator CompletionReady and exact existing completion body. Never bare null across terminal dispatch.",
+    "nextVerification": {
+      "pins": 99,
+      "productDelta": 23,
+      "whole": [
+        16,
+        33,
+        57
+      ],
+      "corrective": [
+        1,
+        1,
+        1
+      ],
+      "remaining": [
+        1,
+        1,
+        5
+      ]
+    },
+    "retention": "Keep51 at original build bindings if SOURCE proves unchanged existing branches/postvalidation body; otherwise exact bounded missing_marker compatibility contingency.",
+    "gmDisposition": "Client-owned routing of existing selected protocol only; no GM-authored schema/field/capability/prompt/example change."
   }
 }

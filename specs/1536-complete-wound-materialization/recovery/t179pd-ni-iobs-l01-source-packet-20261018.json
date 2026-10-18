@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_BORROWED_LEASE_SOURCE_CANDIDATE",
-  "status": "UNCERTAIN1BORROWEDLEASE_ORIGINAL_FROZEN",
+  "status": "QUALIFIED51_OF57_SELECTED_ROUTING_PLAN_ACCEPTED_SOURCE_PREP_REQUIRED",
   "sourceBase": "bb99804e8c7124e4c625ea7557d61cdaa93a8035",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
   "sourcePins": [
@@ -895,10 +895,10 @@
   "gmDisposition": "Client-owned lease composition and fixture oracle/observation only; no GM-authored capability, schema, prompt, example, manifest or daemon contract changes.",
   "oldCorrectedCrash": "Old environment session66529 remainsUNKNOWN, bytes unavailable. Separate new qualification only after corrected SOURCE/fresh PREP/named release, independent disposable fixtures/new genuine children; no old environment/process or real save operation.",
   "namedActualRelease": {
-    "status": "NONE_FROZEN_PENDING_INDEPENDENT_DIAGNOSIS",
+    "status": "NONE_SOURCE_AND_FRESH_PREP_REQUIRED_NO_NATIVE_RETRY",
     "mode": null
   },
-  "next": "Freeze affected selection; save/recover originals, independent diagnosis, then continue authorized in-scope fixes with SOURCE/fresh affected PREP.",
+  "next": "Implement saved independent minimal direct-routing plan, independent SOURCE, fresh ZERO4/PREP; only later newly named uncertain1 qualification and separate newcrash5. Preserve both frozen uncertain1 FAILs and old66529 UNKNOWN.",
   "sourceReview": {
     "verdict": "ACCEPT_BORROWED_LEASE_SOURCE_AND_NAMED_ZERO4_ONLY",
     "model": "gpt-6-astra",
@@ -1297,23 +1297,24 @@
     }
   ],
   "nextProposedVerificationContract": {
-    "status": "PROPOSAL_ONLY_REQUIRES_REMEDY_SOURCE_ACCEPTANCE_AND_FRESH_PREP",
-    "whole": {
-      "descriptors": 16,
-      "methods": 33,
-      "cases": 57
-    },
-    "corrective": {
-      "descriptors": 2,
-      "methods": 2,
-      "cases": 5
-    },
-    "remaining": {
-      "descriptors": 1,
-      "methods": 1,
-      "cases": 5
-    },
-    "expectedFutureProductDelta": 22
+    "status": "MINIMAL_ROUTING_PLAN_ACCEPTED_SOURCE_PENDING",
+    "expectedPins": 99,
+    "expectedProductDelta": 23,
+    "whole": [
+      16,
+      33,
+      57
+    ],
+    "corrective": [
+      1,
+      1,
+      1
+    ],
+    "remaining": [
+      1,
+      1,
+      5
+    ]
   },
   "historicalBindingScope": "All previous source/preparation/reviews in prior packet are historical and remain at their original source; none releases this changed candidate.",
   "historicalCausalReview": [

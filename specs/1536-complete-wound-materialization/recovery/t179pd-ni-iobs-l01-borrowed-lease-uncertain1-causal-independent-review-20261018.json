@@ -1,0 +1,245 @@
+{
+  "kind": "INDEPENDENT_NEW_UNCERTAIN1_FAILURE_CAUSAL_REVIEW_AND_BOUNDED_REMEDY_PLAN",
+  "reviewedUtc": "2026-10-18T14:54:52.822813+00:00",
+  "verdict": "HOLD_UNCERTAIN1_EVIDENCE; ACCEPT_NARROW_STORY_DISPATCH_REMEDY_PLAN_FOR_IMPLEMENTATION_AND_NEW_SOURCE_PREP_REVIEW",
+  "carrier": "f390eb0602a99f5a2387ab7dc6ef52571e856b26",
+  "actualSource": "74da374af40e0017fef9a8d736394a7e7949cd3a",
+  "compiledSource": "3ed6a8f3c0b944777ef05f2a0095431ec63f6664",
+  "recordSha256": "5432cc4abead5fb6d94d9de9f64f87b94bec4be9c88a96733d4eaa160b89a43f",
+  "qualifiedCases": 51,
+  "newQualifiedTargets": 0,
+  "newCrash5": "UNRUN_HELD",
+  "oldCorrectedCrash5": "UNKNOWN_UNAVAILABLE",
+  "finding": {
+    "id": "L01-UNCERTAIN-STORY-PREEMPT-001",
+    "severity": "blocking",
+    "classification": "PRODUCT_DISPATCH_PREEMPTS_SELECTED_CURRENT_OWNER",
+    "fact": "Same-frame retained PublicationUncertain marks story completion claimed before common exists. Absent marker causes an early HeldBlocked result, preventing the selected current-resume route from executing.",
+    "directEvidence": "New post-call logger adds exactly the missing-completion-marker hold; turn42/proofnull/capture1 and unchanged pending/I/mechanics agree with that path.",
+    "oldRunLimit": "No old missing post-call diagnostics are reconstructed or uniquely attributed by this new observation."
+  },
+  "evidence": {
+    "checker": {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_borrowed_lease_uncertain1_failure.py",
+      "bytes": 29025,
+      "sha256": "520c28d87ebe3f01b401da2ec2fc8a7918b8547d9ddf1f5e8ae2f3cca762b8ea"
+    },
+    "checkerResult": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-borrowed-lease-uncertain1-failure-independent-check-f390eb06-20261018.json",
+      "bytes": 15056,
+      "sha256": "c20d28ed3c9ecd1446a1b8ed99423bd11ab32cbe6c24dd9d43a323854bbdd705"
+    },
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-borrowed-lease-uncertain1-813f1057-files-20261018/archive.json",
+      "sha256": "02f489fc84b2bc742eed5ff00fdf6ffab9167d26165bdce9e40f8f0ff42febcd",
+      "rawChains": 11,
+      "rawBytes": 25855579,
+      "completeOriginalCoverage": true,
+      "storedRawRestoredExact": true
+    },
+    "recovery": {
+      "receiptPath": "/tmp/1536-cloud-tools/carrier-recovery-f390eb06.json",
+      "receiptSha256": "58f4bac283b39b2d429ae209b064f0ad8c27c8d4765c001719dfdbfe176d56b2",
+      "changedPaths": 20,
+      "bytesHashesBlobsModesVerified": true,
+      "completeSavedGitTreeMatchesIndependentClone": true
+    }
+  },
+  "originalOutcome": {
+    "nativeExit": 1,
+    "tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "wallSeconds": 134.49943128499945,
+    "categoryResult": {
+      "Category": "fr063-joint-interface-uncertain-current",
+      "Seconds": 105.6960277,
+      "BudgetMinutes": 10,
+      "Completed": false
+    },
+    "noTimeout": true,
+    "failure": "Assert.NotNull() Failure: Value is null",
+    "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertUncertainCurrentResumeAsync(GameEngine engine, String firstDiagnostics, Func`1 describeCurrentDiagnostics) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs:line 94\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertHeldAsync(GameEngine engine, String owningDiagnostics, Func`1 describeCurrentDiagnostics) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 364\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow, Boolean normalizeNarrativeBeforeCheckpoint, Action`1 observeSettledCommonPlan, Boolean postOriginalAutomaticSubmission, Action`1 attachActualOwnerProbe, JointCaptureCutProbe currentCaptureProbe, JointInterfaceLifecycleProbe interfaceLifecycleProbe) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 439\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs:line 15\n--- End of stack trace from previous location ---",
+    "nineAndFull1575OutputsUnchanged": true,
+    "sourcePinCount": 98,
+    "sourcePinDigest": "b4e01729c1a4df935f79e7407e6aafe52bf9394d4f6e1ddab6f83a40893f02d5",
+    "productDeltaPaths": 22,
+    "jsonParseErrors": 0
+  },
+  "directCausalEvidence": {
+    "newDiagnostic": "Joint story/turn completion held: The joint completion marker is missing.; original, ready, outputs, backups and committed union retained.",
+    "loggerDelta": "The new post-call logger equals the original owning diagnostics followed by exactly this additional hold. The old injected capture IOException remains historical text in that logger; it was not thrown again by this new call.",
+    "callState": {
+      "Handled": true,
+      "Turn": 42,
+      "CurrentProof": null,
+      "CaptureCallbacks": 1,
+      "Disposition": "PublicationUncertain",
+      "Issues": [
+        {
+          "FilePath": "acceptedTurn.wounds",
+          "Severity": 2,
+          "Message": "L01 one-shot existing completed capture checkpoint; preparation not entered.",
+          "Category": 1,
+          "Code": "mortal_joint_repair_admission_refused",
+          "Actor": "Client",
+          "Section": "mortal_qte_private_source",
+          "Expected": "one actual same-original source-bound joint repair wave and held request",
+          "Actual": "blocked",
+          "RepairHint": "Recompose the accepted wound turn from its sealed authority inputs."
+        }
+      ],
+      "OldAttempt": {
+        "Live": false,
+        "Delegated": false,
+        "ContinuationAbsent": true,
+        "ReservationAbsent": true
+      }
+    },
+    "physicalState": {
+      "pendingSha256": "1d0365e18bb79071d362a6d4f36868df5380a328ffb531957a4f6451e80b90df",
+      "interfaceSha256": "743c9470b742cce4f980fe7e9af976fe9276f67857d02d5551d527419862e5c7",
+      "mechanicalPaths": 15,
+      "allEqualToInitialRetainedImages": true,
+      "readErrors": 0
+    },
+    "terminalEvidence": "Before the new call, the retained physical completion Ready is valid success and correlated to the same session/request/turn43; error Ready and common marker are absent. The direct-restore guard preserves all 222 captured paths. After the new call, exact pending/Published I and all 15 mechanical images remain unchanged with no read errors. Only that emitted post-call scope is claimed.",
+    "path": [
+      "TurnLifecycle.cs ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync captures terminal signals, then calls TryReconcileMortalJointStoryTurnAsync before ordinary terminal dispatch and ValidateAcceptedTurnOutcomeWithRepairLoopAsync.",
+      "StoryTurn.cs computes claimed from same-frame canonical disposition Committed OR PublicationUncertain. InspectCurrent integrity protection runs first. At line35, an absent common marker plus claimed produces HeldBlocked.",
+      "The late caller immediately returns handled=true. ValidateAcceptedTurnOutcomeWithRepairLoopAsync and its selected TryResumeMortalJointInterfaceBeforeCoreAsync entry are not reached by this call.",
+      "Consequently the existing selected recovery code cannot reconstruct a new owner or clear only obsolete uncertainty after its owning release. Capture count remains1, turn42 and proofnull, and the unchanged positive assertion fails at UncertainResume.cs94."
+    ],
+    "classification": "Product dispatch defect. The genuine one-shot completed-capture fault intentionally leaves a pre-common PublicationUncertain diagnostic with already Published I. The test correctly requires a new current owner. The earlier story owner mistakes that diagnostic for a claim requiring an already-existing common completion marker.",
+    "oldRunLimit": "This diagnosis uses the NEW original telemetry. It does not reconstruct the old failed run, whose post-call log was unavailable, or replace its earlier source-path inference with a retrospectively asserted unique cause."
+  },
+  "assertionScope": {
+    "reached": [
+      "initial exact PublicationUncertain issue after one genuine completed capture and Published I",
+      "expired old attempt with no live/delegated/continuation/reservation",
+      "held turn42, exact pending Published I, all15 initial mechanical images",
+      "direct actual restore refusal and exact222 before/after images",
+      "new real late call returned handled=true",
+      "new post-call logger, typed diagnostic/scalar and pending/I/15mechanical snapshots emitted without read error",
+      "post-call turn42, proofnull, captureCallbacks1, old diagnostic retained, pending/I/15mechanical bytes unchanged",
+      "native and owned-root cleanup"
+    ],
+    "unreached": [
+      "selected current resume dispatch after the early story hold",
+      "second actual capture and new common plan/take/publication",
+      "non-null current full DATA proof and turn43 positive assertions",
+      "post-resume mechanical effect assertions",
+      "seven terminal cleanup assertions",
+      "positive after-state and inert repeat",
+      "newcrash5"
+    ]
+  },
+  "acceptedRemedyPlan": {
+    "location": "The missing-marker branch in GameEngine.MortalJointStoryTurn.cs, with a distinctly scoped read-only classifier/helper if useful. Keep the existing completed-marker body and final validator/completion body intact.",
+    "classificationPreconditions": [
+      "The validated frame is present and exactly matches the retained PublicationUncertain diagnostic; never admit the Committed disposition through this branch.",
+      "Keep InspectCurrentAsync and its IntegrityConflict refusal first. Require the current original-baseline NotCommitted inspection, not a generic absent marker or an unrelated/non-mortal NotCommitted reason.",
+      "The actual common marker is absent. Parse current pending bytes and a valid selected checkpoint schema2 with UsesInterfacePublication. Strictly read the existing Published I result, reject errors, and reuse RequireLegacyPending/RequireCheckpoint for exact graph and checkpoint binding.",
+      "Bind session/request/snapshot/turn and selected current generation to the actual validated frame; reuse current original/session checks rather than treating diagnostic or JSON fields as authority. RequireImagesAsync on the same owning lease must verify exact pending bytes and record.AfterBytes.",
+      "Require the runtime session and prior turn, an exact correlated valid completion Ready and absence of error Ready. Missing, malformed, foreign, competing or changed evidence must remain held without deleting Ready or entering ordinary mismatch/error cleanup."
+    ],
+    "routing": "For only that classification, bypass the initial already-completed-family/phase applicability checks; do not bypass their later proof requirements. Release the existing inspection lease, then enter the existing direct ValidateAcceptedTurnOutcomeWithRepairLoopAsync path already below it. Require MortalJointRepairCompletionReady before the existing pre-cleanup checkpoint and current full completion/phase/projection/story/terminal-cleanup owner can proceed.",
+    "stateAndOwnership": "Keep claimed and the old diagnostic intact at classification. Issue no Ready, attempt, continuation, reservation, plan or take; do not mark Committed, normalize, republish I or clear uncertainty. The unchanged selected owner must reconstruct/revalidate current inputs, perform its actual owning release, and only then retire obsolete same-frame uncertainty before new common publication. If the candidate vanishes or becomes ineligible between classification and validation, the retained uncertainty fallback must hold.",
+    "rejectedShortcut": "Do not merely return null from StoryTurn for this candidate. That would re-enter the late caller's previously captured terminal-signal dispatch, including destructive mismatch/error branches before selected validation. The accepted plan routes directly to the existing guarded validator/completion path.",
+    "compatibility": "Preserve exact old behavior for non-null markers, Committed claims, genuine checkpoint-v1/child1, absent/malformed/foreign selected data, I drift, unsupported family, wrong runtime turn and unsafe Ready. The existing full completion/phase/projection/story/once-only/cleanup requirements remain mandatory.",
+    "fixturePolicy": "Keep the existing positive uncertain1 body, strict assertions, one-shot fault, observations, Ready ownership and original outcome unchanged; no fixture exception reclassification, fallback, delayed proof assertion or logger-policy change is indicated by this cause."
+  },
+  "affectedVerificationPlan": {
+    "sourceBinding": "StoryTurn.cs is absent from the present 98 pins and product22 delta. Add its actual bytes/blob/mode as a new pin and product path: expected99/product23 if this is the sole newly touched production path. Preserve the complete previous98 packet. Recompute actual delta, both controller guards, pin digest and source/tool bindings; do not retain an inaccurate98/22 claim.",
+    "sourceGate": "Save/push/exactly recover the concrete candidate and obtain independent SOURCE review of the new branch, fail-closed exclusions, lease release before selected validation, diagnostic lifetime, ordinary-path preservation and exact selection. No actual is released by this plan.",
+    "freshPreparation": "Fresh BOTH/catalog plus separately named whole16/33/57, corrective uncertain1 1/1/1 and separate remaining crash5 1/1/5 ZERO records. Every original must be native0/executed0 with fresh nine/full-output inventory, exact method/case binding, v2 boundaries and durable recovery before independent PREP.",
+    "runtime": "After accepted saved/recovered PREP and fresh clean v2 preflight, execute only one newly named uncertain1 corrective original under its unchanged10-minute category budget. New crash5 remains separately named and gated with unchanged15-minute budget and genuine-child isolation. No automatic retries or advance.",
+    "retention51Rationale": "The narrow branch requires the conjunction of same-frame PublicationUncertain, no common marker and current valid selected Published I. Previously accepted completed-marker paths keep their original body; v1 fails selected eligibility; the new integrity4 engines have no matching retained uncertain diagnostic; first-capture stop cases do not perform this later same-engine retry. Therefore the51 historical qualifications can be retained with original build provenance if SOURCE confirms those exclusions and unchanged bodies. No cross-build equivalence is claimed.",
+    "boundedCompatibilityContingency": "No broad retained51 replay or extra native compatibility gate is required for the exact structurally isolated plan. If implementation changes shared IntegrityConflict ordering, the old claimed/missing-marker fallback, non-null-marker flow or v1 handling, that is a concrete dependency: add an explicitly isolated compatibility selection, starting with existing GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: missing_marker), with unchanged assertions and proven row/filter bijection. Do not run or claim the whole12-row method as a one-row check. Broader changes require renewed scope review."
+  },
+  "cleanupAndTime": {
+    "nativeCleanup": true,
+    "ownedRootCleanupCount": 1,
+    "savedNamespacesEmpty": true,
+    "censuses": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-uncertain1-before-census-20261018.json",
+        "sha256": "781acb06a1ff78333867f942e2015919ddc912eae336fd0db830676f057e9a03",
+        "entries": 112,
+        "startedUtc": "2026-10-18T14:41:14.212876+00:00",
+        "finishedUtc": "2026-10-18T14:41:14.234249+00:00",
+        "clean": true,
+        "knownVisibility": [
+          {
+            "pid": 10433,
+            "expectedStartTick": 477854,
+            "status": "MATCH",
+            "classification": "exited-nonexecuting"
+          },
+          {
+            "pid": 44006,
+            "expectedStartTick": 1908213,
+            "status": "MATCH",
+            "classification": "observer-self"
+          }
+        ]
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-uncertain1-after-census-20261018.json",
+        "sha256": "4e4349f473ea9db220b07ff7b3886e2258fe04630c325266a979e3093b735bcb",
+        "entries": 112,
+        "startedUtc": "2026-10-18T14:43:31.612666+00:00",
+        "finishedUtc": "2026-10-18T14:43:31.629278+00:00",
+        "clean": true,
+        "knownVisibility": [
+          {
+            "pid": 10433,
+            "expectedStartTick": 477854,
+            "status": "MATCH",
+            "classification": "exited-nonexecuting"
+          },
+          {
+            "pid": 44282,
+            "expectedStartTick": 1921952,
+            "status": "MATCH",
+            "classification": "observer-self"
+          }
+        ]
+      }
+    ],
+    "beforeGapSeconds": 2.016489,
+    "afterGapSeconds": 0.862726,
+    "limit": "Two clean112-entry dated observations; no continuous/instant absence claim. Original exe-link arrays remain incomplete."
+  },
+  "reviewUtilityHistory": {
+    "initialFailureChecker": {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_borrowed_lease_uncertain1_failure-v1-absence.py",
+      "bytes": 28988,
+      "sha256": "6b6e7321919cc65bc1a6fec414c75b3fdf8d03f0ff699ef39bb4538cb47a3d2f"
+    },
+    "initialLog": {
+      "path": "/tmp/1536-cloud-tools/review/borrowed-lease-uncertain1-failure-check-run.log",
+      "bytes": 624,
+      "sha256": "2658f6f9e1bc78f798a95342d6a111bbeab1f1ee2bb749b22f1152c659f5ba6b"
+    },
+    "completedLog": {
+      "path": "/tmp/1536-cloud-tools/review/borrowed-lease-uncertain1-failure-check-run-v2.log",
+      "bytes": 262,
+      "sha256": "e71cb5f5e536822086c3979e11c2db5758743f7f0474289b0d665f35c9c9e75f"
+    },
+    "correction": "The first read-only checker incorrectly assumed every mechanical path was present. It was corrected to validate explicit Absent=true/Bytes=null/ReadError=null against the original absent before-image, as the accepted diagnostic contract requires. No product/source/native change or retry."
+  },
+  "preservation": "Retain51 and every original outcome/archive, including both distinct uncertain1 failures, the old unqualified integrity4 nativePASS, and lost old corrected crash5 UNKNOWN. Newcrash5 remains UNRUN. The cloud-access notice does not imply any native repeat, restoration or older-environment access. FullNI/HOT/F1/M3/T197, A3, Windows and CI holds remain unchanged.",
+  "execution": "Read-only evidence/source/recovery/build-output and saved-census work; writes only under /tmp/1536-cloud-tools/review. No tests/build/discovery/controller/observer execution, current fixture-root or process inspection/control, repository edit or native retry."
+}
