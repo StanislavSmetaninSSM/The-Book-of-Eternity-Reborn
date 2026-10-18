@@ -1,3 +1,7 @@
+## T179-Pd-NI-IOBS-L01 — diagnostic1 fresh ZERO3 native0; PREP pending (2026-10-18)
+
+catalog native0/ZERO 422.339s, plan native0/ZERO 28.971s, diagnostic-plan native0/ZERO 18.938s. Whole16/33/57 and separate diagnostic1/1/1;32 exact rawchains,101pins/product23,nine/full inventory and six dated boundaries retained.809categories/11801methods; no actual tests executed. Frozen prior two roots remain unchanged/outside new mutable namespace. Independent PREP/recovery/readback and separate named gate required before one diagnostic run. Qualified52/alloriginals/old66529UNKNOWN and broader holds unchanged. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — compile-corrected diagnostic1 SOURCE accepted; new ZERO3 only (2026-10-18)
 
 [Independent affected SOURCE](recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-source-independent-review-20261018.md) accepts the one-line import correction at6daaa3da8fb279909ef6318cdfa9892a2f06362c, unchanged101 closure/product23 and newb51375ba namespace/labels. Original compiler native1/ZERO and earlierSOURCE/PREPadmissions remain historical; qualified52/newcrash124/old66529UNKNOWN unchanged. Save/recover/readback acceptance then newly named fresh BOTH/catalog+whole57+diagnostic1 ZERO3 only. No actual before independent fresh PREP and separate saved/recovered gate. All broader holds unchanged. Following sections historical.

@@ -1,3 +1,13 @@
+## T179-Pd-NI-IOBS-L01 current frontier — diagnostic SOURCE/fresh ZERO3 complete; PREP pending (2026-10-18)
+
+- [x] Qualified52/57 retained at original actual/compiled provenance; all historical failures and old66529 UNKNOWN/unavailable unchanged.
+- [x] Newcrash5 native124/220s child timeouts archived247chains/recovered; no five-case target accepted. Fixture-only diagnostic1 plan and corrected SOURCE101/product23 independently accepted; one compilerfailure preserved separately.
+- [x] New compiled8f8f5343 fresh catalog809/11801 and separate whole16/33/57 +diagnostic1/1/1 PlanOnly native0/ZERO3, exact32rawchains/nine+1575 outputs/dated boundaries/isolation receipts saved.
+- [ ] Independent PREP after candidate push/exactremote/recovery, then saved acceptance/readback/fresh clean preflight before one separately named diagnostic1 actual. Diagnostic1 is outside57/coverage; no crash5 retry or product remedy from preparation.
+- [ ] Complete bounded L01 whole57/final EVIDENCE. FullNI/HOT/F1/M3/T197 remain incomplete; A3 NO-PROCEED, Windows403 blocked/no retry, no CI.
+
+Following task sections are historical; current plan/cloud ledger control.
+
 ## T179-Pd-NI-IOBS-L01 current frontier — qualified52/57, diagnostic1 plan only (2026-10-18)
 
 - [x] Original37 plus accepted legacy3/corrected close2/races2/settlement3/new integrity4/uncertain1 retained at original actual/compiled provenance; SOURCE/PREP qualified each affected phase.

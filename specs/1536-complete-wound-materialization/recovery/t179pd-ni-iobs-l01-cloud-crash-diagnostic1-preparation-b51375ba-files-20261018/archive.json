@@ -1,0 +1,280 @@
+{
+  "kind": "EXACT_NI_IOBS_L01_WHOLE_ORIGINAL_RAW_ARCHIVE_NOT_VERDICT",
+  "createdUtc": "2026-10-18T16:47:31.692842+00:00",
+  "actualSources": [
+    "8f8f534304e3672df5d42c9ab31e7055235bfaca",
+    "8f8f534304e3672df5d42c9ab31e7055235bfaca",
+    "8f8f534304e3672df5d42c9ab31e7055235bfaca"
+  ],
+  "compiledSources": [
+    "8f8f534304e3672df5d42c9ab31e7055235bfaca",
+    "8f8f534304e3672df5d42c9ab31e7055235bfaca",
+    "8f8f534304e3672df5d42c9ab31e7055235bfaca"
+  ],
+  "nativeExits": [
+    0,
+    0,
+    0
+  ],
+  "rawChainCount": 32,
+  "files": [
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/8f8f534304e3672df5d42c9ab31e7055235bfaca-ni-iobs-l01-process-zero-catalog.FIRST.json",
+      "storedPath": "00000-8f8f534304e3672df5d42c9ab31e7055235bfaca-ni-iobs-l01-process-zero-catalog.FIRST.json.gz",
+      "bytes": 296,
+      "sha256": "a4b30280a6a6dada45b1b5d88d5152056e800d486b7d921b7cbce110afb0f9d2",
+      "storedBytes": 251,
+      "storedSha256": "b85390cb1a0edd3d8f499a66a7215f73304af8da29094a937d81f8722bfe7c56"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/8f8f534304e3672df5d42c9ab31e7055235bfaca-ni-iobs-l01-process-zero-diagnostic-plan.FIRST.json",
+      "storedPath": "00001-8f8f534304e3672df5d42c9ab31e7055235bfaca-ni-iobs-l01-process-zero-diagnostic-plan.FIRST.json.gz",
+      "bytes": 312,
+      "sha256": "0fce8a2fa04dd18d1a7943af81213157c910e81a1016161eb5a0e3f52617c91e",
+      "storedBytes": 254,
+      "storedSha256": "f6203a8b4fa504b573cb3cf77b204c2e4a055ae40bf42cd822a6922a533dc328"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/8f8f534304e3672df5d42c9ab31e7055235bfaca-ni-iobs-l01-process-zero-plan.FIRST.json",
+      "storedPath": "00002-8f8f534304e3672df5d42c9ab31e7055235bfaca-ni-iobs-l01-process-zero-plan.FIRST.json.gz",
+      "bytes": 296,
+      "sha256": "74bb7d43ad2ad9abd2a3f457d906f3e151c8be366976f1eda355639e39df687c",
+      "storedBytes": 254,
+      "storedSha256": "2c3c4c67d37cfd7689c8f8a0f022524702420805eb39f4ca4905246d2f5469d1"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-crash-diagnostic1-compile-corrected-cloud-b51375ba/ledger-context.json",
+      "storedPath": "00003-ledger-context.json.gz",
+      "bytes": 43759,
+      "sha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
+      "storedBytes": 11206,
+      "storedSha256": "6de385248e58f2dd9817516133e85fc65fbb1da97cd1e1ae251e511f765933b4"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-crash-diagnostic1-compile-corrected-cloud-b51375ba/process.json",
+      "storedPath": "00004-process.json.gz",
+      "bytes": 629,
+      "sha256": "242101e7c35a22f5c9cb171dbe1a13e1b50644441b537926de8200c77273fa63",
+      "storedBytes": 338,
+      "storedSha256": "26184aed77f996aaea8dccc8f50a6d5eba992ea6ae8058e82642d6852cc8883c"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-crash-diagnostic1-compile-corrected-cloud-b51375ba/record.json",
+      "storedPath": "00005-record.json.gz",
+      "bytes": 753932,
+      "sha256": "0c9453ce199e50f8199094a5d15fa4b721785f9e3ca9293b573a895819836441",
+      "storedBytes": 177921,
+      "storedSha256": "89a5fb6dfef7bc34ca32ca2927404f779d22a8e81f804c16a176ebaba8387834"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-crash-diagnostic1-compile-corrected-cloud-b51375ba/source-binding.json",
+      "storedPath": "00006-source-binding.json.gz",
+      "bytes": 80705,
+      "sha256": "40d6ee815c3753c82d600e3cc5f8746022469b5f545762bc7b4dcc577bb049b3",
+      "storedBytes": 18737,
+      "storedSha256": "a405b23ca39ea7696f9db9c643e766f672f93b0aff6e025a904093164996de1a"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-crash-diagnostic1-compile-corrected-cloud-b51375ba/stdout.log",
+      "storedPath": "00007-stdout.log.gz",
+      "bytes": 712,
+      "sha256": "52da9bf63b5f8d40546e1ee7f15b58eb0783ad3db29553b4cd24ca6c74021e5b",
+      "storedBytes": 394,
+      "storedSha256": "23910e378cecd9fc731e42b74ebb58b94ec73f0b57f34b356ee44c18d75b31c2"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba/exact-selected-scope.json",
+      "storedPath": "00008-exact-selected-scope.json.gz",
+      "bytes": 635,
+      "sha256": "53586a013169d0f09c1e0ab80815d74a8a8f62212328d30fc1bffb20c48bbc1f",
+      "storedBytes": 426,
+      "storedSha256": "bf10cde9c8b776da3a12d0601b7a63d7418bea7174b3f68d43cf2511d9b4488c"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba/ledger-context.json",
+      "storedPath": "00009-ledger-context.json.gz",
+      "bytes": 43759,
+      "sha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
+      "storedBytes": 11206,
+      "storedSha256": "6de385248e58f2dd9817516133e85fc65fbb1da97cd1e1ae251e511f765933b4"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba/observed-plan.json",
+      "storedPath": "00010-observed-plan.json.gz",
+      "bytes": 1801,
+      "sha256": "205586c41ea05b9224bad7fdf9992cd48e6262d1c9a42c64856008d69ac1565f",
+      "storedBytes": 849,
+      "storedSha256": "e429be5bead62e3f51b0cbfec5c669e909a01800b942ff9f1759a012a92e023f"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba/process.json",
+      "storedPath": "00011-process.json.gz",
+      "bytes": 1052,
+      "sha256": "55a53206b6c791aa5d330856a05240aff1e324443a0af7b74bfbeec67ed04781",
+      "storedBytes": 465,
+      "storedSha256": "86375220ad9d7600ec312b207aa9000fb337d6953db61292281c13e089ce36e1"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba/record.json",
+      "storedPath": "00012-record.json.gz",
+      "bytes": 754193,
+      "sha256": "dab4805c23d89fc401cb763fa0aba4ce1bb37cb350ff926f4d7b4c93c961048f",
+      "storedBytes": 177753,
+      "storedSha256": "070174120b4491b793f4e9497cb2ae1074799996cb89fd973afa879aa262f23e"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba/source-binding.json",
+      "storedPath": "00013-source-binding.json.gz",
+      "bytes": 80705,
+      "sha256": "40d6ee815c3753c82d600e3cc5f8746022469b5f545762bc7b4dcc577bb049b3",
+      "storedBytes": 18737,
+      "storedSha256": "a405b23ca39ea7696f9db9c643e766f672f93b0aff6e025a904093164996de1a"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba/stdout.log",
+      "storedPath": "00014-stdout.log.gz",
+      "bytes": 1390,
+      "sha256": "57af6f6f43988a2610848a82a34d44304c47655c40f87ea753353eda41ee1a93",
+      "storedBytes": 624,
+      "storedSha256": "66746956b06dd1e4cee45dcf4614ddde79f3430d43d7bcab5e62e8ee22500c67"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-whole-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba/ledger-context.json",
+      "storedPath": "00015-ledger-context.json.gz",
+      "bytes": 43759,
+      "sha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
+      "storedBytes": 11206,
+      "storedSha256": "6de385248e58f2dd9817516133e85fc65fbb1da97cd1e1ae251e511f765933b4"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-whole-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba/observed-plan.json",
+      "storedPath": "00016-observed-plan.json.gz",
+      "bytes": 29217,
+      "sha256": "927e2ff1fa85470fb9375b5b01d9c44938180935b95fdb5c0fd6bac4573ae828",
+      "storedBytes": 4717,
+      "storedSha256": "cb6104f8de395413e4e65635a058f84dd210e64b7b78d38b5accd7c517764540"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-whole-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba/process.json",
+      "storedPath": "00017-process.json.gz",
+      "bytes": 618,
+      "sha256": "8a2a122f0783f09fe4c832c68ea75dba6e358412637a628e0fb55ee573d0c9c5",
+      "storedBytes": 325,
+      "storedSha256": "4256db19a858f786d934554e503d55120572e0038013c3396c3a1723bbcfa11c"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-whole-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba/record.json",
+      "storedPath": "00018-record.json.gz",
+      "bytes": 753996,
+      "sha256": "ff6171110eb6107a16e0bdab1214152ccfd3769fd952c2b7da4e51f99ac156d1",
+      "storedBytes": 177721,
+      "storedSha256": "8b73c93564dcae1c7fc5f33077d3a0a021983f1dd7a9d400cbbdc4a97babdcb1"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-whole-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba/source-binding.json",
+      "storedPath": "00019-source-binding.json.gz",
+      "bytes": 80705,
+      "sha256": "40d6ee815c3753c82d600e3cc5f8746022469b5f545762bc7b4dcc577bb049b3",
+      "storedBytes": 18737,
+      "storedSha256": "a405b23ca39ea7696f9db9c643e766f672f93b0aff6e025a904093164996de1a"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-whole-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba/stdout.log",
+      "storedPath": "00020-stdout.log.gz",
+      "bytes": 17670,
+      "sha256": "30175b85b69041835fda2ec61d6c08af8d3b4d7bbaa3538329ae0395d07ab6b8",
+      "storedBytes": 2392,
+      "storedSha256": "e37c4acdcfeeb366a27b971bb88c278ec70dc8030e2e4887c406087d99970297"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-163839-227-59680-3155bfc00e4b492793f1d73ba6f9130d-categories/Build-integration.log",
+      "storedPath": "00021-Build-integration.log.gz",
+      "bytes": 135382,
+      "sha256": "6032d0c2597338fc7829c09e0bf21fba655540cc35f714daaf8a6039943557d2",
+      "storedBytes": 10092,
+      "storedSha256": "3bce907b73d3d5c1ef4914e8c938e66ad7bc2e5f2aad392a9ee53859fd221327"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-163839-227-59680-3155bfc00e4b492793f1d73ba6f9130d-categories/Build-unit.log",
+      "storedPath": "00022-Build-unit.log.gz",
+      "bytes": 28400,
+      "sha256": "e0f77e1512ddcdde6080701c7220d372c921a06c931250d59cbd4a6b65faf904",
+      "storedBytes": 1795,
+      "storedSha256": "e26c05481092aed7a313c94be9db020f92c31cdff65b5512e38c974fb7375310"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-163839-227-59680-3155bfc00e4b492793f1d73ba6f9130d-categories/catalog-audit.json",
+      "storedPath": "00023-catalog-audit.json.gz",
+      "bytes": 103,
+      "sha256": "ebdfb99eb4e4e71702c049b00c0814e51d1ea218b7294d6364e83eb67c3d566c",
+      "storedBytes": 103,
+      "storedSha256": "2b6f5c82e9ccba3ec98781ff275dbb8521a29124e2e5522b88818b012240949f"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-163839-227-59680-3155bfc00e4b492793f1d73ba6f9130d-categories/dotnet-test.log",
+      "storedPath": "00024-dotnet-test.log.gz",
+      "bytes": 3589131,
+      "sha256": "d122dc1a5300ace74d396c3cb06f6634a8171b4c53cc83445213526490e2cdf5",
+      "storedBytes": 391530,
+      "storedSha256": "adde17f09331fb45196d4771a7ea4aecbd1964667d0d8ab9fd42331486311351"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-163839-227-59680-3155bfc00e4b492793f1d73ba6f9130d-categories/summary.json",
+      "storedPath": "00025-summary.json.gz",
+      "bytes": 1601,
+      "sha256": "be23e5c89ab3bda17b9375717750e2d25049f8f60b40194a96f8dbbe3386c204",
+      "storedBytes": 642,
+      "storedSha256": "9581ca382baab9a16da23d0116f0f996a13069c273a1ec95abbbbc7b3d50f7c1"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-164615-277-60409-28504307d3ea4360bbc501a9fbfacef5-categories/dotnet-test.log",
+      "storedPath": "00026-dotnet-test.log.gz",
+      "bytes": 3425383,
+      "sha256": "471e6734ab8fd7d6eee76a9d5c9cde79c4bf7a23535f4fb11c4240602e80f2e0",
+      "storedBytes": 379740,
+      "storedSha256": "413df1ed173ce3d7b2bd4c5b38922ff356b8aeaf264b5c5a6da935e43cba42e3"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-164615-277-60409-28504307d3ea4360bbc501a9fbfacef5-categories/plan.json",
+      "storedPath": "00027-plan.json.gz",
+      "bytes": 29193,
+      "sha256": "b974215c47fd818757cb61442a906ff0e342672d0a9245d407b76f395679d0f6",
+      "storedBytes": 4723,
+      "storedSha256": "8dcfcd285138789ff0caf7b960115efb7d7c355fbb0ab4b30f5901794fc8c7e9"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-164615-277-60409-28504307d3ea4360bbc501a9fbfacef5-categories/summary.json",
+      "storedPath": "00028-summary.json.gz",
+      "bytes": 11471,
+      "sha256": "6b0bd1eeacee08bb754361b5dae4f5bc8469bd0474bb3d418d341c90298bedab",
+      "storedBytes": 3337,
+      "storedSha256": "d52ab7f124f04b1aa1f23887b900303d21186d5caa1fbc37d7652070b8cb43b3"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-164700-218-60651-5e49a5b85f2e4af49fdaf1514a9ffce7-categories/dotnet-test.log",
+      "storedPath": "00029-dotnet-test.log.gz",
+      "bytes": 1695009,
+      "sha256": "3d45e6f61d804eaf800641dcbe705dbe1cc53b572a261b701d9ba7f8f95416cf",
+      "storedBytes": 188267,
+      "storedSha256": "c89ad277fb1c9769271edb9e31232e4134156dd23b437630c656c2e1e805ac1f"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-164700-218-60651-5e49a5b85f2e4af49fdaf1514a9ffce7-categories/plan.json",
+      "storedPath": "00030-plan.json.gz",
+      "bytes": 1801,
+      "sha256": "205586c41ea05b9224bad7fdf9992cd48e6262d1c9a42c64856008d69ac1565f",
+      "storedBytes": 849,
+      "storedSha256": "e429be5bead62e3f51b0cbfec5c669e909a01800b942ff9f1759a012a92e023f"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-164700-218-60651-5e49a5b85f2e4af49fdaf1514a9ffce7-categories/summary.json",
+      "storedPath": "00031-summary.json.gz",
+      "bytes": 1988,
+      "sha256": "31be08c7e7201ef3295834061cb4178ded8977c6219fe4fcfa31db75108ab6d4",
+      "storedBytes": 926,
+      "storedSha256": "3bc4eaf38e15e124da3c7232b9cb3f60daf3d9faad3425979ae03ed15383bba0"
+    }
+  ],
+  "helperText": "\"\"\"UNRUN read-only complete original whole-product zero/actual raw archive. No execution, cleanup, retry or classification.\"\"\"\nfrom pathlib import Path\nimport sys,json,gzip,hashlib,datetime\nrecords=[Path(x) for x in sys.argv[1:-1]];out=Path(sys.argv[-1]);assert records and not out.exists();out.mkdir(parents=True)\ndef h(b):return hashlib.sha256(b).hexdigest()\npaths=[];original=[]\nfor p in records:\n j=json.loads(p.read_bytes());assert j['kind'] in {'FIRST_NI_IOBS_L01_WHOLE_ZERO_PREPARATION_RAW','FIRST_NI_IOBS_L01_WHOLE_ACTUAL_RAW_NOT_EVIDENCE'};original.append(j)\n paths.extend([p,Path(j['stdoutPath']),Path(j['processRecord']),Path(j['firstSentinel']),p.parent/'source-binding.json',p.parent/'ledger-context.json'])\n for name in ['observed-plan.json','exact-selected-scope.json']:\n  if (p.parent/name).is_file():paths.append(p.parent/name)\n for d in j['resultDirectories']:paths.extend(q for q in sorted(Path(d).rglob('*')) if q.is_file())\n # Normal tests delete only their positively settled owned roots. If an actual\n # unresolved child retained its nonce container, freeze it without deletion.\n for root in j['namespaceAfter']['ownedRoots']:\n  path=Path(root);assert path.exists();paths.extend(q for q in sorted(path.rglob('*')) if q.is_file())\nfiles=[]\nfor i,p in enumerate(sorted(set(paths))):\n b=p.read_bytes();name=f'{i:05d}-'+p.name+'.gz';stored=gzip.compress(b,compresslevel=9,mtime=0);(out/name).write_bytes(stored);assert gzip.decompress((out/name).read_bytes())==b\n files.append(dict(rawPath=str(p),storedPath=name,bytes=len(b),sha256=h(b),storedBytes=len(stored),storedSha256=h(stored)))\narchive=dict(kind='EXACT_NI_IOBS_L01_WHOLE_ORIGINAL_RAW_ARCHIVE_NOT_VERDICT',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSources=[x['actualSource'] for x in original],compiledSources=[x['compiledSource'] for x in original],nativeExits=[x['nativeExit'] for x in original],rawChainCount=len(files),files=files,helperText=Path(__file__).read_text(),scope='All original record/source/ledger/process/sentinel/stdout/runner/TRX/retained-child artifacts, gzip roundtrip; no raw edits, runtime, deletion, retry or verdict.')\n(out/'archive.json').write_text(json.dumps(archive,indent=2)+'\\n');print(json.dumps(dict(archive=str(out/'archive.json'),sha256=h((out/'archive.json').read_bytes()),rawChains=len(files))))\n",
+  "scope": "All original record/source/ledger/process/sentinel/stdout/runner/TRX/retained-child artifacts, gzip roundtrip; no raw edits, runtime, deletion, retry or verdict."
+}

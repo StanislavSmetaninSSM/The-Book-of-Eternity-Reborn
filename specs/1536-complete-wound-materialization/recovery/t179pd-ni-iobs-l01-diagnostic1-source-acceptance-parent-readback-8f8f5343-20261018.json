@@ -1,0 +1,38 @@
+{
+  "kind": "PARENT_CORRECTED_DIAGNOSTIC_SOURCE_ACCEPTANCE_READBACK_ZERO3_ONLY",
+  "checkedUtc": "2026-10-18T16:38:19.836081+00:00",
+  "sha": "8f8f534304e3672df5d42c9ab31e7055235bfaca",
+  "compiledSource": "8f8f534304e3672df5d42c9ab31e7055235bfaca",
+  "sourceCandidate": "6daaa3da8fb279909ef6318cdfa9892a2f06362c",
+  "qualified": 52,
+  "pins": 101,
+  "product": 23,
+  "pinDigest": "2c144b7734708f8c02a3924d4d12a885384f05a1437021afd2845827c761c616",
+  "sourceAcceptance": "ACCEPT_AFFECTED_SOURCE_AND_NEW_NAMED_ZERO3_ONLY_AFTER_SAVE_RECOVERY_READBACK",
+  "namedZeroRelease": {
+    "status": "SOURCE_ACCEPTED_SAVED_RECOVERED_DIAGNOSTIC_ZERO3_ONLY",
+    "labels": {
+      "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-crash-diagnostic1-compile-corrected-cloud-b51375ba",
+      "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba",
+      "diagnostic-plan": "t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba"
+    }
+  },
+  "noActualRelease": true,
+  "old66529": "UNKNOWN_UNAVAILABLE_UNCHANGED",
+  "newCrash5": "FROZEN_NATIVE124_NO_TRX_NO_ADDED_TARGETS",
+  "oldDiagnosticCatalog": "FROZEN_NATIVE1_ZERO_COMPILER_FAILURE",
+  "namespace": {
+    "identity": "ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9",
+    "tmpdir": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9",
+    "samePhysicalCloud": true,
+    "bootId": "cbd633d5-c8d0-43e1-8c6e-1b233700b8d9",
+    "frozenRootsOutsideMutableNamespace": [
+      "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-c39f7e9cf6eb42868669ed06f092c491",
+      "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a"
+    ],
+    "oldNamespace": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320",
+    "toolchain": "Same immutable SDK/runtime/pwsh and NuGet dependency cache; new CLI/XDG/runtime mutable directories, no shared mutable game state",
+    "environmentFile": "/tmp/1536-cloud-tools/env-crash-diagnostic1-b51375ba.sh"
+  },
+  "limits": "Readback only; wrapper requires frozen-root byte/file-set proof and immediate clean dated global/new mutable namespace census before each separately invoked ZERO phase."
+}
