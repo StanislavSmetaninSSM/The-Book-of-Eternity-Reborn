@@ -1,3 +1,9 @@
+## T179-Pd-NI-IOBS-L01 — ReadyDrift fresh ZERO4 native0; PREP review pending (2026-10-18)
+
+Fresh actual/compiled e2d0a10f: BOTH/catalog native0/587.277s,808 categories/11800 methods; whole16/33/57 native0/67.534s; corrective1/2/2 native0/48.682s; remaining4/5/13 native0/52.908s. All phases executed ZERO tests. [All43 original raw chains](recovery/t179pd-ni-iobs-l01-cloud-ready-diagnostic-preparation-813f1057-files-20261018/archive.json) are archived. Nine managed copies/full1575 outputs remain exact across all NoBuild plans. Eight dated v2 before/after boundaries and a fresh qualification snapshot are clean; original exe-dependent process arrays retain their stated limits.
+
+After saving/recovering this candidate, require independent corrected PREP before any actual. Qualified42 are unchanged. Original races2 1PASS1FAIL, its unreached final mechanical/direct-restore assertions and old corrected-crash UNKNOWN remain preserved. Corrective races2 and remaining13 still require separately named releases, immediate clean v2 preflight and immutable original outcomes. Broader holds remain. Following sections are historical.
+
 ## T179-Pd-NI-IOBS-L01 — ReadyDrift SOURCE accepted; fresh ZERO4 only (2026-10-18)
 
 [Independent Astra XHigh SOURCE](recovery/t179pd-ni-iobs-l01-ready-diagnostic-source-independent-review-7cad7e3b-20261018.md) accepted7cad7e3b with no findings: exact minimal logging delta,98 pins, productDelta21/guards21, corrective races1/2/2, remaining4/5/13 and complete12+6-path recovery. The original binding20 blocker is preserved as SOURCE history; no ZERO ran on it. Retained42 remain at original provenance; CurrentCaptureStop1 crosses this catch but asserts unchanged state/issue/expiry/images, not logger silence/counts, so no replay is needed.

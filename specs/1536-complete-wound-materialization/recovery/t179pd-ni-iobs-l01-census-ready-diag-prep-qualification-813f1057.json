@@ -1,0 +1,1400 @@
+{
+  "kind": "L01_SUPPLEMENTAL_ARGV_STAT_PROCESS_ROOT_BOUNDARY",
+  "observerVersion": 2,
+  "phase": "ready-diag-prep-qualification",
+  "startedUtc": "2026-10-18T11:54:18.260327+00:00",
+  "finishedUtc": "2026-10-18T11:54:18.280466+00:00",
+  "observerSource": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-20261018.py",
+  "observerSourceSha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
+  "observerPid": 19436,
+  "fixtureTemp": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320",
+  "fixtureTempUid": 1000,
+  "pidsEnumerated": [
+    1,
+    2,
+    202,
+    252,
+    521,
+    2204,
+    2233,
+    2678,
+    3087,
+    3401,
+    3608,
+    3813,
+    4150,
+    4151,
+    4853,
+    4915,
+    5889,
+    5937,
+    6734,
+    6794,
+    7678,
+    8048,
+    8386,
+    8857,
+    9294,
+    9354,
+    10185,
+    10244,
+    10433,
+    11072,
+    11073,
+    12145,
+    12215,
+    12549,
+    12616,
+    13246,
+    13305,
+    14080,
+    14139,
+    14845,
+    14937,
+    15576,
+    15669,
+    16434,
+    16493,
+    16912,
+    16991,
+    17670,
+    17729,
+    17926,
+    17948,
+    18509,
+    18510,
+    18524,
+    19432,
+    19434,
+    19435,
+    19436
+  ],
+  "entries": [
+    {
+      "pid": 1,
+      "startTick": 431,
+      "ppid": 0,
+      "comm": "tail",
+      "state": "S",
+      "statBefore": "1 (tail) S 0 1 1 0 -1 4194560 1127 0 0 0 270 307 0 0 20 0 1 0 431 3129344 160 18446744073709551615 1 1 0 0 0 0 0 0 0 0 0 0 17 1 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "1 (tail) S 0 1 1 0 -1 4194560 1127 0 0 0 270 307 0 0 20 0 1 0 431 3129344 160 18446744073709551615 1 1 0 0 0 0 0 0 0 0 0 0 17 1 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "tail",
+      "argvCount": 3,
+      "argvSha256": "9eaa60f145781d1c90910e7759e82375ebdcd6ff94d9db24f11bcf81334c7b14",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "other-readable",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.261087+00:00"
+    },
+    {
+      "pid": 2,
+      "startTick": 443,
+      "ppid": 1,
+      "comm": "caas-prefix-tra",
+      "state": "S",
+      "statBefore": "2 (caas-prefix-tra) S 1 1 1 0 -1 4194560 910 279 0 0 3 0 0 0 20 0 1 0 443 1007616 32 18446744073709551615 1 1 0 0 0 0 0 4102 1088 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "2 (caas-prefix-tra) S 1 1 1 0 -1 4194560 910 279 0 0 3 0 0 0 20 0 1 0 443 1007616 32 18446744073709551615 1 1 0 0 0 0 0 4102 1088 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "caas-prefix-transfer-server",
+      "argvCount": 5,
+      "argvSha256": "cbb81d3bec89a72a5532f034e8dd8753cc182932e80a768d4227fd84c0f178bb",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "other-readable",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.261207+00:00"
+    },
+    {
+      "pid": 202,
+      "startTick": 1733,
+      "ppid": 1,
+      "comm": "dockerd",
+      "state": "S",
+      "statBefore": "202 (dockerd) S 1 202 202 0 -1 4194560 9989 52106 14 0 1718 386 33 37 20 0 12 0 1733 2158342144 8785 18446744073709551615 1 1 0 0 0 0 0 4096 2143416063 0 0 0 17 1 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "202 (dockerd) S 1 202 202 0 -1 4194560 9989 52106 14 0 1718 386 33 37 20 0 12 0 1733 2158342144 8785 18446744073709551615 1 1 0 0 0 0 0 4096 2143416063 0 0 0 17 1 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "dockerd",
+      "argvCount": 6,
+      "argvSha256": "becd3d449cfde9d4fd8d02f885600b10c88c604d6c78813a7553bc8d5c46d7bb",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "other-readable",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.261329+00:00"
+    },
+    {
+      "pid": 252,
+      "startTick": 1777,
+      "ppid": 202,
+      "comm": "containerd",
+      "state": "S",
+      "statBefore": "252 (containerd) S 202 252 252 0 -1 4194304 6021 0 3 0 4128 1174 0 0 20 0 10 0 1777 1298714624 5311 18446744073709551615 1 1 0 0 0 0 0 0 2143420159 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "252 (containerd) S 202 252 252 0 -1 4194304 6021 0 3 0 4128 1174 0 0 20 0 10 0 1777 1298714624 5311 18446744073709551615 1 1 0 0 0 0 0 0 2143420159 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "containerd",
+      "argvCount": 3,
+      "argvSha256": "0e45df746b026740c89fa403367a7679b94bdcff933f7832e7adaafafe3747a8",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "other-readable",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.261422+00:00"
+    },
+    {
+      "pid": 521,
+      "startTick": 1950,
+      "ppid": 0,
+      "comm": "codex",
+      "state": "S",
+      "statBefore": "521 (codex) S 0 521 521 0 -1 4194560 17916 21132565 0 1926 1274 595 323185 98980 20 0 8 0 1950 455991296 9194 18446744073709551615 1 1 0 0 0 0 0 4096 83010 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "521 (codex) S 0 521 521 0 -1 4194560 17916 21132565 0 1926 1274 595 323185 98980 20 0 8 0 1950 455991296 9194 18446744073709551615 1 1 0 0 0 0 0 4096 83010 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "codex",
+      "argvCount": 7,
+      "argvSha256": "63b74ec77a7552a0892f0cfd590c3679ac90ac79892e54d679a8b43f577aa8a3",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "other-readable",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.263249+00:00"
+    },
+    {
+      "pid": 2204,
+      "startTick": 55433,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "2204 (git) Z 1 2204 2204 0 -1 4227404 122 0 0 0 0 0 0 0 20 0 1 0 55433 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "2204 (git) Z 1 2204 2204 0 -1 4227404 122 0 0 0 0 0 0 0 20 0 1 0 55433 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.263849+00:00"
+    },
+    {
+      "pid": 2233,
+      "startTick": 57536,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "2233 (git) Z 1 2233 2233 0 -1 4227404 122 0 0 0 0 0 0 0 20 0 1 0 57536 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "2233 (git) Z 1 2233 2233 0 -1 4227404 122 0 0 0 0 0 0 0 20 0 1 0 57536 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.264458+00:00"
+    },
+    {
+      "pid": 2678,
+      "startTick": 81360,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "2678 (git) Z 1 2678 2678 0 -1 4227404 122 0 0 0 0 0 0 0 20 0 1 0 81360 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 2 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "2678 (git) Z 1 2678 2678 0 -1 4227404 122 0 0 0 0 0 0 0 20 0 1 0 81360 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 2 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.265409+00:00"
+    },
+    {
+      "pid": 3087,
+      "startTick": 90783,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "3087 (git) Z 1 3087 3087 0 -1 4227404 122 0 0 0 0 0 0 0 20 0 1 0 90783 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "3087 (git) Z 1 3087 3087 0 -1 4227404 122 0 0 0 0 0 0 0 20 0 1 0 90783 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.265526+00:00"
+    },
+    {
+      "pid": 3401,
+      "startTick": 102376,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "3401 (git) Z 1 3401 3401 0 -1 4227404 122 0 0 0 0 0 0 0 20 0 1 0 102376 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 2 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "3401 (git) Z 1 3401 3401 0 -1 4227404 122 0 0 0 0 0 0 0 20 0 1 0 102376 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 2 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.265737+00:00"
+    },
+    {
+      "pid": 3608,
+      "startTick": 105156,
+      "ppid": 1,
+      "comm": "dotnet",
+      "state": "Z",
+      "statBefore": "3608 (dotnet) Z 1 3446 3446 0 -1 4227340 57305 999745 0 0 2436 513 86288 3250 20 0 1 0 105156 0 0 18446744073709551615 0 0 0 0 0 0 0 4096 214270 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "3608 (dotnet) Z 1 3446 3446 0 -1 4227340 57305 999745 0 0 2436 513 86288 3250 20 0 1 0 105156 0 0 18446744073709551615 0 0 0 0 0 0 0 4096 214270 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.265855+00:00"
+    },
+    {
+      "pid": 3813,
+      "startTick": 114161,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "3813 (git) Z 1 3813 3813 0 -1 4227404 123 0 0 0 0 0 0 0 20 0 1 0 114161 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "3813 (git) Z 1 3813 3813 0 -1 4227404 123 0 0 0 0 0 0 0 20 0 1 0 114161 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.266740+00:00"
+    },
+    {
+      "pid": 4150,
+      "startTick": 134074,
+      "ppid": 1,
+      "comm": "dotnet",
+      "state": "Z",
+      "statBefore": "4150 (dotnet) Z 1 3446 3446 0 -1 4227340 40625 0 0 0 754 126 0 0 20 0 1 0 134074 0 0 18446744073709551615 0 0 0 0 0 0 0 4096 148734 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "4150 (dotnet) Z 1 3446 3446 0 -1 4227340 40625 0 0 0 754 126 0 0 20 0 1 0 134074 0 0 18446744073709551615 0 0 0 0 0 0 0 4096 148734 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.266861+00:00"
+    },
+    {
+      "pid": 4151,
+      "startTick": 134074,
+      "ppid": 1,
+      "comm": "dotnet",
+      "state": "Z",
+      "statBefore": "4151 (dotnet) Z 1 3446 3446 0 -1 4227340 29242 0 0 0 743 75 0 0 20 0 1 0 134074 0 0 18446744073709551615 0 0 0 0 0 0 0 4096 148734 0 0 0 17 2 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "4151 (dotnet) Z 1 3446 3446 0 -1 4227340 29242 0 0 0 743 75 0 0 20 0 1 0 134074 0 0 18446744073709551615 0 0 0 0 0 0 0 4096 148734 0 0 0 17 2 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.266935+00:00"
+    },
+    {
+      "pid": 4853,
+      "startTick": 151460,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "4853 (git) Z 1 4853 4853 0 -1 4227404 131 0 0 0 0 0 0 0 20 0 1 0 151460 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "4853 (git) Z 1 4853 4853 0 -1 4227404 131 0 0 0 0 0 0 0 20 0 1 0 151460 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.267002+00:00"
+    },
+    {
+      "pid": 4915,
+      "startTick": 153317,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "4915 (git) Z 1 4915 4915 0 -1 4227404 131 0 0 0 0 0 0 0 20 0 1 0 153317 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "4915 (git) Z 1 4915 4915 0 -1 4227404 131 0 0 0 0 0 0 0 20 0 1 0 153317 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.267067+00:00"
+    },
+    {
+      "pid": 5889,
+      "startTick": 192917,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "5889 (git) Z 1 5889 5889 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 192917 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "5889 (git) Z 1 5889 5889 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 192917 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.268809+00:00"
+    },
+    {
+      "pid": 5937,
+      "startTick": 197484,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "5937 (git) Z 1 5937 5937 0 -1 4227404 131 0 0 0 0 0 0 0 20 0 1 0 197484 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 2 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "5937 (git) Z 1 5937 5937 0 -1 4227404 131 0 0 0 0 0 0 0 20 0 1 0 197484 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 2 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.268902+00:00"
+    },
+    {
+      "pid": 6734,
+      "startTick": 301833,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "6734 (git) Z 1 6734 6734 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 301833 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "6734 (git) Z 1 6734 6734 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 301833 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.268979+00:00"
+    },
+    {
+      "pid": 6794,
+      "startTick": 310071,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "6794 (git) Z 1 6794 6794 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 310071 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "6794 (git) Z 1 6794 6794 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 310071 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.269045+00:00"
+    },
+    {
+      "pid": 7678,
+      "startTick": 356055,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "7678 (git) Z 1 7678 7678 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 356055 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 1 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "7678 (git) Z 1 7678 7678 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 356055 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 1 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.269110+00:00"
+    },
+    {
+      "pid": 8048,
+      "startTick": 360111,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "8048 (git) Z 1 8048 8048 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 360111 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 1 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "8048 (git) Z 1 8048 8048 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 360111 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 1 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.269221+00:00"
+    },
+    {
+      "pid": 8386,
+      "startTick": 372257,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "8386 (git) Z 1 8386 8386 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 372257 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "8386 (git) Z 1 8386 8386 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 372257 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.271380+00:00"
+    },
+    {
+      "pid": 8857,
+      "startTick": 404782,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "8857 (git) Z 1 8857 8857 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 404782 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 1 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "8857 (git) Z 1 8857 8857 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 404782 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 1 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.271470+00:00"
+    },
+    {
+      "pid": 9294,
+      "startTick": 420189,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "9294 (git) Z 1 9294 9294 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 420189 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "9294 (git) Z 1 9294 9294 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 420189 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.271538+00:00"
+    },
+    {
+      "pid": 9354,
+      "startTick": 421500,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "9354 (git) Z 1 9354 9354 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 421500 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "9354 (git) Z 1 9354 9354 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 421500 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.271612+00:00"
+    },
+    {
+      "pid": 10185,
+      "startTick": 474728,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "10185 (git) Z 1 10185 10185 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 474728 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "10185 (git) Z 1 10185 10185 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 474728 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.271684+00:00"
+    },
+    {
+      "pid": 10244,
+      "startTick": 475773,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "10244 (git) Z 1 10244 10244 0 -1 4227404 131 0 0 0 0 0 0 0 20 0 1 0 475773 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "10244 (git) Z 1 10244 10244 0 -1 4227404 131 0 0 0 0 0 0 0 20 0 1 0 475773 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.271862+00:00"
+    },
+    {
+      "pid": 10433,
+      "startTick": 477854,
+      "ppid": 1,
+      "comm": "dotnet",
+      "state": "Z",
+      "statBefore": "10433 (dotnet) Z 1 10339 10339 0 -1 4227340 53675 922829 0 0 2850 648 100309 4785 20 0 1 0 477854 0 0 18446744073709551615 0 0 0 0 0 0 0 4096 214270 0 0 0 17 1 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "10433 (dotnet) Z 1 10339 10339 0 -1 4227340 53675 922829 0 0 2850 648 100309 4785 20 0 1 0 477854 0 0 18446744073709551615 0 0 0 0 0 0 0 4096 214270 0 0 0 17 1 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.271938+00:00",
+      "knownExpectedStartTick": 477854,
+      "knownIdentityMatched": true
+    },
+    {
+      "pid": 11072,
+      "startTick": 508312,
+      "ppid": 1,
+      "comm": "dotnet",
+      "state": "Z",
+      "statBefore": "11072 (dotnet) Z 1 10339 10339 0 -1 4227340 38857 0 0 0 1331 276 0 0 20 0 1 0 508312 0 0 18446744073709551615 0 0 0 0 0 0 0 4096 148734 0 0 0 17 2 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "11072 (dotnet) Z 1 10339 10339 0 -1 4227340 38857 0 0 0 1331 276 0 0 20 0 1 0 508312 0 0 18446744073709551615 0 0 0 0 0 0 0 4096 148734 0 0 0 17 2 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.272011+00:00"
+    },
+    {
+      "pid": 11073,
+      "startTick": 508312,
+      "ppid": 1,
+      "comm": "dotnet",
+      "state": "Z",
+      "statBefore": "11073 (dotnet) Z 1 10339 10339 0 -1 4227340 29788 0 0 0 1311 157 0 0 20 0 1 0 508312 0 0 18446744073709551615 0 0 0 0 0 0 0 4096 148734 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "11073 (dotnet) Z 1 10339 10339 0 -1 4227340 29788 0 0 0 1311 157 0 0 20 0 1 0 508312 0 0 18446744073709551615 0 0 0 0 0 0 0 4096 148734 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.272094+00:00"
+    },
+    {
+      "pid": 12145,
+      "startTick": 551528,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "12145 (git) Z 1 12145 12145 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 551528 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "12145 (git) Z 1 12145 12145 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 551528 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.272163+00:00"
+    },
+    {
+      "pid": 12215,
+      "startTick": 554226,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "12215 (git) Z 1 12215 12215 0 -1 4227404 131 0 0 0 0 0 0 0 20 0 1 0 554226 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 1 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "12215 (git) Z 1 12215 12215 0 -1 4227404 131 0 0 0 0 0 0 0 20 0 1 0 554226 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 1 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.272223+00:00"
+    },
+    {
+      "pid": 12549,
+      "startTick": 556748,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "12549 (git) Z 1 12549 12549 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 556748 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "12549 (git) Z 1 12549 12549 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 556748 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.273249+00:00"
+    },
+    {
+      "pid": 12616,
+      "startTick": 558804,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "12616 (git) Z 1 12616 12616 0 -1 4227404 131 0 0 0 0 0 0 0 20 0 1 0 558804 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 1 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "12616 (git) Z 1 12616 12616 0 -1 4227404 131 0 0 0 0 0 0 0 20 0 1 0 558804 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 1 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.273475+00:00"
+    },
+    {
+      "pid": 13246,
+      "startTick": 602906,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "13246 (git) Z 1 13246 13246 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 602906 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 2 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "13246 (git) Z 1 13246 13246 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 602906 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 2 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.273546+00:00"
+    },
+    {
+      "pid": 13305,
+      "startTick": 604166,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "13305 (git) Z 1 13305 13305 0 -1 4227404 131 0 0 0 0 0 0 0 20 0 1 0 604166 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "13305 (git) Z 1 13305 13305 0 -1 4227404 131 0 0 0 0 0 0 0 20 0 1 0 604166 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.274058+00:00"
+    },
+    {
+      "pid": 14080,
+      "startTick": 660458,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "14080 (git) Z 1 14080 14080 0 -1 4227404 131 0 0 0 0 0 0 0 20 0 1 0 660458 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "14080 (git) Z 1 14080 14080 0 -1 4227404 131 0 0 0 0 0 0 0 20 0 1 0 660458 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.274146+00:00"
+    },
+    {
+      "pid": 14139,
+      "startTick": 663447,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "14139 (git) Z 1 14139 14139 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 663447 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "14139 (git) Z 1 14139 14139 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 663447 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.274222+00:00"
+    },
+    {
+      "pid": 14845,
+      "startTick": 692500,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "14845 (git) Z 1 14845 14845 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 692500 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "14845 (git) Z 1 14845 14845 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 692500 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.274292+00:00"
+    },
+    {
+      "pid": 14937,
+      "startTick": 698364,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "14937 (git) Z 1 14937 14937 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 698364 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "14937 (git) Z 1 14937 14937 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 698364 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.274357+00:00"
+    },
+    {
+      "pid": 15576,
+      "startTick": 715250,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "15576 (git) Z 1 15576 15576 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 715250 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "15576 (git) Z 1 15576 15576 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 715250 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.274433+00:00"
+    },
+    {
+      "pid": 15669,
+      "startTick": 718072,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "15669 (git) Z 1 15669 15669 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 718072 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "15669 (git) Z 1 15669 15669 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 718072 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.274505+00:00"
+    },
+    {
+      "pid": 16434,
+      "startTick": 751735,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "16434 (git) Z 1 16434 16434 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 751735 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 2 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "16434 (git) Z 1 16434 16434 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 751735 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 2 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.274580+00:00"
+    },
+    {
+      "pid": 16493,
+      "startTick": 756806,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "16493 (git) Z 1 16493 16493 0 -1 4227404 131 0 0 0 0 0 0 0 20 0 1 0 756806 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 1 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "16493 (git) Z 1 16493 16493 0 -1 4227404 131 0 0 0 0 0 0 0 20 0 1 0 756806 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 1 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.274651+00:00"
+    },
+    {
+      "pid": 16912,
+      "startTick": 771303,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "16912 (git) Z 1 16912 16912 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 771303 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "16912 (git) Z 1 16912 16912 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 771303 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.274716+00:00"
+    },
+    {
+      "pid": 16991,
+      "startTick": 776917,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "16991 (git) Z 1 16991 16991 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 776917 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "16991 (git) Z 1 16991 16991 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 776917 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.276061+00:00"
+    },
+    {
+      "pid": 17670,
+      "startTick": 800307,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "17670 (git) Z 1 17670 17670 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 800307 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 2 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "17670 (git) Z 1 17670 17670 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 800307 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 2 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.276137+00:00"
+    },
+    {
+      "pid": 17729,
+      "startTick": 801455,
+      "ppid": 1,
+      "comm": "git",
+      "state": "Z",
+      "statBefore": "17729 (git) Z 1 17729 17729 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 801455 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "17729 (git) Z 1 17729 17729 0 -1 4227404 130 0 0 0 0 0 0 0 20 0 1 0 801455 0 0 18446744073709551615 0 0 0 0 0 0 0 0 20487 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.276212+00:00"
+    },
+    {
+      "pid": 17926,
+      "startTick": 804103,
+      "ppid": 1,
+      "comm": "dotnet",
+      "state": "Z",
+      "statBefore": "17926 (dotnet) Z 1 17831 17831 0 -1 4227340 48177 0 0 0 3069 777 0 0 20 0 1 0 804103 0 0 18446744073709551615 0 0 0 0 0 0 0 4096 214270 0 0 0 17 2 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "17926 (dotnet) Z 1 17831 17831 0 -1 4227340 48177 0 0 0 3069 777 0 0 20 0 1 0 804103 0 0 18446744073709551615 0 0 0 0 0 0 0 4096 214270 0 0 0 17 2 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "",
+      "argvCount": 0,
+      "argvSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "exited-nonexecuting",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.276290+00:00"
+    },
+    {
+      "pid": 17948,
+      "startTick": 804756,
+      "ppid": 1,
+      "comm": "VBCSCompiler",
+      "state": "S",
+      "statBefore": "17948 (VBCSCompiler) S 1 17831 17831 0 -1 4194304 1076511 0 0 0 153496 9251 0 0 20 0 18 0 804756 69985787904 91544 18446744073709551615 1 1 0 0 0 0 0 4096 148734 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "17948 (VBCSCompiler) S 1 17831 17831 0 -1 4194304 1076511 0 0 0 153496 9251 0 0 20 0 18 0 804756 69985787904 91544 18446744073709551615 1 1 0 0 0 0 0 4096 148734 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "VBCSCompiler",
+      "argvCount": 2,
+      "argvSha256": "d9c7ed3b933d173ed367d979140a15b745d8e856f5984e946732b7e214fd680a",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "build-infrastructure",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.276397+00:00",
+      "argv": [
+        "/tmp/1536-cloud-tools/dotnet/sdk/10.0.402/Roslyn/bincore/VBCSCompiler",
+        "-pipename:gm7QEMP4QmiqLP6Coo30skQPvZv8SbkiZ25s79SX7hE"
+      ]
+    },
+    {
+      "pid": 18509,
+      "startTick": 851921,
+      "ppid": 1,
+      "comm": "dotnet",
+      "state": "S",
+      "statBefore": "18509 (dotnet) S 1 17831 17831 0 -1 4194560 40585 0 0 0 2043 251 0 0 20 0 20 0 851921 69072838656 48709 18446744073709551615 1 1 0 0 0 0 0 4096 148734 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "18509 (dotnet) S 1 17831 17831 0 -1 4194560 40585 0 0 0 2043 251 0 0 20 0 20 0 851921 69072838656 48709 18446744073709551615 1 1 0 0 0 0 0 4096 148734 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "dotnet",
+      "argvCount": 7,
+      "argvSha256": "02928e37096a2c96092d7e74910f3a5a77a4425a335311d6b46cc7e31dec915b",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "build-infrastructure",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.276515+00:00",
+      "argv": [
+        "/tmp/1536-cloud-tools/dotnet/dotnet",
+        "/tmp/1536-cloud-tools/dotnet/sdk/10.0.402/MSBuild.dll",
+        "/noautoresponse",
+        "/nologo",
+        "/nodemode:1",
+        "/nodeReuse:true",
+        "/low:false"
+      ]
+    },
+    {
+      "pid": 18510,
+      "startTick": 851921,
+      "ppid": 1,
+      "comm": "dotnet",
+      "state": "S",
+      "statBefore": "18510 (dotnet) S 1 17831 17831 0 -1 4194560 46678 0 0 0 2984 462 0 0 20 0 20 0 851921 69206503424 54529 18446744073709551615 1 1 0 0 0 0 0 4096 148734 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "18510 (dotnet) S 1 17831 17831 0 -1 4194560 46678 0 0 0 2984 462 0 0 20 0 20 0 851921 69206503424 54529 18446744073709551615 1 1 0 0 0 0 0 4096 148734 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "dotnet",
+      "argvCount": 7,
+      "argvSha256": "02928e37096a2c96092d7e74910f3a5a77a4425a335311d6b46cc7e31dec915b",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "build-infrastructure",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.276619+00:00",
+      "argv": [
+        "/tmp/1536-cloud-tools/dotnet/dotnet",
+        "/tmp/1536-cloud-tools/dotnet/sdk/10.0.402/MSBuild.dll",
+        "/noautoresponse",
+        "/nologo",
+        "/nodemode:1",
+        "/nodeReuse:true",
+        "/low:false"
+      ]
+    },
+    {
+      "pid": 18524,
+      "startTick": 851927,
+      "ppid": 1,
+      "comm": "dotnet",
+      "state": "S",
+      "statBefore": "18524 (dotnet) S 1 17831 17831 0 -1 4194560 30394 0 0 0 1809 207 0 0 20 0 18 0 851927 68987981824 38543 18446744073709551615 1 1 0 0 0 0 0 4096 148734 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "18524 (dotnet) S 1 17831 17831 0 -1 4194560 30394 0 0 0 1809 207 0 0 20 0 18 0 851927 68987981824 38543 18446744073709551615 1 1 0 0 0 0 0 4096 148734 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "dotnet",
+      "argvCount": 7,
+      "argvSha256": "02928e37096a2c96092d7e74910f3a5a77a4425a335311d6b46cc7e31dec915b",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "build-infrastructure",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.276719+00:00",
+      "argv": [
+        "/tmp/1536-cloud-tools/dotnet/dotnet",
+        "/tmp/1536-cloud-tools/dotnet/sdk/10.0.402/MSBuild.dll",
+        "/noautoresponse",
+        "/nologo",
+        "/nodemode:1",
+        "/nodeReuse:true",
+        "/low:false"
+      ]
+    },
+    {
+      "pid": 19432,
+      "startTick": 906590,
+      "ppid": 521,
+      "comm": "codex-linux-san",
+      "state": "S",
+      "statBefore": "19432 (codex-linux-san) S 521 19432 19432 0 -1 4194560 7166 258 0 0 2 8 0 0 20 0 1 0 906590 290762752 3680 18446744073709551615 1 1 0 0 0 0 0 4096 17479 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "19432 (codex-linux-san) S 521 19432 19432 0 -1 4194560 7166 258 0 0 2 8 0 0 20 0 1 0 906590 290762752 3680 18446744073709551615 1 1 0 0 0 0 0 4096 17479 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "codex-linux-sandbox",
+      "argvCount": 12,
+      "argvSha256": "707516690ccb30642541a72e96b1d4c5b361b74cdd4ad8ef2d4d742302f14e00",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "other-readable",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.276914+00:00"
+    },
+    {
+      "pid": 19434,
+      "startTick": 906602,
+      "ppid": 19432,
+      "comm": "bwrap",
+      "state": "S",
+      "statBefore": "19434 (bwrap) S 19432 19434 19432 0 -1 4194560 351 0 0 0 0 0 0 0 20 0 1 0 906602 3674112 192 18446744073709551615 1 1 0 0 0 0 65536 4096 0 0 0 0 17 2 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "19434 (bwrap) S 19432 19434 19432 0 -1 4194560 351 0 0 0 0 0 0 0 20 0 1 0 906602 3674112 192 18446744073709551615 1 1 0 0 0 0 65536 4096 0 0 0 0 17 2 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "bwrap",
+      "argvCount": 96,
+      "argvSha256": "28a0e81c9d158a06f9995f3f64bf0e2f75343745c1fab49111df30bb1bdcf3a7",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "other-readable",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.277244+00:00"
+    },
+    {
+      "pid": 19435,
+      "startTick": 906603,
+      "ppid": 19434,
+      "comm": "codex",
+      "state": "S",
+      "statBefore": "19435 (codex) S 19434 19435 19435 0 -1 4194560 3699 0 0 0 0 5 0 0 20 0 1 0 906603 290762752 3552 18446744073709551615 140165153275904 140165376731414 140737039027792 0 0 0 0 4096 17479 1 0 0 17 4 0 0 0 0 0 140165426229784 140165431819344 93825376100352 140737039036150 140737039037399 140737039037399 140737039040483 0\n",
+      "statAfter": "19435 (codex) S 19434 19435 19435 0 -1 4194560 3699 0 0 0 0 5 0 0 20 0 1 0 906603 290762752 3552 18446744073709551615 140165153275904 140165376731414 140737039027792 0 0 0 0 4096 17479 1 0 0 17 4 0 0 0 0 0 140165426229784 140165431819344 93825376100352 140737039036150 140737039037399 140737039037399 140737039040483 0\n",
+      "argv0": "codex-linux-sandbox",
+      "argvCount": 12,
+      "argvSha256": "7642a7c710a6aba6444be513228e11835be1cb1fd7e16f0c552d1cbba6869c7c",
+      "exe": {
+        "path": "/opt/codex/bin/codex",
+        "access": "READ"
+      },
+      "classification": "other-readable",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.279828+00:00"
+    },
+    {
+      "pid": 19436,
+      "startTick": 906609,
+      "ppid": 19435,
+      "comm": "python",
+      "state": "R",
+      "statBefore": "19436 (python) R 19435 19435 19435 0 -1 4194560 3778 767 0 0 10 8 0 0 20 0 1 0 906609 38813696 2848 18446744073709551615 4329472 32290168 140731653353072 0 0 0 0 16781312 2 0 0 0 17 0 0 0 0 0 0 23068672 32290168 365101056 140731653358158 140731653358483 140731653358483 140731653361583 0\n",
+      "statAfter": "19436 (python) R 19435 19435 19435 0 -1 4194560 3778 767 0 0 10 8 0 0 20 0 1 0 906609 38813696 2848 18446744073709551615 4329472 32290168 140731653353072 0 0 0 0 16781312 2 0 0 0 17 0 0 0 0 0 0 23068672 32290168 365101056 140731653358158 140731653358483 140731653358483 140731653361583 0\n",
+      "argv0": "python",
+      "argvCount": 10,
+      "argvSha256": "477f7bd851e23d0a2f0ca0876dfac3dcf1aece70cc1173d056cf589717973468",
+      "exe": {
+        "path": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "access": "READ"
+      },
+      "classification": "observer-self",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.280043+00:00",
+      "knownExpectedStartTick": 906609,
+      "knownIdentityMatched": true
+    }
+  ],
+  "confirmedGone": [],
+  "unknown": [],
+  "knownVisibility": [
+    {
+      "pid": 10433,
+      "expectedStartTick": 477854,
+      "status": "MATCH",
+      "classification": "exited-nonexecuting"
+    },
+    {
+      "pid": 19436,
+      "expectedStartTick": 906609,
+      "status": "MATCH",
+      "classification": "observer-self"
+    }
+  ],
+  "activeTaskGameTestProcesses": [],
+  "buildInfrastructure": [
+    {
+      "pid": 17948,
+      "startTick": 804756,
+      "ppid": 1,
+      "comm": "VBCSCompiler",
+      "state": "S",
+      "statBefore": "17948 (VBCSCompiler) S 1 17831 17831 0 -1 4194304 1076511 0 0 0 153496 9251 0 0 20 0 18 0 804756 69985787904 91544 18446744073709551615 1 1 0 0 0 0 0 4096 148734 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "17948 (VBCSCompiler) S 1 17831 17831 0 -1 4194304 1076511 0 0 0 153496 9251 0 0 20 0 18 0 804756 69985787904 91544 18446744073709551615 1 1 0 0 0 0 0 4096 148734 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "VBCSCompiler",
+      "argvCount": 2,
+      "argvSha256": "d9c7ed3b933d173ed367d979140a15b745d8e856f5984e946732b7e214fd680a",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "build-infrastructure",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.276397+00:00",
+      "argv": [
+        "/tmp/1536-cloud-tools/dotnet/sdk/10.0.402/Roslyn/bincore/VBCSCompiler",
+        "-pipename:gm7QEMP4QmiqLP6Coo30skQPvZv8SbkiZ25s79SX7hE"
+      ]
+    },
+    {
+      "pid": 18509,
+      "startTick": 851921,
+      "ppid": 1,
+      "comm": "dotnet",
+      "state": "S",
+      "statBefore": "18509 (dotnet) S 1 17831 17831 0 -1 4194560 40585 0 0 0 2043 251 0 0 20 0 20 0 851921 69072838656 48709 18446744073709551615 1 1 0 0 0 0 0 4096 148734 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "18509 (dotnet) S 1 17831 17831 0 -1 4194560 40585 0 0 0 2043 251 0 0 20 0 20 0 851921 69072838656 48709 18446744073709551615 1 1 0 0 0 0 0 4096 148734 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "dotnet",
+      "argvCount": 7,
+      "argvSha256": "02928e37096a2c96092d7e74910f3a5a77a4425a335311d6b46cc7e31dec915b",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "build-infrastructure",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.276515+00:00",
+      "argv": [
+        "/tmp/1536-cloud-tools/dotnet/dotnet",
+        "/tmp/1536-cloud-tools/dotnet/sdk/10.0.402/MSBuild.dll",
+        "/noautoresponse",
+        "/nologo",
+        "/nodemode:1",
+        "/nodeReuse:true",
+        "/low:false"
+      ]
+    },
+    {
+      "pid": 18510,
+      "startTick": 851921,
+      "ppid": 1,
+      "comm": "dotnet",
+      "state": "S",
+      "statBefore": "18510 (dotnet) S 1 17831 17831 0 -1 4194560 46678 0 0 0 2984 462 0 0 20 0 20 0 851921 69206503424 54529 18446744073709551615 1 1 0 0 0 0 0 4096 148734 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "18510 (dotnet) S 1 17831 17831 0 -1 4194560 46678 0 0 0 2984 462 0 0 20 0 20 0 851921 69206503424 54529 18446744073709551615 1 1 0 0 0 0 0 4096 148734 0 0 0 17 4 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "dotnet",
+      "argvCount": 7,
+      "argvSha256": "02928e37096a2c96092d7e74910f3a5a77a4425a335311d6b46cc7e31dec915b",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "build-infrastructure",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.276619+00:00",
+      "argv": [
+        "/tmp/1536-cloud-tools/dotnet/dotnet",
+        "/tmp/1536-cloud-tools/dotnet/sdk/10.0.402/MSBuild.dll",
+        "/noautoresponse",
+        "/nologo",
+        "/nodemode:1",
+        "/nodeReuse:true",
+        "/low:false"
+      ]
+    },
+    {
+      "pid": 18524,
+      "startTick": 851927,
+      "ppid": 1,
+      "comm": "dotnet",
+      "state": "S",
+      "statBefore": "18524 (dotnet) S 1 17831 17831 0 -1 4194560 30394 0 0 0 1809 207 0 0 20 0 18 0 851927 68987981824 38543 18446744073709551615 1 1 0 0 0 0 0 4096 148734 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "statAfter": "18524 (dotnet) S 1 17831 17831 0 -1 4194560 30394 0 0 0 1809 207 0 0 20 0 18 0 851927 68987981824 38543 18446744073709551615 1 1 0 0 0 0 0 4096 148734 0 0 0 17 3 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "argv0": "dotnet",
+      "argvCount": 7,
+      "argvSha256": "02928e37096a2c96092d7e74910f3a5a77a4425a335311d6b46cc7e31dec915b",
+      "exe": {
+        "access": "UNAVAILABLE_OPTIONAL",
+        "errno": 13,
+        "error": "PermissionError"
+      },
+      "classification": "build-infrastructure",
+      "reasons": [],
+      "readUtc": "2026-10-18T11:54:18.276719+00:00",
+      "argv": [
+        "/tmp/1536-cloud-tools/dotnet/dotnet",
+        "/tmp/1536-cloud-tools/dotnet/sdk/10.0.402/MSBuild.dll",
+        "/noautoresponse",
+        "/nologo",
+        "/nodemode:1",
+        "/nodeReuse:true",
+        "/low:false"
+      ]
+    }
+  ],
+  "ownedRoots": [],
+  "cleanBoundary": true,
+  "limitations": "Dated boundary only. Optional exe-link errors never suppress argv/stat classification. Non-target argv is hashed rather than retained to avoid unrelated command arguments. No historical snapshot reconstruction, process intervention, runtime/test execution or external state access."
+}

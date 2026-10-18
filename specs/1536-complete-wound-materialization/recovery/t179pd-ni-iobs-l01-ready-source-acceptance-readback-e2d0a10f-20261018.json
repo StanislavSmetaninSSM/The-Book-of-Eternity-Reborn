@@ -1,0 +1,72 @@
+{
+  "kind": "INDEPENDENT_READY_DIAGNOSTIC_SOURCE_ACCEPTANCE_METADATA_READBACK",
+  "checkedUtc": "2026-10-18T11:37:41.319155+00:00",
+  "carrier": "e2d0a10f6b12cc1947ef9c9f71fd600146fcec2d",
+  "acceptedSourceCandidate": "7cad7e3b22df9e06e045bbde9068599906041bc1",
+  "metadataOnlyPathsRecovered": 9,
+  "allBytesSha256GitBlobModesMatched": true,
+  "sourcePinsUnchanged": 98,
+  "sourcePinDigest": "f5c13d343de221bc86aaf3ec100869ea6e1cafdaae59b3006baa5642de328e8e",
+  "receiptSha256": "25c892191d6994c9af2954d849e0cf68358d67510846a9ccad2e723c27a88003",
+  "bothCheckoutsClean": true,
+  "remoteExact": true,
+  "sourceReview": {
+    "verdict": "ACCEPT_MINIMAL_READY_DIAGNOSTIC_SOURCE_AND_NAMED_ZERO4_PLAN",
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "candidate": "7cad7e3b22df9e06e045bbde9068599906041bc1",
+    "findings": [],
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-diagnostic-source-independent-review-7cad7e3b-20261018.json",
+        "sha256": "aa1d989129e8bfcb33df89d4e31d298c8ba15123fcf8ff58e019cf181f9b2187",
+        "bytes": 11201
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-diagnostic-source-independent-review-7cad7e3b-20261018.md",
+        "sha256": "2128019552216c6f9908245480703d57776c96455149f94042885460343ad52d",
+        "bytes": 3061
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-diagnostic-source-independent-check-7cad7e3b-20261018.json",
+        "sha256": "9b3d1990e13151db8a6c94829d4849f2d6dd8df0bbdbcfcaf44ceff643af116e",
+        "bytes": 12758
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-diagnostic-source-blocker-8e1fedfe-20261018.json",
+        "sha256": "b225b8838246bd4f4238341f664c003be7a61e57db023ac3dd40d42b8d6b7e4f",
+        "bytes": 1212
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-diagnostic-source-checker-7cad7e3b-20261018.py",
+        "sha256": "ab93fb9d0edc5e75113144da60500cf876e9b10c1015ae43f0abf95de7375688",
+        "bytes": 15419
+      }
+    ]
+  },
+  "freshPreparation": "REQUIRED_AFTER_SOURCE_ACCEPTANCE",
+  "release": {
+    "status": "NO_ACTUAL_NAMED_ZERO4_ONLY",
+    "mode": null
+  },
+  "findings": [],
+  "eligibility": "Named ZERO preparation only. Catalog running is not reviewed completion. No actual release or PREP acceptance.",
+  "limits": "Read-only saved source/metadata/recovery check; no runtime/observer execution or current global process absence assertion.",
+  "namedZeroRelease": {
+    "labels": {
+      "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-ready-diag-cloud-813f1057",
+      "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-ready-diag-cloud-813f1057",
+      "corrective-plan": "t179pd-ni-iobs-l01-process-prep-first-corrective-plan-ready-diag-cloud-813f1057",
+      "remaining-plan": "t179pd-ni-iobs-l01-process-prep-first-remaining-plan-ready-diag-cloud-813f1057"
+    },
+    "order": [
+      "catalog",
+      "plan",
+      "corrective-plan",
+      "remaining-plan"
+    ],
+    "conditions": "Only separate explicit invocations on saved acceptance SHA. Each previous original native0/ZERO plus exact inventory checks before next; dated mandatory v2 before/after census. Any failure freezes without retry/advance. Fresh BOTH/catalog then whole16/33/57, corrective1/2/2 and remaining4/5/13 PlanOnly-NoBuild with exact catalog continuity.",
+    "actualRelease": false
+  },
+  "packetAndCloudGatesAgree": true
+}
