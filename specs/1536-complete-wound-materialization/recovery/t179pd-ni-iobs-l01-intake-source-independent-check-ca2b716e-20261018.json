@@ -1,0 +1,83 @@
+{
+  "kind": "CONNECTED_INTAKE_FIXTURE_SOURCE_CLOSURE",
+  "carrier": "ca2b716e72908488a6a7555c99069150500c2513",
+  "priorCarrier": "bd799b19adc0d0c2591b40ea4be2003d2d4ad4f1",
+  "priorDeltaSupport": {
+    "path": "/tmp/t179pd-ni-iobs-l01-intake-fixture-source-check-bd799b19-20261018.json",
+    "bytes": 4412,
+    "sha256": "2659d60168e1b658e3d5543467eeebcd28902e407dc7fc96c631e769ce3ca86e"
+  },
+  "receipt": {
+    "path": "/tmp/t179pd-ni-iobs-l01-optional-reader-delta-github-ca2b716e-20261018.json",
+    "bytes": 8558,
+    "sha256": "53f1be64b87ed1cd7b4a3aba1126ecec007138d49bfa9d2d7e8c6fc4e63ad9ce"
+  },
+  "composition": {
+    "path": "/tmp/t179pd3d-root-recovery-composition-ca2b716e-20261017.json",
+    "bytes": 37544,
+    "sha256": "add7472d9cefa9accce9f16e65280c778d8845dc2825a93f8be27102708edecf"
+  },
+  "newPhysicalFiles": 9,
+  "newChangedPaths": 5,
+  "newBytesModeBlobGitShowExact": true,
+  "sourcePinCount": 98,
+  "pinDigest": "1315ce330e8767b6c6b64b62c686f3df41506114fcde12076ab58799db1dda1f",
+  "ledger": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-method-row-ledger-20261018.json",
+    "sha256": "7ac13b5d22d94a8a953590071e4c824b5e566486033de059966ed453b6d88509",
+    "phase": "IMMUTABLE_SOURCE_ACCEPTANCE_LEDGER_AT_COMPILED_45CC_BEFORE_PREP_METADATA",
+    "currentRuntimePointer": "preparationCurrent + runtime + actualScopes; ledger remains exact immutable build-entry/source inventory."
+  },
+  "onlyChangedContentPin": {
+    "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs",
+    "bytes": 27240,
+    "sha256": "d8fa7b3004266329f313834bf5c2c75187b327addd74f458715dc9eef1fd1766",
+    "gitBlob": "381ff1812f6370433de48f97f3a837cf69bd7554",
+    "mode": "100644",
+    "binding": "CORRECTED_WARNING_ABSENT_FIXTURE_AND_UNRUN_DERIVATIVE_TOOLS_PRODUCTION_UNCHANGED"
+  },
+  "S09": "CLOSED_SOURCE_ONLY: existing ordinary optional read plus real tuple, required soul, absent setup/omission/physical observations; no signed-absence authority claimed.",
+  "targetMethodDeclarationsAndAssertionTailUnchanged": true,
+  "productionTestSupportCatalogSelectorsToolsUnchangedFromBd": true,
+  "tools": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-preparation-run.py",
+      "bytes": 10099,
+      "sha256": "f24fcc1960551abba6ef2489decb38e485d51b42a3b08d8ec39ca69cf74b9cfb",
+      "gitBlob": "d68caa805a428b2ddbbd9760b96072bd98d9aa82"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-first-run.py",
+      "bytes": 9377,
+      "sha256": "c147ee76084f275f29c6920e2a81ddb66fbff2a786d04a02a878ac56b6b83b85",
+      "gitBlob": "337263028a28a5f9aa3205ccc49a657a968ab9b7"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-whole.py",
+      "bytes": 2342,
+      "sha256": "bf6503ecb8b1006842e66313da7c72fc185b217e54cd44d4ff5a62b864c36c3f",
+      "gitBlob": "34acff73fd7845cced12b8bc75295fada4e2a6eb"
+    }
+  ],
+  "retentionMatrix": {
+    "nullLate2": 2,
+    "nullCut3": 3,
+    "ChangedOrderingNoOp": 1,
+    "pureUnitUnchanged": 15,
+    "guidanceUnchanged": 1,
+    "NoWriteNoOp": 3,
+    "ErrorNoOp": 1
+  },
+  "defaultRetentionProof": "Prior bd support established exact whole JointCompletion inverse; new correction only adds Absent state/assertions and replaces the Warning/Absent-only reader selection. All other scenarios return before every added read/write/assertion/counter; case declarations and original assertion tail remain byte-exact.",
+  "staticSelection": {
+    "wholeOwners": 16,
+    "wholeMethods": 33,
+    "wholeCases": 57,
+    "pendingOwners": 9,
+    "pendingMethods": 17,
+    "pendingCases": 31,
+    "retainedCases": 26
+  },
+  "prepStatus": "NOT_RUN_CURRENT_CORRECTION",
+  "runtimeStatus": "HELD_PENDING_FRESH_PREP_AND_NAMED_ROOT_RELEASE"
+}

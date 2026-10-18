@@ -1,8 +1,8 @@
 {
-  "kind": "NI_IOBS_L01_TEST_ONLY_INITIAL_GM_FIXTURE_CORRECTION_WIP",
+  "kind": "NI_IOBS_L01_CORRECTED_INTAKE_SOURCE_ACCEPTED_FRESH_ZERO_PENDING",
   "sourceBase": "eaea2dde3fd5381d27e86ab9e87c782cd97d9ae0",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
-  "status": "CORRECTED2_AND_REMAINING29_SOURCE_REVIEW_FRESH_PREP_NATIVE_HELD",
+  "status": "ACCEPTED_DELTA_SOURCE_RETENTION26_CURRENT_PREPARATION_AND31ACTUALS_HELD",
   "sourcePins": [
     {
       "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
@@ -794,8 +794,8 @@
   "ledger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-method-row-ledger-20261018.json",
     "sha256": "7ac13b5d22d94a8a953590071e4c824b5e566486033de059966ed453b6d88509",
-    "phase": "IMMUTABLE_SOURCE_ACCEPTANCE_LEDGER_AT_COMPILED_45CC_BEFORE_PREP_METADATA",
-    "currentRuntimePointer": "preparationCurrent + runtime + actualScopes; ledger remains exact immutable build-entry/source inventory."
+    "phase": "CURRENT_CA2B_TEST_ONLY_CORRECTED_FIXTURE_AUTHORING_LEDGER_HASH_EXACT_NOT_HISTORICAL45CC_LEDGER",
+    "currentRuntimePointer": "runtime/currentActualScopes describe corrected fixture (0unrun); historicalCompiled45ccFixtureSourceContext/actualScopes/preparationCurrent retain original26qualified+2fixtureFAIL/old97binding."
   },
   "productDelta": [
     "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
@@ -820,7 +820,7 @@
     "BookOfEternityClient/game_master_daemon.ps1"
   ],
   "originalContractSourceContext": "Frozen447bc map/source ranges and accepted wholevertical report preserved unchanged; this current test packet does not rehash/replace historical contexts.",
-  "review": "Original whole SOURCE/PREP and 26 qualified positives remain immutable; E01 fixture cause accepted. Current delta SOURCE/fixture/selection and retained26 equivalence are pending, then named fresh ZERO/repaired2/remaining29; no product RED or production fix.",
+  "review": "Independent d804/4247/d833 and Root594f accept corrected fixture/selection/tools and exact retained26 source/dependency equivalence. Named fresh catalog and two separately named PlanOnly ZERO phases remain required; current runtime held.",
   "firstCandidate": {
     "category": "fr063-joint-interface-lifecycle-order",
     "project": "integration",
@@ -942,7 +942,7 @@
       "status": "HISTORICAL_EIGHT_INVOCATIONS_NEW_PHASE_UNRUN"
     }
   ],
-  "next": "Original2FAIL are classified invalid fixture prerequisites; current corrected2 and untouched remaining29 stay unrun. No native or fresh preparation authority from this WIP.",
+  "next": "Root resolves this saved clean metadata HEAD and names catalog-only fresh BOTH/discovery. Root separately names whole16/33/57 and remaining9/17/31 plans after successful raw readback. Archive all3 original ZERO records once; no automatic actual/retry.",
   "sourcePinBindingMeaning": "Active authored-source hashes including necessary new helper definitions, not compiled qualification. Old44/9DLL/preparation/first RED context is retained separately. Verification tools are frozen historical source and cannot be reused unchanged for current bindings.",
   "firstActual": {
     "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
@@ -1136,7 +1136,8 @@
       "settlement3",
       "uncertain1"
     ],
-    "scope": "Historical26qualified+2fixtureFAIL preserved at compiled45cc. Current corrected2 are new changed-fixture verification, not same-body replay; remaining29 untouched unrun. No current native permission or whole qualification."
+    "scope": "Historical26qualified+2fixtureFAIL preserved at compiled45cc. Current corrected2 are new changed-fixture verification, not same-body replay; remaining29 untouched unrun. No current native permission or whole qualification.",
+    "retentionStatus": "INDEPENDENT_SOURCE_ACCEPTED26_OLD_PROVENANCE_NO_NEW_BINARY_EQUIVALENCE_CLAIM"
   },
   "currentImplementation": {
     "sourceBase": "afb5a3bb6a2dd7e066946258cbf64334bf965048",
@@ -1337,21 +1338,45 @@
     "status": "EXACT107DELTA55577TREE_COPIED_OPTIONAL_READER_FIX_WIP_PENDING_PUBLICATION"
   },
   "sourceAcceptance": {
-    "candidate": "520e66e418a428223afa4ef2364ec96b28eeac54",
-    "rootDecision": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-source-acceptance-zero-release-520e66e4-20261018.json",
-    "rootDecisionSha256": "82237e443156daf8f3a9d7f6212042873e0b00c18ce316f2bb15f0724feb374c",
-    "sourceOnly": true,
-    "preparation": "UNRUN_UNQUALIFIED",
-    "runtime": "UNRUN_UNQUALIFIED",
-    "rootRelease": "CATALOG_ONLY_AFTER_SEPARATE_NAMED_METADATA_HEAD_ACTIVATION",
-    "supplementalCut01Pin": {
-      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointCaptureCut.cs",
-      "sha256": "f10a4412302ef54e51b9f4334fff9ca21aa2d4d754f24b901ebc6a2df381ba75",
-      "bytes": 15482,
-      "gitBlob": "8ba4fe0991e4128affe95b4e109b2a31db268b6a",
-      "mode": "100644",
-      "meaning": "Retained affected CUT01 test body; exact baseline447bc/current520e bytes. Adds explicit review-support binding without changing current97 packet."
-    }
+    "phase": "CORRECTED_WARNING_ABSENT_FIXTURE_DELTA",
+    "source": "ACCEPT_MINIMAL_FIXTURE_SELECTION_TOOLS",
+    "retention": "RETAIN26_AT_ORIGINAL_ACTUAL_COMPILED_PROVENANCE",
+    "runtime": "CURRENT_CORRECTED2_AND_REMAINING29_NOT_COMPILED_OR_EXECUTED",
+    "carrier": "ca2b716e72908488a6a7555c99069150500c2513",
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-source-independent-review-ca2b716e-20261018.md",
+        "sha256": "d804e9b9a2898e9f0811eafd63ef2575933452860d792f4cad95c0a3e5292b9c"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-source-independent-review-ca2b716e-20261018.json",
+        "sha256": "424762b5311a52b2b31e1eff5c9849e3aad3f74d223c08bab4f56ef7c56b5497"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-source-independent-check-ca2b716e-20261018.json",
+        "sha256": "d8337a63f75d222c42dd26314bcf595425cdd7848ad021ba24ef83fd1c6d4c80"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-intake-source-acceptance-zero-release-ca2b716e-20261018.json",
+        "sha256": "594fdec64777213c735bb2c57d05f402325aae71257b270c0809acdeb2763d04"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-fixture-source-check-bd799b19-20261018.json",
+        "sha256": "2659d60168e1b658e3d5543467eeebcd28902e407dc7fc96c631e769ce3ca86e"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-optional-reader-delta-github-ca2b716e-20261018.json",
+        "sha256": "53f1be64b87ed1cd7b4a3aba1126ecec007138d49bfa9d2d7e8c6fc4e63ad9ce"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-ca2b716e-20261017.json",
+        "sha256": "add7472d9cefa9accce9f16e65280c778d8845dc2825a93f8be27102708edecf"
+      }
+    ],
+    "sourcePinCount": 98,
+    "sourcePinDigest": "1315ce330e8767b6c6b64b62c686f3df41506114fcde12076ab58799db1dda1f",
+    "ledgerSha256": "7ac13b5d22d94a8a953590071e4c824b5e566486033de059966ed453b6d88509",
+    "limits": "Only named ZERO preparation eligibility; no native release or production change. S09 closed in source only; L02 phase wording reconciled without ledger/source edits."
   },
   "preparationCurrent": {
     "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
@@ -9697,7 +9722,7 @@
         "noWriteNoOpProbe": 3,
         "errorNoOpProbe": 1
       },
-      "status": "AUTHOR_STATIC_CHECKS_PENDING_INDEPENDENT_DELTA_EQUIVALENCE"
+      "status": "INDEPENDENT_ACCEPTED_RETENTION26_AT_OLD_ACTUAL_COMPILED_PROVENANCE"
     },
     "production": "All BookOfEternityClient and GMBridge bytes equal eaea/compiled45cc; no prompt/example/game contract change. No GM updates needed for test-only response setup. All original raw/reviews/history preserved.",
     "sourceOnlyAuthoringCorrections": [
@@ -9708,6 +9733,11 @@
     "publicationNote": {
       "firstAttempt": "Read-only changed-path GitHub recovery HTTP503; partial /tmp/t179pd-ni-iobs-l01-intake-fixture-recovered-bd799b19-20261018 retained; original stderr in tool response, no separate first stderr file claimed.",
       "verifiedRetry": "Exact same read-only recovery into new v2 clean directory succeeded25files/all21paths; Root full107/55577tree accepted. Not a push/build/native failure or retry."
+    },
+    "sourceOnlyS09Finding": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-fixture-source-check-bd799b19-20261018.json",
+      "sha256": "2659d60168e1b658e3d5543467eeebcd28902e407dc7fc96c631e769ce3ca86e",
+      "status": "HISTORICAL_MATERIAL_SOURCE_ONLY_CLOSED_CA2B_NO_NATIVE_FAIL"
     }
   },
   "preparationRequired": {
@@ -9717,5 +9747,22 @@
     "note": "Current output binaries still historical45cc; no fresh output byte-equivalence assumption before build. New inventory/counts observed afresh."
   },
   "actualScopesBinding": "HISTORICAL_COMPILED45CC_SIX_FIRST_MODES_26QUALIFIED_AND_2INVALID_FIXTURE_FAILURES_NOT_CURRENT_CORRECTED_FIXTURE",
-  "currentActualScopes": {}
+  "currentActualScopes": {},
+  "historicalWholeSourceAcceptanceAt520e": {
+    "candidate": "520e66e418a428223afa4ef2364ec96b28eeac54",
+    "rootDecision": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-source-acceptance-zero-release-520e66e4-20261018.json",
+    "rootDecisionSha256": "82237e443156daf8f3a9d7f6212042873e0b00c18ce316f2bb15f0724feb374c",
+    "sourceOnly": true,
+    "preparation": "UNRUN_UNQUALIFIED",
+    "runtime": "UNRUN_UNQUALIFIED",
+    "rootRelease": "CATALOG_ONLY_AFTER_SEPARATE_NAMED_METADATA_HEAD_ACTIVATION",
+    "supplementalCut01Pin": {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointCaptureCut.cs",
+      "sha256": "f10a4412302ef54e51b9f4334fff9ca21aa2d4d754f24b901ebc6a2df381ba75",
+      "bytes": 15482,
+      "gitBlob": "8ba4fe0991e4128affe95b4e109b2a31db268b6a",
+      "mode": "100644",
+      "meaning": "Retained affected CUT01 test body; exact baseline447bc/current520e bytes. Adds explicit review-support binding without changing current97 packet."
+    }
+  }
 }

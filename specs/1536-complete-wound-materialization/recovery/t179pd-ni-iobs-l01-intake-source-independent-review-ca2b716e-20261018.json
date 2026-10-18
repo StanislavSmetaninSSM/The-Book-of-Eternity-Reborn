@@ -1,0 +1,75 @@
+{
+  "kind": "INDEPENDENT_CONNECTED_FIXTURE_SELECTION_TOOL_SOURCE_REVIEW",
+  "carrier": "ca2b716e72908488a6a7555c99069150500c2513",
+  "codeBase": "eaea2dde3fd5381d27e86ab9e87c782cd97d9ae0",
+  "sourceVerdict": "ACCEPT_AFFECTED_TEST_FIXTURE_AND_TOOL_SOURCE_FOR_NAMED_ZERO_ONLY",
+  "fixtureVerdict": "ACCEPT_CORRECTED_WARNING_ABSENT_SOURCE_S09_CLOSED",
+  "selectionVerdict": "ACCEPT_STATIC_16_33_57_AND_PENDING_9_17_31_SUBJECT_TO_FRESH_DISCOVERY",
+  "retentionVerdict": "RETAIN_PRIOR26_QUALIFIED_CASES_AT_ORIGINAL_ACTUAL_AND_COMPILED_PROVENANCE",
+  "prepVerdict": "CURRENT_FRESH_PREPARATION_NOT_YET_RUN",
+  "runtimeVerdict": "HELD_NO_ACTUAL_AUTHORITY_FROM_THIS_REPORT",
+  "support": {
+    "path": "/tmp/t179pd-ni-iobs-l01-intake-source-independent-check-ca2b716e-20261018.json",
+    "bytes": 3903,
+    "sha256": "d8337a63f75d222c42dd26314bcf595425cdd7848ad021ba24ef83fd1c6d4c80"
+  },
+  "scope": "Only eaea→bd fixture/category/controller delta and bd→ca2b optional-reader correction; retained whole product/source/evidence was not replayed.",
+  "findings": [
+    {
+      "id": "NI-IOBS-S09",
+      "severity": "MATERIAL_FIXTURE",
+      "historicalCarrier": "bd799b19adc0d0c2591b40ea4be2003d2d4ad4f1",
+      "status": "CLOSED_IN_CA2B_SOURCE_NOT_RUNTIME",
+      "fact": "Observed-optional signed absence cannot cover I outside closed OriginalPathPresenceV1. Current ordinary optional selection uses real same-tuple required-soul original read; Absent is established by genuine pre-Stage physical deletion, absent declared/covered I and first/corrected physical absence. No schema expansion."
+    },
+    {
+      "id": "NI-IOBS-L02",
+      "severity": "LOW_METADATA",
+      "status": "NEXT_NORMAL_METADATA_RECONCILIATION",
+      "fact": "packet.ledger.phase still names compiled45cc even though current hash correctly binds changed ca2b ledger. Current WIP/runtime fields distinguish uncompiled/unrun; use current-ledger or explicit historical wording in the next normal metadata checkpoint. No extra source/native cycle required."
+    }
+  ],
+  "fixtureAssessment": [
+    "Warning seed is authored before genuine Stage43 and reused for FIRST/corrected public output. Same-tuple original bytes are only a readonly oracle, never authoring input.",
+    "Absent removes I before genuine original, confirms real absence/manifest omission, removes first Ready.filesModified I after public setup and reads every retained declared output before Ready-last. Corrected public dictionary omits I; physical readback precedes correlated Ready-last.",
+    "All method identities, scenario InlineData and target full completion/no-write/mtime/ordered-warning assertions remain unchanged. Strict cleanup ownership is unchanged.",
+    "All production/TestSupport bytes remain equal to the prior accepted source. The public reader dependency is now explicitly pinned; no production presence or resubmission rule changed."
+  ],
+  "retentionMatrix": {
+    "nullLate2": 2,
+    "nullCut3": 3,
+    "ChangedOrderingNoOp": 1,
+    "pureUnitUnchanged": 15,
+    "guidanceUnchanged": 1,
+    "NoWriteNoOp": 3,
+    "ErrorNoOp": 1
+  },
+  "selection": {
+    "wholeOwners": 16,
+    "wholeMethods": 33,
+    "wholeCases": 57,
+    "pendingOwners": 9,
+    "pendingMethods": 17,
+    "pendingCases": 31,
+    "retainedCases": 26
+  },
+  "toolAssessment": [
+    "Preparation allows only separately named catalog, whole PlanOnly-NoBuild and remaining PlanOnly-NoBuild; dependent plans bind successful catalog source/binaries/all-output inventory.",
+    "Actual derivative admits only repaired2 and the eight unrun groups29; retained26 cannot be selected by mode. Each mode has a distinct exclusive FIRST sentinel, fixed semantic category selection, NoBuild and complete current output-set/hash comparison to fresh preparation.",
+    "Original native record/stdout/process/source/ledger/selection/result evidence is recorded before utility qualification. The unchanged archiver includes exact-selected-scope.json and all result/retained-child files. No automatic next mode, retry or build in actual recorder."
+  ],
+  "eligibleNext": [
+    "Root may separately name fresh catalog/BOTH zero execution.",
+    "After catalog native0, separately name whole16/33/57 and pending9/17/31 zero-execution plans under unchanged source/output pins.",
+    "Freeze/read back fresh preparation; only then separately consider repaired2 actual release, followed by remaining29 according to observed outcomes. Any unexpected FIRST outcome must be retained and stop advancement."
+  ],
+  "history": [
+    "Original live6 remains native1/4PASS2FAIL; failed target cases were invalid fixture prerequisites, not product RED.",
+    "Prior26 positive cases retain their original actual/compiled identity; no current-assembly execution is claimed.",
+    "Historical source acceptance and S09 source-only authoring error remain immutable."
+  ],
+  "limits": [
+    "Static acceptance is not a fresh build/discovery result or new runtime evidence.",
+    "No complete NI/HOT/F1/M3/T197/Windows/CI/ZIP/A3 acceptance. No repository or native mutation by reviewer."
+  ]
+}
