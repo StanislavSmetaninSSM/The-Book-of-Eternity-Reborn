@@ -1,3 +1,7 @@
+## T179-Pd-NI-IOBS-L01 — prep independent acceptance; qualified47/57 (2026-10-18)
+
+Independent Astra XHigh prep verdict: ACCEPT_PREP_ONLY. Original evidence and actual/compiled bindings retained. Save/recover acceptance and readback; only separately named integrity4 after clean v2 preflight. Original integrity4 unqualified4PASS / uncertain1 FAIL, seven old fixture failures and old66529 UNKNOWN/unavailable immutable. Ready/once-only/exact owned transition and unchanged budgets preserved. All broader holds remain. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — borrowed lease fresh ZERO4 native0; PREP pending (2026-10-18)
 
 catalog native0/ZERO 487.778s, plan native0/ZERO 31.966s, corrective-plan native0/ZERO 22.615s, remaining-plan native0/ZERO 24.266s. Whole16/33/57, corrective2/2/5, newcrash1/1/5;43 original chains and all dated v2 boundaries saved. No actual tests executed. Retain47 and all originals. Independent fresh PREP required before each separate actual gate; old66529 UNKNOWN/unavailable unchanged. All broader holds remain. Following sections historical.

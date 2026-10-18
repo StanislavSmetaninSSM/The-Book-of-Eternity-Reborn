@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_BORROWED_LEASE_SOURCE_CANDIDATE",
-  "status": "BORROWED_LEASE_ZERO4_NATIVE0_INDEPENDENT_PREP_PENDING",
+  "status": "QUALIFIED47_OF57_BORROWED_LEASE_PREP_ACCEPTED",
   "sourceBase": "bb99804e8c7124e4c625ea7557d61cdaa93a8035",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
   "sourcePins": [
@@ -895,10 +895,23 @@
   "gmDisposition": "Client-owned lease composition and fixture oracle/observation only; no GM-authored capability, schema, prompt, example, manifest or daemon contract changes.",
   "oldCorrectedCrash": "Old environment session66529 remainsUNKNOWN, bytes unavailable. Separate new qualification only after corrected SOURCE/fresh PREP/named release, independent disposable fixtures/new genuine children; no old environment/process or real save operation.",
   "namedActualRelease": {
-    "status": "NONE_FRESH_INDEPENDENT_PREP_PENDING",
-    "mode": null
+    "status": "SEPARATELY_NAMED_AFTER_SAVED_ACCEPTANCE_RECOVERY_AND_IMMEDIATE_CLEAN_V2_CENSUS",
+    "mode": "integrity4",
+    "label": "t179pd-ni-iobs-l01-process-first-integrity4-borrowed-lease-cloud-813f1057",
+    "compiledSource": "3ed6a8f3c0b944777ef05f2a0095431ec63f6664",
+    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-borrowed-lease-cloud-813f1057/record.json",
+    "expectedCases": 4,
+    "category": "fr063-joint-interface-current-integrity",
+    "methods": [
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback",
+        "cases": 4
+      }
+    ],
+    "conditions": "After acceptance saved/pushed/exactremote/fullcleanGitHub recovery and metadata readback, immediate clean authoritative v2 preflight then one fixed NoBuild/FIRST invocation. Preserve original outcome then immediate after-boundary/whole archive/inventories/cleanup. Unexpected outcome freezes affected set for independent diagnosis; no automatic next/retry; no repo mutation during actual. Disposable per-test GUID root/new nonce/genuine children only.",
+    "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED_NOT_RECOVERED_OR_RETRIED"
   },
-  "next": "Save/recover ZERO4 originals; independent fresh PREP before separately named integrity4/uncertain1/newcrash5 actuals. Retain47 provenance and frozen originals/old66529 UNKNOWN.",
+  "next": "Save/recover acceptance and readback; only separately named integrity4 after clean v2 preflight.",
   "sourceReview": {
     "verdict": "ACCEPT_BORROWED_LEASE_SOURCE_AND_NAMED_ZERO4_ONLY",
     "model": "gpt-6-astra",
@@ -1221,11 +1234,40 @@
     }
   },
   "freshPreparationAcceptance": {
-    "status": "PENDING_FOR_BORROWED_LEASE_CANDIDATE",
-    "previousOriginal": {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-before-borrowed-lease-20261018.json",
-      "sha256": "b33c8e20d033760925f57e45cb71460423989f0095c1492444a7e2e27e1ded8d",
-      "bytes": 60552
+    "verdict": "ACCEPT_PREP_ONLY",
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/check_l01_borrowed_lease_prep.py",
+        "sha256": "0680218241620dcc876d280c6754adb3adf8bccd4a719893ffdcca3060c329d5",
+        "bytes": 24453
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-prep-independent-check-ee3ed59c-20261018.json",
+        "sha256": "6c3918f7492d7806d24baff025f340a2689a30ec99383167e644e8068cc70784",
+        "bytes": 19948
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-prep-independent-review-20261018.json",
+        "sha256": "5bafe1323a3d7a8e3418c3242d2fc4f5682db35b9cd2cb58bab90ecce055bb80",
+        "bytes": 21309
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-prep-independent-review-20261018.md",
+        "sha256": "e56bff2fc0a7bc683419471cc2db43a08d79af420e24a95c29fa2b74a5448b1f",
+        "bytes": 4060
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-prep-warning-comparison-20261018.json",
+        "sha256": "db818953ec8777a8d85e5250e00bf67fab1eb16765c8485574918e43e97f110d",
+        "bytes": 447
+      }
+    ],
+    "candidateRecovery": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-prep-candidate-recovery-ee3ed59c-20261018.json",
+      "sha256": "6ae4503051feda8d5ef5cd95e68ab01f7682cc69f4196ce7c097ae7946ab55c3",
+      "bytes": 23866
     }
   },
   "currentBlockerHandoff": [

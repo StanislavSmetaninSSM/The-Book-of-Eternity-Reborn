@@ -1,0 +1,17 @@
+{
+  "kind": "READ_ONLY_WARNING_COMPARISON_COORDINATES_NORMALIZED",
+  "baselineCompiled": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
+  "currentCompiled": "3ed6a8f3c0b944777ef05f2a0095431ec63f6664",
+  "results": {
+    "Build-integration": {
+      "sameIgnoringSourceCoordinates": true,
+      "removed": [],
+      "added": []
+    },
+    "Build-unit": {
+      "sameIgnoringSourceCoordinates": true,
+      "removed": [],
+      "added": []
+    }
+  }
+}
