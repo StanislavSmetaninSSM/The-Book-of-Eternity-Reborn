@@ -1,8 +1,8 @@
 {
-  "kind": "NI_IOBS_L01_ORIGINAL_FRESH_ZERO_PREPARATION_SAVED_PENDING_INDEPENDENT_QUALIFICATION",
+  "kind": "NI_IOBS_L01_SOURCE_AND_FRESH_ZERO_PREPARATION_ACCEPTED_ACTUAL_PENDING",
   "sourceBase": "afb5a3bb6a2dd7e066946258cbf64334bf965048",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
-  "status": "FRESH_BOTH_CATALOG_AND_EXACT_PLAN_ZERO_NATIVE0_0_CURRENT_ACTUAL_UNRUN",
+  "status": "ACCEPTED_FRESH_ZERO_PREPARATION_ALL_CURRENT_ACTUAL_MODES_UNRUN",
   "sourcePins": [
     {
       "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
@@ -944,7 +944,7 @@
       "sha256": "1b82e4e1c3366fb066824e4964c1cc94e7451482aac91b47ecba5e87f52c5cdd",
       "bytes": 8756,
       "role": "Fixed current changed-product fresh BOTH/catalog/discovery then dependent exact PlanOnly-NoBuild; ZERO actual cases",
-      "status": "UNRUN_SOURCE_ONLY_NAMED_ROOT_RELEASE_REQUIRED"
+      "status": "EXECUTED_ONCE_CATALOG_AND_ONCE_DEPENDENT_PLAN_ZERO_CASES_ACCEPTED_PREPARATION"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-first-run.py",
@@ -958,10 +958,10 @@
       "sha256": "bf6503ecb8b1006842e66313da7c72fc185b217e54cd44d4ff5a62b864c36c3f",
       "bytes": 2342,
       "role": "Read-only full original zero/actual process/source/ledger/sentinel/stdout/runner/TRX plus any unresolved retained child roots; no cleanup/classification",
-      "status": "UNRUN_SOURCE_ONLY_NAMED_ROOT_RELEASE_REQUIRED"
+      "status": "READ_ONLY_TWO_INVOCATIONS_CATALOG11_AND_PLAN10_RAW_CHAINS_NO_TEST_EXECUTION"
     }
   ],
-  "next": "Independent qualification of saved original fresh ZERO preparation, then Root separately names protectedLate2 first affected actual. No automatic actual/Plan retry, source edit or other scope.",
+  "next": "Root exact recovered decision readback then separately named protected-late2 FIRST only on compiled45cc. No other mode, rerun, source/build or automatic advance.",
   "sourcePinBindingMeaning": "Active authored-source hashes including necessary new helper definitions, not compiled qualification. Old44/9DLL/preparation/first RED context is retained separately. Verification tools are frozen historical source and cannot be reused unchanged for current bindings.",
   "firstActual": {
     "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
@@ -1140,7 +1140,9 @@
     "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
     "currentProductActualCases": 0,
     "currentProductDiscovery": "807CATALOG_11800METHODS_15SELECTED_33METHODS_57PLANNED_ZEROEXECUTED",
-    "scope": "Fresh original compilation/discovery/Plan only. No current product runtime PASS/RED/cleanup/crash success is qualified. Original preproduct RED remains historical."
+    "scope": "Fresh current preparation qualified only. No current product actual PASS/RED/semantic cleanup evidence. Original old-product RED remains immutable historical.",
+    "currentActualStatus": "ALL_14_FIXED_MODES_UNRUN",
+    "nextEligibleScope": "protected-late2 only after separately named recovered decision HEAD"
   },
   "currentImplementation": {
     "sourceBase": "afb5a3bb6a2dd7e066946258cbf64334bf965048",
@@ -9330,6 +9332,27 @@
     "processesBefore": [],
     "processesAfter": [],
     "namedActivation": "Root separately named catalog-only45cc and dependent Plan-only45cc by literal messages after each predecessor readback; no separate named activation file was created or claimed.",
-    "scope": "Genuine original fresh BOTH builds/catalog discovery and exact PlanOnly-NoBuild, ZERO executed tests. Root raw readback accepted; saved carrier/recovery plus independent PREP review and separately named actual remain required."
+    "scope": "Independently accepted original fresh BOTH/catalog and exact PlanOnly-NoBuild ZERO preparation, raw/recovery and Root readback. No actual mode has run.",
+    "independentAcceptance": {
+      "verdict": "ACCEPT_FRESH_ZERO_PREPARATION_ONLY",
+      "carrier": "8d00ba291d16af98b56a8932630d87cab3bade2f",
+      "reports": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-prep-independent-review-8d00ba29-20261018.md",
+          "sha256": "4c0e5b525a3ba1b1fdc6c2a948624f3786a3c1ef171bab424c0c480aefb89253"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-prep-independent-review-8d00ba29-20261018.json",
+          "sha256": "66087a312bf3d3b8db545c848ce2ccc0329daba0c94d849ab5519d8dbbb5f4f3"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-prep-independent-check-8d00ba29-20261018.json",
+          "sha256": "840ebdce085ac56494d59eb29b4b2709ffb55982cec9516996571af18fc8d360"
+        }
+      ],
+      "rootDecision": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-prep-acceptance-protected-release-8d00ba29-20261018.json",
+      "rootDecisionSha256": "79e6287e6cd4aad44cba379599f1ca0a44e112ddf9833787bd8c87d8ac5a10ec",
+      "actualCases": 0
+    }
   }
 }

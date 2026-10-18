@@ -1,0 +1,140 @@
+{
+  "kind": "INDEPENDENT_PREP_COMMITTED_BINDING",
+  "carrier": "8d00ba291d16af98b56a8932630d87cab3bade2f",
+  "actualSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+  "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+  "independentLiveCheck": {
+    "path": "/tmp/t179pd-ni-iobs-l01-prep-independent-live-check-45cc99ab-20261018.json",
+    "sha256": "f13a7a863ecc8a61afaeda8a5ee4f0e87d019a95dfc3ebaf826d126879ca8898",
+    "bytes": 59107
+  },
+  "committed21Chains": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-catalog-files-20261018/00000-45cc99ab788513ca7a963cacb31c9445876adb6c-ni-iobs-l01-whole-zero-catalog.FIRST.json.gz",
+      "storedSha256": "49f3f03050ef7f71f02278094667db5d59831bff2263bbed4b769bbca3f652c8",
+      "rawSha256": "c28e67b37b28bb1ae618c149775ba88f81fe02fbf9e202c44997bcfe76ff7c98"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-catalog-files-20261018/00001-ledger-context.json.gz",
+      "storedSha256": "18cd770bd4f55bf6425f4a41558b8124e5bfa3272a33e3468e864d213a65271c",
+      "rawSha256": "33e8066c13c9b89d804318d987ad564d89e2ce2eb0576a3eea708b3e61c67528"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-catalog-files-20261018/00002-process.json.gz",
+      "storedSha256": "4be5b82ebbe1daf1df4bf886a79cb5ed282a4e74b9217b820077f20c3e92c399",
+      "rawSha256": "cc0bdb4369a67473d2553fceb54c3ccce317eaa411cdaf9a1fe831d3e8bb98c9"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-catalog-files-20261018/00003-record.json.gz",
+      "storedSha256": "68867e3e944077367eba757efaca9a0b1dce56b1b9c6fe16a6a92cbbf0927667",
+      "rawSha256": "77d8b7ad953859412208e8891c9e766c924b48a6f21d1d95e3ebaf8acdb8246a"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-catalog-files-20261018/00004-source-binding.json.gz",
+      "storedSha256": "6bc1d05d953817585e1631d4a55cd15cd5e5820a5ce50a66994ba3ccc7cf9f9d",
+      "rawSha256": "58498be0d244e6a4ed32f793cc94fc7f3ecb1155f0f556cb4b6156ffb8ca6a14"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-catalog-files-20261018/00005-stdout.log.gz",
+      "storedSha256": "a6bea6c7421435d62b0df160b57f5cd8c639aa72352b7fd2660c0e03a2c3a5bb",
+      "rawSha256": "f4e1c07eeda9d6c1d4b3ccb6bea6b654d50ab044880d3367c33b2bb75bd71ada"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-catalog-files-20261018/00006-Build-integration.log.gz",
+      "storedSha256": "303968439fd1269cfc5b3ed485b4c4fe73a4077d39ad195e97f14eafb8c5ca5b",
+      "rawSha256": "16444579a3a07f2785d28a0a3affebdd65f604b61351932116db342f44cc933c"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-catalog-files-20261018/00007-Build-unit.log.gz",
+      "storedSha256": "c4e0079dc6e8c499789cd5f01f9f37d2af248cb6820ecebddffe4c0960765600",
+      "rawSha256": "230606982c74e665ab4338f0b1b1e5cee77229e7cd169dc62c9621280aff2964"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-catalog-files-20261018/00008-catalog-audit.json.gz",
+      "storedSha256": "d6df4956a257bc733d6d12dadbe41f0125bdae896a808111dc1496e67ee8c278",
+      "rawSha256": "f59ed81f4e3312bfa85077dcb6d171e525c7265aff249b2d96eb6f047ad4e5a2"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-catalog-files-20261018/00009-dotnet-test.log.gz",
+      "storedSha256": "3046d6455ee1d776edfd9751b0ace6ad7a4ee50dbc1f7934d634623dfd3eafef",
+      "rawSha256": "70e6dfaae339c76e4bb6bba01da32c4232e68e1a87292cc795f87a84c538d746"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-catalog-files-20261018/00010-summary.json.gz",
+      "storedSha256": "d492f501e1c6cff3eb0e1386a57dba17316bc800edf30fbfa1f84140acb26c5d",
+      "rawSha256": "040b9267313881174ede4d37f4e03e8d66d0cd6359f72322155030ce703ee633"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-plan-files-20261018/00000-45cc99ab788513ca7a963cacb31c9445876adb6c-ni-iobs-l01-whole-zero-plan.FIRST.json.gz",
+      "storedSha256": "06beeb70481f8c8a3b5bbb6dfb86ad4ef2641f16567a61e5ecb4dccbf681e59a",
+      "rawSha256": "bf448efde445ff998011fd28cd36e26efc75cdb6ac8e9d34c642f3f5629fe4f8"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-plan-files-20261018/00001-ledger-context.json.gz",
+      "storedSha256": "18cd770bd4f55bf6425f4a41558b8124e5bfa3272a33e3468e864d213a65271c",
+      "rawSha256": "33e8066c13c9b89d804318d987ad564d89e2ce2eb0576a3eea708b3e61c67528"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-plan-files-20261018/00002-observed-plan.json.gz",
+      "storedSha256": "bf52843b8e371e74885c5b0878557bd1d009f6f061d40532edaac764c29b884e",
+      "rawSha256": "c5e83345dd999c2ec7e9b6e31aeb526fcb65edbb2819e520cfead32030ec00e9"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-plan-files-20261018/00003-process.json.gz",
+      "storedSha256": "31389092a4e82b5d7bdb6b153dd14360bac88ee52ae16ac0b21e281afd53f008",
+      "rawSha256": "62cc062790e17a49a950f52294cdf91f271bc6b1fe2f1ddb325ba7fe610f52be"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-plan-files-20261018/00004-record.json.gz",
+      "storedSha256": "98845060d1db1c081122d8e6645d6134b198ccdb6ec1e30ef4b2b24d4c2a580e",
+      "rawSha256": "68be58135d23b586cc311cca25fe7301df2107cfd5121f4008fc6a25de5600d4"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-plan-files-20261018/00005-source-binding.json.gz",
+      "storedSha256": "6bc1d05d953817585e1631d4a55cd15cd5e5820a5ce50a66994ba3ccc7cf9f9d",
+      "rawSha256": "58498be0d244e6a4ed32f793cc94fc7f3ecb1155f0f556cb4b6156ffb8ca6a14"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-plan-files-20261018/00006-stdout.log.gz",
+      "storedSha256": "576921147bf7da5ed07c447207969d35ce60ee3e1e7f68c4481aec87bbbcc829",
+      "rawSha256": "4136c1550446ccb7e935c1fd7caf0cd54ada4dae8594833a74df7ca0088b0838"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-plan-files-20261018/00007-dotnet-test.log.gz",
+      "storedSha256": "6b41f765df0dfe918752fb0a3e7772b95cb068780ff91ec8df796fa351a3215a",
+      "rawSha256": "fbdbd57d8c6ef129977eecb01d8fbb059e0fdea13d7fea9213f5f74353b10e20"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-plan-files-20261018/00008-plan.json.gz",
+      "storedSha256": "ca0f9e3e83ac013a2968ceb8c51375f329b471298a6bd68e59f9d97a171cde15",
+      "rawSha256": "929ba73110a7e82a954ee8eb545ab729661ded76d44d96d0cf4c2b4ee18465bb"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-plan-files-20261018/00009-summary.json.gz",
+      "storedSha256": "e3096c459498d013272c701c299c8157203331b952830481a87af58fecbc31f5",
+      "rawSha256": "500f5df93b2d389faf5af731bd8954ccc028c2b53e8da380688792a675fdf2b6"
+    }
+  ],
+  "source97AndLedgerBytesUnchanged": true,
+  "sourceDigest": "3e2bf2b2e6e890222ae8cbf7ceaeb4d203b41a6aab68ec879e6e88723f70bb57",
+  "metadataOnlySinceCompiled": true,
+  "rootReadback": {
+    "path": "/tmp/t179pd-ni-iobs-l01-root-whole-prep-readback-45cc99ab-20261018.json",
+    "sha256": "4aad74ce3f7ff7db43963157e93bcb2e4f174625d299d75ea1ca5c687e2e6958",
+    "bytes": 4157
+  },
+  "recovery": {
+    "path": "/tmp/t179pd-ni-iobs-l01-whole-prepared-delta-github-8d00ba29-20261018.json",
+    "sha256": "fbdb872f04e8e334e94b9d88cd8a835d20ef4b7bfbd46e4f74881d6a2d34234b",
+    "bytes": 27452
+  },
+  "composition": {
+    "path": "/tmp/t179pd3d-root-recovery-composition-8d00ba29-20261017.json",
+    "sha256": "e89046ad913b5f7944e84f1689fde49cdcec894bed94a986cf4d31f00d6a6459",
+    "bytes": 35091
+  },
+  "reviewUtilityNotes": [
+    "First verifier compared lexically sorted path strings to Path-sorted recorded list; ordering differs but exact file sets match. Corrected to set equality plus all individual byte/hash checks; no original record/build/test changed.",
+    "Initial whole-ledger-pointer object equality included new historical-phase annotations; corrected to exact path/hash and actual ledger bytes, which are unchanged. No native result or source changed."
+  ]
+}
