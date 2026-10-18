@@ -100,12 +100,12 @@ fixture caches. No production change, new route, effect or carrier.
 - [x] Save/recover this plan, independent Astra XHigh plan/route/selection review;
   resolve concrete findings before implementation. User already chose M01 and
   autonomous execution; no second routine permission question.
-- [ ] Write the one Fact and minimal test-only preparation seams. This adds coverage
+- [x] Write the one Fact and minimal test-only preparation seams. This adds coverage
   of existing behavior: no production implementation is permitted to manufacture RED.
   A production change clearing/changing the audit on healing must fail the byte oracle.
   No test outcome is preclaimed; any first failure freezes original evidence for
   independent diagnosis. Preserve TDD's production-change gate if a real defect appears.
-- [ ] Save/push/recover source WIP, then independent SOURCE review of real dataflow,
+- [x] Save/push/recover source WIP, then independent SOURCE review of real dataflow,
   default caller preservation, pre-sign seed, assertions, exact singleton selection
   and adequate cleanup/evidence. No actual test before this gate.
 - [ ] Fresh `pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog`:

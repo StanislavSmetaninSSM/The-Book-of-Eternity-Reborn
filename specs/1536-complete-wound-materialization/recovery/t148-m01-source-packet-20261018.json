@@ -528,10 +528,18 @@
   },
   "admissions": {
     "catalog": {
-      "status": "SOURCE_REVIEW_PENDING"
+      "status": "M01_SOURCE_ACCEPTED_ZERO_ONLY",
+      "reviewedSource": "43c6c7b6504edb03e1b4a9a7d40c0ed6bdae9f7c",
+      "reviewPath": "specs/1536-complete-wound-materialization/recovery/t148-m01-source-corrected-independent-review-20261018.json",
+      "reviewSha256": "65bfb8a8bc74c42777d7ff5b903539b3bd58e3c8563474c36ad501a09e1dccc0",
+      "scope": "One original ZERO phase; no native retry; actual requires separate PREP."
     },
     "plan": {
-      "status": "SOURCE_REVIEW_PENDING"
+      "status": "M01_SOURCE_ACCEPTED_ZERO_ONLY",
+      "reviewedSource": "43c6c7b6504edb03e1b4a9a7d40c0ed6bdae9f7c",
+      "reviewPath": "specs/1536-complete-wound-materialization/recovery/t148-m01-source-corrected-independent-review-20261018.json",
+      "reviewSha256": "65bfb8a8bc74c42777d7ff5b903539b3bd58e3c8563474c36ad501a09e1dccc0",
+      "scope": "One original ZERO phase; no native retry; actual requires separate PREP."
     },
     "actual": {
       "status": "PREP_REVIEW_PENDING"

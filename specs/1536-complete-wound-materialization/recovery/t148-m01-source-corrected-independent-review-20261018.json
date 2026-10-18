@@ -1,0 +1,167 @@
+{
+  "kind": "T148_M01_CONSOLIDATED_CORRECTED_SOURCE_REVIEW",
+  "createdUtc": "2026-10-18T18:54:37.695306+00:00",
+  "reviewedCandidate": "43c6c7b6504edb03e1b4a9a7d40c0ed6bdae9f7c",
+  "priorReviewedCandidate": "8b1b80f76603a11fd6280e20246262019da8b85f",
+  "verdict": "ACCEPT_SOURCE_FRESH_CATALOG_AND_SINGLETON_PLANONLY_ZERO_ONLY",
+  "findings": [],
+  "fixedFinding": {
+    "id": "M01-01",
+    "status": "RESOLVED",
+    "capture_native": "Known nativeExit survives output close failures; launch/close errors enter observerErrors.",
+    "finalize": "Persistence and emission failures are caught; failed emission triggers one bounded record update, never native retry. Native!=0 wins; native0/unknown plus observer failure is held.",
+    "summary": "os.write sends unbuffered summary and short write becomes an observer failure, avoiding buffered shutdown-flush status replacement.",
+    "evidence": "Saved writer proof binds both source versions, reproduces8 original finalization cases and original close failure, and covers24 corrected None/0/7 × close/persist/emit combinations. Independently inspected source and checked original proof bytes/results; no proof/native rerun."
+  },
+  "consolidatedConclusions": [
+    "Production unchanged. One new integration Fact; existing helper assertion/body bytes restored exactly by inverse of the two optional preparation seams. No broad compatibility category justified by this source diff.",
+    "Optional callback executes before PrepareSignedCreationTurn and before lease acquisition, inside existing owned preparation cleanup. isolatedSource ?? GetOrAdd(...).Value selects lazily; new factory directly bypasses both cache dictionaries and asserts their absence. Unique wound name/source key avoid cache/profile aliasing.",
+    "PreparedFixtureTree.ReadFileBytes matches one captured relative path and returns ToArray, exposing no mutable cached bytes. Existing Capture/Materialize are unchanged. This narrow getter is justified to check completed source after source-root deletion without reflection or third mutable root.",
+    "Real production ApplyUpdate produces two distinct fixed historical outcomes at turns1/2 with memory_attack, memory_suppression, nonempty motivation and audit data; no response wrapper remains. Physical bytes are captured before creation signing and compared after completed source, new evaluation, pre-heal and actual post-heal.",
+    "Fact follows raw item authority -> binding readmission -> current pre-heal capture -> InvokePlan/Compose -> no-write assertion -> PublishWithCanonicalRefresh. Same composed plan must publish; no canonical Error allowed. Current roots have active/suspended wound source identities before heal and exact expired transition/active absence afterward. Existing wound identity/history helper proves genuine healed terminal state.",
+    "Separate pre/post SarefStory validation retains all diagnostics and rejects Saref Error by path or code; it does not claim global validation. Common refresh reaches existing Saref normalizer. No runtime Saref effect, spiritual/E01 or joint crash route is introduced.",
+    "Exactly one new exclusive integration category at existing10-minute bound and exact singleton selection. All old category entries remain semantically identical. New getter/default-branch equivalence creates no need for broad cache/recovery/L01 replay.",
+    "Recovery verifies changed file bytes/blob/mode and93 current M01 pins; old L01 packet/cloud/method ledgers stay byte-exact, exactly catalog/selection differ among101 historical pins, other99 and all production/product23 unchanged. Full compiled closure is additionally bound to clean source commit and future inventories; pin list alone is not a whole-product equivalence claim."
+  ],
+  "sourceBinding": {
+    "pinCount": 93,
+    "pinDigest": "84503e9eb22c08940d328a4c8be34464684fc6f0947a00fb04d99ab1df9066d2",
+    "reviewedFiles": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-run-phase-20261018.py",
+        "sha256": "c52f7b5243c209ab4a9fc1fe1e0f3294e05a932e97539dfd49e712ad9d93f5b5",
+        "bytes": 7435
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-controller-proof-20261018.py",
+        "sha256": "77bd7410aaf6d795d94c53a0dc482740cb7a408fb005beec84f8bdbfeb55480b",
+        "bytes": 5064
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-controller-proof-20261018.json",
+        "sha256": "91c6fcf15078e7db660f5c6d905de1715f8f6777f31ac94f759c32ba10aa86a5",
+        "bytes": 10200
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-source-packet-20261018.json",
+        "sha256": "e9db2ff761264afd02b9fff7ff43fd61fac17d1cb4c2b7a8865f30077ef34f82",
+        "bytes": 23253
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-recover-20261018.py",
+        "sha256": "2d8213fb9bd306c19ed332935fed0ae24ec9da79d4c4c46151ac6d9d84b860b2",
+        "bytes": 3466
+      }
+    ]
+  },
+  "eligibility": {
+    "acceptanceSave": "Save/push/exact recovery of this acceptance and packet admissions. Set catalog and plan to M01_SOURCE_ACCEPTED_ZERO_ONLY; keep actual PREP_REVIEW_PENDING. No extra user permission needed within authorized M01 scope.",
+    "freshCatalog": "One separately invoked versioned runner catalog phase at clean accepted source; -ValidateCatalog builds/discovers only, actual executed0. Preserve complete original stdout/stderr/native status and resulting inventories.",
+    "singletonPlanOnly": "Only after catalog original native0 with no observer errors: one separately invoked plan phase, exact category saref-audit-mortal-heal-preservation, -PlanOnly -NoBuild, expected1 descriptor/1 method/1 Fact and executed0, inventories unchanged.",
+    "actual": "NONE from SOURCE acceptance. Independent PREP must inspect saved/recovered originals, exact source/binaries/selection/cleanup before a separately named FIRST actual release.",
+    "failure": "Any phase failure, incomplete/ambiguous evidence or observer failure freezes original evidence; no auto-advance/retry or budget change."
+  },
+  "continuity": {
+    "CSharpAndCategorySelection": "Byte-identical to prior SOURCE review; no repeated broad review or added test family.",
+    "historicalL01": "52/57 at original provenance,99 unchanged historical pins+exact catalog/selection2 exceptions, product23/all production unchanged, old packet/ledgers/outcomes byte-exact.",
+    "old66529": "UNKNOWN/unavailable/recoveryClaim=false",
+    "E01_T148_Phase10_andBroaderHolds": "unchanged"
+  },
+  "priorReview": {
+    "path": "/tmp/1536-cloud-tools/review/t148-m01-source-independent-review-20261018.json",
+    "sha256": "53a0e539402918b43af2843a048e4ff937f7519fd2ce442168359ddba1d42705",
+    "preservedInRepository": "specs/1536-complete-wound-materialization/recovery/t148-m01-source-original-hold-20261018.json"
+  },
+  "recovery": {
+    "path": "/tmp/1536-cloud-tools/m01-carrier-recovery-43c6c7b6.json",
+    "sha256": "3b36387a8b1c645fc8a1f4cf7fa77739417cbb55b226317c7af7353143d6be6d",
+    "method": "Existing receipt plus independent exact local/clone file readback; no recovery/network action performed by reviewer."
+  },
+  "checks": [
+    {
+      "check": "/workspace/The-Book-of-Eternity-Reborn exact HEAD and clean",
+      "passed": true
+    },
+    {
+      "check": "/workspace/1536-cloud-clean-restore exact HEAD and clean",
+      "passed": true
+    },
+    {
+      "check": "correction only reviewed metadata/tool files",
+      "passed": true
+    },
+    {
+      "check": "all C# production/test/catalog/selection unchanged from first SOURCE review",
+      "passed": true
+    },
+    {
+      "check": "exact93 source pins and canonical digest",
+      "passed": true
+    },
+    {
+      "check": "all93 pin bytes source/working/clone exact",
+      "passed": true
+    },
+    {
+      "check": "saved recovery reports exact candidate/clean/direct GitHub/93",
+      "passed": true
+    },
+    {
+      "check": "all17 recovered paths exact bytes/blob/mode",
+      "passed": true
+    },
+    {
+      "check": "historical L01 source-packet unchanged",
+      "passed": true
+    },
+    {
+      "check": "historical L01 method-row-ledger unchanged",
+      "passed": true
+    },
+    {
+      "check": "historical L01 cloud-qualification unchanged",
+      "passed": true
+    },
+    {
+      "check": "exact99+2 historical bookkeeping",
+      "passed": true
+    },
+    {
+      "check": "production unchanged from historical M01 base",
+      "passed": true
+    },
+    {
+      "check": "proof binds original and corrected runner bytes",
+      "passed": true
+    },
+    {
+      "check": "original failure proof8 + closefailure0 retained",
+      "passed": true
+    },
+    {
+      "check": "all24 fake combinations present",
+      "passed": true
+    },
+    {
+      "check": "proof rows show one invocation/native priority/observation hold",
+      "passed": true
+    },
+    {
+      "check": "original independent HOLD copied byteexact json",
+      "passed": true
+    },
+    {
+      "check": "original independent HOLD copied byteexact md",
+      "passed": true
+    },
+    {
+      "check": "actual still PREP pending before acceptance save",
+      "passed": true
+    }
+  ],
+  "limits": [
+    "SOURCE admission only; M01 tests/build/discovery/PREP/actual remain unrun at this review.",
+    "Proof concerns external observer handling and does not qualify M01 or L01 runtime.",
+    "No repository modification, game/native/observer process invocation, diagnostics or proof-script rerun."
+  ]
+}

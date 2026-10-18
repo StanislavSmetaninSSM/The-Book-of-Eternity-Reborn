@@ -1,4 +1,4 @@
-## T148 M01 — test-only SOURCE WIP; runtime не допущен (2026-10-18)
+## T148 M01 — SOURCE принят; ZERO PREP следующий (2026-10-18)
 
 Реализован один Fact `Publication_TerminalHealingPreservesExistingSarefMemorySuppressionAudit`,
 pre-sign production ApplyUpdate, source/evaluation cache bypass, fixed historical
@@ -17,7 +17,9 @@ or accept native0 after output close failure. External runner correction retains
 status, holds success on observer errors; fake callbacks reproduce8 original combinations
 and verify24 corrected combinations with one fake invocation each. No game/native phase
 ran. [Original HOLD](recovery/t148-m01-source-original-hold-20261018.md) retained.
-Affected independent SOURCE review required before fresh ZERO PREP; M01 UNRUN.
+[Affected SOURCE ACCEPT](recovery/t148-m01-source-corrected-independent-review-20261018.md)
+принимает exact43c6c7b6 и допускает после save/recovery только fresh catalog и
+singleton PlanOnly ZERO. Actual PREP_REVIEW_PENDING; M01 UNRUN.
 
 ## T148 M01 — PLAN принят; test-only SOURCE следующий (2026-10-18)
 
