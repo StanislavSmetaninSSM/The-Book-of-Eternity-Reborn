@@ -1,0 +1,1 @@
+Read-only recovery invocation first used an incorrectly transcribed full SHA 34bbb9581650d403732bd3a7317338668e3ab2d9. git diff failed before GitHub fetch with fatal: bad object. Exact published/read-back SHA is 34bbb9581a29983ef4629295924a340a9ff97458. No build/test/product failure or runtime retry; correction reads HEAD directly. Original tool stderr remains in session.

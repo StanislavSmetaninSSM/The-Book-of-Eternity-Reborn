@@ -82,11 +82,25 @@ internal static partial class MortalQteDecisionPublication
         var marker = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes),
             SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "current ordinary-slot joint selector")
             ?? throw Invalid("joint_interface_ordinary_marker_null");
-        if (marker["schemaVersion"]?.GetValue<int>() != 2) return null;
+        var jointClaim = marker.ContainsKey("outputBinding") || marker.ContainsKey("niPublication") ||
+            marker.ContainsKey("jointTreatment") || marker.ContainsKey("consumedPrivatePaths") || marker.ContainsKey("progression");
+        if (marker["schemaVersion"]?.GetValue<int>() != 2)
+        {
+            if (jointClaim) throw Invalid("joint_interface_selected_parent_version_changed");
+            return null; // genuine old non-joint publication, not a claimed NI downgrade
+        }
         var original = ReadInspectionSnapshot(files, lease);
         if (original.SessionId != Text(marker, "sessionId") || original.RequestId != Text(marker, "requestId") ||
             original.SnapshotToken != Text(marker, "snapshotToken") || original.TurnNumber != JointInteger(marker, "turn"))
-            return null; // a genuinely different new ordinary original, not cache absence
+        {
+            // A tuple mismatch by itself is not a new operation: one corrupt
+            // request/turn field must not request another ordinary I projection.
+            // A genuine new original already signed the EXACT prior marker as a
+            // baseline before its new GM outputs; use that actual source witness.
+            if (!original.CoveredLogicalPaths.Contains(StatePath, StringComparer.Ordinal) ||
+                !Same(bytes, original.ReadRequiredBytes(StatePath))) throw Invalid("joint_interface_selector_tuple_conflict");
+            return null;
+        }
         // Even a claimed legacy child is fully checked before permitting its old
         // writer. Partial deletion/downgrade cannot exploit a null memory cache.
         return await ReadCurrentJointInterfaceDataAsync(files, lease, original.SessionId,

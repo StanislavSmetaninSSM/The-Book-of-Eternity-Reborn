@@ -76,7 +76,19 @@ public partial class GameEngine
             }
         }
         catch (Exception failure) { operationFailure = failure; throw; }
-        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, installed is not null, operationFailure); }
+        finally
+        {
+            try
+            {
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease,
+                    installed is not null && !expectedCheckpoint.UsesInterfacePublication, operationFailure);
+            }
+            catch
+            {
+                if (expectedCheckpoint.UsesInterfacePublication) _mortalJointInterfacePreparationHeld = true;
+                throw;
+            }
+        }
 
         // No repair dispatch can proceed until both physical readback and ordinary
         // runtime projection refresh succeeded. A known refresh failure compensates

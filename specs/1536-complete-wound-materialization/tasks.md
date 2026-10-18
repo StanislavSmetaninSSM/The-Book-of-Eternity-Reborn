@@ -1,17 +1,17 @@
 ## T179-Pd-NI-IOBS-L01 current frontier (2026-10-18)
 
-- [x] Original actual ordering RED accepted and saved before implementation.
-- [ ] Minimal whole engine integration drafted and remotely checkpointed; uncompiled/unrun/unreviewed, not qualified.
-- [ ] Finish finite real-owner/crash/resume/legacy/error/retention/ambient-policy controls plus GM/docs/affected selection. Static9methods16rows are partial authored inventory only.
-- [ ] Final connected SOURCE/FIXTURE/SELECTION then separately named fresh preparation/actuals/EVIDENCE; no native/build release yet.
+- [x] Original actual ordering RED independently accepted and preserved before implementation.
+- [ ] Whole implementation plus current live controls WIP:13methods22staticrows, uncompiled/unrun/unreviewed.
+- [ ] Finish finite crash/resume/culture/legacy/close/integrity/retention/common/GM controls, then final affected selection and connected SOURCE.
+- [ ] Named fresh preparation/actuals/EVIDENCE; no current build or native release.
 
-## T179-Pd-NI-IOBS-L01 — whole engine integration draft WIP; finite controls in progress (2026-10-18)
+## T179-Pd-NI-IOBS-L01 — integrated live-controls WIP; remaining finite controls OPEN (2026-10-18)
 
-The saved [causal RED/release](recovery/t179pd-ni-iobs-l01-root-causal-acceptance-production-release-7e5c4405-20261018.json) authorizes this minimal whole integration. Draft source now connects actual private FIRST2/post-install one-shot arming, outside-Lp whole I/Prepared→I+Published/owning release, mandatory Capturing decision and immutable Ready before→after join, dedicated new-current-owner resume, child3/common/take/niPublication2, both late and generic frozen-DATA slots and current cold proof. Generic selection uses current durable pending/marker/original proof, never cache absence; direct and outer restore paths retain selected lifecycle evidence. Legacy Capture1 and child1 remain supported, without a caller version flag or byte rewrite.
+Current uncompiled draft connects the accepted whole engine route. This checkpoint adds genuine shared-engine NoWrite UTF8/BOM/UTF16 byte+mtime controls, absent I, original-derived stale Warning vector/common survival, and ErrorPrepared with positive committed-record reach evidence, unchanged I-before/mechanical images and no common. These4 new methods/6 static rows bring authored current inventory to13 methods/22 rows/3 owners, **not discovery or executed results**. The original ordering RED and immutable raw remain historical.
 
-**Uncompiled/unrun and NOT source/runtime accepted.** Current authored static inventory remains9 methods/16 rows (ordering1 plus component DATA15); finite genuine live/error/encoding/drift/release/retention/legacy and abrupt-child/resume/ambient-policy controls are still being authored. The real new route can only be qualified after those controls and affected selection are complete, changed-scope SOURCE and separately named fresh preparation/actual/EVIDENCE. Do not infer success from drafted joins. An independent reviewer may read this immutable production scope while remaining finite tests are finished, without a duplicate intermediate acceptance gate.
+Connected draft source corrections refuse selected-parent version downgrade and tuple drift (new ordinary fallback needs exact prior-marker bytes in its genuine original), require observed initial FIRST2 owning release before fresh arming, and tighten closed timestamp/fallback DATA without replaying ordinary policy. These are unrun authoring corrections, not native failures. The recovery utility's incorrectly transcribed SHA was rejected before fetch; the explicit authoring note is preserved separately from tests.
 
-Original first9079/compileda650 ordering RED/native1 and its exact raw, actual later I-changing2 versus historical prediction1, strict cleanup, old preparation and complete output bindings remain historical/immutable. No new build/discovery/native, no old proof replay. GM lifecycle guide/worked-example/source-guard assessment remains OPEN before whole completion. FullNI/HOT/S/B/D9/M3/F1/T197/platform/Windows/A3 and all other holds remain unchanged. Following completed scopes are historical.
+**No whole SOURCE/runtime acceptance yet.** Actual abrupt-child/current resume/culture, genuine legacy graph/cold, initial-I-outer close distinctions, selector negatives, writer-preimage/Ready contrasts, common compensation/terminal/retention and GM guide/example/source-guard controls remain OPEN. Continue that finite work under existing authorization while the same connected reviewer reads immutable source/deltas. No new build/discovery/native, old accepted replay or broader NI/HOT/platform/A3 activation. Following scopes are historical.
 
 ## T179-Pd-CUT01 bounded implementation/source/EVIDENCE complete (2026-10-18)
 

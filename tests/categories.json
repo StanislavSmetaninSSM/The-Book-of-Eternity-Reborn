@@ -2,6 +2,40 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-interface-lifecycle-live",
+  "responsibility": "Real Stage43/held TREAT/correlated corrected Ready and actual new I lifecycle: unchanged raw UTF8/BOM/UTF16 images and mtime, absent I, frozen warning vector through common, ErrorPrepared retaining original I and mechanical byte images without common.",
+  "excludes": "No crash/restart/legacy producer proof, no policy-replay inference from no-write, no initial/I-owning/outer close failure qualification, no missing/corrupt selector coverage or full NI/HOT. Those finite controls remain separate.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfacePublication.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-interface-lifecycle-order",
+      "when": "Same whole current consumer, with distinct Changed/one-projector semantic witness."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 15,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceNoWriteRetainsExactBytesAndMtime",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AbsentInterfacePublishesOnlyResultAndCompletes",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceErrorFreezesPreparedWithoutPublicationOrCommon",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceWarningVectorSurvivesCommonAndOrdinaryCompletion"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-interface-result-data",
   "responsibility": "Strict committed computed-interface DATA: exact diagnostic/null/duplicate preservation, canonical closed decoding, absent/empty and raw UTF16 images, defensive copies, Error Prepared refusal, and no inherited 2MiB checkpoint cap. These are data controls, not engine admission or publication authority.",
   "excludes": "Does not qualify actual FIRST/current admission, writer owning release, Ready transitions, atomic crash/resume, common take, late/cold once-only behavior or ordinary I fidelity. Those require separate actual-owner controls.",

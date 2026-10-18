@@ -136,6 +136,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         currentCaptureProbe?.Attach(engine);
         interfaceLifecycleProbe?.Attach(engine);
         GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(source.Source!.SessionId, 42);
+        interfaceLifecycleProbe?.ConfigureBeforeOriginal();
         await GetPrivateField<StateManager>(engine, "_stateManager").RefreshGameStateAsync();
         if (!useLiveCaller)
             await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
@@ -413,6 +414,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             currentCaptureProbe.AssertStopped(engine);
             return; // New deliberate held-cut branch only; default completion oracles remain below.
         }
+        if (interfaceLifecycleProbe is { ExpectsHeld: true })
+        {
+            interfaceLifecycleProbe.AssertHeld(engine);
+            return; // genuine prerequisites above; selected ErrorPrepared cannot enter ordinary completion
+        }
         if (normalizeNarrativeBeforeCheckpoint)
         {
             var correctedNarrative = Assert.IsType<byte[]>(correctedNarrativeForBinding);
@@ -581,6 +587,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                         severityReverted["proposal"]!["severity"] = "III";
                         Assert.True(JsonNode.DeepEquals(authoredDecision, severityReverted));
                         Assert.Equal(scene, ParseJsonObjectBytes(resubmittedPublicOutputs["output/narrative_response.json"])["response"]!.GetValue<string>());
+                        interfaceLifecycleProbe?.ObserveCorrectedSubmissionReadback();
                         // Correlated repair Ready is LAST, after complete public readback.
                         File.WriteAllText(_fs.ResolvePath("game_state/control/validation_repair_ready.json"),
                             JsonSerializer.Serialize(new { sessionId = original.SessionId, requestId = original.RequestId,

@@ -1,7 +1,7 @@
 {
   "kind": "NI_IOBS_L01_AUTHORED_METHOD_ROW_LEDGER",
   "sourceBase": "9a92049ef86bcbc4569aaa0a11d1f42632093622",
-  "status": "WHOLE_ENGINE_INTEGRATION_DRAFT_UNCOMPILED_UNRUN_FINITE_CONTROLS_IN_PROGRESS",
+  "status": "WHOLE_INTEGRATION_PLUS_LIVE_CONTROLS_WIP_UNCOMPILED_UNRUN_REMAINING_FINITE_OPEN",
   "rows": [
     {
       "category": "fr063-joint-interface-lifecycle-order",
@@ -151,14 +151,50 @@
       "staticRows": 1,
       "status": "AUTHORED_UNCOMPILED_UNRUN_COMPONENT_DATA_ONLY",
       "scope": "Data contract control, not actual engine admission/publication/cold/crash authority."
+    },
+    {
+      "category": "fr063-joint-interface-lifecycle-live",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceNoWriteRetainsExactBytesAndMtime",
+      "attributes": "Theory",
+      "staticRows": 3,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_REAL_OWNER_CONTROL",
+      "prerequisite": "Actual shared source42/original43/held request/real first repair+public correction/Ready before positive or deliberate ErrorPrepared held assertions; owned root removed by original shared owner."
+    },
+    {
+      "category": "fr063-joint-interface-lifecycle-live",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AbsentInterfacePublishesOnlyResultAndCompletes",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_REAL_OWNER_CONTROL",
+      "prerequisite": "Actual shared source42/original43/held request/real first repair+public correction/Ready before positive or deliberate ErrorPrepared held assertions; owned root removed by original shared owner."
+    },
+    {
+      "category": "fr063-joint-interface-lifecycle-live",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceErrorFreezesPreparedWithoutPublicationOrCommon",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_REAL_OWNER_CONTROL",
+      "prerequisite": "Actual shared source42/original43/held request/real first repair+public correction/Ready before positive or deliberate ErrorPrepared held assertions; owned root removed by original shared owner."
+    },
+    {
+      "category": "fr063-joint-interface-lifecycle-live",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceWarningVectorSurvivesCommonAndOrdinaryCompletion",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_REAL_OWNER_CONTROL",
+      "prerequisite": "Actual shared source42/original43/held request/real first repair+public correction/Ready before positive or deliberate ErrorPrepared held assertions; owned root removed by original shared owner."
     }
   ],
   "staticTotals": {
-    "newMethods": 9,
-    "newRows": 16,
-    "newOwners": 2,
-    "predictedDescriptors": 2,
-    "scope": "Authored current static inventory only. Final finite vertical is incomplete; actual discovery/build not run."
+    "newMethods": 13,
+    "newRows": 22,
+    "newOwners": 3,
+    "predictedDescriptors": 3,
+    "scope": "Current authored source only, not discovery/runtime. Remaining finite crash/legacy/refusal/close controls OPEN."
   },
   "actualCases": 0,
   "productChanged": true,
@@ -197,7 +233,7 @@
       "status": "READ_ONLY_ARCHIVED_BOTH_FIRST_ZERO_RECORDS_ONE_INVOCATION_19CHAINS"
     }
   ],
-  "priority": "Continue finite real-consumer/crash/legacy/error controls and precise affected selection while independent reviewer may read this immutable draft. No build/discovery/native until whole candidate/changed-scope review and named releases.",
+  "priority": "Continue remaining finite crash/resume/legacy/close/integrity/retention controls and GM/docs under existing authoring release; connected reviewer assesses immutable draft/deltas. No build/discovery/native.",
   "firstActual": {
     "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
     "compiledSource": "a65005989ac5922db9c943dda339a999131ba5c6",
@@ -356,7 +392,7 @@
   },
   "historicalFirstNativeCases": 1,
   "currentImplementation": {
-    "sourceBase": "63bf04f47979a2a34f4b0d394a7cbe90625c3821",
+    "sourceBase": "34bbb9581a29983ef4629295924a340a9ff97458",
     "status": "DRAFT_UNCOMPILED_UNRUN_NOT_SOURCE_OR_RUNTIME_ACCEPTED",
     "integrated": [
       "private FIRST2 factory and post-install/readback/release/runtime-refresh one-shot arming",
@@ -368,12 +404,16 @@
       "direct generic/dedicated baseline restore and outer destructive fallback retain selected Prepared/Published/missing-result states"
     ],
     "open": [
-      "all new source is uncompiled/unreviewed; actual success/refusal remains unqualified",
-      "finite actual-owner NoWrite/BOM/UTF16/absence/error/warning/current-drift/owning-close/outer-finalization controls",
-      "genuine abrupt child cuts and new ordinary current engine resume/once-policy witness",
-      "genuine legacy Capture1 complete retained graph/current engine/child1/cold compatibility control",
-      "malformed/crossoperation/version/missing-result restart, common compensation/lostack and whole terminal controls",
-      "exact GM guide/worked-example and affected category/source-guard decisions"
+      "All current source uncompiled/unreviewed; no success/refusal/runtime claim",
+      "Abrupt child Prepared/I-member/Published crash cuts, genuinely current new owner resume and ambient policy witness",
+      "Legacy Capture1 graph/current engine/child1/new-current and cold compatibility",
+      "Initial install/I adapter/outer finalization failures, missing/malformed/foreign selector and direct/outer restore/whole terminal controls",
+      "Actual under-write preimage conflict/owned Ready contrast, common compensation/lostack and GM guide/example/source guards"
+    ],
+    "draftReviewCorrections": [
+      "Current selected marker with changed/unknown parent version refuses; tuple mismatch only permits new ordinary frame when official original covers exact prior marker bytes.",
+      "Initial FIRST2 install uses non-swallowing owning release before refresh/arming; v1 retains existing completed-release behavior.",
+      "I-policy timestamp NotReached iff nonObject and fallback canonical UTC O-format data; semantic negatives independently reseal and assert specific structural rejection."
     ]
   }
 }
