@@ -1,0 +1,29 @@
+{
+  "kind": "D01_ORIGINAL_BUFFERED_EMITTER_FAKE_SOURCE_PROOF",
+  "sourceSha256": "3a08defd13791951757dfb806fde2d4743b1e2b579e823dd17a617ab3913db10",
+  "source": "0db1f4186fd190c4940b018ec186cc9667727cfd",
+  "fixtureProcessesStarted": 0,
+  "helperOrDotnetExecuted": false,
+  "proof": [
+    {
+      "native": 0,
+      "finalizeReturned": 0,
+      "observerErrorsBeforeShutdown": [],
+      "pendingBufferedChars": 80,
+      "subsequentFlushFailureOutsideFinalize": "BrokenPipeError",
+      "recordStillHasNative": 0,
+      "provesUnobservedShutdownFailure": true
+    },
+    {
+      "native": 7,
+      "finalizeReturned": 7,
+      "observerErrorsBeforeShutdown": [],
+      "pendingBufferedChars": 80,
+      "subsequentFlushFailureOutsideFinalize": "BrokenPipeError",
+      "recordStillHasNative": 7,
+      "provesUnobservedShutdownFailure": true
+    }
+  ],
+  "allAssertionsPassed": true,
+  "limit": "No actual interpreter shutdown/native run; AST-exact emit and finalize prove deferred flush is outside guarded reporting. Python runtime shutdown exit-code behavior is a separate documented consequence."
+}

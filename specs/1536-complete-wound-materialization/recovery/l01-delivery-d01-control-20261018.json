@@ -2,7 +2,10 @@
   "kind": "D01_GATED_CONTROL",
   "sourcePinDigest": "b277e73745c98abdc78f5feaa62a68373c2bf26b4b6115a20e4aa5207970e9ef",
   "source": {
-    "status": "SOURCE_REVIEW_PENDING"
+    "status": "SOURCE_ACCEPTED_ZERO_ONLY",
+    "candidate": "4810d2ad2ac5121aacabb21bf49cfb0b56a0da09",
+    "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-live-delivery-source-independent-review-20261018.json",
+    "reviewSha256": "9244d70026710a46a038b3583d42f5962bf201559f8de7fde2481866190b8822"
   },
   "synthetic": {
     "status": "CLOSED_UNRUN"

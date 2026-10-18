@@ -1,3 +1,7 @@
+## L01 D01 — SOURCE accepted; fresh ZERO3 only (2026-10-18)
+
+Independent [SOURCE](recovery/l01-live-delivery-source-independent-review-20261018.md) accepts exact4810d2ad,149pins,711static checks. Original0db HOLD and two source findings remain saved; checked unbuffered emission and pinned inventory/revalidation correct them. Source-bound9fake checks passed without subprocesses. Helper/nonlive20/wiring/Live bytes unchanged. Next finite selection is fresh catalog/build/discovery ZERO, exact diagnostic PlanOnly/NoBuild1/1/1 ZERO, direct helper+Live compilation. Save/recover originals and independent PREP before separately released target0+target7 synthetic. No unchanged evidence replay, game/snapshot/crash5 or broader/platform release; L0152/57 and oldUNKNOWN unchanged.
+
 ## L01 D01 — whole SOURCE candidate saved, ZERO/native admissions CLOSED (2026-10-18)
 
 Completed test-only source candidate: exact helper/non-live20 bytes unchanged;
