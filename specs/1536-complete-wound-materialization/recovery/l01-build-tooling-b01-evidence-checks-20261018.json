@@ -1,0 +1,359 @@
+{
+  "kind": "B01_READ_ONLY_FIRST_EVIDENCE_CHECKS",
+  "candidate": "c20a9cf0bcb29c4dcea8853e77b390eeb7c50611",
+  "actualSource": "d3a1ddcf7a6e2f06ae815877c46314ec81d9f0d7",
+  "reviewerActions": "Static files/ZIP/Git and private binary hash reads only; no procfs, SDK, build, test, game or signals.",
+  "checks": [
+    {
+      "name": "/workspace/The-Book-of-Eternity-Reborn HEAD",
+      "passed": true
+    },
+    {
+      "name": "/workspace/The-Book-of-Eternity-Reborn clean",
+      "passed": true
+    },
+    {
+      "name": "/workspace/1536-cloud-clean-restore HEAD",
+      "passed": true
+    },
+    {
+      "name": "/workspace/1536-cloud-clean-restore clean",
+      "passed": true
+    },
+    {
+      "name": "recovery provenance",
+      "passed": true
+    },
+    {
+      "name": "actual to carrier delta only evidence plus plan",
+      "passed": true,
+      "detail": [
+        "specs/1536-complete-wound-materialization/plan.md",
+        "specs/1536-complete-wound-materialization/recovery/l01-build-tooling-b01-first-outcome-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/l01-build-tooling-b01-first-outcome-originals-20261018.zip"
+      ]
+    },
+    {
+      "name": "archive exact recorded bytes/hash",
+      "passed": true
+    },
+    {
+      "name": "four exact unique archive members",
+      "passed": true
+    },
+    {
+      "name": "specs/1536-complete-wound-materialization/recovery/l01-build-tooling-b01-first-outcome-20261018.json saved/restored byte chain",
+      "passed": true
+    },
+    {
+      "name": "specs/1536-complete-wound-materialization/recovery/l01-build-tooling-b01-first-outcome-originals-20261018.zip saved/restored byte chain",
+      "passed": true
+    },
+    {
+      "name": "raw started.json",
+      "passed": true
+    },
+    {
+      "name": "raw record.json",
+      "passed": true
+    },
+    {
+      "name": "raw stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "raw stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "exact admitted runner source",
+      "passed": true
+    },
+    {
+      "name": "admitted single build only",
+      "passed": true
+    },
+    {
+      "name": "149 pin closure unchanged by evidence carrier",
+      "passed": true
+    },
+    {
+      "name": "packet unchanged from actual",
+      "passed": true
+    },
+    {
+      "name": "historical ledgers/production unchanged receipt",
+      "passed": true
+    },
+    {
+      "name": "actual source consistency",
+      "passed": true
+    },
+    {
+      "name": "initial incomplete state retained",
+      "passed": true
+    },
+    {
+      "name": "initial/final admitted command identical",
+      "passed": true
+    },
+    {
+      "name": "unchanged 600 plus conditional10 GNU wrapper",
+      "passed": true
+    },
+    {
+      "name": "one unit build command/private outputs/server/feed/doc flags",
+      "passed": true
+    },
+    {
+      "name": "original native0 and observer separation",
+      "passed": true
+    },
+    {
+      "name": "elapsed under unchanged wrapper budget",
+      "passed": true
+    },
+    {
+      "name": "no tests/game/fixtures/synthetic/diagnostic targets",
+      "passed": true
+    },
+    {
+      "name": "old outcome preserved and permit consumed",
+      "passed": true
+    },
+    {
+      "name": "all following runtime releases NONE",
+      "passed": true
+    },
+    {
+      "name": "dated original pre/post tool census unchanged zombies",
+      "passed": true
+    },
+    {
+      "name": "visibility limitation explicit",
+      "passed": true
+    },
+    {
+      "name": "131 original samples",
+      "passed": true
+    },
+    {
+      "name": "sample monotonic order",
+      "passed": true
+    },
+    {
+      "name": "recorded wrapper identity",
+      "passed": true
+    },
+    {
+      "name": "every sampled row in owned session/group",
+      "passed": true
+    },
+    {
+      "name": "first sample binds direct timeout wrapper",
+      "passed": true
+    },
+    {
+      "name": "per-identity CPU ticks nondecreasing",
+      "passed": true
+    },
+    {
+      "name": "no sampled same PID changes birth",
+      "passed": true
+    },
+    {
+      "name": "resource scope identity stable",
+      "passed": true
+    },
+    {
+      "name": "scope retains /.. mapping caveat",
+      "passed": true
+    },
+    {
+      "name": "recomputed samples",
+      "passed": true,
+      "detail": 131
+    },
+    {
+      "name": "recomputed maximumGapSeconds",
+      "passed": true,
+      "detail": 5.551541713997722
+    },
+    {
+      "name": "recomputed maximumObservedSingleProcessRssBytes",
+      "passed": true,
+      "detail": 2918567936
+    },
+    {
+      "name": "recomputed maximumObservedSumOfSessionRssBytes",
+      "passed": true,
+      "detail": 3562098688
+    },
+    {
+      "name": "recomputed maximumObservedSharedNodeMemoryCurrentBytes",
+      "passed": true,
+      "detail": 13473382400
+    },
+    {
+      "name": "recomputed childrenRusage",
+      "passed": true,
+      "detail": {
+        "userSeconds": 852.57242,
+        "systemSeconds": 60.153142,
+        "maxRssKiB": 2872092,
+        "limit": "Cumulative waited children of this observer, including preflight Git queries; maxRSS is not simultaneous tree peak."
+      }
+    },
+    {
+      "name": "recomputed sharedNodeCounterDeltas",
+      "passed": true,
+      "detail": {
+        "cpu.stat": {
+          "usage_usec": 931754148,
+          "user_usec": 890361794,
+          "system_usec": 41392354,
+          "nice_usec": 0,
+          "nr_periods": 2823,
+          "nr_throttled": 1798,
+          "throttled_usec": 141044009,
+          "nr_bursts": 0,
+          "burst_usec": 0
+        },
+        "memory.events": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0
+        }
+      }
+    },
+    {
+      "name": "no observed mounted-node memory event increments",
+      "passed": true
+    },
+    {
+      "name": "stdout succeeds exactly once",
+      "passed": true
+    },
+    {
+      "name": "stderr no build error or timeout termination",
+      "passed": true
+    },
+    {
+      "name": "project inclusive statistic BookOfEternityClient.TestSupport",
+      "passed": true
+    },
+    {
+      "name": "project inclusive statistic PortableStorageCrashHost",
+      "passed": true
+    },
+    {
+      "name": "project inclusive statistic BookOfEternityClient",
+      "passed": true
+    },
+    {
+      "name": "project inclusive statistic BookOfEternityGMBridge",
+      "passed": true
+    },
+    {
+      "name": "project inclusive statistic BookOfEternityClient.Tests",
+      "passed": true
+    },
+    {
+      "name": "target CoreCompile",
+      "passed": true
+    },
+    {
+      "name": "task RestoreTask",
+      "passed": true
+    },
+    {
+      "name": "task Csc",
+      "passed": true
+    },
+    {
+      "name": "task MSBuild",
+      "passed": true
+    },
+    {
+      "name": "build reported elapsed retained separately",
+      "passed": true
+    },
+    {
+      "name": "exact five expected primary outputs",
+      "passed": true
+    },
+    {
+      "name": "private physical DLL BookOfEternityClient",
+      "passed": true
+    },
+    {
+      "name": "private physical DLL BookOfEternityGMBridge",
+      "passed": true
+    },
+    {
+      "name": "private physical DLL BookOfEternityClient.TestSupport",
+      "passed": true
+    },
+    {
+      "name": "private physical DLL PortableStorageCrashHost",
+      "passed": true
+    },
+    {
+      "name": "private physical DLL BookOfEternityClient.Tests",
+      "passed": true
+    },
+    {
+      "name": "all899 normal-bin file paths and bytes unchanged",
+      "passed": true
+    },
+    {
+      "name": "normal binaries not claimed new PREP",
+      "passed": true
+    }
+  ],
+  "passed": 68,
+  "failed": [],
+  "metrics": {
+    "samples": 131,
+    "maximumGapSeconds": 5.551541713997722,
+    "maximumObservedSingleProcessRssBytes": 2918567936,
+    "maximumObservedSumOfSessionRssBytes": 3562098688,
+    "maximumObservedSharedNodeMemoryCurrentBytes": 13473382400,
+    "childrenRusage": {
+      "userSeconds": 852.57242,
+      "systemSeconds": 60.153142,
+      "maxRssKiB": 2872092,
+      "limit": "Cumulative waited children of this observer, including preflight Git queries; maxRSS is not simultaneous tree peak."
+    },
+    "sharedNodeCounterDeltas": {
+      "cpu.stat": {
+        "usage_usec": 931754148,
+        "user_usec": 890361794,
+        "system_usec": 41392354,
+        "nice_usec": 0,
+        "nr_periods": 2823,
+        "nr_throttled": 1798,
+        "throttled_usec": 141044009,
+        "nr_bursts": 0,
+        "burst_usec": 0
+      },
+      "memory.events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      }
+    }
+  },
+  "rawArchiveSha256": "dd65447562557b86fa116c8b3ef015ad1953cc800e4688f7afd92a5e05c1f675",
+  "evidenceIndexSha256": "c2d55643cd08a93c44e68aee92205c0d475e9612c2c93f0429d6a8dabb6b41f9",
+  "recoveryReceiptSha256": "93349c31fe7d5f7d4d8e7e1f735307d3e241c3727ad15afaba6acbeee16a6d8c",
+  "checkerSha256": "3e549961e65aa2a84c294d31b1fbaae558df9f8c05bbe1917d614dc51f6a69fb",
+  "normalInventoryCount": 899,
+  "sampledIdentityCount": 10
+}

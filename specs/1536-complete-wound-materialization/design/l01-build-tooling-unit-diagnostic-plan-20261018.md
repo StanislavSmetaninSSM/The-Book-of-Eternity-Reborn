@@ -40,37 +40,73 @@ Original actual server use/fallback is unknown. No active server is observed now
 ## One finite operation after independent review
 
 - [x] Save read-only evidence, graph, current constraints and one-shot source.
-- [ ] Independently review diagnosis, ownership/isolation and exact command; save
+- [x] Independently review diagnosis, ownership/isolation and exact command; save
   report with `buildOnlyAdmission=ACCEPT_ONE_ISOLATED_UNIT_BUILD_ONLY` and the exact
   `buildScriptSha256`. Publish/recover report before invocation.
-- [ ] Invoke `recovery/l01-build-tooling-unit-once-20261018.py` once with exact clean
+- [x] Invoke `recovery/l01-build-tooling-unit-once-20261018.py` once with exact clean
   current HEAD, saved review path/hash. Its unused private root is
   `/tmp/l01bd-772d38df9b5b4cf8`; mkdir prevents reuse. Before launch recheck149D01
   pins,172installed inputs and exact S01 helper SHA before import, no active exact
   tool match, old rootPID absence, required numeric resource reads and tmp free.
   An unresolved still-present/reused PID read holds launch/acceptance; a vanished
   PID is distinguished by reprobe. Record raw cgroup mount-node identity/scope.
-- [ ] The only build is installed `dotnet build BookOfEternityClient.Tests/...csproj
+- [x] The only build is installed `dotnet build BookOfEternityClient.Tests/...csproj
   --verbosity minimal --artifacts-path <root>/artifacts --disable-build-servers
   -p:GenerateDocumentationFile=true -p:NoWarn=1591 -p:NuGetAudit=false
   -p:RestoreSources=/tmp/1536-cloud-tools/nuget -clp:PerformanceSummary;Summary`.
   Full project references remain; restore reads the existing local package cache.
   No test/discovery/fixture/game/diagnostic command is run. Persistent servers are
   ignored per invocation; no global server configuration/shutdown changes.
-- [ ] Installed GNU timeout owns a new session/process group and ordinary600s
+- [x] Installed GNU timeout owns a new session/process group and ordinary600s
   execution limit, then TERM and, while the monitored command remains alive,
   at most10s before KILL. Normal wrapper exit does not prove descendant cleanup.
   This bound is independent of Python. Samples every2s cover only that session's PID/starttick/
   PPID/state/CPU ticks/RSS and cgroup counters. Ordinary logs plus MSBuild performance
   summary provide project/task timing. No stacks, dumps, registers or game payloads.
-- [ ] Save first raw command/logs/record/samples and original native status. Wrapper
+- [x] Save first raw command/logs/record/samples and original native status. Wrapper
   normal0 passes through build success; raw negative Popen return means a signal
   (for example,-9), not positive137. Preserve it and map only the external controller
   exit to128+signal.124/negative status do not invent a known separate child exit.
   Observer errors stay separate; own-session/tool liveness after exit
   blocks acceptance and permits no global/PID signal. Retain disposable artifacts.
-- [ ] Independent EVIDENCE, remote SHA/readback/clean recovery and handoff. No further
+- [x] Independent EVIDENCE, remote SHA/readback/clean recovery and handoff. No further
   build retry or downstream D01 execution follows automatically.
+
+## Completed first outcome and current handoff
+
+The single admitted source `d3a1ddcf7a6e2f06ae815877c46314ec81d9f0d7`
+completed in282.270769695s, raw wrapper/controller0, joined, observer errors0,
+94warnings/0errors. [Original evidence](../recovery/l01-build-tooling-b01-first-outcome-20261018.json)
+and its four-member archive were saved/recovered at `c20a9cf0` before independent
+EVIDENCE. The historical index retains its pending-review status; the subsequent
+[independent review](../recovery/l01-build-tooling-b01-evidence-independent-review-20261018.md)
+accepts BUILD_ONLY evidence,68checks/findings[]. Root verified all four review/check
+artifact hashes before byte-exact copying. Final report/status carrier is published
+and recovered with its actual SHA before handoff; no self-receipt commit loop.
+
+Five primary private DLL hashes and all899unchanged normal-bin files were verified.
+131retained samples cover ten PID/birth identities, maximum gap5.551541714s;
+terminal own-session/tool observations are empty with explicit visibility limits.
+No original outcome, source, assertions,149D01pins or normal outputs changed.
+`CoreCompile`270576ms/5calls is a target summary entry; `Csc`270535ms/5calls is
+a task summary entry. The index's descriptive taskSummary grouping preserves both
+original values; neither is exclusive elapsed time. Resource/CPU attribution and
+sampling limits above remain. Private DLL byte restoration is not claimed.
+
+Permit CONSUMED, no repeat. Current isolated unit-build capability is established;
+the cause of original catalog124/unit137 remains UNKNOWN. This evidence supplies
+no reason requiring immediate cloud migration and no general-health/repeatability
+claim. Original catalog/D01PREP, PlanOnly, direct Live compilation, synthetic,
+gameplay and crash5 remain held/unreleased. L0152/57 and old66529UNKNOWN remain.
+
+The next finite recommendation is PLAN ONLY: inspect a coherent fresh BOTH/catalog
+ZERO design with one new private artifacts namespace, demonstrated disabled-server/
+local-cache conditions and the existing aggregate600s deadline. Bind exact build
+outputs for both project graphs to discovery and subsequent NoBuild PlanOnly;
+inspect existing path resolution before proposing the minimum necessary tooling
+adjustment. No old899files or B01outputs become accepted PREP. Any change needs
+affected SOURCE before command admission and fresh independent PREP afterward.
+No fit guarantee, budget reset/increase or automatic catalog/synthetic/game release.
 
 ## Interpretation and stop rules
 

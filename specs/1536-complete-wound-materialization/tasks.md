@@ -2,8 +2,8 @@
 
 - [x] Preserve old124 and collect read-only resource/tool/process/project graph observations; no resource-cause claim.
 - [x] Independent diagnosis + [one isolated unit build plan](design/l01-build-tooling-unit-diagnostic-plan-20261018.md)/observer SOURCE accepted7f6bb5c6,42focused checks, all4findings resolved; one build only after acceptance recovery/fresh guards.
-- [ ] One justified build-only operation with ordinary600s bound/private outputs/normal logs/process observations; preserve new outcome separately, no gameplay/synthetic.
-- [ ] Independent EVIDENCE and durable checkpoint; old catalog/PREP/game gates remain unchanged.
+- [x] One justified build-only operation: actuald3a1ddcf, native/controller0,282.271s,94warnings/0errors, five private outputs, no observer errors/tests/gameplay/synthetic. [Four original files](recovery/l01-build-tooling-b01-first-outcome-20261018.json) retained separately from original124/137.
+- [x] [Independent EVIDENCE](recovery/l01-build-tooling-b01-evidence-independent-review-20261018.md): ACCEPT_BUILD_ONLY_EVIDENCE,68checks/findings[],149pins/fiveDLLs/899unchanged normal files. Permit consumed; final report/status carrier requires exact publication/recovery before handoff. Original cause UNKNOWN; old catalog/PREP/game gates unchanged. Next coherent private BOTH/catalog recommendation PLAN ONLY, aggregate600s unchanged, exact build→discovery/NoBuild binding required; no further command release.
 
 ## L01 D01 — parent-owned live diagnostic delivery (2026-10-18)
 

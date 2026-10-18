@@ -1,0 +1,151 @@
+{
+  "kind": "L01_B01_FIRST_BUILD_ONLY_EVIDENCE_INDEPENDENT_REVIEW",
+  "reviewedUtc": "2026-10-18T22:06:02.760106+00:00",
+  "candidate": "c20a9cf0bcb29c4dcea8853e77b390eeb7c50611",
+  "actualSource": "d3a1ddcf7a6e2f06ae815877c46314ec81d9f0d7",
+  "sourceReviewCandidate": "7f6bb5c6250b107b2f943a7531ea3fcfbd623966",
+  "verdict": "ACCEPT_BUILD_ONLY_EVIDENCE",
+  "findings": [],
+  "qualifiedScope": "The one admitted, isolated full five-project unit build completed successfully in this cloud under the unchanged 600-second GNU timeout and conditional 10-second cleanup setting. This is build capability evidence only.",
+  "originalOutcome": {
+    "rawWrapperReturnCode": 0,
+    "controllerExit": 0,
+    "joined": true,
+    "observerErrors": [],
+    "controllerDurationSeconds": 282.27076969499467,
+    "buildReportedDuration": "00:04:41.67",
+    "warnings": 94,
+    "errors": 0,
+    "primaryPrivateDllOutputs": 5,
+    "testsExecuted": 0,
+    "gameProcesses": 0,
+    "fixtureTargets": 0,
+    "syntheticRuns": 0,
+    "diagnosticRequests": 0
+  },
+  "verification": {
+    "passed": 68,
+    "failed": 0,
+    "rawArchiveMembers": 4,
+    "sampledPidBirthIdentities": 10,
+    "samples": 131,
+    "normalBinFilesUnchanged": 899,
+    "privatePrimaryDllHashesVerified": 5,
+    "sourcePinsUnchanged": 149,
+    "sourcePinDigest": "b277e73745c98abdc78f5feaa62a68373c2bf26b4b6115a20e4aa5207970e9ef",
+    "buildScriptSha256": "b8182fb480ad46452010e31f395e9d2deac63c11d5e1e90d0c08c273e8387e6f",
+    "method": "Independent raw ZIP/local-original/Git blob/clean restored-copy comparisons; source/admission/delta checks; recomputed original process and resource observations; direct current private output and normal-bin byte hashes. No source import, new census, SDK, test, build, game, sampling or process action."
+  },
+  "conclusions": [
+    "All four originals match their index, local retained bytes and saved clean GitHub restore. The actual source-to-carrier delta consists only of the evidence index, raw ZIP and plan status; the admitted runner and current 149-pin closure are unchanged.",
+    "The build log establishes success for all five private primary outputs with 94 warnings and zero errors. The normal integration/unit bin trees retain exactly the original 899-file set and hashes from the frozen catalog failure. Private DLL hashes are verified locally; their byte restoration is not claimed by source/log recovery.",
+    "The original preflight and terminal observations record no active exact tool matches, unchanged 35 zombie dotnet entries, five executable-read fallbacks and no remaining own-session processes. Wrapper identity 102017:4494247 was joined. These are dated observations, not continuous absence or a universal descendant-cleanup proof.",
+    "131 original samples and ten PID/birth identities have increasing observation times and nondecreasing per-identity CPU ticks; every sampled process belongs to the owned wrapper session/group. Maximum observed inter-sample gap is 5.551541714 seconds. Missing intervals are not reconstructed.",
+    "The successful fresh private-output/server-disabled/local-feed build does not prove which change affected the previous run. Old catalog 124 and interrupted unit 137 remain immutable; their compiler, server, OOM or environmental cause remains UNKNOWN. This result supplies no evidence requiring an immediate move to another cloud, and does not establish general environment health or repeatability."
+  ],
+  "metrics": {
+    "samples": 131,
+    "maximumGapSeconds": 5.551541713997722,
+    "maximumObservedSingleProcessRssBytes": 2918567936,
+    "maximumObservedSumOfSessionRssBytes": 3562098688,
+    "maximumObservedSharedNodeMemoryCurrentBytes": 13473382400,
+    "childrenRusage": {
+      "userSeconds": 852.57242,
+      "systemSeconds": 60.153142,
+      "maxRssKiB": 2872092,
+      "limit": "Cumulative waited children of this observer, including preflight Git queries; maxRSS is not simultaneous tree peak."
+    },
+    "sharedNodeCounterDeltas": {
+      "cpu.stat": {
+        "usage_usec": 931754148,
+        "user_usec": 890361794,
+        "system_usec": 41392354,
+        "nice_usec": 0,
+        "nr_periods": 2823,
+        "nr_throttled": 1798,
+        "throttled_usec": 141044009,
+        "nr_bursts": 0,
+        "burst_usec": 0
+      },
+      "memory.events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      }
+    }
+  },
+  "metricLimits": [
+    "Controller 282.270769695 seconds and build-reported 281.67 seconds measure different scopes. MSBuild project accumulated/inclusive timings overlap and must not be summed or subtracted to infer exclusive compiler work.",
+    "CoreCompile 270576 ms/5 calls is a Target Performance Summary entry; Csc 270535 ms/5 calls is a Task Performance Summary entry. The derived outcome groups both under taskSummary; that grouping is descriptive and does not change the original log or establish exclusive elapsed time.",
+    "Waited-child CPU 852.57242 user + 60.153142 system seconds includes preflight Git children. ru_maxrss 2872092 KiB is not a simultaneous tree peak. Sampled RSS maxima are observed samples; summed process RSS may count shared pages more than once.",
+    "The stable visible cgroup mount has root /.., membership 0::/, node device24/inode148. CPU usage delta 931754148 us and throttled delta 141044009 us/1798 periods describe this shared visible node, not exclusive build CPU, build pause time or proven effective ancestor limits. All observed memory.events deltas are zero; this does not establish the cause of the old run.",
+    "Samples were retained in the final original record rather than a continuously durable journal. This completed run has the retained samples; no evidence of an interrupted observer is reconstructed."
+  ],
+  "nextFinitePreparationRecommendation": {
+    "status": "PLAN_ONLY_NO_EXECUTION_ADMISSION",
+    "proposal": "Prepare a bounded SOURCE-reviewed design for a fresh coherent BOTH/build-and-catalog ZERO attempt using one new private artifacts namespace, the demonstrated disabled-server/local-cache conditions, and the existing aggregate 600-second deadline. Explicitly bind the exact integration and unit build outputs to discovery and subsequent NoBuild PlanOnly selection; retain all original first outcomes.",
+    "requirements": [
+      "Inspect and document how the existing runner resolves artifacts-path outputs for both discovery and NoBuild. If it assumes normal bin paths, review only the necessary test-tooling path/configuration adjustment before admitting any command; do not silently discover the old 899 normal files.",
+      "Use the existing exact project graphs and flags. Any ordering or reuse of common project outputs must be within this same fresh preparation namespace and source/configuration; do not reuse B01 private outputs as already qualified PREP.",
+      "Preserve the aggregate deadline and zero-test contract. This build does not prove that full BOTH/catalog fits; no timeout increase, reset-by-fragmentation or repeated blind catalog attempts follows from it.",
+      "Archive a separately named original attempt and require independent fresh PREP acceptance, exact PlanOnly/NoBuild bindings, and the separately reviewed direct live-fixture preparation before any D01 synthetic gate. No source or execution approval is supplied by this evidence review."
+    ],
+    "whyFinite": "The admitted unit build completed; the remaining unresolved preparation obligation is fresh integration+unit catalog completeness and coherent output binding. A bounded tooling/source plan can address that obligation without another diagnostic framework or a claimed old-run causal fix."
+  },
+  "permit": "CONSUMED_FIRST_BUILD_OUTCOME_NO_RETRY",
+  "buildOnlyAdmission": "NONE_CONSUMED",
+  "catalogPrepRelease": "NONE",
+  "syntheticRelease": "NONE",
+  "gameplayRelease": "NONE",
+  "unchangedHolds": [
+    "D01 SOURCE remains accepted but full catalog/PREP is held; PlanOnly, direct Live fixture compilation and synthetic qualification remain unrun/unreleased.",
+    "L01 remains 52/57; original five crash targets unqualified, old session66529 permanently UNKNOWN/unavailable, all frozen original failures retained.",
+    "M01 accepted narrow audit preservation and S01 accepted synthetic managed-stack capability retain their original scope and provenance.",
+    "Conditional future game snapshot remains proposal only; cloud Linux, future Windows five-case qualification and Windows artifact403 holds remain distinct. No Windows/CI action or broader closure."
+  ],
+  "bindings": [
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-build-tooling-b01-first-outcome-20261018.json",
+      "bytes": 7564,
+      "sha256": "c2d55643cd08a93c44e68aee92205c0d475e9612c2c93f0429d6a8dabb6b41f9"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-build-tooling-b01-first-outcome-originals-20261018.zip",
+      "bytes": 30155,
+      "sha256": "dd65447562557b86fa116c8b3ef015ad1953cc800e4688f7afd92a5e05c1f675"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-build-tooling-unit-once-20261018.py",
+      "bytes": 10676,
+      "sha256": "b8182fb480ad46452010e31f395e9d2deac63c11d5e1e90d0c08c273e8387e6f"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-build-tooling-b01-independent-review-20261018.json",
+      "bytes": 9303,
+      "sha256": "0c9761ae7d3204c5d738278b63ed7aa34b4d4384330c3d3b374c0aad982490b0"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/d01-carrier-recovery-c20a9cf0.json",
+      "bytes": 42523,
+      "sha256": "93349c31fe7d5f7d4d8e7e1f735307d3e241c3727ad15afaba6acbeee16a6d8c"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/l01-build-tooling-b01-evidence-checks-20261018.json",
+      "bytes": 9201,
+      "sha256": "d4a2385f3891920efd6fc91e5e049762bae13a3ff9e4b07af033fdbf475ab7f3"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_b01_first_evidence.py",
+      "bytes": 11712,
+      "sha256": "3e549961e65aa2a84c294d31b1fbaae558df9f8c05bbe1917d614dc51f6a69fb"
+    }
+  ],
+  "acceptanceSaveConditions": [
+    "Copy this review/checker/checks byte-exact; preserve all four originals and native timing/outcomes.",
+    "Record only B01 build-evidence acceptance and consumed permit. Keep catalog/PREP/synthetic/game gates closed and the next recommendation PLAN ONLY.",
+    "If clarifying MSBuild metadata, retain original values and note CoreCompile is a target summary entry; no original log rewrite is needed."
+  ]
+}
