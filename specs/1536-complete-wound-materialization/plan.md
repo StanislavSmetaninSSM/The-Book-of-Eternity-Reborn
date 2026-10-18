@@ -1,8 +1,8 @@
-## T148 — выбранный SOURCE-аудит Saref memory_suppression, WIP (2026-10-18)
+## T148 — SOURCE-аудит Saref memory_suppression принят; T148 открыт (2026-10-18)
 
 Пользователь выбрал рекомендованный независимый audit от `12d2bac1e680799c176346b6e6f29f48859e32d1`
 в этой же ветке. [Фактическая цепочка, cleanup map, минимальные tests и follow-up](design/t148-saref-memory-suppression-source-audit-20261018.md)
-сохраняют отдельные статусы: SOURCE review pending; M01 historical audit-state
+сохраняют отдельные статусы: SOURCE audit COMPLETE; M01 historical audit-state
 preservation test UNRUN; E01 independent effect + spiritual healing survival BLOCKED;
 T148/Phase10 OPEN. Прослеженный defeat producer даёт canonical audit; отдельно
 authored suppressed advantage eligibility действительно исполняется, но мост audit
@@ -11,11 +11,16 @@ planner caller и общий exact wound-lineage/carrier cleanup разобра�
 дефекта удаления существующих Saref данных не найдено, runtime proof не заявляется.
 Есть подготовленный follow-up text, issue не создана; новой механики или fix нет.
 
-Независимый reviewer проверяет альтернативные lawful sources/consumers и итоговый
-audit. Только documentation/source evidence: код, тесты, каталог/selection и budgets
-не меняются; runtime/build/discovery не запускались. После review — сохранить его
-verdict, exact remote SHA и чистое GitHub recovery/readback. Все L01/broader holds
-ниже сохраняются; этот audit не возобновляет crash/sampling/Windows/CI.
+[Независимое SOURCE review](recovery/t148-saref-source-audit-final-independent-review-20261018.md)
+приняло exact `d9ffe5416d370c466b973f35329a0a136fb988cc`: blocking/material findings
+нет; исправлен один неблокирующий source pointer 5754. [Все 229 static checks](recovery/t148-saref-source-audit-final-static-checks-20261018.json)
+сохранены; это не выполненные C# tests. Root сверил 42 base inputs / 22 independent pins
+(50 unique paths), exact reviewed 6, 101 L01 pins и чистое GitHub recovery 6 paths
+(receipt SHA256 `051ce2fa82a39e2f4734b407ee9fbb10dd2e39f82264a0ca73c4afd44d954c35`).
+Код, тесты, каталог/selection, budgets и три L01 ledger/packet не изменены;
+runtime/build/discovery не запускались. Финальный carrier с review/evidence требует
+exact remote SHA и чистое GitHub recovery/readback перед передачей. Все L01/broader
+holds ниже сохраняются; этот audit не возобновляет crash/sampling/Windows/CI.
 
 ## T179-Pd-NI-IOBS-L01 — joint bounded blocker; 52/57 qualified (2026-10-18)
 

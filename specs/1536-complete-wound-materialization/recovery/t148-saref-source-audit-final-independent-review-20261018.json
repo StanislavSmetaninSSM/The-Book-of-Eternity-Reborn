@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "reviewKind": "INDEPENDENT_T148_BOUNDED_SOURCE_DOCUMENTATION_REVIEW",
+  "baseCommit": "12d2bac1e680799c176346b6e6f29f48859e32d1",
+  "reviewedCommit": "d9ffe5416d370c466b973f35329a0a136fb988cc",
+  "verdict": "ACCEPT_SOURCE_DOCUMENTATION_ONLY",
+  "blockingFindings": [],
+  "materialFindings": [],
+  "reviewedFiles": [
+    {
+      "path": "specs/1536-complete-wound-materialization/design/t148-saref-memory-suppression-source-audit-20261018.md",
+      "sha256": "7a72bdeff453b58a5fdcefe2dd6b619de4bf2296db425153ac5f44e5af5fdf69",
+      "bytes": 22779
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "sha256": "86ef6979d8134a3fddd82140e93117e7a0fefd617b5a2954aa53ae4d315d432d",
+      "bytes": 2456065
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-saref-source-audit-inputs-20261018.json",
+      "sha256": "680e6ce3945ec600e6a6d42b64d3653db524cfcccf1eac494a135d989e893f45",
+      "bytes": 19163
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-saref-source-chain-independent-findings-20261018.json",
+      "sha256": "bef97c355dc2e91dd6c0d8b9cc8457f966e12ffcb28024b1cdf3655e4f2a797c",
+      "bytes": 18890
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-saref-source-chain-independent-findings-20261018.md",
+      "sha256": "ceeb6faf0ade746d68009abdff55dd8b04644ea6b9827e1a5d53050879fa7b00",
+      "bytes": 6393
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "sha256": "83c4d46670875902c615ac39b22ff8230014f13fc33928fdfced4ed21811c845",
+      "bytes": 1607286
+    }
+  ],
+  "recoveryReceipt": {
+    "path": "/tmp/1536-cloud-tools/carrier-recovery-d9ffe541.json",
+    "sha256": "051ce2fa82a39e2f4734b407ee9fbb10dd2e39f82264a0ca73c4afd44d954c35"
+  },
+  "staticVerification": {
+    "path": "/tmp/1536-cloud-tools/review/t148-saref-source-audit-final-static-checks-20261018.json",
+    "sha256": "5b38e3149c49bcdf48b7c698e9e305d12582d31e58885e98f88e9aa36921e10c",
+    "checkCount": 229,
+    "failed": [],
+    "uniqueAuditInputPaths": 50,
+    "baseInputPins": 42,
+    "independentSourcePins": 22,
+    "L01Pins": 101,
+    "localLinks": 33,
+    "originalStaticQueriesReproduced": 4
+  },
+  "manualSourceAssessment": [
+    {
+      "area": "Producer, lawful alternate sources, consumers and existing story guards",
+      "conclusion": "Accepted bounded conclusion: defeat audit is real persisted validated story data; closed effect source/carrier/component paths do not establish its materialized effect bridge. Real separately-authored spiritual_art/fate_card/quest/faction/world_event alternatives and suppressed-advantage eligibility remain explicitly acknowledged. Prior independent 22-file source findings are copied byte-exact."
+    },
+    {
+      "area": "Three terminal planner callers",
+      "conclusion": "All three production direct calls confirmed: WoundAcceptedTurnPlanner.cs:2738 (worsen); MortalWoundTreatmentSeverityRematerializationPlanner.cs:394 (whole/selected removed roots); EffectAcceptedTurnPlanner.MortalRecovery.cs:609-613 (severity/heal selected roots, otherwise empty). None selects all effects just because they share a player/owner."
+    },
+    {
+      "area": "Lineage and exact mutation",
+      "conclusion": "AcceptedMechanicsPlanner.cs:2149-2251 derives exact (realm,wound,woundId), declared roots and authenticated descendants; terminal planner:2765-2905 rejects source/target/carrier/identity/stack disagreement. EffectAcceptedTurnPlanner.cs:5754-5824 rechecks sealed occurrence and removes only the exact EffectId, retaining an expired history transition; TryRemoveEffect:8897 requires one mutable occurrence."
+    },
+    {
+      "area": "Wound carrier, shared carrier and legacy",
+      "conclusion": "BuildRecoveryFinalSources:760-774 changes/removes one exact wound row in cloned owner state. WoundAcceptedTurnPlannerCore.MortalRecovery.cs:104-107 emits selected delete/update; AcceptedMechanicsPlanner.ApplyMutation:1150-1219 verifies exact owner/wound/before-image. Common Compose:622-666 checks non-effect fields, ComposeLive:83-130 replaces selected wound collection in a clone of accepted effect/owner root. WoundAcceptedOwnerCarrierAuthority:173-198 removes only activeWounds on unsupported profiles. WoundTransitionReducer:1963,2061,2193,2825 preserves unrelated relation refs and limits wound effect intents to owned roots; independent legacy declarations do not confer Saref runtime authority."
+    },
+    {
+      "area": "M01 fixture and runtime proof boundary",
+      "conclusion": "Future one-Fact metadata regression is appropriately UNRUN and requires independent per-case seed through the real Saref producer before PrepareSignedCreationTurn:1443. FixtureCache:147-191 captures signed immutable preparation then materializes/export-binds; post-sign injection or shared cached-template edits would be invalid. PublicationRollback:108-150 supplies a real raw-item/current refresh seam; its existing outcomes are not copied into M01. Expected actual heal, exact terminal identity/history, validation, audit bytes and cleanup avoid a no-op preservation claim."
+    },
+    {
+      "area": "E01 and task dependencies",
+      "conclusion": "E01 remains BLOCKED/UNRUN: current metadata test cannot satisfy spiritual-wound plus independent runtime-effect survival at contracts/wound-effects-and-atomicity.md:657-663. T148 and Phase10 remain open, T177/final conclusions remain held; this bounded SOURCE audit does not require reopening L01, Windows or a new architecture."
+    },
+    {
+      "area": "Follow-up, release and scope",
+      "conclusion": "Follow-up is draft text only, not a created issue or satisfied before-1536-closure condition. No gameplay/GM contract change, implementation choice, runtime authorization, new PASS or confidence upgrade is introduced. No confirmed data-loss defect was established in the reviewed source paths."
+    }
+  ],
+  "editorialObservations": [
+    {
+      "severity": "nonblocking",
+      "path": "specs/1536-complete-wound-materialization/design/t148-saref-memory-suppression-source-audit-20261018.md",
+      "text": "The ApplyWoundTerminalOperation label/anchor uses 5749; the declaration starts at5754 and5749 belongs to the preceding helper catch. Correct label and #L anchor to5754 in acceptance metadata save; semantic review and verdict unaffected.",
+      "requiresNewSourceReview": false
+    }
+  ],
+  "acceptanceScope": "Accept the saved bounded source audit and future test/follow-up documentation as accurate evidence. This does not complete T148, accept an implementation or release M01/E01/any native action.",
+  "acceptanceSaveConditions": [
+    "Preserve reviewed commit/hash provenance and exact independent report copies.",
+    "Keep M01 UNRUN, E01 BLOCKED, T148/Phase10 OPEN and follow-up issue uncreated unless a separately authorized later action actually creates it.",
+    "Do not change source, tests, catalog/selection, budgets, source pins or existing outcome evidence while recording this acceptance."
+  ],
+  "preservedHolds": {
+    "L01": "52/57; original five crash targets unqualified",
+    "old66529": "UNKNOWN/unavailable/recoveryClaim=false",
+    "release": "NONE",
+    "budgets": "220/900 unchanged",
+    "broader": "FullNI/HOT/F1/M3/T197 incomplete; A3 NO-PROCEED; Windows403 blocked; no CI"
+  },
+  "actions": {
+    "repositoryWrites": false,
+    "CSharp": false,
+    "tests": false,
+    "build": false,
+    "discovery": false,
+    "runtime": false,
+    "diagnostics": false,
+    "installation": false,
+    "processIntervention": false,
+    "newGitHubRecovery": false
+  },
+  "createdUtc": "2026-10-18T18:23:16.938581+00:00"
+}
