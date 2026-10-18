@@ -63,6 +63,8 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     private Action<TrustedLocalPublicationPhase, int>? _consolePublicationObserver;
     private Action<string>? _consoleMutationObserver;
     private Func<string, Task>? _consoleCanonicalReadObserver;
+    private Func<Task>? _consoleSessionClosingObserver;
+    private Func<string, Task>? _consoleReturnedCanonicalReadObserver;
     private string? _armedCanonicalWriteFailurePath;
     private int _remainingCanonicalWriteFailureMatches;
     private readonly ITestOutputHelper? _directGachaOutput;
@@ -80,6 +82,8 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             {
                 BeforeCanonicalMutationAsync = BeforeCanonicalMutationAsync,
                 AfterCanonicalReadInitialValidationAsync = path => _consoleCanonicalReadObserver?.Invoke(path) ?? Task.CompletedTask,
+                SessionOperationClosingAsync = () => _consoleSessionClosingObserver?.Invoke() ?? Task.CompletedTask,
+                AfterCanonicalReadAttemptAsync = path => _consoleReturnedCanonicalReadObserver?.Invoke(path) ?? Task.CompletedTask,
                 LocalPublicationObserver = (phase, index) => _consolePublicationObserver?.Invoke(phase, index)
             });
         _fs.EnsureDirectoryStructure();

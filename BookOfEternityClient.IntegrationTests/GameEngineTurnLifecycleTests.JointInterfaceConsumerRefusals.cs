@@ -17,6 +17,8 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData("Tuple")]
     [InlineData("SealMissing")]
     [InlineData("RecordMissing")]
+    [InlineData("Empty")]
+    [InlineData("UnknownEmpty")]
     public async Task GuaranteedTreatment_ActualGenericInterfaceConsumerRefusesSelectedMarkerDamage(string damage)
     {
         using var probe = new JointInterfaceLifecycleProbe(this, "Selector:" + damage);
@@ -53,7 +55,7 @@ public sealed partial class GameEngineTurnLifecycleTests
 
     private sealed partial class JointInterfaceLifecycleProbe
     {
-        private bool ChangesInterface => scenario is "Changed" or "Error" or "LateCurrent" ||
+        private bool ChangesInterface => scenario is "Changed" or "Error" or "LateCurrent" or "InterfaceClose" or "OuterClose" or "ReadRace" or "ReadyDrift" ||
             scenario.StartsWith("Selector:", StringComparison.Ordinal) || scenario.StartsWith("Crash:", StringComparison.Ordinal);
         private int _selectorChecks;
         private int _lateWarningCount = -1;
@@ -64,12 +66,13 @@ public sealed partial class GameEngineTurnLifecycleTests
         private Func<string, Task>? _priorInitialRead;
         private bool _initialInstalled, _initialPaused;
         private FileSystemManager.CanonicalWriteLease? _initialOwner;
-        private readonly IOException _initialCloseFailure = new("L01 actual FIRST2 initial owning release failure.");
+        private readonly IOException _initialCloseFailure;
         private InitialInterfaceThrowingClose? _initialCloser;
         private byte[]? _initialPending;
         private Dictionary<string, byte[]>? _initialCanonical;
 
         internal bool ExpectsInitialClose => scenario == "InitialClose";
+        private bool ExpectsObservedOwningClose => scenario is "InitialClose" or "InterfaceClose";
 
         private async Task ObserveFrozenWarningConsumersAsync(GameEngine engine)
         {
@@ -78,6 +81,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             var issues = Assert.IsAssignableFrom<IReadOnlyList<ValidationIssue>>(refresh.GetType().GetProperty("Issues")!.GetValue(refresh));
             _lateWarningCount = issues.Count(issue => issue.Code == "accepted_turn_stale_interface_updates");
             var before = CaptureCanonicalFiles();
+            var interfaceMtime = Mtime();
             for (var invocation = 0; invocation < 2; invocation++)
             {
                 var returned = await InvokePrivateAsync<IReadOnlyList<ValidationIssue>>(engine, "ReadMortalJointInterfaceAtGenericSlotAsync");
@@ -137,6 +141,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 case "Tuple": marker["requestId"] = marker["requestId"]!.GetValue<string>() + "-foreign"; break;
                 case "SealMissing": Assert.True(marker.Remove("niPublication")); break;
                 case "RecordMissing": Assert.True(marker["outputBinding"]!["publishedInterfaceResult"]!.AsObject().Remove("record")); break;
+                case "Empty": marker.Clear(); break;
+                case "UnknownEmpty": marker.Clear(); marker["schemaVersion"] = 7; break;
                 default: throw new InvalidOperationException(scenario);
             }
             var damaged = Encoding.UTF8.GetBytes(marker.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
@@ -149,11 +155,13 @@ public sealed partial class GameEngineTurnLifecycleTests
                 fixture.WritePhysicalInjuryDiagnostic("iobs_actual_generic_selected_damage", new
                 { scenario, Positive = positive, OriginalMarker = Raw(markerBytes), DamagedMarker = Raw(damaged),
                     Refusal = refusal?.ToString(), Before = before.ToDictionary(row => row.Key, row => Raw(row.Value)),
-                    After = CaptureCanonicalFiles().ToDictionary(row => row.Key, row => Raw(row.Value)) });
+                    After = CaptureCanonicalFiles().ToDictionary(row => row.Key, row => Raw(row.Value)),
+                    InterfaceMtimeBefore = interfaceMtime, InterfaceMtimeAfter = Mtime() });
                 Assert.IsType<InvalidDataException>(refusal);
                 if (scenario == "Selector:Tuple") Assert.Contains("joint_interface_selector_tuple_conflict", refusal!.Message);
-                if (scenario is "Selector:Parent1" or "Selector:ParentUnknown")
+                if (scenario is "Selector:Parent1" or "Selector:ParentUnknown" or "Selector:Empty" or "Selector:UnknownEmpty")
                     Assert.Contains("joint_interface_selected_parent_version_changed", refusal!.Message);
+                Assert.Equal(interfaceMtime, Mtime());
                 Assert.Equal(before.Keys.Order(StringComparer.Ordinal), CaptureCanonicalFiles().Keys.Order(StringComparer.Ordinal));
                 foreach (var (path, bytes) in before) Assert.Equal(path == markerPath ? damaged : bytes, File.ReadAllBytes(path));
             }
@@ -167,7 +175,7 @@ public sealed partial class GameEngineTurnLifecycleTests
 
         private void AttachInitialCloseObservation()
         {
-            if (!ExpectsInitialClose) return;
+            if (!ExpectsObservedOwningClose) return;
             _priorInitialRead = fixture._consoleCanonicalReadObserver;
             fixture._consoleCanonicalReadObserver = async path =>
             {
@@ -183,12 +191,13 @@ public sealed partial class GameEngineTurnLifecycleTests
 
         private void ObserveInitialInstallation(TrustedLocalPublicationPhase phase)
         {
-            if (!ExpectsInitialClose || _initialInstalled || phase != TrustedLocalPublicationPhase.Committed) return;
+            if (!ExpectsObservedOwningClose || _initialInstalled || phase != TrustedLocalPublicationPhase.Committed) return;
             var raw = ReadPhysical(WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
             if (raw is null) return;
             var pending = ParseJsonObjectBytes(raw);
             if (pending["jointRepairCheckpoint"] is not JsonObject checkpoint || checkpoint["schemaVersion"]?.GetValue<int>() != 2) return;
-            Assert.False(pending.ContainsKey(MortalJointInterfacePublication.PendingField));
+            if (ExpectsInitialClose) Assert.False(pending.ContainsKey(MortalJointInterfacePublication.PendingField));
+            else if (pending[MortalJointInterfacePublication.PendingField] is not JsonObject result || result["state"]?.GetValue<string>() != "Published") return;
             _initialInstalled = true;
         }
 
@@ -200,8 +209,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 { Failure = (await Record.ExceptionAsync(() => operation))?.ToString(), _initialInstalled, _initialPaused });
             Assert.Same(_initialReadEntered.Task, first);
             var inspector = typeof(OriginalOwnedLeaseCloseTests).GetMethod("InspectOriginalNestedOwningLease", BindingFlags.Static | BindingFlags.NonPublic)!;
-            var inspected = ((FileSystemManager.CanonicalWriteLease Lease, string State))inspector.Invoke(null,
-                [operation, "GameEngine+<RestoreMortalJointRepairBaselineAsync>"])!;
+            var boundary = ExpectsInitialClose ? "GameEngine+<RestoreMortalJointRepairBaselineAsync>" : "PrepareAndPublishWithOwningReleaseAsync";
+            var inspected = ((FileSystemManager.CanonicalWriteLease Lease, string State))inspector.Invoke(null, [operation, boundary])!;
             _initialOwner = inspected.Lease;
             Assert.Same(fixture._fs, _initialOwner.Owner); Assert.True(_initialOwner.IsActive);
             Assert.NotNull(_initialOwner.MainAdmission); Assert.Null(_initialOwner.ExternalPublicationContext);
@@ -252,7 +261,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         private void DisposeInitialCloseObservation()
         {
             ReleaseInitialRead();
-            if (ExpectsInitialClose) fixture._consoleCanonicalReadObserver = _priorInitialRead;
+            if (ExpectsObservedOwningClose) fixture._consoleCanonicalReadObserver = _priorInitialRead;
         }
 
         private sealed class InitialInterfaceThrowingClose(IOException failure) : IDisposable

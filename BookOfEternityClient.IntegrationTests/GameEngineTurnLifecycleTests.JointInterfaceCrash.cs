@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Globalization;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -27,12 +28,12 @@ public sealed partial class GameEngineTurnLifecycleTests
         using var classOwned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         var own = Path.Combine(Path.GetTempPath(), "boe-joint-interface-crash-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(Path.Combine(own, "tmp"));
-        using var owned = new CleanupOwnedFixture(own, line => _directGachaOutput?.WriteLine(line));
+        using var owned = new JointInterfaceCrashOwnedContainer(own, line => _directGachaOutput?.WriteLine(line));
         var nonce = Guid.NewGuid().ToString("N");
         File.WriteAllText(Path.Combine(own, "parent.json"), JsonSerializer.Serialize(new
         { Nonce = nonce, ParentPid = Environment.ProcessId, Cut = cut }));
         var cutPath = Path.Combine(own, "cut.json");
-        var original = await RunJointInterfaceNativeChildAsync("engine-joint-interface-original-crash", own, cutPath, cut, own);
+        var original = await RunJointInterfaceNativeChildAsync("engine-joint-interface-original-crash", own, cutPath, cut, own, owned);
         WritePhysicalInjuryDiagnostic("iobs_actual_abrupt_original_exit", original);
         Assert.Equal(73, original.ExitCode); // Environment.Exit, not an exception/catch/compensation surrogate
         Assert.True(original.Eof); Assert.True(original.Joined);
@@ -45,7 +46,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(0, atCut["CommonCallbacks"]!.GetValue<int>()); Assert.Equal(42, atCut["Turn"]!.GetValue<int>());
         Assert.NotNull(atCut["JournalBase64"]); Assert.Equal(cut, atCut["Cut"]!.GetValue<int>());
         var output = Path.Combine(own, "resume.json");
-        var resumed = await RunJointInterfaceNativeChildAsync("engine-joint-interface-resume", root, output, cut, own);
+        var resumed = await RunJointInterfaceNativeChildAsync("engine-joint-interface-resume", root, output, cut, own, owned);
         var raw = File.Exists(output) ? File.ReadAllText(output) : null;
         WritePhysicalInjuryDiagnostic("iobs_actual_current_resume_exit", new
         { Original = original, Cut = atCut, Resume = resumed, ResultRaw = raw,
@@ -72,7 +73,8 @@ public sealed partial class GameEngineTurnLifecycleTests
     private sealed record JointInterfaceNativeOutcome(int Pid, DateTime BirthUtc, int ExitCode, string Stdout, string Stderr,
         string Executable, string[] Arguments, object Dependencies, bool Eof, bool Joined);
 
-    private async Task<JointInterfaceNativeOutcome> RunJointInterfaceNativeChildAsync(string role, string root, string output, int cut, string own)
+    private async Task<JointInterfaceNativeOutcome> RunJointInterfaceNativeChildAsync(string role, string root, string output, int cut, string own,
+        JointInterfaceCrashOwnedContainer ownership)
     {
         var paths = MortalArchiveDependencyPaths();
         var executable = Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!, "dotnet");
@@ -83,24 +85,60 @@ public sealed partial class GameEngineTurnLifecycleTests
         foreach (var argument in arguments) start.ArgumentList.Add(argument);
         start.Environment["TMPDIR"] = Path.Combine(own, "tmp"); // child-only owned namespace, no global environment mutation
         using var child = Process.Start(start) ?? throw new InvalidOperationException("Actual joint engine child was not started.");
-        var birth = child.StartTime.ToUniversalTime();
-        var stdout = child.StandardOutput.ReadToEndAsync(); var stderr = child.StandardError.ReadToEndAsync();
+        ownership.Started(child.Id);
+        DateTime birth = default;
+        Task<string>? stdout = null, stderr = null;
         Exception? failure = null;
-        try { await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(220)); }
+        try
+        {
+            birth = child.StartTime.ToUniversalTime();
+            stdout = child.StandardOutput.ReadToEndAsync(); stderr = child.StandardError.ReadToEndAsync();
+            await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(220));
+        }
         catch (Exception error) { failure = error; throw; }
         finally
         {
-            if (!child.HasExited) child.Kill(entireProcessTree: true); // only this original owned child tree
-            await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
-            await Task.WhenAll(stdout, stderr).WaitAsync(TimeSpan.FromSeconds(10));
-            File.WriteAllText(output + ".stdout", await stdout); File.WriteAllText(output + ".stderr", await stderr);
+            Exception? cleanupFailure = null;
+            try
+            {
+                if (!child.HasExited) child.Kill(entireProcessTree: true); // only this original owned child tree
+                await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
+                stdout ??= child.StandardOutput.ReadToEndAsync(); stderr ??= child.StandardError.ReadToEndAsync();
+                await Task.WhenAll(stdout, stderr).WaitAsync(TimeSpan.FromSeconds(10));
+                ownership.Joined(child.Id); // only positive terminal+join+EOF can permit container deletion
+            }
+            catch (Exception error) { cleanupFailure = error; if (failure is not null) failure.Data["JointInterfaceChildCleanupFailure"] = error; }
+            if (stdout?.IsCompletedSuccessfully == true) File.WriteAllText(output + ".stdout", stdout.Result);
+            if (stderr?.IsCompletedSuccessfully == true) File.WriteAllText(output + ".stderr", stderr.Result);
             WritePhysicalInjuryDiagnostic("iobs_actual_native_join", new
-            { child.Id, BirthUtc = birth, child.ExitCode, Eof = stdout.IsCompletedSuccessfully && stderr.IsCompletedSuccessfully,
+            { child.Id, BirthUtc = birth, ExitCode = child.HasExited ? (int?)child.ExitCode : null, Eof = stdout?.IsCompletedSuccessfully == true && stderr?.IsCompletedSuccessfully == true,
                 Joined = child.HasExited, Failure = failure?.ToString(), Executable = executable, Arguments = arguments,
-                Dependencies = MortalArchiveDependencyContext(), RawStdout = await stdout, RawStderr = await stderr });
+                Dependencies = MortalArchiveDependencyContext(), RawStdout = stdout?.IsCompletedSuccessfully == true ? stdout.Result : null,
+                RawStderr = stderr?.IsCompletedSuccessfully == true ? stderr.Result : null, CleanupFailure = cleanupFailure?.ToString(),
+                RetainedOwnedContainer = ownership.HasUnsettledChildren ? own : null });
+            if (cleanupFailure is not null && failure is null) throw cleanupFailure;
         }
-        return new(child.Id, birth, child.ExitCode, await stdout, await stderr, executable, arguments,
-            MortalArchiveDependencyContext(), stdout.IsCompletedSuccessfully && stderr.IsCompletedSuccessfully, child.HasExited);
+        return new(child.Id, birth, child.ExitCode, await stdout!, await stderr!, executable, arguments,
+            MortalArchiveDependencyContext(), stdout!.IsCompletedSuccessfully && stderr!.IsCompletedSuccessfully, child.HasExited);
+    }
+
+    private sealed class JointInterfaceCrashOwnedContainer(string root, Action<string> output) : IDisposable
+    {
+        private readonly HashSet<int> _unsettled = [];
+        internal bool HasUnsettledChildren => _unsettled.Count != 0;
+        internal void Started(int pid) => Assert.True(_unsettled.Add(pid));
+        internal void Joined(int pid) => Assert.True(_unsettled.Remove(pid));
+        public void Dispose()
+        {
+            if (HasUnsettledChildren)
+            {
+                output(JsonSerializer.Serialize(new { CleanupOwnedRoot = root, OwnedFixtureRemoved = false,
+                    OwnedFixtureRetainedForUnresolvedChild = true, UnsettledOwnedPids = _unsettled.Order().ToArray(),
+                    CleanupFailure = "Native exit/join/EOF could not all be positively established; do not delete under an unconfirmed child." }));
+                return;
+            }
+            new CleanupOwnedFixture(root, output).Dispose();
+        }
     }
 
     public static async Task WriteJointInterfaceOriginalCrashAsync(string ignoredRoot, string output, int cut, string own)
@@ -141,6 +179,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         }
         FileSystemManager files = null!;
         var changingI = 0; var actualCaller = false;
+        MortalJointInterfacePublication.Record? completedProof = null;
         var publications = new List<object>(); var recovery = new List<object>();
         files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
         {
@@ -161,7 +200,23 @@ public sealed partial class GameEngineTurnLifecycleTests
         var log = new SpiritualLifecycleTestLogger();
         var engine = factory.CreateGameEngine(new QueuedConsoleInputSource([]), settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },
             fileSystem: files, logger: log, finalizationHooks: new GameEngineSessionFinalizationHooks
-            { AtCheckpointAsync = point => { if (point == SessionFinalizationCheckpoint.LateTerminalAndIdleOperationBound) actualCaller = true; return Task.CompletedTask; } });
+            { AtCheckpointAsync = async point =>
+                {
+                    if (point == SessionFinalizationCheckpoint.LateTerminalAndIdleOperationBound) actualCaller = true;
+                    if (cut < 3 && point == SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization)
+                    {
+                        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+                        var actualOriginal = MortalQteWoundOpportunityProjection.ReadSnapshot(files, lease);
+                        completedProof = await MortalQteDecisionPublication.ReadCurrentJointInterfaceDataAsync(files, lease,
+                            actualOriginal.SessionId, actualOriginal.RequestId, actualOriginal.SnapshotToken, actualOriginal.TurnNumber);
+                        Assert.NotNull(completedProof);
+                        AssertActualJointInterfaceRegistrySettled(files);
+                        Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "iobs_actual_completed_data_before_terminal_cleanup",
+                            Original = new { actualOriginal.SessionId, actualOriginal.RequestId, actualOriginal.SnapshotToken, actualOriginal.TurnNumber },
+                            Record = completedProof.ToJson(), Interface = await files.ReadFileBytesAsync(lease, MortalJointInterfacePublication.InterfacePath),
+                            Meaning = "Full existing current original/history/resource proof while actual original remains present; no post-cleanup authority recreation" }));
+                    }
+                } });
         await using var audio = GetPrivateField<AudioService>(engine, "_audioService");
         var noFresh = GetPrivateFieldValue<object?>(engine, "_mortalJointRepairCheckpoint") is null &&
             GetPrivateFieldValue<string?>(engine, "_mortalJointInterfaceFreshCheckpoint") is null &&
@@ -190,7 +245,10 @@ public sealed partial class GameEngineTurnLifecycleTests
                 {
                     result = MortalJointInterfacePublication.Read(JsonSerializer.SerializeToElement(pending[MortalJointInterfacePublication.PendingField]));
                     result.RequireCheckpoint(parsed.Checkpoint.ToJsonObject()); result.RequireLegacyPending(pending);
-                    Assert.True(JsonNode.DeepEquals(atCut["Result"]!["binding"], result.Binding));
+                    var cutRecord = MortalJointInterfacePublication.Read(JsonSerializer.SerializeToElement(atCut["Result"]));
+                    Assert.Equal(cutRecord.ResultFingerprint, result.ResultFingerprint);
+                    if (cut == 4) Assert.True(JsonNode.DeepEquals(cutRecord.ToJson(), result.ToJson()));
+                    else Assert.True(JsonNode.DeepEquals(cutRecord.AsPublished().ToJson(), result.AsPublished().ToJson()));
                     Assert.Equal(cut == 2 ? "Published" : "Prepared", result.State);
                     recoveredI = await files.ReadFileBytesAsync(lease, MortalJointInterfacePublication.InterfacePath);
                     Assert.Equal(cut == 2 ? result.AfterBytes : result.BeforeBytes, recoveredI);
@@ -207,22 +265,29 @@ public sealed partial class GameEngineTurnLifecycleTests
                 after = await CaptureConfirmedClaimReadImagesAsync(files, lease);
                 if (cut < 3)
                 {
-                    var current = await MortalQteDecisionPublication.ReadCurrentJointInterfaceDataAsync(files, lease,
-                        original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber);
+                    var current = completedProof; // physical proof frozen at the actual pre-cleanup checkpoint
                     Assert.NotNull(current); Assert.Equal("Published", current.State); Assert.False(current.HasErrors);
-                    Assert.True(JsonNode.DeepEquals(result!.AsPublished().ToJson(), current.ToJson()));
-                    Assert.Equal(result.AfterBytes, await files.ReadFileBytesAsync(lease, MortalJointInterfacePublication.InterfacePath));
-                    var image = ParseJsonObjectBytes(Assert.IsType<byte[]>(result.AfterBytes));
+                    var cutRecord = MortalJointInterfacePublication.Read(JsonSerializer.SerializeToElement(atCut["Result"]));
+                    Assert.Equal(cutRecord.ResultFingerprint, current.ResultFingerprint);
+                    Assert.True(JsonNode.DeepEquals(cutRecord.AsPublished().ToJson(), current.ToJson()));
+                    Assert.Equal(cutRecord.AfterBytes, await files.ReadFileBytesAsync(lease, MortalJointInterfacePublication.InterfacePath));
+                    var image = ParseJsonObjectBytes(Assert.IsType<byte[]>(cutRecord.AfterBytes));
                     var option = Assert.IsType<JsonObject>(Assert.Single(image["dialogueOptions"]!.AsArray()));
                     Assert.Equal("[NI_CONTROL:second]Продолжить обычный ответ.", option["text"]!.GetValue<string>());
                     Assert.Equal("[NI_ACTION:first][NI_CONTROL:second]Продолжить обычный ответ.", option["inputValue"]!.GetValue<string>());
                     Assert.Equal(43, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
+                    await AssertJointInterfaceResumedMechanicalOutcomeAsync(files, lease, before, current.Binding);
+                    foreach (var path in new[] { AcceptedMechanicsPlan.WoundCommandPath, WoundAcceptedTurnSnapshotContract.PendingResolutionPath,
+                        MortalWoundOpportunityAdapter.DecisionPath, "input/turn_request.json", "ready/turn_complete.json",
+                        LiveTurnPreparationService.PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath })
+                        Assert.Null(await files.ReadFileBytesAsync(lease, path));
                     result = current; completed = true;
                 }
                 else
                 {
                     Assert.Equal(42, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
                     Assert.Equal(recoveredPending, await files.ReadFileBytesAsync(lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath));
+                    Assert.Equal(before.Keys.Order(StringComparer.Ordinal), after.Keys.Order(StringComparer.Ordinal));
                     foreach (var (path, bytes) in before) Assert.Equal(bytes, after[path]);
                     if (result is not null)
                     {
@@ -255,6 +320,57 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Before = before, After = after, Repeated = repeated, Publications = publications, Recovery = recovery, Logs = log.Describe(),
                 Dependencies = MortalArchiveDependencyContext(), Loaded = MortalArchiveLoadedDependencyBindings() }));
         }
+    }
+
+    private static async Task AssertJointInterfaceResumedMechanicalOutcomeAsync(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease, IReadOnlyDictionary<string, byte[]?> before, JsonObject binding)
+    {
+        var definitions = ResourceDefinitionCatalog.ParseCanonical(await files.ReadFileAsync(lease, ResourceMaterializationContract.DefinitionsPath), false);
+        Assert.True(definitions.IsValid, DescribeValidationIssues(definitions.Issues));
+        var state = ResourceStateContract.ParseCanonical(await files.ReadFileAsync(lease, ResourceMaterializationContract.StatePath), definitions.Catalog!, false);
+        var history = ResourceHistoryState.ParseCanonical(await files.ReadFileAsync(lease, ResourceMaterializationContract.HistoryPath), definitions.Catalog!, false);
+        Assert.True(state.IsValid, DescribeValidationIssues(state.Issues)); Assert.True(history.IsValid, DescribeValidationIssues(history.Issues));
+        Assert.Empty(history.History!.ValidateStateAgreement(state.Ledger!));
+        var spend = Assert.Single(history.History.Transitions, row => row.Turn == 43 && row.Coordinate.ResourceKey == "energy");
+        Assert.Equal(ResourceTransitionOperation.Spend, spend.Operation); Assert.Equal(ResourceMutationPhase.RegisteredSystemOutcome, spend.Phase);
+        Assert.Equal(2m, spend.RequestedAmount); Assert.Equal(2m, spend.AppliedAmount); Assert.Equal(2m, spend.BeforeState!.Current); Assert.Equal(0m, spend.AfterState!.Current);
+        Assert.Equal(0m, Assert.Single(state.Ledger!.Entries, row => row.Coordinate.ResourceKey == "energy").Current);
+        var damage = Assert.Single(history.History.Transitions, row => row.Turn == 43 && row.Coordinate.ResourceKey == "health");
+        Assert.Equal(ResourceTransitionOperation.Damage, damage.Operation); Assert.Equal(ResourceMutationPhase.EffectTrigger, damage.Phase);
+        Assert.Equal(3m, damage.AppliedAmount); Assert.Equal(5m, damage.BeforeState!.Current); Assert.Equal(2m, damage.AfterState!.Current);
+        Assert.Equal(2m, Assert.Single(state.Ledger.Entries, row => row.Coordinate.ResourceKey == "health").Current);
+        Assert.Equal(2, history.History.Transitions.Count(row => row.Turn == 43));
+        var prior = WoundHistoryState.Parse(MortalArchiveText(before[WoundHistoryState.HistoryPath]!), WoundHistoryState.HistoryPath);
+        var current = WoundHistoryState.Parse(await files.ReadFileAsync(lease, WoundHistoryState.HistoryPath), WoundHistoryState.HistoryPath);
+        Assert.True(prior.IsValid, DescribeValidationIssues(prior.Issues)); Assert.True(current.IsValid, DescribeValidationIssues(current.Issues));
+        foreach (var row in prior.State!.Transitions)
+            Assert.Equal(JsonSerializer.Serialize(row, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
+                JsonSerializer.Serialize(Assert.Single(current.State!.Transitions, now => now.Ordinal == row.Ordinal), SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var suffix = current.State!.Transitions.Skip(prior.State.Transitions.Count).ToArray();
+        Assert.Equal(2, suffix.Length); Assert.Equal("create", suffix[0].Kind); Assert.Equal("treat", suffix[1].Kind);
+        Assert.Equal(prior.State.NextOrdinal, suffix[0].Ordinal); Assert.Equal(prior.State.NextOrdinal + 1, suffix[1].Ordinal);
+        Assert.All(suffix, row => Assert.Equal(43, row.Turn));
+        var treatment = Assert.IsType<MortalWoundTreatmentPersistedResult>(suffix[1].TreatmentResult);
+        Assert.Equal(binding["requestFingerprint"]!.GetValue<string>(), treatment.Request.RequestFingerprint);
+        Assert.Equal(suffix[1].WoundId, treatment.Request.Coordinates.WoundId);
+        Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "iobs_actual_resumed_once_mechanics", spend, damage,
+            OriginalWoundPrefix = prior.State.Transitions, ExactSuffix = suffix, RequestFingerprint = treatment.Request.RequestFingerprint,
+            Meaning = "Independent 2→0 charge, 5→2 damage, exactly two target-turn resource rows and create/treat suffix; full current proof was frozen before cleanup" }));
+    }
+
+    private static void AssertActualJointInterfaceRegistrySettled(FileSystemManager files)
+    {
+        // Observe the slot created by THIS real current common publisher. This
+        // diagnostic lookup neither initializes a state nor supplies capability.
+        var roots = typeof(AcceptedTurnAuthorityRegistry).GetField("RootSlots", BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null)!;
+        object?[] arguments = [files.CanonicalRootAuthorityIdentity, null];
+        Assert.True((bool)roots.GetType().GetMethod("TryGetValue")!.Invoke(roots, arguments)!);
+        var state = GetPrivateField<object>(arguments[1]!, "_state");
+        Assert.Null(GetPrivateFieldValue<object?>(state, "_mortalWoundTreatmentPublicationReservation"));
+        Assert.Null(GetPrivateFieldValue<object?>(state, "_openJointRepairPublicationReceipt"));
+        Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "iobs_actual_current_common_claim_settled",
+            Root = files.BasePath, ActualState = state.GetType().FullName, ReservationAbsent = true, OpenTakeAbsent = true,
+            Meaning = "Actual completed physical proof precedes this read of existing owner state, not a fabricated receipt or old-process claim" }));
     }
 
     private sealed partial class JointInterfaceLifecycleProbe

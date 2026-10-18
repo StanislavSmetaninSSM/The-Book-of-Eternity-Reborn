@@ -67,7 +67,12 @@ public sealed partial class GameEngineTurnLifecycleTests
         private readonly GameEngineTurnLifecycleTests fixture;
         private readonly string scenario;
         internal JointInterfaceLifecycleProbe(GameEngineTurnLifecycleTests fixture, string scenario = "Changed")
-        { this.fixture = fixture; this.scenario = scenario; }
+        {
+            this.fixture = fixture; this.scenario = scenario;
+            _initialCloseFailure = new IOException(scenario == "InterfaceClose"
+                ? "L01 actual I publication owning release failure."
+                : "L01 actual FIRST2 initial owning release failure.");
+        }
         private const string InterfacePath = "output/interface_updates.json";
         private const string TwoTags = "[NI_ACTION:first][NI_CONTROL:second]Продолжить обычный ответ.";
         private const string OneTag = "[NI_CONTROL:second]Продолжить обычный ответ.";
@@ -84,7 +89,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         private int _captureCallbacks, _interfaceAtCapture, _sequence;
         private bool _configured;
         private DateTime? _submittedMtime, _finalMtime;
-        internal bool ExpectsHeld => scenario == "Error";
+        internal bool ExpectsHeld => scenario is "Error" or "InterfaceClose" or "ReadRace" or "ReadyDrift";
 
         internal void Attach(GameEngine engine)
         {
@@ -116,6 +121,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 }
             });
             AttachInitialCloseObservation();
+            AttachOuterCloseObservation();
+            AttachReturnedReadRace();
         }
 
         internal void ConfigureCorrectedOutputs(Dictionary<string, byte[]> outputs)
@@ -144,6 +151,11 @@ public sealed partial class GameEngineTurnLifecycleTests
 
         internal void ConfigureBeforeOriginal()
         {
+            if (scenario == "ReadRace")
+            {
+                File.Delete(fixture._fs.ResolvePath(InterfacePath));
+                return; // genuine original records absence, so freshness performs NO public I read
+            }
             if (scenario != "Warning") return;
             // A real public previous-turn image BEFORE Stage43 signs its own
             // original. No original manifest/hash is edited or re-signed here.
@@ -189,6 +201,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     // Exact actual committed member, not a fixture-created DTO.
                     _ = MortalJointInterfacePublication.Read(JsonSerializer.SerializeToElement(result));
                     _resultCommits.Add(result.DeepClone().AsObject());
+                    ObservePublishedReadyDrift(result);
                     fixture.WritePhysicalInjuryDiagnostic("iobs_actual_result_commit", new
                     { TransactionId = root.GetProperty("TransactionId").GetString(), Record = result,
                         Interface = Raw(ReadPhysical(InterfacePath)), Mtime = Mtime() });
@@ -280,8 +293,20 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal(1, _lateWarningCount); Assert.Equal(new[] { 1, 1 }, _genericWarningCounts);
         }
 
-        internal void AssertHeld(GameEngine engine, string owningDiagnostics)
+        internal async Task AssertHeldAsync(GameEngine engine, string owningDiagnostics)
         {
+            if (scenario is "ReadRace" or "ReadyDrift")
+            {
+                AssertSourceRaceHeld(engine, owningDiagnostics);
+                await AssertActualRetainingOwnersAsync(engine);
+                return;
+            }
+            if (scenario == "InterfaceClose")
+            {
+                AssertInterfaceCloseHeld(engine, owningDiagnostics);
+                await AssertActualRetainingOwnersAsync(engine);
+                return;
+            }
             var pendingBytes = ReadPhysical(WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
             var pending = ParseJsonObjectBytes(Assert.IsType<byte[]>(pendingBytes));
             var result = MortalJointInterfacePublication.Read(JsonSerializer.SerializeToElement(pending[MortalJointInterfacePublication.PendingField]));
@@ -304,6 +329,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.True(GetPrivateFieldValue<bool>(engine, "_mortalJointInterfaceFreshConsumed"));
             Assert.True(GetPrivateFieldValue<bool>(engine, "_mortalJointInterfacePreparationHeld"));
             foreach (var (path, before) in _mechanicalBefore) Assert.Equal(before, after[path]);
+            await AssertActualRetainingOwnersAsync(engine);
         }
 
         private byte[]? ReadPhysical(string path) => File.Exists(fixture._fs.ResolvePath(path))
@@ -326,6 +352,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         public void Dispose()
         {
             DisposeInitialCloseObservation();
+            DisposeOuterCloseObservation();
+            DisposeReturnedReadRace();
             if (_engine is not null) _engine.ConfigureSessionFinalizationHooksForTesting(_priorHooks);
         }
     }

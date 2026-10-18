@@ -84,11 +84,9 @@ internal static partial class MortalQteDecisionPublication
             ?? throw Invalid("joint_interface_ordinary_marker_null");
         var jointClaim = marker.ContainsKey("outputBinding") || marker.ContainsKey("niPublication") ||
             marker.ContainsKey("jointTreatment") || marker.ContainsKey("consumedPrivatePaths") || marker.ContainsKey("progression");
-        if (marker["schemaVersion"]?.GetValue<int>() != 2)
-        {
-            if (jointClaim) throw Invalid("joint_interface_selected_parent_version_changed");
-            return null; // genuine old non-joint publication, not a claimed NI downgrade
-        }
+        var parentVersion = marker["schemaVersion"]?.GetValue<int>();
+        if (parentVersion is not (1 or 2) || (parentVersion == 1 && jointClaim))
+            throw Invalid("joint_interface_selected_parent_version_changed");
         var original = ReadInspectionSnapshot(files, lease);
         if (original.SessionId != Text(marker, "sessionId") || original.RequestId != Text(marker, "requestId") ||
             original.SnapshotToken != Text(marker, "snapshotToken") || original.TurnNumber != JointInteger(marker, "turn"))
@@ -101,7 +99,7 @@ internal static partial class MortalQteDecisionPublication
                 !Same(bytes, original.ReadRequiredBytes(StatePath))) throw Invalid("joint_interface_selector_tuple_conflict");
             return null;
         }
-        // Even a claimed legacy child is fully checked before permitting its old
+        // Every matching parent1 and claimed legacy child is fully checked before permitting its old
         // writer. Partial deletion/downgrade cannot exploit a null memory cache.
         return await ReadCurrentJointInterfaceDataAsync(files, lease, original.SessionId,
             original.RequestId, original.SnapshotToken, original.TurnNumber);

@@ -2,6 +2,76 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-interface-close-retention",
+  "responsibility": "Actual I-owning close after Published readback refuses transient delivery while retaining committed bytes; distinct later outer SessionOperation close preserves established completion. Error/close branches invoke direct real Stage-backup restore and actual outer validation wrapper, asserting selected graph retention.",
+  "excludes": "No synthetic authority, new production observer/counter, generic CAS rule, ordinary I behavior change, global dedupe, or exception-only crash claim; process-loss rows are separate.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCloseRetention.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfacePublication.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-interface-current-owner-refusal",
+      "when": "Distinct initial FIRST2 owning close and actual partial marker refusal."
+    },
+    {
+      "id": "fr063-joint-interface-crash-current",
+      "when": "Abrupt original exit is a separate failure class from owning/outer exceptions."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 15,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceOwningCloseRetainsPublishedButCannotDeliverFreshResult",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LaterOuterFinalizationDoesNotUnemitCommittedInterfaceOrReplay"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-interface-source-races",
+  "responsibility": "Actual returned public-I read under fresh preparation is followed by physical valid-JSON drift, exposing leased preimage mismatch; actual Published I before Capturing cannot excuse a different immutable Ready input drift. Real original absence proof prevents guessed public-read ordinals.",
+  "excludes": "No synthetic authority, new production observer/counter, generic CAS rule, ordinary I behavior change, global dedupe, or exception-only crash claim; process-loss rows are separate.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSourceRaces.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfacePublication.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-interface-current-owner-refusal",
+      "when": "Distinct initial FIRST2 owning close and actual partial marker refusal."
+    },
+    {
+      "id": "fr063-joint-interface-crash-current",
+      "when": "Abrupt original exit is a separate failure class from owning/outer exceptions."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 15,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualReturnedReadCannotHideChangedWriterPreimage",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_PublishedInterfaceCannotExcuseOtherImmutableReadyDrift"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-interface-legacy-current",
   "responsibility": "Genuine existing CaptureAsync v1 installs the complete actual held graph with original-backed reconstruction; real engine child1 live/cold consumers; separate actual new Stage44 original covers exact prior marker and generic I ignores old cached DATA.",
   "excludes": "No route downgrade flag, v2 mutation/private authority seeding, old save promise beyond explicit accepted v1/child1 operation contract, or crash qualification.",
@@ -67,7 +137,7 @@
 },
 {
   "id": "fr063-joint-interface-current-owner-refusal",
-  "responsibility": "Actual genuine child3 generic-slot DATA positive then five partial marker faults; actual FIRST2 installation owning-close failure with real hoisted lease; new late Main owns matching Ready independently of closed Stage ConsoleOwner/optional HOT.",
+  "responsibility": "Actual genuine child3 generic-slot DATA positive then seven partial marker faults; actual FIRST2 installation owning-close failure with real hoisted lease; new late Main owns matching Ready independently of closed Stage ConsoleOwner/optional HOT.",
   "excludes": "No crash/restart, legacy producer, I-owning-close/outer-finalization or new ordinary-frame fallback proof. These remain separate finite controls.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceConsumerRefusals.cs",

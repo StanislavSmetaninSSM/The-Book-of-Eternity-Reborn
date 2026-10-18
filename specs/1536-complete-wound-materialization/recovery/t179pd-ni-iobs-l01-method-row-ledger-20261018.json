@@ -1,7 +1,7 @@
 {
   "kind": "NI_IOBS_L01_AUTHORED_METHOD_ROW_LEDGER",
   "sourceBase": "9a92049ef86bcbc4569aaa0a11d1f42632093622",
-  "status": "LEGACY_AND_ACTUAL_CRASH_SOURCE_WIP_UNCOMPILED_UNRUN_FINITE_INCOMPLETE",
+  "status": "CLOSE_RETENTION_SOURCE_RACE_AND_CRASH_CORRECTION_WIP_UNCOMPILED_UNRUN",
   "rows": [
     {
       "category": "fr063-joint-interface-lifecycle-order",
@@ -193,7 +193,7 @@
       "project": "integration",
       "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualGenericInterfaceConsumerRefusesSelectedMarkerDamage",
       "attributes": "Theory",
-      "staticRows": 5,
+      "staticRows": 7,
       "status": "AUTHORED_UNCOMPILED_UNRUN_ACTUAL_CONSUMER_CONTROL",
       "prerequisite": "Real Stage43/held TREAT/current original and actual engine owner. Partial-marker rows first prove actual child3 DATA consumption before fault. Initial close observes real installed graph/owning lease; late control keeps existing two-Main staging."
     },
@@ -250,14 +250,50 @@
       "staticRows": 5,
       "status": "AUTHORED_UNCOMPILED_UNRUN_ACTUAL_OWNER_FINITE_CONTROL",
       "prerequisite": "Actual separate engine process Environment.Exit at Prepared-commit, I-member uncommitted, Published-commit-before-ack, initial missing-result and ErrorPrepared. New process/ordinary Main/current frame resumes stored publication or holds, exact I/fallback bytes, actual public en-GB/en-US policy contrast, inert mechanical images and owned native child/container cleanup."
+    },
+    {
+      "category": "fr063-joint-interface-close-retention",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceOwningCloseRetainsPublishedButCannotDeliverFreshResult",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_ACTUAL_FAILURE_OR_RACE_CONTROL",
+      "prerequisite": "Actual I-owning close after Published readback refuses transient delivery while retaining committed bytes; distinct later outer SessionOperation close preserves established completion. Error/close branches invoke direct real Stage-backup restore and actual outer validation wrapper, asserting selected graph retention."
+    },
+    {
+      "category": "fr063-joint-interface-close-retention",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LaterOuterFinalizationDoesNotUnemitCommittedInterfaceOrReplay",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_ACTUAL_FAILURE_OR_RACE_CONTROL",
+      "prerequisite": "Actual I-owning close after Published readback refuses transient delivery while retaining committed bytes; distinct later outer SessionOperation close preserves established completion. Error/close branches invoke direct real Stage-backup restore and actual outer validation wrapper, asserting selected graph retention."
+    },
+    {
+      "category": "fr063-joint-interface-source-races",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualReturnedReadCannotHideChangedWriterPreimage",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_ACTUAL_FAILURE_OR_RACE_CONTROL",
+      "prerequisite": "Actual returned public-I read under fresh preparation is followed by physical valid-JSON drift, exposing leased preimage mismatch; actual Published I before Capturing cannot excuse a different immutable Ready input drift. Real original absence proof prevents guessed public-read ordinals."
+    },
+    {
+      "category": "fr063-joint-interface-source-races",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_PublishedInterfaceCannotExcuseOtherImmutableReadyDrift",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_ACTUAL_FAILURE_OR_RACE_CONTROL",
+      "prerequisite": "Actual returned public-I read under fresh preparation is followed by physical valid-JSON drift, exposing leased preimage mismatch; actual Published I before Capturing cannot excuse a different immutable Ready input drift. Real original absence proof prevents guessed public-read ordinals."
     }
   ],
   "staticTotals": {
-    "newMethods": 20,
-    "newRows": 37,
-    "newOwners": 6,
-    "predictedDescriptors": 6,
-    "scope": "Static authored source only; no current build/discovery/native. Remaining close/race/retention/common/GM controls open."
+    "newMethods": 24,
+    "newRows": 43,
+    "newOwners": 8,
+    "predictedDescriptors": 8,
+    "scope": "Static current authored inventory only; whole SOURCE/PREP/runtime pending. Remaining common/terminal/GM/strict graph controls and final affected selection/tools OPEN."
   },
   "actualCases": 0,
   "productChanged": true,
@@ -296,7 +332,7 @@
       "status": "READ_ONLY_ARCHIVED_BOTH_FIRST_ZERO_RECORDS_ONE_INVOCATION_19CHAINS"
     }
   ],
-  "priority": "Continue remaining close/retention/Ready-race/common/GM controls and final source/tool selection. This preserved finite fixture source is not runtime proof; no build/discovery/native.",
+  "priority": "Continue finite common/terminal/strict graph and GM/docs work, then final affected selectors/tooling and connected SOURCE; no build/discovery/native yet.",
   "firstActual": {
     "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
     "compiledSource": "a65005989ac5922db9c943dda339a999131ba5c6",
@@ -455,7 +491,7 @@
   },
   "historicalFirstNativeCases": 1,
   "currentImplementation": {
-    "sourceBase": "fbd19e4f941df079d98ca25fe77ab7603292ef90",
+    "sourceBase": "e8fd65a4425d0028f9a38383145da2bcf95c8af8",
     "status": "DRAFT_UNCOMPILED_UNRUN_CONNECTED_SOURCE_REVIEW_PENDING",
     "integrated": [
       "private FIRST2 factory and post-install/readback/release/runtime-refresh one-shot arming",
@@ -468,18 +504,21 @@
       "Independent private NI current-Main matching-Ready/source/delete/release observation; actual Stage coordinates retained without reviving its ConsoleOwner or changing HOT availability."
     ],
     "open": [
-      "Whole current source uncompiled/unrun and connected final SOURCE pending",
-      "I-owning release vs later outer finalization failures; ErrorPrepared resume, missing-result and crash source still require concrete SOURCE/actual validation",
-      "Strict malformed/stale/foreign graph current consumers, direct/outer retention/whole terminal and error diagnostic bounds",
-      "Actual under-write preimage hidden race, immutable Ready contrast, common compensation/lost acknowledgment and applicable GM guide/example/source guards",
-      "Final actual affected selections include genuinely changed CUT01new3/protectedLate2 plus actual finite source owners; no broad historical replay"
+      "All current changed source uncompiled/unrun, same connected final SOURCE pending",
+      "Finish strict selected graph/version/original/G refusal, whole terminal/common compensation and applicable GM guide/worked example/source guard disposition",
+      "Finalize actual affected selection/controllers/fresh source and managed-output binding, then separately named preparation/actual/EVIDENCE",
+      "No broader NI/HOT/S/B/D9/M3/F1/platform/Windows/A3 qualification"
     ],
     "draftReviewCorrections": [
       "Current selected marker with changed/unknown parent version refuses; tuple mismatch only permits new ordinary frame when official original covers exact prior marker bytes.",
       "Initial FIRST2 install uses non-swallowing owning release before refresh/arming; v1 retains existing completed-release behavior.",
       "I-policy timestamp NotReached iff nonObject and fallback canonical UTC O-format data; semantic negatives independently reseal and assert specific structural rejection.",
       "S03 actual late caller stages under a closed prior Main: selected NI now observes its own current Main and genuine corrected Ready; HOT continuous-owner requirements unchanged. Missing actual Stage/private FIRST still Held.",
-      "S04 fresh ErrorPrepared now delivers its defensive complete frozen issue vector via noninteractive owning diagnostics, shared with selected resume; no recompute/repair/retry. Actual ErrorPrepared control asserts delivered serialized issues plus existing no-effects images."
+      "S04 fresh ErrorPrepared now delivers its defensive complete frozen issue vector via noninteractive owning diagnostics, shared with selected resume; no recompute/repair/retry. Actual ErrorPrepared control asserts delivered serialized issues plus existing no-effects images.",
+      "S01-R1 matching parent1 now requires full existing proof; unknown/empty current marker cannot ask for ordinary fallback. Actual seven damage rows include Empty/UnknownEmpty and exact I mtime. Genuine new-original prior-marker condition unchanged.",
+      "S05 crash fixture freezes complete current DATA proof before actual terminal original cleanup, never recreates original or reads removed proof afterward. Original cut record/resultFP/all fields stay exact across recovery, modulo legitimate Prepared\u2192Published seal/state; held first comparison checks exact keysets.",
+      "Crash source independently checks 2\u21920 energy,5\u21922 damage,exact two turn43 resource rows,preserved wound prefix+create/treat suffix,matching request and actual current registry no-open-take/reservation before cleanup.",
+      "If actual native child exit/join/EOF cannot all be positively established, retain parent-owned container and report unresolved owned PIDs; normal joined runs retain strict physical removal."
     ],
     "authoringCorrection": "Two uncompiled aee4 bool reflection reads used the class-constrained helper; corrected to the existing value helper before any build. No compiler/native failure occurred.",
     "proofLimits": [
@@ -492,7 +531,9 @@
       "Explicit real CaptureAsync1 complete graph/physical install/current readback and legacy live/committed cold tests; unchanged protectedLate2 is NOT rerouted to v1.",
       "Actual new original44 proves exact signed prior marker before actual generic ordinary I, while prior DATA cache remains present.",
       "Five actual-child abrupt cuts; parent owns native Process handles/stdio/join/birth/nonce and child-local TMPDIR container; actual current new engine resumes under separate Main without old private fields.",
-      "Published cut uses original en-GB accepted timestamp, new en-US owner plus actual separate-root ordinary public-policy rejection; Prepared/member rows retain exact sampled fallback/I afterbytes."
+      "Published cut uses original en-GB accepted timestamp, new en-US owner plus actual separate-root ordinary public-policy rejection; Prepared/member rows retain exact sampled fallback/I afterbytes.",
+      "Actual original I-owning close versus later outer-finalization exception controls preserve distinct returned/durable/overall outcomes; direct actual Stage backup and outer wrapper retain selected graphs.",
+      "Actual returned-read and immutable Ready drift controls use existing test-only FS hooks (null defaults), no production hook/counter/CAS and no guessed read ordinal; actual original declaration establishes absent I."
     ]
   }
 }

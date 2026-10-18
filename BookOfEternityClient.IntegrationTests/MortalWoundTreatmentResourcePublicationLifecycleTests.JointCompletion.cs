@@ -178,6 +178,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                         await _fs.ReadFileBytesAsync(lease, image.Key));
                 await AssertJointNaturalStage43OriginalAndRollbackAsync(lease, original, jointOriginalTail, priorQteReminder);
                 Assert.Equal(43, original.TurnNumber);
+                interfaceLifecycleProbe?.ObserveActualOriginalMetadata(original);
                 Assert.Equal(source.Source.SessionId, original.SessionId);
                 Assert.NotEqual(source.Source.RequestId, original.RequestId);
                 Assert.NotEqual(source.SnapshotToken, original.SnapshotToken);
@@ -376,7 +377,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             return; // explicit owning-close case, not the ordinary repair-dispatch/completion branch
         }
         Assert.Null(observerFailure);
-        Assert.Null(failure);
+        if (interfaceLifecycleProbe is { ExpectsOuterClose: true }) interfaceLifecycleProbe.AssertOuterCloseRetained(engine, failure);
+        else Assert.Null(failure);
         Assert.True(entered);
         Assert.True(jointOriginalAuthored);
         Assert.Equal(useLiveCaller, liveWaitEntered);
@@ -425,7 +427,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         }
         if (interfaceLifecycleProbe is { ExpectsHeld: true })
         {
-            interfaceLifecycleProbe.AssertHeld(engine, logger.Describe());
+            await interfaceLifecycleProbe.AssertHeldAsync(engine, logger.Describe());
             return; // genuine prerequisites above; selected ErrorPrepared cannot enter ordinary completion
         }
         if (normalizeNarrativeBeforeCheckpoint)
@@ -464,7 +466,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(nonzeroProgression ? 1 : 0, reportDeletions);
         Assert.Equal(nonzeroProgression, baselineReportRemovalTransaction is not null);
         Assert.Equal(nonzeroProgression, progressionReportConsumptionTransaction is not null);
-        if (useLiveCaller) Assert.True(liveCallerReturned);
+        if (useLiveCaller) Assert.Equal(interfaceLifecycleProbe?.ExpectsOuterClose != true, liveCallerReturned);
         else Assert.False(handled); // Actual caller completion follows the strict full-union oracles.
         Dictionary<string, byte[]?> complete;
         await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
