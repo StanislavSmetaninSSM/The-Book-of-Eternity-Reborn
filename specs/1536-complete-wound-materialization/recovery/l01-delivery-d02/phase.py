@@ -83,7 +83,8 @@ def run_owned(command,phase,name,env,deadline,lib,census):
         except BaseException as error:result['observerErrors'].append('Owned-session observation: '+repr(error))
     result['rawWrapperReturnCode']=result['nativeExit']
     result['terminationSignal']=-result['nativeExit'] if result['nativeExit'] is not None and result['nativeExit']<0 else None
-    lib['write'](phase/(name+'.record.json'),result)
+    # Use the accepted M01/S01 publication path; observer faults preserve native.
+    lib['FINALIZE'](result,lambda value:lib['write'](phase/(name+'.record.json'),value),lambda value:None)
     return result
 
 def main():

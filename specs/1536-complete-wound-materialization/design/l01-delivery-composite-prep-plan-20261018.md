@@ -87,6 +87,16 @@ B01's hash-bound read-only tool census. No general instrumentation framework.
 
 ## Refusal and review focus
 
+Original SOURCE96f08c8b is retained with independent HOLD/D02-S01: an unguarded
+per-command record write could prevent returning known native status. The single
+local correction reuses the already pinned M01/S01 FINALIZE for that publication,
+then returns the same result. No new accounting policy/framework is introduced.
+`native-accounting-check.py` uses the actual pinned finalizer and original pure
+fakes: original8PASS/4expected persistence FAIL, corrected12PASS for0/7/124/-9
+across ordinary/output-close/record-fault paths; no native actions. The original
+four copy checks retain their96f08 source provenance; their function ASTs did not
+change and they are not replayed. Focused affected SOURCE is still required.
+
 Property routing/import mismatch, absent source/tool/dependency binding, hash
 drift, failure/UNKNOWN or live tool/session residue freezes that first outcome.
 No automatic composite retry or fresh restore. If reuse is disproved, user permits
