@@ -1,0 +1,167 @@
+{
+  "kind": "D02_FIRST_SYNTHETIC_DELIVERY_INDEPENDENT_EVIDENCE_REVIEW",
+  "candidate": "be89497c746d8393470d2ff9789c262c1d60ed5a",
+  "actualSource": "237a26c39d5530933ff844209349d20bc8303111",
+  "directLiveCompiledSource": "3a36b1f1b790205099f6c940b0e362e456fa0975",
+  "verdict": "ACCEPT_D01_DELIVERY_OWN_SYNTHETIC_0_7_ONLY",
+  "findings": [],
+  "conclusion": "The first two owned synthetic cases qualify the unchanged D01 helper live-delivery path and native/observer separation within the reviewed synthetic scope. They do not qualify a game run, custody-to-accepted timing, snapshot capture or any of the five remaining L01 targets.",
+  "controllerSha256": "42837634637f1e0ee5c3752147263bdd7f5388775abf741c033ff55f937e26b6",
+  "bindingsSha256": "0565587f35dd6fca647e0235141ffe9f5cc98f0ac3485173d2f286ec239d33ff",
+  "sourcePinDigest": "b277e73745c98abdc78f5feaa62a68373c2bf26b4b6115a20e4aa5207970e9ef",
+  "currentPins": 149,
+  "checks": {
+    "passed": 73,
+    "findings": [],
+    "path": "/tmp/1536-cloud-tools/review/l01-delivery-d02-synthetic-independent-checks-20261018.json",
+    "sha256": "0d3e6c0c226e71cc098c27c263e4595402aa4615e87a40b3660a1d6bb69b2cd7",
+    "scriptPath": "/tmp/1536-cloud-tools/review/check_d02_synthetic_evidence.py",
+    "scriptSha256": "a4aff5df945f4107fef2aee02a3512bfe32bb3aad3e9a30ecd89a0de94e35c31",
+    "reviewerNativeActions": 0,
+    "reviewerProcfsReads": 0,
+    "repositoryWrites": 0
+  },
+  "evidence": {
+    "indexPath": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-synthetic-first-20261018.json",
+    "indexSha256": "5e65cf308cba51d451186f11bf40c57157c08187c17e8b8555556bda04fa9534",
+    "archivePath": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-synthetic-first-originals-20261018.zip",
+    "archiveBytes": 12470,
+    "archiveSha256": "514e464f3b836736f8187ab0daefcbcd5625d7ea71783fa1ae9e95ae958f7c3a",
+    "rawMembers": 18,
+    "chains": "All original local bytes equal indexed ZIP entries, saved Git bytes and independent clean GitHub restore.",
+    "recordSha256": "9ceee126edea7ed15f4aa72dba88de475dab46a3c658058807b4d7e82836d898",
+    "recoveryReceipt": "/tmp/1536-cloud-tools/d01-carrier-recovery-be89497c.json",
+    "recoveryReceiptSha256": "280053f8bf1f20d3c0bd7e811d53306ee44a2e0b911b2e8e1100419043e9ece4",
+    "remoteVerifiedByReceipt": true,
+    "independentWriterAndRestoreHeadExactClean": true,
+    "newOutcomeDeltaPaths": 4
+  },
+  "admissionAndCompilation": {
+    "savedPrepAcceptanceCarrier": "237a26c39d5530933ff844209349d20bc8303111",
+    "prepReviewPath": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-composite-prep-independent-review-20261018.json",
+    "prepReviewSha256": "8fe784c66f294082180087b3cd366d4a63b0bb402f65fc88acefae0401e1f291",
+    "actualGateWas": "PREP_ACCEPTED_SYNTHETIC_0_7_ONCE",
+    "currentPermit": "CONSUMED_NO_RETRY",
+    "exactThreePrepRecordHashesVerified": true,
+    "compiledLiveDllSha256": "ec59272038423c31a7c63959977c79136d6634b85b460c89f4955991f3094d7c",
+    "fourCompiledOutputsUnchanged": true,
+    "retainedProjectCompilationProvenance": {
+      "integration": "d53e61e5dc9e610416e0e9cc2601a2e6933ec7fe",
+      "unit": "d3a1ddcf7a6e2f06ae815877c46314ec81d9f0d7"
+    },
+    "unchangedSource": "Helper, Live.cs, original actual_case, current149pins/controller/bindings are unchanged from accepted preparation."
+  },
+  "observed": {
+    "verificationExit": 0,
+    "verificationMeaning": "Aggregate synthetic assertion result, separate from original target/reader native exits.",
+    "controllerWallSeconds": 5.190647966002871,
+    "targets": 2,
+    "readerHosts": 2,
+    "targetNativeExits": [
+      0,
+      7
+    ],
+    "readerNativeExits": [
+      0,
+      0
+    ],
+    "testsExecuted": 0,
+    "gameProcesses": 0,
+    "diagnosticRequests": 0,
+    "observerErrors": [],
+    "cases": [
+      {
+        "expectedTargetExit": 0,
+        "targetIdentity": {
+          "pid": 112101,
+          "birthTick": 4917573,
+          "parentPid": 112073,
+          "uid": 1000
+        },
+        "readerIdentity": {
+          "pid": 112102,
+          "birthTick": 4917574,
+          "parentPid": 112073,
+          "uid": 1000
+        },
+        "root": "/tmp/l01d02-b796a0e4bf514a62/synthetic/exit0/fixture",
+        "nonce": "e7fab111cfbd4ff4b859c0c1fc43ae35",
+        "liveBeforeStop": true,
+        "rawPendingAtPulse": true,
+        "malformed": 0,
+        "uncertain": false,
+        "rawStdoutSha256": "012da331605ed303b5648db7b2485dd3ed882a9be31e941f4b74eab77756af63",
+        "reportedRuntime": ".NET 8.0.32",
+        "reportedMvid": "b392b19e-acad-44d7-93f2-a5347fb3e1d4",
+        "joinedEof": true
+      },
+      {
+        "expectedTargetExit": 7,
+        "targetIdentity": {
+          "pid": 112123,
+          "birthTick": 4917622,
+          "parentPid": 112073,
+          "uid": 1000
+        },
+        "readerIdentity": {
+          "pid": 112124,
+          "birthTick": 4917622,
+          "parentPid": 112073,
+          "uid": 1000
+        },
+        "root": "/tmp/l01d02-b796a0e4bf514a62/synthetic/exit7/fixture",
+        "nonce": "c8deaba5cd3c4d46987bc6446852c0fc",
+        "liveBeforeStop": true,
+        "rawPendingAtPulse": true,
+        "malformed": 1,
+        "uncertain": true,
+        "rawStdoutSha256": "333347679a3388bea320b4725b3bd54d76064e177782d4b6d89ab41cf6e27db1",
+        "reportedRuntime": ".NET 8.0.32",
+        "reportedMvid": "b392b19e-acad-44d7-93f2-a5347fb3e1d4",
+        "joinedEof": true
+      }
+    ]
+  },
+  "semanticReach": [
+    "Each case used one newly spawned target and one newly spawned reader, both direct children of supervisor112073. Archived command/identity/manifest records agree on PID, kernel birth, UID1000, root, nonce and cut1; source-bound checks establish exact executable/argv and pidfd ownership before use.",
+    "The sole .NET StreamReader consumed the inherited target pipe. The supervisor read only reader.stdout. Its successful assertion required the live custody-return event, RawPending=true, Eof=false and both actors alive before it sent private STOP:<nonce>. The target emitted done only after that exact STOP.",
+    "Exit0 delivered one identity-ordered custody marker with no uncertainty. Exit7 first emitted malformed candidate text: Candidates2/Malformed1/Published1/Uncertain=true, then delivered the valid marker. This intentional uncertainty remained after EOF; it did not overwrite target native7 or fabricate an observer failure.",
+    "Raw decoded text preserves ordinary Unicode owl, CRLF, optional malformed line, the exact JSON marker and done suffix. Independently recomputed raw SHA256 equals both reader and child-self report; event line SHA256 and UTF-16 character offset also match.",
+    "Both readers reached terminal with Failure=null, EOF=true, RawReadFault=false and runtime.NET8.0.32. Both target and reader waits joined with native0/7 and0/0 respectively. No cleanupExit or cleanup-error path was required; all observer/primary failures remain empty.",
+    "Recorded normal899 before/after identity and installed172-input verification remain exact. The unchanged controller rechecks retained/staged closures. Dated terminal exact-tool observation has no active matches;35Z and5 executable fallbacks are retained."
+  ],
+  "limits": [
+    "The raw pipe is represented by exact decoded RawStdout plus child-self hash equality; no independent target-stdout file or arbitrary byte-stream fidelity beyond this Unicode fixture is claimed.",
+    "MVIDb392b19e-acad-44d7-93f2-a5347fb3e1d4 is consistently reported by both readers using the hash-bound prepared DLL. This review did not load or execute the assembly for metadata inspection.",
+    "Source-to-receive latency, current capture phase and source-emission completeness remain UNKNOWN. Timestamps and synthetic ElapsedMilliseconds1 do not prove game timing or a real custody-to-accepted interval.",
+    "These two genuine process cases exercise normal live delivery and intentional malformed-input uncertainty. They do not replay or broaden the prior20 non-live checks and do not demonstrate every possible saturation/read-fault/race scenario in a game process.",
+    "Owned process join/EOF and dated exact-tool observations establish the stated cleanup scope. Evidence/fixture directories are retained; no continuous absence, unrelated-process ancestry or namespace deletion is claimed.",
+    "Retained integration/unit compilation remains separately attributed to d53/d3; this result does not convert original catalog124/unit137 into success or claim their private binaries were recovered from Git."
+  ],
+  "utilityHistory": [
+    {
+      "source": "Parent-reported readback timing, independently distinguished from native outcome",
+      "event": "Parent first tried reading the restored ZIP before the recovery tool completed and received FileNotFound; the unchanged readback succeeded after confirmed receipt.",
+      "status": "No SDK/test/native retry or reclassification. Reviewer read only the completed recovered carrier; all18 chains passed."
+    }
+  ],
+  "acceptanceSaveConditions": [
+    "Copy this JSON/MD and exact checker/checks unchanged; save/push/exact remote readback and independent recovery before final checkpoint.",
+    "Mark only D01 own synthetic delivery EVIDENCE accepted. Keep source ZERO permits consumed and synthetic permit consumed; retryRelease remains NONE.",
+    "Preserve all first raw actor/native/observer outcomes and timing/UNKNOWN limits. Do not label expected target7 as native0 or erase intentional Malformed1/Uncertain=true.",
+    "Finalize the existing conditional one-game-snapshot PLAN for separate focused documentation review only, then STOP. No gameplay/snapshot/crash5/Windows/CI execution is admitted by this result."
+  ],
+  "preserved": {
+    "L01Qualified": "52/57",
+    "old66529": "UNKNOWN_UNAVAILABLE",
+    "firstBindingFailure": "FROZEN_UNCHANGED",
+    "originalCatalogExit": 124,
+    "originalUnitExit": 137,
+    "M01": "Original narrow qualification only",
+    "gameplayRelease": "NONE",
+    "snapshotRelease": "NONE",
+    "crash5Release": "NONE",
+    "syntheticRetryRelease": "NONE",
+    "broaderHolds": "Unchanged, including cloud-game, future Windows-five, artifact403, A3 and broader NI/E01/T148/Phase10 constraints."
+  }
+}

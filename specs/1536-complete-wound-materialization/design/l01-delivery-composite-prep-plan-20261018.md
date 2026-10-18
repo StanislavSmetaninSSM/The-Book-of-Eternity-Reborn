@@ -96,14 +96,18 @@ report/check hashes and both reader corrections (argv index and indexed ZIP-memb
 addressing only; no semantic assertion/source/native changes). Nine report/reader
 history artifacts are preserved byte-exact. ZERO permits stay consumed; only after
 this PREP acceptance is saved/recovered may one original synthetic0/7 run proceed.
-- [ ] FIRST `synthetic`: call unchanged D01 actual_case sequentially for0 then7
+- [x] FIRST `synthetic`: call unchanged D01 actual_case sequentially for0 then7
   in separate disposable fixtures. Keep original PID+starttick/nonce/root/cut,
   one target+reader per case, live pre-EOF pulse/raw pending/health, exact bytes,
   original native0/7, join/EOF and pidfd-owned cleanup assertions. Stop on first
   failure; retain both native and observer status. No game/API/capture process.
-- [ ] Save/push/recover original synthetic outcome and independent EVIDENCE.
-  Update D01 status/current handoff only after Root reads actual proof. Finalize
-  the existing conditional one-game-snapshot plan; STOP before snapshot/game.
+- [x] Save/push/recover original synthetic outcome and independent EVIDENCE.
+  Actual237a26c3/5.191s,18raw originals saved/recoveredbe89497c; independent73checks
+  and findings[] accept only D01 own synthetic delivery. Root read exact report,
+  checks/hashes and native0/7 versus reader0/0; expected malformed1/Uncertain in7
+  remains. Permit consumed/no retry, normal899/149pins exact; no game/API.
+- [ ] Finalize the existing conditional one-game-snapshot plan with focused
+  documentation review, save/recover final checkpoint and STOP before snapshot/game.
 
 ## Refusal and review focus
 

@@ -25,7 +25,7 @@
     }
   },
   "synthetic": {
-    "status": "CONSUMED_FIRST_OUTCOME_PENDING_INDEPENDENT_EVIDENCE",
+    "status": "CONSUMED_EVIDENCE_ACCEPTED_NO_RETRY",
     "candidate": "74105ae6165259051810898e00a6466d4c2bc53e",
     "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-composite-prep-independent-review-20261018.json",
     "reviewSha256": "8fe784c66f294082180087b3cd366d4a63b0bb402f65fc88acefae0401e1f291",
@@ -36,7 +36,9 @@
     },
     "firstOutcome": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-synthetic-first-20261018.json",
     "recordSha256": "9ceee126edea7ed15f4aa72dba88de475dab46a3c658058807b4d7e82836d898",
-    "retryRelease": "NONE"
+    "retryRelease": "NONE",
+    "evidenceReviewPath": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-synthetic-independent-review-20261018.json",
+    "evidenceReviewSha256": "1bdc0c5b159b4b27f2f6ffa99e68d4ce184401f2230a57384cac990428a25cef"
   },
   "gameplayRelease": "NONE",
   "crash5Release": "NONE",
@@ -44,5 +46,8 @@
   "authority": "Latest explicit user delegation continues D01 PREP and own synthetic0/7 after independent reviews without extra user approval; STOP before gameplay snapshot.",
   "accountingPattern": "Existing pinned M01/S01 FINALIZE for known-native record/summary publication; existing capture_native where native execution/output-close handling is needed. No new framework or accounting variant.",
   "prepEvidence": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-composite-prep-20261018.json",
-  "prepStatus": "ACCEPTED_COMPOSITE_PER_PROJECT_PROVENANCE_ONLY"
+  "prepStatus": "ACCEPTED_COMPOSITE_PER_PROJECT_PROVENANCE_ONLY",
+  "snapshotRelease": "NONE",
+  "deliveryQualification": "ACCEPTED_OWN_SYNTHETIC_0_7_ONLY",
+  "futureSnapshotPlanStatus": "DOCUMENTATION_CANDIDATE_PENDING_FOCUSED_REVIEW"
 }
