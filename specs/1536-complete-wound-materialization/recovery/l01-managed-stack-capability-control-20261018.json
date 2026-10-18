@@ -4,6 +4,16 @@
   "planAcceptanceCarrier": "32d098d39268bcba4d9e9d607e237d56231880b5",
   "sourcePins": [
     {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-affected-preparation-20261018.json",
+      "bytes": 4086,
+      "sha256": "b0a35ab80dd06bdc6f2572791f36c2d6d5d8e911e6e7133d5ff2dd3c6b808c62"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-api-observer-proof-20261018.json",
+      "bytes": 2534,
+      "sha256": "40a43554dc4872cf55d750b91704e7d773301ef911c038753749d57cbc4c9a6b"
+    },
+    {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-inventory-20261018.json",
       "bytes": 43429,
       "sha256": "d13edf86aa1315385ed0aa56255e4212f4fb40e723c137c97ab86c2bca1dc528"
@@ -15,8 +25,8 @@
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Collect.ps1",
-      "bytes": 4816,
-      "sha256": "5a600cb9f437768425f22cb723b40bb342ca705559e72d23e5ce7b81f68da4dd"
+      "bytes": 6695,
+      "sha256": "10690f7dc53b67478cc5446c77fc61103629529a214a94fa8d04298f8ec95ceb"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Synthetic.cs",
@@ -24,9 +34,24 @@
       "sha256": "8a90cc6af0eac680a405381be106fa11d6ff70b932a46eb21a93a8342f10beed"
     },
     {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/check_api_observer.ps1",
+      "bytes": 3028,
+      "sha256": "034d7e56ee5fa48a6c128dd01970aaa016906051a367ec2fad031385b364c0d9"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/check_teardown.py",
+      "bytes": 3129,
+      "sha256": "93b9f70c00e3dd88f94c19cfe0d75385a3c9acc7b0a69a2a549cbc935b19ddd6"
+    },
+    {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
-      "bytes": 21437,
-      "sha256": "e16e1df1b0257459c5753c5e01571d535abae5596390156c0c608ccbfe1d76f9"
+      "bytes": 23669,
+      "sha256": "aa06d2374c2337176254671fa116e1d455bb72590b1890bcadbc4ab9f349a168"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-teardown-proof-20261018.json",
+      "bytes": 3801,
+      "sha256": "ef97982c6cbccb1dd5ccda5df8bad9987650be3d12243c4311d0910ceb2ab57d"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-run-phase-20261018.py",
@@ -39,5 +64,35 @@
     "status": "SOURCE_PREP_REVIEW_PENDING"
   },
   "gameplayRelease": "NONE",
-  "sourceScope": "Three external helper sources, exact installed inventory and accepted review; reused M01 observer finalizer unchanged. No game code/category/runtime selection changes."
+  "sourceScope": "Three external helper sources, exact installed inventory and accepted review; reused M01 observer finalizer unchanged. No game code/category/runtime selection changes.",
+  "proposedAffectedPreparation": {
+    "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-affected-preparation-20261018.json",
+    "sha256": "b0a35ab80dd06bdc6f2572791f36c2d6d5d8e911e6e7133d5ff2dd3c6b808c62",
+    "sourcePinExceptions": [
+      {
+        "original": {
+          "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Collect.ps1",
+          "bytes": 4816,
+          "sha256": "5a600cb9f437768425f22cb723b40bb342ca705559e72d23e5ce7b81f68da4dd"
+        },
+        "current": {
+          "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Collect.ps1",
+          "bytes": 6695,
+          "sha256": "10690f7dc53b67478cc5446c77fc61103629529a214a94fa8d04298f8ec95ceb"
+        }
+      },
+      {
+        "original": {
+          "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
+          "bytes": 21437,
+          "sha256": "e16e1df1b0257459c5753c5e01571d535abae5596390156c0c608ccbfe1d76f9"
+        },
+        "current": {
+          "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
+          "bytes": 23669,
+          "sha256": "aa06d2374c2337176254671fa116e1d455bb72590b1890bcadbc4ab9f349a168"
+        }
+      }
+    ]
+  }
 }

@@ -1,0 +1,172 @@
+{
+  "kind": "L01_S01_FAKE_TEARDOWN_PROOF",
+  "baselineSource": "33cb9a07180dd90046d17bb23043cd401cf38695",
+  "baselineSourceSha256": "e16e1df1b0257459c5753c5e01571d535abae5596390156c0c608ccbfe1d76f9",
+  "currentSourceSha256": "aa06d2374c2337176254671fa116e1d455bb72590b1890bcadbc4ab9f349a168",
+  "baseline": [
+    {
+      "site": "stdin",
+      "nativeExit": 0,
+      "originalUnhandled": true,
+      "originalLine": 363
+    },
+    {
+      "site": "stdin",
+      "nativeExit": 7,
+      "originalUnhandled": true,
+      "originalLine": 363
+    },
+    {
+      "site": "target_fd",
+      "nativeExit": 0,
+      "originalUnhandled": true,
+      "originalLine": 364
+    },
+    {
+      "site": "target_fd",
+      "nativeExit": 7,
+      "originalUnhandled": true,
+      "originalLine": 364
+    },
+    {
+      "site": "drain",
+      "nativeExit": 0,
+      "originalUnhandled": true,
+      "originalLine": 263
+    },
+    {
+      "site": "drain",
+      "nativeExit": 7,
+      "originalUnhandled": true,
+      "originalLine": 263
+    },
+    {
+      "site": "subprocess_fd",
+      "nativeExit": 0,
+      "originalUnhandled": true,
+      "originalLine": 123
+    },
+    {
+      "site": "subprocess_fd",
+      "nativeExit": 7,
+      "originalUnhandled": true,
+      "originalLine": 123
+    }
+  ],
+  "corrected": [
+    {
+      "site": "stdin",
+      "nativeExit": 0,
+      "closeFails": false,
+      "controllerExit": 0,
+      "recordPersisted": true
+    },
+    {
+      "site": "stdin",
+      "nativeExit": 0,
+      "closeFails": true,
+      "controllerExit": 2,
+      "recordPersisted": true
+    },
+    {
+      "site": "stdin",
+      "nativeExit": 7,
+      "closeFails": false,
+      "controllerExit": 7,
+      "recordPersisted": true
+    },
+    {
+      "site": "stdin",
+      "nativeExit": 7,
+      "closeFails": true,
+      "controllerExit": 7,
+      "recordPersisted": true
+    },
+    {
+      "site": "target_fd",
+      "nativeExit": 0,
+      "closeFails": false,
+      "controllerExit": 0,
+      "recordPersisted": true
+    },
+    {
+      "site": "target_fd",
+      "nativeExit": 0,
+      "closeFails": true,
+      "controllerExit": 2,
+      "recordPersisted": true
+    },
+    {
+      "site": "target_fd",
+      "nativeExit": 7,
+      "closeFails": false,
+      "controllerExit": 7,
+      "recordPersisted": true
+    },
+    {
+      "site": "target_fd",
+      "nativeExit": 7,
+      "closeFails": true,
+      "controllerExit": 7,
+      "recordPersisted": true
+    },
+    {
+      "site": "drain",
+      "nativeExit": 0,
+      "closeFails": false,
+      "controllerExit": 0,
+      "recordPersisted": true
+    },
+    {
+      "site": "drain",
+      "nativeExit": 0,
+      "closeFails": true,
+      "controllerExit": 2,
+      "recordPersisted": true
+    },
+    {
+      "site": "drain",
+      "nativeExit": 7,
+      "closeFails": false,
+      "controllerExit": 7,
+      "recordPersisted": true
+    },
+    {
+      "site": "drain",
+      "nativeExit": 7,
+      "closeFails": true,
+      "controllerExit": 7,
+      "recordPersisted": true
+    },
+    {
+      "site": "subprocess_fd",
+      "nativeExit": 0,
+      "closeFails": false,
+      "controllerExit": 0,
+      "recordPersisted": true
+    },
+    {
+      "site": "subprocess_fd",
+      "nativeExit": 0,
+      "closeFails": true,
+      "controllerExit": 2,
+      "recordPersisted": true
+    },
+    {
+      "site": "subprocess_fd",
+      "nativeExit": 7,
+      "closeFails": false,
+      "controllerExit": 7,
+      "recordPersisted": true
+    },
+    {
+      "site": "subprocess_fd",
+      "nativeExit": 7,
+      "closeFails": true,
+      "controllerExit": 7,
+      "recordPersisted": true
+    }
+  ],
+  "outcome": "PASS",
+  "limits": "8 original AST reproductions,16 corrected callback cases; zero synthetic/diagnostic API calls. No original native result is changed."
+}

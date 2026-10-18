@@ -1,10 +1,45 @@
 param([Parameter(Mandatory)][string]$Manifest, [switch]$MetadataOnly)
 $ErrorActionPreference = 'Stop'
-$nativeStatus = 0
-$observerFailure = $false
+$preflightStatus = 0
+$apiStatus = $null
+$apiOutcome = 'UNREACHED'
+$observerErrors = [Collections.Generic.List[string]]::new()
 function Emit($value) {
     [Console]::Out.WriteLine('L01_COLLECTOR ' + ($value | ConvertTo-Json -Depth 12 -Compress))
     [Console]::Out.Flush()
+}
+function Observe-Emit($value) {
+    try { Emit $value }
+    catch { [void]$observerErrors.Add($_.Exception.GetBaseException().ToString()) }
+}
+function Invoke-ObservedApi([scriptblock]$Request, [scriptblock]$Writer, $Started) {
+    $result = @{ ApiStatus = $null; ApiOutcome = 'UNREACHED'; Invocations = 0;
+        ObserverErrors = [Collections.Generic.List[string]]::new(); Failure = $null }
+    try { & $Writer $Started }
+    catch {
+        [void]$result.ObserverErrors.Add('Entry observation: ' + $_.Exception.GetBaseException().Message)
+        return $result
+    }
+    $result.Invocations = 1
+    try {
+        & $Request
+        $result.ApiStatus = 0
+        $result.ApiOutcome = 'RETURNED'
+    } catch {
+        $cause = $_.Exception.GetBaseException()
+        $result.ApiStatus = 7
+        $result.ApiOutcome = 'FAILED'
+        $result.Failure = @{ Type = $cause.GetType().FullName; HResult = $cause.HResult; Message = $cause.Message }
+    }
+    try { & $Writer @{ Stage = 'api_outcome'; ApiStatus = $result.ApiStatus; ApiOutcome = $result.ApiOutcome; Failure = $result.Failure } }
+    catch { [void]$result.ObserverErrors.Add('Return observation: ' + $_.Exception.GetBaseException().Message) }
+    return $result
+}
+function Get-CollectorExit($ApiStatus, [int]$PreflightStatus, [int]$ObserverCount) {
+    if ($null -ne $ApiStatus -and $ApiStatus -ne 0) { return [int]$ApiStatus }
+    if ($PreflightStatus -ne 0) { return $PreflightStatus }
+    if ($ObserverCount -gt 0) { return 2 }
+    return 0
 }
 function Identity([int]$processId) {
     $stat = [IO.File]::ReadAllText("/proc/$processId/stat")
@@ -30,7 +65,7 @@ try {
     })
     if ($MetadataOnly) {
         $target = [Reflection.Assembly]::LoadFile($m.TargetAssembly)
-        Emit @{ Stage = 'metadata_only'; Client = $assembly.FullName; ClientPath = $assembly.Location;
+        Observe-Emit @{ Stage = 'metadata_only'; Client = $assembly.FullName; ClientPath = $assembly.Location;
             WriteDump = $write.ToString(); Loaded = $loaded; TargetMvid = $target.ManifestModule.ModuleVersionId.ToString() }
     } else {
         # This private collector accepts only this controller's live synthetic child.
@@ -48,20 +83,22 @@ try {
         if ($expectedSocket -ne $m.Socket -or [Text.Encoding]::UTF8.GetByteCount($expectedSocket) -gt 107 -or
             -not (Test-Path -LiteralPath $expectedSocket) -or $m.DumpPath -ne (Join-Path (Split-Path $Manifest) 'synthetic-normal.core')) { throw 'Private socket/output mismatch.' }
         if ((Identity $m.TargetPid).BirthTick -ne $m.TargetBirthTick) { throw 'Target changed before request.' }
-        Emit @{ Stage = 'request_started'; TargetPid = $m.TargetPid; TargetBirthTick = $m.TargetBirthTick; Nonce = $m.Nonce; Socket = $expectedSocket; Loaded = $loaded }
         $client = [Activator]::CreateInstance($clientType, [object[]]@([int]$m.TargetPid))
         # One public API call. No direct attach or manual security-setting operation.
-        [void]$write.Invoke($client, [object[]]@([Enum]::ToObject($dumpType, 1), [string]$m.DumpPath, [Enum]::ToObject($flagType, 4)))
-        Emit @{ Stage = 'request_returned'; NativeStatus = 0 }
+        $result = Invoke-ObservedApi -Request {
+            [void]$write.Invoke($client, [object[]]@([Enum]::ToObject($dumpType, 1), [string]$m.DumpPath, [Enum]::ToObject($flagType, 4)))
+        } -Writer { param($event) Emit $event } -Started @{ Stage = 'request_started'; TargetPid = $m.TargetPid;
+            TargetBirthTick = $m.TargetBirthTick; Nonce = $m.Nonce; Socket = $expectedSocket; Loaded = $loaded }
+        $apiStatus = $result.ApiStatus
+        $apiOutcome = $result.ApiOutcome
+        foreach ($errorText in $result.ObserverErrors) { [void]$observerErrors.Add($errorText) }
     }
 } catch {
-    $nativeStatus = 7
+    $preflightStatus = 7
     $cause = $_.Exception.GetBaseException()
-    try { Emit @{ Stage = 'failure'; Type = $cause.GetType().FullName; HResult = $cause.HResult; Message = $cause.Message; NativeStatus = $nativeStatus } }
-    catch { $observerFailure = $true }
+    Observe-Emit @{ Stage = 'preflight_failure'; Type = $cause.GetType().FullName; HResult = $cause.HResult;
+        Message = $cause.Message; PreflightStatus = $preflightStatus; ApiOutcome = $apiOutcome; ApiStatus = $apiStatus }
 }
-try { Emit @{ Stage = 'collector_exit'; NativeStatus = $nativeStatus; ObserverFailure = $observerFailure } }
-catch { $observerFailure = $true }
-if ($nativeStatus -ne 0) { exit $nativeStatus }
-if ($observerFailure) { exit 2 }
-exit 0
+Observe-Emit @{ Stage = 'collector_exit'; ApiStatus = $apiStatus; ApiOutcome = $apiOutcome;
+    PreflightStatus = $preflightStatus; ObserverErrors = @($observerErrors.ToArray()) }
+exit (Get-CollectorExit $apiStatus $preflightStatus $observerErrors.Count)

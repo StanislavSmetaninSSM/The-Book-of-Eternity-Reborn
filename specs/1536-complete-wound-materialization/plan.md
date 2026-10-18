@@ -1,3 +1,16 @@
+## L01 S01 — observer SOURCE correction; original PREP immutable (2026-10-18)
+
+Independent SOURCE HOLD33cb9a07 found3 observer/accounting defects, not a game or
+synthetic failure. Guarded closes now retain native outcomes; request count derives
+from actual collector stages; API success/failure is separate from output failure.
+Fake proofs:8 original AST close failures,16 corrected teardown cases,8 PowerShell
+API/emit cases, zero diagnostic targets/calls. [Affected preparation binding](recovery/l01-managed-stack-affected-preparation-20261018.json)
+proposes exact Python+Collect observer deltas only. Original compiler/metadata0 and
+all13 raw chains/MVID/config/C#/163refs/loadedABI/outputs stay byte-exact; no native
+PREP replay. Focused SOURCE/PREP pending, S01 UNRUN, gameplay release NONE.
+Future one-shot snapshot additionally needs safe live event delivery: existing parent
+buffers child stdout until join; no pipe stealing or silent new source route allowed.
+
 ## L01 S01 — helper SOURCE/PREP originals saved; target UNRUN (2026-10-18)
 
 Direct cached-reference csc and metadata-only collector both native0, no observer

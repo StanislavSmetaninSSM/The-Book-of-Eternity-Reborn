@@ -1,0 +1,86 @@
+{
+  "kind": "L01_S01_PROPOSED_AFFECTED_PREPARATION_BINDING",
+  "status": "FOCUSED_SOURCE_PREP_REVIEW_PENDING",
+  "originalCarrier": "33cb9a07180dd90046d17bb23043cd401cf38695",
+  "preparedSource": "0422f6c7148f2f6eda4caa8dbc1043c557ae90a3",
+  "prepRecordSha256": "9c1fa00ea8918b03068531cfe4268089221d5bb84d27a6c17a6e7a72a70b79c7",
+  "originalIndex": {
+    "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-preparation-20261018.json",
+    "sha256": "382d98ca327c872dc7f64abd79e1d3d7b1e67b18132be60caee92455e38f04fe"
+  },
+  "originalArchive": "80d35531a4c2bdaf14ba5690eacc213905b73b246c82c0f6c4b6a03d5dd6702c",
+  "sourcePinExceptions": [
+    {
+      "original": {
+        "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Collect.ps1",
+        "bytes": 4816,
+        "sha256": "5a600cb9f437768425f22cb723b40bb342ca705559e72d23e5ce7b81f68da4dd"
+      },
+      "current": {
+        "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Collect.ps1",
+        "bytes": 6695,
+        "sha256": "10690f7dc53b67478cc5446c77fc61103629529a214a94fa8d04298f8ec95ceb"
+      }
+    },
+    {
+      "original": {
+        "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
+        "bytes": 21437,
+        "sha256": "e16e1df1b0257459c5753c5e01571d535abae5596390156c0c608ccbfe1d76f9"
+      },
+      "current": {
+        "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
+        "bytes": 23669,
+        "sha256": "aa06d2374c2337176254671fa116e1d455bb72590b1890bcadbc4ab9f349a168"
+      }
+    }
+  ],
+  "unchangedPreparedPins": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-inventory-20261018.json",
+      "bytes": 43429,
+      "sha256": "d13edf86aa1315385ed0aa56255e4212f4fb40e723c137c97ab86c2bca1dc528"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-plan-independent-review-20261018.json",
+      "bytes": 11475,
+      "sha256": "e8ba9ecc9dc2bf3d0720a728efc21db2ed83bd00bbba5320fe69d9a2454d4eee"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Synthetic.cs",
+      "bytes": 2949,
+      "sha256": "8a90cc6af0eac680a405381be106fa11d6ff70b932a46eb21a93a8342f10beed"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-run-phase-20261018.py",
+      "bytes": 7435,
+      "sha256": "c52f7b5243c209ab4a9fc1fe1e0f3294e05a932e97539dfd49e712ad9d93f5b5"
+    }
+  ],
+  "proofs": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-api-observer-proof-20261018.json",
+      "bytes": 2534,
+      "sha256": "40a43554dc4872cf55d750b91704e7d773301ef911c038753749d57cbc4c9a6b"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/check_api_observer.ps1",
+      "bytes": 3028,
+      "sha256": "034d7e56ee5fa48a6c128dd01970aaa016906051a367ec2fad031385b364c0d9"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/check_teardown.py",
+      "bytes": 3129,
+      "sha256": "93b9f70c00e3dd88f94c19cfe0d75385a3c9acc7b0a69a2a549cbc935b19ddd6"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-teardown-proof-20261018.json",
+      "bytes": 3801,
+      "sha256": "ef97982c6cbccb1dd5ccda5df8bad9987650be3d12243c4311d0910ceb2ab57d"
+    }
+  ],
+  "nativePreparationReplayed": false,
+  "syntheticTargetStarts": 0,
+  "diagnosticRequests": 0,
+  "limits": "Original compiler/metadata/MVID/config/163refs/loadedABI/output bytes retained exactly; Python+PowerShell observer-only deltas reviewed separately through fake proofs. Not a new native preparation. Original HOLD and source hashes retained; admission pending. Collector-first IPC-client cleanup is accepted in principle with supervisor/target pidfd retained and immediate exact createdump accounting. No game release."
+}

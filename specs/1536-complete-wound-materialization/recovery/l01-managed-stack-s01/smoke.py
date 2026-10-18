@@ -43,6 +43,13 @@ def write(path, value):
     Path(path).write_text(json.dumps(value, indent=2) + '\n')
 
 
+def close_observed(record, label, close):
+    try:
+        close()
+    except BaseException as error:
+        record['observerErrors'].append(label + ': ' + repr(error))
+
+
 def identity(process_id):
     raw = Path(f'/proc/{process_id}/stat').read_text()
     assert int(raw.split(' ', 1)[0]) == process_id
@@ -120,11 +127,10 @@ def run_owned(command, phase, name, env, timeout):
                 result['joined'] = child.returncode is not None
             except BaseException as error:
                 result['observerErrors'].append('Owned subprocess cleanup: ' + repr(error))
-        if handle is not None: os.close(handle)
+        if handle is not None: close_observed(result, 'Process handle close', lambda: os.close(handle))
         for stream in [out, err]:
             if stream is not None:
-                try: stream.close()
-                except BaseException as error: result['observerErrors'].append('Output close: ' + repr(error))
+                close_observed(result, 'Output close', stream.close)
     return result
 
 
@@ -231,7 +237,16 @@ def prepare(root, control, inventory, source, result):
 def smoke(root, control, inventory, source):
     prep = json.loads((root / 'prepare/record.json').read_text())
     assert digest((root / 'prepare/record.json').read_bytes()) == control['smokeAdmission']['prepRecordSha256']
-    assert prep['compiler']['nativeExit'] == prep['metadata']['nativeExit'] == 0 and prep['sourcePins'] == control['sourcePins']
+    assert prep['compiler']['nativeExit'] == prep['metadata']['nativeExit'] == 0
+    # Keep original PREP bytes. Only explicitly reviewed observer-only deltas can bind it.
+    current = {row['path']: row for row in control['sourcePins']}
+    exceptions = []
+    for old in prep['sourcePins']:
+        new = current[old['path']]
+        if old != new:
+            assert Path(old['path']).name in ['smoke.py', 'Collect.ps1']
+            exceptions.append(dict(original=old, current=new))
+    assert exceptions == control['smokeAdmission']['acceptedAffectedPreparation']['sourcePinExceptions']
     for row in prep['outputs']:
         assert image(row['path']) == row
     phase = root / 's01'
@@ -242,6 +257,8 @@ def smoke(root, control, inventory, source):
                str(root / 'prepare/L01Synthetic.dll'), nonce]
     record = dict(kind='L01_S01_ORIGINAL_SYNTHETIC', source=source, preparedSource=prep['source'], nonce=nonce,
                   status='HOLD', nativeExit=None, collector=None, target=None, observerErrors=[], diagnosticRequests=0,
+                  collectorLaunches=0, apiOutcome='UNREACHED', affectedPreparation=exceptions,
+                  requestCountScope='Public API invocation reach, not an independently counted IPC wire command or createdump launch.',
                   startedUtc=datetime.datetime.now(datetime.timezone.utc).isoformat())
     write(phase / 'started.json', record)
     start = time.monotonic()
@@ -260,7 +277,7 @@ def smoke(root, control, inventory, source):
         except BaseException as error:
             record['observerErrors'].append('Stream observer: ' + repr(error))
         finally:
-            stream.close()
+            close_observed(record, 'Stream close', stream.close)
 
     def cleanup_createdump():
         owned_children = children(target.pid)
@@ -276,7 +293,7 @@ def smoke(root, control, inventory, source):
                 terminate(fd)
                 record.setdefault('terminatedOwnedCreatedump', []).append(expected)
             finally:
-                os.close(fd)
+                close_observed(record, 'Createdump handle close', lambda: os.close(fd))
 
     try:
         target = subprocess.Popen(command, cwd=phase, env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -305,14 +322,30 @@ def smoke(root, control, inventory, source):
                  TargetCommand=command, Nonce=nonce, Socket=str(socket), DumpPath=str(phase / 'synthetic-normal.core'))
         write(manifest, m)
         assert identity(target.pid) == owned and target.poll() is None
-        record['diagnosticRequests'] = 1  # One public invocation; no fallback/retry.
+        record['collectorLaunches'] = 1
         before = time.monotonic()
         record['collector'] = run_owned([PWSH, '-NoLogo', '-NoProfile', '-NonInteractive', '-File', str(HERE / 'Collect.ps1'),
                                          '-Manifest', str(manifest)], phase, 'collector', env, 20)
         record['nativeExit'] = record['collector']['nativeExit']
         record['requestSeconds'] = time.monotonic() - before
+        collector_events = prefixed(phase / 'collector.stdout', 'L01_COLLECTOR ')
+        record['collectorEvents'] = collector_events
+        outcomes = [e for e in collector_events if e.get('Stage') == 'api_outcome']
+        exits = [e for e in collector_events if e.get('Stage') == 'collector_exit']
+        started = [e for e in collector_events if e.get('Stage') == 'request_started']
+        record['admittedRequestStages'] = len(started)
+        assert len(started) <= 1 and len(outcomes) <= 1 and len(exits) <= 1
+        outcome = outcomes[-1] if outcomes else exits[-1] if exits else None
+        if outcome is not None:
+            record['apiOutcome'] = outcome.get('ApiOutcome', 'UNREACHED')
+            record['apiNativeStatus'] = outcome.get('ApiStatus')
+        elif started:
+            record['apiOutcome'] = 'UNKNOWN_AFTER_ENTRY_STAGE'
+        record['diagnosticRequests'] = (1 if record['apiOutcome'] in ['RETURNED', 'FAILED'] else
+                                        None if record['apiOutcome'] == 'UNKNOWN_AFTER_ENTRY_STAGE' else 0)
         cleanup_createdump()
         assert record['collector']['nativeExit'] == 0 and not record['collector']['observerErrors'] and not record['childrenAfterRequest']
+        assert record['apiOutcome'] == 'RETURNED' and record['apiNativeStatus'] == 0 and record['diagnosticRequests'] == len(started) == 1
         report_path = phase / 'synthetic-normal.core.crashreport.json'
         report = json.loads(report_path.read_text())
         record['managedFrames'] = decode(report, ready, prep['abi']['TargetMvid'])
@@ -360,8 +393,10 @@ def smoke(root, control, inventory, source):
             except BaseException as error:
                 record['observerErrors'].append('Owned cleanup: ' + repr(error))
             finally:
-                if target.stdin is not None and not target.stdin.closed: target.stdin.close()
-                if target_handle is not None: os.close(target_handle)
+                if target.stdin is not None and not target.stdin.closed:
+                    close_observed(record, 'Target stdin close', target.stdin.close)
+                if target_handle is not None:
+                    close_observed(record, 'Target handle close', lambda: os.close(target_handle))
         record['durationSeconds'] = time.monotonic() - start
     if record['status'] == 'STACKS_INTERPRETED_PENDING_CLEANUP' and not record['observerErrors']:
         record['status'] = 'PASS_OWNED_SYNTHETIC_MANAGED_STACK_ONLY'

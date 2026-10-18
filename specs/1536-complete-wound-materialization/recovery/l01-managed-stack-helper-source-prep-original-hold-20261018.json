@@ -1,0 +1,136 @@
+{
+  "kind": "L01_MANAGED_STACK_HELPER_SOURCE_PREP_ORIGINAL_INDEPENDENT_REVIEW",
+  "createdUtc": "2026-10-18T19:44:05.740269+00:00",
+  "reviewedCandidate": "33cb9a07180dd90046d17bb23043cd401cf38695",
+  "preparedSource": "0422f6c7148f2f6eda4caa8dbc1043c557ae90a3",
+  "verdict": "HOLD_S01_SOURCE_CORRECTION_REQUIRED",
+  "findings": [
+    {
+      "id": "S01-01",
+      "severity": "blocking",
+      "paths": [
+        "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py:123",
+        "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py:263",
+        "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py:363"
+      ],
+      "problem": "Unprotected handle/stdin/reader close calls can escape after the native outcome is known. smoke() then fails before main reaches FINALIZE; run_owned can also lose its return record, while drain close failure is not recorded.",
+      "scenario": "A target pipe close/flush raises BrokenPipeError/OSError after collector native7 or0. The outer finally propagates the close exception instead of returning the native-bound record to FINALIZE. Reader close failure may be absent from observerErrors.",
+      "requiredCorrection": "Guard all teardown close callbacks and append observer errors without replacing known native status or skipping persistence. Prove original failure and corrected native0/native7 close-failure behavior with fake callbacks only; preserve original source/history."
+    },
+    {
+      "id": "S01-02",
+      "severity": "blocking",
+      "paths": [
+        "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py:308"
+      ],
+      "problem": "diagnosticRequests is set to1 before the collector is even launched. Dependency load, ownership or socket refusal would incorrectly claim an API request was made.",
+      "requiredCorrection": "Record admission/collector launch separately from reached request/API return/failure stages. Derive request reach from preserved collector evidence, with UNREACHED or UNKNOWN where warranted; never invent a request from launch intention."
+    },
+    {
+      "id": "S01-03",
+      "severity": "blocking",
+      "paths": [
+        "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Collect.ps1:54",
+        "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Collect.ps1:55",
+        "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Collect.ps1:57"
+      ],
+      "problem": "The request-returned Emit shares the API try/catch. A successful WriteDump followed by output failure is converted to nativeStatus7 and no longer preserves the known successful API return.",
+      "requiredCorrection": "Separate API outcome from observer emission status and pre-call failure; API failure retains its type/HRESULT/message, API success plus observer failure holds without relabeling the API result. Verify via extracted-function fake callbacks, with no SDK call/target."
+    }
+  ],
+  "sourceBindings": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-inventory-20261018.json",
+      "bytes": 43429,
+      "sha256": "d13edf86aa1315385ed0aa56255e4212f4fb40e723c137c97ab86c2bca1dc528"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-plan-independent-review-20261018.json",
+      "bytes": 11475,
+      "sha256": "e8ba9ecc9dc2bf3d0720a728efc21db2ed83bd00bbba5320fe69d9a2454d4eee"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Collect.ps1",
+      "bytes": 4816,
+      "sha256": "5a600cb9f437768425f22cb723b40bb342ca705559e72d23e5ce7b81f68da4dd"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Synthetic.cs",
+      "bytes": 2949,
+      "sha256": "8a90cc6af0eac680a405381be106fa11d6ff70b932a46eb21a93a8342f10beed"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
+      "bytes": 21437,
+      "sha256": "e16e1df1b0257459c5753c5e01571d535abae5596390156c0c608ccbfe1d76f9"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-run-phase-20261018.py",
+      "bytes": 7435,
+      "sha256": "c52f7b5243c209ab4a9fc1fe1e0f3294e05a932e97539dfd49e712ad9d93f5b5"
+    }
+  ],
+  "control": {
+    "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-control-20261018.json",
+    "sha256": "1bffe1fcc556d19a459900f189d4a0f95479410706a7554b00479cbcc0dfa432",
+    "smokeAdmission": {
+      "status": "SOURCE_PREP_REVIEW_PENDING"
+    },
+    "gameplayRelease": "NONE"
+  },
+  "originalPreparation": {
+    "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-preparation-20261018.json",
+    "sha256": "382d98ca327c872dc7f64abd79e1d3d7b1e67b18132be60caee92455e38f04fe",
+    "recordSha256": "9c1fa00ea8918b03068531cfe4268089221d5bb84d27a6c17a6e7a72a70b79c7",
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-preparation-originals-20261018.zip",
+      "bytes": 19084,
+      "sha256": "80d35531a4c2bdaf14ba5690eacc213905b73b246c82c0f6c4b6a03d5dd6702c"
+    },
+    "entries": 13,
+    "independentReadbackChecks": 60,
+    "readbackFindings": [],
+    "scope": "All ZIP entry bytes/lengths/hashes and current originals exact; complete record matches index; compiler and metadata native0/joined/no observer errors, empty stderr, no compiler warnings/errors; outputs/source pins/current loaded-file hashes match. ZERO synthetic targets/API calls.",
+    "mvid": "35065df3-7a06-4e1b-8b74-ac77cd578120",
+    "runtimeConfig": "net8.0 / Microsoft.NETCore.App8.0.32 / rollForward Disable",
+    "decoderProof": "Original pure source harness: one valid plus seven rejecting cases; not live capability evidence.",
+    "smokeDirectoryAbsent": true
+  },
+  "nonBlockingSourceConclusions": [
+    "The tiny synthetic program uses no game assembly, fixture or save; known CPU and stdin-wait NoInlining/NoOptimization chains, real native TIDs, nonce and compiled MVID support the intended narrow oracle.",
+    "Explicit child environment, root0700/umask077, exact runtimeconfig, file hashes, same-user/parent/PID birth/command/private socket checks and pidfd ownership are appropriately scoped. No arbitrary PID controller entrypoint or manual security policy change exists.",
+    "Decoder requires ordered managed leaf/outer names on both actual TIDs, expected module/MVID and nonzero MethodDef tokens. It rejects native-only/wrong TID/MVID/module/token/missing/reversed chains. No general heap/async decoder capability is claimed.",
+    "S01 remains a capability smoke only. API/IPC/ptrace/DAC permissions and actual naming are unproved until one separately admitted original is reviewed."
+  ],
+  "collectorFirstTimeoutRuling": {
+    "disposition": "Acceptable bounded implementation-order deviation if explicitly documented before admission; not itself a required lifecycle redesign.",
+    "reason": "The killed collector is the owned IPC client, not createdump/tracer. The external supervisor remains executing and retains its target pidfd, then immediately accounts for the target task-child set and identity-verifies executable/output/parent/UID/birth before signalling any createdump. It subsequently stops/joins the target and drains EOF. The supervisor does not depend on the suspended target timer.",
+    "limits": "Preserve deadline, collector native/cleanup status and all child-accounting errors. Any unverified descendant or cleanup/EOF failure holds; killing the IPC client alone cannot be claimed to cancel capture or prove target resumption. No name/global-process signalling."
+  },
+  "affectedRebindingConditions": [
+    "Preserve original compile/metadata record, ZIP, source hashes and this HOLD report verbatim. No rewriting of the original six-pin list or claims of a new native preparation.",
+    "Corrected source may reuse compiled/prepared outputs only with an explicit reviewed binding from the original record hash to exact old/current observer-only smoke.py and Collect.ps1 deltas, plus separately pinned fake-proof inputs. Synthetic.cs/compiler/reference/runtimeconfig/loaded dependency/output bytes must remain exact.",
+    "Do not merely retain prep.sourcePins==current control.sourcePins after a changed helper pin; either provide a narrow explicit accepted delta binding or obtain genuinely fresh preparation under a new identity. Existing original status remains historical.",
+    "Save/recover the corrected sources, fake proof originals and affected binding for focused review before any SOURCE_PREP_ACCEPTED_S01_ONCE release. No synthetic target or gameplay release follows from this HOLD."
+  ],
+  "futureProposalPrerequisite": {
+    "status": "BLOCKED_LIVE_SIGNAL_DELIVERY_NOT_IMPLEMENTED",
+    "source": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:128",
+    "additionalLines": [
+      144,
+      145,
+      146,
+      149
+    ],
+    "evidence": "RunJointInterfaceNativeChildAsync starts ReadToEndAsync, then writes/serializes RawStdout after child exit/join. Current external observer has no live custody/accepted event surface. It must not steal/read the child-owned pipe or treat the post-exit file as live.",
+    "requiredBoundary": "Future proposal must state conditional trigger availability and require a separately reviewed minimal exact tee/delivery with separate gameplay authorization, or remain blocked. No game/test-side change is part of S01."
+  },
+  "recovery": {
+    "path": "/tmp/1536-cloud-tools/m01-carrier-recovery-33cb9a07.json",
+    "sha256": "d03b12cd2ff60d8eae33f3435457943faca1093d8f1cc64794a56599b4254164",
+    "savedRemoteVerifiedByReceipt": true,
+    "independentCloneExactCleanVerified": true
+  },
+  "preservation": "All production/project/catalog/selection and accepted M01/L01 packets, ledgers and outcomes unchanged from39cafe9e. L0152/57/crash5 unqualified/old66529 UNKNOWN and broader holds unchanged.",
+  "reviewExecution": "Read-only source/Git/ZIP/file-hash checks; no helper, compiler, SDK call, synthetic/game test, diagnostic attach, process intervention or installation executed. One ancillary line-number read used wrong cwd and was repeated with the exact absolute path; no evidence interpretation depended on that failure."
+}

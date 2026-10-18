@@ -88,8 +88,11 @@ Direct createdump --crashreportonly exists, but is not an automatic fallback.
 7. Send stop token and require target0, join/EOF and bounded owned cleanup. On a
    failure, preserve the first result, stop only identity-verified own processes,
    and independently diagnose. External watchdog cleanup cannot rely on the suspended
-   target self deadline: first account for and terminate its exact owned createdump
-   child if necessary, then close/terminate collector and target, and join/drain EOF.
+   target self deadline. Reviewed implementation ruling: the external supervisor may
+   first terminate its exact collector (IPC client, not the tracer), retaining the
+   target pidfd, then immediately account for and terminate the exact createdump
+   child if necessary before stopping the target and joining/draining EOF. Collector
+   exit alone never proves ptracer exit or target resumption.
    Any createdump descendant cleanup must first prove
    target parentage, executable, private output argument and PID/starttick; otherwise
    report the blocker, never signal by name. No global kill/process scan.
@@ -112,7 +115,14 @@ plan for exactly one existing diagnostic Fact
 It is diagnostic, outside the original five-case qualification. No launch is released
 here; original crash5 and all previous outcomes remain frozen.
 
-Proposed observation: retain existing scalar diagnostic output and untouched220s
+Prerequisite currently missing: JointInterfaceCrash.cs:128,144–150 reads child stdout
+with ReadToEndAsync and publishes it after join. No safe live custody/accepted signal
+is exposed to an external observer. A separately authorized/reviewed minimal test-side
+tee or equivalent owned delivery must preserve exact raw stdout/join/EOF and primary
+errors. Do not read/steal the parent pipe, add polling or assume a live artifact exists.
+This is future proposal work, not an S01 or game-source change released here.
+
+Proposed observation, conditional on that prerequisite: retain existing scalar diagnostic output and untouched220s
 resumer/900s category. On the exact owned resumer's
 `finalization-return/MortalJointCustodyCaptureCompletedBeforePreparation`, arm one
 timer for60s after that observed return. If accepted-outcome/late return or exit
