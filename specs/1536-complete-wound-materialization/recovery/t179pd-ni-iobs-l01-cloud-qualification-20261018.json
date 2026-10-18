@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "PREP_ACCEPTED_LEGACY3_NAMED_RELEASE_PENDING_PUBLICATION_READBACK",
+  "status": "LEGACY3_ORIGINAL_3PASS_SAVED_CLOSE2_NAMED_RELEASE_PENDING_READBACK",
   "sourceCheckpoint": "2e0463ff3b5e52510e86f1c8b53bd714923e156d",
   "sourcePinDigest": "1f11670a1e063bed010e2e03585fb6e8b5ad4da64157a5ce877317475d3c7bc4",
   "sourcePinCount": 98,
@@ -360,7 +360,7 @@
           "cases": 1
         }
       ],
-      "status": "UNRUN_IN_NEW_ENVIRONMENT"
+      "status": "EXECUTED_ORIGINAL_NATIVE_PASS_INDEPENDENT_EVIDENCE_PENDING"
     },
     {
       "mode": "close2",
@@ -456,7 +456,46 @@
     "assertions": "Retain exact cut bytes before identity checks, FIRST2/Prepared/I-member/Published/ErrorPrepared boundaries, exact I/result/binding/Ready/once-only mechanics, culture contrast, current child3/common/take/late/cold DATA proofs and complete cleanup.",
     "gates": "Fresh catalog/build, whole57 and pending20 PlanOnly, recovered independent SOURCE/PREP and isolation-plan acceptance; named crash5 on new run identity only. Any unexpected failure freezes execution and requires independent diagnosis."
   },
-  "actuals": {},
+  "actuals": {
+    "legacy3": {
+      "status": "ORIGINAL_NATIVE_3PASS_PENDING_INDEPENDENT_EVIDENCE",
+      "actualSource": "9acc5708e6f2e752fd43ae917b8357ed9ce98e1f",
+      "compiledSource": "6ab43f6add261d90628fc07d6aacf42dfbae0561",
+      "nativeExit": 0,
+      "seconds": 869.1273030290001,
+      "tests": {
+        "Total": 3,
+        "Executed": 3,
+        "Passed": 3,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 3,
+        "CompletedCases": 3,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "recordPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-first-legacy3-cloud-813f1057/record.json",
+      "recordSha256": "7f4607ca051df9d79c7a7b990bd26f0b323f675013838878943845524a2d9a59",
+      "archive": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-legacy3-813f1057-files-20261018/archive.json",
+        "sha256": "9858024f7ba343a82f0667c65bd8d33079e709ec6463b5575e02fbad4fec57c8",
+        "rawChains": 11
+      },
+      "parentInspection": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-legacy3-parent-inspection-20261018.json",
+        "sha256": "0683bf5c64e87e62879c3fec43783a63e727cfdbdd5306418e459fe0f5b35c05"
+      },
+      "nineBinariesUnchanged": true,
+      "all1575OutputsUnchanged": true,
+      "namespaceAfter": {
+        "ownedRoots": []
+      },
+      "processesAfter": []
+    }
+  },
   "holds": [
     "FullNI",
     "HOT",
@@ -468,7 +507,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "After acceptance persistence/recovery, run only named legacy3. Other15 remainder and separate crash5 retain individual release gates.",
+  "next": "Separately named close2 only. Remaining12 originally UNRUN and separate new crash5 not executed; legacy3 EVIDENCE review pending.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -642,12 +681,18 @@
     }
   },
   "release": {
-    "mode": "legacy3",
-    "label": "t179pd-ni-iobs-l01-process-first-legacy3-cloud-813f1057",
-    "expectedCases": 3,
+    "mode": "close2",
+    "label": "t179pd-ni-iobs-l01-process-first-close2-cloud-813f1057",
+    "expectedCases": 2,
     "compiledSource": "6ab43f6add261d90628fc07d6aacf42dfbae0561",
     "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-cloud-813f1057/record.json",
     "controller": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-first-run.py",
-    "conditions": "Only after exact saved acceptance remote SHA/readback/recovery; same98 source pins,9DLL1575outputs,NoBuild,unique label/root. Preserve original outcome; any unexpected failure freezes all further modes and requires independent diagnosis. No automatic retry/next mode."
+    "conditions": "Next close2 only after this carrier push/readback/recovery and same98pins/9DLL1575outputs. NoBuild; original outcomes first, unexpected failure freezes. Not automatic advance or retry.",
+    "outcomeBeforePersistedRecord": "UNKNOWN_AFTER_ACTIVATION_UNTIL_ORIGINAL_RECORD_IS_SAVED"
+  },
+  "newOriginalObservedPassingCases": 3,
+  "lastAcceptanceRecovery": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-acceptance-recovery-9acc5708-20261018.json",
+    "sha256": "0169b9dc0a8cd326ae9537577986ccf3f2597f6b7fc134c86a94d01c90d98e1a"
   }
 }
