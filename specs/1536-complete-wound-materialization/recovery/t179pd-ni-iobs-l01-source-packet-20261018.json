@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_SELECTED_CURRENT_RESUME_ROUTING_SOURCE_CANDIDATE",
-  "status": "QUALIFIED52_DIAGNOSTIC2_SOURCE_PREP_ACCEPTED_ONE_NAMED_GATE_ONLY",
+  "status": "QUALIFIED52_DIAGNOSTIC2_ORIGINAL_SAVED_CAUSAL_REVIEW_PENDING",
   "sourceBase": "f390eb0602a99f5a2387ab7dc6ef52571e856b26",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
   "sourcePins": [
@@ -1101,23 +1101,10 @@
   "gmDisposition": "Diagnostic fixture/logging/selection only; no production/game capability/schema/GM prompt/example/afterlife change. Prior client-owned routing rationale is historical and retained.",
   "oldCorrectedCrash": "Old environment session66529 remainsUNKNOWN, bytes unavailable. Separate new qualification only after corrected SOURCE/fresh PREP/named release, independent disposable fixtures/new genuine children; no old environment/process or real save operation.",
   "namedActualRelease": {
-    "status": "SEPARATELY_NAMED_ONE_DIAGNOSTIC2_ACCOUNTING_AFTER_SAVED_ACCEPTANCE_RECOVERY_AND_CLEAN_PREFLIGHT",
-    "mode": "diagnostic2",
-    "controllerMode": "diagnostic1",
-    "label": "t179pd-ni-iobs-l01-process-first-diagnostic2-accounting-cloud-de0f3e20",
-    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic2-cloud-de0f3e20/record.json",
-    "prepRecordSha256": "68d025fc38c48eb9aa1173c603b1a46c3f5a8ca3f697774cd9a00d2f59208e79",
-    "compiledSource": "5aa8673ec128d808b3fdc3d3fd244946e2ae7df6",
-    "category": "fr063-joint-interface-crash-diagnostic",
-    "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_DiagnoseCurrentResumeAfterInterfaceMemberProcessLoss",
-    "expectedDescriptors": 1,
-    "expectedMethods": 1,
-    "expectedCases": 1,
-    "countsToward57": false,
-    "childTimeoutSeconds": 220,
-    "categoryTimeoutSeconds": 900
+    "status": "NONE_DIAGNOSTIC_ORIGINAL_PENDING_INDEPENDENT_CAUSAL_REVIEW",
+    "mode": null
   },
-  "next": "Save/recover/readback PREP acceptance and one named release. Immediate clean global/newroot v2/frozen237 gate then exactly one diagnostic2 accounting with unchanged220900/assertions; archive/recover originals and joint concrete verdict. No automatic further diagnostic or original5.",
+  "next": "Save/recover the one authorized diagnostic2 original +all accounting/gaps, then independent causal review and joint concrete three-way verdict. No additional identical diagnostic chain or original5 qualification from a diagnostic/budget. Retain52/alloriginals/oldUNKNOWN.",
   "sourceReview": {
     "verdict": "ACCEPT_SOURCE_FOR_FRESH_NAMED_DIAGNOSTIC2_ZERO3_ONLY_AFTER_SAVED_RECOVERY_READBACK",
     "candidate": "5aaf15107897ab5f217107e4e1a3ca1a52a98284",

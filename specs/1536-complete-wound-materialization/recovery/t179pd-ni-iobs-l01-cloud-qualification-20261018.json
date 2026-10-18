@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "QUALIFIED52_DIAGNOSTIC2_SOURCE_PREP_ACCEPTED_ONE_NAMED_GATE_ONLY",
+  "status": "QUALIFIED52_DIAGNOSTIC2_ORIGINAL_SAVED_CAUSAL_REVIEW_PENDING",
   "sourceCheckpoint": "5aaf15107897ab5f217107e4e1a3ca1a52a98284",
   "sourcePinDigest": "2c144b7734708f8c02a3924d4d12a885384f05a1437021afd2845827c761c616",
   "sourcePinCount": 101,
@@ -1738,6 +1738,84 @@
           }
         ]
       }
+    },
+    "diagnostic2": {
+      "status": "ORIGINAL_NATIVE1_DIAGNOSTIC_ONLY_INDEPENDENT_CAUSAL_REVIEW_PENDING",
+      "countsToward57": false,
+      "actualSource": "52dc426673a14ce718ab85481234109063be0317",
+      "compiledSource": "5aa8673ec128d808b3fdc3d3fd244946e2ae7df6",
+      "nativeExit": 1,
+      "seconds": 400.7790696589982,
+      "recordPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-first-diagnostic2-accounting-cloud-de0f3e20/record.json",
+      "recordSha256": "928dba485ac9f40087d57a844834933be7712ed45a2fd68487a7c012f1d3674d",
+      "archive": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic2-original-de0f3e20-files-20261018/archive.json",
+        "sha256": "693c876bfbf731b885e530640db22ae95a004d5da6d97af36e9d94e38be7a8e8",
+        "bytes": 7985,
+        "rawChains": 11
+      },
+      "tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "timedOut": false,
+      "sourcePreparationReadbacks": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-actual-source-recovery-52dc4266-20261018.json",
+          "sha256": "552bbd0e8fb2bf8a877bfa45f50b93c279292c351d65606475b3838e54972ebd",
+          "bytes": 4665
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-acceptance-parent-readback-52dc4266-20261018.json",
+          "sha256": "7d23fe4808ecad6aed3fe3ba7c7bf7328c32aaf80622603e214e0a5ec478306c",
+          "bytes": 427
+        }
+      ],
+      "supplementalAuthoritativeCensuses": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-actual-before-census-de0f3e20-20261018.json",
+          "sha256": "c416ed8522c5330ffb34be1c73d054b1d721a1ffbb0efde3af39dcadca6df11b",
+          "bytes": 164643,
+          "datedBoundaryGapSeconds": 4.593755
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-actual-after-census-de0f3e20-20261018.json",
+          "sha256": "d5cd42d7f2f727940b151ab84bd16cd1b2fcb8fcf8c59bad9ff77f555e89e6a4",
+          "bytes": 162415,
+          "datedBoundaryGapSeconds": 1.267196
+        }
+      ],
+      "frozenRootsSeparation": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-actual-frozen-separation-de0f3e20-20261018.json",
+        "sha256": "1f057c6a1883c4aeb1f9193b3b7fbf5ba38af961cda893c8dbbc9bf074f64854",
+        "bytes": 810
+      },
+      "nineBinariesUnchanged": true,
+      "allOutputsUnchanged": true,
+      "outputFiles": 1575,
+      "namespaceAfter": {
+        "ownedRoots": []
+      },
+      "originalProcessArrayLimitation": "exe-link arrays incomplete, use dated v2 observations; no continuous absence inference",
+      "limits": "Original observed diagnostic outcome only. No extra target qualified, no original crash5 reclassification or automatic retry/remedy. Preserve current logs/child identities/semantic assertion reach; independent causal review required. Old66529 remains UNKNOWN/unavailable.",
+      "accountingArchive": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic2-accounting-de0f3e20-files-20261018/archive.json",
+        "sha256": "5bd3d3b0643b3aa3bce066e393eba2f949df3abe6b2a1b7fcd55f95dedf6df26",
+        "bytes": 3119,
+        "rawChains": 3,
+        "missingOriginalPaths": []
+      },
+      "oneRunStopRule": "Exactly one authorized profile consumed. Joint verdict: proved narrow defect/remedy OR justified environment budget with separate performancehold OR honest boundedblocker; no automatic extra diagnostic or original5 retry."
     }
   },
   "holds": [
@@ -1751,7 +1829,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Save/recover/readback PREP acceptance and one named release. Immediate clean global/newroot v2/frozen237 gate then exactly one diagnostic2 accounting with unchanged220900/assertions; archive/recover originals and joint concrete verdict. No automatic further diagnostic or original5.",
+  "next": "Save/recover the one authorized diagnostic2 original +all accounting/gaps, then independent causal review and joint concrete three-way verdict. No additional identical diagnostic chain or original5 qualification from a diagnostic/budget. Retain52/alloriginals/oldUNKNOWN.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -2175,21 +2253,8 @@
     "cleanup": "Native owned-tree/runtime cleanup plus dated v2 argv/stat global/new-TMPDIR boundaries. Frozen prior current-cloud roots unchanged outside mutable namespace. Original exe arrays incomplete; no continuous/instant absence inference."
   },
   "release": {
-    "status": "SEPARATELY_NAMED_ONE_DIAGNOSTIC2_ACCOUNTING_AFTER_SAVED_ACCEPTANCE_RECOVERY_AND_CLEAN_PREFLIGHT",
-    "mode": "diagnostic2",
-    "controllerMode": "diagnostic1",
-    "label": "t179pd-ni-iobs-l01-process-first-diagnostic2-accounting-cloud-de0f3e20",
-    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic2-cloud-de0f3e20/record.json",
-    "prepRecordSha256": "68d025fc38c48eb9aa1173c603b1a46c3f5a8ca3f697774cd9a00d2f59208e79",
-    "compiledSource": "5aa8673ec128d808b3fdc3d3fd244946e2ae7df6",
-    "category": "fr063-joint-interface-crash-diagnostic",
-    "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_DiagnoseCurrentResumeAfterInterfaceMemberProcessLoss",
-    "expectedDescriptors": 1,
-    "expectedMethods": 1,
-    "expectedCases": 1,
-    "countsToward57": false,
-    "childTimeoutSeconds": 220,
-    "categoryTimeoutSeconds": 900
+    "status": "NONE_DIAGNOSTIC_ORIGINAL_PENDING_INDEPENDENT_CAUSAL_REVIEW",
+    "mode": null
   },
   "newOriginalObservedPassingCases": 4,
   "lastAcceptanceRecovery": {
@@ -5122,7 +5187,7 @@
     "phase": "HISTORICAL_COMPILED_6AB43F6A_ZERO3_PRE_CORRECTION_INELIGIBLE_FOR_CORRECTED_ACTUALS"
   },
   "crashDiagnostic2": {
-    "status": "INDEPENDENT_PREP_ACCEPTED_ONE_DIAGNOSTIC2_GATE_ONLY",
+    "status": "ORIGINAL_NATIVE1_DIAGNOSTIC_ONLY_INDEPENDENT_CAUSAL_REVIEW_PENDING",
     "countsToward57": false,
     "runNamespace": {
       "identity": "ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892",

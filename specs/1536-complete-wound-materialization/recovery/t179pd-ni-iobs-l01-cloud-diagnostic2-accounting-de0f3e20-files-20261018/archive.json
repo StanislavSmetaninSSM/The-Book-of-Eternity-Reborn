@@ -1,0 +1,35 @@
+{
+  "kind": "EXACT_ONE_DIAGNOSTIC2_EXTERNAL_ACCOUNTING_ORIGINAL_ARCHIVE_NOT_VERDICT",
+  "createdUtc": "2026-10-18T17:43:47.341208+00:00",
+  "rawChainCount": 3,
+  "files": [
+    {
+      "rawPath": "/tmp/1536-cloud-tools/diagnostic2-diagnostic2-accounting-de0f3e20.jsonl",
+      "storedPath": "00000-diagnostic2-diagnostic2-accounting-de0f3e20.jsonl.gz",
+      "bytes": 5760352,
+      "sha256": "da22fe601b89574c6199a76579e77e8b2d4aa37556816233c2380617a4143adc",
+      "storedBytes": 153880,
+      "storedSha256": "d97bd8c6a8aa3fb6b88ab5cd14557500b42f768bd889ecd687eda95313d0e066"
+    },
+    {
+      "rawPath": "/tmp/1536-cloud-tools/diagnostic2-diagnostic2-accounting-status-de0f3e20.json",
+      "storedPath": "00001-diagnostic2-diagnostic2-accounting-status-de0f3e20.json.gz",
+      "bytes": 7216,
+      "sha256": "280949ad817192c7a5dc2d12782503eba16cbdb6a9967dcf607e930a0f501b8b",
+      "storedBytes": 2005,
+      "storedSha256": "db22a7212ade085e46abb25a49974f17a5a535aab61d8d1a725e4fa9c8d34716"
+    },
+    {
+      "rawPath": "/tmp/1536-cloud-tools/diagnostic2-wrapper-session-de0f3e20.log",
+      "storedPath": "00002-diagnostic2-wrapper-session-de0f3e20.log.gz",
+      "bytes": 1598,
+      "sha256": "4b237c82199537f4a780b1cfc1c01cfce94a4f8bb26754cb9cc002afa5b7751a",
+      "storedBytes": 676,
+      "storedSha256": "c08f8fa86dfd7698e1f41651f6d5157381b0399d05ccb0125db62270a0358d25"
+    }
+  ],
+  "missingOriginalPaths": [],
+  "helperText": "\"\"\"Archive exact external profile and wrapper originals; no native, cleanup or verdict.\"\"\"\nfrom pathlib import Path\nimport sys,json,gzip,hashlib,datetime\nout=Path(sys.argv[1]);assert not out.exists();out.mkdir(parents=True);t=Path('/tmp/1536-cloud-tools');paths=[t/'diagnostic2-diagnostic2-accounting-de0f3e20.jsonl',t/'diagnostic2-diagnostic2-accounting-status-de0f3e20.json',t/'diagnostic2-wrapper-session-de0f3e20.log'];files=[];missing=[]\ndef h(b):return hashlib.sha256(b).hexdigest()\nfor i,p in enumerate(paths):\n if not p.exists():missing.append(str(p));continue\n raw=p.read_bytes();stored=gzip.compress(raw,compresslevel=9,mtime=0);name=f'{i:05d}-'+p.name+'.gz';(out/name).write_bytes(stored);assert gzip.decompress((out/name).read_bytes())==raw;files.append(dict(rawPath=str(p),storedPath=name,bytes=len(raw),sha256=h(raw),storedBytes=len(stored),storedSha256=h(stored)))\nj=dict(kind='EXACT_ONE_DIAGNOSTIC2_EXTERNAL_ACCOUNTING_ORIGINAL_ARCHIVE_NOT_VERDICT',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),rawChainCount=len(files),files=files,missingOriginalPaths=missing,helperText=Path(__file__).read_text(),countsToward57=False,scope='Exact observed bytes and explicit missing paths only. No reconstruction, native action, qualification or causal conclusion.')\n(out/'archive.json').write_text(json.dumps(j,indent=2)+'\\n');print(json.dumps(dict(path=str(out/'archive.json'),sha256=h((out/'archive.json').read_bytes()),rawChains=len(files),missing=missing)))\n",
+  "countsToward57": false,
+  "scope": "Exact observed bytes and explicit missing paths only. No reconstruction, native action, qualification or causal conclusion."
+}

@@ -1,0 +1,106 @@
+{
+  "kind": "EXACT_NI_IOBS_L01_WHOLE_ORIGINAL_RAW_ARCHIVE_NOT_VERDICT",
+  "createdUtc": "2026-10-18T17:43:47.076160+00:00",
+  "actualSources": [
+    "52dc426673a14ce718ab85481234109063be0317"
+  ],
+  "compiledSources": [
+    "5aa8673ec128d808b3fdc3d3fd244946e2ae7df6"
+  ],
+  "nativeExits": [
+    1
+  ],
+  "rawChainCount": 11,
+  "files": [
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/5aa8673ec128d808b3fdc3d3fd244946e2ae7df6-ni-iobs-l01-process-diagnostic1.FIRST.json",
+      "storedPath": "00000-5aa8673ec128d808b3fdc3d3fd244946e2ae7df6-ni-iobs-l01-process-diagnostic1.FIRST.json.gz",
+      "bytes": 340,
+      "sha256": "d62174f8d4b9a4a5d2231ebddeb8eab01fd6abd84080d7911bb19e33c0ea1ea6",
+      "storedBytes": 272,
+      "storedSha256": "c2d319ea042da1833042d7c626203d05caea6151f7facd0ee9ce0739654242c8"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-first-diagnostic2-accounting-cloud-de0f3e20/exact-selected-scope.json",
+      "storedPath": "00001-exact-selected-scope.json.gz",
+      "bytes": 635,
+      "sha256": "53586a013169d0f09c1e0ab80815d74a8a8f62212328d30fc1bffb20c48bbc1f",
+      "storedBytes": 426,
+      "storedSha256": "bf10cde9c8b776da3a12d0601b7a63d7418bea7174b3f68d43cf2511d9b4488c"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-first-diagnostic2-accounting-cloud-de0f3e20/ledger-context.json",
+      "storedPath": "00002-ledger-context.json.gz",
+      "bytes": 43759,
+      "sha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
+      "storedBytes": 11206,
+      "storedSha256": "6de385248e58f2dd9817516133e85fc65fbb1da97cd1e1ae251e511f765933b4"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-first-diagnostic2-accounting-cloud-de0f3e20/process.json",
+      "storedPath": "00003-process.json.gz",
+      "bytes": 957,
+      "sha256": "67c6eed68ab94aba862e970ffc136c905ff22b0cc20f5215644a1f8bf1ec6d18",
+      "storedBytes": 438,
+      "storedSha256": "e989bb59a64f005b02120013908e6e46d85812ac2eecbbde11fad7df062fdaa6"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-first-diagnostic2-accounting-cloud-de0f3e20/record.json",
+      "storedPath": "00004-record.json.gz",
+      "bytes": 754204,
+      "sha256": "928dba485ac9f40087d57a844834933be7712ed45a2fd68487a7c012f1d3674d",
+      "storedBytes": 177926,
+      "storedSha256": "67cb2ec02dd94e5437904aba38eca73c7d7f9e72b3b574c824cc11d6521f2cec"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-first-diagnostic2-accounting-cloud-de0f3e20/source-binding.json",
+      "storedPath": "00005-source-binding.json.gz",
+      "bytes": 145894,
+      "sha256": "c4194a2ec8a5d026bbe4d0c8df4cfdafd07cdf5eb5bd9a4959dbc2ad10f2f0aa",
+      "storedBytes": 29563,
+      "storedSha256": "d4686968386d3b208cb9b41c2779d396ee7b6d39d4fa1a537e51bcea4d568f2b"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-first-diagnostic2-accounting-cloud-de0f3e20/stdout.log",
+      "storedPath": "00006-stdout.log.gz",
+      "bytes": 1166250,
+      "sha256": "b2a6968b6d3b9b304569f37d0f3c5a6de5c3883fe3891a6140b3e1d73c89630e",
+      "storedBytes": 360283,
+      "storedSha256": "3de6edc73bfc022abd254fec94e1367b05a7f75cdcee615bdeff4f5a0c3d0cbb"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-173707-446-68151-627b579d43654a3fb44129f344ad40c7-categories/dotnet-test.log",
+      "storedPath": "00007-dotnet-test.log.gz",
+      "bytes": 2860311,
+      "sha256": "35d49ee33dda04a8469d25e2a7f03e2081e634c310ca41ea09f49e704c588048",
+      "storedBytes": 548105,
+      "storedSha256": "162e5d5ba8a7730c7ca743a9fec5f1d6e5914245678e3fac74ff46f265c91d01"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-173707-446-68151-627b579d43654a3fb44129f344ad40c7-categories/fr063-joint-interface-crash-diagnostic-integration-001.trx",
+      "storedPath": "00008-fr063-joint-interface-crash-diagnostic-integration-001.trx.gz",
+      "bytes": 2331650,
+      "sha256": "6c12fa27c77ea0004f64b72d1b5671480bb753e7014b8b41145e6ab06261ab51",
+      "storedBytes": 719104,
+      "storedSha256": "01a8655812967ee82ce18b7233d84a251688c7abc9ed6e1e96d4a65d213fa8d5"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-173707-446-68151-627b579d43654a3fb44129f344ad40c7-categories/plan.json",
+      "storedPath": "00009-plan.json.gz",
+      "bytes": 1801,
+      "sha256": "0edccd23e6d8509bc19b704787391cc31493611b6b7a627e3bf39a4e4003fe8f",
+      "storedBytes": 850,
+      "storedSha256": "371c2e9f7a50002dcaa7e00cb8ee0a4fa115060dd841e8aa16b138c43aa723a0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-173707-446-68151-627b579d43654a3fb44129f344ad40c7-categories/summary.json",
+      "storedPath": "00010-summary.json.gz",
+      "bytes": 1978,
+      "sha256": "4ca804f64d7a17a1633af5ffcbbeddde7656ec12c69cab31b41c47b64cb0c167",
+      "storedBytes": 914,
+      "storedSha256": "22206ec338ebb38b136dd2b6af4c9b72c955bcdeda61e62a9703eb2d326a59d1"
+    }
+  ],
+  "helperText": "\"\"\"UNRUN read-only complete original whole-product zero/actual raw archive. No execution, cleanup, retry or classification.\"\"\"\nfrom pathlib import Path\nimport sys,json,gzip,hashlib,datetime\nrecords=[Path(x) for x in sys.argv[1:-1]];out=Path(sys.argv[-1]);assert records and not out.exists();out.mkdir(parents=True)\ndef h(b):return hashlib.sha256(b).hexdigest()\npaths=[];original=[]\nfor p in records:\n j=json.loads(p.read_bytes());assert j['kind'] in {'FIRST_NI_IOBS_L01_WHOLE_ZERO_PREPARATION_RAW','FIRST_NI_IOBS_L01_WHOLE_ACTUAL_RAW_NOT_EVIDENCE'};original.append(j)\n paths.extend([p,Path(j['stdoutPath']),Path(j['processRecord']),Path(j['firstSentinel']),p.parent/'source-binding.json',p.parent/'ledger-context.json'])\n for name in ['observed-plan.json','exact-selected-scope.json']:\n  if (p.parent/name).is_file():paths.append(p.parent/name)\n for d in j['resultDirectories']:paths.extend(q for q in sorted(Path(d).rglob('*')) if q.is_file())\n # Normal tests delete only their positively settled owned roots. If an actual\n # unresolved child retained its nonce container, freeze it without deletion.\n for root in j['namespaceAfter']['ownedRoots']:\n  path=Path(root);assert path.exists();paths.extend(q for q in sorted(path.rglob('*')) if q.is_file())\nfiles=[]\nfor i,p in enumerate(sorted(set(paths))):\n b=p.read_bytes();name=f'{i:05d}-'+p.name+'.gz';stored=gzip.compress(b,compresslevel=9,mtime=0);(out/name).write_bytes(stored);assert gzip.decompress((out/name).read_bytes())==b\n files.append(dict(rawPath=str(p),storedPath=name,bytes=len(b),sha256=h(b),storedBytes=len(stored),storedSha256=h(stored)))\narchive=dict(kind='EXACT_NI_IOBS_L01_WHOLE_ORIGINAL_RAW_ARCHIVE_NOT_VERDICT',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSources=[x['actualSource'] for x in original],compiledSources=[x['compiledSource'] for x in original],nativeExits=[x['nativeExit'] for x in original],rawChainCount=len(files),files=files,helperText=Path(__file__).read_text(),scope='All original record/source/ledger/process/sentinel/stdout/runner/TRX/retained-child artifacts, gzip roundtrip; no raw edits, runtime, deletion, retry or verdict.')\n(out/'archive.json').write_text(json.dumps(archive,indent=2)+'\\n');print(json.dumps(dict(archive=str(out/'archive.json'),sha256=h((out/'archive.json').read_bytes()),rawChains=len(files))))\n",
+  "scope": "All original record/source/ledger/process/sentinel/stdout/runner/TRX/retained-child artifacts, gzip roundtrip; no raw edits, runtime, deletion, retry or verdict."
+}

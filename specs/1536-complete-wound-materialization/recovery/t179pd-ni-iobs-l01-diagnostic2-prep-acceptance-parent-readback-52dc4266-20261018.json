@@ -1,0 +1,13 @@
+{
+  "kind": "PARENT_EXACT_SAVED_ACCEPTANCE_READBACK_NOT_INDEPENDENT_REVIEW",
+  "phase": "prep",
+  "sha": "52dc426673a14ce718ab85481234109063be0317",
+  "checkedUtc": "2026-10-18T17:36:27.789933+00:00",
+  "remoteExact": true,
+  "cleanGithubClone": true,
+  "pins101Exact": true,
+  "externalToolsExact": true,
+  "qualified52": true,
+  "nativeExecuted": false,
+  "recovery": "/tmp/1536-cloud-tools/carrier-recovery-52dc4266.json"
+}
