@@ -1,3 +1,13 @@
+## T179-Pd-NI-IOBS-L01 current frontier — qualified52/57, diagnostic1 plan only (2026-10-18)
+
+- [x] Original37 plus accepted legacy3/corrected close2/races2/settlement3/new integrity4/uncertain1 retained at original actual/compiled provenance; SOURCE/PREP qualified each affected phase.
+- [x] Separately named newcrash5 original timeout and retained roots archived247chains, pushed/recovered5479e8c2; independent causal review freezes allfive, leaves coverage52 and old66529 UNKNOWN unchanged.
+- [x] Independent fixture-only one-case diagnostic1 plan accepted; source101/product23 is proposed, not implemented at this plan checkpoint.
+- [ ] Implement diagnostic1 instrumentation/selection; SOURCE, fresh ZERO3 and independent PREP/recovery/readback before explicit one-mode diagnostic actual; diagnose originals before remedy or requalification.
+- [ ] Bounded L01 whole57/final EVIDENCE; fullNI/HOT/F1/M3/T197 remain incomplete. A3 NO-PROCEED; Windows403 blocked/no retry; no CI.
+
+The following task sections describe their historical checkpoints; current plan/cloud ledger control.
+
 ## T179-Pd-NI-IOBS-L01 current frontier (2026-10-18)
 
 - [x]37 qualified positives preserved at original provenance; original intake2/crash5 fixtureFAIL frozen and classified, not product RED.

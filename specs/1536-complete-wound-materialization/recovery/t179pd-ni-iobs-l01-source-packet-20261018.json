@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_SELECTED_CURRENT_RESUME_ROUTING_SOURCE_CANDIDATE",
-  "status": "CRASH5SELECTEDROUTING_ORIGINAL_FROZEN",
+  "status": "QUALIFIED52_OF57_CRASH5_TIMEOUT_CAUSAL_HOLD_DIAGNOSTIC1_PLAN_ACCEPTED",
   "sourceBase": "f390eb0602a99f5a2387ab7dc6ef52571e856b26",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
   "sourcePins": [
@@ -894,10 +894,10 @@
   "gmDisposition": "Client-owned routing of existing selected checkpoint2/Published I into existing owner; no GM-authored capability/schema/field/prompt/example/manifest/daemon contract change.",
   "oldCorrectedCrash": "Old environment session66529 remainsUNKNOWN, bytes unavailable. Separate new qualification only after corrected SOURCE/fresh PREP/named release, independent disposable fixtures/new genuine children; no old environment/process or real save operation.",
   "namedActualRelease": {
-    "status": "NONE_FROZEN_PENDING_INDEPENDENT_DIAGNOSIS",
+    "status": "NONE_DIAGNOSTIC1_SOURCE_AND_PREP_REQUIRED",
     "mode": null
   },
-  "next": "Freeze affected selection; save/recover originals, independent diagnosis, then continue authorized in-scope fixes with SOURCE/fresh affected PREP.",
+  "next": "Save/recover plan, implement only diagnostic1 fixture instrumentation/selection, independent SOURCE then fresh ZERO3/PREP before a separately named single diagnostic run. No crash5 retry or product patch.",
   "sourceReview": {
     "verdict": "ACCEPT_SOURCE_AND_NAMED_ZERO4_ONLY_SUBJECT_TO_METADATA_SAVE_READBACK",
     "candidate": "fed1f7789db0145de866cd4d73b97ab030871509",
@@ -953,21 +953,8 @@
     "metadataConditions": "Current crashRequalificationPlan.gates updated to corrective1/1/1+remaining1/1/5; borrowedLeaseCorrection explicitly historical/superseded while accepted records retained. Original gate text/status preserved. Original fed1 receipt hardcoded98 retained; explicit99-count attestation and exact minimal dynamic-count utility saved. Exactremote/recovery/readback before named ZERO4; no actual release."
   },
   "namedZeroRelease": {
-    "status": "COMPLETED_NATIVE0_ZERO4_INDEPENDENT_PREP_PENDING_NO_REPEAT",
-    "labels": {
-      "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-selected-routing-cloud-813f1057",
-      "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-selected-routing-cloud-813f1057",
-      "corrective-plan": "t179pd-ni-iobs-l01-process-prep-first-corrective-plan-selected-routing-cloud-813f1057",
-      "remaining-plan": "t179pd-ni-iobs-l01-process-prep-first-remaining-plan-selected-routing-cloud-813f1057"
-    },
-    "order": [
-      "catalog",
-      "plan",
-      "corrective-plan",
-      "remaining-plan"
-    ],
-    "conditions": "Independent SOURCE saved/recovered/readback first; four distinct serial invocations native0/ZERO with exact inventories and v2 boundaries; fresh independent PREP before any actual.",
-    "actualRelease": false
+    "status": "NONE_DIAGNOSTIC_SOURCE_NOT_IMPLEMENTED",
+    "labels": {}
   },
   "freshPreparationCandidate": {
     "status": "ORIGINAL_NATIVE0_ZERO4_CANDIDATE_INDEPENDENT_PREP_PENDING",
@@ -1266,18 +1253,6 @@
       "bytes": 22630
     }
   },
-  "currentBlockerHandoff": [
-    {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-blocker-handoff-20261018.json",
-      "sha256": "d3388232a3085021f37319f81d39819bac803e4e83d9c981b4310d6c11162ad3",
-      "bytes": 8821
-    },
-    {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-blocker-handoff-20261018.md",
-      "sha256": "2f1889786a5d90768a5ed1504be63d943a5f1ac3b3afdd3801cc0692e99fcb10",
-      "bytes": 2551
-    }
-  ],
   "jointBlockerReview": [
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-joint-blocker-review-20261018.json",
@@ -1349,5 +1324,22 @@
     }
   ],
   "historicalCausalDecision": "ACCEPT_SHARED_FIXTURE_CAUSE_AND_MINIMAL_CORRECTION_PLAN_ONLY_RUNTIME_HELD",
-  "causalLimits": "New uncertain1 post-call logs directly identify early StoryTurn hold before selected validator. Older uncertain1 missing post-call logs remain unreconstructed. Both FAILs immutable."
+  "causalLimits": "New uncertain1 post-call logs directly identify early StoryTurn hold before selected validator. Older uncertain1 missing post-call logs remain unreconstructed. Both FAILs immutable.",
+  "historicalBlockerHandoffBeforeCrash5": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-blocker-handoff-20261018.json",
+      "sha256": "d3388232a3085021f37319f81d39819bac803e4e83d9c981b4310d6c11162ad3",
+      "bytes": 8821
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-blocker-handoff-20261018.md",
+      "sha256": "2f1889786a5d90768a5ed1504be63d943a5f1ac3b3afdd3801cc0692e99fcb10",
+      "bytes": 2551
+    }
+  ],
+  "currentDiagnosticPlan": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-qualification-20261018.json",
+    "field": "crashDiagnostic1",
+    "verdict": "HOLD_CRASH5; ACCEPT_BOUNDED_DIAGNOSTIC1_PLAN_SUBJECT_TO_SOURCE_AND_FRESH_PREP"
+  }
 }

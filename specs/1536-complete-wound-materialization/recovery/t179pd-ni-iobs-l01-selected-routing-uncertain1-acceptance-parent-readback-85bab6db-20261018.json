@@ -1,0 +1,30 @@
+{
+  "kind": "PARENT_ACCEPTANCE_READBACK_BEFORE_DISTINCT_NEWCRASH5",
+  "sha": "85bab6db59f15f1b7ac02ac618ab4b00461544e5",
+  "checkedUtc": "2026-10-18T15:43:39.842987+00:00",
+  "qualified": 52,
+  "sourcePins": 99,
+  "productDelta": 23,
+  "compiledSource": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
+  "release": {
+    "status": "SEPARATELY_NAMED_AFTER_SAVED_ACCEPTANCE_RECOVERY_AND_IMMEDIATE_CLEAN_V2_CENSUS",
+    "mode": "crash5",
+    "label": "t179pd-ni-iobs-l01-process-first-crash5-selected-routing-cloud-813f1057",
+    "compiledSource": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
+    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-selected-routing-cloud-813f1057/record.json",
+    "expectedCases": 5,
+    "category": "fr063-joint-interface-crash-current",
+    "methods": [
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection",
+        "cases": 5
+      }
+    ],
+    "conditions": "After acceptance saved/pushed/exactremote/fullcleanGitHub recovery and metadata readback, immediate clean authoritative v2 preflight then one fixed NoBuild/FIRST invocation. Preserve original outcome then immediate after-boundary/whole archive/inventories/cleanup. Unexpected outcome freezes affected set for independent diagnosis; no automatic next/retry; no repo mutation during actual. Disposable per-test GUID root/new nonce/genuine children only.",
+    "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED_NOT_RECOVERED_OR_RETRIED"
+  },
+  "independentUncertainEvidenceAccepted": true,
+  "old66529": "UNKNOWN_UNAVAILABLE_UNCHANGED",
+  "rootProcessStateIsolation": "New per-test GUID roots/nonces/new genuine supervised producer-resumer only; immutable source templates independently copied; no real operation or shared old state; original isolation SOURCE/PREP accepted",
+  "limits": "Readback only; immediate census still required; no crash actual yet"
+}

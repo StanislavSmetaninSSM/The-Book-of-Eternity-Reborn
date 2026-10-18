@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "CRASH5SELECTEDROUTING_ORIGINAL_FROZEN",
+  "status": "QUALIFIED52_OF57_CRASH5_TIMEOUT_CAUSAL_HOLD_DIAGNOSTIC1_PLAN_ACCEPTED",
   "sourceCheckpoint": "fed1f7789db0145de866cd4d73b97ab030871509",
   "sourcePinDigest": "70aa551ca427bb9c28b18e205bcbe2e10d1ebb88487309bb73b4a31426e37eb5",
   "sourcePinCount": 99,
@@ -444,11 +444,11 @@
           "cases": 5
         }
       ],
-      "status": "NEW_BORROWED_LEASE_UNEXPECTED_OUTCOME_FROZEN"
+      "status": "NEW_SELECTED_ROUTING_TIMEOUT_FROZEN_INDEPENDENT_DIAGNOSTIC1_PLAN_ONLY"
     }
   ],
   "crashRequalificationPlan": {
-    "status": "ISOLATION_SOURCE_AND_FRESH_PREP_ACCEPTED_DISTINCT_NEWCRASH5_PENDING_SAVED_RELEASE_RECOVERY_PREFLIGHT",
+    "status": "NEW_RUN_TIMEOUT_FROZEN_OLD_UNKNOWN_UNCHANGED_DIAGNOSTIC1_PLAN_ONLY",
     "purpose": "Separate new fixture qualification; preserve old UNKNOWN. No recovery or blind retry of old result.",
     "rootIsolation": "Fresh environmentId and GUID TMPDIR; each fixture constructs a new GUID own container/parent nonce and child-local tmp. No imported old root, checkpoint, live owner, save or real game operation.",
     "processIsolation": "Only newly started genuine child Process handles; independent parent/self PID+kernel starttick and nonce, exit73, new resume PID, join+EOF, strict containment. Retain owned container if termination/join/EOF unresolved; no old process query/kill.",
@@ -460,7 +460,8 @@
     "newCompiledSource": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
     "restorationOfOldResult": false,
     "oldOutcome": "UNKNOWN_UNAVAILABLE_UNCHANGED",
-    "scope": "Disposable per-case new GUID roots/new nonces/new genuine supervised producer-resumer processes only. No shared mutable old state or real game operation; unchanged strong assertions and900s budget. No old environment/process access."
+    "scope": "Disposable per-case new GUID roots/new nonces/new genuine supervised producer-resumer processes only. No shared mutable old state or real game operation; unchanged strong assertions and900s budget. No old environment/process access.",
+    "historicalStatusBeforeNewTimeout": "ISOLATION_SOURCE_AND_FRESH_PREP_ACCEPTED_DISTINCT_NEWCRASH5_PENDING_SAVED_RELEASE_RECOVERY_PREFLIGHT"
   },
   "actuals": {
     "legacy3": {
@@ -1529,7 +1530,64 @@
       },
       "originalProcessesAfter": [],
       "processArrayLimitation": "Original exe-link arrays incomplete. V2 argv/stat census is dated boundary only.",
-      "limits": "Observed native outcome is not independent EVIDENCE acceptance. Historical originals including old66529 UNKNOWN unchanged."
+      "limits": "Observed native outcome is not independent EVIDENCE acceptance. Historical originals including old66529 UNKNOWN unchanged.",
+      "causalReview": {
+        "model": "gpt-6-astra",
+        "reasoningEffort": "xhigh",
+        "artifacts": [
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/check_l01_selected_routing_crash5_causal-v1-wide-excerpt.py",
+            "bytes": 10459,
+            "sha256": "572045f3c6ebf25fe49fdbf6341f5e5077426e3322e7e3781006f11fbdbbe66e"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/check_l01_selected_routing_crash5_causal.py",
+            "bytes": 10508,
+            "sha256": "e106b20274603fbfc675df6eb981197e33b3d96387407b4faa1fdc824bd2fe45"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/selected-routing-crash5-causal-check-format-history.json",
+            "bytes": 834,
+            "sha256": "85feb89e6f97055e336afd19e203f714f760ce7fea355ff6d2a82994adfe03e7"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/selected-routing-crash5-causal-check-run-v1.log",
+            "bytes": 250,
+            "sha256": "1bb58d917d4610ee7e91072f1168e336def5534d735200457cfed28c2aedd0ab"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-crash5-causal-independent-check-5479e8c2-20261018.json",
+            "bytes": 13049,
+            "sha256": "2e302f0eedd8de09c53c885984db0e7853d851b2c527ff5430e2f138bfecf5e7"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-crash5-causal-independent-review-20261018.json",
+            "bytes": 17524,
+            "sha256": "0f23af9d339e393956252d6d3650884804190c03073fcce837d7cf6a81124678"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-crash5-causal-independent-review-20261018.md",
+            "bytes": 2967,
+            "sha256": "9c5826d87ef023166e474a2d7aa44e54561eba97fc870eedd3dfd5c6a9a3aff0"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/write_selected_routing_crash5_causal_review.py",
+            "bytes": 13417,
+            "sha256": "fa62a02446f38f75fe92c5b3dff47472d13aef3d1336b8265a2a76c4d4c8497e"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-crash5-frozen-carrier-recovery-5479e8c2-20261018.json",
+            "bytes": 97480,
+            "sha256": "94a98644ac1db43a696ce3afca04265e6b0aa7fde7d168492d3b03c521f40c37"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-uncertain1-acceptance-parent-readback-85bab6db-20261018.json",
+            "bytes": 2033,
+            "sha256": "78d67c3893e9387a2355e7b7e3d6631d34b4fe86587b45933a884ade2e12bbc9"
+          }
+        ]
+      },
+      "diagnosis": "Direct cut1/cut2 220s resumer timeouts; global900s timeout and incomplete/noTRX. Cut0 progressed to Published but no owning return/common/fullDATA proved. Unique blocked await and product-versus-fixture cause unproved."
     }
   },
   "holds": [
@@ -1543,7 +1601,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Freeze affected selection; save/recover originals, independent diagnosis, then continue authorized in-scope fixes with SOURCE/fresh affected PREP.",
+  "next": "Save/recover plan, implement only diagnostic1 fixture instrumentation/selection, independent SOURCE then fresh ZERO3/PREP before a separately named single diagnostic run. No crash5 retry or product patch.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -1719,7 +1777,7 @@
     "phase": "HISTORICAL_COMPILED_6AB43F6A_ZERO3_PRE_CORRECTION_INELIGIBLE_FOR_CORRECTED_ACTUALS"
   },
   "release": {
-    "status": "NONE_FROZEN_PENDING_INDEPENDENT_DIAGNOSIS",
+    "status": "NONE_DIAGNOSTIC1_SOURCE_AND_PREP_REQUIRED",
     "mode": null
   },
   "newOriginalObservedPassingCases": 4,
@@ -2880,89 +2938,6 @@
     },
     "phase": "HISTORICAL_ACCEPTED_SOURCE_AND_PREP_AT7dbfbddc_NOT_CURRENT_EXECUTION_AUTHORIZATION_AFTER_MATERIAL_HOLD"
   },
-  "materialReviewHold": {
-    "kind": "CURRENT_RESUME_NESTED_CANONICAL_LEASE",
-    "integrity4": "Native4PASS unchanged but CurrentInterface desired refusal not proved; independent diagnosis pending",
-    "uncertain1": "Native1/0PASS1FAIL frozen; current full-proof checkpoint not reached",
-    "qualifiedCases": 47,
-    "unqualifiedCases": 10,
-    "newCrash5": "UNRUN_BLOCKED",
-    "oldCrash5": "UNKNOWN_UNAVAILABLE_UNCHANGED",
-    "sourceChangesAfterFinding": 0,
-    "independentIntegrityReview": [
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-integrity4-independent-review-20261018.json",
-        "sha256": "de53818c9c07832bf38ebcd5877ef31c6d3aff11eb382cd41e6bf0737fb3a589",
-        "bytes": 24263
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-integrity4-independent-review-20261018.md",
-        "sha256": "4967c16e44ca826f43c962df1919f87be7877f428a076f2e99ac711738ae6941",
-        "bytes": 3598
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-integrity4-independent-check-90fbb068-20261018.json",
-        "sha256": "05d0efbd495a77d658ba84e4a6fe89c0e8cb6e3e3cfd0fe9cb2c4ec8aaea07fc",
-        "bytes": 23763
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-integrity4-evidence-checker-20261018.py",
-        "sha256": "64811c878086031c32672bb051f3d09a9a5711084f8d33787e0cf7fd1333d780",
-        "bytes": 27732
-      }
-    ],
-    "uncertain1JointDiagnosis": "DIRECT_FAILURE_VERIFIED_SHARED_CAUSE_SOURCE_SUPPORTED_POSTCALL_DIAGNOSTIC_UNAVAILABLE",
-    "status": "INDEPENDENT_JOINT_BLOCKER_DIAGNOSIS_SAVED",
-    "jointDiagnosis": {
-      "verdict": "HOLD_CONCRETE_PRODUCT_LEASE_COMPOSITION_AND_TARGET_ORACLE_BLOCKER_NO_IMPLEMENTATION_OR_RUNTIME_RELEASE",
-      "model": "gpt-6-astra",
-      "reasoningEffort": "xhigh",
-      "artifacts": [
-        {
-          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-joint-blocker-review-20261018.json",
-          "sha256": "d69ac4caa56652c8ac903d6c7806f2890355090ff504d5323da29c604ff175ab",
-          "bytes": 19548
-        },
-        {
-          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-joint-blocker-review-20261018.md",
-          "sha256": "22006cf914090e94c7ed13833b19c6fe5ccf976f70beeea84dfff84b207ea5ba",
-          "bytes": 4058
-        },
-        {
-          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-uncertain1-failure-independent-check-4dbdb144-20261018.json",
-          "sha256": "a7de87d5ec5b55411cd5beb4d3dbffa7d31efeaf9638f56ed64b93181bddb16f",
-          "bytes": 10199
-        },
-        {
-          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-uncertain1-causal-checker-20261018.py",
-          "sha256": "25ae868b8e1c39ed9dce3e89c3fadb18d6afef80146d16d9fc16c7e5d1bf0d3b",
-          "bytes": 20521
-        },
-        {
-          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-joint-blocker-report-writer-20261018.py",
-          "sha256": "d8d5ef06f7dec9e1d05cd8f2b4777d5b91734bc28e74bc0e5f360ccefabb28c5",
-          "bytes": 16575
-        }
-      ]
-    },
-    "handoff": [
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-blocker-handoff-20261018.json",
-        "sha256": "d3388232a3085021f37319f81d39819bac803e4e83d9c981b4310d6c11162ad3",
-        "bytes": 8821
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-blocker-handoff-20261018.md",
-        "sha256": "2f1889786a5d90768a5ed1504be63d943a5f1ac3b3afdd3801cc0692e99fcb10",
-        "bytes": 2551
-      }
-    ],
-    "finalDatedCensus": {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-blocker-handoff-census-20261018.json",
-      "sha256": "1a94421877d43dbdf135a467e6bd5b9a0f63ec7396a9af6754e59f85fdff3b71",
-      "bytes": 81023
-    }
-  },
   "nextProposedSafePlan": {
     "status": "USER_RESUMED_IMPLEMENTATION_MINIMAL_PLAN_ACCEPTED_CANDIDATE_SOURCE_REVIEW_PENDING",
     "production": "Thread the exact already-owned ordinary canonical lease from selected resume through upstream collection into an item-validation core/overload. Borrowed path validates active lease ownership for this FileSystemManager and neither acquires nor disposes it. Existing no-argument path retains its own acquisition/disposal and every retained-spiritual/foreign-claim/vacancy/item-validation/invalidation branch and order.",
@@ -3008,14 +2983,9 @@
   },
   "currentHandoff": [
     {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-blocker-handoff-20261018.json",
-      "sha256": "d3388232a3085021f37319f81d39819bac803e4e83d9c981b4310d6c11162ad3",
-      "bytes": 8821
-    },
-    {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-blocker-handoff-20261018.md",
-      "sha256": "2f1889786a5d90768a5ed1504be63d943a5f1ac3b3afdd3801cc0692e99fcb10",
-      "bytes": 2551
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-crash5-causal-independent-review-20261018.md",
+      "bytes": 2967,
+      "sha256": "9c5826d87ef023166e474a2d7aa44e54561eba97fc870eedd3dfd5c6a9a3aff0"
     }
   ],
   "borrowedLeaseCorrection": {
@@ -3825,5 +3795,181 @@
       }
     }
   },
-  "historicalSourceCheckpointBeforeSelectedRouting": "9fdecef3fd79614b9eb13b5609c99b9457d51af4"
+  "historicalSourceCheckpointBeforeSelectedRouting": "9fdecef3fd79614b9eb13b5609c99b9457d51af4",
+  "crashDiagnostic1": {
+    "status": "INDEPENDENT_CAUSAL_HOLD_AND_DIAGNOSTIC1_IMPLEMENTATION_PLAN_ACCEPTED_NO_RUNTIME",
+    "verdict": "HOLD_CRASH5; ACCEPT_BOUNDED_DIAGNOSTIC1_PLAN_SUBJECT_TO_SOURCE_AND_FRESH_PREP",
+    "review": {
+      "model": "gpt-6-astra",
+      "reasoningEffort": "xhigh",
+      "artifacts": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/check_l01_selected_routing_crash5_causal-v1-wide-excerpt.py",
+          "bytes": 10459,
+          "sha256": "572045f3c6ebf25fe49fdbf6341f5e5077426e3322e7e3781006f11fbdbbe66e"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/check_l01_selected_routing_crash5_causal.py",
+          "bytes": 10508,
+          "sha256": "e106b20274603fbfc675df6eb981197e33b3d96387407b4faa1fdc824bd2fe45"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/selected-routing-crash5-causal-check-format-history.json",
+          "bytes": 834,
+          "sha256": "85feb89e6f97055e336afd19e203f714f760ce7fea355ff6d2a82994adfe03e7"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/selected-routing-crash5-causal-check-run-v1.log",
+          "bytes": 250,
+          "sha256": "1bb58d917d4610ee7e91072f1168e336def5534d735200457cfed28c2aedd0ab"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-crash5-causal-independent-check-5479e8c2-20261018.json",
+          "bytes": 13049,
+          "sha256": "2e302f0eedd8de09c53c885984db0e7853d851b2c527ff5430e2f138bfecf5e7"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-crash5-causal-independent-review-20261018.json",
+          "bytes": 17524,
+          "sha256": "0f23af9d339e393956252d6d3650884804190c03073fcce837d7cf6a81124678"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-crash5-causal-independent-review-20261018.md",
+          "bytes": 2967,
+          "sha256": "9c5826d87ef023166e474a2d7aa44e54561eba97fc870eedd3dfd5c6a9a3aff0"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/write_selected_routing_crash5_causal_review.py",
+          "bytes": 13417,
+          "sha256": "fa62a02446f38f75fe92c5b3dff47472d13aef3d1336b8265a2a76c4d4c8497e"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-crash5-frozen-carrier-recovery-5479e8c2-20261018.json",
+          "bytes": 97480,
+          "sha256": "94a98644ac1db43a696ce3afca04265e6b0aa7fde7d168492d3b03c521f40c37"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-uncertain1-acceptance-parent-readback-85bab6db-20261018.json",
+          "bytes": 2033,
+          "sha256": "78d67c3893e9387a2355e7b7e3d6631d34b4fe86587b45933a884ade2e12bbc9"
+        }
+      ]
+    },
+    "frozenCarrier": "5479e8c29732c06bca1c2dad778f5ee18c472109",
+    "scope": "Fixture-only flushed scalar enter/return diagnostics around setup/preflight/snapshot/refresh/images/real late calls and existing finalization checkpoints; bounded live logs. No product remedy until unique cause supported. Original assertions, exception behavior and220/900limits unchanged.",
+    "selection": "One separately cataloged diagnostic Fact calls unchanged semantic cut1 fixture with diagnostic flag; dedicated selection excluded from original16/33/57 and coverage count. Fresh ZERO3 BOTH/catalog+whole57+diagnostic1. FIRST whitelist diagnostic1 only.",
+    "proposedClosure": {
+      "sourcePins": 101,
+      "productPaths": 23,
+      "newPaths": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrashDiagnostic.cs",
+        "tests/selections/1536-joint-interface-crash-diagnostic1.json"
+      ]
+    },
+    "isolation": "Same physical cloud/boot; new GUID run/TMPDIR/runtime/cache identity. Keep old two frozen roots outside mutable namespace untouched; new per-case GUID roots/new genuine supervised producer/resumer/newnonce; global active/UNKNOWN is hard stop. Old66529 environment/processes/bytes untouched and UNKNOWN/unavailable.",
+    "gates": "Save/push/exactremote/fullGitHub recovery/readback plan, fixture-only implementation and SOURCE101/product23, save/recover accepted SOURCE, fresh ZERO3 inventories/dated authoritative censuses then independent PREP, save/recover acceptance and only explicit one-mode diagnostic1 release. Original diagnostic outcome saved/reviewed before any remedy/requalification."
+  },
+  "historicalMaterialReviewHoldBeforeCrash5": {
+    "kind": "CURRENT_RESUME_NESTED_CANONICAL_LEASE",
+    "integrity4": "Native4PASS unchanged but CurrentInterface desired refusal not proved; independent diagnosis pending",
+    "uncertain1": "Native1/0PASS1FAIL frozen; current full-proof checkpoint not reached",
+    "qualifiedCases": 47,
+    "unqualifiedCases": 10,
+    "newCrash5": "UNRUN_BLOCKED",
+    "oldCrash5": "UNKNOWN_UNAVAILABLE_UNCHANGED",
+    "sourceChangesAfterFinding": 0,
+    "independentIntegrityReview": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-integrity4-independent-review-20261018.json",
+        "sha256": "de53818c9c07832bf38ebcd5877ef31c6d3aff11eb382cd41e6bf0737fb3a589",
+        "bytes": 24263
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-integrity4-independent-review-20261018.md",
+        "sha256": "4967c16e44ca826f43c962df1919f87be7877f428a076f2e99ac711738ae6941",
+        "bytes": 3598
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-integrity4-independent-check-90fbb068-20261018.json",
+        "sha256": "05d0efbd495a77d658ba84e4a6fe89c0e8cb6e3e3cfd0fe9cb2c4ec8aaea07fc",
+        "bytes": 23763
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-integrity4-evidence-checker-20261018.py",
+        "sha256": "64811c878086031c32672bb051f3d09a9a5711084f8d33787e0cf7fd1333d780",
+        "bytes": 27732
+      }
+    ],
+    "uncertain1JointDiagnosis": "DIRECT_FAILURE_VERIFIED_SHARED_CAUSE_SOURCE_SUPPORTED_POSTCALL_DIAGNOSTIC_UNAVAILABLE",
+    "status": "INDEPENDENT_JOINT_BLOCKER_DIAGNOSIS_SAVED",
+    "jointDiagnosis": {
+      "verdict": "HOLD_CONCRETE_PRODUCT_LEASE_COMPOSITION_AND_TARGET_ORACLE_BLOCKER_NO_IMPLEMENTATION_OR_RUNTIME_RELEASE",
+      "model": "gpt-6-astra",
+      "reasoningEffort": "xhigh",
+      "artifacts": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-joint-blocker-review-20261018.json",
+          "sha256": "d69ac4caa56652c8ac903d6c7806f2890355090ff504d5323da29c604ff175ab",
+          "bytes": 19548
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-joint-blocker-review-20261018.md",
+          "sha256": "22006cf914090e94c7ed13833b19c6fe5ccf976f70beeea84dfff84b207ea5ba",
+          "bytes": 4058
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-uncertain1-failure-independent-check-4dbdb144-20261018.json",
+          "sha256": "a7de87d5ec5b55411cd5beb4d3dbffa7d31efeaf9638f56ed64b93181bddb16f",
+          "bytes": 10199
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-uncertain1-causal-checker-20261018.py",
+          "sha256": "25ae868b8e1c39ed9dce3e89c3fadb18d6afef80146d16d9fc16c7e5d1bf0d3b",
+          "bytes": 20521
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-joint-blocker-report-writer-20261018.py",
+          "sha256": "d8d5ef06f7dec9e1d05cd8f2b4777d5b91734bc28e74bc0e5f360ccefabb28c5",
+          "bytes": 16575
+        }
+      ]
+    },
+    "handoff": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-blocker-handoff-20261018.json",
+        "sha256": "d3388232a3085021f37319f81d39819bac803e4e83d9c981b4310d6c11162ad3",
+        "bytes": 8821
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-blocker-handoff-20261018.md",
+        "sha256": "2f1889786a5d90768a5ed1504be63d943a5f1ac3b3afdd3801cc0692e99fcb10",
+        "bytes": 2551
+      }
+    ],
+    "finalDatedCensus": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-blocker-handoff-census-20261018.json",
+      "sha256": "1a94421877d43dbdf135a467e6bd5b9a0f63ec7396a9af6754e59f85fdff3b71",
+      "bytes": 81023
+    }
+  },
+  "materialReviewHold": {
+    "kind": "NEW_CRASH5_RESUMER_AND_CATEGORY_TIMEOUT",
+    "status": "INDEPENDENT_DIAGNOSIS_INCONCLUSIVE_LAST_AWAIT_NOT_OBSERVED",
+    "qualifiedCases": 52,
+    "newCrash5": "FROZEN_NATIVE124_NO_TRX_NO_TARGETS_ACCEPTED",
+    "oldCrash5": "UNKNOWN_UNAVAILABLE_UNCHANGED",
+    "next": "Only reviewed fixture diagnostic1 implementation/SOURCE/fresh PREP; no actual release"
+  },
+  "historicalHandoffBeforeCrash5": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-blocker-handoff-20261018.json",
+      "sha256": "d3388232a3085021f37319f81d39819bac803e4e83d9c981b4310d6c11162ad3",
+      "bytes": 8821
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-blocker-handoff-20261018.md",
+      "sha256": "2f1889786a5d90768a5ed1504be63d943a5f1ac3b3afdd3801cc0692e99fcb10",
+      "bytes": 2551
+    }
+  ]
 }

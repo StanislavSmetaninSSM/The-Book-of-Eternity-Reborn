@@ -1,0 +1,1802 @@
+{
+  "kind": "CLOUD_CARRIER_EXACT_GITHUB_RECOVERY",
+  "sha": "5479e8c29732c06bca1c2dad778f5ee18c472109",
+  "base": "85bab6db59f15f1b7ac02ac618ab4b00461544e5",
+  "checkedUtc": "2026-10-18T16:00:26.430807+00:00",
+  "directory": "/workspace/1536-cloud-clean-restore",
+  "remoteShaVerified": true,
+  "clean": true,
+  "localSourceOrObjectReuse": false,
+  "changedPathsVerified": 255,
+  "files": [
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 2423663,
+      "sha256": "805db39cbd4fd032ce664392fcaf7905bccc4787ee7c0ed9bfa4ef8c21059da7",
+      "gitBlob": "3eca81c457614529b1f58c7a4be10dd24024cb15",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-qualification-20261018.json",
+      "bytes": 201221,
+      "sha256": "9ba9ab9fc403760ec103c56e9c5e0ba167d84ec4e7082446acf5110a115467a0",
+      "gitBlob": "8a1dcc5e83c0c8dbdcca1bedcbbb5fe7e751d544",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00000-canonical-write.lock.gz",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "gitBlob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00001-gm-main-owner.lock.gz",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "gitBlob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00002-current.json.gz",
+      "bytes": 87,
+      "sha256": "65a7d61033cf10523cce5d4ccd515a24637ee776105cf22a3c73694c35dc52c7",
+      "gitBlob": "3550b155d6f4d79ad9f9b4c3e345484adf44abbb",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00003-item_identity_index.json.gz",
+      "bytes": 61,
+      "sha256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7",
+      "gitBlob": "c6b0a27336887245e7213412470c0c65b4955383",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00004-cut.json.gz",
+      "bytes": 85305,
+      "sha256": "c5d2b9ebe49336f3c191f0ddd674e85c31d1ef442a00c9a15b97a636ec8c43b3",
+      "gitBlob": "c4c63c0ed4f998cb0422ace07bfa4e76e44b8387",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00005-cut.json.stderr.gz",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "gitBlob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00006-cut.json.stdout.gz",
+      "bytes": 104700,
+      "sha256": "e5a61b00a9640f3ea878f9344df3dd7cf4ced07da755c1a3e311e51ff312bde9",
+      "gitBlob": "caa1c1c9670caad793580fc93915eef256d3d513",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00007-parent.json.gz",
+      "bytes": 100,
+      "sha256": "22d45506f00c0cbd45229e0b419d27dcd4cdfd14cbe92b6b0da39d21850d1c91",
+      "gitBlob": "4b9ee0c5d5dc3dc6e9a7b766a6f09e348902a5ee",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00008-canonical-write.lock.gz",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "gitBlob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00009-gm-main-owner.lock.gz",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "gitBlob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00010-current.json.gz",
+      "bytes": 87,
+      "sha256": "b959fb1fb2b5d289d08bdf1763155628680f751e8650aa3340299f05444b304f",
+      "gitBlob": "d35625eecc52755fd229afe25a0fea009dc9b442",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00011-item_identity_index.json.gz",
+      "bytes": 61,
+      "sha256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7",
+      "gitBlob": "c6b0a27336887245e7213412470c0c65b4955383",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00012-canonical-write.lock.gz",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "gitBlob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00013-gm-main-owner.lock.gz",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "gitBlob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00014-current.json.gz",
+      "bytes": 87,
+      "sha256": "d254f7f5d398c8aa4d038bc53e26e42d4ace8576bd9b6987da7424b322ac0e24",
+      "gitBlob": "0eb2b92796f165338e1c268a0fc0ff332409e753",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00015-afterlife_active_threats.json.gz",
+      "bytes": 1439,
+      "sha256": "f45ffacd279f2736574c446ae6b0e5c5db24a56b1df757fecce50a67c000e56a",
+      "gitBlob": "dc982ed866147dd595d64a7a4941b88a82ed11e2",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00016-afterlife_active_threats.json.rollback.639279357659446248.gz",
+      "bytes": 1439,
+      "sha256": "f45ffacd279f2736574c446ae6b0e5c5db24a56b1df757fecce50a67c000e56a",
+      "gitBlob": "dc982ed866147dd595d64a7a4941b88a82ed11e2",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00017-afterlife_chronicles.json.gz",
+      "bytes": 1126,
+      "sha256": "7c72575ee81273e5d7a3c27fc2b85d9d90915e299111a31b2c8756cb4a047dd4",
+      "gitBlob": "501db1bd874b2cabe70f9dba5eef3b19f992bc5a",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00018-afterlife_chronicles.json.rollback.639279357659446248.gz",
+      "bytes": 1126,
+      "sha256": "7c72575ee81273e5d7a3c27fc2b85d9d90915e299111a31b2c8756cb4a047dd4",
+      "gitBlob": "501db1bd874b2cabe70f9dba5eef3b19f992bc5a",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00019-afterlife_global_flags.json.gz",
+      "bytes": 726,
+      "sha256": "f1470fefce1430b8ebcd04f35291a13f6c3ff04fa83da79a9206942d08c82488",
+      "gitBlob": "c8fc89686cf219f65d45abbf42794cd5f8ab1ebd",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00020-afterlife_global_flags.json.rollback.639279357659446248.gz",
+      "bytes": 726,
+      "sha256": "f1470fefce1430b8ebcd04f35291a13f6c3ff04fa83da79a9206942d08c82488",
+      "gitBlob": "c8fc89686cf219f65d45abbf42794cd5f8ab1ebd",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00021-afterlife_story_outline.json.gz",
+      "bytes": 1511,
+      "sha256": "ebff7218b19cc90543f35c51324ce7b5db59df87dc61b0136751788e1d6aeacf",
+      "gitBlob": "e5e158354be81667c8be22ea22fb936fec6fd618",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00022-afterlife_story_outline.json.rollback.639279357659446248.gz",
+      "bytes": 1511,
+      "sha256": "ebff7218b19cc90543f35c51324ce7b5db59df87dc61b0136751788e1d6aeacf",
+      "gitBlob": "e5e158354be81667c8be22ea22fb936fec6fd618",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00023-guardian_mirror.json.gz",
+      "bytes": 3106,
+      "sha256": "46c445a971c2ba2c1104910535a803f864af3b375861d6860d2c43f9d0a328ed",
+      "gitBlob": "5ea84e1e294e560726f5c3adef4ef9b3b1d1960c",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00024-guardian_mirror.json.rollback.639279357659446248.gz",
+      "bytes": 3106,
+      "sha256": "46c445a971c2ba2c1104910535a803f864af3b375861d6860d2c43f9d0a328ed",
+      "gitBlob": "5ea84e1e294e560726f5c3adef4ef9b3b1d1960c",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00025-shining_senator_mirel.json.gz",
+      "bytes": 2826,
+      "sha256": "24ef34d6443c70ea5aede96dafc122c7965b38963978ec941d893b04260402c9",
+      "gitBlob": "b17f3dde90dd76a541a1116f2c9532d5f060adda",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00026-shining_senator_mirel.json.rollback.639279357659446248.gz",
+      "bytes": 2826,
+      "sha256": "24ef34d6443c70ea5aede96dafc122c7965b38963978ec941d893b04260402c9",
+      "gitBlob": "b17f3dde90dd76a541a1116f2c9532d5f060adda",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00027-guardian_politics.json.gz",
+      "bytes": 1518,
+      "sha256": "4b1399804c906ce24bc6104df4d91ed8a859d0aa4eae26689b2daa0ae2fbaa16",
+      "gitBlob": "49ad5829f2656d1b0327e59a31c52a50b61171a3",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00028-guardian_politics.json.rollback.639279357659446248.gz",
+      "bytes": 1518,
+      "sha256": "4b1399804c906ce24bc6104df4d91ed8a859d0aa4eae26689b2daa0ae2fbaa16",
+      "gitBlob": "49ad5829f2656d1b0327e59a31c52a50b61171a3",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00029-allies.json.gz",
+      "bytes": 45,
+      "sha256": "4e87d2522e10986c64cfbf8b0aed03b589e425b47d7308e331a4312e3f8a579f",
+      "gitBlob": "8f697964e723b25daaece306653759f3d6e07367",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00030-allies.json.rollback.639279357659446248.gz",
+      "bytes": 45,
+      "sha256": "4e87d2522e10986c64cfbf8b0aed03b589e425b47d7308e331a4312e3f8a579f",
+      "gitBlob": "8f697964e723b25daaece306653759f3d6e07367",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00031-enemies.json.gz",
+      "bytes": 46,
+      "sha256": "68314f5e851ad20415fcc106bdd730b6e259820afb958c7bd061fb5943a0e3d1",
+      "gitBlob": "fc09bbdfd9091bdc91f2e6b1d2aebfd7c27f73c8",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00032-enemies.json.rollback.639279357659446248.gz",
+      "bytes": 46,
+      "sha256": "68314f5e851ad20415fcc106bdd730b6e259820afb958c7bd061fb5943a0e3d1",
+      "gitBlob": "fc09bbdfd9091bdc91f2e6b1d2aebfd7c27f73c8",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00033-gm_trajectory_ledger.jsonl.gz",
+      "bytes": 785,
+      "sha256": "3ab80286fbc66f532dca73d9e495b247eebaf1e375a8de7ebdf75fc2b81abac9",
+      "gitBlob": "8836a0fcfc77304252ac0189435c299d299b4985",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00034-pending_dice_state.json.gz",
+      "bytes": 281,
+      "sha256": "b617b4bc8222a5506d6a0a573b59cb1659cb59b79972d2cc18db186a33b4c138",
+      "gitBlob": "c973d0476310cf379d558de1ded394f6b07aee38",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00035-pending_dice_state.json.rollback.639279357659446248.gz",
+      "bytes": 281,
+      "sha256": "b617b4bc8222a5506d6a0a573b59cb1659cb59b79972d2cc18db186a33b4c138",
+      "gitBlob": "c973d0476310cf379d558de1ded394f6b07aee38",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00036-pending_ink_actions.json.gz",
+      "bytes": 47,
+      "sha256": "d86e169f6f3cfdd608589557a8ee596b0de0611c8e5f92ed8a2e4eb2c9003f52",
+      "gitBlob": "fe63e6c0448cfdfea699f67aba474a0b5a77d139",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00037-pending_ink_actions.json.rollback.639279357659446248.gz",
+      "bytes": 47,
+      "sha256": "d86e169f6f3cfdd608589557a8ee596b0de0611c8e5f92ed8a2e4eb2c9003f52",
+      "gitBlob": "fe63e6c0448cfdfea699f67aba474a0b5a77d139",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00038-pending_mortal_wound_occurrences.json.gz",
+      "bytes": 1009,
+      "sha256": "ed7aa786da2eff69ad849d096c2c3f6005f68749a3f6be41aae404aa1f4227c0",
+      "gitBlob": "f19ae8467b41d966f39cd03549461573359823b8",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00039-pending_mortal_wound_occurrences.json.rollback.639279357659446248.gz",
+      "bytes": 1009,
+      "sha256": "ed7aa786da2eff69ad849d096c2c3f6005f68749a3f6be41aae404aa1f4227c0",
+      "gitBlob": "f19ae8467b41d966f39cd03549461573359823b8",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00040-afterlife_active_threats.json.gz",
+      "bytes": 1439,
+      "sha256": "f45ffacd279f2736574c446ae6b0e5c5db24a56b1df757fecce50a67c000e56a",
+      "gitBlob": "dc982ed866147dd595d64a7a4941b88a82ed11e2",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00041-afterlife_chronicles.json.gz",
+      "bytes": 1126,
+      "sha256": "7c72575ee81273e5d7a3c27fc2b85d9d90915e299111a31b2c8756cb4a047dd4",
+      "gitBlob": "501db1bd874b2cabe70f9dba5eef3b19f992bc5a",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00042-afterlife_global_flags.json.gz",
+      "bytes": 726,
+      "sha256": "f1470fefce1430b8ebcd04f35291a13f6c3ff04fa83da79a9206942d08c82488",
+      "gitBlob": "c8fc89686cf219f65d45abbf42794cd5f8ab1ebd",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00043-afterlife_story_outline.json.gz",
+      "bytes": 1511,
+      "sha256": "ebff7218b19cc90543f35c51324ce7b5db59df87dc61b0136751788e1d6aeacf",
+      "gitBlob": "e5e158354be81667c8be22ea22fb936fec6fd618",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00044-guardian_mirror.json.gz",
+      "bytes": 3106,
+      "sha256": "46c445a971c2ba2c1104910535a803f864af3b375861d6860d2c43f9d0a328ed",
+      "gitBlob": "5ea84e1e294e560726f5c3adef4ef9b3b1d1960c",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00045-shining_senator_mirel.json.gz",
+      "bytes": 2826,
+      "sha256": "24ef34d6443c70ea5aede96dafc122c7965b38963978ec941d893b04260402c9",
+      "gitBlob": "b17f3dde90dd76a541a1116f2c9532d5f060adda",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00046-guardian_politics.json.gz",
+      "bytes": 1518,
+      "sha256": "4b1399804c906ce24bc6104df4d91ed8a859d0aa4eae26689b2daa0ae2fbaa16",
+      "gitBlob": "49ad5829f2656d1b0327e59a31c52a50b61171a3",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00047-allies.json.gz",
+      "bytes": 45,
+      "sha256": "4e87d2522e10986c64cfbf8b0aed03b589e425b47d7308e331a4312e3f8a579f",
+      "gitBlob": "8f697964e723b25daaece306653759f3d6e07367",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00048-enemies.json.gz",
+      "bytes": 46,
+      "sha256": "68314f5e851ad20415fcc106bdd730b6e259820afb958c7bd061fb5943a0e3d1",
+      "gitBlob": "fc09bbdfd9091bdc91f2e6b1d2aebfd7c27f73c8",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00049-pending_dice_state.json.gz",
+      "bytes": 281,
+      "sha256": "b617b4bc8222a5506d6a0a573b59cb1659cb59b79972d2cc18db186a33b4c138",
+      "gitBlob": "c973d0476310cf379d558de1ded394f6b07aee38",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00050-pending_ink_actions.json.gz",
+      "bytes": 47,
+      "sha256": "d86e169f6f3cfdd608589557a8ee596b0de0611c8e5f92ed8a2e4eb2c9003f52",
+      "gitBlob": "fe63e6c0448cfdfea699f67aba474a0b5a77d139",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00051-pending_mortal_wound_occurrences.json.gz",
+      "bytes": 1009,
+      "sha256": "ed7aa786da2eff69ad849d096c2c3f6005f68749a3f6be41aae404aa1f4227c0",
+      "gitBlob": "f19ae8467b41d966f39cd03549461573359823b8",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00052-progression_schedule.json.gz",
+      "bytes": 370,
+      "sha256": "e93a8153dcaf681f1af030517cbbb80d8b0140923712692e5c19bbc0f77a6690",
+      "gitBlob": "5ac566d0a008d9ba3cf5f7a0421540ee9a8a45e8",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00053-qte_deferred_effect_continuation.json.gz",
+      "bytes": 50108,
+      "sha256": "3e9dd4fec2a224a9f2421dd1a307724ae782b667ea36752ef2695c9f05edd9b1",
+      "gitBlob": "cd1fa4f7c45d08b90bdab5e135746866acc2413f",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00054-qte_runtime.json.gz",
+      "bytes": 197,
+      "sha256": "577ec3544b0ca9882046c153865ca241219d1272b6e3c851609fff9ffc2f7f10",
+      "gitBlob": "a4713f89a59f33f9ce08e2e269d3aa15a8ce1fc3",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00055-game_settings.json.gz",
+      "bytes": 48,
+      "sha256": "06352c19e5e20598b1c2a0d786594ee75130102deb7fbdea2afaea27f4ca6455",
+      "gitBlob": "768120374e45542cbc6770089c2626e61339d7ca",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00056-player_status.json.gz",
+      "bytes": 90,
+      "sha256": "7967d826c88c80cfc5cc5a17053ef979785b713bb901acc81cca441c12d20fa8",
+      "gitBlob": "4d816f7795445a2f27a8a36adf5c4aa8d5a00bdf",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00057-system_mods.json.gz",
+      "bytes": 472,
+      "sha256": "1d9d1c1d49199db3c594967b418f93ac768353c95cbab04a2175e3005f3ea970",
+      "gitBlob": "28d78f3c7d6a7e91135e109fec59c37a5343ae62",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00058-effect_identity_index.json.gz",
+      "bytes": 55,
+      "sha256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37",
+      "gitBlob": "b2a7a8be08466d561659e3e402fbe790f0819c4b",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00059-qte_history.json.gz",
+      "bytes": 215,
+      "sha256": "a1b883da1a0a05db9ba134c05ed886cc8ccdfff6572de4359a6b01c9525abd1b",
+      "gitBlob": "892d83047a36ea838eca3893287bfe6b63180d72",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00060-item_identity_index.json.gz",
+      "bytes": 383,
+      "sha256": "99e4a4cd82088151fe59b433eb67eb817deae789089fb84d57f23751d0829d57",
+      "gitBlob": "af8055812138e0bf573473f175ee1d4b20b0f140",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00061-items.json.gz",
+      "bytes": 1551,
+      "sha256": "825b35648fea154b59b59410648283c0abbb26d515412bed17f4d455bcf493fa",
+      "gitBlob": "07259fca74b8e773863c73b31e2e33b58b917495",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00062-achievements.json.gz",
+      "bytes": 197,
+      "sha256": "70bc84534272bdbbff4de57e67d15984d6c07e8e9d714a3b25a41e97f277d3e0",
+      "gitBlob": "fedc2f05aaf504d4114a410b2f5bc37c3215e238",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00063-afterlife_entity_profiles.json.gz",
+      "bytes": 62,
+      "sha256": "4da5698354efa22fb9cd72bfa5fa1bed35b7256ef7e0f7de8da95fd6fb9abcae",
+      "gitBlob": "21108cf107bbc5712a2d067e60b7faaa29302dd7",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00064-character_chronicle.json.gz",
+      "bytes": 438,
+      "sha256": "cccf56d7ed70c3d63db3a13ce7acef27bd4bba9a3fd1609b9ce789d712709cfc",
+      "gitBlob": "87d5282e0fc6397561520858f76552c8ec0cfa05",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00065-guardians.json.gz",
+      "bytes": 103,
+      "sha256": "1f8613e696404a1d6e39502388785b46bc757334945ef4c345f94c848927eaad",
+      "gitBlob": "a882be94da2a8a2a2515d8f71d37cc01d2ebd671",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00066-soul_state.json.gz",
+      "bytes": 267,
+      "sha256": "4d7c937c73f247384549c1e7140d57ee43507a7b0133a409ed5a1ed1c08697da",
+      "gitBlob": "e94f7ba949d17555bbf7c736745ee19dddddae0d",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00067-characteristics.json.gz",
+      "bytes": 139,
+      "sha256": "cb2fbd6364121d8701ef0732d7f7d4f949283afe33a0cb3c27ed826a9cb9dffe",
+      "gitBlob": "68d53b69953670a7d2a3a32d6c7803e5d9c2fd17",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00068-item_journals.json.gz",
+      "bytes": 487,
+      "sha256": "b21daac6c19179bb03c7266544d725e4c48fcf4be76674c314f29d73b6c39959",
+      "gitBlob": "2a122dadf208259e39742977739e3076a815cb2a",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00069-npc_core.json.gz",
+      "bytes": 1416,
+      "sha256": "1259809744bca0b1be545311e68306daa3fac92b1aa7ef31ac26b416a63236b9",
+      "gitBlob": "be1c1b2a3debcad6d0a81d3243354946563720df",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00070-npc_journals.json.gz",
+      "bytes": 41,
+      "sha256": "7f75eaadf8771ccca97c6f6000acd7f8113c1ea857c1c42453f178002a8b139c",
+      "gitBlob": "4cc7cf9b4fcde54783a7512634b02a762ae88482",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00071-npc_wounds.json.gz",
+      "bytes": 61,
+      "sha256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7",
+      "gitBlob": "c6b0a27336887245e7213412470c0c65b4955383",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00072-computed_characteristics.json.gz",
+      "bytes": 414,
+      "sha256": "3e0d0e46894054a8b1f6b0ec17a31a2aa1a36ebe36b755a2df2df5916d6649e3",
+      "gitBlob": "f9015a0b77d93674268aa0f7f22752fac3b61ed5",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00073-effects.json.gz",
+      "bytes": 67,
+      "sha256": "c10422cc324b0023955875a1dd5ae45f80c51406b12bd07f97746b34c4ae0e25",
+      "gitBlob": "9b924b1ce1141ec57c89aa4a748b3975340e8a81",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00074-experience.json.gz",
+      "bytes": 127,
+      "sha256": "eb8590c7d64b2a7b13c4e6ffe91f8b99e762eeac98722cd5e039152cd1ea9f58",
+      "gitBlob": "b4c7554f5224d5eb99a20d9632957b9d6ea0fca3",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00075-player_status.json.gz",
+      "bytes": 612,
+      "sha256": "86867e25ac3aa73a5779b163960f5314aa63f6c3a9b2908f3a96574da4543b5a",
+      "gitBlob": "c08dbacc17acb8dac94ec1b2bdc4ea64db856c51",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00076-skill_mastery.json.gz",
+      "bytes": 49,
+      "sha256": "2e09a3eac1dd364721daffca1c997266865a3d48f77de104d8c5b088cc8113c9",
+      "gitBlob": "8489321f8930ddff5590e172e871c36da94e25cf",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00077-skills_active.json.gz",
+      "bytes": 48,
+      "sha256": "5c6cabf271b8f9eff95ef6daa326650f6fa96e668002c3ba981864bf49ff42c7",
+      "gitBlob": "1745d6b94ef73d9b4d88455e646273b9e34703ff",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00078-skills_passive.json.gz",
+      "bytes": 49,
+      "sha256": "81e222a8e19d9d49d047a9c237df603ddd43bfd5a860853072efb2539f1b9b4b",
+      "gitBlob": "65390f480cbc49bc5f43776f0e88d09e10e9e2a7",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00079-stat_points.json.gz",
+      "bytes": 68,
+      "sha256": "49db0c2e2c020e107ee110cb4e7bc3bc62abf10f8f212034585cdc8d89965faa",
+      "gitBlob": "d6c8b765b717453c9701276aa6fb847cb97e8a8b",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00080-transformation.json.gz",
+      "bytes": 210,
+      "sha256": "99e8646f12d871238794fb3e16558f7cbf89f37d96d7efe59bb5c98968a4f609",
+      "gitBlob": "f2ec6324f75037756a91eb5a2766c9ff29d96a08",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00081-wounds.json.gz",
+      "bytes": 1607,
+      "sha256": "f369b063e10d7481483f9e6a3bca275984df1fd2266a8108ad2663157a96e4bd",
+      "gitBlob": "0d4bafaf8e9b815dab2359be7a30d6cf5fa8882d",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00082-quest_history.json.gz",
+      "bytes": 824,
+      "sha256": "3fc78904699aca5e5d6262929def457e4e87e91f34697b8295e85e9356a7bac8",
+      "gitBlob": "59b5c9082a3c4bb033129997a16a281fc00b6e28",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00083-resource_definitions.json.gz",
+      "bytes": 924,
+      "sha256": "0db87404f712c0841de798ec3be6f4444ab4085ac95e2ab851ec3cd7df01046d",
+      "gitBlob": "3a0d18ceb1a098f6b4bbe615fc91a747d2b57fca",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00084-resource_history.json.gz",
+      "bytes": 873,
+      "sha256": "6c76176aa3f237c8f2bfa721629d77596a7fc1f7095ddf8f414bafe2fc214839",
+      "gitBlob": "314010d8fb5d821ffcad1cd65b424da908773623",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00085-resource_owner_authority.json.gz",
+      "bytes": 253,
+      "sha256": "bd763608fc41bdc44649e27f5a3c65bcb1d5259381c5a64401ea2468b4d00218",
+      "gitBlob": "932c69707884850a477543affa9b5ae7be7bbc6b",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00086-resource_state.json.gz",
+      "bytes": 388,
+      "sha256": "6ee81e83f3ecbace2d097757cb73b3559e64c10dcbdc01c6c1dafe9fc5e5dc18",
+      "gitBlob": "24289ba7b332c3d72e1694ba5fd3cb8091fe53b9",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00087-faction_chronicles.json.gz",
+      "bytes": 1284,
+      "sha256": "b1a218289c9fadc36b65c39a6e2ac524ddcf53ac2609abf203aaa08df7369278",
+      "gitBlob": "432adfb6d229303cb308b3859b9242ff880bc93d",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00088-current_location.json.gz",
+      "bytes": 1475,
+      "sha256": "ac2756cea63b73a6b223b739dc4b7947411693accaa898fa13544f531fce927b",
+      "gitBlob": "d31ffba9dc18e788541256b79c055707cd7574a4",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00089-location_identity_index.json.gz",
+      "bytes": 280,
+      "sha256": "30569f81ea55059e2c1ace14cbc8fa303f528870c51317f56be11ab85cba6005",
+      "gitBlob": "1f1eac38029578c918bd99d64e902fb16316b12e",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00090-world_map.json.gz",
+      "bytes": 1440,
+      "sha256": "0c0c2941de20fa7592a838c6c957a1c425198a7b619a1334492d9e0287616d97",
+      "gitBlob": "b1d9ca19110d2d4da9eb11790a9866a92ce41a92",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00091-world_time.json.gz",
+      "bytes": 121,
+      "sha256": "104c633e60083ca8690ae582ec33314a4f75598f67d21dd9b7cf9e102e55b008",
+      "gitBlob": "9b31b624c19e9f47935fde333864f8ceb627cded",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00092-wound_history.json.gz",
+      "bytes": 549,
+      "sha256": "a3b28ea591a6e86db1673bb2905b792477906e55ea9cdba3d969ccbc8c4a8989",
+      "gitBlob": "0436730b9ea4755c8bc83c9fc54a5ad4c5a29ea9",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00093-wound_identity_index.json.gz",
+      "bytes": 348,
+      "sha256": "0ec7f7f78660b21381d849b3ac73a9d93d747ecc2dd1b5829bab50d1617e0fde",
+      "gitBlob": "01ba1bf4ddcbe815754f345dcdbfe2f10d395550",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00094-wound_opportunity_receipts.json.gz",
+      "bytes": 75,
+      "sha256": "7aa79019b455c17b4068405ae58e07af358a0b36e0bc5562c49ff092b145ae6f",
+      "gitBlob": "6612cc85b19aab314ad2020021bbbd4807c7ccc0",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00095-cosmology.json.gz",
+      "bytes": 938,
+      "sha256": "d05e032e271f3998d877dc6805d62c813b422b914ca904ead64309b5d5297059",
+      "gitBlob": "278ecf4eb5f0e24e15933ec4919e2d438d26f235",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00096-codex_entries.json.gz",
+      "bytes": 1199,
+      "sha256": "a63a1151ad6186377ba54532f9109a67ffd650efa7141c70970c8026f56fdfe8",
+      "gitBlob": "ca89dbb868028a5c15112bea8b4d6a373c060659",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00097-cultures.json.gz",
+      "bytes": 503,
+      "sha256": "9142f1bd761bdfc6ab022292545988159a09064913e887ac024bb84ea7598f95",
+      "gitBlob": "6b09e381c37696f9024df67364add90532149f7e",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00098-geography.json.gz",
+      "bytes": 487,
+      "sha256": "2f270e6d96991273ee76f5efec1075ae4310acd21b425f7af7a330361bf6f8bd",
+      "gitBlob": "706b9bb189f83fa798dcd2b79a835b5679743f37",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00099-history.json.gz",
+      "bytes": 502,
+      "sha256": "c7c55a74cc78528febf942520548a55512a7e93d4e3ab9b7207a7857c13354ce",
+      "gitBlob": "af5f0409cf331ad9055bdd0d3a8fa6b74f3ef6b6",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00100-threats.json.gz",
+      "bytes": 444,
+      "sha256": "e47dc3074226d0263e58142bbcc5b6e8b2b6d308d2e4eeb028c9f7c140f3d646",
+      "gitBlob": "c50c84f766cee16e7569900133eeee973134f773",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00101-world_directives_draft_example.md.gz",
+      "bytes": 624,
+      "sha256": "fed9e603d3b11c28edde6c157b693d35ae40ad1ce661606bd7d13f11d98dc416",
+      "gitBlob": "07ff9c62e5069414993a68b12913bb3a3b329e7d",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00102-world_setting.json.gz",
+      "bytes": 639,
+      "sha256": "4dce223dbdd5eb423d7f4fce815d944ed66de24acaf29eccb88dda567078b633",
+      "gitBlob": "9c1ca9afe7b9dffeddb7e3d3a72a65c36ba1976b",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00103-debug_logs.json.gz",
+      "bytes": 316,
+      "sha256": "1d70eab2adbdd0699354955f9a37c1ec4750e52bc86df17f7fdb08f1b1351966",
+      "gitBlob": "fb1251468320ccdfa83085885b7add74fb29d364",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00104-interface_updates.json.gz",
+      "bytes": 94,
+      "sha256": "1fb86c8470fe99a5c77d6506627784260966a70eb444e5b367da2315a046083c",
+      "gitBlob": "b4e28e305fdaccde6cb4c97af19d9acbbcb2f7ce",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00105-narrative_response.json.gz",
+      "bytes": 123,
+      "sha256": "9a6960e28b7147a9f5331f9c03777da27fbde4aca577b7169f6c64c4b0dcfd49",
+      "gitBlob": "7629ccf923ad5eab0b8ee4dbdbac96b87637f3c3",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00106-pending_turn_snapshot.authority.json.gz",
+      "bytes": 10859,
+      "sha256": "5bbedcd39249206a8126729b465dffce3c5b1fc77726367be4cbb17d4ae56724",
+      "gitBlob": "7ef40d90f857644a9fc98ecb269105952d3a5ebc",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00107-pending_turn_snapshot.json.gz",
+      "bytes": 5968,
+      "sha256": "64d37c34ad8e42b4da8c96836191fba4f0040838609e35670b69e86075b061b9",
+      "gitBlob": "59b2779dda5705b40822405b56b56b642261d837",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00108-pending_wound_resolutions.json.gz",
+      "bytes": 9384,
+      "sha256": "5243723fc23d757abb47b2873bf39e126908bb7e8ea3148cce5517f59994ca59",
+      "gitBlob": "cc25216d3a8570cf463a2d94399b71e3299d3df1",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00109-progression_schedule.json.gz",
+      "bytes": 370,
+      "sha256": "e93a8153dcaf681f1af030517cbbb80d8b0140923712692e5c19bbc0f77a6690",
+      "gitBlob": "5ac566d0a008d9ba3cf5f7a0421540ee9a8a45e8",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00110-progression_schedule.json.rollback.639279357659446248.gz",
+      "bytes": 370,
+      "sha256": "e93a8153dcaf681f1af030517cbbb80d8b0140923712692e5c19bbc0f77a6690",
+      "gitBlob": "5ac566d0a008d9ba3cf5f7a0421540ee9a8a45e8",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00111-qte_deferred_effect_continuation.json.gz",
+      "bytes": 50108,
+      "sha256": "3e9dd4fec2a224a9f2421dd1a307724ae782b667ea36752ef2695c9f05edd9b1",
+      "gitBlob": "cd1fa4f7c45d08b90bdab5e135746866acc2413f",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00112-qte_deferred_effect_continuation.json.rollback.639279357659446248.gz",
+      "bytes": 50108,
+      "sha256": "3e9dd4fec2a224a9f2421dd1a307724ae782b667ea36752ef2695c9f05edd9b1",
+      "gitBlob": "cd1fa4f7c45d08b90bdab5e135746866acc2413f",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00113-qte_runtime.json.gz",
+      "bytes": 197,
+      "sha256": "577ec3544b0ca9882046c153865ca241219d1272b6e3c851609fff9ffc2f7f10",
+      "gitBlob": "a4713f89a59f33f9ce08e2e269d3aa15a8ce1fc3",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00114-qte_runtime.json.rollback.639279357659446248.gz",
+      "bytes": 197,
+      "sha256": "577ec3544b0ca9882046c153865ca241219d1272b6e3c851609fff9ffc2f7f10",
+      "gitBlob": "a4713f89a59f33f9ce08e2e269d3aa15a8ce1fc3",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00115-validation_repair_request.json.gz",
+      "bytes": 4171,
+      "sha256": "0a2f57863911f2e2a47432894109d160d56cbb2cc775a8d7058e95e27431d0a3",
+      "gitBlob": "32d1425ae84f687613236011239d8e22c4df8b3b",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00116-game_settings.json.gz",
+      "bytes": 48,
+      "sha256": "06352c19e5e20598b1c2a0d786594ee75130102deb7fbdea2afaea27f4ca6455",
+      "gitBlob": "768120374e45542cbc6770089c2626e61339d7ca",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00117-game_settings.json.rollback.639279357659446248.gz",
+      "bytes": 48,
+      "sha256": "06352c19e5e20598b1c2a0d786594ee75130102deb7fbdea2afaea27f4ca6455",
+      "gitBlob": "768120374e45542cbc6770089c2626e61339d7ca",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00118-player_status.json.gz",
+      "bytes": 90,
+      "sha256": "7967d826c88c80cfc5cc5a17053ef979785b713bb901acc81cca441c12d20fa8",
+      "gitBlob": "4d816f7795445a2f27a8a36adf5c4aa8d5a00bdf",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00119-player_status.json.rollback.639279357659446248.gz",
+      "bytes": 90,
+      "sha256": "7967d826c88c80cfc5cc5a17053ef979785b713bb901acc81cca441c12d20fa8",
+      "gitBlob": "4d816f7795445a2f27a8a36adf5c4aa8d5a00bdf",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00120-system_mods.json.gz",
+      "bytes": 472,
+      "sha256": "1d9d1c1d49199db3c594967b418f93ac768353c95cbab04a2175e3005f3ea970",
+      "gitBlob": "28d78f3c7d6a7e91135e109fec59c37a5343ae62",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00121-system_mods.json.rollback.639279357659446248.gz",
+      "bytes": 472,
+      "sha256": "1d9d1c1d49199db3c594967b418f93ac768353c95cbab04a2175e3005f3ea970",
+      "gitBlob": "28d78f3c7d6a7e91135e109fec59c37a5343ae62",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00122-effect_identity_index.json.gz",
+      "bytes": 55,
+      "sha256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37",
+      "gitBlob": "b2a7a8be08466d561659e3e402fbe790f0819c4b",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00123-effect_identity_index.json.rollback.639279357659446248.gz",
+      "bytes": 55,
+      "sha256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37",
+      "gitBlob": "b2a7a8be08466d561659e3e402fbe790f0819c4b",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00124-chat_log.json.gz",
+      "bytes": 70,
+      "sha256": "aae4923022fd598c716fae7d0a3d29c601d5073ad73565068dd548b2e631f039",
+      "gitBlob": "c2b36382d2a57ecabea7afb248187e688a25b549",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00125-qte_history.json.gz",
+      "bytes": 215,
+      "sha256": "a1b883da1a0a05db9ba134c05ed886cc8ccdfff6572de4359a6b01c9525abd1b",
+      "gitBlob": "892d83047a36ea838eca3893287bfe6b63180d72",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00126-qte_history.json.rollback.639279357659446248.gz",
+      "bytes": 215,
+      "sha256": "a1b883da1a0a05db9ba134c05ed886cc8ccdfff6572de4359a6b01c9525abd1b",
+      "gitBlob": "892d83047a36ea838eca3893287bfe6b63180d72",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00127-item_identity_index.json.gz",
+      "bytes": 383,
+      "sha256": "99e4a4cd82088151fe59b433eb67eb817deae789089fb84d57f23751d0829d57",
+      "gitBlob": "af8055812138e0bf573473f175ee1d4b20b0f140",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00128-item_identity_index.json.rollback.639279357659446248.gz",
+      "bytes": 383,
+      "sha256": "99e4a4cd82088151fe59b433eb67eb817deae789089fb84d57f23751d0829d57",
+      "gitBlob": "af8055812138e0bf573473f175ee1d4b20b0f140",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00129-items.json.gz",
+      "bytes": 1551,
+      "sha256": "825b35648fea154b59b59410648283c0abbb26d515412bed17f4d455bcf493fa",
+      "gitBlob": "07259fca74b8e773863c73b31e2e33b58b917495",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00130-items.json.rollback.639279357659446248.gz",
+      "bytes": 1551,
+      "sha256": "825b35648fea154b59b59410648283c0abbb26d515412bed17f4d455bcf493fa",
+      "gitBlob": "07259fca74b8e773863c73b31e2e33b58b917495",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00131-achievements.json.gz",
+      "bytes": 197,
+      "sha256": "70bc84534272bdbbff4de57e67d15984d6c07e8e9d714a3b25a41e97f277d3e0",
+      "gitBlob": "fedc2f05aaf504d4114a410b2f5bc37c3215e238",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00132-achievements.json.rollback.639279357659446248.gz",
+      "bytes": 197,
+      "sha256": "70bc84534272bdbbff4de57e67d15984d6c07e8e9d714a3b25a41e97f277d3e0",
+      "gitBlob": "fedc2f05aaf504d4114a410b2f5bc37c3215e238",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00133-afterlife_entity_profiles.json.gz",
+      "bytes": 62,
+      "sha256": "4da5698354efa22fb9cd72bfa5fa1bed35b7256ef7e0f7de8da95fd6fb9abcae",
+      "gitBlob": "21108cf107bbc5712a2d067e60b7faaa29302dd7",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00134-afterlife_entity_profiles.json.rollback.639279357659446248.gz",
+      "bytes": 62,
+      "sha256": "4da5698354efa22fb9cd72bfa5fa1bed35b7256ef7e0f7de8da95fd6fb9abcae",
+      "gitBlob": "21108cf107bbc5712a2d067e60b7faaa29302dd7",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00135-character_chronicle.json.gz",
+      "bytes": 438,
+      "sha256": "cccf56d7ed70c3d63db3a13ce7acef27bd4bba9a3fd1609b9ce789d712709cfc",
+      "gitBlob": "87d5282e0fc6397561520858f76552c8ec0cfa05",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00136-character_chronicle.json.rollback.639279357659446248.gz",
+      "bytes": 438,
+      "sha256": "cccf56d7ed70c3d63db3a13ce7acef27bd4bba9a3fd1609b9ce789d712709cfc",
+      "gitBlob": "87d5282e0fc6397561520858f76552c8ec0cfa05",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00137-guardians.json.gz",
+      "bytes": 103,
+      "sha256": "1f8613e696404a1d6e39502388785b46bc757334945ef4c345f94c848927eaad",
+      "gitBlob": "a882be94da2a8a2a2515d8f71d37cc01d2ebd671",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00138-guardians.json.rollback.639279357659446248.gz",
+      "bytes": 103,
+      "sha256": "1f8613e696404a1d6e39502388785b46bc757334945ef4c345f94c848927eaad",
+      "gitBlob": "a882be94da2a8a2a2515d8f71d37cc01d2ebd671",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00139-soul_state.json.gz",
+      "bytes": 267,
+      "sha256": "4d7c937c73f247384549c1e7140d57ee43507a7b0133a409ed5a1ed1c08697da",
+      "gitBlob": "e94f7ba949d17555bbf7c736745ee19dddddae0d",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00140-soul_state.json.rollback.639279357659446248.gz",
+      "bytes": 267,
+      "sha256": "4d7c937c73f247384549c1e7140d57ee43507a7b0133a409ed5a1ed1c08697da",
+      "gitBlob": "e94f7ba949d17555bbf7c736745ee19dddddae0d",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00141-characteristics.json.gz",
+      "bytes": 139,
+      "sha256": "cb2fbd6364121d8701ef0732d7f7d4f949283afe33a0cb3c27ed826a9cb9dffe",
+      "gitBlob": "68d53b69953670a7d2a3a32d6c7803e5d9c2fd17",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00142-characteristics.json.rollback.639279357659446248.gz",
+      "bytes": 139,
+      "sha256": "cb2fbd6364121d8701ef0732d7f7d4f949283afe33a0cb3c27ed826a9cb9dffe",
+      "gitBlob": "68d53b69953670a7d2a3a32d6c7803e5d9c2fd17",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00143-item_journals.json.gz",
+      "bytes": 487,
+      "sha256": "b21daac6c19179bb03c7266544d725e4c48fcf4be76674c314f29d73b6c39959",
+      "gitBlob": "2a122dadf208259e39742977739e3076a815cb2a",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00144-item_journals.json.rollback.639279357659446248.gz",
+      "bytes": 487,
+      "sha256": "b21daac6c19179bb03c7266544d725e4c48fcf4be76674c314f29d73b6c39959",
+      "gitBlob": "2a122dadf208259e39742977739e3076a815cb2a",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00145-npc_core.json.gz",
+      "bytes": 1416,
+      "sha256": "1259809744bca0b1be545311e68306daa3fac92b1aa7ef31ac26b416a63236b9",
+      "gitBlob": "be1c1b2a3debcad6d0a81d3243354946563720df",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00146-npc_core.json.rollback.639279357659446248.gz",
+      "bytes": 1416,
+      "sha256": "1259809744bca0b1be545311e68306daa3fac92b1aa7ef31ac26b416a63236b9",
+      "gitBlob": "be1c1b2a3debcad6d0a81d3243354946563720df",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00147-npc_journals.json.gz",
+      "bytes": 41,
+      "sha256": "7f75eaadf8771ccca97c6f6000acd7f8113c1ea857c1c42453f178002a8b139c",
+      "gitBlob": "4cc7cf9b4fcde54783a7512634b02a762ae88482",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00148-npc_journals.json.rollback.639279357659446248.gz",
+      "bytes": 41,
+      "sha256": "7f75eaadf8771ccca97c6f6000acd7f8113c1ea857c1c42453f178002a8b139c",
+      "gitBlob": "4cc7cf9b4fcde54783a7512634b02a762ae88482",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00149-npc_wounds.json.gz",
+      "bytes": 61,
+      "sha256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7",
+      "gitBlob": "c6b0a27336887245e7213412470c0c65b4955383",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00150-npc_wounds.json.rollback.639279357659446248.gz",
+      "bytes": 61,
+      "sha256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7",
+      "gitBlob": "c6b0a27336887245e7213412470c0c65b4955383",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00151-computed_characteristics.json.gz",
+      "bytes": 414,
+      "sha256": "3e0d0e46894054a8b1f6b0ec17a31a2aa1a36ebe36b755a2df2df5916d6649e3",
+      "gitBlob": "f9015a0b77d93674268aa0f7f22752fac3b61ed5",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00152-computed_characteristics.json.rollback.639279357659446248.gz",
+      "bytes": 414,
+      "sha256": "3e0d0e46894054a8b1f6b0ec17a31a2aa1a36ebe36b755a2df2df5916d6649e3",
+      "gitBlob": "f9015a0b77d93674268aa0f7f22752fac3b61ed5",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00153-effects.json.gz",
+      "bytes": 67,
+      "sha256": "c10422cc324b0023955875a1dd5ae45f80c51406b12bd07f97746b34c4ae0e25",
+      "gitBlob": "9b924b1ce1141ec57c89aa4a748b3975340e8a81",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00154-effects.json.rollback.639279357659446248.gz",
+      "bytes": 67,
+      "sha256": "c10422cc324b0023955875a1dd5ae45f80c51406b12bd07f97746b34c4ae0e25",
+      "gitBlob": "9b924b1ce1141ec57c89aa4a748b3975340e8a81",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00155-experience.json.gz",
+      "bytes": 127,
+      "sha256": "eb8590c7d64b2a7b13c4e6ffe91f8b99e762eeac98722cd5e039152cd1ea9f58",
+      "gitBlob": "b4c7554f5224d5eb99a20d9632957b9d6ea0fca3",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00156-experience.json.rollback.639279357659446248.gz",
+      "bytes": 127,
+      "sha256": "eb8590c7d64b2a7b13c4e6ffe91f8b99e762eeac98722cd5e039152cd1ea9f58",
+      "gitBlob": "b4c7554f5224d5eb99a20d9632957b9d6ea0fca3",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00157-player_status.json.gz",
+      "bytes": 612,
+      "sha256": "86867e25ac3aa73a5779b163960f5314aa63f6c3a9b2908f3a96574da4543b5a",
+      "gitBlob": "c08dbacc17acb8dac94ec1b2bdc4ea64db856c51",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00158-player_status.json.rollback.639279357659446248.gz",
+      "bytes": 612,
+      "sha256": "86867e25ac3aa73a5779b163960f5314aa63f6c3a9b2908f3a96574da4543b5a",
+      "gitBlob": "c08dbacc17acb8dac94ec1b2bdc4ea64db856c51",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00159-skill_mastery.json.gz",
+      "bytes": 49,
+      "sha256": "2e09a3eac1dd364721daffca1c997266865a3d48f77de104d8c5b088cc8113c9",
+      "gitBlob": "8489321f8930ddff5590e172e871c36da94e25cf",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00160-skill_mastery.json.rollback.639279357659446248.gz",
+      "bytes": 49,
+      "sha256": "2e09a3eac1dd364721daffca1c997266865a3d48f77de104d8c5b088cc8113c9",
+      "gitBlob": "8489321f8930ddff5590e172e871c36da94e25cf",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00161-skills_active.json.gz",
+      "bytes": 48,
+      "sha256": "5c6cabf271b8f9eff95ef6daa326650f6fa96e668002c3ba981864bf49ff42c7",
+      "gitBlob": "1745d6b94ef73d9b4d88455e646273b9e34703ff",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00162-skills_active.json.rollback.639279357659446248.gz",
+      "bytes": 48,
+      "sha256": "5c6cabf271b8f9eff95ef6daa326650f6fa96e668002c3ba981864bf49ff42c7",
+      "gitBlob": "1745d6b94ef73d9b4d88455e646273b9e34703ff",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00163-skills_passive.json.gz",
+      "bytes": 49,
+      "sha256": "81e222a8e19d9d49d047a9c237df603ddd43bfd5a860853072efb2539f1b9b4b",
+      "gitBlob": "65390f480cbc49bc5f43776f0e88d09e10e9e2a7",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00164-skills_passive.json.rollback.639279357659446248.gz",
+      "bytes": 49,
+      "sha256": "81e222a8e19d9d49d047a9c237df603ddd43bfd5a860853072efb2539f1b9b4b",
+      "gitBlob": "65390f480cbc49bc5f43776f0e88d09e10e9e2a7",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00165-stat_points.json.gz",
+      "bytes": 68,
+      "sha256": "49db0c2e2c020e107ee110cb4e7bc3bc62abf10f8f212034585cdc8d89965faa",
+      "gitBlob": "d6c8b765b717453c9701276aa6fb847cb97e8a8b",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00166-stat_points.json.rollback.639279357659446248.gz",
+      "bytes": 68,
+      "sha256": "49db0c2e2c020e107ee110cb4e7bc3bc62abf10f8f212034585cdc8d89965faa",
+      "gitBlob": "d6c8b765b717453c9701276aa6fb847cb97e8a8b",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00167-transformation.json.gz",
+      "bytes": 210,
+      "sha256": "99e8646f12d871238794fb3e16558f7cbf89f37d96d7efe59bb5c98968a4f609",
+      "gitBlob": "f2ec6324f75037756a91eb5a2766c9ff29d96a08",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00168-transformation.json.rollback.639279357659446248.gz",
+      "bytes": 210,
+      "sha256": "99e8646f12d871238794fb3e16558f7cbf89f37d96d7efe59bb5c98968a4f609",
+      "gitBlob": "f2ec6324f75037756a91eb5a2766c9ff29d96a08",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00169-wounds.json.gz",
+      "bytes": 1607,
+      "sha256": "f369b063e10d7481483f9e6a3bca275984df1fd2266a8108ad2663157a96e4bd",
+      "gitBlob": "0d4bafaf8e9b815dab2359be7a30d6cf5fa8882d",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00170-wounds.json.rollback.639279357659446248.gz",
+      "bytes": 1607,
+      "sha256": "f369b063e10d7481483f9e6a3bca275984df1fd2266a8108ad2663157a96e4bd",
+      "gitBlob": "0d4bafaf8e9b815dab2359be7a30d6cf5fa8882d",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00171-quest_history.json.gz",
+      "bytes": 824,
+      "sha256": "3fc78904699aca5e5d6262929def457e4e87e91f34697b8295e85e9356a7bac8",
+      "gitBlob": "59b5c9082a3c4bb033129997a16a281fc00b6e28",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00172-quest_history.json.rollback.639279357659446248.gz",
+      "bytes": 824,
+      "sha256": "3fc78904699aca5e5d6262929def457e4e87e91f34697b8295e85e9356a7bac8",
+      "gitBlob": "59b5c9082a3c4bb033129997a16a281fc00b6e28",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00173-resource_definitions.json.gz",
+      "bytes": 924,
+      "sha256": "0db87404f712c0841de798ec3be6f4444ab4085ac95e2ab851ec3cd7df01046d",
+      "gitBlob": "3a0d18ceb1a098f6b4bbe615fc91a747d2b57fca",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00174-resource_definitions.json.rollback.639279357659446248.gz",
+      "bytes": 924,
+      "sha256": "0db87404f712c0841de798ec3be6f4444ab4085ac95e2ab851ec3cd7df01046d",
+      "gitBlob": "3a0d18ceb1a098f6b4bbe615fc91a747d2b57fca",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00175-resource_history.json.gz",
+      "bytes": 873,
+      "sha256": "6c76176aa3f237c8f2bfa721629d77596a7fc1f7095ddf8f414bafe2fc214839",
+      "gitBlob": "314010d8fb5d821ffcad1cd65b424da908773623",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00176-resource_history.json.rollback.639279357659446248.gz",
+      "bytes": 873,
+      "sha256": "6c76176aa3f237c8f2bfa721629d77596a7fc1f7095ddf8f414bafe2fc214839",
+      "gitBlob": "314010d8fb5d821ffcad1cd65b424da908773623",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00177-resource_owner_authority.json.gz",
+      "bytes": 253,
+      "sha256": "bd763608fc41bdc44649e27f5a3c65bcb1d5259381c5a64401ea2468b4d00218",
+      "gitBlob": "932c69707884850a477543affa9b5ae7be7bbc6b",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00178-resource_owner_authority.json.rollback.639279357659446248.gz",
+      "bytes": 253,
+      "sha256": "bd763608fc41bdc44649e27f5a3c65bcb1d5259381c5a64401ea2468b4d00218",
+      "gitBlob": "932c69707884850a477543affa9b5ae7be7bbc6b",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00179-resource_state.json.gz",
+      "bytes": 388,
+      "sha256": "6ee81e83f3ecbace2d097757cb73b3559e64c10dcbdc01c6c1dafe9fc5e5dc18",
+      "gitBlob": "24289ba7b332c3d72e1694ba5fd3cb8091fe53b9",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00180-resource_state.json.rollback.639279357659446248.gz",
+      "bytes": 388,
+      "sha256": "6ee81e83f3ecbace2d097757cb73b3559e64c10dcbdc01c6c1dafe9fc5e5dc18",
+      "gitBlob": "24289ba7b332c3d72e1694ba5fd3cb8091fe53b9",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00181-faction_chronicles.json.gz",
+      "bytes": 1284,
+      "sha256": "b1a218289c9fadc36b65c39a6e2ac524ddcf53ac2609abf203aaa08df7369278",
+      "gitBlob": "432adfb6d229303cb308b3859b9242ff880bc93d",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00182-faction_chronicles.json.rollback.639279357659446248.gz",
+      "bytes": 1284,
+      "sha256": "b1a218289c9fadc36b65c39a6e2ac524ddcf53ac2609abf203aaa08df7369278",
+      "gitBlob": "432adfb6d229303cb308b3859b9242ff880bc93d",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00183-current_location.json.gz",
+      "bytes": 1475,
+      "sha256": "ac2756cea63b73a6b223b739dc4b7947411693accaa898fa13544f531fce927b",
+      "gitBlob": "d31ffba9dc18e788541256b79c055707cd7574a4",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00184-current_location.json.rollback.639279357659446248.gz",
+      "bytes": 1475,
+      "sha256": "ac2756cea63b73a6b223b739dc4b7947411693accaa898fa13544f531fce927b",
+      "gitBlob": "d31ffba9dc18e788541256b79c055707cd7574a4",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00185-location_identity_index.json.gz",
+      "bytes": 280,
+      "sha256": "30569f81ea55059e2c1ace14cbc8fa303f528870c51317f56be11ab85cba6005",
+      "gitBlob": "1f1eac38029578c918bd99d64e902fb16316b12e",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00186-location_identity_index.json.rollback.639279357659446248.gz",
+      "bytes": 280,
+      "sha256": "30569f81ea55059e2c1ace14cbc8fa303f528870c51317f56be11ab85cba6005",
+      "gitBlob": "1f1eac38029578c918bd99d64e902fb16316b12e",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00187-world_map.json.gz",
+      "bytes": 1440,
+      "sha256": "0c0c2941de20fa7592a838c6c957a1c425198a7b619a1334492d9e0287616d97",
+      "gitBlob": "b1d9ca19110d2d4da9eb11790a9866a92ce41a92",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00188-world_map.json.rollback.639279357659446248.gz",
+      "bytes": 1440,
+      "sha256": "0c0c2941de20fa7592a838c6c957a1c425198a7b619a1334492d9e0287616d97",
+      "gitBlob": "b1d9ca19110d2d4da9eb11790a9866a92ce41a92",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00189-world_time.json.gz",
+      "bytes": 121,
+      "sha256": "104c633e60083ca8690ae582ec33314a4f75598f67d21dd9b7cf9e102e55b008",
+      "gitBlob": "9b31b624c19e9f47935fde333864f8ceb627cded",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00190-world_time.json.rollback.639279357659446248.gz",
+      "bytes": 121,
+      "sha256": "104c633e60083ca8690ae582ec33314a4f75598f67d21dd9b7cf9e102e55b008",
+      "gitBlob": "9b31b624c19e9f47935fde333864f8ceb627cded",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00191-wound_commands.json.gz",
+      "bytes": 4648,
+      "sha256": "a18fde59b40d313a13b457b797b4bf69bd63fdab98263725c060b35831e13821",
+      "gitBlob": "a7da02e4b1129fe12b21f83aa8fa97bfa7e6186b",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00192-wound_history.json.gz",
+      "bytes": 549,
+      "sha256": "a3b28ea591a6e86db1673bb2905b792477906e55ea9cdba3d969ccbc8c4a8989",
+      "gitBlob": "0436730b9ea4755c8bc83c9fc54a5ad4c5a29ea9",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00193-wound_history.json.rollback.639279357659446248.gz",
+      "bytes": 549,
+      "sha256": "a3b28ea591a6e86db1673bb2905b792477906e55ea9cdba3d969ccbc8c4a8989",
+      "gitBlob": "0436730b9ea4755c8bc83c9fc54a5ad4c5a29ea9",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00194-wound_identity_index.json.gz",
+      "bytes": 348,
+      "sha256": "0ec7f7f78660b21381d849b3ac73a9d93d747ecc2dd1b5829bab50d1617e0fde",
+      "gitBlob": "01ba1bf4ddcbe815754f345dcdbfe2f10d395550",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00195-wound_identity_index.json.rollback.639279357659446248.gz",
+      "bytes": 348,
+      "sha256": "0ec7f7f78660b21381d849b3ac73a9d93d747ecc2dd1b5829bab50d1617e0fde",
+      "gitBlob": "01ba1bf4ddcbe815754f345dcdbfe2f10d395550",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00196-wound_opportunity_receipts.json.gz",
+      "bytes": 75,
+      "sha256": "7aa79019b455c17b4068405ae58e07af358a0b36e0bc5562c49ff092b145ae6f",
+      "gitBlob": "6612cc85b19aab314ad2020021bbbd4807c7ccc0",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00197-wound_opportunity_receipts.json.rollback.639279357659446248.gz",
+      "bytes": 75,
+      "sha256": "7aa79019b455c17b4068405ae58e07af358a0b36e0bc5562c49ff092b145ae6f",
+      "gitBlob": "6612cc85b19aab314ad2020021bbbd4807c7ccc0",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00198-turn_request.json.gz",
+      "bytes": 20334,
+      "sha256": "6c31975365b42cd9063efa009b212b791b42fe7cbfd8144c376824a4460fd1bd",
+      "gitBlob": "bdea737029872720af3a195d7e7c0a655b87a4aa",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00199-cosmology.json.gz",
+      "bytes": 938,
+      "sha256": "d05e032e271f3998d877dc6805d62c813b422b914ca904ead64309b5d5297059",
+      "gitBlob": "278ecf4eb5f0e24e15933ec4919e2d438d26f235",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00200-cosmology.json.rollback.639279357659446248.gz",
+      "bytes": 938,
+      "sha256": "d05e032e271f3998d877dc6805d62c813b422b914ca904ead64309b5d5297059",
+      "gitBlob": "278ecf4eb5f0e24e15933ec4919e2d438d26f235",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00201-codex_entries.json.gz",
+      "bytes": 1199,
+      "sha256": "a63a1151ad6186377ba54532f9109a67ffd650efa7141c70970c8026f56fdfe8",
+      "gitBlob": "ca89dbb868028a5c15112bea8b4d6a373c060659",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00202-codex_entries.json.rollback.639279357659446248.gz",
+      "bytes": 1199,
+      "sha256": "a63a1151ad6186377ba54532f9109a67ffd650efa7141c70970c8026f56fdfe8",
+      "gitBlob": "ca89dbb868028a5c15112bea8b4d6a373c060659",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00203-cultures.json.gz",
+      "bytes": 503,
+      "sha256": "9142f1bd761bdfc6ab022292545988159a09064913e887ac024bb84ea7598f95",
+      "gitBlob": "6b09e381c37696f9024df67364add90532149f7e",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00204-cultures.json.rollback.639279357659446248.gz",
+      "bytes": 503,
+      "sha256": "9142f1bd761bdfc6ab022292545988159a09064913e887ac024bb84ea7598f95",
+      "gitBlob": "6b09e381c37696f9024df67364add90532149f7e",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00205-geography.json.gz",
+      "bytes": 487,
+      "sha256": "2f270e6d96991273ee76f5efec1075ae4310acd21b425f7af7a330361bf6f8bd",
+      "gitBlob": "706b9bb189f83fa798dcd2b79a835b5679743f37",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00206-geography.json.rollback.639279357659446248.gz",
+      "bytes": 487,
+      "sha256": "2f270e6d96991273ee76f5efec1075ae4310acd21b425f7af7a330361bf6f8bd",
+      "gitBlob": "706b9bb189f83fa798dcd2b79a835b5679743f37",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00207-history.json.gz",
+      "bytes": 502,
+      "sha256": "c7c55a74cc78528febf942520548a55512a7e93d4e3ab9b7207a7857c13354ce",
+      "gitBlob": "af5f0409cf331ad9055bdd0d3a8fa6b74f3ef6b6",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00208-history.json.rollback.639279357659446248.gz",
+      "bytes": 502,
+      "sha256": "c7c55a74cc78528febf942520548a55512a7e93d4e3ab9b7207a7857c13354ce",
+      "gitBlob": "af5f0409cf331ad9055bdd0d3a8fa6b74f3ef6b6",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00209-threats.json.gz",
+      "bytes": 444,
+      "sha256": "e47dc3074226d0263e58142bbcc5b6e8b2b6d308d2e4eeb028c9f7c140f3d646",
+      "gitBlob": "c50c84f766cee16e7569900133eeee973134f773",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00210-threats.json.rollback.639279357659446248.gz",
+      "bytes": 444,
+      "sha256": "e47dc3074226d0263e58142bbcc5b6e8b2b6d308d2e4eeb028c9f7c140f3d646",
+      "gitBlob": "c50c84f766cee16e7569900133eeee973134f773",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00211-world_directives_draft_example.md.gz",
+      "bytes": 624,
+      "sha256": "fed9e603d3b11c28edde6c157b693d35ae40ad1ce661606bd7d13f11d98dc416",
+      "gitBlob": "07ff9c62e5069414993a68b12913bb3a3b329e7d",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00212-world_directives_draft_example.md.rollback.639279357659446248.gz",
+      "bytes": 624,
+      "sha256": "fed9e603d3b11c28edde6c157b693d35ae40ad1ce661606bd7d13f11d98dc416",
+      "gitBlob": "07ff9c62e5069414993a68b12913bb3a3b329e7d",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00213-world_setting.json.gz",
+      "bytes": 639,
+      "sha256": "4dce223dbdd5eb423d7f4fce815d944ed66de24acaf29eccb88dda567078b633",
+      "gitBlob": "9c1ca9afe7b9dffeddb7e3d3a72a65c36ba1976b",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00214-world_setting.json.rollback.639279357659446248.gz",
+      "bytes": 639,
+      "sha256": "4dce223dbdd5eb423d7f4fce815d944ed66de24acaf29eccb88dda567078b633",
+      "gitBlob": "9c1ca9afe7b9dffeddb7e3d3a72a65c36ba1976b",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00215-example_system_mod.json.gz",
+      "bytes": 319,
+      "sha256": "a10a7fba0cee20a266440345403680207be89d3f69e5ca4353295a9bcda1c5e0",
+      "gitBlob": "f4cceb1eae487ca3395be2984d908dca9f435143",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00216-example_system_mod.md.gz",
+      "bytes": 341,
+      "sha256": "23e8caed836887ea76836d402c1a61ae89e70641a7c9f5685288cab22adf36de",
+      "gitBlob": "397f4c0f00666d644439e82d45a4ab776c0f8bc4",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00217-example_system_mod.txt.gz",
+      "bytes": 443,
+      "sha256": "a3874a4a959d1fb265971892c7057f10e17296a0ede97135f719bb12c6660507",
+      "gitBlob": "9752c7dd524aae69fd239858f2344a0ead78fd51",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00218-debug_logs.json.gz",
+      "bytes": 447,
+      "sha256": "ea3d9e6063f6e68be087c083ad61d06c2d46d0c53d8066dad9f65c23c13d7de1",
+      "gitBlob": "9d40f6f9a5883b67450dcb1bd73641bddd5872fa",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00219-debug_logs.json.rollback.639279357659446248.gz",
+      "bytes": 316,
+      "sha256": "1d70eab2adbdd0699354955f9a37c1ec4750e52bc86df17f7fdb08f1b1351966",
+      "gitBlob": "fb1251468320ccdfa83085885b7add74fb29d364",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00220-interface_updates.json.gz",
+      "bytes": 216,
+      "sha256": "a0dd6c6bb57286f8c73c8f0e44177b678707f59ea3d6561b2a8d7b1e71fe36d0",
+      "gitBlob": "133ea31b4e7c82eb9c874cf2c465a20b48af0348",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00221-interface_updates.json.rollback.639279357659446248.gz",
+      "bytes": 94,
+      "sha256": "1fb86c8470fe99a5c77d6506627784260966a70eb444e5b367da2315a046083c",
+      "gitBlob": "b4e28e305fdaccde6cb4c97af19d9acbbcb2f7ce",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00222-mortal_wound_decisions.json.gz",
+      "bytes": 1843,
+      "sha256": "7cafff5b32169635719f982bfc07d7bdbced1ca85514e5d135ad1c6512c82005",
+      "gitBlob": "db0564827cf94505ec59513c91310e2436987b88",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00223-narrative_response.json.gz",
+      "bytes": 232,
+      "sha256": "b7c1cabe4a0e324e5232fdf30b2dab30cc6f7e8c4b9d4e11346201d0299623da",
+      "gitBlob": "6f3dd79ce56d9faf59bf42cd1cd6e8faaf063703",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00224-narrative_response.json.rollback.639279357659446248.gz",
+      "bytes": 123,
+      "sha256": "9a6960e28b7147a9f5331f9c03777da27fbde4aca577b7169f6c64c4b0dcfd49",
+      "gitBlob": "7629ccf923ad5eab0b8ee4dbdbac96b87637f3c3",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00225-turn_complete.json.gz",
+      "bytes": 242,
+      "sha256": "1d0f90522198e87aedbc6978bfd7938982b2383093397024f602f0ac5b32a069",
+      "gitBlob": "4bed2a9e1b43ee915fb723923bd032284c921062",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00226-chaos_sea_command_display_fixture.zip.gz",
+      "bytes": 70973,
+      "sha256": "7ac877183049ba80ae0ba872a03f932f4ddb8310555459f3d6bb31aacb79f091",
+      "gitBlob": "8826dd1105c1af34def9408fcedb1637eccb18b6",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00227-chaos_sea_command_display_fixture_metadata.json.gz",
+      "bytes": 1517,
+      "sha256": "d806446a87ff899e69ff1673358a4c00aa9e3225a5cdb8465b04f264f23c9cbc",
+      "gitBlob": "81ec98ebd1ea8274e87c95a8c74b51fd84a319d1",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00228-first_character_save_metadata.json.gz",
+      "bytes": 555,
+      "sha256": "dfa8179a7f98a8a9be2318f0c6b0a0d63fc2c3900b28d9f579757ff32dbccc19",
+      "gitBlob": "2ca15a88d9771d14342087833a28b27f2de49896",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00229-mortal_world_command_display_fixture.zip.gz",
+      "bytes": 95361,
+      "sha256": "c8a386318b4854279b547b0d6f36923b01102f24ffe11583d2770ec75d3c8cad",
+      "gitBlob": "51ee0df01635d53ed3f2586cc13d644ef4ba238f",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00230-mortal_world_command_display_fixture_metadata.json.gz",
+      "bytes": 723,
+      "sha256": "422e213bb5f1a0222c481b6e00086763839a144b4c335317ddb6ef4553e0db06",
+      "gitBlob": "ec9d5e9fc04c8c535c3b1ba1432b4b72cc240d8a",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00231-shining_abode_command_display_fixture.zip.gz",
+      "bytes": 32269,
+      "sha256": "f1b16280a2dfa002623d76bb3aae5252e291f339abdf7740f098000d4c15619f",
+      "gitBlob": "fb44dcfd84e974a97961d198ff3895ea7815c6fc",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00232-shining_abode_command_display_fixture_metadata.json.gz",
+      "bytes": 659,
+      "sha256": "9a6279f14137cd9f409562705f48249bb548960b52da50cb5beae8a37d31f14f",
+      "gitBlob": "f966e0843a90fe7675b29acede6be485125c882c",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00233-mortal_life_2.jsonl.gz",
+      "bytes": 233,
+      "sha256": "1b399434ccfffba27dba010897a37c89db0b9cbe4b97b40498321d75a6ddee68",
+      "gitBlob": "1dcf2fd64dc49d2f59378814bcd695d1a43401b8",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00234-example_world_profile.json.gz",
+      "bytes": 1173,
+      "sha256": "e669232e0e9b763c2788683983bd11a267aea89cf97c572e19a1081fe63d3721",
+      "gitBlob": "29f65a4b864fd5037bc35ee93582bbbb6c68d769",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00235-example_world_profile.md.gz",
+      "bytes": 431,
+      "sha256": "266c08e875ddbbccb065817865bd37f147b1653835e197eec0a2bf60aa3cc1ea",
+      "gitBlob": "83534eb00bd74535f59d5bf7336ec9b9de4c20bd",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00236-example_world_profile.txt.gz",
+      "bytes": 693,
+      "sha256": "5fabb4c20b4435b13f4f71ae74653c57ff884e42c2fb25922fa6452f2c4d802c",
+      "gitBlob": "1ad54467d47103557e8164123ab54f96958cad75",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00237-c391c03012e48c4e2395bdb288f0d763d2c0cf7f-ni-iobs-l01-process-crash5.FIRST.json.gz",
+      "bytes": 272,
+      "sha256": "e28378de18d37433434169fe9eb5a7b43c12ab133a052faefd6219ac9e555ab6",
+      "gitBlob": "202fac3c3bde4eea0d79f7a12e125f04e124cdf8",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00238-exact-selected-scope.json.gz",
+      "bytes": 459,
+      "sha256": "861f3acc3de760998a9a218dd9c555ac8c185ec1343a66d328e1a8eccb44e6eb",
+      "gitBlob": "151336f605b59cc5c0bc7845bab279cb0e9d6aa5",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00239-ledger-context.json.gz",
+      "bytes": 11206,
+      "sha256": "6de385248e58f2dd9817516133e85fc65fbb1da97cd1e1ae251e511f765933b4",
+      "gitBlob": "fe5f9a48ea5d36b60b7280a7d75baf058dc50479",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00240-process.json.gz",
+      "bytes": 362,
+      "sha256": "841ba4175f2446163e6c02c8da5be21cca9f3dfbafd1eb280783b68f5b1bd54c",
+      "gitBlob": "f247873aa54d9a26557b3c3574fb297e9a901ae9",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00241-record.json.gz",
+      "bytes": 178134,
+      "sha256": "7c3accf33c6fb7d511c89c0d31b71ad076b1d2926a6444c335f82cb7d5fbb7f8",
+      "gitBlob": "ffc3d02de76b8949f7acf2343a7601e588fe7413",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00242-source-binding.json.gz",
+      "bytes": 15966,
+      "sha256": "acf3afd046ce5b7a2fc7e69d51f2c0667a4bfe6f022523f80dcdf2243b855a26",
+      "gitBlob": "f0d2f4b7cafff49a66c963b8ae0638f23f30decb",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00243-stdout.log.gz",
+      "bytes": 717553,
+      "sha256": "693c46b09bc7fdacd42201c3d2b54caad1aeec8bab4e748bb88f3f0e2e346eb1",
+      "gitBlob": "9fea62a4ae52d861e070d646413fc532ec9793a0",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00244-dotnet-test.log.gz",
+      "bytes": 905569,
+      "sha256": "edbbf4a054ab63196f52adad82b1e529b64fec5a8d152d309408e5a10d3b3f1a",
+      "gitBlob": "5e6b8e7bc99a6542a375bfbd26cdd2b97a5992ab",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00245-plan.json.gz",
+      "bytes": 892,
+      "sha256": "61f916af9f9316e00c5bed080f27869e6de3da0d1a59b77ab32ee351446fc953",
+      "gitBlob": "a1b9bd600aa5ec26c9a64583d45bc34de6450a77",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/00246-summary.json.gz",
+      "bytes": 970,
+      "sha256": "23b59905ce16b44eb63fd9591c0efbf2a1d5f836ab32c5601483bb54814cdf72",
+      "gitBlob": "fda2f09e47a1b8c6786d77130b47da4c3a22cf3e",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/archive.json",
+      "bytes": 143197,
+      "sha256": "8faf5d9eb531d104183d744709ac7d393ad399b1663301c1bb4405c52f734d24",
+      "gitBlob": "0619a3069510f318467fe4bfbb24bd6edba46cba",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-crash5-actual-source-recovery-85bab6db-20261018.json",
+      "bytes": 5527,
+      "sha256": "a57cad3a9b9bad90577785366acc5fb48f2fc47acd832e2525c27488af423ae8",
+      "gitBlob": "218e0d972bcdb7809e9d325cf086681da2694ad6",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-crash5-after-census-20261018.json",
+      "bytes": 120235,
+      "sha256": "75cc845a3fb8858c1e1eb4169bc64deabf2bda7084a95a2066f088a50c5842c4",
+      "gitBlob": "58e61df7d2217f3a6cb7b5397c32a838e0354a86",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-crash5-before-census-20261018.json",
+      "bytes": 117218,
+      "sha256": "53b7ea9404f6d980db6926e9c373d01e1243df8852c2b02fe650dbfb2c1cf756",
+      "gitBlob": "798c8245351cf64fb98ee3f07d6dc56359e1c6aa",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-crash5-parent-inspection-20261018.json",
+      "bytes": 1279,
+      "sha256": "a51ff1fb6d267744de506c218a8407edd39ebfcd35a7d84a5afb916ebe099424",
+      "gitBlob": "014910735ed9dd6087f6294d97074de274c3fad1",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
+      "bytes": 65384,
+      "sha256": "9ce45f224854c59e7ba59f344992c2f3525528805a3fc1562d182b1040264382",
+      "gitBlob": "e7618512f086a14225aa4aec4bea2dfc350370c9",
+      "mode": "100644"
+    }
+  ],
+  "sourcePinsVerified": 99,
+  "sourcePinDigest": "70aa551ca427bb9c28b18e205bcbe2e10d1ebb88487309bb73b4a31426e37eb5",
+  "method": "Fetch exact task branch directly from GitHub into independent originally empty-directory GitHub clone, checkout exact SHA, clean tree, verify every changed file bytes/SHA256/blob/mode and all current source pins",
+  "limits": "Source/evidence recovery only. No test/build execution here; no lost corrected-crash bytes recovered."
+}
