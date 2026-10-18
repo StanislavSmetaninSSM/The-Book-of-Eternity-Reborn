@@ -6,6 +6,9 @@ T148; база `12d2bac1e680799c176346b6e6f29f48859e32d1`, ветка
 Статус: **WIP, независимое review ожидается**. Только чтение исходников и запись
 аудита; ни тесты, ни build/discovery, ни gameplay/diagnostics не запускались.
 [Входные hashes и точный search scope](../recovery/t148-saref-source-audit-inputs-20261018.json).
+[Отдельные независимые source findings](../recovery/t148-saref-source-chain-independent-findings-20261018.md)
+содержат 22 exact source/test pins и проверку alternate exports/consumers; они не
+заменяют итоговое review cleanup map и test contract всего блока.
 
 ## Вывод и предел доказательства
 
@@ -23,6 +26,9 @@ effects или утверждение, что любая способность 
 Но `record_defeat_outcome` возвращает результат сразу (:649–652), а его side effects
 не меняют `sarefAdvantages`. Связь конкретного memory suppression audit с
 advantageId/state, фрагментом памяти или effect identity не установлена.
+Старый design [2026-05-20:438](../../../docs/superpowers/specs/2026-05-20-wings-over-the-abyss-design.md#L438)
+описывает подавление фрагментов/преимуществ как intent. Это не доказательство,
+что defeat audit автоматически устанавливает реализованный suppressed state.
 
 Подтверждённого дефекта удаления/изменения существующего Saref audit при wound
 cleanup статическим разбором не обнаружено. Runtime survival не проверен.

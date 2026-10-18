@@ -1,0 +1,455 @@
+{
+  "schemaVersion": 1,
+  "reviewKind": "INDEPENDENT_BOUNDED_T148_SOURCE_AUDIT",
+  "baseCommit": "12d2bac1e680799c176346b6e6f29f48859e32d1",
+  "verdict": "CURRENT_SAREF_DEFEAT_AUDIT_HAS_NO_ESTABLISHED_MATERIALIZED_EFFECT_BRIDGE",
+  "scope": "Producer/source export/identity/carrier/consumers/lifecycle, including lawful alternative effect source kinds. Parent separately audits wound cleanup. No final T148 closure.",
+  "boundedConclusion": "The current memory_suppression defeat path persists and validates a story audit. No production bridge from this audit to a lawful effect source/application, effect identity/carrier, component consumer or lifetime was found in the closed source and carrier maps. Separately authored Saref-agent generic effects and separately authored suppressed-advantage story eligibility are real distinct possibilities; they must not be denied or relabeled as automatic audit materialization.",
+  "sourceEvidence": [
+    {
+      "stage": "producer",
+      "path": "BookOfEternityClient/Services/SarefMainStoryState.cs",
+      "lines": [
+        640,
+        649,
+        728,
+        759,
+        764,
+        784
+      ],
+      "member": "ApplyUpdate / ApplyDefeatOutcomeUpdate / ApplyDefeatOutcomeSideEffects",
+      "finding": "record_defeat_outcome copies memorySuppressionAudit into defeatOutcomes; outcomeId drives case-insensitive replace/append. Side effects only oath/personal bond/final confrontation/advantage-use merge; no effect materialization or advantage-state suppression."
+    },
+    {
+      "stage": "persistence",
+      "path": "BookOfEternityClient/IO/StateDistributor.cs",
+      "lines": [
+        536,
+        546,
+        553
+      ],
+      "member": "Merge state response handling",
+      "finding": "Canonical root and update wrapper route to the same Saref story root; ApplyUpdate is a real persistence producer."
+    },
+    {
+      "stage": "normalization",
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SarefMainStory.cs",
+      "lines": [
+        7,
+        14,
+        24,
+        25
+      ],
+      "member": "NormalizeSarefMainStoryStateAsync",
+      "finding": "Normalizes full canonical root or projected update into the story file, without exporting an active effect."
+    },
+    {
+      "stage": "audit_identity_validation",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs",
+      "lines": [
+        1992,
+        2009,
+        2078,
+        3426,
+        3440,
+        3452
+      ],
+      "member": "ValidateSarefDefeatOutcomes / ValidateSarefMemorySuppressionDefeat",
+      "finding": "Outcome identity and story fields are validated; memory audit requires scope, severity, summary. No effectId/sourceId/carrier/lifetime coupling is established by this branch."
+    },
+    {
+      "stage": "existing_story_guard",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs",
+      "lines": [
+        1810,
+        1875
+      ],
+      "member": "ValidateSarefAdvantageUses",
+      "finding": "Separately authored suppressed/disabled advantage state rejects usage. This is real story eligibility, not proof that a memorySuppressionAudit caused it."
+    },
+    {
+      "stage": "existing_story_projection",
+      "path": "BookOfEternityClient/Services/SarefMainStoryState.cs",
+      "lines": [
+        1351,
+        1360
+      ],
+      "member": "BuildAvailableWingsAdvantageArray",
+      "finding": "Only available/passive applicable advantages enter the pending projection; suppressed advantages are excluded independently of defeat audit."
+    },
+    {
+      "stage": "lawful_source_kinds",
+      "path": "BookOfEternityClient/Services/EffectSourceAuthority.cs",
+      "lines": [
+        254,
+        259
+      ],
+      "member": "EffectSourceAuthority.SourceKinds",
+      "finding": "Closed twelve-kind set includes spiritual_art, fate_card, quest, faction, world_event and other lawful generic sources. Absence of saref alone is not the conclusion."
+    },
+    {
+      "stage": "source_export",
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs",
+      "lines": [
+        25,
+        1269,
+        1581,
+        1614,
+        1644,
+        1650,
+        2282,
+        2360,
+        2366,
+        2404,
+        2412,
+        2420,
+        2450
+      ],
+      "member": "BuildCanonicalSourceAuthority / CollectSources / EnumerateRegisteredSourceObjects",
+      "finding": "Closed exact-path source enumeration exports owner activeEffectDefinitions. Afterlife profiles specialArts/fateCards are lawful alternatives; story defeatOutcomes is not one of the enumerated owners, and there is no default recursive story export."
+    },
+    {
+      "stage": "agent_bridge",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ActorMaterializationBinding.cs",
+      "lines": [
+        607,
+        614,
+        628,
+        631
+      ],
+      "member": "TryCollectSarefAgentBindings",
+      "finding": "Real saref_agent bindings read factionLinks.knownAgents[].agentId, not defeatOutcomes or memory audit. A separately authored profile can participate in ordinary generic effect sources."
+    },
+    {
+      "stage": "dependency_not_export",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs",
+      "lines": [
+        684,
+        727,
+        739
+      ],
+      "member": "ValidateAndCollectAcceptedEffectOwnerExportsAsync",
+      "finding": "Story root in transitive actor/faction validation dependencies does not make its audit an effect export."
+    },
+    {
+      "stage": "application_identity_carrier",
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs",
+      "lines": [
+        5537,
+        5563,
+        5601,
+        6125,
+        6157,
+        6186,
+        6188,
+        6196,
+        7053
+      ],
+      "member": "ParseApplication / application materialization / lifetime reduction",
+      "finding": "Generic commands resolve lawful exact source before client-allocated effect identity, canonical carrier and identity entry; actual lifecycle uses the effect scheduler. No Saref defeat bridge was found."
+    },
+    {
+      "stage": "closed_carriers",
+      "path": "BookOfEternityClient/Services/EffectCarrierCatalog.cs",
+      "lines": [
+        21,
+        31,
+        69,
+        73,
+        79
+      ],
+      "member": "EffectCarrierCatalogInput / Build",
+      "finding": "Six registered carrier roots; Saref story root is not a carrier."
+    },
+    {
+      "stage": "runtime_snapshot",
+      "path": "BookOfEternityClient/Services/EffectMechanicsSnapshot.cs",
+      "lines": [
+        67,
+        72,
+        76,
+        89,
+        98,
+        147,
+        153,
+        157
+      ],
+      "member": "Build",
+      "finding": "Carrier/index agreement required; only active canonical components enter mechanics. Story audit alone never enters this input."
+    },
+    {
+      "stage": "component_semantics",
+      "path": "BookOfEternityClient/Services/EffectComponentProfiles.cs",
+      "lines": [
+        277,
+        310,
+        355,
+        384,
+        734,
+        749
+      ],
+      "member": "Descriptors / ValidateEventReaction",
+      "finding": "Closed characteristic/roll/resistance/resource/action/reaction/wound/combat profiles; no memory-scope operation. A generic modifier named memory_suppression would not prove the Saref defeat audit was materialized."
+    },
+    {
+      "stage": "reaction_semantics",
+      "path": "BookOfEternityClient/Services/EffectReactionResultCatalog.cs",
+      "lines": [
+        5,
+        37
+      ],
+      "member": "EffectReactionResultBehavior / Descriptors",
+      "finding": "Closed apply_definition, periodic component, event outcome, remove and suspend behaviors do not provide arbitrary memory mutation."
+    },
+    {
+      "stage": "event_outcome_semantics",
+      "path": "BookOfEternityClient/Services/EffectEventOutcomeCatalog.cs",
+      "lines": [
+        15,
+        17,
+        20
+      ],
+      "member": "Registered / Contains",
+      "finding": "Only owner_critical_failure critical_failure-to-failure event outcome is registered; event_reaction is not an arbitrary memory suppression escape hatch."
+    },
+    {
+      "stage": "generic_runtime_consumer",
+      "path": "BookOfEternityClient/Services/EffectRollContributionResolver.cs",
+      "lines": [
+        28,
+        42,
+        73,
+        107
+      ],
+      "member": "Capture / Resolve",
+      "finding": "Real generic roll contributions use accepted active components and exact current skill scope."
+    },
+    {
+      "stage": "generic_runtime_use",
+      "path": "BookOfEternityClient/Services/MortalWoundProcedureCheckAuthority.cs",
+      "lines": [
+        300,
+        310
+      ],
+      "member": "Procedure roll source capture/resolution",
+      "finding": "Actual procedure-check path consumes generic roll effects, not Saref defeat audit."
+    },
+    {
+      "stage": "generic_lifecycle",
+      "path": "BookOfEternityClient/Services/EffectLifecycleScheduler.cs",
+      "lines": [
+        217,
+        248,
+        261,
+        264,
+        281
+      ],
+      "member": "AdvanceLifetime",
+      "finding": "Typed effect modes, target/realm/source/condition loss and explicit policies. The Saref audit has no corresponding effect lifetime."
+    },
+    {
+      "stage": "story_display",
+      "path": "BookOfEternityClient/UI/ExplorerUniversalMetaCommandResultBuilder.cs",
+      "lines": [
+        2688,
+        2735,
+        2780,
+        2806
+      ],
+      "member": "BuildSarefStory / BuildSarefStoryArraySection / BuildSarefStoryCard",
+      "finding": "Story outcome cards consume the audit; display is not mechanical suppression."
+    },
+    {
+      "stage": "prompt",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "lines": [
+        4624,
+        4642
+      ],
+      "member": "GM main-story guidance",
+      "finding": "Requires recorded defeat and memory audit; textual authoring guidance does not itself create active runtime effects."
+    },
+    {
+      "stage": "synthetic_existing_test",
+      "path": "BookOfEternityClient.Tests/WoundConsequenceEnvelopeTests.cs",
+      "lines": [
+        2321,
+        2332,
+        2342,
+        2350
+      ],
+      "member": "IndependentEffects_ArePreservedAndNeverConsumeSlotsOrEnterProfileValidation",
+      "finding": "Hand-built kind=saref plus UnknownComponent intentionally exercises envelope exclusion/preservation. It does not prove a lawful SourceAuthority producer or materialized runtime memory effect."
+    },
+    {
+      "stage": "future_metadata_test_helper",
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.cs",
+      "lines": [
+        852,
+        885,
+        887,
+        895
+      ],
+      "member": "ComposeAndPublishRecovery",
+      "finding": "Existing real accepted publication helper is a possible future metadata-preservation test seam; not executed or modified in this audit."
+    },
+    {
+      "stage": "future_metadata_heal",
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.TerminalState.cs",
+      "lines": [
+        16,
+        36,
+        63,
+        66,
+        68
+      ],
+      "member": "Publication_ConsumesEpochDeltasRematerializesAndHealsOnTheNextInterval",
+      "finding": "Existing Mortal heal path demonstrates a source-level test seam, not proof of the new requested preservation scenario."
+    }
+  ],
+  "sourceFiles": {
+    "BookOfEternityClient/Services/SarefMainStoryState.cs": {
+      "sha256": "e0fceb10f412b90fd07a696d55362c66da4272a730b6095a9f9e09e516861d2c",
+      "bytes": 58841,
+      "workspaceEqualsBase": true
+    },
+    "BookOfEternityClient/IO/StateDistributor.cs": {
+      "sha256": "0ceecfb1f5d517673504e413f138bad5593065791f1f85a222238c7f19a3893d",
+      "bytes": 33511,
+      "workspaceEqualsBase": true
+    },
+    "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SarefMainStory.cs": {
+      "sha256": "74e490f5309d9b22267374a4e1017810c1e622d7f5bd842cbf22c29b7dd6347e",
+      "bytes": 1887,
+      "workspaceEqualsBase": true
+    },
+    "BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs": {
+      "sha256": "a0f42912f0714e163a6a56147a19a8d7ef2c51849c5eba4fcfe48c947ff4c3f3",
+      "bytes": 208572,
+      "workspaceEqualsBase": true
+    },
+    "BookOfEternityClient/Services/EffectSourceAuthority.cs": {
+      "sha256": "3fe3208487a96ebc861721502562a35219ba361a0d566e23fc5b9fca2e88bd86",
+      "bytes": 97492,
+      "workspaceEqualsBase": true
+    },
+    "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs": {
+      "sha256": "486eb3820a6b6706560f21987ebcc00cc6cbfff62f2f05485d1ef9602c59c753",
+      "bytes": 108909,
+      "workspaceEqualsBase": true
+    },
+    "BookOfEternityClient/Services/Validation/ValidationService.ActorMaterializationBinding.cs": {
+      "sha256": "22bf78161fc966a6c50cc8b7962a4105ac318c1542253ba09ef10caaf90dc0e5",
+      "bytes": 42745,
+      "workspaceEqualsBase": true
+    },
+    "BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs": {
+      "sha256": "ac3b8d4d77674067557518c6fcfdab6d42ca33139bbc375e562d80cc08a75f15",
+      "bytes": 83387,
+      "workspaceEqualsBase": true
+    },
+    "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs": {
+      "sha256": "c12c5b842fb534c4e18b753f1004dcc8479ed66b4462794cb0c83a312808eb5a",
+      "bytes": 398519,
+      "workspaceEqualsBase": true
+    },
+    "BookOfEternityClient/Services/EffectCarrierCatalog.cs": {
+      "sha256": "ee19e8e3ce918984c0c5dddefd49e7236043ce4a13f452e518ac5763db35c7ab",
+      "bytes": 28369,
+      "workspaceEqualsBase": true
+    },
+    "BookOfEternityClient/Services/EffectMechanicsSnapshot.cs": {
+      "sha256": "5818fe389cbc4d2b2799e01340b2b0d719f3494a140959e669d5501da8e7115d",
+      "bytes": 16920,
+      "workspaceEqualsBase": true
+    },
+    "BookOfEternityClient/Services/EffectComponentProfiles.cs": {
+      "sha256": "c36fe4256315a5d876f6f9e4bf681426113f1171aa34d2a0f1901be49dbc0cac",
+      "bytes": 43922,
+      "workspaceEqualsBase": true
+    },
+    "BookOfEternityClient/Services/EffectReactionResultCatalog.cs": {
+      "sha256": "6622bae7db75808873307dc2edce526f0d4e2bb3fb5c97c5cc6caafb72fd1440",
+      "bytes": 3125,
+      "workspaceEqualsBase": true
+    },
+    "BookOfEternityClient/Services/EffectEventOutcomeCatalog.cs": {
+      "sha256": "97a6c645fd20e22ba36190e68fcb013d2b1ccb3d4bbfe7c77907aa84be1bec36",
+      "bytes": 1076,
+      "workspaceEqualsBase": true
+    },
+    "BookOfEternityClient/Services/EffectRollContributionResolver.cs": {
+      "sha256": "1e16ed43739ee46fab5a44d2b496bb55f21dd73f38da70086898107d3d6a0f5d",
+      "bytes": 11057,
+      "workspaceEqualsBase": true
+    },
+    "BookOfEternityClient/Services/MortalWoundProcedureCheckAuthority.cs": {
+      "sha256": "90d54272b838d7f5d676c724741e8dd4f4e18e2c2484d91a863f2cf9e50d78b3",
+      "bytes": 34087,
+      "workspaceEqualsBase": true
+    },
+    "BookOfEternityClient/Services/EffectLifecycleScheduler.cs": {
+      "sha256": "f2b2b853dc727bd7d254f705c2169537411fbc199df8b0f4489dc3b2411d8d86",
+      "bytes": 39094,
+      "workspaceEqualsBase": true
+    },
+    "BookOfEternityClient/UI/ExplorerUniversalMetaCommandResultBuilder.cs": {
+      "sha256": "450ea7fdb0178520db961faf8e22fc868155e4eca60fba4e1147dd80a79aea24",
+      "bytes": 190131,
+      "workspaceEqualsBase": true
+    },
+    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs": {
+      "sha256": "24032f1654c9c0851fd115e1c0343d074dc7939dab47c0bb9e195efeb47229b9",
+      "bytes": 296492,
+      "workspaceEqualsBase": true
+    },
+    "BookOfEternityClient.Tests/WoundConsequenceEnvelopeTests.cs": {
+      "sha256": "64facc5def2cbad35c11cb629bc4589a3cfb5b1f5e208332dee188eb82437de0",
+      "bytes": 133383,
+      "workspaceEqualsBase": true
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.cs": {
+      "sha256": "4faf575e2f0b0660d3a02be62c4121926014f9a7d8fdae5ad287aba8c3e66aef",
+      "bytes": 175652,
+      "workspaceEqualsBase": true
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.TerminalState.cs": {
+      "sha256": "37e14464bf85ef8e86c3ca610b8b1b09aa74a6b101e52301cbc63c41fd3d3642",
+      "bytes": 10119,
+      "workspaceEqualsBase": true
+    }
+  },
+  "futureTestContract": {
+    "status": "PROPOSAL_ONLY_UNIMPLEMENTED_UNRUN",
+    "minimalHonestScenario": "Persist a valid historical memory_suppression audit through actual Saref ApplyUpdate/normalizer before the Mortal wound-operation baseline; validate canonical audit, then use actual accepted Mortal recovery/heal publication and compare exact story-file/audit identity and bytes. Independently require genuine wound state/effect retirement and relevant effect/index preservation so a no-op cannot pass.",
+    "realmLimit": "This tests persistent historical metadata during Mortal healing. Do not execute an afterlife defeat as a Mortal action, simulate an unproven Soul Gates transition, inject an invented active cross-realm effect, or claim spiritual-wound/runtime-effect survival.",
+    "fullAcceptancePrerequisites": [
+      "A separately accepted precise lawful source/definition and producer linking the Saref outcome to actual materialization.",
+      "Client effect identity and carrier agreement, actual suppression semantics/consumer, and lifetime/removal/realm behavior.",
+      "A genuine current realm-compatible spiritual wound healing fixture proving unrelated materialized Saref effect bytes/behavior survive without manufactured authority.",
+      "Explicit tracked follow-up before issue1536 closes if runtime authority remains incomplete; source audit does not itself authorize creating an issue or implementing new architecture."
+    ],
+    "existingRequestedTestAbsent": true,
+    "contractLimit": "contracts/wound-effects-and-atomicity.md:657-663 requires spiritual-wound healing and independent Saref effect bytes; a Mortal metadata test is a smaller regression only."
+  },
+  "cleanupDefect": "No confirmed cleanup defect established by this independent producer/effect trace. Full cleanup audit is delegated to parent; no runtime guarantee inferred.",
+  "actions": {
+    "repositoryEdits": false,
+    "csharpExecution": false,
+    "build": false,
+    "tests": false,
+    "discovery": false,
+    "diagnostics": false,
+    "runtimeOrProcessIntervention": false,
+    "installation": false
+  },
+  "holds": {
+    "qualifiedL01": "52/57 unchanged",
+    "fiveCrashTargets": "UNQUALIFIED",
+    "old66529": "UNKNOWN/unavailable unchanged",
+    "release": "NONE",
+    "T148": "OPEN; bounded SOURCE findings only",
+    "broaderHolds": "unchanged"
+  },
+  "createdUtc": "2026-10-18T18:18:27.087405+00:00"
+}
