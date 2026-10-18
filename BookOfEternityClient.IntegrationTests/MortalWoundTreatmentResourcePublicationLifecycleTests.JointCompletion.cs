@@ -26,7 +26,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         bool useLiveCaller = false, bool recoverRetainedStoryRow = false, bool normalizeNarrativeBeforeCheckpoint = false,
         Action<AcceptedMechanicsPlan?>? observeSettledCommonPlan = null,
         bool postOriginalAutomaticSubmission = false, Action<GameEngine>? attachActualOwnerProbe = null,
-        JointCaptureCutProbe? currentCaptureProbe = null)
+        JointCaptureCutProbe? currentCaptureProbe = null,
+        JointInterfaceLifecycleProbe? interfaceLifecycleProbe = null)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         IDisposable? sourceInput = null;
@@ -133,6 +134,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             }, logger: logger);
         attachActualOwnerProbe?.Invoke(engine);
         currentCaptureProbe?.Attach(engine);
+        interfaceLifecycleProbe?.Attach(engine);
         GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(source.Source!.SessionId, 42);
         await GetPrivateField<StateManager>(engine, "_stateManager").RefreshGameStateAsync();
         if (!useLiveCaller)
@@ -311,10 +313,11 @@ public sealed partial class GameEngineTurnLifecycleTests
         var reportRemovalHistory = new List<object>();
         var milestones = new List<(string Path, string Raw, Dictionary<string, byte[]?> Images)>();
         Exception? observerFailure = null;
-        _consolePublicationObserver = currentCaptureProbe is null ? ObserveActualRepair : (phase, index) =>
+        _consolePublicationObserver = (phase, index) =>
         {
             ObserveActualRepair(phase, index);
-            currentCaptureProbe.ObservePublication(phase, index);
+            currentCaptureProbe?.ObservePublication(phase, index);
+            interfaceLifecycleProbe?.ObservePublication(phase, index);
         };
         Exception? failure;
         var handled = false;
@@ -462,6 +465,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Before = MortalArchiveDigests(complete), After = MortalArchiveDigests(repeated), FullBytesEqual = true });
         Assert.False(repeat);
         Assert.Equal(43, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
+        interfaceLifecycleProbe?.ObserveCompletionBeforeCleanup();
 
         void ObserveActualRepair(TrustedLocalPublicationPhase phase, int index)
         {
@@ -549,6 +553,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                             correctedNarrativeForBinding = Encoding.UTF8.GetBytes(reply.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
                             resubmittedPublicOutputs["output/narrative_response.json"] = correctedNarrativeForBinding;
                         }
+                        interfaceLifecycleProbe?.ConfigureCorrectedOutputs(resubmittedPublicOutputs);
                         // Offline MAIN-GM resubmits the COMPLETE actual43 public turn
                         // after real baseline restore. The normalized positive additionally
                         // exercises the permitted pre-seal timestamp-only scene correction.

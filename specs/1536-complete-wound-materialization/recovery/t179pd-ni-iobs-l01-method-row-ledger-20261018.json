@@ -1,0 +1,39 @@
+{
+  "kind": "NI_IOBS_L01_AUTHORED_METHOD_ROW_LEDGER",
+  "sourceBase": "9a92049ef86bcbc4569aaa0a11d1f42632093622",
+  "status": "INTERMEDIATE_FIRST_ORDERING_FIXTURE_AUTHORED_UNCOMPILED_UNRUN",
+  "rows": [
+    {
+      "category": "fr063-joint-interface-lifecycle-order",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN",
+      "firstCausalAssertion": "Assert.Equal(1, _interfaceAtCapture), after real shared helper completion/inert repeat and frozen original diagnostics",
+      "baselinePrediction": "capture callback1, early I-changing cohort0, later actual I-changing cohort1/common completed; native evidence not yet obtained",
+      "rootOwner": "RunJointCompletionControlAsync/CleanupOwnedFixture; final I image frozen before root disposal; no post-disposal read"
+    }
+  ],
+  "staticTotals": {
+    "newMethods": 1,
+    "newRows": 1,
+    "newOwners": 1,
+    "predictedDescriptors": 1
+  },
+  "discovery": "NOT_RUN",
+  "actualCases": 0,
+  "productChanged": false,
+  "remainingAuthoring": [
+    "Prepared/Published no-write/BOM/UTF16/absence/over2MiB and exact issue vector",
+    "ErrorPrepared frozen issues/unchanged I/no common; warning once at late slot",
+    "Ready/consumed/writer preimage drift and current resume admission/refusal",
+    "Real abrupt engine child at Prepared commit/I member before second commit/second commit before ack; fresh ordinary owner resume",
+    "missing/malformed/crossoperation/version/hash restart; direct and outer restore retention/whole terminal",
+    "genuine unchanged Capture1 full graph\u2192real engine reconstruction/restore/child1/cold compatibility",
+    "ambient timestamp-policy replay witness independent of double-tag projector/no-new-write evidence"
+  ],
+  "holds": [
+    "No production or build/discovery/native action. Exact future finite methods/rows will replace remaining-authoring prose only after actually authored; no all-vertical claim from singleton."
+  ]
+}

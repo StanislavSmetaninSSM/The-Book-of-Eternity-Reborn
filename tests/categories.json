@@ -2,6 +2,42 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-interface-lifecycle-order",
+  "responsibility": "Genuine Stage43/TREAT rejected-wave/corrected public I and real ordinary completion/inert repeat before first semantic early-I ordering assertion. Observe actual I-changing cohorts at existing capture checkpoint; distinguish marker cohorts; preserve one-pass double-tag image through late consumption.",
+  "excludes": "No missing-type/schema2/NotNull setup RED, unarmed-zero no-effects proof or direct serializer/publisher substitute. This singleton does not qualify crash/resume/error/retention/legacy/ambient timestamp policy or full NI/HOT/platform. No old accepted category replay for counts.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-capture-cut-stop",
+      "when": "After relevant changed product/shared fixture dependencies only; not a pre-product native replay."
+    },
+    {
+      "id": "fr063-joint-late-completion",
+      "when": "After changed product fresh compilation, separately named protected consumer gate; no unchanged baseline rerun."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-capture-cut-stop",
   "responsibility": "Real current joint capture returns then a configured typed IO observation stop must run BEFORE preparation. Genuine Stage43/correction/Ready prerequisites, actual present pending-wave prep-entry witness, existing owner/lease/expiry and exact held physical images. FIRST causal singleton only.",
   "excludes": "No NI producer/family availability/HOT/cold/precommon activation or writer/Ready changes; no enum-existence/NotNull RED; no broad historical family replay. Stop fixture errors/cleanup/timeout never qualify as causal RED.",
