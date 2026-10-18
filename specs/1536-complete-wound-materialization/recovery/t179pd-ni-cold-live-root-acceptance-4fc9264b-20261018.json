@@ -1,0 +1,110 @@
+{
+  "kind": "ROOT_ACCEPTANCE_BOUNDED_NI_COLD_CONTRACT_AND_SEPARATE_LIVE_SOURCE",
+  "createdUtc": "2026-10-18T03:04:26.313585+00:00",
+  "sourceBase": "f40f222c840ce2a471625d6ff75968ff9524f01f",
+  "savedCandidate": "4fc9264b9c95e91b6fa4cc4853ad0f1deecb34e8",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "artifacts": [
+    {
+      "path": "/tmp/t179pd-ni-cold-trusted-local-proposal-f40f222c-20261018.md",
+      "bytes": 16528,
+      "sha256": "4b871d45fae9839e046ebd11b41226b74a02e913d4709bd1d47fe160bac2a90f"
+    },
+    {
+      "path": "/tmp/t179pd-ni-cold-trusted-local-proposal-f40f222c-20261018.json",
+      "bytes": 22059,
+      "sha256": "e975feb2f3f4f931f5d29d8577373edae2fae90fc1a7df5542e6b2dc8ea04103"
+    },
+    {
+      "path": "/tmp/t179pd-ni-live-prefix-source-f40f222c-20261018.md",
+      "bytes": 3888,
+      "sha256": "35a551881365c408f8a3bd55238c081c91b55f3b1ffe8676b46c570464515331"
+    },
+    {
+      "path": "/tmp/t179pd-ni-live-prefix-source-f40f222c-20261018.json",
+      "bytes": 10354,
+      "sha256": "87c298dc39ea2866151239587fd9ab7ab10943550c467e4caf80f4b63a2f2514"
+    },
+    {
+      "path": "/tmp/t179pd-ni-trusted-local-model-source-correction-f40f222c-20261018.json",
+      "bytes": 3985,
+      "sha256": "439015b16f840b4f19325ff587d05aeff36db9766ada01256efa5e55a57717e6"
+    },
+    {
+      "path": "/tmp/t179pd-ni-cold-live-source-design-independent-review-20261018.md",
+      "bytes": 4036,
+      "sha256": "4e822e9beac95a55d8fd8bb39f37f88fe9ebf31aeb748c944f75b01b96034052"
+    },
+    {
+      "path": "/tmp/t179pd-ni-cold-live-source-design-independent-review-20261018.json",
+      "bytes": 6302,
+      "sha256": "0c486ee704f8aa6f90a00fd2faf4cfdd81ec74a8a9e1ada87c8395f6b95ea815"
+    },
+    {
+      "path": "/tmp/t179pd-ni-cold-live-source-design-independent-check-20261018.json",
+      "bytes": 46666,
+      "sha256": "6a02bda2de139f46950e7a14e218e08589e0c408b1584766b57a8fa29fa951d5"
+    },
+    {
+      "path": "/tmp/t179pd-ni-cold-finalization-temporal-clarification-20261018.json",
+      "bytes": 1844,
+      "sha256": "fbd2b11b3cccd235f55b14ed3cd8c53292df08ee1899fc0dc2f507c6e58043d8"
+    },
+    {
+      "path": "/tmp/t179pd-ni-cold-wip-delta-github-4fc9264b-20261018.json",
+      "bytes": 12433,
+      "sha256": "9da4c72d1c2af2375b41f51a933a3ce19a4d3b97101f6f9969de3a4c9615864f"
+    },
+    {
+      "path": "/tmp/t179pd3d-root-recovery-composition-4fc9264b-20261017.json",
+      "bytes": 23670,
+      "sha256": "a2cadc18f81b3962060d20d9ebe44a110cb940a9b7f05ec92e759869d1077517"
+    }
+  ],
+  "verdicts": {
+    "documentarySource": "ACCEPT",
+    "coldCommittedCommonContractDesign": "ACCEPT_BOUNDED_TRUSTED_LOCAL_CONTRACT",
+    "niCold01CommittedCommonDesignDependency": "CLOSED_DESIGN_ONLY",
+    "liveExecutableTestsOnlyAdmission": "NOT_ADMITTED_CURRENT_STRICT_CUT",
+    "fullNIImplementationAndQualification": "OPEN",
+    "newRuntimeEvidence": "NONE"
+  },
+  "independence": {
+    "soleRepositoryWriter": "a1_writer; Sol 6.1 XHigh",
+    "readOnlyReviewer": "a1_reviewer; Astra XHigh",
+    "root": "Read/hash-verified immutable cold/live/model/review/support/temporal artifacts and bounded repository status. Earlier Root source-pin and exact GitHub-delta/composition checks retained, not replayed. Independent review checks 34 distinct source files/47 projections."
+  },
+  "coldOwnerAndOrder": "Actual closed returned-I immutable DATA enters outputBinding child2 before existing common authority/input/prepared fingerprints; actual registry take supplies marker niPublication crosslinks; marker and mechanical members publish in the same existing atomic journal cohort; full actual-taken readback precedes settlement. Cold recovery then strict stable parent/child shape, full existing G/original/history/operation/receipt/current-image relations, exact I bytes/absence and bracketed rereads. No reconstructed live capability or repeated projector/clock/write. Child1 keeps old exact shape and behavior.",
+  "strictDecoder": "Reject noncanonical blank/duplicate repairTargetFiles before ValidationIssue construction can filter them; preserve issue/target order, actual field types/nulls and no-Error returned diagnostics. Preserve NI fields through phase update and immutable fingerprint.",
+  "threatModelCorrection": {
+    "withdrawOverstrongCriterion": true,
+    "historicalReportsImmutable": true,
+    "partition": [
+      "Corrupt, partial or stale records with old links refuse.",
+      "Recomputed outer hashes never waive foreign G/frame/request/treatment/history/current-I relationships.",
+      "Coherent supported whole closed-save owner edits are outside anti-owner protection; no secrets/new cryptography/security anchor."
+    ]
+  },
+  "scopeBoundary": "Only the same committed common cohort durably establishes child2 I data. Early ordinary I is separately committed; missing child2 after pre-common crash/rollback is neither evidence I was unrun nor projector retry authority. Pre-common lost observation remains separately held; no whole-session once-only claim.",
+  "temporalPrecision": "Known I Error/fault/uncertainty before emit/commit prevents child2. Public I owning-release return differs from later Main/session finalization. A later outer fault after genuine I return and same-common commit cannot unemit child2, undo committed history, fabricate overall success or authorize projector retry. Preserve committed proof and actual held outcome; later real cold admission, recovery/current proof may remain held and child2 grants no independent resume authority.",
+  "liveExactBlocker": "Actual Stage43/TREAT/corrected Ready and real attempt/lease probes exist, but callbacks occur inside Capture/Ready recheck. RetainHotSource and synchronous CloseCapture return immediately to preparation at CanonicalPublication47->48. Generation reads bypass observers. In-consumer throw interrupts the decision; preparation I/O is already too late. I-image-only assertions can pass with an unused producer.",
+  "liveNextDependency": "Jointly review minimal actual NI consumer and deterministic post-decision/pre-preparation non-authority observation/stop seam, actual WRITE beforeimage/public-owning-release and immutable READY/frame/G/iteration associations, no-effects/late/cold reach and cleanup. Then exact tests-only SOURCE/selection admission; no such test/helper authored or executed here.",
+  "recoveryBeforeFinal": {
+    "fullBase": "7a9eca35af13fe48c959b8d431087e9c058a45dc",
+    "consecutiveDeltas": 68,
+    "trackedPaths": 55140,
+    "newGitHubFiles": 15,
+    "allChangedPathsCovered": 11,
+    "rootVerified": true,
+    "noFullBaseCloneOrReplay": true
+  },
+  "releasedFinalAction": "Sole writer may save exact review MD/JSON/support, this Root decision, temporal clarification and prior WIP recovery/composition plus three derived documentation headers only; non-force commit/push with skip-ci, exact remote branch/main readback and fresh complete changed-path GitHub delta. Root independently verifies final delta/full retained composition externally without self-receipt commit.",
+  "notReleased": [
+    "production/test/tool/catalog/selector edits",
+    "native/build/discovery runs or old accepted evidence replay",
+    "held HOT/new QTE activation",
+    "CI run, denied ZIP access/alternate transfer, security or credentials changes",
+    "merge, force-push, branch deletion or main changes"
+  ],
+  "remainingHolds": "Full NI including pre-common lost-I history, actual WRITE/READY/Capturing/LATE plus codec/common/recovery qualification; broader HOT/full3e/S/B/D9/M3/F1/T197/Windows and A3 NO-PROCEED unchanged."
+}

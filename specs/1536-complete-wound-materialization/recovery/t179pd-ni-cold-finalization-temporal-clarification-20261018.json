@@ -1,0 +1,22 @@
+{
+  "kind": "DERIVED_TEMPORAL_PRECISION_FOR_BOUNDED_NI_COLD_DESIGN",
+  "dateUtc": "2026-10-18",
+  "candidate": "4fc9264b9c95e91b6fa4cc4853ad0f1deecb34e8",
+  "reviewMdSha256": "4e822e9beac95a55d8fd8bb39f37f88fe9ebf31aeb748c944f75b01b96034052",
+  "reviewJsonSha256": "0c486ee704f8aa6f90a00fd2faf4cfdd81ec74a8a9e1ada87c8395f6b95ea815",
+  "classification": "NONMATERIAL_DERIVED_WORDING_PRECISION_REQUIRED",
+  "frozenReportsUnchanged": true,
+  "interpretation": [
+    "The cold draft table condition I Error/fault/outer-finalization uncertainty prevents child2 refers only to uncertainty already observed before the actual child/common publication is emitted or committed. It cannot require successful future outer-session completion before the current common commit.",
+    "Public I write owning-release return is distinct from the later whole Main/session-operation finalization. Preserve both actual outcomes without treating one as the other.",
+    "A failure of that later outer finalization after genuine public I returned and the same common cohort committed does not retroactively unemit a valid child, undo commitment, authorize a repeated I projector/write, or fabricate a successful outer operation.",
+    "Retain the actual committed cohort and failure evidence. A later cold attempt must satisfy its real owner/admission, journal recovery and full current proof; its disposition may remain held. The child alone does not authorize resume."
+  ],
+  "designVerdictsUnchanged": {
+    "cold": "ACCEPT_BOUNDED_TRUSTED_LOCAL_COMMITTED_COMMON_CONTRACT",
+    "livePrefix": "NOT_ADMITTED_CURRENT_STRICT_CUT",
+    "fullNIRoute": "OPEN",
+    "runtime": "NONE_NEW"
+  },
+  "action": "Record this temporal precision in the next ordinary derived metadata/Root disposition; no frozen draft rewrite, new test, implementation or runtime is authorized."
+}
