@@ -33,7 +33,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     public async Task GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback(string fault)
         => await RunJointInterfaceActualProcessLossAsync(0, fault);
 
-    private async Task RunJointInterfaceActualProcessLossAsync(int cut, string? fault = null)
+    private async Task RunJointInterfaceActualProcessLossAsync(int cut, string? fault = null, bool diagnostic = false)
     {
         Assert.True(OperatingSystem.IsLinux());
         using var classOwned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
@@ -42,7 +42,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         using var owned = new JointInterfaceCrashOwnedContainer(own, line => _directGachaOutput?.WriteLine(line));
         var nonce = Guid.NewGuid().ToString("N");
         File.WriteAllText(Path.Combine(own, "parent.json"), JsonSerializer.Serialize(new
-        { Nonce = nonce, ParentPid = Environment.ProcessId, Cut = cut, Fault = fault }));
+        { Nonce = nonce, ParentPid = Environment.ProcessId, Cut = cut, Fault = fault, Diagnostic = diagnostic }));
         var cutPath = Path.Combine(own, "cut.json");
         var original = await RunJointInterfaceNativeChildAsync("engine-joint-interface-original-crash", own, cutPath, cut, own, owned);
         WritePhysicalInjuryDiagnostic("iobs_actual_abrupt_original_exit", original);
@@ -69,6 +69,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(0, resumed.ExitCode); Assert.NotEqual(original.Pid, resumed.Pid);
         Assert.True(resumed.Eof); Assert.True(resumed.Joined);
         var result = JsonNode.Parse(Assert.IsType<string>(raw))!.AsObject();
+        if (diagnostic) Assert.Null(result["DiagnosticOutputFailure"]);
         Assert.Equal(resumed.Pid, result["Pid"]!.GetValue<int>()); Assert.Equal(nonce, result["Nonce"]!.GetValue<string>());
         Assert.Equal(resumed.BirthTick, result["BirthTick"]!.GetValue<ulong>());
         Assert.True(result["ActualCallerEntered"]!.GetValue<bool>()); Assert.Null(result["Failure"]);
@@ -194,7 +195,11 @@ public sealed partial class GameEngineTurnLifecycleTests
         var fault = parent["Fault"]?.GetValue<string>();
         Assert.Equal(root, atCut["Root"]!.GetValue<string>()); Assert.Equal(cut, atCut["Cut"]!.GetValue<int>());
         Assert.NotEqual(atCut["Pid"]!.GetValue<int>(), Environment.ProcessId);
+        var diagnostic = new JointInterfaceResumeDiagnostic(parent["Diagnostic"]?.GetValue<bool>() == true,
+            cut, root, parent["Nonce"]!.GetValue<string>());
+        diagnostic.Observe("factory-enter");
         using var factory = new GameEngineTurnLifecycleTests(new JointInterfaceConsoleOutput());
+        diagnostic.Observe("factory-return");
         using var auxiliaryOwned = new CleanupOwnedFixture(factory._rootPath, Console.WriteLine);
         var policyRejected = false;
         if (cut == 2)
@@ -213,6 +218,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var changingI = 0; var actualCaller = false;
         MortalJointInterfacePublication.Record? completedProof = null;
         var publications = new List<object>(); var recovery = new List<object>();
+        diagnostic.Observe("file-system-enter");
         files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
         {
             LocalPublicationRecoveryObserver = (phase, index) => recovery.Add(new { Phase = phase.ToString(), Index = index }),
@@ -229,15 +235,21 @@ public sealed partial class GameEngineTurnLifecycleTests
                 }
             }
         });
+        diagnostic.Observe("file-system-return");
         var log = new SpiritualLifecycleTestLogger();
+        ILogger<GameEngine> engineLogger = diagnostic.Enabled ? new JointInterfaceResumeDiagnosticLogger(log, diagnostic) : log;
+        diagnostic.Observe("engine-enter");
         var engine = factory.CreateGameEngine(new QueuedConsoleInputSource([]), settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },
-            fileSystem: files, logger: log, finalizationHooks: new GameEngineSessionFinalizationHooks
+            fileSystem: files, logger: engineLogger, finalizationHooks: new GameEngineSessionFinalizationHooks
             { AtCheckpointAsync = async point =>
                 {
+                    diagnostic.Observe("finalization-enter", point.ToString());
                     if (point == SessionFinalizationCheckpoint.LateTerminalAndIdleOperationBound) actualCaller = true;
                     if (cut < 3 && fault is null && point == SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization)
                     {
+                        diagnostic.Observe("completed-proof-lease-enter");
                         await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+                        diagnostic.Observe("completed-proof-lease-return");
                         var actualOriginal = MortalQteWoundOpportunityProjection.ReadSnapshot(files, lease);
                         completedProof = await MortalQteDecisionPublication.ReadCurrentJointInterfaceDataAsync(files, lease,
                             actualOriginal.SessionId, actualOriginal.RequestId, actualOriginal.SnapshotToken, actualOriginal.TurnNumber);
@@ -248,7 +260,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                             Record = completedProof.ToJson(), Interface = await files.ReadFileBytesAsync(lease, MortalJointInterfacePublication.InterfacePath),
                             Meaning = "Full existing current original/history/resource proof while actual original remains present; no post-cleanup authority recreation" }));
                     }
+                    diagnostic.Observe("finalization-return", point.ToString());
                 } });
+        diagnostic.Observe("engine-return");
         await using var audio = GetPrivateField<AudioService>(engine, "_audioService");
         var noFresh = GetPrivateFieldValue<object?>(engine, "_mortalJointRepairCheckpoint") is null &&
             GetPrivateFieldValue<string?>(engine, "_mortalJointInterfaceFreshCheckpoint") is null &&
@@ -277,11 +291,15 @@ public sealed partial class GameEngineTurnLifecycleTests
         try
         {
             PendingTurnSnapshotReadAuthority original;
+            diagnostic.Observe("preflight-lease-enter");
             await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
             {
+                diagnostic.Observe("preflight-lease-return");
                 // This actual new ordinary lease recovers the original journal
                 // BEFORE the original/result proof. No copied root or old Ready.
+                diagnostic.Observe("snapshot-enter");
                 original = MortalQteWoundOpportunityProjection.ReadSnapshot(files, lease);
+                diagnostic.Observe("snapshot-return");
                 Assert.Equal(43, original.TurnNumber);
                 recoveredPending = await files.ReadFileBytesAsync(lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
                 var pending = ParseJsonObjectBytes(Assert.IsType<byte[]>(recoveredPending));
@@ -300,7 +318,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                     Assert.Equal(cut == 2 ? result.AfterBytes : result.BeforeBytes, recoveredI);
                 }
                 else Assert.False(pending.ContainsKey(MortalJointInterfacePublication.PendingField));
+                diagnostic.Observe("runtime-refresh-enter");
                 await GetPrivateField<StateManager>(engine, "_stateManager").RefreshGameStateReadOnlyAsync(lease);
+                diagnostic.Observe("runtime-refresh-return");
                 Assert.Equal(42, GetPrivateField<StateManager>(engine, "_stateManager").CurrentState.TurnNumber);
                 GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(original.SessionId, 42);
                 if (fault is not null)
@@ -327,15 +347,22 @@ public sealed partial class GameEngineTurnLifecycleTests
                         Meaning = "Actual abrupt producer and complete baseline proof precede this fault; only new current engine may classify it" }));
                     if (faultPath == WoundAcceptedTurnSnapshotContract.PendingResolutionPath) recoveredPending = afterFault;
                 }
+                diagnostic.Observe("before-images-enter");
                 before = await CaptureConfirmedClaimReadImagesAsync(files, lease);
+                diagnostic.Observe("before-images-return");
             }
+            diagnostic.Observe("preflight-lease-release-return");
             var firstLogsBefore = log.Describe();
+            diagnostic.Observe("late-first-enter");
             handled = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
+            diagnostic.Observe("late-first-return", handled.ToString());
             var firstLogsAfter = log.Describe();
             RequireCurrentInterfaceGuard(1, firstLogsBefore, firstLogsAfter);
             await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
             {
+                diagnostic.Observe("after-images-enter");
                 after = await CaptureConfirmedClaimReadImagesAsync(files, lease);
+                diagnostic.Observe("after-images-return");
                 if (cut < 3 && fault is null)
                 {
                     var current = completedProof; // physical proof frozen at the actual pre-cleanup checkpoint
@@ -370,12 +397,16 @@ public sealed partial class GameEngineTurnLifecycleTests
                 }
             }
             var secondLogsBefore = log.Describe();
+            diagnostic.Observe("late-second-enter");
             second = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
+            diagnostic.Observe("late-second-return", second.ToString());
             var secondLogsAfter = log.Describe();
             RequireCurrentInterfaceGuard(2, secondLogsBefore, secondLogsAfter);
             await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
             {
+                diagnostic.Observe("repeat-images-enter");
                 repeated = await CaptureConfirmedClaimReadImagesAsync(files, lease);
+                diagnostic.Observe("repeat-images-return");
                 await AssertConfirmedClaimReadImagesAsync(files, lease, after);
             }
             Assert.Equal(fault is null && cut < 2 ? 1 : 0, changingI); Assert.True(actualCaller);
@@ -384,6 +415,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         catch (Exception error) { failure = error; throw; }
         finally
         {
+            diagnostic.Observe("resume-finally", failure?.GetType().FullName);
             File.WriteAllText(output, JsonSerializer.Serialize(new
             { Pid = Environment.ProcessId, BirthUtc = Process.GetCurrentProcess().StartTime.ToUniversalTime(),
                 BirthTick = ReadJointInterfaceLinuxBirthTick(Environment.ProcessId), Nonce = parent["Nonce"]!.GetValue<string>(),
@@ -395,7 +427,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 IndependentOrdinaryPolicyRejected = policyRejected, Culture = CultureInfo.CurrentCulture.Name,
                 Result = result?.ToJson(), RecoveredPending = recoveredPending, RecoveredI = recoveredI,
                 Before = before, After = after, Repeated = repeated, Publications = publications, Recovery = recovery, Logs = log.Describe(),
-                IntegrityGuardEntries = integrityGuardEntries,
+                IntegrityGuardEntries = integrityGuardEntries, DiagnosticOutputFailure = diagnostic.OutputFailure,
                 Dependencies = MortalArchiveDependencyContext(), Loaded = MortalArchiveLoadedDependencyBindings() }));
         }
     }

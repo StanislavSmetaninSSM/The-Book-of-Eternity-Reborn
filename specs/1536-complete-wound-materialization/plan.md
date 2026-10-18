@@ -1,3 +1,9 @@
+## T179-Pd-NI-IOBS-L01 — diagnostic1 fixture SOURCE WIP (2026-10-18)
+
+Only fixture diagnostics/one separate cut1 Fact/catalog owner/selection and current named ZERO/FIRST tools changed; production23, original whole16/33/57/selection/ledger and every original semantic assertion/220s child/900s crash5 budget retained. New logger wrapper leaves original bounded logger unchanged.101 exact sourcepins digeste319d75fce820bb4b309b4806d5f87ce32f263ca6695378e49a420c64cb4a2b2; uncompiled/unrun. Diagnostic1 is outside coverage and does not releasecrash5. Qualified52/originaloutcomes/old66529 UNKNOWN immutable.
+
+New mutable run identity `ni-iobs-l01-crash-diagnostic1-20261018-f57baaa823e7465cb91cd7fcd9613dea` in SAME physical cloud/boot, with freshTMPDIR/runtime/CLI/XDG paths; frozen two roots retained outside it. Immutable toolchain/NuGet dependencies remain inputs; no mutable game state shared. Save/recover WIP and independent SOURCE before any ZERO. Fresh BOTH/catalog+unchangedwhole57+separatediagnostic1 ZERO3 and independent PREP plus saved recovery/readback and fresh clean global/namespace census required before one explicit diagnostic actual. All broader holds unchanged; no product remedy now. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — crash5 timeout diagnosed; diagnostic1 plan accepted (2026-10-18)
 
 [Independent causal report](recovery/t179pd-ni-iobs-l01-selected-routing-crash5-causal-independent-review-20261018.md) retains52/57 and freezes newcrash5 at5479e8c2: native124, direct220s cut1/cut2 child timeouts, incomplete/noTRX/category900s.247 rawchains include two frozen roots; no partial targets accepted. Cut0 reached Published, not proved owning return/common/fullDATA. Exact blocked await and product-versus-fixture cause unproved; no product remedy or blind five-case retry. Old66529 UNKNOWN/unavailable unchanged.

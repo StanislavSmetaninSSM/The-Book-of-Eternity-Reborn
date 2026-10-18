@@ -2,6 +2,36 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-interface-crash-diagnostic",
+  "responsibility": "One isolated diagnostic cut1 invokes the original genuine process-loss fixture and all its unchanged positive/once-only/current DATA/cleanup assertions. Flushed scalar stages/live bounded logs locate the cold current-owner blocked await. Diagnostic evidence only; excluded from original57 target union.",
+  "excludes": "No crash5 requalification or extra qualified target, production remedy, old root reuse, user save, larger child/category bounds, skipped assertions or synthetic process loss.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrashDiagnostic.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-interface-crash-current",
+      "when": "Only after separately diagnosed source correction and fresh affected SOURCE/PREP; diagnostic1 alone never releases five-case qualification."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_DiagnoseCurrentResumeAfterInterfaceMemberProcessLoss"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-interface-uncertain-current",
   "responsibility": "Genuine Published I followed by one-shot existing completed-capture stop, expired attempt and uncertain diagnostic/no common; same engine NEW ordinary Main validates/release-acknowledges stored DATA and completes common/mechanics/cleanup exactly once. Legacy uncertain policy stays held; no old Ready/attempt revival.",
   "excludes": "No seeded cache/capability, changed CUT01 test, legacy uncertainty bypass, current-image-only authority or normalizer/time/cost replay. Published ownership is distinct from a destructive rollback permission.",

@@ -1,9 +1,9 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "QUALIFIED52_OF57_CRASH5_TIMEOUT_CAUSAL_HOLD_DIAGNOSTIC1_PLAN_ACCEPTED",
+  "status": "QUALIFIED52_DIAGNOSTIC1_FIXTURE_SOURCE_WIP_UNCOMPILED_UNRUN",
   "sourceCheckpoint": "fed1f7789db0145de866cd4d73b97ab030871509",
-  "sourcePinDigest": "70aa551ca427bb9c28b18e205bcbe2e10d1ebb88487309bb73b4a31426e37eb5",
-  "sourcePinCount": 99,
+  "sourcePinDigest": "e319d75fce820bb4b309b4806d5f87ce32f263ca6695378e49a420c64cb4a2b2",
+  "sourcePinCount": 101,
   "environment": {
     "kind": "NEW_CLOUD_ENVIRONMENT_QUALIFICATION_IDENTITY",
     "runIdentity": "ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320",
@@ -1601,7 +1601,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Save/recover plan, implement only diagnostic1 fixture instrumentation/selection, independent SOURCE then fresh ZERO3/PREP before a separately named single diagnostic run. No crash5 retry or product patch.",
+  "next": "Save/recover fixture WIP then independent SOURCE101/product23. No native before accepted SOURCE and saved recovery/readback, fresh ZERO3/PREP then separate one-mode diagnostic gate.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -3797,7 +3797,7 @@
   },
   "historicalSourceCheckpointBeforeSelectedRouting": "9fdecef3fd79614b9eb13b5609c99b9457d51af4",
   "crashDiagnostic1": {
-    "status": "INDEPENDENT_CAUSAL_HOLD_AND_DIAGNOSTIC1_IMPLEMENTATION_PLAN_ACCEPTED_NO_RUNTIME",
+    "status": "FIXTURE_ONLY_SOURCE_WIP_UNCOMPILED_UNRUN",
     "verdict": "HOLD_CRASH5; ACCEPT_BOUNDED_DIAGNOSTIC1_PLAN_SUBJECT_TO_SOURCE_AND_FRESH_PREP",
     "review": {
       "model": "gpt-6-astra",
@@ -3867,7 +3867,26 @@
       ]
     },
     "isolation": "Same physical cloud/boot; new GUID run/TMPDIR/runtime/cache identity. Keep old two frozen roots outside mutable namespace untouched; new per-case GUID roots/new genuine supervised producer/resumer/newnonce; global active/UNKNOWN is hard stop. Old66529 environment/processes/bytes untouched and UNKNOWN/unavailable.",
-    "gates": "Save/push/exactremote/fullGitHub recovery/readback plan, fixture-only implementation and SOURCE101/product23, save/recover accepted SOURCE, fresh ZERO3 inventories/dated authoritative censuses then independent PREP, save/recover acceptance and only explicit one-mode diagnostic1 release. Original diagnostic outcome saved/reviewed before any remedy/requalification."
+    "gates": "Save/push/exactremote/fullGitHub recovery/readback plan, fixture-only implementation and SOURCE101/product23, save/recover accepted SOURCE, fresh ZERO3 inventories/dated authoritative censuses then independent PREP, save/recover acceptance and only explicit one-mode diagnostic1 release. Original diagnostic outcome saved/reviewed before any remedy/requalification.",
+    "runNamespace": {
+      "identity": "ni-iobs-l01-crash-diagnostic1-20261018-f57baaa823e7465cb91cd7fcd9613dea",
+      "tmpdir": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-f57baaa823e7465cb91cd7fcd9613dea",
+      "samePhysicalCloud": true,
+      "bootId": "cbd633d5-c8d0-43e1-8c6e-1b233700b8d9",
+      "frozenRootsOutsideMutableNamespace": [
+        "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-c39f7e9cf6eb42868669ed06f092c491",
+        "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a"
+      ],
+      "oldNamespace": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320",
+      "toolchain": "Same immutable SDK/runtime/pwsh and NuGet dependency cache; new CLI/XDG/runtime mutable directories, no shared mutable game state",
+      "environmentFile": "/tmp/1536-cloud-tools/env-crash-diagnostic1.sh"
+    },
+    "currentTargetClosure": {
+      "sourcePins": 101,
+      "productPaths": 23
+    },
+    "implementation": "New dedicated Fact/selection; original theory, semantic assertions, child supervision/220s and original crash5/900s unchanged. Readonly stdout scalar stages/live logger wrapper; original boundedlogger unchanged. No production source change, no actual now.",
+    "sourcePinDigest": "e319d75fce820bb4b309b4806d5f87ce32f263ca6695378e49a420c64cb4a2b2"
   },
   "historicalMaterialReviewHoldBeforeCrash5": {
     "kind": "CURRENT_RESUME_NESTED_CANONICAL_LEASE",
@@ -3971,5 +3990,6 @@
       "sha256": "2f1889786a5d90768a5ed1504be63d943a5f1ac3b3afdd3801cc0692e99fcb10",
       "bytes": 2551
     }
-  ]
+  ],
+  "historicalSourceCheckpointBeforeCrashDiagnostic1": "fed1f7789db0145de866cd4d73b97ab030871509"
 }
