@@ -1,0 +1,69 @@
+{
+  "kind": "INDEPENDENT_AFFECTED_COMPILE_CORRECTED_DIAGNOSTIC1_SOURCE_REVIEW",
+  "reviewedUtc": "2026-10-18T16:37:13.886310+00:00",
+  "verdict": "ACCEPT_AFFECTED_SOURCE_AND_NEW_NAMED_ZERO3_ONLY_AFTER_SAVE_RECOVERY_READBACK",
+  "candidate": "6daaa3da8fb279909ef6318cdfa9892a2f06362c",
+  "base": "c66d33592622c59261e08c2cb739a61fbf1955a9",
+  "sourcePins": 101,
+  "pinDigest": "2c144b7734708f8c02a3924d4d12a885384f05a1437021afd2845827c761c616",
+  "productDelta": 23,
+  "artifacts": {
+    "checker": {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic1_compile_corrected_source.py",
+      "bytes": 8378,
+      "sha256": "a14bbe9db143e8e19a108c65a3d257b920298df39643772e78e10a3f4df163d4"
+    },
+    "check": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-source-independent-check-6daaa3da-20261018.json",
+      "bytes": 2709,
+      "sha256": "5aa3952d0da097eb290837da21ba435f9544aed45769898745a0345daff54dd6"
+    },
+    "recovery": {
+      "path": "/tmp/1536-cloud-tools/carrier-recovery-6daaa3da.json",
+      "bytes": 4119,
+      "sha256": "e99e81f548f48d0602cdcccdfa0674fa8e96dcc0995c0fb67a3461fbaa409a31"
+    }
+  },
+  "findings": [],
+  "assessment": {
+    "correction": "The only changed pinned executable content is using Microsoft.Extensions.Logging; in Crash.cs. Removing that exact line restores the frozen prior source byte-for-byte. It supplies the namespace for the existing ILogger<GameEngine> reference; no new assembly or package is needed.",
+    "preserved": "All125 current Assert invocations, fixture bodies, diagnostic logger/observer behavior, genuine child/identity/containment/join/EOF policy, controllers, selectors, ledger, wrapper, child220 and category900 bounds are exact. Production23 unchanged. Prior full diagnostic SOURCE assessment remains applicable except its missed import, independently diagnosed in the saved build causal report.",
+    "compileLimit": "SOURCE accepts the targeted correction; no successful compilation, catalog, PREP or runtime outcome is claimed. The failed9b attempt stays native1/ZERO with all8 original chains.",
+    "selection": "Fresh BOTH/catalog plus whole16/33/57 and separate diagnostic1/1/1 NoBuild ZERO3 is sufficient. Original target union is unchanged and diagnostic1 counts toward neither57 nor qualified52. No accepted52 replay or unrelated family needed for an import-only change.",
+    "namespace": "New b51375ba GUID replaces f57baaa8 exactly in the environment text; same cloud/boot and toolchain. HOME unchanged; effective TMPDIR/runtime/CLI/XDG paths are new. Frozen old crash roots stay outside the mutable namespace. Original f57 namespace is preserved explicitly as historical; it had no actual test. Exact wrapper/global v2/frozen-byte checks remain mandatory. Saved fresh PREP evidence must establish actual private directory/environment/census state; this SOURCE review does not inspect live roots."
+  },
+  "verification": {
+    "checksPassed": 150,
+    "pinsHashBlobModeAndCloneMatched": 101,
+    "changedRecoveryPaths": 10,
+    "exactImportInverse": true,
+    "environmentGUIDOnlyChange": true,
+    "retainedTargets": 52,
+    "historicalSourceAcceptanceAndCatalogFailurePreserved": true,
+    "remoteScope": "Parent saved exact remote/full independent GitHub receipt; reviewer independently checked restored bytes/modes/Git blobs."
+  },
+  "eligibility": {
+    "actualRelease": "NONE",
+    "prepAcceptance": "NONE",
+    "namedZeroRelease": {
+      "status": "SOURCE_ACCEPTED_SAVED_RECOVERED_DIAGNOSTIC_ZERO3_ONLY",
+      "labels": {
+        "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-crash-diagnostic1-compile-corrected-cloud-b51375ba",
+        "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba",
+        "diagnostic-plan": "t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba"
+      }
+    },
+    "conditions": [
+      "Save this review/checker/check with acceptance metadata and unchanged101-pin digest, preserve prior SOURCE/reports/checkers/build failure as historical; no edits to original artifacts.",
+      "Push, verify exact remote and independent clean GitHub recovery, then read back exact source digest/new b513 namespace/environment/current ZERO labels/qualified52 and NONE actual. The resulting acceptance SHA becomes the new attempted compiled source.",
+      "Invoke only the newly named catalog first through the unchanged one-phase wrapper and exact new environment; require original native0/ZERO/fresh BOTH/catalog809/11801/no errors, complete inventories and authoritative dated boundaries.",
+      "Only after catalog succeeds, separately invoke whole plan16/33/57 and diagnostic-plan1/1/1 NoBuild on that same clean accepted SHA; require original0/ZERO and exact inventory/method continuity. No automatic advance or retry.",
+      "Archive/save/recover all three originals, six before/after v2 boundaries plus PREP qualification boundary, three frozen-root separation receipts, exact environment/wrapper/source acceptance/readback and full output inventories; independent PREP remains mandatory.",
+      "Preserve old9b PREP checker/readiness unchanged. Make any checker adaptation a separately saved version bound to the new compiled SHA/digest/labels/environment before qualification.",
+      "Only a later saved/recovered accepted PREP plus immediate clean preflight can release one separately named diagnostic1 actual. Original crash5 requalification remains frozen."
+    ]
+  },
+  "retention": "Qualified52 retains original actual/compiled provenance. Frozen newcrash5 native124/noTRX/two observed child timeouts/two retained roots, failed diagnostic catalognative1, every older failure and old66529 UNKNOWN/unavailable remain immutable. No final57 or broader runtime PASS.",
+  "gmDisposition": "Import-only fixture correction; no production/gameplay/schema/GM/afterlife contract change, so no GM docs/examples change.",
+  "reviewerScope": "Read-only frozen/current Git/source/recovery checks and /tmp report/checker writes only. No native/build/discovery/observer/process or live fixture-root action; no repo edits."
+}

@@ -1,7 +1,7 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "QUALIFIED52_DIAGNOSTIC1_COMPILE_CORRECTION_SOURCE_WIP_UNCOMPILED_UNRUN",
-  "sourceCheckpoint": "a85f2d2e05b7c8acb644408c4cd1a8f86e272e3b",
+  "status": "QUALIFIED52_DIAGNOSTIC1_COMPILE_CORRECTED_SOURCE_ACCEPTED_ZERO3_ONLY",
+  "sourceCheckpoint": "6daaa3da8fb279909ef6318cdfa9892a2f06362c",
   "sourcePinDigest": "2c144b7734708f8c02a3924d4d12a885384f05a1437021afd2845827c761c616",
   "sourcePinCount": 101,
   "environment": {
@@ -1601,7 +1601,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Save/recover one-line ILogger import correction; independent affected SOURCE then newly named fresh BOTH/catalog+whole57+diagnostic1 ZERO3/PREP in new clean namespace. No actual or crash5 retry.",
+  "next": "Save/recover/readback corrected SOURCE acceptance then only newly named fresh catalog/whole57/diagnostic1 ZERO3; archive originals/recover/independent PREP before any separately named actual.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -1638,9 +1638,37 @@
     "scope": "Environment prerequisite only; no product/controller/fixture/assertion/catalog/source change. Original failed preparation remains immutable."
   },
   "sourceReview": {
-    "status": "PENDING_AFFECTED_SOURCE_ONE_LINE_IMPORT_CORRECTION",
-    "priorAcceptedCandidate": "a85f2d2e05b7c8acb644408c4cd1a8f86e272e3b",
-    "scope": "Exact using Microsoft.Extensions.Logging only; all other executable fixture/controller/product bytes unchanged. New clean GUID namespace/environment/labels required."
+    "verdict": "ACCEPT_AFFECTED_SOURCE_AND_NEW_NAMED_ZERO3_ONLY_AFTER_SAVE_RECOVERY_READBACK",
+    "candidate": "6daaa3da8fb279909ef6318cdfa9892a2f06362c",
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/check_l01_diagnostic1_compile_corrected_source.py",
+        "sha256": "a14bbe9db143e8e19a108c65a3d257b920298df39643772e78e10a3f4df163d4",
+        "bytes": 8378
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-source-independent-check-6daaa3da-20261018.json",
+        "sha256": "5aa3952d0da097eb290837da21ba435f9544aed45769898745a0345daff54dd6",
+        "bytes": 2709
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-source-independent-review-20261018.json",
+        "sha256": "5cfdb107298a3b58c9d6b4acf88cb656c9de0e8d724ce7a8478131d224602567",
+        "bytes": 6211
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-source-independent-review-20261018.md",
+        "sha256": "306551dccf206f0cfd4dce906e7885b27adc2ec192310c938dcd9f986e1031b1",
+        "bytes": 1684
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-source-candidate-recovery-6daaa3da-20261018.json",
+        "sha256": "e99e81f548f48d0602cdcccdfa0674fa8e96dcc0995c0fb67a3461fbaa409a31",
+        "bytes": 4119
+      }
+    ]
   },
   "freshPreparation": {
     "status": "UNRUN_NEW_DIAGNOSTIC_ZERO3_AFTER_ONE_LINE_COMPILER_FIX",
@@ -3668,7 +3696,7 @@
   },
   "historicalSourceCheckpointBeforeSelectedRouting": "9fdecef3fd79614b9eb13b5609c99b9457d51af4",
   "crashDiagnostic1": {
-    "status": "ONE_LINE_IMPORT_CORRECTION_WIP_AFFECTED_SOURCE_AND_NEW_ZERO3_REQUIRED",
+    "status": "COMPILE_CORRECTED_SOURCE_ACCEPTED_NEW_ZERO3_UNRUN",
     "verdict": "HOLD_CRASH5; ACCEPT_BOUNDED_DIAGNOSTIC1_PLAN_SUBJECT_TO_SOURCE_AND_FRESH_PREP",
     "review": {
       "model": "gpt-6-astra",
@@ -3765,7 +3793,37 @@
     },
     "metadataPhaseLabels": "Prior packet causal/source/preparation/contract objects preserved exactly in historicalSelectedRoutingMetadataBeforeDiagnostic1 and pre-diagnostic snapshot; current fields point to diagnostic1 SOURCE/ZERO3 with52 retained.",
     "sourceAcceptance": {
-      "status": "PENDING_CURRENT_ONE_LINE_COMPILE_CORRECTION_SOURCE"
+      "verdict": "ACCEPT_AFFECTED_SOURCE_AND_NEW_NAMED_ZERO3_ONLY_AFTER_SAVE_RECOVERY_READBACK",
+      "candidate": "6daaa3da8fb279909ef6318cdfa9892a2f06362c",
+      "model": "gpt-6-astra",
+      "reasoningEffort": "xhigh",
+      "artifacts": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/check_l01_diagnostic1_compile_corrected_source.py",
+          "sha256": "a14bbe9db143e8e19a108c65a3d257b920298df39643772e78e10a3f4df163d4",
+          "bytes": 8378
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-source-independent-check-6daaa3da-20261018.json",
+          "sha256": "5aa3952d0da097eb290837da21ba435f9544aed45769898745a0345daff54dd6",
+          "bytes": 2709
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-source-independent-review-20261018.json",
+          "sha256": "5cfdb107298a3b58c9d6b4acf88cb656c9de0e8d724ce7a8478131d224602567",
+          "bytes": 6211
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-source-independent-review-20261018.md",
+          "sha256": "306551dccf206f0cfd4dce906e7885b27adc2ec192310c938dcd9f986e1031b1",
+          "bytes": 1684
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-source-candidate-recovery-6daaa3da-20261018.json",
+          "sha256": "e99e81f548f48d0602cdcccdfa0674fa8e96dcc0995c0fb67a3461fbaa409a31",
+          "bytes": 4119
+        }
+      ]
     },
     "preparationAttempts": [
       {

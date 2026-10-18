@@ -1,0 +1,87 @@
+{
+  "kind": "CLOUD_CARRIER_EXACT_GITHUB_RECOVERY",
+  "sha": "6daaa3da8fb279909ef6318cdfa9892a2f06362c",
+  "base": "c66d33592622c59261e08c2cb739a61fbf1955a9",
+  "checkedUtc": "2026-10-18T16:34:59.653276+00:00",
+  "directory": "/workspace/1536-cloud-clean-restore",
+  "remoteShaVerified": true,
+  "clean": true,
+  "localSourceOrObjectReuse": false,
+  "changedPathsVerified": 10,
+  "files": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+      "bytes": 42643,
+      "sha256": "b34615c6e74ca26145f75fe7d1244c276983b05551bc6e271989e0e2a80c2c1e",
+      "gitBlob": "f37f9ae1f30f386f7d99df99f53ac4428bb4b190",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 2429878,
+      "sha256": "f25e63a2fca20c793c822aabddfca60a02aaae8d5a8f7b87b216d626e0d36ffb",
+      "gitBlob": "513abcab701b501cd13359430f6749b2bffdb0a9",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/check_l01_diagnostic1_build_failure.py",
+      "bytes": 6521,
+      "sha256": "a84edf9a524e862c7997cfbd020209b29303207b77a467d406b48cab8fdd7b55",
+      "gitBlob": "b1211191f65587b454877daa2e00199b270ebc53",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-qualification-20261018.json",
+      "bytes": 223244,
+      "sha256": "1969d767ea92522945ff1868b514d979bffab32134a7e8261718d987e9e24ce5",
+      "gitBlob": "5a133c859eefd2d5f467ae35f23bcdb4cd237e71",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-build-causal-independent-check-c66d3359-20261018.json",
+      "bytes": 4748,
+      "sha256": "8d1e733b2aed0421c81e5d4ac6d87a067703ede7315b6711672bc96ee9104ff5",
+      "gitBlob": "4c0fe9003f742899979406d2b98492b7cc73acb5",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-build-causal-independent-review-20261018.json",
+      "bytes": 4863,
+      "sha256": "ad40ea89b7efcb248ce21fa6bec74223efa53f05c7f9a369439a7ba3d6824683",
+      "gitBlob": "8d473aa2bc30c280ad4f03534ec000c21d6a2b13",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-build-causal-independent-review-20261018.md",
+      "bytes": 1278,
+      "sha256": "edca3a42b832130de8c101b6a3fac44b1deab57570a50db1a268dd285f8c4041",
+      "gitBlob": "1d8a88a1a8876c144daa09e80be0296ed714aa01",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-build-failure-carrier-recovery-c66d3359-20261018.json",
+      "bytes": 7670,
+      "sha256": "7e85a752bf5e49fa2d1db971cb7e41047e33af1ff3c33642260546f05a2cca54",
+      "gitBlob": "e93d45841717b096059e59d0930a2399113bdae2",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-env-b51375ba-20261018.sh",
+      "bytes": 1276,
+      "sha256": "a1560b8027b94f787ed5f3bfab6439a231eb5a48f479111e17db824c7c19ffff",
+      "gitBlob": "3addcc0c0c883cf589d68b11b2155701bab9973f",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
+      "bytes": 77445,
+      "sha256": "f1c52933bb04c71540891bb663eed7f08d4b6a0c41b1568fb0eaa1001c8e3154",
+      "gitBlob": "766c352d07c68a01c3f72831fd428a145ba23ba7",
+      "mode": "100644"
+    }
+  ],
+  "sourcePinsVerified": 101,
+  "sourcePinDigest": "2c144b7734708f8c02a3924d4d12a885384f05a1437021afd2845827c761c616",
+  "method": "Fetch exact task branch directly from GitHub into independent originally empty-directory GitHub clone, checkout exact SHA, clean tree, verify every changed file bytes/SHA256/blob/mode and all current source pins",
+  "limits": "Source/evidence recovery only. No test/build execution here; no lost corrected-crash bytes recovered."
+}

@@ -1,3 +1,7 @@
+## T179-Pd-NI-IOBS-L01 — compile-corrected diagnostic1 SOURCE accepted; new ZERO3 only (2026-10-18)
+
+[Independent affected SOURCE](recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-source-independent-review-20261018.md) accepts the one-line import correction at6daaa3da8fb279909ef6318cdfa9892a2f06362c, unchanged101 closure/product23 and newb51375ba namespace/labels. Original compiler native1/ZERO and earlierSOURCE/PREPadmissions remain historical; qualified52/newcrash124/old66529UNKNOWN unchanged. Save/recover/readback acceptance then newly named fresh BOTH/catalog+whole57+diagnostic1 ZERO3 only. No actual before independent fresh PREP and separate saved/recovered gate. All broader holds unchanged. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — independently confirmed one-line compile correction WIP (2026-10-18)
 
 Only `using Microsoft.Extensions.Logging;` added to Crash.cs, resolving frozen CS0246. No production/assertion/logger/controller/budget change; failed native1/ZERO catalog retained.101pins/product23 digest2c144b7734708f8c02a3924d4d12a885384f05a1437021afd2845827c761c616; corrected source uncompiled/unrun. A new GUID mutable identity `ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9` prevents reusing first preparation namespace/labels; same cloud/boot and old frozen roots remain unchanged. Save/recover WIP and affected SOURCE before newly named fresh ZERO3/PREP; no actual. Qualified52/newcrash124/old66529UNKNOWN/all broader holds unchanged. Following sections historical.
