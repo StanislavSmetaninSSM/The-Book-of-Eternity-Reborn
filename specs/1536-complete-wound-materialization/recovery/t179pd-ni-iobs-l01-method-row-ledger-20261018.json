@@ -1,7 +1,7 @@
 {
   "kind": "NI_IOBS_L01_AUTHORED_METHOD_ROW_LEDGER",
   "sourceBase": "9a92049ef86bcbc4569aaa0a11d1f42632093622",
-  "status": "INTERMEDIATE_FIRST_ORDERING_FIXTURE_AUTHORED_UNCOMPILED_UNRUN",
+  "status": "FIRST_ORDERING_SOURCE_ACCEPTED_FRESH_COMPILED_DISCOVERED_UNRUN",
   "rows": [
     {
       "category": "fr063-joint-interface-lifecycle-order",
@@ -9,7 +9,7 @@
       "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce",
       "attributes": "Fact",
       "staticRows": 1,
-      "status": "AUTHORED_UNCOMPILED_UNRUN",
+      "status": "FRESH_COMPILED_DISCOVERED_UNRUN",
       "firstCausalAssertion": "Assert.Equal(1, _interfaceAtCapture), after real shared helper completion/inert repeat and frozen original diagnostics",
       "baselinePrediction": "capture callback1, early I-changing cohort0, later actual I-changing cohort1/common completed; native evidence not yet obtained",
       "rootOwner": "RunJointCompletionControlAsync/CleanupOwnedFixture; final I image frozen before root disposal; no post-disposal read"
@@ -21,7 +21,14 @@
     "newOwners": 1,
     "predictedDescriptors": 1
   },
-  "discovery": "NOT_RUN",
+  "discovery": {
+    "compiledSource": "a65005989ac5922db9c943dda339a999131ba5c6",
+    "owners": 1,
+    "descriptors": 1,
+    "methods": 1,
+    "cases": 1,
+    "zeroActualExecutions": true
+  },
   "actualCases": 0,
   "productChanged": false,
   "remainingAuthoring": [
@@ -40,23 +47,94 @@
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-order-preparation-run.py",
       "sha256": "4ba772646550747fceeeac9f1c9a5f1375560960afb47b71954f502a5385f9be",
-      "status": "UNRUN_FIXED_SOURCE_REQUIRES_NAMED_ROOT_RELEASE"
+      "status": "USED_CATALOG_ONCE_AND_DEPENDENT_PLAN_ONCE_ZERO_CASES"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-order-first-run.py",
       "sha256": "ed5c32e44ea5256ed1ca8090160cc9aaf6c298fd020b5154ef58e930e8ff0b29",
-      "status": "UNRUN_FIXED_SOURCE_REQUIRES_NAMED_ROOT_RELEASE"
+      "status": "UNRUN_REQUIRES_SEPARATE_NAMED_ROOT_ACTUAL_RELEASE"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-order-first.py",
       "sha256": "cc3d9a14a0fc5f0f46b2a9b79b005be47dc7b91c65ab827c1fe4a9b15a4180d2",
-      "status": "UNRUN_FIXED_SOURCE_REQUIRES_NAMED_ROOT_RELEASE"
+      "status": "UNRUN_READ_ONLY_ACTUAL_ARCHIVER"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-order-preparation.py",
       "sha256": "5e00c6e7c7496f044aa8dbc1068681601ab41882ae3888eb5d9dbcf2a5de8fde",
-      "status": "UNRUN_FIXED_SOURCE_REQUIRES_NAMED_ROOT_RELEASE"
+      "status": "READ_ONLY_ARCHIVED_BOTH_FIRST_ZERO_RECORDS_ONE_INVOCATION_19CHAINS"
     }
   ],
-  "priority": "Qualify genuine earliest semantic singleton via concrete SOURCE/fresh PREP/named FIRST before making every later negative/codec case a prerequisite; remaining whole-vertical authoring/qualification explicitly open."
+  "priority": "Qualify genuine earliest semantic singleton via concrete SOURCE/fresh PREP/named FIRST before making every later negative/codec case a prerequisite; remaining whole-vertical authoring/qualification explicitly open.",
+  "preparation": {
+    "catalog": {
+      "nativeExit": 0,
+      "seconds": 89.04021126301086,
+      "recordSha256": "e58e13ab1c4e810889dfe843cafe6a4cd886a8fa890d0d9cd1105017d65110f6"
+    },
+    "plan": {
+      "nativeExit": 0,
+      "seconds": 3.5434679559984943,
+      "recordSha256": "60232c916bc3e39166170b20e22d48e017b6a33ebc43f58099373877260b8740"
+    },
+    "rawArchive": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-order-prep-first-files-20261018/archive.json",
+    "rawArchiveSha256": "b81c15a36fe647c450f2c89ff2ca7bbd9050fc26a55ed477573a3545a50265e7",
+    "rawChains": 19,
+    "currentManagedFilesObserved": 335,
+    "binaries": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "be8d274b60dd52fd67a1c7817af4d1d8543efdf5a37a2d8a7a736415e3d37643"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9601024,
+        "sha256": "f1db07ed7fd2cde6dd7d16711fa5fcb1ae84e5aa68b727048a4e75dee04295f1"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "be8d274b60dd52fd67a1c7817af4d1d8543efdf5a37a2d8a7a736415e3d37643"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 29225472,
+        "sha256": "8f342a698cbb0ca7b92941f621fae55c0a60cde7fcea69ecd33b51893863a397"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "e89848cf82c909f664b694d9bf34c3284b03c56f1d13b96bff7b641bb196aee4"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "e89848cf82c909f664b694d9bf34c3284b03c56f1d13b96bff7b641bb196aee4"
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "be8d274b60dd52fd67a1c7817af4d1d8543efdf5a37a2d8a7a736415e3d37643"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+        "bytes": 248832,
+        "sha256": "c60421600c0cfef877285f035ec114539fa20d3b357f4296a9af38bd5b180376"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "be8d274b60dd52fd67a1c7817af4d1d8543efdf5a37a2d8a7a736415e3d37643"
+      }
+    ],
+    "runtimeAcceptance": false,
+    "rootReadback": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-fresh-prep-readback-a6500598-20261018.json",
+      "sha256": "5cdb8194b971bf5698b364a45311093023937c25a87f2c57dc07d5b8bfbeb577",
+      "status": "ACCEPT_FRESH_ZERO_PREPARATION",
+      "observedMainManagedFiles": 335,
+      "observedAllOutputFilesForPostFirstContinuity": 1234
+    }
+  }
 }

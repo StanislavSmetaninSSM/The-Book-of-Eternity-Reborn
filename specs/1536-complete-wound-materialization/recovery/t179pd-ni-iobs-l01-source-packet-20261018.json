@@ -2,7 +2,7 @@
   "kind": "NI_IOBS_L01_INTERMEDIATE_TESTS_ONLY_SOURCE_PACKET",
   "sourceBase": "9a92049ef86bcbc4569aaa0a11d1f42632093622",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
-  "status": "FIRST_ORDERING_FIXTURE_ONLY_AUTHORED_UNCOMPILED_UNRUN_REMAINDER_AUTHORING_OPEN",
+  "status": "FIRST_SOURCE_ACCEPTED_FRESH_ZERO_PREP_FROZEN_FIRST_CASE_UNRUN",
   "sourcePins": [
     {
       "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
@@ -361,11 +361,11 @@
   "pinDigest": "c17d44bb5540bc379a29b8c393510b84a3e9a65108d17cfe2149153071293ce4",
   "ledger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-method-row-ledger-20261018.json",
-    "sha256": "114554141ef54b18776ac06a730765f502da2a7958859c6a6619e9ea2f2a140c"
+    "sha256": "1946912931f907d86b1a7f542b0a2983369f5af1405fe520c5f3d4834920b51a"
   },
   "productDelta": [],
   "originalContractSourceContext": "Frozen447bc map/source ranges and accepted wholevertical report preserved unchanged; this current test packet does not rehash/replace historical contexts.",
-  "review": "Wholevertical contract accepted; concrete tests SOURCE/FIXTURE/SELECTION/PREP and native not accepted, no actuals run.",
+  "review": "Independent bounded SOURCE/FIXTURE/SELECTION accepted f7f79f15/73771b88/fab40beb plus2 unchanged helper definitions. Root accepted original fresh ZERO preparation by5cdb8194, including19rawchains/335maininventory/1234current outputfile binding/9copies. Save carrier and separately named actual remain required; no causal EVIDENCE or testcases.",
   "firstCandidate": {
     "category": "fr063-joint-interface-lifecycle-order",
     "project": "integration",
@@ -381,34 +381,110 @@
   "defaultNullFixtureDelta": "One optional test-only probe; attach wraps prior essential checkpoint hook; corrected public I authoring precedes correlated repair Ready; observer reads journal; final bytes retained before owned cleanup. No producer/Ready/protocol/authority seeding.",
   "recovery": "Base9a full7a+84 verified; exact new immediate GitHub changed-path recovery required after push. Intermediate WIP before remaining authoring, no new review loop.",
   "runtime": {
-    "build": 0,
-    "discovery": 0,
+    "freshCatalogNative": 0,
+    "freshPlanNative": 0,
     "testCases": 0,
-    "binaryQualification": "NOT_FRESH_FOR_NEW_TESTS",
-    "existingCompiledProduct": "CUT01 3d historical only"
+    "currentMethodUnrun": true,
+    "binaryQualification": "FRESH_CATALOG_BOTH_9_CURRENT_COPIES",
+    "managedInventoryObserved": 335,
+    "compiledSource": "a65005989ac5922db9c943dda339a999131ba5c6",
+    "scope": "Accepted fresh build/discovery/ZERO preparation only by Root5cdb8194, no testcase/runtime EVIDENCE. Root1234 outputfile baseline and9copies bind post-FIRST continuity; actual remains separately named."
   },
   "gmDocs": "Tests-only observer/public fixture change, no GM contract update. Future client-owned protocol/held lifecycle guide/worked-example/actual guard decision required; no unrelated afterlife/package replay.",
   "verificationTools": [
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-order-preparation-run.py",
       "sha256": "4ba772646550747fceeeac9f1c9a5f1375560960afb47b71954f502a5385f9be",
-      "status": "UNRUN_FIXED_SOURCE_REQUIRES_NAMED_ROOT_RELEASE"
+      "status": "USED_CATALOG_ONCE_AND_DEPENDENT_PLAN_ONCE_ZERO_CASES"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-order-first-run.py",
       "sha256": "ed5c32e44ea5256ed1ca8090160cc9aaf6c298fd020b5154ef58e930e8ff0b29",
-      "status": "UNRUN_FIXED_SOURCE_REQUIRES_NAMED_ROOT_RELEASE"
+      "status": "UNRUN_REQUIRES_SEPARATE_NAMED_ROOT_ACTUAL_RELEASE"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-order-first.py",
       "sha256": "cc3d9a14a0fc5f0f46b2a9b79b005be47dc7b91c65ab827c1fe4a9b15a4180d2",
-      "status": "UNRUN_FIXED_SOURCE_REQUIRES_NAMED_ROOT_RELEASE"
+      "status": "UNRUN_READ_ONLY_ACTUAL_ARCHIVER"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-order-preparation.py",
       "sha256": "5e00c6e7c7496f044aa8dbc1068681601ab41882ae3888eb5d9dbcf2a5de8fde",
-      "status": "UNRUN_FIXED_SOURCE_REQUIRES_NAMED_ROOT_RELEASE"
+      "status": "READ_ONLY_ARCHIVED_BOTH_FIRST_ZERO_RECORDS_ONE_INVOCATION_19CHAINS"
     }
   ],
-  "next": "Named fresh catalog/BOTH+exact1 PlanOnly ZERO only after saved tools/source readback; concrete FIRST Source/PREP and separate Root actual activation. No run from this WIP. Remaining full lifecycle/crash/negative authoring is open, not counted or required to learn earliest semantic RED."
+  "next": "Publish/recover accepted fresh PREP carrier, then Root names only FIRST ordering1 and checks full inventory continuity. Preserve first original actual regardless of outcome for independent causal EVIDENCE; no retries/product/remainder coverage.",
+  "preparation": {
+    "catalog": {
+      "nativeExit": 0,
+      "seconds": 89.04021126301086,
+      "recordSha256": "e58e13ab1c4e810889dfe843cafe6a4cd886a8fa890d0d9cd1105017d65110f6"
+    },
+    "plan": {
+      "nativeExit": 0,
+      "seconds": 3.5434679559984943,
+      "recordSha256": "60232c916bc3e39166170b20e22d48e017b6a33ebc43f58099373877260b8740"
+    },
+    "rawArchive": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-order-prep-first-files-20261018/archive.json",
+    "rawArchiveSha256": "b81c15a36fe647c450f2c89ff2ca7bbd9050fc26a55ed477573a3545a50265e7",
+    "rawChains": 19,
+    "currentManagedFilesObserved": 335,
+    "binaries": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "be8d274b60dd52fd67a1c7817af4d1d8543efdf5a37a2d8a7a736415e3d37643"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9601024,
+        "sha256": "f1db07ed7fd2cde6dd7d16711fa5fcb1ae84e5aa68b727048a4e75dee04295f1"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "be8d274b60dd52fd67a1c7817af4d1d8543efdf5a37a2d8a7a736415e3d37643"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 29225472,
+        "sha256": "8f342a698cbb0ca7b92941f621fae55c0a60cde7fcea69ecd33b51893863a397"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "e89848cf82c909f664b694d9bf34c3284b03c56f1d13b96bff7b641bb196aee4"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "e89848cf82c909f664b694d9bf34c3284b03c56f1d13b96bff7b641bb196aee4"
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "be8d274b60dd52fd67a1c7817af4d1d8543efdf5a37a2d8a7a736415e3d37643"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+        "bytes": 248832,
+        "sha256": "c60421600c0cfef877285f035ec114539fa20d3b357f4296a9af38bd5b180376"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "be8d274b60dd52fd67a1c7817af4d1d8543efdf5a37a2d8a7a736415e3d37643"
+      }
+    ],
+    "runtimeAcceptance": false,
+    "compiledSource": "a65005989ac5922db9c943dda339a999131ba5c6",
+    "rootReadback": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-fresh-prep-readback-a6500598-20261018.json",
+      "sha256": "5cdb8194b971bf5698b364a45311093023937c25a87f2c57dc07d5b8bfbeb577",
+      "status": "ACCEPT_FRESH_ZERO_PREPARATION",
+      "observedMainManagedFiles": 335,
+      "observedAllOutputFilesForPostFirstContinuity": 1234
+    }
+  },
+  "sourcePinBindingMeaning": "The unchanged44 sourcePin entries retain their authored input-context metadata from80bf/88b. Their physical bytes/digest remain exact; fresh compilation/discovery qualification is recorded separately under preparation. Historical raw source-binding.json preserves the compiled input packet unmodified."
 }
