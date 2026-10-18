@@ -1,3 +1,9 @@
+## T179-Pd-NI-IOBS-L01 — observer v2 SOURCE accepted; corrected PREP review next (2026-10-18)
+
+[Independent observerv2](recovery/t179pd-ni-iobs-l01-process-census-v2-independent-review-20261018.md) accepted без findings; exactsourceSHA141a2020/7410bytes. [Новый PREP qualification boundary](recovery/t179pd-ni-iobs-l01-census-corrected-prep-qualification-813f1057.json) clean: stableknownMSBuild/self, active/UNKNOWN/roots0. [36007cc5 recovery](recovery/t179pd-ni-iobs-l01-corrected-prep-candidate-recovery-36007cc5-20261018.json) восстанавливает58changedpaths изGitHub. Qualified40targets неизменны.
+
+После сохранения этого observeracceptance нужен независимый correctedPREP по43rawchains/98pins/9DLL1575outputs/whole57+corrective2+remaining15 ZERO и новому обязательному census. Actual пока HELD. Каждый следующий actual требует своего namedrelease и немедленных clean before/after argv/stat boundaries; старые exe-dependent arrays не превращаются задним числом в completecensus. Originalclose2FAIL и oldcrash5UNKNOWN сохранены. Следующие sections исторические.
+
 ## T179-Pd-NI-IOBS-L01 — corrected ZERO4 native0 saved; independent PREP pending (2026-10-18)
 
 Fresh correctedsource compiled/actualcf52201c: BOTH/catalog native0/374.238s,808categories11800methods; whole16/33/57 native0/40.657s; corrective1/2/2 native0/19.864s; remaining5/7/15 native0/41.600s. Все ZEROactualtests.9DLL/full1575outputs непрерывны между NoBuildplans; originalrecords/source/process/FIRST/log/plan/inventory и[43rawchains](recovery/t179pd-ni-iobs-l01-cloud-diagnostic-preparation-813f1057-files-20261018/archive.json) сохранены. Независимый corrected PREP ещё НЕ принят; actual закрыты.

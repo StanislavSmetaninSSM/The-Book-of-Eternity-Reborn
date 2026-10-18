@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "CORRECTED_ZERO4_ORIGINAL_NATIVE0_OBSERVER_V2_AND_INDEPENDENT_PREP_PENDING_ACTUAL_HELD",
+  "status": "CORRECTED_ZERO4_OBSERVER_V2_ACCEPTED_INDEPENDENT_PREP_PENDING_ACTUAL_HELD",
   "sourceCheckpoint": "a0da72f2c21fca66193314954cfdf87992752876",
   "sourcePinDigest": "b29c971342ee772b13cd123a954d7afa8937e1f50a7e5f4c4c14403e4de4c347",
   "sourcePinCount": 98,
@@ -584,7 +584,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Push/exactremote/cleanGitHub recovery of originalZERO4+supplement artifacts. Independent observerv2 SOURCE and corrected PREP acceptance with fresh mandatory boundary census before separately named close2 corrective regression.",
+  "next": "After exactremote/clean GitHub recovery, independent corrected PREP review of43rawchains/current98pins/fresh9DLLfull1575outputs/exactZEROplans and mandatory authoritative census. No actual before accepted PREP plus separate named release and immediate clean before-census.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -930,7 +930,12 @@
         "cases": 15,
         "executed": 0
       },
-      "cleanup": "Native owned-tree cleanup complete and roots absent. Original exe-link-dependent process arrays are incomplete observer outputs; supplemental dated boundary gates required. No retrospective complete census claim."
+      "cleanup": "Native owned-tree cleanup complete and roots absent. Original exe-link-dependent process arrays are incomplete observer outputs; supplemental dated boundary gates required. No retrospective complete census claim.",
+      "candidateCarrierRecovery": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-corrected-prep-candidate-recovery-36007cc5-20261018.json",
+        "sha256": "e091f0cd9f8857e0af31f13fa3e890a3aa60e8f4fea0ee68e8c024f4c48af4c0",
+        "bytes": 21888
+      }
     },
     "sourceReview": {
       "verdict": "ACCEPT_MINIMAL_CLOSE_DIAGNOSTIC_SOURCE_AND_NAMED_ZERO4_PLAN",
@@ -989,7 +994,7 @@
     }
   },
   "processCensusScopeCorrection": {
-    "status": "MANDATORY_SUPPLEMENT_SOURCE_V2_AND_PREP_ASSESSMENT_PENDING",
+    "status": "SUPPLEMENT_SOURCE_V2_INDEPENDENTLY_ACCEPTED_MANDATORY_BOUNDARIES",
     "finding": "exe symlink PermissionError can cause original controller processes() to omit readable live identities. Preserve all original arrays unchanged; no complete global process-absence inference from them.",
     "effect": "Telemetry qualification gap, not product RED. Historical semantic PASS and original owned-child exit/join/EOF/containment proofs unchanged; no replay/reconstruction.",
     "decisionAndIndependentArtifacts": [
@@ -1105,6 +1110,29 @@
       }
     ],
     "mandatoryGate": "After independently accepted observer source: clean dated cmdline/stat census at PREP acceptance and immediately before/after each named actual. Stable PID+kernelstarttick; optional exe; any live UNKNOWN/active task/test/game/root blocks without kill/retry. Build infrastructure separate. Existing9DLL/fulloutput/strong child assertions mandatory.",
-    "limitations": "Firstv1snapshot independentlyaccepted onlyitsdatedboundary. V2smallcorrections sourceassessmentpending. No complete pre-catalog/old37/legacy/close snapshot is recovered or retrospectively asserted."
+    "limitations": "Firstv1snapshot independentlyaccepted onlyitsdatedboundary. V2smallcorrections sourceassessmentpending. No complete pre-catalog/old37/legacy/close snapshot is recovered or retrospectively asserted.",
+    "sourceReview": {
+      "artifacts": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-independent-review-20261018.json",
+          "sha256": "3536c3187c2c7feff5c5e67ff371e0db9e3956ad9f1be3282564cd8ad9d41229",
+          "bytes": 4693
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-independent-review-20261018.md",
+          "sha256": "4ed2228fc0617b27c2cf79ad24ca8fd8f7ba22076f0758a1cf42a6072bdc20c4",
+          "bytes": 2045
+        }
+      ],
+      "model": "gpt-6-astra",
+      "reasoningEffort": "xhigh",
+      "findings": [],
+      "sourceSha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f"
+    },
+    "prepQualificationBoundary": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-corrected-prep-qualification-813f1057.json",
+      "sha256": "72742121d2dac30a0f010a2bfeadb4ea59b835e9d797d7151c4535bbc1f5495e",
+      "bytes": 47878
+    }
   }
 }
