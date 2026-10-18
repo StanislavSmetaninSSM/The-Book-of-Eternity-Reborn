@@ -1,0 +1,328 @@
+{
+  "record": "/tmp/t179pd-ni-iobs-l01-whole-implementation-tools/t179pd-ni-iobs-l01-whole-first-data-current/record.json",
+  "recordSha256": "c1a833e0f4ae5547e97e598b5c3d63ca281d121d6314f7f0b29230f8276ca4f1",
+  "archive": "/tmp/t179pd-ni-iobs-l01-whole-data-archive-first-1024bee0-20261018/archive.json",
+  "archiveSha256": "e8017979b709145dc89f0256993271f0b2abdc76348deb8014d1f06646711193",
+  "rawChains": 11,
+  "actualSource": "1024bee0a1a5483b4e593bcea0c6fdb107ad61cc",
+  "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+  "nativeExit": 0,
+  "wallSeconds": 5.49178363099054,
+  "expectedMethodCounts": {
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.AbsenceIsDistinctFromPresentEmptyAndReturnedCopiesAreDefensive": 1,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.ErrorPreparedIsFrozenAndCannotBecomePublished": 1,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.FrozenFallbackRejectsNoncanonicalOrNonUtcDataWithoutReevaluatingInterfacePolicy": 3,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.InterfaceAboveCheckpointBlobLimitIsPreservedWithoutTruncation": 1,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.ObjectCannotClaimTimestampPolicyWasNotReachedEvenWithConsistentDataDigests": 1,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.PublishedRecordPreservesExactDiagnosticsWithoutClaimingHistoricalReturn": 1,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRefusesMalformedOrSilentlyCanonicalizedData": 6,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRejectsDuplicatePropertiesBeforeJsonNodeCanonicalization": 1
+  },
+  "actualMethodCounts": {
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.AbsenceIsDistinctFromPresentEmptyAndReturnedCopiesAreDefensive": 1,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.ErrorPreparedIsFrozenAndCannotBecomePublished": 1,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.FrozenFallbackRejectsNoncanonicalOrNonUtcDataWithoutReevaluatingInterfacePolicy": 3,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.InterfaceAboveCheckpointBlobLimitIsPreservedWithoutTruncation": 1,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.ObjectCannotClaimTimestampPolicyWasNotReachedEvenWithConsistentDataDigests": 1,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.PublishedRecordPreservesExactDiagnosticsWithoutClaimingHistoricalReturn": 1,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRefusesMalformedOrSilentlyCanonicalizedData": 6,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRejectsDuplicatePropertiesBeforeJsonNodeCanonicalization": 1
+  },
+  "source97AndContextExact": true,
+  "freshNineAndAll1575Exact": true,
+  "nativeCompleteAndClean": true,
+  "kind": "CONNECTED_EVIDENCE_SCOPE_CHECK_PENDING_FINAL_CARRIER",
+  "mode": "data15",
+  "summary": {
+    "Categories": [
+      "fr063-joint-interface-result-data"
+    ],
+    "Reasons": [
+      {
+        "category": "fr063-joint-interface-result-data",
+        "reason": "Strict committed computed-interface DATA: exact diagnostic/null/duplicate preservation, canonical closed decoding, absent/empty and raw UTF16 images, defensive copies, Error Prepared refusal, and no inherited 2MiB checkpoint cap. These are data controls, not engine admission or publication authority.",
+        "contracts": [
+          "NI-IOBS-L01 bounded real FIRST2/Prepared→I+Published/common/current-resume/late-cold DATA obligations; discovery and actual evidence are recorded separately."
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "1024bee0a1a5483b4e593bcea0c6fdb107ad61cc",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-joint-interface-result-data",
+        "Seconds": 2.0339233,
+        "BudgetMinutes": 2,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0330222,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0509359,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.102742,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0029831,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 7,
+    "WallTime": "00:00:04.5753079",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 15,
+      "CompletedCases": 15,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 15,
+      "Executed": 15,
+      "Passed": 15,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "caseIdentities": [
+    {
+      "executionId": "9b0e7af4-3659-4032-8714-a7b7b163e466",
+      "testId": "a36f277d-c846-808d-4cd1-6cce9d5b9845",
+      "testName": "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRefusesMalformedOrSilentlyCanonicalizedData(corruption: \"image\")",
+      "computerName": "c151c60a176e",
+      "duration": "00:00:00.0003851",
+      "startTime": "2026-10-18T07:22:04.0534871+00:00",
+      "endTime": "2026-10-18T07:22:04.0534871+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "9b0e7af4-3659-4032-8714-a7b7b163e466"
+    },
+    {
+      "executionId": "435cb5bc-7ec7-40e4-a099-ff6ef864e5a1",
+      "testId": "293b0ef6-bab6-3ade-3618-9d6f6520d58e",
+      "testName": "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.PublishedRecordPreservesExactDiagnosticsWithoutClaimingHistoricalReturn",
+      "computerName": "c151c60a176e",
+      "duration": "00:00:00.0127058",
+      "startTime": "2026-10-18T07:22:04.0662141+00:00",
+      "endTime": "2026-10-18T07:22:04.0662141+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "435cb5bc-7ec7-40e4-a099-ff6ef864e5a1"
+    },
+    {
+      "executionId": "4c8ae5ff-bcf3-46e2-b8bc-1623e09eb0fb",
+      "testId": "cb4595d6-1658-3165-2756-693b651a2b4b",
+      "testName": "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.FrozenFallbackRejectsNoncanonicalOrNonUtcDataWithoutReevaluatingInterfacePolicy(sample: \"2026-10-18T12:00:00.0000000+02:00\")",
+      "computerName": "c151c60a176e",
+      "duration": "00:00:00.0005080",
+      "startTime": "2026-10-18T07:22:04.0680778+00:00",
+      "endTime": "2026-10-18T07:22:04.0680778+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "4c8ae5ff-bcf3-46e2-b8bc-1623e09eb0fb"
+    },
+    {
+      "executionId": "aef7c824-e57a-4e8f-b409-eeed7199ef21",
+      "testId": "047130cf-343d-61ea-0939-034b12317f50",
+      "testName": "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.FrozenFallbackRejectsNoncanonicalOrNonUtcDataWithoutReevaluatingInterfacePolicy(sample: \"2026-10-18T12:00:00+00:00\")",
+      "computerName": "c151c60a176e",
+      "duration": "00:00:00.0012729",
+      "startTime": "2026-10-18T07:22:04.0675227+00:00",
+      "endTime": "2026-10-18T07:22:04.0675227+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "aef7c824-e57a-4e8f-b409-eeed7199ef21"
+    },
+    {
+      "executionId": "d15a8853-90e9-46bd-add6-ac7d581c1007",
+      "testId": "89f395da-6002-790d-a9cb-bd1941f941b5",
+      "testName": "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRefusesMalformedOrSilentlyCanonicalizedData(corruption: \"extra\")",
+      "computerName": "c151c60a176e",
+      "duration": "00:00:00.0008806",
+      "startTime": "2026-10-18T07:22:04.0533144+00:00",
+      "endTime": "2026-10-18T07:22:04.0533145+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "d15a8853-90e9-46bd-add6-ac7d581c1007"
+    },
+    {
+      "executionId": "59be68c6-08a8-44b4-b3d3-38182e1ec727",
+      "testId": "53d92af0-7688-1acc-099a-d368124ddc6b",
+      "testName": "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRefusesMalformedOrSilentlyCanonicalizedData(corruption: \"targets-duplicate\")",
+      "computerName": "c151c60a176e",
+      "duration": "00:00:00.0003852",
+      "startTime": "2026-10-18T07:22:04.0534728+00:00",
+      "endTime": "2026-10-18T07:22:04.0534728+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "59be68c6-08a8-44b4-b3d3-38182e1ec727"
+    },
+    {
+      "executionId": "604d376b-33ee-4e05-a5b4-3df7d65f7db1",
+      "testId": "9f167e71-cb69-6856-2c80-278a0f257a97",
+      "testName": "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRefusesMalformedOrSilentlyCanonicalizedData(corruption: \"targets-blank\")",
+      "computerName": "c151c60a176e",
+      "duration": "00:00:00.0209906",
+      "startTime": "2026-10-18T07:22:04.0514230+00:00",
+      "endTime": "2026-10-18T07:22:04.0514329+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "604d376b-33ee-4e05-a5b4-3df7d65f7db1"
+    },
+    {
+      "executionId": "ace40241-c022-4307-85c4-236c3301b211",
+      "testId": "f9fa6300-7a2b-cf5d-1320-ea346b2b1994",
+      "testName": "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.FrozenFallbackRejectsNoncanonicalOrNonUtcDataWithoutReevaluatingInterfacePolicy(sample: \"yesterday\")",
+      "computerName": "c151c60a176e",
+      "duration": "00:00:00.0003642",
+      "startTime": "2026-10-18T07:22:04.1280925+00:00",
+      "endTime": "2026-10-18T07:22:04.1280927+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "ace40241-c022-4307-85c4-236c3301b211"
+    },
+    {
+      "executionId": "3a570902-ae78-43a8-8963-3519c8db93ae",
+      "testId": "9c6583cc-fd6b-002c-dccc-b469acdc5ce3",
+      "testName": "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.ErrorPreparedIsFrozenAndCannotBecomePublished",
+      "computerName": "c151c60a176e",
+      "duration": "00:00:00.0007347",
+      "startTime": "2026-10-18T07:22:04.1283666+00:00",
+      "endTime": "2026-10-18T07:22:04.1283666+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "3a570902-ae78-43a8-8963-3519c8db93ae"
+    },
+    {
+      "executionId": "4be3563b-a66b-4204-9b77-a761b7707a3d",
+      "testId": "650912f0-45bb-66fe-ae80-dbcba37243eb",
+      "testName": "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRejectsDuplicatePropertiesBeforeJsonNodeCanonicalization",
+      "computerName": "c151c60a176e",
+      "duration": "00:00:00.0009613",
+      "startTime": "2026-10-18T07:22:04.1283455+00:00",
+      "endTime": "2026-10-18T07:22:04.1283456+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "4be3563b-a66b-4204-9b77-a761b7707a3d"
+    },
+    {
+      "executionId": "635f6c10-92fe-4078-89c1-71a2d9fc0f50",
+      "testId": "24e524c3-929b-a307-13b8-d966f6443b5c",
+      "testName": "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.ObjectCannotClaimTimestampPolicyWasNotReachedEvenWithConsistentDataDigests",
+      "computerName": "c151c60a176e",
+      "duration": "00:00:00.0005910",
+      "startTime": "2026-10-18T07:22:04.1283844+00:00",
+      "endTime": "2026-10-18T07:22:04.1283845+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "635f6c10-92fe-4078-89c1-71a2d9fc0f50"
+    },
+    {
+      "executionId": "40f1c9f7-6f59-4d5d-8f47-5ec93512c4d8",
+      "testId": "4fa65f46-885e-433e-a4af-cea82e41c480",
+      "testName": "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRefusesMalformedOrSilentlyCanonicalizedData(corruption: \"version\")",
+      "computerName": "c151c60a176e",
+      "duration": "00:00:00.0004529",
+      "startTime": "2026-10-18T07:22:04.0534558+00:00",
+      "endTime": "2026-10-18T07:22:04.0534558+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "40f1c9f7-6f59-4d5d-8f47-5ec93512c4d8"
+    },
+    {
+      "executionId": "a51d2e2b-00e9-46a7-b143-76615f5d5408",
+      "testId": "0fbe68b6-583c-c3ce-8dcd-df23a0aa9427",
+      "testName": "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.InterfaceAboveCheckpointBlobLimitIsPreservedWithoutTruncation",
+      "computerName": "c151c60a176e",
+      "duration": "00:00:00.2233686",
+      "startTime": "2026-10-18T07:22:04.2957879+00:00",
+      "endTime": "2026-10-18T07:22:04.2957881+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "a51d2e2b-00e9-46a7-b143-76615f5d5408"
+    },
+    {
+      "executionId": "b5907f35-e8f2-41fb-8474-00027c94adcb",
+      "testId": "d77b5031-e771-064f-f074-76662b3edb9c",
+      "testName": "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRefusesMalformedOrSilentlyCanonicalizedData(corruption: \"issue-null-targets\")",
+      "computerName": "c151c60a176e",
+      "duration": "00:00:00.0004541",
+      "startTime": "2026-10-18T07:22:04.0535004+00:00",
+      "endTime": "2026-10-18T07:22:04.0535004+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "b5907f35-e8f2-41fb-8474-00027c94adcb"
+    },
+    {
+      "executionId": "aabc0075-fbbe-4043-9d6c-e60f5ec24f5a",
+      "testId": "209d5a26-1a1c-06b6-1f72-b9075b778873",
+      "testName": "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.AbsenceIsDistinctFromPresentEmptyAndReturnedCopiesAreDefensive",
+      "computerName": "c151c60a176e",
+      "duration": "00:00:00.0013224",
+      "startTime": "2026-10-18T07:22:04.1284063+00:00",
+      "endTime": "2026-10-18T07:22:04.1284063+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "aabc0075-fbbe-4043-9d6c-e60f5ec24f5a"
+    }
+  ],
+  "source": {
+    "path": "BookOfEternityClient.Tests/MortalJointInterfacePublicationTests.cs",
+    "sha256": "66412a8362979a575060b75c0e90ef0e1d31339e13046e20a6b1fc3c8fd3add5",
+    "compiledAndActualExact": true
+  },
+  "qualifiedAssertions": [
+    "Exact diagnostic vector order/multiplicity/null-versus-empty and canonical target fields roundtrip through Published DATA, with no Returned/publicReturn claim.",
+    "Six resealed malformed DATA variants fail their exact format/shape/image/target reason, not merely stale digest.",
+    "Object/NotReached contradiction rejected with recalculated DATA digests; three noncanonical/non-UTC fallback samples rejected without invoking ordinary time policy.",
+    "Duplicate JSON property refused before JsonNode canonicalization.",
+    "More than 2 MiB interface bytes roundtrip without truncation and returned copies remain defensive.",
+    "Error Prepared cannot become Published; absent differs from present-empty; exposed JSON cannot mutate stored binding."
+  ],
+  "limits": [
+    "These are eight unit methods/fifteen DATA cases using explicit test DATA, not genuine engine authority/Ready/take or a crash/resume proof.",
+    "Passing source-bound assertions qualify these finite cases; no separately captured intermediate DATA bodies are claimed.",
+    "No fixture roots are created by these source methods; namespace/process cleanup and exact build bindings are recorded."
+  ],
+  "carrierStatus": "AWAITING_COMBINED_PUBLISHED_RECOVERY"
+}

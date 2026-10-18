@@ -1,0 +1,167 @@
+{
+  "record": "/tmp/t179pd-ni-iobs-l01-whole-implementation-tools/t179pd-ni-iobs-l01-whole-first-guidance-current/record.json",
+  "recordSha256": "9495a5dcc0daa6db839745379ca0cdcb66202edec9d5a181f421833b89bfb218",
+  "archive": "/tmp/t179pd-ni-iobs-l01-whole-guidance-archive-first-1024bee0-20261018/archive.json",
+  "archiveSha256": "c365fc7a9a95e6edeaf1c7ab4732eca8d188cde943aa9de4e6423ced7b8fda61",
+  "rawChains": 11,
+  "actualSource": "1024bee0a1a5483b4e593bcea0c6fdb107ad61cc",
+  "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+  "nativeExit": 0,
+  "wallSeconds": 5.291148613992846,
+  "expectedMethodCounts": {
+    "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalJointSeverityRepairGuidance_PreservesPublicTransportAndOnceOnlyClientOwnership": 1
+  },
+  "actualMethodCounts": {
+    "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalJointSeverityRepairGuidance_PreservesPublicTransportAndOnceOnlyClientOwnership": 1
+  },
+  "source97AndContextExact": true,
+  "freshNineAndAll1575Exact": true,
+  "nativeCompleteAndClean": true,
+  "kind": "CONNECTED_EVIDENCE_SCOPE_CHECK_PENDING_FINAL_CARRIER",
+  "mode": "guidance1",
+  "summary": {
+    "Categories": [
+      "fr063-joint-interface-guidance"
+    ],
+    "Reasons": [
+      {
+        "category": "fr063-joint-interface-guidance",
+        "reason": "Changed existing Mortal joint guidance/mirrors, worked continuation and manifest coverage limit require the exact existing guidance source guard. Private protocol is client-owned; GM preserves once-published I and cannot reauthor a frozen-error operation.",
+        "contracts": [
+          "No authority or runtime qualification is implied by selecting this finite owner."
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "1024bee0a1a5483b4e593bcea0c6fdb107ad61cc",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-joint-interface-guidance",
+        "Seconds": 1.8375614,
+        "BudgetMinutes": 2,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0307881,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0351198,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1040817,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0043796,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 7,
+    "WallTime": "00:00:04.3932232",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 1,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "caseIdentity": {
+    "executionId": "44c0bec4-c7ea-48bf-a412-a8b29e8069dc",
+    "testId": "146e75e1-dbac-130b-ab2e-a51341efced4",
+    "testName": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalJointSeverityRepairGuidance_PreservesPublicTransportAndOnceOnlyClientOwnership",
+    "computerName": "c151c60a176e",
+    "duration": "00:00:00.0067817",
+    "startTime": "2026-10-18T07:23:09.2415913+00:00",
+    "endTime": "2026-10-18T07:23:09.2416014+00:00",
+    "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+    "outcome": "Passed",
+    "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+    "relativeResultsDirectory": "44c0bec4-c7ea-48bf-a412-a8b29e8069dc"
+  },
+  "sourceAndActuallyReadDocumentPins": [
+    {
+      "path": "BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs",
+      "sha256": "0cc22a92230c3fcb34f13564820426f6cd805bc6eb35c8ef9006cd5d5f2cfcb9",
+      "bytes": 47899
+    },
+    {
+      "path": "OtherGuides/Wound_Materialization_Contract.md",
+      "sha256": "fcecf7f3dc84f09c43bbf25dcbad0c98fff4f1a7137b2e26cf39579bf3fde926",
+      "bytes": 90358
+    },
+    {
+      "path": "Rules/Block_12.txt",
+      "sha256": "34d76b2a0eee588978f0b419e769aa9bae97361f534c55bd0976d1cce359b3a4",
+      "bytes": 109300
+    },
+    {
+      "path": "TaskGuides/CLI_Step_Main.txt",
+      "sha256": "35df5633e97a830edd9b02d4b97f2ac7af62d88e17c477353e615ab9ef7c3177",
+      "bytes": 190405
+    },
+    {
+      "path": "Examples/E_CLI_Step_Main.txt",
+      "sha256": "bfd569981b5899b4f259456d440888829c4145a1ef914c90b2c6e8d817f1ebe4",
+      "bytes": 109663
+    },
+    {
+      "path": "CLI_API_Specification.md",
+      "sha256": "59ad38a0644a84cbe54415909aa1366f81b765de89500ea12bec0d2bca65591d",
+      "bytes": 251772
+    },
+    {
+      "path": "CLI_Agent_Daemon_Specification.md",
+      "sha256": "8e6aa9d4d8db74ddea53fe3b464cbb1aa9badac9cdd49bdc137422a46465c509",
+      "bytes": 162302
+    },
+    {
+      "path": "BookOfEternityClient/game_master_daemon.ps1",
+      "sha256": "7527e386a593d372a068760a9b6c8ae479a98666c6538a8c8c02294b59a2db1c",
+      "bytes": 402692
+    },
+    {
+      "path": "Examples/E_CLI_Wound_Materialization.txt",
+      "sha256": "62924671b84f3e9ca0ecd1f1ea8515503543881d81e00aa70605cee1c8331e2b",
+      "bytes": 102223
+    }
+  ],
+  "qualifiedAssertions": [
+    "Seven exact public guidance files carry the finite same-scene repair/client ownership/one-pass interface/frozen-error/older-wave text; actual daemon has exactly two mirrored paragraphs.",
+    "Worked example contains required source/rejected/packet/corrected markers, real binding guidance and explicit non-runnable/no crash qualification boundaries."
+  ],
+  "limits": [
+    "One documentation-content Fact; does not execute a GM/daemon workflow, package publisher, worked example, crash recovery or extra ownership API.",
+    "The Fact creates no fixture root; native namespace/process cleanup is the applicable evidence."
+  ],
+  "carrierStatus": "AWAITING_COMBINED_PUBLISHED_RECOVERY"
+}
