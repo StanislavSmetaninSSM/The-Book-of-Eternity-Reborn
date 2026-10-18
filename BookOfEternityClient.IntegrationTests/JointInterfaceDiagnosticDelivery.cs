@@ -27,7 +27,12 @@ internal sealed class JointInterfaceDiagnosticDelivery
     internal readonly record struct Health(long Candidates, long Published, long Dropped, long Malformed,
         long Oversize, long IncompleteTail, long IdentityRejected, long Duplicates, long ElapsedRegressions,
         long TrackingExhausted, bool Uncertain, bool Eof, bool RawReadFault, bool CustodySeen,
-        bool AcceptedSeen, bool LateReturnSeen, string? ObserverFailure);
+        bool AcceptedSeen, bool LateReturnSeen, string? ObserverFailure)
+    {
+        public string SourceEmissionCompleteness => "UNKNOWN";
+        public string CapturePhase => "UNKNOWN";
+        public string ExpectedCustody => CustodySeen ? "OBSERVED_DISCRETE_MARKER" : Eof ? "UNOBSERVED" : "NOT_YET_OBSERVED";
+    }
     internal readonly record struct QueueTiming(double ResidenceMilliseconds, bool Delayed,
         string SourceToReceiveLatency, string CapturePhase);
 
@@ -136,6 +141,7 @@ internal sealed class JointInterfaceDiagnosticDelivery
     {
         if (!line.Contains(Boundary, StringComparison.Ordinal)) return;
         var ordinal = Interlocked.Increment(ref _candidates);
+        Event item;
         try
         {
             using var document = JsonDocument.Parse(line);
@@ -181,16 +187,17 @@ internal sealed class JointInterfaceDiagnosticDelivery
                 else if (stage == "late-first-return") { control = "LATE_RETURN"; Volatile.Write(ref _lateReturnSeen, 1); }
             }
             var controlDetail = stage is "finalization-enter" or "finalization-return" && detail is Custody or Accepted ? detail : null;
-            var item = new Event(ordinal, _lineOrdinal, _lineStart, Stopwatch.GetTimestamp(), DateTimeOffset.UtcNow,
+            item = new Event(ordinal, _lineOrdinal, _lineStart, Stopwatch.GetTimestamp(), DateTimeOffset.UtcNow,
                 pid, tick, sourceRoot!, nonce!, cut, elapsed, utc, stage!, controlDetail, fingerprint, disposition, control);
-            // FullMode=Wait is intentional: TryWrite false means known loss. Never await/backpressure.
-            if (_events.Writer.TryWrite(item)) Interlocked.Increment(ref _published);
-            else { Interlocked.Increment(ref _dropped); Uncertain(); }
         }
         catch (Exception error) when (Recoverable(error))
         {
-            Interlocked.Increment(ref _malformed); Uncertain();
+            Interlocked.Increment(ref _malformed); Uncertain(); return;
         }
+        // Publication faults are observer faults, distinct from malformed input.
+        // FullMode=Wait: TryWrite false means known loss. Never await/backpressure.
+        if (_events.Writer.TryWrite(item)) Interlocked.Increment(ref _published);
+        else { Interlocked.Increment(ref _dropped); Uncertain(); }
     }
 
     // Health/terminal markers never depend on a queued event being delivered.

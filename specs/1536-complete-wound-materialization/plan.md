@@ -1,3 +1,16 @@
+## L01 D01 — non-live helper-check source WIP (2026-10-18)
+
+Saved helper0e4a69d2 now has explicit source-completeness/phase UNKNOWN and publication
+fault classification. Added20 source-bound non-live checks + pinned compiler/host
+controller (only prepare/pure; no real child/game entrypoint). Includes actual
+in-memory pre-EOF delivery, stdout chunks/Unicode/offsets, five-field identity,
+framing/duplicate/regression/overflow/tracking/fallback/raw-fault/no-inline/delay/
+cancellation semantics. Planned once-only checks01-prepare/pure under D01 private
+root. No wiring or current catalog/selection change yet; no helper compile/run yet.
+Next after source save/recovery: compile and run this non-live preparation once;
+freeze failures for independent diagnosis before any affected fix. Native fixture
+children, snapshot/game remain CLOSED; all original evidence/holds retained.
+
 ## L01 D01 — bounded delivery helper source WIP, uncompiled (2026-10-18)
 
 Added only BCL test utility `JointInterfaceDiagnosticDelivery.cs`: single decoded
