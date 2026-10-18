@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "QUALIFIED51_OF57_SELECTED_ROUTING_PREP_ACCEPTED",
+  "status": "UNCERTAIN1SELECTEDROUTING_PASS_EVIDENCE_PENDING",
   "sourceCheckpoint": "fed1f7789db0145de866cd4d73b97ab030871509",
   "sourcePinDigest": "70aa551ca427bb9c28b18e205bcbe2e10d1ebb88487309bb73b4a31426e37eb5",
   "sourcePinCount": 99,
@@ -432,7 +432,7 @@
           "cases": 1
         }
       ],
-      "status": "NEW_BORROWED_LEASE_UNEXPECTED_OUTCOME_FROZEN"
+      "status": "NEW_BORROWED_LEASE_NATIVE_PASS_EVIDENCE_PENDING"
     },
     {
       "mode": "crash5",
@@ -1334,6 +1334,68 @@
       "originalProcessesAfter": [],
       "processArrayLimitation": "Original exe-link arrays incomplete. V2 argv/stat census is dated boundary only.",
       "limits": "Observed native outcome is not independent EVIDENCE acceptance. Historical originals including old66529 UNKNOWN unchanged."
+    },
+    "uncertain1SelectedRouting": {
+      "actualSourceRecovery": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-uncertain1-actual-source-recovery-24c958f6-20261018.json",
+        "sha256": "87a2679e675f9cdd6f0a25e1bbe23f910d06c472c4f4dfbc8d70853f3fdb9270",
+        "bytes": 4153
+      },
+      "status": "ORIGINAL_NATIVE_PASS_INDEPENDENT_EVIDENCE_PENDING",
+      "actualSource": "24c958f6f7936e20275412e95cb3c0d26df6480b",
+      "compiledSource": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
+      "nativeExit": 0,
+      "seconds": 370.3263706409998,
+      "tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 1,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "recordPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-first-uncertain1-selected-routing-cloud-813f1057/record.json",
+      "recordSha256": "a21109a2d73df9097103159d65b119463452db021285a6ee67098d1258acf850",
+      "archive": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-uncertain1-813f1057-files-20261018/archive.json",
+        "sha256": "1c1810cab21061e37751e694e3c3351533b0ba735017102a94782fe5524818d6",
+        "bytes": 8009,
+        "rawChains": 11
+      },
+      "parentInspection": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-uncertain1-parent-inspection-20261018.json",
+        "sha256": "6616541f6f52ead7e17372f3c0d43cbea57ba202abe6dc4ee7aade4f7a8d6d4f",
+        "bytes": 2870
+      },
+      "supplementalAuthoritativeCensuses": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-uncertain1-before-census-20261018.json",
+          "sha256": "1611d46544ef4c4179c6b0efa66219cbab559ed33432c086257c9a9e2694fce6",
+          "bytes": 120425,
+          "datedBoundaryGapSeconds": 2.414912
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-uncertain1-after-census-20261018.json",
+          "sha256": "4f69db19646e59b6bb2d4c1b41eba11e9a9fc0d8ed4663519005880f20ff7a77",
+          "bytes": 118195,
+          "datedBoundaryGapSeconds": 1.221967
+        }
+      ],
+      "nineBinariesUnchanged": true,
+      "allOutputsUnchanged": true,
+      "completeOutputFileCount": 1575,
+      "namespaceAfter": {
+        "ownedRoots": []
+      },
+      "originalProcessesAfter": [],
+      "processArrayLimitation": "Original exe-link arrays incomplete. V2 argv/stat census is dated boundary only.",
+      "limits": "Observed native outcome is not independent EVIDENCE acceptance. Historical originals including old66529 UNKNOWN unchanged."
     }
   },
   "holds": [
@@ -1347,7 +1409,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Save/recover acceptance and readback; only separately named uncertain1 after clean v2 preflight.",
+  "next": "Save/recover original outcome then independent EVIDENCE; no next actual released.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -1523,21 +1585,8 @@
     "phase": "HISTORICAL_COMPILED_6AB43F6A_ZERO3_PRE_CORRECTION_INELIGIBLE_FOR_CORRECTED_ACTUALS"
   },
   "release": {
-    "status": "SEPARATELY_NAMED_AFTER_SAVED_ACCEPTANCE_RECOVERY_AND_IMMEDIATE_CLEAN_V2_CENSUS",
-    "mode": "uncertain1",
-    "label": "t179pd-ni-iobs-l01-process-first-uncertain1-selected-routing-cloud-813f1057",
-    "compiledSource": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
-    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-selected-routing-cloud-813f1057/record.json",
-    "expectedCases": 1,
-    "category": "fr063-joint-interface-uncertain-current",
-    "methods": [
-      {
-        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic",
-        "cases": 1
-      }
-    ],
-    "conditions": "After acceptance saved/pushed/exactremote/fullcleanGitHub recovery and metadata readback, immediate clean authoritative v2 preflight then one fixed NoBuild/FIRST invocation. Preserve original outcome then immediate after-boundary/whole archive/inventories/cleanup. Unexpected outcome freezes affected set for independent diagnosis; no automatic next/retry; no repo mutation during actual. Disposable per-test GUID root/new nonce/genuine children only.",
-    "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED_NOT_RECOVERED_OR_RETRIED"
+    "status": "NONE_PENDING_INDEPENDENT_EVIDENCE",
+    "mode": null
   },
   "newOriginalObservedPassingCases": 4,
   "lastAcceptanceRecovery": {

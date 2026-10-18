@@ -1,0 +1,78 @@
+{
+  "kind": "PARENT_READONLY_ORIGINAL_ACTUAL_INSPECTION_NOT_INDEPENDENT_ACCEPTANCE",
+  "mode": "uncertain1",
+  "actualSource": "24c958f6f7936e20275412e95cb3c0d26df6480b",
+  "compiledSource": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
+  "nativeExit": 0,
+  "seconds": 370.3263706409998,
+  "expectedCases": 1,
+  "recordSha256": "a21109a2d73df9097103159d65b119463452db021285a6ee67098d1258acf850",
+  "tests": [
+    {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 1,
+      "Failed": 0
+    }
+  ],
+  "selections": [
+    {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    }
+  ],
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic",
+      "testId": "acb41208-03e6-8c50-63c0-76fdc3983ac8",
+      "outcome": "Passed",
+      "duration": "00:04:51.9212483",
+      "boundaries": {
+        "fr063_guaranteed_native_pre_original_npc_shape": 1,
+        "qte_story_actual_client_append": 1,
+        "qte_story_actual_engine_result": 1,
+        "qte_physical_actual_occurrence": 1,
+        "fr063_joint_actual_prior42_inactive_tail": 1,
+        "fr063_joint_original_progression_reader_before_owner": 1,
+        "fr063_joint_signed_original_schedule_before_owner": 1,
+        "fr063_joint_natural_stage43_image_before_assert": 19,
+        "fr063_joint_original_inventory_structural_absence_before_assert": 2,
+        "fr063_confirmed_claim_inspection": 1,
+        "fr063_joint_completion_actual_prerequisites": 1,
+        "iobs_actual_public_correction_before_ready": 1,
+        "iobs_actual_result_commit": 2,
+        "iobs_actual_committed_member": 3,
+        "iobs_actual_completed_capture": 2,
+        "fr063_joint_in_memory_owner_snapshot_before_filesystem": 1,
+        "fr063_joint_completion_actual_owner_outcome": 1,
+        "iobs_actual_direct_and_outer_restore_retention": 1,
+        "iobs_same_engine_new_current_fullproof_before_cleanup": 1,
+        "iobs_same_engine_uncertain_new_call_returned": 1,
+        "iobs_same_engine_uncertain_new_call_raw_images": 1,
+        "iobs_same_engine_uncertain_diagnostic_current_resume": 1
+      },
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-e2856fc4b14b405084014f49cab65a15",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "jsonLineParseErrors": 0,
+      "error": null,
+      "stack": null
+    }
+  ],
+  "binariesUnchanged": true,
+  "allOutputsUnchanged": true,
+  "namespaceAfter": {
+    "ownedRoots": []
+  },
+  "processesAfter": [],
+  "headAfter": "24c958f6f7936e20275412e95cb3c0d26df6480b",
+  "statusAfter": ""
+}

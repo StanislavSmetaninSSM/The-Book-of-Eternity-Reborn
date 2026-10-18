@@ -1,0 +1,87 @@
+{
+  "kind": "CLOUD_CARRIER_EXACT_GITHUB_RECOVERY",
+  "sha": "24c958f6f7936e20275412e95cb3c0d26df6480b",
+  "base": "225d3d8d20e65b3586bcb15b4e70689a32d68889",
+  "checkedUtc": "2026-10-18T15:25:24.009170+00:00",
+  "directory": "/workspace/1536-cloud-clean-restore",
+  "remoteShaVerified": true,
+  "clean": true,
+  "localSourceOrObjectReuse": false,
+  "changedPathsVerified": 10,
+  "files": [
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 2421800,
+      "sha256": "cd0eb8cd726212454e7299d6319736552376057983fb6264f9a31a474c6979e0",
+      "gitBlob": "7cbb649cd4b8888bf883585ee1bd0a9ead3f3f49",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/check_l01_selected_routing_prep.py",
+      "bytes": 24521,
+      "sha256": "9a9aace70d88b9fd89d7598be69ed2d431799f04d73a99b4788a5923a78be5a7",
+      "gitBlob": "1bc4eee09e2c2675effc89040119fe6061bebe4a",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-qualification-20261018.json",
+      "bytes": 192133,
+      "sha256": "7ec529d5377be97a3e48a556887f537df682e7cecf4a7e5230aeb85670595ba3",
+      "gitBlob": "49d77a2a567949c730ecbd8f9ef69ca53c76a247",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-prep-candidate-recovery-225d3d8d-20261018.json",
+      "bytes": 22630,
+      "sha256": "f95248d3787ca2a3590ccc0c64e66ac917c8424ae2a453349264b3de077734b8",
+      "gitBlob": "ab909339ac61352be66e553e160924722eba13e1",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-prep-checker-ready-20261018.json",
+      "bytes": 1709,
+      "sha256": "927f7bf77b1b4f79affb6d893f9c46f9afe1cfc94e405b39ada878744a443e42",
+      "gitBlob": "ffd91195692ccda1a8ff008ec6e3e2963fb30d76",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-prep-independent-check-225d3d8d-20261018.json",
+      "bytes": 18967,
+      "sha256": "4b199f44c9a27041b4b0a5032619541bb25ede229dde070e6378048b6aa3282e",
+      "gitBlob": "162d50da67b57a5e35c50f4b079492999fc7b0e9",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-prep-independent-review-20261018.json",
+      "bytes": 15232,
+      "sha256": "b2704812890389caad234b5c54cd771fac613a4e57660370f5a1aa2373341a61",
+      "gitBlob": "ffd15ad27ca6c8a08dc66aa1783a94dba1018a92",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-prep-independent-review-20261018.md",
+      "bytes": 2366,
+      "sha256": "ea16a1d35e04416e50806d8676a593634ee1f66cfa4aed3e5d98da77a9073411",
+      "gitBlob": "e0c2e1263c51a3e21c2b4ce8afb96d05f076412a",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-prep-warning-comparison-20261018.json",
+      "bytes": 585,
+      "sha256": "464633601347bf959f000d4e19039df1f6d3920772f1720c773b29d9840092d6",
+      "gitBlob": "21894a6debf0ef754e028ab10dcb96c2d1ea6230",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
+      "bytes": 66579,
+      "sha256": "a2de1c466569eacae000d81b0b4f5dddc4e3fd5a92277b4749c65d99b974a270",
+      "gitBlob": "b488264f0b011bad342584899a85ab7915454465",
+      "mode": "100644"
+    }
+  ],
+  "sourcePinsVerified": 99,
+  "sourcePinDigest": "70aa551ca427bb9c28b18e205bcbe2e10d1ebb88487309bb73b4a31426e37eb5",
+  "method": "Fetch exact task branch directly from GitHub into independent originally empty-directory GitHub clone, checkout exact SHA, clean tree, verify every changed file bytes/SHA256/blob/mode and all current source pins",
+  "limits": "Source/evidence recovery only. No test/build execution here; no lost corrected-crash bytes recovered."
+}
