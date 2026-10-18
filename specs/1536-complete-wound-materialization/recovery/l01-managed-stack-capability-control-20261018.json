@@ -61,7 +61,7 @@
   ],
   "prepareAdmission": "PLAN_ACCEPTED_HELPER_PREPARATION_ONLY",
   "smokeAdmission": {
-    "status": "CONSUMED_FIRST_S01_EVIDENCE_PENDING",
+    "status": "CONSUMED_EVIDENCE_ACCEPTED_SYNTHETIC_ONLY",
     "releaseName": "L01_MANAGED_STACK_S01_20261018_D2C716AF",
     "reviewedSource": "d2c716af0946484e1440783d2ad0425b8e469b07",
     "preparedSource": "0422f6c7148f2f6eda4caa8dbc1043c557ae90a3",
@@ -136,5 +136,28 @@
         }
       }
     ]
+  },
+  "evidenceAcceptance": {
+    "status": "ACCEPT_OWNED_SYNTHETIC_MANAGED_STACK_CAPABILITY_ONLY",
+    "reviewedCarrier": "126f08d44b8360cd7fdc7116120d8ad1aece8f86",
+    "originalEvidenceCarrier": "32cfa9ce156a8e5bc5e41c60ad4b1b0e605bfd94",
+    "actualReleaseAndSource": "4d476b388b3319ed6fb3602f80d6bccb9035e11e",
+    "reportPath": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01-evidence-independent-review-20261018.json",
+    "reportSha256": "7c10b105b2c91fa2fd5994815794ab17004cf2e3642ead24cb9aa093e1625912",
+    "checks": 164,
+    "openFindings": [],
+    "scope": "Own synthetic known managed stacks only; all original record/ZIP/prepared/runtime/source pins retained. Historical evidence index remains immutable with its original pending label; this control is current acceptance.",
+    "nextRelease": "NONE"
+  },
+  "futureObservation": {
+    "status": "ACCEPT_CONDITIONAL_DOCUMENTATION_ONLY_NO_GAMEPLAY_RELEASE",
+    "gameplayRelease": "NONE",
+    "prerequisite": "Safe source-bound ordered live custody/accepted delivery missing; separate authorized tee/observer SOURCE/PREP/ownership and gameplay decision required.",
+    "captureRace": "UNKNOWN phase unless actual capture ordering is proved",
+    "budgetSeconds": {
+      "resumer": 220,
+      "category": 900
+    },
+    "assertions": "UNCHANGED"
   }
 }

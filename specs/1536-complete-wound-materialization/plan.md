@@ -1,3 +1,41 @@
+## L01 managed-stack capability QUALIFIED; future gameplay observation held (2026-10-18)
+
+Task #1536, branch `1536-wound-b2-cloud-20261012`. [Independent AstraXHigh EVIDENCE](recovery/l01-managed-stack-s01-evidence-independent-review-20261018.md)
+accepts corrected126f08d4 plus original32cfa9ce evidence, actual/source4d476b38,
+reviewed helperd2c716af and prepared0422f6c7. Root read the restored8-entry ZIP,
+raw four frames/11 pins, both check reports (146+18 all true) and exact review hashes.
+This completes only the installed cloud Linux synthetic managed-stack capability
+inquiry: real known wait/CPU call chains, nativeTIDs, exact MVID, independently
+validated MethodDef/IL, native0/join/EOF/owned cleanup. No install or manual security
+policy change; runtime's normal targeted ptracer authorization is retained. Raw core
+stays private; raw stack JSON/record are durable. S01 FIRST consumed, next release NONE.
+
+Measured collector envelope1.728769s includes startup/preflight/API/exit/join/close;
+phase1.998960s and createdump's reported136ms are separate. API-only and exact
+suspension durations UNKNOWN. No inference of a game pause/budget or general
+heap/async decoding. Source/helper/known-work assertions unchanged; no re-run needed.
+
+[Future custody→accepted proposal](design/l01-managed-stack-capability-plan-20261018.md)
+is accepted as conditional documentation only: one cut1 diagnostic Fact, one60s
+triggered snapshot,220s/900s unchanged, no sampling/retry/qualification claim.
+Concrete blocker: current child stdout is exposed after join; safe ordered live
+delivery does not exist. A separate authorized test-side tee/observer needs SOURCE/
+PREP/ownership review and a gameplay decision before any actual. If capture ordering
+is not proved, capturePhase=UNKNOWN. This block implements/releases neither tee
+nor observer nor game run. Next finite step, only if separately authorized: design
+that delivery/observer preparation around the preserved original stdout contract.
+
+Cloud Linux game qualification remains52/57 at original provenance, original crash5
+unqualified. Future Windows-five/native identity preparation is separate and unrun;
+Windowsartifact403 remains separately BLOCKED/no retry, CI not run. Old66529
+UNKNOWN/unavailable/recoveryClaim=false, frozen failures, M01 and once-only/I/Ready/
+owned-transition/oldv1-child1 invariants remain. FullNI/HOT/F1/M3/T197/E01/T148/Phase10
+open/incomplete; A3 NO-PROCEED. No product/test/catalog/selection/GM contract change.
+No C#/game category is needed for acceptance-metadata documentation; no new native
+verification. Final carrier still requires push/exactremote/clean GitHub recovery
+and narrow independent metadata readback, not a self-receipt commit loop.
+Following sections preserve their historical gates and original outcomes.
+
 ## L01 S01 — FIRST synthetic PASS saved; independent EVIDENCE pending (2026-10-18)
 
 Task #1536, branch `1536-wound-b2-cloud-20261012`; actual release/source

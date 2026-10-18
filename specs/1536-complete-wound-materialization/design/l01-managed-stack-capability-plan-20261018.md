@@ -3,8 +3,10 @@
 Task: #1536 / NI-IOBS-L01. Base `39cafe9e9595730929efb7b7450b4cc260b5bafc`.
 Sole writer Root; independent reviewer Astra XHigh. User authorizes cloud inventory,
 documentation and an owned synthetic smoke only after independent minimal-plan review.
-**S01 FIRST PASS saved at actual4d476b38 after independent SOURCE/PREP ACCEPTd2c716af.
-Independent EVIDENCE pending. One-shot permit consumed; gameplay release NONE.**
+**S01 FIRST PASS independently EVIDENCE-accepted at corrected126f08d4; actual4d476b38,
+SOURCE/PREPd2c716af and compiled0422f6c7 remain distinct. One-shot permit consumed;
+next release NONE, gameplay NONE. Future proposal accepted as conditional documentation only.**
+[Independent EVIDENCE,164 checks](../recovery/l01-managed-stack-s01-evidence-independent-review-20261018.md).
 [Saved original evidence](../recovery/l01-managed-stack-s01-original-evidence-20261018.json).
 [Independent PLAN review](../recovery/l01-managed-stack-capability-plan-independent-review-20261018.md).
 
@@ -28,7 +30,7 @@ Chosen route: SDK DiagnosticsClient.WriteDump(Normal, private absolute path,
 CrashReportEnabled), requesting the target runtime's matching createdump. Its
 built-in DAC unwinder and JSON writer can emit managed method names, tokens,
 IL offsets, module names and MVIDs. This is a source-supported possibility,
-**now demonstrated on the owned synthetic only, pending EVIDENCE; not a general dump analyzer**.
+**independently demonstrated on the owned synthetic only; not a general dump analyzer**.
 Direct createdump --crashreportonly exists, but is not an automatic fallback.
 
 - [Official client sample](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/diagnostics-client-library#write-a-core-dump)
@@ -171,7 +173,7 @@ installed analyzer suffices, stop with that precise tooling/evidence gap.
 
 | Platform | Current qualification / next step | Release now |
 | --- | --- | --- |
-| Cloud Linux | L0152/57 at original provenance; crash5 unqualified. S01 FIRST PASS saved, independent EVIDENCE pending; no personal Linux is available | NONE; own synthetic permit consumed, gameplay held |
+| Cloud Linux | L0152/57 at original provenance; crash5 unqualified. S01 FIRST PASS independently accepted (synthetic only); game cause/qualification remains held; no personal Linux is available | NONE; own synthetic permit consumed, gameplay held |
 | Windows | User may later qualify the five scenarios separately. Current identity helper reads Linux `/proc/<pid>/stat`, so Windows needs a separately reviewed native identity/ownership preparation while retaining strong assertions | NONE; do not request Windows, start tests, retry artifact403 or use CI |
 
 Windows success would be separate platform evidence and would not prove cloud Linux

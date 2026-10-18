@@ -1,7 +1,8 @@
 ## L01 — cloud managed-stack diagnostic capability (2026-10-18)
 
-- [ ] [Read-only inventory → independent minimal-plan review → safe owned synthetic S01](design/l01-managed-stack-capability-plan-20261018.md): prove actual named managed stacks or exact access/component blocker. No install/security changes/gameplay release.
-- [ ] Review one future custody→accepted observation proposal; actual gameplay is NOT authorized. Keep cloud Linux crash5 and future Windows-five-case qualification separate; Windows not requested, artifact403/CI holds unchanged.
+- [x] [Read-only inventory → independent minimal-plan/SOURCE/PREP → owned synthetic S01](design/l01-managed-stack-capability-plan-20261018.md): actual two-TID managed chains/MVID/MethodDef/IL and cleanup independently accepted,164 checks. [EVIDENCE](recovery/l01-managed-stack-s01-evidence-independent-review-20261018.md). Installed route works for this own synthetic; permit consumed, no install/manual security changes/gameplay release.
+- [x] Review one future custody→accepted observation proposal as conditional documentation only: safe live delivery missing, separate tee/observer SOURCE/PREP/ownership and gameplay decision required; uncertain capture phase remains UNKNOWN. Actual gameplay NOT authorized. Cloud Linux crash5/future Windows-five/artifact403 are separate holds; Windows/CI not run.
+- [ ] Future gameplay qualification remains held: L0152/57, original crash5 unqualified. S01 is outside that count; no future observer implementation/run is released here.
 
 ## T148 M01 — historical audit-state survival QUALIFIED (2026-10-18)
 
