@@ -932,14 +932,14 @@
       "sha256": "c147ee76084f275f29c6920e2a81ddb66fbff2a786d04a02a878ac56b6b83b85",
       "bytes": 9377,
       "role": "Only separately named repaired2 or one of eight remaining29 groups; retained26 are deliberately not runnable modes, original outcome before guards",
-      "status": "CURRENT_1_SEPARATELY_NAMED_MODES_EXECUTED_REMAINING_HELD"
+      "status": "CURRENT_2_SEPARATELY_NAMED_MODES_EXECUTED_REMAINING_HELD"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-whole.py",
       "sha256": "bf6503ecb8b1006842e66313da7c72fc185b217e54cd44d4ff5a62b864c36c3f",
       "bytes": 2342,
       "role": "Unchanged read-only complete raw archiver reused with new phase/source fields; historical eight invocations retained, no runtime from archiving",
-      "status": "READ_ONLY_HISTORICAL8_PLUS_CURRENT_ZERO_ARCHIVE1_PLUS_CURRENT_MODE_ARCHIVES1_NO_TEST_EXECUTION"
+      "status": "READ_ONLY_HISTORICAL8_PLUS_CURRENT_ZERO_ARCHIVE1_PLUS_CURRENT_MODE_ARCHIVES2_NO_TEST_EXECUTION"
     }
   ],
   "next": "Root independently verifies this saved recovery then separately names next fixed mode. No automatic execution/retry/build/source changes; independent whole EVIDENCE remains open.",
@@ -1118,10 +1118,10 @@
   },
   "runtime": {
     "currentFixtureCompiled": true,
-    "currentFixtureActualCases": 2,
+    "currentFixtureActualCases": 11,
     "retainedQualifiedCases": 26,
     "originalFixtureFailures": 2,
-    "remainingPreviouslyUnrunCases": 29,
+    "remainingPreviouslyUnrunCases": 20,
     "pendingQualifiedCases": 31,
     "pendingDescriptors": 9,
     "pendingMethods": 17,
@@ -1141,9 +1141,9 @@
     "currentFixtureDiscovery": "808categories11800methods_FRESH_BOTH_ZERO",
     "currentPreparation": "INDEPENDENT_AND_ROOT_ACCEPTED_CATALOG_WHOLE_PLAN_REMAINING_PLAN_ZERO",
     "nextEligibleScope": "NONE_UNTIL_ROOT_SEPARATELY_NAMES_NEXT_MODE",
-    "currentFixtureObservedPassed": 2,
+    "currentFixtureObservedPassed": 11,
     "currentFixtureObservedFailed": 0,
-    "totalObservedPositiveUnionIncludingRetained26": 28
+    "totalObservedPositiveUnionIncludingRetained26": 37
   },
   "currentImplementation": {
     "sourceBase": "afb5a3bb6a2dd7e066946258cbf64334bf965048",
@@ -9816,6 +9816,55 @@
       "rootReadback": {
         "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-repaired-readback-6b7d1e82-20261018.json",
         "sha256": "77b2b09946efe3c34d577051c6773f4e4d0ccb131dae0c1dcce582e2fd53c10d"
+      },
+      "evidence": "INDEPENDENT_CONNECTED_REPAIRED2_SEMANTICS_ACCEPTED_WHOLE_EVIDENCE_OPEN",
+      "nineBinariesUnchanged": true,
+      "all1575OutputFilesUnchanged": true,
+      "namespaceAfter": {
+        "ownedRoots": []
+      },
+      "processesAfter": [],
+      "history": "Changed-fixture verification/current first scope. Original45cc live2FAIL and retained26 proof remain at original provenance; no overwrite or double counting.",
+      "connectedSupport": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-connected-repaired-check-6b7d1e82-20261018.json",
+          "sha256": "7ff8ac5768954f83c0d12bb687118f53cb1ea59663ab75f97ebef9cbb5f7cba3"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-connected-repaired-carrier-check-1611b5c7-20261018.json",
+          "sha256": "66ec29cc78111fe306d14b23dbab58e63b024e81664f826083b7261b20c114c2"
+        }
+      ]
+    },
+    "refusal9": {
+      "actualSource": "1611b5c720a627a3582481db2d9419fc488f518c",
+      "compiledSource": "4c6d8334b441193cbda6de539347bcf7998d4db6",
+      "nativeExit": 0,
+      "seconds": 473.2569851150038,
+      "tests": {
+        "Total": 9,
+        "Executed": 9,
+        "Passed": 9,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 9,
+        "CompletedCases": 9,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "recordPath": "/tmp/t179pd-ni-iobs-l01-intake-implementation-tools/t179pd-ni-iobs-l01-intake-first-refusal-current/record.json",
+      "recordSha256": "f98d41fd72d17d1efc935b694e62bc076db5f6cb0666e876ea7f993805679a37",
+      "archive": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-refusal9-files-20261018/archive.json",
+        "sha256": "37a01525ed8c18251b6de951687d711c904b84acb34411278bbf7299d3ad777f",
+        "rawChains": 11
+      },
+      "rootReadback": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-refusal-readback-1611b5c7-20261018.json",
+        "sha256": "8ffc10d083c51e0c07a1c8de7d2e1e1331a6e4da80cd369a009fd53dcd51a1f1"
       },
       "evidence": "ORIGINAL_RAW_OBSERVED_ROOT_READBACK_INDEPENDENT_WHOLE_EVIDENCE_OPEN",
       "nineBinariesUnchanged": true,

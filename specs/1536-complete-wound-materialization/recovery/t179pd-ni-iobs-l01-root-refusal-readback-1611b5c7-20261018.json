@@ -1,0 +1,106 @@
+{
+  "kind": "ROOT_NAMED_ORIGINAL_ACTUAL_RAW_READBACK_NOT_INDEPENDENT_EVIDENCE",
+  "createdUtc": "2026-10-18T08:30:43.225820+00:00",
+  "mode": "refusal9",
+  "actualSource": "1611b5c720a627a3582481db2d9419fc488f518c",
+  "compiledSource": "4c6d8334b441193cbda6de539347bcf7998d4db6",
+  "nativeExit": 0,
+  "seconds": 473.2569851150038,
+  "tests": {
+    "Total": 9,
+    "Executed": 9,
+    "Passed": 9,
+    "Failed": 0
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 9,
+    "CompletedCases": 9,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "actualCases": [
+    {
+      "testId": "34a66dd8-cefb-e195-6f99-4015963f5d4e",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualGenericInterfaceConsumerRefusesSelectedMarkerDamage(damage: \"RecordMissing\")",
+      "outcome": "Passed",
+      "duration": "00:00:57.2320146"
+    },
+    {
+      "testId": "6f51dff7-a8b8-af00-1e3b-b209105f1c61",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualGenericInterfaceConsumerRefusesSelectedMarkerDamage(damage: \"ParentUnknown\")",
+      "outcome": "Passed",
+      "duration": "00:01:01.6752532"
+    },
+    {
+      "testId": "f5d10344-4157-3a52-3f93-5a4fbfe35d80",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualGenericInterfaceConsumerRefusesSelectedMarkerDamage(damage: \"Tuple\")",
+      "outcome": "Passed",
+      "duration": "00:00:56.7305774"
+    },
+    {
+      "testId": "3ebe7470-8212-d7c8-0563-967035e31469",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualGenericInterfaceConsumerRefusesSelectedMarkerDamage(damage: \"UnknownEmpty\")",
+      "outcome": "Passed",
+      "duration": "00:00:57.0495362"
+    },
+    {
+      "testId": "47bf0eaf-591f-e4c7-2036-4f9242665c0a",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_FirstInstallOwningCloseCannotArmInterfacePermission",
+      "outcome": "Passed",
+      "duration": "00:00:07.8359254"
+    },
+    {
+      "testId": "a67385e6-2d9d-4ce9-1987-062ac0fa9d18",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualGenericInterfaceConsumerRefusesSelectedMarkerDamage(damage: \"SealMissing\")",
+      "outcome": "Passed",
+      "duration": "00:00:56.5739380"
+    },
+    {
+      "testId": "dafd104a-c423-b90f-856e-27cc4efd8c4d",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewLateMainConsumesOwnReadyWithoutRevivingHotOwner",
+      "outcome": "Passed",
+      "duration": "00:00:55.3185208"
+    },
+    {
+      "testId": "96c70140-7621-2f01-8342-aabfe3261f9f",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualGenericInterfaceConsumerRefusesSelectedMarkerDamage(damage: \"Parent1\")",
+      "outcome": "Passed",
+      "duration": "00:00:56.7089947"
+    },
+    {
+      "testId": "edf9c5d1-9e59-5766-f826-3ff1205b6381",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualGenericInterfaceConsumerRefusesSelectedMarkerDamage(damage: \"Empty\")",
+      "outcome": "Passed",
+      "duration": "00:00:56.6604004"
+    }
+  ],
+  "record": {
+    "path": "/tmp/t179pd-ni-iobs-l01-intake-implementation-tools/t179pd-ni-iobs-l01-intake-first-refusal-current/record.json",
+    "sha256": "f98d41fd72d17d1efc935b694e62bc076db5f6cb0666e876ea7f993805679a37"
+  },
+  "archive": {
+    "path": "/tmp/t179pd-ni-iobs-l01-intake-refusal-archive-first-1611b5c7-20261018/archive.json",
+    "sha256": "37a01525ed8c18251b6de951687d711c904b84acb34411278bbf7299d3ad777f",
+    "rawChains": 11
+  },
+  "nineCopiesUnchanged": true,
+  "allCurrentOutputFilesIndependentlyHashed": 1575,
+  "exactOutputFileSet": true,
+  "namespaceAndProcessesEmpty": true,
+  "physicalCleanupRootsGone": [
+    "/tmp/boe-gameengine-turnlifecycle-39259bf082344b5db03870a009709c27",
+    "/tmp/boe-gameengine-turnlifecycle-4b08c8b5a3854646bd000c01388e9d76",
+    "/tmp/boe-gameengine-turnlifecycle-8063ebaeefc9413cad0120c988c04d32",
+    "/tmp/boe-gameengine-turnlifecycle-87f05588f3db4e02a81763f9144521b7",
+    "/tmp/boe-gameengine-turnlifecycle-8927c7fd16414d39b9427277ceeb343b",
+    "/tmp/boe-gameengine-turnlifecycle-8dc66d88ca8a4b50839e476a42fedb84",
+    "/tmp/boe-gameengine-turnlifecycle-ac7af8472891407eb80174242a7a5c4f",
+    "/tmp/boe-gameengine-turnlifecycle-e3951db64de746ba9ad22cb2f9f4faab",
+    "/tmp/boe-gameengine-turnlifecycle-f446beda494a46fb8fb33babdd448306"
+  ],
+  "uniqueStdoutPayloads": 10,
+  "sourceHeadClean": true,
+  "limits": "Exact original observed native0/raw cases only. Independent connected EVIDENCE still required; no product/fullNI/HOT qualification or automatic next run."
+}
