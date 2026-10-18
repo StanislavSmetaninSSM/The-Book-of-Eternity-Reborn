@@ -6,6 +6,16 @@ Concrete blocker: current-resume holds the canonical lease and upstream item val
 
 Next proposal only: borrowed existing lease through collector/item helper, unchanged no-argument ownership and validation branches, stronger CurrentInterface target-reason oracle; independent SOURCE, fresh BOTH/catalog + whole16/33/57 + corrective2/2/5 + remaining1/1/5 ZERO/PREP and separate new identities before future actuals. Expected future product22 is not implemented; current pins98/product21 remain exact. Qualified47 keeps its original provenance. All broader holds, Windows403/noCI/A3 and repository protections remain. This bounded qualification stage stops at its concrete blocker. Following sections are historical.
 
+## T179-Pd-NI-IOBS-L01 — user-resumed minimal lease correction (2026-10-18)
+
+Continue from verified GitHub checkpoint bb99804e8c7124e4c625ea7557d61cdaa93a8035 in the same isolated cloud environment. [Independent Astra XHigh plan](recovery/t179pd-ni-iobs-l01-borrowed-lease-plan-independent-review-20261018.md) accepts implementation: distinctly named borrowed-lease core, original no-arg/reflection routes and awaited ownership intact; selected current resume retains sole release. Preserve every validation branch/order, once-only effect, Ready immutability and exact owned transition. No GM contract change: this is client-owned lease composition plus fixture diagnostics/oracle.
+
+Strengthen CurrentInterface with immutable before/after log snapshots and a new exact target-reason occurrence for EACH real call. Preserve all old assertions. uncertain1 keeps original FAIL and missing-log limits; add read-only raw/scalar/live-log diagnostics immediately after the new real call and before positive full-proof assertions, without lease/recovery or masking exceptions. No retrospective log reconstruction.
+
+Qualified47/57 bindings and all original outcomes remain unchanged. First SOURCE of saved patch, then fresh separately named BOTH/catalog + whole16/33/57 + corrective integrity4/uncertain1 2/2/5 + remaining newcrash5 1/1/5 ZERO4, mandatory census boundaries and independent PREP. Each actual has a separate named release/new root/process identity; old66529 stays UNKNOWN/unavailable. Unchanged budgets. Unexpected outcomes freeze the affected selection, preserve originals, independently diagnose and continue in-scope remedies under user authorization. No ordinary technical gate ends the task; only a real external blocker or new architecture outside this plan requires escalation. No actual runtime release at this planning checkpoint.
+
+FullNI/HOT/F1/M3/T197 remain incomplete; A3 NO-PROCEED, Windows raw403 blocked/no retry, no CI/main/merge/force-push/delete/issue close. Following sections are historical.
+
 ## T179-Pd-NI-IOBS-L01 — independent integrity HOLD saved (2026-10-18)
 
 [Independent integrity4 review](recovery/t179pd-ni-iobs-l01-integrity4-independent-review-20261018.md) blocks qualification with finding L01-INTEGRITY-CURRENTI-001. Native four PASS remain immutable, but CurrentInterface reaches a nested canonical lock refusal before the target I preimage guard; no additional targets are accepted. Three other rows are not separately qualified. Qualified count stays47/57.
