@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_READY_DRIFT_DIAGNOSTIC_SOURCE_CANDIDATE",
-  "status": "RACES2CORRECTED_NATIVE_PASS_EVIDENCE_PENDING_NEXT_SETTLEMENT3_SEPARATELY_NAMED",
+  "status": "SETTLEMENT3_ORIGINAL_FROZEN",
   "sourceBase": "40920dab235f48abc07988b231a8bf0481c646bd",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
   "sourcePins": [
@@ -899,7 +899,7 @@
   },
   "gmDisposition": "Diagnostic-only original-exception preservation in existing owning catch. No GM schema, prompt, example, manifest, daemon guidance or contract change; existing docs remain exact.",
   "oldCorrectedCrash": "Old environment session66529 remainsUNKNOWN, bytes unavailable. Separate new qualification only after corrected SOURCE/fresh PREP/named release, independent disposable fixtures/new genuine children; no old environment/process or real save operation.",
-  "next": "After outcome recovery, independent EVIDENCE forraces2Corrected; separately named FIRSTsettlement3 only after immediate clean authoritative census and no unresolved finding. Qualified count unchanged until acceptance.",
+  "next": "Independent causal diagnosis before anysource/actual/retry.",
   "sourceBindingCorrection": {
     "reason": "Independent SOURCE review identified 21 actual product paths; newly logged pre-existing canonical-publication file was not in prior20. Controllers corrected before any ZERO/runtime.",
     "previousCandidate": "8e1fedfecf2b4799502034f539330c8c3eba43f9",
@@ -987,26 +987,7 @@
     ]
   },
   "namedActualRelease": {
-    "status": "SEPARATELY_NAMED_FIRST_AFTER_SAVED_OUTCOME_RECOVERY_AND_IMMEDIATE_CLEAN_V2_CENSUS",
-    "mode": "settlement3",
-    "label": "t179pd-ni-iobs-l01-process-first-settlement3-ready-diag-cloud-813f1057",
-    "compiledSource": "e2d0a10f6b12cc1947ef9c9f71fd600146fcec2d",
-    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-ready-diag-cloud-813f1057/record.json",
-    "expectedCases": 3,
-    "category": "fr063-joint-interface-settlement",
-    "methods": [
-      {
-        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CommonMemberCompensationRetainsPublishedInterfaceWithoutReplay",
-        "cases": 1
-      },
-      {
-        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate",
-        "cases": 2
-      }
-    ],
-    "observerPath": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-20261018.py",
-    "observerSourceSha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
-    "conditions": "Save exactremote/cleanGitHub recovery; independent SOURCE/PREP unchanged; no unresolved semantic concern; immediate clean v2 before-census; NoBuild/FIRST/new disposable roots only; mandatory originaloutcome+aftercensus/inventories/save. Anyunexpectedfailure/materialreviewfinding freezes. No concurrent actual or automaticadvance/retry. PriorpositiveEVIDENCEreview may read immutable files concurrently; no repo mutation duringactual.",
-    "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED"
+    "status": "NONE_FROZEN_PENDING_INDEPENDENT_DIAGNOSIS",
+    "mode": null
   }
 }

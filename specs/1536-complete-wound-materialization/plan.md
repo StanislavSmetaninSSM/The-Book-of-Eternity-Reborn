@@ -1,3 +1,9 @@
+## T179-Pd-NI-IOBS-L01 — settlement3 original outcome saved; next gate explicit (2026-10-18)
+
+Новый отдельно именованныйsettlement3: actualf0bfcda8/compilede2d0a10f, native1, 3executed/1PASS/2FAIL, 440.258s. [Original11rawchains](t179pd-ni-iobs-l01-cloud-settlement3-frozen-813f1057-files-20261018/archive.json) и exactbefore/afterauthoritativecensuses сохранены; observedpositive=False. Это originaloutcome, independentEVIDENCE ещё pending, qualifiedcount пока42. Frozenoriginalclose2FAIL/семьстарыхfixtureFAIL/oldcorrectedcrashUNKNOWN неизменны.
+
+Independent causal diagnosis before anysource/actual/retry. Все исходные assertions и once-only/Ready/ownedtransition contracts неизменны. Noactual/retry приunexpectedfailure; всеbroaderholds/Windows403/CI/A3 сохраняются. Следующие sections исторические.
+
 Corrected races2 after census is 160.682168s after recorded completion. This is a dated observation, not instantaneous or continuous absence; native owned-tree/runtime cleanup is separate proof. No intervening actual or root/process intervention; no gap reconstruction.
 
 Timing limit for corrected races2: before census → native launch 47.661597s, including controller preflight. No intervening mutation or actual; dated boundary evidence only, no continuous absence claim.

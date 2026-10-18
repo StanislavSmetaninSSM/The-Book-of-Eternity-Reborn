@@ -1,0 +1,146 @@
+{
+  "kind": "PARENT_READONLY_ORIGINAL_ACTUAL_INSPECTION_NOT_INDEPENDENT_ACCEPTANCE",
+  "mode": "settlement3",
+  "actualSource": "f0bfcda832db851a2768d6af13ce60695c24a9cd",
+  "compiledSource": "e2d0a10f6b12cc1947ef9c9f71fd600146fcec2d",
+  "nativeExit": 1,
+  "seconds": 440.25795118099995,
+  "expectedCases": 3,
+  "recordSha256": "dc135269fb73456f61e1e508d3031df0f25793a237398f029649e649bf3d18ab",
+  "tests": [
+    {
+      "Total": 3,
+      "Executed": 3,
+      "Passed": 1,
+      "Failed": 2
+    }
+  ],
+  "selections": [
+    {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 3,
+      "CompletedCases": 3,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    }
+  ],
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate(fault: False)",
+      "testId": "a956ed4e-9ff2-2afa-ff41-6b903f7c73f0",
+      "outcome": "Passed",
+      "duration": "00:00:42.9044690",
+      "boundaries": {
+        "fr063_guaranteed_native_pre_original_npc_shape": 1,
+        "qte_story_actual_client_append": 1,
+        "qte_story_actual_engine_result": 1,
+        "qte_physical_actual_occurrence": 1,
+        "fr063_joint_actual_prior42_inactive_tail": 1,
+        "fr063_joint_original_progression_reader_before_owner": 1,
+        "fr063_joint_signed_original_schedule_before_owner": 1,
+        "fr063_joint_natural_stage43_image_before_assert": 19,
+        "fr063_joint_original_inventory_structural_absence_before_assert": 2,
+        "fr063_confirmed_claim_inspection": 1,
+        "fr063_joint_completion_actual_prerequisites": 1,
+        "iobs_actual_public_correction_before_ready": 1,
+        "iobs_actual_result_commit": 1,
+        "fr063_joint_in_memory_owner_snapshot_before_filesystem": 1,
+        "fr063_joint_completion_actual_owner_outcome": 1,
+        "iobs_actual_error_prepared_held": 1,
+        "iobs_actual_direct_and_outer_restore_retention": 1,
+        "iobs_actual_whole_terminal_settlement": 1
+      },
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-19436ceab09e43eda9d388eb8be1a017",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "jsonLineParseErrors": 0,
+      "error": null,
+      "stack": null
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate(fault: True)",
+      "testId": "eddfc0f4-8901-83df-7cb3-94c5051d1f17",
+      "outcome": "Failed",
+      "duration": "00:01:02.6369181",
+      "boundaries": {
+        "fr063_guaranteed_native_pre_original_npc_shape": 1,
+        "qte_story_actual_client_append": 1,
+        "qte_story_actual_engine_result": 1,
+        "qte_physical_actual_occurrence": 1,
+        "fr063_joint_actual_prior42_inactive_tail": 1,
+        "fr063_joint_original_progression_reader_before_owner": 1,
+        "fr063_joint_signed_original_schedule_before_owner": 1,
+        "fr063_joint_natural_stage43_image_before_assert": 19,
+        "fr063_joint_original_inventory_structural_absence_before_assert": 2,
+        "fr063_confirmed_claim_inspection": 1,
+        "fr063_joint_completion_actual_prerequisites": 1,
+        "iobs_actual_public_correction_before_ready": 1,
+        "iobs_actual_result_commit": 1,
+        "fr063_joint_in_memory_owner_snapshot_before_filesystem": 1,
+        "fr063_joint_completion_actual_owner_outcome": 1,
+        "iobs_actual_error_prepared_held": 1,
+        "iobs_actual_direct_and_outer_restore_retention": 1,
+        "iobs_actual_owning_member_fault": 1
+      },
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-5f8bf1202e8144fdb657e9b0cf67ead2",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "jsonLineParseErrors": 0,
+      "error": "Assert.Equal() Failure: Values differ\nExpected: PublicationUncertain\nActual:   TerminalReleased",
+      "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertWholeTerminalAsync(GameEngine engine) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSettlement.cs:line 115\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertHeldAsync(GameEngine engine, String owningDiagnostics) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 407\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow, Boolean normalizeNarrativeBeforeCheckpoint, Action`1 observeSettledCommonPlan, Boolean postOriginalAutomaticSubmission, Action`1 attachActualOwnerProbe, JointCaptureCutProbe currentCaptureProbe, JointInterfaceLifecycleProbe interfaceLifecycleProbe) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 439\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate(Boolean fault) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSettlement.cs:line 24\n--- End of stack trace from previous location ---"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CommonMemberCompensationRetainsPublishedInterfaceWithoutReplay",
+      "testId": "58c2975f-86c6-6b2e-fb44-3f6cd1d3493b",
+      "outcome": "Failed",
+      "duration": "00:04:58.9562583",
+      "boundaries": {
+        "fr063_guaranteed_native_pre_original_npc_shape": 1,
+        "qte_story_actual_client_append": 1,
+        "qte_story_actual_engine_result": 1,
+        "qte_physical_actual_occurrence": 1,
+        "fr063_joint_actual_prior42_inactive_tail": 1,
+        "fr063_joint_original_progression_reader_before_owner": 1,
+        "fr063_joint_signed_original_schedule_before_owner": 1,
+        "fr063_joint_natural_stage43_image_before_assert": 19,
+        "fr063_joint_original_inventory_structural_absence_before_assert": 2,
+        "fr063_confirmed_claim_inspection": 1,
+        "fr063_joint_completion_actual_prerequisites": 1,
+        "iobs_actual_public_correction_before_ready": 1,
+        "iobs_actual_result_commit": 2,
+        "iobs_actual_committed_member": 3,
+        "iobs_actual_completed_capture": 1,
+        "iobs_actual_owning_member_fault": 1,
+        "fr063_joint_in_memory_owner_snapshot_before_filesystem": 1,
+        "fr063_joint_completion_actual_owner_outcome": 1
+      },
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-8fb94ef5423e4a4984ef0628a4bbf2ea",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "jsonLineParseErrors": 0,
+      "error": "Assert.NotNull() Failure: Value is null",
+      "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertCompensatedCommonAsync(GameEngine engine) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSettlement.cs:line 65\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertHeldAsync(GameEngine engine, String owningDiagnostics) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 369\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow, Boolean normalizeNarrativeBeforeCheckpoint, Action`1 observeSettledCommonPlan, Boolean postOriginalAutomaticSubmission, Action`1 attachActualOwnerProbe, JointCaptureCutProbe currentCaptureProbe, JointInterfaceLifecycleProbe interfaceLifecycleProbe) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 439\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CommonMemberCompensationRetainsPublishedInterfaceWithoutReplay() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSettlement.cs:line 15\n--- End of stack trace from previous location ---"
+    }
+  ],
+  "binariesUnchanged": true,
+  "allOutputsUnchanged": true,
+  "namespaceAfter": {
+    "ownedRoots": []
+  },
+  "processesAfter": [],
+  "headAfter": "f0bfcda832db851a2768d6af13ce60695c24a9cd",
+  "statusAfter": ""
+}
