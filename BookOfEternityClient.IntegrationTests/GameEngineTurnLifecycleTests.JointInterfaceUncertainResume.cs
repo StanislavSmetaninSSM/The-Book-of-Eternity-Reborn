@@ -81,9 +81,11 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Trace = _publications, Meaning = "New runtime observation only; original failed run had no post-call log" });
             object ObserveImage(string path)
             {
-                try { return new { Bytes = ReadPhysical(path), ReadError = (string?)null }; }
+                try { return new { Bytes = File.ReadAllBytes(fixture._fs.ResolvePath(path)), Absent = false, ReadError = (string?)null }; }
+                catch (Exception error) when (error is FileNotFoundException or DirectoryNotFoundException)
+                { return new { Bytes = (byte[]?)null, Absent = true, ReadError = (string?)null }; }
                 catch (Exception error) when (error is IOException or UnauthorizedAccessException)
-                { return new { Bytes = (byte[]?)null, ReadError = error.ToString() }; }
+                { return new { Bytes = (byte[]?)null, Absent = false, ReadError = error.ToString() }; }
             }
             fixture.WritePhysicalInjuryDiagnostic("iobs_same_engine_uncertain_new_call_raw_images", new
             { Pending = ObserveImage(WoundAcceptedTurnSnapshotContract.PendingResolutionPath),

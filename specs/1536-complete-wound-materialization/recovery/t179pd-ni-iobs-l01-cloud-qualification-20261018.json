@@ -2,7 +2,7 @@
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
   "status": "QUALIFIED47_OF57_USER_RESUMED_MINIMAL_BORROWED_LEASE_IMPLEMENTATION_SOURCE_PREP_REQUIRED",
   "sourceCheckpoint": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
-  "sourcePinDigest": "8d9af639e85516874013910334b135946d3d7482da728e9889f99f8d080e106e",
+  "sourcePinDigest": "b4e01729c1a4df935f79e7407e6aafe52bf9394d4f6e1ddab6f83a40893f02d5",
   "sourcePinCount": 98,
   "environment": {
     "kind": "NEW_CLOUD_ENVIRONMENT_QUALIFICATION_IDENTITY",
@@ -2681,12 +2681,17 @@
     "gmDisposition": "Client-owned lease composition and fixture observation/oracle only; no GM-authored capability/schema/prompt/example contract changes.",
     "sourcePacket": {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
-      "sha256": "0fd7af860aae77a6d77e944178dfc8eec9abfd017f36d4161d631a494d067ccb",
-      "bytes": 48506
+      "sha256": "f616e4e1c7866e9800510184ce2e564781580ac3fd5d9580656b252acfa1ab2e",
+      "bytes": 49491
     },
     "freshPreparation": {
       "status": "UNRUN_SOURCE_PENDING"
     },
-    "productDeltaCount": 22
+    "productDeltaCount": 22,
+    "sourceFeedback": {
+      "candidate": "ef981a4606fb9f7813ed5390114da823f3704dac",
+      "correction": "Read diagnostic images directly; distinguish absent exceptions from unreadable IOException/UnauthorizedAccessException. Existing ReadPhysical/assertions unchanged. Independent source recheck required.",
+      "nativeExecuted": false
+    }
   }
 }

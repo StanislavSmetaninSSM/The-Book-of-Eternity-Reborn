@@ -78,9 +78,9 @@
     },
     {
       "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs",
-      "bytes": 9412,
-      "sha256": "bc6fac420bff76186cbd4584035d3ebfd4174c0006f8d904fe87094d857e6de6",
-      "gitBlob": "392fc65c6889b0f958e410efd442a20efbeba8e0",
+      "bytes": 9682,
+      "sha256": "deadc153a51e5ddd0d001904737ee74e287f970553bee0c8fd698a225cba780e",
+      "gitBlob": "40e0842daa2ac494e4c8a301ee261cdabfbc29b7",
       "mode": "100644",
       "binding": "BORROWED_LEASE_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
     },
@@ -790,12 +790,12 @@
     }
   ],
   "sourcePinCount": 98,
-  "pinDigest": "8d9af639e85516874013910334b135946d3d7482da728e9889f99f8d080e106e",
+  "pinDigest": "b4e01729c1a4df935f79e7407e6aafe52bf9394d4f6e1ddab6f83a40893f02d5",
   "ledger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-method-row-ledger-20261018.json",
     "sha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
     "phase": "CURRENT_PROCESS_FIXTURE_BUILD_ENTRY_SOURCE_INVENTORY_HASH_UNCHANGED_FROM_C4C0_AUTHORING",
-    "currentRuntimePointer": "Fixed authored method inventory only. Current runtime SOURCE/fresh PREP gates are packet.currentVerificationContract and cloud.settlementFixtureCorrection; historical ReadyDrift and ledger statuses are not a current native release."
+    "currentRuntimePointer": "Fixed authored inventory/hash unchanged. Current source/prep gates: packet.currentVerificationContract and cloud.borrowedLeaseCorrection. Current named release: packet.namedActualRelease/cloud.release. Previous settlement/ReadyDrift/ledger statuses historical, not release."
   },
   "productDelta": [
     "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
@@ -828,27 +828,17 @@
   },
   "causalReview": [
     {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-causal-review-20261018.json",
-      "sha256": "e09c84f4d9f6fd2364f05bd322581a055800aec321ed6f61c6ba51213f2eb680",
-      "bytes": 14627
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-joint-blocker-review-20261018.json",
+      "sha256": "d69ac4caa56652c8ac903d6c7806f2890355090ff504d5323da29c604ff175ab",
+      "bytes": 19548
     },
     {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-causal-review-20261018.md",
-      "sha256": "bbe52b8e1ea3236e5db0282d4dd88268c8c252a3a829b43b331a28e510223974",
-      "bytes": 3776
-    },
-    {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-failure-independent-check-4406e723-20261018.json",
-      "sha256": "7c9d26438c0de0d0b91b5ec3a8c25c307084ecc6c779c0a7c46047868a9b3bb8",
-      "bytes": 20056
-    },
-    {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-causal-checker-20261018.py",
-      "sha256": "8f79949119f461bc945adf498dca55573cb5068596d4807b062d382d1002d4bd",
-      "bytes": 24885
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-plan-independent-review-20261018.json",
+      "sha256": "90992571e612bfc7b0f6a1f1a01eb815aacb873e7d0b4faf093f09a2973ea038",
+      "bytes": 10263
     }
   ],
-  "causalDecision": "ACCEPT_SHARED_FIXTURE_CAUSE_AND_MINIMAL_CORRECTION_PLAN_ONLY_RUNTIME_HELD",
+  "causalDecision": "PROVEN_SELECTED_CURRENT_RESUME_NESTED_LEASE_AND_CURRENTINTERFACE_VACUOUS_ORACLE_MINIMAL_REMEDY_PLAN_ACCEPTED_SOURCE_PENDING",
   "correction": {
     "scope": "Exact owned lease from selected current resume into distinctly named upstream collector/item core. Original noarg callers/signatures, awaited acquisition/disposal, branch bodies/order and outer release remain. CurrentInterface each-call exact positive reason delta; uncertain1 raw/scalar/live diagnostics before unchanged positive oracles.",
     "retention": "47 accepted bindings retain original actual/compiled provenance; no replay. Original integrity4 unqualified, uncertain1 FAIL, all historical failures/old66529 UNKNOWN immutable.",
@@ -1008,5 +998,29 @@
     },
     "expectedFutureProductDelta": 22
   },
-  "historicalBindingScope": "All previous source/preparation/reviews in prior packet are historical and remain at their original source; none releases this changed candidate."
+  "historicalBindingScope": "All previous source/preparation/reviews in prior packet are historical and remain at their original source; none releases this changed candidate.",
+  "historicalCausalReview": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-causal-review-20261018.json",
+      "sha256": "e09c84f4d9f6fd2364f05bd322581a055800aec321ed6f61c6ba51213f2eb680",
+      "bytes": 14627
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-causal-review-20261018.md",
+      "sha256": "bbe52b8e1ea3236e5db0282d4dd88268c8c252a3a829b43b331a28e510223974",
+      "bytes": 3776
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-failure-independent-check-4406e723-20261018.json",
+      "sha256": "7c9d26438c0de0d0b91b5ec3a8c25c307084ecc6c779c0a7c46047868a9b3bb8",
+      "bytes": 20056
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-causal-checker-20261018.py",
+      "sha256": "8f79949119f461bc945adf498dca55573cb5068596d4807b062d382d1002d4bd",
+      "bytes": 24885
+    }
+  ],
+  "historicalCausalDecision": "ACCEPT_SHARED_FIXTURE_CAUSE_AND_MINIMAL_CORRECTION_PLAN_ONLY_RUNTIME_HELD",
+  "causalLimits": "Original uncertain1 proves returned late call then missing current proof, not its unique exception/final state; original post-call logs unavailable and not reconstructed. New observations belong only to new named run."
 }
