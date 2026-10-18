@@ -1,0 +1,48 @@
+{
+  "kind": "INDEPENDENT_NEW_CLOUD_PRECOMPILE_ENVIRONMENT_FAILURE_DIAGNOSIS",
+  "reviewedUtc": "2026-10-18T09:39:32.390501+00:00",
+  "candidateFailureCarrier": "d5d1a8483099a7ae60a128fa07c6d82c7cb8d058",
+  "originalActualSource": "bb156d0d84d4f2911f356ad79205a3f2697c1cf9",
+  "verdict": "ACCEPT_ENVIRONMENT_CAUSE_AND_ONE_NAMED_CORRECTED_CATALOG_ZERO_ONLY",
+  "findings": [],
+  "originalOutcome": {
+    "nativeExit": 1,
+    "actualTestsExecuted": 0,
+    "phase": "dotnet CLI first-use before compilation/discovery",
+    "productRed": false,
+    "unchangedBinaryInventory": true,
+    "unchangedCompleteOutputInventory": true,
+    "emptyOwnedNamespacesAndProcesses": true
+  },
+  "cause": "SDK10.0.402 uses runtime10.0.13. Unix named-mutex security change uses XDG_RUNTIME_DIR or home storage; env.sh omitted XDG_RUNTIME_DIR. Read-only home caused mkdir(/home/agent/.dotnet,0700)=EROFS before NuGet-Migrations mutex creation. Parent diagnostic dotnet --help reproduced this independently of any project build.",
+  "evidence": [
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-cloud-813f1057/record.json",
+      "sha256": "e238a8fdeb937a305d43d230af00e64ba16d5348e9247e8643d5618417ad75c8"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-093708-501-2760-4b45f9bdf3ed46099abcbcc1c8ee6518-categories/dotnet-test.log",
+      "sha256": "7aab8499f66d0a4a336cf6cc48101a7d37ab35e52e4fba62378a449b52b442df"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/dotnet-help-files.trace",
+      "sha256": "0b8cde9713495345827596bbf1b8acfac3882d13eaab7ce2b11cc0802e59fcd9"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/env.sh",
+      "sha256": "5861572ce6226e0aacecadf20e7dc33ee2b82911e625636dec5ae4868030445d"
+    }
+  ],
+  "primarySources": [
+    "https://github.com/dotnet/docs/issues/56396",
+    "https://github.com/dotnet/runtime/issues/135726"
+  ],
+  "acceptedCorrection": {
+    "setting": "XDG_RUNTIME_DIR",
+    "valueConstraint": "New private real directory under the current GUID cloud root, owned by current UID, mode0700; inherit consistently in controller/pwsh/dotnet/children. Record exact path/realpath/mode/owner.",
+    "preserve": "HOME, source packet98, ledger, fixture/assertions/selectors/controllers, original failure bytes/sentinel/outcome and SDK/runtime versions unchanged; no synthetic migration markers or unsafe global mutex switch."
+  },
+  "nextAdmission": "After parent saves and verifies exact environment correction plus original failure/diagnostic decision, one separately named fresh catalog ZERO at new saved metadata HEAD using unchanged fixed preparation controller is eligible. Preserve prior FIRST sentinel, create new uniquely named record/sentinel; no automatic repeat.",
+  "holds": "No PREP acceptance, PlanOnly or actual release. Successful fresh catalog still needs separately named whole/pending ZERO, complete output inventory and independent PREP; SOURCE/crash isolation review still in progress. Original corrected crash session66529 remains UNKNOWN/unavailable. Windows/CI/fullNI/HOT/F1/M3/T197/A3 holds unchanged.",
+  "reviewerActions": "Read-only repository/evidence/metadata checks plus official documentation retrieval. No build/discovery/tests/process intervention/repository writes."
+}

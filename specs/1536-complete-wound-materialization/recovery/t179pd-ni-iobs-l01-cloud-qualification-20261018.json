@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "WIP_FRESH_ZERO_ENVIRONMENT_PREREQUISITE_FAILURE_FROZEN",
+  "status": "WIP_INDEPENDENT_ENVIRONMENT_CORRECTION_ACCEPTED_NEW_ZERO_ELIGIBLE",
   "sourceCheckpoint": "2e0463ff3b5e52510e86f1c8b53bd714923e156d",
   "sourcePinDigest": "1f11670a1e063bed010e2e03585fb6e8b5ad4da64157a5ce877317475d3c7bc4",
   "sourcePinCount": 98,
@@ -461,7 +461,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Independent environment prerequisite diagnosis; no PlanOnly or actual execution.",
+  "next": "One new named catalog ZERO after this correction push/readback, then separately gated whole/pending PlanOnly. No actual execution.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -471,8 +471,30 @@
       "error": "System.IO.IOException opening NuGet-Migrations named mutex during .NET first-time configuration, before build/discovery",
       "archive": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-prep-failed-813f1057-files-20261018/archive.json",
       "archiveSha256": "e4998c89be71089625bf4d1a65b613889b358fa8746366df8eaa4a9b0b63e1f8",
-      "diagnosis": "INDEPENDENT_PENDING",
-      "retry": "NOT_AUTHORIZED_BY_REVIEW_YET"
+      "diagnosis": "INDEPENDENT_ENVIRONMENT_CAUSE_ACCEPTED",
+      "retry": "ONE_SEPARATELY_NAMED_CATALOG_ZERO_AFTER_CORRECTION_SAVED_READBACK"
     }
-  ]
+  ],
+  "environmentCorrection": {
+    "setting": "XDG_RUNTIME_DIR",
+    "path": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/runtime",
+    "realpath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/runtime",
+    "uid": 1000,
+    "mode": "0700",
+    "homeUnchanged": true,
+    "envShellBeforeSha256": "5861572ce6226e0aacecadf20e7dc33ee2b82911e625636dec5ae4868030445d",
+    "envShellSha256": "5d61c19c1341cf9a26b9d361c81da8c89d09924381791c4108d968555f899c53",
+    "envShell": "export PATH=/tmp/1536-cloud-tools/pwsh:/tmp/1536-cloud-tools/dotnet:$PATH\nexport DOTNET_ROOT=/tmp/1536-cloud-tools/dotnet\nexport DOTNET_CLI_HOME=/tmp/1536-cloud-tools/cli\nexport NUGET_PACKAGES=/tmp/1536-cloud-tools/nuget\nexport XDG_CACHE_HOME=/tmp/1536-cloud-tools/cache\nexport XDG_CONFIG_HOME=/tmp/1536-cloud-tools/config\nexport XDG_DATA_HOME=/tmp/1536-cloud-tools/data\nexport DOTNET_CLI_TELEMETRY_OPTOUT=1\nexport DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1\nexport TMPDIR=/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320\nexport XDG_RUNTIME_DIR=/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/runtime\n",
+    "independentDecision": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-environment-diagnosis-20261018.json",
+      "sha256": "a5f27297cad5774a040660748615c7cadc0521429afe9fa28be4f552d6cf553f",
+      "model": "gpt-6-astra",
+      "reasoningEffort": "xhigh"
+    },
+    "diagnosticTrace": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-dotnet-help-files.trace.gz",
+      "rawSha256": "0b8cde9713495345827596bbf1b8acfac3882d13eaab7ce2b11cc0802e59fcd9"
+    },
+    "scope": "Environment prerequisite only; no product/controller/fixture/assertion/catalog/source change. Original failed preparation remains immutable."
+  }
 }
