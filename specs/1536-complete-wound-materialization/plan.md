@@ -1,3 +1,7 @@
+## T179-Pd-NI-IOBS-L01 — diagnostic catalog compiler failure frozen; ZERO actual (2026-10-18)
+
+Freshcatalog actual/compiled9b1124a4: native1, ZERO executed,333.909s. Original8rawchains and clean new-namespace before/after v2 boundaries saved; old two frozen roots unchanged outside it. Compiler CS0246 at Crash.cs240: newly referenced ILogger<> lacks Microsoft.Extensions.Logging import in this source file. Whole57/diagnostic1 plans remain UNRUN; no actual release or new target. Preserve this failed original; independently confirm one-line namespace correction, affected SOURCE and new separately named fresh ZERO3/PREP before any one-mode diagnostic gate. Qualified52/newcrash124/old66529UNKNOWN/all broader holds unchanged. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — diagnostic1 SOURCE accepted; ZERO3 only (2026-10-18)
 
 [Independent SOURCE](recovery/t179pd-ni-iobs-l01-diagnostic1-source-independent-review-20261018.md) accepts fixture-only instrumentation/diagnostic Fact/exact selection and isolation/tool gates at candidatea85f2d2e05b7c8acb644408c4cd1a8f86e272e3b.101pins/product23, original assertions/whole57/ledger/220s child/900s crash5 limits unchanged. Qualified52/original native124/directtimeouts/two frozen roots/old66529 UNKNOWN retained. Save/recover/readback acceptance then named fresh BOTH/catalog+whole16/33/57+diagnostic1/1/1 ZERO3 only. No actual until saved/recovered original preparation and independent PREP plus separate named gate. All broader holds unchanged. Following sections historical.

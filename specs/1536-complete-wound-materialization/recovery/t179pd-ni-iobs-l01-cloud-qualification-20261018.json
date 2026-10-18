@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "QUALIFIED52_DIAGNOSTIC1_SOURCE_ACCEPTED_ZERO3_ONLY",
+  "status": "QUALIFIED52_DIAGNOSTIC1_BUILD_COMPILER_FAILURE_FROZEN",
   "sourceCheckpoint": "a85f2d2e05b7c8acb644408c4cd1a8f86e272e3b",
   "sourcePinDigest": "ccae22922742a45cac69e9b35a4df4ad1f99ebe83977f6ec05e47b765cd02ebf",
   "sourcePinCount": 101,
@@ -1601,7 +1601,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Save/recover/readback SOURCE acceptance then only named fresh catalog/whole57/diagnostic1 ZERO3; archive originals/recover/independent PREP before any separately named actual.",
+  "next": "Save/recover compilerfailure, independently confirm minimal ILogger namespace fix, affected SOURCE then separately named fresh catalog/whole57/diagnostic1 ZERO3 and independent PREP. No actual or crash5 retry.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -1726,7 +1726,7 @@
     "qualified": 52
   },
   "release": {
-    "status": "NONE_DIAGNOSTIC1_SOURCE_AND_PREP_REQUIRED",
+    "status": "NONE_COMPILER_FAILURE_SOURCE_PREP_REQUIRED",
     "mode": null
   },
   "newOriginalObservedPassingCases": 4,
@@ -3746,7 +3746,7 @@
   },
   "historicalSourceCheckpointBeforeSelectedRouting": "9fdecef3fd79614b9eb13b5609c99b9457d51af4",
   "crashDiagnostic1": {
-    "status": "SOURCE_ACCEPTED_FRESH_ZERO3_UNRUN",
+    "status": "BUILD_FAILURE_FROZEN_AFFECTED_SOURCE_CORRECTION_REQUIRED",
     "verdict": "HOLD_CRASH5; ACCEPT_BOUNDED_DIAGNOSTIC1_PLAN_SUBJECT_TO_SOURCE_AND_FRESH_PREP",
     "review": {
       "model": "gpt-6-astra",
@@ -3919,7 +3919,65 @@
           "bytes": 6393
         }
       ]
-    }
+    },
+    "preparationAttempts": [
+      {
+        "status": "ORIGINAL_COMPILER_FAILURE_NATIVE1_ZERO_ACTUAL_FROZEN",
+        "mode": "catalog",
+        "actualSource": "9b1124a4706b47bdb198afb2444408d6cba2f0b0",
+        "compiledSource": "9b1124a4706b47bdb198afb2444408d6cba2f0b0",
+        "recordPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-crash-diagnostic1-cloud-f57baaa8/record.json",
+        "recordSha256": "123724fa7b7e934ddb09882a8f511035abfb3216eb0e030117cd14991ca62963",
+        "nativeExit": 1,
+        "actualTestsExecuted": 0,
+        "seconds": 333.9087935660027,
+        "compilerError": "CS0246 ILogger<> at JointInterfaceCrash.cs240: Microsoft.Extensions.Logging namespace absent from this source file",
+        "archive": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic1-prep-catalog-frozen-f57baaa8-files-20261018/archive.json",
+          "bytes": 6568,
+          "sha256": "e50b8656e8b82bdf0c7125e63541a803bf6ee8c3d6cf230164dab32a94f7edbf",
+          "rawChains": 8
+        },
+        "evidence": [
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-build-failure-census-crash-diagnostic1-catalog-before-f57baaa8.json",
+            "bytes": 129539,
+            "sha256": "f693a40457a8ecc8745397e36c8bc6aa50ba33cbaf3f6471e4fd4a0498f51de5"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-build-failure-census-crash-diagnostic1-catalog-after-f57baaa8.json",
+            "bytes": 135298,
+            "sha256": "b93cea1e88b8fb75786a49f0b9922f513ca2c22489601bf61d5f0e37e2f3a4d5"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-build-failure-diagnostic1-catalog-frozen-separation-f57baaa8.json",
+            "bytes": 806,
+            "sha256": "5eb20e74269381cff8d7e1fb33db0e1144e74825f342d6113e849d190fe33215"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-build-failure-diagnostic1-source-acceptance-parent-readback-9b1124a4.json",
+            "bytes": 2423,
+            "sha256": "e28c8e49485546e6b537170aba9ac93bc7ce474e3487aa82e1e2dabc3bb613fe"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-build-failure-carrier-recovery-9b1124a4.json",
+            "bytes": 6429,
+            "sha256": "7bb1f9d18dedc463034c69dac5317546ba8c36c2152d795e7ae55e8cfc79705d"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/check_l01_diagnostic1_prep.py",
+            "bytes": 27011,
+            "sha256": "4b4fa32932212beb20a785298336b5e04b1996728b8718e577c1835cab426b02"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-prep-checker-ready-20261018.json",
+            "bytes": 2621,
+            "sha256": "caed5e861bc1c8401a94b102f8030e9a187c15461acdbff055b2bc0846286e69"
+          }
+        ],
+        "scope": "No test ran. Whole/diagnostic plans UNRUN; no actual release. Frozen current-cloud roots retained unchanged; before/after new namespace clean. Previous SOURCE report retained at original candidate; corrected type reference requires affected SOURCE/new fresh ZERO3."
+      }
+    ]
   },
   "historicalMaterialReviewHoldBeforeCrash5": {
     "kind": "CURRENT_RESUME_NESTED_CANONICAL_LEASE",
