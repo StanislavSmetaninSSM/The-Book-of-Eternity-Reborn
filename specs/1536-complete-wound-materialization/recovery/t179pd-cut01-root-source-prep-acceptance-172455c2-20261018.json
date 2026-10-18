@@ -1,0 +1,71 @@
+{
+  "kind": "ROOT_CUT01_CONCRETE_SOURCE_PREP_ACCEPTANCE_FIRST_STOP1_RELEASE",
+  "createdUtc": "2026-10-18T03:32:41.137377+00:00",
+  "preparedCarrier": "172455c2b66c15c56db759d564b7ca211a8ebf74",
+  "compiledSource": "3579d8e21db039dbabc6050a175024cf6c08f79b",
+  "unchangedProductSource": "08119f36c66464913e94d4bd5d23221073e0d48d",
+  "verdict": "ACCEPT_BOUNDED_SOURCE_FIXTURE_SELECTION_PREP_FOR_FIRST_STOP1_ONLY",
+  "artifacts": [
+    {
+      "path": "/tmp/t179pd-cut01-tests-source-independent-review-20261018.md",
+      "bytes": 2528,
+      "sha256": "5790ed592039b0d5bdc1d5414a03dd651a0eaa740d71f83f1eaafc8408a36f14"
+    },
+    {
+      "path": "/tmp/t179pd-cut01-tests-source-independent-review-20261018.json",
+      "bytes": 4167,
+      "sha256": "c93822fa475c8ccabe1215bd1dd8e4b9e3d0f5c4b0710ccd1e56d62e2556c396"
+    },
+    {
+      "path": "/tmp/t179pd-cut01-tests-source-independent-check-20261018.json",
+      "bytes": 34571,
+      "sha256": "45f7c40d2a1971dbdc931f357bc121baf886c22c0961830a462aa415afd77f15"
+    },
+    {
+      "path": "/tmp/t179pd-cut01-prepared-delta-github-172455c2-20261018.json",
+      "bytes": 27555,
+      "sha256": "97d21f707edf7bd16595953e4b62e2b2a8ad577c6d234d8db8966bf9986be764"
+    },
+    {
+      "path": "/tmp/t179pd3d-root-recovery-composition-172455c2-20261017.json",
+      "bytes": 24690,
+      "sha256": "7ae8d104beedcc70bdb724c630491c5721d3192c3df5f230afaa0a36dcc0b6ea"
+    },
+    {
+      "path": "/tmp/t179pd-cut01-stop-first-run.py",
+      "bytes": 5767,
+      "sha256": "2946a501dc52d593c5d3c0bde417b07e0ff8487f324433c13bdec8136e073950"
+    },
+    {
+      "path": "/tmp/t179pd-cut01-archive-stop-v2.py",
+      "bytes": 1768,
+      "sha256": "4e23bf8570402faf74245118a1e022fee1e843141916d16ccaf8ebfd15d11c38"
+    }
+  ],
+  "rootChecks": [
+    "Read fixed262lineprobe, four default-null fixture substitutions, exact existing null dispatcher and real preparation pending-read edge.",
+    "Read fresh canonical BOTH/catalog and PlanOnly native0/0 records, actual stage3owners3descriptors4methods5planned/0executed summaries and ninecopies/namespace/335inventory binding.",
+    "Independently verified all19 NEW raw/stored compressed preparation chains against live original bytes, no replay of accepted old packages.",
+    "Independently verified physical newGitHubdelta36files/all32metadata paths and full7a+71deltas/55,198trackedpaths; exact clean172 and unchanged product/TestSupport.",
+    "Read/hashverified fixed2946 recorder and4e23 v2archiver in/tmp and savedsource; formal independent review/support hashes exact."
+  ],
+  "firstActualScope": {
+    "category": "fr063-joint-capture-cut-stop",
+    "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentCaptureStopPrecedesPreparationAndExpiresActualOwner",
+    "cases": 1,
+    "runMode": "Fixed FIRST recorder, canonical category -NoBuild; compiled3579 ninecopies must still match.",
+    "remainingCasesHeld": 4,
+    "conditionalRelease": "Sole writer may first persist exact independentreview3/thisRootdecision/currentboundedstatus+preparedrecovery/composition metadata only, nonforcepush/exactremote/GitHubdelta. Root then names ONLY this firststop1 on that clean metadata-only descendant. This record alone is not an instruction to bypass that named activation.",
+    "causalEvidenceRequired": [
+      "Genuine Stage43/original/realrepair/correctedReady prerequisites pass before intended assertion.",
+      "Original raw shows actual preparation-present-pending reads >0 and actual retained/pub/oldroute outcome; no callback exists on unchanged product.",
+      "Exactly one completed discovered target case with intended callback0-vs1 semantic failure, without setup/NotNull/enum/compilation/timeout/underfill substitution.",
+      "Frozen original native/runner/TRX/stdout/process/source/FIRST records and strict unique-root cleanup/physical absence; before/after binaries, namespace and cleanHEAD exact."
+    ],
+    "unexpectedOutcome": "Preserve raw and stop. No retry, edit, product advance or reclassification before independent causal EVIDENCE."
+  },
+  "counterPrecision": "Marker counter observes committed marker-containing cohorts (can include progression), not exact firstcommon invocation count. Negative zero plus real prep-entry/source-order stop establishes bounded no-preparation/no-later-work.",
+  "laterRelease": "Production enumappend+await only after accepted causalRED. Fresh product preparation/SOURCE then separate actual affectedLate2/EVIDENCE before newstop+transparency3. No preproduct replay.",
+  "precommon": "Bounded v2 Prepared→Published design direction accepted separately; NI-IOBS-L01 actualissuer/strictcodec/recovery/originbridge remains OPEN. No codeactivation.",
+  "constraints": "No fullNI/HOT/newQTE/Windows/CI/ZIP/A3/main/merge/forcepush/branch deletion/credentials/security changes. Current seam event never certifies NI-complete."
+}
