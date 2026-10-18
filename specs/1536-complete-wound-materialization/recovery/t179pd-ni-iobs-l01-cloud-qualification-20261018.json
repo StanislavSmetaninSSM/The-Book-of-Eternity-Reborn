@@ -1,8 +1,8 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "QUALIFIED52_DIAGNOSTIC1_BUILD_COMPILER_FAILURE_FROZEN",
+  "status": "QUALIFIED52_DIAGNOSTIC1_COMPILE_CORRECTION_SOURCE_WIP_UNCOMPILED_UNRUN",
   "sourceCheckpoint": "a85f2d2e05b7c8acb644408c4cd1a8f86e272e3b",
-  "sourcePinDigest": "ccae22922742a45cac69e9b35a4df4ad1f99ebe83977f6ec05e47b765cd02ebf",
+  "sourcePinDigest": "2c144b7734708f8c02a3924d4d12a885384f05a1437021afd2845827c761c616",
   "sourcePinCount": 101,
   "environment": {
     "kind": "NEW_CLOUD_ENVIRONMENT_QUALIFICATION_IDENTITY",
@@ -1601,7 +1601,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Save/recover compilerfailure, independently confirm minimal ILogger namespace fix, affected SOURCE then separately named fresh catalog/whole57/diagnostic1 ZERO3 and independent PREP. No actual or crash5 retry.",
+  "next": "Save/recover one-line ILogger import correction; independent affected SOURCE then newly named fresh BOTH/catalog+whole57+diagnostic1 ZERO3/PREP in new clean namespace. No actual or crash5 retry.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -1638,92 +1638,14 @@
     "scope": "Environment prerequisite only; no product/controller/fixture/assertion/catalog/source change. Original failed preparation remains immutable."
   },
   "sourceReview": {
-    "verdict": "ACCEPT_SOURCE_AND_NAMED_ZERO3_ONLY_AFTER_METADATA_SAVE_RECOVERY_READBACK",
-    "candidate": "a85f2d2e05b7c8acb644408c4cd1a8f86e272e3b",
-    "model": "gpt-6-astra",
-    "reasoningEffort": "xhigh",
-    "artifacts": [
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/check_l01_diagnostic1_source-v1-assert-count.py",
-        "sha256": "c1233885363043e676fd81dd48d36eff214cbf43e74fcec7cd17a44594a4ede0",
-        "bytes": 12508
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/check_l01_diagnostic1_source.py",
-        "sha256": "046ab63b6a7a331acc97f5f9c1861ba538bd0a0ea3e2967aaba4c8a32b64cb7b",
-        "bytes": 12505
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/diagnostic1-source-check-8ba3ddbf.log",
-        "sha256": "9e17432c7980edb69e6a4ad76487a39f0f977daa946901a26424b35e20e2d577",
-        "bytes": 711
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/diagnostic1-source-check-a85f2d2e.log",
-        "sha256": "bbada247cdc27ec430d4b42f14e9cba9c01425e9730757650fbf87975b8156c5",
-        "bytes": 237
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-source-correction-readback-a85f2d2e-20261018.json",
-        "sha256": "cf628b820f9964189663f653007a61277392e8eafda8eb04ec56dfeeef08f217",
-        "bytes": 4053
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-source-independent-check-8ba3ddbf-20261018.json",
-        "sha256": "22d0d9450c16a0d6b067ad649c9792b181888ef262b52e4eab308db4b7a63099",
-        "bytes": 3488
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-source-independent-check-a85f2d2e-20261018.json",
-        "sha256": "f64c6b0769c792d90d561711ce1d39be23832e4028dd950bf8ad8f3e43ead4d9",
-        "bytes": 2981
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-source-independent-review-20261018.json",
-        "sha256": "28b1b7417b5d60c5c5ad72b5f067bceffe9cf256352506657238d1bb6118c325",
-        "bytes": 11333
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-source-independent-review-20261018.md",
-        "sha256": "43058f45cb6c10461a1b449600f4c6176bb4cea1b331536d4b61db47919c11d9",
-        "bytes": 2693
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-source-review-utility-history-20261018.json",
-        "sha256": "77c34cbd3f3d590a1d116f9d25e7738e77af488b0c44c29198169d6f84500169",
-        "bytes": 1373
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/write_diagnostic1_source_review.py",
-        "sha256": "31af681a7f28aed41b500e769d63e241953aa84c24c571b0fc8ded1dc60ba023",
-        "bytes": 13386
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-source-candidate-recovery-a85f2d2e-20261018.json",
-        "sha256": "b9d777c0fbbccd8f777aae6257dc434554b869e3f1f99a24d9ac952c4fb253fd",
-        "bytes": 2015
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-plan-parent-readback-6a3f88fd-20261018.json",
-        "sha256": "257c0f635c8d708dc4054da20be9589a456d0e5ac736c22b89a937572511ca8f",
-        "bytes": 456
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-plan-carrier-recovery-6a3f88fd-20261018.json",
-        "sha256": "ee31de421a8e75c55d5cbaf775004aeb9f80756c8ce3da2718228756c3c16d40",
-        "bytes": 6393
-      }
-    ]
+    "status": "PENDING_AFFECTED_SOURCE_ONE_LINE_IMPORT_CORRECTION",
+    "priorAcceptedCandidate": "a85f2d2e05b7c8acb644408c4cd1a8f86e272e3b",
+    "scope": "Exact using Microsoft.Extensions.Logging only; all other executable fixture/controller/product bytes unchanged. New clean GUID namespace/environment/labels required."
   },
   "freshPreparation": {
-    "status": "UNRUN_CURRENT_DIAGNOSTIC_ZERO3",
+    "status": "UNRUN_NEW_DIAGNOSTIC_ZERO3_AFTER_ONE_LINE_COMPILER_FIX",
     "currentPointer": "cloud-qualification.crashDiagnostic1",
-    "modes": [
-      "catalog",
-      "plan",
-      "diagnostic-plan"
-    ],
-    "qualified": 52
+    "retained": 52
   },
   "release": {
     "status": "NONE_COMPILER_FAILURE_SOURCE_PREP_REQUIRED",
@@ -3746,7 +3668,7 @@
   },
   "historicalSourceCheckpointBeforeSelectedRouting": "9fdecef3fd79614b9eb13b5609c99b9457d51af4",
   "crashDiagnostic1": {
-    "status": "BUILD_FAILURE_FROZEN_AFFECTED_SOURCE_CORRECTION_REQUIRED",
+    "status": "ONE_LINE_IMPORT_CORRECTION_WIP_AFFECTED_SOURCE_AND_NEW_ZERO3_REQUIRED",
     "verdict": "HOLD_CRASH5; ACCEPT_BOUNDED_DIAGNOSTIC1_PLAN_SUBJECT_TO_SOURCE_AND_FRESH_PREP",
     "review": {
       "model": "gpt-6-astra",
@@ -3818,8 +3740,8 @@
     "isolation": "Same physical cloud/boot; new GUID run/TMPDIR/runtime/cache identity. Keep old two frozen roots outside mutable namespace untouched; new per-case GUID roots/new genuine supervised producer/resumer/newnonce; global active/UNKNOWN is hard stop. Old66529 environment/processes/bytes untouched and UNKNOWN/unavailable.",
     "gates": "Save/push/exactremote/fullGitHub recovery/readback plan, fixture-only implementation and SOURCE101/product23, save/recover accepted SOURCE, fresh ZERO3 inventories/dated authoritative censuses then independent PREP, save/recover acceptance and only explicit one-mode diagnostic1 release. Original diagnostic outcome saved/reviewed before any remedy/requalification.",
     "runNamespace": {
-      "identity": "ni-iobs-l01-crash-diagnostic1-20261018-f57baaa823e7465cb91cd7fcd9613dea",
-      "tmpdir": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-f57baaa823e7465cb91cd7fcd9613dea",
+      "identity": "ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9",
+      "tmpdir": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9",
       "samePhysicalCloud": true,
       "bootId": "cbd633d5-c8d0-43e1-8c6e-1b233700b8d9",
       "frozenRootsOutsideMutableNamespace": [
@@ -3828,14 +3750,14 @@
       ],
       "oldNamespace": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320",
       "toolchain": "Same immutable SDK/runtime/pwsh and NuGet dependency cache; new CLI/XDG/runtime mutable directories, no shared mutable game state",
-      "environmentFile": "/tmp/1536-cloud-tools/env-crash-diagnostic1.sh"
+      "environmentFile": "/tmp/1536-cloud-tools/env-crash-diagnostic1-b51375ba.sh"
     },
     "currentTargetClosure": {
       "sourcePins": 101,
       "productPaths": 23
     },
     "implementation": "New dedicated Fact/selection; original theory, semantic assertions, child supervision/220s and original crash5/900s unchanged. Readonly stdout scalar stages/live logger wrapper; original boundedlogger unchanged. No production source change, no actual now.",
-    "sourcePinDigest": "ccae22922742a45cac69e9b35a4df4ad1f99ebe83977f6ec05e47b765cd02ebf",
+    "sourcePinDigest": "2c144b7734708f8c02a3924d4d12a885384f05a1437021afd2845827c761c616",
     "sourceReviewCorrection": {
       "finding": "New unrun5min diagnostic category could interrupt original220s child timeout/diagnostic flush/join before the useful event record",
       "remedy": "Preserve original900s outer category ceiling for singleton, child220unchanged; no native run on5min proposal",
@@ -3843,6 +3765,115 @@
     },
     "metadataPhaseLabels": "Prior packet causal/source/preparation/contract objects preserved exactly in historicalSelectedRoutingMetadataBeforeDiagnostic1 and pre-diagnostic snapshot; current fields point to diagnostic1 SOURCE/ZERO3 with52 retained.",
     "sourceAcceptance": {
+      "status": "PENDING_CURRENT_ONE_LINE_COMPILE_CORRECTION_SOURCE"
+    },
+    "preparationAttempts": [
+      {
+        "status": "ORIGINAL_COMPILER_FAILURE_NATIVE1_ZERO_ACTUAL_FROZEN",
+        "mode": "catalog",
+        "actualSource": "9b1124a4706b47bdb198afb2444408d6cba2f0b0",
+        "compiledSource": "9b1124a4706b47bdb198afb2444408d6cba2f0b0",
+        "recordPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-crash-diagnostic1-cloud-f57baaa8/record.json",
+        "recordSha256": "123724fa7b7e934ddb09882a8f511035abfb3216eb0e030117cd14991ca62963",
+        "nativeExit": 1,
+        "actualTestsExecuted": 0,
+        "seconds": 333.9087935660027,
+        "compilerError": "CS0246 ILogger<> at JointInterfaceCrash.cs240: Microsoft.Extensions.Logging namespace absent from this source file",
+        "archive": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic1-prep-catalog-frozen-f57baaa8-files-20261018/archive.json",
+          "bytes": 6568,
+          "sha256": "e50b8656e8b82bdf0c7125e63541a803bf6ee8c3d6cf230164dab32a94f7edbf",
+          "rawChains": 8
+        },
+        "evidence": [
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-build-failure-census-crash-diagnostic1-catalog-before-f57baaa8.json",
+            "bytes": 129539,
+            "sha256": "f693a40457a8ecc8745397e36c8bc6aa50ba33cbaf3f6471e4fd4a0498f51de5"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-build-failure-census-crash-diagnostic1-catalog-after-f57baaa8.json",
+            "bytes": 135298,
+            "sha256": "b93cea1e88b8fb75786a49f0b9922f513ca2c22489601bf61d5f0e37e2f3a4d5"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-build-failure-diagnostic1-catalog-frozen-separation-f57baaa8.json",
+            "bytes": 806,
+            "sha256": "5eb20e74269381cff8d7e1fb33db0e1144e74825f342d6113e849d190fe33215"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-build-failure-diagnostic1-source-acceptance-parent-readback-9b1124a4.json",
+            "bytes": 2423,
+            "sha256": "e28c8e49485546e6b537170aba9ac93bc7ce474e3487aa82e1e2dabc3bb613fe"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-build-failure-carrier-recovery-9b1124a4.json",
+            "bytes": 6429,
+            "sha256": "7bb1f9d18dedc463034c69dac5317546ba8c36c2152d795e7ae55e8cfc79705d"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/check_l01_diagnostic1_prep.py",
+            "bytes": 27011,
+            "sha256": "4b4fa32932212beb20a785298336b5e04b1996728b8718e577c1835cab426b02"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-prep-checker-ready-20261018.json",
+            "bytes": 2621,
+            "sha256": "caed5e861bc1c8401a94b102f8030e9a187c15461acdbff055b2bc0846286e69"
+          }
+        ],
+        "scope": "No test ran. Whole/diagnostic plans UNRUN; no actual release. Frozen current-cloud roots retained unchanged; before/after new namespace clean. Previous SOURCE report retained at original candidate; corrected type reference requires affected SOURCE/new fresh ZERO3."
+      }
+    ],
+    "historicalRunNamespaces": [
+      {
+        "identity": "ni-iobs-l01-crash-diagnostic1-20261018-f57baaa823e7465cb91cd7fcd9613dea",
+        "tmpdir": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-f57baaa823e7465cb91cd7fcd9613dea",
+        "samePhysicalCloud": true,
+        "bootId": "cbd633d5-c8d0-43e1-8c6e-1b233700b8d9",
+        "frozenRootsOutsideMutableNamespace": [
+          "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-c39f7e9cf6eb42868669ed06f092c491",
+          "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a"
+        ],
+        "oldNamespace": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320",
+        "toolchain": "Same immutable SDK/runtime/pwsh and NuGet dependency cache; new CLI/XDG/runtime mutable directories, no shared mutable game state",
+        "environmentFile": "/tmp/1536-cloud-tools/env-crash-diagnostic1.sh",
+        "scope": "First diagnostic SOURCE/PREP namespace; catalog compilerfailure preserved, no game tests executed. Not reused."
+      }
+    ],
+    "buildCausalReview": {
+      "verdict": "CONFIRM_BUILD_FAILURE_AND_ACCEPT_ONE_LINE_IMPORT_FIX_PLAN_ONLY",
+      "model": "gpt-6-astra",
+      "reasoningEffort": "xhigh",
+      "artifacts": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/check_l01_diagnostic1_build_failure.py",
+          "sha256": "a84edf9a524e862c7997cfbd020209b29303207b77a467d406b48cab8fdd7b55",
+          "bytes": 6521
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-build-causal-independent-check-c66d3359-20261018.json",
+          "sha256": "8d1e733b2aed0421c81e5d4ac6d87a067703ede7315b6711672bc96ee9104ff5",
+          "bytes": 4748
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-build-causal-independent-review-20261018.json",
+          "sha256": "ad40ea89b7efcb248ce21fa6bec74223efa53f05c7f9a369439a7ba3d6824683",
+          "bytes": 4863
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-build-causal-independent-review-20261018.md",
+          "sha256": "edca3a42b832130de8c101b6a3fac44b1deab57570a50db1a268dd285f8c4041",
+          "bytes": 1278
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-build-failure-carrier-recovery-c66d3359-20261018.json",
+          "sha256": "7e85a752bf5e49fa2d1db971cb7e41047e33af1ff3c33642260546f05a2cca54",
+          "bytes": 7670
+        }
+      ]
+    },
+    "historicalSourceAcceptanceBeforeCompileFix": {
       "verdict": "ACCEPT_SOURCE_AND_NAMED_ZERO3_ONLY_AFTER_METADATA_SAVE_RECOVERY_READBACK",
       "candidate": "a85f2d2e05b7c8acb644408c4cd1a8f86e272e3b",
       "model": "gpt-6-astra",
@@ -3919,65 +3950,7 @@
           "bytes": 6393
         }
       ]
-    },
-    "preparationAttempts": [
-      {
-        "status": "ORIGINAL_COMPILER_FAILURE_NATIVE1_ZERO_ACTUAL_FROZEN",
-        "mode": "catalog",
-        "actualSource": "9b1124a4706b47bdb198afb2444408d6cba2f0b0",
-        "compiledSource": "9b1124a4706b47bdb198afb2444408d6cba2f0b0",
-        "recordPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-crash-diagnostic1-cloud-f57baaa8/record.json",
-        "recordSha256": "123724fa7b7e934ddb09882a8f511035abfb3216eb0e030117cd14991ca62963",
-        "nativeExit": 1,
-        "actualTestsExecuted": 0,
-        "seconds": 333.9087935660027,
-        "compilerError": "CS0246 ILogger<> at JointInterfaceCrash.cs240: Microsoft.Extensions.Logging namespace absent from this source file",
-        "archive": {
-          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic1-prep-catalog-frozen-f57baaa8-files-20261018/archive.json",
-          "bytes": 6568,
-          "sha256": "e50b8656e8b82bdf0c7125e63541a803bf6ee8c3d6cf230164dab32a94f7edbf",
-          "rawChains": 8
-        },
-        "evidence": [
-          {
-            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-build-failure-census-crash-diagnostic1-catalog-before-f57baaa8.json",
-            "bytes": 129539,
-            "sha256": "f693a40457a8ecc8745397e36c8bc6aa50ba33cbaf3f6471e4fd4a0498f51de5"
-          },
-          {
-            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-build-failure-census-crash-diagnostic1-catalog-after-f57baaa8.json",
-            "bytes": 135298,
-            "sha256": "b93cea1e88b8fb75786a49f0b9922f513ca2c22489601bf61d5f0e37e2f3a4d5"
-          },
-          {
-            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-build-failure-diagnostic1-catalog-frozen-separation-f57baaa8.json",
-            "bytes": 806,
-            "sha256": "5eb20e74269381cff8d7e1fb33db0e1144e74825f342d6113e849d190fe33215"
-          },
-          {
-            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-build-failure-diagnostic1-source-acceptance-parent-readback-9b1124a4.json",
-            "bytes": 2423,
-            "sha256": "e28c8e49485546e6b537170aba9ac93bc7ce474e3487aa82e1e2dabc3bb613fe"
-          },
-          {
-            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-build-failure-carrier-recovery-9b1124a4.json",
-            "bytes": 6429,
-            "sha256": "7bb1f9d18dedc463034c69dac5317546ba8c36c2152d795e7ae55e8cfc79705d"
-          },
-          {
-            "path": "specs/1536-complete-wound-materialization/recovery/check_l01_diagnostic1_prep.py",
-            "bytes": 27011,
-            "sha256": "4b4fa32932212beb20a785298336b5e04b1996728b8718e577c1835cab426b02"
-          },
-          {
-            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-prep-checker-ready-20261018.json",
-            "bytes": 2621,
-            "sha256": "caed5e861bc1c8401a94b102f8030e9a187c15461acdbff055b2bc0846286e69"
-          }
-        ],
-        "scope": "No test ran. Whole/diagnostic plans UNRUN; no actual release. Frozen current-cloud roots retained unchanged; before/after new namespace clean. Previous SOURCE report retained at original candidate; corrected type reference requires affected SOURCE/new fresh ZERO3."
-      }
-    ]
+    }
   },
   "historicalMaterialReviewHoldBeforeCrash5": {
     "kind": "CURRENT_RESUME_NESTED_CANONICAL_LEASE",

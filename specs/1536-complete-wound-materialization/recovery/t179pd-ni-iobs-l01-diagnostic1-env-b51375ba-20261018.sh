@@ -1,0 +1,17 @@
+export PATH=/tmp/1536-cloud-tools/pwsh:/tmp/1536-cloud-tools/dotnet:$PATH
+export DOTNET_ROOT=/tmp/1536-cloud-tools/dotnet
+export DOTNET_CLI_HOME=/tmp/1536-cloud-tools/cli
+export NUGET_PACKAGES=/tmp/1536-cloud-tools/nuget
+export XDG_CACHE_HOME=/tmp/1536-cloud-tools/cache
+export XDG_CONFIG_HOME=/tmp/1536-cloud-tools/config
+export XDG_DATA_HOME=/tmp/1536-cloud-tools/data
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
+export DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
+export TMPDIR=/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320
+export XDG_RUNTIME_DIR=/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/runtime
+export TMPDIR=/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9
+export XDG_RUNTIME_DIR=/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/runtime
+export DOTNET_CLI_HOME=/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/tooling/cli
+export XDG_CACHE_HOME=/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/tooling/cache
+export XDG_CONFIG_HOME=/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/tooling/config
+export XDG_DATA_HOME=/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/tooling/data

@@ -1,3 +1,7 @@
+## T179-Pd-NI-IOBS-L01 — independently confirmed one-line compile correction WIP (2026-10-18)
+
+Only `using Microsoft.Extensions.Logging;` added to Crash.cs, resolving frozen CS0246. No production/assertion/logger/controller/budget change; failed native1/ZERO catalog retained.101pins/product23 digest2c144b7734708f8c02a3924d4d12a885384f05a1437021afd2845827c761c616; corrected source uncompiled/unrun. A new GUID mutable identity `ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9` prevents reusing first preparation namespace/labels; same cloud/boot and old frozen roots remain unchanged. Save/recover WIP and affected SOURCE before newly named fresh ZERO3/PREP; no actual. Qualified52/newcrash124/old66529UNKNOWN/all broader holds unchanged. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — diagnostic catalog compiler failure frozen; ZERO actual (2026-10-18)
 
 Freshcatalog actual/compiled9b1124a4: native1, ZERO executed,333.909s. Original8rawchains and clean new-namespace before/after v2 boundaries saved; old two frozen roots unchanged outside it. Compiler CS0246 at Crash.cs240: newly referenced ILogger<> lacks Microsoft.Extensions.Logging import in this source file. Whole57/diagnostic1 plans remain UNRUN; no actual release or new target. Preserve this failed original; independently confirm one-line namespace correction, affected SOURCE and new separately named fresh ZERO3/PREP before any one-mode diagnostic gate. Qualified52/newcrash124/old66529UNKNOWN/all broader holds unchanged. Following sections historical.

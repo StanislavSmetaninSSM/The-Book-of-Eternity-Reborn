@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_SELECTED_CURRENT_RESUME_ROUTING_SOURCE_CANDIDATE",
-  "status": "QUALIFIED52_DIAGNOSTIC1_BUILD_COMPILER_FAILURE_FROZEN",
+  "status": "QUALIFIED52_DIAGNOSTIC1_COMPILE_CORRECTION_SOURCE_WIP_UNCOMPILED_UNRUN",
   "sourceBase": "f390eb0602a99f5a2387ab7dc6ef52571e856b26",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
   "sourcePins": [
@@ -38,9 +38,9 @@
     },
     {
       "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
-      "bytes": 42607,
-      "sha256": "c680f0404cff58c36e97ee7fd48b3e4c74e7670119c640b658ba4820fd0164e9",
-      "gitBlob": "c9e5152381c3442869ccf936283d6d42230e4f6f",
+      "bytes": 42643,
+      "sha256": "b34615c6e74ca26145f75fe7d1244c276983b05551bc6e271989e0e2a80c2c1e",
+      "gitBlob": "f37f9ae1f30f386f7d99df99f53ac4428bb4b190",
       "mode": "100644",
       "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
     },
@@ -814,7 +814,7 @@
     }
   ],
   "sourcePinCount": 101,
-  "pinDigest": "ccae22922742a45cac69e9b35a4df4ad1f99ebe83977f6ec05e47b765cd02ebf",
+  "pinDigest": "2c144b7734708f8c02a3924d4d12a885384f05a1437021afd2845827c761c616",
   "ledger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-method-row-ledger-20261018.json",
     "sha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
@@ -953,7 +953,7 @@
       "countsToward57": false
     },
     "catalog": "Fresh BOTH/catalog ZERO; new diagnostic category/method inventoried and nine binaries/full output inventory bind NoBuild plans.",
-    "phase": "FIXTURE_DIAGNOSTIC1_SOURCE_WIP_UNCOMPILED_UNRUN"
+    "phase": "COMPILE_FIX_WIP_AFFECTED_SOURCE_NEW_ZERO3_REQUIRED"
   },
   "mandatorySupplement": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-20261018.py",
@@ -966,106 +966,23 @@
     "status": "NONE_COMPILER_FAILURE_SOURCE_PREP_REQUIRED",
     "mode": null
   },
-  "next": "Save/recover compilerfailure, independently confirm minimal ILogger namespace fix, affected SOURCE then separately named fresh catalog/whole57/diagnostic1 ZERO3 and independent PREP. No actual or crash5 retry.",
+  "next": "Save/recover one-line ILogger import correction; independent affected SOURCE then newly named fresh BOTH/catalog+whole57+diagnostic1 ZERO3/PREP in new clean namespace. No actual or crash5 retry.",
   "sourceReview": {
-    "verdict": "ACCEPT_SOURCE_AND_NAMED_ZERO3_ONLY_AFTER_METADATA_SAVE_RECOVERY_READBACK",
-    "candidate": "a85f2d2e05b7c8acb644408c4cd1a8f86e272e3b",
-    "model": "gpt-6-astra",
-    "reasoningEffort": "xhigh",
-    "artifacts": [
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/check_l01_diagnostic1_source-v1-assert-count.py",
-        "sha256": "c1233885363043e676fd81dd48d36eff214cbf43e74fcec7cd17a44594a4ede0",
-        "bytes": 12508
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/check_l01_diagnostic1_source.py",
-        "sha256": "046ab63b6a7a331acc97f5f9c1861ba538bd0a0ea3e2967aaba4c8a32b64cb7b",
-        "bytes": 12505
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/diagnostic1-source-check-8ba3ddbf.log",
-        "sha256": "9e17432c7980edb69e6a4ad76487a39f0f977daa946901a26424b35e20e2d577",
-        "bytes": 711
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/diagnostic1-source-check-a85f2d2e.log",
-        "sha256": "bbada247cdc27ec430d4b42f14e9cba9c01425e9730757650fbf87975b8156c5",
-        "bytes": 237
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-source-correction-readback-a85f2d2e-20261018.json",
-        "sha256": "cf628b820f9964189663f653007a61277392e8eafda8eb04ec56dfeeef08f217",
-        "bytes": 4053
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-source-independent-check-8ba3ddbf-20261018.json",
-        "sha256": "22d0d9450c16a0d6b067ad649c9792b181888ef262b52e4eab308db4b7a63099",
-        "bytes": 3488
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-source-independent-check-a85f2d2e-20261018.json",
-        "sha256": "f64c6b0769c792d90d561711ce1d39be23832e4028dd950bf8ad8f3e43ead4d9",
-        "bytes": 2981
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-source-independent-review-20261018.json",
-        "sha256": "28b1b7417b5d60c5c5ad72b5f067bceffe9cf256352506657238d1bb6118c325",
-        "bytes": 11333
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-source-independent-review-20261018.md",
-        "sha256": "43058f45cb6c10461a1b449600f4c6176bb4cea1b331536d4b61db47919c11d9",
-        "bytes": 2693
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-source-review-utility-history-20261018.json",
-        "sha256": "77c34cbd3f3d590a1d116f9d25e7738e77af488b0c44c29198169d6f84500169",
-        "bytes": 1373
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/write_diagnostic1_source_review.py",
-        "sha256": "31af681a7f28aed41b500e769d63e241953aa84c24c571b0fc8ded1dc60ba023",
-        "bytes": 13386
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-source-candidate-recovery-a85f2d2e-20261018.json",
-        "sha256": "b9d777c0fbbccd8f777aae6257dc434554b869e3f1f99a24d9ac952c4fb253fd",
-        "bytes": 2015
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-plan-parent-readback-6a3f88fd-20261018.json",
-        "sha256": "257c0f635c8d708dc4054da20be9589a456d0e5ac736c22b89a937572511ca8f",
-        "bytes": 456
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-plan-carrier-recovery-6a3f88fd-20261018.json",
-        "sha256": "ee31de421a8e75c55d5cbaf775004aeb9f80756c8ce3da2718228756c3c16d40",
-        "bytes": 6393
-      }
-    ]
+    "status": "PENDING_AFFECTED_SOURCE_ONE_LINE_IMPORT_CORRECTION",
+    "priorAcceptedCandidate": "a85f2d2e05b7c8acb644408c4cd1a8f86e272e3b",
+    "scope": "Exact using Microsoft.Extensions.Logging only; all other executable fixture/controller/product bytes unchanged. New clean GUID namespace/environment/labels required."
   },
   "namedZeroRelease": {
-    "status": "FROZEN_CATALOG_NATIVE1_WHOLE_AND_DIAGNOSTIC_PLANS_UNRUN_NO_RETRY",
-    "labels": {
-      "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-crash-diagnostic1-cloud-f57baaa8",
-      "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-crash-diagnostic1-cloud-f57baaa8",
-      "diagnostic-plan": "t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic1-cloud-f57baaa8"
-    },
-    "scope": "Each mode separately invoked; fresh build/catalog then unchanged whole57 and diagnostic1 PlanOnly-NoBuild, ZERO actual; no actual release. After exact saved acceptance/recovery/metadata readback and clean v2 boundary."
+    "status": "NONE_AFFECTED_SOURCE_COMPILE_FIX_REQUIRED",
+    "labels": {}
   },
   "freshPreparationCandidate": {
-    "status": "UNRUN_CURRENT_DIAGNOSTIC_ZERO3",
+    "status": "UNRUN_NEW_DIAGNOSTIC_ZERO3_AFTER_ONE_LINE_COMPILER_FIX",
     "currentPointer": "cloud-qualification.crashDiagnostic1",
-    "modes": [
-      "catalog",
-      "plan",
-      "diagnostic-plan"
-    ],
-    "qualified": 52
+    "retained": 52
   },
   "freshPreparationAcceptance": {
-    "status": "NONE_CURRENT_DIAGNOSTIC_PREP_UNRUN",
+    "status": "NONE_CURRENT_CORRECTED_DIAGNOSTIC_PREP_UNRUN",
     "noActualRelease": true
   },
   "jointBlockerReview": {
@@ -1124,9 +1041,9 @@
     "sha256": "5ab4e4f4d4c59842179f5a6ef41bb96d0bd5f164a081a6a86da2283d67a3d805",
     "scope": "One explicit phase, exact clean SHA, new TMPDIR identity, archived frozen-root bytes/file-set unchanged before each phase, immediate dated authoritative v2 global/new-namespace boundaries; no automatic next/retry.",
     "environmentShell": {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-env-f57baaa8-20261018.sh",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-env-b51375ba-20261018.sh",
       "bytes": 1276,
-      "sha256": "230eb604a1556c5196a8fe41027419dff8db0d49706e03a91bec996680c9b991",
+      "sha256": "a1560b8027b94f787ed5f3bfab6439a231eb5a48f479111e17db824c7c19ffff",
       "scope": "Exact task-only toolchain variables/newGUID TMPDIR/runtime/CLI/XDG namespace; HOME untouched; NuGet dependency cache shared only as tooling input."
     }
   },
@@ -1548,6 +1465,9 @@
     }
   },
   "diagnosticSourceAcceptance": {
+    "status": "PENDING_CURRENT_ONE_LINE_COMPILE_CORRECTION_SOURCE"
+  },
+  "historicalDiagnostic1SourceAcceptanceBeforeImportFix": {
     "verdict": "ACCEPT_SOURCE_AND_NAMED_ZERO3_ONLY_AFTER_METADATA_SAVE_RECOVERY_READBACK",
     "candidate": "a85f2d2e05b7c8acb644408c4cd1a8f86e272e3b",
     "model": "gpt-6-astra",
