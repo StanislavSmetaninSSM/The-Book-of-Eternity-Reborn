@@ -1,7 +1,7 @@
 {
   "kind": "NI_IOBS_L01_AUTHORED_METHOD_ROW_LEDGER",
   "sourceBase": "9a92049ef86bcbc4569aaa0a11d1f42632093622",
-  "status": "FIRST_ORDERING_SOURCE_ACCEPTED_FRESH_COMPILED_DISCOVERED_UNRUN",
+  "status": "FIRST_NATIVE1_FAILED_ORIGINAL_OUTCOME_PENDING_INDEPENDENT_CAUSAL_EVIDENCE",
   "rows": [
     {
       "category": "fr063-joint-interface-lifecycle-order",
@@ -9,10 +9,76 @@
       "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce",
       "attributes": "Fact",
       "staticRows": 1,
-      "status": "FRESH_COMPILED_DISCOVERED_UNRUN",
+      "status": "FIRST1EXECUTED0PASS1FAIL_UNQUALIFIED_PENDING_INDEPENDENT_EVIDENCE",
       "firstCausalAssertion": "Assert.Equal(1, _interfaceAtCapture), after real shared helper completion/inert repeat and frozen original diagnostics",
-      "baselinePrediction": "capture callback1, early I-changing cohort0, later actual I-changing cohort1/common completed; native evidence not yet obtained",
-      "rootOwner": "RunJointCompletionControlAsync/CleanupOwnedFixture; final I image frozen before root disposal; no post-disposal read"
+      "rootOwner": "RunJointCompletionControlAsync/CleanupOwnedFixture; final I image frozen before root disposal; no post-disposal read",
+      "historicalPreRunPrediction": "capture callback1, early I-changing cohort0, later actual I-changing cohort1/common completed; native evidence not yet obtained",
+      "actualOriginalObservation": {
+        "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
+        "compiledSource": "a65005989ac5922db9c943dda339a999131ba5c6",
+        "nativeExit": 1,
+        "seconds": 66.88679516299453,
+        "tests": {
+          "Total": 1,
+          "Executed": 1,
+          "Passed": 0,
+          "Failed": 1
+        },
+        "actualMethod": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce",
+        "firstAssertion": {
+          "line": 124,
+          "message": "Assert.Equal() Failure: Values differ\nExpected: 1\nActual:   0",
+          "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertEarlyInterfaceAndSingleConsumption() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 124\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 23\n--- End of stack trace from previous location ---"
+        },
+        "callback": 1,
+        "earlyIChangingCohorts": 0,
+        "laterIChangingCohorts": 2,
+        "markerCohorts": 2,
+        "physicalSequence": [
+          [
+            1,
+            false,
+            true
+          ],
+          [
+            2,
+            true,
+            false
+          ],
+          [
+            3,
+            false,
+            true
+          ],
+          [
+            4,
+            true,
+            false
+          ]
+        ],
+        "genuineSharedCompletionObserved": true,
+        "actualTurn": 43,
+        "strictOwnedRootCleanup": [
+          {
+            "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-bac60ba005fe4dd88842f2b51ee340f3",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          }
+        ],
+        "namespaceBefore": {
+          "ownedRoots": []
+        },
+        "namespaceAfter": {
+          "ownedRoots": []
+        },
+        "nineBinariesUnchanged": true,
+        "all1234OutputFilesUnchanged": true,
+        "rawArchive": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-first-ordering-files-20261018/archive.json",
+        "rawArchiveSha256": "e0dd5ec9d0de7912211d525e9fdb752d1fc85cbbb3a41bd467108414b92131ca",
+        "rawChains": 9,
+        "qualification": "ORIGINAL_FAILED_OUTCOME_PENDING_INDEPENDENT_CAUSAL_EVIDENCE",
+        "limits": "Cohorts are physical observations, not exact common or public-I API invocation counts. Expected laterI1 was wrong; actual2 preserved. No absence-of-writes proof of ambient policy/sample counts, no rerun or fix."
+      }
     }
   ],
   "staticTotals": {
@@ -29,7 +95,7 @@
     "cases": 1,
     "zeroActualExecutions": true
   },
-  "actualCases": 0,
+  "actualCases": 1,
   "productChanged": false,
   "remainingAuthoring": [
     "Prepared/Published no-write/BOM/UTF16/absence/over2MiB and exact issue vector",
@@ -52,12 +118,12 @@
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-order-first-run.py",
       "sha256": "ed5c32e44ea5256ed1ca8090160cc9aaf6c298fd020b5154ef58e930e8ff0b29",
-      "status": "UNRUN_REQUIRES_SEPARATE_NAMED_ROOT_ACTUAL_RELEASE"
+      "status": "USED_ONCE_FIRST_NATIVE1_ONEEXECUTED_0PASS1FAIL_ORIGINAL_UNQUALIFIED"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-order-first.py",
       "sha256": "cc3d9a14a0fc5f0f46b2a9b79b005be47dc7b91c65ab827c1fe4a9b15a4180d2",
-      "status": "UNRUN_READ_ONLY_ACTUAL_ARCHIVER"
+      "status": "READ_ONLY_ARCHIVED_ORIGINAL_FIRST9CHAINS_ONCE_NOT_CAUSAL_VERDICT"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-order-preparation.py",
@@ -136,5 +202,71 @@
       "observedMainManagedFiles": 335,
       "observedAllOutputFilesForPostFirstContinuity": 1234
     }
+  },
+  "firstActual": {
+    "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
+    "compiledSource": "a65005989ac5922db9c943dda339a999131ba5c6",
+    "nativeExit": 1,
+    "seconds": 66.88679516299453,
+    "tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1
+    },
+    "actualMethod": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce",
+    "firstAssertion": {
+      "line": 124,
+      "message": "Assert.Equal() Failure: Values differ\nExpected: 1\nActual:   0",
+      "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertEarlyInterfaceAndSingleConsumption() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 124\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 23\n--- End of stack trace from previous location ---"
+    },
+    "callback": 1,
+    "earlyIChangingCohorts": 0,
+    "laterIChangingCohorts": 2,
+    "markerCohorts": 2,
+    "physicalSequence": [
+      [
+        1,
+        false,
+        true
+      ],
+      [
+        2,
+        true,
+        false
+      ],
+      [
+        3,
+        false,
+        true
+      ],
+      [
+        4,
+        true,
+        false
+      ]
+    ],
+    "genuineSharedCompletionObserved": true,
+    "actualTurn": 43,
+    "strictOwnedRootCleanup": [
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-bac60ba005fe4dd88842f2b51ee340f3",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "namespaceBefore": {
+      "ownedRoots": []
+    },
+    "namespaceAfter": {
+      "ownedRoots": []
+    },
+    "nineBinariesUnchanged": true,
+    "all1234OutputFilesUnchanged": true,
+    "rawArchive": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-first-ordering-files-20261018/archive.json",
+    "rawArchiveSha256": "e0dd5ec9d0de7912211d525e9fdb752d1fc85cbbb3a41bd467108414b92131ca",
+    "rawChains": 9,
+    "qualification": "ORIGINAL_FAILED_OUTCOME_PENDING_INDEPENDENT_CAUSAL_EVIDENCE",
+    "limits": "Cohorts are physical observations, not exact common or public-I API invocation counts. Expected laterI1 was wrong; actual2 preserved. No absence-of-writes proof of ambient policy/sample counts, no rerun or fix."
   }
 }

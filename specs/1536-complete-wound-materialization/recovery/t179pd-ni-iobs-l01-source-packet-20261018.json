@@ -2,7 +2,7 @@
   "kind": "NI_IOBS_L01_INTERMEDIATE_TESTS_ONLY_SOURCE_PACKET",
   "sourceBase": "9a92049ef86bcbc4569aaa0a11d1f42632093622",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
-  "status": "FIRST_SOURCE_ACCEPTED_FRESH_ZERO_PREP_FROZEN_FIRST_CASE_UNRUN",
+  "status": "FIRST_NATIVE1_FAILED_ORIGINAL_OUTCOME_PENDING_INDEPENDENT_CAUSAL_EVIDENCE",
   "sourcePins": [
     {
       "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
@@ -361,7 +361,7 @@
   "pinDigest": "c17d44bb5540bc379a29b8c393510b84a3e9a65108d17cfe2149153071293ce4",
   "ledger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-method-row-ledger-20261018.json",
-    "sha256": "1946912931f907d86b1a7f542b0a2983369f5af1405fe520c5f3d4834920b51a"
+    "sha256": "264dcb0c16dc1453f5b26412515fedb8fdbed26e6ff5879881e4125348c86f18"
   },
   "productDelta": [],
   "originalContractSourceContext": "Frozen447bc map/source ranges and accepted wholevertical report preserved unchanged; this current test packet does not rehash/replace historical contexts.",
@@ -372,23 +372,94 @@
     "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce",
     "attributes": "Fact",
     "staticRows": 1,
-    "status": "AUTHORED_UNCOMPILED_UNRUN",
+    "status": "FIRST1EXECUTED0PASS1FAIL_UNQUALIFIED_PENDING_INDEPENDENT_EVIDENCE",
     "firstCausalAssertion": "Assert.Equal(1, _interfaceAtCapture), after real shared helper completion/inert repeat and frozen original diagnostics",
-    "baselinePrediction": "capture callback1, early I-changing cohort0, later actual I-changing cohort1/common completed; native evidence not yet obtained",
-    "rootOwner": "RunJointCompletionControlAsync/CleanupOwnedFixture; final I image frozen before root disposal; no post-disposal read"
+    "rootOwner": "RunJointCompletionControlAsync/CleanupOwnedFixture; final I image frozen before root disposal; no post-disposal read",
+    "historicalPreRunPrediction": "capture callback1, early I-changing cohort0, later actual I-changing cohort1/common completed; native evidence not yet obtained",
+    "actualOriginalObservation": {
+      "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
+      "compiledSource": "a65005989ac5922db9c943dda339a999131ba5c6",
+      "nativeExit": 1,
+      "seconds": 66.88679516299453,
+      "tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "actualMethod": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce",
+      "firstAssertion": {
+        "line": 124,
+        "message": "Assert.Equal() Failure: Values differ\nExpected: 1\nActual:   0",
+        "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertEarlyInterfaceAndSingleConsumption() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 124\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 23\n--- End of stack trace from previous location ---"
+      },
+      "callback": 1,
+      "earlyIChangingCohorts": 0,
+      "laterIChangingCohorts": 2,
+      "markerCohorts": 2,
+      "physicalSequence": [
+        [
+          1,
+          false,
+          true
+        ],
+        [
+          2,
+          true,
+          false
+        ],
+        [
+          3,
+          false,
+          true
+        ],
+        [
+          4,
+          true,
+          false
+        ]
+      ],
+      "genuineSharedCompletionObserved": true,
+      "actualTurn": 43,
+      "strictOwnedRootCleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-bac60ba005fe4dd88842f2b51ee340f3",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "namespaceBefore": {
+        "ownedRoots": []
+      },
+      "namespaceAfter": {
+        "ownedRoots": []
+      },
+      "nineBinariesUnchanged": true,
+      "all1234OutputFilesUnchanged": true,
+      "rawArchive": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-first-ordering-files-20261018/archive.json",
+      "rawArchiveSha256": "e0dd5ec9d0de7912211d525e9fdb752d1fc85cbbb3a41bd467108414b92131ca",
+      "rawChains": 9,
+      "qualification": "ORIGINAL_FAILED_OUTCOME_PENDING_INDEPENDENT_CAUSAL_EVIDENCE",
+      "limits": "Cohorts are physical observations, not exact common or public-I API invocation counts. Expected laterI1 was wrong; actual2 preserved. No absence-of-writes proof of ambient policy/sample counts, no rerun or fix."
+    }
   },
-  "firstWitness": "Actual existing capture callback after current decision; real I-changing journal members separate from marker cohorts. Complete shared ordinary+inert-repeat prerequisites finish before intended early1vs0 failure. Later child3 checks cannot replace semantic first failure.",
+  "firstWitness": "Original intended early1vs0 assertion reached at actual124 AFTER full shared completion/inert-repeat. Callback1/early0; actual TWO later I-changing cohorts and TWO marker cohorts. Predictionlater1 corrected explicitly; source/physical trace must not be relabeled exact API call counts.",
   "defaultNullFixtureDelta": "One optional test-only probe; attach wraps prior essential checkpoint hook; corrected public I authoring precedes correlated repair Ready; observer reads journal; final bytes retained before owned cleanup. No producer/Ready/protocol/authority seeding.",
   "recovery": "Base9a full7a+84 verified; exact new immediate GitHub changed-path recovery required after push. Intermediate WIP before remaining authoring, no new review loop.",
   "runtime": {
     "freshCatalogNative": 0,
     "freshPlanNative": 0,
-    "testCases": 0,
-    "currentMethodUnrun": true,
+    "testCases": 1,
+    "currentMethodUnrun": false,
     "binaryQualification": "FRESH_CATALOG_BOTH_9_CURRENT_COPIES",
     "managedInventoryObserved": 335,
     "compiledSource": "a65005989ac5922db9c943dda339a999131ba5c6",
-    "scope": "Accepted fresh build/discovery/ZERO preparation only by Root5cdb8194, no testcase/runtime EVIDENCE. Root1234 outputfile baseline and9copies bind post-FIRST continuity; actual remains separately named."
+    "scope": "Accepted fresh build/discovery/ZERO preparation only by Root5cdb8194, no testcase/runtime EVIDENCE. Root1234 outputfile baseline and9copies bind post-FIRST continuity; actual remains separately named.",
+    "passed": 0,
+    "failed": 1,
+    "nativeExit": 1,
+    "causalEvidence": "PENDING_SEPARATE_INDEPENDENT_REVIEW",
+    "all1234CurrentOutputsBeforeAfterUnchanged": true
   },
   "gmDocs": "Tests-only observer/public fixture change, no GM contract update. Future client-owned protocol/held lifecycle guide/worked-example/actual guard decision required; no unrelated afterlife/package replay.",
   "verificationTools": [
@@ -400,12 +471,12 @@
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-order-first-run.py",
       "sha256": "ed5c32e44ea5256ed1ca8090160cc9aaf6c298fd020b5154ef58e930e8ff0b29",
-      "status": "UNRUN_REQUIRES_SEPARATE_NAMED_ROOT_ACTUAL_RELEASE"
+      "status": "USED_ONCE_FIRST_NATIVE1_ONEEXECUTED_0PASS1FAIL_ORIGINAL_UNQUALIFIED"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-order-first.py",
       "sha256": "cc3d9a14a0fc5f0f46b2a9b79b005be47dc7b91c65ab827c1fe4a9b15a4180d2",
-      "status": "UNRUN_READ_ONLY_ACTUAL_ARCHIVER"
+      "status": "READ_ONLY_ARCHIVED_ORIGINAL_FIRST9CHAINS_ONCE_NOT_CAUSAL_VERDICT"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-order-preparation.py",
@@ -413,7 +484,7 @@
       "status": "READ_ONLY_ARCHIVED_BOTH_FIRST_ZERO_RECORDS_ONE_INVOCATION_19CHAINS"
     }
   ],
-  "next": "Publish/recover accepted fresh PREP carrier, then Root names only FIRST ordering1 and checks full inventory continuity. Preserve first original actual regardless of outcome for independent causal EVIDENCE; no retries/product/remainder coverage.",
+  "next": "Publish/recover ALL original FIRST failed raw and exact actual facts, then independent causal EVIDENCE on existing raw only. No source authoring/product/retry/otheractual until Root accepted saved causal gate; remaining finite controls open.",
   "preparation": {
     "catalog": {
       "nativeExit": 0,
@@ -486,5 +557,71 @@
       "observedAllOutputFilesForPostFirstContinuity": 1234
     }
   },
-  "sourcePinBindingMeaning": "The unchanged44 sourcePin entries retain their authored input-context metadata from80bf/88b. Their physical bytes/digest remain exact; fresh compilation/discovery qualification is recorded separately under preparation. Historical raw source-binding.json preserves the compiled input packet unmodified."
+  "sourcePinBindingMeaning": "The unchanged44 sourcePin entries retain their authored input-context metadata from80bf/88b. Their physical bytes/digest remain exact; fresh compilation/discovery qualification is recorded separately under preparation. Historical raw source-binding.json preserves the compiled input packet unmodified.",
+  "firstActual": {
+    "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
+    "compiledSource": "a65005989ac5922db9c943dda339a999131ba5c6",
+    "nativeExit": 1,
+    "seconds": 66.88679516299453,
+    "tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1
+    },
+    "actualMethod": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce",
+    "firstAssertion": {
+      "line": 124,
+      "message": "Assert.Equal() Failure: Values differ\nExpected: 1\nActual:   0",
+      "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertEarlyInterfaceAndSingleConsumption() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 124\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 23\n--- End of stack trace from previous location ---"
+    },
+    "callback": 1,
+    "earlyIChangingCohorts": 0,
+    "laterIChangingCohorts": 2,
+    "markerCohorts": 2,
+    "physicalSequence": [
+      [
+        1,
+        false,
+        true
+      ],
+      [
+        2,
+        true,
+        false
+      ],
+      [
+        3,
+        false,
+        true
+      ],
+      [
+        4,
+        true,
+        false
+      ]
+    ],
+    "genuineSharedCompletionObserved": true,
+    "actualTurn": 43,
+    "strictOwnedRootCleanup": [
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-bac60ba005fe4dd88842f2b51ee340f3",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "namespaceBefore": {
+      "ownedRoots": []
+    },
+    "namespaceAfter": {
+      "ownedRoots": []
+    },
+    "nineBinariesUnchanged": true,
+    "all1234OutputFilesUnchanged": true,
+    "rawArchive": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-first-ordering-files-20261018/archive.json",
+    "rawArchiveSha256": "e0dd5ec9d0de7912211d525e9fdb752d1fc85cbbb3a41bd467108414b92131ca",
+    "rawChains": 9,
+    "qualification": "ORIGINAL_FAILED_OUTCOME_PENDING_INDEPENDENT_CAUSAL_EVIDENCE",
+    "limits": "Cohorts are physical observations, not exact common or public-I API invocation counts. Expected laterI1 was wrong; actual2 preserved. No absence-of-writes proof of ambient policy/sample counts, no rerun or fix."
+  }
 }

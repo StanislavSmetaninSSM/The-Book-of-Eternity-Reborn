@@ -1,0 +1,10 @@
+{
+  "kind": "AUTHOR_POST_FIRST_COMPLETE_CURRENT_OUTPUT_INVENTORY_CHECK",
+  "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
+  "rootInventoryPath": "/tmp/t179pd-ni-iobs-l01-root-fresh-prep-readback-a6500598-20261018.json",
+  "rootInventorySha256": "5cdb8194b971bf5698b364a45311093023937c25a87f2c57dc07d5b8bfbeb577",
+  "verifiedFileCount": 1234,
+  "exactPathSet": true,
+  "allBytesSizeSha256Match": true,
+  "checkedUtc": "2026-10-18T05:19:06.054374+00:00"
+}

@@ -1,0 +1,84 @@
+{
+  "kind": "EXACT_FIRST_NI_IOBS_L01_ORDERING1_RAW_ARCHIVE_NOT_CAUSAL_VERDICT",
+  "createdUtc": "2026-10-18T05:18:44.391942+00:00",
+  "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
+  "compiledSource": "a65005989ac5922db9c943dda339a999131ba5c6",
+  "nativeExit": 1,
+  "rawChainCount": 9,
+  "files": [
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-order-implementation-tools/9079452d93a77e0edfd2ba1a8cb140cb1967d089-ni-iobs-l01-order.FIRST.json",
+      "storedPath": "000-9079452d93a77e0edfd2ba1a8cb140cb1967d089-ni-iobs-l01-order.FIRST.json.gz",
+      "bytes": 284,
+      "sha256": "3799dda6052180bc4fdbd0dff6d377d3e7d59f228707d99bc6b10ed3fb8e974a",
+      "storedBytes": 238,
+      "storedSha256": "8462f2eed435bdc7ac008d425be4cc00b360258fe1d2c90c5c2c69478f908476"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-order-implementation-tools/t179pd-ni-iobs-l01-order-first-causal/process.json",
+      "storedPath": "001-process.json.gz",
+      "bytes": 756,
+      "sha256": "765a7c5c6a0d0692cf4d6f34d4637176036c1f152b313aabf1b367d9ae7c3433",
+      "storedBytes": 389,
+      "storedSha256": "9af909afdfa0a30d2226e814a92ed614db3c674c0de67cf15a3923fa9b4f2975"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-order-implementation-tools/t179pd-ni-iobs-l01-order-first-causal/record.json",
+      "storedPath": "002-record.json.gz",
+      "bytes": 13240,
+      "sha256": "cc6950b25b96e3b788ad783b22589bbe6789c0fe806cd441f31d959db33d3ecb",
+      "storedBytes": 3827,
+      "storedSha256": "ab5b087910bd27fe480854b231932046831c2efd7061a25c7218b83fca15e1ea"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-order-implementation-tools/t179pd-ni-iobs-l01-order-first-causal/source-binding.json",
+      "storedPath": "003-source-binding.json.gz",
+      "bytes": 23989,
+      "sha256": "2cf6483f27dbd75b51a8fe19d700f02356e06afebc5a005b3081892f52b197a0",
+      "storedBytes": 7344,
+      "storedSha256": "48bdf9a4f479b87caff0a56589c748944653cd4654db0963278a9013b682c805"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-order-implementation-tools/t179pd-ni-iobs-l01-order-first-causal/stdout.log",
+      "storedPath": "004-stdout.log.gz",
+      "bytes": 6878536,
+      "sha256": "03d53f6e796fe92a3353794d35f031245c6ad8b75638268b5857783e04d7192c",
+      "storedBytes": 2367696,
+      "storedSha256": "0168e59273339c04975812bdc61881e3f18170e60f063c31dea7e2cf34d400d1"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-051723-573-201359-d681aefa13ff4e44aa2251a6a0df1701-categories/dotnet-test.log",
+      "storedPath": "005-dotnet-test.log.gz",
+      "bytes": 8567247,
+      "sha256": "1b5b36ae076f99a186c177c9c8b92ecce4162250a4721cf30f16467b5ac48b41",
+      "storedBytes": 2555304,
+      "storedSha256": "7da4d21aacfc0fd831226ed016648307d1b317cf8b4cb8fa88bce8dbbd5f2479"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-051723-573-201359-d681aefa13ff4e44aa2251a6a0df1701-categories/fr063-joint-interface-lifecycle-order-integration-001.trx",
+      "storedPath": "006-fr063-joint-interface-lifecycle-order-integration-001.trx.gz",
+      "bytes": 13761025,
+      "sha256": "bb3c7e0ce517ddaa84a54218fbe02360f5ce953a527edd3c804aa7a3dcbb14df",
+      "storedBytes": 4735178,
+      "storedSha256": "9fb0bb3b28b18fc1269d1fc63f572c08b1797819553ff0cc35ba2730b2a7516d"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-051723-573-201359-d681aefa13ff4e44aa2251a6a0df1701-categories/plan.json",
+      "storedPath": "007-plan.json.gz",
+      "bytes": 1207,
+      "sha256": "8f84570290c280dc8c555719d257b2dc16fc809a431bb0f20a5406c6a15cedb2",
+      "storedBytes": 540,
+      "storedSha256": "d971ebc8871c8e2a1cdf271a9b4664d1d6158c6df71306ef3fef4f4d41787f6e"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-051723-573-201359-d681aefa13ff4e44aa2251a6a0df1701-categories/summary.json",
+      "storedPath": "008-summary.json.gz",
+      "bytes": 1386,
+      "sha256": "026c56f5b124cd19716e09f5b0c7f1b61a7921cdbc1e6f53e6eb2043b6388db2",
+      "storedBytes": 600,
+      "storedSha256": "60b11d57853f4dea311ed3f7e283c0303a4da97044cdfed3720124d701cd5e39"
+    }
+  ],
+  "helperText": "\"\"\"UNRUN read-only exact FIRST boundary raw archive; no retry, execution or classification.\"\"\"\nfrom pathlib import Path\nimport json,sys,hashlib,gzip,datetime\nrecord_path=Path(sys.argv[1]);destination=Path(sys.argv[2]);assert not destination.exists();destination.mkdir(parents=True)\nrecord=json.loads(record_path.read_text());assert record['kind']=='FIRST_NI_IOBS_L01_ORDERING1_RAW_NOT_CAUSAL_ACCEPTANCE'\ndef h(b):return hashlib.sha256(b).hexdigest()\npaths=[record_path,Path(record['stdoutPath']),Path(record['processRecord']),Path(record['firstSentinel']),record_path.parent/'source-binding.json']\nfor d in record['resultDirectories']:paths.extend(p for p in sorted(Path(d).rglob('*')) if p.is_file())\nfiles=[]\nfor i,p in enumerate(sorted(set(paths))):\n b=p.read_bytes();name=f'{i:03d}-'+p.name+'.gz';compressed=gzip.compress(b,compresslevel=9,mtime=0);(destination/name).write_bytes(compressed);assert gzip.decompress((destination/name).read_bytes())==b\n files.append(dict(rawPath=str(p),storedPath=name,bytes=len(b),sha256=h(b),storedBytes=len(compressed),storedSha256=h(compressed)))\nj=dict(kind='EXACT_FIRST_NI_IOBS_L01_ORDERING1_RAW_ARCHIVE_NOT_CAUSAL_VERDICT',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSource=record['actualSource'],compiledSource=record['compiledSource'],nativeExit=record['nativeExit'],rawChainCount=len(files),files=files,helperText=Path(__file__).read_text(),scope='Read-only complete original native stdout/process/sourcecontext/sentinel/runner/TRX files. No runtime/delete/retry/qualification or inferred case outcome.')\n(destination/'archive.json').write_text(json.dumps(j,indent=2)+'\\n');print(json.dumps(dict(archive=str(destination/'archive.json'),sha256=h((destination/'archive.json').read_bytes()),rawChains=len(files))))\n",
+  "scope": "Read-only complete original native stdout/process/sourcecontext/sentinel/runner/TRX files. No runtime/delete/retry/qualification or inferred case outcome."
+}
