@@ -1,0 +1,31 @@
+{
+  "kind": "CONNECTED_INTAKE_SCOPE_CARRIER_BINDING",
+  "mode": "refusal9",
+  "status": "QUALIFIED_NEW_ORIGINAL_RAW",
+  "actualSource": "1611b5c720a627a3582481db2d9419fc488f518c",
+  "compiledSource": "4c6d8334b441193cbda6de539347bcf7998d4db6",
+  "carrier": "fd78a4a9beba1974be8fdb20bf3ea5b0bdfe066a",
+  "passed": 9,
+  "failed": 0,
+  "methodCounts": {
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualGenericInterfaceConsumerRefusesSelectedMarkerDamage": 7,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_FirstInstallOwningCloseCannotArmInterfacePermission": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewLateMainConsumesOwnReadyWithoutRevivingHotOwner": 1
+  },
+  "support": "/tmp/t179pd-ni-iobs-l01-connected-refusal-check-1611b5c7-20261018.json",
+  "supportSha256": "5afb601dc097bcc813d555da307d742e58af46f6409e687200f607f5a37ecf8f",
+  "originalRawAndCommittedChains": 11,
+  "receipt": "/tmp/t179pd-ni-iobs-l01-intake-refusal-raw-delta-github-fd78a4a9-20261018.json",
+  "receiptSha256": "fedc45ae132659bd43b9bb681ee14000a4a0f83b144143f2acaab375ea61c90c",
+  "physicalRecoveryFilesVerified": 22,
+  "changedPathsVerified": 18,
+  "composition": "/tmp/t179pd3d-root-recovery-composition-fd78a4a9-20261017.json",
+  "compositionSha256": "e55fad0f4a525d4e06deeeb10da645b279176cb5a219e1185a0dd56eaaa6eb6c",
+  "allRecoveredFilesBytesShaBlobModeGitshowExact": true,
+  "allCommittedArchiveAndStoredChainsExact": true,
+  "noProductSourceTestsSelectorsOrActiveControllerMutationInRawCarrier": true,
+  "priorLedgerSha256": "90bc423df53a9758417b4b736f2e6e511ef56c52f479c987617d208c7782cec4",
+  "qualifiedDistinctAfter": 37,
+  "remainingNeverRunAfter": 20,
+  "limits": "This only binds the new checked scope; prior raw/source/output families were not replayed. Mixed original compilation provenance is retained."
+}
