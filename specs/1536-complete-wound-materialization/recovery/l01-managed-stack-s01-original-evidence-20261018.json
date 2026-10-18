@@ -1,0 +1,204 @@
+{
+  "kind": "L01_S01_SAVED_FIRST_ORIGINAL_EVIDENCE",
+  "savedUtc": "2026-10-18T19:56:27.386871+00:00",
+  "reviewStatus": "PENDING_INDEPENDENT_EVIDENCE",
+  "originalStatus": "PASS_OWNED_SYNTHETIC_MANAGED_STACK_ONLY",
+  "runIdentity": {
+    "source": "4d476b388b3319ed6fb3602f80d6bccb9035e11e",
+    "preparedSource": "0422f6c7148f2f6eda4caa8dbc1043c557ae90a3",
+    "nonce": "6190a2cbeb3641b9983a88000f3669e7",
+    "root": "/tmp/l01ms-e3edce403bfe41ee/s01",
+    "startedUtc": "2026-10-18T19:53:24.440167+00:00",
+    "target": {
+      "pid": 87058,
+      "birthTick": 3781245,
+      "parentPid": 87032,
+      "uid": 1000
+    },
+    "collector": {
+      "pid": 87070,
+      "birthTick": 3781266,
+      "parentPid": 87032,
+      "uid": 1000
+    }
+  },
+  "command": "python3 specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py smoke 4d476b388b3319ed6fb3602f80d6bccb9035e11e",
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01-originals-20261018.zip",
+    "bytes": 8572,
+    "sha256": "7da93dccdb154f9e4d91aa49c3e8771307b710087f509c04ef426db6cdbcc9f1",
+    "files": [
+      {
+        "entry": "s01/collector-manifest.json",
+        "bytes": 1543,
+        "sha256": "342054e26c8ad3efbf7295cde6dc5db1e7fd012cdedbdae4f69ef966fd77ac34",
+        "originalMode": "0o600"
+      },
+      {
+        "entry": "s01/collector.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "originalMode": "0o600"
+      },
+      {
+        "entry": "s01/collector.stdout",
+        "bytes": 1282,
+        "sha256": "5d2e95c2a81423b3ae169cf00746c8467702413ec1eb879c18c63631fa739943",
+        "originalMode": "0o600"
+      },
+      {
+        "entry": "s01/record.json",
+        "bytes": 6346,
+        "sha256": "073b94838e33811cd7205b223abf91de42138d95f88f92f14b33e3f8fa1d2ada",
+        "originalMode": "0o600"
+      },
+      {
+        "entry": "s01/started.json",
+        "bytes": 1585,
+        "sha256": "2343a963decfeb37b4dc1a7a0d2fa79312b2900558c0f2e70ed64bac155460ff",
+        "originalMode": "0o600"
+      },
+      {
+        "entry": "s01/synthetic-normal.core.crashreport.json",
+        "bytes": 45724,
+        "sha256": "af0e4a3fe6bb312dd95b1c8b9e535ee58f5df5ccafb62dbac000f4aef2bfb488",
+        "originalMode": "0o600"
+      },
+      {
+        "entry": "s01/target.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "originalMode": "0o600"
+      },
+      {
+        "entry": "s01/target.stdout",
+        "bytes": 806,
+        "sha256": "4c9d9b286ee930dc252162ef4d18695c82582d90e91e542d570f340fc7931e88",
+        "originalMode": "0o600"
+      }
+    ]
+  },
+  "originalRecordSha256": "073b94838e33811cd7205b223abf91de42138d95f88f92f14b33e3f8fa1d2ada",
+  "rawStackReport": {
+    "path": "/tmp/l01ms-e3edce403bfe41ee/s01/synthetic-normal.core.crashreport.json",
+    "bytes": 45724,
+    "sha256": "af0e4a3fe6bb312dd95b1c8b9e535ee58f5df5ccafb62dbac000f4aef2bfb488"
+  },
+  "privateCore": {
+    "path": "/tmp/l01ms-e3edce403bfe41ee/s01/synthetic-normal.core",
+    "bytes": 8237056,
+    "sha256": "3bbbbd9313a58bba21149c4d47f5c3cbacb67938a79edd16b26891a8e66d4bda",
+    "uploaded": false,
+    "recoverableFromGit": false,
+    "scope": "Owned sanitized synthetic only; retained private, excluded from archive."
+  },
+  "rawMatchedFrames": [
+    {
+      "nativeTid": 87058,
+      "rawFrameIndex": 12,
+      "frame": {
+        "is_managed": "true",
+        "module_address": "0x7f0e17eb4000",
+        "stack_pointer": "0x7ffc9d55e760",
+        "native_address": "0x7f0d9d6124e7",
+        "native_offset": "0x237",
+        "native_image_offset": "0xffffffff8575e4e7",
+        "token": "0x600001e",
+        "il_offset": "0x7b",
+        "method_name": "L01OwnedSynthetic.KnownWaitLeaf(System.String)",
+        "timestamp": "0x6ad52008",
+        "sizeofimage": "0xa000",
+        "filename": "L01Synthetic.dll",
+        "guid": "35065df37a064e1b8b74ac77cd578120"
+      }
+    },
+    {
+      "nativeTid": 87058,
+      "rawFrameIndex": 13,
+      "frame": {
+        "is_managed": "true",
+        "module_address": "0x7f0e17eb4000",
+        "stack_pointer": "0x7ffc9d55e880",
+        "native_address": "0x7f0d9d61226f",
+        "native_offset": "0x2f",
+        "native_image_offset": "0xffffffff8575e26f",
+        "token": "0x600001d",
+        "il_offset": "0x2",
+        "method_name": "L01OwnedSynthetic.KnownWaitOuter(System.String)",
+        "timestamp": "0x6ad52008",
+        "sizeofimage": "0xa000",
+        "filename": "L01Synthetic.dll",
+        "guid": "35065df37a064e1b8b74ac77cd578120"
+      }
+    },
+    {
+      "nativeTid": 87068,
+      "rawFrameIndex": 1,
+      "frame": {
+        "is_managed": "true",
+        "module_address": "0x7f0e17eb4000",
+        "stack_pointer": "0x7f0e169fcaf0",
+        "native_address": "0x7f0d9d6120c4",
+        "native_offset": "0x64",
+        "native_image_offset": "0xffffffff8575e0c4",
+        "token": "0x600001c",
+        "il_offset": "0x18",
+        "method_name": "L01OwnedSynthetic.KnownCpuLeaf()",
+        "timestamp": "0x6ad52008",
+        "sizeofimage": "0xa000",
+        "filename": "L01Synthetic.dll",
+        "guid": "35065df37a064e1b8b74ac77cd578120"
+      }
+    },
+    {
+      "nativeTid": 87068,
+      "rawFrameIndex": 2,
+      "frame": {
+        "is_managed": "true",
+        "module_address": "0x7f0e17eb4000",
+        "stack_pointer": "0x7f0e169fcb30",
+        "native_address": "0x7f0d9d612009",
+        "native_offset": "0x29",
+        "native_image_offset": "0xffffffff8575e009",
+        "token": "0x600001b",
+        "il_offset": "0x6",
+        "method_name": "L01OwnedSynthetic.KnownCpuOuter()",
+        "timestamp": "0x6ad52008",
+        "sizeofimage": "0xa000",
+        "filename": "L01Synthetic.dll",
+        "guid": "35065df37a064e1b8b74ac77cd578120"
+      }
+    }
+  ],
+  "outcome": {
+    "nativeExit": 0,
+    "targetExit": 0,
+    "collectorExit": 0,
+    "targetJoinedEof": true,
+    "collectorJoined": true,
+    "observerErrors": [],
+    "childrenAfterRequest": [],
+    "originalIdentitiesAbsentAtReadback": true,
+    "apiOutcome": "RETURNED",
+    "apiNativeStatus": 0,
+    "publicApiRequestReach": 1,
+    "requestCountScope": "Public API invocation reach, not an independently counted IPC wire command or createdump launch.",
+    "collectorLaunches": 1,
+    "requestWallSeconds": 1.7287690419980208,
+    "phaseWallSeconds": 1.9989599859982263,
+    "createdumpReportedDurationMilliseconds": 136
+  },
+  "interpretation": "Real managed KnownWaitLeaf/Outer mapped to independently reported native wait TID/private stdin; real KnownCpuLeaf/Outer mapped to independently reported worker TID and actual progressing Interlocked work. Exact prepared module MVID and nonzero MethodDef tokens/IL offsets retained in raw JSON.",
+  "scope": "Installed DiagnosticsClient normal runtime request plus matching createdump/DAC can obtain and interpret these own synthetic managed stacks under this cloud Linux context. No installation/manual security policy change. No gameplay capture or claim of general dump/heap/async decoding, game causality, pause budget or qualification.",
+  "holds": {
+    "gameplayRelease": "NONE",
+    "syntheticPermit": "CONSUMED_NO_RETRY",
+    "L01": "52/57 original provenance; five crash scenarios unqualified",
+    "old66529": "UNKNOWN; unavailable; recoveryClaim=false",
+    "cloudLinuxGameplay": "HOLD",
+    "futureWindowsFive": "SEPARATE_HOLD_NATIVE_IDENTITY_PREP_REQUIRED",
+    "WindowsArtifact403": "BLOCKED_NO_RETRY",
+    "CI": "NOT_RUN",
+    "A3": "NO_PROCEED"
+  }
+}

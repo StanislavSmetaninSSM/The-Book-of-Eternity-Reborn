@@ -1,3 +1,25 @@
+## L01 S01 — FIRST synthetic PASS saved; independent EVIDENCE pending (2026-10-18)
+
+Task #1536, branch `1536-wound-b2-cloud-20261012`; actual release/source
+`4d476b388b3319ed6fb3602f80d6bccb9035e11e`, reviewed helperd2c716af,
+prepared fixture0422f6c7. S01 ran ONCE in private new root with no game assembly,
+save or process. [Original evidence](recovery/l01-managed-stack-s01-original-evidence-20261018.json)
+retains all8 raw files in a hashed ZIP, including real crash-report JSON. Core
+8237056bytes stays private/excluded; no full-core recovery claim. Known wait and
+CPU leaf→outer chains match independent nativeTIDs87058/87068, exact compiledMVID,
+MethodDef tokens and IL offsets. API/collector/target0, one publicAPI reach,
+join/EOF, no observer errors or remaining owned child. Phase1.999s, request1.729s;
+createdump's own136ms is not a game pause budget. First permit consumed, no retry.
+
+WIP outcome preservation only; next finite step is independent AstraXHigh EVIDENCE
+of this exact saved carrier, including managed-frame interpretation and held future
+custody→accepted proposal. No game/test/product changes or additional actuals.
+Live custody/accepted delivery is still missing; separate implementation/SOURCE/PREP
+would be required before any future proposal release. L0152/57, original crash5,
+old66529 UNKNOWN, M01 and all platform/broader holds stay unchanged. Cloud Linux
+game qualification, future Windows-five preparation and Windowsartifact403 are
+three separate holds; Windows/CI not run. Following sections are historical.
+
 ## L01 S01 — SOURCE/PREP ACCEPT; separately saved one-shot release (2026-10-18)
 
 [Independent helper SOURCE/PREP ACCEPT](recovery/l01-managed-stack-helper-source-prep-independent-review-20261018.md)

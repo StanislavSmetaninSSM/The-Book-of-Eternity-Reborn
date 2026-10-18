@@ -61,7 +61,7 @@
   ],
   "prepareAdmission": "PLAN_ACCEPTED_HELPER_PREPARATION_ONLY",
   "smokeAdmission": {
-    "status": "SOURCE_PREP_ACCEPTED_S01_ONCE",
+    "status": "CONSUMED_FIRST_S01_EVIDENCE_PENDING",
     "releaseName": "L01_MANAGED_STACK_S01_20261018_D2C716AF",
     "reviewedSource": "d2c716af0946484e1440783d2ad0425b8e469b07",
     "preparedSource": "0422f6c7148f2f6eda4caa8dbc1043c557ae90a3",
@@ -99,7 +99,11 @@
     "targetMvid": "35065df3-7a06-4e1b-8b74-ac77cd578120",
     "scope": "Exactly one internally spawned owned synthetic S01 using existing prepared bytes; no arbitrary PID, no retries/fallback, no gameplay.",
     "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-source-prep-independent-review-20261018.json",
-    "reviewSha256": "add755d50da787d97844016be18dfafdf012ef37ece9abe097b1bb10bf246448"
+    "reviewSha256": "add755d50da787d97844016be18dfafdf012ef37ece9abe097b1bb10bf246448",
+    "actualSource": "4d476b388b3319ed6fb3602f80d6bccb9035e11e",
+    "originalEvidencePath": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01-original-evidence-20261018.json",
+    "originalRecordSha256": "073b94838e33811cd7205b223abf91de42138d95f88f92f14b33e3f8fa1d2ada",
+    "nextRelease": "NONE"
   },
   "gameplayRelease": "NONE",
   "sourceScope": "Three external helper sources, exact installed inventory and accepted review; reused M01 observer finalizer unchanged. No game code/category/runtime selection changes.",
