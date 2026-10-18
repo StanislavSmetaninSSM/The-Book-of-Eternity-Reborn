@@ -48,9 +48,13 @@ public sealed partial class GameEngineTurnLifecycleTests
         WritePhysicalInjuryDiagnostic("iobs_actual_abrupt_original_exit", original);
         Assert.Equal(73, original.ExitCode); // Environment.Exit, not an exception/catch/compensation surrogate
         Assert.True(original.Eof); Assert.True(original.Joined);
-        var atCut = ParseJsonObjectBytes(File.ReadAllBytes(cutPath));
+        var cutBytes = File.ReadAllBytes(cutPath);
+        WritePhysicalInjuryDiagnostic("iobs_actual_abrupt_cut_raw_before_identity", new
+        { Bytes = cutBytes.Length, Sha256 = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(cutBytes)),
+            Base64 = Convert.ToBase64String(cutBytes) });
+        var atCut = ParseJsonObjectBytes(cutBytes);
         Assert.Equal(original.Pid, atCut["Pid"]!.GetValue<int>()); Assert.Equal(nonce, atCut["Nonce"]!.GetValue<string>());
-        Assert.Equal(original.BirthUtc, atCut["BirthUtc"]!.GetValue<DateTime>());
+        Assert.Equal(original.BirthTick, atCut["BirthTick"]!.GetValue<ulong>());
         var root = atCut["Root"]!.GetValue<string>();
         Assert.StartsWith(Path.GetFullPath(Path.Combine(own, "tmp")) + Path.DirectorySeparatorChar, Path.GetFullPath(root));
         Assert.True(Directory.Exists(root)); // abrupt original did not run managed fixture disposal
@@ -66,6 +70,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.True(resumed.Eof); Assert.True(resumed.Joined);
         var result = JsonNode.Parse(Assert.IsType<string>(raw))!.AsObject();
         Assert.Equal(resumed.Pid, result["Pid"]!.GetValue<int>()); Assert.Equal(nonce, result["Nonce"]!.GetValue<string>());
+        Assert.Equal(resumed.BirthTick, result["BirthTick"]!.GetValue<ulong>());
         Assert.True(result["ActualCallerEntered"]!.GetValue<bool>()); Assert.Null(result["Failure"]);
         Assert.Equal(cut < 3 && fault is null, result["Completed"]!.GetValue<bool>());
         Assert.Equal(cut >= 3 || fault is not null, result["Held"]!.GetValue<bool>());
@@ -81,8 +86,21 @@ public sealed partial class GameEngineTurnLifecycleTests
         }
     }
 
-    private sealed record JointInterfaceNativeOutcome(int Pid, DateTime BirthUtc, int ExitCode, string Stdout, string Stderr,
+    private sealed record JointInterfaceNativeOutcome(int Pid, DateTime BirthUtc, ulong BirthTick, int ExitCode, string Stdout, string Stderr,
         string Executable, string[] Arguments, object Dependencies, bool Eof, bool Joined);
+
+    private static ulong ReadJointInterfaceLinuxBirthTick(int pid)
+    {
+        var stat = File.ReadAllText($"/proc/{pid}/stat");
+        Assert.Equal(pid, int.Parse(stat.AsSpan(0, stat.IndexOf(' ')), CultureInfo.InvariantCulture));
+        var close = stat.LastIndexOf(')'); // comm can contain spaces or parentheses
+        Assert.True(close > 0 && close + 2 < stat.Length && stat[close + 1] == ' ');
+        var fields = stat[(close + 2)..].Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        Assert.True(fields.Length > 19);
+        var birth = ulong.Parse(fields[19], CultureInfo.InvariantCulture); // field22: kernel ticks since boot
+        Assert.True(birth > 0);
+        return birth;
+    }
 
     private async Task<JointInterfaceNativeOutcome> RunJointInterfaceNativeChildAsync(string role, string root, string output, int cut, string own,
         JointInterfaceCrashOwnedContainer ownership)
@@ -98,11 +116,13 @@ public sealed partial class GameEngineTurnLifecycleTests
         using var child = Process.Start(start) ?? throw new InvalidOperationException("Actual joint engine child was not started.");
         ownership.Started(child.Id);
         DateTime birth = default;
+        ulong birthTick = 0;
         Task<string>? stdout = null, stderr = null;
         Exception? failure = null;
         try
         {
             birth = child.StartTime.ToUniversalTime();
+            birthTick = ReadJointInterfaceLinuxBirthTick(child.Id); // live owned child, independent of child-self record
             stdout = child.StandardOutput.ReadToEndAsync(); stderr = child.StandardError.ReadToEndAsync();
             await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(220));
         }
@@ -122,14 +142,14 @@ public sealed partial class GameEngineTurnLifecycleTests
             if (stdout?.IsCompletedSuccessfully == true) File.WriteAllText(output + ".stdout", stdout.Result);
             if (stderr?.IsCompletedSuccessfully == true) File.WriteAllText(output + ".stderr", stderr.Result);
             WritePhysicalInjuryDiagnostic("iobs_actual_native_join", new
-            { child.Id, BirthUtc = birth, ExitCode = child.HasExited ? (int?)child.ExitCode : null, Eof = stdout?.IsCompletedSuccessfully == true && stderr?.IsCompletedSuccessfully == true,
+            { child.Id, BirthUtc = birth, BirthTick = birthTick, ExitCode = child.HasExited ? (int?)child.ExitCode : null, Eof = stdout?.IsCompletedSuccessfully == true && stderr?.IsCompletedSuccessfully == true,
                 Joined = child.HasExited, Failure = failure?.ToString(), Executable = executable, Arguments = arguments,
                 Dependencies = MortalArchiveDependencyContext(), RawStdout = stdout?.IsCompletedSuccessfully == true ? stdout.Result : null,
                 RawStderr = stderr?.IsCompletedSuccessfully == true ? stderr.Result : null, CleanupFailure = cleanupFailure?.ToString(),
                 RetainedOwnedContainer = ownership.HasUnsettledChildren ? own : null });
             if (cleanupFailure is not null && failure is null) throw cleanupFailure;
         }
-        return new(child.Id, birth, child.ExitCode, await stdout!, await stderr!, executable, arguments,
+        return new(child.Id, birth, birthTick, child.ExitCode, await stdout!, await stderr!, executable, arguments,
             MortalArchiveDependencyContext(), stdout!.IsCompletedSuccessfully && stderr!.IsCompletedSuccessfully, child.HasExited);
     }
 
@@ -345,7 +365,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         finally
         {
             File.WriteAllText(output, JsonSerializer.Serialize(new
-            { Pid = Environment.ProcessId, BirthUtc = Process.GetCurrentProcess().StartTime.ToUniversalTime(), Nonce = parent["Nonce"]!.GetValue<string>(),
+            { Pid = Environment.ProcessId, BirthUtc = Process.GetCurrentProcess().StartTime.ToUniversalTime(),
+                BirthTick = ReadJointInterfaceLinuxBirthTick(Environment.ProcessId), Nonce = parent["Nonce"]!.GetValue<string>(),
                 Root = root, AuxiliaryRoot = factory._rootPath, ActualCallerEntered = actualCaller, Handled = handled, Second = second,
                 Fault = fault, Completed = completed, Held = !completed && failure is null, Failure = failure?.ToString(),
                 NewChangingICommits = changingI, InertRepeatBytesEqual = repeated is not null && after is not null &&
@@ -446,7 +467,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             else Assert.True(journal.RootElement.GetProperty("Committed").GetBoolean());
             foreach (var (path, bytes) in _mechanicalBefore) Assert.Equal(bytes, ReadPhysical(path));
             File.WriteAllText(_crashOutput!, JsonSerializer.Serialize(new
-            { Pid = Environment.ProcessId, BirthUtc = Process.GetCurrentProcess().StartTime.ToUniversalTime(), Nonce = parent["Nonce"]!.GetValue<string>(),
+            { Pid = Environment.ProcessId, BirthUtc = Process.GetCurrentProcess().StartTime.ToUniversalTime(),
+                BirthTick = ReadJointInterfaceLinuxBirthTick(Environment.ProcessId), Nonce = parent["Nonce"]!.GetValue<string>(),
                 ParentPid = parent["ParentPid"]!.GetValue<int>(), Root = fixture._fs.BasePath, Cut = cut,
                 Phase = phase.ToString(), Index = index, JournalBase64 = Convert.ToBase64String(journalBytes),
                 ActualPending = ReadPhysical(WoundAcceptedTurnSnapshotContract.PendingResolutionPath), PendingMemberAfter = pendingBytes,
