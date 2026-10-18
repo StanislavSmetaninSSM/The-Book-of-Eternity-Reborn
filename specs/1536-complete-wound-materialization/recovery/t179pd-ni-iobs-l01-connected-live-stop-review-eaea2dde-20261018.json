@@ -1,0 +1,208 @@
+{
+  "kind": "INDEPENDENT_CONNECTED_EVIDENCE_STOP_AND_CAUSE_REVIEW",
+  "date": "2026-10-18",
+  "carrier": "eaea2dde3fd5381d27e86ab9e87c782cd97d9ae0",
+  "actualSource": "91a533d61e93ee043622763cd709b708dbc89dd3",
+  "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+  "evidenceVerdict": "STOP_FIXTURE_PRECONDITIONS_INVALID_FOR_TWO_TARGET_CASES",
+  "wholeEvidenceVerdict": "OPEN_NOT_GREEN",
+  "sourceDisposition": "Prior SOURCE acceptance is preserved; it missed these two fixture/resubmission incompatibilities. No new production SOURCE acceptance or product defect is inferred.",
+  "native": {
+    "exit": 1,
+    "wallSeconds": 210.71721310300927,
+    "planned": 6,
+    "executed": 6,
+    "passed": 4,
+    "failed": 2,
+    "descriptorsComplete": 1,
+    "duplicateOrUnderfillOrTimeout": false,
+    "cleanupComplete": true
+  },
+  "qualifiedPasses": [
+    {
+      "method": "GuaranteedTreatment_InterfaceNoWriteRetainsExactBytesAndMtime",
+      "rows": [
+        "Utf8",
+        "Bom",
+        "Utf16"
+      ],
+      "qualification": "Actual complete joint path and exact unchanged interface bytes/mtime, no I-changing cohort, frozen Prepared/Published result, child3, mechanics/progression/story/inert repeat and strict cleanup."
+    },
+    {
+      "method": "GuaranteedTreatment_InterfaceErrorFreezesPreparedWithoutPublicationOrCommon",
+      "rows": 1,
+      "qualification": "Actual ErrorPrepared result is frozen and reported, I/mechanical images remain unchanged, no common completion, direct and outer retention. No crash/resume qualification."
+    }
+  ],
+  "findings": [
+    {
+      "id": "NI-IOBS-E01",
+      "severity": "MATERIAL_FIXTURE",
+      "place": "JointInterfaceLifecycle.cs ConfigureBeforeOriginal/ConfigureCorrectedOutputs; JointCompletion.cs:464,910",
+      "scenario": "Warning returns exact original/rollback I after FIRST response changed I; Absent removes I only in corrected response after rejected I was present. Both FIRST repair requests require I resubmission.",
+      "actualFailure": "Assert.Single for Spend43 at JointCompletion.cs:910, before target warning/absent final oracles. Actual turn42, canonical disposition null, correctionReady true, no Prepared/Published/common.",
+      "sourceCause": "SessionAndSnapshots.cs:2262-2290 requires rejected-path presence consistency and Changed relative to original baseline; :2326-2334 also treats semantically equal JSON as Unchanged. Warning violates Changed; Absent violates presence. ValidationAndRepair.cs:659-682 retains severity error and enters BeforeDestructiveRefusal; :447 invokes selected-missing-result hold before the later error log. MortalJointInterfaceResume.cs:142-157 refuses the missing-result selected wave.",
+      "consequence": "Neither failure qualifies the intended I-result/common behavior, and neither establishes a product RED. The existing resubmission policy must remain unchanged.",
+      "correction": "Tests only: Warning I must already equal its genuine original in the FIRST public response and corrected reply; Absent I must genuinely be absent in original, FIRST response and corrected reply. Narrow optional-output capture must represent absence honestly and preserve Ready-last. No private authority/Ready injection, resubmission bypass, semantic/encoding trick, or weakened final assertion."
+    }
+  ],
+  "unqualifiedCases": [
+    {
+      "identity": {
+        "executionId": "7a5ea675-cefc-4342-aaa3-546ab746ce64",
+        "testId": "f72e1aca-4507-bb1d-f81d-8718a9fb8ca9",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceWarningVectorSurvivesCommonAndOrdinaryCompletion",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:09.3945554",
+        "startTime": "2026-10-18T07:36:43.6442547+00:00",
+        "endTime": "2026-10-18T07:36:43.6442549+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "7a5ea675-cefc-4342-aaa3-546ab746ce64"
+      },
+      "scenario": "Warning",
+      "classification": "FIXTURE_PREREQUISITE_MISMATCH_NOT_QUALIFIED_TARGET_PRODUCT_FAILURE",
+      "assertion": "shared completion resource Spend43 Assert.Single at JointCompletion.cs910",
+      "reason": "Corrected I equals exact signed-original/rollback-baseline bytes; required rejected-path resubmission demands Changed.",
+      "requiredPaths": [
+        "game_state/wounds/wound_commands.json",
+        "output/debug_logs.json",
+        "output/interface_updates.json",
+        "output/mortal_wound_decisions.json",
+        "output/narrative_response.json"
+      ],
+      "rejectedI": {
+        "Exists": true,
+        "Length": 68,
+        "Sha256": "30E8B70AD0820C2E821E168676311C88C81D02074E72A3899A224F2C5B0AA3DA"
+      },
+      "originalAndRollbackSha256": "0a14b6259e79f0f120b1fc351d5dc6cbb75ecf682780df85724416b94721e6c7",
+      "correctedI": {
+        "bytes": 158,
+        "sha256": "0a14b6259e79f0f120b1fc351d5dc6cbb75ecf682780df85724416b94721e6c7"
+      },
+      "actualTurn": 42,
+      "checkpointPresent": true,
+      "correctionReady": true,
+      "canonicalRefreshAbsent": true,
+      "noPreparedOrPublishedRecordObserved": true,
+      "onlyFirstRepairDispatchMilestone": true,
+      "noCommonOrTargetFinalAssertionsReached": true,
+      "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 910\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 991\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow, Boolean normalizeNarrativeBeforeCheckpoint, Action`1 observeSettledCommonPlan, Boolean postOriginalAutomaticSubmission, Action`1 attachActualOwnerProbe, JointCaptureCutProbe currentCaptureProbe, JointInterfaceLifecycleProbe interfaceLifecycleProbe) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 464\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceWarningVectorSurvivesCommonAndOrdinaryCompletion() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 58\n--- End of stack trace from previous location ---"
+    },
+    {
+      "identity": {
+        "executionId": "089901b0-abf8-4379-8313-7d2c259474a4",
+        "testId": "9d4c12ec-93ca-b96a-73ef-eb09dbe88ba9",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AbsentInterfacePublishesOnlyResultAndCompletes",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:13.0885317",
+        "startTime": "2026-10-18T07:33:41.9311049+00:00",
+        "endTime": "2026-10-18T07:33:41.9311195+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "089901b0-abf8-4379-8313-7d2c259474a4"
+      },
+      "scenario": "Absent",
+      "classification": "FIXTURE_PREREQUISITE_MISMATCH_NOT_QUALIFIED_TARGET_PRODUCT_FAILURE",
+      "assertion": "shared completion resource Spend43 Assert.Single at JointCompletion.cs910",
+      "reason": "Corrected I absent while recorded rejected I presence is true; required rejected-path resubmission demands same presence.",
+      "requiredPaths": [
+        "game_state/wounds/wound_commands.json",
+        "output/debug_logs.json",
+        "output/interface_updates.json",
+        "output/mortal_wound_decisions.json",
+        "output/narrative_response.json"
+      ],
+      "rejectedI": {
+        "Exists": true,
+        "Length": 68,
+        "Sha256": "A8BDF49F043F059B4E36DF8F686D1B7E0C2F33F00B75CA55A50DCB79D3632E59"
+      },
+      "originalAndRollbackSha256": "f5fe7664cd83f0dd56e6e69193814ad035671f60a93ea4133120aab830f11400",
+      "correctedI": null,
+      "actualTurn": 42,
+      "checkpointPresent": true,
+      "correctionReady": true,
+      "canonicalRefreshAbsent": true,
+      "noPreparedOrPublishedRecordObserved": true,
+      "onlyFirstRepairDispatchMilestone": true,
+      "noCommonOrTargetFinalAssertionsReached": true,
+      "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 910\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 991\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow, Boolean normalizeNarrativeBeforeCheckpoint, Action`1 observeSettledCommonPlan, Boolean postOriginalAutomaticSubmission, Action`1 attachActualOwnerProbe, JointCaptureCutProbe currentCaptureProbe, JointInterfaceLifecycleProbe interfaceLifecycleProbe) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 464\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AbsentInterfacePublishesOnlyResultAndCompletes() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 41\n--- End of stack trace from previous location ---"
+    }
+  ],
+  "connectedCounts": {
+    "finiteSelected": 57,
+    "executedDistinct": 28,
+    "qualifiedPass": 26,
+    "fixtureFailedUnqualifiedTargets": 2,
+    "neverRun": 29,
+    "priorQualifiedRetained": 22,
+    "newQualifiedPass": 4
+  },
+  "retainedQualifiedScopes": [
+    {
+      "mode": "protected-late2",
+      "passed": 2,
+      "support": "/tmp/t179pd-ni-iobs-l01-connected-late2-check-c840d604-20261018.json",
+      "supportSha256": "ad89064eca83b976f7dee4437241d4f4bba1090f3b7be774f4c0b58ceda256a6"
+    },
+    {
+      "mode": "ordering1",
+      "passed": 1,
+      "support": "/tmp/t179pd-ni-iobs-l01-connected-ordering-check-1024bee0-20261018-v2.json",
+      "supportSha256": "4c0277baa82865204f2895a4c218749e6165cff7993fb9021fcb421c7ab63429"
+    },
+    {
+      "mode": "data15",
+      "passed": 15,
+      "support": "/tmp/t179pd-ni-iobs-l01-connected-data-check-1024bee0-20261018.json",
+      "supportSha256": "1a0d7e1d4eb9a5f300e6ff2f99436b77344581eb54e9d40d4bc76999e2b2d49d"
+    },
+    {
+      "mode": "guidance1",
+      "passed": 1,
+      "support": "/tmp/t179pd-ni-iobs-l01-connected-guidance-check-1024bee0-20261018.json",
+      "supportSha256": "87843c78cab538bc78dd7feb6f9a34bff498858fedf8f9d4ecca51a9c043018a"
+    },
+    {
+      "mode": "cut3",
+      "passed": 3,
+      "support": "/tmp/t179pd-ni-iobs-l01-connected-cut-check-f5dc4aff-20261018.json",
+      "supportSha256": "7360c781d99e8640ef2949c4533f16d6eba7c02392e22bbe254d3f4e7e608131"
+    }
+  ],
+  "nextAffectedScope": [
+    "Review only the concrete test fixture correction and dependent optional-output/default path, category split, source pins and fixed controller. Preserve all previous raw and SOURCE decisions.",
+    "Split retained positive4 from corrected Warning+Absent2 without changing case/method identity or count. Expected whole current discovery remains33methods57cases; category ownership may become16 after the split and must be verified by fresh discovery.",
+    "A strict inverse/default-branch proof must show the correction cannot affect the previously qualified26 cases, including shared genuine joint fixtures. If that proof holds, retain their old actual/compiled provenance and do not repeat them merely for new assembly hashes. Any materially changed retained path requires its specific affected control.",
+    "Fresh BOTH build/catalog and exact full/remaining PlanOnly zero-execution bindings must establish the new category ownership and the corrected2 plus remaining29 partition. Actual corrected2 require a new named release; remaining29 remain first-ever unrun and require separate authorized progression.",
+    "Do not weaken product resubmission/retention semantics or treat successful compilation as fixture or runtime qualification."
+  ],
+  "proof": {
+    "rawQualification": {
+      "path": "/tmp/t179pd-ni-iobs-l01-connected-live-stop-check-91a533d6-20261018.json",
+      "sha256": "6950ab3c66d95678a2df0656eccbc99a56a625936eace542ff2aa54c6b628403",
+      "bytes": 40312
+    },
+    "carrierBinding": {
+      "path": "/tmp/t179pd-ni-iobs-l01-connected-live-stop-carrier-check-eaea2dde-20261018.json",
+      "sha256": "297d56bbc0a9b5f62d51b6d082de2f955a0365000dedaaf6c9c01969def31ba6",
+      "bytes": 1997
+    },
+    "rawChainCount": 11,
+    "physicalNewRecoveryFiles": 20,
+    "changedMetadataPaths": 16,
+    "source97AndContextExact": true,
+    "freshNineAndAll1575ExactAtActual": true,
+    "strictDistinctAbsentRoots": 6
+  },
+  "limits": [
+    "Only existing original FIRST evidence was read; no native execution, rebuild, retry or repository edit by reviewer.",
+    "Literal 2FAIL and all historical failures remain immutable; source-backed explanation is not additional branch instrumentation.",
+    "Deleted fixture payloads are evidenced only where frozen raw includes them or reached source-bound assertions establish them; no reconstructed deleted physical files are claimed.",
+    "Marker-containing cohorts are not exact API-call counts. No full NI/HOT/F1/M3/T197/Windows/CI/ZIP/A3 acceptance or runtime authority is granted."
+  ]
+}

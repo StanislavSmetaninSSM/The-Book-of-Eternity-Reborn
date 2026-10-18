@@ -245,6 +245,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(_fs, lease));
                 await WriteLiveRepairOrdinaryOutputsAsync(lease, original, decision,
                     normalizeNarrativeBeforeCheckpoint ? scene.Replace("\n", "`n", StringComparison.Ordinal) : scene);
+                if (interfaceLifecycleProbe is not null)
+                    await interfaceLifecycleProbe.ConfigureInitialIntakeAsync(lease, original);
                 if (postOriginalAutomaticSubmission)
                 {
                     Assert.True(useLiveCaller);
@@ -275,8 +277,15 @@ public sealed partial class GameEngineTurnLifecycleTests
                 // Freeze actual authored43 public bytes before the real repair restores
                 // original baseline. This is a GM response, never private restore authority.
                 foreach (var path in WoundAcceptedTurnSnapshotContract.OutputPaths)
+                {
+                    if (interfaceLifecycleProbe is { ExpectsAbsentInterface: true } && path == "output/interface_updates.json")
+                    {
+                        Assert.Null(await _fs.ReadFileBytesAsync(lease, path));
+                        continue;
+                    }
                     authoredPublicOutputs.Add(path,
                         Assert.IsType<byte[]>(await _fs.ReadFileBytesAsync(lease, path)).ToArray());
+                }
                 if (nonzeroProgression)
                     authoredProgressionReport = Assert.IsType<byte[]>(
                         await _fs.ReadFileBytesAsync(lease, ProgressionScheduleService.ReportPath)).ToArray();

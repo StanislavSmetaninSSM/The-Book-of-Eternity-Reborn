@@ -82,13 +82,16 @@ public sealed partial class GameEngineTurnLifecycleTests
         private GameEngine? _engine;
         private GameEngineSessionFinalizationHooks? _priorHooks;
         private byte[]? _submitted;
+        private byte[]? _warningPublicSeed;
         private byte[]? _atCapture;
         private byte[]? _finalInterface;
         private bool _completionObserved;
         private JsonObject? _firstMarker;
         private int _captureCallbacks, _interfaceAtCapture, _sequence;
         private bool _configured;
+        private bool _initialIntakeConfigured;
         private DateTime? _submittedMtime, _finalMtime;
+        internal bool ExpectsAbsentInterface => scenario == "Absent";
         internal bool ExpectsHeld => scenario is "Error" or "InterfaceClose" or "ReadRace" or "ReadyDrift" or "CommonFault" or "Terminal" or "TerminalFault" or "CutResume";
 
         internal void Attach(GameEngine engine)
@@ -132,6 +135,12 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             Assert.False(_configured); _configured = true;
             if (scenario == "Absent") { outputs.Remove(InterfacePath); return; }
+            if (scenario == "Warning")
+            {
+                Assert.True(_initialIntakeConfigured);
+                outputs[InterfacePath] = Assert.IsType<byte[]>(_submitted).ToArray();
+                return;
+            }
             // Missing useful timestamp forces the real ordinary fallback, and an
             // object with two tags changes on each projection: late replay is visible.
             var value = new JsonObject
@@ -154,7 +163,7 @@ public sealed partial class GameEngineTurnLifecycleTests
 
         internal void ConfigureBeforeOriginal()
         {
-            if (scenario == "ReadRace")
+            if (scenario is "ReadRace" or "Absent")
             {
                 File.Delete(fixture._fs.ResolvePath(InterfacePath));
                 return; // genuine original records absence, so freshness performs NO public I read
@@ -164,7 +173,50 @@ public sealed partial class GameEngineTurnLifecycleTests
             // original. No original manifest/hash is edited or re-signed here.
             var value = new JsonObject { ["dialogueOptions"] = new JsonArray(new JsonObject
                 { ["text"] = "Продолжить обычный ответ." }), ["timestamp"] = "2026-10-18T00:00:00.0000000+00:00" };
-            File.WriteAllText(fixture._fs.ResolvePath(InterfacePath), value.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed), new UTF8Encoding(false));
+            _warningPublicSeed = Encoding.UTF8.GetBytes(value.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+            File.WriteAllBytes(fixture._fs.ResolvePath(InterfacePath), _warningPublicSeed);
+        }
+
+        internal async Task ConfigureInitialIntakeAsync(FileSystemManager.CanonicalWriteLease lease,
+            PendingTurnSnapshotReadAuthority original)
+        {
+            if (scenario is not ("Warning" or "Absent")) return;
+            Assert.False(_initialIntakeConfigured); _initialIntakeConfigured = true;
+            var read = PendingTurnSnapshotReader.ReadCurrent(fixture._fs, lease,
+                PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(
+                    ["game_state/meta/soul_state.json"], [InterfacePath]));
+            Assert.True(read.Success, DescribeValidationIssues(read.Issues));
+            var observed = Assert.IsType<PendingTurnSnapshotReadAuthority>(read.Snapshot);
+            Assert.Equal(original.Realm, observed.Realm);
+            Assert.Equal(original.SessionId, observed.SessionId); Assert.Equal(original.RequestId, observed.RequestId);
+            Assert.Equal(original.SnapshotToken, observed.SnapshotToken); Assert.Equal(original.TurnNumber, observed.TurnNumber);
+            if (scenario == "Absent")
+            {
+                Assert.Contains(InterfacePath, observed.AbsentLogicalPaths);
+                File.Delete(fixture._fs.ResolvePath(InterfacePath));
+                Assert.Null(await fixture._fs.ReadFileBytesAsync(lease, InterfacePath));
+            }
+            else
+            {
+                _submitted = Assert.IsType<byte[]>(_warningPublicSeed).ToArray();
+                Assert.Equal(_submitted, observed.ReadRequiredBytes(InterfacePath)); // readonly oracle, never authoring input
+                await fixture._fs.WriteFileAtomicBytesAsync(lease, InterfacePath, _submitted);
+                Assert.Equal(_submitted, await fixture._fs.ReadFileBytesAsync(lease, InterfacePath));
+            }
+            var ready = ParseJsonObjectBytes(Assert.IsType<byte[]>(
+                await fixture._fs.ReadFileBytesAsync(lease, "ready/turn_complete.json")));
+            var modified = Assert.IsType<JsonArray>(ready["filesModified"]);
+            if (scenario == "Absent")
+                modified.Remove(Assert.Single(modified.Where(path => path!.GetValue<string>() == InterfacePath)));
+            foreach (var path in modified)
+                Assert.NotNull(await fixture._fs.ReadFileBytesAsync(lease, path!.GetValue<string>()));
+            // Honest first-GM response, before rejected-wave/rollback capture.
+            // Preserve correlation/timestamp and publish Ready last after readback.
+            await fixture._fs.WriteFileAtomicAsync(lease, "ready/turn_complete.json",
+                ready.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+            fixture.WritePhysicalInjuryDiagnostic("iobs_actual_initial_intake_before_rejected_wave", new
+            { scenario, OriginalDeclaresInterface = original.DeclaredOriginalLogicalPaths.Contains(InterfacePath),
+                Interface = Raw(await fixture._fs.ReadFileBytesAsync(lease, InterfacePath)), Ready = ready });
         }
 
         internal void ObserveCorrectedSubmissionReadback()

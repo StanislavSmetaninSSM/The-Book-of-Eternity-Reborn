@@ -1,7 +1,7 @@
 {
   "kind": "NI_IOBS_L01_AUTHORED_METHOD_ROW_LEDGER",
-  "sourceBase": "9a92049ef86bcbc4569aaa0a11d1f42632093622",
-  "status": "CONNECTED_SOURCE_FIXTURE_SELECTION_ACCEPTED_CURRENT_PRODUCT_UNCOMPILED_UNRUN",
+  "sourceBase": "eaea2dde3fd5381d27e86ab9e87c782cd97d9ae0",
+  "status": "TEST_ONLY_INTAKE_FIXTURE_CORRECTION_WIP_UNCOMPILED_UNRUN",
   "rows": [
     {
       "category": "fr063-joint-interface-lifecycle-order",
@@ -162,13 +162,13 @@
       "prerequisite": "Actual shared source42/original43/held request/real first repair+public correction/Ready before positive or deliberate ErrorPrepared held assertions; owned root removed by original shared owner."
     },
     {
-      "category": "fr063-joint-interface-lifecycle-live",
+      "category": "fr063-joint-interface-corrected-intake",
       "project": "integration",
       "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AbsentInterfacePublishesOnlyResultAndCompletes",
       "attributes": "Fact",
       "staticRows": 1,
-      "status": "AUTHORED_UNCOMPILED_UNRUN_REAL_OWNER_CONTROL",
-      "prerequisite": "Actual shared source42/original43/held request/real first repair+public correction/Ready before positive or deliberate ErrorPrepared held assertions; owned root removed by original shared owner."
+      "status": "CORRECTED_INITIAL_GM_FIXTURE_UNCOMPILED_UNRUN_PRIOR_FAILURE_PRESERVED",
+      "prerequisite": "Genuine original43 with initial-GM Warning same public seed or original/first/corrected Absent, honest Ready last, severityIII first then correctedII; no resubmission-policy bypass. All final whole mechanics/noWrite/warning assertions unchanged."
     },
     {
       "category": "fr063-joint-interface-lifecycle-live",
@@ -180,13 +180,13 @@
       "prerequisite": "Actual shared source42/original43/held request/real first repair+public correction/Ready before positive or deliberate ErrorPrepared held assertions; owned root removed by original shared owner."
     },
     {
-      "category": "fr063-joint-interface-lifecycle-live",
+      "category": "fr063-joint-interface-corrected-intake",
       "project": "integration",
       "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceWarningVectorSurvivesCommonAndOrdinaryCompletion",
       "attributes": "Fact",
       "staticRows": 1,
-      "status": "AUTHORED_UNCOMPILED_UNRUN_REAL_OWNER_CONTROL",
-      "prerequisite": "Actual shared source42/original43/held request/real first repair+public correction/Ready before positive or deliberate ErrorPrepared held assertions; owned root removed by original shared owner."
+      "status": "CORRECTED_INITIAL_GM_FIXTURE_UNCOMPILED_UNRUN_PRIOR_FAILURE_PRESERVED",
+      "prerequisite": "Genuine original43 with initial-GM Warning same public seed or original/first/corrected Absent, honest Ready last, severityIII first then correctedII; no resubmission-policy bypass. All final whole mechanics/noWrite/warning assertions unchanged."
     },
     {
       "category": "fr063-joint-interface-current-owner-refusal",
@@ -327,9 +327,9 @@
   "staticTotals": {
     "newMethods": 28,
     "newRows": 51,
-    "newOwners": 11,
-    "predictedDescriptors": 11,
-    "scope": "Static current source inventory only; prospective affected union33methods57cases15owners/15descriptors, not discovery or runtime."
+    "newOwners": 12,
+    "predictedDescriptors": 12,
+    "scope": "Current static new28methods51rows12owners plus affected existing6 =whole16descriptors33methods57rows. Fresh whole and pending9descriptors17methods31rows discovery unrun;26 historical qualified cases retained subject to delta equivalence."
   },
   "actualCases": 0,
   "productChanged": true,
@@ -348,28 +348,28 @@
   ],
   "verificationTools": [
     {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-preparation-run.py",
-      "sha256": "1b82e4e1c3366fb066824e4964c1cc94e7451482aac91b47ecba5e87f52c5cdd",
-      "bytes": 8756,
-      "role": "Fixed current changed-product fresh BOTH/catalog/discovery then dependent exact PlanOnly-NoBuild; ZERO actual cases",
-      "status": "UNRUN_SOURCE_ONLY_NAMED_ROOT_RELEASE_REQUIRED"
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-preparation-run.py",
+      "sha256": "f24fcc1960551abba6ef2489decb38e485d51b42a3b08d8ec39ca69cf74b9cfb",
+      "bytes": 10099,
+      "role": "Three separately named ZERO modes only: fresh BOTH/catalog, dependent whole16/33/57 plan, dependent remaining9/17/31 plan with exact selection archived.",
+      "status": "UNRUN_SOURCE_ONLY_NAMED_RELEASE_REQUIRED"
     },
     {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-first-run.py",
-      "sha256": "411b9d1ca4585c6ee66d3bbd9992a95b734cd5eb4da059f25faaa3b8762c5fd0",
-      "bytes": 9552,
-      "role": "Fixed separately named protectedLate2 and each finite actual subset; NoBuild, no auto advance/retry",
-      "status": "UNRUN_SOURCE_ONLY_NAMED_ROOT_RELEASE_REQUIRED"
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-first-run.py",
+      "sha256": "c147ee76084f275f29c6920e2a81ddb66fbff2a786d04a02a878ac56b6b83b85",
+      "bytes": 9377,
+      "role": "Only separately named repaired2 or one of eight remaining29 groups; retained26 are deliberately not runnable modes, original outcome before guards",
+      "status": "UNRUN_SOURCE_ONLY_NAMED_RELEASE_REQUIRED"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-whole.py",
       "sha256": "bf6503ecb8b1006842e66313da7c72fc185b217e54cd44d4ff5a62b864c36c3f",
       "bytes": 2342,
-      "role": "Read-only full original zero/actual process/source/ledger/sentinel/stdout/runner/TRX plus any unresolved retained child roots; no cleanup/classification",
-      "status": "UNRUN_SOURCE_ONLY_NAMED_ROOT_RELEASE_REQUIRED"
+      "role": "Unchanged read-only complete raw archiver reused with new phase/source fields; historical eight invocations retained, no runtime from archiving",
+      "status": "HISTORICAL_EIGHT_INVOCATIONS_NEW_PHASE_UNRUN"
     }
   ],
-  "priority": "Await Root exact recovered decision readback and separately named catalog-only FIRST ZERO activation. No Plan or actual auto-advance.",
+  "priority": "Original2FAIL are classified invalid fixture prerequisites; current corrected2 and untouched remaining29 stay unrun. No native or fresh preparation authority from this WIP.",
   "firstActual": {
     "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
     "compiledSource": "a65005989ac5922db9c943dda339a999131ba5c6",
@@ -529,7 +529,7 @@
   "historicalFirstNativeCases": 1,
   "currentImplementation": {
     "sourceBase": "afb5a3bb6a2dd7e066946258cbf64334bf965048",
-    "status": "DRAFT_UNCOMPILED_UNRUN_CONNECTED_SOURCE_REVIEW_PENDING",
+    "status": "PRODUCTION_UNCHANGED_TEST_ONLY_INTAKE_CORRECTION_PENDING_SOURCE_FRESH_PREP",
     "integrated": [
       "private FIRST2 factory and post-install/readback/release/runtime-refresh one-shot arming",
       "outside-Lp whole I preparation, Prepared then I+Published, release-before-transient-delivery and ErrorPrepared Hold",
@@ -541,10 +541,9 @@
       "Independent private NI current-Main matching-Ready/source/delete/release observation; actual Stage coordinates retained without reviving its ConsoleOwner or changing HOT availability."
     ],
     "open": [
-      "Source/FIXTURE/SELECTION accepted at520e only; current product fresh compilation/discovery/Plan/preparation unqualified",
-      "Root separately names catalog-only ZERO after saved decision recovery; no automatic dependent Plan or actuals",
-      "Successful fresh preparation/raw/recovery/independent qualification precede protectedLate2 first affected actual, then each named finite scope",
-      "No broader NI/HOT/S/B/D9/M3/F1/platform/Windows/A3 qualification"
+      "Independent delta SOURCE/FIXTURE/SELECTION checks exact unchanged production, special-only fixture branches/default inverse and retained26 dependency equivalence",
+      "Fresh changed-test BOTH/catalog and whole16/33/57 PlanOnly ZERO; then separately named repaired2 plus remaining29 only",
+      "Full current independent EVIDENCE and saved checkpoint; broader holds unchanged"
     ],
     "draftReviewCorrections": [
       "Current selected marker with changed/unknown parent version refuses; tuple mismatch only permits new ordinary frame when official original covers exact prior marker bytes.",
@@ -598,6 +597,38 @@
     "entrypoint": "Daemon change is static joint guidance in its existing two prompt copies; no command/control flow/launcher/package implementation changes. This branch contains no later1557/1559 package/inverse-entrypoint tests; do not import adjacent branch families. Exact guidance Fact reads all seven changed mirrors/two daemon copies."
   },
   "sourceReviewCurrent": {
+    "status": "CONNECTED_DELTA_SOURCE_FIXTURE_SELECTION_TOOLS_PENDING",
+    "historical": {
+      "candidate": "520e66e418a428223afa4ef2364ec96b28eeac54",
+      "verdict": "ACCEPT_CONNECTED_BOUNDED_IMPLEMENTATION",
+      "selection": "STATIC15OWNERS33METHODS57CASES",
+      "reviewFiles": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-connected-final-source-review-520e66e4-20261018.json",
+          "sha256": "1ee80f442046cbc9555da6e83cea8cb455e4501a6bbc9c7128906293fe4d9ec9"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-connected-final-source-review-520e66e4-20261018.md",
+          "sha256": "ca5f57597b4949c3ac20f37d10f0e63468a82d45486218784c80bf0fa696e2c3"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-connected-final-source-check-520e66e4-20261018.json",
+          "sha256": "f6adcaaae17cf5e814363f0693414fdc5e55420a82ce465f1c3825d50febb3c9"
+        }
+      ],
+      "supplementalCut01Pin": {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointCaptureCut.cs",
+        "sha256": "f10a4412302ef54e51b9f4334fff9ca21aa2d4d754f24b901ebc6a2df381ba75",
+        "bytes": 15482,
+        "gitBlob": "8ba4fe0991e4128affe95b4e109b2a31db268b6a",
+        "mode": "100644",
+        "meaning": "Retained affected CUT01 test body; exact baseline447bc/current520e bytes. Adds explicit review-support binding without changing current97 packet."
+      },
+      "limits": "Independent source only, no current compilation/runtime/cleanup evidence."
+    },
+    "newScope": "Only special Warning/Absent fixture inputs, optional capture, category split and derivative verification tools. No production/GM contract change."
+  },
+  "historicalSourceReviewAtCompiled45cc": {
     "candidate": "520e66e418a428223afa4ef2364ec96b28eeac54",
     "verdict": "ACCEPT_CONNECTED_BOUNDED_IMPLEMENTATION",
     "selection": "STATIC15OWNERS33METHODS57CASES",
@@ -624,5 +655,10 @@
       "meaning": "Retained affected CUT01 test body; exact baseline447bc/current520e bytes. Adds explicit review-support binding without changing current97 packet."
     },
     "limits": "Independent source only, no current compilation/runtime/cleanup evidence."
+  },
+  "historicalLedgerPhaseAtCompiled45cc": {
+    "git": "eaea2dde3fd5381d27e86ab9e87c782cd97d9ae0:specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-method-row-ledger-20261018.json",
+    "sha256": "33e8066c13c9b89d804318d987ad564d89e2ce2eb0576a3eea708b3e61c67528",
+    "meaning": "Old ledger/source/raw and failed first live6 remain exact historical, not current discovery/runtime."
   }
 }

@@ -1,0 +1,49 @@
+{
+  "kind": "INDEPENDENT_CONNECTED_LIVE_STOP_CARRIER_BINDING",
+  "carrier": "eaea2dde3fd5381d27e86ab9e87c782cd97d9ae0",
+  "actualSource": "91a533d61e93ee043622763cd709b708dbc89dd3",
+  "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+  "verdict": "BOUND_ALL_NEW_RECOVERY_AND_11_COMMITTED_RAW_CHAINS",
+  "rawQualification": {
+    "path": "/tmp/t179pd-ni-iobs-l01-connected-live-stop-check-91a533d6-20261018.json",
+    "sha256": "6950ab3c66d95678a2df0656eccbc99a56a625936eace542ff2aa54c6b628403",
+    "bytes": 40312
+  },
+  "archive": {
+    "path": "/tmp/t179pd-ni-iobs-l01-whole-live-archive-first-91a533d6-20261018/archive.json",
+    "sha256": "c1257d7c095d5407283accb7e9eabd35ef2ccf6b8577b7b291a84f1e8f87e2af",
+    "bytes": 7799
+  },
+  "receipt": {
+    "path": "/tmp/t179pd-ni-iobs-l01-unexpected-live-delta-github-eaea2dde-20261018.json",
+    "sha256": "b77e6fc23f434f92776799b719cd775654a41d9746b914eda2d871059ba7bbe5",
+    "bytes": 16973
+  },
+  "composition": {
+    "path": "/tmp/t179pd3d-root-recovery-composition-eaea2dde-20261017.json",
+    "sha256": "f8be840455fd729154d68a80348f67b0df1b2b69ec1b713b605e9e7f62c325da",
+    "bytes": 36840
+  },
+  "filesChecked": 20,
+  "changedPathsChecked": 16,
+  "gitModesBlobsBytesExact": true,
+  "committedRawChains": 11,
+  "oldLedger": {
+    "path": "/tmp/t179pd-ni-iobs-l01-connected-evidence-ledger-20261018.json",
+    "sha256": "3eed20ccfd4911a65a5e7583ee8989ba15191134f758ba6bcb7afda479fecb35",
+    "bytes": 7789
+  },
+  "connectedLedger": {
+    "path": "/tmp/t179pd-ni-iobs-l01-connected-evidence-ledger-20261018.json",
+    "sha256": "ac2eae4d171429c16073faee5561f0f5f238d2ef2257f8f69592d2def205dc10",
+    "bytes": 9709
+  },
+  "rootCompositionReported": {
+    "consecutiveDeltas": 106,
+    "trackedPaths": 55567
+  },
+  "limits": [
+    "This step bound only the new saved evidence; it did not replay old evidence, source audits or the output inventory.",
+    "Whole finite EVIDENCE remains open:26qualifiedPASS,2fixtureFAIL,29UNRUN."
+  ]
+}

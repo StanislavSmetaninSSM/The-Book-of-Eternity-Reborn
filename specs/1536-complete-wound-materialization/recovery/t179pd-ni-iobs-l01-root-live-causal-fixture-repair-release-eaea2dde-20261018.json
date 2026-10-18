@@ -1,0 +1,43 @@
+{
+  "kind": "ROOT_FIRST_LIVE_FAILURE_CAUSAL_ASSESSMENT_TEST_ONLY_AUTHORING_RELEASE",
+  "createdUtc": "2026-10-18T07:44:57.382398+00:00",
+  "carrier": "eaea2dde3fd5381d27e86ab9e87c782cd97d9ae0",
+  "actualSource": "91a533d61e93ee043622763cd709b708dbc89dd3",
+  "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+  "original": {
+    "nativeExit": 1,
+    "executed": 6,
+    "passed": 4,
+    "failed": 2,
+    "archive": "/tmp/t179pd-ni-iobs-l01-whole-live-archive-first-91a533d6-20261018/archive.json",
+    "archiveSha256": "c1257d7c095d5407283accb7e9eabd35ef2ccf6b8577b7b291a84f1e8f87e2af",
+    "rootReadback": "/tmp/t179pd-ni-iobs-l01-root-unexpected-live-readback-91a533d6-20261018.json",
+    "rootReadbackSha256": "b967f01e1c744d1dd8daa643206db38506befbe663a45cbdf49c12778e62943f"
+  },
+  "causal": {
+    "independent": "Astra XHigh established from original raw and exact source; concise immutable report to accompany next normal source carrier.",
+    "frontier": "Both failures before Prepared/capture/common, runtime42, checkpoint+CorrectionReady present, no canonical refresh; first missing Spend43 assertion910, later scenario assertions unreached.",
+    "sourceGate": "Existing GameEngine.SessionAndSnapshots.cs2262-2290 requires rejected presence AND Changed versus rollback baseline; semantic equality counts Unchanged2326-2334. ValidationAndRepair.cs659-678 re-adds original severity error then beforeDestructiveRefusal legitimately holds selected missing-result graph.",
+    "warning": "Corrected I exactly equals signed original and rollback backup while I was a required changed rejected path.",
+    "absent": "Corrected I is absent while the rejected wave required I present.",
+    "classification": "INVALID_FIXTURE_PREPAREDNESS_NOT_PRODUCT_I_PUBLICATION_RED",
+    "positiveRows": "NoWrite UTF8/BOM/UTF16 and ErrorPrepared remain separate source-bound positives; no projected policy promise from the two failing rows."
+  },
+  "release": {
+    "scope": "Minimal test fixture + bounded category/selection/tool update only. Production unchanged.",
+    "requirements": [
+      "Warning: public first rejected I already original-equivalent; corrected same I remains honest stale warning intake.",
+      "Absent: genuine original, first public rejected response and corrected public absence, optional capture and accurate Ready declarations.",
+      "Initial public Ready and correlated corrected Ready last after complete readback.",
+      "Preserve original/held TREAT/severityIII\u2192II/current owner/fullresubmission and all final whole-mechanics/bytes/mtime/diagnostic assertions.",
+      "Defaultnull/no-op unrelated cases source-equivalent; no bypass, privateauthority, seededcache, protocolupgrade, whitespace/encoding repair."
+    ],
+    "selection": "Prefer coherent retainedpositive4 versus repairedintake2 category split and fixed mode; current whole static selection16owners/33methods/57cases. Historical15/source/FAIL unchanged.",
+    "next": "Commit/push/recover concrete fixture/tool/catalog WIP; independent connected delta SOURCE/selection/dependency assessment; fresh BOTH/catalog+exactPlan then separately named repaired2 and remaining29. No native/retry before those gates."
+  },
+  "limits": [
+    "No production weakening or new semantics authorized.",
+    "Historical22 accepted positives plus4 observed positives remain distinct from2 unresolved fixture failures.",
+    "No unrelated accepted package replay or whole NI/HOT/platform/Windows/A3 acceptance."
+  ]
+}

@@ -295,8 +295,8 @@
 },
 {
   "id": "fr063-joint-interface-lifecycle-live",
-  "responsibility": "Real Stage43/held TREAT/correlated corrected Ready and actual new I lifecycle: unchanged raw UTF8/BOM/UTF16 images and mtime, absent I, frozen warning vector through common, ErrorPrepared retaining original I and mechanical byte images without common.",
-  "excludes": "No crash/restart/legacy producer proof, no policy-replay inference from no-write, no initial/I-owning/outer close failure qualification, no missing/corrupt selector coverage or full NI/HOT. Those finite controls remain separate.",
+  "responsibility": "Real Stage43/held TREAT/correlated corrected Ready: exact no-write UTF8/BOM/UTF16 I bytes/mtime and ErrorPrepared frozen diagnostics/no common. Four retained passing rows; Warning/Absent corrected-intake responsibility is separate.",
+  "excludes": "No crash/restart/legacy producer proof, no policy-replay inference from no-write, no initial/I-owning/outer close failure qualification, no missing/corrupt selector coverage or full NI/HOT. Those finite controls remain separate. Warning/Absent first-GM intake and genuine original absence/equality belong to fr063-joint-interface-corrected-intake.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs",
     "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
@@ -320,8 +320,37 @@
       "project": "integration",
       "tests": [
         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceNoWriteRetainsExactBytesAndMtime",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceErrorFreezesPreparedWithoutPublicationOrCommon"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-interface-corrected-intake",
+  "responsibility": "Exactly two real Stage43 corrected-intake cases: Warning authors the same public I seed before the genuine original, first rejected severityIII and correctedII; Absent honestly omits I from original, firstGM, correctedGM and initial Ready declaration. Full real completion, no-write bytes/mtime and frozen warning late/generic diagnostics remain required.",
+  "excludes": "No production admission change, private/original backup bytes used as authoring input, repaired whitespace, seeded authority, rerun of retained positive4 or unrelated accepted controls. Native evidence on the pre-correction fixture remains immutable; these two cases need fresh current preparation and separately named execution.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-interface-lifecycle-live",
+      "when": "The unchanged four passing live rows retain their old compiled evidence only after default/non-special inverse review."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 10,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AbsentInterfacePublishesOnlyResultAndCompletes",
-        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceErrorFreezesPreparedWithoutPublicationOrCommon",
         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceWarningVectorSurvivesCommonAndOrdinaryCompletion"
       ]
     }

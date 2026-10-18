@@ -1,0 +1,94 @@
+{
+  "kind": "ROOT_ORIGINAL_UNEXPECTED_LIVE_RAW_INSPECTION_NOT_PRODUCT_VERDICT",
+  "createdUtc": "2026-10-18T07:41:46.699403+00:00",
+  "actualSource": "91a533d61e93ee043622763cd709b708dbc89dd3",
+  "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+  "nativeExit": 1,
+  "seconds": 210.71721310300927,
+  "tests": {
+    "Total": 6,
+    "Executed": 6,
+    "Passed": 4,
+    "Failed": 2
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 6,
+    "CompletedCases": 6,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceWarningVectorSurvivesCommonAndOrdinaryCompletion",
+      "outcome": "Failed",
+      "stack": [
+        "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 910\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 991\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow, Boolean normalizeNarrativeBeforeCheckpoint, Action`1 observeSettledCommonPlan, Boolean postOriginalAutomaticSubmission, Action`1 attachActualOwnerProbe, JointCaptureCutProbe currentCaptureProbe, JointInterfaceLifecycleProbe interfaceLifecycleProbe) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 464\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceWarningVectorSurvivesCommonAndOrdinaryCompletion() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 58\n--- End of stack trace from previous location ---"
+      ],
+      "failureFrontier": {
+        "turn": 42,
+        "checkpoint": true,
+        "correctionReady": true,
+        "noCanonicalRefresh": true,
+        "firstAssertion": "Shared completion missing turn43 Resource Spend at910",
+        "laterSpecificAssertions": "UNREACHED"
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AbsentInterfacePublishesOnlyResultAndCompletes",
+      "outcome": "Failed",
+      "stack": [
+        "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 910\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 991\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow, Boolean normalizeNarrativeBeforeCheckpoint, Action`1 observeSettledCommonPlan, Boolean postOriginalAutomaticSubmission, Action`1 attachActualOwnerProbe, JointCaptureCutProbe currentCaptureProbe, JointInterfaceLifecycleProbe interfaceLifecycleProbe) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 464\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AbsentInterfacePublishesOnlyResultAndCompletes() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 41\n--- End of stack trace from previous location ---"
+      ],
+      "failureFrontier": {
+        "turn": 42,
+        "checkpoint": true,
+        "correctionReady": true,
+        "noCanonicalRefresh": true,
+        "firstAssertion": "Shared completion missing turn43 Resource Spend at910",
+        "laterSpecificAssertions": "UNREACHED"
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceErrorFreezesPreparedWithoutPublicationOrCommon",
+      "outcome": "Passed",
+      "stack": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceNoWriteRetainsExactBytesAndMtime(encoding: \"Bom\")",
+      "outcome": "Passed",
+      "stack": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceNoWriteRetainsExactBytesAndMtime(encoding: \"Utf16\")",
+      "outcome": "Passed",
+      "stack": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceNoWriteRetainsExactBytesAndMtime(encoding: \"Utf8\")",
+      "outcome": "Passed",
+      "stack": []
+    }
+  ],
+  "recordSha256": "449e305fa44d9d8f60684556f5e359a2bcf755e11c3cf2bda261be59d4a72b74",
+  "archive": {
+    "path": "/tmp/t179pd-ni-iobs-l01-whole-live-archive-first-91a533d6-20261018/archive.json",
+    "sha256": "c1257d7c095d5407283accb7e9eabd35ef2ccf6b8577b7b291a84f1e8f87e2af",
+    "rawChains": 11
+  },
+  "allCurrentOutputFilesHashed": 1575,
+  "nineCopiesUnchanged": true,
+  "namespaceProcessesEmpty": true,
+  "physicalCleanupRootsGone": [
+    "/tmp/boe-gameengine-turnlifecycle-31e9e0daa5ff42aab47de3cb03ebb3d4",
+    "/tmp/boe-gameengine-turnlifecycle-4276b3e9d4144ec1905493866dec3825",
+    "/tmp/boe-gameengine-turnlifecycle-475993d92f7c4b4681fce1b9b02f2804",
+    "/tmp/boe-gameengine-turnlifecycle-4f4d9c07add74f1eabb9a163cf3cbc1a",
+    "/tmp/boe-gameengine-turnlifecycle-878b9b6c886a490c95f0f48f669bb2ce",
+    "/tmp/boe-gameengine-turnlifecycle-eb07fee8520e405f81a4db0c371f46ef"
+  ],
+  "currentRawCarrier": "eaea2dde3fd5381d27e86ab9e87c782cd97d9ae0",
+  "recoveryComposition": "/tmp/t179pd3d-root-recovery-composition-eaea2dde-20261017.json",
+  "limits": "Preserves original 4PASS2FAIL. Neither failed row reached I preparation/capture/common or later per-scenario assertions. Independent causal fixture/product classification still required before authoring; remaining29 held."
+}
