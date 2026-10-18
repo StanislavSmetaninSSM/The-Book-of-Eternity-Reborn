@@ -1,0 +1,50 @@
+{
+  "kind": "ROOT_NAMED_ORIGINAL_ACTUAL_RAW_READBACK_NOT_INDEPENDENT_EVIDENCE",
+  "createdUtc": "2026-10-18T07:21:34.050366+00:00",
+  "mode": "ordering1",
+  "actualSource": "1024bee0a1a5483b4e593bcea0c6fdb107ad61cc",
+  "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+  "nativeExit": 0,
+  "seconds": 66.61869637700147,
+  "tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 1,
+    "Failed": 0
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 1,
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "actualCases": [
+    {
+      "testId": "f8494336-75cb-e3ed-0293-4ec19d289c85",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce",
+      "outcome": "Passed",
+      "duration": "00:01:00.7246839"
+    }
+  ],
+  "record": {
+    "path": "/tmp/t179pd-ni-iobs-l01-whole-implementation-tools/t179pd-ni-iobs-l01-whole-first-ordering-current/record.json",
+    "sha256": "dbbfa978cf0164f23167900afb5b873b2465e00fc4d24b3cb9a3bdf76758f891"
+  },
+  "archive": {
+    "path": "/tmp/t179pd-ni-iobs-l01-whole-ordering-archive-first-1024bee0-20261018/archive.json",
+    "sha256": "8ba3ab05a0858b1820d43bf03be183d6a39916431d87b776c21b37d63bb48ac5",
+    "rawChains": 11
+  },
+  "nineCopiesUnchanged": true,
+  "allCurrentOutputFilesIndependentlyHashed": 1575,
+  "exactOutputFileSet": true,
+  "namespaceAndProcessesEmpty": true,
+  "physicalCleanupRootsGone": [
+    "/tmp/boe-gameengine-turnlifecycle-009f008819cd4e8daa1eaad975eaeb46"
+  ],
+  "uniqueStdoutPayloads": 2,
+  "sourceHeadClean": true,
+  "limits": "Exact original observed native0/raw cases only. Independent connected EVIDENCE still required; no product/fullNI/HOT qualification or automatic next run."
+}

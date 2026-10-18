@@ -1,0 +1,275 @@
+{
+  "version": 3,
+  "localWoundRef": "live_pending_impact",
+  "woundId": "wound_72e7074a6fdd976d96c7b1fd0775d30977a6a505f0027dd0d55d20b9011c2bf3",
+  "transitionId": "wound_transition_6506a1daf0b6fed35e21ac97c01934245ab686769cbe293ee0592c5262845390",
+  "narrativeBase64": "77u/eyJyZXNwb25zZSI6IlRoZSBleGFjdCB0cmVhdG1lbnQgc3RhYmlsaXplcyB0aGUgd291bmQgd2l0aG91dCBsb3NpbmcgaXRzIGhlbGQgcmVzb3VyY2UuIFx1MDQxQVx1MDQ0MFx1MDQzMFx1MDQzOSBcdTA0M0FcdTA0MzBcdTA0M0NcdTA0M0RcdTA0NEYgXHUwNDNFXHUwNDQxXHUwNDQyXHUwNDMwXHUwNDMyXHUwNDNCXHUwNDRGXHUwNDM1XHUwNDQyIFx1MDQzRlx1MDQzRVx1MDQzMlx1MDQzNVx1MDQ0MFx1MDQ0NVx1MDQzRFx1MDQzRVx1MDQ0MVx1MDQ0Mlx1MDQzRFx1MDQ0Qlx1MDQzOSBcdTA0M0ZcdTA0M0VcdTA0NDBcdTA0MzVcdTA0MzcgXHUwNDNEXHUwNDMwIFx1MDQzMVx1MDQzRVx1MDQzQVx1MDQ0My4iLCJ0aW1lc3RhbXAiOiIyMDI2LTEwLTE4VDA3OjE5OjQ2Ljg4NTg2MTNaIn0=",
+  "narrativeHash": "1DD231B91C1B6809209540A1BC6915AD7C4973A9CF357DF0C34FCD2F8222E366",
+  "publishedInterfaceResult": {
+    "version": 1,
+    "origin": "PreparedResultPublicationV1",
+    "record": {
+      "version": 1,
+      "state": "Published",
+      "binding": {
+        "sessionGeneration": "4ca0f41e84ba460fb7720dab6efc5027",
+        "sessionId": "session_qte_story_append",
+        "requestId": "3f93331bcc9d407ab1c6e49408882cbb",
+        "snapshotToken": "ED3F83890DA57EC7602D28F8DBDEF3B90340514BE37660A1AC00D1AF1BD1D512",
+        "turnNumber": 43,
+        "realm": "mortal_world",
+        "stageOrdinal": 1,
+        "readyOrdinal": 1,
+        "iterationOrdinal": 2,
+        "checkpointFingerprint": "sha256:864cf84fed051c831b80ec53342115ede8b0c6b1b88e91cceb2ec6a9a9845462",
+        "operationKey": "operation_fr063_joint_completion",
+        "attemptId": "wound_treatment_attempt_5e71098f5f59287bf41ad08d2ca9ab83f078307f473c77955d84b0bc40144637",
+        "requestFingerprint": "sha256:ee0333746300b446f0ef58c76dcf11bd87278a28bdd64d9b6136365f0bb7e1a8"
+      },
+      "legacyPendingFingerprint": "sha256:774f352243aa32c0aa8617b3b828fca0f09d04652b8387d84597b118911d2d2e",
+      "sourceAssociationFingerprint": "sha256:62cdeff05b5a6fbc76411d0181a3a99fc3fcd10dd8f51e799da8c6d96e4fd091",
+      "beforeImage": {
+        "present": true,
+        "base64": "ewogICJkaWFsb2d1ZU9wdGlvbnMiOiBbCiAgICB7CiAgICAgICJ0ZXh0IjogIltOSV9BQ1RJT046Zmlyc3RdW05JX0NPTlRST0w6c2Vjb25kXdCf0YDQvtC00L7Qu9C20LjRgtGMINC+0LHRi9GH0L3Ri9C5INC+0YLQstC10YIuIgogICAgfQogIF0KfQ==",
+        "sha256": "3EC7AFF43FF10F02429E2BD89EBF4ED5BA1BD19800ED6B9778DAC6938308E674"
+      },
+      "afterImage": {
+        "present": true,
+        "base64": "77u/ewogICJkaWFsb2d1ZU9wdGlvbnMiOiBbCiAgICB7CiAgICAgICJ0ZXh0IjogIltOSV9DT05UUk9MOnNlY29uZF3Qn9GA0L7QtNC+0LvQttC40YLRjCDQvtCx0YvRh9C90YvQuSDQvtGC0LLQtdGCLiIsCiAgICAgICJpbnB1dFZhbHVlIjogIltOSV9BQ1RJT046Zmlyc3RdW05JX0NPTlRST0w6c2Vjb25kXdCf0YDQvtC00L7Qu9C20LjRgtGMINC+0LHRi9GH0L3Ri9C5INC+0YLQstC10YIuIgogICAgfQogIF0sCiAgInRpbWVzdGFtcCI6ICIyMDI2LTEwLTE4VDA3OjE5OjQ5LjQwMDM3MDErMDA6MDAiCn0=",
+        "sha256": "B0ABB050F6C2CA98D0DD3FA08A3114D0C14CB7869BCC193EFB389C38F3EBD022"
+      },
+      "normalization": "Changed",
+      "fallback": {
+        "required": true,
+        "sampled": true,
+        "value": "2026-10-18T07:19:49.4003701+00:00"
+      },
+      "timestampCheck": {
+        "document": "Object",
+        "timestamp": "ParseAccepted"
+      },
+      "issues": [],
+      "resultFingerprint": "sha256:06484988373b233e7c023e14e4d707e1224d675201b0fcf3baadba4f4e1b04d3",
+      "fingerprint": "sha256:d1306fc70c53f689713abc59abfac2198c368194aa8f850ea8cb12b0cea0f170"
+    }
+  },
+  "kind": "CONNECTED_EVIDENCE_SCOPE_CHECK_PENDING_FINAL_CARRIER",
+  "mode": "ordering1",
+  "summary": {
+    "Categories": [
+      "fr063-joint-interface-lifecycle-order"
+    ],
+    "Reasons": [
+      {
+        "category": "fr063-joint-interface-lifecycle-order",
+        "reason": "Genuine Stage43/TREAT rejected-wave/corrected public I and real ordinary completion/inert repeat before first semantic early-I ordering assertion. Observe actual I-changing cohorts at existing capture checkpoint; distinguish marker cohorts; preserve one-pass double-tag image through late consumption.",
+        "contracts": [
+          "NI-IOBS-L01 bounded real FIRST2/Prepared→I+Published/common/current-resume/late-cold DATA obligations; discovery and actual evidence are recorded separately."
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "1024bee0a1a5483b4e593bcea0c6fdb107ad61cc",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-joint-interface-lifecycle-order",
+        "Seconds": 62.8235264,
+        "BudgetMinutes": 5,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0321439,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0357209,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1025124,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0032661,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:01:05.7252901",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 1,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "case": {
+    "case": {
+      "executionId": "ba9d6fd9-908d-440c-ab51-fc238b5c8921",
+      "testId": "f8494336-75cb-e3ed-0293-4ec19d289c85",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce",
+      "computerName": "c151c60a176e",
+      "duration": "00:01:00.7246839",
+      "startTime": "2026-10-18T07:20:37.5285534+00:00",
+      "endTime": "2026-10-18T07:20:37.5285634+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "ba9d6fd9-908d-440c-ab51-fc238b5c8921"
+    },
+    "source": {
+      "SessionId": "session_qte_story_append",
+      "RequestId": "2c03defee6cd43e18f0e2270a28caa77",
+      "SnapshotToken": "542079A6B975C21AC4D6341E99377A29E54B69D6A0C28399BEFBA5AC9524A11A",
+      "TurnNumber": 42
+    },
+    "original": {
+      "SessionId": "session_qte_story_append",
+      "RequestId": "3f93331bcc9d407ab1c6e49408882cbb",
+      "SnapshotToken": "ED3F83890DA57EC7602D28F8DBDEF3B90340514BE37660A1AC00D1AF1BD1D512",
+      "TurnNumber": 43,
+      "Realm": "mortal_world"
+    },
+    "generation": "4ca0f41e84ba460fb7720dab6efc5027",
+    "nonzeroProgression": false,
+    "actualTurn": 43,
+    "handled": false,
+    "create": {
+      "ordinal": 2,
+      "transitionId": "wound_transition_6506a1daf0b6fed35e21ac97c01934245ab686769cbe293ee0592c5262845390",
+      "woundId": "wound_72e7074a6fdd976d96c7b1fd0775d30977a6a505f0027dd0d55d20b9011c2bf3"
+    },
+    "treat": {
+      "ordinal": 3,
+      "transitionId": "wound_transition_c02223d073554663a2e7d01e7d12e8a2a723b77cf0250cbb7ef5f3665b313b31",
+      "woundId": "wound_test_torn_side"
+    },
+    "charge": {
+      "amount": 2,
+      "before": 2,
+      "after": 0
+    },
+    "damage": {
+      "amount": 3,
+      "before": 5,
+      "after": 2
+    },
+    "publishedFootprintCount": 42,
+    "rawMilestoneImageCounts": [
+      221,
+      221,
+      221
+    ],
+    "manifestSnapshotHashesVerified": 66,
+    "cleanupPathsVerified": 142,
+    "inertRepeatImages": 84,
+    "storyReconstructedBytes": 691,
+    "storySha256": "4cef22de040df835addcb7ee3c76d98e7f6a9f89bd58896f421d6331e30cf7ba",
+    "namedTransactions": [],
+    "cleanup": {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-009f008819cd4e8daa1eaad975eaeb46",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    "stdoutSha256": "3e84025b6efd929a6845d7dcce8840422081c34af29d619c969e0a22a0e37ac5",
+    "progressionControl": {
+      "currentRealm": "Mortal World",
+      "currentWorldTimeInMinutes": 1260,
+      "lastWorldSimulationTimeInMinutes": 1260,
+      "lastFactionSimulationTimeInMinutes": 1260,
+      "worldCycleMinutes": 240,
+      "factionCycleMinutes": 1440,
+      "worldCyclesAlreadyPendingBeforeTurn": 0,
+      "factionCyclesAlreadyPendingBeforeTurn": 0,
+      "mustEvaluateWorldProgression": false,
+      "mustEvaluateFactionProgression": false,
+      "currentChaosSeaTurnOrdinal": 0,
+      "nextChaosSeaTurnOrdinal": 0,
+      "lastChaosSeaSimulationOrdinal": 0,
+      "lastGuardianProjectCycleOrdinal": 0,
+      "nextGuardianProjectCycleOrdinal": 0,
+      "lastResidentAgencyCycleOrdinal": 0,
+      "lastShiningAbodeCycleOrdinal": 0,
+      "lastShiningFactionCycleOrdinal": 0,
+      "lastShiningTradeCycleOrdinal": 0,
+      "chaosSeaCycleEquivalentHours": 24,
+      "nextResidentAgencyCycleOrdinal": 0,
+      "nextShiningAbodeCycleOrdinal": 0,
+      "nextShiningFactionCycleOrdinal": 0,
+      "nextShiningTradeCycleOrdinal": 0,
+      "chaosSeaCyclesExpectedThisTurn": 0,
+      "guardianProjectCyclesExpectedThisTurn": 0,
+      "residentAgencyCyclesExpectedThisTurn": 0,
+      "shiningAbodeCyclesExpectedThisTurn": 0,
+      "shiningFactionCyclesExpectedThisTurn": 0,
+      "shiningTradeCyclesExpectedThisTurn": 0,
+      "mustEvaluateChaosSeaProgression": false,
+      "mustEvaluateGuardianProjectProgression": false,
+      "mustEvaluateResidentAgencyProgression": false,
+      "mustEvaluateShiningAbodeProgression": false,
+      "mustEvaluateShiningFactionProgression": false,
+      "mustEvaluateShiningTradeProgression": false,
+      "afterlifeCatchupRequired": false,
+      "afterlifeCatchupElapsedCycles": 0,
+      "afterlifeCatchupPressureTier": "none",
+      "afterlifeCatchupSummaryEventsRequired": 0,
+      "afterlifeCatchupContours": []
+    },
+    "phaseFingerprint": "sha256:8d0dd9dcc93354bfd08dc94ee7eccbb59fdbf80dd48190f9ebfba98951675011"
+  },
+  "predicateSha256": "4fea2e2819a4a6372710c60eb2f20dfb7420c05ab4a0481066d190dad1ff9b63",
+  "ordering": {
+    "callback": 1,
+    "IChangingCohortsBeforeCapture": 1,
+    "IChangingCohortsTotal": 1,
+    "IChangingCohortsLater": 0,
+    "markerContainingCohorts": 2,
+    "sequence": "I1 → marker2 → marker3",
+    "atCaptureEqualsFinal": true,
+    "childVersion": 3,
+    "niPublicationVersion": 2,
+    "origin": "PreparedResultPublicationV1",
+    "resultFingerprint": "sha256:06484988373b233e7c023e14e4d707e1224d675201b0fcf3baadba4f4e1b04d3",
+    "fallback": {
+      "required": true,
+      "sampled": true,
+      "value": "2026-10-18T07:19:49.4003701+00:00"
+    },
+    "preparedToPublishedOnlyStateAndEnvelopeFingerprintChanged": true
+  },
+  "oldRedContrast": "Retained original FIRST on baseline447bc: early I0 and two later I-changing cohorts; no raw rewritten or replayed. New actual fulfills earliest ordering oracle and reached final one-tag/inputValue/frozen result assertions.",
+  "limits": [
+    "Publication cohorts do not establish API invocation totals.",
+    "No broader finite crash/resume/legacy/integrity qualification from this one case.",
+    "Final computed-characteristics raw body remains unavailable; retained digest/inert equality only."
+  ],
+  "carrierStatus": "AWAITING_COMBINED_PUBLISHED_RECOVERY"
+}

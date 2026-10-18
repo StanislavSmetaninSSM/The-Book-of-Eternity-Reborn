@@ -1,17 +1,17 @@
 ## T179-Pd-NI-IOBS-L01 current frontier (2026-10-18)
 
-- [x] Original causal ordering RED,connected SOURCE and fresh ZERO PREP independently accepted.
-- [x] FIRST affected protectedLate2 observed2PASS; original11raw chains/Root readback saved,final EVIDENCE pending.
-- [ ] Root separately names ordering1 after recovered raw;remaining55current cases UNRUN.
-- [ ] Continue finite actuals, independent final EVIDENCE and saved checked checkpoint; no broader qualification.
+- [x] Original causal RED,connected SOURCE and fresh ZERO PREP independently accepted.
+- [x] FIRST protected2+ordering1+data15+guidance1 observed19PASS;all original raw saved,whole EVIDENCE open.
+- [ ] Root separately names cut3,then remaining finite scopes;38current cases UNRUN.
+- [ ] Independent final EVIDENCE and saved checked checkpoint;no broader qualification.
 
-## T179-Pd-NI-IOBS-L01 — FIRST protectedLate2 raw outcome saved (2026-10-18)
+## T179-Pd-NI-IOBS-L01 — FIRST ordering/data/guidance raw saved (2026-10-18)
 
-The first named affected protectedLate2 scope on actualc840/compiled45cc completed **native0,2executed/2PASS/0FAIL**,122.980983660s,one complete descriptor/no underfill,timeout or duplicate. Both actual owned roots are physically removed,namespace/processes empty;9binary copies and all1575 output files remain identical to accepted fresh preparation. [Root literal readback](recovery/t179pd-ni-iobs-l01-root-protected-late2-readback-c840d604-20261018.json) and11exact original/raw/gzip chains are saved. Independent final semantic EVIDENCE remains OPEN; this is observed native/raw qualification only.
+Three separately named FIRST scopes on actual1024/compiled45cc completed native0: **ordering1/1PASS (66.618696377s), strict DATA15/15PASS (5.491783631s), guidance1/1PASS (5.291148614s)**. Exact complete descriptors/no underfill,owned namespaces/processes empty;9copies/all1575 output file set/hashes remain unchanged. Their33original raw/gzip chains,three Root readbacks and exact connected Late2/ordering checks are preserved in this single carrier. The independent whole EVIDENCE decision remains OPEN.
 
-Only2/57current planned cases have executed; remaining55—including the real ordering singleton and finite lifecycle/codec/legacy/crash/integrity/retention/GM controls—remain UNRUN. Root will separately name ordering1 after exact saved raw/recovery verification; no automatic advance/rerun/build/source change. Source97pins/digest,ledger bytes,tools,selectors and compiled outputs stay unchanged.
+Root and independent ordering readers observe genuine completion/inert repeat,early I-changing cohort1/later0,AtCapture==Final,child3 PreparedResultPublicationV1/NIseal2 and frozen one-pass image/fallback. These are actual physical observations, not API/ambient-policy counters. Component DATA and text guidance passes establish their own boundaries, not production authority. Together with prior protectedLate2, **19distinct current cases observed PASS;remaining38/57cases in10modes UNRUN**. Historical original RED is retained separately and not double-counted.
 
-A post-run readonly one-line summary printer had an unclosed-parenthesis utility error, then a corrected multiline read succeeded. Native/runner/TRX/archive were already frozen and unchanged; no test failed or reran because of that utility typo. Historical first RED/source findings/reports remain immutable. No whole NI/HOT/platform/Windows/A3 claim. Following scopes are historical.
+Current source97pins/digest,ledger bytes,tools,selectors and compiled outputs stay unchanged; no build/retry/extra native scope. Root next separately names cut3 after this saved raw/recovery readback. Whole NI/HOT/platform/Windows/A3 and broader holds remain. Following scopes are historical.
 
 ## T179-Pd-CUT01 bounded implementation/source/EVIDENCE complete (2026-10-18)
 

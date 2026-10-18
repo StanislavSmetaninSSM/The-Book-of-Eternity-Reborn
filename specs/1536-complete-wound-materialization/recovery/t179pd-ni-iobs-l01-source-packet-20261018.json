@@ -1,8 +1,8 @@
 {
-  "kind": "NI_IOBS_L01_FIRST_AFFECTED_PROTECTED_LATE2_ORIGINAL_RAW_SAVED",
+  "kind": "NI_IOBS_L01_ORDERING_DATA_GUIDANCE_ORIGINAL_RAW_SAVED",
   "sourceBase": "afb5a3bb6a2dd7e066946258cbf64334bf965048",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
-  "status": "PROTECTED_LATE2_NATIVE0_2PASS_OBSERVED_INDEPENDENT_EVIDENCE_PENDING",
+  "status": "CURRENT_OBSERVED19PASS_REMAINING38UNRUN_CONNECTED_FINAL_EVIDENCE_OPEN",
   "sourcePins": [
     {
       "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
@@ -951,17 +951,17 @@
       "sha256": "411b9d1ca4585c6ee66d3bbd9992a95b734cd5eb4da059f25faaa3b8762c5fd0",
       "bytes": 9552,
       "role": "Fixed separately named protectedLate2 and each finite actual subset; NoBuild, no auto advance/retry",
-      "status": "EXECUTED_ONCE_PROTECTED_LATE2_NATIVE0_2PASS_OBSERVED_OTHER13MODES_UNRUN"
+      "status": "FOUR_FIRST_MODES_PROTECTED_ORDERING_DATA_GUIDANCE_EXECUTED_NATIVE0_OBSERVED19PASS_OTHER10MODES_UNRUN"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-whole.py",
       "sha256": "bf6503ecb8b1006842e66313da7c72fc185b217e54cd44d4ff5a62b864c36c3f",
       "bytes": 2342,
       "role": "Read-only full original zero/actual process/source/ledger/sentinel/stdout/runner/TRX plus any unresolved retained child roots; no cleanup/classification",
-      "status": "READ_ONLY_THREE_INVOCATIONS_CATALOG11_PLAN10_PROTECTED11_RAW_CHAINS_NO_TEST_EXECUTION"
+      "status": "READ_ONLY_SIX_INVOCATIONS_ZERO_CATALOG_PLAN_AND_FOUR_FIRST_ACTUAL_ARCHIVES_NO_TEST_EXECUTION"
     }
   ],
-  "next": "Root exact saved raw/recovery readback then separately names ordering1. No other actual mode, rerun, build or source changes; connected final independent EVIDENCE remains open.",
+  "next": "Root verifies coherent saved ordering/data/guidance raw/recovery then separately names cut3. No other scope, retry, build/source change or automatic advance.",
   "sourcePinBindingMeaning": "Active authored-source hashes including necessary new helper definitions, not compiled qualification. Old44/9DLL/preparation/first RED context is retained separately. Verification tools are frozen historical source and cannot be reused unchanged for current bindings.",
   "firstActual": {
     "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
@@ -1138,12 +1138,12 @@
   "runtime": {
     "currentProductCompiled": true,
     "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
-    "currentProductActualCases": 2,
+    "currentProductActualCases": 19,
     "currentProductDiscovery": "807CATALOG_11800METHODS_15SELECTED_33METHODS_57PLANNED_ZEROEXECUTED",
-    "scope": "Exactly one FIRST protected2 invocation on compiled45cc; original outcome preserved, no rerun. Native PASS/raw readback is not final semantic EVIDENCE or whole NI qualification.",
-    "currentActualStatus": "PROTECTED_LATE2_OBSERVED2PASS_OTHER55CASES_UNRUN_INDEPENDENT_EVIDENCE_PENDING",
-    "nextEligibleScope": "ordering1 only after separately named Root saved raw carrier readback",
-    "currentProductObservedPassed": 2,
+    "scope": "Four distinct named FIRST scopes on compiled45cc:protected2+ordering1+data15+guidance1. No rerun/double-counting of original preproduct RED or duplicate TRX transport; remaining10modes38cases unrun. Whole independent EVIDENCE remains open.",
+    "currentActualStatus": "FOUR_FIRST_MODES_OBSERVED19PASS_OTHER38CASES_UNRUN_CONNECTED_FINAL_EVIDENCE_OPEN",
+    "nextEligibleScope": "cut3 only after separately named Root raw carrier readback",
+    "currentProductObservedPassed": 19,
     "currentProductObservedFailed": 0
   },
   "currentImplementation": {
@@ -9396,7 +9396,133 @@
       "processesAfter": [],
       "evidence": "ORIGINAL_NATIVE_2PASS_OBSERVED_ROOT_LITERAL_READBACK_COMPLETE_INDEPENDENT_FINAL_EVIDENCE_PENDING",
       "activation": "Root separately named mode protected-late2 and exactc840/compiled45cc by literal message; original FIRST record/process/source arguments bind it. No standalone activation file is claimed.",
-      "authoringNote": "After native completed, first readonly one-line summary-print utility had an unclosed parenthesis; multiline readonly print succeeded. Original native record/runner/TRX/archive remained untouched, no native failure or rerun. Original utility stderr exists in tool-session output only; no fabricated raw file provenance."
+      "authoringNote": "After native completed, first readonly one-line summary-print utility had an unclosed parenthesis; multiline readonly print succeeded. Original native record/runner/TRX/archive remained untouched, no native failure or rerun. Original utility stderr exists in tool-session output only; no fabricated raw file provenance.",
+      "connectedCheck": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-connected-late2-check-c840d604-20261018.json",
+        "sha256": "ad89064eca83b976f7dee4437241d4f4bba1090f3b7be774f4c0b58ceda256a6"
+      }
+    },
+    "ordering1": {
+      "actualSource": "1024bee0a1a5483b4e593bcea0c6fdb107ad61cc",
+      "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+      "nativeExit": 0,
+      "seconds": 66.61869637700147,
+      "tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 1,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "recordPath": "/tmp/t179pd-ni-iobs-l01-whole-implementation-tools/t179pd-ni-iobs-l01-whole-first-ordering-current/record.json",
+      "recordSha256": "dbbfa978cf0164f23167900afb5b873b2465e00fc4d24b3cb9a3bdf76758f891",
+      "archive": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-ordering-files-20261018/archive.json",
+        "sha256": "8ba3ab05a0858b1820d43bf03be183d6a39916431d87b776c21b37d63bb48ac5",
+        "rawChains": 11
+      },
+      "rootReadback": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-ordering-readback-1024bee0-20261018.json",
+        "sha256": "f918497810e1611a88921c04b299aff22b85a7045710650dad3ba867601be7f6"
+      },
+      "nineBinariesUnchanged": true,
+      "all1575OutputFilesUnchanged": true,
+      "namespaceAfter": {
+        "ownedRoots": []
+      },
+      "processesAfter": [],
+      "evidence": "FIRST_ORIGINAL_NATIVE_PASS_AND_ROOT_LITERAL_READBACK_SAVED_CONNECTED_FINAL_EVIDENCE_OPEN",
+      "activation": "Root separately named this exact mode/actual1024/compiled45cc by literal message; no standalone activation file or automatic scope advance is claimed.",
+      "connectedCheck": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-connected-ordering-check-1024bee0-20261018.json",
+        "sha256": "e56e6a03849b0ede4bd6cbea6325d440c2a3dfb0291f44cccccfb6a4cad56cf3"
+      },
+      "semanticObservation": "early I-changing cohort1/later0,total1;AtCapture==Final;child3 PreparedResultPublicationV1 and niPublication2;complete original ordinary outcome/inert repeat/strict cleanup. Physical cohorts do not count public API/sample invocations."
+    },
+    "data15": {
+      "actualSource": "1024bee0a1a5483b4e593bcea0c6fdb107ad61cc",
+      "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+      "nativeExit": 0,
+      "seconds": 5.49178363099054,
+      "tests": {
+        "Total": 15,
+        "Executed": 15,
+        "Passed": 15,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 15,
+        "CompletedCases": 15,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "recordPath": "/tmp/t179pd-ni-iobs-l01-whole-implementation-tools/t179pd-ni-iobs-l01-whole-first-data-current/record.json",
+      "recordSha256": "c1a833e0f4ae5547e97e598b5c3d63ca281d121d6314f7f0b29230f8276ca4f1",
+      "archive": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-data-files-20261018/archive.json",
+        "sha256": "e8017979b709145dc89f0256993271f0b2abdc76348deb8014d1f06646711193",
+        "rawChains": 11
+      },
+      "rootReadback": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-data-readback-1024bee0-20261018.json",
+        "sha256": "e4e0724f89ae0164d03519d670f7c4360244b8694d78557bc44398aa2f2c6220"
+      },
+      "nineBinariesUnchanged": true,
+      "all1575OutputFilesUnchanged": true,
+      "namespaceAfter": {
+        "ownedRoots": []
+      },
+      "processesAfter": [],
+      "evidence": "FIRST_ORIGINAL_NATIVE_PASS_AND_ROOT_LITERAL_READBACK_SAVED_CONNECTED_FINAL_EVIDENCE_OPEN",
+      "activation": "Root separately named this exact mode/actual1024/compiled45cc by literal message; no standalone activation file or automatic scope advance is claimed."
+    },
+    "guidance1": {
+      "actualSource": "1024bee0a1a5483b4e593bcea0c6fdb107ad61cc",
+      "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+      "nativeExit": 0,
+      "seconds": 5.291148613992846,
+      "tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 1,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "recordPath": "/tmp/t179pd-ni-iobs-l01-whole-implementation-tools/t179pd-ni-iobs-l01-whole-first-guidance-current/record.json",
+      "recordSha256": "9495a5dcc0daa6db839745379ca0cdcb66202edec9d5a181f421833b89bfb218",
+      "archive": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-guidance-files-20261018/archive.json",
+        "sha256": "c365fc7a9a95e6edeaf1c7ab4732eca8d188cde943aa9de4e6423ced7b8fda61",
+        "rawChains": 11
+      },
+      "rootReadback": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-guidance-readback-1024bee0-20261018.json",
+        "sha256": "fdae8c67abf534c42181abeb14ec5b0a9f05b4bb30003f9c9c56e38de994334a"
+      },
+      "nineBinariesUnchanged": true,
+      "all1575OutputFilesUnchanged": true,
+      "namespaceAfter": {
+        "ownedRoots": []
+      },
+      "processesAfter": [],
+      "evidence": "FIRST_ORIGINAL_NATIVE_PASS_AND_ROOT_LITERAL_READBACK_SAVED_CONNECTED_FINAL_EVIDENCE_OPEN",
+      "activation": "Root separately named this exact mode/actual1024/compiled45cc by literal message; no standalone activation file or automatic scope advance is claimed."
     }
   }
 }
