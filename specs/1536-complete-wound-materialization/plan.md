@@ -6,8 +6,11 @@ and [read-only inventory](recovery/l01-managed-stack-capability-inventory-202610
 have independent PLAN ACCEPT at62d3a760 for helper preparation only; S01 awaits
 SOURCE/PREP. Installed SDK DiagnosticsClient and .NET8 createdump/DAC
 may yield named managed stacks via built-in crash-report JSON; capability UNPROVED.
-No installs/security changes/unrelated targets/gameplay runs. Only after independent
-plan and helper SOURCE/PREP review may one own synthetic smoke run.
+No installs/security changes/unrelated targets/gameplay runs. External helper SOURCE WIP now contains isolated C#/PowerShell/Python sources,
+private IPC ownership checks, external bounds and strict managed-frame decoder.
+Decoder source harness1 valid/7 negative passed; no target has run. Direct csc
+preparation is admitted by PLAN, then independent helper SOURCE/PREP is mandatory
+before one own synthetic smoke. Reused M01 observer finalizer bytes stay unchanged.
 Future one custody→accepted snapshot is a proposal, NOT released. Linux cloud and
 future Windows crash5 qualifications are separate holds; Windows not requested and
 403/CI restrictions unchanged. L0152/57, M01 accepted and all broader holds retained.

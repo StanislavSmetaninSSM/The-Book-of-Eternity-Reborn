@@ -1,0 +1,43 @@
+{
+  "kind": "L01_MANAGED_STACK_S01_HELPER_CONTROL",
+  "planAccepted": "62d3a7605c69e3e516dc8543c51cee227c12a32e",
+  "planAcceptanceCarrier": "32d098d39268bcba4d9e9d607e237d56231880b5",
+  "sourcePins": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-inventory-20261018.json",
+      "bytes": 43429,
+      "sha256": "d13edf86aa1315385ed0aa56255e4212f4fb40e723c137c97ab86c2bca1dc528"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-plan-independent-review-20261018.json",
+      "bytes": 11475,
+      "sha256": "e8ba9ecc9dc2bf3d0720a728efc21db2ed83bd00bbba5320fe69d9a2454d4eee"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Collect.ps1",
+      "bytes": 4816,
+      "sha256": "5a600cb9f437768425f22cb723b40bb342ca705559e72d23e5ce7b81f68da4dd"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Synthetic.cs",
+      "bytes": 2949,
+      "sha256": "8a90cc6af0eac680a405381be106fa11d6ff70b932a46eb21a93a8342f10beed"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
+      "bytes": 21437,
+      "sha256": "e16e1df1b0257459c5753c5e01571d535abae5596390156c0c608ccbfe1d76f9"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-run-phase-20261018.py",
+      "bytes": 7435,
+      "sha256": "c52f7b5243c209ab4a9fc1fe1e0f3294e05a932e97539dfd49e712ad9d93f5b5"
+    }
+  ],
+  "prepareAdmission": "PLAN_ACCEPTED_HELPER_PREPARATION_ONLY",
+  "smokeAdmission": {
+    "status": "SOURCE_PREP_REVIEW_PENDING"
+  },
+  "gameplayRelease": "NONE",
+  "sourceScope": "Three external helper sources, exact installed inventory and accepted review; reused M01 observer finalizer unchanged. No game code/category/runtime selection changes."
+}
