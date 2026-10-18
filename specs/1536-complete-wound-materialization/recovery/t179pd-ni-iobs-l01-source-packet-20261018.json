@@ -1,8 +1,8 @@
 {
-  "kind": "NI_IOBS_L01_SOURCE_AND_FRESH_ZERO_PREPARATION_ACCEPTED_ACTUAL_PENDING",
+  "kind": "NI_IOBS_L01_FIRST_AFFECTED_PROTECTED_LATE2_ORIGINAL_RAW_SAVED",
   "sourceBase": "afb5a3bb6a2dd7e066946258cbf64334bf965048",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
-  "status": "ACCEPTED_FRESH_ZERO_PREPARATION_ALL_CURRENT_ACTUAL_MODES_UNRUN",
+  "status": "PROTECTED_LATE2_NATIVE0_2PASS_OBSERVED_INDEPENDENT_EVIDENCE_PENDING",
   "sourcePins": [
     {
       "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
@@ -787,7 +787,7 @@
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-method-row-ledger-20261018.json",
     "sha256": "33e8066c13c9b89d804318d987ad564d89e2ce2eb0576a3eea708b3e61c67528",
     "phase": "IMMUTABLE_SOURCE_ACCEPTANCE_LEDGER_AT_COMPILED_45CC_BEFORE_PREP_METADATA",
-    "currentRuntimePointer": "preparationCurrent + runtime; source-phase UNCOMPILED/UNRUN labels in frozen ledger are historical at build entry, not current compile status."
+    "currentRuntimePointer": "preparationCurrent + runtime + actualScopes; ledger remains exact immutable build-entry/source inventory."
   },
   "productDelta": [
     "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
@@ -951,17 +951,17 @@
       "sha256": "411b9d1ca4585c6ee66d3bbd9992a95b734cd5eb4da059f25faaa3b8762c5fd0",
       "bytes": 9552,
       "role": "Fixed separately named protectedLate2 and each finite actual subset; NoBuild, no auto advance/retry",
-      "status": "UNRUN_SOURCE_ONLY_NAMED_ROOT_RELEASE_REQUIRED"
+      "status": "EXECUTED_ONCE_PROTECTED_LATE2_NATIVE0_2PASS_OBSERVED_OTHER13MODES_UNRUN"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-whole.py",
       "sha256": "bf6503ecb8b1006842e66313da7c72fc185b217e54cd44d4ff5a62b864c36c3f",
       "bytes": 2342,
       "role": "Read-only full original zero/actual process/source/ledger/sentinel/stdout/runner/TRX plus any unresolved retained child roots; no cleanup/classification",
-      "status": "READ_ONLY_TWO_INVOCATIONS_CATALOG11_AND_PLAN10_RAW_CHAINS_NO_TEST_EXECUTION"
+      "status": "READ_ONLY_THREE_INVOCATIONS_CATALOG11_PLAN10_PROTECTED11_RAW_CHAINS_NO_TEST_EXECUTION"
     }
   ],
-  "next": "Root exact recovered decision readback then separately named protected-late2 FIRST only on compiled45cc. No other mode, rerun, source/build or automatic advance.",
+  "next": "Root exact saved raw/recovery readback then separately names ordering1. No other actual mode, rerun, build or source changes; connected final independent EVIDENCE remains open.",
   "sourcePinBindingMeaning": "Active authored-source hashes including necessary new helper definitions, not compiled qualification. Old44/9DLL/preparation/first RED context is retained separately. Verification tools are frozen historical source and cannot be reused unchanged for current bindings.",
   "firstActual": {
     "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
@@ -1138,11 +1138,13 @@
   "runtime": {
     "currentProductCompiled": true,
     "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
-    "currentProductActualCases": 0,
+    "currentProductActualCases": 2,
     "currentProductDiscovery": "807CATALOG_11800METHODS_15SELECTED_33METHODS_57PLANNED_ZEROEXECUTED",
-    "scope": "Fresh current preparation qualified only. No current product actual PASS/RED/semantic cleanup evidence. Original old-product RED remains immutable historical.",
-    "currentActualStatus": "ALL_14_FIXED_MODES_UNRUN",
-    "nextEligibleScope": "protected-late2 only after separately named recovered decision HEAD"
+    "scope": "Exactly one FIRST protected2 invocation on compiled45cc; original outcome preserved, no rerun. Native PASS/raw readback is not final semantic EVIDENCE or whole NI qualification.",
+    "currentActualStatus": "PROTECTED_LATE2_OBSERVED2PASS_OTHER55CASES_UNRUN_INDEPENDENT_EVIDENCE_PENDING",
+    "nextEligibleScope": "ordering1 only after separately named Root saved raw carrier readback",
+    "currentProductObservedPassed": 2,
+    "currentProductObservedFailed": 0
   },
   "currentImplementation": {
     "sourceBase": "afb5a3bb6a2dd7e066946258cbf64334bf965048",
@@ -1196,7 +1198,7 @@
       "Four actual new-current-owner integrity rows follow an abruptly terminated genuine Prepared producer and baseline readback, then apply exactly one partial physical fault; complete no-write/no-effects keysets and bytes are checked."
     ],
     "phase": "FROZEN_SOURCE_ACCEPTANCE_DESCRIPTION_AT_COMPILED_45CC",
-    "currentStatusPointer": "preparationCurrent + runtime; no ledger/source/tool rewrite at raw-save phase."
+    "currentStatusPointer": "preparationCurrent + runtime + actualScopes; source-phase description unchanged."
   },
   "finiteLiveControls": {
     "methods": [
@@ -9353,6 +9355,48 @@
       "rootDecision": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-prep-acceptance-protected-release-8d00ba29-20261018.json",
       "rootDecisionSha256": "79e6287e6cd4aad44cba379599f1ca0a44e112ddf9833787bd8c87d8ac5a10ec",
       "actualCases": 0
+    }
+  },
+  "actualScopes": {
+    "protected-late2": {
+      "actualSource": "c840d604dc5ccb50a9a97dd83319e2366a7a09ac",
+      "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+      "nativeExit": 0,
+      "seconds": 122.9809836600034,
+      "tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "recordPath": "/tmp/t179pd-ni-iobs-l01-whole-implementation-tools/t179pd-ni-iobs-l01-whole-first-protected-late2-current/record.json",
+      "recordSha256": "d2b0d7b05cab5861fd26ad7bc44cf82d4e76e4bfef66970c2a107b770b28e326",
+      "archive": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-protected-late2-files-20261018/archive.json",
+        "sha256": "95e9ce4d8d4b718a61242b2e822419aabf583add27b4d24766e9f2fd2b3c5a6d",
+        "rawChains": 11
+      },
+      "rootReadback": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-protected-late2-readback-c840d604-20261018.json",
+        "sha256": "da996e83c4a0bd2fe0cadc1ee6abbc07dc2b7c2178c69132aaadc8c5b9d11a02"
+      },
+      "nineBinariesUnchanged": true,
+      "all1575OutputFilesUnchanged": true,
+      "namespaceAfter": {
+        "ownedRoots": []
+      },
+      "processesAfter": [],
+      "evidence": "ORIGINAL_NATIVE_2PASS_OBSERVED_ROOT_LITERAL_READBACK_COMPLETE_INDEPENDENT_FINAL_EVIDENCE_PENDING",
+      "activation": "Root separately named mode protected-late2 and exactc840/compiled45cc by literal message; original FIRST record/process/source arguments bind it. No standalone activation file is claimed.",
+      "authoringNote": "After native completed, first readonly one-line summary-print utility had an unclosed parenthesis; multiline readonly print succeeded. Original native record/runner/TRX/archive remained untouched, no native failure or rerun. Original utility stderr exists in tool-session output only; no fabricated raw file provenance."
     }
   }
 }
