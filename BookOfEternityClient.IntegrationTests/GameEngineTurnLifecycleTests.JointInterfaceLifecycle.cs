@@ -90,6 +90,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         private int _captureCallbacks, _interfaceAtCapture, _sequence;
         private bool _configured;
         private bool _initialIntakeConfigured;
+        private bool _absentBeforeOriginalObserved;
         private DateTime? _submittedMtime, _finalMtime;
         internal bool ExpectsAbsentInterface => scenario == "Absent";
         internal bool ExpectsHeld => scenario is "Error" or "InterfaceClose" or "ReadRace" or "ReadyDrift" or "CommonFault" or "Terminal" or "TerminalFault" or "CutResume";
@@ -166,6 +167,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             if (scenario is "ReadRace" or "Absent")
             {
                 File.Delete(fixture._fs.ResolvePath(InterfacePath));
+                if (scenario == "Absent")
+                {
+                    Assert.False(File.Exists(fixture._fs.ResolvePath(InterfacePath)));
+                    _absentBeforeOriginalObserved = true;
+                }
                 return; // genuine original records absence, so freshness performs NO public I read
             }
             if (scenario != "Warning") return;
@@ -183,8 +189,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             if (scenario is not ("Warning" or "Absent")) return;
             Assert.False(_initialIntakeConfigured); _initialIntakeConfigured = true;
             var read = PendingTurnSnapshotReader.ReadCurrent(fixture._fs, lease,
-                PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(
-                    ["game_state/meta/soul_state.json"], [InterfacePath]));
+                new PendingTurnSnapshotPathSelection(["game_state/meta/soul_state.json"], [InterfacePath]));
             Assert.True(read.Success, DescribeValidationIssues(read.Issues));
             var observed = Assert.IsType<PendingTurnSnapshotReadAuthority>(read.Snapshot);
             Assert.Equal(original.Realm, observed.Realm);
@@ -192,7 +197,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal(original.SnapshotToken, observed.SnapshotToken); Assert.Equal(original.TurnNumber, observed.TurnNumber);
             if (scenario == "Absent")
             {
-                Assert.Contains(InterfacePath, observed.AbsentLogicalPaths);
+                Assert.True(_absentBeforeOriginalObserved);
+                Assert.DoesNotContain(InterfacePath, observed.DeclaredOriginalLogicalPaths);
+                Assert.DoesNotContain(InterfacePath, observed.CoveredLogicalPaths);
                 File.Delete(fixture._fs.ResolvePath(InterfacePath));
                 Assert.Null(await fixture._fs.ReadFileBytesAsync(lease, InterfacePath));
             }
@@ -215,7 +222,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             await fixture._fs.WriteFileAtomicAsync(lease, "ready/turn_complete.json",
                 ready.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
             fixture.WritePhysicalInjuryDiagnostic("iobs_actual_initial_intake_before_rejected_wave", new
-            { scenario, OriginalDeclaresInterface = original.DeclaredOriginalLogicalPaths.Contains(InterfacePath),
+            { scenario, AbsentBeforeOriginalObserved = _absentBeforeOriginalObserved,
+                OriginalDeclaresInterface = observed.DeclaredOriginalLogicalPaths.Contains(InterfacePath),
                 Interface = Raw(await fixture._fs.ReadFileBytesAsync(lease, InterfacePath)), Ready = ready });
         }
 

@@ -54,9 +54,9 @@
     },
     {
       "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs",
-      "bytes": 26776,
-      "sha256": "e10e9635fc02d528ddbebc6f34effba877565cd2597e89fc6cfe79772319a9e8",
-      "gitBlob": "55ac2652a4cbbf367649c19ee81de35c81dcf831",
+      "bytes": 27240,
+      "sha256": "d8fa7b3004266329f313834bf5c2c75187b327addd74f458715dc9eef1fd1766",
+      "gitBlob": "381ff1812f6370433de48f97f3a837cf69bd7554",
       "mode": "100644",
       "binding": "CORRECTED_WARNING_ABSENT_FIXTURE_AND_UNRUN_DERIVATIVE_TOOLS_PRODUCTION_UNCHANGED"
     },
@@ -790,10 +790,10 @@
     }
   ],
   "sourcePinCount": 98,
-  "pinDigest": "e8f9c60b5cfd1d71a1bb4013faf641cb90407919ca348a2f1617a187c15744a9",
+  "pinDigest": "1315ce330e8767b6c6b64b62c686f3df41506114fcde12076ab58799db1dda1f",
   "ledger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-method-row-ledger-20261018.json",
-    "sha256": "d960cc1c3734352410b7949b8ac30e0ac5787f817ecb56e1345787412cc17940",
+    "sha256": "7ac13b5d22d94a8a953590071e4c824b5e566486033de059966ed453b6d88509",
     "phase": "IMMUTABLE_SOURCE_ACCEPTANCE_LEDGER_AT_COMPILED_45CC_BEFORE_PREP_METADATA",
     "currentRuntimePointer": "preparationCurrent + runtime + actualScopes; ledger remains exact immutable build-entry/source inventory."
   },
@@ -1331,10 +1331,10 @@
     "history": "Old97/current45cc15-owner preparation/tools/native outcomes stay exact historical. New98/16-owner whole source plan includes retained26 inventory but fixed actual tool only permits repaired2+remaining29."
   },
   "recoveryCurrentCandidate": {
-    "base": "eaea2dde3fd5381d27e86ab9e87c782cd97d9ae0",
-    "receipt": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-unexpected-live-delta-github-eaea2dde-20261018.json",
-    "rootComposition": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-eaea2dde-20261017.json",
-    "status": "EXACT106DELTA55567TREE_COPIED_NEW_FIXTURE_WIP_PUBLICATION_PENDING"
+    "base": "bd799b19adc0d0c2591b40ea4be2003d2d4ad4f1",
+    "receipt": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-fixture-delta-github-bd799b19-20261018-v2.json",
+    "rootComposition": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-bd799b19-20261017.json",
+    "status": "EXACT107DELTA55577TREE_COPIED_OPTIONAL_READER_FIX_WIP_PENDING_PUBLICATION"
   },
   "sourceAcceptance": {
     "candidate": "520e66e418a428223afa4ef2364ec96b28eeac54",
@@ -9684,7 +9684,7 @@
       }
     ],
     "warning": "Cache actual public seed BEFORE Stage43; first/corrected GM authors that seed; separate observed-optional real original read is only same-tuple byte oracle.",
-    "absent": "Delete real public I BEFORE original; omit first/corrected I and initial Ready.filesModified; signed optional absence read is only oracle. Shared freeze is optional only for specialAbsent.",
+    "absent": "Delete real public I BEFORE original; observe physical absence, no declared/covered I in same-tuple ordinary optional reader; omit first/corrected I and initial Ready.filesModified. This is fixture observation and read-only original metadata, not signed-absence authority.",
     "defaultInverse": {
       "sharedOwner": "Removing exact added call and Absent-only freeze branch restores eaea whole JointCompletion source; no null/default behavioral side effects.",
       "nonSpecial": "ConfigureInitialIntakeAsync returns before every read/write/counter/assert unless Warning/Absent; original before/corrected branches for every other scenario retain semantics.",
@@ -9702,8 +9702,13 @@
     "production": "All BookOfEternityClient and GMBridge bytes equal eaea/compiled45cc; no prompt/example/game contract change. No GM updates needed for test-only response setup. All original raw/reviews/history preserved.",
     "sourceOnlyAuthoringCorrections": [
       "Before freeze, replaced uncovered QTE-snapshot I read with a separate same-tuple observed-optional current original reader. No compiler/native failure.",
-      "Category edit utility initially matched a nested related id; final root-category exact replacement is verified, no discovery/native ran."
-    ]
+      "Category edit utility initially matched a nested related id; final root-category exact replacement is verified, no discovery/native ran.",
+      "bd799 required signed optional absence for I outside closed OriginalPathPresenceV1. Current ordinary optional soul/I oracle asserts original tuple; Absent actual deletion before Stage and no declared/covered I plus first/corrected physical absence. Warning public seed remains authoring input; no production/schema/native change."
+    ],
+    "publicationNote": {
+      "firstAttempt": "Read-only changed-path GitHub recovery HTTP503; partial /tmp/t179pd-ni-iobs-l01-intake-fixture-recovered-bd799b19-20261018 retained; original stderr in tool response, no separate first stderr file claimed.",
+      "verifiedRetry": "Exact same read-only recovery into new v2 clean directory succeeded25files/all21paths; Root full107/55577tree accepted. Not a push/build/native failure or retry."
+    }
   },
   "preparationRequired": {
     "status": "CHANGED_FIXTURE_UNCOMPILED_UNRUN",
