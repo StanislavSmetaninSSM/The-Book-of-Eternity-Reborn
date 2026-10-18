@@ -1,3 +1,7 @@
+## T148 — выбранный bounded SOURCE audit, WIP (2026-10-18)
+
+- [ ] [SOURCE-аудит Saref memory_suppression](design/t148-saref-memory-suppression-source-audit-20261018.md): реальный defeat audit producer/identity/persistence, separate suppressed advantage eligibility, отсутствующий runtime-effect мост, три terminal caller/common cleanup, M01 metadata regression UNRUN и E01 spiritual effect survival BLOCKED. Независимое финальное review ожидается; T148/Phase10 остаются открытыми. Issue не создана, code/test/catalog/selection/budget/runtime не изменены. Продолжение от12d2bac1 выбрано пользователем; прежнее предложение ниже — историческое. L01 52/57 и все holds неизменны.
+
 > **Current L01: 52/57 qualified; JOINT BOUNDED BLOCKER (2026-10-18).** [Current handoff](plan.md) records the one permitted diagnostic2: a 220-second resumer timeout with active CPU. A managed cause and defensible completion budget remain unproved. All five original crash cases remain unqualified; release NONE, no additional diagnostic/retry/source or budget change. All historical outcomes, old UNKNOWN and broader holds remain unchanged. Following sections are historical.
 
 ### Предложение независимого продолжения после 631cff24 (2026-10-18)

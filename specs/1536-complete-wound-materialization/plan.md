@@ -1,3 +1,22 @@
+## T148 — выбранный SOURCE-аудит Saref memory_suppression, WIP (2026-10-18)
+
+Пользователь выбрал рекомендованный независимый audit от `12d2bac1e680799c176346b6e6f29f48859e32d1`
+в этой же ветке. [Фактическая цепочка, cleanup map, минимальные tests и follow-up](design/t148-saref-memory-suppression-source-audit-20261018.md)
+сохраняют отдельные статусы: SOURCE review pending; M01 historical audit-state
+preservation test UNRUN; E01 independent effect + spiritual healing survival BLOCKED;
+T148/Phase10 OPEN. Прослеженный defeat producer даёт canonical audit; отдельно
+authored suppressed advantage eligibility действительно исполняется, но мост audit
+→ materialized effect/подавление памяти не найден. Все три production terminal
+planner caller и общий exact wound-lineage/carrier cleanup разобраны; подтверждённого
+дефекта удаления существующих Saref данных не найдено, runtime proof не заявляется.
+Есть подготовленный follow-up text, issue не создана; новой механики или fix нет.
+
+Независимый reviewer проверяет альтернативные lawful sources/consumers и итоговый
+audit. Только documentation/source evidence: код, тесты, каталог/selection и budgets
+не меняются; runtime/build/discovery не запускались. После review — сохранить его
+verdict, exact remote SHA и чистое GitHub recovery/readback. Все L01/broader holds
+ниже сохраняются; этот audit не возобновляет crash/sampling/Windows/CI.
+
 ## T179-Pd-NI-IOBS-L01 — joint bounded blocker; 52/57 qualified (2026-10-18)
 
 Root and the [independent reviewer](recovery/t179pd-ni-iobs-l01-diagnostic2-outcome-causal-independent-review-20261018.md) agree on **BOUNDED_BLOCKER**. The original 37 plus 15 newly accepted cases remain qualified at their original provenance. All five original crash cases remain unqualified. The one permitted profiling run is consumed; release is **NONE**.

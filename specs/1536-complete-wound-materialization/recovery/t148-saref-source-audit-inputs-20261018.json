@@ -1,0 +1,309 @@
+{
+  "kind": "T148_BOUNDED_READ_ONLY_SOURCE_AUDIT_INPUTS",
+  "base": "12d2bac1e680799c176346b6e6f29f48859e32d1",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "checkedUtc": "2026-10-18T18:18:07.153809+00:00",
+  "verification": "Static source reads only. No build/discovery/test, diagnostic/runtime, install or attach.",
+  "sourcePins": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71"
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "bytes": 242141,
+      "sha256": "a90d70d67e3a052218091eb2b2a11b942c30736e5c2440c0663db7ddc3703fde"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 2454183,
+      "sha256": "2a0c2cfaa8eda6d6a87c3cd6a16996f0e47fc30e8c514aa5bdf86763a67bfa84"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "bytes": 1606418,
+      "sha256": "d4aa082457ea8f6df2cb60e5dbcdc4d4bf937a3e46fb14c08b002b9b04d10f36"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/contracts/wound-effects-and-atomicity.md",
+      "bytes": 43418,
+      "sha256": "444944fe99267ae200b68e251cda10c95dd4349a6143b7b80750c2abcb032dca"
+    },
+    {
+      "path": "BookOfEternityClient/Configuration/FileMapping.cs",
+      "bytes": 15562,
+      "sha256": "0e657357c315ffe740983d3f9c3347475dc1907d84f059753eddcf95f707b538"
+    },
+    {
+      "path": "BookOfEternityClient/IO/StateDistributor.cs",
+      "bytes": 33511,
+      "sha256": "0ceecfb1f5d517673504e413f138bad5593065791f1f85a222238c7f19a3893d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SarefMainStoryState.cs",
+      "bytes": 58841,
+      "sha256": "e0fceb10f412b90fd07a696d55362c66da4272a730b6095a9f9e09e516861d2c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs",
+      "bytes": 208572,
+      "sha256": "a0f42912f0714e163a6a56147a19a8d7ef2c51849c5eba4fcfe48c947ff4c3f3"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer.cs",
+      "bytes": 23872,
+      "sha256": "af3eed10ef8f253aea0aa4d4b47b3b4690a7ba81dab4163a16aef5c62bc2dab9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SarefMainStory.cs",
+      "bytes": 1887,
+      "sha256": "74e490f5309d9b22267374a4e1017810c1e622d7f5bd842cbf22c29b7dd6347e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectSourceAuthority.cs",
+      "bytes": 97492,
+      "sha256": "3fe3208487a96ebc861721502562a35219ba361a0d566e23fc5b9fca2e88bd86"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs",
+      "bytes": 108909,
+      "sha256": "486eb3820a6b6706560f21987ebcc00cc6cbfff62f2f05485d1ef9602c59c753"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectCarrierCatalog.cs",
+      "bytes": 28369,
+      "sha256": "ee19e8e3ce918984c0c5dddefd49e7236043ce4a13f452e518ac5763db35c7ab"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs",
+      "bytes": 398519,
+      "sha256": "c12c5b842fb534c4e18b753f1004dcc8479ed66b4462794cb0c83a312808eb5a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectEventOutcomeCatalog.cs",
+      "bytes": 1076,
+      "sha256": "97a6c645fd20e22ba36190e68fcb013d2b1ccb3d4bbfe7c77907aa84be1bec36"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectLifecycleScheduler.cs",
+      "bytes": 39094,
+      "sha256": "f2b2b853dc727bd7d254f705c2169537411fbc199df8b0f4489dc3b2411d8d86"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectComponentProfiles.cs",
+      "bytes": 43922,
+      "sha256": "c36fe4256315a5d876f6f9e4bf681426113f1171aa34d2a0f1901be49dbc0cac"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs",
+      "bytes": 196569,
+      "sha256": "ec080b51a939c57de541ed3e61992c6c70d94db04209b028a98a107a54fb91bd"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentSeverityRematerializationPlanner.cs",
+      "bytes": 27087,
+      "sha256": "b32737fc2ccd28170ce3b52c9f85886341ff90f88d9559df6d2d105add97fe41"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.MortalRecovery.cs",
+      "bytes": 49290,
+      "sha256": "3bcfcb69b1c0a22e91d3e286a12dd812669927fe6c1fa6218dcefa9e63fbb73d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundEffectIdentityLineageAnalyzer.cs",
+      "bytes": 38987,
+      "sha256": "023c5c5606cadaa1e6304e6b4bee39e12e18ec035933d9bd0db015db9ae6a7a7"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs",
+      "bytes": 405766,
+      "sha256": "e0004844ba56d69d41ff68753f995c7e19427f6875097e0b3afda97fc2549779"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsCarrierAssembler.LiveWounds.cs",
+      "bytes": 9929,
+      "sha256": "526e6ba78b409621f64516c618561d4096de038f59ecfd0481922dae337a87cc"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsCarrierAssembler.MortalRecovery.cs",
+      "bytes": 14054,
+      "sha256": "a2db5d193cb32fb220cdaccaf664395d3d8824965ffc99742e876260e4161d98"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlannerCore.MortalRecovery.cs",
+      "bytes": 13821,
+      "sha256": "0455968755194d5d58850524f09f90e9592d7c24579f56502eb546e0109fc9c1"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedOwnerCarrierAuthority.cs",
+      "bytes": 11285,
+      "sha256": "f81cccdf8a4d2a0adab546d59d93b14a5aed4b35a8e8ed62619d5db0980cbd86"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundTransitionReducer.cs",
+      "bytes": 123929,
+      "sha256": "51935ad4ae40a31072957b00559722ab649284716bce832752f6fed7dbca4a62"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualHealingOutcomeMath.cs",
+      "bytes": 2721,
+      "sha256": "1750a2afdece34fa81bed9498f53bb2ccd2056851678b83e5b244e5027361a9b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundRecoveryMath.cs",
+      "bytes": 1603,
+      "sha256": "552faebdd4cac3fd6f1b3084f7024d8f4c83ca900bed3f2d636285fede99e7bf"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/WoundConsequenceEnvelopeTests.cs",
+      "bytes": 133383,
+      "sha256": "64facc5def2cbad35c11cb629bc4589a3cfb5b1f5e208332dee188eb82437de0"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.SarefMainStory.cs",
+      "bytes": 12498,
+      "sha256": "9efa0175af7837f27928e6acd6a600f778cf83d5d6b87251b52d148943e13e5d"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/SarefMainStoryStateValidationTests.cs",
+      "bytes": 120010,
+      "sha256": "76062ac53074cd11a6d036e0eff873c8ec36eaf70e09c1dd3041868d0d369833"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.cs",
+      "bytes": 175652,
+      "sha256": "4faf575e2f0b0660d3a02be62c4121926014f9a7d8fdae5ad287aba8c3e66aef"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.FixtureCache.cs",
+      "bytes": 10993,
+      "sha256": "039c10dc47b9fff5cc8bb8a3be52c1bfc801b53a7b977a310286eb79a6d7e250"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.TerminalState.cs",
+      "bytes": 10119,
+      "sha256": "37e14464bf85ef8e86c3ca610b8b1b09aa74a6b101e52301cbc63c41fd3d3642"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.PublicationRollback.cs",
+      "bytes": 7465,
+      "sha256": "d199ab077303d0b487a4d21021c614a5c01c09a23b0e7d4170302cac6249e4b1"
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Turns.txt",
+      "bytes": 699288,
+      "sha256": "2865180ed71387a21b30763c00f9fd26c97a1c3937ad4addcbbb572d69c9ed49"
+    },
+    {
+      "path": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "bytes": 255057,
+      "sha256": "3e85d05ae513b2fa8215ef54b153347a0408ff7459a364cfd840a0c459d7993b"
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 2014078,
+      "sha256": "08bfb226bb044544e992996c241abbe61a87d0a3ab543a9e30e71479b85ed480"
+    }
+  ],
+  "searches": [
+    {
+      "argv": [
+        "rg",
+        "-n",
+        "-i",
+        "memory.?suppression",
+        "BookOfEternityClient/Services",
+        "BookOfEternityClient/Core",
+        "BookOfEternityClient/Models",
+        "BookOfEternityClient/UI",
+        "BookOfEternityClient/WebUi"
+      ],
+      "exitCode": 0,
+      "lines": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:4624:  SAREF MAIN STORY: do not reveal Сареф or Крылья Ангелов while revealStage=unknown|shadow. If you use a Saref advantage, it must exist in sarefAdvantages[], have state available/passive, and the sceneType must match applicableScenes[] or any. Consumed one-use advantages must end as state=spent with matching spentAudit and sarefAdvantageUses[]; suppressed/disabled/spent/unknown advantages cannot be claimed. Quest 4 memory restoration is the playable memoryScene layer Воспоминание, not Mortal World and not Memory Gates; it does not create pendingMemoryLegacy unless the player separately uses Memory Gates. Close it only through sarefMainStoryUpdate.mode=record_memory_scene with role, boundaries[], 3-5 abilities[], requiredStoryNodes[], successCondition, closureTarget, resolvedAtTurn, non-physical evidence only (memory, image, echo, knowledge trace, or soul resonance), and guardianQuestlines[].questStates[].memorySceneProof. If game_state/control/pending_saref_wings_infiltration.json exists, close it only through sarefMainStoryUpdate.mode=reveal_wings|refuse_wings|block_wings with matching requestId, positive resolvedAtTurn, and wingsInfiltration.status; risky/desperate routes require listed disadvantages. A final deal requires postStoryAgenda.state=oathbound_to_saref; continue play through assignments[] linked to Shining factionConflictCampaigns[], use saref_directive breakthroughs for direct orders, do not let the player leave Wings by ordinary voluntary action, and write dominationScene once no significant non-Wings faction can oppose Saref. Later agenda changes use sarefMainStoryUpdate.mode=record_oathbound_agenda. If Saref defeats the player, record only through sarefMainStoryUpdate.mode=record_defeat_outcome into defeatOutcomes[]; valid outcomeType values are forced_oath, exile_to_chaos_sea, memory_suppression, soul_dissipation, and pyrrhic_escape, with gmMotivation and matching playerOathState/exileAudit/memorySuppressionAudit/soulDissipationProofId/mitigation.",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:4642:  SAREF MAIN STORY: do not reveal Сареф or Крылья Ангелов while revealStage=unknown|shadow. If you use a Saref advantage, it must exist in sarefAdvantages[], have state available/passive, and the sceneType must match applicableScenes[] or any. Consumed one-use advantages must end as state=spent with matching spentAudit and sarefAdvantageUses[]; suppressed/disabled/spent/unknown advantages cannot be claimed. Quest 4 memory restoration is the playable memoryScene layer Воспоминание, not Mortal World and not Memory Gates; it does not create pendingMemoryLegacy unless the player separately uses Memory Gates. Close it only through sarefMainStoryUpdate.mode=record_memory_scene with role, boundaries[], 3-5 abilities[], requiredStoryNodes[], successCondition, closureTarget, resolvedAtTurn, non-physical evidence only (memory, image, echo, knowledge trace, or soul resonance), and guardianQuestlines[].questStates[].memorySceneProof. If game_state/control/pending_saref_wings_infiltration.json exists, close it only through sarefMainStoryUpdate.mode=reveal_wings|refuse_wings|block_wings with matching requestId, positive resolvedAtTurn, and wingsInfiltration.status; risky/desperate routes require listed disadvantages. A final deal requires postStoryAgenda.state=oathbound_to_saref; continue play through assignments[] linked to Shining factionConflictCampaigns[], use saref_directive breakthroughs for direct orders, do not let the player leave Wings by ordinary voluntary action, and write dominationScene once no significant non-Wings faction can oppose Saref. Later agenda changes use sarefMainStoryUpdate.mode=record_oathbound_agenda. If Saref defeats the player, record only through sarefMainStoryUpdate.mode=record_defeat_outcome into defeatOutcomes[]; valid outcomeType values are forced_oath, exile_to_chaos_sea, memory_suppression, soul_dissipation, and pyrrhic_escape, with gmMotivation and matching playerOathState/exileAudit/memorySuppressionAudit/soulDissipationProofId/mitigation.",
+        "BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs:2078:            else if (string.Equals(outcomeType, SarefMainStoryState.DefeatOutcomeMemorySuppression, StringComparison.OrdinalIgnoreCase))",
+        "BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs:2079:                ValidateSarefMemorySuppressionDefeat(item, context, issues);",
+        "BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs:3426:    private static void ValidateSarefMemorySuppressionDefeat(JsonElement item, string context, List<ValidationIssue> issues)",
+        "BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs:3428:        if (!item.TryGetProperty(\"memorySuppressionAudit\", out var audit) || audit.ValueKind != JsonValueKind.Object)",
+        "BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs:3432:                $\"{context}.memorySuppressionAudit\",",
+        "BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs:3433:                \"memory_suppression требует memorySuppressionAudit с областью и тяжестью подавления памяти.\",",
+        "BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs:3435:                \"memorySuppressionAudit object\",",
+        "BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs:3436:                item.TryGetProperty(\"memorySuppressionAudit\", out var present) ? present.ValueKind.ToString() : \"missing\");",
+        "BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs:3445:                $\"{context}.memorySuppressionAudit.suppressedMemoryScope\",",
+        "BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs:3446:                \"memory_suppression должен фиксировать, какая память подавлена.\",",
+        "BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs:3452:        RequireSarefString(audit, $\"{context}.memorySuppressionAudit\", \"severity\", \"saref_main_story_defeat_memory_missing_audit\", issues);",
+        "BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs:3453:        RequireSarefString(audit, $\"{context}.memorySuppressionAudit\", \"summary\", \"saref_main_story_defeat_memory_missing_audit\", issues);",
+        "BookOfEternityClient/Services/SarefMainStoryState.cs:65:    public const string DefeatOutcomeMemorySuppression = \"memory_suppression\";",
+        "BookOfEternityClient/Services/SarefMainStoryState.cs:282:        DefeatOutcomeMemorySuppression,",
+        "BookOfEternityClient/Services/SarefMainStoryState.cs:759:        if (updateRoot[\"memorySuppressionAudit\"] is JsonObject memorySuppressionAudit && outcome[\"memorySuppressionAudit\"] == null)",
+        "BookOfEternityClient/Services/SarefMainStoryState.cs:760:            outcome[\"memorySuppressionAudit\"] = memorySuppressionAudit.DeepClone();"
+      ]
+    },
+    {
+      "argv": [
+        "rg",
+        "-n",
+        "WoundEffectTerminalOperationPlanner.Plan",
+        "BookOfEternityClient/Services"
+      ],
+      "exitCode": 0,
+      "lines": [
+        "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.MortalRecovery.cs:612:        var terminal = WoundEffectTerminalOperationPlanner.Plan(before, workspace.ToInput(), currentIdentity.State,",
+        "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs:2738:                var terminal = WoundEffectTerminalOperationPlanner.Plan(",
+        "BookOfEternityClient/Services/MortalWoundTreatmentSeverityRematerializationPlanner.cs:394:        var terminal = WoundEffectTerminalOperationPlanner.Plan("
+      ]
+    },
+    {
+      "argv": [
+        "rg",
+        "-n",
+        "WoundHealingEvidence",
+        "BookOfEternityClient/Services"
+      ],
+      "exitCode": 0,
+      "lines": [
+        "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.MortalRecovery.cs:733:            ? new WoundHealingEvidence(view.Resolution.AuthorityFingerprint, beforeFingerprint, afterFingerprint,",
+        "BookOfEternityClient/Services/WoundTransitionReducer.cs:117:internal sealed record WoundHealingEvidence(",
+        "BookOfEternityClient/Services/WoundTransitionReducer.cs:1834:        if (request.Evidence is not WoundHealingEvidence evidence)",
+        "BookOfEternityClient/Services/WoundTransitionReducer.cs:1836:            EvidenceKindMismatch(issues, \"WoundHealingEvidence\", request.Evidence);",
+        "BookOfEternityClient/Services/WoundTransitionReducer.cs:2156:            case WoundHealingEvidence healing:"
+      ]
+    },
+    {
+      "argv": [
+        "rg",
+        "-n",
+        "memory_suppression|memorySuppressionAudit",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests"
+      ],
+      "exitCode": 0,
+      "lines": [
+        "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs:4081:            Assert.Contains(\"memorySuppressionAudit\", text, StringComparison.Ordinal);",
+        "BookOfEternityClient.Tests/WoundConsequenceEnvelopeTests.cs:2332:            Effect(\"effect_saref\", new[] { UnknownComponent(\"saref_component\") }, \"saref\", \"memory_suppression\", null),"
+      ]
+    }
+  ],
+  "plannedTestPath": "BookOfEternityClient.IntegrationTests/SarefMemorySuppressionWoundIsolationTests.cs",
+  "plannedTestPathExists": false,
+  "limits": "Literal search is bounded inventory, not proof by absence alone. SOURCE conclusions rely on producer/export/consumer/cleanup branch tracing in the linked audit. Existing generic Saref story eligibility is distinguished from a memory_suppression effect bridge. No runtime preservation or full spiritual wound healing qualification claimed.",
+  "L01": {
+    "qualified": 52,
+    "total": 57,
+    "originalCrash5": "UNQUALIFIED",
+    "oldSession66529": "UNKNOWN/unavailable/recoveryClaim=false",
+    "release": "NONE"
+  }
+}
