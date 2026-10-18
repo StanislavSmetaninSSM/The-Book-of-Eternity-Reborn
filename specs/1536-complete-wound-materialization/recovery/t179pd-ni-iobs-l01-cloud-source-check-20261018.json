@@ -1,0 +1,215 @@
+{
+  "kind": "INDEPENDENT_CLOUD_SOURCE_RETENTION_SELECTION_ARCHIVE_CHECK",
+  "checkedUtc": "2026-10-18T09:42:13.203050+00:00",
+  "candidate": "bb156d0d84d4f2911f356ad79205a3f2697c1cf9",
+  "currentHeadObserved": "6ab43f6add261d90628fc07d6aacf42dfbae0561",
+  "priorSourceAcceptance": "c4c0c62fbf37d2b0699b72e95794e4e3cef50535",
+  "sourcePinCount": 98,
+  "sourcePinDigest": "1f11670a1e063bed010e2e03585fb6e8b5ad4da64157a5ce877317475d3c7bc4",
+  "ledgerSha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
+  "allPinsMatchWorkingTreeCandidatePriorAndCurrentGitBlobMode": true,
+  "nonSpecChangesSincePriorSourceAcceptance": [],
+  "productDeltaPaths": 20,
+  "whole": {
+    "descriptors": 16,
+    "methods": 33,
+    "cases": 57,
+    "basis": "Static current selectors expanded against unchanged authored ledger plus five unchanged source methods/six rows; not fresh discovery"
+  },
+  "pending": {
+    "descriptors": 7,
+    "methods": 12,
+    "cases": 20,
+    "groups": {
+      "legacy3": [
+        [
+          "fr063-joint-interface-legacy-current"
+        ],
+        3
+      ],
+      "crash5": [
+        [
+          "fr063-joint-interface-crash-current"
+        ],
+        5
+      ],
+      "integrity4": [
+        [
+          "fr063-joint-interface-current-integrity"
+        ],
+        4
+      ],
+      "close2": [
+        [
+          "fr063-joint-interface-close-retention"
+        ],
+        2
+      ],
+      "races2": [
+        [
+          "fr063-joint-interface-source-races"
+        ],
+        2
+      ],
+      "settlement3": [
+        [
+          "fr063-joint-interface-settlement"
+        ],
+        3
+      ],
+      "uncertain1": [
+        [
+          "fr063-joint-interface-uncertain-current"
+        ],
+        1
+      ]
+    }
+  },
+  "retained": {
+    "methods": 21,
+    "cases": 37,
+    "methodCases": {
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce": 1,
+      "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.PublishedRecordPreservesExactDiagnosticsWithoutClaimingHistoricalReturn": 1,
+      "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRefusesMalformedOrSilentlyCanonicalizedData": 6,
+      "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.ObjectCannotClaimTimestampPolicyWasNotReachedEvenWithConsistentDataDigests": 1,
+      "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.FrozenFallbackRejectsNoncanonicalOrNonUtcDataWithoutReevaluatingInterfacePolicy": 3,
+      "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRejectsDuplicatePropertiesBeforeJsonNodeCanonicalization": 1,
+      "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.InterfaceAboveCheckpointBlobLimitIsPreservedWithoutTruncation": 1,
+      "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.ErrorPreparedIsFrozenAndCannotBecomePublished": 1,
+      "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.AbsenceIsDistinctFromPresentEmptyAndReturnedCopiesAreDefensive": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceNoWriteRetainsExactBytesAndMtime": 3,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceErrorFreezesPreparedWithoutPublicationOrCommon": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AbsentInterfacePublishesOnlyResultAndCompletes": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceWarningVectorSurvivesCommonAndOrdinaryCompletion": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualGenericInterfaceConsumerRefusesSelectedMarkerDamage": 7,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_FirstInstallOwningCloseCannotArmInterfacePermission": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewLateMainConsumesOwnReadyWithoutRevivingHotOwner": 1,
+      "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalJointSeverityRepairGuidance_PreservesPublicTransportAndOnceOnlyClientOwnership": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentCaptureStopPrecedesPreparationAndExpiresActualOwner": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentCaptureObservationPreservesOrdinaryCompletion": 2,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce": 1
+    },
+    "provenance": "26 compiled45cc +11 compiled4c6d; actualSource per archive preserved"
+  },
+  "archives": [
+    {
+      "scope": "protected-late2",
+      "chains": 11,
+      "actualSource": "c840d604dc5ccb50a9a97dd83319e2366a7a09ac",
+      "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+      "tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      }
+    },
+    {
+      "scope": "ordering1",
+      "chains": 11,
+      "actualSource": "1024bee0a1a5483b4e593bcea0c6fdb107ad61cc",
+      "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+      "tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 1,
+        "Failed": 0
+      }
+    },
+    {
+      "scope": "data15",
+      "chains": 11,
+      "actualSource": "1024bee0a1a5483b4e593bcea0c6fdb107ad61cc",
+      "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+      "tests": {
+        "Total": 15,
+        "Executed": 15,
+        "Passed": 15,
+        "Failed": 0
+      }
+    },
+    {
+      "scope": "guidance1",
+      "chains": 11,
+      "actualSource": "1024bee0a1a5483b4e593bcea0c6fdb107ad61cc",
+      "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+      "tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 1,
+        "Failed": 0
+      }
+    },
+    {
+      "scope": "cut3",
+      "chains": 12,
+      "actualSource": "f5dc4aff3b2847d1d3a4e4e76d9edc4b9f7d9f91",
+      "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+      "tests": {
+        "Total": 3,
+        "Executed": 3,
+        "Passed": 3,
+        "Failed": 0
+      }
+    },
+    {
+      "scope": "live6",
+      "chains": 11,
+      "actualSource": "91a533d61e93ee043622763cd709b708dbc89dd3",
+      "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+      "tests": {
+        "Total": 6,
+        "Executed": 6,
+        "Passed": 4,
+        "Failed": 2
+      }
+    },
+    {
+      "scope": "repaired2",
+      "chains": 11,
+      "actualSource": "6b7d1e8288af73982de85159a343626efda21d57",
+      "compiledSource": "4c6d8334b441193cbda6de539347bcf7998d4db6",
+      "tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      }
+    },
+    {
+      "scope": "refusal9",
+      "chains": 11,
+      "actualSource": "1611b5c720a627a3582481db2d9419fc488f518c",
+      "compiledSource": "4c6d8334b441193cbda6de539347bcf7998d4db6",
+      "tests": {
+        "Total": 9,
+        "Executed": 9,
+        "Passed": 9,
+        "Failed": 0
+      }
+    },
+    {
+      "scope": "crash5",
+      "chains": 11,
+      "actualSource": "fd78a4a9beba1974be8fdb20bf3ea5b0bdfe066a",
+      "compiledSource": "4c6d8334b441193cbda6de539347bcf7998d4db6",
+      "tests": {
+        "Total": 5,
+        "Executed": 5,
+        "Passed": 0,
+        "Failed": 5
+      }
+    }
+  ],
+  "verifiedOriginalGzipRawChains": 100,
+  "originalActualCaseRows": 44,
+  "originalPassRows": 37,
+  "originalFixtureFailures": 7,
+  "noDuplicatePassedMethodCaseNames": true,
+  "correctedOldCrash": "UNKNOWN_UNAVAILABLE_NOT_RECOVERED",
+  "freshPREP": "NOT_ACCEPTED",
+  "reviewerExecution": "No build/discovery/tests or game runtime; Python read-only evidence/hash checks only",
+  "findings": []
+}

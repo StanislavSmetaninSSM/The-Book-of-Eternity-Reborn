@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "WIP_INDEPENDENT_ENVIRONMENT_CORRECTION_ACCEPTED_NEW_ZERO_ELIGIBLE",
+  "status": "WIP_FRESH_ZERO3_SAVED_INDEPENDENT_PREP_PENDING",
   "sourceCheckpoint": "2e0463ff3b5e52510e86f1c8b53bd714923e156d",
   "sourcePinDigest": "1f11670a1e063bed010e2e03585fb6e8b5ad4da64157a5ce877317475d3c7bc4",
   "sourcePinCount": 98,
@@ -323,7 +323,14 @@
     "restoredRawChains": 100,
     "retainedQualifiedCases": 37,
     "originalFixtureFailures": 7,
-    "limits": "Restored saved direct evidence, not new execution or cross-build equality. 33 historical /tmp receipt byte files were not found at their recorded basenames; no reconstruction claimed. Full new GitHub clone is pending."
+    "limits": "Restored saved direct evidence, not new execution or cross-build equality. 33 historical /tmp receipt byte files were not found at their recorded basenames; no reconstruction claimed. Full new GitHub clone is pending.",
+    "fullCleanGithubClone": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-clean-restore-6ab43-20261018.json",
+      "sha256": "a061099847dea58f62ad02a64cf54180e0fea68592ded2d1841ea0f4681b1865",
+      "sha": "6ab43f6add261d90628fc07d6aacf42dfbae0561",
+      "clean": true,
+      "localObjectOrSourceReuse": false
+    }
   },
   "oldCorrectedCrash": {
     "outcome": "UNKNOWN",
@@ -441,7 +448,7 @@
     }
   ],
   "crashRequalificationPlan": {
-    "status": "INDEPENDENT_REVIEW_REQUIRED_BEFORE_EXECUTION",
+    "status": "INDEPENDENT_SOURCE_AND_ISOLATION_PLAN_ACCEPTED_PREP_STILL_HELD",
     "purpose": "Separate new fixture qualification; preserve old UNKNOWN. No recovery or blind retry of old result.",
     "rootIsolation": "Fresh environmentId and GUID TMPDIR; each fixture constructs a new GUID own container/parent nonce and child-local tmp. No imported old root, checkpoint, live owner, save or real game operation.",
     "processIsolation": "Only newly started genuine child Process handles; independent parent/self PID+kernel starttick and nonce, exit73, new resume PID, join+EOF, strict containment. Retain owned container if termination/join/EOF unresolved; no old process query/kill.",
@@ -461,7 +468,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "One new named catalog ZERO after this correction push/readback, then separately gated whole/pending PlanOnly. No actual execution.",
+  "next": "Independent focused PREP of restored fresh ZERO3 carrier; only then separate named legacy3 actual, other UNRUN modes and crash5 retain separate progression gates.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -496,5 +503,103 @@
       "rawSha256": "0b8cde9713495345827596bbf1b8acfac3882d13eaab7ce2b11cc0802e59fcd9"
     },
     "scope": "Environment prerequisite only; no product/controller/fixture/assertion/catalog/source change. Original failed preparation remains immutable."
+  },
+  "sourceReview": {
+    "verdict": "ACCEPT_UNCHANGED_SOURCE_RETENTION37_EXACT_SELECTION_AND_SEPARATE_NEW_CRASH5_PLAN",
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-source-plan-review-20261018.md",
+        "sha256": "543856bf95942bf270da3fa2d31f4dc5e8f0e5e8776fbb8e37218021d787f6d6",
+        "bytes": 2603
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-source-plan-review-20261018.json",
+        "sha256": "41631dd68066a7106f1703add6c1665734217a2ba96ea7b573151aaa245aac67",
+        "bytes": 8337
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-source-check-20261018.json",
+        "sha256": "473548b98f1f4737847a7d31d0b99409d32e0e488fc4dabacfcfe69611276749",
+        "bytes": 8069
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-source-checker-20261018.py",
+        "sha256": "320e5baf0862d273009091a52891a352807af9193fc2a953e31854dd189981cb",
+        "bytes": 7878
+      }
+    ],
+    "findings": []
+  },
+  "freshPreparation": {
+    "status": "ZERO3_ORIGINAL_NATIVE_SUCCESS_INDEPENDENT_PREP_PENDING",
+    "actualSource": "6ab43f6add261d90628fc07d6aacf42dfbae0561",
+    "compiledSource": "6ab43f6add261d90628fc07d6aacf42dfbae0561",
+    "records": [
+      {
+        "mode": "catalog",
+        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-cloud-xdg-813f1057/record.json",
+        "sha256": "67f629deb5a6e2ce48086c0e4d47a3281ef0113d6847c4731f30ce1c0b7f1cb7",
+        "nativeExit": 0,
+        "seconds": 343.4147662790001,
+        "actualTestsExecuted": 0,
+        "resultDirectories": [
+          "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-094036-624-3501-b167d62e228b4805b1c3998254317e79-categories"
+        ]
+      },
+      {
+        "mode": "plan",
+        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-whole-plan-cloud-813f1057/record.json",
+        "sha256": "614457d4e636be2056ba8baa6d32032ba4d545e46277a8edb2c68055f968323e",
+        "nativeExit": 0,
+        "seconds": 26.61719420899999,
+        "actualTestsExecuted": 0,
+        "resultDirectories": [
+          "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-094653-749-4417-774551f4bc4841a584bb0f7217c38544-categories"
+        ]
+      },
+      {
+        "mode": "remaining-plan",
+        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-cloud-813f1057/record.json",
+        "sha256": "896e477b1dc543eb5d28969479b63cf009211450eb6aa49d244f1717b471e74a",
+        "nativeExit": 0,
+        "seconds": 15.637611821000064,
+        "actualTestsExecuted": 0,
+        "resultDirectories": [
+          "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-094723-498-4626-892658fd63784973bfa1a01f930b0a0d-categories"
+        ]
+      }
+    ],
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-preparation-813f1057-files-20261018/archive.json",
+      "sha256": "06abc6c48256844aafd5e4b9761c505f82aa3ae6b906c20378c7c9075b80081d",
+      "rawChains": 32
+    },
+    "catalog": {
+      "valid": true,
+      "categories": 808,
+      "methods": 11800,
+      "unmapped": [],
+      "staleSelectors": []
+    },
+    "whole": {
+      "descriptors": 16,
+      "methods": 33,
+      "cases": 57,
+      "executed": 0
+    },
+    "pending": {
+      "descriptors": 7,
+      "methods": 12,
+      "cases": 20,
+      "executed": 0
+    },
+    "binaryCopies": 9,
+    "completeOutputFiles": 1575,
+    "sourcePinCount": 98,
+    "sourcePinDigest": "1f11670a1e063bed010e2e03585fb6e8b5ad4da64157a5ce877317475d3c7bc4",
+    "cleanup": "No owned fixture roots/game processes before or after; native runner cleanup complete",
+    "limits": "Fresh environment preparation only; no actual case executed. Original failure remains separate. No old binary equality or new runtime evidence for retained37."
   }
 }

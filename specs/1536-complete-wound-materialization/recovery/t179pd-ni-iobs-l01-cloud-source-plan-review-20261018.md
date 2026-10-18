@@ -1,0 +1,13 @@
+# L01 new-cloud SOURCE and separate crash5 plan review
+
+**ACCEPT_UNCHANGED_SOURCE_RETENTION37_EXACT_SELECTION_AND_SEPARATE_NEW_CRASH5_PLAN.** No findings. Candidate `bb156d0d84d4f2911f356ad79205a3f2697c1cf9`; observed metadata descendant `6ab43f6add261d90628fc07d6aacf42dfbae0561`.
+
+All 98 pinned files match the accepted process SOURCE at c4c0c62f by bytes, SHA256, Git blob and mode. The entire non-spec tree is unchanged. Independently checked 100 saved gzip/raw chains and TRX identities: 37 distinct historical passing rows at original actual/compiled provenance, plus the immutable original two intake and five crash fixture failures. Whole selection remains 16 descriptors / 33 methods / 57 cases; pending remains 7 / 12 / 20. Six ordinary pending modes contain 15 cases; crash5 is separately named. These are source counts, not fresh discovery.
+
+The new crash plan is isolated at source: fresh GUID containers/nonce, child-only TMPDIR, newly spawned original/resume children, exact parent/child PID and kernel birth tick identity, exit73/join/EOF, containment and retention on unresolved cleanup. Fixture copies come from the repository template; services receive the disposable FileSystemManager. Full cut bytes, actual publication boundaries, current-owner DATA proof, exact I/result/binding, culture contrast, once-only mechanics and inert-repeat/held-byte assertions remain unchanged. No old root, live owner or user save is reused. Old corrected crash session66529 remains **UNKNOWN**, with original result bytes unavailable.
+
+**PREP and actual execution remain held.** The first new-cloud catalog failed before compilation/discovery with zero tests. The separate environment diagnosis permits one newly named catalog ZERO after saving a private0700 `XDG_RUNTIME_DIR` correction; it grants no PREP or actual acceptance. Fresh successful catalog, whole/pending PlanOnly, complete output bindings/cleanup, recovered evidence and independent PREP are still required. Full GitHub clean-restore readback remains a separate parent persistence gate. Every actual mode needs its own named release, with no retry or automatic advance.
+
+No full NI/HOT/F1/M3/T197/A3, Windows, CI or broader qualification follows. No repository edits, builds, tests, discovery or process interventions were performed.
+
+Detailed source/plan decision: `/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-cloud-source-plan-review-20261018.json`. Supporting check: `/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-cloud-source-check-20261018.json` (SHA256 `473548b98f1f4737847a7d31d0b99409d32e0e488fc4dabacfcfe69611276749`).

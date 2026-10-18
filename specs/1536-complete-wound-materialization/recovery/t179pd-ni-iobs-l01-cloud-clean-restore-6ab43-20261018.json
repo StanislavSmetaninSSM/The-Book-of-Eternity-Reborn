@@ -1,0 +1,22 @@
+{
+  "kind": "NEW_EMPTY_DIRECTORY_GITHUB_CLONE_CLEAN_RESTORE",
+  "sha": "6ab43f6add261d90628fc07d6aacf42dfbae0561",
+  "createdUtc": "2026-10-18T09:44:29.404845+00:00",
+  "directory": "/workspace/1536-cloud-clean-restore",
+  "method": "git clone --depth 1 --single-branch --branch 1536-wound-b2-cloud-20261012 --no-checkout FROM_GITHUB new_empty_directory; fetch current metadata ref FROM_GITHUB; checkout --detach exact6ab43f6a",
+  "localObjectOrSourceReuse": false,
+  "trackedPaths": 55747,
+  "tree": "34ee70ddba603757c03d1a43baacb6b790582986",
+  "clean": true,
+  "sourcePinsVerified": 98,
+  "sourcePinDigest": "1f11670a1e063bed010e2e03585fb6e8b5ad4da64157a5ce877317475d3c7bc4",
+  "mandatoryFiles": [
+    "AGENTS.md",
+    "docs/development-workflow.md",
+    "docs/testing.md",
+    ".specify/memory/constitution.md",
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-qualification-20261018.json"
+  ],
+  "limits": "Full source checkout recovery verified. No build or tests in restore directory. Does not recover old corrected crash5 or 33 historical /tmp receipts."
+}
