@@ -1,0 +1,194 @@
+{
+  "kind": "G01_PURE_POLICY_FIRST_GREEN_FAILURE_INDEPENDENT_DIAGNOSIS",
+  "candidate": "345f550644d443a09022c0afb88db1d9e3ec7775",
+  "actualSource": "17684f613fea24d9236105e43be0709001cc7744",
+  "verdict": "CONFIRMED_POLICY_TIMESTAMP_ORDER_DEFECT_ACCEPT_MINIMAL_RAW_COMPARISON_FIX_PLAN",
+  "scope": "Bounded original pure-policy failure diagnosis only, not whole SOURCE/PREP/game admission.",
+  "original": {
+    "compilerNative": 0,
+    "probeNative": 1,
+    "passed": 22,
+    "failed": 1,
+    "cases": 23,
+    "failedCase": "future_timestamp_cancels",
+    "observerErrors": [],
+    "durationSeconds": 3.9878980400026194,
+    "status": "HOLD_FIRST_OUTCOME",
+    "gameProcesses": 0,
+    "requests": 0
+  },
+  "diagnosis": {
+    "direct": "Receipt=T and now=T\u22121 must cancel. The original sole Require failure establishes that Step returned non-CANCELLED; no elapsed-call exception/compiler/observer failure was reported. The current sign guard runs only after GetElapsedTime converts the raw interval to TimeSpan/TotalSeconds.",
+    "sourceInference": "A one-Stopwatch-tick negative interval can quantize to TimeSpan zero before the sign check. This explains the observed future-timestamp acceptance. Original Frequency, converted residence and returned state were not emitted; no numerical runtime measurement is reconstructed.",
+    "defect": "Test-parent policy lacks an exact raw timestamp-order guard. This is not a production/game defect.",
+    "impact": "A future receipt can arm the policy. No game or diagnostic API was exercised."
+  },
+  "minimalCorrectionPlan": [
+    "Reject item.ReceivedTimestamp > now using the existing STALE_OR_UNKNOWN_LOCAL_RESIDENCE cancellation before GetElapsedTime. Preserve all23 existing PolicyProbe assertions, stale-duration check and unrelated branches.",
+    "This raw comparison suffices for the demonstrated failure independently of timer frequency. Nonpositive timestamp rejection is a separate input-contract choice, not required to explain this failure.",
+    "Preserve original RED and green directory/five files/hashes. Add only a new unused green-corrected phase; update mode success classification so its positive outcome is GREEN without overwriting or relabelling original green.",
+    "Save/recover the narrow correction before one source-bound directcompile/pure23-check run, retaining60s compiler/10s probe bounds and original native/observer accounting. Preserve the first corrected result for whole SOURCE.",
+    "Phase-uncertainty contract clarification remains separate. No game/collector/API release follows from this fix plan."
+  ],
+  "checks": {
+    "passed": 20,
+    "findings": [],
+    "rows": [
+      {
+        "name": "saved writer HEAD and clean independent clone exact",
+        "passed": true
+      },
+      {
+        "name": "tracked writer unchanged; untracked work excluded",
+        "passed": true
+      },
+      {
+        "name": "receipt exactremote186paths149pins no production change",
+        "passed": true
+      },
+      {
+        "name": "five-chain original record.json",
+        "passed": true
+      },
+      {
+        "name": "five-chain original compile.stdout",
+        "passed": true
+      },
+      {
+        "name": "five-chain original compile.stderr",
+        "passed": true
+      },
+      {
+        "name": "five-chain original probe.stdout",
+        "passed": true
+      },
+      {
+        "name": "five-chain original probe.stderr",
+        "passed": true
+      },
+      {
+        "name": "originalcompiler0 probe1 and observers empty",
+        "passed": true
+      },
+      {
+        "name": "original commands joined distinct owned identities",
+        "passed": true
+      },
+      {
+        "name": "sole exact future testFAIL in23cases",
+        "passed": true
+      },
+      {
+        "name": "pureprobe no game or request",
+        "passed": true
+      },
+      {
+        "name": "empty compiler/probe stderr and no compiler errors/warnings",
+        "passed": true
+      },
+      {
+        "name": "exact original source JointInterfaceDiagnosticDelivery.cs",
+        "passed": true
+      },
+      {
+        "name": "exact original source JointInterfaceManagedCapturePolicy.cs",
+        "passed": true
+      },
+      {
+        "name": "exact original source PolicyProbe.cs",
+        "passed": true
+      },
+      {
+        "name": "test raw nowTminus1 requires cancellation",
+        "passed": true
+      },
+      {
+        "name": "raw ordering currently not guarded beforeconversion",
+        "passed": true
+      },
+      {
+        "name": "original RED distinct and expected",
+        "passed": true
+      },
+      {
+        "name": "23assertionprobe unchanged from RED",
+        "passed": true
+      }
+    ]
+  },
+  "rawFiles": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/policy-first-green-failure.record.json",
+      "originalPath": "/tmp/g01-policy-check/green/record.json",
+      "bytes": 4063,
+      "sha256": "d694d324750ab779032d7829de1b18d4622286b875ab7156b95873f24ab01ef7"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/policy-first-green-failure.compile.stdout",
+      "originalPath": "/tmp/g01-policy-check/green/compile.stdout",
+      "bytes": 161,
+      "sha256": "edd64cf9d37a6f21e4b95d8d6ded4064f46192c4b340a290833d3ec2f56ed8d1"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/policy-first-green-failure.compile.stderr",
+      "originalPath": "/tmp/g01-policy-check/green/compile.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/policy-first-green-failure.probe.stdout",
+      "originalPath": "/tmp/g01-policy-check/green/probe.stdout",
+      "bytes": 1437,
+      "sha256": "f5d28dc2d7cfd11032ac5a4c56031203c8cb1c4ad5cc30c8788c0172e205eb8d"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/policy-first-green-failure.probe.stderr",
+      "originalPath": "/tmp/g01-policy-check/green/probe.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "sourceBindings": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/JointInterfaceManagedCapturePolicy.cs",
+      "bytes": 2723,
+      "sha256": "aa8fb84ad8c4ade00f8b7871aa211df90dd411920343a9d959ed53c785eaa609"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/PolicyProbe.cs",
+      "bytes": 4801,
+      "sha256": "b2405d34948fbb1868dc64661bdab1983aaa1b8fe0fccf147104d07a36bf0d68"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/policy-check.py",
+      "bytes": 3521,
+      "sha256": "d8d14a1d9210e4b21ec48b4ad66330b92e630b12f77d268005fb8f9a9667e0c4"
+    }
+  ],
+  "sourceReferences": {
+    "conversionLine": 33,
+    "signTestLine": 34,
+    "futureTestLine": 42
+  },
+  "recovery": {
+    "path": "/tmp/1536-cloud-tools/d01-carrier-recovery-345f5506.json",
+    "sha256": "6ffdbec6be2e2660584a3d453e2f4b03f67541b6ead4f6cd9f37331a143b7c3e",
+    "remoteVerified": true,
+    "independentCloneExactClean": true
+  },
+  "reviewMetadataLimit": {
+    "firstReadbackCheck": "A preliminary report-generation assertion expecting the entire writer tree clean failed after unrelated untracked MapFrames.cs appeared. No report/native result was produced by that failed readback.",
+    "observedUntracked": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/MapFrames.cs",
+    "resolution": "Report binds immutable saved345/current tracked bytes and clean independent clone. Untracked file is excluded and not inspected. The actual Policy/Probe evidence remains exact.",
+    "noNativeRetry": true
+  },
+  "nativeActionsByReviewer": 0,
+  "gameplayRelease": "NONE",
+  "collectorRelease": "NONE",
+  "crash5Release": "NONE",
+  "limits": [
+    "No SDK/test/procfs/process/API action by reviewer.",
+    "Not a whole-source acceptance of developing orchestration.",
+    "L0152/57, oldUNKNOWN, all production/assertions/budgets and broader holds preserved."
+  ]
+}

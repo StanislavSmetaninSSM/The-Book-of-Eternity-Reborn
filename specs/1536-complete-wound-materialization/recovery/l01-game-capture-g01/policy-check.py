@@ -13,7 +13,7 @@ REC = HERE.parent
 
 def main():
     mode, source = sys.argv[1:]
-    assert mode in ('red', 'green')
+    assert mode in ('red', 'green', 'green-corrected')
     assert subprocess.check_output(['git', '-C', str(REPO), 'rev-parse', 'HEAD'], text=True).strip() == source
     assert not subprocess.check_output(['git', '-C', str(REPO), 'status', '--porcelain'])
     packet = json.loads((REC / 'l01-delivery-d01-source-packet-20261018.json').read_text())
@@ -48,7 +48,7 @@ def main():
         record['results'] = json.loads((root / 'probe.stdout').read_text())
     except BaseException as e: record['observerErrors'].append(repr(e))
     record['durationSeconds'] = time.monotonic() - started
-    record['status'] = 'EXPECTED_UNIMPLEMENTED_RED' if mode == 'red' and record['nativeExit'] == 1 and not record['observerErrors'] else 'GREEN' if mode == 'green' and record['nativeExit'] == 0 and not record['observerErrors'] else 'HOLD_FIRST_OUTCOME'
+    record['status'] = 'EXPECTED_UNIMPLEMENTED_RED' if mode == 'red' and record['nativeExit'] == 1 and not record['observerErrors'] else 'GREEN' if mode in ('green', 'green-corrected') and record['nativeExit'] == 0 and not record['observerErrors'] else 'HOLD_FIRST_OUTCOME'
     return lib['FINALIZE'](record, lambda r: lib['write'](root/'record.json', r), summary)
 
 if __name__ == '__main__': sys.exit(main())

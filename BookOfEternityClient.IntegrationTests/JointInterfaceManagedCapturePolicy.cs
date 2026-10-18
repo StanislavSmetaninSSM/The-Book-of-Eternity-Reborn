@@ -30,6 +30,7 @@ internal sealed class JointInterfaceManagedCapturePolicy
         if (!Healthy(health)) return Cancel("STICKY_HEALTH_OR_TERMINAL");
         if (item is not null)
         {
+            if (item.ReceivedTimestamp > now) return Cancel("STALE_OR_UNKNOWN_LOCAL_RESIDENCE");
             var residence = Stopwatch.GetElapsedTime(item.ReceivedTimestamp, now).TotalSeconds;
             if (residence < 0 || residence > 1) return Cancel("STALE_OR_UNKNOWN_LOCAL_RESIDENCE");
         }
