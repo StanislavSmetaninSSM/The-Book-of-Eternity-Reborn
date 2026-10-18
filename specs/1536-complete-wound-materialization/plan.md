@@ -1,3 +1,15 @@
+## T148 M01 — PREP принят; отдельный FIRST actual release (2026-10-18)
+
+[Independent PREP ACCEPT](recovery/t148-m01-prep-independent-review-20261018.md)
+принимает exactedb63309, все69 checks; original raw16, compiled9eb672ea,
+93pins и899outputs проверены. После save/push/recovery допускается ровно один
+M01_FIRST_ACTUAL_20261018_EDB63309, NoBuild, unchanged10-minute descriptor budget,
+new actual namespace; exact catalog/plan record hashes записаны в source packet.
+Actual ещё UNRUN. Original outcome требуется сохранить/recover до independent
+EVIDENCE; native0 сам по себе не квалификация. Два новых CS1573 XML parameter
+warnings сохранены как неблокирующее замечание, без source edits/rebuild.
+Production, L01 provenance и все holds неизменны.
+
 ## T148 M01 — ZERO PREP originals saved; independent PREP pending (2026-10-18)
 
 Fresh source9eb672ea: catalog native0/400.443s, both projects built with errors0

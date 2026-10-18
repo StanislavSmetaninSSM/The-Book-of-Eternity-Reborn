@@ -108,7 +108,7 @@ fixture caches. No production change, new route, effect or carrier.
 - [x] Save/push/recover source WIP, then independent SOURCE review of real dataflow,
   default caller preservation, pre-sign seed, assertions, exact singleton selection
   and adequate cleanup/evidence. No actual test before this gate.
-- [ ] Fresh `pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog`:
+- [x] Fresh `pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog`:
   build/discovery/catalog only, no executed tests. Fresh source/binaries/tool hashes
   and raw output preserved. Then singleton
   `-Category saref-audit-mortal-heal-preservation -PlanOnly -NoBuild`:

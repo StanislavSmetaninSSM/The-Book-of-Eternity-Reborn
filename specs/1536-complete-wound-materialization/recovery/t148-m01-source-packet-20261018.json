@@ -542,7 +542,16 @@
       "scope": "One original ZERO phase; no native retry; actual requires separate PREP."
     },
     "actual": {
-      "status": "PREP_REVIEW_PENDING"
+      "status": "M01_PREP_ACCEPTED_FIRST_SINGLETON",
+      "prepCatalogRecordSha256": "4fc8812e59e9d6798ca8720f0485708c7aafe40aa872ddcdc7264534bbf970cb",
+      "prepPlanRecordSha256": "4e378d39c0a6f8961534a542b5d93fc960032ab8c6f12417141f884b981a5ebe",
+      "releaseName": "M01_FIRST_ACTUAL_20261018_EDB63309",
+      "reviewedPrep": "edb63309bf9abd430b61ab5b080c3b64e957be7f",
+      "compiledSource": "9eb672ea62870c6ff1890821d7d8745085616866",
+      "sourcePinDigest": "84503e9eb22c08940d328a4c8be34464684fc6f0947a00fb04d99ab1df9066d2",
+      "reviewPath": "specs/1536-complete-wound-materialization/recovery/t148-m01-prep-independent-review-20261018.json",
+      "reviewSha256": "15bf1bf3fb719ce1ac29dc71281155e36e633b386ce374e9350ff17b1e43623a",
+      "scope": "Exactly one first singleton actual, NoBuild, new actual namespace; freeze original before EVIDENCE; no retries."
     }
   },
   "sourcePinDigestEncoding": "SHA256 UTF8 json.dumps(sourcePins, sort_keys=True, separators=(comma,colon)), no newline"

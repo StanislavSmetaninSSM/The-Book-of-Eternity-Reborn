@@ -1,0 +1,120 @@
+{
+  "kind": "T148_M01_INDEPENDENT_PREPARATION_REVIEW",
+  "createdUtc": "2026-10-18T19:07:02.123358+00:00",
+  "reviewedCandidate": "edb63309bf9abd430b61ab5b080c3b64e957be7f",
+  "reviewedSource": "43c6c7b6504edb03e1b4a9a7d40c0ed6bdae9f7c",
+  "actualAndCompiledPreparationSource": "9eb672ea62870c6ff1890821d7d8745085616866",
+  "verdict": "ACCEPT_PREP_ELIGIBLE_FOR_SEPARATELY_RELEASED_FIRST_M01_SINGLETON",
+  "findings": [],
+  "evidence": {
+    "index": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-prep-evidence-20261018.json",
+      "sha256": "eec5a9282e568e607a5c1235608facf4ad74074ad2fb53b65783b5973f828946"
+    },
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-prep-originals-20261018.zip",
+      "sha256": "d19cfcaebd98492a034a36435d4aab24c429c0cc09f61bd25e72e47f841992ec",
+      "bytes": 697013,
+      "originalFiles": 16,
+      "verification": "Every ZIP entry length/SHA256/original bytes checked; exact coverage of both runner result directories; ZIP integrity and clean-clone/Git carrier bytes verified."
+    },
+    "catalog": {
+      "recordSha256": "4fc8812e59e9d6798ca8720f0485708c7aafe40aa872ddcdc7264534bbf970cb",
+      "nativeExit": 0,
+      "durationSeconds": 400.443333645002,
+      "categories": 810,
+      "methods": 11802,
+      "unmapped": 0,
+      "stale": 0,
+      "executed": 0
+    },
+    "plan": {
+      "recordSha256": "4e378d39c0a6f8961534a542b5d93fc960032ab8c6f12417141f884b981a5ebe",
+      "nativeExit": 0,
+      "durationSeconds": 18.475382741999056,
+      "descriptors": 1,
+      "methods": 1,
+      "cases": 1,
+      "executed": 0,
+      "method": "BookOfEternityClient.Tests.MortalWoundRecoveryTests.Publication_TerminalHealingPreservesExistingSarefMemorySuppressionAudit",
+      "category": "saref-audit-mortal-heal-preservation",
+      "categoryBudgetMinutes": 10
+    },
+    "builds": {
+      "integration": {
+        "warnings": 150,
+        "errors": 0,
+        "seconds": 311.3424076
+      },
+      "unit": {
+        "warnings": 37,
+        "errors": 0,
+        "seconds": 55.1511619
+      }
+    },
+    "inventories": {
+      "entries": 899,
+      "sha256": "7e2d42e725495496aed2b79de5b0e9be700b7d2777185848eef12ca67ea84a17",
+      "scope": "Complete unit and integration bin/Debug/net8.0 output sets. Catalog and NoBuild plan inventories identical; all current paths/bytes/hashes exact. No cross-build L01 qualification inferred."
+    },
+    "cleanup": "Both original summaries OwnedTreeCleanupSucceeded=true, RuntimeCleanupSucceeded=true; controller observerErrors and remainingOwnedFixtureRoots empty. This is owned-run cleanup evidence, not continuous global process census."
+  },
+  "nonblockingObservations": [
+    {
+      "id": "M01-PREP-DOC-WARNINGS",
+      "detail": "Two new CS1573 warnings for beforeCreation and isolatedSource XML param documentation; originals retain exact messages. Integration150/unit37 warnings, errors0. These documentation warnings do not invalidate compilation or singleton discovery. No source changes are authorized by this PREP review; any later source edit must follow affected SOURCE/PREP."
+    },
+    {
+      "id": "PLANONLY_ZERO_COUNTS",
+      "detail": "Plan summary Complete=false/underfilled descriptor is expected because PlanOnly executed0. Actual admission does not treat this as runtime completion. Its outer summary default15 minutes does not change the selected descriptor10-minute budget."
+    }
+  ],
+  "eligibility": {
+    "status": "M01_PREP_ACCEPTED_FIRST_SINGLETON",
+    "requiredAcceptanceSave": "Save/push/exact recovery of this independent PREP and actual admission before invocation; acceptance carrier may change metadata only, retaining accepted93 pins and all899 output bytes.",
+    "admissionFields": {
+      "status": "M01_PREP_ACCEPTED_FIRST_SINGLETON",
+      "prepCatalogRecordSha256": "4fc8812e59e9d6798ca8720f0485708c7aafe40aa872ddcdc7264534bbf970cb",
+      "prepPlanRecordSha256": "4e378d39c0a6f8961534a542b5d93fc960032ab8c6f12417141f884b981a5ebe"
+    },
+    "compiledSource": "9eb672ea62870c6ff1890821d7d8745085616866",
+    "sourcePinDigest": "84503e9eb22c08940d328a4c8be34464684fc6f0947a00fb04d99ab1df9066d2",
+    "category": "saref-audit-mortal-heal-preservation",
+    "method": "BookOfEternityClient.Tests.MortalWoundRecoveryTests.Publication_TerminalHealingPreservesExistingSarefMemorySuppressionAudit",
+    "expectedDescriptors": 1,
+    "expectedMethods": 1,
+    "expectedCases": 1,
+    "mode": "actual",
+    "runRoot": "/tmp/t148-m01-20261018-f2e982b1ee094858a91ace5fafe97c80",
+    "newActualPhaseRoot": "/tmp/t148-m01-20261018-f2e982b1ee094858a91ace5fafe97c80/actual",
+    "newFixtureTemp": "/tmp/t148-m01-20261018-f2e982b1ee094858a91ace5fafe97c80/actual/tmp",
+    "command": "Invoke the accepted versioned t148-m01-run-phase-20261018.py once with mode actual and the exact clean saved acceptance HEAD; it selects only this category with -NoBuild.",
+    "preflight": "Require unused actual phase identity, clean exact HEAD, unchanged93 pinned files, prior catalog/plan native0 and no observer errors, exact record hashes and current fresh inventory matching catalog. Do not reuse old L01 diagnostic namespaces.",
+    "afterward": "Preserve original native result, controller observations, complete TRX/descriptor/case counts, unchanged outputs and owned cleanup. Save/push/recover before independent EVIDENCE. A native0 alone is not M01 acceptance.",
+    "freeze": "Any failure, incomplete or changed evidence freezes originals. No automatic retry, assertion weakening, budget increase, crash5 run or broader selection."
+  },
+  "continuity": {
+    "sourcePins": 93,
+    "historicalL01": "99 original pins unchanged; exactly catalog/selection2 expected metadata exceptions; old ledgers/packet/outcomes byte-identical. Product23 and all production unchanged.",
+    "L01Qualification": "52/57 at original provenance only",
+    "old66529": "UNKNOWN/unavailable/recoveryClaim=false",
+    "E01_T148_Phase10_broaderHolds": "unchanged",
+    "M01RuntimeAtReview": "UNRUN; actual phase directory absent"
+  },
+  "recovery": {
+    "path": "/tmp/1536-cloud-tools/m01-carrier-recovery-edb63309.json",
+    "sha256": "2f6aa52d3883e387e262c47457626a84394e48198555adf07de0b1b173b9a2db",
+    "pathsVerified": 23,
+    "scope": "Existing exact remote/full clean independent clone receipt inspected plus exact carrier bytes/blob/mode readback; no new recovery executed."
+  },
+  "checks": {
+    "path": "/tmp/1536-cloud-tools/review/t148-m01-prep-static-edb63309-20261018.json",
+    "sha256": "a341a57613b9bc9d8856d05fb9eab1112f8bd670ceafbf4f9fddebeb5342da9b",
+    "passed": 69,
+    "findings": []
+  },
+  "limits": [
+    "Read-only review of original ZIP, source and current inventories. No tests/builds/discovery/runtime/observer/process actions or repository writes.",
+    "Acceptance covers PREP readiness only; no M01 semantic PASS, L01 completion or new effect capability is claimed."
+  ]
+}
