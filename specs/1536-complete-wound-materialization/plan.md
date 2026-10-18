@@ -1,3 +1,16 @@
+## L01 D01 — original non-live baseline gap observed and saved (2026-10-18)
+
+Actual/sourcec947bf92: installed csc compile native0; one isolated non-live .NET
+harness host returned expected native7. [Original evidence](recovery/l01-delivery-d01-baseline-evidence-20261018.json)
+retains exact commands/source/identity/outputs/ZIP. Old ReadToEndAsync received the
+custody-shaped first chunk while EOF was held but had no consumable event result;
+releasing EOF joined with exact decoded text. Host0.320s; native7 is preserved,
+not product RED or another L01 case. No fixture/worker subprocess, game assembly,
+Process.Start/attach/API, or helper implementation. Both compiler and host joined.
+Next finite step after this save/recovery: implement accepted bounded helper and
+diagnostic-only wiring, then independent SOURCE/fresh PREP before native child0/7.
+S01 not repeated; all52/57/UNKNOWN/gameplay/platform/broader holds unchanged.
+
 ## L01 D01 — non-live baseline source WIP, implementation not started (2026-10-18)
 
 Accepted PLAN/source9e5b2cb9 is saved/recovered. Added only source-bound in-memory
