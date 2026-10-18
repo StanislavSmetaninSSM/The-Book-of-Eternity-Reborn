@@ -1,8 +1,8 @@
 {
-  "kind": "NI_IOBS_L01_NATIVE_ONLY_FINITE_RAW_PROGRESS",
+  "kind": "NI_IOBS_L01_UNEXPECTED_FIRST_LIVE_OUTCOME_FROZEN_STOP",
   "sourceBase": "afb5a3bb6a2dd7e066946258cbf64334bf965048",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
-  "status": "CURRENT_OBSERVED22PASS_REMAINING35UNRUN_CONNECTED_FINAL_EVIDENCE_OPEN",
+  "status": "STOP_FIRST_LIVE_NATIVE1_6COMPLETE_4PASS2FAIL_CAUSE_UNQUALIFIED",
   "sourcePins": [
     {
       "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
@@ -951,17 +951,17 @@
       "sha256": "411b9d1ca4585c6ee66d3bbd9992a95b734cd5eb4da059f25faaa3b8762c5fd0",
       "bytes": 9552,
       "role": "Fixed separately named protectedLate2 and each finite actual subset; NoBuild, no auto advance/retry",
-      "status": "FIVE_FIRST_MODES_EXECUTED_NATIVE0_OBSERVED22PASS_OTHER9MODES_UNRUN"
+      "status": "SIX_FIRST_MODES_EXECUTED_LAST_LIVE_NATIVE1_4PASS2FAIL_STOP_ALL_OTHER8MODES_HELD"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-whole.py",
       "sha256": "bf6503ecb8b1006842e66313da7c72fc185b217e54cd44d4ff5a62b864c36c3f",
       "bytes": 2342,
       "role": "Read-only full original zero/actual process/source/ledger/sentinel/stdout/runner/TRX plus any unresolved retained child roots; no cleanup/classification",
-      "status": "READ_ONLY_SEVEN_INVOCATIONS_TWO_ZERO_AND_FIVE_ACTUAL_ARCHIVES_NO_TEST_EXECUTION"
+      "status": "READ_ONLY_EIGHT_INVOCATIONS_TWO_ZERO_AND_SIX_ORIGINAL_ACTUAL_ARCHIVES_NO_TEST_EXECUTION"
     }
   ],
-  "next": "Root exact concise cut raw/recovery readback then separately names live6. No source/build/retry or automatic advance.",
+  "next": "Root and independent reviewer inspect ONLY existing frozen live original raw to qualify cause after recovered saved checkpoint. No source/fix/build/retry/other actual;29current cases remain unrun/held.",
   "sourcePinBindingMeaning": "Active authored-source hashes including necessary new helper definitions, not compiled qualification. Old44/9DLL/preparation/first RED context is retained separately. Verification tools are frozen historical source and cannot be reused unchanged for current bindings.",
   "firstActual": {
     "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
@@ -1138,13 +1138,13 @@
   "runtime": {
     "currentProductCompiled": true,
     "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
-    "currentProductActualCases": 22,
+    "currentProductActualCases": 28,
     "currentProductDiscovery": "807CATALOG_11800METHODS_15SELECTED_33METHODS_57PLANNED_ZEROEXECUTED",
-    "scope": "Five distinct FIRST modes on compiled45cc. High-level spec/plan/task text is the prior saved19PASS milestone/ongoing scope, not current counts; exact native progress is this runtime/actualScopes index until final EVIDENCE reconciliation. No original preproduct RED or duplicate TRX transport is double-counted.",
-    "currentActualStatus": "FIVE_FIRST_MODES_OBSERVED22PASS_OTHER35CASES_UNRUN_CONNECTED_FINAL_EVIDENCE_OPEN",
-    "nextEligibleScope": "live6 only after separately named Root raw carrier readback",
-    "currentProductObservedPassed": 22,
-    "currentProductObservedFailed": 0
+    "scope": "Six distinct FIRST modes on compiled45cc: prior22observedPASS plus live6=4PASS2FAIL. All native outcomes preserved; whole independent EVIDENCE/implementation acceptance remains open. No failed case rerun, no successful case replay or source change. High-level docs remain prior ongoing saved milestones; this exact runtime/actualScopes index records current STOP.",
+    "currentActualStatus": "STOP_UNEXPECTED_LIVE_FIRST_4PASS2FAIL_CAUSE_UNQUALIFIED_OTHER29CASES_HELD",
+    "nextEligibleScope": "NONE_UNTIL_ORIGINAL_UNEXPECTED_CAUSE_EVIDENCE_AND_ROOT_RULING",
+    "currentProductObservedPassed": 26,
+    "currentProductObservedFailed": 2
   },
   "currentImplementation": {
     "sourceBase": "afb5a3bb6a2dd7e066946258cbf64334bf965048",
@@ -9574,7 +9574,48 @@
       },
       "processesAfter": [],
       "evidence": "FIRST_NATIVE3PASS_ROOT_RAW_READBACK_COMPLETE_CONNECTED_FINAL_EVIDENCE_OPEN",
-      "activation": "Root separately named cut3 exactf5dc/compiled45cc by literal message; no automatic next mode or standalone activation file claimed."
+      "activation": "Root separately named cut3 exactf5dc/compiled45cc by literal message; no automatic next mode or standalone activation file claimed.",
+      "connectedCheck": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-connected-cut-check-f5dc4aff-20261018.json",
+        "sha256": "7360c781d99e8640ef2949c4533f16d6eba7c02392e22bbe254d3f4e7e608131"
+      }
+    },
+    "live6": {
+      "actualSource": "91a533d61e93ee043622763cd709b708dbc89dd3",
+      "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+      "nativeExit": 1,
+      "seconds": 210.71721310300927,
+      "tests": {
+        "Total": 6,
+        "Executed": 6,
+        "Passed": 4,
+        "Failed": 2
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 6,
+        "CompletedCases": 6,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "recordPath": "/tmp/t179pd-ni-iobs-l01-whole-implementation-tools/t179pd-ni-iobs-l01-whole-first-live-current/record.json",
+      "recordSha256": "449e305fa44d9d8f60684556f5e359a2bcf755e11c3cf2bda261be59d4a72b74",
+      "archive": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-live-files-20261018/archive.json",
+        "sha256": "c1257d7c095d5407283accb7e9eabd35ef2ccf6b8577b7b291a84f1e8f87e2af",
+        "rawChains": 11
+      },
+      "nineBinariesUnchanged": true,
+      "all1575OutputFilesUnchanged": true,
+      "namespaceAfter": {
+        "ownedRoots": []
+      },
+      "processesAfter": [],
+      "evidence": "UNEXPECTED_FIRST_OUTCOME_FROZEN_CAUSE_UNQUALIFIED_ALL_DEPENDENTS_STOPPED",
+      "rootReadback": "PENDING_INDEPENDENT_READONLY_ORIGINAL_RAW_REVIEW_AFTER_SAVED_CARRIER",
+      "activation": "Root separately named live6 exact91a5/compiled45cc by literal message; no other mode or retry occurred.",
+      "limits": "Original native1/executed6/PASS4/FAIL2 is retained without attributing product versus fixture cause. No whole or new live semantic acceptance. Raw TRX preserves exact failures/stack and passed-case observations; no fix/source edit/retry before cause/evidence."
     }
   }
 }
