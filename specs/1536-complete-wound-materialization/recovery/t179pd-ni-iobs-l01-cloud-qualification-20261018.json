@@ -1,7 +1,7 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "MINIMAL_DIAGNOSTIC_SOURCE_CANDIDATE_INDEPENDENT_SOURCE_AND_FRESH_PREP_PENDING",
-  "sourceCheckpoint": "Diagnostic-preservation candidate based on5687e0e6; WIP SHA assigned after commit",
+  "status": "CORRECTION_SOURCE_ACCEPTED_NAMED_ZERO4_RELEASED_ACTUAL_HELD",
+  "sourceCheckpoint": "a0da72f2c21fca66193314954cfdf87992752876",
   "sourcePinDigest": "b29c971342ee772b13cd123a954d7afa8937e1f50a7e5f4c4c14403e4de4c347",
   "sourcePinCount": 98,
   "environment": {
@@ -448,13 +448,13 @@
     }
   ],
   "crashRequalificationPlan": {
-    "status": "SOURCE_ISOLATION_PLAN_AND_FRESH_PREP_ACCEPTED_NEW_CRASH5_STILL_SEPARATELY_GATED",
+    "status": "SOURCE_ISOLATION_PLAN_ACCEPTED_CORRECTED_SOURCE_FRESH_PREP_REQUIRED",
     "purpose": "Separate new fixture qualification; preserve old UNKNOWN. No recovery or blind retry of old result.",
     "rootIsolation": "Fresh environmentId and GUID TMPDIR; each fixture constructs a new GUID own container/parent nonce and child-local tmp. No imported old root, checkpoint, live owner, save or real game operation.",
     "processIsolation": "Only newly started genuine child Process handles; independent parent/self PID+kernel starttick and nonce, exit73, new resume PID, join+EOF, strict containment. Retain owned container if termination/join/EOF unresolved; no old process query/kill.",
     "stateIsolation": "Read immutable repository templates into independent writable fixture roots; existing installed production route/strong assertions unchanged. Reviewer must reject if shared mutable/external state or duplicate real operation is possible.",
     "assertions": "Retain exact cut bytes before identity checks, FIRST2/Prepared/I-member/Published/ErrorPrepared boundaries, exact I/result/binding/Ready/once-only mechanics, culture contrast, current child3/common/take/late/cold DATA proofs and complete cleanup.",
-    "gates": "Fresh catalog/build, whole57 and pending20 PlanOnly, recovered independent SOURCE/PREP and isolation-plan acceptance; named crash5 on new run identity only. Any unexpected failure freezes execution and requires independent diagnosis."
+    "gates": "Fresh corrected BOTH/catalog, whole16/33/57, corrective1/2/2, remaining5/7/15 ZERO, saved recovery and independent PREP acceptance, then separate named crash5 release. Old UNKNOWN remains UNKNOWN; unexpected failure freezes actuals."
   },
   "actuals": {
     "legacy3": {
@@ -584,7 +584,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Push/readback/clean GitHub recovery, independent SOURCE on minimal patch/bindings/tools/exact selection/retention40, then named ZERO4 fresh PREP; no actual before independent PREP acceptance.",
+  "next": "After exactremote/clean GitHub recovery, only four separately named ZERO phases below may run on saved acceptance SHA; fresh independent PREP before any actual.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -646,7 +646,8 @@
         "bytes": 7878
       }
     ],
-    "findings": []
+    "findings": [],
+    "phase": "HISTORICAL_PRE_DIAGNOSTIC_CORRECTION_SOURCE_ACCEPTANCE_INELIGIBLE_FOR_CORRECTED_ACTUALS"
   },
   "freshPreparation": {
     "status": "ACCEPTED_INDEPENDENT_AND_PARENT_NEW_CLOUD_ZERO3",
@@ -755,7 +756,8 @@
       },
       "buildErrors": 0,
       "limits": "Remaining-plan immediate cmdline snapshot empty; recorded launch argv/PID/kernel identity/runner-owned result dir bind it. Cleanup excludes ordinary compiler/runtime scratch."
-    }
+    },
+    "phase": "HISTORICAL_COMPILED_6AB43F6A_ZERO3_PRE_CORRECTION_INELIGIBLE_FOR_CORRECTED_ACTUALS"
   },
   "release": {
     "status": "NONE_ACTUAL_HELD_PENDING_CORRECTION_SOURCE_AND_FRESH_PREP",
@@ -784,7 +786,7 @@
   },
   "historicalSourceCheckpointBeforeDiagnosticCorrection": "2e0463ff3b5e52510e86f1c8b53bd714923e156d",
   "diagnosticCorrection": {
-    "status": "WRITTEN_UNCOMPILED_SOURCE_REVIEW_PENDING",
+    "status": "INDEPENDENT_SOURCE_ACCEPTED_UNCOMPILED_FRESH_ZERO4_REQUIRED",
     "causalReview": [
       {
         "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-causal-review-20261018.json",
@@ -809,8 +811,8 @@
     ],
     "sourcePacket": {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
-      "sha256": "66f5bdb8b609758bbc76e8f0c7caae127114b3ecf0fde4a48678234cf0d21163",
-      "bytes": 43847
+      "sha256": "1456b08e2596eb9328fa8179dfaccaa0a93d27fd4bf2e6d9b1d779389a21fe96",
+      "bytes": 46004
     },
     "scope": {
       "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
@@ -833,6 +835,61 @@
       "methods": 7,
       "cases": 15
     },
-    "freshPreparation": "REQUIRED_ZERO4_BEFORE_ANY_ACTUAL"
+    "freshPreparation": "REQUIRED_ZERO4_BEFORE_ANY_ACTUAL",
+    "sourceReview": {
+      "verdict": "ACCEPT_MINIMAL_CLOSE_DIAGNOSTIC_SOURCE_AND_NAMED_ZERO4_PLAN",
+      "model": "gpt-6-astra",
+      "reasoningEffort": "xhigh",
+      "candidate": "a0da72f2c21fca66193314954cfdf87992752876",
+      "findings": [],
+      "artifacts": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-close-diagnostic-source-independent-review-a0da72f2-20261018.json",
+          "sha256": "4846e2b8d419a9173518e71e77e705edc7f42a0dc5f980c3e814036b56a0e7b4",
+          "bytes": 12985
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-close-diagnostic-source-independent-review-a0da72f2-20261018.md",
+          "sha256": "bc7b903bd6f6be9ac8ffc66cc0ac54a7d8a9f0d1f2231993be6764ee97722547",
+          "bytes": 3279
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-close-diagnostic-source-independent-check-a0da72f2-20261018.json",
+          "sha256": "e7eeed46f9de087769dd3e1e8d0b6be725643249547444a0a553bd39d473482b",
+          "bytes": 16613
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-close-diagnostic-source-checker-a0da72f2-20261018.py",
+          "sha256": "8895da12887210ebf6759c6889c46ee9abd60b13f66f8a0e1b51e68170ac4384",
+          "bytes": 16577
+        }
+      ]
+    },
+    "sourceCarrierRecovery": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-close-diagnostic-source-recovery-a0da72f2-20261018.json",
+      "sha256": "464634c1d0382f5c5ae59b5c44ef691e383e8e640d2d2bbd78fee4655f9575b6",
+      "bytes": 4682
+    },
+    "parentSourceCheck": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-close-diagnostic-parent-source-check-a0da72f2-20261018.json",
+      "sha256": "cba45863cc13d5f97a69722b1060dbf30de241a92f0d3500acd624ecc1c3e0ff",
+      "bytes": 2109
+    },
+    "namedZeroRelease": {
+      "labels": {
+        "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-diag-cloud-813f1057",
+        "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-diag-cloud-813f1057",
+        "corrective-plan": "t179pd-ni-iobs-l01-process-prep-first-corrective-plan-diag-cloud-813f1057",
+        "remaining-plan": "t179pd-ni-iobs-l01-process-prep-first-remaining-plan-diag-cloud-813f1057"
+      },
+      "order": [
+        "catalog",
+        "plan",
+        "corrective-plan",
+        "remaining-plan"
+      ],
+      "conditions": "Separate explicit controller invocations only. Each prior original native0/ZERO plus inventory/namespace/process checks must pass before next. Failure freezes without retry/advance. catalog fresh BOTH build; plans depend on exact catalog record/source/9DLL/fulloutput continuity.",
+      "actualRelease": false
+    }
   }
 }

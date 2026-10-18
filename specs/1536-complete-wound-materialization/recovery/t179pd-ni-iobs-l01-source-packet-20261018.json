@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_CLOSE_DIAGNOSTIC_CORRECTION_SOURCE_CANDIDATE",
-  "status": "INDEPENDENT_DIAGNOSIS_ACCEPTED_MINIMAL_SOURCE_WRITTEN_SOURCE_PREP_PENDING",
+  "status": "INDEPENDENT_SOURCE_ACCEPTED_FRESH_ZERO4_REQUIRED_ACTUAL_HELD",
   "sourceBase": "5687e0e603509b01070d4e999ebb6e0c58d4d9df",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
   "sourcePins": [
@@ -795,7 +795,7 @@
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-method-row-ledger-20261018.json",
     "sha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
     "phase": "CURRENT_PROCESS_FIXTURE_BUILD_ENTRY_SOURCE_INVENTORY_HASH_UNCHANGED_FROM_C4C0_AUTHORING",
-    "currentRuntimePointer": "sourceAcceptance is current process SOURCE; preparationRequired/runtime/currentActualScopes bind current uncompiled phase. Ledger authored-status text is its fixed pre-PREP source-inventory snapshot; prior45cc/4c6d contexts are historical."
+    "currentRuntimePointer": "Fixed authored method inventory only; currentVerificationContract/next and cloud diagnosticCorrection define current corrected SOURCE/fresh PREP gates. Historical ledger status is not current runtime acceptance."
   },
   "productDelta": [
     "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
@@ -892,5 +892,50 @@
   },
   "gmDisposition": "Diagnostic-only preservation of existing exception when protective hold replaces control flow. No GM-authored contract, prompt/schema/example/daemon/manifest or guidance behavior change; existing documentation remains exact.",
   "oldCorrectedCrash": "Old environment session66529 UNKNOWN; original bytes unavailable. New qualification distinct and isolated, only disposable fixtures/genuine new children; no old environment/process interaction.",
-  "next": "Push/readback/clean GitHub recovery, independent SOURCE on minimal patch/bindings/tools/exact selection/retention40, then named ZERO4 fresh PREP; no actual before independent PREP acceptance."
+  "next": "After exactremote/clean GitHub recovery, only four separately named ZERO phases below may run on saved acceptance SHA; fresh independent PREP before any actual.",
+  "sourceReview": {
+    "verdict": "ACCEPT_MINIMAL_CLOSE_DIAGNOSTIC_SOURCE_AND_NAMED_ZERO4_PLAN",
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "candidate": "a0da72f2c21fca66193314954cfdf87992752876",
+    "findings": [],
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-close-diagnostic-source-independent-review-a0da72f2-20261018.json",
+        "sha256": "4846e2b8d419a9173518e71e77e705edc7f42a0dc5f980c3e814036b56a0e7b4",
+        "bytes": 12985
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-close-diagnostic-source-independent-review-a0da72f2-20261018.md",
+        "sha256": "bc7b903bd6f6be9ac8ffc66cc0ac54a7d8a9f0d1f2231993be6764ee97722547",
+        "bytes": 3279
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-close-diagnostic-source-independent-check-a0da72f2-20261018.json",
+        "sha256": "e7eeed46f9de087769dd3e1e8d0b6be725643249547444a0a553bd39d473482b",
+        "bytes": 16613
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-close-diagnostic-source-checker-a0da72f2-20261018.py",
+        "sha256": "8895da12887210ebf6759c6889c46ee9abd60b13f66f8a0e1b51e68170ac4384",
+        "bytes": 16577
+      }
+    ]
+  },
+  "namedZeroRelease": {
+    "labels": {
+      "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-diag-cloud-813f1057",
+      "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-diag-cloud-813f1057",
+      "corrective-plan": "t179pd-ni-iobs-l01-process-prep-first-corrective-plan-diag-cloud-813f1057",
+      "remaining-plan": "t179pd-ni-iobs-l01-process-prep-first-remaining-plan-diag-cloud-813f1057"
+    },
+    "order": [
+      "catalog",
+      "plan",
+      "corrective-plan",
+      "remaining-plan"
+    ],
+    "conditions": "Separate explicit controller invocations only. Each prior original native0/ZERO plus inventory/namespace/process checks must pass before next. Failure freezes without retry/advance. catalog fresh BOTH build; plans depend on exact catalog record/source/9DLL/fulloutput continuity.",
+    "actualRelease": false
+  }
 }
