@@ -1,3 +1,10 @@
+## L01 B01 — build tooling/environment diagnosis (2026-10-18)
+
+- [x] Preserve old124 and collect read-only resource/tool/process/project graph observations; no resource-cause claim.
+- [ ] Independent diagnosis + review of [one isolated unit build plan](design/l01-build-tooling-unit-diagnostic-plan-20261018.md) and single-purpose observer, then saved/recovered build-only admission.
+- [ ] One justified build-only operation with ordinary600s bound/private outputs/normal logs/process observations; preserve new outcome separately, no gameplay/synthetic.
+- [ ] Independent EVIDENCE and durable checkpoint; old catalog/PREP/game gates remain unchanged.
+
 ## L01 D01 — parent-owned live diagnostic delivery (2026-10-18)
 
 - [x] [Independent PLAN](design/l01-live-delivery-plan-20261018.md) and test-only helper/wiring SOURCE accepted4810d2ad:711static checks, retained original helper20PASS; native/identity/order and explicit loss/delay/stale/unknown semantics reviewed.

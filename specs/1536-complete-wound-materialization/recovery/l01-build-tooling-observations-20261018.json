@@ -1,0 +1,448 @@
+{
+  "kind": "L01_B01_BUILD_TOOLING_READONLY_DIAGNOSIS",
+  "base": "be99971f7fcce34aeca46d85f5b4a3a893ccc147",
+  "task": 1536,
+  "status": "INDEPENDENT_DIAGNOSIS_AND_BUILD_ONLY_PLAN_REVIEW_PENDING",
+  "originalFailure": {
+    "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-first-prep-failure-20261018.json",
+    "sha256": "ea02dbddfa33802c4e3f270f41ead889aaadc9e7313a9a8a9411a2bdd7d535d8",
+    "nativeExit": 124,
+    "integrationBuildSeconds": 520.5722769,
+    "integrationDiscoveryNativeExit": 0,
+    "unitBuildSeconds": 72.2731552,
+    "unitBuildNativeExit": 137,
+    "unitBuildComplete": false,
+    "globalDeadlineSeconds": 600,
+    "perProjectCscTimes": "UNAVAILABLE_IN_ORIGINAL_MINIMAL_LOG"
+  },
+  "environmentSnapshot": {
+    "utc": "2026-10-18T21:31:20Z",
+    "cpuCount": 5,
+    "affinity": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "loadAverage": [
+      0.16064453125,
+      1.01123046875,
+      2.107421875
+    ],
+    "diskFree": {
+      "total": 33770192896,
+      "used": 23277441024,
+      "free": 8757989376
+    },
+    "tmpDiskFree": {
+      "total": 9466109952,
+      "used": 1646510080,
+      "free": 7819599872
+    },
+    "memory": {
+      "MemTotal": "18488496 kB",
+      "MemFree": "7469912 kB",
+      "MemAvailable": "15973688 kB",
+      "SwapTotal": "0 kB",
+      "SwapFree": "0 kB",
+      "Dirty": "196 kB",
+      "Writeback": "0 kB"
+    },
+    "selfCgroup": [
+      "0::/"
+    ],
+    "limits": {
+      "RLIMIT_AS": [
+        -1,
+        -1
+      ],
+      "RLIMIT_CPU": [
+        -1,
+        -1
+      ],
+      "RLIMIT_DATA": [
+        -1,
+        -1
+      ],
+      "RLIMIT_NOFILE": [
+        16384,
+        16384
+      ],
+      "RLIMIT_NPROC": [
+        72144,
+        72144
+      ]
+    },
+    "cgroup": {
+      "cpu.max": "400000 100000",
+      "cpu.stat": "usage_usec 28901162699\nuser_usec 24422254145\nsystem_usec 4478908554\nnice_usec 0\nnr_periods 212846\nnr_throttled 32328\nthrottled_usec 3241624166\nnr_bursts 0\nburst_usec 0",
+      "cpuset.cpus.effective": "0-4",
+      "memory.max": "17179869184",
+      "memory.current": "10771333120",
+      "memory.peak": "17180217344",
+      "memory.events": "low 0\nhigh 0\nmax 6638\noom 0\noom_kill 0\noom_group_kill 0",
+      "memory.swap.max": "max",
+      "pids.max": "max",
+      "pids.current": "300",
+      "cpu.pressure": "FileNotFoundError",
+      "memory.pressure": "FileNotFoundError",
+      "io.pressure": "FileNotFoundError"
+    }
+  },
+  "processSnapshot": {
+    "kind": "D01_BUILD_TOOL_PROCESS_STATE_READONLY",
+    "utc": "2026-10-18T21:32:16Z",
+    "toolStateCounts": [
+      {
+        "command": "dotnet",
+        "state": "Z",
+        "count": 35
+      }
+    ],
+    "liveTools": [],
+    "readErrors": {},
+    "priorRootPidPresence": {
+      "97377": false,
+      "97402": false
+    },
+    "cgroup": {
+      "memory.stat": "anon 53989376\nfile 9886617600\nkernel 805093376\nkernel_stack 573440\npagetables 2113536\nsec_pagetables 0\npercpu 14476\nsock 0\nvmalloc 4096\nshmem 1646501888\nfile_mapped 24576\nfile_dirty 53248\nfile_writeback 0\nswapcached 0\nanon_thp 0\nfile_thp 18874368\nshmem_thp 0\ninactive_anon 94539776\nactive_anon 1605914624\ninactive_file 5897355264\nactive_file 2342768640\nunevictable 0\nslab_reclaimable 788887336\nslab_unreclaimable 13475344\nslab 802362680\nworkingset_refault_anon 0\nworkingset_refault_file 3393762\nworkingset_activate_anon 0\nworkingset_activate_file 2099694\nworkingset_restore_anon 0\nworkingset_restore_file 5222\nworkingset_nodereclaim 0\npgdemote_kswapd 0\npgdemote_direct 0\npgdemote_khugepaged 0\npgdemote_proactive 0\npgscan 286462\npgsteal 233553\npswpin 0\npswpout 0\npgscan_kswapd 0\npgscan_direct 286462\npgscan_khugepaged 0\npgscan_proactive 0\npgsteal_kswapd 0\npgsteal_direct 233553\npgsteal_khugepaged 0\npgsteal_proactive 0\npgfault 112933580\npgmajfault 7718\npgrefill 27076\npgactivate 222112899\npgdeactivate 27076\npglazyfree 3\npglazyfreed 0\nswpin_zero 0\nswpout_zero 0\nthp_fault_alloc 0\nthp_collapse_alloc 0\nthp_swpout 0\nthp_swpout_fallback 0",
+      "memory.events": "low 0\nhigh 0\nmax 6638\noom 0\noom_kill 0\noom_group_kill 0",
+      "cpu.stat": "usage_usec 28904541025\nuser_usec 24422653717\nsystem_usec 4481887308\nnice_usec 0\nnr_periods 212946\nnr_throttled 32330\nthrottled_usec 3241633474\nnr_bursts 0\nburst_usec 0",
+      "cpu.max": "400000 100000",
+      "memory.current": "10746757120"
+    },
+    "limits": "Zombie state means exited/no executing code, not proof of original tree membership or parent reaping. No signal or process mutation."
+  },
+  "projectGraphs": {
+    "kind": "D01_BUILD_RESTORE_GRAPH",
+    "graphs": [
+      {
+        "root": "BookOfEternityClient.IntegrationTests",
+        "dgspecPath": "BookOfEternityClient.IntegrationTests/obj/BookOfEternityClient.IntegrationTests.csproj.nuget.dgspec.json",
+        "dgspecSha256": "84a7cce05f356788b2bb66f8e97523320a0362018ba481f5edce4ce31c09ac6a",
+        "nodes": [
+          {
+            "path": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+            "projectSha256": "cdda61b515137ff8c75cc6b6eab8a58a66af2446a0f339538603fd81500a51f6",
+            "frameworks": [
+              "net8.0"
+            ],
+            "projectReferences": [
+              "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj",
+              "BookOfEternityClient/BookOfEternityClient.csproj"
+            ],
+            "localCsFiles": 642,
+            "localCsBytes": 21948224
+          },
+          {
+            "path": "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj",
+            "projectSha256": "472a2d743d0bb89a2585ca22c90fd5bce33ba92edc02e0a98634ae094bf2972f",
+            "frameworks": [
+              "net8.0"
+            ],
+            "projectReferences": [
+              "BookOfEternityClient/BookOfEternityClient.csproj"
+            ],
+            "localCsFiles": 98,
+            "localCsBytes": 1133409
+          },
+          {
+            "path": "BookOfEternityClient/BookOfEternityClient.csproj",
+            "projectSha256": "b1bafa2fffd26263bc821cd668f20d199a2d08a1a6ed1a4f32c69b95a893d59e",
+            "frameworks": [
+              "net8.0"
+            ],
+            "projectReferences": [],
+            "localCsFiles": 941,
+            "localCsBytes": 30046655
+          }
+        ],
+        "limits": "Graph is latest successful restore evaluation. Local C# counts exclude bin/obj and are not the final Csc Compile item list; linked items are described by project XML."
+      },
+      {
+        "root": "BookOfEternityClient.Tests",
+        "dgspecPath": "BookOfEternityClient.Tests/obj/BookOfEternityClient.Tests.csproj.nuget.dgspec.json",
+        "dgspecSha256": "f243bb8c1511dbb4ecb0be75d75736abc01dd31c7bb06f501c34e579e53c298d",
+        "nodes": [
+          {
+            "path": "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj",
+            "projectSha256": "472a2d743d0bb89a2585ca22c90fd5bce33ba92edc02e0a98634ae094bf2972f",
+            "frameworks": [
+              "net8.0"
+            ],
+            "projectReferences": [
+              "BookOfEternityClient/BookOfEternityClient.csproj"
+            ],
+            "localCsFiles": 98,
+            "localCsBytes": 1133409
+          },
+          {
+            "path": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+            "projectSha256": "7fdfb57115042c44afaed4258ff39dc970a3a2f13860c575febf0cbd36edbcb0",
+            "frameworks": [
+              "net8.0"
+            ],
+            "projectReferences": [
+              "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj",
+              "BookOfEternityClient/BookOfEternityClient.csproj",
+              "tests/fixtures/PortableStorageCrashHost/PortableStorageCrashHost.csproj"
+            ],
+            "localCsFiles": 550,
+            "localCsBytes": 9995813
+          },
+          {
+            "path": "BookOfEternityClient/BookOfEternityClient.csproj",
+            "projectSha256": "b1bafa2fffd26263bc821cd668f20d199a2d08a1a6ed1a4f32c69b95a893d59e",
+            "frameworks": [
+              "net8.0"
+            ],
+            "projectReferences": [],
+            "localCsFiles": 941,
+            "localCsBytes": 30046655
+          },
+          {
+            "path": "tests/fixtures/PortableStorageCrashHost/PortableStorageCrashHost.csproj",
+            "projectSha256": "1854f0e63e4a4fd67f1da767bc6bbd04c0e41528703e6d2a23256c55142e8ede",
+            "frameworks": [
+              "net8.0"
+            ],
+            "projectReferences": [
+              "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj"
+            ],
+            "localCsFiles": 1,
+            "localCsBytes": 2226
+          }
+        ],
+        "limits": "Graph is latest successful restore evaluation. Local C# counts exclude bin/obj and are not the final Csc Compile item list; linked items are described by project XML."
+      }
+    ],
+    "unitBuildProjectReferenceClosure": [
+      {
+        "path": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+        "references": [
+          "BookOfEternityClient/BookOfEternityClient.csproj",
+          "BookOfEternityGMBridge/BookOfEternityGMBridge.csproj",
+          "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj",
+          "tests/fixtures/PortableStorageCrashHost/PortableStorageCrashHost.csproj"
+        ]
+      },
+      {
+        "path": "BookOfEternityClient/BookOfEternityClient.csproj",
+        "references": []
+      },
+      {
+        "path": "BookOfEternityGMBridge/BookOfEternityGMBridge.csproj",
+        "references": [
+          "BookOfEternityClient/BookOfEternityClient.csproj"
+        ]
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj",
+        "references": [
+          "BookOfEternityClient/BookOfEternityClient.csproj"
+        ]
+      },
+      {
+        "path": "tests/fixtures/PortableStorageCrashHost/PortableStorageCrashHost.csproj",
+        "references": [
+          "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj"
+        ]
+      }
+    ],
+    "unitBuildVersusRestoreNote": "Build closure has5 projects. Restore dgspec has4: GMBridge ReferenceOutputAssembly=false/SkipGetTargetFrameworkProperties=true omits it from restore graph, but original build log and evaluated ProjectReference include it."
+  },
+  "compilerConfiguration": {
+    "sdk": "10.0.402",
+    "compilerRuntime": "net10.0/10.0.13",
+    "targetFramework": "net8.0",
+    "compilerServerGc": true,
+    "propertyEvaluation": {
+      "Properties": {
+        "UseSharedCompilation": "",
+        "BuildInParallel": "true",
+        "TargetFramework": "net8.0",
+        "BaseIntermediateOutputPath": "obj\\",
+        "OutputPath": "bin\\Debug/net8.0/",
+        "MSBuildNodeCount": "1"
+      },
+      "Items": {
+        "ProjectReference": [
+          {
+            "Identity": "../BookOfEternityClient/BookOfEternityClient.csproj",
+            "Targets": "",
+            "OutputItemType": "",
+            "ReferenceSourceTarget": "ProjectReference",
+            "FullPath": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/BookOfEternityClient.csproj",
+            "RootDir": "/",
+            "Filename": "BookOfEternityClient",
+            "Extension": ".csproj",
+            "RelativeDir": "../BookOfEternityClient/",
+            "Directory": "workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/",
+            "RecursiveDir": "",
+            "ModifiedTime": "",
+            "CreatedTime": "",
+            "AccessedTime": "",
+            "DefiningProjectFullPath": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+            "DefiningProjectDirectory": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/",
+            "DefiningProjectName": "BookOfEternityClient.Tests",
+            "DefiningProjectExtension": ".csproj"
+          },
+          {
+            "Identity": "../BookOfEternityGMBridge/BookOfEternityGMBridge.csproj",
+            "Targets": "",
+            "OutputItemType": "",
+            "ReferenceSourceTarget": "ProjectReference",
+            "ReferenceOutputAssembly": "false",
+            "SkipGetTargetFrameworkProperties": "true",
+            "FullPath": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityGMBridge/BookOfEternityGMBridge.csproj",
+            "RootDir": "/",
+            "Filename": "BookOfEternityGMBridge",
+            "Extension": ".csproj",
+            "RelativeDir": "../BookOfEternityGMBridge/",
+            "Directory": "workspace/The-Book-of-Eternity-Reborn/BookOfEternityGMBridge/",
+            "RecursiveDir": "",
+            "ModifiedTime": "",
+            "CreatedTime": "",
+            "AccessedTime": "",
+            "DefiningProjectFullPath": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+            "DefiningProjectDirectory": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/",
+            "DefiningProjectName": "BookOfEternityClient.Tests",
+            "DefiningProjectExtension": ".csproj"
+          },
+          {
+            "Identity": "../BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj",
+            "Targets": "",
+            "OutputItemType": "",
+            "ReferenceSourceTarget": "ProjectReference",
+            "FullPath": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj",
+            "RootDir": "/",
+            "Filename": "BookOfEternityClient.TestSupport",
+            "Extension": ".csproj",
+            "RelativeDir": "../BookOfEternityClient.TestSupport/",
+            "Directory": "workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.TestSupport/",
+            "RecursiveDir": "",
+            "ModifiedTime": "",
+            "CreatedTime": "",
+            "AccessedTime": "",
+            "DefiningProjectFullPath": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+            "DefiningProjectDirectory": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/",
+            "DefiningProjectName": "BookOfEternityClient.Tests",
+            "DefiningProjectExtension": ".csproj"
+          },
+          {
+            "Identity": "../tests/fixtures/PortableStorageCrashHost/PortableStorageCrashHost.csproj",
+            "Targets": "",
+            "OutputItemType": "",
+            "ReferenceSourceTarget": "ProjectReference",
+            "FullPath": "/workspace/The-Book-of-Eternity-Reborn/tests/fixtures/PortableStorageCrashHost/PortableStorageCrashHost.csproj",
+            "RootDir": "/",
+            "Filename": "PortableStorageCrashHost",
+            "Extension": ".csproj",
+            "RelativeDir": "../tests/fixtures/PortableStorageCrashHost/",
+            "Directory": "workspace/The-Book-of-Eternity-Reborn/tests/fixtures/PortableStorageCrashHost/",
+            "RecursiveDir": "",
+            "ModifiedTime": "",
+            "CreatedTime": "",
+            "AccessedTime": "",
+            "DefiningProjectFullPath": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+            "DefiningProjectDirectory": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/",
+            "DefiningProjectName": "BookOfEternityClient.Tests",
+            "DefiningProjectExtension": ".csproj"
+          }
+        ]
+      }
+    },
+    "compileTargetDefault": "Microsoft.Managed.Core.targets sets UseSharedCompilation=true at target execution when unset; evaluation-only value is empty. Old actual compiler-server use/fallback is not recorded.",
+    "runnerBuildArguments": [
+      "build",
+      "project",
+      "--verbosity",
+      "minimal",
+      "-p:GenerateDocumentationFile=true",
+      "-p:NoWarn=1591"
+    ],
+    "oldServerEnvironment": "Sanitized phase.environment has no compiler/build-server override. No current live dotnet/pwsh server was observed.",
+    "cachedUnitGraphPackageVersions": 61,
+    "missingCachedNupkg": 0
+  },
+  "readonlyQueries": {
+    "artifact": "specs/1536-complete-wound-materialization/recovery/l01-build-tooling-readonly-query-originals-20261018.zip",
+    "bytes": 2232,
+    "sha256": "4c26508dad2ed12c1b467b8197b2793ca55fb8365d8ca29444f37f78415d868d",
+    "members": [
+      {
+        "member": "query.json",
+        "bytes": 5474,
+        "sha256": "bbfad190936927c21caa1f54dff49122e896b0e4e3aa9d8cb68ee915440652ec"
+      },
+      {
+        "member": "build-help.json",
+        "bytes": 2928,
+        "sha256": "f77074730c79214ab01a14e901242869d59655882b03f3d01e27ec1b10d308f8"
+      }
+    ],
+    "msbuildEvaluationNativeExit": 0,
+    "buildHelpNativeExit": 0,
+    "buildTargetsExecuted": 0
+  },
+  "sourceBindings": [
+    {
+      "path": "scripts/test-csharp.ps1",
+      "bytes": 81688,
+      "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
+    },
+    {
+      "path": "scripts/testing/TestCategoryExecution.ps1",
+      "bytes": 11710,
+      "sha256": "5a10ff1e9b643ee12c02d16684a4654c9dc0d324b86769910d8bc188e8f9be38"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "bytes": 1682,
+      "sha256": "7fdfb57115042c44afaed4258ff39dc970a3a2f13860c575febf0cbd36edbcb0"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "bytes": 1991,
+      "sha256": "cdda61b515137ff8c75cc6b6eab8a58a66af2446a0f339538603fd81500a51f6"
+    },
+    {
+      "path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "bytes": 5795,
+      "sha256": "b1bafa2fffd26263bc821cd668f20d199a2d08a1a6ed1a4f32c69b95a893d59e"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj",
+      "bytes": 1054,
+      "sha256": "472a2d743d0bb89a2585ca22c90fd5bce33ba92edc02e0a98634ae094bf2972f"
+    },
+    {
+      "path": "BookOfEternityGMBridge/BookOfEternityGMBridge.csproj",
+      "bytes": 470,
+      "sha256": "c49d352dbfb3bb464e0a5bd456366222e0abe792b1264d665d60c8d545e487d4"
+    },
+    {
+      "path": "tests/fixtures/PortableStorageCrashHost/PortableStorageCrashHost.csproj",
+      "bytes": 383,
+      "sha256": "1854f0e63e4a4fd67f1da767bc6bbd04c0e41528703e6d2a23256c55142e8ede"
+    }
+  ],
+  "conclusions": [
+    "Original deadline expiry is established; slow-build cause is not. No original per-process CPU/RSS/Csc phase observations exist.",
+    "Current CPU quota is4cores across5logical; current cgroup headroom is about5.9GiB and tmp free about7.28GiB. Cgroup memory mostly file cache/shmem; headroom is not a guarantee.",
+    "Memory peak/max events and CPU throttling counters are lifetime snapshots with no original-run baseline. They cannot attribute original slowdown. oom/oom_kill counters currently0 do not prove absence of every possible external termination.",
+    "No active dotnet/pwsh in point-in-time same-UID tool census; prior controller/PW rootPIDs absent.35dotnet zombies are exited, not active servers, and original ancestry/reaping are not established. No signals issued.",
+    "Build graph differs from restore graph: unit has5projects including GMBridge; integration3. Original total integration time does not isolate which project/compiler task consumed it.",
+    "No current persistent degradation established by these snapshots. Prefer one independently justified isolated unit build with ordinary600s bound and bounded observations, rather than claiming a repair or substituting fresh cloud without evidence."
+  ],
+  "limitations": [
+    "Initial exe-first process scan generated PermissionError entries; refined stat-first scan distinguishes zombies and found no active tools. Raw unfiltered error-PID list remains private, not published.",
+    "/usr/bin/time is absent. No installation; use ordinary MSBuild performance summary plus same-session process samples and standard resource.getrusage with stated limits.",
+    "Current source/header/property reads and two evaluation/help commands execute no build/test/fixture/game."
+  ],
+  "gameplayRelease": "NONE",
+  "syntheticRelease": "NONE",
+  "originalCrash5Release": "NONE"
+}
