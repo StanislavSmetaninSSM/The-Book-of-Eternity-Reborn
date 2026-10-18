@@ -1,0 +1,201 @@
+{
+  "kind": "L01_MANAGED_STACK_CAPABILITY_INDEPENDENT_PLAN_REVIEW",
+  "createdUtc": "2026-10-18T19:30:58.611920+00:00",
+  "reviewedCandidate": "62d3a7605c69e3e516dc8543c51cee227c12a32e",
+  "base": "39cafe9e9595730929efb7b7450b4cc260b5bafc",
+  "priorCandidate": "a0c944b8f3fdefb98224042d43bb2e3f904469d3",
+  "verdict": "ACCEPT_PLAN_FOR_EXTERNAL_HELPER_SOURCE_AND_PREP_ONLY",
+  "findings": [],
+  "reviewedFiles": [
+    {
+      "path": "specs/1536-complete-wound-materialization/design/l01-managed-stack-capability-plan-20261018.md",
+      "bytes": 11726,
+      "sha256": "8d98ccc6c4da505f7487ee232101a434712a7bf19c8fa6bfe6b2a9b73b0a4df5",
+      "gitBlob": "b2a41b62fcccd69e4e54ff2d6e70173f49f45166"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-inventory-20261018.json",
+      "bytes": 43429,
+      "sha256": "d13edf86aa1315385ed0aa56255e4212f4fb40e723c137c97ab86c2bca1dc528",
+      "gitBlob": "580868241fa60cc1b47b609b56f810a496884136"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 2465776,
+      "sha256": "715211ca4f99aa3325dd375924553a2004c5f200e370d405d79fd0027b59a079",
+      "gitBlob": "32439bc82103ef5a323b51c90dbad0d4c2861ce3"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "bytes": 1609586,
+      "sha256": "754c1b72813255a69c1d99c05d9d73da8dcf28ecb899cce7e562f3a91efe938e",
+      "gitBlob": "44751ebe44b23fd0faafb877e2941da76a4aea63"
+    }
+  ],
+  "recovery": {
+    "path": "/tmp/1536-cloud-tools/m01-carrier-recovery-62d3a760.json",
+    "sha256": "8d61f4f983226bb27800b4d2590dce86e1e1d80b393a7418e873479698664f46",
+    "remoteShaVerifiedBySavedReceipt": true,
+    "independentCloneExactAndCleanVerified": true,
+    "newRecoveryPerformed": false
+  },
+  "checks": [
+    {
+      "check": "/workspace/The-Book-of-Eternity-Reborn exact HEAD",
+      "passed": true
+    },
+    {
+      "check": "/workspace/The-Book-of-Eternity-Reborn clean",
+      "passed": true
+    },
+    {
+      "check": "/workspace/1536-cloud-clean-restore exact HEAD",
+      "passed": true
+    },
+    {
+      "check": "/workspace/1536-cloud-clean-restore clean",
+      "passed": true
+    },
+    {
+      "check": "exact four documentation paths since accepted M01",
+      "passed": true
+    },
+    {
+      "check": "corrective edge only plan and inventory",
+      "passed": true
+    },
+    {
+      "check": "saved independent recovery receipt",
+      "passed": true
+    },
+    {
+      "check": "writer/clone/saved/receipt exact specs/1536-complete-wound-materialization/design/l01-managed-stack-capability-plan-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "writer/clone/saved/receipt exact specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-inventory-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "writer/clone/saved/receipt exact specs/1536-complete-wound-materialization/plan.md",
+      "passed": true
+    },
+    {
+      "check": "writer/clone/saved/receipt exact specs/1536-complete-wound-materialization/tasks.md",
+      "passed": true
+    },
+    {
+      "check": "original inventory inputs/ABI/history unchanged",
+      "passed": true
+    },
+    {
+      "check": "all installed bytes match availableFiles",
+      "passed": true
+    },
+    {
+      "check": "all installed bytes match net8ReferenceInputs",
+      "passed": true
+    },
+    {
+      "check": "9 critical files and163 cached refs",
+      "passed": true
+    },
+    {
+      "check": "fresh and superseded roots never used",
+      "passed": true
+    },
+    {
+      "check": "socket actual byte budget",
+      "passed": true
+    },
+    {
+      "check": "all M01/L01 sources and evidence unchanged",
+      "passed": true
+    }
+  ],
+  "availability": {
+    "criticalFilesVerified": 9,
+    "net8ReferenceAssembliesVerified": 163,
+    "actualAttach": "UNRUN",
+    "managedStackCapability": "UNPROVEN",
+    "decoderAbsence": "Bounded inventory only; not universal absence. Built-in DAC/crash-report JSON is a source-supported alternative, not a general heap/async analyzer.",
+    "metadataReflection": "Prior initial PowerShell134/home-cache failure and corrected metadata-only0 remain preserved; reviewer did not rerun either."
+  },
+  "resolvedFeedback": [
+    {
+      "issue": "The ordinary API is not ptrace-free, and a blanket claim of no prctl would misdescribe it.",
+      "resolution": "Corrected plan explicitly distinguishes runtime targeted PR_SET_PTRACER(createdump child) from prohibited manual/system/ANY-ptracer/direct-attach changes. Normal failure must be preserved without escalation."
+    },
+    {
+      "issue": "A suspended target cannot enforce its own deadline.",
+      "resolution": "Corrected plan uses an external20-second collector watchdog and identity-verified createdump/collector/target cleanup; target60-second deadline is backup only."
+    },
+    {
+      "issue": "Original long TMPDIR could exceed Unix-domain socket path capacity.",
+      "resolution": "Writer shortened the unused namespace; independent calculation confirms92bytes excludingNUL against107maximum. Both planned roots remain absent."
+    }
+  ],
+  "planAssessment": [
+    "One isolated synthetic process with independently known waiting and CPU call chains is a bounded, relevant capability test. No game references, fixtures, saves, project/catalog changes, or retained test replay are needed.",
+    "Passing requires both reported native TIDs to contain the expected ordered managed leaf/outer frames, nonzero method tokens and the actual compiled module/MVID. Preserve observed IL offsets and raw JSON; neither native0 nor file existence substitutes for this oracle.",
+    "No installed external decoder is needed to attempt this specific DAC-generated JSON route. API loading, IPC permissions, DAC unwinding and usable names remain runtime questions; exact failure is a valid bounded outcome.",
+    "A Normal dump perturbs the synthetic target and can contain memory. Use a secret-free explicit environment; keep the core private with hash/size and preserve the actual JSON as the recoverable interpretation evidence.",
+    "Future one custody-to-accepted snapshot is accurately a proposal only. A frame identifies a captured managed site; it alone proves neither CPU activity, lock ownership, async causality, deadlock, useful progress nor completion upper bound. Early accepted/exit yields NOT_OBSERVED, without retry.",
+    "Cloud Linux qualification remains separate from any later Windows-five-case task. Neither S01 nor a proposed diagnostic snapshot can qualify the original crash5 or reinterpret old UNKNOWN/outcomes."
+  ],
+  "nextAuthorizedWork": {
+    "scope": "Author only external task-local helper/synthetic source and prepare it with existing csc/cached references, no restore/install/network. Save/push/recover source and compilation evidence for independent SOURCE/PREP.",
+    "syntheticLaunch": "NONE until separately saved/recovered SOURCE/PREP acceptance and one named S01 admission",
+    "gameplayRelease": "NONE",
+    "futureSnapshotRelease": "NONE",
+    "retryFallbackRelease": "NONE"
+  },
+  "sourcePrepConditions": [
+    "Hash every helper, collector, parser, source, runtimeconfig, reference, loaded dependency and output; pin8.0.32 with roll-forward disabled. Inspect actual dependency resolution and compile exit; no synthetic target during preparation.",
+    "No arbitrary PID entrypoint or global diagnostic endpoint search. Launch the target internally; bind private root/nonce/command/UID/PID/kernel birth and exact socket, rechecking immediately before the sole request. Reject missing/reused/mismatched identity.",
+    "Root/output permissions must keep the memory core private; sanitize inherited environment and disable accidental external diagnostic ports/startup hooks. Check the actual socket path byte length before target launch.",
+    "Use monotonic external bounds for readiness, the20-second request and finite cleanup. API cancellation/collector exit alone does not prove createdump exit or target resumption. Retain unresolved identities/artifacts and HOLD if exact owned descendant cleanup cannot be proved; never signal by name or a recycled PID.",
+    "Drain stdout/stderr concurrently and preserve first native/API status separately from observer/serialization/cleanup failures. Failed interpretation or cleanup cannot become a PASS because native returned0; no automatic retry/direct-createdump fallback.",
+    "Confirm two real NoInlining/NoOptimization chains and TIDs; bind raw managed names/tokens/MVID to compiled bytes and source. Save original diagnostics, identities, joins/EOF and timing before independent EVIDENCE.",
+    "Save this plan decision before implementation; current plan/tasks may mark PLAN accepted, but helper SOURCE/PREP and S01 remain pending/UNRUN and gameplay release remainsNONE."
+  ],
+  "primarySources": [
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/core/diagnostics/diagnostics-client-library#write-a-core-dump",
+      "support": "Public DiagnosticsClient WriteDump route; installed ABI is separately recorded as metadata reflection, not an exercised attach."
+    },
+    {
+      "url": "https://github.com/dotnet/runtime/blob/v8.0.32/src/coreclr/debug/createdump/threadinfo.cpp#L214",
+      "support": "GatherStackFrames uses DAC method/token/scope and IL offset information."
+    },
+    {
+      "url": "https://github.com/dotnet/runtime/blob/v8.0.32/src/coreclr/debug/createdump/crashreportwriter.cpp#L204",
+      "support": "Managed JSON frame fields include method_name, token, il_offset, filename, guid; native_thread_id is emitted per thread. Boolean/numeric fields are string encoded."
+    },
+    {
+      "url": "https://github.com/dotnet/runtime/blob/v8.0.32/src/coreclr/pal/src/thread/process.cpp#L2353",
+      "support": "Normal runtime dump path authorizes its own createdump child with PR_SET_PTRACER; this is not a ptrace-free mechanism."
+    },
+    {
+      "url": "https://github.com/dotnet/runtime/blob/v8.0.32/src/coreclr/debug/createdump/createdumpunix.cpp#L45",
+      "support": "Threads are suspended during capture and CleanupAndResumeProcess is called on exit. Target self-deadline cannot replace an external watchdog."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/core/diagnostics/faq-dumps",
+      "support": "ptrace/proc and kernel/container policies can deny capture; observed UID/capability/seccomp values alone do not prove success or denial."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/core/diagnostics/diagnostic-port#default-diagnostic-port",
+      "support": "Linux socket is under TMPDIR with target PID and starttime disambiguator; same-user access and exact private endpoint matter."
+    }
+  ],
+  "preservedHolds": [
+    "M01 accepted historical audit-state scope only",
+    "L0152/57 at original provenance; original crash5 unqualified",
+    "old66529 UNKNOWN/unavailable/recoveryClaim=false; all original outcomes and frozen roots unchanged",
+    "diagnostic2 permit consumed; no reuse",
+    "E01/T148/Phase10/fullNI/HOT/F1/M3/T197 open/incomplete; A3 NO-PROCEED",
+    "Windows not requested; artifact403 no retry; no CI"
+  ],
+  "reviewOperations": "Read-only repository/files/hash checks and official source browsing; wrote only these review artifacts under /tmp. No compile/helper/test/game/attach/process-control/install/security action."
+}

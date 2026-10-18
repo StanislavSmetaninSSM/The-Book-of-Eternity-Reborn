@@ -3,7 +3,9 @@
 Task: #1536 / NI-IOBS-L01. Base `39cafe9e9595730929efb7b7450b4cc260b5bafc`.
 Sole writer Root; independent reviewer Astra XHigh. User authorizes cloud inventory,
 documentation and an owned synthetic smoke only after independent minimal-plan review.
-**PLAN_REVIEW_PENDING. Synthetic UNRUN. Gameplay release NONE.**
+**PLAN ACCEPTED at62d3a760: helper preparation only, independent SOURCE/PREP
+required before S01. Synthetic UNRUN. Gameplay release NONE.**
+[Independent PLAN review](../recovery/l01-managed-stack-capability-plan-independent-review-20261018.md).
 
 ## Question and available route
 

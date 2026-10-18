@@ -3,7 +3,8 @@
 User requests cloud Linux diagnostic feasibility after accepted M01.
 [Minimal synthetic plan](design/l01-managed-stack-capability-plan-20261018.md)
 and [read-only inventory](recovery/l01-managed-stack-capability-inventory-20261018.json)
-are PLAN_REVIEW_PENDING. Installed SDK DiagnosticsClient and .NET8 createdump/DAC
+have independent PLAN ACCEPT at62d3a760 for helper preparation only; S01 awaits
+SOURCE/PREP. Installed SDK DiagnosticsClient and .NET8 createdump/DAC
 may yield named managed stacks via built-in crash-report JSON; capability UNPROVED.
 No installs/security changes/unrelated targets/gameplay runs. Only after independent
 plan and helper SOURCE/PREP review may one own synthetic smoke run.
