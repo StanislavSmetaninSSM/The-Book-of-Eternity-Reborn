@@ -20,6 +20,20 @@ DOTNET='/tmp/1536-cloud-tools/dotnet/dotnet'
 sha=lambda b:hashlib.sha256(b).hexdigest()
 
 
+def verify_installed_inputs(inventory):
+    rows=inventory['availableFiles']+inventory['net8ReferenceInputs']
+    for row in rows:
+        data=Path(row['path']).read_bytes()
+        assert len(data)==row['bytes'] and sha(data)==row['sha256'],row['path']
+    return dict(count=len(rows),sha256=sha(json.dumps(rows,sort_keys=True,separators=(',',':')).encode()))
+
+
+def emit_summary(record):
+    payload=(json.dumps({k:record[k] for k in ('status','nativeExit','observerErrors','durationSeconds')})+'\n').encode()
+    # Keep all reporting errors inside FINALIZE; no buffered shutdown flush.
+    if os.write(1,payload)!=len(payload):raise OSError('Incomplete summary write')
+
+
 def actual_case(lib,phase,prep,expected_exit):
     case=phase/('exit'+str(expected_exit));case.mkdir(mode=0o700)
     fixture=case/'fixture';fixture.mkdir(mode=0o700)
@@ -141,6 +155,10 @@ def main():
     lib['write'](phase/'started.json',record)
     start=time.monotonic()
     try:
+        inventory=json.loads((RECOVERY/'l01-managed-stack-capability-inventory-20261018.json').read_text())
+        # Current packet pins the inventory itself. Recheck its installed inputs
+        # for every phase, including after compilation and before synthetic launch.
+        record['verifiedInstalledInputs']=verify_installed_inputs(inventory)
         if mode in ('catalog','plan'):
             if mode=='plan':
                 cat=json.loads((ROOT/'d01-catalog/record.json').read_text())
@@ -162,9 +180,6 @@ def main():
             if mode=='catalog':record['compiledSource']=source
             else:assert record['binaryInventory']==cat['binaryInventory']
         elif mode=='prepare':
-            inventory=json.loads((RECOVERY/'l01-managed-stack-capability-inventory-20261018.json').read_text())
-            for p in inventory['availableFiles']+inventory['net8ReferenceInputs']:
-                b=Path(p['path']).read_bytes();assert len(b)==p['bytes'] and sha(b)==p['sha256']
             lib['write'](phase/'D01Live.runtimeconfig.json',dict(runtimeOptions=dict(tfm='net8.0',framework=dict(name='Microsoft.NETCore.App',version='8.0.32'),rollForward='Disable')))
             args=['-nostdlib+','-target:exe','-debug:portable','-optimize-','-out:'+str(phase/'D01Live.dll')]
             args+=['-reference:'+p['path'] for p in inventory['net8ReferenceInputs']]
@@ -193,7 +208,6 @@ def main():
         record['observerErrors'].append(repr(error));record['status']='FROZEN_ORIGINAL_FAILURE'
     finally:
         record['durationSeconds']=time.monotonic()-start
-    return lib['FINALIZE'](record,lambda r:lib['write'](phase/'record.json',r),
-        lambda r:print(json.dumps({k:r[k] for k in ('status','nativeExit','observerErrors','durationSeconds')})))
+    return lib['FINALIZE'](record,lambda r:lib['write'](phase/'record.json',r),emit_summary)
 
 if __name__=='__main__':sys.exit(main())

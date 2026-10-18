@@ -645,19 +645,34 @@
       "sha256": "f6f3c5fde2d50b17236e7f3f4b3badb04d629f9c44ec8149bd1b573d8ae61a7a"
     },
     {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/controller-fault-checks.json",
+      "bytes": 1490,
+      "sha256": "58973e84ab874161d2356a66a6f68f5ea6a0f3eabe363d390739e95f1b655052"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/controller_fault_checks.py",
+      "bytes": 3565,
+      "sha256": "fd31dface9538742cbddbb6a1a95d371f226dbb90f7aaad5b9cade0695344575"
+    },
+    {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/make_packet.py",
-      "bytes": 2494,
-      "sha256": "0e2fb8afe9f01ded69687563f3eaded370ed29f07fbeba5f1ccab3036487728b"
+      "bytes": 2587,
+      "sha256": "c7f1f146681d49e92055351c90a9771e599c63d229297d90dbc3136f07da88a4"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/phase.py",
-      "bytes": 14092,
-      "sha256": "3a08defd13791951757dfb806fde2d4743b1e2b579e823dd17a617ab3913db10"
+      "bytes": 14723,
+      "sha256": "722f7de047ef0eaf951aa10bbd6e51d2ade1d85b0e0f0b0925810b783c27e5ad"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-live-delivery-plan-independent-review-20261018.json",
       "bytes": 13924,
       "sha256": "3253e8d6ffa47a76c3e22118f6da0272701c6025dd90ce0bcda7997590e2b863"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-inventory-20261018.json",
+      "bytes": 43429,
+      "sha256": "d13edf86aa1315385ed0aa56255e4212f4fb40e723c137c97ab86c2bca1dc528"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-controller-proof-20261018.json",
@@ -735,7 +750,7 @@
       "sha256": "817e4e70d02ae22af34f1bdeeccf01e74f4a2b0e0651f1c03dfd1db548da3c4c"
     }
   ],
-  "sourcePinDigest": "e79039be9d8297390cafca811a57a634b98bdc26c88a3f721fb9c15c56a74aee",
+  "sourcePinDigest": "b277e73745c98abdc78f5feaa62a68373c2bf26b4b6115a20e4aa5207970e9ef",
   "historicalPinSets": [
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",

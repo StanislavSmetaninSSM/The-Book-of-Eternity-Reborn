@@ -1,0 +1,64 @@
+{
+  "kind": "D01_CORRECTED_CONTROLLER_SOURCE_FAULT_CHECKS",
+  "phaseSha256": "722f7de047ef0eaf951aa10bbd6e51d2ade1d85b0e0f0b0925810b783c27e5ad",
+  "scope": "AST-exact functions with fake writes and one private temporary file only; no processes/compiler/helper/game or current phase executed.",
+  "checks": [
+    {
+      "check": "unbuffered_native_priority",
+      "native": 0,
+      "fault": "none",
+      "returned": 0,
+      "passed": true
+    },
+    {
+      "check": "unbuffered_native_priority",
+      "native": 0,
+      "fault": "short",
+      "returned": 2,
+      "passed": true
+    },
+    {
+      "check": "unbuffered_native_priority",
+      "native": 0,
+      "fault": "error",
+      "returned": 2,
+      "passed": true
+    },
+    {
+      "check": "unbuffered_native_priority",
+      "native": 7,
+      "fault": "none",
+      "returned": 7,
+      "passed": true
+    },
+    {
+      "check": "unbuffered_native_priority",
+      "native": 7,
+      "fault": "short",
+      "returned": 7,
+      "passed": true
+    },
+    {
+      "check": "unbuffered_native_priority",
+      "native": 7,
+      "fault": "error",
+      "returned": 7,
+      "passed": true
+    },
+    {
+      "check": "inventory_exact_bytes",
+      "passed": true
+    },
+    {
+      "check": "inventory_drift_rejected",
+      "passed": true
+    },
+    {
+      "check": "inventory_verification_before_all_phase_branches",
+      "passed": true
+    }
+  ],
+  "passed": 9,
+  "fixtureSubprocessTargets": 0,
+  "allPassed": true
+}
