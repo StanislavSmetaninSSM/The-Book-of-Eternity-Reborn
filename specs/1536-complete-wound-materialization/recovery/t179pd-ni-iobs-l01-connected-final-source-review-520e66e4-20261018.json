@@ -1,0 +1,133 @@
+{
+  "kind": "INDEPENDENT_CONNECTED_SOURCE_FIXTURE_SELECTION_VERDICT",
+  "candidate": "520e66e418a428223afa4ef2364ec96b28eeac54",
+  "productBase": "447bc1210c507742758243e1c254860bea0c4539",
+  "verdict": "ACCEPT_SOURCE_FIXTURE_SELECTION_FOR_FRESH_ZERO_PREPARATION",
+  "source": "ACCEPT_BOUNDED_SELECTED_IMPLEMENTATION_SOURCE",
+  "fixture": "ACCEPT_FINITE_FIXTURE_SOURCE_NOT_RUNTIME",
+  "selection": "ACCEPT_STATIC_15_OWNERS_33_METHODS_57_CASES",
+  "preparation": "NOT_RUN_UNQUALIFIED",
+  "evidence": "NO_NEW_PRODUCT_RUNTIME_EVIDENCE",
+  "materialOpenFindings": [],
+  "findingDispositions": [
+    {
+      "id": "S01 / residual S01-R1",
+      "status": "SOURCE_ADDRESSED",
+      "meaning": "Strict current parent applicability; selected partial damage refuses, genuinely new original must cover exact prior marker."
+    },
+    {
+      "id": "S02",
+      "status": "SOURCE_ADDRESSED",
+      "meaning": "FIRST2 permission follows actual installation/readback/non-swallowed owning release; legacy1 preserved."
+    },
+    {
+      "id": "S03",
+      "status": "SOURCE_ADDRESSED",
+      "meaning": "Independent current-Main NI Ready proof; no revival of closed Stage ConsoleOwner or optional HOT authority."
+    },
+    {
+      "id": "S04",
+      "status": "SOURCE_ADDRESSED",
+      "meaning": "Fresh frozen Error issues are noninteractively reported; Warning exact vectors checked at late and repeated generic slots."
+    },
+    {
+      "id": "S05",
+      "status": "SOURCE_ADDRESSED",
+      "meaning": "Crash proof frozen before cleanup, original full result retained modulo allowed state, strict held keysets, owned child settling and concrete mechanics/history oracles."
+    },
+    {
+      "id": "S06",
+      "status": "SOURCE_ADDRESSED_NO_COMPILER_FAILURE_OCCURRED",
+      "meaning": "Selector mtime local is captured in the correct actual method."
+    },
+    {
+      "id": "S07",
+      "status": "SOURCE_ADDRESSED",
+      "meaning": "Completed child3 requires independent physical proof before overriding cached uncertainty; pending selected current admission/readback/owning release retires only same-frame obsolete diagnostic before the unchanged publisher fence."
+    },
+    {
+      "id": "S08",
+      "status": "SOURCE_ADDRESSED",
+      "meaning": "Immediate I-close/Ready-race refusal and direct Restore retention are separate from lawful NEW-current-owner Published DATA resume."
+    },
+    {
+      "id": "D6 fixture configuration",
+      "status": "SOURCE_ADDRESSED_BEFORE_COMPILATION",
+      "meaning": "CommonFault seeds Changed I; whole-terminal observer is scoped around the actual terminal call and restored in finally."
+    },
+    {
+      "id": "Final metadata labels",
+      "status": "ADDRESSED",
+      "meaning": "Close-retention scope and productBase baseline label now match actual controller/fixture behavior."
+    }
+  ],
+  "support": {
+    "path": "/tmp/t179pd-ni-iobs-l01-connected-final-source-check-520e66e4-20261018.json",
+    "sha256": "f6adcaaae17cf5e814363f0693414fdc5e55420a82ce465f1c3825d50febb3c9",
+    "bytes": 55240
+  },
+  "sourcePinDigest": "3e2bf2b2e6e890222ae8cbf7ceaeb4d203b41a6aab68ec879e6e88723f70bb57",
+  "sourcePinCount": 97,
+  "supplementalPin": {
+    "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointCaptureCut.cs",
+    "sha256": "f10a4412302ef54e51b9f4334fff9ca21aa2d4d754f24b901ebc6a2df381ba75",
+    "bytes": 15482,
+    "gitBlob": "8ba4fe0991e4128affe95b4e109b2a31db268b6a",
+    "mode": "100644",
+    "meaning": "Retained affected CUT01 test body; exact baseline447bc/current520e bytes. Adds explicit review-support binding without changing current97 packet."
+  },
+  "tools": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-preparation-run.py",
+      "tmpPath": "/tmp/t179pd-ni-iobs-l01-whole-preparation-run.py",
+      "sha256": "1b82e4e1c3366fb066824e4964c1cc94e7451482aac91b47ecba5e87f52c5cdd",
+      "bytes": 8756,
+      "status": "UNRUN_SOURCE_AND_AST_ONLY"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-first-run.py",
+      "tmpPath": "/tmp/t179pd-ni-iobs-l01-whole-first-run.py",
+      "sha256": "411b9d1ca4585c6ee66d3bbd9992a95b734cd5eb4da059f25faaa3b8762c5fd0",
+      "bytes": 9552,
+      "status": "UNRUN_SOURCE_AND_AST_ONLY"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-whole.py",
+      "tmpPath": "/tmp/t179pd-ni-iobs-l01-archive-whole.py",
+      "sha256": "bf6503ecb8b1006842e66313da7c72fc185b217e54cd44d4ff5a62b864c36c3f",
+      "bytes": 2342,
+      "status": "UNRUN_SOURCE_AND_AST_ONLY"
+    }
+  ],
+  "scope": [
+    "Actual private FIRST2 -> immutable Prepared -> I+Published -> owning release -> current Capturing consumer -> common/take/child3 -> late/generic/cold DATA consumption.",
+    "Current new-owner resume validates original/checkpoint/claim/raw families and stored images; diagnostic bookkeeping is not authority.",
+    "ErrorPrepared remains frozen with I-before; direct/outer retention, common compensation and whole-terminal removal/refusal use their actual owners.",
+    "Legacy genuine Capture1/child1 and a genuinely different ordinary original remain separately controlled; no old protocol upgrade or returned-I fiction.",
+    "GM guidance/mirrors/worked continuation/manifest/source guard accurately describe client ownership and frozen-error behavior."
+  ],
+  "selectionReason": "51 new rows cover data strictness, real ordering, raw encodings/absence, diagnostics, owner/release, genuine legacy, abrupt current resume, partial integrity, source/Ready races, compensation/whole terminal and new-current uncertainty. Six affected existing rows are CUT01 three, protected Late two and one guidance Fact. No broad historical package/family replay is required.",
+  "freshPreparationRequirements": [
+    "Root may separately activate the exact fixed catalog/BOTH discovery controller, then its dependent current SelectionFile PlanOnly-NoBuild; both execute ZERO tests.",
+    "Preserve FIRST nonzero native/utility outcome without retry. Fresh successful both-project build, exact15/33/57 plan, nine copies and complete output file-set/hash inventory, source/ledger, owned namespace/process cleanup, committed raw and recovery must be independently qualified before NoBuild actuals."
+  ],
+  "runtimeHolds": [
+    "This report starts no command and grants no actual execution by itself. All14 fixed actual modes remain UNRUN and require separate named Root release after PREP; protected Late2 is the first affected actual gate.",
+    "No actual case count, causal correction, crash/recovery success or cleanup completion follows from compilation/source review.",
+    "No full NI/HOT availability, broader F1/M3/T197, Windows/backend, CI/ZIP, A3 reopening or whole-wounds completion is claimed."
+  ],
+  "history": "All original source findings, immutable first ordering RED, wrong late-one prediction versus actual two I-changing cohorts and earlier reports remain preserved. This is one connected final SOURCE review, not a rewritten EVIDENCE history.",
+  "recovery": {
+    "receipt": {
+      "path": "/tmp/t179pd-ni-iobs-l01-whole-tools-delta-github-520e66e4-20261018.json",
+      "sha256": "6de621b4ef7fc8a4386c875a9fea38b80e931dc1e293e849a4a1c109763dd71b",
+      "bytes": 13474
+    },
+    "rootComposition": {
+      "path": "/tmp/t179pd3d-root-recovery-composition-520e66e4-20261017.json",
+      "sha256": "0bdb8bf1bc9d101fe541d738e760cd09db38e45df2e9aef2edcaac0108c04e45",
+      "bytes": 34385
+    },
+    "meaning": "Saved metadata/tool carrier520e; retained full7a+99 deltas/current55437 tree verified by Root."
+  }
+}

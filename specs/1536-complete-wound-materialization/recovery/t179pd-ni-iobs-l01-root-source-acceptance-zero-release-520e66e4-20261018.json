@@ -1,0 +1,50 @@
+{
+  "kind": "ROOT_CONNECTED_SOURCE_ACCEPTANCE_AND_NAMED_ZERO_PREPARATION_RELEASE",
+  "createdUtc": "2026-10-18T07:01:40.682458+00:00",
+  "candidate": "520e66e418a428223afa4ef2364ec96b28eeac54",
+  "source": "ACCEPT_CONNECTED_BOUNDED_IMPLEMENTATION",
+  "fixture": "ACCEPT_SOURCE_ONLY",
+  "selection": "ACCEPT_STATIC_15_33_57",
+  "runtime": "UNRUN_UNQUALIFIED",
+  "independentReview": [
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-connected-final-source-review-520e66e4-20261018.json",
+      "sha256": "1ee80f442046cbc9555da6e83cea8cb455e4501a6bbc9c7128906293fe4d9ec9"
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-connected-final-source-review-520e66e4-20261018.md",
+      "sha256": "ca5f57597b4949c3ac20f37d10f0e63468a82d45486218784c80bf0fa696e2c3"
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-connected-final-source-check-520e66e4-20261018.json",
+      "sha256": "f6adcaaae17cf5e814363f0693414fdc5e55420a82ce465f1c3825d50febb3c9"
+    }
+  ],
+  "sourcePinCount": 97,
+  "sourcePinDigest": "3e2bf2b2e6e890222ae8cbf7ceaeb4d203b41a6aab68ec879e6e88723f70bb57",
+  "supplementalPin": {
+    "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointCaptureCut.cs",
+    "sha256": "f10a4412302ef54e51b9f4334fff9ca21aa2d4d754f24b901ebc6a2df381ba75",
+    "bytes": 15482,
+    "gitBlob": "8ba4fe0991e4128affe95b4e109b2a31db268b6a",
+    "mode": "100644",
+    "meaning": "Retained affected CUT01 test body; exact baseline447bc/current520e bytes. Adds explicit review-support binding without changing current97 packet."
+  },
+  "recoveryComposition": "/tmp/t179pd3d-root-recovery-composition-520e66e4-20261017.json",
+  "remoteVerified": "520e66e418a428223afa4ef2364ec96b28eeac54",
+  "mainUnchanged": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4",
+  "release": {
+    "phase": "ZERO_CATALOG_ONLY_THEN_SEPARATELY_NAMED_DEPENDENT_PLAN",
+    "catalogLabel": "t179pd-ni-iobs-l01-whole-prep-first-catalog-current",
+    "catalogTool": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-preparation-run.py",
+    "catalogToolSha256": "1b82e4e1c3366fb066824e4964c1cc94e7451482aac91b47ecba5e87f52c5cdd",
+    "actualSource": "Next clean metadata-only decision carrier after writer commit/push and independent Root exact recovery. All97 pinned/tool bytes and supplementalCUT01 unchanged.",
+    "bounds": "Fresh BOTH build/catalog discovery, ZERO actual tests. Freeze original nonzero/utility result; no retry or automatic Plan/actual. Send record/stdout/process/inventory."
+  },
+  "next": "Root reads original catalog then names dependent exact PlanOnly; independent PREP qualification and durable raw precede protectedLate2 first affected actual. Remaining14 modes never auto-advance.",
+  "limits": [
+    "Historical causalRED and all source finding history preserved.",
+    "No completion or native PASS follows from source review.",
+    "No full NI/HOT, wider F1/M3/T197/platform/Windows/A3/CI authority."
+  ]
+}

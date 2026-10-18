@@ -1,7 +1,7 @@
 {
   "kind": "NI_IOBS_L01_AUTHORED_METHOD_ROW_LEDGER",
   "sourceBase": "9a92049ef86bcbc4569aaa0a11d1f42632093622",
-  "status": "WHOLE_FINITE_SOURCE_AND_VERIFICATION_TOOLS_FROZEN_UNCOMPILED_UNRUN",
+  "status": "CONNECTED_SOURCE_FIXTURE_SELECTION_ACCEPTED_CURRENT_PRODUCT_UNCOMPILED_UNRUN",
   "rows": [
     {
       "category": "fr063-joint-interface-lifecycle-order",
@@ -369,7 +369,7 @@
       "status": "UNRUN_SOURCE_ONLY_NAMED_ROOT_RELEASE_REQUIRED"
     }
   ],
-  "priority": "Frozen whole candidate is ready for connected affected SOURCE/FIXTURE/SELECTION and verification-tool review. No build/discovery/native before named Root release.",
+  "priority": "Await Root exact recovered decision readback and separately named catalog-only FIRST ZERO activation. No Plan or actual auto-advance.",
   "firstActual": {
     "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
     "compiledSource": "a65005989ac5922db9c943dda339a999131ba5c6",
@@ -541,9 +541,9 @@
       "Independent private NI current-Main matching-Ready/source/delete/release observation; actual Stage coordinates retained without reviving its ConsoleOwner or changing HOT availability."
     ],
     "open": [
-      "Connected final affected SOURCE/FIXTURE/SELECTION/tool review; current product uncompiled/unrun",
-      "Separately named fresh BOTH/catalog discovery then exact PlanOnly ZERO, full output inventory and no stale source/copy checks",
-      "Separately named actual finite/protected controls and independent EVIDENCE; unexpected first outcome freezes/no retry",
+      "Source/FIXTURE/SELECTION accepted at520e only; current product fresh compilation/discovery/Plan/preparation unqualified",
+      "Root separately names catalog-only ZERO after saved decision recovery; no automatic dependent Plan or actuals",
+      "Successful fresh preparation/raw/recovery/independent qualification precede protectedLate2 first affected actual, then each named finite scope",
       "No broader NI/HOT/S/B/D9/M3/F1/platform/Windows/A3 qualification"
     ],
     "draftReviewCorrections": [
@@ -596,5 +596,33 @@
     "reason": "Existing joint paragraph changes because same-operation frozen I Error holds rather than inviting rewrite/resubmit. Public GM response schema unchanged; no private result/protocol version is authored. Existing named JSON example bodies stay exact; adjacent worked continuation and coverage limit explain client lifecycle only.",
     "afterlife": "No Chaos Sea/Shining Abode rule, pending/control, capability or authored surface changes; afterlife matrix/examples/registry unchanged.",
     "entrypoint": "Daemon change is static joint guidance in its existing two prompt copies; no command/control flow/launcher/package implementation changes. This branch contains no later1557/1559 package/inverse-entrypoint tests; do not import adjacent branch families. Exact guidance Fact reads all seven changed mirrors/two daemon copies."
+  },
+  "sourceReviewCurrent": {
+    "candidate": "520e66e418a428223afa4ef2364ec96b28eeac54",
+    "verdict": "ACCEPT_CONNECTED_BOUNDED_IMPLEMENTATION",
+    "selection": "STATIC15OWNERS33METHODS57CASES",
+    "reviewFiles": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-connected-final-source-review-520e66e4-20261018.json",
+        "sha256": "1ee80f442046cbc9555da6e83cea8cb455e4501a6bbc9c7128906293fe4d9ec9"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-connected-final-source-review-520e66e4-20261018.md",
+        "sha256": "ca5f57597b4949c3ac20f37d10f0e63468a82d45486218784c80bf0fa696e2c3"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-connected-final-source-check-520e66e4-20261018.json",
+        "sha256": "f6adcaaae17cf5e814363f0693414fdc5e55420a82ce465f1c3825d50febb3c9"
+      }
+    ],
+    "supplementalCut01Pin": {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointCaptureCut.cs",
+      "sha256": "f10a4412302ef54e51b9f4334fff9ca21aa2d4d754f24b901ebc6a2df381ba75",
+      "bytes": 15482,
+      "gitBlob": "8ba4fe0991e4128affe95b4e109b2a31db268b6a",
+      "mode": "100644",
+      "meaning": "Retained affected CUT01 test body; exact baseline447bc/current520e bytes. Adds explicit review-support binding without changing current97 packet."
+    },
+    "limits": "Independent source only, no current compilation/runtime/cleanup evidence."
   }
 }
