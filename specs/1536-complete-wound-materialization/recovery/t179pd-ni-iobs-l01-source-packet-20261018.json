@@ -361,7 +361,7 @@
   "pinDigest": "c17d44bb5540bc379a29b8c393510b84a3e9a65108d17cfe2149153071293ce4",
   "ledger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-method-row-ledger-20261018.json",
-    "sha256": "37e9979efe2e722d6750b7632e67f6176cabecec809600b54a86f11c2caabee1"
+    "sha256": "114554141ef54b18776ac06a730765f502da2a7958859c6a6619e9ea2f2a140c"
   },
   "productDelta": [],
   "originalContractSourceContext": "Frozen447bc map/source ranges and accepted wholevertical report preserved unchanged; this current test packet does not rehash/replace historical contexts.",
@@ -387,5 +387,28 @@
     "binaryQualification": "NOT_FRESH_FOR_NEW_TESTS",
     "existingCompiledProduct": "CUT01 3d historical only"
   },
-  "gmDocs": "Tests-only observer/public fixture change, no GM contract update. Future client-owned protocol/held lifecycle guide/worked-example/actual guard decision required; no unrelated afterlife/package replay."
+  "gmDocs": "Tests-only observer/public fixture change, no GM contract update. Future client-owned protocol/held lifecycle guide/worked-example/actual guard decision required; no unrelated afterlife/package replay.",
+  "verificationTools": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-order-preparation-run.py",
+      "sha256": "4ba772646550747fceeeac9f1c9a5f1375560960afb47b71954f502a5385f9be",
+      "status": "UNRUN_FIXED_SOURCE_REQUIRES_NAMED_ROOT_RELEASE"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-order-first-run.py",
+      "sha256": "ed5c32e44ea5256ed1ca8090160cc9aaf6c298fd020b5154ef58e930e8ff0b29",
+      "status": "UNRUN_FIXED_SOURCE_REQUIRES_NAMED_ROOT_RELEASE"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-order-first.py",
+      "sha256": "cc3d9a14a0fc5f0f46b2a9b79b005be47dc7b91c65ab827c1fe4a9b15a4180d2",
+      "status": "UNRUN_FIXED_SOURCE_REQUIRES_NAMED_ROOT_RELEASE"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-order-preparation.py",
+      "sha256": "5e00c6e7c7496f044aa8dbc1068681601ab41882ae3888eb5d9dbcf2a5de8fde",
+      "status": "UNRUN_FIXED_SOURCE_REQUIRES_NAMED_ROOT_RELEASE"
+    }
+  ],
+  "next": "Named fresh catalog/BOTH+exact1 PlanOnly ZERO only after saved tools/source readback; concrete FIRST Source/PREP and separate Root actual activation. No run from this WIP. Remaining full lifecycle/crash/negative authoring is open, not counted or required to learn earliest semantic RED."
 }

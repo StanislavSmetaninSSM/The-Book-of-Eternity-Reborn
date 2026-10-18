@@ -35,5 +35,28 @@
   ],
   "holds": [
     "No production or build/discovery/native action. Exact future finite methods/rows will replace remaining-authoring prose only after actually authored; no all-vertical claim from singleton."
-  ]
+  ],
+  "verificationTools": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-order-preparation-run.py",
+      "sha256": "4ba772646550747fceeeac9f1c9a5f1375560960afb47b71954f502a5385f9be",
+      "status": "UNRUN_FIXED_SOURCE_REQUIRES_NAMED_ROOT_RELEASE"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-order-first-run.py",
+      "sha256": "ed5c32e44ea5256ed1ca8090160cc9aaf6c298fd020b5154ef58e930e8ff0b29",
+      "status": "UNRUN_FIXED_SOURCE_REQUIRES_NAMED_ROOT_RELEASE"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-order-first.py",
+      "sha256": "cc3d9a14a0fc5f0f46b2a9b79b005be47dc7b91c65ab827c1fe4a9b15a4180d2",
+      "status": "UNRUN_FIXED_SOURCE_REQUIRES_NAMED_ROOT_RELEASE"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-order-preparation.py",
+      "sha256": "5e00c6e7c7496f044aa8dbc1068681601ab41882ae3888eb5d9dbcf2a5de8fde",
+      "status": "UNRUN_FIXED_SOURCE_REQUIRES_NAMED_ROOT_RELEASE"
+    }
+  ],
+  "priority": "Qualify genuine earliest semantic singleton via concrete SOURCE/fresh PREP/named FIRST before making every later negative/codec case a prerequisite; remaining whole-vertical authoring/qualification explicitly open."
 }
