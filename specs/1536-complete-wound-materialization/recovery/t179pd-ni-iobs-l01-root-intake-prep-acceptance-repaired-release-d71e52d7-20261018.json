@@ -1,0 +1,48 @@
+{
+  "kind": "ROOT_CORRECTED_FRESH_PREP_ACCEPTANCE_NAMED_REPAIRED2_RELEASE",
+  "createdUtc": "2026-10-18T08:15:12.085538+00:00",
+  "carrier": "d71e52d7a1731693338236e43d0d1a93da11a5b8",
+  "compiledSource": "4c6d8334b441193cbda6de539347bcf7998d4db6",
+  "prepVerdict": "ACCEPT_FRESH_ZERO3_FOR_PENDING31",
+  "independentReview": [
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-intake-prep-independent-review-d71e52d7-20261018.md",
+      "sha256": "80a048bf1b0165a97867c8043ea306eef5bbdac6af1a7146ac52fcf361b76a86",
+      "bytes": 1840
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-intake-prep-independent-review-d71e52d7-20261018.json",
+      "sha256": "76a59ea9a26de987e2e7b60128c5902a946879bd0446355986dfeb1d3eb302d6",
+      "bytes": 4199
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-intake-prep-carrier-check-d71e52d7-20261018.json",
+      "sha256": "82b9c004e089ac5bca59ad239f5681548d6054117981b8bd1d291cf9b5fe08a0",
+      "bytes": 1457
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-intake-prep-independent-check-4c6d8334-20261018.json",
+      "sha256": "de769a72b603d02585b4ba8a7c1970dbb5387be780915901a0aa7fca3a6a7d73",
+      "bytes": 9600
+    }
+  ],
+  "sourcePinCount": 98,
+  "sourcePinDigest": "1315ce330e8767b6c6b64b62c686f3df41506114fcde12076ab58799db1dda1f",
+  "ledgerSha256": "7ac13b5d22d94a8a953590071e4c824b5e566486033de059966ed453b6d88509",
+  "recovery": "/tmp/t179pd3d-root-recovery-composition-d71e52d7-20261017.json",
+  "remoteVerified": "d71e52d7a1731693338236e43d0d1a93da11a5b8",
+  "mainUnchanged": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4",
+  "release": {
+    "mode": "repaired2",
+    "expectedCases": 2,
+    "label": "t179pd-ni-iobs-l01-intake-first-repaired-current",
+    "tool": "/tmp/t179pd-ni-iobs-l01-intake-first-run.py",
+    "sha256": "c147ee76084f275f29c6920e2a81ddb66fbff2a786d04a02a878ac56b6b83b85",
+    "preparationRecord": "/tmp/t179pd-ni-iobs-l01-intake-implementation-tools/t179pd-ni-iobs-l01-intake-prep-first-remaining-plan-current/record.json",
+    "activation": "Next clean PREP acceptance metadata carrier after commit/push/exact Root recovery and separately named HEAD message.",
+    "scope": "Only corrected Warning and Absent fixture rows. NoBuild. Preserve original native/utility result and archive. Unexpected outcome freezes progression; no automatic retry or next scope."
+  },
+  "retention": "26 prior qualified cases retain original actual/compiled provenance; original 2 invalid-fixture FAIL remain immutable history.",
+  "remaining": "29 first-ever unrun cases require separately named modes and observed-outcome progression.",
+  "limits": "No whole57GREEN, fullNI/HOT/F1/M3/T197/platform/A3 acceptance."
+}

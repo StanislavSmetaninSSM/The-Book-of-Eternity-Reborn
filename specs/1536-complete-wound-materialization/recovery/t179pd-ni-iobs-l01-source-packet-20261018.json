@@ -1,8 +1,8 @@
 {
-  "kind": "NI_IOBS_L01_CORRECTED_INTAKE_FRESH_ZERO3_RAW_SAVED",
+  "kind": "NI_IOBS_L01_CORRECTED_INTAKE_PREP_ACCEPTED_ACTUAL_RELEASE_PENDING",
   "sourceBase": "eaea2dde3fd5381d27e86ab9e87c782cd97d9ae0",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
-  "status": "OBSERVED_PREP_ZERO3_98PINS_WHOLE57_PENDING31_NO_CURRENT_ACTUAL",
+  "status": "ACCEPT_SOURCE_AND_ZERO3_PENDING_NAMED_CORRECTED2_THEN29",
   "sourcePins": [
     {
       "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
@@ -942,7 +942,7 @@
       "status": "READ_ONLY_NINE_TOTAL_INVOCATIONS_ORIGINAL_HISTORY8_PLUS_CURRENT3RECORD_ARCHIVE1_NO_TEST_EXECUTION"
     }
   ],
-  "next": "Independent PREP qualification on this recovered raw carrier, then Root names repaired2 actual separately; no native/build/retry or remaining-group automatic advance.",
+  "next": "Root names repaired2 exact saved acceptance HEAD after recovery; compiled4c6d/source98 and full1575-output fresh binding unchanged. No build/retry/automatic remaining actual.",
   "sourcePinBindingMeaning": "Active authored-source hashes including necessary new helper definitions, not compiled qualification. Old44/9DLL/preparation/first RED context is retained separately. Verification tools are frozen historical source and cannot be reused unchanged for current bindings.",
   "firstActual": {
     "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
@@ -1139,11 +1139,12 @@
     "scope": "Historical26qualified+2fixtureFAIL preserved at compiled45cc. Current corrected2 are new changed-fixture verification, not same-body replay; remaining29 untouched unrun. No current native permission or whole qualification.",
     "retentionStatus": "INDEPENDENT_SOURCE_ACCEPTED26_OLD_PROVENANCE_NO_NEW_BINARY_EQUIVALENCE_CLAIM",
     "currentFixtureDiscovery": "808categories11800methods_FRESH_BOTH_ZERO",
-    "currentPreparation": "Fresh catalog0/wholePlan0/remainingPlan0; Rootreadback accepted, independent PREP qualification pending."
+    "currentPreparation": "INDEPENDENT_AND_ROOT_ACCEPTED_CATALOG_WHOLE_PLAN_REMAINING_PLAN_ZERO",
+    "nextEligibleScope": "ONLY_REPAIRED2_AFTER_NAMED_ROOT_ACTUAL_ACTIVATION"
   },
   "currentImplementation": {
     "sourceBase": "afb5a3bb6a2dd7e066946258cbf64334bf965048",
-    "status": "PRODUCTION_UNCHANGED_TEST_ONLY_INTAKE_CORRECTION_PENDING_SOURCE_FRESH_PREP",
+    "status": "PRODUCTION_UNCHANGED_CORRECTED_FIXTURE_SOURCE_AND_PREP_ACCEPTED_PENDING31_ACTUALS",
     "integrated": [
       "private FIRST2 factory and post-install/readback/release/runtime-refresh one-shot arming",
       "outside-Lp whole I preparation, Prepared then I+Published, release-before-transient-delivery and ErrorPrepared Hold",
@@ -1155,9 +1156,9 @@
       "Independent private NI current-Main matching-Ready/source/delete/release observation; actual Stage coordinates retained without reviving its ConsoleOwner or changing HOT availability."
     ],
     "open": [
-      "Independent delta SOURCE/FIXTURE/SELECTION checks exact unchanged production, special-only fixture branches/default inverse and retained26 dependency equivalence",
-      "Fresh changed-test BOTH/catalog and whole16/33/57 PlanOnly ZERO; then separately named repaired2 plus remaining29 only",
-      "Full current independent EVIDENCE and saved checkpoint; broader holds unchanged"
+      "Root names only corrected2 on recovered saved acceptance; native NoBuild, original first outcomes/strict cleanup and archive before progression.",
+      "Remaining29 first-ever unrun cases require separately named scopes and independent EVIDENCE; no retained26 rerun for counts.",
+      "Whole bounded implementation qualification/final metadata checkpoint remain open; broader NI/HOT/platform/A3 held."
     ],
     "draftReviewCorrections": [
       "Current selected marker with changed/unknown parent version refuses; tuple mismatch only permits new ordinary frame when official original covers exact prior marker bytes.",
@@ -1266,7 +1267,7 @@
     "newMethods": 28,
     "newCases": 51,
     "affectedExistingCases": 6,
-    "status": "STATIC_CURRENT_CORRECTED_FIXTURE_PENDING_FRESH_DISCOVERY",
+    "status": "ACTUAL_ZERO_PLANS_ACCEPTED_WHOLE16_33_57_PENDING9_17_31",
     "pending": {
       "descriptors": 9,
       "methods": 17,
@@ -1309,7 +1310,7 @@
       "newMethods": 28,
       "newCases": 51,
       "affectedExistingCases": 6,
-      "status": "STATIC_CURRENT_CORRECTED_FIXTURE_PENDING_FRESH_DISCOVERY",
+      "status": "ACTUAL_ZERO_PLANS_ACCEPTED_WHOLE16_33_57_PENDING9_17_31",
       "pending": {
         "descriptors": 9,
         "methods": 17,
@@ -1381,7 +1382,7 @@
     "limits": "Only named ZERO preparation eligibility; no native release or production change. S09 closed in source only; L02 phase wording reconciled without ledger/source edits."
   },
   "preparationCurrent": {
-    "status": "FRESH_ZERO3_OBSERVED_ROOT_READBACK_QUALIFIED_INDEPENDENT_PREP_REVIEW_PENDING",
+    "status": "ACCEPT_FRESH_ZERO3_FOR_PENDING31_INDEPENDENT_AND_ROOT",
     "compiledSource": "4c6d8334b441193cbda6de539347bcf7998d4db6",
     "sourceBindingSha256": "b1b460708a407717d07928546a557762310d313a115e78d3efcd99b96b69f706",
     "sourcePinCount": 98,
@@ -9376,7 +9377,42 @@
       "ownedRoots": []
     },
     "processesAfter": [],
-    "limits": "Three new ZERO phases only; no actual case. Prior26 stay at old compiled45cc identities, not relabeled current4c6d. Original45cc97-pin and first6 live raw remain immutable at original context."
+    "limits": "Three new ZERO phases only; no actual case. Prior26 stay at old compiled45cc identities, not relabeled current4c6d. Original45cc97-pin and first6 live raw remain immutable at original context.",
+    "acceptance": {
+      "carrier": "d71e52d7a1731693338236e43d0d1a93da11a5b8",
+      "artifacts": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-prep-independent-review-d71e52d7-20261018.md",
+          "sha256": "80a048bf1b0165a97867c8043ea306eef5bbdac6af1a7146ac52fcf361b76a86"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-prep-independent-review-d71e52d7-20261018.json",
+          "sha256": "76a59ea9a26de987e2e7b60128c5902a946879bd0446355986dfeb1d3eb302d6"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-prep-carrier-check-d71e52d7-20261018.json",
+          "sha256": "82b9c004e089ac5bca59ad239f5681548d6054117981b8bd1d291cf9b5fe08a0"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-prep-independent-check-4c6d8334-20261018.json",
+          "sha256": "de769a72b603d02585b4ba8a7c1970dbb5387be780915901a0aa7fca3a6a7d73"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-intake-prep-acceptance-repaired-release-d71e52d7-20261018.json",
+          "sha256": "646199dbbee718a36800dc25f82673df79540a74a1152b39fcba42b9f1a7af11"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-prepared-delta-github-d71e52d7-20261018.json",
+          "sha256": "b02114d9d93270820467f5e2eaaefe31dd221bf056bd44c984f1b4ce19c2ce5b"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-d71e52d7-20261017.json",
+          "sha256": "cf513a600dee4885ba468a2ac617c1043c75eac071bf2084bedd2fa0b0811b37"
+        }
+      ],
+      "verdict": "ACCEPT_FRESH_ZERO3_FOR_PENDING31",
+      "limits": "No actual case; saved acceptance still requires Root named repaired2 HEAD. Remaining29 require separate named progression."
+    }
   },
   "actualScopes": {
     "protected-late2": {
@@ -9741,7 +9777,7 @@
     }
   },
   "preparationRequired": {
-    "status": "CHANGED_FIXTURE_UNCOMPILED_UNRUN",
+    "status": "COMPLETED_AND_ACCEPTED_THREE_ZERO_PHASES_NO_ACTUAL",
     "fresh": "Catalog BOTH, then separately named whole16/33/57 and remaining9/17/31 PlanOnly-NoBuild ZERO modes.",
     "selectionArchive": "remaining-plan persists exact-selected-scope.json, automatically included by unchanged raw archiver; actual tool requires this remaining plan.",
     "note": "Current output binaries still historical45cc; no fresh output byte-equivalence assumption before build. New inventory/counts observed afresh."

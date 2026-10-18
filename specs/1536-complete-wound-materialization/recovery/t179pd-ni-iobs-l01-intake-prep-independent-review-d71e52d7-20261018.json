@@ -1,0 +1,108 @@
+{
+  "kind": "INDEPENDENT_CORRECTED_FRESH_PREPARATION_REVIEW",
+  "carrier": "d71e52d7a1731693338236e43d0d1a93da11a5b8",
+  "actualAndCompiledSource": "4c6d8334b441193cbda6de539347bcf7998d4db6",
+  "acceptedFixtureSource": "ca2b716e72908488a6a7555c99069150500c2513",
+  "prepVerdict": "ACCEPT_FRESH_ZERO3_FOR_PENDING31",
+  "runtimeVerdict": "NO_NEW_ACTUAL_RESULTS_OR_AUTOMATIC_RELEASE",
+  "records": [
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-intake-implementation-tools/t179pd-ni-iobs-l01-intake-prep-first-catalog-current/record.json",
+      "bytes": 754157,
+      "sha256": "039fd9c43eb78f6224832b79e1fe519d6ffaae4866fb70dd3e9957bda9ea1dcf",
+      "mode": "catalog",
+      "nativeExit": 0,
+      "wallSeconds": 89.93683192000026,
+      "actualExecuted": 0
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-intake-implementation-tools/t179pd-ni-iobs-l01-intake-prep-first-whole-plan-current/record.json",
+      "bytes": 754219,
+      "sha256": "38c0fdb2049e66728e481b258024525c3597310e70c8104f818fd20ff2149afb",
+      "mode": "plan",
+      "nativeExit": 0,
+      "wallSeconds": 6.165224523996585,
+      "actualExecuted": 0
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-intake-implementation-tools/t179pd-ni-iobs-l01-intake-prep-first-remaining-plan-current/record.json",
+      "bytes": 754368,
+      "sha256": "f2a6ba1980854e5a8ba99cedeab6b66396601911e1cc603062df1d9d0b46f212",
+      "mode": "remaining-plan",
+      "nativeExit": 0,
+      "wallSeconds": 3.6233674279937986,
+      "actualExecuted": 0
+    }
+  ],
+  "catalog": {
+    "Valid": true,
+    "Methods": 11800,
+    "Categories": 808,
+    "Unmapped": [],
+    "StaleSelectors": []
+  },
+  "buildPhases": [
+    {
+      "Name": "Build-integration",
+      "Seconds": 71.0894075,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 12.0947271,
+      "Completed": true
+    }
+  ],
+  "wholePlan": {
+    "descriptors": 16,
+    "methods": 33,
+    "cases": 57
+  },
+  "remainingPlan": {
+    "descriptors": 9,
+    "methods": 17,
+    "cases": 31
+  },
+  "executedCases": 0,
+  "partition": {
+    "retainedMethods": 16,
+    "retainedCases": 26,
+    "pendingMethods": 17,
+    "pendingCases": 31,
+    "pendingComposition": "corrected2 plus previously unrun29",
+    "comparison": "Every pending descriptor equals its whole-plan descriptor except ordinal Name; exact method/case subtraction matches retained26 evidence-ledger identities."
+  },
+  "binding": {
+    "sourcePinCount": 98,
+    "sourcePinDigest": "1315ce330e8767b6c6b64b62c686f3df41506114fcde12076ab58799db1dda1f",
+    "rawChains": 32,
+    "nineFreshBinaries": 9,
+    "allCurrentOutputFiles": 1575,
+    "originalGzipCommittedExact": true,
+    "catalogToBothPlansOutputContinuity": true,
+    "allSourceContextLedgerCompiledGitExact": true,
+    "noTrxNoTests": true,
+    "emptyOwnedNamespacesAndProcesses": true,
+    "runnerCleanupSucceeded": true
+  },
+  "supports": [
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-intake-prep-independent-check-4c6d8334-20261018.json",
+      "bytes": 9600,
+      "sha256": "de769a72b603d02585b4ba8a7c1970dbb5387be780915901a0aa7fca3a6a7d73"
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-intake-prep-carrier-check-d71e52d7-20261018.json",
+      "bytes": 1457,
+      "sha256": "82b9c004e089ac5bca59ad239f5681548d6054117981b8bd1d291cf9b5fe08a0"
+    }
+  ],
+  "findings": [],
+  "eligibleNext": "After saved acceptance and Root named activation, corrected2 may run with the reviewed fixed NoBuild recorder. Remaining29 require their separate named modes and observed-outcome progression. Any unexpected FIRST result remains immutable and stops advancement.",
+  "retention": "Prior26 remain qualified only at their original actual/compiled45cc provenance under accepted source-equivalence review; these ZERO records do not reexecute or newly qualify them.",
+  "limits": [
+    "PlanOnly underfilled descriptors and Complete=false are expected because no tests execute; they are not runtime underfill failures.",
+    "No fresh semanticPASS, whole57GREEN, production release, fullNI/HOT/F1/M3/T197/Windows/CI/ZIP/A3 claim.",
+    "Reviewer performed only read-only checks and wrote /tmp review artifacts; no build/test/native replay."
+  ]
+}
