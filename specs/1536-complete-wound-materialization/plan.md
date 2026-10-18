@@ -1,3 +1,16 @@
+## L01 D01 — non-live baseline source WIP, implementation not started (2026-10-18)
+
+Accepted PLAN/source9e5b2cb9 is saved/recovered. Added only source-bound in-memory
+EOF witness and compiler/host controller, under recovery/l01-delivery-d01. It uses
+installed csc/net8 refs and exact pinned S01 owned-process finalizer; no fixture
+subprocess, game, attach/API, or helper implementation. Planned isolated root
+`/tmp/l01d01-76df8b42f6ad4ea2`; prepare and witness are separate once-only phases.
+Next finite step after this WIP save/recovery: compile witness, run it once and
+preserve expected native7 missing-delivery assertion/raw-EOF proof. This is allowed
+non-live preparation, not child0/7 release or product RED. All game/52/UNKNOWN holds
+remain. Environment read-only access/local+remote b411999b was positively confirmed
+after the20:27 disconnect notification; no new writer or prior run replay.
+
 ## L01 D01 — independent PLAN ACCEPT; helper/non-live preparation only (2026-10-18)
 
 [Independent AstraXHigh PLAN](recovery/l01-live-delivery-plan-independent-review-20261018.md)
