@@ -1,3 +1,7 @@
+## T179-Pd-NI-IOBS-L01 — direct routing fresh ZERO4 native0; PREP pending (2026-10-18)
+
+catalog native0/ZERO 366.010s, plan native0/ZERO 35.834s, corrective-plan native0/ZERO 19.594s, remaining-plan native0/ZERO 19.095s. Whole16/33/57, corrective1/1/1, separatecrash1/1/5;43 rawchains/all inventories and dated v2 boundaries saved.99pins/product23. No actual tests executed; retain51/all originalFAIL/old66529 UNKNOWN. Independent fresh PREP before separate actual gate; all broader holds remain. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — selected direct routing SOURCE accepted; ZERO4 only (2026-10-18)
 
 [Independent SOURCE](recovery/t179pd-ni-iobs-l01-selected-routing-source-independent-review-20261018.md) accepts exact guarded direct route, borrowed read-only helper, unchanged old branches/full completion body and retention51 without replay.99pins/product23; original fixtures/assertions/budgets unchanged. Current crash gate text corrected to1/1/1+1/1/5, old text retained. Save/recover/readback then fresh BOTH/catalog, whole57, correctiveuncertain1 and separatecrash5 PlanOnly ZERO4. Independent fresh PREP and separate release required before actual. Bothuncertain1 FAILs/old66529 UNKNOWN and all broader holds preserved. Following sections historical.

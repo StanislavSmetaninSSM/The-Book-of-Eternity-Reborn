@@ -1,0 +1,49 @@
+{
+  "kind": "INDEPENDENT_SELECTED_ROUTING_SOURCE_ACCEPTANCE_READBACK_NO_RUNTIME",
+  "checkedUtc": "2026-10-18T15:13:58.838152+00:00",
+  "acceptance": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
+  "sourceCandidate": "fed1f7789db0145de866cd4d73b97ab030871509",
+  "metadataOnly": true,
+  "sourcePinCount": 99,
+  "sourcePinDigest": "70aa551ca427bb9c28b18e205bcbe2e10d1ebb88487309bb73b4a31426e37eb5",
+  "productDeltaPaths": 23,
+  "restoredMetadataPaths": 12,
+  "receipt": {
+    "path": "/tmp/1536-cloud-tools/carrier-recovery-c391c030.json",
+    "bytes": 4840,
+    "sha256": "6dc82d2c1763b872a96e7399993a9d7c38f5606da5e92fa79d91d1f0d5975e92"
+  },
+  "remoteExact": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f\trefs/heads/1536-wound-b2-cloud-20261012",
+  "sourceReviewArtifactsExact": true,
+  "threeMetadataConditionsSatisfied": true,
+  "originalStaleCountReceiptPreserved": true,
+  "correctedRecoveryCount": 99,
+  "borrowedHistoricalDelta": {
+    "status": "HISTORICAL_SOURCE_PREP_ACCEPTED_AT_COMPILED3ed6_WITH_NATIVE_OUTCOMES_RETAINED",
+    "supersededBy": "selectedResumeRoutingCorrection",
+    "historicalStatusBeforeSelectedRouting": "SOURCE_AND_FRESH_ZERO4_PREP_INDEPENDENTLY_ACCEPTED"
+  },
+  "namedZero": {
+    "status": "SOURCE_ACCEPTED_SAVED_RECOVERED_ZERO4_ONLY",
+    "labels": {
+      "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-selected-routing-cloud-813f1057",
+      "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-selected-routing-cloud-813f1057",
+      "corrective-plan": "t179pd-ni-iobs-l01-process-prep-first-corrective-plan-selected-routing-cloud-813f1057",
+      "remaining-plan": "t179pd-ni-iobs-l01-process-prep-first-remaining-plan-selected-routing-cloud-813f1057"
+    },
+    "order": [
+      "catalog",
+      "plan",
+      "corrective-plan",
+      "remaining-plan"
+    ],
+    "conditions": "Independent SOURCE saved/recovered/readback first; four distinct serial invocations native0/ZERO with exact inventories and v2 boundaries; fresh independent PREP before any actual.",
+    "actualRelease": false
+  },
+  "actualRelease": false,
+  "qualifiedCases": 51,
+  "oldCorrectedCrash": "UNKNOWN",
+  "minorStatusWording": "Packet currentVerificationContract.phase and correction.freshPreparation.status still include SOURCE_PENDING; current sourceReview, correction.status and namedZeroRelease unambiguously record acceptance. Reconcile wording when saving fresh PREP; no runtime release implied.",
+  "findings": [],
+  "limits": "Immutable metadata/Git only; no running catalog/process/fixture-root/build-output inspection or runtime verdict."
+}

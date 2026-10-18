@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "SELECTED_ROUTING_SOURCE_ACCEPTED_FRESH_ZERO4_ONLY",
+  "status": "SELECTED_ROUTING_ZERO4_NATIVE0_FRESH_INDEPENDENT_PREP_PENDING",
   "sourceCheckpoint": "fed1f7789db0145de866cd4d73b97ab030871509",
   "sourcePinDigest": "70aa551ca427bb9c28b18e205bcbe2e10d1ebb88487309bb73b4a31426e37eb5",
   "sourcePinCount": 99,
@@ -1347,7 +1347,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "After saved/recovered SOURCE acceptance and readback, four explicit fresh ZERO phases only; fresh independent PREP before newly named uncertain1 and separate newcrash5. Retain51/all frozenFAIL/oldUNKNOWN.",
+  "next": "Save/recover ZERO4 originals and independent PREP, then only newly named uncertain1 and later distinct newcrash5. Retain51/allFAIL/oldUNKNOWN.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -1523,7 +1523,7 @@
     "phase": "HISTORICAL_COMPILED_6AB43F6A_ZERO3_PRE_CORRECTION_INELIGIBLE_FOR_CORRECTED_ACTUALS"
   },
   "release": {
-    "status": "NONE_SOURCE_AND_FRESH_PREP_PENDING_NO_NATIVE_RETRY",
+    "status": "NONE_FRESH_INDEPENDENT_PREP_PENDING",
     "mode": null
   },
   "newOriginalObservedPassingCases": 4,
@@ -3212,7 +3212,7 @@
     "supersededBy": "selectedResumeRoutingCorrection"
   },
   "selectedResumeRoutingCorrection": {
-    "status": "SOURCE_ACCEPTED_FRESH_PREP_UNRUN",
+    "status": "SELECTED_ROUTING_ZERO4_NATIVE0_FRESH_INDEPENDENT_PREP_PENDING",
     "baseline": "f390eb0602a99f5a2387ab7dc6ef52571e856b26",
     "artifacts": [
       {
@@ -3278,7 +3278,259 @@
     "sourcePinCount": 99,
     "productDeltaCount": 23,
     "freshPreparation": {
-      "status": "UNRUN_SOURCE_PENDING"
+      "status": "ORIGINAL_NATIVE0_ZERO4_CANDIDATE_INDEPENDENT_PREP_PENDING",
+      "actualSource": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
+      "compiledSource": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
+      "sourcePinCount": 99,
+      "sourcePinDigest": "70aa551ca427bb9c28b18e205bcbe2e10d1ebb88487309bb73b4a31426e37eb5",
+      "productDeltaCount": 23,
+      "records": [
+        {
+          "mode": "catalog",
+          "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-selected-routing-cloud-813f1057/record.json",
+          "sha256": "946ebfbf670608d49c133bdfa5849cbde7c7d98ab3fc709cb17cac09be30085b",
+          "nativeExit": 0,
+          "actualTestsExecuted": 0,
+          "seconds": 366.0095347150018,
+          "descriptors": 16,
+          "methods": 33,
+          "cases": 57,
+          "resultDirectories": [
+            "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-151154-997-48068-e6fcb65c372842a99840c54891e2cf7a-categories"
+          ]
+        },
+        {
+          "mode": "plan",
+          "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-whole-plan-selected-routing-cloud-813f1057/record.json",
+          "sha256": "94ae54916f49069d389926f0bd4e022491cd6a0be10c2376a7f5f0056eb12e14",
+          "nativeExit": 0,
+          "actualTestsExecuted": 0,
+          "seconds": 35.834032512000704,
+          "descriptors": 16,
+          "methods": 33,
+          "cases": 57,
+          "resultDirectories": [
+            "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-151846-982-48900-91f6d28dbd6c43519234d3d1322ad1be-categories"
+          ]
+        },
+        {
+          "mode": "corrective-plan",
+          "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-selected-routing-cloud-813f1057/record.json",
+          "sha256": "b4be1de2490fbc66029ce0821b71601500849732e87474f42121214fbb439535",
+          "nativeExit": 0,
+          "actualTestsExecuted": 0,
+          "seconds": 19.593556258001627,
+          "descriptors": 1,
+          "methods": 1,
+          "cases": 1,
+          "resultDirectories": [
+            "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-151933-488-49177-40d0f37fbe5f4c9c9e840774b2353a18-categories"
+          ]
+        },
+        {
+          "mode": "remaining-plan",
+          "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-selected-routing-cloud-813f1057/record.json",
+          "sha256": "24e4203c515ae6f761d79c5bc51f8174fc54dab015800f26930c4c00f0008890",
+          "nativeExit": 0,
+          "actualTestsExecuted": 0,
+          "seconds": 19.094928958998935,
+          "descriptors": 1,
+          "methods": 1,
+          "cases": 5,
+          "resultDirectories": [
+            "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-152031-441-49402-8e9325957111435084b37721ca0448a7-categories"
+          ]
+        }
+      ],
+      "archive": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-preparation-813f1057-files-20261018/archive.json",
+        "sha256": "1cf277ad899da2ccb2abb3e585c387dfd09bbe1ca601224d03d9d3bb0ff921fc",
+        "bytes": 23007,
+        "rawChains": 43
+      },
+      "binaryCopies": 9,
+      "completeOutputFiles": 1575,
+      "catalog": {
+        "categories": 808,
+        "methods": 11800,
+        "unmapped": [],
+        "staleSelectors": [],
+        "executed": 0
+      },
+      "whole": {
+        "descriptors": 16,
+        "methods": 33,
+        "cases": 57,
+        "executed": 0
+      },
+      "corrective": {
+        "descriptors": 1,
+        "methods": 1,
+        "cases": 1,
+        "executed": 0
+      },
+      "remaining": {
+        "descriptors": 1,
+        "methods": 1,
+        "cases": 5,
+        "executed": 0
+      },
+      "supplementalBoundaries": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-catalog-before-813f1057.json",
+          "sha256": "fdb034cba911174cd3af3bca677eee89fde56ec7b3bbdc70170833fab4f45191",
+          "bytes": 107530,
+          "phase": "selected-routing-catalog-before",
+          "cleanBoundary": true,
+          "entries": 120,
+          "datedBoundaryGapSeconds": 2.7214
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-catalog-after-813f1057.json",
+          "sha256": "e5a0243084d0eb06a4f00932a399d774d8b5c86e8270009c9be6d1e7a90d251c",
+          "bytes": 119039,
+          "phase": "selected-routing-catalog-after",
+          "cleanBoundary": true,
+          "entries": 124,
+          "datedBoundaryGapSeconds": 1.790495
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-whole-before-813f1057.json",
+          "sha256": "d59222aac2d284d79d8bc731ee05b6574eb7d7e06270e52c45aaa5aba7129a7e",
+          "bytes": 116942,
+          "phase": "selected-routing-whole-before",
+          "cleanBoundary": true,
+          "entries": 124,
+          "datedBoundaryGapSeconds": 1.82721
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-whole-after-813f1057.json",
+          "sha256": "122a979f22d5d746484324ff9386d88c003ab90936d4a4a68fb05dd6c00b7768",
+          "bytes": 116953,
+          "phase": "selected-routing-whole-after",
+          "cleanBoundary": true,
+          "entries": 124,
+          "datedBoundaryGapSeconds": 0.605463
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-corrective-before-813f1057.json",
+          "sha256": "37d140de1b810b256379034b6736fcf83a97fa10edeccd0121a7c0e8d5215e71",
+          "bytes": 116945,
+          "phase": "selected-routing-corrective-before",
+          "cleanBoundary": true,
+          "entries": 124,
+          "datedBoundaryGapSeconds": 1.906753
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-corrective-after-813f1057.json",
+          "sha256": "f732180d400aac16ee9b3baabb88a0fef9b33c6613a4dfb0ed4af98d08998bc1",
+          "bytes": 116954,
+          "phase": "selected-routing-corrective-after",
+          "cleanBoundary": true,
+          "entries": 124,
+          "datedBoundaryGapSeconds": 0.711136
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-remaining-before-813f1057.json",
+          "sha256": "e4d795c0fd88f7ece36a3df80fff74814d4eebf99e3c49cbadde7b8ad6ac46ac",
+          "bytes": 116944,
+          "phase": "selected-routing-remaining-before",
+          "cleanBoundary": true,
+          "entries": 124,
+          "datedBoundaryGapSeconds": 2.039846
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-remaining-after-813f1057.json",
+          "sha256": "3cf50dc7af05c1140b0aee1cec83db4b851af80440e3f68157202cc8bb106fc2",
+          "bytes": 116955,
+          "phase": "selected-routing-remaining-after",
+          "cleanBoundary": true,
+          "entries": 124,
+          "datedBoundaryGapSeconds": 0.618143
+        }
+      ],
+      "prepQualificationBoundary": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-prep-qualification-813f1057.json",
+        "sha256": "73c64ad9fde9ddf1e3e3801ebc7a3e0cd6d5098aef2108e167254392a957b08d",
+        "bytes": 115785
+      },
+      "sourceAcceptance": {
+        "verdict": "ACCEPT_SOURCE_AND_NAMED_ZERO4_ONLY_SUBJECT_TO_METADATA_SAVE_READBACK",
+        "candidate": "fed1f7789db0145de866cd4d73b97ab030871509",
+        "model": "gpt-6-astra",
+        "reasoningEffort": "xhigh",
+        "artifacts": [
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/check_l01_selected_routing_source.py",
+            "sha256": "4369b8d4357dba6f89505532d5f12dd6e8cbbd7fc82db2dc7eed34c88725d163",
+            "bytes": 23583
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-independent-check-fed1f778-20261018.json",
+            "sha256": "123ec651b82761e8fd366c3ece08615521cf311dc9b982c40eca9661d456bdb7",
+            "bytes": 17853
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-independent-review-20261018.json",
+            "sha256": "e76fd8936fc177775beaee891d7486ea73947c019786978209bdd7da15f51d09",
+            "bytes": 14326
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-independent-review-20261018.md",
+            "sha256": "cf40c5c90e231b27615c31a9e9ff77e4516a1ca596d59016087c0285206e6cab",
+            "bytes": 3116
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-selected-routing-phase-20261018.py",
+            "sha256": "da65d134a2c41f471c34d4983773239d4641df7058eb632694db90e61e8cc5b7",
+            "bytes": 2404
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-candidate-recovery-fed1f778-20261018.json",
+            "sha256": "448bda3647a27af0ce4b4772a62ac38c5a7af9354f8219ab491809b9cb56dc0d",
+            "bytes": 2399
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-recovery-count-attestation-fed1f778-20261018.json",
+            "sha256": "e179e1fb29d6da7548c76277ac485b6a15407c2c152f8b01d55ea3a0f68fd49b",
+            "bytes": 769
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-original-fixed-count-20261018.py",
+            "sha256": "adad2fb10f6fc5bfcd67181cb9424e50891e88ba06f663d66cce78b7b82fc26f",
+            "bytes": 2116
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-dynamic-pins-20261018.py",
+            "sha256": "c95aa47f4d71ac83e0976a0ffb2d749d16b13ac19d3d68d20a5e007fb5a78ae7",
+            "bytes": 2152
+          }
+        ],
+        "metadataConditions": "Current crashRequalificationPlan.gates updated to corrective1/1/1+remaining1/1/5; borrowedLeaseCorrection explicitly historical/superseded while accepted records retained. Original gate text/status preserved. Original fed1 receipt hardcoded98 retained; explicit99-count attestation and exact minimal dynamic-count utility saved. Exactremote/recovery/readback before named ZERO4; no actual release."
+      },
+      "sourceAcceptanceRecovery": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-acceptance-recovery-c391c030-20261018.json",
+        "sha256": "6dc82d2c1763b872a96e7399993a9d7c38f5606da5e92fa79d91d1f0d5975e92",
+        "bytes": 4840
+      },
+      "sourceAcceptanceReadback": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-acceptance-parent-readback-c391c030-20261018.json",
+        "sha256": "4019a3afbee97c5d5c0039af21b7653e45a0a2d7bcb685b80211e4db70cd3832",
+        "bytes": 884
+      },
+      "cleanup": "Original owned-tree/runtime cleanup and dated v2 argv/stat boundaries; original exe-only arrays incomplete; no continuous/instant absence inference.",
+      "orchestrationEvidence": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-selected-routing-phase-20261018.py",
+          "sha256": "da65d134a2c41f471c34d4983773239d4641df7058eb632694db90e61e8cc5b7",
+          "bytes": 2404
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-acceptance-readback-c391c030-20261018.json",
+          "sha256": "f9b523a17fee26ac2e682f1d874443d1849a3f6ac80f50e9d4d9c897b6d2e359",
+          "bytes": 2576
+        }
+      ]
     },
     "sourceAcceptance": {
       "verdict": "ACCEPT_SOURCE_AND_NAMED_ZERO4_ONLY_SUBJECT_TO_METADATA_SAVE_READBACK",
