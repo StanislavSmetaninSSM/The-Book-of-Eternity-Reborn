@@ -1,3 +1,15 @@
+## L01 S01 — SOURCE/PREP ACCEPT; separately saved one-shot release (2026-10-18)
+
+[Independent helper SOURCE/PREP ACCEPT](recovery/l01-managed-stack-helper-source-prep-independent-review-20261018.md)
+accepts exactd2c716af,77 focused checks. Original PREP remains0422f6c7/13files;
+explicit exact2 observer-source binding accepted, no compile/metadata replay.
+After this acceptance's push/recovery/readback, only L01_MANAGED_STACK_S01_20261018_D2C716AF
+may run once on its internally launched sanitized synthetic target, using installed
+runtime8.0.32/DAC/client and unchanged known-work/stack/ownership oracles. S01 still
+UNRUN here; raw core stays private. First original must be preserved/recovered before
+independent EVIDENCE. No retry/fallback/gameplay/future custody snapshot release.
+M01/L0152of57/oldUNKNOWN, separate platform holds and all broader restrictions stay.
+
 ## L01 S01 — observer SOURCE correction; original PREP immutable (2026-10-18)
 
 Independent SOURCE HOLD33cb9a07 found3 observer/accounting defects, not a game or

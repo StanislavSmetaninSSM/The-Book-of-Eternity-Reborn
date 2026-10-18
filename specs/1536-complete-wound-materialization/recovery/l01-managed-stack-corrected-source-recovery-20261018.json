@@ -1,0 +1,408 @@
+{
+  "kind": "M01_EXACT_GITHUB_RECOVERY",
+  "sha": "d2c716af0946484e1440783d2ad0425b8e469b07",
+  "base": "0292234faa8eb1cd405ade611057be07bafa5e19",
+  "checkedUtc": "2026-10-18T19:49:04.830222+00:00",
+  "clean": true,
+  "remoteShaVerified": true,
+  "localSourceOrObjectReuse": false,
+  "changedPaths": 54,
+  "files": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.SarefAuditPreservation.cs",
+      "bytes": 13532,
+      "sha256": "058d9be5aff1897bb80be5e870f27c875ae35356c970792a6dfa0bfe54ee21bd",
+      "gitBlob": "da4f5a539347d9c9b64a7f7be646443d51123426",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.cs",
+      "bytes": 175823,
+      "sha256": "41ea9966751a693a858cf85c1db2ce83dd7d8bfc30d2a0d8b1e15e1c986c0964",
+      "gitBlob": "009e3623b63440641e11af65ed927bf00dfde0ce",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/PreparedFixtureTree.cs",
+      "bytes": 2972,
+      "sha256": "429c1eeb63cc80a0776cd48253b6cf3ce786e20f7d23cccfe2c4a5f18745e5a5",
+      "gitBlob": "db8a9961d7cfb9f499c2a8cc8424d1b3b1ad104a",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/l01-managed-stack-capability-plan-20261018.md",
+      "bytes": 12680,
+      "sha256": "d7c4ca8ff80b40eeb9b278f87d69563945ee8d5873ff1843878185afdabcd4e9",
+      "gitBlob": "52f0314038a8f39da9178062a042054bec35b732",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/t148-m01-historical-audit-preservation-plan-20261018.md",
+      "bytes": 10125,
+      "sha256": "287762cd8de16d243a0f3faf2305c42238f0b6ca53d597121dfc2cd3c8dc4d46",
+      "gitBlob": "b06d3f9b3fa3d2126f897cd8946e5862509d7fdc",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 2468051,
+      "sha256": "787d4d04506051a6916d1ccb32e0ff19b31a76850b8f94bdb60eabea512acc49",
+      "gitBlob": "2193af99df9fb912c8a8274a0547dc4b63d89c69",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-affected-preparation-20261018.json",
+      "bytes": 4357,
+      "sha256": "e903faa9b07bbedbe97f610baf777a557c0c4d05d7b4da60099dfeae4ee397ec",
+      "gitBlob": "6e55089b890f92f8757ff2573be174b596d69ad2",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-api-observer-proof-20261018.json",
+      "bytes": 2534,
+      "sha256": "40a43554dc4872cf55d750b91704e7d773301ef911c038753749d57cbc4c9a6b",
+      "gitBlob": "a1f2e2c9627afa71414100a434ee21bc87a2df9a",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-control-20261018.json",
+      "bytes": 4388,
+      "sha256": "0c2be3b726c9b71593ccbeae0baf151a2cf02fc45e3b2ee650b69319521de5a7",
+      "gitBlob": "5873d2a73b762f52d2265509cf333859895a7c22",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-inventory-20261018.json",
+      "bytes": 43429,
+      "sha256": "d13edf86aa1315385ed0aa56255e4212f4fb40e723c137c97ab86c2bca1dc528",
+      "gitBlob": "580868241fa60cc1b47b609b56f810a496884136",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-plan-independent-review-20261018.json",
+      "bytes": 11475,
+      "sha256": "e8ba9ecc9dc2bf3d0720a728efc21db2ed83bd00bbba5320fe69d9a2454d4eee",
+      "gitBlob": "f6f7f9dfc93dc52644f9e18c9d8bc22642658e26",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-plan-independent-review-20261018.md",
+      "bytes": 2842,
+      "sha256": "f3be7a08a2c0635a10b6540c4bd31cc8beb80d47f90f026527441f331702b746",
+      "gitBlob": "9501673eb9a819836addb960bc002876bb913778",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-preparation-20261018.json",
+      "bytes": 11628,
+      "sha256": "382d98ca327c872dc7f64abd79e1d3d7b1e67b18132be60caee92455e38f04fe",
+      "gitBlob": "a921d166fee1354b3a08e3ca51dfc653d1cb4ffd",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-preparation-originals-20261018.zip",
+      "bytes": 19084,
+      "sha256": "80d35531a4c2bdaf14ba5690eacc213905b73b246c82c0f6c4b6a03d5dd6702c",
+      "gitBlob": "6f3f70f7aea64867e85132c3e6d519aefc032d39",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-source-prep-original-hold-20261018.json",
+      "bytes": 10511,
+      "sha256": "55c165f7fc0733fe2ffbdf8987b5115c1fec735b9054e787ee5da4e4f44c2097",
+      "gitBlob": "0db85822955236767132435378df3562416e7fce",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-source-prep-original-hold-20261018.md",
+      "bytes": 2446,
+      "sha256": "65dbe5674c136cdbfe31a74b91065b76e8d69792b65d6571a44b123e79d36a2b",
+      "gitBlob": "5ce796bc7af288f2983137a99c327e6bb6773cbf",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-source-recovery-20261018.json",
+      "bytes": 14792,
+      "sha256": "dceeb1824208e1ee35d90fa13f873cc73773f74f27912aef2d540480d61f7690",
+      "gitBlob": "3c1dc1e2c58e3cd49e56bf7c32e109b3d7914a76",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-plan-candidate-recovery-20261018.json",
+      "bytes": 12560,
+      "sha256": "8d61f4f983226bb27800b4d2590dce86e1e1d80b393a7418e873479698664f46",
+      "gitBlob": "d6a1b57a92714d2a895c11bcc535512077174723",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Collect.ps1",
+      "bytes": 6695,
+      "sha256": "10690f7dc53b67478cc5446c77fc61103629529a214a94fa8d04298f8ec95ceb",
+      "gitBlob": "c950878c8526f43d395c2eb209a70a505e837435",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Synthetic.cs",
+      "bytes": 2949,
+      "sha256": "8a90cc6af0eac680a405381be106fa11d6ff70b932a46eb21a93a8342f10beed",
+      "gitBlob": "7cbe8221e78f91846c1e0b2c24b7749c0e0f360e",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/check_api_observer.ps1",
+      "bytes": 3028,
+      "sha256": "034d7e56ee5fa48a6c128dd01970aaa016906051a367ec2fad031385b364c0d9",
+      "gitBlob": "cf3c8ad2c69b2440b5e46e8ccc8ab2f20add6c5a",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/check_teardown.py",
+      "bytes": 4971,
+      "sha256": "4484ad592dff8924f303b91ca21b5b0156a275ad80138bc22274f28adc0c075f",
+      "gitBlob": "98933660ad5ee0ced48c133be39d742aa3979990",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
+      "bytes": 24445,
+      "sha256": "d121731cff4867acf993d034962c9f5591fdcb496307a5fe0e9642b8392da333",
+      "gitBlob": "69ed3bc4652383cc83b31356e2d08322d9bb0dbd",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-teardown-proof-20261018.json",
+      "bytes": 5967,
+      "sha256": "93feceddb97740bb9b896fa28d0119d6f0f70420e16dbba260e1bb8356101b34",
+      "gitBlob": "2bb2f3767f258740ae4962340ecf0f6e65e2f9a9",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-actual-evidence-20261018.json",
+      "bytes": 254086,
+      "sha256": "1e2639f5feeb6a6ee2794214fd71d092354c0e758a9a08f1d44a00b87d4ac59b",
+      "gitBlob": "89f40fe9ea470b888179c71c990218f4afdaab85",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-actual-original-recovery-20261018.json",
+      "bytes": 10317,
+      "sha256": "17a57c4ff5fac0f935832398ffdac83817388f95e276831094ba77e858b160a7",
+      "gitBlob": "87ad62f91d7394ebb791d0ee250bf80793e67324",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-actual-originals-20261018.zip",
+      "bytes": 245310,
+      "sha256": "d6170db07781497b2de5fe410134bcf9c5450ab0d280a5b519d6b21660c07179",
+      "gitBlob": "fab71d4e9b1eba35e840085f6a36a98c117d1b76",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-controller-proof-20261018.json",
+      "bytes": 10200,
+      "sha256": "91c6fcf15078e7db660f5c6d905de1715f8f6777f31ac94f759c32ba10aa86a5",
+      "gitBlob": "b42b54ec57160a7abec8f282423ea9d3a0a63878",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-controller-proof-20261018.py",
+      "bytes": 5064,
+      "sha256": "77bd7410aaf6d795d94c53a0dc482740cb7a408fb005beec84f8bdbfeb55480b",
+      "gitBlob": "64847a7ff03a8192a24b4c4f21aa7dced275c8a7",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-evidence-focused-checks-af52fa6f-20261018.json",
+      "bytes": 9557,
+      "sha256": "379e9ae60245707817bfb7b863aeffcd2341575dbafaf039480e0f764c1d88bd",
+      "gitBlob": "d5ad61b34f317f15a9fa666143bf1d88ff44f364",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-evidence-independent-review-20261018.json",
+      "bytes": 10160,
+      "sha256": "ac48275d548a221bfd9b986cf64d8de833f5fdaee28b50eda0e66c7204e90856",
+      "gitBlob": "dc6047c32e866f1de8c99661031bf10b867d195b",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-evidence-independent-review-20261018.md",
+      "bytes": 2418,
+      "sha256": "e092c8795b692ac89931a4ea3122fd3aed5c77e90bd3d7538711a99b9d4a26ed",
+      "gitBlob": "c561d3da88467d97836a9d425eb590862edb4163",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-first-release-recovery-20261018.json",
+      "bytes": 9379,
+      "sha256": "e75b5d82477fc880c687af94719da99159388b158f1407eeca0f03954b2acdda",
+      "gitBlob": "5ccd0990d80570795e9f8af68327d400d1d3168f",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-plan-independent-review-20261018.json",
+      "bytes": 19667,
+      "sha256": "59b5f9f5c272877643beda1b26238bb80c56fcd4d53889ab3ebee56661ab8024",
+      "gitBlob": "ef43bebec969a1a33b7be4072be5736317efa2ba",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-plan-independent-review-20261018.md",
+      "bytes": 3453,
+      "sha256": "c0e99c973fea1c498aa71e9a6f919182173708b62ee59349d1de84627f9cd136",
+      "gitBlob": "9a523178cc6b2e3d190c5cb8af6484f6d9d2df34",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-prep-evidence-20261018.json",
+      "bytes": 497152,
+      "sha256": "eec5a9282e568e607a5c1235608facf4ad74074ad2fb53b65783b5973f828946",
+      "gitBlob": "5c96e86e48c64628a43a1f6c41659c511ae44a57",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-prep-independent-review-20261018.json",
+      "bytes": 6964,
+      "sha256": "15bf1bf3fb719ce1ac29dc71281155e36e633b386ce374e9350ff17b1e43623a",
+      "gitBlob": "d0b5901a8cfcb80fe959584b37053f94022356f3",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-prep-independent-review-20261018.md",
+      "bytes": 2365,
+      "sha256": "e0fdcea1d6474db7d8f8f37aac390b42b89927da889a027905e57a562569f9a7",
+      "gitBlob": "40ccf3a117aa381d8e232f8944cd7b8dfb0f837b",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-prep-original-recovery-20261018.json",
+      "bytes": 8117,
+      "sha256": "2f6aa52d3883e387e262c47457626a84394e48198555adf07de0b1b173b9a2db",
+      "gitBlob": "fe5b4573da1c27d3fa88a5a3c6cd72561013911f",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-prep-originals-20261018.zip",
+      "bytes": 697013,
+      "sha256": "d19cfcaebd98492a034a36435d4aab24c429c0cc09f61bd25e72e47f841992ec",
+      "gitBlob": "96683121077a3d5bddc86b577c8ac362895e1d32",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-prep-static-edb63309-20261018.json",
+      "bytes": 9629,
+      "sha256": "a341a57613b9bc9d8856d05fb9eab1112f8bd670ceafbf4f9fddebeb5342da9b",
+      "gitBlob": "c114aaa5af5386ec92a9993bd70beee2ca63c250",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-recover-20261018.py",
+      "bytes": 3466,
+      "sha256": "2d8213fb9bd306c19ed332935fed0ae24ec9da79d4c4c46151ac6d9d84b860b2",
+      "gitBlob": "8f224ee060a3b0142c3e19445908e2fe3d993a80",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-run-phase-20261018.py",
+      "bytes": 7435,
+      "sha256": "c52f7b5243c209ab4a9fc1fe1e0f3294e05a932e97539dfd49e712ad9d93f5b5",
+      "gitBlob": "b0d6f863ed843f2f5a53d88c9deb24ef74db142c",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-source-admission-recovery-20261018.json",
+      "bytes": 7180,
+      "sha256": "8803fbc47a38bf3a9dd55ab857ab8a87b71051ce2e6cfb8b445fc771a73e1a1a",
+      "gitBlob": "2ba5ebc003a91e08114ce8b0e4a7c2fd25c47049",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-source-corrected-independent-review-20261018.json",
+      "bytes": 9625,
+      "sha256": "65bfb8a8bc74c42777d7ff5b903539b3bd58e3c8563474c36ad501a09e1dccc0",
+      "gitBlob": "7fe21fca3b09b1514ee7ff4e0c965e33df64e507",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-source-corrected-independent-review-20261018.md",
+      "bytes": 2179,
+      "sha256": "0e4de0bccb2774cd338398e5e27e1ddd2b31a28f8d5b68fc470328cffb3cdfbf",
+      "gitBlob": "7ef2aa5aa681ca49fd59b3da9f24165423ae727d",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-source-correction-recovery-20261018.json",
+      "bytes": 6204,
+      "sha256": "3b36387a8b1c645fc8a1f4cf7fa77739417cbb55b226317c7af7353143d6be6d",
+      "gitBlob": "5f05fd517972b18d21953b3f29d145bd85c17993",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-source-original-hold-20261018.json",
+      "bytes": 8549,
+      "sha256": "53a0e539402918b43af2843a048e4ff937f7519fd2ce442168359ddba1d42705",
+      "gitBlob": "932a48f7adf6aa28bd7ed8e683155f450d47732b",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-source-original-hold-20261018.md",
+      "bytes": 2268,
+      "sha256": "390e0e633cd158fe6add780d0eacea873e5a19e35c3048b12400d8c35c208645",
+      "gitBlob": "364c305907f0388e509827e77282dded84fab41c",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-source-packet-20261018.json",
+      "bytes": 27576,
+      "sha256": "e6ed9116ee330bcf9afd948cc1cea122ab514db64020f906581b7efd2b88760e",
+      "gitBlob": "cb30df2eebd535c4902e24ca608e8531514493a0",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-source-static-8b1b80f7-20261018.json",
+      "bytes": 17015,
+      "sha256": "08de1539535104ebf4cd973a5ca1ccfe7c7fe8e52570328ab92028ad98f81840",
+      "gitBlob": "12d540a2e1411eeb1f31507908aaa3745633b575",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "bytes": 1609586,
+      "sha256": "754c1b72813255a69c1d99c05d9d73da8dcf28ecb899cce7e562f3a91efe938e",
+      "gitBlob": "44751ebe44b23fd0faafb877e2941da76a4aea63",
+      "mode": "100644"
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 2015172,
+      "sha256": "e1fce3f722777efb741dbc8edd85277f702c2a3e205c62b7fa4265e20154d696",
+      "gitBlob": "7c43b0b4ddee2f021c4cd997120e21f23242aeb1",
+      "mode": "100644"
+    },
+    {
+      "path": "tests/selection.json",
+      "bytes": 777,
+      "sha256": "8ed0e422dc7464252758fbc126fec536477392d6300c26d353009daf14c62578",
+      "gitBlob": "5b564883c523432a6b551ccf73b170184907ae46",
+      "mode": "100644"
+    }
+  ],
+  "historicalL01UnchangedPins": 99,
+  "historicalL01ExpectedExceptions": [
+    {
+      "path": "tests/categories.json",
+      "historical": "08bfb226bb044544e992996c241abbe61a87d0a3ab543a9e30e71479b85ed480",
+      "current": "e1fce3f722777efb741dbc8edd85277f702c2a3e205c62b7fa4265e20154d696"
+    },
+    {
+      "path": "tests/selection.json",
+      "historical": "817e4e70d02ae22af34f1bdeeccf01e74f4a2b0e0651f1c03dfd1db548da3c4c",
+      "current": "8ed0e422dc7464252758fbc126fec536477392d6300c26d353009daf14c62578"
+    }
+  ],
+  "historicalL01LedgersByteIdentical": true,
+  "productionChanges": false,
+  "M01SourcePinsVerified": 93,
+  "sourcePinDigest": "84503e9eb22c08940d328a4c8be34464684fc6f0947a00fb04d99ab1df9066d2",
+  "limits": "Source/evidence recovery only; L01 original52/57 provenance retained, no current cross-build qualification or lost bytes recovery."
+}
