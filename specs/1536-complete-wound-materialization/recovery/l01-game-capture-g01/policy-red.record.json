@@ -1,0 +1,184 @@
+{
+  "kind": "G01_POLICY_RED",
+  "source": "57afc2cc7e160fd72a3a76c1bf8de41c07dbc759",
+  "nativeExit": 1,
+  "observerErrors": [],
+  "gameProcesses": 0,
+  "requests": 0,
+  "sourceImages": [
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/JointInterfaceDiagnosticDelivery.cs",
+      "bytes": 11956,
+      "sha256": "19accc81f98e30e7d0addc8e1774c2174c126fc8e81dcf045b67a61c1c76300c"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/JointInterfaceManagedCapturePolicy.cs",
+      "bytes": 574,
+      "sha256": "192716eaf0d1048020dd2a9ebd74b15523100c93bae9554a85001fdf1ae8dade"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/PolicyProbe.cs",
+      "bytes": 4801,
+      "sha256": "b2405d34948fbb1868dc64661bdab1983aaa1b8fe0fccf147104d07a36bf0d68"
+    }
+  ],
+  "compile": {
+    "command": [
+      "/tmp/1536-cloud-tools/dotnet/dotnet",
+      "exec",
+      "/tmp/1536-cloud-tools/dotnet/sdk/10.0.402/Roslyn/bincore/csc.dll",
+      "-noconfig",
+      "@/tmp/g01-policy-check/red/compile.rsp"
+    ],
+    "nativeExit": 0,
+    "observerErrors": [],
+    "identity": {
+      "pid": 116997,
+      "birthTick": 5044665,
+      "parentPid": 116972,
+      "uid": 1000
+    },
+    "joined": true
+  },
+  "probe": {
+    "command": [
+      "/tmp/1536-cloud-tools/dotnet/dotnet",
+      "/tmp/g01-policy-check/red/Policy.dll"
+    ],
+    "nativeExit": 1,
+    "observerErrors": [],
+    "identity": {
+      "pid": 117015,
+      "birthTick": 5044899,
+      "parentPid": 116972,
+      "uid": 1000
+    },
+    "joined": true
+  },
+  "results": {
+    "kind": "G01_PURE_POLICY",
+    "passed": 0,
+    "failed": 23,
+    "cases": [
+      {
+        "name": "wait_for_exact_control",
+        "passed": false,
+        "error": "NotImplementedException: G01 admission not implemented"
+      },
+      {
+        "name": "arm_once_wait_until_receipt_plus60",
+        "passed": false,
+        "error": "NotImplementedException: G01 admission not implemented"
+      },
+      {
+        "name": "timer_anchored_to_receipt_not_dequeue",
+        "passed": false,
+        "error": "NotImplementedException: G01 admission not implemented"
+      },
+      {
+        "name": "stale_queue_cancels",
+        "passed": false,
+        "error": "NotImplementedException: G01 admission not implemented"
+      },
+      {
+        "name": "future_timestamp_cancels",
+        "passed": false,
+        "error": "NotImplementedException: G01 admission not implemented"
+      },
+      {
+        "name": "unknown_admission_phase_cancels",
+        "passed": false,
+        "error": "NotImplementedException: G01 admission not implemented"
+      },
+      {
+        "name": "late_arm_insufficient_window_cancels",
+        "passed": false,
+        "error": "NotImplementedException: G01 admission not implemented"
+      },
+      {
+        "name": "expiry_requires25_seconds",
+        "passed": false,
+        "error": "NotImplementedException: G01 admission not implemented"
+      },
+      {
+        "name": "uncertain_cancellation_is_sticky",
+        "passed": false,
+        "error": "NotImplementedException: G01 admission not implemented"
+      },
+      {
+        "name": "accepted_cancellation_is_sticky",
+        "passed": false,
+        "error": "NotImplementedException: G01 admission not implemented"
+      },
+      {
+        "name": "late_cancellation_is_sticky",
+        "passed": false,
+        "error": "NotImplementedException: G01 admission not implemented"
+      },
+      {
+        "name": "eof_cancellation_is_sticky",
+        "passed": false,
+        "error": "NotImplementedException: G01 admission not implemented"
+      },
+      {
+        "name": "raw_fault_cancellation_is_sticky",
+        "passed": false,
+        "error": "NotImplementedException: G01 admission not implemented"
+      },
+      {
+        "name": "observer_fault_cancellation_is_sticky",
+        "passed": false,
+        "error": "NotImplementedException: G01 admission not implemented"
+      },
+      {
+        "name": "dropped_cancellation_is_sticky",
+        "passed": false,
+        "error": "NotImplementedException: G01 admission not implemented"
+      },
+      {
+        "name": "malformed_cancellation_is_sticky",
+        "passed": false,
+        "error": "NotImplementedException: G01 admission not implemented"
+      },
+      {
+        "name": "oversize_cancellation_is_sticky",
+        "passed": false,
+        "error": "NotImplementedException: G01 admission not implemented"
+      },
+      {
+        "name": "tail_cancellation_is_sticky",
+        "passed": false,
+        "error": "NotImplementedException: G01 admission not implemented"
+      },
+      {
+        "name": "identity_cancellation_is_sticky",
+        "passed": false,
+        "error": "NotImplementedException: G01 admission not implemented"
+      },
+      {
+        "name": "duplicate_cancellation_is_sticky",
+        "passed": false,
+        "error": "NotImplementedException: G01 admission not implemented"
+      },
+      {
+        "name": "regression_cancellation_is_sticky",
+        "passed": false,
+        "error": "NotImplementedException: G01 admission not implemented"
+      },
+      {
+        "name": "tracking_cancellation_is_sticky",
+        "passed": false,
+        "error": "NotImplementedException: G01 admission not implemented"
+      },
+      {
+        "name": "noncontrol_does_not_arm",
+        "passed": false,
+        "error": "NotImplementedException: G01 admission not implemented"
+      }
+    ],
+    "gameProcesses": 0,
+    "requests": 0
+  },
+  "durationSeconds": 2.5500344690008205,
+  "status": "EXPECTED_UNIMPLEMENTED_RED"
+}

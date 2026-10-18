@@ -1,3 +1,7 @@
+## G01 pure policy RED preserved; phase-guard clarification pending (2026-10-18)
+
+Source57afc2cc clean/pushed/recovered176paths149pins: directcompiler0, pure policy probe native1/23expected NotImplemented RED/0PASS, no observer errors,2.550s. Original5small record/stdout/stderr files copied exact underG01; zero game/fixture/collector/API. These are deliberate new-policy RED, not game/SDK fixture failures. Minimal policy implementation now WIP; GREEN remains UNRUN. The user wording phase uncertainty cancelscapture versus permanentlyUNKNOWN D01CapturePhase was raised as an explicit asynchronous semantic clarification; no dependent actual until answer. Other tooling can proceed without interpreting UNKNOWN as a known phase.
+
 ## L01 G01 — authorized one managed snapshot; implementation/PREP before actual (2026-10-18)
 
 Latest user explicitly approves [minimal G01 implementation](design/l01-game-managed-snapshot-g01-plan-20261018.md), independent SOURCE and fresh affected PREP, then exactly existing diagnostic cut1/one newfixture/maxone Normal+CrashReportEnabled request. This is new managed-stack distinguishing evidence, not oldCPU sampling or originalcrash5 qualification. Native/assertions/220/900 unchanged; health/identity/phase uncertainty cancels capture. New lifecycle: retain private own/capture before request through independent sanitized EVIDENCE/finalreport; no core/rawreport Git/attachments/archive/autodelete. Uncertain cleanup retains root/reports.
