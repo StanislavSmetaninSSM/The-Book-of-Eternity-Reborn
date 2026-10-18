@@ -1,3 +1,11 @@
+## T179-Pd-NI-IOBS-L01 — qualified 47/57, independently diagnosed blocker checkpoint (2026-10-18)
+
+[Current handoff](recovery/t179pd-ni-iobs-l01-current-resume-blocker-handoff-20261018.md) and [joint independent diagnosis](recovery/t179pd-ni-iobs-l01-current-resume-joint-blocker-review-20261018.md) are authoritative. Retained37 + newly accepted10 =47 distinct targets. All15 initially remaining independent targets were attempted; integrity4 original native4PASS remains unqualified and uncertain1 original native1FAIL is frozen. New crash5 remains UNRUN; old lost corrected crash5 remains UNKNOWN/unavailable.
+
+Concrete blocker: current-resume holds the canonical lease and upstream item validation tries to acquire it again, before the intended CurrentInterface mismatch guard. Uncertain1's positive proof assertion fails; its missing post-call diagnostic is not reconstructed. No source or assertion changed after the finding, no retry or new crash5 was launched. All actuals are held. Final dated v2 snapshot is clean; no continuous absence claim.
+
+Next proposal only: borrowed existing lease through collector/item helper, unchanged no-argument ownership and validation branches, stronger CurrentInterface target-reason oracle; independent SOURCE, fresh BOTH/catalog + whole16/33/57 + corrective2/2/5 + remaining1/1/5 ZERO/PREP and separate new identities before future actuals. Expected future product22 is not implemented; current pins98/product21 remain exact. Qualified47 keeps its original provenance. All broader holds, Windows403/noCI/A3 and repository protections remain. This bounded qualification stage stops at its concrete blocker. Following sections are historical.
+
 ## T179-Pd-NI-IOBS-L01 — independent integrity HOLD saved (2026-10-18)
 
 [Independent integrity4 review](recovery/t179pd-ni-iobs-l01-integrity4-independent-review-20261018.md) blocks qualification with finding L01-INTEGRITY-CURRENTI-001. Native four PASS remain immutable, but CurrentInterface reaches a nested canonical lock refusal before the target I preimage guard; no additional targets are accepted. Three other rows are not separately qualified. Qualified count stays47/57.

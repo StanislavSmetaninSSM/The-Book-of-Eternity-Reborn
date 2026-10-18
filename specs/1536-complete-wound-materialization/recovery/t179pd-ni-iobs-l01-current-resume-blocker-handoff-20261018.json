@@ -1,0 +1,151 @@
+{
+  "kind": "NI_IOBS_L01_QUALIFIED47_CONCRETE_BLOCKER_HANDOFF",
+  "createdUtc": "2026-10-18T13:44:35.240642+00:00",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "restoredCheckpoint": "2e0463ff3b5e52510e86f1c8b53bd714923e156d",
+  "lastRecoveredCarrier": "b19a7409c4da6e16b61924f9e74c1cf4cc5e447b",
+  "compiledSource": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
+  "sourcePinCount": 98,
+  "sourcePinDigest": "304a7e8beb3174246ac3db792c6aa63319fa8ead9f3bab62f91346d4f204248d",
+  "actualProductDeltaCount": 21,
+  "qualifiedCases": {
+    "retainedOriginal": 37,
+    "newQualified": 10,
+    "totalDistinctTargets": 47,
+    "wholeTarget": 57,
+    "limits": "Retained37 + independently accepted new legacy3/corrected close2/corrected races2/corrected settlement3 =47, original actual/compiled provenance. New integrity4 native4PASS remains unqualified due CurrentInterface early lock-refusal evidence gap; uncertain1 native1/0PASS1FAIL frozen; new crash5 UNRUN. Lost old corrected crash5 UNKNOWN unchanged."
+  },
+  "requestedRemaining15DistinctTargetsAttempted": 15,
+  "newTargetPartition": {
+    "qualified": 10,
+    "nativePassUnqualifiedIntegrity": 4,
+    "nativeFailUnqualifiedUncertain": 1,
+    "separateNewCrash5Unrun": 5
+  },
+  "acceptedNewGroups": [
+    "legacy3",
+    "close2Corrected",
+    "races2Corrected",
+    "settlement3Corrected"
+  ],
+  "integrity4": {
+    "native": "4PASS",
+    "qualification": "HOLD",
+    "reason": "CurrentInterface target mismatch guard not proven; actual nested canonical lease error occurs earlier. Other3 rows not separately accepted."
+  },
+  "uncertain1": {
+    "native": "1FAIL",
+    "directObservation": "Current full proof remains null at unchanged assertion line67; downstream completion assertions and final diagnostic not reached.",
+    "causalLimit": "Shared source path supports nested-lease explanation; missing post-call diagnostic does not establish a uniquely observed throw or final physical state."
+  },
+  "oldCorrectedCrash": {
+    "outcome": "UNKNOWN",
+    "session": 66529,
+    "compiledSource": "71108a7df72204a1bdcc143feb84d5c857eef1a1",
+    "recordPathInUnavailableOldEnvironment": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-first-crash-current/record.json",
+    "artifactAvailability": "UNAVAILABLE",
+    "processIntervention": "NONE",
+    "recoveryClaim": false
+  },
+  "newCrash5": "UNRUN_SEPARATELY_GATED_NOT_RECOVERY_OF_OLD_UNKNOWN",
+  "jointIndependentDiagnosis": {
+    "verdict": "HOLD_CONCRETE_PRODUCT_LEASE_COMPOSITION_AND_TARGET_ORACLE_BLOCKER_NO_IMPLEMENTATION_OR_RUNTIME_RELEASE",
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-joint-blocker-review-20261018.json",
+        "sha256": "d69ac4caa56652c8ac903d6c7806f2890355090ff504d5323da29c604ff175ab",
+        "bytes": 19548
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-joint-blocker-review-20261018.md",
+        "sha256": "22006cf914090e94c7ed13833b19c6fe5ccf976f70beeea84dfff84b207ea5ba",
+        "bytes": 4058
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-uncertain1-failure-independent-check-4dbdb144-20261018.json",
+        "sha256": "a7de87d5ec5b55411cd5beb4d3dbffa7d31efeaf9638f56ed64b93181bddb16f",
+        "bytes": 10199
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-uncertain1-causal-checker-20261018.py",
+        "sha256": "25ae868b8e1c39ed9dce3e89c3fadb18d6afef80146d16d9fc16c7e5d1bf0d3b",
+        "bytes": 20521
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-joint-blocker-report-writer-20261018.py",
+        "sha256": "d8d5ef06f7dec9e1d05cd8f2b4777d5b91734bc28e74bc0e5f360ccefabb28c5",
+        "bytes": 16575
+      }
+    ]
+  },
+  "nextProposedSafePlan": {
+    "status": "REVIEWABLE_RECOMMENDATION_ONLY_NO_IMPLEMENTATION_OR_RETRY_AT_THIS_CHECKPOINT",
+    "production": "Thread the exact already-owned ordinary canonical lease from selected resume through upstream collection into an item-validation core/overload. Borrowed path validates active lease ownership for this FileSystemManager and neither acquires nor disposes it. Existing no-argument path retains its own acquisition/disposal and every retained-spiritual/foreign-claim/vacancy/item-validation/invalidation branch and order.",
+    "oracle": "Strengthen CurrentInterface with positive evidence for the intended exact pending/I preimage/readback refusal on both real entries, attributable to each entry (for example independent diagnostic deltas). Preserve all existing bytes, ownership, fresh-authority-absence, genuine child identity/exit/join/EOF, no changing I/common commit and inert-repeat assertions. Keep the existing uncertain1 positive full-proof/turn43/mechanical/terminal-cleanup/repeat assertions unchanged.",
+    "exclusions": [
+      "No globally reentrant lock or lock retry/budget increase",
+      "No upstream item-admission bypass, normalization fallback, fence release/reacquire or reordered publication",
+      "No seeded Ready/take/current proof or changed physical fault",
+      "No success inferred from broad Held or native counters"
+    ],
+    "sourceBindings": "Three product call-chain files are implicated. SpiritualContinuation.cs is already among98 pins but outside the current product delta: expected productDelta21→22, exact sorted packet list and both controller guards must agree. Preserve prior packets; regenerate all changed source/tool/test pins and digest. Verify dependency scope from final diff before acceptance.",
+    "affectedSelection": {
+      "whole": {
+        "descriptors": 16,
+        "methods": 33,
+        "cases": 57
+      },
+      "corrective": {
+        "descriptors": 2,
+        "methods": 2,
+        "cases": 5,
+        "groups": [
+          "integrity4",
+          "uncertain1"
+        ]
+      },
+      "remaining": {
+        "descriptors": 1,
+        "methods": 1,
+        "cases": 5,
+        "groups": [
+          "separately named newcrash5"
+        ]
+      },
+      "retention": "Retain47 original qualified targets at original compiled/actual provenance; no cross-build equivalence or blanket replay. Any newly demonstrated dependency must be named and independently assessed."
+    },
+    "gates": [
+      "Save/recover a concrete source candidate only when further implementation is authorized; independent SOURCE review must accept lease ownership, unchanged old callers, strengthened target oracle, exact22-path guards and98 pins.",
+      "Then separately named fresh BOTH/catalog, whole16/33/57, corrective2/2/5, remaining1/1/5 ZERO records, each original native0 and executed0; exact9 DLL/full output inventories and mandatory v2 dated boundaries.",
+      "Save/recover originals and obtain independent PREP acceptance before any actual. Release each finite corrective/remaining mode separately with fresh clean preflight; preserve original native failures and freeze on unexpected results.",
+      "New crash5 retains its previously accepted disposable isolation, genuine new process/identity/exit73/join/EOF and unresolved-child retention requirements; it remains UNRUN now."
+    ]
+  },
+  "runtimeRelease": null,
+  "sourceOrAssertionChangesAfterFinding": 0,
+  "finalDatedCensus": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-blocker-handoff-census-20261018.json",
+    "sha256": "1a94421877d43dbdf135a467e6bd5b9a0f63ec7396a9af6754e59f85fdff3b71",
+    "bytes": 81023
+  },
+  "lastRecoveredCarrierReceipt": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-b19a7409-20261018.json",
+    "sha256": "63db2602cbda2632797b713b7ed39fb9a34c180015c296de25bf6bb03d3e9afb",
+    "bytes": 3429
+  },
+  "holds": [
+    "FullNI",
+    "HOT",
+    "F1",
+    "M3",
+    "T197",
+    "A3_NO_PROCEED",
+    "Windows_raw_artifact403_BLOCKED_NO_RETRY",
+    "CI_NO_RUN",
+    "No_main_merge_force_push_delete_or_issue_close"
+  ],
+  "constraints": "Cloud only; no old environment/process intervention. Disposable fixtures only. No main/merge/force-push/branch deletion/issue closure/secrets; no CI; Windows raw403 blocked/no retry; A3 NO-PROCEED. Qualified47 keeps original actual/compiled provenance. No old37 replay or broad testing.",
+  "next": "Technical source remedy and stronger target oracle, independently reviewed SOURCE and fresh affected ZERO/PREP (whole16/33/57, corrective2/2/5, remaining1/1/5), then separately named new actuals only. Current task stops at the concrete blocker; no implementation, retry or newcrash5 release."
+}

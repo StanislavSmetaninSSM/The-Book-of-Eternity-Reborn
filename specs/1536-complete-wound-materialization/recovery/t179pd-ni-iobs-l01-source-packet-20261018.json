@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_SETTLEMENT_FIXTURE_CLASSIFICATION_SOURCE_CANDIDATE",
-  "status": "47_OF_57_QUALIFIED_CURRENT_RESUME_NESTED_LEASE_PRODUCT_BLOCKER_ALL_ACTUALS_FROZEN",
+  "status": "QUALIFIED47_OF57_CONCRETE_CURRENT_RESUME_BLOCKER_CHECKPOINT_NO_RUNTIME_RELEASE",
   "sourceBase": "67e143b24645e0a5b25829b17cb27e80edf3f000",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
   "sourcePins": [
@@ -892,7 +892,8 @@
       "methods": 3,
       "cases": 10
     },
-    "catalog": "Fresh BOTH build/discovery, zero tests; exact nine managed copies and full output inventory bind all NoBuild plans/actuals."
+    "catalog": "Fresh BOTH build/discovery, zero tests; exact nine managed copies and full output inventory bind all NoBuild plans/actuals.",
+    "phase": "LAST_ACCEPTED_AT7dbfbddc_CURRENT_EXECUTION_BLOCKED_BY_MATERIAL_REVIEW"
   },
   "mandatorySupplement": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-20261018.py",
@@ -905,7 +906,7 @@
     "status": "NONE_ALL_ACTUALS_FROZEN_CURRENT_RESUME_MATERIAL_REVIEW_CONCERN_AND_UNCERTAIN1_FAILURE",
     "mode": null
   },
-  "next": "Independent frozen-original diagnosis of current-resume nested canonical lease and both integrity CurrentInterface evidence gap/uncertain1 positive failure before any source/oracle correction, affected fresh PREP, retry or newcrash5. All actuals frozen; no source/assertion change yet.",
+  "next": "Technical source remedy and stronger target oracle, independently reviewed SOURCE and fresh affected ZERO/PREP (whole16/33/57, corrective2/2/5, remaining1/1/5), then separately named new actuals only. Current task stops at the concrete blocker; no implementation, retry or newcrash5 release.",
   "sourceReview": {
     "verdict": "ACCEPT_MINIMAL_SETTLEMENT_FIXTURE_SOURCE_AND_NAMED_ZERO4_PLAN_WITH_METADATA_SAVE_CONDITIONS",
     "candidate": "c79cdea9c29a513863439966685c99fdddb8ca3e",
@@ -1179,5 +1180,63 @@
       "sha256": "ff00b951c0af4e03e005fffd8faa97fad9c6137f6d09df292c25dd7a0e957598",
       "bytes": 22694
     }
+  },
+  "currentBlockerHandoff": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-blocker-handoff-20261018.json",
+      "sha256": "d3388232a3085021f37319f81d39819bac803e4e83d9c981b4310d6c11162ad3",
+      "bytes": 8821
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-blocker-handoff-20261018.md",
+      "sha256": "2f1889786a5d90768a5ed1504be63d943a5f1ac3b3afdd3801cc0692e99fcb10",
+      "bytes": 2551
+    }
+  ],
+  "jointBlockerReview": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-joint-blocker-review-20261018.json",
+      "sha256": "d69ac4caa56652c8ac903d6c7806f2890355090ff504d5323da29c604ff175ab",
+      "bytes": 19548
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-joint-blocker-review-20261018.md",
+      "sha256": "22006cf914090e94c7ed13833b19c6fe5ccf976f70beeea84dfff84b207ea5ba",
+      "bytes": 4058
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-uncertain1-failure-independent-check-4dbdb144-20261018.json",
+      "sha256": "a7de87d5ec5b55411cd5beb4d3dbffa7d31efeaf9638f56ed64b93181bddb16f",
+      "bytes": 10199
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-uncertain1-causal-checker-20261018.py",
+      "sha256": "25ae868b8e1c39ed9dce3e89c3fadb18d6afef80146d16d9fc16c7e5d1bf0d3b",
+      "bytes": 20521
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-joint-blocker-report-writer-20261018.py",
+      "sha256": "d8d5ef06f7dec9e1d05cd8f2b4777d5b91734bc28e74bc0e5f360ccefabb28c5",
+      "bytes": 16575
+    }
+  ],
+  "nextProposedVerificationContract": {
+    "status": "PROPOSAL_ONLY_REQUIRES_REMEDY_SOURCE_ACCEPTANCE_AND_FRESH_PREP",
+    "whole": {
+      "descriptors": 16,
+      "methods": 33,
+      "cases": 57
+    },
+    "corrective": {
+      "descriptors": 2,
+      "methods": 2,
+      "cases": 5
+    },
+    "remaining": {
+      "descriptors": 1,
+      "methods": 1,
+      "cases": 5
+    },
+    "expectedFutureProductDelta": 22
   }
 }
