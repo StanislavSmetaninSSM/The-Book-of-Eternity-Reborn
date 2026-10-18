@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "WIP_FRESH_ZERO3_SAVED_INDEPENDENT_PREP_PENDING",
+  "status": "PREP_ACCEPTED_LEGACY3_NAMED_RELEASE_PENDING_PUBLICATION_READBACK",
   "sourceCheckpoint": "2e0463ff3b5e52510e86f1c8b53bd714923e156d",
   "sourcePinDigest": "1f11670a1e063bed010e2e03585fb6e8b5ad4da64157a5ce877317475d3c7bc4",
   "sourcePinCount": 98,
@@ -448,7 +448,7 @@
     }
   ],
   "crashRequalificationPlan": {
-    "status": "INDEPENDENT_SOURCE_AND_ISOLATION_PLAN_ACCEPTED_PREP_STILL_HELD",
+    "status": "SOURCE_ISOLATION_PLAN_AND_FRESH_PREP_ACCEPTED_NEW_CRASH5_STILL_SEPARATELY_GATED",
     "purpose": "Separate new fixture qualification; preserve old UNKNOWN. No recovery or blind retry of old result.",
     "rootIsolation": "Fresh environmentId and GUID TMPDIR; each fixture constructs a new GUID own container/parent nonce and child-local tmp. No imported old root, checkpoint, live owner, save or real game operation.",
     "processIsolation": "Only newly started genuine child Process handles; independent parent/self PID+kernel starttick and nonce, exit73, new resume PID, join+EOF, strict containment. Retain owned container if termination/join/EOF unresolved; no old process query/kill.",
@@ -468,7 +468,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Independent focused PREP of restored fresh ZERO3 carrier; only then separate named legacy3 actual, other UNRUN modes and crash5 retain separate progression gates.",
+  "next": "After acceptance persistence/recovery, run only named legacy3. Other15 remainder and separate crash5 retain individual release gates.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -533,7 +533,7 @@
     "findings": []
   },
   "freshPreparation": {
-    "status": "ZERO3_ORIGINAL_NATIVE_SUCCESS_INDEPENDENT_PREP_PENDING",
+    "status": "ACCEPTED_INDEPENDENT_AND_PARENT_NEW_CLOUD_ZERO3",
     "actualSource": "6ab43f6add261d90628fc07d6aacf42dfbae0561",
     "compiledSource": "6ab43f6add261d90628fc07d6aacf42dfbae0561",
     "records": [
@@ -600,6 +600,54 @@
     "sourcePinCount": 98,
     "sourcePinDigest": "1f11670a1e063bed010e2e03585fb6e8b5ad4da64157a5ce877317475d3c7bc4",
     "cleanup": "No owned fixture roots/game processes before or after; native runner cleanup complete",
-    "limits": "Fresh environment preparation only; no actual case executed. Original failure remains separate. No old binary equality or new runtime evidence for retained37."
+    "limits": "Fresh environment preparation only; no actual case executed. Original failure remains separate. No old binary equality or new runtime evidence for retained37.",
+    "review": {
+      "verdict": "ACCEPT_NEW_CLOUD_FRESH_ZERO3_PREPARATION",
+      "model": "gpt-6-astra",
+      "reasoningEffort": "xhigh",
+      "findings": [],
+      "artifacts": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-prep-independent-review-a35ec-20261018.md",
+          "sha256": "058e9a17f9fe2a476b69f9156c8a90cbd92e3c8126b4ad2e2226fc2ef7dec761",
+          "bytes": 2576
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-prep-independent-review-a35ec-20261018.json",
+          "sha256": "ded58e8ff999dd01472749f7a47234f63659f8e489eea043eedb3afe871d5573",
+          "bytes": 6310
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-prep-independent-check-a35ec-20261018.json",
+          "sha256": "2849db4806a6f7258e4ab8f4b1b389cfdd06afe6b0ee4957441f4427dc9f8459",
+          "bytes": 7662
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-prep-checker-a35ec-20261018.py",
+          "sha256": "9ff8a3d4dcbad6c419e7cfb87ed04e1b983880a6081608d4c16a16f3ee80b148",
+          "bytes": 16531
+        }
+      ],
+      "carrier": "a35ec692e79538f255f850842f4ade1afdbf298f",
+      "carrierRecovery": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-prep-carrier-recovery-a35ec-20261018.json",
+        "sha256": "53f45cb11ce2f18af045743e3d1412a3f25299dae5dd650ff0cff2f2fc3efa3c"
+      },
+      "buildWarnings": {
+        "integration": 148,
+        "unit": 37
+      },
+      "buildErrors": 0,
+      "limits": "Remaining-plan immediate cmdline snapshot empty; recorded launch argv/PID/kernel identity/runner-owned result dir bind it. Cleanup excludes ordinary compiler/runtime scratch."
+    }
+  },
+  "release": {
+    "mode": "legacy3",
+    "label": "t179pd-ni-iobs-l01-process-first-legacy3-cloud-813f1057",
+    "expectedCases": 3,
+    "compiledSource": "6ab43f6add261d90628fc07d6aacf42dfbae0561",
+    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-cloud-813f1057/record.json",
+    "controller": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-first-run.py",
+    "conditions": "Only after exact saved acceptance remote SHA/readback/recovery; same98 source pins,9DLL1575outputs,NoBuild,unique label/root. Preserve original outcome; any unexpected failure freezes all further modes and requires independent diagnosis. No automatic retry/next mode."
   }
 }

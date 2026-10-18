@@ -1,0 +1,89 @@
+{
+  "kind": "INDEPENDENT_L01_NEW_CLOUD_FRESH_ZERO3_PREPARATION_REVIEW",
+  "reviewedUtc": "2026-10-18T09:54:16.470688+00:00",
+  "carrier": "a35ec692e79538f255f850842f4ade1afdbf298f",
+  "actualSource": "6ab43f6add261d90628fc07d6aacf42dfbae0561",
+  "compiledSource": "6ab43f6add261d90628fc07d6aacf42dfbae0561",
+  "verdict": "ACCEPT_NEW_CLOUD_FRESH_ZERO3_PREPARATION",
+  "findings": [],
+  "preparation": {
+    "catalog": {
+      "nativeExit": 0,
+      "seconds": 343.4147662790001,
+      "categories": 808,
+      "methods": 11800,
+      "unmapped": 0,
+      "staleSelectors": 0,
+      "executed": 0
+    },
+    "wholePlan": {
+      "nativeExit": 0,
+      "seconds": 26.61719420899999,
+      "descriptors": 16,
+      "methods": 33,
+      "cases": 57,
+      "executed": 0
+    },
+    "pendingPlan": {
+      "nativeExit": 0,
+      "seconds": 15.637611821000064,
+      "descriptors": 7,
+      "methods": 12,
+      "cases": 20,
+      "executed": 0
+    },
+    "timingMeaning": "Controller wall seconds, separate invocations; no aggregate runtime PASS.",
+    "builds": "Both integration and unit build logs show Build succeeded and zero errors; warnings148 and37 respectively remain recorded. Public native helper xUnit1013 warnings are consistent with intentionally reflected TestSupport entrypoints, not missing selected tests. Discovery and both plans completed without test execution; zero TRX artifacts."
+  },
+  "bindings": {
+    "sourcePins": 98,
+    "sourcePinDigest": "1f11670a1e063bed010e2e03585fb6e8b5ad4da64157a5ce877317475d3c7bc4",
+    "ledgerSha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
+    "source": "Pins/ledger/controllers/selectors unchanged and match saved/restored carrier. Only metadata changed since compiled6ab43f6a.",
+    "output": "All9 selected DLL copies are newly changed or added during catalog. Four client copies agree and both copied TestSupport DLLs agree. Complete dynamic1575-file set, lengths and SHA256 match current physical output and are unchanged through both dependent NoBuild plans. No equality with historical45cc/4c6d builds is claimed.",
+    "selection": "Fresh whole16/33/57 and pending7/12/20 exactly match current selection/ledger and method/case identities. Difference is exactly retained21methods37cases at original actual/compiled provenance; no retained-case replay.",
+    "raw": "All32 stored-gzip/raw chains, full original record/stdout/process/sentinel/source/ledger/build/catalog/plan/summary coverage verified byte-for-byte against original files and independent GitHub restore.",
+    "cleanup": "All three native0 records and runner summaries report successful owned-tree/runtime cleanup, zero completed actual descriptors/cases, empty owned fixture namespace and game/test process census. Current read-only census also empty."
+  },
+  "recovery": {
+    "carrier": "a35ec692e79538f255f850842f4ade1afdbf298f",
+    "remoteBranchShaVerified": true,
+    "independentGitHubClone": "/workspace/1536-cloud-clean-restore",
+    "clean": true,
+    "changedPathsVerified": 40,
+    "bytesGitBlobsAndArchivesVerified": true,
+    "sourceDirectoryReuse": "No local object alternates; GitHub origin and clean clone receipt retained. This closes only current source/preparation carrier readback, not unavailable historical /tmp receipts or old corrected crash output."
+  },
+  "environment": {
+    "correction": "Exact sole addition XDG_RUNTIME_DIR to saved env shell, actual real uid1000-owned0700 directory under GUID cloud TMPDIR; HOME not reassigned. Same new-cloud boot and recorded environment identity.",
+    "originalFailedCatalog": "Separate native1/zero-test precompile failure remains unchanged; all8 saved raw chains independently verified. No product RED or overwritten attempt.",
+    "limits": [
+      "The remaining-plan immediate /proc cmdline snapshot is empty. Its explicit controller Popen argv, matching process PID4626 and (pwsh) comm/positive kernel birth tick, runner result directory containing PID4626, original native0 log and plan/source binding establish the launched phase. No claim that this cmdline was recovered.",
+      "GUID TMPDIR retains ordinary compiler/runtime scratch. Empty cleanup claims are scoped to owned game fixtures and game/test processes, not all toolchain scratch."
+    ]
+  },
+  "eligibility": {
+    "next": "After parent saves/reads back this independent PREP acceptance, separately name legacy3 first using unchanged process-first-run.py NoBuild and the qualified remaining-plan record.",
+    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-cloud-813f1057/record.json",
+    "prepRecordSha256": "896e477b1dc543eb5d28969479b63cf009211450eb6aa49d244f1717b471e74a",
+    "scope": "legacy3, close2, races2, settlement3, integrity4, uncertain1 are15 pending cases; each requires its own named Root release and original outcome/cleanup/evidence preservation. No automatic advance/retry; unexpected failure freezes remaining execution for independent diagnosis.",
+    "crash5": "Separate newly named qualification only under the previously accepted new-run isolation plan, same fresh source/output binding and its own release. Session66529 outcome remains UNKNOWN and original bytes unavailable; nothing here restores or changes it."
+  },
+  "notClaimed": [
+    "No current semantic PASS or whole runtime acceptance",
+    "No new execution or cross-build equivalence for retained37",
+    "No recovered old correctedcrash5 result",
+    "No fullNI/HOT/F1/M3/T197 completion",
+    "A3 remains NO-PROCEED",
+    "Windows raw403 remains blocked/no retry",
+    "CI remains prohibited",
+    "No main/merge/force/delete/issues/secrets operations"
+  ],
+  "support": {
+    "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-cloud-prep-independent-check-a35ec-20261018.json",
+    "sha256": "2849db4806a6f7258e4ab8f4b1b389cfdd06afe6b0ee4957441f4427dc9f8459",
+    "checkerPath": "/tmp/1536-cloud-tools/review/check_l01_cloud_prep.py",
+    "checkerSha256": "9ff8a3d4dcbad6c419e7cfb87ed04e1b983880a6081608d4c16a16f3ee80b148"
+  },
+  "reviewerActions": "Read-only source/raw/archive/XML-free JSON/hash/Git/metadata checks and current new-environment process census only; no build, discovery, test, process intervention, repository edit or push."
+}
