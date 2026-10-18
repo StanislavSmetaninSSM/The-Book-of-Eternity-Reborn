@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_CLOSE_DIAGNOSTIC_CORRECTION_SOURCE_CANDIDATE",
-  "status": "INDEPENDENT_SOURCE_ACCEPTED_FRESH_ZERO4_REQUIRED_ACTUAL_HELD",
+  "status": "CORRECTED_SOURCE_AND_FRESH_ZERO4_PREP_ACCEPTED_ONLY_NAMED_CLOSE2_ELIGIBLE",
   "sourceBase": "5687e0e603509b01070d4e999ebb6e0c58d4d9df",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
   "sourcePins": [
@@ -892,7 +892,7 @@
   },
   "gmDisposition": "Diagnostic-only preservation of existing exception when protective hold replaces control flow. No GM-authored contract, prompt/schema/example/daemon/manifest or guidance behavior change; existing documentation remains exact.",
   "oldCorrectedCrash": "Old environment session66529 UNKNOWN; original bytes unavailable. New qualification distinct and isolated, only disposable fixtures/genuine new children; no old environment/process interaction.",
-  "next": "After exactremote/clean GitHub recovery, only four separately named ZERO phases below may run on saved acceptance SHA; fresh independent PREP before any actual.",
+  "next": "Recover savedPREPacceptance and capture immediate clean v2 before-census; execute ONLYnamedclose2corrective regression, saveoriginaloutcome+aftercensus+archive, freeze if unexpected. Remaining15 separately gated.",
   "sourceReview": {
     "verdict": "ACCEPT_MINIMAL_CLOSE_DIAGNOSTIC_SOURCE_AND_NAMED_ZERO4_PLAN",
     "model": "gpt-6-astra",
@@ -937,5 +937,45 @@
     ],
     "conditions": "Separate explicit controller invocations only. Each prior original native0/ZERO plus inventory/namespace/process checks must pass before next. Failure freezes without retry/advance. catalog fresh BOTH build; plans depend on exact catalog record/source/9DLL/fulloutput continuity.",
     "actualRelease": false
+  },
+  "freshPreparationAcceptance": {
+    "verdict": "ACCEPT_CORRECTED_ZERO4_PREPARATION_CLOSE2_ELIGIBLE_AFTER_SAVED_ACCEPTANCE_AND_IMMEDIATE_CLEAN_CENSUS",
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "findings": [],
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-corrected-prep-independent-check-eb8f31a3-20261018.json",
+        "bytes": 12512,
+        "sha256": "a191db1627eacf8d2960376944f92ecc33f3b4696acd1ca68bbb182389162b37"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-corrected-prep-independent-review-eb8f31a3-20261018.json",
+        "bytes": 13542,
+        "sha256": "5c492682fee28ba8e1c095a91edd0cee207f8569d194fbc2463f29ef0323392f"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-corrected-prep-independent-review-eb8f31a3-20261018.md",
+        "bytes": 2868,
+        "sha256": "fcbedf278068df70fed524855f42b5063f15f5aaefb00007e7e0c4e3d660f81a"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-corrected-prep-checker-eb8f31a3-20261018.py",
+        "bytes": 19573,
+        "sha256": "d8dccaca14e5a6e62590478fb8cc4d017a9a7633097cab5ad1734760fc5272bd"
+      }
+    ]
+  },
+  "namedActualRelease": {
+    "status": "NAMED_CLOSE2_ONLY_AFTER_SAVED_ACCEPTANCE_AND_IMMEDIATE_CLEAN_V2_CENSUS",
+    "mode": "close2",
+    "label": "t179pd-ni-iobs-l01-process-first-close2-diag-cloud-813f1057",
+    "compiledSource": "cf52201ca165d24c971018251ef9723a8e493384",
+    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-diag-cloud-813f1057/record.json",
+    "observerPath": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-20261018.py",
+    "observerSourceSha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
+    "conditions": "Push/exactremote/cleanGitHub recovery, then immediate authoritative clean before-census; existingNoBuild FIRST controller exact2methods,9DLL/full1575continuity, no active/unknown/roots; immediate authoritative after-census; original outcome frozen/archived before utility/EVIDENCE/nextmode. Anyunexpectedfailure freezes. This is post-source-change regression, distinct from frozenoriginal; no automatic retry/advance.",
+    "otherModes": "HELD_SEPARATE_NAMED_RELEASE_REQUIRED",
+    "lostOldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED"
   }
 }

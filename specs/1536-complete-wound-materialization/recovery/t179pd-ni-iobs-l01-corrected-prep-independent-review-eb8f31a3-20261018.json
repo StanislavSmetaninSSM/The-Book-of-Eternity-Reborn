@@ -1,0 +1,255 @@
+{
+  "kind": "INDEPENDENT_CORRECTED_L01_ZERO4_PREPARATION_REVIEW",
+  "reviewedUtc": "2026-10-18T11:02:06.527187+00:00",
+  "reviewer": {
+    "role": "Independent PREP reviewer",
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh"
+  },
+  "carrier": "eb8f31a377d2ee9c23ddb0a4f74e2484ff0ade2b",
+  "actualSource": "cf52201ca165d24c971018251ef9723a8e493384",
+  "compiledSource": "cf52201ca165d24c971018251ef9723a8e493384",
+  "verdict": "ACCEPT_CORRECTED_ZERO4_PREPARATION_CLOSE2_ELIGIBLE_AFTER_SAVED_ACCEPTANCE_AND_IMMEDIATE_CLEAN_CENSUS",
+  "findings": [],
+  "artifacts": [
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_corrected_prep.py",
+      "bytes": 19573,
+      "sha256": "d8dccaca14e5a6e62590478fb8cc4d017a9a7633097cab5ad1734760fc5272bd"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-corrected-prep-independent-check-eb8f31a3-20261018.json",
+      "bytes": 12512,
+      "sha256": "a191db1627eacf8d2960376944f92ecc33f3b4696acd1ca68bbb182389162b37"
+    }
+  ],
+  "source": {
+    "acceptedCandidate": "a0da72f2c21fca66193314954cfdf87992752876",
+    "acceptanceCarrier": "cf52201ca165d24c971018251ef9723a8e493384",
+    "pinCount": 98,
+    "pinDigest": "b29c971342ee772b13cd123a954d7afa8937e1f50a7e5f4c4c14403e4de4c347",
+    "unchangedProductFixtureAssertionControllerSelectors": true,
+    "sourceBinding": "Every original ZERO source-binding equals the exact compiledcf522 packet and98 reviewed pins; current/restored copies and Git blobs/modes match. No non-spec changes since compiled source."
+  },
+  "originalEvidence": {
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic-preparation-813f1057-files-20261018/archive.json",
+      "sha256": "671ba66a881c6755e07197f3cdaa5608d9e80d217b1fc16afdccbf44a69b5f9f",
+      "rawChains": 43,
+      "completeRawCoverage": true,
+      "allOriginalStoredRestoredBytesMatched": true
+    },
+    "nativeOutcomes": [
+      {
+        "mode": "catalog",
+        "nativeExit": 0,
+        "executed": 0,
+        "seconds": 374.2383788799998,
+        "recordSha256": "493a9ce1d9f6738df4718afad1bbaf9c0cd035b053cb3b4621491f8a60df44bf"
+      },
+      {
+        "mode": "plan",
+        "nativeExit": 0,
+        "executed": 0,
+        "seconds": 40.65711218399974,
+        "recordSha256": "819b64c9acd25217acf783a62257f8a4affee61c98983d7bf3c83cc786effaf9"
+      },
+      {
+        "mode": "corrective-plan",
+        "nativeExit": 0,
+        "executed": 0,
+        "seconds": 19.86374154799978,
+        "recordSha256": "2a20dac89741ce9ab3d87dbc22912d06e8c32ef94918f0ce2cdfccfa5917735d"
+      },
+      {
+        "mode": "remaining-plan",
+        "nativeExit": 0,
+        "executed": 0,
+        "seconds": 41.59974905499985,
+        "recordSha256": "a6d4b5e2cf14b930347e0f2dda0ee1b4ffbab199f8dff52278d72029b7053d3f"
+      }
+    ],
+    "coverage": "All43 stored gzip hashes, decoded raw hashes/lengths, original local bytes and recovered bytes match. Coverage equals every file in all four native result directories plus original records/stdout/process/source/ledger/first-use sentinels/subsets/observed plans. No TRX or actual test completion exists in these ZERO records."
+  },
+  "catalogAndBuild": {
+    "categories": 808,
+    "methods": 11800,
+    "valid": true,
+    "unmapped": [],
+    "staleSelectors": [],
+    "freshBothBuild": true,
+    "integrationWarnings": 148,
+    "unitWarnings": 37,
+    "errors": 0,
+    "allBuildAndDiscoveryNativeExits": 0,
+    "timedOut": false,
+    "warningDetailsInCheck": true
+  },
+  "plans": {
+    "whole": {
+      "descriptors": 16,
+      "methods": 33,
+      "cases": 57,
+      "executed": 0
+    },
+    "corrective": {
+      "descriptors": 1,
+      "methods": 2,
+      "cases": 2,
+      "executed": 0
+    },
+    "remaining": {
+      "descriptors": 5,
+      "methods": 7,
+      "cases": 15,
+      "executed": 0
+    },
+    "qualification": "Each separately named plan used PlanOnly/NoBuild and the fresh catalog source/inventory. Descriptor adapters, exact FQN filters, method identities/case counts and archived selectors reconcile against the accepted SOURCE maps; no duplicate/overlap/ordinal substitution. Corrective selects only unchanged close2; remaining excludes close2 and legacy3."
+  },
+  "binaries": {
+    "copies": 9,
+    "completeOutputFiles": 1575,
+    "allNineSelectedCopiesChangedDuringFreshCatalog": true,
+    "fourClientCopiesEqual": true,
+    "twoSupportCopiesEqual": true,
+    "correctedClientSha256": "79ae2bdd102548216fb9feb67acb993acc95e1b03fdb0bf461a2a0dce4c67535",
+    "qualification": "Complete current1575 path set, sizes and SHA256 match the fresh catalog after-inventory. All three NoBuild plans preserve the same before/after nine-copy and complete inventories. Fresh corrected product copies differ from old6ab product; historical accepted cases are not assigned to this build."
+  },
+  "cleanupAndCensus": {
+    "runner": "All four native summaries report owned-tree/runtime cleanup success, no timeout, and no completed test/category/adapter rows; original owned fixture roots are absent. Every launch binds argv/PID/kernel start tick and the runner-owned result directory; all four immediate command lines are present.",
+    "oldObserverLimitation": "Original controller process arrays remain unchanged and are not treated as a complete absence census. No pre-catalog, old37, legacy3 or close2 complete snapshot is reconstructed.",
+    "authoritativeObserver": {
+      "version": 2,
+      "bytes": 7410,
+      "sha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
+      "sourceReview": "Accepted separately; saved source/review/current utility bytes exact."
+    },
+    "qualificationBoundary": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-corrected-prep-qualification-813f1057.json",
+      "sha256": "72742121d2dac30a0f010a2bfeadb4ea59b835e9d797d7151c4535bbc1f5495e",
+      "version": 2,
+      "startedUtc": "2026-10-18T10:55:33.544401+00:00",
+      "finishedUtc": "2026-10-18T10:55:33.556891+00:00",
+      "entries": 45,
+      "classes": {
+        "other-readable": 16,
+        "exited-nonexecuting": 24,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "build-infrastructure"
+        },
+        {
+          "pid": 12208,
+          "expectedStartTick": 554137,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    "boundaryMeaning": "The dated v2 qualification interval accounts for45 stable PID/start identities:16 other-readable (including recovery Git processes),24 exited/nonexecuting,4 build infrastructure and1 observer. Known MSBuild10433:477854 and observer12208:554137 match despite optional exe EACCES for MSBuild. Active/UNKNOWN/owned-root counts are zero. Full preserved argv hashes reconcile. This qualifies only that observation interval.",
+    "otherBoundaries": "All three earlier supplementary boundary records reconcile. The two v1 observations have no gone/unknown branch, preserve their v1 source and are used only for their dates; v2 supersedes the observer for future gates.",
+    "mandatory": "A fresh accepted-v2 clean authoritative census immediately before and after every separately named actual is mandatory, with exact run root, source, prepared inventories, own-child join/EOF/containment and unresolved-child retention requirements intact."
+  },
+  "recovery": {
+    "steps": [
+      {
+        "carrier": "36007cc5a65ed0433766b687ac94a7f4fb6c80bf",
+        "base": "cf52201ca165d24c971018251ef9723a8e493384",
+        "changedPaths": 58,
+        "receiptSha256": "e091f0cd9f8857e0af31f13fa3e890a3aa60e8f4fea0ee68e8c024f4c48af4c0",
+        "bytesHashesBlobsModesVerified": true
+      },
+      {
+        "carrier": "eb8f31a377d2ee9c23ddb0a4f74e2484ff0ade2b",
+        "base": "36007cc5a65ed0433766b687ac94a7f4fb6c80bf",
+        "changedPaths": 6,
+        "receiptSha256": "0329f3d5c724a72ea237981c1bf8fbd3b1fe28a6b67f496f6d2f0fb445fa2426",
+        "bytesHashesBlobsModesVerified": true
+      }
+    ],
+    "currentIndependentClone": "/workspace/1536-cloud-clean-restore",
+    "cleanBoth": true,
+    "identicalCurrentGitTrees": true,
+    "GitHubBranchShaIndependentlyRead": "eb8f31a377d2ee9c23ddb0a4f74e2484ff0ade2b",
+    "qualification": "Independently checked all58 preceding-carrier and6 latest-carrier changed paths against each historical Git revision by bytes/SHA256/blob/mode; latest and carried-forward paths match physical independent clone and working checkout. No local object alternates.",
+    "historicalEvidenceUnchangedSinceCompiled": [
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-before-close-diagnostic-source-packet-20261018.json",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-preparation-813f1057-files-20261018",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-frozen-813f1057-files-20261018",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-legacy3-813f1057-files-20261018",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-protected-late2-files-20261018",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-ordering-files-20261018",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-data-files-20261018",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-guidance-files-20261018",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-cut-files-20261018",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-live-files-20261018",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-repaired2-files-20261018",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-refusal9-files-20261018",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-crash5-files-20261018",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-prep-failed-813f1057-files-20261018"
+    ]
+  },
+  "retention": {
+    "oldAccepted": 37,
+    "cloudLegacyAccepted": 3,
+    "retainedTotal": 40,
+    "methods": 24,
+    "wholeTarget": 57,
+    "corrective": 2,
+    "remaining": 15,
+    "scope": "Exact disjoint57-case partition. Retain original37 at their actual/compiled45cc/4c6d provenance and legacy3 at actual9acc/compiled6ab43. Original close2 native1/1PASS1FAIL stays frozen and unqualified; its positive row is not separately promoted. No retained replay or corrected-build equivalence."
+  },
+  "crashPlan": "Unchanged accepted separate new-cloud disposable-fixture isolation plan. Old corrected crash session66529 remains UNKNOWN/unavailable. New crash5 is a separate named first qualification under fresh corrected PREP and its own later release; this decision does not release it.",
+  "environment": {
+    "envSha256": "5d61c19c1341cf9a26b9d361c81da8c89d09924381791c4108d968555f899c53",
+    "privateRuntime": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/runtime",
+    "uid": 1000,
+    "mode": "0700",
+    "homeUnchanged": true,
+    "sameBoot": true
+  },
+  "metadataObservation": {
+    "blocking": false,
+    "text": "processCensusScopeCorrection.limitations retains stale v2 sourceassessmentpending prose; parent will replace it with accepted v2/current dated-scope wording in the PREP acceptance save. Keep historical arrays and non-retrospective limitation."
+  },
+  "nextEligible": {
+    "mode": "close2",
+    "category": "fr063-joint-interface-close-retention",
+    "descriptors": 1,
+    "methods": 2,
+    "cases": 2,
+    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-diag-cloud-813f1057/record.json",
+    "conditions": [
+      "Save this independent PREP acceptance and metadata clarification; push/read back and recover the concrete carrier with unchanged98 pins and reviewed observer bytes.",
+      "Obtain an immediate clean authoritative v2 before-census at the same GUID root; require prepared9/full1575 inventories and no unresolved prior task/child/root.",
+      "Parent separately names the new corrective close2 NoBuild activation against this corrective-plan. Preserve the original red and the complete new native outcome.",
+      "Capture authoritative after-census and archive/recover all original raw evidence before independent semantic EVIDENCE qualification. Any unexpected outcome, unknown process, cleanup or inventory drift freezes further execution."
+    ],
+    "notReleased": [
+      "races2",
+      "settlement3",
+      "integrity4",
+      "uncertain1",
+      "crash5"
+    ]
+  },
+  "holds": [
+    "NO_NEW_PRODUCT_RUNTIME_PASS",
+    "NO_AUTO_RETRY_OR_ADVANCE",
+    "NO_RETAINED40_REPLAY",
+    "OLD_CORRECTED_CRASH_UNKNOWN",
+    "FullNI/HOT/F1/M3/T197 incomplete",
+    "A3 NO-PROCEED",
+    "Windows raw403 blocked/no retry",
+    "CI prohibited",
+    "No main/merge/force/delete/issues/secrets"
+  ],
+  "reviewerActions": "Read-only original archive/source/Git/physical inventory/census reconciliation. No build, discovery, tests, controller or observer execution, process intervention or repository write."
+}

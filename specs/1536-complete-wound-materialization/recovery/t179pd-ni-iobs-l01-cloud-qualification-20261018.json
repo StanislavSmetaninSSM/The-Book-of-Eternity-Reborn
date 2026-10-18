@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "CORRECTED_ZERO4_OBSERVER_V2_ACCEPTED_INDEPENDENT_PREP_PENDING_ACTUAL_HELD",
+  "status": "CORRECTED_SOURCE_AND_PREP_ACCEPTED_NAMED_CLOSE2_ONLY",
   "sourceCheckpoint": "a0da72f2c21fca66193314954cfdf87992752876",
   "sourcePinDigest": "b29c971342ee772b13cd123a954d7afa8937e1f50a7e5f4c4c14403e4de4c347",
   "sourcePinCount": 98,
@@ -584,7 +584,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "After exactremote/clean GitHub recovery, independent corrected PREP review of43rawchains/current98pins/fresh9DLLfull1575outputs/exactZEROplans and mandatory authoritative census. No actual before accepted PREP plus separate named release and immediate clean before-census.",
+  "next": "Recover savedPREPacceptance and capture immediate clean v2 before-census; execute ONLYnamedclose2corrective regression, saveoriginaloutcome+aftercensus+archive, freeze if unexpected. Remaining15 separately gated.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -760,8 +760,16 @@
     "phase": "HISTORICAL_COMPILED_6AB43F6A_ZERO3_PRE_CORRECTION_INELIGIBLE_FOR_CORRECTED_ACTUALS"
   },
   "release": {
-    "status": "NONE_ACTUAL_HELD_PENDING_OBSERVER_V2_AND_INDEPENDENT_FRESH_PREP",
-    "mode": null
+    "status": "NAMED_CLOSE2_ONLY_AFTER_SAVED_ACCEPTANCE_AND_IMMEDIATE_CLEAN_V2_CENSUS",
+    "mode": "close2",
+    "label": "t179pd-ni-iobs-l01-process-first-close2-diag-cloud-813f1057",
+    "compiledSource": "cf52201ca165d24c971018251ef9723a8e493384",
+    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-diag-cloud-813f1057/record.json",
+    "observerPath": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-20261018.py",
+    "observerSourceSha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
+    "conditions": "Push/exactremote/cleanGitHub recovery, then immediate authoritative clean before-census; existingNoBuild FIRST controller exact2methods,9DLL/full1575continuity, no active/unknown/roots; immediate authoritative after-census; original outcome frozen/archived before utility/EVIDENCE/nextmode. Anyunexpectedfailure freezes. This is post-source-change regression, distinct from frozenoriginal; no automatic retry/advance.",
+    "otherModes": "HELD_SEPARATE_NAMED_RELEASE_REQUIRED",
+    "lostOldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED"
   },
   "newOriginalObservedPassingCases": 4,
   "lastAcceptanceRecovery": {
@@ -786,7 +794,7 @@
   },
   "historicalSourceCheckpointBeforeDiagnosticCorrection": "2e0463ff3b5e52510e86f1c8b53bd714923e156d",
   "diagnosticCorrection": {
-    "status": "SOURCE_ACCEPTED_FRESH_ZERO4_ORIGINAL_NATIVE0_INDEPENDENT_PREP_PENDING",
+    "status": "SOURCE_AND_FRESH_ZERO4_PREP_INDEPENDENTLY_ACCEPTED",
     "causalReview": [
       {
         "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-causal-review-20261018.json",
@@ -836,7 +844,7 @@
       "cases": 15
     },
     "freshPreparation": {
-      "status": "ORIGINAL_NATIVE0_ZERO4_CANDIDATE_NOT_INDEPENDENT_PREP",
+      "status": "INDEPENDENT_CORRECTED_ZERO4_PREP_ACCEPTED",
       "actualSource": "cf52201ca165d24c971018251ef9723a8e493384",
       "compiledSource": "cf52201ca165d24c971018251ef9723a8e493384",
       "records": [
@@ -935,6 +943,44 @@
         "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-corrected-prep-candidate-recovery-36007cc5-20261018.json",
         "sha256": "e091f0cd9f8857e0af31f13fa3e890a3aa60e8f4fea0ee68e8c024f4c48af4c0",
         "bytes": 21888
+      },
+      "review": {
+        "verdict": "ACCEPT_CORRECTED_ZERO4_PREPARATION_CLOSE2_ELIGIBLE_AFTER_SAVED_ACCEPTANCE_AND_IMMEDIATE_CLEAN_CENSUS",
+        "model": "gpt-6-astra",
+        "reasoningEffort": "xhigh",
+        "findings": [],
+        "artifacts": [
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-corrected-prep-independent-check-eb8f31a3-20261018.json",
+            "bytes": 12512,
+            "sha256": "a191db1627eacf8d2960376944f92ecc33f3b4696acd1ca68bbb182389162b37"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-corrected-prep-independent-review-eb8f31a3-20261018.json",
+            "bytes": 13542,
+            "sha256": "5c492682fee28ba8e1c095a91edd0cee207f8569d194fbc2463f29ef0323392f"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-corrected-prep-independent-review-eb8f31a3-20261018.md",
+            "bytes": 2868,
+            "sha256": "fcbedf278068df70fed524855f42b5063f15f5aaefb00007e7e0c4e3d660f81a"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-corrected-prep-checker-eb8f31a3-20261018.py",
+            "bytes": 19573,
+            "sha256": "d8dccaca14e5a6e62590478fb8cc4d017a9a7633097cab5ad1734760fc5272bd"
+          }
+        ]
+      },
+      "reviewCarrierRecovery": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-corrected-prep-review-recovery-eb8f31a3-20261018.json",
+        "bytes": 2798,
+        "sha256": "0329f3d5c724a72ea237981c1bf8fbd3b1fe28a6b67f496f6d2f0fb445fa2426"
+      },
+      "parentReadback": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-corrected-prep-parent-readback-eb8f31a3-20261018.json",
+        "bytes": 918,
+        "sha256": "c043fb68020b6cb92870f0f1d9ff34cb586316f9619d0a956859c0620f382e16"
       }
     },
     "sourceReview": {
@@ -1110,7 +1156,7 @@
       }
     ],
     "mandatoryGate": "After independently accepted observer source: clean dated cmdline/stat census at PREP acceptance and immediately before/after each named actual. Stable PID+kernelstarttick; optional exe; any live UNKNOWN/active task/test/game/root blocks without kill/retry. Build infrastructure separate. Existing9DLL/fulloutput/strong child assertions mandatory.",
-    "limitations": "Firstv1snapshot independentlyaccepted onlyitsdatedboundary. V2smallcorrections sourceassessmentpending. No complete pre-catalog/old37/legacy/close snapshot is recovered or retrospectively asserted.",
+    "limitations": "Acceptedv2observer qualifies only independently reconciled dated boundaries and mandatory future clean before/after gates. Original exe-dependent arrays remain incomplete observer output; no missing historical census is reconstructed or relabeled.",
     "sourceReview": {
       "artifacts": [
         {

@@ -1,3 +1,9 @@
+## T179-Pd-NI-IOBS-L01 — corrected PREP accepted; named close2 only (2026-10-18)
+
+[Independent Astra XHigh corrected PREP](recovery/t179pd-ni-iobs-l01-corrected-prep-independent-review-eb8f31a3-20261018.md) accepted без findings:43originalrawchains,98pins, fresh BOTH/catalog808/11800, whole16/33/57+corrective1/2/2+remaining5/7/15 ZERO,9freshcopies/full1575outputs/NoBuildcontinuity,58+6recoveredpaths и acceptedv2mandatorycensus. Native build warnings148+37/errors0. Actualtests0; qualified40targets unchanged.
+
+После push/exactremote/cleanGitHub recovery этого acceptance и немедленного cleanv2beforecensus разрешён только новый `t179pd-ni-iobs-l01-process-first-close2-diag-cloud-813f1057` через existingNoBuild/FIRST controller и exactcorrective-plan record compiledcf52201c. Сразу после join — authoritativev2aftercensus и сохранение originalnative/raw/archive. Unexpectedfailure freezes; остальные15 только по отдельным releases. Это post-source-change regression, не переписывание frozenoriginalclose2 native1/1PASS1FAIL. Oldcorrectedcrash5UNKNOWN неизменен; old37+legacy3 не повторяются. Broadholds/Windows403/CI/A3 сохраняются. Следующиеsectionsисторические.
+
 ## T179-Pd-NI-IOBS-L01 — observer v2 SOURCE accepted; corrected PREP review next (2026-10-18)
 
 [Independent observerv2](recovery/t179pd-ni-iobs-l01-process-census-v2-independent-review-20261018.md) accepted без findings; exactsourceSHA141a2020/7410bytes. [Новый PREP qualification boundary](recovery/t179pd-ni-iobs-l01-census-corrected-prep-qualification-813f1057.json) clean: stableknownMSBuild/self, active/UNKNOWN/roots0. [36007cc5 recovery](recovery/t179pd-ni-iobs-l01-corrected-prep-candidate-recovery-36007cc5-20261018.json) восстанавливает58changedpaths изGitHub. Qualified40targets неизменны.
