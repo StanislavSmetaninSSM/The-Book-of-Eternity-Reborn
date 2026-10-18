@@ -1,0 +1,465 @@
+{
+  "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
+  "status": "WIP_SOURCE_RESTORED_FRESH_PREPARATION_PENDING",
+  "sourceCheckpoint": "2e0463ff3b5e52510e86f1c8b53bd714923e156d",
+  "sourcePinDigest": "1f11670a1e063bed010e2e03585fb6e8b5ad4da64157a5ce877317475d3c7bc4",
+  "sourcePinCount": 98,
+  "environment": {
+    "kind": "NEW_CLOUD_ENVIRONMENT_QUALIFICATION_IDENTITY",
+    "runIdentity": "ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320",
+    "environmentId": "ccarenv_b64_Y2NhcmVudl81OGJhMmIxOTUzNTQ4MTkxYjg3NzQ2NjFhZDJlNmRjYg",
+    "createdUtc": "2026-10-18T09:30:26.953555+00:00",
+    "root": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320",
+    "realpath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320",
+    "rootInitialEntries": [],
+    "linuxBootId": "cbd633d5-c8d0-43e1-8c6e-1b233700b8d9",
+    "hostname": "735aec146281",
+    "oldCorrectedCrashOutcome": "UNKNOWN",
+    "oldSession": 66529,
+    "scope": "New disposable cloud fixture qualification only; no access to or recovery of old process result. No user saves, Windows, CI or actual game operation."
+  },
+  "toolchain": {
+    "sdk": "10.0.402",
+    "runtime": "8.0.32",
+    "powershell": "7.6.7",
+    "installRoot": "/tmp/1536-cloud-tools",
+    "os": "Debian13_linux_x64"
+  },
+  "restoration": {
+    "checkout": "/workspace/The-Book-of-Eternity-Reborn",
+    "clean": true,
+    "remoteVerified": "2e0463ff3b5e52510e86f1c8b53bd714923e156d",
+    "priorComposition": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-cdd92116-20261017.json",
+    "compositionAudit": {
+      "continuousEdges": 117,
+      "manifestHead": "cdd92116ba2d87d8a6c6a30f7653fb144df5d5fe",
+      "receiptsHashVerified": [
+        "specs/1536-complete-wound-materialization/recovery/t179pd3d-tests-wip-delta-github-56dbe1de-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3d-prepared-wip-delta-github-ec60cc7a-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3d-nis01-source-wip-delta-github-b501b2b7-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3d-nis01-prepared-wip-delta-github-b5859fcf-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3d-source-decision-delta-github-63aa451e-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-boundary-outcome-delta-github-70953bda-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3d-causal-decision-delta-github-e9823e84-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3d-minimal-product-delta-github-0f00ee25-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-prepared-delta-github-a06ac89a-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-source-decision-delta-github-e1d9885a-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-late2-delta-github-702f7998-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3d-late2-evidence-decision-delta-github-31fe14fa-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-ordinary52-delta-github-60400613-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3d-final-bounded-delta-github-fe3dc219-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3e-tests-wip-delta-github-d377f91c-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-prep-stop-delta-github-c0ba4299-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3e-c01-source-delta-github-7307e8f8-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3e-corrected-prep-delta-github-2dcfa0dd-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3e-source-decision-delta-github-479a23a9-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-boundary-delta-github-25fe58aa-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3e-causal-decision-delta-github-e9f55c14-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-wip-delta-github-f766d9d0-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-prep-delta-github-b197cb2b-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-source-delta-github-828d36cf-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-late2-delta-github-2f39b078-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3e-late2-evidence-decision-delta-github-406ac844-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-ordinary45-delta-github-44951f9d-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd3e-bounded-final-delta-github-47d0f4a3-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-source-wip-delta-github-440c81b6-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-final-delta-github-1afc3072-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-wip-delta-github-5e3bfade-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-final-delta-github-7dc0a7ea-20261017.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-design-wip-delta-github-bf13deae-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-design-final-delta-github-f40f222c-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-cold-wip-delta-github-4fc9264b-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-cold-final-delta-github-08119f36-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-tests-wip-delta-github-3579d8e2-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-prepared-delta-github-172455c2-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-source-decision-delta-github-558c7ec0-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-first-stop-delta-github-7f0b11c6-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-product-delta-github-3d195f2f-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-product-preparation-delta-github-072dc47b-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-product-source-delta-github-127d3cf7-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-product-late2-delta-github-f7988570-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-late2-evidence-delta-github-074575d3-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-product-new3-delta-github-29b2a4c4-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-final-delta-github-22cf0e77-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-final-labels-delta-github-46451715-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-final-handoff-delta-github-447bc121-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-contract-wip-delta-github-82e1552e-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-acceptance-delta-github-9a92049e-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-order-wip-delta-github-80bf2a31-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-tools-wip-delta-github-88b25759-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-decision-delta-github-a6500598-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-prep-delta-github-9079452d-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-first-raw-delta-github-7e5c4405-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-causal-accepted-delta-github-acf6f7b9-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-foundation-delta-github-63bf04f4-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-integration-delta-github-34bbb958-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-live-controls-delta-github-aee4feb3-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-ready-delta-github-fbd19e4f-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-legacy-crash-delta-github-e8fd65a4-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-close-race-delta-github-116393ee-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-finite-gm-delta-github-d6dac525-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-delta-github-afb5a3bb-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-tools-delta-github-520e66e4-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-accepted-delta-github-45cc99ab-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-prepared-delta-github-8d00ba29-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-prep-accepted-delta-github-c840d604-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-protected-raw-delta-github-1024bee0-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-order-units-raw-delta-github-f5dc4aff-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cut-raw-delta-github-91a533d6-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-unexpected-live-delta-github-eaea2dde-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-fixture-delta-github-bd799b19-20261018-v2.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-optional-reader-delta-github-ca2b716e-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-source-accepted-delta-github-4c6d8334-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-prepared-delta-github-d71e52d7-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-prep-accepted-delta-github-6b7d1e82-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-repaired-raw-delta-github-1611b5c7-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-refusal-raw-delta-github-fd78a4a9-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-crash-stop-delta-github-b31c0d78-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-fixture-delta-github-c4c0c62f-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-source-accepted-delta-github-71108a7d-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-prepared-delta-github-cdd92116-20261018.json"
+      ],
+      "receiptBytesNotRecovered": [
+        "/tmp/a1-source-prepared-delta-github-3da75b41-20261017.json",
+        "/tmp/a1-source-recovery-correction-delta-github-12498e69-20261017.json",
+        "/tmp/a1-source-accepted-delta-github-465bf972-20261017.json",
+        "/tmp/a1-first-late2-delta-github-a50588d5-20261017.json",
+        "/tmp/a1-late2-accepted-delta-github-271fb6be-20261017.json",
+        "/tmp/a1-boundary-first-unqualified-delta-github-34409b65-20261017.json",
+        "/tmp/a1-f01-fixture-wip-delta-github-4d1e3fa2-20261017.json",
+        "/tmp/a1-f01-prepared-delta-github-e259efa1-20261017.json",
+        "/tmp/a1-f01-source-accepted-delta-github-b2bdd663-20261017.json",
+        "/tmp/a1-f01-corrected-boundary-delta-github-39dbbdf9-20261017.json",
+        "/tmp/a1-f01-runtime-accepted-delta-github-3a053db1-20261017.json",
+        "/tmp/a1-qualified52-delta-github-dcc251e4-20261017.json",
+        "/tmp/a1-final-accepted-delta-github-65fcce70-20261017.json",
+        "/tmp/a2-contract-delta-github-8af31391-20261017.json",
+        "/tmp/a2-contract-accepted-delta-github-851655c0-20261017.json",
+        "/tmp/a2-tests-wip-delta-github-1c85a092-20261017.json",
+        "/tmp/a2-first-preparation-fail-delta-github-47fa2227-20261017.json",
+        "/tmp/a2-interface-fix-delta-github-b7648a2b-20261017.json",
+        "/tmp/a2-second-preparation-fail-delta-github-a22c9280-20261017.json",
+        "/tmp/a2-compile-import-fix-delta-github-40ed288b-20261017.json",
+        "/tmp/a2-red-prepared-delta-github-778cd024-20261017.json",
+        "/tmp/a2-red-source-accepted-delta-github-38ea3f83-20261017.json",
+        "/tmp/a2-first-causal-red-delta-github-a00ff2d5-20261017.json",
+        "/tmp/a2-causal-red-accepted-delta-github-e479b11c-20261017.json",
+        "/tmp/a2-production-wip-delta-github-a4e111b3-20261017.json",
+        "/tmp/a2-green-prepared-delta-github-f42d90e5-20261017.json",
+        "/tmp/a2-green-source-accepted-delta-github-505ffc92-20261017.json",
+        "/tmp/a2-first-late2-delta-github-c538622e-20261017.json",
+        "/tmp/a2-late2-accepted-delta-github-6104d973-20261017.json",
+        "/tmp/a2-green57-delta-github-d43f3a71-20261017.json",
+        "/tmp/a2-final-delta-github-9416298b-20261017.json",
+        "/tmp/a3-contract-delta-github-387c4f48-20261017.json",
+        "/tmp/a3-deferred-delta-github-a5a41cfa-20261017.json"
+      ],
+      "limits": "Do not claim unavailable old /tmp receipt bytes restored. Exact GitHub commit checkout and direct 37-case/failure archive bytes checked independently."
+    },
+    "restoredArchives": [
+      {
+        "scope": "protected-late2",
+        "sourceField": "actualScopes",
+        "tests": {
+          "Total": 2,
+          "Executed": 2,
+          "Passed": 2,
+          "Failed": 0
+        },
+        "actualSource": "c840d604dc5ccb50a9a97dd83319e2366a7a09ac",
+        "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+        "archive": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-protected-late2-files-20261018/archive.json",
+          "sha256": "95e9ce4d8d4b718a61242b2e822419aabf583add27b4d24766e9f2fd2b3c5a6d",
+          "rawChains": 11
+        },
+        "chainsVerified": 11
+      },
+      {
+        "scope": "ordering1",
+        "sourceField": "actualScopes",
+        "tests": {
+          "Total": 1,
+          "Executed": 1,
+          "Passed": 1,
+          "Failed": 0
+        },
+        "actualSource": "1024bee0a1a5483b4e593bcea0c6fdb107ad61cc",
+        "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+        "archive": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-ordering-files-20261018/archive.json",
+          "sha256": "8ba3ab05a0858b1820d43bf03be183d6a39916431d87b776c21b37d63bb48ac5",
+          "rawChains": 11
+        },
+        "chainsVerified": 11
+      },
+      {
+        "scope": "data15",
+        "sourceField": "actualScopes",
+        "tests": {
+          "Total": 15,
+          "Executed": 15,
+          "Passed": 15,
+          "Failed": 0
+        },
+        "actualSource": "1024bee0a1a5483b4e593bcea0c6fdb107ad61cc",
+        "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+        "archive": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-data-files-20261018/archive.json",
+          "sha256": "e8017979b709145dc89f0256993271f0b2abdc76348deb8014d1f06646711193",
+          "rawChains": 11
+        },
+        "chainsVerified": 11
+      },
+      {
+        "scope": "guidance1",
+        "sourceField": "actualScopes",
+        "tests": {
+          "Total": 1,
+          "Executed": 1,
+          "Passed": 1,
+          "Failed": 0
+        },
+        "actualSource": "1024bee0a1a5483b4e593bcea0c6fdb107ad61cc",
+        "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+        "archive": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-guidance-files-20261018/archive.json",
+          "sha256": "c365fc7a9a95e6edeaf1c7ab4732eca8d188cde943aa9de4e6423ced7b8fda61",
+          "rawChains": 11
+        },
+        "chainsVerified": 11
+      },
+      {
+        "scope": "cut3",
+        "sourceField": "actualScopes",
+        "tests": {
+          "Total": 3,
+          "Executed": 3,
+          "Passed": 3,
+          "Failed": 0
+        },
+        "actualSource": "f5dc4aff3b2847d1d3a4e4e76d9edc4b9f7d9f91",
+        "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+        "archive": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-cut-files-20261018/archive.json",
+          "sha256": "f2fc02278a6c6181980464dd805722ae4a86c79029dd2656b3b504c6aaeedb2a",
+          "rawChains": 12
+        },
+        "chainsVerified": 12
+      },
+      {
+        "scope": "live6",
+        "sourceField": "actualScopes",
+        "tests": {
+          "Total": 6,
+          "Executed": 6,
+          "Passed": 4,
+          "Failed": 2
+        },
+        "actualSource": "91a533d61e93ee043622763cd709b708dbc89dd3",
+        "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+        "archive": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-live-files-20261018/archive.json",
+          "sha256": "c1257d7c095d5407283accb7e9eabd35ef2ccf6b8577b7b291a84f1e8f87e2af",
+          "rawChains": 11
+        },
+        "chainsVerified": 11
+      },
+      {
+        "scope": "repaired2",
+        "sourceField": "historical4c6dCurrentActualScopes",
+        "tests": {
+          "Total": 2,
+          "Executed": 2,
+          "Passed": 2,
+          "Failed": 0
+        },
+        "actualSource": "6b7d1e8288af73982de85159a343626efda21d57",
+        "compiledSource": "4c6d8334b441193cbda6de539347bcf7998d4db6",
+        "archive": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-repaired2-files-20261018/archive.json",
+          "sha256": "27905467fe1f9451ccfd0cb096fa4ad0aa437518ce4e43b78061f2e0b0a871d0",
+          "rawChains": 11
+        },
+        "chainsVerified": 11
+      },
+      {
+        "scope": "refusal9",
+        "sourceField": "historical4c6dCurrentActualScopes",
+        "tests": {
+          "Total": 9,
+          "Executed": 9,
+          "Passed": 9,
+          "Failed": 0
+        },
+        "actualSource": "1611b5c720a627a3582481db2d9419fc488f518c",
+        "compiledSource": "4c6d8334b441193cbda6de539347bcf7998d4db6",
+        "archive": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-refusal9-files-20261018/archive.json",
+          "sha256": "37a01525ed8c18251b6de951687d711c904b84acb34411278bbf7299d3ad777f",
+          "rawChains": 11
+        },
+        "chainsVerified": 11
+      },
+      {
+        "scope": "crash5",
+        "sourceField": "historical4c6dCurrentActualScopes",
+        "tests": {
+          "Total": 5,
+          "Executed": 5,
+          "Passed": 0,
+          "Failed": 5
+        },
+        "actualSource": "fd78a4a9beba1974be8fdb20bf3ea5b0bdfe066a",
+        "compiledSource": "4c6d8334b441193cbda6de539347bcf7998d4db6",
+        "archive": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-crash5-files-20261018/archive.json",
+          "sha256": "debe6ab711fc559a97c888078328a3f98db16f245f5726e7cf43033b1da2cda8",
+          "rawChains": 11
+        },
+        "chainsVerified": 11
+      }
+    ],
+    "restoredRawChains": 100,
+    "retainedQualifiedCases": 37,
+    "originalFixtureFailures": 7,
+    "limits": "Restored saved direct evidence, not new execution or cross-build equality. 33 historical /tmp receipt byte files were not found at their recorded basenames; no reconstruction claimed. Full new GitHub clone is pending."
+  },
+  "oldCorrectedCrash": {
+    "outcome": "UNKNOWN",
+    "session": 66529,
+    "compiledSource": "71108a7df72204a1bdcc143feb84d5c857eef1a1",
+    "recordPathInUnavailableOldEnvironment": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-first-crash-current/record.json",
+    "artifactAvailability": "UNAVAILABLE",
+    "processIntervention": "NONE",
+    "recoveryClaim": false
+  },
+  "pending": [
+    {
+      "mode": "legacy3",
+      "category": "fr063-joint-interface-legacy-current",
+      "expectedCases": 3,
+      "methods": [
+        {
+          "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCompletesWithoutProtocolUpgrade",
+          "cases": 1
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCommittedColdKeepsLegacyConsumer",
+          "cases": 1
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewOrdinaryOriginalUsesPriorMarkerSourceInsteadOfCachedData",
+          "cases": 1
+        }
+      ],
+      "status": "UNRUN_IN_NEW_ENVIRONMENT"
+    },
+    {
+      "mode": "close2",
+      "category": "fr063-joint-interface-close-retention",
+      "expectedCases": 2,
+      "methods": [
+        {
+          "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceOwningCloseRetainsPublishedButCannotDeliverFreshResult",
+          "cases": 1
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LaterOuterFinalizationDoesNotUnemitCommittedInterfaceOrReplay",
+          "cases": 1
+        }
+      ],
+      "status": "UNRUN_IN_NEW_ENVIRONMENT"
+    },
+    {
+      "mode": "races2",
+      "category": "fr063-joint-interface-source-races",
+      "expectedCases": 2,
+      "methods": [
+        {
+          "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualReturnedReadCannotHideChangedWriterPreimage",
+          "cases": 1
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_PublishedInterfaceCannotExcuseOtherImmutableReadyDrift",
+          "cases": 1
+        }
+      ],
+      "status": "UNRUN_IN_NEW_ENVIRONMENT"
+    },
+    {
+      "mode": "settlement3",
+      "category": "fr063-joint-interface-settlement",
+      "expectedCases": 3,
+      "methods": [
+        {
+          "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CommonMemberCompensationRetainsPublishedInterfaceWithoutReplay",
+          "cases": 1
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate",
+          "cases": 2
+        }
+      ],
+      "status": "UNRUN_IN_NEW_ENVIRONMENT"
+    },
+    {
+      "mode": "integrity4",
+      "category": "fr063-joint-interface-current-integrity",
+      "expectedCases": 4,
+      "methods": [
+        {
+          "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback",
+          "cases": 4
+        }
+      ],
+      "status": "UNRUN_IN_NEW_ENVIRONMENT"
+    },
+    {
+      "mode": "uncertain1",
+      "category": "fr063-joint-interface-uncertain-current",
+      "expectedCases": 1,
+      "methods": [
+        {
+          "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic",
+          "cases": 1
+        }
+      ],
+      "status": "UNRUN_IN_NEW_ENVIRONMENT"
+    },
+    {
+      "mode": "crash5",
+      "category": "fr063-joint-interface-crash-current",
+      "expectedCases": 5,
+      "methods": [
+        {
+          "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection",
+          "cases": 5
+        }
+      ],
+      "status": "UNRUN_IN_NEW_ENVIRONMENT"
+    }
+  ],
+  "crashRequalificationPlan": {
+    "status": "INDEPENDENT_REVIEW_REQUIRED_BEFORE_EXECUTION",
+    "purpose": "Separate new fixture qualification; preserve old UNKNOWN. No recovery or blind retry of old result.",
+    "rootIsolation": "Fresh environmentId and GUID TMPDIR; each fixture constructs a new GUID own container/parent nonce and child-local tmp. No imported old root, checkpoint, live owner, save or real game operation.",
+    "processIsolation": "Only newly started genuine child Process handles; independent parent/self PID+kernel starttick and nonce, exit73, new resume PID, join+EOF, strict containment. Retain owned container if termination/join/EOF unresolved; no old process query/kill.",
+    "stateIsolation": "Read immutable repository templates into independent writable fixture roots; existing installed production route/strong assertions unchanged. Reviewer must reject if shared mutable/external state or duplicate real operation is possible.",
+    "assertions": "Retain exact cut bytes before identity checks, FIRST2/Prepared/I-member/Published/ErrorPrepared boundaries, exact I/result/binding/Ready/once-only mechanics, culture contrast, current child3/common/take/late/cold DATA proofs and complete cleanup.",
+    "gates": "Fresh catalog/build, whole57 and pending20 PlanOnly, recovered independent SOURCE/PREP and isolation-plan acceptance; named crash5 on new run identity only. Any unexpected failure freezes execution and requires independent diagnosis."
+  },
+  "actuals": {},
+  "holds": [
+    "FullNI",
+    "HOT",
+    "F1",
+    "M3",
+    "T197",
+    "A3_NO_PROCEED",
+    "Windows_raw_artifact403_BLOCKED_NO_RETRY",
+    "CI_NO_RUN",
+    "No_main_merge_force_push_delete_or_issue_close"
+  ],
+  "next": "Fresh catalog/build and whole/pending PlanOnly ZERO, then independent SOURCE/PREP review. No tests yet."
+}
