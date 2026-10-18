@@ -36,7 +36,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Result = _currentResumedProof.ToJson(), Meaning = "Current full committed DATA proof before legitimate terminal original cleanup" });
         }
 
-        private async Task AssertUncertainCurrentResumeAsync(GameEngine engine, string firstDiagnostics)
+        private async Task AssertUncertainCurrentResumeAsync(GameEngine engine, string firstDiagnostics, Func<string> describeCurrentDiagnostics)
         {
             Assert.Equal(1, _captureCallbacks); Assert.Empty(_publications.Where(row => row.MarkerCommitted));
             Assert.Single(_publications.Where(row => row.InterfaceChanged));
@@ -64,6 +64,31 @@ public sealed partial class GameEngineTurnLifecycleTests
             // The old attempt/Ready is not revived, and the one-shot cut is no
             // longer thrown. No private fields or issued permissions are seeded.
             var handled = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
+            // Observe this NEW returned call before its positive oracle. No lease,
+            // recovery, authority validation or private capability serialization.
+            var currentRefresh = GetPrivateFieldValue<object?>(engine, "_mortalJointRepairCanonicalRefresh");
+            var currentDisposition = currentRefresh is null ? (MortalJointRepairPublicationDisposition?)null :
+                (MortalJointRepairPublicationDisposition)currentRefresh.GetType().GetProperty("Disposition")!.GetValue(currentRefresh)!;
+            var currentIssues = currentRefresh is null ? null :
+                (IReadOnlyList<ValidationIssue>)currentRefresh.GetType().GetProperty("Issues")!.GetValue(currentRefresh)!;
+            fixture.WritePhysicalInjuryDiagnostic("iobs_same_engine_uncertain_new_call_returned", new
+            { Handled = handled, CurrentDiagnostics = describeCurrentDiagnostics(),
+                Turn = GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber,
+                CurrentProof = _currentResumedProof?.ToJson(), CaptureCallbacks = _captureCallbacks,
+                Disposition = currentDisposition?.ToString(), Issues = currentIssues,
+                OldAttempt = new { oldAttempt.Live, oldAttempt.Delegated,
+                    ContinuationAbsent = oldAttempt.Continuation is null, ReservationAbsent = oldAttempt.Reservation is null },
+                Trace = _publications, Meaning = "New runtime observation only; original failed run had no post-call log" });
+            object ObserveImage(string path)
+            {
+                try { return new { Bytes = ReadPhysical(path), ReadError = (string?)null }; }
+                catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+                { return new { Bytes = (byte[]?)null, ReadError = error.ToString() }; }
+            }
+            fixture.WritePhysicalInjuryDiagnostic("iobs_same_engine_uncertain_new_call_raw_images", new
+            { Pending = ObserveImage(WoundAcceptedTurnSnapshotContract.PendingResolutionPath),
+                Interface = ObserveImage(InterfacePath), Mechanical = _mechanicalBefore.Keys.ToDictionary(path => path, ObserveImage),
+                Meaning = "Raw read-only images after new call; ReadError distinguishes unreadable from absent" });
             Assert.NotNull(_currentResumedProof); Assert.Equal(43, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
             Assert.Equal(record.ResultFingerprint, _currentResumedProof.ResultFingerprint);
             Assert.True(JsonNode.DeepEquals(record.ToJson(), _currentResumedProof.ToJson()));

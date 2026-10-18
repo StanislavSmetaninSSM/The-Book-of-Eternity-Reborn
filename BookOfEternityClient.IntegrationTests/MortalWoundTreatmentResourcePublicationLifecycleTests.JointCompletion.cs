@@ -436,7 +436,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         }
         if (interfaceLifecycleProbe is { ExpectsHeld: true })
         {
-            await interfaceLifecycleProbe.AssertHeldAsync(engine, logger.Describe());
+            await interfaceLifecycleProbe.AssertHeldAsync(engine, logger.Describe(), logger.Describe);
             return; // genuine prerequisites above; selected ErrorPrepared cannot enter ordinary completion
         }
         if (normalizeNarrativeBeforeCheckpoint)

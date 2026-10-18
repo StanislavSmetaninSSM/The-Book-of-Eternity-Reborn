@@ -357,11 +357,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal(1, _lateWarningCount); Assert.Equal(new[] { 1, 1 }, _genericWarningCounts);
         }
 
-        internal async Task AssertHeldAsync(GameEngine engine, string owningDiagnostics)
+        internal async Task AssertHeldAsync(GameEngine engine, string owningDiagnostics, Func<string> describeCurrentDiagnostics)
         {
             if (scenario == "CutResume")
             {
-                await AssertUncertainCurrentResumeAsync(engine, owningDiagnostics);
+                await AssertUncertainCurrentResumeAsync(engine, owningDiagnostics, describeCurrentDiagnostics);
                 return;
             }
             if (scenario == "CommonFault")

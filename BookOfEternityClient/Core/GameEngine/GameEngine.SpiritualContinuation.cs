@@ -58,6 +58,14 @@ public partial class GameEngine
     private async Task<UpstreamAcceptedTurnValidation> ValidateAcceptedTurnUpstreamRawItemsAsync()
     {
         await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        return await ValidateAcceptedTurnUpstreamRawItemsWithLeaseAsync(lease);
+    }
+
+    // The caller owns acquisition and awaited release; this helper only borrows.
+    private async Task<UpstreamAcceptedTurnValidation> ValidateAcceptedTurnUpstreamRawItemsWithLeaseAsync(
+        FileSystemManager.CanonicalWriteLease lease)
+    {
+        _fs.EnsureCanonicalWriteLeaseActive(lease);
         if (AcceptedMechanicsPlanAuthority.TryPeekSpiritualPublication(_fs, lease, out var retained))
         {
             var retainedIssues = await retained.ValidateCurrentInputsAsync(_fs, lease);

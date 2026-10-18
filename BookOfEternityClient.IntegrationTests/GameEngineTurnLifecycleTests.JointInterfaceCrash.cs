@@ -258,6 +258,20 @@ public sealed partial class GameEngineTurnLifecycleTests
         Dictionary<string, byte[]?>? before = null, after = null, repeated = null;
         byte[]? recoveredPending = null, recoveredI = null;
         bool? handled = null, second = null;
+        var integrityGuardEntries = new List<object>();
+        const string integrityReason = "joint_interface_actual_publication_preimage_or_readback_changed";
+        static int ReasonCount(string logs) => logs.Split(integrityReason, StringSplitOptions.None).Length - 1;
+        void RequireCurrentInterfaceGuard(int entry, string logsBefore, string logsAfter)
+        {
+            if (fault != "CurrentInterface") return;
+            var countBefore = ReasonCount(logsBefore); var countAfter = ReasonCount(logsAfter);
+            var observed = new { Boundary = "iobs_actual_current_interface_guard_entry", Entry = entry,
+                Reason = integrityReason, CountBefore = countBefore, CountAfter = countAfter,
+                LogsBefore = logsBefore, LogsAfter = logsAfter };
+            integrityGuardEntries.Add(observed);
+            Console.WriteLine(JsonSerializer.Serialize(observed)); // retained even when the stronger oracle fails
+            Assert.True(countAfter > countBefore, "Each real entry must newly report " + integrityReason);
+        }
         Exception? failure = null;
         var completed = false;
         try
@@ -315,7 +329,10 @@ public sealed partial class GameEngineTurnLifecycleTests
                 }
                 before = await CaptureConfirmedClaimReadImagesAsync(files, lease);
             }
+            var firstLogsBefore = log.Describe();
             handled = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
+            var firstLogsAfter = log.Describe();
+            RequireCurrentInterfaceGuard(1, firstLogsBefore, firstLogsAfter);
             await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
             {
                 after = await CaptureConfirmedClaimReadImagesAsync(files, lease);
@@ -352,7 +369,10 @@ public sealed partial class GameEngineTurnLifecycleTests
                     }
                 }
             }
+            var secondLogsBefore = log.Describe();
             second = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
+            var secondLogsAfter = log.Describe();
+            RequireCurrentInterfaceGuard(2, secondLogsBefore, secondLogsAfter);
             await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
             {
                 repeated = await CaptureConfirmedClaimReadImagesAsync(files, lease);
@@ -375,6 +395,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 IndependentOrdinaryPolicyRejected = policyRejected, Culture = CultureInfo.CurrentCulture.Name,
                 Result = result?.ToJson(), RecoveredPending = recoveredPending, RecoveredI = recoveredI,
                 Before = before, After = after, Repeated = repeated, Publications = publications, Recovery = recovery, Logs = log.Describe(),
+                IntegrityGuardEntries = integrityGuardEntries,
                 Dependencies = MortalArchiveDependencyContext(), Loaded = MortalArchiveLoadedDependencyBindings() }));
         }
     }

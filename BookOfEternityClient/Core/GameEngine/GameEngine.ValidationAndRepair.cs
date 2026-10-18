@@ -1720,14 +1720,22 @@ public partial class GameEngine
     /// Critical, NPC, faction, location and item diagnostics in the existing admission order,
     /// together with an explicit terminal rejection when private spiritual authority fails admission.
     /// </returns>
-    private async Task<UpstreamAcceptedTurnValidation> CollectAcceptedTurnUpstreamRawStateIssuesAsync()
+    private async Task<UpstreamAcceptedTurnValidation> CollectAcceptedTurnUpstreamRawStateIssuesAsync() =>
+        await CollectAcceptedTurnUpstreamRawStateIssuesCoreAsync(null);
+
+    // Ordinary callers retain the self-owned item lease. Selected current resume
+    // lends its active lease so all admission remains inside that owning fence.
+    private async Task<UpstreamAcceptedTurnValidation> CollectAcceptedTurnUpstreamRawStateIssuesCoreAsync(
+        FileSystemManager.CanonicalWriteLease? ownedLease)
     {
         var issues = await _criticalStateHealth.ValidateAcceptedTurnRawStateAsync();
         issues.AddRange(await _validator.ValidateNpcCoreChangesBeforeNormalizationAsync());
         issues.AddRange(await _validator.ValidateFactionCoreChangesBeforeNormalizationAsync());
         issues.AddRange(await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync());
         issues.AddRange(await _validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync());
-        var itemValidation = await ValidateAcceptedTurnUpstreamRawItemsAsync();
+        var itemValidation = ownedLease is null
+            ? await ValidateAcceptedTurnUpstreamRawItemsAsync()
+            : await ValidateAcceptedTurnUpstreamRawItemsWithLeaseAsync(ownedLease);
         issues.AddRange(itemValidation.Issues);
         return new UpstreamAcceptedTurnValidation(issues, itemValidation.RejectSpiritualBoundary);
     }

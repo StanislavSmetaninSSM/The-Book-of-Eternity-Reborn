@@ -2,7 +2,7 @@
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
   "status": "QUALIFIED47_OF57_USER_RESUMED_MINIMAL_BORROWED_LEASE_IMPLEMENTATION_SOURCE_PREP_REQUIRED",
   "sourceCheckpoint": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
-  "sourcePinDigest": "304a7e8beb3174246ac3db792c6aa63319fa8ead9f3bab62f91346d4f204248d",
+  "sourcePinDigest": "8d9af639e85516874013910334b135946d3d7482da728e9889f99f8d080e106e",
   "sourcePinCount": 98,
   "environment": {
     "kind": "NEW_CLOUD_ENVIRONMENT_QUALIFICATION_IDENTITY",
@@ -448,7 +448,7 @@
     }
   ],
   "crashRequalificationPlan": {
-    "status": "ISOLATION_PLAN_RETAINED_SOURCE_REMEDY_AND_FRESH_AFFECTED_PREP_REQUIRED_ALL_ACTUALS_HELD",
+    "status": "ISOLATION_PLAN_RETAINED_BORROWED_LEASE_SOURCE_AND_FRESH_PREP_REQUIRED",
     "purpose": "Separate new fixture qualification; preserve old UNKNOWN. No recovery or blind retry of old result.",
     "rootIsolation": "Fresh environmentId and GUID TMPDIR; each fixture constructs a new GUID own container/parent nonce and child-local tmp. No imported old root, checkpoint, live owner, save or real game operation.",
     "processIsolation": "Only newly started genuine child Process handles; independent parent/self PID+kernel starttick and nonce, exit73, new resume PID, join+EOF, strict containment. Retain owned container if termination/join/EOF unresolved; no old process query/kill.",
@@ -2591,7 +2591,7 @@
     }
   },
   "nextProposedSafePlan": {
-    "status": "REVIEWABLE_RECOMMENDATION_ONLY_NO_IMPLEMENTATION_OR_RETRY_AT_THIS_CHECKPOINT",
+    "status": "USER_RESUMED_IMPLEMENTATION_MINIMAL_PLAN_ACCEPTED_CANDIDATE_SOURCE_REVIEW_PENDING",
     "production": "Thread the exact already-owned ordinary canonical lease from selected resume through upstream collection into an item-validation core/overload. Borrowed path validates active lease ownership for this FileSystemManager and neither acquires nor disposes it. Existing no-argument path retains its own acquisition/disposal and every retained-spiritual/foreign-claim/vacancy/item-validation/invalidation branch and order.",
     "oracle": "Strengthen CurrentInterface with positive evidence for the intended exact pending/I preimage/readback refusal on both real entries, attributable to each entry (for example independent diagnostic deltas). Preserve all existing bytes, ownership, fresh-authority-absence, genuine child identity/exit/join/EOF, no changing I/common commit and inert-repeat assertions. Keep the existing uncertain1 positive full-proof/turn43/mechanical/terminal-cleanup/repeat assertions unchanged.",
     "exclusions": [
@@ -2646,7 +2646,7 @@
     }
   ],
   "borrowedLeaseCorrection": {
-    "status": "PLAN_INDEPENDENTLY_ACCEPTED_IMPLEMENTATION_AUTHORIZED_UNRUN",
+    "status": "WIP_UNCOMPILED_SOURCE_REVIEW_PENDING",
     "baseline": "bb99804e8c7124e4c625ea7557d61cdaa93a8035",
     "planReview": [
       {
@@ -2678,6 +2678,15 @@
         5
       ]
     },
-    "gmDisposition": "Client-owned lease composition and fixture observation/oracle only; no GM-authored capability/schema/prompt/example contract changes."
+    "gmDisposition": "Client-owned lease composition and fixture observation/oracle only; no GM-authored capability/schema/prompt/example contract changes.",
+    "sourcePacket": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
+      "sha256": "0fd7af860aae77a6d77e944178dfc8eec9abfd017f36d4161d631a494d067ccb",
+      "bytes": 48506
+    },
+    "freshPreparation": {
+      "status": "UNRUN_SOURCE_PENDING"
+    },
+    "productDeltaCount": 22
   }
 }

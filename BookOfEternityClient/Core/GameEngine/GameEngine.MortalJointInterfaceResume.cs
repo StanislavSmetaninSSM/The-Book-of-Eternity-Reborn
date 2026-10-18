@@ -64,7 +64,7 @@ public partial class GameEngine
                 var capture = await ReadCurrentJointRejectedCaptureAsync(lease, expected);
                 _ = await MortalJointRepairCheckpoint.RevalidateCorrectionAsync(_fs, lease, capture);
                 using var snapshotScope = _validator.UsePrevalidatedPendingTurnSnapshotScope(frame.Manifest);
-                var upstream = await CollectAcceptedTurnUpstreamRawStateIssuesAsync();
+                var upstream = await CollectAcceptedTurnUpstreamRawStateIssuesCoreAsync(lease);
                 if (upstream.RejectSpiritualBoundary || upstream.Issues.Any(issue => issue.Severity == IssueSeverity.Error))
                     return HeldWithFrozenIssues(upstream.Issues);
                 var narrative = await _validator.ValidateMortalJointAcceptedNarrativeReadOnlyAsync();
