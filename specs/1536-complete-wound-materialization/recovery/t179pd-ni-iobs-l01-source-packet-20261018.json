@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_SELECTED_CURRENT_RESUME_ROUTING_SOURCE_CANDIDATE",
-  "status": "QUALIFIED52_OF57_SELECTED_ROUTING_UNCERTAIN1_ACCEPTED",
+  "status": "CRASH5SELECTEDROUTING_ORIGINAL_FROZEN",
   "sourceBase": "f390eb0602a99f5a2387ab7dc6ef52571e856b26",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
   "sourcePins": [
@@ -894,23 +894,10 @@
   "gmDisposition": "Client-owned routing of existing selected checkpoint2/Published I into existing owner; no GM-authored capability/schema/field/prompt/example/manifest/daemon contract change.",
   "oldCorrectedCrash": "Old environment session66529 remainsUNKNOWN, bytes unavailable. Separate new qualification only after corrected SOURCE/fresh PREP/named release, independent disposable fixtures/new genuine children; no old environment/process or real save operation.",
   "namedActualRelease": {
-    "status": "SEPARATELY_NAMED_AFTER_SAVED_ACCEPTANCE_RECOVERY_AND_IMMEDIATE_CLEAN_V2_CENSUS",
-    "mode": "crash5",
-    "label": "t179pd-ni-iobs-l01-process-first-crash5-selected-routing-cloud-813f1057",
-    "compiledSource": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
-    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-selected-routing-cloud-813f1057/record.json",
-    "expectedCases": 5,
-    "category": "fr063-joint-interface-crash-current",
-    "methods": [
-      {
-        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection",
-        "cases": 5
-      }
-    ],
-    "conditions": "After acceptance saved/pushed/exactremote/fullcleanGitHub recovery and metadata readback, immediate clean authoritative v2 preflight then one fixed NoBuild/FIRST invocation. Preserve original outcome then immediate after-boundary/whole archive/inventories/cleanup. Unexpected outcome freezes affected set for independent diagnosis; no automatic next/retry; no repo mutation during actual. Disposable per-test GUID root/new nonce/genuine children only.",
-    "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED_NOT_RECOVERED_OR_RETRIED"
+    "status": "NONE_FROZEN_PENDING_INDEPENDENT_DIAGNOSIS",
+    "mode": null
   },
-  "next": "Save/recover acceptance and readback; only separately named crash5 after clean v2 preflight.",
+  "next": "Freeze affected selection; save/recover originals, independent diagnosis, then continue authorized in-scope fixes with SOURCE/fresh affected PREP.",
   "sourceReview": {
     "verdict": "ACCEPT_SOURCE_AND_NAMED_ZERO4_ONLY_SUBJECT_TO_METADATA_SAVE_READBACK",
     "candidate": "fed1f7789db0145de866cd4d73b97ab030871509",

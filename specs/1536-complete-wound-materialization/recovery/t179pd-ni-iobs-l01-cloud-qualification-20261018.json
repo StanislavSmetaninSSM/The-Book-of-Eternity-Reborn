@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "QUALIFIED52_OF57_SELECTED_ROUTING_UNCERTAIN1_ACCEPTED",
+  "status": "CRASH5SELECTEDROUTING_ORIGINAL_FROZEN",
   "sourceCheckpoint": "fed1f7789db0145de866cd4d73b97ab030871509",
   "sourcePinDigest": "70aa551ca427bb9c28b18e205bcbe2e10d1ebb88487309bb73b4a31426e37eb5",
   "sourcePinCount": 99,
@@ -444,7 +444,7 @@
           "cases": 5
         }
       ],
-      "status": "UNRUN_IN_NEW_ENVIRONMENT"
+      "status": "NEW_BORROWED_LEASE_UNEXPECTED_OUTCOME_FROZEN"
     }
   ],
   "crashRequalificationPlan": {
@@ -1463,6 +1463,73 @@
           "bytes": 7739
         }
       }
+    },
+    "crash5SelectedRouting": {
+      "actualSourceRecovery": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-crash5-actual-source-recovery-85bab6db-20261018.json",
+        "sha256": "a57cad3a9b9bad90577785366acc5fb48f2fc47acd832e2525c27488af423ae8",
+        "bytes": 5527
+      },
+      "status": "ORIGINAL_UNEXPECTED_OUTCOME_FROZEN_INDEPENDENT_DIAGNOSIS_REQUIRED",
+      "actualSource": "85bab6db59f15f1b7ac02ac618ab4b00461544e5",
+      "compiledSource": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
+      "nativeExit": 124,
+      "seconds": 929.7918036539995,
+      "tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 5,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "fr063-joint-interface-crash-current-integration-001"
+        ],
+        "Complete": false
+      },
+      "recordPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-first-crash5-selected-routing-cloud-813f1057/record.json",
+      "recordSha256": "4eb04ce91fcd6335329e5dc5a4e8ef66da3b6bdecbedd32ecc9654bfdfa9c206",
+      "archive": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/archive.json",
+        "sha256": "8faf5d9eb531d104183d744709ac7d393ad399b1663301c1bb4405c52f734d24",
+        "bytes": 143197,
+        "rawChains": 247
+      },
+      "parentInspection": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-crash5-parent-inspection-20261018.json",
+        "sha256": "a51ff1fb6d267744de506c218a8407edd39ebfcd35a7d84a5afb916ebe099424",
+        "bytes": 1279
+      },
+      "supplementalAuthoritativeCensuses": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-crash5-before-census-20261018.json",
+          "sha256": "53b7ea9404f6d980db6926e9c373d01e1243df8852c2b02fe650dbfb2c1cf756",
+          "bytes": 117218,
+          "datedBoundaryGapSeconds": 3.478353
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-crash5-after-census-20261018.json",
+          "sha256": "75cc845a3fb8858c1e1eb4169bc64deabf2bda7084a95a2066f088a50c5842c4",
+          "bytes": 120235,
+          "datedBoundaryGapSeconds": 1.48801
+        }
+      ],
+      "nineBinariesUnchanged": true,
+      "allOutputsUnchanged": true,
+      "completeOutputFileCount": 1575,
+      "namespaceAfter": {
+        "ownedRoots": [
+          "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-c39f7e9cf6eb42868669ed06f092c491",
+          "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a"
+        ]
+      },
+      "originalProcessesAfter": [],
+      "processArrayLimitation": "Original exe-link arrays incomplete. V2 argv/stat census is dated boundary only.",
+      "limits": "Observed native outcome is not independent EVIDENCE acceptance. Historical originals including old66529 UNKNOWN unchanged."
     }
   },
   "holds": [
@@ -1476,7 +1543,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Save/recover acceptance and readback; only separately named crash5 after clean v2 preflight.",
+  "next": "Freeze affected selection; save/recover originals, independent diagnosis, then continue authorized in-scope fixes with SOURCE/fresh affected PREP.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -1652,21 +1719,8 @@
     "phase": "HISTORICAL_COMPILED_6AB43F6A_ZERO3_PRE_CORRECTION_INELIGIBLE_FOR_CORRECTED_ACTUALS"
   },
   "release": {
-    "status": "SEPARATELY_NAMED_AFTER_SAVED_ACCEPTANCE_RECOVERY_AND_IMMEDIATE_CLEAN_V2_CENSUS",
-    "mode": "crash5",
-    "label": "t179pd-ni-iobs-l01-process-first-crash5-selected-routing-cloud-813f1057",
-    "compiledSource": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
-    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-selected-routing-cloud-813f1057/record.json",
-    "expectedCases": 5,
-    "category": "fr063-joint-interface-crash-current",
-    "methods": [
-      {
-        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection",
-        "cases": 5
-      }
-    ],
-    "conditions": "After acceptance saved/pushed/exactremote/fullcleanGitHub recovery and metadata readback, immediate clean authoritative v2 preflight then one fixed NoBuild/FIRST invocation. Preserve original outcome then immediate after-boundary/whole archive/inventories/cleanup. Unexpected outcome freezes affected set for independent diagnosis; no automatic next/retry; no repo mutation during actual. Disposable per-test GUID root/new nonce/genuine children only.",
-    "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED_NOT_RECOVERED_OR_RETRIED"
+    "status": "NONE_FROZEN_PENDING_INDEPENDENT_DIAGNOSIS",
+    "mode": null
   },
   "newOriginalObservedPassingCases": 4,
   "lastAcceptanceRecovery": {

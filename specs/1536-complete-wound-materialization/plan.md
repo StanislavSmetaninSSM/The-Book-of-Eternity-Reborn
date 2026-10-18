@@ -1,3 +1,7 @@
+## T179-Pd-NI-IOBS-L01 — crash5SelectedRouting original outcome saved (2026-10-18)
+
+Actual 85bab6db59f15f1b7ac02ac618ab4b00461544e5/compiled c391c03012e48c4e2395bdb288f0d763d2c0cf7f: native124, 0 executed/0PASS/0FAIL, 929.792s. Original 247 raw chains, native inventory/cleanup and dated v2 boundaries saved. Observed positive=False; independent EVIDENCE pending, qualified count remains52. All historical outcomes and old66529 UNKNOWN/unavailable immutable. Freeze affected selection; save/recover originals, independent diagnosis, then continue authorized in-scope fixes with SOURCE/fresh affected PREP. All broader holds remain. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — uncertain1 independent acceptance; qualified52/57 (2026-10-18)
 
 Independent Astra XHigh uncertain1 verdict: ACCEPT_EVIDENCE_ONE_UNCERTAIN1_TARGET. Original evidence and actual/compiled bindings retained. Save/recover acceptance and readback; only separately named crash5 after clean v2 preflight. Original integrity4 unqualified4PASS / both original uncertain1 FAILs, seven old fixture failures and old66529 UNKNOWN/unavailable immutable. Ready/once-only/exact owned transition and unchanged budgets preserved. All broader holds remain. Following sections historical.

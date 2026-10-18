@@ -1,0 +1,1994 @@
+{
+  "kind": "EXACT_NI_IOBS_L01_WHOLE_ORIGINAL_RAW_ARCHIVE_NOT_VERDICT",
+  "createdUtc": "2026-10-18T15:59:44.364643+00:00",
+  "actualSources": [
+    "85bab6db59f15f1b7ac02ac618ab4b00461544e5"
+  ],
+  "compiledSources": [
+    "c391c03012e48c4e2395bdb288f0d763d2c0cf7f"
+  ],
+  "nativeExits": [
+    124
+  ],
+  "rawChainCount": 247,
+  "files": [
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-c39f7e9cf6eb42868669ed06f092c491/.boe_runtime/locks/canonical-write.lock",
+      "storedPath": "00000-canonical-write.lock.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-c39f7e9cf6eb42868669ed06f092c491/.boe_runtime/locks/gm-main-owner.lock",
+      "storedPath": "00001-gm-main-owner.lock.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-c39f7e9cf6eb42868669ed06f092c491/.boe_runtime/session-generation/current.json",
+      "storedPath": "00002-current.json.gz",
+      "bytes": 69,
+      "sha256": "648eaf4511993ffaec78a89cdb3ff199159c32caf9da39f51ef48cb4e88610d6",
+      "storedBytes": 87,
+      "storedSha256": "65a7d61033cf10523cce5d4ccd515a24637ee776105cf22a3c73694c35dc52c7"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-c39f7e9cf6eb42868669ed06f092c491/game_session/game_state/inventory/item_identity_index.json",
+      "storedPath": "00003-item_identity_index.json.gz",
+      "bytes": 44,
+      "sha256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385",
+      "storedBytes": 61,
+      "storedSha256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/cut.json",
+      "storedPath": "00004-cut.json.gz",
+      "bytes": 259044,
+      "sha256": "ffacf84baf884c055b724575833a201aadfd53aecccb545d12401c63f330df8d",
+      "storedBytes": 85305,
+      "storedSha256": "c5d2b9ebe49336f3c191f0ddd674e85c31d1ef442a00c9a15b97a636ec8c43b3"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/cut.json.stderr",
+      "storedPath": "00005-cut.json.stderr.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/cut.json.stdout",
+      "storedPath": "00006-cut.json.stdout.gz",
+      "bytes": 352989,
+      "sha256": "d5f111ff25ff9c6278c73b5aaf9095fc377eba8dcf3966adeeca9417ff5101ea",
+      "storedBytes": 104700,
+      "storedSha256": "e5a61b00a9640f3ea878f9344df3dd7cf4ced07da755c1a3e311e51ff312bde9"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/parent.json",
+      "storedPath": "00007-parent.json.gz",
+      "bytes": 83,
+      "sha256": "8f208a6fc65b506595eaf74d7417299c5d69975db88d0679d4010772e54b4b02",
+      "storedBytes": 100,
+      "storedSha256": "22d45506f00c0cbd45229e0b419d27dcd4cdfd14cbe92b6b0da39d21850d1c91"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-583b663ae9d1420c8e399caf64034a8f/.boe_runtime/locks/canonical-write.lock",
+      "storedPath": "00008-canonical-write.lock.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-583b663ae9d1420c8e399caf64034a8f/.boe_runtime/locks/gm-main-owner.lock",
+      "storedPath": "00009-gm-main-owner.lock.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-583b663ae9d1420c8e399caf64034a8f/.boe_runtime/session-generation/current.json",
+      "storedPath": "00010-current.json.gz",
+      "bytes": 69,
+      "sha256": "bcf0d6abe17160f6e8bb8719a515f93af7d9b851aae04242a2cc46700bb5c634",
+      "storedBytes": 87,
+      "storedSha256": "b959fb1fb2b5d289d08bdf1763155628680f751e8650aa3340299f05444b304f"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-583b663ae9d1420c8e399caf64034a8f/game_session/game_state/inventory/item_identity_index.json",
+      "storedPath": "00011-item_identity_index.json.gz",
+      "bytes": 44,
+      "sha256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385",
+      "storedBytes": 61,
+      "storedSha256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/.boe_runtime/locks/canonical-write.lock",
+      "storedPath": "00012-canonical-write.lock.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/.boe_runtime/locks/gm-main-owner.lock",
+      "storedPath": "00013-gm-main-owner.lock.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/.boe_runtime/session-generation/current.json",
+      "storedPath": "00014-current.json.gz",
+      "bytes": 69,
+      "sha256": "f85c00524edf69b925d2943dddeb91d56f7fab715b28996be78653e05b3b301c",
+      "storedBytes": 87,
+      "storedSha256": "d254f7f5d398c8aa4d038bc53e26e42d4ace8576bd9b6987da7424b322ac0e24"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/afterlife/afterlife_active_threats.json",
+      "storedPath": "00015-afterlife_active_threats.json.gz",
+      "bytes": 4057,
+      "sha256": "0586d0057dd387f86c0302cdd9b47f2435504f2f6ab8ce3476f8c6f89b81bc0f",
+      "storedBytes": 1439,
+      "storedSha256": "f45ffacd279f2736574c446ae6b0e5c5db24a56b1df757fecce50a67c000e56a"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/afterlife/afterlife_active_threats.json.rollback.639279357659446248",
+      "storedPath": "00016-afterlife_active_threats.json.rollback.639279357659446248.gz",
+      "bytes": 4057,
+      "sha256": "0586d0057dd387f86c0302cdd9b47f2435504f2f6ab8ce3476f8c6f89b81bc0f",
+      "storedBytes": 1439,
+      "storedSha256": "f45ffacd279f2736574c446ae6b0e5c5db24a56b1df757fecce50a67c000e56a"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/afterlife/afterlife_chronicles.json",
+      "storedPath": "00017-afterlife_chronicles.json.gz",
+      "bytes": 2653,
+      "sha256": "0e2cb441a5f87166ccc3f49284591e9f17bbc10e299f19edd74c79ebdc0a373f",
+      "storedBytes": 1126,
+      "storedSha256": "7c72575ee81273e5d7a3c27fc2b85d9d90915e299111a31b2c8756cb4a047dd4"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/afterlife/afterlife_chronicles.json.rollback.639279357659446248",
+      "storedPath": "00018-afterlife_chronicles.json.rollback.639279357659446248.gz",
+      "bytes": 2653,
+      "sha256": "0e2cb441a5f87166ccc3f49284591e9f17bbc10e299f19edd74c79ebdc0a373f",
+      "storedBytes": 1126,
+      "storedSha256": "7c72575ee81273e5d7a3c27fc2b85d9d90915e299111a31b2c8756cb4a047dd4"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/afterlife/afterlife_global_flags.json",
+      "storedPath": "00019-afterlife_global_flags.json.gz",
+      "bytes": 1900,
+      "sha256": "51d177338a159fded29d414cdba07ef95a1f292dbfe2ffa5799952548cac594b",
+      "storedBytes": 726,
+      "storedSha256": "f1470fefce1430b8ebcd04f35291a13f6c3ff04fa83da79a9206942d08c82488"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/afterlife/afterlife_global_flags.json.rollback.639279357659446248",
+      "storedPath": "00020-afterlife_global_flags.json.rollback.639279357659446248.gz",
+      "bytes": 1900,
+      "sha256": "51d177338a159fded29d414cdba07ef95a1f292dbfe2ffa5799952548cac594b",
+      "storedBytes": 726,
+      "storedSha256": "f1470fefce1430b8ebcd04f35291a13f6c3ff04fa83da79a9206942d08c82488"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/afterlife/afterlife_story_outline.json",
+      "storedPath": "00021-afterlife_story_outline.json.gz",
+      "bytes": 3462,
+      "sha256": "b68def0acb1ee92e5bdf67f0fa7271b218e1f8fe6a700ea861acd68cea4594b8",
+      "storedBytes": 1511,
+      "storedSha256": "ebff7218b19cc90543f35c51324ce7b5db59df87dc61b0136751788e1d6aeacf"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/afterlife/afterlife_story_outline.json.rollback.639279357659446248",
+      "storedPath": "00022-afterlife_story_outline.json.rollback.639279357659446248.gz",
+      "bytes": 3462,
+      "sha256": "b68def0acb1ee92e5bdf67f0fa7271b218e1f8fe6a700ea861acd68cea4594b8",
+      "storedBytes": 1511,
+      "storedSha256": "ebff7218b19cc90543f35c51324ce7b5db59df87dc61b0136751788e1d6aeacf"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/afterlife/entity_profiles/guardian_mirror.json",
+      "storedPath": "00023-guardian_mirror.json.gz",
+      "bytes": 9864,
+      "sha256": "a295046ef610c13096bdb30d9bcb7a0bc343ab162415f3e6b0d57558316fa4a1",
+      "storedBytes": 3106,
+      "storedSha256": "46c445a971c2ba2c1104910535a803f864af3b375861d6860d2c43f9d0a328ed"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/afterlife/entity_profiles/guardian_mirror.json.rollback.639279357659446248",
+      "storedPath": "00024-guardian_mirror.json.rollback.639279357659446248.gz",
+      "bytes": 9864,
+      "sha256": "a295046ef610c13096bdb30d9bcb7a0bc343ab162415f3e6b0d57558316fa4a1",
+      "storedBytes": 3106,
+      "storedSha256": "46c445a971c2ba2c1104910535a803f864af3b375861d6860d2c43f9d0a328ed"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/afterlife/entity_profiles/shining_senator_mirel.json",
+      "storedPath": "00025-shining_senator_mirel.json.gz",
+      "bytes": 8851,
+      "sha256": "15def35f254d5505186a3b51edb4d75458fb1a6a310cc2f1e61df739e2c7d66f",
+      "storedBytes": 2826,
+      "storedSha256": "24ef34d6443c70ea5aede96dafc122c7965b38963978ec941d893b04260402c9"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/afterlife/entity_profiles/shining_senator_mirel.json.rollback.639279357659446248",
+      "storedPath": "00026-shining_senator_mirel.json.rollback.639279357659446248.gz",
+      "bytes": 8851,
+      "sha256": "15def35f254d5505186a3b51edb4d75458fb1a6a310cc2f1e61df739e2c7d66f",
+      "storedBytes": 2826,
+      "storedSha256": "24ef34d6443c70ea5aede96dafc122c7965b38963978ec941d893b04260402c9"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/chaos_sea/guardian_politics.json",
+      "storedPath": "00027-guardian_politics.json.gz",
+      "bytes": 4822,
+      "sha256": "31151310b4b08ab7bb046d491f5e6b5cf203ed6de88318600b5e2e901cd5b1a7",
+      "storedBytes": 1518,
+      "storedSha256": "4b1399804c906ce24bc6104df4d91ed8a859d0aa4eae26689b2daa0ae2fbaa16"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/chaos_sea/guardian_politics.json.rollback.639279357659446248",
+      "storedPath": "00028-guardian_politics.json.rollback.639279357659446248.gz",
+      "bytes": 4822,
+      "sha256": "31151310b4b08ab7bb046d491f5e6b5cf203ed6de88318600b5e2e901cd5b1a7",
+      "storedBytes": 1518,
+      "storedSha256": "4b1399804c906ce24bc6104df4d91ed8a859d0aa4eae26689b2daa0ae2fbaa16"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/combat/allies.json",
+      "storedPath": "00029-allies.json.gz",
+      "bytes": 25,
+      "sha256": "81af7cc4287cdeb3b839e1523db45cf33fceb9dfc3f0776c58406eeaf89a0801",
+      "storedBytes": 45,
+      "storedSha256": "4e87d2522e10986c64cfbf8b0aed03b589e425b47d7308e331a4312e3f8a579f"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/combat/allies.json.rollback.639279357659446248",
+      "storedPath": "00030-allies.json.rollback.639279357659446248.gz",
+      "bytes": 25,
+      "sha256": "81af7cc4287cdeb3b839e1523db45cf33fceb9dfc3f0776c58406eeaf89a0801",
+      "storedBytes": 45,
+      "storedSha256": "4e87d2522e10986c64cfbf8b0aed03b589e425b47d7308e331a4312e3f8a579f"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/combat/enemies.json",
+      "storedPath": "00031-enemies.json.gz",
+      "bytes": 26,
+      "sha256": "49913cd73be6d76b86d424ce984105f6f8e3c1fd3f193ba36fe72e9c9e2ad33f",
+      "storedBytes": 46,
+      "storedSha256": "68314f5e851ad20415fcc106bdd730b6e259820afb958c7bd061fb5943a0e3d1"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/combat/enemies.json.rollback.639279357659446248",
+      "storedPath": "00032-enemies.json.rollback.639279357659446248.gz",
+      "bytes": 26,
+      "sha256": "49913cd73be6d76b86d424ce984105f6f8e3c1fd3f193ba36fe72e9c9e2ad33f",
+      "storedBytes": 46,
+      "storedSha256": "68314f5e851ad20415fcc106bdd730b6e259820afb958c7bd061fb5943a0e3d1"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/gm_trajectory_ledger.jsonl",
+      "storedPath": "00033-gm_trajectory_ledger.jsonl.gz",
+      "bytes": 1421,
+      "sha256": "c001602b7c1783e9c0ebbf6b5fddf65323e1365c2bf320708fe513f7577b2c7a",
+      "storedBytes": 785,
+      "storedSha256": "3ab80286fbc66f532dca73d9e495b247eebaf1e375a8de7ebdf75fc2b81abac9"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_dice_state.json",
+      "storedPath": "00034-pending_dice_state.json.gz",
+      "bytes": 471,
+      "sha256": "10125516bfc2195c9a848ab2257ffbb6fa82e248c80def5f608648c0b005cdc0",
+      "storedBytes": 281,
+      "storedSha256": "b617b4bc8222a5506d6a0a573b59cb1659cb59b79972d2cc18db186a33b4c138"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_dice_state.json.rollback.639279357659446248",
+      "storedPath": "00035-pending_dice_state.json.rollback.639279357659446248.gz",
+      "bytes": 471,
+      "sha256": "10125516bfc2195c9a848ab2257ffbb6fa82e248c80def5f608648c0b005cdc0",
+      "storedBytes": 281,
+      "storedSha256": "b617b4bc8222a5506d6a0a573b59cb1659cb59b79972d2cc18db186a33b4c138"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_ink_actions.json",
+      "storedPath": "00036-pending_ink_actions.json.gz",
+      "bytes": 27,
+      "sha256": "17c3a0fb8e35969d6287033de69890790db70bcc977ea3c759046528540b21e3",
+      "storedBytes": 47,
+      "storedSha256": "d86e169f6f3cfdd608589557a8ee596b0de0611c8e5f92ed8a2e4eb2c9003f52"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_ink_actions.json.rollback.639279357659446248",
+      "storedPath": "00037-pending_ink_actions.json.rollback.639279357659446248.gz",
+      "bytes": 27,
+      "sha256": "17c3a0fb8e35969d6287033de69890790db70bcc977ea3c759046528540b21e3",
+      "storedBytes": 47,
+      "storedSha256": "d86e169f6f3cfdd608589557a8ee596b0de0611c8e5f92ed8a2e4eb2c9003f52"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_mortal_wound_occurrences.json",
+      "storedPath": "00038-pending_mortal_wound_occurrences.json.gz",
+      "bytes": 2127,
+      "sha256": "d19e3fcae6fecf2ca8fc81dc20a1c7780c0fc3b55076cf0939c22775b11f63e4",
+      "storedBytes": 1009,
+      "storedSha256": "ed7aa786da2eff69ad849d096c2c3f6005f68749a3f6be41aae404aa1f4227c0"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_mortal_wound_occurrences.json.rollback.639279357659446248",
+      "storedPath": "00039-pending_mortal_wound_occurrences.json.rollback.639279357659446248.gz",
+      "bytes": 2127,
+      "sha256": "d19e3fcae6fecf2ca8fc81dc20a1c7780c0fc3b55076cf0939c22775b11f63e4",
+      "storedBytes": 1009,
+      "storedSha256": "ed7aa786da2eff69ad849d096c2c3f6005f68749a3f6be41aae404aa1f4227c0"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/afterlife/afterlife_active_threats.json",
+      "storedPath": "00040-afterlife_active_threats.json.gz",
+      "bytes": 4057,
+      "sha256": "0586d0057dd387f86c0302cdd9b47f2435504f2f6ab8ce3476f8c6f89b81bc0f",
+      "storedBytes": 1439,
+      "storedSha256": "f45ffacd279f2736574c446ae6b0e5c5db24a56b1df757fecce50a67c000e56a"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/afterlife/afterlife_chronicles.json",
+      "storedPath": "00041-afterlife_chronicles.json.gz",
+      "bytes": 2653,
+      "sha256": "0e2cb441a5f87166ccc3f49284591e9f17bbc10e299f19edd74c79ebdc0a373f",
+      "storedBytes": 1126,
+      "storedSha256": "7c72575ee81273e5d7a3c27fc2b85d9d90915e299111a31b2c8756cb4a047dd4"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/afterlife/afterlife_global_flags.json",
+      "storedPath": "00042-afterlife_global_flags.json.gz",
+      "bytes": 1900,
+      "sha256": "51d177338a159fded29d414cdba07ef95a1f292dbfe2ffa5799952548cac594b",
+      "storedBytes": 726,
+      "storedSha256": "f1470fefce1430b8ebcd04f35291a13f6c3ff04fa83da79a9206942d08c82488"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/afterlife/afterlife_story_outline.json",
+      "storedPath": "00043-afterlife_story_outline.json.gz",
+      "bytes": 3462,
+      "sha256": "b68def0acb1ee92e5bdf67f0fa7271b218e1f8fe6a700ea861acd68cea4594b8",
+      "storedBytes": 1511,
+      "storedSha256": "ebff7218b19cc90543f35c51324ce7b5db59df87dc61b0136751788e1d6aeacf"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/afterlife/entity_profiles/guardian_mirror.json",
+      "storedPath": "00044-guardian_mirror.json.gz",
+      "bytes": 9864,
+      "sha256": "a295046ef610c13096bdb30d9bcb7a0bc343ab162415f3e6b0d57558316fa4a1",
+      "storedBytes": 3106,
+      "storedSha256": "46c445a971c2ba2c1104910535a803f864af3b375861d6860d2c43f9d0a328ed"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/afterlife/entity_profiles/shining_senator_mirel.json",
+      "storedPath": "00045-shining_senator_mirel.json.gz",
+      "bytes": 8851,
+      "sha256": "15def35f254d5505186a3b51edb4d75458fb1a6a310cc2f1e61df739e2c7d66f",
+      "storedBytes": 2826,
+      "storedSha256": "24ef34d6443c70ea5aede96dafc122c7965b38963978ec941d893b04260402c9"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/chaos_sea/guardian_politics.json",
+      "storedPath": "00046-guardian_politics.json.gz",
+      "bytes": 4822,
+      "sha256": "31151310b4b08ab7bb046d491f5e6b5cf203ed6de88318600b5e2e901cd5b1a7",
+      "storedBytes": 1518,
+      "storedSha256": "4b1399804c906ce24bc6104df4d91ed8a859d0aa4eae26689b2daa0ae2fbaa16"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/combat/allies.json",
+      "storedPath": "00047-allies.json.gz",
+      "bytes": 25,
+      "sha256": "81af7cc4287cdeb3b839e1523db45cf33fceb9dfc3f0776c58406eeaf89a0801",
+      "storedBytes": 45,
+      "storedSha256": "4e87d2522e10986c64cfbf8b0aed03b589e425b47d7308e331a4312e3f8a579f"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/combat/enemies.json",
+      "storedPath": "00048-enemies.json.gz",
+      "bytes": 26,
+      "sha256": "49913cd73be6d76b86d424ce984105f6f8e3c1fd3f193ba36fe72e9c9e2ad33f",
+      "storedBytes": 46,
+      "storedSha256": "68314f5e851ad20415fcc106bdd730b6e259820afb958c7bd061fb5943a0e3d1"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/control/pending_dice_state.json",
+      "storedPath": "00049-pending_dice_state.json.gz",
+      "bytes": 471,
+      "sha256": "10125516bfc2195c9a848ab2257ffbb6fa82e248c80def5f608648c0b005cdc0",
+      "storedBytes": 281,
+      "storedSha256": "b617b4bc8222a5506d6a0a573b59cb1659cb59b79972d2cc18db186a33b4c138"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/control/pending_ink_actions.json",
+      "storedPath": "00050-pending_ink_actions.json.gz",
+      "bytes": 27,
+      "sha256": "17c3a0fb8e35969d6287033de69890790db70bcc977ea3c759046528540b21e3",
+      "storedBytes": 47,
+      "storedSha256": "d86e169f6f3cfdd608589557a8ee596b0de0611c8e5f92ed8a2e4eb2c9003f52"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/control/pending_mortal_wound_occurrences.json",
+      "storedPath": "00051-pending_mortal_wound_occurrences.json.gz",
+      "bytes": 2127,
+      "sha256": "d19e3fcae6fecf2ca8fc81dc20a1c7780c0fc3b55076cf0939c22775b11f63e4",
+      "storedBytes": 1009,
+      "storedSha256": "ed7aa786da2eff69ad849d096c2c3f6005f68749a3f6be41aae404aa1f4227c0"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/control/progression_schedule.json",
+      "storedPath": "00052-progression_schedule.json.gz",
+      "bytes": 1036,
+      "sha256": "38604632bb3a63b12f31ed417d51a7ec52fd6db34626d0c8609b97f17f287733",
+      "storedBytes": 370,
+      "storedSha256": "e93a8153dcaf681f1af030517cbbb80d8b0140923712692e5c19bbc0f77a6690"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/control/qte_deferred_effect_continuation.json",
+      "storedPath": "00053-qte_deferred_effect_continuation.json.gz",
+      "bytes": 164857,
+      "sha256": "277b249c7becac76d0306c1e449b6c79872893a42d7425679088bfd69c548e5d",
+      "storedBytes": 50108,
+      "storedSha256": "3e9dd4fec2a224a9f2421dd1a307724ae782b667ea36752ef2695c9f05edd9b1"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/control/qte_runtime.json",
+      "storedPath": "00054-qte_runtime.json.gz",
+      "bytes": 185,
+      "sha256": "910801c06e73c5a5b6fa164d7e4935b494c418b811d49e542a6bd73a259d0f69",
+      "storedBytes": 197,
+      "storedSha256": "577ec3544b0ca9882046c153865ca241219d1272b6e3c851609fff9ffc2f7f10"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/core/game_settings.json",
+      "storedPath": "00055-game_settings.json.gz",
+      "bytes": 28,
+      "sha256": "48b1b58d015ea9ac89f445068c8340137c421e2c50c87b8560caf52bbc45f7bd",
+      "storedBytes": 48,
+      "storedSha256": "06352c19e5e20598b1c2a0d786594ee75130102deb7fbdea2afaea27f4ca6455"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/core/player_status.json",
+      "storedPath": "00056-player_status.json.gz",
+      "bytes": 83,
+      "sha256": "8c9cdaf126f0b97a757327f12fe86d66ea4c0c51fb852ebebcb1ffcc21dff2e3",
+      "storedBytes": 90,
+      "storedSha256": "7967d826c88c80cfc5cc5a17053ef979785b713bb901acc81cca441c12d20fa8"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/core/system_mods.json",
+      "storedPath": "00057-system_mods.json.gz",
+      "bytes": 1279,
+      "sha256": "97d6eb07d1759dd63ad96b89f110f477c8c5806467d35e0973c93f0dee202f43",
+      "storedBytes": 472,
+      "storedSha256": "1d9d1c1d49199db3c594967b418f93ac768353c95cbab04a2175e3005f3ea970"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/effects/effect_identity_index.json",
+      "storedPath": "00058-effect_identity_index.json.gz",
+      "bytes": 35,
+      "sha256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "storedBytes": 55,
+      "storedSha256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/history/qte_history.json",
+      "storedPath": "00059-qte_history.json.gz",
+      "bytes": 287,
+      "sha256": "2f0c95499caecc52a4d405f1c234defd98f794efe744dd5f912016028d86b829",
+      "storedBytes": 215,
+      "storedSha256": "a1b883da1a0a05db9ba134c05ed886cc8ccdfff6572de4359a6b01c9525abd1b"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/inventory/item_identity_index.json",
+      "storedPath": "00060-item_identity_index.json.gz",
+      "bytes": 1073,
+      "sha256": "7c42f694e39218087d2791f0a6d05add6dfb889927500824c6a0fd65a0e1f5b9",
+      "storedBytes": 383,
+      "storedSha256": "99e4a4cd82088151fe59b433eb67eb817deae789089fb84d57f23751d0829d57"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/inventory/items.json",
+      "storedPath": "00061-items.json.gz",
+      "bytes": 4603,
+      "sha256": "8c84347a66ea51133cc204a69c115c83324d8b8be0470c7ae9de872bb959fa61",
+      "storedBytes": 1551,
+      "storedSha256": "825b35648fea154b59b59410648283c0abbb26d515412bed17f4d455bcf493fa"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/meta/achievements.json",
+      "storedPath": "00062-achievements.json.gz",
+      "bytes": 400,
+      "sha256": "a10e5e2470f988d4511c9f254eb15b1da514646dfe22e398b659919666064818",
+      "storedBytes": 197,
+      "storedSha256": "70bc84534272bdbbff4de57e67d15984d6c07e8e9d714a3b25a41e97f277d3e0"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_entity_profiles.json",
+      "storedPath": "00063-afterlife_entity_profiles.json.gz",
+      "bytes": 45,
+      "sha256": "478cb55932547c1412679e7f2436caec9b7c1a37cc8bce24ba16e1f1ef45c0fa",
+      "storedBytes": 62,
+      "storedSha256": "4da5698354efa22fb9cd72bfa5fa1bed35b7256ef7e0f7de8da95fd6fb9abcae"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/meta/character_chronicle.json",
+      "storedPath": "00064-character_chronicle.json.gz",
+      "bytes": 733,
+      "sha256": "8057bda6f53f16cd7618648aa6945654163349a88aba67c629981b6518913a49",
+      "storedBytes": 438,
+      "storedSha256": "cccf56d7ed70c3d63db3a13ce7acef27bd4bba9a3fd1609b9ce789d712709cfc"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/meta/guardians.json",
+      "storedPath": "00065-guardians.json.gz",
+      "bytes": 106,
+      "sha256": "ab1a9be59b0e8657ebac266d47080384eb3fd7e1bdd546037b5317e791dd3d6c",
+      "storedBytes": 103,
+      "storedSha256": "1f8613e696404a1d6e39502388785b46bc757334945ef4c345f94c848927eaad"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+      "storedPath": "00066-soul_state.json.gz",
+      "bytes": 415,
+      "sha256": "19e66a7a2059c8f569862e55fe728b6a6a3ba62c93fdbe42265e821b7de68430",
+      "storedBytes": 267,
+      "storedSha256": "4d7c937c73f247384549c1e7140d57ee43507a7b0133a409ed5a1ed1c08697da"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/misc/characteristics.json",
+      "storedPath": "00067-characteristics.json.gz",
+      "bytes": 225,
+      "sha256": "a29fbee3856171241586b449b0a785bcf60a12d7d802abae346a1de70a3d1ec5",
+      "storedBytes": 139,
+      "storedSha256": "cb2fbd6364121d8701ef0732d7f7d4f949283afe33a0cb3c27ed826a9cb9dffe"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/npcs/item_journals.json",
+      "storedPath": "00068-item_journals.json.gz",
+      "bytes": 987,
+      "sha256": "dcb005342ffb229f59580356a55c755bd8d9937d96cbdf69de77437041af435d",
+      "storedBytes": 487,
+      "storedSha256": "b21daac6c19179bb03c7266544d725e4c48fcf4be76674c314f29d73b6c39959"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/npcs/npc_core.json",
+      "storedPath": "00069-npc_core.json.gz",
+      "bytes": 3994,
+      "sha256": "a4c67cbfab01e901d126c1f0d1386f07a0369e410c6a951768f9ec491034d8e1",
+      "storedBytes": 1416,
+      "storedSha256": "1259809744bca0b1be545311e68306daa3fac92b1aa7ef31ac26b416a63236b9"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/npcs/npc_journals.json",
+      "storedPath": "00070-npc_journals.json.gz",
+      "bytes": 21,
+      "sha256": "96e628a14882456158db02b16a3ab7bf3ebe40c2afa3db8d64cb1c839fd97a53",
+      "storedBytes": 41,
+      "storedSha256": "7f75eaadf8771ccca97c6f6000acd7f8113c1ea857c1c42453f178002a8b139c"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/npcs/npc_wounds.json",
+      "storedPath": "00071-npc_wounds.json.gz",
+      "bytes": 44,
+      "sha256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385",
+      "storedBytes": 61,
+      "storedSha256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/player/computed_characteristics.json",
+      "storedPath": "00072-computed_characteristics.json.gz",
+      "bytes": 1431,
+      "sha256": "6e432d9dc8ca8031948c9af882b07d261d662cb0d12685f3998f5e300cb31d96",
+      "storedBytes": 414,
+      "storedSha256": "3e0d0e46894054a8b1f6b0ec17a31a2aa1a36ebe36b755a2df2df5916d6649e3"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/player/effects.json",
+      "storedPath": "00073-effects.json.gz",
+      "bytes": 50,
+      "sha256": "57cfa98cff82eb4821e37b1296a354d34213b9136c7c90c7e475103a5ca6cc7b",
+      "storedBytes": 67,
+      "storedSha256": "c10422cc324b0023955875a1dd5ae45f80c51406b12bd07f97746b34c4ae0e25"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/player/experience.json",
+      "storedPath": "00074-experience.json.gz",
+      "bytes": 170,
+      "sha256": "2c74d725b11da06d9ed0834b7776bb2cb6f4824f56ef64f668ea0523a164585b",
+      "storedBytes": 127,
+      "storedSha256": "eb8590c7d64b2a7b13c4e6ffe91f8b99e762eeac98722cd5e039152cd1ea9f58"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/player/player_status.json",
+      "storedPath": "00075-player_status.json.gz",
+      "bytes": 1202,
+      "sha256": "3cae75f26e400f642bdec76d974d3e56efe7b79b5212e329449ca97241f39b17",
+      "storedBytes": 612,
+      "storedSha256": "86867e25ac3aa73a5779b163960f5314aa63f6c3a9b2908f3a96574da4543b5a"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/player/skill_mastery.json",
+      "storedPath": "00076-skill_mastery.json.gz",
+      "bytes": 29,
+      "sha256": "ab368372158b5afb30e3c1f7e7ddd189b01f0cf985b6b85ba8dea0a4e1a8a049",
+      "storedBytes": 49,
+      "storedSha256": "2e09a3eac1dd364721daffca1c997266865a3d48f77de104d8c5b088cc8113c9"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/player/skills_active.json",
+      "storedPath": "00077-skills_active.json.gz",
+      "bytes": 28,
+      "sha256": "615ea9dae3be242fb738d57742295c5419909709a3984bba13458748028d30db",
+      "storedBytes": 48,
+      "storedSha256": "5c6cabf271b8f9eff95ef6daa326650f6fa96e668002c3ba981864bf49ff42c7"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/player/skills_passive.json",
+      "storedPath": "00078-skills_passive.json.gz",
+      "bytes": 29,
+      "sha256": "062046836ab471cc0e7a6c7e3328f974ee4ae89be8839e012d2461cd74a600f0",
+      "storedBytes": 49,
+      "storedSha256": "81e222a8e19d9d49d047a9c237df603ddd43bfd5a860853072efb2539f1b9b4b"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/player/stat_points.json",
+      "storedPath": "00079-stat_points.json.gz",
+      "bytes": 50,
+      "sha256": "0ad75b0ebb81096d7964434dd8eb4519de2a6e9af833bb820b3cfe070e9891b4",
+      "storedBytes": 68,
+      "storedSha256": "49db0c2e2c020e107ee110cb4e7bc3bc62abf10f8f212034585cdc8d89965faa"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/player/transformation.json",
+      "storedPath": "00080-transformation.json.gz",
+      "bytes": 242,
+      "sha256": "53bb9c81bda4ab38bcb888639bd639822f77731fcc1fe7b5c3c2f8d5546d08fc",
+      "storedBytes": 210,
+      "storedSha256": "99e8646f12d871238794fb3e16558f7cbf89f37d96d7efe59bb5c98968a4f609"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/player/wounds.json",
+      "storedPath": "00081-wounds.json.gz",
+      "bytes": 4872,
+      "sha256": "9833d7546ae55e930ca5e7909474bb6878bb6061d3682517d6c233c34b3194a7",
+      "storedBytes": 1607,
+      "storedSha256": "f369b063e10d7481483f9e6a3bca275984df1fd2266a8108ad2663157a96e4bd"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/quests/quest_history.json",
+      "storedPath": "00082-quest_history.json.gz",
+      "bytes": 2056,
+      "sha256": "babcc397ccdc70661f844094dee691c3c2ef08ad2fe408aba614cdaaa1327cae",
+      "storedBytes": 824,
+      "storedSha256": "3fc78904699aca5e5d6262929def457e4e87e91f34697b8295e85e9356a7bac8"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json",
+      "storedPath": "00083-resource_definitions.json.gz",
+      "bytes": 6885,
+      "sha256": "6a17704c0439d2c2868d6f829dc2a50a3fa1d4ac1ddfe230785a71f5bc6b6603",
+      "storedBytes": 924,
+      "storedSha256": "0db87404f712c0841de798ec3be6f4444ab4085ac95e2ab851ec3cd7df01046d"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json",
+      "storedPath": "00084-resource_history.json.gz",
+      "bytes": 4914,
+      "sha256": "42c6d92a3c153151a209aca2fe11e9e4627f2be31f33eb97265f54ae6b88d31f",
+      "storedBytes": 873,
+      "storedSha256": "6c76176aa3f237c8f2bfa721629d77596a7fc1f7095ddf8f414bafe2fc214839"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_owner_authority.json",
+      "storedPath": "00085-resource_owner_authority.json.gz",
+      "bytes": 689,
+      "sha256": "a3e542ea0a6202980cde14acb80884909a1cf8f110611386915e2168cc43b777",
+      "storedBytes": 253,
+      "storedSha256": "bd763608fc41bdc44649e27f5a3c65bcb1d5259381c5a64401ea2468b4d00218"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json",
+      "storedPath": "00086-resource_state.json.gz",
+      "bytes": 1125,
+      "sha256": "5e55fcfb96b046b92253579a37d179a63406fdf66ac1573f47ca3a1d8fa8fdf8",
+      "storedBytes": 388,
+      "storedSha256": "6ee81e83f3ecbace2d097757cb73b3559e64c10dcbdc01c6c1dafe9fc5e5dc18"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/shining_abode/faction_chronicles.json",
+      "storedPath": "00087-faction_chronicles.json.gz",
+      "bytes": 3669,
+      "sha256": "c43c647883df9cd5402dd60d8416070bb53cc674eeb8de517faa588977664cff",
+      "storedBytes": 1284,
+      "storedSha256": "b1a218289c9fadc36b65c39a6e2ac524ddcf53ac2609abf203aaa08df7369278"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/world/current_location.json",
+      "storedPath": "00088-current_location.json.gz",
+      "bytes": 5783,
+      "sha256": "aed6fe35f610feb93ea29db2b46086edc1deec59d96b7e8c8620c851c04c919c",
+      "storedBytes": 1475,
+      "storedSha256": "ac2756cea63b73a6b223b739dc4b7947411693accaa898fa13544f531fce927b"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/world/location_identity_index.json",
+      "storedPath": "00089-location_identity_index.json.gz",
+      "bytes": 481,
+      "sha256": "99f60feba92b2d72943227979bac4d165e265ddd4013fd07e397f35c0feba09c",
+      "storedBytes": 280,
+      "storedSha256": "30569f81ea55059e2c1ace14cbc8fa303f528870c51317f56be11ab85cba6005"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/world/world_map.json",
+      "storedPath": "00090-world_map.json.gz",
+      "bytes": 5687,
+      "sha256": "d1d42d1b7eef7679ec6b4a5b8b953c7f3020e5a5aa1c7001694e8878d2d42a31",
+      "storedBytes": 1440,
+      "storedSha256": "0c0c2941de20fa7592a838c6c957a1c425198a7b619a1334492d9e0287616d97"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/world/world_time.json",
+      "storedPath": "00091-world_time.json.gz",
+      "bytes": 112,
+      "sha256": "4580e41d6ed481e03b444cfd9689c5e830ce67b7388dc04a23a83acbfd753233",
+      "storedBytes": 121,
+      "storedSha256": "104c633e60083ca8690ae582ec33314a4f75598f67d21dd9b7cf9e102e55b008"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/wounds/wound_history.json",
+      "storedPath": "00092-wound_history.json.gz",
+      "bytes": 1062,
+      "sha256": "14767592f1d844969bb7ee8c5ba5b6e3c738ffb2e2a7b18be97d997e7ced759f",
+      "storedBytes": 549,
+      "storedSha256": "a3b28ea591a6e86db1673bb2905b792477906e55ea9cdba3d969ccbc8c4a8989"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/wounds/wound_identity_index.json",
+      "storedPath": "00093-wound_identity_index.json.gz",
+      "bytes": 552,
+      "sha256": "594fb1982927597100ef470dc47f57470108ee57835fe2909711e71afd80df81",
+      "storedBytes": 348,
+      "storedSha256": "0ec7f7f78660b21381d849b3ac73a9d93d747ecc2dd1b5829bab50d1617e0fde"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/game_state/wounds/wound_opportunity_receipts.json",
+      "storedPath": "00094-wound_opportunity_receipts.json.gz",
+      "bytes": 65,
+      "sha256": "562c3ee724700be4d8274a73df6f84d9c6ff32816868a5c2b600d0fdb5920aa1",
+      "storedBytes": 75,
+      "storedSha256": "7aa79019b455c17b4068405ae58e07af358a0b36e0bc5562c49ff092b145ae6f"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/lore/chaos_sea/cosmology.json",
+      "storedPath": "00095-cosmology.json.gz",
+      "bytes": 2047,
+      "sha256": "fec13c4f2430d3e7318f3ebb6f186883bfbeede0bb417f2ce5ced13405a104cd",
+      "storedBytes": 938,
+      "storedSha256": "d05e032e271f3998d877dc6805d62c813b422b914ca904ead64309b5d5297059"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/lore/codex_entries.json",
+      "storedPath": "00096-codex_entries.json.gz",
+      "bytes": 4112,
+      "sha256": "937670566ef62459066fe5a994fe2c5f23a2a837b508855897e58913ef3f204c",
+      "storedBytes": 1199,
+      "storedSha256": "a63a1151ad6186377ba54532f9109a67ffd650efa7141c70970c8026f56fdfe8"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/lore/current_world/cultures.json",
+      "storedPath": "00097-cultures.json.gz",
+      "bytes": 1006,
+      "sha256": "56f3acb7a5909210da08827d10ae089c4cfef5740600d2fa31cb1949fbba0c5d",
+      "storedBytes": 503,
+      "storedSha256": "9142f1bd761bdfc6ab022292545988159a09064913e887ac024bb84ea7598f95"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/lore/current_world/geography.json",
+      "storedPath": "00098-geography.json.gz",
+      "bytes": 995,
+      "sha256": "4c80352d019abc2153c70c860b8fecd08c13618e7d1c9f2de677b8a2d050285c",
+      "storedBytes": 487,
+      "storedSha256": "2f270e6d96991273ee76f5efec1075ae4310acd21b425f7af7a330361bf6f8bd"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/lore/current_world/history.json",
+      "storedPath": "00099-history.json.gz",
+      "bytes": 950,
+      "sha256": "901a86d97b1f4a2601dc6c6d6cd7dd2d7f7e0e99dae6483b3b7a633a662c8b21",
+      "storedBytes": 502,
+      "storedSha256": "c7c55a74cc78528febf942520548a55512a7e93d4e3ab9b7207a7857c13354ce"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/lore/current_world/threats.json",
+      "storedPath": "00100-threats.json.gz",
+      "bytes": 764,
+      "sha256": "a9a941fdc517262b29090b8cd782b2e3e6f779a45ef1db176d328b94b20b70c6",
+      "storedBytes": 444,
+      "storedSha256": "e47dc3074226d0263e58142bbcc5b6e8b2b6d308d2e4eeb028c9f7c140f3d646"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/lore/current_world/world_directives_draft_example.md",
+      "storedPath": "00101-world_directives_draft_example.md.gz",
+      "bytes": 1040,
+      "sha256": "4fa097fa95c8af22eba1901fdbee3d8de544089038de4888a6521add23ff1547",
+      "storedBytes": 624,
+      "storedSha256": "fed9e603d3b11c28edde6c157b693d35ae40ad1ce661606bd7d13f11d98dc416"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/lore/current_world/world_setting.json",
+      "storedPath": "00102-world_setting.json.gz",
+      "bytes": 1095,
+      "sha256": "72792cb8026ef61118b9ebdc294272cf371717680dd7287bb36103c24ca3cefb",
+      "storedBytes": 639,
+      "storedSha256": "4dce223dbdd5eb423d7f4fce815d944ed66de24acaf29eccb88dda567078b633"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/output/debug_logs.json",
+      "storedPath": "00103-debug_logs.json.gz",
+      "bytes": 379,
+      "sha256": "defb850283dc251a98d235ed00552b6db57cdc53c7bfe8c557c2958a44e95aca",
+      "storedBytes": 316,
+      "storedSha256": "1d70eab2adbdd0699354955f9a37c1ec4750e52bc86df17f7fdb08f1b1351966"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/output/interface_updates.json",
+      "storedPath": "00104-interface_updates.json.gz",
+      "bytes": 77,
+      "sha256": "fc2b413298a44798b1b740a7a46c575c015830d0cde3b6535f4a35a6a50e98e6",
+      "storedBytes": 94,
+      "storedSha256": "1fb86c8470fe99a5c77d6506627784260966a70eb444e5b367da2315a046083c"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot/output/narrative_response.json",
+      "storedPath": "00105-narrative_response.json.gz",
+      "bytes": 111,
+      "sha256": "ea58235a8c48e221d4d305f1f009c6eee6063b9a28da443b3e1bb92d8e05bdd1",
+      "storedBytes": 123,
+      "storedSha256": "9a6960e28b7147a9f5331f9c03777da27fbde4aca577b7169f6c64c4b0dcfd49"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot.authority.json",
+      "storedPath": "00106-pending_turn_snapshot.authority.json.gz",
+      "bytes": 44331,
+      "sha256": "1492b678753503603ccc5fddffb32f527cabcdebfb14c30097c25136163d8fe7",
+      "storedBytes": 10859,
+      "storedSha256": "5bbedcd39249206a8126729b465dffce3c5b1fc77726367be4cbb17d4ae56724"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_turn_snapshot.json",
+      "storedPath": "00107-pending_turn_snapshot.json.gz",
+      "bytes": 31012,
+      "sha256": "09ca641c60b7c36d63e440d571f654097c54b6e3054ed92d5bdf374ac0fdae42",
+      "storedBytes": 5968,
+      "storedSha256": "64d37c34ad8e42b4da8c96836191fba4f0040838609e35670b69e86075b061b9"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/pending_wound_resolutions.json",
+      "storedPath": "00108-pending_wound_resolutions.json.gz",
+      "bytes": 29915,
+      "sha256": "8789e6d60589c5164dc7df219265332af720565a24bc9ad08313b047d8817ec5",
+      "storedBytes": 9384,
+      "storedSha256": "5243723fc23d757abb47b2873bf39e126908bb7e8ea3148cce5517f59994ca59"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/progression_schedule.json",
+      "storedPath": "00109-progression_schedule.json.gz",
+      "bytes": 1036,
+      "sha256": "38604632bb3a63b12f31ed417d51a7ec52fd6db34626d0c8609b97f17f287733",
+      "storedBytes": 370,
+      "storedSha256": "e93a8153dcaf681f1af030517cbbb80d8b0140923712692e5c19bbc0f77a6690"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/progression_schedule.json.rollback.639279357659446248",
+      "storedPath": "00110-progression_schedule.json.rollback.639279357659446248.gz",
+      "bytes": 1036,
+      "sha256": "38604632bb3a63b12f31ed417d51a7ec52fd6db34626d0c8609b97f17f287733",
+      "storedBytes": 370,
+      "storedSha256": "e93a8153dcaf681f1af030517cbbb80d8b0140923712692e5c19bbc0f77a6690"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/qte_deferred_effect_continuation.json",
+      "storedPath": "00111-qte_deferred_effect_continuation.json.gz",
+      "bytes": 164857,
+      "sha256": "277b249c7becac76d0306c1e449b6c79872893a42d7425679088bfd69c548e5d",
+      "storedBytes": 50108,
+      "storedSha256": "3e9dd4fec2a224a9f2421dd1a307724ae782b667ea36752ef2695c9f05edd9b1"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/qte_deferred_effect_continuation.json.rollback.639279357659446248",
+      "storedPath": "00112-qte_deferred_effect_continuation.json.rollback.639279357659446248.gz",
+      "bytes": 164857,
+      "sha256": "277b249c7becac76d0306c1e449b6c79872893a42d7425679088bfd69c548e5d",
+      "storedBytes": 50108,
+      "storedSha256": "3e9dd4fec2a224a9f2421dd1a307724ae782b667ea36752ef2695c9f05edd9b1"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/qte_runtime.json",
+      "storedPath": "00113-qte_runtime.json.gz",
+      "bytes": 185,
+      "sha256": "910801c06e73c5a5b6fa164d7e4935b494c418b811d49e542a6bd73a259d0f69",
+      "storedBytes": 197,
+      "storedSha256": "577ec3544b0ca9882046c153865ca241219d1272b6e3c851609fff9ffc2f7f10"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/qte_runtime.json.rollback.639279357659446248",
+      "storedPath": "00114-qte_runtime.json.rollback.639279357659446248.gz",
+      "bytes": 185,
+      "sha256": "910801c06e73c5a5b6fa164d7e4935b494c418b811d49e542a6bd73a259d0f69",
+      "storedBytes": 197,
+      "storedSha256": "577ec3544b0ca9882046c153865ca241219d1272b6e3c851609fff9ffc2f7f10"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/control/validation_repair_request.json",
+      "storedPath": "00115-validation_repair_request.json.gz",
+      "bytes": 12546,
+      "sha256": "b49542e3b687dfaf7c09a183becabf8fb04033a45672fb48d0be3f860a1c12f2",
+      "storedBytes": 4171,
+      "storedSha256": "0a2f57863911f2e2a47432894109d160d56cbb2cc775a8d7058e95e27431d0a3"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/core/game_settings.json",
+      "storedPath": "00116-game_settings.json.gz",
+      "bytes": 28,
+      "sha256": "48b1b58d015ea9ac89f445068c8340137c421e2c50c87b8560caf52bbc45f7bd",
+      "storedBytes": 48,
+      "storedSha256": "06352c19e5e20598b1c2a0d786594ee75130102deb7fbdea2afaea27f4ca6455"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/core/game_settings.json.rollback.639279357659446248",
+      "storedPath": "00117-game_settings.json.rollback.639279357659446248.gz",
+      "bytes": 28,
+      "sha256": "48b1b58d015ea9ac89f445068c8340137c421e2c50c87b8560caf52bbc45f7bd",
+      "storedBytes": 48,
+      "storedSha256": "06352c19e5e20598b1c2a0d786594ee75130102deb7fbdea2afaea27f4ca6455"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/core/player_status.json",
+      "storedPath": "00118-player_status.json.gz",
+      "bytes": 83,
+      "sha256": "8c9cdaf126f0b97a757327f12fe86d66ea4c0c51fb852ebebcb1ffcc21dff2e3",
+      "storedBytes": 90,
+      "storedSha256": "7967d826c88c80cfc5cc5a17053ef979785b713bb901acc81cca441c12d20fa8"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/core/player_status.json.rollback.639279357659446248",
+      "storedPath": "00119-player_status.json.rollback.639279357659446248.gz",
+      "bytes": 83,
+      "sha256": "8c9cdaf126f0b97a757327f12fe86d66ea4c0c51fb852ebebcb1ffcc21dff2e3",
+      "storedBytes": 90,
+      "storedSha256": "7967d826c88c80cfc5cc5a17053ef979785b713bb901acc81cca441c12d20fa8"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/core/system_mods.json",
+      "storedPath": "00120-system_mods.json.gz",
+      "bytes": 1279,
+      "sha256": "97d6eb07d1759dd63ad96b89f110f477c8c5806467d35e0973c93f0dee202f43",
+      "storedBytes": 472,
+      "storedSha256": "1d9d1c1d49199db3c594967b418f93ac768353c95cbab04a2175e3005f3ea970"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/core/system_mods.json.rollback.639279357659446248",
+      "storedPath": "00121-system_mods.json.rollback.639279357659446248.gz",
+      "bytes": 1279,
+      "sha256": "97d6eb07d1759dd63ad96b89f110f477c8c5806467d35e0973c93f0dee202f43",
+      "storedBytes": 472,
+      "storedSha256": "1d9d1c1d49199db3c594967b418f93ac768353c95cbab04a2175e3005f3ea970"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/effects/effect_identity_index.json",
+      "storedPath": "00122-effect_identity_index.json.gz",
+      "bytes": 35,
+      "sha256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "storedBytes": 55,
+      "storedSha256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/effects/effect_identity_index.json.rollback.639279357659446248",
+      "storedPath": "00123-effect_identity_index.json.rollback.639279357659446248.gz",
+      "bytes": 35,
+      "sha256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "storedBytes": 55,
+      "storedSha256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/history/chat_log.json",
+      "storedPath": "00124-chat_log.json.gz",
+      "bytes": 56,
+      "sha256": "7007f8ba969aa63363159dd685ba017b2cda36a6eec1428ea522da17132534ea",
+      "storedBytes": 70,
+      "storedSha256": "aae4923022fd598c716fae7d0a3d29c601d5073ad73565068dd548b2e631f039"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/history/qte_history.json",
+      "storedPath": "00125-qte_history.json.gz",
+      "bytes": 287,
+      "sha256": "2f0c95499caecc52a4d405f1c234defd98f794efe744dd5f912016028d86b829",
+      "storedBytes": 215,
+      "storedSha256": "a1b883da1a0a05db9ba134c05ed886cc8ccdfff6572de4359a6b01c9525abd1b"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/history/qte_history.json.rollback.639279357659446248",
+      "storedPath": "00126-qte_history.json.rollback.639279357659446248.gz",
+      "bytes": 287,
+      "sha256": "2f0c95499caecc52a4d405f1c234defd98f794efe744dd5f912016028d86b829",
+      "storedBytes": 215,
+      "storedSha256": "a1b883da1a0a05db9ba134c05ed886cc8ccdfff6572de4359a6b01c9525abd1b"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/inventory/item_identity_index.json",
+      "storedPath": "00127-item_identity_index.json.gz",
+      "bytes": 1073,
+      "sha256": "7c42f694e39218087d2791f0a6d05add6dfb889927500824c6a0fd65a0e1f5b9",
+      "storedBytes": 383,
+      "storedSha256": "99e4a4cd82088151fe59b433eb67eb817deae789089fb84d57f23751d0829d57"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/inventory/item_identity_index.json.rollback.639279357659446248",
+      "storedPath": "00128-item_identity_index.json.rollback.639279357659446248.gz",
+      "bytes": 1073,
+      "sha256": "7c42f694e39218087d2791f0a6d05add6dfb889927500824c6a0fd65a0e1f5b9",
+      "storedBytes": 383,
+      "storedSha256": "99e4a4cd82088151fe59b433eb67eb817deae789089fb84d57f23751d0829d57"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/inventory/items.json",
+      "storedPath": "00129-items.json.gz",
+      "bytes": 4603,
+      "sha256": "8c84347a66ea51133cc204a69c115c83324d8b8be0470c7ae9de872bb959fa61",
+      "storedBytes": 1551,
+      "storedSha256": "825b35648fea154b59b59410648283c0abbb26d515412bed17f4d455bcf493fa"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/inventory/items.json.rollback.639279357659446248",
+      "storedPath": "00130-items.json.rollback.639279357659446248.gz",
+      "bytes": 4603,
+      "sha256": "8c84347a66ea51133cc204a69c115c83324d8b8be0470c7ae9de872bb959fa61",
+      "storedBytes": 1551,
+      "storedSha256": "825b35648fea154b59b59410648283c0abbb26d515412bed17f4d455bcf493fa"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/meta/achievements.json",
+      "storedPath": "00131-achievements.json.gz",
+      "bytes": 400,
+      "sha256": "a10e5e2470f988d4511c9f254eb15b1da514646dfe22e398b659919666064818",
+      "storedBytes": 197,
+      "storedSha256": "70bc84534272bdbbff4de57e67d15984d6c07e8e9d714a3b25a41e97f277d3e0"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/meta/achievements.json.rollback.639279357659446248",
+      "storedPath": "00132-achievements.json.rollback.639279357659446248.gz",
+      "bytes": 400,
+      "sha256": "a10e5e2470f988d4511c9f254eb15b1da514646dfe22e398b659919666064818",
+      "storedBytes": 197,
+      "storedSha256": "70bc84534272bdbbff4de57e67d15984d6c07e8e9d714a3b25a41e97f277d3e0"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/meta/afterlife_entity_profiles.json",
+      "storedPath": "00133-afterlife_entity_profiles.json.gz",
+      "bytes": 45,
+      "sha256": "478cb55932547c1412679e7f2436caec9b7c1a37cc8bce24ba16e1f1ef45c0fa",
+      "storedBytes": 62,
+      "storedSha256": "4da5698354efa22fb9cd72bfa5fa1bed35b7256ef7e0f7de8da95fd6fb9abcae"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/meta/afterlife_entity_profiles.json.rollback.639279357659446248",
+      "storedPath": "00134-afterlife_entity_profiles.json.rollback.639279357659446248.gz",
+      "bytes": 45,
+      "sha256": "478cb55932547c1412679e7f2436caec9b7c1a37cc8bce24ba16e1f1ef45c0fa",
+      "storedBytes": 62,
+      "storedSha256": "4da5698354efa22fb9cd72bfa5fa1bed35b7256ef7e0f7de8da95fd6fb9abcae"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/meta/character_chronicle.json",
+      "storedPath": "00135-character_chronicle.json.gz",
+      "bytes": 733,
+      "sha256": "8057bda6f53f16cd7618648aa6945654163349a88aba67c629981b6518913a49",
+      "storedBytes": 438,
+      "storedSha256": "cccf56d7ed70c3d63db3a13ce7acef27bd4bba9a3fd1609b9ce789d712709cfc"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/meta/character_chronicle.json.rollback.639279357659446248",
+      "storedPath": "00136-character_chronicle.json.rollback.639279357659446248.gz",
+      "bytes": 733,
+      "sha256": "8057bda6f53f16cd7618648aa6945654163349a88aba67c629981b6518913a49",
+      "storedBytes": 438,
+      "storedSha256": "cccf56d7ed70c3d63db3a13ce7acef27bd4bba9a3fd1609b9ce789d712709cfc"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/meta/guardians.json",
+      "storedPath": "00137-guardians.json.gz",
+      "bytes": 106,
+      "sha256": "ab1a9be59b0e8657ebac266d47080384eb3fd7e1bdd546037b5317e791dd3d6c",
+      "storedBytes": 103,
+      "storedSha256": "1f8613e696404a1d6e39502388785b46bc757334945ef4c345f94c848927eaad"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/meta/guardians.json.rollback.639279357659446248",
+      "storedPath": "00138-guardians.json.rollback.639279357659446248.gz",
+      "bytes": 106,
+      "sha256": "ab1a9be59b0e8657ebac266d47080384eb3fd7e1bdd546037b5317e791dd3d6c",
+      "storedBytes": 103,
+      "storedSha256": "1f8613e696404a1d6e39502388785b46bc757334945ef4c345f94c848927eaad"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/meta/soul_state.json",
+      "storedPath": "00139-soul_state.json.gz",
+      "bytes": 415,
+      "sha256": "19e66a7a2059c8f569862e55fe728b6a6a3ba62c93fdbe42265e821b7de68430",
+      "storedBytes": 267,
+      "storedSha256": "4d7c937c73f247384549c1e7140d57ee43507a7b0133a409ed5a1ed1c08697da"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/meta/soul_state.json.rollback.639279357659446248",
+      "storedPath": "00140-soul_state.json.rollback.639279357659446248.gz",
+      "bytes": 415,
+      "sha256": "19e66a7a2059c8f569862e55fe728b6a6a3ba62c93fdbe42265e821b7de68430",
+      "storedBytes": 267,
+      "storedSha256": "4d7c937c73f247384549c1e7140d57ee43507a7b0133a409ed5a1ed1c08697da"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/misc/characteristics.json",
+      "storedPath": "00141-characteristics.json.gz",
+      "bytes": 225,
+      "sha256": "a29fbee3856171241586b449b0a785bcf60a12d7d802abae346a1de70a3d1ec5",
+      "storedBytes": 139,
+      "storedSha256": "cb2fbd6364121d8701ef0732d7f7d4f949283afe33a0cb3c27ed826a9cb9dffe"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/misc/characteristics.json.rollback.639279357659446248",
+      "storedPath": "00142-characteristics.json.rollback.639279357659446248.gz",
+      "bytes": 225,
+      "sha256": "a29fbee3856171241586b449b0a785bcf60a12d7d802abae346a1de70a3d1ec5",
+      "storedBytes": 139,
+      "storedSha256": "cb2fbd6364121d8701ef0732d7f7d4f949283afe33a0cb3c27ed826a9cb9dffe"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/npcs/item_journals.json",
+      "storedPath": "00143-item_journals.json.gz",
+      "bytes": 987,
+      "sha256": "dcb005342ffb229f59580356a55c755bd8d9937d96cbdf69de77437041af435d",
+      "storedBytes": 487,
+      "storedSha256": "b21daac6c19179bb03c7266544d725e4c48fcf4be76674c314f29d73b6c39959"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/npcs/item_journals.json.rollback.639279357659446248",
+      "storedPath": "00144-item_journals.json.rollback.639279357659446248.gz",
+      "bytes": 987,
+      "sha256": "dcb005342ffb229f59580356a55c755bd8d9937d96cbdf69de77437041af435d",
+      "storedBytes": 487,
+      "storedSha256": "b21daac6c19179bb03c7266544d725e4c48fcf4be76674c314f29d73b6c39959"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/npcs/npc_core.json",
+      "storedPath": "00145-npc_core.json.gz",
+      "bytes": 3994,
+      "sha256": "a4c67cbfab01e901d126c1f0d1386f07a0369e410c6a951768f9ec491034d8e1",
+      "storedBytes": 1416,
+      "storedSha256": "1259809744bca0b1be545311e68306daa3fac92b1aa7ef31ac26b416a63236b9"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/npcs/npc_core.json.rollback.639279357659446248",
+      "storedPath": "00146-npc_core.json.rollback.639279357659446248.gz",
+      "bytes": 3994,
+      "sha256": "a4c67cbfab01e901d126c1f0d1386f07a0369e410c6a951768f9ec491034d8e1",
+      "storedBytes": 1416,
+      "storedSha256": "1259809744bca0b1be545311e68306daa3fac92b1aa7ef31ac26b416a63236b9"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/npcs/npc_journals.json",
+      "storedPath": "00147-npc_journals.json.gz",
+      "bytes": 21,
+      "sha256": "96e628a14882456158db02b16a3ab7bf3ebe40c2afa3db8d64cb1c839fd97a53",
+      "storedBytes": 41,
+      "storedSha256": "7f75eaadf8771ccca97c6f6000acd7f8113c1ea857c1c42453f178002a8b139c"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/npcs/npc_journals.json.rollback.639279357659446248",
+      "storedPath": "00148-npc_journals.json.rollback.639279357659446248.gz",
+      "bytes": 21,
+      "sha256": "96e628a14882456158db02b16a3ab7bf3ebe40c2afa3db8d64cb1c839fd97a53",
+      "storedBytes": 41,
+      "storedSha256": "7f75eaadf8771ccca97c6f6000acd7f8113c1ea857c1c42453f178002a8b139c"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/npcs/npc_wounds.json",
+      "storedPath": "00149-npc_wounds.json.gz",
+      "bytes": 44,
+      "sha256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385",
+      "storedBytes": 61,
+      "storedSha256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/npcs/npc_wounds.json.rollback.639279357659446248",
+      "storedPath": "00150-npc_wounds.json.rollback.639279357659446248.gz",
+      "bytes": 44,
+      "sha256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385",
+      "storedBytes": 61,
+      "storedSha256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/player/computed_characteristics.json",
+      "storedPath": "00151-computed_characteristics.json.gz",
+      "bytes": 1431,
+      "sha256": "6e432d9dc8ca8031948c9af882b07d261d662cb0d12685f3998f5e300cb31d96",
+      "storedBytes": 414,
+      "storedSha256": "3e0d0e46894054a8b1f6b0ec17a31a2aa1a36ebe36b755a2df2df5916d6649e3"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/player/computed_characteristics.json.rollback.639279357659446248",
+      "storedPath": "00152-computed_characteristics.json.rollback.639279357659446248.gz",
+      "bytes": 1431,
+      "sha256": "6e432d9dc8ca8031948c9af882b07d261d662cb0d12685f3998f5e300cb31d96",
+      "storedBytes": 414,
+      "storedSha256": "3e0d0e46894054a8b1f6b0ec17a31a2aa1a36ebe36b755a2df2df5916d6649e3"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/player/effects.json",
+      "storedPath": "00153-effects.json.gz",
+      "bytes": 50,
+      "sha256": "57cfa98cff82eb4821e37b1296a354d34213b9136c7c90c7e475103a5ca6cc7b",
+      "storedBytes": 67,
+      "storedSha256": "c10422cc324b0023955875a1dd5ae45f80c51406b12bd07f97746b34c4ae0e25"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/player/effects.json.rollback.639279357659446248",
+      "storedPath": "00154-effects.json.rollback.639279357659446248.gz",
+      "bytes": 50,
+      "sha256": "57cfa98cff82eb4821e37b1296a354d34213b9136c7c90c7e475103a5ca6cc7b",
+      "storedBytes": 67,
+      "storedSha256": "c10422cc324b0023955875a1dd5ae45f80c51406b12bd07f97746b34c4ae0e25"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/player/experience.json",
+      "storedPath": "00155-experience.json.gz",
+      "bytes": 170,
+      "sha256": "2c74d725b11da06d9ed0834b7776bb2cb6f4824f56ef64f668ea0523a164585b",
+      "storedBytes": 127,
+      "storedSha256": "eb8590c7d64b2a7b13c4e6ffe91f8b99e762eeac98722cd5e039152cd1ea9f58"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/player/experience.json.rollback.639279357659446248",
+      "storedPath": "00156-experience.json.rollback.639279357659446248.gz",
+      "bytes": 170,
+      "sha256": "2c74d725b11da06d9ed0834b7776bb2cb6f4824f56ef64f668ea0523a164585b",
+      "storedBytes": 127,
+      "storedSha256": "eb8590c7d64b2a7b13c4e6ffe91f8b99e762eeac98722cd5e039152cd1ea9f58"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/player/player_status.json",
+      "storedPath": "00157-player_status.json.gz",
+      "bytes": 1202,
+      "sha256": "3cae75f26e400f642bdec76d974d3e56efe7b79b5212e329449ca97241f39b17",
+      "storedBytes": 612,
+      "storedSha256": "86867e25ac3aa73a5779b163960f5314aa63f6c3a9b2908f3a96574da4543b5a"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/player/player_status.json.rollback.639279357659446248",
+      "storedPath": "00158-player_status.json.rollback.639279357659446248.gz",
+      "bytes": 1202,
+      "sha256": "3cae75f26e400f642bdec76d974d3e56efe7b79b5212e329449ca97241f39b17",
+      "storedBytes": 612,
+      "storedSha256": "86867e25ac3aa73a5779b163960f5314aa63f6c3a9b2908f3a96574da4543b5a"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/player/skill_mastery.json",
+      "storedPath": "00159-skill_mastery.json.gz",
+      "bytes": 29,
+      "sha256": "ab368372158b5afb30e3c1f7e7ddd189b01f0cf985b6b85ba8dea0a4e1a8a049",
+      "storedBytes": 49,
+      "storedSha256": "2e09a3eac1dd364721daffca1c997266865a3d48f77de104d8c5b088cc8113c9"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/player/skill_mastery.json.rollback.639279357659446248",
+      "storedPath": "00160-skill_mastery.json.rollback.639279357659446248.gz",
+      "bytes": 29,
+      "sha256": "ab368372158b5afb30e3c1f7e7ddd189b01f0cf985b6b85ba8dea0a4e1a8a049",
+      "storedBytes": 49,
+      "storedSha256": "2e09a3eac1dd364721daffca1c997266865a3d48f77de104d8c5b088cc8113c9"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/player/skills_active.json",
+      "storedPath": "00161-skills_active.json.gz",
+      "bytes": 28,
+      "sha256": "615ea9dae3be242fb738d57742295c5419909709a3984bba13458748028d30db",
+      "storedBytes": 48,
+      "storedSha256": "5c6cabf271b8f9eff95ef6daa326650f6fa96e668002c3ba981864bf49ff42c7"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/player/skills_active.json.rollback.639279357659446248",
+      "storedPath": "00162-skills_active.json.rollback.639279357659446248.gz",
+      "bytes": 28,
+      "sha256": "615ea9dae3be242fb738d57742295c5419909709a3984bba13458748028d30db",
+      "storedBytes": 48,
+      "storedSha256": "5c6cabf271b8f9eff95ef6daa326650f6fa96e668002c3ba981864bf49ff42c7"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/player/skills_passive.json",
+      "storedPath": "00163-skills_passive.json.gz",
+      "bytes": 29,
+      "sha256": "062046836ab471cc0e7a6c7e3328f974ee4ae89be8839e012d2461cd74a600f0",
+      "storedBytes": 49,
+      "storedSha256": "81e222a8e19d9d49d047a9c237df603ddd43bfd5a860853072efb2539f1b9b4b"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/player/skills_passive.json.rollback.639279357659446248",
+      "storedPath": "00164-skills_passive.json.rollback.639279357659446248.gz",
+      "bytes": 29,
+      "sha256": "062046836ab471cc0e7a6c7e3328f974ee4ae89be8839e012d2461cd74a600f0",
+      "storedBytes": 49,
+      "storedSha256": "81e222a8e19d9d49d047a9c237df603ddd43bfd5a860853072efb2539f1b9b4b"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/player/stat_points.json",
+      "storedPath": "00165-stat_points.json.gz",
+      "bytes": 50,
+      "sha256": "0ad75b0ebb81096d7964434dd8eb4519de2a6e9af833bb820b3cfe070e9891b4",
+      "storedBytes": 68,
+      "storedSha256": "49db0c2e2c020e107ee110cb4e7bc3bc62abf10f8f212034585cdc8d89965faa"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/player/stat_points.json.rollback.639279357659446248",
+      "storedPath": "00166-stat_points.json.rollback.639279357659446248.gz",
+      "bytes": 50,
+      "sha256": "0ad75b0ebb81096d7964434dd8eb4519de2a6e9af833bb820b3cfe070e9891b4",
+      "storedBytes": 68,
+      "storedSha256": "49db0c2e2c020e107ee110cb4e7bc3bc62abf10f8f212034585cdc8d89965faa"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/player/transformation.json",
+      "storedPath": "00167-transformation.json.gz",
+      "bytes": 242,
+      "sha256": "53bb9c81bda4ab38bcb888639bd639822f77731fcc1fe7b5c3c2f8d5546d08fc",
+      "storedBytes": 210,
+      "storedSha256": "99e8646f12d871238794fb3e16558f7cbf89f37d96d7efe59bb5c98968a4f609"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/player/transformation.json.rollback.639279357659446248",
+      "storedPath": "00168-transformation.json.rollback.639279357659446248.gz",
+      "bytes": 242,
+      "sha256": "53bb9c81bda4ab38bcb888639bd639822f77731fcc1fe7b5c3c2f8d5546d08fc",
+      "storedBytes": 210,
+      "storedSha256": "99e8646f12d871238794fb3e16558f7cbf89f37d96d7efe59bb5c98968a4f609"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/player/wounds.json",
+      "storedPath": "00169-wounds.json.gz",
+      "bytes": 4872,
+      "sha256": "9833d7546ae55e930ca5e7909474bb6878bb6061d3682517d6c233c34b3194a7",
+      "storedBytes": 1607,
+      "storedSha256": "f369b063e10d7481483f9e6a3bca275984df1fd2266a8108ad2663157a96e4bd"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/player/wounds.json.rollback.639279357659446248",
+      "storedPath": "00170-wounds.json.rollback.639279357659446248.gz",
+      "bytes": 4872,
+      "sha256": "9833d7546ae55e930ca5e7909474bb6878bb6061d3682517d6c233c34b3194a7",
+      "storedBytes": 1607,
+      "storedSha256": "f369b063e10d7481483f9e6a3bca275984df1fd2266a8108ad2663157a96e4bd"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/quests/quest_history.json",
+      "storedPath": "00171-quest_history.json.gz",
+      "bytes": 2056,
+      "sha256": "babcc397ccdc70661f844094dee691c3c2ef08ad2fe408aba614cdaaa1327cae",
+      "storedBytes": 824,
+      "storedSha256": "3fc78904699aca5e5d6262929def457e4e87e91f34697b8295e85e9356a7bac8"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/quests/quest_history.json.rollback.639279357659446248",
+      "storedPath": "00172-quest_history.json.rollback.639279357659446248.gz",
+      "bytes": 2056,
+      "sha256": "babcc397ccdc70661f844094dee691c3c2ef08ad2fe408aba614cdaaa1327cae",
+      "storedBytes": 824,
+      "storedSha256": "3fc78904699aca5e5d6262929def457e4e87e91f34697b8295e85e9356a7bac8"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/resources/resource_definitions.json",
+      "storedPath": "00173-resource_definitions.json.gz",
+      "bytes": 6885,
+      "sha256": "6a17704c0439d2c2868d6f829dc2a50a3fa1d4ac1ddfe230785a71f5bc6b6603",
+      "storedBytes": 924,
+      "storedSha256": "0db87404f712c0841de798ec3be6f4444ab4085ac95e2ab851ec3cd7df01046d"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/resources/resource_definitions.json.rollback.639279357659446248",
+      "storedPath": "00174-resource_definitions.json.rollback.639279357659446248.gz",
+      "bytes": 6885,
+      "sha256": "6a17704c0439d2c2868d6f829dc2a50a3fa1d4ac1ddfe230785a71f5bc6b6603",
+      "storedBytes": 924,
+      "storedSha256": "0db87404f712c0841de798ec3be6f4444ab4085ac95e2ab851ec3cd7df01046d"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/resources/resource_history.json",
+      "storedPath": "00175-resource_history.json.gz",
+      "bytes": 4914,
+      "sha256": "42c6d92a3c153151a209aca2fe11e9e4627f2be31f33eb97265f54ae6b88d31f",
+      "storedBytes": 873,
+      "storedSha256": "6c76176aa3f237c8f2bfa721629d77596a7fc1f7095ddf8f414bafe2fc214839"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/resources/resource_history.json.rollback.639279357659446248",
+      "storedPath": "00176-resource_history.json.rollback.639279357659446248.gz",
+      "bytes": 4914,
+      "sha256": "42c6d92a3c153151a209aca2fe11e9e4627f2be31f33eb97265f54ae6b88d31f",
+      "storedBytes": 873,
+      "storedSha256": "6c76176aa3f237c8f2bfa721629d77596a7fc1f7095ddf8f414bafe2fc214839"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/resources/resource_owner_authority.json",
+      "storedPath": "00177-resource_owner_authority.json.gz",
+      "bytes": 689,
+      "sha256": "a3e542ea0a6202980cde14acb80884909a1cf8f110611386915e2168cc43b777",
+      "storedBytes": 253,
+      "storedSha256": "bd763608fc41bdc44649e27f5a3c65bcb1d5259381c5a64401ea2468b4d00218"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/resources/resource_owner_authority.json.rollback.639279357659446248",
+      "storedPath": "00178-resource_owner_authority.json.rollback.639279357659446248.gz",
+      "bytes": 689,
+      "sha256": "a3e542ea0a6202980cde14acb80884909a1cf8f110611386915e2168cc43b777",
+      "storedBytes": 253,
+      "storedSha256": "bd763608fc41bdc44649e27f5a3c65bcb1d5259381c5a64401ea2468b4d00218"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/resources/resource_state.json",
+      "storedPath": "00179-resource_state.json.gz",
+      "bytes": 1125,
+      "sha256": "5e55fcfb96b046b92253579a37d179a63406fdf66ac1573f47ca3a1d8fa8fdf8",
+      "storedBytes": 388,
+      "storedSha256": "6ee81e83f3ecbace2d097757cb73b3559e64c10dcbdc01c6c1dafe9fc5e5dc18"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/resources/resource_state.json.rollback.639279357659446248",
+      "storedPath": "00180-resource_state.json.rollback.639279357659446248.gz",
+      "bytes": 1125,
+      "sha256": "5e55fcfb96b046b92253579a37d179a63406fdf66ac1573f47ca3a1d8fa8fdf8",
+      "storedBytes": 388,
+      "storedSha256": "6ee81e83f3ecbace2d097757cb73b3559e64c10dcbdc01c6c1dafe9fc5e5dc18"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/shining_abode/faction_chronicles.json",
+      "storedPath": "00181-faction_chronicles.json.gz",
+      "bytes": 3669,
+      "sha256": "c43c647883df9cd5402dd60d8416070bb53cc674eeb8de517faa588977664cff",
+      "storedBytes": 1284,
+      "storedSha256": "b1a218289c9fadc36b65c39a6e2ac524ddcf53ac2609abf203aaa08df7369278"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/shining_abode/faction_chronicles.json.rollback.639279357659446248",
+      "storedPath": "00182-faction_chronicles.json.rollback.639279357659446248.gz",
+      "bytes": 3669,
+      "sha256": "c43c647883df9cd5402dd60d8416070bb53cc674eeb8de517faa588977664cff",
+      "storedBytes": 1284,
+      "storedSha256": "b1a218289c9fadc36b65c39a6e2ac524ddcf53ac2609abf203aaa08df7369278"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/world/current_location.json",
+      "storedPath": "00183-current_location.json.gz",
+      "bytes": 5783,
+      "sha256": "aed6fe35f610feb93ea29db2b46086edc1deec59d96b7e8c8620c851c04c919c",
+      "storedBytes": 1475,
+      "storedSha256": "ac2756cea63b73a6b223b739dc4b7947411693accaa898fa13544f531fce927b"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/world/current_location.json.rollback.639279357659446248",
+      "storedPath": "00184-current_location.json.rollback.639279357659446248.gz",
+      "bytes": 5783,
+      "sha256": "aed6fe35f610feb93ea29db2b46086edc1deec59d96b7e8c8620c851c04c919c",
+      "storedBytes": 1475,
+      "storedSha256": "ac2756cea63b73a6b223b739dc4b7947411693accaa898fa13544f531fce927b"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/world/location_identity_index.json",
+      "storedPath": "00185-location_identity_index.json.gz",
+      "bytes": 481,
+      "sha256": "99f60feba92b2d72943227979bac4d165e265ddd4013fd07e397f35c0feba09c",
+      "storedBytes": 280,
+      "storedSha256": "30569f81ea55059e2c1ace14cbc8fa303f528870c51317f56be11ab85cba6005"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/world/location_identity_index.json.rollback.639279357659446248",
+      "storedPath": "00186-location_identity_index.json.rollback.639279357659446248.gz",
+      "bytes": 481,
+      "sha256": "99f60feba92b2d72943227979bac4d165e265ddd4013fd07e397f35c0feba09c",
+      "storedBytes": 280,
+      "storedSha256": "30569f81ea55059e2c1ace14cbc8fa303f528870c51317f56be11ab85cba6005"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/world/world_map.json",
+      "storedPath": "00187-world_map.json.gz",
+      "bytes": 5687,
+      "sha256": "d1d42d1b7eef7679ec6b4a5b8b953c7f3020e5a5aa1c7001694e8878d2d42a31",
+      "storedBytes": 1440,
+      "storedSha256": "0c0c2941de20fa7592a838c6c957a1c425198a7b619a1334492d9e0287616d97"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/world/world_map.json.rollback.639279357659446248",
+      "storedPath": "00188-world_map.json.rollback.639279357659446248.gz",
+      "bytes": 5687,
+      "sha256": "d1d42d1b7eef7679ec6b4a5b8b953c7f3020e5a5aa1c7001694e8878d2d42a31",
+      "storedBytes": 1440,
+      "storedSha256": "0c0c2941de20fa7592a838c6c957a1c425198a7b619a1334492d9e0287616d97"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/world/world_time.json",
+      "storedPath": "00189-world_time.json.gz",
+      "bytes": 112,
+      "sha256": "4580e41d6ed481e03b444cfd9689c5e830ce67b7388dc04a23a83acbfd753233",
+      "storedBytes": 121,
+      "storedSha256": "104c633e60083ca8690ae582ec33314a4f75598f67d21dd9b7cf9e102e55b008"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/world/world_time.json.rollback.639279357659446248",
+      "storedPath": "00190-world_time.json.rollback.639279357659446248.gz",
+      "bytes": 112,
+      "sha256": "4580e41d6ed481e03b444cfd9689c5e830ce67b7388dc04a23a83acbfd753233",
+      "storedBytes": 121,
+      "storedSha256": "104c633e60083ca8690ae582ec33314a4f75598f67d21dd9b7cf9e102e55b008"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/wounds/wound_commands.json",
+      "storedPath": "00191-wound_commands.json.gz",
+      "bytes": 36981,
+      "sha256": "b003a3df38381d17e9293ad7803ee6c4b51344b06b6beb1eb72d951089264231",
+      "storedBytes": 4648,
+      "storedSha256": "a18fde59b40d313a13b457b797b4bf69bd63fdab98263725c060b35831e13821"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/wounds/wound_history.json",
+      "storedPath": "00192-wound_history.json.gz",
+      "bytes": 1062,
+      "sha256": "14767592f1d844969bb7ee8c5ba5b6e3c738ffb2e2a7b18be97d997e7ced759f",
+      "storedBytes": 549,
+      "storedSha256": "a3b28ea591a6e86db1673bb2905b792477906e55ea9cdba3d969ccbc8c4a8989"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/wounds/wound_history.json.rollback.639279357659446248",
+      "storedPath": "00193-wound_history.json.rollback.639279357659446248.gz",
+      "bytes": 1062,
+      "sha256": "14767592f1d844969bb7ee8c5ba5b6e3c738ffb2e2a7b18be97d997e7ced759f",
+      "storedBytes": 549,
+      "storedSha256": "a3b28ea591a6e86db1673bb2905b792477906e55ea9cdba3d969ccbc8c4a8989"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/wounds/wound_identity_index.json",
+      "storedPath": "00194-wound_identity_index.json.gz",
+      "bytes": 552,
+      "sha256": "594fb1982927597100ef470dc47f57470108ee57835fe2909711e71afd80df81",
+      "storedBytes": 348,
+      "storedSha256": "0ec7f7f78660b21381d849b3ac73a9d93d747ecc2dd1b5829bab50d1617e0fde"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/wounds/wound_identity_index.json.rollback.639279357659446248",
+      "storedPath": "00195-wound_identity_index.json.rollback.639279357659446248.gz",
+      "bytes": 552,
+      "sha256": "594fb1982927597100ef470dc47f57470108ee57835fe2909711e71afd80df81",
+      "storedBytes": 348,
+      "storedSha256": "0ec7f7f78660b21381d849b3ac73a9d93d747ecc2dd1b5829bab50d1617e0fde"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/wounds/wound_opportunity_receipts.json",
+      "storedPath": "00196-wound_opportunity_receipts.json.gz",
+      "bytes": 65,
+      "sha256": "562c3ee724700be4d8274a73df6f84d9c6ff32816868a5c2b600d0fdb5920aa1",
+      "storedBytes": 75,
+      "storedSha256": "7aa79019b455c17b4068405ae58e07af358a0b36e0bc5562c49ff092b145ae6f"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/game_state/wounds/wound_opportunity_receipts.json.rollback.639279357659446248",
+      "storedPath": "00197-wound_opportunity_receipts.json.rollback.639279357659446248.gz",
+      "bytes": 65,
+      "sha256": "562c3ee724700be4d8274a73df6f84d9c6ff32816868a5c2b600d0fdb5920aa1",
+      "storedBytes": 75,
+      "storedSha256": "7aa79019b455c17b4068405ae58e07af358a0b36e0bc5562c49ff092b145ae6f"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/input/turn_request.json",
+      "storedPath": "00198-turn_request.json.gz",
+      "bytes": 65264,
+      "sha256": "77e062b586afb0fbff2a03922fff0e553dd0148771f140ea1ad2b57ef552ace3",
+      "storedBytes": 20334,
+      "storedSha256": "6c31975365b42cd9063efa009b212b791b42fe7cbfd8144c376824a4460fd1bd"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/lore/chaos_sea/cosmology.json",
+      "storedPath": "00199-cosmology.json.gz",
+      "bytes": 2047,
+      "sha256": "fec13c4f2430d3e7318f3ebb6f186883bfbeede0bb417f2ce5ced13405a104cd",
+      "storedBytes": 938,
+      "storedSha256": "d05e032e271f3998d877dc6805d62c813b422b914ca904ead64309b5d5297059"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/lore/chaos_sea/cosmology.json.rollback.639279357659446248",
+      "storedPath": "00200-cosmology.json.rollback.639279357659446248.gz",
+      "bytes": 2047,
+      "sha256": "fec13c4f2430d3e7318f3ebb6f186883bfbeede0bb417f2ce5ced13405a104cd",
+      "storedBytes": 938,
+      "storedSha256": "d05e032e271f3998d877dc6805d62c813b422b914ca904ead64309b5d5297059"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/lore/codex_entries.json",
+      "storedPath": "00201-codex_entries.json.gz",
+      "bytes": 4112,
+      "sha256": "937670566ef62459066fe5a994fe2c5f23a2a837b508855897e58913ef3f204c",
+      "storedBytes": 1199,
+      "storedSha256": "a63a1151ad6186377ba54532f9109a67ffd650efa7141c70970c8026f56fdfe8"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/lore/codex_entries.json.rollback.639279357659446248",
+      "storedPath": "00202-codex_entries.json.rollback.639279357659446248.gz",
+      "bytes": 4112,
+      "sha256": "937670566ef62459066fe5a994fe2c5f23a2a837b508855897e58913ef3f204c",
+      "storedBytes": 1199,
+      "storedSha256": "a63a1151ad6186377ba54532f9109a67ffd650efa7141c70970c8026f56fdfe8"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/lore/current_world/cultures.json",
+      "storedPath": "00203-cultures.json.gz",
+      "bytes": 1006,
+      "sha256": "56f3acb7a5909210da08827d10ae089c4cfef5740600d2fa31cb1949fbba0c5d",
+      "storedBytes": 503,
+      "storedSha256": "9142f1bd761bdfc6ab022292545988159a09064913e887ac024bb84ea7598f95"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/lore/current_world/cultures.json.rollback.639279357659446248",
+      "storedPath": "00204-cultures.json.rollback.639279357659446248.gz",
+      "bytes": 1006,
+      "sha256": "56f3acb7a5909210da08827d10ae089c4cfef5740600d2fa31cb1949fbba0c5d",
+      "storedBytes": 503,
+      "storedSha256": "9142f1bd761bdfc6ab022292545988159a09064913e887ac024bb84ea7598f95"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/lore/current_world/geography.json",
+      "storedPath": "00205-geography.json.gz",
+      "bytes": 995,
+      "sha256": "4c80352d019abc2153c70c860b8fecd08c13618e7d1c9f2de677b8a2d050285c",
+      "storedBytes": 487,
+      "storedSha256": "2f270e6d96991273ee76f5efec1075ae4310acd21b425f7af7a330361bf6f8bd"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/lore/current_world/geography.json.rollback.639279357659446248",
+      "storedPath": "00206-geography.json.rollback.639279357659446248.gz",
+      "bytes": 995,
+      "sha256": "4c80352d019abc2153c70c860b8fecd08c13618e7d1c9f2de677b8a2d050285c",
+      "storedBytes": 487,
+      "storedSha256": "2f270e6d96991273ee76f5efec1075ae4310acd21b425f7af7a330361bf6f8bd"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/lore/current_world/history.json",
+      "storedPath": "00207-history.json.gz",
+      "bytes": 950,
+      "sha256": "901a86d97b1f4a2601dc6c6d6cd7dd2d7f7e0e99dae6483b3b7a633a662c8b21",
+      "storedBytes": 502,
+      "storedSha256": "c7c55a74cc78528febf942520548a55512a7e93d4e3ab9b7207a7857c13354ce"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/lore/current_world/history.json.rollback.639279357659446248",
+      "storedPath": "00208-history.json.rollback.639279357659446248.gz",
+      "bytes": 950,
+      "sha256": "901a86d97b1f4a2601dc6c6d6cd7dd2d7f7e0e99dae6483b3b7a633a662c8b21",
+      "storedBytes": 502,
+      "storedSha256": "c7c55a74cc78528febf942520548a55512a7e93d4e3ab9b7207a7857c13354ce"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/lore/current_world/threats.json",
+      "storedPath": "00209-threats.json.gz",
+      "bytes": 764,
+      "sha256": "a9a941fdc517262b29090b8cd782b2e3e6f779a45ef1db176d328b94b20b70c6",
+      "storedBytes": 444,
+      "storedSha256": "e47dc3074226d0263e58142bbcc5b6e8b2b6d308d2e4eeb028c9f7c140f3d646"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/lore/current_world/threats.json.rollback.639279357659446248",
+      "storedPath": "00210-threats.json.rollback.639279357659446248.gz",
+      "bytes": 764,
+      "sha256": "a9a941fdc517262b29090b8cd782b2e3e6f779a45ef1db176d328b94b20b70c6",
+      "storedBytes": 444,
+      "storedSha256": "e47dc3074226d0263e58142bbcc5b6e8b2b6d308d2e4eeb028c9f7c140f3d646"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/lore/current_world/world_directives_draft_example.md",
+      "storedPath": "00211-world_directives_draft_example.md.gz",
+      "bytes": 1040,
+      "sha256": "4fa097fa95c8af22eba1901fdbee3d8de544089038de4888a6521add23ff1547",
+      "storedBytes": 624,
+      "storedSha256": "fed9e603d3b11c28edde6c157b693d35ae40ad1ce661606bd7d13f11d98dc416"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/lore/current_world/world_directives_draft_example.md.rollback.639279357659446248",
+      "storedPath": "00212-world_directives_draft_example.md.rollback.639279357659446248.gz",
+      "bytes": 1040,
+      "sha256": "4fa097fa95c8af22eba1901fdbee3d8de544089038de4888a6521add23ff1547",
+      "storedBytes": 624,
+      "storedSha256": "fed9e603d3b11c28edde6c157b693d35ae40ad1ce661606bd7d13f11d98dc416"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/lore/current_world/world_setting.json",
+      "storedPath": "00213-world_setting.json.gz",
+      "bytes": 1095,
+      "sha256": "72792cb8026ef61118b9ebdc294272cf371717680dd7287bb36103c24ca3cefb",
+      "storedBytes": 639,
+      "storedSha256": "4dce223dbdd5eb423d7f4fce815d944ed66de24acaf29eccb88dda567078b633"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/lore/current_world/world_setting.json.rollback.639279357659446248",
+      "storedPath": "00214-world_setting.json.rollback.639279357659446248.gz",
+      "bytes": 1095,
+      "sha256": "72792cb8026ef61118b9ebdc294272cf371717680dd7287bb36103c24ca3cefb",
+      "storedBytes": 639,
+      "storedSha256": "4dce223dbdd5eb423d7f4fce815d944ed66de24acaf29eccb88dda567078b633"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/mods/example_system_mod.json",
+      "storedPath": "00215-example_system_mod.json.gz",
+      "bytes": 503,
+      "sha256": "cb66a9bdc29ea9ea529c1934119e9c03ec9ca1ea08387c50e42005340015c369",
+      "storedBytes": 319,
+      "storedSha256": "a10a7fba0cee20a266440345403680207be89d3f69e5ca4353295a9bcda1c5e0"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/mods/example_system_mod.md",
+      "storedPath": "00216-example_system_mod.md.gz",
+      "bytes": 548,
+      "sha256": "cd7e840fa6775e965a3eab204e40141a740800ed551f72173abe0e17ce885a9e",
+      "storedBytes": 341,
+      "storedSha256": "23e8caed836887ea76836d402c1a61ae89e70641a7c9f5685288cab22adf36de"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/mods/example_system_mod.txt",
+      "storedPath": "00217-example_system_mod.txt.gz",
+      "bytes": 807,
+      "sha256": "4d73b86eb51eb6ee198383f79fdc2452f5de421403c232e5aeb4954fc2e7e6ca",
+      "storedBytes": 443,
+      "storedSha256": "a3874a4a959d1fb265971892c7057f10e17296a0ede97135f719bb12c6660507"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/output/debug_logs.json",
+      "storedPath": "00218-debug_logs.json.gz",
+      "bytes": 1064,
+      "sha256": "956a717a05f60f4733c41ad05d629027d5030122ef7a4cbfd8a1a578eb3b41bb",
+      "storedBytes": 447,
+      "storedSha256": "ea3d9e6063f6e68be087c083ad61d06c2d46d0c53d8066dad9f65c23c13d7de1"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/output/debug_logs.json.rollback.639279357659446248",
+      "storedPath": "00219-debug_logs.json.rollback.639279357659446248.gz",
+      "bytes": 379,
+      "sha256": "defb850283dc251a98d235ed00552b6db57cdc53c7bfe8c557c2958a44e95aca",
+      "storedBytes": 316,
+      "storedSha256": "1d70eab2adbdd0699354955f9a37c1ec4750e52bc86df17f7fdb08f1b1351966"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/output/interface_updates.json",
+      "storedPath": "00220-interface_updates.json.gz",
+      "bytes": 287,
+      "sha256": "9ef6317355da367fe770b779623d1097b67ec259b28e4d68cbdd77deced70d43",
+      "storedBytes": 216,
+      "storedSha256": "a0dd6c6bb57286f8c73c8f0e44177b678707f59ea3d6561b2a8d7b1e71fe36d0"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/output/interface_updates.json.rollback.639279357659446248",
+      "storedPath": "00221-interface_updates.json.rollback.639279357659446248.gz",
+      "bytes": 77,
+      "sha256": "fc2b413298a44798b1b740a7a46c575c015830d0cde3b6535f4a35a6a50e98e6",
+      "storedBytes": 94,
+      "storedSha256": "1fb86c8470fe99a5c77d6506627784260966a70eb444e5b367da2315a046083c"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/output/mortal_wound_decisions.json",
+      "storedPath": "00222-mortal_wound_decisions.json.gz",
+      "bytes": 5716,
+      "sha256": "6d9edc9a3b0b85dfc2c9c3113c2775dd04ca23f73c69944c677e4f9ca2a1bada",
+      "storedBytes": 1843,
+      "storedSha256": "7cafff5b32169635719f982bfc07d7bdbced1ca85514e5d135ad1c6512c82005"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/output/narrative_response.json",
+      "storedPath": "00223-narrative_response.json.gz",
+      "bytes": 395,
+      "sha256": "4d9324d8202bb629b8e246d9a286679148d18c18e9de468d07061961a30a9ba9",
+      "storedBytes": 232,
+      "storedSha256": "b7c1cabe4a0e324e5232fdf30b2dab30cc6f7e8c4b9d4e11346201d0299623da"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/output/narrative_response.json.rollback.639279357659446248",
+      "storedPath": "00224-narrative_response.json.rollback.639279357659446248.gz",
+      "bytes": 111,
+      "sha256": "ea58235a8c48e221d4d305f1f009c6eee6063b9a28da443b3e1bb92d8e05bdd1",
+      "storedBytes": 123,
+      "storedSha256": "9a6960e28b7147a9f5331f9c03777da27fbde4aca577b7169f6c64c4b0dcfd49"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/ready/turn_complete.json",
+      "storedPath": "00225-turn_complete.json.gz",
+      "bytes": 313,
+      "sha256": "4658dd7bf97cf872438dd17f62e846dee7f0b9046dd6908e706a96e799cdf215",
+      "storedBytes": 242,
+      "storedSha256": "1d0f90522198e87aedbc6978bfd7938982b2383093397024f602f0ac5b32a069"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/saves/manual_saves/chaos_sea_command_display_fixture.zip",
+      "storedPath": "00226-chaos_sea_command_display_fixture.zip.gz",
+      "bytes": 81508,
+      "sha256": "d88967a7837eb579ef21a7383f42bb669e79500b8c17568acf15588af3ffd751",
+      "storedBytes": 70973,
+      "storedSha256": "7ac877183049ba80ae0ba872a03f932f4ddb8310555459f3d6bb31aacb79f091"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/saves/manual_saves/chaos_sea_command_display_fixture_metadata.json",
+      "storedPath": "00227-chaos_sea_command_display_fixture_metadata.json.gz",
+      "bytes": 3700,
+      "sha256": "9b4e138d22d12229b3a756138ae75d34d104031b0ab90145f7b1e7a577cfd415",
+      "storedBytes": 1517,
+      "storedSha256": "d806446a87ff899e69ff1673358a4c00aa9e3225a5cdb8465b04f264f23c9cbc"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/saves/manual_saves/first_character_save_metadata.json",
+      "storedPath": "00228-first_character_save_metadata.json.gz",
+      "bytes": 869,
+      "sha256": "6412eedb4029b53fd56122fe393c55d641b4b4267e81fce83d56ebac2575a63a",
+      "storedBytes": 555,
+      "storedSha256": "dfa8179a7f98a8a9be2318f0c6b0a0d63fc2c3900b28d9f579757ff32dbccc19"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/saves/manual_saves/mortal_world_command_display_fixture.zip",
+      "storedPath": "00229-mortal_world_command_display_fixture.zip.gz",
+      "bytes": 103744,
+      "sha256": "22d7dcab87ee3a2452b801e8f49e4be7ce9187c4b6f2a4c148f360bc3fd2a55d",
+      "storedBytes": 95361,
+      "storedSha256": "c8a386318b4854279b547b0d6f36923b01102f24ffe11583d2770ec75d3c8cad"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/saves/manual_saves/mortal_world_command_display_fixture_metadata.json",
+      "storedPath": "00230-mortal_world_command_display_fixture_metadata.json.gz",
+      "bytes": 1672,
+      "sha256": "5eda2758a5a8e6ed892dbdd91cb5ed605650851adaaf7ea0c81accb20027e45f",
+      "storedBytes": 723,
+      "storedSha256": "422e213bb5f1a0222c481b6e00086763839a144b4c335317ddb6ef4553e0db06"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/saves/manual_saves/shining_abode_command_display_fixture.zip",
+      "storedPath": "00231-shining_abode_command_display_fixture.zip.gz",
+      "bytes": 35684,
+      "sha256": "822fd3e81578f7cfdfeba7d924a3d454bd9687efb90fa866c48dc49173adb735",
+      "storedBytes": 32269,
+      "storedSha256": "f1b16280a2dfa002623d76bb3aae5252e291f339abdf7740f098000d4c15619f"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/saves/manual_saves/shining_abode_command_display_fixture_metadata.json",
+      "storedPath": "00232-shining_abode_command_display_fixture_metadata.json.gz",
+      "bytes": 1540,
+      "sha256": "78fb89b27751e6f23bd893ab6ed62413da61bd33ddfb001d2bf1eb338cde1ae1",
+      "storedBytes": 659,
+      "storedSha256": "9a6279f14137cd9f409562705f48249bb548960b52da50cb5beae8a37d31f14f"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/stories/mortal_life_2.jsonl",
+      "storedPath": "00233-mortal_life_2.jsonl.gz",
+      "bytes": 255,
+      "sha256": "dbc528c3016a9f6628f15da37647ac9d783f3b76bde2d32033865f5aed2392f2",
+      "storedBytes": 233,
+      "storedSha256": "1b399434ccfffba27dba010897a37c89db0b9cbe4b97b40498321d75a6ddee68"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/world_profiles/example_world_profile.json",
+      "storedPath": "00234-example_world_profile.json.gz",
+      "bytes": 2603,
+      "sha256": "f62c409d898819de756c2b48a989d5b980511d626f29f2d8fbffae03602547f6",
+      "storedBytes": 1173,
+      "storedSha256": "e669232e0e9b763c2788683983bd11a267aea89cf97c572e19a1081fe63d3721"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/world_profiles/example_world_profile.md",
+      "storedPath": "00235-example_world_profile.md.gz",
+      "bytes": 674,
+      "sha256": "c54e577a6264219d2713ed964c47eb89d7d3cad1c775a2c20667ab0cbf6353c4",
+      "storedBytes": 431,
+      "storedSha256": "266c08e875ddbbccb065817865bd37f147b1653835e197eec0a2bf60aa3cc1ea"
+    },
+    {
+      "rawPath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37/game_session/world_profiles/example_world_profile.txt",
+      "storedPath": "00236-example_world_profile.txt.gz",
+      "bytes": 1455,
+      "sha256": "9e0ea1fdaa81c94235e0a6fedaf60f99974ce83ebe3bb26efbbd20a2916a64f7",
+      "storedBytes": 693,
+      "storedSha256": "5fabb4c20b4435b13f4f71ae74653c57ff884e42c2fb25922fa6452f2c4d802c"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/c391c03012e48c4e2395bdb288f0d763d2c0cf7f-ni-iobs-l01-process-crash5.FIRST.json",
+      "storedPath": "00237-c391c03012e48c4e2395bdb288f0d763d2c0cf7f-ni-iobs-l01-process-crash5.FIRST.json.gz",
+      "bytes": 336,
+      "sha256": "1216ec8980f4013df5b3963792fe355a9eb58deb2e680ff42c8da80f6118149e",
+      "storedBytes": 272,
+      "storedSha256": "e28378de18d37433434169fe9eb5a7b43c12ab133a052faefd6219ac9e555ab6"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-first-crash5-selected-routing-cloud-813f1057/exact-selected-scope.json",
+      "storedPath": "00238-exact-selected-scope.json.gz",
+      "bytes": 709,
+      "sha256": "c37c7e09fe0109fc59b034799fd826560646e50e2fa4bf29c15d7e0182b26c29",
+      "storedBytes": 459,
+      "storedSha256": "861f3acc3de760998a9a218dd9c555ac8c185ec1343a66d328e1a8eccb44e6eb"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-first-crash5-selected-routing-cloud-813f1057/ledger-context.json",
+      "storedPath": "00239-ledger-context.json.gz",
+      "bytes": 43759,
+      "sha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
+      "storedBytes": 11206,
+      "storedSha256": "6de385248e58f2dd9817516133e85fc65fbb1da97cd1e1ae251e511f765933b4"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-first-crash5-selected-routing-cloud-813f1057/process.json",
+      "storedPath": "00240-process.json.gz",
+      "bytes": 622,
+      "sha256": "af43d4deaa52ed6c6d6449dfbf0b2894e7488b28a8679f65b1745013f68be15b",
+      "storedBytes": 362,
+      "storedSha256": "841ba4175f2446163e6c02c8da5be21cca9f3dfbafd1eb280783b68f5b1bd54c"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-first-crash5-selected-routing-cloud-813f1057/record.json",
+      "storedPath": "00241-record.json.gz",
+      "bytes": 754939,
+      "sha256": "4eb04ce91fcd6335329e5dc5a4e8ef66da3b6bdecbedd32ecc9654bfdfa9c206",
+      "storedBytes": 178134,
+      "storedSha256": "7c3accf33c6fb7d511c89c0d31b71ad076b1d2926a6444c335f82cb7d5fbb7f8"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-first-crash5-selected-routing-cloud-813f1057/source-binding.json",
+      "storedPath": "00242-source-binding.json.gz",
+      "bytes": 66567,
+      "sha256": "c622a2643629a25217d862c405eff8482cedef33094c670d0aaac22a2291431c",
+      "storedBytes": 15966,
+      "storedSha256": "acf3afd046ce5b7a2fc7e69d51f2c0667a4bfe6f022523f80dcdf2243b855a26"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-first-crash5-selected-routing-cloud-813f1057/stdout.log",
+      "storedPath": "00243-stdout.log.gz",
+      "bytes": 2306951,
+      "sha256": "df6e72205b4e1a6347b69a2a9dd43d92c40c316a811696abed3f9470a071d5f3",
+      "storedBytes": 717553,
+      "storedSha256": "693c46b09bc7fdacd42201c3d2b54caad1aeec8bab4e748bb88f3f0e2e346eb1"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-154401-588-53146-4d13de09a6fc4f5b8bc92ed399730a9a-categories/dotnet-test.log",
+      "storedPath": "00244-dotnet-test.log.gz",
+      "bytes": 4000858,
+      "sha256": "a0560d2bdf1a88ea03ec6a62fde8af8a993e25be49337b84509749e31c8d5657",
+      "storedBytes": 905569,
+      "storedSha256": "edbbf4a054ab63196f52adad82b1e529b64fec5a8d152d309408e5a10d3b3f1a"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-154401-588-53146-4d13de09a6fc4f5b8bc92ed399730a9a-categories/plan.json",
+      "storedPath": "00245-plan.json.gz",
+      "bytes": 1882,
+      "sha256": "bef0fa0db29e64b00c06f6d8282d3f71bb0f0e914ee2ef1032c0abc83e69ab37",
+      "storedBytes": 892,
+      "storedSha256": "61f916af9f9316e00c5bed080f27869e6de3da0d1a59b77ab32ee351446fc953"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-154401-588-53146-4d13de09a6fc4f5b8bc92ed399730a9a-categories/summary.json",
+      "storedPath": "00246-summary.json.gz",
+      "bytes": 2112,
+      "sha256": "ee2be62ea2cc6adb28eba7e4ba29f848e76a3f9decc80d0d8f1757469ce1a658",
+      "storedBytes": 970,
+      "storedSha256": "23b59905ce16b44eb63fd9591c0efbf2a1d5f836ab32c5601483bb54814cdf72"
+    }
+  ],
+  "helperText": "\"\"\"UNRUN read-only complete original whole-product zero/actual raw archive. No execution, cleanup, retry or classification.\"\"\"\nfrom pathlib import Path\nimport sys,json,gzip,hashlib,datetime\nrecords=[Path(x) for x in sys.argv[1:-1]];out=Path(sys.argv[-1]);assert records and not out.exists();out.mkdir(parents=True)\ndef h(b):return hashlib.sha256(b).hexdigest()\npaths=[];original=[]\nfor p in records:\n j=json.loads(p.read_bytes());assert j['kind'] in {'FIRST_NI_IOBS_L01_WHOLE_ZERO_PREPARATION_RAW','FIRST_NI_IOBS_L01_WHOLE_ACTUAL_RAW_NOT_EVIDENCE'};original.append(j)\n paths.extend([p,Path(j['stdoutPath']),Path(j['processRecord']),Path(j['firstSentinel']),p.parent/'source-binding.json',p.parent/'ledger-context.json'])\n for name in ['observed-plan.json','exact-selected-scope.json']:\n  if (p.parent/name).is_file():paths.append(p.parent/name)\n for d in j['resultDirectories']:paths.extend(q for q in sorted(Path(d).rglob('*')) if q.is_file())\n # Normal tests delete only their positively settled owned roots. If an actual\n # unresolved child retained its nonce container, freeze it without deletion.\n for root in j['namespaceAfter']['ownedRoots']:\n  path=Path(root);assert path.exists();paths.extend(q for q in sorted(path.rglob('*')) if q.is_file())\nfiles=[]\nfor i,p in enumerate(sorted(set(paths))):\n b=p.read_bytes();name=f'{i:05d}-'+p.name+'.gz';stored=gzip.compress(b,compresslevel=9,mtime=0);(out/name).write_bytes(stored);assert gzip.decompress((out/name).read_bytes())==b\n files.append(dict(rawPath=str(p),storedPath=name,bytes=len(b),sha256=h(b),storedBytes=len(stored),storedSha256=h(stored)))\narchive=dict(kind='EXACT_NI_IOBS_L01_WHOLE_ORIGINAL_RAW_ARCHIVE_NOT_VERDICT',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSources=[x['actualSource'] for x in original],compiledSources=[x['compiledSource'] for x in original],nativeExits=[x['nativeExit'] for x in original],rawChainCount=len(files),files=files,helperText=Path(__file__).read_text(),scope='All original record/source/ledger/process/sentinel/stdout/runner/TRX/retained-child artifacts, gzip roundtrip; no raw edits, runtime, deletion, retry or verdict.')\n(out/'archive.json').write_text(json.dumps(archive,indent=2)+'\\n');print(json.dumps(dict(archive=str(out/'archive.json'),sha256=h((out/'archive.json').read_bytes()),rawChains=len(files))))\n",
+  "scope": "All original record/source/ledger/process/sentinel/stdout/runner/TRX/retained-child artifacts, gzip roundtrip; no raw edits, runtime, deletion, retry or verdict."
+}

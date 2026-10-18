@@ -1,0 +1,42 @@
+{
+  "kind": "PARENT_READONLY_ORIGINAL_ACTUAL_INSPECTION_NOT_INDEPENDENT_ACCEPTANCE",
+  "mode": "crash5",
+  "actualSource": "85bab6db59f15f1b7ac02ac618ab4b00461544e5",
+  "compiledSource": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
+  "nativeExit": 124,
+  "seconds": 929.7918036539995,
+  "expectedCases": 5,
+  "recordSha256": "4eb04ce91fcd6335329e5dc5a4e8ef66da3b6bdecbedd32ecc9654bfdfa9c206",
+  "tests": [
+    {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    }
+  ],
+  "selections": [
+    {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 5,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "fr063-joint-interface-crash-current-integration-001"
+      ],
+      "Complete": false
+    }
+  ],
+  "cases": [],
+  "binariesUnchanged": true,
+  "allOutputsUnchanged": true,
+  "namespaceAfter": {
+    "ownedRoots": [
+      "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-c39f7e9cf6eb42868669ed06f092c491",
+      "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a"
+    ]
+  },
+  "processesAfter": [],
+  "headAfter": "85bab6db59f15f1b7ac02ac618ab4b00461544e5",
+  "statusAfter": ""
+}
