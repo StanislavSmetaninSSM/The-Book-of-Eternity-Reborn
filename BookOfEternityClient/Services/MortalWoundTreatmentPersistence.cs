@@ -248,10 +248,10 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
         var allowed = new HashSet<string>(new[]
         {
             "schemaVersion", "sessionId", "requestId", "snapshotToken",
-            "repairPackets", "repairReceipts", "submittedTreatmentRequests", "jointRepairCheckpoint"
+            "repairPackets", "repairReceipts", "submittedTreatmentRequests", "jointRepairCheckpoint", "jointInterfacePublication"
         }, StringComparer.Ordinal);
         var required = allowed.Where(static name =>
-            name != "submittedTreatmentRequests" && name != "jointRepairCheckpoint").ToHashSet(StringComparer.Ordinal);
+            name != "submittedTreatmentRequests" && name != "jointRepairCheckpoint" && name != "jointInterfacePublication").ToHashSet(StringComparer.Ordinal);
         var seen = new HashSet<string>(StringComparer.Ordinal);
         foreach (var property in root.EnumerateObject())
         {

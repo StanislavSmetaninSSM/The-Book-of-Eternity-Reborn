@@ -29,6 +29,7 @@ internal sealed class MortalJointRepairCheckpoint
     private readonly JsonObject _root;
     private MortalJointRepairCheckpoint(JsonObject root) => _root = root.DeepClone().AsObject();
     internal JsonObject ToJsonObject() => _root.DeepClone().AsObject();
+    internal bool UsesInterfacePublication => _root["schemaVersion"]!.GetValue<int>() == 2;
     private static readonly object CaptureIssuer = new();
     // Lease-local reconstruction proof for REJECTED provenance only, never accepted common authority.
     internal sealed class RejectedCapture
@@ -79,6 +80,11 @@ internal sealed class MortalJointRepairCheckpoint
         string sessionId, string requestId, string snapshotToken, int expectedTurn) =>
         CaptureCoreAsync(files, lease, sessionId, requestId, snapshotToken, expectedTurn, null);
 
+    // Separate actual FIRST producer; the existing CaptureAsync remains v1.
+    internal static Task<ReadResult> CaptureInterfaceFirstAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
+        string sessionId, string requestId, string snapshotToken, int expectedTurn) =>
+        CaptureCoreAsync(files, lease, sessionId, requestId, snapshotToken, expectedTurn, null, 2);
+
     internal static async Task<ReadResult> ReconstructAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
         string sessionId, string requestId, string snapshotToken, int expectedTurn)
     {
@@ -94,7 +100,7 @@ internal sealed class MortalJointRepairCheckpoint
     }
 
     private static async Task<ReadResult> CaptureCoreAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
-        string sessionId, string requestId, string snapshotToken, int expectedTurn, JsonObject? retainedPending)
+        string sessionId, string requestId, string snapshotToken, int expectedTurn, JsonObject? retainedPending, int initialVersion = 1)
     {
         files.EnsureCanonicalWriteLeaseActive(lease);
         try
@@ -114,6 +120,8 @@ internal sealed class MortalJointRepairCheckpoint
                 var parsedCheckpoint = Parse(JsonSerializer.SerializeToElement(stored));
                 if (!parsedCheckpoint.IsValid) return parsedCheckpoint;
                 retainedCheckpoint = parsedCheckpoint.Checkpoint!;
+                if (retainedPending[MortalJointInterfacePublication.PendingField] is not null)
+                    _ = MortalJointInterfacePublication.LegacyPending(retainedPending);
                 draftBytes = Convert.FromBase64String(stored["rejectedDraftBase64"]!.GetValue<string>());
                 sceneBytes = Convert.FromBase64String(stored["narrativeBase64"]!.GetValue<string>());
             }
@@ -201,7 +209,7 @@ internal sealed class MortalJointRepairCheckpoint
                 (JsonNode?)JsonValue.Create(receipt!["semanticFingerprint"]!.GetValue<string>())).ToArray();
             var root = new JsonObject
             {
-                ["schemaVersion"] = 1, ["kind"] = Kind, ["sessionGeneration"] = generation,
+                ["schemaVersion"] = retainedCheckpoint?._root["schemaVersion"]!.GetValue<int>() ?? initialVersion, ["kind"] = Kind, ["sessionGeneration"] = generation,
                 ["sessionId"] = sessionId, ["requestId"] = requestId, ["snapshotToken"] = snapshotToken, ["turnNumber"] = expectedTurn,
                 ["originalManifestHash"] = Hash(manifest), ["originalAuthorityHash"] = Hash(authority),
                 ["opportunityRef"] = opportunity.PublicRef, ["sourceOperationKey"] = occurrence.ProducerOperationKey,
@@ -214,12 +222,15 @@ internal sealed class MortalJointRepairCheckpoint
                 ["packetFingerprints"] = new JsonArray(packets.Select(packet => (JsonNode?)JsonValue.Create(packet.SemanticFingerprint)).ToArray()),
                 ["receiptFingerprints"] = new JsonArray(receiptFingerprints)
             };
+            if (root["schemaVersion"]!.GetValue<int>() == 2) root["interfaceObservationProtocolVersion"] = 1;
             root["fingerprint"] = Fingerprint(JsonSerializer.SerializeToElement(root));
             var checkedValue = Parse(JsonSerializer.SerializeToElement(root));
             if (!checkedValue.IsValid) return checkedValue;
             if (retainedCheckpoint is not null && !JsonNode.DeepEquals(root, retainedCheckpoint.ToJsonObject()))
                 return Refuse("provenance_changed", "Fresh original/request/source/packet reconstruction disagrees with the retained checkpoint.");
             pending["jointRepairCheckpoint"] = root.DeepClone();
+            if (retainedPending?[MortalJointInterfacePublication.PendingField] is { } result)
+                pending[MortalJointInterfacePublication.PendingField] = result.DeepClone();
             if (retainedPending is not null && !JsonNode.DeepEquals(pending, retainedPending))
                 return Refuse("wave_changed", "Only the entire exact source-issued wave and complete request graph may reconstruct.");
             return new(checkedValue.Checkpoint, Array.Empty<ValidationIssue>(), new RejectedCapture(CaptureIssuer, files, lease,
@@ -258,7 +269,10 @@ internal sealed class MortalJointRepairCheckpoint
 
     internal static IReadOnlyList<ValidationIssue> ValidatePendingEnvelope(JsonElement root)
     {
-        if (!root.TryGetProperty("jointRepairCheckpoint", out var value)) return Array.Empty<ValidationIssue>();
+        if (!root.TryGetProperty("jointRepairCheckpoint", out var value))
+            return root.TryGetProperty(MortalJointInterfacePublication.PendingField, out _)
+                ? Refuse("interface_without_checkpoint", "An interface result cannot exist without its exact protocol checkpoint.").Issues
+                : Array.Empty<ValidationIssue>();
         var parsed = Parse(value); if (!parsed.IsValid) return parsed.Issues;
         try
         {
@@ -271,9 +285,14 @@ internal sealed class MortalJointRepairCheckpoint
                 root.GetProperty("repairPackets")[0].GetProperty("semanticFingerprint").GetString() != value.GetProperty("packetFingerprints")[0].GetString() ||
                 root.GetProperty("repairReceipts")[0].GetProperty("semanticFingerprint").GetString() != value.GetProperty("receiptFingerprints")[0].GetString())
                 return Refuse("pending_graph", "Packet/receipt/full request identities disagree with the checkpoint.").Issues;
+            if (root.TryGetProperty(MortalJointInterfacePublication.PendingField, out var result))
+            {
+                var publication = MortalJointInterfacePublication.Read(result);
+                publication.RequireLegacyPending(JsonNode.Parse(root.GetRawText())!.AsObject());
+            }
             return Array.Empty<ValidationIssue>();
         }
-        catch (Exception error) when (error is KeyNotFoundException or InvalidOperationException or FormatException)
+        catch (Exception error) when (error is KeyNotFoundException or InvalidOperationException or FormatException or InvalidDataException or JsonException)
         { return Refuse("pending_shape", error.Message).Issues; }
     }
 
@@ -281,10 +300,14 @@ internal sealed class MortalJointRepairCheckpoint
     {
         try
         {
-            if (root.ValueKind != JsonValueKind.Object || root.EnumerateObject().Select(property => property.Name).Order(StringComparer.Ordinal)
-                .SequenceEqual(Fields.Order(StringComparer.Ordinal)) is false)
-                return Refuse("shape", "One complete closed version-1 checkpoint with unique fields is required.");
-            if (root.GetProperty("schemaVersion").GetInt32() != 1 || root.GetProperty("kind").GetString() != Kind || root.GetProperty("turnNumber").GetInt32() < 0)
+            if (root.ValueKind != JsonValueKind.Object || !root.TryGetProperty("schemaVersion", out var version) ||
+                version.GetInt32() is not (1 or 2)) return Refuse("version", "Unsupported checkpoint version.");
+            var fields = version.GetInt32() == 1 ? Fields : Fields.Append("interfaceObservationProtocolVersion").ToArray();
+            if (!root.EnumerateObject().Select(property => property.Name).Order(StringComparer.Ordinal)
+                .SequenceEqual(fields.Order(StringComparer.Ordinal)))
+                return Refuse("shape", "One complete closed checkpoint with unique fields is required.");
+            if (version.GetInt32() == 2 && root.GetProperty("interfaceObservationProtocolVersion").GetInt32() != 1 ||
+                root.GetProperty("kind").GetString() != Kind || root.GetProperty("turnNumber").GetInt32() < 0)
                 return Refuse("version", "Unsupported checkpoint version, kind or turn.");
             foreach (var name in Fields.Except(["schemaVersion", "turnNumber", "packetFingerprints", "receiptFingerprints"]))
             {
@@ -318,8 +341,10 @@ internal sealed class MortalJointRepairCheckpoint
     }
     private static string Fingerprint(JsonElement root)
     {
-        var values = new List<string?> { Domain };
-        foreach (var name in Fields.Where(name => name != "fingerprint"))
+        var selected = root.GetProperty("schemaVersion").GetInt32() == 2;
+        var values = new List<string?> { selected ? "book_of_eternity.mortal_joint_repair_checkpoint.v2" : Domain };
+        var fields = selected ? Fields.Append("interfaceObservationProtocolVersion") : Fields.AsEnumerable();
+        foreach (var name in fields.Where(name => name != "fingerprint"))
         {
             var value = root.GetProperty(name); values.Add(name);
             if (value.ValueKind == JsonValueKind.Array) values.AddRange(value.EnumerateArray().Select(item => item.GetString()));

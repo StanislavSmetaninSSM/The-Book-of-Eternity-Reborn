@@ -2,6 +2,36 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-interface-result-data",
+  "responsibility": "Strict committed computed-interface DATA: exact diagnostic/null/duplicate preservation, canonical closed decoding, absent/empty and raw UTF16 images, defensive copies, Error Prepared refusal, and no inherited 2MiB checkpoint cap. These are data controls, not engine admission or publication authority.",
+  "excludes": "Does not qualify actual FIRST/current admission, writer owning release, Ready transitions, atomic crash/resume, common take, late/cold once-only behavior or ordinary I fidelity. Those require separate actual-owner controls.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalJointInterfacePublication.cs",
+    "BookOfEternityClient.Tests/MortalJointInterfacePublicationTests.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-interface-lifecycle-order",
+      "when": "Actual engine integration ordering and same-result consumers; data tests cannot substitute."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-interface-lifecycle-order",
   "responsibility": "Genuine Stage43/TREAT rejected-wave/corrected public I and real ordinary completion/inert repeat before first semantic early-I ordering assertion. Observe actual I-changing cohorts at existing capture checkpoint; distinguish marker cohorts; preserve one-pass double-tag image through late consumption.",
   "excludes": "No missing-type/schema2/NotNull setup RED, unarmed-zero no-effects proof or direct serializer/publisher substitute. This singleton does not qualify crash/resume/error/retention/legacy/ambient timestamp policy or full NI/HOT/platform. No old accepted category replay for counts.",
