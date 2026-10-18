@@ -600,6 +600,11 @@
       "sha256": "5914d1e81ced62c8440af0df4565f3b8b0f2f193a4c5115fdbfadd578b2039e8"
     },
     {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-generator-initial-path-error-20261018.json",
+      "bytes": 3534,
+      "sha256": "3d8f2e2814035f798cc7f13930a96cd46985d3117f99ae3a2118def55e939ed5"
+    },
+    {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-nonlive-evidence-20261018.json",
       "bytes": 7545,
       "sha256": "565cb0739ffad2f33b03aac621d6d735e5b27ae560c621b988d90247c2d70c6c"
@@ -626,8 +631,8 @@
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/Live.cs",
-      "bytes": 7930,
-      "sha256": "6bf58dc879dac0d89565aab2a4f02a047561597b676c925bd4e7d9bc08241729"
+      "bytes": 4206,
+      "sha256": "09742d448715952261d145a883bdc325cd07eecb4e8dba2257443fbc54a6114a"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/baseline.py",
@@ -638,6 +643,16 @@
       "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/checks.py",
       "bytes": 4491,
       "sha256": "f6f3c5fde2d50b17236e7f3f4b3badb04d629f9c44ec8149bd1b573d8ae61a7a"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/make_packet.py",
+      "bytes": 2494,
+      "sha256": "0e2fb8afe9f01ded69687563f3eaded370ed29f07fbeba5f1ccab3036487728b"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/phase.py",
+      "bytes": 14092,
+      "sha256": "3a08defd13791951757dfb806fde2d4743b1e2b579e823dd17a617ab3913db10"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-live-delivery-plan-independent-review-20261018.json",
@@ -696,13 +711,13 @@
     },
     {
       "path": "tests/categories.json",
-      "bytes": 2015172,
-      "sha256": "e1fce3f722777efb741dbc8edd85277f702c2a3e205c62b7fa4265e20154d696"
+      "bytes": 2015486,
+      "sha256": "6ffc3d9238623a475c24d2e84aed679e5136a2566c0ee7a3e1626c2ac8ef0212"
     },
     {
       "path": "tests/selection.json",
-      "bytes": 777,
-      "sha256": "8ed0e422dc7464252758fbc126fec536477392d6300c26d353009daf14c62578"
+      "bytes": 659,
+      "sha256": "b0c0a01ff85c4801954ee0f349cbd4ebe61fc5505f46595222ba5170706dc870"
     },
     {
       "path": "tests/selections/1536-joint-interface-crash-diagnostic1.json",
@@ -720,7 +735,7 @@
       "sha256": "817e4e70d02ae22af34f1bdeeccf01e74f4a2b0e0651f1c03dfd1db548da3c4c"
     }
   ],
-  "sourcePinDigest": "aca00b1fda50c7c75c3cc3c2ed1cb9fe5e58f3d7f2b90e7c7db0216f3e2aa639",
+  "sourcePinDigest": "e79039be9d8297390cafca811a57a634b98bdc26c88a3f721fb9c15c56a74aee",
   "historicalPinSets": [
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
@@ -741,8 +756,8 @@
           "historicalSha256": "08bfb226bb044544e992996c241abbe61a87d0a3ab543a9e30e71479b85ed480",
           "current": {
             "path": "tests/categories.json",
-            "bytes": 2015172,
-            "sha256": "e1fce3f722777efb741dbc8edd85277f702c2a3e205c62b7fa4265e20154d696"
+            "bytes": 2015486,
+            "sha256": "6ffc3d9238623a475c24d2e84aed679e5136a2566c0ee7a3e1626c2ac8ef0212"
           }
         },
         {
@@ -750,8 +765,8 @@
           "historicalSha256": "817e4e70d02ae22af34f1bdeeccf01e74f4a2b0e0651f1c03dfd1db548da3c4c",
           "current": {
             "path": "tests/selection.json",
-            "bytes": 777,
-            "sha256": "8ed0e422dc7464252758fbc126fec536477392d6300c26d353009daf14c62578"
+            "bytes": 659,
+            "sha256": "b0c0a01ff85c4801954ee0f349cbd4ebe61fc5505f46595222ba5170706dc870"
           }
         }
       ],
@@ -760,8 +775,27 @@
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-source-packet-20261018.json",
       "originalPins": 93,
-      "unchangedPins": 93,
-      "explicitCurrentDeltas": [],
+      "unchangedPins": 91,
+      "explicitCurrentDeltas": [
+        {
+          "path": "tests/categories.json",
+          "historicalSha256": "e1fce3f722777efb741dbc8edd85277f702c2a3e205c62b7fa4265e20154d696",
+          "current": {
+            "path": "tests/categories.json",
+            "bytes": 2015486,
+            "sha256": "6ffc3d9238623a475c24d2e84aed679e5136a2566c0ee7a3e1626c2ac8ef0212"
+          }
+        },
+        {
+          "path": "tests/selection.json",
+          "historicalSha256": "8ed0e422dc7464252758fbc126fec536477392d6300c26d353009daf14c62578",
+          "current": {
+            "path": "tests/selection.json",
+            "bytes": 659,
+            "sha256": "b0c0a01ff85c4801954ee0f349cbd4ebe61fc5505f46595222ba5170706dc870"
+          }
+        }
+      ],
       "qualification": "Historical original compiled provenance only; no current byte equivalence claim for changed source."
     }
   ],

@@ -1,3 +1,20 @@
+## L01 D01 — whole SOURCE candidate saved, ZERO/native admissions CLOSED (2026-10-18)
+
+Completed test-only source candidate: exact helper/non-live20 bytes unchanged;
+diagnostic-only parent wiring keeps original outcome/reader/assertions; direct-owner
+synthetic supervisor owns target+reader host (no grandchildren), sole target stdout
+consumer is the same .NET helper. Existing native0/7 and actor exits remain separate.
+Native fixture source is UNCOMPILED/UNRUN. Current selector is diagnostic1/1/1 for
+ZERO PREP ONLY; metadata changes are explicit L0198+3 / M0191+2 exceptions. Source
+packet/recovery pin current closure; original packets/ledgers and11S01pins unchanged.
+Controller exposes only catalog/PlanOnly/direct-compile and separately gated own
+synthetic modes, no game actual. SOURCE review is required before ZERO commands;
+PREP review and saved one-shot release before2 genuine targets. Next finite step:
+independent whole bounded SOURCE, including startup/EOF/teardown/publication guards,
+private fixture isolation/ownership, exact stdout and observer/native priorities.
+No S01/nonlive20/old52 replay selected; no game/snapshot/crash5 release. OldUNKNOWN,
+all failures and platform/broader holds stay unchanged. Current build not yet done.
+
 ## L01 D01 — diagnostic-only wiring and real synthetic source WIP (2026-10-18)
 
 Added diagnostic-resume-only Start/queue/guarded health publication to the owning

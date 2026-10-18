@@ -1,0 +1,11 @@
+{
+  "kind": "D01_GATED_CONTROL",
+  "sourcePinDigest": "e79039be9d8297390cafca811a57a634b98bdc26c88a3f721fb9c15c56a74aee",
+  "source": {
+    "status": "SOURCE_REVIEW_PENDING"
+  },
+  "synthetic": {
+    "status": "CLOSED_UNRUN"
+  },
+  "gameplayRelease": "NONE"
+}

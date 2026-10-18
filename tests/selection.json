@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "saref-audit-mortal-heal-preservation",
-      "reason": "M01 single historical audit-state regression: production Saref ApplyUpdate before signing, uncached genuine Mortal heal/full canonical refresh and exact original bytes with terminal ownership/cleanup. Original L01 selection remains historical at0292234f; no L01 runtime release.",
+      "category": "fr063-joint-interface-crash-diagnostic",
+      "reason": "D01 test-only owned-resumer live delivery: fresh build/catalog and exact singleton PlanOnly PREP ONLY. No gameplay actual/snapshot/crash5 release. Own BCL synthetic delivery is controlled separately after SOURCE/PREP.",
       "contracts": [
-        "#1536 T148 M01 bounded historical canonical audit-state preservation only; independent effect/spiritual healing E01 and T148/Phase10 remain open.",
-        "Test-only preparation callback and lazy isolated source preserve default helpers; SOURCE and fresh build/discovery/PlanOnly PREP precede one first singleton actual."
+        "#1536 D01 existing diagnostic events; raw stdout/native/ownership assertions and220/900 unchanged.",
+        "Historical L0152/57 and M01 remain original provenance; Source/Prep and separately named synthetic admission required; gameplay decision remains CLOSED."
       ]
     }
   ]

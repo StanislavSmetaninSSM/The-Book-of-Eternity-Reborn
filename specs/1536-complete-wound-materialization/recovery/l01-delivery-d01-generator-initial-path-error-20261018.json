@@ -1,0 +1,18 @@
+{
+  "kind": "D01_PREPARATION_GENERATOR_FIRST_PATH_FAILURE",
+  "nativeExit": 1,
+  "sourcePublishedAtFailure": false,
+  "sourceSnapshot": "from pathlib import Path\nimport json,hashlib\nrepo=Path(__file__).resolve().parents[3];base=repo/'specs/1536-complete-wound-materialization';r=base/'recovery'\nh=lambda b:hashlib.sha256(b).hexdigest()\nnames=['t179pd-ni-iobs-l01-source-packet-20261018.json','t148-m01-source-packet-20261018.json']\npaths=set();bindings=[]\nfor name in names:\n p=json.loads((r/name).read_text());deltas=[]\n for x in p['sourcePins']:\n  paths.add(x['path']);data=(repo/x['path']).read_bytes()\n  if len(data)!=x['bytes'] or h(data)!=x['sha256']:deltas.append(dict(path=x['path'],historicalSha256=x['sha256'],current=dict(path=x['path'],bytes=len(data),sha256=h(data))))\n bindings.append(dict(path=str((r/name).relative_to(repo)),originalPins=len(p['sourcePins']),unchangedPins=len(p['sourcePins'])-len(deltas),explicitCurrentDeltas=deltas,qualification='Historical original compiled provenance only; no current byte equivalence claim for changed source.'))\n paths.add(str((r/name).relative_to(repo)))\npaths.update(str(p.relative_to(repo)) for p in (r/'l01-delivery-d01').iterdir() if p.is_file())\npaths.update(str(p.relative_to(repo)) for p in [r/'l01-delivery-d01-recover-20261018.py',repo/'BookOfEternityClient.IntegrationTests/JointInterfaceDiagnosticDelivery.cs',r/'l01-live-delivery-plan-independent-review-20261018.json',r/'l01-delivery-d01-baseline-evidence-20261018.json',r/'l01-delivery-d01-baseline-originals-20261018.zip',r/'l01-delivery-d01-nonlive-evidence-20261018.json',r/'l01-delivery-d01-nonlive-originals-20261018.zip'])\nrows=[dict(path=p,bytes=len((repo/p).read_bytes()),sha256=h((repo/p).read_bytes())) for p in sorted(paths)]\npacket=dict(kind='D01_CURRENT_TEST_ONLY_SOURCE_CLOSURE',base='1817ae5814f06a45cd6df975a9211c380a256df8',planAccepted='b411999b4c1c4cd55c96f8d3edfc608c99f15dd7',status='WIP_UNCOMPILED_WIRING_SOURCE_REVIEW_REQUIRED',sourcePins=rows,sourcePinDigest=h(json.dumps(rows,sort_keys=True,separators=(',',':')).encode()),historicalPinSets=bindings,category='fr063-joint-interface-crash-diagnostic',gameplayRelease='NONE',nativeFixtureRelease='NONE',scope='Current source preparation only. Source guard bounds old packets as immutable original provenance, not rewritten/current qualification.')\n(r/'l01-delivery-d01-source-packet-20261018.json').write_text(json.dumps(packet,indent=2)+'\\n')\nprint('D01 packet',len(rows),'pins',[(x['originalPins'],x['unchangedPins'],len(x['explicitCurrentDeltas'])) for x in bindings])\n",
+  "sourceSha256": "4d8c4dc1d0c65914b4ef0d00fac9670405eaa62736a9cfef82d0afa29a1eaafc",
+  "failure": "FileNotFoundError: '/workspace/The-Book-of-Eternity-Reborn/specs/specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json'",
+  "cause": "Moved file generator lives one directory deeper than flat recovery script; __file__.parents[3] selected specs rather than repository root.",
+  "correction": "__file__.parents[4]; no assertion, helper or compiled runtime input change.",
+  "fixtureTargetsStarted": 0,
+  "gameProcesses": 0,
+  "review": "Resolved source bookkeeping finding included in pending independent SOURCE review; original source/failure retained here.",
+  "catalogFormattingGuard": {
+    "preventedWholeFileReformat": true,
+    "writePerformed": false,
+    "correction": "Insert one hint in exact existing category span; original formatting retained. No selector/budget/assertion change."
+  }
+}
