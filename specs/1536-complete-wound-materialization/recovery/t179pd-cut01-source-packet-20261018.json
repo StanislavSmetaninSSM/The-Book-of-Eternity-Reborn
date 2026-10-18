@@ -718,7 +718,15 @@
     "sourceInvariant": "recovery/t179pd-cut01-root-final-source-invariants-29b2a4c4-20261018.json",
     "new3Inspection": "recovery/t179pd-cut01-root-new3-raw-inspection-074575d3-20261018.json",
     "finalRemoteReadback": "Conditional on exact final nonforce publication/clean remote and complete changed-path GitHub recovery + external Root verification. External receipt fulfils this condition; no self-receipt commit.",
-    "remaining": "NI-IOBS-L01 v2 implementation and genuine NI/common/cold/late origin qualification OPEN; fullNI/HOT/M3/F1/T197/Windows/A3 and declared broader holds unchanged."
+    "remaining": "NI-IOBS-L01 v2 implementation and genuine NI/common/cold/late origin qualification OPEN; fullNI/HOT/M3/F1/T197/Windows/A3 and declared broader holds unchanged.",
+    "metadataReview": {
+      "md": "recovery/t179pd-cut01-final-metadata-independent-review-20261018.md",
+      "json": "recovery/t179pd-cut01-final-metadata-independent-review-20261018.json",
+      "support": "recovery/t179pd-cut01-final-metadata-independent-check-20261018.json",
+      "root": "recovery/t179pd-cut01-root-final-metadata-acceptance-46451715-20261018.json",
+      "verdict": "ACCEPT_METADATA_HANDOFF_NO_MATERIAL_FINDINGS",
+      "scope": "Only final5derived paths/copied-artifact provenance since29b2; no source/raw/native review replay. Exact review/Root provenance persisted once; final external Root exactremote/tree receipt closes persistence without a self-save loop."
+    }
   },
   "historicalTestsOnlyRuntimeLabel": {
     "phase": "HISTORICAL558C_PRIOR_PRODUCT",
@@ -760,11 +768,11 @@
     "noAdditionalRuntime": true
   },
   "recovery": {
-    "priorCarrier": "22cf0e77d63041a2631dcf0ce6749fdcf95d7693",
-    "receipt": "recovery/t179pd-cut01-final-delta-github-22cf0e77-20261018.json",
-    "composition": "recovery/t179pd3d-root-recovery-composition-22cf0e77-20261017.json",
-    "priorVerifiedDeltaCount": 80,
-    "priorVerifiedTrackedPaths": 55294,
+    "priorCarrier": "464517150f0db61f27ff3c68b20299565abb62ad",
+    "receipt": "recovery/t179pd-cut01-final-labels-delta-github-46451715-20261018.json",
+    "composition": "recovery/t179pd3d-root-recovery-composition-46451715-20261017.json",
+    "priorVerifiedDeltaCount": 81,
+    "priorVerifiedTrackedPaths": 55296,
     "finalCheckpoint": "Final exact HEAD/changed-path recovery/external Root check pending publication; no extra self-receipt commit."
   }
 }
