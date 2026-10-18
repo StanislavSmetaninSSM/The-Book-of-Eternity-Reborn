@@ -1,3 +1,13 @@
+Corrected races2 after census is 160.682168s after recorded completion. This is a dated observation, not instantaneous or continuous absence; native owned-tree/runtime cleanup is separate proof. No intervening actual or root/process intervention; no gap reconstruction.
+
+Timing limit for corrected races2: before census → native launch 47.661597s, including controller preflight. No intervening mutation or actual; dated boundary evidence only, no continuous absence claim.
+
+## T179-Pd-NI-IOBS-L01 — races2Corrected original outcome saved; next gate explicit (2026-10-18)
+
+Новый отдельно именованныйraces2: actual1e2bdb75/compilede2d0a10f, native0, 2executed/2PASS/0FAIL, 188.272s. [Original11rawchains](t179pd-ni-iobs-l01-cloud-races2-corrected-813f1057-files-20261018/archive.json) и exactbefore/afterauthoritativecensuses сохранены; observedpositive=True. Это originaloutcome, independentEVIDENCE ещё pending, qualifiedcount пока42. Frozenoriginalclose2FAIL/семьстарыхfixtureFAIL/oldcorrectedcrashUNKNOWN неизменны.
+
+After outcome recovery, independent EVIDENCE forraces2Corrected; separately named FIRSTsettlement3 only after immediate clean authoritative census and no unresolved finding. Qualified count unchanged until acceptance. Все исходные assertions и once-only/Ready/ownedtransition contracts неизменны. Noactual/retry приunexpectedfailure; всеbroaderholds/Windows403/CI/A3 сохраняются. Следующие sections исторические.
+
 ## T179-Pd-NI-IOBS-L01 — ReadyDrift PREP accepted; corrective races2 only (2026-10-18)
 
 [Independent Astra XHigh PREP](recovery/t179pd-ni-iobs-l01-ready-diagnostic-prep-independent-review-a391aef0-20261018.md) accepted with no findings: all43 original chains,98 pins/productDelta21, fresh e2d0a10f BOTH/catalog, exact whole57/corrective2/remaining13 ZERO, nine DLL copies/full1575 outputs, nine dated census snapshots and57 recovered paths. Transient reviewer capacity interruption is review-service history only; no native retry or model switch occurred. Qualified42 are unchanged.
