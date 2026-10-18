@@ -1,3 +1,9 @@
+## L01 D01 — parent-owned live diagnostic delivery (2026-10-18)
+
+- [ ] [Independent PLAN](design/l01-live-delivery-plan-20261018.md), then minimal test-only helper/wiring; preserve raw/native/identity/order and explicit loss/delay/stale/unknown semantics.
+- [ ] Source-bound baseline, SOURCE/fresh affected build/discovery/PlanOnly PREP, named own synthetic delivery and independent EVIDENCE; no game actual.
+- [ ] Reviewed plan of one future distinguishing snapshot with stop/evidence limits; gameplay remains CLOSED pending consideration. No crash5 release.
+
 ## L01 — cloud managed-stack diagnostic capability (2026-10-18)
 
 - [x] [Read-only inventory → independent minimal-plan/SOURCE/PREP → owned synthetic S01](design/l01-managed-stack-capability-plan-20261018.md): actual two-TID managed chains/MVID/MethodDef/IL and cleanup independently accepted,164 checks. [EVIDENCE](recovery/l01-managed-stack-s01-evidence-independent-review-20261018.md). Installed route works for this own synthetic; permit consumed, no install/manual security changes/gameplay release.

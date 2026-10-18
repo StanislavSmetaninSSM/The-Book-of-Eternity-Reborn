@@ -1,3 +1,15 @@
+## L01 D01 — live diagnostic delivery PLAN candidate (2026-10-18)
+
+User accepts S01 and authorizes the next bounded test-only delivery/preparation and
+synthetic block. Base1817ae58; Root sole writer, independent AstraXHigh. [D01 plan](design/l01-live-delivery-plan-20261018.md)
+chooses a single stdout reader plus bounded in-memory parent-owned event queue,
+preserving decoded raw stdout/native/ownership semantics and current child JSON.
+Independent PLAN required before implementation. Proposed current-only pin deltas
+are explicit, old L01/M01 evidence remains original provenance. Next finite step:
+independent review of saved/recovered plan. Game run and crash5 remain CLOSED.
+No implementation/build/runtime yet; all S01/L0152of57/UNKNOWN/platform/broader holds
+unchanged. Following sections are historical checkpoints.
+
 ## L01 managed-stack capability QUALIFIED; future gameplay observation held (2026-10-18)
 
 Task #1536, branch `1536-wound-b2-cloud-20261012`. [Independent AstraXHigh EVIDENCE](recovery/l01-managed-stack-s01-evidence-independent-review-20261018.md)
