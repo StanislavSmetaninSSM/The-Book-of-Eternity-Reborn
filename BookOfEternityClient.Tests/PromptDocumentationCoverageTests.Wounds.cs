@@ -23,7 +23,10 @@ public sealed partial class PromptDocumentationCoverageTests
                          "including timestamp and formatting", "not silently normalized or reaccepted", "correct only the permitted severity leaf",
                          "do not recreate it on a retry", "no replacement command, claim, receipt, seal or lifecycle acknowledgement",
                          "active training, level-up or new-QTE task cannot be cleared or skipped",
-                         "requiredResponseShape.woundDecisions[0].proposal.correctOnly" })
+                         "requiredResponseShape.woundDecisions[0].proposal.correctOnly",
+                         "freezes interface_updates.json once before mechanical publication",
+                         "same operation remains held", "do not rewrite the response, delete private pending files",
+                         "no interface-result record or protocol version", "retained older wave" })
                 Assert.Contains(required, text, StringComparison.Ordinal);
         }
         var daemon = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
@@ -33,7 +36,9 @@ public sealed partial class PromptDocumentationCoverageTests
                      "wound_mortal_joint_severity_repair_rejected_v1", "wound_mortal_joint_severity_repair_packet_view_v1",
                      "wound_mortal_joint_severity_repair_corrected_v1", "not a literal runnable",
                      "sessionId, requestId, snapshotToken", "candidateRef and semanticFingerprint",
-                     "The real sealed", "no public mixed command" })
+                     "The real sealed", "no public mixed command", "Worked continuation:",
+                     "stored one-pass publication", "frozen interface error", "No interface-result record",
+                     "read-only adapter example guard does not qualify joint completion or crash recovery" })
             Assert.Contains(required, example, StringComparison.Ordinal);
     }
 

@@ -89,7 +89,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         private int _captureCallbacks, _interfaceAtCapture, _sequence;
         private bool _configured;
         private DateTime? _submittedMtime, _finalMtime;
-        internal bool ExpectsHeld => scenario is "Error" or "InterfaceClose" or "ReadRace" or "ReadyDrift";
+        internal bool ExpectsHeld => scenario is "Error" or "InterfaceClose" or "ReadRace" or "ReadyDrift" or "CommonFault" or "Terminal" or "TerminalFault";
 
         internal void Attach(GameEngine engine)
         {
@@ -137,7 +137,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 { ["text"] = ChangesInterface ? TwoTags : "Продолжить обычный ответ." })
             };
             if (!ChangesInterface) value["timestamp"] = "2026-10-18T00:00:00.0000000+00:00";
-            if (scenario is "Error" or "Crash:Error") value["unsupported_result_field"] = true;
+            if (scenario is "Error" or "Crash:Error" or "Terminal" or "TerminalFault") value["unsupported_result_field"] = true;
             if (scenario == "Crash:PublishedCulture") value["timestamp"] = "13/02/2026";
             var text = value.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
             _submitted = scenario switch
@@ -184,6 +184,7 @@ public sealed partial class GameEngineTurnLifecycleTests
 
         internal void ObservePublication(TrustedLocalPublicationPhase phase, int index)
         {
+            ObserveSettlementPublication(phase, index);
             ObserveActualCrashCut(phase, index);
             ObserveInitialInstallation(phase);
             if (!_configured || phase != TrustedLocalPublicationPhase.Committed) return;
@@ -295,6 +296,11 @@ public sealed partial class GameEngineTurnLifecycleTests
 
         internal async Task AssertHeldAsync(GameEngine engine, string owningDiagnostics)
         {
+            if (scenario == "CommonFault")
+            {
+                await AssertCompensatedCommonAsync(engine);
+                return;
+            }
             if (scenario is "ReadRace" or "ReadyDrift")
             {
                 AssertSourceRaceHeld(engine, owningDiagnostics);
@@ -330,6 +336,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.True(GetPrivateFieldValue<bool>(engine, "_mortalJointInterfacePreparationHeld"));
             foreach (var (path, before) in _mechanicalBefore) Assert.Equal(before, after[path]);
             await AssertActualRetainingOwnersAsync(engine);
+            if (scenario is "Terminal" or "TerminalFault") await AssertWholeTerminalAsync(engine);
         }
 
         private byte[]? ReadPhysical(string path) => File.Exists(fixture._fs.ResolvePath(path))

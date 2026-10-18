@@ -1,17 +1,17 @@
 ## T179-Pd-NI-IOBS-L01 current frontier (2026-10-18)
 
 - [x] Original genuine ordering RED independently accepted and frozen.
-- [ ] Integrated whole production +24methods43staticrows/8owners, current source uncompiled/unrun.
-- [ ] Finish strict graph/common/terminal/GM controls and final selectors/tooling; connected final SOURCE.
-- [ ] Separately named fresh preparation/native/EVIDENCE. No current execution release.
+- [ ] Whole implementation/finite27methods50staticrows and bounded GM guidance uncompiled/unrun.
+- [ ] Freeze current fixed verification tools and connected final SOURCE/FIXTURE/SELECTION.
+- [ ] Separately named fresh ZERO preparation and actual/EVIDENCE, no current execution release.
 
-## T179-Pd-NI-IOBS-L01 — close/retention/race and crash-fixture correction WIP (2026-10-18)
+## T179-Pd-NI-IOBS-L01 — finite whole-owner and GM candidate WIP (2026-10-18)
 
-Current uncompiled source adds actual I-owning-release and distinct later outer-finalization controls, direct real Stage-backup/outer-wrapper retention and actual returned-read/immutable Ready drift cases. Existing test-only FS callbacks have null defaults; no production observation hook or CAS/ordinary-I rule was added. Empty/unknown partial markers now refuse rather than downgrade to normal I; matching real parent1 still traverses its existing full proof. Seven actual marker-damage rows check I bytes+mtime after a positive genuine child3 DATA read.
+Authored finite controls now cover actual common-member compensation, complete terminal success/fault settlement and strict current-resume partial integrity after a genuine abrupt Prepared producer. Initial/I owning close, later outer finalization, immutable Ready/read-preimage races, v1 genuine factory/current fallback and whole cut-record continuity remain distinct. The connected review's source-only selector mtime-local defect is corrected; no compiler or native failure was observed.
 
-Source finding S05 is addressed in the crash fixture draft: freeze full current DATA before terminal cleanup deletes originals, compare the original cut's complete computed result/fallback/issues across recovery, independently assert exact once-only energy/damage/history/request/registry outcomes, and retain owned containers if child exit/join/EOF is unresolved. No original proof is recreated and no native failure has occurred. Normal joined child/container cleanup remains strict. Historical source findings and original RED/raw remain unchanged.
+The existing Mortal joint GM paragraph/mirrors and worked continuation now explain one-pass client-owned I and frozen-error same-operation hold; public response fields remain unchanged and no GM authors private records/versions. The exact existing guidance Fact covers seven mirrors/two daemon copies; the old worked adapter's JSON bodies and coverage limitations remain intact. No afterlife rule/surface changes. Daemon edits are prompt text only, not new commands/launch flow; no unrelated branch package/entrypoint family is imported.
 
-Current static24methods43rows/8owners are authored only, **uncompiled/unrun/not discovered**. Connected final SOURCE plus remaining strict graph/common/terminal/GM disposition and final affected selectors/tooling/PREP/actual EVIDENCE stay OPEN. Continue under existing whole-vertical authorization; no build/discovery/native, old-family replay or broader NI/HOT/platform/A3 activation. Following scopes are historical.
+Static **27new methods50rows/10owners**, plus exact affected guidance1/CUT01new3/protectedLate2, propose **32methods56cases14owners**; discovery remains UNRUN. Current production/tests/GM source is uncompiled/unrun. Final fixed current-product tooling and connected SOURCE/FIXTURE/SELECTION/PREP/actual EVIDENCE remain OPEN, under existing implementation authorization. No build/discovery/native, old-family replay or broader HOT/NI/platform/A3 activation. Following scopes are historical.
 
 ## T179-Pd-CUT01 bounded implementation/source/EVIDENCE complete (2026-10-18)
 

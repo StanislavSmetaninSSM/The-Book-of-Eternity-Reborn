@@ -1836,6 +1836,20 @@ timestamp or reformatting the JSON after publication causes a recovery hold. The
 normalizes escaped line breaks before the first checkpoint; it cannot silently rewrite
 the sealed scene during completion. This adds no GM-authored receipt or acknowledgement.
 
+For a newly selected joint wave, the same client also freezes the computed interface
+before mechanical publication. Worked continuation: the GM submits the ordinary
+interface_updates.json response with the corrected severity response below; after
+client normalization/publication the GM leaves that exact interface image, timestamp
+and formatting untouched. A restart may finish the stored one-pass publication; it
+is not another request for dialogue-option normalization or a new timestamp. If a
+frozen interface error is reported, the same operation remains held. Reformatting or
+rewriting the response, deleting private pending state, or resubmitting the same
+operation is not a repair. Only an explicit new client-owned recovery or complete
+operation cancellation can change that disposition. No interface-result record,
+protocol version, private claim or seal is GM-authored. Retained older waves follow
+their existing client-selected route. This worked prose explains client lifecycle;
+the read-only adapter example guard does not qualify joint completion or crash recovery.
+
 ### wound_mortal_joint_severity_repair_source_v1
 
 Complete QTE offer authored BEFORE the actual harmful terminal source:

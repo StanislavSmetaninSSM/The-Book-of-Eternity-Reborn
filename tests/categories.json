@@ -2,6 +2,96 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-interface-settlement",
+  "responsibility": "Actual common member failure and owning compensation retain already Published I. Actual whole-operation terminal owner either restores/removes the complete ErrorPrepared graph with prepared claim release or compensates a real member fault; no record-only deletion or generic restore.",
+  "excludes": "No synthetic owner/capability, serializer-only whole-vertical proof, ordinary CAS rule, full HOT/NI activation, or old-family replay. Actual source/PREP/EVIDENCE gates remain separate.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSettlement.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-interface-lifecycle-order",
+      "when": "Earliest real consumer ordering oracle is retained; no authority from this relation."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 15,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CommonMemberCompensationRetainsPublishedInterfaceWithoutReplay",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-interface-current-integrity",
+  "responsibility": "Genuine abruptly terminated Prepared producer followed by a new current ordinary owner; partial checkpoint version, result fingerprint, signed original manifest or current I byte corruption must hold without normalization, write/common/effect replay.",
+  "excludes": "No synthetic owner/capability, serializer-only whole-vertical proof, ordinary CAS rule, full HOT/NI activation, or old-family replay. Actual source/PREP/EVIDENCE gates remain separate.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-interface-lifecycle-order",
+      "when": "Earliest real consumer ordering oracle is retained; no authority from this relation."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 15,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-interface-guidance",
+  "responsibility": "Changed existing Mortal joint guidance/mirrors, worked continuation and manifest coverage limit require the exact existing guidance source guard. Private protocol is client-owned; GM preserves once-published I and cannot reauthor a frozen-error operation.",
+  "excludes": "One exact existing unit Fact only, not broad documentation-examples, afterlife, old worked-adapter runtime, or historical GM package replay. Runtime joint behavior is covered by actual lifecycle controls.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs",
+    "OtherGuides/Wound_Materialization_Contract.md",
+    "Examples/E_CLI_Wound_Materialization.txt"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-worked-example",
+      "when": "Intentional exact existing guidance Fact overlap; original JSON example bodies/adapter source stay unchanged."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalJointSeverityRepairGuidance_PreservesPublicTransportAndOnceOnlyClientOwnership"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-interface-close-retention",
   "responsibility": "Actual I-owning close after Published readback refuses transient delivery while retaining committed bytes; distinct later outer SessionOperation close preserves established completion. Error/close branches invoke direct real Stage-backup restore and actual outer validation wrapper, asserting selected graph retention.",
   "excludes": "No synthetic authority, new production observer/counter, generic CAS rule, ordinary I behavior change, global dedupe, or exception-only crash claim; process-loss rows are separate.",

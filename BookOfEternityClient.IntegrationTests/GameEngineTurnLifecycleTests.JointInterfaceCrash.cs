@@ -23,6 +23,17 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData(3)] // actual FIRST2 graph installed; no result, missing-result restart must hold
     [InlineData(4)] // ErrorPrepared committed; restart must report frozen errors and hold
     public async Task GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection(int cut)
+        => await RunJointInterfaceActualProcessLossAsync(cut);
+
+    [Theory]
+    [InlineData("Version")]
+    [InlineData("RecordFingerprint")]
+    [InlineData("OriginalManifest")]
+    [InlineData("CurrentInterface")]
+    public async Task GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback(string fault)
+        => await RunJointInterfaceActualProcessLossAsync(0, fault);
+
+    private async Task RunJointInterfaceActualProcessLossAsync(int cut, string? fault = null)
     {
         Assert.True(OperatingSystem.IsLinux());
         using var classOwned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
@@ -31,7 +42,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         using var owned = new JointInterfaceCrashOwnedContainer(own, line => _directGachaOutput?.WriteLine(line));
         var nonce = Guid.NewGuid().ToString("N");
         File.WriteAllText(Path.Combine(own, "parent.json"), JsonSerializer.Serialize(new
-        { Nonce = nonce, ParentPid = Environment.ProcessId, Cut = cut }));
+        { Nonce = nonce, ParentPid = Environment.ProcessId, Cut = cut, Fault = fault }));
         var cutPath = Path.Combine(own, "cut.json");
         var original = await RunJointInterfaceNativeChildAsync("engine-joint-interface-original-crash", own, cutPath, cut, own, owned);
         WritePhysicalInjuryDiagnostic("iobs_actual_abrupt_original_exit", original);
@@ -56,9 +67,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         var result = JsonNode.Parse(Assert.IsType<string>(raw))!.AsObject();
         Assert.Equal(resumed.Pid, result["Pid"]!.GetValue<int>()); Assert.Equal(nonce, result["Nonce"]!.GetValue<string>());
         Assert.True(result["ActualCallerEntered"]!.GetValue<bool>()); Assert.Null(result["Failure"]);
-        Assert.Equal(cut < 3, result["Completed"]!.GetValue<bool>());
-        Assert.Equal(cut >= 3, result["Held"]!.GetValue<bool>());
-        Assert.Equal(cut < 2 ? 1 : 0, result["NewChangingICommits"]!.GetValue<int>());
+        Assert.Equal(cut < 3 && fault is null, result["Completed"]!.GetValue<bool>());
+        Assert.Equal(cut >= 3 || fault is not null, result["Held"]!.GetValue<bool>());
+        Assert.Equal(fault is null && cut < 2 ? 1 : 0, result["NewChangingICommits"]!.GetValue<int>());
         Assert.True(result["InertRepeatBytesEqual"]!.GetValue<bool>());
         Assert.True(result["FreshAuthorityFieldsAbsentBeforeEntry"]!.GetValue<bool>());
         if (cut == 2)
@@ -160,6 +171,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
         var parent = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "parent.json")))!.AsObject();
         var atCut = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "cut.json")))!.AsObject();
+        var fault = parent["Fault"]?.GetValue<string>();
         Assert.Equal(root, atCut["Root"]!.GetValue<string>()); Assert.Equal(cut, atCut["Cut"]!.GetValue<int>());
         Assert.NotEqual(atCut["Pid"]!.GetValue<int>(), Environment.ProcessId);
         using var factory = new GameEngineTurnLifecycleTests(new JointInterfaceConsoleOutput());
@@ -203,7 +215,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             { AtCheckpointAsync = async point =>
                 {
                     if (point == SessionFinalizationCheckpoint.LateTerminalAndIdleOperationBound) actualCaller = true;
-                    if (cut < 3 && point == SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization)
+                    if (cut < 3 && fault is null && point == SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization)
                     {
                         await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
                         var actualOriginal = MortalQteWoundOpportunityProjection.ReadSnapshot(files, lease);
@@ -257,13 +269,37 @@ public sealed partial class GameEngineTurnLifecycleTests
                 await GetPrivateField<StateManager>(engine, "_stateManager").RefreshGameStateReadOnlyAsync(lease);
                 Assert.Equal(42, GetPrivateField<StateManager>(engine, "_stateManager").CurrentState.TurnNumber);
                 GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(original.SessionId, 42);
+                if (fault is not null)
+                {
+                    Assert.Equal(0, cut); Assert.NotNull(result); Assert.Equal("Prepared", result.State);
+                    var damagedPending = ParseJsonObjectBytes(Assert.IsType<byte[]>(recoveredPending));
+                    var faultPath = fault switch
+                    {
+                        "Version" or "RecordFingerprint" => WoundAcceptedTurnSnapshotContract.PendingResolutionPath,
+                        "OriginalManifest" => LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+                        "CurrentInterface" => MortalJointInterfacePublication.InterfacePath,
+                        _ => throw new InvalidDataException("Unknown actual resume test fault: " + fault)
+                    };
+                    var beforeFault = await files.ReadFileBytesAsync(lease, faultPath); Assert.NotNull(beforeFault);
+                    byte[] afterFault;
+                    if (fault == "Version")
+                    { damagedPending["jointRepairCheckpoint"]!["schemaVersion"] = 7; afterFault = JsonSerializer.SerializeToUtf8Bytes(damagedPending); }
+                    else if (fault == "RecordFingerprint")
+                    { damagedPending[MortalJointInterfacePublication.PendingField]!["fingerprint"] = new string('0', 64); afterFault = JsonSerializer.SerializeToUtf8Bytes(damagedPending); }
+                    else afterFault = beforeFault.Concat(new byte[] { 32 }).ToArray();
+                    File.WriteAllBytes(files.ResolvePath(faultPath), afterFault); // one partial physical fault, never reseal/reissue original/capability
+                    Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "iobs_actual_current_resume_integrity_fault", fault,
+                        Path = faultPath, Before = beforeFault, After = afterFault, GenuinePrepared = result.ToJson(),
+                        Meaning = "Actual abrupt producer and complete baseline proof precede this fault; only new current engine may classify it" }));
+                    if (faultPath == WoundAcceptedTurnSnapshotContract.PendingResolutionPath) recoveredPending = afterFault;
+                }
                 before = await CaptureConfirmedClaimReadImagesAsync(files, lease);
             }
             handled = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
             await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
             {
                 after = await CaptureConfirmedClaimReadImagesAsync(files, lease);
-                if (cut < 3)
+                if (cut < 3 && fault is null)
                 {
                     var current = completedProof; // physical proof frozen at the actual pre-cleanup checkpoint
                     Assert.NotNull(current); Assert.Equal("Published", current.State); Assert.False(current.HasErrors);
@@ -289,7 +325,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     Assert.Equal(recoveredPending, await files.ReadFileBytesAsync(lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath));
                     Assert.Equal(before.Keys.Order(StringComparer.Ordinal), after.Keys.Order(StringComparer.Ordinal));
                     foreach (var (path, bytes) in before) Assert.Equal(bytes, after[path]);
-                    if (result is not null)
+                    if (cut == 4 && result is not null)
                     {
                         Assert.True(result.HasErrors);
                         foreach (var issue in result.Issues) Assert.Contains(JsonSerializer.Serialize(issue), log.Describe());
@@ -302,7 +338,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 repeated = await CaptureConfirmedClaimReadImagesAsync(files, lease);
                 await AssertConfirmedClaimReadImagesAsync(files, lease, after);
             }
-            Assert.Equal(cut < 2 ? 1 : 0, changingI); Assert.True(actualCaller);
+            Assert.Equal(fault is null && cut < 2 ? 1 : 0, changingI); Assert.True(actualCaller);
             if (completed) Assert.False(second!.Value); else Assert.True(GetPrivateFieldValue<bool>(engine, "_mortalJointInterfacePreparationHeld"));
         }
         catch (Exception error) { failure = error; throw; }
@@ -311,7 +347,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             File.WriteAllText(output, JsonSerializer.Serialize(new
             { Pid = Environment.ProcessId, BirthUtc = Process.GetCurrentProcess().StartTime.ToUniversalTime(), Nonce = parent["Nonce"]!.GetValue<string>(),
                 Root = root, AuxiliaryRoot = factory._rootPath, ActualCallerEntered = actualCaller, Handled = handled, Second = second,
-                Completed = completed, Held = !completed && failure is null, Failure = failure?.ToString(),
+                Fault = fault, Completed = completed, Held = !completed && failure is null, Failure = failure?.ToString(),
                 NewChangingICommits = changingI, InertRepeatBytesEqual = repeated is not null && after is not null &&
                     repeated.Count == after.Count && repeated.All(row => after.TryGetValue(row.Key, out var bytes) && MortalJointInterfacePublication.BytesEqual(row.Value, bytes)),
                 FreshAuthorityFieldsAbsentBeforeEntry = noFresh, AmbientParseAccepted = DateTimeOffset.TryParse("13/02/2026", out _),

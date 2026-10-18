@@ -92,6 +92,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             fixture.WritePhysicalInjuryDiagnostic("iobs_actual_warning_consumer_vectors", new
             { LateCount = _lateWarningCount, GenericIndependentInvocationCounts = _genericWarningCounts,
                 LateIssues = issues, Frozen = _resultCommits[1]["issues"] });
+            Assert.Equal(interfaceMtime, Mtime());
             foreach (var (path, bytes) in before) Assert.Equal(bytes, File.ReadAllBytes(path));
         }
 
@@ -131,6 +132,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             var before = CaptureCanonicalFiles();
             // First prove that the current real generic slot can consume THIS
             // genuine common result under the still-current original/Main owner.
+            var interfaceMtime = Mtime();
             var positive = await InvokePrivateAsync<IReadOnlyList<ValidationIssue>>(engine, "ReadMortalJointInterfaceAtGenericSlotAsync");
             Assert.Equal(JsonSerializer.Serialize(record.Issues), JsonSerializer.Serialize(positive));
             foreach (var (path, bytes) in before) Assert.Equal(bytes, File.ReadAllBytes(path));

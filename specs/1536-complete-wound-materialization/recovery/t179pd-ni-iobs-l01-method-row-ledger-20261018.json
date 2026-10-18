@@ -1,7 +1,7 @@
 {
   "kind": "NI_IOBS_L01_AUTHORED_METHOD_ROW_LEDGER",
   "sourceBase": "9a92049ef86bcbc4569aaa0a11d1f42632093622",
-  "status": "CLOSE_RETENTION_SOURCE_RACE_AND_CRASH_CORRECTION_WIP_UNCOMPILED_UNRUN",
+  "status": "FINITE_WHOLE_OWNER_AND_GM_CANDIDATE_WIP_UNCOMPILED_UNRUN",
   "rows": [
     {
       "category": "fr063-joint-interface-lifecycle-order",
@@ -286,14 +286,41 @@
       "staticRows": 1,
       "status": "AUTHORED_UNCOMPILED_UNRUN_ACTUAL_FAILURE_OR_RACE_CONTROL",
       "prerequisite": "Actual returned public-I read under fresh preparation is followed by physical valid-JSON drift, exposing leased preimage mismatch; actual Published I before Capturing cannot excuse a different immutable Ready input drift. Real original absence proof prevents guessed public-read ordinals."
+    },
+    {
+      "category": "fr063-joint-interface-settlement",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CommonMemberCompensationRetainsPublishedInterfaceWithoutReplay",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_FINITE_ACTUAL_OWNER_CONTROL",
+      "prerequisite": "Actual common member failure and owning compensation retain already Published I. Actual whole-operation terminal owner either restores/removes the complete ErrorPrepared graph with prepared claim release or compensates a real member fault; no record-only deletion or generic restore."
+    },
+    {
+      "category": "fr063-joint-interface-settlement",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate",
+      "attributes": "Theory",
+      "staticRows": 2,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_FINITE_ACTUAL_OWNER_CONTROL",
+      "prerequisite": "Actual common member failure and owning compensation retain already Published I. Actual whole-operation terminal owner either restores/removes the complete ErrorPrepared graph with prepared claim release or compensates a real member fault; no record-only deletion or generic restore."
+    },
+    {
+      "category": "fr063-joint-interface-current-integrity",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback",
+      "attributes": "Theory",
+      "staticRows": 4,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_FINITE_ACTUAL_OWNER_CONTROL",
+      "prerequisite": "Genuine abruptly terminated Prepared producer followed by a new current ordinary owner; partial checkpoint version, result fingerprint, signed original manifest or current I byte corruption must hold without normalization, write/common/effect replay."
     }
   ],
   "staticTotals": {
-    "newMethods": 24,
-    "newRows": 43,
-    "newOwners": 8,
-    "predictedDescriptors": 8,
-    "scope": "Static current authored inventory only; whole SOURCE/PREP/runtime pending. Remaining common/terminal/GM/strict graph controls and final affected selection/tools OPEN."
+    "newMethods": 27,
+    "newRows": 50,
+    "newOwners": 10,
+    "predictedDescriptors": 10,
+    "scope": "Static authored new inventory, not discovery or PASS. Affected existing guidance1+CUT01new3+protectedLate2 are separate: prospective union32methods56cases14owners/14descriptors."
   },
   "actualCases": 0,
   "productChanged": true,
@@ -332,7 +359,7 @@
       "status": "READ_ONLY_ARCHIVED_BOTH_FIRST_ZERO_RECORDS_ONE_INVOCATION_19CHAINS"
     }
   ],
-  "priority": "Continue finite common/terminal/strict graph and GM/docs work, then final affected selectors/tooling and connected SOURCE; no build/discovery/native yet.",
+  "priority": "Freeze bounded whole finite+GM source candidate and fixed verification tooling for connected final SOURCE/FIXTURE/SELECTION; no build/discovery/native until named.",
   "firstActual": {
     "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
     "compiledSource": "a65005989ac5922db9c943dda339a999131ba5c6",
@@ -491,7 +518,7 @@
   },
   "historicalFirstNativeCases": 1,
   "currentImplementation": {
-    "sourceBase": "e8fd65a4425d0028f9a38383145da2bcf95c8af8",
+    "sourceBase": "116393ee1793846489a480a075210c06e9c7a23b",
     "status": "DRAFT_UNCOMPILED_UNRUN_CONNECTED_SOURCE_REVIEW_PENDING",
     "integrated": [
       "private FIRST2 factory and post-install/readback/release/runtime-refresh one-shot arming",
@@ -504,9 +531,9 @@
       "Independent private NI current-Main matching-Ready/source/delete/release observation; actual Stage coordinates retained without reviving its ConsoleOwner or changing HOT availability."
     ],
     "open": [
-      "All current changed source uncompiled/unrun, same connected final SOURCE pending",
-      "Finish strict selected graph/version/original/G refusal, whole terminal/common compensation and applicable GM guide/worked example/source guard disposition",
-      "Finalize actual affected selection/controllers/fresh source and managed-output binding, then separately named preparation/actual/EVIDENCE",
+      "Current whole source uncompiled/unrun; connected reviewer must qualify exact remaining finite/GM changes and final selection",
+      "Freeze fixed current whole-product zero preparation, original-outcome actual recorder and raw archiver; old44pin tools remain immutable historical only",
+      "Named fresh BOTH/catalog+PlanOnly ZERO, then separately named actual first outcomes/EVIDENCE; no current runtime permission",
       "No broader NI/HOT/S/B/D9/M3/F1/platform/Windows/A3 qualification"
     ],
     "draftReviewCorrections": [
@@ -518,7 +545,8 @@
       "S01-R1 matching parent1 now requires full existing proof; unknown/empty current marker cannot ask for ordinary fallback. Actual seven damage rows include Empty/UnknownEmpty and exact I mtime. Genuine new-original prior-marker condition unchanged.",
       "S05 crash fixture freezes complete current DATA proof before actual terminal original cleanup, never recreates original or reads removed proof afterward. Original cut record/resultFP/all fields stay exact across recovery, modulo legitimate Prepared\u2192Published seal/state; held first comparison checks exact keysets.",
       "Crash source independently checks 2\u21920 energy,5\u21922 damage,exact two turn43 resource rows,preserved wound prefix+create/treat suffix,matching request and actual current registry no-open-take/reservation before cleanup.",
-      "If actual native child exit/join/EOF cannot all be positively established, retain parent-owned container and report unresolved owned PIDs; normal joined runs retain strict physical removal."
+      "If actual native child exit/join/EOF cannot all be positively established, retain parent-owned container and report unresolved owned PIDs; normal joined runs retain strict physical removal.",
+      "Connected reviewer identified a source-only selector mtime local scope mistake at1163; selector now owns its local, and warning consumer also asserts its existing local mtime. No compiler/native failure occurred."
     ],
     "authoringCorrection": "Two uncompiled aee4 bool reflection reads used the class-constrained helper; corrected to the existing value helper before any build. No compiler/native failure occurred.",
     "proofLimits": [
@@ -533,7 +561,27 @@
       "Five actual-child abrupt cuts; parent owns native Process handles/stdio/join/birth/nonce and child-local TMPDIR container; actual current new engine resumes under separate Main without old private fields.",
       "Published cut uses original en-GB accepted timestamp, new en-US owner plus actual separate-root ordinary public-policy rejection; Prepared/member rows retain exact sampled fallback/I afterbytes.",
       "Actual original I-owning close versus later outer-finalization exception controls preserve distinct returned/durable/overall outcomes; direct actual Stage backup and outer wrapper retain selected graphs.",
-      "Actual returned-read and immutable Ready drift controls use existing test-only FS hooks (null defaults), no production hook/counter/CAS and no guessed read ordinal; actual original declaration establishes absent I."
+      "Actual returned-read and immutable Ready drift controls use existing test-only FS hooks (null defaults), no production hook/counter/CAS and no guessed read ordinal; actual original declaration establishes absent I.",
+      "Actual common known-member compensation, whole terminal removal and terminal fault compensation use genuine confirmed graph/actual Stage backup/private release owner, no new hook/authority.",
+      "Four actual new-current-owner integrity rows follow an abruptly terminated genuine Prepared producer and baseline readback, then apply exactly one partial physical fault; complete no-write/no-effects keysets and bytes are checked."
     ]
+  },
+  "gmDisposition": {
+    "updatedMirrors": [
+      "OtherGuides/Wound_Materialization_Contract.md",
+      "Rules/Block_12.txt",
+      "TaskGuides/CLI_Step_Main.txt",
+      "Examples/E_CLI_Step_Main.txt",
+      "CLI_API_Specification.md",
+      "CLI_Agent_Daemon_Specification.md",
+      "BookOfEternityClient/game_master_daemon.ps1"
+    ],
+    "daemonCopies": 2,
+    "workedExample": "Examples/E_CLI_Wound_Materialization.txt",
+    "manifest": "Examples/example_validation_manifest.json",
+    "exactGuard": "PromptDocumentationCoverageTests.MortalJointSeverityRepairGuidance_PreservesPublicTransportAndOnceOnlyClientOwnership",
+    "reason": "Existing joint paragraph changes because same-operation frozen I Error holds rather than inviting rewrite/resubmit. Public GM response schema unchanged; no private result/protocol version is authored. Existing named JSON example bodies stay exact; adjacent worked continuation and coverage limit explain client lifecycle only.",
+    "afterlife": "No Chaos Sea/Shining Abode rule, pending/control, capability or authored surface changes; afterlife matrix/examples/registry unchanged.",
+    "entrypoint": "Daemon change is static joint guidance in its existing two prompt copies; no command/control flow/launcher/package implementation changes. This branch contains no later1557/1559 package/inverse-entrypoint tests; do not import adjacent branch families. Exact guidance Fact reads all seven changed mirrors/two daemon copies."
   }
 }

@@ -105,7 +105,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Contains(_initialCloseFailure.Message, diagnostics);
         }
 
-        private async Task AssertActualRetainingOwnersAsync(GameEngine engine)
+        private async Task AssertActualRetainingOwnersAsync(GameEngine engine, bool invokeWrapper = true)
         {
             var stage = GetPrivateFieldValue<object?>(engine, "_hotOrdinaryOriginal"); Assert.NotNull(stage);
             var preparation = GetPrivateFieldValue<object?>(stage, "Preparation"); Assert.NotNull(preparation);
@@ -120,14 +120,17 @@ public sealed partial class GameEngineTurnLifecycleTests
                 // The direct restore's durable guard must act even without entry dispatch.
                 direct = await Record.ExceptionAsync(() => InvokePrivateTaskAsync(engine, "RestorePreTurnBackup", backup));
                 Assert.NotNull(direct); Assert.Equal("MortalJointRepairPublicationHoldException", direct.GetType().Name);
-                wrapper = await InvokePrivateTaskResultAsync(engine, "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
-                    "L01 selected graph retention control", frame, backup, 43, progression);
-                Assert.Equal("MortalJointRepairPublicationHeldBlocked", wrapper.ToString());
+                if (invokeWrapper)
+                {
+                    wrapper = await InvokePrivateTaskResultAsync(engine, "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
+                        "L01 selected graph retention control", frame, backup, 43, progression);
+                    Assert.Equal("MortalJointRepairPublicationHeldBlocked", wrapper.ToString());
+                }
                 return true;
             });
             var after = CaptureCanonicalFiles();
             fixture.WritePhysicalInjuryDiagnostic("iobs_actual_direct_and_outer_restore_retention", new
-            { scenario, DirectFailure = direct!.ToString(), ActualOuterDisposition = wrapper!.ToString(),
+            { scenario, DirectFailure = direct!.ToString(), ActualOuterDisposition = wrapper?.ToString(),
                 Before = before.ToDictionary(row => row.Key, row => Raw(row.Value)), After = after.ToDictionary(row => row.Key, row => Raw(row.Value)) });
             Assert.Equal(before.Keys.Order(StringComparer.Ordinal), after.Keys.Order(StringComparer.Ordinal));
             foreach (var (path, bytes) in before) Assert.Equal(bytes, after[path]);
