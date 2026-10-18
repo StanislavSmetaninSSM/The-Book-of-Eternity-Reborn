@@ -1,7 +1,7 @@
 {
   "kind": "NI_IOBS_L01_AUTHORED_METHOD_ROW_LEDGER",
   "sourceBase": "9a92049ef86bcbc4569aaa0a11d1f42632093622",
-  "status": "WHOLE_FINITE_CURRENT_RESUME_SOURCE_CANDIDATE_WIP_UNCOMPILED_UNRUN",
+  "status": "WHOLE_FINITE_SOURCE_AND_VERIFICATION_TOOLS_FROZEN_UNCOMPILED_UNRUN",
   "rows": [
     {
       "category": "fr063-joint-interface-lifecycle-order",
@@ -258,7 +258,7 @@
       "attributes": "Fact",
       "staticRows": 1,
       "status": "AUTHORED_UNCOMPILED_UNRUN_ACTUAL_FAILURE_OR_RACE_CONTROL",
-      "prerequisite": "Actual I-owning close after Published readback refuses transient delivery while retaining committed bytes; distinct later outer SessionOperation close preserves established completion. Error/close branches invoke direct real Stage-backup restore and actual outer validation wrapper, asserting selected graph retention."
+      "prerequisite": "Actual I-owning close after Published readback refuses transient delivery while retaining committed bytes and directly forbids destructive Stage-backup restore; a NEW current Main may lawfully consume valid Published DATA. ErrorPrepared/missing-result cases separately assert the full wrapper Held. A distinct later outer SessionOperation close preserves established completion."
     },
     {
       "category": "fr063-joint-interface-close-retention",
@@ -267,7 +267,7 @@
       "attributes": "Fact",
       "staticRows": 1,
       "status": "AUTHORED_UNCOMPILED_UNRUN_ACTUAL_FAILURE_OR_RACE_CONTROL",
-      "prerequisite": "Actual I-owning close after Published readback refuses transient delivery while retaining committed bytes; distinct later outer SessionOperation close preserves established completion. Error/close branches invoke direct real Stage-backup restore and actual outer validation wrapper, asserting selected graph retention."
+      "prerequisite": "Actual I-owning close after Published readback refuses transient delivery while retaining committed bytes and directly forbids destructive Stage-backup restore; a NEW current Main may lawfully consume valid Published DATA. ErrorPrepared/missing-result cases separately assert the full wrapper Held. A distinct later outer SessionOperation close preserves established completion."
     },
     {
       "category": "fr063-joint-interface-source-races",
@@ -348,27 +348,28 @@
   ],
   "verificationTools": [
     {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-order-preparation-run.py",
-      "sha256": "4ba772646550747fceeeac9f1c9a5f1375560960afb47b71954f502a5385f9be",
-      "status": "USED_CATALOG_ONCE_AND_DEPENDENT_PLAN_ONCE_ZERO_CASES"
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-preparation-run.py",
+      "sha256": "1b82e4e1c3366fb066824e4964c1cc94e7451482aac91b47ecba5e87f52c5cdd",
+      "bytes": 8756,
+      "role": "Fixed current changed-product fresh BOTH/catalog/discovery then dependent exact PlanOnly-NoBuild; ZERO actual cases",
+      "status": "UNRUN_SOURCE_ONLY_NAMED_ROOT_RELEASE_REQUIRED"
     },
     {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-order-first-run.py",
-      "sha256": "ed5c32e44ea5256ed1ca8090160cc9aaf6c298fd020b5154ef58e930e8ff0b29",
-      "status": "USED_ONCE_FIRST_NATIVE1_ONEEXECUTED_0PASS1FAIL_ORIGINAL_UNQUALIFIED"
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-first-run.py",
+      "sha256": "411b9d1ca4585c6ee66d3bbd9992a95b734cd5eb4da059f25faaa3b8762c5fd0",
+      "bytes": 9552,
+      "role": "Fixed separately named protectedLate2 and each finite actual subset; NoBuild, no auto advance/retry",
+      "status": "UNRUN_SOURCE_ONLY_NAMED_ROOT_RELEASE_REQUIRED"
     },
     {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-order-first.py",
-      "sha256": "cc3d9a14a0fc5f0f46b2a9b79b005be47dc7b91c65ab827c1fe4a9b15a4180d2",
-      "status": "READ_ONLY_ARCHIVED_ORIGINAL_FIRST9CHAINS_ONCE_NOT_CAUSAL_VERDICT"
-    },
-    {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-order-preparation.py",
-      "sha256": "5e00c6e7c7496f044aa8dbc1068681601ab41882ae3888eb5d9dbcf2a5de8fde",
-      "status": "READ_ONLY_ARCHIVED_BOTH_FIRST_ZERO_RECORDS_ONE_INVOCATION_19CHAINS"
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-whole.py",
+      "sha256": "bf6503ecb8b1006842e66313da7c72fc185b217e54cd44d4ff5a62b864c36c3f",
+      "bytes": 2342,
+      "role": "Read-only full original zero/actual process/source/ledger/sentinel/stdout/runner/TRX plus any unresolved retained child roots; no cleanup/classification",
+      "status": "UNRUN_SOURCE_ONLY_NAMED_ROOT_RELEASE_REQUIRED"
     }
   ],
-  "priority": "Finish fixed verification tooling, then freeze final connected SOURCE/FIXTURE/SELECTION/PREP candidate; no runtime/build yet.",
+  "priority": "Frozen whole candidate is ready for connected affected SOURCE/FIXTURE/SELECTION and verification-tool review. No build/discovery/native before named Root release.",
   "firstActual": {
     "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
     "compiledSource": "a65005989ac5922db9c943dda339a999131ba5c6",
@@ -527,7 +528,7 @@
   },
   "historicalFirstNativeCases": 1,
   "currentImplementation": {
-    "sourceBase": "d6dac5251f902041d76dff983ce38e5c23693959",
+    "sourceBase": "afb5a3bb6a2dd7e066946258cbf64334bf965048",
     "status": "DRAFT_UNCOMPILED_UNRUN_CONNECTED_SOURCE_REVIEW_PENDING",
     "integrated": [
       "private FIRST2 factory and post-install/readback/release/runtime-refresh one-shot arming",
@@ -540,9 +541,9 @@
       "Independent private NI current-Main matching-Ready/source/delete/release observation; actual Stage coordinates retained without reviving its ConsoleOwner or changing HOT availability."
     ],
     "open": [
-      "Current whole source and every changed finite case uncompiled/unrun; connected SOURCE final verdict pending actual final verification-tool source",
-      "Freeze fixed current-product zero/actual/archive tools with current source/selection/managed output binding",
-      "Separately named fresh BOTH/catalog discovery+PlanOnly ZERO and actual/EVIDENCE; no current execution authorization",
+      "Connected final affected SOURCE/FIXTURE/SELECTION/tool review; current product uncompiled/unrun",
+      "Separately named fresh BOTH/catalog discovery then exact PlanOnly ZERO, full output inventory and no stale source/copy checks",
+      "Separately named actual finite/protected controls and independent EVIDENCE; unexpected first outcome freezes/no retry",
       "No broader NI/HOT/S/B/D9/M3/F1/platform/Windows/A3 qualification"
     ],
     "draftReviewCorrections": [

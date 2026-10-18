@@ -1,8 +1,8 @@
 {
-  "kind": "NI_IOBS_L01_WHOLE_FINITE_CURRENT_OWNER_CANDIDATE_WIP",
-  "sourceBase": "d6dac5251f902041d76dff983ce38e5c23693959",
+  "kind": "NI_IOBS_L01_WHOLE_SOURCE_FIXTURE_SELECTION_AND_FIXED_TOOL_CANDIDATE",
+  "sourceBase": "afb5a3bb6a2dd7e066946258cbf64334bf965048",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
-  "status": "WHOLE_FINITE_CURRENT_RESUME_SOURCE_CANDIDATE_WIP_UNCOMPILED_UNRUN",
+  "status": "WHOLE_FINITE_SOURCE_AND_VERIFICATION_TOOLS_FROZEN_UNCOMPILED_UNRUN",
   "sourcePins": [
     {
       "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
@@ -10,7 +10,7 @@
       "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a",
       "gitBlob": "268d355d8f3070c9bd4dbe2b3b358dc4a77726f6",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs",
@@ -18,7 +18,7 @@
       "sha256": "cc6c6283e7b4cdbdd3b3ab56996b5acc2bcb6b9009729a6b20053a0ca08aea23",
       "gitBlob": "ba5408988166d42fc993a4ccda8a3ebc1f77af7b",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCloseRetention.cs",
@@ -26,7 +26,7 @@
       "sha256": "4d6c1d08949055d66bd4b7091b6daedac6ce7d4776bb18476800521bd3bea94e",
       "gitBlob": "63ef7bbafb4e510257ded5840e022e22e4f25519",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceConsumerRefusals.cs",
@@ -34,7 +34,7 @@
       "sha256": "0fb47c8c1ebfce3ecb07fbf52f7966abcbb5d02ea419eb145ee95558cff3e6dd",
       "gitBlob": "432b4d980a317d9dd0f8c4c61bcc75ec1db6c6ea",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
@@ -42,7 +42,7 @@
       "sha256": "c1699aee07ffd1576e60ca567aef4fa1bba022557ae7669dec0b1df95ecdd5b2",
       "gitBlob": "e473517e467868efee9d27a3054fd828d20b68ab",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLegacy.cs",
@@ -50,7 +50,7 @@
       "sha256": "79bbd63c633f29a94d3a6d5daeeee795001a575704975b10155eff59059221a6",
       "gitBlob": "7812e6bd166eb30cd1473312151341e048472c9e",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs",
@@ -58,7 +58,7 @@
       "sha256": "809fe648199996808a41afea302ed7b4d9a027a3627b1cdd6f233149ba709dda",
       "gitBlob": "1779bcb2c70c2cd16c1d0779841a7a28c3faebfe",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSettlement.cs",
@@ -66,7 +66,7 @@
       "sha256": "977c9b0802c31635e5a0a349c7dc5547c7a33e196b80666a4f5c0b7137c86c5f",
       "gitBlob": "313eff010c51f1c5a6a1e79a95284e615c780f71",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSourceRaces.cs",
@@ -74,7 +74,7 @@
       "sha256": "c128d9ee8f78b0674a67f78a2baa15de3bd6b5cb3bd212d6091b23036427e350",
       "gitBlob": "cb15dabe7067454cde6e9d3ea2485640cb972553",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs",
@@ -82,7 +82,7 @@
       "sha256": "5653d51c40ffa2522386b3cb3f8f50cf64044a40e03586a498e4e0fee96dd7b7",
       "gitBlob": "61b198793a5d55167f594f0f56123acaaf61760c",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MusingsActualCrash.cs",
@@ -90,7 +90,7 @@
       "sha256": "2bf05873695d88b2c3f67b2ee2b48026e7ce294dd9cf15bf5944317531d1472d",
       "gitBlob": "8ae24d01d8c21a5e856f4e55e2442fa1a1be9945",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs",
@@ -98,7 +98,7 @@
       "sha256": "2ccdf58fedf0128b3ebfcfa8cf494de29669ffaf2fdb003f8f5cfb010c195d16",
       "gitBlob": "1c2a98e027a02a773783a77c840d830e38ec9185",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
@@ -106,7 +106,7 @@
       "sha256": "1f08e00dde87bcb61a82ea79c07d0d2f1407576d0758e79fe5dbe05cf593aaaf",
       "gitBlob": "d4580329e70f8d0f9c6a29831dc8f67aa82f9b22",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
@@ -114,7 +114,7 @@
       "sha256": "cad56070f5eb3c8f96233793e275f49495ece07717372d0d6b4dfb43f95fde17",
       "gitBlob": "6d90128f580b488fa2521d68293bd0fd50664c5f",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
@@ -122,7 +122,7 @@
       "sha256": "05e89b15d84208e3034351448353b123aa5c7928b274864233e0a0406ab4f584",
       "gitBlob": "c015d38d22f4cbfa3c1986089414d752c1828edb",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Remaining.cs",
@@ -130,7 +130,7 @@
       "sha256": "14bafa6fadbe829bae1c11f2dc4dadd6ce058cdd1009902ddb994c4a99e30f9d",
       "gitBlob": "ad87b3c79655df3829eb109260ff148b87372c0a",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
@@ -138,7 +138,7 @@
       "sha256": "cc19ea786b8bce8c96e84a07091b8384c3fcbeab570f19ccbd2818ecd36fa86e",
       "gitBlob": "6882107a57602ad439d592a0d3c67af08531fd8d",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient.TestSupport/TrustedLocalPublicationCrashFixture.cs",
@@ -146,7 +146,7 @@
       "sha256": "c0ea6ca997470500c4d41e4bc41ce7d8ddf4bf9398638d605a87c1614fa76ddc",
       "gitBlob": "d5ece7f4c9efa89eedf977952a971a779108efe6",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient.Tests/MortalJointInterfacePublicationTests.cs",
@@ -154,7 +154,7 @@
       "sha256": "66412a8362979a575060b75c0e90ef0e1d31339e13046e20a6b1fc3c8fd3add5",
       "gitBlob": "a5e3e41c81bd5dddfb4ca25f811c91b6f6ca6e6d",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs",
@@ -162,7 +162,7 @@
       "sha256": "0cc22a92230c3fcb34f13564820426f6cd805bc6eb35c8ef9006cd5d5f2cfcb9",
       "gitBlob": "6ee7d0e08b5391e3419d741aa0883b31d5f13b20",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Core/DialogueOptionControlTagNormalizer.cs",
@@ -170,7 +170,7 @@
       "sha256": "1d29b2f022af651eea548aec4b483b4892c88678034962fe4ed18b1645ad0d7a",
       "gitBlob": "cd77ed504f522059dc40c7cd61522989625b7fa8",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
@@ -178,7 +178,7 @@
       "sha256": "384f9f65d33e1c70c6f7e337d96aec6e71664d142612546139345bf274923a14",
       "gitBlob": "3f892cc44d59d81d49d1cba3b4f8199c5d92d33a",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
@@ -186,7 +186,7 @@
       "sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
       "gitBlob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Core/FileSystemManager.cs",
@@ -194,7 +194,7 @@
       "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
       "gitBlob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
@@ -202,7 +202,7 @@
       "sha256": "f556defa68fd396aaf378f4766c67c7d3883c095537aa0af403c26faf654efa3",
       "gitBlob": "b9962eb7926f40bed5287996dcdc73a83ba43602",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfacePublication.cs",
@@ -210,7 +210,7 @@
       "sha256": "c2aaca74c30c16f577c6a6947e37578992bace327009435c656d0917554c1735",
       "gitBlob": "78554d552d2f3e91487344bc758afd3ff225929c",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceReady.cs",
@@ -218,7 +218,7 @@
       "sha256": "ad09ff64f378709617265bf1272bc51b6ee0c9dfafcbb9291b675703ff4ad470",
       "gitBlob": "571d1797e00c6383b599127d2224c9ee7b1dd6d5",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
@@ -226,7 +226,7 @@
       "sha256": "14888a2cc43c813c61e5b38ce98ab62c10b3359ddcf003c905de69b9c071d9a8",
       "gitBlob": "592dedd0ec466d46df19fa4181c2c3f367e31e15",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs",
@@ -234,7 +234,7 @@
       "sha256": "fcc27f5bb5ae9ecd04059282a8c1b6192a453213bbf7d56c41d533690d012a60",
       "gitBlob": "d9677dfd1950eaffc2753c8b1d8fba817b40322e",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairAdmission.cs",
@@ -242,7 +242,7 @@
       "sha256": "df42295d25629a87fa4a7216767cf467660e20e6461b02b1abadf1254020fb9a",
       "gitBlob": "395b2cd20794b6bef005f7d350e355c8b0c674d3",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
@@ -250,7 +250,7 @@
       "sha256": "1732b324c1990265858eaf7a09bd093c05b3f861af6d87f11ba95f03d334dbda",
       "gitBlob": "3dd6a69d473ed3b8eb969b9c5bee5fa0aaef7af0",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
@@ -258,7 +258,7 @@
       "sha256": "0678579868f754eba3cafd9b1adc10c9345fa38e819faf032be42d3e99fe3efe",
       "gitBlob": "08710465de59f2a58ef4d85ca2650cd6dc90239e",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs",
@@ -266,7 +266,7 @@
       "sha256": "c2eea5e5c267965be0fbc4c75640f4ebd38a7a329d2eb1315bb29e50b8d973cb",
       "gitBlob": "a557bd634d5158711ddfbb69085c31e154380882",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairRestore.cs",
@@ -274,7 +274,7 @@
       "sha256": "da176118bf0ea7099ac920cea69f0b45654b1723b959a0196e7535c73cf9964c",
       "gitBlob": "d19cbbef6edc74d0840748a5e5d3c7249fdcc4d8",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairTerminalRelease.cs",
@@ -282,7 +282,7 @@
       "sha256": "ce622ac731e2d9aa8b532928b105ebc19df982603cea2eda1d7e856782b27e99",
       "gitBlob": "264a3aca4f7fb5a09066fd5fdf2add966e0133d1",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalQteWoundDecision.cs",
@@ -290,7 +290,7 @@
       "sha256": "1c4b0d32477c34517b26081fe2140cdb05a1d9477e64ee64029e1208fbf349ab",
       "gitBlob": "4d0b2376f867e3dce5a6a7b3ba561ac1efac50f6",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs",
@@ -298,7 +298,7 @@
       "sha256": "14496bf41b96ce8423f0471c01f5c4ef2c9b415aeb8f775c4d6d13174feff0cf",
       "gitBlob": "371b7f27486ada8dd7535f2e8a9c0aa6be66fbcc",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
@@ -306,7 +306,7 @@
       "sha256": "a79f26d899251e23ba858ef0f64aa180b06fb6792ef1c88860a98f4ac720918f",
       "gitBlob": "d1008234e6011790849e391e800feded85ebc30e",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
@@ -314,7 +314,7 @@
       "sha256": "86727fd844517342979572209983b181dd0947541fecbaf384461ffeed44d712",
       "gitBlob": "7831be8e58492e161f8b982d634666a7bcf6f5d4",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
@@ -322,7 +322,7 @@
       "sha256": "6098dcbab770ea36ffb65808a200770d0996b25f41313aa1f2348c06d6219ded",
       "gitBlob": "509df8cfc6bc89c9ff4c8802166d2882f97fb7d9",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Core/MainOperationContinuationException.cs",
@@ -330,7 +330,7 @@
       "sha256": "5c9e2ad69823b9228631ab2c7043522a989d86bf17eef30405f4aa74c7648ba1",
       "gitBlob": "a7c759e2aa09b4c5e3ef7791b5e9ec1339a7b342",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
@@ -338,7 +338,7 @@
       "sha256": "5b0b98825d0e4f0c6e91a3396b3e54acdda7e774f6afacfcf3fb49b18c155efa",
       "gitBlob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Core/StrictJsonAuthority.cs",
@@ -346,7 +346,7 @@
       "sha256": "fc37727e91dcce1af6d9270d37dba103f3b2ee51bddd1436ca86e548a636a73e",
       "gitBlob": "354773962d3470637847d7bd9687c5b3a9551c9a",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.FrameMetadata.cs",
@@ -354,7 +354,7 @@
       "sha256": "f500283845a561cd2066bcc930d159a4d597c365e2c370d45d86b007162b8739",
       "gitBlob": "9fcf0b3eba7d3c33bd327ab41691925a76036b6d",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
@@ -362,7 +362,7 @@
       "sha256": "4d00cbfdcca3863067c6398ec28175c78288197e095d394efdb13069daa0e0fc",
       "gitBlob": "418b8da4bdd6c8f3f41f82cd313d600fb234db63",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
@@ -370,7 +370,7 @@
       "sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
       "gitBlob": "99081f43140f8f59511d26666e19a6fa57544983",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.MortalJointRepair.cs",
@@ -378,7 +378,7 @@
       "sha256": "8fc8913af2fb18cb62a294b5ee2c55b4a11c21f31e0b23187b5ceb24534b2cc4",
       "gitBlob": "cafdf7b047f764926bf13e11f3496a1cf0355591",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointRepairPublication.cs",
@@ -386,7 +386,7 @@
       "sha256": "11740a8b29084c5891b59fc280e6133846f9d27389a540073bef6e493253a5fe",
       "gitBlob": "569e8e815282dfebcf4162d4bab3295736e0b4f6",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointRepairRelease.cs",
@@ -394,7 +394,7 @@
       "sha256": "942f35af66b8c441e2bac83347d63b4df964cfd8bc82c4385e838c5f16ee725d",
       "gitBlob": "ef7398b77ecdd9ae46f47a8a4f791b36edece28b",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs",
@@ -402,7 +402,7 @@
       "sha256": "5b0326ca86c9dcff1152d28c6b1abe250d8df0104d8299d8ff51095afd63d099",
       "gitBlob": "6924c012039ac85a2766783c888598008fcf92b8",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/AcceptedTurnOutputProjector.cs",
@@ -410,7 +410,7 @@
       "sha256": "e31a87fa150b9787494713c89ba0a25028b9f8567594ee32c80d52670a8cd0b5",
       "gitBlob": "3c604feb824fa8d552371f5c2484ffd521342718",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/CanonicalJsonUtf8.cs",
@@ -418,7 +418,7 @@
       "sha256": "8d369549d3b15da614f5782a15b3890cbeede14ce10972051d4960ee3e6d5bd8",
       "gitBlob": "5f2ed429fc307bf184eb8e8721c7b44c585f341f",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
@@ -426,7 +426,7 @@
       "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4",
       "gitBlob": "f8accbc3e70feb6e9de4a5bc3337b68e11ba2d14",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/CriticalStateHealthService.cs",
@@ -434,7 +434,7 @@
       "sha256": "f55cbe8b0a25ee6a4713e2b6a43503f2194afbe41b771f9443fa65cdfd117449",
       "gitBlob": "3c01893f9d321182bf6cabb9b8979b5edb5f826a",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/GmRuntime/GmMainOperationProtocol.cs",
@@ -442,7 +442,7 @@
       "sha256": "199378d4f0477a2cfdd7e7afc6745ffdebe58935f49b5169342e0e58d0b9b2c9",
       "gitBlob": "a54deb686b6a85de26f37821fdf67456c2bffd30",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
@@ -450,7 +450,7 @@
       "sha256": "eea0a8dc65e14bd2234774eb6127b7b9ca16a01583d22d22ea184588fcdcbbd7",
       "gitBlob": "ce2d9cfebc301cfb6ce678a35df43b65311396e2",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs",
@@ -458,7 +458,7 @@
       "sha256": "2a3723a88ceda182cdf0350597f76e8d09529cf99ebdd16752d66c642be07ecf",
       "gitBlob": "00070c8ffb45231d4ab153416a76ddb411d8986f",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/MortalJointInterfacePublication.cs",
@@ -466,7 +466,7 @@
       "sha256": "44aeb6751c0146ef636a4f3743b28cac87078baeb815089c7bfebb6e54f7a08e",
       "gitBlob": "b451b156d8f2e403f724a336b595eacaa2167243",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/MortalJointRepairCheckpoint.cs",
@@ -474,7 +474,7 @@
       "sha256": "de012fef9b0468916040df03c4225fdb60914da16d53246a8a4fe8c1896598b6",
       "gitBlob": "64bbe4a57a459d08bcf07792d612275190531e3e",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/MortalJointRepairPublicationPreparation.cs",
@@ -482,7 +482,7 @@
       "sha256": "4b63871bb085508cfb27e68ab1cc46097c84d03f43926cec8e11b6ae676f28b7",
       "gitBlob": "2e76b870fe98cdec28917364a75dd9b9e7660c8c",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/MortalJointRepairPublicationTakeReceipt.cs",
@@ -490,7 +490,7 @@
       "sha256": "0e83dd847802e66d07fa7ed7fac195638acf24ae82a14f0c98bd6c5d25452cde",
       "gitBlob": "0fadfd1cb34eac8f75ec8050365c10229663e534",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/MortalJointRepairPublicationTransaction.cs",
@@ -498,7 +498,7 @@
       "sha256": "3f3f486c2c39550034609a96f0467a6f892ff4ff0acdb214a64f2253837fdbed",
       "gitBlob": "39bfd63f85d8aa5f6b51c120d806fbfbd8f2fb0d",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointInterface.cs",
@@ -506,7 +506,7 @@
       "sha256": "ac39ed2a12f51d4396d0085c9829eb6e09a179a772ce3693ecd6a39a5edd46f4",
       "gitBlob": "975d886a0200bffd5adcf63c2f9eb1ebbc846d97",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgression.cs",
@@ -514,7 +514,7 @@
       "sha256": "3b96155adc121ec67ab42b2463cd7c6b4d71e321265b71348d6153273edcfd92",
       "gitBlob": "7cbb6d25f243e66e32020b13eeb6a2fed2a20bce",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
@@ -522,7 +522,7 @@
       "sha256": "f1e3fe848f5cb0c76b87e63d0bffec01800f39d4ea197514d14f7b69eb0f25e8",
       "gitBlob": "4ba1b0872d82bbef0bbd42b4fb40992d4efd9384",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
@@ -530,7 +530,7 @@
       "sha256": "18a6dabe883dfcf25c784d3b5148e923eb578e9047ade724a8adb7bb6161bf7f",
       "gitBlob": "7e75b1b754db9f688c01727a61a9e77c7b9e8faa",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/MortalWoundTreatmentPersistence.cs",
@@ -538,7 +538,7 @@
       "sha256": "adc23e5b386d4e99e7194ef5cce27dca2f1ecb6a5c9cb7a14d33cd9ce314aeaa",
       "gitBlob": "f0c695f2ac40c7ca396514fb97402d6b3deda486",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
@@ -546,7 +546,7 @@
       "sha256": "8a8c5a41f1541856af4e0b80a074e4c61b437dc4972c8e6384c3c1810b1e3d0a",
       "gitBlob": "6de2ed172122c51a621631c9520d51189dac9e3e",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/Validation/ValidationService.FactionCoreChanges.cs",
@@ -554,7 +554,7 @@
       "sha256": "6ea65bf4e414c1050ef4ce5d2939f25349917c611784ba9b5faf2d9a0e307188",
       "gitBlob": "9e5e75ac2b20aac75c8e3849c0ea5797a9a60453",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/Validation/ValidationService.FactionMaterializationContinuity.cs",
@@ -562,7 +562,7 @@
       "sha256": "c31d6a98874b052c97085dd0fec851c7b773929daefb60005dcb942d57270488",
       "gitBlob": "2884d24642a2cae9d6842d3c1479fa79340e964d",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/Validation/ValidationService.MortalJointInterfacePreparation.cs",
@@ -570,7 +570,7 @@
       "sha256": "f2e9fa18e528c1439c2b5612270293e2c130b3d7352c674d3538a666bfd08998",
       "gitBlob": "b295538f6edd11fbbea22f4fab07b531eaa8cbb7",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/Validation/ValidationService.MortalLocationMaterialization.cs",
@@ -578,7 +578,7 @@
       "sha256": "dc342fb74ab4075460d8724018f6878e33920fc8e829fb950ae9a983e28025fb",
       "gitBlob": "6e3ba1b6e4262352a49da8c6bf6f3c091f5af4fe",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/Validation/ValidationService.NarrativeInterfacePolicy.cs",
@@ -586,7 +586,7 @@
       "sha256": "694d40779dcc117a798c1578e351601e8b173de7750e0d2188ef3856c9eb2409",
       "gitBlob": "4ce3aaa625d08efebc84d3951a31a3417ada4402",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcCoreChanges.cs",
@@ -594,7 +594,7 @@
       "sha256": "5c96f4bb13c83a88c9bfcd1c180e5de556ecbbb8fc85f6befc6887d0d4ba569a",
       "gitBlob": "9c874a99d31b806c3b30facc6022b5ab24faaccd",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
@@ -602,7 +602,7 @@
       "sha256": "6ec55fe70decf80ac11a1146548a821f0aec445b5132d5a7c683f49a1a4b6f86",
       "gitBlob": "d61e8b3b4b59c6ff8ec5f286e22302edbda9a266",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs",
@@ -610,7 +610,7 @@
       "sha256": "54222a4e3ede3574e4a489c88f8c085a015408ddee4c6f9531ecf87d0d5af907",
       "gitBlob": "456415569129ff288c324515aaba6927049eb543",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs",
@@ -618,7 +618,7 @@
       "sha256": "a4a52de937925f82f2ace302bfc8edb2ac3b8d9fa0ff9420dcce0a73c0ce2805",
       "gitBlob": "d77ab4fb20682459906b709340f6ce24b19ab1fd",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs",
@@ -626,7 +626,7 @@
       "sha256": "90fdb05497360d7349eff84c4482b2bbe3897e8be9fceb023ebd1353fc22948e",
       "gitBlob": "c280741554e8a244990534d7f3a16f1cdce8ddc6",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs",
@@ -634,7 +634,7 @@
       "sha256": "5f081294198dd174774680d69de5388780b0553a6301099594f5bd7adf590668",
       "gitBlob": "4d1a3cb396067f0218fb09880c8ab94ba6302302",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs",
@@ -642,7 +642,7 @@
       "sha256": "eeec80940c84551d3c150aed7230f020996bb1671fa7a0925f0c0e0ab09b0fd0",
       "gitBlob": "4e37858eee09c14248b155fae63bda7faf9fc61b",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "BookOfEternityClient/game_master_daemon.ps1",
@@ -650,7 +650,7 @@
       "sha256": "7527e386a593d372a068760a9b6c8ae479a98666c6538a8c8c02294b59a2db1c",
       "gitBlob": "5dbaaf290fb46785cc409fd6a9ad1af9865cfbcd",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "CLI_API_Specification.md",
@@ -658,7 +658,7 @@
       "sha256": "59ad38a0644a84cbe54415909aa1366f81b765de89500ea12bec0d2bca65591d",
       "gitBlob": "1dc4f0f1fce6decd5d6e2bb03da2d822543a2406",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "CLI_Agent_Daemon_Specification.md",
@@ -666,7 +666,7 @@
       "sha256": "8e6aa9d4d8db74ddea53fe3b464cbb1aa9badac9cdd49bdc137422a46465c509",
       "gitBlob": "8e10bcd1f1f363c7e0ce925c818212b58275dd11",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "Examples/E_CLI_Step_Main.txt",
@@ -674,7 +674,7 @@
       "sha256": "bfd569981b5899b4f259456d440888829c4145a1ef914c90b2c6e8d817f1ebe4",
       "gitBlob": "bbec99623fb959de67039d8a3445ae1b71bce83e",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "Examples/E_CLI_Wound_Materialization.txt",
@@ -682,7 +682,7 @@
       "sha256": "62924671b84f3e9ca0ecd1f1ea8515503543881d81e00aa70605cee1c8331e2b",
       "gitBlob": "b6a515749020495a42269b7fde63bde9167dd2e4",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "Examples/example_validation_manifest.json",
@@ -690,7 +690,7 @@
       "sha256": "2f65217d1125bb2acc83f101341ee68c9c7d37ed8779aa82da8a5d7c5f555acc",
       "gitBlob": "dfe08011113d86d80a81a55dd53464853950cfd0",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "OtherGuides/Wound_Materialization_Contract.md",
@@ -698,7 +698,7 @@
       "sha256": "fcecf7f3dc84f09c43bbf25dcbad0c98fff4f1a7137b2e26cf39579bf3fde926",
       "gitBlob": "a99c5e068c326288ccd1c61711caf983f7157d9f",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "Rules/Block_12.txt",
@@ -706,7 +706,7 @@
       "sha256": "34d76b2a0eee588978f0b419e769aa9bae97361f534c55bd0976d1cce359b3a4",
       "gitBlob": "f04d8ef493b8a5db5658f88ea570c900eb7fa9b8",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "TaskGuides/CLI_Step_Main.txt",
@@ -714,7 +714,31 @@
       "sha256": "35df5633e97a830edd9b02d4b97f2ac7af62d88e17c477353e615ab9ef7c3177",
       "gitBlob": "4e72c9bdf38166e55d607ec2ef4fedb2f5d2a2ff",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-whole.py",
+      "bytes": 2342,
+      "sha256": "bf6503ecb8b1006842e66313da7c72fc185b217e54cd44d4ff5a62b864c36c3f",
+      "gitBlob": "34acff73fd7845cced12b8bc75295fada4e2a6eb",
+      "mode": "100644",
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-first-run.py",
+      "bytes": 9552,
+      "sha256": "411b9d1ca4585c6ee66d3bbd9992a95b734cd5eb4da059f25faaa3b8762c5fd0",
+      "gitBlob": "3920d53db3d1de3cdf72df8ff246b3022fcade9e",
+      "mode": "100644",
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-preparation-run.py",
+      "bytes": 8756,
+      "sha256": "1b82e4e1c3366fb066824e4964c1cc94e7451482aac91b47ecba5e87f52c5cdd",
+      "gitBlob": "4d69c2ea5f04d0a8eac59762b03957718abd83c9",
+      "mode": "100644",
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-precommon-result-lifecycle-08119f36-20261018-v2.md",
@@ -722,23 +746,23 @@
       "sha256": "c470399bbde36073f96c5b15cfeb121c2881eca41688e583118bca958d0491a8",
       "gitBlob": "fc9a3c794e60d2469c1fcb8d2d319383af023c50",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "tests/categories.json",
-      "bytes": 2011004,
-      "sha256": "6b8089bdc130adcfec835293f62954205ce4ee8bcf512077ccb2ab70eddd3c75",
-      "gitBlob": "4f304042b0217914ed64bcb001a05496dca09f89",
+      "bytes": 2011064,
+      "sha256": "b632a237396fa9605851399a5fee78a3b01db9a6a878f1d0b8b21475d1d9a7a2",
+      "gitBlob": "f73e6705f3fe13ed1efc4fe1f27f65532c0f9829",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "tests/selection.json",
-      "bytes": 7989,
-      "sha256": "d414525bce913f9cbf0066bdc9df35fd3c72ba44f1c4ecd02bcc3ac1745687c2",
-      "gitBlob": "322cd699962852836538ac936f5c5e0339908140",
+      "bytes": 8049,
+      "sha256": "ef797e15e8dd43de3fa7beafba23cc73883dc6b6396f4e4fa61550c63d201393",
+      "gitBlob": "5498d52439c751827703b004d0046807e0d73bec",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "tests/selections/1536-joint-interface-lifecycle-order.json",
@@ -746,22 +770,22 @@
       "sha256": "34b69809eef843a06a69988cc3d0339eee23be62a1394d8de455c427381a5bfd",
       "gitBlob": "4025bcb18ebd2c22d5d724015ed66193e8a447fc",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     },
     {
       "path": "tests/selections/1536-joint-interface-lifecycle-stage.json",
-      "bytes": 7989,
-      "sha256": "d414525bce913f9cbf0066bdc9df35fd3c72ba44f1c4ecd02bcc3ac1745687c2",
-      "gitBlob": "322cd699962852836538ac936f5c5e0339908140",
+      "bytes": 8049,
+      "sha256": "ef797e15e8dd43de3fa7beafba23cc73883dc6b6396f4e4fa61550c63d201393",
+      "gitBlob": "5498d52439c751827703b004d0046807e0d73bec",
       "mode": "100644",
-      "binding": "WHOLE_FINITE_CURRENT_OWNER_WIP_UNCOMPILED_UNRUN"
+      "binding": "WHOLE_SOURCE_AND_FIXED_TOOL_CANDIDATE_UNCOMPILED_UNRUN"
     }
   ],
-  "sourcePinCount": 94,
-  "pinDigest": "11a04fb69c8647c13b223d4906f9d93f3ee018cbd8435c65620825059aed0714",
+  "sourcePinCount": 97,
+  "pinDigest": "3e2bf2b2e6e890222ae8cbf7ceaeb4d203b41a6aab68ec879e6e88723f70bb57",
   "ledger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-method-row-ledger-20261018.json",
-    "sha256": "aed665fa9dea9daa99b426f3edf45bffda9ffccacddb583913530280db76fb7b"
+    "sha256": "88542944d286236d45fb5adca173b035942e146aa94e06c6cb1c75061b1395b4"
   },
   "productDelta": [
     "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
@@ -786,7 +810,7 @@
     "BookOfEternityClient/game_master_daemon.ps1"
   ],
   "originalContractSourceContext": "Frozen447bc map/source ranges and accepted wholevertical report preserved unchanged; this current test packet does not rehash/replace historical contexts.",
-  "review": "Independent bounded SOURCE/FIXTURE/SELECTION accepted f7f79f15/73771b88/fab40beb plus2 unchanged helper definitions. Root accepted original fresh ZERO preparation by5cdb8194, including19rawchains/335maininventory/1234current outputfile binding/9copies. Save carrier and separately named actual remain required; no causal EVIDENCE or testcases.",
+  "review": "One connected independent changed-scope SOURCE/FIXTURE/SELECTION review remains pending final candidate/UNRUN tools. Historical original SOURCE/ZERO/causal RED remain qualified only at their immutable old contexts; no current product preparation/actual acceptance.",
   "firstCandidate": {
     "category": "fr063-joint-interface-lifecycle-order",
     "project": "integration",
@@ -867,30 +891,48 @@
   "firstWitness": "Original intended early1vs0 assertion reached at actual124 AFTER full shared completion/inert-repeat. Callback1/early0; actual TWO later I-changing cohorts and TWO marker cohorts. Predictionlater1 corrected explicitly; source/physical trace must not be relabeled exact API call counts.",
   "defaultNullFixtureDelta": "One optional test-only probe; attach wraps prior essential checkpoint hook; corrected public I authoring precedes correlated repair Ready; observer reads journal; final bytes retained before owned cleanup. No producer/Ready/protocol/authority seeding.",
   "recovery": "Base9a full7a+84 verified; exact new immediate GitHub changed-path recovery required after push. Intermediate WIP before remaining authoring, no new review loop.",
-  "gmDocs": "Client-owned lifecycle/public GM correction fields unchanged in this foundation. ErrorPrepared same-operation Held and operator recovery implications still need exact existing Mortal guide/worked-example/source-guard assessment before whole completion; no unrelated afterlife expansion.",
+  "gmDocs": {
+    "updatedMirrors": [
+      "OtherGuides/Wound_Materialization_Contract.md",
+      "Rules/Block_12.txt",
+      "TaskGuides/CLI_Step_Main.txt",
+      "Examples/E_CLI_Step_Main.txt",
+      "CLI_API_Specification.md",
+      "CLI_Agent_Daemon_Specification.md",
+      "BookOfEternityClient/game_master_daemon.ps1"
+    ],
+    "daemonCopies": 2,
+    "workedExample": "Examples/E_CLI_Wound_Materialization.txt",
+    "manifest": "Examples/example_validation_manifest.json",
+    "exactGuard": "PromptDocumentationCoverageTests.MortalJointSeverityRepairGuidance_PreservesPublicTransportAndOnceOnlyClientOwnership",
+    "reason": "Existing joint paragraph changes because same-operation frozen I Error holds rather than inviting rewrite/resubmit. Public GM response schema unchanged; no private result/protocol version is authored. Existing named JSON example bodies stay exact; adjacent worked continuation and coverage limit explain client lifecycle only.",
+    "afterlife": "No Chaos Sea/Shining Abode rule, pending/control, capability or authored surface changes; afterlife matrix/examples/registry unchanged.",
+    "entrypoint": "Daemon change is static joint guidance in its existing two prompt copies; no command/control flow/launcher/package implementation changes. This branch contains no later1557/1559 package/inverse-entrypoint tests; do not import adjacent branch families. Exact guidance Fact reads all seven changed mirrors/two daemon copies."
+  },
   "verificationTools": [
     {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-order-preparation-run.py",
-      "sha256": "4ba772646550747fceeeac9f1c9a5f1375560960afb47b71954f502a5385f9be",
-      "status": "USED_CATALOG_ONCE_AND_DEPENDENT_PLAN_ONCE_ZERO_CASES"
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-preparation-run.py",
+      "sha256": "1b82e4e1c3366fb066824e4964c1cc94e7451482aac91b47ecba5e87f52c5cdd",
+      "bytes": 8756,
+      "role": "Fixed current changed-product fresh BOTH/catalog/discovery then dependent exact PlanOnly-NoBuild; ZERO actual cases",
+      "status": "UNRUN_SOURCE_ONLY_NAMED_ROOT_RELEASE_REQUIRED"
     },
     {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-order-first-run.py",
-      "sha256": "ed5c32e44ea5256ed1ca8090160cc9aaf6c298fd020b5154ef58e930e8ff0b29",
-      "status": "USED_ONCE_FIRST_NATIVE1_ONEEXECUTED_0PASS1FAIL_ORIGINAL_UNQUALIFIED"
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-whole-first-run.py",
+      "sha256": "411b9d1ca4585c6ee66d3bbd9992a95b734cd5eb4da059f25faaa3b8762c5fd0",
+      "bytes": 9552,
+      "role": "Fixed separately named protectedLate2 and each finite actual subset; NoBuild, no auto advance/retry",
+      "status": "UNRUN_SOURCE_ONLY_NAMED_ROOT_RELEASE_REQUIRED"
     },
     {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-order-first.py",
-      "sha256": "cc3d9a14a0fc5f0f46b2a9b79b005be47dc7b91c65ab827c1fe4a9b15a4180d2",
-      "status": "READ_ONLY_ARCHIVED_ORIGINAL_FIRST9CHAINS_ONCE_NOT_CAUSAL_VERDICT"
-    },
-    {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-order-preparation.py",
-      "sha256": "5e00c6e7c7496f044aa8dbc1068681601ab41882ae3888eb5d9dbcf2a5de8fde",
-      "status": "READ_ONLY_ARCHIVED_BOTH_FIRST_ZERO_RECORDS_ONE_INVOCATION_19CHAINS"
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-whole.py",
+      "sha256": "bf6503ecb8b1006842e66313da7c72fc185b217e54cd44d4ff5a62b864c36c3f",
+      "bytes": 2342,
+      "role": "Read-only full original zero/actual process/source/ledger/sentinel/stdout/runner/TRX plus any unresolved retained child roots; no cleanup/classification",
+      "status": "UNRUN_SOURCE_ONLY_NAMED_ROOT_RELEASE_REQUIRED"
     }
   ],
-  "next": "Finish fixed verification tooling, then freeze final connected SOURCE/FIXTURE/SELECTION/PREP candidate; no runtime/build yet.",
+  "next": "Frozen whole candidate is ready for connected affected SOURCE/FIXTURE/SELECTION and verification-tool review. No build/discovery/native before named Root release.",
   "sourcePinBindingMeaning": "Active authored-source hashes including necessary new helper definitions, not compiled qualification. Old44/9DLL/preparation/first RED context is retained separately. Verification tools are frozen historical source and cannot be reused unchanged for current bindings.",
   "firstActual": {
     "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
@@ -1067,10 +1109,11 @@
   "runtime": {
     "currentProductCompiled": false,
     "currentProductActualCases": 0,
-    "scope": "NO new build/discovery/native. The original accepted RED/old preparation/output inventory remain historical and immutable."
+    "currentProductDiscovery": "UNRUN",
+    "scope": "Current whole product/source/tools are uncompiled/unrun. Only original old-product causal RED and its preparation/inventory are historical accepted evidence; no execution authorization from this packet."
   },
   "currentImplementation": {
-    "sourceBase": "d6dac5251f902041d76dff983ce38e5c23693959",
+    "sourceBase": "afb5a3bb6a2dd7e066946258cbf64334bf965048",
     "status": "DRAFT_UNCOMPILED_UNRUN_CONNECTED_SOURCE_REVIEW_PENDING",
     "integrated": [
       "private FIRST2 factory and post-install/readback/release/runtime-refresh one-shot arming",
@@ -1083,9 +1126,9 @@
       "Independent private NI current-Main matching-Ready/source/delete/release observation; actual Stage coordinates retained without reviving its ConsoleOwner or changing HOT availability."
     ],
     "open": [
-      "Current whole source and every changed finite case uncompiled/unrun; connected SOURCE final verdict pending actual final verification-tool source",
-      "Freeze fixed current-product zero/actual/archive tools with current source/selection/managed output binding",
-      "Separately named fresh BOTH/catalog discovery+PlanOnly ZERO and actual/EVIDENCE; no current execution authorization",
+      "Connected final affected SOURCE/FIXTURE/SELECTION/tool review; current product uncompiled/unrun",
+      "Separately named fresh BOTH/catalog discovery then exact PlanOnly ZERO, full output inventory and no stale source/copy checks",
+      "Separately named actual finite/protected controls and independent EVIDENCE; unexpected first outcome freezes/no retry",
       "No broader NI/HOT/S/B/D9/M3/F1/platform/Windows/A3 qualification"
     ],
     "draftReviewCorrections": [
@@ -1189,5 +1232,69 @@
     "affectedExistingCases": 6,
     "status": "STATIC_PENDING_CANONICAL_DISCOVERY",
     "partition": "new51, existing exact guidance1, unchanged CUT01new3, unchanged protectedLate2"
+  },
+  "historicalPreProductVerificationTools": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-order-preparation-run.py",
+      "sha256": "4ba772646550747fceeeac9f1c9a5f1375560960afb47b71954f502a5385f9be",
+      "status": "USED_CATALOG_ONCE_AND_DEPENDENT_PLAN_ONCE_ZERO_CASES"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-order-first-run.py",
+      "sha256": "ed5c32e44ea5256ed1ca8090160cc9aaf6c298fd020b5154ef58e930e8ff0b29",
+      "status": "USED_ONCE_FIRST_NATIVE1_ONEEXECUTED_0PASS1FAIL_ORIGINAL_UNQUALIFIED"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-order-first.py",
+      "sha256": "cc3d9a14a0fc5f0f46b2a9b79b005be47dc7b91c65ab827c1fe4a9b15a4180d2",
+      "status": "READ_ONLY_ARCHIVED_ORIGINAL_FIRST9CHAINS_ONCE_NOT_CAUSAL_VERDICT"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-order-preparation.py",
+      "sha256": "5e00c6e7c7496f044aa8dbc1068681601ab41882ae3888eb5d9dbcf2a5de8fde",
+      "status": "READ_ONLY_ARCHIVED_BOTH_FIRST_ZERO_RECORDS_ONE_INVOCATION_19CHAINS"
+    }
+  ],
+  "historicalPreProductSourceReviewAtZeroPhase": "Independent bounded SOURCE/FIXTURE/SELECTION accepted f7f79f15/73771b88/fab40beb plus2 unchanged helper definitions. Root accepted original fresh ZERO preparation by5cdb8194, including19rawchains/335maininventory/1234current outputfile binding/9copies. Save carrier and separately named actual remain required; no causal EVIDENCE or testcases.",
+  "historicalFoundationGmDocsAssessment": "Client-owned lifecycle/public GM correction fields unchanged in this foundation. ErrorPrepared same-operation Held and operator recovery implications still need exact existing Mortal guide/worked-example/source-guard assessment before whole completion; no unrelated afterlife expansion.",
+  "currentVerificationContract": {
+    "expectedActivePins": 97,
+    "expectedProductDeltaPaths": 20,
+    "selection": {
+      "owners": 15,
+      "descriptors": 15,
+      "methods": 33,
+      "cases": 57,
+      "newMethods": 28,
+      "newCases": 51,
+      "affectedExistingCases": 6,
+      "status": "STATIC_PENDING_CANONICAL_DISCOVERY"
+    },
+    "zero": "Exactly one fresh catalog builds/discovers both selected projects, then dependent exact PlanOnly-NoBuild with no actual cases; original failures STOP without retry.",
+    "actual": "Each fixed mode requires separate named activation, metadata-only descendant of fresh compiled source, exact source digest/ledger/current nine copies AND all actual managed-output file set/hashes unchanged; original record written before utility assertions.",
+    "scopeModes": [
+      "protected-late2",
+      "ordering1",
+      "cut3",
+      "data15",
+      "live6",
+      "refusal9",
+      "legacy3",
+      "crash5",
+      "integrity4",
+      "close2",
+      "races2",
+      "settlement3",
+      "uncertain1",
+      "guidance1"
+    ],
+    "cleanup": "New actual fixture strict owned roots and native PID/birth/exit/join/EOF evidence; unresolved owned child roots retained and archived, never broad prefix deletion. Pure data/source guards own no fixture.",
+    "history": "Original44-pin tools/raw/335main+1234output observations remain exact historical; current inventory counts are observed fresh, never inherited."
+  },
+  "recoveryCurrentCandidate": {
+    "base": "afb5a3bb6a2dd7e066946258cbf64334bf965048",
+    "receipt": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-delta-github-afb5a3bb-20261018.json",
+    "rootComposition": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-afb5a3bb-20261017.json",
+    "status": "EXACT_FILES_COPIED_ROOT_FULL98_CHAIN_SOURCE_NEXT_WIP_PENDING_PUBLICATION"
   }
 }

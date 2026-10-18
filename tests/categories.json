@@ -124,7 +124,7 @@
 },
 {
   "id": "fr063-joint-interface-close-retention",
-  "responsibility": "Actual I-owning close after Published readback refuses transient delivery while retaining committed bytes; distinct later outer SessionOperation close preserves established completion. Error/close branches invoke direct real Stage-backup restore and actual outer validation wrapper, asserting selected graph retention.",
+  "responsibility": "Actual I-owning close after Published readback refuses transient delivery while retaining committed bytes and directly forbids destructive Stage-backup restore; a NEW current Main may lawfully consume valid Published DATA. ErrorPrepared/missing-result cases separately assert the full wrapper Held. A distinct later outer SessionOperation close preserves established completion.",
   "excludes": "No synthetic authority, new production observer/counter, generic CAS rule, ordinary I behavior change, global dedupe, or exception-only crash claim; process-loss rows are separate.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCloseRetention.cs",

@@ -45,7 +45,7 @@
     },
     {
       "category": "fr063-joint-interface-close-retention",
-      "reason": "Actual I-owning close after Published readback refuses transient delivery while retaining committed bytes; distinct later outer SessionOperation close preserves established completion. Error/close branches invoke direct real Stage-backup restore and actual outer validation wrapper, asserting selected graph retention.",
+      "reason": "Actual I-owning close after Published readback refuses transient delivery while retaining committed bytes and directly forbids destructive Stage-backup restore; a NEW current Main may lawfully consume valid Published DATA. ErrorPrepared/missing-result cases separately assert the full wrapper Held. A distinct later outer SessionOperation close preserves established completion.",
       "contracts": [
         "NI-IOBS-L01 bounded real FIRST2/Prepared\u2192I+Published/common/current-resume/late-cold DATA obligations; discovery and actual evidence are recorded separately."
       ]
