@@ -76,12 +76,16 @@ fixture caches. No production change, new route, effect or carrier.
 - Baseline is the file's physical bytes captured before creation signing. Assert
   the source completion, newly signed evaluation and pre-heal file still match it.
   Do not derive expected bytes from the post-heal output or serialize for equality.
-- Assert actual composition returns Composed, no issues, real accepted plan/receipt,
-  composition writes nothing; raw item authority then genuine publication/full refresh.
+- Preserve the existing seam order: `PrepareCanonicalRefreshItemAuthority` →
+  `ReadmitCurrentRecoveryBinding` → capture current pre-heal state → `InvokePlan`/
+  `Compose` → verify no writes → `PublishWithCanonicalRefresh`. Never prepare raw
+  item authority after Compose. Assert Composed/no issues and real plan/receipt.
   Verify same composed plan was published and canonical result contains no Error.
 - Assert wound is genuinely healed, absent from active carrier, retained History and
-  wound identity agree; all original wound-owned root effects are absent from active
-  carrier and retained expired with exact expire history. Reuse existing assertions.
+  wound identity agree; capture exact current pre-heal owned root bindings with
+  active/suspended identity proof, then require them absent from active carrier and
+  retained expired with exact expire history. Do not union retired historical
+  generations into that oracle. Reuse existing assertions.
 - Compare file existence and exact original bytes after healing plus fixed semantic
   audit rows; run separate SarefStory validation. This is historical persisted data,
   not a new Mortal Saref defeat, active cross-realm effect or test of Soul Gates.
