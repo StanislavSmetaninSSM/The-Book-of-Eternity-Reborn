@@ -9,7 +9,8 @@ Saref runtime effect, spiritual healing, E01, full T148 or Phase10.
 **Spec:** [accepted M01 source audit](t148-saref-memory-suppression-source-audit-20261018.md).
 **Base:** `0292234faa8eb1cd405ade611057be07bafa5e19`, existing task branch
 `1536-wound-b2-cloud-20261012`; #1536/T148. User authorizes implementation after
-independent plan/route review. Current status: PLAN WIP; no test/source/runtime change.
+independent plan/route review. [PLAN ACCEPTED](../recovery/t148-m01-plan-independent-review-20261018.md)
+at reviewed `b5f6ab881fa80cdea260a6dccde968dea5f1383d`; SOURCE/PREP/runtime pending.
 
 **Architecture:** call production `SarefMainStoryState.ApplyUpdate` with valid
 historical `record_defeat_outcome` inputs, persist its canonical output before the
@@ -92,7 +93,7 @@ fixture caches. No production change, new route, effect or carrier.
 
 ## Work and gates
 
-- [ ] Save/recover this plan, independent Astra XHigh plan/route/selection review;
+- [x] Save/recover this plan, independent Astra XHigh plan/route/selection review;
   resolve concrete findings before implementation. User already chose M01 and
   autonomous execution; no second routine permission question.
 - [ ] Write the one Fact and minimal test-only preparation seams. This adds coverage

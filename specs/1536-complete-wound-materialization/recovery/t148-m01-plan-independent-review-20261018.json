@@ -1,0 +1,482 @@
+{
+  "kind": "T148_M01_INDEPENDENT_PLAN_REVIEW",
+  "createdUtc": "2026-10-18T18:38:58.187281+00:00",
+  "base": "0292234faa8eb1cd405ade611057be07bafa5e19",
+  "initialReviewedCandidate": "a0ab0801118d6e079f5caf24eadf48c590780428",
+  "reviewedCandidate": "b5f6ab881fa80cdea260a6dccde968dea5f1383d",
+  "verdict": "ACCEPT_PLAN_FOR_TEST_ONLY_IMPLEMENTATION",
+  "findings": [],
+  "reviewedFiles": [
+    {
+      "path": "specs/1536-complete-wound-materialization/design/t148-m01-historical-audit-preservation-plan-20261018.md",
+      "bytes": 9541,
+      "sha256": "c23fb74fb8795682917031ea835640ffb417d720b2e82ff32e8dd2ccc43a75b7",
+      "gitBlob": "304babac5e4277979f6617e2d9d3d1053ddace98",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 2457909,
+      "sha256": "75ac109c027d15086906af96cbcc63a73e9c040055728f0db03bf32f4b1a45a5",
+      "gitBlob": "a262482049cb445b28ad7699f5977b8cc10bf792",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "bytes": 1608536,
+      "sha256": "0d650db5c0643e774083100c0d0c0d1fabcdebe90ad57cceca2295feae5964e0",
+      "gitBlob": "8e6ec8fa9742c7f613ec85a769af1a92ca0637ea",
+      "mode": "100644"
+    }
+  ],
+  "recovery": {
+    "path": "/tmp/1536-cloud-tools/carrier-recovery-b5f6ab88.json",
+    "sha256": "d4fb151f4d96e1ce6122189d2e4d4d6017a7e81aad489b574fa7925721c41422",
+    "scope": "Existing recovery receipt inspected, exact clone/local document readback verified; no new network or recovery action."
+  },
+  "acceptedScope": "Exactly one future M01 Fact proving historical canonical Saref audit bytes survive genuine accepted Mortal wound healing. No runtime suppression/effect identity, spiritual wound/E01, full T148/Phase10 or L01 admission.",
+  "routeDecision": {
+    "lawfulProducer": "Production SarefMainStoryState.ApplyUpdate(record_defeat_outcome), persisted canonically by fixture setup before first creation signature. Does not claim typed StateDistributor ingestion.",
+    "historicalRows": "Two distinct fixed outcome IDs, turns1/2 before creation42, exact memory_attack/memory_suppression semantic audit rows and sentinel checked before physical byte capture.",
+    "signaturesAndIsolation": "Fresh per-case source prepared before signing; lazy isolated-source override; direct CreateUncached bypasses both caches; nested partial Fixture legally accesses private detached source. Existing owned preparation/evaluation cleanup retained.",
+    "actualHeal": "AtDueBoundary + currentStepThreshold1 uses existing accepted recovery composition and full canonical publication. No selected joint CurrentResume/late consumer or crash5 completion is needed.",
+    "validation": "Pre/post SarefStory diagnostics retained; assert no actual Saref contract Error by path/code. Canonical refresh issues independently contain no Error. Neither statement claims full ValidateGameState universe.",
+    "oracles": "Pre-sign physical expected bytes compared at source completion, signed evaluation, pre-heal and post-heal. Actual composed plan/receipt, no-write compose, published-plan identity, healed wound/history/carrier agreement, exact current pre-heal roots actively owned before heal and expired/absent afterward."
+  },
+  "feedbackResolved": [
+    {
+      "id": "M01-ORDER",
+      "resolution": "Saved plan now explicitly requires raw item authority -> current-binding readmission -> capture current pre-heal state -> InvokePlan/Compose -> no-write check -> full refresh. No authority preparation after Compose."
+    },
+    {
+      "id": "M01-ROOTS",
+      "resolution": "Saved plan now captures actual current pre-heal owned root bindings with active/suspended identity proof; already-retired generations are excluded from the terminal-effect oracle."
+    }
+  ],
+  "selectionDecision": {
+    "plannedCategory": "saref-audit-mortal-heal-preservation",
+    "method": "BookOfEternityClient.Tests.MortalWoundRecoveryTests.Publication_TerminalHealingPreservesExistingSarefMemorySuppressionAudit",
+    "plannedActualCases": 1,
+    "timeoutMinutes": 10,
+    "budgetReason": "Same existing recovery owner bound, not a crash-budget increase; no runtime duration is claimed. Failure/timeout freezes the original.",
+    "sufficiency": "Fresh full catalog/build/discovery plus singleton PlanOnly and one first actual is sufficient if independent SOURCE proves default helper branches unchanged. No additional existing cache/recovery/L01 replay required absent a concrete changed dependency. Overlapping wildcard catalog ownership does not authorize broader actual selection."
+  },
+  "implementationAndReleaseConditions": [
+    "Only test preparation optional parameters/new partial Fact plus its exact catalog/selection/evidence closure. No production patch, new realm transition, effect bridge, shared active owner or post-sign injection.",
+    "Default null callback and source preserve old helper behavior; supplied source must be lazy and bypass both caches. A unique per-case source key must not alias shared preparation profiles. Do not portray shared timing bookkeeping as seeded cache provenance.",
+    "Capture exact expected physical bytes only after nonvacuous producer assertions and before first sign. Preserve every original helper assertion and both cleanup scopes, including callback/signature failures.",
+    "Persist this accepted PLAN before implementation. Save/recover implementation and receive independent SOURCE approval before fresh complete build/catalog/discovery and singleton PlanOnly ZERO preparation.",
+    "Independent PREP acceptance and separate saved/recovered first-actual release are still required. Use a new owned M01 TMPDIR/XDG namespace, exact NoBuild binaries/selection, native exit/TRX/counts/cleanup evidence. Save/recover original actual before independent EVIDENCE.",
+    "Unexpected failure/incomplete outcome freezes evidence. No automatic retry, assertion relaxation, budget widening, crash/sampling, old-environment operation or broad test family follows from this review."
+  ],
+  "historicalL01": {
+    "qualified": 52,
+    "total": 57,
+    "originalCrashTargetsUnqualified": 5,
+    "old66529": "UNKNOWN/unavailable/recoveryClaim=false",
+    "release": "NONE",
+    "currentPlanPinsUnchanged": 101,
+    "pinDigest": "2c144b7734708f8c02a3924d4d12a885384f05a1437021afd2845827c761c616",
+    "productPathsUnchanged": 23,
+    "futureExpectedPinExceptions": [
+      "tests/categories.json",
+      "tests/selection.json"
+    ],
+    "futureOtherPinsRequiredUnchanged": 99,
+    "bookkeeping": "Preserve original packet/cloud/method ledgers and actuals byte-exact; M01 binds independent current source/catalog/selection/binaries and verifies exact2 exceptions. Old all101-current recovery helper cannot be reused unchanged. This does not add a crash5 dependency."
+  },
+  "sourceReferences": [
+    {
+      "path": "BookOfEternityClient/Services/SarefMainStoryState.cs",
+      "lines": [
+        408,
+        640,
+        728,
+        746,
+        759,
+        764,
+        784
+      ],
+      "sha256": "e0fceb10f412b90fd07a696d55362c66da4272a730b6095a9f9e09e516861d2c",
+      "bytes": 58841,
+      "supports": "Real canonical historical audit producer; distinct IDs and positive fixed turns."
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs",
+      "lines": [
+        530,
+        2009,
+        2034,
+        2046,
+        2058,
+        2078,
+        3426
+      ],
+      "sha256": "a0f42912f0714e163a6a56147a19a8d7ef2c51849c5eba4fcfe48c947ff4c3f3",
+      "bytes": 208572,
+      "supports": "Exact memory_attack and memory_suppression audit contract."
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/IntegrationValidationProfiles.cs",
+      "lines": [
+        181
+      ],
+      "sha256": "844681abb35afa07c0c31805efe045eed14970ad6ff6e582eae651d7621c0f1e",
+      "bytes": 11755,
+      "supports": "Separate SarefStory profile; retain all diagnostics and scope Error check to actual Saref path/code."
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.cs",
+      "lines": [
+        1063,
+        1236,
+        1262,
+        1376,
+        1443,
+        1445,
+        1499,
+        1509,
+        1523,
+        1532,
+        1542,
+        1549,
+        1553,
+        1555,
+        1562,
+        1574,
+        2452,
+        2511,
+        2856
+      ],
+      "sha256": "4faf575e2f0b0660d3a02be62c4121926014f9a7d8fdae5ad287aba8c3e66aef",
+      "bytes": 175652,
+      "supports": "Pre-sign callback, detached source, two real signed turns, lazy cache bypass and owned cleanup."
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.FixtureCache.cs",
+      "lines": [
+        81,
+        113,
+        147,
+        169,
+        178,
+        189
+      ],
+      "sha256": "039c10dc47b9fff5cc8bb8a3be52c1bfc801b53a7b977a310286eb79a6d7e250",
+      "bytes": 10993,
+      "supports": "Second cache must also be bypassed; default behavior remains."
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/PreparedFixtureTree.cs",
+      "lines": [
+        26,
+        45
+      ],
+      "sha256": "ffc80c190ee24c3af5b915329f7072e6a66937c7423030068c452343e981ef2a",
+      "bytes": 2463,
+      "supports": "Detached bytes, independent evaluation root, no live ownership reuse."
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/WoundAcceptedTurnTestFixture.cs",
+      "lines": [
+        17
+      ],
+      "sha256": "6daf9a607fe43e1233b4900bf2ea3bbe9aac722a602e5c1c0732e999333861cf",
+      "bytes": 12374,
+      "supports": "Creation turn42; fixture historical turns1/2 precede it."
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.PublicationRollback.cs",
+      "lines": [
+        18,
+        20,
+        50,
+        51,
+        54,
+        56,
+        58,
+        61,
+        82,
+        83,
+        84,
+        89,
+        108,
+        123,
+        149
+      ],
+      "sha256": "d199ab077303d0b487a4d21021c614a5c01c09a23b0e7d4170302cac6249e4b1",
+      "bytes": 7465,
+      "supports": "Actual legal item authority/readmit/compose/full refresh order."
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.TerminalState.cs",
+      "lines": [
+        105,
+        119,
+        126,
+        161
+      ],
+      "sha256": "37e14464bf85ef8e86c3ca610b8b1b09aa74a6b101e52301cbc63c41fd3d3642",
+      "bytes": 10119,
+      "supports": "Actual terminal carrier/identity/history agreement."
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundRecoveryAcceptedPlanComposer.cs",
+      "lines": [
+        64
+      ],
+      "sha256": "a62f20a83f6e745830ea6d746e960be67891d24adcd85df8e7d415ca1586ecfa",
+      "bytes": 3279,
+      "supports": "Existing genuine accepted recovery composer."
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalRecovery.cs",
+      "lines": [
+        26,
+        83,
+        91,
+        97,
+        119,
+        123
+      ],
+      "sha256": "c645b92006618c59ebcd17d940944fa6af54ae83ce21e32c168fe14e95660c1a",
+      "bytes": 9491,
+      "supports": "Current recovery authority and common publication route, no joint crash dispatcher."
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs",
+      "lines": [
+        1743,
+        1754,
+        1795,
+        1798,
+        1830,
+        1873
+      ],
+      "sha256": "6b2de14c772aa509fb04d3b00192ddee491bdc3110f85aafd140ab0e63972c4d",
+      "bytes": 82191,
+      "supports": "Existing real full canonical publication and bounded diagnostics."
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SarefMainStory.cs",
+      "lines": [
+        7,
+        14,
+        20,
+        24
+      ],
+      "sha256": "74e490f5309d9b22267374a4e1017810c1e622d7f5bd842cbf22c29b7dd6347e",
+      "bytes": 1887,
+      "supports": "Canonical root/ApplyUpdate normalization behavior."
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer.cs",
+      "lines": [
+        259,
+        283,
+        406,
+        447
+      ],
+      "sha256": "af3eed10ef8f253aea0aa4d4b47b3b4690a7ba81dab4163a16aef5c62bc2dab9",
+      "bytes": 23872,
+      "supports": "Additional public-normalizer prerequisites need not be introduced before signing; existing refresh reaches Saref normalization."
+    },
+    {
+      "path": "BookOfEternityClient/Models/GameResponse.cs",
+      "lines": [],
+      "sha256": "dcc178fdcb21ed5bd5d14d2fc48c03371b8f0858e0ada86d65ab9778271f27bb",
+      "bytes": 24047,
+      "supports": "No typed Saref field; no claim of StateDistributor ingress."
+    },
+    {
+      "path": "docs/testing.md",
+      "lines": [
+        135,
+        145,
+        148,
+        152,
+        158,
+        162
+      ],
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "bytes": 18979,
+      "supports": "Singleton discovery/selection, protective budget, per-case state."
+    },
+    {
+      "path": "tests/categories.json",
+      "lines": [],
+      "sha256": "08bfb226bb044544e992996c241abbe61a87d0a3ab543a9e30e71479b85ed480",
+      "bytes": 2014078,
+      "supports": "Existing recovery owner timeout10; new exact singleton category permitted."
+    },
+    {
+      "path": "tests/selection.json",
+      "lines": [],
+      "sha256": "817e4e70d02ae22af34f1bdeeccf01e74f4a2b0e0651f1c03dfd1db548da3c4c",
+      "bytes": 8599,
+      "supports": "Independent M01 selection must replace current metadata without rewriting historical L01 packet."
+    }
+  ],
+  "staticChecks": [
+    {
+      "check": "/workspace/The-Book-of-Eternity-Reborn exact current HEAD",
+      "passed": true
+    },
+    {
+      "check": "/workspace/The-Book-of-Eternity-Reborn clean",
+      "passed": true
+    },
+    {
+      "check": "/workspace/1536-cloud-clean-restore exact current HEAD",
+      "passed": true
+    },
+    {
+      "check": "/workspace/1536-cloud-clean-restore clean",
+      "passed": true
+    },
+    {
+      "check": "only requested plan refinement after initial candidate",
+      "passed": true
+    },
+    {
+      "check": "exact 8 added / 4 removed lines",
+      "passed": true
+    },
+    {
+      "check": "three documentation paths from accepted base",
+      "passed": true
+    },
+    {
+      "check": "receipt exact candidate/base and expected scope",
+      "passed": true
+    },
+    {
+      "check": "receipt records clean independent GitHub recovery",
+      "passed": true
+    },
+    {
+      "check": "exact document source/clone/hash/blob/mode specs/1536-complete-wound-materialization/design/t148-m01-historical-audit-preservation-plan-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "exact document source/clone/hash/blob/mode specs/1536-complete-wound-materialization/plan.md",
+      "passed": true
+    },
+    {
+      "check": "exact document source/clone/hash/blob/mode specs/1536-complete-wound-materialization/tasks.md",
+      "passed": true
+    },
+    {
+      "check": "handoff preserves previous full text specs/1536-complete-wound-materialization/plan.md",
+      "passed": true
+    },
+    {
+      "check": "handoff preserves previous full text specs/1536-complete-wound-materialization/tasks.md",
+      "passed": true
+    },
+    {
+      "check": "critical historical object unchanged specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "critical historical object unchanged specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-method-row-ledger-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "critical historical object unchanged specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-qualification-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "101 pins / product23 / exact prior digest",
+      "passed": true
+    },
+    {
+      "check": "correction is documentation-only and old pin values preserved",
+      "passed": true
+    },
+    {
+      "check": "supporting source unchanged BookOfEternityClient/Services/SarefMainStoryState.cs",
+      "passed": true
+    },
+    {
+      "check": "supporting source unchanged BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs",
+      "passed": true
+    },
+    {
+      "check": "supporting source unchanged BookOfEternityClient.IntegrationTests/IntegrationValidationProfiles.cs",
+      "passed": true
+    },
+    {
+      "check": "supporting source unchanged BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.cs",
+      "passed": true
+    },
+    {
+      "check": "supporting source unchanged BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.FixtureCache.cs",
+      "passed": true
+    },
+    {
+      "check": "supporting source unchanged BookOfEternityClient.IntegrationTests/PreparedFixtureTree.cs",
+      "passed": true
+    },
+    {
+      "check": "supporting source unchanged BookOfEternityClient.TestSupport/WoundAcceptedTurnTestFixture.cs",
+      "passed": true
+    },
+    {
+      "check": "supporting source unchanged BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.PublicationRollback.cs",
+      "passed": true
+    },
+    {
+      "check": "supporting source unchanged BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.TerminalState.cs",
+      "passed": true
+    },
+    {
+      "check": "supporting source unchanged BookOfEternityClient/Services/MortalWoundRecoveryAcceptedPlanComposer.cs",
+      "passed": true
+    },
+    {
+      "check": "supporting source unchanged BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalRecovery.cs",
+      "passed": true
+    },
+    {
+      "check": "supporting source unchanged BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs",
+      "passed": true
+    },
+    {
+      "check": "supporting source unchanged BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SarefMainStory.cs",
+      "passed": true
+    },
+    {
+      "check": "supporting source unchanged BookOfEternityClient/Services/CanonicalStateNormalizer.cs",
+      "passed": true
+    },
+    {
+      "check": "supporting source unchanged BookOfEternityClient/Models/GameResponse.cs",
+      "passed": true
+    },
+    {
+      "check": "supporting source unchanged docs/testing.md",
+      "passed": true
+    },
+    {
+      "check": "supporting source unchanged tests/categories.json",
+      "passed": true
+    },
+    {
+      "check": "supporting source unchanged tests/selection.json",
+      "passed": true
+    }
+  ],
+  "reviewServiceHistory": [
+    {
+      "event": "Read-only static verifier targeted initial a0ab while writer saved announced b5f6 refinement",
+      "observed": "Initial candidate HEAD/clone HEAD/plan-bytes assertions failed; all other checks had no failures. No report was written and no acceptance was inferred.",
+      "resolution": "Read exact8+/4- documentation correction and existing b5f6 receipt; focused final checks bind b5f6. No native retry or product/test execution occurred."
+    }
+  ],
+  "limits": [
+    "Plan feasibility only; M01 UNRUN and source not implemented or admitted by this verdict.",
+    "No production data-loss defect established; no performance or full runtime-effect result claimed.",
+    "Read-only source/Git/file checks only; no build/discovery/test/runtime/observer/diagnostic/process/recovery action or repository edit."
+  ]
+}

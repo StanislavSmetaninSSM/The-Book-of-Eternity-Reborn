@@ -1,6 +1,7 @@
-## T148 M01 — implementation выбрана; PLAN WIP (2026-10-18)
+## T148 M01 — PLAN принят; implementation следующая (2026-10-18)
 
-- [ ] [Один M01 audit-state regression](design/t148-m01-historical-audit-preservation-plan-20261018.md): independent plan/route gate → test-only SOURCE → fresh catalog/build/discovery/PlanOnly PREP → first singleton actual → independent EVIDENCE и GitHub recovery. Сейчас только PLAN WIP; ни код, ни runtime не начаты. M01 не закрывает E01/T148/Phase10; L01 остаётся52/57 со всеми holds.
+- [x] [Independent PLAN/route review](recovery/t148-m01-plan-independent-review-20261018.md) exact b5f6ab88 принимает законный historical producer/pre-sign uncached fixture/actual Mortal heal без L01 crash5; raw item authority до Compose и current pre-heal root oracle закреплены. Save/recovery до test-only реализации.
+- [ ] [Один M01 audit-state regression](design/t148-m01-historical-audit-preservation-plan-20261018.md): test-only SOURCE → fresh catalog/build/discovery/PlanOnly PREP → first singleton actual → independent EVIDENCE и GitHub recovery. SOURCE/PREP/actual ещё не допущены; M01 UNRUN и не закрывает E01/T148/Phase10. L01 остаётся 52/57 со всеми holds.
 
 ## T148 — bounded SOURCE audit принят, полная задача открыта (2026-10-18)
 

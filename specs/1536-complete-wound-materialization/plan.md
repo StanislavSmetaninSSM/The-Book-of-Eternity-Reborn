@@ -1,11 +1,14 @@
-## T148 M01 — выбран один audit-state regression; PLAN WIP (2026-10-18)
+## T148 M01 — PLAN принят; test-only SOURCE следующий (2026-10-18)
 
 Продолжение от `0292234faa8eb1cd405ade611057be07bafa5e19` выбрано пользователем.
 [Точный M01 план](design/t148-m01-historical-audit-preservation-plan-20261018.md)
 перед реализацией требует независимого plan/route review: genuine ApplyUpdate
 до creation sign, fresh uncached per-case preparation, existing accepted Mortal heal
 и exact original audit bytes. Feasibility по исходникам подтверждена отдельно;
-formal review pending, implementation/runtime ещё не начаты. Код production
+formal [independent PLAN review](recovery/t148-m01-plan-independent-review-20261018.md)
+принимает exact `b5f6ab881fa80cdea260a6dccde968dea5f1383d` без unresolved blockers.
+После save/recovery допускается только test-only реализация; SOURCE/PREP/actual
+ещё не приняты и M01 UNRUN. Код production
 можно менять только после доказанного defect/report/плана; новой механики нет.
 
 Catalog/current selection M01 дадут ровно два ожидаемых изменения historical L01
