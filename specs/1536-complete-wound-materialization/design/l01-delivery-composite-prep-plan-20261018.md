@@ -47,8 +47,9 @@ installed SDK manifest bindings stopped before discovery. The11raw originals and
 first outcome are immutable. Independent [diagnosis/minimal correction plan](../recovery/l01-delivery-d02-binding-failure-independent-review-20261018.md)
 accepts only16exact already installed WorkloadManifest.targets additions to360pins
 and new unused `/tmp/l01d02-b796a0e4bf514a62`. Functions/accounting/closure rows/
-149pins/budgets stay unchanged; unknown imports still HOLD. This is an affected
-SOURCE candidate, not execution or PREP acceptance. No rebuild/install/restore is
+149pins/budgets stay unchanged; unknown imports still HOLD. Affected SOURCE accepts
+5e2a3c5a,18focused checks/findings[], with ZERO only after saved/recovered acceptance.
+This is not PREP acceptance. No rebuild/install/restore is
 justified; unit binding and complete catalog are still unobserved.
 
 ## Bounded source and stages

@@ -1,10 +1,10 @@
 {
   "kind": "D02_COMPOSITE_CONTINUATION_CONTROL",
   "source": {
-    "status": "HOLD_AFFECTED_IMPORT_BINDING_SOURCE",
-    "candidate": "5efddae52f18d723b8e8365127ef88aac6b04bfb",
-    "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-source-independent-review-20261018.json",
-    "reviewSha256": "18666d3b02908c64d3c9801f8e020fd7a9eda7658bc8ea2e95afebf02e73fea8",
+    "status": "SOURCE_ACCEPTED_COMPOSITE_ZERO_ONLY",
+    "candidate": "5e2a3c5a612a96080f39302314aa6f3c60528976",
+    "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-import-corrected-source-independent-review-20261018.json",
+    "reviewSha256": "b9844da3f8e9e8480a47b01457d34d03e7591629f10a411bf7f82098e54479ca",
     "allowedOnceModes": [
       "catalog",
       "plan",
@@ -12,7 +12,12 @@
     ],
     "firstOutcome": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-first-binding-failure-20261018.json",
     "minimalPlanReviewPath": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-binding-failure-independent-review-20261018.json",
-    "minimalPlanReviewSha256": "651f8338d2256a347ad29a370f2448bf1b522eb6c2bc17bc71f982a46fd453ab"
+    "minimalPlanReviewSha256": "651f8338d2256a347ad29a370f2448bf1b522eb6c2bc17bc71f982a46fd453ab",
+    "previousSourceReview": {
+      "candidate": "5efddae52f18d723b8e8365127ef88aac6b04bfb",
+      "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-source-independent-review-20261018.json",
+      "reviewSha256": "18666d3b02908c64d3c9801f8e020fd7a9eda7658bc8ea2e95afebf02e73fea8"
+    }
   },
   "synthetic": {
     "status": "HOLD_PREP_REQUIRED"
