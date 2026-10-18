@@ -1,0 +1,208 @@
+{
+  "kind": "D02_FIRST_SYNTHETIC_DELIVERY_ORIGINAL_EVIDENCE",
+  "status": "SYNTHETIC2_NATIVE_VERIFIED_PENDING_INDEPENDENT_EVIDENCE",
+  "source": "237a26c39d5530933ff844209349d20bc8303111",
+  "root": "/tmp/l01d02-b796a0e4bf514a62/synthetic",
+  "controllerSha256": "42837634637f1e0ee5c3752147263bdd7f5388775abf741c033ff55f937e26b6",
+  "bindingsSha256": "0565587f35dd6fca647e0235141ffe9f5cc98f0ac3485173d2f286ec239d33ff",
+  "sourcePinDigest": "b277e73745c98abdc78f5feaa62a68373c2bf26b4b6115a20e4aa5207970e9ef",
+  "compilationProvenance": {
+    "integration": "d53e61e5dc9e610416e0e9cc2601a2e6933ec7fe",
+    "unit": "d3a1ddcf7a6e2f06ae815877c46314ec81d9f0d7"
+  },
+  "directLiveCompiledSource": "3a36b1f1b790205099f6c940b0e362e456fa0975",
+  "prepAcceptanceCarrier": "237a26c39d5530933ff844209349d20bc8303111",
+  "prepReviewPath": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-composite-prep-independent-review-20261018.json",
+  "prepReviewSha256": "8fe784c66f294082180087b3cd366d4a63b0bb402f65fc88acefae0401e1f291",
+  "recordSha256": "9ceee126edea7ed15f4aa72dba88de475dab46a3c658058807b4d7e82836d898",
+  "verificationNativeExit": 0,
+  "observerErrors": [],
+  "durationSeconds": 5.190647966002871,
+  "fixtureSubprocessTargets": 2,
+  "readerHarnessProcesses": 2,
+  "testsExecuted": 0,
+  "gameProcesses": 0,
+  "diagnosticRequests": 0,
+  "normal899UnchangedBeforeAfter": true,
+  "afterLiveTools": [],
+  "caseSummary": [
+    {
+      "expectedTargetNativeExit": 0,
+      "targetIdentity": {
+        "pid": 112101,
+        "birthTick": 4917573,
+        "parentPid": 112073,
+        "uid": 1000
+      },
+      "readerIdentity": {
+        "pid": 112102,
+        "birthTick": 4917574,
+        "parentPid": 112073,
+        "uid": 1000
+      },
+      "targetNativeExit": 0,
+      "readerNativeExit": 0,
+      "passed": true,
+      "childAliveBeforeStop": true,
+      "liveRawPending": true,
+      "liveUncertain": false,
+      "liveMalformed": 0,
+      "joinedEof": true,
+      "rawStdoutSha256": "012da331605ed303b5648db7b2485dd3ed882a9be31e941f4b74eab77756af63",
+      "mvid": "b392b19e-acad-44d7-93f2-a5347fb3e1d4"
+    },
+    {
+      "expectedTargetNativeExit": 7,
+      "targetIdentity": {
+        "pid": 112123,
+        "birthTick": 4917622,
+        "parentPid": 112073,
+        "uid": 1000
+      },
+      "readerIdentity": {
+        "pid": 112124,
+        "birthTick": 4917622,
+        "parentPid": 112073,
+        "uid": 1000
+      },
+      "targetNativeExit": 7,
+      "readerNativeExit": 0,
+      "passed": true,
+      "childAliveBeforeStop": true,
+      "liveRawPending": true,
+      "liveUncertain": true,
+      "liveMalformed": 1,
+      "joinedEof": true,
+      "rawStdoutSha256": "333347679a3388bea320b4725b3bd54d76064e177782d4b6d89ab41cf6e27db1",
+      "mvid": "b392b19e-acad-44d7-93f2-a5347fb3e1d4"
+    }
+  ],
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-synthetic-first-originals-20261018.zip",
+    "bytes": 12470,
+    "sha256": "514e464f3b836736f8187ab0daefcbcd5625d7ea71783fa1ae9e95ae958f7c3a",
+    "members": [
+      {
+        "originalPath": "/tmp/l01d02-b796a0e4bf514a62/synthetic/started.json",
+        "member": "started.json",
+        "bytes": 865,
+        "sha256": "ad2d6ccc5c8e941c6d07155ec9bdf38bb3b26a2b0e604c5e6c10172b24233ce2"
+      },
+      {
+        "originalPath": "/tmp/l01d02-b796a0e4bf514a62/synthetic/record.json",
+        "member": "record.json",
+        "bytes": 13388,
+        "sha256": "9ceee126edea7ed15f4aa72dba88de475dab46a3c658058807b4d7e82836d898"
+      },
+      {
+        "originalPath": "/tmp/l01d02-b796a0e4bf514a62/synthetic/exit0/started.json",
+        "member": "exit0/started.json",
+        "bytes": 300,
+        "sha256": "c81e2fb61d365b450695420034131a6974469c365a6f626cc7d0a9e0d230dcb2"
+      },
+      {
+        "originalPath": "/tmp/l01d02-b796a0e4bf514a62/synthetic/exit0/record.json",
+        "member": "exit0/record.json",
+        "bytes": 4744,
+        "sha256": "7a2565c6641aba75dd88261bdfa4782d122fa78c5d4947446eab51464509d6f7"
+      },
+      {
+        "originalPath": "/tmp/l01d02-b796a0e4bf514a62/synthetic/exit0/target-identity.json",
+        "member": "exit0/target-identity.json",
+        "bytes": 499,
+        "sha256": "f90422635f55c5fb424e4957550a5aa3d435f1678d45c6c12b9d3a478c7535cb"
+      },
+      {
+        "originalPath": "/tmp/l01d02-b796a0e4bf514a62/synthetic/exit0/reader-identity.json",
+        "member": "exit0/reader-identity.json",
+        "bytes": 460,
+        "sha256": "168a7947adda19799d16be80b948a7ffc0068e3f4fbb09f31be347b6b5665c7a"
+      },
+      {
+        "originalPath": "/tmp/l01d02-b796a0e4bf514a62/synthetic/exit0/reader-manifest.json",
+        "member": "exit0/reader-manifest.json",
+        "bytes": 157,
+        "sha256": "d9df42c1afd2169d489104a44b86cf375c42ccc7b34633abb0e1cd41d310ba85"
+      },
+      {
+        "originalPath": "/tmp/l01d02-b796a0e4bf514a62/synthetic/exit0/target.stderr",
+        "member": "exit0/target.stderr",
+        "bytes": 265,
+        "sha256": "39eeec378230cc2f87a4854b9d0e1794acd0d9a2ae1560ca7611d23fba074211"
+      },
+      {
+        "originalPath": "/tmp/l01d02-b796a0e4bf514a62/synthetic/exit0/reader.stdout",
+        "member": "exit0/reader.stdout",
+        "bytes": 2370,
+        "sha256": "006009ad1f3f01b8d2df30e2ea40ea606dbc816c4df2e1ad48d80f46feb3aab1"
+      },
+      {
+        "originalPath": "/tmp/l01d02-b796a0e4bf514a62/synthetic/exit0/reader.stderr",
+        "member": "exit0/reader.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "originalPath": "/tmp/l01d02-b796a0e4bf514a62/synthetic/exit7/started.json",
+        "member": "exit7/started.json",
+        "bytes": 300,
+        "sha256": "7ab4d61f8bed133c4fc95035bdcff784fdc6cbc9cc7a9bed866e85e463c5719a"
+      },
+      {
+        "originalPath": "/tmp/l01d02-b796a0e4bf514a62/synthetic/exit7/record.json",
+        "member": "exit7/record.json",
+        "bytes": 4775,
+        "sha256": "2b69630b002a4f6a6d9b6d72cba16a6c07f4b13cc645909c56813b0aaeb94d72"
+      },
+      {
+        "originalPath": "/tmp/l01d02-b796a0e4bf514a62/synthetic/exit7/target-identity.json",
+        "member": "exit7/target-identity.json",
+        "bytes": 499,
+        "sha256": "3116513e1f79babf1586bb47ab224dc1eadb02438ec13ec8bba6e68ff5f3c6b5"
+      },
+      {
+        "originalPath": "/tmp/l01d02-b796a0e4bf514a62/synthetic/exit7/reader-identity.json",
+        "member": "exit7/reader-identity.json",
+        "bytes": 460,
+        "sha256": "ef760546587656dd817f7399820fdbabfd0d091ccd31313b5a70f6a841d9050b"
+      },
+      {
+        "originalPath": "/tmp/l01d02-b796a0e4bf514a62/synthetic/exit7/reader-manifest.json",
+        "member": "exit7/reader-manifest.json",
+        "bytes": 157,
+        "sha256": "206cf38f6d93065929c66e81d0ad91b00694c75f58f5c1f0b6e072faca7ca1e4"
+      },
+      {
+        "originalPath": "/tmp/l01d02-b796a0e4bf514a62/synthetic/exit7/target.stderr",
+        "member": "exit7/target.stderr",
+        "bytes": 265,
+        "sha256": "d227ef6eace86010160cf6ba5ed5df64f946349477a55d971cd4c1be1792c93b"
+      },
+      {
+        "originalPath": "/tmp/l01d02-b796a0e4bf514a62/synthetic/exit7/reader.stdout",
+        "member": "exit7/reader.stdout",
+        "bytes": 2401,
+        "sha256": "c3c7d151c819783ecce15b46e6ec7845db68477113f37892c10dfd5cea550995"
+      },
+      {
+        "originalPath": "/tmp/l01d02-b796a0e4bf514a62/synthetic/exit7/reader.stderr",
+        "member": "exit7/reader.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "permit": "CONSUMED_NO_RETRY",
+  "sourceToReceiveLatency": "UNKNOWN",
+  "capturePhase": "UNKNOWN",
+  "sourceEmissionCompleteness": "UNKNOWN",
+  "rawRecoveryScope": "Exact JSON/log bytes include decoded RawStdout and its child-self SHA equality; there is no separate target-stdout pipe artifact. Private integration/unit closures are not archived.",
+  "originalCatalog124Replaced": false,
+  "originalUnit137Replaced": false,
+  "firstBindingFailureReplaced": false,
+  "L01Qualified": "52/57",
+  "old66529": "UNKNOWN_UNAVAILABLE_NO_RECOVERY_CLAIM",
+  "gameplayRelease": "NONE",
+  "crash5Release": "NONE",
+  "allBroaderHoldsUnchanged": true
+}
