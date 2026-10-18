@@ -1,3 +1,19 @@
+## T148 M01 — test-only SOURCE WIP; runtime не допущен (2026-10-18)
+
+Реализован один Fact `Publication_TerminalHealingPreservesExistingSarefMemorySuppressionAudit`,
+pre-sign production ApplyUpdate, source/evaluation cache bypass, fixed historical
+semantics и physical byte oracle, actual heal/expired-root/history/cleanup assertions.
+Два optional test preparation parameters сохраняют default ветви; новый readonly
+`PreparedFixtureTree.ReadFileBytes` возвращает копию завершённого source snapshot.
+Ruling: этот узкий test-helper getter нужен для source-completion byte assertion
+после owned source cleanup, без reflection или дополнительного mutable root.
+
+Добавлены singleton category/current selection и [M01 SOURCE packet](recovery/t148-m01-source-packet-20261018.json),
+одна-фаза runner и отдельный recovery с exact2 historical pin exceptions. Все старые
+catalog entries семантически неизменны; packet/ledgers прежнего L01 byte-exact,
+остальные99/product23 unchanged. Production diff пуст; build/discovery/actual ещё
+не запускались. Independent SOURCE review требуется до fresh ZERO PREP; M01 UNRUN.
+
 ## T148 M01 — PLAN принят; test-only SOURCE следующий (2026-10-18)
 
 Продолжение от `0292234faa8eb1cd405ade611057be07bafa5e19` выбрано пользователем.

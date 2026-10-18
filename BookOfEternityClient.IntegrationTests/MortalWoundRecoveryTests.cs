@@ -1373,7 +1373,8 @@ public sealed partial class MortalWoundRecoveryTests
         /// <returns>
         /// Portable source bytes and private comparison copies after disposing the hookless source owner.
         /// </returns>
-        private static PreparedRecoverySource PrepareRecoverySourceTemplate(Scenario scenario, string key)
+        private static PreparedRecoverySource PrepareRecoverySourceTemplate(Scenario scenario, string key,
+            Action<FileSystemManager>? beforeCreation = null)
         {
             SourcePreparationCounts.AddOrUpdate(key, 1, static (_, count) => checked(count + 1));
             var preparationTimer = Stopwatch.StartNew();
@@ -1440,6 +1441,7 @@ public sealed partial class MortalWoundRecoveryTests
                     };
                 }
                 Write(fs, EffectAcceptedTurnInputComposer.WorldTimePath, scenario.WorldTime);
+                beforeCreation?.Invoke(fs);
                 creationInput = PrepareSignedCreationTurn(fs, creationInput);
                 AssertLiveTurnCorrelation(fs, creationInput.Binding, creationInput);
                 lease = fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
@@ -1520,7 +1522,7 @@ public sealed partial class MortalWoundRecoveryTests
         /// <returns>
         /// A temporary fresh owner that must be disposed after its completed signed files are captured.
         /// </returns>
-        private static Fixture CreateUncached(Scenario scenario)
+        private static Fixture CreateUncached(Scenario scenario, PreparedRecoverySource? isolatedSource = null)
         {
             var key = GetSourcePreparationKey(scenario);
             var detached = scenario with
@@ -1529,7 +1531,7 @@ public sealed partial class MortalWoundRecoveryTests
                 WorldTime = scenario.WorldTime.DeepClone().AsObject(),
                 IntentTypes = scenario.IntentTypes.ToArray()
             };
-            var source = PreparedRecoverySources.GetOrAdd(key, _ =>
+            var source = isolatedSource ?? PreparedRecoverySources.GetOrAdd(key, _ =>
                 new Lazy<PreparedRecoverySource>(() => PrepareRecoverySourceTemplate(detached, key),
                     LazyThreadSafetyMode.ExecutionAndPublication)).Value;
             var root = Path.Combine(Path.GetTempPath(), "boe-t062-" + Guid.NewGuid().ToString("N"));

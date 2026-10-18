@@ -57,5 +57,12 @@ internal sealed class PreparedFixtureTree
         }
     }
 
+    /// <summary>Reads a detached file image from completed preparation without a writable owner.</summary>
+    /// <param name="relativePath">Exact slash-separated path relative to the captured corpus.</param>
+    /// <returns>A private copy; changing it cannot modify the prepared tree.</returns>
+    internal byte[] ReadFileBytes(string relativePath) => _files.Single(file =>
+        string.Equals(file.RelativePath.Replace('\\', '/'), relativePath, StringComparison.Ordinal))
+        .Content.ToArray();
+
     private sealed record FixtureFile(string RelativePath, byte[] Content);
 }

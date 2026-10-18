@@ -2,6 +2,23 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "saref-audit-mortal-heal-preservation",
+  "responsibility": "M01: exact historical canonical Saref audit bytes survive genuine accepted Mortal recovery/heal, with pre-sign production producer, isolated uncached preparation, actual terminal history and owned cleanup.",
+  "excludes": "No independent Saref effect materialization/lifetime, spiritual healing/E01/T148 completion, cross-realm active effect, L01 replay/crash/sampling, production remedy or CI execution.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.SarefAuditPreservation.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.cs",
+    "BookOfEternityClient.IntegrationTests/PreparedFixtureTree.cs"
+  ],
+  "related": [],
+  "requirements": { "frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04" },
+  "timeoutMinutes": 10,
+  "expectedSeconds": null,
+  "selectors": [{ "project": "integration", "tests": [
+    "BookOfEternityClient.Tests.MortalWoundRecoveryTests.Publication_TerminalHealingPreservesExistingSarefMemorySuppressionAudit"
+  ] }]
+},
+{
   "id": "fr063-joint-interface-crash-diagnostic",
   "responsibility": "One isolated diagnostic cut1 invokes the original genuine process-loss fixture and all its unchanged positive/once-only/current DATA/cleanup assertions. Flushed scalar stages/live bounded logs locate the cold current-owner blocked await. Diagnostic evidence only; excluded from original57 target union.",
   "excludes": "No crash5 requalification or extra qualified target, production remedy, old root reuse, user save, larger child/category bounds, skipped assertions or synthetic process loss.",

@@ -54,6 +54,10 @@ fixture caches. No production change, new route, effect or carrier.
   `PrepareRecoverySourceTemplate(Scenario, string, Action<FileSystemManager>? beforeCreation = null)`;
   `CreateUncached(Scenario, PreparedRecoverySource? isolatedSource = null)`.
   Old callers use defaults; existing cache keys and assertions remain unchanged.
+- SOURCE implementation ruling: add readonly `PreparedFixtureTree.ReadFileBytes`
+  returning a copy, so the Fact can compare completed source snapshot bytes after
+  source root cleanup. This avoids reflection or a third mutable materialization;
+  existing Capture/Materialize paths and default callers remain unchanged.
 - Nested `Fixture.CreateForHistoricalSarefAudit(Scenario)` returns the actual Fixture
   and a detached `byte[]` expected audit image. It can access its private source
   types; do not expose them or use reflection. Per-case source key is unique and
