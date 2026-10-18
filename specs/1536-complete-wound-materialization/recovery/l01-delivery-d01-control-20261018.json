@@ -2,13 +2,18 @@
   "kind": "D01_GATED_CONTROL",
   "sourcePinDigest": "b277e73745c98abdc78f5feaa62a68373c2bf26b4b6115a20e4aa5207970e9ef",
   "source": {
-    "status": "SOURCE_ACCEPTED_ZERO_ONLY",
+    "status": "SOURCE_ACCEPTED_PREP_FROZEN",
     "candidate": "4810d2ad2ac5121aacabb21bf49cfb0b56a0da09",
     "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-live-delivery-source-independent-review-20261018.json",
-    "reviewSha256": "9244d70026710a46a038b3583d42f5962bf201559f8de7fde2481866190b8822"
+    "reviewSha256": "9244d70026710a46a038b3583d42f5962bf201559f8de7fde2481866190b8822",
+    "zeroPermitOutcome": "FIRST_CATALOG_NATIVE124_NO_DEPENDENT_PHASES"
   },
   "synthetic": {
-    "status": "CLOSED_UNRUN"
+    "status": "HOLD_PREP_CATALOG124_UNRUN"
   },
-  "gameplayRelease": "NONE"
+  "gameplayRelease": "NONE",
+  "firstPrepFailure": {
+    "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-first-prep-failure-20261018.json",
+    "sha256": "ea02dbddfa33802c4e3f270f41ead889aaadc9e7313a9a8a9411a2bdd7d535d8"
+  }
 }

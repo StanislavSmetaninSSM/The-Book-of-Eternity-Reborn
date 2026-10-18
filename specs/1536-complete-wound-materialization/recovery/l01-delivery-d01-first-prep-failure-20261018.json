@@ -1,0 +1,151 @@
+{
+  "kind": "D01_FIRST_PREP_CATALOG_FROZEN_ORIGINAL",
+  "source": "d53e61e5dc9e610416e0e9cc2601a2e6933ec7fe",
+  "sourcePinDigest": "b277e73745c98abdc78f5feaa62a68373c2bf26b4b6115a20e4aa5207970e9ef",
+  "status": "PREP_BLOCKED_CATALOG_TIMEOUT",
+  "nativeExit": 124,
+  "observerErrors": [],
+  "phaseDurationSeconds": 651.885419863007,
+  "runnerSummary": {
+    "Categories": [
+      null
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": true,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "d53e61e5dc9e610416e0e9cc2601a2e6933ec7fe",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.2855346,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.3172871,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.723161,
+        "Completed": true
+      },
+      {
+        "Name": "Build-integration",
+        "Seconds": 520.5722769,
+        "Completed": true
+      },
+      {
+        "Name": "Build-unit",
+        "Seconds": 72.2731552,
+        "Completed": false
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:10:22.6588445",
+    "ExitCode": 124,
+    "TimedOut": true,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 0,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 0,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "integrationBuildNativeExit": 0,
+  "integrationDiscoveryNativeExit": 0,
+  "unitBuildNativeExit": 137,
+  "unitDiscovery": "UNRUN",
+  "buildFailureCausality": "Runner reports Build-unit exceeded selected10min verification budget. Exit137 is retained; no independent CPU/memory/OOM/root-cause conclusion yet.",
+  "verifiedInstalledInputs": {
+    "count": 172,
+    "sha256": "1ee529f929e54f79a2f3b2c7a516ef0afeb6cc0b32cfb9a73f174dd44b392cce"
+  },
+  "binaryInventoryCount": 899,
+  "binaryInventoryQualification": "Partial PREP snapshot only; unit build incomplete, no accepted NoBuild or cross-build equivalence.",
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-first-prep-failure-originals-20261018.zip",
+    "bytes": 261302,
+    "sha256": "b7ac760f50c47b32167db17de8268beedc996d6e8b407025da1f54f1b4e1522a",
+    "members": [
+      {
+        "originalPath": "/tmp/l01d01-76df8b42f6ad4ea2/d01-catalog/started.json",
+        "member": "phase/started.json",
+        "bytes": 366,
+        "sha256": "78b7383993827c3bd172b2940d16fd536ed5f8bd71bbf23f4ed42bd7f97a3255"
+      },
+      {
+        "originalPath": "/tmp/l01d01-76df8b42f6ad4ea2/d01-catalog/record.json",
+        "member": "phase/record.json",
+        "bytes": 216252,
+        "sha256": "f28173fd0e23c4211005f55d3a4fdab73b8eda7e88f29f1fe8d12f88e0c174e8"
+      },
+      {
+        "originalPath": "/tmp/l01d01-76df8b42f6ad4ea2/d01-catalog/stdout.txt",
+        "member": "phase/stdout.txt",
+        "bytes": 709,
+        "sha256": "1abdd34d1b81a0376759934fd2d1aba2c1a67de309a2dbbb248e18f7b2ff181e"
+      },
+      {
+        "originalPath": "/tmp/l01d01-76df8b42f6ad4ea2/d01-catalog/stderr.txt",
+        "member": "phase/stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "originalPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-211003-260-97402-80a4cb573f194415b112c69644cb31ec-categories/Build-integration.log",
+        "member": "runner/Build-integration.log",
+        "bytes": 137362,
+        "sha256": "9451789022ae58d24f96d50cbf7db88b5cd96076b5be9016b2d8652972168b69"
+      },
+      {
+        "originalPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-211003-260-97402-80a4cb573f194415b112c69644cb31ec-categories/dotnet-test.log",
+        "member": "runner/dotnet-test.log",
+        "bytes": 1838293,
+        "sha256": "3ceefee59fcf6411517a00aeedcceab912394121eadad7e8b3ace40dcca22945"
+      },
+      {
+        "originalPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-211003-260-97402-80a4cb573f194415b112c69644cb31ec-categories/summary.json",
+        "member": "runner/summary.json",
+        "bytes": 1394,
+        "sha256": "eb41d88fed77e2e56aa7b62f72f5857bd5b0b7363cdf87fc77bb18d5dc7f8476"
+      }
+    ]
+  },
+  "executedTests": 0,
+  "fixtureSubprocessTargets": 0,
+  "gameProcesses": 0,
+  "diagnosticRequests": 0,
+  "dependentPhases": {
+    "plan": "UNRUN",
+    "prepare": "UNRUN",
+    "synthetic": "UNRUN"
+  },
+  "readOnlyStatusProbe": {
+    "scope": "Known own PREP parent97402 only; no signals/intervention/replacement lookup.",
+    "outcome": "FileNotFoundError reading task97402/children after initial parent command validation; auxiliary observer probe, not native PREP outcome. Later status read returned parent sleeping. No CPU measurement obtained."
+  },
+  "release": "NONE",
+  "gameplayRelease": "NONE",
+  "limits": "Freeze first failure, independent bounded diagnosis before any retry/source correction. Do not increase budgets or qualify partial catalog. L0152/57, old66529UNKNOWN, crash5 and all platform/broader holds unchanged."
+}
