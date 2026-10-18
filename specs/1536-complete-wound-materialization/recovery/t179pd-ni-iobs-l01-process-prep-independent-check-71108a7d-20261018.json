@@ -1,0 +1,169 @@
+{
+  "kind": "INDEPENDENT_CORRECTED_PROCESS_IDENTITY_ZERO_PREPARATION_CHECK",
+  "compiledSource": "71108a7df72204a1bdcc143feb84d5c857eef1a1",
+  "acceptedFixtureSource": "c4c0c62fbf37d2b0699b72e95794e4e3cef50535",
+  "status": "FRESH_ZERO_QUALIFIED_AWAITING_SAVED_CARRIER",
+  "records": [
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-current/record.json",
+      "bytes": 754103,
+      "sha256": "c925dd76bc8fb380d1772d8e7056d389889be77a0303196d65e68692f7a9506c",
+      "mode": "catalog",
+      "nativeExit": 0,
+      "wallSeconds": 92.08124107398908,
+      "actualExecuted": 0
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-whole-plan-current/record.json",
+      "bytes": 754165,
+      "sha256": "3ff212fa43aa86e39fcaf95356c9f7f0747e116389a130e36e51c5268528fcb4",
+      "mode": "plan",
+      "nativeExit": 0,
+      "wallSeconds": 6.116564047013526,
+      "actualExecuted": 0
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-current/record.json",
+      "bytes": 754314,
+      "sha256": "b983d7204f61b8fe5d86669d2c47846d5f91bee09fa39ea1b16eb0cda8a73d27",
+      "mode": "remaining-plan",
+      "nativeExit": 0,
+      "wallSeconds": 3.54124421699089,
+      "actualExecuted": 0
+    }
+  ],
+  "archive": {
+    "path": "/tmp/t179pd-ni-iobs-l01-process-preparation-archive-first-71108a7d-20261018/archive.json",
+    "bytes": 17403,
+    "sha256": "be265cc0a435231f0aa65d4dbdf43805a08066e24127cabf54d1c72a2525b1bc"
+  },
+  "exactOriginalGzipChains": 32,
+  "archiveArtifactSetComplete": true,
+  "catalog": {
+    "Valid": true,
+    "Methods": 11800,
+    "Categories": 808,
+    "Unmapped": [],
+    "StaleSelectors": []
+  },
+  "buildPhases": [
+    {
+      "Name": "Build-integration",
+      "Seconds": 73.3459712,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 12.0488149,
+      "Completed": true
+    }
+  ],
+  "whole": {
+    "descriptors": 16,
+    "methods": 33,
+    "cases": 57
+  },
+  "pending": {
+    "descriptors": 7,
+    "methods": 12,
+    "cases": 20
+  },
+  "retained37ExactMethodCounts": {
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentCaptureStopPrecedesPreparationAndExpiresActualOwner": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentCaptureObservationPreservesOrdinaryCompletion": 2,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AbsentInterfacePublishesOnlyResultAndCompletes": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceWarningVectorSurvivesCommonAndOrdinaryCompletion": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualGenericInterfaceConsumerRefusesSelectedMarkerDamage": 7,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_FirstInstallOwningCloseCannotArmInterfacePermission": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewLateMainConsumesOwnReadyWithoutRevivingHotOwner": 1,
+    "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalJointSeverityRepairGuidance_PreservesPublicTransportAndOnceOnlyClientOwnership": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceErrorFreezesPreparedWithoutPublicationOrCommon": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceNoWriteRetainsExactBytesAndMtime": 3,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce": 1,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.AbsenceIsDistinctFromPresentEmptyAndReturnedCopiesAreDefensive": 1,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.ErrorPreparedIsFrozenAndCannotBecomePublished": 1,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.FrozenFallbackRejectsNoncanonicalOrNonUtcDataWithoutReevaluatingInterfacePolicy": 3,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.InterfaceAboveCheckpointBlobLimitIsPreservedWithoutTruncation": 1,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.ObjectCannotClaimTimestampPolicyWasNotReachedEvenWithConsistentDataDigests": 1,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.PublishedRecordPreservesExactDiagnosticsWithoutClaimingHistoricalReturn": 1,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRefusesMalformedOrSilentlyCanonicalizedData": 6,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRejectsDuplicatePropertiesBeforeJsonNodeCanonicalization": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce": 1
+  },
+  "pendingExactMethodCounts": {
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceOwningCloseRetainsPublishedButCannotDeliverFreshResult": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LaterOuterFinalizationDoesNotUnemitCommittedInterfaceOrReplay": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection": 5,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback": 4,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCommittedColdKeepsLegacyConsumer": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCompletesWithoutProtocolUpgrade": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewOrdinaryOriginalUsesPriorMarkerSourceInsteadOfCachedData": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CommonMemberCompensationRetainsPublishedInterfaceWithoutReplay": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate": 2,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualReturnedReadCannotHideChangedWriterPreimage": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_PublishedInterfaceCannotExcuseOtherImmutableReadyDrift": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic": 1
+  },
+  "descriptorMetadataEqualExceptOrdinalName": true,
+  "zeroTrxAndExecutions": true,
+  "plannedUnderfilledCompleteFalseExpected": true,
+  "sourcePinCount": 98,
+  "sourcePinDigest": "1f11670a1e063bed010e2e03585fb6e8b5ad4da64157a5ce877317475d3c7bc4",
+  "sourceContextAndLedgerExactCompiledGit": true,
+  "freshNine": [
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26266624,
+      "sha256": "e8b7aab43661d242427f0257d6d7ce854b9f5c423a7ec8e45c5792c6d330e965"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 29466624,
+      "sha256": "78b805f1f76fa87a08ed7fd7dd1045e799c96fbea4c240c7881e8241e9d4d0a8"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1831424,
+      "sha256": "b4fab1185b63b37144eebcef378deb7915bcf51d339d529dc1af01a4de2d0064"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26266624,
+      "sha256": "e8b7aab43661d242427f0257d6d7ce854b9f5c423a7ec8e45c5792c6d330e965"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1831424,
+      "sha256": "b4fab1185b63b37144eebcef378deb7915bcf51d339d529dc1af01a4de2d0064"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9609216,
+      "sha256": "f8ca09a008d01f990a35d5c0878fcda298481d4ff8fa5252574fc6326537265b"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26266624,
+      "sha256": "e8b7aab43661d242427f0257d6d7ce854b9f5c423a7ec8e45c5792c6d330e965"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26266624,
+      "sha256": "e8b7aab43661d242427f0257d6d7ce854b9f5c423a7ec8e45c5792c6d330e965"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+      "bytes": 248832,
+      "sha256": "882f9d8c8ab8a73bb4c47f2398109c4f68b98393f6bd3b214170735887cb7fe7"
+    }
+  ],
+  "all1575FilesExactCurrentSetAndHash": true,
+  "allPlanBeforeAfterEqualFreshCatalog": true,
+  "namespaceAndProcessesEmpty": true,
+  "runnerCleanupTrue": true,
+  "limits": [
+    "The old37 raw cases were not replayed or rereviewed; only retained identity/count ledger mapping was used.",
+    "Fresh compilation/discovery supplies no new actual PASS or semantic outcome."
+  ]
+}

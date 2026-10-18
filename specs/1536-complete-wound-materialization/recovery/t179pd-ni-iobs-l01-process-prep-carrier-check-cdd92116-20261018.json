@@ -1,0 +1,40 @@
+{
+  "kind": "INDEPENDENT_PROCESS_ZERO_PREPARATION_SAVED_CARRIER_BINDING",
+  "checkedUtc": "2026-10-18T09:04:50.488230+00:00",
+  "carrier": "cdd92116ba2d87d8a6c6a30f7653fb144df5d5fe",
+  "actualAndCompiledSource": "71108a7df72204a1bdcc143feb84d5c857eef1a1",
+  "liveQualification": {
+    "path": "/tmp/t179pd-ni-iobs-l01-process-prep-independent-check-71108a7d-20261018.json",
+    "sha256": "97980ecf16b5ad166ad3159c93e79b1511313ab455a516df6732256d8711896b",
+    "bytes": 9615
+  },
+  "exactImmediateRecoveredFiles": 41,
+  "allChangedMetadataPaths": 37,
+  "source98LedgerAndToolBytesUnchanged": true,
+  "committedArchive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-preparation-files-20261018/archive.json",
+    "sha256": "be265cc0a435231f0aa65d4dbdf43805a08066e24127cabf54d1c72a2525b1bc",
+    "originalChains": 32,
+    "allStoredBytesExact": true
+  },
+  "rootReadback": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-process-prep-readback-71108a7d-20261018.json",
+    "sha256": "959051502da7f954817848b1da8b838a285c85fdfe89fe3e224454c13c845299"
+  },
+  "receipt": {
+    "path": "/tmp/t179pd-ni-iobs-l01-process-prepared-delta-github-cdd92116-20261018.json",
+    "sha256": "59d275b010ce5965bda6c68d2bcb01dcc63439527b0e260b785dd964345b631e",
+    "bytes": 33641
+  },
+  "rootComposition": {
+    "path": "/tmp/t179pd3d-root-recovery-composition-cdd92116-20261017.json",
+    "sha256": "d72d28853ddc20b2284824afe3da213dc1c5a8776e1073f3c8aadefbfcf50336",
+    "bytes": 40742
+  },
+  "retainedComposition": {
+    "deltas": 117,
+    "trackedPaths": 55728
+  },
+  "verdict": "ACCEPT_FRESH_ZERO_PREPARATION",
+  "limits": "Only new saved carrier/32 stored-chain binding checked here; previous fresh original/inventory checks reused. No repeated source/raw-family audit, native run or new semantic PASS."
+}

@@ -1,0 +1,48 @@
+{
+  "kind": "ROOT_PROCESS_FIXTURE_FRESH_PREP_ACCEPTANCE_NAMED_CORRECTED_CRASH5_RELEASE",
+  "createdUtc": "2026-10-18T09:05:52.267790+00:00",
+  "carrier": "cdd92116ba2d87d8a6c6a30f7653fb144df5d5fe",
+  "compiledSource": "71108a7df72204a1bdcc143feb84d5c857eef1a1",
+  "prepVerdict": "ACCEPT_FRESH_ZERO_PREPARATION",
+  "independentReview": [
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-process-prep-independent-review-cdd92116-20261018.md",
+      "sha256": "4e034d744c26d7fe354c2c71cb36ddb8a10569c1326f164eed8b2f8a6b20eb3f",
+      "bytes": 1714
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-process-prep-independent-review-cdd92116-20261018.json",
+      "sha256": "d13a00b44f834ca5d88eb984d31929c1654725e9bb852d1cce5fc9be4367fbc9",
+      "bytes": 4824
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-process-prep-independent-check-71108a7d-20261018.json",
+      "sha256": "97980ecf16b5ad166ad3159c93e79b1511313ab455a516df6732256d8711896b",
+      "bytes": 9615
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-process-prep-carrier-check-cdd92116-20261018.json",
+      "sha256": "48777355d3249d07eb67e036ecfef6017cebfe920eb4656588dae28d69a79118",
+      "bytes": 1879
+    }
+  ],
+  "sourcePinCount": 98,
+  "sourcePinDigest": "1f11670a1e063bed010e2e03585fb6e8b5ad4da64157a5ce877317475d3c7bc4",
+  "ledgerSha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
+  "recovery": "/tmp/t179pd3d-root-recovery-composition-cdd92116-20261017.json",
+  "remoteVerified": "cdd92116ba2d87d8a6c6a30f7653fb144df5d5fe",
+  "mainUnchanged": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4",
+  "release": {
+    "mode": "crash5",
+    "expectedCases": 5,
+    "label": "t179pd-ni-iobs-l01-process-first-crash-current",
+    "tool": "/tmp/t179pd-ni-iobs-l01-process-first-run.py",
+    "sha256": "9ecd219574553ef37a08b863cde9aa23e563c3ae82b74c00ab2b5c32445bad89",
+    "preparationRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-current/record.json",
+    "activation": "Next clean PREP acceptance metadata carrier after commit/push/exact Root recovery and separately named HEAD message.",
+    "scope": "Corrected5 real process-loss/current-resume cases only. NoBuild. Preserve original parent/child outcomes and archive before utility verdict. Unexpected freezes progression; no retry/automatic next."
+  },
+  "retention": "37 previously qualified retain actual/compiled45cc or4c6d provenance; originalintake2FAIL+crash5FAIL immutable.",
+  "remaining": "15 unrun targets in the remaining six modes require separate named progression. No repeated accepted families.",
+  "limits": "No whole57GREEN/fullNI/HOT/Windows/platform/A3 claim."
+}
