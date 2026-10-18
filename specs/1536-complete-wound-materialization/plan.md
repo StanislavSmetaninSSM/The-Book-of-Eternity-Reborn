@@ -1,3 +1,7 @@
+## T179-Pd-NI-IOBS-L01 — one diagnostic1 original outcome saved; causal review pending (2026-10-18)
+
+Actual801229a1d301cc3526b451c95cc71953f89f1f62/compiled8f8f534304e3672df5d42c9ab31e7055235bfaca: native0,296.522s, native summary{'Total': 1, 'Executed': 1, 'Passed': 1, 'Failed': 0}, complete=True, timeout=False. Original11rawchains, identity/stage/logger/cleanup and dated boundaries retained. Diagnostic1 is excluded from original57/coverage; qualified52/alloriginals/old66529UNKNOWN remain unchanged. Save/recover original then independent causal review before any remedy or requalification; no next actual released. All broader holds unchanged. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — diagnostic1 independent PREP accepted; one named gate only (2026-10-18)
 
 [Independent PREP](recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-prep-independent-review-20261018.md) accepts32raw/101pins/product23/whole16-33-57+separate1/9-1575 outputs/148-37unchanged warnings/seven dated clean boundaries/three frozen237-file checks at49d64969, compiled8f8f5343. Prior packet phase fields and observation status preserved as history; current SOURCE/PREP accepted. Qualified52 remains unchanged.

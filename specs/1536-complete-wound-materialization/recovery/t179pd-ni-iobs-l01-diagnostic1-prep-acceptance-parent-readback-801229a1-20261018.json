@@ -1,0 +1,34 @@
+{
+  "kind": "PARENT_DIAGNOSTIC1_PREP_ACCEPTANCE_READBACK_ONE_GATE",
+  "checkedUtc": "2026-10-18T16:52:56.961691+00:00",
+  "sha": "801229a1d301cc3526b451c95cc71953f89f1f62",
+  "compiledSource": "8f8f534304e3672df5d42c9ab31e7055235bfaca",
+  "qualified": 52,
+  "sourcePins": 101,
+  "productDelta": 23,
+  "pinDigest": "2c144b7734708f8c02a3924d4d12a885384f05a1437021afd2845827c761c616",
+  "verdict": "ACCEPT_PREP_FOR_ONE_SEPARATELY_NAMED_DIAGNOSTIC1_AFTER_SAVE_RECOVERY_READBACK_AND_CLEAN_PREFLIGHT",
+  "release": {
+    "status": "SEPARATELY_NAMED_ONE_DIAGNOSTIC_AFTER_SAVED_ACCEPTANCE_RECOVERY_AND_CLEAN_PREFLIGHT",
+    "mode": "diagnostic1",
+    "label": "t179pd-ni-iobs-l01-process-first-diagnostic1-compile-corrected-cloud-b51375ba",
+    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba/record.json",
+    "prepRecordSha256": "dab4805c23d89fc401cb763fa0aba4ce1bb37cb350ff926f4d7b4c93c961048f",
+    "compiledSource": "8f8f534304e3672df5d42c9ab31e7055235bfaca",
+    "expectedCases": 1,
+    "category": "fr063-joint-interface-crash-diagnostic",
+    "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_DiagnoseCurrentResumeAfterInterfaceMemberProcessLoss",
+    "countsToward57": false,
+    "conditions": [
+      "A separately saved/recovered explicit one-mode release and clean actual HEAD, same accepted 101 pins/digest, NoBuild nine/full1575 exact inventory, and this exact diagnostic-plan record.",
+      "Use the accepted b51375ba environment and one-phase wrapper. Immediately before launch, require global v2 no active/UNKNOWN plus empty new fixture namespace and another frozen-root full-file-set/bytes check; preserve both frozen roots outside the mutable namespace.",
+      "Use fresh disposable fixture roots, new actual children with PID/kernel-birth identities and nonce, all original strong cut1 assertions, 220-second child and 900-second category budgets unchanged. No user saves, shared mutable game state, real external operation, old environment access, automatic retry or next mode.",
+      "Capture same-invocation after-census on any return, preserve the original result and all diagnostic streams before classification, archive/save/recover outcome before causal review or further change. Any unexpected result or boundary/inventory concern freezes progression."
+    ]
+  },
+  "old66529": "UNKNOWN_UNAVAILABLE_UNCHANGED",
+  "newCrash5": "FROZEN_NATIVE124_NO_TRX",
+  "oldDiagnosticCatalog": "FROZEN_NATIVE1_ZERO_COMPILER_FAILURE",
+  "countsToward57": false,
+  "limits": "Only this one separately named diagnostic1 after wrapper frozen237 check and immediate clean global/new namespace v2 census. No retry/automatic next or crash5 release; original result must be saved/reviewed."
+}
