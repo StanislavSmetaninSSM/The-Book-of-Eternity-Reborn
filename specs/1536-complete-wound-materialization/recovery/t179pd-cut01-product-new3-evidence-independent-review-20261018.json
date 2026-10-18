@@ -1,0 +1,81 @@
+{
+  "kind": "INDEPENDENT_CUT01_NEW3_EVIDENCE_REVIEW",
+  "date": "2026-10-18",
+  "verdict": "ACCEPT_CURRENT_CAPTURE_SEAM_NEW3_3PASS",
+  "carrier": "29b2a4c4ea37932a5db9d6dbab84f55f3d7282bf",
+  "actualSource": "074575d37bf28bb0121bf5bb7c69984afcfb604e",
+  "compiledProduct": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
+  "native": {
+    "exit": 0,
+    "seconds": 139.88709520299744,
+    "descriptors": 2,
+    "methods": 2,
+    "planned": 3,
+    "executed": 3,
+    "passed": 3,
+    "failed": 0,
+    "complete": true,
+    "duplicates": 0,
+    "skipped": 0,
+    "underfill": 0,
+    "timedOut": false
+  },
+  "materialFindings": [],
+  "stop": {
+    "callback": 1,
+    "activeLeaseAtCut": true,
+    "runtimeCutTurn": 42,
+    "runtimeAfterTurn": 42,
+    "actualStagedFrameTurn": 43,
+    "preparationEntryReads": 0,
+    "retainedStages": 0,
+    "reservations": 0,
+    "takes": 0,
+    "markerCohorts": 0,
+    "postCutCanonicalMutations": 0,
+    "postCutPublicationEvents": 0,
+    "cutAndAfterExactImagesIncludingGeneration": 223,
+    "typedSentinelDisposition": "PublicationUncertain",
+    "actualCloseDisposition": "UnavailableNotReserved",
+    "actualOwnerExpired": true,
+    "noReceiptAndClosedLease": "Source-bound reached passing assertions"
+  },
+  "transparency": {
+    "additionalObservers": [
+      false,
+      true
+    ],
+    "callbacks": [
+      0,
+      1
+    ],
+    "preparationReadsEach": 4,
+    "retainedEachOfSixStages": 1,
+    "markerCohortsEach": 2,
+    "fullCompletionAndInertRepeatVerified": true,
+    "globalNullHookClaim": false
+  },
+  "bindings": {
+    "rawChains": 11,
+    "sourcePins": 31,
+    "freshBinaryCopies": 9,
+    "managedFiles": 335,
+    "temporarySubsetIncluded": true,
+    "strictUniqueRemovedRoots": 3,
+    "physicalAbsent": true
+  },
+  "sourceBackedLimits": [
+    "Raw captures active lease at cut, actual stage/close diagnostic, sentinel issue, counters and223 exact before/after files. Same object/registry identity, later lease inactivity, CloseRecorded, null receipt and runtime _inGame are reached exact assertions in the unchanged passing test, not separate serialized identity fields.",
+    "False transparency retains essential fixture hook; its unarmed PostCut0 is not absence of ordinary work. True transparency permits the observed subsequent ordinary mutations/publications.",
+    "The actual cut runtime turn42 differs legitimately from staged original/frame43. Root additional hardcoded43 predicate was a derived inspector assumption error, not native failure/retry.",
+    "Markers count observed committed marker-containing cohorts, not common method call totals."
+  ],
+  "priorEvidence": "Separate new-product protected Late2 accepted and retained, not reread/recounted here. These new3 plus retained2 cover the bounded five-case CUT01 stage; historical missing-cut RED remains immutable.",
+  "next": "Root may save/recover this bounded seam evidence and reconcile CUT01 status. This report authorizes no further runtime or NI/precommon implementation.",
+  "holds": [
+    "No full NI semantic acceptance, read-history consumer or precommon NI-IOBS-L01/origin bridge activation.",
+    "No wider HOT/F1/M3/Windows/CI/ZIP/A3/full wounds claim.",
+    "No source/code changes, test reruns, or reviewer native execution occurred."
+  ],
+  "supportPath": "/tmp/t179pd-cut01-product-new3-evidence-independent-check-20261018.json"
+}

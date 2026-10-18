@@ -1,0 +1,70 @@
+{
+  "kind": "ROOT_BOUNDED_CUT01_NEW3_EVIDENCE_ACCEPTANCE_AND_FINAL_CHECKPOINT",
+  "createdUtc": "2026-10-18T04:09:19.735575+00:00",
+  "carrier": "29b2a4c4ea37932a5db9d6dbab84f55f3d7282bf",
+  "actualSource": "074575d37bf28bb0121bf5bb7c69984afcfb604e",
+  "compiledProduct": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
+  "verdict": "ACCEPT_BOUNDED_CURRENT_CAPTURE_CUT01_NEW3_3PASS_PLUS_SEPARATELY_ACCEPTED_AFFECTED_LATE2_2PASS",
+  "artifacts": [
+    {
+      "path": "/tmp/t179pd-cut01-product-new3-evidence-independent-review-20261018.md",
+      "bytes": 2054,
+      "sha256": "817086d7d1570dc0210caebcde15ca7eedc0f8773e579f26d8697542a2913f0d"
+    },
+    {
+      "path": "/tmp/t179pd-cut01-product-new3-evidence-independent-review-20261018.json",
+      "bytes": 3366,
+      "sha256": "01e967092adc858279560cba8fa4edb2f0062a8abe4e568a21ede85f435f400d"
+    },
+    {
+      "path": "/tmp/t179pd-cut01-product-new3-evidence-independent-check-20261018.json",
+      "bytes": 115409,
+      "sha256": "9de623cb773aab17411153fd184db6f1f5ee8819a051a81a7c701a3edbe6e275"
+    },
+    {
+      "path": "/tmp/t179pd-cut01-root-new3-raw-inspection-074575d3-20261018.json",
+      "bytes": 2417,
+      "sha256": "8c4855ef53fe5a0170594e72c092b06021002a4ea8f82fc7df963209c90a9d01"
+    },
+    {
+      "path": "/tmp/t179pd-cut01-root-final-source-invariants-29b2a4c4-20261018.json",
+      "bytes": 1448,
+      "sha256": "a3c640f9d59701c44a1f7007d93b322d5ca9c06203e4bcee42e655b653a98c21"
+    },
+    {
+      "path": "/tmp/t179pd-cut01-product-new3-delta-github-29b2a4c4-20261018.json",
+      "bytes": 18687,
+      "sha256": "a0b333fab995a60dc5d0686fcf4fe882e8a4bfce069c61832edcbb2cb233d629"
+    },
+    {
+      "path": "/tmp/t179pd3d-root-recovery-composition-29b2a4c4-20261017.json",
+      "bytes": 27446,
+      "sha256": "7c6874810dfd14473de4d0f433fa0b9d1c9747a4ca01774c5d0173eb57708603"
+    }
+  ],
+  "rootChecks": [
+    "Read/hashverified independent new3 MD/JSON/support; directly read originalsummary and bothTRX exact3 unique named cases/2complete descriptors/native0/139.887095s, no skip/duplicate/underfill/timeout.",
+    "Verified all11 original/gzip chains, including unchanged trackedselection-derived exacttemporary subset; no extra build/native rerun.",
+    "Parsed actualcut/stop/transparency serialized diagnostics: callback1, activelease atcut; all223 path/images/G exact; runtime42 unchanged/staged43; typed sentinel PublicationUncertain/UnavailableNotReserved/expired; all observed preparation/stage/reserve/take/markercohort/postcut mutation/publication zeros; transparency0/1 genuine preparation4/stages1/cohorts2. Reached owneridentity/leaseclose/nullreceipt assertions retain honest source-backed limits.",
+    "Independently verified new23GitHubfiles/all19changedpaths and full7a+79consecutive deltas/55,286tree.",
+    "Final source invariant receipt verifies all31pins/currentledger, exact2 whole-file literal inverses vs08119, tests/fixture/support/catalog/selectors/scripts unchanged3579 and9copies unchangedcompiled3d."
+  ],
+  "causalHistory": "Preserve original missing-cut RED native1/exact1FAIL at actual558/compiled3579 and separate accepted RED EVIDENCE. Also preserve Root derived predicate turn43 assumption correction; not a native FAIL/retry.",
+  "stageCoverage": {
+    "affectedLate2": {
+      "actual": "127d3cf73f99f676af8b7cb46df0f8930b5682f6",
+      "nativeExit": 0,
+      "passed": 2
+    },
+    "new3": {
+      "actual": "074575d37bf28bb0121bf5bb7c69984afcfb604e",
+      "nativeExit": 0,
+      "passed": 3
+    },
+    "uniqueCases": 5,
+    "qualification": "Two separately named native runs, separate source/evidence gates; no single5run/recount/NI/globalnull/exactcommoninvocation claim."
+  },
+  "finalWriterGate": "Save exact independent3 + Rootacceptance + Rootinspection/invariants +29b2receipt/79composition. Reconcile only current derived kind/noRuntime/firstEligibleActual/SOURCE-at-that-time/status labels/headers/ledger. Preserve original reports/raw/history; no code/test/tool/build/runtime changes. Commit normal bounded checkpoint, nonforcepush, read exactremote and complete changedpath GitHub recovery. Root will independently verify finaldelta/exacttree/main/clean; external final receipt need not self-save.",
+  "precommon": "NI-IOBS-L01 v2 DESIGN accepted, not implemented. Actual issuer discriminator/checkpointv2+Prepared→Published existing pending sibling, restore/terminal precedence and honest common/cold/late origin bridge remain concrete implementation/qualification gate; no poststate-as-history or restart projector/Ready rewrite.",
+  "holds": "Child1/oldv2 unchanged; child2 DESIGN only. FullNI/HOT/M3/F1/T197/WindowsEVIDENCE(artifact403)/A3 and other declared holds remain. No CI/run/ZIP workaround/security/newQTE/main/merge/forcepush/delete/issueclose. Internal observer only; no GM-authored behavior/contract/prompt/example update needed."
+}

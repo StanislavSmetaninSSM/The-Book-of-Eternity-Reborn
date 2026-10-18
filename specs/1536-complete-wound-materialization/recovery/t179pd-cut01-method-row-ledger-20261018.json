@@ -2,7 +2,7 @@
   "kind": "T179PD_CUT01_FINITE_METHOD_ROW_LEDGER",
   "task": "#1536 T179-Pd-CUT01",
   "base": "08119f36c66464913e94d4bd5d23221073e0d48d",
-  "status": "PRODUCT_NEW3_FIRST_RAW_SAVED_EVIDENCE_PENDING_PROTECTED_LATE2_SEPARATELY_ACCEPTED",
+  "status": "BOUNDED_CUT01_SOURCE_AND_SEPARATE_EVIDENCE_ACCEPTED_FINAL_REMOTE_READBACK_CONDITIONAL",
   "plan": "recovery/t179pd-ni-capture-cut-plan-08119f36-20261018-v2.md",
   "planReview": "recovery/t179pd-ni-capture-cut-plan-independent-review-20261018.md",
   "newRows": [
@@ -118,12 +118,12 @@
   "scope": "Current capture boundary only; no NI producer/family completeness",
   "precommon": "v2 independently accepted bounded DESIGN: NI-IOBS-D01 resolved; NI-IOBS-L01 implementation and child2 origin bridge OPEN. Originalv1 retained, no code/test/native admission.",
   "gates": [
-    "Saved WIP/exactremote/GitHub changed path recovery",
-    "Fresh bounded BOTH/catalog/PlanOnly ZERO",
-    "Concrete SOURCE/FIXTURE/SELECTION/PREP + named stop1",
-    "Accepted original causal missing-cut evidence before product",
-    "Only 2 product edits/inverse + new fresh preparation/SOURCE",
-    "Separate protectedLate2 and new3 actual/EVIDENCE"
+    "COMPLETED: saved tests WIP3579 + fresh BOTH/catalog/PlanOnly0 + concrete Source/PREP",
+    "COMPLETED: separately named558c original causal missing-cut RED1 + accepted separate EVIDENCE",
+    "COMPLETED: exact2product edits/inverse08119 + saved3d WIP + fresh BOTH/catalog/PlanOnly0 + affected Source/PREP",
+    "COMPLETED: separately named protectedLate2 FIRST/EVIDENCE qualified2PASS",
+    "COMPLETED: separately named new3 FIRST/EVIDENCE qualified3PASS",
+    "FINAL_PERSISTENCE_CONDITIONAL: exact final remote/clean/GitHub complete delta + external Root receipt; no self-save loop"
   ],
   "holds": [
     "All native and production until their named gates",
@@ -160,7 +160,7 @@
     "scope": "Only append enum + await existing nullable dispatcher after current capture/before preparation; no NI semantics",
     "inverse": "Both exact08119 whole source restored by removing exact2edits",
     "freshProductPrep": "COMPLETED_FIRST_ZERO_3D195F2F; new9copies/335managed, not actual acceptance",
-    "actuals": "New3 original raw saved; separate EVIDENCE pending. ProtectedLate2 separately accepted; no single5-case invocation claim.",
+    "actuals": "COMPLETE_BOUNDED: new3 qualified3PASS plus separately accepted affectedLate2 qualified2PASS. Two named native invocations; no further test/build authorized.",
     "preparation": {
       "compiledSource": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
       "productSource": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
@@ -231,7 +231,7 @@
         "ownedRoots": []
       },
       "compiledContext": "Exact source/ledger snapshots inside both original FIRST records remain immutable. Current derived metadata is a metadata-only descendant; no raw rewrite or replay.",
-      "phase": "CURRENT_CHANGED_PRODUCT_COMPILED_3D195F2F_ZERO_ACTUAL",
+      "phase": "FIRST_CHANGED_PRODUCT_COMPILED_3D195F2F_PREPARATION_ZERO_ONLY; current runtime qualification is in product.currentQualified",
       "cleanup": {
         "catalogOwned": true,
         "catalogRuntime": true,
@@ -269,7 +269,7 @@
       "support": "recovery/t179pd-cut01-product-source-independent-check-20261018.json",
       "root": "recovery/t179pd-cut01-root-product-source-prep-acceptance-072dc47b-20261018.json",
       "status": "ACCEPTED_AFFECTED_PRODUCT_SOURCE_FIXTURE_SELECTION_PREP_ONLY",
-      "scope": "Exact2source inverse/current31/unchangedtests/currentfresh9/new19raw/fixedUNRUNactualtools qualified. All product actuals remainUNRUN until named exactRoot activation; separate protectedLate2 FIRST/EVIDENCE before new3."
+      "scope": "Historical source/preparation verdict before product actuals: exact2inverse/current31/unchangedtests/new9/new19raw/fixed then-UNRUN actualtools accepted. Later named Late2 and new3 have separate EVIDENCE below; no new SOURCE replay."
     },
     "late2Actual": {
       "kind": "FIRST_CURRENT_PRODUCT_ORIGINAL_RAW_PENDING_SEPARATE_INDEPENDENT_EVIDENCE",
@@ -362,13 +362,52 @@
       "archive": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-first-product-new3-files-20261018/archive.json",
       "archiveSha256": "eb3ecb4445c1a931ffe4145cdea2cef12cb3dc113cfe9c4a01fc941589850687",
       "rawChains": 11,
-      "independentEvidence": "PENDING_NOT_YET_QUALIFIED",
+      "independentEvidence": {
+        "md": "recovery/t179pd-cut01-product-new3-evidence-independent-review-20261018.md",
+        "json": "recovery/t179pd-cut01-product-new3-evidence-independent-review-20261018.json",
+        "support": "recovery/t179pd-cut01-product-new3-evidence-independent-check-20261018.json",
+        "root": "recovery/t179pd-cut01-root-final-evidence-acceptance-29b2a4c4-20261018.json",
+        "verdict": "ACCEPT_BOUNDED_CURRENT_CAPTURE_CUT01_NEW3_EXACT_3PASS_ONLY"
+      },
       "scope": "Exact named new3 current-product outcome, pending independent EVIDENCE. Transparency false retains the essential setup hook and adds no capture observer; not a claim of global hooks-null native coverage. No NI or broader family qualification.",
       "namedAuthorization": {
         "source": "Root named activation message, copied as derived metadata AFTER terminal; no separate pre-run activation artifact claimed",
         "text": "Root independently VERIFIED physical GitHub0745 delta: full7a+78/55,272 exacttree; clean/exactremote074575d37bf28bb0121bf5bb7c69984afcfb604e/main d024. Name exactly ONE FIRST new3 now: fixed /tmp/t179pd-cut01-product-first-run.py (SHAa4eaa9) mode new3, label t179pd-cut01-product-new3-first-074575d3-20261018, actual 074575d37bf28bb0121bf5bb7c69984afcfb604e, prep /tmp/t179pd-cut01-implementation-tools/t179pd-cut01-product-prep-first-plan-3d195f2f-20261018/record.json. Exact temp subset two new categories/3cases NoBuild; no protectedLate2 replay/build/retry/advance. Preserve original native/raw/sentinel/source/process/runner/TRX/cleanup then readonlyarchive65cdda new directory, save WIP raw+0745receipt/78composition metadata-only/nonforcepush/GitHubdelta. Return native exactcounts immediately; Root sends new independent EVIDENCE after raw carrier recovered. No automatic fixes if fail.",
         "actualRecord": "/tmp/t179pd-cut01-implementation-tools/t179pd-cut01-product-new3-first-074575d3-20261018/record.json"
       }
+    },
+    "currentQualified": {
+      "compiledProduct": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
+      "new3": {
+        "actualSource": "074575d37bf28bb0121bf5bb7c69984afcfb604e",
+        "nativeExit": 0,
+        "passed": 3,
+        "methods": 2,
+        "descriptors": 2,
+        "seconds": 139.88709520299744
+      },
+      "separateProtectedLate2": {
+        "actualSource": "127d3cf73f99f676af8b7cb46df0f8930b5682f6",
+        "nativeExit": 0,
+        "passed": 2,
+        "methods": 2,
+        "descriptors": 1,
+        "seconds": 120.28117616300005
+      },
+      "qualifiedDistinctProductCases": 5,
+      "qualifiedMethods": 4,
+      "singleFiveCaseNativeInvocation": false,
+      "historicalBaseline": "Original558c/compiled3579 missing-cut native1/1FAIL remains accepted causal RED, not a sixth unique product case or current failure.",
+      "scope": "Only nullable current-custody observation seam. Typed IOException stop after actual completed capture/before preparation; no additional observer and passive observer preserve ordinary completion. No NI or global-hooks-null or exact-common-invocation claim."
     }
+  },
+  "completion": {
+    "qualifiedBoundedStage": "T179-Pd-CUT01",
+    "sourceAndEvidence": "ACCEPTED_BOUNDED_ONLY",
+    "rootEvidence": "recovery/t179pd-cut01-root-final-evidence-acceptance-29b2a4c4-20261018.json",
+    "sourceInvariant": "recovery/t179pd-cut01-root-final-source-invariants-29b2a4c4-20261018.json",
+    "new3Inspection": "recovery/t179pd-cut01-root-new3-raw-inspection-074575d3-20261018.json",
+    "finalRemoteReadback": "Conditional on exact final nonforce publication/clean remote and complete changed-path GitHub recovery + external Root verification. External receipt fulfils this condition; no self-receipt commit.",
+    "remaining": "NI-IOBS-L01 v2 implementation and genuine NI/common/cold/late origin qualification OPEN; fullNI/HOT/M3/F1/T197/Windows/A3 and declared broader holds unchanged."
   }
 }

@@ -1,0 +1,44 @@
+{
+  "kind": "ROOT_READONLY_NEW3_ORIGINAL_RAW_INSPECTION_NOT_INDEPENDENT_EVIDENCE",
+  "createdUtc": "2026-10-18T04:06:29.624156+00:00",
+  "actualSource": "074575d37bf28bb0121bf5bb7c69984afcfb604e",
+  "compiledSource": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
+  "nativeExit": 0,
+  "wallSeconds": 139.88709520299744,
+  "recordSha256": "1a4efff4c7c23bc918babf906beada158ad79dcbc5dd9d2e7d6fe745c3ca9978",
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentCaptureObservationPreservesOrdinaryCompletion(observe: False)",
+      "outcome": "Passed",
+      "additionalObserver": false,
+      "callback": 0,
+      "preparationEntryWitnesses": 4,
+      "markerCohorts": 2,
+      "scope": "full control assertions completed+inert repeat; false preserves essential fixture hook, no global null observer claim"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentCaptureObservationPreservesOrdinaryCompletion(observe: True)",
+      "outcome": "Passed",
+      "additionalObserver": true,
+      "callback": 1,
+      "preparationEntryWitnesses": 4,
+      "markerCohorts": 2,
+      "scope": "full control assertions completed+inert repeat; false preserves essential fixture hook, no global null observer claim"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentCaptureStopPrecedesPreparationAndExpiresActualOwner",
+      "outcome": "Passed",
+      "callback": 1,
+      "currentTurn": 42,
+      "stagedAttemptTurn": 43,
+      "exactEqualPathImages": 223,
+      "disposition": "PublicationUncertain",
+      "closeDisposition": "UnavailableNotReserved",
+      "allObservedWorkCountersZero": true,
+      "scope": "actual current custody cut only; source-backed assertions additionally verify actual lease/owner close/receipt absence"
+    }
+  ],
+  "archive11ChainsPreviouslyVerified": true,
+  "derivationCorrection": "An initial Root inline readonly predicate failed because it conflated current loop turn with staged attempt turn and hardcoded43. Raw diagnosis proves current cut/after42, staged attempt43; corrected single assumption. Native outcome remains original0/3PASS; no rerun or source change.",
+  "remaining": "Independent EVIDENCE still required after saved/recovered raw carrier; no fullNI/default-global-null/exact-common-call claim."
+}

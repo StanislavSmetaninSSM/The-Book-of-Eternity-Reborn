@@ -1,0 +1,25 @@
+{
+  "kind": "ROOT_FINAL_SOURCE_INVARIANTS_NO_BUILD_OR_RUNTIME",
+  "createdUtc": "2026-10-18T04:07:00.098327+00:00",
+  "head": "29b2a4c4ea37932a5db9d6dbab84f55f3d7282bf",
+  "sourcePinsVerified": 31,
+  "sourcePinDigest": "d2166163295ea183719e3a51f65a0c795a238bfeb83faf5e1109c0fb4aacb77f",
+  "wholeFileLiteralChanges": [
+    {
+      "path": "BookOfEternityClient/Core/GameEngine.cs",
+      "baseSha256": "28761cafd0394e222e18f194a44907e6b7102ee3e4e18198ec26cd3397814890",
+      "currentSha256": "10f1967888b7eca0890a1a6c3ff32af0d9f26f7b7a0523af3bb211d3553f7be3",
+      "wholeFileForwardAndInverse": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "baseSha256": "2882510dad3a8ad27e9331ad8f157884e569c851507749b8ed502b74c39901fb",
+      "currentSha256": "1732b324c1990265858eaf7a09bd093c05b3f861af6d87f11ba95f03d334dbda",
+      "wholeFileForwardAndInverse": true
+    }
+  ],
+  "testsFixtureSupportCatalogSelectorsScripts": "UNCHANGED_SINCE_TESTS_FIRST_3579",
+  "freshBinaryCopiesVerified": 9,
+  "binariesUnchangedSinceCompiled": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
+  "scope": "Only final source equality/inverses and unchanged binaries; accepted native/raw not replayed. Default dispatcher body/catches/leases/expiry remain literally unchanged. GM-facing behavior/contracts/prompts/examples unchanged: internal observer only, tracked rationale in feature docs."
+}
