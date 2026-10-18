@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_SELECTED_CURRENT_RESUME_ROUTING_SOURCE_CANDIDATE",
-  "status": "WIP_SELECTED_ROUTING_UNCOMPILED_SOURCE_REVIEW_PENDING",
+  "status": "SELECTED_ROUTING_SOURCE_ACCEPTED_FRESH_ZERO4_ONLY",
   "sourceBase": "f390eb0602a99f5a2387ab7dc6ef52571e856b26",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
   "sourcePins": [
@@ -897,17 +897,63 @@
     "status": "NONE_SOURCE_AND_FRESH_PREP_PENDING_NO_NATIVE_RETRY",
     "mode": null
   },
-  "next": "Save/recover WIP, independent SOURCE including exact retention51/negative-branch equivalence; fresh ZERO4/PREP before new selected-routing uncertain1 and separate newcrash5.",
+  "next": "After saved/recovered SOURCE acceptance and readback, four explicit fresh ZERO phases only; fresh independent PREP before newly named uncertain1 and separate newcrash5. Retain51/all frozenFAIL/oldUNKNOWN.",
   "sourceReview": {
-    "status": "PENDING_FOR_SELECTED_ROUTING_CANDIDATE",
-    "previousOriginal": {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-before-selected-routing-20261018.json",
-      "sha256": "1ba30bc53c9ca64c84a0ea844047e7f141e3b84309342dd9a2f317882d8ace92",
-      "bytes": 64451
-    }
+    "verdict": "ACCEPT_SOURCE_AND_NAMED_ZERO4_ONLY_SUBJECT_TO_METADATA_SAVE_READBACK",
+    "candidate": "fed1f7789db0145de866cd4d73b97ab030871509",
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/check_l01_selected_routing_source.py",
+        "sha256": "4369b8d4357dba6f89505532d5f12dd6e8cbbd7fc82db2dc7eed34c88725d163",
+        "bytes": 23583
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-independent-check-fed1f778-20261018.json",
+        "sha256": "123ec651b82761e8fd366c3ece08615521cf311dc9b982c40eca9661d456bdb7",
+        "bytes": 17853
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-independent-review-20261018.json",
+        "sha256": "e76fd8936fc177775beaee891d7486ea73947c019786978209bdd7da15f51d09",
+        "bytes": 14326
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-independent-review-20261018.md",
+        "sha256": "cf40c5c90e231b27615c31a9e9ff77e4516a1ca596d59016087c0285206e6cab",
+        "bytes": 3116
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-selected-routing-phase-20261018.py",
+        "sha256": "da65d134a2c41f471c34d4983773239d4641df7058eb632694db90e61e8cc5b7",
+        "bytes": 2404
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-candidate-recovery-fed1f778-20261018.json",
+        "sha256": "448bda3647a27af0ce4b4772a62ac38c5a7af9354f8219ab491809b9cb56dc0d",
+        "bytes": 2399
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-recovery-count-attestation-fed1f778-20261018.json",
+        "sha256": "e179e1fb29d6da7548c76277ac485b6a15407c2c152f8b01d55ea3a0f68fd49b",
+        "bytes": 769
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-original-fixed-count-20261018.py",
+        "sha256": "adad2fb10f6fc5bfcd67181cb9424e50891e88ba06f663d66cce78b7b82fc26f",
+        "bytes": 2116
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-dynamic-pins-20261018.py",
+        "sha256": "c95aa47f4d71ac83e0976a0ffb2d749d16b13ac19d3d68d20a5e007fb5a78ae7",
+        "bytes": 2152
+      }
+    ],
+    "metadataConditions": "Current crashRequalificationPlan.gates updated to corrective1/1/1+remaining1/1/5; borrowedLeaseCorrection explicitly historical/superseded while accepted records retained. Original gate text/status preserved. Original fed1 receipt hardcoded98 retained; explicit99-count attestation and exact minimal dynamic-count utility saved. Exactremote/recovery/readback before named ZERO4; no actual release."
   },
   "namedZeroRelease": {
-    "status": "PROPOSED_ONLY_SOURCE_PENDING",
+    "status": "SOURCE_ACCEPTED_SAVED_RECOVERED_ZERO4_ONLY",
     "labels": {
       "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-selected-routing-cloud-813f1057",
       "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-selected-routing-cloud-813f1057",

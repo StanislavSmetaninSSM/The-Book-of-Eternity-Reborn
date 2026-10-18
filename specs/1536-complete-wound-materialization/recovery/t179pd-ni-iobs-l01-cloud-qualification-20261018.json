@@ -1,7 +1,7 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "WIP_SELECTED_ROUTING_UNCOMPILED_SOURCE_REVIEW_PENDING",
-  "sourceCheckpoint": "9fdecef3fd79614b9eb13b5609c99b9457d51af4",
+  "status": "SELECTED_ROUTING_SOURCE_ACCEPTED_FRESH_ZERO4_ONLY",
+  "sourceCheckpoint": "fed1f7789db0145de866cd4d73b97ab030871509",
   "sourcePinDigest": "70aa551ca427bb9c28b18e205bcbe2e10d1ebb88487309bb73b4a31426e37eb5",
   "sourcePinCount": 99,
   "environment": {
@@ -454,7 +454,8 @@
     "processIsolation": "Only newly started genuine child Process handles; independent parent/self PID+kernel starttick and nonce, exit73, new resume PID, join+EOF, strict containment. Retain owned container if termination/join/EOF unresolved; no old process query/kill.",
     "stateIsolation": "Read immutable repository templates into independent writable fixture roots; existing installed production route/strong assertions unchanged. Reviewer must reject if shared mutable/external state or duplicate real operation is possible.",
     "assertions": "Retain exact cut bytes before identity checks, FIRST2/Prepared/I-member/Published/ErrorPrepared boundaries, exact I/result/binding/Ready/once-only mechanics, culture contrast, current child3/common/take/late/cold DATA proofs and complete cleanup.",
-    "gates": "After reviewed remedy, new independent SOURCE and fresh BOTH/catalog, whole16/33/57, corrective2/2/5, remaining1/1/5 ZERO/PREP; exact saved recovery, clean v2 boundaries and separate named newcrash5 release. No current actual release; oldUNKNOWN unchanged."
+    "gates": "After current99/product23 SOURCE acceptance save/recovery/readback, fresh BOTH/catalog +whole16/33/57 +corrective1/1/1 +remaining1/1/5 ZERO/PREP, clean v2 boundaries and distinct named newcrash5 release. Old66529 UNKNOWN unchanged; no actual now.",
+    "historicalGatesBeforeSelectedRouting": "After reviewed remedy, new independent SOURCE and fresh BOTH/catalog, whole16/33/57, corrective2/2/5, remaining1/1/5 ZERO/PREP; exact saved recovery, clean v2 boundaries and separate named newcrash5 release. No current actual release; oldUNKNOWN unchanged."
   },
   "actuals": {
     "legacy3": {
@@ -1346,7 +1347,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Save/recover WIP, independent SOURCE including exact retention51/negative-branch equivalence; fresh ZERO4/PREP before new selected-routing uncertain1 and separate newcrash5.",
+  "next": "After saved/recovered SOURCE acceptance and readback, four explicit fresh ZERO phases only; fresh independent PREP before newly named uncertain1 and separate newcrash5. Retain51/all frozenFAIL/oldUNKNOWN.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -2822,7 +2823,7 @@
     }
   ],
   "borrowedLeaseCorrection": {
-    "status": "SOURCE_AND_FRESH_ZERO4_PREP_INDEPENDENTLY_ACCEPTED",
+    "status": "HISTORICAL_SOURCE_PREP_ACCEPTED_AT_COMPILED3ed6_WITH_NATIVE_OUTCOMES_RETAINED",
     "baseline": "bb99804e8c7124e4c625ea7557d61cdaa93a8035",
     "planReview": [
       {
@@ -3206,10 +3207,12 @@
         "sha256": "6ae4503051feda8d5ef5cd95e68ab01f7682cc69f4196ce7c097ae7946ab55c3",
         "bytes": 23866
       }
-    }
+    },
+    "historicalStatusBeforeSelectedRouting": "SOURCE_AND_FRESH_ZERO4_PREP_INDEPENDENTLY_ACCEPTED",
+    "supersededBy": "selectedResumeRoutingCorrection"
   },
   "selectedResumeRoutingCorrection": {
-    "status": "WIP_SELECTED_ROUTING_UNCOMPILED_SOURCE_REVIEW_PENDING",
+    "status": "SOURCE_ACCEPTED_FRESH_PREP_UNRUN",
     "baseline": "f390eb0602a99f5a2387ab7dc6ef52571e856b26",
     "artifacts": [
       {
@@ -3276,6 +3279,60 @@
     "productDeltaCount": 23,
     "freshPreparation": {
       "status": "UNRUN_SOURCE_PENDING"
+    },
+    "sourceAcceptance": {
+      "verdict": "ACCEPT_SOURCE_AND_NAMED_ZERO4_ONLY_SUBJECT_TO_METADATA_SAVE_READBACK",
+      "candidate": "fed1f7789db0145de866cd4d73b97ab030871509",
+      "model": "gpt-6-astra",
+      "reasoningEffort": "xhigh",
+      "artifacts": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/check_l01_selected_routing_source.py",
+          "sha256": "4369b8d4357dba6f89505532d5f12dd6e8cbbd7fc82db2dc7eed34c88725d163",
+          "bytes": 23583
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-independent-check-fed1f778-20261018.json",
+          "sha256": "123ec651b82761e8fd366c3ece08615521cf311dc9b982c40eca9661d456bdb7",
+          "bytes": 17853
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-independent-review-20261018.json",
+          "sha256": "e76fd8936fc177775beaee891d7486ea73947c019786978209bdd7da15f51d09",
+          "bytes": 14326
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-independent-review-20261018.md",
+          "sha256": "cf40c5c90e231b27615c31a9e9ff77e4516a1ca596d59016087c0285206e6cab",
+          "bytes": 3116
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-selected-routing-phase-20261018.py",
+          "sha256": "da65d134a2c41f471c34d4983773239d4641df7058eb632694db90e61e8cc5b7",
+          "bytes": 2404
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-candidate-recovery-fed1f778-20261018.json",
+          "sha256": "448bda3647a27af0ce4b4772a62ac38c5a7af9354f8219ab491809b9cb56dc0d",
+          "bytes": 2399
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-recovery-count-attestation-fed1f778-20261018.json",
+          "sha256": "e179e1fb29d6da7548c76277ac485b6a15407c2c152f8b01d55ea3a0f68fd49b",
+          "bytes": 769
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-original-fixed-count-20261018.py",
+          "sha256": "adad2fb10f6fc5bfcd67181cb9424e50891e88ba06f663d66cce78b7b82fc26f",
+          "bytes": 2116
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-dynamic-pins-20261018.py",
+          "sha256": "c95aa47f4d71ac83e0976a0ffb2d749d16b13ac19d3d68d20a5e007fb5a78ae7",
+          "bytes": 2152
+        }
+      ],
+      "metadataConditions": "Current crashRequalificationPlan.gates updated to corrective1/1/1+remaining1/1/5; borrowedLeaseCorrection explicitly historical/superseded while accepted records retained. Original gate text/status preserved. Original fed1 receipt hardcoded98 retained; explicit99-count attestation and exact minimal dynamic-count utility saved. Exactremote/recovery/readback before named ZERO4; no actual release."
     }
   },
   "historicalSourceCheckpointBeforeSelectedRouting": "9fdecef3fd79614b9eb13b5609c99b9457d51af4"

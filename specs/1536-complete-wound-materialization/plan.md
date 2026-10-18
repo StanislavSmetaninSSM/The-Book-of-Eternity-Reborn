@@ -1,3 +1,7 @@
+## T179-Pd-NI-IOBS-L01 — selected direct routing SOURCE accepted; ZERO4 only (2026-10-18)
+
+[Independent SOURCE](recovery/t179pd-ni-iobs-l01-selected-routing-source-independent-review-20261018.md) accepts exact guarded direct route, borrowed read-only helper, unchanged old branches/full completion body and retention51 without replay.99pins/product23; original fixtures/assertions/budgets unchanged. Current crash gate text corrected to1/1/1+1/1/5, old text retained. Save/recover/readback then fresh BOTH/catalog, whole57, correctiveuncertain1 and separatecrash5 PlanOnly ZERO4. Independent fresh PREP and separate release required before actual. Bothuncertain1 FAILs/old66529 UNKNOWN and all broader holds preserved. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — direct selected-resume routing plan accepted (2026-10-18)
 
 [Independent cause and plan](recovery/t179pd-ni-iobs-l01-borrowed-lease-uncertain1-causal-independent-review-20261018.md) directly identifies StoryTurn missing-marker interception in NEW uncertain1 native1/0PASS1FAIL at74da/compiled3ed, preserved/recoveredf390. This does not reconstruct older missing logs. Qualified51/57; both uncertain1 failures immutable; newcrash5 UNRUN/held.

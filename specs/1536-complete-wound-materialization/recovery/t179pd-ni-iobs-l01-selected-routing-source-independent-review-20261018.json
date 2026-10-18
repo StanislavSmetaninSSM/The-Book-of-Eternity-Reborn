@@ -1,0 +1,225 @@
+{
+  "kind": "INDEPENDENT_SELECTED_CURRENT_RESUME_ROUTING_SOURCE_REVIEW",
+  "reviewedUtc": "2026-10-18T15:09:43.186650+00:00",
+  "verdict": "ACCEPT_SOURCE_AND_NAMED_ZERO4_ONLY_SUBJECT_TO_METADATA_SAVE_READBACK",
+  "candidate": "fed1f7789db0145de866cd4d73b97ab030871509",
+  "baseline": "f390eb0602a99f5a2387ab7dc6ef52571e856b26",
+  "planCarrier": "c756e04f9e83d5d4f0108b918b65686d9ed4db95",
+  "scope": "Concrete selected-routing production change plus two existing pinned controllers; no runtime qualification.",
+  "findings": [],
+  "evidence": {
+    "check": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-selected-routing-source-independent-check-fed1f778-20261018.json",
+      "bytes": 17853,
+      "sha256": "123ec651b82761e8fd366c3ece08615521cf311dc9b982c40eca9661d456bdb7"
+    },
+    "executableChecker": {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_selected_routing_source.py",
+      "bytes": 23583,
+      "sha256": "4369b8d4357dba6f89505532d5f12dd6e8cbbd7fc82db2dc7eed34c88725d163"
+    },
+    "causalAndPlanReview": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-borrowed-lease-uncertain1-causal-independent-review-20261018.json",
+      "bytes": 19801,
+      "sha256": "d77c7aca96a49c693df77fd5090d8eacf92d87adad96764bbdd61c315c5701b3"
+    },
+    "recovery": {
+      "receipts": [
+        {
+          "path": "/tmp/1536-cloud-tools/carrier-recovery-c756e04f.json",
+          "bytes": 4802,
+          "sha256": "e84ee872daa7a0175949c6dc40acdbe48f31fc2b31d11dd555f97e211aef4910",
+          "sha": "c756e04f9e83d5d4f0108b918b65686d9ed4db95",
+          "base": "f390eb0602a99f5a2387ab7dc6ef52571e856b26",
+          "changedPaths": 12,
+          "originalReportedPinCount": 98
+        },
+        {
+          "path": "/tmp/1536-cloud-tools/carrier-recovery-fed1f778.json",
+          "bytes": 2399,
+          "sha256": "448bda3647a27af0ce4b4772a62ac38c5a7af9354f8219ab491809b9cb56dc0d",
+          "sha": "fed1f7789db0145de866cd4d73b97ab030871509",
+          "base": "c756e04f9e83d5d4f0108b918b65686d9ed4db95",
+          "changedPaths": 5,
+          "originalReportedPinCount": 98
+        }
+      ],
+      "fullIndependentGitTreeEqual": true,
+      "all99PinsIndependentlyVerified": true,
+      "physicalBothCheckoutsClean": true,
+      "remoteExact": "fed1f7789db0145de866cd4d73b97ab030871509\trefs/heads/1536-wound-b2-cloud-20261012",
+      "noAlternates": true
+    },
+    "recoveryCountCorrection": {
+      "attestation": {
+        "path": "/tmp/1536-cloud-tools/selected-routing-source-recovery-count-attestation-fed1f778.json",
+        "bytes": 769,
+        "sha256": "e179e1fb29d6da7548c76277ac485b6a15407c2c152f8b01d55ea3a0f68fd49b"
+      },
+      "originalUtility": {
+        "path": "/tmp/1536-cloud-tools/recover-carrier.py",
+        "bytes": 2116,
+        "sha256": "adad2fb10f6fc5bfcd67181cb9424e50891e88ba06f663d66cce78b7b82fc26f"
+      },
+      "correctedUtility": {
+        "path": "/tmp/1536-cloud-tools/recover-carrier-dynamic-pins.py",
+        "bytes": 2152,
+        "sha256": "c95aa47f4d71ac83e0976a0ffb2d749d16b13ac19d3d68d20a5e007fb5a78ae7"
+      },
+      "exactTwoMetadataSubstitutionsOnly": true,
+      "allPinsLoopUnchanged": true,
+      "approvedForFutureRecovery": true,
+      "executedByReviewer": false
+    },
+    "onePhaseWrapper": {
+      "path": "/tmp/1536-cloud-tools/run-selected-routing-phase.py",
+      "bytes": 2404,
+      "sha256": "da65d134a2c41f471c34d4983773239d4641df7058eb632694db90e61e8cc5b7",
+      "exactPriorCorrectedWrapperWithTagSubstitutionOnly": true,
+      "executed": false
+    }
+  },
+  "sourceBinding": {
+    "count": 99,
+    "pinDigest": "70aa551ca427bb9c28b18e205bcbe2e10d1ebb88487309bb73b4a31426e37eb5",
+    "productDeltaCount": 23,
+    "sourcePacketSha256": "13300712e6df26ea6e851b2c32abebf027d45e95242c2940058bc512b1c8cb1f",
+    "changedPins": [
+      "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-first-run.py",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-preparation-run.py"
+    ],
+    "newPin": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+    "historicalPacket": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-before-selected-routing-20261018.json",
+      "sha256": "1ba30bc53c9ca64c84a0ea844047e7f141e3b84309342dd9a2f317882d8ace92",
+      "bytes": 64451
+    },
+    "ledgerSha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc"
+  },
+  "causalAssessment": {
+    "remedy": "The directly observed NEW uncertain1 failure was intercepted by StoryTurn missing-marker hold before current selected ownership could be reconstructed. The candidate changes only that dispatch conjunction and directly reuses the existing guarded validator/completion path.",
+    "oldFailureLimit": "This does not reconstruct the older uncertain1 post-call log or prove its unique unseen cause. Both failed originals remain immutable.",
+    "gate": "Same validated frame and retained PublicationUncertain; marker absent; InspectCurrent NotCommitted with exact original_baseline; valid selected checkpoint2; exact session/request/snapshot/turn/current generation; strictly bound Published/no-error record and pending graph; exact pending/I readback; matching prior runtime; existing exact completion Ready and no error Ready.",
+    "nonAuthorizing": "The helper borrows and verifies the existing ordinary-purpose lease. It only reads/parses/compares; no acquisition/release, authority issuance, private state reset, Ready deletion, normalization, I reprojection or diagnostic retirement occurs at classification.",
+    "routing": "The enclosing await-using scope ends before the existing direct validator call. It does not return null into the late caller terminal dispatcher on successful classification. The current selected owner re-reads/revalidates and awaits its owning release before retiring obsolete same-frame uncertainty. The unchanged validator retains its uncertainty hold if the candidate disappears or becomes ineligible.",
+    "completion": "CompletionReady remains mandatory before the unchanged hook, current applied-phase proof, projection verification, authenticated story publication/revalidation, once-only runtime increment, verified owned terminal cleanup and final state clearing."
+  },
+  "preservation": {
+    "exactInverse": {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+      "currentSha256": "c0c9b094b2696d7481fb6ed99d6c19a2b8f6a9a77c1dcb71b410ef9b0961e344",
+      "baselineSha256": "e7029de3f464396d8f677e2d112d28b5ff10b072f08f78318eed01828fd72350",
+      "exactInverse": true,
+      "prefixIntegrityConflictUnchanged": true,
+      "nonNullMarkerBodyExactModuloIndent": true,
+      "sharedReadyGateExact": true,
+      "priorPhaseBodyExactModuloIndent": true,
+      "fullPostvalidationCatchCompletionAndHoldBodyExact": true
+    },
+    "exclusions": [
+      "IntegrityConflict refusal still precedes marker applicability.",
+      "Committed claims cannot use the new branch; their absent-marker hold is unchanged.",
+      "Checkpoint-v1 and invalid/missing/foreign/error records cannot classify as selected current Published I.",
+      "Non-null marker applicability/family/Committed reset, shared Ready guard, old phase checks and the whole postvalidation/catch/Hold body match the baseline exactly apart from wrapping indentation."
+    ],
+    "fixturesAssertionsLoggerCatalogSelectorsBudgetsGmDocs": "All byte-identical to baseline. No weakening, fault change, delayed oracle or logger-policy change.",
+    "retained51": "31 methods/51 distinct targets remain at their recorded original actual/compiled provenance. Completed-marker bodies are unchanged; v1 fails new eligibility; accepted integrity4 engines lack the matching retained uncertainty; first-capture-stop controls do not perform this later same-engine retry. No cross-build runtime equivalence or replay is claimed.",
+    "extraCompatibilityNativeRequired": false,
+    "missingMarkerContingency": "Not activated: no shared IntegrityConflict ordering, old refusal, non-null marker body or v1 behavior was changed. Any future change to those facts requires renewed scoped review.",
+    "history": "All actual records/archives, qualified51, holds, environment, old lost corrected crash UNKNOWN/unavailable and genuine-child isolation plan preserved exactly."
+  },
+  "verificationPlan": {
+    "whole": {
+      "descriptors": 16,
+      "methods": 33,
+      "cases": 57
+    },
+    "corrective": {
+      "descriptors": 1,
+      "methods": 1,
+      "cases": 1
+    },
+    "remaining": {
+      "descriptors": 1,
+      "methods": 1,
+      "cases": 5
+    },
+    "modes": {
+      "crash5": {
+        "categories": [
+          "fr063-joint-interface-crash-current"
+        ],
+        "methodCases": {
+          "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection": 5
+        },
+        "descriptors": 1,
+        "methods": 1,
+        "cases": 5,
+        "timeoutMinutes": 15,
+        "requiredPrep": "remaining-plan"
+      },
+      "uncertain1": {
+        "categories": [
+          "fr063-joint-interface-uncertain-current"
+        ],
+        "methodCases": {
+          "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic": 1
+        },
+        "descriptors": 1,
+        "methods": 1,
+        "cases": 1,
+        "timeoutMinutes": 10,
+        "requiredPrep": "corrective-plan"
+      }
+    },
+    "labels": {
+      "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-selected-routing-cloud-813f1057",
+      "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-selected-routing-cloud-813f1057",
+      "corrective-plan": "t179pd-ni-iobs-l01-process-prep-first-corrective-plan-selected-routing-cloud-813f1057",
+      "remaining-plan": "t179pd-ni-iobs-l01-process-prep-first-remaining-plan-selected-routing-cloud-813f1057"
+    },
+    "order": [
+      "catalog",
+      "plan",
+      "corrective-plan",
+      "remaining-plan"
+    ],
+    "controllers": "AST parsed only; both guard99/product23, one original child invocation each, exclusive first sentinel, no retry/automatic advance, complete inventories/source digest and exact method/case checks. uncertain1 requires corrective-plan; crash5 requires remaining-plan; retained51 cannot be selected.",
+    "preparationRequirements": "First save/push/read back exact remote and independent clean recovery of SOURCE acceptance and metadata conditions. Then each named ZERO is separately invoked; fresh BOTH/catalog, whole16/33/57, corrective1/1/1 and remaining1/1/5 must each be original native0/executed0. Bind nine fresh managed copies/full output inventory and mandatory v2 dated before/after boundaries; archive/recover originals for independent PREP.",
+    "actualRelease": "NONE. After independently accepted saved/recovered fresh PREP and immediate clean v2 boundary, uncertain1 may receive a separately named new corrective release under unchanged10-minute category budget. Newcrash5 remains separately gated under unchanged15-minute budget and existing isolated genuine-child fixture plan. No auto next/retry; failure freezes progression."
+  },
+  "metadataAcceptanceSaveConditions": [
+    {
+      "id": "CURRENT_CRASH_PREP_GATE",
+      "observed": "After reviewed remedy, new independent SOURCE and fresh BOTH/catalog, whole16/33/57, corrective2/2/5, remaining1/1/5 ZERO/PREP; exact saved recovery, clean v2 boundaries and separate named newcrash5 release. No current actual release; oldUNKNOWN unchanged.",
+      "required": "Set current corrective to 1/1/1 uncertain1; whole16/33/57 and remaining1/1/5 crash remain. SOURCE accepted only after saved recovery; fresh ZERO4/PREP and distinct crash release still required."
+    },
+    {
+      "id": "BORROWED_PHASE_HISTORICAL",
+      "observed": {
+        "status": "SOURCE_AND_FRESH_ZERO4_PREP_INDEPENDENTLY_ACCEPTED",
+        "phase": null,
+        "supersededBy": null
+      },
+      "required": "Add explicit historical phase/supersededBy selectedResumeRoutingCorrection while preserving all original borrowed SOURCE/PREP/actual records."
+    },
+    {
+      "id": "RECOVERY_PIN_COUNT_READBACK",
+      "observed": "Original fed1f778 receipt sourcePinsVerified=98 and method says and98pins.",
+      "required": "Preserve original receipt. Save corrected explicit 99-pin attestation/readback with acceptance; this independent check verifies all99 bytes/hash/blob/modes in both trees."
+    }
+  ],
+  "recoveryUtilityDecision": "ACCEPT metadata-only dynamic pin-count utility for future recovery; exact all-pin verification loop unchanged. Save original fed1f778 receipt, original utility, corrected utility and separate 99-pin attestation; never rewrite original receipt as if it originally said99.",
+  "gmDisposition": "Client-owned routing of the already accepted selected protocol; no GM-authored schema, output field, capability, prompt, example or afterlife contract changed. No GM documentation update indicated.",
+  "historicalWhitespace": {
+    "scope": "Two already saved causal checker line16 trailing spaces; preserve original artifact hashes. Candidate implementation diffcheck clean.",
+    "output": "specs/1536-complete-wound-materialization/recovery/check_l01_borrowed_lease_uncertain1_failure-v1-absence.py:16: trailing whitespace.\n+expected_label='t179pd-ni-iobs-l01-process-first-'+mode+'-borrowed-lease-cloud-813f1057' \nspecs/1536-complete-wound-materialization/recovery/check_l01_borrowed_lease_uncertain1_failure.py:16: trailing whitespace.\n+expected_label='t179pd-ni-iobs-l01-process-first-'+mode+'-borrowed-lease-cloud-813f1057' \n"
+  },
+  "limits": [
+    "SOURCE and static selection only; candidate uncompiled, no new native result claimed.",
+    "No tests/build/discovery/controller/observer execution, process/root intervention, source or repository write was performed by this reviewer.",
+    "The old corrected crash5 remains UNKNOWN and unavailable; newcrash5 is UNRUN.",
+    "Broader FullNI/HOT/F1/M3/T197 and A3/Windows/CI holds remain."
+  ]
+}

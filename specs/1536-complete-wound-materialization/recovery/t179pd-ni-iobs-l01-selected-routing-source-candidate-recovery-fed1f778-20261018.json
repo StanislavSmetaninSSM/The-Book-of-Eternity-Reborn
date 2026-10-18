@@ -1,0 +1,52 @@
+{
+  "kind": "CLOUD_CARRIER_EXACT_GITHUB_RECOVERY",
+  "sha": "fed1f7789db0145de866cd4d73b97ab030871509",
+  "base": "c756e04f9e83d5d4f0108b918b65686d9ed4db95",
+  "checkedUtc": "2026-10-18T15:01:11.272209+00:00",
+  "directory": "/workspace/1536-cloud-clean-restore",
+  "remoteShaVerified": true,
+  "clean": true,
+  "localSourceOrObjectReuse": false,
+  "changedPathsVerified": 5,
+  "files": [
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+      "bytes": 13672,
+      "sha256": "c0c9b094b2696d7481fb6ed99d6c19a2b8f6a9a77c1dcb71b410ef9b0961e344",
+      "gitBlob": "1adec656248988d92425a5b4506e5831bf84b2e6",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-qualification-20261018.json",
+      "bytes": 172613,
+      "sha256": "95db5d3b4b3b96fe2b6745bc400a2307dd9364c3dea51005661a01fee5661183",
+      "gitBlob": "3fcbc392c54d55b02f70e463b203033cb3b13dd0",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-first-run.py",
+      "bytes": 9282,
+      "sha256": "5be3b06142593a541bb0a12e11f2636977f9141ff26cef2cf6bf04c5ae9bc77e",
+      "gitBlob": "087202a32d95ec53c3301c9267c06f1f87df6b71",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-preparation-run.py",
+      "bytes": 10005,
+      "sha256": "1293d696bfec31123c41e1fd64576bab9b18d8e4dee4aee22e4e2a0c9b26a61f",
+      "gitBlob": "470a6eda279e7b4cc1c0e270fd86a89bb40e76e6",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
+      "bytes": 49197,
+      "sha256": "13300712e6df26ea6e851b2c32abebf027d45e95242c2940058bc512b1c8cb1f",
+      "gitBlob": "51dc0c911340a06fd4c3b65520d475bf8c6c8f07",
+      "mode": "100644"
+    }
+  ],
+  "sourcePinsVerified": 98,
+  "sourcePinDigest": "70aa551ca427bb9c28b18e205bcbe2e10d1ebb88487309bb73b4a31426e37eb5",
+  "method": "Fetch exact task branch directly from GitHub into independent originally empty-directory GitHub clone, checkout exact SHA, clean tree, verify every changed file bytes/SHA256/blob/mode and98pins",
+  "limits": "Source/evidence recovery only. No test/build execution here; no lost corrected-crash bytes recovered."
+}
