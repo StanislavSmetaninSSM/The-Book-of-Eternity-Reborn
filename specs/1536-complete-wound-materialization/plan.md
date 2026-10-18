@@ -15,8 +15,14 @@ All earlier failures, the incomplete native-124 crash run and old session 66529 
 Задача #1536; база `631cff24a4841557bdf0445763aef578fb35b0c4`, ветка
 `1536-wound-b2-cloud-20261012`. Текущий проход — чтение плана, исходников и
 доступности инструментов. Код, бюджеты, assertions, ledger, source packet и frozen
-evidence не изменены. Независимое ревью предложения ожидается; реализация и новый
-runtime не допускаются.
+evidence не изменены. [Независимое review](recovery/independent-next-slice-proposal-review-20261018.md)
+приняло exact proposal `4e844bab0242dca476e35429654100dfeaa1dbe8` без замечаний.
+Root сверил hashes трёх reviewed файлов, 9 base inputs, 101pins и неизменность
+ledger/source packet. Три пути восстановлены из GitHub в отдельный чистый checkout;
+receipt SHA256 `49e41df48ed4eb6157fdb8be4f685b35a7f707a0bfd41500d8dbbc9d00f0753c`.
+Это принятие документального предложения, не выбор следующего задания;
+реализация и новый runtime не допускаются. Финальный carrier с reports/metadata
+также требует exact remote SHA и GitHub recovery/readback перед передачей.
 
 **Рекомендация: ограниченный SOURCE-аудит T148 — фактическая независимость
 `memory_suppression` Сарефа от лечения ран.** Следующий результат: карта

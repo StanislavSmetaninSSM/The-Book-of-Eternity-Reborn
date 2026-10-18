@@ -2,7 +2,8 @@
 
 ### Предложение независимого продолжения после 631cff24 (2026-10-18)
 
-- [ ] Рекомендуемый следующий участок: **T148 bounded SOURCE-аудит Saref memory_suppression** — реальная producer/source/identity/carrier/lifecycle цепочка и точные границы независимости от wound healing. [Проверенные зависимости, acceptance и доступность managed diagnostics](plan.md#следующий-независимый-cloud-участок--предложение-после-631cff24-2026-10-18). Это предложение, независимое ревью ожидается; код, тесты, установка/attach и новый runtime не допущены. T148/T177/Phase10 не закрываются; все L01 и broader holds выше неизменны. Материализация полного independent effect при его отсутствии потребовала бы отдельного решения.
+- [x] Документальное предложение после 631cff24: [независимое review](recovery/independent-next-slice-proposal-review-20261018.md) приняло exact WIP4e844bab без замечаний; Root проверил source/input/pin/critical-record hashes и чистое GitHub recovery трёх путей. Итоговый carrier с review требует final push/readback/recovery; это не закрытие T148 и не выбор следующего задания.
+- [ ] Рекомендуемый следующий участок: **T148 bounded SOURCE-аудит Saref memory_suppression** — реальная producer/source/identity/carrier/lifecycle цепочка и точные границы независимости от wound healing. [Проверенные зависимости, acceptance и доступность managed diagnostics](plan.md#следующий-независимый-cloud-участок--предложение-после-631cff24-2026-10-18). Предложение принято только как документация; код, тесты, установка/attach и новый runtime не допущены. T148/T177/Phase10 не закрываются; все L01 и broader holds выше неизменны. Материализация полного independent effect при его отсутствии потребовала бы отдельного решения.
 
 Дальнейшие записи о diagnostics являются историческими; новый запуск не разрешён.
 
