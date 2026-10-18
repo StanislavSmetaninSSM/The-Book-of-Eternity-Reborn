@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_BORROWED_LEASE_SOURCE_CANDIDATE",
-  "status": "WIP_UNCOMPILED_BORROWED_LEASE_SOURCE_REVIEW_PENDING_NO_RUNTIME_RELEASE",
+  "status": "BORROWED_LEASE_SOURCE_ACCEPTED_FRESH_ZERO4_ONLY",
   "sourceBase": "bb99804e8c7124e4c625ea7557d61cdaa93a8035",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
   "sourcePins": [
@@ -898,17 +898,53 @@
     "status": "NONE_SOURCE_AND_FRESH_PREP_PENDING",
     "mode": null
   },
-  "next": "Independent SOURCE of concrete saved/recovered candidate; fresh ZERO4/PREP, then distinct isolated integrity4/uncertain1/newcrash5 after each separate release. Continue in-scope remedy under user authorization; preserve all originals.",
+  "next": "After exactremote/full clean GitHub recovery and metadata/pin readback, serial named fresh ZERO4 only; independent PREP before separately named actuals. Retain47 and original FAIL/old66529 UNKNOWN.",
   "sourceReview": {
-    "status": "PENDING_FOR_BORROWED_LEASE_CANDIDATE",
-    "previousOriginal": {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-before-borrowed-lease-20261018.json",
-      "sha256": "b33c8e20d033760925f57e45cb71460423989f0095c1492444a7e2e27e1ded8d",
-      "bytes": 60552
-    }
+    "verdict": "ACCEPT_BORROWED_LEASE_SOURCE_AND_NAMED_ZERO4_ONLY",
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "candidate": "9fdecef3fd79614b9eb13b5609c99b9457d51af4",
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/check_l01_borrowed_lease_source.py",
+        "sha256": "2b974052cef99def03cf1ed8b8fc1f0c34375d5b25254de079fa2f3c9650b112",
+        "bytes": 23070
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/check_l01_borrowed_lease_source_final.py",
+        "sha256": "e276c9debeca56c7ad5502634aaa44c75163ac6a7537cd743a43beac08991de4",
+        "bytes": 8885
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-source-feedback-ef981a46-20261018.json",
+        "sha256": "d5b425280b20df4462a5d79cd43e3aaf1889d8470c3c6b219c0fbfad54f8bb3e",
+        "bytes": 3747
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-source-independent-check-9fdecef3-20261018.json",
+        "sha256": "9eb47bbab72aa3582b761ac46e8655aa456c1fb13e819bf5e2d928359c035422",
+        "bytes": 9008
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-source-independent-check-ef981a46-20261018.json",
+        "sha256": "1bc4b1e95db10a777674c5f0b0d88c8773654772e9a169c53109b80de7c8e68a",
+        "bytes": 18224
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-source-independent-review-20261018.json",
+        "sha256": "c3ce0a2de8a1065ad407885af1db9c0120caeb30470f8f6c30f26e57a2e2639c",
+        "bytes": 23516
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-source-independent-review-20261018.md",
+        "sha256": "53cded5f686627c4d9f1e60221e49e170012732904e2392b9872e5b5c741bf6b",
+        "bytes": 3102
+      }
+    ],
+    "metadataConditions": "Current causal references and ledger runtime pointer clarified at9fde; all originals explicitly historical. Saved acceptance must be exactremote/recovered and read back before ZERO. No actual release."
   },
   "namedZeroRelease": {
-    "status": "PROPOSED_ONLY_SOURCE_PENDING",
+    "status": "SOURCE_ACCEPTED_SAVED_RECOVERED_ZERO4_ONLY",
     "labels": {
       "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-borrowed-lease-cloud-813f1057",
       "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-borrowed-lease-cloud-813f1057",

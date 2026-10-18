@@ -1,0 +1,148 @@
+{
+  "kind": "INDEPENDENT_BORROWED_LEASE_SOURCE_FOCUSED_FINAL_CHECK",
+  "checkedUtc": "2026-10-18T14:06:38.010553+00:00",
+  "candidate": "9fdecef3fd79614b9eb13b5609c99b9457d51af4",
+  "previousCandidate": "ef981a4606fb9f7813ed5390114da823f3704dac",
+  "baseline": "bb99804e8c7124e4c625ea7557d61cdaa93a8035",
+  "priorCompleteCheck": {
+    "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-borrowed-lease-source-independent-check-ef981a46-20261018.json",
+    "bytes": 18224,
+    "sha256": "1bc4b1e95db10a777674c5f0b0d88c8773654772e9a169c53109b80de7c8e68a"
+  },
+  "preservedFeedback": {
+    "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-borrowed-lease-source-feedback-ef981a46-20261018.json",
+    "bytes": 3747,
+    "sha256": "d5b425280b20df4462a5d79cd43e3aaf1889d8470c3c6b219c0fbfad54f8bb3e"
+  },
+  "closedFinding": "L01-BORROWED-LEASE-SOURCE-OBSERVATION-001",
+  "directReadMissingVsReadErrorExplicit": true,
+  "exactSingleSourceDeltaInverse": true,
+  "allOriginalUncertainAssertionsExactInverseToBaseline": true,
+  "priorSevenSourceAndControllerChecksRetainedByExactThreePathDelta": true,
+  "sourcePacketSha256": "f616e4e1c7866e9800510184ce2e564781580ac3fd5d9580656b252acfa1ab2e",
+  "sourcePinCount": 98,
+  "sourcePinDigest": "b4e01729c1a4df935f79e7407e6aafe52bf9394d4f6e1ddab6f83a40893f02d5",
+  "changedPinSinceFirst": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs"
+  ],
+  "productDeltaPaths": 22,
+  "allCurrentPinsMatchBothCleanGitCheckouts": true,
+  "metadataConditionsSatisfied": [
+    "CURRENT_LEDGER_POINTER",
+    "CURRENT_CAUSAL_FIELDS"
+  ],
+  "currentCausalLimitsPreserved": true,
+  "whole": {
+    "descriptors": 16,
+    "methods": 33,
+    "cases": 57
+  },
+  "corrective": {
+    "descriptors": 2,
+    "methods": 2,
+    "cases": 5
+  },
+  "remaining": {
+    "descriptors": 1,
+    "methods": 1,
+    "cases": 5
+  },
+  "modes": {
+    "crash5": {
+      "categories": [
+        "fr063-joint-interface-crash-current"
+      ],
+      "methodCases": {
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection": 5
+      },
+      "methods": 1,
+      "cases": 5,
+      "timeoutMinutes": 15,
+      "requiredPrep": "remaining-plan"
+    },
+    "integrity4": {
+      "categories": [
+        "fr063-joint-interface-current-integrity"
+      ],
+      "methodCases": {
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback": 4
+      },
+      "methods": 1,
+      "cases": 4,
+      "timeoutMinutes": 15,
+      "requiredPrep": "corrective-plan"
+    },
+    "uncertain1": {
+      "categories": [
+        "fr063-joint-interface-uncertain-current"
+      ],
+      "methodCases": {
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic": 1
+      },
+      "methods": 1,
+      "cases": 1,
+      "timeoutMinutes": 10,
+      "requiredPrep": "corrective-plan"
+    }
+  },
+  "retained": {
+    "methods": 30,
+    "cases": 47,
+    "methodCases": {
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce": 1,
+      "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.PublishedRecordPreservesExactDiagnosticsWithoutClaimingHistoricalReturn": 1,
+      "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRefusesMalformedOrSilentlyCanonicalizedData": 6,
+      "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.ObjectCannotClaimTimestampPolicyWasNotReachedEvenWithConsistentDataDigests": 1,
+      "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.FrozenFallbackRejectsNoncanonicalOrNonUtcDataWithoutReevaluatingInterfacePolicy": 3,
+      "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRejectsDuplicatePropertiesBeforeJsonNodeCanonicalization": 1,
+      "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.InterfaceAboveCheckpointBlobLimitIsPreservedWithoutTruncation": 1,
+      "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.ErrorPreparedIsFrozenAndCannotBecomePublished": 1,
+      "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.AbsenceIsDistinctFromPresentEmptyAndReturnedCopiesAreDefensive": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceNoWriteRetainsExactBytesAndMtime": 3,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceErrorFreezesPreparedWithoutPublicationOrCommon": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AbsentInterfacePublishesOnlyResultAndCompletes": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceWarningVectorSurvivesCommonAndOrdinaryCompletion": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualGenericInterfaceConsumerRefusesSelectedMarkerDamage": 7,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_FirstInstallOwningCloseCannotArmInterfacePermission": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewLateMainConsumesOwnReadyWithoutRevivingHotOwner": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCompletesWithoutProtocolUpgrade": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCommittedColdKeepsLegacyConsumer": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewOrdinaryOriginalUsesPriorMarkerSourceInsteadOfCachedData": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceOwningCloseRetainsPublishedButCannotDeliverFreshResult": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LaterOuterFinalizationDoesNotUnemitCommittedInterfaceOrReplay": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualReturnedReadCannotHideChangedWriterPreimage": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_PublishedInterfaceCannotExcuseOtherImmutableReadyDrift": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CommonMemberCompensationRetainsPublishedInterfaceWithoutReplay": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate": 2,
+      "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalJointSeverityRepairGuidance_PreservesPublicTransportAndOnceOnlyClientOwnership": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentCaptureStopPrecedesPreparationAndExpiresActualOwner": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentCaptureObservationPreservesOrdinaryCompletion": 2,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce": 1
+    },
+    "provenance": "Unchanged original37 + accepted legacy3/correctedclose2/correctedraces2/correctedsettlement3, each actual/compiled binding retained; no cross-build equivalence."
+  },
+  "originalArchivesAndOldUnknownUnchanged": true,
+  "extraCompatibilityRuntimeRequired": false,
+  "recovery": {
+    "receipt": {
+      "path": "/tmp/1536-cloud-tools/carrier-recovery-9fdecef3.json",
+      "bytes": 1799,
+      "sha256": "6c94e505bfe9b5454693206cbda7ca8bcf51785d021be5a7f198d71244dc6357"
+    },
+    "changedPaths": 3,
+    "remoteExact": "9fdecef3fd79614b9eb13b5609c99b9457d51af4\trefs/heads/1536-wound-b2-cloud-20261012",
+    "fullIndependentGitTreesEqual": true,
+    "clean": true,
+    "noAlternates": true
+  },
+  "namedZeroPlan": {
+    "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-borrowed-lease-cloud-813f1057",
+    "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-borrowed-lease-cloud-813f1057",
+    "corrective-plan": "t179pd-ni-iobs-l01-process-prep-first-corrective-plan-borrowed-lease-cloud-813f1057",
+    "remaining-plan": "t179pd-ni-iobs-l01-process-prep-first-remaining-plan-borrowed-lease-cloud-813f1057"
+  },
+  "findings": [],
+  "eligibility": "ACCEPT_SOURCE_AND_NAMED_ZERO4_ONLY_AFTER_SAVED_RECOVERED_ACCEPTANCE_READBACK; independent fresh PREP required before any actual.",
+  "limits": "Focused read-only final review carries forward completed independent ef981 source/binding checks; no build/test/discovery/controller/observer/process/root action or repository edit."
+}

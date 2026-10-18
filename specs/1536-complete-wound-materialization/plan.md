@@ -1,3 +1,9 @@
+## T179-Pd-NI-IOBS-L01 — borrowed lease SOURCE accepted; fresh ZERO4 only (2026-10-18)
+
+[Independent Astra XHigh SOURCE](recovery/t179pd-ni-iobs-l01-borrowed-lease-source-independent-review-20261018.md) accepts minimal owned-lease propagation, preserved ordinary/body/reflection routes, original assertions, each-entry exact CurrentInterface reason delta and read-only uncertain diagnostics. Initial diagnostic feedback preserved and corrected before native.98 pins/product22; whole16/33/57, corrective2/2/5, separate newcrash1/1/5. Retain47 at original provenance; no replay.
+
+Save/exactremote/full GitHub recovery and readback before four named ZERO phases. No actual until fresh independent PREP and separate release. Original integrity4 unqualified/uncertain1 FAIL/old66529 UNKNOWN unchanged. All broader holds remain. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — qualified 47/57, independently diagnosed blocker checkpoint (2026-10-18)
 
 [Current handoff](recovery/t179pd-ni-iobs-l01-current-resume-blocker-handoff-20261018.md) and [joint independent diagnosis](recovery/t179pd-ni-iobs-l01-current-resume-joint-blocker-review-20261018.md) are authoritative. Retained37 + newly accepted10 =47 distinct targets. All15 initially remaining independent targets were attempted; integrity4 original native4PASS remains unqualified and uncertain1 original native1FAIL is frozen. New crash5 remains UNRUN; old lost corrected crash5 remains UNKNOWN/unavailable.

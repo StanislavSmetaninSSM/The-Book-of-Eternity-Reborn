@@ -1,7 +1,7 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "QUALIFIED47_OF57_USER_RESUMED_MINIMAL_BORROWED_LEASE_IMPLEMENTATION_SOURCE_PREP_REQUIRED",
-  "sourceCheckpoint": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
+  "status": "BORROWED_LEASE_SOURCE_ACCEPTED_FRESH_ZERO4_ONLY",
+  "sourceCheckpoint": "9fdecef3fd79614b9eb13b5609c99b9457d51af4",
   "sourcePinDigest": "b4e01729c1a4df935f79e7407e6aafe52bf9394d4f6e1ddab6f83a40893f02d5",
   "sourcePinCount": 98,
   "environment": {
@@ -1170,7 +1170,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Implement independently agreed minimal owned-lease propagation and stricter CurrentInterface oracle; preserve original uncertain1 FAIL and add read-only current diagnostics. SOURCE then fresh whole16/33/57, corrective2/2/5, remaining1/1/5 ZERO/PREP; separately named new actuals. Continue in-scope diagnosis/fixes autonomously; no runtime release yet.",
+  "next": "After exactremote/full clean GitHub recovery and metadata/pin readback, serial named fresh ZERO4 only; independent PREP before separately named actuals. Retain47 and original FAIL/old66529 UNKNOWN.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -2646,7 +2646,7 @@
     }
   ],
   "borrowedLeaseCorrection": {
-    "status": "WIP_UNCOMPILED_SOURCE_REVIEW_PENDING",
+    "status": "SOURCE_ACCEPTED_FRESH_PREP_UNRUN",
     "baseline": "bb99804e8c7124e4c625ea7557d61cdaa93a8035",
     "planReview": [
       {
@@ -2692,6 +2692,50 @@
       "candidate": "ef981a4606fb9f7813ed5390114da823f3704dac",
       "correction": "Read diagnostic images directly; distinguish absent exceptions from unreadable IOException/UnauthorizedAccessException. Existing ReadPhysical/assertions unchanged. Independent source recheck required.",
       "nativeExecuted": false
+    },
+    "sourceAcceptance": {
+      "verdict": "ACCEPT_BORROWED_LEASE_SOURCE_AND_NAMED_ZERO4_ONLY",
+      "model": "gpt-6-astra",
+      "reasoningEffort": "xhigh",
+      "candidate": "9fdecef3fd79614b9eb13b5609c99b9457d51af4",
+      "artifacts": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/check_l01_borrowed_lease_source.py",
+          "sha256": "2b974052cef99def03cf1ed8b8fc1f0c34375d5b25254de079fa2f3c9650b112",
+          "bytes": 23070
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/check_l01_borrowed_lease_source_final.py",
+          "sha256": "e276c9debeca56c7ad5502634aaa44c75163ac6a7537cd743a43beac08991de4",
+          "bytes": 8885
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-source-feedback-ef981a46-20261018.json",
+          "sha256": "d5b425280b20df4462a5d79cd43e3aaf1889d8470c3c6b219c0fbfad54f8bb3e",
+          "bytes": 3747
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-source-independent-check-9fdecef3-20261018.json",
+          "sha256": "9eb47bbab72aa3582b761ac46e8655aa456c1fb13e819bf5e2d928359c035422",
+          "bytes": 9008
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-source-independent-check-ef981a46-20261018.json",
+          "sha256": "1bc4b1e95db10a777674c5f0b0d88c8773654772e9a169c53109b80de7c8e68a",
+          "bytes": 18224
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-source-independent-review-20261018.json",
+          "sha256": "c3ce0a2de8a1065ad407885af1db9c0120caeb30470f8f6c30f26e57a2e2639c",
+          "bytes": 23516
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-source-independent-review-20261018.md",
+          "sha256": "53cded5f686627c4d9f1e60221e49e170012732904e2392b9872e5b5c741bf6b",
+          "bytes": 3102
+        }
+      ],
+      "metadataConditions": "Current causal references and ledger runtime pointer clarified at9fde; all originals explicitly historical. Saved acceptance must be exactremote/recovered and read back before ZERO. No actual release."
     }
   }
 }
