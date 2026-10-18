@@ -1,3 +1,17 @@
+## L01 D01 — first non-live helper20 PASS, wiring pending (2026-10-18)
+
+Actual/source81619574: first helper/check compilation native0; one non-live host
+completed20/20 source-bound checks, native0/no observer errors/join. [Original evidence](recovery/l01-delivery-d01-nonlive-evidence-20261018.json)
+archives raw compiler/host/records/prepared bytes; helper source hash remains explicit.
+Pre-EOF queue delivery, exact decoded stdout/chunks, typed identity/order, explicit
+loss/unknown/queue delay, no-inline continuation and observer/raw priority passed.
+No real fixture child/game/API or wiring executed. This is non-live preparation,
+not SOURCE/PREP acceptance or a new L01 case; review still pending. Baseline native7
+and all originals retained. Next finite step: minimal diagnostic-only parent wiring,
+separate current pin packet/recovery and genuine synthetic source, then independent
+SOURCE/fresh affected PREP. No unchanged non-live20/S01/old52 replay is selected.
+Game/snapshot/crash5 remain CLOSED; all platform/UNKNOWN/broader holds unchanged.
+
 ## L01 D01 — non-live helper-check source WIP (2026-10-18)
 
 Saved helper0e4a69d2 now has explicit source-completeness/phase UNKNOWN and publication
