@@ -1,3 +1,17 @@
+## T179-Pd-NI-IOBS-L01 — 47/57 qualified; current-resume material blocker, all actuals frozen (2026-10-18)
+
+Independent integrity EVIDENCE review found a material gap in the unchanged native4PASS original: CurrentInterface resumes into canonical-write.lock IOException before the intended I preimage guard. Current-resume holds its lease then upstream raw item validation attempts another lease. The original four PASS remain immutable but unqualified; no claim that this lock refusal establishes interface-integrity protection.
+
+Already running uncertain1 was preserved without intervention and completed native 1 / 0 PASS / 1 FAIL, 101.709 s, exact complete one-case selection, unchanged9/1575 outputs, native cleanup and clean after-census. It fails at currentResumedProof NotNull (line67); later proof/turn43/mechanical/cleanup/inert-repeat assertions are not reached. [Frozen original11-chain archive](recovery/t179pd-ni-iobs-l01-cloud-uncertain1-frozen-813f1057-files-20261018/archive.json).
+
+All further actuals, including separately planned new crash5, are frozen pending independent causal diagnosis and a justified source/oracle correction plan plus affected fresh SOURCE/PREP. No source or assertion has changed. Qualified47/57 remains durable; old crash UNKNOWN and every original failure remain immutable. New crash5 is still UNRUN. All broader holds remain. Following sections historical.
+
+## T179-Pd-NI-IOBS-L01 — uncertain1 original outcome saved; next gate explicit (2026-10-18)
+
+Новый отдельно именованныйuncertain1: actual90fbb068/compiled7dbfbddc, native1, 1executed/0PASS/1FAIL, 101.709s. [Original11rawchains](t179pd-ni-iobs-l01-cloud-uncertain1-frozen-813f1057-files-20261018/archive.json) и exactbefore/afterauthoritativecensuses сохранены; observedpositive=False. Это originaloutcome, independentEVIDENCE ещё pending, qualifiedcount пока47. Frozenoriginalclose2FAIL/семьстарыхfixtureFAIL/oldcorrectedcrashUNKNOWN неизменны.
+
+Independent causal diagnosis before anysource/actual/retry. Все исходные assertions и once-only/Ready/ownedtransition contracts неизменны. Noactual/retry приunexpectedfailure; всеbroaderholds/Windows403/CI/A3 сохраняются. Следующие sections исторические.
+
 ## T179-Pd-NI-IOBS-L01 — 47/57 qualified; integrity4 original PASS, EVIDENCE pending (2026-10-18)
 
 [Corrected settlement3 independent EVIDENCE accepted](recovery/t179pd-ni-iobs-l01-settlement3-corrected-independent-review-20261018.md), findings empty: all three full settlement oracles, one I-changing cohort, exact Published retention and terminal release/compensation images. Qualified union is now 47/57 at original actual/compiled provenance; original failures and old crash UNKNOWN remain unchanged.

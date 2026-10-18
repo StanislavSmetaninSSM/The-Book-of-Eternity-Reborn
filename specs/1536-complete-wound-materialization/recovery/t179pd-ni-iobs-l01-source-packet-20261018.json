@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_SETTLEMENT_FIXTURE_CLASSIFICATION_SOURCE_CANDIDATE",
-  "status": "INTEGRITY4_NATIVE_PASS_EVIDENCE_PENDING_NEXT_UNCERTAIN1_SEPARATELY_NAMED",
+  "status": "47_OF_57_QUALIFIED_CURRENT_RESUME_NESTED_LEASE_PRODUCT_BLOCKER_ALL_ACTUALS_FROZEN",
   "sourceBase": "67e143b24645e0a5b25829b17cb27e80edf3f000",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
   "sourcePins": [
@@ -902,25 +902,10 @@
   "gmDisposition": "Fixture-only fault classification. No production behavior, GM-authored schema/prompt/example/manifest/daemon or documentation contract change.",
   "oldCorrectedCrash": "Old environment session66529 remainsUNKNOWN, bytes unavailable. Separate new qualification only after corrected SOURCE/fresh PREP/named release, independent disposable fixtures/new genuine children; no old environment/process or real save operation.",
   "namedActualRelease": {
-    "status": "SEPARATELY_NAMED_FIRST_AFTER_SAVED_OUTCOME_RECOVERY_AND_IMMEDIATE_CLEAN_V2_CENSUS",
-    "mode": "uncertain1",
-    "label": "t179pd-ni-iobs-l01-process-first-uncertain1-settlement-fixture-cloud-813f1057",
-    "compiledSource": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
-    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-settlement-fixture-cloud-813f1057/record.json",
-    "expectedCases": 1,
-    "category": "fr063-joint-interface-uncertain-current",
-    "methods": [
-      {
-        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic",
-        "cases": 1
-      }
-    ],
-    "observerPath": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-20261018.py",
-    "observerSourceSha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
-    "conditions": "Save exactremote/cleanGitHub recovery; independent SOURCE/PREP unchanged; no unresolved semantic concern; immediate clean v2 before-census; NoBuild/FIRST/new disposable roots only; mandatory originaloutcome+aftercensus/inventories/save. Anyunexpectedfailure/materialreviewfinding freezes. No concurrent actual or automaticadvance/retry. PriorpositiveEVIDENCEreview may read immutable files concurrently; no repo mutation duringactual.",
-    "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED"
+    "status": "NONE_ALL_ACTUALS_FROZEN_CURRENT_RESUME_MATERIAL_REVIEW_CONCERN_AND_UNCERTAIN1_FAILURE",
+    "mode": null
   },
-  "next": "After outcome recovery, independent EVIDENCE forintegrity4; separately named FIRSTuncertain1 only after immediate clean authoritative census and no unresolved finding. Qualified count unchanged until acceptance.",
+  "next": "Independent frozen-original diagnosis of current-resume nested canonical lease and both integrity CurrentInterface evidence gap/uncertain1 positive failure before any source/oracle correction, affected fresh PREP, retry or newcrash5. All actuals frozen; no source/assertion change yet.",
   "sourceReview": {
     "verdict": "ACCEPT_MINIMAL_SETTLEMENT_FIXTURE_SOURCE_AND_NAMED_ZERO4_PLAN_WITH_METADATA_SAVE_CONDITIONS",
     "candidate": "c79cdea9c29a513863439966685c99fdddb8ca3e",
