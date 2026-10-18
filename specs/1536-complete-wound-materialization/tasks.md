@@ -1,3 +1,7 @@
+## T148 M01 — implementation выбрана; PLAN WIP (2026-10-18)
+
+- [ ] [Один M01 audit-state regression](design/t148-m01-historical-audit-preservation-plan-20261018.md): independent plan/route gate → test-only SOURCE → fresh catalog/build/discovery/PlanOnly PREP → first singleton actual → independent EVIDENCE и GitHub recovery. Сейчас только PLAN WIP; ни код, ни runtime не начаты. M01 не закрывает E01/T148/Phase10; L01 остаётся52/57 со всеми holds.
+
 ## T148 — bounded SOURCE audit принят, полная задача открыта (2026-10-18)
 
 - [x] Ограниченный [SOURCE-аудит Saref memory_suppression](design/t148-saref-memory-suppression-source-audit-20261018.md): [независимое review](recovery/t148-saref-source-audit-final-independent-review-20261018.md) exact `d9ffe541` — ACCEPT_SOURCE_DOCUMENTATION_ONLY, без blocking/material findings; pointer 5754 исправлен. Реальный defeat audit producer/identity/persistence, separate suppressed advantage eligibility, отсутствующий runtime-effect мост и три terminal caller/common cleanup прослежены. Сохранены 42 base / 22 independent pins / 229 static checks; code/test/catalog/selection/budget/runtime не изменены. Финальный carrier требует push/exact SHA/clean GitHub recovery/readback. Это завершение SOURCE-аудита, не T148/Phase10.

@@ -1,3 +1,18 @@
+## T148 M01 — выбран один audit-state regression; PLAN WIP (2026-10-18)
+
+Продолжение от `0292234faa8eb1cd405ade611057be07bafa5e19` выбрано пользователем.
+[Точный M01 план](design/t148-m01-historical-audit-preservation-plan-20261018.md)
+перед реализацией требует независимого plan/route review: genuine ApplyUpdate
+до creation sign, fresh uncached per-case preparation, existing accepted Mortal heal
+и exact original audit bytes. Feasibility по исходникам подтверждена отдельно;
+formal review pending, implementation/runtime ещё не начаты. Код production
+можно менять только после доказанного defect/report/плана; новой механики нет.
+
+Catalog/current selection M01 дадут ровно два ожидаемых изменения historical L01
+pins; старые101/packet/ledgers/outcomes сохраняют исходную provenance, unchanged99/
+product23 проверяются отдельно. M01 SOURCE/PREP/actual будут самостоятельными,
+не допуском L01. L01 52/57, crash5/старый UNKNOWN и все broader holds неизменны.
+
 ## T148 — SOURCE-аудит Saref memory_suppression принят; T148 открыт (2026-10-18)
 
 Пользователь выбрал рекомендованный независимый audit от `12d2bac1e680799c176346b6e6f29f48859e32d1`
