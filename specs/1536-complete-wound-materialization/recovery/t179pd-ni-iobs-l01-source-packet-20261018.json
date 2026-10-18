@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_SETTLEMENT_FIXTURE_CLASSIFICATION_SOURCE_CANDIDATE",
-  "status": "SETTLEMENT_FIXTURE_CAUSAL_REVIEW_SAVED_SOURCE_REVIEW_PENDING",
+  "status": "SETTLEMENT_FIXTURE_SOURCE_ACCEPTED_FRESH_ZERO4_ONLY_PENDING_RECOVERY_READBACK",
   "sourceBase": "67e143b24645e0a5b25829b17cb27e80edf3f000",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
   "sourcePins": [
@@ -795,7 +795,7 @@
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-method-row-ledger-20261018.json",
     "sha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
     "phase": "CURRENT_PROCESS_FIXTURE_BUILD_ENTRY_SOURCE_INVENTORY_HASH_UNCHANGED_FROM_C4C0_AUTHORING",
-    "currentRuntimePointer": "Fixed authored method inventory only. CurrentVerificationContract/next and cloud.readyDriftCorrection define current SOURCE/fresh PREP gates; historic ledger status is not current runtime acceptance."
+    "currentRuntimePointer": "Fixed authored method inventory only. Current runtime SOURCE/fresh PREP gates are packet.currentVerificationContract and cloud.settlementFixtureCorrection; historical ReadyDrift and ledger statuses are not a current native release."
   },
   "productDelta": [
     "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
@@ -905,5 +905,51 @@
     "status": "NONE_HELD_PENDING_FIXTURE_SOURCE_AND_FRESH_PREP",
     "mode": null
   },
-  "next": "Independent SOURCE on saved/recovered one-line fixture classification, exact98/product21 bindings, corrected settlement1/2/3 and remaining3/3/10 ZERO tools, retention44 and separate crash isolation. No native before SOURCE acceptance; then fresh ZERO4 and independent PREP before any actual."
+  "next": "Exact remote/full clean GitHub recovery and metadata condition readback, then only four individually named ZERO preparations. No actual before saved originals and independent fresh PREP.",
+  "sourceReview": {
+    "verdict": "ACCEPT_MINIMAL_SETTLEMENT_FIXTURE_SOURCE_AND_NAMED_ZERO4_PLAN_WITH_METADATA_SAVE_CONDITIONS",
+    "candidate": "c79cdea9c29a513863439966685c99fdddb8ca3e",
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "findings": [],
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement-fixture-source-independent-review-20261018.json",
+        "sha256": "9c2dabd460915093d300e3099aa8c5210dc6660cf488c99b2a6b159836a84365",
+        "bytes": 22432
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement-fixture-source-independent-review-20261018.md",
+        "sha256": "075815981b028e76d82d52242fd2b6b15dbb2256609433794d0bfa378974a3f7",
+        "bytes": 2906
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement-fixture-source-independent-check-c79cdea9-20261018.json",
+        "sha256": "f902810dcafb0b8545c903271b0a9d26bb3160443211798efe76235227b89ab8",
+        "bytes": 15476
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement-fixture-source-checker-20261018.py",
+        "sha256": "b3fcf6119101cf48e2834002cc93a877ab278e9aed02d1ea4dcd5fd3b6f60ca9",
+        "bytes": 17721
+      }
+    ],
+    "metadataConditions": "All three required clarifications applied in this acceptance save; independent readback/recovery before ZERO. Fixed authored ledger and source pins unchanged."
+  },
+  "namedZeroRelease": {
+    "labels": {
+      "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-settlement-fixture-cloud-813f1057",
+      "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-settlement-fixture-cloud-813f1057",
+      "corrective-plan": "t179pd-ni-iobs-l01-process-prep-first-corrective-plan-settlement-fixture-cloud-813f1057",
+      "remaining-plan": "t179pd-ni-iobs-l01-process-prep-first-remaining-plan-settlement-fixture-cloud-813f1057"
+    },
+    "order": [
+      "catalog",
+      "plan",
+      "corrective-plan",
+      "remaining-plan"
+    ],
+    "conditions": "Only four explicit separate invocations at saved/recovered SOURCE acceptance SHA after metadata condition readback. Previous original native0/ZERO and inventories/censuses verified before next. Fresh BOTH/catalog then whole16/33/57, corrective settlement1/2/3, remaining3/3/10 PlanOnly-NoBuild. Any unexpected failure freezes. Fresh independent PREP before any actual.",
+    "actualRelease": false
+  }
 }

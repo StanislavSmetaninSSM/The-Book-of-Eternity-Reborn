@@ -1,3 +1,9 @@
+## T179-Pd-NI-IOBS-L01 — settlement fixture SOURCE accepted; ZERO4 only (2026-10-18)
+
+[Independent SOURCE](recovery/t179pd-ni-iobs-l01-settlement-fixture-source-independent-review-20261018.md) accepts the one-line fixture classification and bounded tools, code/binding findings empty. Three required metadata clarifications are included: fixed-ledger pointer selects current settlementFixtureCorrection; new crash gate requires current fresh1/2/3+3/3/10 PREP; previous ReadyDrift SOURCE/PREP explicitly historical with all records preserved. Source98 pins/product21/unchanged assertions and retention44 verified. No production change.
+
+After exactremote/clean GitHub recovery and metadata readback, only the four explicit new ZERO labels in source packet may run serially: fresh BOTH/catalog, whole16/33/57, corrective settlement1/2/3, remaining3/3/10. Each original0/ZERO and9/full output/census evidence precedes next; any failure freezes. No actual release until independent fresh PREP is saved/recovered. Qualified44/57, original settlement1PASS2FAIL and all historical outcomes/old crashUNKNOWN remain unchanged. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — settlement diagnosis saved; SOURCE gate (2026-10-18)
 
 [Independent frozen-original causal review](recovery/t179pd-ni-iobs-l01-settlement3-causal-review-20261018.md) accepts shared transient-retry fixture cause and the one-line nonretryable injected-fault correction plan only. It does not qualify either failed row or Terminal(false). Selection.Complete=true means all3 cases ran; the failed category has CategoryResults.Completed=false. No post-terminal compensation byte proof is inferred after the TerminalFault disposition failure.
