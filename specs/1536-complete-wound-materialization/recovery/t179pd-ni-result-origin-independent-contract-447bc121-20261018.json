@@ -1,0 +1,77 @@
+{
+  "kind": "DERIVED_NI_RESULT_ORIGIN_CONTRACT",
+  "source": "447bc1210c507742758243e1c254860bea0c4539",
+  "status": "RECOMMENDED_SINGLE_WHOLE_VERTICAL_FOR_INDEPENDENT_ACCEPTANCE_NOT_IMPLEMENTED",
+  "scope": "Joint I Prepared/Published result continuity through actual common/take and late/cold consumer; not full live NI/HOT availability.",
+  "markdown": {
+    "path": "/tmp/t179pd-ni-result-origin-independent-contract-447bc121-20261018.md",
+    "bytes": 12683,
+    "sha256": "eed71ed8bb685da3f40868e0fa08c2b912f3cdacf6365e6a975b4535496708ed"
+  },
+  "support": {
+    "path": "/tmp/t179pd-ni-result-origin-independent-contract-447bc121-20261018-check.json",
+    "bytes": 21637,
+    "sha256": "329c3677ef1a6df40527f3dedf054228792fb4f7ceb4581522e6cd87ce97de3e"
+  },
+  "decision": {
+    "selectedOutputBindingVersion": 3,
+    "durableOrigin": "PreparedResultPublicationV1",
+    "proposedParentNiPublicationVersion": 2,
+    "freshAndRecoveredSameDurableMeaning": true,
+    "historicPublicReturnInferred": false,
+    "legacyCheckpoint1AndChild1Unchanged": true,
+    "acceptedReturnedIChild2DesignUnchanged": true,
+    "defaultFreshSelection": "Existing actual private FIRST issuer chooses checkpoint2/protocol1 for new genuine joint repair waves; no caller/test flag or upgrade.",
+    "noResultRestart": "HELD",
+    "resumeAuthority": "New actual current Main/lease/graph/mechanical/common owners; record is DATA and cannot recreate old Ready/HOT/capture authority.",
+    "completeConsumerRequired": true
+  },
+  "sourceFindings": [
+    {
+      "id": "ORIGIN-01",
+      "location": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs:519",
+      "fact": "Current ordinary I writes before tail and return; stored publication cannot attest the later historical return."
+    },
+    {
+      "id": "DISPATCH-01",
+      "location": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalQteWoundDecision.cs:43",
+      "fact": "N normalization precedes pending reconstruction; new result dispatch must precede this and destructive restore while preserving completed-cold first."
+    },
+    {
+      "id": "READY-01",
+      "location": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs:249",
+      "fact": "Existing Ready recheck compares all outputs to prior snapshot, including I. Fresh owned transition requires explicit source contract; no snapshot rewrite."
+    },
+    {
+      "id": "COMMON-01",
+      "location": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs:52",
+      "fact": "Output basis is captured before common fingerprint; the derived child must enter here, not after take."
+    },
+    {
+      "id": "COLD-01",
+      "location": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs:203",
+      "fact": "Existing full current proof/recovery and live taken comparison must be extended, not replaced by record hashes."
+    },
+    {
+      "id": "LATE-01",
+      "location": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs:98",
+      "fact": "Current I public call is unconditional; selected child3 must consume stored data at this real slot."
+    }
+  ],
+  "remainingWholeVerticalRequirements": [
+    "Exact selected fresh/resume result consumer and typed failure routing before old normalizers/restores.",
+    "Strict checkpoint2/pending record/child3/parent niPublication2 with complete graphs and canonical diagnostics.",
+    "Genuine one-pass projector/fallback and under-lease before-image/owning-release evidence.",
+    "Actual Ready owned-transition preserves old snapshot without imported capabilities.",
+    "Same existing common authority/cache/take/cohort/readback/claim settlement and cold/progression proof.",
+    "Restore/terminal precedence plus real crash/reentry and finite selection/ownership fixtures."
+  ],
+  "evidence": {
+    "repositoryEdits": false,
+    "nativeRuns": false,
+    "oldRawReplay": false,
+    "productAcceptance": false,
+    "testsExecutionAuthorizedByReport": false,
+    "threatModel": "Trusted local consistency/stale/corrupt/cross-operation checks; no omnipotent-owner antitamper or new trust anchor."
+  }
+}

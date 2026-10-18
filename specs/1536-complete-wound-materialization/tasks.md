@@ -1,3 +1,14 @@
+## T179-Pd-NI-IOBS-L01 — complete I-result vertical contract/map WIP (2026-10-18)
+
+- [ ] **T179-Pd-NI-IOBS-L01**: independently review the smallest closed I-result lifecycle, then author focused causal TDD and implement only the accepted whole vertical under separate concrete SOURCE/FIXTURE/SELECTION/PREP and named actual gates. Current selected phase is **DOC_WIP_FOR_WHOLE_VERTICAL_REVIEW**, not implementation or test admission.
+- [x] Freeze the [engineering map](recovery/t179pd-ni-iobs-l01-engineering-map-447bc121-20261018.md) and [38 Git pins/64 ranges](recovery/t179pd-ni-iobs-l01-engineering-map-447bc121-20261018.json) at clean base447bc; preserve the independent origin contract and its exact fresh/cold and authoritative enum/resume-v2 companions.
+- [ ] Publish/recover this documentary WIP and obtain independent whole-candidate review. The [Root scope](recovery/t179pd-ni-iobs-l01-root-contract-review-scope-447bc121-20261018.json) authorizes this save, not acceptance of the proposed contract or runtime.
+- [ ] After accepted contract/vertical and concrete fixture review: genuine old-route semantic RED, minimal coherent implementation, fresh affected preparation/SOURCE, separately named crash/restart/compatibility and consumer EVIDENCE. No runnable tests, production, catalog/selection or tools are authored by this checkpoint; no build/discovery/native action has run for L01.
+
+Selected candidate: actual private FIRST checkpoint2/protocol1 for new waves → consume one-shot preparation capability → Prepared → I+Published → real pre-preparation consumer → child3/common/take → late/cold published DATA consumption. Result origin is committed prepared-result publication, never invented historical public-I return. Retained schema1/child1 stays genuine and unchanged; proposed child2 ReturnedI remains its separate accepted DESIGN. Fresh/resume current admission, owning-I-release outside the publication lease, immutable Ready plus owned I transition, direct/outer restore retention, actual abrupt child cuts and legacy fixture provenance are required review points. Full NI/HOT/platform/A3 and other holds remain.
+
+Latest user autonomy and [current plan](plan.md) supersede prior completed CUT01-only/no-further-edit banners for this new documentary phase; fixed proposals/reviews and accepted CUT01 evidence remain unchanged. Documentary WIP persistence is expressly authorized before whole-candidate review, including where frozen draft wording held repository authoring. No human approval question or broad accepted-test replay follows.
+
 ## T179-Pd-CUT01 bounded implementation/source/EVIDENCE complete (2026-10-18)
 
 - [x] Accepted finite plan and tests-only WIP3579; fresh BOTH/catalog+PlanOnly ZERO and concrete first-stop Source/PREP saved/recovered.
