@@ -1,3 +1,13 @@
+## T179-Pd-NI-IOBS-L01 — ReadyDrift diagnostic fix WIP; SOURCE/PREP pending (2026-10-18)
+
+Квалифицированы 42/57 targets: прежние 37, cloud legacy3 и corrected close2, каждый на исходном actual/compiled provenance. [Точный recovery checkpoint40920dab](recovery/t179pd-ni-iobs-l01-qualified42-recovery-40920dab-20261018.json) сохранён. [Независимая диагностика races2](recovery/t179pd-ni-iobs-l01-races2-causal-review-20261018.md) подтвердила отдельный product diagnostic omission: original exception превращается в точный retained Issue, затем non-Committed gate возвращает Held до логирования. Это не logger truncation.
+
+В original ReadyDrift FAIL достигнуты exact Published/pending/I, foreign experience bytes, immutable Ready source и expiry/no capture/common. Финальный mechanical foreach и direct restore НЕ достигнуты; прежние более широкие формулировки о no-effects assertions уточняются. Отдельное независимое сравнение15 raw images не превращает эти недостигнутые assertions в PASS. Original races2 1PASS1FAIL и все raw остаются неизменными.
+
+Минимальная поправка добавляет одно общее LogError исходного exception после существующего Retain с фактическим Disposition, плюс using. Catch/filter, attempt closure, state, frame, lease/finally expiry, return и assertions не меняются. [Current98-pin packet](recovery/t179pd-ni-iobs-l01-source-packet-20261018.json) связывает её с обновлёнными двумя контроллерами. Код ещё не compiled и не квалифицирован.
+
+После WIP push/readback/clean recovery нужен independent SOURCE. Затем четыре отдельно именованных ZERO: fresh BOTH/catalog, whole16/33/57, corrective races1/2/2, remaining4/5/13. Fresh9DLL/full outputs, mandatory v2 census и independent PREP обязательны до actual. Existing races2 — coherent corrective category; retained42 не повторяются. Остальные13: settlement3, integrity4, uncertain1 и отдельный newcrash5. Старый corrected crash5 session66529 остаётся UNKNOWN; original bytes недоступны. Все broader holds, Windows403 blocked/no retry, CI no-run и A3 NO-PROCEED сохраняются. Следующие sections исторические.
+
 ## T179-Pd-NI-IOBS-L01 — qualified42; races2 original1PASS1FAIL frozen (2026-10-18)
 
 [Independent correctedclose2 EVIDENCE](recovery/t179pd-ni-iobs-l01-close2-corrected-independent-review-20261018.md) accepted без findings: native0/2PASS/468.043s,11rawchains/981rawimagechecks/22embeddedhashes, originalIOException preserved, directrestorehold/222canonicalpaths unchanged, realcommon/child3/late/inertrepeat once-only assertions. Отдельногоcoldchild/dedicatedDATA take/late-refusal runtime эти2метода не дают. Aftercensus — datedboundary через33.042601s, не instantaneous/continuousabsence. Qualified42=37retained+legacy3+correctedclose2, provenance раздельный.

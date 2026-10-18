@@ -1,4 +1,5 @@
 using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging;
 
 namespace BookOfEternityClient.Core;
 
@@ -117,6 +118,8 @@ public partial class GameEngine
                 result = Retain(new(existing?.Disposition == MortalJointRepairPublicationDisposition.Committed
                     ? MortalJointRepairPublicationDisposition.Committed : MortalJointRepairPublicationDisposition.PublicationUncertain,
                     existing?.Plan, JointRepairAdmissionIssue(error.Message), existing?.Completed));
+                _logger.LogError(error,
+                    "Joint canonical publication retained {Disposition} after an exception.", result.Disposition);
             }
 
             MortalJointRepairCanonicalRefresh Refused(IReadOnlyList<ValidationIssue> issues)

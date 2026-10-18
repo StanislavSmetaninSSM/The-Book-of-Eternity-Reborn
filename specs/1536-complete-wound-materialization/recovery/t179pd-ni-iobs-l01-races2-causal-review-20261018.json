@@ -1,0 +1,237 @@
+{
+  "kind": "INDEPENDENT_RACES2_CAUSAL_REVIEW",
+  "reviewer": "independent GPT-6 Astra XHigh",
+  "verdict": "CONFIRMED_PRODUCT_DIAGNOSTIC_TRANSPORT_OMISSION_HOLD_EXECUTION_PENDING_MINIMAL_SOURCE_AND_FRESH_PREP",
+  "reviewedUtc": "2026-10-18T11:25:17.430566+00:00",
+  "carrier": "8f94b4b2b16d67d7862ea106cf6a9fb33eb86c15",
+  "actualSource": "23362e5701daf6f01aa989f7fde070242a9167d3",
+  "compiledSource": "cf52201ca165d24c971018251ef9723a8e493384",
+  "sourcePinDigest": "b29c971342ee772b13cd123a954d7afa8937e1f50a7e5f4c4c14403e4de4c347",
+  "evidence": [
+    {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-races2-failure-independent-check-8f94b4b2-20261018.json",
+      "sha256": "012df4b3aa7b2469256bcb9890aa48fc6ae93a32e7c88840855fdd37bdbad701",
+      "bytes": 8148
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_races2_failure.py",
+      "sha256": "3097f45dfa8c1a5a56f6a9ec7b0a5082627890c1ba4f15492631f64babbf5ad1",
+      "bytes": 12857
+    }
+  ],
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-races2-frozen-813f1057-files-20261018/archive.json",
+    "sha256": "12c6c0e7c9d09593a5ee809dadd2439b0136934fe4a7f87c5d3263a69ff0066e",
+    "rawChains": 11,
+    "rawBytes": 16928346,
+    "completeOriginalCoverage": true,
+    "allOriginalStoredRestoredBytesMatched": true
+  },
+  "originalNative": {
+    "nativeExit": 1,
+    "tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 1,
+      "Failed": 1
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "seconds": 178.31791332300054,
+    "noTimeout": true,
+    "bothOwnedRootsRemoved": true,
+    "nativeCleanupComplete": true,
+    "nineDllAnd1575OutputsStable": true,
+    "restoredCarrierPaths": 18
+  },
+  "finding": {
+    "id": "L01_READY_DRIFT_ORIGINAL_EXCEPTION_NOT_LOGGED",
+    "severity": "blocking runtime qualification",
+    "cause": {
+      "failedMethod": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_PublishedInterfaceCannotExcuseOtherImmutableReadyDrift",
+      "message": "Assert.Contains() Failure: Sub-string not found\nString:    \"Engine diagnostics:\\nCritical accepted-tur\"···\nNot found: \"joint_interface_ready_submitted_source_ch\"···",
+      "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertSourceRaceHeld(GameEngine engine, String diagnostics) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSourceRaces.cs:line 117\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertHeldAsync(GameEngine engine, String owningDiagnostics) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 374\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow, Boolean normalizeNarrativeBeforeCheckpoint, Action`1 observeSettledCommonPlan, Boolean postOriginalAutomaticSubmission, Action`1 attachActualOwnerProbe, JointCaptureCutProbe currentCaptureProbe, JointInterfaceLifecycleProbe interfaceLifecycleProbe) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 439\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_PublishedInterfaceCannotExcuseOtherImmutableReadyDrift() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSourceRaces.cs:line 23\n--- End of stack trace from previous location ---",
+      "inMemoryDisposition": "PublicationUncertain",
+      "retainedIssue": {
+        "Index": 0,
+        "Code": {
+          "Value": "mortal_joint_repair_admission_refused",
+          "OriginalLength": 37,
+          "Truncated": false,
+          "FullUtf8Sha256": "BEB9C2640F8A0A27C1326A7AD6CB224A782654BAADAA4E2E9D72C22F7456FFDA"
+        },
+        "FilePath": {
+          "Value": "acceptedTurn.wounds",
+          "OriginalLength": 19,
+          "Truncated": false,
+          "FullUtf8Sha256": "9C04D7230A85D863B8FC9F2B415E636627DC8BFAC51167F99E98DFEEC64E29AE"
+        },
+        "Message": {
+          "Value": "joint_interface_ready_submitted_source_changed: game_state/player/experience.json",
+          "OriginalLength": 81,
+          "Truncated": false,
+          "FullUtf8Sha256": "F03C15F7896DB10DE1D7CB5FBD1761EA8EB738C8DBA761DFBC50EAE65BDEDC82"
+        }
+      },
+      "loggerDiagnostic": "Engine diagnostics:\nCritical accepted-turn raw state corruption after обработки хода: 1 errors",
+      "loggerDiagnosticLength": 94,
+      "collectorTruncationExplainsFailure": false,
+      "publishedPositiveReach": true,
+      "immutableReadyFaultIsWhitespaceOnly": true,
+      "earlierAssertionsReached": [
+        "one physical mutation",
+        "no completed capture or common marker",
+        "turn42",
+        "fresh consumed",
+        "exact retained pending",
+        "exact foreign experience bytes",
+        "Published and exact I",
+        "original Ready source not reseeded",
+        "attempt not live/delegated; continuation/reservation null; stages empty; capabilities expired"
+      ],
+      "downstreamAssertionsNotReached": [
+        "final mechanical-before foreach",
+        "iobs_actual_source_race_held_no_repair emission",
+        "direct RestorePreTurnBackup hold/byte-retention oracle"
+      ],
+      "independentRawMechanicalDigestComparison": {
+        "paths": 15,
+        "allExpectedOriginalOrInjectedForeignBytesMatchRecordedFinalDigests": true,
+        "distinction": "This independent comparison does not claim the failed test reached its later mechanical assertion loop."
+      },
+      "causalPath": [
+        "Ready.cs Recheck throws original InvalidDataException with immutable source path",
+        "ConsumeCurrentMortalJointInterfaceAsync propagates before optional HOT custody",
+        "PublishCurrentMortalJointRepairAsync filtered catch closes attempt and retains original error.Message as one admission issue",
+        "No original exception logging in that catch; no rethrow to the previously corrected canonical-refresh catch",
+        "ValidateMortalJointPostPublicationAsync returns Held at its initial non-Committed gate before its logging paths"
+      ],
+      "noNewRuntimePass": true
+    },
+    "sourceTrace": [
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceReady.cs",
+        "line": 119,
+        "effect": "Immutable Ready source comparison rejects a foreign experience.json whitespace change; original InvalidDataException contains precise reason/path."
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfacePublication.cs",
+        "line": 173,
+        "effect": "Mandatory selected-interface consume recheck propagates before optional HOT handling."
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs",
+        "line": 162,
+        "effect": "CaptureCurrentHotCustodyAsync awaits mandatory consume before optional HOT catch."
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+        "line": 111,
+        "effect": "Existing filtered catch closes actual attempt, retains PublicationUncertain and original error.Message as an admission issue, but does not log the error or rethrow it."
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "line": 886,
+        "effect": "Normal canonical-refresh return hands retained publication to post-publication validation; previous guard/log correction is not entered."
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+        "line": 54,
+        "effect": "Non-Committed disposition returns Held before later logger calls."
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.SpiritualContinuation.cs",
+        "line": 490,
+        "effect": "Collector includes Information-and-higher and appends Exception.ToString, bounded 24/2000. The failing original contains only one short generic count; no eviction or truncation explains missing reason."
+      }
+    ]
+  },
+  "minimalRemedy": {
+    "location": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs: existing filtered catch, immediately after result = Retain(...)",
+    "change": "Add one general LogError of the original caught error with a neutral retained-disposition message, and the Microsoft.Extensions.Logging import if required. Example message: Joint canonical publication owner caught a failure; retained disposition {Disposition}.",
+    "whyAfterRetain": "Keep closure and retained classification/issue established before diagnostic emission, without adding authority, a destructive branch or a rethrow. Log original exception type/message/stack while the catch owns it.",
+    "preserve": [
+      "Exact catch filter, including SessionReplaced exclusion and existing exception types.",
+      "CloseCurrentJointAttempt call and delegated/unattempted classification.",
+      "Retain disposition, Plan, issue message, Completed and Frame fields.",
+      "Owning lease close, finally Expire, runtime refresh condition, held/committed return behavior.",
+      "No normalization, Ready reseeding, current DATA reinterpretation, restore, common publication or retry changes.",
+      "No fixture/test/logger/assertion/budget/catalog/selection identity changes."
+    ],
+    "exclude": [
+      "Message-specific exception matching or suppression.",
+      "Reconstructing an exception from issue text later.",
+      "Logging on every repeated retained-publication read.",
+      "Broadly changing post-publication issue handling or flattening distinct close and Ready paths."
+    ],
+    "implementationStatus": "Recommendation only; no source change authored by reviewer."
+  },
+  "affectedScope": {
+    "correctiveCategory": "fr063-joint-interface-source-races",
+    "descriptors": 1,
+    "methods": 2,
+    "cases": 2,
+    "exactMethods": [
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualReturnedReadCannotHideChangedWriterPreimage",
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_PublishedInterfaceCannotExcuseOtherImmutableReadyDrift"
+    ],
+    "justification": "Existing coherent source-races pair directly distinguishes prepublication returned-read refusal from post-Published immutable Ready refusal. The second exercises the new logger site; the first controls the previously corrected canonical-refresh path and its independent restore proof. Its observed PASS is not independently qualified, so preserving the existing pair avoids inventing a one-off selector.",
+    "retained42": "Preserve old37 plus accepted legacy3 and corrected close2 at their original compiled/actual provenance. The proposed addition logs only exceptions already caught; positive common paths and earlier close/read paths do not enter this catch. No concrete dependency requires replaying retained42.",
+    "remainingPlan": {
+      "descriptors": 4,
+      "methods": 5,
+      "cases": 13,
+      "groups": [
+        "settlement3",
+        "integrity4",
+        "uncertain1",
+        "separate newly named crash5"
+      ]
+    },
+    "wholePlan": {
+      "descriptors": 16,
+      "methods": 33,
+      "cases": 57
+    },
+    "partition": "retained26methods42cases + corrective2methods2cases + remaining5methods13cases = 33methods57cases; not a same-build runtime equivalence claim."
+  },
+  "requiredGates": [
+    "Save original frozen races2 evidence and this causal distinction without changing raw bytes; clarify earlier overbroad mechanics wording in derived metadata.",
+    "Parent may implement only the proposed narrow diagnostic change; then independent SOURCE review must verify exact diff/control flow, logging behavior, method partition, source pins, controller bindings and recovery.",
+    "Fresh separately named ZERO4: BOTH/catalog, whole16/33/57, corrective1/2/2, remaining4/5/13; no actual before accepted fresh PREP and saved/recovered acceptance.",
+    "Exact new build/DLL/full output inventories and separately named first controllers, no replay of old accepted cases, no automatic advance/retry.",
+    "Accepted observer v2 immediately before and after every separately named actual; native cleanup and exact outputs required. Preserve each original outcome and freeze on unexpected result.",
+    "Only after gates may a new separately named races2 corrective original run. Remaining modes require their own named releases; new crash5 retains accepted isolation and old lost corrected crash stays UNKNOWN."
+  ],
+  "cleanupLimits": {
+    "datedCensuses": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-races2-before-census-20261018.json",
+        "sha256": "8e333540e4c5cd052d677b2ee39bdaca1fb283dbee45b5df3e03c56a5d2f44ad",
+        "startedUtc": "2026-10-18T11:14:28.031143+00:00",
+        "finishedUtc": "2026-10-18T11:14:28.043322+00:00",
+        "entries": 43,
+        "clean": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-races2-after-census-20261018.json",
+        "sha256": "ea527dcc64dea37aa71a969267e40d75a335e66523e50760c5d6fee37c0e199e",
+        "startedUtc": "2026-10-18T11:18:00.555431+00:00",
+        "finishedUtc": "2026-10-18T11:18:00.569741+00:00",
+        "entries": 43,
+        "clean": true
+      }
+    ],
+    "afterCensusGapSeconds": 11.096833,
+    "scope": "Finite before/after boundaries only; original exe-dependent process arrays are not complete absence evidence. No live process census/intervention by reviewer."
+  },
+  "qualification": "No races2 cases newly qualified here. Corrected close2 acceptance yields retained42; this original remains native1 with one observed PASS and one FAIL.",
+  "broaderHolds": "FullNI/HOT/F1/M3/T197 incomplete; A3 NO-PROCEED; Windows raw403 blocked/no retry; CI prohibited; no whole-runtime PASS.",
+  "reviewActions": "Read-only source/Git/original archive/TRX/inventory/census parsing; artifacts written only in /tmp/1536-cloud-tools/review. No builds/discovery/tests/observer execution/process intervention/repository edits."
+}
