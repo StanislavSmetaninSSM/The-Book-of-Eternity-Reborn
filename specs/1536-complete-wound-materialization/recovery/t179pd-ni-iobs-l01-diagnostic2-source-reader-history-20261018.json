@@ -1,0 +1,33 @@
+{
+  "kind": "INDEPENDENT_READONLY_SOURCE_CHECKER_HISTORY_NO_NATIVE",
+  "createdUtc": "2026-10-18T17:20:28.984863+00:00",
+  "candidate": "5aaf15107897ab5f217107e4e1a3ca1a52a98284",
+  "originalChecker": {
+    "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic2_source.py",
+    "bytes": 9721,
+    "sha256": "48a9658945bc5a0b13236786d8547b3269564cb3db028e66757afb6955496b3e"
+  },
+  "preservedCopy": {
+    "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic2_source-v1-import-policy.py",
+    "bytes": 9721,
+    "sha256": "48a9658945bc5a0b13236786d8547b3269564cb3db028e66757afb6955496b3e"
+  },
+  "originalSuccessfulCarrier": "9d72351aaeb404e81936bb28c2362eeca5a317a3",
+  "failedReadOnlyInvocation": {
+    "exit": 1,
+    "failure": "AssertionError: sampler no process-control imports",
+    "location": "check_l01_diagnostic2_source.py:62",
+    "scope": "Original blanket import prohibition rejected subprocess import used only for TimeoutExpired in moved callback loop. No reviewed code imported/executed. The invocation also still named the old25 fake proof; it did not reach that check."
+  },
+  "correction": {
+    "checker": {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic2_source_control_corrected.py",
+      "bytes": 10185,
+      "sha256": "73b01c7518034fb9756afa6cb9d1ea4f08857b0cc3716c99ecc78dd6e94a9b31"
+    },
+    "inverseRestoresOriginalExactly": true,
+    "scope": "Permit only one subprocess.TimeoutExpired AST reference; retain no signal/ctypes and all denied intervention calls. No runtime/process capability added to checker. New invocation uses packet-bound control-corrected83 proof, keeping old25 untouched."
+  },
+  "nativeRetries": 0,
+  "sourceOrSemanticAssertionsChanged": false
+}

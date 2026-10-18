@@ -1,0 +1,77 @@
+{
+  "kind": "PREPARED_DIAGNOSTIC2_SOURCE_REVIEW_CRITERIA_NO_ADMISSION",
+  "createdUtc": "2026-10-18T17:11:19.775367+00:00",
+  "scope": "Exactly one additional cut1 external-accounting diagnostic after independent SOURCE/PREP. No actual, sampler or fake-proc execution by reviewer; no original5 retry or coverage increment.",
+  "prototypeFeedback": [
+    {
+      "id": "FNF_REPROBE",
+      "finding": "Prototype catches FileNotFoundError as gone without PID/TID reprobe; missing fixture metadata or wchan while process remains live must not become confirmed process disappearance."
+    },
+    {
+      "id": "KNOWN_IDENTITY_RECONCILIATION",
+      "finding": "Prototype does not reconcile every previously selected identity each scan; missing enumeration, changed argv, reused birth or unreadable known PID must become explicit events/gaps."
+    },
+    {
+      "id": "TASK_DISAPPEARANCE_GAPS",
+      "finding": "Prototype omits task disappearances from aggregate gap/status. Preserve explicit confirmed absence or inconclusive gap, including partial observation."
+    }
+  ],
+  "sourceCriteria": [
+    {
+      "id": "SCOPE_BINDING",
+      "requirement": "All101 original pins/product23, fixtures/assertions/catalog/selection and220/900 limits remain exact. Bind separately versioned sampler/wrapper/env/parser tests/proof/discriminator bytes in current packet. Preserve all old raw outcomes52/UNKNOWN and snapshot historical metadata."
+    },
+    {
+      "id": "POSITIVE_SELECTION",
+      "requirement": "Exact dotnet exec/dependency argv, producer/resumer role, cut1, direct canonical GUID container under newde0f namespace, correct output path and immutable parent nonce. No foreign argv retention or game-state/capability access. No generalized process selection."
+    },
+    {
+      "id": "IDENTITY_RACES",
+      "requirement": "Double process stat+argv and task stat birth checks around each sample. Reconcile known identities every scan. Reused/changed/unreadable identity is explicit; FNF requires a fresh identity probe. Confirmed absence differs from still-live, changed or unobservable state."
+    },
+    {
+      "id": "OBSERVATION_GAPS",
+      "requirement": "Read/permission/parse/malformed/partial samples, lost tasks, skipped reads and256-thread truncation are retained with scope and timing. No zero-value fallback. Every target observation failure or unattributed interval is represented in final status and prevents automatic causal closure."
+    },
+    {
+      "id": "ACCOUNTING",
+      "requirement": "Capture raw CPU user/system ticks with actual clock frequency, per-thread identities, bounded wchan, I/O/status, UTC/monotonic intervals and sampler overhead. Process totals already include threads; never sum both. Shared cgroup usage/throttle/pressure/memory counters retain scope and interval-delta limits."
+    },
+    {
+      "id": "ONE_NONOVERLAPPING_LOOP",
+      "requirement": "One nominal1Hz non-overlapping scan, actual lateness/missed intervals retained and no catch-up bursts. Exactly one controller invocation; no retry, next mode or reused FIRST sentinel. New compiled/source identity must be fresh and exact."
+    },
+    {
+      "id": "NATIVE_OUTCOME_PRIORITY",
+      "requirement": "Sampler creation failure before native prevents launch. Once native starts, sampler failure cannot interrupt, replace or hide its outcome; record error, keep polling original child, capture immediate after-census before potentially prolonged finalization, preserve original native exit separately from utility/observer status."
+    },
+    {
+      "id": "NO_PROCESS_INTERVENTION",
+      "requirement": "No signal/kill/ptrace/debugger attachment/affinity/scheduler/cgroup mutation. Sampler only reads declared proc/cgroup fields and its positively selected fixture parent manifest, writes only exclusive-created diagnostic outputs, and never acquires a game lease or accesses user saves."
+    },
+    {
+      "id": "FINITE_DISCRIMINATORS",
+      "requirement": "Predeclare observations and decision limits before the one run: CPU/I/O progress, predominantly waiting with unresolved cause, and measured cgroup pressure/exhaustion. Futex/leaderwchan or lowCPU alone cannot prove a managed lock defect; current quotas/cumulative counters cannot reconstruct old outcomes."
+    },
+    {
+      "id": "JOINT_STOP_DECISION",
+      "requirement": "After exactly one new original and its profile are archived/recovered, issue the user-requested concrete joint verdict: supported defect+narrow fix, separately justified environment-budget proposal with explicit performance hold, or honest bounded blocker. No continuing diagnostic chain or target qualification from diagnostic PASS/budget changes."
+    },
+    {
+      "id": "ISOLATION_AND_PREP",
+      "requirement": "NewGUID same physical cloud/boot, frozen237 roots unchanged/outside mutable namespace, before/after authoritativev2 global/newroot boundaries, no old66529 access. Fresh BOTH809/11801 catalog, whole16/33/57 and separatediagnostic1/1/1 ZERO with exactnine/full outputs then independent PREP and separate saved/recovered release."
+    }
+  ],
+  "fakeProcCasesRequired": [
+    "stat parser comm containing spaces/parentheses, valid field indexing and malformed/short/nonpositive identity rejection",
+    "exact producer and resumer argv/dependency/root/cut/output/nonce match; foreign/malformed/dependency-mismatch and symlink/escape rejection",
+    "PID reuse between before/after stat and argv change with same birth",
+    "known identity missing from enumeration, known identity now foreign selection, unreadable known PID",
+    "FNF at processstat/cmdline/parentmanifest/wchan: confirmed gone vs stilllive vs reused vs reprobefailure",
+    "TID reuse/disappearance between stat/wchan/stat; explicit observation gap and parent identity maintained",
+    "task enumeration and io/status/wchan permission errors;256-thread cap/truncation retained",
+    "late/slow scan with no catch-up burst; accounting fields stay separate; malformed/missingcgroup memory/cpu counters retained",
+    "sampler emit/capture/finish error before/after simulated controller start preserves original exit and immediate after-census ordering without game/nativeprocesses"
+  ],
+  "verificationMode": "Review parent fake-proc source, original invocation/output/proof/source hash and exact candidate; reviewer checker does not run tests or components."
+}

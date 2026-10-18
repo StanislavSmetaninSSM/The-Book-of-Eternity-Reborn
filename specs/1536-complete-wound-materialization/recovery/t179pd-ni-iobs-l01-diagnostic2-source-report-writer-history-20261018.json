@@ -1,0 +1,11 @@
+{
+  "kind": "REPORT_WRITER_ONLY_COUNT_ASSERTION_CORRECTION",
+  "createdUtc": "2026-10-18T17:22:34.923814+00:00",
+  "preservedOriginalWriter": {
+    "path": "/tmp/1536-cloud-tools/review/write_diagnostic2_source_review-v1-counter.py",
+    "bytes": 12973,
+    "sha256": "7a349ce2cc7b214db40d9cbca209d172887ff07d023d94a954a2e91ff94b7fb6"
+  },
+  "failure": "AssertionError checking serialized checksPassed==588. Artifact stores587 before its final exclusive-output-preservation check; final invocation output reports588. No SOURCE check failure, native execution or source change.",
+  "correction": "Use587 stored checks and explicitly explain588 total. No final report existed on first failed writer invocation. Metadata acceptance condition also records current phase reconciliation."
+}

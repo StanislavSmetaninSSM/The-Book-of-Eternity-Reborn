@@ -1,0 +1,80 @@
+{
+  "kind": "CLOUD_CARRIER_EXACT_GITHUB_RECOVERY",
+  "sha": "9d72351aaeb404e81936bb28c2362eeca5a317a3",
+  "base": "7816b0c85290cdbb1a4d7820eede601b130ad60e",
+  "checkedUtc": "2026-10-18T17:13:40.077120+00:00",
+  "directory": "/workspace/1536-cloud-clean-restore",
+  "remoteShaVerified": true,
+  "clean": true,
+  "localSourceOrObjectReuse": false,
+  "changedPathsVerified": 9,
+  "files": [
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 2435800,
+      "sha256": "e137a1b9e7e70c5b5ad61a1ebd082de061ff1fb21a68d235b5a41ff97a0228df",
+      "gitBlob": "aab305953e4614f4172789f3e081db1af39a3be0",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-qualification-20261018.json",
+      "bytes": 275333,
+      "sha256": "08aa4a7eab66079dfce5db19f0f782cdd129bec3cfde89db7d616199e6f19e9d",
+      "gitBlob": "4d8fc222f2111250b75d2d125e5f58bdcd6148e9",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-check-accounting-fake-proc-20261018.py",
+      "bytes": 8564,
+      "sha256": "96296209bc3934cd7efb320598ab782a024b917551ead00310fc3f578d57a8e3",
+      "gitBlob": "c8cd188e28577891612b6a32231c27e437bd5d98",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-discriminators-20261018.json",
+      "bytes": 5041,
+      "sha256": "30a6be598329173c97a0091249611b7551e5260df319ce38808a44f55d5d505a",
+      "gitBlob": "f6fc38a0e72ddc064e7c1133909eb0c341a9b17a",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-env-de0f3e20-20261018.sh",
+      "bytes": 902,
+      "sha256": "221116fc7534c2265e936efe59d603e758ef0ad78615b94da171395cc6583910",
+      "gitBlob": "2505e014b8bd4742b5da81f32bc35f89e0560447",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-process-accounting-20261018.py",
+      "bytes": 12279,
+      "sha256": "fbfb06927ebf3a27c7538c2f47a7a096abec7e829d7b94ca2d22685dc308883a",
+      "gitBlob": "601a63f19a5ace6961b6b886c13c3ee24705e6e1",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-writer-fake-proc-check-20261018.json",
+      "bytes": 1406,
+      "sha256": "bbe9978766b3272727e1376c11fdc11d1b112347ef0232269de814da7de1783a",
+      "gitBlob": "6e3ef9330de544974e81b36e66db4cdb1424f7cf",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-crash-accounting-phase-20261018.py",
+      "bytes": 6731,
+      "sha256": "fd0af867d603d81b7601744db05ad6c18af571cb9c65c2545c6ea3dc7e3c5dbe",
+      "gitBlob": "6e8ebd5b4a314f14afebbde28f84db899f5f553a",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
+      "bytes": 107729,
+      "sha256": "3dd9b970d56805b5bfcb1f9a1cb01473aded3055c2f867bae571593801335183",
+      "gitBlob": "a87298d265b73e8d0e60ea02a54963ec165e6969",
+      "mode": "100644"
+    }
+  ],
+  "sourcePinsVerified": 101,
+  "sourcePinDigest": "2c144b7734708f8c02a3924d4d12a885384f05a1437021afd2845827c761c616",
+  "method": "Fetch exact task branch directly from GitHub into independent originally empty-directory GitHub clone, checkout exact SHA, clean tree, verify every changed file bytes/SHA256/blob/mode and all current source pins",
+  "limits": "Source/evidence recovery only. No test/build execution here; no lost corrected-crash bytes recovered."
+}

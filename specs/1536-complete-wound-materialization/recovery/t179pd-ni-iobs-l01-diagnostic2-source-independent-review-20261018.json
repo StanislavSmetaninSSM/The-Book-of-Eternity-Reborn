@@ -1,0 +1,208 @@
+{
+  "kind": "INDEPENDENT_DIAGNOSTIC2_EXTERNAL_SOURCE_REVIEW",
+  "reviewedUtc": "2026-10-18T17:22:35.697218+00:00",
+  "model": "gpt-6-astra",
+  "reasoningEffort": "xhigh",
+  "candidate": "5aaf15107897ab5f217107e4e1a3ca1a52a98284",
+  "base": "9793e320bef881462ef7dbac847f748e645ab324",
+  "verdict": "ACCEPT_SOURCE_FOR_FRESH_NAMED_DIAGNOSTIC2_ZERO3_ONLY_AFTER_SAVED_RECOVERY_READBACK",
+  "findings": [],
+  "scope": "Affected external sampler/control loop/wrapper/environment and evidence bindings only. No production, fixture, assertion, logger, category, selection, controller, budget or GM contract change. No native/component/fake-proc execution by reviewer.",
+  "unchanged": {
+    "sourcePins": 101,
+    "productPaths": 23,
+    "pinDigest": "2c144b7734708f8c02a3924d4d12a885384f05a1437021afd2845827c761c616",
+    "qualifiedTargets": 52,
+    "wholeDescriptorsMethodsCases": [
+      16,
+      33,
+      57
+    ],
+    "diagnosticDescriptorsMethodsCases": [
+      1,
+      1,
+      1
+    ],
+    "childSeconds": 220,
+    "categorySeconds": 900,
+    "authoredLedgerSha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
+    "old66529": "UNKNOWN, unavailable, recoveryClaim=false",
+    "frozenNewCrash5": "native124/incomplete/noTRX; direct cut1/cut2 timeouts and237 retained files remain immutable",
+    "diagnostic1": "Original native0/1PASS remains outside57; does not establish old timeout cause"
+  },
+  "artifacts": {
+    "staticChecker": {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic2_source_control_corrected.py",
+      "bytes": 10185,
+      "sha256": "73b01c7518034fb9756afa6cb9d1ea4f08857b0cc3716c99ecc78dd6e94a9b31"
+    },
+    "staticCheck": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic2-source-independent-check-5aaf1510-20261018.json",
+      "bytes": 10682,
+      "sha256": "b27dcad1d850a241e44386cd35f2f02ea7dab7bb1a11bb2ddd9c2017e4c05318"
+    },
+    "checkCountNote": "587 checks serialized in artifact plus exclusive output preservation check =588 final invocation checks.",
+    "reportWriterHistory": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic2-source-report-writer-history-20261018.json",
+      "bytes": 785,
+      "sha256": "c620dd9d04af8d6d0f77c79baace0cd3fa2f788f95c078a6c66c91a15f3ce809"
+    },
+    "initialFeedback": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic2-source-feedback-9d72351a-20261018.json",
+      "bytes": 4218,
+      "sha256": "38739120f5ece5fb4347a7a1d9b224739d48537a117f7e2ee289935b6219511a"
+    },
+    "initialStaticCheck": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic2-source-independent-check-9d72351a-20261018.json",
+      "bytes": 10179,
+      "sha256": "b83f33cfdefc17f441e78275822efef81ff209bc96e8fedcde195718ef73f1f5"
+    },
+    "readerHistory": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic2-source-reader-history-20261018.json",
+      "bytes": 1728,
+      "sha256": "3ad013fd585f2ad58e8fafebecc51a28e6dffd4f5c72811d951427aca031466e"
+    },
+    "originalChecker": {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic2_source.py",
+      "bytes": 9721,
+      "sha256": "48a9658945bc5a0b13236786d8547b3269564cb3db028e66757afb6955496b3e"
+    },
+    "preservedOriginalChecker": {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic2_source-v1-import-policy.py",
+      "bytes": 9721,
+      "sha256": "48a9658945bc5a0b13236786d8547b3269564cb3db028e66757afb6955496b3e"
+    },
+    "criteria": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic2-source-review-criteria-20261018.json",
+      "bytes": 6394,
+      "sha256": "1176f2a03b1ee1f7f844b9ffe473417e69412559141d707b60108436d739dec1"
+    }
+  },
+  "externalClosure": {
+    "sampler": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-process-accounting-20261018.py",
+      "sha256": "2d538bb97b4f1205038f91682a9cdce7ee93196ab6963a73eebffa0709b83019",
+      "bytes": 15006
+    },
+    "wrapper": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-crash-accounting-phase-20261018.py",
+      "sha256": "2d568172614762f3b8c2d5040022ad45bdba2dfbda40f6ff03c8050eb196072f",
+      "bytes": 5867
+    },
+    "environmentShell": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-env-de0f3e20-20261018.sh",
+      "sha256": "221116fc7534c2265e936efe59d603e758ef0ad78615b94da171395cc6583910",
+      "bytes": 902
+    },
+    "discriminators": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-discriminators-20261018.json",
+      "sha256": "30a6be598329173c97a0091249611b7551e5260df319ce38808a44f55d5d505a",
+      "bytes": 5041
+    },
+    "fakeProcChecker": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-check-accounting-fake-proc-20261018.py",
+      "sha256": "9514f92b14ff9a80b2eb3076b5ac154ad502e064199bed1fd2ade6678191ebd8",
+      "bytes": 11225
+    },
+    "fakeProcProof": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-writer-fake-proc-control-corrected-check-20261018.json",
+      "sha256": "abcb788ab2f541e068a243e21645681265c5b40aaf522142f81121a9da2b3798",
+      "bytes": 4170
+    },
+    "sourceClosure": "Separate external executable/observation closure; original101 C#/FIRST/PREP/catalog/selection pins byte-identical. No product change or target replay.",
+    "status": "NATIVE_PRIORITY_SCOPE_CORRECTED_SOURCE_WIP_UNRUN",
+    "sourceBase": "9d72351aaeb404e81936bb28c2362eeca5a317a3"
+  },
+  "recovery": [
+    {
+      "receipt": {
+        "path": "/tmp/1536-cloud-tools/carrier-recovery-7816b0c8.json",
+        "bytes": 6380,
+        "sha256": "d6e6182c6b04fae720dfb3288409f891897078b4d2ca2661a7c4ab6f7f080386"
+      },
+      "sha": "7816b0c85290cdbb1a4d7820eede601b130ad60e",
+      "base": "9793e320bef881462ef7dbac847f748e645ab324",
+      "paths": 17
+    },
+    {
+      "receipt": {
+        "path": "/tmp/1536-cloud-tools/carrier-recovery-9d72351a.json",
+        "bytes": 3766,
+        "sha256": "235a547ae6a865a0801ce2b8fc7b829be769b0813cde670ab87f80131608d0f7"
+      },
+      "sha": "9d72351aaeb404e81936bb28c2362eeca5a317a3",
+      "base": "7816b0c85290cdbb1a4d7820eede601b130ad60e",
+      "paths": 9
+    },
+    {
+      "receipt": {
+        "path": "/tmp/1536-cloud-tools/carrier-recovery-5aaf1510.json",
+        "bytes": 3820,
+        "sha256": "38b6e14f2b4bb6e78678570ebbd98f9b73d88180ade343428bc952e0ccb355b7"
+      },
+      "sha": "5aaf15107897ab5f217107e4e1a3ca1a52a98284",
+      "base": "9d72351aaeb404e81936bb28c2362eeca5a317a3",
+      "paths": 9
+    }
+  ],
+  "feedbackResolution": [
+    {
+      "id": "WRAPPER_OUTCOME_PRIORITY",
+      "status": "RESOLVED",
+      "source": "Sampler module run_one_controller; wrapper delegates exact unchanged FIRST arguments.",
+      "evidence": "Exactly one invoke callback. Constructor failure precedes native creation. Once controller exit is known it is separately emitted before after-census/profile/status. Observer failures retained separately; nonzero controller return wins, native0 plus observation error/gap holds. After-census runs before finish/status. No signals/retry/automatic advance.",
+      "verification": "Writer saved83 fake checks bind exact corrected sampler/checker. Reviewed native0/7 x capture/finish/after/profile-read/status-write/gap/clean, asserting one invoke, after-before-finish-before-status, return precedence, independent native emission. Reviewer did not rerun them."
+    },
+    {
+      "id": "CGROUP_ATTRIBUTION",
+      "status": "RESOLVED_WITH_EXPLICIT_INTERPRETATION_LIMIT",
+      "evidence": "Header records raw own cgroup and cgroup2 mountinfo, sampled node path/device/inode; each selected identity records raw cgroup membership. Missing membership/mapping reads retained; node startup failure prevents launch.",
+      "limit": "Interpretation must establish target governance from actual captured mapping. Missing/empty/ambiguous mapping leaves shared-node observations unattributed; no target pressure/exhaustion claim. Shared totals never wholly attributed to child; no old-run inference."
+    },
+    {
+      "id": "CURRENT_LEDGER_POINTER",
+      "status": "RESOLVED",
+      "evidence": "Current pointer names cloud.crashDiagnostic2/current SOURCE/PREP/orchestration; former diagnostic1 pointer preserved byte-value exactly in ledger.historicalDiagnostic1RuntimePointer. Authored ledger bytes unchanged."
+    }
+  ],
+  "manualAssessment": {
+    "identity": "Exact dotnet/dependency/assembly/role/cut1/output/new canonical direct container/parent nonce selection. Double process stat+argv and per-task birth around reads; stable parent binding; known identities reconciled every scan; explicit gone/reused/unknown/live-not-selected distinctions. No arbitrary foreign argv retained.",
+    "gaps": "Task disappearance, read denial, malformed samples and256-thread truncation retained, never fabricated zero. Partial/unknown accounting cannot justify automatic causal closure. Nominal1Hz actual monotonic/UTC intervals and own CPU overhead retained; no catch-up burst.",
+    "accounting": "Raw process and per-task CPU kept separate; process already includes threads. Raw I/O, status/RSS/context switches, state/wchan and cgroup CPU/memory preserved. Wchan snapshots/low CPU cannot prove a managed lock or its owner.",
+    "isolation": "Same physical cloud/boot, fresh de0f mutable game/runtime/CLI/XDG namespace; HOME unchanged. Shared immutable SDK/runtime/NuGet only. Unchanged v2 global/newroot census and frozen237 byte/file-set checks before each phase. Original frozen roots outside mutable namespace, never reused/deleted; old66529 untouched.",
+    "selection": "No retained52 selector or original crash5 actual selector. Existing controller diagnostic1 mode selects only the separate cut1 Fact1/1/1 outside original whole57. Fresh compiled identity supplies a new FIRST sentinel; unique labels and exclusive artifacts prohibit replay.",
+    "retention": "Unchanged101 pins/product23 and exact unchanged assertions provide no dependency reason to replay retained52. No cross-build equivalence or whole runtime PASS claimed.",
+    "GM": "External observational tooling only; no player/GM-authored or canonical gameplay contract changed; no GM document update needed."
+  },
+  "writerProof": {
+    "ref": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-writer-fake-proc-control-corrected-check-20261018.json",
+      "sha256": "abcb788ab2f541e068a243e21645681265c5b40aaf522142f81121a9da2b3798",
+      "bytes": 4170
+    },
+    "checks": 83,
+    "independentRerun": false,
+    "manualSourceReview": true,
+    "previous25ProofPreserved": true
+  },
+  "eligibility": {
+    "sourceOnly": true,
+    "acceptanceMetadataCondition": "Preserve old currentVerificationContract/global freshPreparation as historical; set current DIAGNOSTIC2_SOURCE_ACCEPTED_FRESH_ZERO3_UNRUN and no actual release. Current ledger pointer source status must reflect accepted SOURCE, not retain nested pending status.",
+    "namedZeroReleaseStatus": "SOURCE_ACCEPTED_SAVED_RECOVERED_DIAGNOSTIC2_ZERO3_ONLY",
+    "labels": {
+      "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-crash-diagnostic2-cloud-de0f3e20",
+      "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-crash-diagnostic2-cloud-de0f3e20",
+      "diagnostic-plan": "t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic2-cloud-de0f3e20"
+    },
+    "sequence": [
+      "catalog: fresh BOTH build + discovery/catalog809/11801, zero actual tests",
+      "plan: exact whole16/33/57 PlanOnly-NoBuild, zero actual tests",
+      "diagnostic-plan: exact separate1/1/1 PlanOnly-NoBuild outside57, zero actual tests"
+    ],
+    "beforeZero": "Save/push/exact-remote/full-independent-GitHub recovery/readback of this acceptance; bind unchanged101 plus exact corrected external closure; current fields accepted SOURCE and fresh PREP pending, namedActualRelease remains NONE. Run versioned wrapper path with exact environment.",
+    "zeroEvidence": "Each phase separately invoked; original outcome frozen, unchanged220/900, nine managed and full1575 output inventories plus real fresh build logs (deterministic hashes may remain identical), warnings/errors/catalog/plan exact identities, three frozen237 checks and six dated clean v2 boundaries plus qualification boundary. Unexpected outcome freezes; no retry/automatic advance.",
+    "actual": "NOT RELEASED. Requires archived/saved/recovered freshZERO3, independent PREP, separate saved/recovered/readback one-mode release and fresh clean v2/frozen237 preflight. Future label t179pd-ni-iobs-l01-process-first-diagnostic2-accounting-cloud-de0f3e20. Exactly one unchanged cut1 diagnostic, no original5 retry/count increment."
+  },
+  "oneRunJointDecision": "After exactly one separately admitted diagnostic2 original/profile is saved and recovered, give the user a concrete joint verdict: proven defect+narrow remedy; or quantified justified environment-budget proposal with separate performance hold; or honest bounded blocker. No continuing same diagnostic chain or budget change in this run. A diagnostic PASS or larger proposed budget never closes any original5 target. Descriptive30s/10-sample CPU windows are not assertions/pass thresholds; gaps and instrumentation uncertainty retained.",
+  "limits": "SOURCE acceptance is not PREP/native/EVIDENCE acceptance. No live sampling, fixture inspection, process control, build/discovery/game tests, repository writes or native retries by reviewer. Old failures/UNKNOWN and all broader holds remain. Static checker original import-policy failure preserved; corrected reader allows subprocess.TimeoutExpired reference only, no subprocess execution. No further implementation blocker found."
+}
