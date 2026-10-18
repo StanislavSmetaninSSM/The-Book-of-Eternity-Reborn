@@ -14,6 +14,18 @@
   "gameplayRelease": "NONE",
   "firstPrepFailure": {
     "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-first-prep-failure-20261018.json",
-    "sha256": "ea02dbddfa33802c4e3f270f41ead889aaadc9e7313a9a8a9411a2bdd7d535d8"
-  }
+    "sha256": "ea02dbddfa33802c4e3f270f41ead889aaadc9e7313a9a8a9411a2bdd7d535d8",
+    "independentReview": {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-first-prep-failure-independent-review-20261018.json",
+      "sha256": "e4292a12ab1cfb6665997f36bf0820460ffae2ef687259c9397915fe5562305d",
+      "verdict": "PREP_HOLD_CONCRETE_CATALOG_DEADLINE_BLOCKER",
+      "checksPassed": 212
+    }
+  },
+  "checkpointStatus": "SOURCE_ACCEPTED_PREP_BLOCKED_NO_RUNTIME_RELEASE",
+  "futurePlan": {
+    "path": "specs/1536-complete-wound-materialization/design/l01-future-custody-accepted-single-run-plan-20261018.md",
+    "verdict": "ACCEPT_CONDITIONAL_DRAFT_ONLY_NOT_EXECUTABLE_OR_GAMEPLAY_RELEASE"
+  },
+  "reviewerContinuity": "Astra XHigh completed and saved report before capacity interruption; same reviewer confirmed exact report/hashes and212PASS in next turn without repeated checks/native work."
 }

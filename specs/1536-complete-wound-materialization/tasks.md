@@ -1,8 +1,8 @@
 ## L01 D01 — parent-owned live diagnostic delivery (2026-10-18)
 
-- [ ] [Independent PLAN](design/l01-live-delivery-plan-20261018.md), then minimal test-only helper/wiring; preserve raw/native/identity/order and explicit loss/delay/stale/unknown semantics.
-- [ ] Source-bound baseline, SOURCE/fresh affected build/discovery/PlanOnly PREP, named own synthetic delivery and independent EVIDENCE; no game actual.
-- [ ] Reviewed plan of one future distinguishing snapshot with stop/evidence limits; gameplay remains CLOSED pending consideration. No crash5 release.
+- [x] [Independent PLAN](design/l01-live-delivery-plan-20261018.md) and test-only helper/wiring SOURCE accepted4810d2ad:711static checks, retained original helper20PASS; native/identity/order and explicit loss/delay/stale/unknown semantics reviewed.
+- [ ] Complete D01 qualification: source-bound baseline/native7 and helper20PASS retained; SOURCE accepted. FIRST fresh catalog PREP timed out124; independent PREP_HOLD/212static checks. PlanOnly/Live compile/synthetic UNRUN; [original failure/diagnosis](recovery/l01-delivery-d01-first-prep-failure-independent-review-20261018.md), no runtime release.
+- [x] [Reviewed conditional plan of one future distinguishing snapshot](design/l01-future-custody-accepted-single-run-plan-20261018.md), stop/evidence limits accepted as documentation only. D01 PREP/EVIDENCE and future capture SOURCE/PREP/user consideration remain required; gameplay/crash5 CLOSED.
 
 ## L01 — cloud managed-stack diagnostic capability (2026-10-18)
 
