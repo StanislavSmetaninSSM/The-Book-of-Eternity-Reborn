@@ -1,3 +1,9 @@
+## T179-Pd-NI-IOBS-L01 — diagnostic2 fresh PREP accepted; one named accounting gate only (2026-10-18)
+
+[Independent PREP](recovery/t179pd-ni-iobs-l01-diagnostic2-prep-independent-review-20261018.md) accepts32rawchains/101pins/product23/external6refs+83fakechecks/catalog80911801/whole16-33-57+separate1-1-1/nine+1575outputs/buildwarnings/dated7boundaries/frozen237 at213c43d01f3ffec439b6a92764c31fa9e617abd5, compiled5aa8673e. Qualified52 unchanged; no original5 release. Current fields SOURCE/PREP accepted, former phases preserved.
+
+Only `t179pd-ni-iobs-l01-process-first-diagnostic2-accounting-cloud-de0f3e20` in newde0f namespace via exact versioned wrapper/environment, controllerdiagnostic1 Fact unchanged, externalaccounting.220s child/900s outer/allstrongassertions retained; outside57. Save/push/exactremote/cleanGitHub recovery/readback then immediate clean global/newroot v2 and frozen237 file/byte gate, exactly one NoBuild invocation. Any native outcome/gaps saved/recovered before joint concrete defect-remedy OR justified environment budget with separateperformancehold OR boundedblocker. No automatic extra diagnostic chain. Alloriginals/old66529UNKNOWN/broaderholds unchanged. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — diagnostic2 fresh ZERO3 native0; PREP pending (2026-10-18)
 
 catalog native0/ZERO 412.972s, plan native0/ZERO 27.565s, diagnostic-plan native0/ZERO 15.627s. Whole16/33/57 and separate diagnostic Fact1/1/1 for diagnostic2 accounting;32 exact rawchains,101pins/product23,nine/full inventory and six dated boundaries retained.809categories/11801methods; no actual tests executed. Frozen prior two roots remain unchanged/outside new mutable namespace. Independent PREP/recovery/readback and separate named gate required before one diagnostic run. Qualified52/alloriginals/old66529UNKNOWN and broader holds unchanged. Following sections historical.

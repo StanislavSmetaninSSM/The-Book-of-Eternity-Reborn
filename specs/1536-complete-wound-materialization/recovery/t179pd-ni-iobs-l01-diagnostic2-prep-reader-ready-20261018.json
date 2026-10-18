@@ -1,0 +1,59 @@
+{
+  "kind": "INDEPENDENT_DIAGNOSTIC2_PREP_READER_READY_NOT_EXECUTED_NO_ADMISSION",
+  "createdUtc": "2026-10-18T17:24:03.024407+00:00",
+  "checker": {
+    "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic2_prep.py",
+    "bytes": 28964,
+    "sha256": "ce5145b21b15cfd17077fd0db298ba692884230ec2939b97c35b708d2ad4d2ec"
+  },
+  "basisPreserved": {
+    "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic1_compile_corrected_prep.py",
+    "bytes": 27083,
+    "sha256": "ec7f858e51b819c7c452190dd1a40f160f7a647981bb778bb0cf36c084e5c478"
+  },
+  "sourceAcceptance": {
+    "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic2-source-independent-review-20261018.json",
+    "bytes": 14011,
+    "sha256": "ef342fb9425f66372b6b7a04ee9d984cd97401352a082aee03c67729b15273c1"
+  },
+  "compiledSource": "PARAMETER_REQUIRED_NEW_SOURCE_ACCEPTANCE_CARRIER_NOT_YET_RUN",
+  "usage": "python /tmp/1536-cloud-tools/review/check_l01_diagnostic2_prep.py SAVED_PREP_CARRIER COMPILED_SOURCE [CONTINUOUS_RECOVERY_RECEIPTS_FROM_COMPILED_TO_CARRIER...]",
+  "checks": [
+    "Unchanged101/product23/digest/52/original native124 and oldUNKNOWN; exactnew compiled accepted packet/current crashDiagnostic2 freshPreparation",
+    "FreshBOTH build/discovery809/11801 and all original32 gzip/rawchains; PlanOnly16/33/57 plus1/1/1outside57, actual0/noTRX, exactmethods/filters; nine/full1575 inventories and NoBuild continuity",
+    "Exact accepted external six-entry closure,83writerfakechecks,source report hash,newde0f env; all stored among nested orchestrationEvidence refs",
+    "Three frozen237 byte/file-set dated receipts; unchanged authoritativev2 six boundaries plus qualification; gaps dated notcontinuous",
+    "Warnings compared to immediately preceding diagnostic1 accepted compiled8f8 fresh build; deterministic unchanged nine hashes allowed",
+    "Full independent GitHub clone/exactremote/tree/pins plus continuous recovered path bytes/blobs/modes",
+    "No original actual changes or actualFIRST sentinel for new compiledsource; report only, no automatic PREP/native admission"
+  ],
+  "notExecuted": [
+    "preparedchecker",
+    "sampler",
+    "wrapper",
+    "fake-proc",
+    "native",
+    "observer",
+    "build",
+    "discovery"
+  ],
+  "syntaxValidation": "AST parse and in-memory compile only; reviewed component modules never imported",
+  "schemaExpectations": {
+    "currentPhase": "cloud.crashDiagnostic2",
+    "prepKeys": [
+      "records",
+      "archive",
+      "sourcePinDigest",
+      "supplementalBoundaries",
+      "prepQualificationBoundary",
+      "orchestrationEvidence",
+      "sourceAcceptanceRecovery"
+    ],
+    "sourceAcceptanceArtifacts": "cloud.crashDiagnostic2.sourceAcceptance.artifacts",
+    "rawChains": 32,
+    "supplementalBoundaries": 6,
+    "qualificationBoundaries": 1,
+    "frozenReceiptsAmongNestedRefs": 3
+  },
+  "limits": "Do not execute until completed ZERO3 original evidence is archived, pushed, exactremote and independentGitHub recovered. A reader/schema failure must be preserved before narrow correction; never infer runtime acceptance."
+}

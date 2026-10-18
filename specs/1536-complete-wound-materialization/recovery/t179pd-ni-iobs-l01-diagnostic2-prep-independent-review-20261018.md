@@ -1,0 +1,11 @@
+PREP accepted at `213c43d01f3ffec439b6a92764c31fa9e617abd5`, compiled `5aa8673ec128d808b3fdc3d3fd244946e2ae7df6`, for one separately named diagnostic2 accounting run after saved acceptance/recovery/readback and a new clean preflight. No actual was executed or released by this review.
+
+The unchanged prepared reader passed on its first invocation: all32 original gzip/raw chains,101 pins/product23, six exact external inputs, full48-path GitHub recovery, nine managed copies and all1575 outputs match. Fresh BOTH build/discovery succeeded with148/37 warnings and0errors; warning sets are unchanged. Catalog809/11801 has no unmapped/stale selectors. Whole16/33/57 and separate diagnostic1/1/1 plans executed0 tests; exact diagnostic method remains outside57. NoBuild inventories are identical across plans, and all nine selected copies changed during this fresh catalog.
+
+Native cleanup, seven dated clean v2 boundaries and three frozen237-file checks pass. The disclosed29.102480s whole-plan before-boundary gap is retained as an observation limit; no continuous absence or reconstructed gap is claimed. A new clean v2/frozen-root preflight is mandatory before actual.
+
+Only proposed release: `t179pd-ni-iobs-l01-process-first-diagnostic2-accounting-cloud-de0f3e20`, external mode`diagnostic2` through unchanged FIRST mode`diagnostic1`, bound to the exact fresh diagnostic-plan record,220s child/900s category and unchanged cut1 assertions. Save/push/recover/read back the explicit one-mode release first. Preserve every native/profile/error/census byte; after-census precedes profile finalization. Any gap or unexpected outcome freezes progression without native intervention.
+
+Qualified52, original newcrash124/noTRX/directtimeouts and old66529UNKNOWN remain unchanged. This diagnostic never increments coverage or authorizes an original5 retry. After this one run, the joint verdict must be a proven narrow defect/remedy, a quantified environment-budget proposal with separate performance hold, or an honest bounded blocker. No automatic further diagnostic chain.
+
+[Exact report, release proposal and checksum references](/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic2-prep-independent-review-20261018.json) · [Independent check](/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic2-prep-independent-check-213c43d0-20261018.json)

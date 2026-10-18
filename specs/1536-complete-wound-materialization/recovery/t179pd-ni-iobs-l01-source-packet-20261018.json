@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_SELECTED_CURRENT_RESUME_ROUTING_SOURCE_CANDIDATE",
-  "status": "QUALIFIED52_DIAGNOSTIC2_ZERO3_NATIVE0_INDEPENDENT_PREP_PENDING",
+  "status": "QUALIFIED52_DIAGNOSTIC2_SOURCE_PREP_ACCEPTED_ONE_NAMED_GATE_ONLY",
   "sourceBase": "f390eb0602a99f5a2387ab7dc6ef52571e856b26",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
   "sourcePins": [
@@ -912,7 +912,50 @@
       "orchestration": "diagnostic2Orchestration",
       "freshPreparation": "freshPreparationCandidate",
       "qualification": "cloud-qualification-20261018.json:crashDiagnostic2",
-      "limits": "External diagnostic2 only, all101 original pins/ledger bytes unchanged, outside57; one final profiling invocation afterSOURCE/PREP."
+      "limits": "External diagnostic2 only, all101 original pins/ledger bytes unchanged, outside57; one final profiling invocation afterSOURCE/PREP.",
+      "preparationAcceptance": {
+        "verdict": "ACCEPT_PREP_FOR_ONE_SEPARATELY_NAMED_DIAGNOSTIC2_AFTER_SAVED_RECOVERY_READBACK_AND_CLEAN_PREFLIGHT",
+        "candidate": "213c43d01f3ffec439b6a92764c31fa9e617abd5",
+        "model": "gpt-6-astra",
+        "reasoningEffort": "xhigh",
+        "artifacts": [
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-213c43d0.json",
+            "bytes": 18471,
+            "sha256": "57c81a6bbe2a813c03ff7e4b26c77e5b0349188487de0ad9f148b72bdca00830"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic2_prep.py",
+            "bytes": 28964,
+            "sha256": "ce5145b21b15cfd17077fd0db298ba692884230ec2939b97c35b708d2ad4d2ec"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-independent-check-213c43d0-20261018.json",
+            "bytes": 29373,
+            "sha256": "2c5273e8d8bab8e1f28d44436aa252415419db2e8772a9a3ca7afe9b82ba29f4"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-independent-review-20261018.json",
+            "bytes": 25345,
+            "sha256": "dc923f156154a6c95399d26f818eff5531e3121603c5a2475475ac93b6f8af5e"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-independent-review-20261018.md",
+            "bytes": 2354,
+            "sha256": "e7d454f0becd10538c9a806e93ea2d3fd9912db4e665bb29a4ae6270df85546a"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-reader-ready-20261018.json",
+            "bytes": 3090,
+            "sha256": "1358e4e180fc69668364e1691774bc2355d68344478ba46d8cc4af2e1be557d4"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-candidate-recovery-213c43d0-20261018.json",
+            "bytes": 18471,
+            "sha256": "57c81a6bbe2a813c03ff7e4b26c77e5b0349188487de0ad9f148b72bdca00830"
+          }
+        ]
+      }
     },
     "historicalDiagnostic1RuntimePointer": "Fixed original authored inventory/hash unchanged. Current diagnostic1 SOURCE/PREP in packet.currentVerificationContract/cloud.crashDiagnostic1; diagnostic Fact excluded from original57/coverage. Original builds/evidence retain original actual/compiled bindings."
   },
@@ -1048,7 +1091,7 @@
       "countsToward57": false
     },
     "catalog": "Fresh BOTH/catalog ZERO; new diagnostic category/method inventoried and nine binaries/full output inventory bind NoBuild plans.",
-    "phase": "DIAGNOSTIC2_ZERO3_NATIVE0_FRESH_INDEPENDENT_PREP_PENDING"
+    "phase": "DIAGNOSTIC2_SOURCE_AND_FRESH_PREP_ACCEPTED_ONE_NAMED_GATE_ONLY"
   },
   "mandatorySupplement": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-20261018.py",
@@ -1058,10 +1101,23 @@
   "gmDisposition": "Diagnostic fixture/logging/selection only; no production/game capability/schema/GM prompt/example/afterlife change. Prior client-owned routing rationale is historical and retained.",
   "oldCorrectedCrash": "Old environment session66529 remainsUNKNOWN, bytes unavailable. Separate new qualification only after corrected SOURCE/fresh PREP/named release, independent disposable fixtures/new genuine children; no old environment/process or real save operation.",
   "namedActualRelease": {
-    "status": "NONE_DIAGNOSTIC2_INDEPENDENT_PREP_PENDING",
-    "mode": null
+    "status": "SEPARATELY_NAMED_ONE_DIAGNOSTIC2_ACCOUNTING_AFTER_SAVED_ACCEPTANCE_RECOVERY_AND_CLEAN_PREFLIGHT",
+    "mode": "diagnostic2",
+    "controllerMode": "diagnostic1",
+    "label": "t179pd-ni-iobs-l01-process-first-diagnostic2-accounting-cloud-de0f3e20",
+    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic2-cloud-de0f3e20/record.json",
+    "prepRecordSha256": "68d025fc38c48eb9aa1173c603b1a46c3f5a8ca3f697774cd9a00d2f59208e79",
+    "compiledSource": "5aa8673ec128d808b3fdc3d3fd244946e2ae7df6",
+    "category": "fr063-joint-interface-crash-diagnostic",
+    "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_DiagnoseCurrentResumeAfterInterfaceMemberProcessLoss",
+    "expectedDescriptors": 1,
+    "expectedMethods": 1,
+    "expectedCases": 1,
+    "countsToward57": false,
+    "childTimeoutSeconds": 220,
+    "categoryTimeoutSeconds": 900
   },
-  "next": "Save/recover ZERO3 originals then independent diagnostic2 PREP; only after saved acceptance/recovery/readback and fresh clean boundary may one separately named diagnostic2 run. No crash5 retry/coverage increment.",
+  "next": "Save/recover/readback PREP acceptance and one named release. Immediate clean global/newroot v2/frozen237 gate then exactly one diagnostic2 accounting with unchanged220900/assertions; archive/recover originals and joint concrete verdict. No automatic further diagnostic or original5.",
   "sourceReview": {
     "verdict": "ACCEPT_SOURCE_FOR_FRESH_NAMED_DIAGNOSTIC2_ZERO3_ONLY_AFTER_SAVED_RECOVERY_READBACK",
     "candidate": "5aaf15107897ab5f217107e4e1a3ca1a52a98284",
@@ -1160,7 +1216,7 @@
     "nativeActualReleased": false
   },
   "freshPreparationCandidate": {
-    "status": "ORIGINAL_NATIVE0_ZERO3_DIAGNOSTIC_CANDIDATE_INDEPENDENT_PREP_PENDING",
+    "status": "INDEPENDENT_PREP_ACCEPTED_ZERO3_NATIVE0",
     "actualSource": "5aa8673ec128d808b3fdc3d3fd244946e2ae7df6",
     "compiledSource": "5aa8673ec128d808b3fdc3d3fd244946e2ae7df6",
     "sourcePinCount": 101,
@@ -1459,14 +1515,54 @@
     "cleanup": "Native owned-tree/runtime cleanup plus dated v2 argv/stat global/new-TMPDIR boundaries. Frozen prior current-cloud roots unchanged outside mutable namespace. Original exe arrays incomplete; no continuous/instant absence inference."
   },
   "freshPreparationAcceptance": {
-    "status": "DIAGNOSTIC2_FRESH_PREP_PENDING"
+    "verdict": "ACCEPT_PREP_FOR_ONE_SEPARATELY_NAMED_DIAGNOSTIC2_AFTER_SAVED_RECOVERY_READBACK_AND_CLEAN_PREFLIGHT",
+    "candidate": "213c43d01f3ffec439b6a92764c31fa9e617abd5",
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-213c43d0.json",
+        "bytes": 18471,
+        "sha256": "57c81a6bbe2a813c03ff7e4b26c77e5b0349188487de0ad9f148b72bdca00830"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic2_prep.py",
+        "bytes": 28964,
+        "sha256": "ce5145b21b15cfd17077fd0db298ba692884230ec2939b97c35b708d2ad4d2ec"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-independent-check-213c43d0-20261018.json",
+        "bytes": 29373,
+        "sha256": "2c5273e8d8bab8e1f28d44436aa252415419db2e8772a9a3ca7afe9b82ba29f4"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-independent-review-20261018.json",
+        "bytes": 25345,
+        "sha256": "dc923f156154a6c95399d26f818eff5531e3121603c5a2475475ac93b6f8af5e"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-independent-review-20261018.md",
+        "bytes": 2354,
+        "sha256": "e7d454f0becd10538c9a806e93ea2d3fd9912db4e665bb29a4ae6270df85546a"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-reader-ready-20261018.json",
+        "bytes": 3090,
+        "sha256": "1358e4e180fc69668364e1691774bc2355d68344478ba46d8cc4af2e1be557d4"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-candidate-recovery-213c43d0-20261018.json",
+        "bytes": 18471,
+        "sha256": "57c81a6bbe2a813c03ff7e4b26c77e5b0349188487de0ad9f148b72bdca00830"
+      }
+    ]
   },
   "jointBlockerReview": {
     "status": "HISTORICAL_JOINT_LEASE_BLOCKER_RECORD_RETAINED",
     "currentPointer": "causalReview"
   },
   "nextProposedVerificationContract": {
-    "status": "DIAGNOSTIC2_FRESH_ZERO3_NATIVE0_PREP_PENDING",
+    "status": "ONE_NAMED_DIAGNOSTIC2_AFTER_SAVED_RECOVERY_AND_CLEAN_PREFLIGHT",
     "whole": "16/33/57",
     "diagnostic": "1/1/1 outside57",
     "zero": "Fresh BOTH/catalog +wholePlan +diagnosticPlan native0/ZERO3",
@@ -2738,5 +2834,16 @@
         "sha256": "38b6e14f2b4bb6e78678570ebbd98f9b73d88180ade343428bc952e0ccb355b7"
       }
     ]
+  },
+  "historicalDiagnostic2PendingPreparationFieldsBeforeAcceptance": {
+    "preparationStatus": "ORIGINAL_NATIVE0_ZERO3_DIAGNOSTIC_CANDIDATE_INDEPENDENT_PREP_PENDING",
+    "acceptance": {
+      "status": "DIAGNOSTIC2_FRESH_PREP_PENDING"
+    },
+    "namedActualRelease": {
+      "status": "NONE_DIAGNOSTIC2_INDEPENDENT_PREP_PENDING",
+      "mode": null
+    },
+    "nextStatus": "DIAGNOSTIC2_FRESH_ZERO3_NATIVE0_PREP_PENDING"
   }
 }
