@@ -1,3 +1,9 @@
+## T179-Pd-NI-IOBS-L01 — ReadyDrift SOURCE accepted; fresh ZERO4 only (2026-10-18)
+
+[Independent Astra XHigh SOURCE](recovery/t179pd-ni-iobs-l01-ready-diagnostic-source-independent-review-7cad7e3b-20261018.md) accepted7cad7e3b with no findings: exact minimal logging delta,98 pins, productDelta21/guards21, corrective races1/2/2, remaining4/5/13 and complete12+6-path recovery. The original binding20 blocker is preserved as SOURCE history; no ZERO ran on it. Retained42 remain at original provenance; CurrentCaptureStop1 crosses this catch but asserts unchanged state/issue/expiry/images, not logger silence/counts, so no replay is needed.
+
+After saving/recovering this acceptance, only the four separately named ZERO phases in the current packet may run: fresh BOTH/catalog, whole16/33/57, corrective1/2/2 and remaining4/5/13 PlanOnly-NoBuild. Require native0/ZERO/inventory continuity and dated v2 census boundaries before advancing. Independent fresh PREP is mandatory before any actual. Original races2 FAIL and unreached mechanical/direct-restore scope remain unchanged; old crash5 remains UNKNOWN. All broader holds persist. Following sections are historical.
+
 ## ReadyDrift SOURCE binding correction — ZERO not run (2026-10-18)
 
 Independent SOURCE review found that the new logging file adds a21st product path relative to productBase447bc; the packet and two guards still expected20. The sorted product delta and both guards are now21; affected tool hashes/pins/digest were regenerated. This corrects verification binding only. The three-line production patch, tests, fixtures and assertions are unchanged. No ZERO, build or actual was launched on the rejected binding; independent review of the saved corrected candidate is required. Qualified42 and all frozen outcomes remain unchanged.

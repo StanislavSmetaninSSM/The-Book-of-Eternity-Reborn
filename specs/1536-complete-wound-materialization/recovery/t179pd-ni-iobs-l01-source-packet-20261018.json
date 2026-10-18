@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_READY_DRIFT_DIAGNOSTIC_SOURCE_CANDIDATE",
-  "status": "INDEPENDENT_CAUSAL_DIAGNOSIS_ACCEPTED_MINIMAL_SOURCE_WRITTEN_SOURCE_PREP_PENDING",
+  "status": "READY_DIAGNOSTIC_SOURCE_ACCEPTED_FRESH_ZERO4_REQUIRED_ACTUAL_HELD",
   "sourceBase": "40920dab235f48abc07988b231a8bf0481c646bd",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
   "sourcePins": [
@@ -899,7 +899,7 @@
   },
   "gmDisposition": "Diagnostic-only original-exception preservation in existing owning catch. No GM schema, prompt, example, manifest, daemon guidance or contract change; existing docs remain exact.",
   "oldCorrectedCrash": "Old environment session66529 remainsUNKNOWN, bytes unavailable. Separate new qualification only after corrected SOURCE/fresh PREP/named release, independent disposable fixtures/new genuine children; no old environment/process or real save operation.",
-  "next": "Save/push/exactremote/clean GitHub recovery; independent SOURCE review of minimal delta/bindings/controllers/exact corrective2+remaining13/retention42; only then named ZERO4. Actuals held pending independent fresh PREP.",
+  "next": "After exactremote/clean GitHub recovery, only named ZERO4 on saved acceptance SHA; no actual before recovered independent fresh PREP.",
   "sourceBindingCorrection": {
     "reason": "Independent SOURCE review identified 21 actual product paths; newly logged pre-existing canonical-publication file was not in prior20. Controllers corrected before any ZERO/runtime.",
     "previousCandidate": "8e1fedfecf2b4799502034f539330c8c3eba43f9",
@@ -907,5 +907,55 @@
     "oldCount": 20,
     "currentCount": 21,
     "runtimeExecuted": 0
+  },
+  "sourceReview": {
+    "verdict": "ACCEPT_MINIMAL_READY_DIAGNOSTIC_SOURCE_AND_NAMED_ZERO4_PLAN",
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "candidate": "7cad7e3b22df9e06e045bbde9068599906041bc1",
+    "findings": [],
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-diagnostic-source-independent-review-7cad7e3b-20261018.json",
+        "sha256": "aa1d989129e8bfcb33df89d4e31d298c8ba15123fcf8ff58e019cf181f9b2187",
+        "bytes": 11201
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-diagnostic-source-independent-review-7cad7e3b-20261018.md",
+        "sha256": "2128019552216c6f9908245480703d57776c96455149f94042885460343ad52d",
+        "bytes": 3061
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-diagnostic-source-independent-check-7cad7e3b-20261018.json",
+        "sha256": "9b3d1990e13151db8a6c94829d4849f2d6dd8df0bbdbcfcaf44ceff643af116e",
+        "bytes": 12758
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-diagnostic-source-blocker-8e1fedfe-20261018.json",
+        "sha256": "b225b8838246bd4f4238341f664c003be7a61e57db023ac3dd40d42b8d6b7e4f",
+        "bytes": 1212
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-diagnostic-source-checker-7cad7e3b-20261018.py",
+        "sha256": "ab93fb9d0edc5e75113144da60500cf876e9b10c1015ae43f0abf95de7375688",
+        "bytes": 15419
+      }
+    ]
+  },
+  "namedZeroRelease": {
+    "labels": {
+      "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-ready-diag-cloud-813f1057",
+      "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-ready-diag-cloud-813f1057",
+      "corrective-plan": "t179pd-ni-iobs-l01-process-prep-first-corrective-plan-ready-diag-cloud-813f1057",
+      "remaining-plan": "t179pd-ni-iobs-l01-process-prep-first-remaining-plan-ready-diag-cloud-813f1057"
+    },
+    "order": [
+      "catalog",
+      "plan",
+      "corrective-plan",
+      "remaining-plan"
+    ],
+    "conditions": "Only separate explicit invocations on saved acceptance SHA. Each previous original native0/ZERO plus exact inventory checks before next; dated mandatory v2 before/after census. Any failure freezes without retry/advance. Fresh BOTH/catalog then whole16/33/57, corrective1/2/2 and remaining4/5/13 PlanOnly-NoBuild with exact catalog continuity.",
+    "actualRelease": false
   }
 }

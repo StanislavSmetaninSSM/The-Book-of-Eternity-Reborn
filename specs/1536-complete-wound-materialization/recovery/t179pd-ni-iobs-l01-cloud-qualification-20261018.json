@@ -1,7 +1,7 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "READY_DIAGNOSTIC_SOURCE_CANDIDATE_SOURCE_AND_FRESH_PREP_PENDING",
-  "sourceCheckpoint": "ReadyDrift diagnostic candidate based on40920dab; WIP SHA after commit",
+  "status": "READY_DIAGNOSTIC_SOURCE_ACCEPTED_NAMED_ZERO4_ONLY",
+  "sourceCheckpoint": "7cad7e3b22df9e06e045bbde9068599906041bc1",
   "sourcePinDigest": "f5c13d343de221bc86aaf3ec100869ea6e1cafdaae59b3006baa5642de328e8e",
   "sourcePinCount": 98,
   "environment": {
@@ -448,7 +448,7 @@
     }
   ],
   "crashRequalificationPlan": {
-    "status": "SOURCE_ISOLATION_PLAN_ACCEPTED_READY_DIAGNOSTIC_SOURCE_AND_FRESH_PREP_REQUIRED",
+    "status": "SOURCE_ISOLATION_AND_READY_DIAGNOSTIC_SOURCE_ACCEPTED_FRESH_PREP_REQUIRED",
     "purpose": "Separate new fixture qualification; preserve old UNKNOWN. No recovery or blind retry of old result.",
     "rootIsolation": "Fresh environmentId and GUID TMPDIR; each fixture constructs a new GUID own container/parent nonce and child-local tmp. No imported old root, checkpoint, live owner, save or real game operation.",
     "processIsolation": "Only newly started genuine child Process handles; independent parent/self PID+kernel starttick and nonce, exit73, new resume PID, join+EOF, strict containment. Retain owned container if termination/join/EOF unresolved; no old process query/kill.",
@@ -734,7 +734,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Save/push/exactremote/clean GitHub recovery; independent SOURCE review of minimal delta/bindings/controllers/exact corrective2+remaining13/retention42; only then named ZERO4. Actuals held pending independent fresh PREP.",
+  "next": "After exactremote/clean GitHub recovery, only named ZERO4 on saved acceptance SHA; no actual before recovered independent fresh PREP.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -910,7 +910,7 @@
     "phase": "HISTORICAL_COMPILED_6AB43F6A_ZERO3_PRE_CORRECTION_INELIGIBLE_FOR_CORRECTED_ACTUALS"
   },
   "release": {
-    "status": "NONE_ACTUAL_AND_ZERO_HELD_PENDING_READY_DIAGNOSTIC_SOURCE_ACCEPTANCE",
+    "status": "NO_ACTUAL_NAMED_ZERO4_ONLY",
     "mode": null
   },
   "newOriginalObservedPassingCases": 4,
@@ -1338,7 +1338,7 @@
   ],
   "sourcePinDigestBeforeReadyDriftCorrection": "b29c971342ee772b13cd123a954d7afa8937e1f50a7e5f4c4c14403e4de4c347",
   "readyDriftCorrection": {
-    "status": "WRITTEN_UNCOMPILED_INDEPENDENT_SOURCE_PENDING",
+    "status": "INDEPENDENT_SOURCE_ACCEPTED_UNCOMPILED_FRESH_ZERO4_REQUIRED",
     "causalReview": [
       {
         "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-races2-causal-review-20261018.json",
@@ -1363,8 +1363,8 @@
     ],
     "sourcePacket": {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
-      "bytes": 45345,
-      "sha256": "b5d2f838c22d3933fab0ca9a2bb52afe434192be391290d700107d6f555e1f88"
+      "sha256": "7e967f4f707b490a6a26d62992afa5d3c958a343780b962b55bf00c7fa0fd7fa",
+      "bytes": 47829
     },
     "scope": {
       "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
@@ -1404,6 +1404,61 @@
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-source-initial-recovery-8e1fedfe-20261018.json",
       "sha256": "9c1490f603ea16f0ed966bca4ea4d13d7adebbed4353cd03da8788dd953f2c2e",
       "bytes": 4679
+    },
+    "sourceReview": {
+      "verdict": "ACCEPT_MINIMAL_READY_DIAGNOSTIC_SOURCE_AND_NAMED_ZERO4_PLAN",
+      "model": "gpt-6-astra",
+      "reasoningEffort": "xhigh",
+      "candidate": "7cad7e3b22df9e06e045bbde9068599906041bc1",
+      "findings": [],
+      "artifacts": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-diagnostic-source-independent-review-7cad7e3b-20261018.json",
+          "sha256": "aa1d989129e8bfcb33df89d4e31d298c8ba15123fcf8ff58e019cf181f9b2187",
+          "bytes": 11201
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-diagnostic-source-independent-review-7cad7e3b-20261018.md",
+          "sha256": "2128019552216c6f9908245480703d57776c96455149f94042885460343ad52d",
+          "bytes": 3061
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-diagnostic-source-independent-check-7cad7e3b-20261018.json",
+          "sha256": "9b3d1990e13151db8a6c94829d4849f2d6dd8df0bbdbcfcaf44ceff643af116e",
+          "bytes": 12758
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-diagnostic-source-blocker-8e1fedfe-20261018.json",
+          "sha256": "b225b8838246bd4f4238341f664c003be7a61e57db023ac3dd40d42b8d6b7e4f",
+          "bytes": 1212
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-diagnostic-source-checker-7cad7e3b-20261018.py",
+          "sha256": "ab93fb9d0edc5e75113144da60500cf876e9b10c1015ae43f0abf95de7375688",
+          "bytes": 15419
+        }
+      ]
+    },
+    "sourceCarrierRecovery": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-source-correction-recovery-7cad7e3b-20261018.json",
+      "sha256": "b45b3948b2329c767f36cc47b104aa94ef0a6772630eea04bf82b9db3f471c08",
+      "bytes": 2720
+    },
+    "namedZeroRelease": {
+      "labels": {
+        "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-ready-diag-cloud-813f1057",
+        "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-ready-diag-cloud-813f1057",
+        "corrective-plan": "t179pd-ni-iobs-l01-process-prep-first-corrective-plan-ready-diag-cloud-813f1057",
+        "remaining-plan": "t179pd-ni-iobs-l01-process-prep-first-remaining-plan-ready-diag-cloud-813f1057"
+      },
+      "order": [
+        "catalog",
+        "plan",
+        "corrective-plan",
+        "remaining-plan"
+      ],
+      "conditions": "Only separate explicit invocations on saved acceptance SHA. Each previous original native0/ZERO plus exact inventory checks before next; dated mandatory v2 before/after census. Any failure freezes without retry/advance. Fresh BOTH/catalog then whole16/33/57, corrective1/2/2 and remaining4/5/13 PlanOnly-NoBuild with exact catalog continuity.",
+      "actualRelease": false
     }
   },
   "lastQualifiedCarrierRecovery": {
