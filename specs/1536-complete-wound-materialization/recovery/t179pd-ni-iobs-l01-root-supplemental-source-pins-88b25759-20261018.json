@@ -1,0 +1,27 @@
+{
+  "kind": "ROOT_NI_IOBS_L01_SUPPLEMENTAL_ACTUAL_HELPER_SOURCE_BINDING",
+  "head": "88b25759d1761566276c94db8064a08abc385c45",
+  "pins": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryAdmission.cs",
+      "bytes": 27567,
+      "sha256": "e397cf86000c51503d3bd6b74cd90871769ead651d6d66b71f658c147a13a9c8",
+      "gitBlob": "b5905b3bc32042ef6007197be5b2638bae1b94f4",
+      "lines": [
+        398,
+        405
+      ]
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.cs",
+      "bytes": 311741,
+      "sha256": "06a3377ad0f0574e6d6bb501c446719b03998fda628082a54a90526534f6cee7",
+      "gitBlob": "1dd62b4338cc19a5c8732b1ddc13432ca00a9cb5",
+      "lines": [
+        3358,
+        3371
+      ]
+    }
+  ],
+  "meaning": "Exact current/Git88b/Git80bf wholefile equality and actual helper bodies read. Additive actual dependency coverage outside44packet; no source edit/count-only rewrite/native outcome."
+}

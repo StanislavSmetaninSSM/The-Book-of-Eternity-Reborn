@@ -1,0 +1,17 @@
+# First I-ordering fixture: independent source review
+
+**ACCEPT_FIRST_ORDERING_SOURCE_FIXTURE_SELECTION_PENDING_PREP.** No material source finding. Bound to saved tools carrier `88b25759d1761566276c94db8064a08abc385c45`, unchanged tests `80bf2a31cefda292fe7fd2025192a77a640346ed`, and unchanged product `447bc1210c507742758243e1c254860bea0c4539`. This accepts one authored Fact; no preparation or execution is accepted.
+
+The Fact awaits the genuine shared Stage43/source/TREAT, rejected-wave restore, corrected public reply/Ready, full ordinary common completion and inert repeat before its first new `Assert.Equal(1, _interfaceAtCapture)`. The two leading tags are recognized by the actual projector and make a second projection visible. The public reply alone supplies the missing-timestamp I document; the probe does not mint a result, checkpoint2, Ready capability or publisher outcome.
+
+The existing CUT01 callback is awaited after the essential prior fixture hook. The observer reads actual committed I members and records them separately from marker-containing cohorts. Those cohorts are not exact common invocation counts. Final I bytes are captured before owned-root disposal; the later assertions do not reread deleted files. The optional fixture changes invert byte-exactly to the parent helper, and all previous assertions remain. The publication observer ends before inert repeat; retained final-byte equality detects a changed projection, not every hypothetical no-write timestamp-policy invocation.
+
+The one category selects exactly the one integration Fact. All prior category rows remain unchanged. The 44 packet pins and ledger pointer match Git; support adds exact whole-file bindings for the diagnostic-output and BOM-aware JSON helper definitions. Both are unchanged baseline source. Recovery comparison covered all22 physical files/all18 paths for80bf and all13/all9 for88b. No full-base/history replay was performed.
+
+All four fixed controllers were read and match their saved copies. They allow one zero-test catalog preparation, its dependent singleton PlanOnly, and a separately named one-category NoBuild actual. Native/raw recording precedes outcome assertions; archive tools preserve original bytes and do not classify RED or retry. They remain UNRUN. The first recorder verifies nine named binaries. Complete fresh managed-inventory continuity must be bound separately by Root before FIRST; an inherited inventory count is not evidence.
+
+Next: persist this decision and supplemental source bindings, obtain fresh canonical BOTH/catalog and exact singleton PlanOnly, review their original zero-test raw and fresh binary/inventory bindings, then obtain Root's separate named actual activation. Expected early0/lateI1 is only a prediction. A causal verdict requires actual genuine prerequisites, completed capture/common/inert-repeat witnesses, the exact first assertion and successful strict cleanup. Compile/setup/observer/cleanup failures or later missing child3 fields cannot substitute for that evidence.
+
+Remaining finite lifecycle/crash/resume/integrity/retention/legacy controls are outside this review and unqualified. No production, full NI/HOT, F1/M3, Windows/A3 or issue-completion claim follows.
+
+Support: `/tmp/t179pd-ni-iobs-l01-order-source-independent-review-20261018-check.json` (SHA256 `fab40beb2486b2aac64ff2131c9f72e29c7de2d2323797986fc267cf9c8ea5ef`). JSON: `/tmp/t179pd-ni-iobs-l01-order-source-independent-review-20261018.json` (SHA256 `73771b88b3b92ec5f7325b37f981913646a03130f4c63f8e9b45611ffdd813a0`).
