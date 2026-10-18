@@ -1,0 +1,74 @@
+{
+  "kind": "NI_IOBS_L01_WHOLE_DERIVED_CONTRACT_AND_ENGINEERING_REVIEW",
+  "verdict": "ACCEPT_WHOLE_VERTICAL_FOR_TESTS_FIRST",
+  "baseSource": "447bc1210c507742758243e1c254860bea0c4539",
+  "carrier": "82e1552e0172f41c066a8fac6899332ea4137813",
+  "markdown": {
+    "path": "/tmp/t179pd-ni-iobs-l01-whole-vertical-independent-review-20261018.md",
+    "bytes": 8207,
+    "sha256": "1c3bc35d0db9221820bc40e49ff69ec312bd78ed245d38bbdad3dc9f3dc2fcfe"
+  },
+  "support": {
+    "path": "/tmp/t179pd-ni-iobs-l01-whole-vertical-independent-review-20261018-check.json",
+    "bytes": 37862,
+    "sha256": "e269e783d17778a34a1740778a7dfbc803237e7d24481013e8d8cbfc0fdd024f"
+  },
+  "materialBlockers": [],
+  "resolvedChoices": {
+    "fresh": "Real FIRST-v2 installation/readback/owned release/runtime refresh; one-shot consumed before preparation starts; sticky failures.",
+    "iOwner": "Outside Lp; required readback and owning release before delivery to the actual current pre-preparation consumer.",
+    "resume": "Existing ordered six-family current guards + sealed read-only N + current graph/frame/resource/mechanical/common/take reconstruction; no generic ensures/normalizers or historical authority from DATA.",
+    "error": "Commit complete Error result as Prepared; preserve I-before, hold frozen issues, no I/common/recompute/reauthor; exact whole-terminal resolution only.",
+    "legacy": "Keep genuine existing v1 CaptureAsync semantics for complete legacy fixture producer; actual engine FIRST separately issues v2. No protocol flag/version rewriting. Exact old producer artifact only if retained factory semantics cease to be source-equivalent.",
+    "bounds": "No new 2 MiB I/diagnostic cap; existing rejected-source limits unchanged. Checked size/length arithmetic and canonical closed shape, proportional allocation, no truncation; actual codec resource verification later.",
+    "cold": "Child3 committed DATA and full physical/history crosslinks; no absent-plan/take/checkpoint reconstruction or historical returned-I fiction.",
+    "selection": "Finite new semantic/crash/integrity/retention owners plus actual affected CUT01/Late2 and precise reader/ordinary consumers after code change. No guessed counts/all-family run."
+  },
+  "laterGates": [
+    "Persist this exact decision and Root disposition.",
+    "Concrete tests-only SOURCE/FIXTURE/SELECTION and fresh PREP before named genuine baseline RED.",
+    "Saved independent causal RED before whole accepted production implementation.",
+    "Fresh affected SOURCE/PREP and separately named abrupt crash, resume, legacy and consumer evidence; no immediate runtime authority from this report."
+  ],
+  "evidenceLimits": {
+    "sourceDesignOnly": true,
+    "nativeRuns": false,
+    "repositoryEdits": false,
+    "productAcceptance": false,
+    "fullNIOrHOTAcceptance": false,
+    "newRuntimeAuthorization": false,
+    "oldRawOrBinaryReplay": false
+  },
+  "artifactsReviewed": [
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-engineering-map-447bc121-20261018.md",
+      "bytes": 23519,
+      "sha256": "aae9ffeabc718106db4de89ecdc463f466c42a288a7f3cc2fd4e45d2ef3fd692"
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-engineering-map-447bc121-20261018.json",
+      "bytes": 30259,
+      "sha256": "8955898327df2819b82b3e4ef40c2ff6a539cbfcd4e4845750dd392bc6c10018"
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-root-contract-review-scope-447bc121-20261018.json",
+      "bytes": 5836,
+      "sha256": "1475af3b601ad792dba70f0209cbcebf13ca5591708a1869fb74f06d99252da6"
+    },
+    {
+      "path": "/tmp/t179pd-ni-result-origin-independent-contract-447bc121-20261018.md",
+      "bytes": 12683,
+      "sha256": "eed71ed8bb685da3f40868e0fa08c2b912f3cdacf6365e6a975b4535496708ed"
+    },
+    {
+      "path": "/tmp/t179pd-ni-result-origin-fresh-cold-precision-447bc121-20261018.json",
+      "bytes": 4010,
+      "sha256": "d0d9cb79a4c9fb0204adb0c53323ac16a309a0fd9f199f5840395a513b178ebe"
+    },
+    {
+      "path": "/tmp/t179pd-ni-result-enums-resume-precision-447bc121-20261018-v2.json",
+      "bytes": 10598,
+      "sha256": "1e6cfc9e37c8dda2134f517a280c46bb35c4a58ddcde5d7da49ba33c10722076"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "kind": "ROOT_NI_IOBS_L01_WHOLE_VERTICAL_ACCEPTANCE_CONDITIONAL_TESTS_ONLY_AUTHORING",
+  "createdUtc": "2026-10-18T04:46:16.719250+00:00",
+  "source": "447bc1210c507742758243e1c254860bea0c4539",
+  "carrier": "82e1552e0172f41c066a8fac6899332ea4137813",
+  "verdict": "ACCEPT_DERIVED_RESULT_ORIGIN_AND_WHOLE_VERTICAL_FOR_TESTS_FIRST",
+  "artifacts": [
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-whole-vertical-independent-review-20261018.md",
+      "bytes": 8207,
+      "sha256": "1c3bc35d0db9221820bc40e49ff69ec312bd78ed245d38bbdad3dc9f3dc2fcfe"
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-whole-vertical-independent-review-20261018.json",
+      "bytes": 4160,
+      "sha256": "d7799e8579d00ae0fc68c4b36bf802d5334ec04d5258bb276309be10954b41f0"
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-whole-vertical-independent-review-20261018-check.json",
+      "bytes": 37862,
+      "sha256": "e269e783d17778a34a1740778a7dfbc803237e7d24481013e8d8cbfc0fdd024f"
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-contract-wip-delta-github-82e1552e-20261018.json",
+      "bytes": 15976,
+      "sha256": "f688a9a51b0b8199c16f5b2e826ad90d7660b56ef806d91b60910085d51005b7"
+    },
+    {
+      "path": "/tmp/t179pd3d-root-recovery-composition-82e1552e-20261017.json",
+      "bytes": 28821,
+      "sha256": "ff046fe5d97424a6dfd6e76fbaa2b58d883f95bad6b6b66947a8ce1dedf851f3"
+    }
+  ],
+  "rootChecks": [
+    "Read/hashverified independent wholevertical MD/JSON/support; no materialarchitecture/game-rule blocker. Explicit five resolved choices accepted as normative refinements over draftissues.",
+    "Read actual38/64sourceboundengineeringmap and29/47origin+10/18enum/resume exactGit/range pins.",
+    "Independentlyverifiedphysical20GitHubfiles/all16paths, full7a+83/55,314tree, exactremote/clean/mainunchanged. All12frozencopies exact; four prependedcurrentheaders preserve historicaltails. Root initial helperexpectedDOC_WIP tokeninspec too literally; semanticWIP/no-codeheadercorrect, nopackage/nativefailure."
+  ],
+  "selected": "RealprivateFIRST2/protocol1 → one-shotwholeI → pendingPrepared → I+Published → actualcurrentconsumer → child3/common/take/publication → late/coldDATA. Child3 PreparedResultPublicationV1 is committed DATA, never historicalReturnedI; no newdurablepath/journal/backend/antitamper.",
+  "resolved": [
+    "Freshpermission onlyafterFIRSTinstall/readback/owningrelease/runtime refresh, consumedbeforeIreads/projector/UTC; sameprocessfaultsticky/newmissingrestartHELD.",
+    "Iadapter ownleaseoutsideLp completesrequiredreadback+owningreleasebeforedelivery; Prepared andI+Published useexistingpublisher. Lostrelease doesnotuncommitrecord or inventpriorreturn.",
+    "CompleteError computation commitsPrepared/frozenorderedissues only, currentIbeforeunchanged; Held/noI/common/recompute/re-author, actualwholeterminalresolution only. OrdinarypublicIwrite-beforetailunchanged.",
+    "Actualcurrentresume sixorderedrawfamilyguards+sealedreadonlyN+original/checkpoint/request/currentclaim/mechanical/common/take; noPublishedI-as-admission/no oldReadyrevival; exactimmutableReadybefore→Iownedtransitiononfresh.",
+    "Retainexistinggenuinev1Capture factorysemanticsforcompletecompatibilityfixture; engineFIRSTseparateprivatev2, no protocolflag/versionrewriting.",
+    "No arbitrary2MiB I/issuecap; preserveallactualbytes/diagnostics withcheckedproportionalallocation/canonicalclosedshape. ExistingrejectedN/checkpointlimitsunchanged.",
+    "CommonatomicallyconsumesPublishedpendingandinstallschild3; direct+outerrollbackhold/retain, commonrollbackrestoresPublished/Iafter; coldonlyretainedlinks/currentphysicalproof, no absenttake/checkpoint/planrecreation."
+  ],
+  "conditionalRelease": "Firstpersist exactreview3+thisRoot+83receipt/composition andcurrentacceptedcontract/task/plan/specheaders only; preserve frozen drafts/map/acceptedhistory. NormalWIP/nonforcepush/exactremote/completeGitHubdelta. Root independentlychecks then names focused TESTS_ONLY_AUTHORING (notproduct/runtime).",
+  "testsOnlyWork": "Authorfirstgenuineorderingcausalcaseandfinite lifecycle/crash/integrity/retention/legacy/affectedcontrols+boundednativechildharness. Existingproductunchanged; exactfirstassertionafteroldgenuinecompletion, noNotNull/schema2setupfailure substitute. Trackexactmethods/cases/source/selection/cleanup. SaveWIP BEFORE concreteindependentSOURCE/FIXTURE/SELECTION andfreshBOTH/catalog/PlanOnly0; no actual until namedRoot. Actualabruptenginecrashes distinctfromgracefulexception. No guessedcounts.",
+  "implementationGate": "OnlyaftersavedqualifiedgenuinecausalREDandseparateindependentEVIDENCE mayminimalwholeacceptedproduction proceed. ThenfreshaffectedSOURCE/PREP andnamedfiniteactuals/separateEVIDENCE. Useralreadyconditionallyauthorizes autonomy; no routinepermissionstop.",
+  "holds": "CUT01/PriorA1/A2 acceptednoreplayuntilgenuinelychangeddependency; no currenttest/native/buildrun. FullNI/HOT/M3/F1/T197/platform/A3notaccepted; Windows403/CI/ZIPheld, no main/merge/forcepush/delete/issueclose/security/newQTE."
+}
