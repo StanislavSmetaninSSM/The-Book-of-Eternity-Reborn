@@ -1,8 +1,8 @@
 {
-  "kind": "NI_IOBS_L01_CORRECTED_INTAKE_PREP_ACCEPTED_ACTUAL_RELEASE_PENDING",
+  "kind": "NI_IOBS_L01_CORRECTED_INTAKE_CURRENT_ACTUAL_RAW_SAVED",
   "sourceBase": "eaea2dde3fd5381d27e86ab9e87c782cd97d9ae0",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
-  "status": "ACCEPT_SOURCE_AND_ZERO3_PENDING_NAMED_CORRECTED2_THEN29",
+  "status": "CURRENT_FIRST_MODE_RAW_SAVED_WHOLE_EVIDENCE_OPEN",
   "sourcePins": [
     {
       "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
@@ -932,17 +932,17 @@
       "sha256": "c147ee76084f275f29c6920e2a81ddb66fbff2a786d04a02a878ac56b6b83b85",
       "bytes": 9377,
       "role": "Only separately named repaired2 or one of eight remaining29 groups; retained26 are deliberately not runnable modes, original outcome before guards",
-      "status": "UNRUN_SOURCE_ONLY_NAMED_RELEASE_REQUIRED"
+      "status": "CURRENT_1_SEPARATELY_NAMED_MODES_EXECUTED_REMAINING_HELD"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-whole.py",
       "sha256": "bf6503ecb8b1006842e66313da7c72fc185b217e54cd44d4ff5a62b864c36c3f",
       "bytes": 2342,
       "role": "Unchanged read-only complete raw archiver reused with new phase/source fields; historical eight invocations retained, no runtime from archiving",
-      "status": "READ_ONLY_NINE_TOTAL_INVOCATIONS_ORIGINAL_HISTORY8_PLUS_CURRENT3RECORD_ARCHIVE1_NO_TEST_EXECUTION"
+      "status": "READ_ONLY_HISTORICAL8_PLUS_CURRENT_ZERO_ARCHIVE1_PLUS_CURRENT_MODE_ARCHIVES1_NO_TEST_EXECUTION"
     }
   ],
-  "next": "Root names repaired2 exact saved acceptance HEAD after recovery; compiled4c6d/source98 and full1575-output fresh binding unchanged. No build/retry/automatic remaining actual.",
+  "next": "Root independently verifies this saved recovery then separately names next fixed mode. No automatic execution/retry/build/source changes; independent whole EVIDENCE remains open.",
   "sourcePinBindingMeaning": "Active authored-source hashes including necessary new helper definitions, not compiled qualification. Old44/9DLL/preparation/first RED context is retained separately. Verification tools are frozen historical source and cannot be reused unchanged for current bindings.",
   "firstActual": {
     "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
@@ -1118,7 +1118,7 @@
   },
   "runtime": {
     "currentFixtureCompiled": true,
-    "currentFixtureActualCases": 0,
+    "currentFixtureActualCases": 2,
     "retainedQualifiedCases": 26,
     "originalFixtureFailures": 2,
     "remainingPreviouslyUnrunCases": 29,
@@ -1136,11 +1136,14 @@
       "settlement3",
       "uncertain1"
     ],
-    "scope": "Historical26qualified+2fixtureFAIL preserved at compiled45cc. Current corrected2 are new changed-fixture verification, not same-body replay; remaining29 untouched unrun. No current native permission or whole qualification.",
+    "scope": "Retained26 qualified old actual/compiled provenance + current changed-fixture pending31 partition. Original2 invalid-fixtureFAIL remain historical, not an added target case or product RED. Current observed outcomes do not alone constitute independent whole EVIDENCE.",
     "retentionStatus": "INDEPENDENT_SOURCE_ACCEPTED26_OLD_PROVENANCE_NO_NEW_BINARY_EQUIVALENCE_CLAIM",
     "currentFixtureDiscovery": "808categories11800methods_FRESH_BOTH_ZERO",
     "currentPreparation": "INDEPENDENT_AND_ROOT_ACCEPTED_CATALOG_WHOLE_PLAN_REMAINING_PLAN_ZERO",
-    "nextEligibleScope": "ONLY_REPAIRED2_AFTER_NAMED_ROOT_ACTUAL_ACTIVATION"
+    "nextEligibleScope": "NONE_UNTIL_ROOT_SEPARATELY_NAMES_NEXT_MODE",
+    "currentFixtureObservedPassed": 2,
+    "currentFixtureObservedFailed": 0,
+    "totalObservedPositiveUnionIncludingRetained26": 28
   },
   "currentImplementation": {
     "sourceBase": "afb5a3bb6a2dd7e066946258cbf64334bf965048",
@@ -9783,7 +9786,47 @@
     "note": "Current output binaries still historical45cc; no fresh output byte-equivalence assumption before build. New inventory/counts observed afresh."
   },
   "actualScopesBinding": "HISTORICAL_COMPILED45CC_SIX_FIRST_MODES_26QUALIFIED_AND_2INVALID_FIXTURE_FAILURES_NOT_CURRENT_CORRECTED_FIXTURE",
-  "currentActualScopes": {},
+  "currentActualScopes": {
+    "repaired2": {
+      "actualSource": "6b7d1e8288af73982de85159a343626efda21d57",
+      "compiledSource": "4c6d8334b441193cbda6de539347bcf7998d4db6",
+      "nativeExit": 0,
+      "seconds": 125.15458675498667,
+      "tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "recordPath": "/tmp/t179pd-ni-iobs-l01-intake-implementation-tools/t179pd-ni-iobs-l01-intake-first-repaired-current/record.json",
+      "recordSha256": "c66cdaf7e80015b1ae1c8f821c5c4b53613a2b3acb14857d69e2085ee919857d",
+      "archive": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-repaired2-files-20261018/archive.json",
+        "sha256": "27905467fe1f9451ccfd0cb096fa4ad0aa437518ce4e43b78061f2e0b0a871d0",
+        "rawChains": 11
+      },
+      "rootReadback": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-repaired-readback-6b7d1e82-20261018.json",
+        "sha256": "77b2b09946efe3c34d577051c6773f4e4d0ccb131dae0c1dcce582e2fd53c10d"
+      },
+      "evidence": "ORIGINAL_RAW_OBSERVED_ROOT_READBACK_INDEPENDENT_WHOLE_EVIDENCE_OPEN",
+      "nineBinariesUnchanged": true,
+      "all1575OutputFilesUnchanged": true,
+      "namespaceAfter": {
+        "ownedRoots": []
+      },
+      "processesAfter": [],
+      "history": "Changed-fixture verification/current first scope. Original45cc live2FAIL and retained26 proof remain at original provenance; no overwrite or double counting."
+    }
+  },
   "historicalWholeSourceAcceptanceAt520e": {
     "candidate": "520e66e418a428223afa4ef2364ec96b28eeac54",
     "rootDecision": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-source-acceptance-zero-release-520e66e4-20261018.json",
