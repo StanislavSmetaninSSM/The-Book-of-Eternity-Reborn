@@ -53,6 +53,20 @@ internal static partial class WoundAcceptedTurnPlanner
         internal JsonObject AcquisitionCommandRoot => _acquisitionCommandRoot.DeepClone().AsObject();
         internal byte[] ReadAcceptedNarrative() => _before["output/narrative_response.json"]?.ToArray()
             ?? throw new InvalidDataException("The sealed joint continuation has no accepted narrative.");
+        internal MortalJointInterfacePublication.Record? ReadPublishedInterface()
+        {
+            if (!Checkpoint.UsesInterfacePublication) return null;
+            var pending = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
+                _before[WoundAcceptedTurnSnapshotContract.PendingResolutionPath] ?? throw new InvalidDataException("joint_interface_pending_missing")),
+                SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "sealed joint interface result")!;
+            var result = MortalJointInterfacePublication.Read(System.Text.Json.JsonSerializer.SerializeToElement(
+                pending[MortalJointInterfacePublication.PendingField] ?? throw new InvalidDataException("joint_interface_result_missing")));
+            result.RequireLegacyPending(pending);
+            if (result.State != "Published" || result.HasErrors || !MortalJointInterfacePublication.BytesEqual(
+                    result.AfterBytes, _before[MortalJointInterfacePublication.InterfacePath]))
+                throw new InvalidDataException("joint_interface_result_not_consumed_current");
+            return result;
+        }
         internal WoundAcceptedTurnInput TreatmentInput => WoundAcceptedTurnData.CloneInput(_treatmentInput)!;
         internal MortalWoundTreatmentOutcomePreparation Outcome => _outcome.DetachedCopy();
         internal WoundEffectOperationBatch? TreatmentBatch => _treatmentBatch is null ? null : WoundAcceptedTurnData.CloneOperationBatch(_treatmentBatch);
@@ -194,12 +208,14 @@ internal static partial class WoundAcceptedTurnPlanner
                 WoundIdentityState.StatePath, WoundHistoryState.HistoryPath, EffectIdentityState.StatePath,
                 EffectCarrierCatalog.PlayerPath, EffectCarrierCatalog.NpcPath, EffectCarrierCatalog.SpiritualConflictPath,
                 MortalWoundOccurrenceState.StatePath, MortalWoundOpportunityReceiptState.StatePath
-            }).Distinct(StringComparer.Ordinal).ToArray();
+            }).Concat(capture.Checkpoint.UsesInterfacePublication ? new[] { MortalJointInterfacePublication.InterfacePath } : Array.Empty<string>())
+                .Distinct(StringComparer.Ordinal).ToArray();
             var before = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
             foreach (var path in paths) before.Add(path, await files.ReadFileBytesAsync(lease, path));
             var authority = new JointRepairContinuationAuthority(JointRepairIssuer, files, capture.Accepted.SessionGeneration,
                 capture.Checkpoint, input, treatmentInput, acquisitionCommandRoot, capture.Accepted, capture.Request, capture.Resolution,
                 shell.Finalization, preparation.Preparation!, rematerialization, before);
+            _ = authority.ReadPublishedInterface();
             await authority.ValidateCurrentAsync(files, lease);
             return new(input, authority, Array.Empty<ValidationIssue>());
         }

@@ -32,6 +32,7 @@ internal static class MortalJointInterfacePublication
         internal string State => Text(_root, "state");
         internal string Fingerprint => Text(_root, "fingerprint");
         internal string ResultFingerprint => Text(_root, "resultFingerprint");
+        internal string SourceAssociationFingerprint => Text(_root, "sourceAssociationFingerprint");
         internal JsonObject Binding => _root["binding"]!.DeepClone().AsObject();
         internal byte[]? BeforeBytes => DecodeImage(_root["beforeImage"]!.AsObject());
         internal byte[]? AfterBytes => DecodeImage(_root["afterImage"]!.AsObject());

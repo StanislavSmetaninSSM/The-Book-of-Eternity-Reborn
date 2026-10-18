@@ -34,6 +34,16 @@ internal static partial class WoundAcceptedTurnPlanner
                 _before[row.Key] = new(row.Value.Existed, row.Value.Bytes?.ToArray());
             }
             var joint = ReadJoint();
+            var publishedInterface = joint.ReadPublishedInterface();
+            if (publishedInterface is not null)
+            {
+                var after = publishedInterface.AfterBytes;
+                var image = new CanonicalBeforeImage(after is not null, after);
+                if (_before.TryGetValue(MortalJointInterfacePublication.InterfacePath, out var existing) &&
+                    existing.Fingerprint != image.Fingerprint)
+                    throw new InvalidDataException("Joint I/common read-dependency disagreement.");
+                _before[MortalJointInterfacePublication.InterfacePath] = image;
+            }
             var command = joint.ReadAcquisitionCommands().Single();
             var history = WoundHistoryState.Parse(Bundle.FinalPlan.HistoryAfterImage?.ToJsonString(), WoundHistoryState.HistoryPath);
             var creates = history.State?.Transitions.Where(row => row.Kind == "create" && row.EventRef == command.Opportunity.EventRef &&
@@ -50,7 +60,7 @@ internal static partial class WoundAcceptedTurnPlanner
             if (creates[0].OperationKey != "wound_operation_" + decisionFingerprint["sha256:".Length..])
                 throw new InvalidDataException("The sealed acquisition local ref must reproduce the SAME CREATE operation.");
             OutputBasis = MortalJointAcceptedOutputBasis.Capture(localRef, creates[0].WoundId,
-                creates[0].TransitionId, joint.ReadAcceptedNarrative());
+                creates[0].TransitionId, joint.ReadAcceptedNarrative(), publishedInterface);
             Fingerprint = ComputeFingerprint();
         }
         internal GameEngine.MortalJointProgressionSource Progression { get; }

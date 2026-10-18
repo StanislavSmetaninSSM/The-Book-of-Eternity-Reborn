@@ -176,6 +176,7 @@ internal static partial class MortalQteDecisionPublication
             throw Invalid("joint_output_taken_receipt");
         root["schemaVersion"] = 2;
         root["outputBinding"] = basis.ToJson();
+        if (basis.InterfacePublication is not null) root["niPublication"] = CreateJointInterfaceSeal(taken);
         root["jointTreatment"] = new JsonObject {
             ["operationKey"] = expected.Request.Coordinates.OperationKey, ["attemptId"] = expected.Request.Coordinates.AttemptId,
             ["requestFingerprint"] = expected.Request.RequestFingerprint, ["persistedResultFingerprint"] = PersistedFingerprint(expected),
@@ -208,7 +209,9 @@ internal static partial class MortalQteDecisionPublication
         var recovered = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(stableMarker),
             SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "current recovered joint completion");
         if (!JsonNode.DeepEquals(root, recovered)) throw Invalid("joint_marker_recovery_changed");
-        if (root.Count != JointFields.Length || root.Any(row => !JointFields.Contains(row.Key, StringComparer.Ordinal))) throw Invalid("joint_shape");
+        var outputBasis = MortalJointAcceptedOutputBasis.Read(root["outputBinding"]);
+        var fields = outputBasis.InterfacePublication is null ? JointFields : JointFields.Append("niPublication").ToArray();
+        if (root.Count != fields.Length || root.Any(row => !fields.Contains(row.Key, StringComparer.Ordinal))) throw Invalid("joint_shape");
         var payload = root.DeepClone().AsObject(); payload.Remove("fingerprint");
         if (Text(root, "fingerprint") != JointFingerprint(payload) || !fs.IsCurrentSessionGeneration(lease, Text(root, "generation")))
             throw Invalid("joint_seal_or_generation");
@@ -296,6 +299,7 @@ internal static partial class MortalQteDecisionPublication
             !MortalQteWoundOpportunityProjection.MatchesMaterializedOutputReference(original, receipt, acquired.Wound, basis.LocalWoundRef))
             throw Invalid("joint_output_receipt_source_binding");
         await RequireExactJointPublicOutputsAsync(fs, lease, root, basis);
+        await RequireJointInterfaceDataAsync(fs, lease, root, basis);
         await GameEngine.ValidateCurrentMortalJointInactiveTailAsync(fs, lease, snapshot.TurnNumber);
         await ValidateJointProgressionDataAsync(fs, lease, root);
         await RequireExactJointPublicOutputsAsync(fs, lease, root, basis);
@@ -316,13 +320,18 @@ internal static partial class MortalQteDecisionPublication
             Text(treatment, "requestFingerprint") != taken.Authority.Request.RequestFingerprint ||
             Text(treatment, "persistedResultFingerprint") != PersistedFingerprint(MortalWoundTreatmentPersistedResult.Create(taken.Authority.Resolution)) ||
             Text(treatment, "resourceFinalizationFingerprint") != taken.Authority.Finalization.FinalizationFingerprint ||
-            Text(treatment, "repairCheckpointFingerprint") != taken.Authority.RepairCheckpointFingerprint)
+            Text(treatment, "repairCheckpointFingerprint") != taken.Authority.RepairCheckpointFingerprint ||
+            taken.Authority.OutputBasis.InterfacePublication is not null &&
+                !JsonNode.DeepEquals(proof.Root["niPublication"], CreateJointInterfaceSeal(taken)))
             throw Invalid("joint_readback_taken_binding");
     }
 
     private static async Task RequireExactJointPublicOutputsAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
         JsonObject marker, MortalJointAcceptedOutputBasis basis)
     {
+        if (basis.InterfacePublication is { } result && !MortalJointInterfacePublication.BytesEqual(result.AfterBytes,
+                await files.ReadFileBytesAsync(lease, MortalJointInterfacePublication.InterfacePath)))
+            throw Invalid("joint_continuation_changed_interface");
         var current = await files.ReadFileBytesAsync(lease, "output/narrative_response.json");
         if (!Same(current, basis.NarrativeBytes)) throw Invalid("joint_continuation_changed_scene");
         var draft = await files.ReadFileBytesAsync(lease, MortalWoundOpportunityAdapter.DecisionPath);

@@ -250,14 +250,18 @@ public partial class GameEngine
         if (!JsonNode.DeepEquals(fresh.OriginalOperations, previous.OriginalOperations))
             throw new InvalidDataException("HOT original operations changed between actual leases.");
         foreach (var (path, bytes) in previous.Current)
-            if (!HotBytesEqual(bytes, fresh.Current[path])) throw new InvalidDataException("HOT submitted source changed: " + path);
+            if (!HotBytesEqual(bytes, fresh.Current[path]) &&
+                !(path == MortalJointInterfacePublication.InterfacePath && IsOwnedMortalJointInterfaceReadyTransition(read, bytes, fresh.Current[path])))
+                throw new InvalidDataException("HOT submitted source changed: " + path);
         var ready = await _fs.ReadFileBytesAsync(lease, ValidationRepairReadyPath);
         if (requireReadyAbsent ? ready is not null : !HotBytesEqual(ready, read.Bytes))
             throw new InvalidDataException("HOT Ready no longer matches its actual consumption event.");
         fresh.Evidence.RequireCurrent(_fs, lease, fresh.Snapshot);
         await RequireHotCurrentImagesAsync(lease, fresh.Current);
         // Only this new lease's genuinely issued reader evidence is retained.
-        read.Source = fresh;
+        // Retain the immutable Ready before-images. Only the genuinely current
+        // reader evidence is refreshed; selected I after-image is an owned join.
+        read.Source = fresh with { Current = previous.Current.ToDictionary(row => row.Key, row => row.Value?.ToArray(), StringComparer.Ordinal) };
     }
 
     private static bool HotBytesEqual(byte[]? a, byte[]? b) => a is null ? b is null : b is not null && a.AsSpan().SequenceEqual(b);

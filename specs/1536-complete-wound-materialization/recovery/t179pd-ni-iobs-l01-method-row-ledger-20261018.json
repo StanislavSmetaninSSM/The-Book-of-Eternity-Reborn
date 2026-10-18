@@ -1,7 +1,7 @@
 {
   "kind": "NI_IOBS_L01_AUTHORED_METHOD_ROW_LEDGER",
   "sourceBase": "9a92049ef86bcbc4569aaa0a11d1f42632093622",
-  "status": "WHOLE_IMPLEMENTATION_IN_PROGRESS_FOUNDATION_WIP_UNCOMPILED_UNRUN_ENGINE_JOINS_OPEN",
+  "status": "WHOLE_ENGINE_INTEGRATION_DRAFT_UNCOMPILED_UNRUN_FINITE_CONTROLS_IN_PROGRESS",
   "rows": [
     {
       "category": "fr063-joint-interface-lifecycle-order",
@@ -172,8 +172,8 @@
     "ambient timestamp-policy replay witness independent of double-tag projector/no-new-write evidence"
   ],
   "holds": [
-    "No build/discovery/native until whole finite candidate and changed-scope SOURCE then named verification releases.",
-    "This early implementation checkpoint has data/lifecycle primitives and joint-only I computation, but engine fresh/resume/Ready/common/late/cold/retention/crash integration remains OPEN. No runnable whole feature or qualification claim."
+    "Incomplete finite tests and uncompiled/unrun product; no whole SOURCE or GREEN claim.",
+    "No old category replay, Windows/CI/ZIP/HOT/fullNI/A3 activation."
   ],
   "verificationTools": [
     {
@@ -197,7 +197,7 @@
       "status": "READ_ONLY_ARCHIVED_BOTH_FIRST_ZERO_RECORDS_ONE_INVOCATION_19CHAINS"
     }
   ],
-  "priority": "Continue accepted whole real consumer integration and finite test authoring. Preserve exact historical first RED and unchanged old tools; do not execute them against new source.",
+  "priority": "Continue finite real-consumer/crash/legacy/error controls and precise affected selection while independent reviewer may read this immutable draft. No build/discovery/native until whole candidate/changed-scope review and named releases.",
   "firstActual": {
     "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
     "compiledSource": "a65005989ac5922db9c943dda339a999131ba5c6",
@@ -356,21 +356,24 @@
   },
   "historicalFirstNativeCases": 1,
   "currentImplementation": {
-    "sourceBase": "acf6f7b948bb152acfeb17f54e8d792ea8dd191b",
-    "changedProductFiles": 4,
-    "status": "UNCOMPILED_UNRUN_INCOMPLETE_NOT_ACTIVATED",
-    "implemented": [
-      "strict computed-DATA record and two existing-journal publication operations",
-      "joint-only prepare-before-write I with original projector/prefix/timestamp/tail policy and actual raw-read preimage",
-      "separate version2 checkpoint factory/strict selected sibling parsing; legacy CaptureAsync remains version1"
+    "sourceBase": "63bf04f47979a2a34f4b0d394a7cbe90625c3821",
+    "status": "DRAFT_UNCOMPILED_UNRUN_NOT_SOURCE_OR_RUNTIME_ACCEPTED",
+    "integrated": [
+      "private FIRST2 factory and post-install/readback/release/runtime-refresh one-shot arming",
+      "outside-Lp whole I preparation, Prepared then I+Published, release-before-transient-delivery and ErrorPrepared Hold",
+      "mandatory actual Capturing consumer, immutable Ready owned transition and source association",
+      "dedicated new-current-owner selected resume before Core/ensure/N/restore using six raw families, readonly N and actual joint resource admission",
+      "child3 output basis before common fingerprint/take, exact I-after retained read dependency, parent niPublication2 and full current cold proof",
+      "both original late and generic I slots use current committed DATA; generic selector is durable pending/marker/frame, not cache absence",
+      "direct generic/dedicated baseline restore and outer destructive fallback retain selected Prepared/Published/missing-result states"
     ],
-    "notImplemented": [
-      "actual private FIRST2 issuance and fresh permission",
-      "genuine current resume admission",
-      "immutable Ready owned transition and pre-preparation consumer",
-      "child3/common/take/late+generic/cold integration",
-      "direct/outer rollback retention and terminal qualification",
-      "real abrupt child/current owner controls and remaining finite cases"
+    "open": [
+      "all new source is uncompiled/unreviewed; actual success/refusal remains unqualified",
+      "finite actual-owner NoWrite/BOM/UTF16/absence/error/warning/current-drift/owning-close/outer-finalization controls",
+      "genuine abrupt child cuts and new ordinary current engine resume/once-policy witness",
+      "genuine legacy Capture1 complete retained graph/current engine/child1/cold compatibility control",
+      "malformed/crossoperation/version/missing-result restart, common compensation/lostack and whole terminal controls",
+      "exact GM guide/worked-example and affected category/source-guard decisions"
     ]
   }
 }

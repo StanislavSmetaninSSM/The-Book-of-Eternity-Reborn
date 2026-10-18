@@ -2406,6 +2406,7 @@ public partial class GameEngine
         FileSystemManager.CanonicalWriteLease writeLease,
         RollbackSnapshot snapshot)
     {
+        await RequireNoMortalJointInterfaceRestoreAsync(writeLease, blockSelectedMissing: true);
         var validatedBackups = await ReadValidatedRollbackBeforeImagesAsync(writeLease, snapshot);
         var failures = new List<Exception>();
         foreach (var trackedFile in EnumerateRollbackTrackedFiles(writeLease))

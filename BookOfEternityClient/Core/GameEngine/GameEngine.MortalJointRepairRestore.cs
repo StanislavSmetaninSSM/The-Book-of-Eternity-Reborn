@@ -21,6 +21,7 @@ public partial class GameEngine
         {
             ThrowIfRepairSessionReplaced(writeLease, generation);
             RequireOrdinaryJointRepairLease(writeLease);
+            await RequireNoMortalJointInterfaceRestoreAsync(writeLease);
             var reconstructed = await ReadCurrentJointRejectedCaptureAsync(writeLease, expected);
             reconstructed.EnsureCurrent(_fs, writeLease);
             var baseline = await ReadValidatedRollbackBeforeImagesAsync(writeLease, snapshot);
@@ -80,7 +81,11 @@ public partial class GameEngine
         // No repair dispatch can proceed until both physical readback and ordinary
         // runtime projection refresh succeeded. A known refresh failure compensates
         // the entire installed cohort under a freshly participating same-G lease.
-        try { await RefreshRuntimeStateAfterExactRollbackAsync(); }
+        try
+        {
+            await RefreshRuntimeStateAfterExactRollbackAsync();
+            ArmFirstMortalJointInterfacePreparation(expectedCheckpoint);
+        }
         catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
         {
             if (installed is null) throw;
@@ -105,8 +110,11 @@ public partial class GameEngine
     {
         var pending = await _fs.ReadFileBytesAsync(lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
         var result = pending is null
-            ? await MortalJointRepairCheckpoint.CaptureAsync(_fs, lease, expected["sessionId"]!.GetValue<string>(),
-                expected["requestId"]!.GetValue<string>(), expected["snapshotToken"]!.GetValue<string>(), expected["turnNumber"]!.GetValue<int>())
+            ? expected["schemaVersion"]!.GetValue<int>() == 2
+                ? await MortalJointRepairCheckpoint.CaptureInterfaceFirstAsync(_fs, lease, expected["sessionId"]!.GetValue<string>(),
+                    expected["requestId"]!.GetValue<string>(), expected["snapshotToken"]!.GetValue<string>(), expected["turnNumber"]!.GetValue<int>())
+                : await MortalJointRepairCheckpoint.CaptureAsync(_fs, lease, expected["sessionId"]!.GetValue<string>(),
+                    expected["requestId"]!.GetValue<string>(), expected["snapshotToken"]!.GetValue<string>(), expected["turnNumber"]!.GetValue<int>())
             : await MortalJointRepairCheckpoint.ReconstructAsync(_fs, lease, expected["sessionId"]!.GetValue<string>(),
                 expected["requestId"]!.GetValue<string>(), expected["snapshotToken"]!.GetValue<string>(), expected["turnNumber"]!.GetValue<int>());
         if (!result.IsValid || result.Capture is null || !JsonNode.DeepEquals(result.Checkpoint!.ToJsonObject(), expected))

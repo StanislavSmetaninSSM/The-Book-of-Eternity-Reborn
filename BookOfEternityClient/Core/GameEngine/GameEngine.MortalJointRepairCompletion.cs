@@ -95,7 +95,7 @@ public partial class GameEngine
             issues.AddRange(existingStory is null ? await _validator.ValidateGameStateAsync() :
                 await _validator.ValidateMortalJointStoryGameStateAsync(existingStory));
             issues.AddRange(await _validator.ValidateMortalJointAcceptedNarrativeReadOnlyAsync());
-            issues.AddRange(await _validator.ValidateAcceptedTurnInterfacePayloadAsync());
+            issues.AddRange(await ReadMortalJointInterfaceAtLateSlotAsync(frame));
             issues.AddRange(await _validator.ValidateAcceptedTurnReasoningAsync());
             issues.AddRange(await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync());
             issues.AddRange(await _validator.ValidateAcceptedTurnQteOfferAsync());

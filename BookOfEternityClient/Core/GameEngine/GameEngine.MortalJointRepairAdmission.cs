@@ -126,7 +126,7 @@ public partial class GameEngine
                 return Result(MortalJointRepairRawDisposition.Rejected, null, JointRepairAdmissionIssue("One exact homogeneous guaranteed treatment command is required."));
             var captured = pending?["jointRepairCheckpoint"] is not null
                 ? await MortalJointRepairCheckpoint.ReconstructAsync(_fs, lease, frame.SessionId, frame.RequestId, frame.Payload.ManifestPayloadHash, expectedTurn)
-                : await MortalJointRepairCheckpoint.CaptureAsync(_fs, lease, frame.SessionId, frame.RequestId, frame.Payload.ManifestPayloadHash, expectedTurn);
+                : await MortalJointRepairCheckpoint.CaptureInterfaceFirstAsync(_fs, lease, frame.SessionId, frame.RequestId, frame.Payload.ManifestPayloadHash, expectedTurn);
             if (!captured.IsValid || captured.Capture is not { } capture)
                 return Result(MortalJointRepairRawDisposition.Rejected, null,
                     captured.Issues.Select(MortalWoundOpportunityAdapter.PrivateSourceIssue).ToArray());

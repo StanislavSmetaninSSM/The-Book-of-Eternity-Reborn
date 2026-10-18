@@ -243,7 +243,7 @@ public partial class GameEngine
             {
                 if (RequiresFreshNarrativePayload(source))
                     issues.AddRange(await _validator.ValidateAcceptedTurnNarrativePayloadAsync());
-                issues.AddRange(await _validator.ValidateAcceptedTurnInterfacePayloadAsync());
+                issues.AddRange(await ReadMortalJointInterfaceAtGenericSlotAsync());
                 issues.AddRange(await _validator.ValidateAcceptedTurnReasoningAsync());
                 issues.AddRange(await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync());
                 issues.AddRange(await _validator.ValidateAcceptedTurnQteOfferAsync());
@@ -443,6 +443,8 @@ public partial class GameEngine
         }
         async Task BeforeDestructiveRefusalAsync()
         {
+            await using (var interfaceLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+                await RequireNoMortalJointInterfaceRestoreAsync(interfaceLease, blockSelectedMissing: true);
             if (_mortalJointRepairCanonicalRefresh is { } joint &&
                 (MatchesMortalJointRepairOutcomeFrame(activeSnapshotContext, expectedTurn) || MatchesMortalJointRepairFrame(activeSnapshotContext, expectedTurn)))
             {
@@ -479,6 +481,8 @@ public partial class GameEngine
                 var jointContinuation = await TryReadMortalJointCompletedContinuationAsync(source, activeSnapshotContext, expectedTurn);
                 if (jointContinuation.HasValue) return jointContinuation.Value;
             }
+            var resumedInterface = await TryResumeMortalJointInterfaceBeforeCoreAsync(source, activeSnapshotContext, expectedTurn);
+            if (resumedInterface.HasValue) return resumedInterface.Value;
             var result = await ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync(source, activeSnapshotContext, rollbackSnapshot,
                 expectedTurn, progressionControl, BeforeDestructiveRefusalAsync);
             if (result is not (AcceptedTurnValidationDisposition.Accepted or AcceptedTurnValidationDisposition.MortalJointRepairCompletionReady))
@@ -541,6 +545,7 @@ public partial class GameEngine
 
         while (true)
         {
+            _mortalJointInterfaceValidationIteration++;
             await EnsureClientOwnedSystemFilesHealthyAsync();
             var spiritualAdmission = SpiritualContinuationAdmission.Admitted;
             UpstreamAcceptedTurnValidation upstreamValidation;
@@ -2281,6 +2286,14 @@ public partial class GameEngine
         {
             if (activeSnapshotContext is null || !MatchesMortalJointRepairFrame(activeSnapshotContext, expectedTurn))
                 throw new InvalidDataException("Joint canonical refresh requires the exact validated original frame.");
+            var interfaceResult = await PrepareCurrentMortalJointInterfaceAsync(activeSnapshotContext);
+            if (interfaceResult?.HasErrors == true)
+            {
+                var held = new MortalJointRepairCanonicalRefresh(MortalJointRepairPublicationDisposition.PublicationUncertain,
+                    null, interfaceResult.Issues, Frame: activeSnapshotContext);
+                _mortalJointRepairCanonicalRefresh = held;
+                return new AcceptedTurnCanonicalRefreshResult(true, held.Issues, JointPublication: held);
+            }
             var joint = await PublishCurrentMortalJointRepairAsync(activeSnapshotContext, expectedTurn, snapshot);
             return new AcceptedTurnCanonicalRefreshResult(true, joint.Issues, joint.Plan, JointPublication: joint);
         }

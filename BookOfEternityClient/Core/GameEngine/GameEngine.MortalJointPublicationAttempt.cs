@@ -159,6 +159,7 @@ public partial class GameEngine
     private async Task CaptureCurrentHotCustodyAsync(MortalJointPublicationAttempt attempt,
         FileSystemManager.CanonicalWriteLease lease)
     {
+        await ConsumeCurrentMortalJointInterfaceAsync(lease, attempt);
         var read = _hotRepairReady;
         if (read is { Faulted: false, Status: "ConsumedReadyMatched", ReadyDeleteReturned: true, ReadyReleaseReturned: true })
         {
