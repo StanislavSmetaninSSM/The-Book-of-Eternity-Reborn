@@ -1,8 +1,8 @@
 {
-  "kind": "NI_IOBS_L01_PROCESS_BIRTH_FIXTURE_CORRECTION_WIP",
+  "kind": "NI_IOBS_L01_PROCESS_FIXTURE_SOURCE_ACCEPTED_ZERO3_PENDING",
   "sourceBase": "b31c0d78b526dd4196b088dcb6308a464375e43b",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
-  "status": "CORRECTED_CRASH5_PLUS_UNRUN15_SOURCE_PREP_NATIVE_HELD",
+  "status": "ACCEPTED_PROCESS_SOURCE_RETENTION37_PREPARATION_PENDING20_ACTUALS_HELD",
   "sourcePins": [
     {
       "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
@@ -794,8 +794,8 @@
   "ledger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-method-row-ledger-20261018.json",
     "sha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
-    "phase": "CURRENT_PROCESS_BIRTH_FIXTURE_AUTHORING_LEDGER_HASH_EXACT_PRIOR_LEDGER_CONTEXTS_HISTORICAL",
-    "currentRuntimePointer": "runtime/currentActualScopes describe current uncompiled process fixture; historical4c6dCurrentActualScopes and original45cc actualScopes retain old identities."
+    "phase": "CURRENT_PROCESS_FIXTURE_BUILD_ENTRY_SOURCE_INVENTORY_HASH_UNCHANGED_FROM_C4C0_AUTHORING",
+    "currentRuntimePointer": "sourceAcceptance is current process SOURCE; preparationRequired/runtime/currentActualScopes bind current uncompiled phase. Ledger authored-status text is its fixed pre-PREP source-inventory snapshot; prior45cc/4c6d contexts are historical."
   },
   "productDelta": [
     "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
@@ -820,7 +820,7 @@
     "BookOfEternityClient/game_master_daemon.ps1"
   ],
   "originalContractSourceContext": "Frozen447bc map/source ranges and accepted wholevertical report preserved unchanged; this current test packet does not rehash/replace historical contexts.",
-  "review": "Original seven fixture failures preserved; crash5 causal review qualifies an invalid exact-DateTime premise, not product RED. Current source/helper/retention37/derivative tools require independent delta review before fresh preparation or actuals.",
+  "review": "Independent ad402/e914/39ab and Root1ce8 accept minimal process fixture/selection/tools only for named ZERO3; retain37 original provenance, no new product/runtime qualification.",
   "firstCandidate": {
     "category": "fr063-joint-interface-lifecycle-order",
     "project": "integration",
@@ -942,7 +942,7 @@
       "status": "READ_ONLY_HISTORICAL_ARCHIVES_PRESERVED_NEW_PHASE_UNRUN"
     }
   ],
-  "next": "Minimal test-only kernel process identity correction; no production, category or selector change. No build/native until named releases.",
+  "next": "Root resolves this clean recovered SOURCE metadata HEAD and names catalog-only fresh BOTH/discovery. No automatic whole/pending plans, actuals or retry.",
   "sourcePinBindingMeaning": "Active authored-source hashes including necessary new helper definitions, not compiled qualification. Old44/9DLL/preparation/first RED context is retained separately. Verification tools are frozen historical source and cannot be reused unchanged for current bindings.",
   "firstActual": {
     "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
@@ -1140,7 +1140,7 @@
   },
   "currentImplementation": {
     "sourceBase": "b31c0d78b526dd4196b088dcb6308a464375e43b",
-    "status": "PRODUCTION_UNCHANGED_NATIVE_FIXTURE_BIRTH_CORRECTION_SOURCE_REVIEW_PENDING",
+    "status": "PRODUCTION_UNCHANGED_PROCESS_FIXTURE_SOURCE_ACCEPTED_FRESH_ZERO3_PENDING",
     "integrated": [
       "private FIRST2 factory and post-install/readback/release/runtime-refresh one-shot arming",
       "outside-Lp whole I preparation, Prepared then I+Published, release-before-transient-delivery and ErrorPrepared Hold",
@@ -1152,9 +1152,9 @@
       "Independent private NI current-Main matching-Ready/source/delete/release observation; actual Stage coordinates retained without reviving its ConsoleOwner or changing HOT availability."
     ],
     "open": [
-      "Independent changed-scope SOURCE/FIXTURE/SELECTION/TOOLS and retained37 dependency equivalence",
-      "Separately named fresh BOTH/catalog, whole57 and pending20 PlanOnly ZERO, fresh inventory/cleanup/raw recovery",
-      "Separately named corrected crash5 +unrun15 actuals and whole independent EVIDENCE; broader holds unchanged"
+      "Root names catalog-only ZERO on exact recovered saved acceptance; whole and pending plans separately named after native0 readback.",
+      "Fresh ZERO3 archived/recovered/independently qualified before named corrected crash5 and remaining15 actuals.",
+      "Whole current EVIDENCE and final checkpoint remain open; retained37 stay old actual/compiled provenance, broader holds unchanged."
     ],
     "draftReviewCorrections": [
       "Current selected marker with changed/unknown parent version refuses; tuple mismatch only permits new ordinary frame when official original covers exact prior marker bytes.",
@@ -1335,45 +1335,40 @@
     "status": "EXACT114DELTA_ORIGINAL_STOP_COPIED_NEW_PROCESS_FIXTURE_WIP_PUBLICATION_PENDING"
   },
   "sourceAcceptance": {
-    "phase": "CORRECTED_WARNING_ABSENT_FIXTURE_DELTA",
-    "source": "ACCEPT_MINIMAL_FIXTURE_SELECTION_TOOLS",
-    "retention": "RETAIN26_AT_ORIGINAL_ACTUAL_COMPILED_PROVENANCE",
-    "runtime": "CURRENT_CORRECTED2_AND_REMAINING29_NOT_COMPILED_OR_EXECUTED",
-    "carrier": "ca2b716e72908488a6a7555c99069150500c2513",
+    "phase": "CURRENT_PROCESS_BIRTH_FIXTURE_SOURCE",
+    "carrier": "c4c0c62fbf37d2b0699b72e95794e4e3cef50535",
+    "verdict": "ACCEPT_SOURCE_FIXTURE_SELECTION_TOOLS_FOR_ZERO3_ONLY",
+    "retention": "RETAIN37_ORIGINAL_PROVENANCE_26_COMPILED45CC_11_COMPILED4C6D",
     "artifacts": [
       {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-source-independent-review-ca2b716e-20261018.md",
-        "sha256": "d804e9b9a2898e9f0811eafd63ef2575933452860d792f4cad95c0a3e5292b9c"
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-source-independent-review-c4c0c62f-20261018.md",
+        "sha256": "ad402861e319e3ca6a9659d28b63985c96530e9b2b4c54b7f0f697a890cd3755"
       },
       {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-source-independent-review-ca2b716e-20261018.json",
-        "sha256": "424762b5311a52b2b31e1eff5c9849e3aad3f74d223c08bab4f56ef7c56b5497"
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-source-independent-review-c4c0c62f-20261018.json",
+        "sha256": "e914989749a04938b5321f12a398f1fb6a6d994714edb1a0031c893d84f8f7d4"
       },
       {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-source-independent-check-ca2b716e-20261018.json",
-        "sha256": "d8337a63f75d222c42dd26314bcf595425cdd7848ad021ba24ef83fd1c6d4c80"
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-source-independent-check-c4c0c62f-20261018.json",
+        "sha256": "39ab124f536d888f18e68efaf465b599fb2b415741b084d62e23d27461c585d0"
       },
       {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-intake-source-acceptance-zero-release-ca2b716e-20261018.json",
-        "sha256": "594fdec64777213c735bb2c57d05f402325aae71257b270c0809acdeb2763d04"
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-process-source-acceptance-zero-release-c4c0c62f-20261018.json",
+        "sha256": "1ce81983a2c32f859b43f45e460edafd8237e74a7609897d88d7f86c291222ba"
       },
       {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-fixture-source-check-bd799b19-20261018.json",
-        "sha256": "2659d60168e1b658e3d5543467eeebcd28902e407dc7fc96c631e769ce3ca86e"
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-fixture-delta-github-c4c0c62f-20261018.json",
+        "sha256": "c30cf0c3667abedeb0e0f0ed3a76fcb1c262e95a98814818606e1b1d9524f635"
       },
       {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-optional-reader-delta-github-ca2b716e-20261018.json",
-        "sha256": "53f1be64b87ed1cd7b4a3aba1126ecec007138d49bfa9d2d7e8c6fc4e63ad9ce"
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-ca2b716e-20261017.json",
-        "sha256": "add7472d9cefa9accce9f16e65280c778d8845dc2825a93f8be27102708edecf"
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-c4c0c62f-20261017.json",
+        "sha256": "e790ea6cdc11ca567fa809c5fcf1e43bc8bec83f28779b21fb31d91b2a170386"
       }
     ],
     "sourcePinCount": 98,
-    "sourcePinDigest": "1315ce330e8767b6c6b64b62c686f3df41506114fcde12076ab58799db1dda1f",
-    "ledgerSha256": "7ac13b5d22d94a8a953590071e4c824b5e566486033de059966ed453b6d88509",
-    "limits": "Only named ZERO preparation eligibility; no native release or production change. S09 closed in source only; L02 phase wording reconciled without ledger/source edits."
+    "pinDigest": "1f11670a1e063bed010e2e03585fb6e8b5ad4da64157a5ce877317475d3c7bc4",
+    "ledgerSha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
+    "runtime": "Only separately named ZERO3 eligibility; no actual or new build evidence."
   },
   "preparationCurrent": {
     "status": "ACCEPT_FRESH_ZERO3_FOR_PENDING31_INDEPENDENT_AND_ROOT",
@@ -9999,6 +9994,76 @@
     "fullRaw": "Read exact cut bytes then emit byte length/SHA256/base64 before parsing/PID/nonce/birth assertions; deleted cut file remains recoverable from original output.",
     "unchanged": "Owned Process/nonce/child-only TMPDIR/exit73/EOF/join/container containment/strict or unresolved cleanup and all original crash/resume/bytes/fallback/diagnostic/mechanical/retention oracles preserved. No production/category/selector/GM contract change.",
     "retention37": "Only crash/integrity shared native fixture changes. No dependency from retained37 to this helper; source inverse/unchanged method and production tests must be independently confirmed.",
-    "reference": "Official .NET8 Process.Linux StartTimeCore uses boot-time conversion cached per process; explanatory primary-source reference, not exact loaded-runtime mechanism proof: https://raw.githubusercontent.com/dotnet/runtime/v8.0.0/src/libraries/System.Diagnostics.Process/src/System/Diagnostics/Process.Linux.cs"
+    "reference": "Official .NET8 Process.Linux StartTimeCore uses boot-time conversion cached per process; explanatory primary-source reference, not exact loaded-runtime mechanism proof: https://raw.githubusercontent.com/dotnet/runtime/v8.0.0/src/libraries/System.Diagnostics.Process/src/System/Diagnostics/Process.Linux.cs",
+    "sourceAcceptance": {
+      "status": "INDEPENDENT_SOURCE_ACCEPTED_RETENTION37",
+      "artifacts": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-source-independent-review-c4c0c62f-20261018.md",
+          "sha256": "ad402861e319e3ca6a9659d28b63985c96530e9b2b4c54b7f0f697a890cd3755"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-source-independent-review-c4c0c62f-20261018.json",
+          "sha256": "e914989749a04938b5321f12a398f1fb6a6d994714edb1a0031c893d84f8f7d4"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-source-independent-check-c4c0c62f-20261018.json",
+          "sha256": "39ab124f536d888f18e68efaf465b599fb2b415741b084d62e23d27461c585d0"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-process-source-acceptance-zero-release-c4c0c62f-20261018.json",
+          "sha256": "1ce81983a2c32f859b43f45e460edafd8237e74a7609897d88d7f86c291222ba"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-fixture-delta-github-c4c0c62f-20261018.json",
+          "sha256": "c30cf0c3667abedeb0e0f0ed3a76fcb1c262e95a98814818606e1b1d9524f635"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-c4c0c62f-20261017.json",
+          "sha256": "e790ea6cdc11ca567fa809c5fcf1e43bc8bec83f28779b21fb31d91b2a170386"
+        }
+      ]
+    }
+  },
+  "historicalIntakeSourceAcceptanceAtCa2b": {
+    "phase": "CORRECTED_WARNING_ABSENT_FIXTURE_DELTA",
+    "source": "ACCEPT_MINIMAL_FIXTURE_SELECTION_TOOLS",
+    "retention": "RETAIN26_AT_ORIGINAL_ACTUAL_COMPILED_PROVENANCE",
+    "runtime": "CURRENT_CORRECTED2_AND_REMAINING29_NOT_COMPILED_OR_EXECUTED",
+    "carrier": "ca2b716e72908488a6a7555c99069150500c2513",
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-source-independent-review-ca2b716e-20261018.md",
+        "sha256": "d804e9b9a2898e9f0811eafd63ef2575933452860d792f4cad95c0a3e5292b9c"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-source-independent-review-ca2b716e-20261018.json",
+        "sha256": "424762b5311a52b2b31e1eff5c9849e3aad3f74d223c08bab4f56ef7c56b5497"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-source-independent-check-ca2b716e-20261018.json",
+        "sha256": "d8337a63f75d222c42dd26314bcf595425cdd7848ad021ba24ef83fd1c6d4c80"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-intake-source-acceptance-zero-release-ca2b716e-20261018.json",
+        "sha256": "594fdec64777213c735bb2c57d05f402325aae71257b270c0809acdeb2763d04"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-fixture-source-check-bd799b19-20261018.json",
+        "sha256": "2659d60168e1b658e3d5543467eeebcd28902e407dc7fc96c631e769ce3ca86e"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-optional-reader-delta-github-ca2b716e-20261018.json",
+        "sha256": "53f1be64b87ed1cd7b4a3aba1126ecec007138d49bfa9d2d7e8c6fc4e63ad9ce"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-ca2b716e-20261017.json",
+        "sha256": "add7472d9cefa9accce9f16e65280c778d8845dc2825a93f8be27102708edecf"
+      }
+    ],
+    "sourcePinCount": 98,
+    "sourcePinDigest": "1315ce330e8767b6c6b64b62c686f3df41506114fcde12076ab58799db1dda1f",
+    "ledgerSha256": "7ac13b5d22d94a8a953590071e4c824b5e566486033de059966ed453b6d88509",
+    "limits": "Only named ZERO preparation eligibility; no native release or production change. S09 closed in source only; L02 phase wording reconciled without ledger/source edits."
   }
 }

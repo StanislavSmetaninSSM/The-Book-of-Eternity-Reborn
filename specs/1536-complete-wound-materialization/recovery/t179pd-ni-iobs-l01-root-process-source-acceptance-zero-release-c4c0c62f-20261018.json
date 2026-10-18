@@ -1,0 +1,42 @@
+{
+  "kind": "ROOT_PROCESS_FIXTURE_SOURCE_RETENTION_ACCEPTANCE_NAMED_ZERO_RELEASE",
+  "createdUtc": "2026-10-18T08:55:19.016893+00:00",
+  "carrier": "c4c0c62fbf37d2b0699b72e95794e4e3cef50535",
+  "sourceVerdict": "ACCEPT_SOURCE_FIXTURE_SELECTION_TOOLS_FOR_ZERO3_ONLY",
+  "retention": "RETAIN37_ORIGINAL_PROVENANCE_26_COMPILED45CC_11_COMPILED4C6D",
+  "independentReview": [
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-process-source-independent-review-c4c0c62f-20261018.md",
+      "sha256": "ad402861e319e3ca6a9659d28b63985c96530e9b2b4c54b7f0f697a890cd3755",
+      "bytes": 2769
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-process-source-independent-review-c4c0c62f-20261018.json",
+      "sha256": "e914989749a04938b5321f12a398f1fb6a6d994714edb1a0031c893d84f8f7d4",
+      "bytes": 5500
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-process-source-independent-check-c4c0c62f-20261018.json",
+      "sha256": "39ab124f536d888f18e68efaf465b599fb2b415741b084d62e23d27461c585d0",
+      "bytes": 23368
+    }
+  ],
+  "sourcePinCount": 98,
+  "sourcePinDigest": "1f11670a1e063bed010e2e03585fb6e8b5ad4da64157a5ce877317475d3c7bc4",
+  "ledgerSha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
+  "recovery": "/tmp/t179pd3d-root-recovery-composition-c4c0c62f-20261017.json",
+  "remoteVerified": "c4c0c62fbf37d2b0699b72e95794e4e3cef50535",
+  "mainUnchanged": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4",
+  "release": {
+    "mode": "catalog",
+    "label": "t179pd-ni-iobs-l01-process-prep-first-catalog-current",
+    "tool": "/tmp/t179pd-ni-iobs-l01-process-preparation-run.py",
+    "sha256": "0968f998c95983eb46a91ea2f0559374a2019ad0373e953bce525ccfa4b8a70e",
+    "activation": "Next clean source-acceptance metadata carrier after push/exact Root recovery and separately named HEAD message.",
+    "scope": "Fresh BOTH/catalog discovery, ZERO tests. Preserve original native/utility outcome; unexpected freeze. No automatic plans/actual."
+  },
+  "next": "Root reads catalog then separately names whole16/33/57 and pending7/12/20 PlanOnly-NoBuild ZERO against same catalog. Archive all3 originals once, save/recover prep raw, independent PREP before corrected crash5 or other actual.",
+  "history": "Original2intakeFAIL+5crashFAIL unchanged. Production/TestSupport/catalog/selectors and null-cut retained dependencies unchanged. No old positive rerun or assembly byte-equality claim.",
+  "runtime": "PENDING20_HELD_UNQUALIFIED_NO_ACTUAL_RELEASE",
+  "limits": "No fullNI/HOT/platform/Windows/A3 claim."
+}

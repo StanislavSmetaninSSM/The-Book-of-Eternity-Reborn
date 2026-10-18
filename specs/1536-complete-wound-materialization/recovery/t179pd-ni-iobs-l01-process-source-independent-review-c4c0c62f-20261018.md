@@ -1,0 +1,13 @@
+# Targeted process-identity fixture review — 2026-10-18
+
+**ACCEPT_SOURCE_FIXTURE_SELECTION_TOOLS_FOR_ZERO3_ONLY.** No material finding. Candidate `c4c0c62fbf37d2b0699b72e95794e4e3cef50535`, parent `b31c0d78b526dd4196b088dcb6308a464375e43b`.
+
+The one changed C# fixture reconstructs the parent byte-for-byte when the reviewed additions are reversed. Exact Linux PID/start-tick checks replace the unsupported cross-process UTC equality; UTC remains diagnostic. Parent and child observe their identities independently. Nonce, exit, EOF, join, containment, cleanup and existing semantic assertions remain. Full original cut bytes, length, SHA256 and base64 are emitted before parsing and identity assertions; the resume result gains an exact birth-tick check too.
+
+Production, catalog, selections, TestSupport and retained test bodies are unchanged. The shared crash observer still exits through its unchanged null-cut guard for retained scopes; its changed branches and native wrapper affect crash5/integrity4. **Retain 37 qualified cases at their original provenance:** 26 compiled `45cc99ab788513ca7a963cacb31c9445876adb6c`, plus repaired2/refusal9 compiled `4c6d8334b441193cbda6de539347bcf7998d4db6`. This is source-equivalence retention, not execution or assembly-byte equality on the new build. The five crash failures and two earlier intake failures remain historical, unqualified executions.
+
+The unchanged whole inventory is 16 owners / 33 methods / 57 finite cases. The pending subset is seven owners / 12 methods / 20 cases: corrected crash5 and fifteen previously unrun cases. Both derivative controllers exclude the retained 37, bind fresh source/ledger and complete managed output inventories, preserve original outcomes and exact temporary selectors, and require separate named commands. The existing archiver is unchanged. Current 98 source pins, their digest, ledger pointer, exact tool copies and all 20 recovered files covering 16 changed paths match the saved carrier.
+
+Only three separately named ZERO commands are eligible next: fresh BOTH/catalog, whole PlanOnly-NoBuild, and pending PlanOnly-NoBuild. **PREP and actual execution remain held** until fresh records, discovery, binary/file-set bindings, cleanup and the recovered preparation carrier are independently qualified. No command was run by this review. No new crash/resume, Windows, whole NI/HOT or full-wounds qualification follows.
+
+Supporting check: `/tmp/t179pd-ni-iobs-l01-process-source-independent-check-c4c0c62f-20261018.json` (`39ab124f536d888f18e68efaf465b599fb2b415741b084d62e23d27461c585d0`). The checker’s initial literal-selector count was corrected for the existing eight-method unit wildcard; this was a read-only reviewer utility issue, with no source or native change.
