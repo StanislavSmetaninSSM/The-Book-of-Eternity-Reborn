@@ -39,8 +39,9 @@ this block does not implement/release snapshot collection.
   enable only for diagnostic=true + resume role. Ordinary original/crash/current
   non-diagnostic paths retain ReadToEndAsync. Instantiate only after live independent
   identity; retain stdout task, original WaitForExit/220s, finally/native/join/EOF,
-  primary exceptions and all assertions. Expose delivery through a parent-owned
-  helper variable/API usable by a future separately reviewed observer. Optional
+  primary exceptions and all assertions. Expose LIVE Reader and health through a
+  parent-owned helper variable/API before waiting for child exit, usable by a future
+  separately reviewed observer. Optional
   delivery health/minimal events in diagnostic output must be guarded; no Assert
   on observer state changes the game/native result.
 - External task-local synthetic source/controller under recovery/l01-delivery-d01/:
@@ -58,19 +59,29 @@ this block does not implement/release snapshot collection.
 ## Delivery and observation semantics
 
 One stdout reader; observer publication uses TryWrite only, never await/callback/I/O
-on the raw-drain path. Fixed queue capacity64 and observer line limit8192 chars;
+on the raw-drain path. Channel: FullMode=Wait, AllowSynchronousContinuations=false,
+SingleWriter=true/SingleReader=true; TryWrite(false) is known local loss, never silent
+drop-mode success. Fixed queue capacity64 and observer line limit8192 chars;
 raw stdout is still retained whole, as before. Complete frames have ordinal and
 character offset, parent monotonic receive time, original source fields and minimal
 stage/detail (only known control detail; other detail may be hashed). No reordering.
 JSON parse/framing/publication errors are observer health, caught separately from
-raw reader errors. A raw I/O error remains the original drain failure. Fatal process/
+raw reader errors. Construction/publication/health-serialization errors must be
+contained: construction failure falls back to the sole original raw reader before
+any read; observer processing failure latches health and continues raw draining.
+No observer summary exception may escape native finalization. A raw I/O error
+remains the original drain failure. Sticky health/gap/EOF are available independently
+of the possibly full Channel; future admission must recheck health even if a
+cancellation marker was dropped. Fatal process/
 resource failure cannot be promised survivable; no result may claim otherwise.
 
 - Exact PID/starttick/root/nonce/cut mismatch: REJECTED_IDENTITY, never trigger.
 - Channel overflow: known locally dropped frames/ordinals, health gap; never block.
 - Oversize/incomplete EOF/malformed candidate: explicit framing/parse gap, raw retained.
 - Same-identity duplicate or regressing child elapsed: DUPLICATE/STALE_ORDER,
-  retained/labeled, never fresh trigger. Track bounded state; exhausted tracking
+  retained/labeled, never fresh trigger. Equal ElapsedMilliseconds on different
+  events is legitimate; duplicate uses exact bounded fingerprint, not millisecond
+  equality. Track bounded state; exhausted tracking
   must itself become an uncertainty, not silently stop detection.
 - Parent enqueue→dequeue residence can be measured monotonically and labeled DELAYED
   against a named local threshold. Source→receive latency is UNKNOWN: child relative
@@ -87,10 +98,12 @@ resource failure cannot be promised survivable; no result may claim otherwise.
 ## Execution tasks and verification gates
 
 1. Save/push/recover this candidate, obtain independent PLAN before implementation.
-2. Establish a genuine baseline synthetic witness: owned child flushes custody then
-   waits for private STOP; old ReadToEndAsync has no consumable event before child
-   completion. Record the bounded expected delivery failure as helper baseline only,
-   not product RED or a gameplay failure. Publish source/preparation first.
+2. Before helper implementation, establish a source-bound in-memory async TextReader/
+   EOF witness: a flushed logical custody line is available while EOF is held, but
+   old ReadToEndAsync has no consumable event until EOF. Record the expected delivery
+   failure as helper baseline only, not product RED/gameplay. No real child/attach/
+   diagnostic API in this baseline. All genuine native0/native7 children belong only
+   to the finite post-SOURCE/PREP selection in task5.
 3. Implement smallest helper and diagnostic-only wiring. Synthetic checks exercise
    exact decoded stdout across chunk/Unicode/CRLF/trailing boundaries, real live
    delivery before STOP/exit, identity rejects, duplicate/time regression, overflow,
@@ -111,7 +124,10 @@ resource failure cannot be promised survivable; no result may claim otherwise.
    synthetic data. Independent EVIDENCE, final exactremote/recovery/readback.
 6. Deliver reviewed future single-game-run plan only, not its execution. Include
    exact owned diagnostic cut1, source/build identities, event health/freshness gates,
-   single60s timer after custody receipt, cancellation on accepted/late/exit/gap/stale,
+   single60s timer after exact finalization-return/
+   MortalJointCustodyCaptureCompletedBeforePreparation receipt; cancellation already
+   on finalization-enter/AcceptedOutcomeValidatedBeforeMaterialization, its return,
+   late-first-return/exit or health gap/stale/delay/unknown,
    identity revalidation, at most one normal+crashreport request and bounded owned
    cleanup. Do not pause/reset/extend220/900. Raw core stays private; publish only
    inspected minimal stack metadata/source mapping, health and native outcome.
