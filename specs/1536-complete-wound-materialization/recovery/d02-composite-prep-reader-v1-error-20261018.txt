@@ -1,0 +1,2 @@
+ValueError: could not convert string to float: '/tmp/1536-cloud-tools/dotnet/dotne'
+check_d02_composite_prep.py line74: reader used command[5], the executable; timeout duration is command[4].

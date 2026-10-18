@@ -1,7 +1,7 @@
 {
   "kind": "D02_COMPOSITE_CONTINUATION_CONTROL",
   "source": {
-    "status": "SOURCE_ACCEPTED_ZERO_PERMITS_CONSUMED_PREP_PENDING",
+    "status": "SOURCE_ACCEPTED_ZERO_PERMITS_CONSUMED_PREP_ACCEPTED",
     "candidate": "5e2a3c5a612a96080f39302314aa6f3c60528976",
     "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-import-corrected-source-independent-review-20261018.json",
     "reviewSha256": "b9844da3f8e9e8480a47b01457d34d03e7591629f10a411bf7f82098e54479ca",
@@ -25,12 +25,21 @@
     }
   },
   "synthetic": {
-    "status": "HOLD_PREP_REQUIRED"
+    "status": "PREP_ACCEPTED_SYNTHETIC_0_7_ONCE",
+    "candidate": "74105ae6165259051810898e00a6466d4c2bc53e",
+    "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-composite-prep-independent-review-20261018.json",
+    "reviewSha256": "8fe784c66f294082180087b3cd366d4a63b0bb402f65fc88acefae0401e1f291",
+    "prepRecords": {
+      "catalog": "6b80d4932680e8a18e427dd66af326a2a609a830c94425c7be51f7e5d46412d4",
+      "plan": "eb1a7764c0d5e04382ab6c24d429977e6d83c13cd7dfecc4dcd9e2d764525de9",
+      "prepare": "72aa1ee64d8d4227b0e4e5dba5ab99d08ff2bcd7306b499c1776c3639b2aac57"
+    }
   },
   "gameplayRelease": "NONE",
   "crash5Release": "NONE",
   "originalCatalog124Replaced": false,
   "authority": "Latest explicit user delegation continues D01 PREP and own synthetic0/7 after independent reviews without extra user approval; STOP before gameplay snapshot.",
   "accountingPattern": "Existing pinned M01/S01 FINALIZE for known-native record/summary publication; existing capture_native where native execution/output-close handling is needed. No new framework or accounting variant.",
-  "prepEvidence": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-composite-prep-20261018.json"
+  "prepEvidence": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-composite-prep-20261018.json",
+  "prepStatus": "ACCEPTED_COMPOSITE_PER_PROJECT_PROVENANCE_ONLY"
 }

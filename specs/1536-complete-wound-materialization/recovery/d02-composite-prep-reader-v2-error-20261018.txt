@@ -1,0 +1,2 @@
+KeyError: "There is no item named 'staged-metadata/integration/BookOfEternityClient.IntegrationTests.csproj.nuget.g.props' in the archive"
+Read-only reader line104 assumed a ZIP name; corrected reader resolves exact indexed originalPath to member.

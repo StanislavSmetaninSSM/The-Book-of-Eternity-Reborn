@@ -2,7 +2,7 @@
 
 - [x] [Minimal reuse plan](design/l01-delivery-composite-prep-plan-20261018.md), read-only independent consultation and frozen separate integration460/unit439 closures; original124 unchanged, per-project provenance explicit. Four pure staging safety checks, no native work.
 - [x] Independent whole bounded controller/bindings SOURCE: original60checks/HOLD retained, minimal existingFINALIZE correction accepted5efddae5/19focused/12fakePASS. SOURCE-only acceptance must be pushed/recovered before ZERO; no production/assertion/149pin change, syntheticHOLD.
-- [ ] FIRST property/import binding + fresh composite catalog ZERO/NoBuild, exact diagnostic PlanOnly1/1/1 and direct Live60s preparation; independent PREP and durable checkpoint.
+- [x] FIRST corrected property/import binding + composite catalog0/42.663s (810/11802), PlanOnly0/19.166s exact1/1/1 ZERO, directLivecompile0/10.729s. [Independent PREP](recovery/l01-delivery-d02-composite-prep-independent-review-20261018.md) accepts74105ae6/122checks/findings[],50raw/fouroutputs; one original synthetic0/7 only after acceptance recovery. No rebuild/restore; firstfailure/nativeprovenance preserved.
 - [ ] Only after PREP acceptance, FIRST genuine own synthetic0/7 with unchanged D01 assertions, separate native/observer outcomes, original artifacts and independent EVIDENCE.
 - [ ] Final saved one-game-snapshot plan; STOP before gameplay/crash5. Windows/CI/budgets/broader holds unchanged.
 

@@ -67,7 +67,7 @@ B01's hash-bound read-only tool census. No general instrumentation framework.
   acceptance with exact controller/bindings hashes. Recheck149pins and172installed
   inputs, exact helper hashes before imports, source-tree equivalence, available
   retained roots and no active exact tool match before each native phase.
-- [ ] FIRST `catalog`: consume unused phase/root identity, copy exact separate
+- [x] FIRST `catalog`: consume unused phase/root identity, copy exact separate
   closures/metadata, property-only queries/preprocessed imports, then new catalog
   ZERO/NoBuild. Preserve
   one aggregate600s deadline for this composite attempt; GNU timeout bounds each
@@ -75,17 +75,27 @@ B01's hash-bound read-only tool census. No general instrumentation framework.
   retains its ordinary10min protective bound. Capture raw commands/logs/native
   statuses, actual result root/audit, evaluated paths and all before/after hashes.
   No compiler/restore/test method/fixture/game/diagnostic invocation.
-- [ ] FIRST `plan`: require successful exact catalog and unchanged staged files;
+- [x] FIRST `plan`: require successful exact catalog and unchanged staged files;
   same ArtifactsPath, exact diagnostic category, PlanOnly/NoBuild. Require exact
   one method/one case/one descriptor and zero actual. Retain ordinary runner budget;
   new external600s cap is stricter, never a budget increase.
-- [ ] FIRST `prepare`: unchanged D01 Live+helper direct csc/net8references and
+- [x] FIRST `prepare`: unchanged D01 Live+helper direct csc/net8references and
   runtimeconfig, ordinary60s compilation bound. Native0 alone is preparation;
   preserve DLL/PDB/runtimeconfig/response-file identities before runtime release.
-- [ ] Save all first raw records/logs/audit/bindings, push/readback/recover and
+- [x] Save all first raw records/logs/audit/bindings, push/readback/recover and
   independent PREP. Require per-project compilation provenance and exact staged
   output bindings; original catalog124 is still a failure. No synthetic until
   saved PREP acceptance and one-shot synthetic0/7 admission.
+
+Corrected composite PREP actual3a36b1f1 is independently accepted at74105ae6:
+122read-only checks plus exact normal-file set/six-command-record comparisons,
+findings[]. Catalog0/42.663s, PlanOnly0/19.166s, direct compiler0/10.729s;50raw
+chains/four compiled outputs exact. Imports129/127, catalog810/11802, singleton
+1/1/1 ZERO; separate integrationd53/unitd3/Live3a provenance. Root verified all
+report/check hashes and both reader corrections (argv index and indexed ZIP-member
+addressing only; no semantic assertion/source/native changes). Nine report/reader
+history artifacts are preserved byte-exact. ZERO permits stay consumed; only after
+this PREP acceptance is saved/recovered may one original synthetic0/7 run proceed.
 - [ ] FIRST `synthetic`: call unchanged D01 actual_case sequentially for0 then7
   in separate disposable fixtures. Keep original PID+starttick/nonce/root/cut,
   one target+reader per case, live pre-EOF pulse/raw pending/health, exact bytes,
