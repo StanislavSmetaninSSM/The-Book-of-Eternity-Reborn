@@ -1,0 +1,13 @@
+Corrected close2 EVIDENCE accepted for the two original methods only: native0, 2/2 PASS, complete descriptor, no timeout; 468.043 seconds overall and 445.339 seconds within the unchanged 900-second category budget. Carrier `23362e5701daf6f01aa989f7fde070242a9167d3`, actual `b5d9bece`, compiled `cf52201c`.
+
+The actual I-owning-close case preserves exact Published/pending/I bytes, expires the owning lease and ambient capabilities, delivers no fresh DATA or common effects, and now retains the original IOException diagnostic. Its previously unreached direct restore check executes with the actual Stage backup/frame, throws the publication hold and preserves all 222 captured canonical paths. The optional outer wrapper is not invoked for this scenario.
+
+The outer-finalization companion preserves the original exception in the typed completed-outcome continuation while retaining delivered DATA and turn43. One I cohort precedes common publication; child3 contains the exact Published record. Full create+treat, energy2→0, health5→2, canonical validation, exact story suffix, zero progression and actual late/idle inert-repeat assertions pass. These methods do not execute a separate cold child or dedicated current-DATA take/late-refusal scenarios.
+
+Independent checks match all 11 original gzip/raw chains, 981 raw-image length/hash checks and 22 embedded-image hashes; unchanged 98 source pins, nine DLL copies and complete 1575-file output set; and all 20 recovered carrier paths including Git blobs/modes. Both owned fixture roots were removed and native cleanup succeeded. Accepted v2 before/after censuses each contain 41 resolved entries and no active/unknown task processes or roots. The after snapshot starts 33.042601 seconds after recorded completion: dated boundary evidence only, with no instantaneous/continuous absence or reconstructed-gap claim. Parent reports no intervening actual or intervention.
+
+Saving this acceptance adds two distinct cases to retained40, giving 42/57 qualified targets at their own provenance. Original close2 RED, old seven fixture failures and lost corrected-crash UNKNOWN remain immutable. No old-case replay or cross-build equivalence is claimed.
+
+No close2 finding. The separately reported races2 native1 keeps all further actual execution frozen; this verdict does not release it or qualify its passing sibling. FullNI/HOT/F1/M3/T197 and A3 holds remain.
+
+Evidence/check details: `t179pd-ni-iobs-l01-close2-corrected-independent-check-23362e57-20261018.json` (SHA256 `c607064cc251cfd34711f76b68ad5a8761a86a3f31534d63cc668e952341d492`) and `check_l01_close2_corrected.py`. No build/test/observer execution, process intervention or repository write was performed.

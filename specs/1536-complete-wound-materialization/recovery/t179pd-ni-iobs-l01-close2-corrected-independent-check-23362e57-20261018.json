@@ -1,0 +1,225 @@
+{
+  "kind": "INDEPENDENT_CORRECTED_CLOSE2_EVIDENCE_CHECK",
+  "checkedUtc": "2026-10-18T11:20:39.236313+00:00",
+  "carrier": "23362e5701daf6f01aa989f7fde070242a9167d3",
+  "actualSource": "b5d9becea7e1e802dc362dfab78791f25e0889d3",
+  "compiledSource": "cf52201ca165d24c971018251ef9723a8e493384",
+  "recordSha256": "d8ed64a23966ba4150f8c6438714ab43332bc19c1f781625575c77d4231e6d37",
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-corrected-813f1057-files-20261018/archive.json",
+    "sha256": "66862a2d5556dc5245eff0f4fa0dcd2b75d4012ae43d67db6a8a4dd24fbbfdc8",
+    "rawChains": 11,
+    "rawBytes": 15826210,
+    "completeOriginalCoverage": true,
+    "originalStoredIndependentRestoreBytesMatched": true
+  },
+  "sourcePins": 98,
+  "sourcePinDigest": "b29c971342ee772b13cd123a954d7afa8937e1f50a7e5f4c4c14403e4de4c347",
+  "tests": {
+    "Total": 2,
+    "Executed": 2,
+    "Passed": 2,
+    "Failed": 0
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 2,
+    "CompletedCases": 2,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "nativeExit": 0,
+  "wallSeconds": 468.0428018350003,
+  "categorySeconds": 445.3386172,
+  "categoryBudgetSeconds": 900,
+  "noTimeout": true,
+  "noBuild": true,
+  "cases": [
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LaterOuterFinalizationDoesNotUnemitCommittedInterfaceOrReplay",
+      "testId": "01e54cdc-9a26-40ef-4d8b-b761119aaa96",
+      "outcome": "Passed",
+      "durationSeconds": 383.8163515,
+      "diagnosticRows": 46,
+      "boundaries": {
+        "fr063_guaranteed_native_pre_original_npc_shape": 1,
+        "qte_story_actual_client_append": 1,
+        "qte_story_actual_engine_result": 1,
+        "qte_physical_actual_occurrence": 1,
+        "fr063_joint_actual_prior42_inactive_tail": 1,
+        "fr063_joint_original_progression_reader_before_owner": 1,
+        "fr063_joint_signed_original_schedule_before_owner": 1,
+        "fr063_joint_natural_stage43_image_before_assert": 19,
+        "fr063_joint_original_inventory_structural_absence_before_assert": 2,
+        "fr063_confirmed_claim_inspection": 1,
+        "fr063_joint_completion_actual_prerequisites": 1,
+        "iobs_actual_public_correction_before_ready": 1,
+        "iobs_actual_result_commit": 2,
+        "iobs_actual_committed_member": 3,
+        "iobs_actual_completed_capture": 1,
+        "iobs_actual_outer_finalization_cut": 1,
+        "fr063_joint_in_memory_owner_snapshot_before_filesystem": 1,
+        "fr063_joint_completion_actual_owner_outcome": 1,
+        "iobs_actual_outer_finalization_retained": 1,
+        "fr063_joint_complete_union": 1,
+        "fr063_joint_progression_phase_report_arithmetic": 1,
+        "fr063_joint_completion_inert_repeat": 1,
+        "iobs_ordering_original_outcome": 1
+      },
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-fb7c528b2f054da8a2ebeaf40617f9cc",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceOwningCloseRetainsPublishedButCannotDeliverFreshResult",
+      "testId": "97479f69-7779-78be-9926-f8a61cae2e78",
+      "outcome": "Passed",
+      "durationSeconds": 50.8272275,
+      "diagnosticRows": 40,
+      "boundaries": {
+        "fr063_guaranteed_native_pre_original_npc_shape": 1,
+        "qte_story_actual_client_append": 1,
+        "qte_story_actual_engine_result": 1,
+        "qte_physical_actual_occurrence": 1,
+        "fr063_joint_actual_prior42_inactive_tail": 1,
+        "fr063_joint_original_progression_reader_before_owner": 1,
+        "fr063_joint_signed_original_schedule_before_owner": 1,
+        "fr063_joint_natural_stage43_image_before_assert": 19,
+        "fr063_joint_original_inventory_structural_absence_before_assert": 2,
+        "fr063_confirmed_claim_inspection": 1,
+        "fr063_joint_completion_actual_prerequisites": 1,
+        "iobs_actual_public_correction_before_ready": 1,
+        "iobs_actual_result_commit": 2,
+        "iobs_actual_committed_member": 1,
+        "iobs_actual_initial_install_close_attached": 1,
+        "fr063_joint_in_memory_owner_snapshot_before_filesystem": 1,
+        "fr063_joint_completion_actual_owner_outcome": 1,
+        "iobs_actual_interface_owning_close_retained": 1,
+        "iobs_actual_direct_and_outer_restore_retention": 1
+      },
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-0b278782a29549c4abcd2af4fc1c5f65",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    }
+  ],
+  "interfaceOwningClose": {
+    "originalDiagnosticPresentExactlyOnce": true,
+    "actualOwningLeaseReleaseCalls": 1,
+    "leaseExpiredAndAmbientCapabilitiesClearedByUnchangedAssertions": true,
+    "publishedAndPendingBytesRetained": true,
+    "noFreshData": true,
+    "noCommonCaptureOrMechanicalEffects": true,
+    "mechanicalPaths": 15,
+    "directRestoreReached": true,
+    "directRestoreHold": true,
+    "directBeforeAfterPaths": 222,
+    "directBeforeAfterBytesEqual": true,
+    "outerWrapperInvoked": false,
+    "diagnosticSha256": "54fe5006c6b38a81447232ad50a300fa79b913eb73165189219ca27e6685c69c"
+  },
+  "outerFinalization": {
+    "owningDataPrecedesOuterClose": true,
+    "originalOuterFailurePreservedInTypedContinuation": true,
+    "establishedOutcome": "Completed",
+    "outerAwaitSucceeded": false,
+    "interfaceCommittedOnceBeforeCommon": true,
+    "completedCaptureOnce": true,
+    "child3ContainsExactPublishedRecord": true,
+    "fullCreateTreatUnion": true,
+    "energy": "2->0",
+    "health": "5->2",
+    "canonicalValidation": true,
+    "exactOneStorySuffix": true,
+    "turn43": true,
+    "zeroProgressionCorrect": true,
+    "actualLateIdleRepeatInert": true,
+    "repeatComparedPaths": 84,
+    "coldChildExecuted": false,
+    "dedicatedCurrentDataTakeOrLateRefusalScenariosExecuted": false
+  },
+  "rawImageLengthShaChecks": 981,
+  "embeddedImageShaChecks": 22,
+  "binaries": {
+    "selectedCopies": 9,
+    "completeOutputFiles": 1575,
+    "originalBeforeAfterPrepAndCurrentPhysicalExact": true
+  },
+  "launch": {
+    "pid": 13436,
+    "startTick": 605604,
+    "argvMatchesController": true,
+    "immediateCmdlineEmpty": true
+  },
+  "cleanup": {
+    "perCaseOwnedRootsRemoved": true,
+    "nativeRunnerCleanupSucceeded": true,
+    "originalExeDependentProcessArraysNotCompleteCensus": true,
+    "censuses": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-close2corrected-before-census-20261018.json",
+        "sha256": "65e86e29058c8e1e6bed9eb77b38b0aa806e7a85113d28fd34b7c4aeb8583d30",
+        "startedUtc": "2026-10-18T11:04:01.662205+00:00",
+        "finishedUtc": "2026-10-18T11:04:01.672049+00:00",
+        "entries": 41,
+        "clean": true,
+        "knownVisibility": [
+          {
+            "pid": 10433,
+            "expectedStartTick": 477854,
+            "status": "MATCH",
+            "classification": "exited-nonexecuting"
+          },
+          {
+            "pid": 13401,
+            "expectedStartTick": 604958,
+            "status": "MATCH",
+            "classification": "observer-self"
+          }
+        ]
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-close2corrected-after-census-20261018.json",
+        "sha256": "5b52e4680899f40d601481cd196318b9acb489f76ad9d9ede8e5e2af48485549",
+        "startedUtc": "2026-10-18T11:12:29.116718+00:00",
+        "finishedUtc": "2026-10-18T11:12:29.128871+00:00",
+        "entries": 41,
+        "clean": true,
+        "knownVisibility": [
+          {
+            "pid": 10433,
+            "expectedStartTick": 477854,
+            "status": "MATCH",
+            "classification": "exited-nonexecuting"
+          },
+          {
+            "pid": 13953,
+            "expectedStartTick": 655698,
+            "status": "MATCH",
+            "classification": "observer-self"
+          }
+        ]
+      }
+    ],
+    "beforeSnapshotToStartSeconds": 6.359668,
+    "finishToAfterSnapshotSeconds": 33.042601,
+    "afterGapDecision": "Disclosed finite dated boundary gap; accepted with native owned cleanup, per-case cleanup assertions, stable inventories, and parent report of no intervening actual/source/fixture/process action. No instantaneous or continuous absence claim; gap not reconstructed.",
+    "noCurrentGlobalCensusPerformed": true
+  },
+  "restoredCarrier": {
+    "paths": 20,
+    "bytesSha256GitBlobsModesVerified": true
+  },
+  "preserved": {
+    "originalClose2Native1Immutable": true,
+    "retained40HistoricalProvenanceUnchanged": true,
+    "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE",
+    "noOldRuntimeReplay": true
+  },
+  "findings": [],
+  "scope": "Only the two corrected close2 methods; this review does not qualify races2, cold child, current-DATA take/refusal families, remaining actual modes, or a whole runtime."
+}

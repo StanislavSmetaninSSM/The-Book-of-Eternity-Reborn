@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "RACES2_ORIGINAL_FROZEN",
+  "status": "QUALIFIED42_RACES2_ORIGINAL_1PASS1FAIL_FROZEN_ALL_EXECUTION_HELD",
   "sourceCheckpoint": "a0da72f2c21fca66193314954cfdf87992752876",
   "sourcePinDigest": "b29c971342ee772b13cd123a954d7afa8937e1f50a7e5f4c4c14403e4de4c347",
   "sourcePinCount": 98,
@@ -376,7 +376,7 @@
           "cases": 1
         }
       ],
-      "status": "NEW_CORRECTED_NATIVE_PASS_EVIDENCE_PENDING"
+      "status": "NEW_CORRECTED_INDEPENDENT_EVIDENCE_ACCEPTED_2PASS"
     },
     {
       "mode": "races2",
@@ -573,7 +573,7 @@
       "retry": "NONE"
     },
     "close2Corrected": {
-      "status": "ORIGINAL_NATIVE_PASS_INDEPENDENT_EVIDENCE_PENDING",
+      "status": "INDEPENDENT_EVIDENCE_ACCEPTED_2PASS",
       "actualSource": "b5d9becea7e1e802dc362dfab78791f25e0889d3",
       "compiledSource": "cf52201ca165d24c971018251ef9723a8e493384",
       "nativeExit": 0,
@@ -636,7 +636,36 @@
           "sha256": "543edeacd8d391dda8a951cb2199bf6892eba721ed2500cf48fff5d59aec5c30",
           "bytes": 1872
         }
-      ]
+      ],
+      "evidenceReview": {
+        "verdict": "ACCEPT_CORRECTED_CLOSE2_ORIGINAL_EVIDENCE_ONLY",
+        "model": "gpt-6-astra",
+        "reasoningEffort": "xhigh",
+        "findings": [],
+        "artifacts": [
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-close2-corrected-independent-review-20261018.json",
+            "sha256": "7d07ebb8530be427f5d032ed40046fdf445dc2ca6822b00a189ed017851a72a1",
+            "bytes": 8181
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-close2-corrected-independent-review-20261018.md",
+            "sha256": "c6081e0eb5031b5a6cbaeec0c4a51c8776477a24273cabcd210e0428014b2bd0",
+            "bytes": 2717
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-close2-corrected-independent-check-23362e57-20261018.json",
+            "sha256": "c607064cc251cfd34711f76b68ad5a8761a86a3f31534d63cc668e952341d492",
+            "bytes": 9162
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-close2-corrected-evidence-checker-20261018.py",
+            "sha256": "2555e5481635eb513ee3b1de7569a74854e6052dda7e16d8287a6d5862bfdaa5",
+            "bytes": 22012
+          }
+        ],
+        "afterCensusTimingLimit": "Dated after-boundary starts33.042601s after recordedcontrollercompletion; no instantaneous/continuousabsence or reconstructedgap claim. Nativeownedcleanup andnointerveningactual/intervention retained."
+      }
     },
     "races2": {
       "status": "ORIGINAL_UNEXPECTED_OUTCOME_FROZEN_INDEPENDENT_DIAGNOSIS_REQUIRED",
@@ -704,7 +733,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Independent causal diagnosis before anysource/actual/retry.",
+  "next": "Independent causal diagnosis of ReadyDrift diagnostic loss and minimal bounded remedy/affectedselection. No actual/retry/sourcechange before diagnosis; anysourcechange requires affectedSOURCE/freshPREP. Retain42/provenance andoldUNKNOWN.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -895,10 +924,10 @@
   },
   "qualifiedCases": {
     "retainedOriginal": 37,
-    "newQualified": 3,
-    "totalDistinctTargets": 40,
+    "newQualified": 5,
+    "totalDistinctTargets": 42,
     "wholeTarget": 57,
-    "limits": "Only legacy3 new EVIDENCE accepted. Close2 native1/1PASS1FAIL remains unqualified; its positive row is not silently accepted. Lost old corrected crash5 UNKNOWN."
+    "limits": "Retained37+independentlyacceptedcloudlegacy3+correctedclose2. Originalclose2RED andoldsevenfixtureFAIL immutable. Races2native1/1PASS1FAIL frozen; ReadRacePASSnotseparatelyqualified. Lostoldcorrectedcrash5UNKNOWN."
   },
   "lastFreezeCarrierRecovery": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-freeze-recovery-f647853f-20261018.json",
@@ -1292,5 +1321,17 @@
       "sha256": "72742121d2dac30a0f010a2bfeadb4ea59b835e9d797d7151c4535bbc1f5495e",
       "bytes": 47878
     }
-  }
+  },
+  "lastOutcomeCarrierRecoveries": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-close2-corrected-outcome-recovery-23362e57-20261018.json",
+      "sha256": "cf128e78d3c8a165e8a6aae5e3efa18ac8dfd54067348cdfd3d7e73dcc74e61a",
+      "bytes": 7882
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-races2-freeze-recovery-8f94b4b2-20261018.json",
+      "sha256": "8635f34b6476d9262dde4e93b7da16ac7478bae7da2104879a1f16608db1cef3",
+      "bytes": 7118
+    }
+  ]
 }

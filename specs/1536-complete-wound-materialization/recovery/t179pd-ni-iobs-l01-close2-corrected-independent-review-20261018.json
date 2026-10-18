@@ -1,0 +1,173 @@
+{
+  "kind": "INDEPENDENT_CORRECTED_CLOSE2_EVIDENCE_REVIEW",
+  "reviewer": "independent GPT-6 Astra XHigh",
+  "verdict": "ACCEPT_CORRECTED_CLOSE2_ORIGINAL_EVIDENCE_ONLY",
+  "reviewedUtc": "2026-10-18T11:21:22.026956+00:00",
+  "carrier": "23362e5701daf6f01aa989f7fde070242a9167d3",
+  "actualSource": "b5d9becea7e1e802dc362dfab78791f25e0889d3",
+  "compiledSource": "cf52201ca165d24c971018251ef9723a8e493384",
+  "sourcePinDigest": "b29c971342ee772b13cd123a954d7afa8937e1f50a7e5f4c4c14403e4de4c347",
+  "evidence": [
+    {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-close2-corrected-independent-check-23362e57-20261018.json",
+      "sha256": "c607064cc251cfd34711f76b68ad5a8761a86a3f31534d63cc668e952341d492",
+      "bytes": 9162
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_close2_corrected.py",
+      "sha256": "2555e5481635eb513ee3b1de7569a74854e6052dda7e16d8287a6d5862bfdaa5",
+      "bytes": 22012
+    }
+  ],
+  "originalRecordSha256": "d8ed64a23966ba4150f8c6438714ab43332bc19c1f781625575c77d4231e6d37",
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-corrected-813f1057-files-20261018/archive.json",
+    "sha256": "66862a2d5556dc5245eff0f4fa0dcd2b75d4012ae43d67db6a8a4dd24fbbfdc8",
+    "rawChains": 11,
+    "rawBytes": 15826210,
+    "completeOriginalCoverage": true,
+    "originalStoredIndependentRestoreBytesMatched": true
+  },
+  "outcome": {
+    "nativeExit": 0,
+    "tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 2,
+      "Failed": 0
+    },
+    "wallSeconds": 468.0428018350003,
+    "categorySeconds": 445.3386172,
+    "unchangedCategoryBudgetSeconds": 900,
+    "completeDescriptor": true,
+    "noTimeout": true
+  },
+  "semanticAcceptance": {
+    "interfaceOwningClose": {
+      "originalDiagnosticPresentExactlyOnce": true,
+      "actualOwningLeaseReleaseCalls": 1,
+      "leaseExpiredAndAmbientCapabilitiesClearedByUnchangedAssertions": true,
+      "publishedAndPendingBytesRetained": true,
+      "noFreshData": true,
+      "noCommonCaptureOrMechanicalEffects": true,
+      "mechanicalPaths": 15,
+      "directRestoreReached": true,
+      "directRestoreHold": true,
+      "directBeforeAfterPaths": 222,
+      "directBeforeAfterBytesEqual": true,
+      "outerWrapperInvoked": false,
+      "diagnosticSha256": "54fe5006c6b38a81447232ad50a300fa79b913eb73165189219ca27e6685c69c"
+    },
+    "outerFinalization": {
+      "owningDataPrecedesOuterClose": true,
+      "originalOuterFailurePreservedInTypedContinuation": true,
+      "establishedOutcome": "Completed",
+      "outerAwaitSucceeded": false,
+      "interfaceCommittedOnceBeforeCommon": true,
+      "completedCaptureOnce": true,
+      "child3ContainsExactPublishedRecord": true,
+      "fullCreateTreatUnion": true,
+      "energy": "2->0",
+      "health": "5->2",
+      "canonicalValidation": true,
+      "exactOneStorySuffix": true,
+      "turn43": true,
+      "zeroProgressionCorrect": true,
+      "actualLateIdleRepeatInert": true,
+      "repeatComparedPaths": 84,
+      "coldChildExecuted": false,
+      "dedicatedCurrentDataTakeOrLateRefusalScenariosExecuted": false
+    }
+  },
+  "provenanceAndRecovery": {
+    "sourcePins": 98,
+    "binaryCopies": 9,
+    "completeOutputFiles": 1575,
+    "allOriginalNoBuildHashesStable": true,
+    "carrierPaths": 20,
+    "rawImageLengthShaChecks": 981,
+    "embeddedImageShaChecks": 22,
+    "independentGitHubCloneBytesBlobsModesMatched": true
+  },
+  "cleanupAndLimits": {
+    "perCaseOwnedRootsRemoved": true,
+    "nativeRunnerCleanupSucceeded": true,
+    "originalExeDependentProcessArraysNotCompleteCensus": true,
+    "censuses": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-close2corrected-before-census-20261018.json",
+        "sha256": "65e86e29058c8e1e6bed9eb77b38b0aa806e7a85113d28fd34b7c4aeb8583d30",
+        "startedUtc": "2026-10-18T11:04:01.662205+00:00",
+        "finishedUtc": "2026-10-18T11:04:01.672049+00:00",
+        "entries": 41,
+        "clean": true,
+        "knownVisibility": [
+          {
+            "pid": 10433,
+            "expectedStartTick": 477854,
+            "status": "MATCH",
+            "classification": "exited-nonexecuting"
+          },
+          {
+            "pid": 13401,
+            "expectedStartTick": 604958,
+            "status": "MATCH",
+            "classification": "observer-self"
+          }
+        ]
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-close2corrected-after-census-20261018.json",
+        "sha256": "5b52e4680899f40d601481cd196318b9acb489f76ad9d9ede8e5e2af48485549",
+        "startedUtc": "2026-10-18T11:12:29.116718+00:00",
+        "finishedUtc": "2026-10-18T11:12:29.128871+00:00",
+        "entries": 41,
+        "clean": true,
+        "knownVisibility": [
+          {
+            "pid": 10433,
+            "expectedStartTick": 477854,
+            "status": "MATCH",
+            "classification": "exited-nonexecuting"
+          },
+          {
+            "pid": 13953,
+            "expectedStartTick": 655698,
+            "status": "MATCH",
+            "classification": "observer-self"
+          }
+        ]
+      }
+    ],
+    "beforeSnapshotToStartSeconds": 6.359668,
+    "finishToAfterSnapshotSeconds": 33.042601,
+    "afterGapDecision": "Disclosed finite dated boundary gap; accepted with native owned cleanup, per-case cleanup assertions, stable inventories, and parent report of no intervening actual/source/fixture/process action. No instantaneous or continuous absence claim; gap not reconstructed.",
+    "noCurrentGlobalCensusPerformed": true
+  },
+  "qualificationEffect": {
+    "priorQualifiedDistinctCases": 40,
+    "newCorrectedDistinctCases": 2,
+    "qualifiedDistinctCasesAfterSavingAcceptance": 42,
+    "remainingDistinctTargets": 15,
+    "retained40OriginalProvenanceUnchanged": true,
+    "noCrossBuildRuntimeEquivalence": true
+  },
+  "preservation": [
+    "Original close2 native1 / 1PASS1FAIL remains immutable and is not relabelled.",
+    "Original old intake2FAIL and crash5FAIL remain frozen.",
+    "Lost old corrected crash5 session66529 remains UNKNOWN and unavailable; no recovery claim.",
+    "Separate new crash5 qualification retains accepted isolation plan and pending execution."
+  ],
+  "scopeLimits": [
+    "The outer case reaches actual interface owning return, common child3, completed capture, full create+treat union, progression, exact story/turn43 and actual late/idle inert-repeat. It does not invoke a new cold child or separately exercise dedicated current-DATA take/late-refusal scenarios.",
+    "The owning-close case reaches direct RestorePreTurnBackup with the actual Stage backup/frame. It deliberately does not invoke the optional outer validation wrapper, and does not complete common mechanics.",
+    "Lease-expiry, cleared ambient capabilities, same exception identity and once-only closer are unchanged assertions on the passing original path; no invented diagnostic fields are claimed.",
+    "Process launch cmdline sampled empty; original Popen argv and PID/stat birth tick bind the invocation. Original exe-dependent empty process arrays are not complete census.",
+    "After-census begins 33.042601 seconds after recorded finish. This accepted finite dated observation is not instantaneous or continuous absence; no gap reconstruction. Parent states no intervening actual/source/fixture/process intervention.",
+    "Only two corrected close2 cases qualified here. Concurrently reviewed or later races2 outcome is separate; its newly reported native1 freezes further actuals and is not qualified by this verdict.",
+    "No whole L01 runtime PASS, broader FullNI/HOT/F1/M3/T197 completion or A3 proceed."
+  ],
+  "findings": [],
+  "executionGate": "Close2 EVIDENCE acceptance does not lift the newly reported races2 failure freeze. Diagnose original races2 evidence before any further execution or correction.",
+  "reviewActions": "Read-only source/Git/raw/inventory/census parsing. Wrote review artifacts only under /tmp/1536-cloud-tools/review. No builds, discovery, tests, observer execution, process intervention or repo edits."
+}
