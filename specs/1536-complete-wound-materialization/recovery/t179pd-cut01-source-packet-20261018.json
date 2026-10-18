@@ -286,7 +286,7 @@
   "sourcePinDigest": "d2166163295ea183719e3a51f65a0c795a238bfeb83faf5e1109c0fb4aacb77f",
   "currentLedger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-method-row-ledger-20261018.json",
-    "sha256": "af4d8b443395fc51b57c4863a72ee631906f6c7318b59e155db4c5f2888bcf79"
+    "sha256": "4865d71fc0d53571caccbde12e8c8bc898cd956f28807f453ef7af38e17dda7a"
   },
   "productDelta": [
     "BookOfEternityClient/Core/GameEngine.cs",
@@ -577,7 +577,7 @@
       "scope": "Historical source/preparation verdict before product actuals: exact2inverse/current31/unchangedtests/new9/new19raw/fixed then-UNRUN actualtools accepted. Later named Late2 and new3 have separate EVIDENCE below; no new SOURCE replay."
     },
     "late2Actual": {
-      "kind": "FIRST_CURRENT_PRODUCT_ORIGINAL_RAW_PENDING_SEPARATE_INDEPENDENT_EVIDENCE",
+      "kind": "FIRST_CURRENT_PRODUCT_ORIGINAL_RAW_WITH_ACCEPTED_SEPARATE_INDEPENDENT_EVIDENCE",
       "actualSource": "127d3cf73f99f676af8b7cb46df0f8930b5682f6",
       "compiledSource": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
       "nativeExit": 0,
@@ -621,7 +621,7 @@
         "root": "recovery/t179pd-cut01-root-product-late2-evidence-acceptance-f7988570-20261018.json",
         "verdict": "ACCEPT_AFFECTED_LEGACY_LATE2_EXACT_2PASS_ONLY"
       },
-      "scope": "Exact named current product outcome only. Native0/PASS is raw observation pending separate EVIDENCE; not NI or broader family qualification.",
+      "scope": "Exact named affected legacyLate2 current-product outcome:2PASS independently qualified by the linked separate EVIDENCE. No seam/new3/NI or broader family qualification follows from those2 alone.",
       "namedAuthorization": {
         "source": "Root named activation message, copied as derived metadata AFTER terminal; no separate pre-run activation file existed",
         "text": "NAMED PRODUCT ACTUAL RELEASE: ONLYprotectedLate2 onclean127d3cf73f99f676af8b7cb46df0f8930b5682f6 /compiled3d195f2f52f1f5dd4b71c248921f9609d4b9738e. Rootindepdelta15/all11/full7a+76deltas55,254+exactremote/main confirmed. InvokeONCE /tmp/t179pd-cut01-product-first-run.py SHAa4eaa9 modeprotected-late2 labelt179pd-cut01-product-late2-first-127d3cf7-20261018 actualfull127dSHA prep/tmp/t179pd-cut01-implementation-tools/t179pd-cut01-product-prep-first-plan-3d195f2f-20261018/record.json. Exactfr063-joint-late-completion2cases/NoBuild; descriptorordinal003→001 allowedsemanticmethods/categories2counts. Preserveoriginaloutcome/FIRST/source/process/runner/TRX/cleanup+beforeafter9/ns, readonlyarchive65cddaNEWdir thenWIPpush/exactremote/recover BEFOREindepEVIDENCE. No sourceedit/build/retry/new3/autoadvance. Unexpectedrawheld. Proceed.",
@@ -629,7 +629,7 @@
       }
     },
     "new3Actual": {
-      "kind": "FIRST_CURRENT_PRODUCT_ORIGINAL_RAW_PENDING_SEPARATE_INDEPENDENT_EVIDENCE",
+      "kind": "FIRST_CURRENT_PRODUCT_ORIGINAL_RAW_WITH_ACCEPTED_SEPARATE_INDEPENDENT_EVIDENCE",
       "actualSource": "074575d37bf28bb0121bf5bb7c69984afcfb604e",
       "compiledSource": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
       "nativeExit": 0,
@@ -674,7 +674,7 @@
         "root": "recovery/t179pd-cut01-root-final-evidence-acceptance-29b2a4c4-20261018.json",
         "verdict": "ACCEPT_BOUNDED_CURRENT_CAPTURE_CUT01_NEW3_EXACT_3PASS_ONLY"
       },
-      "scope": "Exact named new3 current-product outcome, pending independent EVIDENCE. Transparency false retains the essential setup hook and adds no capture observer; not a claim of global hooks-null native coverage. No NI or broader family qualification.",
+      "scope": "Exact named new3 current-product outcome:3PASS independently qualified by the linked separate EVIDENCE. Transparency false retains the essential setup hook and adds no capture observer; not global-hooks-null native coverage. Bounded CUT01 only, no NI or broader family qualification.",
       "namedAuthorization": {
         "source": "Root named activation message, copied as derived metadata AFTER terminal; no separate pre-run activation artifact claimed",
         "text": "Root independently VERIFIED physical GitHub0745 delta: full7a+78/55,272 exacttree; clean/exactremote074575d37bf28bb0121bf5bb7c69984afcfb604e/main d024. Name exactly ONE FIRST new3 now: fixed /tmp/t179pd-cut01-product-first-run.py (SHAa4eaa9) mode new3, label t179pd-cut01-product-new3-first-074575d3-20261018, actual 074575d37bf28bb0121bf5bb7c69984afcfb604e, prep /tmp/t179pd-cut01-implementation-tools/t179pd-cut01-product-prep-first-plan-3d195f2f-20261018/record.json. Exact temp subset two new categories/3cases NoBuild; no protectedLate2 replay/build/retry/advance. Preserve original native/raw/sentinel/source/process/runner/TRX/cleanup then readonlyarchive65cdda new directory, save WIP raw+0745receipt/78composition metadata-only/nonforcepush/GitHubdelta. Return native exactcounts immediately; Root sends new independent EVIDENCE after raw carrier recovered. No automatic fixes if fail.",
@@ -760,11 +760,11 @@
     "noAdditionalRuntime": true
   },
   "recovery": {
-    "priorCarrier": "29b2a4c4ea37932a5db9d6dbab84f55f3d7282bf",
-    "receipt": "recovery/t179pd-cut01-product-new3-delta-github-29b2a4c4-20261018.json",
-    "composition": "recovery/t179pd3d-root-recovery-composition-29b2a4c4-20261017.json",
-    "priorVerifiedDeltaCount": 79,
-    "priorVerifiedTrackedPaths": 55286,
+    "priorCarrier": "22cf0e77d63041a2631dcf0ce6749fdcf95d7693",
+    "receipt": "recovery/t179pd-cut01-final-delta-github-22cf0e77-20261018.json",
+    "composition": "recovery/t179pd3d-root-recovery-composition-22cf0e77-20261017.json",
+    "priorVerifiedDeltaCount": 80,
+    "priorVerifiedTrackedPaths": 55294,
     "finalCheckpoint": "Final exact HEAD/changed-path recovery/external Root check pending publication; no extra self-receipt commit."
   }
 }
