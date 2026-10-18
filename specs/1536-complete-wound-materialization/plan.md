@@ -1,3 +1,9 @@
+## T179-Pd-NI-IOBS-L01 — diagnostic1 independent PREP accepted; one named gate only (2026-10-18)
+
+[Independent PREP](recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-prep-independent-review-20261018.md) accepts32raw/101pins/product23/whole16-33-57+separate1/9-1575 outputs/148-37unchanged warnings/seven dated clean boundaries/three frozen237-file checks at49d64969, compiled8f8f5343. Prior packet phase fields and observation status preserved as history; current SOURCE/PREP accepted. Qualified52 remains unchanged.
+
+Only named diagnostic1 `t179pd-ni-iobs-l01-process-first-diagnostic1-compile-corrected-cloud-b51375ba`, same unchanged wrapper/b513 environment/220s child/900s outer/all strong cut1 assertions, excluded from57/coverage. Save/push/exactremote/fullGitHub recovery/readback before immediate clean global/new-namespace v2 preflight and frozen237 byte/file-set check; exactly one NoBuild invocation. Preserve/archive/save/recover original then independent causal review before any remedy/requalification. No crash5 retry or automatic next. Alloriginals/old66529UNKNOWN/all broader holds unchanged. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — diagnostic1 fresh ZERO3 native0; PREP pending (2026-10-18)
 
 catalog native0/ZERO 422.339s, plan native0/ZERO 28.971s, diagnostic-plan native0/ZERO 18.938s. Whole16/33/57 and separate diagnostic1/1/1;32 exact rawchains,101pins/product23,nine/full inventory and six dated boundaries retained.809categories/11801methods; no actual tests executed. Frozen prior two roots remain unchanged/outside new mutable namespace. Independent PREP/recovery/readback and separate named gate required before one diagnostic run. Qualified52/alloriginals/old66529UNKNOWN and broader holds unchanged. Following sections historical.

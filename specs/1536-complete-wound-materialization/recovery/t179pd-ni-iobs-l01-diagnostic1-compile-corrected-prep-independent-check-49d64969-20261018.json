@@ -1,0 +1,611 @@
+{
+  "kind": "INDEPENDENT_COMPILE_CORRECTED_DIAGNOSTIC1_ZERO3_PREPARATION_CHECK",
+  "checkedUtc": "2026-10-18T16:48:51.033567+00:00",
+  "carrier": "49d64969cad4bde1f9cbac3759785b733841c884",
+  "compiledSource": "8f8f534304e3672df5d42c9ab31e7055235bfaca",
+  "sourcePinCount": 101,
+  "sourcePinDigest": "2c144b7734708f8c02a3924d4d12a885384f05a1437021afd2845827c761c616",
+  "productDelta": 23,
+  "ledgerSha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-crash-diagnostic1-preparation-b51375ba-files-20261018/archive.json",
+    "sha256": "f5ae7ab2231c5ed9a1b1e19cb6ab6968beda3ccfd1119cd25c6f929e190344de",
+    "rawChains": 32,
+    "completeRawCoverage": true,
+    "allOriginalStoredRestoredBytesMatched": true
+  },
+  "records": [
+    {
+      "mode": "catalog",
+      "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-crash-diagnostic1-compile-corrected-cloud-b51375ba/record.json",
+      "sha256": "0c9453ce199e50f8199094a5d15fa4b721785f9e3ca9293b573a895819836441",
+      "nativeExit": 0,
+      "executed": 0,
+      "seconds": 422.339164447003,
+      "nativeWallSeconds": 414.15215820000003,
+      "timeoutMinutes": 10,
+      "phaseExits": [
+        [
+          "Revision",
+          "0"
+        ],
+        [
+          "Changed-paths",
+          "0"
+        ],
+        [
+          "New-paths",
+          "0"
+        ],
+        [
+          "Build-integration",
+          "0"
+        ],
+        [
+          "integration-discovery",
+          "0"
+        ],
+        [
+          "Build-unit",
+          "0"
+        ],
+        [
+          "unit-discovery",
+          "0"
+        ]
+      ]
+    },
+    {
+      "mode": "plan",
+      "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-whole-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba/record.json",
+      "sha256": "ff6171110eb6107a16e0bdab1214152ccfd3769fd952c2b7da4e51f99ac156d1",
+      "nativeExit": 0,
+      "executed": 0,
+      "seconds": 28.971218184000463,
+      "nativeWallSeconds": 23.0074613,
+      "timeoutMinutes": 30,
+      "phaseExits": [
+        [
+          "Revision",
+          "0"
+        ],
+        [
+          "Changed-paths",
+          "0"
+        ],
+        [
+          "New-paths",
+          "0"
+        ],
+        [
+          "integration-discovery",
+          "0"
+        ],
+        [
+          "unit-discovery",
+          "0"
+        ]
+      ]
+    },
+    {
+      "mode": "diagnostic-plan",
+      "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba/record.json",
+      "sha256": "dab4805c23d89fc401cb763fa0aba4ce1bb37cb350ff926f4d7b4c93c961048f",
+      "nativeExit": 0,
+      "executed": 0,
+      "seconds": 18.937863039001968,
+      "nativeWallSeconds": 13.7616733,
+      "timeoutMinutes": 20,
+      "phaseExits": [
+        [
+          "Revision",
+          "0"
+        ],
+        [
+          "Changed-paths",
+          "0"
+        ],
+        [
+          "New-paths",
+          "0"
+        ],
+        [
+          "integration-discovery",
+          "0"
+        ]
+      ]
+    }
+  ],
+  "catalog": {
+    "Valid": true,
+    "Methods": 11801,
+    "Categories": 809,
+    "Unmapped": [],
+    "StaleSelectors": []
+  },
+  "builds": {
+    "Build-integration": {
+      "warnings": 148,
+      "errors": 0,
+      "codes": {
+        "CS8604": 9,
+        "xUnit1031": 4,
+        "xUnit2031": 34,
+        "xUnit1013": 18,
+        "xUnit2029": 7,
+        "xUnit2030": 1,
+        "CS8602": 37,
+        "CS1573": 15,
+        "xUnit2013": 2,
+        "CS0219": 1,
+        "xUnit2012": 2,
+        "xUnit2009": 1,
+        "CA1416": 3,
+        "CS9124": 1,
+        "CS1587": 3,
+        "CS8629": 1,
+        "CS8618": 2,
+        "CS8601": 2,
+        "CS1572": 5
+      }
+    },
+    "Build-unit": {
+      "warnings": 37,
+      "errors": 0,
+      "codes": {
+        "xUnit2031": 12,
+        "xUnit1031": 3,
+        "CA1416": 4,
+        "CS4014": 1,
+        "xUnit2009": 2,
+        "CS8600": 1,
+        "CS0649": 12,
+        "CS8602": 2
+      }
+    }
+  },
+  "warningComparison": {
+    "Build-integration": {
+      "added": [],
+      "removed": [],
+      "priorDistinct": 117,
+      "currentDistinct": 117
+    },
+    "Build-unit": {
+      "added": [],
+      "removed": [],
+      "priorDistinct": 27,
+      "currentDistinct": 27
+    }
+  },
+  "plans": {
+    "plan": {
+      "descriptors": 16,
+      "methods": 33,
+      "cases": 57,
+      "executed": 0,
+      "methodCases": {
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentCaptureStopPrecedesPreparationAndExpiresActualOwner": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentCaptureObservationPreservesOrdinaryCompletion": 2,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceOwningCloseRetainsPublishedButCannotDeliverFreshResult": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LaterOuterFinalizationDoesNotUnemitCommittedInterfaceOrReplay": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AbsentInterfacePublishesOnlyResultAndCompletes": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceWarningVectorSurvivesCommonAndOrdinaryCompletion": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection": 5,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback": 4,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualGenericInterfaceConsumerRefusesSelectedMarkerDamage": 7,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_FirstInstallOwningCloseCannotArmInterfacePermission": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewLateMainConsumesOwnReadyWithoutRevivingHotOwner": 1,
+        "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalJointSeverityRepairGuidance_PreservesPublicTransportAndOnceOnlyClientOwnership": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCommittedColdKeepsLegacyConsumer": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCompletesWithoutProtocolUpgrade": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewOrdinaryOriginalUsesPriorMarkerSourceInsteadOfCachedData": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceErrorFreezesPreparedWithoutPublicationOrCommon": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceNoWriteRetainsExactBytesAndMtime": 3,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce": 1,
+        "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.AbsenceIsDistinctFromPresentEmptyAndReturnedCopiesAreDefensive": 1,
+        "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.ErrorPreparedIsFrozenAndCannotBecomePublished": 1,
+        "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.FrozenFallbackRejectsNoncanonicalOrNonUtcDataWithoutReevaluatingInterfacePolicy": 3,
+        "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.InterfaceAboveCheckpointBlobLimitIsPreservedWithoutTruncation": 1,
+        "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.ObjectCannotClaimTimestampPolicyWasNotReachedEvenWithConsistentDataDigests": 1,
+        "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.PublishedRecordPreservesExactDiagnosticsWithoutClaimingHistoricalReturn": 1,
+        "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRefusesMalformedOrSilentlyCanonicalizedData": 6,
+        "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRejectsDuplicatePropertiesBeforeJsonNodeCanonicalization": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CommonMemberCompensationRetainsPublishedInterfaceWithoutReplay": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate": 2,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualReturnedReadCannotHideChangedWriterPreimage": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_PublishedInterfaceCannotExcuseOtherImmutableReadyDrift": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce": 1
+      }
+    },
+    "diagnostic-plan": {
+      "descriptors": 1,
+      "methods": 1,
+      "cases": 1,
+      "executed": 0,
+      "methodCases": {
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_DiagnoseCurrentResumeAfterInterfaceMemberProcessLoss": 1
+      }
+    }
+  },
+  "retained": {
+    "methods": 32,
+    "cases": 52,
+    "exactPriorProvenancePreserved": true
+  },
+  "diagnosticCountsToward57": false,
+  "binaries": {
+    "copies": 9,
+    "completeFiles": 1575,
+    "allPhysicalPathsSizesHashesMatch": true,
+    "allPlansNoBuildExactContinuity": true,
+    "fourClientCopiesEqual": true,
+    "twoSupportCopiesEqual": true,
+    "clientSha256": "a0a3bdc7b0e4a7d6551fe7a0dae3ba37601cbb578ea50c89194c95d7860c4516",
+    "selectedCopiesChangedDuringFreshCatalog": [
+      "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll"
+    ]
+  },
+  "processLaunchRecords": [
+    {
+      "mode": "catalog",
+      "pid": 59680,
+      "startTick": 2612216,
+      "cmdlineCaptured": true,
+      "launchAndResultDirectoryBound": true
+    },
+    {
+      "mode": "plan",
+      "pid": 60409,
+      "startTick": 2657861,
+      "cmdlineCaptured": true,
+      "launchAndResultDirectoryBound": true
+    },
+    {
+      "mode": "diagnostic-plan",
+      "pid": 60651,
+      "startTick": 2662449,
+      "cmdlineCaptured": true,
+      "launchAndResultDirectoryBound": true
+    }
+  ],
+  "originalProcessArrayLimitation": "exe-link-dependent arrays preserved; not complete process-absence evidence",
+  "nativeRunnerCleanup": true,
+  "ownedFixtureRootsEmpty": true,
+  "censuses": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic1-catalog-before-b51375ba.json",
+      "sha256": "4928a0cc74e41a187e26b57121e4325889aabefdd5db7bb19416578102b8abaa",
+      "version": 2,
+      "phase": "crash-diagnostic1-catalog-before",
+      "startedUtc": "2026-10-18T16:38:29.949350+00:00",
+      "finishedUtc": "2026-10-18T16:38:29.977723+00:00",
+      "entries": 153,
+      "confirmedGone": [],
+      "classes": {
+        "other-readable": 9,
+        "exited-nonexecuting": 141,
+        "build-infrastructure": 2,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 59655,
+          "expectedStartTick": 2611786,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic1-catalog-after-b51375ba.json",
+      "sha256": "c1bfc805ce2af9f735ab53085c328d0d8dcd9574958a3d5402808e0c3bab0afc",
+      "version": 2,
+      "phase": "crash-diagnostic1-catalog-after",
+      "startedUtc": "2026-10-18T16:45:38.036045+00:00",
+      "finishedUtc": "2026-10-18T16:45:38.060614+00:00",
+      "entries": 156,
+      "confirmedGone": [],
+      "classes": {
+        "other-readable": 9,
+        "exited-nonexecuting": 141,
+        "build-infrastructure": 5,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 60330,
+          "expectedStartTick": 2654594,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic1-plan-before-b51375ba.json",
+      "sha256": "cbe547997538648fc047024f23575027cd8ee042413eaf7de5ab15ea1916eb78",
+      "version": 2,
+      "phase": "crash-diagnostic1-plan-before",
+      "startedUtc": "2026-10-18T16:46:07.563733+00:00",
+      "finishedUtc": "2026-10-18T16:46:07.604517+00:00",
+      "entries": 156,
+      "confirmedGone": [],
+      "classes": {
+        "other-readable": 9,
+        "exited-nonexecuting": 141,
+        "build-infrastructure": 5,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 60384,
+          "expectedStartTick": 2657546,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic1-plan-after-b51375ba.json",
+      "sha256": "f4bde7e5d652afcfa4e748f8eee33ee3a472dfc29824eb408770c7b3a1aa3de2",
+      "version": 2,
+      "phase": "crash-diagnostic1-plan-after",
+      "startedUtc": "2026-10-18T16:46:40.826218+00:00",
+      "finishedUtc": "2026-10-18T16:46:40.854679+00:00",
+      "entries": 156,
+      "confirmedGone": [],
+      "classes": {
+        "other-readable": 9,
+        "exited-nonexecuting": 141,
+        "build-infrastructure": 5,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 60589,
+          "expectedStartTick": 2660875,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic1-diagnostic-plan-before-b51375ba.json",
+      "sha256": "d4fcdda933bea9283bfaf72515dd2f834f85b2571bdeff96696669bea8d10c3b",
+      "version": 2,
+      "phase": "crash-diagnostic1-diagnostic-plan-before",
+      "startedUtc": "2026-10-18T16:46:54.327409+00:00",
+      "finishedUtc": "2026-10-18T16:46:54.373202+00:00",
+      "entries": 156,
+      "confirmedGone": [],
+      "classes": {
+        "other-readable": 9,
+        "exited-nonexecuting": 141,
+        "build-infrastructure": 5,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 60623,
+          "expectedStartTick": 2662225,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic1-diagnostic-plan-after-b51375ba.json",
+      "sha256": "7504fb814e398b3e6b2d40e39caadefdcaca475b681ea1cbff74f72fa8fe24cb",
+      "version": 2,
+      "phase": "crash-diagnostic1-diagnostic-plan-after",
+      "startedUtc": "2026-10-18T16:47:16.038701+00:00",
+      "finishedUtc": "2026-10-18T16:47:16.062237+00:00",
+      "entries": 156,
+      "confirmedGone": [],
+      "classes": {
+        "other-readable": 9,
+        "exited-nonexecuting": 141,
+        "build-infrastructure": 5,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 60777,
+          "expectedStartTick": 2664398,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic1-prep-qualification-b51375ba.json",
+      "sha256": "870932ee38533a4be74c7a2334acb6ae7aea594ef4b7ffe212d6a4d8e9449304",
+      "version": 2,
+      "phase": "crash-diagnostic1-prep-qualification",
+      "startedUtc": "2026-10-18T16:47:32.300398+00:00",
+      "finishedUtc": "2026-10-18T16:47:32.356898+00:00",
+      "entries": 155,
+      "confirmedGone": [],
+      "classes": {
+        "other-readable": 8,
+        "exited-nonexecuting": 141,
+        "build-infrastructure": 5,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 60791,
+          "expectedStartTick": 2665988,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    }
+  ],
+  "observerV2": {
+    "sha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
+    "bytes": 7410,
+    "exactReviewedSource": true
+  },
+  "recovery": [
+    {
+      "carrier": "49d64969cad4bde1f9cbac3759785b733841c884",
+      "base": "8f8f534304e3672df5d42c9ab31e7055235bfaca",
+      "changedPaths": 52,
+      "receiptSha256": "a8c8cdb02893221c0cad051fec6c71840fb8b7629fb78077b4c7da0d23a8a313",
+      "bytesHashesBlobsModesVerified": true
+    }
+  ],
+  "environment": {
+    "envSha256": "a1560b8027b94f787ed5f3bfab6439a231eb5a48f479111e17db824c7c19ffff",
+    "namespace": {
+      "identity": "ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9",
+      "tmpdir": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9",
+      "samePhysicalCloud": true,
+      "bootId": "cbd633d5-c8d0-43e1-8c6e-1b233700b8d9",
+      "frozenRootsOutsideMutableNamespace": [
+        "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-c39f7e9cf6eb42868669ed06f092c491",
+        "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a"
+      ],
+      "oldNamespace": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320",
+      "toolchain": "Same immutable SDK/runtime/pwsh and NuGet dependency cache; new CLI/XDG/runtime mutable directories, no shared mutable game state",
+      "environmentFile": "/tmp/1536-cloud-tools/env-crash-diagnostic1-b51375ba.sh"
+    },
+    "effectiveExports": {
+      "PATH": "/tmp/1536-cloud-tools/pwsh:/tmp/1536-cloud-tools/dotnet:$PATH",
+      "DOTNET_ROOT": "/tmp/1536-cloud-tools/dotnet",
+      "DOTNET_CLI_HOME": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/tooling/cli",
+      "NUGET_PACKAGES": "/tmp/1536-cloud-tools/nuget",
+      "XDG_CACHE_HOME": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/tooling/cache",
+      "XDG_CONFIG_HOME": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/tooling/config",
+      "XDG_DATA_HOME": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/tooling/data",
+      "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+      "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+      "TMPDIR": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9",
+      "XDG_RUNTIME_DIR": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/runtime"
+    },
+    "homeUnchanged": true,
+    "scope": "Saved environment/census/separation evidence only; no live root/process observation"
+  },
+  "frozenRootBeforeEachPhase": [
+    {
+      "mode": "catalog",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-catalog-frozen-separation-b51375ba.json",
+      "sha256": "15660d233c107c2eeb2a2760831b4eafc35c008fdbe752cda37de1425ad17d9d",
+      "verifiedFiles": 237,
+      "checkedUtc": "2026-10-18T16:38:29.852684+00:00"
+    },
+    {
+      "mode": "plan",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-plan-frozen-separation-b51375ba.json",
+      "sha256": "63c1af8f8c56afd9b2c9b8e78f01b88f178b9f1d6b53a1b9cb5c221b8dc708cd",
+      "verifiedFiles": 237,
+      "checkedUtc": "2026-10-18T16:46:07.450111+00:00"
+    },
+    {
+      "mode": "diagnostic-plan",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-diagnostic-plan-frozen-separation-b51375ba.json",
+      "sha256": "0c342a94eda8be7613cbd225fc180c27cbafb1c59a372f8a1badc15a768aa607",
+      "verifiedFiles": 237,
+      "checkedUtc": "2026-10-18T16:46:54.242321+00:00"
+    }
+  ],
+  "boundaryGaps": {
+    "catalog": {
+      "beforeFinishToStartSeconds": 4.164791,
+      "finishToAfterStartSeconds": 1.554588
+    },
+    "plan": {
+      "beforeFinishToStartSeconds": 2.990148,
+      "finishToAfterStartSeconds": 1.260334
+    },
+    "diagnostic-plan": {
+      "beforeFinishToStartSeconds": 2.109183,
+      "finishToAfterStartSeconds": 0.618477
+    }
+  },
+  "orchestrationEvidence": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-crash-diagnostic-phase-20261018.py",
+      "bytes": 3721,
+      "sha256": "5ab4e4f4d4c59842179f5a6ef41bb96d0bd5f164a081a6a86da2283d67a3d805",
+      "scope": "One explicit phase, exact clean SHA, new TMPDIR identity, archived frozen-root bytes/file-set unchanged before each phase, immediate dated authoritative v2 global/new-namespace boundaries; no automatic next/retry.",
+      "environmentShell": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-env-b51375ba-20261018.sh",
+        "bytes": 1276,
+        "sha256": "a1560b8027b94f787ed5f3bfab6439a231eb5a48f479111e17db824c7c19ffff",
+        "scope": "Exact task-only toolchain variables/newGUID TMPDIR/runtime/CLI/XDG namespace; HOME untouched; NuGet dependency cache shared only as tooling input."
+      }
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-20261018.py",
+      "sha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
+      "scope": "Unchanged independently accepted argv/stat observer, mandatory dated PREP acceptance and immediate before/after actual boundaries. Optional exe, fail closed on active/UNKNOWN/roots. No old snapshot reconstruction."
+    }
+  ],
+  "eligibility": "CHECKER_ONLY_NO_AUTOMATIC_PREP_ACCEPTANCE_OR_RUNTIME_RELEASE. Independent review still required. Only a separately named diagnostic1 gate could follow accepted PREP; original crash5/57 qualification remains frozen.",
+  "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE",
+  "newCrash5": "ORIGINAL_NATIVE124_NO_TRX_FROZEN",
+  "actualExecuted": 0,
+  "findings": [],
+  "limits": "No build/discovery/test/controller/observer invocation, process intervention or repo writes. No product runtime PASS or cross-build equivalence for retained52. Dated observations do not establish continuous absence."
+}

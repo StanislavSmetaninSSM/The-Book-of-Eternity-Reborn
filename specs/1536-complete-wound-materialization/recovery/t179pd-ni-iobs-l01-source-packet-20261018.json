@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_SELECTED_CURRENT_RESUME_ROUTING_SOURCE_CANDIDATE",
-  "status": "QUALIFIED52_DIAGNOSTIC1_ZERO3_NATIVE0_INDEPENDENT_PREP_PENDING",
+  "status": "QUALIFIED52_DIAGNOSTIC1_PREP_ACCEPTED_ONE_NAMED_GATE_PENDING_SAVE_RECOVERY_PREFLIGHT",
   "sourceBase": "f390eb0602a99f5a2387ab7dc6ef52571e856b26",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
   "sourcePins": [
@@ -953,7 +953,7 @@
       "countsToward57": false
     },
     "catalog": "Fresh BOTH/catalog ZERO; new diagnostic category/method inventoried and nine binaries/full output inventory bind NoBuild plans.",
-    "phase": "DIAGNOSTIC1_ZERO3_NATIVE0_FRESH_INDEPENDENT_PREP_PENDING"
+    "phase": "SOURCE_AND_FRESH_ZERO3_PREP_ACCEPTED_ONE_DIAGNOSTIC_GATE_ONLY"
   },
   "mandatorySupplement": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-20261018.py",
@@ -963,10 +963,24 @@
   "gmDisposition": "Diagnostic fixture/logging/selection only; no production/game capability/schema/GM prompt/example/afterlife change. Prior client-owned routing rationale is historical and retained.",
   "oldCorrectedCrash": "Old environment session66529 remainsUNKNOWN, bytes unavailable. Separate new qualification only after corrected SOURCE/fresh PREP/named release, independent disposable fixtures/new genuine children; no old environment/process or real save operation.",
   "namedActualRelease": {
-    "status": "NONE_DIAGNOSTIC1_INDEPENDENT_PREP_PENDING",
-    "mode": null
+    "status": "SEPARATELY_NAMED_ONE_DIAGNOSTIC_AFTER_SAVED_ACCEPTANCE_RECOVERY_AND_CLEAN_PREFLIGHT",
+    "mode": "diagnostic1",
+    "label": "t179pd-ni-iobs-l01-process-first-diagnostic1-compile-corrected-cloud-b51375ba",
+    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba/record.json",
+    "prepRecordSha256": "dab4805c23d89fc401cb763fa0aba4ce1bb37cb350ff926f4d7b4c93c961048f",
+    "compiledSource": "8f8f534304e3672df5d42c9ab31e7055235bfaca",
+    "expectedCases": 1,
+    "category": "fr063-joint-interface-crash-diagnostic",
+    "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_DiagnoseCurrentResumeAfterInterfaceMemberProcessLoss",
+    "countsToward57": false,
+    "conditions": [
+      "A separately saved/recovered explicit one-mode release and clean actual HEAD, same accepted 101 pins/digest, NoBuild nine/full1575 exact inventory, and this exact diagnostic-plan record.",
+      "Use the accepted b51375ba environment and one-phase wrapper. Immediately before launch, require global v2 no active/UNKNOWN plus empty new fixture namespace and another frozen-root full-file-set/bytes check; preserve both frozen roots outside the mutable namespace.",
+      "Use fresh disposable fixture roots, new actual children with PID/kernel-birth identities and nonce, all original strong cut1 assertions, 220-second child and 900-second category budgets unchanged. No user saves, shared mutable game state, real external operation, old environment access, automatic retry or next mode.",
+      "Capture same-invocation after-census on any return, preserve the original result and all diagnostic streams before classification, archive/save/recover outcome before causal review or further change. Any unexpected result or boundary/inventory concern freezes progression."
+    ]
   },
-  "next": "Save/recover ZERO3 originals then independent diagnostic1 PREP; only after saved acceptance/recovery/readback and fresh clean boundary may one separately named diagnostic1 run. No crash5 retry/coverage increment.",
+  "next": "Save/push/exactremote/fullGitHub recovery and metadata readback, then only one named diagnostic1 via unchanged wrapper/environment after frozen237 and immediate clean global/new-namespace v2 preflight. Preserve/archive/save/recover original before causal review. No automatic next/retry or crash5 qualification.",
   "sourceReview": {
     "verdict": "ACCEPT_AFFECTED_SOURCE_AND_NEW_NAMED_ZERO3_ONLY_AFTER_SAVE_RECOVERY_READBACK",
     "candidate": "6daaa3da8fb279909ef6318cdfa9892a2f06362c",
@@ -1009,7 +1023,7 @@
     }
   },
   "freshPreparationCandidate": {
-    "status": "ORIGINAL_NATIVE0_ZERO3_DIAGNOSTIC_CANDIDATE_INDEPENDENT_PREP_PENDING",
+    "status": "INDEPENDENT_PREP_ACCEPTED_ZERO3_NATIVE0",
     "actualSource": "8f8f534304e3672df5d42c9ab31e7055235bfaca",
     "compiledSource": "8f8f534304e3672df5d42c9ab31e7055235bfaca",
     "sourcePinCount": 101,
@@ -1227,19 +1241,56 @@
         "scope": "Unchanged independently accepted argv/stat observer, mandatory dated PREP acceptance and immediate before/after actual boundaries. Optional exe, fail closed on active/UNKNOWN/roots. No old snapshot reconstruction."
       }
     ],
-    "cleanup": "Native owned-tree/runtime cleanup plus dated v2 argv/stat global/new-TMPDIR boundaries. Frozen prior current-cloud roots unchanged outside mutable namespace. Original exe arrays incomplete; no continuous/instant absence inference."
+    "cleanup": "Native owned-tree/runtime cleanup plus dated v2 argv/stat global/new-TMPDIR boundaries. Frozen prior current-cloud roots unchanged outside mutable namespace. Original exe arrays incomplete; no continuous/instant absence inference.",
+    "historicalObservationStatusBeforeAcceptance": "ORIGINAL_NATIVE0_ZERO3_DIAGNOSTIC_CANDIDATE_INDEPENDENT_PREP_PENDING"
   },
   "freshPreparationAcceptance": {
-    "status": "NONE_CURRENT_CORRECTED_DIAGNOSTIC_PREP_UNRUN",
-    "noActualRelease": true
+    "verdict": "ACCEPT_PREP_FOR_ONE_SEPARATELY_NAMED_DIAGNOSTIC1_AFTER_SAVE_RECOVERY_READBACK_AND_CLEAN_PREFLIGHT",
+    "candidate": "49d64969cad4bde1f9cbac3759785b733841c884",
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/check_l01_diagnostic1_compile_corrected_prep.py",
+        "sha256": "ec7f858e51b819c7c452190dd1a40f160f7a647981bb778bb0cf36c084e5c478",
+        "bytes": 27083
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-prep-checker-ready-20261018.json",
+        "sha256": "296af21faf57c94dbc556441530dded6394426efc6e260bd9376cfada5b08457",
+        "bytes": 4008
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-prep-independent-check-49d64969-20261018.json",
+        "sha256": "c9fd9c0dcf8aae7776f710c08d8635bbf739c3e3efde2b2bd306bbd0b9320161",
+        "bytes": 24940
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-prep-independent-review-20261018.json",
+        "sha256": "409037e1ef6b137c65ecf8613800f5d4e6ef3ad1086746e6176413223e45d377",
+        "bytes": 20607
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-prep-independent-review-20261018.md",
+        "sha256": "3b0f2e165c03565b34e245fd5b8f999d0a9558490d39b4133223458d3a0eb8f3",
+        "bytes": 3067
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-prep-candidate-recovery-49d64969-20261018.json",
+        "sha256": "a8c8cdb02893221c0cad051fec6c71840fb8b7629fb78077b4c7da0d23a8a313",
+        "bytes": 19686
+      }
+    ]
   },
   "jointBlockerReview": {
     "status": "HISTORICAL_JOINT_LEASE_BLOCKER_RECORD_RETAINED",
     "currentPointer": "causalReview"
   },
   "nextProposedVerificationContract": {
-    "status": "CURRENT_DIAGNOSTIC_SOURCE_THEN_ZERO3_PREP_REQUIRED",
-    "currentPointer": "currentVerificationContract"
+    "status": "SOURCE_AND_FRESH_ZERO3_PREP_ACCEPTED_ONE_DIAGNOSTIC_GATE_ONLY",
+    "currentPointer": "currentVerificationContract",
+    "coverageIncrement": 0,
+    "crash5RetryAuthorized": false
   },
   "historicalBindingScope": "Before-diagnostic source/cloud snapshots and original archives retain all99-pin/23product provenance,52accepted targets and frozencrash5. Current101 pins are fixture instrumentation only, uncompiled/unrun.",
   "historicalCausalReview": [
@@ -1822,5 +1873,16 @@
         "bytes": 6393
       }
     ]
+  },
+  "historicalDiagnostic1PreparationFieldsBeforeAcceptance": {
+    "freshPreparationAcceptance": {
+      "status": "NONE_CURRENT_CORRECTED_DIAGNOSTIC_PREP_UNRUN",
+      "noActualRelease": true
+    },
+    "nextProposedVerificationContract": {
+      "status": "CURRENT_DIAGNOSTIC_SOURCE_THEN_ZERO3_PREP_REQUIRED",
+      "currentPointer": "currentVerificationContract"
+    },
+    "phase": "DIAGNOSTIC1_ZERO3_NATIVE0_FRESH_INDEPENDENT_PREP_PENDING"
   }
 }
