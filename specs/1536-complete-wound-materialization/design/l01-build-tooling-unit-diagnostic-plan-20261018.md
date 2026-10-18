@@ -20,12 +20,15 @@ retain original124/137,520.572s integration build and72.273s incomplete unit bui
 The600s deadline was shared across the whole catalog;72s was not a unit timeout.
 No original Csc/project timings, process CPU or RSS were recorded.
 
-Current same-UID tool census found no executing dotnet/pwsh, prior controller/PW
-PIDs absent;35dotnet zombies are exited, not active servers. This is a dated census,
-not old ancestry/reaping proof. No signal/reap/server shutdown is performed.
-5logical CPUs share4CPU quota; cgroup memory limit16GiB, current headroom about5.9GiB,
-tmp free7.28GiB. Lifetime max/throttling events lack an original baseline; current
-OOM counters0 and file-cache-heavy memory do not establish the previous cause.
+Corrected same-UID stat/executable census with identity-rechecked exact argv0
+fallback found no active tool match; prior controller/PW PIDs absent,35dotnet
+zombies exited. Executable visibility is limited; this is a dated match-based
+census, not original ancestry/reaping proof. No signal/reap/server shutdown occurs.
+Affinity exposes5logical CPUs. Observed cpu.max represents4CPU bandwidth and
+memory.max is16GiB, with current node headroom about5.9GiB and tmp free7.28GiB.
+The cgroup2 mount root is/.. while membership is0::/: these are shared mount-node
+observations, not proven effective per-build/ancestor limits. Lifetime max/throttle
+events lack an original baseline; OOM0 and file cache do not establish old cause.
 
 Unit build graph is5projects: unit, client, GMBridge, TestSupport and storage host.
 Restore graph omits GMBridge metadata, while original build log/evaluated references
@@ -43,7 +46,10 @@ Original actual server use/fallback is unknown. No active server is observed now
 - [ ] Invoke `recovery/l01-build-tooling-unit-once-20261018.py` once with exact clean
   current HEAD, saved review path/hash. Its unused private root is
   `/tmp/l01bd-772d38df9b5b4cf8`; mkdir prevents reuse. Before launch recheck149D01
-  pins,172installed inputs, no active tool process, old rootPID absence and tmp free.
+  pins,172installed inputs and exact S01 helper SHA before import, no active exact
+  tool match, old rootPID absence, required numeric resource reads and tmp free.
+  An unresolved still-present/reused PID read holds launch/acceptance; a vanished
+  PID is distinguished by reprobe. Record raw cgroup mount-node identity/scope.
 - [ ] The only build is installed `dotnet build BookOfEternityClient.Tests/...csproj
   --verbosity minimal --artifacts-path <root>/artifacts --disable-build-servers
   -p:GenerateDocumentationFile=true -p:NoWarn=1591 -p:NuGetAudit=false
@@ -52,13 +58,16 @@ Original actual server use/fallback is unknown. No active server is observed now
   No test/discovery/fixture/game/diagnostic command is run. Persistent servers are
   ignored per invocation; no global server configuration/shutdown changes.
 - [ ] Installed GNU timeout owns a new session/process group and ordinary600s
-  execution limit, then TERM/at most10s cleanup before KILL. It is independent of
-  the Python observer. Samples every2s cover only that session's PID/starttick/
+  execution limit, then TERM and, while the monitored command remains alive,
+  at most10s before KILL. Normal wrapper exit does not prove descendant cleanup.
+  This bound is independent of Python. Samples every2s cover only that session's PID/starttick/
   PPID/state/CPU ticks/RSS and cgroup counters. Ordinary logs plus MSBuild performance
   summary provide project/task timing. No stacks, dumps, registers or game payloads.
 - [ ] Save first raw command/logs/record/samples and original native status. Wrapper
-  normal0 passes through build success;124/137 do not manufacture a known separate
-  child exit. Observer errors stay separate; own-session/tool liveness after exit
+  normal0 passes through build success; raw negative Popen return means a signal
+  (for example,-9), not positive137. Preserve it and map only the external controller
+  exit to128+signal.124/negative status do not invent a known separate child exit.
+  Observer errors stay separate; own-session/tool liveness after exit
   blocks acceptance and permits no global/PID signal. Retain disposable artifacts.
 - [ ] Independent EVIDENCE, remote SHA/readback/clean recovery and handoff. No further
   build retry or downstream D01 execution follows automatically.

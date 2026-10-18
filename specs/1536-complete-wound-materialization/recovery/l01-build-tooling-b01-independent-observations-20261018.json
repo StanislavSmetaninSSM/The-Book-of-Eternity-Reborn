@@ -1,0 +1,43 @@
+{
+  "kind": "B01_INDEPENDENT_DATED_READONLY_ENVIRONMENT_OBSERVATIONS",
+  "firstObservationUtc": "2026-10-18T21:41:47Z",
+  "affinity": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "selfCgroup": "0::/",
+  "activeNamedTools": [],
+  "dotnetZombieCount": 35,
+  "priorRootPids": {
+    "97377": "ABSENT",
+    "97402": "ABSENT"
+  },
+  "procReadErrors": [],
+  "tmpFreeBytes": 7819542528,
+  "workspaceFreeBytes": 8754327552,
+  "observedMountedNode": {
+    "cpuMax": "400000 100000",
+    "memoryMax": 17179869184,
+    "memoryCurrent": 10303463424,
+    "memoryEvents": "low0 high0 max6638 oom0 oom_kill0 oom_group_kill0",
+    "cpuThrottledLifetimePeriods": 32333
+  },
+  "laterVisibilityProbe": {
+    "time": "Subsequent read-only tool call; no precise UTC recorded",
+    "nonZombieSameUidProcesses": 8,
+    "exeReadable": 3,
+    "exePermissionError": 5,
+    "cmdlineReadErrors": [],
+    "exactDotnetPwshMatches": [],
+    "mountinfo": "90 89 0:24 /.. /sys/fs/cgroup ro,nosuid,nodev,noexec,relatime master:8 - cgroup2 cgroup2 rw,nsdelegate"
+  },
+  "limits": [
+    "Dated observations only; no continuity or universal process-absence proof.",
+    "Zombie means exited, not established original ancestry/reaping.",
+    "Mounted node /.. scope prevents exact effective per-build cgroup/ancestor quota attribution. Counters are shared-node observations, not process-exclusive.",
+    "No build/test/helper/diagnostic target, signal, policy mutation or install was performed."
+  ]
+}

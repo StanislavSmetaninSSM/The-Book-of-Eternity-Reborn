@@ -431,9 +431,9 @@
   ],
   "conclusions": [
     "Original deadline expiry is established; slow-build cause is not. No original per-process CPU/RSS/Csc phase observations exist.",
-    "Current CPU quota is4cores across5logical; current cgroup headroom is about5.9GiB and tmp free about7.28GiB. Cgroup memory mostly file cache/shmem; headroom is not a guarantee.",
+    "Observed mount node has cpu.max400000/100000, memory.max16GiB, current node headroom about5.9GiB and tmp free7.28GiB. Effective task/ancestor limits and exclusive attribution are unproved.",
     "Memory peak/max events and CPU throttling counters are lifetime snapshots with no original-run baseline. They cannot attribute original slowdown. oom/oom_kill counters currently0 do not prove absence of every possible external termination.",
-    "No active dotnet/pwsh in point-in-time same-UID tool census; prior controller/PW rootPIDs absent.35dotnet zombies are exited, not active servers, and original ancestry/reaping are not established. No signals issued.",
+    "Initial comm-based snapshot found no named active tool and35dotnet zombies. Corrected stat/executable/identity-rechecked argv0 fallback probe independently finds no active exact tool match; executable visibility is limited. Old roots absent, ancestry/reaping unproved, no signals.",
     "Build graph differs from restore graph: unit has5projects including GMBridge; integration3. Original total integration time does not isolate which project/compiler task consumed it.",
     "No current persistent degradation established by these snapshots. Prefer one independently justified isolated unit build with ordinary600s bound and bounded observations, rather than claiming a repair or substituting fresh cloud without evidence."
   ],
@@ -444,5 +444,6 @@
   ],
   "gameplayRelease": "NONE",
   "syntheticRelease": "NONE",
-  "originalCrash5Release": "NONE"
+  "originalCrash5Release": "NONE",
+  "scopeCorrection": "Original5f82 snapshot labels are narrowed: /proc/self/cgroup0::/ and cgroup2 mount root/.. expose shared mount-node counters. cpu.max400000/100000 and memory.max16GiB are observed node values, not a proven effective per-build/ancestor allocation. Root cause remains unproved."
 }

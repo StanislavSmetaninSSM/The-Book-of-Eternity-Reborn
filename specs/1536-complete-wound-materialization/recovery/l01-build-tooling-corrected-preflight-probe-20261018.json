@@ -1,0 +1,48 @@
+{
+  "kind": "B01_CORRECTED_SOURCE_READONLY_PREFLIGHT_PROBE",
+  "scriptSha256": "b8182fb480ad46452010e31f395e9d2deac63c11d5e1e90d0c08c273e8387e6f",
+  "processSummary": [
+    {
+      "comm": "dotnet",
+      "state": "Z",
+      "count": 35
+    }
+  ],
+  "visibility": {
+    "executableFallbacks": 5,
+    "positivelyVanished": 0
+  },
+  "resources": {
+    "monotonic": 44515.123491804,
+    "cgroup": {
+      "cpu.max": "400000 100000",
+      "cpu.stat": "usage_usec 28936651872\nuser_usec 24437674575\nsystem_usec 4498977297\nnice_usec 0\nnr_periods 214490\nnr_throttled 32333\nthrottled_usec 3241810494\nnr_bursts 0\nburst_usec 0",
+      "memory.current": "10244837376",
+      "memory.max": "17179869184",
+      "memory.events": "low 0\nhigh 0\nmax 6638\noom 0\noom_kill 0\noom_group_kill 0"
+    },
+    "cgroupMembership": "0::/",
+    "cgroupMount": "90 89 0:24 /.. /sys/fs/cgroup ro,nosuid,nodev,noexec,relatime master:8 - cgroup2 cgroup2 rw,nsdelegate",
+    "mountNode": {
+      "device": 24,
+      "inode": 148
+    },
+    "counterScope": "Observed shared mount node; effective per-build/ancestor limits and exclusive attribution are unproved.",
+    "affinity": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "load": [
+      0.080078125,
+      0.3125,
+      1.00439453125
+    ],
+    "tmpFreeBytes": 7819513856
+  },
+  "buildLaunches": 0,
+  "scope": "AST-exact read-only census/resource functions only; main/import/finalizer/build/timeout not invoked. Unreadable executables use identity-rechecked argv0 fallback; non-tool argv values are not published.",
+  "provenanceNote": "Only nativeExitScope explanation changed after the read-only function probe; proc_rows/resources_now/tool_summary bytes are unchanged."
+}

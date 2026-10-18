@@ -1,0 +1,94 @@
+{
+  "kind": "B01_INDEPENDENT_ORIGINAL_PLAN_SOURCE_HOLD",
+  "candidate": "5f82a65318a3845418ddb1966d00095c78f511e3",
+  "verdict": "HOLD_TARGETED_SOURCE_CORRECTIONS_REQUIRED",
+  "buildOnlyAdmission": "HOLD_SOURCE_CORRECTIONS_REQUIRED",
+  "buildScriptSha256": "5ce605559a4cd11e87c0dce92c5284561cd60b0909785c6ed72584019b784ba4",
+  "findings": [
+    {
+      "id": "B01-S01",
+      "severity": "SOURCE_BLOCKER",
+      "member": "main: runpy S01 dependency",
+      "finding": "Accepted S01 smoke.py is outside149 D01 pins and imported without its accepted hash guard; its environment/identity/FINALIZE code participates in this runner.",
+      "correction": "Require accepted SHA d121731cff4867acf993d034962c9f5591fdcb496307a5fe0e9642b8392da333 before import and one-shot root consumption. M01 finalizer dependency is already in149 pins."
+    },
+    {
+      "id": "B01-S02",
+      "severity": "SOURCE_BLOCKER",
+      "member": "proc_rows and launch/terminal guards",
+      "finding": "Initial census filters mutable comm only, so renamed dotnet/pwsh comm can evade it; all FileNotFound reads are silently dropped without proving exit. This cannot support the promised old-tree/remaining-tool clean decision.",
+      "correction": "Use stat-first non-Z census, exact executable or a declared exact cmdline/stat fallback, double PID/birth identity, and explicit still-live/reused/unreadable UNKNOWN. Positive disappeared PIDs may be treated as exited. Hold launch/acceptance on unresolved relevant identities. Current sandbox denies5/8 live exe links, so require truthful fallback rather than an impossible universal exe-read assumption."
+    },
+    {
+      "id": "B01-S03",
+      "severity": "SOURCE_BLOCKER",
+      "member": "resources_now, preflight and samples",
+      "finding": "Required cgroup read errors become ordinary strings and do not prevent launch or observer-success; current plan overstates exact effective resource scope without recording mount ancestry.",
+      "correction": "Validate required resource numeric/readable state before launch; retain sampling/terminal read failures as observation errors or explicit incomplete scope that cannot be PASS. Record own cgroup/mount mapping/node identity and shared-node limits. Do not claim observed mounted-node4CPU/16GiB equals a fully established effective per-build limit."
+    },
+    {
+      "id": "B01-S04",
+      "severity": "SOURCE_BLOCKER",
+      "member": "Popen.wait return code and final controller exit",
+      "finding": "Direct Popen can return -9 when timeout is killed with its process group. Saving that raw value is valid, but passing it to sys.exit is not shell137; timeout-wrapper native and controller representations are conflated.",
+      "correction": "Preserve raw Popen status (including negative signal) and explicitly derive controller/shell-compatible status without overwriting raw outcome. Native nonzero retains priority over observer errors. Narrow timeout prose: kill-after is contingent on the monitored command still living; wrapper exit does not establish descendant cleanup, so terminal census/HOLD remains required."
+    }
+  ],
+  "diagnosis": [
+    "Original catalog124/global600s and incomplete unit137 remain unchanged. Original unit72.273s was remaining aggregate budget, not an independent unit timeout. No old Csc/project CPU or memory timings establish cause.",
+    "Independent current reads agree no active named/exact-tool match and both old root PIDs absent at observation;35 dotnet zombies execute no code. Prior runner cleanup report plus current dated observations support considering one new build after a fresh clean guard; no claim to reconstruct old tree ancestry.",
+    "Current affinity5, readable mounted-node counters and tmp/workspace free space do not establish persistent degradation or OOM. The /.. mount-root qualification limits effective resource attribution. Fresh-cloud substitution is not justified by these snapshots alone.",
+    "Full unit build graph is5 nodes including GMBridge, while restore dgspec has4. XML references, saved evaluation and original log agree.61 unit package versions have cached nupkg files. SDK output-path targets exclude old bin/obj and artifacts root; custom native-package validation does not launch gameplay.",
+    "UseSharedCompilation evaluation is empty; installed SDK target defaults it at target execution. Original compiler-server use is UNKNOWN. No active server is observed now."
+  ],
+  "planAssessment": {
+    "potentiallyJustified": true,
+    "purpose": "One standalone five-project unit build can establish present bounded build capability and obtain ordinary task/project timings, unlike blindly replaying the full catalog.",
+    "conditionsDiffer": "Private artifacts/CLI directories, local cached restore feed, disabled persistent build servers and an independent600s bound differ from the failed catalog; success cannot identify which prior condition caused slowdown.",
+    "scope": "No test/discovery/helper/game/synthetic/attach, no production/assertion change or budget increase. Standard new-session timeout with600s+10s bound is a suitable existing mechanism provided outcomes and residual-process limitations are explicit.",
+    "afterCorrection": "Focused re-review of only named guards/accounting and saved/recovered report is required before at most one build. No execution authorized for this candidate.",
+    "stop": "Preserve first raw logs/samples/command/native outcome, any gaps and terminal residual identity. Any failure/UNKNOWN/leftover freezes outcome. No auto retry or D01 advance; original catalog PREP remains HOLD regardless of build diagnostic success."
+  },
+  "checks": {
+    "artifact": {
+      "path": "/tmp/1536-cloud-tools/review/l01-build-tooling-b01-original-checks-20261018.json",
+      "bytes": 11432,
+      "sha256": "60a6ec0d177c7f53273129f25c344d44d8cf3468f79f89dd293bfd942ae8004e"
+    },
+    "checker": {
+      "path": "/tmp/1536-cloud-tools/review/check_b01_original_source.py",
+      "bytes": 5498,
+      "sha256": "61b43f84529f7d211931eacee5740b3fa6b82e0fc455420eb8f71d03c0bde949"
+    },
+    "passed": 100
+  },
+  "sourceSnapshot": {
+    "path": "/tmp/1536-cloud-tools/review/b01-original-unit-once-source-5f82a653.py",
+    "bytes": 7794,
+    "sha256": "5ce605559a4cd11e87c0dce92c5284561cd60b0909785c6ed72584019b784ba4"
+  },
+  "observations": {
+    "path": "/tmp/1536-cloud-tools/review/l01-build-tooling-b01-independent-observations-20261018.json",
+    "bytes": 1461,
+    "sha256": "f6eb73762403b0c9f3772b3bab43eb626c957a0723b07e115a887b6e8a3ffe8a"
+  },
+  "sourceReferences": [
+    "recovery/l01-build-tooling-unit-once-20261018.py: proc_rows/resources_now/main",
+    "BookOfEternityClient.Tests.csproj: four ProjectReference entries including GMBridge false-output metadata",
+    "SDK10.0.402 Microsoft.NET.DefaultOutputPaths.targets:78\u201389,125\u2013133",
+    "SDK10.0.402 Roslyn/Microsoft.Managed.Core.targets:57\u201358"
+  ],
+  "primarySemantics": [
+    {
+      "url": "https://raw.githubusercontent.com/coreutils/coreutils/master/src/timeout.c",
+      "support": "Standard process-group signal/kill-after and monitored-child behavior; upstream reference, not an assertion that local binary was rebuilt from this exact revision."
+    },
+    {
+      "url": "https://docs.python.org/3/library/subprocess.html#subprocess.Popen.returncode",
+      "support": "POSIX negative return values encode terminating signals; preserve raw return separately from controller representation."
+    }
+  ],
+  "reviewMethod": "Read-only source/XML/ZIP/cache/hash/AST and user-authorized dated proc/resource reads; no build/runtime target or signals. systematic-debugging skill used to distinguish original cause, current observations and proposed discriminating experiment.",
+  "retained": "D01 SOURCE accepted/PREP HOLD; L0152/57, old66529UNKNOWN, all historical failures, M01/S01 narrow evidence, game/synthetic/crash5/platform/broader holds and A3NO-PROCEED unchanged.",
+  "newRuntimeAuthorization": "NONE"
+}
