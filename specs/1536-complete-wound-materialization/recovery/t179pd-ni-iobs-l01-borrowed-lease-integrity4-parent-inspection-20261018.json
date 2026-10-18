@@ -1,0 +1,146 @@
+{
+  "kind": "PARENT_READONLY_ORIGINAL_ACTUAL_INSPECTION_NOT_INDEPENDENT_ACCEPTANCE",
+  "mode": "integrity4",
+  "actualSource": "52a163d0d06b7d1b762d0a5f5a7d81168eb2d728",
+  "compiledSource": "3ed6a8f3c0b944777ef05f2a0095431ec63f6664",
+  "nativeExit": 0,
+  "seconds": 386.20491197900265,
+  "expectedCases": 4,
+  "recordSha256": "3ac8313027fd7a59c2f6ae49928d962ec2534bb6e8915738685a96097eb6d1d6",
+  "tests": [
+    {
+      "Total": 4,
+      "Executed": 4,
+      "Passed": 4,
+      "Failed": 0
+    }
+  ],
+  "selections": [
+    {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 4,
+      "CompletedCases": 4,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    }
+  ],
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback(fault: \"CurrentInterface\")",
+      "testId": "ae2521c6-ec7b-d533-779d-c5d140f5d11c",
+      "outcome": "Passed",
+      "duration": "00:01:41.4418576",
+      "boundaries": {
+        "iobs_actual_native_join": 2,
+        "iobs_actual_abrupt_original_exit": 1,
+        "iobs_actual_abrupt_cut_raw_before_identity": 1,
+        "iobs_actual_current_resume_exit": 1
+      },
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-ed3df9f6c5cf4c598a0ef4f58694f121",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-17813c60971a4fb2bd8191bc7f405bfd",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "jsonLineParseErrors": 0,
+      "error": null,
+      "stack": null
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback(fault: \"OriginalManifest\")",
+      "testId": "3f9a01f7-e06c-3bff-88e0-8efe626d42be",
+      "outcome": "Passed",
+      "duration": "00:01:37.3743885",
+      "boundaries": {
+        "iobs_actual_native_join": 2,
+        "iobs_actual_abrupt_original_exit": 1,
+        "iobs_actual_abrupt_cut_raw_before_identity": 1,
+        "iobs_actual_current_resume_exit": 1
+      },
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-1a491c8a29224d26ba60f378d579983f",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-1ebc40e143984291a76640e5bf24f6ab",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "jsonLineParseErrors": 0,
+      "error": null,
+      "stack": null
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback(fault: \"RecordFingerprint\")",
+      "testId": "850a6267-31dd-db23-7696-335d45b6df51",
+      "outcome": "Passed",
+      "duration": "00:01:16.1079754",
+      "boundaries": {
+        "iobs_actual_native_join": 2,
+        "iobs_actual_abrupt_original_exit": 1,
+        "iobs_actual_abrupt_cut_raw_before_identity": 1,
+        "iobs_actual_current_resume_exit": 1
+      },
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-354fe51de8a24091b9c59bdb196d7422",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-cca3cdaffbe941cd817ba3ea3229f9a4",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "jsonLineParseErrors": 0,
+      "error": null,
+      "stack": null
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback(fault: \"Version\")",
+      "testId": "3f621749-8e7b-afd7-56cc-962b13f2024f",
+      "outcome": "Passed",
+      "duration": "00:01:12.7605274",
+      "boundaries": {
+        "iobs_actual_native_join": 2,
+        "iobs_actual_abrupt_original_exit": 1,
+        "iobs_actual_abrupt_cut_raw_before_identity": 1,
+        "iobs_actual_current_resume_exit": 1
+      },
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-6e87ca0b823443e5aa3b9973ec18f75f",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-59e8bc4ac8d64dcc9790e25a613757d9",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "jsonLineParseErrors": 0,
+      "error": null,
+      "stack": null
+    }
+  ],
+  "binariesUnchanged": true,
+  "allOutputsUnchanged": true,
+  "namespaceAfter": {
+    "ownedRoots": []
+  },
+  "processesAfter": [],
+  "headAfter": "52a163d0d06b7d1b762d0a5f5a7d81168eb2d728",
+  "statusAfter": ""
+}

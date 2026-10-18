@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "QUALIFIED47_OF57_BORROWED_LEASE_PREP_ACCEPTED",
+  "status": "INTEGRITY4BORROWEDLEASE_PASS_EVIDENCE_PENDING",
   "sourceCheckpoint": "9fdecef3fd79614b9eb13b5609c99b9457d51af4",
   "sourcePinDigest": "b4e01729c1a4df935f79e7407e6aafe52bf9394d4f6e1ddab6f83a40893f02d5",
   "sourcePinCount": 98,
@@ -420,7 +420,7 @@
           "cases": 4
         }
       ],
-      "status": "NATIVE_4PASS_FROZEN_UNQUALIFIED_CURRENT_INTERFACE_LOCK_VACUITY"
+      "status": "NEW_BORROWED_LEASE_NATIVE_PASS_EVIDENCE_PENDING"
     },
     {
       "mode": "uncertain1",
@@ -1157,6 +1157,68 @@
       "censusAfterGapSeconds": 0.785627,
       "limits": "Observed native outcome is not independent EVIDENCE acceptance or additional qualified targets; original frozen failures and oldUNKNOWN remain unchanged.",
       "failureScope": "Failed at UncertainResume.cs67 currentResumedProof NotNull after real late caller. Prior initial PublicationUncertain/PublishedI/expired old attempt/unchanged mechanical before/direct restore assertions reached. Current full-proof checkpoint, subsequent turn43/exact resumed proof/mechanical outcome/terminal cleanup/inert repeat assertions not reached; do not infer them from native cleanup."
+    },
+    "integrity4BorrowedLease": {
+      "actualSourceRecovery": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-integrity4-actual-source-recovery-52a163d0-20261018.json",
+        "sha256": "bb9a3acd44647e094153309dfe26577ba236bed9f87e59893683a3f2209ce15b",
+        "bytes": 3783
+      },
+      "status": "ORIGINAL_NATIVE_PASS_INDEPENDENT_EVIDENCE_PENDING",
+      "actualSource": "52a163d0d06b7d1b762d0a5f5a7d81168eb2d728",
+      "compiledSource": "3ed6a8f3c0b944777ef05f2a0095431ec63f6664",
+      "nativeExit": 0,
+      "seconds": 386.20491197900265,
+      "tests": {
+        "Total": 4,
+        "Executed": 4,
+        "Passed": 4,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 4,
+        "CompletedCases": 4,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "recordPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-first-integrity4-borrowed-lease-cloud-813f1057/record.json",
+      "recordSha256": "3ac8313027fd7a59c2f6ae49928d962ec2534bb6e8915738685a96097eb6d1d6",
+      "archive": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-borrowed-lease-integrity4-813f1057-files-20261018/archive.json",
+        "sha256": "b7d6b3aad2ac8d83c80d6d3aac5cc8838b212ecc19a2b74c8872f9cbafe01653",
+        "bytes": 7998,
+        "rawChains": 11
+      },
+      "parentInspection": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-integrity4-parent-inspection-20261018.json",
+        "sha256": "085f4e062e551fbe34d86cd6c77a4af5f669419380dfa1c96a38f41fe39173e4",
+        "bytes": 5521
+      },
+      "supplementalAuthoritativeCensuses": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-integrity4-before-census-20261018.json",
+          "sha256": "829570141b2ec74b5faa60683289194087bc672c67e8d354a07faa394e000d28",
+          "bytes": 101539,
+          "datedBoundaryGapSeconds": 2.851919
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-integrity4-after-census-20261018.json",
+          "sha256": "5c2627af2d848dd092d7c1d2d90457a91ea933d882e07dca5d248714168a7bfa",
+          "bytes": 97110,
+          "datedBoundaryGapSeconds": 1.550652
+        }
+      ],
+      "nineBinariesUnchanged": true,
+      "allOutputsUnchanged": true,
+      "completeOutputFileCount": 1575,
+      "namespaceAfter": {
+        "ownedRoots": []
+      },
+      "originalProcessesAfter": [],
+      "processArrayLimitation": "Original exe-link arrays incomplete. V2 argv/stat census is dated boundary only.",
+      "limits": "Observed native outcome is not independent EVIDENCE acceptance. Historical originals including old66529 UNKNOWN unchanged."
     }
   },
   "holds": [
@@ -1170,7 +1232,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Save/recover acceptance and readback; only separately named integrity4 after clean v2 preflight.",
+  "next": "Save/recover original outcome then independent EVIDENCE; no next actual released.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -1346,21 +1408,8 @@
     "phase": "HISTORICAL_COMPILED_6AB43F6A_ZERO3_PRE_CORRECTION_INELIGIBLE_FOR_CORRECTED_ACTUALS"
   },
   "release": {
-    "status": "SEPARATELY_NAMED_AFTER_SAVED_ACCEPTANCE_RECOVERY_AND_IMMEDIATE_CLEAN_V2_CENSUS",
-    "mode": "integrity4",
-    "label": "t179pd-ni-iobs-l01-process-first-integrity4-borrowed-lease-cloud-813f1057",
-    "compiledSource": "3ed6a8f3c0b944777ef05f2a0095431ec63f6664",
-    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-borrowed-lease-cloud-813f1057/record.json",
-    "expectedCases": 4,
-    "category": "fr063-joint-interface-current-integrity",
-    "methods": [
-      {
-        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback",
-        "cases": 4
-      }
-    ],
-    "conditions": "After acceptance saved/pushed/exactremote/fullcleanGitHub recovery and metadata readback, immediate clean authoritative v2 preflight then one fixed NoBuild/FIRST invocation. Preserve original outcome then immediate after-boundary/whole archive/inventories/cleanup. Unexpected outcome freezes affected set for independent diagnosis; no automatic next/retry; no repo mutation during actual. Disposable per-test GUID root/new nonce/genuine children only.",
-    "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED_NOT_RECOVERED_OR_RETRIED"
+    "status": "NONE_PENDING_INDEPENDENT_EVIDENCE",
+    "mode": null
   },
   "newOriginalObservedPassingCases": 4,
   "lastAcceptanceRecovery": {
