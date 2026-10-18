@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_BORROWED_LEASE_SOURCE_CANDIDATE",
-  "status": "BORROWED_LEASE_SOURCE_ACCEPTED_FRESH_ZERO4_ONLY",
+  "status": "BORROWED_LEASE_ZERO4_NATIVE0_INDEPENDENT_PREP_PENDING",
   "sourceBase": "bb99804e8c7124e4c625ea7557d61cdaa93a8035",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
   "sourcePins": [
@@ -895,10 +895,10 @@
   "gmDisposition": "Client-owned lease composition and fixture oracle/observation only; no GM-authored capability, schema, prompt, example, manifest or daemon contract changes.",
   "oldCorrectedCrash": "Old environment session66529 remainsUNKNOWN, bytes unavailable. Separate new qualification only after corrected SOURCE/fresh PREP/named release, independent disposable fixtures/new genuine children; no old environment/process or real save operation.",
   "namedActualRelease": {
-    "status": "NONE_SOURCE_AND_FRESH_PREP_PENDING",
+    "status": "NONE_FRESH_INDEPENDENT_PREP_PENDING",
     "mode": null
   },
-  "next": "After exactremote/full clean GitHub recovery and metadata/pin readback, serial named fresh ZERO4 only; independent PREP before separately named actuals. Retain47 and original FAIL/old66529 UNKNOWN.",
+  "next": "Save/recover ZERO4 originals; independent fresh PREP before separately named integrity4/uncertain1/newcrash5 actuals. Retain47 provenance and frozen originals/old66529 UNKNOWN.",
   "sourceReview": {
     "verdict": "ACCEPT_BORROWED_LEASE_SOURCE_AND_NAMED_ZERO4_ONLY",
     "model": "gpt-6-astra",
@@ -944,7 +944,7 @@
     "metadataConditions": "Current causal references and ledger runtime pointer clarified at9fde; all originals explicitly historical. Saved acceptance must be exactremote/recovered and read back before ZERO. No actual release."
   },
   "namedZeroRelease": {
-    "status": "SOURCE_ACCEPTED_SAVED_RECOVERED_ZERO4_ONLY",
+    "status": "COMPLETED_NATIVE0_ZERO4_INDEPENDENT_PREP_PENDING_NO_REPEAT",
     "labels": {
       "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-borrowed-lease-cloud-813f1057",
       "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-borrowed-lease-cloud-813f1057",
@@ -961,11 +961,263 @@
     "actualRelease": false
   },
   "freshPreparationCandidate": {
-    "status": "PENDING_FOR_BORROWED_LEASE_CANDIDATE",
-    "previousOriginal": {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-before-borrowed-lease-20261018.json",
-      "sha256": "b33c8e20d033760925f57e45cb71460423989f0095c1492444a7e2e27e1ded8d",
-      "bytes": 60552
+    "status": "ORIGINAL_NATIVE0_ZERO4_CANDIDATE_INDEPENDENT_PREP_PENDING",
+    "actualSource": "3ed6a8f3c0b944777ef05f2a0095431ec63f6664",
+    "compiledSource": "3ed6a8f3c0b944777ef05f2a0095431ec63f6664",
+    "sourcePinCount": 98,
+    "sourcePinDigest": "b4e01729c1a4df935f79e7407e6aafe52bf9394d4f6e1ddab6f83a40893f02d5",
+    "productDeltaCount": 22,
+    "records": [
+      {
+        "mode": "catalog",
+        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-borrowed-lease-cloud-813f1057/record.json",
+        "sha256": "f883613f18604329ceec86219d8011722f66f5bcb40027e1a00a1e53e0317d38",
+        "nativeExit": 0,
+        "actualTestsExecuted": 0,
+        "seconds": 487.777805564001,
+        "descriptors": 16,
+        "methods": 33,
+        "cases": 57,
+        "resultDirectories": [
+          "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-140912-805-38934-e9dc4e99dd894407a6e259f426af0967-categories"
+        ]
+      },
+      {
+        "mode": "plan",
+        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-whole-plan-borrowed-lease-cloud-813f1057/record.json",
+        "sha256": "53be88e6749148155ce8daa62399032f8ed52c9b5a5ae1af52baf8fb6d25f036",
+        "nativeExit": 0,
+        "actualTestsExecuted": 0,
+        "seconds": 31.965609930000937,
+        "descriptors": 16,
+        "methods": 33,
+        "cases": 57,
+        "resultDirectories": [
+          "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-141732-369-39867-865da04b753744b3b8de853237d8e05e-categories"
+        ]
+      },
+      {
+        "mode": "corrective-plan",
+        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-borrowed-lease-cloud-813f1057/record.json",
+        "sha256": "11492d33c30fb4031bbd4b3dc1ed2b55c5ffa2b700c8cf3af844f1566120f471",
+        "nativeExit": 0,
+        "actualTestsExecuted": 0,
+        "seconds": 22.614836618999107,
+        "descriptors": 2,
+        "methods": 2,
+        "cases": 5,
+        "resultDirectories": [
+          "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-141833-723-40113-642e84f1cf8d4debb6c3e8e73c13ca6d-categories"
+        ]
+      },
+      {
+        "mode": "remaining-plan",
+        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-borrowed-lease-cloud-813f1057/record.json",
+        "sha256": "4d884c2fea1153ef68e8d6d33a2d0eb3fdcee7f9939c344c606c72793c6e2326",
+        "nativeExit": 0,
+        "actualTestsExecuted": 0,
+        "seconds": 24.265782540001965,
+        "descriptors": 1,
+        "methods": 1,
+        "cases": 5,
+        "resultDirectories": [
+          "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-141909-759-40301-12caf691c9b64cde9a8dab3493eeb356-categories"
+        ]
+      }
+    ],
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-borrowed-lease-preparation-813f1057-files-20261018/archive.json",
+      "sha256": "8311c105b656274c48b3876ea333b6acf230d42802c3078c52169d2ca5ff6acc",
+      "bytes": 22961,
+      "rawChains": 43
+    },
+    "binaryCopies": 9,
+    "completeOutputFiles": 1575,
+    "catalog": {
+      "categories": 808,
+      "methods": 11800,
+      "unmapped": [],
+      "staleSelectors": [],
+      "executed": 0
+    },
+    "whole": {
+      "descriptors": 16,
+      "methods": 33,
+      "cases": 57,
+      "executed": 0
+    },
+    "corrective": {
+      "descriptors": 2,
+      "methods": 2,
+      "cases": 5,
+      "executed": 0
+    },
+    "remaining": {
+      "descriptors": 1,
+      "methods": 1,
+      "cases": 5,
+      "executed": 0
+    },
+    "supplementalBoundaries": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-borrowed-lease-catalog-before-813f1057.json",
+        "sha256": "aae8d34a9096f8d7556c651657576eb50d187b87b05a092d8cd326fc63c6c892",
+        "bytes": 90879,
+        "phase": "borrowed-lease-catalog-before",
+        "cleanBoundary": true,
+        "entries": 101,
+        "datedBoundaryGapSeconds": 4.079232
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-borrowed-lease-catalog-after-813f1057.json",
+        "sha256": "e65956139c4150827e1a1ed8b3b801785e214b8c9488e79a5aec7d82d8f01612",
+        "bytes": 102394,
+        "phase": "borrowed-lease-catalog-after",
+        "cleanBoundary": true,
+        "entries": 105,
+        "datedBoundaryGapSeconds": 1.596708
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-borrowed-lease-whole-before-813f1057.json",
+        "sha256": "c0daa50e838e0d407f5d5955d6f26a7d7564977181f56a9c80179d4a6814207d",
+        "bytes": 100295,
+        "phase": "borrowed-lease-whole-before",
+        "cleanBoundary": true,
+        "entries": 105,
+        "datedBoundaryGapSeconds": 2.565865
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-borrowed-lease-whole-after-813f1057.json",
+        "sha256": "cc9044788d32fc133b015545dfc2c66e3287ebcb5885170c680c6e618d7f0c0b",
+        "bytes": 100310,
+        "phase": "borrowed-lease-whole-after",
+        "cleanBoundary": true,
+        "entries": 105,
+        "datedBoundaryGapSeconds": 2.434651
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-borrowed-lease-corrective-before-813f1057.json",
+        "sha256": "17fb2221a44744a3133c023c332c0856951c2fcaefc9c24069f30fb3b262276f",
+        "bytes": 100302,
+        "phase": "borrowed-lease-corrective-before",
+        "cleanBoundary": true,
+        "entries": 105,
+        "datedBoundaryGapSeconds": 2.620089
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-borrowed-lease-corrective-after-813f1057.json",
+        "sha256": "a072674b5a385a5e683626b8d0db0a548e7f00c37bcf7dc723a63aa2cdc1dd1a",
+        "bytes": 100311,
+        "phase": "borrowed-lease-corrective-after",
+        "cleanBoundary": true,
+        "entries": 105,
+        "datedBoundaryGapSeconds": 0.651016
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-borrowed-lease-remaining-before-813f1057.json",
+        "sha256": "72c29dc8658a56542599a2925dac55aa29b83e8895c997a392f1d0b5440c27e1",
+        "bytes": 100301,
+        "phase": "borrowed-lease-remaining-before",
+        "cleanBoundary": true,
+        "entries": 105,
+        "datedBoundaryGapSeconds": 2.620685
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-borrowed-lease-remaining-after-813f1057.json",
+        "sha256": "aa2613efce4a2db725b347588c28dd6f42038ac29f0a43aaf4af4d50c989eb4b",
+        "bytes": 100314,
+        "phase": "borrowed-lease-remaining-after",
+        "cleanBoundary": true,
+        "entries": 105,
+        "datedBoundaryGapSeconds": 1.13903
+      }
+    ],
+    "prepQualificationBoundary": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-borrowed-lease-prep-qualification-813f1057.json",
+      "sha256": "bd422b42ca421e6b8b23880a9724218e971f7fe425af05fbd22be2fe333448d4",
+      "bytes": 99144
+    },
+    "sourceAcceptance": {
+      "verdict": "ACCEPT_BORROWED_LEASE_SOURCE_AND_NAMED_ZERO4_ONLY",
+      "model": "gpt-6-astra",
+      "reasoningEffort": "xhigh",
+      "candidate": "9fdecef3fd79614b9eb13b5609c99b9457d51af4",
+      "artifacts": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/check_l01_borrowed_lease_source.py",
+          "sha256": "2b974052cef99def03cf1ed8b8fc1f0c34375d5b25254de079fa2f3c9650b112",
+          "bytes": 23070
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/check_l01_borrowed_lease_source_final.py",
+          "sha256": "e276c9debeca56c7ad5502634aaa44c75163ac6a7537cd743a43beac08991de4",
+          "bytes": 8885
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-source-feedback-ef981a46-20261018.json",
+          "sha256": "d5b425280b20df4462a5d79cd43e3aaf1889d8470c3c6b219c0fbfad54f8bb3e",
+          "bytes": 3747
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-source-independent-check-9fdecef3-20261018.json",
+          "sha256": "9eb47bbab72aa3582b761ac46e8655aa456c1fb13e819bf5e2d928359c035422",
+          "bytes": 9008
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-source-independent-check-ef981a46-20261018.json",
+          "sha256": "1bc4b1e95db10a777674c5f0b0d88c8773654772e9a169c53109b80de7c8e68a",
+          "bytes": 18224
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-source-independent-review-20261018.json",
+          "sha256": "c3ce0a2de8a1065ad407885af1db9c0120caeb30470f8f6c30f26e57a2e2639c",
+          "bytes": 23516
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-source-independent-review-20261018.md",
+          "sha256": "53cded5f686627c4d9f1e60221e49e170012732904e2392b9872e5b5c741bf6b",
+          "bytes": 3102
+        }
+      ],
+      "metadataConditions": "Current causal references and ledger runtime pointer clarified at9fde; all originals explicitly historical. Saved acceptance must be exactremote/recovered and read back before ZERO. No actual release."
+    },
+    "cleanup": "Native owned-tree/runtime cleanup and exact root boundary; original exe-dependent arrays are incomplete observer output. V2 argv/stat boundary is dated only, no continuous/instant absence.",
+    "orchestrationEvidence": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-borrowed-phase-catalog-launch-version-reconstructed.py",
+        "sha256": "41895273e5ca8e9c26ebb8e4cff75e4e2388320d19527f43077244c913c1d127",
+        "bytes": 2157
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-borrowed-phase-noncatalog-corrected-version.py",
+        "sha256": "d599977fc89c0aebf43faae0dd1fa0333d231ed2e2227fa18c5c90868d8d33fe",
+        "bytes": 2400
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-wrapper-orchestration-correction.json",
+        "sha256": "30033dbd64987d60e6a3ddc57de115421eeb9b7fdb7359021084c4f4548d30a6",
+        "bytes": 988
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-source-acceptance-parent-readback-3ed6a8f3.json",
+        "sha256": "9db1682f42db60dfcc270bbac22575c90d8c599de53dc89e8a26fd60faba0cc1",
+        "bytes": 864
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-source-acceptance-readback-3ed6a8f3-20261018.json",
+        "sha256": "b4616531543596c7c9d413d029f64645b72d3104c086277dc7c9aed164be23d9",
+        "bytes": 1791
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-phase-wrapper-independent-review-20261018.json",
+        "sha256": "a75f2abf6c4f96df4862ae003e62779087aaebe53ffc1cd25be7fea0ae418f04",
+        "bytes": 2286
+      }
+    ],
+    "sourceAcceptanceRecovery": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-source-acceptance-recovery-3ed6a8f3-20261018.json",
+      "sha256": "0f22a4e3bc97db066069a2ba0afb0875f67c0aed7d545114afef3624a6e73996",
+      "bytes": 4105
     }
   },
   "freshPreparationAcceptance": {

@@ -1,0 +1,38 @@
+{
+  "kind": "INDEPENDENT_BORROWED_LEASE_SOURCE_ACCEPTANCE_READBACK_NO_RUNTIME",
+  "checkedUtc": "2026-10-18T14:13:43.764532+00:00",
+  "acceptance": "3ed6a8f3c0b944777ef05f2a0095431ec63f6664",
+  "sourceCandidate": "9fdecef3fd79614b9eb13b5609c99b9457d51af4",
+  "metadataOnly": true,
+  "sourcePinCount": 98,
+  "sourcePinDigest": "b4e01729c1a4df935f79e7407e6aafe52bf9394d4f6e1ddab6f83a40893f02d5",
+  "productDeltaPaths": 22,
+  "restoredMetadataPaths": 10,
+  "receipt": {
+    "path": "/tmp/1536-cloud-tools/carrier-recovery-3ed6a8f3.json",
+    "bytes": 4105,
+    "sha256": "0f22a4e3bc97db066069a2ba0afb0875f67c0aed7d545114afef3624a6e73996"
+  },
+  "sourceReviewArtifactsExact": true,
+  "namedZero": {
+    "status": "SOURCE_ACCEPTED_SAVED_RECOVERED_ZERO4_ONLY",
+    "labels": {
+      "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-borrowed-lease-cloud-813f1057",
+      "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-borrowed-lease-cloud-813f1057",
+      "corrective-plan": "t179pd-ni-iobs-l01-process-prep-first-corrective-plan-borrowed-lease-cloud-813f1057",
+      "remaining-plan": "t179pd-ni-iobs-l01-process-prep-first-remaining-plan-borrowed-lease-cloud-813f1057"
+    },
+    "order": [
+      "catalog",
+      "plan",
+      "corrective-plan",
+      "remaining-plan"
+    ],
+    "conditions": "Saved/recovered independent SOURCE acceptance first; serial ZERO4 with native0/executed0/exact inventory and clean v2 before/after dated boundary each. Original outcome saved before qualification; independent PREP before any actual.",
+    "actualRelease": false
+  },
+  "actualRelease": false,
+  "qualifiedCases": 47,
+  "oldCorrectedCrash": "UNKNOWN",
+  "limits": "Immutable metadata/Git only; no running catalog/process/fixture-root/build-output inspection or runtime verdict."
+}

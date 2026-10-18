@@ -1,0 +1,16 @@
+{
+  "kind": "LOCAL_WRAPPER_ORCHESTRATION_CORRECTION_NOT_NATIVE_RETRY",
+  "createdUtc": "2026-10-18T14:11:01.948181+00:00",
+  "initialVersion": {
+    "path": "/tmp/1536-cloud-tools/run-borrowed-phase-catalog-launch-version-reconstructed.py",
+    "sha256": "41895273e5ca8e9c26ebb8e4cff75e4e2388320d19527f43077244c913c1d127",
+    "provenance": "Reconstructed after correction by exact inverse of sole inserted non-catalog argv block; original complete wrapper text is recorded in the tool write. No pre-edit on-disk hash/capture was taken; this is not claimed as contemporaneous captured original bytes."
+  },
+  "correctedVersion": {
+    "path": "/tmp/1536-cloud-tools/run-borrowed-phase-noncatalog-corrected-version.py",
+    "sha256": "d599977fc89c0aebf43faae0dd1fa0333d231ed2e2227fa18c5c90868d8d33fe"
+  },
+  "correction": "Append accepted catalog record for non-catalog prep only; catalog branch and running invocation unchanged.",
+  "nativeRetry": false,
+  "pinnedSourceChanged": false
+}

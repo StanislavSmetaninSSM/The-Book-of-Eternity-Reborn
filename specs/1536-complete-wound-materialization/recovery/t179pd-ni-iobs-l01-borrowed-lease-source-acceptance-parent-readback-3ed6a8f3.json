@@ -1,0 +1,17 @@
+{
+  "kind": "PARENT_SOURCE_ACCEPTANCE_READBACK_NO_RUNTIME",
+  "head": "3ed6a8f3c0b944777ef05f2a0095431ec63f6664",
+  "sourceCandidate": "9fdecef3fd79614b9eb13b5609c99b9457d51af4",
+  "sourcePinCount": 98,
+  "productDeltaCount": 22,
+  "pinDigest": "b4e01729c1a4df935f79e7407e6aafe52bf9394d4f6e1ddab6f83a40893f02d5",
+  "metadataOnly": true,
+  "sourceVerdict": "ACCEPT_BORROWED_LEASE_SOURCE_AND_NAMED_ZERO4_ONLY",
+  "zeroLabels": {
+    "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-borrowed-lease-cloud-813f1057",
+    "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-borrowed-lease-cloud-813f1057",
+    "corrective-plan": "t179pd-ni-iobs-l01-process-prep-first-corrective-plan-borrowed-lease-cloud-813f1057",
+    "remaining-plan": "t179pd-ni-iobs-l01-process-prep-first-remaining-plan-borrowed-lease-cloud-813f1057"
+  },
+  "actualRelease": false
+}

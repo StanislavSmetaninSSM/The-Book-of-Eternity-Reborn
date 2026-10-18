@@ -1,3 +1,7 @@
+## T179-Pd-NI-IOBS-L01 — borrowed lease fresh ZERO4 native0; PREP pending (2026-10-18)
+
+catalog native0/ZERO 487.778s, plan native0/ZERO 31.966s, corrective-plan native0/ZERO 22.615s, remaining-plan native0/ZERO 24.266s. Whole16/33/57, corrective2/2/5, newcrash1/1/5;43 original chains and all dated v2 boundaries saved. No actual tests executed. Retain47 and all originals. Independent fresh PREP required before each separate actual gate; old66529 UNKNOWN/unavailable unchanged. All broader holds remain. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — borrowed lease SOURCE accepted; fresh ZERO4 only (2026-10-18)
 
 [Independent Astra XHigh SOURCE](recovery/t179pd-ni-iobs-l01-borrowed-lease-source-independent-review-20261018.md) accepts minimal owned-lease propagation, preserved ordinary/body/reflection routes, original assertions, each-entry exact CurrentInterface reason delta and read-only uncertain diagnostics. Initial diagnostic feedback preserved and corrected before native.98 pins/product22; whole16/33/57, corrective2/2/5, separate newcrash1/1/5. Retain47 at original provenance; no replay.
