@@ -1,3 +1,7 @@
+## T179-Pd-NI-IOBS-L01 — uncertain1BorrowedLease original outcome saved (2026-10-18)
+
+Actual 74da374af40e0017fef9a8d736394a7e7949cd3a/compiled 3ed6a8f3c0b944777ef05f2a0095431ec63f6664: native1, 1 executed/0PASS/1FAIL, 134.499s. Original 11 raw chains, native inventory/cleanup and dated v2 boundaries saved. Observed positive=False; independent EVIDENCE pending, qualified count remains51. All historical outcomes and old66529 UNKNOWN/unavailable immutable. Freeze affected selection; save/recover originals, independent diagnosis, then continue authorized in-scope fixes with SOURCE/fresh affected PREP. All broader holds remain. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — integrity4 independent acceptance; qualified51/57 (2026-10-18)
 
 Independent Astra XHigh integrity4 verdict: ACCEPT_INTEGRITY4_NEW_ORIGINAL_ONLY. Original evidence and actual/compiled bindings retained. Save/recover acceptance and readback; only separately named uncertain1 after clean v2 preflight. Original integrity4 unqualified4PASS / uncertain1 FAIL, seven old fixture failures and old66529 UNKNOWN/unavailable immutable. Ready/once-only/exact owned transition and unchanged budgets preserved. All broader holds remain. Following sections historical.

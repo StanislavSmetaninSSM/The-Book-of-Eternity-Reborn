@@ -1,0 +1,23 @@
+{
+  "kind": "READONLY_CLOUD_ACCESS_CONFIRMED_AFTER_DISCONNECT_NOTICE",
+  "observedUtc": "2026-10-18T14:44:18.146551+00:00",
+  "localAndRemote": "74da374af40e0017fef9a8d736394a7e7949cd3a",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "cleanBeforeArchival": true,
+  "previousSavedOutcomeCarrier": "2fcc1a49e4b2dd1b7a5a1ace9ec64aa122219980",
+  "independentAcceptanceSuccessorQualified": 51,
+  "currentNative": {
+    "mode": "uncertain1BorrowedLease",
+    "actual": "74da374af40e0017fef9a8d736394a7e7949cd3a",
+    "compiled": "3ed6a8f3c0b944777ef05f2a0095431ec63f6664",
+    "nativeExit": 1,
+    "outcome": "FAIL",
+    "finishedUtc": "2026-10-18T14:43:30.749940+00:00",
+    "recordBytesAvailable": true,
+    "afterCensusClean": true
+  },
+  "retry": false,
+  "old66529": "UNKNOWN_UNAVAILABLE_UNCHANGED",
+  "windowsUsed": false,
+  "scope": "Access and current completed original checked read-only; no new native launch or old environment intervention."
+}

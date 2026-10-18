@@ -1,0 +1,101 @@
+{
+  "kind": "CLOUD_CARRIER_EXACT_GITHUB_RECOVERY",
+  "sha": "74da374af40e0017fef9a8d736394a7e7949cd3a",
+  "base": "2fcc1a49e4b2dd1b7a5a1ace9ec64aa122219980",
+  "checkedUtc": "2026-10-18T14:40:31.693682+00:00",
+  "directory": "/workspace/1536-cloud-clean-restore",
+  "remoteShaVerified": true,
+  "clean": true,
+  "localSourceOrObjectReuse": false,
+  "changedPathsVerified": 12,
+  "files": [
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 2417461,
+      "sha256": "2942931c6a2e6973b1c863ba4c88455bb93049b214110bcd15dd6a84f5fb48a5",
+      "gitBlob": "839ed3f312e7aecb7d8be05391a6048ffe03a487",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/borrowed-lease-integrity4-check-run-v2.log",
+      "bytes": 257,
+      "sha256": "c7977119270adda5e4aea3c80c487c88bbecd24a8bc6e3051b4a48f249a5ff6d",
+      "gitBlob": "70c31175e11c66194b4edb57a64d63c586f22f40",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/borrowed-lease-integrity4-check-run.log",
+      "bytes": 280,
+      "sha256": "47bd54b914129b6ccb1a4f3ad8a2567ca93f14b942b6155519694c862c6e05cc",
+      "gitBlob": "38b94045bc4bdead824099468716d9c0227bcce0",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/check_l01_borrowed_lease_evidence-v1-cli-shadow.py",
+      "bytes": 43068,
+      "sha256": "6a6759b63bf8251062be09b792e5d92ac47bee1bcb94203077795d8f0478081c",
+      "gitBlob": "29a5a864c421f940a47cb81a5e12c4046a6510cd",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/check_l01_borrowed_lease_evidence.py",
+      "bytes": 43084,
+      "sha256": "6af2e6141a8f4fb18f4d93fcb931bcd62387ced256eefea228527bc140ac33b7",
+      "gitBlob": "fafa0fab4e51161f736abb93e60e83b717c4e4f1",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-evidence-checker-ready-20261018.json",
+      "bytes": 3451,
+      "sha256": "bcc1c17e927eabea6f6352126ac3b60881dd88cc210cdbdcd4eb6a2eb07606f5",
+      "gitBlob": "e98748e1bb74a9b409da15d8c8e52175b9f4cde3",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-integrity4-candidate-recovery-2fcc1a49-20261018.json",
+      "bytes": 7688,
+      "sha256": "016c302612b82a755f8302cee71e0f628eb4e3afd82952eb2b91b941d3913347",
+      "gitBlob": "e525c56f8700b8eae288a9d614105cd01e4c1631",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-integrity4-independent-check-2fcc1a49-20261018.json",
+      "bytes": 31490,
+      "sha256": "7815f61a23ebc931698a8d95b641e0ec02ad5fef95e520a837dc129918e24e7c",
+      "gitBlob": "26af66bbf8b76bd121c3fd54d9d66ca667b3d328",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-integrity4-independent-review-20261018.json",
+      "bytes": 17107,
+      "sha256": "c3ffa1666186b820f29dd71f18ff2536430a134424f184fc2e6efe453e727799",
+      "gitBlob": "cbe5f65d4f6eda547a802b6eb03569b42f963f06",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-integrity4-independent-review-20261018.md",
+      "bytes": 2946,
+      "sha256": "c6f1e0e7cc27174e51240f912e17ecf30e93902ecf39f3934a1e5e9bd353895d",
+      "gitBlob": "82ec434ca29971d62c08df840ca18e06684a616d",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-qualification-20261018.json",
+      "bytes": 167292,
+      "sha256": "5753c2e057494e4fc388d5cac540eb5f60d65e5be1f2ec389a98fa208864617d",
+      "gitBlob": "3e9932069210f70630aa8f5373b6f80689300ee0",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
+      "bytes": 65644,
+      "sha256": "ecd49c08c143b6f1656040223860c0dcda38501e362505fd0de88de285477113",
+      "gitBlob": "8f294cdc7dd2e7aafcf5b9c0368944b70349c49d",
+      "mode": "100644"
+    }
+  ],
+  "sourcePinsVerified": 98,
+  "sourcePinDigest": "b4e01729c1a4df935f79e7407e6aafe52bf9394d4f6e1ddab6f83a40893f02d5",
+  "method": "Fetch exact task branch directly from GitHub into independent originally empty-directory GitHub clone, checkout exact SHA, clean tree, verify every changed file bytes/SHA256/blob/mode and98pins",
+  "limits": "Source/evidence recovery only. No test/build execution here; no lost corrected-crash bytes recovered."
+}

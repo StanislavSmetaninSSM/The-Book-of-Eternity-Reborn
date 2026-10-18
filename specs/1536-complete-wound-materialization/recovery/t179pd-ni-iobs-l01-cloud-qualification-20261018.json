@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "QUALIFIED51_OF57_BORROWED_LEASE_INTEGRITY4_ACCEPTED",
+  "status": "UNCERTAIN1BORROWEDLEASE_ORIGINAL_FROZEN",
   "sourceCheckpoint": "9fdecef3fd79614b9eb13b5609c99b9457d51af4",
   "sourcePinDigest": "b4e01729c1a4df935f79e7407e6aafe52bf9394d4f6e1ddab6f83a40893f02d5",
   "sourcePinCount": 98,
@@ -432,7 +432,7 @@
           "cases": 1
         }
       ],
-      "status": "NEW_ORIGINAL_UNEXPECTED_OUTCOME_FROZEN"
+      "status": "NEW_BORROWED_LEASE_UNEXPECTED_OUTCOME_FROZEN"
     },
     {
       "mode": "crash5",
@@ -1271,6 +1271,68 @@
           "bytes": 7688
         }
       }
+    },
+    "uncertain1BorrowedLease": {
+      "actualSourceRecovery": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-uncertain1-actual-source-recovery-74da374a-20261018.json",
+        "sha256": "f408634fc0ac491719bf0031d663b2bd8019740f7ad64931d6fe05f1e201d607",
+        "bytes": 4754
+      },
+      "status": "ORIGINAL_UNEXPECTED_OUTCOME_FROZEN_INDEPENDENT_DIAGNOSIS_REQUIRED",
+      "actualSource": "74da374af40e0017fef9a8d736394a7e7949cd3a",
+      "compiledSource": "3ed6a8f3c0b944777ef05f2a0095431ec63f6664",
+      "nativeExit": 1,
+      "seconds": 134.49943128499945,
+      "tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "recordPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-first-uncertain1-borrowed-lease-cloud-813f1057/record.json",
+      "recordSha256": "5432cc4abead5fb6d94d9de9f64f87b94bec4be9c88a96733d4eaa160b89a43f",
+      "archive": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-borrowed-lease-uncertain1-813f1057-files-20261018/archive.json",
+        "sha256": "02f489fc84b2bc742eed5ff00fdf6ffab9167d26165bdce9e40f8f0ff42febcd",
+        "bytes": 8006,
+        "rawChains": 11
+      },
+      "parentInspection": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-uncertain1-parent-inspection-20261018.json",
+        "sha256": "d540721bb13d2dc0a3cfd276aaed38360ab191594b56009c62b4b778cf9723c4",
+        "bytes": 4540
+      },
+      "supplementalAuthoritativeCensuses": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-uncertain1-before-census-20261018.json",
+          "sha256": "781acb06a1ff78333867f942e2015919ddc912eae336fd0db830676f057e9a03",
+          "bytes": 100573,
+          "datedBoundaryGapSeconds": 2.016489
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-uncertain1-after-census-20261018.json",
+          "sha256": "4e4349f473ea9db220b07ff7b3886e2258fe04630c325266a979e3093b735bcb",
+          "bytes": 100588,
+          "datedBoundaryGapSeconds": 0.862726
+        }
+      ],
+      "nineBinariesUnchanged": true,
+      "allOutputsUnchanged": true,
+      "completeOutputFileCount": 1575,
+      "namespaceAfter": {
+        "ownedRoots": []
+      },
+      "originalProcessesAfter": [],
+      "processArrayLimitation": "Original exe-link arrays incomplete. V2 argv/stat census is dated boundary only.",
+      "limits": "Observed native outcome is not independent EVIDENCE acceptance. Historical originals including old66529 UNKNOWN unchanged."
     }
   },
   "holds": [
@@ -1284,7 +1346,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Save/recover acceptance and readback; only separately named uncertain1 after clean v2 preflight.",
+  "next": "Freeze affected selection; save/recover originals, independent diagnosis, then continue authorized in-scope fixes with SOURCE/fresh affected PREP.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -1460,21 +1522,8 @@
     "phase": "HISTORICAL_COMPILED_6AB43F6A_ZERO3_PRE_CORRECTION_INELIGIBLE_FOR_CORRECTED_ACTUALS"
   },
   "release": {
-    "status": "SEPARATELY_NAMED_AFTER_SAVED_ACCEPTANCE_RECOVERY_AND_IMMEDIATE_CLEAN_V2_CENSUS",
-    "mode": "uncertain1",
-    "label": "t179pd-ni-iobs-l01-process-first-uncertain1-borrowed-lease-cloud-813f1057",
-    "compiledSource": "3ed6a8f3c0b944777ef05f2a0095431ec63f6664",
-    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-borrowed-lease-cloud-813f1057/record.json",
-    "expectedCases": 1,
-    "category": "fr063-joint-interface-uncertain-current",
-    "methods": [
-      {
-        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic",
-        "cases": 1
-      }
-    ],
-    "conditions": "After acceptance saved/pushed/exactremote/fullcleanGitHub recovery and metadata readback, immediate clean authoritative v2 preflight then one fixed NoBuild/FIRST invocation. Preserve original outcome then immediate after-boundary/whole archive/inventories/cleanup. Unexpected outcome freezes affected set for independent diagnosis; no automatic next/retry; no repo mutation during actual. Disposable per-test GUID root/new nonce/genuine children only.",
-    "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED_NOT_RECOVERED_OR_RETRIED"
+    "status": "NONE_FROZEN_PENDING_INDEPENDENT_DIAGNOSIS",
+    "mode": null
   },
   "newOriginalObservedPassingCases": 4,
   "lastAcceptanceRecovery": {
