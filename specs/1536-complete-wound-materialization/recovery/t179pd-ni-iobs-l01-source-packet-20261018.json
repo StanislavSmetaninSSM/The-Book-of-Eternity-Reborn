@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_CLOSE_DIAGNOSTIC_CORRECTION_SOURCE_CANDIDATE",
-  "status": "CLOSE2CORRECTED_NATIVE_PASS_EVIDENCE_PENDING_NEXT_RACES2_SEPARATELY_NAMED",
+  "status": "RACES2_ORIGINAL_FROZEN",
   "sourceBase": "5687e0e603509b01070d4e999ebb6e0c58d4d9df",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
   "sourcePins": [
@@ -892,7 +892,7 @@
   },
   "gmDisposition": "Diagnostic-only preservation of existing exception when protective hold replaces control flow. No GM-authored contract, prompt/schema/example/daemon/manifest or guidance behavior change; existing documentation remains exact.",
   "oldCorrectedCrash": "Old environment session66529 UNKNOWN; original bytes unavailable. New qualification distinct and isolated, only disposable fixtures/genuine new children; no old environment/process interaction.",
-  "next": "After outcome recovery, independent EVIDENCE forclose2Corrected; separately named FIRSTraces2 only after immediate clean authoritative census and no unresolved finding. Qualified count unchanged until acceptance.",
+  "next": "Independent causal diagnosis before anysource/actual/retry.",
   "sourceReview": {
     "verdict": "ACCEPT_MINIMAL_CLOSE_DIAGNOSTIC_SOURCE_AND_NAMED_ZERO4_PLAN",
     "model": "gpt-6-astra",
@@ -967,26 +967,7 @@
     ]
   },
   "namedActualRelease": {
-    "status": "SEPARATELY_NAMED_FIRST_AFTER_SAVED_OUTCOME_RECOVERY_AND_IMMEDIATE_CLEAN_V2_CENSUS",
-    "mode": "races2",
-    "label": "t179pd-ni-iobs-l01-process-first-races2-diag-cloud-813f1057",
-    "compiledSource": "cf52201ca165d24c971018251ef9723a8e493384",
-    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-diag-cloud-813f1057/record.json",
-    "expectedCases": 2,
-    "category": "fr063-joint-interface-source-races",
-    "methods": [
-      {
-        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualReturnedReadCannotHideChangedWriterPreimage",
-        "cases": 1
-      },
-      {
-        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_PublishedInterfaceCannotExcuseOtherImmutableReadyDrift",
-        "cases": 1
-      }
-    ],
-    "observerPath": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-20261018.py",
-    "observerSourceSha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
-    "conditions": "Save exactremote/cleanGitHub recovery; independent SOURCE/PREP unchanged; no unresolved semantic concern; immediate clean v2 before-census; NoBuild/FIRST/new disposable roots only; mandatory originaloutcome+aftercensus/inventories/save. Anyunexpectedfailure/materialreviewfinding freezes. No concurrent actual or automaticadvance/retry. PriorpositiveEVIDENCEreview may read immutable files concurrently; no repo mutation duringactual.",
-    "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED"
+    "status": "NONE_FROZEN_PENDING_INDEPENDENT_DIAGNOSIS",
+    "mode": null
   }
 }

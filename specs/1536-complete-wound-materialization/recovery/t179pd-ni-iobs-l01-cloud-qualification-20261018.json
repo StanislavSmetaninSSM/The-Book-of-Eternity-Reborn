@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "CLOSE2CORRECTED_NATIVE_PASS_EVIDENCE_PENDING_NEXT_RACES2_SEPARATELY_NAMED",
+  "status": "RACES2_ORIGINAL_FROZEN",
   "sourceCheckpoint": "a0da72f2c21fca66193314954cfdf87992752876",
   "sourcePinDigest": "b29c971342ee772b13cd123a954d7afa8937e1f50a7e5f4c4c14403e4de4c347",
   "sourcePinCount": 98,
@@ -392,7 +392,7 @@
           "cases": 1
         }
       ],
-      "status": "UNRUN_IN_NEW_ENVIRONMENT"
+      "status": "NEW_ORIGINAL_UNEXPECTED_OUTCOME_FROZEN"
     },
     {
       "mode": "settlement3",
@@ -637,6 +637,60 @@
           "bytes": 1872
         }
       ]
+    },
+    "races2": {
+      "status": "ORIGINAL_UNEXPECTED_OUTCOME_FROZEN_INDEPENDENT_DIAGNOSIS_REQUIRED",
+      "actualSource": "23362e5701daf6f01aa989f7fde070242a9167d3",
+      "compiledSource": "cf52201ca165d24c971018251ef9723a8e493384",
+      "nativeExit": 1,
+      "seconds": 178.31791332300054,
+      "tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 1,
+        "Failed": 1
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "recordPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-first-races2-diag-cloud-813f1057/record.json",
+      "recordSha256": "359cdd08bf17c7b19b8292e946a0be9d964ac0cc42a54e86bf18652fbb0c5dfb",
+      "archive": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-races2-frozen-813f1057-files-20261018/archive.json",
+        "sha256": "12c6c0e7c9d09593a5ee809dadd2439b0136934fe4a7f87c5d3263a69ff0066e",
+        "bytes": 7902,
+        "rawChains": 11
+      },
+      "parentInspection": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-races2-parent-inspection-20261018.json",
+        "sha256": "cc5aad024a3f5e7c05075eecc08134a96826ecd6b439bbc0e608de89d1775cc1",
+        "bytes": 6129
+      },
+      "supplementalAuthoritativeCensuses": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-races2-before-census-20261018.json",
+          "sha256": "8e333540e4c5cd052d677b2ee39bdaca1fb283dbee45b5df3e03c56a5d2f44ad",
+          "bytes": 39830
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-races2-after-census-20261018.json",
+          "sha256": "ea527dcc64dea37aa71a969267e40d75a335e66523e50760c5d6fee37c0e199e",
+          "bytes": 39829
+        }
+      ],
+      "nineBinariesUnchanged": true,
+      "all1575OutputsUnchanged": true,
+      "namespaceAfter": {
+        "ownedRoots": []
+      },
+      "originalProcessesAfter": [],
+      "processArrayLimitation": "Original exe-link-dependent arrays are incomplete observer output. Dated independently accepted argv/stat census is authoritative boundary only.",
+      "limits": "Observed native outcome is not independent EVIDENCE acceptance or additional qualified targets; original frozen failures and oldUNKNOWN remain unchanged."
     }
   },
   "holds": [
@@ -650,7 +704,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "After outcome recovery, independent EVIDENCE forclose2Corrected; separately named FIRSTraces2 only after immediate clean authoritative census and no unresolved finding. Qualified count unchanged until acceptance.",
+  "next": "Independent causal diagnosis before anysource/actual/retry.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -826,27 +880,8 @@
     "phase": "HISTORICAL_COMPILED_6AB43F6A_ZERO3_PRE_CORRECTION_INELIGIBLE_FOR_CORRECTED_ACTUALS"
   },
   "release": {
-    "status": "SEPARATELY_NAMED_FIRST_AFTER_SAVED_OUTCOME_RECOVERY_AND_IMMEDIATE_CLEAN_V2_CENSUS",
-    "mode": "races2",
-    "label": "t179pd-ni-iobs-l01-process-first-races2-diag-cloud-813f1057",
-    "compiledSource": "cf52201ca165d24c971018251ef9723a8e493384",
-    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-diag-cloud-813f1057/record.json",
-    "expectedCases": 2,
-    "category": "fr063-joint-interface-source-races",
-    "methods": [
-      {
-        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualReturnedReadCannotHideChangedWriterPreimage",
-        "cases": 1
-      },
-      {
-        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_PublishedInterfaceCannotExcuseOtherImmutableReadyDrift",
-        "cases": 1
-      }
-    ],
-    "observerPath": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-20261018.py",
-    "observerSourceSha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
-    "conditions": "Save exactremote/cleanGitHub recovery; independent SOURCE/PREP unchanged; no unresolved semantic concern; immediate clean v2 before-census; NoBuild/FIRST/new disposable roots only; mandatory originaloutcome+aftercensus/inventories/save. Anyunexpectedfailure/materialreviewfinding freezes. No concurrent actual or automaticadvance/retry. PriorpositiveEVIDENCEreview may read immutable files concurrently; no repo mutation duringactual.",
-    "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED"
+    "status": "NONE_FROZEN_PENDING_INDEPENDENT_DIAGNOSIS",
+    "mode": null
   },
   "newOriginalObservedPassingCases": 4,
   "lastAcceptanceRecovery": {

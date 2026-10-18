@@ -1,3 +1,9 @@
+## T179-Pd-NI-IOBS-L01 — races2 original outcome saved; next gate explicit (2026-10-18)
+
+Новый отдельно именованныйraces2: actual23362e57/compiledcf52201c, native1, 2executed/1PASS/1FAIL, 178.318s. [Original11rawchains](t179pd-ni-iobs-l01-cloud-races2-frozen-813f1057-files-20261018/archive.json) и exactbefore/afterauthoritativecensuses сохранены; observedpositive=False. Это originaloutcome, independentEVIDENCE ещё pending, qualifiedcount пока40. Frozenoriginalclose2FAIL/семьстарыхfixtureFAIL/oldcorrectedcrashUNKNOWN неизменны.
+
+Independent causal diagnosis before anysource/actual/retry. Все исходные assertions и once-only/Ready/ownedtransition contracts неизменны. Noactual/retry приunexpectedfailure; всеbroaderholds/Windows403/CI/A3 сохраняются. Следующие sections исторические.
+
 ## T179-Pd-NI-IOBS-L01 — close2Corrected original outcome saved; next gate explicit (2026-10-18)
 
 Новый отдельно именованныйclose2: actualb5d9bece/compiledcf52201c, native0, 2executed/2PASS/0FAIL, 468.043s. [Original11rawchains](t179pd-ni-iobs-l01-cloud-close2-corrected-813f1057-files-20261018/archive.json) и exactbefore/afterauthoritativecensuses сохранены; observedpositive=True. Это originaloutcome, independentEVIDENCE ещё pending, qualifiedcount пока40. Frozenoriginalclose2FAIL/семьстарыхfixtureFAIL/oldcorrectedcrashUNKNOWN неизменны.
