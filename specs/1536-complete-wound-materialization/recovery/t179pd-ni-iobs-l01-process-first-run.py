@@ -1,11 +1,10 @@
-"""Borrowed-lease correction: separately named integrity4/uncertain1 corrective qualification and new crash5; retained47 cannot be selected. Each mode requires its own Root named activation; no auto advance/retry/build."""
+"""Selected routing correction: separately named uncertain1 corrective qualification and new crash5; retained51 cannot be selected. Each mode requires its own Root named activation; no auto advance/retry/build."""
 from pathlib import Path
 import sys,subprocess,hashlib,json,datetime,time,tempfile,re,os
 R=Path('/workspace/The-Book-of-Eternity-Reborn')
 mode,label,actual,prep_path=sys.argv[1:]
 groups={
  'crash5':(['fr063-joint-interface-crash-current'],5),
- 'integrity4':(['fr063-joint-interface-current-integrity'],4),
  'uncertain1':(['fr063-joint-interface-uncertain-current'],1)}
 assert mode in groups and re.fullmatch(r't179pd-ni-iobs-l01-process-first-[a-z0-9-]+',label) and re.fullmatch(r'[0-9a-f]{40}',actual)
 def git(*a):return subprocess.check_output(['git',*a],cwd=R)
@@ -13,13 +12,13 @@ def h(b):return hashlib.sha256(b).hexdigest()
 def now():return datetime.datetime.now(datetime.timezone.utc).isoformat()
 assert git('rev-parse','HEAD').decode().strip()==actual and not git('status','--porcelain')
 p=R/'specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json';raw=p.read_bytes();binding=json.loads(raw)
-assert len(binding['sourcePins'])==98 and len(binding['productDelta'])==22
+assert len(binding['sourcePins'])==99 and len(binding['productDelta'])==23
 for pin in binding['sourcePins']:
  b=(R/pin['path']).read_bytes();assert len(b)==pin['bytes'] and h(b)==pin['sha256'],pin['path']
 assert h(json.dumps(binding['sourcePins'],sort_keys=True,separators=(',',':')).encode())==binding['pinDigest']
 ledger_path=R/binding['ledger']['path'];assert h(ledger_path.read_bytes())==binding['ledger']['sha256']
 prep=json.loads(Path(prep_path).read_bytes());assert prep['kind']=='FIRST_NI_IOBS_L01_WHOLE_ZERO_PREPARATION_RAW' and prep['mode']==('remaining-plan' if mode=='crash5' else 'corrective-plan') and prep['nativeExit']==0 and prep['actualTestsExecuted']==0
-compiled=prep['compiledSource'];assert prep['sourcePinDigest']==binding['pinDigest'] and prep['sourcePinCount']==98
+compiled=prep['compiledSource'];assert prep['sourcePinDigest']==binding['pinDigest'] and prep['sourcePinCount']==99
 assert not subprocess.run(['git','merge-base','--is-ancestor',compiled,actual],cwd=R).returncode
 assert all(n.startswith('specs/1536-complete-wound-materialization/') for n in git('diff','--name-only',compiled,actual).decode().splitlines())
 assert git('diff','--name-only',binding['productBase'],actual,'--','BookOfEternityClient','BookOfEternityGMBridge').decode().splitlines()==binding['productDelta']
@@ -59,7 +58,7 @@ with (out/'stdout.log').open('wb') as stream:
  except FileNotFoundError:identity['exitedBeforeCensus']=True
  (out/'process.json').write_text(json.dumps(dict(argv=argv,identity=identity,startedUtc=started),indent=2)+'\n');native=child.wait()
 results=sorted(str(p) for p in set(results_root.iterdir())-old) if results_root.exists() else [];after=binaries();all_after=all_outputs();ns_after=namespace();proc_after=processes()
-record=dict(kind='FIRST_NI_IOBS_L01_WHOLE_ACTUAL_RAW_NOT_EVIDENCE',phase='BORROWED_LEASE_CORRECTIVE5_AND_SEPARATE_NEWCRASH5',mode=mode,label=label,actualSource=actual,compiledSource=compiled,productBase=binding['productBase'],implementedProductCompiledSource=compiled,categories=categories,expectedCases=expected_cases,expectedDescriptors=selected,argv=argv,cwd=str(R),prepRecord=str(prep_path),prepRecordSha256=h(Path(prep_path).read_bytes()),sourceBindingSha256=h(raw),sourcePinCount=98,sourcePinDigest=binding['pinDigest'],startedUtc=started,finishedUtc=now(),wallSeconds=time.monotonic()-clock,nativeExit=native,stdoutPath=str(out/'stdout.log'),stdoutSha256=h((out/'stdout.log').read_bytes()),processRecord=str(out/'process.json'),firstSentinel=str(sentinel),resultDirectories=results,binaryBefore=before,binaryAfter=after,allOutputInventoryBefore=all_before,allOutputInventory=all_after,namespaceBefore=ns_before,namespaceAfter=ns_after,processesBefore=proc_before,processesAfter=proc_after,headAfter=git('rev-parse','HEAD').decode().strip(),statusAfter=git('status','--porcelain').decode(),helperSource=Path(__file__).read_text(),scope='ONE named fixed mode only, NoBuild. Original native/stdout/process/TRX/source/child/cleanup outcome precedes utility qualification. No retry, automatic next scope, retained47 replay or inferred semantic acceptance; integrity4 and uncertain1 are separately named affected qualification after a reviewed product remedy/stronger oracle; old native4PASS stays unqualified and original uncertain1 FAIL stays frozen. New crash5 is distinct from old66529 UNKNOWN/unavailable.')
+record=dict(kind='FIRST_NI_IOBS_L01_WHOLE_ACTUAL_RAW_NOT_EVIDENCE',phase='SELECTED_ROUTING_CORRECTIVE1_AND_SEPARATE_NEWCRASH5',mode=mode,label=label,actualSource=actual,compiledSource=compiled,productBase=binding['productBase'],implementedProductCompiledSource=compiled,categories=categories,expectedCases=expected_cases,expectedDescriptors=selected,argv=argv,cwd=str(R),prepRecord=str(prep_path),prepRecordSha256=h(Path(prep_path).read_bytes()),sourceBindingSha256=h(raw),sourcePinCount=99,sourcePinDigest=binding['pinDigest'],startedUtc=started,finishedUtc=now(),wallSeconds=time.monotonic()-clock,nativeExit=native,stdoutPath=str(out/'stdout.log'),stdoutSha256=h((out/'stdout.log').read_bytes()),processRecord=str(out/'process.json'),firstSentinel=str(sentinel),resultDirectories=results,binaryBefore=before,binaryAfter=after,allOutputInventoryBefore=all_before,allOutputInventory=all_after,namespaceBefore=ns_before,namespaceAfter=ns_after,processesBefore=proc_before,processesAfter=proc_after,headAfter=git('rev-parse','HEAD').decode().strip(),statusAfter=git('status','--porcelain').decode(),helperSource=Path(__file__).read_text(),scope='ONE named fixed mode only, NoBuild. Original native/stdout/process/TRX/source/child/cleanup outcome precedes utility qualification. No retry, automatic next scope, retained51 replay or inferred semantic acceptance; uncertain1 is a separately named affected qualification after reviewed direct-routing remedy; both original uncertain1 FAILs remain frozen; accepted new integrity4 retained at original provenance. New crash5 is distinct from old66529 UNKNOWN/unavailable.')
 (out/'record.json').write_text(json.dumps(record,indent=2)+'\n');print('FIRST_WHOLE_NI_IOBS_L01_ACTUAL_NATIVE',native,str(out/'record.json'),flush=True)
 assert before==after and all_before==all_after and ns_before==ns_after and not proc_after and record['headAfter']==actual and not record['statusAfter']
 # Semantic methods/categories, not plan ordinal suffixes, bind actual subset.

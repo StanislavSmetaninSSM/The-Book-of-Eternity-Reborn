@@ -1,9 +1,9 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "QUALIFIED51_OF57_SELECTED_ROUTING_PLAN_ACCEPTED_SOURCE_PREP_REQUIRED",
+  "status": "WIP_SELECTED_ROUTING_UNCOMPILED_SOURCE_REVIEW_PENDING",
   "sourceCheckpoint": "9fdecef3fd79614b9eb13b5609c99b9457d51af4",
-  "sourcePinDigest": "b4e01729c1a4df935f79e7407e6aafe52bf9394d4f6e1ddab6f83a40893f02d5",
-  "sourcePinCount": 98,
+  "sourcePinDigest": "70aa551ca427bb9c28b18e205bcbe2e10d1ebb88487309bb73b4a31426e37eb5",
+  "sourcePinCount": 99,
   "environment": {
     "kind": "NEW_CLOUD_ENVIRONMENT_QUALIFICATION_IDENTITY",
     "runIdentity": "ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320",
@@ -448,7 +448,7 @@
     }
   ],
   "crashRequalificationPlan": {
-    "status": "ISOLATION_PLAN_RETAINED_BORROWED_LEASE_SOURCE_AND_FRESH_PREP_REQUIRED",
+    "status": "ISOLATION_PLAN_RETAINED_SELECTED_ROUTING_SOURCE_AND_FRESH_PREP_REQUIRED",
     "purpose": "Separate new fixture qualification; preserve old UNKNOWN. No recovery or blind retry of old result.",
     "rootIsolation": "Fresh environmentId and GUID TMPDIR; each fixture constructs a new GUID own container/parent nonce and child-local tmp. No imported old root, checkpoint, live owner, save or real game operation.",
     "processIsolation": "Only newly started genuine child Process handles; independent parent/self PID+kernel starttick and nonce, exit73, new resume PID, join+EOF, strict containment. Retain owned container if termination/join/EOF unresolved; no old process query/kill.",
@@ -1346,7 +1346,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Implement saved independent minimal direct-routing plan, independent SOURCE, fresh ZERO4/PREP; only later newly named uncertain1 qualification and separate newcrash5. Preserve both frozen uncertain1 FAILs and old66529 UNKNOWN.",
+  "next": "Save/recover WIP, independent SOURCE including exact retention51/negative-branch equivalence; fresh ZERO4/PREP before new selected-routing uncertain1 and separate newcrash5.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -1522,7 +1522,7 @@
     "phase": "HISTORICAL_COMPILED_6AB43F6A_ZERO3_PRE_CORRECTION_INELIGIBLE_FOR_CORRECTED_ACTUALS"
   },
   "release": {
-    "status": "NONE_SOURCE_AND_FRESH_PREP_REQUIRED_NO_NATIVE_RETRY",
+    "status": "NONE_SOURCE_AND_FRESH_PREP_PENDING_NO_NATIVE_RETRY",
     "mode": null
   },
   "newOriginalObservedPassingCases": 4,
@@ -3209,7 +3209,7 @@
     }
   },
   "selectedResumeRoutingCorrection": {
-    "status": "INDEPENDENT_CAUSE_AND_MINIMAL_PLAN_ACCEPTED_NO_IMPLEMENTATION_OR_RUNTIME_YET",
+    "status": "WIP_SELECTED_ROUTING_UNCOMPILED_SOURCE_REVIEW_PENDING",
     "baseline": "f390eb0602a99f5a2387ab7dc6ef52571e856b26",
     "artifacts": [
       {
@@ -3269,6 +3269,14 @@
       ]
     },
     "retention": "Keep51 at original build bindings if SOURCE proves unchanged existing branches/postvalidation body; otherwise exact bounded missing_marker compatibility contingency.",
-    "gmDisposition": "Client-owned routing of existing selected protocol only; no GM-authored schema/field/capability/prompt/example change."
-  }
+    "gmDisposition": "Client-owned routing of existing selected protocol only; no GM-authored schema/field/capability/prompt/example change.",
+    "sourcePacketPath": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
+    "sourcePinDigest": "70aa551ca427bb9c28b18e205bcbe2e10d1ebb88487309bb73b4a31426e37eb5",
+    "sourcePinCount": 99,
+    "productDeltaCount": 23,
+    "freshPreparation": {
+      "status": "UNRUN_SOURCE_PENDING"
+    }
+  },
+  "historicalSourceCheckpointBeforeSelectedRouting": "9fdecef3fd79614b9eb13b5609c99b9457d51af4"
 }

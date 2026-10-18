@@ -32,36 +32,55 @@ public partial class GameEngine
                 if (inspection.State == MortalQteDecisionPublication.CurrentPublicationState.IntegrityConflict)
                     return HoldMortalJointStoryTurn("The original-bound publication evidence is inconsistent: " + inspection.Reason);
                 var bytes = await _fs.ReadFileBytesAsync(lease, MortalQteDecisionPublication.StatePath);
-                if (bytes is null) return claimed ? HoldMortalJointStoryTurn("The joint completion marker is missing.") : null;
-                var marker = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes),
-                    SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "joint completion applicability");
-                if (marker?["schemaVersion"] is not JsonValue version || !version.TryGetValue<int>(out var schema) || schema != 2)
-                    return claimed ? HoldMortalJointStoryTurn("The joint completion family changed.") : null;
-                if (marker["sessionId"]?.GetValue<string>() != frame.SessionId || marker["requestId"]?.GetValue<string>() != frame.RequestId ||
-                    marker["snapshotToken"]?.GetValue<string>() != frame.Payload.ManifestPayloadHash || marker["turn"]?.GetValue<int>() != frame.TurnNumber)
-                    return claimed ? HoldMortalJointStoryTurn("The joint completion tuple changed.") : null;
-                claimed = true;
-                if (_gameLoop.SessionId != frame.SessionId ||
-                    (_gameLoop.TurnNumber != frame.TurnNumber - 1 && _gameLoop.TurnNumber != frame.TurnNumber))
-                    return HoldMortalJointStoryTurn("The runtime session/turn is unrelated to the authenticated joint original.");
-                if (!await MortalQteDecisionPublication.IsCurrentJointCompletedFamilyAsync(_fs, lease,
-                    frame.SessionId, frame.RequestId, frame.Payload.ManifestPayloadHash, frame.TurnNumber))
-                    throw new InvalidDataException("joint_story_turn_family_not_proved");
-                _mortalJointRepairCanonicalRefresh = new(MortalJointRepairPublicationDisposition.Committed,
-                    null, Array.Empty<ValidationIssue>(), Frame: frame);
+                // A retained uncertainty is not proof that common publication
+                // happened. This read-only classification routes only a current
+                // selected Published I into the existing validator below; it
+                // grants no completion authority and does not clear diagnostics.
+                if (bytes is null)
+                {
+                    if (!claimed || _mortalJointRepairCanonicalRefresh?.Disposition != MortalJointRepairPublicationDisposition.PublicationUncertain ||
+                        inspection.State != MortalQteDecisionPublication.CurrentPublicationState.NotCommitted ||
+                        inspection.Reason != "original_baseline" ||
+                        !await IsCurrentSelectedPublishedInterfaceResumeCandidateAsync(lease, frame))
+                        return claimed ? HoldMortalJointStoryTurn("The joint completion marker is missing.") : null;
+                    if (_gameLoop.SessionId != frame.SessionId || _gameLoop.TurnNumber != frame.TurnNumber - 1)
+                        return HoldMortalJointStoryTurn("The selected pending original has no prior runtime session/turn.");
+                }
+                else
+                {
+                    var marker = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes),
+                        SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "joint completion applicability");
+                    if (marker?["schemaVersion"] is not JsonValue version || !version.TryGetValue<int>(out var schema) || schema != 2)
+                        return claimed ? HoldMortalJointStoryTurn("The joint completion family changed.") : null;
+                    if (marker["sessionId"]?.GetValue<string>() != frame.SessionId || marker["requestId"]?.GetValue<string>() != frame.RequestId ||
+                        marker["snapshotToken"]?.GetValue<string>() != frame.Payload.ManifestPayloadHash || marker["turn"]?.GetValue<int>() != frame.TurnNumber)
+                        return claimed ? HoldMortalJointStoryTurn("The joint completion tuple changed.") : null;
+                    claimed = true;
+                    if (_gameLoop.SessionId != frame.SessionId ||
+                        (_gameLoop.TurnNumber != frame.TurnNumber - 1 && _gameLoop.TurnNumber != frame.TurnNumber))
+                        return HoldMortalJointStoryTurn("The runtime session/turn is unrelated to the authenticated joint original.");
+                    if (!await MortalQteDecisionPublication.IsCurrentJointCompletedFamilyAsync(_fs, lease,
+                        frame.SessionId, frame.RequestId, frame.Payload.ManifestPayloadHash, frame.TurnNumber))
+                        throw new InvalidDataException("joint_story_turn_family_not_proved");
+                    _mortalJointRepairCanonicalRefresh = new(MortalJointRepairPublicationDisposition.Committed,
+                        null, Array.Empty<ValidationIssue>(), Frame: frame);
+                }
                 var completion = ParseReadySignalMetadata(await _fs.ReadFileAsync(lease, "ready/turn_complete.json"), "ready/turn_complete.json");
                 if (completion is null || completion.SessionId != frame.SessionId || completion.RequestId != frame.RequestId ||
                     completion.TurnNumber != frame.TurnNumber || !HasValidTerminalSignalContract("turn_complete", completion) ||
                     await _fs.ReadFileBytesAsync(lease, "ready/turn_error.json") is not null)
                     return HoldMortalJointStoryTurn("The original correlated terminal evidence is missing, foreign or contradictory.");
-                var phase = await MortalQteDecisionPublication.ReadJointProgressionPhaseAsync(_fs, lease,
-                    frame.SessionId, frame.RequestId, frame.Payload.ManifestPayloadHash, frame.TurnNumber);
-                if (_gameLoop.TurnNumber == frame.TurnNumber)
+                if (bytes is not null)
                 {
-                    if (phase.Phase != "applied") return HoldMortalJointStoryTurn("An advanced runtime has no applied joint phase.");
-                    var existing = await _storyService.ReadMortalJointStoryAsync(lease, phase);
-                    if (existing.Disposition != StoryService.MortalJointStoryDisposition.AlreadyAppended || existing.Proof is null)
-                        return HoldMortalJointStoryTurn("An advanced runtime has no exact authenticated joint story row.");
+                    var phase = await MortalQteDecisionPublication.ReadJointProgressionPhaseAsync(_fs, lease,
+                        frame.SessionId, frame.RequestId, frame.Payload.ManifestPayloadHash, frame.TurnNumber);
+                    if (_gameLoop.TurnNumber == frame.TurnNumber)
+                    {
+                        if (phase.Phase != "applied") return HoldMortalJointStoryTurn("An advanced runtime has no applied joint phase.");
+                        var existing = await _storyService.ReadMortalJointStoryAsync(lease, phase);
+                        if (existing.Disposition != StoryService.MortalJointStoryDisposition.AlreadyAppended || existing.Proof is null)
+                            return HoldMortalJointStoryTurn("An advanced runtime has no exact authenticated joint story row.");
+                    }
                 }
             }
 
@@ -122,6 +141,34 @@ public partial class GameEngine
             _logger.LogError(error, "Joint story/turn owner blocked after {Source}; no destructive ordinary fallback or cleanup.", source);
             return HoldMortalJointStoryTurn(error.Message);
         }
+    }
+
+    // Applicability only, borrowed lease only. The direct validator must still
+    // reconstruct its own current owner and complete the full physical G proof.
+    private async Task<bool> IsCurrentSelectedPublishedInterfaceResumeCandidateAsync(
+        FileSystemManager.CanonicalWriteLease lease, ValidatedPendingTurnSnapshotContext frame)
+    {
+        _fs.EnsureCanonicalWriteLeaseActive(lease);
+        RequireOrdinaryJointRepairLease(lease);
+        var bytes = await _fs.ReadFileBytesAsync(lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
+        if (bytes is null) return false;
+        var pending = ReadOrdinaryTreatmentRoot(bytes, "selected pending before joint story dispatch");
+        if (pending["jointRepairCheckpoint"] is not { } node) return false;
+        var parsed = MortalJointRepairCheckpoint.Parse(JsonSerializer.SerializeToElement(node));
+        if (!parsed.IsValid || parsed.Checkpoint is not { UsesInterfacePublication: true } checkpoint) return false;
+        var binding = checkpoint.ToJsonObject();
+        if (binding["sessionId"]!.GetValue<string>() != frame.SessionId ||
+            binding["requestId"]!.GetValue<string>() != frame.RequestId ||
+            binding["snapshotToken"]!.GetValue<string>() != frame.Payload.ManifestPayloadHash ||
+            binding["turnNumber"]!.GetValue<int>() != frame.TurnNumber) return false;
+        ThrowIfRepairSessionReplaced(lease, binding["sessionGeneration"]!.GetValue<string>());
+        if (pending[MortalJointInterfacePublication.PendingField] is not { } data) return false;
+        var record = MortalJointInterfacePublication.Read(JsonSerializer.SerializeToElement(data));
+        record.RequireCheckpoint(binding);
+        record.RequireLegacyPending(pending);
+        if (record.State != "Published" || record.HasErrors) return false;
+        await MortalJointInterfacePublication.RequireImagesAsync(_fs, lease, bytes, record.AfterBytes);
+        return true;
     }
 
     private MortalJointStoryTurnDisposition HoldMortalJointStoryTurn(string reason)
