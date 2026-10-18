@@ -1,0 +1,151 @@
+{
+  "kind": "D02_FIRST_COMPOSITE_BINDING_OUTCOME_FROZEN",
+  "status": "HOLD_IMPORT_BINDINGS_BEFORE_CATALOG",
+  "source": "82da1cdaed7fa593c2c217cecdb9abb8ba77b727",
+  "controllerSha256": "fc8a9f070f20528b3942584ca2248cb1b25f4ca3168cd5ba9414791d84c5986e",
+  "bindingsSha256": "a7d62aae8152516210aec579d12ac0d01bf990880b1650f6cd4ba8445a98e12e",
+  "sourcePinDigest": "b277e73745c98abdc78f5feaa62a68373c2bf26b4b6115a20e4aa5207970e9ef",
+  "nativeExit": null,
+  "controllerExit": 2,
+  "commands": [
+    {
+      "command": [
+        "/usr/bin/timeout",
+        "--verbose",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "593.3200929750019s",
+        "/tmp/1536-cloud-tools/dotnet/dotnet",
+        "msbuild",
+        "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+        "-nologo",
+        "-nodeReuse:false",
+        "-getProperty:TargetPath,ProjectAssetsFile,MSBuildProjectExtensionsPath,IsTestProject,TargetFramework,Configuration,AssemblyName,MSBuildAllProjects"
+      ],
+      "nativeExit": 0,
+      "observerErrors": [],
+      "joined": true,
+      "remainingSessionProcesses": []
+    },
+    {
+      "command": [
+        "/usr/bin/timeout",
+        "--verbose",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "591.7958074540002s",
+        "/tmp/1536-cloud-tools/dotnet/dotnet",
+        "msbuild",
+        "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+        "-nologo",
+        "-nodeReuse:false",
+        "-preprocess:/tmp/l01d02-cd3d584b5e27457f/catalog/bind-integration.project.xml"
+      ],
+      "nativeExit": 0,
+      "observerErrors": [],
+      "joined": true,
+      "remainingSessionProcesses": []
+    }
+  ],
+  "observerErrors": [
+    "KeyError('/tmp/1536-cloud-tools/dotnet/sdk-manifests/10.0.100/microsoft.net.sdk.android/36.1.2/WorkloadManifest.targets')"
+  ],
+  "durationSeconds": 9.72533515500254,
+  "catalog": "UNREACHED_NO_DISCOVERY",
+  "plan": "UNRUN",
+  "prepare": "UNRUN",
+  "synthetic": "UNRUN",
+  "buildsExecuted": 0,
+  "restoresExecuted": 0,
+  "testsExecuted": 0,
+  "gameProcesses": 0,
+  "fixtureSubprocessTargets": 0,
+  "diagnosticRequests": 0,
+  "afterLiveTools": [],
+  "datedVisibility": {
+    "executableFallbacks": 5,
+    "positivelyVanished": 0
+  },
+  "normal899VerifiedUnchangedByRootAfterFailure": true,
+  "staged899AndOwnMetadataVerifiedUnchangedByRootAfterFailure": true,
+  "missingBinding": "Installed SDK workload manifest targets under dotnet/sdk-manifests/10.0.100; initial import inventory covered sdk/10.0.402 but omitted sibling sdk-manifests.",
+  "originalCatalog124Replaced": false,
+  "originalUnit137Replaced": false,
+  "old66529": "UNKNOWN_UNAVAILABLE_NO_RECOVERY_CLAIM",
+  "gameplayRelease": "NONE",
+  "crash5Release": "NONE",
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-first-binding-failure-originals-20261018.zip",
+    "bytes": 231945,
+    "sha256": "f11b6aa284d6fb8b9e3e0310b0c93db77c66ce4790b9c6f8c5a77dba3bc47ebc",
+    "members": [
+      {
+        "originalPath": "/tmp/l01d02-cd3d584b5e27457f/catalog/bind-integration.project.xml",
+        "member": "bind-integration.project.xml",
+        "bytes": 1606168,
+        "sha256": "a7420968ccbd1d3358c7f5f21e5e6d57172b8dc5453a8e45f819c96eb6c5c717"
+      },
+      {
+        "originalPath": "/tmp/l01d02-cd3d584b5e27457f/catalog/bind-integration.record.json",
+        "member": "bind-integration.record.json",
+        "bytes": 816,
+        "sha256": "98dcc1f05a8c2b860daf9f1279ba274ace8d3cf6bc5d3111f95140ea07909ac6"
+      },
+      {
+        "originalPath": "/tmp/l01d02-cd3d584b5e27457f/catalog/bind-integration.started.json",
+        "member": "bind-integration.started.json",
+        "bytes": 579,
+        "sha256": "64f80cf0828b2fd7b0c7ca304a5fa730674fe23cd83b4ba2243db8f3ba704730"
+      },
+      {
+        "originalPath": "/tmp/l01d02-cd3d584b5e27457f/catalog/bind-integration.stderr",
+        "member": "bind-integration.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "originalPath": "/tmp/l01d02-cd3d584b5e27457f/catalog/bind-integration.stdout",
+        "member": "bind-integration.stdout",
+        "bytes": 880,
+        "sha256": "c53cfb237881e3e9915d899cd24970318f4479c2bd4dcd2743a973209cfde46f"
+      },
+      {
+        "originalPath": "/tmp/l01d02-cd3d584b5e27457f/catalog/imports-integration.record.json",
+        "member": "imports-integration.record.json",
+        "bytes": 747,
+        "sha256": "eaeeb0b1a0a45001fa89d554c289cec63556f524821aa978874a889da405ba0d"
+      },
+      {
+        "originalPath": "/tmp/l01d02-cd3d584b5e27457f/catalog/imports-integration.started.json",
+        "member": "imports-integration.started.json",
+        "bytes": 510,
+        "sha256": "b2080bcf110839e89d2587ba496a49478cc1bef60abe2b932db4ae142d9569ae"
+      },
+      {
+        "originalPath": "/tmp/l01d02-cd3d584b5e27457f/catalog/imports-integration.stderr",
+        "member": "imports-integration.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "originalPath": "/tmp/l01d02-cd3d584b5e27457f/catalog/imports-integration.stdout",
+        "member": "imports-integration.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "originalPath": "/tmp/l01d02-cd3d584b5e27457f/catalog/record.json",
+        "member": "record.json",
+        "bytes": 4427,
+        "sha256": "de9867e9e05dffc59f341a20f8719ded276e4a4e6d3d2bf6fb9e8889d63ab39d"
+      },
+      {
+        "originalPath": "/tmp/l01d02-cd3d584b5e27457f/catalog/started.json",
+        "member": "started.json",
+        "bytes": 861,
+        "sha256": "d531ced2345de1150c239ed5e9f082d372ccd8a3d15d8282f1c18249911ac0a6"
+      }
+    ]
+  },
+  "next": "Independent first-failure diagnosis before any affected binding/root/source correction; no automatic rerun/rebuild/restore or fixture invocation."
+}

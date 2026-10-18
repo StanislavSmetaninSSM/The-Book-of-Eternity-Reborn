@@ -1,7 +1,7 @@
 {
   "kind": "D02_COMPOSITE_CONTINUATION_CONTROL",
   "source": {
-    "status": "SOURCE_ACCEPTED_COMPOSITE_ZERO_ONLY",
+    "status": "FROZEN_FIRST_BINDING_FAILURE_NO_DISCOVERY",
     "candidate": "5efddae52f18d723b8e8365127ef88aac6b04bfb",
     "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-source-independent-review-20261018.json",
     "reviewSha256": "18666d3b02908c64d3c9801f8e020fd7a9eda7658bc8ea2e95afebf02e73fea8",
@@ -9,7 +9,8 @@
       "catalog",
       "plan",
       "prepare"
-    ]
+    ],
+    "firstOutcome": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-first-binding-failure-20261018.json"
   },
   "synthetic": {
     "status": "HOLD_PREP_REQUIRED"
