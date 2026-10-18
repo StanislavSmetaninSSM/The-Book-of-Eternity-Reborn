@@ -1,0 +1,478 @@
+{
+  "kind": "INDEPENDENT_EXISTING_FIRST_ORDERING_RAW_CHECK_NOT_EXECUTION",
+  "createdUtc": "2026-10-18T05:26:20.640775+00:00",
+  "carrier": "7e5c44055ffbe56d7eb753ef29b04ba30bd232ca",
+  "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
+  "compiledSource": "a65005989ac5922db9c943dda339a999131ba5c6",
+  "productSource": "447bc1210c507742758243e1c254860bea0c4539",
+  "testSource": "80bf2a31cefda292fe7fd2025192a77a640346ed",
+  "record": {
+    "path": "/tmp/t179pd-ni-iobs-l01-order-implementation-tools/t179pd-ni-iobs-l01-order-first-causal/record.json",
+    "bytes": 13240,
+    "sha256": "cc6950b25b96e3b788ad783b22589bbe6789c0fe806cd441f31d959db33d3ecb"
+  },
+  "archive": {
+    "path": "/tmp/t179pd-ni-iobs-l01-order-first-archive-9079452d-20261018/archive.json",
+    "bytes": 6291,
+    "sha256": "e0dd5ec9d0de7912211d525e9fdb752d1fc85cbbb3a41bd467108414b92131ca"
+  },
+  "rawChains": [
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-order-implementation-tools/9079452d93a77e0edfd2ba1a8cb140cb1967d089-ni-iobs-l01-order.FIRST.json",
+      "storedPath": "000-9079452d93a77e0edfd2ba1a8cb140cb1967d089-ni-iobs-l01-order.FIRST.json.gz",
+      "bytes": 284,
+      "sha256": "3799dda6052180bc4fdbd0dff6d377d3e7d59f228707d99bc6b10ed3fb8e974a",
+      "storedBytes": 238,
+      "storedSha256": "8462f2eed435bdc7ac008d425be4cc00b360258fe1d2c90c5c2c69478f908476"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-order-implementation-tools/t179pd-ni-iobs-l01-order-first-causal/process.json",
+      "storedPath": "001-process.json.gz",
+      "bytes": 756,
+      "sha256": "765a7c5c6a0d0692cf4d6f34d4637176036c1f152b313aabf1b367d9ae7c3433",
+      "storedBytes": 389,
+      "storedSha256": "9af909afdfa0a30d2226e814a92ed614db3c674c0de67cf15a3923fa9b4f2975"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-order-implementation-tools/t179pd-ni-iobs-l01-order-first-causal/record.json",
+      "storedPath": "002-record.json.gz",
+      "bytes": 13240,
+      "sha256": "cc6950b25b96e3b788ad783b22589bbe6789c0fe806cd441f31d959db33d3ecb",
+      "storedBytes": 3827,
+      "storedSha256": "ab5b087910bd27fe480854b231932046831c2efd7061a25c7218b83fca15e1ea"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-order-implementation-tools/t179pd-ni-iobs-l01-order-first-causal/source-binding.json",
+      "storedPath": "003-source-binding.json.gz",
+      "bytes": 23989,
+      "sha256": "2cf6483f27dbd75b51a8fe19d700f02356e06afebc5a005b3081892f52b197a0",
+      "storedBytes": 7344,
+      "storedSha256": "48bdf9a4f479b87caff0a56589c748944653cd4654db0963278a9013b682c805"
+    },
+    {
+      "rawPath": "/tmp/t179pd-ni-iobs-l01-order-implementation-tools/t179pd-ni-iobs-l01-order-first-causal/stdout.log",
+      "storedPath": "004-stdout.log.gz",
+      "bytes": 6878536,
+      "sha256": "03d53f6e796fe92a3353794d35f031245c6ad8b75638268b5857783e04d7192c",
+      "storedBytes": 2367696,
+      "storedSha256": "0168e59273339c04975812bdc61881e3f18170e60f063c31dea7e2cf34d400d1"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-051723-573-201359-d681aefa13ff4e44aa2251a6a0df1701-categories/dotnet-test.log",
+      "storedPath": "005-dotnet-test.log.gz",
+      "bytes": 8567247,
+      "sha256": "1b5b36ae076f99a186c177c9c8b92ecce4162250a4721cf30f16467b5ac48b41",
+      "storedBytes": 2555304,
+      "storedSha256": "7da4d21aacfc0fd831226ed016648307d1b317cf8b4cb8fa88bce8dbbd5f2479"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-051723-573-201359-d681aefa13ff4e44aa2251a6a0df1701-categories/fr063-joint-interface-lifecycle-order-integration-001.trx",
+      "storedPath": "006-fr063-joint-interface-lifecycle-order-integration-001.trx.gz",
+      "bytes": 13761025,
+      "sha256": "bb3c7e0ce517ddaa84a54218fbe02360f5ce953a527edd3c804aa7a3dcbb14df",
+      "storedBytes": 4735178,
+      "storedSha256": "9fb0bb3b28b18fc1269d1fc63f572c08b1797819553ff0cc35ba2730b2a7516d"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-051723-573-201359-d681aefa13ff4e44aa2251a6a0df1701-categories/plan.json",
+      "storedPath": "007-plan.json.gz",
+      "bytes": 1207,
+      "sha256": "8f84570290c280dc8c555719d257b2dc16fc809a431bb0f20a5406c6a15cedb2",
+      "storedBytes": 540,
+      "storedSha256": "d971ebc8871c8e2a1cdf271a9b4664d1d6158c6df71306ef3fef4f4d41787f6e"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-051723-573-201359-d681aefa13ff4e44aa2251a6a0df1701-categories/summary.json",
+      "storedPath": "008-summary.json.gz",
+      "bytes": 1386,
+      "sha256": "026c56f5b124cd19716e09f5b0c7f1b61a7921cdbc1e6f53e6eb2043b6388db2",
+      "storedBytes": 600,
+      "storedSha256": "60b11d57853f4dea311ed3f7e283c0303a4da97044cdfed3720124d701cd5e39"
+    }
+  ],
+  "recovery": {
+    "path": "/tmp/t179pd-ni-iobs-l01-first-raw-delta-github-7e5c4405-20261018.json",
+    "bytes": 19893,
+    "sha256": "2b59a0a0c97c73f0248d58542346c04d27c2d57dc5336e2f6eff52d201885765",
+    "all25PhysicalFilesAnd21ChangedPathsVerified": true
+  },
+  "summary": {
+    "Categories": [
+      "fr063-joint-interface-lifecycle-order"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-joint-interface-lifecycle-order",
+        "Seconds": 63.2736835,
+        "BudgetMinutes": 5,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0322264,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0401249,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1031651,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:01:06.1690935",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1
+    },
+    "DuplicateTests": []
+  },
+  "caseIdentity": {
+    "executionId": "892af0c4-ba1e-4d58-a1c4-812b87c65d85",
+    "testId": "f8494336-75cb-e3ed-0293-4ec19d289c85",
+    "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce",
+    "computerName": "c151c60a176e",
+    "duration": "00:01:00.9362472",
+    "startTime": "2026-10-18T05:18:28.9892063+00:00",
+    "endTime": "2026-10-18T05:18:28.9892222+00:00",
+    "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+    "outcome": "Failed",
+    "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+    "relativeResultsDirectory": "892af0c4-ba1e-4d58-a1c4-812b87c65d85"
+  },
+  "error": "Assert.Equal() Failure: Values differ\nExpected: 1\nActual:   0",
+  "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertEarlyInterfaceAndSingleConsumption() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 124\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 23\n--- End of stack trace from previous location ---",
+  "transportStdOutHashes": [
+    "0c69f19457eb179f1cd282e19548b95584bd0b3a0d5267faf5689695416eb77d",
+    "b8999c4907499ae295729ddbd319100201390bd1d278932ab1cca96bd08598c9"
+  ],
+  "transportMeaning": "One UnitTestResult/executionId only; duplicate output containers are transport copies, not extra cases.",
+  "eventBoundaryCounts": {
+    "fr063_guaranteed_native_pre_original_npc_shape": 1,
+    "qte_story_actual_client_append": 1,
+    "qte_story_actual_engine_result": 1,
+    "qte_physical_actual_occurrence": 1,
+    "fr063_joint_actual_prior42_inactive_tail": 1,
+    "fr063_joint_original_progression_reader_before_owner": 1,
+    "fr063_joint_signed_original_schedule_before_owner": 1,
+    "fr063_joint_natural_stage43_image_before_assert": 19,
+    "fr063_joint_original_inventory_structural_absence_before_assert": 2,
+    "fr063_confirmed_claim_inspection": 1,
+    "fr063_joint_completion_actual_prerequisites": 1,
+    "iobs_actual_completed_capture": 1,
+    "iobs_actual_committed_member": 4,
+    "fr063_joint_in_memory_owner_snapshot_before_filesystem": 1,
+    "fr063_joint_completion_actual_owner_outcome": 1,
+    "fr063_joint_complete_union": 1,
+    "fr063_joint_progression_phase_report_arithmetic": 1,
+    "fr063_joint_completion_inert_repeat": 1,
+    "CleanupOwnedRoot": 1,
+    "iobs_ordering_original_outcome": 1
+  },
+  "prerequisites": {
+    "source": {
+      "SessionId": "session_qte_story_append",
+      "RequestId": "5779ff1ffc914556b4654b05a910b7cc",
+      "SnapshotToken": "97EE14A3C7B12E87FC11BD11945FE0690A8A07F31D763B7069B66E62AB362F8B",
+      "TurnNumber": 42
+    },
+    "original": {
+      "SessionId": "session_qte_story_append",
+      "RequestId": "0cdaf6c0759c4047b55e11328e91ebf0",
+      "SnapshotToken": "7472F54427486187377660C4A2F6EA14695F24D9233372147542B6E4C8818B5F",
+      "TurnNumber": 43,
+      "Realm": "mortal_world"
+    },
+    "generation": "4114fa6273a04af8b1e9678de32a51ac",
+    "held": true,
+    "noPrecomposedCommonPlan": true,
+    "originalSeverity": "III",
+    "repairRequest": {
+      "sessionId": "session_qte_story_append",
+      "requestId": "0cdaf6c0759c4047b55e11328e91ebf0",
+      "turnNumber": 43,
+      "errors": [
+        {
+          "code": "wound_severity_above_opportunity",
+          "filePath": "woundDecisions[0].proposal.severity",
+          "severity": "Error",
+          "category": "StateConsistency",
+          "message": "Wound decision violates its sealed opportunity.",
+          "section": "wound_materialization",
+          "expected": "I-II",
+          "actual": "III",
+          "repairHint": "Keep the same opportunity and choose none or one legal bounded wound."
+        }
+      ]
+    },
+    "owner": {
+      "ActualCaller": "ProcessPlayerTurn",
+      "entered": true,
+      "liveCallerReturned": true,
+      "liveWaitEntered": true,
+      "jointOriginalAuthored": true,
+      "Failure": null,
+      "ObserverFailure": null,
+      "ActualTurn": 43
+    },
+    "fullUnion": {
+      "fullCanonicalValidation": true,
+      "createOrdinal": 2,
+      "treatOrdinal": 3,
+      "actualTurn": 43
+    },
+    "inertRepeat": {
+      "repeat": false,
+      "turn": 43,
+      "fullBytesEqual": true,
+      "digestCount": 84
+    }
+  },
+  "capture": {
+    "callback": 1,
+    "earlyIChangingCohorts": 0,
+    "submittedEqualsCapture": true
+  },
+  "publications": [
+    {
+      "Sequence": 1,
+      "TransactionId": "5fb5fd7013da4f1c95b1cca2bacd9002",
+      "InterfaceChanged": false,
+      "MarkerCommitted": true,
+      "Before": null,
+      "After": null
+    },
+    {
+      "Sequence": 2,
+      "TransactionId": "4f1071cc77ae45ffb32f5365dc187dfb",
+      "InterfaceChanged": true,
+      "MarkerCommitted": false,
+      "Before": {
+        "Bytes": "ewogICJkaWFsb2d1ZU9wdGlvbnMiOiBbCiAgICB7CiAgICAgICJ0ZXh0IjogIltOSV9BQ1RJT046Zmlyc3RdW05JX0NPTlRST0w6c2Vjb25kXdCf0YDQvtC00L7Qu9C20LjRgtGMINC+0LHRi9GH0L3Ri9C5INC+0YLQstC10YIuIgogICAgfQogIF0KfQ==",
+        "Length": 142,
+        "Sha256": "3EC7AFF43FF10F02429E2BD89EBF4ED5BA1BD19800ED6B9778DAC6938308E674"
+      },
+      "After": {
+        "Bytes": "77u/ewogICJkaWFsb2d1ZU9wdGlvbnMiOiBbCiAgICB7CiAgICAgICJ0ZXh0IjogIltOSV9DT05UUk9MOnNlY29uZF3Qn9GA0L7QtNC+0LvQttC40YLRjCDQvtCx0YvRh9C90YvQuSDQvtGC0LLQtdGCLiIsCiAgICAgICJpbnB1dFZhbHVlIjogIltOSV9BQ1RJT046Zmlyc3RdW05JX0NPTlRST0w6c2Vjb25kXdCf0YDQvtC00L7Qu9C20LjRgtGMINC+0LHRi9GH0L3Ri9C5INC+0YLQstC10YIuIgogICAgfQogIF0sCiAgInRpbWVzdGFtcCI6ICIyMDI2LTEwLTE4VDA1OjE4OjIyLjE1Mzk4MjErMDA6MDAiCn0=",
+        "Length": 287,
+        "Sha256": "BC71407E1CA5344F66248E6664822C9B765D90B15496D81B4FAEFC1F604E8367"
+      }
+    },
+    {
+      "Sequence": 3,
+      "TransactionId": "80f85a526b7640bcbd9cffd6923428c2",
+      "InterfaceChanged": false,
+      "MarkerCommitted": true,
+      "Before": null,
+      "After": null
+    },
+    {
+      "Sequence": 4,
+      "TransactionId": "041106ae7bdc421884fb446401d25c3f",
+      "InterfaceChanged": true,
+      "MarkerCommitted": false,
+      "Before": {
+        "Bytes": "77u/ewogICJkaWFsb2d1ZU9wdGlvbnMiOiBbCiAgICB7CiAgICAgICJ0ZXh0IjogIltOSV9DT05UUk9MOnNlY29uZF3Qn9GA0L7QtNC+0LvQttC40YLRjCDQvtCx0YvRh9C90YvQuSDQvtGC0LLQtdGCLiIsCiAgICAgICJpbnB1dFZhbHVlIjogIltOSV9BQ1RJT046Zmlyc3RdW05JX0NPTlRST0w6c2Vjb25kXdCf0YDQvtC00L7Qu9C20LjRgtGMINC+0LHRi9GH0L3Ri9C5INC+0YLQstC10YIuIgogICAgfQogIF0sCiAgInRpbWVzdGFtcCI6ICIyMDI2LTEwLTE4VDA1OjE4OjIyLjE1Mzk4MjErMDA6MDAiCn0=",
+        "Length": 287,
+        "Sha256": "BC71407E1CA5344F66248E6664822C9B765D90B15496D81B4FAEFC1F604E8367"
+      },
+      "After": {
+        "Bytes": "77u/ewogICJkaWFsb2d1ZU9wdGlvbnMiOiBbCiAgICB7CiAgICAgICJ0ZXh0IjogItCf0YDQvtC00L7Qu9C20LjRgtGMINC+0LHRi9GH0L3Ri9C5INC+0YLQstC10YIuIiwKICAgICAgImlucHV0VmFsdWUiOiAiW05JX0FDVElPTjpmaXJzdF1bTklfQ09OVFJPTDpzZWNvbmRd0J/RgNC+0LTQvtC70LbQuNGC0Ywg0L7QsdGL0YfQvdGL0Lkg0L7RgtCy0LXRgi4iCiAgICB9CiAgXSwKICAidGltZXN0YW1wIjogIjIwMjYtMTAtMThUMDU6MTg6MjIuMTUzOTgyMSswMDowMCIKfQ==",
+        "Length": 268,
+        "Sha256": "543E481625C3C63F2C750F823096609AF7A1394CD534657CDC5474C7FB686940"
+      }
+    }
+  ],
+  "interfaceDocuments": {
+    "submitted": {
+      "dialogueOptions": [
+        {
+          "text": "[NI_ACTION:first][NI_CONTROL:second]Продолжить обычный ответ."
+        }
+      ]
+    },
+    "firstAfter": {
+      "dialogueOptions": [
+        {
+          "text": "[NI_CONTROL:second]Продолжить обычный ответ.",
+          "inputValue": "[NI_ACTION:first][NI_CONTROL:second]Продолжить обычный ответ."
+        }
+      ],
+      "timestamp": "2026-10-18T05:18:22.1539821+00:00"
+    },
+    "final": {
+      "dialogueOptions": [
+        {
+          "text": "Продолжить обычный ответ.",
+          "inputValue": "[NI_ACTION:first][NI_CONTROL:second]Продолжить обычный ответ."
+        }
+      ],
+      "timestamp": "2026-10-18T05:18:22.1539821+00:00"
+    }
+  },
+  "rawImageHashes": [
+    {
+      "bytes": 142,
+      "sha256": "3ec7aff43ff10f02429e2bd89ebf4ed5ba1bd19800ed6b9778dac6938308e674"
+    },
+    {
+      "bytes": 142,
+      "sha256": "3ec7aff43ff10f02429e2bd89ebf4ed5ba1bd19800ed6b9778dac6938308e674"
+    },
+    {
+      "bytes": 268,
+      "sha256": "543e481625c3c63f2c750f823096609af7a1394cd534657cdc5474c7fb686940"
+    },
+    {
+      "bytes": 142,
+      "sha256": "3ec7aff43ff10f02429e2bd89ebf4ed5ba1bd19800ed6b9778dac6938308e674"
+    },
+    {
+      "bytes": 142,
+      "sha256": "3ec7aff43ff10f02429e2bd89ebf4ed5ba1bd19800ed6b9778dac6938308e674"
+    },
+    {
+      "bytes": 287,
+      "sha256": "bc71407e1ca5344f66248e6664822c9b765d90b15496d81b4faefc1f604e8367"
+    },
+    {
+      "bytes": 287,
+      "sha256": "bc71407e1ca5344f66248e6664822c9b765d90b15496d81b4faefc1f604e8367"
+    },
+    {
+      "bytes": 268,
+      "sha256": "543e481625c3c63f2c750f823096609af7a1394cd534657cdc5474c7fb686940"
+    }
+  ],
+  "firstMarker": {
+    "parentSchemaVersion": 2,
+    "childVersion": 1
+  },
+  "cleanup": [
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-bac60ba005fe4dd88842f2b51ee340f3",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "processTerminal": true,
+  "currentNineCopies": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26178560,
+      "sha256": "be8d274b60dd52fd67a1c7817af4d1d8543efdf5a37a2d8a7a736415e3d37643"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9601024,
+      "sha256": "f1db07ed7fd2cde6dd7d16711fa5fcb1ae84e5aa68b727048a4e75dee04295f1"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26178560,
+      "sha256": "be8d274b60dd52fd67a1c7817af4d1d8543efdf5a37a2d8a7a736415e3d37643"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 29225472,
+      "sha256": "8f342a698cbb0ca7b92941f621fae55c0a60cde7fcea69ecd33b51893863a397"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1830912,
+      "sha256": "e89848cf82c909f664b694d9bf34c3284b03c56f1d13b96bff7b641bb196aee4"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1830912,
+      "sha256": "e89848cf82c909f664b694d9bf34c3284b03c56f1d13b96bff7b641bb196aee4"
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26178560,
+      "sha256": "be8d274b60dd52fd67a1c7817af4d1d8543efdf5a37a2d8a7a736415e3d37643"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+      "bytes": 248832,
+      "sha256": "c60421600c0cfef877285f035ec114539fa20d3b357f4296a9af38bd5b180376"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26178560,
+      "sha256": "be8d274b60dd52fd67a1c7817af4d1d8543efdf5a37a2d8a7a736415e3d37643"
+    }
+  ],
+  "freshInventory": {
+    "path": "/tmp/t179pd-ni-iobs-l01-root-fresh-prep-readback-a6500598-20261018.json",
+    "bytes": 295317,
+    "sha256": "5cdb8194b971bf5698b364a45311093023937c25a87f2c57dc07d5b8bfbeb577",
+    "currentExactFileSetAndAllHashesVerified": 1234,
+    "beforeAndAfterReceiptBindingsVerified": true,
+    "mainInventoryCountRecorded": 335
+  },
+  "sourceBinding": {
+    "sha256": "2cf6483f27dbd75b51a8fe19d700f02356e06afebc5a005b3081892f52b197a0",
+    "literalActualGitShowEqual": true,
+    "pins44Unchanged": true,
+    "productDeltaEmpty": true,
+    "testsByteEqual80bf": true,
+    "compiledToActualOnlyFeatureMetadata": true
+  },
+  "affectedConsumerSourceEdges": [
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+      "sha256": "c89d5c40509819aef230ea7ba16fc2d4dcc53049db0adf5d93d86d17820177f9",
+      "start": 91,
+      "end": 101,
+      "rangeSha256": "673fac1a3c63b697e9b6d757a896d5f7d38f4efe2b31f38a3738b39045c54604"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "sha256": "5de57a4290615baba4ec71ad70ed5bcbd8f60bdad6491fc1aea99a6c80087c92",
+      "start": 240,
+      "end": 251,
+      "rangeSha256": "bdd7053dd0bcc59c91db91c8a8d7fd52cf9bb4d71e990a1410568a5138b00fe5"
+    }
+  ],
+  "limits": [
+    "No runtime was executed by reviewer.",
+    "Shared assertions reached before line124 are source-bound actual execution evidence; later assertions are not passed.",
+    "Archived I image bytes are verified; deleted mutable root is not reconstructed.",
+    "Observed cohorts do not count API/common calls or prove clock/policy invocation totals.",
+    "Current1234 file equality is directly checked now; pre/post-time continuity also relies on preserved time-bound receipts.",
+    "Old preparation19 chains/full recovery history were not replayed."
+  ]
+}

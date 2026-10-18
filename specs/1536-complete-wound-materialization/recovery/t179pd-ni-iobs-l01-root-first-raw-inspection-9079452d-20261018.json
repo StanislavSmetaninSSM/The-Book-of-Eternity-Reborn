@@ -1,0 +1,52 @@
+{
+  "kind": "ROOT_FIRST_NI_IOBS_L01_ORIGINAL_RAW_INSPECTION_PENDING_INDEPENDENT_EVIDENCE",
+  "createdUtc": "2026-10-18T05:21:56.593431+00:00",
+  "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
+  "compiledSource": "a65005989ac5922db9c943dda339a999131ba5c6",
+  "nativeExit": 1,
+  "wallSeconds": 66.88679516299453,
+  "tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 0,
+    "Failed": 1
+  },
+  "exactFirstFailure": "Assert.Equal() Failure: Values differ\nExpected: 1\nActual:   0",
+  "firstStack": [
+    "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertEarlyInterfaceAndSingleConsumption() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 124",
+    "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 23"
+  ],
+  "actualCaptureCallbacks": 1,
+  "actualEarlyIChangingCohorts": 0,
+  "actualLaterIChangingSequences": [
+    2,
+    4
+  ],
+  "actualMarkerContainingSequences": [
+    1,
+    3
+  ],
+  "predictionCorrection": "Predicted lateI1 was wrong: actual2 later I-changing cohorts. Preserve actualimages/order; not exactAPI/common invocation counts. Earliest firstEqual missingearlyI remains independently reviewable afterfullgenuinecompletion. No rerun/newsemantics.",
+  "genuineFullUnionTurn": 43,
+  "inertRepeat": {
+    "repeat": false,
+    "FullBytesEqual": true
+  },
+  "completionObservedBeforeOwnedCleanup": true,
+  "uniqueOwnedRootsPhysicallyGone": [
+    "/tmp/boe-gameengine-turnlifecycle-bac60ba005fe4dd88842f2b51ee340f3"
+  ],
+  "rawArchive": {
+    "path": "/tmp/t179pd-ni-iobs-l01-order-first-archive-9079452d-20261018/archive.json",
+    "sha256": "e0dd5ec9d0de7912211d525e9fdb752d1fc85cbbb3a41bd467108414b92131ca",
+    "exactChains": 9
+  },
+  "binaryProof": {
+    "path": "/tmp/t179pd-ni-iobs-l01-root-fresh-prep-readback-a6500598-20261018.json",
+    "sha256": "5cdb8194b971bf5698b364a45311093023937c25a87f2c57dc07d5b8bfbeb577",
+    "allCurrent1234UnchangedAfterActual": true
+  },
+  "transport": "Exactly1TRXUnitTestResult/1executed. DuplicateStdOut transport copies de-duplicated by exactpayload SHA, never counted asanother execution.",
+  "verdict": "ORIGINAL_INTENDED_EARLIEST_FAILURE_OBSERVED_PENDING_SAVED_CARRIER_AND_INDEPENDENT_CAUSAL_EVIDENCE",
+  "scope": "No production/native retry or later assertions acceptance. FrozenData consumer must cover both actual late/postmaterialized I callsites; sourcecalls Completion98 andgenericValidation246 are inferencecandidates, not invocationcounts proved solelyfromcohorts."
+}

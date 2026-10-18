@@ -1,7 +1,7 @@
 {
   "kind": "NI_IOBS_L01_AUTHORED_METHOD_ROW_LEDGER",
   "sourceBase": "9a92049ef86bcbc4569aaa0a11d1f42632093622",
-  "status": "FIRST_NATIVE1_FAILED_ORIGINAL_OUTCOME_PENDING_INDEPENDENT_CAUSAL_EVIDENCE",
+  "status": "CAUSAL_ORDERING_RED_ACCEPTED_WHOLE_IMPLEMENTATION_AUTHORING_RELEASED_NO_NEW_ACTUAL",
   "rows": [
     {
       "category": "fr063-joint-interface-lifecycle-order",
@@ -9,7 +9,7 @@
       "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce",
       "attributes": "Fact",
       "staticRows": 1,
-      "status": "FIRST1EXECUTED0PASS1FAIL_UNQUALIFIED_PENDING_INDEPENDENT_EVIDENCE",
+      "status": "QUALIFIED_CAUSAL_RED1_ORIGINAL_FAILED_NATIVE_RETAINED",
       "firstCausalAssertion": "Assert.Equal(1, _interfaceAtCapture), after real shared helper completion/inert repeat and frozen original diagnostics",
       "rootOwner": "RunJointCompletionControlAsync/CleanupOwnedFixture; final I image frozen before root disposal; no post-disposal read",
       "historicalPreRunPrediction": "capture callback1, early I-changing cohort0, later actual I-changing cohort1/common completed; native evidence not yet obtained",
@@ -131,7 +131,7 @@
       "status": "READ_ONLY_ARCHIVED_BOTH_FIRST_ZERO_RECORDS_ONE_INVOCATION_19CHAINS"
     }
   ],
-  "priority": "Qualify genuine earliest semantic singleton via concrete SOURCE/fresh PREP/named FIRST before making every later negative/codec case a prerequisite; remaining whole-vertical authoring/qualification explicitly open.",
+  "priority": "Author minimal whole accepted lifecycle and remaining finite tests-first controls; early bounded uncompiled/unrun WIP. No build/discovery/native before changed-scope review and named preparation/actual releases.",
   "preparation": {
     "catalog": {
       "nativeExit": 0,
@@ -268,5 +268,16 @@
     "rawChains": 9,
     "qualification": "ORIGINAL_FAILED_OUTCOME_PENDING_INDEPENDENT_CAUSAL_EVIDENCE",
     "limits": "Cohorts are physical observations, not exact common or public-I API invocation counts. Expected laterI1 was wrong; actual2 preserved. No absence-of-writes proof of ambient policy/sample counts, no rerun or fix."
+  },
+  "causalEvidence": {
+    "verdict": "ACCEPT_CAUSAL_RED_EARLY_INTERFACE_ORDERING_ONLY",
+    "review": "t179pd-ni-iobs-l01-first-ordering-evidence-independent-review-20261018.md",
+    "rootDecision": "t179pd-ni-iobs-l01-root-causal-acceptance-production-release-7e5c4405-20261018.json",
+    "savedRawCarrier": "7e5c44055ffbe56d7eb753ef29b04ba30bd232ca",
+    "scope": "One genuine ordering RED only. Original native1/one failed case remains unchanged; all assertions after124 unreached. Later I-changing2, not predicted1; physical cohorts are not API invocation counts.",
+    "requiredConsumers": [
+      "MortalJointRepairCompletion.cs:98",
+      "ValidationAndRepair.cs:246"
+    ]
   }
 }
