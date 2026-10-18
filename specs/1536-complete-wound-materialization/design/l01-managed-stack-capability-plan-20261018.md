@@ -38,7 +38,12 @@ Direct createdump --crashreportonly exists, but is not an automatic fallback.
 - [Official permissions FAQ](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/faq-dumps)
   describes ptrace/proc access and possible seccomp/LSM denial. Here UID1000,
   CapEff0, NoNewPrivs1, Seccomp2; Yama/LSM setting files are unavailable. These
-  observations alone prove neither permission nor denial. No security setting changes.
+  observations alone prove neither permission nor denial. No manual/system security
+  setting changes. The normal runtime API itself authorizes its specific createdump
+  child with PR_SET_PTRACER before that child uses ptrace/proc; this route is not
+  ptrace-free. See [runtime PAL](https://github.com/dotnet/runtime/blob/v8.0.32/src/coreclr/pal/src/thread/process.cpp#L2353).
+  We do not invoke prctl, grant ANY ptracer, change sysctl/setcap/seccomp/LSM policy,
+  or use direct attach. If normal runtime authorization is denied, retain that failure.
 - [Diagnostic-port contract](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/diagnostic-port)
   requires same-user access and a matching TMPDIR; use a new private namespace.
 
@@ -54,18 +59,23 @@ Direct createdump --crashreportonly exists, but is not an automatic fallback.
    hashes and fresh build identity. This is helper preparation, zero game tests.
 3. Save/push/recover helper source and preparation before independent SOURCE/PREP
    review. Only after acceptance admit one named S01. No implicit fallback/retry.
-4. Use the unused inventory-planned `/tmp/l01-managed-stack-smoke-20261018-*` root,
+4. Use the unused inventory-planned short `/tmp/l01ms-<16hex>` root,
    private TMPDIR/XDG/output folders and a sanitized explicit child environment with
-   no credentials or game paths. Do not reuse prior L01/M01 namespaces. Target has
+   no credentials or game paths. Preflight requires the worst-case Unix socket path
+   below108 bytes including its numeric PID/starttick budget (currently92 bytes
+   excluding NUL), avoiding a known long-TMPDIR risk before launch. The superseded
+   long planned root was never created or used. Do not reuse prior L01/M01 namespaces. Target has
    two NoInlining/NoOptimization known call chains: main waits on private stdin in
    KnownWaitLeaf/Outer; one worker executes bounded KnownCpuLeaf/Outer. It reports
    nonce, PID/kernel starttick, native thread IDs and readiness after real CPU work.
-   A private stop token ends it; a60-second self deadline bounds abnormal paths.
+   A private stop token ends it; a60-second self deadline is only a backup while its
+   threads run. It cannot fire while createdump has suspended those threads.
 5. Controller records its spawned ownership, target command/nonce, PID/starttick,
    same UID and exact private diagnostic socket. Recheck immediately before the
    one request; a missing/exited/replaced identity is a HOLD, never a PID guess.
    A private PowerShell collector loads only pinned existing SDK dependencies and
-   calls the public API once. Its20-second deadline is a synthetic tooling bound,
+   calls the public API once. An external controller enforces its20-second deadline
+   independently of suspended target/collector code. This is a synthetic tooling bound,
    not a game timeout change. No process-wide endpoint enumeration or unrelated PID.
 6. Drain original stdout/stderr concurrently. On return, parse the original JSON:
    at least the two independently reported native thread IDs must have the known
@@ -75,7 +85,10 @@ Direct createdump --crashreportonly exists, but is not an automatic fallback.
    native0, guessed names from logs, or native-only frames alone cannot pass S01.
 7. Send stop token and require target0, join/EOF and bounded owned cleanup. On a
    failure, preserve the first result, stop only identity-verified own processes,
-   and independently diagnose. Any createdump descendant cleanup must first prove
+   and independently diagnose. External watchdog cleanup cannot rely on the suspended
+   target self deadline: first account for and terminate its exact owned createdump
+   child if necessary, then close/terminate collector and target, and join/drain EOF.
+   Any createdump descendant cleanup must first prove
    target parentage, executable, private output argument and PID/starttick; otherwise
    report the blocker, never signal by name. No global kill/process scan.
 8. Preserve raw JSON, command/stdout/stderr, timing, identities, compile/ABI and

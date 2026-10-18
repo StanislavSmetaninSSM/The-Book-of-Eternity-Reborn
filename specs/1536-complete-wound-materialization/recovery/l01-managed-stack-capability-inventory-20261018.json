@@ -4,7 +4,7 @@
   "base": "39cafe9e9595730929efb7b7450b4cc260b5bafc",
   "syntheticStatus": "PLAN_REVIEW_PENDING_UNRUN",
   "gameplayRelease": "NONE",
-  "plannedRunRoot": "/tmp/l01-managed-stack-smoke-20261018-e41ea38d29f24bf5b8e56f5d98298e80",
+  "plannedRunRoot": "/tmp/l01ms-e3edce403bfe41ee",
   "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
   "architecture": "x86_64",
   "security": {
@@ -929,5 +929,11 @@
     "correctedExit": 0,
     "correction": "Existing pwsh with private /tmp/l01-diagnostic-inventory-20261018 XDG paths; no installation/escalation. Reflected ABI and references only, not a diagnostic smoke."
   },
-  "limits": "Read-only metadata/help/inventory only; no synthetic/gameplay target, no dump/trace/attach, no process enumeration of diagnostic endpoints or unrelated process data. Old lost environment untouched."
+  "limits": "Read-only metadata/help/inventory only; no synthetic/gameplay target, no dump/trace/attach, no process enumeration of diagnostic endpoints or unrelated process data. Old lost environment untouched.",
+  "supersededUnusedRunRoot": "/tmp/l01-managed-stack-smoke-20261018-e41ea38d29f24bf5b8e56f5d98298e80",
+  "unixSocketPathBudget": {
+    "maxSunPathBytesExcludingNul": 107,
+    "worstPlannedPath": "/tmp/l01ms-e3edce403bfe41ee/s01/tmp/dotnet-diagnostic-9999999999-99999999999999999999-socket",
+    "worstPlannedBytes": 92
+  }
 }
