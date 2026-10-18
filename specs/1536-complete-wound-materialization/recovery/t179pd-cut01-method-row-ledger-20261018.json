@@ -2,7 +2,7 @@
   "kind": "T179PD_CUT01_FINITE_METHOD_ROW_LEDGER",
   "task": "#1536 T179-Pd-CUT01",
   "base": "08119f36c66464913e94d4bd5d23221073e0d48d",
-  "status": "CAUSAL_RED_ACCEPTED_MINIMAL_PRODUCT_AUTHORED_UNCOMPILED_ALL_PRODUCT_ACTUALS_HELD",
+  "status": "MINIMAL_PRODUCT_FRESH_BOTH_CATALOG_PLAN_ZERO_SOURCE_REVIEW_PENDING_ALL_PRODUCT_ACTUALS_HELD",
   "plan": "recovery/t179pd-ni-capture-cut-plan-08119f36-20261018-v2.md",
   "planReview": "recovery/t179pd-ni-capture-cut-plan-independent-review-20261018.md",
   "newRows": [
@@ -52,9 +52,9 @@
     "planCases": 5,
     "buildBothCompleted": true,
     "executed": 1,
-    "traces": "NO_TRX; planned-but-unexecuted descriptors are intentional PlanOnly state, not a runtime underfill",
+    "traces": "Historical zero-test prep has noTRX; original stop1 has one failed TRX preserved in exact9-chain raw. No current-product TRX exists.",
     "firstStop": {
-      "kind": "FIRST_STOP1_ORIGINAL_RAW_PENDING_INDEPENDENT_CAUSAL_EVIDENCE",
+      "kind": "HISTORICAL_FIRST_STOP1_ORIGINAL_RAW_WITH_ACCEPTED_CAUSAL_MISSING_CUT_RED",
       "actualSource": "558c7ec0a683dad0586a1dd599676fd291193ef2",
       "compiledSource": "3579d8e21db039dbabc6050a175024cf6c08f79b",
       "nativeExit": 1,
@@ -87,7 +87,7 @@
         "ActualDisposition is literally null; no nonnull Committed claim from that field.",
         "PostCut counters0 were unarmed because callback missing; they are NOT no-work evidence.",
         "Marker-containing cohorts may include progression; not exactly2 common invocations.",
-        "Source/publication/physical state and genuine old work still require separate independent causal qualification.",
+        "Source/publication/physical state and genuine old work were independently qualified as missing-cut RED only; original raw is unchanged.",
         "No GREEN, NI, new held behavior or remaining4 actuals claimed."
       ],
       "runnerOwnedCleanup": true,
@@ -100,7 +100,8 @@
       "rawChains": 9,
       "authorization": "Root named exact558c FIRST stop1 after saved Source/PREP decision and complete72-delta readback; recorded original helper/actual context carries exact invocation.",
       "independentCausalVerdict": "ACCEPTED_CAUSAL_MISSING_CUT_RED_ONLY"
-    }
+    },
+    "phase": "HISTORICAL_TESTS_ONLY_PREP3579_AND_NAMED_FIRST558C_RED; current product has ZERO actual cases"
   },
   "rulings": [
     {
@@ -136,12 +137,13 @@
     "rawChains": 19,
     "nineFreshCopies": true,
     "namespaceEmptyBoth": true,
-    "firstStopRecorder": "tools/t179pd-cut01-stop-first-run.py UNRUN; separate named actual release required"
+    "firstStopRecorder": "HISTORICAL used once558c; independent causal missing-cut RED accepted, exact native1/raw retained",
+    "phase": "HISTORICAL_TESTS_ONLY_COMPILED3579_ZERO; not current product qualification"
   },
   "sourceReview": {
     "md": "recovery/t179pd-cut01-tests-source-independent-review-20261018.md",
     "root": "recovery/t179pd-cut01-root-source-prep-acceptance-172455c2-20261018.json",
-    "scope": "First stop1 eligibility only, saved decision and separate named activation required",
+    "scope": "HISTORICAL tests-only3579/172455 FIRST stop1 eligibility, followed by named558c and accepted genuine missing-cut RED. Not changed-product SOURCE acceptance.",
     "remainingCasesHeld": 4,
     "counterPrecision": "Committed marker-containing cohort count may include progression, not exact first-common invocation total. Zero negatives and positive presence only."
   },
@@ -157,7 +159,109 @@
     ],
     "scope": "Only append enum + await existing nullable dispatcher after current capture/before preparation; no NI semantics",
     "inverse": "Both exact08119 whole source restored by removing exact2edits",
-    "freshProductPrep": "PENDING; no old binaries/prep reuse",
-    "actuals": "ALL_HELD pending product SOURCE/PREP and named protectedLate2 FIRST/EVIDENCE then new3"
+    "freshProductPrep": "COMPLETED_FIRST_ZERO_3D195F2F; new9copies/335managed, not actual acceptance",
+    "actuals": "ALL_HELD until product SOURCE/PREP decision saved/recovered then separate named protectedLate2 FIRST/EVIDENCE before new3",
+    "preparation": {
+      "compiledSource": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
+      "productSource": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
+      "archivePath": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-first-product-preparation-files-20261018/archive.json",
+      "archiveSha256": "8439477d57e78692068c54d693c73dad0af626db5cb2cae8a1db8c66911b5a69",
+      "rawChains": 19,
+      "catalogNative": 0,
+      "catalogMethods": 11772,
+      "catalogCategories": 795,
+      "catalogSeconds": 89.87840779199905,
+      "stagePlanNative": 0,
+      "stagePlanSeconds": 3.263149282996892,
+      "stagePlannedOwners": 3,
+      "stagePlannedDescriptors": 3,
+      "stagePlannedMethods": 4,
+      "stagePlannedCases": 5,
+      "actualCasesExecuted": 0,
+      "bothBuilds": true,
+      "binaryPins": [
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "bytes": 26178560,
+          "sha256": "2d808a2b25b14a3263376751e9abd875187e4cb431400528abc7080fbada24ff"
+        },
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+          "bytes": 9601024,
+          "sha256": "94d6011e86cc63ab1a7d7430d0ad135d95171257875fb65a7d9fcb1a33c1d05d"
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "bytes": 26178560,
+          "sha256": "2d808a2b25b14a3263376751e9abd875187e4cb431400528abc7080fbada24ff"
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "bytes": 29208576,
+          "sha256": "092ff16f66c86413898d42f65c651fa9e2ef1f69aa2315281b13ae3534544943"
+        },
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "bytes": 1830912,
+          "sha256": "a195e3b67434fddd7af55526b76eb783a8e6a1a55916d66dacec75ae9c22d71b"
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "bytes": 1830912,
+          "sha256": "a195e3b67434fddd7af55526b76eb783a8e6a1a55916d66dacec75ae9c22d71b"
+        },
+        {
+          "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "bytes": 26178560,
+          "sha256": "2d808a2b25b14a3263376751e9abd875187e4cb431400528abc7080fbada24ff"
+        },
+        {
+          "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+          "bytes": 248832,
+          "sha256": "2cffebb809f30a0746d7a82c10039810e196bf6a489cd0c72993451b4b433ad2"
+        },
+        {
+          "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "bytes": 26178560,
+          "sha256": "2d808a2b25b14a3263376751e9abd875187e4cb431400528abc7080fbada24ff"
+        }
+      ],
+      "managedOutputCount": 335,
+      "namespace": {
+        "ownedRoots": []
+      },
+      "compiledContext": "Exact source/ledger snapshots inside both original FIRST records remain immutable. Current derived metadata is a metadata-only descendant; no raw rewrite or replay.",
+      "phase": "CURRENT_CHANGED_PRODUCT_COMPILED_3D195F2F_ZERO_ACTUAL",
+      "cleanup": {
+        "catalogOwned": true,
+        "catalogRuntime": true,
+        "planOwned": true,
+        "planRuntime": true
+      }
+    },
+    "actualControllers": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-product-first-run.py",
+        "sha256": "a4eaa9ac8618ea251e61bedef572a79b628726243279d283d440b8485230f0a1",
+        "status": "UNRUN_REQUIRES_SAVED_PRODUCT_SOURCE_AND_SEPARATE_NAMED_MODE"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-archive-product.py",
+        "sha256": "65cdda7af386a200f3f675572d72702f9b853e58962ac6fdc95387535f1b5fef",
+        "status": "UNRUN_REQUIRES_SAVED_PRODUCT_SOURCE_AND_SEPARATE_NAMED_MODE"
+      }
+    ],
+    "preparationControllers": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-product-preparation-run.py",
+        "sha256": "11e1348602f4198d002a9ffb121c870ee66a3d379f36d229b27c63dd2766e5cf",
+        "status": "USED_FOR_FRESH_CATALOG_BOTH_AND_STAGE_PLAN_ZERO"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-archive-product-preparation.py",
+        "sha256": "a0a54d44ff94c1ba581a5d1af6d3af2fc5ad31bded9727e58a908cb78e44a834",
+        "status": "READ_ONLY_FROZE_TWO_PREP_RECORDS_EXACT19CHAINS"
+      }
+    ]
   }
 }
