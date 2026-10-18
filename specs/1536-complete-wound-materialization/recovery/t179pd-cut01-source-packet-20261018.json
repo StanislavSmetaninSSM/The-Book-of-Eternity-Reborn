@@ -1,7 +1,7 @@
 {
   "kind": "T179PD_CUT01_TESTS_ONLY_CURRENT_SOURCE_PACKET",
   "base": "08119f36c66464913e94d4bd5d23221073e0d48d",
-  "status": "FIRST_STOP1_FAILED_ORIGINAL_RAW_PENDING_INDEPENDENT_CAUSAL_EVIDENCE",
+  "status": "CAUSAL_RED_ACCEPTED_MINIMAL_PRODUCT_AUTHORED_UNCOMPILED_ALL_PRODUCT_ACTUALS_HELD",
   "sourcePins": [
     {
       "path": "AGENTS.md",
@@ -41,21 +41,21 @@
     },
     {
       "path": "BookOfEternityClient/Core/GameEngine.cs",
-      "bytes": 10951,
-      "sha256": "28761cafd0394e222e18f194a44907e6b7102ee3e4e18198ec26cd3397814890",
-      "gitBlob": "bfb2fa7d29bdf42e794930fc5ae26e0cc384c3ca",
+      "bytes": 11008,
+      "sha256": "10f1967888b7eca0890a1a6c3ff32af0d9f26f7b7a0523af3bb211d3553f7be3",
+      "gitBlob": "0e45af94051de93058a054e180a6ec86176184ea",
       "mode": "100644",
       "baselineGitBlob": "bfb2fa7d29bdf42e794930fc5ae26e0cc384c3ca",
-      "disposition": "UNCHANGED_RETAINED_08119F36"
+      "disposition": "CURRENT_MINIMAL_PRODUCT_SOURCE"
     },
     {
       "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
-      "bytes": 10347,
-      "sha256": "2882510dad3a8ad27e9331ad8f157884e569c851507749b8ed502b74c39901fb",
-      "gitBlob": "770578be4fd4f3284036431e8c3192b1f27bd3c2",
+      "bytes": 10494,
+      "sha256": "1732b324c1990265858eaf7a09bd093c05b3f861af6d87f11ba95f03d334dbda",
+      "gitBlob": "3dd6a69d473ed3b8eb969b9c5bee5fa0aaef7af0",
       "mode": "100644",
       "baselineGitBlob": "770578be4fd4f3284036431e8c3192b1f27bd3c2",
-      "disposition": "UNCHANGED_RETAINED_08119F36"
+      "disposition": "CURRENT_MINIMAL_PRODUCT_SOURCE"
     },
     {
       "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs",
@@ -283,14 +283,17 @@
       "disposition": "UNCHANGED_RETAINED_08119F36"
     }
   ],
-  "sourcePinDigest": "4e51099287cebfc111fd8035b219ee361d0208a54cfcba5cccab1c9039932435",
+  "sourcePinDigest": "d2166163295ea183719e3a51f65a0c795a238bfeb83faf5e1109c0fb4aacb77f",
   "currentLedger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-method-row-ledger-20261018.json",
-    "sha256": "95e62b2cdda209c5c289884d4f37a7236fb30df47d20a0e45893f59794007fdc"
+    "sha256": "1c359e8fd80d614a4576fb7eb397c80bcb8841a6489dae2615cf0ae026d83175"
   },
-  "productDelta": [],
+  "productDelta": [
+    "BookOfEternityClient/Core/GameEngine.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs"
+  ],
   "fixture": "Original accepted full source base+69 consecutive deltas retained; changed actual fixture and new probe pinned here. No fullclone/old evidence replay.",
-  "firstEligibleActual": "FIRST named stop1 already executed once on558c; original raw preserved pending independent causal EVIDENCE. No rerun/remaining4/product release.",
+  "firstEligibleActual": "Old stop1 RED accepted under unchanged product. ALL current product actuals held; future exact protectedLate2 first after new product prep/SOURCE, then new3.",
   "planCorrections": "Preserve v1 initial absent-file proposed probe and exact v2 source correction, not native failure. Literal guaranteed present read at Reconstruct88/preparation146–147.",
   "precommonDesign": "t179pd-cut01-method-row-ledger-20261018.json precommon: accepted DESIGN only, NI-IOBS-L01 and origin bridge open",
   "noRuntime": "Exactly1 actual stop case executed:1FAIL/raw only. Preparation0/0 remains historical; other4 actuals UNRUN.",
@@ -363,7 +366,8 @@
     "namespace": {
       "ownedRoots": []
     },
-    "compiledContext": "Original source-binding/ledger bytes inside FIRST raw remain immutable uncompiled-phase snapshots; current derived metadata updated without replay."
+    "compiledContext": "Original source-binding/ledger bytes inside FIRST raw remain immutable uncompiled-phase snapshots; current derived metadata updated without replay.",
+    "phase": "HISTORICAL_TESTS_ONLY_COMPILED3579_ZERO; not current changed-product qualification"
   },
   "controllers": [
     {
@@ -451,6 +455,33 @@
     "archiveSha256": "3a362efd062ed37c3b02f30a912f93ce1b4ef70f77d26f6cd408f86bbff1dcbb",
     "rawChains": 9,
     "authorization": "Root named exact558c FIRST stop1 after saved Source/PREP decision and complete72-delta readback; recorded original helper/actual context carries exact invocation.",
-    "independentCausalVerdict": "PENDING"
+    "independentCausalVerdict": "ACCEPTED_CAUSAL_MISSING_CUT_RED_ONLY"
+  },
+  "product": {
+    "files": [
+      "BookOfEternityClient/Core/GameEngine.cs",
+      "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs"
+    ],
+    "scope": "Only append enum + await existing nullable dispatcher after current capture/before preparation; no NI semantics",
+    "inverse": "Both exact08119 whole source restored by removing exact2edits",
+    "freshProductPrep": "PENDING; no old binaries/prep reuse",
+    "actuals": "ALL_HELD pending product SOURCE/PREP and named protectedLate2 FIRST/EVIDENCE then new3",
+    "preparationControllers": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-product-preparation-run.py",
+        "sha256": "11e1348602f4198d002a9ffb121c870ee66a3d379f36d229b27c63dd2766e5cf",
+        "status": "UNRUN_ZERO_TEST_ONLY"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-archive-product-preparation.py",
+        "sha256": "a0a54d44ff94c1ba581a5d1af6d3af2fc5ad31bded9727e58a908cb78e44a834",
+        "status": "UNRUN_ZERO_TEST_ONLY"
+      }
+    ]
+  },
+  "causalEvidence": {
+    "md": "recovery/t179pd-cut01-first-stop-evidence-independent-review-20261018.md",
+    "root": "recovery/t179pd-cut01-root-causal-red-acceptance-7f0b11c6-20261018.json",
+    "originalFailImmutable": true
   }
 }

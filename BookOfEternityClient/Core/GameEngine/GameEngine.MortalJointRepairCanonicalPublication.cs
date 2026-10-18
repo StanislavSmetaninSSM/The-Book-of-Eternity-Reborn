@@ -45,6 +45,7 @@ public partial class GameEngine
             try
             {
                 await CaptureCurrentHotCustodyAsync(attempt, lease);
+                await InvokeSessionFinalizationCheckpointAsync(SessionFinalizationCheckpoint.MortalJointCustodyCaptureCompletedBeforePreparation);
                 var preparation = await WoundAcceptedTurnPlanner.CreateJointRepairPreparationAsync(_fs, lease, capture);
                 attempt.RetainStage(JointAttemptIssuer, JointAttemptStage.Preparation, preparation);
                 if (!preparation.IsValid) return Refused(preparation.Issues);

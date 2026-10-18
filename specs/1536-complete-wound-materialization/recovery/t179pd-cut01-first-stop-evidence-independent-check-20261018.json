@@ -1,0 +1,804 @@
+{
+  "kind": "INDEPENDENT_FIRST_CUT01_STOP1_CAUSAL_EVIDENCE_CHECK",
+  "date": "2026-10-18",
+  "carrier": "7f0b11c6819b90473a272e793a5551e377b4371f",
+  "actualSource": "558c7ec0a683dad0586a1dd599676fd291193ef2",
+  "compiledSource": "3579d8e21db039dbabc6050a175024cf6c08f79b",
+  "unchangedProduct": "08119f36c66464913e94d4bd5d23221073e0d48d",
+  "record": {
+    "path": "/tmp/t179pd-cut01-implementation-tools/t179pd-cut01-stop-first-558c7ec0-20261018/record.json",
+    "bytes": 13068,
+    "sha256": "d2185787bf5c7c7c266efd6605327e52463ccfbeb39c68f2d621e2872f4d6037"
+  },
+  "archive": {
+    "path": "/tmp/t179pd-cut01-stop-archive-first-558c7ec0-20261018/archive.json",
+    "bytes": 6187,
+    "sha256": "3a362efd062ed37c3b02f30a912f93ce1b4ef70f77d26f6cd408f86bbff1dcbb"
+  },
+  "committedArchive": {
+    "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/t179pd-cut01-first-stop-files-20261018/archive.json",
+    "bytes": 6187,
+    "sha256": "3a362efd062ed37c3b02f30a912f93ce1b4ef70f77d26f6cd408f86bbff1dcbb"
+  },
+  "rawChains": [
+    {
+      "rawPath": "/tmp/t179pd-cut01-implementation-tools/558c7ec0a683dad0586a1dd599676fd291193ef2-cut01-stop1.FIRST.json",
+      "storedPath": "000-558c7ec0a683dad0586a1dd599676fd291193ef2-cut01-stop1.FIRST.json.gz",
+      "bytes": 289,
+      "sha256": "4feb788b13ea1643abfe50b97ef517855aa81f1f30184e0947e921fcb7c92783",
+      "storedBytes": 237,
+      "storedSha256": "b45bcdf919afe885ff9666e354121ca96d4fc13c957a0d037e038ef7c118d7da"
+    },
+    {
+      "rawPath": "/tmp/t179pd-cut01-implementation-tools/t179pd-cut01-stop-first-558c7ec0-20261018/process.json",
+      "storedPath": "001-process.json.gz",
+      "bytes": 736,
+      "sha256": "8c4945471c994c16061a5062028e72edfdb1a0a65f674215b3819099adfb50a2",
+      "storedBytes": 384,
+      "storedSha256": "82f169b95c90d04ad7da7190773b5cd86eea2507bf20372683f2cd98e8a81440"
+    },
+    {
+      "rawPath": "/tmp/t179pd-cut01-implementation-tools/t179pd-cut01-stop-first-558c7ec0-20261018/record.json",
+      "storedPath": "002-record.json.gz",
+      "bytes": 13068,
+      "sha256": "d2185787bf5c7c7c266efd6605327e52463ccfbeb39c68f2d621e2872f4d6037",
+      "storedBytes": 3813,
+      "storedSha256": "afa3b0ea2c751fd68651a09c7d291eaa39e93998d41dbcd606bdb95766b46ddb"
+    },
+    {
+      "rawPath": "/tmp/t179pd-cut01-implementation-tools/t179pd-cut01-stop-first-558c7ec0-20261018/source-binding.json",
+      "storedPath": "003-source-binding.json.gz",
+      "bytes": 19197,
+      "sha256": "de3c33f8fffcc4cc196f7999f95ea4a187566a9c95cb3fdf844dab3f373e08ce",
+      "storedBytes": 5473,
+      "storedSha256": "1e0b3db9548c20afbfb2c86304d7267e46cff20048470bfb8aa423aa7ff112c1"
+    },
+    {
+      "rawPath": "/tmp/t179pd-cut01-implementation-tools/t179pd-cut01-stop-first-558c7ec0-20261018/stdout.log",
+      "storedPath": "004-stdout.log.gz",
+      "bytes": 7003903,
+      "sha256": "5bd315721e611b13d9c4619f8b1510e37e55c80bda5390978c82990eee901b04",
+      "storedBytes": 2551644,
+      "storedSha256": "75edd937f007d1046bf9de7a9401ef4f7d9416541b6cc9b6b621278c35acf840"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-033455-749-187295-7a70e18415b24605a6888859b9bde564-categories/dotnet-test.log",
+      "storedPath": "005-dotnet-test.log.gz",
+      "bytes": 8692461,
+      "sha256": "1fce98ef5d8652272f29dca9b313e3a5c088833bf78ff748c8a52e752f001798",
+      "storedBytes": 2738936,
+      "storedSha256": "039382ff26fc830c6f2cd8a170e091fe0b3895a891cfcff2b467cf00dfe2103c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-033455-749-187295-7a70e18415b24605a6888859b9bde564-categories/fr063-joint-capture-cut-stop-integration-001.trx",
+      "storedPath": "006-fr063-joint-capture-cut-stop-integration-001.trx.gz",
+      "bytes": 14011632,
+      "sha256": "faabb4a89014b189b07c52d6fc0c78769d3d07d91c108e399b1cef8f39f480c1",
+      "storedBytes": 5102527,
+      "storedSha256": "d6bcb8e05bff9330f5e4bd4f8dddbd61c48d29370e2aed30514d0f848833cd76"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-033455-749-187295-7a70e18415b24605a6888859b9bde564-categories/plan.json",
+      "storedPath": "007-plan.json.gz",
+      "bytes": 1181,
+      "sha256": "24ae77a3504da3d0a918e16476426084f9e227d2b5cc77e7571a1c9d16ad0533",
+      "storedBytes": 539,
+      "storedSha256": "45ace9793a4997ae3e2e4bd7ce6b6470773ade2672125e927bfdfd6bd4420901"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-033455-749-187295-7a70e18415b24605a6888859b9bde564-categories/summary.json",
+      "storedPath": "008-summary.json.gz",
+      "bytes": 1368,
+      "sha256": "1ac773f797fdaa9d44abd22bf82179fa349ad4873e9a3d21750544ed2a6c8818",
+      "storedBytes": 590,
+      "storedSha256": "e65e0bbd169955fe20e18014c83de676188f74351b6821e5933b274d3a7996ba"
+    }
+  ],
+  "sourceContext": {
+    "path": "/tmp/t179pd-cut01-implementation-tools/t179pd-cut01-stop-first-558c7ec0-20261018/source-binding.json",
+    "bytes": 19197,
+    "sha256": "de3c33f8fffcc4cc196f7999f95ea4a187566a9c95cb3fdf844dab3f373e08ce"
+  },
+  "sourcePinCount": 31,
+  "sourcePinDigest": "4e51099287cebfc111fd8035b219ee361d0208a54cfcba5cccab1c9039932435",
+  "sourceAndMetadataAncestryExact": true,
+  "binaryCopies": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26178560,
+      "sha256": "9252a27248143e88499fe6759b17c99035b394fc06288dc5f0d2062c22f70590"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9601024,
+      "sha256": "b6086fcd2c83bfac368b48a0490414b9b1a2bf1d53367cb9143e97b7a5600a0a"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26178560,
+      "sha256": "9252a27248143e88499fe6759b17c99035b394fc06288dc5f0d2062c22f70590"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 29208576,
+      "sha256": "2452dd9db86ee33ff542daaf0d94126584b8eb74c91c0880a4a726ad0a576464"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1830912,
+      "sha256": "ef42fb5967df95dae90ab44b95081d97132a457c2a72134536e6fedfe179621e"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1830912,
+      "sha256": "ef42fb5967df95dae90ab44b95081d97132a457c2a72134536e6fedfe179621e"
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26178560,
+      "sha256": "9252a27248143e88499fe6759b17c99035b394fc06288dc5f0d2062c22f70590"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+      "bytes": 248832,
+      "sha256": "ba249c1ff84a3e6bdcfe62bfc5ece077496215c6afb830a633d5970a1b9069af"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26178560,
+      "sha256": "9252a27248143e88499fe6759b17c99035b394fc06288dc5f0d2062c22f70590"
+    }
+  ],
+  "managedFilesChecked": 335,
+  "plan": {
+    "path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-033455-749-187295-7a70e18415b24605a6888859b9bde564-categories/plan.json",
+    "bytes": 1181,
+    "sha256": "24ae77a3504da3d0a918e16476426084f9e227d2b5cc77e7571a1c9d16ad0533"
+  },
+  "summary": {
+    "Categories": [
+      "fr063-joint-capture-cut-stop"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "558c7ec0a683dad0586a1dd599676fd291193ef2",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-joint-capture-cut-stop",
+        "Seconds": 62.2817306,
+        "BudgetMinutes": 5,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0308132,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0358166,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1010911,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:01:05.0742168",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1
+    },
+    "DuplicateTests": []
+  },
+  "trx": {
+    "path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-033455-749-187295-7a70e18415b24605a6888859b9bde564-categories/fr063-joint-capture-cut-stop-integration-001.trx",
+    "bytes": 14011632,
+    "sha256": "faabb4a89014b189b07c52d6fc0c78769d3d07d91c108e399b1cef8f39f480c1"
+  },
+  "caseIdentity": {
+    "executionId": "7019195f-c2cd-4e5d-a4d9-5dce4c2bc38a",
+    "testId": "f214df6a-007f-899d-8352-78acec41fa7f",
+    "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentCaptureStopPrecedesPreparationAndExpiresActualOwner",
+    "computerName": "c151c60a176e",
+    "duration": "00:01:00.0082846",
+    "startTime": "2026-10-18T03:36:00.1727857+00:00",
+    "endTime": "2026-10-18T03:36:00.1727997+00:00",
+    "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+    "outcome": "Failed",
+    "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+    "relativeResultsDirectory": "7019195f-c2cd-4e5d-a4d9-5dce4c2bc38a"
+  },
+  "error": "Assert.Equal() Failure: Values differ\nExpected: 1\nActual:   0",
+  "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointCaptureCutProbe.AssertStopped(GameEngine actualEngine) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointCaptureCut.cs:line 175\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow, Boolean normalizeNarrativeBeforeCheckpoint, Action`1 observeSettledCommonPlan, Boolean postOriginalAutomaticSubmission, Action`1 attachActualOwnerProbe, JointCaptureCutProbe currentCaptureProbe) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 410\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentCaptureStopPrecedesPreparationAndExpiresActualOwner() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointCaptureCut.cs:line 16\n--- End of stack trace from previous location ---",
+  "prerequisites": {
+    "source": {
+      "SessionId": "session_qte_story_append",
+      "RequestId": "f1c32b8582a34a2ca5cb4495190bc6ba",
+      "SnapshotToken": "AEF8DBB2B2C624DA77440AA376A9D00BDE487DC3A6CA55E2DB5057CC7A05A10B",
+      "TurnNumber": 42
+    },
+    "original": {
+      "SessionId": "session_qte_story_append",
+      "RequestId": "20f8456d5e074b1fa4afed9e85a4cb87",
+      "SnapshotToken": "ABF17D8A221D036BA7D4BD694630AE211FC2C1688AEF40A01A50173D1F928BAE",
+      "TurnNumber": 43,
+      "Realm": "mortal_world"
+    },
+    "generation": "38d2b9e82c2f477aa0e0a25fd1ca8566",
+    "confirmedHeld": true,
+    "noPrecomposedCommonPlan": true,
+    "stage43Images": 19,
+    "allStage43ImageEqualities": true,
+    "repairErrorCodes": [
+      "wound_severity_above_opportunity"
+    ],
+    "repairCount": 1,
+    "caller": "ProcessPlayerTurn",
+    "failure": null,
+    "observerFailure": null
+  },
+  "actualProbe": {
+    "Callback": 0,
+    "Counters": {
+      "PreparationPresentWaveEntryReads": 4,
+      "RetainedPreparation": 1,
+      "RetainedPrepared": 1,
+      "RetainedFinal": 1,
+      "RetainedPreflight": 1,
+      "RetainedEffects": 1,
+      "RetainedCommon": 1,
+      "ReservationObjectsObserved": 1,
+      "OpenTakeObjectsObserved": 1,
+      "JointMarkerCommonPublications": 2,
+      "PostCutCanonicalMutations": [],
+      "PostCutLocalPublicationEvents": 0,
+      "Meaning": "Actual read/retained-state/publication observations; not fabricated per-method invocation totals"
+    },
+    "Trace": [
+      "actual-preparation-present-pending-read",
+      "actual-preparation-present-pending-read",
+      "actual-preparation-present-pending-read",
+      "actual-preparation-present-pending-read",
+      "actual-joint-marker-common-publication",
+      "actual-joint-marker-common-publication"
+    ],
+    "ActualDisposition": null,
+    "Issues": null,
+    "CutImages": null,
+    "ActualTurn": 43,
+    "attempt": {
+      "phase": "Delegated",
+      "closeDisposition": "UnavailableDelegated",
+      "delegated": true,
+      "captureCanOpen": false,
+      "liveCapabilitiesExpired": true,
+      "fullSemanticAdmission": false,
+      "hasS": false,
+      "hasB": false,
+      "hasM3": false,
+      "binding": {
+        "generation": "38d2b9e82c2f477aa0e0a25fd1ca8566",
+        "sessionId": "session_qte_story_append",
+        "requestId": "20f8456d5e074b1fa4afed9e85a4cb87",
+        "snapshotToken": "ABF17D8A221D036BA7D4BD694630AE211FC2C1688AEF40A01A50173D1F928BAE",
+        "turn": 43,
+        "actualStageCompleted": true,
+        "stageDisposition": "StagedUnderLiveOwner"
+      }
+    },
+    "custody": {
+      "status": "ConsumedReadyMatched",
+      "reason": "ActualMatchingDeletionAndReleaseReturned",
+      "readyObservedBeforeDelete": true,
+      "readyDeleteReturned": true,
+      "readyReleaseReturned": true,
+      "currentSourceRecheckSucceeded": true
+    }
+  },
+  "physicalCapturedAfterImages": [
+    {
+      "path": "game_state/afterlife/afterlife_active_threats.json",
+      "bytes": 4057,
+      "sha256": "0586d0057dd387f86c0302cdd9b47f2435504f2f6ab8ce3476f8c6f89b81bc0f"
+    },
+    {
+      "path": "game_state/afterlife/afterlife_chronicles.json",
+      "bytes": 2653,
+      "sha256": "0e2cb441a5f87166ccc3f49284591e9f17bbc10e299f19edd74c79ebdc0a373f"
+    },
+    {
+      "path": "game_state/afterlife/afterlife_global_flags.json",
+      "bytes": 1900,
+      "sha256": "51d177338a159fded29d414cdba07ef95a1f292dbfe2ffa5799952548cac594b"
+    },
+    {
+      "path": "game_state/afterlife/afterlife_story_outline.json",
+      "bytes": 3462,
+      "sha256": "b68def0acb1ee92e5bdf67f0fa7271b218e1f8fe6a700ea861acd68cea4594b8"
+    },
+    {
+      "path": "game_state/afterlife/entity_profiles/guardian_mirror.json",
+      "bytes": 9864,
+      "sha256": "a295046ef610c13096bdb30d9bcb7a0bc343ab162415f3e6b0d57558316fa4a1"
+    },
+    {
+      "path": "game_state/afterlife/entity_profiles/shining_senator_mirel.json",
+      "bytes": 8851,
+      "sha256": "15def35f254d5505186a3b51edb4d75458fb1a6a310cc2f1e61df739e2c7d66f"
+    },
+    {
+      "path": "game_state/chaos_sea/guardian_politics.json",
+      "bytes": 4822,
+      "sha256": "31151310b4b08ab7bb046d491f5e6b5cf203ed6de88318600b5e2e901cd5b1a7"
+    },
+    {
+      "path": "game_state/combat/allies.json",
+      "bytes": 25,
+      "sha256": "81af7cc4287cdeb3b839e1523db45cf33fceb9dfc3f0776c58406eeaf89a0801"
+    },
+    {
+      "path": "game_state/combat/enemies.json",
+      "bytes": 26,
+      "sha256": "49913cd73be6d76b86d424ce984105f6f8e3c1fd3f193ba36fe72e9c9e2ad33f"
+    },
+    {
+      "path": "game_state/control/gm_trajectory_ledger.jsonl",
+      "bytes": 1421,
+      "sha256": "5c9b8ce2da313b290eddbed41f90802dcb04e5b2a6a94d8555ef87a2ab284907"
+    },
+    {
+      "path": "game_state/control/pending_dice_state.json",
+      "bytes": 471,
+      "sha256": "fc4e6f961d5a3776e4c54c8c84cbf83e403e5a56f33843e1df1f7d705a95f2fe"
+    },
+    {
+      "path": "game_state/control/pending_ink_actions.json",
+      "bytes": 27,
+      "sha256": "17c3a0fb8e35969d6287033de69890790db70bcc977ea3c759046528540b21e3"
+    },
+    {
+      "path": "game_state/control/pending_mortal_wound_occurrences.json",
+      "bytes": 48,
+      "sha256": "d33b0852a32aa18421f697370527a571eab0e4742f323bb782a6f030b8a10fc9"
+    },
+    {
+      "path": "game_state/control/progression_schedule.json",
+      "bytes": 1036,
+      "sha256": "2e333ac7709a479a581b57479d5c9631a97c2a653c677ea821fa9125eaf3031b"
+    },
+    {
+      "path": "game_state/control/qte_deferred_effect_continuation.json",
+      "bytes": 164857,
+      "sha256": "f0c2cde399bc56ebd1351eb02a2e2b39f681820948bb2578d9e67e8a2c6e8a9c"
+    },
+    {
+      "path": "game_state/control/qte_runtime.json",
+      "bytes": 185,
+      "sha256": "910801c06e73c5a5b6fa164d7e4935b494c418b811d49e542a6bd73a259d0f69"
+    },
+    {
+      "path": "game_state/core/game_settings.json",
+      "bytes": 28,
+      "sha256": "48b1b58d015ea9ac89f445068c8340137c421e2c50c87b8560caf52bbc45f7bd"
+    },
+    {
+      "path": "game_state/core/player_status.json",
+      "bytes": 83,
+      "sha256": "8c9cdaf126f0b97a757327f12fe86d66ea4c0c51fb852ebebcb1ffcc21dff2e3"
+    },
+    {
+      "path": "game_state/core/system_mods.json",
+      "bytes": 1279,
+      "sha256": "70ba62eba73ed86197f516faaab43e74e3c3a241e6d6677664e32f65c444d63b"
+    },
+    {
+      "path": "game_state/effects/effect_identity_index.json",
+      "bytes": 2426,
+      "sha256": "f59a17d0c5e1f6ac0d0d721aef8d74575a8e33b23924854058234afdfa79c57a"
+    },
+    {
+      "path": "game_state/history/chat_log.json",
+      "bytes": 56,
+      "sha256": "7007f8ba969aa63363159dd685ba017b2cda36a6eec1428ea522da17132534ea"
+    },
+    {
+      "path": "game_state/history/qte_history.json",
+      "bytes": 287,
+      "sha256": "2f0c95499caecc52a4d405f1c234defd98f794efe744dd5f912016028d86b829"
+    },
+    {
+      "path": "game_state/inventory/item_identity_index.json",
+      "bytes": 1073,
+      "sha256": "7c42f694e39218087d2791f0a6d05add6dfb889927500824c6a0fd65a0e1f5b9"
+    },
+    {
+      "path": "game_state/inventory/items.json",
+      "bytes": 4603,
+      "sha256": "8c84347a66ea51133cc204a69c115c83324d8b8be0470c7ae9de872bb959fa61"
+    },
+    {
+      "path": "game_state/meta/achievements.json",
+      "bytes": 400,
+      "sha256": "a10e5e2470f988d4511c9f254eb15b1da514646dfe22e398b659919666064818"
+    },
+    {
+      "path": "game_state/meta/afterlife_entity_profiles.json",
+      "bytes": 45,
+      "sha256": "478cb55932547c1412679e7f2436caec9b7c1a37cc8bce24ba16e1f1ef45c0fa"
+    },
+    {
+      "path": "game_state/meta/character_chronicle.json",
+      "bytes": 733,
+      "sha256": "8057bda6f53f16cd7618648aa6945654163349a88aba67c629981b6518913a49"
+    },
+    {
+      "path": "game_state/meta/guardians.json",
+      "bytes": 106,
+      "sha256": "ab1a9be59b0e8657ebac266d47080384eb3fd7e1bdd546037b5317e791dd3d6c"
+    },
+    {
+      "path": "game_state/meta/soul_state.json",
+      "bytes": 415,
+      "sha256": "19e66a7a2059c8f569862e55fe728b6a6a3ba62c93fdbe42265e821b7de68430"
+    },
+    {
+      "path": "game_state/misc/characteristics.json",
+      "bytes": 225,
+      "sha256": "a29fbee3856171241586b449b0a785bcf60a12d7d802abae346a1de70a3d1ec5"
+    },
+    {
+      "path": "game_state/npcs/item_journals.json",
+      "bytes": 987,
+      "sha256": "dcb005342ffb229f59580356a55c755bd8d9937d96cbdf69de77437041af435d"
+    },
+    {
+      "path": "game_state/npcs/npc_core.json",
+      "bytes": 3994,
+      "sha256": "a4c67cbfab01e901d126c1f0d1386f07a0369e410c6a951768f9ec491034d8e1"
+    },
+    {
+      "path": "game_state/npcs/npc_journals.json",
+      "bytes": 21,
+      "sha256": "96e628a14882456158db02b16a3ab7bf3ebe40c2afa3db8d64cb1c839fd97a53"
+    },
+    {
+      "path": "game_state/npcs/npc_wounds.json",
+      "bytes": 44,
+      "sha256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385"
+    },
+    {
+      "path": "game_state/player/computed_characteristics.json",
+      "bytes": 1431,
+      "sha256": "15cedffd54a19f9ec50ad8e0ae75695ad0937043e1cc7cf0b9c11cf8fcceb3dd"
+    },
+    {
+      "path": "game_state/player/effects.json",
+      "bytes": 2547,
+      "sha256": "121969335ebdccda26a89bc4b6b8f62298791df376bce10a9c8625ca7b37e0e5"
+    },
+    {
+      "path": "game_state/player/experience.json",
+      "bytes": 170,
+      "sha256": "7b9c36ec21091aa8d118e8dda777738d8fdaab28b287cf8b83ac823338aa3b51"
+    },
+    {
+      "path": "game_state/player/player_status.json",
+      "bytes": 1202,
+      "sha256": "3cae75f26e400f642bdec76d974d3e56efe7b79b5212e329449ca97241f39b17"
+    },
+    {
+      "path": "game_state/player/skill_mastery.json",
+      "bytes": 29,
+      "sha256": "ab368372158b5afb30e3c1f7e7ddd189b01f0cf985b6b85ba8dea0a4e1a8a049"
+    },
+    {
+      "path": "game_state/player/skills_active.json",
+      "bytes": 28,
+      "sha256": "615ea9dae3be242fb738d57742295c5419909709a3984bba13458748028d30db"
+    },
+    {
+      "path": "game_state/player/skills_passive.json",
+      "bytes": 29,
+      "sha256": "062046836ab471cc0e7a6c7e3328f974ee4ae89be8839e012d2461cd74a600f0"
+    },
+    {
+      "path": "game_state/player/stat_points.json",
+      "bytes": 50,
+      "sha256": "0ad75b0ebb81096d7964434dd8eb4519de2a6e9af833bb820b3cfe070e9891b4"
+    },
+    {
+      "path": "game_state/player/transformation.json",
+      "bytes": 242,
+      "sha256": "53bb9c81bda4ab38bcb888639bd639822f77731fcc1fe7b5c3c2f8d5546d08fc"
+    },
+    {
+      "path": "game_state/player/wounds.json",
+      "bytes": 13724,
+      "sha256": "6a0ff8d0dd8d3ec07abdb609a7a25e88f35d0b05081f65fdc5ea7b05c70e6344"
+    },
+    {
+      "path": "game_state/quests/quest_history.json",
+      "bytes": 2056,
+      "sha256": "babcc397ccdc70661f844094dee691c3c2ef08ad2fe408aba614cdaaa1327cae"
+    },
+    {
+      "path": "game_state/resources/resource_definitions.json",
+      "bytes": 9231,
+      "sha256": "b1b9a571109f356c162c06823f898c158283fc8688c0c97e06cfc9ed378c6e1a"
+    },
+    {
+      "path": "game_state/resources/resource_history.json",
+      "bytes": 10320,
+      "sha256": "45f14fd55105b9f975e00e8ce70dc195a1a2d0abb75b98145318f9c7236547b1"
+    },
+    {
+      "path": "game_state/resources/resource_owner_authority.json",
+      "bytes": 895,
+      "sha256": "4a1e769c9bb0f7b99c6d57f6854ee5f5f86a794fe4c00df79e1085cbcae467d7"
+    },
+    {
+      "path": "game_state/resources/resource_state.json",
+      "bytes": 1603,
+      "sha256": "5a108bfbef94ffe8d3fa2652b17fab984edcfe0dbe91601b6fbd0dd4aaeab5b3"
+    },
+    {
+      "path": "game_state/shining_abode/faction_chronicles.json",
+      "bytes": 3669,
+      "sha256": "c43c647883df9cd5402dd60d8416070bb53cc674eeb8de517faa588977664cff"
+    },
+    {
+      "path": "game_state/world/current_location.json",
+      "bytes": 5783,
+      "sha256": "aed6fe35f610feb93ea29db2b46086edc1deec59d96b7e8c8620c851c04c919c"
+    },
+    {
+      "path": "game_state/world/location_identity_index.json",
+      "bytes": 481,
+      "sha256": "99f60feba92b2d72943227979bac4d165e265ddd4013fd07e397f35c0feba09c"
+    },
+    {
+      "path": "game_state/world/world_map.json",
+      "bytes": 5687,
+      "sha256": "d1d42d1b7eef7679ec6b4a5b8b953c7f3020e5a5aa1c7001694e8878d2d42a31"
+    },
+    {
+      "path": "game_state/world/world_time.json",
+      "bytes": 112,
+      "sha256": "4580e41d6ed481e03b444cfd9689c5e830ce67b7388dc04a23a83acbfd753233"
+    },
+    {
+      "path": "game_state/wounds/mortal_qte_decision_publication.json",
+      "bytes": 224200,
+      "sha256": "f0eb8802135192d9f9c066dc2e207f43e192c395b2c9d227c3d491d19fc07095"
+    },
+    {
+      "path": "game_state/wounds/wound_history.json",
+      "bytes": 22117,
+      "sha256": "ed09d10cf9f791240a92f0759da28eaeef15ab4302e4e1d2cf22db0b9c194d77"
+    },
+    {
+      "path": "game_state/wounds/wound_identity_index.json",
+      "bytes": 1121,
+      "sha256": "677c6ef9093c1eb47b23b6e6b55d869bdab17a34f4962c47f2aa4e521a6343af"
+    },
+    {
+      "path": "game_state/wounds/wound_opportunity_receipts.json",
+      "bytes": 2480,
+      "sha256": "32639cacbe3fa3d1fd85378bf4ba7e5286b8127a45c1aa5fc7f98a27eec47203"
+    },
+    {
+      "path": "lore/chaos_sea/cosmology.json",
+      "bytes": 2047,
+      "sha256": "fec13c4f2430d3e7318f3ebb6f186883bfbeede0bb417f2ce5ced13405a104cd"
+    },
+    {
+      "path": "lore/codex_entries.json",
+      "bytes": 4112,
+      "sha256": "937670566ef62459066fe5a994fe2c5f23a2a837b508855897e58913ef3f204c"
+    },
+    {
+      "path": "lore/current_world/cultures.json",
+      "bytes": 1006,
+      "sha256": "56f3acb7a5909210da08827d10ae089c4cfef5740600d2fa31cb1949fbba0c5d"
+    },
+    {
+      "path": "lore/current_world/geography.json",
+      "bytes": 995,
+      "sha256": "4c80352d019abc2153c70c860b8fecd08c13618e7d1c9f2de677b8a2d050285c"
+    },
+    {
+      "path": "lore/current_world/history.json",
+      "bytes": 950,
+      "sha256": "901a86d97b1f4a2601dc6c6d6cd7dd2d7f7e0e99dae6483b3b7a633a662c8b21"
+    },
+    {
+      "path": "lore/current_world/threats.json",
+      "bytes": 764,
+      "sha256": "a9a941fdc517262b29090b8cd782b2e3e6f779a45ef1db176d328b94b20b70c6"
+    },
+    {
+      "path": "lore/current_world/world_directives_draft_example.md",
+      "bytes": 1040,
+      "sha256": "4fa097fa95c8af22eba1901fdbee3d8de544089038de4888a6521add23ff1547"
+    },
+    {
+      "path": "lore/current_world/world_setting.json",
+      "bytes": 1095,
+      "sha256": "72792cb8026ef61118b9ebdc294272cf371717680dd7287bb36103c24ca3cefb"
+    },
+    {
+      "path": "mods/example_system_mod.json",
+      "bytes": 503,
+      "sha256": "cb66a9bdc29ea9ea529c1934119e9c03ec9ca1ea08387c50e42005340015c369"
+    },
+    {
+      "path": "mods/example_system_mod.md",
+      "bytes": 548,
+      "sha256": "cd7e840fa6775e965a3eab204e40141a740800ed551f72173abe0e17ce885a9e"
+    },
+    {
+      "path": "mods/example_system_mod.txt",
+      "bytes": 807,
+      "sha256": "4d73b86eb51eb6ee198383f79fdc2452f5de421403c232e5aeb4954fc2e7e6ca"
+    },
+    {
+      "path": "output/debug_logs.json",
+      "bytes": 1064,
+      "sha256": "4ce86a7c62948dbd1077bcbaa4394e1f9d70e545661e4f3113a04cc3d9c8e197"
+    },
+    {
+      "path": "output/interface_updates.json",
+      "bytes": 68,
+      "sha256": "3f8d7ccb0a5bd8448d5a9d440152593aed14e10ce5e447fee5cbaa61140d1eb3"
+    },
+    {
+      "path": "output/narrative_response.json",
+      "bytes": 395,
+      "sha256": "e2efe9f3831fb6941228732e587e85c663e56d15c3c05c2b49fe3cf0686a6cf4"
+    },
+    {
+      "path": "saves/manual_saves/chaos_sea_command_display_fixture.zip",
+      "bytes": 81508,
+      "sha256": "d88967a7837eb579ef21a7383f42bb669e79500b8c17568acf15588af3ffd751"
+    },
+    {
+      "path": "saves/manual_saves/chaos_sea_command_display_fixture_metadata.json",
+      "bytes": 3700,
+      "sha256": "9b4e138d22d12229b3a756138ae75d34d104031b0ab90145f7b1e7a577cfd415"
+    },
+    {
+      "path": "saves/manual_saves/first_character_save_metadata.json",
+      "bytes": 869,
+      "sha256": "6412eedb4029b53fd56122fe393c55d641b4b4267e81fce83d56ebac2575a63a"
+    },
+    {
+      "path": "saves/manual_saves/mortal_world_command_display_fixture.zip",
+      "bytes": 103744,
+      "sha256": "22d7dcab87ee3a2452b801e8f49e4be7ce9187c4b6f2a4c148f360bc3fd2a55d"
+    },
+    {
+      "path": "saves/manual_saves/mortal_world_command_display_fixture_metadata.json",
+      "bytes": 1672,
+      "sha256": "5eda2758a5a8e6ed892dbdd91cb5ed605650851adaaf7ea0c81accb20027e45f"
+    },
+    {
+      "path": "saves/manual_saves/shining_abode_command_display_fixture.zip",
+      "bytes": 35684,
+      "sha256": "822fd3e81578f7cfdfeba7d924a3d454bd9687efb90fa866c48dc49173adb735"
+    },
+    {
+      "path": "saves/manual_saves/shining_abode_command_display_fixture_metadata.json",
+      "bytes": 1540,
+      "sha256": "78fb89b27751e6f23bd893ab6ed62413da61bd33ddfb001d2bf1eb338cde1ae1"
+    },
+    {
+      "path": "stories/mortal_life_2.jsonl",
+      "bytes": 691,
+      "sha256": "dd7d508839998c291b28aba86be7462fe29eaa65d4bc112ad0186a770ca7e59c"
+    },
+    {
+      "path": "world_profiles/example_world_profile.json",
+      "bytes": 2603,
+      "sha256": "f62c409d898819de756c2b48a989d5b980511d626f29f2d8fbffae03602547f6"
+    },
+    {
+      "path": "world_profiles/example_world_profile.md",
+      "bytes": 674,
+      "sha256": "c54e577a6264219d2713ed964c47eb89d7d3cad1c775a2c20667ab0cbf6353c4"
+    },
+    {
+      "path": "world_profiles/example_world_profile.txt",
+      "bytes": 1455,
+      "sha256": "9e0ea1fdaa81c94235e0a6fedaf60f99974ce83ebe3bb26efbbd20a2916a64f7"
+    },
+    {
+      "path": "$sessionGeneration",
+      "bytes": 69,
+      "sha256": "574c79c8ca54fae2a1acccff1f03b9d689ce9de7fe7003f8cb3236d6133b92aa"
+    }
+  ],
+  "publishedMarker": {
+    "path": "game_state/wounds/mortal_qte_decision_publication.json",
+    "sha256": "f0eb8802135192d9f9c066dc2e207f43e192c395b2c9d227c3d491d19fc07095",
+    "schema": 2,
+    "progressionPhase": "applied",
+    "turn": 43,
+    "sameGenerationAndOriginal": true,
+    "jointTreatment": {
+      "operationKey": "operation_fr063_joint_completion",
+      "attemptId": "wound_treatment_attempt_98c872029977a91ee169a2ae5692f738fa38598992e7b423f2a0f69550a26f08",
+      "requestFingerprint": "sha256:10e04856ccf8ec28a13c4ba766672361dc7fe0721aa233fe7409dcc915237bae",
+      "persistedResultFingerprint": "sha256:5b2420033d88a325ddc15a70ace44ed66760fc92abf464595c6d39af23dac0bb",
+      "resourceFinalizationFingerprint": "sha256:62fab1caf43c16b5c2aeebc30745939ef9c53afa31a79c3106b7d53efd5d71b7",
+      "repairCheckpointFingerprint": "sha256:908b6fb9b425769079aee8a03d7cad720d2200a880ede65e4920b533afe78710",
+      "treatmentHistoryOrdinal": 3
+    }
+  },
+  "ownerCompletionDiagnostic": "Engine diagnostics:\nCritical accepted-turn raw state corruption after \u043e\u0431\u0440\u0430\u0431\u043e\u0442\u043a\u0438 \u0445\u043e\u0434\u0430: 1 errors\nJoint story and runtime turn 43 completed once after newly published active joint completion; owned terminal cleanup verified.",
+  "nullDispositionExplanation": {
+    "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+    "sha256": "e7029de3f464396d8f677e2d112d28b5ff10b072f08f78318eed01828fd72350",
+    "fact": "Actual successful terminal completion clears canonical refresh; final null is preserved, not relabeled Committed"
+  },
+  "cleanup": [
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-17d804588f62437fb1e5d570f94c26c4",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "physicalRootAbsent": true,
+  "runnerLeaderGone": true,
+  "noOwnedNamespaceRemainder": true,
+  "recovery": {
+    "receipt": {
+      "path": "/tmp/t179pd-cut01-first-stop-delta-github-7f0b11c6-20261018.json",
+      "bytes": 16808,
+      "sha256": "8e4e2413c0af7ccc90a30d1ad48f234d0ddb77356a260cce3f6c0d9aa8b6608f"
+    },
+    "newGithubFiles": 21,
+    "changedPaths": 17,
+    "retainedComposition": {
+      "path": "/tmp/t179pd3d-root-recovery-composition-7f0b11c6-20261017.json",
+      "bytes": 25379,
+      "sha256": "b7445ded2ab9a1fcc3ce8ac80608fbb907c241fb9861bad0747375a68020213a"
+    },
+    "retainedDeltas": 73,
+    "trackedPaths": 55216
+  },
+  "limits": [
+    "Callback was absent, so cut snapshots and all assertions after Equal line175 were unreached. Post-cut zero counters are not positive held-path evidence.",
+    "Old actual path reached applied marker/turn43/completion, but this bounded RED is not a complete gameplay/Full NI/HOT acceptance.",
+    "CategoryResults.Completed=false reflects nonzero test outcome; Selection.Complete=true records exact executed singleton.",
+    "One required severity-repair error preceded successful actual completion; no fixture exception or observer failure was observed."
+  ],
+  "reviewerExecution": "Read-only existing raw/source/hash inspection; no rerun, build, native command, repository mutation or cleanup"
+}

@@ -23,7 +23,8 @@ internal enum SessionFinalizationCheckpoint
     AcceptedOutcomeValidatedBeforeMaterialization,
     LifeEvaluationRequestDispatchedBeforeWait,
     RawAcceptedOutcomeValidatedBeforeLifeEvaluationFinalWrites,
-    MortalJointCommonReadbackSettledBeforeProgression
+    MortalJointCommonReadbackSettledBeforeProgression,
+    MortalJointCustodyCaptureCompletedBeforePreparation
 }
 
 internal sealed class GameEngineSessionFinalizationHooks

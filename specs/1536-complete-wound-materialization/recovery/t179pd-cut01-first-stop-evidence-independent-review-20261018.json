@@ -1,0 +1,54 @@
+{
+  "kind": "INDEPENDENT_FIRST_CUT01_STOP1_CAUSAL_EVIDENCE_REVIEW",
+  "date": "2026-10-18",
+  "verdict": "ACCEPT_CAUSAL_RED_CURRENT_CAPTURE_STOP_MISSING",
+  "carrier": "7f0b11c6819b90473a272e793a5551e377b4371f",
+  "actualSource": "558c7ec0a683dad0586a1dd599676fd291193ef2",
+  "compiledSource": "3579d8e21db039dbabc6050a175024cf6c08f79b",
+  "productSource": "08119f36c66464913e94d4bd5d23221073e0d48d",
+  "native": {
+    "exit": 1,
+    "seconds": 65.74984875301016,
+    "planned": 1,
+    "executed": 1,
+    "passed": 0,
+    "failed": 1,
+    "selectionComplete": true,
+    "duplicates": 0,
+    "underfill": 0,
+    "timedOut": false
+  },
+  "cause": "Existing completed-current-capture route proceeds into real preparation/reservation/take/common publication without invoking the requested pre-preparation observation callback. The genuine actual owner then reaches the intended callback Equal1/0 assertion.",
+  "reachedEvidence": [
+    "Source42 and genuine original43/repair/held-request prerequisites passed before AssertStopped.",
+    "Four guaranteed-present pending preparation reads, six actual retained stages, one reservation and take; two committed marker-containing cohorts (not exact first-common invocation count).",
+    "Actual caller returned without fixture/observer exception, actual turn43 and captured same-operation marker progression applied; completion log and terminal source explain final null refresh.",
+    "Failure is solely callback Assert.Equal expected1/actual0 at JointCaptureCut.cs175; strict fixture receipt removedtrue/nullfailure and physical absence, canonical cleanup true."
+  ],
+  "literalLimits": {
+    "finalDisposition": null,
+    "finalIssues": null,
+    "cutImages": null,
+    "afterImageFiles": 84,
+    "laterHeldAndNoEffectAssertions": "UNREACHED",
+    "newlyQualifiedCases": 1,
+    "remainingCases": "Transparency2 and separate protectedLate2 UNRUN"
+  },
+  "bindings": {
+    "rawChains": 9,
+    "currentSourcePins": 31,
+    "currentBinaryCopies": 9,
+    "currentManagedFiles": 335,
+    "sourceContextExactActual": true,
+    "unchangedProduct": true
+  },
+  "materialFindings": [],
+  "sourceVerdict": "Retain accepted tests-only SOURCE decision unchanged; this report does not accept future product code.",
+  "nextEngineeringStep": "After Root acceptance/persistence/recovery, the already bounded two-file minimal checkpoint insertion may proceed under Root release; fresh product preparation and affected SOURCE, then separate protectedLate2 and new3 evidence remain required.",
+  "holds": [
+    "No product or runtime authorization follows from this report alone.",
+    "Full NI/semantic admission, precommon lifecycle/origin bridge, broader HOT/F1/M3/Windows/CI/ZIP/A3 boundaries remain unchanged.",
+    "Preserve FIRST FAIL and all prior source/preparation reports; no retry or doublecount."
+  ],
+  "supportPath": "/tmp/t179pd-cut01-first-stop-evidence-independent-check-20261018.json"
+}
