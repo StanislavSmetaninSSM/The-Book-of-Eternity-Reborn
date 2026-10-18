@@ -1,0 +1,103 @@
+{
+  "kind": "INDEPENDENT_SETTLEMENT_PREP_ACCEPTANCE_AND_SAVED_PREFLIGHT_READBACK",
+  "reviewedUtc": "2026-10-18T13:06:51.883480+00:00",
+  "verdict": "ACCEPTANCE_SAVE_RECOVERY_AND_DATED_BEFORE_CENSUS_CONDITIONS_SATISFIED_NO_MATERIAL_FINDING",
+  "findings": [],
+  "carrier": "3119d29ae5a44c6bc5804b91a9f6efe47e4b66d6",
+  "compiledSource": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
+  "scope": "Bounded saved metadata, Git objects/restored eight paths, prior review artifacts and immutable before-census only. No repeated SOURCE/PREP qualification.",
+  "recovery": {
+    "receiptPath": "/tmp/1536-cloud-tools/carrier-recovery-3119d29a.json",
+    "receiptSha256": "0f1135bf92bd587eabb7f326d3f451bfd69c47ee79703e682054a4a3bd45746c",
+    "changedPaths": 8,
+    "allEightRestoredBytesHashesBlobsModesMatched": true,
+    "completeSavedGitTreeMatchesIndependentClone": true,
+    "remoteExactAndFullIndependentCloneProvenance": "Confirmed in supplied recovery receipt; no new network fetch performed in this bounded readback.",
+    "paths": [
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-qualification-20261018.json",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement-fixture-prep-candidate-recovery-e5d130e3-20261018.json",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement-fixture-prep-checker-20261018.py",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement-fixture-prep-independent-check-e5d130e3-20261018.json",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement-fixture-prep-independent-review-20261018.json",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement-fixture-prep-independent-review-20261018.md",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json"
+    ]
+  },
+  "parentReadback": {
+    "path": "/tmp/1536-cloud-tools/settlement-prep-acceptance-parent-readback-3119d29a.json",
+    "sha256": "3c37675f4fb8934d692479c2ad93004055243b2d1b6738bbb9fe8ff789ac763e",
+    "releaseIndependentlyMatched": true
+  },
+  "sourceAndEvidenceContinuity": {
+    "sourcePinCount": 98,
+    "sourcePinDigest": "304a7e8beb3174246ac3db792c6aa63319fa8ead9f3bab62f91346d4f204248d",
+    "sourcePinsExactlyEqualPreviouslyAcceptedCandidate": true,
+    "changedPinnedPaths": 0,
+    "productDeltaPaths": 21,
+    "prepOriginalRecordsUnchanged": true,
+    "fourIndependentPrepArtifactsCopiedVerbatim": true,
+    "qualifiedDistinctCases": 44,
+    "priorActualEntriesUnchanged": true,
+    "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED",
+    "holdsUnchanged": true
+  },
+  "namedRelease": {
+    "mode": "settlement3",
+    "label": "t179pd-ni-iobs-l01-process-first-settlement3-fixture-corrected-cloud-813f1057",
+    "compiledSource": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
+    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-settlement-fixture-cloud-813f1057/record.json",
+    "prepRecordSha256": "7ed48419621c0f0d778c6aed35ba7611444de1a3f753d475ef07df372dadbab1",
+    "descriptors": 1,
+    "methods": 2,
+    "cases": 3,
+    "NoBuild": true,
+    "onlyCurrentRelease": true,
+    "laterIntegrity4Decision": "Conditional serial/read-only review overlap only; no present release. All original conditions preserved."
+  },
+  "savedBeforeCensus": {
+    "path": "/tmp/1536-cloud-tools/census-settlement3-corrected-before-813f1057.json",
+    "bytes": 77609,
+    "sha256": "29ac1301ccf9375ad1e6f17937a0380c28880ef307be44b97d67ffca0521a15e",
+    "observerVersion": 2,
+    "observerSourceSha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
+    "phase": "settlement3-corrected-before-actual",
+    "startedUtc": "2026-10-18T13:01:15.028081+00:00",
+    "finishedUtc": "2026-10-18T13:01:15.046267+00:00",
+    "entries": 81,
+    "stablePidAndBirthTickChecks": 81,
+    "classes": {
+      "other-readable": 8,
+      "exited-nonexecuting": 69,
+      "build-infrastructure": 3,
+      "observer-self": 1
+    },
+    "knownVisibility": [
+      {
+        "pid": 10433,
+        "expectedStartTick": 477854,
+        "status": "MATCH",
+        "classification": "exited-nonexecuting"
+      },
+      {
+        "pid": 27957,
+        "expectedStartTick": 1308292,
+        "status": "MATCH",
+        "classification": "observer-self"
+      }
+    ],
+    "active": 0,
+    "unknown": 0,
+    "ownedRoots": 0,
+    "clean": true,
+    "datedOnly": true
+  },
+  "reviewServiceHistory": "A transient capacity interruption preceded this completed readback. It produced no semantic finding, acceptance, model change or native retry.",
+  "remainingLimits": [
+    "Parent reports the named corrected settlement3 actual already running serially. This readback does not inspect or alter its execution and makes no outcome claim.",
+    "Actual original result, semantic oracles, native cleanup, unchanged inventories and after-census remain for later EVIDENCE review after save and recovery.",
+    "The saved before-census supports only its dated observation; no continuous absence, current process/root absence or unobserved launch timing is claimed.",
+    "No build, discovery, test, observer or controller execution; no current-root/process inspection or intervention; no repository edits. Report writes only under /tmp/1536-cloud-tools/review.",
+    "No new qualified cases, old-crash restoration, retained44 replay, cross-build equivalence, automatic advance/retry or broader hold release."
+  ]
+}

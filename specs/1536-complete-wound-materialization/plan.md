@@ -1,3 +1,15 @@
+## T179-Pd-NI-IOBS-L01 — corrected settlement3 original PASS saved, EVIDENCE pending (2026-10-18)
+
+Actual `3119d29a`, compiled `7dbfbddc`: native 0, 3/3 PASS, 495.089 s, exact complete selection, unchanged nine DLL and all 1575 outputs, native cleanup and clean dated v2 boundaries. CommonFault reaches RetryableHeld, retained Published I, mechanical assertions and actual direct restore retention. Terminal and TerminalFault reach the full post-terminal assertions and emit TerminalReleased / PublicationUncertain respectively. [Original 11-chain archive](recovery/t179pd-ni-iobs-l01-cloud-settlement3-corrected-813f1057-files-20261018/archive.json); [parent reached-oracle readback](recovery/t179pd-ni-iobs-l01-settlement3-corrected-parent-oracles-20261018.json).
+
+Independent EVIDENCE is pending; qualified count remains 44/57. Original settlement3 native 1 / 1 PASS / 2 FAIL stays immutable. After exact-remote recovery, no known concern and a fresh clean v2 preflight, the separately named next FIRST is integrity4 using accepted remaining-plan. It may run serially while settlement EVIDENCE reads immutable originals; any unexpected outcome or material finding freezes later work. No concurrent actual, automatic advance, retained-case replay or repository mutation during actual. Old crash UNKNOWN and broader holds remain unchanged. Following sections are historical.
+
+## T179-Pd-NI-IOBS-L01 — settlement3Corrected original outcome saved; next gate explicit (2026-10-18)
+
+Новый отдельно именованныйsettlement3: actual3119d29a/compiled7dbfbddc, native0, 3executed/3PASS/0FAIL, 495.089s. [Original11rawchains](t179pd-ni-iobs-l01-cloud-settlement3-corrected-813f1057-files-20261018/archive.json) и exactbefore/afterauthoritativecensuses сохранены; observedpositive=True. Это originaloutcome, independentEVIDENCE ещё pending, qualifiedcount пока44. Frozenoriginalclose2FAIL/семьстарыхfixtureFAIL/oldcorrectedcrashUNKNOWN неизменны.
+
+After outcome recovery, independent EVIDENCE forsettlement3Corrected; separately named FIRSTintegrity4 only after immediate clean authoritative census and no unresolved finding. Qualified count unchanged until acceptance. Все исходные assertions и once-only/Ready/ownedtransition contracts неизменны. Noactual/retry приunexpectedfailure; всеbroaderholds/Windows403/CI/A3 сохраняются. Следующие sections исторические.
+
 ## T179-Pd-NI-IOBS-L01 — settlement fixture PREP accepted; corrective settlement3 gate (2026-10-18)
 
 [Independent PREP](recovery/t179pd-ni-iobs-l01-settlement-fixture-prep-independent-review-20261018.md) accepts fresh ZERO4 on compiled7dbfbddc, findings empty:43 chains,98 pins/product21,9 fresh managed copies/full1575 outputs, exact whole16/33/57/corrective1/2/3/remaining3/3/10, dated censuses and clean full GitHub recovery. Source/fixture assertions unchanged. No actual has run on this new source.

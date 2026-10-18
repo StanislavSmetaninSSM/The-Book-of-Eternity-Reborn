@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_SETTLEMENT_FIXTURE_CLASSIFICATION_SOURCE_CANDIDATE",
-  "status": "SETTLEMENT_FIXTURE_SOURCE_AND_FRESH_PREP_ACCEPTED_CORRECTIVE_SETTLEMENT3_ELIGIBLE_AFTER_SAVED_RECOVERY_PREFLIGHT",
+  "status": "SETTLEMENT3CORRECTED_NATIVE_PASS_EVIDENCE_PENDING_NEXT_INTEGRITY4_SEPARATELY_NAMED",
   "sourceBase": "67e143b24645e0a5b25829b17cb27e80edf3f000",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
   "sourcePins": [
@@ -902,28 +902,25 @@
   "gmDisposition": "Fixture-only fault classification. No production behavior, GM-authored schema/prompt/example/manifest/daemon or documentation contract change.",
   "oldCorrectedCrash": "Old environment session66529 remainsUNKNOWN, bytes unavailable. Separate new qualification only after corrected SOURCE/fresh PREP/named release, independent disposable fixtures/new genuine children; no old environment/process or real save operation.",
   "namedActualRelease": {
-    "status": "SEPARATELY_NAMED_FIRST_CORRECTIVE_SETTLEMENT3_AFTER_SAVED_ACCEPTANCE_RECOVERY_AND_NEW_CLEAN_V2_PREFLIGHT",
-    "mode": "settlement3",
-    "label": "t179pd-ni-iobs-l01-process-first-settlement3-fixture-corrected-cloud-813f1057",
+    "status": "SEPARATELY_NAMED_FIRST_AFTER_SAVED_OUTCOME_RECOVERY_AND_IMMEDIATE_CLEAN_V2_CENSUS",
+    "mode": "integrity4",
+    "label": "t179pd-ni-iobs-l01-process-first-integrity4-settlement-fixture-cloud-813f1057",
     "compiledSource": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
-    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-settlement-fixture-cloud-813f1057/record.json",
-    "expectedCases": 3,
-    "category": "fr063-joint-interface-settlement",
+    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-settlement-fixture-cloud-813f1057/record.json",
+    "expectedCases": 4,
+    "category": "fr063-joint-interface-current-integrity",
     "methods": [
       {
-        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CommonMemberCompensationRetainsPublishedInterfaceWithoutReplay",
-        "cases": 1
-      },
-      {
-        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate",
-        "cases": 2
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback",
+        "cases": 4
       }
     ],
     "observerPath": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-20261018.py",
     "observerSourceSha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
-    "conditions": "Exactremote/full clean GitHub recovery of this acceptance; current pins and9/full1575 inventories unchanged; new clean v2 before-census; only one serial NoBuild/FIRST actual with new disposable roots. Same-shell after-census on any return, original native/stdout/TRX/cleanup/inventories frozen before qualification. No retained44 replay, source/assertion change, automatic retry/advance or concurrent actual. Any unexpected failure/material finding freezes. Old original settlement1PASS2FAIL and lost old crashUNKNOWN immutable."
+    "conditions": "Save exactremote/cleanGitHub recovery; independent SOURCE/PREP unchanged; no unresolved semantic concern; immediate clean v2 before-census; NoBuild/FIRST/new disposable roots only; mandatory originaloutcome+aftercensus/inventories/save. Anyunexpectedfailure/materialreviewfinding freezes. No concurrent actual or automaticadvance/retry. PriorpositiveEVIDENCEreview may read immutable files concurrently; no repo mutation duringactual.",
+    "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED"
   },
-  "next": "Save/exactremote/recover acceptance and new clean v2 preflight, then only separately named corrective settlement3. Qualified44 unchanged; later integrity4 is not released, conditional serial/read-only-review overlap requires positive settlement3 original saved/recovered and its own explicit gate.",
+  "next": "After outcome recovery, independent EVIDENCE forsettlement3Corrected; separately named FIRSTintegrity4 only after immediate clean authoritative census and no unresolved finding. Qualified count unchanged until acceptance.",
   "sourceReview": {
     "verdict": "ACCEPT_MINIMAL_SETTLEMENT_FIXTURE_SOURCE_AND_NAMED_ZERO4_PLAN_WITH_METADATA_SAVE_CONDITIONS",
     "candidate": "c79cdea9c29a513863439966685c99fdddb8ca3e",
