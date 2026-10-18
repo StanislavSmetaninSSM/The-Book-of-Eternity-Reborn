@@ -1,3 +1,11 @@
+## L01 G01 — one managed snapshot after new SOURCE/PREP (2026-10-18)
+
+- [ ] Minimal test-only orchestration and policy/observer-fault RED/GREEN; lifecycle retention/private publication, original assertions/budgets unchanged.
+- [ ] Saved/recovered WIP and independent SOURCE of complete code/tooling/current explicit source deltas.
+- [ ] Fresh affected integration/catalog/diagnostic1/1/1 PlanOnly ZERO/mapper metadata, exact output bindings, independent PREP and saved one-shot actual admission.
+- [ ] Exactly one diagnostic case/newfixture/maxone request; first outcome and bounded owned cleanup, no retry/crash5.
+- [ ] Minimal sanitized EVIDENCE/recovery/independent review, final facts/newknowledge/minimal nextstep; dump/rawreport remain private and retained.
+
 ## L01 D01 continuation — composite PREP and own synthetic0/7 (2026-10-18)
 
 - [x] [Minimal reuse plan](design/l01-delivery-composite-prep-plan-20261018.md), read-only independent consultation and frozen separate integration460/unit439 closures; original124 unchanged, per-project provenance explicit. Four pure staging safety checks, no native work.

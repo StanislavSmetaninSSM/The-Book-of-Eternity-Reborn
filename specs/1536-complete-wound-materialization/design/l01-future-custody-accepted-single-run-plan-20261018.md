@@ -1,3 +1,5 @@
+> NEW USER AUTHORITY: minimal test-only capture implementation and, after independent SOURCE/fresh affected PREP, one existing cut1 diagnostic with maxone WriteDump are authorized. See G01 implementation plan. Dump/raw report stay private under disposable own/capture through independent sanitized EVIDENCE and final report; no commit/attach/archive/autodelete. Uncertain ownership/cleanup retains root and is reported. All old permits stay consumed; G01 runtime remains gated. Earlier documentation-only review below is historical, not the new executable gate.
+
 > FINAL REVIEWED CONDITIONAL PLAN, DOCUMENTATION ONLY; GAMEPLAY CLOSED. D01 SOURCE and separately named composite PREP are accepted; first own synthetic0/7 EVIDENCE is independently accepted; conditional plan documentation review is independently accepted. This document releases no gameplay, snapshot API or crash5. Future capture tooling requires separate SOURCE/fresh affected PREP and an explicitly authorized single run.
 
 # One future custody→accepted distinguishing run — PLAN, STOP BEFORE GAMEPLAY
