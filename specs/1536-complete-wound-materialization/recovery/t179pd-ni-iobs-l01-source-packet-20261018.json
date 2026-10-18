@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_READY_DRIFT_DIAGNOSTIC_SOURCE_CANDIDATE",
-  "status": "READY_DIAGNOSTIC_SOURCE_ACCEPTED_FRESH_ZERO4_REQUIRED_ACTUAL_HELD",
+  "status": "READY_SOURCE_AND_FRESH_PREP_ACCEPTED_ONLY_NAMED_CORRECTIVE_RACES2_ELIGIBLE",
   "sourceBase": "40920dab235f48abc07988b231a8bf0481c646bd",
   "productBase": "447bc1210c507742758243e1c254860bea0c4539",
   "sourcePins": [
@@ -899,7 +899,7 @@
   },
   "gmDisposition": "Diagnostic-only original-exception preservation in existing owning catch. No GM schema, prompt, example, manifest, daemon guidance or contract change; existing docs remain exact.",
   "oldCorrectedCrash": "Old environment session66529 remainsUNKNOWN, bytes unavailable. Separate new qualification only after corrected SOURCE/fresh PREP/named release, independent disposable fixtures/new genuine children; no old environment/process or real save operation.",
-  "next": "After exactremote/clean GitHub recovery, only named ZERO4 on saved acceptance SHA; no actual before recovered independent fresh PREP.",
+  "next": "After saved/recovered acceptance and immediate clean v2 preflight, execute only newly named corrective races2. Save originals/after-census/archive; freeze if unexpected. Remaining13 need separate releases.",
   "sourceBindingCorrection": {
     "reason": "Independent SOURCE review identified 21 actual product paths; newly logged pre-existing canonical-publication file was not in prior20. Controllers corrected before any ZERO/runtime.",
     "previousCandidate": "8e1fedfecf2b4799502034f539330c8c3eba43f9",
@@ -957,5 +957,45 @@
     ],
     "conditions": "Only separate explicit invocations on saved acceptance SHA. Each previous original native0/ZERO plus exact inventory checks before next; dated mandatory v2 before/after census. Any failure freezes without retry/advance. Fresh BOTH/catalog then whole16/33/57, corrective1/2/2 and remaining4/5/13 PlanOnly-NoBuild with exact catalog continuity.",
     "actualRelease": false
+  },
+  "freshPreparationAcceptance": {
+    "verdict": "ACCEPT_READY_DIAGNOSTIC_ZERO4_PREPARATION_RACES2_ELIGIBLE_AFTER_SAVED_ACCEPTANCE_AND_IMMEDIATE_CLEAN_CENSUS",
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "findings": [],
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-diagnostic-prep-independent-review-a391aef0-20261018.json",
+        "sha256": "f629eacee5a67e0af53845c12003ea2f0ee5dbbcd1ef38e9be5d53e93248c52e",
+        "bytes": 22162
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-diagnostic-prep-independent-review-a391aef0-20261018.md",
+        "sha256": "1e35c3b494bfaab53889386a62882ef6aed63aedb60736d1e8e9a54683fec69a",
+        "bytes": 2959
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-diagnostic-prep-independent-check-a391aef0-20261018.json",
+        "sha256": "8fa447d05ab7a9720a96ea9f71bc8d5febf1111f92376dd49f08aaecb6a438e8",
+        "bytes": 17937
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-diagnostic-prep-checker-a391aef0-20261018.py",
+        "sha256": "6602d260f07abfd6c812433fed3054915858514a78a64adb4e5bcb880c712c37",
+        "bytes": 21658
+      }
+    ]
+  },
+  "namedActualRelease": {
+    "status": "NAMED_CORRECTIVE_RACES2_ONLY_AFTER_SAVED_ACCEPTANCE_AND_IMMEDIATE_CLEAN_V2_PREFLIGHT",
+    "mode": "races2",
+    "label": "t179pd-ni-iobs-l01-process-first-races2-ready-diag-cloud-813f1057",
+    "compiledSource": "e2d0a10f6b12cc1947ef9c9f71fd600146fcec2d",
+    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-ready-diag-cloud-813f1057/record.json",
+    "observerPath": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-20261018.py",
+    "observerSourceSha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
+    "conditions": "Push/exactremote/clean recovery, then immediate clean v2 before-census; exact two unchanged methods/NoBuild/FIRST and nine/full-output continuity. Continuously monitor native session and read-only after-census on observed exit. Preserve original outcome/archive before utility acceptance or next release. Any unexpected failure freezes. No simultaneous actual or repo mutation during native. Distinct post-source-change regression, not a retry of frozen original.",
+    "otherModes": "HELD_SEPARATE_NAMED_RELEASE_REQUIRED",
+    "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED"
   }
 }

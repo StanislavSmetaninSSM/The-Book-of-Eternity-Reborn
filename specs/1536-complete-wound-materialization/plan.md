@@ -1,3 +1,9 @@
+## T179-Pd-NI-IOBS-L01 — ReadyDrift PREP accepted; corrective races2 only (2026-10-18)
+
+[Independent Astra XHigh PREP](recovery/t179pd-ni-iobs-l01-ready-diagnostic-prep-independent-review-a391aef0-20261018.md) accepted with no findings: all43 original chains,98 pins/productDelta21, fresh e2d0a10f BOTH/catalog, exact whole57/corrective2/remaining13 ZERO, nine DLL copies/full1575 outputs, nine dated census snapshots and57 recovered paths. Transient reviewer capacity interruption is review-service history only; no native retry or model switch occurred. Qualified42 are unchanged.
+
+After saving/recovering this acceptance and an immediate clean v2 preflight, only newly named `t179pd-ni-iobs-l01-process-first-races2-ready-diag-cloud-813f1057` may execute through the existing NoBuild/FIRST controller and exact corrective-plan record. Preserve original outcome plus authoritative after-census and archive; any unexpected failure freezes. Remaining13 require separate named gates. Retained42 are not replayed; original races2/close2 failures, seven old fixture failures and lost old crash5 UNKNOWN remain immutable. Broader holds persist. Following sections are historical.
+
 ## T179-Pd-NI-IOBS-L01 — ReadyDrift fresh ZERO4 native0; PREP review pending (2026-10-18)
 
 Fresh actual/compiled e2d0a10f: BOTH/catalog native0/587.277s,808 categories/11800 methods; whole16/33/57 native0/67.534s; corrective1/2/2 native0/48.682s; remaining4/5/13 native0/52.908s. All phases executed ZERO tests. [All43 original raw chains](recovery/t179pd-ni-iobs-l01-cloud-ready-diagnostic-preparation-813f1057-files-20261018/archive.json) are archived. Nine managed copies/full1575 outputs remain exact across all NoBuild plans. Eight dated v2 before/after boundaries and a fresh qualification snapshot are clean; original exe-dependent process arrays retain their stated limits.

@@ -1,0 +1,590 @@
+{
+  "kind": "INDEPENDENT_READY_DIAGNOSTIC_ZERO4_PREPARATION_CHECK",
+  "checkedUtc": "2026-10-18T11:57:42.976805+00:00",
+  "carrier": "a391aef048a411665dc0defe8c278576c4c81a83",
+  "compiledSource": "e2d0a10f6b12cc1947ef9c9f71fd600146fcec2d",
+  "sourcePinCount": 98,
+  "sourcePinDigest": "f5c13d343de221bc86aaf3ec100869ea6e1cafdaae59b3006baa5642de328e8e",
+  "ledgerSha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-ready-diagnostic-preparation-813f1057-files-20261018/archive.json",
+    "sha256": "9690522e7bcfa7d01d532a4484ab1d2a9e301fb124c61c7ccb5901c688d19b30",
+    "rawChains": 43,
+    "completeRawCoverage": true,
+    "allOriginalStoredRestoredBytesMatched": true
+  },
+  "records": [
+    {
+      "mode": "catalog",
+      "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-ready-diag-cloud-813f1057/record.json",
+      "sha256": "7d0b53af9089ca83fc5eea2cd0030de84fffd2d2eedc6d7d933a68a9f2adbb54",
+      "nativeExit": 0,
+      "executed": 0,
+      "seconds": 587.2772348689996,
+      "nativeWallSeconds": 578.2183289,
+      "timeoutMinutes": 10,
+      "phaseExits": [
+        [
+          "Revision",
+          "0"
+        ],
+        [
+          "Changed-paths",
+          "0"
+        ],
+        [
+          "New-paths",
+          "0"
+        ],
+        [
+          "Build-integration",
+          "0"
+        ],
+        [
+          "integration-discovery",
+          "0"
+        ],
+        [
+          "Build-unit",
+          "0"
+        ],
+        [
+          "unit-discovery",
+          "0"
+        ]
+      ]
+    },
+    {
+      "mode": "plan",
+      "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-whole-plan-ready-diag-cloud-813f1057/record.json",
+      "sha256": "4ce80aebedb47ebade2baba19873bedd7ba22d6e4f252276d397567bb71b012e",
+      "nativeExit": 0,
+      "executed": 0,
+      "seconds": 67.5335780509995,
+      "nativeWallSeconds": 44.4142686,
+      "timeoutMinutes": 30,
+      "phaseExits": [
+        [
+          "Revision",
+          "0"
+        ],
+        [
+          "Changed-paths",
+          "0"
+        ],
+        [
+          "New-paths",
+          "0"
+        ],
+        [
+          "integration-discovery",
+          "0"
+        ],
+        [
+          "unit-discovery",
+          "0"
+        ]
+      ]
+    },
+    {
+      "mode": "corrective-plan",
+      "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-ready-diag-cloud-813f1057/record.json",
+      "sha256": "24d642d31bc8bcb8debb366ae353b3c6c51bb7588f2b03a4e401f451ff85bd8c",
+      "nativeExit": 0,
+      "executed": 0,
+      "seconds": 48.681815163001374,
+      "nativeWallSeconds": 34.6487697,
+      "timeoutMinutes": 20,
+      "phaseExits": [
+        [
+          "Revision",
+          "0"
+        ],
+        [
+          "Changed-paths",
+          "0"
+        ],
+        [
+          "New-paths",
+          "0"
+        ],
+        [
+          "integration-discovery",
+          "0"
+        ]
+      ]
+    },
+    {
+      "mode": "remaining-plan",
+      "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-ready-diag-cloud-813f1057/record.json",
+      "sha256": "f3791289219de2d3185ea8393a9268c59cea0e770994485d27a8d6b51393d6ce",
+      "nativeExit": 0,
+      "executed": 0,
+      "seconds": 52.90826758300136,
+      "nativeWallSeconds": 27.4649035,
+      "timeoutMinutes": 30,
+      "phaseExits": [
+        [
+          "Revision",
+          "0"
+        ],
+        [
+          "Changed-paths",
+          "0"
+        ],
+        [
+          "New-paths",
+          "0"
+        ],
+        [
+          "integration-discovery",
+          "0"
+        ]
+      ]
+    }
+  ],
+  "catalog": {
+    "Valid": true,
+    "Methods": 11800,
+    "Categories": 808,
+    "Unmapped": [],
+    "StaleSelectors": []
+  },
+  "builds": {
+    "Build-integration": {
+      "warnings": 148,
+      "errors": 0,
+      "codes": {
+        "CS8604": 9,
+        "xUnit1031": 4,
+        "xUnit2031": 34,
+        "xUnit1013": 18,
+        "xUnit2029": 7,
+        "xUnit2030": 1,
+        "CS8602": 37,
+        "CS1573": 15,
+        "xUnit2013": 2,
+        "CS0219": 1,
+        "xUnit2012": 2,
+        "xUnit2009": 1,
+        "CA1416": 3,
+        "CS9124": 1,
+        "CS1587": 3,
+        "CS8629": 1,
+        "CS8618": 2,
+        "CS8601": 2,
+        "CS1572": 5
+      }
+    },
+    "Build-unit": {
+      "warnings": 37,
+      "errors": 0,
+      "codes": {
+        "xUnit2031": 12,
+        "xUnit1031": 3,
+        "CA1416": 4,
+        "CS4014": 1,
+        "xUnit2009": 2,
+        "CS8600": 1,
+        "CS0649": 12,
+        "CS8602": 2
+      }
+    }
+  },
+  "plans": {
+    "plan": {
+      "descriptors": 16,
+      "methods": 33,
+      "cases": 57,
+      "executed": 0
+    },
+    "corrective-plan": {
+      "descriptors": 1,
+      "methods": 2,
+      "cases": 2,
+      "executed": 0
+    },
+    "remaining-plan": {
+      "descriptors": 4,
+      "methods": 5,
+      "cases": 13,
+      "executed": 0
+    }
+  },
+  "retained": {
+    "methods": 26,
+    "cases": 42,
+    "exactPriorProvenancePreserved": true
+  },
+  "binaries": {
+    "copies": 9,
+    "completeFiles": 1575,
+    "allPhysicalPathsSizesHashesMatch": true,
+    "allPlansNoBuildExactContinuity": true,
+    "fourClientCopiesEqual": true,
+    "twoSupportCopiesEqual": true,
+    "correctedClientSha256": "eb0b35ec8993dc65d5d6f280663415e97d9067f275de693b17867309e9387d98",
+    "selectedCopiesChangedDuringFreshCatalog": [
+      "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll"
+    ]
+  },
+  "processLaunchRecords": [
+    {
+      "mode": "catalog",
+      "pid": 17858,
+      "startTick": 803116,
+      "cmdlineCaptured": true,
+      "launchAndResultDirectoryBound": true
+    },
+    {
+      "mode": "plan",
+      "pid": 18791,
+      "startTick": 865902,
+      "cmdlineCaptured": true,
+      "launchAndResultDirectoryBound": true
+    },
+    {
+      "mode": "corrective-plan",
+      "pid": 19062,
+      "startTick": 880234,
+      "cmdlineCaptured": true,
+      "launchAndResultDirectoryBound": true
+    },
+    {
+      "mode": "remaining-plan",
+      "pid": 19248,
+      "startTick": 892865,
+      "cmdlineCaptured": true,
+      "launchAndResultDirectoryBound": true
+    }
+  ],
+  "originalProcessArrayLimitation": "exe-link-dependent arrays preserved; not complete process-absence evidence",
+  "nativeRunnerCleanup": true,
+  "ownedFixtureRootsEmpty": true,
+  "censuses": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-ready-diag-catalog-before-813f1057.json",
+      "sha256": "39701367553e2f4e66a2ca4f5e696348bfb96a859b481c6fea8e73c73b9ba1e7",
+      "version": 2,
+      "phase": "ready-diag-catalog-before-zero",
+      "startedUtc": "2026-10-18T11:36:56.470272+00:00",
+      "finishedUtc": "2026-10-18T11:36:56.481878+00:00",
+      "entries": 53,
+      "classes": {
+        "other-readable": 8,
+        "exited-nonexecuting": 44,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 17825,
+          "expectedStartTick": 802438,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-ready-diag-catalog-after-813f1057.json",
+      "sha256": "34ebb3784d812da13679c6e83debc9ebb48e8260c3de601f37393d26e4e764ee",
+      "version": 2,
+      "phase": "ready-diag-catalog-after-zero",
+      "startedUtc": "2026-10-18T11:46:52.933413+00:00",
+      "finishedUtc": "2026-10-18T11:46:52.946574+00:00",
+      "entries": 58,
+      "classes": {
+        "other-readable": 8,
+        "exited-nonexecuting": 45,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 18738,
+          "expectedStartTick": 862077,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-ready-diag-whole-before-813f1057.json",
+      "sha256": "3287b9c0e453114c49f355e3422eaf6bb59dd47eab04fdd30b512112ec91afe7",
+      "version": 2,
+      "phase": "ready-diag-whole-before-zero",
+      "startedUtc": "2026-10-18T11:47:20.161888+00:00",
+      "finishedUtc": "2026-10-18T11:47:20.176097+00:00",
+      "entries": 58,
+      "classes": {
+        "other-readable": 8,
+        "exited-nonexecuting": 45,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 18758,
+          "expectedStartTick": 864799,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-ready-diag-whole-after-813f1057.json",
+      "sha256": "f016e3beee7662561752329ababda22185533cdaaca9bcf9015119bc9b5f0a89",
+      "version": 2,
+      "phase": "ready-diag-whole-after-zero",
+      "startedUtc": "2026-10-18T11:48:39.749635+00:00",
+      "finishedUtc": "2026-10-18T11:48:39.768368+00:00",
+      "entries": 58,
+      "classes": {
+        "other-readable": 8,
+        "exited-nonexecuting": 45,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 19016,
+          "expectedStartTick": 872764,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-ready-diag-corrective-before-813f1057.json",
+      "sha256": "bace47590ffb3af56492ce32c79a6b7e1861539a187eb555d1d6f1b2e7f5c9f5",
+      "version": 2,
+      "phase": "ready-diag-corrective-before-zero",
+      "startedUtc": "2026-10-18T11:48:59.644289+00:00",
+      "finishedUtc": "2026-10-18T11:48:59.663222+00:00",
+      "entries": 58,
+      "classes": {
+        "other-readable": 8,
+        "exited-nonexecuting": 45,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 19026,
+          "expectedStartTick": 874726,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-ready-diag-corrective-after-813f1057.json",
+      "sha256": "952565209463826607ab94f7dec15d92417f756396788b422702163092bcef16",
+      "version": 2,
+      "phase": "ready-diag-corrective-after-zero",
+      "startedUtc": "2026-10-18T11:50:45.338373+00:00",
+      "finishedUtc": "2026-10-18T11:50:45.359821+00:00",
+      "entries": 58,
+      "classes": {
+        "other-readable": 8,
+        "exited-nonexecuting": 45,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 19200,
+          "expectedStartTick": 885316,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-ready-diag-remaining-before-813f1057.json",
+      "sha256": "1908a6a69ad9fc18f8ec0b6d38366f9a69d1952c84860e9221b8da475e17e8df",
+      "version": 2,
+      "phase": "ready-diag-remaining-before-zero",
+      "startedUtc": "2026-10-18T11:51:28.861558+00:00",
+      "finishedUtc": "2026-10-18T11:51:28.896017+00:00",
+      "entries": 58,
+      "classes": {
+        "other-readable": 8,
+        "exited-nonexecuting": 45,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 19212,
+          "expectedStartTick": 889645,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-ready-diag-remaining-after-813f1057.json",
+      "sha256": "cb73fb63b482c607dd1aeb02167f5161a26f742b08f080c81b4d4afb1fc37fad",
+      "version": 2,
+      "phase": "ready-diag-remaining-after-zero",
+      "startedUtc": "2026-10-18T11:52:54.348220+00:00",
+      "finishedUtc": "2026-10-18T11:52:54.372671+00:00",
+      "entries": 58,
+      "classes": {
+        "other-readable": 8,
+        "exited-nonexecuting": 45,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 19381,
+          "expectedStartTick": 898223,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-ready-diag-prep-qualification-813f1057.json",
+      "sha256": "fb249a4330eb663def269093e1bac564394bd3a17d8c3509b0cac3cb3ce0adaf",
+      "version": 2,
+      "phase": "ready-diag-prep-qualification",
+      "startedUtc": "2026-10-18T11:54:18.260327+00:00",
+      "finishedUtc": "2026-10-18T11:54:18.280466+00:00",
+      "entries": 58,
+      "classes": {
+        "other-readable": 8,
+        "exited-nonexecuting": 45,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 19436,
+          "expectedStartTick": 906609,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    }
+  ],
+  "observerV2": {
+    "sha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
+    "bytes": 7410,
+    "exactReviewedSource": true,
+    "mandatoryBeforeAfterEveryActual": true
+  },
+  "recovery": [
+    {
+      "carrier": "a391aef048a411665dc0defe8c278576c4c81a83",
+      "base": "e2d0a10f6b12cc1947ef9c9f71fd600146fcec2d",
+      "changedPaths": 57,
+      "receiptSha256": "cd957b87709ba05163b630d9166ce61d12ac99dcf2837d3885bf6c879ed5cece",
+      "bytesHashesBlobsModesVerified": true
+    }
+  ],
+  "environment": {
+    "envSha256": "5d61c19c1341cf9a26b9d361c81da8c89d09924381791c4108d968555f899c53",
+    "privateRuntime": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/runtime",
+    "uid": 1000,
+    "mode": "0700",
+    "homeUnchanged": true,
+    "sameBoot": true
+  },
+  "boundaryGaps": {
+    "catalog": {
+      "beforeFinishToStartSeconds": 6.664662,
+      "finishToAfterStartSeconds": 2.509924
+    },
+    "plan": {
+      "beforeFinishToStartSeconds": 10.827934,
+      "finishToAfterStartSeconds": 1.21222
+    },
+    "corrective-plan": {
+      "beforeFinishToStartSeconds": 54.664154,
+      "finishToAfterStartSeconds": 2.32921
+    },
+    "remaining-plan": {
+      "beforeFinishToStartSeconds": 31.732367,
+      "finishToAfterStartSeconds": 0.811596
+    }
+  },
+  "metadataObservation": "Current ReadyDrift SOURCE accepted; all four originals ZERO with dated v2 boundaries; independent PREP pending until this decision is saved.",
+  "eligibility": "After saved/recovered independent PREP acceptance and immediate authoritative clean before-census, ONLY separately named races2 corrective NoBuild regression. Other modes separately gated.",
+  "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE",
+  "actualExecuted": 0,
+  "findings": [],
+  "limits": "Evidence/hash/source reads only. No builds/discovery/tests/controller/observer execution, process intervention or repo writes. No product runtime PASS or cross-build equivalence for retained42."
+}

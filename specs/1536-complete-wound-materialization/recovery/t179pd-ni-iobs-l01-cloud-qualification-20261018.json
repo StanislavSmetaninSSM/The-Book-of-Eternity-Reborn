@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "READY_DIAGNOSTIC_ZERO4_NATIVE0_INDEPENDENT_PREP_PENDING_ACTUAL_HELD",
+  "status": "READY_SOURCE_AND_FRESH_PREP_ACCEPTED_NAMED_RACES2_ONLY",
   "sourceCheckpoint": "7cad7e3b22df9e06e045bbde9068599906041bc1",
   "sourcePinDigest": "f5c13d343de221bc86aaf3ec100869ea6e1cafdaae59b3006baa5642de328e8e",
   "sourcePinCount": 98,
@@ -448,7 +448,7 @@
     }
   ],
   "crashRequalificationPlan": {
-    "status": "SOURCE_ISOLATION_AND_READY_DIAGNOSTIC_SOURCE_ACCEPTED_FRESH_PREP_REQUIRED",
+    "status": "SOURCE_ISOLATION_AND_READY_SOURCE_PREP_ACCEPTED_NEW_CRASH5_STILL_SEPARATELY_GATED",
     "purpose": "Separate new fixture qualification; preserve old UNKNOWN. No recovery or blind retry of old result.",
     "rootIsolation": "Fresh environmentId and GUID TMPDIR; each fixture constructs a new GUID own container/parent nonce and child-local tmp. No imported old root, checkpoint, live owner, save or real game operation.",
     "processIsolation": "Only newly started genuine child Process handles; independent parent/self PID+kernel starttick and nonce, exit73, new resume PID, join+EOF, strict containment. Retain owned container if termination/join/EOF unresolved; no old process query/kill.",
@@ -734,7 +734,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Save/push/exactremote/clean recovery of ZERO4 originals and v2 boundaries, then independent fresh PREP. Only subsequent saved/recovered acceptance and immediate clean v2 preflight can release a separately named corrective races2.",
+  "next": "After saved/recovered acceptance and immediate clean v2 preflight, execute only newly named corrective races2. Save originals/after-census/archive; freeze if unexpected. Remaining13 need separate releases.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -910,8 +910,16 @@
     "phase": "HISTORICAL_COMPILED_6AB43F6A_ZERO3_PRE_CORRECTION_INELIGIBLE_FOR_CORRECTED_ACTUALS"
   },
   "release": {
-    "status": "NONE_ACTUAL_HELD_PENDING_INDEPENDENT_READY_DIAGNOSTIC_PREP",
-    "mode": null
+    "status": "NAMED_CORRECTIVE_RACES2_ONLY_AFTER_SAVED_ACCEPTANCE_AND_IMMEDIATE_CLEAN_V2_PREFLIGHT",
+    "mode": "races2",
+    "label": "t179pd-ni-iobs-l01-process-first-races2-ready-diag-cloud-813f1057",
+    "compiledSource": "e2d0a10f6b12cc1947ef9c9f71fd600146fcec2d",
+    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-ready-diag-cloud-813f1057/record.json",
+    "observerPath": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-20261018.py",
+    "observerSourceSha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
+    "conditions": "Push/exactremote/clean recovery, then immediate clean v2 before-census; exact two unchanged methods/NoBuild/FIRST and nine/full-output continuity. Continuously monitor native session and read-only after-census on observed exit. Preserve original outcome/archive before utility acceptance or next release. Any unexpected failure freezes. No simultaneous actual or repo mutation during native. Distinct post-source-change regression, not a retry of frozen original.",
+    "otherModes": "HELD_SEPARATE_NAMED_RELEASE_REQUIRED",
+    "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED"
   },
   "newOriginalObservedPassingCases": 4,
   "lastAcceptanceRecovery": {
@@ -1338,7 +1346,7 @@
   ],
   "sourcePinDigestBeforeReadyDriftCorrection": "b29c971342ee772b13cd123a954d7afa8937e1f50a7e5f4c4c14403e4de4c347",
   "readyDriftCorrection": {
-    "status": "SOURCE_ACCEPTED_FRESH_ZERO4_ORIGINAL_NATIVE0_INDEPENDENT_PREP_PENDING",
+    "status": "INDEPENDENT_SOURCE_AND_FRESH_ZERO4_PREP_ACCEPTED",
     "causalReview": [
       {
         "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-races2-causal-review-20261018.json",
@@ -1392,7 +1400,7 @@
       "catalog": "Fresh BOTH build/discovery, zero tests, unchanged categories/selections; nine fresh copies/full outputs bind all NoBuild plans and actuals."
     },
     "freshPreparation": {
-      "status": "ORIGINAL_NATIVE0_ZERO4_CANDIDATE_NOT_INDEPENDENT_PREP",
+      "status": "INDEPENDENT_READY_DIAGNOSTIC_ZERO4_PREP_ACCEPTED",
       "actualSource": "e2d0a10f6b12cc1947ef9c9f71fd600146fcec2d",
       "compiledSource": "e2d0a10f6b12cc1947ef9c9f71fd600146fcec2d",
       "sourcePinCount": 98,
@@ -1574,7 +1582,45 @@
         "sha256": "25c892191d6994c9af2954d849e0cf68358d67510846a9ccad2e723c27a88003",
         "bytes": 3847
       },
-      "cleanup": "Native owned-tree cleanup complete; owned roots absent. Original exe-dependent arrays remain incomplete observer output. Independently accepted v2 source provides the saved dated before/after boundaries; no instantaneous or continuous absence claim."
+      "cleanup": "Native owned-tree cleanup complete; owned roots absent. Original exe-dependent arrays remain incomplete observer output. Independently accepted v2 source provides the saved dated before/after boundaries; no instantaneous or continuous absence claim.",
+      "review": {
+        "verdict": "ACCEPT_READY_DIAGNOSTIC_ZERO4_PREPARATION_RACES2_ELIGIBLE_AFTER_SAVED_ACCEPTANCE_AND_IMMEDIATE_CLEAN_CENSUS",
+        "model": "gpt-6-astra",
+        "reasoningEffort": "xhigh",
+        "findings": [],
+        "artifacts": [
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-diagnostic-prep-independent-review-a391aef0-20261018.json",
+            "sha256": "f629eacee5a67e0af53845c12003ea2f0ee5dbbcd1ef38e9be5d53e93248c52e",
+            "bytes": 22162
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-diagnostic-prep-independent-review-a391aef0-20261018.md",
+            "sha256": "1e35c3b494bfaab53889386a62882ef6aed63aedb60736d1e8e9a54683fec69a",
+            "bytes": 2959
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-diagnostic-prep-independent-check-a391aef0-20261018.json",
+            "sha256": "8fa447d05ab7a9720a96ea9f71bc8d5febf1111f92376dd49f08aaecb6a438e8",
+            "bytes": 17937
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-diagnostic-prep-checker-a391aef0-20261018.py",
+            "sha256": "6602d260f07abfd6c812433fed3054915858514a78a64adb4e5bcb880c712c37",
+            "bytes": 21658
+          }
+        ]
+      },
+      "candidateCarrierRecovery": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-prep-candidate-recovery-a391aef0-20261018.json",
+        "sha256": "cd957b87709ba05163b630d9166ce61d12ac99dcf2837d3885bf6c879ed5cece",
+        "bytes": 21850
+      },
+      "parentReadback": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-ready-prep-parent-readback-a391aef0-20261018.json",
+        "sha256": "9acb44e1eecda9c78df516014b6d4b42570b5af963493ee89fc0ef039742cf2a",
+        "bytes": 764
+      }
     },
     "sourceBindingCorrection": {
       "reason": "Independent SOURCE review identified 21 actual product paths; newly logged pre-existing canonical-publication file was not in prior20. Controllers corrected before any ZERO/runtime.",

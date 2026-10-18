@@ -1,0 +1,15 @@
+{
+  "kind": "PARENT_READY_DIAGNOSTIC_ZERO4_READBACK",
+  "candidate": "a391aef048a411665dc0defe8c278576c4c81a83",
+  "compiled": "e2d0a10f6b12cc1947ef9c9f71fd600146fcec2d",
+  "rawChains": 43,
+  "allStoredRawOriginalBytesMatch": true,
+  "currentOutputsVerified": 1575,
+  "managedCopies": 9,
+  "allNoBuildInventoriesExact": true,
+  "newClientDiffersFromPreviousCompile": true,
+  "oldClientSha256": "79ae2bdd102548216fb9feb67acb993acc95e1b03fdb0bf461a2a0dce4c67535",
+  "newClientSha256": "eb0b35ec8993dc65d5d6f280663415e97d9067f275de693b17867309e9387d98",
+  "actualTestsExecuted": 0,
+  "limits": "Parent readonly check, not independent PREP or runtime acceptance. Dated accepted-v2 boundaries separately saved; original exe-dependent arrays retain their limitation."
+}
