@@ -1,8 +1,8 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "44_OF_57_QUALIFIED_SETTLEMENT3_ORIGINAL_FAILURES_FROZEN_DIAGNOSIS_REQUIRED",
-  "sourceCheckpoint": "7cad7e3b22df9e06e045bbde9068599906041bc1",
-  "sourcePinDigest": "f5c13d343de221bc86aaf3ec100869ea6e1cafdaae59b3006baa5642de328e8e",
+  "status": "UNCOMPILED_FIXTURE_CORRECTION_FORMAL_DIAGNOSIS_AND_SOURCE_REVIEW_PENDING",
+  "sourceCheckpoint": "Uncompiled settlement fixture candidate based on67e143b2; exact carrier assigned after commit",
+  "sourcePinDigest": "304a7e8beb3174246ac3db792c6aa63319fa8ead9f3bab62f91346d4f204248d",
   "sourcePinCount": 98,
   "environment": {
     "kind": "NEW_CLOUD_ENVIRONMENT_QUALIFICATION_IDENTITY",
@@ -879,7 +879,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Independent causal diagnosis of both frozen settlement3 failures before any source change, retry or next actual; retain44 accepted targets and original provenance. Integrity4/uncertain1/newcrash5 remain UNRUN. Old crash5 UNKNOWN unchanged.",
+  "next": "Save formal frozen-original diagnosis, exact remote/clean GitHub recovery and independent SOURCE on one-line fixture classification and tools/bindings/retention44. Then separately named fresh ZERO4 and independent PREP before any corrective settlement3 or unrun actual.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -1055,7 +1055,7 @@
     "phase": "HISTORICAL_COMPILED_6AB43F6A_ZERO3_PRE_CORRECTION_INELIGIBLE_FOR_CORRECTED_ACTUALS"
   },
   "release": {
-    "status": "NONE_FROZEN_PENDING_INDEPENDENT_DIAGNOSIS",
+    "status": "NONE_HELD_PENDING_FIXTURE_SOURCE_AND_FRESH_PREP",
     "mode": null
   },
   "newOriginalObservedPassingCases": 4,
@@ -1842,5 +1842,38 @@
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-qualified42-recovery-40920dab-20261018.json",
     "sha256": "76b15a4c28b63c5bc5af7796d86b47e6ae3372f6a6c817160054be76d6c0cd14",
     "bytes": 3473
+  },
+  "sourcePinDigestBeforeSettlementFixtureCorrection": "f5c13d343de221bc86aaf3ec100869ea6e1cafdaae59b3006baa5642de328e8e",
+  "settlementFixtureCorrection": {
+    "status": "UNCOMPILED_FIXTURE_CORRECTION_FORMAL_DIAGNOSIS_AND_SOURCE_REVIEW_PENDING",
+    "sourceBase": "67e143b24645e0a5b25829b17cb27e80edf3f000",
+    "scope": {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSettlement.cs",
+      "scope": "Exactly one injected exception type IOException→InvalidDataException, same message. One actual MemberPublished injection, counter/journal, assertions, callbacks, roots and production code unchanged. Inverse replacement exactly restores previous file bytes.",
+      "reason": "Known compensated IOException is transient and storage retries it; one-shot fixture then succeeds. Existing InvalidDataException exclusion makes the original compensation boundary observable without weakening its oracle.",
+      "red": "Original settlement3 actual f0bfcda832db851a2768d6af13ce60695c24a9cd / compiled e2d0a10f6b12cc1947ef9c9f71fd600146fcec2d remains native1/1PASS2FAIL at recovered4406e723. CommonFault refresh null; TerminalFault actualTerminalReleased; neither failed row proves compensation.",
+      "failureScope": "CommonFault reached faultCount1/capture1 then fails refreshNotNull, so remaining RetryableHeld/Published/I/mechanics/restore assertions not reached. TerminalFault reached pre-terminal ErrorPrepared and direct+outer retention, then faultCount1; fails disposition before post-terminal images/pending assertions and diagnostic. Terminal(false) PASS not independently qualified.",
+      "retention": "Retain qualified44 at original actual/compiled provenance. Fixture field only used by settlement probes; no accepted44 dependency change. Corrective unchanged category1/2/3, remaining3/3/10; old37 not repeated."
+    },
+    "causalReview": [],
+    "verificationContract": {
+      "whole": {
+        "descriptors": 16,
+        "methods": 33,
+        "cases": 57
+      },
+      "corrective": {
+        "descriptors": 1,
+        "methods": 2,
+        "cases": 3
+      },
+      "remaining": {
+        "descriptors": 3,
+        "methods": 3,
+        "cases": 10
+      },
+      "catalog": "Fresh BOTH build/discovery, zero tests; exact nine managed copies and full output inventory bind all NoBuild plans/actuals."
+    },
+    "freshPreparation": "REQUIRED_ZERO4_AND_INDEPENDENT_PREP_BEFORE_ANY_ACTUAL"
   }
 }

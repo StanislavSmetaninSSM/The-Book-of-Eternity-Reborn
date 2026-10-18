@@ -1,3 +1,11 @@
+## T179-Pd-NI-IOBS-L01 — settlement fixture classification WIP; SOURCE/PREP pending (2026-10-18)
+
+Qualified44/57 at recovered67e143b2; original37 unchanged and not replayed. Frozen settlement3 actualf0bfcda8/compilede2d0a10f remains native1/1PASS2FAIL, archive764ef854, recovered4406e723. Independent Astra XHigh confirmed shared fixture classification: known compensated IOException is retried by existing storage policy; one-shot injection then permits successful storage publication. This does not demonstrate a production compensation defect. Formal original diagnosis report is pending durable save.
+
+One-line fixture-only correction: injected IOException→InvalidDataException, identical message; same real MemberPublished cut/counter/journal and all assertions unchanged. Inverse replacement restores the entire previous test file exactly. Production retry/owner/normalization/state code and category selections unchanged. Both owners already catch this nonretryable type. No build/discovery/PlanOnly/actual has run for the new source. [Updated98-pin source packet](recovery/t179pd-ni-iobs-l01-source-packet-20261018.json) and old packet retained.
+
+Before any actual: formal diagnosis save, WIP push/exactremote/full clean GitHub recovery, independent SOURCE; fresh BOTH/catalog + whole16/33/57 + corrective settlement1/2/3 + remaining3/3/10 ZERO; independent PREP and explicit separate release. Retain44; no accepted-case replay. Next modes integrity4/uncertain1/newcrash5 remainUNRUN. Old corrected crash5 staysUNKNOWN, bytes unavailable; separate new isolated qualification only. All broader holds/Windows403/noCI/A3 remain. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — 44/57 independently qualified; settlement3 frozen (2026-10-18)
 
 Corrected races2 EVIDENCE accepted independently by Astra XHigh: unchanged two cases, archive11/raw images, source98/product21, nine DLL/full1575 inventory and clean GitHub recovery verified, findings empty. [Review](recovery/t179pd-ni-iobs-l01-races2-corrected-independent-review-20261018.md). Qualified union is retained37 + new legacy3 + corrected close2 + corrected races2 =44/57, with original actual/compiled provenance. Original37 were not replayed; the two corrected categories were separately justified affected regressions.

@@ -1,4 +1,4 @@
-"""Retained issue diagnostic correction: separately named fresh BOTH/catalog, whole57, corrective2 and remaining13 ZERO. Root named release required."""
+"""Settlement fixture classification correction: separately named fresh BOTH/catalog, whole57, corrective3 and remaining10 ZERO. Root named release required."""
 from pathlib import Path
 import sys,subprocess,hashlib,json,datetime,time,tempfile,re,os
 R=Path('/workspace/The-Book-of-Eternity-Reborn')
@@ -20,9 +20,9 @@ selection='tests/selection.json';selection_raw=(R/selection).read_bytes();whole_
 assert len(stage['selections'])==16 and (R/'tests/selections/1536-joint-interface-lifecycle-stage.json').read_bytes()==selection_raw
 expected_descriptors,expected_methods,expected_cases=16,33,57
 if mode in {'corrective-plan','remaining-plan'}:
- pending_categories=({'fr063-joint-interface-source-races'} if mode=='corrective-plan' else {'fr063-joint-interface-crash-current','fr063-joint-interface-current-integrity','fr063-joint-interface-settlement','fr063-joint-interface-uncertain-current'})
+ pending_categories=({'fr063-joint-interface-settlement'} if mode=='corrective-plan' else {'fr063-joint-interface-crash-current','fr063-joint-interface-current-integrity','fr063-joint-interface-uncertain-current'})
  stage=dict(schemaVersion=1,selections=[x for x in stage['selections'] if x['category'] in pending_categories])
- expected_descriptors,expected_methods,expected_cases=(1,2,2) if mode=='corrective-plan' else (4,5,13)
+ expected_descriptors,expected_methods,expected_cases=(1,2,3) if mode=='corrective-plan' else (3,3,10)
  assert len(stage['selections'])==expected_descriptors
  selection_raw=(json.dumps(stage,indent=2)+'\n').encode()
 
@@ -65,7 +65,7 @@ with (out/'stdout.log').open('wb') as stream:
 results=sorted(str(p) for p in set(results_root.iterdir())-old) if results_root.exists() else [];after=binaries();all_after=all_outputs();ns_after=namespace();proc_after=processes()
 summaries=[json.loads((Path(d)/'summary.json').read_bytes()) for d in results if (Path(d)/'summary.json').exists()]
 executed=sum(j.get('Tests',{}).get('Executed',0) for j in summaries)
-record=dict(kind='FIRST_NI_IOBS_L01_WHOLE_ZERO_PREPARATION_RAW',phase='READY_DRIFT_DIAGNOSTIC_FRESH_ZERO',mode=mode,label=label,actualSource=actual,compiledSource=actual,productBase=binding['productBase'],implementedProductCompiledSource=actual,sourcePinCount=len(binding['sourcePins']),sourcePinDigest=binding['pinDigest'],sourceBindingSha256=h(raw),ledgerContextSha256=h(ledger_path.read_bytes()),selectionSha256=h(selection_raw),wholeSelectionSha256=h(whole_selection_raw),expectedDescriptors=expected_descriptors,expectedMethods=expected_methods,expectedCases=expected_cases,argv=argv,cwd=str(R),startedUtc=started,finishedUtc=now(),wallSeconds=time.monotonic()-clock,nativeExit=native,actualTestsExecuted=executed,stdoutPath=str(out/'stdout.log'),stdoutSha256=h((out/'stdout.log').read_bytes()),processRecord=str(out/'process.json'),firstSentinel=str(sentinel),resultDirectories=results,binaryBefore=before,binaryAfter=after,allOutputInventoryBefore=all_before,allOutputInventory=all_after,namespaceBefore=ns_before,namespaceAfter=ns_after,processesBefore=proc_before,processesAfter=proc_after,headAfter=git('rev-parse','HEAD').decode().strip(),statusAfter=git('status','--porcelain').decode(),helperSource=Path(__file__).read_text(),scope='Corrected-product fresh BOTH/catalog discovery then whole16/33/57, corrective1/2/2 or remaining4/5/13 PlanOnly-NoBuild (exact subsets archived), ZERO actual tests. No retries, accepted-family replay or automatic actual execution.')
+record=dict(kind='FIRST_NI_IOBS_L01_WHOLE_ZERO_PREPARATION_RAW',phase='SETTLEMENT_FIXTURE_CLASSIFICATION_FRESH_ZERO',mode=mode,label=label,actualSource=actual,compiledSource=actual,productBase=binding['productBase'],implementedProductCompiledSource=actual,sourcePinCount=len(binding['sourcePins']),sourcePinDigest=binding['pinDigest'],sourceBindingSha256=h(raw),ledgerContextSha256=h(ledger_path.read_bytes()),selectionSha256=h(selection_raw),wholeSelectionSha256=h(whole_selection_raw),expectedDescriptors=expected_descriptors,expectedMethods=expected_methods,expectedCases=expected_cases,argv=argv,cwd=str(R),startedUtc=started,finishedUtc=now(),wallSeconds=time.monotonic()-clock,nativeExit=native,actualTestsExecuted=executed,stdoutPath=str(out/'stdout.log'),stdoutSha256=h((out/'stdout.log').read_bytes()),processRecord=str(out/'process.json'),firstSentinel=str(sentinel),resultDirectories=results,binaryBefore=before,binaryAfter=after,allOutputInventoryBefore=all_before,allOutputInventory=all_after,namespaceBefore=ns_before,namespaceAfter=ns_after,processesBefore=proc_before,processesAfter=proc_after,headAfter=git('rev-parse','HEAD').decode().strip(),statusAfter=git('status','--porcelain').decode(),helperSource=Path(__file__).read_text(),scope='Corrected-fixture fresh BOTH/catalog discovery then whole16/33/57, corrective1/2/3 or remaining3/3/10 PlanOnly-NoBuild (exact subsets archived), ZERO actual tests. No retries, accepted-family replay or automatic actual execution.')
 (out/'record.json').write_text(json.dumps(record,indent=2)+'\n');print('FIRST_WHOLE_NI_IOBS_L01_PREP_NATIVE',native,str(out/'record.json'),flush=True)
 # Original outcome is already frozen before utility qualification.
 if native==0:

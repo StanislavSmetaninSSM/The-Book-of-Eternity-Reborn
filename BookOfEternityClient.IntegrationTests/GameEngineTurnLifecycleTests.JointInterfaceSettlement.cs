@@ -30,7 +30,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         private bool _terminalArmed;
         private readonly List<object> _settlementTrace = [];
         private CanonicalLocalFileChange[]? _terminalMembers;
-        private readonly IOException _settlementFailure = new("L01 actual whole-owner member publication fault.");
+        private readonly InvalidDataException _settlementFailure = new("L01 actual whole-owner member publication fault.");
 
         private void ObserveSettlementPublication(TrustedLocalPublicationPhase phase, int index)
         {
