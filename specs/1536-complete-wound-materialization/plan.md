@@ -1,3 +1,14 @@
+## L01 S01 — helper SOURCE/PREP originals saved; target UNRUN (2026-10-18)
+
+Direct cached-reference csc and metadata-only collector both native0, no observer
+errors; tiny fixture MVID35065df3-7a06-4e1b-8b74-ac77cd578120, net8.0/runtime8.0.32
+with roll-forward disabled. Decoder source harness1valid/7negative passed.
+[Original helper preparation](recovery/l01-managed-stack-helper-preparation-20261018.json)
+records exact compiler/reference/source/output/loaded-ABI bindings; no package restore
+or installation, zero synthetic targets and zero diagnostic API calls. Independent
+SOURCE/PREP required before S01; gameplay release NONE. No game/project/catalog/
+selection/budget/assertion changes; M01/L0152of57 and all holds unchanged.
+
 ## L01 — managed-stack capability inquiry; gameplay release NONE (2026-10-18)
 
 User requests cloud Linux diagnostic feasibility after accepted M01.
