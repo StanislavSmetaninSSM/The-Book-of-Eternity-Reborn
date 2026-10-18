@@ -1,3 +1,18 @@
+## T148 M01 — first actual native PASS; EVIDENCE pending (2026-10-18)
+
+One original actual at2f8bb248, compiled9eb672ea: native0,1executed/1passed/0failed,
+1/1 completed descriptor/case, selection complete, no timeout/observer errors.
+Fact78.0984915s; category92.475053s; runner wall110.8404154s; controller115.4244546s.
+Actual healed turn44, current owned wound root expires under strong source assertions;
+original2467 audit bytes SHA2561c7d7185c1e0bc3330dc67465b4c6ab434647429cbc7279cb141e72f4a1a3c2d
+match all4 physical stage images. Source pre-sign/completion hashes match; distinct
+private source/evaluation roots removed, both caches bypassed, one source preparation.
+Canonical refresh issues empty; separate validation retains non-Saref guardian/worldtime
+Errors, no Saref Error; global validation is not claimed. All899 outputs unchanged.
+[Original TRX/stdout/records and exact archive index](recovery/t148-m01-actual-evidence-20261018.json)
+saved for independent EVIDENCE. FIRST permit consumed; no actual retry.
+No qualification yet beyond native result; production/L01/broader holds unchanged.
+
 ## T148 M01 — PREP принят; отдельный FIRST actual release (2026-10-18)
 
 [Independent PREP ACCEPT](recovery/t148-m01-prep-independent-review-20261018.md)
