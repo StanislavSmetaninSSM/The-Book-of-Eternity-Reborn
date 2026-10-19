@@ -1,3 +1,104 @@
+# CRASH5 — Implementation Plan, редакция 3: QTE validation с существующим lease
+
+> **For agentic workers:** REQUIRED SUB-SKILL: superpowers:executing-plans. Один разработчик выполняет canonical [tasks.md](tasks.md); независимый reviewer проверяет связанный блок. Не создавать конкурирующий Superpowers plan.
+
+**Goal:** убрать повторную аутентификацию исходного pending snapshot внутри одной console QTE terminal validation, сохранив внешний lease, исходные ошибки и физические чтения текущего состояния.
+**Architecture:** существующий invocation runner получает второй factory для borrowed scope. Scope резервирует фактический MainAccess уже удерживаемого lease; открытие проверки, начало mutation и начало закрытия согласуются под одним коротким state lock. Entry/final proof и immutable DTO остаются общими с plan2. Два QTE validation calls имеют два независимых lifetime.
+**Tech Stack:** C#/.NET8, SDK10, PowerShell7/xUnit; существующий filesystem/authority stack, без packages и persisted schemas. Windows выполняется здесь; Linux runtime — в облаке.
+**Spec:** [согласованная редакция5](spec.md), approval владельца «хорошо» на f9658ae0e,2026-10-20; [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536).
+**Status:** проект plan3, T239; implementation/runtime не начаты. Требуется review фактически записанного плана владельцем. Branch1536-crash5-linux-windows-spec-20261019; planning base43e2f0ed56fc98839cff0e897c8c67259149d733. T234 остаётся FAIL_CHILD_TIMEOUT, Windows5 FAIL_INCOMPLETE, Linux UNRUN.
+
+## Plan3 — Global Constraints
+
+- Одна validation invocation, не весь terminal outcome. Без acquisition/recovery/new MainAdmission/Dispose внешнего lease. После success/failure/cancellation исходные lease, ambient registration и owner остаются у caller.
+- Exact manager/root/admission/active ambient registration/generation; instance reservation до reset shared caches. Foreign/competing validation entrypoints, в том числе Task.Run с inherited context, отвергаются. Retained private lookup после close отвергается; обнаружение произвольного reflection lookup в активной копии ExecutionContext не обещается.
+- Entry authentication и final сравнение exact dependency bytes/absence; независимые DTO; current/snapshot leaf reads физические; sticky invalidation, исходная ошибка сохраняется. Две полные аутентификации максимум. R=3,N=1/8/32: invocation rollback reads≤6. Acquisition считается отдельно; для той же clean fixture warm total≤9/cold≤12, не включая независимые current/marker/control reads. Нельзя выдавать этот component budget за весь game I/O.
+- Browser, same-turn/override и scalar entrypoint сохраняют прежнее поведение. AcceptedStoryAppend передаётся без подмены. QTE mutations, refresh, restoration, cleanup и publication остаются вне proof.
+- Producer73/resumer0; child220s/stop-join10s/EOF10s; source42 category5m, ordinary5 category15m; все прежние game/current-owner/history/receipt/culture/inert-repeat assertions неизменны. NativeLineage/C, collectors, security settings, GM/save/hash contracts вне scope.
+- Одна будущая source42 проба после causal GREEN и SOURCE/PREP; five только после её PASS. FAIL не разрешает retry или увеличение лимита. Чужие процессы/каталоги и retained T219 fixture не затрагиваются.
+
+## Plan3 — Constitution Check и research
+
+Pre-design gate: issue1536 и feature существуют; spec5 одобрена; T239 отслеживает проект. Post-design gate: внутреннее client-owned переиспользование доказательства не меняет игровые правила, тексты, GM surface или schema, поэтому GM prompts/examples не требуют обновления; console/browser семантика сохраняется. Новая совместимость со старыми saves не вводится. TDD, адресный отбор, XML docs, независимое complex review и remote recovery обязательны; full suite/CI/merge не назначаются. Последняя пользовательская модельная политика имеет приоритет над старым repo-исключением о постоянном Astra parent/XHigh.
+
+Phase0: [research.md](research.md) фиксирует read-only консультацию отдельного gpt-6-astra/high по точному borrowed-lease/close риску и проверенные границы. Phase1: [data-model.md](data-model.md), interfaces ниже и [quickstart.md](quickstart.md). Внешнего API/нового contracts файла нет. Runtime-достаточность гипотезы остаётся проверяемым условием, а не обещанием. T240 дополнительно подтверждает полный охват same-lease mutation envelopes до реализации: непокрытый путь нельзя объявить исключённым.
+
+## Plan3 — файлы и interfaces
+
+| Файл | Изменение и контракт |
+| --- | --- |
+| Services/ValidationService.cs | Сохранить scalar ValidateQteTerminalGameStateAsync(AcceptedStoryAppend?). Добавить overload с CanonicalWriteLease первым параметром; валидный browser/same-turn/override caller уходит в прежний entrypoint, eligible console — в borrowed runner |
+| Services/Validation/ValidationService.PendingSnapshotValidation.cs | Сохранить единственный одноаргументный RunPendingSnapshotValidationAsync для spec4/tests; вынести тело в CoreAsync с factory, добавить uniquely named borrowed wrapper. Не менять CapturePendingSnapshotEvidence/DTO/checker algorithms |
+| Core/FileSystemManager.PendingSnapshotValidationRead.cs | Добавить BeginBorrowedPendingSnapshotValidationRead(writeLease); один scope с immutable owned/borrowed mode. Borrowed OpenAsync связывает generation, DisposeAsync освобождает только reservation; owned acquisition/cleanup сохраняются |
+| Core/FileSystemManager.ValidationReadReservation.cs | Добавить nullable RetainedPhysicalAdmission с default null; только borrowed scope возвращает exact original physical admission |
+| Core/FileSystemManager.MainRunFence.cs | Разрешить только exact retained physical admission среди ancestry; shared state transitions reserve/mutation/physical close/BeginClosing/terminal freeze. Другие siblings и physical admissions остаются конфликтом |
+| Core/FileSystemManager.cs | Physical lease close transition до обнуления полей/освобождения ресурсов; attach mutation envelopes в перечисленных ниже writer boundaries, без изменения алгоритмов записи/восстановления |
+| Core/FileSystemManager.ValidationMutationReservation.cs (новый) | Малый MainMutationReservation helper с idempotent release, bound к исходному MainAccess; не новая authority или global lock |
+| Core/FileSystemManager.DirectoryDeletion.cs, .ImagePublication.cs, .WorkerPublication.cs, .SyntheticBundlePublication.cs | Только необходимые enclosing mutation tokens до recovery/preparation и после cleanup; точные требующие изменения методы подтверждает T240. Unaffected methods не редактировать |
+| Services/QteSceneService.cs | Ровно два вызова в ApplyTerminalOutcomeValidatedStateChangesAsync передают существующий writeLease; WithOwnedQteLeaseAsync и ReleaseOwnedLeaseAsync не переписываются |
+| BookOfEternityClient.Tests/PendingSnapshotValidationScopeTests.cs и новая .BorrowedLease.cs | Сделать class partial, переиспользовать существующую независимую Fixture. Новые BorrowedProof_* / BorrowedCustody_* / BorrowedMutation_* cases; отдельный RunBorrowedAsync, старый reflection contract не ломать |
+| BookOfEternityClient.IntegrationTests/QteSceneServiceTests.PendingSnapshotValidation.cs (новый) | Actual caller/rollback/accepted-story/две invocation проверки через настоящий service и validator |
+| BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.WorldReadPhase.cs и .MetaControlShapes.cs | Existing source-closure fences: review точных changed/new source dependencies перед обновлением pins; прежние assertions/criteria не менять |
+| tests/categories.json, tests/selections/1536-snapshot-validation.json, tests/selection.json | Узкий отбор ниже; original Scope_*36 отделён от новых partial методов. Existing source fences обновляются только после review фактических source deltas |
+
+Все Core/Services пути в таблице относительны к BookOfEternityClient. Новые/изменённые API, включая test helpers, получают XML summary/param/returns отдельными строками с точными именами и валидными cref; unrelated docs не форматируются.
+
+Exact signatures:
+
+    internal Task<List<ValidationIssue>> ValidateQteTerminalGameStateAsync(
+        FileSystemManager.CanonicalWriteLease writeLease, StoryService.AcceptedStoryAppend? acceptedStoryAppend);
+    private Task<List<ValidationIssue>> RunBorrowedPendingSnapshotValidationAsync(
+        FileSystemManager.CanonicalWriteLease writeLease, Func<Task<List<ValidationIssue>>> validate);
+    private Task<List<ValidationIssue>> RunPendingSnapshotValidationCoreAsync(
+        Func<Task<List<ValidationIssue>>> validate, Func<FileSystemManager.PendingSnapshotValidationReadScope> beginRead);
+    internal PendingSnapshotValidationReadScope BeginBorrowedPendingSnapshotValidationRead(CanonicalWriteLease writeLease);
+    internal virtual MainAdmission? RetainedPhysicalAdmission => null;
+    internal MainMutationReservation MainAdmission.BeginMutation();
+    internal MainMutationReservation MainAccess.BeginMutation(MainAdmission admission, ValidationReadReservation? recoveryIssuance);
+
+Последние две строки — объявления на указанных nested types, не синтаксис qualified method declaration. MainMutationReservation.Dispose снимает только свой зарегистрированный token. BeginPhysicalLeaseClose(MainAdmission) и BeginOwnerClosing(MainAdmission, Action markClosing) — внутренние MainAccess transitions под его _state; MainAdmission делегирует им с собственной identity. Имена допускают существующее style оформление, параметры/ordering и результат фиксированы.
+
+## Plan3 — протокол владения и writers
+
+1. Validate explicit lease у того же manager; reject inactive/foreign/metadata/finalization/replacement/worker capabilities. Для eligible console exact lease.MainAdmission должен быть live в текущей ancestry, а exact active AmbientRegistration — в ambient chain. HasAmbientCanonicalLease без сопоставления identity недостаточен. Никакого нового retain.
+2. Под MainAccess._state установить reservation только если нет другого proof, sibling/foreign physical admission, active mutation, frozen/closing состояния. Единственный допустимый PhysicalScope — RetainedPhysicalAdmission этой reservation, реально зарегистрированный в access и ancestry. Owned World/spec4 без retained admission сохраняют прежний запрет всех existing physical borrowers.
+3. Active mutation tokens и reservation взаимно исключаются тем же lock. Token охватывает mutation operation до первого recovery/preparation эффекта/awaited boundary и до конца publication/compensation/cleanup в finally. Locks не удерживаются через await. Existing per-path InProcessMutationRegistration не заменяется: он наблюдает paths и не покрывает все directory/recovery writers.
+4. T240 составляет конечную таблицу same-lease write/append/conditional-write/delete/move/directory/image/worker-recovery/publication entrypoints → enclosing token или доказанный independent physical-admission conflict. Проверить raw physical mutation calls, а не только EnsureWorkerGeneralMutationAllowed. Известные пробелы: DeleteFileCore, DeleteOriginalDirectoryTree, DeleteTrustedLocalDirectoryTreeAsync/empty pruning, RecoverInterruptedWorkerApplyTransactionAsync, ранняя preparation PublishLocalImageFilesAsync/worker publication. Для обычного atomic write и move token начинается не позже существующей path registration, до обоих mutation hooks. Открытый обход блокирует production acceptance; изменение storage algorithms или файлов вне указанного filesystem guard scope требует отдельного решения.
+5. Close transition и reserve используют тот же _state. Попытка закрыть lease при proof отказывает до изменения stream/parent/context/ambient fields; начатое закрытие исключает reservation. BeginClosing проверяет и ставит bound-closing атомарно; terminal freeze проверяет pending reservation до изменения frozen. MainAccess.Release сохраняет atomic check+mark/remove. Owned opening/closed cleanup exception допустим только для exact physical issuance; borrowed route его не получает.
+6. Runner резервирует validator до reset caches, открывает scope, получает entry evidence, запускает прежний core с AcceptedStoryAppend, сверяет final physical evidence. В finally закрывает proof и shared admission, сохраняя primary/secondary ошибки. Borrowed teardown никогда не трогает ExternalPublicationContext.Dispose. После close проверяет сохранность оригинального lease/admission/ambient ownership; issues/logging возвращаются только после successful final proof и close.
+7. Preexisting call — после его RefreshGameStateAsync и до ApplyTerminalResourceOutcomeAsync. Final call — после всех mutations/refresh и до обработки issues, restoration, AllowCleanup/cleanup. Когда allowPreexistingStateIssues=true, это две свежие invocation через промежуточные записи. Оригинальный caller владеет lease до своего finally.
+
+## Plan3 — Review Focus и тестовая карта
+
+| Риск | Тесты и точные assertions |
+| --- | --- |
+| Cache ускоряет только искусственный helper | BorrowedProof_ReadBudget(N=1,8,32; warm/cold) вызывает реальные sync/async lookup под уже acquired lease через тот же runner, что новый entrypoint. Исходный forwarding seam даёт причинный RED по reads дляN8/32, не по MissingMethod/admission/timeout. Actual QtePendingSnapshot_CallerSeparatesInvocations(false/true) доказывает wiring обоих вызовов |
+| Close портит чужой lease до отказа | BorrowedCustody_LeaseSurvives(success/primary/cancel), CloseRefuses(lease/physical admission/ancestor/BeginClosing/terminal freeze), ClosingWinsBeforeReservation: same object, active ownership/registration, неизменные flags/resources; после proof legitimate write и owner disposal работают. ExternalPublicationContext sentinel не вызывается borrowed teardown |
+| Writer уже прошёл guard до proof | BorrowedMutation_ExistingWriterRefusesProof: pause before и after mutation-boundary validation для write/append/delete/move; отдельно directory pruning/image/recovery preparation. Reservation отвергается до entry authentication; writer законно заканчивает. Обратный порядок: writer не достигает effects. Cancel/error/rollback освобождают token; следующая invocation проходит. Матрица T240 не оставляет неизвестных путей |
+| Старый proof переживает mutation/чужой caller | BorrowedProof_DependencyChange использует прежние12 вариантов overwrite/delete/BOM/same-mtime/manifest/authority/request/session/turn/alternative/generation/valid-pair; свежие DTO, Missing/Unusable, FreshAfterOuterWrite. BorrowedCustody_CompetingEntry(direct/Task.Run), ForeignLease/second-manager и RetiredContext отклоняются; no stale acceptance |
+| Изменились реальные ошибки/history/компенсация | BorrowedProof_CurrentIssues сравнивает ordered scalar/reserved issues при настоящем invalid current file; QtePendingSnapshot_ValidationFailureRestoresAfterClose проверяет реальные writes restoration/cleanup после release. QtePendingSnapshot_AcceptedStoryProof(valid/tampered) использует настоящий StoryService.AppendAcceptedQteSourceTurnAsync и исходные history checks, не вручную созданный authority object |
+
+Дополнительно: physical current reads между consumers, final read I/O failure, cancellation без потерянного внешнего lease, совместное primary/final-close failure без маскировки. Existing owned Scope_FinalReadAndCloseFailurePreservePrimary остаётся контролем общего runner; borrowed sentinel отдельно доказывает отсутствие outer teardown. Browser/override/same-turn fallback не получает новый proof. Tests-only forwarding seam компилируется и сохраняет scalar поведение; он не считается production-оптимизацией и не закрывает negative tests.
+
+## Plan3 — точный отбор и gates
+
+Сохранить восемь адресных plan2 categories/90 cases: contracts36, lifecycle3, Meta proof7/reservation7/ownership8, World2/controls24, source guards3. Они нужны из-за изменения общего runner/MainAccess/lease close; старый selector PendingSnapshotValidationScopeTests.* сузить до Scope_* без потери исходных36. Source-pin changes разрешены только по фактическому reviewed diff, без blind baseline refresh.
+
+Добавить owners: pending-snapshot-qte-proof (BorrowedProof_*,2m), pending-snapshot-qte-custody (BorrowedCustody_*,2m), pending-snapshot-qte-mutation (BorrowedMutation_*,3m), pending-snapshot-qte-caller (QteSceneServiceTests.QtePendingSnapshot_*,5m). Дополнительные новые категории:
+
+- pending-snapshot-qte-neighbors,3m: QteSceneServiceTests.ApplyTerminalOutcomeValidatedStateChangesAsync_RestoresStateAfterValidationFailure; .ResolveActiveActionAsync_DirectLatePersistenceFailureRollsBackResourceQuartetAndPreservesSelectedBoundary; .ResolveActiveActionAsync_BackupCleanupFailureDoesNotMaskCommittedResult; .ApplyTerminalOutcomeValidatedStateChangesAsync_PreservesSiblingBackupRunDirectory. Это четыре existing Fact, без всей qte-rules.
+- pending-snapshot-qte-browser,3m: WebUi.BrowserQteGenerationFencingTests.CompleteAction_LatePersistenceFailureRollsBackOutcomeHistoryAndRuntime; .CompleteAction_ResourcePenaltyLateFailureRollsBackCanonicalQuartet (по2 cases); .ResolveAction_NewGameWinsBeforeQteLease_DoesNotRestoreOldBytesIntoReplacementSession (1). Existing web service path, без browser-api-host aggregate.
+
+Все полные type prefixes — BookOfEternityClient.Tests. Итоговая snapshot selection14 descriptors; новые case counts определяются точными written tests и fresh discovery, не выдумываются по плану. Source42/ordinary5 отдельно,1/5 cases и5m/15m. Linux-only affected storage/native controls остаются UNRUN здесь и входят в cloud handoff, включая исходные NativeLineage controls.
+
+Execution order: T240 source inventory/tests/RED → T241 borrowed scope/shared guards/unit GREEN → T242 actual QTE caller RED→GREEN → T243 full affected SOURCE/fresh XML builds/catalog/PlanOnly/selected GREEN/PREP → T244 single source42 → только PASS:T245 five → T246 evidence/recovery/handoff → T247 cloud. Если RED не подтверждён, закончить investigation и не внедрять cache. При новой причине/неподтверждённом outcome — сохранить evidence без повтора. [P] implementation задач нет: общий ownership contract; независимый reviewer не автор реализации.
+
+## Plan3 — checkpoint и review
+
+T239 использует реальные setup-plan/setup-tasks scripts, не перезаписывающие существующие файлы, затем read-only speckit-analyze после генерации tasks. Installed prerequisite script не поддерживает новый флаг RequireSpec: первый вызов завершился parameter-binding error без действий; выполнен поддерживаемый Json/RequireTasks/IncludeTasks и отдельная проверка наличия spec.md. Optional git hooks заменяются explicit checkpoints, optional agent-context rewrite пропускается; обязательных hooks этих фаз нет. Проверить spec5 acceptance→tasks map, historical tails, interface names, selection и численные bounds. Документарная review и clean remote recovery предшествуют предъявлению plan3. Это не SOURCE/PREP будущей реализации. Тесты, discovery, build и игровой runtime на этой planning фазе не запускаются.
+
+---
+
 # CRASH5 — Implementation Plan, редакция 2: одна операция проверки исходного снимка
 
 > **For agentic workers:** REQUIRED SUB-SKILL: `superpowers:executing-plans`. Один разработчик выполняет canonical [tasks.md](tasks.md), T230…T237; отдельный reviewer проверяет законченный блок. Этот план дополняет plan1 ниже, а не переоценивает его результаты.

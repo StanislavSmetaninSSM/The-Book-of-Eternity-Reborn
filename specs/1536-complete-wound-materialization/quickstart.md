@@ -1,3 +1,40 @@
+# CRASH5 spec5 / plan3 — будущая адресная проверка
+
+[Spec5](spec.md) согласована из f9658ae0e; [plan3](plan.md) и [tasks](tasks.md) пока предъявляются на review. Нижние spec4 команды и результаты исторические для завершённого этапа. На planning phase build/discovery/tests/game не запускать. T234 остаётся FAIL, Windows5 не повторены, Linux UNRUN.
+
+После одобрения plan3 выполнять из отдельного checkout, PowerShell7, SDK10/.NET8. Сначала T240 source inventory и tests-only forwarding seams; затем fresh XML build, catalog/PlanOnly и адресный causal RED. Не считать compile/admission/timeout ошибку доказательством повторных чтений. Parent ведёт весь блок; independent gpt-6-astra/high проверяет contracts/selection/binding.
+
+    dotnet build BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-restore -p:GenerateDocumentationFile=true
+    dotnet build BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj --no-restore -p:GenerateDocumentationFile=true
+    ./scripts/test-csharp.ps1 -ValidateCatalog -NoBuild
+    ./scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-snapshot-validation.json -PlanOnly -NoBuild
+
+Сборки только последовательно: проекты используют общие outputs. Фиксировать source SHA, DLL SHA256, changed XML diagnostics, exact discovery/selected counts; устаревшие DLL не допускают NoBuild. Новые категории будут созданы T240, эти команды не означают, что они уже существуют.
+
+    ./scripts/test-csharp.ps1 -Category pending-snapshot-qte-proof -NoBuild
+    ./scripts/test-csharp.ps1 -Category pending-snapshot-qte-custody -NoBuild
+    ./scripts/test-csharp.ps1 -Category pending-snapshot-qte-mutation -NoBuild
+    ./scripts/test-csharp.ps1 -Category pending-snapshot-qte-caller -NoBuild
+
+Для causal RED выбирается соответствующий точный selector/bounded category до production fix; ожидаемые numeric/ownership failures записываются по cases. После исправления сохранить GREEN и прежние impacted controls из selection14 descriptors: old8/90 +proof/custody/mutation/caller +four QTE neighbors +five browser cases. Список exact existing selectors и budgets находится в plan3. Новые case counts устанавливаются fresh discovery. Категории запускаются отдельно; не повторять уже passing unchanged группы без изменения/риска. Source-pin update требует reviewed source diff, не простого нового hash.
+
+Только после T243 SOURCE/PREP:
+
+    ./scripts/test-csharp.ps1 -Category fr063-joint-interface-source42-windows-probe -PlanOnly -NoBuild
+    ./scripts/test-csharp.ps1 -Category fr063-joint-interface-crash-current -PlanOnly -NoBuild
+
+Ожидания1/5 cases,5m/15m. Затем ровно один T244:
+
+    ./scripts/test-csharp.ps1 -Category fr063-joint-interface-source42-windows-probe -NoBuild
+
+Только при настоящем source42 return/PASS разрешается T245:
+
+    ./scripts/test-csharp.ps1 -Category fr063-joint-interface-crash-current -NoBuild
+
+Child220s/stop-join10s/EOF10s и original oracles неизменны. FAIL/partial сохраняются без автоматического retry. Counts entry/returned callbacks не объявляются полным physical I/O или method timing. Сохранить raw TRX/summary/stages, source/DLL binding и owned cleanup; обновить существующий recovery/crash5/source42-investigation.md и linux-handoff.md. Linux исполнитель отдельно выполняет fresh package/builds/PREP, affected snapshot/native controls и ordinary5; Windows binaries/PASS не заменяют Linux qualification.
+
+---
+
 # CRASH5 spec4 / plan2 — проверка реализации
 
 [Spec4](spec.md) одобрена из da3efec34; [plan2](plan.md) из bd9c8dd434 одобрен владельцем. Выполняются [T230…T237](tasks.md). Source9c30fc6b8 принят независимым gpt-6-astra/high после причинного RED и исправления outer-owner close. Обе свежие XML builds прошли; 90 distinct cases PASS в документированном union; Windows SOURCE/PREP принят gpt-6-astra/high на evidence d8791bab6. После Meta aggregate timeout прежние шесть Meta selectors разделены на proof7/reservation7/ownership8, каждая категория3m; итоговая selection8descriptors/90cases. Команды ниже задают актуальный отбор. Windows5 пока FAIL_INCOMPLETE, Linux UNRUN; подробные доказательства в [investigation](recovery/crash5/source42-investigation.md).

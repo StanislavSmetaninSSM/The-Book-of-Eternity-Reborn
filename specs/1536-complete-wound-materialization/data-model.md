@@ -1,3 +1,21 @@
+# CRASH5 spec5 — Phase 1: borrowed invocation ownership
+
+Источник: [spec5](spec.md), [plan3](plan.md), issue1536. Только in-memory lifetime models; новых persisted полей, API внешним системам и save migration нет.
+
+| Модель | Контракт и переходы |
+| --- | --- |
+| PendingSnapshotValidationReadScope | Immutable mode OwnedAcquisition или BorrowedExisting; оба используют exact manager/root/MainAccess/generation. Borrowed хранит исходные CanonicalWriteLease/MainAdmission/AmbientRegistration; Open не приобретает authority; Close освобождает только proof reservation |
+| ValidationReadReservation.RetainedPhysicalAdmission | Default null сохраняет World/Meta/owned contract. Borrowed возвращает ровно зарегистрированный physical frame своего lease; не набор допустимых leases |
+| MainAccess reservation state | Под одним _state согласуются read reservation, active mutation identities, physical-close и bound-close flags. Read reservation требует отсутствие активной mutation/closing/sibling; mutation register требует отсутствие чужой read reservation |
+| MainMutationReservation | Token исходного access/admission, Active→Released, release idempotent. Снимает только свой registration; owned opening recovery допускает только exact WorldRecoveryIssuance. Borrowed recovery exception отсутствует |
+| Physical close transition | Active→Closing ставится до detach fields/resources. Если proof активен, переход отклоняется без изменения original lease. Closing-first запрещает новое proof. Final disposal прежних resources остаётся у внешнего owner |
+| PendingSnapshotValidationInvocation/Evidence | Прежние exclusive validator identity и immutable dependency bytes/absence; entry/final proof, свежие DTO, sticky invalidation. Scope lifetime не переносится через QTE writes/refresh или в следующую проверку |
+| Validation result | Ordered issues/primary exception после final proof и закрытия proof. AcceptedStoryAppend — исходный объект фактического story writer; не cache authority и не замена source authentication |
+
+Одна QTE операция при allowPreexistingStateIssues=true создаёт две отдельные invocation. Между ними mutation tokens допускаются, proof отсутствует. После ошибочного validation original lease остаётся доступен настоящей compensation/cleanup. Копирование async context не продлевает закрытый lifetime и не разрешает competing validation entrypoint.
+
+---
+
 # CRASH5 spec4 — Phase 1: invocation evidence
 
 Источник: [spec4](spec.md), [plan2](plan.md), issue1536. Внутренние ephemeral модели; сериализуемая save schema и внешний API не меняются.

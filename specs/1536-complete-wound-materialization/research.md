@@ -1,3 +1,23 @@
+# CRASH5 spec5 — Phase 0, plan3
+
+Источник: [согласованная spec5](spec.md), [plan3](plan.md), issue1536. Read-only consultation: отдельный agent spec5_borrowed_lease_consultation, явно gpt-6-astra/high; код/тесты/диагностика не запускались и не редактировались. Это решение конкретного borrowed-lifetime вопроса, не независимое принятие готового плана.
+
+| Решение | Основание | Отклонённая альтернатива |
+| --- | --- | --- |
+| Второй scope factory, общий runner | PendingSnapshotValidation.cs уже содержит entry/final proof, error preservation и instance reservation; меняется владение physical lease, не checker | Дублировать весь validator/cache или передать прежний prevalidated object |
+| Existing exact lease + physical admission | QteSceneService.WithOwnedQteLeaseAsync приобретает lease до ApplyTerminalOutcomeValidatedStateChangesAsync; два validations находятся внутри. AcquireCanonicalWriteLeaseAsync синхронно устанавливает ambient registration до await | Вложенное acquisition/recovery, новый MainAdmission, выдача console за browser |
+| Nullable RetainedPhysicalAdmission | MainAccess.ReserveWorldRead сейчас отвергает все PhysicalScope. Для borrowed нужен один exact зарегистрированный physical frame из ancestry | Разрешить все physical borrowers либо только совпадение root/SharesAccess |
+| Close/reserve атомарны под MainAccess._state | CanonicalWriteLease.DisposeAsync сейчас обнуляет/освобождает stream до MainAdmission.Dispose; BeginClosing имеет check→assignment разрыв; Freeze меняет frozen до проверки refs | Одна предварительная проверка вне общего lock либо отказ после повреждения lease |
+| Active mutation tokens в shared access | Boundary guards до awaited hooks не исключают writer, уже прошедший guard. Existing per-path registrations не охватывают DeleteFileCore/directory pruning/recovery и раннюю portable preparation | Root-only path observer, один guard на входе, считать paused writer уже покрытым same-lease test |
+| Token вокруг целой mutation envelope | Под _state register/refuse; release в finally после publication/rollback/cleanup. T240 проверяет полный finite same-lease inventory в названных filesystem files и отсутствие bypass | Менять storage algorithms; держать lock через await; объявлять coverage доказанным без source audit/behavioral probes |
+| Две отдельные QTE invocation | QteSceneService preexisting validation2035 и final2055 разделены resource/state writes и RefreshGameStateAsync | Cache через весь terminal outcome либо через runtime refresh |
+| Точная copied-context гарантия | Competing entrypoints отвергаются shared validator reservation, retired private lookups — Closed/Invalidated | Обещать идентифицировать любое клонирование ExecutionContext или активный reflection lookup; текущие AsyncLocal этого не доказывают |
+| R3/N1,8,32; ≤6 invocation reads | Реальные lookup consumers под существующим lease; acquisition измеряется отдельным интервалом. Предыдущие warm9/cold12 остаются whole-fixture controls | Вычитать preparation из actual220s или сравнивать разные trace endpoints как доказательство ускорения |
+
+Архитектурный выбор определён; полный inventory mutation envelopes — обязательный bounded investigation deliverable T240 до production-изменения. Непокрытый supported path блокирует acceptance; выход за указанные filesystem guards возвращается к review scope. Причинность именно QTE и достаточность для220s остаются runtime-гипотезами; первая проверяется RED, вторая — единственной новой source42 после PREP.
+
+---
+
 # CRASH5 spec4 — Phase 0, plan2
 
 Основание: [spec4](spec.md), [plan2](plan.md), issue1536, source da3efec34. Read-only консультация отдельного `gpt-6-astra/high` (`spec4_lifetime_consultation`) проверила конкретный lifetime/locking риск; не является runtime verification или независимым review готовой реализации.
