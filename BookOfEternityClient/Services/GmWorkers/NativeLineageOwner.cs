@@ -20,7 +20,15 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
     /// <returns>
     /// The current admission decision.
     /// </returns>
-    internal static NativeFiniteStartDecision EvaluateFiniteStart(NativeFiniteObservation observation) => NativeFiniteStartDecision.Pending;
+    internal static NativeFiniteStartDecision EvaluateFiniteStart(NativeFiniteObservation observation)
+    {
+        if (observation.Uncertainty != null || observation.Terminal?.State == GmWorkerStopState.Uncertain ||
+            (observation.SupervisorExited && observation.SupervisorExitCode is int exitCode && exitCode != 0))
+            return NativeFiniteStartDecision.Rejected;
+        if (!observation.Released) return NativeFiniteStartDecision.Pending;
+        if (observation.Started) return NativeFiniteStartDecision.Started;
+        return HasCompleteFiniteRetirement(observation) ? NativeFiniteStartDecision.Completed : NativeFiniteStartDecision.Pending;
+    }
 
     /// <summary>
     /// Determines whether a closed stop pipe agrees with complete natural retirement.
@@ -31,7 +39,24 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
     /// <returns>
     /// <see langword="true"/> only for complete natural retirement without uncertainty; otherwise <see langword="false"/>.
     /// </returns>
-    internal static bool CanAcceptFiniteClosedControl(NativeFiniteObservation observation) => false;
+    internal static bool CanAcceptFiniteClosedControl(NativeFiniteObservation observation) =>
+        HasCompleteFiniteRetirement(observation) && observation.Terminal!.Reason == "root-exited";
+
+    /// <summary>
+    /// Checks the complete positive retirement conjunction independently of Started.
+    /// </summary>
+    /// <param name="observation">
+    /// The original owner's observations, including sticky uncertainty.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when all required retirement observations agree; otherwise <see langword="false"/>.
+    /// </returns>
+    private static bool HasCompleteFiniteRetirement(NativeFiniteObservation observation) =>
+        observation.Released && observation.Uncertainty == null && observation.RootExited &&
+        observation.SupervisorExited && observation.SupervisorExitCode == 0 &&
+        observation.StatusCompleted && observation.HelperErrorCompleted &&
+        observation.Terminal is { State: GmWorkerStopState.StoppedWithinScope, CleanupComplete: true,
+            AuthorityRetained: false, RootExitCode: not null };
 
     /// <summary>
     /// Waits for finite admission or rejection while preserving the caller's cancellation.
@@ -58,8 +83,18 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
         Func<NativeFiniteObservation> snapshot, Task started, Task retirementObserved,
         Task<string> authorityLost, CancellationToken cancellationToken)
     {
-        await started.WaitAsync(cancellationToken);
-        return NativeFiniteStartDecision.Started;
+        var pending = new List<Task> { started, retirementObserved, authorityLost };
+        while (true)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (authorityLost.IsCompleted) return NativeFiniteStartDecision.Rejected;
+            var decision = EvaluateFiniteStart(snapshot());
+            if (decision != NativeFiniteStartDecision.Pending) return decision;
+            var notification = await Task.WhenAny(pending).WaitAsync(cancellationToken);
+            try { await notification; }
+            catch { return NativeFiniteStartDecision.Rejected; }
+            pending.Remove(notification);
+        }
     }
 
     /// <summary>
@@ -91,6 +126,11 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
             UseShellExecute = false, RedirectStandardInput = true, RedirectStandardOutput = true,
             RedirectStandardError = true, WorkingDirectory = host.WorkingDirectory, CreateNoWindow = true
         };
+        if (finitePipe)
+        {
+            start.Environment.Clear();
+            foreach (var item in host.Environment) start.Environment[item.Key] = item.Value;
+        }
         foreach (var arg in new[] { runId, "100", "2500", "--host-v2", socketPath, host.FileName })
             start.ArgumentList.Add(arg);
         foreach (var arg in host.ArgumentList) start.ArgumentList.Add(arg);
@@ -112,7 +152,7 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
     internal static async Task<string> ReadPipeOutputAsync(Stream input, bool finitePipe)
     {
         using var reader = new StreamReader(input, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, leaveOpen: true);
-        return await GmWorkerBridgePool.CaptureProcessOutputAsync(reader);
+        return finitePipe ? await reader.ReadToEndAsync() : await GmWorkerBridgePool.CaptureProcessOutputAsync(reader);
     }
 
 
@@ -260,21 +300,53 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
         }catch{Lose("terminal-release-unconfirmed");CloseBootstrap();throw;}
     }
 
+    /// <summary>
+    /// Starts the original supervisor and binds the root identity before releasing exec.
+    /// </summary>
+    /// <param name="host">
+    /// The child command and working directory.
+    /// </param>
+    /// <param name="executable">
+    /// The validated supervisor executable.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Cancels bootstrap without replacing the retained owner.
+    /// </param>
+    /// <param name="columns">
+    /// Initial terminal columns; ignored for pipe launches.
+    /// </param>
+    /// <param name="rows">
+    /// Initial terminal rows; ignored for pipe launches.
+    /// </param>
+    /// <param name="observeHeldRoot">
+    /// Optional synchronous observation of the bound root before release.
+    /// </param>
+    /// <param name="holdTerminal">
+    /// Whether to return a held terminal for a later explicit release.
+    /// </param>
+    /// <returns>
+    /// Completion after admission or after the requested held-terminal preparation.
+    /// </returns>
     private async Task StartAsync(ProcessStartInfo host, string executable, CancellationToken cancellationToken, int columns = 80, int rows = 25, Action<int>? observeHeldRoot = null,bool holdTerminal=false)
     {
-        var start = new ProcessStartInfo(executable)
+        ProcessStartInfo start;
+        if (_terminalMode)
         {
-            UseShellExecute = false, RedirectStandardInput = true, RedirectStandardOutput = true,
-            RedirectStandardError = true, WorkingDirectory = host.WorkingDirectory,
-            CreateNoWindow = true
-        };
-        // Terminal launch consumes the original configured child environment.
-        // Worker host-v2 retains its separately owned existing environment path.
-        if(_terminalMode){start.Environment.Clear();foreach(var item in host.Environment)start.Environment[item.Key]=item.Value;}
-        foreach (var arg in new[] { _run, "100", "2500", _terminalMode ? "--terminal-v1" : "--host-v2", Path.Combine(_bootstrapDirectory, "owner") }) start.ArgumentList.Add(arg);
-        if (_terminalMode) { start.ArgumentList.Add(columns.ToString(System.Globalization.CultureInfo.InvariantCulture)); start.ArgumentList.Add(rows.ToString(System.Globalization.CultureInfo.InvariantCulture)); }
-        start.ArgumentList.Add(host.FileName);
-        foreach (var arg in host.ArgumentList) start.ArgumentList.Add(arg);
+            start = new ProcessStartInfo(executable)
+            {
+                UseShellExecute = false, RedirectStandardInput = true, RedirectStandardOutput = true,
+                RedirectStandardError = true, WorkingDirectory = host.WorkingDirectory, CreateNoWindow = true
+            };
+            start.Environment.Clear();
+            foreach (var item in host.Environment) start.Environment[item.Key] = item.Value;
+            foreach (var arg in new[] { _run, "100", "2500", "--terminal-v1", Path.Combine(_bootstrapDirectory, "owner") })
+                start.ArgumentList.Add(arg);
+            start.ArgumentList.Add(columns.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            start.ArgumentList.Add(rows.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            start.ArgumentList.Add(host.FileName);
+            foreach (var arg in host.ArgumentList) start.ArgumentList.Add(arg);
+        }
+        else start = CreatePipeSupervisorStartInfo(host, executable, _run, Path.Combine(_bootstrapDirectory, "owner"), false);
         _supervisor.StartInfo = start;
         if (!_supervisor.Start()) throw new InvalidOperationException("Native supervisor did not start.");
         _processStarted = true;
@@ -460,10 +532,18 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
         if (_observationFault != null) await _observationFault.ObserveOutputsAsync();
     }
 
+    /// <summary>
+    /// Drains one owned host pipe and records any loss on the original owner.
+    /// </summary>
+    /// <param name="stream">
+    /// The owned readable pipe; its handle remains owned by this launch.
+    /// </param>
+    /// <returns>
+    /// Captured output after EOF, or a propagated stream failure.
+    /// </returns>
     private async Task<string> CaptureHostOutputAsync(Stream stream)
     {
-        using var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, leaveOpen: true);
-        try { return await GmWorkerBridgePool.CaptureProcessOutputAsync(reader); }
+        try { return await ReadPipeOutputAsync(stream, false); }
         catch { Lose("output-drain-lost"); throw; }
     }
 
