@@ -12,15 +12,17 @@ public partial class ValidationService
     private WorldValidationInvocation? _worldReservation;
     private WorldReadPhase? _worldReadPhase;
 
-    private sealed class WorldValidationInvocation(bool worldReserved, bool metaReserved)
+    private sealed class WorldValidationInvocation(bool worldReserved, bool metaReserved, bool pendingReserved = false)
     {
         internal readonly bool WorldReserved = worldReserved, MetaReserved = metaReserved;
-        internal bool Reserved => WorldReserved || MetaReserved;
+        internal readonly bool PendingReserved = pendingReserved;
+        internal bool Reserved => WorldReserved || MetaReserved || PendingReserved;
         internal bool Closed;
     }
 
     private WorldValidationInvocation AdmitWorldValidation(bool gameState, GameStateValidationSelection? selection = null)
     {
+        _pendingSnapshotInvocation.Value?.RequireCurrent();
         var browser = gameState && _sameTurnOwnerInputs == null && _fs.HasBrowserOriginalOperation;
         lock (_worldReadGate)
         {
@@ -77,6 +79,7 @@ public partial class ValidationService
 
     private void RequireWorldCacheAccess()
     {
+        _pendingSnapshotInvocation.Value?.RequireCurrent();
         lock (_worldReadGate)
         {
             if (_worldReservation != null &&
@@ -89,11 +92,12 @@ public partial class ValidationService
     {
         lock (_worldReadGate)
         {
-            if (_worldReservation != null && (_worldReadPhase != null || _metaControlShapeReadPhase != null ||
+            if (_worldReservation != null && (_worldReservation.PendingReserved || _worldReadPhase != null || _metaControlShapeReadPhase != null ||
                 !ReferenceEquals(_worldReservation, _worldValidationInvocation.Value) || _worldReservation.Closed))
             {
                 if (withdrawal)
                 {
+                    if (_pendingSnapshotReservation != null) _pendingSnapshotReservation.Invalidated = true;
                     if (_worldReadPhase != null) _worldReadPhase.Invalidated = true;
                     if (_metaControlShapeReadPhase != null) _metaControlShapeReadPhase.Invalidated = true;
                 }

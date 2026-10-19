@@ -18,7 +18,7 @@ public partial class FileSystemManager
     }
     internal MainAdmission BeginMainAdmission()=>BeginMainAdmission(false);
     internal MainAdmission BeginParticipatingMainAdmission()=>BeginMainAdmission(true);
-    private MainAdmission BeginMainAdmission(bool participating, WorldValidationReadScope? worldIssuance = null, bool physicalScope = false)
+    private MainAdmission BeginMainAdmission(bool participating, ValidationReadReservation? worldIssuance = null, bool physicalScope = false)
     {
         var parent=MainAdmissions.Value;
         for (var p = parent; p != null; p = p.Parent)
@@ -39,7 +39,7 @@ public partial class FileSystemManager
         private GmMainOperationClient? _retainedRemote;
         private GmSessionRunCoordinator.Access? _retainedOriginal;
         private readonly bool _participating;
-        private readonly WorldValidationReadScope? _worldIssuance;
+        private readonly ValidationReadReservation? _worldIssuance;
         internal readonly bool PhysicalScope;
         private GmWorkerCanonicalPurpose? _workerPurpose;
         internal bool WasRemote {get;private set;}
@@ -51,7 +51,7 @@ public partial class FileSystemManager
         internal CanonicalRootIdentity RootIdentity=>_files.CanonicalRootAuthorityIdentity;
         internal bool Closed=>_closed;
         internal MainAdmission? Parent=>_parent;
-        internal MainAdmission(FileSystemManager files,MainAdmission? parent,GmSessionRunCoordinator.Access? requested,bool participating, WorldValidationReadScope? worldIssuance, bool physicalScope)
+        internal MainAdmission(FileSystemManager files,MainAdmission? parent,GmSessionRunCoordinator.Access? requested,bool participating, ValidationReadReservation? worldIssuance, bool physicalScope)
         {_files=files;_parent=parent;_requested=requested;_participating=participating;_worldIssuance=worldIssuance;PhysicalScope=physicalScope;}
         internal async Task AcquireAsync(CancellationToken token=default,bool closing=false,bool quiescentOnly=false, GmWorkerCanonicalPurpose? workerPurpose=null)
         {
@@ -102,7 +102,7 @@ public partial class FileSystemManager
         }
         internal bool Acquired=>_access!=null && !_closed;
         internal bool SharesAccess(MainAdmission other)=>_access!=null && ReferenceEquals(_access,other._access);
-        internal void ReserveWorldRead(WorldValidationReadScope scope)
+        internal void ReserveWorldRead(ValidationReadReservation scope)
         {
             var access = _access;
             if (_closed || access == null) throw BrowserOriginalMainCondition.Invalid();
@@ -111,10 +111,10 @@ public partial class FileSystemManager
             access.ReserveWorldRead(scope, ancestors);
             _worldReservedAccess = access;
         }
-        internal void ReleaseWorldRead(WorldValidationReadScope scope)
+        internal void ReleaseWorldRead(ValidationReadReservation scope)
         { _worldReservedAccess?.ReleaseWorldRead(scope); _worldReservedAccess = null; }
-        internal void RequireNoWorldReadConflict(WorldValidationReadScope? issuance = null) => _access?.RequireNoWorldReadConflict(issuance);
-        internal WorldValidationReadScope? WorldRecoveryIssuance => _worldIssuance is { Opening: true } ? _worldIssuance : null;
+        internal void RequireNoWorldReadConflict(ValidationReadReservation? issuance = null) => _access?.RequireNoWorldReadConflict(issuance);
+        internal ValidationReadReservation? WorldRecoveryIssuance => _worldIssuance is { Opening: true } ? _worldIssuance : null;
         internal void RequireNoWorldMutation() => _access?.RequireNoWorldReadConflict(WorldRecoveryIssuance);
         internal BrowserOriginalMainCondition CaptureBrowserCondition(string generation)
         {
@@ -204,8 +204,8 @@ public partial class FileSystemManager
         private int _references=1;
         private bool _frozen;
         private readonly HashSet<MainAdmission> _admissions = [owner];
-        private WorldValidationReadScope? _worldRead;
-        internal void ReserveWorldRead(WorldValidationReadScope scope, HashSet<MainAdmission> ancestors)
+        private ValidationReadReservation? _worldRead;
+        internal void ReserveWorldRead(ValidationReadReservation scope, HashSet<MainAdmission> ancestors)
         {
             lock (_state)
             {
@@ -215,9 +215,9 @@ public partial class FileSystemManager
                 _worldRead = scope;
             }
         }
-        internal void ReleaseWorldRead(WorldValidationReadScope scope)
+        internal void ReleaseWorldRead(ValidationReadReservation scope)
         { lock (_state) { if (ReferenceEquals(_worldRead, scope)) _worldRead = null; } }
-        internal void RequireNoWorldReadConflict(WorldValidationReadScope? issuance)
+        internal void RequireNoWorldReadConflict(ValidationReadReservation? issuance)
         { lock (_state) { if (_worldRead != null && !ReferenceEquals(_worldRead, issuance))
             throw new InvalidOperationException("Original access is reserved by a World read phase."); } }
         internal GmWorkerRootContext? Workers;
@@ -225,7 +225,7 @@ public partial class FileSystemManager
         internal GmMainOperationClient? Remote=>remote;
         internal GmMainOwnerGuard? Guard=>guard;
         internal GmSessionRunCoordinator.Access? Original=>original;
-        internal MainAccess Retain(MainAdmission admission, WorldValidationReadScope? issuance)
+        internal MainAccess Retain(MainAdmission admission, ValidationReadReservation? issuance)
         {
             lock(_state)
             {

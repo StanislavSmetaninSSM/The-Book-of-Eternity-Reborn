@@ -3318,6 +3318,7 @@ public partial class ValidationService
 
     private ValidatedPendingTurnSnapshotLookup LoadValidatedPendingTurnSnapshotLookupSync()
     {
+        if (CurrentPendingSnapshotLookup() is { } scoped) return scoped;
         if (_prevalidatedPendingTurnSnapshotOverride != null)
             return new ValidatedPendingTurnSnapshotLookup(ValidatedPendingTurnSnapshotStatus.Usable, _prevalidatedPendingTurnSnapshotOverride);
 
@@ -3901,6 +3902,20 @@ public partial class ValidationService
             : _fs.ReadFileAsync(writeLease, requestPath)
                 .GetAwaiter()
                 .GetResult();
+        return ParsePendingTurnRequestValidationContext(json);
+    }
+
+    /// <summary>
+    /// Parses the existing request identity contract without manufacturing missing fields.
+    /// </summary>
+    /// <param name="json">
+    /// Physical request text; null, empty or malformed text yields no context.
+    /// </param>
+    /// <returns>
+    /// Parsed turn identity, or null when the existing shape rules are not satisfied.
+    /// </returns>
+    private static PendingTurnRequestValidationContext? ParsePendingTurnRequestValidationContext(string? json)
+    {
         if (string.IsNullOrWhiteSpace(json))
             return null;
 
@@ -4963,6 +4978,7 @@ public partial class ValidationService
     private async Task<ValidatedPendingTurnSnapshotLookup> LoadValidatedPendingTurnSnapshotLookupAsync(
         FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
+        if (CurrentPendingSnapshotLookup(writeLease) is { } scoped) return scoped;
         if (_prevalidatedPendingTurnSnapshotOverride != null)
             return new ValidatedPendingTurnSnapshotLookup(ValidatedPendingTurnSnapshotStatus.Usable, _prevalidatedPendingTurnSnapshotOverride);
 
@@ -5009,7 +5025,9 @@ public partial class ValidationService
     private bool IsValidatedPendingTurnSnapshotManifestUsable(
         ValidationPendingTurnSnapshotManifest? manifest,
         string? authorityJson,
-        FileSystemManager.CanonicalWriteLease? writeLease = null)
+        FileSystemManager.CanonicalWriteLease? writeLease = null,
+        Func<string, byte[]?>? readBytes = null,
+        Func<string, string?>? readText = null)
     {
         if (manifest == null)
             return false;
@@ -5029,7 +5047,7 @@ public partial class ValidationService
                 static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
                 static snapshotManifest => snapshotManifest.SourceLabel,
                 static snapshotManifest => snapshotManifest.RollbackBackups,
-                relativePath => ReadRelativeFileBytesFromWorkspace(
+                relativePath => readBytes != null ? readBytes(relativePath) : ReadRelativeFileBytesFromWorkspace(
                     relativePath,
                     writeLease),
                 out _,
@@ -5040,29 +5058,27 @@ public partial class ValidationService
 
         return IsValidatedPendingTurnSnapshotManifestCurrent(
             manifest,
-            writeLease);
+            writeLease, readText);
     }
 
     private bool IsValidatedPendingTurnSnapshotManifestCurrent(
         ValidationPendingTurnSnapshotManifest manifest,
-        FileSystemManager.CanonicalWriteLease? writeLease = null)
+        FileSystemManager.CanonicalWriteLease? writeLease = null,
+        Func<string, string?>? readText = null)
     {
+        PendingTurnRequestValidationContext? ReadContext(string path) => readText == null
+            ? LoadPendingTurnRequestValidationContextSync(path, writeLease)
+            : ParsePendingTurnRequestValidationContext(readText(path));
         const string repairRequestPath = "game_state/control/validation_repair_request.json";
-        var repairContext = LoadPendingTurnRequestValidationContextSync(
-            repairRequestPath,
-            writeLease);
+        var repairContext = ReadContext(repairRequestPath);
         if (DoesPendingTurnRequestValidationContextMatchManifest(manifest, repairContext))
             return true;
 
-        var turnContext = LoadPendingTurnRequestValidationContextSync(
-            "input/turn_request.json",
-            writeLease);
+        var turnContext = ReadContext("input/turn_request.json");
         if (DoesPendingTurnRequestValidationContextMatchManifest(manifest, turnContext))
             return true;
 
-        var completionContext = LoadPendingTurnRequestValidationContextSync(
-            "ready/turn_complete.json",
-            writeLease);
+        var completionContext = ReadContext("ready/turn_complete.json");
         return DoesPendingTurnRequestValidationContextMatchManifest(manifest, completionContext);
     }
 

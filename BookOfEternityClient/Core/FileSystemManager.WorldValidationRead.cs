@@ -102,16 +102,18 @@ public partial class FileSystemManager
     }
 
     internal sealed class WorldValidationReadScope(
-        FileSystemManager files, BrowserOriginalOperationScope original, MainAdmission owner) : IAsyncDisposable
+        FileSystemManager files, BrowserOriginalOperationScope original, MainAdmission owner) : ValidationReadReservation, IAsyncDisposable
     {
         internal Task<CanonicalWriteLease> Acquisition { get; set; } = null!;
         internal CanonicalWriteLease? Lease { get; private set; }
-        internal bool Opening { get; private set; } = true;
+        private bool _opening = true;
+        internal override bool Opening => _opening;
+        internal override bool Closed => _closed;
         private bool _closed;
         internal async Task OpenAsync()
         {
             Lease = await Acquisition;
-            Opening = false;
+            _opening = false;
             RequireCurrent();
         }
         internal void RequireCurrent()
@@ -140,7 +142,7 @@ public partial class FileSystemManager
             {
                 if (Lease != null) await Lease.DisposeAsync();
             }
-            finally { _closed = true; Opening = false; owner.ReleaseWorldRead(this); }
+            finally { _closed = true; _opening = false; owner.ReleaseWorldRead(this); }
         }
         internal void RequireOwnerAfterClose()
         {

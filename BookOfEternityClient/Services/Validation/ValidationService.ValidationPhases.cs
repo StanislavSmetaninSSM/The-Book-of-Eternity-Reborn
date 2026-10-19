@@ -41,7 +41,7 @@ public partial class ValidationService
                 await RunLifecycleValidationPhasesAsync(phases, issues, acceptedStoryAppend, jointStoryProof);
             }
 
-            LogValidationErrors(issues);
+            if (_pendingSnapshotInvocation.Value == null) LogValidationErrors(issues);
             return issues;
         }
         finally
