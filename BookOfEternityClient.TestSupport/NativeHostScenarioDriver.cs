@@ -12,8 +12,19 @@ namespace BookOfEternityClient.Tests;
 // the actual Process.Start caller, so SO_PEERCRED is checked against the right Process.
 internal static class NativeHostScenarioDriver
 {
+    /// <summary>
+    /// Dispatches isolated test fixture roles to their original scenario implementations.
+    /// </summary>
+    /// <param name="args">
+    /// The exact role and role-specific paths supplied by the owning test.
+    /// </param>
+    /// <returns>
+    /// The selected fixture exit code, or64 when no role matches.
+    /// </returns>
     internal static async Task<int> Main(string[] args)
     {
+        if (args.Length == 3 && args[0].StartsWith("finite-pipe-", StringComparison.Ordinal))
+            return await NativeFinitePipeScenarioDriver.RunAsync(args[0]["finite-pipe-".Length..], args[1], args[2]);
         if (args.Length == 3 && args[0] == "engine-rollback-cold-read")
             return await EngineRollbackColdProbe.RunAsync(args[1], args[2]);
         if ((args.Length == 4 && args[0] is "engine-browser-recovery-cold" or "engine-qte-story-resume") ||

@@ -2,6 +2,17 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "worker-native-finite-pipe-linux",
+  "responsibility": "CRASH5 actual finite NativeLineage root exit0/73, pre-exec identity, full separate output, natural retirement, timeout and retained uncertainty under the existing independent guardian using a prebuilt package.",
+  "excludes": "No gameplay qualification, package compilation inside cases, diagnostic capture or platform skip. Managed no-Started policy is owned separately by adapter-contracts.",
+  "changeHints": ["BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs", "BookOfEternityClient.TestSupport/NativeFinitePipeScenarioDriver.cs"],
+  "related": [],
+  "requirements": { "frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04" },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.GmWorkerNativeFinitePipeTests.*"] }]
+},
+{
   "id": "fr063-joint-interface-crash-adapter-contracts",
   "responsibility": "CRASH5 finite process admission, natural-retirement/control-loss policy, child environment and full separate output contracts. Managed behavior runs on Windows without Linux native startup.",
   "excludes": "No game crash5 qualification, Linux native execution, diagnostic capture or replacement of native ownership evidence by simulated observations.",
