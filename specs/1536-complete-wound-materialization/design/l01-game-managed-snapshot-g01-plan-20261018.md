@@ -1,3 +1,5 @@
+> CURRENT 2026-10-19: singleG01game executed1/FAILoriginal220timeout; cleanuptrue/liveTools[]. Capture precollectorFileNotFound, collector0/API0/UNREACHED, no dump/report/map. Namedlease consumed/no retry. SanitizedEVIDENCE+independentdiagnosis pending; observed acceptedmarker207.334s is discrete only, phase/sourcecompleteness/suspensionUNKNOWN. Earlier statuses historical.
+
 > CURRENT 2026-10-19: finalPREP accepted47checks + retainedtools43. Namedrun2ca476b7cf58446fb3eb3c6218e850b8 lease CONSUMED beforeexactone diagnostic actual; actualUNRUN atsave, maxoneDump, crash5NONE. Nextactualonlyaftersave/recovery; no retry from missing/ambiguoussnapshot. Earlier statuses historical.
 
 > CURRENT 2026-10-19: first tools+freshintegration/catalog/PlanOnly ZERO pass; final independentPREP pending. Source163pins unchanged; actual HOLD_PREP/game/API0, no snapshot. Earlier statuses below historical.

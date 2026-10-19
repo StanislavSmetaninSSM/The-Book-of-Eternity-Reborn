@@ -1,13 +1,13 @@
 {
   "kind": "G01_PENDING_CAPTURE_ORCHESTRATION_CONTROL",
   "base": "c1668efba8ccf9bb041e8b764d561fe7bed0bc6f",
-  "status": "ONE_NAMED_DIAGNOSTIC_LEASE_CONSUMED_ACTUAL_UNRUN",
+  "status": "FIRST_GAME_TIMEOUT_CAPTURE_UNREACHED_FROZEN",
   "sourceReview": "ACCEPT_G01_WHOLE_SOURCE_ZERO_ONLY",
   "affectedIntegrationPrep": "ACCEPT_G01_PREP_ONE_ACTUAL",
   "gameplayRelease": "NONE",
-  "snapshotRelease": "ONE_NAMED_G01_REQUEST_UPPER_BOUND1_ONLY",
+  "snapshotRelease": "CONSUMED_NO_RETRY_CAPTURE_UNREACHED",
   "crash5Release": "NONE",
-  "actualGameCasesExecuted": 0,
+  "actualGameCasesExecuted": 1,
   "diagnosticRequests": 0,
   "dumpArtifactsCreated": 0,
   "purePolicy": {
@@ -39,11 +39,11 @@
   },
   "unimplemented": [],
   "unrunWipSources": [
-    "one named game diagnostic",
-    "offline actual mapping and EVIDENCE"
+    "offline actual mapping BLOCKED_NO_REPORT",
+    "independent sanitized EVIDENCE pending"
   ],
   "allOldOutcomesAndBroaderHoldsUnchanged": true,
-  "currentNextAction": "RUN_EXACT_ONE_NAMED_DIAGNOSTIC_NO_RETRY",
+  "currentNextAction": "INDEPENDENT_EVIDENCE_AND_PRECOLLECTOR_FAILURE_DIAGNOSIS",
   "sourceAdmission": {
     "status": "SOURCE_ACCEPTED_G01_ZERO_ONLY",
     "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-source-accepted-review-20261019.json",
@@ -51,7 +51,7 @@
     "reviewedSource": "e520663f7918e536c2ae0675cb79a774be637655"
   },
   "actualAdmission": {
-    "status": "PREP_ACCEPTED_G01_ONE_ACTUAL_CASE",
+    "status": "CONSUMED_G01_FIRST_OUTCOME",
     "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-final-prep-independent-review-20261019.json",
     "reviewSha256": "64718976c1b316de6f388c431132773ce1c39f29d8144a395e8b706c9b5b47e2",
     "runId": "2ca476b7cf58446fb3eb3c6218e850b8",
@@ -125,5 +125,17 @@
     "plannedDescriptors": 1,
     "plannedCases": 1,
     "executedCases": 0
+  },
+  "firstGameEvidence": {
+    "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-first-game-sanitized-evidence-20261019.json",
+    "sha256": "9def23e0fcbd33ad00645853b5cae7edcc6ce91cac64e698bb5a93181a4f3204",
+    "nativeExit": 1,
+    "executedCases": 1,
+    "passed": 0,
+    "failed": 1,
+    "collectorLaunches": 0,
+    "observedApiRequests": 0,
+    "apiOutcome": "UNREACHED",
+    "gameSource": "275586f399bee346acf6773ecbff2d95f1ec2ba4"
   }
 }
