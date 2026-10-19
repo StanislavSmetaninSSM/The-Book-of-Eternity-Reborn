@@ -2,6 +2,136 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-interface-windows-crash-cut0",
+  "responsibility": "Spec7 Windows cut0 through the original common crash/restart fixture and all original assertions; fixed600s per producer/resumer, independent owned fixture and complete identity/cleanup evidence.",
+  "excludes": "No Linux qualification, original220s timing claim, other cuts, default/CI selection, diagnostic capture or automatic retry.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointWindowsCrash.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+    "BookOfEternityClient.IntegrationTests/JointInterfaceCrashProcessSupport.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 22,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterface_WindowsCrashCut0PreparedReentersCurrentOwner"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-interface-windows-crash-cut1",
+  "responsibility": "Spec7 Windows cut1 through the original common crash/restart fixture and all original assertions; fixed600s per producer/resumer, independent owned fixture and complete identity/cleanup evidence.",
+  "excludes": "No Linux qualification, original220s timing claim, other cuts, default/CI selection, diagnostic capture or automatic retry.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointWindowsCrash.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+    "BookOfEternityClient.IntegrationTests/JointInterfaceCrashProcessSupport.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 22,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterface_WindowsCrashCut1AppliedReentersCurrentOwner"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-interface-windows-crash-cut2",
+  "responsibility": "Spec7 Windows cut2 through the original common crash/restart fixture and all original assertions; fixed600s per producer/resumer, independent owned fixture and complete identity/cleanup evidence.",
+  "excludes": "No Linux qualification, original220s timing claim, other cuts, default/CI selection, diagnostic capture or automatic retry.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointWindowsCrash.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+    "BookOfEternityClient.IntegrationTests/JointInterfaceCrashProcessSupport.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 22,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterface_WindowsCrashCut2PublishedPreservesCultureProof"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-interface-windows-crash-cut3",
+  "responsibility": "Spec7 Windows cut3 through the original common crash/restart fixture and all original assertions; fixed600s per producer/resumer, independent owned fixture and complete identity/cleanup evidence.",
+  "excludes": "No Linux qualification, original220s timing claim, other cuts, default/CI selection, diagnostic capture or automatic retry.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointWindowsCrash.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+    "BookOfEternityClient.IntegrationTests/JointInterfaceCrashProcessSupport.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 22,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterface_WindowsCrashCut3MissingResultRemainsHeld"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-interface-windows-crash-cut4",
+  "responsibility": "Spec7 Windows cut4 through the original common crash/restart fixture and all original assertions; fixed600s per producer/resumer, independent owned fixture and complete identity/cleanup evidence.",
+  "excludes": "No Linux qualification, original220s timing claim, other cuts, default/CI selection, diagnostic capture or automatic retry.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointWindowsCrash.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+    "BookOfEternityClient.IntegrationTests/JointInterfaceCrashProcessSupport.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 22,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterface_WindowsCrashCut4FrozenErrorRemainsHeld"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-interface-source42-windows-extended-probe",
   "responsibility": "Spec6 one explicit Windows source42 observation with600s child wait and unchanged source/QTE assertions.",
   "excludes": "No default or CI selection, ordinary five qualification, Linux runtime, collectors or automatic retry.",
@@ -27,11 +157,13 @@
 },
 {
   "id": "fr063-joint-interface-probe-budget-contracts",
-  "responsibility": "Spec6 finite Windows source-probe budget policy and existing crash adapter mode, identity, stream and custody contracts.",
+  "responsibility": "Spec7 finite Windows source/crash budget eligibility and existing crash adapter mode, identity, stream and custody contracts;25 bounded cases.",
   "excludes": "No real source42/gameplay qualification, Linux startup or diagnostics capture.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/JointInterfaceCrashProcessSupport.cs",
-    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointSourceProbe.cs"
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointSourceProbe.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointWindowsCrash.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs"
   ],
   "related": [],
   "requirements": {

@@ -67,13 +67,13 @@ internal sealed record JointInterfaceCrashIdentity(int Pid, DateTime BirthUtc, s
 internal static class JointInterfaceCrashProcessSupport
 {
     /// <summary>
-    /// Selects the finite wait for a direct crash child or an explicitly extended Windows source probe.
+    /// Selects the finite direct-child wait, including explicitly extended Windows source or crash runs.
     /// </summary>
     /// <param name="windows">
     /// Whether the requested child runs on Windows.
     /// </param>
     /// <param name="role">
-    /// The original dispatcher role; only the source-probe role may request an extension.
+    /// The original dispatcher role; each extension accepts only its corresponding source or crash roles.
     /// </param>
     /// <param name="extendedSourceProbe">
     /// Whether to request the fixed extended observation window instead of the ordinary wait.
@@ -87,6 +87,13 @@ internal static class JointInterfaceCrashProcessSupport
     internal static TimeSpan GetDirectChildTimeout(bool windows, string role, bool extendedSourceProbe,
         bool extendedWindowsCrash = false)
     {
+        if (extendedWindowsCrash)
+        {
+            if (!windows || extendedSourceProbe ||
+                role is not ("engine-joint-interface-original-crash" or "engine-joint-interface-resume"))
+                throw new InvalidDataException("The extended crash wait requires one Windows producer or resumer role without source-probe opt-in.");
+            return TimeSpan.FromSeconds(600);
+        }
         if (!extendedSourceProbe) return TimeSpan.FromSeconds(220);
         if (!windows || !string.Equals(role, "engine-joint-interface-source-probe", StringComparison.Ordinal))
             throw new InvalidDataException("The extended child wait is only available to the Windows source42 probe.");

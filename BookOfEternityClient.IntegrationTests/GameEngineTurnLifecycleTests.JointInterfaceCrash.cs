@@ -47,11 +47,17 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// <param name="diagnostic">
     /// Whether to use the existing Linux diagnostic consumer.
     /// </param>
+    /// <param name="extendedWindowsCrash">
+    /// Whether this explicitly selected Windows case uses the fixed extended producer and resumer waits.
+    /// </param>
     /// <returns>
     /// Completion after the original game and process assertions.
     /// </returns>
-    private async Task RunJointInterfaceActualProcessLossAsync(int cut, string? fault = null, bool diagnostic = false)
+    private async Task RunJointInterfaceActualProcessLossAsync(int cut, string? fault = null, bool diagnostic = false,
+        bool extendedWindowsCrash = false)
     {
+        if (extendedWindowsCrash && !OperatingSystem.IsWindows())
+            throw new PlatformNotSupportedException("Extended crash qualification is a local Windows selection.");
         var mode = new JointInterfaceCrashMode(cut, diagnostic, fault);
         _ = JointInterfaceCrashProcessSupport.SelectBackend(OperatingSystem.IsWindows(), OperatingSystem.IsLinux(), mode);
         using var classOwned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
@@ -66,7 +72,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         if (!diagnostic && fault == null) parentMetadata["RunId"] = Guid.NewGuid().ToString("N");
         File.WriteAllText(Path.Combine(own, "parent.json"), parentMetadata.ToJsonString());
         var cutPath = Path.Combine(own, "cut.json");
-        var original = await RunJointInterfaceNativeChildAsync("engine-joint-interface-original-crash", own, cutPath, cut, own, owned);
+        var original = await RunJointInterfaceNativeChildAsync("engine-joint-interface-original-crash", own, cutPath, cut, own, owned,
+            extendedWindowsCrash: extendedWindowsCrash);
         WritePhysicalInjuryDiagnostic("iobs_actual_abrupt_original_exit", original);
         Assert.Equal(73, original.ExitCode); // Environment.Exit, not an exception/catch/compensation surrogate
         Assert.True(original.Eof); Assert.True(original.Joined);
@@ -84,7 +91,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.NotNull(atCut["JournalBase64"]); Assert.Equal(cut, atCut["Cut"]!.GetValue<int>());
         var output = Path.Combine(own, "resume.json");
         var resumed = await RunJointInterfaceNativeChildAsync("engine-joint-interface-resume", root, output, cut, own, owned,
-            observeLive: diagnostic, deliveryNonce: nonce);
+            observeLive: diagnostic, deliveryNonce: nonce, extendedWindowsCrash: extendedWindowsCrash);
         var raw = File.Exists(output) ? File.ReadAllText(output) : null;
         WritePhysicalInjuryDiagnostic("iobs_actual_current_resume_exit", new
         { Original = original, Cut = atCut, Resume = resumed, ResultRaw = raw,
@@ -226,16 +233,20 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// <param name="extendedSourceProbe">
     /// Requests the fixed extended Windows source-probe wait; the default preserves the ordinary wait.
     /// </param>
+    /// <param name="extendedWindowsCrash">
+    /// Requests the fixed extended Windows producer or resumer wait; cannot be combined with the source extension.
+    /// </param>
     /// <returns>
     /// The independently identified complete child outcome.
     /// </returns>
     private async Task<JointInterfaceNativeOutcome> RunJointInterfaceNativeChildAsync(string role, string root, string output, int cut, string own,
         JointInterfaceCrashOwnedContainer ownership, bool observeLive = false, string? deliveryNonce = null,
-        bool extendedSourceProbe = false)
+        bool extendedSourceProbe = false, bool extendedWindowsCrash = false)
     {
         var paths = MortalArchiveDependencyPaths();
         var windows = OperatingSystem.IsWindows();
-        var childTimeout = JointInterfaceCrashProcessSupport.GetDirectChildTimeout(windows, role, extendedSourceProbe);
+        var childTimeout = JointInterfaceCrashProcessSupport.GetDirectChildTimeout(windows, role, extendedSourceProbe,
+            extendedWindowsCrash);
         var mode = JointInterfaceCrashProcessSupport.ReadAndValidateEntryMode(own, cut, windows, OperatingSystem.IsLinux());
         var backend = JointInterfaceCrashProcessSupport.SelectBackend(windows, OperatingSystem.IsLinux(), mode);
         var dotnetRoot = Environment.GetEnvironmentVariable("DOTNET_ROOT")

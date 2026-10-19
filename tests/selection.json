@@ -125,9 +125,9 @@
     },
     {
       "category": "fr063-joint-interface-probe-budget-contracts",
-      "reason": "Verify fixed extended-source budget eligibility while preserving ordinary process contracts.",
+      "reason": "Verify fixed source/crash Windows budget eligibility and mutual exclusion while preserving default and original process contracts.",
       "contracts": [
-        "Only explicit Windows source probe may use600s; default220 and original owner lifecycle remain."
+        "Only explicit matching Windows source or producer/resumer opt-ins may use600s; default220, Linux and original owner lifecycle remain."
       ]
     }
   ]
