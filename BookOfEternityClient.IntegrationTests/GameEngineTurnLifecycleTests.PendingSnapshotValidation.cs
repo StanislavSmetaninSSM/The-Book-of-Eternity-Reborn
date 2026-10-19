@@ -90,7 +90,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         using var stop = new CancellationTokenSource(TimeSpan.FromSeconds(60));
         var gmRepair = Task.Run(async () =>
         {
-            while (!_fs.FileExists("game_state/control/validation_repair_request.json"))
+            // Observing the external request must not create a competing client admission.
+            // Actual repair mutations below still use the participating manager and its guards.
+            while (!File.Exists(_fs.ResolvePath("game_state/control/validation_repair_request.json")))
                 await Task.Delay(25, stop.Token);
             Assert.Null(reservation.GetValue(validator));
             var before = (await _fs.ReadFileAsync(manifestPath))!;
