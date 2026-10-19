@@ -46,6 +46,7 @@ public sealed partial class QteSceneServiceTests
             SessionId = "borrowed-story-session", RequestId = "borrowed-story-request", TurnNumber = 21,
             CurrentRealm = realm, PlayerAction = action, PreGeneratedDices1d20 = [8]
         });
+        await BindOrdinaryQteSnapshotSourceAsync(files);
         await files.WriteFileAtomicAsync(QteSceneService.QteOfferPath, "{}");
         var accepted = await story.AppendAcceptedQteSourceTurnAsync(21, realm, 1, action, "Осмотр завершён.", null, null);
         Assert.NotNull(accepted);
@@ -63,6 +64,37 @@ public sealed partial class QteSceneServiceTests
         Assert.True(lease.IsActive);
         Assert.Single(invocations);
         Assert.Null(PendingQteInvocation(validator));
+    }
+
+    /// <summary>
+    /// Signs the fixture's prepared physical snapshot as the ordinary player-turn source required by the QTE writer.
+    /// </summary>
+    /// <param name="files">
+    /// Independent fixture containing the actual preparation service's snapshot files and request.
+    /// </param>
+    /// <returns>
+    /// Completion after publishing the matching manifest and detached authority through the ordinary writer.
+    /// </returns>
+    private static async Task BindOrdinaryQteSnapshotSourceAsync(FileSystemManager files)
+    {
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        var manifest = JsonSerializer.Deserialize<LiveTurnPendingSnapshotManifest>(
+            (await files.ReadFileAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath))!,
+            LiveTurnPreparationService.ManifestJsonOptions)!;
+        // The live-test helper's source label deliberately cannot authorize QTE offers.
+        // Retain all its physical inputs and issue the ordinary fixture's corresponding signed source pair.
+        manifest.SourceLabel = QteSceneService.OrdinaryPlayerTurnSourceLabel;
+        var authority = PendingTurnSnapshotAuthority.CreateDetachedAuthorityJson(manifest,
+            LiveTurnPreparationService.ManifestHashJsonOptions,
+            static value => value.ManifestPayloadHash, static (value, hash) => value.ManifestPayloadHash = hash,
+            static value => value.SessionId, static value => value.RequestId, static value => value.TurnNumber,
+            static value => value.Files, static value => value.SnapshotFileHashes,
+            static value => value.ClientOwnedValidationHashes, static value => value.RollbackBaselineFiles,
+            static value => value.SourceLabel, static value => value.RollbackBackups,
+            path => files.ReadFileBytesSync(lease, path));
+        await files.WriteFileAtomicAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+            JsonSerializer.Serialize(manifest, LiveTurnPreparationService.ManifestJsonOptions));
+        await files.WriteFileAtomicAsync(lease, PendingTurnSnapshotAuthority.AuthorityPath, authority);
     }
 
     /// <summary>
