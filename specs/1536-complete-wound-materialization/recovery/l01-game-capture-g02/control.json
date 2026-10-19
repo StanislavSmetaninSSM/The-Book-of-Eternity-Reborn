@@ -1,7 +1,7 @@
 {
   "kind": "G02_CORRECTIVE_CONTROL",
   "base": "46c621fb50fe61e5a662ccaf8f00f3fa0f3c6dc3",
-  "status": "ONE_SYNTHETIC_CAPTURE_PERMIT_CONSUMED_GAME_HOLD",
+  "status": "FIRST_SYNTHETIC_OWNER_FAIL_PRETARGET_NONCE_GAME_HOLD",
   "sourceAdmission": {
     "status": "CONSUMED_G02_ZERO_PREP_FIRST_OUTCOME",
     "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02-final-source-independent-review-20261019.json",
@@ -9,7 +9,7 @@
     "reviewedSource": "913453c077fd9348b51cb3462c8bed5a658dfbde"
   },
   "syntheticAdmission": {
-    "status": "PREP_ACCEPTED_G02_ONE_SYNTHETIC",
+    "status": "CONSUMED_G02_FIRST_SYNTHETIC_PRETARGET_OUTCOME",
     "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02-synthetic-prep-independent-review-20261019.json",
     "reviewSha256": "546e318094933704ccf350383a1e614d7a8461d563f5e545a332e02749ef12e2",
     "runId": "3ac823b7efc444babcd176679ae51ecd",
@@ -27,11 +27,15 @@
   "l01": "52/57 original provenance unchanged; crash5 unqualified",
   "broaderHolds": "FullNI/HOT/F1/M3/T197/E01/T148/Phase10 incomplete; A3 NO-PROCEED",
   "dumpLifecycle": "Private own/capture only; retain through independent sanitized EVIDENCE/final report; no Git/attach/archive/autodelete",
-  "currentNextAction": "After exact remote/recovery perform ONE S01 actual WriteDump+decode through common G01; no game admission",
+  "currentNextAction": "Independent diagnosis of first native1/33-char nonce and proof ZERO target/watchdog/collector/API; game HOLD, no further runtime admitted",
   "syntheticDiagnosticRequestUpperBound": 1,
   "gameDiagnosticRequestUpperBound": 1,
   "zeroPrepEvidence": {
     "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02-zero-prep-first-20261019.json",
     "sha256": "8b469ac4c774c2223298cb9f90891f9ace3920ee10f56d53bda752849c32c217"
+  },
+  "firstSyntheticFailure": {
+    "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02-first-synthetic-pretarget-failure-20261019.json",
+    "sha256": "b8ddb7faa43dc7427bdf0f740700aaf14906c4ef4557ea6ab524bbfdfa035564"
   }
 }

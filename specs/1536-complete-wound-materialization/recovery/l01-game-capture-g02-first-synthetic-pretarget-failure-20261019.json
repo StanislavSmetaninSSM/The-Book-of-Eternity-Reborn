@@ -1,0 +1,90 @@
+{
+  "kind": "G02_FIRST_SYNTHETIC_PRETARGET_FAILURE",
+  "source": "14d9669e3d2fe3de4ab5b0424bea741272a8f474",
+  "runId": "3ac823b7efc444babcd176679ae51ecd",
+  "sourcePinDigest": "5ab898720f9e83e53ee664f3e38b49feffdd8cf02357ae4526749b9aaeb7786c",
+  "ownerNativeExit": 1,
+  "phaseOriginalStatus": "FROZEN_FIRST_G01_OUTCOME",
+  "phaseObserverErrors": [
+    "AssertionError('one-synthetic-capture first native/observer failure')"
+  ],
+  "durationSeconds": 1.0758476049959427,
+  "nonceLength": 33,
+  "nonceRequiredFormat": "Guid N exactly32hex; existing assertion unchanged",
+  "failure": "SyntheticOwner.Require Nonce at line59 before parent/cut/target Start",
+  "s01TargetsLaunched": 0,
+  "watchdogsLaunched": 0,
+  "collectorsLaunched": 0,
+  "diagnosticRequests": 0,
+  "dumpReportsCreated": 0,
+  "gameCases": 0,
+  "afterLiveTools": [],
+  "ownerRecord": "ABSENT failure before actor-accounting scope/any actor launch",
+  "ownChildren": [
+    "capture",
+    "tmp"
+  ],
+  "captureFiles": [],
+  "normal899UnchangedBefore": true,
+  "normal899UnchangedAfter": null,
+  "sourcePredicateAtSavedCode": true,
+  "provisionalCause": "Authored config33-char nonce; independent diagnosis pending; not S01/API/capture failure",
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02-first-synthetic-pretarget-failure-20261019.zip",
+    "bytes": 69336,
+    "sha256": "404478b0bd1641e4746c832e2754b8d733be81886f390eb422cf0917bce918fd",
+    "files": [
+      {
+        "name": "synthetic/one-synthetic-capture.record.json",
+        "bytes": 650,
+        "sha256": "e8ec43c7f65ba75b64806ac4a676feb22980fcc9d54434c588e8f4cf58ac38a1"
+      },
+      {
+        "name": "synthetic/one-synthetic-capture.started.json",
+        "bytes": 413,
+        "sha256": "b1448f7b79bc2503b3595f18c221116d805448fef8578ae353e68a6cd62539e8"
+      },
+      {
+        "name": "synthetic/one-synthetic-capture.stderr",
+        "bytes": 607,
+        "sha256": "6f1fabc2dcccdd306016276c783a6ef6a2a9a4460577ac26032e77f3c110359c"
+      },
+      {
+        "name": "synthetic/one-synthetic-capture.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "synthetic/record.json",
+        "bytes": 1712,
+        "sha256": "d260d83c01e3569e53dfd723c4d2eebf4bc45c5b5bac488a606d2300f18c23e4"
+      },
+      {
+        "name": "synthetic/settings.json",
+        "bytes": 6293,
+        "sha256": "8a6cdc3dacb1e647f41b86f3314337e91041544574102aa83b448e204eb2befc"
+      },
+      {
+        "name": "synthetic/started.json",
+        "bytes": 591,
+        "sha256": "908dcd17ac922ded8a7cbbd75532f49aaf7d640990e83766aa1ba11d5c0b9feb"
+      },
+      {
+        "name": "frozen-current/bindings.json",
+        "bytes": 216029,
+        "sha256": "95fcdea5aa5b588d2b83683d12cddfdb008b85f49bd6131b06a665de84df06f7"
+      },
+      {
+        "name": "frozen-current/source-packet.json",
+        "bytes": 40905,
+        "sha256": "3af25116a4fc7230697dc8c6280f098ed17c886ecc7ed19f04a2db00aca35c92"
+      },
+      {
+        "name": "frozen-current/control.json",
+        "bytes": 1996,
+        "sha256": "1191a4874eb1e6fe5f991e7dfe8fac50ed7a6a7d9e5ca29107ba25b731502b8b"
+      }
+    ]
+  },
+  "limits": "First native1 retained. No retry or game admitted. Actual synthetic API still0. OldG01FAIL/API0/old66529UNKNOWN/52of57 unchanged."
+}
