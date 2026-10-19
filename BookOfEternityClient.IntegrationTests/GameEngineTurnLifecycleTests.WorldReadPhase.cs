@@ -554,7 +554,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             ("BookOfEternityClient/Core/FileSystemManager.BrowserLocalStorage.cs", "36742AF3AFDA505B7A002DA621875576709193F2DBCF1EB3798AE25C30BC1327"),
             ("BookOfEternityClient/Services/Validation/ValidationService.PendingSnapshotValidation.cs", "5D4B48AFC21F93044ACA61B1FB7C2B53EA3D1CD45D199C7E19F5FA7D59B5D51B"),
             ("BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs", "1DECB1BEB44D2FD0466199E58FF06FB6B39E7795341493FE8DA09A977EC8D202"),
-            ("BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs", "A2FB1D259534B66609FEB7D274329437EA3BCC0877E9A2487EFA9DC36F5D628A"),
+            ("BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs", "A36B26B7E5DB3A0F440EEE8EF0D9BA5578957EFF1CE0B6F64B86288D261F2452"),
             ("BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs", "094D4D2F2C2CF7ABBF959165C9F2722F4057902F9EC0F78EDC4B9ED9BC87A148"),
             ("BookOfEternityClient/Core/FileSystemManager.WorkerCanonicalFence.cs", "7A857EC50550365F6576B8E2CCC056E662C87622E1A32F652952760761D3E753"),
             ("BookOfEternityClient/Core/FileSystemManager.WorldValidationRead.cs", "B300E4FA9496502F1D2AB3DA25505D588463CD596E82B1B78FAE0BCDDF53A0F4"),

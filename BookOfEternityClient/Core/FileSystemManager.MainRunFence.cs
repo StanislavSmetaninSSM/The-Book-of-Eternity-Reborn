@@ -300,7 +300,6 @@ public partial class FileSystemManager
         private readonly object _state = new();
         private int _references=1;
         private bool _frozen;
-        private bool _ownerClosing;
         private readonly HashSet<MainAdmission> _admissions = [owner];
         private readonly HashSet<MainAdmission> _physicalClosing = [];
         private readonly HashSet<MainMutationReservation> _mutations = [];
@@ -319,7 +318,7 @@ public partial class FileSystemManager
             lock (_state)
             {
                 var retained = scope.RetainedPhysicalAdmission;
-                if (_frozen || _ownerClosing || _worldRead != null || _references == 0 ||
+                if (_frozen || _worldRead != null || _references == 0 ||
                     _mutations.Count != 0 || _physicalClosing.Count != 0 ||
                     (retained != null && (!retained.PhysicalScope || !_admissions.Contains(retained))) ||
                     _admissions.Any(p => p.Closed || p.Closing || p.BoundClosing || !ancestors.Contains(p) ||
@@ -373,7 +372,6 @@ public partial class FileSystemManager
                     throw new InvalidOperationException("Pending snapshot validation must close before its original operation.");
                 if (!_admissions.Contains(admission) || admission.Closed)
                     throw new InvalidOperationException("The original admission is no longer active.");
-                _ownerClosing = true;
                 markClosing();
             }
         }

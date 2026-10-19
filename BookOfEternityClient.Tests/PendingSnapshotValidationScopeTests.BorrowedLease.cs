@@ -348,18 +348,18 @@ public sealed partial class PendingSnapshotValidationScopeTests
         await SessionOperationContext.RunParticipatingCurrentSessionAsync(fixture.Files, () => Task.CompletedTask);
         Assert.True(owner.Acquired);
         Assert.False(owner.Closed || owner.BoundClosing);
-        async Task<List<ValidationIssue>> ReadSourceAsync()
+        Func<Task<List<ValidationIssue>>> readSource = async () =>
         {
             Assert.Equal("Usable", Status(await fixture.LookupAsync(false)));
             return [];
-        }
+        };
         if (borrowed)
         {
             await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
-            await fixture.RunBorrowedAsync(lease, ReadSourceAsync);
+            await fixture.RunBorrowedAsync(lease, readSource);
             Assert.True(lease.IsActive);
         }
-        else await fixture.RunAsync(ReadSourceAsync);
+        else await fixture.RunAsync(readSource);
     }
 
     /// <summary>
