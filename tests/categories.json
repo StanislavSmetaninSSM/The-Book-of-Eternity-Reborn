@@ -3,7 +3,7 @@
     "categories": [
 {
   "id": "fr063-joint-interface-windows-crash-cut0",
-  "responsibility": "Spec7 Windows cut0 through the original common crash/restart fixture and all original assertions; fixed600s per producer/resumer, independent owned fixture and complete identity/cleanup evidence.",
+  "responsibility": "Spec7 Windows cut0 through the original common crash/restart fixture and all original assertions; producer600s/resumer220s, independent owned fixture and complete identity/cleanup evidence.",
   "excludes": "No Linux qualification, original220s timing claim, other cuts, default/CI selection, diagnostic capture or automatic retry.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointWindowsCrash.cs",
@@ -16,7 +16,7 @@
     "exclusive": true,
     "ciRunner": "windows-latest"
   },
-  "timeoutMinutes": 22,
+  "timeoutMinutes": 15,
   "expectedSeconds": null,
   "selectors": [
     {
@@ -29,7 +29,7 @@
 },
 {
   "id": "fr063-joint-interface-windows-crash-cut1",
-  "responsibility": "Spec7 Windows cut1 through the original common crash/restart fixture and all original assertions; fixed600s per producer/resumer, independent owned fixture and complete identity/cleanup evidence.",
+  "responsibility": "Spec7 Windows cut1 through the original common crash/restart fixture and all original assertions; producer600s/resumer220s, independent owned fixture and complete identity/cleanup evidence.",
   "excludes": "No Linux qualification, original220s timing claim, other cuts, default/CI selection, diagnostic capture or automatic retry.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointWindowsCrash.cs",
@@ -42,7 +42,7 @@
     "exclusive": true,
     "ciRunner": "windows-latest"
   },
-  "timeoutMinutes": 22,
+  "timeoutMinutes": 15,
   "expectedSeconds": null,
   "selectors": [
     {
@@ -55,7 +55,7 @@
 },
 {
   "id": "fr063-joint-interface-windows-crash-cut2",
-  "responsibility": "Spec7 Windows cut2 through the original common crash/restart fixture and all original assertions; fixed600s per producer/resumer, independent owned fixture and complete identity/cleanup evidence.",
+  "responsibility": "Spec7 Windows cut2 through the original common crash/restart fixture and all original assertions; producer600s/resumer220s, independent owned fixture and complete identity/cleanup evidence.",
   "excludes": "No Linux qualification, original220s timing claim, other cuts, default/CI selection, diagnostic capture or automatic retry.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointWindowsCrash.cs",
@@ -68,7 +68,7 @@
     "exclusive": true,
     "ciRunner": "windows-latest"
   },
-  "timeoutMinutes": 22,
+  "timeoutMinutes": 15,
   "expectedSeconds": null,
   "selectors": [
     {
@@ -81,7 +81,7 @@
 },
 {
   "id": "fr063-joint-interface-windows-crash-cut3",
-  "responsibility": "Spec7 Windows cut3 through the original common crash/restart fixture and all original assertions; fixed600s per producer/resumer, independent owned fixture and complete identity/cleanup evidence.",
+  "responsibility": "Spec7 Windows cut3 through the original common crash/restart fixture and all original assertions; producer600s/resumer220s, independent owned fixture and complete identity/cleanup evidence.",
   "excludes": "No Linux qualification, original220s timing claim, other cuts, default/CI selection, diagnostic capture or automatic retry.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointWindowsCrash.cs",
@@ -94,7 +94,7 @@
     "exclusive": true,
     "ciRunner": "windows-latest"
   },
-  "timeoutMinutes": 22,
+  "timeoutMinutes": 15,
   "expectedSeconds": null,
   "selectors": [
     {
@@ -107,7 +107,7 @@
 },
 {
   "id": "fr063-joint-interface-windows-crash-cut4",
-  "responsibility": "Spec7 Windows cut4 through the original common crash/restart fixture and all original assertions; fixed600s per producer/resumer, independent owned fixture and complete identity/cleanup evidence.",
+  "responsibility": "Spec7 Windows cut4 through the original common crash/restart fixture and all original assertions; producer600s/resumer220s, independent owned fixture and complete identity/cleanup evidence.",
   "excludes": "No Linux qualification, original220s timing claim, other cuts, default/CI selection, diagnostic capture or automatic retry.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointWindowsCrash.cs",
@@ -120,7 +120,7 @@
     "exclusive": true,
     "ciRunner": "windows-latest"
   },
-  "timeoutMinutes": 22,
+  "timeoutMinutes": 15,
   "expectedSeconds": null,
   "selectors": [
     {

@@ -12,17 +12,20 @@ namespace BookOfEternityClient.Tests;
 public sealed class JointInterfaceCrashProcessSupportTests
 {
     /// <summary>
-    /// Gives each explicitly selected Windows crash child its finite extended wait.
+    /// Extends the Windows producer wait while preserving the original resumer wait.
     /// </summary>
     /// <param name="role">
     /// The original producer or resumer dispatcher role.
     /// </param>
+    /// <param name="expectedSeconds">
+    /// The finite role-specific wait required by the Windows crash policy.
+    /// </param>
     [Theory]
-    [InlineData("engine-joint-interface-original-crash")]
-    [InlineData("engine-joint-interface-resume")]
-    public void ChildTimeout_ExtendedWindowsCrashUsesSixHundredSeconds(string role)
+    [InlineData("engine-joint-interface-original-crash", 600)]
+    [InlineData("engine-joint-interface-resume", 220)]
+    public void ChildTimeout_ExtendedWindowsCrashUsesRoleWait(string role, int expectedSeconds)
     {
-        Assert.Equal(TimeSpan.FromSeconds(600),
+        Assert.Equal(TimeSpan.FromSeconds(expectedSeconds),
             JointInterfaceCrashProcessSupport.GetDirectChildTimeout(true, role, false, true));
     }
 

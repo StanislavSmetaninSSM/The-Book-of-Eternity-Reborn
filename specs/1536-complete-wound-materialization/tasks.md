@@ -1,12 +1,14 @@
 # CRASH5 — plan5: Windows five с измеренным основанием для бюджета
 
+**T253 уточнение до gameplay:** metadata-проверка отклонила draft22m: каталог допускает1…15m на категорию. Сам runner не меняется. Текущий контракт — producer600s/resumer220s/category15m; только producer выполняет измеренную source42 preparation. Потребность resumer в большем времени пока не установлена. Draft600/600/22 никогда не исполнялся; initial RED сохранён, correction RED проверяет сохранение220 resumer перед минимальным исправлением.
+
 [Issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), [spec7](spec.md), [plan5](plan.md). User waiver продолжает действовать. T250 PASS258.780s и T251 independent acceptance/recovery — основание следующего шага, не five PASS.
 
 - [x] T252 [US2] Зафиксировать spec7/plan5/tasks через reuse Spec Kit phases и consistency W7-1…W7-6. Выбрать отдельные Windows wrappers/finite budget, сохранить original Theory/Linux/production, не ждать нового согласия. Written artifacts предъявляются ссылками до реализации; user review waived.
-- [ ] T253 [US2] Causal RED→GREEN восьми crash budget controls при сохранённых17, пять Windows Fact wrappers к неизменному common body, fixed600 eligible policy,22m individual categories/default exclusion. Fresh XML build/audit,25GREEN, catalog/PlanOnly и независимый SOURCE/PREP всего coherent diff; no gameplay before acceptance.
+- [ ] T253 [US2] Causal RED→GREEN восьми crash budget controls при сохранённых17, пять Windows Fact wrappers к неизменному common body, fixed600 producer/220 resumer policy,15m individual categories/default exclusion. Fresh XML build/audit,25GREEN, catalog/PlanOnly и независимый SOURCE/PREP всего coherent diff; no gameplay before acceptance.
 - [ ] T254 [US2] Один accepted-source Windows cut0: pre-start attempt/DLL binding, producer73/new resumer0, все original assertions, complete1PASS/0skip и cleanup либо фактическая failure evidence. Не повторять автоматически.
 - [ ] T255 [US2] Только после T254 PASS выполнить cut1…4, каждую отдельную категорию один раз последовательно с checkpoint/evidence. Остановиться при первом FAIL/TIMEOUT для конкретной диагностики; не считать partial пятью PASS. Прежние culture/error/held/receipt/inert-repeat проверки обязательны.
-- [ ] T256 [US3] Независимо проверить source/evidence/per-cut results, записать Windows five при600/22m либо partial/failure, сохранить Linux UNRUN и T219/T244 history. Обновить handoff и выполнить commit/push/readback/clean GitHub recovery. Никаких CI/full suite/merge/chat messages.
+- [ ] T256 [US3] Независимо проверить source/evidence/per-cut results, записать Windows five при600/220/15m либо partial/failure, сохранить Linux UNRUN и T219/T244 history. Обновить handoff и выполнить commit/push/readback/clean GitHub recovery. Никаких CI/full suite/merge/chat messages.
 
 Dependencies:T252→T253→T254→T255→T256; failure skips dependent gameplay and preserves investigation evidence. T245 не объявлять выполненной по другому бюджету; текущая Windows квалификация прослеживается T254/T255 отдельно.
 

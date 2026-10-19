@@ -1,6 +1,6 @@
 # Текущая работа: spec7 / plan5
 
-[Spec7](../../spec.md), [plan5](../../plan.md), [tasks](../../tasks.md), T252…T256. T250 source42 PASS258.780s; independent review/recovery T251 приняты. Следующий шаг — пять отдельно выбранных Windows cut0…4, fixed600s/child и22m/category; код/qualification ещё не завершены. Original Theory220/Linux NativeLineage остаются прежними. Ниже сохранена история; новые результаты будут записаны отдельно.
+[Spec7](../../spec.md), [plan5](../../plan.md), [tasks](../../tasks.md), T252…T256. T250 source42 PASS258.780s; independent review/recovery T251 приняты. Следующий шаг — пять отдельно выбранных Windows cut0…4, producer600s/resumer220s и15m/category; код/qualification ещё не завершены. Original Theory220/Linux NativeLineage остаются прежними. Ниже сохранена история; новые результаты будут записаны отдельно.
 
 ---
 

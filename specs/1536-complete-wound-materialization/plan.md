@@ -1,14 +1,16 @@
 # CRASH5 — plan5: отдельные Windows crash/restart cases
 
+**T253 уточнение до gameplay:** metadata-проверка отклонила draft22m: каталог допускает1…15m на категорию. Сам runner не меняется. Текущий контракт — producer600s/resumer220s/category15m; только producer выполняет измеренную source42 preparation. Потребность resumer в большем времени пока не установлена. Draft600/600/22 никогда не исполнялся; initial RED сохранён, correction RED проверяет сохранение220 resumer перед минимальным исправлением.
+
 Canonical [spec7](spec.md), [tasks T252…T256](tasks.md), [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Spec Kit setup-plan/setup-tasks/check-prerequisites выполнены для существующей feature; Superpowers brainstorming/writing-plans/TDD/executing-plans/debugging/review/verification продолжаются inline. User review waived, дополнительного согласия не ждать. Один parent developer и отдельный routine gpt-6.1-sol/xhigh reviewer; isolated checkout/branch reused.
 
 ## Решение
 
 Сохранить исходный Theory и Linux catalog без изменений. Добавить пять Windows Fact wrappers в GameEngineTurnLifecycleTests.JointWindowsCrash.cs, передающих cut0…4 и extendedWindowsCrash:true в прежний private common helper. Это позволяет независимо планировать и сохранить каждый полный case, не менять Linux identity/budget и не дублировать его assertions. В private helper optional bool=false передаётся обоим существующим child calls; non-Windows запрос отклоняется перед own-container creation. RunJointInterfaceNativeChildAsync передаёт этот bool в уже существующий timeout selector; actual wait/cleanup код не меняется.
 
-JointInterfaceCrashProcessSupport.GetDirectChildTimeout получает optional extendedWindowsCrash=false. True допускается только Windows+exact original-crash/resume role+extendedSourceProbe=false и возвращает fixed600; остальные requested crash extensions бросают InvalidDataException. False сохраняет весь spec6 policy. Tests first:2 позитивных roles и6 negatives (Linux producer/resumer, Windows source/unrelated role, both flags with source/producer); первоначальный seam игнорирует новый flag для наблюдаемого численного/rejection RED, затем минимальная реализация.
+JointInterfaceCrashProcessSupport.GetDirectChildTimeout получает optional extendedWindowsCrash=false. True допускается только Windows+exact original-crash/resume role+extendedSourceProbe=false и возвращает fixed600 для producer либо прежние220 для resumer; остальные requested crash extensions бросают InvalidDataException. False сохраняет весь spec6 policy. Tests first:2 позитивных roles и6 negatives (Linux producer/resumer, Windows source/unrelated role, both flags with source/producer); первоначальный seam игнорирует новый flag для наблюдаемого численного/rejection RED, затем минимальная реализация.
 
-Каталог: fr063-joint-interface-windows-crash-cut0…cut4, каждый exclusive/windows-latest/22m/1Fact. Existing fast fr063-joint-interface-probe-budget-contracts остаётся2m и выбирает25cases; изменить responsibility/changeHints/selection rationale. Новые пять не входят в default/CI. Default ожидается205=180snapshot+25support. XML всех новых/изменённых APIs multiline с точными параметрами. Production/native diff должен быть пуст относительно cee.
+Каталог: fr063-joint-interface-windows-crash-cut0…cut4, каждый exclusive/windows-latest/15m/1Fact. Existing fast fr063-joint-interface-probe-budget-contracts остаётся2m и выбирает25cases; изменить responsibility/changeHints/selection rationale. Новые пять не входят в default/CI. Default ожидается205=180snapshot+25support. XML всех новых/изменённых APIs multiline с точными параметрами. Production/native diff должен быть пуст относительно cee.
 
 ## Проверки и выполнение
 
@@ -18,7 +20,7 @@ T254: один cut0 с accepted NoBuild DLLs; raw evidence и original producer7
 
 ## Конституция / риски
 
-Existing issue/feature/approval waiver; нет gameplay/GM/schema change. Реальные cold paths, независимые fixtures, ownership/cleanup и все оригинальные acceptance checks сохранены. Главный риск: одна source preparation не оценивает остальную работу producer/resumer; bounded600 может снова не хватить. При неуспехе анализируем actual outcome, не подменяем assertions и не объявляем infinite wait. Другой риск — перепутать cut/case или применить Windows budget к Linux: exact wrappers/PlanOnly и negative policy tests + independent review.
+Existing issue/feature/approval waiver; нет gameplay/GM/schema change. Реальные cold paths, независимые fixtures, ownership/cleanup и все оригинальные acceptance checks сохранены. Главный риск: одна source preparation не оценивает остальную работу producer/resumer; bounded600 producer/220 resumer может снова не хватить. При неуспехе анализируем actual outcome, не подменяем assertions и не объявляем infinite wait. Другой риск — перепутать cut/case или применить Windows budget к Linux: exact wrappers/PlanOnly и negative policy tests + independent review.
 
 ---
 
