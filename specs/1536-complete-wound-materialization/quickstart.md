@@ -35,7 +35,7 @@ dotnet build BookOfEternityClient.IntegrationTests/BookOfEternityClient.Integrat
 
 Проверить новые/изменённые XML blocks и compiler XML diagnostics; unrelated CS1591 не расширяет текущий scope. Ordinary PlanOnly обязан содержать одну integration Theory и пять cases, no skip; helper/native guard counts отдельные. SOURCE/PREP review проверяет final diff, полноту selection и hashes конкретных DLL. `-NoBuild` разрешён только для этих свежих outputs, изменение source/dependencies требует новой соответствующей подготовки.
 
-Локальный RED→GREEN при разработке — только `-Category fr063-joint-interface-crash-adapter-contracts` с точной записью ожидаемых failing cases, далее соответствующий GREEN. Compile/preparation failure не RED. Если категории пока содержат несколько разрабатываемых методов, разделить test-first подшаги коммитами и фиксировать точный planned/completed список, не запускать другой broad category.
+Локальный RED→GREEN при разработке — только `-Category fr063-joint-interface-crash-adapter-contracts` с точной записью ожидаемых failing cases, далее соответствующий GREEN. Проверяются настоящие production decision/await/env/output helpers. Compile/preparation failure не RED. T204 перед native wiring проверяет RED coverage; для непокрытого поведения требуется tests-only cloud checkpoint и фактический RED **до** соответствующей production-правки, а не после T221. В таком checkpoint cloud PREP подготавливает только соответствующие selected tests/бинарники и не даёт права на ordinaryfive. Если категория содержит несколько разрабатываемых методов, фиксировать точный planned/completed список, не запускать другой broad category.
 
 ## Windows: фактическая проверка после SOURCE/PREP
 

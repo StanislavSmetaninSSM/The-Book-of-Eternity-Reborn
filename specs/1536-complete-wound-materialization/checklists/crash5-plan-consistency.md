@@ -10,7 +10,11 @@
 
 | ID | Category | Severity | Location | Summary |
 | --- | --- | --- | --- | --- |
-| — | — | — | Current spec/plan/tasks | Действенных несогласованностей при родительском анализе не обнаружено; независимый review проводится отдельно |
+| R1 | Incorrect state transition | Important, resolved | plan finite admission; T200 | Независимый review обнаружил ошибочное отклонение неизвестного exec outcome. Исправлено на Pending после A2 до события/deadline, добавлены переходы Pending→Started/Completed. |
+| R2 | Task ordering | Important, resolved | T204→T205; quickstart | Проверка наблюдённого RED перенесена перед production wiring. Добавлены локальные env/output behavioral tests и условный tests-only cloud RED для непокрытого поведения до соответствующей реализации. |
+| R3 | Missing implementation step | Minor, resolved | T202 | AwaitFiniteStartAsync явно реализуется до GREEN T203. |
+
+Первичный родительский анализ не выявил эти замечания. Независимый reviewer gpt-6-astra/high проверил f22e51730…5d966f50; отдельным целевым проходом принял исправления поверх5d966f50 и связанные production seams. Открытых замечаний нет. Повторный read-only consistency analysis проверил актуальные требования, порядок RED gate, task coverage и неизменность исторических частей всех шести документов относительно12533289 (с нормализацией CRLF). Prerequisites повторно выполнены;27 уникальных unchecked IDs T199…T225, diff whitespace check чист. Проверка документов не квалифицирует будущую реализацию.
 
 ## Coverage
 
@@ -19,7 +23,7 @@
 | L1 | T204,T205,T209,T223,T224 |
 | L2 | T202,T205,T206,T217 |
 | L3 | T200,T201,T203,T204,T205,T207,T209 |
-| L4 | T204,T205,T207,T209 |
+| L4 | T200,T201,T202,T203,T204,T205,T207,T209 |
 | L5 | T200,T202,T204,T205,T206,T209 |
 | L6 | T204,T207,T209,T220 |
 | L7 | T199,T204,T205,T214,T215,T216,T222 |
@@ -38,6 +42,6 @@ SC-DOC завершён отдельным spec review/явным approval3. SC-
 
 Constitution2.1: linked issue/scope, test-first, selected categories, independent review, сохранение game authority/current state и отсутствие GM/player/save changes согласованы. No privilege/OS-policy change, no broad suite. Внешние contracts не добавляются, internal signatures/model зафиксированы. Старые contracts/feature history сохранены.
 
-Metrics: функциональных требований17, с task coverage17 (100%); задач27: setup1, US1=13, US2=6, US3=7; unmapped tasks0; ambiguity/duplication/critical findings0 в пределах этого анализа. Runtime неизвестные не считаются выполненными и не скрыты: Linux capabilities/timeout cause, native behavior, Windows5.
+Metrics: функциональных требований17, с task coverage17 (100%); задач27: setup1, US1=13, US2=6, US3=7; unmapped tasks0; открытых findings0 после исправления трёх замечаний независимого review. Runtime неизвестные не считаются выполненными и не скрыты: Linux capabilities/timeout cause, native behavior, Windows5.
 
-Next action: независимый review законченного planning block и review владельца по writing-plans, затем executing-plans. Предложение от research создать отдельную Windows category отклонено до анализа: ordinary остаётся одной категорией по T2. Реализационные изменения/тесты в текущем этапе не разрешаются этой записью.
+Next action: review владельца по writing-plans, затем executing-plans. Независимый review законченного planning block завершён. Предложение от research создать отдельную Windows category отклонено до анализа: ordinary остаётся одной категорией по T2. Реализационные изменения/тесты в текущем этапе не разрешаются этой записью.

@@ -16,7 +16,7 @@
 
 Native lifecycle: Validated → OwnerAllocated → SupervisorStarted → BoundBeforeExec → Released(A2) → Started **или** FiniteTerminalWithoutStarted → RootExit/ScopedRetirement → OutputsSettled → Disposed/Joined. Ошибка до Process.Start освобождает только созданные локальные ресурсы; после возможного start сохраняет original owner. Любое Uncertain остаётся Uncertain; retention не является cleanup PASS.
 
-Finite admission Completed требует после A2 accepted StoppedWithinScope, nonnull root exit, CleanupComplete=true, AuthorityRetained=false, observed root exit, supervisor exit0 и полное status/helper-error. Started допускает запуск без требования, чтобы root всё ещё был жив при возврате; реальные failures остаются отклонением. Expected root73/0 — уровень game adapter.
+Finite admission Completed требует после A2 accepted StoppedWithinScope, nonnull root exit, CleanupComplete=true, AuthorityRetained=false, observed root exit, supervisor exit0 и полное status/helper-error. После A2 без Started/terminal исход exec пока неизвестен: Pending до события/deadline, не Rejected. Confirmed exec failure приходит только через existing status/Uncertainty. Started допускает запуск без требования, чтобы root всё ещё был жив при возврате; реальные failures остаются отклонением. Expected root73/0 — уровень game adapter.
 
 Windows direct lifecycle: original Process started → independent StartTime captured → parallel stream read → exit/join → EOF → Joined. Нет Linux NativeLineage allocation на этом пути. Идентичность Windows сопоставляется по WindowsStartTimeUtcTicks/BirthKind; Linux BirthTick и diagnostic payload сохраняются.
 
