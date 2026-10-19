@@ -415,6 +415,32 @@ public sealed partial class PendingSnapshotValidationScopeTests
     }
 
     /// <summary>
+    /// A declared local browser transaction cannot enter the console borrowed proof path.
+    /// </summary>
+    /// <returns>
+    /// Completion after refusal preserves the original browser access and lease.
+    /// </returns>
+    [Fact]
+    public async Task BorrowedCustody_LocalBrowserLeaseRefusesConsoleProof()
+    {
+        using var fixture = new Fixture();
+        await fixture.PrepareAsync(false);
+        await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+        using var browser = fixture.Files.BeginBrowserLocalStorage(lease,
+            ExplorerLocalTurnRollbackArtifacts.Root + "/scope-eligibility",
+            fixture.Files.ReadExistingSessionGeneration(lease));
+        var reached = false;
+        await Assert.ThrowsAsync<InvalidOperationException>(() => fixture.RunBorrowedAsync(lease, () =>
+        {
+            reached = true;
+            return Task.FromResult(new List<ValidationIssue>());
+        }));
+        Assert.False(reached);
+        Assert.Same(browser, lease.BrowserLocalAccess);
+        Assert.True(lease.IsActive);
+    }
+
+    /// <summary>
     /// An explicit foreign lease cannot create proof for another validator's filesystem.
     /// </summary>
     /// <returns>
