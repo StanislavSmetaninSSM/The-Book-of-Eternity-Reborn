@@ -652,6 +652,12 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
             RequiredInteractionToken(await web.BuildDarenShowcaseStateAsync()));
     }
 
+    /// <summary>
+    /// Rejects an old browser request when session replacement wins before main admission.
+    /// </summary>
+    /// <returns>
+    /// Completion after checking generation rejection and exact replacement bytes.
+    /// </returns>
     [Fact]
     public async Task ResolveAction_NewGameWinsBeforeQteLease_DoesNotRestoreOldBytesIntoReplacementSession()
     {
@@ -664,41 +670,49 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
         await using (var generationLease = await fs.AcquireCanonicalWriteLeaseAsync())
             originalGeneration = fs.GetOrCreateSessionGeneration(generationLease);
 
-        var operationBound = new TaskCompletionSource(
+        var requestReady = new TaskCompletionSource(
             TaskCreationOptions.RunContinuationsAsynchronously);
         var allowOldOperation = new TaskCompletionSource(
             TaskCreationOptions.RunContinuationsAsynchronously);
-        var oldOperation = SessionOperationContext.RunBoundAsync(
-            fs,
-            originalGeneration,
-            async () =>
-            {
-                operationBound.TrySetResult();
-                await allowOldOperation.Task;
-                return await web.ResolveActionAsync(
+        var oldOperation = Task.Run(async () =>
+        {
+            requestReady.TrySetResult();
+            await allowOldOperation.Task;
+            return await SessionOperationContext.RunBoundAsync(
+                fs,
+                originalGeneration,
+                () => web.ResolveActionAsync(
                     new QteWebActionRequest(
                         "finish",
                         "success",
-                        interactionToken));
-            });
+                        interactionToken)));
+        });
 
-        await operationBound.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        await fs.ClearGameStateAsync();
-        byte[] replacementBytes =
-        [
-            0xEF, 0xBB, 0xBF,
-            (byte)'{', (byte)'"', (byte)'s', (byte)'e', (byte)'s', (byte)'s',
-            (byte)'i', (byte)'o', (byte)'n', (byte)'"', (byte)':', (byte)'"',
-            (byte)'B', (byte)'"', (byte)'}'
-        ];
-        await fs.WriteFileAtomicBytesAsync(QteSceneService.QteRuntimePath, replacementBytes);
+        try
+        {
+            await requestReady.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            await fs.ClearGameStateAsync();
+            byte[] replacementBytes =
+            [
+                0xEF, 0xBB, 0xBF,
+                (byte)'{', (byte)'"', (byte)'s', (byte)'e', (byte)'s', (byte)'s',
+                (byte)'i', (byte)'o', (byte)'n', (byte)'"', (byte)':', (byte)'"',
+                (byte)'B', (byte)'"', (byte)'}'
+            ];
+            await fs.WriteFileAtomicBytesAsync(QteSceneService.QteRuntimePath, replacementBytes);
 
-        allowOldOperation.TrySetResult();
-        await Assert.ThrowsAsync<SessionReplacedException>(
-            () => oldOperation.WaitAsync(TimeSpan.FromSeconds(5)));
-        Assert.Equal(
-            replacementBytes,
-            await fs.ReadFileBytesAsync(QteSceneService.QteRuntimePath));
+            allowOldOperation.TrySetResult();
+            await Assert.ThrowsAsync<SessionReplacedException>(
+                () => oldOperation.WaitAsync(TimeSpan.FromSeconds(5)));
+            Assert.Equal(
+                replacementBytes,
+                await fs.ReadFileBytesAsync(QteSceneService.QteRuntimePath));
+        }
+        finally
+        {
+            allowOldOperation.TrySetResult();
+            await Record.ExceptionAsync(() => oldOperation);
+        }
     }
 
     [Fact]

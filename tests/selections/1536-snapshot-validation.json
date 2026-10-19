@@ -111,7 +111,7 @@
     },
     {
       "category": "pending-snapshot-qte-browser-generation",
-      "reason": "Existing browser QTE generation replacement before original lease; one case. Split after aggregate180s timeout; original selectors/assertions preserved, each group3m.",
+      "reason": "Existing browser QTE generation replacement before admission and serialization of an admitted transaction; two cases. Preserve both main-admission orderings and original rejection/bytes assertions; group3m.",
       "contracts": [
         "Preserve original validation, rollback, disposal and browser contracts through the held-lease extension."
       ]

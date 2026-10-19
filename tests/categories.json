@@ -102,7 +102,7 @@
 },
 {
   "id": "pending-snapshot-qte-browser-generation",
-  "responsibility": "Existing browser QTE generation replacement before original lease; one case.",
+  "responsibility": "Existing browser QTE generation replacement before admission and serialization of an admitted transaction; two cases.",
   "excludes": "No broad suite, gameplay qualification or native runtime.",
   "changeHints": [
     "BookOfEternityClient/Services/QteSceneService.cs",
@@ -118,7 +118,8 @@
   "selectors": [
     {
       "tests": [
-        "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.ResolveAction_NewGameWinsBeforeQteLease_DoesNotRestoreOldBytesIntoReplacementSession"
+        "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.ResolveAction_NewGameWinsBeforeQteLease_DoesNotRestoreOldBytesIntoReplacementSession",
+        "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.AcceptOffer_ConcurrentSessionReplacementWaitsForWholeQteTransaction"
       ],
       "project": "integration"
     }
