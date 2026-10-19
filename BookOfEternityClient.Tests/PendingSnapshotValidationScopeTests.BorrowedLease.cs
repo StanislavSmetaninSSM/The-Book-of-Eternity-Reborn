@@ -329,6 +329,40 @@ public sealed partial class PendingSnapshotValidationScopeTests
     }
 
     /// <summary>
+    /// Closing a completed nested session operation preserves its still-live outer owner for validation.
+    /// </summary>
+    /// <param name="borrowed">
+    /// Whether validation borrows a new outer lease or opens its own read lease.
+    /// </param>
+    /// <returns>
+    /// Completion after the actual nested session finalization and subsequent physical source lookup.
+    /// </returns>
+    [Theory]
+    [InlineData(false)] [InlineData(true)]
+    public async Task BorrowedCustody_NestedOperationCloseKeepsOuterOwner(bool borrowed)
+    {
+        using var fixture = new Fixture();
+        await fixture.PrepareAsync(false);
+        using var owner = fixture.Files.BeginMainAdmission();
+        await owner.AcquireAsync();
+        await SessionOperationContext.RunParticipatingCurrentSessionAsync(fixture.Files, () => Task.CompletedTask);
+        Assert.True(owner.Acquired);
+        Assert.False(owner.Closed || owner.BoundClosing);
+        async Task<List<ValidationIssue>> ReadSourceAsync()
+        {
+            Assert.Equal("Usable", Status(await fixture.LookupAsync(false)));
+            return [];
+        }
+        if (borrowed)
+        {
+            await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+            await fixture.RunBorrowedAsync(lease, ReadSourceAsync);
+            Assert.True(lease.IsActive);
+        }
+        else await fixture.RunAsync(ReadSourceAsync);
+    }
+
+    /// <summary>
     /// Normal competing entrypoints cannot enter a reserved validator through copied execution context.
     /// </summary>
     /// <param name="copied">
