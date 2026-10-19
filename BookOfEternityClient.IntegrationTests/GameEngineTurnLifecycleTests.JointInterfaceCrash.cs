@@ -48,7 +48,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// Whether to use the existing Linux diagnostic consumer.
     /// </param>
     /// <param name="extendedWindowsCrash">
-    /// Whether this explicitly selected Windows case uses the fixed extended producer and resumer waits.
+    /// Whether this explicitly selected Windows case extends the producer wait and preserves the original resumer wait.
     /// </param>
     /// <returns>
     /// Completion after the original game and process assertions.
@@ -234,7 +234,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// Requests the fixed extended Windows source-probe wait; the default preserves the ordinary wait.
     /// </param>
     /// <param name="extendedWindowsCrash">
-    /// Requests the fixed extended Windows producer or resumer wait; cannot be combined with the source extension.
+    /// Requests the extended Windows producer wait and original resumer wait; cannot be combined with the source extension.
     /// </param>
     /// <returns>
     /// The independently identified complete child outcome.

@@ -79,7 +79,7 @@ internal static class JointInterfaceCrashProcessSupport
     /// Whether to request the fixed extended observation window instead of the ordinary wait.
     /// </param>
     /// <param name="extendedWindowsCrash">
-    /// Whether to request the fixed Windows producer or resumer wait; defaults to the original policy.
+    /// Whether to extend the Windows producer wait while preserving the original resumer wait; defaults to the original policy.
     /// </param>
     /// <returns>
     /// The selected finite child wait; an ineligible extension request is rejected.
@@ -92,7 +92,7 @@ internal static class JointInterfaceCrashProcessSupport
             if (!windows || extendedSourceProbe ||
                 role is not ("engine-joint-interface-original-crash" or "engine-joint-interface-resume"))
                 throw new InvalidDataException("The extended crash wait requires one Windows producer or resumer role without source-probe opt-in.");
-            return TimeSpan.FromSeconds(600);
+            return TimeSpan.FromSeconds(role == "engine-joint-interface-original-crash" ? 600 : 220);
         }
         if (!extendedSourceProbe) return TimeSpan.FromSeconds(220);
         if (!windows || !string.Equals(role, "engine-joint-interface-source-probe", StringComparison.Ordinal))
