@@ -23,3 +23,9 @@ Handoff commands проверены: отдельная native package preparati
 ## T219 first Windows evidence
 
 The same independent reviewer accepted FAIL_INCOMPLETE with no reporting findings: six DLL hashes still bind to5f, metadata checkpoint9313 has no C# change; console cuts1/4/2/0 timeout at220s, exit-1, EOF/join true, CleanupFailure null. No producer73/resumer observed. No TRX: planned5/completed0, distinct console failures4. Category900.034s, total wall921.433s, runner exit124; generic20-minute outer-lane wording is not category elapsed time. Runner owned-tree cleanup true does not mean fixture deletion: cut3 retained directory remains. Raw log/summary copies match. Last scalar stage does not prove the blocked await. No runtime commands were issued by reviewer.
+
+## T227 SOURCE and preparation
+
+Focused independent SOURCE accepted8326d14b1 with no findings. Exact common source42 fixture arguments, ordinary Windows guards, original custody/deadlines, null default for existing consumers, bounded checkpoint mapping, unchanged production/assertions/qualification selection and multiline XML inspected. RED80b confirms6PASS/1expectedFAIL; no runtime probe executed by reviewer.
+
+Parent PREP8326d14b1: XML builds unit40.14s94warnings0errors, integration23.95s96warnings0errors; changed XML diagnostics0. New xUnit1013 is the intentionally public reflection child entrypoint, consistent with existing dispatch helpers. Stage7GREEN allpassed21.579s with owned cleanup. Catalog814/11833 valid; probe1descriptor/1case/5m, ordinary1descriptor/5cases/15m; PREP0executed. Six DLL hashes still match T227-prep.json. Focused independent PREP pending before one probe.
