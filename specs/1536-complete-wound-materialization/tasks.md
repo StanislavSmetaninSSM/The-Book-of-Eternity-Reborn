@@ -7,7 +7,7 @@
 - [x] CRASH5-S03 Сопоставить облачные механизмы мостика NativeLineageOwner/supervisor и runner с потребностями fixture; записать применимые contracts и ограничения прямого reuse.
 - [x] CRASH5-S04 Записать редакцию3 после уточнения владельца: Linux ordinary использует NativeLineage, Windows local execution, все сохранённые oracles и явное узкое расширение owner scope; старый timeout cause не объявлен установленным.
 - [x] CRASH5-S07 Повторно изучить указанные владельцем NativeLineage файлы source12533289; проверить возможность прямого pipe запуска, pre-exec identity, TMPDIR, полный вывод, root/supervisor exit, partial owner/stop/EOF и package preparation. Только статическое evidence.
-- [ ] CRASH5-S05 Независимо проверить редакцию3 и связанные source contracts; устранить подтверждённые замечания. Принятое gpt-6-astra/high review редакции2/diff125332..5112149 сохраняет историческое значение и не заменяет новое review.
+- [x] CRASH5-S05 Независимо проверить редакцию3 и связанные source contracts; устранить подтверждённые замечания. gpt-6-astra/high проверил diff3c4c34c..72979026b и адресные исправления поверх72979026b: один Minor о terminal без Started устранён; новых замечаний нет. Это готовность к предъявлению, не runtime/approval.
 - [ ] CRASH5-S06 Предъявить фактически записанную редакцию3 владельцу и получить согласование; approval не подразумевается из поручения подготовить документ.
 - [ ] CRASH5-P01 После согласования выполнить writing-plans + speckit-plan/speckit-tasks и speckit-analyze до реализации/исполнения probe; определить точный NativeLineage adapter/API, partial-owner retention, output/time bounds и отдельные cloud/local guard/regression categories.
 
