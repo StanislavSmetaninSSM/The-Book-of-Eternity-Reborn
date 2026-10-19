@@ -1,6 +1,6 @@
-# CRASH5 spec4 / plan2 — будущая проверка
+# CRASH5 spec4 / plan2 — проверка реализации
 
-[Spec4](spec.md) одобрена из da3efec34; [plan2](plan.md) и [T230…T237](tasks.md) подготовлены для review. **Команды ниже для будущей реализации, сейчас не выполнялись.** Новые categories/selection создаются в T230. Текущий результат: Windows5 FAIL_INCOMPLETE, Linux UNRUN; старые PASS не являются проверкой spec4.
+[Spec4](spec.md) одобрена из da3efec34; [plan2](plan.md) из bd9c8dd434 одобрен владельцем. Выполняются [T230…T237](tasks.md). Source9c30fc6b8 принят независимым gpt-6-astra/high после причинного RED и исправления outer-owner close. Обе свежие XML builds прошли; итоговая selected90/PREP ещё проверяется. Команды ниже задают актуальный отбор. Windows5 пока FAIL_INCOMPLETE, Linux UNRUN; подробные доказательства в [investigation](recovery/crash5/source42-investigation.md).
 
 Из корня отдельной копии, PowerShell7, .NET SDK10 + runtime8. DOTNET_ROOT при необходимости задаётся только на время команды и восстанавливается в finally, как в предыдущем CRASH5 guide. Для XML diagnostics не подавлять reference/parameter warnings:
 
@@ -24,11 +24,11 @@ dotnet build BookOfEternityClient.IntegrationTests/BookOfEternityClient.Integrat
 
 ## Preconditions и provenance
 
-Текущий результат: NativeLineage/Windows source принят, helpers37PASS на51f; после T228 обновлённые stages9PASS на25ef748ce отдельно. Windows ordinary5 FAIL_INCOMPLETE; два отдельных source42 investigations T227/T228 по completed1/failed1 с child220s. Spec4 одобрена владельцем; её plan2 выше ожидает review, реализация ещё не начата. Linux UNRUN. Точные артефакты и команды передачи — [linux-handoff.md](recovery/crash5/linux-handoff.md). Не повторять unchanged five/probe: сначала причинный анализ и, если нужен выход за текущий production scope, согласование дополнения спецификации.
+Текущий результат: NativeLineage/Windows source принят, helpers37PASS на51f; после T228 обновлённые stages9PASS на25ef748ce отдельно. Windows ordinary5 FAIL_INCOMPLETE; два отдельных source42 investigations T227/T228 по completed1/failed1 с child220s. Это предыдущий NativeLineage checkpoint; актуальная реализация spec4/plan2 и её evidence приведены в начале документа. Linux UNRUN. Точные артефакты и команды передачи — [linux-handoff.md](recovery/crash5/linux-handoff.md). Не повторять unchanged five/probe: сначала причинный анализ и, если нужен выход за текущий production scope, согласование дополнения спецификации.
 
 PowerShell7, SDK10, .NET8 runtime; отдельный чистый checkout выбранного source SHA. Зафиксировать `git rev-parse HEAD`, `git status --porcelain`, dotnet `--info`, hashes build outputs и source/diff. На Linux дополнительно x64/glibc, `cc`, `readelf`, доступные штатные NativeLineage prerequisites. Никаких изменений политик/прав среды. Новые категории должны уже существовать после реализации; неизвестный selector — ошибка подготовки.
 
-Перед любой подготовкой `tests/selection.json` должен выбирать только `fr063-joint-interface-crash-current`, не G01. `PlanOnly` и `ValidateCatalog` делают discovery; без NoBuild также build. Они не являются metadata-only чтением.
+Для текущего изменения `tests/selection.json` содержит ordinary5 и шесть адресных snapshot категорий. Snapshot controls запускаются отдельно через `tests/selections/1536-snapshot-validation.json`; ordinary5 — только после accepted SOURCE/PREP и source42 PASS. G01 не входит в отбор. `PlanOnly` и `ValidateCatalog` делают discovery; без NoBuild также build. Они не являются metadata-only чтением.
 
 `DOTNET_ROOT` должен указывать фактический корень выбранного runtime. Следующий код меняет только environment текущего PowerShell-процесса и его будущих children, не пользовательские/машинные настройки; сохранить прежние значения и восстановить в `finally` после выбранной фазы:
 
