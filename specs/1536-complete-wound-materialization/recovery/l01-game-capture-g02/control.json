@@ -1,14 +1,33 @@
 {
   "kind": "G02_CORRECTIVE_CONTROL",
   "base": "46c621fb50fe61e5a662ccaf8f00f3fa0f3c6dc3",
-  "status": "FIRST_SYNTHETIC_OWNER_FAIL_PRETARGET_NONCE_GAME_HOLD",
+  "status": "WIP_PRETARGET_CONFIG_CORRECTION_SOURCE_PREP_HOLD",
   "sourceAdmission": {
-    "status": "CONSUMED_G02_ZERO_PREP_FIRST_OUTCOME",
-    "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02-final-source-independent-review-20261019.json",
-    "reviewSha256": "fad16560dcd26c62947d287e75cd258ea8563f3418943491e9c2ea72c50d6b7f",
-    "reviewedSource": "913453c077fd9348b51cb3462c8bed5a658dfbde"
+    "status": "HOLD_CORRECTIVE_SOURCE_REQUIRED"
   },
   "syntheticAdmission": {
+    "status": "HOLD_CORRECTIVE_PREP_REQUIRED"
+  },
+  "actualAdmission": {
+    "status": "HOLD_SUCCESSFUL_SYNTHETIC_AND_FINAL_PREP_REQUIRED"
+  },
+  "oldG01": "FAIL_TIMEOUT220_API0_ENOENT_UNCHANGED",
+  "old66529": "UNKNOWN",
+  "l01": "52/57 original provenance unchanged; crash5 unqualified",
+  "broaderHolds": "FullNI/HOT/F1/M3/T197/E01/T148/Phase10 incomplete; A3 NO-PROCEED",
+  "dumpLifecycle": "Private own/capture only; retain through independent sanitized EVIDENCE/final report; no Git/attach/archive/autodelete",
+  "currentNextAction": "Independent diagnosis acceptance and focused SOURCE on new UUID.hex/configguard/root bindings; no runtime admitted. New ROOT does not exist; old failedROOT retained. Synthetic API cumulative0; new API budget still at most1.",
+  "syntheticDiagnosticRequestUpperBound": 1,
+  "gameDiagnosticRequestUpperBound": 1,
+  "zeroPrepEvidence": {
+    "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02-zero-prep-first-20261019.json",
+    "sha256": "8b469ac4c774c2223298cb9f90891f9ace3920ee10f56d53bda752849c32c217"
+  },
+  "firstSyntheticFailure": {
+    "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02-first-synthetic-pretarget-failure-20261019.json",
+    "sha256": "b8ddb7faa43dc7427bdf0f740700aaf14906c4ef4557ea6ab524bbfdfa035564"
+  },
+  "priorConsumedSyntheticAdmission": {
     "status": "CONSUMED_G02_FIRST_SYNTHETIC_PRETARGET_OUTCOME",
     "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02-synthetic-prep-independent-review-20261019.json",
     "reviewSha256": "546e318094933704ccf350383a1e614d7a8461d563f5e545a332e02749ef12e2",
@@ -19,23 +38,8 @@
     },
     "lease": "CONSUMED_FOR_NAMED_RUN_NO_RETRY"
   },
-  "actualAdmission": {
-    "status": "HOLD"
-  },
-  "oldG01": "FAIL_TIMEOUT220_API0_ENOENT_UNCHANGED",
-  "old66529": "UNKNOWN",
-  "l01": "52/57 original provenance unchanged; crash5 unqualified",
-  "broaderHolds": "FullNI/HOT/F1/M3/T197/E01/T148/Phase10 incomplete; A3 NO-PROCEED",
-  "dumpLifecycle": "Private own/capture only; retain through independent sanitized EVIDENCE/final report; no Git/attach/archive/autodelete",
-  "currentNextAction": "Independent diagnosis of first native1/33-char nonce and proof ZERO target/watchdog/collector/API; game HOLD, no further runtime admitted",
-  "syntheticDiagnosticRequestUpperBound": 1,
-  "gameDiagnosticRequestUpperBound": 1,
-  "zeroPrepEvidence": {
+  "priorZeroPrepEvidence": {
     "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02-zero-prep-first-20261019.json",
     "sha256": "8b469ac4c774c2223298cb9f90891f9ace3920ee10f56d53bda752849c32c217"
-  },
-  "firstSyntheticFailure": {
-    "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02-first-synthetic-pretarget-failure-20261019.json",
-    "sha256": "b8ddb7faa43dc7427bdf0f740700aaf14906c4ef4557ea6ab524bbfdfa035564"
   }
 }

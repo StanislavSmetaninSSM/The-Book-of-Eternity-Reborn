@@ -32,6 +32,11 @@ def unit_tree(rev):
     rows=[r for r in rows if included(r)]
     return dict(count=len(rows),sha256=H(b'\n'.join(rows)+b'\n'))
 
+def validate_config(cfg):
+    values=[cfg[key] for key in ('syntheticNonce','syntheticRunId','runId')]
+    assert all(type(value) is str and len(value)==32 and all(c in '0123456789abcdef' for c in value) for value in values), 'Authored Guid N32 required before any SDK/root/process'
+    assert len(set(values))==3, 'Distinct nonce/synthetic/game identities required'
+
 def validate_synthetic(se,cfg,source_digest):
     assert se['sourcePinDigest']==source_digest
     so=se['syntheticOutcome']
@@ -51,7 +56,7 @@ def main():
     config_dir=HERE if scope=='G01' else REC/'l01-game-capture-g02'
     assert git('rev-parse','HEAD')==source and not git('status','--porcelain')
     cfg=read(config_dir/'bindings.json');packet=read(config_dir/'source-packet.json');control=read(config_dir/'control.json')
-    if scope=='G02':ROOT=Path(cfg['root'])
+    if scope=='G02':validate_config(cfg);ROOT=Path(cfg['root'])
     gate=control['sourceAdmission'] if mode in ('tools','prepare') else control['syntheticAdmission'] if mode=='synthetic' else control['actualAdmission']
     expected='SOURCE_ACCEPTED_G01_ZERO_ONLY' if mode in ('tools','prepare') else 'PREP_ACCEPTED_G01_ONE_ACTUAL_CASE' if mode=='actual' else 'CONSUMED_G01_FIRST_OUTCOME'
     if scope=='G02':expected={'prepare':'SOURCE_ACCEPTED_G02_ZERO_ONLY','synthetic':'PREP_ACCEPTED_G02_ONE_SYNTHETIC','actual':'PREP_ACCEPTED_G02_ONE_ACTUAL_CASE','map':'CONSUMED_G02_FIRST_OUTCOME'}[mode]

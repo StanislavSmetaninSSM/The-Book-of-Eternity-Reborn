@@ -1,6 +1,6 @@
 {
   "kind": "G02_CORRECTIVE_REUSE_BINDINGS",
-  "root": "/tmp/g2-2aa1d92a",
+  "root": "/tmp/g2n-daf7a46e",
   "python": "/usr/bin/python3.13",
   "unit": {
     "key": "unit",
@@ -5017,9 +5017,9 @@
   "clientAssembly": "/tmp/1536-cloud-tools/dotnet/sdk/10.0.402/Extensions/Microsoft.Diagnostics.NETCore.Client.dll",
   "createdump": "/tmp/1536-cloud-tools/dotnet/shared/Microsoft.NETCore.App/8.0.32/createdump",
   "scope": "Unchanged G01 compiled closures reused by exact hashes and source graph; new private roots, fresh routing/discovery/PlanOnly, only SyntheticOwner compiled. G01 originals immutable; single synthetic API0 then at most one G02 game.",
-  "runId": "1f936a7091bf42a6b049e1719016e2da",
-  "syntheticRunId": "3ac823b7efc444babcd176679ae51ecd",
-  "syntheticNonce": "fdd113133ffa42e8b1eebd08b30365f31",
+  "runId": "a9d8da5eb12246068734e0d1aa65f5a0",
+  "syntheticRunId": "cab025288f2a4a0fb8ceb7d067c9dc5a",
+  "syntheticNonce": "d0711492e76943a79fc5c39a98768eff",
   "reuse": {
     "root": "/tmp/g-a91f6d2c7b30",
     "integrationCompiledSource": "d293b3bf796289fb6662a778ca408fae76ab2736",

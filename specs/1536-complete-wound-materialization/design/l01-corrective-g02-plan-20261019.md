@@ -39,3 +39,9 @@ ZERO PREP658a2251 first native0/observer[]/103.558s; integration460/unit439 unch
 Independent synthetic PREP5ac48a24 accepted46 checks/47 chains. One synthetic run3ac823b7efc444babcd176679ae51ecd API<=1 named permit consumed before execution; game HOLD.
 
 FIRST synthetic14d9669e ownernative1/1.076s: GuidN nonce guard rejects authored33-char nonce atOwner59 BEFORE parent/cut/target Start. No S01/watchdog/collector/API/game, afterLiveTools[]. First settings/records/streams/config/control/sourcepacket preserved exact; independent diagnosis required, game HOLD. No further runtime admitted.
+
+## Proven pretarget configuration correction (no API retry)
+
+Independent read-only diagnosis confirms authored N33 was rejected before all S01/watchdog/collector/API starts. The native host command1 is retained as FAIL, not reclassified. First settings/streams/records/control/packet stay byte-exact in the frozen archive and historical first packet; old permit remains consumed. Actual API budget is still0/1, game0/1.
+
+Minimal correction uses generated UUID.hex N32, distinct new nonce/synthetic/game IDs and a new unused short root. Same scope/modes, same Owner/S01/collector/API/assertions; only a pure validate_config guard added before SDK/root/process, with inert RED0/1→GREEN8/8 including exact frozen invalid config. No general framework or assertion change. Independent affected SOURCE required before ONE ZERO PREP in new root; root-dependent properties/import/discovery/PlanOnly are affected and must be fresh. Reuse original qualified G01 closures/tools and unchanged sources; only tiny Owner recompilation for new output path, no game build. Then independent PREP for the single still-unspent synthetic API. Any uncertainty keeps game HOLD; successful actual synthetic/decode and final PREP still mandatory before the separately bounded game. No blanket retry lease or repeated real operation.
