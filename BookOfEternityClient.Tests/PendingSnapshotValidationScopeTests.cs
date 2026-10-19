@@ -393,6 +393,73 @@ public sealed class PendingSnapshotValidationScopeTests(ITestOutputHelper output
     }
 
     /// <summary>
+    /// Every retained original admission remains protected, including ancestors of the reserving frame.
+    /// </summary>
+    [Fact]
+    public async Task Scope_OuterOriginalAdmissionCannotClose()
+    {
+        using var fixture = new Fixture();
+        await fixture.PrepareAsync(false);
+        using var outer = fixture.Files.BeginMainAdmission();
+        await outer.AcquireAsync();
+        using var inner = fixture.Files.BeginMainAdmission();
+        await inner.AcquireAsync();
+        await fixture.RunAsync(() =>
+        {
+            Assert.Throws<InvalidOperationException>(() => outer.Dispose());
+            return Task.FromResult(new List<ValidationIssue>());
+        });
+        Assert.False(outer.Closed);
+        Assert.False(inner.Closed);
+        inner.Dispose();
+        outer.Dispose();
+        Assert.True(outer.Closed);
+    }
+
+    /// <summary>
+    /// An explicit lease from another root cannot borrow the current invocation's evidence.
+    /// </summary>
+    [Fact]
+    public async Task Scope_ExplicitForeignLeaseRefuses()
+    {
+        using var foreign = new Fixture();
+        await foreign.PrepareAsync(false);
+        await using var foreignLease = await foreign.Files.AcquireCanonicalWriteLeaseAsync();
+        using var fixture = new Fixture();
+        await fixture.PrepareAsync(false);
+        using var owner = fixture.Files.BeginMainAdmission();
+        await owner.AcquireAsync();
+        await fixture.RunAsync(async () =>
+        {
+            Assert.NotSame(foreignLease, fixture.CurrentLease);
+            await Assert.ThrowsAsync<InvalidOperationException>(() => fixture.LookupAsync(true, writeLease: foreignLease));
+            Assert.Equal("Usable", Status(await fixture.LookupAsync(true, writeLease: fixture.CurrentLease)));
+            return [];
+        });
+    }
+
+    /// <summary>
+    /// A real source-consuming phase reports a current-state deletion with the original issue and ordering.
+    /// </summary>
+    [Fact]
+    public async Task Scope_CurrentStateMutationPreservesContinuityIssue()
+    {
+        using var fixture = new Fixture();
+        await fixture.PrepareAsync(false, flagBaseline: true);
+        using var owner = fixture.Files.BeginMainAdmission();
+        await owner.AcquireAsync();
+        const GameStateValidationPhase phase = GameStateValidationPhase.AfterlifeGlobalFlagPreTurnContinuity;
+        Assert.Empty(await fixture.Validator.ValidateGameStateAsync(phase));
+        File.WriteAllText(fixture.Files.ResolvePath(AfterlifeGlobalFlagState.StatePath), "{\"schemaVersion\":1,\"flags\":[]}");
+        var scalar = await fixture.Validator.ValidateGameStateAsync(phase);
+        Assert.Equal("afterlife_global_flag_removed_without_obsolete_marker", Assert.Single(scalar).Code);
+        var scoped = await fixture.RunAsync(() => (Task<List<ValidationIssue>>)typeof(ValidationService)
+            .GetMethod("ValidateGameStateCoreAsync", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .Invoke(fixture.Validator, [new GameStateValidationSelection(phase), false, null, null])!);
+        Assert.Equal(JsonSerializer.Serialize(scalar), JsonSerializer.Serialize(scoped));
+    }
+
+    /// <summary>
     /// Owns an isolated real filesystem and a three-file signed rollback cohort.
     /// </summary>
     private sealed class Fixture : IDisposable
@@ -447,10 +514,13 @@ public sealed class PendingSnapshotValidationScopeTests(ITestOutputHelper output
         /// <param name="cold">
         /// True leaves the signed cohort unadmitted; false primes its existing storage owner.
         /// </param>
+        /// <param name="flagBaseline">
+        /// True replaces the first fixture file with a canonical flag for the real continuity phase.
+        /// </param>
         /// <returns>
         /// Completion after the independent fixture is ready.
         /// </returns>
-        internal async Task PrepareAsync(bool cold)
+        internal async Task PrepareAsync(bool cold, bool flagBaseline = false)
         {
             string generation;
             await using (var lease = await Files.AcquireCanonicalWriteLeaseAsync()) generation = Files.GetOrCreateSessionGeneration(lease);
@@ -463,10 +533,12 @@ public sealed class PendingSnapshotValidationScopeTests(ITestOutputHelper output
             var baseline = new JsonArray();
             for (var i = 0; i < 3; i++)
             {
-                var original = $"game_state/world/scope{i}.json";
+                var original = flagBaseline && i == 0 ? AfterlifeGlobalFlagState.StatePath : $"game_state/world/scope{i}.json";
                 var snapshot = $"game_state/control/pending_turn_snapshot/scope{i}.json";
                 var rollback = $"{cohort}/scope{i}.rollback.json";
-                var bytes = Encoding.UTF8.GetBytes("{\"value\":1}");
+                var bytes = Encoding.UTF8.GetBytes(flagBaseline && i == 0
+                    ? "{\"schemaVersion\":1,\"flags\":[{\"flagId\":\"retained-flag\",\"state\":\"active\"}]}"
+                    : "{\"value\":1}");
                 Raw(original, bytes); Raw(snapshot, bytes); Raw(rollback, bytes);
                 _rollback.Add(rollback); files[original] = snapshot;
                 hashes[original] = PendingTurnSnapshotAuthority.ComputeSha256(bytes);
@@ -536,15 +608,19 @@ public sealed class PendingSnapshotValidationScopeTests(ITestOutputHelper output
         /// <param name="validator">
         /// Optional independent validator for a physical replacement-proof control; null uses the fixture instance.
         /// </param>
+        /// <param name="writeLease">
+        /// Explicit asynchronous lookup lease; null uses the invocation's ordinary lookup contract.
+        /// </param>
         /// <returns>
         /// The actual lookup result.
         /// </returns>
-        internal async Task<object> LookupAsync(bool asyncRead, ValidationService? validator = null)
+        internal async Task<object> LookupAsync(bool asyncRead, ValidationService? validator = null,
+            FileSystemManager.CanonicalWriteLease? writeLease = null)
         {
             try
             {
                 var method = typeof(ValidationService).GetMethod(asyncRead ? "LoadValidatedPendingTurnSnapshotLookupAsync" : "LoadValidatedPendingTurnSnapshotLookupSync", BindingFlags.Instance | BindingFlags.NonPublic)!;
-                var result = method.Invoke(validator ?? _validator, asyncRead ? new object?[] { null } : null)!;
+                var result = method.Invoke(validator ?? _validator, asyncRead ? new object?[] { writeLease } : null)!;
                 if (result is not Task task) return result;
                 await task; return task.GetType().GetProperty("Result")!.GetValue(task)!;
             }
