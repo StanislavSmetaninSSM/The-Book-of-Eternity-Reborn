@@ -762,3 +762,5 @@ writes. XML build and mandatory independent Astra XHigh review cover the whole
 bounded runtime/tests/docs block. One complete successful PreMerge≤30minutes
 (including Fast and cleanup) establishes performance acceptance; stop afterward
 for owner inspection. Full death lifecycle and unrelated feature work remain open.
+
+T243 browser qualification85f4:13 categories169PASS before browser5 incomplete at180s. Raw stdout records three assertion failures before timeout (resource history/runtime and late history); no TRX, so none of these five is counted PASS. Runner-owned cleanup succeeded. Under AGENTS category-splitting rule, independent Astra/high accepts exact same three method selectors partitioned2+2+1, each3m, selection17/178; no game bounds or assertions change. Added full existing result.Error output before unchanged assertions to diagnose actual cause. BrowserOriginal scope versus local browser transaction eligibility remains a source hypothesis pending runtime evidence. Source42 unconsumed, LinuxUNRUN.

@@ -15729,3 +15729,5 @@ Only the four following children close; earlier resumption notes preserve histor
   findings, rerun affected checks, update the existing checkpoint once, then
   report measured times and stop for owner inspection. Do not resume gameplay
   implementation, stage, commit, push, merge or close either issue.
+
+T243 browser qualification85f4:13 categories169PASS before browser5 incomplete at180s. Raw stdout records three assertion failures before timeout (resource history/runtime and late history); no TRX, so none of these five is counted PASS. Runner-owned cleanup succeeded. Under AGENTS category-splitting rule, independent Astra/high accepts exact same three method selectors partitioned2+2+1, each3m, selection17/178; no game bounds or assertions change. Added full existing result.Error output before unchanged assertions to diagnose actual cause. BrowserOriginal scope versus local browser transaction eligibility remains a source hypothesis pending runtime evidence. Source42 unconsumed, LinuxUNRUN.

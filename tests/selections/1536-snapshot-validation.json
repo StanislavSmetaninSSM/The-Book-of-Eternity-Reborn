@@ -97,7 +97,21 @@
     },
     {
       "category": "pending-snapshot-qte-browser",
-      "reason": "Exact existing browser QTE rollback and generation-fencing consumers; original fallback remains intact.",
+      "reason": "Existing browser QTE late history/runtime rollback; two cases. Split after aggregate180s timeout; original selectors/assertions preserved, each group3m.",
+      "contracts": [
+        "Preserve original validation, rollback, disposal and browser contracts through the held-lease extension."
+      ]
+    },
+    {
+      "category": "pending-snapshot-qte-browser-resource",
+      "reason": "Existing browser QTE resource quartet rollback; two cases. Split after aggregate180s timeout; original selectors/assertions preserved, each group3m.",
+      "contracts": [
+        "Preserve original validation, rollback, disposal and browser contracts through the held-lease extension."
+      ]
+    },
+    {
+      "category": "pending-snapshot-qte-browser-generation",
+      "reason": "Existing browser QTE generation replacement before original lease; one case. Split after aggregate180s timeout; original selectors/assertions preserved, each group3m.",
       "contracts": [
         "Preserve original validation, rollback, disposal and browser contracts through the held-lease extension."
       ]

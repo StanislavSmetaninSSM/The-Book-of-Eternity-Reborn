@@ -54,7 +54,7 @@
 },
 {
   "id": "pending-snapshot-qte-browser",
-  "responsibility": "Exact existing browser QTE rollback and generation-fencing consumers; original fallback remains intact.",
+  "responsibility": "Existing browser QTE late history/runtime rollback; two cases.",
   "excludes": "No broad suite, gameplay qualification or native runtime.",
   "changeHints": [
     "BookOfEternityClient/Services/QteSceneService.cs",
@@ -70,8 +70,54 @@
   "selectors": [
     {
       "tests": [
-        "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.CompleteAction_LatePersistenceFailureRollsBackOutcomeHistoryAndRuntime",
-        "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.CompleteAction_ResourcePenaltyLateFailureRollsBackCanonicalQuartet",
+        "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.CompleteAction_LatePersistenceFailureRollsBackOutcomeHistoryAndRuntime"
+      ],
+      "project": "integration"
+    }
+  ]
+},
+{
+  "id": "pending-snapshot-qte-browser-resource",
+  "responsibility": "Existing browser QTE resource quartet rollback; two cases.",
+  "excludes": "No broad suite, gameplay qualification or native runtime.",
+  "changeHints": [
+    "BookOfEternityClient/Services/QteSceneService.cs",
+    "BookOfEternityClient/Core/FileSystemManager.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "tests": [
+        "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.CompleteAction_ResourcePenaltyLateFailureRollsBackCanonicalQuartet"
+      ],
+      "project": "integration"
+    }
+  ]
+},
+{
+  "id": "pending-snapshot-qte-browser-generation",
+  "responsibility": "Existing browser QTE generation replacement before original lease; one case.",
+  "excludes": "No broad suite, gameplay qualification or native runtime.",
+  "changeHints": [
+    "BookOfEternityClient/Services/QteSceneService.cs",
+    "BookOfEternityClient/Core/FileSystemManager.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "tests": [
         "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.ResolveAction_NewGameWinsBeforeQteLease_DoesNotRestoreOldBytesIntoReplacementSession"
       ],
       "project": "integration"

@@ -886,6 +886,15 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
         Assert.False(fs.FileExists(QteDeferredEffectContinuation.StatePath));
     }
 
+    /// <summary>
+    /// Restores the original QTE outcome, history and runtime after an injected late failure.
+    /// </summary>
+    /// <param name="failurePhase">
+    /// History or runtime persistence boundary at which the original failure is injected.
+    /// </param>
+    /// <returns>
+    /// Completion after checking the original failure and exact restored state.
+    /// </returns>
     [Theory]
     [InlineData("history")]
     [InlineData("runtime")]
@@ -927,6 +936,7 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
                 "success",
                 interactionToken));
 
+        _output.WriteLine("QTE browser failure: " + result.Error);
         Assert.Equal("Failed", result.State);
         Assert.Contains(failure.Message, result.Error, StringComparison.Ordinal);
         Assert.Equal(runtimeBefore, await fs.ReadFileAsync(QteSceneService.QteRuntimePath));
@@ -945,6 +955,15 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
         Assert.Same(stateBefore, stateManager.CurrentState);
     }
 
+    /// <summary>
+    /// Restores the canonical resource quartet after an injected late terminal failure.
+    /// </summary>
+    /// <param name="failurePhase">
+    /// History or runtime persistence boundary at which the original failure is injected.
+    /// </param>
+    /// <returns>
+    /// Completion after checking the original failure and exact restored state.
+    /// </returns>
     [Theory]
     [InlineData("history")]
     [InlineData("runtime")]
@@ -1001,6 +1020,7 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
                 "success",
                 interactionToken));
 
+        _output.WriteLine("QTE browser failure: " + result.Error);
         Assert.Equal("Failed", result.State);
         Assert.Contains(failure.Message, result.Error, StringComparison.Ordinal);
         await AssertResourceAndRuntimeBytesAsync(fs, before);
