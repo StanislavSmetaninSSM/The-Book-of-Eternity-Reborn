@@ -61,6 +61,11 @@ internal static class MapFrames
                     if ((token & 0xff000000) != 0x06000000 || row == 0 || row > md.MethodDefinitions.Count || il > int.MaxValue)
                     { limitations.Add("UNMAPPABLE_METHODDEF_OR_IL"); continue; }
                     var method = md.GetMethodDefinition(MetadataTokens.MethodDefinitionHandle(row));
+                    if (method.RelativeVirtualAddress == 0)
+                    { limitations.Add("NO_MANAGED_METHOD_BODY"); continue; }
+                    var body = pe.GetMethodBody(method.RelativeVirtualAddress).GetILBytes();
+                    if (body is null || il >= body.Length)
+                    { limitations.Add("IL_OFFSET_OUTSIDE_METHOD_BODY"); continue; }
                     var type = md.GetTypeDefinition(method.GetDeclaringType());
                     string? source = null; int? line = null;
                     if (pdb is not null && row <= pdb.GetTableRowCount(TableIndex.MethodDebugInformation))

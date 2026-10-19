@@ -103,7 +103,7 @@ def main():
             before_ns=time.monotonic_ns();zero([DOTNET,str(phase/'ParentProbe.dll'),str(phase/'parent-proof')],'parent-proof',time.monotonic()+30);after_ns=time.monotonic_ns()
             parent=read(phase/'parent-proof.stdout');assert parent['passed']==len(parent['cases'])==6 and all(c['passed'] for c in parent['cases']) and parent['requests']==parent['gameProcesses']==parent['fixtureChildren']==0
             before_ps=time.monotonic_ns();zero([PW,'-NoLogo','-NoProfile','-NonInteractive','-File',str(HERE/'check_health.ps1'),'-Collector',str(HERE/'Collect.ps1')],'collector-health-proof',time.monotonic()+30);after_ps=time.monotonic_ns()
-            health=read(phase/'collector-health-proof.stdout');assert health['Passed']==len(health['Cases'])==22 and all(c['Passed'] for c in health['Cases']) and health['Requests']==health['GameProcesses']==0
+            health=read(phase/'collector-health-proof.stdout');assert health['Passed']==len(health['Cases'])==23 and all(c['Passed'] for c in health['Cases']) and health['Requests']==health['GameProcesses']==0
             record['clockProof']=[]
             for name,stamp,freq,lo,hi in [('net8',parent['clockStamp'],parent['clockFrequency'],before_ns,after_ns),('powershell',health['ClockStamp'],health['ClockFrequency'],before_ps,after_ps)]:
                 normalized=stamp*10**9//freq;assert lo<=normalized<=hi
@@ -111,15 +111,18 @@ def main():
             assert parent['clockFrequency']==health['ClockFrequency']
             manifest=dict(SourceRoot=str(REPO),MapModules=[dict(Dll=str(phase/'ParentProbe.dll'),DllSha256=H((phase/'ParentProbe.dll').read_bytes()),Pdb=str(phase/'ParentProbe.pdb'),PdbSha256=H((phase/'ParentProbe.pdb').read_bytes()))])
             lib['write'](phase/'map-proof-modules.json',manifest);record['mappingProof']=[]
-            for name,guid,token in [('valid',parent['moduleMvid'],parent['methodToken']),('wrong-mvid',str(uuid.UUID(int=0)),parent['methodToken']),('zero-token',parent['moduleMvid'],0)]:
-                report=dict(payload=dict(threads=[dict(native_thread_id='0xb',stack_frames=[dict(is_managed=True,filename='ParentProbe.dll',guid=guid,token=hex(token),il_offset='0x0')])]))
+            for name,guid,token,il in [('valid',parent['moduleMvid'],parent['methodToken'],0),('wrong-mvid',str(uuid.UUID(int=0)),parent['methodToken'],0),('zero-token',parent['moduleMvid'],0,0),
+                    ('body-end',parent['moduleMvid'],parent['methodToken'],parent['methodIlBytes']),('outside-body',parent['moduleMvid'],parent['methodToken'],0x7fffffff)]:
+                report=dict(payload=dict(threads=[dict(native_thread_id='0xb',stack_frames=[dict(is_managed=True,filename='ParentProbe.dll',guid=guid,token=hex(token),il_offset=hex(il))])]))
                 lib['write'](phase/('map-'+name+'.input.json'),report)
                 zero([DOTNET,str(phase/'MapFrames.dll'),str(phase/('map-'+name+'.input.json')),str(phase/'map-proof-modules.json'),str(phase/('map-'+name+'.json'))],'map-'+name,time.monotonic()+30)
                 mapped=read(phase/('map-'+name+'.json'))
                 if name=='valid':
                     assert len(mapped['mappedFrames'])==1
                     f=mapped['mappedFrames'][0];assert f['method']=='SourceAnchor' and f['sourceFile'].endswith('/ParentProbe.cs') and f['sourceLine']>0 and f['moduleMvid']==parent['moduleMvid']
-                else:assert not mapped['mappedFrames']
+                else:
+                    assert not mapped['mappedFrames']
+                    if name in ('body-end','outside-body'):assert 'IL_OFFSET_OUTSIDE_METHOD_BODY' in mapped['limitations']
                 record['mappingProof'].append(dict(case=name,passed=True,output=image(phase/('map-'+name+'.json'))))
             record.update(parentProof=parent,collectorHealthProof=health)
         elif mode=='prepare':

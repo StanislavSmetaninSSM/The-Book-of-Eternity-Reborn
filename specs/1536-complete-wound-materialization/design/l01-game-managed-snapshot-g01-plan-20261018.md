@@ -1,3 +1,5 @@
+> CURRENT 2026-10-19: wholeSOURCE9d8 HOLD(4 findings) retained; bounded corrections + inert lifecycle5/5 are WIP pending focused SOURCE. Native Parent6/health23/map5 and fresh integration/catalog/PlanOnly/PREP UNRUN; game/API0, gates HOLD. Historical entries below retain original provenance.
+
 > CURRENT: phasecontract resolved by explicituseroption1. Wholecode/bindings/controller/recovery WIP readyforSOURCE; pureParent/PShealth/offlineMap proofs unrun untilSOURCE ZERO acceptance. EarlierphaseBLOCKER entries below are historical. One namedrun 2ca476b7cf58446fb3eb3c6218e850b8 only afterfreshaffectedPREP, exactrecords/save/recovery and consumedlease.
 
 # G01 — one fixture-only managed snapshot implementation

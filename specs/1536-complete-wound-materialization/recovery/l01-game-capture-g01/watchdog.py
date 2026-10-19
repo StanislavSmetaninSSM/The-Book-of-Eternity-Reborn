@@ -120,11 +120,13 @@ def main():
             out = (root/'collector.stdout').open('wb'); err = (root/'collector.stderr').open('wb')
             command = [cfg['Pwsh'], '-NoLogo', '-NoProfile', '-NonInteractive', '-File', cfg['Collector'], '-Manifest', str(root/'request-manifest.json')]
             child = subprocess.Popen(command,cwd=root,env=env,stdin=subprocess.DEVNULL,stdout=out,stderr=err)
-            collector_fd = os.pidfd_open(child.pid)
+            # Account the successful launch before any fallible identity/handle observation.
             record['collectorLaunches'] = 1
-            record['collector'] = dict(command=command,identity=lib['identity'](child.pid),nativeExit=None,joined=False)
-            assert record['collector']['identity']['parentPid'] == os.getpid()
+            record['collector'] = dict(command=command,pid=child.pid,identity=None,nativeExit=None,joined=False)
             record['diagnosticRequests'] = None; record['apiOutcome'] = 'UNKNOWN_COLLECTOR_OBSERVATION'
+            record['collector']['identity'] = lib['identity'](child.pid)
+            assert record['collector']['identity']['parentPid'] == os.getpid()
+            collector_fd = os.pidfd_open(child.pid)
             while True:
                 native = child.poll()
                 if native is not None:
@@ -144,6 +146,23 @@ def main():
         record['observerErrors'].append(repr(error))
     finally:
         cleanup_deadline = time.monotonic() + 5
+        # Reconcile exact-target createdump children even when collector setup/observation failed.
+        if child is not None:
+            try: observe_children()
+            except BaseException as error: record['observerErrors'].append('Final target-child census: '+repr(error))
+        collector_forced = False
+        if child is not None:
+            try:
+                native = child.poll()
+                if native is not None:
+                    record['nativeExit'] = record['collector']['nativeExit'] = native
+                    record['collector']['joined'] = True
+                elif collector_fd is None:
+                    # This exact direct Popen child is still unreaped, so its PID cannot be reused.
+                    # Same own-child fallback as S01; never a target/global PID signal.
+                    child.kill(); collector_forced = True
+                    record.setdefault('ownedCleanupSignals',[]).append('direct-collector')
+            except BaseException as error: record['observerErrors'].append('Direct collector cleanup: '+repr(error))
         # One shared deadline: signal all exact verified handles, then wait within the same remainder.
         owned = []
         if collector_fd is not None: owned.append(('collector', collector_fd))
@@ -161,6 +180,7 @@ def main():
             try:
                 if not select.select([fd], [], [], 0)[0]:
                     signal.pidfd_send_signal(fd,signal.SIGKILL)
+                    if name == 'collector': collector_forced = True
                     record.setdefault('ownedCleanupSignals',[]).append(name)
             except BaseException as error: record['observerErrors'].append('Owned signal: '+repr(error))
         for name,fd in owned:
@@ -172,8 +192,31 @@ def main():
                 code=child.wait(timeout=max(.001,cleanup_deadline-time.monotonic()))
                 if record['collector'] is not None:
                     record['collector']['joined']=True
-                    if record['collector']['nativeExit'] is None: record['collector']['cleanupExit']=code
+                    if record['collector']['nativeExit'] is None:
+                        if not collector_forced or code != -signal.SIGKILL:
+                            record['nativeExit'] = record['collector']['nativeExit'] = code
+                        else: record['collector']['cleanupExit']=code
             except BaseException as error: record['observerErrors'].append('Collector join: '+repr(error))
+            if record['collector']['joined']:
+                try:
+                    observe_children() # Revalidates target identity; catches a late child after collector join.
+                    record['postCollectorCensusMonotonic'] = time.monotonic()
+                except BaseException as error: record['observerErrors'].append('Post-collector target-child census: '+repr(error))
+                for pid,item in dumps.items():
+                    fd = item['fd']
+                    if any(fd == known for _,known in owned): continue
+                    try:
+                        if not select.select([fd], [], [], 0)[0]:
+                            assert lib['identity'](pid) == item['identity']
+                            assert str(Path(f'/proc/{pid}/exe').resolve(strict=True)) == cfg['Createdump']
+                            assert Path(f'/proc/{pid}/cmdline').read_bytes().split(b'\0')[:-1] == [a.encode() for a in item['command']]
+                            signal.pidfd_send_signal(fd,signal.SIGKILL)
+                            record.setdefault('ownedCleanupSignals',[]).append('late-createdump')
+                        owned.append(('createdump',fd))
+                        assert select.select([fd],[],[],max(0,cleanup_deadline-time.monotonic()))[0], 'late createdump terminal UNKNOWN'
+                    except BaseException as error: record['observerErrors'].append('Late createdump ownership/cleanup unresolved: '+repr(error))
+            else: record['postCollectorCensus'] = 'UNKNOWN_COLLECTOR_NOT_JOINED'
+        record['createdumpCensusLimit'] = 'Dated exact-target observations only; no proof against future target-service spawn.'
         for stream in (out,err):
             if stream is not None: lib['close_observed'](record,'Collector output close',stream.close)
         if child is not None: lib['observe_collector'](record,lambda:(root/'collector.stdout').read_text())

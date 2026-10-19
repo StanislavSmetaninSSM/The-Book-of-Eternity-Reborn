@@ -16,6 +16,8 @@ $h = [pscustomobject]@{ Pid=123; BirthTick=456; Root='/tmp/fixture'; Nonce=('a'*
 $rows = [Collections.Generic.List[object]]::new()
 if ($null -ne (Test-AdmissionHealth $h $m $now $freq)) { throw 'Healthy exact receipt with CapturePhase UNKNOWN rejected' }
 $rows.Add(@{Name='exact receipt UNKNOWN phase allowed';Passed=$true})
+if ((Test-AdmissionHealth $h $m $now $freq $true) -cne 'PARENT_OBSERVER_ERROR') { throw 'Published parent cancellation ignored' }
+$rows.Add(@{Name='published parent cancel refuses fresh ADMITTED image';Passed=$true})
 foreach ($name in @('Uncertain','Eof','RawReadFault','AcceptedSeen','LateReturnSeen')) {
     $c=$h|ConvertTo-Json -Depth 10|ConvertFrom-Json; $c.Health.$name=$true
     if ($null -eq (Test-AdmissionHealth $c $m $now $freq)) { throw "Sticky cancellation missing:$name" }

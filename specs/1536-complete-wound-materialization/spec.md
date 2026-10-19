@@ -1,3 +1,5 @@
+> CURRENT 2026-10-19: wholeSOURCE9d8 HOLD(4 findings) retained; bounded corrections + inert lifecycle5/5 are WIP pending focused SOURCE. Native Parent6/health23/map5 and fresh integration/catalog/PlanOnly/PREP UNRUN; game/API0, gates HOLD. Historical entries below retain original provenance.
+
 > G01 latest user clarification: exactcustodyreceipt+freshstickyhealth/noobservedcancel may admit one safe owned-process capture while CapturePhaseUNKNOWN remains; identity/ownership/delivery/order/stickyhealthuncertainty cancels. Retain observedinterval/race/UNKNOWN and mappedframes separately. WholeSOURCE/freshaffectedPREP stillrequired; no newphaseproof mechanism.
 
 > G01 phase-admission clarification pending: healthy discrete custodyreceipt with continuousphaseUNKNOWN versus cancellation for anyCapturePhaseUNKNOWN. No whole SOURCE/PREP/game admission; actualcases0/requests0/dumps0. Latest implementation authorization remains, but dependent execution is blocked until this constraint is resolved.

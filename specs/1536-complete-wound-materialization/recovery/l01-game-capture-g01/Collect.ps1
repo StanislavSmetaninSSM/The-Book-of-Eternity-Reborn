@@ -46,7 +46,8 @@ function Identity([int]$processId) {
     @{ BirthTick = [UInt64]$fields[19]; ParentId = [int]$fields[1]; Uid = [int](($uidLine -split '\s+')[1]) }
 }
 
-function Test-AdmissionHealth($h, $m, [long]$Now, [long]$Frequency) {
+function Test-AdmissionHealth($h, $m, [long]$Now, [long]$Frequency, [bool]$ParentCancelled = $false) {
+    if ($ParentCancelled) { return 'PARENT_OBSERVER_ERROR' }
     foreach ($name in @('Pid','BirthTick','Root','Nonce','Cut','Sequence','Stamp','Frequency','DeadlineStamp','Cancelled','ReceiptAdmitted','PolicyState','Health')) {
         if ($name -notin $h.PSObject.Properties.Name) { return 'MISSING_HEALTH_FIELD' }
     }
@@ -104,7 +105,7 @@ try {
     # Final guard follows library loading/client construction and directly precedes the observed API call.
     if ((Identity $m.TargetPid).BirthTick -ne $m.TargetBirthTick) { throw 'Target changed before request' }
     $h = [IO.File]::ReadAllText($m.HealthPath) | ConvertFrom-Json
-    $cancel = Test-AdmissionHealth $h $m ([Diagnostics.Stopwatch]::GetTimestamp()) ([Diagnostics.Stopwatch]::Frequency)
+    $cancel = Test-AdmissionHealth $h $m ([Diagnostics.Stopwatch]::GetTimestamp()) ([Diagnostics.Stopwatch]::Frequency) ([IO.File]::Exists((Join-Path (Split-Path $Manifest) 'cancel')))
     if ($null -ne $cancel) { Observe-Emit @{ Stage = 'cancelled_before_api'; Reason = $cancel; ApiOutcome = 'UNREACHED' } }
     else {
         $result = Invoke-ObservedApi -Request {

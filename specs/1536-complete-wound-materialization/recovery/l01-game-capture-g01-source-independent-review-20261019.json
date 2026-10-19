@@ -1,0 +1,159 @@
+{
+  "kind": "G01_WHOLE_INDEPENDENT_SOURCE_REVIEW",
+  "candidate": "9d8d08093bb769f85ec79a88d98669f1570e0d57",
+  "base": "4e379a92e27d488bc602f743fc739507d6a96648",
+  "verdict": "HOLD_G01_WHOLE_SOURCE",
+  "sourcePinDigest": "1c8c987efcc7e04d8e6bbb9f265029c58ed05fc3ebeadbda1deb49645687baef",
+  "controllerSha256": "db5c593d0bd599ea9857b9e33e9a50082134c82146dec11630cc6a85d8394aca",
+  "bindingsSha256": "e0d6aa868b52dd92fec36f7c34b01106fc06792c289add93ce0780ffe6d3f200",
+  "summary": "Whole source review completed. Four bounded source defects require correction before any G01 ZERO/tool/native phase. No gameplay/API/dump operation was performed. The earlier phase-contract blocker is resolved by explicit user option1; these are implementation findings.",
+  "findings": [
+    {
+      "id": "G01-S01",
+      "severity": "HIGH",
+      "status": "CONFIRMED_SOURCE_AND_EXACT_AST_FAKE",
+      "title": "Started collector can escape the shared lifecycle when pidfd acquisition fails",
+      "refs": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/watchdog.py",
+          "lines": "122-127,145-183",
+          "bytes": 12221,
+          "sha256": "b4e12b41b7adb2b9b3a894a1dcdf136cae6888e07253b56a9520b686a919b183"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
+          "lines": "114-128",
+          "bytes": 24445,
+          "sha256": "d121731cff4867acf993d034962c9f5591fdcb496307a5fe0e9642b8392da333"
+        }
+      ],
+      "evidence": "Popen succeeds before collectorLaunches/identity are recorded and before pidfd_open. An injected pidfd failure reaches finally with child!=None, collector_fd=None, collector=None, collectorLaunches=0. The exact finally AST issues no stop and only waits for the shared remainder; the fake still-running child times out. The API could continue beyond the advertised watchdog bound. This is not a real collector run.",
+      "relatedRace": "The cleanup finally never reconciles target-createdump children again. A child created between the final pre-cleanup observation and collector termination can be omitted. Mere absence in that one observation must not prove complete child cleanup.",
+      "requiredCorrection": "Record successful Popen immediately, then establish ownership/handle. Reuse the existing exact unreaped-direct-child fallback when pidfd setup fails, with the single shared cleanup remainder and explicit UNKNOWN/retention if identity cannot be proved. Reconcile target-createdump identities during bounded cleanup; never signal the resumer or broaden to unrelated processes. Do not infer complete cleanup from an unobserved createdump.",
+      "requiredProof": "Exact-source no-process fault cases for pidfd/identity setup failure after Popen, direct-child fallback, late createdump observation, unresolved/reused ownership and shared deadline accounting."
+    },
+    {
+      "id": "G01-S02",
+      "severity": "HIGH",
+      "status": "CONFIRMED_SOURCE_PATH",
+      "title": "Final collector admission omits the already-published parent cancellation marker",
+      "refs": [
+        {
+          "path": "BookOfEternityClient.IntegrationTests/JointInterfaceManagedCapture.cs",
+          "lines": "135-144",
+          "bytes": 11561,
+          "sha256": "e982db07e37352699dfb439527e3f48f01a156cbdf19f6f55848cbf1437ab745"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/watchdog.py",
+          "lines": "81-95",
+          "bytes": 12221,
+          "sha256": "b4e12b41b7adb2b9b3a894a1dcdf136cae6888e07253b56a9520b686a919b183"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/Collect.ps1",
+          "lines": "49-66,102-117",
+          "bytes": 9216,
+          "sha256": "b195d961aea2e312b7cfb6c7bacfe68292f7dc43dcde8420c2c479c4051d786f"
+        }
+      ],
+      "evidence": "On an observer exception the parent writes own/capture/cancel and sends CANCEL, leaving the last atomic health image potentially fresh and ADMITTED. Python checks the marker on polling, but the final PowerShell guard checks only health.json. It can proceed before the next watchdog poll even though a positive cancellation file already exists.",
+      "requiredCorrection": "Include the explicit cancellation source in the final pre-API guard and preserve UNREACHED/no request on observed cancellation or unreadable/uncertain required state. Keep the remaining final-check-to-API race and continuous CapturePhase UNKNOWN explicit; do not claim that a file check makes cancellation atomic with WriteDump.",
+      "requiredProof": "A fresh otherwise-admissible health image plus the cancellation marker must refuse with zero API calls; healthy exact receipt without cancellation remains admissible. Run any CLR/PowerShell proof only after affected SOURCE permission."
+    },
+    {
+      "id": "G01-S03",
+      "severity": "MEDIUM",
+      "status": "CONFIRMED_SOURCE_AND_EXACT_AST_FAKE",
+      "title": "A known natural collector failure observed during cleanup loses native priority",
+      "refs": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/watchdog.py",
+          "lines": "128-144,170-186",
+          "bytes": 12221,
+          "sha256": "b4e12b41b7adb2b9b3a894a1dcdf136cae6888e07253b56a9520b686a919b183"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-run-phase-20261018.py",
+          "lines": "46-66",
+          "bytes": 7435,
+          "sha256": "c52f7b5243c209ab4a9fc1fe1e0f3294e05a932e97539dfd49e712ad9d93f5b5"
+        }
+      ],
+      "evidence": "If an observer fault occurs before the next poll and the collector has naturally exited7, finally child.wait returns7 without any cleanup signal. Current code writes collector.cleanupExit=7 but leaves both nativeExit fields None. The unchanged FINALIZE therefore returns2. The exact-source fake reproduces this with a ready terminal pidfd and no signals.",
+      "requiredCorrection": "Before forced cleanup, capture any already-known natural terminal return into the native outcome. Preserve actual forced cleanup returns separately and retain raw return/signal semantics. Once natural nonzero is known, observer/persistence failures must not replace it; native0 with observer errors remains HOLD.",
+      "requiredProof": "Source-bound natural0/nonzero and forced-cleanup cases, including observer failure before poll and publication failure; prove known nonzero priority and native0 observer HOLD without native children."
+    },
+    {
+      "id": "G01-S04",
+      "severity": "MEDIUM",
+      "status": "CONFIRMED_SOURCE_RANGE_ERROR_NO_RUNTIME_EXECUTION",
+      "title": "Mapper can assign a real source line to an IL offset outside the method body",
+      "refs": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/MapFrames.cs",
+          "lines": "56-78",
+          "bytes": 6992,
+          "sha256": "cc91cd05906539d87e2c6c4c5b4ff10928e9930408b880f6679322544c20544b"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/phase.py",
+          "lines": "112-123",
+          "bytes": 20830,
+          "sha256": "db5c593d0bd599ea9857b9e33e9a50082134c82146dec11630cc6a85d8394aca"
+        }
+      ],
+      "evidence": "The mapper accepts any IL <=int.MaxValue, then takes the last visible sequence point whose offset is <=IL. For a valid bound MethodDef with a finite body, IL0x7fffffff satisfies the current check and can be attributed to the last source line despite not being in that body. Existing wrong-MVID/zero-token negatives do not exercise this case.",
+      "requiredCorrection": "Validate a usable managed method body and actual IL range before assigning a source position. Missing body or invalid/out-of-range IL must produce an explicit unmappable limitation, not a fabricated source line. Retain PE/PDB hash/MVID/CodeView checks and existing three proofs.",
+      "requiredProof": "Add a bounded out-of-body IL negative plus relevant absent/unmappable-body handling to the existing offline mapper proof; original valid method/position and negatives remain unchanged."
+    }
+  ],
+  "positiveConclusions": [
+    "Current161 pins/digest and17-path delta match Git, writer and independently recovered clone. Receipt verifies206 paths; explicit3 D01 current deltas and historical packet/ledger exceptions are honest and original packets remain byte-identical.",
+    "All395 declared tool/import inputs and15 request inputs were read/hash-verified; none of those declared SDK/request inputs was invoked. The source-exclusion tree46787 exactly matches retained unit compiled d3. Unit project/reference/linked-source inspection shows no integration dependency.",
+    "Fresh private integration3-project build plus separate retained unit439 closure is a sufficient bounded preparation strategy in principle. It still requires actual target/assets/import binding, full catalog discovery and exact singleton PlanOnly under the unchanged aggregate600; no freshBOTH or original124/137 rehabilitation is claimed.",
+    "All original Assert lines remain identical and ordered. The existing cut1 Fact/category is the only selection; membership and900 category bounds are unchanged. Original220 wait starts before the capture consumer and original native result/cleanup path is retained.",
+    "D01 drain/health and the already accepted raw timestamp policy23/assertions are byte-identical. One receipt-anchored60s trigger, queue residence<=1s, sticky refusals, >=25s remaining, private one-shot fixture claim and exact owned resumer command/nonce chain are present.",
+    "Explicit option1 is implemented: exact receipt plus fresh healthy observation may admit while continuous CapturePhase remains UNKNOWN. No claim that final health read eliminates the race to API entry is supported or accepted.",
+    "Private own/capture retention is enabled before fixture execution and bypasses only the former settled-container deletion. No core/raw report is archived or published by the phase controller; mapper is offline and emits a limited allowlist.",
+    "Current source/actual gates remain HOLD; tools proofs, affected build/catalog/PlanOnly, game and mapping actual are UNRUN. Retained52/57, old66529UNKNOWN and all broader/platform holds are unchanged."
+  ],
+  "prepAssessment": {
+    "status": "STRATEGY_SUFFICIENT_IN_PRINCIPLE_NOT_RELEASED",
+    "tools": "Direct csc of actual parent helper/mapper; existing pure Parent6/health22/map3 and clock brackets, augmented only with affected fault/IL cases after correction. These are host-only proofs, not game/API runs.",
+    "build": "Fresh integration no-restore/private ArtifactsPath; strict unknown import HOLD and actual property routing; separate full retained unit closure; full catalog and exact1/1/1 PlanOnly, all under existing600 envelope.",
+    "actual": "Still requires independent PREP, exact record/tool/bin bindings, saved/recovered consumed named lease and fresh preflight. At most existing diagnostic cut1/new fixture; no crash5 qualification."
+  },
+  "additionalLimits": [
+    "The observed event list contains selected decoded markers, not proof of complete source emission; source-to-receipt latency and continuous phase remain UNKNOWN.",
+    "Python20s is measured from watchdog main entry, not proof of API-only or target suspension duration; the final >=25s guard and original220 remain distinct.",
+    "Mapper currently groups output by module and does not preserve an explicit original frame ordinal. Until an ordinal is retained, do not present sanitized row order as the original full stack order; the private raw report remains available for independent correlation.",
+    "All49 check booleans verify bindings or reproduce source faults; they are not49 runtime tests or an acceptance of the candidate. Existing pure23 outcome remains the only G01 policy runtime evidence reviewed here.",
+    "No SDK/compiler/discovery/game/collector/procfs/census/signals/API execution by reviewer. Fake AST execution uses inert substitutes only. No product fix, budget change, old selection replay, or broad framework is required."
+  ],
+  "nextSafeAction": "Sole writer may correct only these bounded paths, preserve this original HOLD and fake proofs, update exact affected pins/bindings and save/push/recover. Independent focused SOURCE re-review must precede any new tools/ZERO native phase. Later actual remains separately PREP-gated.",
+  "executionAdmission": {
+    "tools": "NONE_SOURCE_HOLD",
+    "prepare": "NONE_SOURCE_HOLD",
+    "gameplay": "NONE_PREP_HOLD",
+    "collector": "NONE",
+    "snapshot": "NONE",
+    "crash5": "NONE"
+  },
+  "artifacts": {
+    "checks": {
+      "path": "/tmp/1536-cloud-tools/review/l01-game-capture-g01-source-independent-checks-20261019.json",
+      "sha256": "164f4ac75a70a62fd7138c700b03629605e562075f5b83395e9e8f1edd4e9a82",
+      "passed": 49
+    },
+    "checker": {
+      "path": "/tmp/1536-cloud-tools/review/check_g01_whole_source_20261019.py",
+      "sha256": "56058aa3a7dcf8bf7bfcc4ea148c425678c39226d2cfb47c4d08ee1613d49525"
+    }
+  },
+  "recovery": {
+    "path": "/tmp/1536-cloud-tools/g01-recovery-9d8d0809.json",
+    "sha256": "1d47e530b83ba410890d3176327cd4977f3fc8a085cd7a8a28b79967254871ba"
+  },
+  "reviewerNativeActions": 0
+}

@@ -53,7 +53,8 @@ internal static class ParentProbe
         Console.WriteLine(JsonSerializer.Serialize(new { kind="G01_PARENT_PURE_PROOF", cases=rows, passed=rows.Count,
             gameProcesses=0, fixtureChildren=0, requests=0, clockStamp=Stopwatch.GetTimestamp(), clockFrequency=Stopwatch.Frequency,
             moduleMvid=typeof(ParentProbe).Assembly.ManifestModule.ModuleVersionId,
-            methodToken=typeof(ParentProbe).GetMethod(nameof(SourceAnchor))!.MetadataToken }));
+            methodToken=typeof(ParentProbe).GetMethod(nameof(SourceAnchor))!.MetadataToken,
+            methodIlBytes=typeof(ParentProbe).GetMethod(nameof(SourceAnchor))!.GetMethodBody()!.GetILAsByteArray()!.Length }));
         return 0;
     }
 }

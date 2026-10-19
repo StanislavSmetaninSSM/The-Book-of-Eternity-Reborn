@@ -1,0 +1,363 @@
+{
+  "kind": "G01_WHOLE_SOURCE_READONLY_CHECKS",
+  "candidate": "9d8d08093bb769f85ec79a88d98669f1570e0d57",
+  "base": "4e379a92e27d488bc602f743fc739507d6a96648",
+  "checks": [
+    {
+      "name": "Writer exact clean candidate",
+      "passed": true
+    },
+    {
+      "name": "Independent clone exact clean candidate",
+      "passed": true
+    },
+    {
+      "name": "Recovery receipt exact remote and independent clean recovery",
+      "passed": true
+    },
+    {
+      "name": "Exactly17 bounded changed paths",
+      "passed": true
+    },
+    {
+      "name": "Changed sources bytes Git writer independent clone exact",
+      "passed": true
+    },
+    {
+      "name": "No production TestSupport unit source changes",
+      "passed": true
+    },
+    {
+      "name": "161 distinct current pins exact",
+      "passed": true
+    },
+    {
+      "name": "Current canonical pin digest exact",
+      "passed": true
+    },
+    {
+      "name": "Historical D01 exactly3 declared current deltas",
+      "passed": true
+    },
+    {
+      "name": "Historical packet/ledger unchanged l01-delivery-d01-source-packet-20261018.json",
+      "passed": true
+    },
+    {
+      "name": "Historical packet/ledger unchanged l01-managed-stack-capability-control-20261018.json",
+      "passed": true
+    },
+    {
+      "name": "Historical packet/ledger unchanged t179pd-ni-iobs-l01-source-packet-20261018.json",
+      "passed": true
+    },
+    {
+      "name": "Historical packet/ledger unchanged t179pd-ni-iobs-l01-cloud-qualification-20261018.json",
+      "passed": true
+    },
+    {
+      "name": "Historical packet/ledger unchanged t179pd-ni-iobs-l01-method-row-ledger-20261018.json",
+      "passed": true
+    },
+    {
+      "name": "Historical packet/ledger unchanged t148-m01-source-packet-20261018.json",
+      "passed": true
+    },
+    {
+      "name": "Historical explicit exception list t179pd-ni-iobs-l01-source-packet-20261018.json",
+      "passed": true
+    },
+    {
+      "name": "Historical explicit exception list t148-m01-source-packet-20261018.json",
+      "passed": true
+    },
+    {
+      "name": "Historical explicit exception list l01-managed-stack-capability-control-20261018.json",
+      "passed": true
+    },
+    {
+      "name": "Controller exact requested SHA",
+      "passed": true
+    },
+    {
+      "name": "Bindings exact requested SHA",
+      "passed": true
+    },
+    {
+      "name": "395 distinct immutable input declarations",
+      "passed": true
+    },
+    {
+      "name": "All395 declared physical input bytes currently match",
+      "passed": true
+    },
+    {
+      "name": "Request executable/library/helper input15 hashes match",
+      "passed": true
+    },
+    {
+      "name": "Retained unit439 manifest and4 metadata project groups",
+      "passed": true
+    },
+    {
+      "name": "Complete outside-integration unit tree46787 exact versus d3",
+      "passed": true
+    },
+    {
+      "name": "No new root consumed",
+      "passed": true
+    },
+    {
+      "name": "All original Assert lines identical ordered",
+      "passed": true
+    },
+    {
+      "name": "Original child220 wait retained and starts before consumer",
+      "passed": true
+    },
+    {
+      "name": "Original cleanup code and game return retained",
+      "passed": true
+    },
+    {
+      "name": "Retention is capture-only before container deletion",
+      "passed": true
+    },
+    {
+      "name": "Accepted delivery/policy/probe unchanged JointInterfaceDiagnosticDelivery.cs",
+      "passed": true
+    },
+    {
+      "name": "Accepted delivery/policy/probe unchanged JointInterfaceManagedCapturePolicy.cs",
+      "passed": true
+    },
+    {
+      "name": "Accepted delivery/policy/probe unchanged PolicyProbe.cs",
+      "passed": true
+    },
+    {
+      "name": "Other categories byte-semantic unchanged",
+      "passed": true
+    },
+    {
+      "name": "Diagnostic membership/bounds unchanged",
+      "passed": true
+    },
+    {
+      "name": "Selection singleton only",
+      "passed": true
+    },
+    {
+      "name": "Resolved option1 and no execution gate",
+      "passed": true
+    },
+    {
+      "name": "Private lifecycle prohibition explicit",
+      "passed": true
+    },
+    {
+      "name": "Tools/ZERO and actual admissions separate with consumed lease",
+      "passed": true
+    },
+    {
+      "name": "Fresh integration no restore + strict actual property/import/catalog/plan before PREP",
+      "passed": true
+    },
+    {
+      "name": "Offline map has no capture/target launch",
+      "passed": true
+    },
+    {
+      "name": "No observer signal targets resumer",
+      "passed": true
+    },
+    {
+      "name": "Maximum declared socket106 bytes",
+      "passed": true
+    },
+    {
+      "name": "Reproduced S01 untracked live collector after pidfd failure",
+      "passed": true
+    },
+    {
+      "name": "Reproduced S03 known natural7 stored only as cleanupExit and masked by2",
+      "passed": true
+    },
+    {
+      "name": "S01 cleanup has no final createdump rediscovery",
+      "passed": true
+    },
+    {
+      "name": "S02 positive cancel file written but collector does not inspect it",
+      "passed": true
+    },
+    {
+      "name": "S04 mapper only intMaxValue, no actual body-bound validation",
+      "passed": true
+    },
+    {
+      "name": "S04 source-position counterexample accepted by current scalar range",
+      "passed": true
+    }
+  ],
+  "passed": 49,
+  "sourceFindingsExpected": [
+    "G01-S01",
+    "G01-S02",
+    "G01-S03",
+    "G01-S04"
+  ],
+  "sourceBoundFakes": [
+    {
+      "case": "pidfd_setup_failure",
+      "record": {
+        "nativeExit": null,
+        "observerErrors": [
+          "OSError('injected pidfd setup failure')",
+          "Collector join: TimeoutError('fake direct collector still running')"
+        ],
+        "collector": null,
+        "collectorLaunches": 0,
+        "diagnosticRequests": null,
+        "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+        "apiNativeStatus": null,
+        "collectorEvents": [],
+        "admittedRequestStages": 0,
+        "createdumpIdentities": [],
+        "durationSeconds": 100.0
+      },
+      "simulatedPopenCalls": 1,
+      "simulatedSignals": [],
+      "waits": [
+        5.0
+      ],
+      "finalizerExit": 2,
+      "nativeActions": 0
+    },
+    {
+      "case": "natural7_before_cleanup_observation",
+      "record": {
+        "nativeExit": null,
+        "observerErrors": [
+          "Injected observer error before next poll"
+        ],
+        "collector": {
+          "nativeExit": null,
+          "joined": true,
+          "cleanupExit": 7
+        },
+        "collectorLaunches": 1,
+        "diagnosticRequests": null,
+        "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+        "apiNativeStatus": null,
+        "collectorEvents": [],
+        "admittedRequestStages": 0,
+        "createdumpIdentities": [],
+        "durationSeconds": 100.0
+      },
+      "simulatedPopenCalls": 0,
+      "simulatedSignals": [],
+      "waits": [
+        5.0
+      ],
+      "finalizerExit": 2,
+      "nativeActions": 0
+    }
+  ],
+  "sourcePinDigest": "1c8c987efcc7e04d8e6bbb9f265029c58ed05fc3ebeadbda1deb49645687baef",
+  "controllerSha256": "db5c593d0bd599ea9857b9e33e9a50082134c82146dec11630cc6a85d8394aca",
+  "bindingsSha256": "e0d6aa868b52dd92fec36f7c34b01106fc06792c289add93ce0780ffe6d3f200",
+  "changedPathBindings": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+      "bytes": 46087,
+      "sha256": "338c2cea598807e90fec83746bbdf6df119bad29d665ff0a015b89ea503b8c15"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/JointInterfaceManagedCapture.cs",
+      "bytes": 11561,
+      "sha256": "e982db07e37352699dfb439527e3f48f01a156cbdf19f6f55848cbf1437ab745"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/l01-game-managed-snapshot-g01-plan-20261018.md",
+      "bytes": 6425,
+      "sha256": "4da599d2d36ec879ff91e54854fea2bb568a75bea49dada22e9ef4f673d03a10"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 2519327,
+      "sha256": "44fc55c33f298e6667527c1c0a2b6d501c5df5dac642c3b264182e8f2b868843"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/Collect.ps1",
+      "bytes": 9216,
+      "sha256": "b195d961aea2e312b7cfb6c7bacfe68292f7dc43dcde8420c2c479c4051d786f"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/ParentProbe.cs",
+      "bytes": 4355,
+      "sha256": "9522f7a5842cc1e752f2283b923c4046d5d26a019d3dd2d568c45bd77439400a"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/bindings.json",
+      "bytes": 214290,
+      "sha256": "e0d6aa868b52dd92fec36f7c34b01106fc06792c289add93ce0780ffe6d3f200"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/check_health.ps1",
+      "bytes": 3140,
+      "sha256": "ee465b6a86943c68f335b379f3266e4a30b10586f546d024f9c8dec2e222c1da"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/control.json",
+      "bytes": 2623,
+      "sha256": "e9bac3713ca861854e6b0bc4f268c3e8b43e135d48ca6792c85ca8965c7307fb"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/phase.py",
+      "bytes": 20830,
+      "sha256": "db5c593d0bd599ea9857b9e33e9a50082134c82146dec11630cc6a85d8394aca"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/recover.py",
+      "bytes": 3749,
+      "sha256": "42e353e282817eb32a1c365c497e79ef363a4c04d53a3529389f08d747d5c22e"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/source-packet.json",
+      "bytes": 37155,
+      "sha256": "135921a41ee21c24f0a00de21d0e41d54d3d2cd56108f59c24669a6efe20e657"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/watchdog.py",
+      "bytes": 12221,
+      "sha256": "b4e12b41b7adb2b9b3a894a1dcdf136cae6888e07253b56a9520b686a919b183"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "bytes": 245357,
+      "sha256": "b583249b809b0f7c1707b1a86ef69bf864aa501248e7c7e7c5bccdf5be1b4515"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "bytes": 1616193,
+      "sha256": "0fe0cd063aff5baa3ab021488f49bc4464fc9b5000fc1b4f3674de178832755b"
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 2016053,
+      "sha256": "82f310ac55cf9223b6afcba45e6458c17cef7575321192c1be3066ba86fe466e"
+    },
+    {
+      "path": "tests/selection.json",
+      "bytes": 901,
+      "sha256": "4fb4e37a395c52fd28a9fae2b6e4ebd5e601a3620137bf195a60dc6c39ccea2c"
+    }
+  ],
+  "readOnlyNativeActions": 0,
+  "limits": "Passing checks verify bindings and reproduce source defects; they do not accept SOURCE or execute proposed CLR/PS/native proofs.",
+  "recovery": {
+    "path": "/tmp/1536-cloud-tools/g01-recovery-9d8d0809.json",
+    "sha256": "1d47e530b83ba410890d3176327cd4977f3fc8a085cd7a8a28b79967254871ba"
+  }
+}

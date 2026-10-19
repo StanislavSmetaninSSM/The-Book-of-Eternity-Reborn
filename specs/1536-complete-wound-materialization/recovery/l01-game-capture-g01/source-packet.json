@@ -759,28 +759,28 @@
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/Collect.ps1",
-      "bytes": 9216,
-      "sha256": "b195d961aea2e312b7cfb6c7bacfe68292f7dc43dcde8420c2c479c4051d786f"
+      "bytes": 9375,
+      "sha256": "f57671b7e70039ba9a45c2e2a75754a17060114194798be9dc8bb1e96c924e61"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/watchdog.py",
-      "bytes": 12221,
-      "sha256": "b4e12b41b7adb2b9b3a894a1dcdf136cae6888e07253b56a9520b686a919b183"
+      "bytes": 15395,
+      "sha256": "d09175beff54012514c779a98faec895a10897fa2b82a8da5e6a88f386523788"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/MapFrames.cs",
-      "bytes": 6992,
-      "sha256": "cc91cd05906539d87e2c6c4c5b4ff10928e9930408b880f6679322544c20544b"
+      "bytes": 7365,
+      "sha256": "dde0e058df7d765191314be82b1e98f1c8b38116c7759f07cdbe7a8f7675c238"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/ParentProbe.cs",
-      "bytes": 4355,
-      "sha256": "9522f7a5842cc1e752f2283b923c4046d5d26a019d3dd2d568c45bd77439400a"
+      "bytes": 4479,
+      "sha256": "b6d0ad6d3679d1152305c4a6fd8ce93886c41cc2a4fa83f9f5a075ab0a9a4db8"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/check_health.ps1",
-      "bytes": 3140,
-      "sha256": "ee465b6a86943c68f335b379f3266e4a30b10586f546d024f9c8dec2e222c1da"
+      "bytes": 3357,
+      "sha256": "f34f9930cf3055dda5fea9df59409c5bd44945d580c762dbc28f5f2a0e023e26"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/PolicyProbe.cs",
@@ -794,8 +794,8 @@
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/phase.py",
-      "bytes": 20830,
-      "sha256": "db5c593d0bd599ea9857b9e33e9a50082134c82146dec11630cc6a85d8394aca"
+      "bytes": 21157,
+      "sha256": "92155d2e8b6add95230fd68bba54ac27a71be2ad52685cbaf007c0d12e3ef89c"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/recover.py",
@@ -805,10 +805,15 @@
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/bindings.json",
       "bytes": 214290,
-      "sha256": "e0d6aa868b52dd92fec36f7c34b01106fc06792c289add93ce0780ffe6d3f200"
+      "sha256": "9c6f4d1c6f3d80b4d5240b7f12560cac73b3adfbc4015f3828f7cf7754fe9960"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/check_watchdog.py",
+      "bytes": 6230,
+      "sha256": "a43e20cea2d32f7d24d54d847e18df7dfa055c6e5971c4a2e68b1abf0fdb0470"
     }
   ],
-  "sourcePinDigest": "1c8c987efcc7e04d8e6bbb9f265029c58ed05fc3ebeadbda1deb49645687baef",
+  "sourcePinDigest": "fab6a66189aa71da5df02cf4580926ef9879775be5d8dd3919309b7b5bfce74f",
   "priorD01SourcePinDigest": "b277e73745c98abdc78f5feaa62a68373c2bf26b4b6115a20e4aa5207970e9ef",
   "explicitD01Deltas": [
     {
