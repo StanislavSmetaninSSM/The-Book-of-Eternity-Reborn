@@ -117,13 +117,64 @@ public sealed partial class PendingSnapshotValidationScopeTests
             fixture.OnPublication = (phase, _) => { if (phase == TrustedLocalPublicationPhase.MemberPublished) throw primary; };
         else fixture.BeforeMutation = _ => Task.FromException(primary);
         var before = File.ReadAllBytes(fixture.Files.ResolvePath("game_state/world/scope0.json"));
-        var error = await Record.ExceptionAsync(() => RunBorrowedWriterAsync(fixture, lease, "coordinated"));
+        if (rollback)
+            Assert.False(await CoordinatedStateWriteHelper.TryCommitAsync(fixture.Files, lease,
+                new CoordinatedStateWriteHelper.PlannedWrite("game_state/world/scope0.json", "{\"value\":1}", "{\"value\":2}")));
+        else
+            Assert.Same(primary, await Record.ExceptionAsync(() => RunBorrowedWriterAsync(fixture, lease, "coordinated")));
         fixture.BeforeMutation = null;
         fixture.OnPublication = null;
-        Assert.Same(primary, error);
         Assert.Equal(before, File.ReadAllBytes(fixture.Files.ResolvePath("game_state/world/scope0.json")));
         await fixture.RunBorrowedAsync(lease, () => Task.FromResult(new List<ValidationIssue>()));
         await fixture.Files.WriteFileAtomicAsync(lease, "game_state/world/scope0.json", "{\"value\":3}");
+    }
+
+    /// <summary>
+    /// Actual retained-journal recovery blocks a new proof until its physical cleanup is complete.
+    /// </summary>
+    /// <returns>
+    /// Completion after cleanup settles and a later proof can use the original lease.
+    /// </returns>
+    [Fact]
+    public async Task BorrowedMutation_RecoveryRefusesProofUntilCleanup()
+    {
+        using var fixture = new Fixture();
+        await fixture.PrepareAsync(false);
+        await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+        fixture.OnPublication = (phase, _) =>
+        {
+            if (phase == TrustedLocalPublicationPhase.Committed) throw new IOException("retain real committed cleanup debt");
+        };
+        await RunBorrowedWriterAsync(fixture, lease, "coordinated");
+        fixture.OnPublication = null;
+        var journal = Path.Combine(fixture.Files.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
+        Assert.True(File.Exists(journal));
+        var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        fixture.OnRecovery = (_, _) =>
+        {
+            entered.TrySetResult();
+            release.Task.WaitAsync(TimeSpan.FromSeconds(5)).GetAwaiter().GetResult();
+        };
+        var recovery = Task.Run(() => RunBorrowedWriterAsync(fixture, lease, "recovery"));
+        try
+        {
+            await Task.WhenAny(entered.Task, recovery).WaitAsync(TimeSpan.FromSeconds(5));
+            if (!entered.Task.IsCompleted) await recovery;
+            Assert.True(entered.Task.IsCompleted);
+            fixture.Ordinary = fixture.Cohort = 0;
+            await Assert.ThrowsAsync<InvalidOperationException>(() => fixture.RunBorrowedAsync(lease,
+                () => Task.FromResult(new List<ValidationIssue>())));
+            Assert.Equal(0, fixture.Ordinary + fixture.Cohort);
+        }
+        finally
+        {
+            release.TrySetResult();
+            await recovery.WaitAsync(TimeSpan.FromSeconds(5));
+            fixture.OnRecovery = null;
+        }
+        Assert.False(File.Exists(journal));
+        await fixture.RunBorrowedAsync(lease, () => Task.FromResult(new List<ValidationIssue>()));
     }
 
     /// <summary>

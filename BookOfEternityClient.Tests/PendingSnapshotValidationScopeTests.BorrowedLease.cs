@@ -4,6 +4,7 @@ using System.Text.Json;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -198,6 +199,30 @@ public sealed partial class PendingSnapshotValidationScopeTests
     }
 
     /// <summary>
+    /// An unusable entry source still binds declared rollback dependencies until final proof.
+    /// </summary>
+    /// <returns>
+    /// Completion after a durable dependency change refuses issue publication.
+    /// </returns>
+    [Fact]
+    public async Task BorrowedProof_UnusableSourceBindsDependencies()
+    {
+        using var fixture = new Fixture();
+        await fixture.PrepareAsync(false);
+        await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+        await fixture.ChangeAsync("request");
+        var reached = false;
+        await Assert.ThrowsAnyAsync<Exception>(() => fixture.RunBorrowedAsync(lease, async () =>
+        {
+            Assert.Equal("Unusable", Status(await fixture.LookupAsync(false)));
+            await fixture.ChangeAsync("overwrite");
+            reached = true;
+            return [];
+        }));
+        Assert.True(reached);
+    }
+
+    /// <summary>
     /// Borrowed teardown preserves all original ownership through success, failure and cancellation.
     /// </summary>
     /// <param name="outcome">
@@ -376,6 +401,54 @@ public sealed partial class PendingSnapshotValidationScopeTests
     }
 
     /// <summary>
+    /// A manager for the same path cannot adopt another manager's original lease.
+    /// </summary>
+    /// <returns>
+    /// Completion after the foreign-manager entry is rejected before running consumers.
+    /// </returns>
+    [Fact]
+    public async Task BorrowedCustody_SecondManager()
+    {
+        using var fixture = new Fixture();
+        await fixture.PrepareAsync(false);
+        await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+        var otherFiles = new FileSystemManager(fixture.Files.BasePath, NullLogger<FileSystemManager>.Instance);
+        var other = new ValidationService(otherFiles, NullLogger<ValidationService>.Instance);
+        await Assert.ThrowsAsync<InvalidOperationException>(() => fixture.RunBorrowedAsync(lease,
+            () => Task.FromResult(new List<ValidationIssue>()), other));
+        Assert.True(lease.IsActive);
+    }
+
+    /// <summary>
+    /// An explicit foreign lookup irreversibly invalidates only the active proof, preserving its outer lease.
+    /// </summary>
+    /// <returns>
+    /// Completion after sticky refusal and a later independent successful invocation.
+    /// </returns>
+    [Fact]
+    public async Task BorrowedCustody_ForeignLookupIsSticky()
+    {
+        using var foreign = new Fixture();
+        await foreign.PrepareAsync(false);
+        await using var foreignLease = await foreign.Files.AcquireCanonicalWriteLeaseAsync();
+        using var fixture = new Fixture();
+        await fixture.PrepareAsync(false);
+        await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+        var refused = false;
+        await Assert.ThrowsAsync<InvalidOperationException>(() => fixture.RunBorrowedAsync(lease, async () =>
+        {
+            Assert.Equal("Usable", Status(await fixture.LookupAsync(true, writeLease: lease)));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => fixture.LookupAsync(true, writeLease: foreignLease));
+            refused = true;
+            await Assert.ThrowsAsync<InvalidOperationException>(() => fixture.LookupAsync(true, writeLease: lease));
+            return [];
+        }));
+        Assert.True(refused);
+        Assert.True(lease.IsActive);
+        await fixture.RunBorrowedAsync(lease, () => Task.FromResult(new List<ValidationIssue>()));
+    }
+
+    /// <summary>
     /// Calls the existing terminal-freeze transition without manufacturing a remote owner.
     /// </summary>
     /// <param name="owner">
@@ -442,17 +515,21 @@ public sealed partial class PendingSnapshotValidationScopeTests
         /// <param name="body">
         /// Real read-only validation consumers whose result must pass final proof.
         /// </param>
+        /// <param name="validator">
+        /// Optional alternate manager's validator for ownership controls; null uses this fixture's validator.
+        /// </param>
         /// <returns>
         /// The runner's ordered issues or its original unwrapped exception.
         /// </returns>
         internal async Task<List<ValidationIssue>> RunBorrowedAsync(
-            FileSystemManager.CanonicalWriteLease lease, Func<Task<List<ValidationIssue>>> body)
+            FileSystemManager.CanonicalWriteLease lease, Func<Task<List<ValidationIssue>>> body,
+            ValidationService? validator = null)
         {
             try
             {
                 var method = typeof(ValidationService).GetMethod("RunBorrowedPendingSnapshotValidationAsync",
                     BindingFlags.Instance | BindingFlags.NonPublic)!;
-                return await (Task<List<ValidationIssue>>)method.Invoke(_validator, [lease, body])!;
+                return await (Task<List<ValidationIssue>>)method.Invoke(validator ?? _validator, [lease, body])!;
             }
             catch (TargetInvocationException error)
             {
