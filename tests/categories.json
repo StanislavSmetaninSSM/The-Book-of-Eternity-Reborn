@@ -2,6 +2,17 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-interface-crash-stage-contracts",
+  "responsibility": "CRASH5 ordinary scalar stage writer: fixed identity, monotonic elapsed time, record and UTF8 byte limits, bounded error types and observer failure precedence.",
+  "excludes": "No process startup, gameplay qualification, native evidence or diagnostic capture. Separately selectable so an expected adapter RED cannot cancel the stage RED before execution.",
+  "changeHints": ["BookOfEternityClient.IntegrationTests/JointInterfaceCrashStageReport.cs"],
+  "related": [],
+  "requirements": { "frontendBuild": false, "exclusive": false },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.JointInterfaceCrashStageReportTests.*"] }]
+},
+{
   "id": "worker-native-finite-pipe-linux",
   "responsibility": "CRASH5 actual finite NativeLineage root exit0/73, pre-exec identity, full separate output, natural retirement, timeout and retained uncertainty under the existing independent guardian using a prebuilt package.",
   "excludes": "No gameplay qualification, package compilation inside cases, diagnostic capture or platform skip. Managed no-Started policy is owned separately by adapter-contracts.",
@@ -23,7 +34,7 @@
   "expectedSeconds": null,
   "selectors": [
     { "project": "unit", "tests": ["BookOfEternityClient.Tests.GmWorkerNativeFinitePipePolicyTests.*"] },
-    { "project": "integration", "tests": ["BookOfEternityClient.Tests.JointInterfaceCrashProcessSupportTests.*", "BookOfEternityClient.Tests.JointInterfaceCrashStageReportTests.*"] }
+    { "project": "integration", "tests": ["BookOfEternityClient.Tests.JointInterfaceCrashProcessSupportTests.*"] }
   ]
 },
 {
