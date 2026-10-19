@@ -79,3 +79,5 @@ Routing checkpoint: parent owned the coherent implementation; independent gpt-6-
 T246 done: final87ca evidence accepted by independent Astra/high, fresh GitHub recovery250files clean/blobverified. User then proposed larger timeout and explicitly waived further approvals. Bounded spec6/plan4/T248…T251 reuses1536: one opt-in Windows source42 child600/category12m, defaults220 unchanged; no production/native/cleanup/assertion relaxation. SpecKit phases and equivalent consistency precede implementation; separate routine Sol6.1/xhigh reviewer planned.
 
 T249 WIP tests-first checkpoint: eight deadline eligibility cases plus existing nine support cases; compiled scalar seam still returns220 and is not wired to the parent. Expected causal RED is600 mismatch and three missing rejections. Extended Fact/runtime not added or run yet.
+
+T249 causal RED atfd19ac0fc:17completed13PASS4expectedFAIL (600 mismatch and three missing eligibility rejections), no timeout/skip, cleanup complete; T249-red archive retained. Minimal fixed policy implemented, shared source fixture/assertions retained, new extended1/12m category excluded default. GREEN/PREP pending; T250 unrun.

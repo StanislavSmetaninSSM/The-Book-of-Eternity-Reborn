@@ -2,6 +2,30 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-interface-source42-windows-extended-probe",
+  "responsibility": "Spec6 one explicit Windows source42 observation with600s child wait and unchanged source/QTE assertions.",
+  "excludes": "No default or CI selection, ordinary five qualification, Linux runtime, collectors or automatic retry.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointSourceProbe.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 12,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterface_Source42WindowsExtendedProbeObservesActualPreparation"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-interface-probe-budget-contracts",
   "responsibility": "Spec6 finite Windows source-probe budget policy and existing crash adapter mode, identity, stream and custody contracts.",
   "excludes": "No real source42/gameplay qualification, Linux startup or diagnostics capture.",

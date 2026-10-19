@@ -14,7 +14,29 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// Completion only when the actual source turn and QTE action return successfully.
     /// </returns>
     [Fact]
-    public async Task JointInterface_Source42WindowsProbeObservesActualPreparation()
+    public Task JointInterface_Source42WindowsProbeObservesActualPreparation() =>
+        RunJointInterfaceSourceProbeAsync(extendedSourceProbe: false);
+
+    /// <summary>
+    /// Observes the unchanged source42 scenario once within the explicitly extended Windows child wait.
+    /// </summary>
+    /// <returns>
+    /// Completion only when the original source-turn, identity and QTE assertions succeed.
+    /// </returns>
+    [Fact]
+    public Task JointInterface_Source42WindowsExtendedProbeObservesActualPreparation() =>
+        RunJointInterfaceSourceProbeAsync(extendedSourceProbe: true);
+
+    /// <summary>
+    /// Shares the original source-probe fixture and assertions between the two finite observation windows.
+    /// </summary>
+    /// <param name="extendedSourceProbe">
+    /// Whether to request the explicit extended wait; otherwise the original wait applies.
+    /// </param>
+    /// <returns>
+    /// Completion after the unchanged source result and original-child identity are verified.
+    /// </returns>
+    private async Task RunJointInterfaceSourceProbeAsync(bool extendedSourceProbe)
     {
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("T227 is a local Windows investigation.");
         using var classOwned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
@@ -28,7 +50,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             Cut = 0, Fault = (string?)null, Diagnostic = false, Source42Probe = true
         }));
         var output = Path.Combine(own, "source42.json");
-        var child = await RunJointInterfaceNativeChildAsync("engine-joint-interface-source-probe", own, output, 0, own, owned);
+        var child = await RunJointInterfaceNativeChildAsync("engine-joint-interface-source-probe", own, output, 0, own, owned,
+            extendedSourceProbe: extendedSourceProbe);
         WritePhysicalInjuryDiagnostic("crash5_source42_probe_exit", child);
         Assert.Equal(0, child.ExitCode);
         Assert.True(child.Eof); Assert.True(child.Joined);

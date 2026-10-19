@@ -83,7 +83,10 @@ internal static class JointInterfaceCrashProcessSupport
     /// </returns>
     internal static TimeSpan GetDirectChildTimeout(bool windows, string role, bool extendedSourceProbe)
     {
-        return TimeSpan.FromSeconds(220);
+        if (!extendedSourceProbe) return TimeSpan.FromSeconds(220);
+        if (!windows || !string.Equals(role, "engine-joint-interface-source-probe", StringComparison.Ordinal))
+            throw new InvalidDataException("The extended child wait is only available to the Windows source42 probe.");
+        return TimeSpan.FromSeconds(600);
     }
 
     /// <summary>

@@ -223,14 +223,19 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// <param name="deliveryNonce">
     /// Diagnostic identity nonce, or null without live delivery.
     /// </param>
+    /// <param name="extendedSourceProbe">
+    /// Requests the fixed extended Windows source-probe wait; the default preserves the ordinary wait.
+    /// </param>
     /// <returns>
     /// The independently identified complete child outcome.
     /// </returns>
     private async Task<JointInterfaceNativeOutcome> RunJointInterfaceNativeChildAsync(string role, string root, string output, int cut, string own,
-        JointInterfaceCrashOwnedContainer ownership, bool observeLive = false, string? deliveryNonce = null)
+        JointInterfaceCrashOwnedContainer ownership, bool observeLive = false, string? deliveryNonce = null,
+        bool extendedSourceProbe = false)
     {
         var paths = MortalArchiveDependencyPaths();
         var windows = OperatingSystem.IsWindows();
+        var childTimeout = JointInterfaceCrashProcessSupport.GetDirectChildTimeout(windows, role, extendedSourceProbe);
         var mode = JointInterfaceCrashProcessSupport.ReadAndValidateEntryMode(own, cut, windows, OperatingSystem.IsLinux());
         var backend = JointInterfaceCrashProcessSupport.SelectBackend(windows, OperatingSystem.IsLinux(), mode);
         var dotnetRoot = Environment.GetEnvironmentVariable("DOTNET_ROOT")
@@ -271,8 +276,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                     new(child.Id, birthTick, root, deliveryNonce ?? "", cut), out delivery, out deliveryObserverFailure);
             else stdout = child.StandardOutput.ReadToEndAsync();
             stderr = child.StandardError.ReadToEndAsync();
-            var deadline = Stopwatch.GetTimestamp() + 220 * Stopwatch.Frequency;
-            var nativeWait = child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(220));
+            var deadline = Stopwatch.GetTimestamp() + (long)(childTimeout.TotalSeconds * Stopwatch.Frequency);
+            var nativeWait = child.WaitForExitAsync().WaitAsync(childTimeout);
             if (observeLive && role == "engine-joint-interface-resume" && delivery is not null && JointInterfaceManagedCapture.Enabled)
                 captureTask = JointInterfaceManagedCapture.ObserveAsync(child, birthTick, root, deliveryNonce ?? "", cut, own,
                     executable, arguments, deadline, delivery, captureStop.Token);
