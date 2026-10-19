@@ -35,3 +35,5 @@ SOURCE only; native PREP/targets/API unrun. Pure role prototype RED0/1→GREEN7/
 SOURCE913453c0 accepted19 focused checks; prior36 static/15 inert reused, publication blocker closed. SourcePinDigest5ab898720f9e83e53ee664f3e38b49feffdd8cf02357ae4526749b9aaeb7786c. ONE ZERO PREP admitted after durable save/recovery; synthetic/game/API HOLD.
 
 ZERO PREP658a2251 first native0/observer[]/103.558s; integration460/unit439 unchanged copies; onlyOwner compiled (7 nullable-context warnings, no errors). Parent6/health26 pass, retainedtimerPolicy23 exactsourceproof; freshproperties/imports/catalog/PlanOnly ZERO pass, exact1/1/1, afterLiveTools[], normal899 unchanged. Evidence frozen; independent synthetic PREP pending; synthetic/game/API HOLD.
+
+Independent synthetic PREP5ac48a24 accepted46 checks/47 chains. One synthetic run3ac823b7efc444babcd176679ae51ecd API<=1 named permit consumed before execution; game HOLD.

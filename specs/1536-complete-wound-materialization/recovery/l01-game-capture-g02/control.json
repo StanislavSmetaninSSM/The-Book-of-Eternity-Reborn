@@ -1,7 +1,7 @@
 {
   "kind": "G02_CORRECTIVE_CONTROL",
   "base": "46c621fb50fe61e5a662ccaf8f00f3fa0f3c6dc3",
-  "status": "ZERO_PREP_FIRST_PASS_PENDING_INDEPENDENT_REVIEW",
+  "status": "ONE_SYNTHETIC_CAPTURE_PERMIT_CONSUMED_GAME_HOLD",
   "sourceAdmission": {
     "status": "CONSUMED_G02_ZERO_PREP_FIRST_OUTCOME",
     "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02-final-source-independent-review-20261019.json",
@@ -9,7 +9,15 @@
     "reviewedSource": "913453c077fd9348b51cb3462c8bed5a658dfbde"
   },
   "syntheticAdmission": {
-    "status": "HOLD"
+    "status": "PREP_ACCEPTED_G02_ONE_SYNTHETIC",
+    "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02-synthetic-prep-independent-review-20261019.json",
+    "reviewSha256": "546e318094933704ccf350383a1e614d7a8461d563f5e545a332e02749ef12e2",
+    "runId": "3ac823b7efc444babcd176679ae51ecd",
+    "prepRecords": {
+      "tools": "1107aab0f5504be7c1193e9b1c51834ed0221028b444b089bdd7819ba5707e8f",
+      "prepare": "77b5e37e8740da928ad245ba3cc4ab358f5af03f0a3a362eeb813236900b632e"
+    },
+    "lease": "CONSUMED_FOR_NAMED_RUN_NO_RETRY"
   },
   "actualAdmission": {
     "status": "HOLD"
@@ -19,7 +27,7 @@
   "l01": "52/57 original provenance unchanged; crash5 unqualified",
   "broaderHolds": "FullNI/HOT/F1/M3/T197/E01/T148/Phase10 incomplete; A3 NO-PROCEED",
   "dumpLifecycle": "Private own/capture only; retain through independent sanitized EVIDENCE/final report; no Git/attach/archive/autodelete",
-  "currentNextAction": "Independent affected PREP for ONE synthetic actual capture only; no synthetic/game/API yet",
+  "currentNextAction": "After exact remote/recovery perform ONE S01 actual WriteDump+decode through common G01; no game admission",
   "syntheticDiagnosticRequestUpperBound": 1,
   "gameDiagnosticRequestUpperBound": 1,
   "zeroPrepEvidence": {
