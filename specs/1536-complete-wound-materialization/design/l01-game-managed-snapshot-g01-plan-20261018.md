@@ -1,3 +1,5 @@
+> CURRENT FINAL 2026-10-19: source-onlycollector-env fix принят24checks/actualprefixpure4PASS, runtimeNONE/consumedlease. ЕдинственныйgameFAIL220, captureAPI0/UNREACHED/no snapshot; EVIDENCEfactsaccepted38+4, parent22/terminal24 scopes separated. L0152of57/oldUNKNOWN/broaderholds unchanged. Дальнейшийruntime требует отдельного user-authorized плана; старыеPREP/actual immutable. Earlierentries historical.
+
 > CURRENT 2026-10-19: firstoutcomeEVIDENCE factsaccepted/captureBLOCKED. Parent22 and terminal24 scopes distinguished; sourceprogressreturns207.678s doesnotprove cause/bound. Postrun source-onlycollector-env mkdir0700 fix+actualprefixpure4/4 WIP pending focusedreview; C#bytes unchanged, originalPREP/actual immutable. RuntimeHOLD/consumedlease/no newgame orDump. Earlierstatuses historical.
 
 > CURRENT 2026-10-19: singleG01game executed1/FAILoriginal220timeout; cleanuptrue/liveTools[]. Capture precollectorFileNotFound, collector0/API0/UNREACHED, no dump/report/map. Namedlease consumed/no retry. SanitizedEVIDENCE+independentdiagnosis pending; observed acceptedmarker207.334s is discrete only, phase/sourcecompleteness/suspensionUNKNOWN. Earlier statuses historical.

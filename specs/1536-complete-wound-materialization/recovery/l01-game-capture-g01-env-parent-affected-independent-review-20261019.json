@@ -1,0 +1,102 @@
+{
+  "kind": "G01_POSTRUN_ENV_PARENT_FOCUSED_SOURCE_AND_PURE_REVIEW",
+  "verdict": "ACCEPT_G01_POSTRUN_ENV_PARENT_SOURCE_AND_PURE_ONLY",
+  "reviewedCarrier": "57cb791f7b7a0ad3d30033c5e822e5e00b9a66e9",
+  "base": "e379457699ee68e1fee45552fbeee3da38c5abb6",
+  "reviewedUtc": "2026-10-19T00:57:53.745102+00:00",
+  "sourcePinDigest": "a6fc0b4308f6d0ae173f4fd41eefccfd73b0fb294dda935f2ab37fb081942b13",
+  "controllerSha256": "63969901c241f7007030af78b757bba0618c72dae457ae75c11804de45bc9980",
+  "watchdogSha256": "0fcd99aefab4a1b23414b0435c3f721deb04d511bcf5e9bd8439ce9b7c5fd2e9",
+  "bindingsSha256": "70cf9cd284fb9559d183525d4b6fc0c3f7acbb9611c0a8a487c770962589fae9",
+  "sourcePins": 164,
+  "findings": [],
+  "checkCount": 24,
+  "checks": {
+    "path": "/tmp/1536-cloud-tools/review/l01-game-capture-g01-env-parent-affected-checks-20261019.json",
+    "bytes": 3757,
+    "sha256": "4a882d8483254a2c1dbab8c25d171529e675645dbe2dd8e0b8450ad400a52424"
+  },
+  "checker": {
+    "path": "/tmp/1536-cloud-tools/review/check_g01_env_parent_affected_20261019.py",
+    "bytes": 10688,
+    "sha256": "73845d73b199b43888dd25d9f19e31a4f86d9490bd510314a774eb9458394d5e"
+  },
+  "readerHistory": [
+    {
+      "path": "/tmp/1536-cloud-tools/review/g01-env-parent-affected-reader-history-20261019.json",
+      "bytes": 894,
+      "sha256": "8321440c3ad107437c4e991567aeea6156ce31750c220fb5ed962650bd5c7fdb"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_g01_env_parent_affected_20261019_v1.py",
+      "bytes": 10658,
+      "sha256": "ee2f97c9b824d03040628e5c23b0e2bb14f93b7605981d4e1ddbd18c5869e59b"
+    }
+  ],
+  "recoveryReceipt": {
+    "path": "/tmp/1536-cloud-tools/g01-recovery-57cb791f.json",
+    "bytes": 81241,
+    "sha256": "6e7be059ac12ac4ba2daeec209a20556a7b02456166b8d13758051a42671a3e0"
+  },
+  "actualPrefixProof": {
+    "source": {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/check_environment_prefix.py",
+      "bytes": 3672,
+      "sha256": "87ff4a03d75960f46b5181c47794f9f1ccbcdf89d1cf9deb9c9c3fcc2d1cfad4"
+    },
+    "originalRed": {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/environment-prefix-red.json",
+      "bytes": 1195,
+      "sha256": "d99f13507961760258d099f9bc7a10a06aff935817faa05360fedeee23319484"
+    },
+    "correctedGreen": {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/environment-prefix-green.json",
+      "bytes": 1023,
+      "sha256": "a739e0f8e52d593cd058df4c1870e832890d058356dcb0ae702b2b40ef58f3aa"
+    },
+    "redPassed": 0,
+    "greenPassed": 4,
+    "nativeChildren": 0,
+    "gameCases": 0,
+    "apiRequests": 0,
+    "reviewerReexecutedProof": false
+  },
+  "equivalence": {
+    "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/postrun-env-parent-equivalence.json",
+    "bytes": 1174,
+    "sha256": "cf32ed56daafc990f31dc1ef8240ec536616a42937a8ede615d7abc3f2935e59"
+  },
+  "conclusions": [
+    "The only functional change is the exact caller-owned collector_phase assignment, strict mkdir(mode=0700), and passing that phase to the unchanged pinned S01 environment(). Exact inverse restores the entire original watchdog bytes. No capture guards, signals, API, timing bounds, game code/assertions or shared helper changed.",
+    "The saved regression extracts the actual old/new caller filesystem AST and exact pinned environment() only. Old source produces0/4 and ENOENT; current source produces4/4 with parent+six children0700, unchanged allowlist and own TMPDIR, and duplicate-phase refusal. Source/helper/prefix hashes and retained filesystem agree. This reviewer inspected those originals and AST, without rerunning them.",
+    "Current source closure changes exactly watchdog and its bindings, adding only the new proof source pin. Inputs/requestInputs change only their watchdog image; controller and every other binding remain byte-equivalent. Canonical164-pin digest and exact clean GitHub recovery agree.",
+    "All47434 tracked entries outside the feature remain identical to integration compiledSource d293. Retained integration460/unit439/tools8 provenance is explicit; immediately preceding independent EVIDENCE verified the physical closures, and the new equivalence record preserves that statement. No compiler reran, no original binary/PDB or PREP digest is relabeled, and no private-binary Git recovery is claimed.",
+    "Original sanitized first outcome and its11 private hash chains remain exact. All8 independent EVIDENCE/proof/history artifacts are copied byte-exact. The new terminal24/extra-two-event addendum exactly matches the accepted independent evidence while the original parent22 interval is unchanged.",
+    "Current sourceAdmission is HOLD_POSTRUN_SOURCE_CHANGE_NO_RUNTIME_RELEASE; actualAdmission remains consumed with its old PREP record hashes, and snapshotRelease=NONE_CONSUMED_FIRST_RUN. These prevent turning this source-only correction into a second runtime attempt."
+  ],
+  "acceptedScope": {
+    "finding": "G01-E01_CALLER_OMITTED_PRIVATE_ENV_PARENT",
+    "status": "RESOLVED_IN_CURRENT_SOURCE_AND_FILESYSTEM_ONLY_PROOF",
+    "runtimePrep": "NOT_REQUALIFIED_FOR_CURRENT_DIGEST",
+    "runtimeRelease": "NONE",
+    "newGameCases": 0,
+    "newCollectorOrWriteDump": 0,
+    "newMappingRelease": "NONE",
+    "originalGame": "FAIL_TIMEOUT220",
+    "originalCapture": "BLOCKED_API_UNREACHED0",
+    "managedSnapshot": "ABSENT",
+    "originalL01Qualified": "52/57",
+    "old66529": "UNKNOWN_UNAVAILABLE"
+  },
+  "acceptanceSaveConditions": [
+    "Save this exact focused report/checks/history and bind current postRunEnvParentFix as accepted source/pure only. Keep the controller-recognized runtime gates closed; do not restore SOURCE_ACCEPTED_G01_ZERO_ONLY or PREP_ACCEPTED_G01_ONE_ACTUAL_CASE for this report.",
+    "Keep original e379 outcome, actual275586f3/oldPREP a6c267 digest and private settings/fixture/raw evidence immutable. Retain original RED and current GREEN as separate outcomes.",
+    "Final checkpoint must state source defect corrected but no managed snapshot, game timeout unresolved, consumed permit/no retry and no game/collector/dump/map release. Keep parent22 and terminal24 scopes separate, no lease-hang claim.",
+    "Preserve original52/57, oldUNKNOWN, private-root retention/privacy rules and all broader/platform holds. Any future runtime requires a separately authorized plan and relevant SOURCE/PREP."
+  ],
+  "limits": [
+    "Focused post-run caller fix and affected filesystem-only proof; not a whole-source/native-PREP review or runtime admission.",
+    "No SDK/compiler/game/diagnostic/API/process/procfs action and no repository edit by reviewer.",
+    "One read-only checker literal expectation was corrected from snapshotRelease NONE to exact NONE_CONSUMED_FIRST_RUN; original reader/failure and correction are preserved. No source/evidence/native outcome changed."
+  ]
+}

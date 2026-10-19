@@ -1,0 +1,135 @@
+{
+  "kind": "G01_POSTRUN_ENV_PARENT_FOCUSED_SOURCE_CHECKS",
+  "carrier": "57cb791f7b7a0ad3d30033c5e822e5e00b9a66e9",
+  "checkedUtc": "2026-10-19T00:56:59.881713+00:00",
+  "checks": [
+    {
+      "check": "only exact caller parent creation and argument substitution",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "current watchdog and unchanged controller SHA",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "pin delta exactly watchdog/bindings and one added pure checker",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "current canonical source digest exact",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "inputs only exact watchdog bytes/SHA changed",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "requestInputs only exact watchdog bytes/SHA changed",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "all other bindings unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "exact independent clean GitHub recovery receipt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "both current checkout HEADs exact and clean",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "all20 changed paths exact local/Git/restore and only feature scope",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "RED/GREEN exact actual caller AST hashes and frozen script/helper bindings",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "prefix calls strictly filesystem mkdir exact helper and str only",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "strict caller mkdir0700 has no parents or exist_ok",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "saved first RED0/4 and GREEN4/4 remain distinct",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "proof records zero children/game/API and no original-root access",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "retained proof filesystem agrees: missing RED, GREEN parent/six children0700",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "outside-feature47434 source entries unchanged from original integration compile",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "equivalence does not relabel original compile/PREP or grant runtime",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "equivalence binds original distinct RED and GREEN records",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "original sanitized evidence and11 private originals unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "22parent/24terminal addendum exactly accepted, no original rewriting",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "all8 original independent evidence artifacts copied unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "runtime gates HOLD source and consumed actual, no retry/map/API release",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "old PREP records keep original digest and failed actual unchanged",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "checkCount": 24,
+  "findings": [],
+  "nativeActions": 0,
+  "proofReexecuted": false,
+  "limits": [
+    "Current read-only source/proof verification only; no whole runtime/PREP acceptance.",
+    "Existing full899/tool8 binary verification is retained from immediately preceding independent EVIDENCE plus parent equivalence receipt; no recompilation or binary-recovery claim."
+  ]
+}

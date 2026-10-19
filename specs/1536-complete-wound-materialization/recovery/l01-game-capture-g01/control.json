@@ -1,8 +1,8 @@
 {
   "kind": "G01_PENDING_CAPTURE_ORCHESTRATION_CONTROL",
   "base": "c1668efba8ccf9bb041e8b764d561fe7bed0bc6f",
-  "status": "POSTRUN_ENV_PARENT_FIX_PURE_PASS_PENDING_FOCUSED_REVIEW",
-  "sourceReview": "ORIGINAL_ACCEPTANCE_RETAINED_POSTRUN_ENV_FIX_PENDING",
+  "status": "QUALIFIED_POSTRUN_SOURCE_FIX_GAME_FAIL_CAPTURE_BLOCKED_RUNTIME_CLOSED",
+  "sourceReview": "ACCEPT_G01_POSTRUN_ENV_PARENT_SOURCE_AND_PURE_ONLY",
   "affectedIntegrationPrep": "ORIGINAL_PREP_RETAINED_CSHARP_UNCHANGED",
   "gameplayRelease": "NONE",
   "snapshotRelease": "NONE_CONSUMED_FIRST_RUN",
@@ -38,14 +38,11 @@
     "automaticDeletion": "NONE"
   },
   "unimplemented": [],
-  "unrunWipSources": [
-    "managed mapping BLOCKED_NO_REPORT",
-    "postrun source/pure affected review pending"
-  ],
+  "unrunWipSources": [],
   "allOldOutcomesAndBroaderHoldsUnchanged": true,
-  "currentNextAction": "FOCUSED_SOURCE_AND_AFFECTED_FILESYSTEM_PURE_REVIEW_NO_RUNTIME",
+  "currentNextAction": "REPORT_FINITE_ENDPOINT_NO_FURTHER_RUNTIME_AUTHORIZED",
   "sourceAdmission": {
-    "status": "HOLD_POSTRUN_SOURCE_CHANGE_NO_RUNTIME_RELEASE",
+    "status": "HOLD_NEW_USER_AUTHORIZED_RUN_PLAN_AND_RELEVANT_PREP_REQUIRED",
     "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-source-accepted-review-20261019.json",
     "reviewSha256": "49a12866715b264a38de2e50572a1f012dce956653035ed437703cd8d5b3cf76",
     "reviewedSource": "e520663f7918e536c2ae0675cb79a774be637655"
@@ -197,7 +194,7 @@
     "interpretation": "The lease-return207346ms and accepted finalization-return207678ms occur after the parent22-event interval. Therefore its last lease-enter cannot establish a blocked lease. The terminal delivery has EOF and no late-first-return marker; no unique managed blocking operation, useful-work remainder or completion bound is proven."
   },
   "postRunEnvParentFix": {
-    "status": "WIP_AFFECTED_PURE4_PASS_PENDING_REVIEW",
+    "status": "ACCEPT_G01_POSTRUN_ENV_PARENT_SOURCE_AND_PURE_ONLY",
     "watchdogSha256": "0fcd99aefab4a1b23414b0435c3f721deb04d511bcf5e9bd8439ce9b7c5fd2e9",
     "proofPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/environment-prefix-green.json",
     "proofSha256": "a739e0f8e52d593cd058df4c1870e832890d058356dcb0ae702b2b40ef58f3aa",
@@ -205,6 +202,15 @@
     "unchangedBinaryProof": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/postrun-env-parent-equivalence.json",
     "runtimeRelease": "NONE",
     "newGameCases": 0,
-    "newDiagnosticRequests": 0
-  }
+    "newDiagnosticRequests": 0,
+    "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-env-parent-affected-independent-review-20261019.json",
+    "reviewSha256": "136d0ed142bd7c8d9f75a396c1e9665177f93608eaad3afe8eb5828baaab112b",
+    "checks": 24
+  },
+  "mappingStatus": "BLOCKED_NO_REPORT_MAPPER_NOT_INVOKED",
+  "remainingBlockers": [
+    "Managed snapshot/target MethodDef+IL frames absent; timeout cause/completion bound unproved.",
+    "Original L01 crash5 still unqualified;52of57 original evidence only.",
+    "Consumed run never retries; any future runtime requires distinct user-authorized plan/newroot/run and relevant SOURCE/PREP."
+  ]
 }
