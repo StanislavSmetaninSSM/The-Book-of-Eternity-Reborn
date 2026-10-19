@@ -12,6 +12,55 @@ namespace BookOfEternityClient.Tests;
 public sealed class JointInterfaceCrashProcessSupportTests
 {
     /// <summary>
+    /// Keeps the original wait when no extended source observation is requested.
+    /// </summary>
+    /// <param name="windows">
+    /// Whether the requested platform is Windows.
+    /// </param>
+    /// <param name="role">
+    /// The ordinary producer, resumer or source-probe dispatcher role.
+    /// </param>
+    [Theory]
+    [InlineData(true, "engine-joint-interface-original-crash")]
+    [InlineData(true, "engine-joint-interface-resume")]
+    [InlineData(true, "engine-joint-interface-source-probe")]
+    [InlineData(false, "engine-joint-interface-source-probe")]
+    public void ChildTimeout_DefaultPreservesOriginalWait(bool windows, string role)
+    {
+        Assert.Equal(TimeSpan.FromSeconds(220),
+            JointInterfaceCrashProcessSupport.GetDirectChildTimeout(windows, role, false));
+    }
+
+    /// <summary>
+    /// Gives the explicit Windows source-probe request its fixed extended observation window.
+    /// </summary>
+    [Fact]
+    public void ChildTimeout_ExtendedWindowsSourceUsesSixHundredSeconds()
+    {
+        Assert.Equal(TimeSpan.FromSeconds(600),
+            JointInterfaceCrashProcessSupport.GetDirectChildTimeout(true, "engine-joint-interface-source-probe", true));
+    }
+
+    /// <summary>
+    /// Rejects extension requests for ordinary roles or non-Windows source probes before launch.
+    /// </summary>
+    /// <param name="windows">
+    /// Whether the requested platform is Windows.
+    /// </param>
+    /// <param name="role">
+    /// The role that must not receive an extended observation window on this platform.
+    /// </param>
+    [Theory]
+    [InlineData(true, "engine-joint-interface-original-crash")]
+    [InlineData(true, "engine-joint-interface-resume")]
+    [InlineData(false, "engine-joint-interface-source-probe")]
+    public void ChildTimeout_RejectsExtensionOutsideWindowsSource(bool windows, string role)
+    {
+        Assert.Throws<InvalidDataException>(() =>
+            JointInterfaceCrashProcessSupport.GetDirectChildTimeout(windows, role, true));
+    }
+
+    /// <summary>
     /// Ordinary mode never reads inherited capture settings, including a malformed setting.
     /// </summary>
     [Fact]

@@ -2,6 +2,31 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-interface-probe-budget-contracts",
+  "responsibility": "Spec6 finite Windows source-probe budget policy and existing crash adapter mode, identity, stream and custody contracts.",
+  "excludes": "No real source42/gameplay qualification, Linux startup or diagnostics capture.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointInterfaceCrashProcessSupport.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointSourceProbe.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointInterfaceCrashProcessSupportTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "pending-snapshot-qte-caller",
   "responsibility": "Actual QTE terminal caller proof lifetimes, compensation and accepted-story validation.",
   "excludes": "No broad suite, gameplay qualification or native runtime.",

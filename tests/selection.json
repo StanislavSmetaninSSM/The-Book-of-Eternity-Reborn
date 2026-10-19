@@ -122,6 +122,13 @@
       "contracts": [
         "Preserve original validation, rollback, disposal and browser contracts through the held-lease extension."
       ]
+    },
+    {
+      "category": "fr063-joint-interface-probe-budget-contracts",
+      "reason": "Verify fixed extended-source budget eligibility while preserving ordinary process contracts.",
+      "contracts": [
+        "Only explicit Windows source probe may use600s; default220 and original owner lifecycle remain."
+      ]
     }
   ]
 }
