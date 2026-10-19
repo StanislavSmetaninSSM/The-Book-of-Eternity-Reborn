@@ -7,6 +7,24 @@ public partial class ValidationService
 {
     private readonly AsyncLocal<GameStateValidationSelection?> _activeGameStateValidationSelection = new();
 
+    /// <summary>
+    /// Executes selected phases under the caller's admission, deferring reporting for a pending-snapshot proof.
+    /// </summary>
+    /// <param name="selection">
+    /// Exact game-state phase and file selection.
+    /// </param>
+    /// <param name="metaControlShapesOnly">
+    /// Whether to run only the existing Meta control-shape component.
+    /// </param>
+    /// <param name="acceptedStoryAppend">
+    /// Optional accepted QTE story proof.
+    /// </param>
+    /// <param name="jointStoryProof">
+    /// Optional Mortal joint story proof.
+    /// </param>
+    /// <returns>
+    /// Ordered issues; a pending-snapshot caller must verify and close before publishing them.
+    /// </returns>
     private async Task<List<ValidationIssue>> ValidateGameStateCoreAsync(
         GameStateValidationSelection selection, bool metaControlShapesOnly, StoryService.AcceptedStoryAppend? acceptedStoryAppend,
         StoryService.MortalJointStoryProof? jointStoryProof)

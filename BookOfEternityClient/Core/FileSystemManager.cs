@@ -3763,6 +3763,24 @@ public partial class FileSystemManager
             CanonicalWritePurpose.PublicationReadQuiescence,
             cancellationToken);
 
+    /// <summary>
+    /// Installs ambient registration in the caller before starting the existing canonical lease acquisition.
+    /// </summary>
+    /// <param name="purpose">
+    /// Existing canonical purpose; a read purpose alone does not enforce mutation exclusion.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Cancellation for main admission and physical lock acquisition.
+    /// </param>
+    /// <param name="workerPurpose">
+    /// Optional existing worker authority.
+    /// </param>
+    /// <param name="worldIssuance">
+    /// Exact read reservation issuing ordinary recovery, or null for ordinary acquisition.
+    /// </param>
+    /// <returns>
+    /// The original acquisition task, whose failure releases only its own registrations.
+    /// </returns>
     private Task<CanonicalWriteLease>
         AcquireCanonicalWriteLeaseWithAmbientAsync(
             CanonicalWritePurpose purpose,

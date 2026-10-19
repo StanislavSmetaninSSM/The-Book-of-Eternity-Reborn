@@ -196,6 +196,51 @@ public partial class GameEngine
         _fs.DeleteFile("input/turn_request.json");
     }
 
+    /// <summary>
+    /// Validates current state and optionally coordinates repair, closing each source read proof before later checks or mutations.
+    /// </summary>
+    /// <param name="source">
+    /// Validation origin; the console post-materialization origin uses a fresh pending-snapshot invocation.
+    /// </param>
+    /// <param name="rollbackSnapshot">
+    /// Optional original rollback capability used by the existing rejection and repair paths.
+    /// </param>
+    /// <param name="progressionControl">
+    /// Optional accepted-turn progression contract to validate and apply on success.
+    /// </param>
+    /// <param name="allowRepairLoop">
+    /// Whether validation errors may enter the existing repair loop.
+    /// </param>
+    /// <param name="initialCanonicalRepairBoundaryUtc">
+    /// Optional prior repair freshness boundary.
+    /// </param>
+    /// <param name="initialCanonicalRepairErrors">
+    /// Optional prior errors whose player-facing outputs require freshness checks.
+    /// </param>
+    /// <param name="initialCanonicalRepairStartedAtUtc">
+    /// Optional start time associated with the supplied prior repair errors.
+    /// </param>
+    /// <param name="pendingResolutionRepairCheckpoint">
+    /// Optional original pending-resolution checkpoint passed to the repair route.
+    /// </param>
+    /// <param name="beforeRepairMutation">
+    /// Optional callback before the first repair mutation, after game-state validation has closed.
+    /// </param>
+    /// <param name="beforeTerminalRepairReturn">
+    /// Optional callback on the existing terminal rejection paths.
+    /// </param>
+    /// <param name="applyProgressionOnSuccess">
+    /// Whether to apply the supplied progression contract after validation succeeds.
+    /// </param>
+    /// <param name="treatmentResourcePublicationTransaction">
+    /// Optional transaction used to filter its exact already-published item issues.
+    /// </param>
+    /// <param name="guardianMusingsForRepair">
+    /// Optional completed guardian-musings proof to recheck after genuine repair completion.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> after validation succeeds; <see langword="false"/> on terminal rejection or declined repair.
+    /// </returns>
     private async Task<bool> ValidateCurrentGameStateOrShowErrorsAsync(string source,
         RollbackSnapshot? rollbackSnapshot = null,
         ProgressionControl? progressionControl = null,

@@ -18,6 +18,21 @@ public partial class FileSystemManager
     }
     internal MainAdmission BeginMainAdmission()=>BeginMainAdmission(false);
     internal MainAdmission BeginParticipatingMainAdmission()=>BeginMainAdmission(true);
+    /// <summary>
+    /// Registers main admission synchronously in the caller's execution flow.
+    /// </summary>
+    /// <param name="participating">
+    /// True permits joining an existing remote operation through its ordinary protocol.
+    /// </param>
+    /// <param name="worldIssuance">
+    /// Exact read reservation issuing recovery, or null for ordinary admission.
+    /// </param>
+    /// <param name="physicalScope">
+    /// True marks a physical lease frame that conflicts with a new read reservation.
+    /// </param>
+    /// <returns>
+    /// A frame that must be acquired and disposed by its owner.
+    /// </returns>
     private MainAdmission BeginMainAdmission(bool participating, ValidationReadReservation? worldIssuance = null, bool physicalScope = false)
     {
         var parent=MainAdmissions.Value;
@@ -51,6 +66,27 @@ public partial class FileSystemManager
         internal CanonicalRootIdentity RootIdentity=>_files.CanonicalRootAuthorityIdentity;
         internal bool Closed=>_closed;
         internal MainAdmission? Parent=>_parent;
+        /// <summary>
+        /// Binds an admission frame to its actual manager, parent and requested access.
+        /// </summary>
+        /// <param name="files">
+        /// Manager issuing this frame.
+        /// </param>
+        /// <param name="parent">
+        /// Calling-flow parent, or null for a root admission.
+        /// </param>
+        /// <param name="requested">
+        /// Existing coordinator access, or null to use ordinary owner admission.
+        /// </param>
+        /// <param name="participating">
+        /// Whether the ordinary remote participation protocol is permitted.
+        /// </param>
+        /// <param name="worldIssuance">
+        /// Exact read reservation opening recovery, or null outside reserved acquisition.
+        /// </param>
+        /// <param name="physicalScope">
+        /// Whether this frame owns a physical filesystem lease.
+        /// </param>
         internal MainAdmission(FileSystemManager files,MainAdmission? parent,GmSessionRunCoordinator.Access? requested,bool participating, ValidationReadReservation? worldIssuance, bool physicalScope)
         {_files=files;_parent=parent;_requested=requested;_participating=participating;_worldIssuance=worldIssuance;PhysicalScope=physicalScope;}
         internal async Task AcquireAsync(CancellationToken token=default,bool closing=false,bool quiescentOnly=false, GmWorkerCanonicalPurpose? workerPurpose=null)
@@ -102,6 +138,12 @@ public partial class FileSystemManager
         }
         internal bool Acquired=>_access!=null && !_closed;
         internal bool SharesAccess(MainAdmission other)=>_access!=null && ReferenceEquals(_access,other._access);
+        /// <summary>
+        /// Reserves this frame's actual shared access for one validation read lifetime.
+        /// </summary>
+        /// <param name="scope">
+        /// New reservation checked against existing borrowers and owner ancestry.
+        /// </param>
         internal void ReserveWorldRead(ValidationReadReservation scope)
         {
             var access = _access;
@@ -111,9 +153,24 @@ public partial class FileSystemManager
             access.ReserveWorldRead(scope, ancestors);
             _worldReservedAccess = access;
         }
+        /// <summary>
+        /// Releases this frame's original read reservation.
+        /// </summary>
+        /// <param name="scope">
+        /// Original reservation to close; another identity cannot release shared access.
+        /// </param>
         internal void ReleaseWorldRead(ValidationReadReservation scope)
         { _worldReservedAccess?.ReleaseWorldRead(scope); _worldReservedAccess = null; }
+        /// <summary>
+        /// Refuses a conflicting borrower of the reserved access.
+        /// </summary>
+        /// <param name="issuance">
+        /// Exact opening reservation, or null to require unreserved access.
+        /// </param>
         internal void RequireNoWorldReadConflict(ValidationReadReservation? issuance = null) => _access?.RequireNoWorldReadConflict(issuance);
+        /// <summary>
+        /// Original reservation during recovery acquisition, otherwise null.
+        /// </summary>
         internal ValidationReadReservation? WorldRecoveryIssuance => _worldIssuance is { Opening: true } ? _worldIssuance : null;
         internal void RequireNoWorldMutation() => _access?.RequireNoWorldReadConflict(WorldRecoveryIssuance);
         internal BrowserOriginalMainCondition CaptureBrowserCondition(string generation)
@@ -200,9 +257,14 @@ public partial class FileSystemManager
             var remote=_ownsRemote?_access?.Remote:null;
             Dispose();if(remote!=null)await remote.DisposeAsync();
         }
+        /// <summary>
+        /// Releases this frame, refusing disposal of an original owner with an active pending-snapshot reservation.
+        /// </summary>
         public void Dispose()
         {
-            if(_closed)return;_closed=true;_access?.Release(this);_access=null;
+            if(_closed)return;
+            _worldReservedAccess?.RequireNoPendingSnapshotClose();
+            _closed=true;_access?.Release(this);_access=null;
             if(MainAdmissions.Value==this)MainAdmissions.Value=_parent;
         }
     }
@@ -213,6 +275,15 @@ public partial class FileSystemManager
         private bool _frozen;
         private readonly HashSet<MainAdmission> _admissions = [owner];
         private ValidationReadReservation? _worldRead;
+        /// <summary>
+        /// Reserves actual shared access only in the absence of physical or sibling borrowers.
+        /// </summary>
+        /// <param name="scope">
+        /// Read reservation to install.
+        /// </param>
+        /// <param name="ancestors">
+        /// Existing owner ancestry permitted to remain while the reservation is active.
+        /// </param>
         internal void ReserveWorldRead(ValidationReadReservation scope, HashSet<MainAdmission> ancestors)
         {
             lock (_state)
@@ -223,8 +294,20 @@ public partial class FileSystemManager
                 _worldRead = scope;
             }
         }
+        /// <summary>
+        /// Withdraws only the matching shared-access read reservation.
+        /// </summary>
+        /// <param name="scope">
+        /// Original reservation to withdraw.
+        /// </param>
         internal void ReleaseWorldRead(ValidationReadReservation scope)
         { lock (_state) { if (ReferenceEquals(_worldRead, scope)) _worldRead = null; } }
+        /// <summary>
+        /// Refuses access unless unreserved or borrowed by the exact opening reservation.
+        /// </summary>
+        /// <param name="issuance">
+        /// Opening read reservation, or null for ordinary borrowing or mutation.
+        /// </param>
         internal void RequireNoWorldReadConflict(ValidationReadReservation? issuance)
         { lock (_state) { if (_worldRead != null && !ReferenceEquals(_worldRead, issuance))
             throw new InvalidOperationException("Original access is reserved by a World read phase."); } }
@@ -243,6 +326,18 @@ public partial class FileSystemManager
         internal GmMainOperationClient? Remote=>remote;
         internal GmMainOwnerGuard? Guard=>guard;
         internal GmSessionRunCoordinator.Access? Original=>original;
+        /// <summary>
+        /// Retains this actual access for one compatible live borrower.
+        /// </summary>
+        /// <param name="admission">
+        /// New admission frame to retain exactly once.
+        /// </param>
+        /// <param name="issuance">
+        /// Exact read reservation opening recovery, or null outside that acquisition.
+        /// </param>
+        /// <returns>
+        /// This same shared access after successful retention.
+        /// </returns>
         internal MainAccess Retain(MainAdmission admission, ValidationReadReservation? issuance)
         {
             lock(_state)

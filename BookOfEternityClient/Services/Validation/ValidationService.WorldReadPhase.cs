@@ -12,14 +12,41 @@ public partial class ValidationService
     private WorldValidationInvocation? _worldReservation;
     private WorldReadPhase? _worldReadPhase;
 
+    /// <summary>
+    /// Identifies an admitted validator call and its exclusive shared-state reservations.
+    /// </summary>
+    /// <param name="worldReserved">
+    /// Whether the browser World read phase is reserved.
+    /// </param>
+    /// <param name="metaReserved">
+    /// Whether the browser Meta read phase is reserved.
+    /// </param>
+    /// <param name="pendingReserved">
+    /// Whether one console pending-snapshot invocation is reserved; defaults to false.
+    /// </param>
     private sealed class WorldValidationInvocation(bool worldReserved, bool metaReserved, bool pendingReserved = false)
     {
         internal readonly bool WorldReserved = worldReserved, MetaReserved = metaReserved;
         internal readonly bool PendingReserved = pendingReserved;
+        /// <summary>
+        /// Whether this invocation exclusively reserves any validation state.
+        /// </summary>
         internal bool Reserved => WorldReserved || MetaReserved || PendingReserved;
         internal bool Closed;
     }
 
+    /// <summary>
+    /// Admits an existing validation route before shared-cache reset, rejecting conflicting reservations.
+    /// </summary>
+    /// <param name="gameState">
+    /// Whether this call validates game-state phases rather than a response.
+    /// </param>
+    /// <param name="selection">
+    /// Selected game-state phases when <paramref name="gameState"/> is true; null for response validation.
+    /// </param>
+    /// <returns>
+    /// The invocation identity that must be released after its call.
+    /// </returns>
     private WorldValidationInvocation AdmitWorldValidation(bool gameState, GameStateValidationSelection? selection = null)
     {
         _pendingSnapshotInvocation.Value?.RequireCurrent();
@@ -77,6 +104,9 @@ public partial class ValidationService
         }
     }
 
+    /// <summary>
+    /// Refuses foreign or retired invocation access to reserved shared validation caches.
+    /// </summary>
     private void RequireWorldCacheAccess()
     {
         _pendingSnapshotInvocation.Value?.RequireCurrent();
@@ -88,6 +118,12 @@ public partial class ValidationService
         }
     }
 
+    /// <summary>
+    /// Admits override mutation only outside a conflicting validation reservation.
+    /// </summary>
+    /// <param name="withdrawal">
+    /// Whether a refused withdrawal must also invalidate the current read proof.
+    /// </param>
     private void BeginWorldOverrideMutation(bool withdrawal)
     {
         lock (_worldReadGate)

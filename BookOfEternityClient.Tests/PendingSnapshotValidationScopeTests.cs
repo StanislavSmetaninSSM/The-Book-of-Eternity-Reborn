@@ -320,7 +320,7 @@ public sealed class PendingSnapshotValidationScopeTests(ITestOutputHelper output
     /// Missing and unusable sources retain their existing statuses instead of becoming cached usable authority.
     /// </summary>
     /// <param name="missing">
-    /// True removes the manifest; false leaves malformed manifest bytes.
+    /// True removes the manifest; false leaves a well-formed manifest with an invalid payload hash.
     /// </param>
     [Theory]
     [InlineData(false)] [InlineData(true)]
@@ -329,7 +329,13 @@ public sealed class PendingSnapshotValidationScopeTests(ITestOutputHelper output
         using var fixture = new Fixture();
         await fixture.PrepareAsync(false);
         var path = fixture.Files.ResolvePath("game_state/control/pending_turn_snapshot.json");
-        if (missing) File.Delete(path); else File.WriteAllText(path, "{");
+        if (missing) File.Delete(path);
+        else
+        {
+            var invalid = JsonNode.Parse(File.ReadAllText(path))!.AsObject();
+            invalid["manifestPayloadHash"] = new string('0', 64);
+            File.WriteAllText(path, invalid.ToJsonString());
+        }
         using var owner = fixture.Files.BeginMainAdmission();
         await owner.AcquireAsync();
         var expected = Status(await fixture.LookupAsync(false));
@@ -340,6 +346,31 @@ public sealed class PendingSnapshotValidationScopeTests(ITestOutputHelper output
             Assert.Equal(expected, Status(await fixture.LookupAsync(true)));
             return [];
         });
+    }
+
+    /// <summary>
+    /// An unusable manifest still binds its declared rollback dependencies for the whole invocation.
+    /// </summary>
+    [Fact]
+    public async Task Scope_UnusableSourceStillBindsRollbackDependencies()
+    {
+        using var fixture = new Fixture();
+        await fixture.PrepareAsync(false);
+        var path = fixture.Files.ResolvePath("game_state/control/pending_turn_snapshot.json");
+        var invalid = JsonNode.Parse(File.ReadAllText(path))!.AsObject();
+        invalid["manifestPayloadHash"] = new string('0', 64);
+        File.WriteAllText(path, invalid.ToJsonString());
+        using var owner = fixture.Files.BeginMainAdmission();
+        await owner.AcquireAsync();
+        var changed = false;
+        await Assert.ThrowsAnyAsync<Exception>(() => fixture.RunAsync(async () =>
+        {
+            Assert.Equal("Unusable", Status(await fixture.LookupAsync(false)));
+            await fixture.ChangeAsync("overwrite");
+            changed = true;
+            return [];
+        }));
+        Assert.True(changed);
     }
 
     /// <summary>
