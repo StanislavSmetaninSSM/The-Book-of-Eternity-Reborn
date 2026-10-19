@@ -18,10 +18,24 @@
       ]
     },
     {
-      "reason": "Shared original MainAccess reservation and validator guards also own the existing browser Meta phase.",
-      "category": "pending-snapshot-validation-meta-neighbors",
+      "category": "pending-snapshot-validation-meta-proof",
+      "reason": "Existing Meta whole-entry proof, eligibility boundaries and reviewed source closure; seven cases. Split after aggregate180s timeout; unchanged selectors/assertions and per-group3m bound.",
       "contracts": [
-        "Six exact existing Meta controls from approved plan2; preserve eligibility, authority, ordered issues and teardown."
+        "Approved plan2 six-selector Meta coverage preserved across three independently bounded groups."
+      ]
+    },
+    {
+      "category": "pending-snapshot-validation-meta-reservation",
+      "reason": "Existing Meta sibling and override exclusion under shared MainAccess reservation; seven cases. Split after aggregate180s timeout; unchanged selectors/assertions and per-group3m bound.",
+      "contracts": [
+        "Approved plan2 six-selector Meta coverage preserved across three independently bounded groups."
+      ]
+    },
+    {
+      "category": "pending-snapshot-validation-meta-ownership",
+      "reason": "Existing Meta original admission opening, close and continuity loss; eight cases. Split after aggregate180s timeout; unchanged selectors/assertions and per-group3m bound.",
+      "contracts": [
+        "Approved plan2 six-selector Meta coverage preserved across three independently bounded groups."
       ]
     },
     {

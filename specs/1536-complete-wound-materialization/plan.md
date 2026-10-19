@@ -8,6 +8,10 @@
 **Spec:** [редакция4](spec.md), одобрена из `da3efec34a6407260e7a9c19830f354740cccce2`; [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Ветка `1536-crash5-linux-windows-spec-20261019`, planning base `fa0a53001502b8ee1c5067f7fc1b529d683f67df`.
 **Status:** владелец одобрил точный plan2 из `bd9c8dd43430ce4d7c4852c580a76c012fed204b` ответом «да». Исполняются T230–T237; Windows5 пока FAIL_INCOMPLETE, Linux UNRUN. Новые результаты будут привязаны к своим SHA.
 
+## T233 — уточнение отбора после измерения Meta (2026-10-19)
+
+Реализация production9c30fc6b8 и тестовая поправка2b16ece45 приняты независимым gpt-6-astra/high. Первые65 адресных случаев прошли на9c; исправленные lifecycle3 прошли на2b16. Meta aggregate22 достиг собственного180s лимита без TRX; результаты отдельных случаев неизвестны. Runner cleanup complete, общий run248.971s. Лимит не увеличивается: по AGENTS test-category policy aggregate заменён тремя смысловыми категориями с прежним3m каждая: `pending-snapshot-validation-meta-proof` (7), `pending-snapshot-validation-meta-reservation` (7), `pending-snapshot-validation-meta-ownership` (8). Сохраняются ровно шесть исходных selectors и все assertions; новых сценариев/изменений production нет. Snapshot selection теперь8descriptors/90cases; это уточнение организации T233, не изменение критериев spec4. Reviewer принял достаточность разделения. Три группы запускаются отдельно; уже GREEN lifecycle не повторяется. SOURCE принят, PREP/game остаются gated до complete evidence.
+
 ## Plan2 — границы, доказательство и численные критерии
 
 - Сохраняются все spec3/game oracles, cut0…4, producer73/resumer0, 220s/10s/10s/15m, source42 probe5m; NativeLineage/C protocol не меняются. Никаких collector, нового bypass или неизменённых повторных прогонов.

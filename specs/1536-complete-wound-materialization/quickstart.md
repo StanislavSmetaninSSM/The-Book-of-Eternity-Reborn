@@ -1,6 +1,6 @@
 # CRASH5 spec4 / plan2 — проверка реализации
 
-[Spec4](spec.md) одобрена из da3efec34; [plan2](plan.md) из bd9c8dd434 одобрен владельцем. Выполняются [T230…T237](tasks.md). Source9c30fc6b8 принят независимым gpt-6-astra/high после причинного RED и исправления outer-owner close. Обе свежие XML builds прошли; итоговая selected90/PREP ещё проверяется. Команды ниже задают актуальный отбор. Windows5 пока FAIL_INCOMPLETE, Linux UNRUN; подробные доказательства в [investigation](recovery/crash5/source42-investigation.md).
+[Spec4](spec.md) одобрена из da3efec34; [plan2](plan.md) из bd9c8dd434 одобрен владельцем. Выполняются [T230…T237](tasks.md). Source9c30fc6b8 принят независимым gpt-6-astra/high после причинного RED и исправления outer-owner close. Обе свежие XML builds прошли; итоговая selected90/PREP ещё проверяется. После Meta aggregate timeout прежние шесть Meta selectors разделены на proof7/reservation7/ownership8, каждая категория3m; итоговая selection8descriptors/90cases. Команды ниже задают актуальный отбор. Windows5 пока FAIL_INCOMPLETE, Linux UNRUN; подробные доказательства в [investigation](recovery/crash5/source42-investigation.md).
 
 Из корня отдельной копии, PowerShell7, .NET SDK10 + runtime8. DOTNET_ROOT при необходимости задаётся только на время команды и восстанавливается в finally, как в предыдущем CRASH5 guide. Для XML diagnostics не подавлять reference/parameter warnings:
 

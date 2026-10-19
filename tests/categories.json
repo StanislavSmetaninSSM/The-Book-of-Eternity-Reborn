@@ -28,7 +28,7 @@
   "changeHints": [
     "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs"
   ],
-  "id": "pending-snapshot-validation-meta-neighbors",
+  "id": "pending-snapshot-validation-meta-proof",
   "related": [],
   "requirements": {
     "exclusive": true,
@@ -42,15 +42,59 @@
       "project": "integration",
       "tests": [
         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_WholeEntryProofCeilingPreservesOrderedIssues",
-        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_SiblingsAndOverrideCannotMutateReservedInvocation",
-        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_OriginalAdmissionOpeningAndResponseBranchesReleaseOnlyOwnState",
-        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_ContinuityLossNeverPublishesIncludingActualOwningClose",
         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_EligibilityKeepsActualScalarDraftAndZeroWindowBoundaries",
         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_SourceClosurePinsRequireReview"
       ]
     }
   ],
-  "responsibility": "Exact existing Meta read reservation neighbors affected by shared MainAccess and validator admission."
+  "responsibility": "Existing Meta whole-entry proof, eligibility boundaries and reviewed source closure; seven cases."
+},
+{
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs"
+  ],
+  "id": "pending-snapshot-validation-meta-reservation",
+  "related": [],
+  "requirements": {
+    "exclusive": true,
+    "frontendBuild": false
+  },
+  "excludes": "No broad Meta rules, gameplay, native or C5 qualification.",
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_SiblingsAndOverrideCannotMutateReservedInvocation"
+      ]
+    }
+  ],
+  "responsibility": "Existing Meta sibling and override exclusion under shared MainAccess reservation; seven cases."
+},
+{
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs"
+  ],
+  "id": "pending-snapshot-validation-meta-ownership",
+  "related": [],
+  "requirements": {
+    "exclusive": true,
+    "frontendBuild": false
+  },
+  "excludes": "No broad Meta rules, gameplay, native or C5 qualification.",
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_OriginalAdmissionOpeningAndResponseBranchesReleaseOnlyOwnState",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_ContinuityLossNeverPublishesIncludingActualOwningClose"
+      ]
+    }
+  ],
+  "responsibility": "Existing Meta original admission opening, close and continuity loss; eight cases."
 },
 
 {
