@@ -1,6 +1,6 @@
 # CRASH5 — plan5: Windows five с измеренным основанием для бюджета
 
-**T253 уточнение до gameplay:** metadata-проверка отклонила draft22m: каталог допускает1…15m на категорию. Сам runner не меняется. Текущий контракт — producer600s/resumer220s/category15m; только producer выполняет измеренную source42 preparation. Потребность resumer в большем времени пока не установлена. Draft600/600/22 никогда не исполнялся; initial RED сохранён, correction RED проверяет сохранение220 resumer перед минимальным исправлением.
+**T253 уточнение до gameplay:** metadata-проверка отклонила draft22m: каталог допускает1…15m на категорию. Сам runner не меняется. Текущий контракт — producer600s/resumer220s/category15m; только producer выполняет измеренную source42 preparation. Потребность resumer в большем времени пока не установлена. Draft600/600/22 не использовался для gameplay; initial RED сохранён, correction RED проверяет сохранение220 resumer перед минимальным исправлением.
 
 [Issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), [spec7](spec.md), [plan5](plan.md). User waiver продолжает действовать. T250 PASS258.780s и T251 independent acceptance/recovery — основание следующего шага, не five PASS.
 

@@ -1,6 +1,6 @@
 # CRASH5 — spec7: Windows crash/restart после измерения source42
 
-**T253 уточнение до gameplay:** metadata-проверка отклонила draft22m: каталог допускает1…15m на категорию. Сам runner не меняется. Текущий контракт — producer600s/resumer220s/category15m; только producer выполняет измеренную source42 preparation. Потребность resumer в большем времени пока не установлена. Draft600/600/22 никогда не исполнялся; initial RED сохранён, correction RED проверяет сохранение220 resumer перед минимальным исправлением.
+**T253 уточнение до gameplay:** metadata-проверка отклонила draft22m: каталог допускает1…15m на категорию. Сам runner не меняется. Текущий контракт — producer600s/resumer220s/category15m; только producer выполняет измеренную source42 preparation. Потребность resumer в большем времени пока не установлена. Draft600/600/22 не использовался для gameplay; initial RED сохранён, correction RED проверяет сохранение220 resumer перед минимальным исправлением.
 
 **Основание:** T250 source42 PASS с полным возвратом258.780s, больше220s. [Issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), активная feature та же. Пользователь прямо разрешил продолжать текущую работу без промежуточных согласований; waiver применяется к этой спецификации. T251 evidence/recovery принят отдельным gpt-6.1-sol/xhigh. Последующие Windows runtime ещё UNRUN.
 

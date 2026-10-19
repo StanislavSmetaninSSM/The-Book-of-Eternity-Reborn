@@ -1,6 +1,6 @@
 # CRASH5 — plan5: отдельные Windows crash/restart cases
 
-**T253 уточнение до gameplay:** metadata-проверка отклонила draft22m: каталог допускает1…15m на категорию. Сам runner не меняется. Текущий контракт — producer600s/resumer220s/category15m; только producer выполняет измеренную source42 preparation. Потребность resumer в большем времени пока не установлена. Draft600/600/22 никогда не исполнялся; initial RED сохранён, correction RED проверяет сохранение220 resumer перед минимальным исправлением.
+**T253 уточнение до gameplay:** metadata-проверка отклонила draft22m: каталог допускает1…15m на категорию. Сам runner не меняется. Текущий контракт — producer600s/resumer220s/category15m; только producer выполняет измеренную source42 preparation. Потребность resumer в большем времени пока не установлена. Draft600/600/22 не использовался для gameplay; initial RED сохранён, correction RED проверяет сохранение220 resumer перед минимальным исправлением.
 
 Canonical [spec7](spec.md), [tasks T252…T256](tasks.md), [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Spec Kit setup-plan/setup-tasks/check-prerequisites выполнены для существующей feature; Superpowers brainstorming/writing-plans/TDD/executing-plans/debugging/review/verification продолжаются inline. User review waived, дополнительного согласия не ждать. Один parent developer и отдельный routine gpt-6.1-sol/xhigh reviewer; isolated checkout/branch reused.
 
@@ -14,7 +14,7 @@ JointInterfaceCrashProcessSupport.GetDirectChildTimeout получает optiona
 
 ## Проверки и выполнение
 
-T253: fresh integration XML build после RED и GREEN, changedXML audit; causal RED на численном600 и новых eligibility отказах →25PASS; уже отклоняемые сочетания могут оставаться GREEN на RED этапе. ValidateCatalog; PlanOnly original five5/15m, source1/5m, extended1/12m, по1newFact/22m, default205 без новых дорогих cases. 180unchanged component tests не повторять. Независимый SOURCE/PREP проверяет именно пять wrapper→cut mappings, общий неизменный assertion body, policy routing/default isolation и достаточность selection. Push/readback до long review/runtime.
+T253: fresh integration XML build после RED и GREEN, changedXML audit; causal RED на численном600 и новых eligibility отказах →25PASS; уже отклоняемые сочетания могут оставаться GREEN на RED этапе. ValidateCatalog; PlanOnly original five5/15m, source1/5m, extended1/12m, по1newFact/15m, default205 без новых дорогих cases. 180unchanged component tests не повторять. Независимый SOURCE/PREP проверяет именно пять wrapper→cut mappings, общий неизменный assertion body, policy routing/default isolation и достаточность selection. Push/readback до long review/runtime.
 
 T254: один cut0 с accepted NoBuild DLLs; raw evidence и original producer73/resumer0/cleanup. T255: после полного cut0 PASS четыре отдельные категории cut1…4 последовательно, по одному запуску, прекращать при первом неуспехе. Ни одна категория не объединяет две попытки; каждая имеет pre-start attempt marker/source/DLL binding. Обновлять checkpoint между законченными cases, не перекомпилировать unchanged DLLs. T256: independent review полного блока, exact five union или честный partial, Linux handoff, commit/push/readback/new-empty recovery.
 
