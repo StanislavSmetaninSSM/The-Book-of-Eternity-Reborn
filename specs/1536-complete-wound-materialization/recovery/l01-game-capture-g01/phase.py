@@ -32,6 +32,15 @@ def unit_tree(rev):
     rows=[r for r in rows if included(r)]
     return dict(count=len(rows),sha256=H(b'\n'.join(rows)+b'\n'))
 
+def validate_synthetic(se,cfg,source_digest):
+    assert se['sourcePinDigest']==source_digest
+    so=se['syntheticOutcome']
+    assert se['status']=='SYNTHETIC_CAPTURE_PASSED_API1' and se['nativeExit']==0 and not se['observerErrors'] and not se['afterLiveTools']
+    assert so['runId']==cfg['syntheticRunId'] and so['status']=='SYNTHETIC_CAPTURE_PASSED_API1' and not so['observerErrors']
+    assert so['apiCalls']==1 and so['watchdog']['apiOutcome']=='RETURNED' and so['watchdog']['diagnosticRequests']==1
+    assert so['targetNativeExit']==so['watchdogNativeExit']==0 and so['targetJoined'] and so['watchdogJoined'] and so['stdoutEof'] and so['stderrEof']
+    assert so['done']['ValidStop'] and len(se['decodedOracleFrames'])==4
+
 def main():
     global ROOT
     args=sys.argv[1:];assert len(args) in (2,3)
@@ -57,11 +66,8 @@ def main():
     if scope=='G02' and mode in ('actual','map'):
         evidence=gate['syntheticEvidence'];assert evidence==review['syntheticEvidence'];verify(evidence)
         se=read(evidence['path']);so=se['syntheticOutcome']
-        assert se['status']=='SYNTHETIC_CAPTURE_PASSED_API1' and se['nativeExit']==0 and not se['observerErrors'] and not se['afterLiveTools']
-        assert so['runId']==cfg['syntheticRunId'] and so['status']=='SYNTHETIC_CAPTURE_PASSED_API1' and not so['observerErrors']
-        assert so['apiCalls']==1 and so['watchdog']['apiOutcome']=='RETURNED' and so['watchdog']['diagnosticRequests']==1
-        assert so['targetNativeExit']==so['watchdogNativeExit']==0 and so['targetJoined'] and so['watchdogJoined'] and so['stdoutEof'] and so['stderrEof']
-        assert so['done']['ValidStop'] and len(se['decodedOracleFrames'])==4
+        assert Path(evidence['path'])==ROOT/'synthetic/record.json'
+        validate_synthetic(se,cfg,packet['sourcePinDigest'])
     for row in packet['sourcePins']:verify(dict(row,path=str(REPO/row['path'])))
     for row in cfg['inputs']:verify(row)
     assert cfg['root']==str(ROOT) and unit_tree(source)==cfg['unchangedUnitTree']==unit_tree(cfg['unit']['compiledSource'])

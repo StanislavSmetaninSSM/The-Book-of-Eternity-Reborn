@@ -1,0 +1,41 @@
+{
+  "kind": "G02_PURE_ROLE_AND_ADMISSION",
+  "passed": 7,
+  "cases": [
+    {
+      "name": "real",
+      "passed": true
+    },
+    {
+      "name": "synthetic",
+      "passed": true
+    },
+    {
+      "name": "missing",
+      "passed": true
+    },
+    {
+      "name": "string",
+      "passed": true
+    },
+    {
+      "name": "wrong-contract",
+      "passed": true
+    },
+    {
+      "name": "synthetic-real-argv",
+      "passed": true
+    },
+    {
+      "name": "real-synthetic-argv",
+      "passed": true
+    },
+    {
+      "name": "validate_synthetic-required",
+      "passed": false
+    }
+  ],
+  "processes": 0,
+  "requests": 0,
+  "nativeExit": 1
+}

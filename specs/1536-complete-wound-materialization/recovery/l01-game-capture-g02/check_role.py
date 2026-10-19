@@ -20,5 +20,24 @@ if nodes:
         except (AssertionError,KeyError):accepted=False
         cases.append(dict(name=name,passed=accepted==accept))
 else:cases=[dict(name='request_role-required',passed=False)]
-result=dict(kind='G02_PURE_ROLE',passed=sum(c['passed'] for c in cases),cases=cases,processes=0,requests=0)
+# Inert admission negatives execute the actual validator function extracted from source.
+import copy
+phase=source.parent/'phase.py';pt=ast.parse(phase.read_text())
+validators=[n for n in pt.body if isinstance(n,ast.FunctionDef) and n.name=='validate_synthetic']
+if validators:
+    ns={};exec(compile(ast.Module(body=validators,type_ignores=[]),str(phase),'exec'),ns);validator=ns['validate_synthetic']
+    valid=dict(sourcePinDigest='digest',status='SYNTHETIC_CAPTURE_PASSED_API1',nativeExit=0,observerErrors=[],afterLiveTools=[],decodedOracleFrames=[1,2,3,4],syntheticOutcome=dict(runId='run',status='SYNTHETIC_CAPTURE_PASSED_API1',observerErrors=[],apiCalls=1,watchdog=dict(apiOutcome='RETURNED',diagnosticRequests=1),targetNativeExit=0,watchdogNativeExit=0,targetJoined=True,watchdogJoined=True,stdoutEof=True,stderrEof=True,done=dict(ValidStop=True)))
+    variants=[('exact-success',(),None,True),('wrong-source',('sourcePinDigest',),'other',False),('wrong-run',('syntheticOutcome','runId'),'other',False),('native-fail',('nativeExit',),1,False),('api0',('syntheticOutcome','apiCalls'),0,False),('missing-frame',('decodedOracleFrames',),[1,2,3],False),('no-eof',('syntheticOutcome','stdoutEof'),False,False),('missing-outcome',('syntheticOutcome',),None,False)]
+    for name,keys,value,expected in variants:
+        record=copy.deepcopy(valid)
+        if keys:
+            parent=record
+            for key in keys[:-1]:parent=parent[key]
+            if value is None:del parent[keys[-1]]
+            else:parent[keys[-1]]=value
+        try:validator(record,dict(syntheticRunId='run'),'digest');accepted=True
+        except (AssertionError,KeyError):accepted=False
+        cases.append(dict(name=name,passed=accepted==expected))
+else:cases.append(dict(name='validate_synthetic-required',passed=False))
+result=dict(kind='G02_PURE_ROLE_AND_ADMISSION',passed=sum(c['passed'] for c in cases),cases=cases,processes=0,requests=0)
 print(json.dumps(result,indent=2));raise SystemExit(0 if all(c['passed'] for c in cases) else 1)

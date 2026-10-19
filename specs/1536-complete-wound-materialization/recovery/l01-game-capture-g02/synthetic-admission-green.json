@@ -1,0 +1,69 @@
+{
+  "kind": "G02_PURE_ROLE_AND_ADMISSION",
+  "passed": 15,
+  "cases": [
+    {
+      "name": "real",
+      "passed": true
+    },
+    {
+      "name": "synthetic",
+      "passed": true
+    },
+    {
+      "name": "missing",
+      "passed": true
+    },
+    {
+      "name": "string",
+      "passed": true
+    },
+    {
+      "name": "wrong-contract",
+      "passed": true
+    },
+    {
+      "name": "synthetic-real-argv",
+      "passed": true
+    },
+    {
+      "name": "real-synthetic-argv",
+      "passed": true
+    },
+    {
+      "name": "exact-success",
+      "passed": true
+    },
+    {
+      "name": "wrong-source",
+      "passed": true
+    },
+    {
+      "name": "wrong-run",
+      "passed": true
+    },
+    {
+      "name": "native-fail",
+      "passed": true
+    },
+    {
+      "name": "api0",
+      "passed": true
+    },
+    {
+      "name": "missing-frame",
+      "passed": true
+    },
+    {
+      "name": "no-eof",
+      "passed": true
+    },
+    {
+      "name": "missing-outcome",
+      "passed": true
+    }
+  ],
+  "processes": 0,
+  "requests": 0,
+  "nativeExit": 0
+}
