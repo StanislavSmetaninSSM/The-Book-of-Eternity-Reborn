@@ -2,6 +2,17 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-interface-source42-windows-probe",
+  "responsibility": "T227 one bounded Windows investigation of the genuine common source42 preparation after producer timeouts, through existing scalar finalization checkpoints and original owned child runner.",
+  "excludes": "No crash5 qualification, stage43/resumer, Linux execution, production instrumentation, diagnostic capture, larger child bounds or automatic retry.",
+  "changeHints": ["BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointSourceProbe.cs"],
+  "related": [],
+  "requirements": { "frontendBuild": false, "exclusive": true, "ciRunner": "windows-latest" },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterface_Source42WindowsProbeObservesActualPreparation"] }]
+},
+{
   "id": "fr063-joint-interface-crash-stage-contracts",
   "responsibility": "CRASH5 ordinary scalar stage writer: fixed identity, monotonic elapsed time, record and UTF8 byte limits, bounded error types and observer failure precedence.",
   "excludes": "No process startup, gameplay qualification, native evidence or diagnostic capture. Separately selectable so an expected adapter RED cannot cancel the stage RED before execution.",

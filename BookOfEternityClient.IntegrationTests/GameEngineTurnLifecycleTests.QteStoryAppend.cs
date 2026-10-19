@@ -242,11 +242,57 @@ public sealed partial class GameEngineTurnLifecycleTests
 
     // Fixture changes that would break these tests: accepting a GM history edit, recapturing arbitrary history,
     // losing exact client append at terminal/restart, or applying selected health Damage more than once.
+    /// <summary>
+    /// Runs the actual source turn and QTE story handoff using an isolated authored response.
+    /// </summary>
+    /// <param name="preacceptMutation">
+    /// Optional controlled history mutation before acceptance; null preserves the ordinary response.
+    /// </param>
+    /// <param name="postHandoffMutation">
+    /// Optional controlled mutation after the actual story handoff; null leaves it unchanged.
+    /// </param>
+    /// <param name="mode">
+    /// Ordinary execution by default, or the existing recovery fixture mode.
+    /// </param>
+    /// <param name="pauseAtAction">
+    /// Whether to stop with a controlled cancellation after observing the actual QTE action.
+    /// </param>
+    /// <param name="bounded">
+    /// Whether to seed the existing bounded-reaction fixture and report its early refusal.
+    /// </param>
+    /// <param name="physicalDeclaration">
+    /// Whether the authored offer declares a physical injury.
+    /// </param>
+    /// <param name="physicalMaximum">
+    /// The declared injury maximum, defaulting to two.
+    /// </param>
+    /// <param name="physicalOnlyUnselected">
+    /// Whether to remove physical injury from the selected terminal outcome.
+    /// </param>
+    /// <param name="observeQteAction">
+    /// Optional callback after the real action handoff has passed its existing assertions.
+    /// </param>
+    /// <param name="retainLiveInput">
+    /// Optional transfer of input disposal to the caller; null keeps disposal inside this method.
+    /// </param>
+    /// <param name="physicalSiblingDamage">
+    /// Whether to add the existing sibling damage response fragment.
+    /// </param>
+    /// <param name="configureBeforePreparation">
+    /// Optional world preparation before source capture; null uses the base world.
+    /// </param>
+    /// <param name="sourceStages">
+    /// Optional bounded scalar reporter for the isolated source probe; null preserves other consumers.
+    /// </param>
+    /// <returns>
+    /// The actual source, handoff observations and captured engine failure, if any.
+    /// </returns>
     private async Task<QteStoryRun> RunActualQteStorySourceAsync(string? preacceptMutation = null,
         string? postHandoffMutation = null, string mode = "ordinary", bool pauseAtAction = false, bool bounded = false,
         bool physicalDeclaration = false, int physicalMaximum = 2, bool physicalOnlyUnselected = false,
         Action? observeQteAction = null, Action<AgentConsoleLiveInputSource>? retainLiveInput = null,
-        bool physicalSiblingDamage = false, Func<FileSystemManager, Task>? configureBeforePreparation = null)
+        bool physicalSiblingDamage = false, Func<FileSystemManager, Task>? configureBeforePreparation = null,
+        JointInterfaceCrashStageReport? sourceStages = null)
     {
         var run = new QteStoryRun();
         CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
@@ -276,6 +322,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 var screen = console.GetSnapshot()!;
                 if (screen.ScreenId.StartsWith("qte-action-", StringComparison.Ordinal) && !run.ActionObserved)
                 {
+                    sourceStages?.Observe("source-qte", "enter");
                     run.StoryAtHandoff = File.ReadAllBytes(_fs.ResolvePath(QteStoryPath));
                     var rows = Encoding.UTF8.GetString(run.StoryAtHandoff).TrimStart('\uFEFF').Split('\n', StringSplitOptions.RemoveEmptyEntries);
                     var row = Assert.Single(rows);
@@ -310,7 +357,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         var stagedReady = false;
         async Task Author(SessionFinalizationCheckpoint checkpoint)
         {
+            sourceStages?.ObserveSourceCheckpoint(checkpoint);
             if (checkpoint != SessionFinalizationCheckpoint.TerminalWaitStarted || stagedReady) return;
+            sourceStages?.Observe("source-author", "enter");
             await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
             {
                 run.Source = JsonSerializer.Deserialize<TurnRequest>((await _fs.ReadFileAsync(lease, "input/turn_request.json"))!, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
@@ -345,6 +394,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             await WriteJsonAsync("ready/turn_complete.json", new { sessionId = run.Source.SessionId, requestId = run.Source.RequestId,
                 turnNumber = run.Source.TurnNumber, status = "success", timestamp, filesModified = new[] { QteSceneService.QteOfferPath, "output/narrative_response.json", "output/interface_updates.json", "output/debug_logs.json" } });
             stagedReady = true;
+            sourceStages?.Observe("source-author", "return");
             if (mode != "ordinary") throw new OperationCanceledException("Original real request/output staged before separate ready recovery.");
         }
         GameEngine NewEngine(bool hooks)
@@ -358,7 +408,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         run.Engine = NewEngine(true);
         await _fs.WriteFileAtomicAsync("game_state/history/chat_log.json", new JsonObject { ["sessionId"] = "session_qte_story_append", ["entries"] = new JsonArray() }.ToJsonString());
         await GetPrivateField<StateManager>(run.Engine, "_stateManager").RefreshGameStateAsync();
+        sourceStages?.Observe("source-turn", "enter");
         run.Failure = await Record.ExceptionAsync(() => InvokePrivateTaskAsync(run.Engine, "ProcessPlayerTurn", QteStoryAction, null));
+        sourceStages?.Observe("source-turn", run.Failure is null ? "return" : "error", run.Failure?.GetType().Name);
         if (mode != "ordinary")
         {
             Assert.IsType<OperationCanceledException>(run.Failure);

@@ -28,7 +28,7 @@ internal static class NativeHostScenarioDriver
         if (args.Length == 3 && args[0] == "engine-rollback-cold-read")
             return await EngineRollbackColdProbe.RunAsync(args[1], args[2]);
         if ((args.Length == 4 && args[0] is "engine-browser-recovery-cold" or "engine-qte-story-resume") ||
-            (args.Length == 6 && args[0] is "engine-joint-interface-original-crash" or "engine-joint-interface-resume" or "engine-mortal-joint-applied-cold" or "engine-mortal-guaranteed-treatment-cold" or "engine-qte-wound-archive" or "engine-qte-wound-durable" or "engine-browser-staging-cut" or "engine-browser-staging-publisher" or "engine-browser-quiescent-admission" or "engine-browser-status-phase" or "engine-browser-consumer-profile" or "engine-musings-repair" or "engine-musings-cut" or "engine-musings-original-cut" or "engine-musings-cold" or "engine-browser-active-poll-original"))
+            (args.Length == 6 && args[0] is "engine-joint-interface-source-probe" or "engine-joint-interface-original-crash" or "engine-joint-interface-resume" or "engine-mortal-joint-applied-cold" or "engine-mortal-guaranteed-treatment-cold" or "engine-qte-wound-archive" or "engine-qte-wound-durable" or "engine-browser-staging-cut" or "engine-browser-staging-publisher" or "engine-browser-quiescent-admission" or "engine-browser-status-phase" or "engine-browser-consumer-profile" or "engine-musings-repair" or "engine-musings-cut" or "engine-musings-original-cut" or "engine-musings-cold" or "engine-browser-active-poll-original"))
         {
             // The integration fixture supplies the real lifecycle service factory.
             // Resolve its test-only dependencies in this isolated child, without a project cycle.
@@ -41,6 +41,7 @@ internal static class NativeHostScenarioDriver
             var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(args[1]);
             var name = args[0] switch
             {
+                "engine-joint-interface-source-probe" => "WriteJointInterfaceSourceProbeAsync",
                 "engine-joint-interface-original-crash" => "WriteJointInterfaceOriginalCrashAsync",
                 "engine-joint-interface-resume" => "WriteJointInterfaceCurrentResumeAsync",
                 "engine-mortal-joint-applied-cold" => "WriteMortalJointAppliedColdProbeAsync",

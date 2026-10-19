@@ -17,6 +17,7 @@ internal sealed class JointInterfaceCrashStageReport
     private readonly int _cut;
     private readonly long _started = Stopwatch.GetTimestamp();
     private readonly object _gate = new();
+    private readonly HashSet<SessionFinalizationCheckpoint> _sourceCheckpoints = new();
     private int _records;
     private bool _outputClosed;
 
@@ -77,7 +78,18 @@ internal sealed class JointInterfaceCrashStageReport
     /// </param>
     internal void ObserveSourceCheckpoint(SessionFinalizationCheckpoint checkpoint)
     {
-        // T227 declaration for the expected behavioral RED.
+        var stage = checkpoint switch
+        {
+            SessionFinalizationCheckpoint.TerminalSignalInspectionLeaseAcquired => "source-inspection",
+            SessionFinalizationCheckpoint.TerminalSignalSnapshotCapturedBeforeResolution => "source-capture",
+            SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization => "source-validated",
+            _ => null
+        };
+        if (stage is null) return;
+        lock (_gate)
+        {
+            if (_sourceCheckpoints.Add(checkpoint)) Observe(stage, "enter");
+        }
     }
 
     /// <summary>
@@ -99,7 +111,8 @@ internal sealed class JointInterfaceCrashStageReport
             if (_outputClosed || _records >= 64) return;
             _records++;
             if (stage is not ("fixture" or "file-system" or "engine" or "preflight-lease" or "snapshot-refresh" or
-                "late-first" or "finalization-before" or "finalization-after" or "late-repeat" or "exit" or "error") ||
+                "late-first" or "finalization-before" or "finalization-after" or "late-repeat" or "exit" or "error" or
+                "source-author" or "source-inspection" or "source-capture" or "source-validated" or "source-qte" or "source-turn") ||
                 transition is not ("enter" or "return" or "error"))
             {
                 OutputFailure ??= "InvalidStage";
