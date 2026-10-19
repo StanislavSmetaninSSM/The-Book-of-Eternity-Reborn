@@ -16,7 +16,7 @@
     ./scripts/test-csharp.ps1 -Category pending-snapshot-qte-mutation -NoBuild
     ./scripts/test-csharp.ps1 -Category pending-snapshot-qte-caller -NoBuild
 
-Для causal RED выбирается соответствующий точный selector/bounded category до production fix; ожидаемые numeric/ownership failures записываются по cases. После исправления сохранить GREEN и прежние impacted controls из selection14 descriptors: old8/90 +proof/custody/mutation/caller +four QTE neighbors +five browser cases. Список exact existing selectors и budgets находится в plan3. Новые case counts устанавливаются fresh discovery. Категории запускаются отдельно; не повторять уже passing unchanged группы без изменения/риска. Source-pin update требует reviewed source diff, не простого нового hash.
+Для causal RED выбирается соответствующий точный selector/bounded category до production fix; ожидаемые numeric/ownership failures записываются по cases. После исправления сохранить GREEN и прежние impacted controls из selection15 descriptors: old8/90 +proof/custody/mutation/caller +four QTE neighbors +five browser cases +four existing lease-release cases. Список exact existing selectors и budgets находится в plan3. Новые case counts устанавливаются fresh discovery. Категории запускаются отдельно; не повторять уже passing unchanged группы без изменения/риска. Source-pin update требует reviewed source diff, не простого нового hash.
 
 Только после T243 SOURCE/PREP:
 

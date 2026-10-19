@@ -16,7 +16,8 @@
 - [x] Open lifetime/caller/selection design decisions remain explicit for the next planning phase.
 - [x] Approved spec4 and historical tails retained; T234 failure does not redefine Windows acceptance.
 - [x] Owner approved exact spec5 from f9658ae0e with «хорошо»,2026-10-20; plan3 review remains before implementation.
-- [ ] Spec5 plan/tasks/consistency phases — pending owner approval, not satisfied by plan2.
+- [x] Spec5 plan/tasks and read-only consistency phases completed for plan3 at5801f2a39; six acceptance criteria mapped to T240…T247, historical artifacts retained. Independent plan review and owner approval remain separate gates.
+- [ ] Owner reviewed and approved the actual written plan3 before implementation.
 
 ## Content Quality
 
