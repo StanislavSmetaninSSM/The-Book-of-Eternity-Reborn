@@ -1,0 +1,580 @@
+{
+  "kind": "G01_FINAL_PREP_READONLY_CHECKS",
+  "reviewedCarrier": "5093c3970df18a42ee3445486ef6befa548f9bdc",
+  "prepareSource": "d293b3bf796289fb6662a778ca408fae76ab2736",
+  "checkedUtc": "2026-10-19T00:33:41.713228+00:00",
+  "checks": [
+    {
+      "check": "carrier and clean independent recovery exact",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "both checkouts exact and clean",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "38 original local/writer/Git/independent-restore byte chains",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "manifest exact and no published private binary claim",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "record exact declared digest source and tools dependency",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "reuse exact independently reviewed43 tools checks, no replay",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "163 current pins unchanged from qualified source through fresh prepare/carrier",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "exact accepted controller bindings digest",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "395 installed/external binding inputs unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "fresh native0 under original600 aggregate, no observer errors",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "seven original command outcomes0 joined/empty owned sessions",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "seven individual command records exact aggregate",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "shared remaining deadline only decreases",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "all original command stderr empty",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "fresh integration build success152warnings0errors",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "only expected fresh three-project outputs private",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "current G01 warnings only two Linux-scope CA1416 sites",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "separate compiled source provenance",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "integration original actual properties exact private paths",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "integration exact observed import set",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "integration all imports source or exact metadata or installed pins, no unknown/normalobj",
+      "passed": true,
+      "detail": {
+        "explicitInstalledPin": 127,
+        "stagedMetadata": 2
+      }
+    },
+    {
+      "check": "unit original actual properties exact private paths",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "unit exact observed import set",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "unit all imports source or exact metadata or installed pins, no unknown/normalobj",
+      "passed": true,
+      "detail": {
+        "explicitInstalledPin": 125,
+        "stagedMetadata": 2
+      }
+    },
+    {
+      "check": "all12 staged NuGet metadata exact original binding",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "complete810/11802 catalog and no unmapped/stale",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "catalog original summary matches aggregate ZERO and cleanup",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "catalog no build phases",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "catalog discovery actually loaded private integration native0",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "catalog actually loaded separate private unit native0",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "plan original summary matches aggregate ZERO and cleanup",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "plan no build phases",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "plan discovery actually loaded private integration native0",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "exact original Fact one descriptor one method one case220/900 unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "PlanOnly underfilled is honest ZERO not actual PASS",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "BookOfEternityClient.IntegrationTests complete private file set and hashes/modes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "BookOfEternityClient.Tests complete private file set and hashes/modes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "unit439 exact original separate closure retained",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "all8 local tools unchanged since reviewed tool originals",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "BookOfEternityClient fresh primary DLL/PDB copy agrees with integration runtime closure",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "BookOfEternityClient.TestSupport fresh primary DLL/PDB copy agrees with integration runtime closure",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "BookOfEternityClient.IntegrationTests fresh primary DLL/PDB copy agrees with integration runtime closure",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "three fresh game module PE/portablePDB identities bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "normal899 exact original files still untouched",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "dated terminal observation no live tools, no continuous claim",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "no actual/API yet and new actual directory absent",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "planned run id and private retention/old holds retained",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "checkCount": 47,
+  "findings": [],
+  "facts": {
+    "warningCodesLogOccurrences": {
+      "CS8602": 74,
+      "CS8629": 2,
+      "CS8604": 18,
+      "CS8601": 4,
+      "CS8618": 4,
+      "CS9124": 2,
+      "CS1572": 10,
+      "CS1573": 34,
+      "CS1587": 6,
+      "CA1416": 10,
+      "CS0219": 2,
+      "xUnit1013": 36,
+      "xUnit2031": 68,
+      "xUnit1031": 8,
+      "xUnit2009": 2,
+      "xUnit2029": 14,
+      "xUnit2030": 2,
+      "xUnit2013": 4,
+      "xUnit2012": 4
+    },
+    "currentG01Warnings": [
+      "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/JointInterfaceManagedCapture.cs(38,9): warning CA1416: This call site is reachable on all platforms. 'Directory.CreateDirectory(string, UnixFileMode)' is unsupported on: 'windows'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1416) [/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]",
+      "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/JointInterfaceManagedCapture.cs(65,13): warning CA1416: This call site is reachable on all platforms. 'Directory.CreateDirectory(string, UnixFileMode)' is unsupported on: 'windows'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1416) [/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]"
+    ],
+    "originalChains": [
+      {
+        "path": "phase/bind-integration.record.json",
+        "sha256": "af60595fe1347598f2c980a7005376efd148a3a4a1f2d79f6325a13ed5c688bd",
+        "bytes": 758,
+        "exact": true
+      },
+      {
+        "path": "phase/bind-integration.started.json",
+        "sha256": "54ce1ab63a98bc3935d84f6748a953810c50ef68a355543d8f3d6211435ebe9b",
+        "bytes": 522,
+        "exact": true
+      },
+      {
+        "path": "phase/bind-integration.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "exact": true
+      },
+      {
+        "path": "phase/bind-integration.stdout",
+        "sha256": "71bf2b325c6e491da42ce8d1eb0e115b1c655eecc55a89de77f2071c246d57e6",
+        "bytes": 551,
+        "exact": true
+      },
+      {
+        "path": "phase/bind-unit.record.json",
+        "sha256": "67a796d6d128147c5ddb089c6ff7c9f2ac84a695d6471ac4642c56a10f5e3aaf",
+        "bytes": 736,
+        "exact": true
+      },
+      {
+        "path": "phase/bind-unit.started.json",
+        "sha256": "081b1dd0954224da8ff6ff44dcfff2480eddef00be2b61d6d62bbd46cd99bc6f",
+        "bytes": 500,
+        "exact": true
+      },
+      {
+        "path": "phase/bind-unit.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "exact": true
+      },
+      {
+        "path": "phase/bind-unit.stdout",
+        "sha256": "02057f7095b9afc0c62c23ae578b943f6b7e10378e3242f53fdd3c6ade841a22",
+        "bytes": 496,
+        "exact": true
+      },
+      {
+        "path": "phase/catalog.record.json",
+        "sha256": "aa00109913eed4bf5357efafe2c17dc27dd2e0112c58c55b21dc07f8f31b365f",
+        "bytes": 654,
+        "exact": true
+      },
+      {
+        "path": "phase/catalog.started.json",
+        "sha256": "0ad46aeb254fc315c035fd1b3d20bc242f71d988f53ff7f589c546d604debf12",
+        "bytes": 418,
+        "exact": true
+      },
+      {
+        "path": "phase/catalog.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "exact": true
+      },
+      {
+        "path": "phase/catalog.stdout",
+        "sha256": "341d9741eb86b5d9c0348236aa085c711af4503aee4f46208a0a3fd573743f2e",
+        "bytes": 714,
+        "exact": true
+      },
+      {
+        "path": "phase/fresh-integration-build.record.json",
+        "sha256": "7deeaada8231d78e26df03b62b73b46ff1a85cf720a819d2eb17ddb7b6b4b294",
+        "bytes": 856,
+        "exact": true
+      },
+      {
+        "path": "phase/fresh-integration-build.started.json",
+        "sha256": "069e6f8df3ba2d8fbbf54d54ba656f52ef5e050620c95ad44ca68d56c6c63cbb",
+        "bytes": 620,
+        "exact": true
+      },
+      {
+        "path": "phase/fresh-integration-build.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "exact": true
+      },
+      {
+        "path": "phase/fresh-integration-build.stdout",
+        "sha256": "c675d1fff7cf66788fc5aa39537a87d0bb85db56eac476547d3fd63e3b13ff9e",
+        "bytes": 154451,
+        "exact": true
+      },
+      {
+        "path": "phase/imports-integration.record.json",
+        "sha256": "bc207d97a23a86a858637053fa11a8765e4aed36d3bfa49d8473289831f1afa2",
+        "bytes": 694,
+        "exact": true
+      },
+      {
+        "path": "phase/imports-integration.started.json",
+        "sha256": "984e8c6f75fa813359e42707f1d5c35b7e7ab5f061749336e48815af2fd32416",
+        "bytes": 457,
+        "exact": true
+      },
+      {
+        "path": "phase/imports-integration.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "exact": true
+      },
+      {
+        "path": "phase/imports-integration.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "exact": true
+      },
+      {
+        "path": "phase/imports-unit.record.json",
+        "sha256": "b1aa6a3a05406abca5c21620a3839635e6b4ad777d7312953c339de845830b22",
+        "bytes": 665,
+        "exact": true
+      },
+      {
+        "path": "phase/imports-unit.started.json",
+        "sha256": "d439592b5a95c4442b133d5c4e9dc0ec1d2bbb4109cd7659502c28806ad197d3",
+        "bytes": 429,
+        "exact": true
+      },
+      {
+        "path": "phase/imports-unit.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "exact": true
+      },
+      {
+        "path": "phase/imports-unit.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "exact": true
+      },
+      {
+        "path": "phase/integration.project.xml",
+        "sha256": "8d455916e963758671d8a0764e51e9c460cd1875c64c1d43f4d43915cb66c77b",
+        "bytes": 1605997,
+        "exact": true
+      },
+      {
+        "path": "phase/plan.record.json",
+        "sha256": "4655f070d1ef86855645216e00edf40fd40d5ceb7c9a96856f7c845b1afe7783",
+        "bytes": 710,
+        "exact": true
+      },
+      {
+        "path": "phase/plan.started.json",
+        "sha256": "d850fab2df47f677ee30319637f03aa5bca17e3bf722320a08002465c85243c5",
+        "bytes": 473,
+        "exact": true
+      },
+      {
+        "path": "phase/plan.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "exact": true
+      },
+      {
+        "path": "phase/plan.stdout",
+        "sha256": "0189d9b649971a6105ead1244a7b5b503d635677a6cc85d36f2e15487af4b391",
+        "bytes": 1392,
+        "exact": true
+      },
+      {
+        "path": "phase/record.json",
+        "sha256": "cc1bdf563029fd4452ba5d7fb9b69ade452cf23c545af588c8b6f9bc9a4903f4",
+        "bytes": 277221,
+        "exact": true
+      },
+      {
+        "path": "phase/started.json",
+        "sha256": "0bc2f7027bf2300b3068fc79560e924894c5bcc34b18e50d4948490c1a663af3",
+        "bytes": 589,
+        "exact": true
+      },
+      {
+        "path": "phase/unit.project.xml",
+        "sha256": "858eb619e0024104267e7b165c15c11fd5506fc22777da95ac0bc65d521db242",
+        "bytes": 1545962,
+        "exact": true
+      },
+      {
+        "path": "catalog/catalog-audit.json",
+        "sha256": "fc0db80502c3e490323c35cbf5d6b6aa60b34138d523dfb44c577a0696c57e97",
+        "bytes": 103,
+        "exact": true
+      },
+      {
+        "path": "catalog/dotnet-test.log",
+        "sha256": "8929c3190260eb9ee68ca14c8514d417480037d7dea3f0a22baae28c3aae5018",
+        "bytes": 3424889,
+        "exact": true
+      },
+      {
+        "path": "catalog/summary.json",
+        "sha256": "15fbc2c58174bc4611a415c535ff929c79106ce03db78bda425054c756f69bc9",
+        "bytes": 1405,
+        "exact": true
+      },
+      {
+        "path": "plan/dotnet-test.log",
+        "sha256": "87fb245838d4d89167c00ccad11b424c6381c74f5941e175caa8d6175cf50ac4",
+        "bytes": 1695123,
+        "exact": true
+      },
+      {
+        "path": "plan/plan.json",
+        "sha256": "984838e790b6ecd8db3562716854cab7099e69e6c02e9c133cee23edad178dcf",
+        "bytes": 1210,
+        "exact": true
+      },
+      {
+        "path": "plan/summary.json",
+        "sha256": "1d8763fd85832ac9d81e080b19ba5eae3fb3bd5203d9cd5e1203d711f085c3a3",
+        "bytes": 1398,
+        "exact": true
+      }
+    ],
+    "imports": [
+      {
+        "project": "integration",
+        "count": 129,
+        "classes": {
+          "explicitInstalledPin": 127,
+          "stagedMetadata": 2
+        }
+      },
+      {
+        "project": "unit",
+        "count": 127,
+        "classes": {
+          "explicitInstalledPin": 125,
+          "stagedMetadata": 2
+        }
+      }
+    ],
+    "closures": [
+      {
+        "project": "BookOfEternityClient.IntegrationTests",
+        "count": 460,
+        "manifestSha256": "62272355f098297e9c7eb6fb5891168a40a2fa4becc92af5d3e59bb7928da632"
+      },
+      {
+        "project": "BookOfEternityClient.Tests",
+        "count": 439,
+        "manifestSha256": "ecd3a2abd9c2dc53ce6b431f0cc59f7590a8a96f18cb2ba2f7db747a2916a9a2"
+      }
+    ],
+    "modules": [
+      {
+        "module": "BookOfEternityClient.dll",
+        "mvid": "03cdae3a-0f6f-4c77-bd36-fbd233f0f157",
+        "pdbId": "c26f0456e848f740a51e66f6e8e9c3d87ea05ca0",
+        "dllSha256": "e4eedc6b98b9ee6c4543ed3bce8d3002e16ec4d776a3b687e8e3b33374d6bedc",
+        "pdbSha256": "b449e76ec501087cc8c613662426b4dffb2587899943b95aded2f44b85d3e7b3"
+      },
+      {
+        "module": "BookOfEternityClient.TestSupport.dll",
+        "mvid": "cd626025-8ff3-467c-979e-c799c3f4452f",
+        "pdbId": "5209334d2906044d9574307e5e28d80c971831f4",
+        "dllSha256": "2eb446cb9a565dda2570905ace746f41300f30b7e429d57115c0edbe6bef3116",
+        "pdbSha256": "e224b0009e175121eda59dc443a2234d1c9e1b97674af69189fb36b71d37e121"
+      },
+      {
+        "module": "BookOfEternityClient.IntegrationTests.dll",
+        "mvid": "1a1ba392-63ea-40cd-a1b7-0203d70e681d",
+        "pdbId": "368ec33a73887f4abc27c4da059c264447ca33c9",
+        "dllSha256": "5df87b2bd9a0dab3035c86f2ba90804f24cc8ec172367208205b1b87c452c9fc",
+        "pdbSha256": "de51b78a039ffa9cf7b12a55320abd693410a758f9e9ef03dc5cafc494f139db"
+      }
+    ],
+    "nativeDurationSeconds": 400.6719431300007,
+    "buildDurationSeconds": 352.2680438280004,
+    "catalogDurationSeconds": 26.64417671800038,
+    "planDurationSeconds": 13.163907651003683,
+    "receiptSha256": "d75de663a2a209774860210c82fc5465a421a5cd038d356bab2b1d9b9df06909",
+    "manifestSha256": "1806cd5f9f18c7b66a6e50e72d089b8c3deb6aa265324d455bd9682ed922bc90"
+  },
+  "readerHistory": [
+    {
+      "stage": "exploratory initial read",
+      "exit": 1,
+      "error": "FileNotFoundError reading evidence/record.json instead of manifest-declared evidence/phase/record.json",
+      "correction": "Read exact manifest path; no original, source or native changes"
+    }
+  ],
+  "limits": [
+    "Reuses completed tools43; does not rerun native proofs",
+    "Private binaries checked locally, not claimed recovered from Git",
+    "No SDK/procfs/native execution by reviewer"
+  ]
+}

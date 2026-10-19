@@ -1,11 +1,11 @@
 {
   "kind": "G01_PENDING_CAPTURE_ORCHESTRATION_CONTROL",
   "base": "c1668efba8ccf9bb041e8b764d561fe7bed0bc6f",
-  "status": "NATIVE_ZERO_PREP_PASSED_PENDING_INDEPENDENT_PREP",
+  "status": "ONE_NAMED_DIAGNOSTIC_LEASE_CONSUMED_ACTUAL_UNRUN",
   "sourceReview": "ACCEPT_G01_WHOLE_SOURCE_ZERO_ONLY",
-  "affectedIntegrationPrep": "NATIVE_PASS_PENDING_INDEPENDENT_REVIEW",
+  "affectedIntegrationPrep": "ACCEPT_G01_PREP_ONE_ACTUAL",
   "gameplayRelease": "NONE",
-  "snapshotRelease": "NONE",
+  "snapshotRelease": "ONE_NAMED_G01_REQUEST_UPPER_BOUND1_ONLY",
   "crash5Release": "NONE",
   "actualGameCasesExecuted": 0,
   "diagnosticRequests": 0,
@@ -39,11 +39,11 @@
   },
   "unimplemented": [],
   "unrunWipSources": [
-    "one game case",
+    "one named game diagnostic",
     "offline actual mapping and EVIDENCE"
   ],
   "allOldOutcomesAndBroaderHoldsUnchanged": true,
-  "currentNextAction": "INDEPENDENT_PREP_EXACT_RECORDS_AND_ONE_NAMED_RUN",
+  "currentNextAction": "RUN_EXACT_ONE_NAMED_DIAGNOSTIC_NO_RETRY",
   "sourceAdmission": {
     "status": "SOURCE_ACCEPTED_G01_ZERO_ONLY",
     "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-source-accepted-review-20261019.json",
@@ -51,7 +51,15 @@
     "reviewedSource": "e520663f7918e536c2ae0675cb79a774be637655"
   },
   "actualAdmission": {
-    "status": "HOLD_PREP"
+    "status": "PREP_ACCEPTED_G01_ONE_ACTUAL_CASE",
+    "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-final-prep-independent-review-20261019.json",
+    "reviewSha256": "64718976c1b316de6f388c431132773ce1c39f29d8144a395e8b706c9b5b47e2",
+    "runId": "2ca476b7cf58446fb3eb3c6218e850b8",
+    "prepRecords": {
+      "tools": "410857f197e1da419f110f9f52eacbe751543c590994e81aa4498ea327e81d12",
+      "prepare": "cc1bdf563029fd4452ba5d7fb9b69ade452cf23c545af588c8b6f9bc9a4903f4"
+    },
+    "lease": "CONSUMED_FOR_NAMED_RUN_NO_RETRY"
   },
   "originalWholeSourceReview": {
     "candidate": "9d8d08093bb769f85ec79a88d98669f1570e0d57",
@@ -69,8 +77,15 @@
     ],
     "pureFakeLifecycleFinalPassed": 5,
     "finalProof": "watchdog-fault-green-budget-guard.json",
-    "nativeTools": "UNRUN",
-    "affectedPrep": "UNRUN",
+    "nativeTools": {
+      "status": "PASSED_AND_INDEPENDENTLY_REVIEWED",
+      "evidenceReference": "toolsEvidence"
+    },
+    "affectedPrep": {
+      "status": "PASSED_AND_INDEPENDENTLY_REVIEWED",
+      "evidenceReference": "prepEvidence",
+      "reviewReference": "actualAdmission"
+    },
     "advancingClockPassed": 4,
     "advancingClockProof": "deadline-fault-green.json"
   },
