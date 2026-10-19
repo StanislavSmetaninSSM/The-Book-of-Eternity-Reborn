@@ -759,13 +759,13 @@
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/Collect.ps1",
-      "bytes": 10338,
-      "sha256": "bafc8cc754f81a54f67e495d7b21d4c6db29ea1f213372b44424e4c9b7e3b406"
+      "bytes": 10325,
+      "sha256": "bbfb301e4028d4ff5c0e39c73a60035e12eaca3e291ce520bed7bc454a3171a9"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/watchdog.py",
-      "bytes": 17343,
-      "sha256": "fb3e123becd6535b0e96fe23af982e6f30af07e0bec99bb78e2290e2a07fd240"
+      "bytes": 17310,
+      "sha256": "68ff8cd3c45560cc2a0ee2cd9fb708e6710a235e15908cf92eb90d97794235e5"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/MapFrames.cs",
@@ -794,8 +794,8 @@
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/phase.py",
-      "bytes": 25624,
-      "sha256": "5ef95a9c293a4d598880968881902f8f310d1a9ff1388e36e3d0982e0d6f8a43"
+      "bytes": 28235,
+      "sha256": "67a0f0fd1b78ba6635beca030c0c657c55f1e9824872b562e8683efbce5d8f04"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/recover.py",
@@ -824,18 +824,18 @@
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/SyntheticOwner.cs",
-      "bytes": 11738,
-      "sha256": "f0e8142f824c52ec81432d2eafe4fde1d6b407d4b95a4844773a10e943f483ee"
+      "bytes": 14160,
+      "sha256": "c2874468229d1ca084b93ae622bf6094e06f3e47526ba09964c59c3166477eda"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/bindings.json",
       "bytes": 216029,
-      "sha256": "6400851f2d25b0437d9219a64942f5600924a8a25cdd7f08cb62bb9ee997821a"
+      "sha256": "95fcdea5aa5b588d2b83683d12cddfdb008b85f49bd6131b06a665de84df06f7"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/check_role.py",
-      "bytes": 2004,
-      "sha256": "72576e333fb7ef6d4b5ca8ddbfb409fd9f7a4c6b879a193d1cc12df236b836eb"
+      "bytes": 1989,
+      "sha256": "4b6182f896865a7b010d77fb6d110d57f82a5b3e6e3e848af8c515aa15ff76f3"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/recover.py",
@@ -851,9 +851,14 @@
       "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/role-red.json",
       "bytes": 266,
       "sha256": "7e5cbf51d8235e192a1feb64bbf307a55c37608e9812d768eaf231820bedc475"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/capture-role-green.json",
+      "bytes": 558,
+      "sha256": "e80e9b661d8141ddad45388666ba3a943ad4899771c2f1a0c418c53dc96d44df"
     }
   ],
-  "sourcePinDigest": "47ae17bb8015235f3120aaf456d2004734c65589f7b972641625949651e1402c",
+  "sourcePinDigest": "9fbed0e9cd04c848d4f4a0429b696e3faf516a9195bb4de34ea5ed08310f7fe0",
   "priorD01SourcePinDigest": "b277e73745c98abdc78f5feaa62a68373c2bf26b4b6115a20e4aa5207970e9ef",
   "explicitD01Deltas": [
     {
@@ -928,20 +933,20 @@
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/Collect.ps1",
       "priorSha256": "3d07c41ba0057d518baf48c2747a17ac3fef7bb9109ace21b84e47f31b99d387",
-      "sha256": "bafc8cc754f81a54f67e495d7b21d4c6db29ea1f213372b44424e4c9b7e3b406",
-      "bytes": 10338
+      "sha256": "bbfb301e4028d4ff5c0e39c73a60035e12eaca3e291ce520bed7bc454a3171a9",
+      "bytes": 10325
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/watchdog.py",
       "priorSha256": "0fcd99aefab4a1b23414b0435c3f721deb04d511bcf5e9bd8439ce9b7c5fd2e9",
-      "sha256": "fb3e123becd6535b0e96fe23af982e6f30af07e0bec99bb78e2290e2a07fd240",
-      "bytes": 17343
+      "sha256": "68ff8cd3c45560cc2a0ee2cd9fb708e6710a235e15908cf92eb90d97794235e5",
+      "bytes": 17310
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/phase.py",
       "priorSha256": "63969901c241f7007030af78b757bba0618c72dae457ae75c11804de45bc9980",
-      "sha256": "5ef95a9c293a4d598880968881902f8f310d1a9ff1388e36e3d0982e0d6f8a43",
-      "bytes": 25624
+      "sha256": "67a0f0fd1b78ba6635beca030c0c657c55f1e9824872b562e8683efbce5d8f04",
+      "bytes": 28235
     }
   ]
 }

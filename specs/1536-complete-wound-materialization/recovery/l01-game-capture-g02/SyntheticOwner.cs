@@ -7,8 +7,9 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Threading.Channels;
 
-// Adapter only: the genuine, unchanged S01 target is the oracle. No diagnostic API here.
+// Adapter only: the genuine, unchanged S01 target is the oracle. Only the common G01 collector invokes the diagnostic API.
 internal static class SyntheticOwner
 {
     static JsonElement Read(string path) => JsonDocument.Parse(File.ReadAllText(path)).RootElement.Clone();
@@ -36,8 +37,6 @@ internal static class SyntheticOwner
         info.Environment["TMPDIR"] = tmp;
         return Process.Start(info) ?? throw new InvalidOperationException("Process.Start returned null");
     }
-    static async Task<string> Line(Process p)
-        => await p.StandardOutput.ReadLineAsync().WaitAsync(TimeSpan.FromSeconds(5)) ?? throw new IOException("Premature target EOF");
     static JsonElement Oracle(string line)
     {
         Require(line.StartsWith("L01_SYNTHETIC ", StringComparison.Ordinal), "Oracle prefix");
@@ -48,8 +47,8 @@ internal static class SyntheticOwner
         Require(args.Length==2, "Settings path and SHA required");
         byte[] raw=File.ReadAllBytes(args[0]); Require(Hash(raw)==args[1], "Settings hash");
         JsonElement cfg=JsonDocument.Parse(raw).RootElement;
-        Require(cfg.GetProperty("SyntheticPreApiOracle").ValueKind==JsonValueKind.True &&
-            S(cfg,"OracleContract")=="S01_G01_PREAPI_ZERO_REQUESTS", "Explicit synthetic-only role");
+        Require(cfg.GetProperty("SyntheticOracle").ValueKind==JsonValueKind.True &&
+            S(cfg,"OracleContract")=="S01_G01_ONE_CAPTURE", "Explicit synthetic-only role");
         string own=S(cfg,"Own"), capture=Path.Combine(own,"capture"), tmp=Path.Combine(own,"tmp");
         Require(!Directory.Exists(own) && !File.Exists(own), "Fresh own required");
         Directory.CreateDirectory(own,UnixFileMode.UserRead|UnixFileMode.UserWrite|UnixFileMode.UserExecute);
@@ -59,20 +58,35 @@ internal static class SyntheticOwner
         int owner=Environment.ProcessId; var ownerId=Identity(owner);
         string nonce=S(cfg,"Nonce");Require(Guid.TryParseExact(nonce,"N",out _),"Nonce");
         Write(Path.Combine(own,"parent.json"),new {Nonce=nonce,ParentPid=owner,Cut=1,Fault=(string?)null,Diagnostic=true});
-        Write(Path.Combine(own,"cut.json"),new {Root=root,Nonce=nonce,Pid=owner,Cut=1,SyntheticPreApiOracle=true});
+        Write(Path.Combine(own,"cut.json"),new {Root=root,Nonce=nonce,Pid=owner,Cut=1,SyntheticOracle=true});
         string parentHash=Hash(File.ReadAllBytes(Path.Combine(own,"parent.json")));
         string[] command={S(cfg,"Dotnet"),"exec","--runtimeconfig",S(cfg,"OracleRuntimeconfig"),S(cfg,"OracleAssembly"),nonce};
         Process? target=null, watchdog=null; long targetTick=0,watchdogTick=0;
+        Task? stdoutDrain=null,stderrDrain=null;
         var errors=new List<string>(); var record=new Dictionary<string,object?> {
-            ["kind"]="G02_S01_THROUGH_G01_PREAPI",["syntheticOnly"]=true,["gameProcesses"]=0,
-            ["runId"]=S(cfg,"RunId"),["apiCalls"]=0,["admissionIsSimulated"]=true,["ownerPid"]=owner,["ownerBirthTick"]=ownerId.Tick };
+            ["kind"]="G02_S01_THROUGH_G01_CAPTURE",["syntheticOnly"]=true,["gameProcesses"]=0,
+            ["runId"]=S(cfg,"RunId"),["apiCalls"]=null,["admissionIsSimulated"]=true,["ownerPid"]=owner,["ownerBirthTick"]=ownerId.Tick };
         using var healthStop=new CancellationTokenSource(); Task? health=null;
         try
         {
             long launched=Stopwatch.GetTimestamp(), deadline=launched+60*Stopwatch.Frequency;
-            target=Start(command[0],command.Skip(1),own,tmp); var targetId=Identity(target.Id); targetTick=targetId.Tick;
-            Task<string> targetErr=target.StandardError.ReadToEndAsync();
-            JsonElement ready=Oracle(await Line(target));
+            target=Start(command[0],command.Skip(1),own,tmp);
+            record["targetLaunches"]=1;record["targetPid"]=target.Id;record["targetNativeExit"]=null;record["targetJoined"]=false;
+            var targetId=Identity(target.Id); targetTick=targetId.Tick;
+            var eventsChannel=Channel.CreateBounded<JsonElement>(4);
+            stdoutDrain=Task.Run(async () => {
+                using var output=new StreamWriter(Path.Combine(own,"target.stdout"));
+                try {
+                    while(await target.StandardOutput.ReadLineAsync() is string line) {
+                        await output.WriteLineAsync(line);
+                        if(line.StartsWith("L01_SYNTHETIC ",StringComparison.Ordinal))
+                            Require(eventsChannel.Writer.TryWrite(Oracle(line)),"Oracle event overflow");
+                    }
+                    eventsChannel.Writer.Complete();
+                }catch(Exception e){eventsChannel.Writer.TryComplete(e);throw;}
+            });
+            stderrDrain=Task.Run(async () => File.WriteAllText(Path.Combine(own,"target.stderr"),await target.StandardError.ReadToEndAsync()));
+            JsonElement ready=await eventsChannel.Reader.ReadAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(5));
             Require(S(ready,"Stage")=="ready" && S(ready,"Nonce")==nonce && N(ready,"Pid")==target.Id &&
                 N(ready,"BirthTick")==targetTick && N(ready,"Uid")==ownerId.Uid && targetId.Parent==owner &&
                 S(ready,"Mvid")==S(cfg,"OracleMvid") && S(ready,"Runtime")==".NET 8.0.32" &&
@@ -97,52 +111,68 @@ internal static class SyntheticOwner
                 HealthPath=Path.Combine(capture,"health.json"),DumpPath=Path.Combine(capture,"game-normal.core"),
                 ParentFileSha256=parentHash,DeadlineStamp=deadline,HealthFloor=1 });
             watchdog=Start(S(cfg,"Python"),new[]{S(cfg,"Watchdog"),Path.Combine(capture,"admission.json")},capture,tmp);
+            record["watchdogLaunches"]=1;record["watchdogPid"]=watchdog.Id;record["watchdogNativeExit"]=null;record["watchdogJoined"]=false;
             watchdogTick=Identity(watchdog.Id).Tick;
             Task<string> wo=watchdog.StandardOutput.ReadToEndAsync(),we=watchdog.StandardError.ReadToEndAsync();
             await watchdog.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(27));
+            record["watchdogNativeExit"]=watchdog.ExitCode; record["watchdogJoined"]=true;
             string watchOut=await wo.WaitAsync(TimeSpan.FromSeconds(2)),watchErr=await we.WaitAsync(TimeSpan.FromSeconds(2));
             File.WriteAllText(Path.Combine(capture,"watchdog.stdout"),watchOut);File.WriteAllText(Path.Combine(capture,"watchdog.stderr"),watchErr);
-            record["watchdogNativeExit"]=watchdog.ExitCode; record["watchdogJoined"]=true;
-            JsonElement wr=Read(Path.Combine(capture,"request-record.json"));record["watchdog"]=wr;
+            JsonElement wr=Read(Path.Combine(capture,"request-record.json"));record["watchdog"]=wr;record["apiCalls"]=wr.GetProperty("diagnosticRequests").Clone();record["apiOutcome"]=S(wr,"apiOutcome");
             Require(watchdog.ExitCode==0 && N(wr,"nativeExit")==0 && N(wr,"collectorLaunches")==1 &&
-                N(wr,"diagnosticRequests")==0 && S(wr,"apiOutcome")=="UNREACHED" && wr.GetProperty("observerErrors").GetArrayLength()==0,
+                N(wr,"diagnosticRequests")==1 && S(wr,"apiOutcome")=="RETURNED" && wr.GetProperty("observerErrors").GetArrayLength()==0,
                 "Watchdog/collector native or API/observer failure");
             var events=File.ReadAllLines(Path.Combine(capture,"collector.stdout")).Where(x=>x.StartsWith("L01_COLLECTOR "))
                 .Select(x=>JsonDocument.Parse(x[14..]).RootElement.Clone()).ToArray();
-            Require(events.Count(x=>S(x,"Stage")=="pre_api_ready")==1 && !events.Any(x=>S(x,"Stage")=="request_started") &&
-                events.Length==2 && S(events[1],"Stage")=="collector_exit" && N(events[1],"PreflightStatus")==0 &&
-                events[1].GetProperty("ObserverErrors").GetArrayLength()==0,"Exactly one positive pre-API guard and clean exit required");
-            Require(!File.Exists(Path.Combine(capture,"game-normal.core")) && !File.Exists(Path.Combine(capture,"game-normal.core.crashreport.json")),"Unexpected capture artifact");
-            record["collectorEvents"]=events;record["preApiReady"]=1;record["noDumpOrReport"]=true;
+            Require(events.Count(x=>S(x,"Stage")=="pre_api_ready")==1 && events.Count(x=>S(x,"Stage")=="request_started")==1 &&
+                events.Length==4 && S(events[3],"Stage")=="collector_exit" && N(events[3],"PreflightStatus")==0 &&
+                events[3].GetProperty("ObserverErrors").GetArrayLength()==0,"Exactly one pre-API marker, actual request, return and clean exit required");
+            string dump=Path.Combine(capture,"game-normal.core"),report= dump+".crashreport.json";
+            Require(new FileInfo(dump).Length>0 && new FileInfo(report).Length>0,"Capture artifacts absent/empty");
+            _=Read(report).GetProperty("payload").GetProperty("threads");
+            record["collectorEvents"]=events;record["preApiReady"]=1;record["apiCalls"]=1;
+            record["privateDumpPath"]=dump;record["privateReportPath"]=report;record["reportReadable"]=true;
             await target.StandardInput.WriteLineAsync("STOP:"+nonce);await target.StandardInput.FlushAsync();target.StandardInput.Close();
-            JsonElement done=Oracle(await Line(target));record["done"]=done;
+            JsonElement done=await eventsChannel.Reader.ReadAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(5));record["done"]=done;
             Require(S(done,"Stage")=="done" && S(done,"Nonce")==nonce && done.GetProperty("ValidStop").GetBoolean() &&
                 N(done,"Iterations")>=N(ready,"Iterations"),"STOP oracle");
             await target.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(5));
-            string tail=await target.StandardOutput.ReadToEndAsync().WaitAsync(TimeSpan.FromSeconds(2));
-            string stderr=await targetErr.WaitAsync(TimeSpan.FromSeconds(2));
-            Require(target.ExitCode==0 && tail.Length==0 && stderr.Length==0,"Target native/EOF");
-            record["targetNativeExit"]=target.ExitCode;record["targetJoined"]=true;record["stdoutEof"]=true;record["stderrEof"]=true;
+            record["targetNativeExit"]=target.ExitCode;record["targetJoined"]=true;
+            await stdoutDrain.WaitAsync(TimeSpan.FromSeconds(2));await stderrDrain.WaitAsync(TimeSpan.FromSeconds(2));
+            Require(target.ExitCode==0 && !eventsChannel.Reader.TryRead(out _),"Target native/oracle event tail");
+            record["stdoutEof"]=true;record["stderrEof"]=true;
         }
         catch(Exception error) {errors.Add(error.ToString());}
         finally
         {
             healthStop.Cancel();if(health!=null)try {await health.WaitAsync(TimeSpan.FromSeconds(1));}catch(Exception e){errors.Add("Health join: "+e);}
-            // Only direct unreaped children of this new owner; identity uncertainty refuses a signal.
+            // Successful Start is accounted before Identity. Missing identity stays an observer failure.
+            // Fallback uses only the retained direct child Process, never an arbitrary PID/tree/global kill.
             long cleanup=Stopwatch.GetTimestamp()+5*Stopwatch.Frequency;
-            foreach(var item in new[]{(P:watchdog,Tick:watchdogTick),(P:target,Tick:targetTick)})
+            foreach(var item in new[]{(Name:"watchdog",P:watchdog,Tick:watchdogTick),(Name:"target",P:target,Tick:targetTick)})
                 if(item.P!=null)try {
-                    if(!item.P.HasExited) {
-                        var id=Identity(item.P.Id);Require(id.Tick==item.Tick && id.Parent==owner && id.Uid==ownerId.Uid,"Cleanup ownership unknown");
-                        Require(Stopwatch.GetTimestamp()<cleanup,"Cleanup budget exhausted");item.P.Kill();errors.Add("Owned fallback kill required");
+                    bool forced=false;
+                    if(item.P.HasExited) {
+                        if(record[item.Name+"NativeExit"]==null)record[item.Name+"NativeExit"]=item.P.ExitCode;
+                    } else {
+                        if(item.Tick!=0) {
+                            var id=Identity(item.P.Id);Require(id.Tick==item.Tick && id.Parent==owner && id.Uid==ownerId.Uid,"Cleanup ownership unknown");
+                        } else record[item.Name+"Identity"]= "UNKNOWN_DIRECT_CHILD_FALLBACK_ONLY";
+                        Require(Stopwatch.GetTimestamp()<cleanup,"Cleanup budget exhausted");item.P.Kill();forced=true;
+                        errors.Add(item.Name+": owned direct-child fallback kill required");
                     }
                     double remaining=(cleanup-Stopwatch.GetTimestamp())/(double)Stopwatch.Frequency;
                     Require(remaining>0,"Cleanup join budget exhausted");await item.P.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(remaining));
+                    record[item.Name+"Joined"]=true;
+                    if(forced)record[item.Name+"CleanupExit"]=item.P.ExitCode;
+                    else if(record[item.Name+"NativeExit"]==null)record[item.Name+"NativeExit"]=item.P.ExitCode;
                 }catch(Exception e){errors.Add("Owned cleanup: "+e);}
-            record["observerErrors"]=errors;record["status"]=errors.Count==0?"PREAPI_PASSED_API0":"FROZEN_FIRST_PREAPI_FAILURE";
+            foreach(var drain in new[]{stdoutDrain,stderrDrain})
+                if(drain!=null)try {await drain.WaitAsync(TimeSpan.FromSeconds(1));}catch(Exception e){errors.Add("Target stream EOF/join: "+e);}
+            record["observerErrors"]=errors;record["status"]=errors.Count==0?"SYNTHETIC_CAPTURE_PASSED_API1":"FROZEN_FIRST_SYNTHETIC_CAPTURE_FAILURE";
             Write(Path.Combine(own,"record.json"),record);
         }
-        Require(errors.Count==0,"Synthetic pre-API failed; retain root and HOLD game");
+        Require(errors.Count==0,"Synthetic capture failed; retain root and HOLD game");
     }
     public static async Task<int> Main(string[] args)
     {

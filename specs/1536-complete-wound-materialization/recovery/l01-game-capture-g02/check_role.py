@@ -9,13 +9,13 @@ cases=[]
 if nodes:
     ns={'Path':Path};exec(compile(ast.Module(body=nodes,type_ignores=[]),str(source),'exec'),ns)
     fn=ns['request_role']
-    cfg=dict(Dotnet='/dotnet',Runtimeconfig='/r',Depsfile='/d',SupportAssembly='/s',IntegrationAssembly='/i',OracleAssembly='/oracle.dll',OracleRuntimeconfig='/oracle.runtimeconfig.json',OracleContract='S01_G01_PREAPI_ZERO_REQUESTS')
+    cfg=dict(Dotnet='/dotnet',Runtimeconfig='/r',Depsfile='/d',SupportAssembly='/s',IntegrationAssembly='/i',OracleAssembly='/oracle.dll',OracleRuntimeconfig='/oracle.runtimeconfig.json',OracleContract='S01_G01_ONE_CAPTURE')
     m=dict(Own='/own',Root='/own/tmp/root',Cut=1,Nonce='a'*32)
     real=['/dotnet','exec','--runtimeconfig','/r','--depsfile','/d','/s','engine-joint-interface-resume','/i',m['Root'],'/own/resume.json','1','/own']
     oracle=['/dotnet','exec','--runtimeconfig','/oracle.runtimeconfig.json','/oracle.dll','a'*32]
     for name,flag,command,contract,accept in [('real',False,real,cfg['OracleContract'],True),('synthetic',True,oracle,cfg['OracleContract'],True),('missing',None,real,cfg['OracleContract'],False),('string','false',real,cfg['OracleContract'],False),('wrong-contract',True,oracle,'WRONG',False),('synthetic-real-argv',True,real,cfg['OracleContract'],False),('real-synthetic-argv',False,oracle,cfg['OracleContract'],False)]:
         c=dict(cfg,OracleContract=contract)
-        if flag is not None:c['SyntheticPreApiOracle']=flag
+        if flag is not None:c['SyntheticOracle']=flag
         try:fn(c,dict(m,TargetCommand=command));accepted=True
         except (AssertionError,KeyError):accepted=False
         cases.append(dict(name=name,passed=accepted==accept))

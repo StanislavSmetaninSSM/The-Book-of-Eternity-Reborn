@@ -16,5 +16,7 @@
   "l01": "52/57 original provenance unchanged; crash5 unqualified",
   "broaderHolds": "FullNI/HOT/F1/M3/T197/E01/T148/Phase10 incomplete; A3 NO-PROCEED",
   "dumpLifecycle": "Private own/capture only; retain through independent sanitized EVIDENCE/final report; no Git/attach/archive/autodelete",
-  "currentNextAction": "Independent affected SOURCE; no target/native/API before acceptance"
+  "currentNextAction": "Independent affected SOURCE for actual synthetic API1/decode; PREAPI/API0 prototype superseded, no native/target/API yet",
+  "syntheticDiagnosticRequestUpperBound": 1,
+  "gameDiagnosticRequestUpperBound": 1
 }

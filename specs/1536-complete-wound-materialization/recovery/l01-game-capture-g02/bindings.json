@@ -4891,13 +4891,13 @@
     },
     {
       "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/watchdog.py",
-      "bytes": 17343,
-      "sha256": "fb3e123becd6535b0e96fe23af982e6f30af07e0bec99bb78e2290e2a07fd240"
+      "bytes": 17310,
+      "sha256": "68ff8cd3c45560cc2a0ee2cd9fb708e6710a235e15908cf92eb90d97794235e5"
     },
     {
       "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/Collect.ps1",
-      "bytes": 10338,
-      "sha256": "bafc8cc754f81a54f67e495d7b21d4c6db29ea1f213372b44424e4c9b7e3b406"
+      "bytes": 10325,
+      "sha256": "bbfb301e4028d4ff5c0e39c73a60035e12eaca3e291ce520bed7bc454a3171a9"
     },
     {
       "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-delivery-d02/phase.py",
@@ -4973,13 +4973,13 @@
     },
     {
       "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/watchdog.py",
-      "bytes": 17343,
-      "sha256": "fb3e123becd6535b0e96fe23af982e6f30af07e0bec99bb78e2290e2a07fd240"
+      "bytes": 17310,
+      "sha256": "68ff8cd3c45560cc2a0ee2cd9fb708e6710a235e15908cf92eb90d97794235e5"
     },
     {
       "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/Collect.ps1",
-      "bytes": 10338,
-      "sha256": "bafc8cc754f81a54f67e495d7b21d4c6db29ea1f213372b44424e4c9b7e3b406"
+      "bytes": 10325,
+      "sha256": "bbfb301e4028d4ff5c0e39c73a60035e12eaca3e291ce520bed7bc454a3171a9"
     },
     {
       "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",

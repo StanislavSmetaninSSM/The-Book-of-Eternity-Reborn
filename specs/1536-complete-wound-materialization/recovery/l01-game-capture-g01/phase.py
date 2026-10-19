@@ -36,24 +36,32 @@ def main():
     global ROOT
     args=sys.argv[1:];assert len(args) in (2,3)
     mode,source=args[:2];scope=args[2] if len(args)==3 else 'G01'
-    assert scope in ('G01','G02') and mode in ('tools','prepare','preapi','actual','map')
-    assert scope=='G02' or mode!='preapi'
+    assert scope in ('G01','G02') and mode in ('tools','prepare','synthetic','actual','map')
+    assert scope=='G02' or mode!='synthetic'
     assert scope!='G02' or mode!='tools'
     config_dir=HERE if scope=='G01' else REC/'l01-game-capture-g02'
     assert git('rev-parse','HEAD')==source and not git('status','--porcelain')
     cfg=read(config_dir/'bindings.json');packet=read(config_dir/'source-packet.json');control=read(config_dir/'control.json')
     if scope=='G02':ROOT=Path(cfg['root'])
-    gate=control['sourceAdmission'] if mode in ('tools','prepare') else control['syntheticAdmission'] if mode=='preapi' else control['actualAdmission']
+    gate=control['sourceAdmission'] if mode in ('tools','prepare') else control['syntheticAdmission'] if mode=='synthetic' else control['actualAdmission']
     expected='SOURCE_ACCEPTED_G01_ZERO_ONLY' if mode in ('tools','prepare') else 'PREP_ACCEPTED_G01_ONE_ACTUAL_CASE' if mode=='actual' else 'CONSUMED_G01_FIRST_OUTCOME'
-    if scope=='G02':expected={'prepare':'SOURCE_ACCEPTED_G02_ZERO_ONLY','preapi':'PREP_ACCEPTED_G02_ONE_PREAPI','actual':'PREP_ACCEPTED_G02_ONE_ACTUAL_CASE','map':'CONSUMED_G02_FIRST_OUTCOME'}[mode]
+    if scope=='G02':expected={'prepare':'SOURCE_ACCEPTED_G02_ZERO_ONLY','synthetic':'PREP_ACCEPTED_G02_ONE_SYNTHETIC','actual':'PREP_ACCEPTED_G02_ONE_ACTUAL_CASE','map':'CONSUMED_G02_FIRST_OUTCOME'}[mode]
     assert gate['status']==expected
     review_raw=(REPO/gate['reviewPath']).read_bytes();assert H(review_raw)==gate['reviewSha256'];review=json.loads(review_raw)
     assert review['sourcePinDigest']==packet['sourcePinDigest'] and review['controllerSha256']==H(Path(__file__).read_bytes())
-    verdict=('ACCEPT_G01_WHOLE_SOURCE_ZERO_ONLY' if mode in ('tools','prepare') else 'ACCEPT_G01_PREP_ONE_ACTUAL') if scope=='G01' else {'prepare':'ACCEPT_G02_AFFECTED_SOURCE_ZERO_ONLY','preapi':'ACCEPT_G02_PREP_ONE_SYNTHETIC','actual':'ACCEPT_G02_PREP_ONE_ACTUAL','map':'ACCEPT_G02_PREP_ONE_ACTUAL'}[mode]
+    verdict=('ACCEPT_G01_WHOLE_SOURCE_ZERO_ONLY' if mode in ('tools','prepare') else 'ACCEPT_G01_PREP_ONE_ACTUAL') if scope=='G01' else {'prepare':'ACCEPT_G02_AFFECTED_SOURCE_ZERO_ONLY','synthetic':'ACCEPT_G02_PREP_ONE_SYNTHETIC','actual':'ACCEPT_G02_PREP_ONE_ACTUAL','map':'ACCEPT_G02_PREP_ONE_ACTUAL'}[mode]
     assert review['verdict']==verdict
-    if mode=='preapi':assert gate['runId']==cfg['syntheticRunId']==review['plannedSyntheticRunId'] and gate['lease']=='CONSUMED_FOR_NAMED_RUN_NO_RETRY'
+    if mode=='synthetic':assert gate['runId']==cfg['syntheticRunId']==review['plannedSyntheticRunId'] and gate['lease']=='CONSUMED_FOR_NAMED_RUN_NO_RETRY'
     if mode in ('actual','map'):assert gate['runId']==cfg['runId']==review['plannedRunId']
     if mode=='actual':assert gate['lease']=='CONSUMED_FOR_NAMED_RUN_NO_RETRY'
+    if scope=='G02' and mode in ('actual','map'):
+        evidence=gate['syntheticEvidence'];assert evidence==review['syntheticEvidence'];verify(evidence)
+        se=read(evidence['path']);so=se['syntheticOutcome']
+        assert se['status']=='SYNTHETIC_CAPTURE_PASSED_API1' and se['nativeExit']==0 and not se['observerErrors'] and not se['afterLiveTools']
+        assert so['runId']==cfg['syntheticRunId'] and so['status']=='SYNTHETIC_CAPTURE_PASSED_API1' and not so['observerErrors']
+        assert so['apiCalls']==1 and so['watchdog']['apiOutcome']=='RETURNED' and so['watchdog']['diagnosticRequests']==1
+        assert so['targetNativeExit']==so['watchdogNativeExit']==0 and so['targetJoined'] and so['watchdogJoined'] and so['stdoutEof'] and so['stderrEof']
+        assert so['done']['ValidStop'] and len(se['decodedOracleFrames'])==4
     for row in packet['sourcePins']:verify(dict(row,path=str(REPO/row['path'])))
     for row in cfg['inputs']:verify(row)
     assert cfg['root']==str(ROOT) and unit_tree(source)==cfg['unchangedUnitTree']==unit_tree(cfg['unit']['compiledSource'])
@@ -75,7 +83,7 @@ def main():
         NUGET_PACKAGES='/tmp/1536-cloud-tools/nuget',NuGetAudit='false',DOTNET_GENERATE_ASPNET_CERTIFICATE='false',
         DOTNET_NOLOGO='1',MSBUILDDISABLENODEREUSE='1',UseSharedCompilation='false',ArtifactsPath=str(ROOT/'artifacts'))
     record=dict(kind=scope+'_FIRST_'+mode.upper(),source=source,sourcePinDigest=packet['sourcePinDigest'],nativeExit=None,
-        observerErrors=[],commands=[],gameCasesPlanned=1 if mode=='actual' else 0,diagnosticRequestUpperBound=1 if mode=='actual' else 0,
+        observerErrors=[],commands=[],gameCasesPlanned=1 if mode=='actual' else 0,diagnosticRequestUpperBound=1 if mode in ('synthetic','actual') else 0,
         capturePhase='UNKNOWN',suspensionDuration='UNKNOWN',beforeTools=b01['tool_summary'](before),beforeVisibility=visibility)
     # Frozen normal output baseline is retained inside original raw archive, not newly qualified.
     import zipfile
@@ -168,6 +176,17 @@ def main():
                 record['reuseProvenance']=reuse
                 record['oracleFiles']=cfg['oracleFiles']
                 record['outsideFeatureCompiledGraphEqual']=True
+                zero([DOTNET,str(tools/'ParentProbe.dll'),str(phase/'parent-proof')],'retained-parent-proof',time.monotonic()+30)
+                parent=read(phase/'retained-parent-proof.stdout');assert parent['passed']==len(parent['cases'])==6 and all(c['passed'] for c in parent['cases']) and parent['requests']==parent['gameProcesses']==parent['fixtureChildren']==0
+                zero([PW,'-NoLogo','-NoProfile','-NonInteractive','-File',str(HERE/'check_health.ps1'),'-Collector',str(HERE/'Collect.ps1'),'-ProofRoot',str(phase/'cancel-proof')],'affected-collector-health-proof',time.monotonic()+30)
+                health=read(phase/'affected-collector-health-proof.stdout');assert health['Passed']==len(health['Cases'])==26 and all(c['Passed'] for c in health['Cases']) and health['Requests']==health['GameProcesses']==0
+                record.update(parentProof=parent,collectorHealthProof=health)
+                policy_path=HERE/'policy-green-corrected.record.json';policy=read(policy_path)
+                assert policy['status']=='GREEN' and policy['nativeExit']==0 and not policy['observerErrors'] and policy['results']['passed']==23 and policy['results']['failed']==0
+                for row in policy['sourceImages']:verify(row)
+                record['retainedTimerPolicyProof']=dict(record=image(policy_path),source=policy['source'],cases=23,gameProcesses=0,requests=0,reexecuted=False,sourceImagesVerified=True)
+
+
             record['evaluatedBindings']=[]
             for key,name,project in [('integration','BookOfEternityClient.IntegrationTests','BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj'),('unit','BookOfEternityClient.Tests','BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj')]:
                 props='TargetPath,ProjectAssetsFile,MSBuildProjectExtensionsPath,IsTestProject,TargetFramework,Configuration,AssemblyName'
@@ -206,23 +225,27 @@ def main():
                 record[name+'Summary']=s;record['runnerRoots'].append(str(rroot))
             record['privateBinClosures']=binaries();record['integrationCompiledSource']=source if scope=='G01' else cfg['reuse']['integrationCompiledSource'];record['unitCompiledSource']=cfg['unit']['compiledSource']
             assert record['privateBinClosures']['BookOfEternityClient.Tests']==cfg['unit']['binFiles']
-        elif mode=='preapi':
+        elif mode=='synthetic':
             check_prep()
             settings=dict(Contract='EXACT_RECEIPT_FRESH_STICKY_HEALTH_CAPTURE_PHASE_UNKNOWN_ALLOWED',RunId=gate['runId'],
-                SyntheticPreApiOracle=True,OracleContract='S01_G01_PREAPI_ZERO_REQUESTS',Own=str(phase/'own'),Nonce=cfg['syntheticNonce'],
+                SyntheticOracle=True,OracleContract='S01_G01_ONE_CAPTURE',Own=str(phase/'own'),Nonce=cfg['syntheticNonce'],
                 Python=cfg['python'],Watchdog=str(HERE/'watchdog.py'),Dotnet=DOTNET,Pwsh=PW,Collector=str(HERE/'Collect.ps1'),Createdump=cfg['createdump'],
                 OracleAssembly=cfg['oracleAssembly'],OracleRuntimeconfig=cfg['oracleRuntimeconfig'],OracleMvid=cfg['oracleMvid'],
                 RequestInputs=cfg['requestInputs']+cfg['oracleFiles'],LoadedFiles=cfg['loadedFiles'],ClientAssembly=cfg['clientAssembly'],BinaryImages=cfg['oracleFiles'])
             lib['write'](phase/'settings.json',settings)
-            zero([DOTNET,str(ROOT/'prepare/SyntheticOwner.dll'),str(phase/'settings.json'),H((phase/'settings.json').read_bytes())],'one-synthetic-preapi',start+45)
+            zero([DOTNET,str(ROOT/'prepare/SyntheticOwner.dll'),str(phase/'settings.json'),H((phase/'settings.json').read_bytes())],'one-synthetic-capture',start+45)
             record['syntheticOutcome']=read(phase/'own/record.json')
-            assert record['syntheticOutcome']['status']=='PREAPI_PASSED_API0'
+            assert record['syntheticOutcome']['status']=='SYNTHETIC_CAPTURE_PASSED_API1'
+            so=record['syntheticOutcome'];report=Path(so['privateReportPath'])
+            record['decodedOracleFrames']=lib['decode'](read(report),so['ready'],cfg['oracleMvid'])
+            assert len(record['decodedOracleFrames'])==4
+            record['privateReportImage']=image(report)
             record['settingsImage']=image(phase/'settings.json')
         elif mode=='actual':
             check_prep()
             bin=ROOT/'artifacts/bin/BookOfEternityClient.IntegrationTests/debug'
             request_inputs=cfg['requestInputs']+[image(bin/n) for n in ('BookOfEternityClient.IntegrationTests.dll','BookOfEternityClient.TestSupport.dll','BookOfEternityClient.dll','BookOfEternityClient.IntegrationTests.runtimeconfig.json','BookOfEternityClient.IntegrationTests.deps.json','System.Collections.Immutable.dll')]
-            settings=dict(Contract='EXACT_RECEIPT_FRESH_STICKY_HEALTH_CAPTURE_PHASE_UNKNOWN_ALLOWED',SyntheticPreApiOracle=False,RunId=gate['runId'],ActualRoot=str(phase),FixtureParent=env['TMPDIR'],
+            settings=dict(Contract='EXACT_RECEIPT_FRESH_STICKY_HEALTH_CAPTURE_PHASE_UNKNOWN_ALLOWED',SyntheticOracle=False,RunId=gate['runId'],ActualRoot=str(phase),FixtureParent=env['TMPDIR'],
                 Python=cfg['python'],Watchdog=str(HERE/'watchdog.py'),Dotnet=DOTNET,Pwsh=PW,Collector=str(HERE/'Collect.ps1'),Createdump=cfg['createdump'],
                 Runtimeconfig=str(bin/'BookOfEternityClient.IntegrationTests.runtimeconfig.json'),Depsfile=str(bin/'BookOfEternityClient.IntegrationTests.deps.json'),
                 SupportAssembly=str(bin/'BookOfEternityClient.TestSupport.dll'),IntegrationAssembly=str(bin/'BookOfEternityClient.IntegrationTests.dll'),
@@ -251,7 +274,7 @@ def main():
                 record['privateMappedPath']=str(own/'capture/mapped.json');record['mappedSummary']=read(own/'capture/mapped.json')
             else:record.update(nativeExit=0,mapping='NOT_CAPTURED_NO_REPORT')
         assert m01['binaries']()==normal;record['normal899UnchangedAfter']=True
-        if mode in ('preapi','actual','map'):check_prep()
+        if mode in ('synthetic','actual','map'):check_prep()
     except BaseException as error:record['observerErrors'].append(repr(error))
     finally:
         record['durationSeconds']=time.monotonic()-start
@@ -259,7 +282,7 @@ def main():
             after,visibility=b01['proc_rows']();record.update(afterTools=b01['tool_summary'](after),afterVisibility=visibility,afterLiveTools=[p for p in after if p['state']!='Z'])
             if record['afterLiveTools']:record['observerErrors'].append('Live exact tool remains; retain roots/HOLD; no global signals.')
         except BaseException as error:record['observerErrors'].append('Terminal observation: '+repr(error))
-    record['status']='PREPARED_'+scope+'_ZERO_ONLY' if mode in ('tools','prepare') and record['nativeExit']==0 and not record['observerErrors'] else 'FIRST_GAME_OUTCOME_RETAINED_NO_RETRY' if mode=='actual' else 'PREAPI_PASSED_API0' if mode=='preapi' and record['nativeExit']==0 and not record['observerErrors'] else 'OFFLINE_MAPPING_COMPLETE' if mode=='map' and record['nativeExit']==0 and not record['observerErrors'] else 'FROZEN_FIRST_G01_OUTCOME'
+    record['status']='PREPARED_'+scope+'_ZERO_ONLY' if mode in ('tools','prepare') and record['nativeExit']==0 and not record['observerErrors'] else 'FIRST_GAME_OUTCOME_RETAINED_NO_RETRY' if mode=='actual' else 'SYNTHETIC_CAPTURE_PASSED_API1' if mode=='synthetic' and record['nativeExit']==0 and not record['observerErrors'] else 'OFFLINE_MAPPING_COMPLETE' if mode=='map' and record['nativeExit']==0 and not record['observerErrors'] else 'FROZEN_FIRST_G01_OUTCOME'
     result=lib['FINALIZE'](record,lambda r:lib['write'](phase/'record.json',r),summary)
     return 128-result if result<0 else result
 

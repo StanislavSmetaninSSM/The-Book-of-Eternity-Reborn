@@ -1,54 +1,33 @@
 # G02 corrective snapshot implementation plan
 
-> **For agentic workers:** execute inline with Superpowers TDD/debugging/verification and repository mandatory independent Astra XHigh affected reviews. Latest user explicitly authorizes autonomous preparation and ONE corrective game after successful own synthetic pre-API gate; no further permission question for routine work.
+Tracked task: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536; spec ../spec.md. Base46c621fb50fe61e5a662ccaf8f00f3fa0f3c6dc3, branch1536-wound-b2-cloud-20261012. Execute autonomously inline; mandatory independent Astra XHigh reviews. No additional routine user approval.
 
-**Goal:** verify the corrected G01 collector-env→collector path end to end without a game, then admit at most one separately named corrective diagnostic case and obtain a source-mapped stack or an exact diagnostic limit.
-**Architecture:** retain G01 owning-process watchdog/collector, qualified C# binaries/tools and existing S01 genuine synthetic oracle. A tiny BCL synthetic owner supplies explicit synthetic G01 context/fresh Stopwatch health, launches that same watchdog/collector and stops at the final pre-API guard with API0. The real G02 role uses unchanged strict resumer identity/argv and the original category; no preflight-only substitute collector or new framework.
-**Tech stack:** pinned Python3.13, PowerShell, SDK10.0.402/net8.0.32; existing immutable tool/import/NuGet inputs.
-**Spec:** ../spec.md; task https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536. Base46c621fb50fe61e5a662ccaf8f00f3fa0f3c6dc3, branch1536-wound-b2-cloud-20261012.
+## Goal and latest explicit authority
 
-## Global constraints
+After proven G01 collector-env parent defect, qualify the same corrected create-env → launch collector → actual WriteDump → readable/decodeable result → owned cleanup on the unchanged genuine S01 oracle. PRE_API_READY/API0 prototype is superseded and cannot release the game. The user separately permits exactly ONE synthetic WriteDump and, only after successful synthetic and independent affected PREP, at most ONE corrective game WriteDump. Stop at that game outcome/source-mapped stack/exact diagnostic limit; no further game chain.
 
-- G01 FAIL220/API0/ENOENT, all raw/private and sanitized evidence, old PREP digests and consumed permit stay immutable. L0152/57 and old66529UNKNOWN unchanged.
-- New G02 root/run/permit only. Exactly existing fr063-joint-interface-crash-diagnostic cut1, one descriptor/method/case outside57, original assertions/wait220/category900.
-- Synthetic is existing S01 DLL with its original60s watchdog and DeadlineStamp from pre-launch Stopwatch stamp; therefore this probe tests pre-API admission/ownership/environment/collector, not the G01 policy's60s receipt timer. Synthetic healthy-admitted context is explicitly simulated and cannot prove a real game phase. Actual game parent/policy unchanged.
-- Synthetic collector completes all common library/ABI/process/argv/socket/output/parent/fresh-health guards, then emits pre_api_ready and exits0/UNREACHED without WriteDump. Maxone WriteDump belongs only to the later game. Synthetic S01 ready/STOP/EOF/join oracle remains genuine.
-- Real-role predicate, atomic state/once-only semantics, D01, Ready immutability, production, GM contracts and budgets unchanged. No main/merge/force/delete/issueclose/secrets/Windows/403/CI.
-- All core/raw reports stay private own/capture, never Git/attach/archive/autodelete; retain through independent minimal EVIDENCE/final report. Continuous phase/source completeness/actual suspension UNKNOWN unless measured; no new phase mechanism.
+Use the same G01 watchdog/collector/controller with explicit G02 config dispatch; no separate collector or new framework. Only three shared G01 Python/PS scripts change; new small BCL SyntheticOwner adapts existing S01 DLL, explicit synthetic context and fresh health. No Integration/Core/TestSupport C# changes.
 
-## Review focus
+## Immutable constraints and boundaries
 
-- Synthetic flag must be a strict explicit boolean without default/fallback and exact hash-bound S01 role; it never broadens real resumer argv/PID+kernel-starttick/root/nonce/UID guards or permits arbitrary targets.
-- G01 real call path after fixed private mkdir must actually reach the same collector's final pre-API guard. Source/helper-only proofs cannot release the game.
-- Native, API, observer and bounded owned cleanup remain separate; positive pre_api_ready exactly once and API0, target STOP0/validnonce/EOF/join required.
-- Reused C# source graph, DLL/PDB/dependencies/NuGet/imports/tools/catalog have explicit original provenance and exact bytes. No old PREP record is relabeled; new derived verification states reuse honestly.
-- Any synthetic native/preflight/observer/ownership/cleanup failure keeps game HOLD and freezes first evidence for diagnosis. No game retry follows any G02 result.
+- Old G01 FAIL220/API0/ENOENT, original PREP records/pins, raw/private evidence and consumed permit remain immutable. Old66529 UNKNOWN; L0152/57 original provenance and crash5 unqualified unchanged.
+- New frozen G02 root, distinct synthetic/game run IDs and separately consumed permits. Real role exact resumer argv/PID+kernel-starttick/nonce/root/UID/parent/socket guards remain unchanged. Explicit strict SyntheticOracle boolean has no fallback/default; true requires exact pinned S01 argv/contract.
+- Original S01 target60s watchdog unchanged. DeadlineStamp starts conservatively before target launch, not game220. Synthetic health/receipt admission is explicitly simulated; it tests the common request path, not the game60s policy. Existing accepted pure policy23/parent6/health26 proofs retain identity; actual game parent/policy/timer unchanged.
+- Same collector common library/ABI/hash/process/parent/socket/output/final fresh-health+cancel guards; synthetic emits pre_api_ready, then invokes the SAME observed API once. Require request1/RETURNED/native0, readable nonempty dump/report, four exact S01 managed oracle frames by original decoder/TID/MVID/token/order, cooperative STOP/nonce/native0/stdout+stderr EOF/join and clean owned boundary.
+- Same watchdog request20s and shared5s collector/createdump cleanup. Owner protected45s; insufficient remaining60 refuses. Native actor outcomes recorded before fallible observations; cleanupExit and observer uncertainty separate. Successful direct child Start accounted before identity; no arbitrary/global PID actions.
+- Actual game remains exact existing fr063-joint-interface-crash-diagnostic, cut1, descriptor1/method1/case1 outside57, original assertions/wait220/category900. At most one API, no retried permit. Actual admission/review must hash-bind successful synthetic record and validate API1/decode/STOP/EOF/cleanup, not merely trust a verdict string.
+- Preserve once-only effects, no double I normalization, oldv1/child1 compatibility, immutable Ready and exact owned transition. Production/main/merge/force/delete/issues/secrets/Windows403/CI untouched; A3 NO-PROCEED; broader FullNI/HOT/F1/M3/T197/E01/T148/Phase10 incomplete.
+- Every core/raw report stays private own/capture, never Git/attach/archive/autodelete. Retain through independent sanitized EVIDENCE/final report; retain on uncertainty. CapturePhase/source completeness/suspension remain UNKNOWN unless measured.
 
-## Task 1 — minimal orchestration and explicit reuse SOURCE
+## Finite execution
 
-Files: modify recovery/l01-game-capture-g01/{watchdog.py,Collect.ps1,phase.py}; add recovery/l01-game-capture-g02/{SyntheticOwner.cs,bindings.json,source-packet.json,control.json,recover.py} (same phase.py dispatch, no second driver); narrow pure role/dispatch checks if needed. No Integration/Core/TestSupport source changes.
+- [ ] Save current source/pins/role TDD and explicit3 G01 deltas; remote SHA/readback/clean recovery; independent affected SOURCE before SDK/targets/API. Prior c0a05c8e HOLD findings retained separately; all corrected source re-reviewed.
+- [ ] Verify/copy unchanged G01 integration460/unit439/tool closures with original compiled-source/hash provenance; same non-feature tracked graph. Compile ONLY SyntheticOwner. Fresh private properties/import routing, discovery/catalog and exact singleton PlanOnly ZERO; no full rebuild.
+- [ ] Save/recover affected PREP, independent admission for ONE genuine synthetic actual capture. Consume separate named synthetic permit; no game permit.
+- [ ] Run S01 through SAME G01 orchestration/config and actual API; decode original oracle; freeze first native/API/observer/cleanup outcome. Any failure keeps game HOLD; preserve artifacts for independent diagnosis, no blind retry.
+- [ ] Save/recover synthetic evidence and independent final affected PREP; actual admission pins successful synthetic evidence and all reused/current binary/source/config identities. Consume separately saved game permit only after acceptance.
+- [ ] One corrective game; freeze first outcome. Offline retained MapFrames mapper only if report exists; publish allowlisted MVID/token/IL/source frames and minimal event timings, never raw report/core/game payload. Independent EVIDENCE, final save/recovery, finite report.
 
-- [ ] Pin old S01 oracle output/ABI/source and G01 tools/integration460/unit439/prep bytes; choose fresh short root and distinct synthetic/game IDs.
-- [ ] Test-first exact role/zero-API branch and fixed G02 config dispatch; preserve RED/GREEN without game or child/API.
-- [ ] Minimal synthetic owner validates existing S01 ready(pid/tick/nonce/UID/MVID/runtime/TIDs), writes private synthetic parent/cut/G01 settings/health and starts real G01 watchdog; cooperative STOP and bounded exact-own fallback only.
-- [ ] Add a strict synthetic-only expected-command alternative to watchdog and a pre_api_ready/API0 branch immediately after the common collector final guard. Real role body unchanged; same20s request/shared5s cleanup.
-- [ ] Give common G01 phase explicit G02 actual/map scope/config; old G01 control/permits remain closed. G02 preparation reuses exact bins/tools, checks fresh private property/import/PlanOnly routing and compiles only synthetic owner; no full rebuild by default.
-- [ ] Save/push/readback/clean recovery all WIP/current source deltas. Independent affected SOURCE before any SDK/probe/target work.
+## Current execution ledger
 
-## Task 2 — affected PREP and genuine non-game pre-API
-
-- [ ] After SOURCE save/recovery: verify/copy original closures/tools/NuGet metadata; direct compile synthetic owner only; fresh property/import routing and singleton PlanOnly ZERO. Reuse catalog only with exact assembly/inventory/source equivalence. Preserve all first outcomes.
-- [ ] Save/recover affected PREP evidence and independent admission for one genuine synthetic pre-API. No game permit yet.
-- [ ] One fresh synthetic root/permit runs S01 genuine child through SAME G01 config/watchdog/collector and guards; pre_api_ready1/collector0/watchdog0/API0, no dump/report; validSTOP/native0/EOF/join/clean boundary required.
-- [ ] Save/recover minimal synthetic evidence. Independent final PREP requires successful E2E and exact all binaries/tools/new source/config/run bindings; failure keeps game HOLD.
-
-## Task 3 — exactly one corrective game and endpoint
-
-- [ ] Save/recover a distinct consumed G02 game permit only after E2E/final PREP acceptance; same category/unchanged budgets/assertions, at most one public WriteDump.
-- [ ] Execute exactly one new disposable fixture case. Freeze first native/game/API/observer/cleanup outcomes; no second game/collector/request on missing/ambiguous capture.
-- [ ] Use retained mapper offline only if report exists; publish allowlisted PE/PDB/MVID/token/IL/source metadata, not raw report/core/game payload. Obtain independent minimal EVIDENCE, save/recover final checkpoint.
-- [ ] Stop and report source-mapped stack or exact limit, new timeout observations, old52/57/UNKNOWN and all broader holds. No production remedy or further game chain.
-
-## Execution ledger
-
-- Planning: user authority recovered, base46c621fb remote SHA/readback/clean recovery verified; existing S01/G01 source inspected. No new native/target/API yet. Independent read-only design consultation accepted with strict explicit role, positive pre_api_ready and original60s bound requirements.
+SOURCE only; native PREP/targets/API unrun. Pure role prototype RED0/1→GREEN7/7 retained; updated capture role7/7. Independent c0a05c8e review found Start-before-identity accounting, native-before-drain recording and missing actual→synthetic evidence binding; corrective source addresses all three. New source review required after latest actual synthetic API1 authority.

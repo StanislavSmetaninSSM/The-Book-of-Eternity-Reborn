@@ -16,17 +16,17 @@ REC = HERE.parent
 H = lambda b: hashlib.sha256(b).hexdigest()
 
 def request_role(cfg, m):
-    assert type(cfg['SyntheticPreApiOracle']) is bool, 'Explicit strict role required'
+    assert type(cfg['SyntheticOracle']) is bool, 'Explicit strict role required'
     own = Path(m['Own'])
-    if cfg['SyntheticPreApiOracle']:
-        assert cfg['OracleContract'] == 'S01_G01_PREAPI_ZERO_REQUESTS'
+    if cfg['SyntheticOracle']:
+        assert cfg['OracleContract'] == 'S01_G01_ONE_CAPTURE'
         expected = [cfg['Dotnet'], 'exec', '--runtimeconfig', cfg['OracleRuntimeconfig'], cfg['OracleAssembly'], m['Nonce']]
     else:
         expected = [cfg['Dotnet'], 'exec', '--runtimeconfig', cfg['Runtimeconfig'], '--depsfile', cfg['Depsfile'],
                     cfg['SupportAssembly'], 'engine-joint-interface-resume', cfg['IntegrationAssembly'], m['Root'],
                     str(own/'resume.json'), '1', str(own)]
     assert m['TargetCommand'] == expected and m['Cut'] == 1
-    return cfg['SyntheticPreApiOracle']
+    return cfg['SyntheticOracle']
 
 def main():
     started = time.monotonic()
@@ -85,7 +85,7 @@ def main():
         assert m['DumpPath'] == str(root/'game-normal.core') and m['HealthPath'] == str(root/'health.json')
         m.update(WatchdogPid=os.getpid(), WatchdogBirthTick=me['birthTick'], Uid=os.geteuid(), Socket=str(socket),
                  LoadedFiles=cfg['LoadedFiles'], ClientAssembly=cfg['ClientAssembly'], BinaryImages=cfg['BinaryImages'],
-                 SyntheticPreApiOracle=synthetic)
+                 SyntheticOracle=synthetic)
         lib['write'](root/'request-manifest.json', m)
         record.update(owner=owner, watchdog=me, targetIdentity=identity, parentFileSha256=m['ParentFileSha256'])
         collector_phase = root/'collector-env'

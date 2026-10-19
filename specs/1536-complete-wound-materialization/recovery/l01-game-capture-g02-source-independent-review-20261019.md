@@ -1,0 +1,15 @@
+# G02 affected SOURCE — HOLD
+
+Reviewed `c0a05c8eef5f4de73fb03272bb1855090eaf60ab` from `46c621fb50fe61e5a662ccaf8f00f3fa0f3c6dc3`. No native execution admission.
+
+1. **G02-S01 — owned launch/cleanup gap.** `SyntheticOwner.cs:73,99–100,133–141`: Start may succeed before Identity throws; tick remains0 and finally refuses its own child cleanup. Account launch before observation and provide a narrowly proven direct-owned fallback/explicit unresolved retention with bounded joins.
+2. **G02-S02 — native outcome loss.** `SyntheticOwner.cs:102–105,121–125`: watchdog native follows fallible drains/writes; target nonzero throws before it is recorded. Save known actor native immediately, reconcile natural exits before forced cleanup, preserve cleanupExit and observer failure separately, and protect final publication.
+3. **G02-S03 — synthetic prerequisite unbound.** `phase.py:92–99,224–225`: actual checks prepared records but never hashes the successful synthetic first outcome. The existing prior() status cannot represent it. Bind a distinct exact syntheticEvidence record/run/source/semantic result in actual admission and the independent PREP report.
+
+The affected bindings are otherwise coherent:170 exact source pins,15 feature-only changed paths and clean GitHub-restored bytes; three explicit shared-script deltas; historical G01 packet/control/evidence unchanged. Separate integration460/unit439/tools reuse retains original provenance.395 inputs differ only in the two declared watchdog/Collect hashes; NuGet metadata and unit closure are unchanged. Real argv and strict false role remain; inert role checks7/7 pass. Fresh private property/import/catalog/PlanOnly and owner compilation are **UNRUN**. The27 passed read-only checks include confirmation of the defects; they are not an acceptance verdict.
+
+**Updated scope supersedes API0.** During this review, the parent relayed the user's requirement for one actual synthetic WriteDump with readable/decodeable S01 frames through the same orchestration. Its permit is separate from the future one-game permit. The reviewed pre_api_ready/API0 proposal cannot meet that requirement and must not run. Review the corrected saved candidate before any SOURCE/PREP release; uncommitted corrections/new capture branches are not covered here.
+
+L01 remains52/57; old66529 UNKNOWN and G01 FAIL220/API0 are unchanged. Production, game C#, assertions,220/900 and crash5 holds are unchanged. No SDK, C#, child, game, API, procfs or signal action was run by this reviewer.
+
+Controller `5ef95a9c293a4d598880968881902f8f310d1a9ff1388e36e3d0982e0d6f8a43`; source digest `47ae17bb8015235f3120aaf456d2004734c65589f7b972641625949651e1402c`; bindings `6400851f2d25b0437d9219a64942f5600924a8a25cdd7f08cb62bb9ee997821a`. Supporting checks: `bf3a563b97503fb9a089dde2544893756244791ac2aca4a41579e6a4d3757d28`. The separate utility history preserves an incorrect all-inputs-unchanged assertion corrected to the exact two declared script updates; no native retry occurred.

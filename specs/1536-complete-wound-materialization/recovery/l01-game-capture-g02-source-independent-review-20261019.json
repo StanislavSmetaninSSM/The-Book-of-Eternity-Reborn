@@ -1,0 +1,145 @@
+{
+  "kind": "G02_AFFECTED_SOURCE_INDEPENDENT_REVIEW",
+  "reviewedSource": "c0a05c8eef5f4de73fb03272bb1855090eaf60ab",
+  "base": "46c621fb50fe61e5a662ccaf8f00f3fa0f3c6dc3",
+  "verdict": "HOLD_G02_AFFECTED_SOURCE",
+  "sourcePinDigest": "47ae17bb8015235f3120aaf456d2004734c65589f7b972641625949651e1402c",
+  "controllerSha256": "5ef95a9c293a4d598880968881902f8f310d1a9ff1388e36e3d0982e0d6f8a43",
+  "bindingsSha256": "6400851f2d25b0437d9219a64942f5600924a8a25cdd7f08cb62bb9ee997821a",
+  "reviewer": "Independent Astra XHigh reviewer",
+  "scope": "Affected SOURCE only: three shared G01 scripts, new SyntheticOwner and current bindings/control/recovery/plan. No SDK/C#/native child/game/API/procfs/signals or repository implementation changes.",
+  "findings": [
+    {
+      "id": "G02-S01",
+      "severity": "high",
+      "title": "Post-launch identity failure leaves direct children outside the advertised cleanup path",
+      "source": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/SyntheticOwner.cs",
+      "lines": [
+        65,
+        73,
+        99,
+        100,
+        133,
+        136,
+        141
+      ],
+      "evidence": "target/watchdog Process.Start can succeed before Identity throws; their birth variable stays0. finally then requires observed birth==0 and refuses the fallback signal. Launch identity/outcome is not durably accounted before this fallible observation.",
+      "impact": "The synthetic owner can return failure with an owned target/watchdog still alive. The outer run_owned observes remaining session members but does not repair this early owner-exit path. Target selfdeadline60 is not proof that watchdog/collector descendants were joined.",
+      "minimalCorrection": "Account each successful Start immediately, then acquire identity. Handle observation failure through a narrowly proven direct-owned-child fallback or explicit unresolved retention; preserve ownership uncertainty, record bounded joins/remaining descendants, and do not signal arbitrary or game targets. Keep existing20/5 bounds and exact false-role guard.",
+      "verification": "Source-bound launch-then-identity-failure paths for target and watchdog, plus failed cleanup/unknown observation; no native execution performed by reviewer."
+    },
+    {
+      "id": "G02-S02",
+      "severity": "high",
+      "title": "Known child native outcomes are recorded after fallible observers/assertions",
+      "source": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/SyntheticOwner.cs",
+      "lines": [
+        102,
+        103,
+        104,
+        105,
+        121,
+        122,
+        123,
+        124,
+        125,
+        134,
+        143,
+        149
+      ],
+      "evidence": "watchdog exit is recorded only after stdout/stderr drain and file writes. Target Require(exit==0) precedes targetNativeExit assignment, so a known nonzero is omitted on the direct negative path. finally does not reconcile available actor exits.",
+      "impact": "An observer or assertion failure can leave the saved first outcome missing a known actor native return; outer owner verification exit1 cannot substitute for that actor outcome.",
+      "minimalCorrection": "Persist actor native/join observations immediately after successful wait or positive HasExited, before drain/assert/publication. Reconcile natural exits before forced cleanup; store forced cleanup exit separately. Protect final evidence publication and retain observer failure independently without replacing known actor outcomes.",
+      "verification": "Bounded source/fake fault matrix for native0/nonzero with drain/publication failure and cleanup-forced exit, preserving separate owner verification status."
+    },
+    {
+      "id": "G02-S03",
+      "severity": "medium",
+      "title": "Actual gate does not bind the mandatory successful synthetic outcome",
+      "source": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/phase.py",
+      "lines": [
+        48,
+        49,
+        50,
+        51,
+        53,
+        92,
+        95,
+        96,
+        97,
+        98,
+        99,
+        224,
+        225
+      ],
+      "evidence": "actual reads only check_prep and the acceptance verdict. It neither reads nor hashes the synthetic first-outcome record. Putting preapi in prepRecords would fail prior(), which accepts PREPARED_G02_ZERO_ONLY, not PREAPI_PASSED_API0.",
+      "impact": "The required synthetic prerequisite has no executable evidence binding at the game admission boundary; this must be resolved before any eventual game release. Current gates are HOLD and no unauthorized game occurred.",
+      "minimalCorrection": "Add a separately named immutable syntheticEvidence binding shared by actual admission and independent PREP report; before actual launch verify its exact bytes/runId/source/first native and required positive semantic result. Under updated user scope that result must include one successful synthetic WriteDump and decoded S01 frames, not API0. Never relabel old records or reset G01 permit.",
+      "verification": "Reject missing/mismatched/wrong-run/nonpassing evidence; accept only the exact independently reviewed first synthetic outcome. No extra runtime is admitted by this review."
+    }
+  ],
+  "checks": {
+    "passed": 27,
+    "failed": 0,
+    "meaning": "Passed static integrity/role/finding-presence checks do not imply SOURCE acceptance."
+  },
+  "supportedConclusions": [
+    "Exact170 current source pins and all15 changed feature paths match saved Git and independent restore; recovery receipt reports351 paths, clean exact source.",
+    "Only shared G01 Collect.ps1/watchdog.py/phase.py change. G01 historical packet/control/bindings and prior FAIL220/API0 remain immutable. No production/C#/catalog/selection changes.",
+    "Real-role expected argv is preserved; strict boolean false is authored by real controller. Reviewed API0 branch follows the common final health/cancel guard. Exact inert request_role7 cases pass.",
+    "Reuse is conceptually sufficient: separate complete integration460/current d293 and unit439/original d3 closures, unchanged unit/NuGet metadata, exact retained tools/prepare records and S01 images.395 inputs retain393 rows plus exactly the declared watchdog/Collect hash updates.",
+    "Controller plans fresh private property/import bindings, NoBuild complete discovery and exact diagnostic1/1/1 PlanOnly, only new owner compilation. These native phases remain UNRUN and cannot be reported accepted.",
+    "Synthetic health is explicitly simulated and cannot establish game custody/60-second policy or continuous phase. Existing original diagnostic case/assertions/220/900 are preserved; no crash5 qualification or52/57 increment."
+  ],
+  "scopeChange": {
+    "authority": "Parent relayed new mandatory user requirement during review",
+    "requirement": "One genuine synthetic capture through SAME G01 orchestration, actual WriteDump plus readable/decodeable S01 oracle. Separate one-synthetic request permit from one-game permit.",
+    "effect": "Reviewed c0 API0 proposal is superseded. Do not execute its SOURCE/PREP/native admissions. Revised plan/source and the three corrections require a new saved/recovered affected SOURCE review.",
+    "notReviewed": "Any uncommitted lifecycle fixes or new synthetic capture/decode branch"
+  },
+  "admissions": {
+    "zero": "NONE",
+    "synthetic": "NONE",
+    "game": "NONE",
+    "writeDump": "NONE",
+    "crash5": "NONE"
+  },
+  "recoveryReceipt": {
+    "path": "/tmp/1536-cloud-tools/g02-recovery-c0a05c8e.json",
+    "sha256": "bb9cc5520877a71c7c4472ed5ad02f5484e139ca20b998ad5088dedf052ea87b"
+  },
+  "readSetChecks": {
+    "path": "/tmp/1536-cloud-tools/review/l01-game-capture-g02-source-checks-20261019.json",
+    "bytes": 8868,
+    "sha256": "bf3a563b97503fb9a089dde2544893756244791ac2aca4a41579e6a4d3757d28"
+  },
+  "supportingArtifacts": [
+    {
+      "path": "/tmp/1536-cloud-tools/review/l01-game-capture-g02-source-checks-20261019.json",
+      "bytes": 8868,
+      "sha256": "bf3a563b97503fb9a089dde2544893756244791ac2aca4a41579e6a4d3757d28"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_g02_c0_source_20261019.py",
+      "bytes": 8938,
+      "sha256": "189f45ec06d93deb39fa86d0fc936645da54cc999058ccf5d4ae5bdbfa15ac8c"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/g02-c0-source-reader-history-20261019.json",
+      "bytes": 629,
+      "sha256": "ba3c55eff0edc2e235bb35ae5d2c11b8bcc681990502d011968c6d996d44bfd7"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_g02_c0_source_20261019_v1.py",
+      "bytes": 8561,
+      "sha256": "3353c014aae8f701c2efc76781827116155ee05b93e5d564da0445c8c8640416"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/g02-c0-source-reader-v1-failure-20261019.txt",
+      "bytes": 301,
+      "sha256": "bff383d53c96224074adde2f8e1c702587fcd1f843330e0df91954f6604d4692"
+    }
+  ],
+  "utilityHistory": "Initial static reader incorrectly expected every395 input row unchanged. Two declared executable-script hashes necessarily differ; immutable v1/error retained and exact2-delta expectation corrected. No source/native failure or retry.",
+  "nextStep": "Root may implement only bounded corrections and revised user-required synthetic capture/decode plan/source, save/recover, then request affected independent SOURCE. No additional native work authorized by this HOLD report."
+}
