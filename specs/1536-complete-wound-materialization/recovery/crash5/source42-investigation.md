@@ -99,3 +99,7 @@ Current document consistency checks cover immutable historical tails, exact outc
 
 ### Final independent T234/spec5 review
 Separate gpt-6-astra/high accepted1084968cd plus the corrected child220s/stop-join10s/EOF10s wording for evidence closure and owner presentation. Original archive/TRX/stage/DLL/cleanup evidence independently matches the recorded1FAIL; no production fix or new game run is implied. Draft spec5 approval and plan3 remain pending. Final remote recovery follows before handoff.
+
+### Final remote recovery and handoff boundary
+Reviewed source/evidence/corrected draft checkpoint6fdbb39c165ec3daee925bf6cfeb2780844037e5 was pushed and independently read back from origin. The separate GitHub recovery clone was fast-forwarded to that exact revision;204 selected source/governance/document/evidence files match their Git blobs using path-aware line-ending normalization, and checkout status is clean. Recovery does not claim a build or runtime test. Final bookkeeping after this checkpoint changes only task/evidence status.
+T236 evidence/handoff work is complete with the actual FAIL outcome. T235 remains gated; original Windows5 T219 remains FAIL_INCOMPLETE; Linux T237/T222…T225 UNRUN. T238 draft spec5 is ready for owner review; approval, plan3/tasks/analyze and further code/runtime are not inferred from this delivery.
