@@ -6,6 +6,18 @@
 
 **Feature**: [spec.md](../spec.md)
 
+## CRASH5 spec5 draft quality — 2026-10-19
+
+- [x] Reused existing feature1536/branch; no duplicate feature or Superpowers specification.
+- [x] T234 observed facts, lower-bound counters and unproven QTE-path hypothesis are distinct.
+- [x] Requested result, scope boundaries, preserved contracts and measurable acceptance criteria written.
+- [x] Causal RED and independent SOURCE/PREP precede any future gameplay probe.
+- [x] Existing owner lease, current physical reads, authority checks and original budgets/assertions preserved.
+- [x] Open lifetime/caller/selection design decisions remain explicit for the next planning phase.
+- [x] Approved spec4 and historical tails retained; T234 failure does not redefine Windows acceptance.
+- [ ] Owner review/approval of this exact draft — pending presentation; no implementation authority yet.
+- [ ] Spec5 plan/tasks/consistency phases — pending owner approval, not satisfied by plan2.
+
 ## Content Quality
 
 - [x] No implementation details (languages, frameworks, APIs)

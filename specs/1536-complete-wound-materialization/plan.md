@@ -8,6 +8,12 @@
 **Spec:** [редакция4](spec.md), одобрена из `da3efec34a6407260e7a9c19830f354740cccce2`; [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Ветка `1536-crash5-linux-windows-spec-20261019`, planning base `fa0a53001502b8ee1c5067f7fc1b529d683f67df`.
 **Status:** владелец одобрил точный plan2 из `bd9c8dd43430ce4d7c4852c580a76c012fed204b` ответом «да». Исполняются T230–T237; Windows5 пока FAIL_INCOMPLETE, Linux UNRUN. Новые результаты будут привязаны к своим SHA.
 
+## Итог выполнения plan2
+
+T230…T233 завершены: SOURCE/Windows PREP приняты,90 distinct cases PASS в объединении документированных прогонов. Единственная T234 source42 проба завершилась FAIL_CHILD_TIMEOUT:1 completed/1 failed/0 skipped, QTE192.405s, возврата хода до220s нет. Child EOF/join и owned cleanup подтверждены. T235 не запускалась, T219 остаётся FAIL_INCOMPLETE; Linux UNRUN. [Evidence](recovery/crash5/T234-probe-outcome.json).
+
+Следующий кандидат — QTE terminal validation под уже удерживаемым lease — выходит за этот plan2. В начале [spec.md](spec.md) записан проект spec5 для согласования. Plan3 и новые implementation tasks ещё не подготовлены; текущий документ не разрешает новое расширение или повтор игрового запуска. Разрешение T233 ниже описывает состояние до T234 и уже израсходовано.
+
 ## T233 — уточнение отбора после измерения Meta (2026-10-19)
 
 Реализация production9c30fc6b8 и тестовая поправка2b16ece45 приняты независимым gpt-6-astra/high. Первые65 адресных случаев прошли на9c; исправленные lifecycle3 прошли на2b16. Meta aggregate22 достиг собственного180s лимита без TRX; результаты отдельных случаев неизвестны. Runner cleanup complete, общий run248.971s. Лимит не увеличивается: по AGENTS test-category policy aggregate заменён тремя смысловыми категориями с прежним3m каждая: `pending-snapshot-validation-meta-proof` (7), `pending-snapshot-validation-meta-reservation` (7), `pending-snapshot-validation-meta-ownership` (8). Сохраняются ровно шесть исходных selectors и все assertions; новых сценариев/изменений production нет. Snapshot selection теперь8descriptors/90cases; это уточнение организации T233, не изменение критериев spec4. Reviewer принял достаточность разделения. Три группы запускаются отдельно; уже GREEN lifecycle не повторяется. SOURCE и Windows PREP приняты по полному union90 (T233-qualified.json); одна source42 проба разрешена по одобренному plan2, five только после её PASS.

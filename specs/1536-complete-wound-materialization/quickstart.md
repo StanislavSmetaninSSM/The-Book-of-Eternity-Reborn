@@ -2,6 +2,10 @@
 
 [Spec4](spec.md) одобрена из da3efec34; [plan2](plan.md) из bd9c8dd434 одобрен владельцем. Выполняются [T230…T237](tasks.md). Source9c30fc6b8 принят независимым gpt-6-astra/high после причинного RED и исправления outer-owner close. Обе свежие XML builds прошли; 90 distinct cases PASS в документированном union; Windows SOURCE/PREP принят gpt-6-astra/high на evidence d8791bab6. После Meta aggregate timeout прежние шесть Meta selectors разделены на proof7/reservation7/ownership8, каждая категория3m; итоговая selection8descriptors/90cases. Команды ниже задают актуальный отбор. Windows5 пока FAIL_INCOMPLETE, Linux UNRUN; подробные доказательства в [investigation](recovery/crash5/source42-investigation.md).
 
+## Фактический результат и граница следующего шага
+
+Единственная T234 source42 проба завершилась FAIL_CHILD_TIMEOUT220:1 completed/1 failed/0 skipped, QTE достигнут на192.405s, возврат всего хода не наблюдался. Original child EOF/join и удаление обоих owned roots подтверждены. Повтор source42 и Windows5 сейчас не разрешены этим plan2; T235 требует PASS. Команды ниже остаются рецептом отбора и не являются поручением повторить уже выполненные проверки. [Spec5](spec.md) — новый проект на согласование, без реализации/plan3. Linux UNRUN.
+
 Из корня отдельной копии, PowerShell7, .NET SDK10 + runtime8. DOTNET_ROOT при необходимости задаётся только на время команды и восстанавливается в finally, как в предыдущем CRASH5 guide. Для XML diagnostics не подавлять reference/parameter warnings:
 
 ```powershell
