@@ -1,6 +1,6 @@
-# CRASH5 spec5 / plan3 — будущая адресная проверка
+# CRASH5 spec5 / plan3 — адресная проверка
 
-[Spec5](spec.md) согласована из f9658ae0e; [plan3](plan.md) и [tasks](tasks.md) пока предъявляются на review. Нижние spec4 команды и результаты исторические для завершённого этапа. На planning phase build/discovery/tests/game не запускать. T234 остаётся FAIL, Windows5 не повторены, Linux UNRUN.
+[Spec5](spec.md) согласована из f9658ae0e; [plan3](plan.md) из f368bd592 одобрен владельцем ответом «Ладно». Выполняются [T240…T246](tasks.md). Ниже описан отбор для реализации; SOURCE/PREP нового кода ещё не приняты. Нижние spec4 команды и результаты исторические. T234 остаётся FAIL, новая T244 проба ещё не запускалась, Windows5 не повторены, Linux UNRUN.
 
 После одобрения plan3 выполнять из отдельного checkout, PowerShell7, SDK10/.NET8. Сначала T240 source inventory и tests-only forwarding seams; затем fresh XML build, catalog/PlanOnly и адресный causal RED. Не считать compile/admission/timeout ошибку доказательством повторных чтений. Parent ведёт весь блок; independent gpt-6-astra/high проверяет contracts/selection/binding.
 
@@ -9,7 +9,7 @@
     ./scripts/test-csharp.ps1 -ValidateCatalog -NoBuild
     ./scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-snapshot-validation.json -PlanOnly -NoBuild
 
-Сборки только последовательно: проекты используют общие outputs. Фиксировать source SHA, DLL SHA256, changed XML diagnostics, exact discovery/selected counts; устаревшие DLL не допускают NoBuild. Новые категории будут созданы T240, эти команды не означают, что они уже существуют.
+Сборки только последовательно: проекты используют общие outputs. Фиксировать source SHA, DLL SHA256, changed XML diagnostics, exact discovery/selected counts; устаревшие DLL не допускают NoBuild. T240 создала все15 category descriptors; полная catalog/selection проверка относится к T243.
 
     ./scripts/test-csharp.ps1 -Category pending-snapshot-qte-proof -NoBuild
     ./scripts/test-csharp.ps1 -Category pending-snapshot-qte-custody -NoBuild

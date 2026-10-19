@@ -3,13 +3,13 @@
 Репозиторий: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn
 Ветка: `1536-crash5-linux-windows-spec-20261019`.
 
-Активная feature: [согласованная spec5 и предыдущие редакции](../../spec.md), [проект plan3](../../plan.md), [tasks](../../tasks.md), [validation guide](../../quickstart.md).
+Активная feature: [согласованная spec5 и предыдущие редакции](../../spec.md), [согласованный plan3](../../plan.md), [tasks](../../tasks.md), [validation guide](../../quickstart.md).
 Исходная версия: `1253328971a27ffafe3820ad59a2515ebbd35628`; согласованная spec3: `f22e51730e090e5cdc86531f589bdff05193158d`; согласованный plan1: `6f2d4d48615db910168d6c1a32841a1ffb037147`.
 NativeLineage implementation/source review: `5f0c08ae5b9303bca7c0a44b1509edcf89fa974c`. Предыдущий C# source с отдельным Windows-only source42 probe и bounded read counters: `25ef748ce8a0b3c8131e0d3b6e9cbb7107a7d090`; accepted PREP checkpoint `779a8e2a8a071f3e5e420b7ad13820c06d40d134`. Probe не входит в Linux/CI selection. Между51f и25ef production не менялся; новая реализация spec4 описана ниже.
 
-## Текущий этап: spec5 согласована, plan3 ожидает review
+## Текущий этап: реализация spec5 / plan3, квалификация ещё не завершена
 
-Владелец одобрил spec5 из f9658ae0e ответом «хорошо»,2026-10-20. Plan3/T239…T247 подготовлены в той же feature через Spec Kit plan/tasks и consistency analysis. План описывает проверку QTE с исходным lease и отдельным lifetime для каждого вызова; новые guards, тесты и selection15 пока не реализованы. Независимый gpt-6-astra/high принял исправленный plan3 на3d5419f6f для предъявления владельцу; до implementation требуется review владельцем фактически записанного plan3. Никаких новых build/discovery/test/game запусков на этой planning фазе нет. Следующий раздел и текущая selection8/90 описывают фактически сохранённую реализацию spec4; cloud не должен выдавать будущий plan3 за готовый код.
+Владелец одобрил spec5 из f9658ae0e ответом «хорошо» и plan3 из f368bd592 ответом «Ладно»,2026-10-20. T240 подтвердила повторные физические чтения и записала полную карту same-lease writers. Подготовлены borrowed scope, общие read/mutation/close guards,40 envelopes записи и два QTE call sites. Selection содержит15 descriptors; T241/T242 адресные регрессии и T243 SOURCE/PREP ещё завершаются. Это сохранённый WIP, не Linux qualification. T244 ещё не запускалась; Windows5 остаётся FAIL_INCOMPLETE. Следующий раздел и selection8/90 описывают историческую реализацию spec4. Облачный исполнитель должен использовать итоговый квалифицированный checkpoint после T246, а не считать этот промежуточный статус PASS.
 
 ## Сохранённый spec4 checkpoint
 
