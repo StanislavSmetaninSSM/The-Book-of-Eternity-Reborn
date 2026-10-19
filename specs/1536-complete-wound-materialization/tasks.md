@@ -4,13 +4,13 @@
 
 ## Дополнение после первого Windows запуска
 
-- [ ] T229 [US2] **До согласования spec4 — только документы.** Предъявить владельцу фактическое дополнение spec4 о сокращении повторной аутентификации pending snapshot в production-валидации. После явного согласования выполнить `speckit-plan`, `speckit-tasks`, consistency analysis и соответствующие Superpowers фазы; определить конкретный безопасный lifetime и причинные RED/negative controls до production-реализации. Нынешний test-only scope не разрешает такой код автоматически.
+- [ ] T229 [US2] Spec4 из `da3efec34a6407260e7a9c19830f354740cccce2` предъявлена и одобрена владельцем ответом «да одобряю». Выполнить `speckit-plan`, `speckit-tasks`, consistency analysis и соответствующие Superpowers фазы в `plan.md`, `tasks.md`, `research.md`, `data-model.md`, `quickstart.md`; определить конкретный безопасный lifetime и причинные RED/negative controls до production-реализации. Отметить задачу после готовности и проверки этих артефактов, а не за одно получение approval.
 
 - [x] T228 [US2] Проверить конкретную гипотезу повторной аутентификации rollback before-images после source-validated посредством существующих fixture read/mutation callbacks. Test-only bounded counters разделяют интервалы capture/validated, различают initial/returned callbacks, rollback reads/unique/repeats и mutations; bounded aggregate вывод без дополнительных файловых чтений/production hooks. Pure regression RED→GREEN, independent SOURCE/PREP, один свежий source42 probe с прежними220s и сохранением фактических lower-bound counts при timeout. Итог — подтверждение/отклонение механизма или UNKNOWN; возможная production optimization требует отдельной согласованной spec и причинных negative tests.
 
 - [x] T227 [US2] Исследовать общий source42 до crash cut: передать необязательный test-only scalar reporter в существующий QTE fixture, записать Author enter/return, первые inspection/capture/accepted-validation checkpoints, QTE action и ProcessPlayerTurn return. Один отдельный Windows source42 probe с прежним original Process/220s/10s/10s и категорией5m; без production changes, capture, новых hooks, canonical reads из observer или повтора five. Deliverable: исходный bounded trace, source/DLL/cleanup evidence и локализованный интервал либо явно UNKNOWN; не game qualification. Регрессия checkpoint mapping RED→GREEN, fresh XML build/catalog/PlanOnly и независимый SOURCE/PREP до probe. Spec3 L8/L9/W4/T2/T4 не меняются.
 
-T220/T221 завершены как независимый разбор и подготовленная передача с явными FAIL/UNRUN; это не выполнение SC-WIN. T219 остаётся открытым. Дополнение4 (T229) предъявляется владельцу; его approval пока отсутствует.
+T220/T221 завершены как независимый разбор и подготовленная передача с явными FAIL/UNRUN; это не выполнение SC-WIN. T219 остаётся открытым. Дополнение4 (T229) одобрено; подготовка его implementation plan продолжается.
 
 ## Phase 1 — Setup
 

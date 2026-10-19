@@ -1,6 +1,6 @@
 # CRASH5 — дополнение редакции 4: повторные чтения при Windows-валидации
 
-**Статус:** проект для согласования, 2026-10-19. **Не разрешает production-реализацию до явного одобрения владельцем.** Активная feature остаётся `1536-complete-wound-materialization`, [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), задача [T229](tasks.md). Редакция3 ниже сохраняет силу для уже подготовленного NativeLineage/Windows adapter и облачной передачи. Это дополнение предлагает отдельное расширение её узкого production scope.
+**Статус:** согласована владельцем ответом «да одобряю» на предъявленную редакцию из commit `da3efec34a6407260e7a9c19830f354740cccce2`, 2026-10-19. Одобрены требования редакции4; перед реализацией обязательны её plan/tasks/consistency и инженерные проверки. Активная feature остаётся `1536-complete-wound-materialization`, [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), задача [T229](tasks.md). Редакция3 ниже сохраняет силу для уже подготовленного NativeLineage/Windows adapter и облачной передачи. Это дополнение расширяет её узкий production scope только в перечисленных границах.
 
 ## Основание и требуемый результат
 
