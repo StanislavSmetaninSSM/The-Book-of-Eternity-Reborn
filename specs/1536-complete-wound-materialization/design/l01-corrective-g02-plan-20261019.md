@@ -33,3 +33,5 @@ Use the same G01 watchdog/collector/controller with explicit G02 config dispatch
 SOURCE only; native PREP/targets/API unrun. Pure role prototype RED0/1→GREEN7/7 retained; updated capture role7/7. Independent c0a05c8e review found Start-before-identity accounting, native-before-drain recording and missing actual→synthetic evidence binding; corrective source addresses all three. New source review required after latest actual synthetic API1 authority.
 
 SOURCE913453c0 accepted19 focused checks; prior36 static/15 inert reused, publication blocker closed. SourcePinDigest5ab898720f9e83e53ee664f3e38b49feffdd8cf02357ae4526749b9aaeb7786c. ONE ZERO PREP admitted after durable save/recovery; synthetic/game/API HOLD.
+
+ZERO PREP658a2251 first native0/observer[]/103.558s; integration460/unit439 unchanged copies; onlyOwner compiled (7 nullable-context warnings, no errors). Parent6/health26 pass, retainedtimerPolicy23 exactsourceproof; freshproperties/imports/catalog/PlanOnly ZERO pass, exact1/1/1, afterLiveTools[], normal899 unchanged. Evidence frozen; independent synthetic PREP pending; synthetic/game/API HOLD.
