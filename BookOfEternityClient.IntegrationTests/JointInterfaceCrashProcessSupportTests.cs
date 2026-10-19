@@ -12,6 +12,46 @@ namespace BookOfEternityClient.Tests;
 public sealed class JointInterfaceCrashProcessSupportTests
 {
     /// <summary>
+    /// Gives each explicitly selected Windows crash child its finite extended wait.
+    /// </summary>
+    /// <param name="role">
+    /// The original producer or resumer dispatcher role.
+    /// </param>
+    [Theory]
+    [InlineData("engine-joint-interface-original-crash")]
+    [InlineData("engine-joint-interface-resume")]
+    public void ChildTimeout_ExtendedWindowsCrashUsesSixHundredSeconds(string role)
+    {
+        Assert.Equal(TimeSpan.FromSeconds(600),
+            JointInterfaceCrashProcessSupport.GetDirectChildTimeout(true, role, false, true));
+    }
+
+    /// <summary>
+    /// Refuses crash extensions outside the two Windows roles or combined with source-probe opt-in.
+    /// </summary>
+    /// <param name="windows">
+    /// Whether the requested platform is Windows.
+    /// </param>
+    /// <param name="role">
+    /// The dispatcher role supplied with an invalid extension request.
+    /// </param>
+    /// <param name="extendedSourceProbe">
+    /// Whether the source-probe extension was also requested.
+    /// </param>
+    [Theory]
+    [InlineData(false, "engine-joint-interface-original-crash", false)]
+    [InlineData(false, "engine-joint-interface-resume", false)]
+    [InlineData(true, "engine-joint-interface-source-probe", false)]
+    [InlineData(true, "unrelated-role", false)]
+    [InlineData(true, "engine-joint-interface-source-probe", true)]
+    [InlineData(true, "engine-joint-interface-original-crash", true)]
+    public void ChildTimeout_RejectsIneligibleWindowsCrashExtension(bool windows, string role, bool extendedSourceProbe)
+    {
+        Assert.Throws<InvalidDataException>(() =>
+            JointInterfaceCrashProcessSupport.GetDirectChildTimeout(windows, role, extendedSourceProbe, true));
+    }
+
+    /// <summary>
     /// Keeps the original wait when no extended source observation is requested.
     /// </summary>
     /// <param name="windows">

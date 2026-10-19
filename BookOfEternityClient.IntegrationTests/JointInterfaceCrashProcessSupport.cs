@@ -78,10 +78,14 @@ internal static class JointInterfaceCrashProcessSupport
     /// <param name="extendedSourceProbe">
     /// Whether to request the fixed extended observation window instead of the ordinary wait.
     /// </param>
+    /// <param name="extendedWindowsCrash">
+    /// Whether to request the fixed Windows producer or resumer wait; defaults to the original policy.
+    /// </param>
     /// <returns>
     /// The selected finite child wait; an ineligible extension request is rejected.
     /// </returns>
-    internal static TimeSpan GetDirectChildTimeout(bool windows, string role, bool extendedSourceProbe)
+    internal static TimeSpan GetDirectChildTimeout(bool windows, string role, bool extendedSourceProbe,
+        bool extendedWindowsCrash = false)
     {
         if (!extendedSourceProbe) return TimeSpan.FromSeconds(220);
         if (!windows || !string.Equals(role, "engine-joint-interface-source-probe", StringComparison.Ordinal))
