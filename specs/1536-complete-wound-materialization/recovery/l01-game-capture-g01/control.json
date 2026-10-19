@@ -1,7 +1,7 @@
 {
   "kind": "G01_PENDING_CAPTURE_ORCHESTRATION_CONTROL",
   "base": "c1668efba8ccf9bb041e8b764d561fe7bed0bc6f",
-  "status": "SOURCE_ACCEPTED_NATIVE_PREP_UNRUN",
+  "status": "TOOLS_PREPARED_FRESH_INTEGRATION_UNRUN",
   "sourceReview": "ACCEPT_G01_WHOLE_SOURCE_ZERO_ONLY",
   "affectedIntegrationPrep": "UNRUN",
   "gameplayRelease": "NONE",
@@ -45,7 +45,7 @@
     "offline actual mapping and EVIDENCE"
   ],
   "allOldOutcomesAndBroaderHoldsUnchanged": true,
-  "currentNextAction": "FIRST_TOOLS_THEN_FRESH_AFFECTED_PREP_ZERO",
+  "currentNextAction": "FRESH_INTEGRATION_CATALOG_PLANONLY_ZERO_ONCE",
   "sourceAdmission": {
     "status": "SOURCE_ACCEPTED_G01_ZERO_ONLY",
     "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-source-accepted-review-20261019.json",
@@ -82,5 +82,15 @@
     "reviewSha256": "0a02972bea1a5241deeb768a51803381ad7669fdcc97acebbae480ff531ae062",
     "readOnlyChecks": 31,
     "verdict": "HOLD_G01_AFFECTED_SOURCE"
+  },
+  "toolsEvidence": {
+    "source": "86bb144d834e29e6e300c24609bc9743561f0e07",
+    "recordPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-tools-first-20261019/record.json",
+    "recordSha256": "410857f197e1da419f110f9f52eacbe751543c590994e81aa4498ea327e81d12",
+    "nativeExit": 0,
+    "parentCases": 6,
+    "collectorHealthCases": 26,
+    "mapCases": 5,
+    "durationSeconds": 9.650486927996099
   }
 }

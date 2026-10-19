@@ -1,0 +1,25 @@
+{
+  "command": [
+    "/usr/bin/timeout",
+    "--verbose",
+    "--signal=TERM",
+    "--kill-after=10s",
+    "29.999995453996235s",
+    "/tmp/1536-cloud-tools/dotnet/dotnet",
+    "/tmp/g-a91f6d2c7b30/tools/ParentProbe.dll",
+    "/tmp/g-a91f6d2c7b30/tools/parent-proof"
+  ],
+  "nativeExit": 0,
+  "observerErrors": [],
+  "joined": true,
+  "identity": {
+    "pid": 127595,
+    "birthTick": 5391999,
+    "parentPid": 127532,
+    "uid": 1000
+  },
+  "durationSeconds": 0.41605829799664207,
+  "remainingSessionProcesses": [],
+  "rawWrapperReturnCode": 0,
+  "terminationSignal": null
+}

@@ -1,0 +1,13 @@
+{
+  "kind": "G01_SANITIZED_MANAGED_MAPPING",
+  "managedFrameCandidates": 1,
+  "mappedFrames": [],
+  "limitations": [
+    "IL_OFFSET_OUTSIDE_METHOD_BODY"
+  ],
+  "capturePhase": "UNKNOWN",
+  "suspensionDuration": "UNKNOWN",
+  "interpretation": "NO_BOUND_MANAGED_METHOD",
+  "requests": 0,
+  "offlineOnly": true
+}

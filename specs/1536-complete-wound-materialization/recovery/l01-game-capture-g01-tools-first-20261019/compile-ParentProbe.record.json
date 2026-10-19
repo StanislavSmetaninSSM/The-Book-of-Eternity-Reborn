@@ -1,0 +1,27 @@
+{
+  "command": [
+    "/usr/bin/timeout",
+    "--verbose",
+    "--signal=TERM",
+    "--kill-after=10s",
+    "59.999928286000795s",
+    "/tmp/1536-cloud-tools/dotnet/dotnet",
+    "exec",
+    "/tmp/1536-cloud-tools/dotnet/sdk/10.0.402/Roslyn/bincore/csc.dll",
+    "-noconfig",
+    "@/tmp/g-a91f6d2c7b30/tools/ParentProbe.rsp"
+  ],
+  "nativeExit": 0,
+  "observerErrors": [],
+  "joined": true,
+  "identity": {
+    "pid": 127559,
+    "birthTick": 5391469,
+    "parentPid": 127532,
+    "uid": 1000
+  },
+  "durationSeconds": 2.942442949002725,
+  "remainingSessionProcesses": [],
+  "rawWrapperReturnCode": 0,
+  "terminationSignal": null
+}

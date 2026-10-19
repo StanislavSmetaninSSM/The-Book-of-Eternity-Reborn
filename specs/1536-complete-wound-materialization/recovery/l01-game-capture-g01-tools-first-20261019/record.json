@@ -1,0 +1,545 @@
+{
+  "kind": "G01_FIRST_TOOLS",
+  "source": "86bb144d834e29e6e300c24609bc9743561f0e07",
+  "sourcePinDigest": "a6c2675674dd6e3218e16917fd9abfcffb44d638195c367c3efcb2d98780b026",
+  "nativeExit": 0,
+  "observerErrors": [],
+  "commands": [
+    {
+      "command": [
+        "/usr/bin/timeout",
+        "--verbose",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "59.999928286000795s",
+        "/tmp/1536-cloud-tools/dotnet/dotnet",
+        "exec",
+        "/tmp/1536-cloud-tools/dotnet/sdk/10.0.402/Roslyn/bincore/csc.dll",
+        "-noconfig",
+        "@/tmp/g-a91f6d2c7b30/tools/ParentProbe.rsp"
+      ],
+      "nativeExit": 0,
+      "observerErrors": [],
+      "joined": true,
+      "identity": {
+        "pid": 127559,
+        "birthTick": 5391469,
+        "parentPid": 127532,
+        "uid": 1000
+      },
+      "durationSeconds": 2.942442949002725,
+      "remainingSessionProcesses": [],
+      "rawWrapperReturnCode": 0,
+      "terminationSignal": null
+    },
+    {
+      "command": [
+        "/usr/bin/timeout",
+        "--verbose",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "59.99999320200004s",
+        "/tmp/1536-cloud-tools/dotnet/dotnet",
+        "exec",
+        "/tmp/1536-cloud-tools/dotnet/sdk/10.0.402/Roslyn/bincore/csc.dll",
+        "-noconfig",
+        "@/tmp/g-a91f6d2c7b30/tools/MapFrames.rsp"
+      ],
+      "nativeExit": 0,
+      "observerErrors": [],
+      "joined": true,
+      "identity": {
+        "pid": 127578,
+        "birthTick": 5391767,
+        "parentPid": 127532,
+        "uid": 1000
+      },
+      "durationSeconds": 2.2851078439998673,
+      "remainingSessionProcesses": [],
+      "rawWrapperReturnCode": 0,
+      "terminationSignal": null
+    },
+    {
+      "command": [
+        "/usr/bin/timeout",
+        "--verbose",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "29.999995453996235s",
+        "/tmp/1536-cloud-tools/dotnet/dotnet",
+        "/tmp/g-a91f6d2c7b30/tools/ParentProbe.dll",
+        "/tmp/g-a91f6d2c7b30/tools/parent-proof"
+      ],
+      "nativeExit": 0,
+      "observerErrors": [],
+      "joined": true,
+      "identity": {
+        "pid": 127595,
+        "birthTick": 5391999,
+        "parentPid": 127532,
+        "uid": 1000
+      },
+      "durationSeconds": 0.41605829799664207,
+      "remainingSessionProcesses": [],
+      "rawWrapperReturnCode": 0,
+      "terminationSignal": null
+    },
+    {
+      "command": [
+        "/usr/bin/timeout",
+        "--verbose",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "29.999996737999027s",
+        "/tmp/1536-cloud-tools/pwsh/pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-File",
+        "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/check_health.ps1",
+        "-Collector",
+        "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/Collect.ps1",
+        "-ProofRoot",
+        "/tmp/g-a91f6d2c7b30/tools/cancel-proof"
+      ],
+      "nativeExit": 0,
+      "observerErrors": [],
+      "joined": true,
+      "identity": {
+        "pid": 127608,
+        "birthTick": 5392043,
+        "parentPid": 127532,
+        "uid": 1000
+      },
+      "durationSeconds": 1.577426680996723,
+      "remainingSessionProcesses": [],
+      "rawWrapperReturnCode": 0,
+      "terminationSignal": null
+    },
+    {
+      "command": [
+        "/usr/bin/timeout",
+        "--verbose",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "29.999995619997208s",
+        "/tmp/1536-cloud-tools/dotnet/dotnet",
+        "/tmp/g-a91f6d2c7b30/tools/MapFrames.dll",
+        "/tmp/g-a91f6d2c7b30/tools/map-valid.input.json",
+        "/tmp/g-a91f6d2c7b30/tools/map-proof-modules.json",
+        "/tmp/g-a91f6d2c7b30/tools/map-valid.json"
+      ],
+      "nativeExit": 0,
+      "observerErrors": [],
+      "joined": true,
+      "identity": {
+        "pid": 127628,
+        "birthTick": 5392203,
+        "parentPid": 127532,
+        "uid": 1000
+      },
+      "durationSeconds": 0.31657800499669975,
+      "remainingSessionProcesses": [],
+      "rawWrapperReturnCode": 0,
+      "terminationSignal": null
+    },
+    {
+      "command": [
+        "/usr/bin/timeout",
+        "--verbose",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "29.999996767000994s",
+        "/tmp/1536-cloud-tools/dotnet/dotnet",
+        "/tmp/g-a91f6d2c7b30/tools/MapFrames.dll",
+        "/tmp/g-a91f6d2c7b30/tools/map-wrong-mvid.input.json",
+        "/tmp/g-a91f6d2c7b30/tools/map-proof-modules.json",
+        "/tmp/g-a91f6d2c7b30/tools/map-wrong-mvid.json"
+      ],
+      "nativeExit": 0,
+      "observerErrors": [],
+      "joined": true,
+      "identity": {
+        "pid": 127636,
+        "birthTick": 5392237,
+        "parentPid": 127532,
+        "uid": 1000
+      },
+      "durationSeconds": 0.36625759200251196,
+      "remainingSessionProcesses": [],
+      "rawWrapperReturnCode": 0,
+      "terminationSignal": null
+    },
+    {
+      "command": [
+        "/usr/bin/timeout",
+        "--verbose",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "29.999995718993887s",
+        "/tmp/1536-cloud-tools/dotnet/dotnet",
+        "/tmp/g-a91f6d2c7b30/tools/MapFrames.dll",
+        "/tmp/g-a91f6d2c7b30/tools/map-zero-token.input.json",
+        "/tmp/g-a91f6d2c7b30/tools/map-proof-modules.json",
+        "/tmp/g-a91f6d2c7b30/tools/map-zero-token.json"
+      ],
+      "nativeExit": 0,
+      "observerErrors": [],
+      "joined": true,
+      "identity": {
+        "pid": 127644,
+        "birthTick": 5392276,
+        "parentPid": 127532,
+        "uid": 1000
+      },
+      "durationSeconds": 0.31706540400045924,
+      "remainingSessionProcesses": [],
+      "rawWrapperReturnCode": 0,
+      "terminationSignal": null
+    },
+    {
+      "command": [
+        "/usr/bin/timeout",
+        "--verbose",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "29.999996695994923s",
+        "/tmp/1536-cloud-tools/dotnet/dotnet",
+        "/tmp/g-a91f6d2c7b30/tools/MapFrames.dll",
+        "/tmp/g-a91f6d2c7b30/tools/map-body-end.input.json",
+        "/tmp/g-a91f6d2c7b30/tools/map-proof-modules.json",
+        "/tmp/g-a91f6d2c7b30/tools/map-body-end.json"
+      ],
+      "nativeExit": 0,
+      "observerErrors": [],
+      "joined": true,
+      "identity": {
+        "pid": 127652,
+        "birthTick": 5392309,
+        "parentPid": 127532,
+        "uid": 1000
+      },
+      "durationSeconds": 0.3185194739999133,
+      "remainingSessionProcesses": [],
+      "rawWrapperReturnCode": 0,
+      "terminationSignal": null
+    },
+    {
+      "command": [
+        "/usr/bin/timeout",
+        "--verbose",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "29.99999683299393s",
+        "/tmp/1536-cloud-tools/dotnet/dotnet",
+        "/tmp/g-a91f6d2c7b30/tools/MapFrames.dll",
+        "/tmp/g-a91f6d2c7b30/tools/map-outside-body.input.json",
+        "/tmp/g-a91f6d2c7b30/tools/map-proof-modules.json",
+        "/tmp/g-a91f6d2c7b30/tools/map-outside-body.json"
+      ],
+      "nativeExit": 0,
+      "observerErrors": [],
+      "joined": true,
+      "identity": {
+        "pid": 127660,
+        "birthTick": 5392343,
+        "parentPid": 127532,
+        "uid": 1000
+      },
+      "durationSeconds": 0.26718295700266026,
+      "remainingSessionProcesses": [],
+      "rawWrapperReturnCode": 0,
+      "terminationSignal": null
+    }
+  ],
+  "gameCasesPlanned": 0,
+  "diagnosticRequestUpperBound": 0,
+  "capturePhase": "UNKNOWN",
+  "suspensionDuration": "UNKNOWN",
+  "beforeTools": [
+    {
+      "comm": "dotnet",
+      "state": "Z",
+      "count": 35
+    }
+  ],
+  "beforeVisibility": {
+    "executableFallbacks": 5,
+    "positivelyVanished": 0
+  },
+  "normal899UnchangedBefore": true,
+  "toolOutputs": [
+    {
+      "path": "/tmp/g-a91f6d2c7b30/tools/ParentProbe.dll",
+      "bytes": 75776,
+      "sha256": "b90367af2af2b1a7d8d4373dfd0d6b7ab5e95ab699067bb69f281eb607fba56b"
+    },
+    {
+      "path": "/tmp/g-a91f6d2c7b30/tools/ParentProbe.pdb",
+      "bytes": 20092,
+      "sha256": "8566942e77892eec1b7104cae78228b47f8e037eaec3701aa844dd3f6f5860ad"
+    },
+    {
+      "path": "/tmp/g-a91f6d2c7b30/tools/ParentProbe.runtimeconfig.json",
+      "bytes": 171,
+      "sha256": "e1110e1dfde27b16580d105a973d71be980b4da921563cc67fecdf5a90bc09df"
+    },
+    {
+      "path": "/tmp/g-a91f6d2c7b30/tools/ParentProbe.rsp",
+      "bytes": 18962,
+      "sha256": "fa0f3801d0a5243e56288eeafe84a2fdcc5f169110cf32f1b764507ec12531e2"
+    },
+    {
+      "path": "/tmp/g-a91f6d2c7b30/tools/MapFrames.dll",
+      "bytes": 19968,
+      "sha256": "c3e074fdef60c9991cfe29823df0b17fdc48b0c1f21299a88b0e8d6f025e66bf"
+    },
+    {
+      "path": "/tmp/g-a91f6d2c7b30/tools/MapFrames.pdb",
+      "bytes": 12164,
+      "sha256": "28067293d191dc48a113680778cbe540fae4485401a5cf590b9bd22393259e62"
+    },
+    {
+      "path": "/tmp/g-a91f6d2c7b30/tools/MapFrames.runtimeconfig.json",
+      "bytes": 171,
+      "sha256": "e1110e1dfde27b16580d105a973d71be980b4da921563cc67fecdf5a90bc09df"
+    },
+    {
+      "path": "/tmp/g-a91f6d2c7b30/tools/MapFrames.rsp",
+      "bytes": 18579,
+      "sha256": "04a1cfde0f93a46a216c210c448da63bd9c8a6e7a38b81e3227128a6ab836ec4"
+    }
+  ],
+  "clockProof": [
+    {
+      "runtime": "net8",
+      "stamp": 53920393997368,
+      "frequency": 1000000000,
+      "beforeMonotonicNs": 53919998437725,
+      "afterMonotonicNs": 53920438993776,
+      "insideObservedBracket": true
+    },
+    {
+      "runtime": "powershell",
+      "stamp": 53921930607358,
+      "frequency": 1000000000,
+      "beforeMonotonicNs": 53920439289594,
+      "afterMonotonicNs": 53922035157500,
+      "insideObservedBracket": true
+    }
+  ],
+  "mappingProof": [
+    {
+      "case": "valid",
+      "passed": true,
+      "output": {
+        "path": "/tmp/g-a91f6d2c7b30/tools/map-valid.json",
+        "bytes": 680,
+        "sha256": "af7a8d7ab8de906fa7cb7ce8fa533c782e0b4ce1949cfdd8512cbe16c1509cfe"
+      }
+    },
+    {
+      "case": "wrong-mvid",
+      "passed": true,
+      "output": {
+        "path": "/tmp/g-a91f6d2c7b30/tools/map-wrong-mvid.json",
+        "bytes": 307,
+        "sha256": "69e402fdad25383a7eeb4ac98dabd130bc270742d7c3802a83af7a7ce25c3033"
+      }
+    },
+    {
+      "case": "zero-token",
+      "passed": true,
+      "output": {
+        "path": "/tmp/g-a91f6d2c7b30/tools/map-zero-token.json",
+        "bytes": 307,
+        "sha256": "04e1372f1e64f3da21e5e234d45febadbcafc439a861199242fc09466a3c92a4"
+      }
+    },
+    {
+      "case": "body-end",
+      "passed": true,
+      "output": {
+        "path": "/tmp/g-a91f6d2c7b30/tools/map-body-end.json",
+        "bytes": 310,
+        "sha256": "09a26924373e1c79280a2680f0b134f655ae079ebd274e05cc207bd20109aaef"
+      }
+    },
+    {
+      "case": "outside-body",
+      "passed": true,
+      "output": {
+        "path": "/tmp/g-a91f6d2c7b30/tools/map-outside-body.json",
+        "bytes": 310,
+        "sha256": "09a26924373e1c79280a2680f0b134f655ae079ebd274e05cc207bd20109aaef"
+      }
+    }
+  ],
+  "parentProof": {
+    "kind": "G01_PARENT_PURE_PROOF",
+    "cases": [
+      {
+        "name": "wrong_cut_refuses_before_fixture",
+        "passed": true
+      },
+      {
+        "name": "settings_hash_refuses_before_fixture",
+        "passed": true
+      },
+      {
+        "name": "one_fixture_claim_only",
+        "passed": true
+      },
+      {
+        "name": "cancel_before_trigger_never_launches_watchdog",
+        "passed": true
+      },
+      {
+        "name": "cancel_report_retains_unknown_phase",
+        "passed": true
+      },
+      {
+        "name": "observer_output_fault_is_contained_and_reported",
+        "passed": true
+      }
+    ],
+    "passed": 6,
+    "gameProcesses": 0,
+    "fixtureChildren": 0,
+    "requests": 0,
+    "clockStamp": 53920393997368,
+    "clockFrequency": 1000000000,
+    "moduleMvid": "54b8f379-aaf7-4918-84b0-0a67a6d0a89c",
+    "methodToken": 100663395,
+    "methodIlBytes": 4
+  },
+  "collectorHealthProof": {
+    "Cases": [
+      {
+        "Name": "exact receipt UNKNOWN phase allowed",
+        "Passed": true
+      },
+      {
+        "Name": "published parent cancel refuses fresh ADMITTED image",
+        "Passed": true
+      },
+      {
+        "Name": "Uncertain",
+        "Passed": true
+      },
+      {
+        "Name": "Eof",
+        "Passed": true
+      },
+      {
+        "Name": "RawReadFault",
+        "Passed": true
+      },
+      {
+        "Name": "AcceptedSeen",
+        "Passed": true
+      },
+      {
+        "Name": "LateReturnSeen",
+        "Passed": true
+      },
+      {
+        "Name": "Dropped",
+        "Passed": true
+      },
+      {
+        "Name": "Malformed",
+        "Passed": true
+      },
+      {
+        "Name": "Oversize",
+        "Passed": true
+      },
+      {
+        "Name": "IncompleteTail",
+        "Passed": true
+      },
+      {
+        "Name": "IdentityRejected",
+        "Passed": true
+      },
+      {
+        "Name": "Duplicates",
+        "Passed": true
+      },
+      {
+        "Name": "ElapsedRegressions",
+        "Passed": true
+      },
+      {
+        "Name": "TrackingExhausted",
+        "Passed": true
+      },
+      {
+        "Name": "future",
+        "Passed": true
+      },
+      {
+        "Name": "stale",
+        "Passed": true
+      },
+      {
+        "Name": "deadline",
+        "Passed": true
+      },
+      {
+        "Name": "identity",
+        "Passed": true
+      },
+      {
+        "Name": "sequence",
+        "Passed": true
+      },
+      {
+        "Name": "missing",
+        "Passed": true
+      },
+      {
+        "Name": "cancelled",
+        "Passed": true
+      },
+      {
+        "Name": "not-admitted",
+        "Passed": true
+      },
+      {
+        "Name": "only missing marker means absent",
+        "Passed": true
+      },
+      {
+        "Name": "private existing marker means cancelled",
+        "Passed": true
+      },
+      {
+        "Name": "private marker I/O uncertainty refuses",
+        "Passed": true
+      }
+    ],
+    "ClockStamp": 53921930607358,
+    "Requests": 0,
+    "Passed": 26,
+    "ClockFrequency": 1000000000,
+    "GameProcesses": 0,
+    "Kind": "G01_PURE_COLLECTOR_HEALTH"
+  },
+  "normal899UnchangedAfter": true,
+  "durationSeconds": 9.650486927996099,
+  "afterTools": [
+    {
+      "comm": "dotnet",
+      "state": "Z",
+      "count": 35
+    }
+  ],
+  "afterVisibility": {
+    "executableFallbacks": 5,
+    "positivelyVanished": 0
+  },
+  "afterLiveTools": [],
+  "status": "PREPARED_G01_ZERO_ONLY"
+}

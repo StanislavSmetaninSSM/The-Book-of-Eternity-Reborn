@@ -1,0 +1,23 @@
+{
+  "kind": "G01_SANITIZED_MANAGED_MAPPING",
+  "managedFrameCandidates": 1,
+  "mappedFrames": [
+    {
+      "nativeTid": 11,
+      "module": "ParentProbe.dll",
+      "moduleMvid": "54b8f379-aaf7-4918-84b0-0a67a6d0a89c",
+      "methodDef": "0x06000063",
+      "ilOffset": "0x0",
+      "type": ".ParentProbe",
+      "method": "SourceAnchor",
+      "sourceFile": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/ParentProbe.cs",
+      "sourceLine": 9
+    }
+  ],
+  "limitations": [],
+  "capturePhase": "UNKNOWN",
+  "suspensionDuration": "UNKNOWN",
+  "interpretation": "BOUND_METHODDEF_IL_ONLY_REVIEW_SOURCE_POSITIONS",
+  "requests": 0,
+  "offlineOnly": true
+}

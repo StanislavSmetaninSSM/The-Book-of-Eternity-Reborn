@@ -1,0 +1,18 @@
+{
+  "payload": {
+    "threads": [
+      {
+        "native_thread_id": "0xb",
+        "stack_frames": [
+          {
+            "is_managed": true,
+            "filename": "ParentProbe.dll",
+            "guid": "54b8f379-aaf7-4918-84b0-0a67a6d0a89c",
+            "token": "0x0",
+            "il_offset": "0x0"
+          }
+        ]
+      }
+    ]
+  }
+}

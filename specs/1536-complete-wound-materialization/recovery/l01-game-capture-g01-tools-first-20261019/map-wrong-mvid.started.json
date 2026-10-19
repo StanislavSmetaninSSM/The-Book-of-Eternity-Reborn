@@ -1,0 +1,17 @@
+{
+  "command": [
+    "/usr/bin/timeout",
+    "--verbose",
+    "--signal=TERM",
+    "--kill-after=10s",
+    "29.999996767000994s",
+    "/tmp/1536-cloud-tools/dotnet/dotnet",
+    "/tmp/g-a91f6d2c7b30/tools/MapFrames.dll",
+    "/tmp/g-a91f6d2c7b30/tools/map-wrong-mvid.input.json",
+    "/tmp/g-a91f6d2c7b30/tools/map-proof-modules.json",
+    "/tmp/g-a91f6d2c7b30/tools/map-wrong-mvid.json"
+  ],
+  "nativeExit": null,
+  "observerErrors": [],
+  "joined": false
+}
