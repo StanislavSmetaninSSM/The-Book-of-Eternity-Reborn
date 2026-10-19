@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
@@ -371,6 +372,24 @@ public sealed class PendingSnapshotValidationScopeTests(ITestOutputHelper output
             return [];
         }));
         Assert.True(changed);
+    }
+
+    /// <summary>
+    /// Actual validator issues retain their order and content across scalar and reserved execution.
+    /// </summary>
+    [Fact]
+    public async Task Scope_ActualValidationPreservesOrderedIssues()
+    {
+        using var fixture = new Fixture();
+        await fixture.PrepareAsync(false);
+        using var owner = fixture.Files.BeginMainAdmission();
+        await owner.AcquireAsync();
+        var scalar = await fixture.Validator.ValidateGameStateAsync(GameStateValidationPhase.RequiredFiles);
+        Assert.NotEmpty(scalar);
+        var scoped = await fixture.RunAsync(() => (Task<List<ValidationIssue>>)typeof(ValidationService)
+            .GetMethod("ValidateGameStateCoreAsync", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .Invoke(fixture.Validator, [new GameStateValidationSelection(GameStateValidationPhase.RequiredFiles), false, null, null])!);
+        Assert.Equal(JsonSerializer.Serialize(scalar), JsonSerializer.Serialize(scoped));
     }
 
     /// <summary>

@@ -135,6 +135,7 @@ public partial class ValidationService
         var reads = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
         byte[]? Read(string path)
         {
+            if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(path)) return null;
             if (reads.TryGetValue(path, out var existing)) return existing;
             var bytes = _fs.ReadFileBytesSync(physical.Lease!, path);
             reads.Add(path, bytes);
@@ -150,6 +151,10 @@ public partial class ValidationService
             ? manifestJson == null ? ValidatedPendingTurnSnapshotStatus.Missing : ValidatedPendingTurnSnapshotStatus.Unusable
             : IsValidatedPendingTurnSnapshotManifestUsable(manifest, authority, physical.Lease, Read, Text)
                 ? ValidatedPendingTurnSnapshotStatus.Usable : ValidatedPendingTurnSnapshotStatus.Unusable;
+        // An unusable manifest may make the checker stop before reading its whole rollback map.
+        // Retain those safe declared dependencies too, without rereading anything the checker consumed.
+        if (manifest?.RollbackBackups is { } backups)
+            foreach (var path in backups.Values) _ = Read(path);
         physical.RequireCurrent();
         return new(status, manifest == null ? null : JsonSerializer.Serialize(manifest, ManifestHashJsonOpts), reads);
     }
@@ -191,8 +196,17 @@ public partial class ValidationService
                     (pair.Value == null ? bytes != null : bytes == null || !pair.Value.AsSpan().SequenceEqual(bytes))))
                 throw new InvalidDataException("Pending snapshot dependencies changed during validation.");
         }
+        /// <summary>
+        /// Reader status observed by this authentication pass.
+        /// </summary>
         private ValidatedPendingTurnSnapshotStatus Status => status;
+        /// <summary>
+        /// Immutable source serialization, or null when no manifest parsed.
+        /// </summary>
         private string? ManifestJson => manifestJson;
+        /// <summary>
+        /// Private dependency bytes and absences retained by this pass.
+        /// </summary>
         private Dictionary<string, byte[]?> Reads => reads;
     }
 

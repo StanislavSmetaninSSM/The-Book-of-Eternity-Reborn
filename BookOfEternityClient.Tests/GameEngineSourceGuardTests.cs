@@ -1252,12 +1252,23 @@ public sealed class GameEngineSourceGuardTests
         Assert.True(normalizeIndex < cleanupIndex, "resolved afterlife pending contracts must be cleaned while the accepted-turn snapshot is still available.");
     }
 
+    /// <summary>
+    /// Preserves normalization, the exact console validation slot and later payload/repair boundaries.
+    /// </summary>
     [Fact]
     public void AcceptedTurnFlows_MustValidateMaterializedStateAfterRuntimeNormalization()
     {
         var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
 
         Assert.Contains("PostAcceptedMaterializedStateValidationSource", source, StringComparison.Ordinal);
+        var validation = ReadGameEnginePartialSource("GameEngine.ValidationAndRepair.cs");
+        var method = ExtractMethodSource(validation, "private async Task<bool> ValidateCurrentGameStateOrShowErrorsAsync(");
+        var healthy = method.IndexOf("await EnsureClientOwnedSystemFilesHealthyAsync();", StringComparison.Ordinal);
+        var reserved = method.IndexOf("await _validator.ValidatePostMaterializedGameStateAsync()", StringComparison.Ordinal);
+        var payload = method.IndexOf("if (RequiresAcceptedTurnPayloadValidation(source))", StringComparison.Ordinal);
+        Assert.Contains("source == PostAcceptedMaterializedStateValidationSource && !_fs.HasBrowserOriginalOperation", method, StringComparison.Ordinal);
+        Assert.True(healthy >= 0 && reserved > healthy && payload > reserved);
+        Assert.Contains(": await _validator.ValidateGameStateAsync();", method, StringComparison.Ordinal);
 
         var anchors = new[]
         {

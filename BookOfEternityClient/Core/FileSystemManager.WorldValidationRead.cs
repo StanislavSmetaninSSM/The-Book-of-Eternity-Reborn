@@ -124,6 +124,12 @@ public partial class FileSystemManager
         /// <inheritdoc />
         internal override bool Closed => _closed;
         private bool _closed;
+        /// <summary>
+        /// Finishes the original recovery acquisition before admitting browser validation reads.
+        /// </summary>
+        /// <returns>
+        /// Completion after original authority has been checked.
+        /// </returns>
         internal async Task OpenAsync()
         {
             Lease = await Acquisition;
@@ -149,6 +155,7 @@ public partial class FileSystemManager
             _ = files.PreflightBrowserOriginalAdmission(Lease!.MainAdmission!, Lease, "world-validation-final");
             RequireCurrent();
         }
+        /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
             if (_closed) return;

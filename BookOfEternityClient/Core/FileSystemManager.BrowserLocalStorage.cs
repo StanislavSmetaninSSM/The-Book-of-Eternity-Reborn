@@ -87,6 +87,18 @@ public partial class FileSystemManager
             .Select(path => GetLocalRelativePath(GameSessionPath, path, OperatingSystem.IsWindows())).ToArray();
     }
 
+    /// <summary>
+    /// Reads exact physical evidence under the original lease and validates its local namespace before and after the read.
+    /// </summary>
+    /// <param name="lease">
+    /// Active original canonical lease for the current session operation.
+    /// </param>
+    /// <param name="relativePath">
+    /// Session-relative evidence path validated by the existing trusted local scope.
+    /// </param>
+    /// <returns>
+    /// Exact file bytes, or null when the evidence file is absent.
+    /// </returns>
     internal byte[]? ReadBrowserStorageEvidence(CanonicalWriteLease lease, string relativePath)
     {
         EnsureCanonicalWriteLeaseActive(lease);
