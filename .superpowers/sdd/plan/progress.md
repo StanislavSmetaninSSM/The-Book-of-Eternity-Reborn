@@ -89,3 +89,5 @@ T250 actual PASS: source42 naturally returns258.780s under600s observation, chil
 T251 closed: Sol6.1/xhigh accepted5149447e0 evidence; clean GitHub recovery261files verified and saved. T252 spec7/plan5 tracks justified Windows five budget/selection work under user waiver; Spec Kit setup-plan/setup-tasks/prerequisites plus W7 consistency performed. No new gameplay run or production change yet.
 
 T253 checkpoint: initial source review missed catalog1..15 maximum; actual PREP rejected22 before any gameplay. Revised policy extends only measured producer600, keeps resumer220, categories15. Initial RED25=18PASS7FAIL and correction RED25=24PASS1FAIL retained; final25PASS/source652, XML0errors/changedXML0/catalog/default205 and12case PlanOnly accepted by scripts. Future budget planning must inspect category maximum separately from runner overall maximum. No routing/model change or measured savings inferred; independent final PREP pending.
+
+T253 independent SOURCE/PREP accepted Sol6.1/xhigh at295549bf4 with compiled652, no outstanding findings. Single T254cut0 next; T255 gated on full case PASS. No further build needed for current selected DLLs.
