@@ -15,6 +15,19 @@ HERE = Path(__file__).resolve().parent
 REC = HERE.parent
 H = lambda b: hashlib.sha256(b).hexdigest()
 
+def request_role(cfg, m):
+    assert type(cfg['SyntheticPreApiOracle']) is bool, 'Explicit strict role required'
+    own = Path(m['Own'])
+    if cfg['SyntheticPreApiOracle']:
+        assert cfg['OracleContract'] == 'S01_G01_PREAPI_ZERO_REQUESTS'
+        expected = [cfg['Dotnet'], 'exec', '--runtimeconfig', cfg['OracleRuntimeconfig'], cfg['OracleAssembly'], m['Nonce']]
+    else:
+        expected = [cfg['Dotnet'], 'exec', '--runtimeconfig', cfg['Runtimeconfig'], '--depsfile', cfg['Depsfile'],
+                    cfg['SupportAssembly'], 'engine-joint-interface-resume', cfg['IntegrationAssembly'], m['Root'],
+                    str(own/'resume.json'), '1', str(own)]
+    assert m['TargetCommand'] == expected and m['Cut'] == 1
+    return cfg['SyntheticPreApiOracle']
+
 def main():
     started = time.monotonic()
     request_deadline = started + 20
@@ -57,10 +70,9 @@ def main():
         command = Path(f'/proc/{target}/cmdline').read_bytes().split(b'\0')[:-1]
         assert command == [a.encode() for a in m['TargetCommand']]
         assert str(Path(f'/proc/{target}/exe').resolve(strict=True)) == m['TargetExecutable'] == cfg['Dotnet']
-        expected = [cfg['Dotnet'], 'exec', '--runtimeconfig', cfg['Runtimeconfig'], '--depsfile', cfg['Depsfile'],
-                    cfg['SupportAssembly'], 'engine-joint-interface-resume', cfg['IntegrationAssembly'], m['Root'],
-                    str(own/'resume.json'), '1', str(own)]
-        assert m['TargetCommand'] == expected and m['Cut'] == 1
+        synthetic = request_role(cfg, m)
+        if synthetic:
+            assert {cfg['OracleAssembly'], cfg['OracleRuntimeconfig']} <= {r['path'] for r in cfg['RequestInputs']}
         parent_bytes = (own/'parent.json').read_bytes(); parent = json.loads(parent_bytes)
         assert H(parent_bytes) == m['ParentFileSha256']
         assert parent == dict(Nonce=m['Nonce'], ParentPid=m['OwnerPid'], Cut=1, Fault=None, Diagnostic=True)
@@ -72,7 +84,8 @@ def main():
         assert not Path(m['DumpPath']).exists() and not Path(m['DumpPath']+'.crashreport.json').exists()
         assert m['DumpPath'] == str(root/'game-normal.core') and m['HealthPath'] == str(root/'health.json')
         m.update(WatchdogPid=os.getpid(), WatchdogBirthTick=me['birthTick'], Uid=os.geteuid(), Socket=str(socket),
-                 LoadedFiles=cfg['LoadedFiles'], ClientAssembly=cfg['ClientAssembly'], BinaryImages=cfg['BinaryImages'])
+                 LoadedFiles=cfg['LoadedFiles'], ClientAssembly=cfg['ClientAssembly'], BinaryImages=cfg['BinaryImages'],
+                 SyntheticPreApiOracle=synthetic)
         lib['write'](root/'request-manifest.json', m)
         record.update(owner=owner, watchdog=me, targetIdentity=identity, parentFileSha256=m['ParentFileSha256'])
         collector_phase = root/'collector-env'

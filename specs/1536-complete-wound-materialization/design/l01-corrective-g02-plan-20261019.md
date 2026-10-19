@@ -11,14 +11,14 @@
 
 - G01 FAIL220/API0/ENOENT, all raw/private and sanitized evidence, old PREP digests and consumed permit stay immutable. L0152/57 and old66529UNKNOWN unchanged.
 - New G02 root/run/permit only. Exactly existing fr063-joint-interface-crash-diagnostic cut1, one descriptor/method/case outside57, original assertions/wait220/category900.
-- Synthetic is existing S01 DLL with its original60s watchdog; therefore this probe tests pre-API admission/ownership/environment/collector, not the G01 policy's60s receipt timer. Synthetic healthy-admitted context is explicitly simulated and cannot prove a real game phase. Actual game parent/policy unchanged.
+- Synthetic is existing S01 DLL with its original60s watchdog and DeadlineStamp from pre-launch Stopwatch stamp; therefore this probe tests pre-API admission/ownership/environment/collector, not the G01 policy's60s receipt timer. Synthetic healthy-admitted context is explicitly simulated and cannot prove a real game phase. Actual game parent/policy unchanged.
 - Synthetic collector completes all common library/ABI/process/argv/socket/output/parent/fresh-health guards, then emits pre_api_ready and exits0/UNREACHED without WriteDump. Maxone WriteDump belongs only to the later game. Synthetic S01 ready/STOP/EOF/join oracle remains genuine.
 - Real-role predicate, atomic state/once-only semantics, D01, Ready immutability, production, GM contracts and budgets unchanged. No main/merge/force/delete/issueclose/secrets/Windows/403/CI.
 - All core/raw reports stay private own/capture, never Git/attach/archive/autodelete; retain through independent minimal EVIDENCE/final report. Continuous phase/source completeness/actual suspension UNKNOWN unless measured; no new phase mechanism.
 
 ## Review focus
 
-- Synthetic flag must be a strict boolean and explicit exact hash-bound S01 role; it never broadens real resumer argv/PID+kernel-starttick/root/nonce/UID guards or permits arbitrary targets.
+- Synthetic flag must be a strict explicit boolean without default/fallback and exact hash-bound S01 role; it never broadens real resumer argv/PID+kernel-starttick/root/nonce/UID guards or permits arbitrary targets.
 - G01 real call path after fixed private mkdir must actually reach the same collector's final pre-API guard. Source/helper-only proofs cannot release the game.
 - Native, API, observer and bounded owned cleanup remain separate; positive pre_api_ready exactly once and API0, target STOP0/validnonce/EOF/join required.
 - Reused C# source graph, DLL/PDB/dependencies/NuGet/imports/tools/catalog have explicit original provenance and exact bytes. No old PREP record is relabeled; new derived verification states reuse honestly.
@@ -26,7 +26,7 @@
 
 ## Task 1 — minimal orchestration and explicit reuse SOURCE
 
-Files: modify recovery/l01-game-capture-g01/{watchdog.py,Collect.ps1,phase.py}; add recovery/l01-game-capture-g02/{SyntheticOwner.cs,phase.py,bindings.json,source-packet.json,control.json,recover.py}; narrow pure role/dispatch checks if needed. No Integration/Core/TestSupport source changes.
+Files: modify recovery/l01-game-capture-g01/{watchdog.py,Collect.ps1,phase.py}; add recovery/l01-game-capture-g02/{SyntheticOwner.cs,bindings.json,source-packet.json,control.json,recover.py} (same phase.py dispatch, no second driver); narrow pure role/dispatch checks if needed. No Integration/Core/TestSupport source changes.
 
 - [ ] Pin old S01 oracle output/ABI/source and G01 tools/integration460/unit439/prep bytes; choose fresh short root and distinct synthetic/game IDs.
 - [ ] Test-first exact role/zero-API branch and fixed G02 config dispatch; preserve RED/GREEN without game or child/API.
@@ -51,4 +51,4 @@ Files: modify recovery/l01-game-capture-g01/{watchdog.py,Collect.ps1,phase.py}; 
 
 ## Execution ledger
 
-- Planning: user authority recovered, base46c621fb remote SHA/readback/clean recovery verified; existing S01/G01 source inspected. No new native/target/API yet. Independent read-only design consultation pending.
+- Planning: user authority recovered, base46c621fb remote SHA/readback/clean recovery verified; existing S01/G01 source inspected. No new native/target/API yet. Independent read-only design consultation accepted with strict explicit role, positive pre_api_ready and original60s bound requirements.

@@ -1,0 +1,20 @@
+{
+  "kind": "G02_CORRECTIVE_CONTROL",
+  "base": "46c621fb50fe61e5a662ccaf8f00f3fa0f3c6dc3",
+  "status": "WIP_SOURCE_UNREVIEWED_NO_NATIVE",
+  "sourceAdmission": {
+    "status": "HOLD"
+  },
+  "syntheticAdmission": {
+    "status": "HOLD"
+  },
+  "actualAdmission": {
+    "status": "HOLD"
+  },
+  "oldG01": "FAIL_TIMEOUT220_API0_ENOENT_UNCHANGED",
+  "old66529": "UNKNOWN",
+  "l01": "52/57 original provenance unchanged; crash5 unqualified",
+  "broaderHolds": "FullNI/HOT/F1/M3/T197/E01/T148/Phase10 incomplete; A3 NO-PROCEED",
+  "dumpLifecycle": "Private own/capture only; retain through independent sanitized EVIDENCE/final report; no Git/attach/archive/autodelete",
+  "currentNextAction": "Independent affected SOURCE; no target/native/API before acceptance"
+}

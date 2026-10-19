@@ -78,6 +78,7 @@ function Read-ParentCancellation([string]$MarkerPath) {
 }
 try {
     $m = [IO.File]::ReadAllText($Manifest) | ConvertFrom-Json
+    if ($m.SyntheticPreApiOracle -isnot [bool]) { throw 'Explicit strict role required' }
     foreach ($row in $m.LoadedFiles) {
         if ((Get-FileHash -LiteralPath $row.path -Algorithm SHA256).Hash.ToLowerInvariant() -cne $row.sha256) { throw 'Loaded-file hash mismatch' }
         [void][Reflection.Assembly]::LoadFrom($row.path)
@@ -119,6 +120,11 @@ try {
     $parentCancelled = Read-ParentCancellation (Join-Path (Split-Path $Manifest) 'cancel')
     $cancel = Test-AdmissionHealth $h $m ([Diagnostics.Stopwatch]::GetTimestamp()) ([Diagnostics.Stopwatch]::Frequency) $parentCancelled
     if ($null -ne $cancel) { Observe-Emit @{ Stage = 'cancelled_before_api'; Reason = $cancel; ApiOutcome = 'UNREACHED' } }
+    elseif ($m.SyntheticPreApiOracle) {
+        Observe-Emit @{ Stage = 'pre_api_ready'; ApiOutcome = 'UNREACHED'; Requests = 0;
+            TargetPid = $m.TargetPid; TargetBirthTick = $m.TargetBirthTick; Nonce = $m.Nonce;
+            HealthSequence = $h.Sequence; SyntheticContract = 'S01_G01_PREAPI_ZERO_REQUESTS' }
+    }
     else {
         $result = Invoke-ObservedApi -Request {
             [void]$write.Invoke($client, [object[]]@([Enum]::ToObject($dumpType, 1), [string]$m.DumpPath, [Enum]::ToObject($flagType, 4)))
