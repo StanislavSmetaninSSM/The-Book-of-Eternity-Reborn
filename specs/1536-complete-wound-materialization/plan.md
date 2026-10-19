@@ -6,7 +6,7 @@
 **Architecture:** прямой `dotnet` child через новый finite pipe вход существующего `NativeLineageOwner`, неизменный C supervisor/host-v2. Общая integration fixture сохраняет игровые oracles; Windows использует собственный Process, прежние Linux integrity/diagnostic consumers сохраняют прямой путь.
 **Tech Stack:** C# / .NET 8, SDK 10 для текущего Roslyn, PowerShell 7, xUnit; Linux x64/glibc, существующие pidfd/Unix bootstrap и заранее собранный native package. Новые packages не нужны.
 **Spec:** [согласованная редакция 3](spec.md), исходный approval commit `f22e51730e090e5cdc86531f589bdff05193158d`; [issue #1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Ветка `1536-crash5-linux-windows-spec-20261019`. Дата: 2026-10-19.
-**Status:** plan1 из6f2d4d486 согласован владельцем ответом «да»; реализация начата по T199. SOURCE/PREP/runtime реализации ещё UNRUN. Рабочий журнал: .superpowers/sdd/plan/progress.md; долговечные checkpoints сохраняются здесь.
+**Status:** plan1 из6f2d4d486 согласован владельцем ответом «да»; реализация начата по T199. Независимый SOURCE/PREP review и ordinary5/native runtime ещё не завершены; результаты helper checks указаны в checkpoints. Рабочий журнал: .superpowers/sdd/plan/progress.md; долговечные checkpoints сохраняются здесь.
 
 ## CRASH5 — Global Constraints
 
@@ -148,6 +148,8 @@ T205 finite entrypoint now uses the tested policy/reader/builder, unchanged B2�
 T207 authored9 Windows/common contracts with minimal API stubs and preserved diagnostic short-circuit baseline. Public-entry RED uses two isolated invalid-mode children; it stops the original child as soon as a forbidden fixture appears, never invokes the abrupt producer in-process. T208 selected RED next. No ordinary5 qualification run.
 
 T208 actual on883b295ef:21 planned/completed,13 PASS/8 expected RED,0skip,157.328s total; cleanup complete, no timeout. Both public-entry tests rejected the missing guard: producer created a fixture, resume returned a non-mode failure. T209 now adds mode guards before both fixtures, Windows original-process UTC identity, child-only TEMP/TMP, platform JSON, ordinary NativeLineage routing and individual GC retention plus output-error precedence. Linux fast control now uses /bin/true to exercise genuinely short native exec; other roots independently self-report identity. SOURCE review and native runtime remain pending. T210 selected GREEN next.
+
+T210 actual db66b01c2:21/21 PASS,0skip,164.394s total, no timeout, owned cleanup complete; exact unit12 + Windows/integration9. New code compiles with XML generation; no C/native package build or Linux execution. T211 authored6 bounded stage reporter controls plus minimal stubs; stage RED next. Ordinary game5 still UNRUN.
 
 ## CRASH5 — checkpoint планирования
 

@@ -1,6 +1,6 @@
 # CRASH5 — задачи реализации согласованной spec редакции 3
 
-Источник: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), [spec](spec.md), [implementation plan редакции1](plan.md), [validation guide](quickstart.md). Spec одобрена из f22e51730; implementation plan1 из6f2d4d486 согласован владельцем ответом «да». Все runtime/build/discovery ниже пока UNRUN. US1=CRASH5-US-L, US2=CRASH5-US-W, US3=CRASH5-US-T. T199…T225 — новые уникальные IDs после существующих plain T001…T198; исторические задачи ниже не переоцениваются.
+Источник: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), [spec](spec.md), [implementation plan редакции1](plan.md), [validation guide](quickstart.md). Spec одобрена из f22e51730; implementation plan1 из6f2d4d486 согласован владельцем ответом «да». Выполненные helper checks отмечены задачами и evidence в plan; ordinary Windows5 и Linux runtime пока UNRUN. US1=CRASH5-US-L, US2=CRASH5-US-W, US3=CRASH5-US-T. T199…T225 — новые уникальные IDs после существующих plain T001…T198; исторические задачи ниже не переоцениваются.
 
 ## Phase 1 — Setup
 
@@ -25,7 +25,7 @@
 - [x] T207 [US2] Написать `BookOfEternityClient.IntegrationTests/JointInterfaceCrashProcessSupportTests.cs`: mode matrix, malformed/missing parent metadata, `BothPublicEntryGuardsPrecedeFixture`, independent positive Windows ticks/Linux token, ArgumentList/space paths/TEMP/TMP/TMPDIR, disabled capture despite settings, `UncertainOwnerRetainsOriginalCustody`, primary-vs-output/cleanup error. Invalid direct entries проверять в isolated child, чтобы baseline не завершил test host через Exit73; никакого in-process вызова незащищённого crash producer.
 - [x] T208 [US2] Получить адресный Windows RED T207 через fr063-joint-interface-crash-adapter-contracts, сохранить ожидаемый failure contract и artifacts в `specs/1536-complete-wound-materialization/recovery/crash5/`; не считать missing-type/сборку RED.
 - [x] T209 [US2] Добавить `JointInterfaceCrashProcessSupport.cs` по interfaces plan и обновить `GameEngineTurnLifecycleTests.JointInterfaceCrash.cs`: оба public entry guards до fixture, backend routing, независимая identity, original-owner retention до Dispose/Joined, raw output error precedence. Native adapter package из BOE_CRASH5_NATIVE_PACKAGE; DirectLinux диагностический/интегрити путь и все игровые assertions сохраняются.
-- [ ] T210 [US2] Получить GREEN T207, сопоставить XML/docs diff и сохранить checkpoint в `specs/1536-complete-wound-materialization/plan.md`; не запускать ordinary5 до SOURCE/PREP T217.
+- [x] T210 [US2] Получить GREEN T207, сопоставить XML/docs diff и сохранить checkpoint в `specs/1536-complete-wound-materialization/plan.md`; не запускать ordinary5 до SOURCE/PREP T217.
 
 ## Phase 4 — US1/US2: вспомогательные test stages
 

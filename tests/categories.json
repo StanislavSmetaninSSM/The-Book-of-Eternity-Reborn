@@ -23,7 +23,7 @@
   "expectedSeconds": null,
   "selectors": [
     { "project": "unit", "tests": ["BookOfEternityClient.Tests.GmWorkerNativeFinitePipePolicyTests.*"] },
-    { "project": "integration", "tests": ["BookOfEternityClient.Tests.JointInterfaceCrashProcessSupportTests.*"] }
+    { "project": "integration", "tests": ["BookOfEternityClient.Tests.JointInterfaceCrashProcessSupportTests.*", "BookOfEternityClient.Tests.JointInterfaceCrashStageReportTests.*"] }
   ]
 },
 {
