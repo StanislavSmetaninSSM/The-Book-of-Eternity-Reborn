@@ -14,6 +14,9 @@ namespace BookOfEternityClient.Tests;
 /// <summary>
 /// Exercises physical pending-snapshot authentication through the real validator lookups.
 /// </summary>
+/// <param name="output">
+/// Destination for physical read counts in the test report.
+/// </param>
 public sealed class PendingSnapshotValidationScopeTests(ITestOutputHelper output)
 {
     /// <summary>
@@ -38,7 +41,7 @@ public sealed class PendingSnapshotValidationScopeTests(ITestOutputHelper output
         {
             for (var i = 0; i < consumers; i++)
                 Assert.Equal("Usable", Status(await fixture.LookupAsync(i % 2 != 0)));
-            return [new() { FilePath = "first", Message = "one" }, new() { FilePath = "second", Message = "two" }];
+            return [new("first", IssueSeverity.Error, "one"), new("second", IssueSeverity.Error, "two")];
         });
         output.WriteLine($"N={consumers}; cold={cold}; ordinary={fixture.Ordinary}; cohort={fixture.Cohort}; total={fixture.Ordinary + fixture.Cohort}");
         Assert.Equal(new[] { "first", "second" }, issues.Select(i => i.FilePath));
