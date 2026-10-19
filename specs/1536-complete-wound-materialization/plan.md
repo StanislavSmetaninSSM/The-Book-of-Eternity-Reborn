@@ -13,6 +13,8 @@
 Implementation source25ef748ce; NativeLineage production неизменён после51f. T227/T228 имеют по одному completed failing source42 run с confirmed original-owner cleanup. T228 подтвердил1740 rollback initial-read callbacks/59distinct/1681repeats к186.508s после validated160.223s, без QTE до220s; это нижняя граница наблюдений, не isolated method profile. Helpers37PASS на51f и обновлённые stages9PASS на25 имеют отдельные provenance. Windows5 остаётся FAIL_INCOMPLETE, Linux UNRUN. Подробности/evidence в recovery/crash5/source42-investigation.md и linux-handoff.md.
 
 T229: в spec.md записано **неодобренное** дополнение4 для production validation optimization. До явного согласования production-код не менять. После approval пройти соответствующие Spec Kit plan/tasks/analyze и Superpowers design/TDD/review/verification; определить доказуемый immutable validation lifetime, dependency-change detection и numeric read-bound до реализации. Нынешние test-only counters не являются оптимизацией или доказательством достаточности одного будущего исправления. Никаких дальнейших unchanged five/source42 retries не запланировано.
+Final independent evidence/draft-document review accepted194b5b665 with no blocking findings. T220/T221/T227/T228 complete as reviewed source/evidence/handoff/investigations; T219 SC-WIN remains open, cloudT222…225 UNRUN, T229 spec4 pending owner approval. No production optimization or further runtime execution performed.
+
 ## CRASH5 — Global Constraints
 
 - Ровно cut0…4, producer `Environment.Exit(73)`, отдельный resumer exit0, разные PID, независимые birth tokens и nonce; повторный вход инертен. Все mechanical/history/culture/control assertions из spec сохраняются.
