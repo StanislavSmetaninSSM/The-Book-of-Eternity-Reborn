@@ -269,7 +269,7 @@ public sealed class PendingSnapshotValidationScopeTests(ITestOutputHelper output
             manifest = JsonSerializer.SerializeToNode(dto, type, opts)!.AsObject();
             manifest["manifestPayloadHash"] = PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
             Raw(ManifestPath, Encoding.UTF8.GetBytes(manifest.ToJsonString()));
-            Raw("input/turn_request.json", Encoding.UTF8.GetBytes("{\"sessionId\":\"session\",\"requestId\":\"request\",\"turnNumber\":42}"));
+            Raw("input/turn_request.json", Encoding.UTF8.GetBytes("{\"sessionId\":\"session\",\"requestId\":\"request\",\"turnNumber\":42,\"timestamp\":\"time\",\"playerAction\":\"action\"}"));
             // Authority creation reads before-images by their actual paths, so use its pure method instead of a writer admission.
             var authority = PendingTurnSnapshotAuthority.CreateDetachedAuthorityJson(manifest, opts,
                 m => m["manifestPayloadHash"]!.GetValue<string>(), (m, h) => m["manifestPayloadHash"] = h,
