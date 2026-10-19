@@ -6,7 +6,7 @@
 - [x] CRASH5-S02 Статически изучить cut0…4, shared consumers/entrypoints, assertions, runner, catalog/selection, относящиеся spec/plan/tasks и causal review; отделить ordinary от G01/G02.
 - [x] CRASH5-S03 Сопоставить облачные механизмы мостика NativeLineageOwner/supervisor и runner с потребностями fixture; записать применимые contracts и ограничения прямого reuse.
 - [x] CRASH5-S04 Записать редакцию2: Linux preparation/cloud execution, Windows local execution, все сохранённые oracles, наблюдение без external capture, неизвестные причины и условность причинного fix.
-- [ ] CRASH5-S05 Независимо проверить полный документарный diff и связанные source contracts; устранить подтверждённые существенные замечания.
+- [x] CRASH5-S05 Независимо проверить полный документарный diff и связанные source contracts; устранить подтверждённые существенные замечания. gpt-6-astra/high: diff125332..5112149, действенных замечаний нет; документ готов к предъявлению, runtime и approval не подтверждены.
 - [ ] CRASH5-S06 Предъявить фактически записанную редакцию2 владельцу и получить согласование; approval не подразумевается из поручения подготовить документ.
 - [ ] CRASH5-P01 После согласования выполнить writing-plans + speckit-plan/speckit-tasks и speckit-analyze до реализации/исполнения probe; определить конкретные пределы self-report и адресные guard/regression categories.
 
