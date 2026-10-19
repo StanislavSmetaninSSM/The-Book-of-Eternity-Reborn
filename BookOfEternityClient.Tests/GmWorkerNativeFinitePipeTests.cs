@@ -32,7 +32,8 @@ public sealed class GmWorkerNativeFinitePipeTests
         Assert.True(result.GetProperty("heldObserved").GetBoolean());
         Assert.True(result.GetProperty("heldBeforeExec").GetBoolean());
         Assert.True(result.GetProperty("sameOriginalOwner").GetBoolean());
-        Assert.True(result.GetProperty("birthMatches").GetBoolean());
+        if (mode == "fast") Assert.True(result.GetProperty("heldBirth").GetUInt64() > 0);
+        else Assert.True(result.GetProperty("birthMatches").GetBoolean());
         Assert.NotEqual(result.GetProperty("rootPid").GetInt32(), result.GetProperty("supervisorPid").GetInt32());
         var stop = result.GetProperty("stop");
         Assert.Equal(0, stop.GetProperty("State").GetInt32());

@@ -51,6 +51,7 @@ internal static class NativeFinitePipeScenarioDriver
             start.ArgumentList.Add(arg);
         start.Environment["TMPDIR"] = Path.Combine(own, "tmp with spaces");
         if (mode == "exec-failure") start.FileName = Path.Combine(own, "missing executable");
+        if (mode == "fast") { start.FileName = "/bin/true"; start.ArgumentList.Clear(); }
         if (mode == "start-failure") start.WorkingDirectory = Path.Combine(own, "absent directory");
         NativeLineageOwner? owner = null, heldOwner = null, exceptionOwner = null;
         GmWorkerStopEvidence? stop = null;
@@ -124,7 +125,7 @@ internal static class NativeFinitePipeScenarioDriver
             {
                 failure, heldObserved, heldBeforeExec,
                 sameOriginalOwner = owner != null && (ReferenceEquals(owner, heldOwner) || ReferenceEquals(owner, exceptionOwner)),
-                rootPid, supervisorPid, birthMatches, environmentMatches, stop, disposed, eof, stdout, stderr,
+                rootPid, supervisorPid, heldBirth, birthMatches, environmentMatches, stop, disposed, eof, stdout, stderr,
                 bootstrapRemoved = bootstrap != null && !Directory.Exists(bootstrap), uncertainty = owner?.Uncertainty
             }));
             GC.KeepAlive(owner); // Uncertain authority is retained until this isolated driver exits.

@@ -147,6 +147,8 @@ T205 finite entrypoint now uses the tested policy/reader/builder, unchanged B2�
 
 T207 authored9 Windows/common contracts with minimal API stubs and preserved diagnostic short-circuit baseline. Public-entry RED uses two isolated invalid-mode children; it stops the original child as soon as a forbidden fixture appears, never invokes the abrupt producer in-process. T208 selected RED next. No ordinary5 qualification run.
 
+T208 actual on883b295ef:21 planned/completed,13 PASS/8 expected RED,0skip,157.328s total; cleanup complete, no timeout. Both public-entry tests rejected the missing guard: producer created a fixture, resume returned a non-mode failure. T209 now adds mode guards before both fixtures, Windows original-process UTC identity, child-only TEMP/TMP, platform JSON, ordinary NativeLineage routing and individual GC retention plus output-error precedence. Linux fast control now uses /bin/true to exercise genuinely short native exec; other roots independently self-report identity. SOURCE review and native runtime remain pending. T210 selected GREEN next.
+
 ## CRASH5 — checkpoint планирования
 
 Один разработчик в этом чате + отдельный независимый review соответствует прямой политике владельца; отдельный implementer не нужен. Обязательный reviewer shared process change — gpt-6-astra/high. Read-only исследование category map выполнено отдельным gpt-6.1-sol/high; предложение duplicate Windows category отклонено как противоречащее T2. Никаких тестов/build/discovery/native execution при планировании не было.
