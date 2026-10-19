@@ -12,7 +12,7 @@ dotnet build BookOfEternityClient.IntegrationTests/BookOfEternityClient.Integrat
 ./scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-snapshot-validation.json -NoBuild
 ```
 
-Сначала exact T230 RED category, затем после кода GREEN и affected controls: new contracts2m, lifecycle5m, existing c5-original-post-validation-source и два c5-world-state-read-phase owners. Сохранять отдельно наблюдённый RED reason, source/DLL/planned/completed/skips, границы component/whole-operation counts. Catalog/PlanOnly не являются runtime tests. Не запускать один и тот же passing owner без изменившегося кода/риска. Точный состав утверждает SOURCE/PREP по реальному diff; Linux-only cases здесь UNRUN.
+Сначала exact T230 RED category, затем после кода GREEN и affected controls: new contracts2m, lifecycle5m, existing c5-original-post-validation-source и два c5-world-state-read-phase owners плюс pending-snapshot-validation-meta-neighbors3m с шестью exact existing selectors из plan2. Сохранять отдельно наблюдённый RED reason, source/DLL/planned/completed/skips, границы component/whole-operation counts. Catalog/PlanOnly не являются runtime tests. Не запускать один и тот же passing owner без изменившегося кода/риска. Точный состав утверждает SOURCE/PREP по реальному diff; Linux-only cases здесь UNRUN.
 
 После принятого T233 один original `fr063-joint-interface-source42-windows-probe` (исходные selector/220s неизменны), после его PASS original `fr063-joint-interface-crash-current`. Все новые runtime provenance записываются в существующий `recovery/crash5/source42-investigation.md` и `linux-handoff.md`. Ни fast controls, ни read-count снижение не закрывают SC-WIN. Для облака — fresh Linux build/package/controls/five, Windows DLL не передавать как compiled proof.
 
