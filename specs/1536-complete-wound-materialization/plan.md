@@ -1,3 +1,7 @@
+## G02 corrective continuation authorized (2026-10-19)
+
+User explicitly authorizes ONE corrective diagnostic after proven G01-E01 fix, not a random-PASS retry. [Minimal G02 plan](design/l01-corrective-g02-plan-20261019.md) first exercises actual G01 watchdog/config/collector pre-API path on own existing S01 synthetic oracle with API0; only successful E2E + independently accepted affected SOURCE/PREP can release one new-root/run/permit game(maxoneWriteDump). Reuse unchanged C#binaries/PREP parts with exact provenance; no automatic rebuild. Old G01FAIL/API0/sourcefix/evidence/consumedpermit remain immutable. No new native/targets/API at this planning checkpoint. All production/220900/assertion/privacy/52of57/oldUNKNOWN/platform/broaderholds unchanged. Ordinary prep is autonomous under latest authority; one G02 outcome ends runtime scope.
+
 ## G01 — итоговый checkpoint: source fix принят, runtime закрыт (2026-10-19)
 
 Единственный диагностический запуск завершён и независимо разобран. Run2ca476b7cf58446fb3eb3c6218e850b8, actualsource275586f399bee346acf6773ecbff2d95f1ec2ba4, integrationcompiledd293b3bf:1executed/0pass/1fail, native1, исходный Wait220 TimeoutException. Producer73/resumer137 имеют разные PID+kernel-starttick, join/EOF положительные; исходные последующие fullresumer/physical/once-only assertions послеawait не достигнуты. Category900 не истёк, owned/runtimecleanuptrue, liveTools[], controller observerErrors[], normal899unchanged. Это FAIL, не новая квалификация L01.

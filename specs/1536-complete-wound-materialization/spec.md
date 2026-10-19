@@ -1,3 +1,5 @@
+> CURRENT G02 2026-10-19: new corrective authority permits preparation and one same-case game ONLY after own-S01 E2E pre-API via exact G01 orchestration passes and independent affected SOURCE/PREP. New root/permit, maxoneDump, no auto rebuild/retry. G01FAIL/API0 and old evidence immutable; all earlier CURRENT banners below historical. See current plan/G02 minimal plan.
+
 > CURRENT FINAL 2026-10-19: source-onlycollector-env fix принят24checks/actualprefixpure4PASS, runtimeNONE/consumedlease. ЕдинственныйgameFAIL220, captureAPI0/UNREACHED/no snapshot; EVIDENCEfactsaccepted38+4, parent22/terminal24 scopes separated. L0152of57/oldUNKNOWN/broaderholds unchanged. Дальнейшийruntime требует отдельного user-authorized плана; старыеPREP/actual immutable. Earlierentries historical.
 
 > CURRENT 2026-10-19: firstoutcomeEVIDENCE factsaccepted/captureBLOCKED. Parent22 and terminal24 scopes distinguished; sourceprogressreturns207.678s doesnotprove cause/bound. Postrun source-onlycollector-env mkdir0700 fix+actualprefixpure4/4 WIP pending focusedreview; C#bytes unchanged, originalPREP/actual immutable. RuntimeHOLD/consumedlease/no newgame orDump. Earlierstatuses historical.
