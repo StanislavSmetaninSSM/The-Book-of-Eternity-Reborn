@@ -21,7 +21,10 @@
   "requirements": { "frontendBuild": false, "exclusive": false },
   "timeoutMinutes": 2,
   "expectedSeconds": null,
-  "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.GmWorkerNativeFinitePipePolicyTests.*"] }]
+  "selectors": [
+    { "project": "unit", "tests": ["BookOfEternityClient.Tests.GmWorkerNativeFinitePipePolicyTests.*"] },
+    { "project": "integration", "tests": ["BookOfEternityClient.Tests.JointInterfaceCrashProcessSupportTests.*"] }
+  ]
 },
 {
   "id": "saref-audit-mortal-heal-preservation",
