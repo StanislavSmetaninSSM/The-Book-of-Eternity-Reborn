@@ -117,3 +117,5 @@ Ordinary обязательно1 Theory/5planned=5completed=5passed,0skip, origi
 ## Итог T244
 
 Windows source42 FAIL_CHILD_TIMEOUT220; QTE179.958s и client story append наблюдались, полный ход не вернулся. Child EOF/join и удаление обоих owned roots подтверждены; original five после этой пробы не запускались. [Полный outcome](T244-probe-outcome.json), [raw archive](T244-source42.zip). Linux qualification остаётся отдельной работой по этому handoff; Windows timeout не устанавливает причину исторического Linux сбоя.
+
+T249 SOURCE/PREP accepted by separate gpt-6.1-sol/xhigh atcee572dc65e4c5e1ea59fe0c946bb9aa768f8a93; no findings. Policy17PASS, original/default/extended/five discovery verified, current3DLL hashes match. Archive T249-prep.zip SHA2568A5FE194C6481C2E1F73AD171A3935F7D4C1D32ED76B3017962E7E45B468CA12. T250 not started at this checkpoint; exactly one explicit600/10/10/12m run permitted by spec6 and user waiver. Historical T244FAIL and LinuxUNRUN unchanged.

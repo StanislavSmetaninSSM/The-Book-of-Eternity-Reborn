@@ -81,3 +81,5 @@ T246 done: final87ca evidence accepted by independent Astra/high, fresh GitHub r
 T249 WIP tests-first checkpoint: eight deadline eligibility cases plus existing nine support cases; compiled scalar seam still returns220 and is not wired to the parent. Expected causal RED is600 mismatch and three missing rejections. Extended Fact/runtime not added or run yet.
 
 T249 causal RED atfd19ac0fc:17completed13PASS4expectedFAIL (600 mismatch and three missing eligibility rejections), no timeout/skip, cleanup complete; T249-red archive retained. Minimal fixed policy implemented, shared source fixture/assertions retained, new extended1/12m category excluded default. GREEN/PREP pending; T250 unrun.
+
+T249 SOURCE/PREP accepted by separate gpt-6.1-sol/xhigh atcee572dc65e4c5e1ea59fe0c946bb9aa768f8a93; no findings. Policy17PASS, original/default/extended/five discovery verified, current3DLL hashes match. Archive T249-prep.zip SHA2568A5FE194C6481C2E1F73AD171A3935F7D4C1D32ED76B3017962E7E45B468CA12. T250 not started at this checkpoint; exactly one explicit600/10/10/12m run permitted by spec6 and user waiver. Historical T244FAIL and LinuxUNRUN unchanged.
