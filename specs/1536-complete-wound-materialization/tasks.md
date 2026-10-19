@@ -1,3 +1,10 @@
+# CRASH5 — планирование согласованной spec5
+
+Источник: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Владелец согласовал предъявленную spec5 из f9658ae0e ответом «хорошо»,2026-10-20. Ни нового runtime, ни production-изменений на этапе планирования нет.
+
+- [ ] T239 [US2] Выполнить Spec Kit plan/tasks/consistency и Superpowers writing-plans в существующих spec.md, plan.md, tasks.md, research.md, data-model.md и quickstart.md для held-lease QTE validation. Определить точные interfaces, causal RED/negative/actual caller controls и affected selection; независимо проверить законченный проект и предъявить фактически записанный plan3 владельцу до реализации.
+
+---
 # CRASH5 — задачи plan2 для согласованной spec4
 
 Источник: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), [spec4](spec.md), [plan2](plan.md), [quickstart](quickstart.md). Spec4 одобрена из da3efec34; plan2 из bd9c8dd434 одобрен владельцем ответом «да». US2 — исходные пять Windows-сценариев, US3 — достоверные результаты/передача. T229 в предыдущем блоке учитывает подготовку этих документов. Начато выполнение T230…T237; выполненные задачи отмечаются только по доказательствам.

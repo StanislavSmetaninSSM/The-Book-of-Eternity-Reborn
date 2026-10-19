@@ -1,6 +1,6 @@
 # CRASH5 — проект дополнения редакции 5: проверка завершения QTE
 
-**Статус: DRAFT — ожидает ревью и явного согласования владельцем.** Активная feature остаётся `1536-complete-wound-materialization`, [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Это расширение scope spec4, а не уже разрешённая реализация. Spec4 и plan2 ниже сохраняются. План реализации следующей редакции ещё не подготовлен; после согласования обязательны Spec Kit plan/tasks/consistency и применимые Superpowers фазы.
+**Статус: согласована владельцем ответом «хорошо» на предъявленную редакцию из checkpoint f9658ae0e6ac77b0e81f0c104bea0546afcb7a14, 2026-10-20.** Требования редакции5 сохранены; выполняется планирование T239. Активная feature остаётся `1536-complete-wound-materialization`, [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Это согласованное расширение scope spec4. Spec4 и plan2 ниже сохраняются. До реализации обязательны Spec Kit plan/tasks/consistency, review фактически записанного plan3 и применимые Superpowers фазы.
 
 ## Основание: наблюдение отдельно от гипотезы
 

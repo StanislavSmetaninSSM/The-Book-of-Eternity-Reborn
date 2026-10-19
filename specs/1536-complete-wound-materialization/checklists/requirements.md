@@ -15,7 +15,7 @@
 - [x] Existing owner lease, current physical reads, authority checks and original budgets/assertions preserved.
 - [x] Open lifetime/caller/selection design decisions remain explicit for the next planning phase.
 - [x] Approved spec4 and historical tails retained; T234 failure does not redefine Windows acceptance.
-- [ ] Owner review/approval of this exact draft — pending presentation; no implementation authority yet.
+- [x] Owner approved exact spec5 from f9658ae0e with «хорошо»,2026-10-20; plan3 review remains before implementation.
 - [ ] Spec5 plan/tasks/consistency phases — pending owner approval, not satisfied by plan2.
 
 ## Content Quality
