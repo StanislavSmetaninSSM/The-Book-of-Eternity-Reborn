@@ -1,14 +1,15 @@
 ## CRASH5 — документарный этап Linux + Windows, 2026-10-19
 
-Источник: [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536) и прямые уточнения владельца; [spec.md — CRASH5 редакция 2](spec.md), [checkpoint](plan.md). Это учёт подготовки спецификации, не реализационный результат speckit-tasks. WIN5 редакция1 заменена новым scope; historical G01/G02 ниже сохраняют только собственное происхождение.
+Источник: [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536) и прямые уточнения владельца; [spec.md — CRASH5 редакция 3](spec.md), [checkpoint](plan.md). Это учёт подготовки спецификации, не реализационный результат speckit-tasks. WIN5 редакция1 и CRASH5 редакция2 заменены NativeLineage scope; historical G01/G02 ниже сохраняют только собственное происхождение.
 
 - [x] CRASH5-S01 Восстановить отдельную рабочую копию в D:\Code\The-Book-of-Eternity-Reborn-crash5-windows-20261019; сверить source125332 и doc-only82124, новую ветку1536-crash5-linux-windows-spec-20261019. Git status до правок чист, source tests не исполнялись.
 - [x] CRASH5-S02 Статически изучить cut0…4, shared consumers/entrypoints, assertions, runner, catalog/selection, относящиеся spec/plan/tasks и causal review; отделить ordinary от G01/G02.
 - [x] CRASH5-S03 Сопоставить облачные механизмы мостика NativeLineageOwner/supervisor и runner с потребностями fixture; записать применимые contracts и ограничения прямого reuse.
-- [x] CRASH5-S04 Записать редакцию2: Linux preparation/cloud execution, Windows local execution, все сохранённые oracles, наблюдение без external capture, неизвестные причины и условность причинного fix.
-- [x] CRASH5-S05 Независимо проверить полный документарный diff и связанные source contracts; устранить подтверждённые существенные замечания. gpt-6-astra/high: diff125332..5112149, действенных замечаний нет; документ готов к предъявлению, runtime и approval не подтверждены.
-- [ ] CRASH5-S06 Предъявить фактически записанную редакцию2 владельцу и получить согласование; approval не подразумевается из поручения подготовить документ.
-- [ ] CRASH5-P01 После согласования выполнить writing-plans + speckit-plan/speckit-tasks и speckit-analyze до реализации/исполнения probe; определить конкретные пределы self-report и адресные guard/regression categories.
+- [x] CRASH5-S04 Записать редакцию3 после уточнения владельца: Linux ordinary использует NativeLineage, Windows local execution, все сохранённые oracles и явное узкое расширение owner scope; старый timeout cause не объявлен установленным.
+- [x] CRASH5-S07 Повторно изучить указанные владельцем NativeLineage файлы source12533289; проверить возможность прямого pipe запуска, pre-exec identity, TMPDIR, полный вывод, root/supervisor exit, partial owner/stop/EOF и package preparation. Только статическое evidence.
+- [ ] CRASH5-S05 Независимо проверить редакцию3 и связанные source contracts; устранить подтверждённые замечания. Принятое gpt-6-astra/high review редакции2/diff125332..5112149 сохраняет историческое значение и не заменяет новое review.
+- [ ] CRASH5-S06 Предъявить фактически записанную редакцию3 владельцу и получить согласование; approval не подразумевается из поручения подготовить документ.
+- [ ] CRASH5-P01 После согласования выполнить writing-plans + speckit-plan/speckit-tasks и speckit-analyze до реализации/исполнения probe; определить точный NativeLineage adapter/API, partial-owner retention, output/time bounds и отдельные cloud/local guard/regression categories.
 
 Планирование и реализация Linux/Windows не отмечаются выполненными по статическому чтению. Историческая Linux52/57, пять unqualified и WindowsUNRUN неизменны. Следующие записи не разрешают исполнение в текущем документарном этапе.
 
