@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "fr063-joint-interface-crash-diagnostic"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "d293b3bf796289fb6662a778ca408fae76ab2736",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 9.6487442,
+  "Descriptors": [
+    {
+      "Name": "fr063-joint-interface-crash-diagnostic-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "fr063-joint-interface-crash-diagnostic",
+      "Categories": [
+        "fr063-joint-interface-crash-diagnostic"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_DiagnoseCurrentResumeAfterInterfaceMemberProcessLoss",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 15,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_DiagnoseCurrentResumeAfterInterfaceMemberProcessLoss",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

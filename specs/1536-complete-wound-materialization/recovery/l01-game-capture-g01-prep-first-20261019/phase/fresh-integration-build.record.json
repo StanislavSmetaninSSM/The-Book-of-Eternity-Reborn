@@ -1,0 +1,35 @@
+{
+  "command": [
+    "/usr/bin/timeout",
+    "--verbose",
+    "--signal=TERM",
+    "--kill-after=10s",
+    "599.4510980679988s",
+    "/tmp/1536-cloud-tools/dotnet/dotnet",
+    "build",
+    "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+    "--no-restore",
+    "--disable-build-servers",
+    "--verbosity",
+    "minimal",
+    "--artifacts-path",
+    "/tmp/g-a91f6d2c7b30/artifacts",
+    "-p:GenerateDocumentationFile=true",
+    "-p:NoWarn=1591",
+    "-p:NuGetAudit=false",
+    "-clp:PerformanceSummary;Summary"
+  ],
+  "nativeExit": 0,
+  "observerErrors": [],
+  "joined": true,
+  "identity": {
+    "pid": 128196,
+    "birthTick": 5398872,
+    "parentPid": 128169,
+    "uid": 1000
+  },
+  "durationSeconds": 352.2680438280004,
+  "remainingSessionProcesses": [],
+  "rawWrapperReturnCode": 0,
+  "terminationSignal": null
+}

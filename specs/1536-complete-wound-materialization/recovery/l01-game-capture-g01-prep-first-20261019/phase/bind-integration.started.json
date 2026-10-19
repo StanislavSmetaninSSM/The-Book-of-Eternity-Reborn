@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/usr/bin/timeout",
+    "--verbose",
+    "--signal=TERM",
+    "--kill-after=10s",
+    "247.11891819799348s",
+    "/tmp/1536-cloud-tools/dotnet/dotnet",
+    "msbuild",
+    "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+    "-nologo",
+    "-nodeReuse:false",
+    "-getProperty:TargetPath,ProjectAssetsFile,MSBuildProjectExtensionsPath,IsTestProject,TargetFramework,Configuration,AssemblyName"
+  ],
+  "nativeExit": null,
+  "observerErrors": [],
+  "joined": false
+}

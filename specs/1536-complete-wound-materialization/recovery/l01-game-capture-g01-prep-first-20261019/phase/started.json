@@ -1,0 +1,24 @@
+{
+  "kind": "G01_FIRST_PREPARE",
+  "source": "d293b3bf796289fb6662a778ca408fae76ab2736",
+  "sourcePinDigest": "a6c2675674dd6e3218e16917fd9abfcffb44d638195c367c3efcb2d98780b026",
+  "nativeExit": null,
+  "observerErrors": [],
+  "commands": [],
+  "gameCasesPlanned": 0,
+  "diagnosticRequestUpperBound": 0,
+  "capturePhase": "UNKNOWN",
+  "suspensionDuration": "UNKNOWN",
+  "beforeTools": [
+    {
+      "comm": "dotnet",
+      "state": "Z",
+      "count": 35
+    }
+  ],
+  "beforeVisibility": {
+    "executableFallbacks": 5,
+    "positivelyVanished": 0
+  },
+  "normal899UnchangedBefore": true
+}

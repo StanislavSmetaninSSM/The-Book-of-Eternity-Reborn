@@ -1,0 +1,30 @@
+{
+  "command": [
+    "/usr/bin/timeout",
+    "--verbose",
+    "--signal=TERM",
+    "--kill-after=10s",
+    "241.20202191199496s",
+    "/tmp/1536-cloud-tools/pwsh/pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-NonInteractive",
+    "-File",
+    "/workspace/The-Book-of-Eternity-Reborn/scripts/test-csharp.ps1",
+    "-ValidateCatalog",
+    "-NoBuild"
+  ],
+  "nativeExit": 0,
+  "observerErrors": [],
+  "joined": true,
+  "identity": {
+    "pid": 128741,
+    "birthTick": 5434697,
+    "parentPid": 128169,
+    "uid": 1000
+  },
+  "durationSeconds": 26.64417671800038,
+  "remainingSessionProcesses": [],
+  "rawWrapperReturnCode": 0,
+  "terminationSignal": null
+}

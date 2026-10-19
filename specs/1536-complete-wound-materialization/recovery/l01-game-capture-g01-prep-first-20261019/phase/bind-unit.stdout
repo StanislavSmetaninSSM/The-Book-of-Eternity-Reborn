@@ -1,0 +1,11 @@
+{
+  "Properties": {
+    "TargetPath": "/tmp/g-a91f6d2c7b30/artifacts/bin/BookOfEternityClient.Tests/debug/BookOfEternityClient.Tests.dll",
+    "ProjectAssetsFile": "/tmp/g-a91f6d2c7b30/artifacts/obj/BookOfEternityClient.Tests/project.assets.json",
+    "MSBuildProjectExtensionsPath": "/tmp/g-a91f6d2c7b30/artifacts/obj/BookOfEternityClient.Tests/",
+    "IsTestProject": "true",
+    "TargetFramework": "net8.0",
+    "Configuration": "Debug",
+    "AssemblyName": "BookOfEternityClient.Tests"
+  }
+}

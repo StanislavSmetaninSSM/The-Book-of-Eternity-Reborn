@@ -1,9 +1,9 @@
 {
   "kind": "G01_PENDING_CAPTURE_ORCHESTRATION_CONTROL",
   "base": "c1668efba8ccf9bb041e8b764d561fe7bed0bc6f",
-  "status": "TOOLS_PREPARED_FRESH_INTEGRATION_UNRUN",
+  "status": "NATIVE_ZERO_PREP_PASSED_PENDING_INDEPENDENT_PREP",
   "sourceReview": "ACCEPT_G01_WHOLE_SOURCE_ZERO_ONLY",
-  "affectedIntegrationPrep": "UNRUN",
+  "affectedIntegrationPrep": "NATIVE_PASS_PENDING_INDEPENDENT_REVIEW",
   "gameplayRelease": "NONE",
   "snapshotRelease": "NONE",
   "crash5Release": "NONE",
@@ -39,13 +39,11 @@
   },
   "unimplemented": [],
   "unrunWipSources": [
-    "ParentProbe/MapFrames compilation and pure proofs",
-    "fresh integration/catalog/PlanOnly",
     "one game case",
     "offline actual mapping and EVIDENCE"
   ],
   "allOldOutcomesAndBroaderHoldsUnchanged": true,
-  "currentNextAction": "FRESH_INTEGRATION_CATALOG_PLANONLY_ZERO_ONCE",
+  "currentNextAction": "INDEPENDENT_PREP_EXACT_RECORDS_AND_ONE_NAMED_RUN",
   "sourceAdmission": {
     "status": "SOURCE_ACCEPTED_G01_ZERO_ONLY",
     "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-source-accepted-review-20261019.json",
@@ -91,6 +89,26 @@
     "parentCases": 6,
     "collectorHealthCases": 26,
     "mapCases": 5,
-    "durationSeconds": 9.650486927996099
+    "durationSeconds": 9.650486927996099,
+    "independentReview": {
+      "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-tools-partial-prep-review-20261019.json",
+      "reviewSha256": "fc95db06a28b155e182141091e19531f5d5607a21a393a438f363c9a28b7b779",
+      "checks": 43
+    }
+  },
+  "prepEvidence": {
+    "compiledSource": "d293b3bf796289fb6662a778ca408fae76ab2736",
+    "recordPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-prep-first-20261019/phase/record.json",
+    "recordSha256": "cc1bdf563029fd4452ba5d7fb9b69ade452cf23c545af588c8b6f9bc9a4903f4",
+    "nativeExit": 0,
+    "durationSeconds": 400.6719431300007,
+    "integrationFiles": 460,
+    "unitFiles": 439,
+    "unitCompiledSource": "d3a1ddcf7a6e2f06ae815877c46314ec81d9f0d7",
+    "catalogCategories": 810,
+    "catalogMethods": 11802,
+    "plannedDescriptors": 1,
+    "plannedCases": 1,
+    "executedCases": 0
   }
 }

@@ -1,0 +1,84 @@
+{
+  "kind": "INDEPENDENT_G01_PARTIAL_TOOLS_PREP_REVIEW",
+  "verdict": "TOOLS_ZERO_EVIDENCE_REVIEWED_FINAL_PREP_PENDING",
+  "reviewedCarrier": "d293b3bf796289fb6662a778ca408fae76ab2736",
+  "reviewedUtc": "2026-10-19T00:28:25.021858+00:00",
+  "toolsSource": "86bb144d834e29e6e300c24609bc9743561f0e07",
+  "acceptedSource": "e520663f7918e536c2ae0675cb79a774be637655",
+  "sourcePinDigest": "a6c2675674dd6e3218e16917fd9abfcffb44d638195c367c3efcb2d98780b026",
+  "controllerSha256": "63969901c241f7007030af78b757bba0618c72dae457ae75c11804de45bc9980",
+  "bindingsSha256": "50e5bffdc10799c05b8757b8606642c0a5e6329fc4a0b91a764851eca4a679b2",
+  "record": {
+    "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-tools-first-20261019/record.json",
+    "sha256": "410857f197e1da419f110f9f52eacbe751543c590994e81aa4498ea327e81d12",
+    "bytes": 14453
+  },
+  "manifest": {
+    "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-tools-first-20261019/manifest.json",
+    "sha256": "28d45b54c4dd3927d04606140dfb327eadac044864fc58c5bc7bd099d8ca0920",
+    "bytes": 7346
+  },
+  "recoveryReceipt": {
+    "path": "/tmp/1536-cloud-tools/g01-recovery-d293b3bf.json",
+    "sha256": "567e1169b457d4c58f96d4fd72ff5590ca2cf025202bf21c473c23d324253b7f",
+    "bytes": 65928
+  },
+  "checks": {
+    "path": "/tmp/1536-cloud-tools/review/l01-game-capture-g01-tools-partial-prep-checks-20261019.json",
+    "sha256": "1a5c34834be98b03b7898e987d8041eaeedba1b89ef9647e15020013001f9870",
+    "bytes": 16912
+  },
+  "checker": {
+    "path": "/tmp/1536-cloud-tools/review/check_g01_tools_partial_prep_20261019.py",
+    "sha256": "339fac7c4dd855e4b7fce29ee7a8c41550c6d2ce90205c12c784cb35d9717cd7",
+    "bytes": 12186
+  },
+  "reviewerUtilityHistory": [
+    {
+      "path": "/tmp/1536-cloud-tools/review/g01-tools-partial-prep-reader-history-20261019.json",
+      "sha256": "ebd9aba7419b1ad43277dbb5dce988d44e9a0d2523433ff45cbc8597b645bbfc",
+      "bytes": 860
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_g01_tools_partial_prep_20261019_v1.py",
+      "sha256": "08db5a3e428146716c007e21f14edc33d0af8a09e244e3549151dc6e6eaaf19f",
+      "bytes": 12405
+    }
+  ],
+  "checkCount": 43,
+  "findings": [],
+  "originalOutcome": {
+    "nativeExit": 0,
+    "observerErrors": [],
+    "durationSeconds": 9.650486927996099,
+    "originalCommands": 9,
+    "allJoined": true,
+    "remainingOwnedSessionProcesses": [],
+    "parentProofCases": 6,
+    "collectorHealthProofCases": 26,
+    "mappingProofCases": 5,
+    "gameCases": 0,
+    "diagnosticRequests": 0,
+    "dumpArtifacts": 0
+  },
+  "conclusions": [
+    "All 45 saved raw originals match local completed tools bytes, writer files, the exact Git carrier and independent restored checkout. Receipt verifies 274 changed paths and 163 pins without local writer-object reuse.",
+    "All 163 pinned source bytes match accepted e520, actual tools source86bb, saved carrier d293, current writer and independent restore. Tools were admitted through the saved SOURCE-only gate.",
+    "Both direct compiler invocations and seven proof hosts returned original0, joined, with empty observer errors, stderr and residual owned sessions. Compiler stdout contains only its banner; no warning/error diagnostics.",
+    "Parent6 tests actual parent-helper refusal, single claim and observer containment without game/fixture child processes. PS26 AST-extracts only the health predicate and private cancellation-reader functions; it never runs collector main/API. Missing/present/directory-I/O cancellation cases all reach the intended assertions.",
+    "Offline mapper valid input maps nativeTid11, actual ParentProbe MVID54b8f379-aaf7-4918-84b0-0a67a6d0a89c, MethodDef0x06000063, IL0 to SourceAnchor at ParentProbe.cs:9. Wrong MVID, zero token, exact method-body end IL4 and IL0x7fffffff map no frames; both bounds cases report IL_OFFSET_OUTSIDE_METHOD_BODY.",
+    "Eight local completed outputs match exact recorded size/SHA: two DLLs, two PDBs, two runtimeconfigs and two response files. Response files select the actual accepted helper sources and all 163 pinned net8 references; runtime8.0.32 uses rollForward Disable. Manifest explicitly does not claim publication/recovery of private compiled outputs.",
+    "Both net8 and PowerShell stamps use frequency1000000000 and fall inside their separately recorded Python monotonic call brackets. This supports the observed shared clock basis, not a guarantee of future scheduler latency, freshness or continuous phase.",
+    "Tools record normal899 unchanged before/after and dated no-active-tool boundaries (35 nonexecuting zombies; five executable fallbacks). No current process census was performed by this review.",
+    "Retained unit scoped Git-tree equality is exact across its original compile source, tools source and carrier (46787 entries). Full fresh integration/unit runtime closure, imports/catalog/PlanOnly remain for final PREP review."
+  ],
+  "limits": [
+    "This is a reusable partial PREP evidence review, not ACCEPT_G01_PREP_ONE_ACTUAL. No actual release or lease is authorized.",
+    "Active prepare files/processes were not inspected; no SDK/compiler/probe/test/native/diagnostic/procfs action was executed by the reviewer.",
+    "Synthetic mapping input proves decoder behavior on a real bound compiled method; it is not a game dump, actual native thread observation or game capture proof.",
+    "Filesystem-only proof roots and local tool outputs are retained; successful process join is not a claim of root deletion.",
+    "Known metadata UNRUN wording for already completed tool proofs should be reconciled in the final PREP save while original source history is retained.",
+    "All52/57, original failures, old66529 UNKNOWN, private-dump policy and broader/platform holds remain unchanged."
+  ],
+  "nextGate": "Await original fresh integration/catalog/PlanOnly outcome, archive/save/recovery and complete packet. Independent final PREP review plus separately saved/recovered consumed named lease remain mandatory before the one authorized actual."
+}

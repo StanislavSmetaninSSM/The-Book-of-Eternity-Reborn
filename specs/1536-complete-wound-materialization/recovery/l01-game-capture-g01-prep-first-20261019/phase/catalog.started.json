@@ -1,0 +1,20 @@
+{
+  "command": [
+    "/usr/bin/timeout",
+    "--verbose",
+    "--signal=TERM",
+    "--kill-after=10s",
+    "241.20202191199496s",
+    "/tmp/1536-cloud-tools/pwsh/pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-NonInteractive",
+    "-File",
+    "/workspace/The-Book-of-Eternity-Reborn/scripts/test-csharp.ps1",
+    "-ValidateCatalog",
+    "-NoBuild"
+  ],
+  "nativeExit": null,
+  "observerErrors": [],
+  "joined": false
+}
