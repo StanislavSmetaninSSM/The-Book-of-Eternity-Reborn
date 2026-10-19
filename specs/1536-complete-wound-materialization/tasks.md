@@ -1,12 +1,16 @@
-## WIN5 — текущий документарный этап, 2026-10-19
+## CRASH5 — документарный этап Linux + Windows, 2026-10-19
 
-Источник: [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536) и прямое поручение владельца; [spec.md — WIN5 редакция 1](spec.md), [checkpoint](plan.md). Это учёт этапа спецификации, а не результат фазы speckit-tasks для реализации. Нижние G01/G02/current записи исторические относительно этой локальной задачи.
+Источник: [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536) и прямые уточнения владельца; [spec.md — CRASH5 редакция 2](spec.md), [checkpoint](plan.md). Это учёт подготовки спецификации, не реализационный результат speckit-tasks. WIN5 редакция1 заменена новым scope; historical G01/G02 ниже сохраняют только собственное происхождение.
 
-- [x] WIN5-S01 Создать отдельную копию и сверить базовый SHA: D:\Code\The-Book-of-Eternity-Reborn-crash5-20261019, 1253328971a27ffafe3820ad59a2515ebbd35628; отдельная ветка 1536-crash5-windows-spec-20261019.
-- [x] WIN5-S02 Статически изучить Theory cut0…4, shared helper, оба child entrypoints, исходные assertions, dispatcher, diagnostic consumer, catalog/selection и относящиеся plan/spec/tasks. Выводы и ограничения записаны в WIN5; тесты не запускались.
-- [ ] WIN5-S03 Независимо проверить документарный diff и устранить подтверждённые существенные замечания.
-- [ ] WIN5-S04 Представить владельцу фактически записанную WIN5 редакцию и получить её согласование.
-- [ ] WIN5-P01 После согласования выполнить writing-plans + speckit-plan / speckit-tasks и анализ согласованности. До этого implementation tasks и probe execution не выпускать; тесты остаются запрещены до нового поручения.
+- [x] CRASH5-S01 Восстановить отдельную рабочую копию в D:\Code\The-Book-of-Eternity-Reborn-crash5-windows-20261019; сверить source125332 и doc-only82124, новую ветку1536-crash5-linux-windows-spec-20261019. Git status до правок чист, source tests не исполнялись.
+- [x] CRASH5-S02 Статически изучить cut0…4, shared consumers/entrypoints, assertions, runner, catalog/selection, относящиеся spec/plan/tasks и causal review; отделить ordinary от G01/G02.
+- [x] CRASH5-S03 Сопоставить облачные механизмы мостика NativeLineageOwner/supervisor и runner с потребностями fixture; записать применимые contracts и ограничения прямого reuse.
+- [x] CRASH5-S04 Записать редакцию2: Linux preparation/cloud execution, Windows local execution, все сохранённые oracles, наблюдение без external capture, неизвестные причины и условность причинного fix.
+- [ ] CRASH5-S05 Независимо проверить полный документарный diff и связанные source contracts; устранить подтверждённые существенные замечания.
+- [ ] CRASH5-S06 Предъявить фактически записанную редакцию2 владельцу и получить согласование; approval не подразумевается из поручения подготовить документ.
+- [ ] CRASH5-P01 После согласования выполнить writing-plans + speckit-plan/speckit-tasks и speckit-analyze до реализации/исполнения probe; определить конкретные пределы self-report и адресные guard/regression categories.
+
+Планирование и реализация Linux/Windows не отмечаются выполненными по статическому чтению. Историческая Linux52/57, пять unqualified и WindowsUNRUN неизменны. Следующие записи не разрешают исполнение в текущем документарном этапе.
 
 > CURRENT G02 2026-10-19: latest authority requires own-S01 actual WriteDump+original oracle decode through exact corrected G01 orchestration/config; PRE_API_READY/API0 prototype superseded. One synthetic API permit distinct from at most one future game API permit; successful synthetic and independent affected SOURCE/PREP required. New root/IDs, exact binary reuse/no auto full rebuild. G01FAIL/API0, old66529UNKNOWN and broader holds immutable; see minimal G02 plan.
 
