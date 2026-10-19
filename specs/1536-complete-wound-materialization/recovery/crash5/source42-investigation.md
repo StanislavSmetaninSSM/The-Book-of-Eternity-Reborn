@@ -22,4 +22,17 @@ Optional test-only reporter observes existing checkpoints: first inspection leas
 
 Mapping RED: source80b4a12f9,7completed/6PASS/1expectedFAIL. GREEN: source8326d14b1,7/7PASS,0skip,21.579s,cleanup complete. Two fresh XML builds, changed XML diagnostics0; six DLL hashes match. Catalog814/11833, probePlanOnly1, ordinaryPlanOnly5. Separate gpt-6-astra/high SOURCE and PREP reviews accepted with no findings. Fresh recovery in the new recovery directory verified117 selected files against metadata3175b8e59, clean.
 
-One probe was started after these checks. Its final outcome and interpretation will be recorded from the actual raw trace, TRX, summary and original-owner cleanup evidence; an absent event alone will not be called proof of a blocked await.
+## Observed result
+
+Run `20261019-195127-804-38496-09a24c6d473e47d8aae2f02e4644757d-categories`: planned1/completed1/failed1, no skips. The child hit220s; the five-minute category did not time out. Runner exit1, total wall242.070s. Child42552 exited-1 after original-parent cleanup; EOF/join true, no cleanup/secondary failure, both owned fixture roots removed. Six DLL hashes still match. [Outcome](T227-probe-outcome.json), [TRX](T227-probe.trx), [summary](T227-probe-summary.json), [full log](T227-probe-dotnet-test.log), [raw archive](T227-source42-raw.zip).
+
+| Actual observation | Seconds from reporter start |
+| --- | ---: |
+| Fixture returned | 0.720 |
+| ProcessPlayerTurn entered | 18.597 |
+| Author entered / returned | 83.683 / 85.641 |
+| Inspection lease acquired | 85.815 |
+| Terminal snapshot captured | 87.740 |
+| Accepted-outcome validation checkpoint | 161.501 |
+
+No QTE action entry or turn/helper return was observed before220s. The waiter and snapshot-capture path did make progress; the unknown interval is now after the actual accepted-outcome validation checkpoint and before the QTE action. The73.762s between capture and accepted-validation is a wall-time interval containing all intervening work, not an isolated measurement of one validator method. No deadlock or root cause is established by the last event alone. No unchanged retry was made. Windows5 remains FAIL_INCOMPLETE; this completed investigation result is not a sixth qualification identity. Linux remains UNRUN.

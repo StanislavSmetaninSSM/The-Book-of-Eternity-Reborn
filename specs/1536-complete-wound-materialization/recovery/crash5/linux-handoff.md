@@ -5,7 +5,7 @@
 
 Активная feature: [spec3](../../spec.md), [plan](../../plan.md), [tasks](../../tasks.md), [validation guide](../../quickstart.md).
 Исходная версия: `1253328971a27ffafe3820ad59a2515ebbd35628`; согласованная spec3: `f22e51730e090e5cdc86531f589bdff05193158d`; согласованный plan1: `6f2d4d48615db910168d6c1a32841a1ffb037147`.
-Implementation source после независимого исправления: `5f0c08ae5b9303bca7c0a44b1509edcf89fa974c`.
+NativeLineage implementation/source review: `5f0c08ae5b9303bca7c0a44b1509edcf89fa974c`. Текущий C# source с отдельным Windows-only source42 probe: `8326d14b1fe8471d258725ae172f75bc23969d73`; evidence checkpoint `709d631cecce8fcfd8a1ff7a751251bf90962ae3`. Probe не входит в Linux/CI selection; production после51f не менялся.
 
 ## Что изменено
 
@@ -21,6 +21,7 @@ Windows использует оригинальный owned Process, dotnet.exe,
 - Managed helpers на51f: **37/37 PASS,0skip**,43.624s,4 descriptors, cleanup complete. [Summary](T213-T218-green-summary.json), [plan](T213-T218-green-plan.json), TRX/logs рядом. Это13 finite policy +2 generic source guards +9 Windows/common +6 stage +7 existing managed consumer cases.
 - Final PREP на5f: обе XML builds exit0; changed-source XML warnings0. Catalog813/11831 valid, ordinary PlanOnly1descriptor/5cases, contracts4descriptors/37cases; все NoBuild,0executed,cleanup complete. [Source/DLL binding](T217-prep.json). Independent SOURCE/PREP accepted; [review](independent-review.md).
 - Windows ordinary5: **FAIL / INCOMPLETE**. Первый run достиг category15m; четыре producer timeout220s до Exit73, пятый interrupted, TRX отсутствует. Runner cleanup complete; fixture пятого сохранён. [Outcome](T219-outcome.json), [summary](T219-summary.json), [raw log](T219-dotnet-test.log). Непроверенные игровые критерии не объявлены выполненными; неизменный прогон не повторялся. Причина исследуется.
+- T227 source42 Windows investigation: **1/1 completed, 1 FAIL** по child220s, category не исчерпана. Actual inspection85.8s → terminal capture87.7s → accepted-validation checkpoint161.5s, без QTE/turn return до220s. Это сужает интервал, но не устанавливает причину. Owned child exit-1/EOF/join/cleanup подтверждены. [Outcome](T227-probe-outcome.json), [trace](T227-probe-stages.json), [investigation](source42-investigation.md). Fresh XML/source8326 принят; обновлённые stages **7/7PASS**, catalog814/11833. При новом PlanOnly contract union ожидает38cases вместо прежних37; это ожидаемое расширение на один scalar regression, не результат нового полного прогона38.
 - Linux native controls и ordinary5: **UNRUN**, ни одна локальная сборка/managed проверка не заменяет Linux qualification. T222…T225 остаются открытыми.
 - Historical52/57 остаётся на своём прежнем source/run. Новые результаты не увеличивают этот исторический счётчик автоматически.
 

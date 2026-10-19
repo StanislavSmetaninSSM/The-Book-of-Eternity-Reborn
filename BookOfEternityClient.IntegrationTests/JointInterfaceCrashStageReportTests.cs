@@ -11,6 +11,46 @@ namespace BookOfEternityClient.Tests;
 public sealed class JointInterfaceCrashStageReportTests
 {
     /// <summary>
+    /// Counter intervals distinguish repeated rollback observations from other reads and mutation attempts.
+    /// </summary>
+    [Fact]
+    public void ReadCounters_PreserveIntervalCountsAndResetAtActualBoundary()
+    {
+        var snapshots = new List<JointSourceReadSnapshot>();
+        var counter = new JointSourceReadCounter(snapshots.Add);
+        counter.InitialRead("game_state/a.json.rollback.request");
+        counter.InitialRead("game_state/a.json.rollback.request");
+        counter.InitialRead("game_state/b.json.rollback.request");
+        counter.InitialRead("game_state/a.json");
+        counter.ReturnedRead(); counter.Mutation();
+        counter.Advance("post-validated");
+        Assert.Equal(new JointSourceReadSnapshot("before-capture", 4, 1, 3, 2, 1, 1, false), snapshots[^1]);
+        counter.InitialRead("game_state/a.json.rollback.request");
+        counter.Complete();
+        Assert.Equal(new JointSourceReadSnapshot("post-validated", 1, 0, 1, 1, 0, 0, false), snapshots[^1]);
+    }
+
+    /// <summary>
+    /// Path retention and emitted aggregates stay bounded even when callback counts grow.
+    /// </summary>
+    [Fact]
+    public void ReadCounters_BoundPathMemoryAndAggregateEmissions()
+    {
+        var snapshots = new List<JointSourceReadSnapshot>();
+        var counter = new JointSourceReadCounter(snapshots.Add);
+        for (var i = 0; i < 20000; i++) counter.InitialRead("x.rollback." + i);
+        counter.InitialRead(new string('x', 600) + ".rollback.y");
+        counter.Complete();
+        Assert.InRange(snapshots.Count, 1, 9);
+        var final = snapshots[^1];
+        Assert.Equal(20001, final.InitialReads);
+        Assert.Equal(20001, final.RollbackReads);
+        Assert.Equal(1024, final.UniqueRollbackPaths);
+        Assert.Equal(0, final.RepeatedRollbackReads);
+        Assert.True(final.PathLimitReached);
+    }
+
+    /// <summary>
     /// Repeated existing checkpoints emit only their first scalar boundary and ignore unrelated hooks.
     /// </summary>
     [Fact]
