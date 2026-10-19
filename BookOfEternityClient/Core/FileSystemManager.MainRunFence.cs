@@ -173,6 +173,20 @@ public partial class FileSystemManager
         /// </summary>
         internal ValidationReadReservation? WorldRecoveryIssuance => _worldIssuance is { Opening: true } ? _worldIssuance : null;
         internal void RequireNoWorldMutation() => _access?.RequireNoWorldReadConflict(WorldRecoveryIssuance);
+        /// <summary>
+        /// Registers one mutation on this actual access before its first awaited or physical effect.
+        /// </summary>
+        /// <returns>
+        /// An independent token retained until the operation and its cleanup end.
+        /// </returns>
+        internal MainMutationReservation BeginMutation() =>
+            (_access ?? throw new InvalidOperationException("Mutation admission is no longer active."))
+                .BeginMutation(this, WorldRecoveryIssuance);
+
+        /// <summary>
+        /// Starts physical teardown atomically with read reservation, before detaching any lease resource.
+        /// </summary>
+        internal void BeginPhysicalLeaseClose() => _access?.BeginPhysicalLeaseClose(this, _worldIssuance);
         internal BrowserOriginalMainCondition CaptureBrowserCondition(string generation)
         {
             Validate(null);
@@ -202,8 +216,8 @@ public partial class FileSystemManager
         /// </summary>
         internal void BeginClosing()
         {
-            _access?.RequireNoPendingSnapshotClose();
-            _boundClosing=true;
+            if (_access is { } access) access.BeginOwnerClosing(this, () => _boundClosing = true);
+            else _boundClosing = true;
             _access?.Remote?.BeginClosing();
         }
         internal async Task CompleteAsync(MainOperationOutcome outcome,bool closingFailed)
@@ -283,10 +297,13 @@ public partial class FileSystemManager
         private readonly object _state = new();
         private int _references=1;
         private bool _frozen;
+        private bool _ownerClosing;
         private readonly HashSet<MainAdmission> _admissions = [owner];
+        private readonly HashSet<MainAdmission> _physicalClosing = [];
+        private readonly HashSet<MainMutationReservation> _mutations = [];
         private ValidationReadReservation? _worldRead;
         /// <summary>
-        /// Reserves actual shared access only in the absence of physical or sibling borrowers.
+        /// Reserves shared access without mutations, closing or unrelated physical or sibling borrowers.
         /// </summary>
         /// <param name="scope">
         /// Read reservation to install.
@@ -298,8 +315,12 @@ public partial class FileSystemManager
         {
             lock (_state)
             {
-                if (_frozen || _worldRead != null || _references == 0 ||
-                    _admissions.Any(p => p.PhysicalScope || !ancestors.Contains(p)))
+                var retained = scope.RetainedPhysicalAdmission;
+                if (_frozen || _ownerClosing || _worldRead != null || _references == 0 ||
+                    _mutations.Count != 0 || _physicalClosing.Count != 0 ||
+                    (retained != null && (!retained.PhysicalScope || !_admissions.Contains(retained))) ||
+                    _admissions.Any(p => p.Closed || p.Closing || p.BoundClosing || !ancestors.Contains(p) ||
+                        (p.PhysicalScope && !ReferenceEquals(p, retained))))
                     throw new InvalidOperationException("World read phase conflicts with an existing original admission.");
                 _worldRead = scope;
             }
@@ -322,14 +343,93 @@ public partial class FileSystemManager
         { lock (_state) { if (_worldRead != null && !ReferenceEquals(_worldRead, issuance))
             throw new InvalidOperationException("Original access is reserved by a World read phase."); } }
         /// <summary>
-        /// Refuses console lifecycle closing while pending-snapshot validation retains the original access.
+        /// Starts console lifecycle closing atomically with pending-snapshot read reservation.
         /// Browser World/Meta close behavior remains governed by its existing proof contract.
         /// </summary>
-        internal void RequireNoPendingSnapshotClose()
+        /// <param name="admission">
+        /// Original live frame beginning close.
+        /// </param>
+        /// <param name="markClosing">
+        /// Marks that frame closing under the same lock after the read check succeeds.
+        /// </param>
+        internal void BeginOwnerClosing(MainAdmission admission, Action markClosing)
         {
             lock (_state)
+            {
                 if (_worldRead is PendingSnapshotValidationReadScope)
                     throw new InvalidOperationException("Pending snapshot validation must close before its original operation.");
+                if (!_admissions.Contains(admission) || admission.Closed)
+                    throw new InvalidOperationException("The original admission is no longer active.");
+                _ownerClosing = true;
+                markClosing();
+            }
+        }
+
+        /// <summary>
+        /// Starts physical close before the lease can detach resources, excluding new read reservations.
+        /// </summary>
+        /// <param name="admission">
+        /// Exact physical frame being closed.
+        /// </param>
+        /// <param name="issuance">
+        /// Original owned read acquisition, or <see langword="null"/> for an ordinary lease.
+        /// </param>
+        internal void BeginPhysicalLeaseClose(MainAdmission admission, ValidationReadReservation? issuance)
+        {
+            lock (_state)
+            {
+                RequirePendingSnapshotRelease(issuance);
+                if (_admissions.Contains(admission)) _physicalClosing.Add(admission);
+            }
+        }
+
+        /// <summary>
+        /// Atomically admits a mutation only outside a reserved read, except its exact owned opening recovery.
+        /// </summary>
+        /// <param name="admission">
+        /// Original live admission performing the mutation.
+        /// </param>
+        /// <param name="recoveryIssuance">
+        /// Exact opening recovery identity, or <see langword="null"/> for ordinary mutation.
+        /// </param>
+        /// <returns>
+        /// A separately tracked token; nested tokens cannot release each other.
+        /// </returns>
+        internal MainMutationReservation BeginMutation(MainAdmission admission, ValidationReadReservation? recoveryIssuance)
+        {
+            lock (_state)
+            {
+                if (_frozen || admission.Closed || !_admissions.Contains(admission) || _physicalClosing.Contains(admission) ||
+                    (_worldRead != null && !(ReferenceEquals(_worldRead, recoveryIssuance) && recoveryIssuance!.Opening)))
+                    throw new InvalidOperationException("Mutation conflicts with reserved or closing original access.");
+                var token = new MainMutationReservation(ReleaseMutation);
+                _mutations.Add(token);
+                return token;
+            }
+        }
+
+        /// <summary>
+        /// Removes only the supplied mutation identity under the shared state lock.
+        /// </summary>
+        /// <param name="token">
+        /// Token issued by this access; a foreign or retired token has no effect.
+        /// </param>
+        private void ReleaseMutation(MainMutationReservation token)
+        {
+            lock (_state) _mutations.Remove(token);
+        }
+
+        /// <summary>
+        /// Checks pending-snapshot teardown while the caller holds the shared state lock.
+        /// </summary>
+        /// <param name="physicalIssuance">
+        /// Exact owned physical acquisition identity, or <see langword="null"/> for another frame.
+        /// </param>
+        private void RequirePendingSnapshotRelease(ValidationReadReservation? physicalIssuance)
+        {
+            if (_worldRead is PendingSnapshotValidationReadScope pending &&
+                !(ReferenceEquals(pending, physicalIssuance) && (pending.Opening || pending.Closed)))
+                throw new InvalidOperationException("Pending snapshot validation must close before its original operation.");
         }
         internal GmWorkerRootContext? Workers;
         internal bool WorkerObservationRequired=>workerObservationRequired;
@@ -358,10 +458,14 @@ public partial class FileSystemManager
                 _references++;return this;
             }
         }
+        /// <summary>
+        /// Freezes terminal ownership after rejecting an active pending-snapshot read without changing state.
+        /// </summary>
         internal void FreezeForTerminalClose()
         {
             lock(_state)
             {
+                RequirePendingSnapshotRelease(null);
                 _frozen=true;
                 if(_references!=1)throw new IOException("Original operation still owns filesystem leases; close is unconfirmed.");
             }
@@ -383,11 +487,10 @@ public partial class FileSystemManager
             bool release;
             lock (_state)
             {
-                if (_worldRead is PendingSnapshotValidationReadScope pending &&
-                    !(ReferenceEquals(pending, physicalIssuance) && (pending.Opening || pending.Closed)))
-                    throw new InvalidOperationException("Pending snapshot validation must close before its original operation.");
+                RequirePendingSnapshotRelease(physicalIssuance);
                 markClosed();
                 if (!_admissions.Remove(admission)) return;
+                _physicalClosing.Remove(admission);
                 release = --_references == 0;
             }
             if(release){Workers?.ReleaseClient();guard?.Dispose();original?.Pin?.Dispose();}

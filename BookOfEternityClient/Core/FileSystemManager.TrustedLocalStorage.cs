@@ -12,8 +12,21 @@ public partial class FileSystemManager
 {
     private string LocalPublicationRoot => Path.Combine(RuntimeRootPath, "trusted-local-publication-v1");
 
+    /// <summary>
+    /// Runs the existing recovery callback with its legacy recovery flag and mutation reservation retained until cleanup.
+    /// </summary>
+    /// <param name="lease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="recovery">
+    /// Existing recovery callback; its completion precedes recovery flag restoration.
+    /// </param>
+    /// <returns>
+    /// Completion after the operation and its required cleanup finish.
+    /// </returns>
     internal async Task RunLegacyStorageRecoveryAsync(CanonicalWriteLease lease, Func<Task> recovery)
     {
+        using var validationMutation = BeginValidationMutation(lease);
         EnsureCanonicalWriteLeaseActive(lease);
         lease.EnsureNoPendingLocalDecision();
         var previous = lease.IsLegacyStorageRecovery;
@@ -108,8 +121,15 @@ public partial class FileSystemManager
         return !path.Equals(root, comparison) && !path.StartsWith(root + Path.DirectorySeparatorChar, comparison);
     }
 
+    /// <summary>
+    /// Recovers existing trusted-local publication evidence and updates generation revision when recovery changes it.
+    /// </summary>
+    /// <param name="lease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
     private void RecoverTrustedLocalStorage(CanonicalWriteLease lease)
     {
+        using var validationMutation = BeginValidationMutation(lease);
         EnsureWorkerRecoveryAdmission(lease,"trusted-local-recovery-wrapper");
         lease.EnsureNoPendingLocalDecision();
         var hasEvidence = HasStorageEvidence(LocalPublicationRoot);
@@ -124,8 +144,24 @@ public partial class FileSystemManager
             CanonicalRootAuthorityIdentity.AdvanceSessionGenerationRevision();
     }
 
+    /// <summary>
+    /// Publishes missing initial configuration or generation while preserving existing local storage authority.
+    /// </summary>
+    /// <param name="lease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="beforeConfig">
+    /// Current configuration bytes, or <see langword="null"/> when configuration is absent.
+    /// </param>
+    /// <param name="desiredConfig">
+    /// Initial configuration bytes to publish when configuration is absent.
+    /// </param>
+    /// <returns>
+    /// The existing or newly published logical session generation.
+    /// </returns>
     internal string BootstrapLocalStorage(CanonicalWriteLease lease, byte[]? beforeConfig, byte[] desiredConfig)
     {
+        using var validationMutation = BeginValidationMutation(lease);
         EnsureWorkerGeneralMutationAllowed(lease);
         VerifyCurrentSessionOperation(lease);
         if (lease.IsLegacyStorageRecovery || lease.MutationIntentRecorder != null)
@@ -150,8 +186,18 @@ public partial class FileSystemManager
     private TrustedLocalFileChange GenerationCreation(string generation) => new(SessionGenerationPath, null,
         JsonSerializer.SerializeToUtf8Bytes(new SessionGenerationDocument(1, generation)));
 
+    /// <summary>
+    /// Publishes a missing session generation through the existing trusted-local transaction.
+    /// </summary>
+    /// <param name="lease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <returns>
+    /// The newly published logical session generation.
+    /// </returns>
     private string CreateTrustedLocalGeneration(CanonicalWriteLease lease)
     {
+        using var validationMutation = BeginValidationMutation(lease);
         EnsureWorkerGeneralMutationAllowed(lease);
         VerifyCurrentSessionOperation(lease);
         if (lease.IsLegacyStorageRecovery)
@@ -164,24 +210,68 @@ public partial class FileSystemManager
         return generation;
     }
 
-    internal Task<TrustedLocalPublicationOutcome> PublishLocalFilesAsync(CanonicalWriteLease lease,
+    /// <summary>
+    /// Publishes declared canonical changes while retaining mutation admission from generation preparation through completion.
+    /// </summary>
+    /// <param name="lease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="changes">
+    /// Declared members and their original before and desired after states; the publication route validates the set.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Cancellation observed by the existing operation; the default token does not request cancellation.
+    /// </param>
+    /// <param name="validatePreparedNamespace">
+    /// Optional namespace validation callback before publication; <see langword="null"/> adds no callback.
+    /// </param>
+    /// <returns>
+    /// The original committed, rolled-back or uncertain publication outcome.
+    /// </returns>
+    internal async Task<TrustedLocalPublicationOutcome> PublishLocalFilesAsync(CanonicalWriteLease lease,
         IReadOnlyList<CanonicalLocalFileChange> changes, CancellationToken cancellationToken = default,
         Func<Task>? validatePreparedNamespace = null)
     {
+        using var validationMutation = BeginValidationMutation(lease);
         lease.EnsureNoPendingLocalDecision();
         VerifyCurrentSessionOperation(lease);
         if (changes.Count == 0 || changes.Any(change => !UsesTrustedLocalWriter(lease, change.RelativePath)))
             throw new InvalidOperationException("A local publication requires ordinary declared canonical members.");
         var generation = GetOrCreateSessionGeneration(lease);
-        return PublishLocalCoreAsync(lease, TrustedLocalGeneration.Existing(generation),
+        return await PublishLocalCoreAsync(lease, TrustedLocalGeneration.Existing(generation),
             changes.Select(change => new TrustedLocalFileChange(ResolvePath(change.RelativePath), change.Before, change.After)).ToArray(),
             cancellationToken, validatePreparedNamespace);
     }
 
+    /// <summary>
+    /// Publishes trusted-local changes under their declared generation through preparation, retry, compensation and cleanup.
+    /// </summary>
+    /// <param name="lease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="generation">
+    /// Original trusted-local generation binding for this publication.
+    /// </param>
+    /// <param name="changes">
+    /// Declared members and their original before and desired after states; the publication route validates the set.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Cancellation observed by the existing operation; the default token does not request cancellation.
+    /// </param>
+    /// <param name="validatePreparedNamespace">
+    /// Optional namespace validation callback before publication; <see langword="null"/> adds no callback.
+    /// </param>
+    /// <param name="standaloneDarenProfile">
+    /// Whether publication is restricted to the registered standalone profile member.
+    /// </param>
+    /// <returns>
+    /// The original committed, rolled-back or uncertain publication outcome.
+    /// </returns>
     private async Task<TrustedLocalPublicationOutcome> PublishLocalCoreAsync(CanonicalWriteLease lease,
         TrustedLocalGeneration generation, IReadOnlyList<TrustedLocalFileChange> changes, CancellationToken cancellationToken,
         Func<Task>? validatePreparedNamespace = null, bool standaloneDarenProfile = false)
     {
+        using var validationMutation = BeginValidationMutation(lease);
         lease.EnsureNoPendingLocalDecision();
         if (standaloneDarenProfile)
         {
@@ -321,9 +411,25 @@ public partial class FileSystemManager
 
     // The ordinary facade and retained script command use the same publication.
     // Returning its original outcome permits capture before facade throw/lease close.
+    /// <summary>
+    /// Reads the current member and publishes its requested bytes through the existing ordinary outcome protocol.
+    /// </summary>
+    /// <param name="lease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <param name="desired">
+    /// Desired member bytes; <see langword="null"/> requests deletion.
+    /// </param>
+    /// <returns>
+    /// The original committed, rolled-back or uncertain publication outcome.
+    /// </returns>
     internal async Task<TrustedLocalPublicationOutcome> PublishOrdinaryFileWithOutcomeAsync(
         CanonicalWriteLease lease, string relativePath, byte[]? desired)
     {
+        using var validationMutation = BeginValidationMutation(lease);
         EnsureWorkerGeneralMutationAllowed(lease);
         lease.EnsureNoPendingLocalDecision();
         if (!UsesTrustedLocalWriter(lease, relativePath))
@@ -332,9 +438,28 @@ public partial class FileSystemManager
         return await PublishLocalFilesAsync(lease, [new(relativePath, before, desired)]);
     }
 
+    /// <summary>
+    /// Reads and appends text through the existing ordinary publication protocol, returning its original outcome.
+    /// </summary>
+    /// <param name="lease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <param name="content">
+    /// Content to publish or append; a nullable value requests deletion where supported.
+    /// </param>
+    /// <param name="token">
+    /// Cancellation observed by the existing operation; the default token does not request cancellation.
+    /// </param>
+    /// <returns>
+    /// The original committed, rolled-back or uncertain publication outcome.
+    /// </returns>
     internal async Task<TrustedLocalPublicationOutcome> AppendOrdinaryFileWithOutcomeAsync(
         CanonicalWriteLease lease, string relativePath, string content, CancellationToken token = default)
     {
+        using var validationMutation = BeginValidationMutation(lease);
         EnsureValidCanonicalWriteLease(lease);
         lease.EnsureNoPendingLocalDecision();
         var appended = Encoding.UTF8.GetBytes(content);

@@ -27,7 +27,7 @@ public partial class ValidationService
     }
 
     /// <summary>
-    /// Runs held-lease validation consumers with their existing scalar lookup behavior.
+    /// Runs one read-only validation invocation using the caller's exact retained lease.
     /// </summary>
     /// <param name="writeLease">
     /// Original caller-owned lease, which remains owned and disposed by the caller.
@@ -43,7 +43,8 @@ public partial class ValidationService
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         ArgumentNullException.ThrowIfNull(validate);
-        return validate();
+        return RunPendingSnapshotValidationCoreAsync(validate,
+            () => _fs.BeginBorrowedPendingSnapshotValidationRead(writeLease));
     }
 
     /// <summary>
@@ -55,7 +56,24 @@ public partial class ValidationService
     /// <returns>
     /// The consumer's ordered issues after proof and close; failures retain their primary exception.
     /// </returns>
-    private async Task<List<ValidationIssue>> RunPendingSnapshotValidationAsync(Func<Task<List<ValidationIssue>>> validate)
+    private Task<List<ValidationIssue>> RunPendingSnapshotValidationAsync(Func<Task<List<ValidationIssue>>> validate) =>
+        RunPendingSnapshotValidationCoreAsync(validate,
+            () => _fs.BeginPendingSnapshotValidationRead(CancellationToken.None));
+
+    /// <summary>
+    /// Shares entry and final source proof across owned and borrowed read lifetimes.
+    /// </summary>
+    /// <param name="validate">
+    /// Read-only consumers whose ordered issues are withheld until proof and close succeed.
+    /// </param>
+    /// <param name="beginRead">
+    /// Synchronous factory that reserves the original access in this execution flow.
+    /// </param>
+    /// <returns>
+    /// Ordered issues after proof and close, preserving the primary failure when either fails.
+    /// </returns>
+    private async Task<List<ValidationIssue>> RunPendingSnapshotValidationCoreAsync(
+        Func<Task<List<ValidationIssue>>> validate, Func<FileSystemManager.PendingSnapshotValidationReadScope> beginRead)
     {
         ArgumentNullException.ThrowIfNull(validate);
         _pendingSnapshotInvocation.Value?.RequireCurrent();
@@ -79,7 +97,7 @@ public partial class ValidationService
         try
         {
             // The synchronous issuer installs ambient ownership in this flow before OpenAsync yields.
-            invocation.Physical = _fs.BeginPendingSnapshotValidationRead(CancellationToken.None);
+            invocation.Physical = beginRead();
             await invocation.Physical.OpenAsync();
             invocation.Evidence = CapturePendingSnapshotEvidence(invocation.Physical);
             invocation.Active = true;

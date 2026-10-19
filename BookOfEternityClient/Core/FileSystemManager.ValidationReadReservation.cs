@@ -8,6 +8,11 @@ public partial class FileSystemManager
     internal abstract class ValidationReadReservation
     {
         /// <summary>
+        /// Exact existing physical admission retained by this read, or <see langword="null"/> for owned acquisition.
+        /// </summary>
+        internal virtual MainAdmission? RetainedPhysicalAdmission => null;
+
+        /// <summary>
         /// Whether the original acquisition may still perform its ordinary recovery.
         /// </summary>
         internal abstract bool Opening { get; }

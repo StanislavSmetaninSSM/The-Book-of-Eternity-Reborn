@@ -4,8 +4,21 @@ namespace BookOfEternityClient.Core;
 
 public partial class FileSystemManager
 {
+    /// <summary>
+    /// Recovers pending publication, deletes declared tree members and prunes their empty structure under one mutation reservation.
+    /// </summary>
+    /// <param name="lease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <returns>
+    /// Completion after the operation and its required cleanup finish.
+    /// </returns>
     private async Task DeleteTrustedLocalDirectoryTreeAsync(CanonicalWriteLease lease, string relativePath)
     {
+        using var validationMutation = BeginValidationMutation(lease);
         VerifyCurrentSessionOperation(lease);
         EnsureSafeCanonicalRelativePath(relativePath);
         EnsureNoLegacyStorageEvidence(lease);

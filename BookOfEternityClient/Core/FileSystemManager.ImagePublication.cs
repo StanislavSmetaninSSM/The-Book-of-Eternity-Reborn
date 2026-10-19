@@ -4,9 +4,25 @@ internal sealed record CanonicalLocalImageChange(string RelativePath, TrustedLoc
 
 public partial class FileSystemManager
 {
+    /// <summary>
+    /// Publishes declared before and after file images, retaining mutation admission across recovery, preparation and cleanup.
+    /// </summary>
+    /// <param name="lease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="changes">
+    /// Declared members and their original before and desired after states; the publication route validates the set.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Cancellation observed by the existing operation; the default token does not request cancellation.
+    /// </param>
+    /// <returns>
+    /// The original committed, rolled-back or uncertain publication outcome.
+    /// </returns>
     internal async Task<TrustedLocalPublicationOutcome> PublishLocalImageFilesAsync(CanonicalWriteLease lease,
         IReadOnlyList<CanonicalLocalImageChange> changes, CancellationToken cancellationToken = default)
     {
+        using var validationMutation = BeginValidationMutation(lease);
         // The established helper resolves retained B1 debt before its ordinary
         // generation fence. Its name reflects the first migrated consumer;
         // the recovery authority and typed uncertainty are shared B1 behavior.

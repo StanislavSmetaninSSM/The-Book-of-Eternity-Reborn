@@ -17,9 +17,25 @@ public partial class FileSystemManager
         new TrustedLocalFileScope([BasePath]).ValidateFile(RegisteredDarenProfilePath);
     }
 
+    /// <summary>
+    /// Publishes the registered standalone profile while preserving the absent-to-absent no-op behavior.
+    /// </summary>
+    /// <param name="lease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="content">
+    /// Content to publish or append; a nullable value requests deletion where supported.
+    /// </param>
+    /// <param name="token">
+    /// Cancellation observed by the existing operation; the default token does not request cancellation.
+    /// </param>
+    /// <returns>
+    /// Completion after the operation and its required cleanup finish.
+    /// </returns>
     internal async Task PublishStandaloneDarenProfileAsync(CanonicalWriteLease lease, byte[]? content,
         CancellationToken token = default)
     {
+        using var validationMutation = BeginValidationMutation(lease);
         RequireStandaloneDarenProfile(lease);
         token.ThrowIfCancellationRequested();
         var before = await ReadLocalDarenProfileAsync(lease, token);

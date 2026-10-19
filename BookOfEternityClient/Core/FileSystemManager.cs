@@ -265,8 +265,16 @@ public partial class FileSystemManager
             _stream != null &&
             _parentAuthority != null;
 
+        /// <summary>
+        /// Closes every owned resource after reserving physical teardown against pending-snapshot readers.
+        /// Repeated disposal retains the existing idempotent resource-release behavior.
+        /// </summary>
+        /// <returns>
+        /// Completion after all resources have been attempted; disposal failures preserve unresolved ownership.
+        /// </returns>
         public async ValueTask DisposeAsync()
         {
+            MainAdmission?.BeginPhysicalLeaseClose();
             var stream = _stream;
             var parentAuthority = _parentAuthority;
             _stream = null;
@@ -637,8 +645,15 @@ public partial class FileSystemManager
         }
     }
 
+    /// <summary>
+    /// Creates the required canonical directories while excluding a concurrent validation read.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
     internal void EnsureDirectoryStructure(CanonicalWriteLease writeLease)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         EnsureDirectoryStructureCore();
@@ -781,12 +796,28 @@ public partial class FileSystemManager
         await WriteFileAtomicBytesAsync(writeLease, relativePath, EncodeUtf8WithPreamble(content));
     }
 
+    /// <summary>
+    /// Writes encoded text and records its original publication evidence under the supplied lease.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <param name="content">
+    /// Content to publish or append; a nullable value requests deletion where supported.
+    /// </param>
+    /// <returns>
+    /// The original physical publication evidence after the operation and its callbacks complete.
+    /// </returns>
     internal async Task<CanonicalMutationPublication>
         WriteFileAtomicWithPublicationAsync(
             CanonicalWriteLease writeLease,
             string relativePath,
             string content)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         var bytes = EncodeUtf8WithPreamble(content);
@@ -809,6 +840,27 @@ public partial class FileSystemManager
         return publication;
     }
 
+    /// <summary>
+    /// Publishes text only against the supplied physical identity and digest, retaining mutation admission through callbacks.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <param name="content">
+    /// Content to publish or append; a nullable value requests deletion where supported.
+    /// </param>
+    /// <param name="expectedCurrentIdentity">
+    /// Physical identity that must still belong to the current destination.
+    /// </param>
+    /// <param name="expectedCurrentSha256">
+    /// SHA-256 digest that must still match the current destination.
+    /// </param>
+    /// <returns>
+    /// The original physical publication evidence after the operation and its callbacks complete.
+    /// </returns>
     internal async Task<CanonicalMutationPublication>
         WriteFileAtomicWithPublicationIfCurrentAuthorityAsync(
             CanonicalWriteLease writeLease,
@@ -817,6 +869,7 @@ public partial class FileSystemManager
             PhysicalFileAuthority.FileIdentity expectedCurrentIdentity,
             string expectedCurrentSha256)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         ArgumentNullException.ThrowIfNull(expectedCurrentIdentity);
         var expectedHash = NormalizeOwnedMutationHashes(
@@ -861,11 +914,27 @@ public partial class FileSystemManager
         }
     }
 
+    /// <summary>
+    /// Publishes canonical bytes through the existing ordinary or legacy writer under the supplied lease.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <param name="content">
+    /// Content to publish or append; a nullable value requests deletion where supported.
+    /// </param>
+    /// <returns>
+    /// Completion after the operation and its required cleanup finish.
+    /// </returns>
     internal async Task WriteFileAtomicBytesAsync(
         CanonicalWriteLease writeLease,
         string relativePath,
         byte[] content)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         if (UsesTrustedLocalWriter(writeLease, relativePath))
@@ -920,12 +989,31 @@ public partial class FileSystemManager
             CancellationToken.None);
     }
 
+    /// <summary>
+    /// Appends text through the existing authorized writer while retaining mutation admission through completion.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <param name="content">
+    /// Content to publish or append; a nullable value requests deletion where supported.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Cancellation observed by the existing operation; the default token does not request cancellation.
+    /// </param>
+    /// <returns>
+    /// Completion after the operation and its required cleanup finish.
+    /// </returns>
     internal async Task AppendFileAtomicAsync(
         CanonicalWriteLease writeLease,
         string relativePath,
         string content,
         CancellationToken cancellationToken)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureValidCanonicalWriteLease(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         EnsureWorkerAuditAppend(writeLease, relativePath, Encoding.UTF8.GetBytes(content));
@@ -1027,6 +1115,27 @@ public partial class FileSystemManager
         }
     }
 
+    /// <summary>
+    /// Compares current bytes and conditionally publishes the requested replacement or deletion.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <param name="expectedContent">
+    /// Expected current bytes; <see langword="null"/> requires the member to be absent.
+    /// </param>
+    /// <param name="desiredContent">
+    /// Desired bytes; <see langword="null"/> requests deletion.
+    /// </param>
+    /// <param name="validatePreparedNamespace">
+    /// Optional namespace validation callback before publication; <see langword="null"/> adds no callback.
+    /// </param>
+    /// <returns>
+    /// The existing mutation result describing whether the expected state matched and the requested change was applied.
+    /// </returns>
     internal async Task<CanonicalFileMutationResult> CompareExchangeFileBytesAsync(
         CanonicalWriteLease writeLease,
         string relativePath,
@@ -1034,6 +1143,7 @@ public partial class FileSystemManager
         byte[]? desiredContent,
         Func<Task>? validatePreparedNamespace = null)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         if (writeLease.WorkerPurpose?.Dispatch is { } dispatch)
             dispatch.ValidateReservation(this, writeLease, relativePath, expectedContent, desiredContent);
         else EnsureWorkerGeneralMutationAllowed(writeLease);
@@ -1094,6 +1204,27 @@ public partial class FileSystemManager
         return CanonicalFileMutationResult.Applied;
     }
 
+    /// <summary>
+    /// Writes bytes only when the current digest or allowed absence matches the supplied authority.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <param name="content">
+    /// Content to publish or append; a nullable value requests deletion where supported.
+    /// </param>
+    /// <param name="allowedCurrentSha256s">
+    /// Accepted current digests; an empty collection is valid only when missing current content is allowed.
+    /// </param>
+    /// <param name="allowMissingCurrent">
+    /// Whether an absent current destination is an accepted precondition.
+    /// </param>
+    /// <returns>
+    /// Completion after the operation and its required cleanup finish.
+    /// </returns>
     internal async Task WriteFileAtomicBytesIfCurrentOwnedAsync(
         CanonicalWriteLease writeLease,
         string relativePath,
@@ -1101,6 +1232,7 @@ public partial class FileSystemManager
         IReadOnlyCollection<string> allowedCurrentSha256s,
         bool allowMissingCurrent)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         ArgumentNullException.ThrowIfNull(allowedCurrentSha256s);
@@ -1116,6 +1248,27 @@ public partial class FileSystemManager
             allowMissingCurrent);
     }
 
+    /// <summary>
+    /// Replaces bytes only when both the physical identity and digest still match.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <param name="content">
+    /// Content to publish or append; a nullable value requests deletion where supported.
+    /// </param>
+    /// <param name="expectedCurrentIdentity">
+    /// Physical identity that must still belong to the current destination.
+    /// </param>
+    /// <param name="expectedCurrentSha256">
+    /// SHA-256 digest that must still match the current destination.
+    /// </param>
+    /// <returns>
+    /// Completion after the operation and its required cleanup finish.
+    /// </returns>
     internal async Task WriteFileAtomicBytesIfCurrentAuthorityAsync(
         CanonicalWriteLease writeLease,
         string relativePath,
@@ -1123,6 +1276,7 @@ public partial class FileSystemManager
         PhysicalFileAuthority.FileIdentity expectedCurrentIdentity,
         string expectedCurrentSha256)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         ArgumentNullException.ThrowIfNull(expectedCurrentIdentity);
@@ -1149,6 +1303,36 @@ public partial class FileSystemManager
             afterPublicationNotCommitted:
                 afterPublicationNotCommitted);
 
+    /// <summary>
+    /// Performs legacy atomic publication under the current physical admission, including retries and cleanup.
+    /// </summary>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <param name="content">
+    /// Content to publish or append; a nullable value requests deletion where supported.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Cancellation observed by the existing operation; the default token does not request cancellation.
+    /// </param>
+    /// <param name="allowedCurrentSha256s">
+    /// Accepted current digests; an empty collection is valid only when missing current content is allowed.
+    /// </param>
+    /// <param name="allowMissingCurrent">
+    /// Whether an absent current destination is an accepted precondition.
+    /// </param>
+    /// <param name="expectedDestinationIdentity">
+    /// Expected physical destination identity, or <see langword="null"/> for no identity condition.
+    /// </param>
+    /// <param name="expectedDestinationSha256">
+    /// Expected destination digest, paired with the identity, or <see langword="null"/> when unconditioned.
+    /// </param>
+    /// <param name="afterPublicationNotCommitted">
+    /// Optional callback after a known nonpublication; <see langword="null"/> adds no callback.
+    /// </param>
+    /// <returns>
+    /// The original physical publication evidence after the operation and its callbacks complete.
+    /// </returns>
     private async Task<CanonicalMutationPublication> WriteFileAtomicBytesCoreAsync(
         string relativePath,
         byte[] content,
@@ -1159,6 +1343,7 @@ public partial class FileSystemManager
         string? expectedDestinationSha256 = null,
         Func<Task>? afterPublicationNotCommitted = null)
     {
+        using var validationMutation = BeginValidationMutation();
         cancellationToken.ThrowIfCancellationRequested();
         if ((expectedDestinationIdentity == null) !=
             string.IsNullOrWhiteSpace(expectedDestinationSha256))
@@ -1883,10 +2068,20 @@ public partial class FileSystemManager
         };
     }
 
+    /// <summary>
+    /// Deletes the requested canonical tree through its existing ordinary or legacy route.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
     internal void DeleteDirectoryTree(
         CanonicalWriteLease writeLease,
         string relativePath)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         EnsureSafeCanonicalRelativePath(relativePath);
@@ -1900,10 +2095,20 @@ public partial class FileSystemManager
 
     // Original browser rollback owns dynamic cleanup even after clearing its
     // recorder. Such cleanup must never enter a new common publication journal.
+    /// <summary>
+    /// Deletes an original canonical tree under the existing lease and namespace checks.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
     internal void DeleteOriginalDirectoryTree(
         CanonicalWriteLease writeLease,
         string relativePath)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         EnsureSafeCanonicalRelativePath(relativePath);
@@ -1927,11 +2132,27 @@ public partial class FileSystemManager
             "Canonical directory-tree deletion");
     }
 
+    /// <summary>
+    /// Moves the admitted runtime directory into the canonical namespace, retaining mutation admission through cleanup.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="sourceDirectoryPath">
+    /// Admitted runtime directory to move into the canonical namespace.
+    /// </param>
+    /// <param name="destinationRelativePath">
+    /// Canonical session-relative destination checked by the existing publication protocol.
+    /// </param>
+    /// <returns>
+    /// Completion after the operation and its required cleanup finish.
+    /// </returns>
     internal async Task MoveRuntimeDirectoryIntoCanonicalSessionAsync(
         CanonicalWriteLease writeLease,
         string sourceDirectoryPath,
         string destinationRelativePath)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         ArgumentException.ThrowIfNullOrWhiteSpace(sourceDirectoryPath);
@@ -2210,11 +2431,27 @@ public partial class FileSystemManager
         }
     }
 
+    /// <summary>
+    /// Publishes the admitted runtime file into the canonical namespace under the existing destination checks.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="stagedFile">
+    /// Original staged file and its retained physical authority.
+    /// </param>
+    /// <param name="destinationRelativePath">
+    /// Canonical session-relative destination checked by the existing publication protocol.
+    /// </param>
+    /// <returns>
+    /// Completion after the operation and its required cleanup finish.
+    /// </returns>
     internal async Task MoveRuntimeFileIntoCanonicalSessionAsync(
         CanonicalWriteLease writeLease,
         RuntimeStagedFile stagedFile,
         string destinationRelativePath)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         ArgumentNullException.ThrowIfNull(stagedFile);
@@ -2266,11 +2503,27 @@ public partial class FileSystemManager
         await stagedFile.DisposeAsync();
     }
 
+    /// <summary>
+    /// Publishes the admitted runtime file into the canonical namespace under the existing destination checks.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="sourceFilePath">
+    /// Admitted runtime file to move into the canonical namespace.
+    /// </param>
+    /// <param name="destinationRelativePath">
+    /// Canonical session-relative destination checked by the existing publication protocol.
+    /// </param>
+    /// <returns>
+    /// Completion after the operation and its required cleanup finish.
+    /// </returns>
     internal async Task MoveRuntimeFileIntoCanonicalSessionAsync(
         CanonicalWriteLease writeLease,
         string sourceFilePath,
         string destinationRelativePath)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         ArgumentException.ThrowIfNullOrWhiteSpace(sourceFilePath);
@@ -2325,10 +2578,20 @@ public partial class FileSystemManager
             "Runtime save publication");
     }
 
+    /// <summary>
+    /// Prunes empty directories beneath the requested canonical root without following reparse points.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativeRoot">
+    /// Canonical session-relative root beneath which empty structure is pruned.
+    /// </param>
     internal void DeleteEmptyDirectories(
         CanonicalWriteLease writeLease,
         string relativeRoot)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         EnsureSafeCanonicalRelativePath(relativeRoot);
@@ -2340,8 +2603,18 @@ public partial class FileSystemManager
         DeleteFileWithLockAsync(relativePath).GetAwaiter().GetResult();
     }
 
+    /// <summary>
+    /// Deletes the canonical member through its existing ordinary or legacy writer.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
     internal void DeleteFile(CanonicalWriteLease writeLease, string relativePath)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         if (UsesTrustedLocalWriter(writeLease, relativePath))
@@ -3496,12 +3769,31 @@ public partial class FileSystemManager
         PhysicalFileAuthority.StableDirectory Authority,
         PhysicalFileAuthority.FileIdentity Identity);
 
+    /// <summary>
+    /// Deletes a canonical member only while the supplied physical identity and digest remain current.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <param name="expectedCurrentIdentity">
+    /// Physical identity that must still belong to the current destination.
+    /// </param>
+    /// <param name="expectedCurrentSha256">
+    /// SHA-256 digest that must still match the current destination.
+    /// </param>
+    /// <returns>
+    /// Completion after the operation and its required cleanup finish.
+    /// </returns>
     internal async Task DeleteFileIfCurrentAuthorityAsync(
         CanonicalWriteLease writeLease,
         string relativePath,
         PhysicalFileAuthority.FileIdentity expectedCurrentIdentity,
         string expectedCurrentSha256)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         ArgumentNullException.ThrowIfNull(expectedCurrentIdentity);
@@ -3645,10 +3937,23 @@ public partial class FileSystemManager
         return normalized;
     }
 
+    /// <summary>
+    /// Performs legacy file deletion under the current physical admission and optionally returns publication evidence.
+    /// </summary>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <param name="capturePublication">
+    /// Whether successful deletion should return its original physical publication evidence.
+    /// </param>
+    /// <returns>
+    /// Deletion evidence when requested and produced; otherwise <see langword="null"/>.
+    /// </returns>
     private CanonicalMutationPublication? DeleteFileCore(
         string relativePath,
         bool capturePublication = false)
     {
+        using var validationMutation = BeginValidationMutation();
         var fullPath = ResolvePath(relativePath);
         for (var attempt = 0; ; attempt++)
         {
@@ -4448,8 +4753,15 @@ public partial class FileSystemManager
         }
     }
 
+    /// <summary>
+    /// Resolves an existing load transaction under its original lease, retaining mutation admission through cleanup.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
     internal void RecoverInterruptedLoadTransaction(CanonicalWriteLease writeLease)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureValidCanonicalWriteLease(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         if (!RuntimeFileExists(ActiveLoadTransactionJournalPath))
@@ -4916,10 +5228,23 @@ public partial class FileSystemManager
         string? PreviousGenerationId = null,
         string? ReplacementGenerationId = null);
 
+    /// <summary>
+    /// Stages and applies an original worker transaction while retaining mutation admission through failure cleanup.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="changes">
+    /// Declared members and their original before and desired after states; the publication route validates the set.
+    /// </param>
+    /// <returns>
+    /// The original worker transaction whose later decision remains owned by the caller.
+    /// </returns>
     internal async Task<CanonicalWorkerApplyTransaction> BeginOriginalWorkerApplyTransactionAsync(
         CanonicalWriteLease writeLease,
         IReadOnlyList<CanonicalWorkerApplyChange> changes)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         if (changes.Count == 0)
@@ -4986,10 +5311,20 @@ public partial class FileSystemManager
         }
     }
 
+    /// <summary>
+    /// Commits the existing worker decision or journal and completes its required cleanup.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="transaction">
+    /// Original worker transaction or deferred decision to complete.
+    /// </param>
     internal void CommitWorkerApplyTransaction(
         CanonicalWriteLease writeLease,
         CanonicalWorkerApplyTransaction transaction)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         if (transaction.LocalDecision is { } decision)
         {
@@ -5016,10 +5351,23 @@ public partial class FileSystemManager
         }
     }
 
+    /// <summary>
+    /// Rolls back the existing worker transaction and retains mutation admission through recovery and cleanup.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="transaction">
+    /// Original worker transaction or deferred decision to complete.
+    /// </param>
+    /// <returns>
+    /// Paths whose rollback remains conflicted after the existing recovery protocol.
+    /// </returns>
     internal async Task<IReadOnlyList<string>> RollbackWorkerApplyTransactionAsync(
         CanonicalWriteLease writeLease,
         CanonicalWorkerApplyTransaction transaction)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         try
         {
@@ -5039,8 +5387,18 @@ public partial class FileSystemManager
         }
     }
 
+    /// <summary>
+    /// Recovers an interrupted worker transaction under the original lease through its final cleanup.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <returns>
+    /// Completion after the operation and its required cleanup finish.
+    /// </returns>
     private async Task RecoverInterruptedWorkerApplyTransactionAsync(CanonicalWriteLease writeLease)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureValidCanonicalWriteLease(writeLease);
         if (!RuntimeFileExists(ActiveWorkerApplyTransactionJournalPath))
             return;
@@ -6011,8 +6369,21 @@ public partial class FileSystemManager
         return await WithOwnedBackupLeaseAsync(lease => CreateBackupWithLeaseAsync(lease, relativePath));
     }
 
+    /// <summary>
+    /// Creates a backup under the supplied lease, preserving the existing missing-source behavior.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <returns>
+    /// The backup path, or <see langword="null"/> when the original source is absent.
+    /// </returns>
     internal string? CreateBackup(CanonicalWriteLease writeLease, string relativePath)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         return CreateBackupWithLeaseAsync(writeLease, relativePath).GetAwaiter().GetResult();
     }
 
@@ -6043,11 +6414,24 @@ public partial class FileSystemManager
         });
     }
 
+    /// <summary>
+    /// Restores the original canonical member from its backup and completes backup cleanup.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="backupFullPath">
+    /// Existing backup path resolved by the canonical backup lifecycle.
+    /// </param>
+    /// <param name="originalRelativePath">
+    /// Canonical session-relative member to restore.
+    /// </param>
     internal void RestoreBackup(
         CanonicalWriteLease writeLease,
         string backupFullPath,
         string originalRelativePath)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         RestoreBackupWithLeaseAsync(writeLease, backupFullPath, originalRelativePath).GetAwaiter().GetResult();
     }
 
@@ -6080,8 +6464,18 @@ public partial class FileSystemManager
         });
     }
 
+    /// <summary>
+    /// Removes the specified backup through the existing backup lifecycle under the supplied lease.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="backupFullPath">
+    /// Existing backup path resolved by the canonical backup lifecycle.
+    /// </param>
     internal void CleanupBackup(CanonicalWriteLease writeLease, string backupFullPath)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         CleanupBackupWithLeaseAsync(writeLease, backupFullPath).GetAwaiter().GetResult();
     }
 

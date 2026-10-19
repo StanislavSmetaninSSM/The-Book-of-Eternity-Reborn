@@ -90,8 +90,24 @@ public partial class FileSystemManager
         return replacement;
     }
 
+    /// <summary>
+    /// Removes only validated empty structure, preserving a file that appears before nonrecursive deletion.
+    /// </summary>
+    /// <param name="lease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <param name="includeEmptyDescendants">
+    /// Whether to prune the complete empty subtree; otherwise only the requested empty directory is removed.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when the selected structure is absent or removed; <see langword="false"/> when it contains files.
+    /// </returns>
     internal bool TryRemoveEmptyCanonicalDirectory(CanonicalWriteLease lease, string relativePath, bool includeEmptyDescendants = true)
     {
+        using var validationMutation = BeginValidationMutation(lease);
         EnsureWorkerGeneralMutationAllowed(lease);
         ArgumentException.ThrowIfNullOrWhiteSpace(relativePath);
         VerifyCurrentSessionOperation(lease);

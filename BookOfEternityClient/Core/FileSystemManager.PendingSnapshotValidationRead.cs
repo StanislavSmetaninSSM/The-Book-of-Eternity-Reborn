@@ -36,7 +36,62 @@ public partial class FileSystemManager
     }
 
     /// <summary>
-    /// Holds the original console owner, read-only canonical lease and actual session generation.
+    /// Reserves the exact caller-owned lease without acquisition, recovery or ownership transfer.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Active ordinary console lease belonging to this manager and execution flow.
+    /// </param>
+    /// <returns>
+    /// A scope that releases only its read reservation when disposed.
+    /// </returns>
+    internal PendingSnapshotValidationReadScope BeginBorrowedPendingSnapshotValidationRead(CanonicalWriteLease writeLease)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        var owner = writeLease.MainAdmission;
+        if (HasBrowserOriginalOperation || writeLease.Purpose != CanonicalWritePurpose.SessionMutation ||
+            writeLease.WorkerPurpose != null || writeLease.IsLegacyStorageRecovery ||
+            owner == null || !owner.PhysicalScope || owner.Closed || owner.Closing || owner.BoundClosing || owner.MetadataOnly)
+            throw new InvalidOperationException("Pending snapshot validation requires its original ordinary console lease.");
+        writeLease.EnsureNoPendingLocalDecision();
+        RequirePendingSnapshotLeaseFlow(writeLease, owner, writeLease.AmbientRegistration);
+        var scope = new PendingSnapshotValidationReadScope(this, owner, writeLease);
+        owner.ReserveWorldRead(scope);
+        return scope;
+    }
+
+    /// <summary>
+    /// Requires the exact active lease registration and physical admission in the current ancestry.
+    /// </summary>
+    /// <param name="lease">
+    /// Original lease whose registration must remain unchanged.
+    /// </param>
+    /// <param name="admission">
+    /// Original physical admission, which must still belong to the lease.
+    /// </param>
+    /// <param name="registration">
+    /// Original active ambient registration; <see langword="null"/> is rejected.
+    /// </param>
+    private void RequirePendingSnapshotLeaseFlow(CanonicalWriteLease lease, MainAdmission admission,
+        AmbientCanonicalLeaseRegistration? registration)
+    {
+        if (!ReferenceEquals(lease.MainAdmission, admission) || admission.Closed ||
+            !ReferenceEquals(lease.AmbientRegistration, registration) || registration?.Active != true)
+            throw new InvalidOperationException("Pending snapshot validation lost its original lease registration.");
+        var current = MainAdmissions.Value;
+        while (current != null && !ReferenceEquals(current, admission))
+        {
+            if (current.Closed && current.OwnsRemote && current.RootIdentity == CanonicalRootAuthorityIdentity)
+                throw new InvalidOperationException("The original main operation has closed.");
+            current = current.Parent;
+        }
+        var ambient = _ambientCanonicalLease.Value;
+        while (ambient != null && !ReferenceEquals(ambient, registration)) ambient = ambient.Previous;
+        if (current == null || ambient == null)
+            throw new InvalidOperationException("Pending snapshot validation left its original execution flow.");
+    }
+
+    /// <summary>
+    /// Holds the original console owner, canonical lease and actual session generation for one read lifetime.
     /// </summary>
     /// <param name="files">
     /// Manager that issued this reservation and owns its lease.
@@ -44,7 +99,11 @@ public partial class FileSystemManager
     /// <param name="owner">
     /// The already admitted original main frame retained by acquisition.
     /// </param>
-    internal sealed class PendingSnapshotValidationReadScope(FileSystemManager files, MainAdmission owner)
+    /// <param name="borrowedLease">
+    /// Original caller-owned lease, or <see langword="null"/> to own the separate acquisition.
+    /// </param>
+    internal sealed class PendingSnapshotValidationReadScope(FileSystemManager files, MainAdmission owner,
+        CanonicalWriteLease? borrowedLease = null)
         : ValidationReadReservation, IAsyncDisposable
     {
         /// <summary>
@@ -54,16 +113,21 @@ public partial class FileSystemManager
         /// <summary>
         /// The original acquired lease, or null before successful acquisition.
         /// </summary>
-        internal CanonicalWriteLease? Lease { get; private set; }
+        internal CanonicalWriteLease? Lease { get; private set; } = borrowedLease;
+        private readonly bool _borrowed = borrowedLease != null;
+        private readonly MainAdmission? _retainedAdmission = borrowedLease?.MainAdmission;
+        private AmbientCanonicalLeaseRegistration? _registration = borrowedLease?.AmbientRegistration;
         private bool _opening = true, _closed, _invalidated;
         private string? _generation;
         /// <inheritdoc />
-        internal override bool Opening => _opening;
+        internal override bool Opening => !_borrowed && _opening;
         /// <inheritdoc />
         internal override bool Closed => _closed;
+        /// <inheritdoc />
+        internal override MainAdmission? RetainedPhysicalAdmission => _retainedAdmission;
 
         /// <summary>
-        /// Finishes unchanged recovery and binds the existing generation before readers are admitted.
+    /// Finishes owned acquisition when required and binds the existing generation before admitting readers.
         /// </summary>
         /// <returns>
         /// Completion once this scope is active and read-only.
@@ -71,9 +135,13 @@ public partial class FileSystemManager
         internal async Task OpenAsync()
         {
             if (_closed || !_opening) throw new InvalidOperationException("Validation read scope cannot reopen.");
-            Lease = await Acquisition;
+            if (!_borrowed)
+            {
+                Lease = await Acquisition;
+                _registration = Lease.AmbientRegistration;
+            }
             _opening = false;
-            _generation = files.ReadExistingSessionGeneration(Lease)
+            _generation = files.ReadExistingSessionGeneration(Lease!)
                 ?? throw new InvalidDataException("Validation source has no existing session generation.");
             RequireCurrent();
         }
@@ -88,10 +156,7 @@ public partial class FileSystemManager
                 if (_invalidated || _closed || _opening || Lease == null || owner.Closed || owner.Closing || owner.BoundClosing ||
                     Lease.MainAdmission == null || !owner.SharesAccess(Lease.MainAdmission))
                     throw new InvalidOperationException("Pending snapshot validation lost its original owner.");
-                var current = MainAdmissions.Value;
-                while (current != null && !ReferenceEquals(current, Lease.MainAdmission)) current = current.Parent;
-                if (current == null || !files.HasAmbientCanonicalLease())
-                    throw new InvalidOperationException("Pending snapshot validation left its original execution flow.");
+                files.RequirePendingSnapshotLeaseFlow(Lease, _retainedAdmission ?? Lease.MainAdmission, _registration);
                 files.EnsureValidCanonicalWriteLease(Lease);
                 if (files.ReadExistingSessionGeneration(Lease) != _generation)
                     throw new InvalidDataException("Pending snapshot validation generation changed.");
@@ -100,10 +165,10 @@ public partial class FileSystemManager
         }
 
         /// <summary>
-        /// Closes only this acquisition and releases the main reservation, including failed opening.
+        /// Releases this reservation and disposes the physical lease only when this scope acquired it.
         /// </summary>
         /// <returns>
-        /// Completion after the original owned lease has been disposed.
+        /// Completion after reservation release and any owned lease teardown, including failed opening.
         /// </returns>
         public async ValueTask DisposeAsync()
         {
@@ -113,8 +178,11 @@ public partial class FileSystemManager
             try
             {
                 // Acquisition owns its registrations until it either fails or returns its lease.
-                var lease = Lease ?? await Acquisition;
-                await lease.DisposeAsync();
+                if (!_borrowed)
+                {
+                    var lease = Lease ?? await Acquisition;
+                    await lease.DisposeAsync();
+                }
             }
             finally { owner.ReleaseWorldRead(this); }
         }
@@ -127,6 +195,11 @@ public partial class FileSystemManager
             if (!_closed || _invalidated || owner.Closed || owner.Closing || owner.BoundClosing)
                 throw new InvalidOperationException("Validation owner closed before issue publication.");
             owner.Validate(null);
+            if (_borrowed)
+            {
+                files.RequirePendingSnapshotLeaseFlow(Lease!, _retainedAdmission!, _registration);
+                files.EnsureValidCanonicalWriteLease(Lease!);
+            }
         }
     }
 }
