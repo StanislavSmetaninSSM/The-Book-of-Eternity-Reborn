@@ -1,3 +1,29 @@
+# CRASH5 Phase 0 — NativeLineage/Windows, 2026-10-19
+
+Источник: [согласованная spec редакции3](spec.md), [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), source12533289. Это research для нового CRASH5 plan; прежние исследования ниже сохранены.
+
+| Решение | Основание в исходниках | Отклонённая альтернатива |
+| --- | --- | --- |
+| Прямой finite pipe entrypoint того же NativeLineageOwner | C host-v2 уже запускает абсолютный executable, передаёт pidfd до exec и отдельные stdout/stderr. StartOwnedAsync требует GmWorkerProcessHostLaunch; existing terminal API даёт PTY | Fake GM handshake/intermediate host или PTY изменили бы child identity/потоки; копия supervisor создаёт вторую реализацию |
+| Identity снимается на B2/A2 gate | GmWorkerHostIdentity проверяет transferred pidfd, supervisor parent и живую incarnation до exec. BirthTick field22 сохраняется через exec | Запрашивать birth по PID после exit или доверять только child JSON |
+| Finite terminal без Started допустим | observe_exec может прочитать EAGAIN; reap заметит root exit и запечатает stopping; следующий EOF уже не эмитит Started. Доказано чтением C, не runtime | Только убрать EnsureLive, оставив обязательный await _startedHost |
+| Natural-exit/control race обрабатывается только finite policy | StopAndObserveAsync после HasExited может получить broken S pipe; accepted reason root-exited + pidfd exit + supervisor0 + полные status/helper-error отличают завершение от genuine loss | Считать любую ошибку S успешной, сбрасывать sticky Uncertain или менять старые stop defaults |
+| Environment/full output — explicit finite options | Pipe startup не копирует host.Environment; bridge capture ограничен64KiB characters. Terminal копирует environment уже сейчас | Глобальный TMPDIR или снятие output cap у всех bridge consumers |
+| Original-owner retention per case | GmWorkerOwnedLaunchException содержит owner даже до admitted PID; Dispose отказывается при uncertainty. Каталог fixture не должен исчезнуть под живым root | Хранить только PID, создать новый owner, Dispose/GC как доказательство cleanup |
+| Windows identity — StartTime UTC ticks | Локальный direct Process существует у родителя; ребёнок независимо читает self. Linux kernel starttick имеет другой смысл | Записать Windows ticks в Linux BirthTick или менять G01 delivery protocol |
+| Pure finite policy позволяет локальный TDD | Decision не требует libc/socket/Process.Start, получает только immutable observations; actual source boundary всё равно тестируется в облаке | Выдавать source guards/моки за native runtime PASS |
+| Одна ordinary category, разные backend/результаты по OS | Spec T2 требует один Theory/five, отдельные qualification/provenance. Runner позволяет локально выполнять одну category независимо от ciRunner | Предложенная в research отдельная Windows category отклонена |
+| Native package готовится до ordinary tests | build-linux-supervisor.ps1 уже создаёт binary+manifest; validator проверяет Linux x64/glibc, executable/hash/metadata. Runner не принимает MSBuild native flags | Сборка C внутри каждого из пяти cases или запуск Linux binary на Windows |
+| Stage report ограничен и вспомогателен | Старые явные test checkpoints уже есть; ordinary diagnostic=false не включает capture. 64x2048-byte JSONL достаточно для конечного stage набора | Внешний collector, dump, новый logger на каждый engine message |
+
+Linux ограничения — рабочая гипотеза владельца; причина прежнего220s timeout и policy refusal неизвестна. Ни выбранный launcher, ни известные успешные применения мостика не доказывают устранение зависания crash5. SDK/runtime/preflight availability и native timing устанавливаются fresh PREP/cloud execution.
+
+Category research отдельным gpt-6.1-sol/high: existing host controls8 unique methods/11 literal cases при объединении regression-host+bootstrap-output; с owner-retention10/13. Native terminal4/12, held/systemd-affected4/4, managed-policy5/7. Это статические количества, actual discovery не запускался. Нет прямого source guard по NativeLineageOwner/entrypoint names; два generic GmWorkers source guard метода остаются обязательными. Выбор подробно зафиксирован в plan, старые category metadata сохраняются.
+
+Нет неизвестного архитектурного выбора, мешающего записать план. Runtime-неизвестные остаются критериями проверки, не обещаниями PASS. Внешний API/новая persisted schema не вводятся; `contracts/` этой внутренней адаптации не нужен.
+
+## Исторический research feature1536 (без изменения)
+
 # Phase 0 Research: Complete Wound Materialization and Healing
 
 ## Approved terminal binding refinement — 2026-09-29 (#1536)

@@ -1,3 +1,96 @@
+# CRASH5 — validation guide для NativeLineage Linux / локального Windows
+
+[Spec редакции3](spec.md), [plan](plan.md), [tasks](tasks.md), [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Ни одна команда из этого руководства не выполнялась на этапе планирования. Выполнение после review implementation plan; Linux блок запускает облачный исполнитель. Исторические инструкции ниже не являются текущим отбором.
+
+## Preconditions и provenance
+
+PowerShell7, SDK10, .NET8 runtime; отдельный чистый checkout выбранного source SHA. Зафиксировать `git rev-parse HEAD`, `git status --porcelain`, dotnet `--info`, hashes build outputs и source/diff. На Linux дополнительно x64/glibc, `cc`, `readelf`, доступные штатные NativeLineage prerequisites. Никаких изменений политик/прав среды. Новые категории должны уже существовать после реализации; неизвестный selector — ошибка подготовки.
+
+Перед любой подготовкой `tests/selection.json` должен выбирать только `fr063-joint-interface-crash-current`, не G01. `PlanOnly` и `ValidateCatalog` делают discovery; без NoBuild также build. Они не являются metadata-only чтением.
+
+`DOTNET_ROOT` должен указывать фактический корень выбранного runtime. Следующий код меняет только environment текущего PowerShell-процесса и его будущих children, не пользовательские/машинные настройки; сохранить прежние значения и восстановить в `finally` после выбранной фазы:
+
+```powershell
+$previousDotnetRoot = $env:DOTNET_ROOT
+$previousNativePackage = $env:BOE_CRASH5_NATIVE_PACKAGE
+$dotnetCommand = (Get-Command dotnet -CommandType Application -ErrorAction Stop).Source
+$dotnetTarget = [IO.File]::ResolveLinkTarget($dotnetCommand, $true)
+$dotnetExecutable = if ($null -eq $dotnetTarget) { $dotnetCommand } else { $dotnetTarget.FullName }
+$env:DOTNET_ROOT = Split-Path -Parent $dotnetExecutable
+```
+
+Каждая команда должна завершиться exit0; при nonzero прекратить эту фазу, сохранить logs/owned roots и установить причину. Не выполнять следующий блок через незамеченный fail. Результаты runner находятся в новом каталоге `TestResults/test-categories/`; сохранить точный каталог каждого вызова, stdout/stderr, build/discovery/plan/summary/TRX, actual counts и cleanup.
+
+## Windows: fresh build и PREP
+
+Из корня checkout; native package Windows не нужен:
+
+```powershell
+dotnet build BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --verbosity minimal -p:GenerateDocumentationFile=true -p:NoWarn=1591
+dotnet build BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj --verbosity minimal -p:GenerateDocumentationFile=true -p:NoWarn=1591
+./scripts/test-csharp.ps1 -ValidateCatalog -NoBuild
+./scripts/test-csharp.ps1 -Category fr063-joint-interface-crash-current -PlanOnly -NoBuild
+./scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-crash5-contracts.json -PlanOnly -NoBuild
+```
+
+Проверить новые/изменённые XML blocks и compiler XML diagnostics; unrelated CS1591 не расширяет текущий scope. Ordinary PlanOnly обязан содержать одну integration Theory и пять cases, no skip; helper/native guard counts отдельные. SOURCE/PREP review проверяет final diff, полноту selection и hashes конкретных DLL. `-NoBuild` разрешён только для этих свежих outputs, изменение source/dependencies требует новой соответствующей подготовки.
+
+Локальный RED→GREEN при разработке — только `-Category fr063-joint-interface-crash-adapter-contracts` с точной записью ожидаемых failing cases, далее соответствующий GREEN. Compile/preparation failure не RED. Если категории пока содержат несколько разрабатываемых методов, разделить test-first подшаги коммитами и фиксировать точный planned/completed список, не запускать другой broad category.
+
+## Windows: фактическая проверка после SOURCE/PREP
+
+```powershell
+./scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-crash5-contracts.json -NoBuild
+./scripts/test-csharp.ps1 -Category fr063-joint-interface-crash-current -NoBuild
+```
+
+Первый вызов — helper/managed consumer contracts, второй — **ровно пять** игровых cases с прежними assertions. Ожидается planned=completed=passed=5, skipped=0, original73/resumer0, independent identity/nonce, EOF/join/cleanup. Не запускать native Linux controls здесь. Не повторять passing выборку без нового изменения/непроверенного affected consumer; после исправления запускать нужные категории.
+
+## Linux: подготовка package и собственных свежих DLL (Астра)
+
+Из корня выбранного cloud checkout, после сохранения command-scope environment выше:
+
+```powershell
+$nativePackage = Join-Path (Get-Location) ('TestResults/crash5-native-' + [Guid]::NewGuid().ToString('N'))
+./scripts/build-linux-supervisor.ps1 -OutputDirectory $nativePackage -IncludeHostGuardian -IncludeTerminalFixture
+$env:BOE_CRASH5_NATIVE_PACKAGE = $nativePackage
+dotnet build BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --verbosity minimal -p:GenerateDocumentationFile=true -p:NoWarn=1591 "-p:BoeNativePackageDirectory=$nativePackage" -p:BoeRequireNativePackage=true
+dotnet build BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj --verbosity minimal -p:GenerateDocumentationFile=true -p:NoWarn=1591 "-p:BoeNativePackageDirectory=$nativePackage" -p:BoeRequireNativePackage=true
+./scripts/test-csharp.ps1 -ValidateCatalog -NoBuild
+./scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-crash5-linux-controls.json -PlanOnly -NoBuild
+./scripts/test-csharp.ps1 -Category fr063-joint-interface-crash-current -PlanOnly -NoBuild
+```
+
+Сохранить `package-manifest.json`, native binary/source SHA256, build logs, source commit и selected managed DLL hashes. Package validator дополнительно выполняется новым finite entrypoint; package отсутствие/несовместимость не включает fallback. Runner не принимает native MSBuild flags, поэтому после explicit build использовать NoBuild. Existing host/terminal controls могут компилировать собственные изолированные test fixtures; ordinary5 использует один заранее подготовленный immutable package.
+
+## Linux: отдельные controls, затем ordinary5 (Астра)
+
+После принятого cloud PREP:
+
+```powershell
+./scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-crash5-linux-controls.json -NoBuild
+./scripts/test-csharp.ps1 -Category fr063-joint-interface-crash-current -NoBuild
+```
+
+Controls selection включает `worker-native-finite-pipe-linux`, `worker-pool-regression-host`, `worker-native-bootstrap-output`, `worker-native-owner-retention`, `gm-owned-terminal-native-linux`, `gm-main-systemd-affected`. Старые budgets/metadata не меняются. Runner deduplicates overlaps; считать actual discovery/summary, не сумму literal InlineData из research. При fail controls сначала расследовать причину; не объявлять ordinaryfive допущенными.
+
+Собственные finite controls: guardian20s, внешний await25s, category3m. Output test пишет ровно131072 ASCII chars в каждый отдельный stream, превышая прежний bridge cap. Negative controls могут намеренно получить Uncertain; это успех только **негативного control assertion**, не cleanup/game PASS. Существующий guardian отдельно подтверждает containment изолированного control-driver; не добавляется к игровым пяти и не подменяет NativeLineage evidence.
+
+Завершив chosen phase, восстановить только ранее сохранённые environment значения:
+
+```powershell
+$env:DOTNET_ROOT = $previousDotnetRoot
+$env:BOE_CRASH5_NATIVE_PACKAGE = $previousNativePackage
+```
+
+## Evidence и остановка
+
+Ordinary original root73 и resumer root0 различаются от supervisor0. Требуются полные исходные игровые oracles, root identity, natural/scoped stop, output EOF, Dispose/owned directory evidence. На Uncertain original owner удерживается, известные каталоги и handles не объявляются очищенными; сохранить run/nonce/root/supervisor и failure chain. Не повторять запуск при неизвестном исходе/обрыве связи, пока прежний outcome/ownership не установлен.
+
+Handoff в `recovery/crash5/linux-handoff.md` создаётся после реализации: reviewed source SHA, Windows outcomes отдельно, cloud prerequisites/команды, все UNRUN, причина каждого patch либо открытый вопрос. Linux52/57 относится к историческому source; новые5 считаются только по новому run. Никакого автоматического сообщения Астре, запуска G01/G02, CI/full suite или живого мостика этим руководством не назначено.
+
+## Исторический quickstart feature1536 (без изменения)
+
 # Quickstart: Implementing and Verifying Complete Wound Materialization
 
 **Feature**: `1536-complete-wound-materialization`  

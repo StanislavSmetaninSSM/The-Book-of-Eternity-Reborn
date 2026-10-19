@@ -1,22 +1,147 @@
-## CRASH5 — NativeLineage Linux + Windows, спецификация редакции 3 (2026-10-19)
+# CRASH5 NativeLineage / Windows — Implementation Plan, редакция 1
 
-Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Canonical [spec.md — CRASH5 редакция 3](spec.md), [учёт документарного этапа](tasks.md), [checklist](checklists/crash5-linux-windows-spec.md). Статус: Draft / user approval pending. Это checkpoint спецификации, не implementation plan и не выполнение speckit-plan/speckit-tasks.
+> **For agentic workers:** REQUIRED SUB-SKILL: `superpowers:executing-plans`; один разработчик ведёт согласованный блок, затем отдельный независимый reviewer. Checkbox-шаги находятся в canonical [tasks.md](tasks.md). `subagent-driven-development` применяется только при последующем явном выборе такого способа работы.
 
-Уточнение владельца: Linux подготовить на существующем NativeLineage; одного логирования недостаточно. Владелец подтвердил source12533289 и указал native/linux/boe-lineage-supervisor.c / NativeLineageOwner.cs, StartOwnedAsync, terminal prepare/release и StopAndObserveAsync. Windows перенос и последующая локальная проверка сохраняются. Сейчас только чтение/документы; никакие build/discovery/tests/native/bridge/capture не запускаются.
+**Goal:** подготовить пять ordinary crash/restart cases на существующем Linux NativeLineage, перенести их на Windows и проверить Windows локально; Linux native/game runtime передать облачной Астре.
+**Architecture:** прямой `dotnet` child через новый finite pipe вход существующего `NativeLineageOwner`, неизменный C supervisor/host-v2. Общая integration fixture сохраняет игровые oracles; Windows использует собственный Process, прежние Linux integrity/diagnostic consumers сохраняют прямой путь.
+**Tech Stack:** C# / .NET 8, SDK 10 для текущего Roslyn, PowerShell 7, xUnit; Linux x64/glibc, существующие pidfd/Unix bootstrap и заранее собранный native package. Новые packages не нужны.
+**Spec:** [согласованная редакция 3](spec.md), исходный approval commit `f22e51730e090e5cdc86531f589bdff05193158d`; [issue #1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Ветка `1536-crash5-linux-windows-spec-20261019`. Дата: 2026-10-19.
+**Status:** implementation plan на review владельцу; SOURCE/PREP/runtime ещё UNRUN. Согласование spec получено ответом «да»; согласование этого плана пока не подразумевается.
 
-Рабочая копия D:/Code/The-Book-of-Eternity-Reborn-crash5-windows-20261019, ветка1536-crash5-linux-windows-spec-20261019. Исходники1253328971a27ffafe3820ad59a2515ebbd35628, унаследованный Windows-only doc82124b10077c10577ce441125640bd86bb03d891, предыдущий документарный checkpoint3c4c34cdc571bbcb8fc527cbc5260027f41ef3a5. Current checkout полный; historical blobs partial clone могут загружаться по требованию. core.longpaths локален; .serena metadata исключена только в .git/info/exclude. На старте редакции3 рабочее дерево чистое.
+## CRASH5 — Global Constraints
 
-Применены brainstorming (архитектурное уточнение), spec-kit-superpowers-bridge и speckit-specify к существующей feature; сохранены ранее прочитанные systematic-debugging, using-git-worktrees, requesting-code-review и verification-before-completion. Specify CLI1.0.6/scaffold проверены ранее. Новый номер/ветка не создаются; before_specify branch hook повторно не запускается по прямому правилу reuse владельца, optional after_specify agent-context не требуется без implementation plan. Canonical дополнение следует шаблону spec; точные технические contracts названы по требованию владельца.
+- Ровно cut0…4, producer `Environment.Exit(73)`, отдельный resumer exit0, разные PID, независимые birth tokens и nonce; повторный вход инертен. Все mechanical/history/culture/control assertions из spec сохраняются.
+- На child 220 секунд, включая native bootstrap; далее не более 10 секунд stop/join и 10 секунд EOF. Ordinary category 15 минут. Внутренние native budgets не увеличиваются.
+- NativeLineage обязателен только Linux ordinary `diagnostic=false/fault=null`; integrity4 и diagnostic1 остаются Linux-only на прежнем пути. Windows принимает только ordinary cut0…4.
+- Production-изменения только внутри `NativeLineageOwner.cs`: finite pipe вход и его policy. C supervisor/protocol, существующие GM/terminal defaults и admission, gameplay, UI, GM prompts, saves и workflows не меняются.
+- G01/G02, dump/stack capture, внешние collectors исключены; собственные NativeLineage supervisor/control/bootstrap/status разрешены выбранной архитектурой.
+- `Uncertain`, неполный вывод, skip, timeout и неподтверждённая очистка не PASS; исходный owner нельзя заменить или потерять. Нет fallback на прямой Linux запуск.
+- Категории выбираются явно; full suite запрещён. `tests/selection.json` меняется с G01 на ordinary5 до первой будущей подготовки. Новые helper tests имеют отдельный category owner.
+- Новые/изменённые C# API и test helpers получают многострочные XML summary/param/typeparam/returns по правилам владельца; build с XML docs, проверка всех затронутых XML comments.
+- Только тестовое/внутреннее process API; нет внешнего API, новой save schema или GM-контракта. Дополнительный внешний `contracts/` не требуется; внутренние signatures ниже и в [data-model.md](data-model.md).
 
-Повторно прочитаны NativeLineageOwner start/identity/output/stop/dispose, GmWorkerProcessHostLaunch, GmWorkerHostIdentity, NativePackage, bridge capture, C host-v2 gate/status/reap и существующие host/terminal потребители. Выбран узкий internal pipe entrypoint на том же owner/неизменном C supervisor: прямой dotnet root, pre-exec identity, child environment, полный раздельный вывод, root exit отдельно от supervisor exit. Существующие GM/PTY entrypoints и admission сохраняются. Production scope расширен только на необходимое внутреннее расширение owner; это явно требует review новой спецификации.
+## CRASH5 — Constitution Check и рабочие фазы
 
-Конкретные адаптационные различия source: pipe StartAsync не переносит ProcessStartInfo.Environment, bridge capture обрезает вывод, финальный EnsureLive не рассчитан на уже завершившийся finite root. Эти факты не объявляются причиной прежнего cloud timeout. Новый вход использует существующий B2/A2 gate и исходный owner даже при partial launch; никакого fake GM-host handshake или копии supervisor. После A2 допустимы Started либо согласованное успешное finite terminal evidence без Started: observe_exec/reap могут завершить root до выдачи Started. Требуется адаптация ожидания _startedHost, не только EnsureLive. Отдельная регрессия покрывает race естественного выхода supervisor с S/StopAndObserveAsync; реальная утрата control/status и уже установленный Uncertain не подавляются. Native package заранее готовит облачный Linux через существующий build script/validator, Windows его не исполняет. Границы/пять oracles/budgets и Linux integrity/diagnostic путь сохранены.
+До и после design проверены: issue1536 и approved scope связаны; Spec Kit нужен по прямому правилу владельца и shared process contract; test-first и category-only evidence предусмотрены; нет player/GM/state/save изменений, привилегированных сервисов или новых зависимостей. Нарушений constitution2.1 нет. Linux runtime выполняется только в облаке, поэтому локальный SOURCE review не означает Linux GREEN. Для тестируемой на Windows чистой finite policy требуется наблюдённый RED до её реализации; native tests пишутся до async wiring, их фактический runtime остаётся явно UNRUN до облака.
 
-Историческое независимое review gpt-6-astra/high приняло редакцию2/diff125332..5112149 без замечаний; оно не одобряет новый scope. Предыдущий3c4c34c опубликован, remote ref прочитан, девять выбранных governance/spec/plan/tasks/checklist файлов восстановлены из GitHub в новом каталоге, hashes совпали; historical tails неизменны. Это документарная recovery, не Linux/Windows квалификация. Отдельное gpt-6-astra/high review редакции3 проверило diff3c4c34c..72979026b30f75dd662acffe1da0b36d17239174 и source: Critical/Important нет, один Minor о finite terminal без Started. L3/L5/L9 и этот checkpoint уточнены; повторное адресное review рабочего diff поверх72979026b подтвердило устранение Minor и отсутствие новых замечаний. Статически реализуемо без изменения C-протокола и готово к предъявлению; runtime, устранение timeout и пользовательское approval не подтверждены.
+`speckit-plan`: выполнен штатный `setup-plan.ps1 -Json` (существующий plan не перезаписывает); Phase0 выводы в [research.md](research.md), Phase1 модели в [data-model.md](data-model.md), сценарии/команды в [quickstart.md](quickstart.md). Старые части этих файлов сохраняются как история. `speckit-tasks` / `speckit-analyze` выполняются после записи design. Необязательные git/agent-context hooks не запускаются: checkpoint сохраняется явным commit/push; AGENTS pointer1553 не переписывается ради локального scope, canonical pointer `.specify/feature.json` уже1536.
 
-Следующий шаг: закончить независимое review, предъявить фактически записанную редакцию3 и дождаться согласования. Затем writing-plans + speckit-plan / speckit-tasks / speckit-analyze: точные API/output retention/partial-owner lifecycle, границы времени и категории регрессий с cloud/local разделением. Текущий документ не исполняет эти фазы и не разрешает старый G01/G02. Linux52/57, пять unqualified, WindowsUNRUN сохраняются.
+## CRASH5 — файлы и ответственность
 
-Маршрутизация по политике владельца2026-10-07: основной автор один, отдельный gpt-6-astra/high review для shared process/identity/retire contracts. Измерений экономии нет. Новая ветка не совпадает с просмотренными triggers repository workflows; PR/dispatch/CI не создаются. Только документарный commit/push с повторным remote readback.
+| Файл | Действие / ответственность |
+| --- | --- |
+| `BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs` | Finite-only start/stop/output/env policy; pure policy types в этом же файле; старые entrypoints неизменны |
+| `BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs` | Guards, identity serialization, common routing; обычные Linux5 через adapter, Windows direct; прежняя игровая проверка |
+| `BookOfEternityClient.IntegrationTests/JointInterfaceCrashProcessSupport.cs` (new) | Pure mode/identity/start-info helpers, NativeLineage adapter, отдельное владение и retention каждого test root |
+| `BookOfEternityClient.IntegrationTests/JointInterfaceCrashStageReport.cs` (new) | Ограниченные ordinary-stage записи, независимо от G01; прежний diagnostic class не меняется |
+| `BookOfEternityClient.IntegrationTests/JointInterfaceCrashProcessSupportTests.cs` (new) | Mode/identity/env/retention/output-error и оба direct-entry guard contracts |
+| `BookOfEternityClient.IntegrationTests/JointInterfaceCrashStageReportTests.cs` (new) | Границы и ошибки scalar записи |
+| `BookOfEternityClient.Tests/GmWorkerNativeFinitePipePolicyTests.cs` (new) | Чистая finite decision policy, работает на Windows без native процессов |
+| `BookOfEternityClient.Tests/GmWorkerNativeFinitePipeTests.cs` (new) | Реальные Linux startup/exit/output/partial/uncertain controls |
+| `BookOfEternityClient.TestSupport/NativeFinitePipeScenarioDriver.cs` (new) | Изолированные Linux fixture roles/negative controls; существующий guardian только для native control tests |
+| `BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs` | Только dispatch новых test-only finite fixture roles; прежние reflection entrypoints не меняются |
+| `tests/categories.json`, `tests/selection.json`, `tests/selections/1536-crash5-contracts.json`, `tests/selections/1536-crash5-linux-controls.json` (последние два new) | Exact category ownership, ordinary отдельно от guard/old-consumer проверок |
+| `docs/testing.md` | Короткая ссылка на CRASH5 validation guide и native-package prerequisite |
+
+Рефакторинг остальных bridge/terminal файлов, изменение supervisor C и переписывание общих игровых тестов не входят в план.
+
+## CRASH5 — внутренние interfaces и решения
+
+### A. Finite pipe owner (US1, L1…L7/L9)
+
+Новый вход: `internal static Task<NativeLineageOwner> StartFinitePipeAsync(ProcessStartInfo startInfo, string packageDirectory, Action<NativeLineageOwner, int> observeHeldRoot, CancellationToken cancellationToken)`; `internal string BootstrapDirectory { get; }` для явного учёта private root. `packageDirectory` абсолютен и проходит существующий `GmWorkerNativePackage.Validate`; executable абсолютен, shell отключён, ArgumentList сохранён. Pre-cancel/validation отклоняют до создания owner.
+
+Добавить immutable finite flag к owner constructor, default false; только новый вход выставляет true. Копирование Environment происходит при terminal **или finite**; worker-host default не меняется. `CaptureHostOutputAsync` для finite использует полный `ReadToEndAsync`, прежний bridge default остаётся ограниченным. Оба читателя работают с создания pipes. Служебный status не смешивается с child streams.
+
+`StartAsync` сохраняет текущую B2-передачу pidfd и peer validation. Существующий held-root callback вызывается до A2; новый вход оборачивает его как `pid => observeHeldRoot(owner, pid)`, чтобы adapter действительно получил original owner до возврата StartFinitePipeAsync. Adapter idempotently регистрирует owner/root evidence и независимо читает `/proc/<pid>/stat` field22 плюс StartTime UTC. Callback не делает async work/build/fixture creation. A2 отправляется один раз, внутри прежнего 5s bootstrap; native startup входит в исходный 220s deadline.
+
+Чистые internal types в `NativeLineageOwner.cs`:
+
+```csharp
+internal enum NativeFiniteStartDecision { Pending, Started, Completed, Rejected }
+internal sealed record NativeFiniteObservation(bool Released, bool Started,
+    bool RootExited, bool SupervisorExited, int? SupervisorExitCode,
+    bool StatusCompleted, bool HelperErrorCompleted,
+    GmWorkerStopEvidence? Terminal, string? Uncertainty);
+internal static NativeFiniteStartDecision EvaluateFiniteStart(NativeFiniteObservation observation);
+internal static bool CanAcceptFiniteClosedControl(NativeFiniteObservation observation);
+internal static Task<NativeFiniteStartDecision> AwaitFiniteStartAsync(
+    Func<NativeFiniteObservation> snapshot, Task started, Task retirementObserved,
+    Task<string> authorityLost, CancellationToken cancellationToken);
+```
+
+Static methods являются членами NativeLineageOwner; enum/record — internal типы этого же файла. Predicates/await helper только оценивают наблюдения, не создают положительные evidence. Production snapshot получает Terminal исключительно из существующего проверяющего parser/run binding, exit — от исходных owner/pidfd, не от JSON child. retirementObserved завершается после accepted terminal и завершения original root/supervisor/status/helper-error; fault тоже будит await. Unit-crafted records проверяют policy, не квалифицируют запуск. Отдельный async unit test подаёт навсегда pending started и завершённый retirementObserved: он проверяет именно используемое production ожидание, без подавления/подделки status frames.
+
+Evaluate: Uncertainty/terminal Uncertain, failed helper или неполный/ошибочный exec → Rejected; до A2 → Pending; подтверждённый Started без uncertainty → Started; после A2 допустим Completed без Started только с positive root exit, accepted scoped terminal (nonnull RootExitCode, CleanupComplete=true, AuthorityRetained=false), supervisor0, законченными status/helper-error. Иначе Pending до deadline. Expected73/0 проверяет game adapter, не общая finite policy. Новое finite ожидание выбирает Started/terminal/authority-loss; прежние entrypoints продолжают ждать Started+EnsureLive.
+
+Stop finite-only: если root уже вышел, дождаться автоматического scoped retirement вместо лишнего S. Если S нужен, сохранить ошибку записи до получения исходных terminal/exit observations; признать закрытый control ожидаемым можно только при `CanAcceptFiniteClosedControl=true`: полное положительное естественное завершение с reason `root-exited`, root exit, supervisor0, законченными status/helper-error и отсутствием uncertainty. Иначе сохранить `control-lost`; никогда не очищать установленный Uncertain. Не подавлять malformed/lost status, exec-failed, owner-lost и timeout. Старый stop branch не меняется.
+
+После root wait (оставшийся 220s) adapter всегда делает stop/join≤10s и output settlement≤10s; native внутренние 5s/5s остаются. Полный путь успеха: root73/0 + owner terminal + supervisor0 + оба EOF + Dispose. Raw streams сохранить до успешной очистки. На partial start использовать `GmWorkerOwnedLaunchException.Owner` даже без root PID.
+
+### B. Общая fixture / Windows (US2, W1…W4)
+
+В `JointInterfaceCrashProcessSupport`:
+
+```csharp
+internal enum JointInterfaceCrashBackend { NativeLinux, DirectLinux, DirectWindows }
+internal sealed record JointInterfaceCrashMode(int Cut, bool Diagnostic, string? Fault);
+internal static JointInterfaceCrashBackend SelectBackend(bool windows, bool linux, JointInterfaceCrashMode mode);
+internal static JointInterfaceCrashMode ReadAndValidateEntryMode(string own, int cut, bool windows, bool linux);
+internal sealed record JointInterfaceCrashIdentity(int Pid, DateTime BirthUtc,
+    string BirthKind, ulong? LinuxBirthTick, long? WindowsStartTimeUtcTicks);
+internal static ProcessStartInfo CreateChildStartInfo(string dotnetRoot, string[] arguments, string own, bool windows);
+internal static JointInterfaceCrashIdentity ReadLiveIdentity(int pid, Process? originalWindowsProcess);
+```
+
+Windows требует корректный parent.json с явно заданными Diagnostic=false, Fault=null и совпадающим Cut0…4. Общий helper и **обе** public child функции вызывают validation перед созданием fixture; missing/invalid mode отклоняется. Linux integrity/diagnostic остаются допустимыми на старом пути. Неподдерживаемая OS — явная ошибка.
+
+Linux BirthTick сохраняется field22/ulong; Windows — положительные StartTime.ToUniversalTime().Ticks/long, родитель читает original Process, child себя. В common outcome BirthKind явен. Cut/resume JSON Linux сохраняют существующий BirthTick и прежний diagnostic format; Windows добавляет `BirthKind=windows-process-start-utc-ticks` и `WindowsStartTimeUtcTicks`, не записывает Windows ticks в BirthTick. Сравнение выбирает тип по backend; Linux kind задан в parent outcome и проверяет Linux field, Windows сравнивает явный kind и ticks. PID/nonce остаются независимыми.
+
+Windows `dotnet.exe`, child-only TEMP/TMP; Linux `dotnet`, child-only TMPDIR. Пути с пробелами передаются только ArgumentList. Прежний direct Linux helper сохраняется для integrity/diagnostic; их captures/JSON и conditional short circuit не переносятся в ordinary.
+
+Native adapter в том же support файле принимает `ProcessStartInfo`, owned container и общий deadline; package из явно установленного `BOE_CRASH5_NATIVE_PACKAGE`. Caller не меняет process-wide environment. Новый Native owner bootstrap root учитывается отдельно от own/tmp и не обязан находиться внутри него: это принадлежащий тому же запуску штатный private каталог с Linux socket bound107. Его удаляет только успешный owner Dispose.
+
+Ownership token привязывается к original returned/exception owner до cleanup; root PID может отсутствовать. Per-owner normal GCHandle удерживает этот конкретный объект до подтверждённого Dispose; token не переиспользуется между тестами. При Uncertain handle намеренно остаётся удержанным до завершения тестового host, каталоги остаются и выводятся run/root/supervisor evidence. Это удержание аварийного owner, не shared fixture или повторное использование authority. Ошибка stdout-file/cleanup добавляется к первичной; при отсутствии первичной сама делает тест fail. Контейнер Joined ставится только после полного native retire/EOF/Dispose либо прежнего direct Process exit/join/EOF.
+
+### C. Вспомогательные стадии (US1/US2, L8)
+
+`JointInterfaceCrashStageReport` — test-only class: constructor `(TextWriter writer, string runId, string nonce, JointInterfaceCrashIdentity identity, int cut)`; `void Observe(string stage, string transition, string? errorType=null)`; `string? OutputFailure { get; }`. Тестовый RunId и Nonce создаются отдельно; оба доступны child из parent.json ordinary. Нативный owner RunId сохраняется отдельно в parent evidence.
+
+JSONL Boundary=`crash5_stage_v1`; RunId/Nonce — GUID N по32 символа, stage из фиксированного набора ниже, transition enter/return/error/limit. Elapsed из Stopwatch, scalar identity/error type. Не более64 записей, каждая≤2048 UTF8 bytes **включая newline**, суммарно≤131072 bytes; последняя доступная запись сообщает limit, последующие подавляются. ErrorType≤256 chars; после сериализации дополнительно проверяется byte count, oversize/unknown stage даёт явный OutputFailure и bounded failure/limit marker, не oversized запись. Сообщений exception/игровых payload нет. Пишет сам child через существующий stdout, без нового collector/task/flush wait. Синхронная запись не имеет отдельной OS-гарантии latency: существующий общий220s включает её, при timeout применяется обычный owner cleanup. Ошибка IOException/ObjectDisposedException записывается в OutputFailure и не заменяет game failure.
+
+Стадии: fixture, file-system, engine, preflight-lease, snapshot-refresh, late-first, finalization-before/after, late-repeat, exit/error; enter/return только в уже имеющихся test местах. Ни новых production hooks, ни включения diagnostic logger. Потеря отчёта/неполные пары явно UNKNOWN для локализации; не менять native/game verdict.
+
+## CRASH5 — Review Focus и тестовые циклы
+
+| Риск | Проверка, владелец задачи |
+| --- | --- |
+| Terminal после A2 без Started и уже умерший root | `GmWorkerNativeFinitePipePolicyTests.TerminalWithoutStartedRequiresCompleteEvidence`; actual fast-exit control; T200…T205 |
+| S закрывается при natural exit, но не при реальной утрате control/status | `ClosedControlRequiresNaturalRetirement`, actual negative controls; T200…T205 |
+| После partial start root PID неизвестен, GC/Dispose теряет owner | `UncertainOwnerRetainsOriginalCustody`, actual partial-launch/EOF control; T204/T207…T209 |
+| Прямой dispatcher вызывает Windows diagnostic/fault mode мимо общего helper | `BothPublicEntryGuardsPrecedeFixture`, isolated invalid-mode child controls; T207…T210 |
+| Обрезанные streams, ошибочная запись artifacts или overflowing stage маскируют исходный fail | >131072-char independent streams, error precedence и bounded stage tests; T200/T204/T207/T211…T213 |
+
+TDD: сначала точные тесты, минимальные объявления API только для компиляции, затем наблюдённый поведенческий RED и минимальная реализация. Compiler/missing dependency failure не считается RED. Native finite decision policy и adapter/stage contracts проходят локальные тестовые циклы; Linux async/native integration проверяется только облаком. Если локальный тест не выражает изменяемое pure поведение, не заявлять TDD выполненным — подготовить tests-only checkpoint для cloud RED до соответствующей production-правки. Это не разрешение заменить native runtime source-assertions.
+
+## CRASH5 — категории, этапы и приёмка
+
+Новые `fr063-joint-interface-crash-adapter-contracts` (unit+integration,2m, no frontend, no real Linux native/game five) и `worker-native-finite-pipe-linux` (unit,3m,exclusive,ubuntu-24.04, только Linux native controls). Точные selectors — перечисленные новые test classes/methods; actual discovery фиксирует counts. Budget не измерение скорости.
+
+Существующий `fr063-joint-interface-crash-current` остаётся **одной** ordinary категорией и одним Theory/five на обеих OS; обновить responsibility/excludes/hints без создания Windows duplicate, сохранить15m/Ubuntu CI metadata. `tests/selection.json` выбирает только её. Contract selection file выбирает adapter-contracts и `worker-pool-regression-managed-policy` (5 methods/7 literal rows по source,3m). Два точных generic source guard метода добавляются в new contract category, без запуска broad `gm-worker-repair`.
+
+Cloud controls selection: new finite + `worker-pool-regression-host`, `worker-native-bootstrap-output`, `worker-native-owner-retention`, `gm-owned-terminal-native-linux`, `gm-main-systemd-affected`. Они покрывают shared constructor/start/stop, так что включены все пять; старые metadata не менять. По source budgets3/2/2/3/3m соответственно, пересекающиеся selectors runner deduplicates. Native controls используют короткие isolated scenario budgets; whole new native category3m. Existing native controls могут готовить собственные fixtures; ordinary5 никогда не компилирует package внутри cases.
+
+Порядок: T199 setup selection → T200…206 owner policy/tests/native source → T207…213 Windows/common/stages → T214…217 fresh XML build/discovery/SOURCE+PREP → T218…220 local contracts/five и review результатов → T221 Linux handoff. T222…225 выполняет облачный исполнитель: fresh package/build/PREP → native+old-consumer controls → отдельный ordinaryfive → qualification/evidence review. Windows PASS не заменяет Linux; локальная готовность заканчивается SOURCE+Windows+handoff, Linux tasks остаются unchecked до фактических результатов.
+
+Полные команды в [quickstart.md](quickstart.md). Готовность_SOURCE: diff сохраняет spec, независимый review принят и указаны все UNRUN. Готовность_PREP: fresh selected builds/XML, source/DLL binding, catalog+exact PlanOnly без skipped/missing selectors. Windows: 5 planned=5 completed=5 passed, no skip, owned cleanup; отдельно helper counts. Linux: те же пять и отдельные native controls только после облачного исполнения. Любой fail исследуется по systematic-debugging; повтор только после исправления/нового релевантного evidence, не увеличивать бюджеты.
+
+## CRASH5 — checkpoint планирования
+
+Один разработчик в этом чате + отдельный независимый review соответствует прямой политике владельца; отдельный implementer не нужен. Обязательный reviewer shared process change — gpt-6-astra/high. Read-only исследование category map выполнено отдельным gpt-6.1-sol/high; предложение duplicate Windows category отклонено как противоречащее T2. Никаких тестов/build/discovery/native execution при планировании не было.
+
+Этот план требует review владельца перед implementation согласно `writing-plans` Execution Handoff. Spec Kit consistency analysis выполнен после setup-tasks: [отчёт](checklists/crash5-plan-consistency.md), 17/17 требований покрыты 27 задачами, действенных несогласованностей не обнаружено; все runtime UNRUN. Независимый review planning block пока pending. Необязательные before/after_plan/tasks/analyze commit hooks заменены явным сохранением; after_plan agent-context hook пропущен. Старые G01/G02 permissions не наследуются.
+
+## Исторический plan feature1536 (без изменения)
 
 ## G02 corrective continuation authorized (2026-10-19)
 

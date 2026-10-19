@@ -1,3 +1,29 @@
+# CRASH5 Phase 1 — process/evidence data model
+
+Источник: [spec редакции3](spec.md), [plan](plan.md), [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Новых game-state/save сущностей нет; это test/process модели.
+
+| Модель | Поля / правила |
+| --- | --- |
+| JointInterfaceCrashMode | Cut0…4; Diagnostic boolean; Fault nullable. Windows: только явно false/null и совпадающий Cut в parent.json. Linux diagnostic/integrity сохраняют старый маршрут |
+| JointInterfaceCrashBackend | NativeLinux ordinary; DirectLinux existing fault/diagnostic; DirectWindows ordinary. Unsupported OS не запускает процесс |
+| JointInterfaceCrashIdentity | Pid>0, BirthUtc UTC; BirthKind. LinuxBirthTick nullable ulong, >0 только Linux; WindowsStartTimeUtcTicks nullable long, >0 только Windows. Ровно одна платформа birth token |
+| NativeFiniteObservation | Released/Started, RootExited, SupervisorExited/ExitCode, StatusCompleted, HelperErrorCompleted, accepted Terminal, sticky Uncertainty. Только immutable snapshot реальных owner observations в production |
+| GmWorkerStopEvidence | Существующий тип без schema change: RunId/Backend/Guarantee/State/Reason/CleanupComplete/AuthorityRetained/RootExitCode. Native parser остаётся единственным источником accepted evidence |
+| Owned child token | Original owner reference, собственный GCHandle retention token, native RunId, bootstrap root, nullable root PID/birth, supervisor PID, first failure/cleanup/output errors. Не переиспользуется между cases |
+| Ordinary parent metadata | Существующие Nonce/ParentPid/Cut/Fault/Diagnostic; ordinary добавляет отдельный RunId. Это не native supervisor RunId и не authority game state |
+| Stage record | Boundary=crash5_stage_v1, RunId/Nonce, Pid/BirthKind, Cut, Stage, Transition, monotonic ElapsedMilliseconds, nullable ErrorType≤256 chars. Максимум64 записи, каждая≤2048 UTF8 bytes, всего≤131072; последняя доступная запись limit |
+| Child outcome | Existing arguments/dependencies/raw stdout/raw stderr и identity; native добавляет supervisor/stop/output/retention evidence. Root exit73/0 не заменяется helper exit0 |
+
+Native lifecycle: Validated → OwnerAllocated → SupervisorStarted → BoundBeforeExec → Released(A2) → Started **или** FiniteTerminalWithoutStarted → RootExit/ScopedRetirement → OutputsSettled → Disposed/Joined. Ошибка до Process.Start освобождает только созданные локальные ресурсы; после возможного start сохраняет original owner. Любое Uncertain остаётся Uncertain; retention не является cleanup PASS.
+
+Finite admission Completed требует после A2 accepted StoppedWithinScope, nonnull root exit, CleanupComplete=true, AuthorityRetained=false, observed root exit, supervisor exit0 и полное status/helper-error. Started допускает запуск без требования, чтобы root всё ещё был жив при возврате; реальные failures остаются отклонением. Expected root73/0 — уровень game adapter.
+
+Windows direct lifecycle: original Process started → independent StartTime captured → parallel stream read → exit/join → EOF → Joined. Нет Linux NativeLineage allocation на этом пути. Идентичность Windows сопоставляется по WindowsStartTimeUtcTicks/BirthKind; Linux BirthTick и diagnostic payload сохраняются.
+
+GCHandle удерживает только конкретный original owner при неопределённости; positive Dispose освобождает token. На failed/unknown case каталоги и данные остаются до последующего внешнего разбора; новый launch/повтор не разрешается самим фактом истечения ожидания.
+
+## Исторический data model feature1536 (без изменения)
+
 # Data Model: Complete Wound Materialization and Healing
 
 **Feature**: `1536-complete-wound-materialization`  

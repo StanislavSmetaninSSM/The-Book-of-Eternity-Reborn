@@ -1,17 +1,65 @@
-## CRASH5 — документарный этап Linux + Windows, 2026-10-19
+# CRASH5 — задачи реализации согласованной spec редакции 3
 
-Источник: [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536) и прямые уточнения владельца; [spec.md — CRASH5 редакция 3](spec.md), [checkpoint](plan.md). Это учёт подготовки спецификации, не реализационный результат speckit-tasks. WIN5 редакция1 и CRASH5 редакция2 заменены NativeLineage scope; historical G01/G02 ниже сохраняют только собственное происхождение.
+Источник: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), [spec](spec.md), [implementation plan редакции1](plan.md), [validation guide](quickstart.md). Spec одобрена из f22e51730; implementation plan ожидает review владельца. Все runtime/build/discovery ниже пока UNRUN. US1=CRASH5-US-L, US2=CRASH5-US-W, US3=CRASH5-US-T. T199…T225 — новые уникальные IDs после существующих plain T001…T198; исторические задачи ниже не переоцениваются.
 
-- [x] CRASH5-S01 Восстановить отдельную рабочую копию в D:\Code\The-Book-of-Eternity-Reborn-crash5-windows-20261019; сверить source125332 и doc-only82124, новую ветку1536-crash5-linux-windows-spec-20261019. Git status до правок чист, source tests не исполнялись.
-- [x] CRASH5-S02 Статически изучить cut0…4, shared consumers/entrypoints, assertions, runner, catalog/selection, относящиеся spec/plan/tasks и causal review; отделить ordinary от G01/G02.
-- [x] CRASH5-S03 Сопоставить облачные механизмы мостика NativeLineageOwner/supervisor и runner с потребностями fixture; записать применимые contracts и ограничения прямого reuse.
-- [x] CRASH5-S04 Записать редакцию3 после уточнения владельца: Linux ordinary использует NativeLineage, Windows local execution, все сохранённые oracles и явное узкое расширение owner scope; старый timeout cause не объявлен установленным.
-- [x] CRASH5-S07 Повторно изучить указанные владельцем NativeLineage файлы source12533289; проверить возможность прямого pipe запуска, pre-exec identity, TMPDIR, полный вывод, root/supervisor exit, partial owner/stop/EOF и package preparation. Только статическое evidence.
-- [x] CRASH5-S05 Независимо проверить редакцию3 и связанные source contracts; устранить подтверждённые замечания. gpt-6-astra/high проверил diff3c4c34c..72979026b и адресные исправления поверх72979026b: один Minor о terminal без Started устранён; новых замечаний нет. Это готовность к предъявлению, не runtime/approval.
-- [ ] CRASH5-S06 Предъявить фактически записанную редакцию3 владельцу и получить согласование; approval не подразумевается из поручения подготовить документ.
-- [ ] CRASH5-P01 После согласования выполнить writing-plans + speckit-plan/speckit-tasks и speckit-analyze до реализации/исполнения probe; определить точный NativeLineage adapter/API, partial-owner retention, output/time bounds и отдельные cloud/local guard/regression categories.
+## Phase 1 — Setup
 
-Планирование и реализация Linux/Windows не отмечаются выполненными по статическому чтению. Историческая Linux52/57, пять unqualified и WindowsUNRUN неизменны. Следующие записи не разрешают исполнение в текущем документарном этапе.
+- [ ] T199 Подготовить явный отбор до build/discovery: `tests/selection.json` только fr063-joint-interface-crash-current; новые contract/native owners и exact selectors в `tests/categories.json` добавлять вместе с соответствующими тестами. Зафиксировать source SHA/clean diff/toolchain, не наследовать G01.
+
+## Phase 2 — US1: NativeLineage finite policy и native adapter source
+
+Независимый критерий: локальный pure policy RED→GREEN и отдельный готовый Linux controls пакет; source готовность не означает native PASS.
+
+- [ ] T200 [US1] Написать `BookOfEternityClient.Tests/GmWorkerNativeFinitePipePolicyTests.cs`: `TerminalWithoutStartedRequiresCompleteEvidence` (A2 + root exit + scoped terminal + helper0 + status/helper-error; отсутствие любого условия не Completed), `TerminalWithoutStartedUnblocksAwait` (pending Started, completed retirement; await returns Completed), `StartedDoesNotRequireStillLiveRoot`, `UncertainNeverBecomesSuccess`, `ClosedControlRequiresNaturalRetirement`, `HelperZeroIsNotRootExit`. Назначить category fr063-joint-interface-crash-adapter-contracts в `tests/categories.json`.
+- [ ] T201 [US1] Наблюдать корректный локальный RED для T200 через выбранную contract category; только минимальные компилируемые API declarations из `NativeLineageOwner.cs` допустимы до RED. Compiler/dependency failure не принимать. Сохранить RED source/log в `specs/1536-complete-wound-materialization/recovery/crash5/`.
+- [ ] T202 [US1] Реализовать immutable observation, `EvaluateFiniteStart` и `CanAcceptFiniteClosedControl` в `BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs` по plan; predicates не создают evidence и не меняют old consumers. XML docs для новых API.
+- [ ] T203 [US1] Получить GREEN T200, проверить diff/XML и сохранить отдельный checkpoint policy в `specs/1536-complete-wound-materialization/plan.md`; passing selection не повторять без релевантного изменения.
+- [ ] T204 [US1] До async wiring написать `BookOfEternityClient.Tests/GmWorkerNativeFinitePipeTests.cs` и `BookOfEternityClient.TestSupport/NativeFinitePipeScenarioDriver.cs`; добавить только dispatch в `NativeHostScenarioDriver.cs`. Controls: root0/73/fast exit, no-Started terminal policy plus real fast child, natural-exit/S vs real loss, bound identity, TMPDIR/space args, 131072 chars отдельно stdout/stderr, timeout, partial start, exec failure, Uncertain/EOF. Category worker-native-finite-pipe-linux,3m; каждый isolated control под existing host-guardian20s, outer wait25s; никаких game cases/package compilation внутри ordinary5.
+- [ ] T205 [US1] Реализовать `StartFinitePipeAsync`, finite constructor option, full output/env, pre-exec callback, finite-only startup/stop decisions и `BootstrapDirectory` в `BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs`. Существующие GM/terminal entrypoints/flags/defaults и C-протокол неизменны; callback до единственного A2; partial exception несёт original owner. Linux runtime UNRUN, pure decisions проверены T200…203.
+- [ ] T206 [US1] Проверить owner diff против L1…L7/L9 и старых consumers, включая root vs supervisor exit, настоящие control/status faults и budget composition; обновить checkpoint `specs/1536-complete-wound-materialization/plan.md`. Если новая поведенческая ветвь не покрыта локальным policy RED, сохранить tests-only checkpoint для cloud RED до этой production-правки; не объявлять её проверенной статическим review.
+
+## Phase 3 — US2: Windows и общий integration adapter
+
+Независимый критерий: ordinary Windows5 и адресные guards; Linux native не запускается локально.
+
+- [ ] T207 [US2] Написать `BookOfEternityClient.IntegrationTests/JointInterfaceCrashProcessSupportTests.cs`: mode matrix, malformed/missing parent metadata, `BothPublicEntryGuardsPrecedeFixture`, independent positive Windows ticks/Linux token, ArgumentList/space paths/TEMP/TMP/TMPDIR, disabled capture despite settings, `UncertainOwnerRetainsOriginalCustody`, primary-vs-output/cleanup error. Invalid direct entries проверять в isolated child, чтобы baseline не завершил test host через Exit73; никакого in-process вызова незащищённого crash producer.
+- [ ] T208 [US2] Получить адресный Windows RED T207 через fr063-joint-interface-crash-adapter-contracts, сохранить ожидаемый failure contract и artifacts в `specs/1536-complete-wound-materialization/recovery/crash5/`; не считать missing-type/сборку RED.
+- [ ] T209 [US2] Добавить `JointInterfaceCrashProcessSupport.cs` по interfaces plan и обновить `GameEngineTurnLifecycleTests.JointInterfaceCrash.cs`: оба public entry guards до fixture, backend routing, независимая identity, original-owner retention до Dispose/Joined, raw output error precedence. Native adapter package из BOE_CRASH5_NATIVE_PACKAGE; DirectLinux диагностический/интегрити путь и все игровые assertions сохраняются.
+- [ ] T210 [US2] Получить GREEN T207, сопоставить XML/docs diff и сохранить checkpoint в `specs/1536-complete-wound-materialization/plan.md`; не запускать ordinary5 до SOURCE/PREP T217.
+
+## Phase 4 — US1/US2: вспомогательные test stages
+
+- [ ] T211 [US1] Написать и получить локальный RED `BookOfEternityClient.IntegrationTests/JointInterfaceCrashStageReportTests.cs`: max64 records/2048 UTF8 each/131072 total, bounded errorType256, explicit limit, monotonic elapsed, IOException/ObjectDisposedException сохранены без подмены primary failure. Category adapter-contracts.
+- [ ] T212 [US1] Реализовать `JointInterfaceCrashStageReport.cs` и подключить только ordinary stage points в `GameEngineTurnLifecycleTests.JointInterfaceCrash.cs`; отдельные RunId/Nonce, finite stage set, никаких новых production hooks/collector/task/flush wait и никаких изменений G01 diagnostic class.
+- [ ] T213 [US1] Получить GREEN T211 и проверить ordinary disabled-capture contract из T207; обновить `specs/1536-complete-wound-materialization/plan.md`, не выдавать stage completeness за доказательство причины старого timeout.
+
+## Phase 5 — US3: exact selection, SOURCE/PREP и Windows qualification
+
+- [ ] T214 [US3] Завершить metadata ordinary category в `tests/categories.json` для двух OS, сохранить один Theory/пять cases/15m; создать `tests/selections/1536-crash5-contracts.json` и `tests/selections/1536-crash5-linux-controls.json` с reasons/contracts из plan. Добавить два точных generic worker source guard selectors к contract category; обновить ссылку в `docs/testing.md`. Windows duplicate category и workflow changes запрещены.
+- [ ] T215 [US3] Выполнить fresh XML builds unit+integration по `specs/1536-complete-wound-materialization/quickstart.md`, проверить все новые/изменённые XML blocks; сохранить source SHA/diff + DLL hashes и build logs. Уточнить необходимые changed-test counts из фактического source.
+- [ ] T216 [US3] Выполнить ValidateCatalog и отдельные PlanOnly ordinary/contract с NoBuild после T215; ordinary обязан дать один descriptor/один Theory/five, guards считаются отдельно. Сохранить actual discovered/planned counts и DLL binding в `specs/1536-complete-wound-materialization/recovery/crash5/`.
+- [ ] T217 [US3] Получить независимый gpt-6-astra/high SOURCE+PREP review полного coherent diff и выбора consumers; устранить подтверждённые findings, повторить только затронутые проверки. Записать outcome и все Linux UNRUN в `specs/1536-complete-wound-materialization/plan.md`.
+- [ ] T218 [US2] Выполнить Windows contract selection `tests/selections/1536-crash5-contracts.json -NoBuild` на согласованных свежих DLL, сохранить TRX/summary/owned cleanup. Повтор уже проходивших helper cases нужен только при изменениях или для ещё непроверенного полного final selection; не запускать Linux native.
+- [ ] T219 [US2] Выполнить отдельно fr063-joint-interface-crash-current -NoBuild: ровно5 planned/completed/passed,0skip, root73/0, независимая identity, EOF/join, все mechanical/culture oracles и cleanup. Сохранить исходные artifacts в `specs/1536-complete-wound-materialization/recovery/crash5/` в санитизированном виде; неизвестный исход не повторять автоматически.
+- [ ] T220 [US3] Независимо разобрать финальный coherent implementation + Windows evidence, зафиксировать PASS/FAIL/UNRUN без повышения historical52/57 и устранить причинные findings с адресным TDD. Обновить `specs/1536-complete-wound-materialization/plan.md`, `tasks.md`, `quickstart.md`; commit/push, remote readback и clean recovery.
+- [ ] T221 [US3] Подготовить `specs/1536-complete-wound-materialization/recovery/crash5/linux-handoff.md`: source/review SHA, Windows evidence отдельно, prebuilt package recipe/manifest hashes, exact cloud commands/categories/count expectations, retained owners/open risks. Передать документ владельцу; сообщения другим чатам и cloud запуск автоматически не отправлять.
+
+## Phase 6 — US1/US3: выполнение облачной Астрой после передачи
+
+- [ ] T222 [US1] Облачный исполнитель делает fresh Linux native package + selected XML builds + catalog/PlanOnly по `quickstart.md`; фиксирует package/source/DLL binding и отдельный PREP review в `recovery/crash5/linux-handoff.md`. Windows DLL не используются как Linux PREP.
+- [ ] T223 [US1] Облачный исполнитель запускает `tests/selections/1536-crash5-linux-controls.json -NoBuild`, включая finite, worker/bootstrap/retention, native terminal/held consumers. Сохраняет фактические counts, root/owner/output/cleanup evidence; source/pure tests не заменяют этот результат.
+- [ ] T224 [US1] После успешных T222/T223 облачный исполнитель запускает отдельно ordinary5; все5 cases и исходные assertions обязательны. Записывает полные runtime outcomes в `recovery/crash5/linux-handoff.md`; fail/unsupported не является PASS или доказанным дефектом игры.
+- [ ] T225 [US3] Независимо разобрать облачные результаты, сопоставить source/compiled/runtime provenance и обновить `specs/1536-complete-wound-materialization/plan.md` / `tasks.md` только по evidence. Исторические52/57 не переписывать; новая Linux квалификация относится к своему SHA/run.
+
+## Dependencies, parallelism и implementation strategy
+
+T199→T200→T201→T202→T203→T204→T205→T206; затем T207→T208→T209→T210→T211→T212→T213→T214…T221. Cloud T222→T223→T224→T225. US2 использует общие interfaces, поэтому общий crash файл не редактируется параллельно. Независимое чтение catalog/source guards или review может идти параллельно автору документа; concurrent implementation не нужен. [P] задач нет по выбранному одному владельцу coherent block.
+
+Минимальный полезный промежуточный результат: проверенная pure policy и готовые native controls; полный локальный результат требует Windows5 и handoff. Нельзя завершить US1 только логированием. Не отмечать Linux tasks выполненными за подготовку исходников.
+
+Документарные S01…S07 предыдущего этапа завершены, включая независимое review и user approval редакции3; план/tasks/analyze завершаются в текущем planning checkpoint. Plan approval pending. Следующие исторические записи не предоставляют новые разрешения G01/G02.
+
+## Исторические tasks feature1536 (без изменения)
 
 > CURRENT G02 2026-10-19: latest authority requires own-S01 actual WriteDump+original oracle decode through exact corrected G01 orchestration/config; PRE_API_READY/API0 prototype superseded. One synthetic API permit distinct from at most one future game API permit; successful synthetic and independent affected SOURCE/PREP required. New root/IDs, exact binary reuse/no auto full rebuild. G01FAIL/API0, old66529UNKNOWN and broader holds immutable; see minimal G02 plan.
 
