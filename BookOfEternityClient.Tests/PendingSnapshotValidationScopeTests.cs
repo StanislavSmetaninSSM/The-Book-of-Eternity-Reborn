@@ -71,6 +71,9 @@ public sealed class PendingSnapshotValidationScopeTests(ITestOutputHelper output
         {
             Assert.Equal("Usable", Status(await fixture.LookupAsync(false)));
             await fixture.ChangeAsync(change);
+            if (change == "valid-pair")
+                Assert.Equal("Usable", Status(await fixture.LookupAsync(false,
+                    new ValidationService(fixture.Files, NullLogger<ValidationService>.Instance))));
             mutated = true;
             return [];
         }));
@@ -201,8 +204,12 @@ public sealed class PendingSnapshotValidationScopeTests(ITestOutputHelper output
     /// <summary>
     /// Same-lease mutation, override replacement and owning lifecycle close cannot extend read authority.
     /// </summary>
-    [Fact]
-    public async Task Scope_SameLeaseOverrideAndLifecycleMutationRefuse()
+    /// <param name="disposeOwner">
+    /// True attempts direct owner disposal; false starts the ordinary lifecycle close.
+    /// </param>
+    [Theory]
+    [InlineData(false)] [InlineData(true)]
+    public async Task Scope_SameLeaseOverrideAndLifecycleMutationRefuse(bool disposeOwner)
     {
         using var fixture = new Fixture();
         await fixture.PrepareAsync(false);
@@ -212,7 +219,8 @@ public sealed class PendingSnapshotValidationScopeTests(ITestOutputHelper output
         {
             await Assert.ThrowsAnyAsync<Exception>(() => fixture.Files.WriteFileAtomicAsync(fixture.CurrentLease, "game_state/world/scope0.json", "{}"));
             Assert.ThrowsAny<Exception>(() => fixture.Validator.UsePrevalidatedPendingTurnSnapshotScope(null));
-            Assert.ThrowsAny<Exception>(() => fixture.Files.BeginMainOperationClosing());
+            if (disposeOwner) Assert.ThrowsAny<Exception>(() => owner.Dispose());
+            else Assert.ThrowsAny<Exception>(() => fixture.Files.BeginMainOperationClosing());
             return [];
         });
     }
@@ -306,6 +314,32 @@ public sealed class PendingSnapshotValidationScopeTests(ITestOutputHelper output
         /// Throws the fixture's predetermined close failure.
         /// </summary>
         public void Dispose() => throw failure;
+    }
+
+    /// <summary>
+    /// Missing and unusable sources retain their existing statuses instead of becoming cached usable authority.
+    /// </summary>
+    /// <param name="missing">
+    /// True removes the manifest; false leaves malformed manifest bytes.
+    /// </param>
+    [Theory]
+    [InlineData(false)] [InlineData(true)]
+    public async Task Scope_MissingAndUnusableRemainDistinct(bool missing)
+    {
+        using var fixture = new Fixture();
+        await fixture.PrepareAsync(false);
+        var path = fixture.Files.ResolvePath("game_state/control/pending_turn_snapshot.json");
+        if (missing) File.Delete(path); else File.WriteAllText(path, "{");
+        using var owner = fixture.Files.BeginMainAdmission();
+        await owner.AcquireAsync();
+        var expected = Status(await fixture.LookupAsync(false));
+        Assert.Equal(missing ? "Missing" : "Unusable", expected);
+        await fixture.RunAsync(async () =>
+        {
+            Assert.Equal(expected, Status(await fixture.LookupAsync(false)));
+            Assert.Equal(expected, Status(await fixture.LookupAsync(true)));
+            return [];
+        });
     }
 
     /// <summary>
@@ -405,16 +439,31 @@ public sealed class PendingSnapshotValidationScopeTests(ITestOutputHelper output
             Raw(ManifestPath, Encoding.UTF8.GetBytes(manifest.ToJsonString()));
             Raw("input/turn_request.json", Encoding.UTF8.GetBytes("{\"sessionId\":\"session\",\"requestId\":\"request\",\"turnNumber\":42,\"timestamp\":\"time\",\"playerAction\":\"action\"}"));
             // Authority creation reads before-images by their actual paths, so use its pure method instead of a writer admission.
-            var authority = PendingTurnSnapshotAuthority.CreateDetachedAuthorityJson(manifest, opts,
+            var authority = Sign(manifest, opts);
+            Raw(PendingTurnSnapshotAuthority.AuthorityPath, Encoding.UTF8.GetBytes(authority));
+            if (!cold) { await using var lease = await Files.AcquireCanonicalWriteLeaseAsync(); }
+            Ordinary = Cohort = 0;
+        }
+
+        /// <summary>
+        /// Builds a valid detached authority with the unchanged production builder over this fixture's bytes.
+        /// </summary>
+        /// <param name="manifest">
+        /// Manifest with its actual payload hash already computed.
+        /// </param>
+        /// <param name="opts">
+        /// Production canonical serialization options.
+        /// </param>
+        /// <returns>
+        /// Valid authority text for the supplied source.
+        /// </returns>
+        private string Sign(JsonObject manifest, JsonSerializerOptions opts) =>
+            PendingTurnSnapshotAuthority.CreateDetachedAuthorityJson(manifest, opts,
                 m => m["manifestPayloadHash"]!.GetValue<string>(), (m, h) => m["manifestPayloadHash"] = h,
                 m => m["sessionId"]!.GetValue<string>(), m => m["requestId"]!.GetValue<string>(), m => m["turnNumber"]!.GetValue<int>(),
                 m => Map(m, "files"), m => Map(m, "snapshotFileHashes"), m => Map(m, "clientOwnedValidationHashes"),
                 m => m["rollbackBaselineFiles"]!.AsArray().Select(n => n!.GetValue<string>()).ToList(), m => m["sourceLabel"]!.GetValue<string>(),
                 m => Map(m, "rollbackBackups"), p => File.ReadAllBytes(Files.ResolvePath(p)), hashSnapshotBytesExactly: true);
-            Raw(PendingTurnSnapshotAuthority.AuthorityPath, Encoding.UTF8.GetBytes(authority));
-            if (!cold) { await using var lease = await Files.AcquireCanonicalWriteLeaseAsync(); }
-            Ordinary = Cohort = 0;
-        }
 
         /// <summary>
         /// Runs a consumer through the same lifetime runner as the production entrypoint.
@@ -434,15 +483,18 @@ public sealed class PendingSnapshotValidationScopeTests(ITestOutputHelper output
         /// <param name="asyncRead">
         /// True selects the asynchronous consumer; false selects the synchronous consumer.
         /// </param>
+        /// <param name="validator">
+        /// Optional independent validator for a physical replacement-proof control; null uses the fixture instance.
+        /// </param>
         /// <returns>
         /// The actual lookup result.
         /// </returns>
-        internal async Task<object> LookupAsync(bool asyncRead)
+        internal async Task<object> LookupAsync(bool asyncRead, ValidationService? validator = null)
         {
             try
             {
                 var method = typeof(ValidationService).GetMethod(asyncRead ? "LoadValidatedPendingTurnSnapshotLookupAsync" : "LoadValidatedPendingTurnSnapshotLookupSync", BindingFlags.Instance | BindingFlags.NonPublic)!;
-                var result = method.Invoke(_validator, asyncRead ? new object?[] { null } : null)!;
+                var result = method.Invoke(validator ?? _validator, asyncRead ? new object?[] { null } : null)!;
                 if (result is not Task task) return result;
                 await task; return task.GetType().GetProperty("Result")!.GetValue(task)!;
             }
@@ -472,9 +524,16 @@ public sealed class PendingSnapshotValidationScopeTests(ITestOutputHelper output
                 case "alternative": Raw("ready/turn_complete.json", "{}"u8.ToArray()); break;
                 case "generation": File.WriteAllText(Files.SessionGenerationPath, "{}"); break;
                 case "valid-pair":
-                    // JSON whitespace preserves both hashes and their mutual validity while replacing entry bytes.
-                    File.AppendAllText(Files.ResolvePath(ManifestPath), " ");
-                    File.AppendAllText(Files.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath), " "); break;
+                    var replacement = JsonNode.Parse(File.ReadAllText(Files.ResolvePath(ManifestPath)))!.AsObject();
+                    replacement["sessionId"] = "replacement-session";
+                    replacement["manifestPayloadHash"] = PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(replacement);
+                    var opts = (JsonSerializerOptions)typeof(ValidationService).GetField("ManifestHashJsonOpts", BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null)!;
+                    Raw(PendingTurnSnapshotAuthority.AuthorityPath, Encoding.UTF8.GetBytes(Sign(replacement, opts)));
+                    Raw(ManifestPath, Encoding.UTF8.GetBytes(replacement.ToJsonString()));
+                    var matchingRequest = JsonNode.Parse(File.ReadAllText(Files.ResolvePath("input/turn_request.json")))!.AsObject();
+                    matchingRequest["sessionId"] = "replacement-session";
+                    Raw("input/turn_request.json", Encoding.UTF8.GetBytes(matchingRequest.ToJsonString()));
+                    break;
                 default:
                     var requestPath = Files.ResolvePath("input/turn_request.json");
                     var request = JsonNode.Parse(File.ReadAllText(requestPath))!.AsObject();

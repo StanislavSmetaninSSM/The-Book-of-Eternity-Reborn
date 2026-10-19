@@ -3316,6 +3316,12 @@ public partial class ValidationService
             : null;
     }
 
+    /// <summary>
+    /// Resolves the pending source through an active proof or the existing physical reader.
+    /// </summary>
+    /// <returns>
+    /// Actual source status and manifest; active invocation manifests are independent copies.
+    /// </returns>
     private ValidatedPendingTurnSnapshotLookup LoadValidatedPendingTurnSnapshotLookupSync()
     {
         if (CurrentPendingSnapshotLookup() is { } scoped) return scoped;
@@ -3893,6 +3899,18 @@ public partial class ValidationService
         GuardianPowerJournalIdentityState? IdentityState,
         string FailureDescription);
 
+    /// <summary>
+    /// Reads and parses a persisted request using the existing physical or browser read phase.
+    /// </summary>
+    /// <param name="requestPath">
+    /// Root-relative request path to read.
+    /// </param>
+    /// <param name="writeLease">
+    /// Existing explicit lease, or null to use the current ordinary read route.
+    /// </param>
+    /// <returns>
+    /// Request identity, or null when missing or malformed.
+    /// </returns>
     private PendingTurnRequestValidationContext? LoadPendingTurnRequestValidationContextSync(
         string requestPath,
         FileSystemManager.CanonicalWriteLease? writeLease = null)
@@ -4975,6 +4993,15 @@ public partial class ValidationService
         return $"{firstIssue.FilePath}: {firstIssue.Message}";
     }
 
+    /// <summary>
+    /// Resolves the pending source asynchronously, refusing foreign leases inside a reserved invocation.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Optional original explicit lease; null uses current invocation authority or ordinary reads.
+    /// </param>
+    /// <returns>
+    /// Actual source status and an independent manifest copy when invocation evidence is active.
+    /// </returns>
     private async Task<ValidatedPendingTurnSnapshotLookup> LoadValidatedPendingTurnSnapshotLookupAsync(
         FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
@@ -5022,6 +5049,27 @@ public partial class ValidationService
             : null;
     }
 
+    /// <summary>
+    /// Applies the existing manifest authority and current-request matching contracts.
+    /// </summary>
+    /// <param name="manifest">
+    /// Parsed source manifest; null is unusable.
+    /// </param>
+    /// <param name="authorityJson">
+    /// Detached authority text, which may be missing or malformed.
+    /// </param>
+    /// <param name="writeLease">
+    /// Existing physical lease, or null for ordinary reader behavior.
+    /// </param>
+    /// <param name="readBytes">
+    /// Optional per-authentication physical byte capture; null preserves the ordinary reader.
+    /// </param>
+    /// <param name="readText">
+    /// Optional request text from the same authentication pass; null reads requests normally.
+    /// </param>
+    /// <returns>
+    /// True only when both reader authority and an existing request context match; otherwise false.
+    /// </returns>
     private bool IsValidatedPendingTurnSnapshotManifestUsable(
         ValidationPendingTurnSnapshotManifest? manifest,
         string? authorityJson,
@@ -5061,6 +5109,21 @@ public partial class ValidationService
             writeLease, readText);
     }
 
+    /// <summary>
+    /// Matches the manifest to the existing repair, input or completion request alternatives.
+    /// </summary>
+    /// <param name="manifest">
+    /// Source identity to match.
+    /// </param>
+    /// <param name="writeLease">
+    /// Optional original lease used by ordinary physical request reads.
+    /// </param>
+    /// <param name="readText">
+    /// Optional text provider for one physical authentication pass; null keeps existing reads.
+    /// </param>
+    /// <returns>
+    /// True when at least one existing request alternative matches; otherwise false.
+    /// </returns>
     private bool IsValidatedPendingTurnSnapshotManifestCurrent(
         ValidationPendingTurnSnapshotManifest manifest,
         FileSystemManager.CanonicalWriteLease? writeLease = null,

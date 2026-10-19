@@ -237,7 +237,9 @@ public partial class GameEngine
             using (_fs.BrowserDiagnosticLogical(null, source))
 #endif
             {
-                issues = await _validator.ValidateGameStateAsync();
+                issues = source == PostAcceptedMaterializedStateValidationSource && !_fs.HasBrowserOriginalOperation
+                    ? await _validator.ValidatePostMaterializedGameStateAsync()
+                    : await _validator.ValidateGameStateAsync();
             }
             if (RequiresAcceptedTurnPayloadValidation(source))
             {

@@ -101,13 +101,27 @@ public partial class FileSystemManager
         return (snapshot?.Content, text);
     }
 
+    /// <summary>
+    /// Reserves an existing browser-original operation for its World or Meta read phase.
+    /// </summary>
+    /// <param name="files">
+    /// Filesystem issuing the original physical lease.
+    /// </param>
+    /// <param name="original">
+    /// Actual processing browser operation whose staged identity remains authoritative.
+    /// </param>
+    /// <param name="owner">
+    /// Existing admitted main frame sharing the original operation's access.
+    /// </param>
     internal sealed class WorldValidationReadScope(
         FileSystemManager files, BrowserOriginalOperationScope original, MainAdmission owner) : ValidationReadReservation, IAsyncDisposable
     {
         internal Task<CanonicalWriteLease> Acquisition { get; set; } = null!;
         internal CanonicalWriteLease? Lease { get; private set; }
         private bool _opening = true;
+        /// <inheritdoc />
         internal override bool Opening => _opening;
+        /// <inheritdoc />
         internal override bool Closed => _closed;
         private bool _closed;
         internal async Task OpenAsync()

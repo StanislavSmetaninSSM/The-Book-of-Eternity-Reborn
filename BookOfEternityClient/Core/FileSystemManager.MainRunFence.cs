@@ -140,7 +140,15 @@ public partial class FileSystemManager
         private bool _boundClosing;
         internal bool BoundClosing => _boundClosing ||
             _parent is { Closed: false } && _parent.RootIdentity == RootIdentity && _parent.BoundClosing;
-        internal void BeginClosing(){_boundClosing=true;_access?.Remote?.BeginClosing();}
+        /// <summary>
+        /// Starts original operation close only after its pending-snapshot read reservation has ended.
+        /// </summary>
+        internal void BeginClosing()
+        {
+            _access?.RequireNoPendingSnapshotClose();
+            _boundClosing=true;
+            _access?.Remote?.BeginClosing();
+        }
         internal async Task CompleteAsync(MainOperationOutcome outcome,bool closingFailed)
         {
             if(!_ownsRemote)return;
@@ -220,6 +228,16 @@ public partial class FileSystemManager
         internal void RequireNoWorldReadConflict(ValidationReadReservation? issuance)
         { lock (_state) { if (_worldRead != null && !ReferenceEquals(_worldRead, issuance))
             throw new InvalidOperationException("Original access is reserved by a World read phase."); } }
+        /// <summary>
+        /// Refuses console lifecycle closing while pending-snapshot validation retains the original access.
+        /// Browser World/Meta close behavior remains governed by its existing proof contract.
+        /// </summary>
+        internal void RequireNoPendingSnapshotClose()
+        {
+            lock (_state)
+                if (_worldRead is PendingSnapshotValidationReadScope)
+                    throw new InvalidOperationException("Pending snapshot validation must close before its original operation.");
+        }
         internal GmWorkerRootContext? Workers;
         internal bool WorkerObservationRequired=>workerObservationRequired;
         internal GmMainOperationClient? Remote=>remote;

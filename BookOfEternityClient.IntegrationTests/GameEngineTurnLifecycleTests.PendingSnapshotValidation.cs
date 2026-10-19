@@ -50,4 +50,72 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Null(reservation.GetValue(validator));
         await _fs.WriteFileAtomicAsync("game_state/world/scope-after-close.json", "{}");
     }
+
+    /// <summary>
+    /// Drives an actual repair response and observes a new source reservation on the next engine iteration.
+    /// </summary>
+    [Fact]
+    public async Task PendingSnapshotValidation_RepairGetsFreshSnapshotAndWritesOnlyAfterClose()
+    {
+        const string path = "game_state/meta/soul_state.json";
+        const string manifestPath = "game_state/control/pending_turn_snapshot.json";
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(_fs,
+            new AfterlifeOwnerResourceAcceptedState(Profiles: AfterlifeEntityProfileState.CreateDefaultRoot()));
+        await WriteJsonAsync(path, new { soulName = "Scope repair", currentRealm = "Chaos Sea", currentIncarnation = 0, soulFormDescription = new { invalid = true } });
+        await _fs.WriteFileAtomicAsync($"game_state/control/pending_turn_snapshot/{path}", (await _fs.ReadFileAsync(path))!);
+        await _fs.WriteFileAtomicAsync($"game_state/control/pending_turn_snapshot/{AfterlifeEntityProfileState.StatePath}",
+            (await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!);
+        await WritePendingTurnSnapshotManifestAsync("repair-session", "repair-request", 42, path, AfterlifeEntityProfileState.StatePath);
+        await WriteJsonAsync("input/turn_request.json", new { sessionId = "repair-session", requestId = "repair-request", turnNumber = 42 });
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
+        var validator = (ValidationService)typeof(GameEngine).GetField("_validator", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(engine)!;
+        var reservation = typeof(ValidationService).GetField("_pendingSnapshotReservation", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        var entries = new List<object>();
+        var writesDuringReservation = new List<string>();
+        var secondEntry = new IOException("Second repair iteration reached its fresh physical authentication.");
+        var repaired = false;
+        _consoleCanonicalReadObserver = read =>
+        {
+            if (read == manifestPath && reservation.GetValue(validator) is { } active && !entries.Contains(active))
+            {
+                entries.Add(active);
+                if (entries.Count == 2) throw secondEntry;
+            }
+            return Task.CompletedTask;
+        };
+        _consoleMutationObserver = changed => { if (reservation.GetValue(validator) != null) writesDuringReservation.Add(changed); };
+        var source = (string)typeof(GameEngine).GetField("PostAcceptedMaterializedStateValidationSource", BindingFlags.Static | BindingFlags.NonPublic)!.GetRawConstantValue()!;
+        using var owner = _fs.BeginMainAdmission();
+        await owner.AcquireAsync();
+        using var stop = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+        var gmRepair = Task.Run(async () =>
+        {
+            while (!_fs.FileExists("game_state/control/validation_repair_request.json"))
+                await Task.Delay(25, stop.Token);
+            Assert.Null(reservation.GetValue(validator));
+            var before = (await _fs.ReadFileAsync(manifestPath))!;
+            await _fs.WriteFileAtomicAsync(manifestPath, before + " ");
+            await WriteJsonAsync(path, new { soulName = "Scope repair", currentRealm = "Chaos Sea", currentIncarnation = 0, soulFormDescription = "Repaired" });
+            repaired = true;
+            await WriteJsonAsync("game_state/control/validation_repair_ready.json",
+                new { sessionId = "repair-session", requestId = "repair-request", turnNumber = 42, updatedAtUtc = "2026-10-19T00:00:00Z", note = "Scope repair control" });
+        });
+        try
+        {
+            var error = await Assert.ThrowsAnyAsync<Exception>(() =>
+                InvokePrivateAsync<bool>(engine, "ValidateCurrentGameStateOrShowErrorsAsync", source, null, null, true));
+            Assert.Same(secondEntry, error);
+            await gmRepair;
+            Assert.True(repaired);
+            Assert.Equal(2, entries.Count);
+            Assert.NotSame(entries[0], entries[1]);
+            Assert.Empty(writesDuringReservation);
+            Assert.Null(reservation.GetValue(validator));
+        }
+        finally
+        {
+            stop.Cancel();
+            try { await gmRepair; } catch (OperationCanceledException) when (stop.IsCancellationRequested) { }
+        }
+    }
 }

@@ -47,11 +47,19 @@ public partial class FileSystemManager
     internal sealed class PendingSnapshotValidationReadScope(FileSystemManager files, MainAdmission owner)
         : ValidationReadReservation, IAsyncDisposable
     {
+        /// <summary>
+        /// The one acquisition issued synchronously by the owning manager.
+        /// </summary>
         internal Task<CanonicalWriteLease> Acquisition { get; set; } = null!;
+        /// <summary>
+        /// The original acquired lease, or null before successful acquisition.
+        /// </summary>
         internal CanonicalWriteLease? Lease { get; private set; }
         private bool _opening = true, _closed, _invalidated;
         private string? _generation;
+        /// <inheritdoc />
         internal override bool Opening => _opening;
+        /// <inheritdoc />
         internal override bool Closed => _closed;
 
         /// <summary>
