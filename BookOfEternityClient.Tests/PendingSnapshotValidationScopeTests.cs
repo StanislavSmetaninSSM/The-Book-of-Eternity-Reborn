@@ -510,6 +510,10 @@ public sealed partial class PendingSnapshotValidationScopeTests(ITestOutputHelpe
                 new FileSystemManagerHooks
                 {
                     BeforeMainBorrowRetainAsync = () => OnBorrow?.Invoke() ?? Task.CompletedTask,
+                    BeforeCanonicalMutationBoundaryAsync = path => BeforeMutation?.Invoke(path) ?? Task.CompletedTask,
+                    AfterCanonicalMutationBoundaryValidatedAsync = path => AfterMutation?.Invoke(path) ?? Task.CompletedTask,
+                    LocalPublicationObserver = (phase, index) => OnPublication?.Invoke(phase, index),
+                    LocalPublicationRecoveryObserver = (phase, index) => OnRecovery?.Invoke(phase, index),
                     AfterCanonicalReadInitialValidationAsync = path => { if (_rollback.Contains(path)) Ordinary++; return OnRead?.Invoke(path) ?? Task.CompletedTask; },
                     AfterSnapshotEvidenceRead = path => { if (_rollback.Contains(path)) Cohort++; }
                 });

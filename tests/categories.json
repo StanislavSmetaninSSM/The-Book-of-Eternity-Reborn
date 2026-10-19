@@ -2,6 +2,28 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "pending-snapshot-qte-custody",
+  "responsibility": "Spec5 original lease, admission and ambient custody through proof close, failure, cancellation and competing consumers.",
+  "excludes": "No gameplay or native qualification, broad lifecycle suite or synthetic replacement authority.",
+  "changeHints": ["BookOfEternityClient/Core/FileSystemManager.PendingSnapshotValidationRead.cs", "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs"],
+  "related": [],
+  "requirements": { "frontendBuild": false, "exclusive": false },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.PendingSnapshotValidationScopeTests.BorrowedCustody_*"] }]
+},
+{
+  "id": "pending-snapshot-qte-mutation",
+  "responsibility": "Spec5 shared reservation versus actual same-lease in-flight mutation, recovery, pruning and publication with both ordering directions.",
+  "excludes": "No broad storage suite, gameplay, native qualification or forced platform capabilities.",
+  "changeHints": ["BookOfEternityClient/Core/FileSystemManager.cs", "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs"],
+  "related": [],
+  "requirements": { "frontendBuild": false, "exclusive": false },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.PendingSnapshotValidationScopeTests.BorrowedMutation_*"] }]
+},
+{
   "id": "pending-snapshot-qte-proof",
   "responsibility": "Spec5 real held-lease source authentication bounds, exact dependency proof and physical current reads.",
   "excludes": "No gameplay qualification, native runtime or broad validation suite.",

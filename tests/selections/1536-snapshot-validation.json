@@ -66,6 +66,20 @@
         "R=3,N=1/8/32, invocation rollback reads<=6; original acquisition accounted separately.",
         "Negative proof/current-state controls are added under T240 before production acceptance."
       ]
+    },
+    {
+      "category": "pending-snapshot-qte-custody",
+      "reason": "Spec5 custody contract under the original caller-owned lease.",
+      "contracts": [
+        "Preserve exact ownership and mutual exclusion; original errors and legal writes after proof close remain intact."
+      ]
+    },
+    {
+      "category": "pending-snapshot-qte-mutation",
+      "reason": "Spec5 mutation contract under the original caller-owned lease.",
+      "contracts": [
+        "Preserve exact ownership and mutual exclusion; original errors and legal writes after proof close remain intact."
+      ]
     }
   ]
 }
