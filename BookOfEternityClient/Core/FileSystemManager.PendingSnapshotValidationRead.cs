@@ -127,7 +127,7 @@ public partial class FileSystemManager
         internal override MainAdmission? RetainedPhysicalAdmission => _retainedAdmission;
 
         /// <summary>
-    /// Finishes owned acquisition when required and binds the existing generation before admitting readers.
+        /// Finishes owned acquisition when required and binds the existing generation before admitting readers.
         /// </summary>
         /// <returns>
         /// Completion once this scope is active and read-only.

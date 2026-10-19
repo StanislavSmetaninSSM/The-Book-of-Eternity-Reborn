@@ -449,6 +449,46 @@ public sealed partial class PendingSnapshotValidationScopeTests
     }
 
     /// <summary>
+    /// A foreign reservation cannot erase the original reservation's release registration.
+    /// </summary>
+    /// <returns>
+    /// Completion after refusal during proof and a legitimate write and new proof after its actual release.
+    /// </returns>
+    [Fact]
+    public async Task BorrowedCustody_ForeignReservationCannotEraseRelease()
+    {
+        using var fixture = new Fixture();
+        await fixture.PrepareAsync(false);
+        await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+        var owner = lease.MainAdmission!;
+        try
+        {
+            await fixture.RunBorrowedAsync(lease, async () =>
+            {
+                var foreign = new FileSystemManager.PendingSnapshotValidationReadScope(fixture.Files, owner, lease);
+                owner.ReleaseWorldRead(foreign);
+                await Assert.ThrowsAsync<InvalidOperationException>(() => fixture.Files.WriteFileAtomicAsync(
+                    lease, "game_state/world/scope0.json", "{\"value\":2}"));
+                return [];
+            });
+            await fixture.Files.WriteFileAtomicAsync(lease, "game_state/world/scope0.json", "{\"value\":2}");
+            await fixture.RunBorrowedAsync(lease, () => Task.FromResult(new List<ValidationIssue>()));
+        }
+        finally
+        {
+            // Restore only this fixture's release pointer after a failed regression assertion so its owner can close.
+            var access = typeof(FileSystemManager.MainAdmission).GetField("_access", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(owner)!;
+            var retained = access.GetType().GetField("_worldRead", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(access)
+                as FileSystemManager.PendingSnapshotValidationReadScope;
+            if (retained != null)
+            {
+                typeof(FileSystemManager.MainAdmission).GetField("_worldReservedAccess", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(owner, access);
+                owner.ReleaseWorldRead(retained);
+            }
+        }
+    }
+
+    /// <summary>
     /// Calls the existing terminal-freeze transition without manufacturing a remote owner.
     /// </summary>
     /// <param name="owner">

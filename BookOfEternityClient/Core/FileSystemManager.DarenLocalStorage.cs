@@ -24,7 +24,7 @@ public partial class FileSystemManager
     /// Original active canonical lease; ownership and disposal remain with its caller.
     /// </param>
     /// <param name="content">
-    /// Content to publish or append; a nullable value requests deletion where supported.
+    /// New profile bytes, or <see langword="null"/> to request deletion.
     /// </param>
     /// <param name="token">
     /// Cancellation observed by the existing operation; the default token does not request cancellation.

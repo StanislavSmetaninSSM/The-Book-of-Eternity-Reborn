@@ -806,7 +806,7 @@ public partial class FileSystemManager
     /// Canonical session-relative member or subtree to operate on.
     /// </param>
     /// <param name="content">
-    /// Content to publish or append; a nullable value requests deletion where supported.
+    /// Content to publish or append.
     /// </param>
     /// <returns>
     /// The original physical publication evidence after the operation and its callbacks complete.
@@ -850,7 +850,7 @@ public partial class FileSystemManager
     /// Canonical session-relative member or subtree to operate on.
     /// </param>
     /// <param name="content">
-    /// Content to publish or append; a nullable value requests deletion where supported.
+    /// Content to publish or append.
     /// </param>
     /// <param name="expectedCurrentIdentity">
     /// Physical identity that must still belong to the current destination.
@@ -924,7 +924,7 @@ public partial class FileSystemManager
     /// Canonical session-relative member or subtree to operate on.
     /// </param>
     /// <param name="content">
-    /// Content to publish or append; a nullable value requests deletion where supported.
+    /// Content to publish or append.
     /// </param>
     /// <returns>
     /// Completion after the operation and its required cleanup finish.
@@ -999,7 +999,7 @@ public partial class FileSystemManager
     /// Canonical session-relative member or subtree to operate on.
     /// </param>
     /// <param name="content">
-    /// Content to publish or append; a nullable value requests deletion where supported.
+    /// Content to publish or append.
     /// </param>
     /// <param name="cancellationToken">
     /// Cancellation observed by the existing operation; the default token does not request cancellation.
@@ -1214,7 +1214,7 @@ public partial class FileSystemManager
     /// Canonical session-relative member or subtree to operate on.
     /// </param>
     /// <param name="content">
-    /// Content to publish or append; a nullable value requests deletion where supported.
+    /// Content to publish or append.
     /// </param>
     /// <param name="allowedCurrentSha256s">
     /// Accepted current digests; an empty collection is valid only when missing current content is allowed.
@@ -1258,7 +1258,7 @@ public partial class FileSystemManager
     /// Canonical session-relative member or subtree to operate on.
     /// </param>
     /// <param name="content">
-    /// Content to publish or append; a nullable value requests deletion where supported.
+    /// Content to publish or append.
     /// </param>
     /// <param name="expectedCurrentIdentity">
     /// Physical identity that must still belong to the current destination.
@@ -1310,7 +1310,7 @@ public partial class FileSystemManager
     /// Canonical session-relative member or subtree to operate on.
     /// </param>
     /// <param name="content">
-    /// Content to publish or append; a nullable value requests deletion where supported.
+    /// Content to publish or append.
     /// </param>
     /// <param name="cancellationToken">
     /// Cancellation observed by the existing operation; the default token does not request cancellation.
