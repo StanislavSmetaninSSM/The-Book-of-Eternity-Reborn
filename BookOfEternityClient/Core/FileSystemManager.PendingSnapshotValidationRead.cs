@@ -107,7 +107,7 @@ public partial class FileSystemManager
         : ValidationReadReservation, IAsyncDisposable
     {
         /// <summary>
-        /// The one acquisition issued synchronously by the owning manager.
+        /// The one owned acquisition issued synchronously by the manager; unused for a borrowed lease.
         /// </summary>
         internal Task<CanonicalWriteLease> Acquisition { get; set; } = null!;
         /// <summary>
@@ -188,7 +188,7 @@ public partial class FileSystemManager
         }
 
         /// <summary>
-        /// Checks retained original ownership after successful lease teardown, without reopening it.
+        /// Checks original ownership after closing the read reservation without reopening it.
         /// </summary>
         internal void RequireOwnerAfterClose()
         {

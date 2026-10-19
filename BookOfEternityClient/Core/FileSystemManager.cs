@@ -1316,7 +1316,7 @@ public partial class FileSystemManager
     /// Cancellation observed by the existing operation; the default token does not request cancellation.
     /// </param>
     /// <param name="allowedCurrentSha256s">
-    /// Accepted current digests; an empty collection is valid only when missing current content is allowed.
+    /// Accepted current digests, or <see langword="null"/> when no digest-set condition is imposed.
     /// </param>
     /// <param name="allowMissingCurrent">
     /// Whether an absent current destination is an accepted precondition.

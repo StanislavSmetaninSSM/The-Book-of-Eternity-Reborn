@@ -84,6 +84,9 @@ public sealed partial class QteSceneServiceTests
         // The live-test helper's source label deliberately cannot authorize QTE offers.
         // Retain all its physical inputs and issue the ordinary fixture's corresponding signed source pair.
         manifest.SourceLabel = QteSceneService.OrdinaryPlayerTurnSourceLabel;
+        manifest.ManifestPayloadHash = PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(manifest,
+            LiveTurnPreparationService.ManifestHashJsonOptions,
+            static value => value.ManifestPayloadHash, static (value, hash) => value.ManifestPayloadHash = hash);
         var authority = PendingTurnSnapshotAuthority.CreateDetachedAuthorityJson(manifest,
             LiveTurnPreparationService.ManifestHashJsonOptions,
             static value => value.ManifestPayloadHash, static (value, hash) => value.ManifestPayloadHash = hash,

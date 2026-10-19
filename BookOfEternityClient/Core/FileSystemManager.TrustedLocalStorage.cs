@@ -448,7 +448,7 @@ public partial class FileSystemManager
     /// Canonical session-relative member or subtree to operate on.
     /// </param>
     /// <param name="content">
-    /// Content to publish or append; a nullable value requests deletion where supported.
+    /// Content to publish or append.
     /// </param>
     /// <param name="token">
     /// Cancellation observed by the existing operation; the default token does not request cancellation.

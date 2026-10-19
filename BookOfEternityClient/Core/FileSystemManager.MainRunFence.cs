@@ -160,7 +160,10 @@ public partial class FileSystemManager
         /// Original reservation to close; another identity cannot release shared access.
         /// </param>
         internal void ReleaseWorldRead(ValidationReadReservation scope)
-        { _worldReservedAccess?.ReleaseWorldRead(scope); _worldReservedAccess = null; }
+        {
+            var access = _worldReservedAccess;
+            access?.ReleaseWorldRead(scope, () => _worldReservedAccess = null);
+        }
         /// <summary>
         /// Refuses a conflicting borrower of the reserved access.
         /// </summary>
@@ -331,8 +334,18 @@ public partial class FileSystemManager
         /// <param name="scope">
         /// Original reservation to withdraw.
         /// </param>
-        internal void ReleaseWorldRead(ValidationReadReservation scope)
-        { lock (_state) { if (ReferenceEquals(_worldRead, scope)) _worldRead = null; } }
+        /// <param name="markReleased">
+        /// Clears the owning frame's release pointer before another reservation can enter.
+        /// </param>
+        internal void ReleaseWorldRead(ValidationReadReservation scope, Action markReleased)
+        {
+            lock (_state)
+            {
+                if (!ReferenceEquals(_worldRead, scope)) return;
+                markReleased();
+                _worldRead = null;
+            }
+        }
         /// <summary>
         /// Refuses access unless unreserved or borrowed by the exact opening reservation.
         /// </summary>
