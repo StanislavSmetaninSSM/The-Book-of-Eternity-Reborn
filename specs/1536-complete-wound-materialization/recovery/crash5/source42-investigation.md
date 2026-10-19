@@ -188,3 +188,17 @@ T243 generation fixture correction: fresh8617692 custody19, late-browser2 and re
 ## T243 final SOURCE/PREP
 
 T240…T243 завершены. Исходники 1e0a5fcd7 и подготовка SOURCE/PREP приняты отдельным gpt-6-astra/high. Адресная квалификация:17 категорий,180 distinct PASS,0skip; это union89 на85f4 +23 на8617692 +68 на1e0a5fcd7 с отдельными source/DLL bindings, а не один общий прогон. Обе XML builds exit0, changed XML diagnostics0; catalog и PlanOnly подтверждены. T244 ещё не запускалась; разрешена ровно одна source42 проба. T245 допускается только после её настоящего full-return PASS. Windows5 сохраняет исторический T219 FAIL_INCOMPLETE; Linux UNRUN.
+
+## T243 final SOURCE/PREP и T244 outcome
+
+T240…T243 завершены. Исходники 1e0a5fcd7 и подготовка SOURCE/PREP приняты отдельным gpt-6-astra/high. Адресная квалификация:17 категорий,180 distinct PASS,0skip; это union89 на85f4 +23 на8617692 +68 на1e0a5fcd7 с отдельными source/DLL bindings, а не один общий прогон. Обе XML builds exit0, changed XML diagnostics0; catalog и PlanOnly подтверждены. T244 выполнена один раз:FAIL_CHILD_TIMEOUT220,1 completed/1 failed/0skip, полного возврата хода нет; подробности и cleanup в T244-probe-outcome.json. T245 НЕ ЗАПУЩЕНА: gate не выполнен. Повтор T244 или увеличение лимита этим plan3 не разрешены. Windows5 сохраняет исторический T219 FAIL_INCOMPLETE; Linux UNRUN.
+
+## T244 — фактический результат единственной пробы plan3
+
+Compiled source `1e0a5fcd7522839c869e3d603b93fb23d65b238d`, metadata HEAD `9ce2d236ce8e4ad3296b74dccc95d6c0c8600af8`; между ними нет C# изменений. Run `20261020-090414-679-55248-21ee2bfdcb954c88ac945df4e57fc482-categories`:1 planned/completed,0passed/1failed/0skip, child220s timeout, category timeout false, runner exit1, wall240.247s. Единственная попытка зафиксирована до запуска; повторов не было.
+
+Фазы: source-turn18.196s → capture87.388s → validated157.359s → QTE179.958s. Наблюдались настоящий client story append и промежуточный QTE success; source-turn return и engine return отсутствуют. Последний bounded snapshot201.285s: post-validated initial2000/returned2096, rollback708/59distinct/649repeat, mutations109, path overflow false. Это callbacks и неполный общий интервал, не число всех физических I/O и не изолированное время QTE. Разница с T234 QTE192.405s или rollback885 не доказывает ускорение на сопоставимом участке. Новая оптимизация подтверждена компонентными tests, но её достаточность для полного игрового хода НЕ подтверждена.
+
+Original child22632 exit-1, EOF/join true, secondary failures empty, cleanup failure null, retained owner absent. Оба owned fixture roots удалены, parent отдельно подтвердил отсутствие. Исторический T219 retained root сохранён; его FAIL_INCOMPLETE и исторический Linux52/57 не переписаны. T245 не запускалась из-за отсутствия T244 PASS; T247 Linux UNRUN.
+
+Evidence: [outcome](T244-probe-outcome.json), [stages](T244-probe-stages.json), [canonical raw archive](T244-source42.zip), readable [stdout](T244-child.stdout)/[stderr](T244-child.stderr). Архив содержит исходные TRX/summary/plan/logs, pre-start attempt record и принятый source/DLL binding; все шесть текущих DLL hashes совпали после запуска. Пустой stderr — наблюдение, не доказательство отсутствия причины. Дальнейшая диагностика полного хода требует отдельного согласованного шага; текущий plan3 не разрешает повтор или увеличение бюджета.

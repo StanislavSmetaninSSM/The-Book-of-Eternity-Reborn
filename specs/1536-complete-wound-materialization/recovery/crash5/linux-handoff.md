@@ -9,7 +9,7 @@ NativeLineage implementation/source review: `5f0c08ae5b9303bca7c0a44b1509edcf89f
 
 ## Текущий checkpoint spec5 / plan3
 
-T240…T243 завершены. Исходники 1e0a5fcd7 и подготовка SOURCE/PREP приняты отдельным gpt-6-astra/high. Адресная квалификация:17 категорий,180 distinct PASS,0skip; это union89 на85f4 +23 на8617692 +68 на1e0a5fcd7 с отдельными source/DLL bindings, а не один общий прогон. Обе XML builds exit0, changed XML diagnostics0; catalog и PlanOnly подтверждены. T244 ещё не запускалась; разрешена ровно одна source42 проба. T245 допускается только после её настоящего full-return PASS. Windows5 сохраняет исторический T219 FAIL_INCOMPLETE; Linux UNRUN.
+T240…T243 завершены. Исходники 1e0a5fcd7 и подготовка SOURCE/PREP приняты отдельным gpt-6-astra/high. Адресная квалификация:17 категорий,180 distinct PASS,0skip; это union89 на85f4 +23 на8617692 +68 на1e0a5fcd7 с отдельными source/DLL bindings, а не один общий прогон. Обе XML builds exit0, changed XML diagnostics0; catalog и PlanOnly подтверждены. T244 выполнена один раз:FAIL_CHILD_TIMEOUT220,1 completed/1 failed/0skip, полного возврата хода нет; подробности и cleanup в T244-probe-outcome.json. T245 НЕ ЗАПУЩЕНА: gate не выполнен. Повтор T244 или увеличение лимита этим plan3 не разрешены. Windows5 сохраняет исторический T219 FAIL_INCOMPLETE; Linux UNRUN.
 
 Compiled source: `1e0a5fcd7522839c869e3d603b93fb23d65b238d`. Полный source/DLL/TRX union: [T243](T243-final-prep.json); история причинных RED и исправлений: [investigation](source42-investigation.md). Windows component PASS не устанавливает причину исторических Linux52/57 и не доказывает обычные пять.
 
@@ -108,3 +108,7 @@ Controls selection: new finite12 cases и существующие host/bootstra
 Ordinary обязательно1 Theory/5planned=5completed=5passed,0skip, original root73/resumer root0, независимая identity/nonce, полные исходные assertions, EOF/join/cleanup. Supervisor0 не подменяет root exit. Лимиты220s child +10s stop/join +10s EOF и15m ordinary category сохранены.
 
 Сохранить исходные stdout/stderr, TRX, plan/summary, durations, source/package/DLL hashes, root/supervisor IDs и статус владения. При Uncertain удерживать original owner и каталоги, не объявлять cleanup успешным. При разрыве связи сначала установить исход прежнего запуска, не повторять неизвестный прогон. Не запускать diagnostic G01/G02, integrity4, full suite или CI как часть этой передачи. После облачного выполнения нужен отдельный независимый разбор T225.
+
+## Итог T244
+
+Windows source42 FAIL_CHILD_TIMEOUT220; QTE179.958s и client story append наблюдались, полный ход не вернулся. Child EOF/join и удаление обоих owned roots подтверждены; original five после этой пробы не запускались. [Полный outcome](T244-probe-outcome.json), [raw archive](T244-source42.zip). Linux qualification остаётся отдельной работой по этому handoff; Windows timeout не устанавливает причину исторического Linux сбоя.
