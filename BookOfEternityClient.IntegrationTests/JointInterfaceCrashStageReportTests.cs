@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using BookOfEternityClient.Core;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -9,6 +10,27 @@ namespace BookOfEternityClient.Tests;
 /// </summary>
 public sealed class JointInterfaceCrashStageReportTests
 {
+    /// <summary>
+    /// Repeated existing checkpoints emit only their first scalar boundary and ignore unrelated hooks.
+    /// </summary>
+    [Fact]
+    public void SourceCheckpoints_RecordFirstBoundaryWithoutRepeatedPollNoise()
+    {
+        using var writer = new StringWriter();
+        var report = Create(writer);
+        for (var i = 0; i < 100; i++)
+        {
+            report.ObserveSourceCheckpoint(SessionFinalizationCheckpoint.TerminalWaitStarted);
+            report.ObserveSourceCheckpoint(SessionFinalizationCheckpoint.TerminalSignalInspectionLeaseAcquired);
+            report.ObserveSourceCheckpoint(SessionFinalizationCheckpoint.TerminalSignalSnapshotCapturedBeforeResolution);
+            report.ObserveSourceCheckpoint(SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization);
+        }
+        var stages = writer.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries)
+            .Select(line => JsonSerializer.Deserialize<JsonElement>(line).GetProperty("Stage").GetString()).ToArray();
+        Assert.Equal(new[] { "source-inspection", "source-capture", "source-validated" }, stages);
+        Assert.Null(report.OutputFailure);
+    }
+
     /// <summary>
     /// The final available record reports the limit, with fixed newline and byte bounds.
     /// </summary>

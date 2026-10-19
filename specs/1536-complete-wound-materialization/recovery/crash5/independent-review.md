@@ -19,3 +19,7 @@ Reviewer сверил T217-prep.json с шестью текущими DLL; вс�
 Handoff commands проверены: отдельная native package preparation, fresh XML builds, Linux PREP review, controls перед ordinaryfive, проверка exit codes. Parent дополнительно синтаксически разобрал оба PowerShell блока без выполнения.
 
 **SOURCE + PREP accepted at5f0c08ae5b9303bca7c0a44b1509edcf89fa974c; open findings0.** Это допускает согласованный локальный Windows5. На этой границе Windows5 и весь Linux runtime — UNRUN. Финальный evidence review выполняется после фактического Windows результата.
+
+## T219 first Windows evidence
+
+The same independent reviewer accepted FAIL_INCOMPLETE with no reporting findings: six DLL hashes still bind to5f, metadata checkpoint9313 has no C# change; console cuts1/4/2/0 timeout at220s, exit-1, EOF/join true, CleanupFailure null. No producer73/resumer observed. No TRX: planned5/completed0, distinct console failures4. Category900.034s, total wall921.433s, runner exit124; generic20-minute outer-lane wording is not category elapsed time. Runner owned-tree cleanup true does not mean fixture deletion: cut3 retained directory remains. Raw log/summary copies match. Last scalar stage does not prove the blocked await. No runtime commands were issued by reviewer.

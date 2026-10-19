@@ -2,6 +2,10 @@
 
 Источник: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), [spec](spec.md), [implementation plan редакции1](plan.md), [validation guide](quickstart.md). Spec одобрена из f22e51730; implementation plan1 из6f2d4d486 согласован владельцем ответом «да». Выполненные helper checks отмечены задачами и evidence в plan; ordinary Windows5 и Linux runtime пока UNRUN. US1=CRASH5-US-L, US2=CRASH5-US-W, US3=CRASH5-US-T. T199…T226 — новые уникальные IDs после существующих plain T001…T198; исторические задачи ниже не переоцениваются.
 
+## Дополнение после первого Windows запуска
+
+- [ ] T227 [US2] Исследовать общий source42 до crash cut: передать необязательный test-only scalar reporter в существующий QTE fixture, записать Author enter/return, первые inspection/capture/accepted-validation checkpoints, QTE action и ProcessPlayerTurn return. Один отдельный Windows source42 probe с прежним original Process/220s/10s/10s и категорией5m; без production changes, capture, новых hooks, canonical reads из observer или повтора five. Deliverable: исходный bounded trace, source/DLL/cleanup evidence и локализованный интервал либо явно UNKNOWN; не game qualification. Регрессия checkpoint mapping RED→GREEN, fresh XML build/catalog/PlanOnly и независимый SOURCE/PREP до probe. Spec3 L8/L9/W4/T2/T4 не меняются.
+
 ## Phase 1 — Setup
 
 - [x] T199 Подготовить явный отбор до build/discovery: `tests/selection.json` только fr063-joint-interface-crash-current; новые contract/native owners и exact selectors в `tests/categories.json` добавлять вместе с соответствующими тестами. Зафиксировать source SHA/clean diff/toolchain, не наследовать G01.

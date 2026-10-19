@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Tests;
 
@@ -67,6 +68,17 @@ internal sealed class JointInterfaceCrashStageReport
     /// Gets the first bounded observer error type, or null when writing has not failed.
     /// </summary>
     internal string? OutputFailure { get; private set; }
+
+    /// <summary>
+    /// Records the first observation of each existing source finalization boundary.
+    /// </summary>
+    /// <param name="checkpoint">
+    /// An existing engine checkpoint; unrelated checkpoints do not produce records.
+    /// </param>
+    internal void ObserveSourceCheckpoint(SessionFinalizationCheckpoint checkpoint)
+    {
+        // T227 declaration for the expected behavioral RED.
+    }
 
     /// <summary>
     /// Emits one bounded stage observation without an external observer or flush wait.
