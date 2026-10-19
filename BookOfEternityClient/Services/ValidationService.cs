@@ -42,7 +42,13 @@ public partial class ValidationService
     /// </returns>
     internal Task<List<ValidationIssue>> ValidateQteTerminalGameStateAsync(
         FileSystemManager.CanonicalWriteLease writeLease, StoryService.AcceptedStoryAppend? acceptedStoryAppend)
-        => ValidateQteTerminalGameStateAsync(acceptedStoryAppend);
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        if (_fs.HasBrowserOriginalOperation || _sameTurnOwnerInputs != null || _prevalidatedPendingTurnSnapshotOverride != null)
+            return ValidateQteTerminalGameStateAsync(acceptedStoryAppend);
+        return RunBorrowedPendingSnapshotValidationAsync(writeLease, () => ValidateGameStateCoreAsync(
+            GameStateValidationSelection.All, false, acceptedStoryAppend, null));
+    }
 
     internal Task<List<ValidationIssue>> ValidateMortalJointStoryGameStateAsync(StoryService.MortalJointStoryProof proof)
         => StartAdmittedGameStateAsync(GameStateValidationSelection.All, metaControlShapesOnly: false,

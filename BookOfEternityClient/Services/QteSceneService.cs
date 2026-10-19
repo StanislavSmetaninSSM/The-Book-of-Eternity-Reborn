@@ -2015,6 +2015,28 @@ public sealed partial class QteSceneService
             allowPreexistingStateIssues));
     }
 
+    /// <summary>
+    /// Applies and validates terminal state under the supplied lease using the existing compensation and cleanup rules.
+    /// Each validation closes its own read reservation before further mutations or restoration.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active QTE lease whose lifetime remains with the outer caller.
+    /// </param>
+    /// <param name="response">
+    /// Materialized terminal response to apply and validate.
+    /// </param>
+    /// <param name="allowPreexistingStateIssues">
+    /// Whether errors already present before these changes are excluded from the final blocking errors.
+    /// </param>
+    /// <param name="resourceSelection">
+    /// Prepared resource selection, or <see langword="null"/> for the ordinary terminal resource path.
+    /// </param>
+    /// <param name="deferredPreparation">
+    /// Original deferred continuation preparation, or <see langword="null"/> for a direct terminal outcome.
+    /// </param>
+    /// <returns>
+    /// The applied response after validation and the existing cleanup complete.
+    /// </returns>
     private async Task<GameResponse> ApplyTerminalOutcomeValidatedStateChangesAsync(
         FileSystemManager.CanonicalWriteLease writeLease,
         GameResponse response,
@@ -2032,7 +2054,7 @@ public sealed partial class QteSceneService
         if (allowPreexistingStateIssues)
         {
             await RefreshGameStateAsync(writeLease);
-            preexistingErrorFingerprints = (await _validator.ValidateQteTerminalGameStateAsync(acceptedStoryAppend))
+            preexistingErrorFingerprints = (await _validator.ValidateQteTerminalGameStateAsync(writeLease, acceptedStoryAppend))
                 .Where(issue => issue.Severity == IssueSeverity.Error)
                 .Select(BuildValidationIssueFingerprint)
                 .ToHashSet(StringComparer.Ordinal);
@@ -2052,7 +2074,7 @@ public sealed partial class QteSceneService
                 baseline.NormalizerBackupsByPath);
             await RefreshGameStateAsync(writeLease);
 
-            var issues = await _validator.ValidateQteTerminalGameStateAsync(acceptedStoryAppend);
+            var issues = await _validator.ValidateQteTerminalGameStateAsync(writeLease, acceptedStoryAppend);
             var errors = issues.Where(issue => issue.Severity == IssueSeverity.Error).ToList();
             if (preexistingErrorFingerprints is { Count: > 0 })
             {
