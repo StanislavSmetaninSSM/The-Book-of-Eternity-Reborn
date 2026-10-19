@@ -1,3 +1,8 @@
+# Текущая работа: spec6 / plan4
+
+User waiver2026-10-20 разрешает продолжать без промежуточных согласований. [Spec6](spec.md), [plan4](plan.md), tasks T248…T251: отдельная Windows source42-проба600s/category12m после policy GREEN и independent PREP. На момент этого checkpoint extended runtime ещё UNRUN. Исходные220s probe/five budgets и Linux NativeLineage остаются прежними; T244FAIL сохранён. Ниже — законченный plan3 checkpoint.
+---
+
 # CRASH5 spec5 / plan3 — адресная проверка
 
 [Spec5](spec.md) согласована из f9658ae0e; [plan3](plan.md) из f368bd592 одобрен владельцем ответом «Ладно». Канонический ход работ — [T240…T247](tasks.md).

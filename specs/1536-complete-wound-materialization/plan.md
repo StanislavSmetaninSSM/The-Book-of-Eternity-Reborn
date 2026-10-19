@@ -1,3 +1,34 @@
+# CRASH5 — Implementation Plan4: расширенная source42-проба
+
+Canonical [spec6](spec.md), [tasks T248…T251](tasks.md), issue1536. User review waived explicitly2026-10-20; execute inline with Superpowers TDD/debugging/review/verification. Reuse existing isolated checkout/branch and feature; no new worktree/task/scaffolding. Parent owns implementation; separate routine reviewer gpt-6.1-sol/xhigh examines final coherent diff and PREP. Production, owner lifecycle and C code do not change.
+
+## Design / constitution check
+
+Bounded question: does unchanged source42 complete within600s? A globally enlarged220 literal would affect ordinary/Linx consumers; reject that design. A separate Fact calls a shared source42 parent helper with a fixed boolean opt-in; no environment/global setting or arbitrary timeout input. Both Facts reuse all existing assertions and child dispatcher. Explicit policy permits600 only for Windows role `engine-joint-interface-source-probe`, otherwise preserves220 or rejects requested opt-in before launch. NativeLinux branch and its220s cancellation remain unchanged. Exact windows ownership, primary exception, streams and10s cleanup remain untouched. No player/GM/schema effects, so no GM documentation update is needed.
+
+## File map / implementation
+
+1. `BookOfEternityClient.IntegrationTests/JointInterfaceCrashProcessSupportTests.cs`:8 policy cases (normal Windows producer/resumer/source +Linux default =4; Windows source600 =1; requested extension for Windows producer/resumer and Linux source rejected =3). Existing9 support cases remain selected.
+2. `.../JointInterfaceCrashProcessSupport.cs`: internal `GetDirectChildTimeout(bool windows, string role, bool extendedSourceProbe)` initially scalar220 seam. RED must be numeric/rejection behavior, not compile/missing symbol. GREEN uses exact role/platform and fixed600; no native routine change.
+3. `.../GameEngineTurnLifecycleTests.JointInterfaceCrash.cs`: optional `bool extendedSourceProbe=false` on private parent runner, select policy before process launch; use returned TimeSpan for existing direct wait/deadline only. Complete multiline XML param; no cleanup/assertion changes.
+4. `.../GameEngineTurnLifecycleTests.JointSourceProbe.cs`: original Fact delegates false; new `JointInterface_Source42WindowsExtendedProbeObservesActualPreparation` delegates true to common private parent helper. Helper preserves original Windows precondition, metadata, child arguments and all assertions; child static dispatcher remains byte-for-byte unchanged.
+5. `tests/categories.json`: separate `fr063-joint-interface-source42-windows-extended-probe` exclusiveWindows1/12m and `fr063-joint-interface-probe-budget-contracts` integration support class17/2m. Existing original probe5m/five15m unchanged. Add only fast policy category to `tests/selection.json`; no diagnostic extended default/CI entry. Snapshot selection180 remains unchanged.
+
+## TDD and verification
+
+Record policy RED with compilable scalar seam. Then minimal policy/parent wiring, fresh XML integration build and exact17GREEN; changed XML comments audited. Catalog/PlanOnly validates17policy/original1/extended1/five5 and default diagnostic exclusion. No repeat of180unchanged snapshot cases or native controls (no production/owner changes). Independent reviewer verifies selection sufficiency, policy routing at actual wait, unchanged default220 and child method/cleanup assertions; source/DLL binding accepted before T250. If changed surface grows, update consistency and select affected controls.
+
+T250 runs once via explicit extended category, NoBuild on qualified DLL, source/metadata binding retained;600/10/10/12m. Preserve complete failure/partial, no automatic replay. T251 extracts raw stage/full return, classifies failure versus duration and confirms original-owner cleanup; independent final evidence review, push/readback and fresh recovery. Any subsequent substantive work gets tracked tasks and evidence; user's waiver remains effective, so no ceremonial approval pause.
+
+## Risks / mitigations
+
+- Larger window can expose a loop: bounded600 and honest TIMEOUT, no success from activity alone.
+- Opt-in can leak into ordinary roles: fixed policy negatives plus source wiring review; NativeLinux path unchanged.
+- Reusing source helper could drop an assertion: actual diff must show all original checks unchanged, shared by both Facts.
+- More runtime does not validate performance: preserve historical220FAIL and separate extended measurement from five qualification.
+
+---
+
 # CRASH5 — Implementation Plan, редакция 3: QTE validation с существующим lease
 
 > **For agentic workers:** REQUIRED SUB-SKILL: superpowers:executing-plans. Один разработчик выполняет canonical [tasks.md](tasks.md); независимый reviewer проверяет связанный блок. Не создавать конкурирующий Superpowers plan.
