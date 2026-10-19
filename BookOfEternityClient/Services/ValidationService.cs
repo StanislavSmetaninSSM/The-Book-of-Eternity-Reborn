@@ -28,6 +28,22 @@ public partial class ValidationService
     internal Task<List<ValidationIssue>> ValidateQteTerminalGameStateAsync(StoryService.AcceptedStoryAppend? acceptedStoryAppend)
         => StartAdmittedGameStateAsync(GameStateValidationSelection.All, metaControlShapesOnly: false, acceptedStoryAppend);
 
+    /// <summary>
+    /// Validates terminal QTE state with the original caller lease and accepted client story evidence.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active caller-owned lease, which remains owned and disposed by the caller.
+    /// </param>
+    /// <param name="acceptedStoryAppend">
+    /// Original client-issued story evidence, or <see langword="null"/> when no client append was accepted.
+    /// </param>
+    /// <returns>
+    /// Ordered current-state issues from the existing validation rules.
+    /// </returns>
+    internal Task<List<ValidationIssue>> ValidateQteTerminalGameStateAsync(
+        FileSystemManager.CanonicalWriteLease writeLease, StoryService.AcceptedStoryAppend? acceptedStoryAppend)
+        => ValidateQteTerminalGameStateAsync(acceptedStoryAppend);
+
     internal Task<List<ValidationIssue>> ValidateMortalJointStoryGameStateAsync(StoryService.MortalJointStoryProof proof)
         => StartAdmittedGameStateAsync(GameStateValidationSelection.All, metaControlShapesOnly: false,
             acceptedStoryAppend: null, jointStoryProof: proof);

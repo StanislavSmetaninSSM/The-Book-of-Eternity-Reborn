@@ -265,16 +265,8 @@ public partial class FileSystemManager
             _stream != null &&
             _parentAuthority != null;
 
-        /// <summary>
-        /// Closes every owned resource after reserving physical teardown against pending-snapshot readers.
-        /// Repeated disposal retains the existing idempotent resource-release behavior.
-        /// </summary>
-        /// <returns>
-        /// Completion after all resources have been attempted; disposal failures preserve unresolved ownership.
-        /// </returns>
         public async ValueTask DisposeAsync()
         {
-            MainAdmission?.BeginPhysicalLeaseClose();
             var stream = _stream;
             var parentAuthority = _parentAuthority;
             _stream = null;
@@ -336,8 +328,16 @@ public partial class FileSystemManager
             _stream != null &&
             _parentAuthority != null;
 
+        /// <summary>
+        /// Closes every owned resource after reserving physical teardown against pending-snapshot readers.
+        /// Repeated disposal retains the existing idempotent resource-release behavior.
+        /// </summary>
+        /// <returns>
+        /// Completion after all resources have been attempted; disposal failures preserve unresolved ownership.
+        /// </returns>
         public async ValueTask DisposeAsync()
         {
+            MainAdmission?.BeginPhysicalLeaseClose();
             var stream = _stream;
             var parentAuthority = _parentAuthority;
             var externalPublicationContext =

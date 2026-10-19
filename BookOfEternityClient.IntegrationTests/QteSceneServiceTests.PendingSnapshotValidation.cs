@@ -11,6 +11,110 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class QteSceneServiceTests
 {
     /// <summary>
+    /// Preserves the genuine story writer's exact afterimage and ordered history issues through borrowed validation.
+    /// </summary>
+    /// <param name="tampered">
+    /// Whether to change the accepted story bytes after the actual writer has issued its evidence.
+    /// </param>
+    /// <returns>
+    /// Completion after scalar parity, the expected history verdict and one bounded proof lifetime are checked.
+    /// </returns>
+    [Theory]
+    [InlineData(false)] [InlineData(true)]
+    public async Task QtePendingSnapshot_AcceptedStoryProof(bool tampered)
+    {
+        ValidationService? validator = null;
+        var invocations = new HashSet<object>();
+        var files = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+            {
+                AfterCanonicalReadInitialValidationAsync = _ =>
+                {
+                    if (validator != null && PendingQteInvocation(validator) is { } invocation) invocations.Add(invocation);
+                    return Task.CompletedTask;
+                }
+            });
+        const string realm = "Mortal World";
+        const string action = "Осмотреть рану.";
+        await files.WriteFileAtomicAsync("game_state/meta/soul_state.json",
+            "{\"currentRealm\":\"Mortal World\",\"currentIncarnation\":1}");
+        await files.WriteFileAtomicAsync("game_state/history/chat_log.json", "[]");
+        var story = new StoryService(files, NullLogger<StoryService>.Instance);
+        await story.AppendTurnAsync(20, realm, 1, "Подойти ближе.", "Герой подходит.");
+        await new LiveTurnPreparationService(files).PrepareAsync(new LiveTurnPreparationOptions
+        {
+            SessionId = "borrowed-story-session", RequestId = "borrowed-story-request", TurnNumber = 21,
+            CurrentRealm = realm, PlayerAction = action, PreGeneratedDices1d20 = [8]
+        });
+        await files.WriteFileAtomicAsync(QteSceneService.QteOfferPath, "{}");
+        var accepted = await story.AppendAcceptedQteSourceTurnAsync(21, realm, 1, action, "Осмотр завершён.", null, null);
+        Assert.NotNull(accepted);
+        var acceptedBytes = accepted.AfterBytes;
+        if (tampered) await files.AppendFileAtomicAsync(accepted.StoryPath, " ");
+        validator = new ValidationService(files, NullLogger<ValidationService>.Instance);
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        var scalar = await validator.ValidateQteTerminalGameStateAsync(accepted);
+        Assert.Empty(invocations);
+        var reserved = await validator.ValidateQteTerminalGameStateAsync(lease, accepted);
+        Assert.Equal(scalar.Select(issue => JsonSerializer.Serialize(issue)), reserved.Select(issue => JsonSerializer.Serialize(issue)));
+        Assert.Equal(tampered, reserved.Any(issue => issue.Code == "client_owned_story_append_afterimage_mismatch"));
+        Assert.DoesNotContain(reserved, issue => issue.Code == "client_owned_history_surface_modified");
+        Assert.Equal(acceptedBytes, accepted.AfterBytes);
+        Assert.True(lease.IsActive);
+        Assert.Single(invocations);
+        Assert.Null(PendingQteInvocation(validator));
+    }
+
+    /// <summary>
+    /// Keeps retained manifest overrides on the existing scalar QTE route without installing a borrowed proof.
+    /// </summary>
+    /// <returns>
+    /// Completion after exact ordered issue parity and preservation of the caller's original lease.
+    /// </returns>
+    [Fact]
+    public async Task QtePendingSnapshot_OverrideKeepsScalarRoute()
+    {
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        using var manifestScope = validator.UsePrevalidatedPendingTurnSnapshotScope(new LiveTurnPendingSnapshotManifest
+        {
+            SessionId = "retained-session", RequestId = "retained-request", TurnNumber = 21,
+            SourceLabel = QteSceneService.OrdinaryPlayerTurnSourceLabel
+        });
+        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        var scalar = await validator.ValidateQteTerminalGameStateAsync(null);
+        var retained = await validator.ValidateQteTerminalGameStateAsync(lease, null);
+        Assert.Equal(scalar.Select(issue => JsonSerializer.Serialize(issue)), retained.Select(issue => JsonSerializer.Serialize(issue)));
+        Assert.True(lease.IsActive);
+        Assert.Null(PendingQteInvocation(validator));
+    }
+
+    /// <summary>
+    /// Preserves the scalar route's result or missing-draft failure for a retained same-turn owner view.
+    /// </summary>
+    /// <returns>
+    /// Completion after checking the original route's exact outcome and unchanged external ownership.
+    /// </returns>
+    [Fact]
+    public async Task QtePendingSnapshot_SameTurnKeepsScalarRoute()
+    {
+        var inputs = SpiritualOriginalDraftInputs.Create("same-turn-session", "same-turn-request", "same-turn-token", 21,
+            [], new Dictionary<string, CanonicalBeforeImage>(StringComparer.Ordinal));
+        var constructor = typeof(ValidationService).GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic)
+            .Single(candidate => candidate.GetParameters().Length == 3);
+        var validator = (ValidationService)constructor.Invoke([_fs, NullLogger<ValidationService>.Instance, inputs]);
+        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        List<ValidationIssue>? scalar = null, retained = null;
+        var originalError = await Record.ExceptionAsync(async () => scalar = await validator.ValidateQteTerminalGameStateAsync(null));
+        var retainedError = await Record.ExceptionAsync(async () => retained = await validator.ValidateQteTerminalGameStateAsync(lease, null));
+        Assert.Equal(originalError?.GetType(), retainedError?.GetType());
+        Assert.Equal(originalError?.Message, retainedError?.Message);
+        if (originalError == null)
+            Assert.Equal(scalar!.Select(issue => JsonSerializer.Serialize(issue)), retained!.Select(issue => JsonSerializer.Serialize(issue)));
+        Assert.True(lease.IsActive);
+        Assert.Null(PendingQteInvocation(validator));
+    }
+
+    /// <summary>
     /// The actual terminal caller gives each validation a fresh proof under its one original lease.
     /// </summary>
     /// <param name="allowPreexisting">
