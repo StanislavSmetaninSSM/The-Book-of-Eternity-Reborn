@@ -58,6 +58,14 @@
       "contracts": [
         "Normalization precedes validation; repairs withdraw old source; runtime refresh remains outside the read lifetime."
       ]
+    },
+    {
+      "category": "pending-snapshot-qte-proof",
+      "reason": "Spec5 causal held-lease regression: repeated real source lookups must authenticate at most twice without reacquiring or closing the original lease.",
+      "contracts": [
+        "R=3,N=1/8/32, invocation rollback reads<=6; original acquisition accounted separately.",
+        "Negative proof/current-state controls are added under T240 before production acceptance."
+      ]
     }
   ]
 }

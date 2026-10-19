@@ -27,6 +27,26 @@ public partial class ValidationService
     }
 
     /// <summary>
+    /// Runs held-lease validation consumers with their existing scalar lookup behavior.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original caller-owned lease, which remains owned and disposed by the caller.
+    /// </param>
+    /// <param name="validate">
+    /// Validation consumers to execute under the caller's existing ownership.
+    /// </param>
+    /// <returns>
+    /// The consumer's ordered issues or its original failure.
+    /// </returns>
+    private Task<List<ValidationIssue>> RunBorrowedPendingSnapshotValidationAsync(
+        FileSystemManager.CanonicalWriteLease writeLease, Func<Task<List<ValidationIssue>>> validate)
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(validate);
+        return validate();
+    }
+
+    /// <summary>
     /// Reserves one validator invocation, authenticates its source twice and closes before publication.
     /// </summary>
     /// <param name="validate">

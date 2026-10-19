@@ -2,6 +2,17 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "pending-snapshot-qte-proof",
+  "responsibility": "Spec5 real held-lease source authentication bounds, exact dependency proof and physical current reads.",
+  "excludes": "No gameplay qualification, native runtime or broad validation suite.",
+  "changeHints": ["BookOfEternityClient/Services/Validation/ValidationService.PendingSnapshotValidation.cs"],
+  "related": [],
+  "requirements": { "frontendBuild": false, "exclusive": false },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.PendingSnapshotValidationScopeTests.BorrowedProof_*"] }]
+},
+{
   "changeHints": [
     "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs"
   ],
@@ -107,7 +118,7 @@
   "selectors": [
     {
       "tests": [
-        "BookOfEternityClient.Tests.PendingSnapshotValidationScopeTests.*"
+        "BookOfEternityClient.Tests.PendingSnapshotValidationScopeTests.Scope_*"
       ],
       "project": "unit"
     }

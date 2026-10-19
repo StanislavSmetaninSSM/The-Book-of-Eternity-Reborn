@@ -2,15 +2,6 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "fr063-joint-interface-crash-current",
-      "reason": "CRASH5 approved spec3/plan1: preserve genuine crash/restart scenarios while preparing NativeLineage Linux ownership and local Windows execution. Helper and native controls have separate explicit selections.",
-      "contracts": [
-        "#1536 ordinary cut0..4 only: original producer exit73, new resumer exit0, independent identities and unchanged game assertions.",
-        "NativeLineage on Linux; direct owned Process on Windows. Root exit, scoped retirement, full output and cleanup remain distinct evidence.",
-        "No G01 capture, integrity fault cases, full suite or implicit qualification; Linux execution belongs to the cloud environment."
-      ]
-    },
-    {
       "reason": "Spec4 exact physical read bounds, immutable invocation proof, negative authority and ownership controls.",
       "category": "pending-snapshot-validation-contracts",
       "contracts": [
@@ -66,6 +57,14 @@
       "category": "c5-original-post-validation-source",
       "contracts": [
         "Normalization precedes validation; repairs withdraw old source; runtime refresh remains outside the read lifetime."
+      ]
+    },
+    {
+      "category": "pending-snapshot-qte-proof",
+      "reason": "Spec5 causal held-lease regression: repeated real source lookups must authenticate at most twice without reacquiring or closing the original lease.",
+      "contracts": [
+        "R=3,N=1/8/32, invocation rollback reads<=6; original acquisition accounted separately.",
+        "Negative proof/current-state controls are added under T240 before production acceptance."
       ]
     }
   ]

@@ -18,8 +18,12 @@ namespace BookOfEternityClient.Tests;
 /// <param name="output">
 /// Destination for physical read counts in the test report.
 /// </param>
-public sealed class PendingSnapshotValidationScopeTests(ITestOutputHelper output)
+public sealed partial class PendingSnapshotValidationScopeTests(ITestOutputHelper output)
 {
+    /// <summary>
+    /// Records physical read measurements for the owned and borrowed invocation controls.
+    /// </summary>
+    private readonly ITestOutputHelper _output = output;
     /// <summary>
     /// Repeated sync and async consumers must not multiply full rollback authentication.
     /// </summary>
@@ -44,7 +48,7 @@ public sealed class PendingSnapshotValidationScopeTests(ITestOutputHelper output
                 Assert.Equal("Usable", Status(await fixture.LookupAsync(i % 2 != 0)));
             return [new("first", IssueSeverity.Error, "one"), new("second", IssueSeverity.Error, "two")];
         });
-        output.WriteLine($"N={consumers}; cold={cold}; ordinary={fixture.Ordinary}; cohort={fixture.Cohort}; total={fixture.Ordinary + fixture.Cohort}");
+        _output.WriteLine($"N={consumers}; cold={cold}; ordinary={fixture.Ordinary}; cohort={fixture.Cohort}; total={fixture.Ordinary + fixture.Cohort}");
         Assert.Equal(new[] { "first", "second" }, issues.Select(i => i.FilePath));
         Assert.InRange(fixture.Ordinary, 0, cold ? 9 : 6);
         Assert.InRange(fixture.Ordinary + fixture.Cohort, 1, cold ? 12 : 9);
@@ -467,7 +471,7 @@ public sealed class PendingSnapshotValidationScopeTests(ITestOutputHelper output
     /// <summary>
     /// Owns an isolated real filesystem and a three-file signed rollback cohort.
     /// </summary>
-    private sealed class Fixture : IDisposable
+    private sealed partial class Fixture : IDisposable
     {
         private const string ManifestPath = "game_state/control/pending_turn_snapshot.json";
         private readonly string _root = Path.Combine(Path.GetTempPath(), "boe-validation-scope-" + Guid.NewGuid().ToString("N"));
