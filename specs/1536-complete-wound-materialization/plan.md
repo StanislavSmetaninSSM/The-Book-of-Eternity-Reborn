@@ -64,7 +64,7 @@ internal sealed record NativeFiniteObservation(bool Released, bool Started,
     bool StatusCompleted, bool HelperErrorCompleted,
     GmWorkerStopEvidence? Terminal, string? Uncertainty);
 internal static NativeFiniteStartDecision EvaluateFiniteStart(NativeFiniteObservation observation);
-internal static bool CanAcceptFiniteClosedControl(NativeFiniteObservation observation);
+internal static bool CanAcceptFiniteClosedControl(NativeFiniteObservation observation, bool controlSettled = true);
 internal static Task<NativeFiniteStartDecision> AwaitFiniteStartAsync(
     Func<NativeFiniteObservation> snapshot, Task started, Task retirementObserved,
     Task<string> authorityLost, CancellationToken cancellationToken);
@@ -150,6 +150,8 @@ T207 authored9 Windows/common contracts with minimal API stubs and preserved dia
 T208 actual on883b295ef:21 planned/completed,13 PASS/8 expected RED,0skip,157.328s total; cleanup complete, no timeout. Both public-entry tests rejected the missing guard: producer created a fixture, resume returned a non-mode failure. T209 now adds mode guards before both fixtures, Windows original-process UTC identity, child-only TEMP/TMP, platform JSON, ordinary NativeLineage routing and individual GC retention plus output-error precedence. Linux fast control now uses /bin/true to exercise genuinely short native exec; other roots independently self-report identity. SOURCE review and native runtime remain pending. T210 selected GREEN next.
 
 T210 actual db66b01c2:21/21 PASS,0skip,164.394s total, no timeout, owned cleanup complete; exact unit12 + Windows/integration9. New code compiles with XML generation; no C/native package build or Linux execution. T211 authored6 bounded stage reporter controls plus minimal stubs; stage RED next. Ordinary game5 still UNRUN.
+
+T211 first preparation failed on9450ba3ca: CS0619 selected xUnit Record.Exception(Func<Task>) for a throw-only lambda. No tests executed; original failure summary retained separately. Corrected only overload selection with explicit Action. Source audit also found T226: positive natural retirement must not forgive a still-pending original control write after its wait times out; otherwise disposal could race that write. Added a regression and a compiling policy parameter (currently ignored) before the fix. This preserves L5/L6 and old defaults, no broader scope. T211/T226 RED next; stages and control-settlement correction remain unimplemented.
 
 ## CRASH5 — checkpoint планирования
 

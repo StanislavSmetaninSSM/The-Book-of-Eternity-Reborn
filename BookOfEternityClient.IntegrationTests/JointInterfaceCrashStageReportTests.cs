@@ -95,11 +95,11 @@ public sealed class JointInterfaceCrashStageReportTests
         using var writer = new FailingWriter(output);
         var report = Create(writer);
         var primary = new InvalidOperationException("game failure");
-        var observed = Record.Exception(() =>
+        var observed = Record.Exception((Action)(() =>
         {
             try { throw primary; }
             finally { report.Observe("error", "error", primary.GetType().Name); }
-        });
+        }));
         Assert.Same(primary, observed);
         Assert.Equal(output.GetType().Name, report.OutputFailure);
     }

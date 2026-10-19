@@ -29,6 +29,8 @@
 
 ## Phase 4 — US1/US2: вспомогательные test stages
 
+- [ ] T226 [US1] Исправить выявленный при source audit край stop timeout: positive retirement не разрешает dispose при ещё незавершённом original control write. Новый `UnsettledControlWrite_RemainsUncertain` должен пройти RED→GREEN; finite stop передаёт реальный IsCompleted в policy. Это уточняет существующий L5/L6 и не меняет старые consumers или budgets.
+
 - [ ] T211 [US1] Написать и получить локальный RED `BookOfEternityClient.IntegrationTests/JointInterfaceCrashStageReportTests.cs`: max64 records/2048 UTF8 each/131072 total, bounded errorType256, explicit limit, monotonic elapsed, IOException/ObjectDisposedException сохранены без подмены primary failure. Category adapter-contracts.
 - [ ] T212 [US1] Реализовать `JointInterfaceCrashStageReport.cs` и подключить только ordinary stage points в `GameEngineTurnLifecycleTests.JointInterfaceCrash.cs`; отдельные RunId/Nonce, finite stage set, никаких новых production hooks/collector/task/flush wait и никаких изменений G01 diagnostic class.
 - [ ] T213 [US1] Получить GREEN T211 и проверить ordinary disabled-capture contract из T207; обновить `specs/1536-complete-wound-materialization/plan.md`, не выдавать stage completeness за доказательство причины старого timeout.

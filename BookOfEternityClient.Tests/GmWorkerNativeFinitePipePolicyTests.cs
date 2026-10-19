@@ -143,6 +143,16 @@ public sealed class GmWorkerNativeFinitePipePolicyTests
     }
 
     /// <summary>
+    /// Positive retirement cannot discard a control write that is still using original owner resources.
+    /// </summary>
+    [Fact]
+    public void UnsettledControlWrite_RemainsUncertain()
+    {
+        Assert.False(NativeLineageOwner.CanAcceptFiniteClosedControl(CompletedObservation(), controlSettled: false));
+        Assert.True(NativeLineageOwner.CanAcceptFiniteClosedControl(CompletedObservation(), controlSettled: true));
+    }
+
+    /// <summary>
     /// Helper exit zero cannot supply the missing root result.
     /// </summary>
     [Fact]

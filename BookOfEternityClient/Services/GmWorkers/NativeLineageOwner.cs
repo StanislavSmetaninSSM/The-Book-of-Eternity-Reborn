@@ -36,10 +36,13 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
     /// <param name="observation">
     /// The retained owner's current observations.
     /// </param>
+    /// <param name="controlSettled">
+    /// Whether the original control write has finished; a timed-out pending write must retain uncertainty.
+    /// </param>
     /// <returns>
     /// <see langword="true"/> only for complete natural retirement without uncertainty; otherwise <see langword="false"/>.
     /// </returns>
-    internal static bool CanAcceptFiniteClosedControl(NativeFiniteObservation observation) =>
+    internal static bool CanAcceptFiniteClosedControl(NativeFiniteObservation observation, bool controlSettled = true) =>
         HasCompleteFiniteRetirement(observation) && observation.Terminal!.Reason == "root-exited";
 
     /// <summary>
