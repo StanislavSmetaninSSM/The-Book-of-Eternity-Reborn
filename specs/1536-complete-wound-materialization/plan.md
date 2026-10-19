@@ -6,7 +6,7 @@
 **Architecture:** прямой `dotnet` child через новый finite pipe вход существующего `NativeLineageOwner`, неизменный C supervisor/host-v2. Общая integration fixture сохраняет игровые oracles; Windows использует собственный Process, прежние Linux integrity/diagnostic consumers сохраняют прямой путь.
 **Tech Stack:** C# / .NET 8, SDK 10 для текущего Roslyn, PowerShell 7, xUnit; Linux x64/glibc, существующие pidfd/Unix bootstrap и заранее собранный native package. Новые packages не нужны.
 **Spec:** [согласованная редакция 3](spec.md), исходный approval commit `f22e51730e090e5cdc86531f589bdff05193158d`; [issue #1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Ветка `1536-crash5-linux-windows-spec-20261019`. Дата: 2026-10-19.
-**Status:** implementation plan на review владельцу; SOURCE/PREP/runtime ещё UNRUN. Согласование spec получено ответом «да»; согласование этого плана пока не подразумевается.
+**Status:** plan1 из6f2d4d486 согласован владельцем ответом «да»; реализация начата по T199. SOURCE/PREP/runtime реализации ещё UNRUN. Рабочий журнал: .superpowers/sdd/plan/progress.md; долговечные checkpoints сохраняются здесь.
 
 ## CRASH5 — Global Constraints
 
@@ -135,6 +135,9 @@ Cloud controls selection: new finite + `worker-pool-regression-host`, `worker-na
 
 Полные команды в [quickstart.md](quickstart.md). Готовность_SOURCE: diff сохраняет spec, независимый review принят и указаны все UNRUN. Готовность_PREP: fresh selected builds/XML, source/DLL binding, catalog+exact PlanOnly без skipped/missing selectors. Windows: 5 planned=5 completed=5 passed, no skip, owned cleanup; отдельно helper counts. Linux: те же пять и отдельные native controls только после облачного исполнения. Любой fail исследуется по systematic-debugging; повтор только после исправления/нового релевантного evidence, не увеличивать бюджеты.
 
+## CRASH5 — implementation checkpoint T199/T200 (2026-10-19)
+
+Owner approved plan1 at6f2d4d486. T199 selection now ordinary5 only; new adapter-contracts owner is valid catalog metadata. T200 writes12 managed behavioral tests plus minimal compilable/legacy-baseline API bodies for RED. No native wiring, finite launch, game test change or native execution yet. T201 is next: selected runner build/discovery and observed RED. Current runtime UNRUN. SDK10.0.401/.NET8.0.31/PowerShell7 present. The original worker/terminal paths do not call these new stubs yet. Current CRASH5 requirements checklist17/17; historical requirements unchecked planning gate already satisfied by approved artifacts and consistency review; markers untouched. Optional implement git hooks skipped in favor of explicit checkpoints. Full suites prohibited; native runtime remains cloud-only. User's current model/review policy supersedes old repo Astra-XHigh standing assignment.
 ## CRASH5 — checkpoint планирования
 
 Один разработчик в этом чате + отдельный независимый review соответствует прямой политике владельца; отдельный implementer не нужен. Обязательный reviewer shared process change — gpt-6-astra/high. Read-only исследование category map выполнено отдельным gpt-6.1-sol/high; предложение duplicate Windows category отклонено как противоречащее T2. Никаких тестов/build/discovery/native execution при планировании не было.

@@ -11,6 +11,111 @@ namespace BookOfEternityClient.Services.GmWorkers;
 // bounded reader from Process.Start onward; host output never enters this parser.
 internal class NativeLineageOwner : GmWorkerOwnedLaunch
 {
+    /// <summary>
+    /// Evaluates already observed finite launch evidence without creating native evidence.
+    /// </summary>
+    /// <param name="observation">
+    /// The retained owner's current observations.
+    /// </param>
+    /// <returns>
+    /// The current admission decision.
+    /// </returns>
+    internal static NativeFiniteStartDecision EvaluateFiniteStart(NativeFiniteObservation observation) => NativeFiniteStartDecision.Pending;
+
+    /// <summary>
+    /// Determines whether a closed stop pipe agrees with complete natural retirement.
+    /// </summary>
+    /// <param name="observation">
+    /// The retained owner's current observations.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> only for complete natural retirement without uncertainty; otherwise <see langword="false"/>.
+    /// </returns>
+    internal static bool CanAcceptFiniteClosedControl(NativeFiniteObservation observation) => false;
+
+    /// <summary>
+    /// Waits for finite admission or rejection while preserving the caller's cancellation.
+    /// </summary>
+    /// <param name="snapshot">
+    /// Reads the current observations from the original owner.
+    /// </param>
+    /// <param name="started">
+    /// The existing Started notification.
+    /// </param>
+    /// <param name="retirementObserved">
+    /// Completes after original root, helper and status observations settle.
+    /// </param>
+    /// <param name="authorityLost">
+    /// Completes when the original owner loses authority.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Cancels this wait without changing the owner's observations.
+    /// </param>
+    /// <returns>
+    /// The observed admission decision; cancellation propagates to the caller.
+    /// </returns>
+    internal static async Task<NativeFiniteStartDecision> AwaitFiniteStartAsync(
+        Func<NativeFiniteObservation> snapshot, Task started, Task retirementObserved,
+        Task<string> authorityLost, CancellationToken cancellationToken)
+    {
+        await started.WaitAsync(cancellationToken);
+        return NativeFiniteStartDecision.Started;
+    }
+
+    /// <summary>
+    /// Builds the pipe supervisor command while retaining literal child arguments.
+    /// </summary>
+    /// <param name="host">
+    /// The configured child executable, working directory, arguments and environment.
+    /// </param>
+    /// <param name="executable">
+    /// The validated supervisor executable path.
+    /// </param>
+    /// <param name="runId">
+    /// The native run identity.
+    /// </param>
+    /// <param name="socketPath">
+    /// The owner's private bootstrap socket path.
+    /// </param>
+    /// <param name="finitePipe">
+    /// Whether this launch consumes the child's complete configured environment.
+    /// </param>
+    /// <returns>
+    /// A separate supervisor start configuration.
+    /// </returns>
+    internal static ProcessStartInfo CreatePipeSupervisorStartInfo(
+        ProcessStartInfo host, string executable, string runId, string socketPath, bool finitePipe)
+    {
+        var start = new ProcessStartInfo(executable)
+        {
+            UseShellExecute = false, RedirectStandardInput = true, RedirectStandardOutput = true,
+            RedirectStandardError = true, WorkingDirectory = host.WorkingDirectory, CreateNoWindow = true
+        };
+        foreach (var arg in new[] { runId, "100", "2500", "--host-v2", socketPath, host.FileName })
+            start.ArgumentList.Add(arg);
+        foreach (var arg in host.ArgumentList) start.ArgumentList.Add(arg);
+        return start;
+    }
+
+    /// <summary>
+    /// Reads a child pipe without taking ownership of the supplied stream.
+    /// </summary>
+    /// <param name="input">
+    /// The readable child stream, left open after reading.
+    /// </param>
+    /// <param name="finitePipe">
+    /// Whether to retain the complete stream instead of the existing bridge capture limit.
+    /// </param>
+    /// <returns>
+    /// The decoded output; stream errors propagate to the owner.
+    /// </returns>
+    internal static async Task<string> ReadPipeOutputAsync(Stream input, bool finitePipe)
+    {
+        using var reader = new StreamReader(input, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, leaveOpen: true);
+        return await GmWorkerBridgePool.CaptureProcessOutputAsync(reader);
+    }
+
+
     private readonly bool _terminalMode;
     private Task? _terminalIoSettlement;
     private readonly TaskCompletionSource<string> _authorityLost = new(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -408,3 +513,62 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
         _disposed = true;
     }
 }
+
+/// <summary>
+/// Describes the admission outcome of an already released finite child.
+/// </summary>
+internal enum NativeFiniteStartDecision
+{
+    /// <summary>
+    /// Required observations have not yet arrived.
+    /// </summary>
+    Pending,
+    /// <summary>
+    /// The original owner observed a successful Started notification.
+    /// </summary>
+    Started,
+    /// <summary>
+    /// The child retired completely without requiring a Started notification.
+    /// </summary>
+    Completed,
+    /// <summary>
+    /// An observed failure prevents admission.
+    /// </summary>
+    Rejected
+}
+
+/// <summary>
+/// Carries immutable observations used by finite admission and stop policy.
+/// The owner supplies validated native evidence; this value does not validate its provenance.
+/// </summary>
+/// <param name="Released">
+/// Whether the original pre-exec gate has been released.
+/// </param>
+/// <param name="Started">
+/// Whether the owner accepted the Started notification.
+/// </param>
+/// <param name="RootExited">
+/// Whether the original root exit observation completed successfully.
+/// </param>
+/// <param name="SupervisorExited">
+/// Whether the original supervisor exit observation completed successfully.
+/// </param>
+/// <param name="SupervisorExitCode">
+/// The observed helper exit code, or null before it is available.
+/// </param>
+/// <param name="StatusCompleted">
+/// Whether the dedicated status reader completed successfully.
+/// </param>
+/// <param name="HelperErrorCompleted">
+/// Whether the helper error stream finished.
+/// </param>
+/// <param name="Terminal">
+/// The terminal evidence accepted by the owner, or null before terminal evidence.
+/// </param>
+/// <param name="Uncertainty">
+/// The sticky loss reason, or null when none has been recorded.
+/// </param>
+internal sealed record NativeFiniteObservation(bool Released, bool Started,
+    bool RootExited, bool SupervisorExited, int? SupervisorExitCode,
+    bool StatusCompleted, bool HelperErrorCompleted,
+    GmWorkerStopEvidence? Terminal, string? Uncertainty);

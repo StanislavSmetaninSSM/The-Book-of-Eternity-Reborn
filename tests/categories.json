@@ -2,6 +2,17 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-interface-crash-adapter-contracts",
+  "responsibility": "CRASH5 finite process admission, natural-retirement/control-loss policy, child environment and full separate output contracts. Managed behavior runs on Windows without Linux native startup.",
+  "excludes": "No game crash5 qualification, Linux native execution, diagnostic capture or replacement of native ownership evidence by simulated observations.",
+  "changeHints": ["BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs"],
+  "related": [],
+  "requirements": { "frontendBuild": false, "exclusive": false },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.GmWorkerNativeFinitePipePolicyTests.*"] }]
+},
+{
   "id": "saref-audit-mortal-heal-preservation",
   "responsibility": "M01: exact historical canonical Saref audit bytes survive genuine accepted Mortal recovery/heal, with pre-sign production producer, isolated uncached preparation, actual terminal history and owned cleanup.",
   "excludes": "No independent Saref effect materialization/lifetime, spiritual healing/E01/T148 completion, cross-realm active effect, L01 replay/crash/sampling, production remedy or CI execution.",
