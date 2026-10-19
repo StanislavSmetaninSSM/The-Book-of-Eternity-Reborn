@@ -1,3 +1,5 @@
+> G01 latest user clarification: exactcustodyreceipt+freshstickyhealth/noobservedcancel may admit one safe owned-process capture while CapturePhaseUNKNOWN remains; identity/ownership/delivery/order/stickyhealthuncertainty cancels. Retain observedinterval/race/UNKNOWN and mappedframes separately. WholeSOURCE/freshaffectedPREP stillrequired; no newphaseproof mechanism.
+
 > G01 phase-admission clarification pending: healthy discrete custodyreceipt with continuousphaseUNKNOWN versus cancellation for anyCapturePhaseUNKNOWN. No whole SOURCE/PREP/game admission; actualcases0/requests0/dumps0. Latest implementation authorization remains, but dependent execution is blocked until this constraint is resolved.
 
 > CURRENT G01 authority supersedes earlier STOP only for minimal test-only capture implementation, independent SOURCE/fresh affected PREP and exactly one existing diagnostic cut1/newfixture/maxone WriteDump. Private dump retention through independent sanitized EVIDENCE/finalreport, no archive/autodelete. Production/assertions/220900/crash5 and broader holds unchanged. See current plan/tasks and G01 bounded plan.

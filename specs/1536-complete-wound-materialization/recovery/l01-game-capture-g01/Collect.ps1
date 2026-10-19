@@ -47,14 +47,14 @@ function Identity([int]$processId) {
 }
 
 function Test-AdmissionHealth($h, $m, [long]$Now, [long]$Frequency) {
-    foreach ($name in @('Pid','BirthTick','Root','Nonce','Cut','Sequence','Stamp','Frequency','DeadlineStamp','Cancelled','PhaseAdmitted','PolicyState','Health')) {
+    foreach ($name in @('Pid','BirthTick','Root','Nonce','Cut','Sequence','Stamp','Frequency','DeadlineStamp','Cancelled','ReceiptAdmitted','PolicyState','Health')) {
         if ($name -notin $h.PSObject.Properties.Name) { return 'MISSING_HEALTH_FIELD' }
     }
     if ($h.Pid -ne $m.TargetPid -or $h.BirthTick -ne $m.TargetBirthTick -or $h.Root -cne $m.Root -or
         $h.Nonce -cne $m.Nonce -or $h.Cut -ne 1 -or $h.DeadlineStamp -ne $m.DeadlineStamp -or
         $h.Sequence -lt $m.HealthFloor -or $h.Frequency -ne $Frequency -or $h.Stamp -gt $Now -or $h.Stamp -le 0) { return 'HEALTH_CONTEXT_OR_CLOCK_UNKNOWN' }
     if (($Now - $h.Stamp) / [double]$Frequency -gt 1 -or ($m.DeadlineStamp - $Now) / [double]$Frequency -lt 25) { return 'STALE_OR_INSUFFICIENT_WINDOW' }
-    if ($h.Cancelled -isnot [bool] -or $h.PhaseAdmitted -isnot [bool] -or $h.Cancelled -or -not $h.PhaseAdmitted -or $h.PolicyState -cne 'ADMITTED') { return 'CANCELLED_OR_PHASE_NOT_ADMITTED' }
+    if ($h.Cancelled -isnot [bool] -or $h.ReceiptAdmitted -isnot [bool] -or $h.Cancelled -or -not $h.ReceiptAdmitted -or $h.PolicyState -cne 'ADMITTED') { return 'CANCELLED_OR_RECEIPT_NOT_ADMITTED' }
     foreach ($name in @('Uncertain','Eof','RawReadFault','AcceptedSeen','LateReturnSeen')) {
         if ($name -notin $h.Health.PSObject.Properties.Name -or $h.Health.$name -isnot [bool] -or $h.Health.$name) { return 'STICKY_HEALTH_UNCERTAINTY' }
     }
@@ -109,8 +109,8 @@ try {
     else {
         $result = Invoke-ObservedApi -Request {
             [void]$write.Invoke($client, [object[]]@([Enum]::ToObject($dumpType, 1), [string]$m.DumpPath, [Enum]::ToObject($flagType, 4)))
-        } -Writer { param($event) Emit $event } -Started @{ Stage = 'request_started'; TargetPid = $m.TargetPid;
-            TargetBirthTick = $m.TargetBirthTick; Nonce = $m.Nonce; HealthSequence = $h.Sequence; CapturePhase = 'UNKNOWN' }
+        } -Writer { param($event) $event.EventObservedStamp = [Diagnostics.Stopwatch]::GetTimestamp(); $event.ClockFrequency = [Diagnostics.Stopwatch]::Frequency; Emit $event } -Started @{ Stage = 'request_started'; TargetPid = $m.TargetPid;
+            TargetBirthTick = $m.TargetBirthTick; Nonce = $m.Nonce; HealthSequence = $h.Sequence; HealthStamp = $h.Stamp; CapturePhase = 'UNKNOWN' }
         $apiStatus = $result.ApiStatus; $apiOutcome = $result.ApiOutcome
         foreach ($errorText in $result.ObserverErrors) { [void]$observerErrors.Add($errorText) }
     }

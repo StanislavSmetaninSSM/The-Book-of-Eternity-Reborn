@@ -1,3 +1,5 @@
+> G01 user phaseguard clarification RESOLVED: permit exacthealthyreceipt while CapturePhaseUNKNOWN stays an evidence limit. Continue minimalwholeimplementation/SOURCE/freshaffectedPREP before onecase/maxoneWriteDump. No continuousphaseproof mechanism; prior blocker entries below are historical.
+
 > G01 saved WIP boundary: independent affected policy review32checks ACCEPT, firstcorrectedpure23PASS. This qualifies only the rawtimestamp correction/purecases. Phase-admission contract stillawaitsclarification; wholeorchestrationSOURCE/PREP unavailable, actualgame0/API0/dump0. Parent/watchdog/currentbindings incomplete; Collect/Map uncompiled/unrun. Nextstepresolveguard thenfinish SOURCE/PREP beforeonecase.
 
 > G01 current boundary: purepolicy23PASS after independently diagnosed timestamp correction; affected review pending. Whole capture orchestration remains WIP/unimplemented, fresh affected integration PREP UNRUN. Phase-admission wording requires clarification versus D01 permanent CapturePhaseUNKNOWN; no game/collector/API/dump occurred, all actual gates NONE. See G01control/currentplan.

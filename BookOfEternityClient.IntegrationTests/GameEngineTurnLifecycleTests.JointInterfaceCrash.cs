@@ -38,9 +38,11 @@ public sealed partial class GameEngineTurnLifecycleTests
     {
         Assert.True(OperatingSystem.IsLinux());
         using var classOwned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
-        var own = Path.Combine(Path.GetTempPath(), "boe-joint-interface-crash-" + Guid.NewGuid().ToString("N"));
+        var capture = diagnostic && JointInterfaceManagedCapture.Enabled;
+        var own = capture ? JointInterfaceManagedCapture.ClaimOwnedDirectory(cut, fault)
+            : Path.Combine(Path.GetTempPath(), "boe-joint-interface-crash-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(Path.Combine(own, "tmp"));
-        using var owned = new JointInterfaceCrashOwnedContainer(own, line => _directGachaOutput?.WriteLine(line));
+        using var owned = new JointInterfaceCrashOwnedContainer(own, line => _directGachaOutput?.WriteLine(line), capture);
         var nonce = Guid.NewGuid().ToString("N");
         File.WriteAllText(Path.Combine(own, "parent.json"), JsonSerializer.Serialize(new
         { Nonce = nonce, ParentPid = Environment.ProcessId, Cut = cut, Fault = fault, Diagnostic = diagnostic }));
@@ -124,6 +126,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         JointInterfaceDiagnosticDelivery? delivery = null;
         JointInterfaceDiagnosticDelivery.Health? deliveryHealth = null;
         string? deliveryObserverFailure = null;
+        Task<JointInterfaceManagedCapture.Outcome>? captureTask = null;
+        JointInterfaceManagedCapture.Outcome? captureOutcome = null;
+        using var captureStop = new CancellationTokenSource();
         Exception? failure = null;
         try
         {
@@ -134,13 +139,17 @@ public sealed partial class GameEngineTurnLifecycleTests
                     new(child.Id, birthTick, root, deliveryNonce ?? "", cut), out delivery, out deliveryObserverFailure);
             else stdout = child.StandardOutput.ReadToEndAsync();
             stderr = child.StandardError.ReadToEndAsync();
-            // Reader/ReadHealth are live here in this original owning parent, before exit.
-            // No snapshot observer is attached/released by D01; a future consumer must recheck sticky health.
-            await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(220));
+            var deadline = Stopwatch.GetTimestamp() + 220 * Stopwatch.Frequency;
+            var nativeWait = child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(220));
+            if (observeLive && role == "engine-joint-interface-resume" && delivery is not null && JointInterfaceManagedCapture.Enabled)
+                captureTask = JointInterfaceManagedCapture.ObserveAsync(child, birthTick, root, deliveryNonce ?? "", cut, own,
+                    executable, arguments, deadline, delivery, captureStop.Token);
+            await nativeWait;
         }
         catch (Exception error) { failure = error; throw; }
         finally
         {
+            captureStop.Cancel();
             Exception? cleanupFailure = null;
             try
             {
@@ -154,6 +163,12 @@ public sealed partial class GameEngineTurnLifecycleTests
             try { deliveryHealth = delivery?.ReadHealth(); }
             catch (Exception observerError) when (observerError is not OutOfMemoryException and not StackOverflowException)
             { deliveryObserverFailure ??= observerError.GetType().Name; }
+            if (captureTask is not null)
+            {
+                try { captureOutcome = await captureTask.WaitAsync(TimeSpan.FromSeconds(5)); }
+                catch (Exception observerError) when (observerError is not OutOfMemoryException and not StackOverflowException)
+                { deliveryObserverFailure ??= "Capture: " + observerError.GetType().Name; }
+            }
             if (stdout?.IsCompletedSuccessfully == true) File.WriteAllText(output + ".stdout", stdout.Result);
             if (stderr?.IsCompletedSuccessfully == true) File.WriteAllText(output + ".stderr", stderr.Result);
             WritePhysicalInjuryDiagnostic("iobs_actual_native_join", new
@@ -166,7 +181,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 try { WritePhysicalInjuryDiagnostic("iobs_parent_live_delivery_health", new
                     { child.Id, BirthTick = birthTick, Root = root, Nonce = deliveryNonce, Cut = cut,
-                        Health = deliveryHealth, ConstructionFailure = deliveryObserverFailure,
+                        Health = deliveryHealth, ConstructionFailure = deliveryObserverFailure, Capture = captureOutcome,
                         SourceEmissionCompleteness = "UNKNOWN", CapturePhase = "UNKNOWN" }); }
                 catch (Exception observerError) when (observerError is not OutOfMemoryException and not StackOverflowException)
                 {
@@ -180,7 +195,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             MortalArchiveDependencyContext(), stdout!.IsCompletedSuccessfully && stderr!.IsCompletedSuccessfully, child.HasExited);
     }
 
-    private sealed class JointInterfaceCrashOwnedContainer(string root, Action<string> output) : IDisposable
+    private sealed class JointInterfaceCrashOwnedContainer(string root, Action<string> output, bool retainCapture = false) : IDisposable
     {
         private readonly HashSet<int> _unsettled = [];
         internal bool HasUnsettledChildren => _unsettled.Count != 0;
@@ -193,6 +208,13 @@ public sealed partial class GameEngineTurnLifecycleTests
                 output(JsonSerializer.Serialize(new { CleanupOwnedRoot = root, OwnedFixtureRemoved = false,
                     OwnedFixtureRetainedForUnresolvedChild = true, UnsettledOwnedPids = _unsettled.Order().ToArray(),
                     CleanupFailure = "Native exit/join/EOF could not all be positively established; do not delete under an unconfirmed child." }));
+                return;
+            }
+            if (retainCapture)
+            {
+                try { output(JsonSerializer.Serialize(new { CleanupOwnedRoot = root, OwnedFixtureRemoved = false,
+                    PrivateCaptureRetainedThroughIndependentEvidenceAndFinalReport = true })); }
+                catch (Exception e) when (e is not OutOfMemoryException and not StackOverflowException) { /* retention does not change native outcome */ }
                 return;
             }
             new CleanupOwnedFixture(root, output).Dispose();

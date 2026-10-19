@@ -1,3 +1,5 @@
+> CURRENT: phasecontract resolved by explicituseroption1. Wholecode/bindings/controller/recovery WIP readyforSOURCE; pureParent/PShealth/offlineMap proofs unrun untilSOURCE ZERO acceptance. EarlierphaseBLOCKER entries below are historical. One namedrun 2ca476b7cf58446fb3eb3c6218e850b8 only afterfreshaffectedPREP, exactrecords/save/recovery and consumedlease.
+
 # G01 — one fixture-only managed snapshot implementation
 
 Task [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536),

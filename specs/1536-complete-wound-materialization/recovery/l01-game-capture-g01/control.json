@@ -1,8 +1,8 @@
 {
   "kind": "G01_PENDING_CAPTURE_ORCHESTRATION_CONTROL",
   "base": "c1668efba8ccf9bb041e8b764d561fe7bed0bc6f",
-  "status": "WIP_PHASE_ADMISSION_CONTRACT_CLARIFICATION_REQUIRED",
-  "sourceReview": "NONE_WHOLE_ORCHESTRATION_NOT_IMPLEMENTED",
+  "status": "WIP_WHOLE_SOURCE_PENDING",
+  "sourceReview": "PENDING_INDEPENDENT_WHOLE_SOURCE",
   "affectedIntegrationPrep": "UNRUN",
   "gameplayRelease": "NONE",
   "snapshotRelease": "NONE",
@@ -26,8 +26,10 @@
   "phaseClarification": {
     "latestInstruction": "health/identity/phase uncertainty cancels capture",
     "existingSource": "JointInterfaceDiagnosticDelivery.Health.CapturePhase => UNKNOWN; receipt is a discrete marker, source-emission completeness UNKNOWN",
-    "pendingQuestion": "Does healthy exact custody receipt permit one request while continuous capture phase stays UNKNOWN, or must any CapturePhase UNKNOWN prohibit capture?",
-    "dependentActualBlocked": true
+    "dependentActualBlocked": false,
+    "resolution": "EXACT_RECEIPT_FRESH_STICKY_HEALTH_CAPTURE_PHASE_UNKNOWN_ALLOWED",
+    "userChoice": 1,
+    "limits": "Identity/ownership/delivery/order/sticky-health uncertainty cancels; CapturePhase UNKNOWN alone does not. No continuous-phase proof mechanism; retain observed interval/races/UNKNOWN plus real mapped frames."
   },
   "dumpLifecycle": {
     "root": "New private disposable own/capture only",
@@ -35,17 +37,19 @@
     "commitAttachArchive": "FORBIDDEN_CORE_OR_RAW_REPORT",
     "automaticDeletion": "NONE"
   },
-  "unimplemented": [
-    "C# parent consumer/wiring/retention",
-    "external request watchdog",
-    "source/current binding packet and one-shot phase controller",
-    "affected build/catalog/PlanOnly/mapper compilation",
-    "whole SOURCE/PREP/game/EVIDENCE"
-  ],
+  "unimplemented": [],
   "unrunWipSources": [
-    "Collect.ps1",
-    "MapFrames.cs"
+    "ParentProbe/MapFrames compilation and pure proofs",
+    "fresh integration/catalog/PlanOnly",
+    "one game case",
+    "offline actual mapping and EVIDENCE"
   ],
   "allOldOutcomesAndBroaderHoldsUnchanged": true,
-  "currentNextAction": "RESOLVE_PHASE_ADMISSION_CONTRACT_BEFORE_DEPENDENT_IMPLEMENTATION_SOURCE_PREP_GAME"
+  "currentNextAction": "SAVE_RECOVER_WHOLE_SOURCE_WIP_AND_INDEPENDENT_REVIEW",
+  "sourceAdmission": {
+    "status": "HOLD_WHOLE_SOURCE"
+  },
+  "actualAdmission": {
+    "status": "HOLD_PREP"
+  }
 }
