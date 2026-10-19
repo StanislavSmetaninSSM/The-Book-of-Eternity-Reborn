@@ -647,7 +647,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         (string Path, string Hash)[] pins = [
             ("BookOfEternityClient/Services/MortalQteDecisionPublication.cs", "18A6DABE883DFCF25C784D3B5148E923EB578E9047ADE724A8ADB7BB6161BF7F"),
             ("BookOfEternityClient/Core/FileSystemManager.ValidationReadReservation.cs", "7237190D02FE11E36A5671E82CAE499D5CD253B0D0A0FBBD69666E18C2CA8603"),
-            ("BookOfEternityClient/Core/FileSystemManager.PendingSnapshotValidationRead.cs", "446284900410A858CCE77471F72BAA21DE859A27A095A17E7F4A176BBD0D9531"),
+            ("BookOfEternityClient/Core/FileSystemManager.PendingSnapshotValidationRead.cs", "B4762E537D1ADF5DA229BB4FE4B2C4EB1995E69A49E89B9A264572CC60B2E233"),
             ("BookOfEternityClient/Core/FileSystemManager.ValidationMutationReservation.cs", "0CF53BE2AD836B22115392E4BC44117E14989624688BF176FDB4C8F0E45CE071"),
             ("BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs", "5E5DBEBA9379081455F00F8F3248B8011F7147EEA77F9396189F105609770DDE"),
             ("BookOfEternityClient/Core/FileSystemManager.ImagePublication.cs", "86E30E1D4048A615002B080BA1B477D265B0831A8BED354FE7279BFD5638999F"),
@@ -725,7 +725,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             ("BookOfEternityClient/Services/Validation/ValidationService.ShiningAbode.cs", "081B4FD60653F4AC130B4598C232AB7CBA233EBEC17722D766DDC92461269B35"),
             ("BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs", "8DD0A006086AF426337DA6AE34E4E3C83A1C98405BFC867021FFCEB8046FFD44"),
             ("BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs", "7FF80990BFB94CE15C38389BE253D4618EADE091A1459339BD2D9873A82C6662"),
-            ("BookOfEternityClient/Services/ValidationService.cs", "CCEAC3A342178D12C5DE79C48DD4C9A6E47C0BFAE67E3F696C9FE663D478E1A0"),
+            ("BookOfEternityClient/Services/ValidationService.cs", "1DBC3F35E142D4F376B1EA4FCDF220D348B80BEE323FAE90E577D4CA5C2E9662"),
             ("BookOfEternityClient/Services/WorldDirectiveService.cs", "1E272E2A48AC49EB82894C917FA3476D24C568BFE9C903B358CB56FE3529C2C0"),
             ("BookOfEternityClient/Core/FileSystemManager.OrdinaryReadStreams.cs", "323D61E2EF12FF77662712D5CE199A2CA0DFE6211544FF8E19CD60E984B93CD1"),
             ("BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs", "520C595470142E021C4497F44A4A9456A8EA47702730860B7A364987278D325C"),

@@ -44,7 +44,8 @@ public partial class ValidationService
         FileSystemManager.CanonicalWriteLease writeLease, StoryService.AcceptedStoryAppend? acceptedStoryAppend)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
-        if (_fs.HasBrowserOriginalOperation || _sameTurnOwnerInputs != null || _prevalidatedPendingTurnSnapshotOverride != null)
+        if (_fs.HasBrowserOriginalOperation || writeLease.BrowserLocalAccess != null ||
+            _sameTurnOwnerInputs != null || _prevalidatedPendingTurnSnapshotOverride != null)
             return ValidateQteTerminalGameStateAsync(acceptedStoryAppend);
         return RunBorrowedPendingSnapshotValidationAsync(writeLease, () => ValidateGameStateCoreAsync(
             GameStateValidationSelection.All, false, acceptedStoryAppend, null));

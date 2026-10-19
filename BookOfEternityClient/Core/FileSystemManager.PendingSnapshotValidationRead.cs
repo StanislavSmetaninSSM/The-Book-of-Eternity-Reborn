@@ -48,7 +48,8 @@ public partial class FileSystemManager
     {
         EnsureValidCanonicalWriteLease(writeLease);
         var owner = writeLease.MainAdmission;
-        if (HasBrowserOriginalOperation || writeLease.Purpose != CanonicalWritePurpose.SessionMutation ||
+        if (HasBrowserOriginalOperation || writeLease.BrowserLocalAccess != null ||
+            writeLease.Purpose != CanonicalWritePurpose.SessionMutation ||
             writeLease.WorkerPurpose != null || writeLease.IsLegacyStorageRecovery ||
             owner == null || !owner.PhysicalScope || owner.Closed || owner.Closing || owner.BoundClosing || owner.MetadataOnly)
             throw new InvalidOperationException("Pending snapshot validation requires its original ordinary console lease.");
