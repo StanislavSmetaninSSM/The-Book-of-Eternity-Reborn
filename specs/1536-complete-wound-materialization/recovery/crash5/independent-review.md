@@ -1,5 +1,13 @@
 # CRASH5 — независимый review implementation / PREP
 
+## Текущий review spec5 / plan3
+
+Отдельный контекст `review_spec5_implementation`, явно выбранные gpt-6-astra/high; parent реализовывал изменения. Проверяющий работал read-only с exact diff, source pins, raw TRX и source/DLL provenance.
+
+T240…T243 завершены. Исходники 1e0a5fcd7 и подготовка SOURCE/PREP приняты отдельным gpt-6-astra/high. Адресная квалификация:17 категорий,180 distinct PASS,0skip; это union89 на85f4 +23 на8617692 +68 на1e0a5fcd7 с отдельными source/DLL bindings, а не один общий прогон. Обе XML builds exit0, changed XML diagnostics0; catalog и PlanOnly подтверждены. T244 ещё не запускалась; разрешена ровно одна source42 проба. T245 допускается только после её настоящего full-return PASS. Windows5 сохраняет исторический T219 FAIL_INCOMPLETE; Linux UNRUN.
+
+Ниже сохранена история предыдущих review; их разрешения и результаты относятся к указанным версиям.
+
 Reviewer: отдельный agent context `review_crash5_implementation`, явно выбранные **gpt-6-astra / high**. Parent реализовывал изменения; reviewer исходники не редактировал и tests/build/discovery/native не запускал.
 
 ## SOURCE
