@@ -80,6 +80,34 @@
       "contracts": [
         "Preserve exact ownership and mutual exclusion; original errors and legal writes after proof close remain intact."
       ]
+    },
+    {
+      "category": "pending-snapshot-qte-caller",
+      "reason": "Actual QTE terminal caller proof lifetimes, compensation and accepted-story validation.",
+      "contracts": [
+        "Preserve original validation, rollback, disposal and browser contracts through the held-lease extension."
+      ]
+    },
+    {
+      "category": "pending-snapshot-qte-neighbors",
+      "reason": "Exact existing QTE restoration, late persistence and backup cleanup consumers.",
+      "contracts": [
+        "Preserve original validation, rollback, disposal and browser contracts through the held-lease extension."
+      ]
+    },
+    {
+      "category": "pending-snapshot-qte-browser",
+      "reason": "Exact existing browser QTE rollback and generation-fencing consumers; original fallback remains intact.",
+      "contracts": [
+        "Preserve original validation, rollback, disposal and browser contracts through the held-lease extension."
+      ]
+    },
+    {
+      "category": "pending-snapshot-qte-lease-release",
+      "reason": "Actual owner teardown after external-context failure, lock reacquisition and primary/completed disposition.",
+      "contracts": [
+        "Preserve original validation, rollback, disposal and browser contracts through the held-lease extension."
+      ]
     }
   ]
 }

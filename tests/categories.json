@@ -2,6 +2,109 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "pending-snapshot-qte-caller",
+  "responsibility": "Actual QTE terminal caller proof lifetimes, compensation and accepted-story validation.",
+  "excludes": "No broad suite, gameplay qualification or native runtime.",
+  "changeHints": [
+    "BookOfEternityClient/Services/QteSceneService.cs",
+    "BookOfEternityClient/Core/FileSystemManager.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "tests": [
+        "BookOfEternityClient.Tests.QteSceneServiceTests.QtePendingSnapshot_*"
+      ],
+      "project": "integration"
+    }
+  ]
+},
+{
+  "id": "pending-snapshot-qte-neighbors",
+  "responsibility": "Exact existing QTE restoration, late persistence and backup cleanup consumers.",
+  "excludes": "No broad suite, gameplay qualification or native runtime.",
+  "changeHints": [
+    "BookOfEternityClient/Services/QteSceneService.cs",
+    "BookOfEternityClient/Core/FileSystemManager.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "tests": [
+        "BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeValidatedStateChangesAsync_RestoresStateAfterValidationFailure",
+        "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_DirectLatePersistenceFailureRollsBackResourceQuartetAndPreservesSelectedBoundary",
+        "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_BackupCleanupFailureDoesNotMaskCommittedResult",
+        "BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeValidatedStateChangesAsync_PreservesSiblingBackupRunDirectory"
+      ],
+      "project": "integration"
+    }
+  ]
+},
+{
+  "id": "pending-snapshot-qte-browser",
+  "responsibility": "Exact existing browser QTE rollback and generation-fencing consumers; original fallback remains intact.",
+  "excludes": "No broad suite, gameplay qualification or native runtime.",
+  "changeHints": [
+    "BookOfEternityClient/Services/QteSceneService.cs",
+    "BookOfEternityClient/Core/FileSystemManager.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "tests": [
+        "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.CompleteAction_LatePersistenceFailureRollsBackOutcomeHistoryAndRuntime",
+        "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.CompleteAction_ResourcePenaltyLateFailureRollsBackCanonicalQuartet",
+        "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.ResolveAction_NewGameWinsBeforeQteLease_DoesNotRestoreOldBytesIntoReplacementSession"
+      ],
+      "project": "integration"
+    }
+  ]
+},
+{
+  "id": "pending-snapshot-qte-lease-release",
+  "responsibility": "Actual owner teardown after external-context failure, lock reacquisition and primary/completed disposition.",
+  "excludes": "No broad suite, gameplay qualification or native runtime.",
+  "changeHints": [
+    "BookOfEternityClient/Services/QteSceneService.cs",
+    "BookOfEternityClient/Core/FileSystemManager.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "tests": [
+        "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.RealLeaseContextFailureStillClosesLockAndAllowsReacquisition",
+        "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure",
+        "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseKeepsCompletedDispositionOnContextFailure"
+      ],
+      "project": "unit"
+    }
+  ]
+},
+{
   "id": "pending-snapshot-qte-custody",
   "responsibility": "Spec5 original lease, admission and ambient custody through proof close, failure, cancellation and competing consumers.",
   "excludes": "No gameplay or native qualification, broad lifecycle suite or synthetic replacement authority.",
