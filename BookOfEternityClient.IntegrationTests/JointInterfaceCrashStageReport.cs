@@ -18,6 +18,7 @@ internal sealed class JointInterfaceCrashStageReport
     private readonly long _started = Stopwatch.GetTimestamp();
     private readonly object _gate = new();
     private readonly HashSet<SessionFinalizationCheckpoint> _sourceCheckpoints = new();
+    private JointSourceReadCounter? _sourceReads;
     private int _records;
     private bool _outputClosed;
 
@@ -71,6 +72,15 @@ internal sealed class JointInterfaceCrashStageReport
     internal string? OutputFailure { get; private set; }
 
     /// <summary>
+    /// Enables scalar counters once during the isolated source probe's fixture setup.
+    /// </summary>
+    /// <returns>
+    /// The probe-local counter wired only to existing read and mutation callbacks.
+    /// </returns>
+    internal JointSourceReadCounter EnableSourceReadCounters() => _sourceReads ??=
+        new(snapshot => ObserveCore("source-reads", "enter", null, snapshot));
+
+    /// <summary>
     /// Records the first observation of each existing source finalization boundary.
     /// </summary>
     /// <param name="checkpoint">
@@ -86,10 +96,17 @@ internal sealed class JointInterfaceCrashStageReport
             _ => null
         };
         if (stage is null) return;
+        bool first;
         lock (_gate)
         {
-            if (_sourceCheckpoints.Add(checkpoint)) Observe(stage, "enter");
+            first = _sourceCheckpoints.Add(checkpoint);
+            if (first) Observe(stage, "enter");
         }
+        // Never acquire the counter gate while holding the writer gate: read callbacks emit in the opposite order.
+        if (first && checkpoint == SessionFinalizationCheckpoint.TerminalSignalSnapshotCapturedBeforeResolution)
+            _sourceReads?.Advance("capture-to-validated");
+        if (first && checkpoint == SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization)
+            _sourceReads?.Advance("post-validated");
     }
 
     /// <summary>
@@ -106,13 +123,34 @@ internal sealed class JointInterfaceCrashStageReport
     /// </param>
     internal void Observe(string stage, string transition, string? errorType = null)
     {
+        if (stage == "source-turn" && transition is "return" or "error") _sourceReads?.Complete();
+        ObserveCore(stage, transition, errorType, null);
+    }
+
+    /// <summary>
+    /// Writes an ordinary scalar stage or a source-probe aggregate under the same record and byte budgets.
+    /// </summary>
+    /// <param name="stage">
+    /// The fixed stage name, including the source-probe aggregate stage.
+    /// </param>
+    /// <param name="transition">
+    /// The observed enter, return or error transition.
+    /// </param>
+    /// <param name="errorType">
+    /// An optional bounded exception type without message or state data.
+    /// </param>
+    /// <param name="reads">
+    /// Optional scalar read counters; null leaves the previous stage schema unchanged.
+    /// </param>
+    private void ObserveCore(string stage, string transition, string? errorType, JointSourceReadSnapshot? reads)
+    {
         lock (_gate)
         {
             if (_outputClosed || _records >= 64) return;
             _records++;
             if (stage is not ("fixture" or "file-system" or "engine" or "preflight-lease" or "snapshot-refresh" or
                 "late-first" or "finalization-before" or "finalization-after" or "late-repeat" or "exit" or "error" or
-                "source-author" or "source-inspection" or "source-capture" or "source-validated" or "source-qte" or "source-turn") ||
+                "source-author" or "source-inspection" or "source-capture" or "source-validated" or "source-qte" or "source-turn" or "source-reads") ||
                 transition is not ("enter" or "return" or "error"))
             {
                 OutputFailure ??= "InvalidStage";
@@ -122,7 +160,7 @@ internal sealed class JointInterfaceCrashStageReport
             errorType = errorType is { Length: > 256 } ? errorType[..256] : errorType;
             try
             {
-                var line = Serialize(stage, transition, errorType);
+                var line = Serialize(stage, transition, errorType, reads);
                 if (Encoding.UTF8.GetByteCount(line) > 2048)
                 {
                     OutputFailure ??= "RecordTooLarge";
@@ -152,13 +190,21 @@ internal sealed class JointInterfaceCrashStageReport
     /// <param name="errorType">
     /// A bounded error type, or <see langword="null"/> when no error is being reported.
     /// </param>
+    /// <param name="reads">
+    /// Optional scalar source-probe totals; no paths or file contents are serialized.
+    /// </param>
     /// <returns>
     /// A single JSONL record for the subsequent byte-bound check.
     /// </returns>
-    private string Serialize(string stage, string transition, string? errorType) => JsonSerializer.Serialize(new
+    private string Serialize(string stage, string transition, string? errorType, JointSourceReadSnapshot? reads = null)
     {
-        Boundary = "crash5_stage_v1", RunId = _runId, Nonce = _nonce, _identity.Pid, _identity.BirthKind,
-        Cut = _cut, Stage = stage, Transition = transition,
-        ElapsedMilliseconds = Stopwatch.GetElapsedTime(_started).TotalMilliseconds, ErrorType = errorType
-    }) + "\n";
+        var record = JsonSerializer.SerializeToNode(new
+        {
+            Boundary = "crash5_stage_v1", RunId = _runId, Nonce = _nonce, _identity.Pid, _identity.BirthKind,
+            Cut = _cut, Stage = stage, Transition = transition,
+            ElapsedMilliseconds = Stopwatch.GetElapsedTime(_started).TotalMilliseconds, ErrorType = errorType
+        })!.AsObject();
+        if (reads != null) record["Reads"] = JsonSerializer.SerializeToNode(reads);
+        return record.ToJsonString() + "\n";
+    }
 }

@@ -74,6 +74,10 @@ public sealed partial class GameEngineTurnLifecycleTests
         using var fixture = new GameEngineTurnLifecycleTests(new JointInterfaceConsoleOutput());
         using var ownedFixture = new CleanupOwnedFixture(fixture._rootPath, line => fixture._directGachaOutput?.WriteLine(line));
         stages.Observe("fixture", "return");
+        var reads = stages.EnableSourceReadCounters();
+        fixture._consoleCanonicalReadObserver = path => { reads.InitialRead(path); return Task.CompletedTask; };
+        fixture._consoleReturnedCanonicalReadObserver = _ => { reads.ReturnedRead(); return Task.CompletedTask; };
+        fixture._consoleMutationObserver = _ => reads.Mutation();
         IDisposable? sourceInput = null;
         try
         {
