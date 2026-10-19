@@ -263,9 +263,19 @@ public partial class FileSystemManager
         public void Dispose()
         {
             if(_closed)return;
-            _worldReservedAccess?.RequireNoPendingSnapshotClose();
-            _closed=true;_access?.Release(this);_access=null;
-            if(MainAdmissions.Value==this)MainAdmissions.Value=_parent;
+            try
+            {
+                if (_access == null) _closed = true;
+                else _access.Release(this, PhysicalScope ? _worldIssuance : null, () => _closed = true);
+            }
+            finally
+            {
+                if (_closed)
+                {
+                    _access = null;
+                    if (MainAdmissions.Value == this) MainAdmissions.Value = _parent;
+                }
+            }
         }
     }
     private sealed class MainAccess(MainAdmission owner, GmMainOwnerGuard? guard,GmSessionRunCoordinator.Access? original,GmMainOperationClient? remote=null,bool workerObservationRequired=false)
@@ -356,10 +366,30 @@ public partial class FileSystemManager
                 if(_references!=1)throw new IOException("Original operation still owns filesystem leases; close is unconfirmed.");
             }
         }
-        public void Release(MainAdmission admission)
+        /// <summary>
+        /// Atomically closes and removes an admission only when its retained read reservation permits it.
+        /// </summary>
+        /// <param name="admission">
+        /// The original admission being disposed.
+        /// </param>
+        /// <param name="physicalIssuance">
+        /// Exact physical acquisition identity, or null for a nonphysical original owner.
+        /// </param>
+        /// <param name="markClosed">
+        /// Marks that admission closed after the reservation check and before removal under the same lock.
+        /// </param>
+        public void Release(MainAdmission admission, ValidationReadReservation? physicalIssuance, Action markClosed)
         {
             bool release;
-            lock(_state) { if(!_admissions.Remove(admission))return;release=--_references==0; }
+            lock (_state)
+            {
+                if (_worldRead is PendingSnapshotValidationReadScope pending &&
+                    !(ReferenceEquals(pending, physicalIssuance) && (pending.Opening || pending.Closed)))
+                    throw new InvalidOperationException("Pending snapshot validation must close before its original operation.");
+                markClosed();
+                if (!_admissions.Remove(admission)) return;
+                release = --_references == 0;
+            }
             if(release){Workers?.ReleaseClient();guard?.Dispose();original?.Pin?.Dispose();}
         }
     }

@@ -429,13 +429,18 @@ public sealed class PendingSnapshotValidationScopeTests(ITestOutputHelper output
         await fixture.PrepareAsync(false);
         using var owner = fixture.Files.BeginMainAdmission();
         await owner.AcquireAsync();
-        await fixture.RunAsync(async () =>
+        var foreignRefused = false;
+        await Assert.ThrowsAsync<InvalidOperationException>(() => fixture.RunAsync(async () =>
         {
             Assert.NotSame(foreignLease, fixture.CurrentLease);
-            await Assert.ThrowsAsync<InvalidOperationException>(() => fixture.LookupAsync(true, writeLease: foreignLease));
             Assert.Equal("Usable", Status(await fixture.LookupAsync(true, writeLease: fixture.CurrentLease)));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => fixture.LookupAsync(true, writeLease: foreignLease));
+            foreignRefused = true;
+            await Assert.ThrowsAsync<InvalidOperationException>(() => fixture.LookupAsync(true, writeLease: fixture.CurrentLease));
             return [];
-        });
+        }));
+        Assert.True(foreignRefused);
+        await fixture.RunAsync(() => Task.FromResult(new List<ValidationIssue>()));
     }
 
     /// <summary>
