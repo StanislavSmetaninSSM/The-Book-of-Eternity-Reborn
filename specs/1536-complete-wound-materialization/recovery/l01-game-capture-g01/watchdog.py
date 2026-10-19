@@ -75,7 +75,9 @@ def main():
                  LoadedFiles=cfg['LoadedFiles'], ClientAssembly=cfg['ClientAssembly'], BinaryImages=cfg['BinaryImages'])
         lib['write'](root/'request-manifest.json', m)
         record.update(owner=owner, watchdog=me, targetIdentity=identity, parentFileSha256=m['ParentFileSha256'])
-        env = lib['environment'](root/'collector-env'); env['TMPDIR'] = str(own/'tmp')
+        collector_phase = root/'collector-env'
+        collector_phase.mkdir(mode=0o700)
+        env = lib['environment'](collector_phase); env['TMPDIR'] = str(own/'tmp')
         env['PATH'] = '/tmp/1536-cloud-tools/pwsh:/tmp/1536-cloud-tools/dotnet:/usr/bin:/bin'
 
         def health_cancelled():

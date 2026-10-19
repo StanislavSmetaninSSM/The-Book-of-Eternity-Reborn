@@ -1,0 +1,22 @@
+{
+  "kind": "G01_POSTRUN_ENV_PARENT_SOURCE_AND_BINARY_EQUIVALENCE",
+  "originalGameSource": "275586f399bee346acf6773ecbff2d95f1ec2ba4",
+  "originalEvidenceCarrier": "e379457699ee68e1fee45552fbeee3da38c5abb6",
+  "integrationCompiledSource": "d293b3bf796289fb6662a778ca408fae76ab2736",
+  "unitCompiledSource": "d3a1ddcf7a6e2f06ae815877c46314ec81d9f0d7",
+  "sourceOutsideFeature": {
+    "entries": 47434,
+    "sha256": "9c11a87e7a765a184c5c966b384ba11522ba029959ae6e5c65e8283c331c8afe"
+  },
+  "privateClosuresVerified": {
+    "BookOfEternityClient.IntegrationTests": 460,
+    "BookOfEternityClient.Tests": 439
+  },
+  "toolOutputsVerified": 8,
+  "newWatchdogSha256": "0fcd99aefab4a1b23414b0435c3f721deb04d511bcf5e9bd8439ce9b7c5fd2e9",
+  "redRecordSha256": "d99f13507961760258d099f9bc7a10a06aff935817faa05360fedeee23319484",
+  "greenRecordSha256": "a739e0f8e52d593cd058df4c1870e832890d058356dcb0ae702b2b40ef58f3aa",
+  "originalGameOrSettingsOrPrepRecordsMutated": false,
+  "gameOrDumpRelease": "NONE",
+  "limits": "C#source/bytes retained by explicit equivalence; original PREP digest and failedactual remain original. This pure proof is not a new fullruntime/PREP admission."
+}

@@ -1,0 +1,13 @@
+{
+  "kind": "G01_EVIDENCE_READER_HISTORY",
+  "originalReader": "/tmp/1536-cloud-tools/review/check_g01_first_outcome_20261019_v1.py",
+  "originalSha256": "26bf4ef2f7900e1d98bdcef6c191817e7972f330cc1223415968be8d5040306e",
+  "originalExit": 1,
+  "originalAssertion": "privacy original raw not published",
+  "cause": "Reader expected only the sanitized index in carrier delta; the five normal handoff/control documentation changes were also present. No private raw file was found.",
+  "correction": "Require the exact six-file metadata/sanitized-index delta; keep all privacy predicates and other checks unchanged.",
+  "correctedReader": "/tmp/1536-cloud-tools/review/check_g01_first_outcome_20261019.py",
+  "correctedSha256": "9eb53f1d873a233ef4e6da04ac446d541f07a9a16992ad1463134a570db1d3e2",
+  "nativeRetry": false,
+  "sourceOrOriginalMutation": false
+}

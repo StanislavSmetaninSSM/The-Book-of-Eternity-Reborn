@@ -1,0 +1,35 @@
+{
+  "kind": "G01_ACTUAL_CALLER_PREFIX_FILESYSTEM_REGRESSION",
+  "watchdogSha256": "0989a13b62899b0bbde9758dda25c15057a08a046127b44ceb2217422c235c1b",
+  "helperSha256": "d121731cff4867acf993d034962c9f5591fdcb496307a5fe0e9642b8392da333",
+  "proofSourceSha256": "87ff4a03d75960f46b5181c47794f9f1ccbcdf89d1cf9deb9c9c3fcc2d1cfad4",
+  "prefixAstSha256": "8bb3711fe5199a1c29c98c1011e98caed956b5bf09bb82e8ebd22a9a6f2add09",
+  "checks": [
+    {
+      "name": "actual prefix completes without missing parent",
+      "passed": false
+    },
+    {
+      "name": "caller parent and six children private0700",
+      "passed": false
+    },
+    {
+      "name": "same allowlist and target own TMPDIR",
+      "passed": false
+    },
+    {
+      "name": "strict caller prefix refuses existing phase",
+      "passed": false
+    }
+  ],
+  "passed": 0,
+  "firstError": {
+    "type": "FileNotFoundError",
+    "message": "[Errno 2] No such file or directory: '/tmp/1536-cloud-tools/g01-env-prefix-red-20261019/own/capture/collector-env/tmp'"
+  },
+  "nativeChildren": 0,
+  "gameCases": 0,
+  "apiRequests": 0,
+  "originalGameRootsTouched": false,
+  "retainedProofRoot": "/tmp/1536-cloud-tools/g01-env-prefix-red-20261019"
+}

@@ -1,0 +1,306 @@
+{
+  "kind": "G01_FIRST_OUTCOME_AND_PREFLIGHT_CAUSE_CHECKS",
+  "carrier": "e379457699ee68e1fee45552fbeee3da38c5abb6",
+  "actualSource": "275586f399bee346acf6773ecbff2d95f1ec2ba4",
+  "checkedUtc": "2026-10-19T00:49:00.033595+00:00",
+  "checks": [
+    {
+      "check": "sanitized index exact saved Git writer restore hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "exact clean independently restored carrier and source closure",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "both checkout HEADs exact clean",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "11 original private hash chains match without publishing originals",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "163 actual source pins unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "original exact saved PREP and consumed one-run lease",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "exact preparatory records still bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "settings hash and actual source identity exact",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "original FIRST game native1, one test failed, observers separate",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "one complete exact selected diagnostic case outside57",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "TRX direct TimeoutException at original220 harness not target managed stack",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "original category not timed out and own/runtime cleanup reported",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "two distinct genuine identities producer73 resumer137 fully joined EOF",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "resumer failure original wait preserved separately",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "parent nonce/cut/source producer tuple consistent",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "request preflight binds actual owner/watchdog/resumer tuple",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "exact real resumer command bound manifest and native join",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "new private owned path retained with correct permissions",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "watchdog launched once joined2 while collector/API definitely unreached",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "sole exact preflight failure repr retained",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "manifest and identities written, environment parent and collector files absent",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "no core/raw report or mapping result; no createdump claimed",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "retained owned socket artifact identity path, not live-process claim",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "exact22 published parent interval, all identities and raw line hashes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "typed interval order no observed gaps",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "discrete source/receipt marker intervals exact",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "parent cancelled at accepted observation and stopped with22 scope",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "terminal native drain has24 diagnostic events with EOF, no construction/reader/gap fault",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "two post-parent-cancel safe stages prove lease returned, not a lease hang",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "terminal child capture does not replace primary outcome",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "no phase/suspension/emission-completeness inference",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "normal899 and dated no-live-tool observations preserved",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "current full899 private compiled closures unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "source-bound no-child filesystem proof4 passed",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "exact missing-parent call source and pinned helper",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "observed source reach puts failure after identity/manifest before collector launch",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "privacy original raw not published",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "consumed lease remains no second actual capability",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "checkCount": 38,
+  "verificationFindings": [],
+  "captureFinding": "G01-E01_CALLER_OMITTED_PRIVATE_ENV_PARENT",
+  "facts": {
+    "gameNativeExit": 1,
+    "testCounts": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1
+    },
+    "controllerDurationSeconds": 309.67069341599563,
+    "trxDuration": "00:04:38.9628246",
+    "categoryTimedOut": false,
+    "producer": {
+      "pid": 130497,
+      "birthTick": 5480864,
+      "exit": 73,
+      "joined": true,
+      "eof": true
+    },
+    "resumer": {
+      "pid": 130544,
+      "birthTick": 5486669,
+      "exit": 137,
+      "joined": true,
+      "eof": true
+    },
+    "capture": {
+      "watchdogExit": 2,
+      "collectorLaunches": 0,
+      "apiRequests": 0,
+      "collectorNativeExit": null,
+      "apiOutcome": "UNREACHED"
+    },
+    "parentIntervalEvents": 22,
+    "parentIntervalSourceGapSeconds": 197.577,
+    "parentIntervalReceivedGapSeconds": 197.580955067,
+    "terminalDeliveryHealth": {
+      "Candidates": 24,
+      "Published": 24,
+      "Dropped": 0,
+      "Malformed": 0,
+      "Oversize": 0,
+      "IncompleteTail": 0,
+      "IdentityRejected": 0,
+      "Duplicates": 0,
+      "ElapsedRegressions": 0,
+      "TrackingExhausted": 0,
+      "Uncertain": false,
+      "Eof": true,
+      "RawReadFault": false,
+      "CustodySeen": true,
+      "AcceptedSeen": true,
+      "LateReturnSeen": false,
+      "ObserverFailure": null,
+      "SourceEmissionCompleteness": "UNKNOWN",
+      "CapturePhase": "UNKNOWN",
+      "ExpectedCustody": "OBSERVED_DISCRETE_MARKER"
+    },
+    "postParentStopDiagnosticEvents": [
+      {
+        "Stage": "completed-proof-lease-return",
+        "SourceElapsedMilliseconds": 207346,
+        "LineOrdinal": 23,
+        "RawLineSha256": "d8e3628188008beb5524870b9e838e40b33021cccad7b6449cadb6a4de36e182"
+      },
+      {
+        "Stage": "finalization-return",
+        "SourceElapsedMilliseconds": 207678,
+        "LineOrdinal": 26,
+        "RawLineSha256": "47c2e6f77c9141cbb31bb279f01c94da0ab953630698b5bb356e5454e1b0e821"
+      }
+    ],
+    "postParentStopControlDetail": "AcceptedOutcomeValidatedBeforeMaterialization",
+    "privateTrxSha256": "7cb68faeb872a096cee5b20f55ca05ce20e1050d3cc29b81e5b74f45ba5c404f",
+    "rawPublished": false,
+    "sourceReferences": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/watchdog.py",
+        "sha256": "0989a13b62899b0bbde9758dda25c15057a08a046127b44ceb2217422c235c1b",
+        "lines": [
+          76,
+          77,
+          78,
+          122,
+          145,
+          146,
+          244,
+          245
+        ]
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
+        "sha256": "d121731cff4867acf993d034962c9f5591fdcb496307a5fe0e9642b8392da333",
+        "lines": [
+          88,
+          94,
+          95
+        ]
+      }
+    ]
+  },
+  "limitations": [
+    "Original request captured exception repr only; no saved traceback or failing filename asserted. Exact source/reached records and independent filesystem witness identify deterministic missing-parent cause.",
+    "Parent22 events and terminal24 events are distinct; lease-return was observed after parent cancellation.",
+    "No native target managed frames or proof of game timeout cause/remainder; no retry release."
+  ]
+}

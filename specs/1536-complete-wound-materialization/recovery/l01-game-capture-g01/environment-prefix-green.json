@@ -1,0 +1,32 @@
+{
+  "kind": "G01_ACTUAL_CALLER_PREFIX_FILESYSTEM_REGRESSION",
+  "watchdogSha256": "0fcd99aefab4a1b23414b0435c3f721deb04d511bcf5e9bd8439ce9b7c5fd2e9",
+  "helperSha256": "d121731cff4867acf993d034962c9f5591fdcb496307a5fe0e9642b8392da333",
+  "proofSourceSha256": "87ff4a03d75960f46b5181c47794f9f1ccbcdf89d1cf9deb9c9c3fcc2d1cfad4",
+  "prefixAstSha256": "bfda87e21c2771cc1d6e5b4897e11431d228f71754f3b678ab1cb88631c9f08f",
+  "checks": [
+    {
+      "name": "actual prefix completes without missing parent",
+      "passed": true
+    },
+    {
+      "name": "caller parent and six children private0700",
+      "passed": true
+    },
+    {
+      "name": "same allowlist and target own TMPDIR",
+      "passed": true
+    },
+    {
+      "name": "strict caller prefix refuses existing phase",
+      "passed": true
+    }
+  ],
+  "passed": 4,
+  "firstError": null,
+  "nativeChildren": 0,
+  "gameCases": 0,
+  "apiRequests": 0,
+  "originalGameRootsTouched": false,
+  "retainedProofRoot": "/tmp/1536-cloud-tools/g01-env-prefix-green-20261019"
+}

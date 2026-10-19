@@ -1,11 +1,11 @@
 {
   "kind": "G01_PENDING_CAPTURE_ORCHESTRATION_CONTROL",
   "base": "c1668efba8ccf9bb041e8b764d561fe7bed0bc6f",
-  "status": "FIRST_GAME_TIMEOUT_CAPTURE_UNREACHED_FROZEN",
-  "sourceReview": "ACCEPT_G01_WHOLE_SOURCE_ZERO_ONLY",
-  "affectedIntegrationPrep": "ACCEPT_G01_PREP_ONE_ACTUAL",
+  "status": "POSTRUN_ENV_PARENT_FIX_PURE_PASS_PENDING_FOCUSED_REVIEW",
+  "sourceReview": "ORIGINAL_ACCEPTANCE_RETAINED_POSTRUN_ENV_FIX_PENDING",
+  "affectedIntegrationPrep": "ORIGINAL_PREP_RETAINED_CSHARP_UNCHANGED",
   "gameplayRelease": "NONE",
-  "snapshotRelease": "CONSUMED_NO_RETRY_CAPTURE_UNREACHED",
+  "snapshotRelease": "NONE_CONSUMED_FIRST_RUN",
   "crash5Release": "NONE",
   "actualGameCasesExecuted": 1,
   "diagnosticRequests": 0,
@@ -39,13 +39,13 @@
   },
   "unimplemented": [],
   "unrunWipSources": [
-    "offline actual mapping BLOCKED_NO_REPORT",
-    "independent sanitized EVIDENCE pending"
+    "managed mapping BLOCKED_NO_REPORT",
+    "postrun source/pure affected review pending"
   ],
   "allOldOutcomesAndBroaderHoldsUnchanged": true,
-  "currentNextAction": "INDEPENDENT_EVIDENCE_AND_PRECOLLECTOR_FAILURE_DIAGNOSIS",
+  "currentNextAction": "FOCUSED_SOURCE_AND_AFFECTED_FILESYSTEM_PURE_REVIEW_NO_RUNTIME",
   "sourceAdmission": {
-    "status": "SOURCE_ACCEPTED_G01_ZERO_ONLY",
+    "status": "HOLD_POSTRUN_SOURCE_CHANGE_NO_RUNTIME_RELEASE",
     "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-source-accepted-review-20261019.json",
     "reviewSha256": "49a12866715b264a38de2e50572a1f012dce956653035ed437703cd8d5b3cf76",
     "reviewedSource": "e520663f7918e536c2ae0675cb79a774be637655"
@@ -137,5 +137,74 @@
     "observedApiRequests": 0,
     "apiOutcome": "UNREACHED",
     "gameSource": "275586f399bee346acf6773ecbff2d95f1ec2ba4"
+  },
+  "evidenceReview": {
+    "verdict": "ACCEPT_FIRST_OUTCOME_FACTS_CAPTURE_BLOCKED",
+    "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-first-outcome-independent-review-20261019.json",
+    "reviewSha256": "6aab0ec48aa95032ca79ac31875446a3fd22d3a03e94f27a9e8b6c920cf1adb1",
+    "checks": 38,
+    "pureFilesystemChecks": 4,
+    "gameFAIL": true,
+    "captureBLOCKED": true,
+    "newRuntimeRelease": "NONE"
+  },
+  "terminalDrainAddendum": {
+    "parentConsumedEvents": 22,
+    "custodySourceElapsedMilliseconds": 9757,
+    "acceptedSourceElapsedMilliseconds": 207334,
+    "sourceMarkerGapSeconds": 197.577,
+    "receivedMarkerGapSeconds": 197.580955067,
+    "parentFinalHealthScope": "Snapshot when parent cancelled at accepted marker; Eof=false/AcceptedSeen=true/LateReturnSeen=false, no observed gaps.",
+    "terminalDrainDiagnosticEvents": 24,
+    "terminalDeliveryHealth": {
+      "Candidates": 24,
+      "Published": 24,
+      "Dropped": 0,
+      "Malformed": 0,
+      "Oversize": 0,
+      "IncompleteTail": 0,
+      "IdentityRejected": 0,
+      "Duplicates": 0,
+      "ElapsedRegressions": 0,
+      "TrackingExhausted": 0,
+      "Uncertain": false,
+      "Eof": true,
+      "RawReadFault": false,
+      "CustodySeen": true,
+      "AcceptedSeen": true,
+      "LateReturnSeen": false,
+      "ObserverFailure": null,
+      "SourceEmissionCompleteness": "UNKNOWN",
+      "CapturePhase": "UNKNOWN",
+      "ExpectedCustody": "OBSERVED_DISCRETE_MARKER"
+    },
+    "postParentStopDiagnosticEvents": [
+      {
+        "Stage": "completed-proof-lease-return",
+        "SourceElapsedMilliseconds": 207346,
+        "LineOrdinal": 23,
+        "RawLineSha256": "d8e3628188008beb5524870b9e838e40b33021cccad7b6449cadb6a4de36e182"
+      },
+      {
+        "Stage": "finalization-return",
+        "SourceElapsedMilliseconds": 207678,
+        "LineOrdinal": 26,
+        "RawLineSha256": "47c2e6f77c9141cbb31bb279f01c94da0ab953630698b5bb356e5454e1b0e821"
+      }
+    ],
+    "postParentStopControlDetail": "AcceptedOutcomeValidatedBeforeMaterialization",
+    "privateRawTrxSha256": "7cb68faeb872a096cee5b20f55ca05ce20e1050d3cc29b81e5b74f45ba5c404f",
+    "interpretation": "The lease-return207346ms and accepted finalization-return207678ms occur after the parent22-event interval. Therefore its last lease-enter cannot establish a blocked lease. The terminal delivery has EOF and no late-first-return marker; no unique managed blocking operation, useful-work remainder or completion bound is proven."
+  },
+  "postRunEnvParentFix": {
+    "status": "WIP_AFFECTED_PURE4_PASS_PENDING_REVIEW",
+    "watchdogSha256": "0fcd99aefab4a1b23414b0435c3f721deb04d511bcf5e9bd8439ce9b7c5fd2e9",
+    "proofPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/environment-prefix-green.json",
+    "proofSha256": "a739e0f8e52d593cd058df4c1870e832890d058356dcb0ae702b2b40ef58f3aa",
+    "sourcePinDigest": "a6fc0b4308f6d0ae173f4fd41eefccfd73b0fb294dda935f2ab37fb081942b13",
+    "unchangedBinaryProof": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/postrun-env-parent-equivalence.json",
+    "runtimeRelease": "NONE",
+    "newGameCases": 0,
+    "newDiagnosticRequests": 0
   }
 }

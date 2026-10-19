@@ -1,0 +1,202 @@
+{
+  "kind": "INDEPENDENT_G01_FIRST_OUTCOME_EVIDENCE_AND_PREFLIGHT_DIAGNOSIS",
+  "verdict": "ACCEPT_FIRST_OUTCOME_FACTS_CAPTURE_BLOCKED",
+  "reviewedCarrier": "e379457699ee68e1fee45552fbeee3da38c5abb6",
+  "reviewedUtc": "2026-10-19T00:50:13.934685+00:00",
+  "actualSource": "275586f399bee346acf6773ecbff2d95f1ec2ba4",
+  "integrationCompiledSource": "d293b3bf796289fb6662a778ca408fae76ab2736",
+  "sourcePinDigest": "a6c2675674dd6e3218e16917fd9abfcffb44d638195c367c3efcb2d98780b026",
+  "plannedRunId": "2ca476b7cf58446fb3eb3c6218e850b8",
+  "sourcePins": 163,
+  "qualification": {
+    "game": "FAIL_ORIGINAL_TIMEOUT220",
+    "capture": "BLOCKED_PREFLIGHT_BEFORE_COLLECTOR",
+    "managedSnapshot": "NOT_CAPTURED",
+    "mappedFrames": 0,
+    "originalL01Qualified": 52,
+    "originalL01Total": 57,
+    "old66529": "UNKNOWN_UNAVAILABLE",
+    "remainingGameOrDumpRelease": "NONE",
+    "firstPermit": "CONSUMED_NO_RETRY"
+  },
+  "sanitizedEvidence": {
+    "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-first-game-sanitized-evidence-20261019.json",
+    "bytes": 16424,
+    "sha256": "9def23e0fcbd33ad00645853b5cae7edcc6ce91cac64e698bb5a93181a4f3204"
+  },
+  "recoveryReceipt": {
+    "path": "/tmp/1536-cloud-tools/g01-recovery-e3794576.json",
+    "bytes": 78408,
+    "sha256": "2581de1fb45940cf50e701874741839d8df785daedd5b8e40eef3156e132023d"
+  },
+  "checks": {
+    "path": "/tmp/1536-cloud-tools/review/l01-game-capture-g01-first-outcome-checks-20261019.json",
+    "bytes": 8609,
+    "sha256": "aedb0e66356292c769df7ae3f66f8fc668fd9ace1fe15dbd93e9b7854e7ad7e8"
+  },
+  "checker": {
+    "path": "/tmp/1536-cloud-tools/review/check_g01_first_outcome_20261019.py",
+    "bytes": 16448,
+    "sha256": "9eb53f1d873a233ef4e6da04ac446d541f07a9a16992ad1463134a570db1d3e2"
+  },
+  "pureProof": {
+    "path": "/tmp/1536-cloud-tools/review/g01-collector-env-parent-pure-proof-20261019.json",
+    "bytes": 1215,
+    "sha256": "4f92584babb1900a76e7eb68e8c45cae431e952308ba03d963e46e97a7bae408"
+  },
+  "pureProofScript": {
+    "path": "/tmp/1536-cloud-tools/review/prove_g01_collector_env_parent_20261019.py",
+    "bytes": 2676,
+    "sha256": "32ee95fb30d6d7d9c6687d7b50514072e17e8d9e8f569978b36e9588776f1fa3"
+  },
+  "readerHistory": [
+    {
+      "path": "/tmp/1536-cloud-tools/review/g01-first-outcome-reader-history-20261019.json",
+      "bytes": 855,
+      "sha256": "9194409323409caaa4444a934e20716f0bab11e440ee2bb37314ab188b10f2cd"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_g01_first_outcome_20261019_v1.py",
+      "bytes": 16166,
+      "sha256": "26bf4ef2f7900e1d98bdcef6c191817e7972f330cc1223415968be8d5040306e"
+    }
+  ],
+  "checkCount": 38,
+  "pureFilesystemChecks": 4,
+  "verificationFindings": [],
+  "findings": [
+    {
+      "id": "G01-E01",
+      "status": "CONFIRMED_CAPTURE_PREFLIGHT_DEFECT",
+      "title": "Watchdog does not create the caller-owned collector environment parent",
+      "source": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/watchdog.py:78",
+      "dependency": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py:88-95",
+      "mechanism": "After request-manifest.json and owner/watchdog/target accounting, watchdog calls environment(capture/collector-env). That parent is absent and no prior caller creates it. The pinned helper uses non-recursive mkdir for its first child collector-env/tmp, so it raises FileNotFoundError before collector Popen at watchdog.py:122.",
+      "directEvidence": "request-manifest exists; request record includes exact owner/watchdog/target identities and parent hash; collector-env and collector stdout/stderr absent; original exception repr is FileNotFoundError(2, No such file or directory); collectorLaunches0/collectorNone/nativeNone/API0UNREACHED.",
+      "independentProof": "Execute only the exact environment() AST function with an owned temporary filesystem directory. Missing parent reproduces ENOENT at collector-env/tmp. One strict caller mkdir(mode=0700) makes the unchanged function create its six private children and preserves the allowlist; existing-parent mkdir refuses reuse. No child/process/API/SDK action.",
+      "evidenceLimit": "The original saved exception has repr only, no traceback or failing filename. The precise line is established by reached source order, retained artifact state and the independent exact-function witness, not an invented original traceback.",
+      "impact": "No collector/WriteDump/createdump or managed snapshot from this request. The game TimeoutException is a separate original outcome; this fixture orchestration defect does not diagnose the game timeout."
+    }
+  ],
+  "originalFacts": {
+    "gameNativeExit": 1,
+    "controllerObserverErrors": [],
+    "controllerDurationSeconds": 309.67069341599563,
+    "trxDuration": "00:04:38.9628246",
+    "testCounts": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1
+    },
+    "categoryTimedOut": false,
+    "originalWaitSeconds": 220,
+    "failureHarnessLines": [
+      147,
+      193,
+      67
+    ],
+    "producer": {
+      "pid": 130497,
+      "birthTick": 5480864,
+      "exit": 73,
+      "joined": true,
+      "eof": true
+    },
+    "resumer": {
+      "pid": 130544,
+      "birthTick": 5486669,
+      "exit": 137,
+      "joined": true,
+      "eof": true
+    },
+    "watchdogExit": 2,
+    "watchdogJoined": true,
+    "parentObserverErrors": [],
+    "collectorLaunches": 0,
+    "collectorNativeExit": null,
+    "observedPublicApiRequests": 0,
+    "apiOutcome": "UNREACHED",
+    "watchdogDurationSeconds": 0.5375913200041396,
+    "dumpPresent": false,
+    "rawReportPresent": false,
+    "mapperInvocations": 0,
+    "all11PrivateHashesMatch": true,
+    "allPrivateCompiledClosuresMatch": true,
+    "normal899UnchangedReported": true,
+    "afterLiveTools": []
+  },
+  "reachedAssertions": {
+    "reached": "Original producer73, independent PID+kernel birth, cut1/nonce/root containment, turn42/commonCallbacks0 and cut image checks precede the actual resumer call. Original resumer wait220 throws; own child terminal/join/EOF succeeds and preserves the primary exception.",
+    "notReached": "RunJointInterfaceActualProcessLossAsync does not return from the resumer await at line67. Its subsequent full resumer result/physical-state/once-only positive assertions are not reached and are not qualified. Child-side marker progress alone is not a pass.",
+    "retention": "Own/capture retained explicitly; one nested fixture cleanup is separately reported. Process cleanup success is not a claim that private capture artifacts were deleted."
+  },
+  "observedInterval": {
+    "parentConsumedEvents": 22,
+    "custodySourceElapsedMilliseconds": 9757,
+    "acceptedSourceElapsedMilliseconds": 207334,
+    "sourceMarkerGapSeconds": 197.577,
+    "receivedMarkerGapSeconds": 197.580955067,
+    "parentFinalHealthScope": "Snapshot when parent cancelled at accepted marker; Eof=false/AcceptedSeen=true/LateReturnSeen=false, no observed gaps.",
+    "terminalDrainDiagnosticEvents": 24,
+    "terminalDeliveryHealth": {
+      "Candidates": 24,
+      "Published": 24,
+      "Dropped": 0,
+      "Malformed": 0,
+      "Oversize": 0,
+      "IncompleteTail": 0,
+      "IdentityRejected": 0,
+      "Duplicates": 0,
+      "ElapsedRegressions": 0,
+      "TrackingExhausted": 0,
+      "Uncertain": false,
+      "Eof": true,
+      "RawReadFault": false,
+      "CustodySeen": true,
+      "AcceptedSeen": true,
+      "LateReturnSeen": false,
+      "ObserverFailure": null,
+      "SourceEmissionCompleteness": "UNKNOWN",
+      "CapturePhase": "UNKNOWN",
+      "ExpectedCustody": "OBSERVED_DISCRETE_MARKER"
+    },
+    "postParentStopDiagnosticEvents": [
+      {
+        "Stage": "completed-proof-lease-return",
+        "SourceElapsedMilliseconds": 207346,
+        "LineOrdinal": 23,
+        "RawLineSha256": "d8e3628188008beb5524870b9e838e40b33021cccad7b6449cadb6a4de36e182"
+      },
+      {
+        "Stage": "finalization-return",
+        "SourceElapsedMilliseconds": 207678,
+        "LineOrdinal": 26,
+        "RawLineSha256": "47c2e6f77c9141cbb31bb279f01c94da0ab953630698b5bb356e5454e1b0e821"
+      }
+    ],
+    "postParentStopControlDetail": "AcceptedOutcomeValidatedBeforeMaterialization",
+    "privateRawTrxSha256": "7cb68faeb872a096cee5b20f55ca05ce20e1050d3cc29b81e5b74f45ba5c404f",
+    "interpretation": "The lease-return207346ms and accepted finalization-return207678ms occur after the parent22-event interval. Therefore its last lease-enter cannot establish a blocked lease. The terminal delivery has EOF and no late-first-return marker; no unique managed blocking operation, useful-work remainder or completion bound is proven."
+  },
+  "minimalCorrectionPlan": {
+    "scope": "Caller-only private filesystem prefix; no product/guard/assertion/budget/collector ABI changes.",
+    "proposedChange": "Create root/'collector-env' once with mkdir(mode=0o700) immediately before the existing environment() call; no parents=True, exist_ok, reused original root or shared mutable helper edit.",
+    "requiredProof": "Retain this failing original and exact-function RED witness; bind the actual corrected caller source and run a narrowly scoped filesystem-only RED/GREEN proof including private permissions and duplicate-path refusal. No subprocess or API is required for that regression.",
+    "affectedReview": "New saved/recovered source/bindings and focused independent SOURCE/affected pure-preparation review must acknowledge the changed watchdog pin. Unchanged C# binaries may be retained only with explicit byte/source/hash equivalence; the old PREP source digest and this actual stay immutable and must not be relabeled.",
+    "runtimeAdmission": "NONE. The consumed first-game permit is exhausted; no second game, collector, WriteDump, mapping attempt or crash5 run is authorized by this report. A future actual would require a distinct user-authorized plan and relevant SOURCE/PREP gates."
+  },
+  "acceptanceSaveConditions": [
+    "Copy this report/checks/pure witness and reviewer history byte-exact; preserve all original private/sanitized evidence and consumed lease.",
+    "Keep the saved22-event parent interval unchanged. Add the separately scoped terminal24 health and the two safe post-parent-stop stage fields/hash reference supplied here; do not imply a lease hang or continuous phase.",
+    "Mark gameFAIL/captureBLOCKED/API0/managedSnapshot absent and runtime releaseNONE. A source-only environment-parent correction does not change those original outcomes or create a new runtime permit.",
+    "Retain private core/raw-report/root policy, all old failures,52/57,old66529UNKNOWN and separate platform/broader holds."
+  ],
+  "limits": [
+    "No private raw game stdout/TRX/core/report is copied into this report; only allowlisted process/outcome/stage metadata and hashes. Eleven private chains are locally verified, not falsely claimed recoverable from published raw bytes.",
+    "Current retained socket is an artifact correlated with the earlier validated identity; its presence is not a new live-process claim. No reviewer procfs/census/signal/SDK/game/API action occurred.",
+    "No createdump was caused by this unlaunched collector. Empty createdump lists and dated cleanup are not a general guarantee against future service spawn.",
+    "CapturePhase, source-emission completeness and suspension duration remain UNKNOWN; no managed target MethodDef/IL frames were captured. No product remedy or increased budget is justified.",
+    "The read-only evidence checker initially expected an index-only delta and rejected ordinary five handoff/control metadata changes. Its version/failure are preserved; correction requires the exact six-file metadata/index set. This is not a native retry or privacy leak."
+  ]
+}
