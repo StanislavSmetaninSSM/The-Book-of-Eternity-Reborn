@@ -43,6 +43,13 @@ public sealed class GmWorkerNativeFinitePipeTests
         Assert.True(result.GetProperty("disposed").GetBoolean());
         Assert.True(result.GetProperty("eof").GetBoolean());
         Assert.True(result.GetProperty("bootstrapRemoved").GetBoolean());
+        if (mode == "natural-stop-race")
+        {
+            Assert.True(result.GetProperty("raceControlAttempted").GetBoolean());
+            Assert.True(result.GetProperty("raceControlFaulted").GetBoolean());
+            Assert.Equal("root-exited", stop.GetProperty("Reason").GetString());
+            Assert.Null(result.GetProperty("uncertainty").GetString());
+        }
         if (mode == "output")
         {
             Assert.Equal(new string('O', 131072), result.GetProperty("stdout").GetString());

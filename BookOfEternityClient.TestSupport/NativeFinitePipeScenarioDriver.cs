@@ -41,6 +41,12 @@ internal static class NativeFinitePipeScenarioDriver
                 await Task.WhenAll(Console.Out.WriteAsync(new string('O', 131072)), Console.Error.WriteAsync(new string('E', 131072)));
             }
             if (childMode is "timeout" or "control-loss" or "status-loss") await Task.Delay(TimeSpan.FromSeconds(8));
+            if (childMode == "natural-stop-race")
+            {
+                using var releaseDeadline = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+                while (!File.Exists(Path.Combine(own, "release-natural-exit")))
+                    await Task.Delay(10, releaseDeadline.Token);
+            }
             return childMode == "seventy-three" ? 73 : 0;
         }
 
@@ -59,6 +65,7 @@ internal static class NativeFinitePipeScenarioDriver
         int? rootPid = null, supervisorPid = null;
         ulong? heldBirth = null;
         var heldObserved = false; var heldBeforeExec = false; var disposed = false; var eof = false;
+        var raceControlAttempted = false; var raceControlFaulted = false;
         try
         {
             using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(5));
@@ -78,8 +85,13 @@ internal static class NativeFinitePipeScenarioDriver
                 if (mode == "control-loss") supervisor.StandardInput.Close();
                 else supervisor.StandardOutput.Close();
             }
-            await owner.HostExited.WaitAsync(TimeSpan.FromMilliseconds(mode == "timeout" ? 100 : 10000));
-            if (mode != "natural-stop-race") await owner.SupervisorExited.WaitAsync(TimeSpan.FromSeconds(5));
+            if (mode == "natural-stop-race")
+                (stop, raceControlAttempted, raceControlFaulted) = await ObserveNaturalStopRaceAsync(owner, own);
+            else
+            {
+                await owner.HostExited.WaitAsync(TimeSpan.FromMilliseconds(mode == "timeout" ? 100 : 10000));
+                await owner.SupervisorExited.WaitAsync(TimeSpan.FromSeconds(5));
+            }
         }
         catch (GmWorkerOwnedLaunchException error)
         {
@@ -93,7 +105,7 @@ internal static class NativeFinitePipeScenarioDriver
             if (owner != null)
             {
                 bootstrap ??= owner.BootstrapDirectory;
-                stop = await owner.StopAndObserveAsync();
+                stop ??= await owner.StopAndObserveAsync();
                 try
                 {
                     if (stop.State == GmWorkerStopState.StoppedWithinScope)
@@ -126,11 +138,49 @@ internal static class NativeFinitePipeScenarioDriver
                 failure, heldObserved, heldBeforeExec,
                 sameOriginalOwner = owner != null && (ReferenceEquals(owner, heldOwner) || ReferenceEquals(owner, exceptionOwner)),
                 rootPid, supervisorPid, heldBirth, birthMatches, environmentMatches, stop, disposed, eof, stdout, stderr,
+                raceControlAttempted, raceControlFaulted,
                 bootstrapRemoved = bootstrap != null && !Directory.Exists(bootstrap), uncertainty = owner?.Uncertainty
             }));
             GC.KeepAlive(owner); // Uncertain authority is retained until this isolated driver exits.
         }
         return 0;
+    }
+
+    /// <summary>
+    /// Queues a real stop write while the finite child is alive, then lets natural retirement close the pipe.
+    /// Only the isolated fixture delays the existing control gate; native observations remain untouched.
+    /// </summary>
+    /// <param name="owner">
+    /// The original finite owner with its actual control stream and observation tasks.
+    /// </param>
+    /// <param name="own">
+    /// The scenario directory containing the child-only natural-exit release file.
+    /// </param>
+    /// <returns>
+    /// Actual stop evidence and whether the original pending write was attempted and subsequently faulted.
+    /// </returns>
+    private static async Task<(GmWorkerStopEvidence Stop, bool Attempted, bool Faulted)> ObserveNaturalStopRaceAsync(
+        NativeLineageOwner owner, string own)
+    {
+        var gate = (SemaphoreSlim)typeof(NativeLineageOwner).GetField("_controlGate", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(owner)!;
+        var writeField = typeof(NativeLineageOwner).GetField("_stopControl", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        await gate.WaitAsync();
+        Task<GmWorkerStopEvidence>? stopping = null;
+        Task? write = null;
+        var attempted = false;
+        try
+        {
+            if (owner.HostExited.IsCompleted) throw new InvalidOperationException("Race child exited before the stop path entered.");
+            stopping = owner.StopAndObserveAsync();
+            write = (Task?)writeField.GetValue(owner);
+            attempted = write is { IsCompleted: false } && !owner.HostExited.IsCompleted;
+            if (!attempted) throw new InvalidOperationException("The original S write was not queued while the child was alive.");
+            await File.WriteAllTextAsync(Path.Combine(own, "release-natural-exit"), "release");
+            await Task.WhenAll(owner.HostExited, owner.SupervisorExited).WaitAsync(TimeSpan.FromSeconds(3));
+        }
+        finally { gate.Release(); }
+        var evidence = await stopping!;
+        return (evidence, attempted, write!.IsFaulted);
     }
 
     /// <summary>
