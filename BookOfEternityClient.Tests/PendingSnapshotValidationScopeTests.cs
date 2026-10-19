@@ -66,12 +66,15 @@ public sealed class PendingSnapshotValidationScopeTests(ITestOutputHelper output
         await fixture.PrepareAsync(false);
         using var owner = fixture.Files.BeginMainAdmission();
         await owner.AcquireAsync();
+        var mutated = false;
         await Assert.ThrowsAnyAsync<Exception>(() => fixture.RunAsync(async () =>
         {
             Assert.Equal("Usable", Status(await fixture.LookupAsync(false)));
             await fixture.ChangeAsync(change);
+            mutated = true;
             return [];
         }));
+        Assert.True(mutated, "The test must reach the dependency change rather than pass on fixture admission failure.");
     }
 
     /// <summary>
@@ -196,6 +199,116 @@ public sealed class PendingSnapshotValidationScopeTests(ITestOutputHelper output
     }
 
     /// <summary>
+    /// Same-lease mutation, override replacement and owning lifecycle close cannot extend read authority.
+    /// </summary>
+    [Fact]
+    public async Task Scope_SameLeaseOverrideAndLifecycleMutationRefuse()
+    {
+        using var fixture = new Fixture();
+        await fixture.PrepareAsync(false);
+        using var owner = fixture.Files.BeginMainAdmission();
+        await owner.AcquireAsync();
+        await fixture.RunAsync(async () =>
+        {
+            await Assert.ThrowsAnyAsync<Exception>(() => fixture.Files.WriteFileAtomicAsync(fixture.CurrentLease, "game_state/world/scope0.json", "{}"));
+            Assert.ThrowsAny<Exception>(() => fixture.Validator.UsePrevalidatedPendingTurnSnapshotScope(null));
+            Assert.ThrowsAny<Exception>(() => fixture.Files.BeginMainOperationClosing());
+            return [];
+        });
+    }
+
+    /// <summary>
+    /// A second manager and a paused acquisition cannot borrow mutation authority from a reserved owner.
+    /// </summary>
+    [Fact]
+    public async Task Scope_PausedBorrowAndSecondManagerCannotMutate()
+    {
+        using var fixture = new Fixture();
+        await fixture.PrepareAsync(false);
+        using var owner = fixture.Files.BeginMainAdmission();
+        await owner.AcquireAsync();
+        var reached = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        fixture.OnBorrow = () => { reached.TrySetResult(); return release.Task; };
+        var validation = fixture.RunAsync(() => Task.FromResult(new List<ValidationIssue>()));
+        try
+        {
+            await reached.Task.WaitAsync(TimeSpan.FromSeconds(3));
+            var other = new FileSystemManager(fixture.Files.BasePath, NullLogger<FileSystemManager>.Instance);
+            await Assert.ThrowsAnyAsync<Exception>(() => other.WriteFileAtomicAsync("game_state/world/scope0.json", "{}"));
+            await Assert.ThrowsAnyAsync<Exception>(() => fixture.Validator.ValidateGameStateAsync());
+            using var cancellation = new CancellationTokenSource(TimeSpan.FromMilliseconds(200));
+            Task contender;
+            using (ExecutionContext.SuppressFlow())
+                contender = Task.Run(async () => { await using var lease = await other.AcquireCanonicalWriteLeaseAsync(cancellationToken: cancellation.Token); });
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(() => contender);
+        }
+        finally { release.TrySetResult(); fixture.OnBorrow = null; }
+        await validation;
+    }
+
+    /// <summary>
+    /// A final physical read fault and lease-close failure never become a successful issue result.
+    /// </summary>
+    /// <param name="failRead">
+    /// True injects the primary error in final authentication; false throws it from the consumer.
+    /// </param>
+    [Theory]
+    [InlineData(false)] [InlineData(true)]
+    public async Task Scope_FinalReadAndCloseFailurePreservePrimary(bool failRead)
+    {
+        using var fixture = new Fixture();
+        await fixture.PrepareAsync(false);
+        using var owner = fixture.Files.BeginMainAdmission();
+        await owner.AcquireAsync();
+        var primary = new IOException("primary validation failure");
+        var close = new IOException("owned close failure");
+        var failure = await Assert.ThrowsAnyAsync<Exception>(() => fixture.RunAsync(() =>
+        {
+            fixture.CurrentLease.ExternalPublicationContext = new FailingClose(close);
+            if (!failRead) return Task.FromException<List<ValidationIssue>>(primary);
+            fixture.OnRead = _ => throw primary;
+            return Task.FromResult(new List<ValidationIssue>());
+        }));
+        Assert.Same(primary, failure);
+        Assert.Same(close, failure.Data["PendingSnapshotValidation.CloseFailure"]);
+        fixture.OnRead = null;
+        await fixture.RunAsync(() => Task.FromResult(new List<ValidationIssue>()));
+    }
+
+    /// <summary>
+    /// Cancellation during acquisition releases only the attempted read reservation.
+    /// </summary>
+    [Fact]
+    public async Task Scope_OpeningCancellationReleasesReservation()
+    {
+        using var fixture = new Fixture();
+        await fixture.PrepareAsync(false);
+        using var owner = fixture.Files.BeginMainAdmission();
+        await owner.AcquireAsync();
+        using var cancellation = new CancellationTokenSource();
+        cancellation.Cancel();
+        var scope = fixture.Files.BeginPendingSnapshotValidationRead(cancellation.Token);
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => scope.OpenAsync());
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => scope.DisposeAsync().AsTask());
+        await fixture.RunAsync(() => Task.FromResult(new List<ValidationIssue>()));
+    }
+
+    /// <summary>
+    /// Supplies a deterministic close failure through the existing canonical lease teardown contract.
+    /// </summary>
+    /// <param name="failure">
+    /// Exception thrown by disposal, retained as secondary when validation already failed.
+    /// </param>
+    private sealed class FailingClose(Exception failure) : IDisposable
+    {
+        /// <summary>
+        /// Throws the fixture's predetermined close failure.
+        /// </summary>
+        public void Dispose() => throw failure;
+    }
+
+    /// <summary>
     /// Owns an isolated real filesystem and a three-file signed rollback cohort.
     /// </summary>
     private sealed class Fixture : IDisposable
@@ -206,6 +319,26 @@ public sealed class PendingSnapshotValidationScopeTests(ITestOutputHelper output
         private readonly ValidationService _validator;
         internal readonly FileSystemManager Files;
         internal int Ordinary, Cohort;
+        internal Func<Task>? OnBorrow;
+        internal Func<string, Task>? OnRead;
+
+        /// <summary>
+        /// The actual validator used by this independent fixture.
+        /// </summary>
+        internal ValidationService Validator => _validator;
+
+        /// <summary>
+        /// The active runner's original lease, used only for adversarial same-lease and close tests.
+        /// </summary>
+        internal FileSystemManager.CanonicalWriteLease CurrentLease
+        {
+            get
+            {
+                var invocation = typeof(ValidationService).GetField("_pendingSnapshotReservation", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(_validator)!;
+                var scope = invocation.GetType().GetField("Physical", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(invocation)!;
+                return (FileSystemManager.CanonicalWriteLease)scope.GetType().GetProperty("Lease", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(scope)!;
+            }
+        }
 
         /// <summary>
         /// Installs counting observers without adding physical reads.
@@ -216,7 +349,8 @@ public sealed class PendingSnapshotValidationScopeTests(ITestOutputHelper output
             Files = new(_root, NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance,
                 new FileSystemManagerHooks
                 {
-                    AfterCanonicalReadInitialValidationAsync = path => { if (_rollback.Contains(path)) Ordinary++; return Task.CompletedTask; },
+                    BeforeMainBorrowRetainAsync = () => OnBorrow?.Invoke() ?? Task.CompletedTask,
+                    AfterCanonicalReadInitialValidationAsync = path => { if (_rollback.Contains(path)) Ordinary++; return OnRead?.Invoke(path) ?? Task.CompletedTask; },
                     AfterSnapshotEvidenceRead = path => { if (_rollback.Contains(path)) Cohort++; }
                 });
             Files.EnsureDirectoryStructure();

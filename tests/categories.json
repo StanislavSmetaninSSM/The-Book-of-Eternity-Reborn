@@ -3,6 +3,58 @@
     "categories": [
 {
   "changeHints": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs"
+  ],
+  "id": "pending-snapshot-validation-lifecycle",
+  "related": [],
+  "requirements": {
+    "exclusive": true,
+    "frontendBuild": false
+  },
+  "excludes": "No source42 or crash5 qualification, Linux runtime or browser consumer profile.",
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PendingSnapshotValidation_*"
+      ]
+    }
+  ],
+  "responsibility": "Actual console GameEngine validation entry and repair lifetime boundaries for spec4."
+},
+{
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs"
+  ],
+  "id": "pending-snapshot-validation-meta-neighbors",
+  "related": [],
+  "requirements": {
+    "exclusive": true,
+    "frontendBuild": false
+  },
+  "excludes": "No broad Meta rules, gameplay, native or C5 qualification.",
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_WholeEntryProofCeilingPreservesOrderedIssues",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_SiblingsAndOverrideCannotMutateReservedInvocation",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_OriginalAdmissionOpeningAndResponseBranchesReleaseOnlyOwnState",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_ContinuityLossNeverPublishesIncludingActualOwningClose",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_EligibilityKeepsActualScalarDraftAndZeroWindowBoundaries",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_SourceClosurePinsRequireReview"
+      ]
+    }
+  ],
+  "responsibility": "Exact existing Meta read reservation neighbors affected by shared MainAccess and validator admission."
+},
+
+{
+  "changeHints": [
     "BookOfEternityClient/Services/Validation/ValidationService.PendingSnapshotValidation.cs"
   ],
   "related": [],
