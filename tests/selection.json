@@ -9,6 +9,50 @@
         "NativeLineage on Linux; direct owned Process on Windows. Root exit, scoped retirement, full output and cleanup remain distinct evidence.",
         "No G01 capture, integrity fault cases, full suite or implicit qualification; Linux execution belongs to the cloud environment."
       ]
+    },
+    {
+      "reason": "Spec4 exact physical read bounds, immutable invocation proof, negative authority and ownership controls.",
+      "category": "pending-snapshot-validation-contracts",
+      "contracts": [
+        "R=3, N=1/8/32: algorithm <=6, warm total<=9, cold total<=12; exact bytes and absence.",
+        "Missing/Unusable, same-lease and nested writers, copied/foreign contexts, failed open/final read/close."
+      ]
+    },
+    {
+      "reason": "Actual console GameEngine entry and genuine repair iteration exercise the new lifetime boundary.",
+      "category": "pending-snapshot-validation-lifecycle",
+      "contracts": [
+        "Only post-materialization game-state validation reserves the proof.",
+        "Repair and payload/current mutations occur after close; next iteration acquires fresh evidence."
+      ]
+    },
+    {
+      "reason": "Shared original MainAccess reservation and validator guards also own the existing browser Meta phase.",
+      "category": "pending-snapshot-validation-meta-neighbors",
+      "contracts": [
+        "Six exact existing Meta controls from approved plan2; preserve eligibility, authority, ordered issues and teardown."
+      ]
+    },
+    {
+      "reason": "Common reservation identity must preserve existing browser World read phase behavior.",
+      "category": "c5-world-state-read-phase",
+      "contracts": [
+        "Browser eligibility, physical reader contracts and ordered validation outcomes remain unchanged."
+      ]
+    },
+    {
+      "reason": "MainAccess borrower and close guards are shared with browser World phase negative controls.",
+      "category": "c5-world-state-read-phase-controls",
+      "contracts": [
+        "Original owner continuity, competing readers/writers, scope close and failures remain fail-closed."
+      ]
+    },
+    {
+      "reason": "Exact accepted-state source/repair/runtime-refresh boundaries changed at one console caller.",
+      "category": "c5-original-post-validation-source",
+      "contracts": [
+        "Normalization precedes validation; repairs withdraw old source; runtime refresh remains outside the read lifetime."
+      ]
     }
   ]
 }
