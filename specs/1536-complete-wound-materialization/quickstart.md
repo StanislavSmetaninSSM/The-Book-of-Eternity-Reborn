@@ -1,6 +1,6 @@
 # CRASH5 — validation guide для NativeLineage Linux / локального Windows
 
-[Spec редакции3](spec.md), [plan](plan.md), [tasks](tasks.md), [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Ни одна команда из этого руководства не выполнялась на этапе планирования. Выполнение после review implementation plan; Linux блок запускает облачный исполнитель. Исторические инструкции ниже не являются текущим отбором.
+[Spec редакции3](spec.md), [plan](plan.md), [tasks](tasks.md), [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Ни одна команда из этого руководства не выполнялась на этапе планирования. Implementation plan1 approved6f2d4d486; actual helper checkpoints записаны в plan; Linux блок запускает облачный исполнитель. Исторические инструкции ниже не являются текущим отбором.
 
 ## Preconditions и provenance
 
@@ -35,7 +35,7 @@ dotnet build BookOfEternityClient.IntegrationTests/BookOfEternityClient.Integrat
 
 Проверить новые/изменённые XML blocks и compiler XML diagnostics; unrelated CS1591 не расширяет текущий scope. Ordinary PlanOnly обязан содержать одну integration Theory и пять cases, no skip; helper/native guard counts отдельные. SOURCE/PREP review проверяет final diff, полноту selection и hashes конкретных DLL. `-NoBuild` разрешён только для этих свежих outputs, изменение source/dependencies требует новой соответствующей подготовки.
 
-Локальный RED→GREEN при разработке — только `-Category fr063-joint-interface-crash-adapter-contracts` с точной записью ожидаемых failing cases, далее соответствующий GREEN. Проверяются настоящие production decision/await/env/output helpers. Compile/preparation failure не RED. T204 перед native wiring проверяет RED coverage; для непокрытого поведения требуется tests-only cloud checkpoint и фактический RED **до** соответствующей production-правки, а не после T221. В таком checkpoint cloud PREP подготавливает только соответствующие selected tests/бинарники и не даёт права на ordinaryfive. Если категория содержит несколько разрабатываемых методов, фиксировать точный planned/completed список, не запускать другой broad category.
+Локальный RED→GREEN при разработке — `-Category fr063-joint-interface-crash-adapter-contracts` либо отдельно `-Category fr063-joint-interface-crash-stage-contracts` с точной записью ожидаемых failing cases, далее соответствующий GREEN. Проверяются настоящие production decision/await/env/output helpers. Compile/preparation failure не RED. T204 перед native wiring проверяет RED coverage; для непокрытого поведения требуется tests-only cloud checkpoint и фактический RED **до** соответствующей production-правки, а не после T221. В таком checkpoint cloud PREP подготавливает только соответствующие selected tests/бинарники и не даёт права на ordinaryfive. Если категория содержит несколько разрабатываемых методов, фиксировать точный planned/completed список, не запускать другой broad category.
 
 ## Windows: фактическая проверка после SOURCE/PREP
 

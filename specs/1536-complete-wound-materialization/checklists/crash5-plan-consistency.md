@@ -45,3 +45,7 @@ Constitution2.1: linked issue/scope, test-first, selected categories, independen
 Metrics: функциональных требований17, с task coverage17 (100%); задач27: setup1, US1=13, US2=6, US3=7; unmapped tasks0; открытых findings0 после исправления трёх замечаний независимого review. Runtime неизвестные не считаются выполненными и не скрыты: Linux capabilities/timeout cause, native behavior, Windows5.
 
 Next action: review владельца по writing-plans, затем executing-plans. Независимый review законченного planning block завершён. Предложение от research создать отдельную Windows category отклонено до анализа: ordinary остаётся одной категорией по T2. Реализационные изменения/тесты в текущем этапе не разрешаются этой записью.
+
+## Implementation consistency amendment
+
+Approved plan1 is being executed. T226 adds an observed regression for the existing L5/L6 prohibition on unsettled control writes; the task set now has28 unique current IDs. Stage helpers have a separate1m category after an expected unit failure prevented their execution in the combined descriptor run; final contract selection includes both categories and the original managed consumers. Ordinary Theory/five/15m and all17 acceptance requirements are unchanged. T211 RED6/6 and T226 RED1/13 are preserved; implementation GREEN, independent SOURCE/PREP and Windows5 remain pending. Historical planning-only statements above retain their original provenance.

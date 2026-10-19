@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    { "category": "worker-native-finite-pipe-linux", "reason": "Qualify the new finite NativeLineage consumer on Linux using the existing guardian and a prebuilt package.", "contracts": ["Actual root0/73/fast, identity, environment, full streams, timeout and uncertain fault custody."] },
+    { "category": "worker-pool-regression-host", "reason": "Shared native owner must preserve existing host ownership and stop evidence.", "contracts": ["Existing host lifetime and scoped retirement behavior."] },
+    { "category": "worker-native-bootstrap-output", "reason": "Finite admission reuses bootstrap and redirected-output boundaries.", "contracts": ["Existing B2/A2 bootstrap and bounded legacy output defaults."] },
+    { "category": "worker-native-owner-retention", "reason": "Partial finite launches retain the same original owner contract.", "contracts": ["Uncertain ownership is retained and cannot be disposed as clean."] },
+    { "category": "gm-owned-terminal-native-linux", "reason": "The shared owner also serves terminal consumers whose defaults must remain unchanged.", "contracts": ["Existing owned terminal launch, output and scoped stop."] },
+    { "category": "gm-main-systemd-affected", "reason": "Exercise existing held-terminal and Main consumers affected by shared owner code.", "contracts": ["Existing prepare/release and terminal lifecycle semantics."] }
+  ]
+}

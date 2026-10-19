@@ -5,6 +5,11 @@
 Имена категорий развиваются вместе с кодом; исполнитель вправе создавать,
 разделять и переименовывать их в своей задаче.
 
+CRASH5: [NativeLineage Linux / локальный Windows validation guide](../specs/1536-complete-wound-materialization/quickstart.md)
+задаёт отдельные contract, native-control и ordinary-five selections. Linux ordinary
+требует заранее собранный package через `BOE_CRASH5_NATIVE_PACKAGE`; Windows использует
+свой owned Process. Результаты двух платформ фиксируются отдельно.
+
 ## Как выбрать проверки
 
 1. Назовите изменённый контракт и его потребителей. Прочитайте ответственность,

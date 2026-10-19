@@ -33,7 +33,11 @@
   "timeoutMinutes": 2,
   "expectedSeconds": null,
   "selectors": [
-    { "project": "unit", "tests": ["BookOfEternityClient.Tests.GmWorkerNativeFinitePipePolicyTests.*"] },
+    { "project": "unit", "tests": [
+      "BookOfEternityClient.Tests.GmWorkerNativeFinitePipePolicyTests.*",
+      "BookOfEternityClient.Tests.GmWorkerBridgeSourceGuardTests.WorkerServices_OnlyApplyGateMayApplyCanonicalFileChanges",
+      "BookOfEternityClient.Tests.GmWorkerBridgeSourceGuardTests.SharedAuditEventIdGenerator_IsTheOnlyWorkerAuditIdFormatter"
+    ] },
     { "project": "integration", "tests": ["BookOfEternityClient.Tests.JointInterfaceCrashProcessSupportTests.*"] }
   ]
 },
@@ -314,12 +318,14 @@
 },
 {
   "id": "fr063-joint-interface-crash-current",
-  "responsibility": "Actual separate engine process Environment.Exit at Prepared-commit, I-member uncommitted, Published-commit-before-ack, initial missing-result and ErrorPrepared. New process/ordinary Main/current frame resumes stored publication or holds, exact I/fallback bytes, actual public en-GB/en-US policy contrast, inert mechanical images and owned native child/container cleanup.",
-  "excludes": "No exception-only crash surrogate, direct-publisher-only child, old Ready/capability resurrection, Bridge WorkerRelease/Windows backend, or generic journal redesign. Source fixtures remain uncompiled/unrun.",
+  "responsibility": "Five actual separate engine process Environment.Exit73 cuts with a new resumer exit0: unchanged current-owner DATA, mechanical, en-GB/en-US and inert-repeat assertions. Ordinary Linux uses finite NativeLineage with a prebuilt package; Windows uses an owned Process and independent creation ticks. Root exit, scoped retirement, full output and fixture cleanup remain separate evidence.",
+  "excludes": "No exception-only crash surrogate, old Ready/capability resurrection, diagnostic capture, integrity fault cases, bridge startup, full suite or qualification inferred from helper tests. Linux and Windows outcomes are recorded separately.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
     "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
-    "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs"
+    "BookOfEternityClient.IntegrationTests/JointInterfaceCrashProcessSupport.cs",
+    "BookOfEternityClient.IntegrationTests/JointInterfaceCrashStageReport.cs",
+    "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs"
   ],
   "related": [
     {

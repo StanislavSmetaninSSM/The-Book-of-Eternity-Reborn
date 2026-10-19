@@ -259,11 +259,18 @@ internal static class JointInterfaceCrashProcessSupport
     /// <param name="fields">
     /// The existing scenario result fields, without a parent-supplied identity.
     /// </param>
+    /// <param name="stages">
+    /// The ordinary stage reporter, or <see langword="null"/> to preserve diagnostic and integrity result fields.
+    /// </param>
     /// <returns>
     /// JSON preserving Linux birth fields and explicitly identifying Windows creation ticks.
     /// </returns>
-    internal static string SerializeCurrentIdentity(object fields) =>
-        AddIdentity(JsonSerializer.SerializeToNode(fields)!.AsObject(), ReadCurrentIdentity()).ToJsonString();
+    internal static string SerializeCurrentIdentity(object fields, JointInterfaceCrashStageReport? stages = null)
+    {
+        var result = AddIdentity(JsonSerializer.SerializeToNode(fields)!.AsObject(), ReadCurrentIdentity());
+        if (stages != null) result["OrdinaryStageOutputFailure"] = stages.OutputFailure;
+        return result.ToJsonString();
+    }
 
     /// <summary>
     /// Runs one ordinary Linux child through the original finite native owner and scoped cleanup.

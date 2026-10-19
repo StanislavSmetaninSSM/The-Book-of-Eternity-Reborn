@@ -1,6 +1,6 @@
 # CRASH5 — задачи реализации согласованной spec редакции 3
 
-Источник: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), [spec](spec.md), [implementation plan редакции1](plan.md), [validation guide](quickstart.md). Spec одобрена из f22e51730; implementation plan1 из6f2d4d486 согласован владельцем ответом «да». Выполненные helper checks отмечены задачами и evidence в plan; ordinary Windows5 и Linux runtime пока UNRUN. US1=CRASH5-US-L, US2=CRASH5-US-W, US3=CRASH5-US-T. T199…T225 — новые уникальные IDs после существующих plain T001…T198; исторические задачи ниже не переоцениваются.
+Источник: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), [spec](spec.md), [implementation plan редакции1](plan.md), [validation guide](quickstart.md). Spec одобрена из f22e51730; implementation plan1 из6f2d4d486 согласован владельцем ответом «да». Выполненные helper checks отмечены задачами и evidence в plan; ordinary Windows5 и Linux runtime пока UNRUN. US1=CRASH5-US-L, US2=CRASH5-US-W, US3=CRASH5-US-T. T199…T226 — новые уникальные IDs после существующих plain T001…T198; исторические задачи ниже не переоцениваются.
 
 ## Phase 1 — Setup
 
@@ -31,13 +31,13 @@
 
 - [ ] T226 [US1] Исправить выявленный при source audit край stop timeout: positive retirement не разрешает dispose при ещё незавершённом original control write. Новый `UnsettledControlWrite_RemainsUncertain` должен пройти RED→GREEN; finite stop передаёт реальный IsCompleted в policy. Это уточняет существующий L5/L6 и не меняет старые consumers или budgets.
 
-- [ ] T211 [US1] Написать и получить локальный RED `BookOfEternityClient.IntegrationTests/JointInterfaceCrashStageReportTests.cs`: max64 records/2048 UTF8 each/131072 total, bounded errorType256, explicit limit, monotonic elapsed, IOException/ObjectDisposedException сохранены без подмены primary failure. Category adapter-contracts.
-- [ ] T212 [US1] Реализовать `JointInterfaceCrashStageReport.cs` и подключить только ordinary stage points в `GameEngineTurnLifecycleTests.JointInterfaceCrash.cs`; отдельные RunId/Nonce, finite stage set, никаких новых production hooks/collector/task/flush wait и никаких изменений G01 diagnostic class.
+- [x] T211 [US1] Написать и получить локальный RED `BookOfEternityClient.IntegrationTests/JointInterfaceCrashStageReportTests.cs`: max64 records/2048 UTF8 each/131072 total, bounded errorType256, explicit limit, monotonic elapsed, IOException/ObjectDisposedException сохранены без подмены primary failure. Category fr063-joint-interface-crash-stage-contracts (выделена для независимого RED).
+- [x] T212 [US1] Реализовать `JointInterfaceCrashStageReport.cs` и подключить только ordinary stage points в `GameEngineTurnLifecycleTests.JointInterfaceCrash.cs`; отдельные RunId/Nonce, finite stage set, никаких новых production hooks/collector/task/flush wait и никаких изменений G01 diagnostic class.
 - [ ] T213 [US1] Получить GREEN T211 и проверить ordinary disabled-capture contract из T207; обновить `specs/1536-complete-wound-materialization/plan.md`, не выдавать stage completeness за доказательство причины старого timeout.
 
 ## Phase 5 — US3: exact selection, SOURCE/PREP и Windows qualification
 
-- [ ] T214 [US3] Завершить metadata ordinary category в `tests/categories.json` для двух OS, сохранить один Theory/пять cases/15m; создать `tests/selections/1536-crash5-contracts.json` и `tests/selections/1536-crash5-linux-controls.json` с reasons/contracts из plan. Добавить два точных generic worker source guard selectors к contract category; обновить ссылку в `docs/testing.md`. Windows duplicate category и workflow changes запрещены.
+- [x] T214 [US3] Завершить metadata ordinary category в `tests/categories.json` для двух OS, сохранить один Theory/пять cases/15m; создать `tests/selections/1536-crash5-contracts.json` и `tests/selections/1536-crash5-linux-controls.json` с reasons/contracts из plan. Добавить два точных generic worker source guard selectors к contract category; обновить ссылку в `docs/testing.md`. Windows duplicate category и workflow changes запрещены.
 - [ ] T215 [US3] Выполнить fresh XML builds unit+integration по `specs/1536-complete-wound-materialization/quickstart.md`, проверить все новые/изменённые XML blocks; сохранить source SHA/diff + DLL hashes и build logs. Уточнить необходимые changed-test counts из фактического source.
 - [ ] T216 [US3] Выполнить ValidateCatalog и отдельные PlanOnly ordinary/contract с NoBuild после T215; ordinary обязан дать один descriptor/один Theory/five, guards считаются отдельно. Сохранить actual discovered/planned counts и DLL binding в `specs/1536-complete-wound-materialization/recovery/crash5/`.
 - [ ] T217 [US3] Получить независимый gpt-6-astra/high SOURCE+PREP review полного coherent diff и выбора consumers; устранить подтверждённые findings, повторить только затронутые проверки. Записать outcome и все Linux UNRUN в `specs/1536-complete-wound-materialization/plan.md`.
@@ -59,7 +59,7 @@ T199→T200→T201→T202→T203→T204→(если нужен: tests-only cloud
 
 Минимальный полезный промежуточный результат: проверенная pure policy и готовые native controls; полный локальный результат требует Windows5 и handoff. Нельзя завершить US1 только логированием. Не отмечать Linux tasks выполненными за подготовку исходников.
 
-Документарные S01…S07 предыдущего этапа завершены, включая независимое review и user approval редакции3; план/tasks/analyze завершаются в текущем planning checkpoint. Plan approval pending. Следующие исторические записи не предоставляют новые разрешения G01/G02.
+Документарные S01…S07 предыдущего этапа завершены, включая независимое review и user approval редакции3; план/tasks/analyze завершаются в текущем planning checkpoint. Plan1 approved at6f2d4d486; implementation in progress. Следующие исторические записи не предоставляют новые разрешения G01/G02.
 
 ## Исторические tasks feature1536 (без изменения)
 

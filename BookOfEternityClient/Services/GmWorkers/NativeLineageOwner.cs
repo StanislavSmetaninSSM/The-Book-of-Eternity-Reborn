@@ -43,7 +43,7 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
     /// <see langword="true"/> only for complete natural retirement without uncertainty; otherwise <see langword="false"/>.
     /// </returns>
     internal static bool CanAcceptFiniteClosedControl(NativeFiniteObservation observation, bool controlSettled = true) =>
-        HasCompleteFiniteRetirement(observation) && observation.Terminal!.Reason == "root-exited";
+        controlSettled && HasCompleteFiniteRetirement(observation) && observation.Terminal!.Reason == "root-exited";
 
     /// <summary>
     /// Checks the complete positive retirement conjunction independently of Started.
@@ -605,7 +605,7 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
                 await Task.WhenAll(_supervisorExit!, _statusReader!, _helperErrorDrain!, _hostExit ?? Task.CompletedTask).WaitAsync(observation.Token);
             }
             catch { Lose("observation-timeout-or-io"); }
-            if (finiteControlFailure && !CanAcceptFiniteClosedControl(ReadFiniteObservation())) Lose("control-lost");
+            if (finiteControlFailure && !CanAcceptFiniteClosedControl(ReadFiniteObservation(), _stopControl?.IsCompleted == true)) Lose("control-lost");
             lock (_stateGate)
             {
                 if (_uncertainty == null && _terminal?.State == GmWorkerStopState.StoppedWithinScope &&
