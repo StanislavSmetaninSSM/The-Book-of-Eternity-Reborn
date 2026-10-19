@@ -170,7 +170,18 @@ internal static class SyntheticOwner
             foreach(var drain in new[]{stdoutDrain,stderrDrain})
                 if(drain!=null)try {await drain.WaitAsync(TimeSpan.FromSeconds(1));}catch(Exception e){errors.Add("Target stream EOF/join: "+e);}
             record["observerErrors"]=errors;record["status"]=errors.Count==0?"SYNTHETIC_CAPTURE_PASSED_API1":"FROZEN_FIRST_SYNTHETIC_CAPTURE_FAILURE";
-            Write(Path.Combine(own,"record.json"),record);
+            try {Write(Path.Combine(own,"record.json"),record);}
+            catch(Exception e) {
+                errors.Add("Record persistence: "+e);record["status"]="FROZEN_FIRST_SYNTHETIC_CAPTURE_FAILURE";
+            }
+            // Independent metadata channel preserves known actor exits even if private persistence fails.
+            try {Console.Out.WriteLine("L01_OWNER_ACCOUNTING "+JsonSerializer.Serialize(record));Console.Out.Flush();}
+            catch(Exception e) {
+                errors.Add("Summary emission: "+e);record["status"]="FROZEN_FIRST_SYNTHETIC_CAPTURE_FAILURE";
+                // Bounded evidence update only. This never relaunches a target/collector/API.
+                try {Write(Path.Combine(own,"record.json"),record);}
+                catch(Exception update) {errors.Add("Record update: "+update);}
+            }
         }
         Require(errors.Count==0,"Synthetic capture failed; retain root and HOLD game");
     }

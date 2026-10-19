@@ -824,8 +824,8 @@
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/SyntheticOwner.cs",
-      "bytes": 14160,
-      "sha256": "c2874468229d1ca084b93ae622bf6094e06f3e47526ba09964c59c3166477eda"
+      "bytes": 14952,
+      "sha256": "c1c8aec1053d0aa4d936839e57a248b4233c71ad7e47220604382781851c9f34"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/bindings.json",
@@ -868,7 +868,7 @@
       "sha256": "ee083a1b30a88b36cf9a60a5ac32bcd7120981856fbfcd325264c683b1166566"
     }
   ],
-  "sourcePinDigest": "288c6cd3ce40a2bf3f83eaaa9238e04b519303794fd8aeb1dce08f11f038aa5d",
+  "sourcePinDigest": "5ab898720f9e83e53ee664f3e38b49feffdd8cf02357ae4526749b9aaeb7786c",
   "priorD01SourcePinDigest": "b277e73745c98abdc78f5feaa62a68373c2bf26b4b6115a20e4aa5207970e9ef",
   "explicitD01Deltas": [
     {
