@@ -95,6 +95,9 @@ public partial class FileSystemManager
         var path = scope.ValidateFile(ResolvePath(relativePath));
         if (!File.Exists(path)) return null;
         var bytes = File.ReadAllBytes(path);
+#if DEBUG
+        _hooks?.AfterSnapshotEvidenceRead?.Invoke(relativePath);
+#endif
         scope.ValidateFile(path, allowMissing: false);
         VerifyCurrentSessionOperation(lease);
         return bytes;

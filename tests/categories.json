@@ -2,6 +2,30 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "changeHints": [
+    "BookOfEternityClient/Services/Validation/ValidationService.PendingSnapshotValidation.cs"
+  ],
+  "related": [],
+  "responsibility": "Spec4 causal read bounds and immutable pending snapshot invocation authority.",
+  "excludes": "No game probe, Linux runtime or qualification; isolated three-file source.",
+  "selectors": [
+    {
+      "tests": [
+        "BookOfEternityClient.Tests.PendingSnapshotValidationScopeTests.*"
+      ],
+      "project": "unit"
+    }
+  ],
+  "expectedSeconds": null,
+  "timeoutMinutes": 2,
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "id": "pending-snapshot-validation-contracts"
+},
+
+{
   "id": "fr063-joint-interface-source42-windows-probe",
   "responsibility": "T227 one bounded Windows investigation of the genuine common source42 preparation after producer timeouts, through existing scalar finalization checkpoints and original owned child runner.",
   "excludes": "No crash5 qualification, stage43/resumer, Linux execution, production instrumentation, diagnostic capture, larger child bounds or automatic retry.",

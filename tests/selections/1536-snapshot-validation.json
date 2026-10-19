@@ -1,0 +1,13 @@
+{
+  "selections": [
+    {
+      "reason": "T230 RED and T231 GREEN for real repeated authentication.",
+      "contracts": [
+        "R=3,N=1/8/32; after acquisition<=6,warm<=9,cold<=12 physical rollback reads.",
+        "Durable dependency changes refuse before publication; no cached mutable authority."
+      ],
+      "category": "pending-snapshot-validation-contracts"
+    }
+  ],
+  "schemaVersion": 1
+}

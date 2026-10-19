@@ -9,6 +9,13 @@ namespace BookOfEternityClient.Core;
 
 internal sealed class FileSystemManagerHooks
 {
+#if DEBUG
+    /// <summary>
+    /// Observes an existing physical snapshot-evidence read; null disables the observation.
+    /// The callback must not perform I/O, wait, or mutate storage.
+    /// </summary>
+    internal Action<string>? AfterSnapshotEvidenceRead { get; init; }
+#endif
     /// <summary>
     /// Receives owned read-only load stage observations; null disables diagnostics.
     /// The callback must not mutate files, authority, settings or session state.

@@ -1,6 +1,6 @@
 # CRASH5 — задачи plan2 для согласованной spec4
 
-Источник: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), [spec4](spec.md), [plan2](plan.md), [quickstart](quickstart.md). Spec4 одобрена из da3efec34; plan2 ожидает предъявления/review. US2 — исходные пять Windows-сценариев, US3 — достоверные результаты/передача. T229 в предыдущем блоке учитывает подготовку этих документов. T230…T237 ещё не исполнялись; чекбоксы не означают разрешения обходить plan review.
+Источник: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), [spec4](spec.md), [plan2](plan.md), [quickstart](quickstart.md). Spec4 одобрена из da3efec34; plan2 из bd9c8dd434 одобрен владельцем ответом «да». US2 — исходные пять Windows-сценариев, US3 — достоверные результаты/передача. T229 в предыдущем блоке учитывает подготовку этих документов. Начато выполнение T230…T237; выполненные задачи отмечаются только по доказательствам.
 
 ## Plan2 — US2: причинная регрессия, lifetime и actual caller
 

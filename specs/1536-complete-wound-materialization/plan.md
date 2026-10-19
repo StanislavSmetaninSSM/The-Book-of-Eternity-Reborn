@@ -6,7 +6,7 @@
 **Architecture:** отдельный typed invocation получает существующий canonical read-quiescence lease, исключает участвующие записи и совместное использование validator, аутентифицирует снимок на входе и физически сверяет исходные зависимости перед возвратом результата. Каждая repair iteration создаёт новое доказательство. Browser original optimization и обычные validation entrypoints сохраняются.
 **Tech Stack:** существующие C#/.NET 8, SDK10, PowerShell7/xUnit; новых packages, save schemas или GM-контрактов нет.
 **Spec:** [редакция4](spec.md), одобрена из `da3efec34a6407260e7a9c19830f354740cccce2`; [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Ветка `1536-crash5-linux-windows-spec-20261019`, planning base `fa0a53001502b8ee1c5067f7fc1b529d683f67df`.
-**Status:** implementation plan2 принят независимым review для предъявления владельцу; user review плана ещё ожидается; кода/новых тестов или runtime для spec4 ещё нет. Windows5 FAIL_INCOMPLETE; Linux UNRUN. Предыдущие SOURCE/PREP/PASS относятся к своим SHA. Исполнение плана — после его предъявления и подтверждения по `superpowers:writing-plans`.
+**Status:** владелец одобрил точный plan2 из `bd9c8dd43430ce4d7c4852c580a76c012fed204b` ответом «да». Исполняются T230–T237; Windows5 пока FAIL_INCOMPLETE, Linux UNRUN. Новые результаты будут привязаны к своим SHA.
 
 ## Plan2 — границы, доказательство и численные критерии
 
