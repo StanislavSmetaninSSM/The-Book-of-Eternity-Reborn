@@ -1,8 +1,8 @@
 {
   "kind": "G01_PENDING_CAPTURE_ORCHESTRATION_CONTROL",
   "base": "c1668efba8ccf9bb041e8b764d561fe7bed0bc6f",
-  "status": "WIP_SHARED5_AND_CANCEL_IO_CORRECTIONS_PENDING_SOURCE",
-  "sourceReview": "HOLD_G01_FOUR_CONFIRMED_SOURCE_FINDINGS",
+  "status": "SOURCE_ACCEPTED_NATIVE_PREP_UNRUN",
+  "sourceReview": "ACCEPT_G01_WHOLE_SOURCE_ZERO_ONLY",
   "affectedIntegrationPrep": "UNRUN",
   "gameplayRelease": "NONE",
   "snapshotRelease": "NONE",
@@ -45,9 +45,12 @@
     "offline actual mapping and EVIDENCE"
   ],
   "allOldOutcomesAndBroaderHoldsUnchanged": true,
-  "currentNextAction": "SAVE_RECOVER_FOCUSED_SOURCE_BOUNDARY_CORRECTIONS",
+  "currentNextAction": "FIRST_TOOLS_THEN_FRESH_AFFECTED_PREP_ZERO",
   "sourceAdmission": {
-    "status": "HOLD_WHOLE_SOURCE"
+    "status": "SOURCE_ACCEPTED_G01_ZERO_ONLY",
+    "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-source-accepted-review-20261019.json",
+    "reviewSha256": "49a12866715b264a38de2e50572a1f012dce956653035ed437703cd8d5b3cf76",
+    "reviewedSource": "e520663f7918e536c2ae0675cb79a774be637655"
   },
   "actualAdmission": {
     "status": "HOLD_PREP"

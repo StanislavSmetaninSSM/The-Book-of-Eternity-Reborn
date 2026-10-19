@@ -1,0 +1,11 @@
+{
+  "kind": "G01_E520_READONLY_REVIEW_UTILITY_CORRECTION",
+  "originalScript": "/tmp/1536-cloud-tools/review/check_g01_source_final_e520_20261019_v1.py",
+  "originalSha256": "d68abfb1e9d36e308fa586b058a82ee719b0931c7a967af7112728e90c125476",
+  "originalExit": 1,
+  "error": "AssertionError: inputs only affectedwatchdog/collector hashes changed",
+  "cause": "Reviewer expected only watchdog/collector hash updates in both arrays. The inputs array correctly also updates the changed check_health.ps1 proof; requestInputs contains exactly watchdog/collector updates.",
+  "correction": "Only expected input-row set corrected; all source gates and semantic checks retained.",
+  "sourceFinding": false,
+  "nativeSdkGameApiActions": 0
+}

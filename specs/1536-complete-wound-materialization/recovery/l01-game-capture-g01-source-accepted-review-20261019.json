@@ -1,0 +1,116 @@
+{
+  "kind": "G01_CONSOLIDATED_WHOLE_SOURCE_ACCEPTANCE_AFTER_BOUNDED_CORRECTIONS",
+  "candidate": "e520663f7918e536c2ae0675cb79a774be637655",
+  "affectedBase": "223a5e09a3998e528e2d6e514ecc91589b5c57c8",
+  "wholeSourceBase": "4e379a92e27d488bc602f743fc739507d6a96648",
+  "verdict": "ACCEPT_G01_WHOLE_SOURCE_ZERO_ONLY",
+  "sourcePinDigest": "a6c2675674dd6e3218e16917fd9abfcffb44d638195c367c3efcb2d98780b026",
+  "controllerSha256": "63969901c241f7007030af78b757bba0618c72dae457ae75c11804de45bc9980",
+  "bindingsSha256": "50e5bffdc10799c05b8757b8606642c0a5e6329fc4a0b91a764851eca4a679b2",
+  "findings": [],
+  "summary": "The original whole review and both focused corrections now close G01-S01..S04 at source level. Acceptance permits only once tools and fresh integration/catalog/PlanOnly ZERO after saved/recovered acceptance. No actual game or diagnostic request is admitted.",
+  "resolvedFindings": [
+    {
+      "id": "G01-S01",
+      "status": "RESOLVED_SOURCE_AND_INERT_PROOFS",
+      "evidence": "Successful Popen is recorded immediately; exact direct-child fallback handles pidfd failure. Initial/post-positive-join target-child observations and all new cleanup signals/positive waits/censuses require remaining time in the same shared5. A nonblocking poll may preserve terminal native after the deadline. Exhaustion records UNKNOWN/HOLD, not another timeout. Inert advancing-clock proof4/4 and lifecycle5/5 match current saved source; no resumer signal introduced."
+    },
+    {
+      "id": "G01-S02",
+      "status": "RESOLVED_SOURCE_NATIVE_PROOFS_PENDING_PREP",
+      "evidence": "The final guard reads the private cancel marker before capturing the health-check timestamp. Only FileNotFound/DirectoryNotFound mean absent; other open/dispose errors propagate to preflight refusal. Marker present cancels a fresh ADMITTED image. Existing23 health checks plus missing/present/directory-I-O3 are bound as26 required ZERO checks. Final-check/API race remains UNKNOWN."
+    },
+    {
+      "id": "G01-S03",
+      "status": "RESOLVED_SOURCE_AND_INERT_PROOFS",
+      "evidence": "Natural native is polled before forced cleanup and preserved when known. Forced SIGKILL cleanup return is separate. Unchanged FINALIZE retains known nonzero over observer faults; source-bound5-case proof includes natural7 before finally and known7 observer failure."
+    },
+    {
+      "id": "G01-S04",
+      "status": "RESOLVED_SOURCE_NATIVE_PROOFS_PENDING_PREP",
+      "evidence": "Mapper requires a managed body and IL strictly below its byte length before source-position mapping. Original3 proofs remain and body-end/outside-body negatives are required; ParentProbe supplies the actual method body length. No mapper/CLR execution has occurred yet."
+    }
+  ],
+  "boundedVerification": {
+    "readOnlyChecks": 35,
+    "currentPins": 163,
+    "recoveredPaths": 222,
+    "lifecycleInertCases": 5,
+    "deadlineInertChecks": 4,
+    "nativeSdkGameApiActions": 0,
+    "unchanged": "Parent/wiring/policy/D01/selection/budgets/production and prior whole-source positive conclusions retained. External dependency inventory and old runtime evidence were not replayed."
+  },
+  "preparationPlan": {
+    "status": "ELIGIBLE_AFTER_SAVED_SOURCE_ACCEPTANCE_RECOVERY",
+    "root": "/tmp/g-a91f6d2c7b30",
+    "tools": "One first tools phase: direct compiler for actual ParentProbe/mapper, Parent6, PS health26, offline map5, and BCL monotonic bracket checks. No fixture child, game, collector main or diagnostic request.",
+    "prepare": "Only after original tools success: one fresh integration3-project no-restore/private ArtifactsPath build, actual property/import bindings, full catalog discovery and exact diagnostic1/1/1 PlanOnly in the original aggregate600s. Retained unitd3 full439 closure stays separate and source/dependency-bound. Unknown imports or any failure freeze; no auto retry/rebuild/BOTH claim.",
+    "expectedNativeTestsExecuted": 0,
+    "buildProvenance": "New integration compile plus original retained unitd3 provenance; never relabel original catalog124/unit137 or prior outputs as a fresh BOTH build."
+  },
+  "acceptanceSaveConditions": [
+    "Copy this report and supporting exact checks/history; retain both original HOLD reviews and all RED/intermediate/final fake outcomes unchanged.",
+    "Set current sourceReview/current handoff to this accepted source candidate; sourceAdmission.status=SOURCE_ACCEPTED_G01_ZERO_ONLY with reviewPath/reviewSha256. Keep current163 digest and reviewed controller/bindings unchanged.",
+    "Save/push/exact-readback/clean-recover acceptance before invoking tools once; prepare is separately invoked only after the original successful tools record. Stop on any native/observer/binding failure.",
+    "Keep actualAdmission=HOLD_PREP and gameplay/snapshot/crash5 release NONE. No consumed actual lease or game invocation until completed fresh evidence receives independent PREP acceptance and a separately saved/recovered one-shot release.",
+    "Keep Parent6/PS26/map5/build/catalog/PlanOnly UNRUN until their first original outcomes exist; source acceptance is not a prediction that they pass."
+  ],
+  "prospectiveActual": {
+    "admitted": false,
+    "plannedRunId": "2ca476b7cf58446fb3eb3c6218e850b8",
+    "category": "fr063-joint-interface-crash-diagnostic",
+    "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_DiagnoseCurrentResumeAfterInterfaceMemberProcessLoss",
+    "cases": 1,
+    "cut": 1,
+    "maxWriteDumpRequests": 1,
+    "conditions": "Later independent PREP and saved/recovered consumed named lease plus fresh original owned fixture/preflight only. No original crash5 qualification."
+  },
+  "limits": [
+    "User option1 admits by exact discrete custody receipt and fresh sticky health; continuous CapturePhase, source emission completeness and final-check/API race remain UNKNOWN.",
+    "Shared-deadline guards prevent intentionally starting another cleanup action after observed expiry; they do not prove scheduler/syscall latency or actual target suspension duration. Dated final child observations do not exclude future service spawn. Unresolved ownership/cleanup retains root.",
+    "Private core/raw report are never committed/attached/archived/autodeleted and remain retained through independent sanitized EVIDENCE/final report.",
+    "Mapped rows are not proof of complete original stack order; actual source positions require later raw/MVID/token/IL evidence. One snapshot cannot prove progress, deadlock ownership or a completion bound.",
+    "L0152/57, old66529 permanentlyUNKNOWN, all original failures and separate cloud Linux/future Windows/artifact403/broader holds remain unchanged."
+  ],
+  "priorReviews": [
+    {
+      "path": "l01-game-capture-g01-source-independent-review-20261019.json",
+      "sha256": "7c1721d2b264027af887f122df483a6e2f8d1791386bb7198c46f95501023839",
+      "candidate": "9d8d08093bb769f85ec79a88d98669f1570e0d57"
+    },
+    {
+      "path": "l01-game-capture-g01-affected-source-review-223a-20261019.json",
+      "sha256": "0a02972bea1a5241deeb768a51803381ad7669fdcc97acebbae480ff531ae062",
+      "candidate": "223a5e09a3998e528e2d6e514ecc91589b5c57c8"
+    }
+  ],
+  "artifacts": {
+    "checks": {
+      "path": "/tmp/1536-cloud-tools/review/l01-game-capture-g01-source-final-checks-e520-20261019.json",
+      "bytes": 13084,
+      "sha256": "f8bae34e854c92d547f54d628298ce77b0d855923bbd4977377cee8118cb01ed"
+    },
+    "checker": {
+      "path": "/tmp/1536-cloud-tools/review/check_g01_source_final_e520_20261019.py",
+      "bytes": 7077,
+      "sha256": "b460538d60aea3176a339298dfa0887bdb99aae3a37ed19c89030648931b6260"
+    }
+  },
+  "reviewUtilityHistory": [
+    {
+      "path": "/tmp/1536-cloud-tools/review/g01-e520-review-utility-history-20261019.json",
+      "bytes": 731,
+      "sha256": "b96027010c53ec129a08e40fc0fdeb148f997214f3d6d2a709acfb80bbeee774"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_g01_source_final_e520_20261019_v1.py",
+      "bytes": 7002,
+      "sha256": "d68abfb1e9d36e308fa586b058a82ee719b0931c7a967af7112728e90c125476"
+    }
+  ],
+  "reviewUtilityLimit": "A first read-only checker expected2 updated rows in inputs; that array correctly also updates check_health.ps1. The exact failed reader is retained; only the expected row set changed. No source/native failure or retry is implied.",
+  "recovery": {
+    "path": "/tmp/1536-cloud-tools/g01-recovery-e520663f.json",
+    "sha256": "e7a776551e5e1ca0255d1257bb99442b3ce9c583d197c418da59bb7bcc9154e0"
+  }
+}
