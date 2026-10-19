@@ -102,8 +102,8 @@ def main():
             short=ROOT/'t';short.mkdir(mode=0o700);env['TMPDIR']=str(short)
             before_ns=time.monotonic_ns();zero([DOTNET,str(phase/'ParentProbe.dll'),str(phase/'parent-proof')],'parent-proof',time.monotonic()+30);after_ns=time.monotonic_ns()
             parent=read(phase/'parent-proof.stdout');assert parent['passed']==len(parent['cases'])==6 and all(c['passed'] for c in parent['cases']) and parent['requests']==parent['gameProcesses']==parent['fixtureChildren']==0
-            before_ps=time.monotonic_ns();zero([PW,'-NoLogo','-NoProfile','-NonInteractive','-File',str(HERE/'check_health.ps1'),'-Collector',str(HERE/'Collect.ps1')],'collector-health-proof',time.monotonic()+30);after_ps=time.monotonic_ns()
-            health=read(phase/'collector-health-proof.stdout');assert health['Passed']==len(health['Cases'])==23 and all(c['Passed'] for c in health['Cases']) and health['Requests']==health['GameProcesses']==0
+            before_ps=time.monotonic_ns();zero([PW,'-NoLogo','-NoProfile','-NonInteractive','-File',str(HERE/'check_health.ps1'),'-Collector',str(HERE/'Collect.ps1'),'-ProofRoot',str(phase/'cancel-proof')],'collector-health-proof',time.monotonic()+30);after_ps=time.monotonic_ns()
+            health=read(phase/'collector-health-proof.stdout');assert health['Passed']==len(health['Cases'])==26 and all(c['Passed'] for c in health['Cases']) and health['Requests']==health['GameProcesses']==0
             record['clockProof']=[]
             for name,stamp,freq,lo,hi in [('net8',parent['clockStamp'],parent['clockFrequency'],before_ns,after_ns),('powershell',health['ClockStamp'],health['ClockFrequency'],before_ps,after_ps)]:
                 normalized=stamp*10**9//freq;assert lo<=normalized<=hi

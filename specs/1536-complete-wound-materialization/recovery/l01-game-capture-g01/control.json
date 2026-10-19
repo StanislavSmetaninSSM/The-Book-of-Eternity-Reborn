@@ -1,7 +1,7 @@
 {
   "kind": "G01_PENDING_CAPTURE_ORCHESTRATION_CONTROL",
   "base": "c1668efba8ccf9bb041e8b764d561fe7bed0bc6f",
-  "status": "WIP_FOUR_SOURCE_CORRECTIONS_PENDING_FOCUSED_REVIEW",
+  "status": "WIP_SHARED5_AND_CANCEL_IO_CORRECTIONS_PENDING_SOURCE",
   "sourceReview": "HOLD_G01_FOUR_CONFIRMED_SOURCE_FINDINGS",
   "affectedIntegrationPrep": "UNRUN",
   "gameplayRelease": "NONE",
@@ -45,7 +45,7 @@
     "offline actual mapping and EVIDENCE"
   ],
   "allOldOutcomesAndBroaderHoldsUnchanged": true,
-  "currentNextAction": "SAVE_RECOVER_CORRECTED_SOURCE_AND_FOCUSED_REVIEW",
+  "currentNextAction": "SAVE_RECOVER_FOCUSED_SOURCE_BOUNDARY_CORRECTIONS",
   "sourceAdmission": {
     "status": "HOLD_WHOLE_SOURCE"
   },
@@ -67,8 +67,17 @@
       "G01-S04"
     ],
     "pureFakeLifecycleFinalPassed": 5,
-    "finalProof": "watchdog-fault-green-final.json",
+    "finalProof": "watchdog-fault-green-budget-guard.json",
     "nativeTools": "UNRUN",
-    "affectedPrep": "UNRUN"
+    "affectedPrep": "UNRUN",
+    "advancingClockPassed": 4,
+    "advancingClockProof": "deadline-fault-green.json"
+  },
+  "affectedSourceHold": {
+    "candidate": "223a5e09a3998e528e2d6e514ecc91589b5c57c8",
+    "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-affected-source-review-223a-20261019.json",
+    "reviewSha256": "0a02972bea1a5241deeb768a51803381ad7669fdcc97acebbae480ff531ae062",
+    "readOnlyChecks": 31,
+    "verdict": "HOLD_G01_AFFECTED_SOURCE"
   }
 }

@@ -65,6 +65,17 @@ function Test-AdmissionHealth($h, $m, [long]$Now, [long]$Frequency, [bool]$Paren
     if ('ObserverFailure' -notin $h.Health.PSObject.Properties.Name -or $null -ne $h.Health.ObserverFailure -or -not $h.Health.CustodySeen) { return 'OBSERVER_OR_CUSTODY_UNKNOWN' }
     return $null
 }
+function Read-ParentCancellation([string]$MarkerPath) {
+    try {
+        $stream = [IO.File]::Open($MarkerPath, [IO.FileMode]::Open, [IO.FileAccess]::Read, [IO.FileShare]::ReadWrite)
+        $stream.Dispose()
+        return $true
+    } catch {
+        $cause = $_.Exception.GetBaseException()
+        if ($cause -is [IO.FileNotFoundException] -or $cause -is [IO.DirectoryNotFoundException]) { return $false }
+        throw # Unknown access/I/O state refuses the request through preflight failure.
+    }
+}
 try {
     $m = [IO.File]::ReadAllText($Manifest) | ConvertFrom-Json
     foreach ($row in $m.LoadedFiles) {
@@ -105,7 +116,8 @@ try {
     # Final guard follows library loading/client construction and directly precedes the observed API call.
     if ((Identity $m.TargetPid).BirthTick -ne $m.TargetBirthTick) { throw 'Target changed before request' }
     $h = [IO.File]::ReadAllText($m.HealthPath) | ConvertFrom-Json
-    $cancel = Test-AdmissionHealth $h $m ([Diagnostics.Stopwatch]::GetTimestamp()) ([Diagnostics.Stopwatch]::Frequency) ([IO.File]::Exists((Join-Path (Split-Path $Manifest) 'cancel')))
+    $parentCancelled = Read-ParentCancellation (Join-Path (Split-Path $Manifest) 'cancel')
+    $cancel = Test-AdmissionHealth $h $m ([Diagnostics.Stopwatch]::GetTimestamp()) ([Diagnostics.Stopwatch]::Frequency) $parentCancelled
     if ($null -ne $cancel) { Observe-Emit @{ Stage = 'cancelled_before_api'; Reason = $cancel; ApiOutcome = 'UNREACHED' } }
     else {
         $result = Invoke-ObservedApi -Request {

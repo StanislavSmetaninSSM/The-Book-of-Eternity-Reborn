@@ -1,3 +1,5 @@
+> CURRENT 2026-10-19: shared5 admission and cancel-I/O fail-closed corrections saved as WIP; inert advancing-clock4/4 and lifecycle5/5. Focused SOURCE pending; native Parent6/PS26/map5 + fresh PREP UNRUN, actual/API0. Earlier statuses below historical.
+
 > CURRENT 2026-10-19: wholeSOURCE9d8 HOLD(4 findings) retained; bounded corrections + inert lifecycle5/5 are WIP pending focused SOURCE. Native Parent6/health23/map5 and fresh integration/catalog/PlanOnly/PREP UNRUN; game/API0, gates HOLD. Historical entries below retain original provenance.
 
 > G01 latest user clarification: exactcustodyreceipt+freshstickyhealth/noobservedcancel may admit one safe owned-process capture while CapturePhaseUNKNOWN remains; identity/ownership/delivery/order/stickyhealthuncertainty cancels. Retain observedinterval/race/UNKNOWN and mappedframes separately. WholeSOURCE/freshaffectedPREP stillrequired; no newphaseproof mechanism.

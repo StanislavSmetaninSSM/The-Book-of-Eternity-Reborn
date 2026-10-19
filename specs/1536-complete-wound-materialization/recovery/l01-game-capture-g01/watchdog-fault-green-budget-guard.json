@@ -1,0 +1,185 @@
+{
+  "kind": "G01_EXACT_SOURCE_FAKE_LIFECYCLE",
+  "sourceSha256": "0989a13b62899b0bbde9758dda25c15057a08a046127b44ceb2217422c235c1b",
+  "cases": [
+    {
+      "case": "pidfd-setup-failure",
+      "passed": true,
+      "record": {
+        "nativeExit": null,
+        "observerErrors": [
+          "OSError('injected pidfd setup failure')"
+        ],
+        "collector": {
+          "command": [
+            "inert"
+          ],
+          "pid": 4242,
+          "identity": {
+            "pid": 4242,
+            "parentPid": 100
+          },
+          "nativeExit": null,
+          "joined": true,
+          "cleanupExit": -9
+        },
+        "collectorLaunches": 1,
+        "diagnosticRequests": null,
+        "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+        "ownedCleanupSignals": [
+          "direct-collector"
+        ],
+        "postCollectorCensusMonotonic": 100.0,
+        "createdumpCensusLimit": "Dated exact-target observations only; no proof against future target-service spawn.",
+        "apiNativeStatus": null,
+        "collectorEvents": [],
+        "admittedRequestStages": 0,
+        "createdumpIdentities": [],
+        "durationSeconds": 100.0
+      },
+      "simulatedLaunches": 1,
+      "simulatedSignals": [
+        "direct-child"
+      ],
+      "waits": [],
+      "finalizerExit": 2
+    },
+    {
+      "case": "natural7-before-finally",
+      "passed": true,
+      "record": {
+        "nativeExit": 7,
+        "observerErrors": [
+          "injected observer error before next poll"
+        ],
+        "collector": {
+          "nativeExit": 7,
+          "joined": true
+        },
+        "collectorLaunches": 1,
+        "diagnosticRequests": null,
+        "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+        "postCollectorCensusMonotonic": 100.0,
+        "createdumpCensusLimit": "Dated exact-target observations only; no proof against future target-service spawn.",
+        "apiNativeStatus": null,
+        "collectorEvents": [],
+        "admittedRequestStages": 0,
+        "createdumpIdentities": [],
+        "durationSeconds": 100.0
+      },
+      "simulatedLaunches": 0,
+      "simulatedSignals": [],
+      "waits": [],
+      "finalizerExit": 7
+    },
+    {
+      "case": "forced-cleanup",
+      "passed": true,
+      "record": {
+        "nativeExit": null,
+        "observerErrors": [
+          "injected observer error before next poll"
+        ],
+        "collector": {
+          "nativeExit": null,
+          "joined": true,
+          "cleanupExit": -9
+        },
+        "collectorLaunches": 1,
+        "diagnosticRequests": null,
+        "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+        "ownedCleanupSignals": [
+          "collector"
+        ],
+        "postCollectorCensusMonotonic": 100.0,
+        "createdumpCensusLimit": "Dated exact-target observations only; no proof against future target-service spawn.",
+        "apiNativeStatus": null,
+        "collectorEvents": [],
+        "admittedRequestStages": 0,
+        "createdumpIdentities": [],
+        "durationSeconds": 100.0
+      },
+      "simulatedLaunches": 0,
+      "simulatedSignals": [
+        "pidfd"
+      ],
+      "waits": [],
+      "finalizerExit": 2
+    },
+    {
+      "case": "known7-observer-error",
+      "passed": true,
+      "record": {
+        "nativeExit": 7,
+        "observerErrors": [
+          "injected observer error before next poll"
+        ],
+        "collector": {
+          "nativeExit": 7,
+          "joined": true
+        },
+        "collectorLaunches": 1,
+        "diagnosticRequests": null,
+        "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+        "postCollectorCensusMonotonic": 100.0,
+        "createdumpCensusLimit": "Dated exact-target observations only; no proof against future target-service spawn.",
+        "apiNativeStatus": null,
+        "collectorEvents": [],
+        "admittedRequestStages": 0,
+        "createdumpIdentities": [],
+        "durationSeconds": 100.0
+      },
+      "simulatedLaunches": 0,
+      "simulatedSignals": [],
+      "waits": [],
+      "finalizerExit": 7
+    },
+    {
+      "case": "late-createdump-after-join",
+      "passed": true,
+      "record": {
+        "nativeExit": 7,
+        "observerErrors": [
+          "injected observer error before next poll"
+        ],
+        "collector": {
+          "nativeExit": 7,
+          "joined": true
+        },
+        "collectorLaunches": 1,
+        "diagnosticRequests": null,
+        "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+        "postCollectorCensusMonotonic": 100.0,
+        "ownedCleanupSignals": [
+          "late-createdump"
+        ],
+        "createdumpCensusLimit": "Dated exact-target observations only; no proof against future target-service spawn.",
+        "apiNativeStatus": null,
+        "collectorEvents": [],
+        "admittedRequestStages": 0,
+        "createdumpIdentities": [
+          {
+            "identity": {
+              "pid": 6060,
+              "parentPid": 100
+            },
+            "command": [
+              "createdump",
+              "target",
+              "dump"
+            ]
+          }
+        ],
+        "durationSeconds": 100.0
+      },
+      "simulatedLaunches": 0,
+      "simulatedSignals": [],
+      "waits": [],
+      "finalizerExit": 7
+    }
+  ],
+  "passed": 5,
+  "nativeProcesses": 0,
+  "gameCases": 0,
+  "apiRequests": 0
+}

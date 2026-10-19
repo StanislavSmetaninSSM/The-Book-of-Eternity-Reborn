@@ -148,7 +148,9 @@ def main():
         cleanup_deadline = time.monotonic() + 5
         # Reconcile exact-target createdump children even when collector setup/observation failed.
         if child is not None:
-            try: observe_children()
+            try:
+                assert time.monotonic() < cleanup_deadline, 'Initial cleanup census deadline exhausted; UNKNOWN/HOLD'
+                observe_children()
             except BaseException as error: record['observerErrors'].append('Final target-child census: '+repr(error))
         collector_forced = False
         if child is not None:
@@ -160,6 +162,7 @@ def main():
                 elif collector_fd is None:
                     # This exact direct Popen child is still unreaped, so its PID cannot be reused.
                     # Same own-child fallback as S01; never a target/global PID signal.
+                    assert time.monotonic() < cleanup_deadline, 'Direct collector cleanup deadline exhausted; UNKNOWN/HOLD'
                     child.kill(); collector_forced = True
                     record.setdefault('ownedCleanupSignals',[]).append('direct-collector')
             except BaseException as error: record['observerErrors'].append('Direct collector cleanup: '+repr(error))
@@ -179,17 +182,25 @@ def main():
         for name,fd in owned:
             try:
                 if not select.select([fd], [], [], 0)[0]:
+                    assert time.monotonic() < cleanup_deadline, 'Owned signal deadline exhausted; UNKNOWN/HOLD'
                     signal.pidfd_send_signal(fd,signal.SIGKILL)
                     if name == 'collector': collector_forced = True
                     record.setdefault('ownedCleanupSignals',[]).append(name)
             except BaseException as error: record['observerErrors'].append('Owned signal: '+repr(error))
         for name,fd in owned:
             try:
-                assert select.select([fd],[],[],max(0,cleanup_deadline-time.monotonic()))[0], name+' terminal UNKNOWN'
+                if not select.select([fd],[],[],0)[0]:
+                    remaining = cleanup_deadline-time.monotonic()
+                    assert remaining > 0, name+' cleanup deadline exhausted; UNKNOWN/HOLD'
+                    assert select.select([fd],[],[],remaining)[0], name+' terminal UNKNOWN'
             except BaseException as error: record['observerErrors'].append('Owned terminal: '+repr(error))
         if child is not None:
             try:
-                code=child.wait(timeout=max(.001,cleanup_deadline-time.monotonic()))
+                code=child.poll()
+                if code is None:
+                    remaining = cleanup_deadline-time.monotonic()
+                    assert remaining > 0, 'Collector join deadline exhausted; UNKNOWN/HOLD'
+                    code=child.wait(timeout=remaining)
                 if record['collector'] is not None:
                     record['collector']['joined']=True
                     if record['collector']['nativeExit'] is None:
@@ -199,6 +210,7 @@ def main():
             except BaseException as error: record['observerErrors'].append('Collector join: '+repr(error))
             if record['collector']['joined']:
                 try:
+                    assert time.monotonic() < cleanup_deadline, 'Post-collector census deadline exhausted; UNKNOWN/HOLD'
                     observe_children() # Revalidates target identity; catches a late child after collector join.
                     record['postCollectorCensusMonotonic'] = time.monotonic()
                 except BaseException as error: record['observerErrors'].append('Post-collector target-child census: '+repr(error))
@@ -210,10 +222,14 @@ def main():
                             assert lib['identity'](pid) == item['identity']
                             assert str(Path(f'/proc/{pid}/exe').resolve(strict=True)) == cfg['Createdump']
                             assert Path(f'/proc/{pid}/cmdline').read_bytes().split(b'\0')[:-1] == [a.encode() for a in item['command']]
+                            assert time.monotonic() < cleanup_deadline, 'Late createdump signal deadline exhausted; UNKNOWN/HOLD'
                             signal.pidfd_send_signal(fd,signal.SIGKILL)
                             record.setdefault('ownedCleanupSignals',[]).append('late-createdump')
                         owned.append(('createdump',fd))
-                        assert select.select([fd],[],[],max(0,cleanup_deadline-time.monotonic()))[0], 'late createdump terminal UNKNOWN'
+                        if not select.select([fd],[],[],0)[0]:
+                            remaining = cleanup_deadline-time.monotonic()
+                            assert remaining > 0, 'Late createdump wait deadline exhausted; UNKNOWN/HOLD'
+                            assert select.select([fd],[],[],remaining)[0], 'late createdump terminal UNKNOWN'
                     except BaseException as error: record['observerErrors'].append('Late createdump ownership/cleanup unresolved: '+repr(error))
             else: record['postCollectorCensus'] = 'UNKNOWN_COLLECTOR_NOT_JOINED'
         record['createdumpCensusLimit'] = 'Dated exact-target observations only; no proof against future target-service spawn.'

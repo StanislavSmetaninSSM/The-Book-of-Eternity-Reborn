@@ -1,0 +1,78 @@
+{
+  "kind": "G01_ADVANCING_CLOCK_FAKE",
+  "sourceSha256": "d09175beff54012514c779a98faec895a10897fa2b82a8da5e6a88f386523788",
+  "checks": [
+    {
+      "name": "no signal at or after shared deadline",
+      "passed": false
+    },
+    {
+      "name": "no positive wait at or after shared deadline",
+      "passed": false
+    },
+    {
+      "name": "exhaustion is explicit HOLD",
+      "passed": false
+    },
+    {
+      "name": "forced cleanup not promoted to native",
+      "passed": true
+    }
+  ],
+  "passed": 1,
+  "cleanupStart": 100,
+  "sharedDeadline": 105,
+  "censuses": [
+    100.0,
+    105.0
+  ],
+  "signals": [
+    {
+      "fd": 3,
+      "at": 100.0
+    },
+    {
+      "fd": 4,
+      "at": 105.0
+    }
+  ],
+  "waits": [
+    {
+      "timeout": 0.001,
+      "at": 105.0
+    }
+  ],
+  "record": {
+    "nativeExit": null,
+    "collector": {
+      "nativeExit": null,
+      "joined": true,
+      "cleanupExit": -9
+    },
+    "collectorLaunches": 1,
+    "observerErrors": [],
+    "ownedCleanupSignals": [
+      "collector",
+      "late-createdump"
+    ],
+    "postCollectorCensusMonotonic": 105.0,
+    "createdumpCensusLimit": "Dated exact-target observations only; no proof against future target-service spawn.",
+    "createdumpIdentities": [
+      {
+        "identity": {
+          "pid": 6060,
+          "parentPid": 100
+        },
+        "command": [
+          "createdump",
+          "target",
+          "dump"
+        ]
+      }
+    ],
+    "durationSeconds": 5.0
+  },
+  "nativeProcesses": 0,
+  "gameCases": 0,
+  "apiRequests": 0
+}

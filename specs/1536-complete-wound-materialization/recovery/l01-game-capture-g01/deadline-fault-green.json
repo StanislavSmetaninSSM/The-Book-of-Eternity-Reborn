@@ -1,0 +1,56 @@
+{
+  "kind": "G01_ADVANCING_CLOCK_FAKE",
+  "sourceSha256": "0989a13b62899b0bbde9758dda25c15057a08a046127b44ceb2217422c235c1b",
+  "checks": [
+    {
+      "name": "no signal at or after shared deadline",
+      "passed": true
+    },
+    {
+      "name": "no positive wait at or after shared deadline",
+      "passed": true
+    },
+    {
+      "name": "exhaustion is explicit HOLD",
+      "passed": true
+    },
+    {
+      "name": "forced cleanup not promoted to native",
+      "passed": true
+    }
+  ],
+  "passed": 4,
+  "cleanupStart": 100,
+  "sharedDeadline": 105,
+  "censuses": [
+    100.0
+  ],
+  "signals": [
+    {
+      "fd": 3,
+      "at": 100.0
+    }
+  ],
+  "waits": [],
+  "record": {
+    "nativeExit": null,
+    "collector": {
+      "nativeExit": null,
+      "joined": true,
+      "cleanupExit": -9
+    },
+    "collectorLaunches": 1,
+    "observerErrors": [
+      "Post-collector target-child census: AssertionError('Post-collector census deadline exhausted; UNKNOWN/HOLD')"
+    ],
+    "ownedCleanupSignals": [
+      "collector"
+    ],
+    "createdumpCensusLimit": "Dated exact-target observations only; no proof against future target-service spawn.",
+    "createdumpIdentities": [],
+    "durationSeconds": 5.0
+  },
+  "nativeProcesses": 0,
+  "gameCases": 0,
+  "apiRequests": 0
+}

@@ -1,0 +1,73 @@
+{
+  "kind": "G01_FOCUSED_AFFECTED_SOURCE_REVIEW",
+  "candidate": "223a5e09a3998e528e2d6e514ecc91589b5c57c8",
+  "base": "9d8d08093bb769f85ec79a88d98669f1570e0d57",
+  "verdict": "HOLD_G01_AFFECTED_SOURCE",
+  "sourcePinDigest": "fab6a66189aa71da5df02cf4580926ef9879775be5d8dd3919309b7b5bfce74f",
+  "controllerSha256": "92155d2e8b6add95230fd68bba54ac27a71be2ad52685cbaf007c0d12e3ef89c",
+  "bindingsSha256": "9c6f4d1c6f3d80b4d5240b7f12560cac73b3adfbc4015f3828f7cf7754fe9960",
+  "resolved": [
+    {
+      "id": "G01-S01-part",
+      "result": "Immediate successful launch accounting, exact direct-child fallback and initial/post-positive-join exact-target census are present. Future-spawn uncertainty is explicitly retained. Shared-deadline enforcement remains incomplete."
+    },
+    {
+      "id": "G01-S03",
+      "result": "Resolved in source: natural poll before signals preserves native7; forced SIGKILL cleanup remains separate. Existing FINALIZE is unchanged. Saved exact-source fake proofs are bound to current watchdog."
+    },
+    {
+      "id": "G01-S04",
+      "result": "Resolved in source: managed body is required and IL must be strictly less than actual body length before source position mapping. Existing3 cases remain with body-end/outside-body negatives added; CLR proof remains UNRUN."
+    }
+  ],
+  "findings": [
+    {
+      "id": "G01-S01-remaining",
+      "severity": "HIGH",
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/watchdog.py",
+      "lines": "146-219",
+      "evidence": "The cleanup deadline is used only as a timeout argument, not an admission guard. After the initial collector pidfd wait consumes all5 seconds, child.wait still receives .001 and the post-join late-createdump branch still signals before calling select(max(0,remainder)). Exact current finally AST with an advancing clock produces a late-createdump signal at t105, shared deadline105, and no observerErrors. The saved5-case proof used a constant clock and therefore did not exercise exhaustion.",
+      "correction": "Require positive shared remainder before every new bounded cleanup action, including fallback/handle signals and join/census work; no positive .001 timeout after expiration. If exhausted, preserve known native outcome, explicitly report UNKNOWN/HOLD and retain. Never start a new5-second allowance.",
+      "requiredProof": "Preserve the original5 cases and add advancing-clock exhaustion covering late child after a consumed collector wait, plus no signal/wait after deadline and known nonzero native priority."
+    },
+    {
+      "id": "G01-S02-remaining",
+      "severity": "MEDIUM",
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/Collect.ps1",
+      "lines": "49-66,108",
+      "evidence": "The positive cancellation boolean is now checked first, but the file-to-boolean boundary uses File.Exists. Its false result also covers access/I/O errors, so uncertainty is indistinguishable from proven absence; the23rd pure boolean test cannot detect this boundary.",
+      "correction": "Use a narrow read whose only absent outcomes are FileNotFoundException/DirectoryNotFoundException. Existing marker cancels; any other access/I/O uncertainty refuses before API and is retained as preflight/observer evidence. Do not claim atomic cancellation with API entry.",
+      "requiredProof": "Retain all23 existing health assertions and add bounded private-file absent/present/I-O-refusal cases to the reviewed ZERO proof; no child/API call."
+    }
+  ],
+  "acceptedUnchangedScope": "No broad re-review: parent C#/wiring, policy, D01 drain, category/selection, original assertions/budgets, production and prior source conclusions are unchanged.162 pins, current hashes, original4 HOLD copies,214-path recovery and source-only fake history verified.",
+  "checks": {
+    "path": "/tmp/1536-cloud-tools/review/l01-game-capture-g01-affected-source-checks-223a-20261019.json",
+    "sha256": "049c77affe9f73042446d975a38be5b6e91184115eef5b2e07677b94b324c99c",
+    "passed": 31,
+    "meaning": "Bindings and source defect witness; not runtime acceptance"
+  },
+  "checker": {
+    "path": "/tmp/1536-cloud-tools/review/check_g01_affected_source_223a_20261019.py",
+    "sha256": "a4686502ccb56d3797a0abea5f86b67e46d2cf0969b5b2ed38b605e8a74056dd"
+  },
+  "recovery": {
+    "path": "/tmp/1536-cloud-tools/g01-recovery-223a5e09.json",
+    "sha256": "1cd0a9551751952de0ff46bfbcd35685840917c6a76735f1561694ce036fedc7"
+  },
+  "executionAdmission": {
+    "tools": "NONE_SOURCE_HOLD",
+    "prepare": "NONE_SOURCE_HOLD",
+    "actual": "NONE_PREP_HOLD",
+    "gameplay": "NONE",
+    "collector": "NONE",
+    "snapshot": "NONE",
+    "crash5": "NONE"
+  },
+  "nextSafeAction": "Preserve this candidate/report/witness; apply only the two remaining boundary fixes, repin/save/recover and request focused re-review. No SDK/CLR/PS/game/procfs/API action authorized by this report.",
+  "limits": [
+    "Both fixes are ordinary bounded orchestration corrections under existing user authority, not a new architecture or request for renewed human permission.",
+    "Private roots remain unused; no new native/SDK/API action by reviewer.",
+    "Old outcomes,52/57,old66529UNKNOWN and broader holds unchanged."
+  ]
+}
