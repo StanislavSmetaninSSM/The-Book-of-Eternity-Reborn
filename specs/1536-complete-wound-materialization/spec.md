@@ -21,7 +21,7 @@
 - Доказательство создаётся после предшествующих terminal mutations/refresh и закрывается до следующих mutations/cleanup/refresh/repair/owner close. Любая следующая проверка получает свежее доказательство; переноса через игровые записи или между ходами нет.
 - Сохраняются неизменяемое представление исходного snapshot с отдельными DTO-копиями, entry authentication и финальное физическое сравнение точных manifest/authority/request alternatives, включая отсутствие, и rollback dependencies. Полностью валидная замена manifest/authority тоже не является исходным доказательством. Durable изменение запрещает успешный результат; произвольная внешняя edit→restore гонка не получает новой гарантии обнаружения.
 - Текущее mutable состояние и snapshot leaf values читаются физически; прежние ordered issues и все проверки действуют. Отказ sticky, основная ошибка не теряется за ошибкой teardown. Browser и неподходящие scalar-пути сохраняются, старый prevalidated object не становится заменой доказанного lifetime.
-- Не меняются исходные game/current-owner/history/receipt/culture/inert-repeat assertions, producer73/resumer0, child220s/stop10s/join10s, source42 category5m и ordinary5 category15m. NativeLineage, C supervisor, save/hash/authority formats, GM-контракты и политики среды вне scope; новых collectors или системных полномочий нет.
+- Не меняются исходные game/current-owner/history/receipt/culture/inert-repeat assertions, producer73/resumer0, child220s/stop-join10s/EOF10s, source42 category5m и ordinary5 category15m. NativeLineage, C supervisor, save/hash/authority formats, GM-контракты и политики среды вне scope; новых collectors или системных полномочий нет.
 
 ## Приёмка и порядок проверки
 
