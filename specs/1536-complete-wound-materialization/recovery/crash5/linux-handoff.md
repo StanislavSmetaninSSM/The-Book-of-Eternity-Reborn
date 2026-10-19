@@ -9,7 +9,7 @@ NativeLineage implementation/source review: `5f0c08ae5b9303bca7c0a44b1509edcf89f
 
 ## Текущий этап: spec5 согласована, plan3 ожидает review
 
-Владелец одобрил spec5 из f9658ae0e ответом «хорошо»,2026-10-20. Plan3/T239…T247 подготовлены в той же feature через Spec Kit plan/tasks и consistency analysis. План описывает проверку QTE с исходным lease и отдельным lifetime для каждого вызова; новые guards, тесты и selection15 пока не реализованы. До implementation требуется review владельцем фактически записанного plan3. Никаких новых build/discovery/test/game запусков на этой planning фазе нет. Следующий раздел и текущая selection8/90 описывают фактически сохранённую реализацию spec4; cloud не должен выдавать будущий plan3 за готовый код.
+Владелец одобрил spec5 из f9658ae0e ответом «хорошо»,2026-10-20. Plan3/T239…T247 подготовлены в той же feature через Spec Kit plan/tasks и consistency analysis. План описывает проверку QTE с исходным lease и отдельным lifetime для каждого вызова; новые guards, тесты и selection15 пока не реализованы. Независимый gpt-6-astra/high принял исправленный plan3 на3d5419f6f для предъявления владельцу; до implementation требуется review владельцем фактически записанного plan3. Никаких новых build/discovery/test/game запусков на этой planning фазе нет. Следующий раздел и текущая selection8/90 описывают фактически сохранённую реализацию spec4; cloud не должен выдавать будущий plan3 за готовый код.
 
 ## Сохранённый spec4 checkpoint
 

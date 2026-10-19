@@ -2,7 +2,7 @@
 
 Источник: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Владелец согласовал предъявленную spec5 из f9658ae0e ответом «хорошо»,2026-10-20. Ни нового runtime, ни production-изменений на этапе планирования нет.
 
-- [ ] T239 [US2] Выполнить Spec Kit plan/tasks/consistency и Superpowers writing-plans в существующих spec.md, plan.md, tasks.md, research.md, data-model.md и quickstart.md для held-lease QTE validation. Определить точные interfaces, causal RED/negative/actual caller controls и affected selection; независимо проверить законченный проект и предъявить фактически записанный plan3 владельцу до реализации.
+- [x] T239 [US2] Выполнить Spec Kit plan/tasks/consistency и Superpowers writing-plans в существующих spec.md, plan.md, tasks.md, research.md, data-model.md и quickstart.md для held-lease QTE validation. Определить точные interfaces, causal RED/negative/actual caller controls и affected selection; независимо проверить законченный проект и предъявить фактически записанный plan3 владельцу до реализации. План подготовлен и принят независимым gpt-6-astra/high на3d5419f6f после двух corrections; готов к предъявлению. Одобрение plan3 владельцем ещё требуется, T240 не начата.
 
 ## Plan3 — US2: causal gate, original lease и QTE caller
 
