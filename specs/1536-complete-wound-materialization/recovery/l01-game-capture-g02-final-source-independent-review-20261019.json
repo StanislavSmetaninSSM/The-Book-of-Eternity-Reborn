@@ -1,0 +1,110 @@
+{
+  "kind": "G02_FINAL_AFFECTED_SOURCE_INDEPENDENT_REVIEW",
+  "reviewedSource": "913453c077fd9348b51cb3462c8bed5a658dfbde",
+  "previousSource": "8b9d08f0242ebaec76e74a1fbe28351fd1f6681e",
+  "verdict": "ACCEPT_G02_AFFECTED_SOURCE_ZERO_ONLY",
+  "sourcePinDigest": "5ab898720f9e83e53ee664f3e38b49feffdd8cf02357ae4526749b9aaeb7786c",
+  "controllerSha256": "1a8b913e68c2740a02e402937d54a914ee08d1142f9466eb96deb2c93e2fa2c5",
+  "bindingsSha256": "95fcdea5aa5b588d2b83683d12cddfdb008b85f49bd6131b06a665de84df06f7",
+  "reviewer": "Independent Astra XHigh reviewer",
+  "findings": [],
+  "scope": "Focused final-publication correction and exact current binding; earlier36 affected SOURCE checks and15 inert role/admission cases retained without reexecution. Report-only writes, no SDK/C#/native child/API/procfs/signals or implementation/control edits.",
+  "resolution": {
+    "finding": "G02-S02-PUBLICATION",
+    "status": "RESOLVED_AT_SOURCE",
+    "source": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/SyntheticOwner.cs",
+    "lines": [
+      172,
+      173,
+      174,
+      177,
+      178,
+      180,
+      182,
+      186
+    ],
+    "reason": "Private persistence is guarded, then an independent complete owner metadata summary is emitted/flushed. Either failure appends a sticky observer error and changes status to failure; emission failure attempts one guarded private evidence update. The actor native/join/cleanup/API fields are preserved, and Require(errors.Count==0) keeps owner verification nonzero after any observer error. No native relaunch or API retry exists in this delta.",
+    "limit": "Independent channels do not guarantee physical evidence survival if both sinks are unavailable. Such an outcome remains failure/unknown and cannot release the game."
+  },
+  "supportedConclusions": [
+    "Exact8b→913 delta is only final-publication block plus its single source pin/current digest. Reversing that block restores the previously reviewed SyntheticOwner bytes exactly; controller, bindings, role branches, decoder, native/cleanup logic and all other172 pins are unchanged.",
+    "173-pin canonical digest is verified by the exact one-pin delta and prior full corpus verification; current changed bytes match the independent GitHub restore. Recovery receipt is exact913/clean/361paths/173pins. No production/C#/catalog/game assertion or budget changes are introduced by this correction.",
+    "Original G02-S01 launch/identity fallback and G02-S02 native ordering fixes remain; G02-S03 exact syntheticEvidence binding remains. Latest actual-synthetic API1/decode requirement supersedes the old API0 proposal.",
+    "Reuse retains old integration460/unit439/tools8 source/binary/PDB/dependency provenance. Current PREP will compile only SyntheticOwner, verify copied closures/tool metadata and fresh private routing/import/catalog/PlanOnly; it does not rewrite or relabel old G01 PREP records.",
+    "The existing diagnostic case remains1/1/1 outside original57. User permits remain separate: one actual synthetic request only after independent PREP, and one game request only after successful synthetic evidence plus independent final PREP. Neither is released by SOURCE."
+  ],
+  "checks": {
+    "focusedPassed": 19,
+    "focusedFailed": 0,
+    "reusedSourceChecks": 36,
+    "reusedInertCases": 15,
+    "oldProofReexecuted": false
+  },
+  "allowedZero": {
+    "mode": "prepare",
+    "scope": "G02",
+    "oneInvocation": true,
+    "root": "/tmp/g2-2aa1d92a",
+    "sourceGate": "SOURCE_ACCEPTED_G02_ZERO_ONLY",
+    "steps": [
+      "Hash/source-equivalence checks and copies of separate retained integration460/unit439/tools8/NuGet metadata closures",
+      "Compile SyntheticOwner only with retained compiler/runtime/reference bindings and existing60s bound",
+      "Bounded non-game retained Parent6 and current collector health26 checks; retain policy23 source/hash evidence without replay",
+      "Fresh private properties/import binding, complete NoBuild catalog discovery and exact diagnostic1/1/1 PlanOnly; no test method execution"
+    ],
+    "budgets": "Use exactly reviewed controller deadlines: no increases or repeat after first unexpected outcome.",
+    "syntheticTargets": 0,
+    "gameCases": 0,
+    "writeDumpCalls": 0
+  },
+  "admissions": {
+    "zero": "ELIGIBLE_AFTER_ACCEPTANCE_SAVE_PUSH_EXACT_RECOVERY_AND_CLEAN_READBACK",
+    "synthetic": "HOLD_INDEPENDENT_PREP_REQUIRED",
+    "game": "HOLD_EXACT_SUCCESSFUL_SYNTHETIC_EVIDENCE_AND_FINAL_PREP_REQUIRED",
+    "writeDump": "NONE_FROM_SOURCE_REPORT",
+    "crash5": "NONE"
+  },
+  "acceptanceSaveConditions": [
+    "Preserve both prior HOLD reports and their supporting checks/reader history byte-exact; store this distinct final acceptance and focused checks.",
+    "Bind current sourceAdmission to this report hash/verdict/sourcePinDigest/controllerSha256 and permit only one G02 prepare invocation; syntheticAdmission and actualAdmission remain HOLD.",
+    "Save/push/read back/recover clean acceptance metadata before preparation. Current untracked review artifacts are report-only pending writer save, not a runtime-clean admission.",
+    "Preserve historical G01 FAIL220/API0/ENOENT, old source/PREP/consumed permits, L0152/57, old66529 UNKNOWN, privacy retention and all broader/platform holds."
+  ],
+  "recoveryReceipt": {
+    "path": "/tmp/1536-cloud-tools/g02-recovery-913453c0.json",
+    "sha256": "ff3d193331f17cba2fa3c22232045622d316db0011e24afd8888e70ed7318a1b"
+  },
+  "supportingArtifacts": [
+    {
+      "path": "/tmp/1536-cloud-tools/review/l01-game-capture-g02-final-source-checks-20261019.json",
+      "bytes": 3211,
+      "sha256": "258a621c850706b38e1193f29bde481d9a888abe0bf31105ca18f26b76910333"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_g02_final_publication_20261019.py",
+      "bytes": 6373,
+      "sha256": "a1ff5249504086fc8bbb234530678613cd1d87350ed91e01bcaa77726d6ebcbb"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/l01-game-capture-g02-capture-source-independent-review-20261019.json",
+      "bytes": 7338,
+      "sha256": "0ce2ebd92accd675e2102e1a938982e27cc2f001e1fc3bb51f24506cc8fc4e9e"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/l01-game-capture-g02-capture-source-independent-review-20261019.md",
+      "bytes": 2535,
+      "sha256": "34b6332b654a1ccd59e1109614ea04e6ef812d963164ebe56078aad1d87d143f"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/l01-game-capture-g02-capture-source-checks-20261019.json",
+      "bytes": 12975,
+      "sha256": "04eafbb963e24460ba6564451532ceef7a16fad58af26a2035f60a615090def5"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_g02_capture_source_20261019.py",
+      "bytes": 13168,
+      "sha256": "d8098b070837b7071ec394b3af51b2a41f70a00b6e201aaf8ed9ed8862e6f8ba"
+    }
+  ],
+  "nextStep": "Root saves/recoveries SOURCE acceptance, then may perform only the reviewed once-only G02 ZERO PREP. Freeze first originals for independent PREP before any synthetic target/API. No additional routine user approval is needed within that already authorized scope."
+}

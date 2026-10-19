@@ -1,9 +1,12 @@
 {
   "kind": "G02_CORRECTIVE_CONTROL",
   "base": "46c621fb50fe61e5a662ccaf8f00f3fa0f3c6dc3",
-  "status": "WIP_SOURCE_UNREVIEWED_NO_NATIVE",
+  "status": "SOURCE_ACCEPTED_ZERO_PREP_PENDING_SYNTHETIC_GAME_HOLD",
   "sourceAdmission": {
-    "status": "HOLD"
+    "status": "SOURCE_ACCEPTED_G02_ZERO_ONLY",
+    "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02-final-source-independent-review-20261019.json",
+    "reviewSha256": "fad16560dcd26c62947d287e75cd258ea8563f3418943491e9c2ea72c50d6b7f",
+    "reviewedSource": "913453c077fd9348b51cb3462c8bed5a658dfbde"
   },
   "syntheticAdmission": {
     "status": "HOLD"
@@ -16,7 +19,7 @@
   "l01": "52/57 original provenance unchanged; crash5 unqualified",
   "broaderHolds": "FullNI/HOT/F1/M3/T197/E01/T148/Phase10 incomplete; A3 NO-PROCEED",
   "dumpLifecycle": "Private own/capture only; retain through independent sanitized EVIDENCE/final report; no Git/attach/archive/autodelete",
-  "currentNextAction": "Independent affected SOURCE for actual synthetic API1/decode; PREAPI/API0 prototype superseded, no native/target/API yet",
+  "currentNextAction": "One ZERO PREP only after this admission remote/recovery; no synthetic/game/API yet",
   "syntheticDiagnosticRequestUpperBound": 1,
   "gameDiagnosticRequestUpperBound": 1
 }

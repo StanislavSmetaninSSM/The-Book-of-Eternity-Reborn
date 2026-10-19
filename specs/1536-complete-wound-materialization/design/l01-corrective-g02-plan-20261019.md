@@ -31,3 +31,5 @@ Use the same G01 watchdog/collector/controller with explicit G02 config dispatch
 ## Current execution ledger
 
 SOURCE only; native PREP/targets/API unrun. Pure role prototype RED0/1→GREEN7/7 retained; updated capture role7/7. Independent c0a05c8e review found Start-before-identity accounting, native-before-drain recording and missing actual→synthetic evidence binding; corrective source addresses all three. New source review required after latest actual synthetic API1 authority.
+
+SOURCE913453c0 accepted19 focused checks; prior36 static/15 inert reused, publication blocker closed. SourcePinDigest5ab898720f9e83e53ee664f3e38b49feffdd8cf02357ae4526749b9aaeb7786c. ONE ZERO PREP admitted after durable save/recovery; synthetic/game/API HOLD.

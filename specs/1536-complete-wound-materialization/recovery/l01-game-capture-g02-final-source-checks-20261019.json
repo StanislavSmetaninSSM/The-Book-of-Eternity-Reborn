@@ -1,0 +1,119 @@
+{
+  "kind": "G02_FINAL_PUBLICATION_AFFECTED_SOURCE_CHECKS",
+  "reviewedSource": "913453c077fd9348b51cb3462c8bed5a658dfbde",
+  "previousSource": "8b9d08f0242ebaec76e74a1fbe28351fd1f6681e",
+  "sourcePinDigest": "5ab898720f9e83e53ee664f3e38b49feffdd8cf02357ae4526749b9aaeb7786c",
+  "controllerSha256": "1a8b913e68c2740a02e402937d54a914ee08d1142f9466eb96deb2c93e2fa2c5",
+  "bindingsSha256": "95fcdea5aa5b588d2b83683d12cddfdb008b85f49bd6131b06a665de84df06f7",
+  "checks": [
+    {
+      "name": "exact_remote_clean_recovery_receipt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "only_owner_packet_delta",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "exact_two_changed_paths_restored",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "canonical_current_digest_173",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "only_one_pin_changed",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "new_owner_pin_exact",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "packet_other_fields_equal",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "exact_inverse_restores_previously_reviewed_owner",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "current_controller_bindings_control_unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "persist_failure_sticky_status_and_errors",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "independent_full_record_emit_after_persist_catch",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "emit_failure_sticky_and_bounded_private_update",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "observerErrors_list_shared_with_record",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "actor_fields_not_modified_by_publication",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "publication_failure_remains_owner_verification_nonzero",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "outer_zero_failure_stops_before_decode",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "all_runtime_and_zero_gates_still_hold",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "unused_G02_root",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "prior36_checks_and15_inert_cases_retained",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "passed": 19,
+  "failed": 0,
+  "reusedProof": {
+    "path": "/tmp/1536-cloud-tools/review/l01-game-capture-g02-capture-source-checks-20261019.json",
+    "sha256": "04eafbb963e24460ba6564451532ceef7a16fad58af26a2035f60a615090def5",
+    "checks": 36,
+    "inertCases": 15,
+    "reexecuted": false
+  },
+  "recoveryReceipt": {
+    "path": "/tmp/1536-cloud-tools/g02-recovery-913453c0.json",
+    "sha256": "ff3d193331f17cba2fa3c22232045622d316db0011e24afd8888e70ed7318a1b"
+  },
+  "executionScope": "Read-only exact Git/files/hash and final-publication control-flow inspection only. No new C#/SDK/fake process/native/API/procfs execution. No old corpus replay."
+}
