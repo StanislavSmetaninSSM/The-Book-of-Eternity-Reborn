@@ -1,6 +1,12 @@
+# Текущая работа: spec7 / plan5
+
+[Spec7](spec.md), [plan5](plan.md), [tasks](tasks.md), T252…T256. T250 source42 PASS258.780s; independent review/recovery T251 приняты. Следующий шаг — пять отдельно выбранных Windows cut0…4, fixed600s/child и22m/category; код/qualification ещё не завершены. Original Theory220/Linux NativeLineage остаются прежними. Ниже сохранена история; новые результаты будут записаны отдельно.
+
+---
+
 # Текущая работа: spec6 / plan4
 
-User waiver2026-10-20 разрешает продолжать без промежуточных согласований. [Spec6](spec.md), [plan4](plan.md), tasks T248…T251: отдельная Windows source42-проба600s/category12m после policy GREEN и independent PREP. T250 завершена:1 planned/completed/PASS,0failed/skip; source-turn return258.778s, engine return258.780s. Child76132 exit0, EOF/join true, оба owned root удалены и отсутствие подтверждено. Наблюдённое выполнение превышает220s; зависания в этой попытке нет. Это не гарантия времени всех сценариев и не SC-WIN five PASS. T244220FAIL сохраняется; original five не повторены, Linux UNRUN. Независимая итоговая проверка и fresh recovery T251 ещё ожидаются. Исходные220s probe/five budgets и Linux NativeLineage остаются прежними; T244FAIL сохранён. Ниже — законченный plan3 checkpoint.
+User waiver2026-10-20 разрешает продолжать без промежуточных согласований. [Spec6](spec.md), [plan4](plan.md), tasks T248…T251: отдельная Windows source42-проба600s/category12m после policy GREEN и independent PREP. T250 завершена:1 planned/completed/PASS,0failed/skip; source-turn return258.778s, engine return258.780s. Child76132 exit0, EOF/join true, оба owned root удалены и отсутствие подтверждено. Наблюдённое выполнение превышает220s; зависания в этой попытке нет. Это не гарантия времени всех сценариев и не SC-WIN five PASS. T244220FAIL сохраняется; original five не повторены, Linux UNRUN. T251 принята независимым gpt-6.1-sol/xhigh на5149447e0 без замечаний; fresh GitHub recovery261files подтверждена, запись T251-clean-recovery.json. Исходные220s probe/five budgets и Linux NativeLineage остаются прежними; T244FAIL сохранён. Ниже — законченный plan3 checkpoint.
 ---
 
 # CRASH5 spec5 / plan3 — адресная проверка

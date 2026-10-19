@@ -1,6 +1,30 @@
+# CRASH5 — plan5: отдельные Windows crash/restart cases
+
+Canonical [spec7](spec.md), [tasks T252…T256](tasks.md), [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Spec Kit setup-plan/setup-tasks/check-prerequisites выполнены для существующей feature; Superpowers brainstorming/writing-plans/TDD/executing-plans/debugging/review/verification продолжаются inline. User review waived, дополнительного согласия не ждать. Один parent developer и отдельный routine gpt-6.1-sol/xhigh reviewer; isolated checkout/branch reused.
+
+## Решение
+
+Сохранить исходный Theory и Linux catalog без изменений. Добавить пять Windows Fact wrappers в GameEngineTurnLifecycleTests.JointWindowsCrash.cs, передающих cut0…4 и extendedWindowsCrash:true в прежний private common helper. Это позволяет независимо планировать и сохранить каждый полный case, не менять Linux identity/budget и не дублировать его assertions. В private helper optional bool=false передаётся обоим существующим child calls; non-Windows запрос отклоняется перед own-container creation. RunJointInterfaceNativeChildAsync передаёт этот bool в уже существующий timeout selector; actual wait/cleanup код не меняется.
+
+JointInterfaceCrashProcessSupport.GetDirectChildTimeout получает optional extendedWindowsCrash=false. True допускается только Windows+exact original-crash/resume role+extendedSourceProbe=false и возвращает fixed600; остальные requested crash extensions бросают InvalidDataException. False сохраняет весь spec6 policy. Tests first:2 позитивных roles и6 negatives (Linux producer/resumer, Windows source/unrelated role, both flags with source/producer); первоначальный seam игнорирует новый flag для наблюдаемого численного/rejection RED, затем минимальная реализация.
+
+Каталог: fr063-joint-interface-windows-crash-cut0…cut4, каждый exclusive/windows-latest/22m/1Fact. Existing fast fr063-joint-interface-probe-budget-contracts остаётся2m и выбирает25cases; изменить responsibility/changeHints/selection rationale. Новые пять не входят в default/CI. Default ожидается205=180snapshot+25support. XML всех новых/изменённых APIs multiline с точными параметрами. Production/native diff должен быть пуст относительно cee.
+
+## Проверки и выполнение
+
+T253: fresh integration XML build после RED и GREEN, changedXML audit; causal RED на численном600 и новых eligibility отказах →25PASS; уже отклоняемые сочетания могут оставаться GREEN на RED этапе. ValidateCatalog; PlanOnly original five5/15m, source1/5m, extended1/12m, по1newFact/22m, default205 без новых дорогих cases. 180unchanged component tests не повторять. Независимый SOURCE/PREP проверяет именно пять wrapper→cut mappings, общий неизменный assertion body, policy routing/default isolation и достаточность selection. Push/readback до long review/runtime.
+
+T254: один cut0 с accepted NoBuild DLLs; raw evidence и original producer73/resumer0/cleanup. T255: после полного cut0 PASS четыре отдельные категории cut1…4 последовательно, по одному запуску, прекращать при первом неуспехе. Ни одна категория не объединяет две попытки; каждая имеет pre-start attempt marker/source/DLL binding. Обновлять checkpoint между законченными cases, не перекомпилировать unchanged DLLs. T256: independent review полного блока, exact five union или честный partial, Linux handoff, commit/push/readback/new-empty recovery.
+
+## Конституция / риски
+
+Existing issue/feature/approval waiver; нет gameplay/GM/schema change. Реальные cold paths, независимые fixtures, ownership/cleanup и все оригинальные acceptance checks сохранены. Главный риск: одна source preparation не оценивает остальную работу producer/resumer; bounded600 может снова не хватить. При неуспехе анализируем actual outcome, не подменяем assertions и не объявляем infinite wait. Другой риск — перепутать cut/case или применить Windows budget к Linux: exact wrappers/PlanOnly и negative policy tests + independent review.
+
+---
+
 # CRASH5 — Implementation Plan4: расширенная source42-проба
 
-**Фактический результат spec6:** T250 завершена:1 planned/completed/PASS,0failed/skip; source-turn return258.778s, engine return258.780s. Child76132 exit0, EOF/join true, оба owned root удалены и отсутствие подтверждено. Наблюдённое выполнение превышает220s; зависания в этой попытке нет. Это не гарантия времени всех сценариев и не SC-WIN five PASS. T244220FAIL сохраняется; original five не повторены, Linux UNRUN. Независимая итоговая проверка и fresh recovery T251 ещё ожидаются.
+**Фактический результат spec6:** T250 завершена:1 planned/completed/PASS,0failed/skip; source-turn return258.778s, engine return258.780s. Child76132 exit0, EOF/join true, оба owned root удалены и отсутствие подтверждено. Наблюдённое выполнение превышает220s; зависания в этой попытке нет. Это не гарантия времени всех сценариев и не SC-WIN five PASS. T244220FAIL сохраняется; original five не повторены, Linux UNRUN. T251 принята независимым gpt-6.1-sol/xhigh на5149447e0 без замечаний; fresh GitHub recovery261files подтверждена, запись T251-clean-recovery.json.
 
 Canonical [spec6](spec.md), [tasks T248…T251](tasks.md), issue1536. User review waived explicitly2026-10-20; execute inline with Superpowers TDD/debugging/review/verification. Reuse existing isolated checkout/branch and feature; no new worktree/task/scaffolding. Parent owns implementation; separate routine reviewer gpt-6.1-sol/xhigh examines final coherent diff and PREP. Production, owner lifecycle and C code do not change.
 

@@ -1,6 +1,29 @@
+# CRASH5 — spec7: Windows crash/restart после измерения source42
+
+**Основание:** T250 source42 PASS с полным возвратом258.780s, больше220s. [Issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), активная feature та же. Пользователь прямо разрешил продолжать текущую работу без промежуточных согласований; waiver применяется к этой спецификации. T251 evidence/recovery принят отдельным gpt-6.1-sol/xhigh. Последующие Windows runtime ещё UNRUN.
+
+## Результат, границы и сохраняемые контракты
+
+US2/P1: завершить на Windows все пять исходных семантических crash/restart случаев с реальным producer Environment.Exit73, новым resumer exit0, исходными game/current-owner/mechanical/culture/inert-repeat assertions. Один source42 PASS этого не доказывает.
+
+- **W7-1:** пять отдельных явно выбранных Windows Facts вызывают тот же existing RunJointInterfaceActualProcessLossAsync для cut0…4. Общие fixture, producer/resumer child methods, nonce, identity, crash boundaries и все assertions неизменны. Каждому case принадлежит независимая fixture.
+- **W7-2:** отдельный fixed opt-in разрешает600s каждому Windows producer/resumer. Default220, обе source-probe policies, original five Theory/category15m, Linux NativeLineage и diagnostic/integrity consumers остаются прежними. Смешение source/crash opt-in, чужая роль и не-Windows extension отклоняются до запуска. Нет env/global timeout setting.
+- **W7-3:** один case/category22m покрывает максимум двух600s детей и прежние stop/join10s, EOF10s плюс запуск/вывод/fixture cleanup. Категории запускаются отдельно последовательно; не объединять пять в одну долгую группу. Это конечный предел наблюдения, не гарантия, что600 достаточно.
+- **W7-4:** causal policy RED/GREEN, свежая XML build, catalog/PlanOnly и independent SOURCE/PREP до gameplay. Default/CI не получает пять дорогих Windows runs; прежний snapshot selection180 не расширяется. Новые fast controls покрывают только новую policy и существующие adapter contracts.
+- **W7-5:** сначала cut0, затем только при его PASS остальные1…4, каждый один раз. После FAIL/TIMEOUT сохранить evidence и диагностировать конкретную причину до следующего дорогого запуска; не повторять неизменный case и не увеличивать предел автоматически. Успех только по пяти завершённым PASS/0skip с полной provenance и cleanup.
+- **W7-6:** новые результаты записывать как Windows five при600s/child и отдельных22m категориях. Исторические T219/T244 не переписывать; исходный220s five не объявлять PASS. Linux runtime остаётся UNRUN и выполняется облачным исполнителем отдельно. Нельзя выводить производительность игры из этих защитных бюджетов.
+
+Scope: только integration test harness/policy/catalog/docs. Production, C supervisor, NativeLineageOwner, GM/save contracts и security settings не меняются. Поэтому GM docs/examples не требуются. Все изменения доступны для review; отказ от промежуточных запросов согласия не отменяет независимого review.
+
+## Приёмка и неопределённости
+
+25 fast support cases проходят: прежние17 плюс2 разрешённые crash roles и6 недопустимых запросов. Discovery: original five5/15m, new five5 отдельных1/22m, original source1/5m и extended source1/12m; новых дорогих entrypoints нет в default. Source/DLL hashes и actual per-cut TRX/summary/raw output/cleanup проверяемы. Пять PASS могут закрыть текущую Windows семантическую квалификацию при новых явно указанных бюджетах; Linux и исторический запуск220 не закрываются. Достаточность600s для полного producer/cold resume пока неизвестна; runtime это проверяет.
+
+---
+
 # CRASH5 — дополнение редакции6: увеличенное окно наблюдения
 
-**Фактический результат spec6:** T250 завершена:1 planned/completed/PASS,0failed/skip; source-turn return258.778s, engine return258.780s. Child76132 exit0, EOF/join true, оба owned root удалены и отсутствие подтверждено. Наблюдённое выполнение превышает220s; зависания в этой попытке нет. Это не гарантия времени всех сценариев и не SC-WIN five PASS. T244220FAIL сохраняется; original five не повторены, Linux UNRUN. Независимая итоговая проверка и fresh recovery T251 ещё ожидаются.
+**Фактический результат spec6:** T250 завершена:1 planned/completed/PASS,0failed/skip; source-turn return258.778s, engine return258.780s. Child76132 exit0, EOF/join true, оба owned root удалены и отсутствие подтверждено. Наблюдённое выполнение превышает220s; зависания в этой попытке нет. Это не гарантия времени всех сценариев и не SC-WIN five PASS. T244220FAIL сохраняется; original five не повторены, Linux UNRUN. T251 принята независимым gpt-6.1-sol/xhigh на5149447e0 без замечаний; fresh GitHub recovery261files подтверждена, запись T251-clean-recovery.json.
 
 **Основание и разрешение:**2026-10-20 пользователь спросил об увеличении220s и после предложения отдельной600s пробы явно разрешил продолжать без дальнейших согласований. Это waiver промежуточного review владельцем, а не пропуск Spec Kit, независимого review или проверок. Активная feature1536, [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), T248…T251. Результат T244FAIL_CHILD_TIMEOUT220 сохраняется.
 
