@@ -1,3 +1,21 @@
+# CRASH5 spec4 — Phase 0, plan2
+
+Основание: [spec4](spec.md), [plan2](plan.md), issue1536, source da3efec34. Read-only консультация отдельного `gpt-6-astra/high` (`spec4_lifetime_consultation`) проверила конкретный lifetime/locking риск; не является runtime verification или независимым review готовой реализации.
+
+| Решение | Доказательство в исходниках / rationale | Отклонённая альтернатива |
+| --- | --- | --- |
+| Lifetime ровно один console post-materialization ValidateGameState | `GameEngine.ValidationAndRepair.cs:227` сначала чинит system files; :240 запускает game-state validation, :244+ payload checks могут писать. Новая repair iteration требует нового source | Обернуть весь repair loop или передать старый activeSnapshotContext |
+| Синхронный issuer + original canonical lease | `FileSystemManager.cs:3760` устанавливает ambient registration в caller; :1335/1482/1572/4314 подавляют nested recovery при active ambient | Async factory с потерей registration, повторное открытие owner, самостоятельная browser identity |
+| Общий typed reservation с сохранением browser guards | `MainRunFence` уже исключает competing admission/physical sibling/mutation при World reservation; PublicationReadQuiescence сам по себе read-only не является | Считать purpose достаточным; широко запретить этот purpose и сломать opening recovery |
+| Entry authentication + final original-dependency proof | `AcceptedTurnAndInkFeathers.cs:3319/4963` повторно проверяют source; `PendingTurnSnapshotAuthority.cs:594/793` перечитывает rollback set. Final scan обязан сравнить entry bytes, не только валидность новой пары | Process cache, mtime cache, одна начальная проверка, detached valid replacement как continuation |
+| Не более2 algorithm full-auth; R=3/N=1,8,32 causal contract | Поддерживаемые writers исключены на всё окно, число consumers не требует новых full scans. Current и snapshot leaf reads остаются физическими | Увеличить220s или убрать game assertions; объявить ограничение всего процесса по одному callback |
+| Warm3R/cold4R для clean fixture отдельно | `ConsoleRollbackEvidence.cs:49` cohort scan; :56 cold signed authority. `BrowserLocalStorage.cs:90` physical reader обходит ordinary read observer | Назвать2R полным I/O или вычитать acquisition без указания |
+| Отказ до возврата результата при durable dependency change | Guard исключает участвующие изменения; final byte proof ловит raw fixture overwrite/delete/BOM/mtime-preserving replacement между consumers | Обещать наблюдение произвольного внешнего edit→restore между двумя scans; это не гарантируется и конституцией не требуется |
+
+Нерешённые технические альтернативы выбраны в plan2. Отдельная граница review: нельзя принимать этот дизайн, если spec интерпретируется как обязательный next-consumer отказ на любую transient external raw race; такой scope потребовал бы отдельного решения, а не тихого уменьшения acceptance. Локальная подготовка не доказывает достаточность оптимизации для source42/five.
+
+---
+
 # CRASH5 Phase 0 — NativeLineage/Windows, 2026-10-19
 
 Источник: [согласованная spec редакции3](spec.md), [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), source12533289. Это research для нового CRASH5 plan; прежние исследования ниже сохранены.

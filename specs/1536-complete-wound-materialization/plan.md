@@ -1,4 +1,80 @@
-# CRASH5 NativeLineage / Windows — Implementation Plan, редакция 1
+# CRASH5 — Implementation Plan, редакция 2: одна операция проверки исходного снимка
+
+> **For agentic workers:** REQUIRED SUB-SKILL: `superpowers:executing-plans`. Один разработчик выполняет canonical [tasks.md](tasks.md), T230…T237; отдельный reviewer проверяет законченный блок. Этот план дополняет plan1 ниже, а не переоценивает его результаты.
+
+**Goal:** убрать повторную полную аутентификацию исходного pending snapshot внутри одного console post-materialization `ValidateGameStateAsync`, сохранив реальные проверки текущего состояния и отказ при утрате исходного доказательства.
+**Architecture:** отдельный typed invocation получает существующий canonical read-quiescence lease, исключает участвующие записи и совместное использование validator, аутентифицирует снимок на входе и физически сверяет исходные зависимости перед возвратом результата. Каждая repair iteration создаёт новое доказательство. Browser original optimization и обычные validation entrypoints сохраняются.
+**Tech Stack:** существующие C#/.NET 8, SDK10, PowerShell7/xUnit; новых packages, save schemas или GM-контрактов нет.
+**Spec:** [редакция4](spec.md), одобрена из `da3efec34a6407260e7a9c19830f354740cccce2`; [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Ветка `1536-crash5-linux-windows-spec-20261019`, planning base `fa0a53001502b8ee1c5067f7fc1b529d683f67df`.
+**Status:** implementation plan2 подготовлен для review; кода/новых тестов или runtime для spec4 ещё нет. Windows5 FAIL_INCOMPLETE; Linux UNRUN. Предыдущие SOURCE/PREP/PASS относятся к своим SHA. Исполнение плана — после его предъявления и подтверждения по `superpowers:writing-plans`.
+
+## Plan2 — границы, доказательство и численные критерии
+
+- Сохраняются все spec3/game oracles, cut0…4, producer73/resumer0, 220s/10s/10s/15m, source42 probe5m; NativeLineage/C protocol не меняются. Никаких collector, нового bypass или неизменённых повторных прогонов.
+- Lifetime — ровно вызов проверки game state в `ValidateCurrentGameStateOrShowErrorsAsync`, после `EnsureClientOwnedSystemFilesHealthyAsync`, до последующих narrative/interface checks и любой repair/publication/refresh/cleanup. Только `PostAcceptedMaterializedStateValidationSource` в console; не весь repair-loop, не весь turn. Для новой итерации lifetime начинается заново.
+- Существующая физическая блокировка исключает участвующих writers. Её purpose `PublicationReadQuiescence` сам по себе не означает запрет записи: отдельная reservation должна блокировать повторное acquisition, same-lease mutation, lifecycle/owner close и чужой доступ. Recovery остаётся в прежнем порядке при opening, до замораживания источника. Нельзя выдавать console за browser.
+- Успех означает: entry evidence действовало при чтении и все удержанные зависимости совпали с ним до возврата результата. Изменённые/удалённые bytes, включая изменения с прежним mtime, другая полностью согласованная manifest/authority пара и появление ранее отсутствовавшего request alternative дают отказ. Проверяется точное entry evidence, а не просто валидность нового снимка на выходе. Ошибка final proof или освобождения запрещает успешный результат.
+- Конституция исключает намеренные внешние гонки с открытым сохранением. Две проверки не обнаруживают произвольную raw edit→restore, полностью произошедшую между ними; такого обещания здесь нет. Все участвующие изменения во время lifetime запрещены. Durable raw changes, внесённые тестовым hook между consumers, должны быть отвергнуты до принятия результата. Если review требует next-consumer detection даже для временно изменённых и восстановленных raw bytes, этот дизайн нельзя принимать: сохранить прежний физический путь и вернуться к scope decision, не ослаблять spec автоматически.
+- Алгоритм: **не более 2 полных аутентификаций исходного снимка на успешную invocation**, независимо от числа потребителей. В отдельной причинной fixture с R=3 rollback paths, различными snapshot/rollback paths и N=1/8/32 повторными sync+async lookup — **не более 6 физических rollback callback reads** после acquisition и до final proof включительно; контекст, ошибки и ordered issues совпадают с обычным путём. До GREEN предел не меняется.
+- Отдельно учитывать всю операцию: clean warm admission добавляет cohort scan R, cold admission — ещё full authority R. Для той же fixture, без recovery/самостоятельных leaf reads этих путей, **warm ≤3R=9, cold ≤4R=12**; marker/control reads отдельно. Cohort scan использует другой reader и не попадает в прежний ordinary callback counter: подтвердить весь бюджет отдельным узким test seam в существующем physical leaf. До измерения статус UNMEASURED и T230/T231 не приняты; нельзя объявлять 6 полным I/O. В actual source42 хранить общий trace; дополнительные игровые source/current reads нельзя вычитать или выдавать за нарушение/соблюдение component bound.
+- Никакого process-wide cache, mtime-only authority или сохранения источника между invocations. Current game files читаются физически. Кэшируем только результат аутентификации исходного manifest; existing snapshot leaf readers и их hash/error semantics остаются. Private entry manifest не выдаётся mutable: lookup получает отдельную DTO-копию из неизменного entry serialization.
+
+## Plan2 — файлы и внутренние interfaces
+
+| Файл | Изменение |
+| --- | --- |
+| `Core/FileSystemManager.ValidationReadReservation.cs` (new, под `BookOfEternityClient/`) | Общая private/internal reservation identity с Opening/Closed; типизация существующего World reservation без изменения browser admission условий |
+| `Core/FileSystemManager.PendingSnapshotValidationRead.cs` (new) | `internal PendingSnapshotValidationReadScope BeginPendingSnapshotValidationRead(CancellationToken cancellationToken)` — синхронный issuer; scope `OpenAsync(): Task`, `RequireCurrent(): void`, `DisposeAsync(): ValueTask`; original manager/main owner/lease/generation binding, никаких самостоятельно переоткрытых владельцев |
+| `Core/FileSystemManager.cs`, `.MainRunFence.cs`, `.WorldValidationRead.cs` | Только подключение общего reservation identity к existing acquisition/retain/mutation/close guards. Сохранить старые browser проверки и opening-recovery exception. Существующая последовательность recovery/admission не меняется |
+| `Services/Validation/ValidationService.PendingSnapshotValidation.cs` (new) | Typed private invocation/evidence, async+sync lookup access, entry/final proof, instance reservation и отказ после disposal. `internal Task<List<ValidationIssue>> ValidatePostMaterializedGameStateAsync()` — новый ограниченный entrypoint |
+| `Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs` | Разделить physical lookup и scoped lookup для sync/async; физическая часть принимает retained lease. Новый scope не устанавливает `_prevalidatedPendingTurnSnapshotOverride`; явный foreign lease запрещён, старые consumers вне scope сохраняются |
+| `Services/Validation/ValidationService.WorldReadPhase.cs`, `.ValidationPhases.cs` | Instance admission перед shared-cache reset; dispose/final proof до публичного возврата и success logging; существующий browser путь сохраняется |
+| `Core/GameEngine/GameEngine.ValidationAndRepair.cs` | Только выбор нового entrypoint в exact console post-materialization slot; новая repair iteration получает новый scope; остальные call sites не меняются |
+| `Core/FileSystemManager.BrowserLocalStorage.cs` (`ReadBrowserStorageEvidence`, строка90 на planning base), `FileSystemManager.cs` (`FileSystemManagerHooks`) | DEBUG hook `internal Action<string>? AfterSnapshotEvidenceRead { get; init; }` вызывается после существующего `File.ReadAllBytes` для полного read budget; счётчик не читает файлы и не ждёт. При null исходное поведение сохраняется; production telemetry не добавляется |
+| `BookOfEternityClient.Tests/PendingSnapshotValidationScopeTests.cs` (new) | Cause/negatives, настоящий signed source через текущий test authority, sync+async lookup и физические read callbacks; состояние отдельно на каждый case |
+| `BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PendingSnapshotValidation.cs` (new) | Genuine console owner, actual selected validator, repair freshness, contention/disposal/ambient-read controls; существующие fixture hooks |
+| `BookOfEternityClient.Tests/GameEngineSourceGuardTests.cs`, `tests/categories.json`, `tests/selection.json`, `tests/selections/1536-snapshot-validation.json` (new) | Affected source guards, точные categories/selection, исключения/бюджеты/обоснование; не широкая suite |
+
+Все изменяемые/new API и test helpers получают DW9/DW10 XML documentation; referenced names проверяются XML build. `PendingTurnSnapshotAuthority` checker/формат не меняется: capture-delegate сохраняет физические bytes, которые он уже проверяет. Любая потребность менять его semantics возвращает дизайн на review.
+
+## Plan2 — протокол invocation
+
+1. Синхронно зарезервировать validator до сброса общих кэшей. Новый entrypoint допускается только вне browser-original, при отсутствии старого override/same-turn retained inputs. Неeligible caller продолжает прежний обычный путь до создания scope; ошибка после начала reservation не включает fallback.
+2. Синхронный filesystem issuer на том же flow устанавливает ambient registration и удерживает original MainAccess reservation. Pending/failed opening закрывает только собственные регистрации. Существующая read-quiescence acquisition завершает штатный recovery; затем scope становится read-only. Не использовать async factory, которая возвращает lease после потери caller AsyncLocal.
+3. Зафиксировать manager/root/owner, actual generation, manifest bytes, authority bytes и все три request alternatives с exact absence. Выполнить исходную reader authentication через retained lease, собрав actual rollback bytes без повторного чтения. Missing/Unusable сохраняют прежний статус/ошибки; не становятся Usable и не являются поводом бесконечного retry.
+4. Внутри одного admitted `ValidateGameState` scoped sync/async lookup проверяет текущие reservation/owner/lease/generation и отдаёт копию исходного DTO. Доступ другого validator invocation, закрытого/copied контекста или scope replacement отказывает. Current file и snapshot leaf reads сохраняют физический путь.
+5. До возврата issues физически перечитать manifest/authority/request alternatives/generation и original rollback dependency set через тот же lease, выполнить fresh physical lookup и сравнить с entry evidence. Self-consistent replacement тоже отказывает. Сверить bytes, реально прочитанные checker, с entry bytes; не запускать отдельный третий rollback scan ради сравнения.
+6. Final proof, закрытие lease и reservation происходят до успеха. При exception/cancellation — cleanup в finally; original failure остаётся primary, teardown failure сохраняется secondary. Любой invalidated/closed scope необратим. После возврата ремонта, нормализации, публикации, refresh и очистки удержанного source нет.
+
+## Plan2 — Review Focus и тестовая карта
+
+| Риск | Проверка до приёмки |
+| --- | --- |
+| Усиление authority из старого manifest или новая валидная пара | `Scope_ReplacedManifestAuthorityCannotReplaceEntryEvidence`, `Scope_RequestAlternativesAndGenerationRemainBound` |
+| Блокировка самого себя на missing read / paused borrower | `Scope_MissingReadKeepsCallerAmbientLease`, `Scope_PausedBorrowAndSecondManagerCannotMutate` |
+| Same-lease write и concurrent validator | `Scope_SameLeaseAndNestedMutationRefuse`, `Scope_ConcurrentAndCopiedContextsCannotUseEvidence` |
+| Repair/normalization попадают внутрь read lifetime | `PostMaterialization_RepairGetsFreshSnapshotAndWritesOnlyAfterClose`, source boundary guards |
+| Final failure или teardown возвращают старый PASS | `Scope_DependencyChangeBeforeFinalProofRefuses`, `Scope_FailureCancellationAndClosePreservePrimary` |
+
+Обязательные таблицы cases: rollback overwrite/delete/BOM/same-length+same-mtime; manifest/authority mismatch и согласованная замена пары; session/request/turn/generation mismatch и missing→present request alternative; read/final-proof I/O failure; owner close/foreign instance/parallel same instance/copied context after close; same-lease write/nested acquire/lifecycle exclusion; independent current game-state edit по-прежнему даёт исходную ошибку; следующая invocation не наследует предыдущий source. Warm/cold и N=1/8/32 — разные per-test fixtures. Для rollback changes между consumers тест ожидает отказ до выдачи результата.
+
+## Plan2 — execution, verification и gates
+
+T230 RED (actual lookup/read count и negatives) → T231 typed lifetime/guards GREEN → T232 exact GameEngine integration/repair controls → T233 fresh XML/catalog/PlanOnly и независимый SOURCE/PREP → T234 один actual source42 → при PASS T235 original Windows five → T236 review/evidence/handoff → T237 облачная квалификация. Если source42 снова FAIL, сохранить evidence и исследовать новую конкретную причину, не повторять неизменные пять.
+
+Proposed categories до появления тестов: `pending-snapshot-validation-contracts` (unit,2m), `pending-snapshot-validation-lifecycle` (integration,5m). Existing affected `c5-original-post-validation-source`; shared reservation требует `c5-world-state-read-phase` + `c5-world-state-read-phase-controls`. `portable-signed-snapshot-authority-neighbors` нужен только если shared checker/reader изменён; если остаётся byte-identical, причинные новые tests вызывают его напрямую и полный старый owner не повторяется автоматически. До runtime SOURCE reviewer проверяет exact selectors, platform и достаточность по фактическому diff. Source42/ordinary5 отдельны от fast controls. Linux-only bodies здесь UNRUN.
+
+Команды/preconditions — в [quickstart.md](quickstart.md). Tests-first, fresh XML build выбранных проектов, observed RED reason, actual planned/completed/skip counts, source/DLL binding и original-owner cleanup обязательны. До долгих runs/review — commit/push/readback. Независимый reviewer: отдельный `gpt-6-astra/high` (сложные lifetime/concurrency контракты); parent реализует, не является собственным reviewer. Policy 2026-10-07 из текущих user AGENTS имеет приоритет над старым repo Astra XHigh исключением.
+
+## Plan2 — Spec Kit consistency и checkpoint
+
+`speckit-plan` выполнен штатным setup-plan с сохранением текущей feature; Phase0 [research.md](research.md), Phase1 [data-model.md](data-model.md), [quickstart.md](quickstart.md). `speckit-tasks` выполнен через setup-tasks и canonical generation T230…T237. External API не меняется, новый contracts документ не нужен. `.specify/extensions.yml` содержит только optional pre/post hooks для plan/tasks/analyze; автоматические git/agent-context hooks пропущены, persistence выполняется явным commit/push, feature pointer1536 сохраняется.
+
+Read-only `speckit-analyze`: local check-prerequisites не поддерживает новый skill flag `-RequireSpec`; выполнен совместимый `-Json -RequireTasks -IncludeTasks` плюс явная проверка spec. Артефакты/issue/pointer согласованы, 39 active IDs уникальны, 8 новых tasks; все6 historical tails совпали с da3efec34 после нормализации CRLF. Анализ 9 требований: lifetime/entry binding→T230…232; participant exclusion/concurrency→T230…232; original dependency changes→T230/T231; current reads→T230/T232; fixed auth/read bound→T230/T231; disposal/repair→T230…232; XML/category/source review→T233; actual Windows5→T234/T235; Linux/provenance→T236/T237. Coverage9/9, unmapped tasks0, duplication0, critical0. Один явный design-review риск: точное соответствие границы transient external edits одобренной spec и конституции; не скрыт как доказанный runtime результат. Независимый review документов/closure ещё pending. Код unchanged, runtime0. После готового документа обязателен user review plan2 по writing-plans; T229 пока открыт.
+
+---
+
+# CRASH5 NativeLineage / Windows — Implementation Plan, редакция 1 (сохранённый предыдущий этап)
 
 > **For agentic workers:** REQUIRED SUB-SKILL: `superpowers:executing-plans`; один разработчик ведёт согласованный блок, затем отдельный независимый reviewer. Checkbox-шаги находятся в canonical [tasks.md](tasks.md). `subagent-driven-development` применяется только при последующем явном выборе такого способа работы.
 

@@ -1,10 +1,30 @@
+# CRASH5 spec4 / plan2 — будущая проверка
+
+[Spec4](spec.md) одобрена из da3efec34; [plan2](plan.md) и [T230…T237](tasks.md) подготовлены для review. **Команды ниже для будущей реализации, сейчас не выполнялись.** Новые categories/selection создаются в T230. Текущий результат: Windows5 FAIL_INCOMPLETE, Linux UNRUN; старые PASS не являются проверкой spec4.
+
+Из корня отдельной копии, PowerShell7, .NET SDK10 + runtime8. DOTNET_ROOT при необходимости задаётся только на время команды и восстанавливается в finally, как в предыдущем CRASH5 guide. Для XML diagnostics не подавлять reference/parameter warnings:
+
+```powershell
+dotnet build BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-restore -p:GenerateDocumentationFile=true
+dotnet build BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj --no-restore -p:GenerateDocumentationFile=true
+./scripts/test-csharp.ps1 -ValidateCatalog -NoBuild
+./scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-snapshot-validation.json -PlanOnly -NoBuild
+./scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-snapshot-validation.json -NoBuild
+```
+
+Сначала exact T230 RED category, затем после кода GREEN и affected controls: new contracts2m, lifecycle5m, existing c5-original-post-validation-source и два c5-world-state-read-phase owners. Сохранять отдельно наблюдённый RED reason, source/DLL/planned/completed/skips, границы component/whole-operation counts. Catalog/PlanOnly не являются runtime tests. Не запускать один и тот же passing owner без изменившегося кода/риска. Точный состав утверждает SOURCE/PREP по реальному diff; Linux-only cases здесь UNRUN.
+
+После принятого T233 один original `fr063-joint-interface-source42-windows-probe` (исходные selector/220s неизменны), после его PASS original `fr063-joint-interface-crash-current`. Все новые runtime provenance записываются в существующий `recovery/crash5/source42-investigation.md` и `linux-handoff.md`. Ни fast controls, ни read-count снижение не закрывают SC-WIN. Для облака — fresh Linux build/package/controls/five, Windows DLL не передавать как compiled proof.
+
+---
+
 # CRASH5 — validation guide для NativeLineage Linux / локального Windows
 
 [Spec редакции3](spec.md), [plan](plan.md), [tasks](tasks.md), [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Ни одна команда из этого руководства не выполнялась на этапе планирования. Implementation plan1 approved6f2d4d486; actual helper checkpoints записаны в plan; Linux блок запускает облачный исполнитель. Исторические инструкции ниже не являются текущим отбором.
 
 ## Preconditions и provenance
 
-Текущий результат: NativeLineage/Windows source принят, helpers37PASS на51f; после T228 обновлённые stages9PASS на25ef748ce отдельно. Windows ordinary5 FAIL_INCOMPLETE; два отдельных source42 investigations T227/T228 по completed1/failed1 с child220s. Spec4 production optimization — проект, ожидающий одобрения владельца. Linux UNRUN. Точные артефакты и команды передачи — [linux-handoff.md](recovery/crash5/linux-handoff.md). Не повторять unchanged five/probe: сначала причинный анализ и, если нужен выход за текущий production scope, согласование дополнения спецификации.
+Текущий результат: NativeLineage/Windows source принят, helpers37PASS на51f; после T228 обновлённые stages9PASS на25ef748ce отдельно. Windows ordinary5 FAIL_INCOMPLETE; два отдельных source42 investigations T227/T228 по completed1/failed1 с child220s. Spec4 одобрена владельцем; её plan2 выше ожидает review, реализация ещё не начата. Linux UNRUN. Точные артефакты и команды передачи — [linux-handoff.md](recovery/crash5/linux-handoff.md). Не повторять unchanged five/probe: сначала причинный анализ и, если нужен выход за текущий production scope, согласование дополнения спецификации.
 
 PowerShell7, SDK10, .NET8 runtime; отдельный чистый checkout выбранного source SHA. Зафиксировать `git rev-parse HEAD`, `git status --porcelain`, dotnet `--info`, hashes build outputs и source/diff. На Linux дополнительно x64/glibc, `cc`, `readelf`, доступные штатные NativeLineage prerequisites. Никаких изменений политик/прав среды. Новые категории должны уже существовать после реализации; неизвестный selector — ошибка подготовки.
 

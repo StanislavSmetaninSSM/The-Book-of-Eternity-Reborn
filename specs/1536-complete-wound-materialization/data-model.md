@@ -1,3 +1,20 @@
+# CRASH5 spec4 — Phase 1: invocation evidence
+
+Источник: [spec4](spec.md), [plan2](plan.md), issue1536. Внутренние ephemeral модели; сериализуемая save schema и внешний API не меняются.
+
+| Модель | Контракт |
+| --- | --- |
+| ValidationReadReservation | Private identity для существующего main-access exclusion; Opening допускает только собственное acquisition/recovery, Active запрещает mutation/nested admission, Closed необратим. World и PendingSnapshot scopes используют тот же guard; browser условия не обобщаются |
+| PendingSnapshotValidationReadScope | Original FileSystemManager/root/MainAccess/retained CanonicalWriteLease, generation; synchronous issuer. OpenAsync завершает прежний recovery, RequireCurrent проверяет identity/active/generation, DisposeAsync освобождает только собственное владение |
+| PendingSnapshotValidationInvocation | Private validator identity, execution-flow identity, retained scope, state Opening→Active→Verifying→Closed; любая ошибка→Invalidated→Closed. Скопированный async context не продлевает scope. Exclusive instance reservation начинается до shared cache reset |
+| PendingSnapshotEntryEvidence | Immutable manifest serialization, authority bytes, session/request/turn/generation, все request alternatives с presence/absence, original rollback coordinate set и фактически аутентифицированные bytes. Mutable DTO не выходит наружу: каждый lookup получает независимую копию |
+| Validation result | Прежний ordered List<ValidationIssue>, доступен вызывающему только после successful final original-evidence proof и close. Missing/Unusable/exception semantics сохраняются; новый valid source не заменяет original evidence |
+| Read evidence | Algorithm full-auth count≤2; component rollback reads≤2R; warm/cold clean admission totals≤3R/4R, отдельные marker/control/leaf/recovery counts. R=3 и N=1/8/32 задаются до RED; большие actual source42 counts — отдельный runtime trace |
+
+Ни одна модель не даёт нового права записи/чтения: authority исходит из retained existing lease и реальных bytes. Current game-state reads не кэшируются. Repair/normalization/publication/refresh не используют завершённую invocation.
+
+---
+
 # CRASH5 Phase 1 — process/evidence data model
 
 Источник: [spec редакции3](spec.md), [plan](plan.md), [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Новых game-state/save сущностей нет; это test/process модели.
