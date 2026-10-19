@@ -1,3 +1,13 @@
+## WIN5 — текущий документарный этап, 2026-10-19
+
+Источник: [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536) и прямое поручение владельца; [spec.md — WIN5 редакция 1](spec.md), [checkpoint](plan.md). Это учёт этапа спецификации, а не результат фазы speckit-tasks для реализации. Нижние G01/G02/current записи исторические относительно этой локальной задачи.
+
+- [x] WIN5-S01 Создать отдельную копию и сверить базовый SHA: D:\Code\The-Book-of-Eternity-Reborn-crash5-20261019, 1253328971a27ffafe3820ad59a2515ebbd35628; отдельная ветка 1536-crash5-windows-spec-20261019.
+- [x] WIN5-S02 Статически изучить Theory cut0…4, shared helper, оба child entrypoints, исходные assertions, dispatcher, diagnostic consumer, catalog/selection и относящиеся plan/spec/tasks. Выводы и ограничения записаны в WIN5; тесты не запускались.
+- [ ] WIN5-S03 Независимо проверить документарный diff и устранить подтверждённые существенные замечания.
+- [ ] WIN5-S04 Представить владельцу фактически записанную WIN5 редакцию и получить её согласование.
+- [ ] WIN5-P01 После согласования выполнить writing-plans + speckit-plan / speckit-tasks и анализ согласованности. До этого implementation tasks и probe execution не выпускать; тесты остаются запрещены до нового поручения.
+
 > CURRENT G02 2026-10-19: latest authority requires own-S01 actual WriteDump+original oracle decode through exact corrected G01 orchestration/config; PRE_API_READY/API0 prototype superseded. One synthetic API permit distinct from at most one future game API permit; successful synthetic and independent affected SOURCE/PREP required. New root/IDs, exact binary reuse/no auto full rebuild. G01FAIL/API0, old66529UNKNOWN and broader holds immutable; see minimal G02 plan.
 
 > CURRENT FINAL 2026-10-19: source-onlycollector-env fix принят24checks/actualprefixpure4PASS, runtimeNONE/consumedlease. ЕдинственныйgameFAIL220, captureAPI0/UNREACHED/no snapshot; EVIDENCEfactsaccepted38+4, parent22/terminal24 scopes separated. L0152of57/oldUNKNOWN/broaderholds unchanged. Дальнейшийruntime требует отдельного user-authorized плана; старыеPREP/actual immutable. Earlierentries historical.
