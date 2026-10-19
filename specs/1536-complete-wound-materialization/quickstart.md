@@ -4,7 +4,7 @@
 
 ## Preconditions и provenance
 
-Текущий результат: NativeLineage/Windows source принят, helpers37PASS на51f; после T227 обновлённые stages7PASS на8326d14b1 отдельно. Windows ordinary5 FAIL_INCOMPLETE; один source42 probe completed1/failed1 по child220s. Linux UNRUN. Точные артефакты и команды передачи — [linux-handoff.md](recovery/crash5/linux-handoff.md). Не повторять unchanged five/probe: сначала причинный анализ и, если нужен выход за текущий production scope, согласование дополнения спецификации.
+Текущий результат: NativeLineage/Windows source принят, helpers37PASS на51f; после T228 обновлённые stages9PASS на25ef748ce отдельно. Windows ordinary5 FAIL_INCOMPLETE; два отдельных source42 investigations T227/T228 по completed1/failed1 с child220s. Spec4 production optimization — проект, ожидающий одобрения владельца. Linux UNRUN. Точные артефакты и команды передачи — [linux-handoff.md](recovery/crash5/linux-handoff.md). Не повторять unchanged five/probe: сначала причинный анализ и, если нужен выход за текущий production scope, согласование дополнения спецификации.
 
 PowerShell7, SDK10, .NET8 runtime; отдельный чистый checkout выбранного source SHA. Зафиксировать `git rev-parse HEAD`, `git status --porcelain`, dotnet `--info`, hashes build outputs и source/diff. На Linux дополнительно x64/glibc, `cc`, `readelf`, доступные штатные NativeLineage prerequisites. Никаких изменений политик/прав среды. Новые категории должны уже существовать после реализации; неизвестный selector — ошибка подготовки.
 

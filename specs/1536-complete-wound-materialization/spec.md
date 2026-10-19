@@ -1,3 +1,36 @@
+# CRASH5 — дополнение редакции 4: повторные чтения при Windows-валидации
+
+**Статус:** проект для согласования, 2026-10-19. **Не разрешает production-реализацию до явного одобрения владельцем.** Активная feature остаётся `1536-complete-wound-materialization`, [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), задача [T229](tasks.md). Редакция3 ниже сохраняет силу для уже подготовленного NativeLineage/Windows adapter и облачной передачи. Это дополнение предлагает отдельное расширение её узкого production scope.
+
+## Основание и требуемый результат
+
+Windows ordinary5 дал FAIL_INCOMPLETE: четыре producer timeout до exit73, пятый прерван общим пределом; resumer не наблюдался. Отдельный test-only source42 probe подтвердил прохождение ожидания ГМ, захвата ответа и первой валидации. Следующий замер существующими read callbacks зафиксировал после source-validated **1740 initial-read observations для59 rollback-путей,1681 повторных** к186.508s; path limit не достигнут. Процесс затем остановлен по прежнему220s. Это нижняя граница количества обращений, не число гарантированно завершённых чтений и не профиль длительности отдельного метода. [Полные результаты](recovery/crash5/source42-investigation.md), [counts](recovery/crash5/T228-last-observed-counts.json).
+
+Исходники показывают конкретный механизм: без prevalidated override повторные pending-snapshot lookups заново аутентифицируют detached authority и пересчитывают hashes всех rollback before-images. Его наличие и повторные чтения подтверждены; доля времени и достаточность одной оптимизации для прохождения five пока неизвестны. Подменять эти неизвестные обещанием исправления нельзя.
+
+**Результат:** устранить избыточную повторную полную аутентификацию одного неизменного исходного snapshot в рамках одной проверяемой операции валидации, сохранив прежнюю достоверность и отказ при изменении зависимостей. Это должно проверяться причинной регрессией на физические read callbacks, затем настоящим source42 и исходными Windows cut0…4 с прежними пределами.
+
+## Допустимый scope и сохраняемые контракты
+
+- Разрешить узкие изменения в pending-snapshot lookup/validation lifetime внутри `ValidationService`, typed context / `PendingTurnSnapshotAuthority` и месте вызова post-materialization validation в `GameEngine`. Если требуется привязка к `FileSystemManager`, использовать существующие owned lease/generation правила; порядок recovery/admission и authority-контракты не менять. Точный набор файлов и способ удержания lifetime зафиксировать в plan до кода.
+- Переиспользовать только свежепроверенное неизменяемое представление **исходного** snapshot внутри доказанного lifetime. Текущее mutable игровое состояние продолжает проходить реальные чтения и все прежние проверки. Не вводить process-wide cache, reuse между тестами/ходами/владельцами или безусловный cache по имени файла/mtime.
+- Проверять фактические session/generation/request/turn, manifest/authority и rollback dependencies. Изменение или исчезновение зависимостей между потребителями не должно приводить к успешному принятию устаревшего доказательства. Способ исключения или обнаружения таких изменений — явный открытый вопрос для plan; ослаблять существующие гарантии ради кэширования нельзя.
+- Перед repair/normalization/rollback/publication/cleanup/runtime refresh/owner close или сменой generation прекращать применимость прежнего доказательства; новая проверочная итерация получает свежую authority. Изолировать concurrent/foreign validator access и корректно освобождать lifetime при ошибке/cancellation.
+- Нельзя просто передать старый `activeSnapshotContext` вместо null в console post-validation: существующий `UsePrevalidatedPendingTurnSnapshotScope(object)` сам по себе не доказывает свежесть или исключительное владение. Нельзя выдавать console fixture за browser, включать browser-only optimization без его authority, заранее синтезировать source42 или переносить подготовку за220s.
+- Не менять механические/current-owner/history/receipt/culture/inert-repeat assertions, схемы saves, GM-facing контракты, исходные exit73/resumer0, бюджеты220/10/10/15m, C supervisor/NativeLineage protocol, диагностические collectors или политики среды. Новых GM-промптов/примеров не требуется при сохранении наблюдаемого игрового поведения.
+
+## Приёмка и порядок работы
+
+1. После одобрения обновить canonical plan/tasks через Spec Kit, выполнить consistency analysis. До реализации определить безопасный lifetime, места его окончания и численный предел полных аутентификаций для одного validation pass; предел не должен расти с числом повторных потребителей. Не подбирать его после GREEN.
+2. Причинный RED должен показать повторную работу на реальном затронутом lookup path. GREEN подтверждает сокращение физических обращений при прежних authority/result assertions. Одни mocks, source-string checks или ускорение wall time недостаточны.
+3. Обязательные negatives: изменённые/удалённые rollback bytes, manifest/authority/request/generation mismatch, изменение между потребителями, repair с новой итерацией, I/O failure, освобождение при ошибке/cancellation, чужой/concurrent validator. Нельзя принять stale state или пропустить старые ошибки. Если корректный lifetime не удаётся доказать, зафиксировать результат и не принимать оптимизацию.
+4. Свежие XML builds, адресные категории по изменённым контрактам и независимый SOURCE/PREP review. Затем source42 и первоначальные Windows five; прохождение только source42 не закрывает SC-WIN. Ни лимиты, ни acceptance не увеличиваются/ослабляются при неудаче; новые существенные причины рассматриваются отдельно.
+5. Linux runtime остаётся облачным. Обновлённый source передаётся с отдельными Linux PREP/controls/five и точным provenance; Windows PASS не заменяет Linux PASS и не переписывает historical52/57.
+
+До согласования этого дополнения выполняются только завершение текущего test-only исследования, независимый разбор evidence и передача уже подготовленного адаптера. Само написание документа не является одобрением.
+
+---
+
 # Дополнение CRASH5: Linux в облаке и локальный Windows
 
 **Редакция:** 3, 2026-10-19. **Статус:** согласована владельцем ответом «да» на предъявленную редакцию из commit `f22e51730e090e5cdc86531f589bdff05193158d`. Требования этой редакции не меняются при записи согласования. По уточнению владельца Linux ordinary crash5 должен использовать существующий NativeLineage, а не ограничиваться новым логированием. Эта редакция заменяет CRASH5 редакции 2 и WIN5 редакции 1; исторические результаты не изменяет.

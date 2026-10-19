@@ -36,3 +36,21 @@ Run `20261019-195127-804-38496-09a24c6d473e47d8aae2f02e4644757d-categories`: pla
 | Accepted-outcome validation checkpoint | 161.501 |
 
 No QTE action entry or turn/helper return was observed before220s. The waiter and snapshot-capture path did make progress; the unknown interval is now after the actual accepted-outcome validation checkpoint and before the QTE action. The73.762s between capture and accepted-validation is a wall-time interval containing all intervening work, not an isolated measurement of one validator method. No deadlock or root cause is established by the last event alone. No unchanged retry was made. Windows5 remains FAIL_INCOMPLETE; this completed investigation result is not a sixth qualification identity. Linux remains UNRUN.
+
+## T228 — causal count through existing fixture hooks
+
+The existing fixture wires initial-read, after-read-attempt and before-mutation callbacks. Only the Windows source42 probe enabled bounded counters through those hooks; no production code or additional file reads were added. Initial and returned callbacks are distinct observations, not success counts. Source-capture and source-validated delimit intervals; snapshots are bounded and share the original stage record budget. Each interval retains at most1024 paths of length512, never emits paths or contents, and emits at eight read-count thresholds plus boundary/completion. Incomplete traces provide lower bounds.
+
+Read-only source analysis identifies a concrete amplification mechanism: `ValidationService.AcceptedTurnAndInkFeathers` repeated lookups without prevalidated override call detached authority validation, whose `PendingTurnSnapshotAuthority.BuildAuthorityPayload` recomputes hashes of all rollback before-images. The console post-materialization call supplies no prevalidated context. Earlier accepted validation does install one. Browser-only read optimizations require browser authority and cannot be enabled by changing this fixture's identity.
+
+Source25ef748ce, metadata779a8e2a8: counter RED9=7PASS/2expectedFAIL, then GREEN9/9PASS0skip22.577s. Fresh selected integration XML45.33s, changed XML diagnostics0, catalog814/11835 and probePlanOnly1. Independent SOURCE/PREP accepted. One causal-count run `20261019-200931-662-53708-059019b1da734236b481fd635758dfd7-categories` completed1/failed1 with child220s timeout, runner1, category timeout false, wall242.654s. Child49268 exit-1/EOF/join true, cleanup null, both owned roots removed. Three selected DLL hashes unchanged. [Outcome](T228-probe-outcome.json), [TRX](T228-probe.trx), [full trace](T228-probe-stages.json), [raw byte archive](T228-source42-raw.zip).
+
+| Interval | Last recorded seconds | Initial callbacks | Returned callbacks | Rollback initial callbacks | Distinct rollback paths | Repeats | Before-mutation callbacks |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Before capture (closed interval) | 87.414 | 924 | 1154 | 472 | 59 | 413 | 191 |
+| Capture to validated (closed interval) | 160.223 | 2081 | 2447 | 531 | 59 | 472 | 4 |
+| Post-validated (incomplete lower bound) | 186.508 | 1988 | 2108 | 1740 | 59 | 1681 | 1 |
+
+No path cap was reached. Repeated rollback read observations after the validation checkpoint are **confirmed**. The counters do not isolate one call site's time, prove all observations completed I/O, establish a deadlock, or prove this is the sole cause of220s. No QTE/turn return was observed. There is no justified test-fixture shortcut: setup finished around19s and subsequent work is actual production preparation/validation. Moving that work outside the child deadline, preauthoring the source, dropping validation or changing platform identity would alter the preserved contract.
+
+Next proposed work is [spec amendment4](../../spec.md), requiring owner approval because it expands the production boundary beyond NativeLineageOwner. It seeks a fresh, immutable, operation-scoped validation proof with preserved dependency-change detection and explicit invalidation; blindly forwarding the earlier context is not an accepted fix. No production optimization has been implemented. T228 is a completed investigation once final evidence review is accepted; Windows5 remains FAIL_INCOMPLETE and Linux UNRUN.

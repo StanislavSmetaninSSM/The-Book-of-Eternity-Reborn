@@ -8,6 +8,11 @@
 **Spec:** [согласованная редакция 3](spec.md), исходный approval commit `f22e51730e090e5cdc86531f589bdff05193158d`; [issue #1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Ветка `1536-crash5-linux-windows-spec-20261019`. Дата: 2026-10-19.
 **Status:** plan1 из6f2d4d486 согласован владельцем ответом «да»; реализация NativeLineage/Windows подготовлена и SOURCE/PREP приняты; ordinary Windows5 — FAIL_INCOMPLETE, source42 probe — FAIL_CHILD_TIMEOUT; Linux native/game runtime UNRUN. Helper37PASS и обновлённые stages7PASS имеют отдельные provenance ниже. Рабочий журнал: .superpowers/sdd/plan/progress.md; долговечные checkpoints сохраняются здесь.
 
+## CRASH5 — текущая граница после T228
+
+Implementation source25ef748ce; NativeLineage production неизменён после51f. T227/T228 имеют по одному completed failing source42 run с confirmed original-owner cleanup. T228 подтвердил1740 rollback initial-read callbacks/59distinct/1681repeats к186.508s после validated160.223s, без QTE до220s; это нижняя граница наблюдений, не isolated method profile. Helpers37PASS на51f и обновлённые stages9PASS на25 имеют отдельные provenance. Windows5 остаётся FAIL_INCOMPLETE, Linux UNRUN. Подробности/evidence в recovery/crash5/source42-investigation.md и linux-handoff.md.
+
+T229: в spec.md записано **неодобренное** дополнение4 для production validation optimization. До явного согласования production-код не менять. После approval пройти соответствующие Spec Kit plan/tasks/analyze и Superpowers design/TDD/review/verification; определить доказуемый immutable validation lifetime, dependency-change detection и numeric read-bound до реализации. Нынешние test-only counters не являются оптимизацией или доказательством достаточности одного будущего исправления. Никаких дальнейших unchanged five/source42 retries не запланировано.
 ## CRASH5 — Global Constraints
 
 - Ровно cut0…4, producer `Environment.Exit(73)`, отдельный resumer exit0, разные PID, независимые birth tokens и nonce; повторный вход инертен. Все mechanical/history/culture/control assertions из spec сохраняются.
