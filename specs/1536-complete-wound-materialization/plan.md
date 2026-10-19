@@ -6,7 +6,7 @@
 **Architecture:** существующий invocation runner получает второй factory для borrowed scope. Scope резервирует фактический MainAccess уже удерживаемого lease; открытие проверки, начало mutation и начало закрытия согласуются под одним коротким state lock. Entry/final proof и immutable DTO остаются общими с plan2. Два QTE validation calls имеют два независимых lifetime.
 **Tech Stack:** C#/.NET8, SDK10, PowerShell7/xUnit; существующий filesystem/authority stack, без packages и persisted schemas. Windows выполняется здесь; Linux runtime — в облаке.
 **Spec:** [согласованная редакция5](spec.md), approval владельца «хорошо» на f9658ae0e,2026-10-20; [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536).
-**Status:** plan3 подготовлен T239 и принят отдельным gpt-6-astra/high для предъявления владельцу на3d5419f6f; два P2 устранены, новых замечаний нет. Implementation/runtime не начаты. Требуется review фактически записанного плана владельцем. Branch1536-crash5-linux-windows-spec-20261019; planning base43e2f0ed56fc98839cff0e897c8c67259149d733. T234 остаётся FAIL_CHILD_TIMEOUT, Windows5 FAIL_INCOMPLETE, Linux UNRUN.
+**Status:** plan3 подготовлен T239 и принят отдельным gpt-6-astra/high для предъявления владельцу на3d5419f6f; два P2 устранены, новых замечаний нет. Владелец одобрил фактически предъявленный plan3 из f368bd592 ответом «Ладно»,2026-10-20. Начато выполнение T240; production fix и игровой runtime остаются за соответствующими gates. Branch1536-crash5-linux-windows-spec-20261019; planning base43e2f0ed56fc98839cff0e897c8c67259149d733. T234 остаётся FAIL_CHILD_TIMEOUT, Windows5 FAIL_INCOMPLETE, Linux UNRUN.
 
 ## Plan3 — Global Constraints
 
