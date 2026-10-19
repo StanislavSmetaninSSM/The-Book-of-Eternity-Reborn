@@ -1,5 +1,7 @@
 # CRASH5 — дополнение редакции6: увеличенное окно наблюдения
 
+**Фактический результат spec6:** T250 завершена:1 planned/completed/PASS,0failed/skip; source-turn return258.778s, engine return258.780s. Child76132 exit0, EOF/join true, оба owned root удалены и отсутствие подтверждено. Наблюдённое выполнение превышает220s; зависания в этой попытке нет. Это не гарантия времени всех сценариев и не SC-WIN five PASS. T244220FAIL сохраняется; original five не повторены, Linux UNRUN. Независимая итоговая проверка и fresh recovery T251 ещё ожидаются.
+
 **Основание и разрешение:**2026-10-20 пользователь спросил об увеличении220s и после предложения отдельной600s пробы явно разрешил продолжать без дальнейших согласований. Это waiver промежуточного review владельцем, а не пропуск Spec Kit, независимого review или проверок. Активная feature1536, [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), T248…T251. Результат T244FAIL_CHILD_TIMEOUT220 сохраняется.
 
 ## Результат и user scenario

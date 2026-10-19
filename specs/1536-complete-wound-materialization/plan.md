@@ -1,5 +1,7 @@
 # CRASH5 — Implementation Plan4: расширенная source42-проба
 
+**Фактический результат spec6:** T250 завершена:1 planned/completed/PASS,0failed/skip; source-turn return258.778s, engine return258.780s. Child76132 exit0, EOF/join true, оба owned root удалены и отсутствие подтверждено. Наблюдённое выполнение превышает220s; зависания в этой попытке нет. Это не гарантия времени всех сценариев и не SC-WIN five PASS. T244220FAIL сохраняется; original five не повторены, Linux UNRUN. Независимая итоговая проверка и fresh recovery T251 ещё ожидаются.
+
 Canonical [spec6](spec.md), [tasks T248…T251](tasks.md), issue1536. User review waived explicitly2026-10-20; execute inline with Superpowers TDD/debugging/review/verification. Reuse existing isolated checkout/branch and feature; no new worktree/task/scaffolding. Parent owns implementation; separate routine reviewer gpt-6.1-sol/xhigh examines final coherent diff and PREP. Production, owner lifecycle and C code do not change.
 
 ## Design / constitution check
