@@ -1,3 +1,9 @@
+# Текущий этап: spec10 / plan8 — проект коротких проверок
+
+Пользователь одобрил карту пяти crash cases и проект минимальной fixture cut0. [Spec10](spec.md), [plan8](plan.md), [tasks T266…T268](tasks.md). Предлагается immutable source42 seed из genuine gameplay, отдельная физическая копия на case, прежние Stage43/crash/current-owner oracles. Это проект, не реализованная fixture: portability/quiescence/contract fingerprint/измеренная польза — gates следующего slice. Новых tests/build/generator/runtime нет. Independent review pending. Windows0/5PASS, T263FAIL, LinuxUNRUN.
+
+---
+
 # Текущий результат: spec9 / plan7
 
 **Spec9 runtime:** Windows0/5PASS, 1/5 attempted at shared820/max600/category15m. T263-cut0 FAILED; completed=True, category timeout=False, duration 00:13:40.8952276; owned fixture cleanup=True, child EOF/join=True, unchanged3DLL=True. Dependent cuts stopped; no unchanged retry or automatic further limit increase. Diagnose actual evidence before a new plan. Original220 five NOT_RERUN; T219/T254/T259 failures retained; LinuxUNRUN.

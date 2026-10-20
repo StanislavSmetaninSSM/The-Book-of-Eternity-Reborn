@@ -1,3 +1,15 @@
+# CRASH5 — plan8 / spec10: проект коротких проверок
+
+Источник: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Пользователь одобрил карту пяти случаев и проект минимальной фикстуры cut0. Этот блок — исследование исходников и документация; тесты не запускаются, код не меняется.
+
+- [x] T266 [US2] Составить карту пяти фактических crash boundaries, обязательных игровых/process assertions и подготовительных зависимостей. Обосновать границу cut0 fixture и сравнить варианты сокращения подготовки по исходникам. Evidence: plan8 map с code anchors, source42/Stage43 boundary и три варианта; live/seed/component coverage различены.
+- [x] T267 [US2] Записать конкретный проект cut0 fixture: выдача подлинного начального состояния, независимая копия/владение, штатная Stage43, реальный exit73, новый current owner, отрицательные контроли и раздельная стоимость. Отметить проверки осуществимости и неподтверждённую скорость. Implementation/runtime не входят в текущий блок. Evidence: plan8 seed schema/file/interfaces/export/import, five future gates; нет claims переноса или speedup.
+- [ ] T268 [US3] Проверить spec10/plan8/tasks на согласованность, провести независимое ревью всего проекта, устранить подтверждённые замечания; сохранить commit/push/readback и проверить восстановление изменённых документов из GitHub. Старые FAIL и LinuxUNRUN сохраняются.
+
+Dependencies:T266→T267→T268. Реализация/генерация fixture/любой запуск потребуют последующего implementation slice; этот проект не квалифицирует новые тесты.
+
+---
+
 # CRASH5 — plan7 / spec9
 
 T265 accepted by separate gpt-6.1-sol/xhigh at af7047267e1d4507900c6d72480fac25833eea81, including inspected historical-status correction. Raw failure, calculated405.8908437s remaining wait,3DLL,EOF/join,cleanup and306-file clean GitHub recovery verified. Windows0/5PASS; T264 stopped, original220 five NOT_RERUN, LinuxUNRUN.

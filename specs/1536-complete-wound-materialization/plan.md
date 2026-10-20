@@ -1,3 +1,77 @@
+# CRASH5 — plan8: карта пяти случаев и fixture cut0
+
+Источник: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Canonical [spec10](spec.md), [tasks T266…T268](tasks.md). Это проект по исходникам; код, fixture artifacts и runtime не изменяются. User approval запросов не требует по ранее данному waiver.
+
+**Goal:** сократить повторяемую подготовку crash-проверок и сохранить проверяемый смысл восстановления. **Architecture:** отделить подлинное завершённое состояние source42 от новой Stage43, аварии и нового current owner. Неизменяемый source42 seed — предлагаемый вариант, допуск зависит от проверок переносимости, изоляции и измеренной пользы. **Stack:** существующие C#/.NET8 test helpers, FileSystemManager и NativeLineage/Windows ownership. Родитель ведёт проект; отдельный gpt-6-astra/high проверяет сложные контракты состояния.
+
+## Карта пяти случаев — F10-1/F10-4
+
+Все cuts заданы в `GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:866–909`, а не выводятся из имени теста. I — `output/interface_updates.json`; changing I commit означает завершённый новый committed cohort resumer, не число физических попыток записи.
+
+| Cut | Фактическая точка аварии | Обязательный результат нового процесса |
+|---|---|---|
+| 0 Prepared | Journal Committed=true; pending содержит selected2 checkpoint и Prepared без ошибок; I ещё Before. Общая механика не применена. | Физический recovery сохраняет Prepared/Before; новый current owner публикует точные сохранённые After и результат, выполняет механику один раз. Completed=true, Held=false, new changing I commits=1. |
+| 1 I applied | MemberPublished именно для I во второй волне; её journal Committed=false, After pending-member содержит Published, I физически применён. | Штатный recovery откатывает незавершённую волну до Prepared/Before, затем новый owner завершает исходный frozen result. Completed=true, changing I commits=1; нельзя считать частично записанные байты committed. |
+| 2 Published/culture | Committed=true; Published без ошибок. Producer en-GB принял `13/02/2026`; конец owning release/common не вернулся. | en-US обычная policy отдельно отклоняет дату, но текущий resume использует сохранённый ParseAccepted/result fingerprint/After без повторной проекции. Completed=true, changing I commits=0. |
+| 3 Missing result | Committed=true; selected2 FIRST2 graph установлен, jointInterfacePublication отсутствует. | Новый engine не имеет прежнего одноразового разрешения. Held=true, Completed=false; I/механика/pending не меняются, changing I commits=0. |
+| 4 ErrorPrepared | Committed=true; Prepared.HasErrors=true. I остаётся Before. | Held=true, Completed=false; frozen record и diagnostics сохраняются, ошибки представлены в отчёте. I/механика/pending неизменны, changing I commits=0. |
+
+Общие оракулы: реальный exit73 без catch/finally/release; новый PID с независимым birth identity и тем же nonce; прочитанный настоящий journal; CommonCallbacks=0 и MechanicalAtCut=MechanicalBefore; отсутствие fresh authority fields в новом engine; actual late/current-session caller; исходный result fingerprint; весь mechanical/history/resource proof; второй вход побайтно инертен; stop/join/EOF и owned cleanup. Успешные cases доходят до turn43 и удаляют исходные pending/request/ready; held cases остаются на42. Source anchors: producer cut `…JointInterfaceCrash.cs:866–909`; recovered state `:632–666`; current owner/proof `:680–734`; held/frozen/repeat `:735–783`; parent assertions `:79–126`; mechanical oracle `:784–830`. Эти ссылки относятся к source582f5ca2b, code unchanged в plan8.
+
+## Что сейчас занимает время — F10-2/F10-5
+
+`WriteJointInterfaceOriginalCrashAsync` (`…JointInterfaceCrash.cs:467–484`) вызывает `RunJointCompletionControlAsync`. Тот безусловно запускает весь `RunActualQteStorySourceAsync` (`…JointCompletion.cs:32–52`): копирует BaseSessionRoot, создаёт ресурсы, обслуживает real console/QTE input, делает ProcessPlayerTurn42 и accepted story append (`…QteStoryAppend.cs:290–415`). После этого создаётся новая естественная Stage43 и её подписанный original/rollback, confirmed treatment claim и corrected public outputs (`…JointCompletion.cs:138–307`). Только затем выполняется проверяемая первая/вторая волна до cut.
+
+T250 измерил полный source42 return258.780s. T263 измерил весь producer до cut0=413.091s и отдельно resumer wait405.8908437s→FAIL. Это разные runs, вычитать258.780 из413.091 для оценки Stage43 нельзя. Образ может убрать повтор source42; размер namespace, Stage43 и стоимость actual current-owner validation остаются неизвестными. Structural>=64snapshot reads из T263 consultation не является измерением метода в runtime.
+
+## Варианты и выбранная граница
+
+1. **Неизменяемый source42 seed, независимая копия на case — рекомендуемый проект.** Один отдельный генератор проходит штатный source42 с `ConfigureJointCompletionWorldBeforeOriginalAsync`, проверяет источник/occurrence/inactive tail и экспортирует завершённые durable bytes до Stage43. Каждый producer получает свою копию, затем выполняет настоящие Stage43, FIRST2/I publication и exit73; существующий resumer проверяет её своим новым owner. Сохраняется подлинное происхождение истории; требуется доказать допустимость переноса и пользу. Генерация — отдельная явно выбранная операция, никогда автоматический fallback короткого теста.
+2. **Новая компактная fixture напрямую через игровые services.** Может сократить и создание seed, но готового builder подлинного joint source/confirmed claim нет. `CreateHeldTreatmentPipelineContextAsync` (`…ResourcePublicationLifecycleTests.cs:3011`) выдаёт homogeneous treatment, без joint QTE/correction/mechanical/progression chain; использовать его как эквивалент cut0 нельзя. Это отдельная более широкая разработка fixture, если seed не проходит gate.
+3. **Небольшой publication component test.** `MortalJointInterfacePublication.CommitPreparedAsync/CommitPublishedAsync` (`Services/MortalJointInterfacePublication.cs:186/206`) позволяют проверить durable waves. Переданный `validateOwner` — ответственность вызывающего кода; пустой callback не доказывает actual GameEngine current-owner reconstruction. Такой тест полезен отдельно, но не закрывает gameplay crash0…4.
+
+Граница seed: после genuine source42 и его inactive-tail assertions, перед `BuildJointNaturalStage43CurrentExpectation`/любой новой Stage43. Нельзя переносить live source.Engine, leases, admissions, private Ready/attempt/registry caches. `QteStoryRun.Engine` и ActionObserved — наблюдения генератора, а не переносимая authority. Live assertion `source.Engine.GameLoop.TurnNumber==42` остаётся в original full-path тесте/генераторе; loader проверяет durable tuple/tail production predicates и создаёт собственный engine. Новый seed-based case имеет отдельное имя/status и не объявляет, что повторно наблюдал source42 gameplay. Существующие full-path entrypoints остаются отдельной итоговой проверкой.
+
+## Конкретный проект cut0 — F10-3/F10-4/F10-6
+
+**Предлагаемые файлы следующего implementation slice:**
+
+- `BookOfEternityClient.IntegrationTests/JointInterfaceCrashSeed.cs`: schema/data manifest, bounded checked copy, hashes и независимость артефакта; никакого создания game authority.
+- `GameEngineTurnLifecycleTests.JointInterfaceCrashSeed.cs`: explicit generator, loader preconditions и отдельный seed-based Windows cut0 Fact. Одно место разделяет source42 generation и continuation43.
+- `MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs`: выделить source acquisition от общей continuation Stage43; live default сохраняет свои проверки. `JointCompletionSource` — detached expectations/tuple; авторитет на43 создаёт прежняя Stage43, не этот DTO.
+- `GameEngineTurnLifecycleTests.JointInterfaceCrash.cs`: будущий явно выбранный seed-mode использует прежние cut observer, child ownership и resumer. `SourceSeed` передаётся явно; отсутствующий/плохой seed завершает проверку, а не запускает полный source42. Ordinary/source42/Linux branches сохраняют прежний route.
+- `JointInterfaceCrashSeedTests.cs`, затем явные catalog/selection owners для loader controls и seed-cut0; существующие native helpers/fast controls переиспользуются. XML новых API — multiline по пользовательскому контракту. Сейчас эти файлы/entrypoints не создаются.
+
+**Proposed interfaces:** `JointInterfaceCrashSeed.Open(string artifactPath, string expectedContractFingerprint)` возвращает проверенный data artifact; `MaterializeAsync(string emptyOwnedRoot)` выдаёт `JointInterfaceCrashSeedMetadata`. Metadata: original source session/request/snapshotToken/turn42 и opportunity reference; это ожидания теста, не разрешение на публикацию. Реализация не должна адаптировать фиктивный QteStoryRun с fake Engine. New continuation принимает `JointCompletionSource`; live adapter и seed adapter явно различают происхождение observations.
+
+**Состав seed:** все игровые durable files завершённого source42 плюс единственный допустимый runtime member `.boe_runtime/session-generation/current.json`, относительные имена/directories, длины/SHA256, generator source SHA и contract fingerprint, source tuple, точные accepted story/QTE/occurrence hashes, культура генерации, результаты upstream checks. Не брать образ из неполных логов T250/T263. Contract fingerprint зависит от производящих/читающих game contracts, generator/helper source и base assets; полный source SHA остаётся provenance. Документальные commits сами по себе не делают старое состояние новым game contract; состав fingerprint closure должен быть зафиксирован до реализации, а не выбран loader по удобству.
+
+**Экспорт:** дождаться выхода source42 и existing genuine-source/physical-occurrence/inactive-tail assertions. Получить quiescence: нет active local journal/debt, workers, pending request/manifest/ready, активного QTE или treatment43. Источник закрывает все live handles/input/owners до финального экспорта; проверка quiescence проводится и перед close, и после него. Сохраняется весь необходимый namespace, а не отобранные вручную два-три файла. Общие mutable fixture/автоматическая генерация при загрузке запрещены.
+
+**Импорт:** новая owned directory с нулём файлов, обычные относительные пути, нет links/reparse/дубликатов/выхода за root, точный inventory и digest; seed не открывается на запись. Из runtime переносится только generation DATA. Полезен паттерн `CopyQuiescentJointNamespaceAsync` (`…JointCompletionNewRoot.cs:14–77`), но existing helper имеет Linux guard и другой checkpoint: переносимость source42 на Windows этим кодом не доказана, вызывать его в Windows нельзя. Loader материализует до создания FileSystemManager/GameEngine, после чего fixture constructor должен принять эту owned directory без overwrite; этот opt-in не меняет default constructor route. Runtime locks и любые process identities создаются заново.
+
+**Producer cut0:** read-only predicate подтверждает source tuple/terminal QTE/physical maxII/health5/energy2/inactive tail из copied DATA; seed не исправляется и не reseal-ится. Новый engine начинает на42. Штатная Stage43 создаёт новый request/snapshot, отличный от source42, original/rollback включают реальный prior lifecycle tail. Сохраняются treatment claim, draft severityIII против maximumII, реальные correction/revalidation/FIRST2 и ComputedResult. Прежний observer видит Committed Prepared/no-error, сохраняет journal/identity/MechanicalBefore и делает exit73. Минимальность здесь — отсутствие повторного previous-turn gameplay; минимальный размер всего world ещё не установлен.
+
+**Resumer cut0:** прежний helper с новым root-bound FileSystemManager/engine восстанавливает настоящий журнал и вызывает late/current-session path. Все recovered-state, result/projection, mechanical, new-changing-I=1, terminal cleanup и inert-repeat assertions из карты обязательны. Новое состояние не создаётся из before/after images тестом. Ошибка по времени остаётся ошибкой; нельзя пропустить проверку owner/mechanics ради короткого PASS.
+
+## Gates будущей реализации и проверки
+
+Текущий блок не выполняет ни один runtime gate. Последующий implementation slice сначала определяет конкретные thresholds, source closure и каталог; это не разрешение автоматически продолжить дорогое выполнение.
+
+1. **Seed lifecycle/portability:** explicit generator (отдельная дорогая операция) даёт настоящее завершённое42; fresh copies в двух разных roots проходят read-only production predicates, quiescence и loader checks без reseal/repair/копирования runtime debt. Тесты сохранения generation DATA и новых root/process owners обязательны. Если перенос невозможен — исследование останавливается на этом gate; переход к варианту2 требует нового проекта.
+2. **Loader negative controls:** missing/stale/corrupt/incomplete artifact, лишний runtime member, duplicate/case-confusable/traversal/reparse path, неверный tuple/generation и active journal отклоняются; отказ не запускает generator. Выход исключения очищает только owned copy; historical T219 fixture не затрагивается. Две копии не влияют друг на друга/seed.
+3. **Preparation measurement:** отдельно измерить Open/hash/copy/read-only validation, cold Stage43-to-cut, физический recovery и current-owner/repeat. Зафиксировать файлы/байты и cold/warm условия; game assertions не становятся performance assertions. Повторное использование seed допускается только после измеренной пользы, как требует AGENTS.md. Сейчас ускорение не установлено.
+4. **Bounded cut0:** новый explicit case допускается лишь после gates1–3 и независимого SOURCE/PREP. До запуска задать короткий конечный бюджет и stop criteria отдельно от historical wrappers; числа не брать из820s. Если even минимальный current-owner path не укладывается, сохранить точный failure и исследовать его на компонентной модели зависимости. Ещё один полный source42/crash0 диагностический цикл не является автоматическим следующим шагом.
+5. **Coverage:** только после полноценного cut0 PASS решать перенос1…4, сохраняя их отличающиеся oracles. Seed-cut0 PASS не закрывает исходный full-path five, source42 live provenance test или Linux qualification.
+
+## Исполнение этого проекта, проверки и ограничения
+
+T266 source map → T267 spec/design → T268 consistency/independent review/GitHub recovery. Superpowers brainstorming (investigation с deliverable=проект) и writing-plans применены к canonical Spec Kit; setup-plan/setup-tasks/check-prerequisites используются без нового feature directory. Consistency coverage F10-1→map/T266; F10-2→cost/boundary/T266; F10-3→seed/gates/T267; F10-4→oracles/status/T267; F10-5→measurements/stop gates/T267; F10-6→file map/review/T268. Эта phase0/phase1 research/data-contract запись находится здесь, без дублирующего отдельного Superpowers плана.
+
+Verification текущего блока: inspect actual code anchors and spec/plan/tasks diff; `git diff --check`; independent gpt-6-astra/high review; fresh GitHub readback/restore документов. Tests/build/catalog/PlanOnly не запускаются: source/catalog/selection unchanged и пользователь одобрил только проект. Исходные Windows0/5PASS/T263FAIL,43fast budget PASS/14stage PASS на их прежних bindings и LinuxUNRUN сохраняются.
+
+---
+
 # CRASH5 — plan7: передать остаток общего времени resumer
 
 T265 accepted by separate gpt-6.1-sol/xhigh at af7047267e1d4507900c6d72480fac25833eea81, including inspected historical-status correction. Raw failure, calculated405.8908437s remaining wait,3DLL,EOF/join,cleanup and306-file clean GitHub recovery verified. Windows0/5PASS; T264 stopped, original220 five NOT_RERUN, LinuxUNRUN.

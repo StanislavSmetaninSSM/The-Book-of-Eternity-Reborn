@@ -1,3 +1,20 @@
+# CRASH5 — spec10: короткие проверки, проект fixture cut0
+
+Источник: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Пользователь одобрил карту пяти случаев и проект минимальной фикстуры после T263FAIL. Сейчас результат — проверенный по исходникам проект; реализация, генерация образа и тестовые запуски не входят в этот блок. Прежний отказ от промежуточных согласований действует.
+
+## Результат и границы
+
+- **F10-1:** для каждого cut0…4 указать фактическое состояние журнала/данных на аварии, ожидаемое восстановление и обязательные игровые/process assertions с точками в исходниках. Не приравнивать выходы процессов к успешному восстановлению.
+- **F10-2:** определить, какие действия создают предусловия, а какие проверяют crash/restart. Рекомендовать конкретную границу подготовки cut0, сохраняющую подлинность исходного игрового состояния и fresh current owner нового процесса.
+- **F10-3:** описать независимую fixture без живых общих owners/leases/registry caches и без ручного изготовления внутренних разрешений. Неизменяемый образ, если выбран, должен быть получен штатным игровым путём, иметь проверяемое происхождение и давать независимые физические копии. Допустимость переноса durable state и польза повторного использования требуют проверок до runtime cut0.
+- **F10-4:** сохранить реальный Environment.Exit73 на исходной publication boundary, новое исполнение current-owner resume, identity/nonce, physical recovery, mechanical/culture/held/frozen-error/inert-repeat assertions. Новые проверки и старые сквозные тесты имеют отдельный статус; исходные five не получают PASS от проектирования или более узкого component test.
+- **F10-5:** отделить стоимость подготовки, Stage43 до аварии, физического recovery, первой обработки current owner и повторного входа. Цель сокращения подготовки не является обещанием быстрого восстановления: T263 resumer405.891s FAIL сохраняется. Новые данные о времени получать только последующим явно ограниченным implementation slice, без скрытой генерации полного source42, автоматического retry или нового увеличения лимитов.
+- **F10-6:** подготовить карту файлов/предлагаемых interfaces, критерии остановки и отрицательные контроли для будущей реализации. Не менять production, NativeLineage, test entrypoints, catalog/selection или budgets сейчас; GM contracts не меняются, GM docs/examples не требуются. Linux runtime UNRUN.
+
+Приёмка этого блока: пять различимых случаев с source anchors; выбранная граница cut0 с объяснением альтернатив; контракт происхождения/изоляции/загрузки образа и сохранения gameplay assertions; явные проверки осуществимости; согласованные spec10/plan8/tasks T266…T268; независимое ревью и GitHub readback/recovery документов. Скорость fixture и Windows five PASS этим блоком не устанавливаются.
+
+---
+
 # CRASH5 — spec9: общее окно Windows crash/restart
 
 T265 accepted by separate gpt-6.1-sol/xhigh at af7047267e1d4507900c6d72480fac25833eea81, including inspected historical-status correction. Raw failure, calculated405.8908437s remaining wait,3DLL,EOF/join,cleanup and306-file clean GitHub recovery verified. Windows0/5PASS; T264 stopped, original220 five NOT_RERUN, LinuxUNRUN.
