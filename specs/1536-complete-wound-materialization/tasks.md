@@ -1,5 +1,7 @@
 # CRASH5 — plan7 / spec9
 
+**T262 PREP:** compiled2c05158f9b7f37de4cb67b529bfd2704d352a386;43/43 budget controls PASS/0skip after causal26PASS17FAIL. Fresh XML build42.88s/0errors/changedXML0; catalog valid, default PlanOnly237, explicit69cases/10descriptors. Metadata executes0tests. Both independent P2 source findings corrected and focused source review accepted; final bound PREP review pending. Source/DLL/raw archive T262-prep.json/zip. T263 shared820/max600/category15m UNRUN; Windows0/5PASS, LinuxUNRUN.
+
 - [x] T261 [US2] Close reviewed T260/290-file recovery and track shared820/max600 experiment in spec9/plan7/tasks via Spec Kit phases and consistency; user review waived.
 - [ ] T262 [US2]18new budget controls plus25existing, causal RED→pure policy/actual shared monotonic clock wiring→43GREEN; XML, metadata/default237/explicit69 and independent SOURCE/PREP. Preserve original assertions/cleanup/native/default policies.
 - [ ] T263 [US2] One new accepted-source cut0 with shared820/max600/category15m; actual per-child budget evidence, raw TRX/result/cleanup and source/DLL binding. No unchanged retry.

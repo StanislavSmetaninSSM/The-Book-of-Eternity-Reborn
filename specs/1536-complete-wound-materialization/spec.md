@@ -1,5 +1,7 @@
 # CRASH5 — spec9: общее окно Windows crash/restart
 
+**T262 PREP:** compiled2c05158f9b7f37de4cb67b529bfd2704d352a386;43/43 budget controls PASS/0skip after causal26PASS17FAIL. Fresh XML build42.88s/0errors/changedXML0; catalog valid, default PlanOnly237, explicit69cases/10descriptors. Metadata executes0tests. Both independent P2 source findings corrected and focused source review accepted; final bound PREP review pending. Source/DLL/raw archive T262-prep.json/zip. T263 shared820/max600/category15m UNRUN; Windows0/5PASS, LinuxUNRUN.
+
 US2/P1: завершить исходные пять Windows crash/restart-сценариев с неизменными assertions либо получить честный ограниченный failure. T259 подтвердил продолжающиеся read-hook observations до214.292s, но завершения за220s нет. Producer414.722s оставил часть разрешённых600s неиспользованной. Это основание для ограниченного эксперимента со временем, не доказательство конечности или производительности. T260 evidence/recovery accepted; LinuxUNRUN. Пользователь явно отказался от промежуточных согласований; продолжаем Spec Kit/Superpowers без нового approval.
 
 - **B9-1:** только пять явно выбранных Windows wrappers используют единый монотонный отсчёт от входа в producer helper до окончания ожидания resumer. На оба процесса вместе820s (= прежние600+220), каждый отдельный wait не более600s. Resumer получает min(600s,820s−фактическое elapsed); остаток не вычисляется из настенных часов или оценок прошлого запуска.

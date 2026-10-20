@@ -103,3 +103,5 @@ T258 SOURCE/PREP accepted separate Sol6.1/xhigh atc1991a398 / compiledb0560bbd5;
 T259 completed FAIL child220, category not timed out. Producer73 at414.722s; resumer active canonical initial hooks through214.292s,14822 since named custody32.829s, no observed contention/publication in that interval. EOF/join/cleanup confirmed, old T219 retained.0/5PASS, T260 independent evidence/recovery pending; no retry.
 
 T260 accepted Sol6.1/xhigh at04624368e with focused wording fixes;290-file fresh recovery. T261 spec9/plan7 shared820s/max600 test-only experiment; user waiver, original budgets/production/native preserved. New43policy controls, default237/explicit69 metadata; T262SOURCE/PREP before T263singlecut0, T264onlyafterPASS.
+
+T262 record: compiled2c05158f9,43GREEN/XML0errors/changedXML0/default237/explicit69; independent bound PREP review pending. T263 runtime not executed; original game assertions retained, LinuxUNRUN.

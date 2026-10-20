@@ -1,6 +1,8 @@
 # Текущая работа: spec9 / plan7
 
-T260 accepted T259FAIL and clean290-file recovery. Windows0/5PASS; cut0 failed twice at resumer220, with observed activity through214.292s. Next bounded experiment shares820s across two Windows children, max600s each/category15m; no implementation/runtime acceptance yet. T261…T265 preserve original game/identity/cleanup assertions. Original220 five and Linux remainUNRUN; no production change.
+**T262 PREP:** compiled2c05158f9b7f37de4cb67b529bfd2704d352a386;43/43 budget controls PASS/0skip after causal26PASS17FAIL. Fresh XML build42.88s/0errors/changedXML0; catalog valid, default PlanOnly237, explicit69cases/10descriptors. Metadata executes0tests. Both independent P2 source findings corrected and focused source review accepted; final bound PREP review pending. Source/DLL/raw archive T262-prep.json/zip. T263 shared820/max600/category15m UNRUN; Windows0/5PASS, LinuxUNRUN.
+
+Original assertions, identity, cleanup and Linux NativeLineage remain unchanged. Original220 five NOT_RERUN; T219/T254/T259 failures preserved.
 
 ---
 
