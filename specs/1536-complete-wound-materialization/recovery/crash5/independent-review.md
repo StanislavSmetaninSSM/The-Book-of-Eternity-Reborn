@@ -1,3 +1,9 @@
+# T258 — SOURCE/PREP accepted
+
+Separate gpt-6.1-sol/xhigh accepted compiled b0560bbd50b95d0ad0ce1c0814748150da369a13 and evidence c1991a3983d97e797e574ab3989643511dcd3732 with no actionable findings. Exact diff from cd965223e: Windows ordinary-resumer-only wiring, enum names, fixed scalar populations, locking,24/64/2048 limits and15s event sampling conform. Existing assertions, cleanup and600/220/15m retained; no production/native/source/Linux/diagnostic delta. Raw RED9PASS5FAIL and GREEN14PASS confirmed. XML0errors/changedXML0, catalog/default219/explicit26 valid. Three current DLLs/versions and42 archive files match. T259 single investigation ready; no deadlock, five PASS or Linux claim.
+
+---
+
 # T256 — accepted failure evidence
 
 Independent gpt-6.1-sol/xhigh accepted T254 at fd5e8158ffc041354290f12a2839ccf0f72babf8: exactly1 completed FAIL/0PASS/0skip, resumer child timeout (category did not time out), producer73, resumer-1, EOF/join/cleanup confirmed. Raw streams/stages and ZIP hash match; three DLLs remain bound to652bdd76a. No reporting finding. Fresh GitHub recovery276 files clean/exact blobs; T256-clean-recovery.json. Historical T219 retained fixture still exists after T254. Windows0/5 qualified, T255 not run, Linux UNRUN. No runtime retry authorized by this evidence review.

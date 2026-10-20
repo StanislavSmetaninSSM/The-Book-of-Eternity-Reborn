@@ -1,6 +1,6 @@
 # T258 — resumer observation qualification
 
-**T258 PREP:** compiled b0560bbd50b95d0ad0ce1c0814748150da369a13;14/14 stage controls PASS/0skip after9PASS+5causalFAIL. Fresh XML build0errors/changedXML0; catalog valid, default PlanOnly219, explicit26cases/9descriptors includes stage14 plus original/new entrypoints12. Metadata executes0tests. No production/native/timeout/assertion delta. Source/DLL/raw evidence in T258-prep.json/zip; independent SOURCE/PREP pending, T259 UNRUN.
+**T258 PREP:** compiled b0560bbd50b95d0ad0ce1c0814748150da369a13;14/14 stage controls PASS/0skip after9PASS+5causalFAIL. Fresh XML build0errors/changedXML0; catalog valid, default PlanOnly219, explicit26cases/9descriptors includes stage14 plus original/new entrypoints12. Metadata executes0tests. No production/native/timeout/assertion delta. Source/DLL/raw evidence in T258-prep.json/zip; independent gpt-6.1-sol/xhigh SOURCE/PREP accepted at c1991a398; all42 archived files and three DLLs verified. T259 one instrumented attempt is ready, not yet executed.
 
 Earlier compiler overload ambiguity was a test-fixture issue, corrected before causal RED; archived separately. New APIs/test helpers use multiline XML; parent inspected comments and original proof/cleanup/budget wiring. Five causal tests cover enum identity/transitions, populations/reset, late event sampling, output quota/terminal capacity and output failure precedence. Existing9 stage/source controls remain GREEN.
 

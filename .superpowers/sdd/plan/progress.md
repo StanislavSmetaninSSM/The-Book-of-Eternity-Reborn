@@ -97,3 +97,5 @@ Spec7 cut0: Failed, CaseQualified=False, run20261020-094923-048-81732-bb41d852f2
 T256 accepted Sol6.1/xhigh atfd5; fresh276-file GitHub recovery; T219 fixture preserved. T257 spec8/plan6 with user waiver continues bounded resumer investigation after Astra/high consultation; no proved deadlock or timeout-policy change. T258 tests/implementation/PREP then one T259, no cut1-4 automatic.
 
 T258 compiledb0560bbd5:14GREEN, XML0errors/changedXML0, catalog/default219/explicit26 valid. RED9PASS5FAIL at9d32; initial Action overload compile error separately recorded. Independent SOURCE/PREP pending; no T259 runtime yet.
+
+T258 SOURCE/PREP accepted separate Sol6.1/xhigh atc1991a398 / compiledb0560bbd5;42 archive files/3DLL verified, no finding. T259 one instrumented cut0 ready; budgets600/220/15m unchanged.

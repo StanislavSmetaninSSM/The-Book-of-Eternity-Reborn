@@ -1,9 +1,9 @@
 # CRASH5 — plan6 / spec8
 
-**T258 PREP:** compiled b0560bbd50b95d0ad0ce1c0814748150da369a13;14/14 stage controls PASS/0skip after9PASS+5causalFAIL. Fresh XML build0errors/changedXML0; catalog valid, default PlanOnly219, explicit26cases/9descriptors includes stage14 plus original/new entrypoints12. Metadata executes0tests. No production/native/timeout/assertion delta. Source/DLL/raw evidence in T258-prep.json/zip; independent SOURCE/PREP pending, T259 UNRUN.
+**T258 PREP:** compiled b0560bbd50b95d0ad0ce1c0814748150da369a13;14/14 stage controls PASS/0skip after9PASS+5causalFAIL. Fresh XML build0errors/changedXML0; catalog valid, default PlanOnly219, explicit26cases/9descriptors includes stage14 plus original/new entrypoints12. Metadata executes0tests. No production/native/timeout/assertion delta. Source/DLL/raw evidence in T258-prep.json/zip; independent gpt-6.1-sol/xhigh SOURCE/PREP accepted at c1991a398; all42 archived files and three DLLs verified. T259 one instrumented attempt is ready, not yet executed.
 
 - [x] T257 [US2] Record read-only Astra/high resumer consultation, T256 accepted failure/recovery and spec8/plan6/tasks/consistency using existing feature and user waiver.
-- [ ] T258 [US2] Add bounded named checkpoint/activity controls, observe causal RED, implement Windows ordinary-resumer hooks without production/budget/assertion change; GREEN, XML, catalog/PlanOnly and independent SOURCE/PREP with source/DLL evidence.
+- [x] T258 [US2] Add bounded named checkpoint/activity controls, observe causal RED, implement Windows ordinary-resumer hooks without production/budget/assertion change; GREEN, XML, catalog/PlanOnly and independent SOURCE/PREP with source/DLL evidence.
 - [ ] T259 [US2] Execute exactly one instrumented cut0 using accepted T258 binaries and600/220/15m; record raw output, named phases/counters, actual result and ownership cleanup. No cut1…4 or retry by this task.
 - [ ] T260 [US3] Independently review full source/evidence block, preserve T254FAIL and LinuxUNRUN, commit/push/readback/clean recovery; determine subsequent work from actual evidence.
 
