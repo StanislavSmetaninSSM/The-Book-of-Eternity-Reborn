@@ -1,0 +1,15 @@
+# Source map for the complete timing run
+
+Read-only consultation: `/root/trace_joint_validation_redundancy`, actual gpt-6-astra/high. Source inspected at0736878d; final98376e40 adds only passive timer lines to the relevant completion/story bodies. This is a source map, not a measured root-cause verdict.
+
+The successful fresh common-plan path has at least8 resource validations. Each validates3 common baselines and reconstructs1 QTE contribution: at least24 continuation validations and8 checkpoint reconstructions. Preflight adds4 resource validations (12 continuation/4 checkpoint), plus complete inventory snapshot/before-image validation. Normalize take adds at least1 more resource validation (3 continuation/1 checkpoint), before publication/readback. Bounds exclude indirect consumers and early-refusal branches.
+
+Source anchors: WoundAcceptedTurnPlanner.MortalJointRepairResources.cs ValidateJointRepairResourcePublicationAsync; MortalJointRepairQteContribution.cs RecomputeJointQteContributionAsync; MortalJointRepairCommon.cs baseline validation; MortalJointRepairPublicationPreparation.cs CreateAsync/candidate bounds/inventory; AcceptedTurnAuthorityRegistry.MortalJointRepairPublication.cs take. Common calculation is retained by an Interlocked gate and executes at most once; these orchestrators contain no automatic repeat-until-success loop. Their finite validation graph still rereads data-sized maps.
+
+Continuation.CompareBeforeImages sequentially awaits each captured before-image. ReadPublicationBaselines composes29 logical reads over21 distinct paths. Checkpoint.CaptureCoreAsync reconstructs the current snapshot, treatment authority, attempt/adapter and manifest/authority bytes. All their timer rows are inclusive; parent/child totals cannot be added as independent wall time.
+
+The actual late-resumer entry calls TryReconcileMortalJointStoryTurnAsync before fallback and after a newly published joint result. Its validation loop reaches joint postpublication validation, full game-state and remaining ordinary validators, complete publication proof, progression publication and projection. The accepted-outcome checkpoint callback itself reads snapshot/full interface proof and registry/interface data. After that callback, progression/projection/story/proof/terminal-cleanup still remain. The same enum is used elsewhere, so the historical593s checkpoint alone cannot identify its invoking method.
+
+Final95 literal scopes decompose the common-plan/preflight/normalize stages, postpublication validators, completed proof, progression/projection, checkpoint callback, final story/proof/cleanup and enclosing lease waits. Raw stdout is appended before parser processing. Named/stage/activity output has no record or byte quota; cumulative activity continues throughout execution and at checkpoint/completion boundaries.
+
+The original T296 partial run failed at600s and lost named observations after250.782s. It remains historical evidence, not root-cause acceptance. Complete current-source timings must establish which finite work consumes the wait or identify an unfinished operation; OS/scanner/CPU explanations require separate evidence.
