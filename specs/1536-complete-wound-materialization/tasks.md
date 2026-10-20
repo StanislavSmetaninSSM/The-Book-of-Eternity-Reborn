@@ -1,10 +1,10 @@
 # CRASH5 — spec14/plan12 revision3: complete diagnostic output
 
 - [x] T298 Preserve T296 failed partial run/raw timings and record user's explicit no-quota/root-cause correction in spec/plan/tasks; actual Spec Kit phases/consistency.
-- [x] T299 Remove diagnostic output quotas, add enclosing joint-story/post-publication timers, observe causal short RED→GREEN beyond former limits, validate XML/affected metadata. Evidence:71literal scopes; old1025vs2200 plus3stage truncation FAILs; corrected15/15 complete/0skip, XML0errors/changedXML0; T300-prep.json/zip.
+- [x] T299 Remove diagnostic output quotas, add enclosing joint-story/post-publication timers, observe causal short RED→GREEN beyond former limits, validate XML/affected metadata. Evidence:95literal scopes final983; old1025vs2200 plus3stage truncation FAILs; corrected15/15 complete/0skip, XML0errors/changedXML0; T300-prep.json/zip.
 - [x] T300 Independent SOURCE/PREP review, exact source/DLL binding and saved remote checkpoint before corrected runtime. Evidence: separateSol6.1/xhigh ACCEPTED final983/remote06b0a1a7,95timers/noquota, XML/archives/DLLs/source preservation verified; T300-source-review.json. Root-cause remainsOPEN.
-- [ ] T301 Generate/bind current genuine source42 if needed, measure corrected instrumented scenario with full raw diagnostics, preserve actual failure/cleanup.
-- [ ] T302 Trace measured dominant/stalled sections to a supported cause; final independent evidence review and remote recovery. Remains open if only partial/localized observations exist.
+- [x] T301 Generate/bind current genuine source42 and measure corrected instrumented scenario. Evidence: source983 genuine generator PASS195.671s/two imports; actual corrected cut0 FAIL600s,1532full records/764intervals, EOF/join/both roots absent/DLL+seed unchanged. T301-profile-cut0-outcome.json/raw.zip; no unchanged retry.
+- [ ] T302 Trace measured dominant/stalled sections to a supported cause; final independent evidence review and remote recovery. Measured: publication390.368s plus two source-explained postpublication passes153.962s =544.330s disjoint; final phase entered597.544s. T302-findings.json/md separates this observed timeout mechanism from unresolved per-operation latency/final tail/Linux causes. Final review/recovery pending; no general root-cause or gameplay acceptance.
 
 Dependencies:T298→T299→T300→T301→T302. The user's objective is diagnosis, not logging alone. Previous T296 occurred once and is failed/partial; it is not retried unchanged.
 

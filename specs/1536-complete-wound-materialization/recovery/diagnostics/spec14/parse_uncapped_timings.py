@@ -56,7 +56,7 @@ def build_report(repo, verify_live=False):
                 archive_index.append({"Path": member.filename, "Bytes": len(raw), "SHA256": digest(raw)})
         assert json.loads(archive.read("summary.json")) == outcome["Summary"]
         assert json.loads(archive.read("T301-seed-binding.json")) == outcome["SeedBinding"]
-        prep = json.loads(archive.read("T295-prep.json"))
+        prep = json.loads(archive.read("T300-prep.json"))
         assert prep["Binding"]["CompiledSource"] == outcome["CompiledSource"]
         ns = {"t": "http://microsoft.com/schemas/VisualStudio/TeamTest/2010"}
         results = []
@@ -217,7 +217,7 @@ def build_report(repo, verify_live=False):
             "An end boundary means the scope ended, including exception unwinding; it does not certify operation success.",
             "Begin-only spans have no measured completed duration. The 600-second parent wait is a different clock and is not assigned to an unfinished method.",
             "An observed collector window is the difference between two output timestamps, including observer overhead; it is not the measured duration of a completed scope.",
-            "If the output limit is reached, open scopes describe the last observation, not necessarily the operation active at timeout.",
+            "Named, stage and activity records have no diagnostic quota. A terminated process cannot emit later end boundaries.",
             "Instrumentation preserves calls and assertions but adds observer/serialization overhead. No uninstrumented speedup or fix is claimed.",
             "Named operation durations localize code cost; they do not separate CPU, filesystem latency, scanning or environment effects.",
         ],
@@ -232,7 +232,7 @@ def markdown(report):
         f"тест {report['TestDuration']}, весь запуск {report['RunnerWallTime']}.", "",
         f"Исходники: `{report['CompiledSource']}`; сохранённое состояние запуска: `{report['MetadataHead']}`. "
         f"PID восстановления: {report['ResumerPID']}. "
-        f"Получено {report['RecordCount']} записей, ограничение вывода {'достигнуто' if report['OutputLimited'] else 'не достигнуто'}. "
+        f"Получено {report['RecordCount']} записей без квоты диагностического вывода. "
         f"Последняя запись по часам коллектора: {report['LastCollectorMilliseconds']/1000:.6f} с.", "",
         "## Завершённые интервалы", "",
         "Значения включают вложенные вызовы. Строки нельзя складывать как независимые части общего времени. "
@@ -265,10 +265,10 @@ def markdown(report):
               f"отчётов с игровым результатом: {report['ParentGameReportCount']}.", ""]
     last_stage = report["LastIndependentStageRecord"]
     if last_stage:
-        lines += [f"Отдельный существующий канал стадий после исчерпания именованного вывода всё ещё зафиксировал "
+        lines += [f"Отдельный существующий канал стадий зафиксировал "
                   f"`{last_stage['Stage']}/{last_stage['Transition']}` "
                   f"(`{last_stage.get('Checkpoint')}`) на {last_stage['ElapsedMilliseconds']/1000:.6f} с своих часов. "
-                  "Это подтверждает более позднюю стадию, но не восстанавливает потерянные длительности методов и не является игровым PASS.", ""]
+                  "Это отдельное наблюдение контрольной точки; его часы имеют другое начало отсчёта. Оно не является игровым PASS.", ""]
     for value in report["FixtureCleanup"]:
         lines.append(f"- Удаление собственного тестового корня: {value['OwnedFixtureRemoved']}; отсутствие подтверждено: {value['PathAbsentOnParentCheck']}.")
     lines += ["", "Это замер одного запуска с наблюдателями. Он показывает стоимость участков, но не разделяет работу CPU, файловой системы и внешних проверок. "
