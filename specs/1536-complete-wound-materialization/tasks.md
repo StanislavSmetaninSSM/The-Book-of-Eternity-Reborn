@@ -1,3 +1,17 @@
+# CRASH5 — spec15/plan13: adjacent duplicate validation proposal
+
+Source: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). [Spec](spec.md), [plan](plan.md). This step answers the requested proposal; no product code/runtime action.
+
+- [x] T307 [US1] Trace adjacent validation duplication and record DEDUP-1..5 in spec15/plan13, preserving original integrity and unlimited diagnostics. Source prediction: common baseline24→16 for the first seam;14 only if the second seam is proven. Current source/basecd63d220; no executed improvement claimed.
+- [ ] T308 [US1] Independent Astra/high review of the coherent proposal and scheduling/lease/registry assumptions; resolve findings, publish/read back and verify remote recovery. Review pending; DEDUP-2 conditional.
+- [ ] T309 [US1/US2] Qualify genuine focused fixture/category and test-first count/refusal controls, then minimal adjacent-call deletions only. Preserve per-read/original/lease/owner and entry/exit boundaries; XML/build/metadata and independent SOURCE/PREP. No new issuer or cached-success state. NOT STARTED.
+- [ ] T310 [US3] Genuine source-bound artifact and one measured original cut0 with all diagnostic records; record counts, times, actual PASS/FAIL and cleanup without changing policy/assertions or retrying unchanged. NOT STARTED.
+- [ ] T311 [US2/US3] Independent final code/evidence review and recovery; preserve failed/historical outcomes and explicitly separate optimized stages from complete restoration. NOT STARTED.
+
+Dependencies: T307→T308→T309→T310→T311. T309 has an explicit genuine-fixture gate; DEDUP-2 additionally requires source/verification proof across the await-return boundary or is omitted. Current Windows five0/5 PASS, T305 FAIL, Linux UNRUN. No diagnostic quotas may be reintroduced.
+
+---
+
 # CRASH5 — spec14/plan12 revision3: complete diagnostic output
 
 - [x] T298 Preserve T296 failed partial run/raw timings and record user's explicit no-quota/root-cause correction in spec/plan/tasks; actual Spec Kit phases/consistency.

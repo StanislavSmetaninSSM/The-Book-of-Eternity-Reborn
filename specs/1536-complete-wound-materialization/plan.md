@@ -1,3 +1,40 @@
+# CRASH5 — plan13: adjacent duplicate validation proposal
+
+Source: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Canonical [spec15](spec.md), [tasks](tasks.md). Base `cd63d22002784770532eea0d07de93a50b1f88d8`. Status: proposal only; implementation/runtime not started.
+
+**Goal:** reduce repeated fresh validation while preserving physical and publication integrity.
+**Architecture:** the caller relies on a retained callee boundary only where its immediately nested check covers the same contract; no remembered validation state. DEDUP-2 remains gated by scheduling/lease proof and can be omitted without blocking DEDUP-1.
+**Stack:** existing C#/.NET8, PowerShell7 category runner, existing optional operation observer. No new dependency/data model/schema/API.
+
+Use `superpowers:writing-plans` for this plan and `superpowers:executing-plans`, TDD, systematic debugging and independent review if implementation is later requested. Parent owns the coherent block; review uses a separate context. Standing review-wait waiver remains, but the present question requests a recommendation, not a runtime run.
+
+## Traced change map
+
+| File / member | Proposed change | Boundary retained |
+| --- | --- | --- |
+| `Services/WoundAcceptedTurnPlanner.MortalJointRepairResources.cs`, `ValidateJointRepairResourcePublicationAsync` | Delete only the redundant baseline call immediately preceding QTE recomputation | Resource seal; QTE baseline entry/exit, checkpoint/correction and companion comparison |
+| `Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs`, `CreateJointRepairCommonPlanAsync` | Conditionally delete only the final caller-side `authority.ValidateCurrentAsync` after successful candidate bounds | Bounds entry/exit current validation; exact candidate/private proof; registry ownership/fence/seal |
+| `Services/WoundAcceptedTurnPlanner.MortalJointRepairQteContribution.cs` | No change | Both full baseline checks surrounding the actual QTE reconstruction/reads |
+| `Core/FileSystemManager*`, `Services/PendingTurnSnapshotReader.Observed.cs`, completion/story/normalizer/native paths | No change | Per-read checks, whole original replay, before-images, postpublication and crash/readback contracts |
+
+Paths above are relative to `BookOfEternityClient`. Existing signatures remain unchanged. Do not move/merge files or create a generic validation-cache subsystem.
+
+## Sequence and verification gates
+
+- [x] **T307 / proposal:** trace exact existing entry/exit/caller/seal order; record DEDUP-1..5 and the expected 24→16→14 common-plan multiplicities. Keep measured T306 evidence immutable and Linux/Windows outcomes separate.
+- [ ] **T308 / design review:** independent Astra/high checks both seams against source, especially await-return scheduling, nested lease behavior, wrong current owner and exact registry sealing. Save its actual findings/verdict, then publish/read back/recover this documentation block. A rejected DEDUP-2 remains conditional/deferred, not silently replaced with cached success.
+- [ ] **T309 / first implementation block, not started:** qualify the smallest genuine issuance fixture; use `BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointValidationDedupTests.cs` only if needed for real-owner controls, owned by a new focused documented category `fr063-joint-validation-dedup-contracts`. No new production issuer. Before product edits, prove a meaningful count RED at the real public/internal coordination path, not by source-text matching or mocks that omit authority. Existing `PendingTurnObservedOriginalBarrierTests` and genuine joint owner/refusal controls inform affected selection; do not automatically run all their heavy scenarios. Required refusal cases: source bytes/presence change before the retained entry check and during the QTE body before retained exit; changed generation/wrong lease; changed reservation/fence at sealing; unchanged physical namespace/no candidate publication after refusal. Verify caller failure paths and scheduler boundary before enabling DEDUP-2. Then minimal deletion(s), GREEN, fresh XML build/documentation audit, category discovery/PlanOnly and separate SOURCE/PREP. If a valid cheap fixture cannot be demonstrated, update the verification seam/cost in these artifacts before execution; never substitute a fake private authority or a blind full restore run.
+- [ ] **T310 / measured verification, not started:** after SOURCE/PREP, generate and independently bind one genuine final-source artifact through the existing source42 generator. Run one original seeded cut0 with unlimited diagnostics and unchanged game assertions/process ownership/test wait. Compare reached resource/baseline/mechanical counts and named stage costs with T305, separately report overall completion, cleanup and raw output. No percentage/speedup claim from removed calls alone; do not overwrite previous seeds/failures or increase limits.
+- [ ] **T311 / acceptance, not started:** review the coherent source/tests/evidence/diff, address validated findings, verify remote recovery. Code optimization acceptance is distinct from complete restoration PASS; a timeout remains FAIL. If work remains, select the next actual measured obstacle before any additional change/run.
+
+Before executing T309, resolve the test seam and re-evaluate affected categories/selection. This planning step runs only the existing Spec Kit setup/prerequisite scripts and offline document/source consistency checks. It does not build or execute tests. Every implementation task preserves DEDUP-3/4; all future runtime steps require the stated evidence gates, not another user permission wait.
+
+## Consistency and limits
+
+DEDUP-1/2→T307/T308/T309; DEDUP-3→T308/T309/T311; DEDUP-4→all tasks/T310; DEDUP-5→T309/T310/T311. Existing original Windows five remain 0/5 PASS, T305 FAIL and Linux locally UNRUN. The new source-derived count prediction is not an executed result. No cross-platform speedup or system/scanner cause is claimed. No GM/player contract change, deployment, PR, issue closure or external message.
+
+---
+
 # CRASH5 — plan12 revision3: complete diagnostics and actual localization
 
 Canonical [spec](spec.md), [tasks](tasks.md). User explicitly rejected diagnostic quotas and clarified that the goal is identifying the cause of apparent hangs. Existing branch/feature and approval-wait waiver apply.
