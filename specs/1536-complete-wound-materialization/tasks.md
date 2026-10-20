@@ -1,6 +1,17 @@
+# CRASH5 — spec15 revision16 / plan13 revision16: real cleanup-validator seams and one profile
+
+- [ ] T338 [US1/US2] Parent TDD: shared strict observed-DATA transport with distinct AppliedBeforeStory/cleanup-entry wrappers; extract actual terminal and destructive-original leaves at unchanged production positions/timers; preserve parser wrapper/logger semantics; new direct fresh-lease component controls and one read-only profile Fact. Relevant XML/catalog/exact PlanOnly/targeted controls, complete source-bound evidence/recovery and separate SOURCE/PREP review before profile. No GameEngine/generator/original/Linux runtime.
+- [ ] T339 [US2/US3] After T338 acceptance run exactly one2min Windows fresh-copy cleanup-validator profile; retain all raw/refs, real validator outcomes, wall/CPU/counts/unfinished scopes, whole game/generation invariance and owner closing/ownedroot cleanup. Analyze actual outcome without stage/eligibility/owner latency overclaim; separate final coherent evidence review/recovery. No retry to fix reporting and no generation/rebinding.
+
+T337 investigation accepted; implementation does not yet establish captured DATA eligibility. T338→T339; original recovery/coldfive/Linux stay open. Every measurement is a real component observation, never a simulated owner or deletion authorization.
+
+---
+
 # CRASH5 — spec15 revision15 / plan13 revision15: cleanup-entry DATA investigation
 
-- [ ] T337 [US1/US2] Read-only bounded investigation of T333 cleanup-entry DATA and current real cleanup/validation APIs: preserve provenance/missing-native limits, map fresh lease/original/applied/story/projection proof construction without GameEngine, identify smallest shared test-support entry points and named measurements, produce concrete next implementation scope. Actual Spec Kit plan/tasks/analyze, independent consultation/review and remote recovery. No C# edits, gameplay, generator, original retry or measurement runtime in this investigation.
+- [x] T337 [US1/US2] Read-only bounded investigation of T333 cleanup-entry DATA and current real cleanup/validation APIs: preserve provenance/missing-native limits, map fresh lease/original/applied/story/projection proof construction without GameEngine, identify smallest shared test-support entry points and named measurements, produce concrete next implementation scope. Actual Spec Kit plan/tasks/analyze, independent consultation/review and remote recovery. No C# edits, gameplay, generator, original retry or measurement runtime in this investigation.
+
+T337 accepted read-only at ecf8b90ea: [findings](recovery/crash5/T337-findings.md), [independent acceptance](recovery/crash5/T337-final-review.json). Parser/logger source-map clarification preserved; no C# or runtime in this spike.
 
 T335–336 diagnostic transport SOURCE/PREP is independently accepted; original recovery/coldfive/Linux remain open. T337 findings do not authorize production implementation or a probe; write the resulting concrete scope separately first. Reuse the active feature and standing review-wait waiver.
 
