@@ -1,7 +1,7 @@
 # CRASH5 — spec15 revision13 / plan13 revision13: return to original recovery
 
-- [ ] T331 [US1/US2] Final T330 acceptance, actual phases/consistency, exact source/DLL/selector PREP, immutable whole oldd41 fixture preservation, then one existing genuine6min source42 generator and complete result/raw/cleanup evidence. No source changes/build/catalog replay or old-manifest rebind.
-- [ ] T332 [US2/US3] Verify new genuine artifact/independent working-source fingerprint, publish byte-exact owned fixture/source-record and declared directories; Git readback/clean recovery, separate DATA/source/DLL binding review and saved acceptance before consumption.
+- [x] T331 [US1/US2] Final T330 acceptance, actual phases/consistency, exact source/DLL/selector PREP, immutable whole oldd41 fixture preservation, then one existing genuine6min source42 generator and complete result/raw/cleanup evidence. No source changes/build/catalog replay or old-manifest rebind.
+- [x] T332 [US2/US3] Verify new genuine artifact/independent working-source fingerprint, publish byte-exact owned fixture/source-record and declared directories; Git readback/clean recovery, separate DATA/source/DLL binding review and saved acceptance before consumption.
 - [ ] T333 [US1/US3] One unchanged-budget seeded Windowscut0 with naturalStage43/crash/resumer/original assertions and uncapped named diagnostics; full immutable raw/TRX/childstreams/capture/input/DLL/artifact/EOF/join/owncleanup verification, offline causal analysis and independent final review/recovery.
 
 Dependencies T330finalaccepted→T331→T332accepted→T333. No unchanged retry/cuts1–4/fullfive/Linux execution. Components do not qualify original recovery; originalFAIL/coldfive0/5/LinuxUNRUN until actual relevant outcome.
