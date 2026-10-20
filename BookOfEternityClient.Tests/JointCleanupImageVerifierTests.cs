@@ -1,8 +1,7 @@
-using System.Reflection;
-using System.Runtime.ExceptionServices;
 using System.Text.Json;
 using System.Diagnostics;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 using Xunit.Abstractions;
@@ -31,7 +30,7 @@ public sealed class JointCleanupImageVerifierTests(ITestOutputHelper output)
         var members = new[] { new CanonicalLocalFileChange("member", [1], null) };
         var retained = new Dictionary<string, byte[]?> { ["retained"] = [4], ["absent"] = null };
         var reads = new List<string>();
-        await Verify(members, retained, after, async path =>
+        await JointCleanupImageVerifier.RequireImagesAsync(members, retained, after, async path =>
         {
             reads.Add(path); await Task.Yield();
             return path == "member" ? (after ? null : new byte[] { 1 }) : retained[path];
@@ -58,7 +57,7 @@ public sealed class JointCleanupImageVerifierTests(ITestOutputHelper output)
     public async Task Images_RefuseChangedBytesAndUnexpectedPresence(string target, bool after)
     {
         var reads = new List<string>();
-        var error = await Assert.ThrowsAsync<InvalidDataException>(() => Verify(
+        var error = await Assert.ThrowsAsync<InvalidDataException>(() => JointCleanupImageVerifier.RequireImagesAsync(
             [new("member", [1], null)], new Dictionary<string, byte[]?> { ["retained"] = [4], ["absent"] = null }, after,
             path =>
             {
@@ -79,7 +78,7 @@ public sealed class JointCleanupImageVerifierTests(ITestOutputHelper output)
     {
         var failure = new IOException("reader failed");
         var reads = 0;
-        var error = await Assert.ThrowsAsync<IOException>(() => Verify([new("member", [1], null)],
+        var error = await Assert.ThrowsAsync<IOException>(() => JointCleanupImageVerifier.RequireImagesAsync([new("member", [1], null)],
             new Dictionary<string, byte[]?> { ["retained"] = [4] }, false,
             async _ => { reads++; await Task.Yield(); throw failure; }));
         Assert.Same(failure, error); Assert.Equal(1, reads);
@@ -104,19 +103,19 @@ public sealed class JointCleanupImageVerifierTests(ITestOutputHelper output)
             const string member = "game_state/core/cleanup_member.bin";
             const string kept = "game_state/core/cleanup_retained.bin";
             const string absent = "game_state/core/cleanup_absent.bin";
-            await files.WriteFileAtomicAsync(member, new byte[] { 1 });
-            await files.WriteFileAtomicAsync(kept, new byte[] { 4 });
+            await files.WriteFileAtomicBytesAsync(member, new byte[] { 1 });
+            await files.WriteFileAtomicBytesAsync(kept, new byte[] { 4 });
             await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
             var members = new[] { new CanonicalLocalFileChange(member, [1], null) };
             var retained = new Dictionary<string, byte[]?> { [kept] = [4], [absent] = null };
             var reads = 0;
             Task<byte[]?> Read(string path) { reads++; return files.ReadFileBytesAsync(lease, path); }
             var clock = Stopwatch.StartNew();
-            await Verify(members, retained, false, Read);
+            await JointCleanupImageVerifier.RequireImagesAsync(members, retained, false, Read);
             Assert.Equal(3, reads);
             if (drift) File.WriteAllBytes(files.ResolvePath(kept), [9]);
             var callback = 0;
-            async Task Validate() { callback++; await Verify(members, retained, false, Read); }
+            async Task Validate() { callback++; await JointCleanupImageVerifier.RequireImagesAsync(members, retained, false, Read); }
             if (drift)
             {
                 await Assert.ThrowsAsync<InvalidDataException>(() => files.PublishLocalFilesAsync(lease, members, validatePreparedNamespace: Validate));
@@ -128,7 +127,7 @@ public sealed class JointCleanupImageVerifierTests(ITestOutputHelper output)
                 var result = await files.PublishLocalFilesAsync(lease, members, validatePreparedNamespace: Validate);
                 Assert.Equal(TrustedLocalPublicationDisposition.Committed, result.Disposition);
                 files.RequireCommittedLocalPublication(result);
-                await Verify(members, retained, true, Read);
+                await JointCleanupImageVerifier.RequireImagesAsync(members, retained, true, Read);
                 Assert.Equal(9, reads);
                 Assert.False(File.Exists(files.ResolvePath(member)));
                 Assert.Equal(new byte[] { 4 }, File.ReadAllBytes(files.ResolvePath(kept)));
@@ -144,33 +143,4 @@ public sealed class JointCleanupImageVerifierTests(ITestOutputHelper output)
         }
     }
 
-    /// <summary>
-    /// Invokes the proposed internal API so its initial absence is an assertion failure.
-    /// </summary>
-    /// <param name="members">
-    /// The fixed deletion cohort with exact before and after images.
-    /// </param>
-    /// <param name="retained">
-    /// The exact retained bytes or declared absences.
-    /// </param>
-    /// <param name="after">
-    /// Whether to compare member after-images.
-    /// </param>
-    /// <param name="read">
-    /// The per-entry asynchronous reader, including injected failures.
-    /// </param>
-    /// <returns>
-    /// Completion of the actual internal verifier; reflected invocation failures are unwrapped.
-    /// </returns>
-    private static Task Verify(IReadOnlyList<CanonicalLocalFileChange> members, IReadOnlyDictionary<string, byte[]?> retained,
-        bool after, Func<string, Task<byte[]?>> read)
-    {
-        var type = typeof(FileSystemManager).Assembly.GetType("BookOfEternityClient.Services.JointCleanupImageVerifier");
-        Assert.NotNull(type);
-        var method = type.GetMethod("RequireImagesAsync", BindingFlags.Static | BindingFlags.NonPublic);
-        Assert.NotNull(method);
-        try { return (Task)method.Invoke(null, [members, retained, after, read])!; }
-        catch (TargetInvocationException error) when (error.InnerException is not null)
-        { ExceptionDispatchInfo.Capture(error.InnerException).Throw(); throw; }
-    }
 }

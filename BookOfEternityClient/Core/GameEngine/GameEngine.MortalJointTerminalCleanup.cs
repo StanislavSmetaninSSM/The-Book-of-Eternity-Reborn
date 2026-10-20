@@ -253,14 +253,29 @@ public partial class GameEngine
             throw new InvalidDataException("joint_cleanup_repair_not_joint_resubmission");
     }
 
-    private async Task RequireMortalJointCleanupImagesAsync(FileSystemManager.CanonicalWriteLease lease,
-        IReadOnlyList<CanonicalLocalFileChange> members, IReadOnlyDictionary<string, byte[]?> retained, bool after)
-    {
-        foreach (var member in members)
-            if (!JointRestoreBytesEqual(await _fs.ReadFileBytesAsync(lease, member.RelativePath), after ? member.After : member.Before))
-                throw new InvalidDataException("joint_cleanup_member_mismatch: " + member.RelativePath);
-        foreach (var row in retained)
-            if (!JointRestoreBytesEqual(await _fs.ReadFileBytesAsync(lease, row.Key), row.Value))
-                throw new InvalidDataException("joint_cleanup_retained_union_changed: " + row.Key);
-    }
+    /// <summary>
+    /// Verifies the actual cleanup images through the current leased reader.
+    /// </summary>
+    /// <param name="lease">
+    /// The current canonical lease required by every physical read.
+    /// </param>
+    /// <param name="members">
+    /// The exact cleanup cohort with its before and after images.
+    /// </param>
+    /// <param name="retained">
+    /// Retained exact bytes or required absences.
+    /// </param>
+    /// <param name="after">
+    /// True verifies committed after-images; false verifies before-images.
+    /// </param>
+    /// <returns>
+    /// Completion after every image matches, propagating the first refusal or read failure.
+    /// </returns>
+    private Task RequireMortalJointCleanupImagesAsync(FileSystemManager.CanonicalWriteLease lease,
+        IReadOnlyList<CanonicalLocalFileChange> members, IReadOnlyDictionary<string, byte[]?> retained, bool after) =>
+        JointCleanupImageVerifier.RequireImagesAsync(members, retained, after, async path =>
+        {
+            using var readTiming = _fs.MeasureOperation("JointCleanup.VerifyImage.ReadAsync");
+            return await _fs.ReadFileBytesAsync(lease, path);
+        });
 }

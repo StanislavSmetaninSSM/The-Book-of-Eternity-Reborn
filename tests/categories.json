@@ -2,6 +2,31 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-cleanup-cost-components",
+  "responsibility": "Actual destructive rollback-authority component with identical detached data: memory/direct/leased/participating-main reader timings and exact counts; changed/missing rollback and corrupt integrity refusal; existing exact/legacy hash-mode dispatch controls.",
+  "excludes": "No whole-game setup or joint cleanup/deletion eligibility, no full snapshot-content verification, no wall-time threshold or guaranteed speedup, no diagnostic quota. Warm per-test fixtures; setup measured separately.",
+  "changeHints": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs",
+    "BookOfEternityClient.Tests/PendingTurnSnapshotAuthorityTests.CleanupCost.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.CleanupCost_*",
+        "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.RollbackHashCallback_UsesOnlyVerifiedExactMode"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-cleanup-images",
   "responsibility": "Shared production cleanup image verifier: exact before/after byte and absence cohorts, short-circuit refusal/failure order, real local publisher prepared namespace and readback on owned tiny roots.",
   "excludes": "No whole-game setup, source42/private joint proof/deletion-eligibility issuance, full recovery qualification or diagnostic quotas.",

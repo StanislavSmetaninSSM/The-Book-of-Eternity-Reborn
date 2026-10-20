@@ -8,6 +8,7 @@ using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
@@ -39,8 +40,17 @@ public sealed partial class PendingTurnSnapshotAuthorityTests : IDisposable
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;
 
-    public PendingTurnSnapshotAuthorityTests()
+    private readonly ITestOutputHelper _cleanupCostOutput;
+
+    /// <summary>
+    /// Creates isolated authority fixtures and retains every component diagnostic in the test output.
+    /// </summary>
+    /// <param name="output">
+    /// The xUnit sink for complete component timings and fixture observations.
+    /// </param>
+    public PendingTurnSnapshotAuthorityTests(ITestOutputHelper output)
     {
+        _cleanupCostOutput = output;
         _rootPath = Path.Combine(Path.GetTempPath(), "boe-pending-snapshot-authority-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_rootPath);
         _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);

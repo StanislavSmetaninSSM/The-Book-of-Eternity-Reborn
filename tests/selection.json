@@ -7,6 +7,13 @@
       "contracts": [
         "Exact before/after images; first refusal prevents later reads or deletion; retained bytes/absence unchanged."
       ]
+    },
+    {
+      "category": "fr063-joint-cleanup-cost-components",
+      "reason": "T313 actual leaf validation versus reader cost and real source drift, without gameplay reconstruction. Constructor output wiring is also exercised by existing hash-mode controls.",
+      "contracts": [
+        "Actual generic destructive validator, exact-byte and legacy dispatch unchanged; source drift refuses; all named measurements retained."
+      ]
     }
   ]
 }
