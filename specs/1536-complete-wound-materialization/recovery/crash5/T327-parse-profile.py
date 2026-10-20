@@ -13,7 +13,8 @@ def analyze(evidence):
             data=z.read(item['Path']);assert len(data)==item['Bytes'] and sha(data)==item['SHA256']
         diagnostics=[name for name in z.namelist() if name.startswith('TestResults/joint-proof-profile/') and name.endswith('.jsonl')]
         assert len(diagnostics)==1
-        records=[json.loads(line) for line in z.read(diagnostics[0]).decode('utf-8-sig').splitlines() if line.strip()]
+        raw_data=z.read(diagnostics[0])
+        records=[json.loads(line) for line in raw_data.decode('utf-8-sig').splitlines() if line.strip()]
         trx_names=[name for name in z.namelist() if name.endswith('.trx')]
         assert len(trx_names)==1
         trx=ET.fromstring(z.read(trx_names[0]));ns={'t':'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'}
@@ -60,7 +61,8 @@ def analyze(evidence):
     costs=[x for x in records if x.get('Boundary')=='joint_profile_process_cost']
     result={'Run':outcome['Run'],'CompiledSource':outcome['CompiledSource'],'MetadataHead':outcome['MetadataHead'],
             'ActualTestOutcome':results[0].get('outcome'),'TestDuration':results[0].get('duration'),
-            'RawSHA256':outcome['SHA256'],'IndexedFiles':len(outcome['Files']),'TimingRecords':len(timings),
+            'ArchiveSHA256':outcome['SHA256'],'RawJsonlBytes':len(raw_data),'RawJsonlSHA256':sha(raw_data),
+            'IndexedFiles':len(outcome['Files']),'TimingRecords':len(timings),
             'TimingDuplicateInTRX':duplicate_in_trx,'ActualFailureMessage':error.text if error is not None else None,
             'CompletedIntervals':len(intervals),'Unfinished':stack,'Setup':setup,'ProcessCosts':costs,'ReadOnlyOracle':oracle,'Cleanup':cleanup,
             'InputAndBinariesUnchanged':outcome['Attempt']['InputsUnchanged'] and outcome['Attempt']['BinariesUnchanged'],
