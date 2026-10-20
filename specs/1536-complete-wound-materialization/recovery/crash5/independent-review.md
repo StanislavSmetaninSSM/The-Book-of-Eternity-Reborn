@@ -1,3 +1,11 @@
+# T277 — seeded cut0 SOURCE/PREP accepted
+
+Separate gpt-6-astra/high accepted compiledf479d42a72f7412871e797575a1b1bd2c6dabd07 and metadata8b1ae811cda07039f8a02b5ca5ffa701fab99c84. Verified all47indexedarchivefiles/archiveSHA,115rawPASS/0skip/completecleanup,XML0errors/changedXML0,current3DLLhashes+versions,catalog839/default295/exactgen1/6m+seededcut01/15m/originalbudgets. No source/project/selection/base-input delta; no actionable findings.
+
+One T278 genuine generation allowed; exact new artifact/source/DLL binding requires focused acceptance before T279. Original Windows0/5 and LinuxUNRUN retained.
+
+---
+
 # T274 — final seed prototype accepted
 
 Separate gpt-6-astra/high accepted source ef93fbde7cde3fddd0b0cf20c57102fa785dc330, runtime metadata22acebccb41a986632cf586b8f8d4b184dbe2099, evidence d2ed51d00f2c1667f0cac68ff02e5121cd774c6b and recovery checkpointaea971007e24108a19a6b942f982ececc85fb031, with no actionable findings.

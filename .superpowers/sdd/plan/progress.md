@@ -140,3 +140,5 @@ T276 causal RED: compiled9d581083d,16inputFAIL +1unsupportedentryFAIL in2runs, a
 T276 compiledf479d42a7 GREEN115/1150skip54.741s,4completecategories; XML43.10s0errors. Execution revisioncleanf479. Research/data-model/receipt-plan docs updated afterexecution snapshot, no compiledinputdelta. Provisional independent Astra/high SOURCEaccepted; final catalog/PlanOnly/boundPREP pending. No newgenerator/fixture/crashruntimeyet.
 
 T276/277 PREP: compiled f479d42a72f7412871e797575a1b1bd2c6dabd07;115/115 bounded PASS/0skip54.741s (16input+42seed+43process+14stage), XML43.10s0errors/changedXML0. Execution snapshot cleanf479; metadata ebb4c5d9a only documentation differs. Catalog839 valid/default295 excludes generator+seededcut0; explicit129cases14descriptors includes new1/15min and generator1/6min. All metadata executes0tests. Provisional independent SOURCE accepted, final bound PREP review pending. T278/T279 UNRUN; originalWindows0/5/LinuxUNRUN. T277-prep.json/zip.
+
+T277 accepted Astra/high at8b1ae811 /compiledf479:115GREEN/47archivefiles/3DLL/XML/catalog/membership verified. Exactlyone T278generator1/6min next; noT279 untilartifactbindingaccepted.
