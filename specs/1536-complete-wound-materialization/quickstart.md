@@ -1,6 +1,6 @@
 # Current proposal — spec15 / plan13
 
-The user asks what to change after measured T306. [Spec15](spec.md), [plan13](plan.md), [tasks T307–311](tasks.md) propose only adjacent duplicate wrapper removal: preserve both QTE baseline boundaries; conditionally reuse the immediately preceding final candidate-bounds validation. No validation cache/new authority/per-read bypass. Expected common baseline24→16→14 is a source prediction, not measured performance. DEDUP-2 and the genuine focused test fixture remain engineering gates. Independent design review pending. No code/build/test/generator run in this step; unlimited diagnostics and all actual outcomes below remain.
+The user asks what to change after measured T306. [Spec15](spec.md), [plan13](plan.md), [tasks T307–311](tasks.md) propose only adjacent duplicate wrapper removal: preserve both QTE baseline boundaries; conditionally reuse the immediately preceding final candidate-bounds validation. No validation cache/new authority/per-read bypass. Expected common baseline24→16→14 is a source prediction, not measured performance. DEDUP-2 and the genuine focused test fixture remain engineering gates. Independent gpt-6-astra/high [design review](recovery/crash5/T308-proposal-review.json) ACCEPTED the bounded recommendation and22-file clean recovery, with no findings. DEDUP-1 is the first recommendation; DEDUP-2 deletion is explicitly not yet proven/accepted. No code/build/test/generator run in this step; unlimited diagnostics and all actual outcomes below remain.
 
 ---
 
