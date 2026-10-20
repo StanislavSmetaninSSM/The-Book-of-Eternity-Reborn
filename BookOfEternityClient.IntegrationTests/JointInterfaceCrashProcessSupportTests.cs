@@ -181,8 +181,11 @@ public sealed partial class JointInterfaceCrashProcessSupportTests
             role, paths["integration"], root.Path, Path.Combine(root.Path, "result.json"), "0", root.Path }) start.ArgumentList.Add(argument);
         start.Environment["TEMP"] = temporary; start.Environment["TMP"] = temporary;
         start.Environment["L01_G01_SETTINGS"] = Path.Combine(root.Path, "must-never-open.json");
+        var capture = new JointChildOutputCapture(root.Path, new { Role = role, Control = "entry-guard-no-game" });
         using var child = Process.Start(start) ?? throw new InvalidOperationException("Guard child did not start.");
-        var stdout = child.StandardOutput.ReadToEndAsync(); var stderr = child.StandardError.ReadToEndAsync();
+        capture.BindIdentity(JointInterfaceCrashProcessSupport.ReadLiveIdentity(child.Id, child));
+        var stdout = FinitePipeOutput.DrainAsync(child.StandardOutput, capture.StandardOutput);
+        var stderr = FinitePipeOutput.DrainAsync(child.StandardError, capture.StandardError);
         var fixtureCreated = false;
         try
         {
@@ -200,8 +203,12 @@ public sealed partial class JointInterfaceCrashProcessSupportTests
             await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
             await Task.WhenAll(stdout, stderr).WaitAsync(TimeSpan.FromSeconds(10));
         }
+        await capture.FinishAsync(await stdout, await stderr);
+        Assert.Null(capture.PreserveFailure(null));
+        Assert.True(capture.OutputReference.PersistenceComplete);
+        Assert.True(capture.ErrorReference.PersistenceComplete);
         Assert.False(fixtureCreated, "Invalid mode reached a game fixture before the entry guard.");
-        Assert.Contains("CRASH5 mode", await stderr);
+        Assert.Contains("CRASH5 mode", File.ReadAllText(capture.ErrorReference.Path));
         Assert.NotEqual(0, child.ExitCode);
         Assert.NotEqual(73, child.ExitCode);
     }

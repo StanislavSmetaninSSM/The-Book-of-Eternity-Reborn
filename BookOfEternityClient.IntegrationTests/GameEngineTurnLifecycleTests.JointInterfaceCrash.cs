@@ -83,12 +83,17 @@ public sealed partial class GameEngineTurnLifecycleTests
         if (source42Seed is not null) parentMetadata["Source42Seed"] = JsonSerializer.SerializeToNode(source42Seed);
         if (fixtureAcquisitionOnly) parentMetadata["FixtureAcquisitionOnly"] = true;
         Assert.Equal(fixtureAcquisitionOnly, JointInterfaceFixtureAcquisition.ReadAndValidate(parentMetadata, OperatingSystem.IsWindows()));
-        using var classOwned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        var failures = new JointChildFailureLedger();
+        using var classOwned = new JointInterfaceCrashOwnedContainer(_rootPath, line => _directGachaOutput?.WriteLine(line), failures: failures);
+        try
+        {
         var capture = JointInterfaceCrashProcessSupport.UsesManagedCapture(mode, () => JointInterfaceManagedCapture.Enabled);
         var own = capture ? JointInterfaceManagedCapture.ClaimOwnedDirectory(cut, fault)
             : Path.Combine(Path.GetTempPath(), "boe-joint-interface-crash-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(Path.Combine(own, "tmp"));
-        using var owned = new JointInterfaceCrashOwnedContainer(own, line => _directGachaOutput?.WriteLine(line), capture);
+        using var owned = new JointInterfaceCrashOwnedContainer(own, line => _directGachaOutput?.WriteLine(line), capture, failures);
+        try
+        {
         File.WriteAllText(Path.Combine(own, "parent.json"), parentMetadata.ToJsonString());
         var cutPath = Path.Combine(own, "cut.json");
         var sharedWindowsCrashStarted = extendedWindowsCrash ? Stopwatch.GetTimestamp() : (long?)null;
@@ -163,6 +168,10 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.True(result["IndependentOrdinaryPolicyRejected"]!.GetValue<bool>());
             Assert.Equal("ParseAccepted", result["Result"]!["timestampCheck"]!["timestamp"]!.GetValue<string>());
         }
+        }
+        catch (Exception error) { failures.Record(error, "actual-process-loss"); throw; }
+        }
+        catch (Exception error) { failures.Record(error, "actual-container"); throw; }
     }
 
     /// <summary>
@@ -181,10 +190,10 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// Root exit code.
     /// </param>
     /// <param name="Stdout">
-    /// Complete stdout.
+    /// The complete or explicitly incomplete external stdout artifact.
     /// </param>
     /// <param name="Stderr">
-    /// Complete stderr.
+    /// The complete or explicitly incomplete external stderr artifact.
     /// </param>
     /// <param name="Executable">
     /// Absolute runtime path.
@@ -210,7 +219,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// <param name="NativeEvidence">
     /// Native scoped retirement evidence, or null for direct consumers.
     /// </param>
-    private sealed record JointInterfaceNativeOutcome(int Pid, DateTime BirthUtc, ulong? BirthTick, int ExitCode, string Stdout, string Stderr,
+    private sealed record JointInterfaceNativeOutcome(int Pid, DateTime BirthUtc, ulong? BirthTick, int ExitCode, JointChildOutputReference Stdout, JointChildOutputReference Stderr,
         string Executable, string[] Arguments, object Dependencies, bool Eof, bool Joined,
         string BirthKind, long? WindowsStartTimeUtcTicks, object? NativeEvidence = null);
 
@@ -310,9 +319,16 @@ public sealed partial class GameEngineTurnLifecycleTests
             role, paths["integration"], root, output, cut.ToString(CultureInfo.InvariantCulture), own];
         var start = JointInterfaceCrashProcessSupport.CreateChildStartInfo(dotnetRoot, arguments, own, windows);
         var executable = start.FileName;
+        var streams = new JointChildOutputCapture(own, new
+        {
+            Role = role, Root = root, Cut = cut, ParentPid = Environment.ProcessId,
+            Parent = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "parent.json"))),
+            Dependencies = MortalArchiveDependencyContext()
+        });
+        ownership.TrackCapture(streams);
         if (backend == JointInterfaceCrashBackend.NativeLinux)
         {
-            var native = await JointInterfaceCrashProcessSupport.RunNativeAsync(start, output,
+            var native = await JointInterfaceCrashProcessSupport.RunNativeAsync(start, streams,
                 ownership.RetainNative, ownership.JoinNativeAsync,
                 evidence => WritePhysicalInjuryDiagnostic("iobs_actual_native_lineage_join", evidence));
             return new(native.Identity.Pid, native.Identity.BirthUtc, native.Identity.LinuxBirthTick, native.ExitCode,
@@ -322,12 +338,20 @@ public sealed partial class GameEngineTurnLifecycleTests
         if (sharedWindowsCrashStarted is { } launchStarted)
             childTimeout = JointInterfaceCrashProcessSupport.GetSharedWindowsCrashTimeout(windows, role,
                 extendedSourceProbe, extendedWindowsCrash, Stopwatch.GetElapsedTime(launchStarted));
-        using var child = Process.Start(start) ?? throw new InvalidOperationException("Actual joint engine child was not started.");
+        Process startedChild;
+        try { startedChild = Process.Start(start) ?? throw new InvalidOperationException("Actual joint engine child was not started."); }
+        catch (Exception error)
+        {
+            await streams.FinishAsync(new(false, error, null), new(false, error, null));
+            streams.PreserveFailure(error);
+            throw;
+        }
+        using var child = startedChild;
         ownership.Started(child.Id);
         DateTime birth = default;
         ulong birthTick = 0;
         JointInterfaceCrashIdentity? identity = null;
-        Task<string>? stdout = null, stderr = null;
+        Task<FinitePipeDrainResult>? stdout = null, stderr = null;
         JointInterfaceDiagnosticDelivery? delivery = null;
         JointInterfaceDiagnosticDelivery.Health? deliveryHealth = null;
         string? deliveryObserverFailure = null;
@@ -341,11 +365,15 @@ public sealed partial class GameEngineTurnLifecycleTests
             identity = JointInterfaceCrashProcessSupport.ReadLiveIdentity(child.Id, windows ? child : null);
             birth = identity.BirthUtc;
             birthTick = identity.LinuxBirthTick ?? 0; // Existing Linux diagnostic consumers only use this local field.
+            streams.BindIdentity(identity);
             if (observeLive && role == "engine-joint-interface-resume")
-                stdout = JointInterfaceDiagnosticDelivery.Start(child.StandardOutput,
-                    new(child.Id, birthTick, root, deliveryNonce ?? "", cut), out delivery, out deliveryObserverFailure);
-            else stdout = child.StandardOutput.ReadToEndAsync();
-            stderr = child.StandardError.ReadToEndAsync();
+            {
+                try { delivery = new(new(child.Id, birthTick, root, deliveryNonce ?? "", cut)); }
+                catch (Exception error) when (FinitePipeOutput.Recoverable(error)) { deliveryObserverFailure = error.ToString(); }
+            }
+            stdout = delivery != null ? delivery.DrainToAsync(child.StandardOutput, streams.StandardOutput)
+                : FinitePipeOutput.DrainAsync(child.StandardOutput, streams.StandardOutput);
+            stderr = FinitePipeOutput.DrainAsync(child.StandardError, streams.StandardError);
             if (sharedWindowsCrashStarted is { } budgetStarted)
             {
                 var elapsed = Stopwatch.GetElapsedTime(budgetStarted);
@@ -372,8 +400,13 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 if (!child.HasExited) child.Kill(entireProcessTree: true); // only this original owned child tree
                 await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
-                stdout ??= child.StandardOutput.ReadToEndAsync(); stderr ??= child.StandardError.ReadToEndAsync();
+                stdout ??= FinitePipeOutput.DrainAsync(child.StandardOutput, streams.StandardOutput);
+                stderr ??= FinitePipeOutput.DrainAsync(child.StandardError, streams.StandardError);
                 await Task.WhenAll(stdout, stderr).WaitAsync(TimeSpan.FromSeconds(10));
+                foreach (var drain in new[] { stdout.Result, stderr.Result })
+                    if (!drain.Eof || drain.ReadFailure != null)
+                        System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(drain.ReadFailure ??
+                            new IOException("Original child pipe EOF was not observed.")).Throw();
                 ownership.Joined(child.Id); // only positive terminal+join+EOF can permit container deletion
             }
             catch (Exception error) { cleanupFailure = error; if (failure is not null) failure.Data["JointInterfaceChildCleanupFailure"] = error; }
@@ -386,20 +419,33 @@ public sealed partial class GameEngineTurnLifecycleTests
                 catch (Exception observerError) when (observerError is not OutOfMemoryException and not StackOverflowException)
                 { deliveryObserverFailure ??= "Capture: " + observerError.GetType().Name; }
             }
-            var outputFailure = JointInterfaceCrashProcessSupport.SaveOutputs(output,
-                stdout?.IsCompletedSuccessfully == true ? stdout.Result : null,
-                stderr?.IsCompletedSuccessfully == true ? stderr.Result : null, failure ?? cleanupFailure);
+            await streams.FinishAsync(stdout?.IsCompletedSuccessfully == true ? stdout.Result : null,
+                stderr?.IsCompletedSuccessfully == true ? stderr.Result : null);
+            if (stdout != null && stderr != null && (!stdout.IsCompleted || !stderr.IsCompleted))
+                streams.ObserveDeferredCompletion(stdout, stderr);
+            streams.RecordOutcome(new { ExitCode = child.HasExited ? (int?)child.ExitCode : null,
+                Joined = !ownership.HasUnsettledChildren, PrimaryFailure = failure?.ToString(), CleanupFailure = cleanupFailure?.ToString() });
+            var outputFailure = streams.PreserveFailure(failure ?? cleanupFailure);
             if (failure == null && outputFailure != null) cleanupFailure = outputFailure;
+            try
+            {
             WritePhysicalInjuryDiagnostic("iobs_actual_native_join", new
             { child.Id, BirthUtc = birth, BirthTick = identity?.LinuxBirthTick, BirthKind = identity?.BirthKind,
                 WindowsStartTimeUtcTicks = identity?.WindowsStartTimeUtcTicks,
-                ExitCode = child.HasExited ? (int?)child.ExitCode : null, Eof = stdout?.IsCompletedSuccessfully == true && stderr?.IsCompletedSuccessfully == true,
+                ExitCode = child.HasExited ? (int?)child.ExitCode : null, Eof = stdout?.IsCompletedSuccessfully == true && stdout.Result.Eof && stderr?.IsCompletedSuccessfully == true && stderr.Result.Eof,
                 Joined = child.HasExited, Failure = failure?.ToString(), Executable = executable, Arguments = arguments,
-                Dependencies = MortalArchiveDependencyContext(), SharedWindowsBudget = sharedWindowsBudget, RawStdout = stdout?.IsCompletedSuccessfully == true ? stdout.Result : null,
-                RawStderr = stderr?.IsCompletedSuccessfully == true ? stderr.Result : null, CleanupFailure = cleanupFailure?.ToString(),
+                Dependencies = MortalArchiveDependencyContext(), SharedWindowsBudget = sharedWindowsBudget, Stdout = streams.OutputReference,
+                Stderr = streams.ErrorReference, CleanupFailure = cleanupFailure?.ToString(),
                 SecondaryFailures = failure?.Data.Cast<System.Collections.DictionaryEntry>().Select(entry => new
                     { Stage = entry.Key.ToString(), Error = entry.Value?.ToString() }).ToArray(),
                 RetainedOwnedContainer = ownership.HasUnsettledChildren ? own : null });
+            }
+            catch (Exception error) when (FinitePipeOutput.Recoverable(error))
+            {
+                streams.RecordFailure("direct-report", error);
+                var combined = streams.PreserveFailure(failure ?? cleanupFailure);
+                if (failure == null) cleanupFailure = combined;
+            }
             if (observeLive && role == "engine-joint-interface-resume")
             {
                 try { WritePhysicalInjuryDiagnostic("iobs_parent_live_delivery_health", new
@@ -412,10 +458,10 @@ public sealed partial class GameEngineTurnLifecycleTests
                     deliveryObserverFailure ??= observerError.GetType().Name;
                 }
             }
-            if (cleanupFailure is not null && failure is null) throw cleanupFailure;
+            if (cleanupFailure is not null && failure is null) System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(cleanupFailure).Throw();
         }
-        return new(child.Id, birth, identity!.LinuxBirthTick, child.ExitCode, await stdout!, await stderr!, executable, arguments,
-            MortalArchiveDependencyContext(), stdout!.IsCompletedSuccessfully && stderr!.IsCompletedSuccessfully, child.HasExited,
+        return new(child.Id, birth, identity!.LinuxBirthTick, child.ExitCode, streams.OutputReference, streams.ErrorReference, executable, arguments,
+            MortalArchiveDependencyContext(), stdout!.IsCompletedSuccessfully && stdout.Result.Eof && stderr!.IsCompletedSuccessfully && stderr.Result.Eof, child.HasExited,
             identity.BirthKind, identity.WindowsStartTimeUtcTicks);
     }
 
@@ -431,14 +477,28 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// <param name="retainCapture">
     /// Whether the existing diagnostic path retains its directory.
     /// </param>
-    private sealed class JointInterfaceCrashOwnedContainer(string root, Action<string> output, bool retainCapture = false) : IDisposable
+    /// <param name="failures">
+    /// Shared original-failure ledger; null creates an independent cleanup ledger.
+    /// </param>
+    private sealed class JointInterfaceCrashOwnedContainer(string root, Action<string> output, bool retainCapture = false,
+        JointChildFailureLedger? failures = null) : IDisposable
     {
+        private readonly JointChildFailureLedger _failures = failures ?? new();
+        private readonly List<JointChildOutputCapture> _captures = [];
         private readonly HashSet<int> _unsettled = [];
         private readonly Dictionary<NativeLineageOwner, JointInterfaceCrashRetainedOwner> _nativeOwners = [];
         /// <summary>
         /// Reports direct children or native original owners whose retirement remains unconfirmed.
         /// </summary>
         internal bool HasUnsettledChildren => _unsettled.Count != 0 || _nativeOwners.Count != 0;
+
+        /// <summary>
+        /// Retains original artifact sessions separately from native ownership.
+        /// </summary>
+        /// <param name="capture">
+        /// The prepared external artifact capture, including unresolved destinations.
+        /// </param>
+        internal void TrackCapture(JointChildOutputCapture capture) => _captures.Add(capture);
 
         /// <summary>
         /// Retains a native owner once, even before it has an admitted root PID.
@@ -472,6 +532,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         /// </summary>
         public void Dispose()
         {
+            _failures.Cleanup(() =>
+            {
             if (HasUnsettledChildren)
             {
                 output(JsonSerializer.Serialize(new { CleanupOwnedRoot = root, OwnedFixtureRemoved = false,
@@ -481,14 +543,16 @@ public sealed partial class GameEngineTurnLifecycleTests
                     CleanupFailure = "Native exit/join/EOF could not all be positively established; do not delete under an unconfirmed child." }));
                 return;
             }
-            if (retainCapture)
+            if (retainCapture || _captures.Any(capture => capture.EvidenceRetentionRequired))
             {
-                try { output(JsonSerializer.Serialize(new { CleanupOwnedRoot = root, OwnedFixtureRemoved = false,
-                    PrivateCaptureRetainedThroughIndependentEvidenceAndFinalReport = true })); }
-                catch (Exception e) when (e is not OutOfMemoryException and not StackOverflowException) { /* retention does not change native outcome */ }
+                output(JsonSerializer.Serialize(new { CleanupOwnedRoot = root, OwnedFixtureRemoved = false,
+                    EvidenceRetentionRequired = true, NativeOwnershipUnsettled = false,
+                    CaptureDirectories = _captures.Select(capture => capture.DirectoryPath).ToArray(),
+                    PrivateCaptureRetainedThroughIndependentEvidenceAndFinalReport = retainCapture }));
                 return;
             }
             new CleanupOwnedFixture(root, output).Dispose();
+            });
         }
     }
 

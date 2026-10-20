@@ -7,7 +7,7 @@ namespace BookOfEternityClient.Tests;
 /// <summary>
 /// Verifies finite output transport without game or native process construction.
 /// </summary>
-public sealed class JointChildOutputCaptureTests
+public sealed partial class JointChildOutputCaptureTests
 {
     /// <summary>
     /// Preserves an already read prefix even when the next pipe read fails.
@@ -76,7 +76,7 @@ public sealed class JointChildOutputCaptureTests
         /// <inheritdoc />
         public override Task WriteAsync(string? value) => throw new IOException("storage");
         /// <inheritdoc />
-        public override ValueTask WriteAsync(ReadOnlyMemory<char> buffer, CancellationToken cancellationToken = default) =>
-            ValueTask.FromException(new IOException("storage"));
+        public override Task WriteAsync(ReadOnlyMemory<char> buffer, CancellationToken cancellationToken = default) =>
+            Task.FromException(new IOException("storage"));
     }
 }

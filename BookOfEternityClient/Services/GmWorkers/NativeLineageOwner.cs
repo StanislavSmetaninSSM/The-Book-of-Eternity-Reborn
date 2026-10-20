@@ -185,7 +185,16 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
     private readonly object _stateGate = new();
     private readonly SemaphoreSlim _stopGate = new(1);
     private readonly SemaphoreSlim _controlGate = new(1);
-    private readonly Task<string> _outputDrain, _errorDrain;
+    private readonly Task<string>? _outputDrain, _errorDrain;
+    private readonly Task<FinitePipeDrainResult>? _streamedOutputDrain, _streamedErrorDrain;
+    /// <summary>
+    /// Gets the original output drain task in the selected mode.
+    /// </summary>
+    private Task OutputCompletion => (Task?)_streamedOutputDrain ?? _outputDrain!;
+    /// <summary>
+    /// Gets the independent original error drain task in the selected mode.
+    /// </summary>
+    private Task ErrorCompletion => (Task?)_streamedErrorDrain ?? _errorDrain!;
     private Task<string>? _helperErrorDrain;
     protected Task? _statusReader, _supervisorExit, _hostExit, _stopControl;
     private GmWorkerHostIdentity? _identity;
@@ -218,8 +227,15 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
     /// <param name="finitePipe">
     /// Enables finite pipe environment, output and admission policy; defaults to the existing worker behavior.
     /// </param>
-    protected NativeLineageOwner(GmWorkerDurableExecution? durable, bool terminal = false,string? terminalRunId=null, bool finitePipe = false)
+    /// <param name="destinations">
+    /// Optional finite-pipe destinations fixed before exclusive drains start; invalid for worker or terminal mode.
+    /// </param>
+    protected NativeLineageOwner(GmWorkerDurableExecution? durable, bool terminal = false,string? terminalRunId=null, bool finitePipe = false,
+        NativeFinitePipeDestinations? destinations = null)
     {
+        if (destinations != null && (!finitePipe || terminal))
+            throw new ArgumentException("Streaming destinations require finite non-terminal mode.", nameof(destinations));
+        if (destinations != null) { ArgumentNullException.ThrowIfNull(destinations.StandardOutput); ArgumentNullException.ThrowIfNull(destinations.StandardError); }
         _terminalMode = terminal; _finitePipe = finitePipe; _durable = durable; _run = durable?.Identity.RunId ?? terminalRunId ?? Guid.NewGuid().ToString("N");
         _bootstrapDirectory = Path.Combine(Path.GetTempPath(), "boe-native-" + _run);
         var socketPath = Path.Combine(_bootstrapDirectory, "owner");
@@ -236,8 +252,16 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
             if (!terminal) {
             _output = new AnonymousPipeServerStream(PipeDirection.In, HandleInheritability.None);
             _error = new AnonymousPipeServerStream(PipeDirection.In, HandleInheritability.None);
-            _outputDrain = CaptureHostOutputAsync(_output);
-            _errorDrain = CaptureHostOutputAsync(_error);
+            if (destinations == null)
+            {
+                _outputDrain = CaptureHostOutputAsync(_output);
+                _errorDrain = CaptureHostOutputAsync(_error);
+            }
+            else
+            {
+                _streamedOutputDrain = CaptureStreamedHostOutputAsync(_output, destinations.StandardOutput);
+                _streamedErrorDrain = CaptureStreamedHostOutputAsync(_error, destinations.StandardError);
+            }
             } else { _outputDrain = Task.FromResult(""); _errorDrain = Task.FromResult(""); }
         }
         catch
@@ -256,8 +280,22 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
     internal override int? AdmittedHostProcessId => _identity?.ProcessId;
     internal override Task HostExited => _hostExit ?? throw new InvalidOperationException("Host identity has not been admitted.");
     internal override int SupervisorProcessId => _supervisor.Id;
-    internal Task<string> HostStandardOutput => _outputDrain;
-    internal Task<string> HostStandardError => _errorDrain;
+    /// <summary>
+    /// Gets legacy captured output; streaming instances require typed drain observations.
+    /// </summary>
+    internal Task<string> HostStandardOutput => _outputDrain ?? throw new InvalidOperationException("Finite output uses streaming destinations.");
+    /// <summary>
+    /// Gets legacy captured errors; streaming instances require typed drain observations.
+    /// </summary>
+    internal Task<string> HostStandardError => _errorDrain ?? throw new InvalidOperationException("Finite output uses streaming destinations.");
+    /// <summary>
+    /// Gets the original streaming output task without manufacturing retirement or EOF.
+    /// </summary>
+    internal Task<FinitePipeDrainResult> StreamedStandardOutput => _streamedOutputDrain ?? throw new InvalidOperationException("Streaming output was not selected.");
+    /// <summary>
+    /// Gets the original streaming error task without manufacturing retirement or EOF.
+    /// </summary>
+    internal Task<FinitePipeDrainResult> StreamedStandardError => _streamedErrorDrain ?? throw new InvalidOperationException("Streaming output was not selected.");
     internal Task SupervisorExited => _supervisorExit ?? Task.CompletedTask;
 
     /// <summary>
@@ -283,8 +321,63 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
     /// <returns>
     /// The retained owner after Started or a fully observed finite retirement.
     /// </returns>
-    internal static async Task<NativeLineageOwner> StartFinitePipeAsync(ProcessStartInfo startInfo,
-        string packageDirectory, Action<NativeLineageOwner, int> observeHeldRoot, CancellationToken cancellationToken)
+    internal static Task<NativeLineageOwner> StartFinitePipeAsync(ProcessStartInfo startInfo,
+        string packageDirectory, Action<NativeLineageOwner, int> observeHeldRoot, CancellationToken cancellationToken) =>
+        StartFinitePipeCoreAsync(startInfo, packageDirectory, observeHeldRoot, null, cancellationToken);
+
+    /// <summary>
+    /// Starts a finite child with exclusive decoded-text destinations fixed before pipe draining begins.
+    /// </summary>
+    /// <param name="startInfo">
+    /// The absolute executable, literal arguments, working directory and complete child environment.
+    /// </param>
+    /// <param name="packageDirectory">
+    /// The absolute prebuilt native package directory.
+    /// </param>
+    /// <param name="observeHeldRoot">
+    /// Records the original owner and root before the single exec release.
+    /// </param>
+    /// <param name="destinations">
+    /// Independent caller-owned writers retained through actual output settlement.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Cancels startup without discarding any allocated original owner.
+    /// </param>
+    /// <returns>
+    /// The original finite owner; partial failures carry that same owner.
+    /// </returns>
+    internal static Task<NativeLineageOwner> StartFinitePipeAsync(ProcessStartInfo startInfo,
+        string packageDirectory, Action<NativeLineageOwner, int> observeHeldRoot,
+        NativeFinitePipeDestinations destinations, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(destinations);
+        return StartFinitePipeCoreAsync(startInfo, packageDirectory, observeHeldRoot, destinations, cancellationToken);
+    }
+
+    /// <summary>
+    /// Applies the existing finite launch contract to legacy or streaming output mode.
+    /// </summary>
+    /// <param name="startInfo">
+    /// The configured absolute child command.
+    /// </param>
+    /// <param name="packageDirectory">
+    /// The prepared native package.
+    /// </param>
+    /// <param name="observeHeldRoot">
+    /// The synchronous original-owner admission observer.
+    /// </param>
+    /// <param name="destinations">
+    /// Optional streaming destinations; null preserves legacy string capture.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// The original startup cancellation.
+    /// </param>
+    /// <returns>
+    /// The same retained native owner used for admission and retirement.
+    /// </returns>
+    private static async Task<NativeLineageOwner> StartFinitePipeCoreAsync(ProcessStartInfo startInfo,
+        string packageDirectory, Action<NativeLineageOwner, int> observeHeldRoot,
+        NativeFinitePipeDestinations? destinations, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(startInfo);
         ArgumentNullException.ThrowIfNull(observeHeldRoot);
@@ -294,7 +387,7 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
         if (!Path.IsPathFullyQualified(packageDirectory))
             throw new InvalidDataException("Finite native package directory must be absolute.");
         var executable = GmWorkerNativePackage.Validate(packageDirectory);
-        var owner = new NativeLineageOwner(null, finitePipe: true);
+        var owner = new NativeLineageOwner(null, finitePipe: true, destinations: destinations);
         try
         {
             await owner.StartAsync(startInfo, executable, cancellationToken,
@@ -619,7 +712,34 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
         finally { _stopGate.Release(); }
     }
 
+    /// <inheritdoc />
     internal override async Task<GmWorkerOwnedOutputs> SettleOutputsAsync()
+    {
+        if (_streamedOutputDrain != null) throw new InvalidOperationException("Finite output requires typed streaming settlement.");
+        await SettleOutputObservationAsync();
+        return new(await _outputDrain!, await _errorDrain!);
+    }
+
+    /// <summary>
+    /// Settles original finite drains after matching scoped retirement, independently of storage success.
+    /// </summary>
+    /// <returns>
+    /// Separate output and error drain observations; string output is never synthesized.
+    /// </returns>
+    internal async Task<NativeFinitePipeOutputs> SettleStreamedOutputsAsync()
+    {
+        if (_streamedOutputDrain == null) throw new InvalidOperationException("Streaming output was not selected.");
+        await SettleOutputObservationAsync();
+        return new(await _streamedOutputDrain, await _streamedErrorDrain!);
+    }
+
+    /// <summary>
+    /// Keeps the original retirement and output-observation conjunction for both finite modes.
+    /// </summary>
+    /// <returns>
+    /// Completion only after actual drains and matching scoped retirement are observed.
+    /// </returns>
+    private async Task SettleOutputObservationAsync()
     {
         try
         {
@@ -631,7 +751,6 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
                     throw new InvalidOperationException("Native outputs cannot settle without matching scoped retirement.");
                 _outputsSettled = true;
             }
-            return new(await _outputDrain, await _errorDrain);
         }
         catch { Lose("owned-output-observation-failed"); throw; }
     }
@@ -639,7 +758,7 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
     private async Task ObserveOwnedOutputCompletionAsync()
     {
         if (_terminalMode) await (_terminalIoSettlement ?? throw new InvalidOperationException("Original PTY settlement not bound."));
-        await Task.WhenAll(_outputDrain, _errorDrain);
+        await Task.WhenAll(OutputCompletion, ErrorCompletion);
         if (_observationFault != null) await _observationFault.ObserveOutputsAsync();
     }
 
@@ -656,6 +775,47 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
     {
         try { return await ReadPipeOutputAsync(stream, _finitePipe); }
         catch { Lose("output-drain-lost"); throw; }
+    }
+
+    /// <summary>
+    /// Drains the original finite pipe through the shared text pump; read failures retain native uncertainty.
+    /// </summary>
+    /// <param name="stream">
+    /// The owned pipe whose handle remains with this owner.
+    /// </param>
+    /// <param name="destination">
+    /// The continuous caller-owned text destination.
+    /// </param>
+    /// <returns>
+    /// Actual EOF and separate read/storage observations.
+    /// </returns>
+    private async Task<FinitePipeDrainResult> CaptureStreamedHostOutputAsync(Stream stream, TextWriter destination)
+    {
+        try
+        {
+            var result = await ReadStreamedPipeOutputAsync(stream, destination);
+            if (!result.Eof || result.ReadFailure != null) Lose("output-drain-lost");
+            return result;
+        }
+        catch { Lose("output-drain-lost"); throw; }
+    }
+
+    /// <summary>
+    /// Uses the existing UTF8/BOM pipe decoder with a continuous streaming destination.
+    /// </summary>
+    /// <param name="stream">
+    /// Readable pipe bytes; its lifetime remains with the owner.
+    /// </param>
+    /// <param name="destination">
+    /// Caller-owned writer for all decoded characters.
+    /// </param>
+    /// <returns>
+    /// Actual EOF and separate read and storage failure observations.
+    /// </returns>
+    internal static async Task<FinitePipeDrainResult> ReadStreamedPipeOutputAsync(Stream stream, TextWriter destination)
+    {
+        using var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, leaveOpen: true);
+        return await FinitePipeOutput.DrainAsync(reader, destination);
     }
 
     private async Task<string> DrainAsync(Stream stream)
@@ -689,7 +849,7 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
         {
             if (_uncertainty != null || _terminal?.State != GmWorkerStopState.StoppedWithinScope ||
                 !_processStarted || !_supervisorExit!.IsCompletedSuccessfully || _supervisor.ExitCode != 0 ||
-                !_statusReader!.IsCompletedSuccessfully || (_terminalMode && _terminalIoSettlement?.IsCompletedSuccessfully != true) || !_outputsSettled || !_outputDrain.IsCompletedSuccessfully || !_errorDrain.IsCompletedSuccessfully)
+                !_statusReader!.IsCompletedSuccessfully || (_terminalMode && _terminalIoSettlement?.IsCompletedSuccessfully != true) || !_outputsSettled || !OutputCompletion.IsCompletedSuccessfully || !ErrorCompletion.IsCompletedSuccessfully)
                 throw new InvalidOperationException("Native launch retains an unconfirmed owner; output EOF and helper exit cannot retire it.");
         }
         _observationFault?.BeforeDispose();
@@ -697,7 +857,7 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
         // Repeat deletion is harmless after a partially successful attempt.
         if (Directory.Exists(_bootstrapDirectory)) Directory.Delete(_bootstrapDirectory, recursive: true);
         CloseBootstrap();
-        await Task.WhenAll(_outputDrain, _errorDrain);
+        await Task.WhenAll(OutputCompletion, ErrorCompletion);
         if (_hostExit != null) await _hostExit;
         _hostPidfd?.Dispose(); _terminalMaster?.Dispose(); _supervisor.Dispose(); _output?.Dispose(); _error?.Dispose();
         _stopGate.Dispose(); _controlGate.Dispose();

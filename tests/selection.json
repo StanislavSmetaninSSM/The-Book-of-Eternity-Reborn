@@ -2,38 +2,25 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-storage-construction-probes",
-      "reason": "T329 constructor-only reduction: targeted pure/physical/fresh-boundary controls and separately reviewed changed real-DATA profile.",
+      "category": "fr063-joint-child-output-transport",
+      "reason": "T335 uncapped decoded-text artifact transport and storage/read/report failure controls without game setup.",
       "contracts": [
-        "Constructor required parents/root correct; later operations fresh; all diagnostics/bytes/ownership preserved."
+        "Full output outside fixture roots; no total quotas or inline raw strings.",
+        "Actual EOF distinct from persistence; preserve primary error and retained evidence."
       ]
     },
     {
-      "category": "portable-storage-paths",
-      "reason": "T329 constructor-only reduction: targeted pure/physical/fresh-boundary controls and separately reviewed changed real-DATA profile.",
+      "category": "fr063-joint-interface-crash-adapter-contracts",
+      "reason": "Finite native API and direct adapter changed; managed policy plus two real entry-guard children use the same pump/finalizer.",
       "contracts": [
-        "Constructor required parents/root correct; later operations fresh; all diagnostics/bytes/ownership preserved."
+        "Original identity, admission, stop, EOF, retention and Windows wait budgets unchanged."
       ]
     },
     {
-      "category": "portable-storage-batch-admission",
-      "reason": "T329 constructor-only reduction: targeted pure/physical/fresh-boundary controls and separately reviewed changed real-DATA profile.",
+      "category": "worker-pool-regression-managed-policy",
+      "reason": "Shared native owner default worker/terminal capture must retain prior mode and ownership policy.",
       "contracts": [
-        "Constructor required parents/root correct; later operations fresh; all diagnostics/bytes/ownership preserved."
-      ]
-    },
-    {
-      "category": "portable-storage-read-construction-boundaries",
-      "reason": "T329 constructor-only reduction: targeted pure/physical/fresh-boundary controls and separately reviewed changed real-DATA profile.",
-      "contracts": [
-        "Constructor required parents/root correct; later operations fresh; all diagnostics/bytes/ownership preserved."
-      ]
-    },
-    {
-      "category": "fr063-joint-completed-proof-profile",
-      "reason": "T329 constructor-only reduction: targeted pure/physical/fresh-boundary controls and separately reviewed changed real-DATA profile.",
-      "contracts": [
-        "Constructor required parents/root correct; later operations fresh; all diagnostics/bytes/ownership preserved."
+        "No native Linux runtime; unchanged default capture and retained native/Job policy."
       ]
     }
   ]

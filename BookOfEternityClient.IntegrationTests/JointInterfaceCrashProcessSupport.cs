@@ -345,8 +345,8 @@ internal static class JointInterfaceCrashProcessSupport
     /// <param name="start">
     /// The absolute child command with its private environment.
     /// </param>
-    /// <param name="output">
-    /// The owned result path used as the raw stream filename prefix.
+    /// <param name="capture">
+    /// Prepared complete-output artifacts outside disposable fixture roots.
     /// </param>
     /// <param name="retain">
     /// Idempotently attaches the original owner, including a partial owner with no admitted PID.
@@ -360,7 +360,7 @@ internal static class JointInterfaceCrashProcessSupport
     /// <returns>
     /// The original root result after positive scoped retirement, complete streams and disposal.
     /// </returns>
-    internal static async Task<JointInterfaceCrashNativeResult> RunNativeAsync(ProcessStartInfo start, string output,
+    internal static async Task<JointInterfaceCrashNativeResult> RunNativeAsync(ProcessStartInfo start, JointChildOutputCapture capture,
         Action<NativeLineageOwner> retain, Func<NativeLineageOwner, Task> disposeAndJoin, Action<object> report)
     {
         var package = Environment.GetEnvironmentVariable("BOE_CRASH5_NATIVE_PACKAGE")
@@ -368,7 +368,7 @@ internal static class JointInterfaceCrashProcessSupport
         NativeLineageOwner? owner = null;
         JointInterfaceCrashIdentity? identity = null;
         GmWorkerStopEvidence? stop = null;
-        GmWorkerOwnedOutputs? outputs = null;
+        NativeFinitePipeOutputs? outputs = null;
         Exception? failure = null;
         int? supervisorPid = null;
         var joined = false;
@@ -382,7 +382,8 @@ internal static class JointInterfaceCrashProcessSupport
                 retain(original);
                 supervisorPid = original.SupervisorProcessId;
                 identity = ReadLiveIdentity(pid, null);
-            }, deadline.Token);
+                capture.BindIdentity(new { NativeRunId = original.Identity.RunId, SupervisorPid = supervisorPid, Root = identity });
+            }, new(capture.StandardOutput, capture.StandardError), deadline.Token);
             await owner.HostExited.WaitAsync(deadline.Token);
         }
         catch (GmWorkerOwnedLaunchException error)
@@ -401,35 +402,46 @@ internal static class JointInterfaceCrashProcessSupport
                 if (stop.State != GmWorkerStopState.StoppedWithinScope || !stop.CleanupComplete || stop.AuthorityRetained ||
                     !owner.HostExited.IsCompletedSuccessfully || !owner.SupervisorExited.IsCompletedSuccessfully)
                     throw new InvalidOperationException("CRASH5 native retirement remains unconfirmed.");
-                outputs = await owner.SettleOutputsAsync().WaitAsync(TimeSpan.FromSeconds(10));
+                outputs = await owner.SettleStreamedOutputsAsync().WaitAsync(TimeSpan.FromSeconds(10));
             }
             catch (Exception error) { failure = PreserveFailure(failure, error, "native-retirement"); }
-            var stdout = outputs?.StandardOutput ?? (owner.HostStandardOutput.IsCompletedSuccessfully ? owner.HostStandardOutput.Result : null);
-            var stderr = outputs?.StandardError ?? (owner.HostStandardError.IsCompletedSuccessfully ? owner.HostStandardError.Result : null);
-            failure = SaveOutputs(output, stdout, stderr, failure);
+            await capture.FinishAsync(
+                owner.StreamedStandardOutput.IsCompletedSuccessfully ? owner.StreamedStandardOutput.Result : null,
+                owner.StreamedStandardError.IsCompletedSuccessfully ? owner.StreamedStandardError.Result : null);
+            if (!owner.StreamedStandardOutput.IsCompleted || !owner.StreamedStandardError.IsCompleted)
+                capture.ObserveDeferredCompletion(owner.StreamedStandardOutput, owner.StreamedStandardError);
+            failure = capture.PreserveFailure(failure);
             if (outputs != null)
             {
                 try { await disposeAndJoin(owner); joined = true; }
                 catch (Exception error) { failure = PreserveFailure(failure, error, "native-disposal"); }
             }
+            capture.RecordOutcome(new { Stop = stop, Joined = joined, PrimaryFailure = failure?.ToString() });
+            failure = capture.PreserveFailure(failure);
             try
             {
                 report(new
                 {
                     NativeRunId = owner.Identity.RunId, SupervisorPid = supervisorPid, Root = identity,
                     BootstrapDirectory = owner.BootstrapDirectory, Stop = stop, Eof = outputs != null, Joined = joined,
-                    ElapsedMilliseconds = watch.Elapsed.TotalMilliseconds, RawStdout = stdout, RawStderr = stderr,
+                    ElapsedMilliseconds = watch.Elapsed.TotalMilliseconds, Stdout = capture.OutputReference, Stderr = capture.ErrorReference,
                     Failure = failure?.ToString(), RetainedOriginalOwner = !joined,
                     SecondaryFailures = failure?.Data.Cast<System.Collections.DictionaryEntry>().Select(entry => new
                         { Stage = entry.Key.ToString(), Error = entry.Value?.ToString() }).ToArray()
                 });
             }
-            catch (Exception error) { failure = PreserveFailure(failure, error, "native-report"); }
+            catch (Exception error) { capture.RecordFailure("native-report", error); failure = capture.PreserveFailure(failure); }
+        }
+        if (owner == null)
+        {
+            var launchFailure = failure ?? new InvalidOperationException("Native launch has no owner.");
+            await capture.FinishAsync(new(false, launchFailure, null), new(false, launchFailure, null));
+            failure = capture.PreserveFailure(failure);
         }
         if (failure != null) ExceptionDispatchInfo.Capture(failure).Throw();
         if (identity == null || stop?.RootExitCode == null || outputs == null || !joined)
             throw new InvalidOperationException("CRASH5 native result lacks complete original-owner evidence.");
-        return new(identity, stop.RootExitCode.Value, outputs.StandardOutput, outputs.StandardError,
+        return new(identity, stop.RootExitCode.Value, capture.OutputReference, capture.ErrorReference,
             new { NativeRunId = owner!.Identity.RunId, SupervisorPid = supervisorPid, Stop = stop, BootstrapDirectory = owner.BootstrapDirectory });
     }
 
@@ -451,6 +463,7 @@ internal static class JointInterfaceCrashProcessSupport
     internal static Exception PreserveFailure(Exception? primary, Exception secondary, string stage)
     {
         if (primary == null) return secondary;
+        if (ReferenceEquals(primary, secondary)) return primary;
         primary.Data["CRASH5-" + stage + "-" + primary.Data.Count.ToString(CultureInfo.InvariantCulture)] = secondary;
         return primary;
     }
@@ -500,16 +513,16 @@ internal static class JointInterfaceCrashProcessSupport
 /// The root exit code, distinct from the supervisor result.
 /// </param>
 /// <param name="Stdout">
-/// Complete standard output after EOF.
+/// The full standard output artifact and its independently observed completion status.
 /// </param>
 /// <param name="Stderr">
-/// Complete standard error after EOF.
+/// The full standard error artifact and its independently observed completion status.
 /// </param>
 /// <param name="Evidence">
 /// Original run, supervisor and scoped retirement observations.
 /// </param>
 internal sealed record JointInterfaceCrashNativeResult(JointInterfaceCrashIdentity Identity, int ExitCode,
-    string Stdout, string Stderr, object Evidence);
+    JointChildOutputReference Stdout, JointChildOutputReference Stderr, object Evidence);
 
 /// <summary>
 /// Retains one original native owner through failed cleanup without sharing it across tests.

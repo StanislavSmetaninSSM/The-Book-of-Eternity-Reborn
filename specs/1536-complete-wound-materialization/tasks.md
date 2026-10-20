@@ -4,6 +4,8 @@
 - [ ] T335 [US1/US2] Parent TDD finite-only pre-drain NativeLineage capture/typed settlement with unchanged default workers/terminals, explicit rejection of legacy string APIs in opt-in mode, and diagnostic-artifact/ref transport outside fixture cleanup, uncapped buffered capture, exact hashes/text semantics/identity/status, primary error precedence and failed-persistence retention; cheap normal/error/long-single-line tests, no gameplay or native ownership change.
 - [ ] T336 [US2/US3] Fresh relevant XML/doc inspection, focused catalog/PlanOnly/transport+managed controls, complete artifact-aware raw/bindings/ownedcleanup, historical evidence preserved, Linux handoff updated; clean remote recovery and separate final coherent SOURCE/PREP acceptance. No generator/rebind/original/five/Linux execution.
 
+WIP T335: actual cheap RED 2completed/1PASS/1prefix-lossFAIL retained in T335-red-outcome/raw. Shared pump, finite-only native destinations/typed settlement, direct/native artifact framing, incremental delivery and cleanup error ledger implemented; extended controls and final builds/review pending. No gameplay/generator/Linux runtime.
+
 Dependencies T334→T335→T336. Original T333fullraw/recovery acceptance stays unmet after actual failed attempt; no unchanged retry or diagnostic quota. Next real cleanup-DATA investigation requires separate written scope.
 
 ---

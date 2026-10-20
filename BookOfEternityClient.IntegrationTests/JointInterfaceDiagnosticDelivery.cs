@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using BookOfEternityClient.Services.GmWorkers;
 
 namespace BookOfEternityClient.Tests;
 
@@ -99,7 +100,7 @@ internal sealed class JointInterfaceDiagnosticDelivery
             {
                 raw.Append(buffer, 0, count); // Same decoded text as ReadToEndAsync, before any observer operation.
                 if (_observerDisabled) continue;
-                try { ObserveChunk(buffer, count); }
+                try { ObserveChunk(buffer.AsSpan(0, count)); }
                 catch (Exception error) when (Recoverable(error)) { ObserverFault(error); }
             }
             Volatile.Write(ref _eof, 1);
@@ -118,9 +119,62 @@ internal sealed class JointInterfaceDiagnosticDelivery
         }
     }
 
-    private void ObserveChunk(char[] chars, int count)
+    /// <summary>
+    /// Observes protocol markers while the shared pump stores every decoded character independently.
+    /// </summary>
+    /// <param name="reader">
+    /// The exclusive child output reader.
+    /// </param>
+    /// <param name="destination">
+    /// The continuous complete-output artifact writer.
+    /// </param>
+    /// <returns>
+    /// Actual EOF and independent read/storage observations without a raw string accumulator.
+    /// </returns>
+    internal async Task<FinitePipeDrainResult> DrainToAsync(TextReader reader, TextWriter destination)
     {
-        for (var i = 0; i < count; i++, _offset++)
+        if (Interlocked.Exchange(ref _started, 1) != 0) throw new InvalidOperationException("Only one raw drain is permitted.");
+        FinitePipeDrainResult? result = null;
+        try
+        {
+            result = await FinitePipeOutput.DrainAsync(reader, destination, ObserveIncremental);
+            return result;
+        }
+        finally
+        {
+            if (result?.Eof == true)
+            {
+                Volatile.Write(ref _eof, 1);
+                if (_line.Length != 0 || _longLine) { Interlocked.Increment(ref _incomplete); Uncertain(); }
+            }
+            else { Volatile.Write(ref _rawReadFault, 1); Uncertain(); }
+            try { _events.Writer.TryComplete(); }
+            catch (Exception error) when (Recoverable(error)) { ObserverFault(error); }
+        }
+    }
+
+    /// <summary>
+    /// Observes a borrowed chunk without owning raw storage or propagating observer failures.
+    /// </summary>
+    /// <param name="chars">
+    /// The decoded chunk, valid only during this call.
+    /// </param>
+    private void ObserveIncremental(ReadOnlyMemory<char> chars)
+    {
+        if (_observerDisabled) return;
+        try { ObserveChunk(chars.Span); }
+        catch (Exception error) when (Recoverable(error)) { ObserverFault(error); }
+    }
+
+    /// <summary>
+    /// Parses bounded protocol candidates independently of uncapped raw artifact storage.
+    /// </summary>
+    /// <param name="chars">
+    /// The next borrowed decoded chunk.
+    /// </param>
+    private void ObserveChunk(ReadOnlySpan<char> chars)
+    {
+        for (var i = 0; i < chars.Length; i++, _offset++)
         {
             if (chars[i] == '\n')
             {
