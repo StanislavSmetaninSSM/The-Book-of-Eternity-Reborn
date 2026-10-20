@@ -241,23 +241,46 @@ internal static partial class WoundAcceptedTurnPlanner
         { return new(null, JointPreparationFailure("resource_publication_invalid", error.Message).Issues); }
     }
 
+    /// <summary>
+    /// Rechecks a private resource authority against the current QTE source and exact companion projection.
+    /// </summary>
+    /// <param name="files">
+    /// The filesystem whose current source and operation timings are used.
+    /// </param>
+    /// <param name="lease">
+    /// The active canonical write lease required by every baseline and QTE read.
+    /// </param>
+    /// <param name="value">
+    /// The private sealed resource authority; any other value is rejected before source work.
+    /// </param>
+    /// <returns>
+    /// Completion after fresh validation and exact companion agreement; validation failures propagate.
+    /// </returns>
     internal static async Task ValidateJointRepairResourcePublicationAsync(FileSystemManager files,
         FileSystemManager.CanonicalWriteLease lease, object value)
     {
-        using var innerTiming1 = files.MeasureOperation("JointResources.ValidateCurrentAsync");
-        using var innerTiming2 = files.MeasureOperation("JointResources.ValidateSeal");
-        if (value is not JointResourcePublicationAuthority authority || !authority.HasValidSeal())
-            throw new InvalidDataException("Invalid private joint resource publication authority.");
-        innerTiming2?.Dispose();
-        await ValidateJointRepairCommonBaselineAsync(files, lease, authority.Baseline);
-        using var innerTiming3 = files.MeasureOperation("JointResources.RecomputeQteAsync");
-        var qte = await RecomputeJointQteContributionAsync(files, lease, authority.Baseline);
-        innerTiming3?.Dispose();
-        using var innerTiming4 = files.MeasureOperation("JointResources.CompareCompanionProjection");
-        var companions = authority.Companions;
-        if (qte.Fingerprint != authority.QteContributionFingerprint ||
-            qte.AfterImages.Any(row => !companions.TryGetValue(row.Key, out var actual) || !JsonNode.DeepEquals(row.Value, actual)))
-            throw new InvalidDataException("The sealed joint QTE partition contribution changed.");
-        innerTiming4?.Dispose();
+        using var timing = files.MeasureOperation("JointResources.ValidateCurrentAsync");
+        JointResourcePublicationAuthority? authority = null;
+        await JointRepairValidationCoordinator.ValidateResourceAsync(
+            () =>
+            {
+                using var sealTiming = files.MeasureOperation("JointResources.ValidateSeal");
+                if (value is not JointResourcePublicationAuthority current || !current.HasValidSeal())
+                    throw new InvalidDataException("Invalid private joint resource publication authority.");
+                authority = current;
+            },
+            async () =>
+            {
+                using var qteTiming = files.MeasureOperation("JointResources.RecomputeQteAsync");
+                return await RecomputeJointQteContributionAsync(files, lease, authority!.Baseline);
+            },
+            qte =>
+            {
+                using var comparisonTiming = files.MeasureOperation("JointResources.CompareCompanionProjection");
+                var companions = authority!.Companions;
+                if (qte.Fingerprint != authority.QteContributionFingerprint ||
+                    qte.AfterImages.Any(row => !companions.TryGetValue(row.Key, out var actual) || !JsonNode.DeepEquals(row.Value, actual)))
+                    throw new InvalidDataException("The sealed joint QTE partition contribution changed.");
+            });
     }
 }

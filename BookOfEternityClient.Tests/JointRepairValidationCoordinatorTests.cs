@@ -1,6 +1,4 @@
-using System.Reflection;
-using System.Runtime.ExceptionServices;
-using BookOfEternityClient.Core;
+using BookOfEternityClient.Services;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -26,8 +24,8 @@ public sealed class JointRepairValidationCoordinatorTests
         var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         Task Baseline() { calls.Add("baseline"); return Task.CompletedTask; }
         var result = new object();
-        var operation = Resource(() => calls.Add("seal"), Baseline,
-            () => Qte(Baseline, async () =>
+        var operation = JointRepairValidationCoordinator.ValidateResourceAsync(() => calls.Add("seal"),
+            () => JointRepairValidationCoordinator.RecomputeWithBaselineAsync(Baseline, async () =>
             {
                 calls.Add("compute");
                 entered.SetResult();
@@ -44,7 +42,6 @@ public sealed class JointRepairValidationCoordinatorTests
         await operation;
         Assert.Equal(2, calls.Count(x => x == "baseline"));
         Assert.Equal(new[] { "seal", "baseline", "compute", "baseline", "compare" }, calls);
-        Assert.Equal(3, PolicyMethod("ValidateResourceAsync").GetParameters().Length);
     }
 
     /// <summary>
@@ -73,11 +70,11 @@ public sealed class JointRepairValidationCoordinatorTests
             if (suspend) await Task.Yield();
             if (!current) throw error;
         }
-        var actual = await Assert.ThrowsAsync<InvalidDataException>(() => Resource(() => { }, Baseline,
+        var actual = await Assert.ThrowsAsync<InvalidDataException>(() => JointRepairValidationCoordinator.ValidateResourceAsync(() => { },
             async () =>
             {
                 if (!exitDrift) current = false;
-                var prepared = await Qte(Baseline, async () =>
+                var prepared = await JointRepairValidationCoordinator.RecomputeWithBaselineAsync(Baseline, async () =>
                 {
                     computes++;
                     if (suspend) await Task.Yield();
@@ -121,7 +118,7 @@ public sealed class JointRepairValidationCoordinatorTests
             if (suspend) await Task.Yield();
             if (name == stage) throw error;
         }
-        var actual = await Assert.ThrowsAsync<IOException>(() => Qte(
+        var actual = await Assert.ThrowsAsync<IOException>(() => JointRepairValidationCoordinator.RecomputeWithBaselineAsync(
             () => Step(++checks == 1 ? "entry" : "exit"),
             async () => { await Step("compute"); return new object(); }));
         Assert.Same(error, actual);
@@ -146,45 +143,14 @@ public sealed class JointRepairValidationCoordinatorTests
     {
         var computed = false;
         var compared = false;
-        var baselines = 0;
         var error = new InvalidDataException("Rejected.");
-        var actual = await Assert.ThrowsAsync<InvalidDataException>(() => Resource(
+        var actual = await Assert.ThrowsAsync<InvalidDataException>(() => JointRepairValidationCoordinator.ValidateResourceAsync(
             () => { if (sealFails) throw error; },
-            () => { baselines++; return Task.CompletedTask; },
             () => { computed = true; return Task.FromResult(new object()); },
             _ => { compared = true; throw error; }));
         Assert.Same(error, actual);
         Assert.Equal(!sealFails, computed);
         Assert.Equal(!sealFails, compared);
-        if (sealFails) Assert.Equal(0, baselines);
     }
 
-    // Reflection lets the first test run report absent support as an assertion,
-    // then lets the identical count assertion observe old three versus new two.
-    // The four-argument extraction fallback is forbidden for GREEN above.
-    private static MethodInfo PolicyMethod(string name)
-    {
-        var policy = typeof(FileSystemManager).Assembly.GetType(
-            "BookOfEternityClient.Services.JointRepairValidationCoordinator");
-        Assert.NotNull(policy);
-        return Assert.Single(policy.GetMethods(BindingFlags.NonPublic | BindingFlags.Static), m => m.Name == name);
-    }
-
-    private static Task Resource<T>(Action seal, Func<Task> baseline, Func<Task<T>> compute, Action<T> compare)
-    {
-        var method = PolicyMethod("ValidateResourceAsync").MakeGenericMethod(typeof(T));
-        return Invoke<Task>(method, method.GetParameters().Length == 4
-            ? new object[] { seal, baseline, compute, compare }
-            : new object[] { seal, compute, compare });
-    }
-
-    private static Task<T> Qte<T>(Func<Task> baseline, Func<Task<T>> compute) =>
-        Invoke<Task<T>>(PolicyMethod("RecomputeWithBaselineAsync").MakeGenericMethod(typeof(T)), new object[] { baseline, compute });
-
-    private static T Invoke<T>(MethodInfo method, object[] arguments)
-    {
-        try { return (T)method.Invoke(null, arguments)!; }
-        catch (TargetInvocationException error) when (error.InnerException is not null)
-        { ExceptionDispatchInfo.Capture(error.InnerException).Throw(); throw; }
-    }
 }

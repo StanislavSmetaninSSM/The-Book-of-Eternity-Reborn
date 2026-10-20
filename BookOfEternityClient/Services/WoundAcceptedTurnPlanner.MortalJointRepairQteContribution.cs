@@ -11,10 +11,49 @@ internal static partial class WoundAcceptedTurnPlanner
     private sealed record JointQteContribution(string Fingerprint,
         IReadOnlyDictionary<string, JsonObject> AfterImages);
 
+    /// <summary>
+    /// Recomputes detached QTE data with fresh baseline checks before and after its reads.
+    /// </summary>
+    /// <param name="files">
+    /// The filesystem containing the actual current original and corrected command.
+    /// </param>
+    /// <param name="lease">
+    /// The active canonical write lease used for the current source checks and reads.
+    /// </param>
+    /// <param name="baseline">
+    /// The private common baseline whose exact source must remain valid through preparation.
+    /// </param>
+    /// <returns>
+    /// A detached fingerprint and companion images, finalized only after the exit check succeeds.
+    /// </returns>
     private static async Task<JointQteContribution> RecomputeJointQteContributionAsync(
         FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, JointCommonBaselineAuthority baseline)
     {
-        await ValidateJointRepairCommonBaselineAsync(files, lease, baseline);
+        var prepared = await JointRepairValidationCoordinator.RecomputeWithBaselineAsync(
+            () => ValidateJointRepairCommonBaselineAsync(files, lease, baseline),
+            () => PrepareJointQteContributionAsync(files, lease, baseline));
+        return new(WoundAcceptedTurnFingerprintWriter.Compute(prepared.Fields), prepared.AfterImages);
+    }
+
+    /// <summary>
+    /// Reads and prepares the real QTE contribution without finalizing a result or issuing authority.
+    /// </summary>
+    /// <param name="files">
+    /// The filesystem containing the authenticated original and corrected command.
+    /// </param>
+    /// <param name="lease">
+    /// The active canonical write lease required by reconstruction and original reads.
+    /// </param>
+    /// <param name="baseline">
+    /// The private baseline checked by the surrounding entry and exit operations.
+    /// </param>
+    /// <returns>
+    /// Detached fingerprint fields and successor images for finalization after the exit check.
+    /// </returns>
+    private static async Task<(List<string?> Fields, IReadOnlyDictionary<string, JsonObject> AfterImages)>
+        PrepareJointQteContributionAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
+            JointCommonBaselineAuthority baseline)
+    {
         if (!TryReadJointRepair(baseline.Continuation, out var joint))
             throw new InvalidDataException("The QTE contribution requires the actual joint continuation.");
         var input = joint.AcquisitionInput;
@@ -90,7 +129,6 @@ internal static partial class WoundAcceptedTurnPlanner
             MortalWoundOpportunityAdapter.DecisionPath, consumed.Receipt.ReceiptFingerprint };
         foreach (var row in successors.OrderBy(row => row.Key, StringComparer.Ordinal))
         { fields.Add(row.Key); fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(row.Value)); }
-        await ValidateJointRepairCommonBaselineAsync(files, lease, baseline);
-        return new(WoundAcceptedTurnFingerprintWriter.Compute(fields), successors);
+        return (fields, successors);
     }
 }
