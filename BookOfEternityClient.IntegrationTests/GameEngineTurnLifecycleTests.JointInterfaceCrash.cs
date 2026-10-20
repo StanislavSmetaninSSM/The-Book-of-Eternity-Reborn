@@ -272,6 +272,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                 native.Stdout, native.Stderr, executable, arguments, MortalArchiveDependencyContext(), true, true,
                 native.Identity.BirthKind, native.Identity.WindowsStartTimeUtcTicks, native.Evidence);
         }
+        if (sharedWindowsCrashStarted is { } launchStarted)
+            childTimeout = JointInterfaceCrashProcessSupport.GetSharedWindowsCrashTimeout(windows, role,
+                extendedSourceProbe, extendedWindowsCrash, Stopwatch.GetElapsedTime(launchStarted));
         using var child = Process.Start(start) ?? throw new InvalidOperationException("Actual joint engine child was not started.");
         ownership.Started(child.Id);
         DateTime birth = default;
@@ -299,10 +302,12 @@ public sealed partial class GameEngineTurnLifecycleTests
             if (sharedWindowsCrashStarted is { } budgetStarted)
             {
                 var elapsed = Stopwatch.GetElapsedTime(budgetStarted);
+                sharedWindowsBudget = new { TotalSeconds = 820, ChildCapSeconds = 600,
+                    ElapsedAtWaitSeconds = elapsed.TotalSeconds, ChildWaitSeconds = (double?)null };
                 childTimeout = JointInterfaceCrashProcessSupport.GetSharedWindowsCrashTimeout(windows, role,
                     extendedSourceProbe, extendedWindowsCrash, elapsed);
                 sharedWindowsBudget = new { TotalSeconds = 820, ChildCapSeconds = 600,
-                    ElapsedAtWaitSeconds = elapsed.TotalSeconds, ChildWaitSeconds = childTimeout.TotalSeconds };
+                    ElapsedAtWaitSeconds = elapsed.TotalSeconds, ChildWaitSeconds = (double?)childTimeout.TotalSeconds };
             }
             var deadline = Stopwatch.GetTimestamp() + (long)(childTimeout.TotalSeconds * Stopwatch.Frequency);
             var nativeWait = child.WaitForExitAsync().WaitAsync(childTimeout);

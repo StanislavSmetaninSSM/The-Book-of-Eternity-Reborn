@@ -1,3 +1,9 @@
+# T262 — focused SOURCE corrections before runtime
+
+Separate gpt-6.1-sol/xhigh found two P2 wiring gaps at3df56557e after43GREEN: the pre-launch check preceded metadata/start-info setup, and post-launch expiry threw before shared budget metadata existed. Parent confirmed both. Recheck now sits directly before Process.Start after setup. Elapsed/820/600 snapshot is seeded before final selection, with nullable ChildWaitSeconds on expiry; existing finally still owns cleanup. No original assertion/policy/production change. Pure43GREEN and initial XML evidence preserved separately in T262-initial-green.json/zip. Fresh final build/affected controls and focused review remain required. No other SOURCE/XML/catalog/docs finding; independent rawRED43/26PASS17FAIL confirmed.
+
+---
+
 # T260 — failure evidence and recovery accepted
 
 Independent gpt-6.1-sol/xhigh accepted04624368e586f227c663c16140c1d71388a75bd7 plus inspected wording corrections: static analysis did not establish a loop (does not prove absence), and obsolete ready-to-run sentences are explicitly historical. Raw1FAIL/0PASS/0skip; resumer timeout but no category timeout.34stages/17samples,14822canonical-initial observations through214.292s; no exhausted quota. Streams, current3DLL and cleanup match. Fresh GitHub recovery290 files clean/exactHEAD; reviewer sampled blobs and recoveredZIP. T260-clean-recovery.json records full parent verification. Windows0/5, T255/LINUX UNRUN. Shared820 proposal not yet implemented or accepted for runtime.
