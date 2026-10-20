@@ -116,3 +116,5 @@ T262 accept: compiled2c05158f9,43GREEN/XML0errors/changedXML0/default237/explici
 
 T265 accepted by separate gpt-6.1-sol/xhigh at af7047267e1d4507900c6d72480fac25833eea81, including inspected historical-status correction. Raw failure, calculated405.8908437s remaining wait,3DLL,EOF/join,cleanup and306-file clean GitHub recovery verified. Windows0/5PASS; T264 stopped, original220 five NOT_RERUN, LinuxUNRUN.
 User feedback: repeated heavyweight crash diagnostics are inappropriate. No new long run is started. Separate process-contract checks, minimal valid state preparation, and actual recovery performance; existing full scenario remains a final integration check. A new diagnostic/fixture design must justify its cost and preserve original assertions before execution.
+
+T270 causal RED archived:36 complete,1PASS35FAIL all missing codec/adoption/fingerprint NotSupportedException. Compiled8965/metadata4fcf; infrastructure catalog error separately fixed. T271/272 GREEN codec, constructor, fingerprint and explicit generator prepared; no GREEN build or actual source42 generation yet. Independent SOURCE/PREP gate remains.

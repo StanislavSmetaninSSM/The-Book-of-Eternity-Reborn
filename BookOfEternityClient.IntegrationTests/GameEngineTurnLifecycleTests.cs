@@ -90,10 +90,12 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     /// </param>
     private GameEngineTurnLifecycleTests(ITestOutputHelper? output, string? adoptedRoot)
     {
-        if (adoptedRoot is not null) throw new NotSupportedException("T270 seed adoption is not implemented.");
         _directGachaOutput = output;
-        _rootPath = Path.Combine(Path.GetTempPath(), "boe-gameengine-turnlifecycle-" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(_rootPath);
+        _rootPath = adoptedRoot is null
+            ? Path.Combine(Path.GetTempPath(), "boe-gameengine-turnlifecycle-" + Guid.NewGuid().ToString("N"))
+            : Path.GetFullPath(adoptedRoot);
+        if (adoptedRoot is null) Directory.CreateDirectory(_rootPath);
+        else if (!Directory.Exists(_rootPath)) throw new DirectoryNotFoundException("The owned materialized seed directory is missing.");
         _fs = new FileSystemManager(
             _rootPath,
             NullLogger<FileSystemManager>.Instance,
@@ -106,13 +108,16 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
                 AfterCanonicalReadAttemptAsync = path => _consoleReturnedCanonicalReadObserver?.Invoke(path) ?? Task.CompletedTask,
                 LocalPublicationObserver = (phase, index) => _consolePublicationObserver?.Invoke(phase, index)
             });
-        _fs.EnsureDirectoryStructure();
-        _fs.WriteFileAtomicAsync(
+        if (adoptedRoot is null)
+        {
+            _fs.EnsureDirectoryStructure();
+            _fs.WriteFileAtomicAsync(
                 MortalItemIdentityState.StatePath,
                 MortalItemIdentityState.CreateEmptyRoot()
                     .ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed))
             .GetAwaiter()
             .GetResult();
+        }
     }
 
     [Fact]

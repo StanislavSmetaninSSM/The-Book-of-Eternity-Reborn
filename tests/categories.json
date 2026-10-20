@@ -2,6 +2,36 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-interface-seed-generation",
+  "responsibility": "Explicit spec11 actual source42 preparation, quiescent durable export, and read-only validation of two independent imports.",
+  "excludes": "No Stage43/crash/current-owner runtime, Linux or original-five qualification; excluded from default selection.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSeedGenerator.cs",
+    "BookOfEternityClient.IntegrationTests/JointInterfaceCrashSeed.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-interface-seed-contracts",
+      "when": "Transport integrity and import/adoption contracts change."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 6,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceSeedGenerator_ActualSource42ExportsAndLoadsTwoIndependentCopies"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-interface-seed-contracts",
   "responsibility": "Spec11 bounded seed codec integrity, immutable independent imports, contract fingerprint closure and default/adopted fixture initialization. Synthetic codec DATA is not gameplay authority.",
   "excludes": "No source42 generator, Stage43/crash/current-owner runtime, Linux or original-five qualification.",
