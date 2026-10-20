@@ -19,7 +19,7 @@ The expanded-root negative appended one space only to the actual rollback backup
 
 ## Scope of the conclusion
 
-The experiment confirms **repeated full rollback-map authentication even for a narrow selected result** on this genuine component path. It separately shows that the ordinary leased primitive is substantially more expensive here than direct cached file reads. It does not isolate which internal lease/path-validation operations cause that cost, or attribute it to Windows, security software, storage, CPU or network.
+The experiment confirms **repeated full rollback-map authentication even for a narrow selected result** on this genuine component path. It separately shows that the ordinary leased primitive is substantially more expensive here than direct raw file reads. It does not isolate which internal lease/path-validation operations cause that cost, or attribute it to Windows, security software, storage, CPU or network.
 
 Callbacks observe the canonical initial-open boundary; they are not a count of OS system calls, disk operations or successful whole reads. The corresponding positive calls separately passed exact output checks. Three source-level existence probes are not content reads and are excluded. Per-call timers cover the production projection invocation; binding/output assertions happen afterward. Raw/leased timings cover their16-call loops including exact-byte checks. The negative's raw elapsed field includes subsequent invariance checks and is not a projection-only timing.
 
