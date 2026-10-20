@@ -1,3 +1,15 @@
+# CRASH5 — spec15 revision6: actual service components on captured DATA
+
+T317 acquired real prepared/applied DATA through producer73/resumer74;1fixture-onlyPASS, test11:27.1815829,2499uncapped records/1248completed/3intentionally unfinished. Exports464.3163/468.5342ms; both owned roots removed. Original recovery remains T315FAIL/open; Windowsfive0/5, LinuxUNRUN.
+
+- CLEAN-10 / US2: use immutable actual AppliedBeforeStory DATA in an independent per-test root. Validate archive/index/bytes/directories/absence before import; preserve the source ZIP; import only game_session and inert generation, never owners/locks/runtime debt or capabilities. Obtain current original and phase through existing production APIs on a new real participating lease. No synthetic frame/phase, source42 rebinding or expensive source42/Stage43 preparation for each component.
+- CLEAN-11 / US2: measure real phase and story APIs directly, without constructing the heavy GameEngine fixture. Positive control: fresh applied proof, initially unappended story, actual append/readback, current proof and exactly one row on repeat; then changed story bytes must invalidate the issued proof. Separate independent input with changed narrative must refuse without appending. Add small importer integrity/refusal controls. Setup is timed separately; no speedup threshold or recovery PASS claim.
+- CLEAN-12 / US3: add passive named inner scopes to real story-source reads and phase-reader dependencies, preserving calls/arguments/order/predicates/catches and unlimited diagnostics. Determine completed cost/fanout before any production optimization. A correction still requires a concrete separately written cause-driven change, causal tests and independent review; no cache or skipped guard is authorized by this instrumentation.
+
+Existing owner/process/native/game/GM contracts and original budgets stay unchanged. Standing explicit review-wait waiver applies. This is component preparation/measurement, not completion of the recovery objective.
+
+---
+
 # CRASH5 — spec15 revision5: acquire reusable applied-turn DATA
 
 T315 actually failed at600s before cleanup:2504uncapped records/1250completed intervals/4unfinished, last begin `JointStory.ValidateStoryProofAsync` at596.7468574s. No cleanup-entry or capture event exists; no inner cleanup cause or duration is claimed. Both owned roots were removed. T219 retained state was read only and contains no reusable terminal original; it remains untouched.

@@ -1,3 +1,14 @@
+# CRASH5 — spec15 revision6 / plan13 revision6: real phase/story components
+
+- [ ] T318a [US2] Publish exact actual applied DATA/provenance; test-first independent importer with byte/index/absence/refusal/source-preservation controls, no imported authority.
+- [ ] T318b [US2] Direct real phase/story component positive/repeat/drift and separate narrative-refusal cases on independent copies/new real leases; no heavy game setup or fabricated proof.
+- [ ] T318c [US3] Passive named inner scopes with source-preservation proof; XML/control/catalog/PlanOnly, independent coherent SOURCE/PREP and remote recovery before the component probe.
+- [ ] T318d [US3] Measure actual wrappers/costs without quotas; preserve negatives/raw/cleanup, independent final review and next written cause-driven correction. Recovery still open.
+
+Dependencies T317 qualifiedDATA→T318a/b/c PREP→review→T318d measurement→next correction→original gate. Original T315FAIL/Windowsfive0/5/LinuxUNRUN unchanged. No diagnostic quotas or unchanged full retry.
+
+---
+
 # CRASH5 — spec15 revision5 / plan13 revision5: fixture acquisition and real component work
 
 - [x] T316 [US1] Preserve/analyze actual T315FAIL and complete diagnostics; minimal canonical parser/checks, comparable-scope findings and separate evidence review. T316-final-review.json: separate Astra/high accepted, DLL-count P3 closed, all historical/current checks exact. No inner cleanup measurement or OS cause claimed.

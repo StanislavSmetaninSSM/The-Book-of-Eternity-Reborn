@@ -1,3 +1,15 @@
+# CRASH5 — plan13 revision6: smallest real phase/story component
+
+T318a publishes immutable actual applied-before-story ZIP and detached provenance from the qualified T317 probe. Test-first a small integration DATA importer, with exact hash/index/root/absence checks and fresh independent owned roots; original ZIP is immutable. No generic gameplay loader or capability deserializer. Actual tuple is checked against a freshly read production original, then supplied to `MortalQteDecisionPublication.ReadJointProgressionPhaseAsync` on the new participating lease (`SessionOperationContext.RunBoundAsync`).
+
+T318b uses `StoryService(files,logger)` directly; no GameEngineTurnLifecycleTests constructor, source42/Stage43, repair loop or full crash harness. Two actual service cases: append/readback/current proof/repeat exactly once then deliberately corrupt story and require proof refusal; separate changed-narrative DATA must refuse with no story append. Small synthetic byte-transport tests never qualify game proof. Reuse existing uncapped timing collector through a narrow internal accessibility change if needed; log every record even on failure. Record setup separately and all real wrapper durations/call counts. No wall-time PASS threshold. Protective categories2min importer /6min two service cases; no original limit change.
+
+T318c inserts named passive scopes in `StoryService.MortalJointRepair.cs` and the actual `ReadJointProgressionPhaseAsync` dependency blocks. Scopes distinguish initial/fresh/readback/proof source reads, phase-before/phase-after, original/manifest, current output binding, row calculation, history inventory and source-image readback. Preserve exact source after stripping timer lines (new XML excluded). Test-first importer controls, XML/new-API review, affected uncapped output control, catalog/exact PlanOnly and independent coherent SOURCE/PREP before actual component runtime. No production optimization or new authority issuer. Use the existing dedicated clone and remote preservation/recovery discipline.
+
+T318d preserves actual component success/refusal/timings and independent review, selects the next demonstrated cause-driven correction and writes it before implementation. Do not end at this intermediate component report while recovery remains open. T317 final runtime/evidence review can proceed independently of T318 source preparation; final T318 review remains separate.
+
+---
+
 # CRASH5 — plan13 revision5: one fixture acquisition, then cheap real components
 
 T316 analyzes/preserves the failed original T315 without attributing an unmeasured cleanup or OS/scanner cause. Compare only completed same-count scopes; nested durations are not additive and two observed runs are not a controlled performance test. Canonical parser extension is limited to actual T315 binding/report format; all historical checks remain exact.
