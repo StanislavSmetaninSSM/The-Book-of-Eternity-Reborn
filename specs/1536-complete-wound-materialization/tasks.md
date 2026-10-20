@@ -4,7 +4,7 @@ Source: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity
 
 - [x] T293 Record latest measurement-only instruction in spec.md/plan.md/tasks.md and restore deferred optimization scaffolding; actual Spec Kit phases/consistency and remote checkpoint precede instrumentation.
 - [x] T294 [US1] Add optional named passive timing scopes and bounded resumer output in the exact production/integration call sites; tiny observer controls, no optimization. Evidence:54literal scopes; exact original4callsite files after removing timer lines; causal1PASS3FAIL→4PASS/0skip, complete selection/owned cleanup; bounded1024+sentinel output.
-- [ ] T295 [US1] Fresh XML build, exact bounded timer controls and affected metadata; independent SOURCE/PREP review and verified remote save.
+- [x] T295 [US1] Fresh XML build, exact bounded timer controls and affected metadata; independent SOURCE/PREP review and verified remote save. Evidence: T295-prep.json/zip, XML0errors/changedXML0;840validcategories/11936methods; default4/explicit2/0execution; separateSol6.1xhigh ACCEPTED exactsource/dll/metadata86547336/readback.
 - [ ] T296 [US2] Generate/bind one new genuine source42 artifact for accepted final source, then one actual profiled seeded Windows cut0 with unchanged budgets; retain raw named timing records/unfinished operations and cleanup.
 - [ ] T297 [US2] Produce actual timing table and findings under recovery/crash5; independently review evidence and verify remote save/readback/fresh recovery. Original Windows0/5/LinuxUNRUN remain separate.
 
