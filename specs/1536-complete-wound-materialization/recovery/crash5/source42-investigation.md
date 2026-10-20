@@ -1,3 +1,11 @@
+# T257 — bounded static resumer investigation
+
+Separate gpt-6-astra/high consultation at fd5e8158ffc completed without edits or execution. The first callback maps to LateTerminalAndIdleOperationBound. The second is strongly consistent with MortalJointCustodyCaptureCompletedBeforePreparation; it is not directly named in T254 and must remain an inference. No accepted-proof output/third callback or late-first return exists. The silent interval includes canonical planning/publication and subsequent validation; it cannot be assigned solely to preparation.
+
+Verified chain: TurnLifecycle885→ValidationAndRepair542→MortalJointInterfaceResume12/115→MortalJointRepairCanonicalPublication49–108→MortalJointRepairCompletion93–113. Planner148–219 and registry stage validations contain repeated physical proof work. No task cycle/infinite retry established. Canonical lock retries200×50ms do not bound OS I/O. The QTE borrowed-validation change does not apply to this canonical rebuild. Existing leased ReadFileBytesAsync does not call AfterCanonicalReadAttemptAsync; that hook cannot measure completed leased reads. Proposed next investigation uses named checkpoints and separate initial/exact-read/lock/publication hook populations, keeping deadlines and assertions. Silence still means UNKNOWN.
+
+---
+
 # T227 — Windows source42 investigation
 
 Task: [T227](../../tasks.md); scope and execution limits: [plan](../../plan.md). Approved spec3 remains unchanged. This is a bounded investigation, not crash5 qualification or permission to modify game production code.

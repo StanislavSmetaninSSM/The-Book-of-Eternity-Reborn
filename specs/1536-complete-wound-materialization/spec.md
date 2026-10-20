@@ -1,3 +1,19 @@
+# CRASH5 — spec8: наблюдение пути Windows resumer
+
+Основание: T254 producer достиг cut0 за395.163s/exit73; resumer не вернулся за220s. Windows0/5 PASS; Linux UNRUN. T256 evidence/recovery приняты. User waiver «продолжай без моих разрешений» действует; новое согласование не ожидается. Продолжаются Spec Kit и Superpowers debugging/TDD/review/verification.
+
+**Результат US2:** получить различимые наблюдения внутри текущего восстановления, чтобы обосновать следующий шаг. Это investigation, не разрешение оптимизировать production и не обещание PASS.
+
+- **R8-1:** ordinary Windows resumer получает точное имя существующего SessionFinalizationCheckpoint в before/after records. Producer, source probe, Linux, diagnostic/integrity modes сохраняют прежнюю обвязку.
+- **R8-2:** на фактическом FileSystemManager resumer наблюдать отдельно canonical initial reads, exact physical initial reads, canonical lock opened/contended, main-owner contended, publication и recovery phases. Только scalar counts/enum names; никаких файловых чтений из новых observers, путей/содержимого, новых production hooks, процессов, collectors или настроек среды.
+- **R8-3:** callbacks синхронно обновляют ограниченное состояние; не ждут/не flush. Event-driven выборка раз в15s с immediate first sample и flush при checkpoint/late return. Не использовать конечный16384 read threshold. Max24 activity records, общий writer64 records/2048 UTF8 bytes each сохраняется; резервировать32 records от activity для стадий. При исчерпании явно отмечать limit. Counts — нижние границы наблюдений, не completed/successful I/O; отсутствие наблюдений не доказывает тупик.
+- **R8-4:** preserve identity/nonce, fresh fixture, actual producer73, all original assertions, fixed600 producer/220 resumer/category15m and existing stop/join/EOF/cleanup. Ни production, ни native, ни timeout policy не меняются.
+- **R8-5:** finite causal controls сначала RED, затем GREEN; XML build/audit, catalog/PlanOnly, independent SOURCE/PREP. Затем ровно одна instrumented cut0 attempt; T254 не повторяется как неизменная попытка и его FAIL сохраняется. При FAIL сохранить evidence, диагностировать; cut1…4 не запускать без отдельного последующего решения. Даже диагностический PASS не означает five PASS.
+
+Acceptance: exact enum mapping and independent identity, separate callback populations/phase reset, late sampling beyond large read counts, bounded output with terminal capacity, nonthrowing writer behavior, unchanged producer/resumer/assertion/budget wiring. Actual single attempt recorded complete/incomplete with source/DLL provenance and cleanup. Возможные результаты: продолжающаяся работа, contention, достигнутая publication, полный возврат либо UNKNOWN; причинный production fix пока вне scope.
+
+---
+
 # CRASH5 — spec7: Windows crash/restart после измерения source42
 
 **Windows qualification spec7:** 0/5 cases PASS; 1/5 attempted. Producer600s/resumer220s/category15m. Остальные случаи ещё не квалифицированы; продолжать только по gate T254/T255. Original220 five не повторены, T219/T244 history сохранена; Linux UNRUN.

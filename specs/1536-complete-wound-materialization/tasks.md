@@ -1,3 +1,14 @@
+# CRASH5 — plan6 / spec8
+
+- [x] T257 [US2] Record read-only Astra/high resumer consultation, T256 accepted failure/recovery and spec8/plan6/tasks/consistency using existing feature and user waiver.
+- [ ] T258 [US2] Add bounded named checkpoint/activity controls, observe causal RED, implement Windows ordinary-resumer hooks without production/budget/assertion change; GREEN, XML, catalog/PlanOnly and independent SOURCE/PREP with source/DLL evidence.
+- [ ] T259 [US2] Execute exactly one instrumented cut0 using accepted T258 binaries and600/220/15m; record raw output, named phases/counters, actual result and ownership cleanup. No cut1…4 or retry by this task.
+- [ ] T260 [US3] Independently review full source/evidence block, preserve T254FAIL and LinuxUNRUN, commit/push/readback/clean recovery; determine subsequent work from actual evidence.
+
+Dependencies:T257→T258→T259→T260. Investigation output is not production implementation authorization or five-case qualification.
+
+---
+
 # CRASH5 — plan5: Windows five с измеренным основанием для бюджета
 
 **Windows qualification spec7:** 0/5 cases PASS; 1/5 attempted. Producer600s/resumer220s/category15m. Остальные случаи ещё не квалифицированы; продолжать только по gate T254/T255. Original220 five не повторены, T219/T244 history сохранена; Linux UNRUN.
@@ -10,7 +21,7 @@
 - [x] T253 [US2] Causal RED→GREEN восьми crash budget controls при сохранённых17, пять Windows Fact wrappers к неизменному common body, fixed600 producer/220 resumer policy,15m individual categories/default exclusion. Fresh XML build/audit,25GREEN, catalog/PlanOnly и независимый SOURCE/PREP всего coherent diff; no gameplay before acceptance. SOURCE/PREP принят отдельным gpt-6.1-sol/xhigh: compiled652bdd76a, docs/evidence295549bf4,25PASS/0skip, XML0errors/changedXML0, catalog и PlanOnly205default/12explicit подтверждены;3DLL и36manifest files сверены.
 - [x] T254 [US2] Один accepted-source Windows cut0: pre-start attempt/DLL binding, producer73/new resumer0, все original assertions, complete1PASS/0skip и cleanup либо фактическая failure evidence. Не повторять автоматически.
 - [ ] T255 [US2] Только после T254 PASS выполнить cut1…4, каждую отдельную категорию один раз последовательно с checkpoint/evidence. Остановиться при первом FAIL/TIMEOUT для конкретной диагностики; не считать partial пятью PASS. Прежние culture/error/held/receipt/inert-repeat проверки обязательны.
-- [ ] T256 [US3] Независимо проверить source/evidence/per-cut results, записать Windows five при600/220/15m либо partial/failure, сохранить Linux UNRUN и T219/T244 history. Обновить handoff и выполнить commit/push/readback/clean GitHub recovery. Никаких CI/full suite/merge/chat messages.
+- [x] T256 [US3] Независимо проверить source/evidence/per-cut results, записать Windows five при600/220/15m либо partial/failure, сохранить Linux UNRUN и T219/T244 history. Обновить handoff и выполнить commit/push/readback/clean GitHub recovery. Никаких CI/full suite/merge/chat messages.
 
 Dependencies:T252→T253→T254→T255→T256; failure skips dependent gameplay and preserves investigation evidence. T245 не объявлять выполненной по другому бюджету; текущая Windows квалификация прослеживается T254/T255 отдельно.
 

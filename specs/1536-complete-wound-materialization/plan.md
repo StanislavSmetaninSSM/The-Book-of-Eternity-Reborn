@@ -1,3 +1,25 @@
+# CRASH5 — plan6: ограниченное наблюдение resumer
+
+Canonical spec8 / tasks T257…T260, existing feature1536 and isolated checkout. User review waived. Parent owns implementation; independent gpt-6.1-sol/xhigh reviews coherent instrumentation block. Bounded Astra/high static consultation is recorded in source42-investigation.md; no production diagnosis assumed.
+
+## File map and design
+
+JointInterfaceCrashStageReport.cs: optional enum Checkpoint field for dedicated finalization method; optional ResumeActivity scalar snapshot and resume-activity stage. Existing64/2048 bounds; activity cap24 and no activity after record32, leaving stage capacity. Add no waits/flush/I/O beyond existing output sink. Unknown enum gets fixed Unknown marker. Existing source path unchanged.
+
+New JointInterfaceResumeActivity.cs: reporter-owned test helper, fixed populations and optional monotonic clock seam for finite tests. Periodic reports15s on callbacks, first sample/phase completion; no timer, tasks, file access, paths or collection growth. Checkpoint flushes/reset interval; publication phase retained as enum name and population counted separately from recovery. Calls to reporter do not hold writer gate recursively through counters. At limit emit one final limited snapshot then suppress activity; ordinary finalization/error/exit remain available. Cumulative per-interval counts explicitly hook observations.
+
+JointInterfaceCrashStageReportTests.cs: causal controls for all enum boundaries, separate populations, interval/reset,15s sample after>16384 callbacks,24-record limit and final stage capacity, writer failure, identity/schema bounds. Compilable no-op seam gives behavior RED, not missing symbols. Existing9 cases retained. tests/categories.json stage category owns helper/tests, remains1m; tests/selection.json includes this fast category. Unchanged180+25 need not rerun solely for instrumentation.
+
+GameEngineTurnLifecycleTests.JointInterfaceCrash.cs: enable helper only ordinary Windows resumer; compose new hooks with existing publication/recovery callbacks, retaining their assertions/effects; replace anonymous before/after with enum-bearing equivalent only when helper enabled. Flush activity at late-first return. Original diagnostic/fault/Linux/source and timeout policy untouched. No new expensive Fact/category.
+
+## Execution and verification
+
+T257: reuse specify/plan/tasks phases, consistency R8-1…R8-5, record T256 accepted evidence/recovery. T258: tests→observed RED→minimal helper/wiring→GREEN; fresh XML integration build, changed XML review, catalog, explicit PlanOnly stage/currentcut0/originalfive; verify source diff has no production/native/budget change; SOURCE/PREP independent review before runtime. T259: one existing windows-cut0 category on accepted new binaries,600/220/15m, pre-start marker and raw evidence. No unchanged retry or automatic cut1…4. T260: independent result review and durable GitHub recovery; continue only from actual causal evidence. Linux staysUNRUN.
+
+Risks: hooks cover only observed populations; OS I/O/unhooked work can be silent. Reporter has finite output and can reach limit; that must be explicit. Sampling can perturb runtime, so no performance claims from cross-run timings. Existing original gameplay observer performs its own proof I/O; new scalar callbacks must not add any.
+
+---
+
 # CRASH5 — plan5: отдельные Windows crash/restart cases
 
 **Windows qualification spec7:** 0/5 cases PASS; 1/5 attempted. Producer600s/resumer220s/category15m. Остальные случаи ещё не квалифицированы; продолжать только по gate T254/T255. Original220 five не повторены, T219/T244 history сохранена; Linux UNRUN.

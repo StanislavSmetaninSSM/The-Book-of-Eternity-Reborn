@@ -1,3 +1,9 @@
+# T256 — accepted failure evidence
+
+Independent gpt-6.1-sol/xhigh accepted T254 at fd5e8158ffc041354290f12a2839ccf0f72babf8: exactly1 completed FAIL/0PASS/0skip, resumer child timeout (category did not time out), producer73, resumer-1, EOF/join/cleanup confirmed. Raw streams/stages and ZIP hash match; three DLLs remain bound to652bdd76a. No reporting finding. Fresh GitHub recovery276 files clean/exact blobs; T256-clean-recovery.json. Historical T219 retained fixture still exists after T254. Windows0/5 qualified, T255 not run, Linux UNRUN. No runtime retry authorized by this evidence review.
+
+---
+
 # CRASH5 — независимый review implementation / PREP
 
 ## Текущий review spec5 / plan3

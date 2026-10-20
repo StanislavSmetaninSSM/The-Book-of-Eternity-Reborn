@@ -1,3 +1,9 @@
+# Текущий этап: spec8 / plan6
+
+T254 cut0FAIL: producer395.163s/exit73, resumer220s timeout;0/5Windows PASS. T256 accepted evidence and fresh276-file recovery. T257…T260 add bounded ordinary Windows resumer observations, then one cut0 investigation at unchanged600/220/15m. No Linux execution or production change. T255 remains stopped; historical results below retain their original scope.
+
+---
+
 # Текущая работа: spec7 / plan5
 
 **Windows qualification spec7:** 0/5 cases PASS; 1/5 attempted. Producer600s/resumer220s/category15m. Остальные случаи ещё не квалифицированы; продолжать только по gate T254/T255. Original220 five не повторены, T219/T244 history сохранена; Linux UNRUN.
