@@ -73,8 +73,11 @@ internal static class JointAppliedDataTemplate
         Require(images.ContainsKey(".boe_runtime/session-generation/current.json"));
         var absent = manifest["Absent"]!.AsArray().Select(node => node!.GetValue<string>()).ToArray();
         foreach (var path in absent)
+        {
             Require(IsOrdinaryRelative(path) && path.StartsWith("game_session/", StringComparison.Ordinal) &&
                 !images.ContainsKey(path) && !directoryNames.Contains(path));
+            parentScope.ValidateNamespacePath(Path.Combine(targetRoot, path));
+        }
         // No target write precedes verification of the complete archive and its declared namespace.
         parentScope.EnsureDirectory(targetRoot);
         var scope = new TrustedLocalFileScope([targetRoot]);

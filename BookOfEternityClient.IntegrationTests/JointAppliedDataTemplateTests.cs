@@ -27,6 +27,7 @@ public sealed class JointAppliedDataTemplateTests
     [InlineData("duplicate")]
     [InlineData("role")]
     [InlineData("directory-parent")]
+    [InlineData("absent-alias")]
     public void Materialize_RequiresExactOrdinaryDataBeforeWriting(string fault)
     {
         var owned = Path.Combine(Path.GetTempPath(), "boe-applied-data-control-" + Guid.NewGuid().ToString("N"));
@@ -54,6 +55,7 @@ public sealed class JointAppliedDataTemplateTests
             if (fault == "traversal") manifest["Directories"]!.AsArray().Add("game_session/../escape");
             if (fault == "directory-parent") manifest["Directories"]!.AsArray().Add("game_session/unlisted/deep");
             if (fault == "absence") manifest["Absent"]!.AsArray().Add("game_session/data.txt");
+            if (fault == "absent-alias") manifest["Absent"]!.AsArray().Add("game_session/data.txt.");
             if (fault == "role") manifest["Provenance"]!["Role"] = "PreparedOriginal";
             if (fault == "runtime")
             {
@@ -75,7 +77,8 @@ public sealed class JointAppliedDataTemplateTests
         var hash = fault == "archive-hash" ? new string('0', 64) : Convert.ToHexString(SHA256.HashData(bytes));
         var target = Path.Combine(owned, "copy");
         if (fault == "existing") { Directory.CreateDirectory(target); File.WriteAllText(Path.Combine(target, "keep.txt"), "keep"); }
-        if (fault == "none")
+        // A trailing dot is a distinct ordinary POSIX name; Windows aliases must refuse before creating a root.
+        if (fault == "none" || (fault == "absent-alias" && !OperatingSystem.IsWindows()))
         {
             var manifest = JointAppliedDataTemplate.Materialize(archive, hash, target);
             Assert.False(manifest["GrantsAuthority"]!.GetValue<bool>());
