@@ -118,3 +118,5 @@ T265 accepted by separate gpt-6.1-sol/xhigh at af7047267e1d4507900c6d72480fac258
 User feedback: repeated heavyweight crash diagnostics are inappropriate. No new long run is started. Separate process-contract checks, minimal valid state preparation, and actual recovery performance; existing full scenario remains a final integration check. A new diagnostic/fixture design must justify its cost and preserve original assertions before execution.
 
 T270 causal RED archived:36 complete,1PASS35FAIL all missing codec/adoption/fingerprint NotSupportedException. Compiled8965/metadata4fcf; infrastructure catalog error separately fixed. T271/272 GREEN codec, constructor, fingerprint and explicit generator prepared; no GREEN build or actual source42 generation yet. Independent SOURCE/PREP gate remains.
+
+T271 initial36GREEN26.488s/XML0errors42.67s; T272 initial43budget+14stagePASS, catalog/default273/explicit106. Astra/high source review requires linked producer-source fingerprint regression/fix and focused limit/link/partial-cleanup negatives; generator remains UNRUN pending corrected SOURCE/PREP.

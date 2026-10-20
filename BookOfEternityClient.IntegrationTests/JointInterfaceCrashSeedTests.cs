@@ -262,6 +262,133 @@ public sealed class JointInterfaceCrashSeedTests
     }
 
     /// <summary>
+    /// Rejects a declared payload above 256 MiB before reading or allocating the claimed bytes.
+    /// </summary>
+    [Fact]
+    public void Open_RejectsOversizedDeclaredPayloadBeforeOpeningPayloadFiles()
+    {
+        using var fixture = new SeedFixture();
+        fixture.WriteIndependentArtifact(manifest => manifest["files"]![0]!["length"] = 268435457L);
+        using var unreadablePayload = new FileStream(Path.Combine(fixture.Artifact, "payload", IdentityPath),
+            FileMode.Open, FileAccess.Read, FileShare.None);
+
+        var error = Assert.Throws<InvalidDataException>(() => JointInterfaceCrashSeed.Open(fixture.Artifact, Fingerprint));
+
+        Assert.Contains("bounded", error.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Rejects more than 8192 file claims at the format bound before inspecting incomplete physical payload.
+    /// </summary>
+    [Fact]
+    public void Open_Rejects8193FileClaimsAtInventoryBound()
+    {
+        using var fixture = new SeedFixture();
+        fixture.WriteIndependentArtifact(manifest =>
+        {
+            var files = manifest["files"]!.AsArray();
+            for (var index = 0; index < 8191; index++)
+                files.Add(new JsonObject
+                {
+                    ["path"] = $"game_session/bounded-{index:D4}.json",
+                    ["length"] = 0,
+                    ["sha256"] = "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+                });
+        });
+
+        var error = Assert.Throws<InvalidDataException>(() => JointInterfaceCrashSeed.Open(fixture.Artifact, Fingerprint));
+
+        Assert.Contains("too many", error.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Refuses a valid manifest padded past four MiB instead of parsing its unbounded physical bytes.
+    /// </summary>
+    [Fact]
+    public void Open_RejectsManifestOverFourMiBEvenWhenTrailingWhitespaceIsValidJson()
+    {
+        using var fixture = new SeedFixture();
+        fixture.WriteIndependentArtifact();
+        var path = Path.Combine(fixture.Artifact, "manifest.json");
+        var original = File.ReadAllBytes(path);
+        var oversized = new byte[4194305];
+        Array.Fill(oversized, (byte)' ');
+        original.CopyTo(oversized, 0);
+        File.WriteAllBytes(path, oversized);
+
+        Assert.Throws<InvalidDataException>(() => JointInterfaceCrashSeed.Open(fixture.Artifact, Fingerprint));
+    }
+
+    /// <summary>
+    /// Removes a partial owned copy after a real file collision while preserving the original failure and foreign sibling.
+    /// </summary>
+    [Fact]
+    public async Task WriteNewRoot_DeletesPartialOwnedCopyAndPreservesOriginalIoFailure()
+    {
+        using var fixture = new SeedFixture();
+        var foreign = Path.Combine(fixture.Root, "foreign-sentinel");
+        File.WriteAllText(foreign, "foreign bytes survive");
+        var target = Path.Combine(fixture.Root, "partial-copy");
+        IOException? originalFailure = null;
+
+        var error = await Assert.ThrowsAnyAsync<IOException>(() => JointInterfaceCrashSeed.WriteNewRootAsync(target, scope =>
+        {
+            var directory = scope.EnsureDirectory(Path.Combine(target, "game_session"));
+            var partial = scope.ValidateFile(Path.Combine(directory, "partial.bin"));
+            File.WriteAllBytes(partial, [7, 11, 13]);
+            Assert.Equal(new byte[] { 7, 11, 13 }, File.ReadAllBytes(partial));
+            try
+            {
+                using var collision = new FileStream(partial, FileMode.CreateNew, FileAccess.Write, FileShare.None);
+            }
+            catch (IOException failure)
+            {
+                originalFailure = failure;
+                throw;
+            }
+            return Task.CompletedTask;
+        }));
+
+        Assert.NotNull(originalFailure);
+        Assert.Same(originalFailure, error);
+        Assert.False(Directory.Exists(target));
+        Assert.False(File.Exists(target));
+        Assert.Equal("foreign bytes survive", File.ReadAllText(foreign));
+        Assert.Equal(new[] { foreign }, Directory.GetFileSystemEntries(fixture.Root));
+    }
+
+    /// <summary>
+    /// Refuses a real payload symbolic link even when its external target has the exact expected bytes.
+    /// </summary>
+    [Fact]
+    public void Open_RejectsPhysicalPayloadLinkToOtherwiseValidExternalBytes()
+    {
+        using var fixture = new SeedFixture();
+        fixture.WriteIndependentArtifact();
+        var external = Path.Combine(fixture.Root, "external-identity.bin");
+        var expected = Encoding.UTF8.GetBytes(IdentityText);
+        File.WriteAllBytes(external, expected);
+        var member = Path.Combine(fixture.Artifact, "payload", IdentityPath);
+        File.Delete(member);
+        var linkCreated = false;
+        try
+        {
+            File.CreateSymbolicLink(member, external);
+            linkCreated = true;
+            Assert.True(File.GetAttributes(member).HasFlag(FileAttributes.ReparsePoint));
+
+            Assert.Throws<InvalidDataException>(() => JointInterfaceCrashSeed.Open(fixture.Artifact, Fingerprint));
+
+            Assert.Equal(expected, File.ReadAllBytes(external));
+        }
+        finally
+        {
+            if (linkCreated) File.Delete(member);
+        }
+        Assert.Equal(expected, File.ReadAllBytes(external));
+    }
+
+    /// <summary>
     /// Checks hand-authored expected bytes and complete relative inventory after an import.
     /// </summary>
     /// <param name="root">

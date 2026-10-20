@@ -102,6 +102,24 @@ public sealed partial class GameEngineTurnLifecycleTests
     }
 
     /// <summary>
+    /// Changes to explicitly linked C# producer inputs invalidate the seed even outside project directories.
+    /// </summary>
+    [Fact]
+    public void JointInterfaceSeed_FingerprintTracksLinkedProjectSource()
+    {
+        var root = Path.Combine(_rootPath, "fingerprint-linked");
+        WriteSeedFingerprintInputs(root);
+        var project = Path.Combine(root, "BookOfEternityClient.TestSupport", "Host.csproj");
+        File.WriteAllText(project, "<Project><ItemGroup><Compile Include=\"../Shared/Fixture.cs\" Link=\"Fixture.cs\" /></ItemGroup></Project>");
+        var linked = Path.Combine(root, "Shared", "Fixture.cs");
+        Directory.CreateDirectory(Path.GetDirectoryName(linked)!);
+        File.WriteAllText(linked, "class LiteralFixture {}");
+        var before = JointInterfaceSeedContractFingerprint.Compute(root);
+        File.WriteAllText(linked, "class ChangedFixture {}");
+        Assert.NotEqual(before, JointInterfaceSeedContractFingerprint.Compute(root));
+    }
+
+    /// <summary>
     /// Writes a small declared source closure without creating a runnable game or fake authority.
     /// </summary>
     /// <param name="root">

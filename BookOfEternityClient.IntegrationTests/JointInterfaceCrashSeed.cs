@@ -548,7 +548,7 @@ internal sealed class JointInterfaceCrashSeed
     /// <returns>
     /// A task completing after writing, or propagating the original failure with any cleanup failure attached.
     /// </returns>
-    private static async Task WriteNewRootAsync(string root, Func<TrustedLocalFileScope, Task> write)
+    internal static async Task WriteNewRootAsync(string root, Func<TrustedLocalFileScope, Task> write)
     {
         if (Directory.Exists(root) || File.Exists(root))
             throw new IOException("The seed destination already exists.");
