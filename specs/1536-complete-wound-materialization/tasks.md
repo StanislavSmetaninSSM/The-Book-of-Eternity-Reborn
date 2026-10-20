@@ -1,3 +1,18 @@
+# CRASH5 — plan10 / spec12: seeded cut0
+
+Source: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). User authorized continuation and waived waiting. Original Windows0/5, LinuxUNRUN, T273 genuine source/transport PASS and historical failures retained.
+
+- [x] T275 [US2] Record spec12/plan10 and actual Spec Kit phases/consistency, present written artifacts under existing user waiver; preserve source fingerprint and define bounded generation/crash gates. Evidence: setup-plan/setup-tasks/prerequisites successful; S12-1…6 coverage/constitution/budgets checked with no unresolved inconsistency; linked written artifacts presented, user review waived.
+- [ ] T276 [US2] Add physical input/mode/integrity controls and causal RED; implement closed seed selection, opt-in new Fact/parent/producer, detached common checkpoint and shared inactive-tail reader without authority fabrication/default-path changes. XML/GREEN and affected42+43+14/category membership checks.
+- [ ] T277 [US2] Save final source/DLL/raw/control evidence; independent coherent SOURCE/PREP acceptance before genuine generation, old entrypoint/budget/default exclusions verified.
+- [ ] T278 [US2] Exactly one accepted-source genuine generator1case6min; validate two independent imports, publish immutable exact artifact with text conversion disabled, source/manifest/payload/DLL binding and focused review. Stop on failure; no hand-rebinding or fallback.
+- [ ] T279 [US2] After accepted source+artifact binding run exactly one seeded Windows cut0 with unchanged shared820/max600/category15 and all original assertions; record producer/resumer/seed/source/DLL/cleanup and actual failure or PASS. No dependent cuts/retry/budget change.
+- [ ] T280 [US3] Independent final code/tests/docs/raw/artifact/result review, commit/push/readback/fresh clean recovery and honest qualification. No original five or Linux claim from seeded cut0.
+
+Dependencies:T275→T276→T277→T278→T279→T280. A failed runtime gate stops dependent work and preserves evidence; investigation acceptance does not redefine gameplay assertions.
+
+---
+
 # CRASH5 — plan9 / spec11: prototype seed
 
 T273 prototype PASS: one complete actual generator case/0skip; source42=206.249s, capture/export/open=1.121s, imports=0.105s/0.083s, read-only validation=0.385s/0.299s. 82 payload files/513708bytes; two own copies and source removed/absence confirmed. Immutable artifact retained and independently rehashed; no Stage43/crash/current-owner qualification or resume speedup claim. Compiled ef93fbde7cde3fddd0b0cf20c57102fa785dc330; runtime metadata 22acebccb41a986632cf586b8f8d4b184dbe2099; run 20261020-123808-320-56712-7cb9a4cc15534c0f8827ef726eb139ca-categories. Exact source/DLL/raw/artifact evidence T273-generator.json/zip. Windows0/5, original220 five NOT_RERUN, LinuxUNRUN; T219 historical fixture retained. Final independent gpt-6-astra/high evidence/recovery review ACCEPTED at aea971007e24108a19a6b942f982ececc85fb031. Fresh GitHub recovery d2ed51d00f2c1667f0cac68ff02e5121cd774c6b:329 files/allGitblobs/clean verified independently, zero mismatches; T274-clean-recovery.json.
