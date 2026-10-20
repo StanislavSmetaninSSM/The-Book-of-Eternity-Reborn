@@ -2,7 +2,7 @@
 
 Issue1536; [spec](spec.md), [plan](plan.md). Accepted source d41f80f347, correction final review b9886d150. Standing autonomous continuation applies.
 
-- [ ] T322 [US1] Actual Spec Kit phases/consistency/exact2casePlanOnly, one genuine final-source42 generation/export/two-import qualification, full original ddadb preservation, producing-byte recipes/Git-exact publication and independent binding review.
+- [x] T322 [US1] Actualphases/2casePlanOnly0execution; generator1PASS/203.51338s,82files/513704bytes/38dirs/twoimports+sourcecleanup.1783producinginputs/43exact+1740LF→CRLF; wholehistoricaldda83files/source-record retained.83Git-exactnewfiles/4DLLbound. Separate Astra/high bindingaccepted4c1afe588 withoutfindings/199Gitrecoveryblobs; T322-generator/source-inputs/validation/binding/review. Original seededgate stillT323/unrun.
 - [ ] T323 [US2] One original seededWindowscut0 under existing820/600/15m policy; preserve all ordinary assertions/owners/inert-repeats and complete raw diagnostics/cleanup-entry DATA/input/binary/seed/cleanup evidence. No unchanged retry.
 - [ ] T324 [US3] Analyze actual outcome/reached counts and unfinished boundaries; independent evidence review/remote recovery, then next written Windows/Linux qualification or cause-driven component correction. Never stop at an intermediate report while useful work remains.
 

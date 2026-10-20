@@ -11,6 +11,8 @@ No production code or gameplay/GM-authored schema change: prompts/examples requi
 
 T322 generator actual1PASS/run20261021-003520-760-6000-49bb718fb4c84e25861817fa8c253cd8-categories; body203.51338s/source42=200.7195586s.82files/513704bytes/38dirs, twoimports/sourcecleanuptrue,4DLLunchanged. T322-generator/source-inputs/validation:136ZIPmembers/96indexedfiles,1783inputs(43Gitexact/1740LF→CRLF), fingerprintFFB07E6F91494C8AA77A0FF750BAEF68DAB2133C8B8B19EED6284D9DE29DFD14. Whole historicaldda83files/source-record retained and verified before newpublication; durableoldT317evidenceunchanged. NewmanifestFF05A741CEBF53D901F8E5F2623DA8586845E29A8E173A69BE73B4042E8A9D13. Bindingreview pending; originalcut0UNRUN.
 
+T322 separate Astra/high bindingaccepted4c1afe588 without findings:96archivefiles/1783recipes/83Gitartifactfiles/4DLL/199recoveryblobs verified, historicalwholefixture/source-record intact. T322-binding-review.json permits exactlyone ordinaryT323seededcut0 at unchanged820/600/15m; originalcoldfive0/5/LinuxUNRUN. Artifact CRLF DATA retainedbyte-exact despite unfilteredgitwhitespacecheck; source/prosecheck excludingDATA passed. No C#change sinceaccepted d41f80f347.
+
 ---
 
 # CRASH5 — plan13 revision7: remove one repeated story-source read
