@@ -2,7 +2,7 @@
 
 Issue1536; [spec](spec.md), [plan](plan.md). T325 coalescing rejected; retain every original observation.
 
-- [ ] T326 [US1/US2/US3] Actual Spec Kit phases/consistency; passive proof/resource/ordinary-read instrumentation with exact stripped-source equivalence, one genuine DATA direct-owner profile case and exact category/selection, XML/build/catalog/PlanOnly, saved remote recovery and separate SOURCE/PREP review. No production optimization.
+- [x] T326 [US1/US2/US3] Actual Spec Kit phases/consistency; passive proof/resource/ordinary-read instrumentation with exact stripped-source equivalence, one genuine DATA direct-owner profile case and exact category/selection, XML/build/catalog/PlanOnly, saved remote recovery and separate SOURCE/PREP review. No production optimization.
 - [ ] T327 [US2/US3] One reviewed profile; preserve all named/CPU/wall/raw/TRX/input/DLL/owned-cleanup evidence, analyze true completed inclusive/exclusive costs and obtain independent completed-block review. Write next causal design and continue original recovery work without unchanged retry.
 
 Dependencies T324accepted+T325counterexample→T326prep/review→T327measurement/review→next written correction. Standing autonomy/review-wait waiver; no diagnostic quota, original limit increase or Windows/Linux qualification inferred.
