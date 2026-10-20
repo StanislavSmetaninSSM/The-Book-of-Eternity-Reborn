@@ -83,6 +83,21 @@ C#, frontend and test-infrastructure verification.
   Preserve result artifacts, actual planned/completed counts and owned cleanup.
   Repeat passing selections only after relevant changes or unresolved failures.
 
+## Test design policy
+
+Follow the unit-test, fixture and diagnostic rules in `docs/testing.md`.
+Do not use reflection to access private or internal members in tests. Use direct
+typed calls through meaningful internal APIs and `InternalsVisibleTo` for the
+appropriate test assembly; create a test project when needed.
+
+Prefer minimal independent fixtures and replaceable dependencies over expensive
+game setup unless that setup or real interaction is the subject of the test.
+The user explicitly permits adding test entry points and refactoring existing
+code throughout the project for this purpose, within the tracked task and review.
+Keep production and tests on the same implementation, preserve integrity and
+ownership checks, and retain genuine integration/cold-path coverage. Measure slow
+sections by name; do not impose diagnostic record, total-size or retention quotas.
+
 ## Spec Kit and Hermes/Codex orchestration guardrail
 
 GitHub Issues remain the task tracker for lifecycle, comments, triage, and closure.

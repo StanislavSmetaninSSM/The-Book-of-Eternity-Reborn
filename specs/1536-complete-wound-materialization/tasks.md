@@ -1,3 +1,11 @@
+# Issue #1536 — T341: правила написания тестов
+
+- [ ] T341 Documentation-only request, 2026-10-21: extend `docs/testing.md` and its `AGENTS.md` entry with the existing category policy, no reflection access to private/internal members, direct `InternalsVisibleTo` test contracts, minimal independent fixtures instead of unrelated expensive game construction, and explicit permission to add test seams/refactor existing code across the project. Preserve real subject/integrity/ownership/cold-path coverage; named measurements and uncapped diagnostics. Verify requirements, links and diff; obtain independent review and remote readback/clean recovery. No code, tests, catalog/selection, builds or runtime execution in this block. This does not extend T340's investigation scope or accept its pending review.
+
+Acceptance: one maintained testing guide with discoverable agent instructions; all requested rules explicit and consistent with existing isolation/category rules. WIP until verification and independent review are recorded.
+
+---
+
 # CRASH5 — spec15 revision17 / plan13 revision17: smallest genuine next probe
 
 - [ ] T340 [US1/US2/US3] Read-only source/API investigation after accepted T339: map missing cold caller/real owner/remaining cleanup work; bounded architecture consultation; specify the cheapest genuine probe/new production-used seams with real authority, preserved T325/freshness/ownership/refusal contracts and cheap controls; compare alternatives, record unknowns and concrete next scope. Actual Spec Kit phases/consistency, separate independent review and remote clean recovery. No C#/native/runner change, materialization, test/profile/generator/original/five/Linux execution or source42 rebind in this spike.
