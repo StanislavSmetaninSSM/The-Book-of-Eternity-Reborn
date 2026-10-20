@@ -1,3 +1,15 @@
+# CRASH5 — spec15 revision7: reuse the authenticated story readback locally
+
+Issue1536. T318 actual2/2PASS establishes append4source reads/41.477s and repeat3reads/30.708s; copy+lease about1s. See recovery/crash5/T318-findings.md and immutable raw evidence. Original recovery remains FAIL/open; diagnostics unlimited.
+
+- STORY-1 / US1: one complete authenticated post-operation source readback supplies both exact-readback checks and initial proof-content comparison. Compare current appended disposition, exact path/row/bytes and full history bindings before proof issuance, synchronously with no intervening await/I/O/owner transition/callback. New append3source reads instead of4; exact repeat2instead of3. Initial read and immediate preappend fresh check remain. No cross-call cache or transported proof.
+- STORY-2 / US2: extract only the existing pure proof-image equality predicate to an internal helper used by both this local readback comparison and later explicit fresh proof validation. Preserve failure message, expected history map comparer, exact bytes/count/value checks and all first-failure behavior. Small tests cover every field, missing/extra/history value drift, case behavior, exact copy and source preservation; helper grants no authority.
+- STORY-3 / US3: retain every physical/original/output/phase-before+after/history/source-image guard on retained reads, actual append/readback/uncertainty classification, current owner/lease/generation, explicit later fresh proof.ValidateCurrentAsync and its rejection of subsequent corruption. No timer/diagnostic quota, timeout increase, native change, source42 rebinding or changed game/GM/schema contract. Record actual source-read count reduction plus real positive/repeat/story/narrative refusal on independent actual DATA roots. Original gate stays required.
+
+Freshness ruling from separate Astra/high T318 review: same-call authenticated snapshot reuse under the continuously held participating lease is defensible, but is not literal fresh-re-read equivalence against concurrent direct filesystem mutation. Compare against original expected contents and issue proof before caller timer disposal or other observer callbacks. Keep later validation fresh; attempted-append failure remains PublicationUncertain, repeat/read failure Refused, session replacement propagates. Required coverage includes retained-readback failure and foreign-owner refusal. T318 evidence accepted; production implementation still requires its own SOURCE/PREP review. Standing user review-wait waiver remains; this version is presented before code. Later coherent SOURCE/PREP review precedes changed actual components; final review precedes qualification. Return to original recovery work after this bounded correction.
+
+---
+
 # CRASH5 — spec15 revision6: actual service components on captured DATA
 
 T317 acquired real prepared/applied DATA through producer73/resumer74;1fixture-onlyPASS, test11:27.1815829,2499uncapped records/1248completed/3intentionally unfinished. Exports464.3163/468.5342ms; both owned roots removed. Original recovery remains T315FAIL/open; Windowsfive0/5, LinuxUNRUN.

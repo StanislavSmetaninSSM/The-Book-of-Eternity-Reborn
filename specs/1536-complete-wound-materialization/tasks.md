@@ -1,9 +1,21 @@
+# CRASH5 — spec15 revision7 / plan13 revision7: local story readback reuse
+
+Issue1536; [spec](spec.md), [plan](plan.md). Standing autonomous execution/review-wait waiver retained.
+
+- [x] T319 [US1] Separate Astra/high accepted T318 evidence without findings; authenticated same-call readback ruling/callback/failure constraints recorded in spec15r7/plan13r7 and T318-final-review.json. Actual Spec Kit plan/tasks/prerequisite phases and T319 consistency before code.
+- [ ] T320 [US1/US2] Causal actual countRED and pure comparisonRED→GREEN; shared exact proof-image helper and one locally reused readback, no other guard removal. XML/build/metadata/unit evidence, source/DLL binding, independent SOURCE/PREP and remote recovery.
+- [ ] T321 [US3] Changed actual three service cases once: source3/2counts, append/repeat/laterdrift/narrative/readback/foreign-owner refusals, complete uncapped diagnostics, input/binary preservation/owned cleanup. Independent final review then continue original recovery gate; no intermediate stop.
+
+Dependencies T318review→T319riskresolution→T320RED/implementation/PREP→review→T321→genuine matching source42/original qualification. T315FAIL/open, originalWindowsfive0/5, LinuxUNRUN unchanged. No new process mechanism, diagnostic quota, broad suite or timeout increase.
+
+---
+
 # CRASH5 — spec15 revision6 / plan13 revision6: real phase/story components
 
 - [x] T318a [US2] Exact actual applied DATA/provenance published; importer9FAIL→9PASS, directory-parent1FAIL/9PASS→10PASS, reviewer aliasP2 regression1FAIL/10PASS→11PASS; independent copies/namespace/bytes/absence/source-preservation controls. No imported authority. T318-prep/v2 and source-review accepted.
-- [x] T318b [US2] Actual2/2PASS on independent real DATA copies/new leases; append/readback/proof/repeat/story-drift and separate narrative-refusal. Full640timingrecords/320complete intervals, nounfinished; bothrootsremoved/absent,3DLL+inputsunchanged. T318-components-outcome/raw and T318-findings.md. Final independent evidence review pending.
+- [x] T318b [US2] Actual2/2PASS on independent real DATA copies/new leases; append/readback/proof/repeat/story-drift and separate narrative-refusal. Full640timingrecords/320complete intervals, nounfinished; bothrootsremoved/absent,3DLL+inputsunchanged. T318-components-outcome/raw and T318-findings.md. Final independent evidence review accepted; T318-final-review.json.
 - [x] T318c [US3] 26passive scopes/2productionfiles preserve original businesssource; XML0errors, transport11PASS/uncappedcollectorPASS, catalog850/11961, exact14casePlanOnly0execution. Separate Astra/high SOURCE/PREP accepted512f2c62d;3runtimeDLLbindings/172Git-exactrecoveryfiles verified. Actual2servicecases stillUNRUN at PREP.
-- [ ] T318d [US3] Measure actual wrappers/costs without quotas; preserve negatives/raw/cleanup, independent final review and next written cause-driven correction. Recovery still open.
+- [x] T318d [US3] Actual2PASS/640records/320complete intervals/0unfinished; full raw/source/cleanup preserved. Separate Astra/high accepted completed T318 evidence at a59b7faa with no findings and178exactGit recoveryblobs; T318-final-review.json. Next concrete local reuse correction written in spec15r7/plan13r7/T319–321. Recovery remains open.
 
 Dependencies T317 qualifiedDATA→T318a/b/c PREP→review→T318d measurement→next correction→original gate. Original T315FAIL/Windowsfive0/5/LinuxUNRUN unchanged. No diagnostic quotas or unchanged full retry.
 
