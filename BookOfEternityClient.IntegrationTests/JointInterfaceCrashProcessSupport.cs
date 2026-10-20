@@ -101,6 +101,30 @@ internal static class JointInterfaceCrashProcessSupport
     }
 
     /// <summary>
+    /// Selects a capped child wait from the remaining shared Windows crash observation window.
+    /// </summary>
+    /// <param name="windows">
+    /// Whether the child runs on Windows; other platforms cannot use this policy.
+    /// </param>
+    /// <param name="role">
+    /// The exact original-crash or resume dispatcher role.
+    /// </param>
+    /// <param name="extendedSourceProbe">
+    /// Whether source-probe extension was requested; it is incompatible with shared crash time.
+    /// </param>
+    /// <param name="extendedWindowsCrash">
+    /// Whether the caller explicitly selected the Windows crash extension; required here.
+    /// </param>
+    /// <param name="elapsed">
+    /// Nonnegative monotonic elapsed time since the common producer-start boundary.
+    /// </param>
+    /// <returns>
+    /// At most600seconds and no more than the820second shared remainder; expiry throws instead of returning an unbounded wait.
+    /// </returns>
+    internal static TimeSpan GetSharedWindowsCrashTimeout(bool windows, string role, bool extendedSourceProbe,
+        bool extendedWindowsCrash, TimeSpan elapsed) => TimeSpan.FromSeconds(220);
+
+    /// <summary>
     /// Preserves the diagnostic-only short circuit before inspecting managed capture settings.
     /// </summary>
     /// <param name="mode">

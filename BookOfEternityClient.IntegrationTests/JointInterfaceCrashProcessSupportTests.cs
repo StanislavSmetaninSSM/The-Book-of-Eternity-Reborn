@@ -9,7 +9,7 @@ namespace BookOfEternityClient.Tests;
 /// <summary>
 /// Checks crash adapter guards, identity and retained ownership without Linux startup.
 /// </summary>
-public sealed class JointInterfaceCrashProcessSupportTests
+public sealed partial class JointInterfaceCrashProcessSupportTests
 {
     /// <summary>
     /// Extends the Windows producer wait while preserving the original resumer wait.
