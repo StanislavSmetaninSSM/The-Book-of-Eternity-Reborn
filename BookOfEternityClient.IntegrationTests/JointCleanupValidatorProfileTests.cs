@@ -77,13 +77,13 @@ public sealed class JointCleanupValidatorProfileTests
         {
             raw = new StreamWriter(new FileStream(diagnosticPath, FileMode.CreateNew, FileAccess.Write, FileShare.Read),
                 new UTF8Encoding(false)) { AutoFlush = true };
-            var timings = new GameEngineTurnLifecycleTests.JointOperationTimings(raw);
+            var capture = new JointCleanupProfileDiagnosticCapture(raw);
             Directory.CreateDirectory(owned);
             var manifest = JointCleanupDataTemplate.Materialize(JointCleanupValidatorTestData.ArchivePath,
                 JointCleanupValidatorTestData.ArchiveSha256, root);
             files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,
                 PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
-                { OperationTimingObserver = timings.Observe });
+                { OperationTimingObserver = capture.Observe });
             acquireStarted = true;
             lease = await files.AcquireCanonicalWriteLeaseAsync();
             // Never manufacture a generation for this DATA.
@@ -98,40 +98,40 @@ public sealed class JointCleanupValidatorProfileTests
                 HistoricalOwnerRecreated = false, ActualReturnedReadBytes = (long?)null }));
             await SessionOperationContext.RunBoundAsync(files, generation, lease, async () =>
             {
-                var original = await MeasureAsync(files, raw, "Profile.ReadCurrentOriginal",
+                var original = await MeasureAsync(files, raw, capture, "Profile.ReadCurrentOriginal",
                     () => Task.FromResult(MortalQteWoundOpportunityProjection.ReadSnapshot(files, lease)));
-                var parsed = await MeasureAsync(files, raw, "Profile.ParseCurrentManifestData",
+                var parsed = await MeasureAsync(files, raw, capture, "Profile.ParseCurrentManifestData",
                     () => JointCleanupValidatorTestData.ReadManifestAsync(files, lease));
                 Assert.Equal(original.SessionId, parsed.SessionId);
                 Assert.Equal(original.RequestId, parsed.RequestId);
                 Assert.Equal(original.TurnNumber, parsed.TurnNumber);
                 Assert.Equal(original.SnapshotToken, parsed.ManifestPayloadHash);
-                var applied = await MeasureAsync(files, raw, "JointCleanup.ReadAppliedPhaseAsync", () =>
+                var applied = await MeasureAsync(files, raw, capture, "JointCleanup.ReadAppliedPhaseAsync", () =>
                     MortalQteDecisionPublication.ReadJointProgressionPhaseAsync(files, lease,
                         original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber));
                 Assert.Equal("applied", applied.Phase);
                 var story = new StoryService(files, NullLogger<StoryService>.Instance);
-                var storyResult = await MeasureAsync(files, raw, "JointCleanup.ReadStoryAsync",
+                var storyResult = await MeasureAsync(files, raw, capture, "JointCleanup.ReadStoryAsync",
                     () => story.ReadMortalJointStoryAsync(lease, applied));
                 Assert.True(storyResult.Disposition == StoryService.MortalJointStoryDisposition.AlreadyAppended,
                     "joint_cleanup_owned_story_missing: " + storyResult.Disposition + "; " + storyResult.Failure);
                 Assert.IsType<StoryService.MortalJointStoryProof>(storyResult.Proof);
                 var state = new StateManager(files, new GameSettings(), NullLogger<StateManager>.Instance);
                 var characteristics = new CharacteristicsService(files, state, NullLogger<CharacteristicsService>.Instance);
-                var projection = await MeasureAsync(files, raw, "JointCleanup.VerifyProjectionAsync",
+                var projection = await MeasureAsync(files, raw, capture, "JointCleanup.VerifyProjectionAsync",
                     () => characteristics.VerifyMortalJointProjectionAsync(lease, applied));
                 Assert.True(projection.Disposition == CharacteristicsService.JointDerivedProjectionDisposition.ExistingVerified,
                     "joint_cleanup_projection_refused: " + projection.Failure);
-                await MeasureAsync(files, raw, "JointCleanup.VerifyTerminalSignalAsync", async () =>
+                await MeasureAsync(files, raw, capture, "JointCleanup.VerifyTerminalSignalAsync", async () =>
                 {
                     await GameEngine.VerifyMortalJointTerminalSignalAsync(files, lease, original.SessionId,
                         original.RequestId, original.TurnNumber, NullLogger<GameEngine>.Instance);
                     return true;
                 });
-                var payload = await MeasureAsync(files, raw, "JointCleanup.VerifyDestructiveOriginal",
+                var payload = await MeasureAsync(files, raw, capture, "JointCleanup.VerifyDestructiveOriginal",
                     () => GameEngine.VerifyMortalJointDestructiveOriginalAsync(files, lease, parsed, original.SnapshotToken));
                 Assert.Equal(original.SnapshotToken, payload.ManifestPayloadHash);
-                await MeasureAsync(files, raw, "JointCleanup.RefreshReadOnlyStateAsync", async () =>
+                await MeasureAsync(files, raw, capture, "JointCleanup.RefreshReadOnlyStateAsync", async () =>
                 {
                     await state.RefreshGameStateReadOnlyAsync(lease);
                     return true;
@@ -213,6 +213,9 @@ public sealed class JointCleanupValidatorProfileTests
     /// <param name="raw">
     /// The uncapped external JSONL writer, kept open until owner close and cleanup finish.
     /// </param>
+    /// <param name="capture">
+    /// Deferred diagnostic ledger merged after the actual validator outcome is known.
+    /// </param>
     /// <param name="name">
     /// Literal component name without paths or payloads.
     /// </param>
@@ -222,7 +225,7 @@ public sealed class JointCleanupValidatorProfileTests
     /// <returns>
     /// The actual result; original failures propagate and diagnostic failures are attached separately.
     /// </returns>
-    private static async Task<T> MeasureAsync<T>(FileSystemManager files, TextWriter raw, string name, Func<Task<T>> operation)
+    internal static async Task<T> MeasureAsync<T>(FileSystemManager files, TextWriter raw, JointCleanupProfileDiagnosticCapture capture, string name, Func<Task<T>> operation)
     {
         using var process = Process.GetCurrentProcess();
         var cpu = process.TotalProcessorTime;

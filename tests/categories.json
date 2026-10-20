@@ -29371,6 +29371,29 @@
       ]
     }
   ]
+},
+{
+  "id": "fr063-joint-cleanup-profile-diagnostic-controls",
+  "responsibility": "Cheap begin/end writer failures and component-report secondary preservation through real optional timing hooks; later records continue.",
+  "excludes": "No game, genuine DATA profile or original recovery run.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointCleanupProfileDiagnosticCapture.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointCleanupProfileDiagnosticCaptureTests.*"
+      ]
+    }
+  ]
 }
 ]
 }
