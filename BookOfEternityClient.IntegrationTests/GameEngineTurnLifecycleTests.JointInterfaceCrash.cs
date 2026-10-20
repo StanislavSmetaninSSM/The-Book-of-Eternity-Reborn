@@ -486,6 +486,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
         var parent = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "parent.json")))!.AsObject();
         var stages = JointInterfaceCrashStageReport.CreateForOrdinary(parent, cut);
+        var resumeActivity = OperatingSystem.IsWindows() && stages != null ? new JointInterfaceResumeActivity(stages) : null;
         var atCut = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "cut.json")))!.AsObject();
         var fault = parent["Fault"]?.GetValue<string>();
         Assert.Equal(root, atCut["Root"]!.GetValue<string>()); Assert.Equal(cut, atCut["Cut"]!.GetValue<int>());
@@ -519,9 +520,19 @@ public sealed partial class GameEngineTurnLifecycleTests
         stages?.Observe("file-system", "enter");
         files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
         {
-            LocalPublicationRecoveryObserver = (phase, index) => recovery.Add(new { Phase = phase.ToString(), Index = index }),
+            AfterCanonicalReadInitialValidationAsync = resumeActivity is null ? null : _ => { resumeActivity.Observe(JointResumeObservation.CanonicalInitial); return Task.CompletedTask; },
+            AfterExactPhysicalReadInitialValidationAsync = resumeActivity is null ? null : _ => { resumeActivity.Observe(JointResumeObservation.ExactInitial); return Task.CompletedTask; },
+            AfterCanonicalWriteLockOpenedAsync = resumeActivity is null ? null : () => { resumeActivity.Observe(JointResumeObservation.CanonicalOpened); return Task.CompletedTask; },
+            CanonicalWriteLockContendedAsync = resumeActivity is null ? null : () => { resumeActivity.Observe(JointResumeObservation.CanonicalContended); return Task.CompletedTask; },
+            MainOwnerLockContendedAsync = resumeActivity is null ? null : () => { resumeActivity.Observe(JointResumeObservation.MainContended); return Task.CompletedTask; },
+            LocalPublicationRecoveryObserver = (phase, index) =>
+            {
+                resumeActivity?.Publication(phase, true);
+                recovery.Add(new { Phase = phase.ToString(), Index = index });
+            },
             LocalPublicationObserver = (phase, index) =>
             {
+                resumeActivity?.Publication(phase, false);
                 if (phase != TrustedLocalPublicationPhase.Committed) return;
                 using var journal = CleanupPublicationCut.Metadata(File.ReadAllBytes(Path.Combine(files.RuntimeRootPath, "trusted-local-publication-v1", "active.json")));
                 foreach (var member in journal.RootElement.GetProperty("Members").EnumerateArray())
@@ -544,7 +555,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             { AtCheckpointAsync = async point =>
                 {
                     diagnostic.Observe("finalization-enter", point.ToString());
-                    stages?.Observe("finalization-before", "enter");
+                    if (resumeActivity != null) resumeActivity.Checkpoint(point, true);
+                    else stages?.Observe("finalization-before", "enter");
                     if (point == SessionFinalizationCheckpoint.LateTerminalAndIdleOperationBound) actualCaller = true;
                     if (cut < 3 && fault is null && point == SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization)
                     {
@@ -562,7 +574,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                             Meaning = "Full existing current original/history/resource proof while actual original remains present; no post-cleanup authority recreation" }));
                     }
                     diagnostic.Observe("finalization-return", point.ToString());
-                    stages?.Observe("finalization-after", "return");
+                    if (resumeActivity != null) resumeActivity.Checkpoint(point, false);
+                    else stages?.Observe("finalization-after", "return");
                 } });
         diagnostic.Observe("engine-return");
         stages?.Observe("engine", "return");
@@ -666,6 +679,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             stages?.Observe("late-first", "enter");
             handled = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
             diagnostic.Observe("late-first-return", handled.ToString());
+            resumeActivity?.Complete();
             stages?.Observe("late-first", "return");
             var firstLogsAfter = log.Describe();
             RequireCurrentInterfaceGuard(1, firstLogsBefore, firstLogsAfter);

@@ -19,7 +19,7 @@ internal sealed class JointInterfaceCrashStageReport
     private readonly object _gate = new();
     private readonly HashSet<SessionFinalizationCheckpoint> _sourceCheckpoints = new();
     private JointSourceReadCounter? _sourceReads;
-    private int _records;
+    private int _records, _resumeRecords;
     private bool _outputClosed;
 
     /// <summary>
@@ -128,6 +128,28 @@ internal sealed class JointInterfaceCrashStageReport
     }
 
     /// <summary>
+    /// Emits the actual enum at the existing finalization callback boundary.
+    /// </summary>
+    /// <param name="checkpoint">
+    /// The observed enum; an undefined value is reported only as Unknown.
+    /// </param>
+    /// <param name="before">
+    /// <see langword="true"/> records entry; <see langword="false"/> records callback return.
+    /// </param>
+    internal void ObserveFinalization(SessionFinalizationCheckpoint checkpoint, bool before) =>
+        ObserveCore(before ? "finalization-before" : "finalization-after", before ? "enter" : "return", null, null,
+            checkpoint: Enum.IsDefined(checkpoint) ? checkpoint.ToString() : "Unknown");
+
+    /// <summary>
+    /// Emits a bounded activity snapshot while reserving at least forty records for ordinary stages.
+    /// </summary>
+    /// <param name="snapshot">
+    /// Scalar hook observations; counts are neither I/O completions nor success claims.
+    /// </param>
+    internal void ObserveResumeActivity(JointResumeActivitySnapshot snapshot) =>
+        ObserveCore("resume-activity", "enter", null, null, resume: snapshot);
+
+    /// <summary>
     /// Writes an ordinary scalar stage or a source-probe aggregate under the same record and byte budgets.
     /// </summary>
     /// <param name="stage">
@@ -142,15 +164,23 @@ internal sealed class JointInterfaceCrashStageReport
     /// <param name="reads">
     /// Optional scalar read counters; null leaves the previous stage schema unchanged.
     /// </param>
-    private void ObserveCore(string stage, string transition, string? errorType, JointSourceReadSnapshot? reads)
+    /// <param name="resume">
+    /// Optional bounded ordinary Windows resumer observations.
+    /// </param>
+    /// <param name="checkpoint">
+    /// An optional enum name from the existing finalization callback.
+    /// </param>
+    private void ObserveCore(string stage, string transition, string? errorType, JointSourceReadSnapshot? reads,
+        JointResumeActivitySnapshot? resume = null, string? checkpoint = null)
     {
         lock (_gate)
         {
             if (_outputClosed || _records >= 64) return;
+            if (resume != null && _resumeRecords++ >= 24) return;
             _records++;
             if (stage is not ("fixture" or "file-system" or "engine" or "preflight-lease" or "snapshot-refresh" or
                 "late-first" or "finalization-before" or "finalization-after" or "late-repeat" or "exit" or "error" or
-                "source-author" or "source-inspection" or "source-capture" or "source-validated" or "source-qte" or "source-turn" or "source-reads") ||
+                "source-author" or "source-inspection" or "source-capture" or "source-validated" or "source-qte" or "source-turn" or "source-reads" or "resume-activity") ||
                 transition is not ("enter" or "return" or "error"))
             {
                 OutputFailure ??= "InvalidStage";
@@ -160,7 +190,7 @@ internal sealed class JointInterfaceCrashStageReport
             errorType = errorType is { Length: > 256 } ? errorType[..256] : errorType;
             try
             {
-                var line = Serialize(stage, transition, errorType, reads);
+                var line = Serialize(stage, transition, errorType, reads, resume, checkpoint);
                 if (Encoding.UTF8.GetByteCount(line) > 2048)
                 {
                     OutputFailure ??= "RecordTooLarge";
@@ -193,10 +223,17 @@ internal sealed class JointInterfaceCrashStageReport
     /// <param name="reads">
     /// Optional scalar source-probe totals; no paths or file contents are serialized.
     /// </param>
+    /// <param name="resume">
+    /// Optional scalar resumer counters without paths or file contents.
+    /// </param>
+    /// <param name="checkpoint">
+    /// Optional fixed enum name; absent for previous stage consumers.
+    /// </param>
     /// <returns>
     /// A single JSONL record for the subsequent byte-bound check.
     /// </returns>
-    private string Serialize(string stage, string transition, string? errorType, JointSourceReadSnapshot? reads = null)
+    private string Serialize(string stage, string transition, string? errorType, JointSourceReadSnapshot? reads = null,
+        JointResumeActivitySnapshot? resume = null, string? checkpoint = null)
     {
         var record = JsonSerializer.SerializeToNode(new
         {
@@ -205,6 +242,8 @@ internal sealed class JointInterfaceCrashStageReport
             ElapsedMilliseconds = Stopwatch.GetElapsedTime(_started).TotalMilliseconds, ErrorType = errorType
         })!.AsObject();
         if (reads != null) record["Reads"] = JsonSerializer.SerializeToNode(reads);
+        if (resume != null) record["ResumeActivity"] = JsonSerializer.SerializeToNode(resume);
+        if (checkpoint != null) record["Checkpoint"] = checkpoint;
         return record.ToJsonString() + "\n";
     }
 }
