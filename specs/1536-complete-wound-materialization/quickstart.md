@@ -1,3 +1,29 @@
+# Spec12 / plan10 — current seeded cut0 preparation
+
+T277 SOURCE/PREP accepted; T278 genuine generation passed once with source f479d42a72f7412871e797575a1b1bd2c6dabd07. Published82files/513708bytes plus manifest match their Git blobs; all38directories exist in the current local artifact. T278-seed-binding.json records the exact local consumer binding. T279 remains UNRUN until focused binding acceptance.
+
+## Explicit artifact restoration
+
+Git stores the83 artifact files, but not seven empty directories. **A plain Git checkout is not a complete seed artifact**, even if source formatting matches. The verified T278-generator.zip preserves every declared directory, including empty directories; expected archive SHA256 is A40C75EDF43C5FCF51185FB901F3242CD0EAAB621A9D900E27D6660B8425D369. The artifact inside it is `generated/artifact/`.
+
+1. Verify the archive digest, then extract it into a fresh explicitly owned staging directory. Do not overwrite an existing directory. Check the staged manifest digest against5439B2F49BCAB971F5B97EFFA238842E6D0A4B4ADD8B5F8FF27093BF9063BFCC and its complete file/hash/directory inventory.
+2. To assemble the fixed repository fixture after a fresh checkout, first verify all83 existing Git artifact files against the staged manifest/payload; missing/changed/extra files refuse. Check ordinary paths and ancestors. Explicitly recreate only the missing declared empty directories from that verified inventory. Do not overwrite or normalize files, add .gitkeep, delete unknown entries, recover game state, or change the manifest. This separate transport preparation is not a loader repair or fallback. Recheck the exact artifact inventory before requesting a test.
+3. Match the producing working-input closure, not just the Git SHA. T278-source-inputs.json records all1769 source/asset hashes and Git-blob reconstruction recipes: core.autocrlf=true,32 exact Git blobs and1737 LF→CRLF inputs. Different checkout formatting correctly invalidates the fingerprint. A mismatch stops; any new genuine generation requires separately authorized bounded work, never an automatic fallback or an extra run in this slice.
+
+Missing empty directories after Git checkout:
+
+- `game_session/game_state/factions`
+- `game_session/images`
+- `game_session/input`
+- `game_session/lore/shining_abode`
+- `game_session/ready`
+- `game_session/saves/autosaves`
+- `game_session/saves/checkpoint_saves`
+
+The current local artifact already satisfies this inventory. Independent copies contain fresh local owners and only game_session+generation DATA. Original cold five/Linux paths remain separate; no universal fresh-clone or cross-platform consumer-readiness claim is made.
+
+---
+
 # Текущее состояние: spec11 / plan9 seed prototype
 
 T273 prototype PASS: one complete actual generator case/0skip; source42=206.249s, capture/export/open=1.121s, imports=0.105s/0.083s, read-only validation=0.385s/0.299s. 82 payload files/513708bytes; two own copies and source removed/absence confirmed. Immutable artifact retained and independently rehashed; no Stage43/crash/current-owner qualification or resume speedup claim. Compiled ef93fbde7cde3fddd0b0cf20c57102fa785dc330; runtime metadata 22acebccb41a986632cf586b8f8d4b184dbe2099; run 20261020-123808-320-56712-7cb9a4cc15534c0f8827ef726eb139ca-categories. Exact source/DLL/raw/artifact evidence T273-generator.json/zip. Windows0/5, original220 five NOT_RERUN, LinuxUNRUN; T219 historical fixture retained. Final independent gpt-6-astra/high evidence/recovery review ACCEPTED at aea971007e24108a19a6b942f982ececc85fb031. Fresh GitHub recovery d2ed51d00f2c1667f0cac68ff02e5121cd774c6b:329 files/allGitblobs/clean verified independently, zero mismatches; T274-clean-recovery.json.
