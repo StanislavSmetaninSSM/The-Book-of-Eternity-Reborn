@@ -19,6 +19,7 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
         ResourceOwnerAuthority owners, IResourceRegisteredSystemOutcomeDraft registeredOutcome,
         IReadOnlyList<ResourceOwnerKey> terminalOwners, AcceptedMechanicsIdentityFactory resourceFactory)
     {
+        using var innerTiming1 = files.MeasureOperation("JointInput.CaptureCalculationInputs");
         try
         {
             var binding = bundle.Input.Binding;
@@ -29,8 +30,10 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
             ValidateTurnRequest(Read(LiveTurnPreparationService.TurnRequestPath), binding, issues);
             ValidateLiveWoundRoots(Read, bundle.Input, issues);
             ValidateLiveEffectRoots(Read, bundle.EffectBatchPlan.EffectPlan, issues);
+            using var innerTiming2 = files.MeasureOperation("JointInput.CaptureReadSnapshot");
             var snapshot = PendingTurnSnapshotReader.ReadCurrent(files, lease,
                 new[] { EffectAcceptedTurnInputComposer.WorldTimePath });
+            innerTiming2?.Dispose();
             issues.AddRange(snapshot.Issues);
             if (!snapshot.Success || snapshot.Snapshot is not { } original || original.SessionId != binding.SessionId ||
                 original.RequestId != binding.RequestId || original.SnapshotToken != binding.SnapshotToken ||
@@ -70,6 +73,7 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
         FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
         WoundAcceptedTurnPlanner.MortalJointRepairCommonAuthority authority)
     {
+        using var innerTiming3 = files.MeasureOperation("JointInput.ComposeAsync");
         try
         {
             await authority.ValidateCurrentAsync(files, lease);
@@ -84,7 +88,9 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
             ValidateTurnRequest(Read(LiveTurnPreparationService.TurnRequestPath), binding, issues);
             ValidateLiveWoundRoots(Read, bundle.Input, issues);
             ValidateLiveEffectRoots(Read, bundle.EffectBatchPlan.EffectPlan, issues);
+            using var innerTiming4 = files.MeasureOperation("JointInput.ComposeReadSnapshot");
             var snapshot = PendingTurnSnapshotReader.ReadCurrent(files, lease, new[] { EffectAcceptedTurnInputComposer.WorldTimePath });
+            innerTiming4?.Dispose();
             issues.AddRange(snapshot.Issues);
             if (!snapshot.Success || snapshot.Snapshot is not { } original || original.SessionId != binding.SessionId ||
                 original.RequestId != binding.RequestId || original.SnapshotToken != binding.SnapshotToken ||

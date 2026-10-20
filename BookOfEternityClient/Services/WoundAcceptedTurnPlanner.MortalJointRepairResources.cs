@@ -244,13 +244,20 @@ internal static partial class WoundAcceptedTurnPlanner
     internal static async Task ValidateJointRepairResourcePublicationAsync(FileSystemManager files,
         FileSystemManager.CanonicalWriteLease lease, object value)
     {
+        using var innerTiming1 = files.MeasureOperation("JointResources.ValidateCurrentAsync");
+        using var innerTiming2 = files.MeasureOperation("JointResources.ValidateSeal");
         if (value is not JointResourcePublicationAuthority authority || !authority.HasValidSeal())
             throw new InvalidDataException("Invalid private joint resource publication authority.");
+        innerTiming2?.Dispose();
         await ValidateJointRepairCommonBaselineAsync(files, lease, authority.Baseline);
+        using var innerTiming3 = files.MeasureOperation("JointResources.RecomputeQteAsync");
         var qte = await RecomputeJointQteContributionAsync(files, lease, authority.Baseline);
+        innerTiming3?.Dispose();
+        using var innerTiming4 = files.MeasureOperation("JointResources.CompareCompanionProjection");
         var companions = authority.Companions;
         if (qte.Fingerprint != authority.QteContributionFingerprint ||
             qte.AfterImages.Any(row => !companions.TryGetValue(row.Key, out var actual) || !JsonNode.DeepEquals(row.Value, actual)))
             throw new InvalidDataException("The sealed joint QTE partition contribution changed.");
+        innerTiming4?.Dispose();
     }
 }

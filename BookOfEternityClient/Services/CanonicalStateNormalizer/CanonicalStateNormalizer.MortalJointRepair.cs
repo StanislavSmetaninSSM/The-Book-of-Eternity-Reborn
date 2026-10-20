@@ -43,8 +43,12 @@ public partial class CanonicalStateNormalizer
 
     private async Task ValidateTakenJointPublicationInputsAsync(MortalJointRepairPublicationTakeReceipt receipt)
     {
+        using var innerTiming1 = _fs.MeasureOperation("JointPublish.ValidateTakenInputsAsync");
         var lease = _writeLease ?? throw new InvalidOperationException("Joint publication requires its issuing lease.");
+        using var innerTiming2 = _fs.MeasureOperation("JointPublish.ValidateTakenInventoryAsync");
         await receipt.Preparation.ValidateInventoryCurrentAsync(_fs, lease);
+        innerTiming2?.Dispose();
+        using var innerTiming3 = _fs.MeasureOperation("JointPublish.ValidateReceiptLineage");
         var probe = AcceptedTurnAuthorityRegistry.ProbeTakenJointRepairPublication(_fs, lease, receipt);
         if (!probe.IsValid) throw new InvalidDataException(string.Join(";", probe.Issues.Select(row => row.Code + ": " + row.FilePath)));
         var plan = receipt.Plan;
@@ -76,6 +80,7 @@ public partial class CanonicalStateNormalizer
         if (firstFailure is not null)
             throw new InvalidDataException("Joint publication lost its exclusive complete effect/wound/item lineage. First failed predicate: " +
                 firstFailure + details);
+        innerTiming3?.Dispose();
 
         static string BoundedFingerprint(string? value) => value is null ? "<null>" :
             value.Length <= 80 ? value : value[..80] + "<truncated>";
@@ -83,8 +88,10 @@ public partial class CanonicalStateNormalizer
         // aggregate bounds. This taken capability additionally proves exact
         // unchanged original/current bytes and the actual vacant item cache slot.
         // It never uses the old singleton normalized-source fallback.
+        using var innerTiming4 = _fs.MeasureOperation("JointPublish.CandidateAdmissionGate");
         var finalIssues = MortalWoundTreatmentCapabilityAuthority.CandidateAdmissionGate.ValidateJoint(receipt.Authority, plan);
         if (finalIssues.Count != 0) throw new InvalidDataException(string.Join(";", finalIssues.Select(row => row.Code + ": " + row.FilePath)));
+        innerTiming4?.Dispose();
     }
 
     internal sealed record JointRepairPublicationResult(MortalJointRepairPublicationDisposition Disposition,
@@ -97,37 +104,60 @@ public partial class CanonicalStateNormalizer
         JointRepairPublicationPreflight preflight, ValidationService validator,
         IReadOnlyDictionary<string, string> backups)
     {
+        using var innerTiming5 = _fs.MeasureOperation("JointPublish.NormalizeAndValidateAsync");
         var lease = _writeLease ?? throw new InvalidOperationException("Joint coordinator requires its issuing lease.");
         AcceptedTurnAuthorityRegistry.JointRepairPublicationTakeResult taken;
+        using var innerTiming6 = _fs.MeasureOperation("JointPublish.TakeAsync");
         try { taken = await TakeJointRepairPublicationAsync(preflight); }
         catch (Exception error) when (error is InvalidDataException or IOException or InvalidOperationException or ArgumentException or System.Text.Json.JsonException)
         { return new(MortalJointRepairPublicationDisposition.PublicationUncertain, null, JointPublicationIssue(error)); }
+        innerTiming6?.Dispose();
         if (!taken.Success || taken.Receipt is null)
             return new(MortalJointRepairPublicationDisposition.PublicationUncertain, null, taken.Issues);
         MortalJointRepairPublicationTransaction transaction;
+        using var innerTiming7 = _fs.MeasureOperation("JointPublish.CreateTransaction");
         try { transaction = MortalJointRepairPublicationTransaction.Create(_fs, lease, taken.Receipt); }
         catch (Exception error) when (error is InvalidDataException or IOException or InvalidOperationException or ArgumentException)
         { return new(MortalJointRepairPublicationDisposition.PublicationUncertain, null, JointPublicationIssue(error)); }
+        innerTiming7?.Dispose();
         try
         {
+            using var innerTiming8 = _fs.MeasureOperation("JointPublish.PublishAcceptedMechanicsAsync");
             var plan = await PublishAcceptedMechanicsAsync(backups, null, preflight.Validated,
                 normalizedAcceptedCarrierBaselines: false, jointTransaction: transaction) ??
                 throw new InvalidDataException("Joint common publication returned no plan.");
+            innerTiming8?.Dispose();
             var issues = new List<ValidationIssue>();
+            using var innerTiming9 = _fs.MeasureOperation("JointPublish.ValidateCanonicalLocationAsync");
             issues.AddRange(await validator.ValidateAcceptedTurnCanonicalMortalLocationMaterializationAsync(lease));
+            innerTiming9?.Dispose();
+            using var innerTiming10 = _fs.MeasureOperation("JointPublish.ValidateCanonicalItemAsync");
             issues.AddRange(await validator.ValidateAcceptedTurnCanonicalMortalItemMaterializationAsync(lease));
+            innerTiming10?.Dispose();
+            using var innerTiming11 = _fs.MeasureOperation("JointPublish.ValidateCanonicalResourceAsync");
             issues.AddRange(await validator.ValidateAcceptedTurnCanonicalResourceMaterializationAsync(lease));
+            innerTiming11?.Dispose();
+            using var innerTiming12 = _fs.MeasureOperation("JointPublish.ValidateCanonicalEffectAsync");
             issues.AddRange(await validator.ValidateAcceptedTurnCanonicalEffectMaterializationAsync(lease));
+            innerTiming12?.Dispose();
+            using var innerTiming13 = _fs.MeasureOperation("JointPublish.ValidateCanonicalWoundAsync");
             issues.AddRange(await validator.ValidateAcceptedTurnCanonicalWoundMaterializationAsync(lease));
+            innerTiming13?.Dispose();
+            using var innerTiming14 = _fs.MeasureOperation("JointPublish.ValidateOutputAuthorityAsync");
             issues.AddRange(await WoundAcceptedTurnSnapshotContract.ValidatePublishedOutputAuthorityAsync(plan,
                 path => _fs.ReadFileBytesAsync(lease, path)));
+            innerTiming14?.Dispose();
             if (issues.Any(row => row.Severity == IssueSeverity.Error))
             {
                 var compensation = await transaction.CompensateAndRearmAsync(_fs, lease);
                 return new(compensation.Disposition, null, issues.Concat(compensation.Issues).ToArray());
             }
+            using var innerTiming15 = _fs.MeasureOperation("JointPublish.ValidateTransactionReadbackAsync");
             var proof = await transaction.ValidatePublishedReadbackAsync(_fs, lease);
+            innerTiming15?.Dispose();
+            using var innerTiming16 = _fs.MeasureOperation("JointPublish.CompleteRegistry");
             var settled = AcceptedTurnAuthorityRegistry.CompleteTakenJointRepairPublication(_fs, lease, transaction.Receipt, proof);
+            innerTiming16?.Dispose();
             if (settled.Disposition != MortalJointRepairPublicationDisposition.Committed)
             {
                 // Completion refusal may mean stale ownership or a claim that

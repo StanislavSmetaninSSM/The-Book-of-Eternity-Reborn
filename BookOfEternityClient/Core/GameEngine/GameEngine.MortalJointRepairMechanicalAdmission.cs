@@ -49,22 +49,31 @@ public partial class GameEngine
         internal async Task ValidateCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
             WoundAcceptedTurnBinding binding)
         {
+            using var innerTiming1 = files.MeasureOperation("JointMechanical.ValidateCurrentAsync");
+            using var innerTiming2 = files.MeasureOperation("JointMechanical.ValidateOwnerAndFingerprint");
             files.EnsureCanonicalWriteLeaseActive(lease);
             if (!ReferenceEquals(files, _files) || !ReferenceEquals(lease, _lease) ||
                 !files.IsCurrentSessionGeneration(lease, _generation) || ComputeFingerprint() != Fingerprint ||
                 WoundAcceptedTurnFingerprints.ComputeBinding(binding) != WoundAcceptedTurnFingerprints.ComputeBinding(_binding))
                 throw new InvalidDataException("Joint mechanical admission belongs to a stale or foreign owner/frame.");
+            innerTiming2?.Dispose();
+            using var innerTiming3 = files.MeasureOperation("JointMechanical.RequireCurrentOriginalEvidence");
             _originalEvidence.RequireCurrent(files, lease, _originalSnapshot);
+            innerTiming3?.Dispose();
+            using var innerTiming4 = files.MeasureOperation("JointMechanical.ReadAndCheckSnapshot");
             var original = MortalQteWoundOpportunityProjection.ReadSnapshot(files, lease);
             if (original.SessionId != binding.SessionId || original.RequestId != binding.RequestId ||
                 original.SnapshotToken != binding.SnapshotToken || original.TurnNumber != binding.Turn || original.Realm != binding.Realm)
                 throw new InvalidDataException("The official original no longer matches mechanical admission.");
+            innerTiming4?.Dispose();
+            using var innerTiming5 = files.MeasureOperation("JointMechanical.CompareBeforeImages");
             foreach (var (path, expected) in _before)
             {
                 var current = await files.ReadFileBytesAsync(lease, path);
                 if (expected is null ? current is not null : current is null || !expected.AsSpan().SequenceEqual(current))
                     throw new InvalidDataException("Joint mechanical admission changed: " + path);
             }
+            innerTiming5?.Dispose();
         }
         internal async Task<GameResponse> ReadProvedEmptyResponseAsync(FileSystemManager files,
             FileSystemManager.CanonicalWriteLease lease, WoundAcceptedTurnBinding binding)

@@ -10,6 +10,19 @@ Canonical [spec](spec.md), [tasks](tasks.md). User explicitly rejected diagnosti
 
 Mapping:TIM3-1/2→T299;TIM3-3→T300;TIM3-4→T301;TIM3-5→T302. Original Windows0/5/LinuxUNRUN remain separate.
 
+### Inner-phase continuation T303–306
+
+Measured questions, not an unchanged retry: which operations account for common-plan remainder127.6000063s, normalization remainder50.2772030s and game-state64.1961875s? Wall time is not CPU time. The existing source consultation identifies untimed mechanical/current-original reads, progression proof, repeated seal/admission/projection calculations, registry/input construction, publication/readback and individual validation phases; none is assumed guilty before measuring.
+
+1. T303 add only existing optional literal scopes. In WoundAcceptedTurnPlanner.MortalJointRepairCommon/Resources/CommonPlan/CommonCalculation separate original seal predicates, mechanical/item-baseline checks, original progression proof, retained calculation capture/calculation, common composition/binding/registry/candidate gate/bounds. Instrument MechanicalAdmission.ValidateCurrentAsync and ProgressionSource.ValidateCurrentAsync by original evidence/snapshot/guard-read groups; no per-file trace expansion. In CanonicalStateNormalizer.MortalJointRepair and the existing accepted-mechanics publication body, split take/input proof/write preparation/local publication/readback/agreement and canonical location/item/resource/effect/wound/output validators. In ValidationService.ValidationPhases place a named timer around each existing phase invocation and core entry; preserve all phase guards and AsyncLocal cleanup. No new authority state, stored filesystem reference, ownership or aggregate API.
+2. Verify every touched file after removing only added timer/Dispose lines matches98376e40 byte-for-byte apart from intentional XML documentation; inspect every actual statement/guard. Unchanged observer/output helpers keep their accepted short controls; do not rerun them without changed source or a concern. Fresh integration XML build, changed-comment audit, source/DLL hashes and metadata only. Separate SOURCE/PREP review and remote checkpoint precede runtime.
+3. T304 existing genuine source42 generator once for final source; current983 artifact remains historical whole DATA. Validate new manifest/payload/directory inventory, two imports and exact producing input recipes; save new artifact/binding. No manual rebinding or automatic fallback.
+4. T305 one changed-instrumentation original seeded cut0 at unchanged process/test policy, all raw names retained. Record actual failure/PASS, spans, callbacks, source/artifact/DLL and owned cleanup. No full five/Linux or automatic retry.
+5. T306 reconstruct named intervals offline, match new scopes to previously uncovered calls, separate inclusive parent/child cost and unfinished tail. Independent review must decide whether the actual cause is established. If not, keep T302/root-cause OPEN and state the next precise unknown; do not relabel localization as completed diagnosis. Save/verify remote recovery.
+
+Mapping: TIM3-1/2/3→T303; TIM3-4→T304/T305; TIM3-5→T306 and still-open T302. Existing spec review waiver applies. Original Windows0/5/LinuxUNRUN and all failures remain. No production optimization or platform/security change.
+
+
 T301 actual result: complete failed cut0 with1532uncut records/764intervals. [Findings](recovery/crash5/T302-findings.md) establish expensive finite publication390.368s plus two caller-driven postpublication passes153.962s; these disjoint spans consume544.330s before final phase begins597.544s. The600s wait terminates the observed flow. Underlying latency inside unmeasured suboperations, eventual tail completion and Linux causes remain unresolved; no optimization accepted. Separate Astra/high accepted partial evidence and500-file clean remote recovery (T302-final-review.json); root-cause/T302 remainOPEN pending finer decomposition.
 
 ---

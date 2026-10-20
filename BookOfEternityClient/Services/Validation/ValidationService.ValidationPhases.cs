@@ -29,6 +29,7 @@ public partial class ValidationService
         GameStateValidationSelection selection, bool metaControlShapesOnly, StoryService.AcceptedStoryAppend? acceptedStoryAppend,
         StoryService.MortalJointStoryProof? jointStoryProof)
     {
+        using var innerTiming1 = _fs.MeasureOperation("GameState.ValidateCoreAsync");
         ArgumentNullException.ThrowIfNull(selection);
         var previousSelection = _activeGameStateValidationSelection.Value;
         var previousGuardianPolicyContext =
@@ -87,6 +88,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("JsonIntegrity", null);
 #endif
+            using var innerTiming2 = _fs.MeasureOperation("GameState.JsonIntegrity");
             await ValidateJsonIntegrity(issues);
         }
         if (phases.Includes(GameStateValidationPhase.RequiredFiles))
@@ -94,6 +96,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("RequiredFiles", null);
 #endif
+            using var innerTiming3 = _fs.MeasureOperation("GameState.RequiredFiles");
             ValidateRequiredFiles(issues);
         }
         if (phases.Includes(GameStateValidationPhase.RequiredFields))
@@ -101,6 +104,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("RequiredFields", null);
 #endif
+            using var innerTiming4 = _fs.MeasureOperation("GameState.RequiredFields");
             await ValidateRequiredFields(issues);
         }
         if (phases.Includes(GameStateValidationPhase.LoreBootstrapRequiredFiles))
@@ -108,6 +112,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("LoreBootstrapRequiredFiles", null);
 #endif
+            using var innerTiming5 = _fs.MeasureOperation("GameState.LoreBootstrapRequiredFiles");
             await ValidateLoreBootstrapRequiredFilesAsync(issues);
         }
         if (phases.Includes(GameStateValidationPhase.MortalBootstrapPlayerVisibleNames))
@@ -115,6 +120,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("MortalBootstrapPlayerVisibleNames", null);
 #endif
+            using var innerTiming6 = _fs.MeasureOperation("GameState.MortalBootstrapPlayerVisibleNames");
             await ValidateMortalBootstrapPlayerVisibleNamesAsync(issues);
         }
         if (phases.Includes(GameStateValidationPhase.MortalBootstrapContentAnchors))
@@ -122,6 +128,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("MortalBootstrapContentAnchors", null);
 #endif
+            using var innerTiming7 = _fs.MeasureOperation("GameState.MortalBootstrapContentAnchors");
             await ValidateMortalBootstrapContentAnchorsAsync(issues);
         }
         if (phases.Includes(GameStateValidationPhase.CrossReferences))
@@ -129,6 +136,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("CrossReferences", null);
 #endif
+            using var innerTiming8 = _fs.MeasureOperation("GameState.CrossReferences");
             await ValidateCrossReferences(issues);
         }
         if (phases.Includes(GameStateValidationPhase.RivalAndResidentCrossReferences) &&
@@ -137,6 +145,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("RivalAndResidentCrossReferences", null);
 #endif
+            using var innerTiming9 = _fs.MeasureOperation("GameState.RivalAndResidentCrossReferences");
             await ValidateRivalAndResidentCrossReferencesAsync(issues);
         }
         if (phases.Includes(GameStateValidationPhase.SoulStateConsistency))
@@ -144,6 +153,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("SoulStateConsistency", null);
 #endif
+            using var innerTiming10 = _fs.MeasureOperation("GameState.SoulStateConsistency");
             await ValidateSoulStateConsistency(issues);
         }
     }
@@ -157,6 +167,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("PlayerStateFiles", null);
 #endif
+            using var innerTiming11 = _fs.MeasureOperation("GameState.PlayerStateFiles");
             await ValidatePlayerStateFiles(issues);
         }
         if (phases.Includes(GameStateValidationPhase.NpcStateFiles))
@@ -164,6 +175,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("NpcStateFiles", null);
 #endif
+            using var innerTiming12 = _fs.MeasureOperation("GameState.NpcStateFiles");
             await ValidateNpcStateFiles(issues);
         }
         if (phases.Includes(GameStateValidationPhase.SkillContractConsistency))
@@ -171,6 +183,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("SkillContractConsistency", null);
 #endif
+            using var innerTiming13 = _fs.MeasureOperation("GameState.SkillContractConsistency");
             await ValidateSkillContractConsistencyAsync(issues);
         }
         if (phases.Includes(GameStateValidationPhase.TrainingShowcases))
@@ -178,6 +191,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("TrainingShowcases", null);
 #endif
+            using var innerTiming14 = _fs.MeasureOperation("GameState.TrainingShowcases");
             await ValidateTrainingShowcasesAsync(issues);
         }
         if (phases.Includes(GameStateValidationPhase.WorldQuestCombatFactionStateFiles))
@@ -185,6 +199,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("WorldQuestCombatFactionStateFiles", null);
 #endif
+            using var innerTiming15 = _fs.MeasureOperation("GameState.WorldQuestCombatFactionStateFiles");
             await ValidateWorldQuestCombatFactionStateFiles(issues);
         }
         if (phases.Includes(GameStateValidationPhase.MetaMiscStateFiles))
@@ -192,6 +207,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("MetaMiscStateFiles", null);
 #endif
+            using var innerTiming16 = _fs.MeasureOperation("GameState.MetaMiscStateFiles");
             await ValidateMetaMiscStateFiles(issues);
         }
         else if (phases.Includes(GameStateValidationPhase.GuardianProjectStateFiles))
@@ -199,6 +215,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("GuardianProjectStateFiles", null);
 #endif
+            using var innerTiming17 = _fs.MeasureOperation("GameState.GuardianProjectStateFiles");
             await ValidateGuardianProjectStateFilesAsync(issues);
         }
         if (phases.Includes(GameStateValidationPhase.AcceptedTurnActorMaterializationCompleteness))
@@ -206,6 +223,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("AcceptedTurnActorMaterializationCompleteness", null);
 #endif
+            using var innerTiming18 = _fs.MeasureOperation("GameState.AcceptedTurnActorMaterializationCompleteness");
             await ValidateAcceptedTurnActorMaterializationCompletenessAsync(issues);
         }
         if (phases.HasFlag(
@@ -214,6 +232,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("AcceptedTurnFactionMaterializationCompleteness", null);
 #endif
+            using var innerTiming19 = _fs.MeasureOperation("GameState.AcceptedTurnFactionMaterializationCompleteness");
             await ValidateAcceptedTurnFactionMaterializationCompletenessAsync(issues);
         }
         if (phases.HasFlag(
@@ -222,6 +241,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("AcceptedTurnLocationMaterializationCompleteness", null);
 #endif
+            using var innerTiming20 = _fs.MeasureOperation("GameState.AcceptedTurnLocationMaterializationCompleteness");
             await ValidateAcceptedTurnCanonicalMortalLocationMaterializationAsync(issues);
         }
         if (phases.HasFlag(
@@ -230,6 +250,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("AcceptedTurnItemMaterializationCompleteness", null);
 #endif
+            using var innerTiming21 = _fs.MeasureOperation("GameState.AcceptedTurnItemMaterializationCompleteness");
             await ValidateAcceptedTurnCanonicalMortalItemMaterializationAsync(issues, null);
         }
         if (phases.HasFlag(
@@ -238,6 +259,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("AcceptedTurnEffectMaterializationCompleteness", null);
 #endif
+            using var innerTiming22 = _fs.MeasureOperation("GameState.AcceptedTurnEffectMaterializationCompleteness");
             await ValidateAcceptedTurnCanonicalEffectMaterializationAsync(issues, null);
         }
         if (phases.HasFlag(
@@ -246,6 +268,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("AcceptedTurnWoundMaterializationCompleteness", null);
 #endif
+            using var innerTiming23 = _fs.MeasureOperation("GameState.AcceptedTurnWoundMaterializationCompleteness");
             await ValidateAcceptedTurnCanonicalWoundMaterializationAsync(
                 issues,
                 writeLease: null);
@@ -255,6 +278,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("AfterlifeSpiritualConflictState", null);
 #endif
+            using var innerTiming24 = _fs.MeasureOperation("GameState.AfterlifeSpiritualConflictState");
             await ValidateAfterlifeSpiritualConflictStateAsync(issues);
         }
         if (phases.Includes(GameStateValidationPhase.SourceOfLightCapstoneGlobalState))
@@ -262,6 +286,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("SourceOfLightCapstoneGlobalState", null);
 #endif
+            using var innerTiming25 = _fs.MeasureOperation("GameState.SourceOfLightCapstoneGlobalState");
             await ValidateSourceOfLightCapstoneGlobalStateAsync(issues);
         }
         if (phases.Includes(GameStateValidationPhase.ShiningLeadershipHeadReferences))
@@ -269,6 +294,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("ShiningLeadershipHeadReferences", null);
 #endif
+            using var innerTiming26 = _fs.MeasureOperation("GameState.ShiningLeadershipHeadReferences");
             await ValidateShiningLeadershipHeadReferencesAsync(issues);
         }
     }
@@ -283,6 +309,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("LifeEvaluationRewardCycle", null);
 #endif
+            using var innerTiming27 = _fs.MeasureOperation("GameState.LifeEvaluationRewardCycle");
             await ValidateLifeEvaluationRewardCycleAsync(issues);
         }
         if (phases.Includes(GameStateValidationPhase.NoLifeEvaluationRewardsOnTriggerTurn))
@@ -290,6 +317,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("NoLifeEvaluationRewardsOnTriggerTurn", null);
 #endif
+            using var innerTiming28 = _fs.MeasureOperation("GameState.NoLifeEvaluationRewardsOnTriggerTurn");
             await ValidateNoLifeEvaluationRewardsOnTriggerTurnAsync(issues);
         }
         if (phases.Includes(GameStateValidationPhase.GuardianResonancePowerEvents))
@@ -297,6 +325,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("GuardianResonancePowerEvents", null);
 #endif
+            using var innerTiming29 = _fs.MeasureOperation("GameState.GuardianResonancePowerEvents");
             await ValidateGuardianResonancePowerEventsAsync(issues);
         }
         if (phases.Includes(GameStateValidationPhase.ShiningTreasuryClientOwnedState))
@@ -304,6 +333,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("ShiningTreasuryClientOwnedState", null);
 #endif
+            using var innerTiming30 = _fs.MeasureOperation("GameState.ShiningTreasuryClientOwnedState");
             await ValidateShiningTreasuryClientOwnedStateAsync(issues);
         }
         if (phases.Includes(GameStateValidationPhase.AfterlifeActiveThreatPreTurnContinuity))
@@ -311,6 +341,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("AfterlifeActiveThreatPreTurnContinuity", null);
 #endif
+            using var innerTiming31 = _fs.MeasureOperation("GameState.AfterlifeActiveThreatPreTurnContinuity");
             await ValidateAfterlifeActiveThreatPreTurnContinuityAsync(issues);
         }
         if (phases.Includes(GameStateValidationPhase.AfterlifeGlobalFlagPreTurnContinuity))
@@ -318,6 +349,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("AfterlifeGlobalFlagPreTurnContinuity", null);
 #endif
+            using var innerTiming32 = _fs.MeasureOperation("GameState.AfterlifeGlobalFlagPreTurnContinuity");
             await ValidateAfterlifeGlobalFlagPreTurnContinuityAsync(issues);
         }
         if (phases.Includes(GameStateValidationPhase.ClientOwnedControlFiles))
@@ -325,6 +357,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("ClientOwnedControlFiles", null);
 #endif
+            using var innerTiming33 = _fs.MeasureOperation("GameState.ClientOwnedControlFiles");
             await ValidateClientOwnedControlFilesAsync(issues, acceptedStoryAppend, jointStoryProof);
         }
         if (phases.Includes(GameStateValidationPhase.RealmSegregation))
@@ -332,6 +365,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("RealmSegregation", null);
 #endif
+            using var innerTiming34 = _fs.MeasureOperation("GameState.RealmSegregation");
             await ValidateRealmSegregationAsync(issues);
         }
     }

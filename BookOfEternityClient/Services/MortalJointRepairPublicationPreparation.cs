@@ -96,19 +96,26 @@ internal sealed class MortalJointRepairPublicationPreparation
     // the same still-confirmed agreement. All IO remains outside its monitors.
     internal async Task ValidateInventoryCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
     {
+        using var innerTiming1 = files.MeasureOperation("JointInventory.ValidateCurrentAsync");
+        using var innerTiming2 = files.MeasureOperation("JointInventory.ValidateOwnerAndSeal");
         files.EnsureCanonicalWriteLeaseActive(lease);
         if (!AgreesWith(files, lease, Plan, Binding) || !files.IsCurrentSessionGeneration(lease, Generation))
             throw new InvalidDataException("Joint transaction inventory belongs to a stale or foreign lease/owner.");
+        innerTiming2?.Dispose();
+        using var innerTiming3 = files.MeasureOperation("JointInventory.ReadAndCheckSnapshot");
         var original = MortalQteWoundOpportunityProjection.ReadSnapshot(files, lease);
         if (original.SessionId != Binding.SessionId || original.RequestId != Binding.RequestId ||
             original.SnapshotToken != Binding.SnapshotToken || original.TurnNumber != Binding.Turn || original.Realm != Binding.Realm)
             throw new InvalidDataException("The actual original no longer matches the joint transaction inventory.");
+        innerTiming3?.Dispose();
+        using var innerTiming4 = files.MeasureOperation("JointInventory.CompareBeforeImages");
         foreach (var (path, expected) in _before.OrderBy(row => row.Key, StringComparer.Ordinal))
         {
             var current = await files.ReadFileBytesAsync(lease, path);
             if (expected.Existed != (current is not null) || !Same(expected.Bytes, current))
                 throw new InvalidDataException("Joint transaction before-image changed: " + path);
         }
+        innerTiming4?.Dispose();
     }
 
     internal void RequireCompletePreparedMembers(IReadOnlyList<CanonicalLocalFileChange> changes)

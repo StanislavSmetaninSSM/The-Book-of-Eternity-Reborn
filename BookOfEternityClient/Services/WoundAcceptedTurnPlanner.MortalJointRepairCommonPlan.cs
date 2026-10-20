@@ -135,16 +135,21 @@ internal static partial class WoundAcceptedTurnPlanner
             context.ExecutionSequenceOffset == 0 && context.TerminalOwners.ToHashSet().SetEquals(TerminalOwners);
         internal async Task ValidateCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
         {
+            using var innerTiming1 = files.MeasureOperation("JointCommonAuthority.ValidateCurrentAsync");
+            using var innerTiming2 = files.MeasureOperation("JointCommonAuthority.ValidateSeal");
             if (!HasValidSeal) throw new InvalidDataException("The private joint common authority changed.");
+            innerTiming2?.Dispose();
             await ValidateJointRepairResourcePublicationAsync(files, lease, _resources);
             await Progression.ValidateCurrentAsync(files, lease);
         }
         internal async Task<IReadOnlyList<ValidationIssue>> ValidateCandidateResourceBoundsAsync(
             FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, AcceptedMechanicsPlan candidate)
         {
+            using var innerTiming3 = files.MeasureOperation("JointCommonAuthority.ValidateCandidateBoundsAsync");
             if (!ReferenceEquals(candidate.JointRepairCommonAuthority, this))
                 return JointPreparationFailure("candidate_bounds_provenance", "Foreign joint candidate.").Issues;
             await ValidateCurrentAsync(files, lease);
+            using var innerTiming4 = files.MeasureOperation("JointCommonAuthority.ProjectCandidateBounds");
             var definitions = ResourceDefinitionCatalog.ParseCanonical(candidate.DefinitionAfterImage.ToJsonString(), allowMissingPristine: false);
             if (definitions.Catalog is not { } catalog) return definitions.Issues;
             // Existing numeric/quantum/minimum/maximum and complete history replay
@@ -179,6 +184,7 @@ internal static partial class WoundAcceptedTurnPlanner
             issues.AddRange(owners.Issues);
             if (owners.Authority is null || owners.Authority.Fingerprint != candidate.OwnerAuthority.Fingerprint)
                 issues.AddRange(JointPreparationFailure("candidate_final_owner_bounds_changed", "The full candidate resource owner/capacity bounds differ.").Issues);
+            innerTiming4?.Dispose();
             await ValidateCurrentAsync(files, lease);
             return issues;
         }
@@ -245,13 +251,23 @@ internal static partial class WoundAcceptedTurnPlanner
             var resources = (JointResourcePublicationAuthority)resourceAuthority;
             var calculationIssues = await resources.EnsureCommonCalculationAsync(JointCommonCalculationIssuer, files, lease);
             if (calculationIssues.Count != 0) return new(null, calculationIssues);
+            using var innerTiming5 = files.MeasureOperation("JointCommon.CreateAuthority");
             authority = resources.GetOrCreateCommonAuthority(JointCommonAuthorityIssuer, progression);
+            innerTiming5?.Dispose();
+            using var innerTiming6 = files.MeasureOperation("JointCommon.ComposeInputAsync");
             var composed = await AcceptedMechanicsWoundCommonInputComposer.ComposeJointRepairAsync(files, lease, authority);
+            innerTiming6?.Dispose();
             if (!composed.Success || composed.Input is null) return new(null, composed.Issues);
+            using var innerTiming7 = files.MeasureOperation("JointCommon.BindInput");
             authority.BindInput(JointCommonAuthorityIssuer, composed.Input);
+            innerTiming7?.Dispose();
+            using var innerTiming8 = files.MeasureOperation("JointCommon.CreateRegistryCandidate");
             var raw = AcceptedTurnAuthorityRegistry.CreateJointRepairCommonCandidate(files, lease, composed.Input, authority);
+            innerTiming8?.Dispose();
             if (!raw.Result.Success || raw.Result.Plan is not { } candidate || raw.Fence is null) return raw.Result;
+            using var innerTiming9 = files.MeasureOperation("JointCommon.CandidateAdmissionGate");
             var issues = MortalWoundTreatmentCapabilityAuthority.CandidateAdmissionGate.ValidateJoint(authority, candidate);
+            innerTiming9?.Dispose();
             if (issues.Count != 0)
             {
                 AcceptedTurnAuthorityRegistry.RevokeJointRepairCommonCandidate(files, lease, authority, raw.Fence);
@@ -265,6 +281,7 @@ internal static partial class WoundAcceptedTurnPlanner
             }
             await authority.ValidateCurrentAsync(files, lease);
             var proof = new JointCandidateAdmissionProof(JointCandidateAdmissionIssuer, authority, candidate, candidate.PreparedPlanFingerprint);
+            using var innerTiming10 = files.MeasureOperation("JointCommon.SealRegistryCandidate");
             return AcceptedTurnAuthorityRegistry.SealJointRepairCommonCandidate(files, lease, composed.Input, authority,
                 raw.Fence, proof, candidate);
         }

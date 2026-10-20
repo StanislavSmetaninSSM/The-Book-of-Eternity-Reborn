@@ -55,18 +55,27 @@ public partial class GameEngine
         }
         internal async Task ValidateCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
         {
+            using var innerTiming1 = files.MeasureOperation("JointProgression.ValidateCurrentSourceAsync");
+            using var innerTiming2 = files.MeasureOperation("JointProgression.ValidateOwnerAndSeal");
             files.EnsureCanonicalWriteLeaseActive(lease);
             if (!HasValidSeal || !ReferenceEquals(files, _files) || !ReferenceEquals(lease, _lease) || !files.IsCurrentSessionGeneration(lease, _generation))
                 throw new InvalidDataException("Joint progression source cannot cross physical owner/generation/lease.");
+            innerTiming2?.Dispose();
+            using var innerTiming3 = files.MeasureOperation("JointProgression.ValidateFrozenInputsAsync");
             await Inputs.ValidateCurrentAsync(files, lease);
+            innerTiming3?.Dispose();
+            using var innerTiming4 = files.MeasureOperation("JointProgression.CompareOriginalGuards");
             foreach (var (path, expected) in _originalGuards)
             {
                 var actual = await files.ReadFileBytesAsync(lease, path);
                 if (actual is null || !expected.AsSpan().SequenceEqual(actual))
                     throw new InvalidDataException("Authenticated progression original changed: " + path);
             }
+            innerTiming4?.Dispose();
+            using var innerTiming5 = files.MeasureOperation("JointProgression.ReadCurrentSnapshot");
             var read = PendingTurnSnapshotReader.ReadCurrent(files, lease,
                 new PendingTurnSnapshotPathSelection(["game_state/meta/soul_state.json", ProgressionScheduleService.SchedulePath], []));
+            innerTiming5?.Dispose();
             if (!read.Success || read.Snapshot is not { } original || original.Realm != "mortal_world" ||
                 original.SessionId != _sessionId || original.RequestId != _requestId || original.SnapshotToken != _snapshotToken || original.TurnNumber != _turn)
                 throw new InvalidDataException("Progression signed original/current snapshot no longer authenticates.");

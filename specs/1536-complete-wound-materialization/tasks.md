@@ -6,6 +6,13 @@
 - [x] T301 Generate/bind current genuine source42 and measure corrected instrumented scenario. Evidence: source983 genuine generator PASS195.671s/two imports; actual corrected cut0 FAIL600s,1532full records/764intervals, EOF/join/both roots absent/DLL+seed unchanged. T301-profile-cut0-outcome.json/raw.zip; no unchanged retry.
 - [ ] T302 Trace measured dominant/stalled sections to a supported cause; final independent evidence review and remote recovery. Measured: publication390.368s plus two source-explained postpublication passes153.962s =544.330s disjoint; final phase entered597.544s. T302-findings.json/md separates this observed timeout mechanism from unresolved per-operation latency/final tail/Linux causes. Separate Astra/high accepted partial evidence/500-file clean remote recovery; root-cause remainsOPEN, finer decomposition pending. No general root-cause or gameplay acceptance.
 
+- [ ] T303 Partition previously unmeasured common-plan/normalization and game-state sections with passive named inner-operation scopes; preserve exact calls/guards/predicates, no quotas/helper changes. Source-preservation/XML/metadata and independent SOURCE/PREP before runtime.
+- [ ] T304 Generate/validate/bind genuine final-source seed once; preserve whole old artifact and producing-byte recipes.
+- [ ] T305 Measure one changed-instrumentation seeded cut0 answering the three explicit cost questions; preserve full raw diagnostics/actual failure/cleanup. No unchanged retry.
+- [ ] T306 Analyze new actual operations, independently review causal evidence/recovery; complete T302 only if TIM3-5 is satisfied. Underlying root-cause remainsOPEN pending evidence.
+
+Inner continuation:T303→T304→T305→T306→T302 acceptance. This is the same investigation, not a performance implementation.
+
 Dependencies:T298→T299→T300→T301→T302. The user's objective is diagnosis, not logging alone. Previous T296 occurred once and is failed/partial; it is not retried unchanged.
 
 ---

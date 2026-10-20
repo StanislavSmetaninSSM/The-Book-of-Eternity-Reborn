@@ -8,6 +8,14 @@ User correction: determine what causes the apparent hangs. No artificial record-
 - TIM3-4: generate a genuinely current source-bound seed if compilation changes its fingerprint, then measure the corrected diagnostic scenario. The original600s test wait is a separate test policy, not a diagnostic-record cutoff; record its consequence honestly. Additional focused measurements require a concrete unresolved question or changed instrumentation, not an unchanged blind retry.
 - TIM3-5: retain complete raw output and named actual durations/unfinished spans, investigate the dominant measured sections, and establish a supported cause or explicitly leave the diagnosis unfinished. Partial measurements are not acceptance of the user's root-cause objective. Standing user waiver covers specification review without waiting.
 
+### Continue the same investigation: inner operation costs
+
+The full T301 record removes the previous observation cutoff but does not complete TIM3-5. Independent Astra/high accepts the partial evidence only. Follow-up T303–306 must decompose the measured common-plan127.600s and normalization50.277s outside their timed direct children, and the two64.196s game-state sections. A diagnostic-only continuation under the same user instruction/waiver is authorized; no performance fix, cached authority or removed validation is proposed.
+
+Retain every produced diagnostic record without count/byte/lifetime quotas. Add passive literal scopes at existing static call sites: shared baseline/resource/common checks, mechanical and progression proof/read groups, common calculation/input/registry/admission, selected publication coordinator and its canonical validation/readback stages, and each selected game-state validation phase. Separate pure predicate/fingerprint sections from physical proof/read groups without evaluating predicates twice or changing short-circuit behavior. Do not emit paths or payloads in the new named timers. Existing original600s test wait/process ownership/assertions remain; it is not a record cutoff. Explain any still-unfinished span without fabricating elapsed time.
+
+Accept only measured attribution to actual operations, preserved raw/source/DLL/seed binding and independent review. Previously passing helper/collector controls can be reused only if their source is unchanged; verify stripping added timer lines restores the accepted source and perform a fresh XML build. Source edits require a genuinely new fingerprint-bound seed before the next actual case. One changed-instrumentation cut0 measurement answers these concrete unresolved questions; no unchanged blind retry. T302/root-cause remains OPEN until evidence supports completion.
+
 Previous revision2 and its exact requirements/results remain below as history. Current T298–302 govern the correction.
 
 ---

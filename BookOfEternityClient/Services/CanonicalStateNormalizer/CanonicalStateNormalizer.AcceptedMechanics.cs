@@ -99,6 +99,7 @@ public partial class CanonicalStateNormalizer
         SpiritualPublicationReceipt? spiritualPublicationReceipt = null,
         MortalJointRepairPublicationTransaction? jointTransaction = null)
     {
+        using var innerTiming1 = _fs.MeasureOperation("MechanicsPublish.PublishAsync");
         ArgumentNullException.ThrowIfNull(preflight);
         if (preflight is AcceptedMechanicsNormalizationPreflight.NoPlan)
         {
@@ -123,7 +124,9 @@ public partial class CanonicalStateNormalizer
             if (treatmentPublicationReceipt is not null || spiritualPublicationReceipt is not null ||
                 !ReferenceEquals(jointTransaction.Receipt.Plan, plan))
                 throw new InvalidDataException("Joint publication cannot share or impersonate another receipt family.");
+            using var innerTiming2 = _fs.MeasureOperation("MechanicsPublish.ValidateTakenJointInputsAsync");
             await ValidateTakenJointPublicationInputsAsync(jointTransaction.Receipt);
+            innerTiming2?.Dispose();
         }
         if (spiritualPublicationReceipt is not null)
         {
@@ -173,8 +176,10 @@ public partial class CanonicalStateNormalizer
             // Other normalizers may intentionally consume plan before-images. The exact
             // authority roots selected by preflight are never mutable normalization
             // outputs, so bind them again immediately before consuming the handoff.
+            using var innerTiming3 = _fs.MeasureOperation("MechanicsPublish.ValidateAuthorityBeforeImagesAsync");
             await ValidateAcceptedMechanicsPublicationAuthorityBeforeImagesAsync(
                 validated.PublicationAuthorityBeforeImages);
+            innerTiming3?.Dispose();
         }
         catch
         {
@@ -184,7 +189,9 @@ public partial class CanonicalStateNormalizer
         }
         try
         {
+            using var innerTiming4 = _fs.MeasureOperation("MechanicsPublish.ValidateItemFinalBaselineAsync");
             await ValidateMortalItemFinalPublicationBaselineAsync(plan);
+            innerTiming4?.Dispose();
         }
         catch
         {
@@ -209,6 +216,7 @@ public partial class CanonicalStateNormalizer
                 "Accepted mechanics validated handoff changed before publication.");
         }
 
+        using var innerTiming5 = _fs.MeasureOperation("MechanicsPublish.BuildWrites");
         var writes = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
         if (!plan.AwaitsPendingResolution)
         {
@@ -281,6 +289,7 @@ public partial class CanonicalStateNormalizer
             .Distinct(StringComparer.Ordinal)
             .OrderBy(static path => path, StringComparer.Ordinal)
             .ToArray();
+        innerTiming5?.Dispose();
         IReadOnlyDictionary<string, CanonicalBeforeImage> retainedPublicationBeforeImages;
 
         var mortalQtePublication = !plan.AwaitsPendingResolution &&
@@ -291,6 +300,7 @@ public partial class CanonicalStateNormalizer
         {
         if (mortalQtePublication)
         {
+            using var innerTiming6 = _fs.MeasureOperation("MechanicsPublish.PrepareBeforeImages");
             var prepared = new List<CanonicalLocalFileChange>();
             foreach (var pair in writes.OrderBy(static pair => pair.Key, StringComparer.Ordinal))
             {
@@ -303,25 +313,36 @@ public partial class CanonicalStateNormalizer
                 if (writes.ContainsKey(path)) throw new InvalidDataException("A Mortal common member cannot be written and consumed together.");
                 prepared.Add(new(path, await _fs.ReadFileBytesAsync(_writeLease, path), null));
             }
+            innerTiming6?.Dispose();
+            using var innerTiming7 = _fs.MeasureOperation("MechanicsPublish.CreateQtePublicationAsync");
             var completion = jointTransaction is null
                 ? await MortalQteDecisionPublication.CreateAsync(_fs, _writeLease, plan, validated.Binding, prepared)
                 : await MortalQteDecisionPublication.CreateJointAsync(_fs, _writeLease, jointTransaction.Receipt, prepared);
+            innerTiming7?.Dispose();
+            using var innerTiming8 = _fs.MeasureOperation("MechanicsPublish.ReadCompletionBeforeImageAsync");
             if (completion is not null)
                 prepared.Add(new(MortalQteDecisionPublication.StatePath,
                     await _fs.ReadFileBytesAsync(_writeLease, MortalQteDecisionPublication.StatePath), completion));
+            innerTiming8?.Dispose();
+            using var innerTiming9 = _fs.MeasureOperation("MechanicsPublish.CaptureAgreementBeforeImagesAsync");
             retainedPublicationBeforeImages = await CaptureRetainedPublicationAgreementBeforeImagesAsync(plan,
                 completion is null ? writes.Keys : writes.Keys.Append(MortalQteDecisionPublication.StatePath), deletePaths);
+            innerTiming9?.Dispose();
+            using var innerTiming10 = _fs.MeasureOperation("MechanicsPublish.PublishLocalBatchAsync");
             jointTransaction?.BindIntendedMembers(JointBatchPublicationIssuer, prepared);
             _fs.RequireCommittedLocalPublication(await _fs.PublishLocalFilesAsync(_writeLease, prepared));
             jointTransaction?.ObserveCommittedBatch(JointBatchPublicationIssuer);
+            innerTiming10?.Dispose();
             // Joint compensation belongs exclusively to the typed transaction:
             // the old v1 outer compensation API has no claim/receipt proof.
             if (jointTransaction is null) _mortalQteCommittedChanges = prepared;
+            using var innerTiming11 = _fs.MeasureOperation("MechanicsPublish.ReadBackBatchAsync");
             foreach (var change in prepared)
             {
                 var actual = await _fs.ReadFileBytesAsync(_writeLease, change.RelativePath);
                 if (!ExactBytes(actual, change.After)) throw new InvalidDataException("Mortal common batch readback differs at " + change.RelativePath);
             }
+            innerTiming11?.Dispose();
         }
         else
         {
@@ -334,11 +355,13 @@ public partial class CanonicalStateNormalizer
             foreach (var path in deletePaths) _fs.DeleteFile(_writeLease, path);
         }
 
+        using var innerTiming12 = _fs.MeasureOperation("MechanicsPublish.ValidateAgreementAsync");
         await ValidateAcceptedMechanicsPublicationAgreementAsync(
             writes,
             exactItemPublicationAfterImages,
             deletePaths,
             retainedPublicationBeforeImages);
+        innerTiming12?.Dispose();
 
         if (plan.AwaitsPendingResolution)
         {
@@ -352,9 +375,15 @@ public partial class CanonicalStateNormalizer
         }
         else
         {
+            using var innerTiming13 = _fs.MeasureOperation("MechanicsPublish.ValidatePublishedWoundsAsync");
             await ValidatePublishedWoundAfterImagesAsync(plan, spiritualPublicationReceipt);
+            innerTiming13?.Dispose();
+            using var innerTiming14 = _fs.MeasureOperation("MechanicsPublish.ValidatePublishedOwnerTransitionsAsync");
             await ValidatePublishedOwnerTransitionsAsync(plan);
+            innerTiming14?.Dispose();
+            using var innerTiming15 = _fs.MeasureOperation("MechanicsPublish.ValidatePublishedResourcesAsync");
             await ValidatePublishedResourceAfterImagesAsync(plan);
+            innerTiming15?.Dispose();
         }
         if (spiritualPublicationReceipt is not null)
         {
