@@ -1,3 +1,13 @@
+# CRASH5 — spec15 revision11 / plan13 revision11: namespace metadata spike
+
+Issue1536; [spec](spec.md), [plan](plan.md). T327 measurement is real but its case remains FAIL; no unchanged retry.
+
+- [ ] T328 [US1/US2/US3] Actual Spec Kit phases/consistency; separate read-only bounded Astra/high consultation plus parent source audit of repeated namespace metadata inside retained reads. Deliver smallest defensible design/error map/tests or counterexample, no implementation/runtime. Reconcile separate T327 evidence review, preserve historical FAIL, write any later production scope before code.
+
+Dependencies T327actualfullraw→T328recommendation→next written implementation if defensible. Corrected diagnostic writer source awaits fresh compilation/verification with later coherent block; no overall profilePASS or original qualification inferred. Existing no-quota/autonomy/review-wait contracts retained.
+
+---
+
 # CRASH5 — spec15 revision10 / plan13 revision10: direct proof cost
 
 Issue1536; [spec](spec.md), [plan](plan.md). T325 coalescing rejected; retain every original observation.

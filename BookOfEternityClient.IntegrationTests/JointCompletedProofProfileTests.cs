@@ -121,7 +121,7 @@ public sealed class JointCompletedProofProfileTests
         }
         finally
         {
-            raw.Flush();
+            raw.Dispose();
             _output.WriteLine(JsonSerializer.Serialize(new { Boundary = "joint_profile_diagnostics", Path = diagnosticsPath }));
             _output.WriteLine(File.ReadAllText(diagnosticsPath));
             Assert.Equal(archiveBefore, File.ReadAllBytes(archive));

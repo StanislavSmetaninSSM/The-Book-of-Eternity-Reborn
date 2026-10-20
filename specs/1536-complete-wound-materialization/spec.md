@@ -1,3 +1,15 @@
+# CRASH5 — spec15 revision11: narrow namespace metadata design investigation
+
+Issue1536; T327 actualprofile FAIL from diagnostic-file sharing after measured service/oracle completion; full18,274records retained. Source fix closes writer before dump; actual Windows whole-stream sharing control old-refuses/new-exact, corrected C# not yet rebuilt. No repeat to repair historical output. T325 four-to-two phase/binder coalescing remains rejected.
+
+- META-1 / US1: read-only source/evidence investigation into narrower metadata work inside the retained physical read boundaries. T327 observes1402ordinarycalls/6.4416464s versus copy+sync-hook0.0833819s. Audit ResolvePath/EnsureNoExistingReparsePoint and TrustedLocalFileScope construction/admission against their real trusted-local contracts, including absent ancestors/leaves, regular-file ancestors, links/dangling links, Windows spelling and access/IO exceptions. Identify exact ordinary-path query redundancy and counterexamples; no OS/scanner cause is inferred.
+- META-2 / US2: recommend the smallest coherent per-component metadata observation or same-construction ancestor sharing, only if it retains fresh entry/open/completion and owner/lease/generation/path checks, all requested path coverage and error/refusal semantics. No authority/success cache, cross-call physical cache, phase/story/continuation check removal, new process owner or security setting. Explicitly distinguish microscopic observation scheduling from semantic before/after boundaries; do not claim unconditional hostile-mutation equivalence.
+- META-3 / US3: deliver exact API/member/exception map plus causal cheap query-count/failure tests and real namespace controls/one-profile verification for a later written implementation design. No production implementation or tests/generator/original retry in this spike. Parent source audit and actual Spec Kit phases/consistency precede the bounded Astra/high consultation; T327 independent evidence review may proceed separately. All diagnostic records remain uncapped. Original recoveryFAIL/coldfive0/5/LinuxUNRUN.
+
+Standing autonomous-execution/review-wait waiver applies; this actual written investigation is presented before consultation. It does not itself authorize the proposed optimization.
+
+---
+
 # CRASH5 — spec15 revision10: isolate completed-proof and physical-read cost
 
 Issue1536; active feature unchanged. T324 evidence independently accepted, actual T323 timeout remains FAIL. T325 produced a concrete transient-file counterexample, so the four-to-two continuation/phase proposal is rejected under the preserved temporal refusal contract. No check removal is authorized.
