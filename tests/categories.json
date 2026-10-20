@@ -29212,6 +29212,30 @@
                     ]
                 }
             ]
-        }
-    ]
+        },
+{
+  "id": "fr063-joint-child-output-transport",
+  "responsibility": "Uncapped finite decoded-text artifacts: durable framing, EOF versus persistence, long lines, Unicode, failure precedence and owned evidence retention without gameplay.",
+  "excludes": "No GameEngine/source42/recovery qualification or Linux native runtime.",
+  "changeHints": [
+    "BookOfEternityClient/Services/GmWorkers/FinitePipeOutput.cs",
+    "BookOfEternityClient.IntegrationTests/JointChildOutputCapture.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointChildOutputCaptureTests.*"
+      ]
+    }
+  ]
+}
+]
 }
