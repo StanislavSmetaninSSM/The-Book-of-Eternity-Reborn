@@ -40,7 +40,6 @@ public sealed class JointCompletedProofProfileTests
         using var raw = new StreamWriter(new FileStream(diagnosticsPath, FileMode.CreateNew, FileAccess.Write, FileShare.Read)) { AutoFlush = true };
         var timings = new GameEngineTurnLifecycleTests.JointOperationTimings(raw);
         var owned = Path.Combine(Path.GetTempPath(), "boe-joint-proof-profile-" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(owned);
         var template = Path.Combine(TestRepoPaths.RepoRoot, "specs", "1536-complete-wound-materialization", "fixtures", "joint-applied-data");
         var recordPath = Path.Combine(template, "source-record.json");
         var recordBefore = File.ReadAllBytes(recordPath);
@@ -50,6 +49,7 @@ public sealed class JointCompletedProofProfileTests
         try
         {
             using var cleanup = new CleanupOwnedFixture(owned, line => { raw.WriteLine(line); _output.WriteLine(line); });
+            Directory.CreateDirectory(owned);
             var setup = Stopwatch.StartNew();
             var root = Path.Combine(owned, "copy");
             var manifest = JointAppliedDataTemplate.Materialize(archive, sourceRecord["ArchiveSHA256"]!.GetValue<string>(), root);
