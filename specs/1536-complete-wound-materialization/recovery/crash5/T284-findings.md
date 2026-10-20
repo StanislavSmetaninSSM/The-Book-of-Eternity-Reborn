@@ -1,6 +1,6 @@
 # T284 — short physical snapshot component: measured findings
 
-Status: component PASS; investigation T281–284 completed, independent T285 review/recovery pending. Original Windows five remain **0/5 PASS**, T279 seeded cut0 remains **FAIL (resumer600s)**, Linux remains **UNRUN locally**. No full crash, Stage43, source42 generation, Linux runtime or production optimization was executed in this slice.
+Status: component PASS; bounded investigation T281–285 completed with independent review and clean GitHub recovery; see [T285-final-review.json](T285-final-review.json). Original Windows five remain **0/5 PASS**, T279 seeded cut0 remains **FAIL (resumer600s)**, Linux remains **UNRUN locally**. No full crash, Stage43, source42 generation, Linux runtime or production optimization was executed in this slice.
 
 ## What was measured
 
@@ -39,4 +39,4 @@ The earlier setup root `C:\Temp\boe-spec13-probe-083fc595ea1546119b1fcf69f143b99
 - [T284-probe-raw.zip](T284-probe-raw.zip): raw streams/parent/guard, compiled throwaway harness and XML, exact diagnostic source, build/metadata logs, source references and immutable input. ZIP SHA256 **3C9D1DB28646810F223A9028D0A6D33B52B5A5BB1E76FA26AEB621E7CEAA6BFB**, 64763bytes; CRC, distinct paths and every indexed member hash checked.
 - [T282-source-localization.md](T282-source-localization.md): pre-execution call map and rejected empty-rollback proposal, retained as design history rather than rewritten as runtime evidence.
 
-Final independent review and clean GitHub recovery are recorded separately by T285; no issue closure, CI/PR/merge or external message is part of this slice.
+Final independent review and clean GitHub recovery are recorded by [T285](T285-final-review.json); no issue closure, CI/PR/merge or external message is part of this slice.
