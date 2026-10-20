@@ -16,7 +16,9 @@ Retain every produced diagnostic record without count/byte/lifetime quotas. Add 
 
 Accept only measured attribution to actual operations, preserved raw/source/DLL/seed binding and independent review. Previously passing helper/collector controls can be reused only if their source is unchanged; verify stripping added timer lines restores the accepted source and perform a fresh XML build. Source edits require a genuinely new fingerprint-bound seed before the next actual case. One changed-instrumentation cut0 measurement answers these concrete unresolved questions; no unchanged blind retry. T302/root-cause remains OPEN until evidence supports completion.
 
-Previous revision2 and its exact requirements/results remain below as history. Current T298–302 govern the correction.
+Evidence checkpoint2026-10-20: [T306 findings](recovery/crash5/T306-findings.md) and separate [gpt-6-astra/high final review](recovery/crash5/T306-final-review.json) satisfy TIM3-5 for the application-level cause of the measured Windows timeout: finite repeated current-original/authority validation and guarded reads exhaust the budget. Complete2846records/1419intervals and33PID/birth-bound processCPU samples retained;533exactGitblob clean remote recovery verified. T302/T306 complete within that scope. Lower-level OS/driver/scanner, unfinished tail and Linux remain unknown; original Windowsfive0/5PASS, no optimization or timeout increase. Original acceptance criteria above are unchanged.
+
+Previous revision2 and its exact requirements/results remain below as history. Current T298–306 govern the correction.
 
 ---
 
