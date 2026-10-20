@@ -13,8 +13,8 @@
     "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs"
   ],
   "related": [
-    "fr063-joint-interface-probe-budget-contracts",
-    "fr063-joint-interface-crash-stage-contracts"
+    { "id": "fr063-joint-interface-probe-budget-contracts", "when": "Process and budget contracts change alongside seed transport." },
+    { "id": "fr063-joint-interface-crash-stage-contracts", "when": "The owned source generator uses ordinary stage reports." }
   ],
   "requirements": {
     "frontendBuild": false,
