@@ -2,6 +2,35 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "portable-storage-read-completion",
+  "responsibility": "T329a exact single actual Windows after-open completion control: move the open leaf within the owned fixture, replace its empty parent by the existing native junction helper, require unchanged InvalidDataException and both byte images.",
+  "excludes": "No repeat of the66unchanged passing constructor/scalar/batch/before-open controls, no production reader/share/native change, GameEngine/source42/original run or Linux qualification.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs"
+  ],
+  "related": [
+    {
+      "id": "portable-storage-read-construction-boundaries",
+      "when": "Full six-case read-boundary cohort changes; this narrow category reruns only the corrected case."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_ParentReplacedByJunctionAfterOpenFailsClosed"
+      ]
+    }
+  ]
+},
+{
   "id": "portable-storage-read-construction-boundaries",
   "responsibility": "T329 actual Windows ordinary reads retain fresh namespace admission and completion after constructor ancestor reduction: before-open and after-open parent junctions, optional directory and intermediate regular-file blockers in sync/async reads.",
   "excludes": "No GameEngine/provider/source42/original recovery or native Linux qualification; existing junction helper only, owned roots and exact file images preserved.",

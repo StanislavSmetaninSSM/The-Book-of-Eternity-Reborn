@@ -407,6 +407,7 @@ public sealed class FileSystemManagerTests : IDisposable
 
     /// <summary>
     /// Refuses a parent junction installed after the real stream opens, preserving both file images.
+    /// The setup moves the open leaf into the owned fixture before replacing its now-empty parent.
     /// </summary>
     /// <returns>
     /// Completion after the fresh read-completion check rejects the changed namespace and owned roots are removed.
@@ -425,9 +426,9 @@ public sealed class FileSystemManagerTests : IDisposable
         var raceRoot = Path.Combine(ownedBase, "construction-after-open");
         var outsideRoot = Path.Combine(ownedBase, "construction-outside");
         var canonicalMeta = Path.Combine(raceRoot, "game_session", "game_state", "meta");
-        var displacedMeta = canonicalMeta + "-before-race";
+        var displacedTarget = Path.Combine(raceRoot, "read-completion-before-race.bin");
         var outsideTarget = Path.Combine(outsideRoot, "read-completion-target.bin");
-        foreach (var path in new[] { raceRoot, outsideRoot, canonicalMeta, displacedMeta, outsideTarget })
+        foreach (var path in new[] { raceRoot, outsideRoot, canonicalMeta, displacedTarget, outsideTarget })
             Assert.StartsWith(ownedBase + Path.DirectorySeparatorChar, Path.GetFullPath(path), StringComparison.Ordinal);
         var armed = false;
         var swapped = false;
@@ -436,7 +437,8 @@ public sealed class FileSystemManagerTests : IDisposable
             AfterCanonicalReadInitialValidationAsync = readPath =>
             {
                 if (!armed || swapped || readPath != relativePath) return Task.CompletedTask;
-                Directory.Move(canonicalMeta, displacedMeta);
+                File.Move(Path.Combine(canonicalMeta, "read-completion-target.bin"), displacedTarget);
+                Directory.Delete(canonicalMeta, recursive: false);
                 CreateDirectoryJunction(canonicalMeta, outsideRoot);
                 swapped = true;
                 return Task.CompletedTask;
@@ -455,14 +457,17 @@ public sealed class FileSystemManagerTests : IDisposable
             await Assert.ThrowsAsync<InvalidDataException>(() => files.ReadFileBytesAsync(relativePath));
             Assert.True(swapped);
             Assert.Equal(new byte[] { 0xD4 }, await File.ReadAllBytesAsync(outsideTarget));
-            Assert.Equal(new byte[] { 0x44 }, await File.ReadAllBytesAsync(Path.Combine(displacedMeta, "read-completion-target.bin")));
+            Assert.Equal(new byte[] { 0x44 }, await File.ReadAllBytesAsync(displacedTarget));
         }
         finally
         {
             if (Directory.Exists(canonicalMeta) && File.GetAttributes(canonicalMeta).HasFlag(FileAttributes.ReparsePoint))
                 Directory.Delete(canonicalMeta, recursive: false);
-            if (Directory.Exists(displacedMeta) && !Directory.Exists(canonicalMeta))
-                Directory.Move(displacedMeta, canonicalMeta);
+            if (File.Exists(displacedTarget))
+            {
+                Directory.CreateDirectory(canonicalMeta);
+                File.Move(displacedTarget, Path.Combine(canonicalMeta, "read-completion-target.bin"));
+            }
             if (Directory.Exists(raceRoot)) Directory.Delete(raceRoot, recursive: true);
             if (Directory.Exists(outsideRoot)) Directory.Delete(outsideRoot, recursive: true);
             Assert.False(Directory.Exists(raceRoot));

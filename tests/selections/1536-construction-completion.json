@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "portable-storage-read-completion",
+      "reason": "Only failed T329fixture changed; preserve66passing cases and original67caseFAIL evidence. Same actual parent-junction after-open contract, supported Windows setup sequence.",
+      "contracts": [
+        "Actual open handle remains original; parent replaced by junction; fresh completion refuses; original/outside bytes and own cleanup exact."
+      ]
+    }
+  ]
+}
