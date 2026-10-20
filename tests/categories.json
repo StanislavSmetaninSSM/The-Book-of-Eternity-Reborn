@@ -2,6 +2,45 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "portable-storage-read-construction-boundaries",
+  "responsibility": "T329 actual Windows ordinary reads retain fresh namespace admission and completion after constructor ancestor reduction: before-open and after-open parent junctions, optional directory and intermediate regular-file blockers in sync/async reads.",
+  "excludes": "No GameEngine/provider/source42/original recovery or native Linux qualification; existing junction helper only, owned roots and exact file images preserved.",
+  "changeHints": [
+    "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+    "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs"
+  ],
+  "related": [
+    {
+      "id": "portable-storage-construction-probes",
+      "when": "Constructor observation schedule changes."
+    },
+    {
+      "id": "portable-storage-paths",
+      "when": "Scalar path classifier changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_ParentReplacedByJunctionBeforeOpenFailsClosed",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_ParentReplacedByJunctionAfterOpenFailsClosed",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_DirectoryAtOptionalFileBoundaryFailsClosed",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileSync_DirectoryAtOptionalFileBoundaryFailsClosed",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_RegularFileAtIntermediateParentFailsClosed",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileSync_RegularFileAtIntermediateParentFailsClosed"
+      ]
+    }
+  ]
+},
+{
   "id": "portable-storage-construction-probes",
   "responsibility": "T329 production-used stateless constructor validation: one required-parent chain plus root, exact path/count/failure order, optional-root versus required-parent absence, unchanged error propagation and invocation freshness.",
   "excludes": "Detached kind/error controls grant no file authority or native permission proof. Physical scalar/batch and ordinary read boundaries qualify separately.",

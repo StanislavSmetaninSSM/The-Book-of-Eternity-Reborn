@@ -304,6 +304,7 @@ internal sealed class TrustedLocalFileScope
     /// </summary>
     /// <param name="normalizedRoot">
     /// An already normalized absolute directory grant with a required parent and an optionally absent root.
+    /// A filesystem root, <see langword="null"/> or empty value cannot provide the required parent and is refused.
     /// </param>
     /// <param name="observeEntry">
     /// The entry observer for this invocation. Production supplies the real classifier; a
@@ -315,7 +316,9 @@ internal sealed class TrustedLocalFileScope
         var parent = Path.GetDirectoryName(normalizedRoot)
             ?? throw new InvalidDataException("A filesystem root is not a local storage scope.");
         ValidateDirectories(parent, allowMissing: false, observeEntry);
-        ValidateDirectories(normalizedRoot, allowMissing: true, observeEntry);
+        var kind = observeEntry(normalizedRoot);
+        if (kind is not (EntryKind.Directory or EntryKind.Missing))
+            throw new InvalidDataException("A local storage ancestor is missing, linked or not a directory: " + normalizedRoot);
     }
 
     /// <summary>

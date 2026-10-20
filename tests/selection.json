@@ -3,9 +3,37 @@
   "selections": [
     {
       "category": "portable-storage-construction-probes",
-      "reason": "Causal RED for constructor duplicated ancestor observations through actual shared validation seam; no game setup.",
+      "reason": "T329 constructor-only reduction: targeted pure/physical/fresh-boundary controls and separately reviewed changed real-DATA profile.",
       "contracts": [
-        "Single parent traversal/root classification; failure order/error propagation; no retained observations."
+        "Constructor required parents/root correct; later operations fresh; all diagnostics/bytes/ownership preserved."
+      ]
+    },
+    {
+      "category": "portable-storage-paths",
+      "reason": "T329 constructor-only reduction: targeted pure/physical/fresh-boundary controls and separately reviewed changed real-DATA profile.",
+      "contracts": [
+        "Constructor required parents/root correct; later operations fresh; all diagnostics/bytes/ownership preserved."
+      ]
+    },
+    {
+      "category": "portable-storage-batch-admission",
+      "reason": "T329 constructor-only reduction: targeted pure/physical/fresh-boundary controls and separately reviewed changed real-DATA profile.",
+      "contracts": [
+        "Constructor required parents/root correct; later operations fresh; all diagnostics/bytes/ownership preserved."
+      ]
+    },
+    {
+      "category": "portable-storage-read-construction-boundaries",
+      "reason": "T329 constructor-only reduction: targeted pure/physical/fresh-boundary controls and separately reviewed changed real-DATA profile.",
+      "contracts": [
+        "Constructor required parents/root correct; later operations fresh; all diagnostics/bytes/ownership preserved."
+      ]
+    },
+    {
+      "category": "fr063-joint-completed-proof-profile",
+      "reason": "T329 constructor-only reduction: targeted pure/physical/fresh-boundary controls and separately reviewed changed real-DATA profile.",
+      "contracts": [
+        "Constructor required parents/root correct; later operations fresh; all diagnostics/bytes/ownership preserved."
       ]
     }
   ]

@@ -405,6 +405,71 @@ public sealed class FileSystemManagerTests : IDisposable
         }
     }
 
+    /// <summary>
+    /// Refuses a parent junction installed after the real stream opens, preserving both file images.
+    /// </summary>
+    /// <returns>
+    /// Completion after the fresh read-completion check rejects the changed namespace and owned roots are removed.
+    /// </returns>
+    [Fact]
+    public async Task ReadFileBytesAsync_ParentReplacedByJunctionAfterOpenFailsClosed()
+    {
+        Assert.True(OperatingSystem.IsWindows(), "This category requires the actual Windows junction boundary.");
+        const string relativePath = "game_state/meta/read-completion-target.bin";
+        var ownedBase = Path.TrimEndingDirectorySeparator(Path.GetFullPath(_rootPath));
+        var rootName = Path.GetFileName(ownedBase);
+        const string prefix = "boe-filesystem-manager-";
+        Assert.StartsWith(prefix, rootName);
+        Assert.True(Guid.TryParseExact(rootName[prefix.Length..], "N", out _));
+        Assert.Equal(Path.TrimEndingDirectorySeparator(Path.GetFullPath(Path.GetTempPath())), Path.GetDirectoryName(ownedBase));
+        var raceRoot = Path.Combine(ownedBase, "construction-after-open");
+        var outsideRoot = Path.Combine(ownedBase, "construction-outside");
+        var canonicalMeta = Path.Combine(raceRoot, "game_session", "game_state", "meta");
+        var displacedMeta = canonicalMeta + "-before-race";
+        var outsideTarget = Path.Combine(outsideRoot, "read-completion-target.bin");
+        foreach (var path in new[] { raceRoot, outsideRoot, canonicalMeta, displacedMeta, outsideTarget })
+            Assert.StartsWith(ownedBase + Path.DirectorySeparatorChar, Path.GetFullPath(path), StringComparison.Ordinal);
+        var armed = false;
+        var swapped = false;
+        var hooks = new FileSystemManagerHooks
+        {
+            AfterCanonicalReadInitialValidationAsync = readPath =>
+            {
+                if (!armed || swapped || readPath != relativePath) return Task.CompletedTask;
+                Directory.Move(canonicalMeta, displacedMeta);
+                CreateDirectoryJunction(canonicalMeta, outsideRoot);
+                swapped = true;
+                return Task.CompletedTask;
+            }
+        };
+        Directory.CreateDirectory(raceRoot);
+        Directory.CreateDirectory(outsideRoot);
+        try
+        {
+            await File.WriteAllBytesAsync(outsideTarget, [0xD4]);
+            var files = new FileSystemManager(raceRoot, NullLogger<FileSystemManager>.Instance,
+                PhysicalLoadTransactionOperations.Instance, hooks);
+            files.EnsureDirectoryStructure();
+            await files.WriteFileAtomicBytesAsync(relativePath, [0x44]);
+            armed = true;
+            await Assert.ThrowsAsync<InvalidDataException>(() => files.ReadFileBytesAsync(relativePath));
+            Assert.True(swapped);
+            Assert.Equal(new byte[] { 0xD4 }, await File.ReadAllBytesAsync(outsideTarget));
+            Assert.Equal(new byte[] { 0x44 }, await File.ReadAllBytesAsync(Path.Combine(displacedMeta, "read-completion-target.bin")));
+        }
+        finally
+        {
+            if (Directory.Exists(canonicalMeta) && File.GetAttributes(canonicalMeta).HasFlag(FileAttributes.ReparsePoint))
+                Directory.Delete(canonicalMeta, recursive: false);
+            if (Directory.Exists(displacedMeta) && !Directory.Exists(canonicalMeta))
+                Directory.Move(displacedMeta, canonicalMeta);
+            if (Directory.Exists(raceRoot)) Directory.Delete(raceRoot, recursive: true);
+            if (Directory.Exists(outsideRoot)) Directory.Delete(outsideRoot, recursive: true);
+            Assert.False(Directory.Exists(raceRoot));
+            Assert.False(Directory.Exists(outsideRoot));
+        }
+    }
+
     [Theory]
     [InlineData("append")]
     [InlineData("compare-exchange")]
