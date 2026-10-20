@@ -120,3 +120,5 @@ User feedback: repeated heavyweight crash diagnostics are inappropriate. No new 
 T270 causal RED archived:36 complete,1PASS35FAIL all missing codec/adoption/fingerprint NotSupportedException. Compiled8965/metadata4fcf; infrastructure catalog error separately fixed. T271/272 GREEN codec, constructor, fingerprint and explicit generator prepared; no GREEN build or actual source42 generation yet. Independent SOURCE/PREP gate remains.
 
 T271 initial36GREEN26.488s/XML0errors42.67s; T272 initial43budget+14stagePASS, catalog/default273/explicit106. Astra/high source review requires linked producer-source fingerprint regression/fix and focused limit/link/partial-cleanup negatives; generator remains UNRUN pending corrected SOURCE/PREP.
+
+T272 review RED f4511671c:42complete41PASS1linked-fingerprint Assert.NotEqual failure,25.132s; all5 limit/real-I/O cleanup/physical-link controls PASS, no capability skip. Corrected fingerprint now resolves literal linked Compile C# inputs inside repository, refuses unsupported/unresolved/external paths, deduplicates and checks ordinary ancestors. Final build/GREEN pending; generator UNRUN.
