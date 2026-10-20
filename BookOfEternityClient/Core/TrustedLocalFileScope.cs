@@ -109,10 +109,7 @@ internal sealed class TrustedLocalFileScope
 
         foreach (var root in _roots)
         {
-            var parent = Path.GetDirectoryName(root)
-                ?? throw new InvalidDataException("A filesystem root is not a local storage scope.");
-            ValidateDirectories(parent, allowMissing: false);
-            ValidateDirectories(root, allowMissing: true);
+            ValidateConstructionRoot(root, Probe);
         }
         foreach (var parent in _exactFiles.Select(file => Path.GetDirectoryName(file)!).Distinct(PathComparer))
             ValidateDirectories(parent, allowMissing: false);
@@ -302,14 +299,57 @@ internal sealed class TrustedLocalFileScope
         return normalized;
     }
 
-    private static void ValidateDirectories(string path, bool allowMissing)
+    /// <summary>
+    /// Validates one construction root with invocation-local observations and retains no callback or result.
+    /// </summary>
+    /// <param name="normalizedRoot">
+    /// An already normalized absolute directory grant with a required parent and an optionally absent root.
+    /// </param>
+    /// <param name="observeEntry">
+    /// The entry observer for this invocation. Production supplies the real classifier; a
+    /// <see langword="null"/> callback is rejected, and observation exceptions propagate unchanged.
+    /// </param>
+    internal static void ValidateConstructionRoot(string normalizedRoot, Func<string, EntryKind> observeEntry)
+    {
+        ArgumentNullException.ThrowIfNull(observeEntry);
+        var parent = Path.GetDirectoryName(normalizedRoot)
+            ?? throw new InvalidDataException("A filesystem root is not a local storage scope.");
+        ValidateDirectories(parent, allowMissing: false, observeEntry);
+        ValidateDirectories(normalizedRoot, allowMissing: true, observeEntry);
+    }
+
+    /// <summary>
+    /// Freshly validates the requested directory chain through the ordinary physical classifier.
+    /// </summary>
+    /// <param name="path">
+    /// The normalized absolute directory name whose chain is checked from the volume root.
+    /// </param>
+    /// <param name="allowMissing">
+    /// Whether the first absent directory ends validation successfully; other non-directory kinds always refuse.
+    /// </param>
+    private static void ValidateDirectories(string path, bool allowMissing) =>
+        ValidateDirectories(path, allowMissing, Probe);
+
+    /// <summary>
+    /// Validates one complete directory chain with the current invocation's entry observations.
+    /// </summary>
+    /// <param name="path">
+    /// The normalized absolute directory name whose chain is checked from the volume root.
+    /// </param>
+    /// <param name="allowMissing">
+    /// Whether the first absent directory ends validation successfully; required absence throws.
+    /// </param>
+    /// <param name="observeEntry">
+    /// The non-null invocation-local observer; its errors propagate and no observations are retained afterward.
+    /// </param>
+    private static void ValidateDirectories(string path, bool allowMissing, Func<string, EntryKind> observeEntry)
     {
         var ancestors = new Stack<string>();
         for (string? current = path; current != null; current = Path.GetDirectoryName(current))
             ancestors.Push(current);
         foreach (var directory in ancestors)
         {
-            var kind = Probe(directory);
+            var kind = observeEntry(directory);
             if (kind == EntryKind.Missing && allowMissing)
                 return;
             if (kind != EntryKind.Directory)
@@ -317,7 +357,32 @@ internal sealed class TrustedLocalFileScope
         }
     }
 
-    private enum EntryKind { Missing, RegularFile, Directory, Link, Other }
+    /// <summary>
+    /// Describes a non-following namespace observation without granting access or mutation authority.
+    /// </summary>
+    internal enum EntryKind
+    {
+        /// <summary>
+        /// No entry is present at the observed name.
+        /// </summary>
+        Missing,
+        /// <summary>
+        /// The observed entry is an ordinary regular file.
+        /// </summary>
+        RegularFile,
+        /// <summary>
+        /// The observed entry is an ordinary directory.
+        /// </summary>
+        Directory,
+        /// <summary>
+        /// The observed entry is a symbolic link or another reparse point.
+        /// </summary>
+        Link,
+        /// <summary>
+        /// The observed entry has a special or unsupported type.
+        /// </summary>
+        Other
+    }
 
     private static EntryKind Probe(string path)
     {

@@ -1,8 +1,19 @@
+# CRASH5 — spec15 revision12 / plan13 revision12: one constructor ancestor traversal
+
+Issue1536; [spec](spec.md), [plan](plan.md); T327 evidence accepted with actualFAIL, T328 recommendation complete.
+
+- [ ] T329 [US1/US2/US3] Actual phases/consistency; stateless real-production construction seam, causal old-double-walk RED→single-parent-walk+root GREEN, pure kind/order/error/freshness and existing physical/batch plus before/after-open boundary controls. XML/build/catalog/exact PlanOnly, source-bound DLLs/remote recovery and separate SOURCE/PREP review. Compile reviewed diagnostic Dispose correction; no profile/generator/original at PREP.
+- [ ] T330 [US2/US3] One accepted changed real-DATA profile with3fullproofs/actual outputs/readonly/generation/cleanup and complete raw/TRX; exact parser and historical evidence, cost analysis, independent final review/recovery. Continue original qualification through genuinely source-matching next gate only after correction acceptance; no unchanged retry/diagnostic quota/timeout increase.
+
+Dependencies T327accepted+T328recommendation→T329RED/GREEN/PREP/review→T330profile/finalreview→next original-gate scope. Original recoveryFAIL/open, coldWindowsfive0/5qualified, LinuxUNRUN.
+
+---
+
 # CRASH5 — spec15 revision11 / plan13 revision11: namespace metadata spike
 
 Issue1536; [spec](spec.md), [plan](plan.md). T327 measurement is real but its case remains FAIL; no unchanged retry.
 
-- [ ] T328 [US1/US2/US3] Actual Spec Kit phases/consistency; separate read-only bounded Astra/high consultation plus parent source audit of repeated namespace metadata inside retained reads. Deliver smallest defensible design/error map/tests or counterexample, no implementation/runtime. Reconcile separate T327 evidence review, preserve historical FAIL, write any later production scope before code.
+- [x] T328 [US1/US2/US3] Actual Spec Kit phases/consistency; separate read-only bounded Astra/high consultation plus parent source audit of repeated namespace metadata inside retained reads. Deliver smallest defensible design/error map/tests or counterexample, no implementation/runtime. Reconcile separate T327 evidence review, preserve historical FAIL, write any later production scope before code.
 
 Dependencies T327actualfullraw→T328recommendation→next written implementation if defensible. Corrected diagnostic writer source awaits fresh compilation/verification with later coherent block; no overall profilePASS or original qualification inferred. Existing no-quota/autonomy/review-wait contracts retained.
 
@@ -13,7 +24,7 @@ Dependencies T327actualfullraw→T328recommendation→next written implementatio
 Issue1536; [spec](spec.md), [plan](plan.md). T325 coalescing rejected; retain every original observation.
 
 - [x] T326 [US1/US2/US3] Actual Spec Kit phases/consistency; passive proof/resource/ordinary-read instrumentation with exact stripped-source equivalence, one genuine DATA direct-owner profile case and exact category/selection, XML/build/catalog/PlanOnly, saved remote recovery and separate SOURCE/PREP review. No production optimization.
-- [ ] T327 [US2/US3] One reviewed profile; preserve all named/CPU/wall/raw/TRX/input/DLL/owned-cleanup evidence, analyze true completed inclusive/exclusive costs and obtain independent completed-block review. Write next causal design and continue original recovery work without unchanged retry.
+- [x] T327 [US2/US3] One reviewed profile; preserve all named/CPU/wall/raw/TRX/input/DLL/owned-cleanup evidence, analyze true completed inclusive/exclusive costs and obtain independent completed-block review. Write next causal design and continue original recovery work without unchanged retry.
 
 Dependencies T324accepted+T325counterexample→T326prep/review→T327measurement/review→next written correction. Standing autonomy/review-wait waiver; no diagnostic quota, original limit increase or Windows/Linux qualification inferred.
 

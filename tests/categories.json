@@ -2,6 +2,39 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "portable-storage-construction-probes",
+  "responsibility": "T329 production-used stateless constructor validation: one required-parent chain plus root, exact path/count/failure order, optional-root versus required-parent absence, unchanged error propagation and invocation freshness.",
+  "excludes": "Detached kind/error controls grant no file authority or native permission proof. Physical scalar/batch and ordinary read boundaries qualify separately.",
+  "changeHints": [
+    "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+    "BookOfEternityClient.Tests/TrustedLocalConstructionTests.cs"
+  ],
+  "related": [
+    {
+      "id": "portable-storage-paths",
+      "when": "Real constructor/path classification changes."
+    },
+    {
+      "id": "portable-storage-batch-admission",
+      "when": "Later admission freshness changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.TrustedLocalConstructionTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-completed-proof-profile",
   "responsibility": "T326/327 direct real applied-phase and ordinary continuation cost on independently imported genuine DATA; complete named physical/proof timing and process CPU/wall, read-only image/generation oracle.",
   "excludes": "No GameEngine/source42/Stage43/original recovery, synthetic capability, check removal, timing threshold or diagnostic quota. SOURCE/PREP review required before probe.",

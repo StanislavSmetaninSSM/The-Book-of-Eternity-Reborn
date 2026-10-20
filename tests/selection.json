@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "fr063-joint-completed-proof-profile",
-      "reason": "T326 passive named proof/physical substeps and single direct-owner profile require exactly one reviewed read-only real-DATA probe.",
+      "category": "portable-storage-construction-probes",
+      "reason": "Causal RED for constructor duplicated ancestor observations through actual shared validation seam; no game setup.",
       "contracts": [
-        "Full validation/order/failure behavior retained; whole game and generation unchanged; all diagnostics preserved."
+        "Single parent traversal/root classification; failure order/error propagation; no retained observations."
       ]
     }
   ]
