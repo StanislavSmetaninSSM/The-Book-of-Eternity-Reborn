@@ -1,3 +1,9 @@
+# Spec12 — detached seed input
+
+`Source42Seed` is an optional closed parent object with exact Pascal-case `ArtifactPath` (absolute ordinary path) and `ManifestSha256` (64 uppercase hex). Absence selects the original path; present-null/malformed/mode mismatch refuses. It grants no game authority. `JointInterfaceSeedCrashInput.Open` validates exact selected manifest before/after codec loading and current broad fingerprint. Materialization produces a fresh owned root with durable game_session+generation only. The import receipt under the process-owned directory records PID/nonce/root/manifest/fingerprint/scalar metadata/timing for parent evidence; no lease or owner is serialized.
+
+---
+
 # CRASH5 spec5 — Phase 1: borrowed invocation ownership
 
 Источник: [spec5](spec.md), [plan3](plan.md), issue1536. Только in-memory lifetime models; новых persisted полей, API внешним системам и save migration нет.

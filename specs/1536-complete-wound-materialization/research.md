@@ -1,3 +1,9 @@
+# Spec12 — seed integration decision
+
+Existing broad fingerprint intentionally includes integration code. Options were narrowing its producer closure, retaining a stale binding, or one genuine generation after final integration source. Chosen: one new accepted-source generation, preserving the existing validation contract and avoiding a second compatibility protocol. Existing natural Stage43 already creates a fresh engine; source private fields are not required downstream. Imported DATA supplies only detached session/request/token/occurrence expectations, while original Engine42 proof remains in the actual-source wrapper. Full current-owner cost remains unknown.
+
+---
+
 # CRASH5 spec5 — Phase 0, plan3
 
 Источник: [согласованная spec5](spec.md), [plan3](plan.md), issue1536. Read-only consultation: отдельный agent spec5_borrowed_lease_consultation, явно gpt-6-astra/high; код/тесты/диагностика не запускались и не редактировались. Это решение конкретного borrowed-lifetime вопроса, не независимое принятие готового плана.
