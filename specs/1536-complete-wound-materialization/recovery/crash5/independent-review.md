@@ -1,3 +1,11 @@
+# T265 — failure evidence and recovery accepted
+
+T265 accepted by separate gpt-6.1-sol/xhigh at af7047267e1d4507900c6d72480fac25833eea81, including inspected historical-status correction. Raw failure, calculated405.8908437s remaining wait,3DLL,EOF/join,cleanup and306-file clean GitHub recovery verified. Windows0/5PASS; T264 stopped, original220 five NOT_RERUN, LinuxUNRUN.
+
+Resumer41 stage records/24 activity samples; final Limited at320.591s,23889canonical-initial observations since custody. Silence after quota exhaustion establishes neither a hang nor completion. Conditional static>=64snapshot-read calculation is supported by source structure, not a measured attribution. No remaining actionable findings; no runtime/production changes during review.
+
+---
+
 # T262 — SOURCE/PREP accepted
 
 Separate gpt-6.1-sol/xhigh accepted compiled2c05158f9b7f37de4cb67b529bfd2704d352a386 and bound evidence 9960a73515479cc033fff1d84c00e8b3d5e41824. Two P2 wiring findings corrected: final pre-launch recheck after setup, nullable elapsed/budget evidence on post-launch exhaustion. Causal RED26PASS17FAIL, fresh GREEN43PASS, XML0errors/changedXML0, catalog/default237/explicit69 and source/DLL/raw archive verified. Original assertions/cleanup/production/native and fixed policies retained. T263 is one new bounded cut0 attempt; no five PASS or Linux runtime claim.

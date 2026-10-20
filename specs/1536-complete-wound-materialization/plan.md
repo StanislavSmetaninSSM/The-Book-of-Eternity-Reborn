@@ -1,5 +1,7 @@
 # CRASH5 — plan7: передать остаток общего времени resumer
 
+T265 accepted by separate gpt-6.1-sol/xhigh at af7047267e1d4507900c6d72480fac25833eea81, including inspected historical-status correction. Raw failure, calculated405.8908437s remaining wait,3DLL,EOF/join,cleanup and306-file clean GitHub recovery verified. Windows0/5PASS; T264 stopped, original220 five NOT_RERUN, LinuxUNRUN.
+
 **Spec9 runtime:** Windows0/5PASS, 1/5 attempted at shared820/max600/category15m. T263-cut0 FAILED; completed=True, category timeout=False, duration 00:13:40.8952276; owned fixture cleanup=True, child EOF/join=True, unchanged3DLL=True. Dependent cuts stopped; no unchanged retry or automatic further limit increase. Diagnose actual evidence before a new plan. Original220 five NOT_RERUN; T219/T254/T259 failures retained; LinuxUNRUN.
 
 **T262 PREP:** compiled2c05158f9b7f37de4cb67b529bfd2704d352a386;43/43 budget controls PASS/0skip after causal26PASS17FAIL. Fresh XML build42.88s/0errors/changedXML0; catalog valid, default PlanOnly237, explicit69cases/10descriptors. Metadata executes0tests. Both independent P2 source findings corrected and focused source review accepted; final bound PREP accepted by separate gpt-6.1-sol/xhigh at 9960a73515479cc033fff1d84c00e8b3d5e41824. Source/DLL/raw archive T262-prep.json/zip. T263/T264 actual runtime status is reported above; LinuxUNRUN.

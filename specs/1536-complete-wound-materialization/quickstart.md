@@ -2,7 +2,7 @@
 
 **Spec9 runtime:** Windows0/5PASS, 1/5 attempted at shared820/max600/category15m. T263-cut0 FAILED; completed=True, category timeout=False, duration 00:13:40.8952276; owned fixture cleanup=True, child EOF/join=True, unchanged3DLL=True. Dependent cuts stopped; no unchanged retry or automatic further limit increase. Diagnose actual evidence before a new plan. Original220 five NOT_RERUN; T219/T254/T259 failures retained; LinuxUNRUN.
 
-Compiled2c05158f9; T26243PASS and SOURCE/PREP accepted. Original assertions, identity, cleanup and Linux NativeLineage unchanged. T265 final independent evidence review/recovery pending.
+Compiled2c05158f9; T26243PASS and SOURCE/PREP accepted. Original assertions, identity, cleanup and Linux NativeLineage unchanged. T265 accepted by separate gpt-6.1-sol/xhigh at af7047267e1d4507900c6d72480fac25833eea81, including inspected historical-status correction. Raw failure, calculated405.8908437s remaining wait,3DLL,EOF/join,cleanup and306-file clean GitHub recovery verified. Windows0/5PASS; T264 stopped, original220 five NOT_RERUN, LinuxUNRUN.
 
 ---
 
