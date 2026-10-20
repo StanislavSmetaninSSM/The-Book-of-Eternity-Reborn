@@ -20,6 +20,8 @@ Measured questions, not an unchanged retry: which operations account for common-
 4. T305 one changed-instrumentation original seeded cut0 at unchanged process/test policy, all raw names retained. Record actual failure/PASS, spans, callbacks, source/artifact/DLL and owned cleanup. No full five/Linux or automatic retry.
 5. T306 reconstruct named intervals offline, match new scopes to previously uncovered calls, separate inclusive parent/child cost and unfinished tail. Independent review must decide whether the actual cause is established. If not, keep T302/root-cause OPEN and state the next precise unknown; do not relabel localization as completed diagnosis. Save/verify remote recovery.
 
+T305 actualFAIL/complete diagnostics:2846named records,1419completed intervals,33standard processCPU samples verified against actual resumer PID/birth. CPU observer was an additional read-only observation during this same run, no profiler/OS-policy/game change or quota; its raw JSONL/state/script are archived. [T306 findings](recovery/crash5/T306-findings.md): common177.247s contains8resource129.818s→24baseline106.806s→mechanical66.276s; full mechanical48calls138.233s, calculationonly1.469s. New scope coverage accounts for common/normalization/game-state enclosing work with ms residuals. Final independent cause/recovery review pending.
+
 Mapping: TIM3-1/2/3→T303; TIM3-4→T304/T305; TIM3-5→T306 and still-open T302. Existing spec review waiver applies. Original Windows0/5/LinuxUNRUN and all failures remain. No production optimization or platform/security change.
 
 

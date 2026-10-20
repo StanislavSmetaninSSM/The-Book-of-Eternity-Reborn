@@ -6,6 +6,7 @@ to verify the existing deterministic JSON/Markdown reports without writing them.
 
 from pathlib import Path
 import argparse
+from datetime import datetime
 import hashlib
 import json
 import math
@@ -222,6 +223,36 @@ def build_report(repo, verify_live=False, report_prefix="T302"):
             "Named operation durations localize code cost; they do not separate CPU, filesystem latency, scanning or environment effects.",
         ],
     }
+    if "LiveCpuSamples" in outcome:
+        cpu_member = stem + "-live-cpu.jsonl"
+        observer_member = stem + "-cpu-observer.json"
+        with zipfile.ZipFile(archive_path) as archive:
+            cpu_samples = [json.loads(line) for line in archive.read(cpu_member).decode("utf-8-sig").splitlines() if line]
+            cpu_observer = json.loads(archive.read(observer_member))
+        assert cpu_samples == outcome["LiveCpuSamples"] and cpu_observer == outcome["LiveCpuObserver"]
+        assert outcome["LiveCpuPIDAndBirthBoundToActualResumer"] and outcome["LiveCpuSamplesMonotonic"]
+        assert all(x["PID"] == resumer["Id"] and x["BirthUtcTicks"] == resumer["WindowsStartTimeUtcTicks"] and not x["RuntimeModified"] for x in cpu_samples)
+        assert cpu_observer["RecordQuota"] is None and cpu_observer["LifetimeQuota"] is None
+        assert cpu_observer["State"] == "Completed" and outcome["LiveCpuObserverNaturalEnd"]
+        for left, right in zip(cpu_samples, cpu_samples[1:]):
+            assert right["ObservedUtc"] > left["ObservedUtc"]
+            assert all(right[key] >= left[key] >= 0 for key in ("TotalProcessorSeconds", "UserProcessorSeconds", "PrivilegedProcessorSeconds"))
+        first, last = cpu_samples[0], cpu_samples[-1]
+        nominal_wall = (datetime.fromisoformat(last["ObservedUtc"]) - datetime.fromisoformat(first["ObservedUtc"])).total_seconds()
+        assert nominal_wall > 0
+        report["ProcessCpuObservation"] = {
+            "Samples": cpu_samples, "SampleCount": len(cpu_samples), "ActualPIDAndBirthVerified": True,
+            "ArchiveMember": cpu_member, "Observer": cpu_observer,
+            "FirstObservedUtc": first["ObservedUtc"], "LastObservedUtc": last["ObservedUtc"],
+            "NominalUtcWindowSeconds": nominal_wall,
+            "WindowTotalCpuSeconds": last["TotalProcessorSeconds"] - first["TotalProcessorSeconds"],
+            "WindowUserCpuSeconds": last["UserProcessorSeconds"] - first["UserProcessorSeconds"],
+            "WindowPrivilegedCpuSeconds": last["PrivilegedProcessorSeconds"] - first["PrivilegedProcessorSeconds"],
+            "LastAccumulatedTotalCpuSeconds": last["TotalProcessorSeconds"],
+            "LastAccumulatedUserCpuSeconds": last["UserProcessorSeconds"],
+            "LastAccumulatedPrivilegedCpuSeconds": last["PrivilegedProcessorSeconds"],
+            "Limitations": outcome["LiveCpuLimitations"],
+        }
     return report
 
 
@@ -271,6 +302,19 @@ def markdown(report, report_prefix="T302"):
                   "Это отдельное наблюдение контрольной точки; его часы имеют другое начало отсчёта. Оно не является игровым PASS.", ""]
     for value in report["FixtureCleanup"]:
         lines.append(f"- Удаление собственного тестового корня: {value['OwnedFixtureRemoved']}; отсутствие подтверждено: {value['PathAbsentOnParentCheck']}.")
+    if "ProcessCpuObservation" in report:
+        cpu = report["ProcessCpuObservation"]
+        lines += ["", "## Счётчики CPU того же дочернего процесса", "",
+                  f"Все {cpu['SampleCount']} снимка связаны с фактическим PID и точным временем рождения из native-отчёта. "
+                  "Наблюдатель читал стандартные счётчики процесса каждые 15 с до его выхода; квоты количества или длительности не было. "
+                  "Первый отдельный снимок сделан до запуска периодического наблюдателя.", "",
+                  f"Последний снимок `{cpu['LastObservedUtc']}`: накоплено CPU {cpu['LastAccumulatedTotalCpuSeconds']:.6f} с, "
+                  f"пользовательское время {cpu['LastAccumulatedUserCpuSeconds']:.6f} с, время ядра {cpu['LastAccumulatedPrivilegedCpuSeconds']:.6f} с. "
+                  f"Между первым и последним снимками: CPU {cpu['WindowTotalCpuSeconds']:.6f} с за {cpu['NominalUtcWindowSeconds']:.6f} с по UTC.", "",
+                  "Это процессные суммы всех потоков, не CPU отдельного именованного интервала. Значения считываются последовательно; "
+                  "небольшая разница total и user+kernel возможна из-за продвижения счётчиков. UTC, часы коллектора и родительского ожидания различаются. "
+                  "Время ядра не устанавливает конкретный драйвер, системный вызов или влияние антивируса. "
+                  "Снимки, состояние и исходник наблюдателя сохранены в сыром архиве."]
     lines += ["", "Это замер одного запуска с наблюдателями. Он показывает стоимость участков, но не разделяет работу CPU, файловой системы и внешних проверок. "
               "Оптимизаций и увеличения лимитов в этом блоке нет. Исходные пять Windows-случаев: 0/5 PASS; Linux локально не запускался.", ""]
     return "\n".join(lines)
