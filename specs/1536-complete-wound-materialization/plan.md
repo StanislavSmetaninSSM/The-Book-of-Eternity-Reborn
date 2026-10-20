@@ -15,6 +15,8 @@ T322 separate Astra/high bindingaccepted4c1afe588 without findings:96archivefile
 
 T323 actual originalseededcut0 FAIL/TimeoutException atunchanged600childwait; body12:33.2382874/run20261021-004553-398-7796-8a8ce06528814c24a6d89b16302e85c6-categories. Producer73/resumer-1, bothEOF/join,2rootsremoved/absent,4DLL+seedunchanged. All3197namedrecords retained; lastbegin JointPhase.ReadCompletedProofAsync at598068.3332ms, parentstack/cause tobeverifiedbyT324. No cleanupcaptureevent/archive. T323-profile-cut0-outcome/raw/childstreams and T323-cleanup-data.json preserved; no retry or qualification. Nextcanonical offlineparser/causalanalysis, independentreview, newcheapactualcomponent/correction.
 
+T324 canonical offline reconstruction:3197records/1596completed/5unfinished,0quota; newcurrentlivebinding and fourhistoricalgoldens exact. Originalappend3source reads37.120776s, freshstoryproof12.540799s completed; then unfinishedValidateAppliedProgressionAsync→ReadCompletedProofAsync598.068s. No cleanupentry/capture. T324-timings/findings/analysis-checks preserve full provenance/comparisons and next bounded continuation/phase-fence question, unresolved/unimplemented. Independent evidence review next; no unchanged originalretry.
+
 ---
 
 # CRASH5 — plan13 revision7: remove one repeated story-source read

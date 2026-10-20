@@ -42,8 +42,8 @@ def records(raw):
 def build_report(repo, verify_live=False, report_prefix="T302"):
     evidence = repo / "specs/1536-complete-wound-materialization/recovery/crash5"
     measurement, preparation = {"T302": ("T301", "T300"), "T306": ("T305", "T303"),
-                                "T311": ("T310", "T309-seam"), "T316": ("T315", "T314")}[report_prefix]
-    generation = {"T302": "T301", "T306": "T304", "T311": "T310", "T316": "T315"}[report_prefix]
+                                "T311": ("T310", "T309-seam"), "T316": ("T315", "T314"), "T324": ("T323", "T320")}[report_prefix]
+    generation = {"T302": "T301", "T306": "T304", "T311": "T310", "T316": "T315", "T324": "T322"}[report_prefix]
     stem = measurement + "-profile-cut0"
     outcome = load(evidence / (stem + "-outcome.json"))
     archive_path = evidence / (stem + "-raw.zip")
@@ -61,7 +61,7 @@ def build_report(repo, verify_live=False, report_prefix="T302"):
         assert json.loads(archive.read("summary.json")) == outcome["Summary"]
         assert json.loads(archive.read(generation + "-seed-binding.json")) == outcome["SeedBinding"]
         prep = json.loads(archive.read("T314-prep-v2.json" if report_prefix == "T316" else preparation + "-prep.json"))
-        assert (prep["Source"] if report_prefix in ("T311", "T316") else prep["Binding"]["CompiledSource"]) == outcome["CompiledSource"]
+        assert (prep["Source"] if report_prefix in ("T311", "T316", "T324") else prep["Binding"]["CompiledSource"]) == outcome["CompiledSource"]
         ns = {"t": "http://microsoft.com/schemas/VisualStudio/TeamTest/2010"}
         results = []
         for member in members:
@@ -165,11 +165,11 @@ def build_report(repo, verify_live=False, report_prefix="T302"):
     assert not limited
     actual_stages = outcome["Children"][children.index(resumer)]["Stages"]
     assert not any(x.get("Transition") == "limit" or x.get("ResumeActivity", {}).get("Limited") for x in actual_stages)
-    current_dlls = prep["Binding"] if report_prefix in ("T311", "T316") else prep["Binding"]["Binaries"]
+    current_dlls = prep["Binding"] if report_prefix in ("T311", "T316", "T324") else prep["Binding"]["Binaries"]
     if verify_live:
         for binary in current_dlls:
             path = repo / binary["Path"]
-            if report_prefix != "T316":
+            if report_prefix not in ("T316", "T324"):
                 assert path.stat().st_size == binary["Bytes"]
             assert digest(path.read_bytes()) == binary["SHA256"]
     seed = outcome["SeedBinding"]
@@ -224,6 +224,8 @@ def build_report(repo, verify_live=False, report_prefix="T302"):
             "Named, stage and activity records have no diagnostic quota. A terminated process cannot emit later end boundaries.",
             ("One redundant outer baseline was removed; retained operations still include observer/serialization overhead. No uninstrumented speedup is inferred."
              if report_prefix == "T311" else
+             "One redundant story-source reread was replaced by exact authenticated readback comparison before initial proof issuance; later fresh validators remain. No controlled wall-time speedup is inferred."
+             if report_prefix == "T324" else
              "Instrumentation preserves calls and assertions but adds observer/serialization overhead. No uninstrumented speedup or fix is claimed."),
             "Named operation durations localize code cost; they do not separate CPU, filesystem latency, scanning or environment effects.",
         ],
@@ -294,7 +296,7 @@ def markdown(report, report_prefix="T302"):
     lines += ["", "## Проверка и границы вывода", "",
               "Идентификатор процесса, последовательность записей и вложенность проверены по сырому stdout фактического дочернего восстановления. "
               "Извлечённые потоки побайтно сверены с TRX внутри архива; CRC, уникальность имён и SHA-256 каждого файла архива проверены. " +
-              (f"{len(report['BinaryBindingVerifiedAtRun'])} DLL" if report_prefix == "T316" else "Три DLL") +
+              (f"{len(report['BinaryBindingVerifiedAtRun'])} DLL" if report_prefix in ("T316", "T324") else "Три DLL") +
               " сверены родительским отчётом до и после запуска; файлы исходного снимка повторно сверены в сохранённом генераторском архиве.", "",
               f"Сырой архив: [{report['RawArchive']}]({report['RawArchive']}); SHA-256 `{report['RawArchiveSHA256']}`. "
               f"Полные интервалы, ссылки на строки исходников и индекс архива: [{report_prefix}-timings.json]({report_prefix}-timings.json).", "",
@@ -322,7 +324,9 @@ def markdown(report, report_prefix="T302"):
                   "Время ядра не устанавливает конкретный драйвер, системный вызов или влияние антивируса. "
                   "Снимки, состояние и исходник наблюдателя сохранены в сыром архиве."]
     change_scope = ("Удалена одна внешняя baseline-проверка; лимиты не увеличивались. "
-                    if report_prefix == "T311" else "Оптимизаций и увеличения лимитов в этом блоке нет. ")
+                    if report_prefix == "T311" else
+                    "Повторное чтение при первоначальной выдаче story-proof заменено полным сравнением с проверенным readback; последующие проверки остаются свежими. Лимиты не увеличивались. "
+                    if report_prefix == "T324" else "Оптимизаций и увеличения лимитов в этом блоке нет. ")
     lines += ["", "Это замер одного запуска с наблюдателями. Он показывает стоимость участков, но не разделяет работу CPU, файловой системы и внешних проверок. "
               + change_scope + "Исходные пять Windows-случаев: 0/5 PASS; Linux локально не запускался.", ""]
     return "\n".join(lines)
@@ -333,7 +337,7 @@ def main():
     parser.add_argument("--repo", type=Path, default=Path(__file__).resolve().parents[5])
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--verify-live", action="store_true", help="Additionally verify currently installed DLLs and fixture bytes; omit for historical offline reconstruction")
-    parser.add_argument("--report", choices=("T302", "T306", "T311", "T316"), default="T302", help="Select the saved measurement; never executes or retries it")
+    parser.add_argument("--report", choices=("T302", "T306", "T311", "T316", "T324"), default="T302", help="Select the saved measurement; never executes or retries it")
     parser.add_argument("--refresh-derived", action="store_true", help="Refresh only derived reports after an offline report clarification; never changes raw evidence")
     args = parser.parse_args()
     assert not (args.check and args.refresh_derived)
