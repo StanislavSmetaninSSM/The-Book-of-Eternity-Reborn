@@ -21,6 +21,8 @@ T338 final GREEN/PREP at69cb4714f:4/4diagnosticPASS, 51retained exact unchanged 
 
 T338 independent SOURCE/PREP accepted03c0be789 (T338-source-review.json), no outstanding findings. Compiled69cb/55distinct controls/78rawfiles/334Git-exact recovery/remoteHEAD verified. Exactlyone existing2min Windows T339 component profile released after this decision is saved/pushed/readback/recovered; no C#/build/passing-control repeat needed. No generator/rebind/original/five/Linux release.
 
+T339 actual69cb/metadata1936db2c4:1PASS17.0272496s. Full80364timers/40182closed/0unfinished/0gaps/0parseerrors; JSONL14839962bytes/SHA6563A1A0A662884AEC1ACCA0882412DDC2D4C014052B48A93B67658EA6E8E7DB, writerclosed/noEOFclaim. Main measured costs: story9065.0954ms(8proofs), projection3696.9635(3), explicitapplied2241.0610(1); backup333.6989, terminal17.2603. Setup1006.7628/ownerclose3.021/cleanup53.4857; allgame/gen/input/4DLL+copies unchanged and ownrootabsent.19indexedrawfiles/CRC/hash ZIP45EE11C191B71A8E59C23CC5C660FC64EFE5A29A9B061D25A57A06EF125B814A. T339-findings/component-map/fulltimings retain all scopes and limits.6082managedordinaryread invocations, not nativecalls/bytes; original hang not reproduced. Final independent evidence review pending; no source/profile retry or original/generator/Linux release.
+
 ---
 
 # CRASH5 — plan13 revision15: source audit before real cleanup measurement
