@@ -16,6 +16,8 @@ T320 source/PREP atd41f80f347: pure12FAIL→12PASS; two XMLbuilds0errors/0introd
 
 T320 independent SOURCE/PREP accepted3ff8b730 by separate Astra/high without findings:75indexedfiles/4DLLbindings/dependencycopies/186Gitblobs verified. T320-source-review.json authorizes exactly the planned3actual serviceGREEN cases once under existing6min category policy. Original recovery stillFAIL/LinuxUNRUN; no fixture regeneration or original attempt yet.
 
+T321 actual3/3PASS atd41f80f347: run20261021-002538-597-36040-6c78380a38184b1f876115762fb1c984-categories, source3/2counts, later fresh story/foreign-files refusal and preappend/postappend narrative refusals allverified.740uncappedrecords/370pairedintervals/0unfinished;3rootsremoved/absent,immutableinput/4PREPDLLsunchanged. Actualappend33.395s/repeat22.330s, observed not controlled speedup. T321-components-outcome/raw and T321-findings.md; final independent evidence review pending. Original recoveryFAIL/LinuxUNRUN; nextgenuine final-source42 and original gate only after acceptance.
+
 ---
 
 # CRASH5 — plan13 revision6: smallest real phase/story component
