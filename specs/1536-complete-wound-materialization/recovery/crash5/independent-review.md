@@ -1,3 +1,13 @@
+# T274 — final seed prototype accepted
+
+Separate gpt-6-astra/high accepted source ef93fbde7cde3fddd0b0cf20c57102fa785dc330, runtime metadata22acebccb41a986632cf586b8f8d4b184dbe2099, evidence d2ed51d00f2c1667f0cac68ff02e5121cd774c6b and recovery checkpointaea971007e24108a19a6b942f982ececc85fb031, with no actionable findings.
+
+Independently verified one complete PASS/0skip within6min, genuine story/occurrence/inactive-tail markers bound to manifest tuple, archiveSHA/all96indexedfiles/all82payloadhashes+lengths/all38directories, runtimegenerationDATAonly, unchanged3DLL, source/twocopies absent. Independently rehashed all329 restored files with zero mismatches; clean recovery HEADd2ed51d and remoteaea971007 confirmed.
+
+Actual source42 preparation206.249s, payload513708bytes, copy0.105/0.083s, separate read-only production validation0.385/0.299s. Export/open/transport prototype is qualified on Windows. No Stage43/crash/current-owner or resumer-speed claim; originalWindows0/5PASS/LinuxUNRUN. No further runtime or source changes after accepted coherent block.
+
+---
+
 # T272 — seed SOURCE/PREP accepted
 
 Separate gpt-6-astra/high accepted compiled ef93fbde7cde3fddd0b0cf20c57102fa785dc330 and metadata860146fda0eb5ee887639f897bcf7e0b031de288. All42 raw TRX PASS/0skip, causal linked-source41PASS1FAIL, retained43+14 affectedPASS, all indexed archive hashes including29final PREP files, three DLLs/versions, XML0errors/changedXML0, catalog837/default279/exactgenerator1case6min verified. Both P2 findings resolved: linked Compile producer-source closure and bounded real limit/link/partial-cleanup negatives. No source/selection/budget delta between compiled and metadata.
