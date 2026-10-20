@@ -23,6 +23,7 @@ public partial class GameEngine
                 MortalJointRepairPublicationDisposition.PublicationUncertain);
         try
         {
+            using var namedStoryInitialLease = _fs.MeasureOperation("JointStory.InitialInspectionLease");
             await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
             {
                 // Nonauthorizing protection precedes marker applicability. Erasing
@@ -93,6 +94,7 @@ public partial class GameEngine
                 }
             }
 
+            namedStoryInitialLease?.Dispose();
             using var namedJointStoryTimer6 = _fs.MeasureOperation("JointStory.ValidateAcceptedTurnOutcomeWithRepairLoopAsync");
             var validated = await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(source, frame,
                 BuildValidatedRollbackSnapshot(frame), frame.TurnNumber, frame.ProgressionControl);
@@ -104,6 +106,7 @@ public partial class GameEngine
             namedJointStoryTimer7?.Dispose();
 
             MortalJointCleanupResult cleanup;
+            using var namedStoryFinalLease = _fs.MeasureOperation("JointStory.FinalMaterializationLeaseAndCleanup");
             await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
             {
                 using var namedJointStoryTimer8 = _fs.MeasureOperation("JointStory.ReadAppliedProgressionPhaseAsync");
@@ -145,6 +148,7 @@ public partial class GameEngine
                 if (cleanup.Disposition != MortalJointCleanupDisposition.CommittedAndVerified || cleanup.Response is null)
                     return HoldMortalJointStoryTurn("The owned terminal cleanup is not verified: " + cleanup.Failure);
             }
+            namedStoryFinalLease?.Dispose();
             // Only the known owned deletion batch and complete readback settle
             // completion. Do not reissue authority from the now-deleted original.
             _inGame = true;
