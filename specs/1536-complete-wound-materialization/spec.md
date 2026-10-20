@@ -1,5 +1,7 @@
 # CRASH5 — spec8: наблюдение пути Windows resumer
 
+**T259 actual:** one completed FAIL/0PASS/0skip, resumer220s timeout; category15m did not time out. Producer exit73 at414.722s; resumer observations continued to214.292s. Named custody checkpoint32.829s; since then14822 canonical-initial hook observations,0observed canonical/main contention,0publication callbacks. This is ongoing observed read activity, not proof of finite completion or successful I/O. Both children EOF/join, two owned roots removed/absence confirmed; historical T219 fixture retained. Windows0/5PASS, cut0 attempted twice (T254 andT259); cut1…4 not run; LinuxUNRUN. No unchanged retry is authorized.
+
 **T258 PREP:** compiled b0560bbd50b95d0ad0ce1c0814748150da369a13;14/14 stage controls PASS/0skip after9PASS+5causalFAIL. Fresh XML build0errors/changedXML0; catalog valid, default PlanOnly219, explicit26cases/9descriptors includes stage14 plus original/new entrypoints12. Metadata executes0tests. No production/native/timeout/assertion delta. Source/DLL/raw evidence in T258-prep.json/zip; independent gpt-6.1-sol/xhigh SOURCE/PREP accepted at c1991a398; all42 archived files and three DLLs verified. T259 one instrumented attempt is ready, not yet executed.
 
 Основание: T254 producer достиг cut0 за395.163s/exit73; resumer не вернулся за220s. Windows0/5 PASS; Linux UNRUN. T256 evidence/recovery приняты. User waiver «продолжай без моих разрешений» действует; новое согласование не ожидается. Продолжаются Spec Kit и Superpowers debugging/TDD/review/verification.

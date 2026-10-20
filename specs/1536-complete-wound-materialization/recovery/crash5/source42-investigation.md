@@ -1,3 +1,35 @@
+# T259 — named resumer activity, still child timeout
+
+**T259 actual:** one completed FAIL/0PASS/0skip, resumer220s timeout; category15m did not time out. Producer exit73 at414.722s; resumer observations continued to214.292s. Named custody checkpoint32.829s; since then14822 canonical-initial hook observations,0observed canonical/main contention,0publication callbacks. This is ongoing observed read activity, not proof of finite completion or successful I/O. Both children EOF/join, two owned roots removed/absence confirmed; historical T219 fixture retained. Windows0/5PASS, cut0 attempted twice (T254 andT259); cut1…4 not run; LinuxUNRUN. No unchanged retry is authorized.
+
+Compiled b0560bbd50b95d0ad0ce1c0814748150da369a13, metadata eb8a931998ae669930b694d231956347bd5e927b, run 20261020-102105-839-22600-c80e9af709c84375ac2f43a272eb03d5-categories. Actual test duration 00:10:36.6806362; process26536 producer73, new67660 resumer-1. Raw ZIP SHAB7B5A909854861E5F89464FCE6BCC42EDC084789ADCBFE9911CDC8A006091071; unchanged3DLL. 34 resumer stage records/17 activity snapshots; no activity/global limit reached. Resumer stderr empty. No late-first return, accepted-proof result or game verdict; original assertions are not claimed passed.
+
+| Elapsed seconds | Interval | Canonical initial | Canonical/main contention | Publication callbacks |
+|---|---|---:|---:|---:|
+| 0.904 | before-finalization | 0 | 0 / 0 | 0 |
+| 7.483 | before-finalization | 317 | 0 / 0 | 0 |
+| 7.491 | LateTerminalAndIdleOperationBound | 1 | 0 / 0 | 0 |
+| 22.494 | LateTerminalAndIdleOperationBound | 2144 | 0 / 0 | 0 |
+| 32.829 | LateTerminalAndIdleOperationBound | 4251 | 0 / 0 | 11 |
+| 32.869 | MortalJointCustodyCaptureCompletedBeforePreparation | 1 | 0 / 0 | 0 |
+| 47.872 | MortalJointCustodyCaptureCompletedBeforePreparation | 1389 | 0 / 0 | 0 |
+| 62.877 | MortalJointCustodyCaptureCompletedBeforePreparation | 2483 | 0 / 0 | 0 |
+| 77.883 | MortalJointCustodyCaptureCompletedBeforePreparation | 3651 | 0 / 0 | 0 |
+| 92.885 | MortalJointCustodyCaptureCompletedBeforePreparation | 5280 | 0 / 0 | 0 |
+| 107.903 | MortalJointCustodyCaptureCompletedBeforePreparation | 6420 | 0 / 0 | 0 |
+| 122.907 | MortalJointCustodyCaptureCompletedBeforePreparation | 8065 | 0 / 0 | 0 |
+| 137.919 | MortalJointCustodyCaptureCompletedBeforePreparation | 9564 | 0 / 0 | 0 |
+| 152.92 | MortalJointCustodyCaptureCompletedBeforePreparation | 11141 | 0 / 0 | 0 |
+| 167.933 | MortalJointCustodyCaptureCompletedBeforePreparation | 12107 | 0 / 0 | 0 |
+| 182.952 | MortalJointCustodyCaptureCompletedBeforePreparation | 13368 | 0 / 0 | 0 |
+| 214.292 | MortalJointCustodyCaptureCompletedBeforePreparation | 14822 | 0 / 0 | 0 |
+
+ExactInitial remains0; this is a separate hook population, not proof of no physical I/O. The last214.292s sample follows182.952s; unobserved intervals may contain I/O or other work. Before custody,4251 canonical-initial hooks and11 publication callbacks are a different interval; do not fold them into a successful-I/O total. After custody the sampled interval contains continuing reads and no publication callback, narrowing the previously silent chain to pre-publication work in this attempt. It still does not identify the expensive method or rule out a read loop. Static analysis established no infinite loop/task cycle; it did identify repeated proof validation.
+
+Candidate next investigation: reallocate unused producer allowance within the existing820s combined observation window, each child capped600s,15m category/cleanup unchanged. This can provide more than220s to a resumer after a shorter producer without enlarging the category or changing assertions. It is an experimental completion window, not a performance remedy; needs pure boundary controls, actual monotonic-clock wiring review and one gated attempt. No production change proposed.
+
+---
+
 # T258 — resumer observation qualification
 
 **T258 PREP:** compiled b0560bbd50b95d0ad0ce1c0814748150da369a13;14/14 stage controls PASS/0skip after9PASS+5causalFAIL. Fresh XML build0errors/changedXML0; catalog valid, default PlanOnly219, explicit26cases/9descriptors includes stage14 plus original/new entrypoints12. Metadata executes0tests. No production/native/timeout/assertion delta. Source/DLL/raw evidence in T258-prep.json/zip; independent gpt-6.1-sol/xhigh SOURCE/PREP accepted at c1991a398; all42 archived files and three DLLs verified. T259 one instrumented attempt is ready, not yet executed.

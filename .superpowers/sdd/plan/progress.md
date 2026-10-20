@@ -99,3 +99,5 @@ T256 accepted Sol6.1/xhigh atfd5; fresh276-file GitHub recovery; T219 fixture pr
 T258 compiledb0560bbd5:14GREEN, XML0errors/changedXML0, catalog/default219/explicit26 valid. RED9PASS5FAIL at9d32; initial Action overload compile error separately recorded. Independent SOURCE/PREP pending; no T259 runtime yet.
 
 T258 SOURCE/PREP accepted separate Sol6.1/xhigh atc1991a398 / compiledb0560bbd5;42 archive files/3DLL verified, no finding. T259 one instrumented cut0 ready; budgets600/220/15m unchanged.
+
+T259 completed FAIL child220, category not timed out. Producer73 at414.722s; resumer active canonical initial hooks through214.292s,14822 since named custody32.829s, no observed contention/publication in that interval. EOF/join/cleanup confirmed, old T219 retained.0/5PASS, T260 independent evidence/recovery pending; no retry.
