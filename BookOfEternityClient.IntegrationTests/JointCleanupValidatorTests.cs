@@ -153,7 +153,8 @@ public sealed class JointCleanupValidatorTests
         JointCleanupDataTemplate.Materialize(JointCleanupValidatorTestData.ArchivePath, JointCleanupValidatorTestData.ArchiveSha256, root);
         var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
         await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
-        var generation = files.ReadExistingSessionGeneration(lease);
+        var generation = files.ReadExistingSessionGeneration(lease)
+            ?? throw new InvalidDataException("Observed DATA has no existing generation.");
         await SessionOperationContext.RunBoundAsync(files, generation, lease, async () =>
         {
             var manifest = await JointCleanupValidatorTestData.ReadManifestAsync(files, lease);

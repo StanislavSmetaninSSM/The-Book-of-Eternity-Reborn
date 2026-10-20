@@ -86,7 +86,9 @@ public sealed class JointCleanupValidatorProfileTests
                 { OperationTimingObserver = timings.Observe });
             acquireStarted = true;
             lease = await files.AcquireCanonicalWriteLeaseAsync();
-            generation = files.ReadExistingSessionGeneration(lease); // Never manufacture a generation for this DATA.
+            // Never manufacture a generation for this DATA.
+            generation = files.ReadExistingSessionGeneration(lease)
+                ?? throw new InvalidDataException("Observed DATA has no existing generation.");
             generationBefore = File.ReadAllBytes(files.SessionGenerationPath);
             before = JointCleanupValidatorTestData.CaptureImages(root);
             directoriesBefore = JointCleanupValidatorTestData.CaptureDirectories(root);

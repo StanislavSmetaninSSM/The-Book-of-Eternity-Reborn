@@ -11,6 +11,9 @@ namespace BookOfEternityClient.Tests;
 /// </summary>
 internal static class JointCleanupValidatorTestData
 {
+    /// <summary>
+    /// Binds the exact retained archive bytes without rebinding capture provenance.
+    /// </summary>
     internal const string ArchiveSha256 = "D2ACF9B8B958F7800E1335B35C0C873E928792C82ADABF5707C57286EB329740";
 
     /// <summary>
