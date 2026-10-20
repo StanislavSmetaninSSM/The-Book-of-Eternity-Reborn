@@ -111,27 +111,36 @@ internal static partial class WoundAcceptedTurnPlanner
         }
         internal async Task ValidateCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
         {
+            using var namedOperationTimer20 = files.MeasureOperation("Continuation.ValidateCurrentAsync");
             files.EnsureCanonicalWriteLeaseActive(lease);
             if (!ReferenceEquals(files, _files) || !files.IsCurrentSessionGeneration(lease, Generation) || !HasValidSeal)
                 throw new InvalidDataException("Joint preparation belongs to a stale or foreign physical owner.");
+            using var namedOperationTimer21 = files.MeasureOperation("Continuation.ReadSnapshot");
             var original = MortalQteWoundOpportunityProjection.ReadSnapshot(files, lease);
+            namedOperationTimer21?.Dispose();
             var binding = _acquisitionInput.Binding;
             if (original.SessionId != binding.SessionId || original.RequestId != binding.RequestId ||
                 original.SnapshotToken != binding.SnapshotToken || original.TurnNumber != binding.Turn || original.Realm != binding.Realm)
                 throw new InvalidDataException("The actual joint original no longer matches its independently bound sources.");
+            using var namedOperationTimer22 = files.MeasureOperation("Continuation.CompareBeforeImages");
             foreach (var (path, expected) in _before)
             {
                 var actual = await files.ReadFileBytesAsync(lease, path);
                 if (expected is null ? actual is not null : actual is null || !expected.AsSpan().SequenceEqual(actual))
                     throw new InvalidDataException("Joint preparation before-image changed: " + path);
             }
+            namedOperationTimer22?.Dispose();
+            using var namedOperationTimer23 = files.MeasureOperation("Continuation.ReadPublicationBaselines");
             var baselines = ReadPublicationBaselines(files, lease);
+            namedOperationTimer23?.Dispose();
             if (baselines.Issues.Count != 0 || WoundAcceptedTurnFingerprints.ComputeInput(new WoundAcceptedTurnInput(
                     _acquisitionInput.Binding, _acquisitionInput.Opportunities, _acquisitionInput.Transitions,
                     baselines.WoundCarriers!, baselines.WoundIdentity!, baselines.WoundHistory!,
                     baselines.EffectCarriers, baselines.EffectIdentity)) != WoundAcceptedTurnFingerprints.ComputeInput(_acquisitionInput))
                 throw new InvalidDataException("The joint wound/effect baseline changed while its guards were captured.");
+            using var namedOperationTimer24 = files.MeasureOperation("Continuation.InspectConfirmedHeldClaim");
             var confirmed = AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(files, lease, Request, Finalization);
+            namedOperationTimer24?.Dispose();
             if (!confirmed.IsValid || confirmed.State != MortalWoundTreatmentResourceReservationState.ConfirmedHeld)
                 throw new InvalidDataException("The same joint request must still own its confirmed resource agreement.");
         }
@@ -149,6 +158,7 @@ internal static partial class WoundAcceptedTurnPlanner
         FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
         MortalJointRepairCheckpoint.RejectedCapture capture)
     {
+        using var namedOperationTimer25 = files.MeasureOperation("Preparation.CreateJointRepairPreparationAsync");
         try
         {
             capture.EnsureCurrent(files, lease);
@@ -157,8 +167,10 @@ internal static partial class WoundAcceptedTurnPlanner
                 return JointPreparationFailure("concurrent_commands", "The first joint contour cannot admit foreign resource/effect commands.");
             var previous = capture;
             var frame = previous.Accepted.Binding;
+            using var namedOperationTimer26 = files.MeasureOperation("Preparation.ReconstructAsync");
             var reconstructed = await MortalJointRepairCheckpoint.ReconstructAsync(files, lease,
                 frame.SessionId, frame.RequestId, frame.SnapshotToken, frame.Turn);
+            namedOperationTimer26?.Dispose();
             if (!reconstructed.IsValid || reconstructed.Capture is not { } current ||
                 current.Accepted.AcceptedStateFingerprint != previous.Accepted.AcceptedStateFingerprint ||
                 current.Request.RequestFingerprint != previous.Request.RequestFingerprint ||
@@ -168,7 +180,9 @@ internal static partial class WoundAcceptedTurnPlanner
             // Use the freshly exported owner/request/claim, never bless new current
             // bytes with a previously captured capability or parsed checkpoint seal.
             capture = current;
+            using var namedOperationTimer27 = files.MeasureOperation("Preparation.RevalidateCorrectionAsync");
             var correction = await MortalJointRepairCheckpoint.RevalidateCorrectionAsync(files, lease, capture);
+            namedOperationTimer27?.Dispose();
             if (correction.SourceBinding is not { } acquisitionBinding || correction.MaterializedOpportunities.Count != 1 ||
                 correction.Transitions.Count != 1 || correction.Transitions[0].Kind != "create" ||
                 correction.MaterializedOpportunities[0].WorseningTarget is not null)
@@ -178,7 +192,9 @@ internal static partial class WoundAcceptedTurnPlanner
             var treatmentBinding = capture.Accepted.Binding;
             if (!SameJointFrame(acquisitionBinding, treatmentBinding))
                 return JointPreparationFailure("binding", "Each independently validated owner must bind the same actual original frame.");
+            using var namedOperationTimer28 = files.MeasureOperation("Preparation.ReadPublicationBaselines");
             var baselines = ReadPublicationBaselines(files, lease);
+            namedOperationTimer28?.Dispose();
             if (baselines.Issues.Count != 0) return new(null, null, baselines.Issues);
             var input = new WoundAcceptedTurnInput(acquisitionBinding, correction.MaterializedOpportunities,
                 correction.Transitions, baselines.WoundCarriers!, baselines.WoundIdentity!, baselines.WoundHistory!,
@@ -186,17 +202,25 @@ internal static partial class WoundAcceptedTurnPlanner
             var treatmentInput = new WoundAcceptedTurnInput(treatmentBinding, Array.Empty<WoundOpportunityAuthority>(),
                 Array.Empty<WoundAcceptedTransitionDraft>(), baselines.WoundCarriers!, baselines.WoundIdentity!,
                 baselines.WoundHistory!, baselines.EffectCarriers, baselines.EffectIdentity);
+            using var namedOperationTimer29 = files.MeasureOperation("Preparation.ValidateInput");
             var validation = WoundAcceptedTurnPlannerCore.ValidateInput(input);
+            namedOperationTimer29?.Dispose();
             if (validation.Issues.Count != 0) return new(null, null, validation.Issues);
+            using var namedOperationTimer30 = files.MeasureOperation("Preparation.PrepareTreatmentOutcome");
             var preparation = MortalWoundTreatmentOutcomePublicationPlanner.Prepare(capture.Accepted,
                 capture.Request, capture.Resolution, capture.Accepted.CurrentGameMinute);
+            namedOperationTimer30?.Dispose();
             if (!preparation.IsValid) return new(null, null, preparation.Issues);
+            using var namedOperationTimer31 = files.MeasureOperation("Preparation.ValidateTreatmentPublicationShell");
             var shell = ValidateTreatmentPublicationShell(capture.Accepted, capture.Request, capture.Resolution);
+            namedOperationTimer31?.Dispose();
             if (shell.Finalization is null || shell.Issues.Count != 0) return new(null, null, shell.Issues);
+            using var namedOperationTimer32 = files.MeasureOperation("Preparation.PrepareSeverityRematerialization");
             var rematerialization = MortalWoundTreatmentSeverityRematerializationPlanner.Prepare(treatmentInput,
                 preparation.Preparation!, capture.Request.RequestFingerprint, capture.Resolution.ResolutionAuthorityFingerprint,
                 capture.Resolution.ResultFingerprint, capture.Request.Coordinates.AttemptId,
                 capture.Request.Coordinates.OperationKey, WoundIdentityState.ComputeSemanticFingerprint(capture.Request.RouteSourceWound));
+            namedOperationTimer32?.Dispose();
             if (!rematerialization.IsValid) return new(null, null, rematerialization.Issues);
             var paths = AcceptedMechanicsWoundCommonInputComposer.TreatmentOrdinaryGuardPaths.Concat(new[]
             {
@@ -211,12 +235,20 @@ internal static partial class WoundAcceptedTurnPlanner
             }).Concat(capture.Checkpoint.UsesInterfacePublication ? new[] { MortalJointInterfacePublication.InterfacePath } : Array.Empty<string>())
                 .Distinct(StringComparer.Ordinal).ToArray();
             var before = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
+            using var namedOperationTimer33 = files.MeasureOperation("Preparation.CaptureBeforeImages");
             foreach (var path in paths) before.Add(path, await files.ReadFileBytesAsync(lease, path));
+            namedOperationTimer33?.Dispose();
+            using var namedOperationTimer34 = files.MeasureOperation("Preparation.ConstructContinuationAuthority");
             var authority = new JointRepairContinuationAuthority(JointRepairIssuer, files, capture.Accepted.SessionGeneration,
                 capture.Checkpoint, input, treatmentInput, acquisitionCommandRoot, capture.Accepted, capture.Request, capture.Resolution,
                 shell.Finalization, preparation.Preparation!, rematerialization, before);
+            namedOperationTimer34?.Dispose();
+            using var namedOperationTimer35 = files.MeasureOperation("Preparation.ReadPublishedInterface");
             _ = authority.ReadPublishedInterface();
+            namedOperationTimer35?.Dispose();
+            using var namedOperationTimer36 = files.MeasureOperation("Preparation.ValidateContinuation");
             await authority.ValidateCurrentAsync(files, lease);
+            namedOperationTimer36?.Dispose();
             return new(input, authority, Array.Empty<ValidationIssue>());
         }
         catch (Exception error) when (error is InvalidDataException or InvalidOperationException or ArgumentException or IOException)

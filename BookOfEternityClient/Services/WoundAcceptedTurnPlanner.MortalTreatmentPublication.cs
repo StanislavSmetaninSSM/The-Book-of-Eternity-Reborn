@@ -1253,6 +1253,7 @@ internal static partial class WoundAcceptedTurnPlanner
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease)
     {
+        using var namedOperationTimer54 = fileSystem.MeasureOperation("Baselines.ReadPublicationBaselines");
         var issues = new List<ValidationIssue>();
         JsonObject? Read(string path, bool required)
         {

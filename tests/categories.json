@@ -1,6 +1,17 @@
 {
     "schemaVersion": 1,
     "categories": [
+        {
+            "id": "crash5-named-operation-timers",
+            "responsibility": "Passive named begin/end timer contract: disabled observer, elapsed/idempotent end, observer failure isolation and primary exception preservation.",
+            "excludes": "No engine, source42 generation, crash/restart or performance optimization.",
+            "changeHints": ["BookOfEternityClient/Core/FileSystemManager.OperationTiming.cs", "BookOfEternityClient.Tests/NamedOperationTimingTests.cs"],
+            "related": [],
+            "requirements": { "frontendBuild": false, "exclusive": false },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.NamedOperationTimingTests.*"] }]
+        },
 {
   "id": "fr063-joint-interface-seed-input-contracts",
   "responsibility": "Spec12 closed seed selection, Windows cut0 mode, exact manifest binding/current fingerprint and fail-without-fallback controls using physical synthetic DATA.",

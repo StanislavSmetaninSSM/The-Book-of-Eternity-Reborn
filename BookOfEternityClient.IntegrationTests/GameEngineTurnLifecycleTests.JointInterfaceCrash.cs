@@ -549,6 +549,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var parent = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "parent.json")))!.AsObject();
         var stages = JointInterfaceCrashStageReport.CreateForOrdinary(parent, cut);
         var resumeActivity = OperatingSystem.IsWindows() && stages != null ? new JointInterfaceResumeActivity(stages) : null;
+        var operationTimings = OperatingSystem.IsWindows() && stages != null ? new JointOperationTimings() : null;
         var atCut = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "cut.json")))!.AsObject();
         var fault = parent["Fault"]?.GetValue<string>();
         Assert.Equal(root, atCut["Root"]!.GetValue<string>()); Assert.Equal(cut, atCut["Cut"]!.GetValue<int>());
@@ -582,6 +583,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         stages?.Observe("file-system", "enter");
         files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
         {
+            OperationTimingObserver = operationTimings is null ? null : operationTimings.Observe,
             AfterCanonicalReadInitialValidationAsync = resumeActivity is null ? null : _ => { resumeActivity.Observe(JointResumeObservation.CanonicalInitial); return Task.CompletedTask; },
             AfterExactPhysicalReadInitialValidationAsync = resumeActivity is null ? null : _ => { resumeActivity.Observe(JointResumeObservation.ExactInitial); return Task.CompletedTask; },
             AfterCanonicalWriteLockOpenedAsync = resumeActivity is null ? null : () => { resumeActivity.Observe(JointResumeObservation.CanonicalOpened); return Task.CompletedTask; },

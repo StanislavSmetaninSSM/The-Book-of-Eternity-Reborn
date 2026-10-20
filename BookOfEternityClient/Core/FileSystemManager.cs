@@ -9,6 +9,12 @@ namespace BookOfEternityClient.Core;
 
 internal sealed class FileSystemManagerHooks
 {
+    /// <summary>
+    /// Observes a named operation's begin and elapsed end; a missing observer disables timing.
+    /// This diagnostic must not mutate game state or authority; observer exceptions are ignored.
+    /// </summary>
+    internal Action<string, string, TimeSpan>? OperationTimingObserver { get; init; }
+
 #if DEBUG
     /// <summary>
     /// Observes an existing physical snapshot-evidence read; null disables the observation.

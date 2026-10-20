@@ -102,15 +102,22 @@ internal sealed class MortalJointRepairCheckpoint
     private static async Task<ReadResult> CaptureCoreAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
         string sessionId, string requestId, string snapshotToken, int expectedTurn, JsonObject? retainedPending, int initialVersion = 1)
     {
+        using var namedOperationTimer37 = files.MeasureOperation("Checkpoint.CaptureCoreAsync");
         files.EnsureCanonicalWriteLeaseActive(lease);
         try
         {
+            using var namedOperationTimer38 = files.MeasureOperation("Checkpoint.ReadSnapshot");
             var original = MortalQteWoundOpportunityProjection.ReadSnapshot(files, lease);
+            namedOperationTimer38?.Dispose();
+            using var namedOperationTimer39 = files.MeasureOperation("Checkpoint.ReadSessionGeneration");
             var generation = files.ReadLocalGenerationSnapshot(lease).Binding.Id;
+            namedOperationTimer39?.Dispose();
             if (original.Realm != "mortal_world" || original.TurnNumber != expectedTurn || original.SessionId != sessionId ||
                 original.RequestId != requestId || original.SnapshotToken != snapshotToken || string.IsNullOrWhiteSpace(generation))
                 return Refuse("binding", "The fresh official original and physical generation must match the current frame.");
+            using var namedOperationTimer40 = files.MeasureOperation("Checkpoint.ReadCommand");
             var commandBytes = await files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath);
+            namedOperationTimer40?.Dispose();
             MortalJointRepairCheckpoint? retainedCheckpoint = null;
             byte[]? draftBytes; byte[]? sceneBytes;
             if (retainedPending is not null)
@@ -159,21 +166,29 @@ internal sealed class MortalJointRepairCheckpoint
                 ["providerId"] = coordinate.ProviderId, ["currentLocationId"] = coordinate.LocationId
             }.ToJsonString(), "joint treatment context");
             if (!context.IsValid || context.Context is null) return new(null, context.Issues);
+            using var namedOperationTimer41 = files.MeasureOperation("Checkpoint.ExportCurrentTreatmentAuthority");
             var exported = MortalWoundTreatmentAcceptedStateAuthority.ExportCurrent(files, lease, context.Context, coordinate.WoundId);
+            namedOperationTimer41?.Dispose();
             if (!exported.IsValid || exported.Authority is not { } accepted) return new(null, exported.Issues);
             if (accepted.SessionGeneration != generation || accepted.Binding.SessionId != sessionId || accepted.Binding.RequestId != requestId ||
                 accepted.Binding.SnapshotToken != snapshotToken || accepted.Binding.Turn != expectedTurn || accepted.Binding.Realm != "mortal_world")
                 return Refuse("accepted_binding", "Fresh treatment accepted-state authority must independently retain the same frame.");
+            using var namedOperationTimer42 = files.MeasureOperation("Checkpoint.RestorePersistedTreatmentRequests");
             var restored = accepted.RestorePersistedTreatmentRequests(history);
+            namedOperationTimer42?.Dispose();
             if (!restored.IsValid) return new(null, restored.Issues);
             if (restored.Requests.Count != 1 || restored.HeldRequests.Count != 1 || restored.FinalizedRequests.Count != 0 ||
                 restored.HeldRequests[0].RequestFingerprint != persisted.RequestFingerprint)
                 return Refuse("restored_request", "Fresh restoration must return the same complete request, not a new reservation.");
             var request = restored.HeldRequests[0];
+            using var namedOperationTimer43 = files.MeasureOperation("Checkpoint.CreateGuaranteedAttempt");
             var resolved = MortalWoundTreatmentPlanner.CreateGuaranteedAttempt(request, history, accepted.CurrentWound, accepted);
+            namedOperationTimer43?.Dispose();
             if (resolved.Disposition != "Resolved" || resolved.Resolution is not { } resolution) return new(null,
                 resolved.Issues.Count == 0 ? Refuse("resolution", "The exact existing request must produce its guaranteed result.").Issues : resolved.Issues);
+            using var namedOperationTimer44 = files.MeasureOperation("Checkpoint.FinalizeResource");
             var finalization = MortalWoundTreatmentResourceComposer.Finalize(resolution);
+            namedOperationTimer44?.Dispose();
             if (!finalization.IsValid) return new(null, finalization.Issues);
             var scene = Root(sceneBytes, "joint ordinary narrative");
             var sceneText = scene["response"]?.GetValue<string>();
@@ -183,8 +198,10 @@ internal sealed class MortalJointRepairCheckpoint
             var draft = Root(draftBytes, "rejected joint acquisition");
             if (draft["decision"]?.GetValue<string>() != "materialize")
                 return Refuse("decision_kind", "Only a genuine materialize severity repair is this first contour.");
+            using var namedOperationTimer45 = files.MeasureOperation("Checkpoint.ComposeRejectedQteResponse");
             var refusal = MortalWoundOpportunityAdapter.ComposeQteAcceptedResponse(files, lease, Text(draftBytes), sceneText,
                 out var replay, out var opportunity);
+            namedOperationTimer45?.Dispose();
             if (refusal is null || refusal.Success || replay is not null || opportunity is null || opportunity.WorseningTarget is not null)
                 return Refuse("rejected_source", "A real rejected CREATE from the actual QTE adapter is required.");
             var actionable = refusal.Issues.Where(issue => issue.Code == "wound_severity_above_opportunity" &&
@@ -201,8 +218,12 @@ internal sealed class MortalJointRepairCheckpoint
             var occurrence = occurrences.State.Occurrences[0];
             if (occurrence.AcceptedEvents.Count(value => value.EventRef == opportunity.EventRef) != 1)
                 return Refuse("source_event", "The selected real opportunity event must be unique in its signed source vector.");
+            using var namedOperationTimer46 = files.MeasureOperation("Checkpoint.ReadManifestBytes");
             var manifest = await files.ReadFileBytesAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
+            namedOperationTimer46?.Dispose();
+            using var namedOperationTimer47 = files.MeasureOperation("Checkpoint.ReadAuthorityBytes");
             var authority = await files.ReadFileBytesAsync(lease, PendingTurnSnapshotAuthority.AuthorityPath);
+            namedOperationTimer47?.Dispose();
             if (manifest is null || authority is null) return Refuse("original_files", "The actual original manifest and authority bytes are required.");
             var pending = WoundRepairPacketBuilder.ComposePendingRoot(accepted.Binding, packets, parsed);
             var receiptFingerprints = pending["repairReceipts"]!.AsArray().Select(receipt =>
@@ -245,11 +266,20 @@ internal sealed class MortalJointRepairCheckpoint
     internal static async Task<WoundResponseInputCompositionResult> RevalidateCorrectionAsync(FileSystemManager files,
         FileSystemManager.CanonicalWriteLease lease, RejectedCapture capture)
     {
+        using var namedOperationTimer48 = files.MeasureOperation("Correction.RevalidateCorrectionAsync");
         capture.EnsureCurrent(files, lease);
+        using var namedOperationTimer49 = files.MeasureOperation("Correction.ReadCommand");
         var currentCommand = await files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath);
+        namedOperationTimer49?.Dispose();
+        using var namedOperationTimer50 = files.MeasureOperation("Correction.ReadPending");
         var currentPending = await files.ReadFileBytesAsync(lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
+        namedOperationTimer50?.Dispose();
+        using var namedOperationTimer51 = files.MeasureOperation("Correction.ReadDraft");
         var draftBytes = await files.ReadFileBytesAsync(lease, MortalWoundOpportunityAdapter.DecisionPath);
+        namedOperationTimer51?.Dispose();
+        using var namedOperationTimer52 = files.MeasureOperation("Correction.ReadNarrative");
         var sceneBytes = await files.ReadFileBytesAsync(lease, "output/narrative_response.json");
+        namedOperationTimer52?.Dispose();
         if (currentCommand is null || !currentCommand.AsSpan().SequenceEqual(capture.CommandBytes) || currentPending is null ||
             !JsonNode.DeepEquals(Root(currentPending, "joint current pending"), capture.Pending) || draftBytes is null || sceneBytes is null)
             throw new InvalidDataException("The actual joint command/pending/public resubmission must retain the complete owned graph.");
@@ -260,8 +290,10 @@ internal sealed class MortalJointRepairCheckpoint
         if (!JsonNode.DeepEquals(actualScene, expectedScene) || capture.Packet.RequiresResponseCorrection ||
             !capture.Packet.MatchesCorrectedDecision(draft, scene["response"]?.GetValue<string>()))
             throw new InvalidDataException("Only the packet-authorized severity leaf may change; the scene remains exact except timestamp.");
+        using var namedOperationTimer53 = files.MeasureOperation("Correction.ComposeCorrectedQteResponse");
         var composed = MortalWoundOpportunityAdapter.ComposeQteAcceptedResponse(files, lease, Text(draftBytes), scene["response"]!.GetValue<string>(),
             out var replay, out var opportunity);
+        namedOperationTimer53?.Dispose();
         if (composed is null || !composed.Success || replay is not null || opportunity is null || !capture.Packet.MatchesOpportunity(opportunity))
             throw new InvalidDataException("The real adapter must independently admit the corrected acquisition within its complete sealed range.");
         return composed;
