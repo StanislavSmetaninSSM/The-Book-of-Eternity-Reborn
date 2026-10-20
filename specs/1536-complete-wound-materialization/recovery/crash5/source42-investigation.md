@@ -1,3 +1,11 @@
+# T273 — measured source42 transport experiment
+
+T273 prototype PASS: one complete actual generator case/0skip; source42=206.249s, capture/export/open=1.121s, imports=0.105s/0.083s, read-only validation=0.385s/0.299s. 82 payload files/513708bytes; two own copies and source removed/absence confirmed. Immutable artifact retained and independently rehashed; no Stage43/crash/current-owner qualification or resume speedup claim. Compiledef93fbde7cde3fddd0b0cf20c57102fa785dc330; runtime metadata22acebccb41a986632cf586b8f8d4b184dbe2099; run20261020-123808-320-56712-7cb9a4cc15534c0f8827ef726eb139ca-categories. Exact source/DLL/raw/artifact evidence T273-generator.json/zip. Windows0/5, original220 five NOT_RERUN, LinuxUNRUN; T219 historical fixture retained. Final independent evidence/recovery review pending.
+
+The measured materialization cost excludes fresh production validation; both are reported separately. Source42 is a one-time preparation measurement in this run; full crash/current-owner execution is unmeasured here. The previous T263 resumer timeout is unresolved by this prototype. Source/production/native code and original budgets remain unchanged.
+
+---
+
 # T263-cut0 — actual shared-window result
 
 **Spec9 runtime:** Windows0/5PASS, 1/5 attempted at shared820/max600/category15m. T263-cut0 FAILED; completed=True, category timeout=False, duration 00:13:40.8952276; owned fixture cleanup=True, child EOF/join=True, unchanged3DLL=True. Dependent cuts stopped; no unchanged retry or automatic further limit increase. Diagnose actual evidence before a new plan. Original220 five NOT_RERUN; T219/T254/T259 failures retained; LinuxUNRUN.

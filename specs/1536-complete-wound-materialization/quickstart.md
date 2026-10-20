@@ -1,6 +1,8 @@
-# Текущий этап: spec11 / plan9 — prototype seed
+# Текущее состояние: spec11 / plan9 seed prototype
 
-Пользователь поручил реализацию и продолжение без ожидания ответов. [Spec11](spec.md), [plan9](plan.md), [tasks T269…T274](tasks.md). T269 complete;36codec/adoption/fingerprint controls plus compilable seams ready for causal RED. Generator отдельно1case/6min после SOURCE/PREP, не в default; actual source42 generation ещёUNRUN. Stage43/crash0…4/LINUX не запускаются этим slice. Windows0/5PASS/T263FAIL сохраняются.
+T273 prototype PASS: one complete actual generator case/0skip; source42=206.249s, capture/export/open=1.121s, imports=0.105s/0.083s, read-only validation=0.385s/0.299s. 82 payload files/513708bytes; two own copies and source removed/absence confirmed. Immutable artifact retained and independently rehashed; no Stage43/crash/current-owner qualification or resume speedup claim. Compiledef93fbde7cde3fddd0b0cf20c57102fa785dc330; runtime metadata22acebccb41a986632cf586b8f8d4b184dbe2099; run20261020-123808-320-56712-7cb9a4cc15534c0f8827ef726eb139ca-categories. Exact source/DLL/raw/artifact evidence T273-generator.json/zip. Windows0/5, original220 five NOT_RERUN, LinuxUNRUN; T219 historical fixture retained. Final independent evidence/recovery review pending.
+
+Artifact in T273-generator.zip under generated/artifact. Extract immutable DATA separately; Open requires current contract fingerprint. The generator is explicit category fr063-joint-interface-seed-generation,1case/6min; it is not the default test path. No unchanged regeneration or crash runtime is part of this slice.
 
 ---
 
