@@ -1,3 +1,9 @@
+# Current preparation — inner operation timings; root cause OPEN
+
+Compiled8499922ae9f8a231545b3299137470e4d495ed27 adds105passive sites (200total) to partition the three measured unknown sections. [T303-prep](recovery/crash5/T303-prep.json) / [scope map](recovery/crash5/T303-source-scope-map.json): freshXML82.904s/0errors/changedXML0;15unchanged output controls reused from073; metadata0executed. Independent SOURCE/PREP pending. **Current fixed seed still contains983 DATA and is historical for the newly compiled source. Do not run or rebind it.** Next genuine generation isT304 only after review; T305 not executed.
+
+---
+
 # CRASH5 — spec14 revision3: full timings and observed Windows timeout mechanism
 
 Current compiled source `98376e40dbaa0435654380815d2bffb602f068f4`,95 literal timers. Named boundaries/stages/activity have no record-count or byte truncation; cumulative activity continues throughout execution. [SOURCE/PREP acceptance](recovery/crash5/T300-source-review.json), [evidence](recovery/crash5/T300-prep.json), [source path map](recovery/crash5/T300-validation-path-map.md). Fifteen output controls passed at073; their unchanged helper/test sources are reused after the timer-only983 supplement and fresh XML build.
