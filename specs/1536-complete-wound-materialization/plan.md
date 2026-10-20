@@ -9,6 +9,8 @@ Spec15r8, issue1536, tasksT322–324; original T315 historical failure remains i
 
 No production code or gameplay/GM-authored schema change: prompts/examples require no update. Tests/selection.json remains the bounded correction's CI selection; generator/seeded gate are explicit manual opt-in categories excluded from default CI by their existing contracts. Acceptance is source-matching export/import evidence plus actual original seeded result/integrity/owned cleanup, not component counts alone.
 
+T322 generator actual1PASS/run20261021-003520-760-6000-49bb718fb4c84e25861817fa8c253cd8-categories; body203.51338s/source42=200.7195586s.82files/513704bytes/38dirs, twoimports/sourcecleanuptrue,4DLLunchanged. T322-generator/source-inputs/validation:136ZIPmembers/96indexedfiles,1783inputs(43Gitexact/1740LF→CRLF), fingerprintFFB07E6F91494C8AA77A0FF750BAEF68DAB2133C8B8B19EED6284D9DE29DFD14. Whole historicaldda83files/source-record retained and verified before newpublication; durableoldT317evidenceunchanged. NewmanifestFF05A741CEBF53D901F8E5F2623DA8586845E29A8E173A69BE73B4042E8A9D13. Bindingreview pending; originalcut0UNRUN.
+
 ---
 
 # CRASH5 — plan13 revision7: remove one repeated story-source read
