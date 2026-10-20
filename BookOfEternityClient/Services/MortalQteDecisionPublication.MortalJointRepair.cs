@@ -204,18 +204,25 @@ internal static partial class MortalQteDecisionPublication
     private static async Task<CompletedProof> ReadJointCompletedProofAsync(FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease lease, PendingTurnSnapshotReadAuthority inspection, JsonObject root)
     {
+        using var t326Proof0 = fs.MeasureOperation("JointProof.RecoverStableMarkerAsync");
         fs.ResolveBackupPublicationRecovery(lease);
         var stableMarker = await fs.ReadFileBytesAsync(lease, StatePath) ?? throw Invalid("joint_marker_missing_after_recovery");
         var recovered = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(stableMarker),
             SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "current recovered joint completion");
         if (!JsonNode.DeepEquals(root, recovered)) throw Invalid("joint_marker_recovery_changed");
+        t326Proof0?.Dispose();
+        using var t326Proof1 = fs.MeasureOperation("JointProof.ValidateSealAndGeneration");
         var outputBasis = MortalJointAcceptedOutputBasis.Read(root["outputBinding"]);
         var fields = outputBasis.InterfacePublication is null ? JointFields : JointFields.Append("niPublication").ToArray();
         if (root.Count != fields.Length || root.Any(row => !fields.Contains(row.Key, StringComparer.Ordinal))) throw Invalid("joint_shape");
         var payload = root.DeepClone().AsObject(); payload.Remove("fingerprint");
         if (Text(root, "fingerprint") != JointFingerprint(payload) || !fs.IsCurrentSessionGeneration(lease, Text(root, "generation")))
             throw Invalid("joint_seal_or_generation");
+        t326Proof1?.Dispose();
+        using var t326Proof2 = fs.MeasureOperation("JointProof.ReadSourceSnapshot");
         var snapshot = ReadSnapshot(fs, lease);
+        t326Proof2?.Dispose();
+        using var t326Proof3 = fs.MeasureOperation("JointProof.ValidateSourceBindingAsync");
         if (snapshot.Realm != "mortal_world" || inspection.SessionId != snapshot.SessionId || inspection.RequestId != snapshot.RequestId ||
             inspection.SnapshotToken != snapshot.SnapshotToken || inspection.TurnNumber != snapshot.TurnNumber ||
             Text(root, "sessionId") != snapshot.SessionId || Text(root, "requestId") != snapshot.RequestId ||
@@ -226,24 +233,34 @@ internal static partial class MortalQteDecisionPublication
         var quartet = ClosedMap(root["originalQuartet"], QuartetPaths);
         foreach (var path in QuartetPaths)
             if (quartet[path]?.GetValue<string>() != Digest(snapshot.ReadRequiredBytes(path))) throw Invalid("joint_original_quartet");
+        t326Proof3?.Dispose();
+        using var t326Proof4 = fs.MeasureOperation("JointProof.ValidateFootprintAsync");
         var footprint = ClosedMap(root["publishedFootprint"], JointFootprintPaths);
         foreach (var path in JointFootprintPaths)
             if (footprint[path]?.GetValue<string>() != Digest(await fs.ReadFileBytesAsync(lease, path))) throw Invalid("joint_published_footprint: " + path);
+        t326Proof4?.Dispose();
+        using var t326Proof5 = fs.MeasureOperation("JointProof.ValidateConsumedWaveAsync");
         if (root["consumedPrivatePaths"] is not JsonArray privatePaths || privatePaths.Count != 1 ||
             privatePaths[0]?.GetValue<string>() != WoundAcceptedTurnSnapshotContract.PendingResolutionPath ||
             await fs.ReadFileBytesAsync(lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath) is not null)
             throw Invalid("joint_wave_present");
+        t326Proof5?.Dispose();
+        using var t326Proof6 = fs.MeasureOperation("JointProof.ValidateConsumedCommands");
         var allowed = MechanicalCommandPaths.Append(MortalWoundOpportunityAdapter.DecisionPath).ToArray();
         if (root["consumedCommands"] is not JsonArray commands || commands.Count is < 2 or > 4 ||
             commands.Select(node => node?.GetValue<string>()).Distinct(StringComparer.Ordinal).Count() != commands.Count ||
             commands.Any(node => !allowed.Contains(node?.GetValue<string>(), StringComparer.Ordinal)) ||
             !commands.Any(node => node?.GetValue<string>() == MortalWoundOpportunityAdapter.DecisionPath) ||
             !commands.Any(node => node?.GetValue<string>() == AcceptedMechanicsPlan.WoundCommandPath)) throw Invalid("joint_consumed_commands");
+        t326Proof6?.Dispose();
 
+        using var t326Proof7 = fs.MeasureOperation("JointProof.ReadOriginalProjection");
         var original = MortalQteWoundOpportunityProjection.ReadSnapshot(fs, lease);
         if (original.SessionId != snapshot.SessionId || original.RequestId != snapshot.RequestId ||
             original.SnapshotToken != snapshot.SnapshotToken || original.TurnNumber != snapshot.TurnNumber || original.Realm != snapshot.Realm)
             throw Invalid("joint_partition_binding");
+        t326Proof7?.Dispose();
+        using var t326Proof8 = fs.MeasureOperation("JointProof.ValidateTreatmentHistoryAsync");
         var treatment = ClosedMap(root["jointTreatment"], JointTreatmentFields);
         var history = WoundHistoryState.Parse(await fs.ReadFileAsync(lease, WoundHistoryState.HistoryPath), WoundHistoryState.HistoryPath);
         var originalHistory = WoundHistoryState.Parse(MortalQteWoundOpportunityProjection.ReadObservedRoot(original, WoundHistoryState.HistoryPath),
@@ -263,7 +280,11 @@ internal static partial class MortalQteDecisionPublication
             !ResourceMaterializationContract.IsAuthorityFingerprint(Text(treatment, "repairCheckpointFingerprint"))) throw Invalid("joint_treatment_binding");
         var finalization = MortalWoundTreatmentResourceComposer.RecomputePersistedGuaranteedFinalization(result);
         if (finalization is null || finalization.Fingerprint != Text(treatment, "resourceFinalizationFingerprint")) throw Invalid("joint_finalization");
+        t326Proof8?.Dispose();
+        using var t326Proof9 = fs.MeasureOperation("JointProof.ValidateResourcesAsync");
         await ValidateJointPublishedResourcesAsync(fs, lease, snapshot, result, finalization);
+        t326Proof9?.Dispose();
+        using var t326Proof10 = fs.MeasureOperation("JointProof.ValidateReceiptPartition");
         var offered = MortalQteWoundOpportunityProjection.Project(original);
         var issues = new List<ValidationIssue>();
         var suffix = new JointHistorySuffixProof(JointHistorySuffixIssuer, row);
@@ -281,6 +302,8 @@ internal static partial class MortalQteDecisionPublication
             source.Owner.CarrierPath != WoundCarrierCatalog.PlayerPath || receipt.Decision != "materialize" ||
             Text(root, "receiptFingerprint") != receipt.ReceiptFingerprint || Text(root, "decisionFingerprint") != receipt.DecisionFingerprint ||
             Text(root, "operationKey") != receipt.OperationKey) throw Invalid("joint_qte_source");
+        t326Proof10?.Dispose();
+        using var t326Proof11 = fs.MeasureOperation("JointProof.ValidateOutputCarriersAsync");
         var basis = MortalJointAcceptedOutputBasis.Read(root["outputBinding"]);
         var carriers = WoundCarrierCatalog.Build(new(
             await ReadOutputCarrier(WoundCarrierCatalog.PlayerPath), await ReadOutputCarrier(WoundCarrierCatalog.NpcPath),
@@ -298,12 +321,25 @@ internal static partial class MortalQteDecisionPublication
             !carriers.TryResolveOne(basis.WoundId, out var acquired) ||
             !MortalQteWoundOpportunityProjection.MatchesMaterializedOutputReference(original, receipt, acquired.Wound, basis.LocalWoundRef))
             throw Invalid("joint_output_receipt_source_binding");
+        t326Proof11?.Dispose();
+        using var t326ProofFirstOutputs = fs.MeasureOperation("JointProof.ValidatePublicOutputsBeforeAsync");
         await RequireExactJointPublicOutputsAsync(fs, lease, root, basis);
+        t326ProofFirstOutputs?.Dispose();
+        using var t326ProofTail0 = fs.MeasureOperation("JointProof.ValidateInterfaceAsync");
         await RequireJointInterfaceDataAsync(fs, lease, root, basis);
+        t326ProofTail0?.Dispose();
+        using var t326ProofTail1 = fs.MeasureOperation("JointProof.ValidateInactiveTailAsync");
         await GameEngine.ValidateCurrentMortalJointInactiveTailAsync(fs, lease, snapshot.TurnNumber);
+        t326ProofTail1?.Dispose();
+        using var t326ProofTail2 = fs.MeasureOperation("JointProof.ValidateProgressionAsync");
         await ValidateJointProgressionDataAsync(fs, lease, root);
+        t326ProofTail2?.Dispose();
+        using var t326ProofTail3 = fs.MeasureOperation("JointProof.ValidatePublicOutputsAfterAsync");
         await RequireExactJointPublicOutputsAsync(fs, lease, root, basis);
+        t326ProofTail3?.Dispose();
+        using var t326ProofTail4 = fs.MeasureOperation("JointProof.ValidateFinalMarkerAsync");
         if (!Same(stableMarker, await fs.ReadFileBytesAsync(lease, StatePath))) throw Invalid("joint_marker_changed_during_proof");
+        t326ProofTail4?.Dispose();
         return new(root, receipt);
     }
 
@@ -343,12 +379,17 @@ internal static partial class MortalQteDecisionPublication
         PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentPersistedResult result,
         MortalWoundTreatmentResourceComposer.PersistedGuaranteedFinalizationProof finalization)
     {
+        using var t326Resources0 = fs.MeasureOperation("JointProofResources.ReadDefinitionsAsync");
         var definitions = ResourceDefinitionCatalog.ParseCanonical(await fs.ReadFileAsync(lease, ResourceMaterializationContract.DefinitionsPath), false);
         if (definitions.Catalog is not { } catalog || !definitions.IsValid) throw Invalid("joint_resource_definitions");
+        t326Resources0?.Dispose();
+        using var t326Resources1 = fs.MeasureOperation("JointProofResources.ReadStateHistoryAsync");
         var state = ResourceStateContract.ParseCanonical(await fs.ReadFileAsync(lease, ResourceMaterializationContract.StatePath), catalog, false);
         var history = ResourceHistoryState.ParseCanonical(await fs.ReadFileAsync(lease, ResourceMaterializationContract.HistoryPath), catalog, false);
         if (state.Ledger is not { } ledger || history.History is not { } transitions || state.Issues.Count != 0 || history.Issues.Count != 0 ||
             transitions.ValidateStateAgreement(ledger).Count != 0) throw Invalid("joint_resource_agreement");
+        t326Resources1?.Dispose();
+        using var t326Resources2 = fs.MeasureOperation("JointProofResources.ValidateHistoryPrefix");
         var originalHistory = ResourceHistoryState.ParseCanonical(CanonicalJsonUtf8.DecodeOneOptionalBom(
             original.ReadRequiredBytes(ResourceMaterializationContract.HistoryPath)), catalog, false);
         if (originalHistory.History is not { } prior || originalHistory.Issues.Count != 0) throw Invalid("joint_original_resource_history");
@@ -359,9 +400,13 @@ internal static partial class MortalQteDecisionPublication
         var resourceConsumptions = finalization.Consumptions.Where(value => value.Kind == "resource_quantity").ToArray();
         if (transitions.Transitions.Skip(prior.Transitions.Count).Count(row => row.Phase == ResourceMutationPhase.RegisteredSystemOutcome &&
                 row.Operation == ResourceTransitionOperation.Spend) != resourceConsumptions.Length) throw Invalid("joint_registered_spend_inventory");
+        t326Resources2?.Dispose();
+        using var t326Resources3 = fs.MeasureOperation("JointProofResources.ComposeOwnersAsync");
         var owners = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(catalog, path => fs.ReadFileAsync(lease, path), ledger, transitions,
             CanonicalResourceOwnerAuthorityPurpose.FinalAfterImage);
         if (owners.Authority is null || owners.Issues.Count != 0) throw Invalid("joint_resource_owner");
+        t326Resources3?.Dispose();
+        using var t326Resources4 = fs.MeasureOperation("JointProofResources.ValidateConsumptions");
         foreach (var consumption in resourceConsumptions)
         {
             if (!ResourceDefinitionCatalog.TryParseOwnerKind(consumption.OwnerKind, out var kind)) throw Invalid("joint_resource_kind");

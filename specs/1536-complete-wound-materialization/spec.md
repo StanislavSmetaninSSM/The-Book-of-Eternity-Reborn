@@ -1,3 +1,15 @@
+# CRASH5 — spec15 revision10: isolate completed-proof and physical-read cost
+
+Issue1536; active feature unchanged. T324 evidence independently accepted, actual T323 timeout remains FAIL. T325 produced a concrete transient-file counterexample, so the four-to-two continuation/phase proposal is rejected under the preserved temporal refusal contract. No check removal is authorized.
+
+- PROFILE-1 / US1: add passive named scopes inside the real joint completed-proof and published-resource validators, and ordinary synchronous/asynchronous file-read stages. Distinguish original snapshots, marker/seal/generation, footprint/consumed commands, treatment/resources/receipt/carriers/output/interface/inactive-tail/progression/final marker; distinguish scope preparation, admission/lease/path, hooks/open, copy and completion checks. Preserve calls/arguments/order/predicates/retries/catches and all failure boundaries. Verify stripped production source exactly equals accepted d41 code. No paths/payloads in timer names.
+- PROFILE-2 / US2: one small independent integration case imports the existing genuine AppliedBeforeStory DATA, acquires fresh real lease/generation/current original, performs one real applied-phase read and one ordinary continuation binding, and checks success plus whole game bytes/directories unchanged. Use direct owners without GameEngine construction, source42/Stage43 or original recovery. Record setup, full process CPU/wall observations and every timing record; no quota, sampling or duration-based success assertion. Clean only its new owned root; source/archive/generation remain unchanged.
+- PROFILE-3 / US3: fresh integration XML build, changed XML inspection, precise catalog/one-case PlanOnly, source/PREP review and saved/recovered remote checkpoint precede the one probe. Preserve full raw output and exact binary/input/cleanup provenance; analyze completed inclusive and exclusive costs without adding nested time. Independent completed-block review and a cause-driven next design follow. No unchanged original retry, timeout/native/OS/security/GM/player/schema change or source42 rebinding. Cold-five0/5/LinuxUNRUN remain.
+
+Standing explicit autonomous-execution/review-wait waiver applies; this exact diagnostic specification is presented before code. This is a measurement investigation, not a production optimization or completion of the original recovery objective.
+
+---
+
 # CRASH5 — spec15 revision9: bounded continuation/phase overlap investigation
 
 Issue1536; active feature unchanged. T323 original seeded recovery still FAIL/600s; complete3197records show append3reads37.121s and subsequent fresh story proof12.541s completed, then phase proof reread unfinished at598.068s. No cleanup entry. Independent T324 evidence review remains pending and separate; no new production correction is authorized by this investigation.

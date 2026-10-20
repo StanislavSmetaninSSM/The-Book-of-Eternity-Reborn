@@ -2,17 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "fr063-joint-story-proof-image",
-      "reason": "T320 new production-used pure proof-image predicate requires every-field/history refusal and exact/case-comparer controls.",
+      "category": "fr063-joint-completed-proof-profile",
+      "reason": "T326 passive named proof/physical substeps and single direct-owner profile require exactly one reviewed read-only real-DATA probe.",
       "contracts": [
-        "Exact expected contents; no authority or input mutation."
-      ]
-    },
-    {
-      "category": "fr063-joint-applied-story-components",
-      "reason": "T320/321 actual local readback reuse changes source fanout and initial proof issuance; three real fresh-proof cases cover positive and affected failures.",
-      "contracts": [
-        "Source3/2reads; exact append/repeat; fresh later drift/foreign-files refusal; post-append readback drift is uncertain; preappend narrative drift refuses; roots/source unchanged."
+        "Full validation/order/failure behavior retained; whole game and generation unchanged; all diagnostics preserved."
       ]
     }
   ]

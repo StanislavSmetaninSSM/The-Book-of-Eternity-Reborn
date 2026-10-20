@@ -1,8 +1,19 @@
+# CRASH5 — spec15 revision10 / plan13 revision10: direct proof cost
+
+Issue1536; [spec](spec.md), [plan](plan.md). T325 coalescing rejected; retain every original observation.
+
+- [ ] T326 [US1/US2/US3] Actual Spec Kit phases/consistency; passive proof/resource/ordinary-read instrumentation with exact stripped-source equivalence, one genuine DATA direct-owner profile case and exact category/selection, XML/build/catalog/PlanOnly, saved remote recovery and separate SOURCE/PREP review. No production optimization.
+- [ ] T327 [US2/US3] One reviewed profile; preserve all named/CPU/wall/raw/TRX/input/DLL/owned-cleanup evidence, analyze true completed inclusive/exclusive costs and obtain independent completed-block review. Write next causal design and continue original recovery work without unchanged retry.
+
+Dependencies T324accepted+T325counterexample→T326prep/review→T327measurement/review→next written correction. Standing autonomy/review-wait waiver; no diagnostic quota, original limit increase or Windows/Linux qualification inferred.
+
+---
+
 # CRASH5 — spec15 revision9 / plan13 revision9: scoped overlap investigation
 
 Issue1536; [spec](spec.md), [plan](plan.md). T323FAIL is preserved; no unchanged retry.
 
-- [ ] T325 [US1/US2/US3] Actual Spec Kit phases/consistency, bounded read-only Astra/high consultation on same-call continuation/phase proof overlap; map exact contracts/lifetime/failure scenarios and cheap/real-DATA controls, then parent source audit and written recommendation. Deliverable is investigation evidence, not production implementation.
+- [x] T325 [US1/US2/US3] Actual Spec Kit phases/consistency, bounded read-only Astra/high consultation on same-call continuation/phase proof overlap; map exact contracts/lifetime/failure scenarios and cheap/real-DATA controls, then parent source audit and written recommendation. Deliverable is investigation evidence, not production implementation.
 
 Independent T323/T324 evidence review may proceed concurrently; both contexts read only. Dependencies T324actualsource/evidence→T325recommendation→next concrete spec/plan/tasks before any prospective implementation. All diagnostics uncapped; original cold-five0/5/LinuxUNRUN and original recovery remain open.
 
@@ -13,8 +24,8 @@ Independent T323/T324 evidence review may proceed concurrently; both contexts re
 Issue1536; [spec](spec.md), [plan](plan.md). Accepted source d41f80f347, correction final review b9886d150. Standing autonomous continuation applies.
 
 - [x] T322 [US1] Actualphases/2casePlanOnly0execution; generator1PASS/203.51338s,82files/513704bytes/38dirs/twoimports+sourcecleanup.1783producinginputs/43exact+1740LF→CRLF; wholehistoricaldda83files/source-record retained.83Git-exactnewfiles/4DLLbound. Separate Astra/high bindingaccepted4c1afe588 withoutfindings/199Gitrecoveryblobs; T322-generator/source-inputs/validation/binding/review. Original seededgate stillT323/unrun.
-- [ ] T323 [US2] One original seededWindowscut0 under existing820/600/15m policy; preserve all ordinary assertions/owners/inert-repeats and complete raw diagnostics/cleanup-entry DATA/input/binary/seed/cleanup evidence. No unchanged retry.
-- [ ] T324 [US3] Analyze actual outcome/reached counts and unfinished boundaries; independent evidence review/remote recovery, then next written Windows/Linux qualification or cause-driven component correction. Never stop at an intermediate report while useful work remains.
+- [x] T323 [US2] One original seededWindowscut0 under existing820/600/15m policy; preserve all ordinary assertions/owners/inert-repeats and complete raw diagnostics/cleanup-entry DATA/input/binary/seed/cleanup evidence. No unchanged retry.
+- [x] T324 [US3] Analyze actual outcome/reached counts and unfinished boundaries; independent evidence review/remote recovery, then next written Windows/Linux qualification or cause-driven component correction. Never stop at an intermediate report while useful work remains.
 
 Dependencies acceptedT321→T322generation/bindingreview→T323→T324→next tracked work. OriginalcoldWindowsfive0/5/LinuxUNRUN and historicalT315FAIL remain unchanged until their own qualification. No diagnostic quotas, broad run, timeout/OS/process change or historical source42 rebinding.
 

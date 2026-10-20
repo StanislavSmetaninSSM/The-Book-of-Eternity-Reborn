@@ -68,9 +68,12 @@ public partial class FileSystemManager
         try
         {
 #endif
+        using var t326Async0 = this.MeasureOperation("OrdinaryRead.Async.Total");
         cancellationToken.ThrowIfCancellationRequested();
+        using var t326Async1 = this.MeasureOperation("OrdinaryRead.Async.PrepareScope");
         var expectedPath = ResolvePath(relativePath);
         var scope = new TrustedLocalFileScope([GameSessionPath]);
+        t326Async1?.Dispose();
         FileStream? stream;
         for (var attempt = 0; ; attempt++)
         {
@@ -82,6 +85,7 @@ public partial class FileSystemManager
             stream = null;
             try
             {
+                using var t326AsyncAdmission = MeasureOperation("OrdinaryRead.Async.Admission");
                 EnsureCanonicalPathStillSafe(relativePath, expectedPath);
                 if (!File.Exists(scope.ValidateFile(expectedPath)))
                 {
@@ -90,7 +94,11 @@ public partial class FileSystemManager
 #endif
                     return null;
                 }
+                t326AsyncAdmission?.Dispose();
+                using var t326AsyncHook = MeasureOperation("OrdinaryRead.Async.BeforeOpenHookAsync");
                 await InvokeBeforeCanonicalReadOpenAsync(relativePath);
+                t326AsyncHook?.Dispose();
+                using var t326AsyncOpen = MeasureOperation("OrdinaryRead.Async.ValidateAndOpen");
                 cancellationToken.ThrowIfCancellationRequested();
                 if (lease != null) EnsureValidCanonicalWriteLease(lease);
                 EnsureCanonicalPathStillSafe(relativePath, expectedPath);
@@ -102,8 +110,11 @@ public partial class FileSystemManager
 #endif
                     return null;
                 }
+                t326AsyncOpen?.Dispose();
+                using var t326AsyncAfterHook = MeasureOperation("OrdinaryRead.Async.AfterOpenHookAsync");
                 if (_hooks?.AfterCanonicalReadInitialValidationAsync != null)
                     await _hooks.AfterCanonicalReadInitialValidationAsync(relativePath);
+                t326AsyncAfterHook?.Dispose();
                 break;
             }
             catch (Exception ex) when (IsTransientOrdinaryReadOpenException(ex) && attempt < TransientFileAccessRetryCount)
@@ -123,8 +134,10 @@ public partial class FileSystemManager
 
         await using (stream)
         {
+            using var t326AsyncRead = MeasureOperation("OrdinaryRead.Async.ReadOpenedSnapshotAsync");
             var snapshot = await ReadOpenedOrdinarySnapshotAsync(stream, scope, relativePath, expectedPath, cancellationToken);
             if (lease != null) EnsureValidCanonicalWriteLease(lease);
+            t326AsyncRead?.Dispose();
 #if DEBUG
             diagnosticOutcome = "present"; diagnosticBytes = snapshot.Content.Length;
 #endif
@@ -153,9 +166,12 @@ public partial class FileSystemManager
         try
         {
 #endif
+        using var t326Sync0 = this.MeasureOperation("OrdinaryRead.Sync.Total");
         dataFailure = null;
+        using var t326Sync1 = this.MeasureOperation("OrdinaryRead.Sync.PrepareScope");
         var expectedPath = ResolvePath(relativePath);
         var scope = new TrustedLocalFileScope([GameSessionPath]);
+        t326Sync1?.Dispose();
         for (var attempt = 0; ; attempt++)
         {
 #if DEBUG
@@ -164,6 +180,7 @@ public partial class FileSystemManager
             var initialValidationComplete = false;
             try
             {
+                using var t326SyncAdmission = MeasureOperation("OrdinaryRead.Sync.Admission");
                 if (lease != null) EnsureValidCanonicalWriteLease(lease);
                 EnsureCanonicalPathStillSafe(relativePath, expectedPath);
                 if (!File.Exists(scope.ValidateFile(expectedPath)))
@@ -173,6 +190,8 @@ public partial class FileSystemManager
 #endif
                     return null;
                 }
+                t326SyncAdmission?.Dispose();
+                using var t326SyncOpen = MeasureOperation("OrdinaryRead.Sync.ValidateAndOpen");
                 using var stream = OpenValidatedOrdinaryFile(scope, expectedPath, asynchronous: false,
                     out dataFailure, nullableDataFailure, attempt >= TransientFileAccessRetryCount);
                 if (stream == null)
@@ -189,16 +208,21 @@ public partial class FileSystemManager
 #endif
                     return null;
                 }
+                t326SyncOpen?.Dispose();
                 initialValidationComplete = true;
                 if (!nullableDataFailure)
                 {
+                    using var t326SyncCopy = MeasureOperation("OrdinaryRead.Sync.HookAndCopy");
                     // Preserve the default reader's original data/check/materialization order.
                     _hooks?.AfterCanonicalReadInitialValidationAsync?.Invoke(relativePath).GetAwaiter().GetResult();
                     var timestamp = File.GetLastWriteTimeUtc(stream.SafeFileHandle);
                     using var buffer = CreateOrdinaryReadBuffer(stream);
                     stream.CopyTo(buffer);
+                    t326SyncCopy?.Dispose();
+                    using var t326SyncComplete = MeasureOperation("OrdinaryRead.Sync.Complete");
                     CompleteOrdinaryRead(scope, relativePath, expectedPath);
                     if (lease != null) EnsureValidCanonicalWriteLease(lease);
+                    t326SyncComplete?.Dispose();
                     var result = new CanonicalFileReadSnapshot(buffer.ToArray(), timestamp);
 #if DEBUG
                     diagnosticOutcome = "present"; diagnosticBytes = result.Content.Length;
@@ -208,6 +232,7 @@ public partial class FileSystemManager
                 CanonicalFileReadSnapshot snapshot;
                 try
                 {
+                    using var t326SyncNullableCopy = MeasureOperation("OrdinaryRead.Sync.NullableHookAndCopy");
                     // The existing synchronous reader has only the post-open hook.
                     _hooks?.AfterCanonicalReadInitialValidationAsync?.Invoke(relativePath).GetAwaiter().GetResult();
                     var timestamp = File.GetLastWriteTimeUtc(stream.SafeFileHandle);
@@ -224,6 +249,7 @@ public partial class FileSystemManager
 #endif
                     return null;
                 }
+                using var t326SyncNullableComplete = MeasureOperation("OrdinaryRead.Sync.NullableComplete");
                 CompleteOrdinaryRead(scope, relativePath, expectedPath);
                 if (lease != null) EnsureValidCanonicalWriteLease(lease);
 #if DEBUG
@@ -279,10 +305,16 @@ public partial class FileSystemManager
     private async Task<CanonicalFileReadSnapshot> ReadOpenedOrdinarySnapshotAsync(FileStream stream,
         TrustedLocalFileScope scope, string relativePath, string expectedPath, CancellationToken cancellationToken)
     {
+        using var t326Opened0 = this.MeasureOperation("OrdinaryRead.OpenedSnapshot.PrepareBuffer");
         var timestamp = File.GetLastWriteTimeUtc(stream.SafeFileHandle);
         using var buffer = CreateOrdinaryReadBuffer(stream);
+        t326Opened0?.Dispose();
+        using var t326Opened1 = this.MeasureOperation("OrdinaryRead.OpenedSnapshot.CopyAsync");
         await stream.CopyToAsync(buffer, cancellationToken);
+        t326Opened1?.Dispose();
+        using var t326Opened2 = this.MeasureOperation("OrdinaryRead.OpenedSnapshot.Complete");
         CompleteOrdinaryRead(scope, relativePath, expectedPath);
+        t326Opened2?.Dispose();
         return new(buffer.ToArray(), timestamp);
     }
 

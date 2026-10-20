@@ -2,6 +2,41 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-completed-proof-profile",
+  "responsibility": "T326/327 direct real applied-phase and ordinary continuation cost on independently imported genuine DATA; complete named physical/proof timing and process CPU/wall, read-only image/generation oracle.",
+  "excludes": "No GameEngine/source42/Stage43/original recovery, synthetic capability, check removal, timing threshold or diagnostic quota. SOURCE/PREP review required before probe.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+    "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+    "BookOfEternityClient.IntegrationTests/JointCompletedProofProfileTests.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-applied-data-transport",
+      "when": "Observed DATA importer changes."
+    },
+    {
+      "id": "fr063-joint-applied-story-components",
+      "when": "Story source validation behavior changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointCompletedProofProfileTests.ActualAppliedData_ProfilesPhaseAndOrdinaryContinuationWithoutWrites"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-story-proof-image",
   "responsibility": "T320 pure shared story proof-image equality: exact disposition/path/row/bytes/full histories, expected comparer and input preservation.",
   "excludes": "No authority issuer, filesystem/current proof or full game setup. Actual phase/story components qualify real retained readback separately.",
