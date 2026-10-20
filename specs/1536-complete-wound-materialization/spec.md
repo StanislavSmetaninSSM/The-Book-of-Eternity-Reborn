@@ -1,3 +1,16 @@
+# CRASH5 — spec15 revision14: preserve every child diagnostic outside fixture cleanup
+
+Issue1536; actual T333FAIL exposes a JSON scalar transport failure (reported length169321202), not an independently recorded resumer timeout/verdict. Full resumer output did not survive; available14rawfiles and structurally verified221file cleanup-entry DATA retained in T334-inspection. T333 original/fullraw acceptance stays unmet, no unchanged retry.
+
+- OUTPUT-1 / US1: preserve complete child stdout/stderr as independent artifacts outside directories deleted by owned fixture cleanup, written as output is drained. No record/byte/lifetime quota, sampling, truncation or inline-large-string threshold. Compact structured observations reference complete artifacts and exact source/run/role/PID/birth/EOF/length/hash status; avoid a single JSON scalar containing the full child stream. Plain buffer sizes are implementation memory choices, never total diagnostic limits.
+- OUTPUT-2 / US2: keep actual native process/owner/identity/stop/disposal/EOF/join and Windows820/600/15min policies unchanged. Reporting/persistence errors must not mask the original wait/native error; retain secondary diagnostic failures and partial artifacts, explicitly distinguish incomplete persistence from EOF/success. If durable evidence cannot be established, do not delete the only temporary copy. No new killer, backend, privileges, tracing mechanism or native/worker/terminal default change.
+- OUTPUT-3 / US2: use cheap detached-input/file/controlled-output tests through production-used test support seams. Cover exact Unicode/newlines/chunk boundaries, complete long single-line output beyond the observed scalar length without a giant scalar/whole-string allocation, stable metadata/hash/file binding, independent calls, storage/report failure precedence and evidence retention through fixture cleanup. No GameEngine construction/source42/Stage43/original recovery to verify transport. XML-document new/changed APIs in multiline form.
+- OUTPUT-4 / US3: preserve actual failure and missing-data limits; independent evidence review, bounded read-only API/owner consultation if useful, parent TDD, fresh relevant XML build/catalog/exact focused PlanOnly/control runs, source-bound assemblies and clean remote recovery plus separate final SOURCE/PREP acceptance. Historical parsers/raw remain immutable and exact where applicable. Update Linux handoff without claiming runtime success. No generator/rebind/full crash/five/Linux execution in this block; subsequent real cleanup-DATA work requires its own written scope.
+
+No game/GM/player/schema/lease/proof change. Existing NativeLineage remains the process owner. Standing explicit autonomy/review-wait waiver applies; actual written scope is presented before implementation/consultation.
+
+---
+
 # CRASH5 — spec15 revision13: source-matching original recovery gate
 
 Issue1536; constructor correction SOURCE/PREP accepted, T330 actual direct-DATA profile PASS with full diagnostics. Component measurements do not establish resolution of original T323600s timeout. T330 final independent review must accept before generator execution.

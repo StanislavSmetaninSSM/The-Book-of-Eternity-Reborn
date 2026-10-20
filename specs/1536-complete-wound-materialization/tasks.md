@@ -1,8 +1,18 @@
+# CRASH5 — spec15 revision14 / plan13 revision14: durable full diagnostics
+
+- [ ] T334 [US1/US3] Preserve and independently inspect actual T333serializationFAIL/available raw/missing resumer limits and captured DATA; actual phases/consistency and bounded read-only direct/native API/owner consultation before implementation. No runtime.
+- [ ] T335 [US1/US2] Parent TDD diagnostic-artifact/ref transport outside fixture cleanup, uncapped buffered capture, exact hashes/text semantics/identity/status, primary error precedence and failed-persistence retention; cheap normal/error/long-single-line tests, no gameplay or native ownership change.
+- [ ] T336 [US2/US3] Fresh relevant XML/doc inspection, focused catalog/PlanOnly/transport+managed controls, complete artifact-aware raw/bindings/ownedcleanup, historical evidence preserved, Linux handoff updated; clean remote recovery and separate final coherent SOURCE/PREP acceptance. No generator/rebind/original/five/Linux execution.
+
+Dependencies T334→T335→T336. Original T333fullraw/recovery acceptance stays unmet after actual failed attempt; no unchanged retry or diagnostic quota. Next real cleanup-DATA investigation requires separate written scope.
+
+---
+
 # CRASH5 — spec15 revision13 / plan13 revision13: return to original recovery
 
 - [x] T331 [US1/US2] Final T330 acceptance, actual phases/consistency, exact source/DLL/selector PREP, immutable whole oldd41 fixture preservation, then one existing genuine6min source42 generator and complete result/raw/cleanup evidence. No source changes/build/catalog replay or old-manifest rebind.
 - [x] T332 [US2/US3] Verify new genuine artifact/independent working-source fingerprint, publish byte-exact owned fixture/source-record and declared directories; Git readback/clean recovery, separate DATA/source/DLL binding review and saved acceptance before consumption.
-- [ ] T333 [US1/US3] One unchanged-budget seeded Windowscut0 with naturalStage43/crash/resumer/original assertions and uncapped named diagnostics; full immutable raw/TRX/childstreams/capture/input/DLL/artifact/EOF/join/owncleanup verification, offline causal analysis and independent final review/recovery.
+- [ ] T333 [US1/US3] **Executed FAIL; full resumer diagnostics not retained, original qualification unmet; no replay.** One unchanged-budget seeded Windowscut0 with naturalStage43/crash/resumer/original assertions and uncapped named diagnostics; full immutable raw/TRX/childstreams/capture/input/DLL/artifact/EOF/join/owncleanup verification, offline causal analysis and independent final review/recovery.
 
 Dependencies T330finalaccepted→T331→T332accepted→T333. No unchanged retry/cuts1–4/fullfive/Linux execution. Components do not qualify original recovery; originalFAIL/coldfive0/5/LinuxUNRUN until actual relevant outcome.
 
