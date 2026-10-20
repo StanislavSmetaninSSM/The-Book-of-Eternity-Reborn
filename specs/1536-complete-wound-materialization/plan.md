@@ -8,6 +8,8 @@ T318c inserts named passive scopes in `StoryService.MortalJointRepair.cs` and th
 
 T318d preserves actual component success/refusal/timings and independent review, selects the next demonstrated cause-driven correction and writes it before implementation. Do not end at this intermediate component report while recovery remains open. T317 final runtime/evidence review can proceed independently of T318 source preparation; final T318 review remains separate.
 
+T318 actual component run2/2PASS, no timeout/skip,640uncappedrecords/320complete/0unfinished; bothrootsremoved/absent,3DLL+inputunchanged. T318-findings.md and T318-components-outcome/raw preserve actual timings. Append41.477s/repeat30.708s; source4/3reads. Next is independent evidence review and a bounded freshness question about reusing authenticated readback for synchronous initial proof comparison. No production change yet; original recoveryFAIL/LinuxUNRUN.
+
 ---
 
 # CRASH5 — plan13 revision5: one fixture acquisition, then cheap real components
