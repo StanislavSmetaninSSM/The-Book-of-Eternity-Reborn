@@ -1,3 +1,9 @@
+# T260 — failure evidence and recovery accepted
+
+Independent gpt-6.1-sol/xhigh accepted04624368e586f227c663c16140c1d71388a75bd7 plus inspected wording corrections: static analysis did not establish a loop (does not prove absence), and obsolete ready-to-run sentences are explicitly historical. Raw1FAIL/0PASS/0skip; resumer timeout but no category timeout.34stages/17samples,14822canonical-initial observations through214.292s; no exhausted quota. Streams, current3DLL and cleanup match. Fresh GitHub recovery290 files clean/exactHEAD; reviewer sampled blobs and recoveredZIP. T260-clean-recovery.json records full parent verification. Windows0/5, T255/LINUX UNRUN. Shared820 proposal not yet implemented or accepted for runtime.
+
+---
+
 # T258 — SOURCE/PREP accepted
 
 Separate gpt-6.1-sol/xhigh accepted compiled b0560bbd50b95d0ad0ce1c0814748150da369a13 and evidence c1991a3983d97e797e574ab3989643511dcd3732 with no actionable findings. Exact diff from cd965223e: Windows ordinary-resumer-only wiring, enum names, fixed scalar populations, locking,24/64/2048 limits and15s event sampling conform. Existing assertions, cleanup and600/220/15m retained; no production/native/source/Linux/diagnostic delta. Raw RED9PASS5FAIL and GREEN14PASS confirmed. XML0errors/changedXML0, catalog/default219/explicit26 valid. Three current DLLs/versions and42 archive files match. T259 single investigation ready; no deadlock, five PASS or Linux claim.

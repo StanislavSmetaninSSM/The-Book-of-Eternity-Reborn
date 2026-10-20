@@ -1,8 +1,30 @@
+# CRASH5 — plan7: передать остаток общего времени resumer
+
+Canonical spec9/tasks T261…T265. Existing feature1536/branch/isolated checkout; user waiver applies. Parent owns coherent budget change; routine independent gpt-6.1-sol/xhigh review. T260 accepted failure/290-file recovery is the prerequisite, not gameplay PASS.
+
+## Implementation map
+
+JointInterfaceCrashProcessSupport.cs: add pure GetSharedWindowsCrashTimeout(windows,role,extendedSourceProbe,extendedWindowsCrash,elapsed). Require Windows+crash opt-in+exact original/resume role+no source opt-in; reject negative elapsed; remaining=820s−elapsed, throw TimeoutException if≤0, otherwise min(600s,remaining). Existing GetDirectChildTimeout unchanged. Initial compilable220 seam lets new behavioral tests fail causally.
+
+JointInterfaceCrashProcessSupportTests.cs becomes partial; new .SharedBudget.cs adds18 cases:9 numeric role/elapsed boundaries (including414722ms→405278ms,600000ms→220000ms,819999ms→1ms),2 exhausted windows,1 negative elapsed,6 ineligible platform/role/flags. Existing25 stay. ExpectedRED26PASS17FAIL, GREEN43PASS. No sleeps/gameplay for policy controls.
+
+GameEngineTurnLifecycleTests.JointInterfaceCrash.cs: for extendedWindowsCrash only capture one nullable Stopwatch timestamp immediately before producer helper, pass identical value to both child calls. Add optional sharedWindowsCrashStarted=null to native helper. Select shared policy before any process start; within existing try after identity/streams recompute using Stopwatch.GetElapsedTime from same timestamp. Existing WaitAsync/deadline use the recomputed duration; existing catch/finally/cleanup unchanged. Store scalar actual budget snapshot in added SharedWindowsBudget field of existing direct-join report; null for other modes. No new output callback or changed assertions. Multi-line XML on changed API params.
+
+tests/categories.json: existing five Windows descriptors remain1case/15m/exclusive, update responsibility to shared820/max600. Existing budget category2m owns43controls; default remains snapshot180+budget43+stage14=237, no expensive cases. Snapshot selection unchanged. Explicit PlanOnly: original five5, sources1+1, newfive5, budget43 and stage14 =69cases/10descriptors. Previous14stagePASS not rerun without a counter change;25support retained inside cheap43 run.
+
+## Execution and interpretation
+
+T261 canonical spec/plan/tasks phases + consistency. T262 RED→implementation→43GREEN, XML, catalog/default237/explicit69, source/DLL/raw evidence and independent SOURCE/PREP. T263 one cut0 using new accepted binding and shared820. Recorded actual selected waits must match remaining-window policy; all original exit73/newexit0/nonce/proof/mechanical/current-owner/repeat assertions remain necessary. T264 after cut0PASS only, cut1…4 once each with checkpoint evidence; stop at first failure. T265 review whole block, save GitHub/readback/new-empty recovery and honest Windows/Linux state.
+
+Risk: neither activity nor this window proves finite work; a repeated read cycle or slow finite path may exceed the budget. On failure, inspect new phase/read/outcome evidence, do not enlarge again automatically. Existing activity report may reach its explicit24-sample quota for a long resumer; silence afterLimited is unknown, not hang proof. Wall clocks and process-list elapsed estimates do not decide budget or result. No production remedy is authorized by this plan.
+
+---
+
 # CRASH5 — plan6: ограниченное наблюдение resumer
 
 **T259 actual:** one completed FAIL/0PASS/0skip, resumer220s timeout; category15m did not time out. Producer exit73 at414.722s; resumer observations continued to214.292s. Named custody checkpoint32.829s; since then14822 canonical-initial hook observations,0observed canonical/main contention,0publication callbacks. This is ongoing observed read activity, not proof of finite completion or successful I/O. Both children EOF/join, two owned roots removed/absence confirmed; historical T219 fixture retained. Windows0/5PASS, cut0 attempted twice (T254 andT259); cut1…4 not run; LinuxUNRUN. No unchanged retry is authorized.
 
-**T258 PREP:** compiled b0560bbd50b95d0ad0ce1c0814748150da369a13;14/14 stage controls PASS/0skip after9PASS+5causalFAIL. Fresh XML build0errors/changedXML0; catalog valid, default PlanOnly219, explicit26cases/9descriptors includes stage14 plus original/new entrypoints12. Metadata executes0tests. No production/native/timeout/assertion delta. Source/DLL/raw evidence in T258-prep.json/zip; independent gpt-6.1-sol/xhigh SOURCE/PREP accepted at c1991a398; all42 archived files and three DLLs verified. T259 one instrumented attempt is ready, not yet executed.
+**T258 PREP:** compiled b0560bbd50b95d0ad0ce1c0814748150da369a13;14/14 stage controls PASS/0skip after9PASS+5causalFAIL. Fresh XML build0errors/changedXML0; catalog valid, default PlanOnly219, explicit26cases/9descriptors includes stage14 plus original/new entrypoints12. Metadata executes0tests. No production/native/timeout/assertion delta. Source/DLL/raw evidence in T258-prep.json/zip; independent gpt-6.1-sol/xhigh SOURCE/PREP accepted at c1991a398; all42 archived files and three DLLs verified. This T258 acceptance preceded the completed T259 investigation reported above.
 
 Canonical spec8 / tasks T257…T260, existing feature1536 and isolated checkout. User review waived. Parent owns implementation; independent gpt-6.1-sol/xhigh reviews coherent instrumentation block. Bounded Astra/high static consultation is recorded in source42-investigation.md; no production diagnosis assumed.
 

@@ -1,3 +1,9 @@
+# Текущая работа: spec9 / plan7
+
+T260 accepted T259FAIL and clean290-file recovery. Windows0/5PASS; cut0 failed twice at resumer220, with observed activity through214.292s. Next bounded experiment shares820s across two Windows children, max600s each/category15m; no implementation/runtime acceptance yet. T261…T265 preserve original game/identity/cleanup assertions. Original220 five and Linux remainUNRUN; no production change.
+
+---
+
 # Текущий результат spec8 / plan6
 
 **T259 actual:** one completed FAIL/0PASS/0skip, resumer220s timeout; category15m did not time out. Producer exit73 at414.722s; resumer observations continued to214.292s. Named custody checkpoint32.829s; since then14822 canonical-initial hook observations,0observed canonical/main contention,0publication callbacks. This is ongoing observed read activity, not proof of finite completion or successful I/O. Both children EOF/join, two owned roots removed/absence confirmed; historical T219 fixture retained. Windows0/5PASS, cut0 attempted twice (T254 andT259); cut1…4 not run; LinuxUNRUN. No unchanged retry is authorized.

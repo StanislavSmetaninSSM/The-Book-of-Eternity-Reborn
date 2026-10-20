@@ -1,13 +1,25 @@
+# CRASH5 — plan7 / spec9
+
+- [x] T261 [US2] Close reviewed T260/290-file recovery and track shared820/max600 experiment in spec9/plan7/tasks via Spec Kit phases and consistency; user review waived.
+- [ ] T262 [US2]18new budget controls plus25existing, causal RED→pure policy/actual shared monotonic clock wiring→43GREEN; XML, metadata/default237/explicit69 and independent SOURCE/PREP. Preserve original assertions/cleanup/native/default policies.
+- [ ] T263 [US2] One new accepted-source cut0 with shared820/max600/category15m; actual per-child budget evidence, raw TRX/result/cleanup and source/DLL binding. No unchanged retry.
+- [ ] T264 [US2] Only after T263PASS, run cut1…4 once sequentially with same binding/independent fixtures and original proof/culture/held/error/repeat assertions. Stop on first failure; fivePASS only from five complete cases.
+- [ ] T265 [US3] Independent coherent-block review, honest exact-budget Windows union or failure; preserve LinuxUNRUN/T219/T254/T259, commit/push/readback/clean recovery. No CI/full suite/merge/chat messages.
+
+Dependencies:T261→T262→T263→T264→T265; failure skips dependent runtime. T255 remains historical unexecuted because its gate failed. Current qualification is tracked separately.
+
+---
+
 # CRASH5 — plan6 / spec8
 
 **T259 actual:** one completed FAIL/0PASS/0skip, resumer220s timeout; category15m did not time out. Producer exit73 at414.722s; resumer observations continued to214.292s. Named custody checkpoint32.829s; since then14822 canonical-initial hook observations,0observed canonical/main contention,0publication callbacks. This is ongoing observed read activity, not proof of finite completion or successful I/O. Both children EOF/join, two owned roots removed/absence confirmed; historical T219 fixture retained. Windows0/5PASS, cut0 attempted twice (T254 andT259); cut1…4 not run; LinuxUNRUN. No unchanged retry is authorized.
 
-**T258 PREP:** compiled b0560bbd50b95d0ad0ce1c0814748150da369a13;14/14 stage controls PASS/0skip after9PASS+5causalFAIL. Fresh XML build0errors/changedXML0; catalog valid, default PlanOnly219, explicit26cases/9descriptors includes stage14 plus original/new entrypoints12. Metadata executes0tests. No production/native/timeout/assertion delta. Source/DLL/raw evidence in T258-prep.json/zip; independent gpt-6.1-sol/xhigh SOURCE/PREP accepted at c1991a398; all42 archived files and three DLLs verified. T259 one instrumented attempt is ready, not yet executed.
+**T258 PREP:** compiled b0560bbd50b95d0ad0ce1c0814748150da369a13;14/14 stage controls PASS/0skip after9PASS+5causalFAIL. Fresh XML build0errors/changedXML0; catalog valid, default PlanOnly219, explicit26cases/9descriptors includes stage14 plus original/new entrypoints12. Metadata executes0tests. No production/native/timeout/assertion delta. Source/DLL/raw evidence in T258-prep.json/zip; independent gpt-6.1-sol/xhigh SOURCE/PREP accepted at c1991a398; all42 archived files and three DLLs verified. This T258 acceptance preceded the completed T259 investigation reported above.
 
 - [x] T257 [US2] Record read-only Astra/high resumer consultation, T256 accepted failure/recovery and spec8/plan6/tasks/consistency using existing feature and user waiver.
 - [x] T258 [US2] Add bounded named checkpoint/activity controls, observe causal RED, implement Windows ordinary-resumer hooks without production/budget/assertion change; GREEN, XML, catalog/PlanOnly and independent SOURCE/PREP with source/DLL evidence.
 - [x] T259 [US2] Execute exactly one instrumented cut0 using accepted T258 binaries and600/220/15m; record raw output, named phases/counters, actual result and ownership cleanup. No cut1…4 or retry by this task.
-- [ ] T260 [US3] Independently review full source/evidence block, preserve T254FAIL and LinuxUNRUN, commit/push/readback/clean recovery; determine subsequent work from actual evidence.
+- [x] T260 [US3] Independently review full source/evidence block, preserve T254FAIL and LinuxUNRUN, commit/push/readback/clean recovery; determine subsequent work from actual evidence.
 
 Dependencies:T257→T258→T259→T260. Investigation output is not production implementation authorization or five-case qualification.
 
