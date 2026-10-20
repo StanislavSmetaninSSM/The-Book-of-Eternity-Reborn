@@ -1,3 +1,16 @@
+# CRASH5 — spec15 revision17: find the smallest genuine owner/cleanup probe
+
+Issue1536; T340 read-only investigation following accepted T338–339. User permits real internal/public test-support seams and autonomous continuation. Apply brainstorming as a spike through Spec Kit; outcome is a source-backed recommendation, not retained implementation or runtime permission.
+
+- PROBE-1 / US1: explain the gap between the17.027s successful cleanup-component profile and the historical unqualified minute-scale original failure. Map the original resumer/cold-recovery caller, GameEngine construction/adoption, current snapshot-context minting, main/coordinator/worker participation and remaining cleanup/cohort/publication/response work omitted by T339. Mark source inference and unknown historical timing explicitly; missing T333 resumer data stays missing.
+- PROBE-2 / US1: identify the cheapest next real probe from immutable cleanup DATA which exercises a meaningful omitted boundary without source42/Stage43 setup. Reuse actual lifecycle/lease/owner APIs. If new seams are needed, specify exact responsibilities/inputs and the production caller sharing them. Never deserialize/fabricate private authority, use uninitialized objects, treat injected runtime scalars as historical proof, or replace NativeLineage/Windows ownership with a new mechanism. Document what the proposed probe would still omit.
+- PROBE-3 / US2: compare a minimal real caller/owner probe with a larger genuine full-cleanup extraction and a fresh-bound original run. Select the smallest justified next scope using actual source dependencies and T339 measurements. Include expected cheap controls and preserved freshness/ABA/error/ownership/cleanup contracts; repetitions alone do not justify dropping checks or adding cache.
+- PROBE-4 / US3: deliver concise source/API/cost-boundary findings, remaining uncertainties and a concrete next spec proposal, independently reviewed and saved/pushed/readback/recovered. No C#/native/runner/default changes, GameEngine construction, DATA materialization, tests/profile/generator/original/five/Linux execution or seed regeneration/rebinding under T340. Full diagnostics remain uncapped.
+
+Acceptance: actual source references distinguish existing facilities from proposed APIs; selected probe's real authority and owner path is explicit, omitted costs and remaining unknowns are honest, cheap acceptance controls and alternatives are stated, and independent review confirms consistency. Runtime success or hang resolution is not an investigation acceptance condition. T339 accepted component eligibility; original recovery/coldfive/Linux remain open.
+
+---
+
 # CRASH5 — spec15 revision16: measure real cleanup validators without expensive game setup
 
 Issue1536; T338–339. Follow accepted [T337 findings](recovery/crash5/T337-findings.md) and [review](recovery/crash5/T337-final-review.json). User explicitly permits new internal/public test support. Standing autonomy/review-wait waiver applies after presenting this concrete scope. No game/GM/player/schema/prompt/example behavior change.

@@ -1,7 +1,15 @@
+# CRASH5 — spec15 revision17 / plan13 revision17: smallest genuine next probe
+
+- [ ] T340 [US1/US2/US3] Read-only source/API investigation after accepted T339: map missing cold caller/real owner/remaining cleanup work; bounded architecture consultation; specify the cheapest genuine probe/new production-used seams with real authority, preserved T325/freshness/ownership/refusal contracts and cheap controls; compare alternatives, record unknowns and concrete next scope. Actual Spec Kit phases/consistency, separate independent review and remote clean recovery. No C#/native/runner change, materialization, test/profile/generator/original/five/Linux execution or source42 rebind in this spike.
+
+T338 SOURCE/PREP and T339 actual component outcome are independently accepted; original recovery/coldfive/Linux remain open. T340 produces findings, not production implementation permission or an executed owner simulation.
+
+---
+
 # CRASH5 — spec15 revision16 / plan13 revision16: real cleanup-validator seams and one profile
 
 - [x] T338 [US1/US2] Parent TDD: shared strict observed-DATA transport with distinct AppliedBeforeStory/cleanup-entry wrappers; extract actual terminal and destructive-original leaves at unchanged production positions/timers; preserve parser wrapper/logger semantics; new direct fresh-lease component controls and one read-only profile Fact. Relevant XML/catalog/exact PlanOnly/targeted controls, complete source-bound evidence/recovery and separate SOURCE/PREP review before profile. No GameEngine/generator/original/Linux runtime.
-- [ ] T339 [US2/US3] After T338 acceptance run exactly one2min Windows fresh-copy cleanup-validator profile; retain all raw/refs, real validator outcomes, wall/CPU/counts/unfinished scopes, whole game/generation invariance and owner closing/ownedroot cleanup. Analyze actual outcome without stage/eligibility/owner latency overclaim; separate final coherent evidence review/recovery. No retry to fix reporting and no generation/rebinding.
+- [x] T339 [US2/US3] After T338 acceptance run exactly one2min Windows fresh-copy cleanup-validator profile; retain all raw/refs, real validator outcomes, wall/CPU/counts/unfinished scopes, whole game/generation invariance and owner closing/ownedroot cleanup. Analyze actual outcome without stage/eligibility/owner latency overclaim; separate final coherent evidence review/recovery. No retry to fix reporting and no generation/rebinding.
 
 T338 accepted SOURCE/PREP at03c0be789, compiled69cb4714f; T338-source-review.json. 55distinct required passing controls, full raw and334Git-exact recovery verified; exactlyone existing2min T339profile released after decision persistence. Genuine DATA eligibility and original recovery remain unproven.
 

@@ -1,3 +1,16 @@
+# CRASH5 — plan13 revision17: bounded source audit before another runtime
+
+Spec15r17; T340 investigation. Keep existing isolated checkout, systematic debugging/writing-plans/Spec Kit and separate complex Astra/high review. Standing explicit autonomy/review-wait waiver applies after presenting this written scope.
+
+1. Establish immutable T339 evidence and T338 source contracts; actual Spec Kit plan/tasks/prerequisite plus bridge-equivalent consistency before investigation. Preserve accepted T338–339 and all historical failed/raw records.
+2. One bounded read-only Astra/high architecture consultation: smallest genuine cold-caller/owner or remaining-cleanup probe on cleanup DATA without expensive source42/Stage43. Provide actual timing/source packet; require precise existing APIs versus proposed seams, real authority/ownership lifecycle, omitted costs, alternatives and cheap controls. No code/runtime. Parent avoids duplicating that source walk and owns the resulting recommendation.
+3. Parent verifies proposed seam/caller boundaries against source and T325 refusal/freshness constraints, records concise findings and a concrete next spec proposal. Compare alternatives without assuming all12measured proofs removable or component latency equal to original runtime latency.
+4. Save/push/readback/clean recovery, separate coherent investigation review, address validated findings; mark T340 complete only with source evidence. Implementation/runtime requires its own written next scope and phases. No unchanged profile retry or original release here.
+
+T339 final independent outcome/analysis accepted at e1c578637 (T339-final-review.json):1PASS17.0272496s,80364timers/40182closed,19rawfiles,340Git-exact recovery. No further runtime released by that acceptance. No model-routing performance/savings claim is made.
+
+---
+
 # CRASH5 — plan13 revision16: extract unchanged leaves, then one genuine read-only profile
 
 Spec15r16; T338–339. Existing isolated branch; parent implementation, TDD/systematic-debugging and independent Astra/high SOURCE/PREP then final review. Canonical Spec Kit phases/consistency before code/probe; no duplicate plans.
