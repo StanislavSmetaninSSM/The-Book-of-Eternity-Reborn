@@ -10,7 +10,7 @@ Canonical [spec](spec.md), [tasks](tasks.md). User explicitly rejected diagnosti
 
 Mapping:TIM3-1/2→T299;TIM3-3→T300;TIM3-4→T301;TIM3-5→T302. Original Windows0/5/LinuxUNRUN remain separate.
 
-T301 actual result: complete failed cut0 with1532uncut records/764intervals. [Findings](recovery/crash5/T302-findings.md) establish expensive finite publication390.368s plus two caller-driven postpublication passes153.962s; these disjoint spans consume544.330s before final phase begins597.544s. The600s wait terminates the observed flow. Underlying latency inside unmeasured suboperations, eventual tail completion and Linux causes remain unresolved; no optimization accepted. Final independent review/recovery pending.
+T301 actual result: complete failed cut0 with1532uncut records/764intervals. [Findings](recovery/crash5/T302-findings.md) establish expensive finite publication390.368s plus two caller-driven postpublication passes153.962s; these disjoint spans consume544.330s before final phase begins597.544s. The600s wait terminates the observed flow. Underlying latency inside unmeasured suboperations, eventual tail completion and Linux causes remain unresolved; no optimization accepted. Separate Astra/high accepted partial evidence and500-file clean remote recovery (T302-final-review.json); root-cause/T302 remainOPEN pending finer decomposition.
 
 ---
 
