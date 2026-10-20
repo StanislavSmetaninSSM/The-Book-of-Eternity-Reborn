@@ -126,8 +126,20 @@ internal static class SnapshotProbe
             Method(owner, "StopAndObserveAsync", 0).ToString(), Method(owner, "SettleOutputsAsync", 0).ToString()
         };
         Require(signatures.All(s => s is not null), "Missing expected signature.");
+        var plainManifest = System.Text.Encoding.UTF8.GetBytes("{\"manifestPayloadHash\":\"describe-only\"}");
+        var bomManifest = new byte[] { 0xEF, 0xBB, 0xBF }.Concat(plainManifest).ToArray();
+        var plainCopy = plainManifest.ToArray();
+        var bomCopy = bomManifest.ToArray();
+        Require(JsonNode.Parse(DecodeManifestView(plainManifest))!["manifestPayloadHash"]!.GetValue<string>() == "describe-only" &&
+            JsonNode.Parse(DecodeManifestView(bomManifest))!["manifestPayloadHash"]!.GetValue<string>() == "describe-only", "In-memory manifest parse view failed.");
+        Require(plainManifest.SequenceEqual(plainCopy) && bomManifest.SequenceEqual(bomCopy), "Manifest parse view changed input bytes.");
+        var invalidUtf8Rejected = false;
+        try { DecodeManifestView([0xFF]); }
+        catch (System.Text.DecoderFallbackException) { invalidUtf8Rejected = true; }
+        Require(invalidUtf8Rejected, "Manifest parse view accepted invalid UTF8.");
         Emit(new { kind = "describe", diagnostic = "THROWAWAY DIAGNOSTIC", fixtures = 0, children = 0, gameCalls = 0,
-            game = _game.Location, integration = _integration.Location, signatures, requiredMembers });
+            game = _game.Location, integration = _integration.Location, signatures, requiredMembers,
+            manifestView = new { plainParsed = true, bomParsed = true, inputsUnchanged = true, invalidUtf8Rejected } });
     }
 
     /// <summary>
@@ -333,7 +345,7 @@ internal static class SnapshotProbe
             WriteData(sessionRoot, "input/turn_request.json", JsonSerializer.SerializeToUtf8Bytes(request, requestType, options));
             var manifestBytes = File.ReadAllBytes(SafeDataPath(sessionRoot, Manifest));
             var authorityBytes = File.ReadAllBytes(SafeDataPath(sessionRoot, Authority));
-            var manifest = JsonNode.Parse(manifestBytes)!.AsObject();
+            var manifest = JsonNode.Parse(DecodeManifestView(manifestBytes))!.AsObject();
             var map = manifest["files"]!.AsObject();
             var backups = manifest["rollbackBackups"]!.AsObject();
             var expected = new[] { Soul }.Concat(Enumerable.Range(0, expanded ? 16 : 0).Select(i => $"lore/probe/member_{i:00}.json")).Order(StringComparer.Ordinal).ToArray();
@@ -353,6 +365,7 @@ internal static class SnapshotProbe
             for (var i = 0; i < 8; i++)
             {
                 counts.Clear();
+                if (i == 0) Emit(new { kind = "measurementStart", variant = expanded ? "expanded" : "minimal", target = "ReadSnapshot", session, requestId, token });
                 var watch = Stopwatch.StartNew();
                 var read = Invoke(projection, "ReadSnapshot", files, lease);
                 var ms = watch.Elapsed.TotalMilliseconds;
@@ -364,6 +377,7 @@ internal static class SnapshotProbe
                 Require(backups.All(p => readCounts.GetValueOrDefault(p.Value!.GetValue<string>()) >= 1), "A rollback physical read was not observed.");
                 observations.Add(new { call = i, elapsedMs = ms, totalReads = readCounts.Values.Sum(), paths = readCounts });
             }
+            Emit(new { kind = "measurementEnd", variant = expanded ? "expanded" : "minimal", target = "ReadSnapshot", calls = observations.Count });
             counts.Clear();
             var rawSoulPath = SafeDataPath(sessionRoot, Soul);
             var rawWatch = Stopwatch.StartNew();
@@ -429,6 +443,21 @@ internal static class SnapshotProbe
             }
             Emit(new { kind = "fixtureCleanup", variant = expanded ? "expanded" : "minimal", audioDisposed = engine is not null, leaseReleased = lease is not null });
         }
+    }
+
+    /// <summary>
+    /// Decodes a strict UTF8 manifest parse view while preserving every original input byte.
+    /// </summary>
+    /// <param name="bytes">
+    /// Original manifest bytes; one leading UTF8 byte order mark is accepted in the parse view.
+    /// </param>
+    /// <returns>
+    /// Decoded JSON text without its optional leading byte order mark; malformed UTF8 throws.
+    /// </returns>
+    private static string DecodeManifestView(byte[] bytes)
+    {
+        var offset = bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF ? 3 : 0;
+        return new System.Text.UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true).GetString(bytes, offset, bytes.Length - offset);
     }
 
     /// <summary>

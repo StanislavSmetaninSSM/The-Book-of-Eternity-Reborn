@@ -7,6 +7,7 @@ Run consumes a one-attempt guard and never retries a failed component probe.
 .PARAMETER Mode
 Build compiles the diagnostic source only; Describe inspects metadata only;
 Run invokes the existing Windows-owned child route once with a30-second cap.
+RunCorrectedSetup is limited to the archived BOM setup failure before any component reads.
 .PARAMETER RepoRoot
 The existing dedicated repository checkout holding the accepted source/evidence.
 .PARAMETER BuildDirectory
@@ -14,7 +15,7 @@ An explicitly owned external build directory for this diagnostic harness.
 #>
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory)][ValidateSet('Build','Describe','Run')][string]$Mode,
+    [Parameter(Mandatory)][ValidateSet('Build','Describe','Run','RunCorrectedSetup')][string]$Mode,
     [Parameter(Mandatory)][string]$RepoRoot,
     [Parameter(Mandatory)][string]$BuildDirectory
 )
@@ -80,18 +81,32 @@ if ($Mode -eq 'Describe') {
     exit $probeDescribeExit
 }
 if (git status --porcelain) { throw 'Save a clean remote source/evidence checkpoint before the single runtime attempt.' }
-$probeAttemptPath = Join-Path $probePlan 'T284-attempt.json'
+$probeCorrectedSetup = $Mode -eq 'RunCorrectedSetup'
+if ($probeCorrectedSetup) {
+    $probeSetupRecord = Get-Content -Raw -LiteralPath (Join-Path $probeRecovery 'T284-setup-failure.json') | ConvertFrom-Json
+    $probeSetupRaw = Join-Path $probeRecovery 'T284-setup-failure.zip'
+    if ($probeSetupRecord.Classification -ne 'SETUP_FAIL before targetReadSnapshot; not a measured component result' -or
+        (Get-FileHash -LiteralPath $probeSetupRaw -Algorithm SHA256).Hash -ne $probeSetupRecord.ArchiveSHA256 -or
+        -not $probeSetupRecord.Parent.stop.CleanupComplete -or $probeSetupRecord.Parent.stop.AuthorityRetained -or
+        -not $probeSetupRecord.Parent.disposed -or -not $probeSetupRecord.RootRetainedAfterArchive) {
+        throw 'Only the preserved BOM setup failure before component execution permits this one corrected measurement.'
+    }
+    if (@($probeSetupRecord.ChildRecords | Where-Object { $_.kind -in @('fixture','child','measurementStart') }).Count) {
+        throw 'The previous child executed the component; retry is prohibited.'
+    }
+}
+$probeAttemptPath = Join-Path $probePlan $(if ($probeCorrectedSetup) { 'T284-measurement-attempt.json' } else { 'T284-attempt.json' })
 $probeOutcomePath = Join-Path $probeRecovery 'T284-outcome.json'
 if ((Test-Path -LiteralPath $probeAttemptPath) -or (Test-Path -LiteralPath $probeOutcomePath)) {
     throw 'The permitted spec13 probe attempt is already consumed; inspect its evidence without retry.'
 }
-$probeEvidence = Join-Path $probePlan 'T284-evidence'
+$probeEvidence = Join-Path $probePlan $(if ($probeCorrectedSetup) { 'T284-measurement-evidence' } else { 'T284-evidence' })
 if (Test-Path -LiteralPath $probeEvidence) { throw 'Probe evidence directory already exists; inspect without replacement.' }
 New-Item -ItemType Directory -Path $probeEvidence | Out-Null
 $probeOwn = Join-Path ([IO.Path]::GetTempPath()) ('boe-spec13-probe-' + [Guid]::NewGuid().ToString('N'))
 if (Test-Path -LiteralPath $probeOwn) { throw 'Unexpected existing owned probe directory.' }
 $probeAttempt = [ordered]@{
-    State='Started'; Attempt=1; RetryAuthorized=$false; Head=(git rev-parse HEAD).Trim()
+    State='Started'; Attempt=1; RetryAuthorized=$false; SetupCorrection=$probeCorrectedSetup; Head=(git rev-parse HEAD).Trim()
     CompiledSource=$probeBinding.CompiledSource; StartedUtc=[DateTime]::UtcNow.ToString('o')
     HarnessSHA256=(Get-FileHash -LiteralPath $probeDll -Algorithm SHA256).Hash
     SoulSHA256=$probeSoulHash; ChildSeconds=30; ParentAndCleanupSeconds=120
