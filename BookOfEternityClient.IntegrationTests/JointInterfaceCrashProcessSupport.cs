@@ -367,8 +367,6 @@ internal static class JointInterfaceCrashProcessSupport
         Action<NativeLineageOwner> retain, Func<NativeLineageOwner, Task> disposeAndJoin, Action<object> report,
         Func<string?>? packageDirectory = null)
     {
-        var package = (packageDirectory ?? (() => Environment.GetEnvironmentVariable("BOE_CRASH5_NATIVE_PACKAGE")))()
-            ?? throw new InvalidDataException("Prepare BOE_CRASH5_NATIVE_PACKAGE before ordinary Linux crash5.");
         NativeLineageOwner? owner = null;
         JointInterfaceCrashIdentity? identity = null;
         GmWorkerStopEvidence? stop = null;
@@ -380,6 +378,8 @@ internal static class JointInterfaceCrashProcessSupport
         using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(220));
         try
         {
+        var package = (packageDirectory ?? (() => Environment.GetEnvironmentVariable("BOE_CRASH5_NATIVE_PACKAGE")))()
+            ?? throw new InvalidDataException("Prepare BOE_CRASH5_NATIVE_PACKAGE before ordinary Linux crash5.");
             owner = await NativeLineageOwner.StartFinitePipeAsync(start, package, (original, pid) =>
             {
                 owner = original;
@@ -439,8 +439,8 @@ internal static class JointInterfaceCrashProcessSupport
         if (owner == null)
         {
             var launchFailure = failure ?? new InvalidOperationException("Native launch has no owner.");
-            await capture.FinishAsync(new(false, launchFailure, null), new(false, launchFailure, null));
-            failure = capture.PreserveFailure(failure);
+            await capture.FailBeforeLaunchAsync(launchFailure);
+            failure = launchFailure;
         }
         if (failure != null) ExceptionDispatchInfo.Capture(failure).Throw();
         if (identity == null || stop?.RootExitCode == null || outputs == null || !joined)
@@ -471,7 +471,7 @@ internal static class JointInterfaceCrashProcessSupport
         FinitePipeDrainResult? stdout, FinitePipeDrainResult? stderr)
     {
         var eof = stdout is { Eof: true, ReadFailure: null } && stderr is { Eof: true, ReadFailure: null };
-        return (exited, eof, exited);
+        return (exited, eof, joined && exited && eof);
     }
 
     /// <summary>
@@ -486,8 +486,15 @@ internal static class JointInterfaceCrashProcessSupport
     /// <returns>
     /// The original child, or the exact prelaunch failure after recording incomplete output.
     /// </returns>
-    internal static Task<Process> StartPreparedDirectChildAsync(JointChildOutputCapture capture, Func<Process> launch) =>
-        Task.FromResult(launch());
+    internal static async Task<Process> StartPreparedDirectChildAsync(JointChildOutputCapture capture, Func<Process> launch)
+    {
+        try { return launch(); }
+        catch (Exception primary)
+        {
+            await capture.FailBeforeLaunchAsync(primary);
+            throw;
+        }
+    }
 
     /// <summary>
     /// Keeps the first failure while retaining a separately named secondary failure.

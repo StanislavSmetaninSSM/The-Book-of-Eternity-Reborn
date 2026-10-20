@@ -335,19 +335,15 @@ public sealed partial class GameEngineTurnLifecycleTests
                 native.Stdout, native.Stderr, executable, arguments, MortalArchiveDependencyContext(), true, true,
                 native.Identity.BirthKind, native.Identity.WindowsStartTimeUtcTicks, native.Evidence);
         }
-        if (sharedWindowsCrashStarted is { } launchStarted)
-            childTimeout = JointInterfaceCrashProcessSupport.GetSharedWindowsCrashTimeout(windows, role,
-                extendedSourceProbe, extendedWindowsCrash, Stopwatch.GetElapsedTime(launchStarted));
-        Process startedChild;
-        try { startedChild = Process.Start(start) ?? throw new InvalidOperationException("Actual joint engine child was not started."); }
-        catch (Exception error)
+        using var child = await JointInterfaceCrashProcessSupport.StartPreparedDirectChildAsync(streams, () =>
         {
-            await streams.FinishAsync(new(false, error, null), new(false, error, null));
-            streams.PreserveFailure(error);
-            throw;
-        }
-        using var child = startedChild;
+            if (sharedWindowsCrashStarted is { } launchStarted)
+                childTimeout = JointInterfaceCrashProcessSupport.GetSharedWindowsCrashTimeout(windows, role,
+                    extendedSourceProbe, extendedWindowsCrash, Stopwatch.GetElapsedTime(launchStarted));
+            return Process.Start(start) ?? throw new InvalidOperationException("Actual joint engine child was not started.");
+        });
         ownership.Started(child.Id);
+        var directJoined = false;
         DateTime birth = default;
         ulong birthTick = 0;
         JointInterfaceCrashIdentity? identity = null;
@@ -408,6 +404,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                         System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(drain.ReadFailure ??
                             new IOException("Original child pipe EOF was not observed.")).Throw();
                 ownership.Joined(child.Id); // only positive terminal+join+EOF can permit container deletion
+                directJoined = true;
             }
             catch (Exception error) { cleanupFailure = error; if (failure is not null) failure.Data["JointInterfaceChildCleanupFailure"] = error; }
             try { deliveryHealth = delivery?.ReadHealth(); }
@@ -423,8 +420,11 @@ public sealed partial class GameEngineTurnLifecycleTests
                 stderr?.IsCompletedSuccessfully == true ? stderr.Result : null);
             if (stdout != null && stderr != null && (!stdout.IsCompleted || !stderr.IsCompleted))
                 streams.ObserveDeferredCompletion(stdout, stderr);
+            var completion = JointInterfaceCrashProcessSupport.ObserveDirectCompletion(child.HasExited, directJoined,
+                stdout?.IsCompletedSuccessfully == true ? stdout.Result : null,
+                stderr?.IsCompletedSuccessfully == true ? stderr.Result : null);
             streams.RecordOutcome(new { ExitCode = child.HasExited ? (int?)child.ExitCode : null,
-                Joined = !ownership.HasUnsettledChildren, PrimaryFailure = failure?.ToString(), CleanupFailure = cleanupFailure?.ToString() });
+                completion.Exited, completion.Eof, completion.Joined, PrimaryFailure = failure?.ToString(), CleanupFailure = cleanupFailure?.ToString() });
             var outputFailure = streams.PreserveFailure(failure ?? cleanupFailure);
             if (failure == null && outputFailure != null) cleanupFailure = outputFailure;
             try
@@ -432,8 +432,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             WritePhysicalInjuryDiagnostic("iobs_actual_native_join", new
             { child.Id, BirthUtc = birth, BirthTick = identity?.LinuxBirthTick, BirthKind = identity?.BirthKind,
                 WindowsStartTimeUtcTicks = identity?.WindowsStartTimeUtcTicks,
-                ExitCode = child.HasExited ? (int?)child.ExitCode : null, Eof = stdout?.IsCompletedSuccessfully == true && stdout.Result.Eof && stderr?.IsCompletedSuccessfully == true && stderr.Result.Eof,
-                Joined = child.HasExited, Failure = failure?.ToString(), Executable = executable, Arguments = arguments,
+                ExitCode = child.HasExited ? (int?)child.ExitCode : null, completion.Eof,
+                completion.Joined, Failure = failure?.ToString(), Executable = executable, Arguments = arguments,
                 Dependencies = MortalArchiveDependencyContext(), SharedWindowsBudget = sharedWindowsBudget, Stdout = streams.OutputReference,
                 Stderr = streams.ErrorReference, CleanupFailure = cleanupFailure?.ToString(),
                 SecondaryFailures = failure?.Data.Cast<System.Collections.DictionaryEntry>().Select(entry => new
@@ -461,7 +461,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             if (cleanupFailure is not null && failure is null) System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(cleanupFailure).Throw();
         }
         return new(child.Id, birth, identity!.LinuxBirthTick, child.ExitCode, streams.OutputReference, streams.ErrorReference, executable, arguments,
-            MortalArchiveDependencyContext(), stdout!.IsCompletedSuccessfully && stdout.Result.Eof && stderr!.IsCompletedSuccessfully && stderr.Result.Eof, child.HasExited,
+            MortalArchiveDependencyContext(), stdout!.IsCompletedSuccessfully && stdout.Result.Eof && stderr!.IsCompletedSuccessfully && stderr.Result.Eof, directJoined,
             identity.BirthKind, identity.WindowsStartTimeUtcTicks);
     }
 

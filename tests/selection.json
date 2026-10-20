@@ -22,6 +22,14 @@
       "contracts": [
         "No native Linux runtime; unchanged default capture and retained native/Job policy."
       ]
+    },
+    {
+      "category": "fr063-joint-child-output-launch-boundaries",
+      "reason": "Independent review found exited-versus-Joined misreporting and prepared destinations bypassed by late budget/missing package refusal.",
+      "contracts": [
+        "Actual join requires original exit, EOF and positive recorded ownership join.",
+        "No-child refusals finalize prepared files without invented EOF/read failure and preserve the original exception."
+      ]
     }
   ]
 }

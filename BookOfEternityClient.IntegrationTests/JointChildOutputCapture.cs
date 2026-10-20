@@ -169,6 +169,23 @@ internal sealed class JointChildOutputCapture
     }
 
     /// <summary>
+    /// Closes prepared destinations after a refusal that started no child or pipe reader.
+    /// </summary>
+    /// <param name="primary">
+    /// The exact original configuration, budget or launch error.
+    /// </param>
+    /// <returns>
+    /// Completion of incomplete-artifact finalization, with secondary failures attached to the original error.
+    /// </returns>
+    internal async Task FailBeforeLaunchAsync(Exception primary)
+    {
+        RecordOutcome(new { ChildStarted = false, PrimaryFailure = primary.ToString() });
+        RecordFailure("prelaunch", primary);
+        await FinishAsync(new(false, null, null), new(false, null, null));
+        PreserveFailure(primary);
+    }
+
+    /// <summary>
     /// Retains pending destinations until the original drain tasks eventually finish.
     /// </summary>
     /// <param name="stdout">
