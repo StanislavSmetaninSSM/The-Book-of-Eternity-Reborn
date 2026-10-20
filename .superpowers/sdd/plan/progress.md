@@ -219,3 +219,5 @@ T311 next measured obstacle selected: terminal cleanup, not guessed deletion-che
 T311 separate Astra/high accepted coherent code/evidence/parser/report block at46607a93; no findings. Parent checked actual raw counts/cleanup and observed durations. Final recovery step pending; full restoration remains FAIL and cleanup inner cause unknown. No further runtime or production edits.
 
 T311 complete: independent Astra/high accepted46607a93, actual post-review remote checkpoint97c28d3d recovered141exactGitblobs in clean directory. Original full caseFAIL retained; DEDUP-1 actual24to16/13resource-two-barrier evidence accepted. Next cleanup investigation remains separate, no code or runtime started. Final bookkeeping commit receives one exact remote/clean readback, no source review/test replay.
+
+T312 Ruling: stopping at T311 was an execution mistake; user explicitly directs continued recovery work. Open objective remains until actual recovery gate passes or progress requires external input. Spec15r3/plan13r3/T312–315 track cleanup leaf timing/support APIs then cause-driven correction. No diagnostic quotas, guessed deletion or unchanged full reruns.

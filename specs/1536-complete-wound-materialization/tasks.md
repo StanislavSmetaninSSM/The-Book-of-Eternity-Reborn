@@ -1,3 +1,16 @@
+# CRASH5 — spec15 revision3 / plan13 revision3: continue cleanup and recovery
+
+Issue1536. [Spec](spec.md), [plan](plan.md). User explicitly corrects stopping after intermediate evidence; autonomous continuation and test-support entrypoints remain authorized.
+
+- [x] T312 [US1] Record continuation objective, cleanup evidence boundaries and cheap component design before implementation; actual Spec Kit phases and cross-artifact consistency.
+- [ ] T313 [US1/US2] Add uncapped cleanup inner timers and shared internal image verifier; cheap test-first byte/absence/refusal/publisher controls and actual destructive-validator dictionary/direct/leased cost probe. XML/build/catalog/selected checks; no guessed production optimization.
+- [ ] T314 [US1/US3] Analyze measured costs/source fanout, independent coherent source/PREP review and remote recovery; write and implement smallest justified correction with causal tests, or collect missing real wrapper evidence. Continue beyond this checkpoint while recovery remains open.
+- [ ] T315 [US3] Source-matching artifact and original recovery gate at unchanged policy; verify integrity/completion and all diagnostics. On FAIL preserve outcome and continue new cause-driven tasks; no unchanged retry/timeout increase. Dependent cases require qualified prerequisites.
+
+Dependencies T312→T313→T314→T315→next measured work if needed. Original recovery remains FAIL, Linux UNRUN. Previous accepted DEDUP-1 and T310raw remain unchanged.
+
+---
+
 # CRASH5 — spec15 revision2 / plan13 revision2: cheap shared validation entrypoints
 
 Source: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). [Spec](spec.md), [plan](plan.md). User approved c1fa2bbc with «давай». T309 executing DEDUP-1 only; DEDUP-2 deferred. Verification seam/cost is recorded in plan13 before test edits/runtime.

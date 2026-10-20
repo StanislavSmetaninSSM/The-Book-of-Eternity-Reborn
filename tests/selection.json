@@ -2,38 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "fr063-joint-validation-dedup-contracts",
-      "reason": "T309 shared production orchestration with substituted leaf data: cheap two-baseline and async/refusal sequencing controls.",
+      "category": "fr063-joint-cleanup-images",
+      "reason": "T313 retained actual cleanup byte/absence leaf and publisher callback, independent of expensive gameplay setup.",
       "contracts": [
-        "Real shared policy, retained QTE entry/exit and failure identity; no global test mode, validation cache or live authority creation. Physical contracts selected separately."
-      ]
-    },
-    {
-      "category": "fr063-joint-validation-dedup-refusals",
-      "reason": "T309 shared production orchestration with substituted leaf data: cheap two-baseline and async/refusal sequencing controls.",
-      "contracts": [
-        "Real shared policy, retained QTE entry/exit and failure identity; no global test mode, validation cache or live authority creation. Physical contracts selected separately."
-      ]
-    },
-    {
-      "category": "fr063-observed-original-conformance",
-      "reason": "Preserve the unchanged underlying observed-original drift, exact owner/lease and generation rejection contracts used by mechanical baseline validation.",
-      "contracts": [
-        "Fresh genuine original-source evidence remains exact and lease/generation bound."
-      ]
-    },
-    {
-      "category": "fr063-observed-original-barrier",
-      "reason": "Preserve the unchanged underlying observed-original drift, exact owner/lease and generation rejection contracts used by mechanical baseline validation.",
-      "contracts": [
-        "Fresh genuine original-source evidence remains exact and lease/generation bound."
-      ]
-    },
-    {
-      "category": "fr063-observed-original-reader",
-      "reason": "Preserve the unchanged underlying observed-original drift, exact owner/lease and generation rejection contracts used by mechanical baseline validation.",
-      "contracts": [
-        "Fresh genuine original-source evidence remains exact and lease/generation bound."
+        "Exact before/after images; first refusal prevents later reads or deletion; retained bytes/absence unchanged."
       ]
     }
   ]

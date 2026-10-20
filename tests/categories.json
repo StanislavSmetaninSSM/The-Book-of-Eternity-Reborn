@@ -2,6 +2,31 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-cleanup-images",
+  "responsibility": "Shared production cleanup image verifier: exact before/after byte and absence cohorts, short-circuit refusal/failure order, real local publisher prepared namespace and readback on owned tiny roots.",
+  "excludes": "No whole-game setup, source42/private joint proof/deletion-eligibility issuance, full recovery qualification or diagnostic quotas.",
+  "changeHints": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs",
+    "BookOfEternityClient/Services/JointCleanupImageVerifier.cs",
+    "BookOfEternityClient.Tests/JointCleanupImageVerifierTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.JointCleanupImageVerifierTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-validation-dedup-contracts",
   "responsibility": "Shared production policy: exactly two baseline checks at QTE entry/exit, one compute and comparison, including genuine async suspension.",
   "excludes": "No game setup, source42 seed, real file tamper or authority issuance claim, full restoration, DEDUP-2, crash/native qualification or diagnostic quotas. Physical reader contracts and original seeded cut0 are separate.",
