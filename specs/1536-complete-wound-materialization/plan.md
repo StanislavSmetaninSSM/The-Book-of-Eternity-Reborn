@@ -1,12 +1,12 @@
 # CRASH5 — plan13: adjacent duplicate validation proposal
 
-Source: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Canonical [spec15](spec.md), [tasks](tasks.md). Base `cd63d22002784770532eea0d07de93a50b1f88d8`. Status: proposal only; implementation/runtime not started.
+Source: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Canonical [spec15](spec.md), [tasks](tasks.md). Base `cd63d22002784770532eea0d07de93a50b1f88d8`. Status: user approved c1fa2bbc with «давай»; T309 executing. DEDUP-2 is deferred; the first code block implements only DEDUP-1.
 
 **Goal:** reduce repeated fresh validation while preserving physical and publication integrity.
 **Architecture:** the caller relies on a retained callee boundary only where its immediately nested check covers the same contract; no remembered validation state. DEDUP-2 remains gated by scheduling/lease proof and can be omitted without blocking DEDUP-1.
 **Stack:** existing C#/.NET8, PowerShell7 category runner, existing optional operation observer. No new dependency/data model/schema/API.
 
-Use `superpowers:writing-plans` for this plan and `superpowers:executing-plans`, TDD, systematic debugging and independent review if implementation is later requested. Parent owns the coherent block; review uses a separate context. Standing review-wait waiver remains, but the present question requests a recommendation, not a runtime run.
+Use `superpowers:writing-plans` for this plan and `superpowers:executing-plans`, TDD, systematic debugging and independent review if implementation is later requested. Parent owns the coherent block; review uses a separate context. Standing review-wait waiver remains. The subsequent «давай» authorizes this implementation and the agreed verification gates.
 
 ## Traced change map
 
@@ -18,6 +18,16 @@ Use `superpowers:writing-plans` for this plan and `superpowers:executing-plans`,
 | `Core/FileSystemManager*`, `Services/PendingTurnSnapshotReader.Observed.cs`, completion/story/normalizer/native paths | No change | Per-read checks, whole original replay, before-images, postpublication and crash/readback contracts |
 
 Paths above are relative to `BookOfEternityClient`. Existing signatures remain unchanged. Do not move/merge files or create a generic validation-cache subsystem.
+
+## T309 resolved verification seam
+
+A bounded read-only Astra/high consultation found no compact genuine joint-resource issuer. Ordinary held-treatment and an uninstalled capture do not qualify. Use the existing genuine `RunJointCompletionControlAsync` with a strictly current immutable source42 copy, natural Stage43, actual repair/correction/custody and unchanged production owner. A test-only optional probe in the existing fixture observes the FIRST real `JointResources.ValidateCurrentAsync` and uses the existing read fault hook to stop before common publication. It never receives or constructs resource/continuation authority, never drives private issuer/stage-retention state, and never treats a timer exception as a stop (timer observation is nonthrowing).
+
+Three independent per-test roots: (1) count all baseline calls versus those nested in QTE, require2total/2insideQTE after the fix, RED must observe3total/2insideQTE; (2) alter actual guarded narrative bytes at QTE entry, require entry-baseline refusal; (3) after first QTE baseline, mutate a guarded absence during an actual QTE read, require arrival at second baseline and refusal there. Preserve the drift through refusal and do not resurrect a refused authority. Inspect actual post-close owner/refusal/no-common-publication and cleanup; component success is not gameplay PASS. Existing bounded observed-original lease/generation/barrier controls cover unchanged underlying contracts. Reservation/fence-at-sealing controls are deferred with DEDUP-2 because this component never reaches sealing; no such coverage is claimed.
+
+This is expensive genuine setup with a short selected target, not a demonstrated cheap fixture. New integration test code changes the source-bound seed fingerprint: build/review test SOURCE/PREP, run the existing genuine generator once for RED source and validate/bind it, then only the count case for causal RED. After the minimal product deletion, build/GREEN requires one genuine GREEN-source generation because its fingerprint changes again. Each generator remains the original1case/6min; count category1case/5min, entry+exit refusal category2cases/10min. These execution budgets are independent of diagnostics, which retain all records. No original600s/shared820s/15min policy is changed. The second generation supplies both GREEN controls and the single agreed T310 original cut0; no unchanged profile retry.
+
+Pre-flight: T309 test probe/default-null fixture branch→T310 original consumer: defaults and original completion assertions must remain unchanged. T309 product deletion→artifact binding: generate matching source rather than rebind. Ruling: retain DEDUP-2 because await-return stability is unproved; it has no effect on accepting DEDUP-1. Reuse the existing dedicated user-requested clone/branch as isolation and the existing plan ledger; do not create another checkout or run a broad baseline.
 
 ## Sequence and verification gates
 

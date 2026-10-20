@@ -1,6 +1,59 @@
 {
     "schemaVersion": 1,
     "categories": [
+{
+  "id": "fr063-joint-validation-dedup-contracts",
+  "responsibility": "First actual resource call in genuine seeded Stage43/current owner: two baseline barriers both inside QTE, controlled existing read-hook stop before common publication, exact no-write/owner-close/cleanup proof.",
+  "excludes": "Explicit only; requires a strictly matching genuine source42 artifact. No source fallback, fake issuer, DEDUP-2/sealing coverage, full restoration/gameplay PASS, crash-process or Linux qualification. All produced diagnostics retained without quotas.",
+  "changeHints": [
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairResources.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointValidationDedupTests.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointValidation_ResourceChecksBaselineExactlyTwiceInsideQte"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-validation-dedup-refusals",
+  "responsibility": "Genuine independent seeded Stage43/current-owner roots: changed current bytes at QTE entry and changed guarded absence during a real QTE read must be refused at retained entry/exit baselines without common publication or input restoration.",
+  "excludes": "Explicit only; requires a strictly matching genuine source42 artifact. No source fallback, fake issuer, DEDUP-2/sealing coverage, full restoration/gameplay PASS, crash-process or Linux qualification. All produced diagnostics retained without quotas.",
+  "changeHints": [
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairResources.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointValidationDedupTests.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 10,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointValidation_QteEntryRefusesChangedBeforeImage",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointValidation_QteExitRefusesChangedAbsence"
+      ]
+    }
+  ]
+},
         {
             "id": "crash5-named-timing-output",
             "responsibility": "Preserve every named timing begin/end beyond the former diagnostic quota without starting the game.",

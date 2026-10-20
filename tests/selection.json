@@ -2,17 +2,38 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "crash5-named-timing-output",
-      "reason": "User requires complete diagnostic output and actual hang localization; exercise all former diagnostic cutoffs without gameplay.",
+      "category": "fr063-joint-validation-dedup-contracts",
+      "reason": "T309 DEDUP-1: real owner count reduction and retained QTE entry/exit refusal, with exact unchanged current-source seed and no publication.",
       "contracts": [
-        "No record/byte truncation; preserve observer failure isolation and unchanged game assertions/process ownership."
+        "No redundant outer baseline; both real QTE barriers remain; no authority fabrication, input restoration or diagnostic quota."
       ]
     },
     {
-      "category": "fr063-joint-interface-crash-stage-contracts",
-      "reason": "User requires complete diagnostic output and actual hang localization; exercise all former diagnostic cutoffs without gameplay.",
+      "category": "fr063-joint-validation-dedup-refusals",
+      "reason": "T309 DEDUP-1: real owner count reduction and retained QTE entry/exit refusal, with exact unchanged current-source seed and no publication.",
       "contracts": [
-        "No record/byte truncation; preserve observer failure isolation and unchanged game assertions/process ownership."
+        "No redundant outer baseline; both real QTE barriers remain; no authority fabrication, input restoration or diagnostic quota."
+      ]
+    },
+    {
+      "category": "fr063-observed-original-conformance",
+      "reason": "Preserve the unchanged underlying observed-original drift, exact owner/lease and generation rejection contracts used by mechanical baseline validation.",
+      "contracts": [
+        "Fresh genuine original-source evidence remains exact and lease/generation bound."
+      ]
+    },
+    {
+      "category": "fr063-observed-original-barrier",
+      "reason": "Preserve the unchanged underlying observed-original drift, exact owner/lease and generation rejection contracts used by mechanical baseline validation.",
+      "contracts": [
+        "Fresh genuine original-source evidence remains exact and lease/generation bound."
+      ]
+    },
+    {
+      "category": "fr063-observed-original-reader",
+      "reason": "Preserve the unchanged underlying observed-original drift, exact owner/lease and generation rejection contracts used by mechanical baseline validation.",
+      "contracts": [
+        "Fresh genuine original-source evidence remains exact and lease/generation bound."
       ]
     }
   ]

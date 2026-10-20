@@ -1,6 +1,6 @@
 # CRASH5 — spec15: eliminate adjacent duplicate validations
 
-Source: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). User asks for a concrete proposal to accelerate restoration while retaining integrity; diagnostics must remain unlimited. This step delivers the proposal, not implementation or runtime. Reuse this feature/branch and the existing review-wait waiver. Base: `cd63d22002784770532eea0d07de93a50b1f88d8`; measured evidence: [T306](recovery/crash5/T306-findings.md).
+Source: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). User asks for a concrete proposal to accelerate restoration while retaining integrity; diagnostics must remain unlimited. The user approved this exact published proposal with «давай» after c1fa2bbc. T309–311 now execute DEDUP-1; DEDUP-2 remains deferred, with its existing caller check retained. Reuse this feature/branch and the existing review-wait waiver. Base: `cd63d22002784770532eea0d07de93a50b1f88d8`; measured evidence: [T306](recovery/crash5/T306-findings.md).
 
 ## Requested result and first scope
 
