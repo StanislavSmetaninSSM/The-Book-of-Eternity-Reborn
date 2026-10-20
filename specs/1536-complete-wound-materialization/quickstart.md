@@ -1,6 +1,6 @@
 # Current preparation — inner operation timings; root cause OPEN
 
-Compiled8499922ae9f8a231545b3299137470e4d495ed27 adds105passive sites (200total) to partition the three measured unknown sections. [T303-prep](recovery/crash5/T303-prep.json) / [scope map](recovery/crash5/T303-source-scope-map.json): freshXML82.904s/0errors/changedXML0;15unchanged output controls reused from073; metadata0executed. Independent SOURCE/PREP pending. **Current fixed seed still contains983 DATA and is historical for the newly compiled source. Do not run or rebind it.** Next genuine generation isT304 only after review; T305 not executed.
+Compiled8499922ae9f8a231545b3299137470e4d495ed27 adds105passive sites (200total) to partition the three measured unknown sections. [T303-prep](recovery/crash5/T303-prep.json) / [scope map](recovery/crash5/T303-source-scope-map.json): freshXML82.904s/0errors/changedXML0;15unchanged output controls reused from073; metadata0executed. [Independent Sol6.1/xhigh SOURCE/PREP ACCEPTED](recovery/crash5/T303-source-review.json) atdb419b680. **Current fixed seed still contains983 DATA and is historical for the newly compiled source. Do not run or rebind it.** Next genuine generation isT304 only after review; T305 not executed.
 
 ---
 
