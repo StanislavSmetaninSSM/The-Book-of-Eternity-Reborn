@@ -2,33 +2,24 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "fr063-joint-child-output-transport",
-      "reason": "T335 uncapped decoded-text artifact transport and storage/read/report failure controls without game setup.",
+      "category": "fr063-joint-applied-data-transport",
+      "reason": "Shared transport must retain original strict applied role.",
       "contracts": [
-        "Full output outside fixture roots; no total quotas or inline raw strings.",
-        "Actual EOF distinct from persistence; preserve primary error and retained evidence."
+        "Exact whole archive and namespace before writes."
       ]
     },
     {
-      "category": "fr063-joint-interface-crash-adapter-contracts",
-      "reason": "Finite native API and direct adapter changed; managed policy plus two real entry-guard children use the same pump/finalizer.",
+      "category": "fr063-joint-cleanup-data-transport",
+      "reason": "Explicit cleanup provenance and independent ordinary copies.",
       "contracts": [
-        "Original identity, admission, stop, EOF, retention and Windows wait budgets unchanged."
+        "Operation/Cut/Parent only; no relabelled original or authority."
       ]
     },
     {
-      "category": "worker-pool-regression-managed-policy",
-      "reason": "Shared native owner default worker/terminal capture must retain prior mode and ownership policy.",
+      "category": "fr063-joint-cleanup-validator-controls",
+      "reason": "Production-used leaves and owning lease refusals; real copied backup DATA and existing exact/legacy dispatch.",
       "contracts": [
-        "No native Linux runtime; unchanged default capture and retained native/Job policy."
-      ]
-    },
-    {
-      "category": "fr063-joint-child-output-launch-boundaries",
-      "reason": "Independent review found exited-versus-Joined misreporting and prepared destinations bypassed by late budget/missing package refusal.",
-      "contracts": [
-        "Actual join requires original exit, EOF and positive recorded ownership join.",
-        "No-child refusals finalize prepared files without invented EOF/read failure and preserve the original exception."
+        "Original semantic expressions, parser/logger behavior, fresh lease and generation fences."
       ]
     }
   ]

@@ -1648,10 +1648,40 @@ public partial class GameEngine
         return ParseReadySignalMetadata(await _fs.ReadFileAsync(relativePath), relativePath);
     }
 
-    private ReadySignalMetadata? ParseReadySignalMetadata(string? json,string relativePath)
+    /// <summary>
+    /// Parses a terminal signal using this engine's existing diagnostic logger.
+    /// </summary>
+    /// <param name="json">
+    /// Signal text; null or whitespace has no signal.
+    /// </param>
+    /// <param name="relativePath">
+    /// Signal path included in the existing failure log.
+    /// </param>
+    /// <returns>
+    /// Parsed metadata, or null after the existing parsing refusal and logging behavior.
+    /// </returns>
+    private ReadySignalMetadata? ParseReadySignalMetadata(string? json, string relativePath) =>
+        ParseReadySignalMetadataWithLogger(json, relativePath, _logger);
+
+    /// <summary>
+    /// Shares the original terminal parser catch, logging and null-result behavior.
+    /// </summary>
+    /// <param name="json">
+    /// Signal text; null or whitespace has no signal.
+    /// </param>
+    /// <param name="relativePath">
+    /// Signal path used in the unchanged diagnostic message.
+    /// </param>
+    /// <param name="logger">
+    /// Original caller logger; a logging failure retains its existing propagation.
+    /// </param>
+    /// <returns>
+    /// Metadata from the original parser, or null on a caught parse failure after logging.
+    /// </returns>
+    private static ReadySignalMetadata? ParseReadySignalMetadataWithLogger(string? json, string relativePath, ILogger<GameEngine> logger)
     {
         try { return ParseReadySignalMetadataCore(json); }
-        catch(Exception ex) { _logger.LogDebug(ex,"Не удалось прочитать ready signal {RelativePath}.",relativePath);return null; }
+        catch(Exception ex) { logger.LogDebug(ex,"Не удалось прочитать ready signal {RelativePath}.",relativePath);return null; }
     }
     private static ReadySignalMetadata? ParseReadySignalMetadataCore(string? json)
 {

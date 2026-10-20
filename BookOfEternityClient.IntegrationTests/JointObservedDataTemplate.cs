@@ -23,12 +23,12 @@ internal static class JointObservedDataTemplate
     /// <param name="targetRoot">
     /// Nonexistent per-test root beneath an existing ordinary owned directory.
     /// </param>
-    /// <returns>
-    /// The verified detached manifest. Current game authority must be obtained from real production validators.
-    /// </returns>
     /// <param name="kind">
     /// The explicitly requested provenance kind; no live game authority is imported.
     /// </param>
+    /// <returns>
+    /// The verified detached manifest. Current game authority must be obtained from real production validators.
+    /// </returns>
     internal static JsonObject Materialize(string archivePath, string expectedSha256, string targetRoot, JointObservedDataKind kind)
     {
         targetRoot = Path.GetFullPath(targetRoot);
@@ -44,7 +44,7 @@ internal static class JointObservedDataTemplate
         JsonObject manifest;
         using (var reader = new StreamReader(metadata.Open())) manifest = JsonNode.Parse(reader.ReadToEnd())!.AsObject();
         Require(manifest["Kind"]!.GetValue<string>() == "joint_cleanup_observed_data_v1" &&
-            !manifest["GrantsAuthority"]!.GetValue<bool>() && manifest["Provenance"]!["Role"]!.GetValue<string>() == "AppliedBeforeStory");
+            !manifest["GrantsAuthority"]!.GetValue<bool>() && HasExpectedProvenance(manifest, kind));
         var directories = manifest["Directories"]!.AsArray().Select(node => node!.GetValue<string>()).ToArray();
         var directoryNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var path in directories)
@@ -98,6 +98,36 @@ internal static class JointObservedDataTemplate
     }
 
     /// <summary>
+    /// Requires the selected capture provenance without treating parent metadata as live authority.
+    /// </summary>
+    /// <param name="manifest">
+    /// Detached observed-DATA manifest parsed before any target write.
+    /// </param>
+    /// <param name="kind">
+    /// The exact supported applied-role or ordinary cleanup-entry provenance contract.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> only when all selected provenance fields match; otherwise <see langword="false"/>.
+    /// </returns>
+    private static bool HasExpectedProvenance(JsonObject manifest, JointObservedDataKind kind)
+    {
+        if (manifest["Provenance"] is not JsonObject provenance) return false;
+        if (kind == JointObservedDataKind.AppliedBeforeStory)
+            return provenance["Role"]?.GetValue<string>() == "AppliedBeforeStory";
+        if (kind != JointObservedDataKind.CleanupEntry || provenance.ContainsKey("Role") || provenance.ContainsKey("Original")) return false;
+        return provenance["Operation"] is JsonValue operation && operation.TryGetValue<string>(out var name) &&
+            name == "JointStory.CleanupEligibleTerminalAsync" &&
+            provenance["Cut"] is JsonValue cutValue && cutValue.TryGetValue<int>(out var cut) && cut is >= 0 and <= 4 &&
+            provenance["Parent"] is JsonObject parent &&
+            parent["Cut"] is JsonValue parentCut && parentCut.TryGetValue<int>(out var ownedCut) && ownedCut == cut &&
+            parent["ParentPid"] is JsonValue pidValue && pidValue.TryGetValue<int>(out var pid) && pid > 0 &&
+            parent["Nonce"] is JsonValue nonce && nonce.TryGetValue<string>(out var nonceText) && Guid.TryParseExact(nonceText, "N", out _) &&
+            parent["RunId"] is JsonValue run && run.TryGetValue<string>(out var runText) && Guid.TryParseExact(runText, "N", out _) &&
+            parent["Diagnostic"] is JsonValue diagnostic && diagnostic.TryGetValue<bool>(out var observed) && !observed &&
+            parent.TryGetPropertyValue("Fault", out var fault) && fault is null;
+    }
+
+    /// <summary>
     /// Rejects relative paths with traversal, aliases or platform-specific alternate spelling.
     /// </summary>
     /// <param name="path">
@@ -117,7 +147,7 @@ internal static class JointObservedDataTemplate
     /// </param>
     private static void Require(bool condition)
     {
-        if (!condition) throw new InvalidDataException("Observed applied DATA archive does not match its exact transport contract.");
+        if (!condition) throw new InvalidDataException("Observed DATA archive does not match its exact transport contract.");
     }
 }
 

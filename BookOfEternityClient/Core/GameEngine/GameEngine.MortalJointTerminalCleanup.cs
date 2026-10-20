@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using Microsoft.Extensions.Logging;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.Models;
@@ -53,32 +54,13 @@ public partial class GameEngine
                 throw new InvalidDataException("joint_cleanup_projection_refused: " + projection.Failure);
             cleanupTimer4?.Dispose();
             using var cleanupTimer5 = _fs.MeasureOperation("JointCleanup.VerifyTerminalSignalAsync");
-            var ready = ParseReadySignalMetadata(await _fs.ReadFileAsync(lease, "ready/turn_complete.json"), "ready/turn_complete.json");
-            if (ready is null || ready.SessionId != frame.SessionId || ready.RequestId != frame.RequestId || ready.TurnNumber != frame.TurnNumber ||
-                !HasValidTerminalSignalContract("turn_complete", ready) || await _fs.ReadFileBytesAsync(lease, "ready/turn_error.json") is not null)
-                throw new InvalidDataException("joint_cleanup_terminal_not_owned");
+            await VerifyMortalJointTerminalSignalAsync(_fs, lease, frame.SessionId, frame.RequestId, frame.TurnNumber, _logger);
 
             cleanupTimer5?.Dispose();
             // Use the real destructive original/backup validator, including its
             // hash mode and every declared source image. No path-label shortcut.
             using var cleanupTimer6 = _fs.MeasureOperation("JointCleanup.VerifyDestructiveOriginal");
-            var authorityText = await _fs.ReadFileAsync(lease, PendingTurnSnapshotAuthority.AuthorityPath);
-            if (!PendingTurnSnapshotAuthority.TryValidateManifestForDestructiveAuthority(
-                frame.Manifest, authorityText, SnapshotHashJsonOpts,
-                static manifest => manifest.ManifestPayloadHash,
-                static (manifest, hash) => manifest.ManifestPayloadHash = hash,
-                static manifest => manifest.SessionId, static manifest => manifest.RequestId, static manifest => manifest.TurnNumber,
-                static manifest => manifest.Files, static manifest => manifest.SnapshotFileHashes,
-                static manifest => manifest.ClientOwnedValidationHashes, static manifest => manifest.RollbackBaselineFiles,
-                static manifest => manifest.SourceLabel, static manifest => manifest.RollbackBackups,
-                path =>
-                {
-                    using var rollbackReadTiming = _fs.MeasureOperation("JointCleanup.Authority.ReadRollbackBytes");
-                    return _fs.ReadFileBytesAsync(lease, path).GetAwaiter().GetResult();
-                }, out var payload, out var failure) || payload is null ||
-                payload.ManifestPayloadHash != frame.Payload.ManifestPayloadHash ||
-                (payload.RollbackBackups.Count == 0 && payload.RollbackBaselineFiles.Count == 0))
-                throw new InvalidDataException("joint_cleanup_original_backup_authority: " + failure);
+            var payload = await VerifyMortalJointDestructiveOriginalAsync(_fs, lease, frame.Manifest, frame.Payload.ManifestPayloadHash);
 
             cleanupTimer6?.Dispose();
             using var cleanupTimer7 = _fs.MeasureOperation("JointCleanup.PlanCohortAndProtocolEvidence");
@@ -207,6 +189,83 @@ public partial class GameEngine
             // recoverable here; retain all remaining evidence and block gameplay.
             return new(MortalJointCleanupDisposition.HeldBlocked, error.Message);
         }
+    }
+
+    /// <summary>
+    /// Verifies the existing owned completion signal and error absence without issuing cleanup authority.
+    /// </summary>
+    /// <param name="files">
+    /// The current participating file manager.
+    /// </param>
+    /// <param name="lease">
+    /// Its active canonical lease, validated by each original file read.
+    /// </param>
+    /// <param name="sessionId">
+    /// Expected session identifier from the current original.
+    /// </param>
+    /// <param name="requestId">
+    /// Expected request identifier from the current original.
+    /// </param>
+    /// <param name="turnNumber">
+    /// Expected original turn number.
+    /// </param>
+    /// <param name="logger">
+    /// The original engine logger; component callers may explicitly substitute their own logger.
+    /// </param>
+    /// <returns>
+    /// Completion after the exact terminal contract succeeds; original read, logging and refusal failures propagate.
+    /// </returns>
+    internal static async Task VerifyMortalJointTerminalSignalAsync(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease, string sessionId, string requestId, int turnNumber,
+        ILogger<GameEngine> logger)
+    {
+        var ready = ParseReadySignalMetadataWithLogger(await files.ReadFileAsync(lease, "ready/turn_complete.json"), "ready/turn_complete.json", logger);
+        if (ready is null || ready.SessionId != sessionId || ready.RequestId != requestId || ready.TurnNumber != turnNumber ||
+            !HasValidTerminalSignalContract("turn_complete", ready) || await files.ReadFileBytesAsync(lease, "ready/turn_error.json") is not null)
+            throw new InvalidDataException("joint_cleanup_terminal_not_owned");
+    }
+
+    /// <summary>
+    /// Revalidates declared original and backup DATA through the existing destructive validator.
+    /// This result alone grants no cleanup permission.
+    /// </summary>
+    /// <param name="files">
+    /// The participating manager used for actual authority and rollback-byte reads.
+    /// </param>
+    /// <param name="lease">
+    /// Its active canonical lease; every original read retains normal ownership validation.
+    /// </param>
+    /// <param name="manifest">
+    /// Parsed original manifest DATA, not a private validated snapshot context.
+    /// </param>
+    /// <param name="expectedManifestHash">
+    /// The exact manifest hash from the caller's current original proof.
+    /// </param>
+    /// <returns>
+    /// Validated payload DATA after exact hash and nonempty rollback conditions; existing failures propagate.
+    /// </returns>
+    internal static async Task<PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload> VerifyMortalJointDestructiveOriginalAsync(
+        FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, PendingTurnSnapshotManifest manifest,
+        string expectedManifestHash)
+    {
+        var authorityText = await files.ReadFileAsync(lease, PendingTurnSnapshotAuthority.AuthorityPath);
+        if (!PendingTurnSnapshotAuthority.TryValidateManifestForDestructiveAuthority(
+            manifest, authorityText, SnapshotHashJsonOpts,
+            static manifest => manifest.ManifestPayloadHash,
+            static (manifest, hash) => manifest.ManifestPayloadHash = hash,
+            static manifest => manifest.SessionId, static manifest => manifest.RequestId, static manifest => manifest.TurnNumber,
+            static manifest => manifest.Files, static manifest => manifest.SnapshotFileHashes,
+            static manifest => manifest.ClientOwnedValidationHashes, static manifest => manifest.RollbackBaselineFiles,
+            static manifest => manifest.SourceLabel, static manifest => manifest.RollbackBackups,
+            path =>
+            {
+                using var rollbackReadTiming = files.MeasureOperation("JointCleanup.Authority.ReadRollbackBytes");
+                return files.ReadFileBytesAsync(lease, path).GetAwaiter().GetResult();
+            }, out var payload, out var failure) || payload is null ||
+            payload.ManifestPayloadHash != expectedManifestHash ||
+            (payload.RollbackBackups.Count == 0 && payload.RollbackBaselineFiles.Count == 0))
+            throw new InvalidDataException("joint_cleanup_original_backup_authority: " + failure);
+        return payload;
     }
 
     /// <summary>

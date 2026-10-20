@@ -11,6 +11,8 @@ Spec15r16; T338–339. Existing isolated branch; parent implementation, TDD/syst
 
 No change to process owners/waits/native policy or game/GM/schema. T325 ABA fences retained; full cleanup cohort/publication/response runner explicitly deferred. Component results cannot qualify historical/native/runtime owner latency.
 
+T338 GREEN WIP: shared explicit provenance and unchanged production leaves/parser wrapper are implemented; initial integration XML build0errors. Added focused terminal/lease/destructive DATA controls and separate opt-in profile with external full JSONL/compact refs, read-only image/generation oracles, real owner close and uncertain-owner retention. Fresh full relevant builds/catalog/controls, source-expression equivalence, XML inspection and independent SOURCE/PREP acceptance remain pending. No genuine profile or original runtime executed.
+
 ---
 
 # CRASH5 — plan13 revision15: source audit before real cleanup measurement

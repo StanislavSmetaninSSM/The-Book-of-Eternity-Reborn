@@ -29288,6 +29288,59 @@
       ]
     }
   ]
+},
+{
+  "id": "fr063-joint-cleanup-validator-controls",
+  "responsibility": "Real terminal/lease and copied destructive-original authority/backup refusals; exact and legacy rollback dispatch.",
+  "excludes": "No GameEngine, generator, original recovery or Linux runtime; no authority from serialized DATA.",
+  "changeHints": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointCleanupValidatorTests.*"
+      ]
+    },
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.RollbackHashCallback_UsesOnlyVerifiedExactMode"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-cleanup-validator-profile",
+  "responsibility": "T339 opt-in real read-only cleanup-validator profile with fresh owning lease, genuine proofs and complete external diagnostics; SOURCE/PREP acceptance required.",
+  "excludes": "No GameEngine, generator, original recovery or Linux runtime; no authority from serialized DATA.",
+  "changeHints": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointCleanupValidatorProfileTests.ActualCleanupData_ProfilesReadOnlyValidatorsWithoutGameEngine"
+      ]
+    }
+  ]
 }
 ]
 }
