@@ -29341,6 +29341,36 @@
       ]
     }
   ]
+},
+{
+  "id": "fr063-joint-cleanup-participation-correction",
+  "responsibility": "T338 corrected existing-generation barrier plus changed physical-lease controls and previously skipped exact/legacy unit dispatch.",
+  "excludes": "No repeat of45unchanged passing transport/terminal/destructive controls; no GameEngine or original/profile runtime.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointCleanupValidatorTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointCleanupValidatorTests.LeavesRefuseLostParticipation",
+        "BookOfEternityClient.Tests.JointCleanupValidatorTests.GenerationReplacementRefusesBeforeLeafAdmission"
+      ]
+    },
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.RollbackHashCallback_UsesOnlyVerifiedExactMode"
+      ]
+    }
+  ]
 }
 ]
 }

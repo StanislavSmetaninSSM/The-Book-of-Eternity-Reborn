@@ -5,6 +5,8 @@
 
 T338 WIP: initial13caseRED completed11oldAppliedPASS/2expectedcleanupFormatFAIL, full raw/source snapshots retained in T338-red-outcome/raw. No GameEngine or genuine DATA profile executed.
 
+Initial GREEN controls at92552bc2e:47PASS/1control-fixtureFAIL of48completed, unit3notrun. Preserve T338-initial-controls/raw; correct generation coverage at the actual existing operation barrier, without changing production. Final evidence combines45exact unchanged passes and6fresh correction/unit cases, not a claimed51case repeat.
+
 T337 investigation accepted; implementation does not yet establish captured DATA eligibility. T338→T339; original recovery/coldfive/Linux stay open. Every measurement is a real component observation, never a simulated owner or deletion authorization.
 
 ---

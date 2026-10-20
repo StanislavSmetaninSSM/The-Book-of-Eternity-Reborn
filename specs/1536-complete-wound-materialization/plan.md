@@ -13,6 +13,8 @@ No change to process owners/waits/native policy or game/GM/schema. T325 ABA fenc
 
 T338 GREEN WIP: shared explicit provenance and unchanged production leaves/parser wrapper are implemented; initial integration XML build0errors. Added focused terminal/lease/destructive DATA controls and separate opt-in profile with external full JSONL/compact refs, read-only image/generation oracles, real owner close and uncertain-owner retention. Fresh full relevant builds/catalog/controls, source-expression equivalence, XML inspection and independent SOURCE/PREP acceptance remain pending. No genuine profile or original runtime executed.
 
+T338 initial controls at92552bc2e:48completed/47PASS/1new-controlFAIL, unit3unexecuted after fail-fast; raw35files retained in T338-initial-controls/raw. Generation test incorrectly expected each ordinary-read leaf to own a generation check; existing VerifyCurrentSessionOperation owns that barrier. Correct only the test to invoke this real fence before leaf admission; retain active/foreign/closed physical lease contract and production expressions. This is a control-fixture correction, not a game fix or relaxed acceptance. Reuse45unchanged transport/terminal/destructive passes; freshly run2changed lease cases+1new generation barrier+3previously skipped unit cases. Fresh source/DLL/XML/catalog and51case overall/1profile/6correction PlanOnly required; profile remains UNRUN until separate SOURCE/PREP acceptance.
+
 ---
 
 # CRASH5 — plan13 revision15: source audit before real cleanup measurement

@@ -79,18 +79,17 @@ public sealed class JointCleanupValidatorTests
     }
 
     /// <summary>
-    /// Refuses a foreign manager, closed lease or deliberately replaced generation before accepting DATA.
+    /// Refuses a foreign manager or closed lease before accepting DATA.
     /// </summary>
     /// <param name="fault">
-    /// The owned lease or generation fault injected into this isolated synthetic fixture.
+    /// The owned manager or lease fault injected into this isolated synthetic fixture.
     /// </param>
     /// <returns>
-    /// Completion after both leaves preserve the actual lease or session-replacement refusal.
+    /// Completion after both leaves preserve the actual physical lease refusal.
     /// </returns>
     [Theory]
     [InlineData("foreign")]
     [InlineData("disposed")]
-    [InlineData("generation")]
     public async Task LeavesRefuseLostParticipation(string fault)
     {
         var root = NewOwnedRoot();
@@ -104,27 +103,49 @@ public sealed class JointCleanupValidatorTests
         {
             var reader = fault == "foreign" ? new FileSystemManager(Path.Combine(root, "foreign"), NullLogger<FileSystemManager>.Instance) : files;
             if (fault == "disposed") await lease.DisposeAsync();
-            if (fault == "generation") File.WriteAllText(files.SessionGenerationPath,
-                JsonSerializer.Serialize(new { schemaVersion = 1, generationId = Guid.NewGuid().ToString("N") }));
             Task Terminal() => GameEngine.VerifyMortalJointTerminalSignalAsync(reader, lease, "session", "request", 43, NullLogger<GameEngine>.Instance);
             Task Original() => GameEngine.VerifyMortalJointDestructiveOriginalAsync(reader, lease, new(), "unused");
-            if (fault == "generation")
-            {
-                await Assert.ThrowsAsync<SessionReplacedException>(Terminal);
-                await Assert.ThrowsAsync<SessionReplacedException>(Original);
-            }
-            else
-            {
-                await Assert.ThrowsAsync<InvalidOperationException>(Terminal);
-                await Assert.ThrowsAsync<InvalidOperationException>(Original);
-            }
+            await Assert.ThrowsAsync<InvalidOperationException>(Terminal);
+            await Assert.ThrowsAsync<InvalidOperationException>(Original);
             bothLeavesChecked = true;
             return true;
         }));
-        Assert.True(bothLeavesChecked);
+        Assert.True(bothLeavesChecked, closing?.ToString());
         if (fault == "foreign") Assert.Null(closing);
-        else if (fault == "generation") Assert.IsType<SessionReplacedException>(closing);
         else Assert.IsType<InvalidOperationException>(closing);
+    }
+
+    /// <summary>
+    /// Uses the existing operation fence to refuse replacement before any cleanup leaf is admitted.
+    /// Ordinary read leaves retain their physical-lease contract and do not acquire a new generation policy.
+    /// </summary>
+    /// <returns>
+    /// Completion after the real generation barrier refuses and both leaf calls remain unentered.
+    /// </returns>
+    [Fact]
+    public async Task GenerationReplacementRefusesBeforeLeafAdmission()
+    {
+        var root = NewOwnedRoot();
+        Directory.CreateDirectory(Path.Combine(root, "game_session"));
+        using var cleanup = new CleanupOwnedFixture(root, Console.WriteLine);
+        var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        var generation = files.GetOrCreateSessionGeneration(lease);
+        var injected = false;
+        var leafEntered = false;
+        await Assert.ThrowsAsync<SessionReplacedException>(() => SessionOperationContext.RunBoundAsync(files, generation, lease, async () =>
+        {
+            File.WriteAllText(files.SessionGenerationPath,
+                JsonSerializer.Serialize(new { schemaVersion = 1, generationId = Guid.NewGuid().ToString("N") }));
+            injected = true;
+            files.VerifyCurrentSessionOperation(lease);
+            leafEntered = true;
+            await GameEngine.VerifyMortalJointTerminalSignalAsync(files, lease, "session", "request", 43, NullLogger<GameEngine>.Instance);
+            await GameEngine.VerifyMortalJointDestructiveOriginalAsync(files, lease, new(), "unused");
+            return true;
+        }));
+        Assert.True(injected);
+        Assert.False(leafEntered);
     }
 
     /// <summary>
