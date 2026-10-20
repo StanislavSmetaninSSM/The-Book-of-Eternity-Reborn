@@ -1,3 +1,11 @@
+# T258 — resumer observation qualification
+
+**T258 PREP:** compiled b0560bbd50b95d0ad0ce1c0814748150da369a13;14/14 stage controls PASS/0skip after9PASS+5causalFAIL. Fresh XML build0errors/changedXML0; catalog valid, default PlanOnly219, explicit26cases/9descriptors includes stage14 plus original/new entrypoints12. Metadata executes0tests. No production/native/timeout/assertion delta. Source/DLL/raw evidence in T258-prep.json/zip; independent SOURCE/PREP pending, T259 UNRUN.
+
+Earlier compiler overload ambiguity was a test-fixture issue, corrected before causal RED; archived separately. New APIs/test helpers use multiline XML; parent inspected comments and original proof/cleanup/budget wiring. Five causal tests cover enum identity/transitions, populations/reset, late event sampling, output quota/terminal capacity and output failure precedence. Existing9 stage/source controls remain GREEN.
+
+---
+
 # T257 — bounded static resumer investigation
 
 Separate gpt-6-astra/high consultation at fd5e8158ffc completed without edits or execution. The first callback maps to LateTerminalAndIdleOperationBound. The second is strongly consistent with MortalJointCustodyCaptureCompletedBeforePreparation; it is not directly named in T254 and must remain an inference. No accepted-proof output/third callback or late-first return exists. The silent interval includes canonical planning/publication and subsequent validation; it cannot be assigned solely to preparation.

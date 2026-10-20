@@ -95,3 +95,5 @@ T253 independent SOURCE/PREP accepted Sol6.1/xhigh at295549bf4 with compiled652,
 Spec7 cut0: Failed, CaseQualified=False, run20261020-094923-048-81732-bb41d852f2164eac8935f6ae5aa74ee3-categories, source652bdd76a45ce2abc8b94eed145bbeea628cff93; exact evidence in specs/1536-complete-wound-materialization/recovery/crash5/T254-cut0-outcome.json. Current 0/5PASS; Linux UNRUN.
 
 T256 accepted Sol6.1/xhigh atfd5; fresh276-file GitHub recovery; T219 fixture preserved. T257 spec8/plan6 with user waiver continues bounded resumer investigation after Astra/high consultation; no proved deadlock or timeout-policy change. T258 tests/implementation/PREP then one T259, no cut1-4 automatic.
+
+T258 compiledb0560bbd5:14GREEN, XML0errors/changedXML0, catalog/default219/explicit26 valid. RED9PASS5FAIL at9d32; initial Action overload compile error separately recorded. Independent SOURCE/PREP pending; no T259 runtime yet.

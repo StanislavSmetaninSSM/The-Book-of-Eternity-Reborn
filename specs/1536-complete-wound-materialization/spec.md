@@ -1,5 +1,7 @@
 # CRASH5 — spec8: наблюдение пути Windows resumer
 
+**T258 PREP:** compiled b0560bbd50b95d0ad0ce1c0814748150da369a13;14/14 stage controls PASS/0skip after9PASS+5causalFAIL. Fresh XML build0errors/changedXML0; catalog valid, default PlanOnly219, explicit26cases/9descriptors includes stage14 plus original/new entrypoints12. Metadata executes0tests. No production/native/timeout/assertion delta. Source/DLL/raw evidence in T258-prep.json/zip; independent SOURCE/PREP pending, T259 UNRUN.
+
 Основание: T254 producer достиг cut0 за395.163s/exit73; resumer не вернулся за220s. Windows0/5 PASS; Linux UNRUN. T256 evidence/recovery приняты. User waiver «продолжай без моих разрешений» действует; новое согласование не ожидается. Продолжаются Spec Kit и Superpowers debugging/TDD/review/verification.
 
 **Результат US2:** получить различимые наблюдения внутри текущего восстановления, чтобы обосновать следующий шаг. Это investigation, не разрешение оптимизировать production и не обещание PASS.
