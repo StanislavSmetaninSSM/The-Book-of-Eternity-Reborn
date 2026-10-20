@@ -500,7 +500,7 @@
   "id": "fr063-joint-interface-crash-stage-contracts",
   "responsibility": "CRASH5 ordinary scalar stage writer: fixed identity, monotonic elapsed time, record and UTF8 byte limits, bounded error types and observer failure precedence.",
   "excludes": "No process startup, gameplay qualification, native evidence or diagnostic capture. Separately selectable so an expected adapter RED cannot cancel the stage RED before execution.",
-  "changeHints": ["BookOfEternityClient.IntegrationTests/JointInterfaceCrashStageReport.cs"],
+  "changeHints": ["BookOfEternityClient.IntegrationTests/JointInterfaceCrashStageReport.cs", "BookOfEternityClient.IntegrationTests/JointInterfaceResumeActivity.cs", "BookOfEternityClient.IntegrationTests/JointInterfaceCrashStageReportTests.Resume.cs"],
   "related": [],
   "requirements": { "frontendBuild": false, "exclusive": false },
   "timeoutMinutes": 1,

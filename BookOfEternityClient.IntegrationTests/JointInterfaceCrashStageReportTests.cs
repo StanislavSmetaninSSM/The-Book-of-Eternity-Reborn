@@ -8,7 +8,7 @@ namespace BookOfEternityClient.Tests;
 /// <summary>
 /// Checks bounded ordinary-stage output without starting a game or observer process.
 /// </summary>
-public sealed class JointInterfaceCrashStageReportTests
+public sealed partial class JointInterfaceCrashStageReportTests
 {
     /// <summary>
     /// Counter intervals distinguish repeated rollback observations from other reads and mutation attempts.

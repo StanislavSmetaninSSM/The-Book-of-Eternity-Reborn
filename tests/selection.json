@@ -129,6 +129,13 @@
       "contracts": [
         "Only explicit matching Windows source or producer opt-ins may use600s; resumer/default220, Linux and original owner lifecycle remain."
       ]
+    },
+    {
+      "category": "fr063-joint-interface-crash-stage-contracts",
+      "reason": "Spec8 bounded Windows resumer observations on existing hooks.",
+      "contracts": [
+        "Named checkpoints, separate populations, finite late sampling and writer failure precedence."
+      ]
     }
   ]
 }

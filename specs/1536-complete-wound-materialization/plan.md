@@ -4,7 +4,7 @@ Canonical spec8 / tasks T257…T260, existing feature1536 and isolated checkout.
 
 ## File map and design
 
-JointInterfaceCrashStageReport.cs: optional enum Checkpoint field for dedicated finalization method; optional ResumeActivity scalar snapshot and resume-activity stage. Existing64/2048 bounds; activity cap24 and no activity after record32, leaving stage capacity. Add no waits/flush/I/O beyond existing output sink. Unknown enum gets fixed Unknown marker. Existing source path unchanged.
+JointInterfaceCrashStageReport.cs: optional enum Checkpoint field for dedicated finalization method; optional ResumeActivity scalar snapshot and resume-activity stage. Existing64/2048 bounds; activity cap24 leaves40 of64 records available for ordinary stages. Add no waits/flush/I/O beyond existing output sink. Unknown enum gets fixed Unknown marker. Existing source path unchanged.
 
 New JointInterfaceResumeActivity.cs: reporter-owned test helper, fixed populations and optional monotonic clock seam for finite tests. Periodic reports15s on callbacks, first sample/phase completion; no timer, tasks, file access, paths or collection growth. Checkpoint flushes/reset interval; publication phase retained as enum name and population counted separately from recovery. Calls to reporter do not hold writer gate recursively through counters. At limit emit one final limited snapshot then suppress activity; ordinary finalization/error/exit remain available. Cumulative per-interval counts explicitly hook observations.
 
