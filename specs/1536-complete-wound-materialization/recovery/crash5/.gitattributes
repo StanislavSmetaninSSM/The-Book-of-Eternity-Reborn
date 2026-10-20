@@ -1,0 +1,2 @@
+T*-child*.stdout -text
+T*-child*.stderr -text
