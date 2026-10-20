@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.IO;
 using System.Text.Json;
 
 namespace BookOfEternityClient.Tests;
@@ -6,19 +7,29 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class GameEngineTurnLifecycleTests
 {
     /// <summary>
-    /// Serializes a bounded stream of observed operation boundaries to diagnostic output.
+    /// Serializes every observed operation boundary to diagnostic output in sequence order.
     /// An end boundary records elapsed time without implying successful completion.
     /// </summary>
     private sealed class JointOperationTimings
     {
-        private const int RecordLimit = 1024;
         private readonly object _gate = new();
         private readonly long _started = Stopwatch.GetTimestamp();
-        private int _recordCount;
-        private bool _limited;
+        private readonly TextWriter _output;
+        private long _sequence;
 
         /// <summary>
-        /// Writes the observed boundary, or a single limit marker after the record budget is exhausted.
+        /// Selects the writer receiving serialized operation timing records.
+        /// </summary>
+        /// <param name="output">
+        /// Diagnostic output writer, or <see langword="null"/> to use <see cref="Console.Out"/>.
+        /// </param>
+        public JointOperationTimings(TextWriter? output = null)
+        {
+            _output = output ?? Console.Out;
+        }
+
+        /// <summary>
+        /// Writes the observed boundary with its duration and the next sequence number.
         /// </summary>
         /// <param name="name">
         /// Literal name of the operation section being observed.
@@ -33,31 +44,13 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             lock (_gate)
             {
-                if (_limited) return;
-                if (_recordCount == RecordLimit)
-                {
-                    _limited = true;
-                    Console.WriteLine(JsonSerializer.Serialize(new
-                    {
-                        Boundary = "joint_operation_timing",
-                        Operation = "output-limit",
-                        State = "limited",
-                        Milliseconds = 0d,
-                        Sequence = RecordLimit + 1,
-                        PID = Environment.ProcessId,
-                        TotalElapsedMilliseconds = Stopwatch.GetElapsedTime(_started).TotalMilliseconds,
-                        Limit = RecordLimit
-                    }));
-                    return;
-                }
-
-                Console.WriteLine(JsonSerializer.Serialize(new
+                _output.WriteLine(JsonSerializer.Serialize(new
                 {
                     Boundary = "joint_operation_timing",
                     Operation = name,
                     State = boundary,
                     Milliseconds = elapsed.TotalMilliseconds,
-                    Sequence = ++_recordCount,
+                    Sequence = ++_sequence,
                     PID = Environment.ProcessId,
                     TotalElapsedMilliseconds = Stopwatch.GetElapsedTime(_started).TotalMilliseconds
                 }));

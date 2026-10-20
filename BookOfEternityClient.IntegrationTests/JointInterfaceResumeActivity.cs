@@ -31,7 +31,7 @@ internal enum JointResumeObservation
 }
 
 /// <summary>
-/// Observes bounded scalar activity without opening files or changing game results.
+/// Observes cumulative scalar activity without a record quota or changes to game results.
 /// </summary>
 internal sealed class JointInterfaceResumeActivity
 {
@@ -42,7 +42,6 @@ internal sealed class JointInterfaceResumeActivity
     private string _phase = "before-finalization";
     private string? _publication, _recovery;
     private TimeSpan _nextReport;
-    private int _reports;
     /// <summary>
     /// Creates a child-local observer with a monotonic clock seam for finite tests.
     /// </summary>
@@ -121,7 +120,7 @@ internal sealed class JointInterfaceResumeActivity
     }
 
     /// <summary>
-    /// Emits remaining observed counts at a normal completion boundary when capacity remains.
+    /// Emits remaining observed counts at a normal completion boundary.
     /// </summary>
     internal void Complete()
     {
@@ -133,7 +132,6 @@ internal sealed class JointInterfaceResumeActivity
     /// </summary>
     private void EmitIfDue()
     {
-        if (_reports >= 24) return;
         var elapsed = _elapsed();
         if (elapsed < _nextReport) return;
         Emit();
@@ -145,10 +143,9 @@ internal sealed class JointInterfaceResumeActivity
     /// </summary>
     private void Emit()
     {
-        if (_reports >= 24 || !_counts.Any(value => value != 0)) return;
-        _reports++;
+        if (!_counts.Any(value => value != 0)) return;
         _report.ObserveResumeActivity(new(_phase, _counts[0], _counts[1], _counts[2], _counts[3],
-            _counts[4], _counts[5], _counts[6], _publication, _recovery, _reports == 24));
+            _counts[4], _counts[5], _counts[6], _publication, _recovery, false));
     }
 }
 
@@ -186,6 +183,6 @@ internal sealed class JointInterfaceResumeActivity
 /// The last observed recovery enum name, or <see langword="null"/> when none was observed.
 /// </param>
 /// <param name="Limited">
-/// <see langword="true"/> marks the last available activity sample; subsequent activity is omitted.
+/// Always <see langword="false"/>; retained for schema compatibility after removal of the activity quota.
 /// </param>
 internal sealed record JointResumeActivitySnapshot(string Phase, long CanonicalInitial, long ExactInitial, long CanonicalOpened, long CanonicalContended, long MainContended, long Publications, long Recoveries, string? LastPublication, string? LastRecovery, bool Limited);

@@ -1,3 +1,17 @@
+# CRASH5 — plan12 revision3: complete diagnostics and actual localization
+
+Canonical [spec](spec.md), [tasks](tasks.md). User explicitly rejected diagnostic quotas and clarified that the goal is identifying the cause of apparent hangs. Existing branch/feature and approval-wait waiver apply.
+
+1. T298 save the failed partial measurement and update canonical records/actual Spec Kit consistency.
+2. T299 remove named-timer count cutoff plus resumer activity/stage count/byte truncation; add timers around the enclosing joint-story path through materialization/cleanup. Parent owns stage/path instrumentation; a bounded Sol6.1/medium agent owns only named collector/output test. Preserve all original production operations. Short causal controls exercise output after old thresholds; XML and affected metadata only.
+3. T300 independent coherent SOURCE/PREP review, source/DLL proof and saved checkpoint. Do not repeat old already-passing timer-core tests without changed code or concern.
+4. T301 current-fingerprint genuine generation/binding and corrected instrumented run, preserving prior failures and original game assertions/Windows Job ownership. Diagnostic records have no arbitrary quotas. Any further focused run is justified by the actual unresolved measured question.
+5. T302 analyze complete timings and follow the measured expensive/stalled operation until a supported diagnosis exists. Final independent evidence review and saved recovery. No claimed fix or cause from merely adding timers; no source caching/validation removal or Linux runtime in this change.
+
+Mapping:TIM3-1/2→T299;TIM3-3→T300;TIM3-4→T301;TIM3-5→T302. Original Windows0/5/LinuxUNRUN remain separate.
+
+---
+
 # CRASH5 — plan12 revision2: measure the real restoration
 
 Canonical [spec](spec.md), [tasks](tasks.md), [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). User explicitly replaced optimization-first work with named timers. Parent implements; independent reviewer checks the coherent observational diff. Previous namespace optimization remains deferred; its unpublished scaffold was archived externally and removed from product source. Its attempted unit build failed before discovery (0tests executed), not a causal RED or runtime result.

@@ -81,22 +81,21 @@ public sealed partial class JointInterfaceCrashStageReportTests
     }
 
     /// <summary>
-    /// Activity has a separate finite quota and leaves room for original terminal records.
+    /// Activity continues beyond its former quota and preserves the final cumulative sample and terminal record.
     /// </summary>
     [Fact]
-    public void ResumeActivity_LimitsSamplesAndPreservesTerminalCapacity()
+    public void ResumeActivity_ContinuesBeyondFormerQuotasThroughCompletion()
     {
         using var writer = new StringWriter(); var now = TimeSpan.Zero; var report = Create(writer);
         var activity = new JointInterfaceResumeActivity(report, () => now);
         for (var i=0; i<100; i++) { now = TimeSpan.FromSeconds(i*15); activity.Observe(JointResumeObservation.CanonicalInitial); }
         activity.Complete(); report.Observe("exit", "return");
         var records = ResumeRecords(writer);
-        Assert.Equal(25, records.Length);
-        Assert.True(records[23].GetProperty("ResumeActivity").GetProperty("Limited").GetBoolean());
-        Assert.Equal("exit", records[24].GetProperty("Stage").GetString());
-        Assert.Equal("return", records[24].GetProperty("Transition").GetString());
-        foreach (var line in writer.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries))
-            Assert.True(Encoding.UTF8.GetByteCount(line+"\n")<=2048);
+        Assert.Equal(102, records.Length);
+        Assert.All(records[..^1], record => Assert.False(record.GetProperty("ResumeActivity").GetProperty("Limited").GetBoolean()));
+        Assert.Equal(100, records[^2].GetProperty("ResumeActivity").GetProperty("CanonicalInitial").GetInt64());
+        Assert.Equal("exit", records[^1].GetProperty("Stage").GetString());
+        Assert.Equal("return", records[^1].GetProperty("Transition").GetString());
         Assert.Null(report.OutputFailure);
     }
 

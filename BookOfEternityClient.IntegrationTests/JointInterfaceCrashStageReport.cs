@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
@@ -7,7 +6,7 @@ using BookOfEternityClient.Core;
 namespace BookOfEternityClient.Tests;
 
 /// <summary>
-/// Writes bounded scalar ordinary-test stages without changing game or native verdicts.
+/// Writes every scalar ordinary-test stage without changing game or native verdicts.
 /// </summary>
 internal sealed class JointInterfaceCrashStageReport
 {
@@ -19,7 +18,6 @@ internal sealed class JointInterfaceCrashStageReport
     private readonly object _gate = new();
     private readonly HashSet<SessionFinalizationCheckpoint> _sourceCheckpoints = new();
     private JointSourceReadCounter? _sourceReads;
-    private int _records, _resumeRecords;
     private bool _outputClosed;
 
     /// <summary>
@@ -67,7 +65,7 @@ internal sealed class JointInterfaceCrashStageReport
             JointInterfaceCrashProcessSupport.ReadCurrentIdentity(), cut);
 
     /// <summary>
-    /// Gets the first bounded observer error type, or null when writing has not failed.
+    /// Gets the first observer error type, or null when writing has not failed.
     /// </summary>
     internal string? OutputFailure { get; private set; }
 
@@ -110,16 +108,16 @@ internal sealed class JointInterfaceCrashStageReport
     }
 
     /// <summary>
-    /// Emits one bounded stage observation without an external observer or flush wait.
+    /// Emits one stage observation without a record quota or flush wait.
     /// </summary>
     /// <param name="stage">
     /// A fixed ordinary-test stage name.
     /// </param>
     /// <param name="transition">
-    /// The enter, return or error transition; the writer reserves limit for its terminal marker.
+    /// The enter, return or error transition.
     /// </param>
     /// <param name="errorType">
-    /// An optional exception type name, truncated to at most 256 characters; no exception messages or game payloads.
+    /// An optional complete exception type name; no exception messages or game payloads.
     /// </param>
     internal void Observe(string stage, string transition, string? errorType = null)
     {
@@ -141,7 +139,7 @@ internal sealed class JointInterfaceCrashStageReport
             checkpoint: Enum.IsDefined(checkpoint) ? checkpoint.ToString() : "Unknown");
 
     /// <summary>
-    /// Emits a bounded activity snapshot while reserving at least forty records for ordinary stages.
+    /// Emits an activity snapshot without reserving or exhausting a record quota.
     /// </summary>
     /// <param name="snapshot">
     /// Scalar hook observations; counts are neither I/O completions nor success claims.
@@ -150,7 +148,7 @@ internal sealed class JointInterfaceCrashStageReport
         ObserveCore("resume-activity", "enter", null, null, resume: snapshot);
 
     /// <summary>
-    /// Writes an ordinary scalar stage or a source-probe aggregate under the same record and byte budgets.
+    /// Writes an ordinary scalar stage or a source-probe aggregate without record or byte truncation.
     /// </summary>
     /// <param name="stage">
     /// The fixed stage name, including the source-probe aggregate stage.
@@ -159,13 +157,13 @@ internal sealed class JointInterfaceCrashStageReport
     /// The observed enter, return or error transition.
     /// </param>
     /// <param name="errorType">
-    /// An optional bounded exception type without message or state data.
+    /// An optional complete exception type without message or state data.
     /// </param>
     /// <param name="reads">
     /// Optional scalar read counters; null leaves the previous stage schema unchanged.
     /// </param>
     /// <param name="resume">
-    /// Optional bounded ordinary Windows resumer observations.
+    /// Optional ordinary Windows resumer observations.
     /// </param>
     /// <param name="checkpoint">
     /// An optional enum name from the existing finalization callback.
@@ -175,9 +173,7 @@ internal sealed class JointInterfaceCrashStageReport
     {
         lock (_gate)
         {
-            if (_outputClosed || _records >= 64) return;
-            if (resume != null && _resumeRecords++ >= 24) return;
-            _records++;
+            if (_outputClosed) return;
             if (stage is not ("fixture" or "file-system" or "engine" or "preflight-lease" or "snapshot-refresh" or
                 "late-first" or "finalization-before" or "finalization-after" or "late-repeat" or "exit" or "error" or
                 "source-author" or "source-inspection" or "source-capture" or "source-validated" or "source-qte" or "source-turn" or "source-reads" or "resume-activity") ||
@@ -186,39 +182,31 @@ internal sealed class JointInterfaceCrashStageReport
                 OutputFailure ??= "InvalidStage";
                 stage = "error"; transition = "error"; errorType = "InvalidStage";
             }
-            if (_records == 64) transition = "limit";
-            errorType = errorType is { Length: > 256 } ? errorType[..256] : errorType;
             try
             {
                 var line = Serialize(stage, transition, errorType, reads, resume, checkpoint);
-                if (Encoding.UTF8.GetByteCount(line) > 2048)
-                {
-                    OutputFailure ??= "RecordTooLarge";
-                    line = Serialize("error", _records == 64 ? "limit" : "error", "RecordTooLarge");
-                }
-                if (Encoding.UTF8.GetByteCount(line) > 2048) { _outputClosed = true; return; }
                 _writer.Write(line); // Fixed newline; no Flush, observer task or external wait.
             }
             catch (Exception error)
             {
                 var name = error.GetType().Name;
-                OutputFailure ??= name.Length > 256 ? name[..256] : name;
+                OutputFailure ??= name;
                 _outputClosed = true;
             }
         }
     }
 
     /// <summary>
-    /// Serializes only bounded scalar identity and stage data with one fixed newline.
+    /// Serializes scalar identity and stage data with one fixed newline.
     /// </summary>
     /// <param name="stage">
     /// An accepted fixed stage name.
     /// </param>
     /// <param name="transition">
-    /// The accepted transition or reserved final limit marker.
+    /// The accepted transition.
     /// </param>
     /// <param name="errorType">
-    /// A bounded error type, or <see langword="null"/> when no error is being reported.
+    /// An error type, or <see langword="null"/> when no error is being reported.
     /// </param>
     /// <param name="reads">
     /// Optional scalar source-probe totals; no paths or file contents are serialized.
@@ -230,7 +218,7 @@ internal sealed class JointInterfaceCrashStageReport
     /// Optional fixed enum name; absent for previous stage consumers.
     /// </param>
     /// <returns>
-    /// A single JSONL record for the subsequent byte-bound check.
+    /// A complete JSONL record without character or byte truncation.
     /// </returns>
     private string Serialize(string stage, string transition, string? errorType, JointSourceReadSnapshot? reads = null,
         JointResumeActivitySnapshot? resume = null, string? checkpoint = null)

@@ -6,7 +6,7 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 /// <summary>
-/// Checks bounded ordinary-stage output without starting a game or observer process.
+/// Checks complete ordinary-stage output without starting a game or observer process.
 /// </summary>
 public sealed partial class JointInterfaceCrashStageReportTests
 {
@@ -72,37 +72,35 @@ public sealed partial class JointInterfaceCrashStageReportTests
     }
 
     /// <summary>
-    /// The final available record reports the limit, with fixed newline and byte bounds.
+    /// Stage output preserves every record beyond its former quota and retains fixed newlines.
     /// </summary>
     [Fact]
-    public void RecordLimit_ReportsLimitWithinIndependentByteBounds()
+    public void Records_PreserveOutputBeyondFormerQuota()
     {
         using var writer = new StringWriter { NewLine = new string('z', 4096) };
         var report = Create(writer);
         for (var i = 0; i < 100; i++) report.Observe("fixture", "enter");
         var output = writer.ToString();
         var lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-        Assert.Equal(64, lines.Length);
-        Assert.True(Encoding.UTF8.GetByteCount(output) <= 131072);
-        foreach (var line in lines) Assert.True(Encoding.UTF8.GetByteCount(line + "\n") <= 2048);
+        Assert.Equal(100, lines.Length);
         using var final = JsonDocument.Parse(lines[^1]);
-        Assert.Equal("limit", final.RootElement.GetProperty("Transition").GetString());
+        Assert.Equal("enter", final.RootElement.GetProperty("Transition").GetString());
         Assert.Null(report.OutputFailure);
     }
 
     /// <summary>
-    /// UTF8-expensive exception type names never produce an oversized stage record.
+    /// Diagnostic exception type names are retained without character or byte truncation.
     /// </summary>
     [Fact]
-    public void ErrorType_IsBoundedInCharactersAndEncodedBytes()
+    public void ErrorType_PreservesCompleteDiagnosticText()
     {
         using var writer = new StringWriter();
         var report = Create(writer);
-        report.Observe("error", "error", new string('\uffff', 1024));
+        var errorType = new string('\uffff', 4096);
+        report.Observe("error", "error", errorType);
         var line = Assert.Single(writer.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries));
-        Assert.True(Encoding.UTF8.GetByteCount(line + "\n") <= 2048);
         using var document = JsonDocument.Parse(line);
-        Assert.True(document.RootElement.GetProperty("ErrorType").GetString()!.Length <= 256);
+        Assert.Equal(errorType, document.RootElement.GetProperty("ErrorType").GetString());
     }
 
     /// <summary>

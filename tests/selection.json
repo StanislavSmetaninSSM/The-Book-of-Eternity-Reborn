@@ -2,11 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "crash5-named-operation-timers",
-      "reason": "Latest user request: instrument real restoration sections with passive named timers; no optimization or state/authority contract changes.",
+      "category": "crash5-named-timing-output",
+      "reason": "User requires complete diagnostic output and actual hang localization; exercise all former diagnostic cutoffs without gameplay.",
       "contracts": [
-        "Disabled observer allocates no timer; named begin/end are monotonic, end is idempotent and observer errors cannot replace the result or primary failure.",
-        "Original Windows profiling case/generator remain explicit-only and use unchanged assertions/ownership/budgets after reviewed source binding."
+        "No record/byte truncation; preserve observer failure isolation and unchanged game assertions/process ownership."
+      ]
+    },
+    {
+      "category": "fr063-joint-interface-crash-stage-contracts",
+      "reason": "User requires complete diagnostic output and actual hang localization; exercise all former diagnostic cutoffs without gameplay.",
+      "contracts": [
+        "No record/byte truncation; preserve observer failure isolation and unchanged game assertions/process ownership."
       ]
     }
   ]

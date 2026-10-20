@@ -1,3 +1,17 @@
+# CRASH5 — spec14 revision3: find the stalled operation with complete diagnostics
+
+User correction: determine what causes the apparent hangs. No artificial record-count, byte-size or collection-duration cutoff is allowed for this diagnostic investigation. The first T296 run was incomplete:1024 named boundaries plus a sentinel, last normal collector248.184s/limit250.782s; actual resumer timed out600s while a separate stage reached593.199s. Preserve this failed result; do not call it root-cause diagnosis.
+
+- TIM3-1: remove output quotas from named timings and the resumer activity/stage output path. Preserve every produced name/begin/end and cumulative activity throughout execution. Preserve nonthrowing observation, serialization and original game/authority/process behavior.
+- TIM3-2: cover the enclosing joint-story/current-owner path and its post-publication/materialization steps with literal timers, retaining all original calls/arguments/awaits/exception order. No optimization until evidence identifies the expensive or stalled operations.
+- TIM3-3: verify output beyond the former1024/64/24 limits with short meaningful controls and XML build. Independent source/PREP review precedes costly execution; original process ownership/assertions remain.
+- TIM3-4: generate a genuinely current source-bound seed if compilation changes its fingerprint, then measure the corrected diagnostic scenario. The original600s test wait is a separate test policy, not a diagnostic-record cutoff; record its consequence honestly. Additional focused measurements require a concrete unresolved question or changed instrumentation, not an unchanged blind retry.
+- TIM3-5: retain complete raw output and named actual durations/unfinished spans, investigate the dominant measured sections, and establish a supported cause or explicitly leave the diagnosis unfinished. Partial measurements are not acceptance of the user's root-cause objective. Standing user waiver covers specification review without waiting.
+
+Previous revision2 and its exact requirements/results remain below as history. Current T298–302 govern the correction.
+
+---
+
 # CRASH5 — spec14 revision2: named operation timings
 
 Source: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Latest user explicitly redirects: «просто исследовать что занимает время… Поставь таймеры… по участкам кода». This supersedes the unimplemented optimization plan; no performance refactor or cache will be implemented here. Standing approval-wait waiver applies.

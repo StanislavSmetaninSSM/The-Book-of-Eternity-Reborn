@@ -1,3 +1,15 @@
+# CRASH5 — spec14/plan12 revision3: complete diagnostic output
+
+- [x] T298 Preserve T296 failed partial run/raw timings and record user's explicit no-quota/root-cause correction in spec/plan/tasks; actual Spec Kit phases/consistency.
+- [ ] T299 Remove diagnostic output quotas, add enclosing joint-story/post-publication timers, observe causal short RED→GREEN beyond former limits, validate XML/affected metadata.
+- [ ] T300 Independent SOURCE/PREP review, exact source/DLL binding and saved remote checkpoint before corrected runtime.
+- [ ] T301 Generate/bind current genuine source42 if needed, measure corrected instrumented scenario with full raw diagnostics, preserve actual failure/cleanup.
+- [ ] T302 Trace measured dominant/stalled sections to a supported cause; final independent evidence review and remote recovery. Remains open if only partial/localized observations exist.
+
+Dependencies:T298→T299→T300→T301→T302. The user's objective is diagnosis, not logging alone. Previous T296 occurred once and is failed/partial; it is not retried unchanged.
+
+---
+
 # CRASH5 — spec14/plan12 revision2: named timers
 
 Source: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536); [spec](spec.md), [plan](plan.md). User explicitly redirects to measuring real code sections. T288–292 optimization implementation/runtime tasks are superseded and deferred; they were not completed. Their uncommitted scaffold is archived outside the product tree; attempted build executed0tests.
@@ -5,8 +17,8 @@ Source: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity
 - [x] T293 Record latest measurement-only instruction in spec.md/plan.md/tasks.md and restore deferred optimization scaffolding; actual Spec Kit phases/consistency and remote checkpoint precede instrumentation.
 - [x] T294 [US1] Add optional named passive timing scopes and bounded resumer output in the exact production/integration call sites; tiny observer controls, no optimization. Evidence:54literal scopes; exact original4callsite files after removing timer lines; causal1PASS3FAIL→4PASS/0skip, complete selection/owned cleanup; bounded1024+sentinel output.
 - [x] T295 [US1] Fresh XML build, exact bounded timer controls and affected metadata; independent SOURCE/PREP review and verified remote save. Evidence: T295-prep.json/zip, XML0errors/changedXML0;840validcategories/11936methods; default4/explicit2/0execution; separateSol6.1xhigh ACCEPTED exactsource/dll/metadata86547336/readback.
-- [ ] T296 [US2] Generate/bind one new genuine source42 artifact for accepted final source, then one actual profiled seeded Windows cut0 with unchanged budgets; retain raw named timing records/unfinished operations and cleanup.
-- [ ] T297 [US2] Produce actual timing table and findings under recovery/crash5; independently review evidence and verify remote save/readback/fresh recovery. Original Windows0/5/LinuxUNRUN remain separate.
+- [x] T296 [US2] Generate/bind one new genuine source42 artifact for accepted final source, then one actual profiled seeded Windows cut0 with unchanged budgets; retain raw named timing records/unfinished operations and cleanup.
+- [ ] T297 [US2] Partial actual timings are saved in T297-timings.json/md; diagnosis/final acceptance deferred to corrected T298–302 because record cutoff lost the later operation durations.
 
 Dependencies:T293→T294→T295→T296→T297. No costly run before instrumented-source acceptance; no optimization, all-five rerun or retry.
 

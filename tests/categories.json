@@ -2,6 +2,17 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "crash5-named-timing-output",
+            "responsibility": "Preserve every named timing begin/end beyond the former diagnostic quota without starting the game.",
+            "excludes": "No genuine source generation, crash/resume or gameplay qualification.",
+            "changeHints": ["BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointOperationTimings.cs", "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointOperationTimingsTests.cs"],
+            "related": [],
+            "requirements": { "frontendBuild": false, "exclusive": false },
+            "timeoutMinutes": 1,
+            "expectedSeconds": null,
+            "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointOperationTimings_PreservesAllBoundariesBeyondFormerLimit"] }]
+        },
+        {
             "id": "crash5-named-operation-timers",
             "responsibility": "Passive named begin/end timer contract: disabled observer, elapsed/idempotent end, observer failure isolation and primary exception preservation.",
             "excludes": "No engine, source42 generation, crash/restart or performance optimization.",
@@ -637,7 +648,7 @@
 },
 {
   "id": "fr063-joint-interface-crash-stage-contracts",
-  "responsibility": "CRASH5 ordinary scalar stage writer: fixed identity, monotonic elapsed time, record and UTF8 byte limits, bounded error types and observer failure precedence.",
+  "responsibility": "CRASH5 complete scalar stage writer and resumer activity: fixed identity, monotonic elapsed time, no record/byte truncation, observer failure precedence.",
   "excludes": "No process startup, gameplay qualification, native evidence or diagnostic capture. Separately selectable so an expected adapter RED cannot cancel the stage RED before execution.",
   "changeHints": ["BookOfEternityClient.IntegrationTests/JointInterfaceCrashStageReport.cs", "BookOfEternityClient.IntegrationTests/JointInterfaceResumeActivity.cs", "BookOfEternityClient.IntegrationTests/JointInterfaceCrashStageReportTests.Resume.cs"],
   "related": [],

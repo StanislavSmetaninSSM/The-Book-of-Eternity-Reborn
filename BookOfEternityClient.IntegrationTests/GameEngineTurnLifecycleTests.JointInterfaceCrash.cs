@@ -741,7 +741,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             var firstLogsBefore = log.Describe();
             diagnostic.Observe("late-first-enter");
             stages?.Observe("late-first", "enter");
+            using var namedResumerTimer1 = files.MeasureOperation("Resumer.FirstCurrentOwnerCall");
             handled = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
+            namedResumerTimer1?.Dispose();
             diagnostic.Observe("late-first-return", handled.ToString());
             resumeActivity?.Complete();
             stages?.Observe("late-first", "return");
@@ -788,7 +790,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             var secondLogsBefore = log.Describe();
             diagnostic.Observe("late-second-enter");
             stages?.Observe("late-repeat", "enter");
+            using var namedResumerTimer2 = files.MeasureOperation("Resumer.SecondCurrentOwnerCall");
             second = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
+            namedResumerTimer2?.Dispose();
             diagnostic.Observe("late-second-return", second.ToString());
             stages?.Observe("late-repeat", "return");
             var secondLogsAfter = log.Describe();

@@ -16,6 +16,7 @@ public partial class GameEngine
     private async Task<MortalJointStoryTurnDisposition?> TryReconcileMortalJointStoryTurnAsync(
         string source, ValidatedPendingTurnSnapshotContext? frame)
     {
+        using var namedJointStoryTimer1 = _fs.MeasureOperation("JointStory.TryReconcileMortalJointStoryTurnAsync");
         if (frame is null) return null;
         var claimed = MatchesMortalJointRepairOutcomeFrame(frame, frame.TurnNumber) &&
             _mortalJointRepairCanonicalRefresh?.Disposition is (MortalJointRepairPublicationDisposition.Committed or
@@ -27,11 +28,15 @@ public partial class GameEngine
                 // Nonauthorizing protection precedes marker applicability. Erasing
                 // the marker cannot hide a changed signed occurrence/receipt/history
                 // partition and send already-published mechanics to ordinary rollback.
+                using var namedJointStoryTimer2 = _fs.MeasureOperation("JointStory.InspectCurrentAsync");
                 var inspection = await MortalQteDecisionPublication.InspectCurrentAsync(_fs, lease,
                     frame.SessionId, frame.RequestId, frame.Payload.ManifestPayloadHash, frame.TurnNumber);
+                namedJointStoryTimer2?.Dispose();
                 if (inspection.State == MortalQteDecisionPublication.CurrentPublicationState.IntegrityConflict)
                     return HoldMortalJointStoryTurn("The original-bound publication evidence is inconsistent: " + inspection.Reason);
+                using var namedJointStoryTimer3 = _fs.MeasureOperation("JointStory.ReadCompletionState");
                 var bytes = await _fs.ReadFileBytesAsync(lease, MortalQteDecisionPublication.StatePath);
+                namedJointStoryTimer3?.Dispose();
                 // A retained uncertainty is not proof that common publication
                 // happened. This read-only classification routes only a current
                 // selected Published I into the existing validator below; it
@@ -72,49 +77,71 @@ public partial class GameEngine
                     return HoldMortalJointStoryTurn("The original correlated terminal evidence is missing, foreign or contradictory.");
                 if (bytes is not null)
                 {
+                    using var namedJointStoryTimer4 = _fs.MeasureOperation("JointStory.ReadOriginalProgressionPhaseAsync");
                     var phase = await MortalQteDecisionPublication.ReadJointProgressionPhaseAsync(_fs, lease,
                         frame.SessionId, frame.RequestId, frame.Payload.ManifestPayloadHash, frame.TurnNumber);
+                    namedJointStoryTimer4?.Dispose();
                     if (_gameLoop.TurnNumber == frame.TurnNumber)
                     {
                         if (phase.Phase != "applied") return HoldMortalJointStoryTurn("An advanced runtime has no applied joint phase.");
+                        using var namedJointStoryTimer5 = _fs.MeasureOperation("JointStory.ReadExistingStoryAsync");
                         var existing = await _storyService.ReadMortalJointStoryAsync(lease, phase);
+                        namedJointStoryTimer5?.Dispose();
                         if (existing.Disposition != StoryService.MortalJointStoryDisposition.AlreadyAppended || existing.Proof is null)
                             return HoldMortalJointStoryTurn("An advanced runtime has no exact authenticated joint story row.");
                     }
                 }
             }
 
+            using var namedJointStoryTimer6 = _fs.MeasureOperation("JointStory.ValidateAcceptedTurnOutcomeWithRepairLoopAsync");
             var validated = await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(source, frame,
                 BuildValidatedRollbackSnapshot(frame), frame.TurnNumber, frame.ProgressionControl);
+            namedJointStoryTimer6?.Dispose();
             if (validated != AcceptedTurnValidationDisposition.MortalJointRepairCompletionReady)
                 return HoldMortalJointStoryTurn("The complete joint canonical/narrative/phase/projection pass did not authorize its completion owner.");
+            using var namedJointStoryTimer7 = _fs.MeasureOperation("JointStory.AcceptedOutcomeCheckpoint");
             await InvokeSessionFinalizationCheckpointAsync(SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization);
+            namedJointStoryTimer7?.Dispose();
 
             MortalJointCleanupResult cleanup;
             await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
             {
+                using var namedJointStoryTimer8 = _fs.MeasureOperation("JointStory.ReadAppliedProgressionPhaseAsync");
                 var applied = await MortalQteDecisionPublication.ReadJointProgressionPhaseAsync(_fs, lease,
                     frame.SessionId, frame.RequestId, frame.Payload.ManifestPayloadHash, frame.TurnNumber);
+                namedJointStoryTimer8?.Dispose();
                 if (applied.Phase != "applied") throw new InvalidDataException("joint_story_turn_phase_not_applied");
+                using var namedJointStoryTimer9 = _fs.MeasureOperation("JointStory.VerifyProjectionBeforeStoryAsync");
                 var projection = await _charService.VerifyMortalJointProjectionAsync(lease, applied);
+                namedJointStoryTimer9?.Dispose();
                 if (projection.Disposition != CharacteristicsService.JointDerivedProjectionDisposition.ExistingVerified)
                     return HoldMortalJointStoryTurn("The actual pre-story derived projection is not verified: " + projection.Failure);
                 if (_gameLoop.SessionId != frame.SessionId ||
                     (_gameLoop.TurnNumber != frame.TurnNumber - 1 && _gameLoop.TurnNumber != frame.TurnNumber))
                     return HoldMortalJointStoryTurn("The runtime changed before story publication.");
+                using var namedJointStoryTimer10 = _fs.MeasureOperation("JointStory.AppendStoryAsync");
                 var story = await _storyService.AppendMortalJointStoryAsync(lease, applied);
+                namedJointStoryTimer10?.Dispose();
                 if (story.Disposition is not (StoryService.MortalJointStoryDisposition.AppendedAndVerified or
                     StoryService.MortalJointStoryDisposition.AlreadyAppended) || story.Proof is null)
                     return HoldMortalJointStoryTurn("The exact joint story publication remains unproved: " + story.Failure);
+                using var namedJointStoryTimer11 = _fs.MeasureOperation("JointStory.ValidateStoryProofAsync");
                 await story.Proof.ValidateCurrentAsync(_fs, lease);
+                namedJointStoryTimer11?.Dispose();
+                using var namedJointStoryTimer12 = _fs.MeasureOperation("JointStory.ValidateAppliedProgressionAsync");
                 await applied.ValidateCurrentAsync(_fs, lease);
+                namedJointStoryTimer12?.Dispose();
+                using var namedJointStoryTimer13 = _fs.MeasureOperation("JointStory.VerifyProjectionAfterStoryAsync");
                 projection = await _charService.VerifyMortalJointProjectionAsync(lease, applied);
+                namedJointStoryTimer13?.Dispose();
                 if (projection.Disposition != CharacteristicsService.JointDerivedProjectionDisposition.ExistingVerified)
                     return HoldMortalJointStoryTurn("The derived projection changed during story publication: " + projection.Failure);
                 if (_gameLoop.SessionId != frame.SessionId) throw new InvalidDataException("joint_story_turn_runtime_session_drift");
                 if (_gameLoop.TurnNumber == frame.TurnNumber - 1) _gameLoop.IncrementTurn();
                 else if (_gameLoop.TurnNumber != frame.TurnNumber) throw new InvalidDataException("joint_story_turn_runtime_drift");
+                using var namedJointStoryTimer14 = _fs.MeasureOperation("JointStory.CleanupEligibleTerminalAsync");
                 cleanup = await CleanupEligibleMortalJointTerminalAsync(lease, frame);
+                namedJointStoryTimer14?.Dispose();
                 if (cleanup.Disposition != MortalJointCleanupDisposition.CommittedAndVerified || cleanup.Response is null)
                     return HoldMortalJointStoryTurn("The owned terminal cleanup is not verified: " + cleanup.Failure);
             }
@@ -148,6 +175,7 @@ public partial class GameEngine
     private async Task<bool> IsCurrentSelectedPublishedInterfaceResumeCandidateAsync(
         FileSystemManager.CanonicalWriteLease lease, ValidatedPendingTurnSnapshotContext frame)
     {
+        using var namedJointStoryTimer15 = _fs.MeasureOperation("JointStory.IsSelectedPublishedInterfaceResumeCandidateAsync");
         _fs.EnsureCanonicalWriteLeaseActive(lease);
         RequireOrdinaryJointRepairLease(lease);
         var bytes = await _fs.ReadFileBytesAsync(lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath);

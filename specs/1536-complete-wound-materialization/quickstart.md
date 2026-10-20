@@ -1,3 +1,20 @@
+# CRASH5 — spec14: named operation timings
+
+User instruction: measure actual code sections; no optimization. Active [spec](spec.md), [plan](plan.md), [tasks T293–297](tasks.md). Optional literal begin/end timers are enabled only in the diagnostic Windows resumer; nested times are inclusive. Four timer controls PASS, fresh XML builds have zero errors/changed-XML diagnostics, independent SOURCE/PREP accepted: [T295-source-review.json](recovery/crash5/T295-source-review.json).
+
+T296 generated one new genuine source42 artifact for compiled source `d1c59346d644016c765b9078ecf2fbb9605b8532`: preparation208.1023224s, total210.6351042s, two independent imports verified/cleaned. The fixed fixture path now contains this entire new artifact, not the historical f479 artifact. Current [source record](fixtures/joint-interface-source42/source-record.json), [generator](recovery/crash5/T296-generator.json), [binding](recovery/crash5/T296-seed-binding.json) and [producing input recipes](recovery/crash5/T296-source-inputs.json) apply together. T278/T279 below describe their historical source only.
+
+The T296 profiled cut0 failed at the600s resumer wait; test12:37.827/runner12:58.787, both children EOF/join and both owned roots absent. [Actual outcome](recovery/crash5/T296-profile-cut0-outcome.json) and [partial timings](recovery/crash5/T297-timings.md) preserve its raw evidence. The1024-record diagnostic quota cut named output at250.782s; a separate stage reached593.199s. This does NOT establish the cause. User explicitly rejected all diagnostic quotas; spec14 revision3/T298–302 removes them and continues diagnosis with changed instrumentation. Original Windowsfive0/5 and Linux locallyUNRUN remain separate.
+
+Current artifact recovery:
+
+1. Git preserves83 artifact files but not all declared directories (7 empty directories). A plain checkout is not a complete seed artifact. Verify `T296-generator.zip` SHA-256 `7C5DB5D1E91DEB8E41B07A28147F1CE099E2A28E2102F2FD857400ACC00FCF73`; its `generated/artifact/` preserves the directory tree. Extract DATA into a separate new destination; do not import historical T278 DATA into the current path.
+2. Verify manifest SHA-256 `67484461874F2E9A2336568F9D25E00A855363EAFBE7827AF4BBEA79744D3E44`, exact82 payload files/513713bytes, all file hashes/lengths and declared directories against that manifest. Keep `.gitattributes` text conversion disabled for artifact DATA.
+3. Current producing fingerprint `6B92A5C8B487209525082E1F3F8A47B75CAB7DAE522416F95EFC6DA5D8776331` covers1771 inputs:33 exact Git blobs and1738 LF→CRLF recipes. A different working checkout must fail closed; matching Git SHA alone does not prove producing-byte equivalence. Do not rebind a manifest or regenerate automatically.
+4. Saved DLL proof is Windows/sourceD1 only. Linux requires its own build and authorized checks; no Linux execution or OS-policy/diagnostic bypass occurs in this block.
+
+---
+
 # Spec12 / plan10 — current seeded cut0 preparation
 
 T279 completed exactly one seeded Windows cut0: 1 executed FAIL/0skip, selection complete; test12:37.809, runner12:58.319. Import0.9744731s, actual producer exit73 at155.266s; distinct resumer exhausted unchanged600s (shared820/max600/category15m), no gameplay verdict. Both EOF/join, two owned roots removed/absent,3DLL and83artifactfiles unchanged; T219 retained. Compiledf479d42a72f7412871e797575a1b1bd2c6dabd07/runtime metadata68cd09b70d85d5added82ff1a99ab11ab9005204. T279-seeded-cut0-outcome.json/assessment.json/raw.zip retain evidence. No retry/cuts1-4/production change; Windows original0/5, LinuxUNRUN. T280 final independent gpt-6-astra/high review ACCEPTED atd5c31e71d8d9abf2a930811f66a75f002641af60, no actionable findings; fresh GitHub recoverya9a00ddd9519e2b0bb75fd5b8d5cd289349940b0:435files/allGitblobs/exactHEAD/clean verified independently. T275..280 bounded investigation complete with T279 FAIL; no gameplay/originalfive/Linux qualification. See [readable result](recovery/crash5/T279-result.md). The permitted T279 attempt is consumed; commands below are historical setup/restoration reference and do not authorize another run.
