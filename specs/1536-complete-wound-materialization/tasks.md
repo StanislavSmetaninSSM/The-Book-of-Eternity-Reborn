@@ -1,3 +1,13 @@
+# CRASH5 — spec15 revision5 / plan13 revision5: fixture acquisition and real component work
+
+- [ ] T316 [US1] Preserve/analyze actual T315FAIL and complete diagnostics; minimal canonical parser/checks, comparable-scope findings and separate evidence review. No inner cleanup measurement or OS cause claimed.
+- [ ] T317 [US2] Test-first distinct Windows fixture-only acquisition: real producer73 and actual accepted checkpoint/export, diagnostic resumer74, unchanged identity/budgets/default ordinary assertions, all DATA/diagnostics and verified cleanup. Fresh XML/catalog/review/save/matching seed before one probe. Fixture PASS is not recovery PASS.
+- [ ] T318 [US2/US3] Prepare smallest actual fresh-proof component from available prepared/applied DATA; measure and preserve negative controls; use internal support APIs if needed. Write any cause-driven production correction before implementation; return to unchanged original runtime gate afterward.
+
+T315 remains FAIL/open; T313/T314 accepted component/source prep is retained. Original220 Windowsfive0/5, LinuxUNRUN. No unchanged full retry or diagnostic quotas. Dependencies T316→T317→T318→original qualification.
+
+---
+
 # CRASH5 — spec15 revision4 / plan13 revision4: continue cleanup and recovery
 
 Issue1536. [Spec](spec.md), [plan](plan.md). User explicitly corrects stopping after intermediate evidence; autonomous continuation and test-support entrypoints remain authorized.
