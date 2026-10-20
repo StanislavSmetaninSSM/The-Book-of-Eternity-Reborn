@@ -51,13 +51,15 @@ public partial class StoryService
             var current = await _owner.ReadMortalJointStorySourceAsync(lease, fresh);
             RequireSameCurrent(current);
         }
-        private void RequireSameCurrent(JointStorySource current)
-        {
-            if (!current.AlreadyAppended || current.Path != StoryPath || current.Row != RowJson ||
-                !SameJointStoryBytes(current.Current, _after) || current.Histories.Count != _histories.Count ||
-                current.Histories.Any(pair => !_histories.TryGetValue(pair.Key, out var hash) || hash != pair.Value))
-                throw new InvalidDataException("joint_story_proof_current_changed");
-        }
+        /// <summary>
+        /// Compares an authenticated source observation with this proof's original expected contents.
+        /// </summary>
+        /// <param name="current">
+        /// The freshly authenticated source returned by this proof owner's reader.
+        /// </param>
+        private void RequireSameCurrent(JointStorySource current) =>
+            JointStoryProofImageVerifier.RequireExact(StoryPath, RowJson, _after, _histories,
+                current.AlreadyAppended, current.Path, current.Row, current.Current, current.Histories);
         internal async Task ValidateCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
         {
             if (!ReferenceEquals(files, _owner._fs) || !ReferenceEquals(lease, _lease))
@@ -85,7 +87,7 @@ public partial class StoryService
     /// Whether an unappended row may be written; <see langword="false"/> only observes its current disposition.
     /// </param>
     /// <returns>
-    /// The actual story disposition and current proof when verified, or the existing refusal/uncertainty result.
+    /// The actual disposition and proof bound to the authenticated readback, or the existing refusal/uncertainty result.
     /// </returns>
     private async Task<MortalJointStoryResult> CompleteMortalJointStoryAsync(FileSystemManager.CanonicalWriteLease lease,
         MortalQteDecisionPublication.JointProgressionPhaseCapability applied, bool append)
@@ -113,14 +115,17 @@ public partial class StoryService
             }
             using var t318Timer4 = _fs.MeasureOperation("JointStoryComplete.ReadBackSourceAsync");
             var readback = await ReadMortalJointStorySourceAsync(lease, applied);
-            t318Timer4?.Dispose();
             if (!readback.AlreadyAppended || readback.Path != source.Path || readback.Row != source.Row ||
                 !SameJointStoryBytes(readback.Current, source.After)) throw new InvalidDataException("joint_story_exact_readback_failed");
+            // This authenticated observation covers the initial proof comparison.
+            // Expected histories remain from the original source, not readback.
+            // Compare and issue before any caller timer/observer callback; later
+            // explicit proof validations still obtain their own fresh source.
+            JointStoryProofImageVerifier.RequireExact(source.Path, source.Row, source.After, source.Histories,
+                readback.AlreadyAppended, readback.Path, readback.Row, readback.Current, readback.Histories);
             var proof = new MortalJointStoryProof(MortalJointStoryIssuer, this, lease, applied,
                 source.Path, source.Row, source.After, source.Histories);
-            using var t318Timer5 = _fs.MeasureOperation("JointStoryComplete.ValidateIssuedProofAsync");
-            await proof.ValidateCurrentAsync(_fs, lease);
-            t318Timer5?.Dispose();
+            t318Timer4?.Dispose();
             return new(source.AlreadyAppended ? MortalJointStoryDisposition.AlreadyAppended :
                 MortalJointStoryDisposition.AppendedAndVerified, proof, null);
         }

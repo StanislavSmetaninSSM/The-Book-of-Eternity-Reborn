@@ -39,6 +39,10 @@ internal static class JointStoryProofImageVerifier
         IReadOnlyDictionary<string, string> expectedHistories, bool currentAppended, string currentPath,
         string currentRow, byte[]? currentBytes, IReadOnlyDictionary<string, string> currentHistories)
     {
-        throw new NotImplementedException("T320 test-first proof-image predicate stub.");
+        if (!currentAppended || currentPath != expectedPath || currentRow != expectedRow ||
+            currentBytes is null || !expectedBytes.AsSpan().SequenceEqual(currentBytes) ||
+            currentHistories.Count != expectedHistories.Count ||
+            currentHistories.Any(pair => !expectedHistories.TryGetValue(pair.Key, out var hash) || hash != pair.Value))
+            throw new InvalidDataException("joint_story_proof_current_changed");
     }
 }
