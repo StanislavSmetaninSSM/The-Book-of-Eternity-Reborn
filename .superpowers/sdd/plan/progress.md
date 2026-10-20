@@ -217,3 +217,5 @@ T310 actual result: one full original seeded cut0 FAIL/TimeoutException at uncha
 T311 next measured obstacle selected: terminal cleanup, not guessed deletion-check removal. Internal cheap test support and named inner cleanup scopes are the next separate bounded block; no new implementation/runtime initiated. Core optimization accepts reduced calls with retained boundaries; overall recovery remains failed.
 
 T311 separate Astra/high accepted coherent code/evidence/parser/report block at46607a93; no findings. Parent checked actual raw counts/cleanup and observed durations. Final recovery step pending; full restoration remains FAIL and cleanup inner cause unknown. No further runtime or production edits.
+
+T311 complete: independent Astra/high accepted46607a93, actual post-review remote checkpoint97c28d3d recovered141exactGitblobs in clean directory. Original full caseFAIL retained; DEDUP-1 actual24to16/13resource-two-barrier evidence accepted. Next cleanup investigation remains separate, no code or runtime started. Final bookkeeping commit receives one exact remote/clean readback, no source review/test replay.
