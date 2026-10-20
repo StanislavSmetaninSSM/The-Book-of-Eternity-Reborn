@@ -1,4 +1,4 @@
-"""Reconstruct the single T301 measurement from its saved raw child output.
+"""Reconstruct saved named-operation measurements from their raw child output.
 
 This offline reader never starts the game or changes its fixtures. Use --check
 to verify the existing deterministic JSON/Markdown reports without writing them.
@@ -41,8 +41,9 @@ def records(raw):
 
 def build_report(repo, verify_live=False, report_prefix="T302"):
     evidence = repo / "specs/1536-complete-wound-materialization/recovery/crash5"
-    measurement, preparation = {"T302": ("T301", "T300"), "T306": ("T305", "T303")}[report_prefix]
-    generation = "T301" if report_prefix == "T302" else "T304"
+    measurement, preparation = {"T302": ("T301", "T300"), "T306": ("T305", "T303"),
+                                "T311": ("T310", "T309-seam")}[report_prefix]
+    generation = {"T302": "T301", "T306": "T304", "T311": "T310"}[report_prefix]
     stem = measurement + "-profile-cut0"
     outcome = load(evidence / (stem + "-outcome.json"))
     archive_path = evidence / (stem + "-raw.zip")
@@ -60,7 +61,7 @@ def build_report(repo, verify_live=False, report_prefix="T302"):
         assert json.loads(archive.read("summary.json")) == outcome["Summary"]
         assert json.loads(archive.read(generation + "-seed-binding.json")) == outcome["SeedBinding"]
         prep = json.loads(archive.read(preparation + "-prep.json"))
-        assert prep["Binding"]["CompiledSource"] == outcome["CompiledSource"]
+        assert (prep["Source"] if report_prefix == "T311" else prep["Binding"]["CompiledSource"]) == outcome["CompiledSource"]
         ns = {"t": "http://microsoft.com/schemas/VisualStudio/TeamTest/2010"}
         results = []
         for member in members:
@@ -164,7 +165,7 @@ def build_report(repo, verify_live=False, report_prefix="T302"):
     assert not limited
     actual_stages = outcome["Children"][children.index(resumer)]["Stages"]
     assert not any(x.get("Transition") == "limit" or x.get("ResumeActivity", {}).get("Limited") for x in actual_stages)
-    current_dlls = prep["Binding"]["Binaries"]
+    current_dlls = prep["Binding"] if report_prefix == "T311" else prep["Binding"]["Binaries"]
     if verify_live:
         for binary in current_dlls:
             path = repo / binary["Path"]
@@ -219,7 +220,9 @@ def build_report(repo, verify_live=False, report_prefix="T302"):
             "Begin-only spans have no measured completed duration. The 600-second parent wait is a different clock and is not assigned to an unfinished method.",
             "An observed collector window is the difference between two output timestamps, including observer overhead; it is not the measured duration of a completed scope.",
             "Named, stage and activity records have no diagnostic quota. A terminated process cannot emit later end boundaries.",
-            "Instrumentation preserves calls and assertions but adds observer/serialization overhead. No uninstrumented speedup or fix is claimed.",
+            ("One redundant outer baseline was removed; retained operations still include observer/serialization overhead. No uninstrumented speedup is inferred."
+             if report_prefix == "T311" else
+             "Instrumentation preserves calls and assertions but adds observer/serialization overhead. No uninstrumented speedup or fix is claimed."),
             "Named operation durations localize code cost; they do not separate CPU, filesystem latency, scanning or environment effects.",
         ],
     }
@@ -315,8 +318,10 @@ def markdown(report, report_prefix="T302"):
                   "небольшая разница total и user+kernel возможна из-за продвижения счётчиков. UTC, часы коллектора и родительского ожидания различаются. "
                   "Время ядра не устанавливает конкретный драйвер, системный вызов или влияние антивируса. "
                   "Снимки, состояние и исходник наблюдателя сохранены в сыром архиве."]
+    change_scope = ("Удалена одна внешняя baseline-проверка; лимиты не увеличивались. "
+                    if report_prefix == "T311" else "Оптимизаций и увеличения лимитов в этом блоке нет. ")
     lines += ["", "Это замер одного запуска с наблюдателями. Он показывает стоимость участков, но не разделяет работу CPU, файловой системы и внешних проверок. "
-              "Оптимизаций и увеличения лимитов в этом блоке нет. Исходные пять Windows-случаев: 0/5 PASS; Linux локально не запускался.", ""]
+              + change_scope + "Исходные пять Windows-случаев: 0/5 PASS; Linux локально не запускался.", ""]
     return "\n".join(lines)
 
 
@@ -325,7 +330,7 @@ def main():
     parser.add_argument("--repo", type=Path, default=Path(__file__).resolve().parents[5])
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--verify-live", action="store_true", help="Additionally verify currently installed DLLs and fixture bytes; omit for historical offline reconstruction")
-    parser.add_argument("--report", choices=("T302", "T306"), default="T302", help="Select the saved measurement; never executes or retries it")
+    parser.add_argument("--report", choices=("T302", "T306", "T311"), default="T302", help="Select the saved measurement; never executes or retries it")
     parser.add_argument("--refresh-derived", action="store_true", help="Refresh only derived reports after an offline report clarification; never changes raw evidence")
     args = parser.parse_args()
     assert not (args.check and args.refresh_derived)
