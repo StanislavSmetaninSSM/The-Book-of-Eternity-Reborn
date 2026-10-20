@@ -19,6 +19,8 @@ T338 corrected controls/PREP at0d8354c84:6/6PASS plus45exact unchanged passes =5
 
 T338 final GREEN/PREP at69cb4714f:4/4diagnosticPASS, 51retained exact unchanged controls =55distinct, not55rerun. Final2XML0errors/no introduced changed-file warnings;369newXMLlines inspected; catalog862/12001 and55overall/1profile/4diagPlanOnly0executed. All4DLLs+4dependentcopies source69cb;331Git-exact recoveryfiles; source-expression equivalence retained. T338-final-prep/raw78indexedfiles/CRC/SHA CFC344F111E8E4097394C2EFE25917A7E769A663A5824F272F95864FCB96701F;5syntheticoffline parser controls PASS distinguish incomplete/gap/non-LIFO/writer failure. Same independent Astra/high reviewer confirms P2 closed in source; final raw/binding/recovery acceptance pending. Parent's initial generation-fixture assumption and review-caught swallowed diagnostic failure caused actual rework; no unmeasured savings or original-latency claim. One genuine profile remains UNRUN until final acceptance is persisted.
 
+T338 independent SOURCE/PREP accepted03c0be789 (T338-source-review.json), no outstanding findings. Compiled69cb/55distinct controls/78rawfiles/334Git-exact recovery/remoteHEAD verified. Exactlyone existing2min Windows T339 component profile released after this decision is saved/pushed/readback/recovered; no C#/build/passing-control repeat needed. No generator/rebind/original/five/Linux release.
+
 ---
 
 # CRASH5 — plan13 revision15: source audit before real cleanup measurement

@@ -1,9 +1,11 @@
 # CRASH5 — spec15 revision16 / plan13 revision16: real cleanup-validator seams and one profile
 
-- [ ] T338 [US1/US2] Parent TDD: shared strict observed-DATA transport with distinct AppliedBeforeStory/cleanup-entry wrappers; extract actual terminal and destructive-original leaves at unchanged production positions/timers; preserve parser wrapper/logger semantics; new direct fresh-lease component controls and one read-only profile Fact. Relevant XML/catalog/exact PlanOnly/targeted controls, complete source-bound evidence/recovery and separate SOURCE/PREP review before profile. No GameEngine/generator/original/Linux runtime.
+- [x] T338 [US1/US2] Parent TDD: shared strict observed-DATA transport with distinct AppliedBeforeStory/cleanup-entry wrappers; extract actual terminal and destructive-original leaves at unchanged production positions/timers; preserve parser wrapper/logger semantics; new direct fresh-lease component controls and one read-only profile Fact. Relevant XML/catalog/exact PlanOnly/targeted controls, complete source-bound evidence/recovery and separate SOURCE/PREP review before profile. No GameEngine/generator/original/Linux runtime.
 - [ ] T339 [US2/US3] After T338 acceptance run exactly one2min Windows fresh-copy cleanup-validator profile; retain all raw/refs, real validator outcomes, wall/CPU/counts/unfinished scopes, whole game/generation invariance and owner closing/ownedroot cleanup. Analyze actual outcome without stage/eligibility/owner latency overclaim; separate final coherent evidence review/recovery. No retry to fix reporting and no generation/rebinding.
 
-T338 WIP: initial13caseRED completed11oldAppliedPASS/2expectedcleanupFormatFAIL, full raw/source snapshots retained in T338-red-outcome/raw. No GameEngine or genuine DATA profile executed.
+T338 accepted SOURCE/PREP at03c0be789, compiled69cb4714f; T338-source-review.json. 55distinct required passing controls, full raw and334Git-exact recovery verified; exactlyone existing2min T339profile released after decision persistence. Genuine DATA eligibility and original recovery remain unproven.
+
+T338 history: initial13caseRED completed11oldAppliedPASS/2expectedcleanupFormatFAIL, full raw/source snapshots retained in T338-red-outcome/raw. No GameEngine or genuine DATA profile executed.
 
 Initial GREEN controls at92552bc2e:47PASS/1control-fixtureFAIL of48completed, unit3notrun. Preserve T338-initial-controls/raw; correct generation coverage at the actual existing operation barrier, without changing production. Final evidence combines45exact unchanged passes and6fresh correction/unit cases, not a claimed51case repeat.
 
