@@ -1,3 +1,18 @@
+# CRASH5 — spec11: реализация прототипа seed
+
+Источник: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). User approved implementation after reviewed plan8 and explicitly says continue without waiting. Scope: preparation/loading/isolation prototype; Stage43/cut0 runtime и production optimization не входят в этот slice.
+
+- **P11-1:** seed содержит завершённые genuine source42 DATA, metadata tuple/opportunity/generation digest и source provenance. Directory artifact: manifest.json + payload; весь game_session и только runtime session-generation/current.json. Никаких живых authority/owners/locks/debt. Codec controls используют маленький synthetic namespace и не квалифицируют gameplay.
+- **P11-2:** строгий inventory/digests/contract fingerprint; version1, source turn42, максимум8192files/256MiB payload/4MiB manifest. Relative ordinary paths, independent physical copies, immutable verified bytes после Open. Missing/stale/corrupt/conflicting inventory и existing target отклоняются без automatic generation и без удаления чужих путей. Partial own copy удаляется при failure.
+- **P11-3:** adoption загруженной root через отдельный test-fixture constructor не пишет пустой MortalItemIdentity поверх образа; default constructor сохраняет прежнее поведение. Generation DATA сохраняется, root/lease owners создаются заново. Две копии/исходный artifact изолированы.
+- **P11-4:** fingerprint closure включает production/integration/TestSupport C# sources/project files, build props/targets и base-session assets; informational Git SHA — отдельная provenance, docs-only commits не меняют contract fingerprint. Closure и формат проверяются до expensiverun; нет mutable cache или env mode.
+- **P11-5:** fast codec/adoption controls проходят causal RED→GREEN, XML, catalog/PlanOnly и independent SOURCE/PREP. Отдельный explicit Windows generator1case/category6min создаёт artifact один раз, проходит existing genuine source42/occurrence/inactive-tail assertions, закрывает input/audio и проверяет quiescence/unchanged namespace перед export. Затем два fresh root/FileSystemManager/read-only lease подтверждают переносимость DATA и сохранение bytes. Генератор никогда не попадает в default selection.
+- **P11-6:** после accepted SOURCE/PREP допускается один generator run, не полный crash diagnostic. Зафиксировать actual elapsed/bytes/file count/две copies/source binding либо первый failure; не повторять без причинного исправления. Windows crash0…4 остаются0/5, old source42 qualification/history не переписывается; LinuxUNRUN. Новых player/GM contracts нет.
+
+Acceptance: codec/adoption short controls complete PASS/0skip; original-root/artifact/copies hashes независимы; preserved default/adopted constructor behavior; genuine generated artifact проходит два независимых physical imports/production predicates либо честный ограниченный failure. Не обещать скорость current-owner resume по стоимости loading. Canonical plan9/tasksT269…274.
+
+---
+
 # CRASH5 — spec10: короткие проверки, проект fixture cut0
 
 T268: independent gpt-6-astra/high accepted source-only spec10/plan8 at04c6a9bbced0ee2a634c48b1f3557a931c43777b, no actionable findings. Fresh GitHub recovery verified 10 design/governance files, exact clean HEAD and all blobs; T268-design-recovery.json. No code/tests/builds/generator/runtime actions or new performance/portability/PASS claim.

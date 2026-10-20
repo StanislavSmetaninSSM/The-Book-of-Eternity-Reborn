@@ -1,3 +1,18 @@
+# CRASH5 — plan9 / spec11: prototype seed
+
+Источник: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Пользователь явно поручил реализацию прототипа и продолжение без ответов. Parent implements inline with Superpowers TDD; separate Astra/high coherent review. Historical Windows0/5PASS/T263FAIL/LinuxUNRUN сохраняются.
+
+- [ ] T269 [US2] Конкретизировать принятый plan8 в spec11/plan9: формат, interfaces, fingerprint closure, short controls, isolated adoption, explicit single generation и budgets; Spec Kit consistency.
+- [ ] T270 [US2] Написать causal RED для bounded seed codec, integrity/namespace/independent copies и default/adopted constructor behavior. Каталог владеет новыми controls, без generator в default; fresh XML build и bounded RED.
+- [ ] T271 [US2] Реализовать codec/export/open/materialize и adopted-root constructor без overwrite; GREEN, changed XML audit, catalog/PlanOnly. Проверить не более нужных affected fast controls; source42/crash runs не требуются этому task.
+- [ ] T272 [US2] Реализовать explicit source42 generator с genuine source/occurrence/inactive-tail assertions, close input/audio, quiescence и export; same artifact в двух roots, fresh leases/read-only predicates/bytes сохранены. Metadata discovery отделяет generator1/6min от fast controls. Independent SOURCE/PREP всего блока до generation.
+- [ ] T273 [US2] После accepted SOURCE/PREP один явно выбранный Windows generator run/category6min. Сохранить источник/DLL, actual timing/bytes, artifact/две копии и cleanup либо точный failure. Без hidden fallback/retry/Stage43/crash/recovery.
+- [ ] T274 [US3] Независимое итоговое evidence review, commit/push/readback/recovery и точный статус прототипа/измерений. Это не original five PASS и не ускорение resumer.
+
+Dependencies:T269→T270→T271→T272→T273→T274. Все согласования уже разрешены пользователем; никакой полный suite/CI/Linux runtime/изменение production.
+
+---
+
 # CRASH5 — plan8 / spec10: проект коротких проверок
 
 Источник: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Пользователь одобрил карту пяти случаев и проект минимальной фикстуры cut0. Этот блок — исследование исходников и документация; тесты не запускаются, код не меняется.
