@@ -125,9 +125,9 @@
     },
     {
       "category": "fr063-joint-interface-probe-budget-contracts",
-      "reason": "Verify fixed source/crash Windows budget eligibility and mutual exclusion while preserving default and original process contracts.",
+      "reason": "Spec9 finite shared Windows crash window, preserving existing source/crash eligibility and adapter contracts.",
       "contracts": [
-        "Only explicit matching Windows source or producer opt-ins may use600s; resumer/default220, Linux and original owner lifecycle remain."
+        "Shared820s/max600s; exact remainder/expiry/eligibility; original25 controls retained among43."
       ]
     },
     {

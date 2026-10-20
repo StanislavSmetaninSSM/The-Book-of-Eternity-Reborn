@@ -119,10 +119,19 @@ internal static class JointInterfaceCrashProcessSupport
     /// Nonnegative monotonic elapsed time since the common producer-start boundary.
     /// </param>
     /// <returns>
-    /// At most600seconds and no more than the820second shared remainder; expiry throws instead of returning an unbounded wait.
+    /// At most 600 seconds and no more than the 820 second shared remainder; expiry throws instead of returning an unbounded wait.
     /// </returns>
     internal static TimeSpan GetSharedWindowsCrashTimeout(bool windows, string role, bool extendedSourceProbe,
-        bool extendedWindowsCrash, TimeSpan elapsed) => TimeSpan.FromSeconds(220);
+        bool extendedWindowsCrash, TimeSpan elapsed)
+    {
+        if (!windows || !extendedWindowsCrash || extendedSourceProbe ||
+            role is not ("engine-joint-interface-original-crash" or "engine-joint-interface-resume"))
+            throw new InvalidDataException("Shared crash time requires one explicitly selected Windows crash role.");
+        if (elapsed < TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(elapsed));
+        var remaining = TimeSpan.FromSeconds(820) - elapsed;
+        if (remaining <= TimeSpan.Zero) throw new TimeoutException("The shared Windows crash observation window is exhausted.");
+        return remaining < TimeSpan.FromSeconds(600) ? remaining : TimeSpan.FromSeconds(600);
+    }
 
     /// <summary>
     /// Preserves the diagnostic-only short circuit before inspecting managed capture settings.

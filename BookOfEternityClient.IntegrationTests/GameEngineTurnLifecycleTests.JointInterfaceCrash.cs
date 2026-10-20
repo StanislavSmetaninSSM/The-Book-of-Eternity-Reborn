@@ -48,7 +48,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// Whether to use the existing Linux diagnostic consumer.
     /// </param>
     /// <param name="extendedWindowsCrash">
-    /// Whether this explicitly selected Windows case extends the producer wait and preserves the original resumer wait.
+    /// Whether this explicitly selected Windows case shares an 820 second observation window with at most 600 seconds per child wait.
     /// </param>
     /// <returns>
     /// Completion after the original game and process assertions.
@@ -72,8 +72,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         if (!diagnostic && fault == null) parentMetadata["RunId"] = Guid.NewGuid().ToString("N");
         File.WriteAllText(Path.Combine(own, "parent.json"), parentMetadata.ToJsonString());
         var cutPath = Path.Combine(own, "cut.json");
+        var sharedWindowsCrashStarted = extendedWindowsCrash ? Stopwatch.GetTimestamp() : (long?)null;
         var original = await RunJointInterfaceNativeChildAsync("engine-joint-interface-original-crash", own, cutPath, cut, own, owned,
-            extendedWindowsCrash: extendedWindowsCrash);
+            extendedWindowsCrash: extendedWindowsCrash, sharedWindowsCrashStarted: sharedWindowsCrashStarted);
         WritePhysicalInjuryDiagnostic("iobs_actual_abrupt_original_exit", original);
         Assert.Equal(73, original.ExitCode); // Environment.Exit, not an exception/catch/compensation surrogate
         Assert.True(original.Eof); Assert.True(original.Joined);
@@ -91,7 +92,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.NotNull(atCut["JournalBase64"]); Assert.Equal(cut, atCut["Cut"]!.GetValue<int>());
         var output = Path.Combine(own, "resume.json");
         var resumed = await RunJointInterfaceNativeChildAsync("engine-joint-interface-resume", root, output, cut, own, owned,
-            observeLive: diagnostic, deliveryNonce: nonce, extendedWindowsCrash: extendedWindowsCrash);
+            observeLive: diagnostic, deliveryNonce: nonce, extendedWindowsCrash: extendedWindowsCrash, sharedWindowsCrashStarted: sharedWindowsCrashStarted);
         var raw = File.Exists(output) ? File.ReadAllText(output) : null;
         WritePhysicalInjuryDiagnostic("iobs_actual_current_resume_exit", new
         { Original = original, Cut = atCut, Resume = resumed, ResultRaw = raw,
@@ -234,19 +235,26 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// Requests the fixed extended Windows source-probe wait; the default preserves the ordinary wait.
     /// </param>
     /// <param name="extendedWindowsCrash">
-    /// Requests the extended Windows producer wait and original resumer wait; cannot be combined with the source extension.
+    /// Requests the extended Windows crash policy; cannot be combined with the source extension.
+    /// </param>
+    /// <param name="sharedWindowsCrashStarted">
+    /// The common monotonic producer-start timestamp for an opted-in Windows crash case;
+    /// <see langword="null"/> preserves the existing fixed role wait without pooling.
     /// </param>
     /// <returns>
     /// The independently identified complete child outcome.
     /// </returns>
     private async Task<JointInterfaceNativeOutcome> RunJointInterfaceNativeChildAsync(string role, string root, string output, int cut, string own,
         JointInterfaceCrashOwnedContainer ownership, bool observeLive = false, string? deliveryNonce = null,
-        bool extendedSourceProbe = false, bool extendedWindowsCrash = false)
+        bool extendedSourceProbe = false, bool extendedWindowsCrash = false, long? sharedWindowsCrashStarted = null)
     {
         var paths = MortalArchiveDependencyPaths();
         var windows = OperatingSystem.IsWindows();
         var childTimeout = JointInterfaceCrashProcessSupport.GetDirectChildTimeout(windows, role, extendedSourceProbe,
             extendedWindowsCrash);
+        if (sharedWindowsCrashStarted is { } sharedStart)
+            childTimeout = JointInterfaceCrashProcessSupport.GetSharedWindowsCrashTimeout(windows, role,
+                extendedSourceProbe, extendedWindowsCrash, Stopwatch.GetElapsedTime(sharedStart));
         var mode = JointInterfaceCrashProcessSupport.ReadAndValidateEntryMode(own, cut, windows, OperatingSystem.IsLinux());
         var backend = JointInterfaceCrashProcessSupport.SelectBackend(windows, OperatingSystem.IsLinux(), mode);
         var dotnetRoot = Environment.GetEnvironmentVariable("DOTNET_ROOT")
@@ -277,6 +285,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         JointInterfaceManagedCapture.Outcome? captureOutcome = null;
         using var captureStop = new CancellationTokenSource();
         Exception? failure = null;
+        object? sharedWindowsBudget = null;
         try
         {
             identity = JointInterfaceCrashProcessSupport.ReadLiveIdentity(child.Id, windows ? child : null);
@@ -287,6 +296,14 @@ public sealed partial class GameEngineTurnLifecycleTests
                     new(child.Id, birthTick, root, deliveryNonce ?? "", cut), out delivery, out deliveryObserverFailure);
             else stdout = child.StandardOutput.ReadToEndAsync();
             stderr = child.StandardError.ReadToEndAsync();
+            if (sharedWindowsCrashStarted is { } budgetStarted)
+            {
+                var elapsed = Stopwatch.GetElapsedTime(budgetStarted);
+                childTimeout = JointInterfaceCrashProcessSupport.GetSharedWindowsCrashTimeout(windows, role,
+                    extendedSourceProbe, extendedWindowsCrash, elapsed);
+                sharedWindowsBudget = new { TotalSeconds = 820, ChildCapSeconds = 600,
+                    ElapsedAtWaitSeconds = elapsed.TotalSeconds, ChildWaitSeconds = childTimeout.TotalSeconds };
+            }
             var deadline = Stopwatch.GetTimestamp() + (long)(childTimeout.TotalSeconds * Stopwatch.Frequency);
             var nativeWait = child.WaitForExitAsync().WaitAsync(childTimeout);
             if (observeLive && role == "engine-joint-interface-resume" && delivery is not null && JointInterfaceManagedCapture.Enabled)
@@ -326,7 +343,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 WindowsStartTimeUtcTicks = identity?.WindowsStartTimeUtcTicks,
                 ExitCode = child.HasExited ? (int?)child.ExitCode : null, Eof = stdout?.IsCompletedSuccessfully == true && stderr?.IsCompletedSuccessfully == true,
                 Joined = child.HasExited, Failure = failure?.ToString(), Executable = executable, Arguments = arguments,
-                Dependencies = MortalArchiveDependencyContext(), RawStdout = stdout?.IsCompletedSuccessfully == true ? stdout.Result : null,
+                Dependencies = MortalArchiveDependencyContext(), SharedWindowsBudget = sharedWindowsBudget, RawStdout = stdout?.IsCompletedSuccessfully == true ? stdout.Result : null,
                 RawStderr = stderr?.IsCompletedSuccessfully == true ? stderr.Result : null, CleanupFailure = cleanupFailure?.ToString(),
                 SecondaryFailures = failure?.Data.Cast<System.Collections.DictionaryEntry>().Select(entry => new
                     { Stage = entry.Key.ToString(), Error = entry.Value?.ToString() }).ToArray(),
