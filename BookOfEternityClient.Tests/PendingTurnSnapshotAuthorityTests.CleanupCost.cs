@@ -30,7 +30,7 @@ public sealed partial class PendingTurnSnapshotAuthorityTests
         var memory = manifest.RollbackBackups.Values.ToDictionary(path => path,
             path => ReadRelativeFileBytes(path)!, StringComparer.Ordinal);
         await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        var generation = _fs.ReadLocalGenerationSnapshot(lease).Binding;
+        var generation = _fs.GetOrCreateSessionGeneration(lease);
         _cleanupCostOutput.WriteLine(JsonSerializer.Serialize(new { Boundary="cleanup_component_v1", Operation="CleanupComponent.PrepareFixtureAsync", Members=count, BytesPerMember=size, Milliseconds=setup.Elapsed.TotalMilliseconds }));
 
         void Measure(string mode, Func<string, byte[]?> reader)

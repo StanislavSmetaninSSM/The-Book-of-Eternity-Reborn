@@ -2,6 +2,30 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-cleanup-data-capture",
+  "responsibility": "T313a immutable terminal diagnostic data archive, exact inventory and absence; no imported authority.",
+  "excludes": "No gameplay, live ownership transfer, source42 qualification or cleanup replay. Original runtime gate is separate.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointCleanupDataCapture.cs",
+    "BookOfEternityClient.IntegrationTests/JointCleanupDataCaptureTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "tests": [
+        "BookOfEternityClient.Tests.JointCleanupDataCaptureTests.*"
+      ],
+      "project": "integration"
+    }
+  ]
+},
+{
   "id": "fr063-joint-cleanup-cost-components",
   "responsibility": "Actual destructive rollback-authority component with identical detached data: memory/direct/leased/participating-main reader timings and exact counts; changed/missing rollback and corrupt integrity refusal; existing exact/legacy hash-mode dispatch controls.",
   "excludes": "No whole-game setup or joint cleanup/deletion eligibility, no full snapshot-content verification, no wall-time threshold or guaranteed speedup, no diagnostic quota. Warm per-test fixtures; setup measured separately.",

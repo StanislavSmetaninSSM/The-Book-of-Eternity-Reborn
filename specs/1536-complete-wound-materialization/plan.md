@@ -1,3 +1,7 @@
+# CRASH5 — plan13 revision4: preserve actual terminal diagnostic DATA
+
+T313a implements the spec15r4 boundary export before the one changed-instrumentation original run. A test-only integration helper captures `game_session` and generation bytes into a new archive outside the source root; rejects reparse entries and existing output; indexes directories, byte lengths/hashes and selected absences; records producing DLL versions/hashes and detached parent metadata. The observer preserves every ordinary timing record and invokes capture once at the first actual cleanup begin. Capture has its own uncapped diagnostic begin/end/result, including failure, and no game authority effect. Tests first prove exact bytes/empty directories/absence, excluded runtime coordination data, no overwrite, malformed/reparse refusal and source preservation. No import or fabricated frame/proof is introduced. T314 reviews this whole coherent block; T315 generates a genuinely matching seed and runs original cut0 once under existing limits. Spec Kit plan/tasks phases and equivalent consistency check precede these edits.
+
 # CRASH5 — plan13 revision3: cheap cleanup diagnosis and continued correction
 
 Spec15r3 and tasksT312–315, issue1536. Parent owns implementation; bounded Astra/high consultation mapped the usable leaf fixtures; independent reviewer remains a separate context. Apply systematic-debugging, writing-plans/executing-plans, TDD, requesting-code-review and verification-before-completion. Existing dedicated clone/branch and review-wait waiver apply.

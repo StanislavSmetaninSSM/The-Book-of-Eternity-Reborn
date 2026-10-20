@@ -14,6 +14,27 @@
       "contracts": [
         "Actual generic destructive validator, exact-byte and legacy dispatch unchanged; source drift refuses; all named measurements retained."
       ]
+    },
+    {
+      "category": "fr063-joint-cleanup-data-capture",
+      "reason": "T313a immutable observed diagnostic DATA export and refusal controls before real cleanup boundary capture.",
+      "contracts": [
+        "No authority issued; uncapped diagnostics and original failures preserved."
+      ]
+    },
+    {
+      "category": "crash5-named-operation-timers",
+      "reason": "T313 new cleanup scopes depend on passive/idempotent observer and failure-isolation behavior.",
+      "contracts": [
+        "No authority issued; uncapped diagnostics and original failures preserved."
+      ]
+    },
+    {
+      "category": "crash5-named-timing-output",
+      "reason": "T313/T313a new observer wrapper must retain all ordinary named timing records without quotas.",
+      "contracts": [
+        "No authority issued; uncapped diagnostics and original failures preserved."
+      ]
     }
   ]
 }

@@ -14,13 +14,13 @@ internal static class JointCleanupImageVerifier
     /// The fixed cleanup cohort containing each member's before and after images.
     /// </param>
     /// <param name="retained">
-    /// Retained bytes, with a null value requiring physical absence rather than an empty file.
+    /// Retained bytes, with a <see langword="null"/> value requiring physical absence rather than an empty file.
     /// </param>
     /// <param name="after">
-    /// True compares committed member after-images; false compares member before-images.
+    /// <see langword="true"/> compares committed member after-images; <see langword="false"/> compares member before-images.
     /// </param>
     /// <param name="read">
-    /// The reader for each relative path; null means absence, and read failures propagate unchanged.
+    /// The reader for each relative path; <see langword="null"/> means absence, and read failures propagate unchanged.
     /// </param>
     /// <returns>
     /// Completion after every image matches; no later entry is read after the first refusal or read failure.
@@ -40,13 +40,13 @@ internal static class JointCleanupImageVerifier
     /// Compares exact bytes while keeping physical absence distinct from an empty image.
     /// </summary>
     /// <param name="left">
-    /// The read bytes, or null for absence.
+    /// The read bytes, or <see langword="null"/> for absence.
     /// </param>
     /// <param name="right">
-    /// The required bytes, or null for required absence.
+    /// The required bytes, or <see langword="null"/> for required absence.
     /// </param>
     /// <returns>
-    /// True if both are absent or have identical bytes; otherwise false.
+    /// <see langword="true"/> if both are absent or have identical bytes; otherwise <see langword="false"/>.
     /// </returns>
     private static bool BytesEqual(byte[]? left, byte[]? right) =>
         left is null ? right is null : right is not null && left.AsSpan().SequenceEqual(right);

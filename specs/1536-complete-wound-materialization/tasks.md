@@ -1,9 +1,10 @@
-# CRASH5 — spec15 revision3 / plan13 revision3: continue cleanup and recovery
+# CRASH5 — spec15 revision4 / plan13 revision4: continue cleanup and recovery
 
 Issue1536. [Spec](spec.md), [plan](plan.md). User explicitly corrects stopping after intermediate evidence; autonomous continuation and test-support entrypoints remain authorized.
 
 - [x] T312 [US1] Record continuation objective, cleanup evidence boundaries and cheap component design before implementation; actual Spec Kit phases and cross-artifact consistency.
 - [ ] T313 [US1/US2] Add uncapped cleanup inner timers and shared internal image verifier; cheap test-first byte/absence/refusal/publisher controls and actual destructive-validator dictionary/direct/leased cost probe. XML/build/catalog/selected checks; no guessed production optimization.
+- [ ] T313a [US1/US2] Test-first immutable actual cleanup-entry DATA archive and test-only observer wiring; exact inventory/hashes/absence/build provenance, excluded runtime authority, explicit uncapped capture cost/outcome, no importer. Preserve source and prior artifacts.
 - [ ] T314 [US1/US3] Analyze measured costs/source fanout, independent coherent source/PREP review and remote recovery; write and implement smallest justified correction with causal tests, or collect missing real wrapper evidence. Continue beyond this checkpoint while recovery remains open.
 - [ ] T315 [US3] Source-matching artifact and original recovery gate at unchanged policy; verify integrity/completion and all diagnostics. On FAIL preserve outcome and continue new cause-driven tasks; no unchanged retry/timeout increase. Dependent cases require qualified prerequisites.
 

@@ -577,13 +577,40 @@ public sealed partial class GameEngineTurnLifecycleTests
         }
         FileSystemManager files = null!;
         var changingI = 0; var actualCaller = false;
+        var cleanupDataCaptured = 0;
         MortalJointInterfacePublication.Record? completedProof = null;
         var publications = new List<object>(); var recovery = new List<object>();
         diagnostic.Observe("file-system-enter");
         stages?.Observe("file-system", "enter");
         files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
         {
-            OperationTimingObserver = operationTimings is null ? null : operationTimings.Observe,
+            OperationTimingObserver = operationTimings is null ? null : (name, boundary, elapsed) =>
+            {
+                operationTimings.Observe(name, boundary, elapsed);
+                if (name != "JointStory.CleanupEligibleTerminalAsync" || boundary != "begin" ||
+                    Interlocked.CompareExchange(ref cleanupDataCaptured, 1, 0) != 0) return;
+                var captureDirectory = Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "joint-cleanup-captures");
+                var archive = Path.Combine(captureDirectory, Guid.NewGuid().ToString("N") + ".zip");
+                operationTimings.Observe("JointCleanup.DiagnosticDataCapture", "begin", TimeSpan.Zero);
+                var captureClock = System.Diagnostics.Stopwatch.StartNew();
+                try
+                {
+                    Directory.CreateDirectory(captureDirectory);
+                    JointCleanupDataCapture.Capture(root, archive, new JsonObject
+                    {
+                        ["Operation"] = name, ["Cut"] = cut, ["Parent"] = parent.DeepClone()
+                    });
+                    Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "joint_cleanup_data_capture", Complete = true,
+                        Archive = archive, Sha256 = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(archive))),
+                        Milliseconds = captureClock.Elapsed.TotalMilliseconds }));
+                }
+                catch (Exception error)
+                {
+                    Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "joint_cleanup_data_capture", Complete = false,
+                        Archive = archive, Error = error.ToString(), Milliseconds = captureClock.Elapsed.TotalMilliseconds }));
+                }
+                finally { operationTimings.Observe("JointCleanup.DiagnosticDataCapture", "end", captureClock.Elapsed); }
+            },
             AfterCanonicalReadInitialValidationAsync = resumeActivity is null ? null : _ => { resumeActivity.Observe(JointResumeObservation.CanonicalInitial); return Task.CompletedTask; },
             AfterExactPhysicalReadInitialValidationAsync = resumeActivity is null ? null : _ => { resumeActivity.Observe(JointResumeObservation.ExactInitial); return Task.CompletedTask; },
             AfterCanonicalWriteLockOpenedAsync = resumeActivity is null ? null : () => { resumeActivity.Observe(JointResumeObservation.CanonicalOpened); return Task.CompletedTask; },
