@@ -1,3 +1,17 @@
+# CRASH5 — plan11 / spec13: short resumer localization
+
+Source: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). User authorizes short localization and autonomous work. Deliverable: reviewed source/cost map plus one bounded valid component probe, or a documented inability to establish it. No production fix/full crash run.
+
+- [x] T281 Record spec13/plan11, present actual written files under explicit user waiver, perform Spec Kit phases/consistency, save remote checkpoint in existing feature/branch. Evidence: setup-plan/setup-tasks/prerequisites successful; written files linked/presented under standing explicit waiver; S13-1..5→T281..285 consistency and constitution gates checked; no runtime yet.
+- [ ] T282 [US1] Trace current raw T279 evidence and actual production call graph; record line-referenced multiplicities/limits and chosen seam in recovery/crash5/T282-source-localization.md. Update plan11 with exact hypothesis/API/input/oracle/bounds before probe work.
+- [ ] T283 [US2] Prepare the selected throwaway diagnostic harness using existing compiled production APIs and owned independent DATA. Record exact source/assembly provenance and meaningful setup/control verification in recovery/crash5; no product behavior changes.
+- [ ] T284 [US2] Execute exactly one valid selected physical component probe with30s child/2min outer+cleanup bound; preserve raw outcome and cleanup, no retry or full resumer. If no valid bounded seam exists, explicitly record NOT_EXECUTED rather than marking this run passed.
+- [ ] T285 [US3] Independent final source/findings/harness/evidence/docs review, commit/push/readback/fresh clean recovery; reconcile completed investigation versus actual original Windows0/5/LinuxUNRUN in existing checkpoint.
+
+Dependencies:T281→T282→T283→T284→T285. Parent owns the coherent block; bounded architectural consultation and mandatory separate review do not authorize concurrent edits. Investigation may finish with a failure or justified NOT_EXECUTED probe; no gameplay acceptance is redefined.
+
+---
+
 # CRASH5 — plan10 / spec12: seeded cut0
 
 T279 completed exactly one seeded Windows cut0: 1 executed FAIL/0skip, selection complete; test12:37.809, runner12:58.319. Import0.9744731s, actual producer exit73 at155.266s; distinct resumer exhausted unchanged600s (shared820/max600/category15m), no gameplay verdict. Both EOF/join, two owned roots removed/absent,3DLL and83artifactfiles unchanged; T219 retained. Compiledf479d42a72f7412871e797575a1b1bd2c6dabd07/runtime metadata68cd09b70d85d5added82ff1a99ab11ab9005204. T279-seeded-cut0-outcome.json/assessment.json/raw.zip retain evidence. No retry/cuts1-4/production change; Windows original0/5, LinuxUNRUN. T280 final independent gpt-6-astra/high review ACCEPTED atd5c31e71d8d9abf2a930811f66a75f002641af60, no actionable findings; fresh GitHub recoverya9a00ddd9519e2b0bb75fd5b8d5cd289349940b0:435files/allGitblobs/exactHEAD/clean verified independently. T275..280 bounded investigation complete with T279 FAIL; no gameplay/originalfive/Linux qualification.
