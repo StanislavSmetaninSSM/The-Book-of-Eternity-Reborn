@@ -44,15 +44,28 @@ public sealed class JointAppliedStoryComponentTests
     public Task ActualAppliedData_RefusesChangedNarrativeWithoutAppend() => RunAsync(true);
 
     /// <summary>
+    /// Refuses a changed source during the retained post-append readback without returning a proof.
+    /// </summary>
+    /// <returns>
+    /// Completion after publication uncertainty and preservation of the deliberately changed game images.
+    /// </returns>
+    [Fact]
+    public Task ActualAppliedData_RefusesDriftDuringRetainedReadback() => RunAsync(false, true);
+
+    /// <summary>
     /// Runs one actual service case on a new physical root and a freshly issued participating lease.
     /// </summary>
     /// <param name="changeNarrativeBeforeStory">
     /// <see langword="true"/> tests narrative refusal; <see langword="false"/> tests append/repeat/story drift.
     /// </param>
+    /// <param name="changeDuringReadback">
+    /// Whether the existing canonical read hook changes narrative at the first post-append readback read.
+    /// The default <see langword="false"/> leaves that readback unchanged.
+    /// </param>
     /// <returns>
     /// Completion after real assertions, complete timing output and disposal of only this case's root.
     /// </returns>
-    private async Task RunAsync(bool changeNarrativeBeforeStory)
+    private async Task RunAsync(bool changeNarrativeBeforeStory, bool changeDuringReadback = false)
     {
         var diagnostics = Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "joint-story-components");
         Directory.CreateDirectory(diagnostics);
@@ -71,8 +84,36 @@ public sealed class JointAppliedStoryComponentTests
             var setup = Stopwatch.StartNew();
             var root = Path.Combine(owned, "copy");
             var manifest = JointAppliedDataTemplate.Materialize(archive, sourceRecord["ArchiveSHA256"]!.GetValue<string>(), root);
+            var sourceReads = 0;
+            var readbackStarted = false;
+            var injectedReadbackDrift = false;
+            Dictionary<string, string>? readbackDamagedImages = null;
             var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,
-                PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks { OperationTimingObserver = timings.Observe });
+                PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+                {
+                    OperationTimingObserver = (name, boundary, elapsed) =>
+                    {
+                        if (name == "JointStorySource.VerifyCurrentSessionOperation" && boundary == "begin")
+                            sourceReads++;
+                        if (name == "JointStoryComplete.ReadBackSourceAsync" && boundary == "begin")
+                            readbackStarted = true;
+                        timings.Observe(name, boundary, elapsed);
+                    },
+                    BeforeCanonicalReadOpenAsync = _ =>
+                    {
+                        if (changeDuringReadback && readbackStarted && !injectedReadbackDrift)
+                        {
+                            injectedReadbackDrift = true;
+                            var path = Path.Combine(root, "game_session", "output", "narrative_response.json");
+                            var narrative = JsonNode.Parse(File.ReadAllText(path))!.AsObject();
+                            narrative["response"] = "Deliberate source drift during the retained post-append readback.";
+                            File.WriteAllText(path, narrative.ToJsonString());
+                            readbackDamagedImages = CaptureImages(root);
+                            raw.WriteLine(JsonSerializer.Serialize(new { Boundary = "joint_component_readback_drift", Injected = true }));
+                        }
+                        return Task.CompletedTask;
+                    }
+                });
             await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
             var generation = files.GetOrCreateSessionGeneration(lease);
             raw.WriteLine(JsonSerializer.Serialize(new { Boundary = "joint_component_setup", Operation = "Component.MaterializeAndAcquireLease",
@@ -114,21 +155,39 @@ public sealed class JointAppliedStoryComponentTests
                 initialTimer?.Dispose();
                 Assert.Equal(StoryService.MortalJointStoryDisposition.OriginalUnappended, initial.Disposition);
                 Assert.Null(initial.Proof);
+                var beforeAppendReads = sourceReads;
                 using var appendTimer = files.MeasureOperation("Component.AppendStoryAsync");
                 var appended = await story.AppendMortalJointStoryAsync(lease, applied);
                 appendTimer?.Dispose();
+                if (changeDuringReadback)
+                {
+                    Assert.True(injectedReadbackDrift);
+                    Assert.Equal(StoryService.MortalJointStoryDisposition.PublicationUncertain, appended.Disposition);
+                    Assert.Null(appended.Proof);
+                    Assert.False(string.IsNullOrWhiteSpace(appended.Failure));
+                    Assert.NotNull(readbackDamagedImages);
+                    Assert.Equal(readbackDamagedImages.OrderBy(pair => pair.Key), CaptureImages(root).OrderBy(pair => pair.Key));
+                    return true;
+                }
                 Assert.Equal(StoryService.MortalJointStoryDisposition.AppendedAndVerified, appended.Disposition);
                 var proof = Assert.IsType<StoryService.MortalJointStoryProof>(appended.Proof);
                 Assert.Equal(proof.AfterBytes, File.ReadAllBytes(files.ResolvePath(proof.StoryPath)));
+                raw.WriteLine(JsonSerializer.Serialize(new { Boundary = "joint_component_source_count", Operation = "Append", Reads = sourceReads - beforeAppendReads }));
+                Assert.Equal(3, sourceReads - beforeAppendReads);
                 using var proofTimer = files.MeasureOperation("Component.ValidateCurrentStoryProofAsync");
                 await proof.ValidateCurrentAsync(files, lease);
                 proofTimer?.Dispose();
+                var foreignFiles = new FileSystemManager(Path.Combine(owned, "foreign"), NullLogger<FileSystemManager>.Instance);
+                await Assert.ThrowsAsync<InvalidDataException>(() => proof.ValidateCurrentAsync(foreignFiles, lease));
+                var beforeRepeatReads = sourceReads;
                 using var repeatTimer = files.MeasureOperation("Component.RepeatAppendStoryAsync");
                 var repeat = await story.AppendMortalJointStoryAsync(lease, applied);
                 repeatTimer?.Dispose();
                 Assert.Equal(StoryService.MortalJointStoryDisposition.AlreadyAppended, repeat.Disposition);
                 Assert.Equal(proof.RowJson, Assert.IsType<StoryService.MortalJointStoryProof>(repeat.Proof).RowJson);
                 Assert.Equal(proof.AfterBytes, File.ReadAllBytes(files.ResolvePath(proof.StoryPath)));
+                raw.WriteLine(JsonSerializer.Serialize(new { Boundary = "joint_component_source_count", Operation = "Repeat", Reads = sourceReads - beforeRepeatReads }));
+                Assert.Equal(2, sourceReads - beforeRepeatReads);
                 File.AppendAllText(files.ResolvePath(proof.StoryPath), "deliberately changed suffix");
                 var damaged = CaptureImages(root);
                 using var driftTimer = files.MeasureOperation("Component.ValidateStoryProofAfterDriftAsync");

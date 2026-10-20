@@ -2,8 +2,37 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-story-proof-image",
+  "responsibility": "T320 pure shared story proof-image equality: exact disposition/path/row/bytes/full histories, expected comparer and input preservation.",
+  "excludes": "No authority issuer, filesystem/current proof or full game setup. Actual phase/story components qualify real retained readback separately.",
+  "changeHints": [
+    "BookOfEternityClient/Services/JointStoryProofImageVerifier.cs",
+    "BookOfEternityClient.Tests/JointStoryProofImageVerifierTests.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-applied-story-components",
+      "when": "Proof equality is adapted into real story readback/validation."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.JointStoryProofImageVerifierTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-applied-story-components",
-  "responsibility": "T318 direct actual phase/story owners on independent captured DATA: append/readback/current proof/repeat exactly once/story-drift refusal; separate changed-narrative refusal with no append. All named timings retained.",
+  "responsibility": "T320/321 direct real phase/story on independent actual DATA: exact append/repeat with source3/2reads, fresh proof/foreign-files/story-drift refusal; separate narrative refusal and post-append retained-readback drift/uncertainty. All diagnostics retained.",
   "excludes": "No source42/Stage43/full game fixture, crash run, cleanup eligibility, performance threshold, imported authority or original recovery PASS. Requires separate SOURCE/PREP review.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/JointAppliedStoryComponentTests.cs",
@@ -18,6 +47,10 @@
     {
       "id": "crash5-named-timing-output",
       "when": "Shared uncapped collector changes."
+    },
+    {
+      "id": "fr063-joint-story-proof-image",
+      "when": "Shared proof-image equality or local readback reuse changes."
     }
   ],
   "requirements": {
