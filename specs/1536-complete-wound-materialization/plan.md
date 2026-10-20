@@ -12,6 +12,8 @@ Review focus: full history comparison cannot be lost while removing final reread
 
 T320 causal RED at9fda54664: actual append count4 versus expected3 gives1FAIL/2PASS; preappend narrative and post-append retained-readback drift controlsPASS. Pure predicate stub12FAIL. Both XMLbuilds0errors/changed-filewarnings0; PlanOnly15cases/0executed, all selection/cleanup/input/4DLL checks exact. T320-red-outcome.json/raw.zip retain39indexedfiles and fulldiagnostics; no optimization yet.
 
+T320 source/PREP atd41f80f347: pure12FAIL→12PASS; two XMLbuilds0errors/0introducedwarnings/0newXMLwarnings (existing CS8604 generation warning retained), catalog851/11963valid and exact15casePlanOnly0execution. T320-prep.json/raw preserve36indexedfiles/4source-boundDLLs/184exactGitrecoveryblobs. Caller readback comparison/privateissue now precede timer disposal; all later fresh validators retained. Actual3caseGREEN is UNRUN pending independent SOURCE/PREP. First archiver guard rejected any changed-file warning; corrected evidence classification against exact RED baseline, no rebuild/test repetition.
+
 ---
 
 # CRASH5 — plan13 revision6: smallest real phase/story component
