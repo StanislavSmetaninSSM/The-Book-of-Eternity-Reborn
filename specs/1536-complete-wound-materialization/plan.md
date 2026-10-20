@@ -10,6 +10,8 @@ Spec15r7, issue1536, tasksT319–321; dedicated checkout/branch retained. Apply 
 
 Review focus: full history comparison cannot be lost while removing final reread; retained readback validates all physical sources both before and after; initial/unappended/readback uncertainty and exception order remain; no new cached success or fake issuer; observer counters are diagnostic-only and uncapped. Freshness ruling: one authenticated observation under held participating lease; no literal equivalence against direct concurrent filesystem mutation is claimed. Comparison/issuance precedes caller timer callbacks; expected histories come from original source. T318-final-review.json records independent advice.
 
+T320 causal RED at9fda54664: actual append count4 versus expected3 gives1FAIL/2PASS; preappend narrative and post-append retained-readback drift controlsPASS. Pure predicate stub12FAIL. Both XMLbuilds0errors/changed-filewarnings0; PlanOnly15cases/0executed, all selection/cleanup/input/4DLL checks exact. T320-red-outcome.json/raw.zip retain39indexedfiles and fulldiagnostics; no optimization yet.
+
 ---
 
 # CRASH5 — plan13 revision6: smallest real phase/story component
