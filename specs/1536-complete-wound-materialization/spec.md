@@ -1,5 +1,7 @@
 # CRASH5 — spec12: seeded Windows cut0
 
+T276/277 PREP: compiled f479d42a72f7412871e797575a1b1bd2c6dabd07;115/115 bounded PASS/0skip54.741s (16input+42seed+43process+14stage), XML43.10s0errors/changedXML0. Execution snapshot cleanf479; metadata ebb4c5d9a only documentation differs. Catalog839 valid/default295 excludes generator+seededcut0; explicit129cases14descriptors includes new1/15min and generator1/6min. All metadata executes0tests. Provisional independent SOURCE accepted, final bound PREP review pending. T278/T279 UNRUN; originalWindows0/5/LinuxUNRUN. T277-prep.json/zip.
+
 Source: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). User says continue after accepted spec11 prototype and explicitly waived waiting for answers. Existing feature/branch reused. Bounded integration of the existing crash scenario; production behavior is outside scope.
 
 **Goal:** remove repeated genuine source42 preparation from an explicitly selected cut0 while preserving natural Stage43, actual abrupt process loss and all original current-owner recovery assertions. T273 proved82files/513708bytes, copy0.105/0.083s+validation0.385/0.299s against source206.249s; this does not predict resume duration.
