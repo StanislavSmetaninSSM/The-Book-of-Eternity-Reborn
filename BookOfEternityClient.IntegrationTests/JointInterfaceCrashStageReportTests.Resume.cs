@@ -109,7 +109,7 @@ public sealed partial class JointInterfaceCrashStageReportTests
         using var writer = new FailingWriter(new IOException("output")); var report = Create(writer);
         var activity = new JointInterfaceResumeActivity(report);
         var primary = new InvalidOperationException("game");
-        var actual = Record.Exception(() => { try { throw primary; } finally { activity.Observe(JointResumeObservation.CanonicalContended); activity.Checkpoint(SessionFinalizationCheckpoint.LateTerminalAndIdleOperationBound, true); } });
+        var actual = Record.Exception((Action)(() => { try { throw primary; } finally { activity.Observe(JointResumeObservation.CanonicalContended); activity.Checkpoint(SessionFinalizationCheckpoint.LateTerminalAndIdleOperationBound, true); } }));
         Assert.Same(primary, actual); Assert.Equal(nameof(IOException), report.OutputFailure);
     }
 
