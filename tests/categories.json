@@ -2,6 +2,28 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-fixture-acquisition-controls",
+  "responsibility": "Distinct fixture-only opt-in: default disabled, exact Windows seeded ordinary cut0, malformed/unsupported selection refused before work; exact observed DATA export/role/PID/parent/hash controls.",
+  "excludes": "No fixture acquisition runtime, actual game proof, original recovery, Linux or timeout change.",
+  "changeHints": ["BookOfEternityClient.IntegrationTests/JointInterfaceFixtureAcquisition.cs", "BookOfEternityClient.IntegrationTests/JointInterfaceFixtureAcquisitionTests.cs"],
+  "related": [],
+  "requirements": {"frontendBuild": false, "exclusive": false},
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.JointInterfaceFixtureAcquisitionTests.*"]}]
+},
+{
+  "id": "fr063-joint-applied-fixture-acquisition",
+  "responsibility": "T317 explicit fixture-only Windows cut0: actual producer73 and fresh resumer through real accepted checkpoint, prepared/applied DATA exports then diagnostic74 with exact identity, EOF/join and owned cleanup.",
+  "excludes": "No gameplay recovery PASS, story/cleanup completion, original five, Linux, alternate owner, timeout increase, fake proof or automatic retry. Requires genuinely source-matching source42 and SOURCE/PREP review.",
+  "changeHints": ["BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointFixtureAcquisition.cs", "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs", "BookOfEternityClient.IntegrationTests/JointInterfaceFixtureAcquisition.cs"],
+  "related": [{"id": "fr063-joint-fixture-acquisition-controls", "when": "Opt-in or export verification changes."}, {"id": "fr063-joint-interface-seed-input-contracts", "when": "Selection metadata or source binding changes."}],
+  "requirements": {"frontendBuild": false, "exclusive": true, "ciRunner": "windows-latest"},
+  "timeoutMinutes": 15,
+  "expectedSeconds": null,
+  "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterface_AcquireActualPreparedAndAppliedFixtureData"]}]
+},
+{
   "id": "fr063-joint-cleanup-data-capture",
   "responsibility": "T313a immutable terminal diagnostic data archive, exact inventory and absence; no imported authority.",
   "excludes": "No gameplay, live ownership transfer, source42 qualification or cleanup replay. Original runtime gate is separate.",

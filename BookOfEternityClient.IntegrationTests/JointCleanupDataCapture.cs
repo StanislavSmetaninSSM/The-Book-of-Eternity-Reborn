@@ -8,7 +8,7 @@ using BookOfEternityClient.Core;
 namespace BookOfEternityClient.Tests;
 
 /// <summary>
-/// Exports observed terminal diagnostic data without importing or issuing game authority.
+/// Exports observed diagnostic data without importing or issuing game authority.
 /// </summary>
 internal static class JointCleanupDataCapture
 {
@@ -72,7 +72,7 @@ internal static class JointCleanupDataCapture
         var manifest = JsonSerializer.SerializeToUtf8Bytes(new
         {
             Kind = "joint_cleanup_observed_data_v1", GrantsAuthority = false,
-            Consistency = "Observed cleanup-entry data, not a closed/quiescent game capability; fresh production validation required for replay.",
+            Consistency = "Observed boundary data, not a closed/quiescent game capability; fresh production validation required for replay.",
             CapturedUtc = DateTime.UtcNow, PID = Environment.ProcessId, Provenance = provenance, Builds = builds,
             Directories = directories.OrderBy(value => value, StringComparer.Ordinal).ToArray(), Absent = absent,
             Files = images.Select(pair => new { Path = pair.Key, Length = pair.Value.LongLength,

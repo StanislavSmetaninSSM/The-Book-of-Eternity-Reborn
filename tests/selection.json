@@ -2,6 +2,16 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "fr063-joint-fixture-acquisition-controls",
+      "reason": "T317 distinct opt-in and exact DATA export role/parent/identity/hash controls without game setup.",
+      "contracts": ["Ordinary default remains disabled; unsupported scope refuses; exported DATA grants no authority."]
+    },
+    {
+      "category": "fr063-joint-interface-seed-input-contracts",
+      "reason": "T317 adds a source-bound seeded selection to the unchanged importer and preserves platform/cut refusal.",
+      "contracts": ["Genuine source42 binding and independent copy; no rebinding old data."]
+    },
+    {
       "category": "fr063-joint-cleanup-images",
       "reason": "T313 retained actual cleanup byte/absence leaf and publisher callback, independent of expensive gameplay setup.",
       "contracts": [

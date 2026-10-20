@@ -54,33 +54,41 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// The exact existing source42 artifact for the explicit ordinary Windows cut0;
     /// <see langword="null"/> preserves the original source-turn preparation path.
     /// </param>
+    /// <param name="fixtureAcquisitionOnly">
+    /// Whether the distinct seeded Windows cut0 probe exports actual prepared/applied DATA
+    /// and expects diagnostic exit74 rather than asserting gameplay completion.
+    /// </param>
     /// <returns>
-    /// Completion after the original game and process assertions.
+    /// Completion after the selected probe's process and DATA assertions, or the original game assertions.
     /// </returns>
     private async Task RunJointInterfaceActualProcessLossAsync(int cut, string? fault = null, bool diagnostic = false,
-        bool extendedWindowsCrash = false, string? seedArtifactPath = null)
+        bool extendedWindowsCrash = false, string? seedArtifactPath = null, bool fixtureAcquisitionOnly = false)
     {
         if (extendedWindowsCrash && !OperatingSystem.IsWindows())
             throw new PlatformNotSupportedException("Extended crash qualification is a local Windows selection.");
         var mode = new JointInterfaceCrashMode(cut, diagnostic, fault);
         _ = JointInterfaceCrashProcessSupport.SelectBackend(OperatingSystem.IsWindows(), OperatingSystem.IsLinux(), mode);
+        if (fixtureAcquisitionOnly && (!extendedWindowsCrash || seedArtifactPath is null))
+            throw new InvalidDataException("Fixture acquisition requires an explicit seeded Windows selection.");
         JointInterfaceSeedCrashInput? source42Seed = null;
         if (seedArtifactPath is not null)
         {
             if (!extendedWindowsCrash) throw new InvalidDataException("Seeded cut0 requires the existing shared Windows crash budget.");
             source42Seed = JointInterfaceSeedCrashInput.Bind(seedArtifactPath, TestRepoPaths.RepoRoot, OperatingSystem.IsWindows(), mode);
         }
+        var nonce = Guid.NewGuid().ToString("N");
+        var parentMetadata = JsonSerializer.SerializeToNode(new
+        { Nonce = nonce, ParentPid = Environment.ProcessId, Cut = cut, Fault = fault, Diagnostic = diagnostic })!.AsObject();
+        if (!diagnostic && fault == null) parentMetadata["RunId"] = Guid.NewGuid().ToString("N");
+        if (source42Seed is not null) parentMetadata["Source42Seed"] = JsonSerializer.SerializeToNode(source42Seed);
+        if (fixtureAcquisitionOnly) parentMetadata["FixtureAcquisitionOnly"] = true;
+        Assert.Equal(fixtureAcquisitionOnly, JointInterfaceFixtureAcquisition.ReadAndValidate(parentMetadata, OperatingSystem.IsWindows()));
         using var classOwned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         var capture = JointInterfaceCrashProcessSupport.UsesManagedCapture(mode, () => JointInterfaceManagedCapture.Enabled);
         var own = capture ? JointInterfaceManagedCapture.ClaimOwnedDirectory(cut, fault)
             : Path.Combine(Path.GetTempPath(), "boe-joint-interface-crash-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(Path.Combine(own, "tmp"));
         using var owned = new JointInterfaceCrashOwnedContainer(own, line => _directGachaOutput?.WriteLine(line), capture);
-        var nonce = Guid.NewGuid().ToString("N");
-        var parentMetadata = JsonSerializer.SerializeToNode(new
-        { Nonce = nonce, ParentPid = Environment.ProcessId, Cut = cut, Fault = fault, Diagnostic = diagnostic })!.AsObject();
-        if (!diagnostic && fault == null) parentMetadata["RunId"] = Guid.NewGuid().ToString("N");
-        if (source42Seed is not null) parentMetadata["Source42Seed"] = JsonSerializer.SerializeToNode(source42Seed);
         File.WriteAllText(Path.Combine(own, "parent.json"), parentMetadata.ToJsonString());
         var cutPath = Path.Combine(own, "cut.json");
         var sharedWindowsCrashStarted = extendedWindowsCrash ? Stopwatch.GetTimestamp() : (long?)null;
@@ -118,6 +126,24 @@ public sealed partial class GameEngineTurnLifecycleTests
         WritePhysicalInjuryDiagnostic("iobs_actual_current_resume_exit", new
         { Original = original, Cut = atCut, Resume = resumed, ResultRaw = raw,
             OwnedContainer = own, ActualContainedRoots = Directory.EnumerateDirectories(Path.Combine(own, "tmp")).ToArray() });
+        if (fixtureAcquisitionOnly)
+        {
+            Assert.Equal(JointInterfaceFixtureAcquisition.CapturedExitCode, resumed.ExitCode);
+            Assert.NotEqual(original.Pid, resumed.Pid); Assert.True(resumed.Eof); Assert.True(resumed.Joined);
+            var captured = JsonNode.Parse(Assert.IsType<string>(raw))!.AsObject();
+            Assert.Equal(resumed.Pid, captured["Pid"]!.GetValue<int>());
+            AssertJointInterfaceChildIdentity(resumed, captured);
+            Assert.Equal(nonce, captured["Nonce"]!.GetValue<string>()); Assert.Equal(root, captured["Root"]!.GetValue<string>());
+            Assert.True(captured["FixtureAcquisitionOnly"]!.GetValue<bool>());
+            Assert.True(captured["ActualCallerEntered"]!.GetValue<bool>());
+            Assert.False(captured["Completed"]!.GetValue<bool>());
+            Assert.Equal(SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization.ToString(), captured["Checkpoint"]!.GetValue<string>());
+            var tuple = JointInterfaceFixtureAcquisition.Verify(captured["Exports"]!.AsArray(),
+                Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "joint-cleanup-captures"), root, resumed.Pid, parentMetadata);
+            Assert.True(JsonNode.DeepEquals(tuple, captured["Original"]));
+            Assert.Equal(atCut["Result"]!["resultFingerprint"]!.GetValue<string>(), captured["PublishedResultFingerprint"]!.GetValue<string>());
+            return;
+        }
         Assert.Equal(0, resumed.ExitCode); Assert.NotEqual(original.Pid, resumed.Pid);
         Assert.True(resumed.Eof); Assert.True(resumed.Joined);
         var result = JsonNode.Parse(Assert.IsType<string>(raw))!.AsObject();
@@ -490,6 +516,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.InRange(cut, 0, 4);
         CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-GB");
         var parent = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "parent.json")))!.AsObject();
+        _ = JointInterfaceFixtureAcquisition.ReadAndValidate(parent, OperatingSystem.IsWindows());
         var source42Seed = JointInterfaceSeedCrashInput.Read(parent, OperatingSystem.IsWindows(), mode);
         var stages = JointInterfaceCrashStageReport.CreateForOrdinary(parent, cut);
         stages?.Observe("fixture", "enter");
@@ -540,13 +567,16 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// Owned directory with parent and cut metadata.
     /// </param>
     /// <returns>
-    /// Completion after original current-owner, mechanical and repeat assertions.
+    /// Completion after original current-owner, mechanical and repeat assertions, unless the explicit
+    /// fixture-only selection exits74 after exporting actual accepted-checkpoint DATA.
     /// </returns>
     public static async Task WriteJointInterfaceCurrentResumeAsync(string root, string output, int cut, string own)
     {
         _ = JointInterfaceCrashProcessSupport.ReadAndValidateEntryMode(own, cut, OperatingSystem.IsWindows(), OperatingSystem.IsLinux());
         CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
         var parent = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "parent.json")))!.AsObject();
+        var fixtureAcquisitionOnly = JointInterfaceFixtureAcquisition.ReadAndValidate(parent, OperatingSystem.IsWindows());
+        var fixtureExports = new JsonArray();
         var stages = JointInterfaceCrashStageReport.CreateForOrdinary(parent, cut);
         var resumeActivity = OperatingSystem.IsWindows() && stages != null ? new JointInterfaceResumeActivity(stages) : null;
         var operationTimings = OperatingSystem.IsWindows() && stages != null ? new JointOperationTimings() : null;
@@ -663,6 +693,23 @@ public sealed partial class GameEngineTurnLifecycleTests
                             Original = new { actualOriginal.SessionId, actualOriginal.RequestId, actualOriginal.SnapshotToken, actualOriginal.TurnNumber },
                             Record = completedProof.ToJson(), Interface = await files.ReadFileBytesAsync(lease, MortalJointInterfacePublication.InterfacePath),
                             Meaning = "Full existing current original/history/resource proof while actual original remains present; no post-cleanup authority recreation" }));
+                        if (fixtureAcquisitionOnly)
+                        {
+                            Assert.True(actualCaller);
+                            var tuple = JsonSerializer.SerializeToNode(new
+                            { actualOriginal.SessionId, actualOriginal.RequestId, actualOriginal.SnapshotToken, actualOriginal.TurnNumber })!.AsObject();
+                            using (files.MeasureOperation("FixtureData.ExportAppliedBeforeStory"))
+                                fixtureExports.Add(JointInterfaceFixtureAcquisition.Capture(root,
+                                    Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "joint-cleanup-captures"), "AppliedBeforeStory", parent, tuple));
+                            File.WriteAllText(output, JointInterfaceCrashProcessSupport.SerializeCurrentIdentity(new
+                            {
+                                Nonce = parent["Nonce"]!.GetValue<string>(), Root = root, FixtureAcquisitionOnly = true,
+                                ActualCallerEntered = actualCaller, Completed = false, Checkpoint = point.ToString(), Original = tuple,
+                                PublishedResultFingerprint = completedProof.ResultFingerprint, Exports = fixtureExports
+                            }, stages));
+                            Console.Out.Flush(); Console.Error.Flush();
+                            Environment.Exit(JointInterfaceFixtureAcquisition.CapturedExitCode);
+                        }
                     }
                     diagnostic.Observe("finalization-return", point.ToString());
                     if (resumeActivity != null) resumeActivity.Checkpoint(point, false);
@@ -769,6 +816,10 @@ public sealed partial class GameEngineTurnLifecycleTests
             diagnostic.Observe("late-first-enter");
             stages?.Observe("late-first", "enter");
             using var namedResumerTimer1 = files.MeasureOperation("Resumer.FirstCurrentOwnerCall");
+            if (fixtureAcquisitionOnly)
+                using (files.MeasureOperation("FixtureData.ExportPreparedOriginal"))
+                    fixtureExports.Add(JointInterfaceFixtureAcquisition.Capture(root,
+                        Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "joint-cleanup-captures"), "PreparedOriginal", parent));
             handled = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
             namedResumerTimer1?.Dispose();
             diagnostic.Observe("late-first-return", handled.ToString());
