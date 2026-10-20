@@ -357,13 +357,17 @@ internal static class JointInterfaceCrashProcessSupport
     /// <param name="report">
     /// Writes parent evidence without changing the primary child failure.
     /// </param>
+    /// <param name="packageDirectory">
+    /// Optional per-call package lookup for no-child refusal controls; null uses the configured environment variable.
+    /// </param>
     /// <returns>
     /// The original root result after positive scoped retirement, complete streams and disposal.
     /// </returns>
     internal static async Task<JointInterfaceCrashNativeResult> RunNativeAsync(ProcessStartInfo start, JointChildOutputCapture capture,
-        Action<NativeLineageOwner> retain, Func<NativeLineageOwner, Task> disposeAndJoin, Action<object> report)
+        Action<NativeLineageOwner> retain, Func<NativeLineageOwner, Task> disposeAndJoin, Action<object> report,
+        Func<string?>? packageDirectory = null)
     {
-        var package = Environment.GetEnvironmentVariable("BOE_CRASH5_NATIVE_PACKAGE")
+        var package = (packageDirectory ?? (() => Environment.GetEnvironmentVariable("BOE_CRASH5_NATIVE_PACKAGE")))()
             ?? throw new InvalidDataException("Prepare BOE_CRASH5_NATIVE_PACKAGE before ordinary Linux crash5.");
         NativeLineageOwner? owner = null;
         JointInterfaceCrashIdentity? identity = null;
@@ -444,6 +448,46 @@ internal static class JointInterfaceCrashProcessSupport
         return new(identity, stop.RootExitCode.Value, capture.OutputReference, capture.ErrorReference,
             new { NativeRunId = owner!.Identity.RunId, SupervisorPid = supervisorPid, Stop = stop, BootstrapDirectory = owner.BootstrapDirectory });
     }
+
+    /// <summary>
+    /// Observes direct exit, EOF and actual ownership join separately.
+    /// </summary>
+    /// <param name="exited">
+    /// Whether the original process positively exited.
+    /// </param>
+    /// <param name="joined">
+    /// Whether the original owner successfully recorded its positive join.
+    /// </param>
+    /// <param name="stdout">
+    /// The completed output drain, or null while unresolved.
+    /// </param>
+    /// <param name="stderr">
+    /// The completed error drain, or null while unresolved.
+    /// </param>
+    /// <returns>
+    /// Separate observations; process exit alone does not establish a join.
+    /// </returns>
+    internal static (bool Exited, bool Eof, bool Joined) ObserveDirectCompletion(bool exited, bool joined,
+        FinitePipeDrainResult? stdout, FinitePipeDrainResult? stderr)
+    {
+        var eof = stdout is { Eof: true, ReadFailure: null } && stderr is { Eof: true, ReadFailure: null };
+        return (exited, eof, exited);
+    }
+
+    /// <summary>
+    /// Starts a prepared direct child after all final budget checks in the supplied launch action.
+    /// </summary>
+    /// <param name="capture">
+    /// The prepared external capture whose writers must settle on a no-child refusal.
+    /// </param>
+    /// <param name="launch">
+    /// Checks remaining budget and starts the original child as its last operation.
+    /// </param>
+    /// <returns>
+    /// The original child, or the exact prelaunch failure after recording incomplete output.
+    /// </returns>
+    internal static Task<Process> StartPreparedDirectChildAsync(JointChildOutputCapture capture, Func<Process> launch) =>
+        Task.FromResult(launch());
 
     /// <summary>
     /// Keeps the first failure while retaining a separately named secondary failure.

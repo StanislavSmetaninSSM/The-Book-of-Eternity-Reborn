@@ -29236,6 +29236,29 @@
       ]
     }
   ]
+},
+{
+  "id": "fr063-joint-child-output-launch-boundaries",
+  "responsibility": "T336 no-child final budget/package refusals finalize prepared destinations and preserve original errors; independent exited/EOF/actual join framing.",
+  "excludes": "No process/game/native startup or recovery qualification.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointInterfaceCrashProcessSupport.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointChildOutputLaunchTests.*"
+      ]
+    }
+  ]
 }
 ]
 }
