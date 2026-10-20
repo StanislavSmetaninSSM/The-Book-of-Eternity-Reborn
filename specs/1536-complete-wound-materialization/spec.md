@@ -1,5 +1,7 @@
 # CRASH5 — spec11: реализация прототипа seed
 
+T271/272 PREP: compiled ef93fbde7cde3fddd0b0cf20c57102fa785dc330, final42/42 fast controls PASS/0skip25.272s; XML build42.71s/0errors/changedXML0. Linked-source causal RED41PASS1FAIL and5actual bound/link/cleanup negatives retained. Affected43budget+14stage PASS at a4ce with no subsequent constructor/process/stage delta. Catalog valid; default279 excludes generator, explicit112cases/12descriptors; metadata executes0tests. Final archive T272-prep.json/zip; independent final bound PREP review pending. Generator UNRUN; Windows0/5, LinuxUNRUN.
+
 Источник: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). User approved implementation after reviewed plan8 and explicitly says continue without waiting. Scope: preparation/loading/isolation prototype; Stage43/cut0 runtime и production optimization не входят в этот slice.
 
 - **P11-1:** seed содержит завершённые genuine source42 DATA, metadata tuple/opportunity/generation digest и source provenance. Directory artifact: manifest.json + payload; весь game_session и только runtime session-generation/current.json. Никаких живых authority/owners/locks/debt. Codec controls используют маленький synthetic namespace и не квалифицируют gameplay.
