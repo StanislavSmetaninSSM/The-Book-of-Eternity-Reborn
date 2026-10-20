@@ -1,6 +1,6 @@
 # Spec12 / plan10 — current seeded cut0 preparation
 
-T277 SOURCE/PREP accepted; T278 genuine generation passed once with source f479d42a72f7412871e797575a1b1bd2c6dabd07. Published82files/513708bytes plus manifest match their Git blobs; all38directories exist in the current local artifact. T278-seed-binding.json records the exact local consumer binding. T279 remains UNRUN until focused binding acceptance.
+T277 SOURCE/PREP accepted; T278 genuine generation passed once with source f479d42a72f7412871e797575a1b1bd2c6dabd07. Published82files/513708bytes plus manifest match their Git blobs; all38directories exist in the current local artifact. T278-seed-binding.json records the exact local consumer binding. Focused binding accepted Astra/high at21b88351f; exactlyone T279 remains UNRUN and may now proceed on this complete local artifact.
 
 ## Explicit artifact restoration
 

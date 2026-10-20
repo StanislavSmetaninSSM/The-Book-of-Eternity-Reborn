@@ -1,3 +1,11 @@
+# T278 — current local seed binding accepted
+
+T278 binding ACCEPTED by separate gpt-6-astra/high at21b88351fcb82bc43fe745f7861b739acd4c3625: exactlyone genuine generatorPASS/0skip,source203.401s;82files513708bytes,all96archivefiles/all83Gitartifactfiles/all38localdirs and1769currentinputfingerprint verified;3DLLunchanged. Newmanifest5439B2F4…,FP07644F81…;current complete local artifact/exact working-source closure only. Git checkout requires explicit empty-directory/input-byte restoration, no fallback. Exactlyone T279 seededcut0 authorized by this gate; UNRUN so far. OriginalWindows0/5/LinuxUNRUN.
+
+Reviewer independently re-enumerated1769working inputs/rawhashes and reproduced the exact generator fingerprint; all payload/manifest/Git bytes, local directory inventory, true source42 tuple, copied-root/source cleanup and3DLLverified. One recovery clarification corrected: seven empty dirs are archived but absent from Git; explicit verified transport restoration documented, without .gitkeep, loader repair or normalizing data. No code change/regeneration needed.
+
+---
+
 # T277 — seeded cut0 SOURCE/PREP accepted
 
 Separate gpt-6-astra/high accepted compiledf479d42a72f7412871e797575a1b1bd2c6dabd07 and metadata8b1ae811cda07039f8a02b5ca5ffa701fab99c84. Verified all47indexedarchivefiles/archiveSHA,115rawPASS/0skip/completecleanup,XML0errors/changedXML0,current3DLLhashes+versions,catalog839/default295/exactgen1/6m+seededcut01/15m/originalbudgets. No source/project/selection/base-input delta; no actionable findings.
