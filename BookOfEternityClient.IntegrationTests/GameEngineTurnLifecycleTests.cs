@@ -69,8 +69,28 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     private int _remainingCanonicalWriteFailureMatches;
     private readonly ITestOutputHelper? _directGachaOutput;
 
-    public GameEngineTurnLifecycleTests(ITestOutputHelper? output = null)
+    /// <summary>
+    /// Creates an isolated initialized world for a lifecycle test.
+    /// </summary>
+    /// <param name="output">
+    /// The diagnostic destination, or <see langword="null"/> when no test sink is needed.
+    /// </param>
+    public GameEngineTurnLifecycleTests(ITestOutputHelper? output = null) : this(output, null)
     {
+    }
+
+    /// <summary>
+    /// Creates a fixture around a new world or caller-owned materialized seed data.
+    /// </summary>
+    /// <param name="output">
+    /// The diagnostic destination, or <see langword="null"/> when no test sink is needed.
+    /// </param>
+    /// <param name="adoptedRoot">
+    /// An existing validated owned copy to preserve; <see langword="null"/> initializes a fresh world.
+    /// </param>
+    private GameEngineTurnLifecycleTests(ITestOutputHelper? output, string? adoptedRoot)
+    {
+        if (adoptedRoot is not null) throw new NotSupportedException("T270 seed adoption is not implemented.");
         _directGachaOutput = output;
         _rootPath = Path.Combine(Path.GetTempPath(), "boe-gameengine-turnlifecycle-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_rootPath);

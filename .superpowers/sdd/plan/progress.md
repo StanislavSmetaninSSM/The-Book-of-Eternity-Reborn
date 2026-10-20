@@ -1,5 +1,7 @@
 # SDD ledger — plan: specs/1536-complete-wound-materialization/plan.md
 
+Current execution: spec11/plan9/T269..274. User explicitly authorizes prototype implementation/autonomous continuation. T269 complete atff0186234; parent owns generator/adoption/fingerprint/integration; bounded Sol6.1/high agent owns codec/tests with parent-controlled RED→GREEN.36short controls/stubs prepared, no actual generation or crash runtime yet. Separate SOURCE/PREP required before one explicit source42 generator6min. Existing borrowed/current-owner/native contracts and historical statuses preserved. This supersedes prior source-only design checkpoint below.
+
 Current checkpoint: spec10/plan8, tasks T266/T267 source-only design complete, T268 independent Astra/high accepted04c6a9bbc; 10 design/governance files recovered clean from GitHub, record T268-design-recovery.json. User explicitly approved five-case map and minimal cut0 fixture project; no test/build/generator/runtime action in this block. Recommended immutable completed-source42 seed with per-case physical copies, real Stage43/exit73/new current owner, preserved gameplay assertions; portability, closed namespace, fingerprint closure and measured benefit are future gates. Windows0/5PASS/T263FAIL and LinuxUNRUN unchanged. No more large diagnostic runs implied by this project. Supersedes earlier execution stage below without altering historical evidence.
 
 Base: 6f2d4d48615db910168d6c1a32841a1ffb037147; remote verified before editing.

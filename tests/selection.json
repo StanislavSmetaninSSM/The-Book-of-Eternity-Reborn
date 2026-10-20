@@ -136,6 +136,13 @@
       "contracts": [
         "Named checkpoints, separate populations, finite late sampling and writer failure precedence."
       ]
+    },
+    {
+      "category": "fr063-joint-interface-seed-contracts",
+      "reason": "Spec11 new seed transport, fingerprint and adopted/default fixture behavior; fast controls only.",
+      "contracts": [
+        "Exact independent bytes, isolation and integrity refusal without live source42 fallback; constructor adoption cannot overwrite seed state."
+      ]
     }
   ]
 }

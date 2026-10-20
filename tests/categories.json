@@ -2,6 +2,38 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-interface-seed-contracts",
+  "responsibility": "Spec11 bounded seed codec integrity, immutable independent imports, contract fingerprint closure and default/adopted fixture initialization. Synthetic codec DATA is not gameplay authority.",
+  "excludes": "No source42 generator, Stage43/crash/current-owner runtime, Linux or original-five qualification.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointInterfaceCrashSeed.cs",
+    "BookOfEternityClient.IntegrationTests/JointInterfaceCrashSeedTests.cs",
+    "BookOfEternityClient.IntegrationTests/JointInterfaceSeedContractFingerprint.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrashSeed.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs"
+  ],
+  "related": [
+    "fr063-joint-interface-probe-budget-contracts",
+    "fr063-joint-interface-crash-stage-contracts"
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointInterfaceCrashSeedTests.*",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceSeed_*"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-interface-windows-crash-cut0",
   "responsibility": "Spec9 Windows cut0 through the original common crash/restart fixture and all original assertions; shared820s/max600s per child, independent owned fixture and complete identity/cleanup evidence.",
   "excludes": "No Linux qualification, original220s timing claim, other cuts, default/CI selection, diagnostic capture or automatic retry.",
