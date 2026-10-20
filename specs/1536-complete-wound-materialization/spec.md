@@ -1,3 +1,15 @@
+# CRASH5 — spec15 revision13: source-matching original recovery gate
+
+Issue1536; constructor correction SOURCE/PREP accepted, T330 actual direct-DATA profile PASS with full diagnostics. Component measurements do not establish resolution of original T323600s timeout. T330 final independent review must accept before generator execution.
+
+- RETURN-1 / US1: retain final executable source778f8c4e0 and all4DLL/dependency bindings, current native launcher/owners, unlimited diagnostics and all original read/owner/lease/generation/story/projection/cleanup checks. No production/test/runtime-helper change, compatibility relaxation, diagnostic quota or original budget increase in this gate.
+- RETURN-2 / US2: preserve the entire historical d41 source42 fixture, source-record, directory inventory and exact file hashes before replacement. Generate exactlyone genuine source42 artifact through existing6min generator for final accepted compiled source; require successful actual two-copy imports and source/copy cleanup. Independently reconstruct producing working-byte fingerprint and record Git exact/LF-to-CRLF recipes. Publish exact new artifact bytes under existing-text-disabled fixture, restore verified empty directories explicitly for local readiness, and require separate exact DATA/source/DLL binding review. Never rebind old manifest or automatically regenerate/fallback.
+- RETURN-3 / US3: after accepted correction, source/PREP/discovery and artifact binding plus remote clean recovery, execute exactlyone existing seeded Windows cut0 with unchanged shared820s/maxchild600s/category15min. NaturalStage43, abrupt loss, distinct real resumer and all original current-owner recovery assertions remain. Retain complete child streams/TRX/raw/incomplete scopes/cleanup captures and input/DLL/artifact/EOF/join/root checks on PASS or FAIL; named inner timers now locate expensive work. Analyze offline and independently review the full outcome. No unchanged retry, cuts1–4/fullfive or Linux execution in this gate. Original default/coldfive qualification remains separate.
+
+Existing isolated clone/active feature, no native/OS/security/GM/player/schema change. No prompt/example change. Standing explicit autonomy/review-wait waiver applies; actual written scope is presented before execution. Missing output/failed outcome remains explicit and leads to a new cause-driven design, not relaxed acceptance.
+
+---
+
 # CRASH5 — spec15 revision12: check constructor ancestors once
 
 Issue1536; T328 source-backed recommendation follows T327 complete measurements (actual test remainsFAIL from output sharing). Accepted T327 evidence and source-only diagnostic close correction remain explicit; no original recovery qualification.
