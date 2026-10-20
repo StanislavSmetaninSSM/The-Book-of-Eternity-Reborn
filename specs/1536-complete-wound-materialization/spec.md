@@ -1,3 +1,17 @@
+# CRASH5 — spec15 revision9: bounded continuation/phase overlap investigation
+
+Issue1536; active feature unchanged. T323 original seeded recovery still FAIL/600s; complete3197records show append3reads37.121s and subsequent fresh story proof12.541s completed, then phase proof reread unfinished at598.068s. No cleanup entry. Independent T324 evidence review remains pending and separate; no new production correction is authorized by this investigation.
+
+Requested result: a concrete safe design or a counterexample for replacing nested complete-publication rereads inside story continuation binding with one same-call authenticated-data window bracketed by both retained real applied-phase checks. Existing source maps show phase-before/after plus binder-before/after, different boundaries. Timing alone does not establish redundancy.
+
+- OVERLAP-1 / US1: map every tuple/original/G/footprint/output/carrier/presentation check and current freshness/owner/lease/generation/consumption/failure boundary to a proposed retained location. Identify exact existing members and the smallest API/data surface; explain callback suspension, exceptions and lifetime. No callback result may become authoritative before the retained exit proof. Reject the proposal with a concrete scenario if its contracts cannot be preserved.
+- OVERLAP-2 / US2: define causal cheap detached-data orchestration controls and real existing AppliedBeforeStory DATA refusal/cost cases needed for a later implementation. No constructed private proof, global test mode, cached success across calls or transport of capabilities; test-support/internal APIs may be introduced only in a subsequent written implementation design.
+- OVERLAP-3 / US3: ordinary continuation callers retain existing full semantics; source42 binding, process/NativeLineage, GM/player/schema and diagnostic no-quota contracts remain. This spike executes no C# tests, generator or original retry and changes no production code. Deliverable is an evidence-backed recommendation with unresolved questions explicit, then a concrete next spec if justified.
+
+Standing explicit review-wait waiver applies. The written investigation is presented before execution; it is not permission to weaken checks or implement the prospective scope. Original cold-five0/5/LinuxUNRUN and historical T315/T323 failures remain.
+
+---
+
 # CRASH5 — spec15 revision8: final-source original seeded recovery gate
 
 Issue1536. Separate Astra/high accepted the T320/321 correction atb9886d150; code d41f80f347a4764164de866a2c5ae7a100f373cc. Actual3servicePASS/source3/2reads/full740records/370intervals/three roots absent. This is bounded component acceptance; historical T315 remainsFAIL/open, original coldWindowsfive0/5qualified, LinuxUNRUN.

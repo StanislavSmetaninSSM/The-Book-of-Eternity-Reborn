@@ -1,3 +1,13 @@
+# CRASH5 — spec15 revision9 / plan13 revision9: scoped overlap investigation
+
+Issue1536; [spec](spec.md), [plan](plan.md). T323FAIL is preserved; no unchanged retry.
+
+- [ ] T325 [US1/US2/US3] Actual Spec Kit phases/consistency, bounded read-only Astra/high consultation on same-call continuation/phase proof overlap; map exact contracts/lifetime/failure scenarios and cheap/real-DATA controls, then parent source audit and written recommendation. Deliverable is investigation evidence, not production implementation.
+
+Independent T323/T324 evidence review may proceed concurrently; both contexts read only. Dependencies T324actualsource/evidence→T325recommendation→next concrete spec/plan/tasks before any prospective implementation. All diagnostics uncapped; original cold-five0/5/LinuxUNRUN and original recovery remain open.
+
+---
+
 # CRASH5 — spec15 revision8 / plan13 revision8: corrected original seeded gate
 
 Issue1536; [spec](spec.md), [plan](plan.md). Accepted source d41f80f347, correction final review b9886d150. Standing autonomous continuation applies.

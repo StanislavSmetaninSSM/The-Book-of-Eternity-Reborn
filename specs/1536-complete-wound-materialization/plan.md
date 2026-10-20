@@ -1,3 +1,13 @@
+# CRASH5 — plan13 revision9: evidence review plus narrow architecture consultation
+
+Spec15r9, issue1536, taskT325; no implementation in this spike. Actual Spec Kit plan/tasks/prerequisite and equivalent consistency check precede consultation. Parent owns eventual code/tests. Use independent contexts with no shared edits: existing Astra/high reviewer verifies completed T323/T324 raw/parser/evidence; bounded separate Astra/high consultant answers only the continuation/phase lifetime question from compiled d41f80f347 source. This is the user-approved architectural consultation route, not a standing model change or separate user-visible task.
+
+Consultant reads StoryService.MortalJointRepair.cs and MortalQteDecisionPublication continuation/progression/completed-proof paths, plus current findings. Expected deliverable: exact retained/missing checks, concrete counterexample or minimal module-private/callback API, lifetime/failure constraints and meaningful cheap/real-DATA controls. Ordinary continuation API remains fully checked for other callers; no speculative generic cache/framework, fake issuer or filesystem policy change. Do not duplicate the evidence review or run tests. Parent reconciles advice with actual source and writes the next implementation spec before code if defensible.
+
+T324 evidence review independently checks unchanged historical parser outputs, exact current raw streams/PID/source/bindings/cleanup, measured three-read append and unfinished phase stack. No OS or cleanup cause is inferred. Save remote/checkpoint and clean recovery before long review; record actual configurations and findings. The investigation ends with a recommendation, while original recovery goal stays open and work continues to a justified correction.
+
+---
+
 # CRASH5 — plan13 revision8: qualify the corrected original seeded flow
 
 Spec15r8, issue1536, tasksT322–324; original T315 historical failure remains immutable. Source d41f80f347 remains exactly the accepted code and compiled DLL set; metadata/fixture publication does not recompile or rebind old seed. Existing dedicated branch/checkout, process owner and review-wait waiver retained.
