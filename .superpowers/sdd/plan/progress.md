@@ -124,3 +124,5 @@ T271 initial36GREEN26.488s/XML0errors42.67s; T272 initial43budget+14stagePASS, c
 T272 review RED f4511671c:42complete41PASS1linked-fingerprint Assert.NotEqual failure,25.132s; all5 limit/real-I/O cleanup/physical-link controls PASS, no capability skip. Corrected fingerprint now resolves literal linked Compile C# inputs inside repository, refuses unsupported/unresolved/external paths, deduplicates and checks ordinary ancestors. Final build/GREEN pending; generator UNRUN.
 
 T271/272 PREP: compiled ef93fbde7cde3fddd0b0cf20c57102fa785dc330, final42/42 fast controls PASS/0skip25.272s; XML build42.71s/0errors/changedXML0. Linked-source causal RED41PASS1FAIL and5actual bound/link/cleanup negatives retained. Affected43budget+14stage PASS at a4ce with no subsequent constructor/process/stage delta. Catalog valid; default279 excludes generator, explicit112cases/12descriptors; metadata executes0tests. Final archive T272-prep.json/zip; independent final bound PREP review pending. Generator UNRUN; Windows0/5, LinuxUNRUN.
+
+T272 SOURCE/PREP accepted separate Astra/high at860146fda / compiled ef93. Exactlyone generator1case6min ready; no Stage43/crash.

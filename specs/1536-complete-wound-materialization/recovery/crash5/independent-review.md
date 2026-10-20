@@ -1,3 +1,11 @@
+# T272 — seed SOURCE/PREP accepted
+
+Separate gpt-6-astra/high accepted compiled ef93fbde7cde3fddd0b0cf20c57102fa785dc330 and metadata860146fda0eb5ee887639f897bcf7e0b031de288. All42 raw TRX PASS/0skip, causal linked-source41PASS1FAIL, retained43+14 affectedPASS, all indexed archive hashes including29final PREP files, three DLLs/versions, XML0errors/changedXML0, catalog837/default279/exactgenerator1case6min verified. Both P2 findings resolved: linked Compile producer-source closure and bounded real limit/link/partial-cleanup negatives. No source/selection/budget delta between compiled and metadata.
+
+Exactly one T273 genuine source42 preparation/import experiment is permitted. Generator UNRUN at acceptance; no Stage43/crash/current-owner qualification, Windows0/5 and LinuxUNRUN retained. Parent owns constructor/fingerprint/generator; bounded Sol6.1/high codec implementation; independent Astra/high review found two concrete gaps corrected before generation. No measured model-cost or runtime-saving claim.
+
+---
+
 # T268 — source-only fixture design accepted
 
 T268: independent gpt-6-astra/high accepted source-only spec10/plan8 at04c6a9bbced0ee2a634c48b1f3557a931c43777b, no actionable findings. Fresh GitHub recovery verified 10 design/governance files, exact clean HEAD and all blobs; T268-design-recovery.json. No code/tests/builds/generator/runtime actions or new performance/portability/PASS claim.
