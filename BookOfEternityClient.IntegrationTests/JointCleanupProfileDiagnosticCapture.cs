@@ -53,8 +53,17 @@ internal sealed class JointCleanupProfileDiagnosticCapture
         lock (_gate)
         {
             _attempted++;
-            _timings.Observe(name, boundary, elapsed);
-            _stored++;
+            try
+            {
+                _timings.Observe(name, boundary, elapsed);
+                _stored++;
+            }
+            catch (Exception error)
+            {
+                // The production hook isolates observation errors. Retain them here before
+                // that boundary, while allowing the actual validator and later writes to run.
+                _failures.Add((error, "timing-observer:" + name + ":" + boundary));
+            }
         }
     }
 

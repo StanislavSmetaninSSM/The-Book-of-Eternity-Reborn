@@ -48,6 +48,7 @@ public sealed class JointCleanupValidatorProfileTests
         var failures = new List<string>();
         Exception? failure = null;
         StreamWriter? raw = null;
+        JointCleanupProfileDiagnosticCapture? capture = null;
         FileSystemManager.CanonicalWriteLease? lease = null;
         FileSystemManager? files = null;
         Dictionary<string, string>? before = null;
@@ -77,7 +78,7 @@ public sealed class JointCleanupValidatorProfileTests
         {
             raw = new StreamWriter(new FileStream(diagnosticPath, FileMode.CreateNew, FileAccess.Write, FileShare.Read),
                 new UTF8Encoding(false)) { AutoFlush = true };
-            var capture = new JointCleanupProfileDiagnosticCapture(raw);
+            capture = new JointCleanupProfileDiagnosticCapture(raw);
             Directory.CreateDirectory(owned);
             var manifest = JointCleanupDataTemplate.Materialize(JointCleanupValidatorTestData.ArchivePath,
                 JointCleanupValidatorTestData.ArchiveSha256, root);
@@ -180,11 +181,19 @@ public sealed class JointCleanupValidatorProfileTests
             if (writerClosed)
                 Attempt(() => { using var input = File.OpenRead(diagnosticPath); bytes = input.Length;
                     sha256 = Convert.ToHexString(SHA256.HashData(input)); }, "diagnostic-hash");
+            // Validator/owner failures have already been recorded. Merge every diagnostic
+            // secondary now, so storage trouble cannot replace the original validator refusal.
+            if (capture is not null)
+                foreach (var secondary in capture.GetFailures()) RecordFailure(secondary.Error, secondary.Stage);
             Attempt(() => _output.WriteLine(JsonSerializer.Serialize(new { Boundary = "joint_cleanup_profile_reference",
                 Path = diagnosticPath, ReportPath = reportPath, StoredBytes = bytes, Sha256 = sha256, WriterClosed = writerClosed,
+                TimingCaptureComplete = capture?.Complete, TimingBoundariesAttempted = capture?.Attempted,
+                TimingBoundariesStored = capture?.Stored,
                 OwnedRoot = owned, OwnedRootRemoved = !Directory.Exists(owned) })), "compact-report");
             Attempt(() => File.WriteAllText(reportPath, JsonSerializer.Serialize(new { Kind = "joint_cleanup_validator_profile_v1",
                 Path = diagnosticPath, StoredBytes = bytes, Sha256 = sha256, WriterClosed = writerClosed,
+                TimingCaptureComplete = capture?.Complete, TimingBoundariesAttempted = capture?.Attempted,
+                TimingBoundariesStored = capture?.Stored,
                 ValidatorsAccepted = validatorsAccepted, GameImagesAndDirectoriesUnchanged = imagesUnchanged,
                 GenerationBytesUnchanged = generationUnchanged, OwnerClosed = ownerClosed, OwnedRoot = owned,
                 OwnedRootRemoved = !Directory.Exists(owned), Failures = failures.ToArray(),
@@ -197,7 +206,7 @@ public sealed class JointCleanupValidatorProfileTests
             failure.Data["CleanupProfileReport"] = reportPath;
             ExceptionDispatchInfo.Capture(failure).Throw();
         }
-        Assert.True(validatorsAccepted && imagesUnchanged && generationUnchanged && ownerClosed && writerClosed);
+        Assert.True(validatorsAccepted && imagesUnchanged && generationUnchanged && ownerClosed && writerClosed && capture?.Complete == true);
         Assert.False(Directory.Exists(owned));
     }
 
@@ -243,8 +252,12 @@ public sealed class JointCleanupValidatorProfileTests
                     WallMilliseconds = wall.Elapsed.TotalMilliseconds,
                     CpuMilliseconds = (process.TotalProcessorTime - cpu).TotalMilliseconds, Returned = primary is null }));
             }
-            catch (Exception report) when (primary is not null)
-            { JointInterfaceCrashProcessSupport.PreserveFailure(primary, report, "component-cost-report"); }
+            catch (Exception report)
+            {
+                capture.RecordDiagnosticFailure(report, "component-cost-report");
+                if (primary is null) throw;
+                JointInterfaceCrashProcessSupport.PreserveFailure(primary, report, "component-cost-report");
+            }
         }
     }
 }

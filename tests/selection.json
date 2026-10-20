@@ -21,6 +21,13 @@
       "contracts": [
         "Original semantic expressions, parser/logger behavior, fresh lease and generation fences."
       ]
+    },
+    {
+      "category": "fr063-joint-cleanup-profile-diagnostic-controls",
+      "reason": "Independent P2: optional observer failures and cost-report secondary must survive in the durable profile ledger.",
+      "contracts": [
+        "No diagnostic quotas; actual incomplete capture is explicit; original validator failure stays primary."
+      ]
     }
   ]
 }
