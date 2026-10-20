@@ -1,7 +1,7 @@
-# CRASH5 — spec15 revision14 / plan13 revision14: durable full diagnostics
+# CRASH5 — spec15 revision14a / plan13 revision14a: durable full diagnostics
 
-- [ ] T334 [US1/US3] Preserve and independently inspect actual T333serializationFAIL/available raw/missing resumer limits and captured DATA; actual phases/consistency and bounded read-only direct/native API/owner consultation before implementation. No runtime.
-- [ ] T335 [US1/US2] Parent TDD diagnostic-artifact/ref transport outside fixture cleanup, uncapped buffered capture, exact hashes/text semantics/identity/status, primary error precedence and failed-persistence retention; cheap normal/error/long-single-line tests, no gameplay or native ownership change.
+- [x] T334 [US1/US3] Preserve and independently inspect actual T333serializationFAIL/available raw/missing resumer limits and captured DATA; actual phases/consistency and bounded read-only direct/native API/owner consultation before implementation. No runtime.
+- [ ] T335 [US1/US2] Parent TDD finite-only pre-drain NativeLineage capture/typed settlement with unchanged default workers/terminals, explicit rejection of legacy string APIs in opt-in mode, and diagnostic-artifact/ref transport outside fixture cleanup, uncapped buffered capture, exact hashes/text semantics/identity/status, primary error precedence and failed-persistence retention; cheap normal/error/long-single-line tests, no gameplay or native ownership change.
 - [ ] T336 [US2/US3] Fresh relevant XML/doc inspection, focused catalog/PlanOnly/transport+managed controls, complete artifact-aware raw/bindings/ownedcleanup, historical evidence preserved, Linux handoff updated; clean remote recovery and separate final coherent SOURCE/PREP acceptance. No generator/rebind/original/five/Linux execution.
 
 Dependencies T334→T335→T336. Original T333fullraw/recovery acceptance stays unmet after actual failed attempt; no unchanged retry or diagnostic quota. Next real cleanup-DATA investigation requires separate written scope.
