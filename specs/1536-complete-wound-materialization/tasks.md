@@ -3,7 +3,7 @@
 Issue1536; [spec](spec.md), [plan](plan.md). Standing autonomous execution/review-wait waiver retained.
 
 - [x] T319 [US1] Separate Astra/high accepted T318 evidence without findings; authenticated same-call readback ruling/callback/failure constraints recorded in spec15r7/plan13r7 and T318-final-review.json. Actual Spec Kit plan/tasks/prerequisite phases and T319 consistency before code.
-- [ ] T320 [US1/US2] Causal actual countRED and pure comparisonRED→GREEN; shared exact proof-image helper and one locally reused readback, no other guard removal. XML/build/metadata/unit evidence, source/DLL binding, independent SOURCE/PREP and remote recovery.
+- [x] T320 [US1/US2] Actual4v3causalRED/2negativePASS; pure12FAIL→12PASS. Shared exact predicate/localreadback reuse atd41f80f347; all other guards retained. XML0errors/nointroducedwarnings, catalog851/11963/15casePlanOnly,4DLLbinding/186Gitblobs. Separate Astra/high SOURCE/PREP accepted3ff8b730 without findings; T320-prep/red/source-review. Three actualGREEN cases remainT321/unrun.
 - [ ] T321 [US3] Changed actual three service cases once: source3/2counts, append/repeat/laterdrift/narrative/readback/foreign-owner refusals, complete uncapped diagnostics, input/binary preservation/owned cleanup. Independent final review then continue original recovery gate; no intermediate stop.
 
 Dependencies T318review→T319riskresolution→T320RED/implementation/PREP→review→T321→genuine matching source42/original qualification. T315FAIL/open, originalWindowsfive0/5, LinuxUNRUN unchanged. No new process mechanism, diagnostic quota, broad suite or timeout increase.

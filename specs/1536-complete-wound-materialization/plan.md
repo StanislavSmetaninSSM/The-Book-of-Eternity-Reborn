@@ -14,6 +14,8 @@ T320 causal RED at9fda54664: actual append count4 versus expected3 gives1FAIL/2P
 
 T320 source/PREP atd41f80f347: pure12FAIL→12PASS; two XMLbuilds0errors/0introducedwarnings/0newXMLwarnings (existing CS8604 generation warning retained), catalog851/11963valid and exact15casePlanOnly0execution. T320-prep.json/raw preserve36indexedfiles/4source-boundDLLs/184exactGitrecoveryblobs. Caller readback comparison/privateissue now precede timer disposal; all later fresh validators retained. Actual3caseGREEN is UNRUN pending independent SOURCE/PREP. First archiver guard rejected any changed-file warning; corrected evidence classification against exact RED baseline, no rebuild/test repetition.
 
+T320 independent SOURCE/PREP accepted3ff8b730 by separate Astra/high without findings:75indexedfiles/4DLLbindings/dependencycopies/186Gitblobs verified. T320-source-review.json authorizes exactly the planned3actual serviceGREEN cases once under existing6min category policy. Original recovery stillFAIL/LinuxUNRUN; no fixture regeneration or original attempt yet.
+
 ---
 
 # CRASH5 — plan13 revision6: smallest real phase/story component
