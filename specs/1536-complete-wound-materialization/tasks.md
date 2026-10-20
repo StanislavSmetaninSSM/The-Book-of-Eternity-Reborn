@@ -1,14 +1,14 @@
-# CRASH5 — spec15/plan13: adjacent duplicate validation proposal
+# CRASH5 — spec15 revision2 / plan13 revision2: cheap shared validation entrypoints
 
 Source: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). [Spec](spec.md), [plan](plan.md). User approved c1fa2bbc with «давай». T309 executing DEDUP-1 only; DEDUP-2 deferred. Verification seam/cost is recorded in plan13 before test edits/runtime.
 
 - [x] T307 [US1] Trace adjacent validation duplication and record DEDUP-1..5 in spec15/plan13, preserving original integrity and unlimited diagnostics. Source prediction: common baseline24→16 for the first seam;14 only if the second seam is proven. Current source/basecd63d220; no executed improvement claimed.
 - [x] T308 [US1] Independent gpt-6-astra/high ACCEPTED the bounded recommendation atb2260c72, no actionable findings; T308-proposal-review.json. DEDUP-1 is the recommended first seam; DEDUP-2 deletion is not proven or accepted and remains conditional. Fresh clean remote recovery22exactGitblobs verified independently; T308-proposal-recovery.json. No code/performance acceptance or runtime.
-- [ ] T309 [US1/US2] Qualify genuine focused fixture/category and test-first count/refusal controls, then minimal adjacent-call deletions only. Preserve per-read/original/lease/owner and entry/exit boundaries; XML/build/metadata and independent SOURCE/PREP. No new issuer or cached-success state. IN PROGRESS: genuine owner-flow first-resource probe; matching RED/GREEN seeds, count plus entry/exit refusal controls. DEDUP-2 stays unchanged.
+- [ ] T309 [US1/US2] Replace expensive owner prototype with two internal production-used orchestration methods; substituted leaf data tests for causal baseline3→2, entry/exit drift and async failure order; retain real validators/timers/post-exit finalization. XML builds, category metadata, cheap physical controls and independent SOURCE/PREP. IN PROGRESS; latest user authorizes test APIs. No cached success or authority fabrication; DEDUP-2 unchanged.
 - [ ] T310 [US3] Genuine source-bound artifact and one measured original cut0 with all diagnostic records; record counts, times, actual PASS/FAIL and cleanup without changing policy/assertions or retrying unchanged. NOT STARTED.
 - [ ] T311 [US2/US3] Independent final code/evidence review and recovery; preserve failed/historical outcomes and explicitly separate optimized stages from complete restoration. NOT STARTED.
 
-Dependencies: T307→T308→T309→T310→T311. T309 has an explicit genuine-fixture gate; DEDUP-2 additionally requires source/verification proof across the await-return boundary or is omitted. Current Windows five0/5 PASS, T305 FAIL, Linux UNRUN. No diagnostic quotas may be reintroduced.
+Dependencies: T307→T308→T309→T310→T311. Current spec15r2/plan13r2 supersede genuine-fixture-only restriction. Historical710 generator PASS is archived; no prototype count/refusal case ran. Current Windowsfive0/5PASS, T305FAIL, LinuxUNRUN; diagnostics unlimited.
 
 ---
 

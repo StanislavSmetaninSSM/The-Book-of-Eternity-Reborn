@@ -3,16 +3,16 @@
   "selections": [
     {
       "category": "fr063-joint-validation-dedup-contracts",
-      "reason": "T309 DEDUP-1: real owner count reduction and retained QTE entry/exit refusal, with exact unchanged current-source seed and no publication.",
+      "reason": "T309 shared production orchestration with substituted leaf data: cheap two-baseline and async/refusal sequencing controls.",
       "contracts": [
-        "No redundant outer baseline; both real QTE barriers remain; no authority fabrication, input restoration or diagnostic quota."
+        "Real shared policy, retained QTE entry/exit and failure identity; no global test mode, validation cache or live authority creation. Physical contracts selected separately."
       ]
     },
     {
       "category": "fr063-joint-validation-dedup-refusals",
-      "reason": "T309 DEDUP-1: real owner count reduction and retained QTE entry/exit refusal, with exact unchanged current-source seed and no publication.",
+      "reason": "T309 shared production orchestration with substituted leaf data: cheap two-baseline and async/refusal sequencing controls.",
       "contracts": [
-        "No redundant outer baseline; both real QTE barriers remain; no authority fabrication, input restoration or diagnostic quota."
+        "Real shared policy, retained QTE entry/exit and failure identity; no global test mode, validation cache or live authority creation. Physical contracts selected separately."
       ]
     },
     {

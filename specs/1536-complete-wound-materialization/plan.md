@@ -1,3 +1,31 @@
+# CRASH5 — plan13 revision2: shared internal orchestration
+
+**Spec:** [spec15 revision2](spec.md). **Tasks:** [T309–311](tasks.md). Issue1536. Use executing-plans, TDD, systematic-debugging, requesting-code-review and verification-before-completion. Parent owns implementation; separate Astra/high context reviews the coherent block. Dedicated clone/branch already isolated. User explicitly permits test entrypoints and waives review waits.
+
+## T309 / US1, US2 — bounded implementation
+
+1. Archive the completed prototype generator (actual1PASS/202.812s) and exact source-input recipes. Remove only its new integration test and restore the optional helper edits from c1fa2bbc; keep all evidence/history. Replace its categories with cheap unit categories.
+2. Write tests for `JointRepairValidationCoordinator.ValidateResourceAsync<T>` and `RecomputeWithBaselineAsync<TPrepared>`. Initial extraction retains outer seal→baseline→QTE→compare and inner baseline→compute→baseline. Compose both real methods with substituted leaf data. First witness absent API failure, then behavior-preserving extraction and actual causal count RED (3, expected2); other ordering controls must pass. Initial reflection overload fallback only handles the outer parameter removal and is documented; GREEN requires the final signature.
+3. Add internal coordinator in `BookOfEternityClient/Services/JointRepairValidationCoordinator.cs`; private real adapters remain in resource/QTE files. Extract QTE body into private detached preparation returning fields/successors; finalize fingerprint after retained exit. Preserve timer names and disposal boundaries and exception ordering. No eager baseline/companion evaluation, no finally exit or authority factory.
+4. Remove only redundant outer baseline invocation and unused callback parameter. GREEN all shared policy controls including suspended compute/baseline failures; actual production adapter source reviewed. DEDUP-2/common-plan, readers, normalizer, story and native remain unchanged.
+5. Fresh XML builds for unit/integration projects, introduced XML inspection; catalog discovery and exact PlanOnly, selected cheap unit and observed-original categories. Expected zero errors, no stale selectors, no seed required for short cases. Commit/push exact source/PREP before independent review.
+
+## T310 / US3 — actual integration
+
+After accepted final SOURCE/PREP, generate one genuine matching source42 artifact using original category. Independently verify producing source inputs/manifest/payload/import cleanup, preserve old artifact as a whole before publication. Run one original seeded Windows cut0 at unchanged600s/shared820s/category15min with all diagnostics. Compare reached counts/times to T305 without summing nested scopes. Save actual failure or PASS and cleanup; no unchanged retry.
+
+## T311 / acceptance
+
+Separate independent review of coherent diff/tests/evidence; address confirmed findings. Verify remote SHA and clean recovery. Unit seam proves policy only; physical tests and original owner flow establish integration. No full-suite/five-test/Linux run or compatibility migration. Keep diagnostic data and previous failures.
+
+## Consistency / review focus
+
+SEAM-1/2→T309; SEAM-3→T309/310; DEDUP-1→T309/310; DEDUP-3/4/5→T309/310/311. Shared interface: test policy→real private adapter must use real validators, same timings and post-exit finalization. Source changes→T310 seed must be genuinely regenerated, never rebound. Review callback exception/suspension order, unchanged authority issuance, production timer scope and category sufficiency. No unresolved design decision blocks this bounded implementation; latest user explicitly removes expensive-fixture-only restriction.
+
+Ruling: replace reviewed prototype with shared internal test seams — user explicitly authorized test support; preserves real integrity while avoiding repeated setup. Risk if wrong: policy tests could miss an adapter error, mitigated by independent source review and one original integration. Existing prototype/source42 evidence stays historical.
+
+---
+
 # CRASH5 — plan13: adjacent duplicate validation proposal
 
 Source: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Canonical [spec15](spec.md), [tasks](tasks.md). Base `cd63d22002784770532eea0d07de93a50b1f88d8`. Status: user approved c1fa2bbc with «давай»; T309 executing. DEDUP-2 is deferred; the first code block implements only DEDUP-1.

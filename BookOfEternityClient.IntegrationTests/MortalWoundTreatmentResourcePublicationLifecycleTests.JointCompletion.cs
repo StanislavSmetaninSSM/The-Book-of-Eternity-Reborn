@@ -67,15 +67,11 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// An optional existing probe of actual interface publication and completion boundaries.
     /// </param>
     /// <param name="sourceSeed">
-    /// Detached metadata from a checked materialized source42 copy for an explicit live consumer;
+    /// Detached metadata from a checked materialized source42 copy for the explicit live crash consumer;
     /// <see langword="null"/> runs the original genuine source-turn path.
     /// </param>
-    /// <param name="validationDedupProbe">
-    /// An optional component probe that checks the first actual resource validation before common publication;
-    /// <see langword="null"/> preserves all ordinary completion assertions.
-    /// </param>
     /// <returns>
-    /// Completion after the selected actual lifecycle or explicit resource component and its state assertions.
+    /// Completion after the selected actual lifecycle and its original state assertions.
     /// </returns>
     private async Task RunJointCompletionControlAsync(bool nonzeroProgression, bool pauseAppliedForCold = false, bool pauseUnappliedForCold = false,
         string? refusalScenario = null, bool newPhysicalRootForCold = false, string? activeTailScenario = null,
@@ -83,8 +79,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Action<AcceptedMechanicsPlan?>? observeSettledCommonPlan = null,
         bool postOriginalAutomaticSubmission = false, Action<GameEngine>? attachActualOwnerProbe = null,
         JointCaptureCutProbe? currentCaptureProbe = null,
-        JointInterfaceLifecycleProbe? interfaceLifecycleProbe = null, JointInterfaceCrashSeedMetadata? sourceSeed = null,
-        JointValidationDedupProbe? validationDedupProbe = null)
+        JointInterfaceLifecycleProbe? interfaceLifecycleProbe = null, JointInterfaceCrashSeedMetadata? sourceSeed = null)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         string sourceSessionId;
@@ -214,7 +209,6 @@ public sealed partial class GameEngineTurnLifecycleTests
         attachActualOwnerProbe?.Invoke(engine);
         currentCaptureProbe?.Attach(engine);
         interfaceLifecycleProbe?.Attach(engine);
-        validationDedupProbe?.Attach(engine);
         GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(sourceSessionId, 42);
         interfaceLifecycleProbe?.ConfigureBeforeOriginal();
         await GetPrivateField<StateManager>(engine, "_stateManager").RefreshGameStateAsync();
@@ -509,11 +503,6 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal(before[path], dispatch.Images[path]);
         Assert.Equal(signedOriginalSchedule, dispatch.Images[ProgressionScheduleService.SchedulePath]);
         Assert.Equal(1, repairReplies);
-        if (validationDedupProbe is not null)
-        {
-            validationDedupProbe.AssertStopped(engine, failure);
-            return; // Explicit component scope; ordinary completion assertions remain below.
-        }
         if (currentCaptureProbe is { StopRequested: true })
         {
             currentCaptureProbe.AssertStopped(engine);

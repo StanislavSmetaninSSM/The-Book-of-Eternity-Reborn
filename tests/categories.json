@@ -3,53 +3,54 @@
     "categories": [
 {
   "id": "fr063-joint-validation-dedup-contracts",
-  "responsibility": "First actual resource call in genuine seeded Stage43/current owner: two baseline barriers both inside QTE, controlled existing read-hook stop before common publication, exact no-write/owner-close/cleanup proof.",
-  "excludes": "Explicit only; requires a strictly matching genuine source42 artifact. No source fallback, fake issuer, DEDUP-2/sealing coverage, full restoration/gameplay PASS, crash-process or Linux qualification. All produced diagnostics retained without quotas.",
+  "responsibility": "Shared production policy: exactly two baseline checks at QTE entry/exit, one compute and comparison, including genuine async suspension.",
+  "excludes": "No game setup, source42 seed, real file tamper or authority issuance claim, full restoration, DEDUP-2, crash/native qualification or diagnostic quotas. Physical reader contracts and original seeded cut0 are separate.",
   "changeHints": [
+    "BookOfEternityClient/Services/JointRepairValidationCoordinator.cs",
     "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairResources.cs",
-    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointValidationDedupTests.cs",
-    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs"
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairQteContribution.cs",
+    "BookOfEternityClient.Tests/JointRepairValidationCoordinatorTests.cs"
   ],
   "related": [],
   "requirements": {
     "frontendBuild": false,
-    "exclusive": true,
-    "ciRunner": "windows-latest"
+    "exclusive": false
   },
-  "timeoutMinutes": 5,
+  "timeoutMinutes": 1,
   "expectedSeconds": null,
   "selectors": [
     {
-      "project": "integration",
+      "project": "unit",
       "tests": [
-        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointValidation_ResourceChecksBaselineExactlyTwiceInsideQte"
+        "BookOfEternityClient.Tests.JointRepairValidationCoordinatorTests.Resource_UsesExactlyTwoBaselineChecks"
       ]
     }
   ]
 },
 {
   "id": "fr063-joint-validation-dedup-refusals",
-  "responsibility": "Genuine independent seeded Stage43/current-owner roots: changed current bytes at QTE entry and changed guarded absence during a real QTE read must be refused at retained entry/exit baselines without common publication or input restoration.",
-  "excludes": "Explicit only; requires a strictly matching genuine source42 artifact. No source fallback, fake issuer, DEDUP-2/sealing coverage, full restoration/gameplay PASS, crash-process or Linux qualification. All produced diagnostics retained without quotas.",
+  "responsibility": "Shared production policy: substituted data drift at entry/exit and seal/compute/baseline/compare failure ordering and exact exception propagation, sync and suspended callbacks.",
+  "excludes": "No game setup, source42 seed, real file tamper or authority issuance claim, full restoration, DEDUP-2, crash/native qualification or diagnostic quotas. Physical reader contracts and original seeded cut0 are separate.",
   "changeHints": [
+    "BookOfEternityClient/Services/JointRepairValidationCoordinator.cs",
     "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairResources.cs",
-    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointValidationDedupTests.cs",
-    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs"
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairQteContribution.cs",
+    "BookOfEternityClient.Tests/JointRepairValidationCoordinatorTests.cs"
   ],
   "related": [],
   "requirements": {
     "frontendBuild": false,
-    "exclusive": true,
-    "ciRunner": "windows-latest"
+    "exclusive": false
   },
-  "timeoutMinutes": 10,
+  "timeoutMinutes": 1,
   "expectedSeconds": null,
   "selectors": [
     {
-      "project": "integration",
+      "project": "unit",
       "tests": [
-        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointValidation_QteEntryRefusesChangedBeforeImage",
-        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointValidation_QteExitRefusesChangedAbsence"
+        "BookOfEternityClient.Tests.JointRepairValidationCoordinatorTests.Resource_RefusesEntryAndExitDrift",
+        "BookOfEternityClient.Tests.JointRepairValidationCoordinatorTests.Qte_PropagatesFailureWithoutLaterOperations",
+        "BookOfEternityClient.Tests.JointRepairValidationCoordinatorTests.Resource_PropagatesSealAndComparisonFailure"
       ]
     }
   ]
