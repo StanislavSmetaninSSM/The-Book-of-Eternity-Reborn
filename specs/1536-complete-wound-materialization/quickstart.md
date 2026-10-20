@@ -1,3 +1,11 @@
+# T309 executing — genuine resource validation controls
+
+T309 test SOURCE/PREP at710ea5d1054941acbbb513e4ccef7c4f676f92cc: integrationXML49.231284s/unitXML11.8584231s, both0errors; changed/new XML has no new warning, baseline10901/5757 warnings retained. Catalog843/11940methods valid; selected5descriptors/41cases and explicitgenerator+cut0 2cases planned,0tests executed. Three DLL/source versions and every37indexed PREP member/CRC/SHA verified; T309-tests-prep.json/zip. Product source unchanged; causal RED and both refusal controls are NOT RUN. Current849seed is historical for this integration closure. Independent test SOURCE/PREP review pending before one genuine RED-source generator; no component or profile execution yet.
+
+[Spec15](spec.md), [plan13](plan.md), [tasks](tasks.md), [PREP](recovery/crash5/T309-tests-prep.json). User approved c1fa2bbc with «давай». DEDUP-2 remains deferred, diagnostics unlimited.
+
+---
+
 # Current proposal — spec15 / plan13
 
 The user asks what to change after measured T306. [Spec15](spec.md), [plan13](plan.md), [tasks T307–311](tasks.md) propose only adjacent duplicate wrapper removal: preserve both QTE baseline boundaries; conditionally reuse the immediately preceding final candidate-bounds validation. No validation cache/new authority/per-read bypass. Expected common baseline24→16→14 is a source prediction, not measured performance. DEDUP-2 and the genuine focused test fixture remain engineering gates. Independent gpt-6-astra/high [design review](recovery/crash5/T308-proposal-review.json) ACCEPTED the bounded recommendation and22-file clean recovery, with no findings. DEDUP-1 is the first recommendation; DEDUP-2 deletion is explicitly not yet proven/accepted. No code/build/test/generator run in this step; unlimited diagnostics and all actual outcomes below remain.

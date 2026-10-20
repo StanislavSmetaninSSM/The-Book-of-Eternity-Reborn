@@ -14,6 +14,8 @@ The owner needs faster real restoration with the same accepted-turn, source, pub
 
 Independent gpt-6-astra/high [review](recovery/crash5/T308-proposal-review.json) accepted this bounded recommendation atb2260c72 and22-file clean remote recovery. DEDUP-1 is supported as the first seam; DEDUP-2 deletion is not yet proven or accepted. No implementation/performance acceptance.
 
+T309 test SOURCE/PREP at710ea5d1054941acbbb513e4ccef7c4f676f92cc: integrationXML49.231284s/unitXML11.8584231s, both0errors; changed/new XML has no new warning, baseline10901/5757 warnings retained. Catalog843/11940methods valid; selected5descriptors/41cases and explicitgenerator+cut0 2cases planned,0tests executed. Three DLL/source versions and every37indexed PREP member/CRC/SHA verified; T309-tests-prep.json/zip. Product source unchanged; causal RED and both refusal controls are NOT RUN. Current849seed is historical for this integration closure. Independent test SOURCE/PREP review pending before one genuine RED-source generator; no component or profile execution yet.
+
 ## Expected effect and acceptance
 
 T305's common-plan trace contains eight resource checks and 24 baseline checks. DEDUP-1 alone removes eight of those baseline passes: the same path would have 16. If the successful DEDUP-2 seam is proven, it removes one resource check and its remaining two baseline passes: seven resource checks and 14 baseline checks. These are source-derived predictions for that same path, not executed counts, guaranteed wall-time savings or a claim that the 600-second timeout is solved. Pure calculation is already only 1.469s; leave it alone in this block.

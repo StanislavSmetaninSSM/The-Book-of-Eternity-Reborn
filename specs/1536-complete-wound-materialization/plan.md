@@ -39,6 +39,8 @@ Pre-flight: T309 test probe/default-null fixture branch→T310 original consumer
 
 Before executing T309, resolve the test seam and re-evaluate affected categories/selection. This planning step runs only the existing Spec Kit setup/prerequisite scripts and offline document/source consistency checks. It does not build or execute tests. Every implementation task preserves DEDUP-3/4; all future runtime steps require the stated evidence gates, not another user permission wait.
 
+T309 test SOURCE/PREP at710ea5d1054941acbbb513e4ccef7c4f676f92cc: integrationXML49.231284s/unitXML11.8584231s, both0errors; changed/new XML has no new warning, baseline10901/5757 warnings retained. Catalog843/11940methods valid; selected5descriptors/41cases and explicitgenerator+cut0 2cases planned,0tests executed. Three DLL/source versions and every37indexed PREP member/CRC/SHA verified; T309-tests-prep.json/zip. Product source unchanged; causal RED and both refusal controls are NOT RUN. Current849seed is historical for this integration closure. Independent test SOURCE/PREP review pending before one genuine RED-source generator; no component or profile execution yet.
+
 ## Consistency and limits
 
 DEDUP-1/2→T307/T308/T309; DEDUP-3→T308/T309/T311; DEDUP-4→all tasks/T310; DEDUP-5→T309/T310/T311. Existing original Windows five remain 0/5 PASS, T305 FAIL and Linux locally UNRUN. The new source-derived count prediction is not an executed result. No cross-platform speedup or system/scanner cause is claimed. No GM/player contract change, deployment, PR, issue closure or external message.
