@@ -9,6 +9,6 @@
 - [x] setup-plan/setup-tasks/check-prerequisites выполнены в существующей feature1536. Локальный check-prerequisites не поддерживает RequireSpec; использован RequireTasks/IncludeTasks, spec.md проверен напрямую.
 - [x] before_specify git-feature extension относится к созданию новой feature и требует один вызов на feature; существующая ветка и feature.json переиспользованы по user instruction. Optional git commit/context hooks не меняют AGENTS.md; сохранение выполняется явным commit/push/readback.
 - [x] Constitution: issue1536 traceability; own mutable state; no production/game/GM contract changes; tests-first потребуется при будущей реализации. Текущий deliverable — source-only investigation/design.
-- [ ] Независимое ревью и GitHub recovery T268 завершены.
+- [x] Независимое gpt-6-astra/high ревью принято на04c6a9bbc без замечаний; GitHub recovery T268: 10 files, clean/exactHEAD/all blobs.
 
 Bridge equivalent speckit-analyze: требования, план, tasks и границы verification согласованы; непроверенные runtime свойства помечены gates, не заменены положительным выводом. Весь проект проверяется одним coherent review.

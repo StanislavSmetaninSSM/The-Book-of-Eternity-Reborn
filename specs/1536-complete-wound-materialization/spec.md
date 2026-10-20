@@ -1,5 +1,7 @@
 # CRASH5 — spec10: короткие проверки, проект fixture cut0
 
+T268: independent gpt-6-astra/high accepted source-only spec10/plan8 at04c6a9bbced0ee2a634c48b1f3557a931c43777b, no actionable findings. Fresh GitHub recovery verified 10 design/governance files, exact clean HEAD and all blobs; T268-design-recovery.json. No code/tests/builds/generator/runtime actions or new performance/portability/PASS claim.
+
 Источник: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Пользователь одобрил карту пяти случаев и проект минимальной фикстуры после T263FAIL. Сейчас результат — проверенный по исходникам проект; реализация, генерация образа и тестовые запуски не входят в этот блок. Прежний отказ от промежуточных согласований действует.
 
 ## Результат и границы

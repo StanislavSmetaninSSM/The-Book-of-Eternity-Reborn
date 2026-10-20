@@ -1,5 +1,7 @@
 # CRASH5 — plan8: карта пяти случаев и fixture cut0
 
+T268: independent gpt-6-astra/high accepted source-only spec10/plan8 at04c6a9bbced0ee2a634c48b1f3557a931c43777b, no actionable findings. Fresh GitHub recovery verified 10 design/governance files, exact clean HEAD and all blobs; T268-design-recovery.json. No code/tests/builds/generator/runtime actions or new performance/portability/PASS claim.
+
 Источник: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Canonical [spec10](spec.md), [tasks T266…T268](tasks.md). Это проект по исходникам; код, fixture artifacts и runtime не изменяются. User approval запросов не требует по ранее данному waiver.
 
 **Goal:** сократить повторяемую подготовку crash-проверок и сохранить проверяемый смысл восстановления. **Architecture:** отделить подлинное завершённое состояние source42 от новой Stage43, аварии и нового current owner. Неизменяемый source42 seed — предлагаемый вариант, допуск зависит от проверок переносимости, изоляции и измеренной пользы. **Stack:** существующие C#/.NET8 test helpers, FileSystemManager и NativeLineage/Windows ownership. Родитель ведёт проект; отдельный gpt-6-astra/high проверяет сложные контракты состояния.

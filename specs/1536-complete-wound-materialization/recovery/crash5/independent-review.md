@@ -1,3 +1,11 @@
+# T268 — source-only fixture design accepted
+
+T268: independent gpt-6-astra/high accepted source-only spec10/plan8 at04c6a9bbced0ee2a634c48b1f3557a931c43777b, no actionable findings. Fresh GitHub recovery verified 10 design/governance files, exact clean HEAD and all blobs; T268-design-recovery.json. No code/tests/builds/generator/runtime actions or new performance/portability/PASS claim.
+
+Reviewer checked all five cuts/oracles against actual source, genuine source42→Stage43 boundary, detached data vs current authority, real exit73/new-owner/mechanical/culture/held/error/repeat/native contracts. Residual gates remain: closed inventory, Windows copies, constructor adoption without overwrite, fingerprint closure, isolation and measured benefit. T263 resumer timeout remains unresolved; seed reuse alone does not establish a short passing crash test.
+
+---
+
 # T265 — failure evidence and recovery accepted
 
 T265 accepted by separate gpt-6.1-sol/xhigh at af7047267e1d4507900c6d72480fac25833eea81, including inspected historical-status correction. Raw failure, calculated405.8908437s remaining wait,3DLL,EOF/join,cleanup and306-file clean GitHub recovery verified. Windows0/5PASS; T264 stopped, original220 five NOT_RERUN, LinuxUNRUN.

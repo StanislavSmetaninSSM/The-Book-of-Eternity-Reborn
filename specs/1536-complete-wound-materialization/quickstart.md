@@ -1,6 +1,6 @@
 # Текущий этап: spec10 / plan8 — проект коротких проверок
 
-Пользователь одобрил карту пяти crash cases и проект минимальной fixture cut0. [Spec10](spec.md), [plan8](plan.md), [tasks T266…T268](tasks.md). Предлагается immutable source42 seed из genuine gameplay, отдельная физическая копия на case, прежние Stage43/crash/current-owner oracles. Это проект, не реализованная fixture: portability/quiescence/contract fingerprint/измеренная польза — gates следующего slice. Новых tests/build/generator/runtime нет. Independent review pending. Windows0/5PASS, T263FAIL, LinuxUNRUN.
+Пользователь одобрил карту пяти crash cases и проект минимальной fixture cut0. [Spec10](spec.md), [plan8](plan.md), [tasks T266…T268](tasks.md). Предлагается immutable source42 seed из genuine gameplay, отдельная физическая копия на case, прежние Stage43/crash/current-owner oracles. Это проект, не реализованная fixture: portability/quiescence/contract fingerprint/измеренная польза — gates следующего slice. Новых tests/build/generator/runtime нет. Independent gpt-6-astra/high accepted04c6a9bbc; 10 design/governance files recovered clean from GitHub (T268-design-recovery.json). Windows0/5PASS, T263FAIL, LinuxUNRUN.
 
 ---
 

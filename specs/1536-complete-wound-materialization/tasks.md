@@ -4,7 +4,7 @@
 
 - [x] T266 [US2] Составить карту пяти фактических crash boundaries, обязательных игровых/process assertions и подготовительных зависимостей. Обосновать границу cut0 fixture и сравнить варианты сокращения подготовки по исходникам. Evidence: plan8 map с code anchors, source42/Stage43 boundary и три варианта; live/seed/component coverage различены.
 - [x] T267 [US2] Записать конкретный проект cut0 fixture: выдача подлинного начального состояния, независимая копия/владение, штатная Stage43, реальный exit73, новый current owner, отрицательные контроли и раздельная стоимость. Отметить проверки осуществимости и неподтверждённую скорость. Implementation/runtime не входят в текущий блок. Evidence: plan8 seed schema/file/interfaces/export/import, five future gates; нет claims переноса или speedup.
-- [ ] T268 [US3] Проверить spec10/plan8/tasks на согласованность, провести независимое ревью всего проекта, устранить подтверждённые замечания; сохранить commit/push/readback и проверить восстановление изменённых документов из GitHub. Старые FAIL и LinuxUNRUN сохраняются.
+- [x] T268 [US3] Проверить spec10/plan8/tasks на согласованность, провести независимое ревью всего проекта, устранить подтверждённые замечания; сохранить commit/push/readback и проверить восстановление изменённых документов из GitHub. Старые FAIL и LinuxUNRUN сохраняются. Evidence: Astra/high accepted04c6a9bbc, 10 clean recovered files; recovery/crash5/T268-design-recovery.json.
 
 Dependencies:T266→T267→T268. Реализация/генерация fixture/любой запуск потребуют последующего implementation slice; этот проект не квалифицирует новые тесты.
 
