@@ -1,10 +1,22 @@
+# CRASH5 — spec15 revision8 / plan13 revision8: corrected original seeded gate
+
+Issue1536; [spec](spec.md), [plan](plan.md). Accepted source d41f80f347, correction final review b9886d150. Standing autonomous continuation applies.
+
+- [ ] T322 [US1] Actual Spec Kit phases/consistency/exact2casePlanOnly, one genuine final-source42 generation/export/two-import qualification, full original ddadb preservation, producing-byte recipes/Git-exact publication and independent binding review.
+- [ ] T323 [US2] One original seededWindowscut0 under existing820/600/15m policy; preserve all ordinary assertions/owners/inert-repeats and complete raw diagnostics/cleanup-entry DATA/input/binary/seed/cleanup evidence. No unchanged retry.
+- [ ] T324 [US3] Analyze actual outcome/reached counts and unfinished boundaries; independent evidence review/remote recovery, then next written Windows/Linux qualification or cause-driven component correction. Never stop at an intermediate report while useful work remains.
+
+Dependencies acceptedT321→T322generation/bindingreview→T323→T324→next tracked work. OriginalcoldWindowsfive0/5/LinuxUNRUN and historicalT315FAIL remain unchanged until their own qualification. No diagnostic quotas, broad run, timeout/OS/process change or historical source42 rebinding.
+
+---
+
 # CRASH5 — spec15 revision7 / plan13 revision7: local story readback reuse
 
 Issue1536; [spec](spec.md), [plan](plan.md). Standing autonomous execution/review-wait waiver retained.
 
 - [x] T319 [US1] Separate Astra/high accepted T318 evidence without findings; authenticated same-call readback ruling/callback/failure constraints recorded in spec15r7/plan13r7 and T318-final-review.json. Actual Spec Kit plan/tasks/prerequisite phases and T319 consistency before code.
 - [x] T320 [US1/US2] Actual4v3causalRED/2negativePASS; pure12FAIL→12PASS. Shared exact predicate/localreadback reuse atd41f80f347; all other guards retained. XML0errors/nointroducedwarnings, catalog851/11963/15casePlanOnly,4DLLbinding/186Gitblobs. Separate Astra/high SOURCE/PREP accepted3ff8b730 without findings; T320-prep/red/source-review. Three actualGREEN cases remainT321/unrun.
-- [ ] T321 [US3] Changed actual three service cases once: source3/2counts, append/repeat/laterdrift/narrative/readback/foreign-owner refusals, complete uncapped diagnostics, input/binary preservation/owned cleanup. Independent final review then continue original recovery gate; no intermediate stop.
+- [x] T321 [US3] Actual3/3PASS/source3/2counts/740uncappedrecords/370pairedintervals/0unfinished; actual refusals/3rootsabsent/input/4DLLunchanged. Separate Astra/high finalreview accepted b9886d150 without findings/190exactGitblobs; T321-final-review.json. Correction qualified only; nextgenuine source42/originalgate T322–324.
 
 Dependencies T318review→T319riskresolution→T320RED/implementation/PREP→review→T321→genuine matching source42/original qualification. T315FAIL/open, originalWindowsfive0/5, LinuxUNRUN unchanged. No new process mechanism, diagnostic quota, broad suite or timeout increase.
 

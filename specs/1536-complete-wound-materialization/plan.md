@@ -1,3 +1,16 @@
+# CRASH5 — plan13 revision8: qualify the corrected original seeded flow
+
+Spec15r8, issue1536, tasksT322–324; original T315 historical failure remains immutable. Source d41f80f347 remains exactly the accepted code and compiled DLL set; metadata/fixture publication does not recompile or rebind old seed. Existing dedicated branch/checkout, process owner and review-wait waiver retained.
+
+1. T322 setup: actual Spec Kit plan/tasks/prerequisite phases and consistency. Exact PlanOnly of fr063-joint-interface-seed-generation + fr063-joint-interface-seeded-windows-cut0 (2cases/0executed); existing catalog851/11963 and accepted builds retained, no unrelated rerun. Save remote checkpoint/clean recovery before generation.
+2. T322 generate once using the existing category6min and final3case acceptance guard. Archive actual run/result/DATA; independently verify full manifest/payload/directories and actual two-copy/source cleanup. Reconstruct producing-input fingerprint from exact current working bytes and Gitblob recipes; record actual counts/version, no portability claim. Only after qualification, move complete historical ddadb artifact plus source-record into a checked repository-local archive and verify every retained byte; old durable T317generatorZIP/Git history unchanged. Publish new artifact/source record, exactGit text-unset attributes/hashes, create new binding. Separate Astra/high binding review before original execution.
+3. T323 original seeded cut0 once after accepted binding under unchanged shared820/max600/category15m. Existing producer73/newresumer and ordinary owning completion remain; fixture-only acquisition is disabled. Existing cleanup-entry observer preserves actual DATA if reached. No new fault mode, dummy proof, killer, reduced assertion, raised timeout or all-tests run. Save all stdout/stderr/TRX/raw/diagnostics/exports and full binding/cleanup observations on either outcome.
+4. T324 analyze completed costs/reached and unfinished boundaries, compare call counts without nested double counting; independent final evidence review and remote recovery. If FAIL, use new evidence/DATA for the next smallest real component and cause-driven correction; if PASS, write remaining Windows/Linux qualification work before executing it. Do not mark original cold-five or Linux passed from this gate.
+
+No production code or gameplay/GM-authored schema change: prompts/examples require no update. Tests/selection.json remains the bounded correction's CI selection; generator/seeded gate are explicit manual opt-in categories excluded from default CI by their existing contracts. Acceptance is source-matching export/import evidence plus actual original seeded result/integrity/owned cleanup, not component counts alone.
+
+---
+
 # CRASH5 — plan13 revision7: remove one repeated story-source read
 
 Spec15r7, issue1536, tasksT319–321; dedicated checkout/branch retained. Apply writing-plans/executing-plans/TDD/systematic-debugging and separate Astra/high review. No GM prompt/example update: private client proof comparison only, no game authored contract or schema change.

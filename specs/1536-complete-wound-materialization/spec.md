@@ -1,3 +1,15 @@
+# CRASH5 — spec15 revision8: final-source original seeded recovery gate
+
+Issue1536. Separate Astra/high accepted the T320/321 correction atb9886d150; code d41f80f347a4764164de866a2c5ae7a100f373cc. Actual3servicePASS/source3/2reads/full740records/370intervals/three roots absent. This is bounded component acceptance; historical T315 remainsFAIL/open, original coldWindowsfive0/5qualified, LinuxUNRUN.
+
+- GATE-1 / US1: generate genuine source42 once with the accepted current executable source and current exact producing-input fingerprint. Verify actual export/two independent imports/source cleanup, bytes/directories/generation/build provenance and every producing input recipe. Preserve whole historical ddadb artifact/source record before publishing the new one, after new generation qualifies. No historical seed rebinding or automatic fallback. Publish Git-exact DATA and independently review its binding before use.
+- GATE-2 / US2: one original seeded Windows cut0 through existing real producer/current-owner protocol after accepted final source and matching DATA. Retain all ordinary gameplay/story/projection/terminal/inert-repeat, integrity/refusal/ownership/EOF/join/cleanup assertions. Preserve all raw diagnostics and existing cleanup-entry DATA capture if reached. Shared820seconds/max600perchild/category15minutes unchanged; generator category6minutes unchanged. No alternative process owner, native change or OS/security settings.
+- GATE-3 / US3: preserve actual PASS/FAIL, complete timing records including unfinished scopes, all exports and input/DLL/seed/owned-root evidence. Independent review and clean remote recovery remain required. A seeded cut0 PASS qualifies that explicit gate only, never the original cold-five or Linux. On failure continue from the new causal boundary/available real DATA; no unchanged rerun, timer quota, increased budget or intermediate stop. Later dependent scope is written after the actual result.
+
+This continues the already agreed original gate in revisions4/7; no production implementation is added. Existing test entrypoints/category selection suffice, no GM/player/schema/prompt/example change. Standing autonomous-execution/review-wait waiver applies. Original cold-five/Linux remain explicit separate acceptance work.
+
+---
+
 # CRASH5 — spec15 revision7: reuse the authenticated story readback locally
 
 Issue1536. T318 actual2/2PASS establishes append4source reads/41.477s and repeat3reads/30.708s; copy+lease about1s. See recovery/crash5/T318-findings.md and immutable raw evidence. Original recovery remains FAIL/open; diagnostics unlimited.
