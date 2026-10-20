@@ -38,9 +38,11 @@ def records(raw):
     return result
 
 
-def build_report(repo, verify_live=False):
+def build_report(repo, verify_live=False, report_prefix="T302"):
     evidence = repo / "specs/1536-complete-wound-materialization/recovery/crash5"
-    stem = "T301-profile-cut0"
+    measurement, preparation = {"T302": ("T301", "T300"), "T306": ("T305", "T303")}[report_prefix]
+    generation = "T301" if report_prefix == "T302" else "T304"
+    stem = measurement + "-profile-cut0"
     outcome = load(evidence / (stem + "-outcome.json"))
     archive_path = evidence / (stem + "-raw.zip")
     assert digest(archive_path.read_bytes()) == outcome["ArchiveSHA256"]
@@ -55,8 +57,8 @@ def build_report(repo, verify_live=False):
                 raw = archive.read(member)
                 archive_index.append({"Path": member.filename, "Bytes": len(raw), "SHA256": digest(raw)})
         assert json.loads(archive.read("summary.json")) == outcome["Summary"]
-        assert json.loads(archive.read("T301-seed-binding.json")) == outcome["SeedBinding"]
-        prep = json.loads(archive.read("T300-prep.json"))
+        assert json.loads(archive.read(generation + "-seed-binding.json")) == outcome["SeedBinding"]
+        prep = json.loads(archive.read(preparation + "-prep.json"))
         assert prep["Binding"]["CompiledSource"] == outcome["CompiledSource"]
         ns = {"t": "http://microsoft.com/schemas/VisualStudio/TeamTest/2010"}
         results = []
@@ -85,15 +87,13 @@ def build_report(repo, verify_live=False):
     assert samples, "The actual resumer emitted no named timing records"
     assert not any(x.get("Boundary") == "joint_operation_timing" for x in records(children[0].get("RawStdout") or ""))
 
-    source_paths = [
-        "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
-        "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs",
-        "BookOfEternityClient/Services/MortalJointRepairCheckpoint.cs",
-        "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentPublication.cs",
-        "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
-        "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
-        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
-    ]
+    source_prefix = outcome["CompiledSource"] + ":"
+    matching = subprocess.check_output([
+        "git", "grep", "--name-only", "-F", 'MeasureOperation("', outcome["CompiledSource"], "--",
+        "BookOfEternityClient", "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+    ], cwd=repo, encoding="utf-8").splitlines()
+    assert matching and all(x.startswith(source_prefix) for x in matching)
+    source_paths = [x[len(source_prefix):] for x in matching]
     locations = {}
     for path in source_paths:
         source_bytes = subprocess.check_output(["git", "show", outcome["CompiledSource"] + ":" + path], cwd=repo)
@@ -169,7 +169,7 @@ def build_report(repo, verify_live=False):
             path = repo / binary["Path"]
             assert path.stat().st_size == binary["Bytes"] and digest(path.read_bytes()) == binary["SHA256"]
     seed = outcome["SeedBinding"]
-    generated_archive = evidence / "T301-generator.zip"
+    generated_archive = evidence / (generation + "-generator.zip")
     assert digest(generated_archive.read_bytes()) == seed["GeneratorArchiveSHA256"]
     with zipfile.ZipFile(generated_archive) as source_zip:
         assert source_zip.testzip() is None
@@ -225,9 +225,9 @@ def build_report(repo, verify_live=False):
     return report
 
 
-def markdown(report):
+def markdown(report, report_prefix="T302"):
     lines = [
-        "# Именованные замеры восстановления — T302", "",
+        "# Именованные замеры восстановления — " + report_prefix, "",
         f"Один фактический запуск: `{report['Run']}`. Результат случая: **{report['CaseOutcome']}**; "
         f"тест {report['TestDuration']}, весь запуск {report['RunnerWallTime']}.", "",
         f"Исходники: `{report['CompiledSource']}`; сохранённое состояние запуска: `{report['MetadataHead']}`. "
@@ -260,7 +260,7 @@ def markdown(report):
               "Извлечённые потоки побайтно сверены с TRX внутри архива; CRC, уникальность имён и SHA-256 каждого файла архива проверены. "
               "Три DLL сверены родительским отчётом до и после запуска; файлы исходного снимка повторно сверены в сохранённом генераторском архиве.", "",
               f"Сырой архив: [{report['RawArchive']}]({report['RawArchive']}); SHA-256 `{report['RawArchiveSHA256']}`. "
-              "Полные интервалы, ссылки на строки исходников и индекс архива: [T302-timings.json](T302-timings.json).", "",
+              f"Полные интервалы, ссылки на строки исходников и индекс архива: [{report_prefix}-timings.json]({report_prefix}-timings.json).", "",
               f"EOF/join обоих процессов: {report['ChildrenEofAndJoined']}; ошибок завершения контейнеров: {len(report['ChildrenCleanupFailures'])}; "
               f"отчётов с игровым результатом: {report['ParentGameReportCount']}.", ""]
     last_stage = report["LastIndependentStageRecord"]
@@ -281,14 +281,15 @@ def main():
     parser.add_argument("--repo", type=Path, default=Path(__file__).resolve().parents[5])
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--verify-live", action="store_true", help="Additionally verify currently installed DLLs and fixture bytes; omit for historical offline reconstruction")
+    parser.add_argument("--report", choices=("T302", "T306"), default="T302", help="Select the saved measurement; never executes or retries it")
     parser.add_argument("--refresh-derived", action="store_true", help="Refresh only derived reports after an offline report clarification; never changes raw evidence")
     args = parser.parse_args()
     assert not (args.check and args.refresh_derived)
-    report = build_report(args.repo, args.verify_live)
+    report = build_report(args.repo, args.verify_live, args.report)
     output = args.repo / "specs/1536-complete-wound-materialization/recovery/crash5"
-    json_path = output / "T302-timings.json"
-    md_path = output / "T302-timings.md"
-    content = markdown(report)
+    json_path = output / (args.report + "-timings.json")
+    md_path = output / (args.report + "-timings.md")
+    content = markdown(report, args.report)
     if args.check:
         assert load(json_path) == report
         assert md_path.read_text(encoding="utf-8-sig") == content
