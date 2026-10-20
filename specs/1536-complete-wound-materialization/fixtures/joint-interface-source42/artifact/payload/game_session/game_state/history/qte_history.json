@@ -1,0 +1,11 @@
+﻿[
+  {
+    "qteId": "qte_physical_injury_admission",
+    "title": "Обвал",
+    "acceptedAtTurn": 42,
+    "finishedAtTurn": 42,
+    "outcomeId": "outcome_1",
+    "grade": "success",
+    "summary": "QTE[qte_physical_injury_admission] -> Каменный удар (Успех)"
+  }
+]

@@ -1,0 +1,19 @@
+﻿{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "woundId": "wound_test_torn_side",
+      "realm": "mortal_world",
+      "ownerKind": "player",
+      "ownerId": "player_current",
+      "carrierPath": "game_state/player/wounds.json",
+      "domain": "physical",
+      "status": "active",
+      "createdAtTurn": 42,
+      "createdEventRef": "turn_42:wound_opened",
+      "lastTransitionOrdinal": 1,
+      "terminalTransitionId": null,
+      "semanticFingerprint": "sha256:4fb2b7cc1b2cce02e9c3410216a35f70ea540dfc156ecf51ebe6f57e2185aa43"
+    }
+  ]
+}

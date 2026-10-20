@@ -1,0 +1,63 @@
+﻿{
+  "_note": "Автоматически вычислено клиентом. Используйте эти значения для проверок действий (Block 12).",
+  "playerLevel": 1,
+  "unspentStatPoints": 0,
+  "characteristics": {
+    "strength": 20,
+    "dexterity": 20,
+    "constitution": 20,
+    "intelligence": 20,
+    "wisdom": 20,
+    "faith": 20,
+    "attractiveness": 20,
+    "trade": 20,
+    "persuasion": 20,
+    "perception": 20,
+    "luck": 20,
+    "speed": 20
+  },
+  "permanentlyModifiedCharacteristics": {
+    "strength": 20,
+    "dexterity": 20,
+    "constitution": 20,
+    "intelligence": 20,
+    "wisdom": 20,
+    "faith": 20,
+    "attractiveness": 20,
+    "trade": 20,
+    "persuasion": 20,
+    "perception": 20,
+    "luck": 20,
+    "speed": 20
+  },
+  "modifiedCharacteristics": {
+    "strength": 20,
+    "dexterity": 20,
+    "constitution": 20,
+    "intelligence": 20,
+    "wisdom": 20,
+    "faith": 20,
+    "attractiveness": 20,
+    "trade": 20,
+    "persuasion": 20,
+    "perception": 20,
+    "luck": 20,
+    "speed": 20
+  },
+  "playerVisibleModifiedCharacteristics": {
+    "strength": 20,
+    "dexterity": 20,
+    "constitution": 20,
+    "intelligence": 20,
+    "wisdom": 20,
+    "faith": 20,
+    "attractiveness": 20,
+    "trade": 20,
+    "persuasion": 20,
+    "perception": 20,
+    "luck": 20,
+    "speed": 20
+  },
+  "breakdown": {},
+  "_lastComputed": "2026-10-20T03:36:15.2878864Z"
+}

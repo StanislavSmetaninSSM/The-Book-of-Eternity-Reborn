@@ -1,0 +1,23 @@
+{
+  "SchemaVersion": 1,
+  "CompiledSource": "f479d42a72f7412871e797575a1b1bd2c6dabd07",
+  "GeneratorMetadataHead": "2331b859d44019915de2c8eace369e603fad8c23",
+  "GeneratorRun": "20261020-133249-074-77740-0a79468d46ed478db5686d07d6e88419-categories",
+  "GeneratorRecord": "T278-generator.json",
+  "GeneratorArchiveSHA256": "A40C75EDF43C5FCF51185FB901F3242CD0EAAB621A9D900E27D6660B8425D369",
+  "ManifestSha256": "5439B2F49BCAB971F5B97EFFA238842E6D0A4B4ADD8B5F8FF27093BF9063BFCC",
+  "ContractFingerprint": "07644F81D8DFC1C36DBE14203EC8096AF9DA1F2C45702ACDE1A158975D653674",
+  "FileCount": 82,
+  "PayloadBytes": 513708,
+  "Metadata": {
+    "SessionId": "session_qte_story_append",
+    "RequestId": "934f532eb4374c75a8f6465ad55fa93a",
+    "SnapshotToken": "33A049A5A1CB7457797C9D6559DB299AD667FBBDC67822560E8FDBE69D0106FD",
+    "TurnNumber": 42,
+    "OpportunityRef": "mortal_wound_32d40518c105fb26afda15e5fa6cf77b63e2f032d8589221a32157a6856ca872",
+    "GenerationSha256": "FA313ABB68EF72898102BC2C62347C70F11A9E7CD90577184134C5ECCC4ED811",
+    "ProducerVersion": "1.0.0+f479d42a72f7412871e797575a1b1bd2c6dabd07",
+    "Culture": "en-GB"
+  },
+  "Scope": "Immutable genuine source42 DATA. No owners or authority transported; exact current source fingerprint required."
+}

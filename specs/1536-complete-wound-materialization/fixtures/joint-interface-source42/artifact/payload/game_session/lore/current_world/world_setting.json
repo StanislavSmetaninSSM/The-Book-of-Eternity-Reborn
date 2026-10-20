@@ -1,0 +1,27 @@
+{
+  "worldType": "medieval_fantasy",
+  "genre": "dark_fantasy_with_hope",
+  "tone": "serious_but_adventurous",
+  "setting": {
+    "name": "Королевство Валендрия",
+    "description": "Средневековое королевство на грани войны, где магия редка и ценна",
+    "currentYear": 1247,
+    "seasonalCycle": "Ранняя весна, время пробуждения"
+  },
+  "majorThemes": [
+    "Искупление через добрые дела",
+    "Цена магической силы", 
+    "Единство перед лицом тьмы",
+    "Мудрость простых людей"
+  ],
+  "conflictLevel": "moderate",
+  "magicPrevalence": "rare_but_powerful",
+  "technologyLevel": "late_medieval",
+  "politicalSituation": "kingdom_under_threat",
+  "currentCrisis": {
+    "name": "Нашествие Теней",
+    "description": "Темные существа проникают из северных пустошей",
+    "urgencyLevel": "growing",
+    "timeframe": "several_months_before_critical"
+  }
+}

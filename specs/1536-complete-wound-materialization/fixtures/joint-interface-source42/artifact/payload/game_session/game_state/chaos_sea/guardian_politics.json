@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "relations": [
+    {
+      "relationId": "azalia_seret_archive_pact_example",
+      "sourceGuardianId": "guardian_azalia",
+      "targetGuardianId": "guardian_seret",
+      "relationType": "alliance",
+      "attitudeScore": 62,
+      "visibility": "known",
+      "reason": "Обе Обители хотят защитить архивы от охотников памяти.",
+      "lastChangedTurn": 44,
+      "effects": [
+        "archive_route_protection",
+        "training_discount"
+      ]
+    },
+    {
+      "relationId": "azalia_wings_hidden_dependency_example",
+      "sourceGuardianId": "guardian_azalia",
+      "targetGuardianId": "system_guardian_wings_shadow",
+      "relationType": "hidden_dependency",
+      "attitudeScore": -35,
+      "visibility": "hidden",
+      "isPlayerVisible": false,
+      "reason": "GM-only: старый долг Азалии связан с белым пером, но reveal proof еще не найден.",
+      "lastChangedTurn": 45,
+      "effects": [
+        "do_not_reveal_saref_name",
+        "bias_memory_scene_pacing"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "projectId": "project_archive_pact_example",
+      "ownerGuardianId": "guardian_azalia",
+      "targetGuardianId": "guardian_seret",
+      "projectType": "alliance",
+      "status": "active",
+      "summary": "Азалия укрепляет пакт архивных Обителей.",
+      "currentProgress": 2,
+      "requiredProgress": 5,
+      "lastUpdatedTurn": 44,
+      "visibility": "known"
+    },
+    {
+      "projectId": "project_wings_debt_containment_example",
+      "ownerGuardianId": "guardian_azalia",
+      "targetGuardianId": "system_guardian_wings_shadow",
+      "projectType": "containment",
+      "status": "blocked",
+      "summary": "GM-only: Азалия ищет способ закрыть старый долг без раскрытия Сарефа.",
+      "currentProgress": 1,
+      "requiredProgress": 6,
+      "lastUpdatedTurn": 45,
+      "visibility": "gm_only"
+    }
+  ],
+  "influenceZones": [
+    {
+      "zoneId": "zone_silk_archive_example",
+      "guardianId": "guardian_azalia",
+      "scopeType": "abode",
+      "scopeId": "abode_azalia",
+      "displayName": "Шелковый Архив",
+      "influenceValue": 73,
+      "controlLevel": 58,
+      "visibility": "known",
+      "updatedAtTurn": 44
+    },
+    {
+      "zoneId": "zone_black_tide_hidden_debt_example",
+      "guardianId": "guardian_azalia",
+      "scopeType": "region",
+      "scopeId": "chaos_black_tide_region",
+      "displayName": "Черный прилив",
+      "influenceValue": 21,
+      "controlLevel": 12,
+      "visibility": "hidden",
+      "updatedAtTurn": 45
+    }
+  ],
+  "chronicle": [
+    {
+      "entryId": "chronicle_archive_pact_044_example",
+      "turnNumber": 44,
+      "eventType": "alliance",
+      "summary": "Азалия и Серет признали общий долг перед архивами.",
+      "visibility": "known",
+      "guardianIds": [
+        "guardian_azalia",
+        "guardian_seret"
+      ],
+      "consequences": [
+        "Обе Обители получают повод защищать архивные маршруты."
+      ]
+    },
+    {
+      "entryId": "chronicle_wings_debt_045_example",
+      "turnNumber": 45,
+      "eventType": "hidden_dependency",
+      "summary": "GM-only: у Азалии есть нераскрытый долг перед тенью белых перьев.",
+      "visibility": "gm_only",
+      "guardianIds": [
+        "guardian_azalia",
+        "system_guardian_wings_shadow"
+      ],
+      "consequences": [
+        "Не выводить детали в обычный /guardian_politics до reveal proof."
+      ]
+    }
+  ],
+  "playerRole": {
+    "roleId": "player_archive_witness",
+    "displayName": "Свидетель архивного пакта",
+    "visibility": "known",
+    "summary": "Игрок видел публичную часть союза Азалии и Серета."
+  },
+  "sarefLinks": [
+    {
+      "linkId": "saref_link_wings_debt_example",
+      "visibility": "hidden",
+      "sourceRelationId": "azalia_wings_hidden_dependency_example",
+      "evidenceLevel": "rumor",
+      "summary": "Private continuity: долг Азалии может быть связан с Крыльями Ангелов."
+    }
+  ],
+  "openConflicts": [
+    {
+      "conflictId": "conflict_archive_pact_vs_wings_debt_example",
+      "visibility": "gm_only",
+      "summary": "Публичный архивный пакт может столкнуться со скрытым долгом Азалии.",
+      "stakes": [
+        "Путь к сцене Воспоминание",
+        "Срок раскрытия белого пера"
+      ]
+    }
+  ]
+}

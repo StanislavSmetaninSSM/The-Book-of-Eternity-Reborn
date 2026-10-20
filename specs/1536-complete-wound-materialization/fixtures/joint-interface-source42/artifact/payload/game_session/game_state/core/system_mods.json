@@ -1,0 +1,40 @@
+﻿{
+  "modsDirectory": "mods",
+  "activeCount": 0,
+  "totalCount": 3,
+  "enabledSystemMods": [],
+  "activeMods": [],
+  "availableMods": [
+    {
+      "fileName": "example_system_mod.json",
+      "relativePath": "mods/example_system_mod.json",
+      "modId": "shining-abode-harmony",
+      "name": "Shining Abode Harmony",
+      "description": "Softens afterlife scenes toward peace, warmth, and fulfilled desires without changing core mechanics.",
+      "extension": ".json",
+      "lastModifiedUtc": "2026-10-19T06:04:36.3139452Z",
+      "enabled": false
+    },
+    {
+      "fileName": "example_system_mod.md",
+      "relativePath": "mods/example_system_mod.md",
+      "modId": "example-system-mod",
+      "name": "High Stakes Mortality",
+      "description": "Description",
+      "extension": ".md",
+      "lastModifiedUtc": "2026-10-19T06:04:36.3139452Z",
+      "enabled": false
+    },
+    {
+      "fileName": "example_system_mod.txt",
+      "relativePath": "mods/example_system_mod.txt",
+      "modId": "example-system-mod",
+      "name": "Shining Abode Harmony",
+      "description": "Описание:",
+      "extension": ".txt",
+      "lastModifiedUtc": "2026-10-19T06:04:36.3139452Z",
+      "enabled": false
+    }
+  ],
+  "_lastUpdated": "2026-10-20T03:33:23.9123422Z"
+}

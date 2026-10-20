@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "factions": [
+    {
+      "factionId": "faction_silver_lanterns",
+      "factionName": "Серебряные Фонари",
+      "chronicle": [
+        {
+          "entryId": "silver_lanterns_public_aid_045",
+          "turnNumber": 45,
+          "eventType": "public_aid",
+          "summary": "Серебряные Фонари открыли безопасный проход для потерянных резидентов.",
+          "visibility": "visible",
+          "consequences": [
+            "Игрок может просить фракцию о публичной помощи в Сияющей Обители."
+          ],
+          "occurredAtUtc": "2026-05-25T12:00:00Z"
+        },
+        {
+          "entryId": "silver_lanterns_hidden_oath_imprint_046",
+          "turnNumber": 46,
+          "eventType": "hidden_oath_imprint",
+          "summary": "GM-only: в клятвенной канцелярии обнаружен оттиск чужой клятвы.",
+          "visibility": "hidden",
+          "consequences": [
+            "Скрытая ячейка может давить на leadership decisions.",
+            "Не показывать связь с Крыльями до reveal proof."
+          ],
+          "relatedThreatId": "wings_hidden_cell_silver_hall_example",
+          "occurredAtUtc": "2026-05-25T13:00:00Z"
+        }
+      ],
+      "territorialInfluence": [
+        {
+          "zoneId": "silver_hall_public_haven",
+          "scopeType": "hall",
+          "scopeId": "silver_hall",
+          "displayName": "Серебряный Зал",
+          "controlLevel": 64,
+          "influenceValue": 58,
+          "publicStatus": "known haven",
+          "updatedAtTurn": 46,
+          "sourceEntryId": "silver_lanterns_public_aid_045",
+          "summary": "Фракция публично контролирует прием потерянных резидентов."
+        },
+        {
+          "zoneId": "silver_hall_oath_office_hidden",
+          "scopeType": "office",
+          "scopeId": "silver_hall_oath_office",
+          "displayName": "Клятвенная канцелярия",
+          "controlLevel": 41,
+          "influenceValue": 37,
+          "publicStatus": "quiet",
+          "updatedAtTurn": 46,
+          "sourceEntryId": "silver_lanterns_hidden_oath_imprint_046",
+          "summary": "Hidden test data: канцелярия остается уязвимой для чужой клятвы."
+        }
+      ],
+      "strategicMemory": {
+        "summary": "Фракция пытается выглядеть безопасным публичным институтом, пока скрытая ячейка проверяет ее церемонии.",
+        "lastUpdatedTurn": 46,
+        "recentCampaigns": [
+          "public_haven_consolidation"
+        ],
+        "losses": [
+          "Часть доверенных писцов отстранена после подозрения в подмене клятвы."
+        ],
+        "alliances": [
+          "guardian_azalia:memory_archive_support"
+        ],
+        "enemies": [
+          "wings_hidden_cell_silver_hall_example"
+        ]
+      },
+      "resourceLedger": [
+        {
+          "entryId": "silver_lanterns_light_sparks_grant_045",
+          "turnNumber": 45,
+          "resourceType": "lightSparks",
+          "delta": 3,
+          "balanceAfter": 19,
+          "reason": "Публичная помощь резидентам привела к пожертвованиям Искр Света.",
+          "occurredAtUtc": "2026-05-25T12:05:00Z"
+        }
+      ]
+    }
+  ]
+}

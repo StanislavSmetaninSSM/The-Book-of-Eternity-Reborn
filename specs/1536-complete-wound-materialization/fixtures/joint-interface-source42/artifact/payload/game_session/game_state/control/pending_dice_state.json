@@ -1,0 +1,33 @@
+﻿{
+  "preGeneratedDices1d20": [
+    8,
+    5,
+    3,
+    8,
+    13,
+    16,
+    15,
+    12,
+    7,
+    20,
+    20,
+    11,
+    11,
+    12,
+    6,
+    3,
+    14,
+    4,
+    8,
+    12
+  ],
+  "gachaBaseResult": {
+    "diceUsed": [],
+    "baseScore": 39,
+    "baseRarity": "Common",
+    "formula": "client-computed gacha base (range 4-80)"
+  },
+  "isFateLocked": false,
+  "createdAtUtc": "2026-10-20T03:35:17.0533185Z",
+  "lastUpdatedUtc": "2026-10-20T03:35:17.0533495Z"
+}
