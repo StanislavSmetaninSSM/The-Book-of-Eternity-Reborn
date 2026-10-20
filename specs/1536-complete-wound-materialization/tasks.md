@@ -1,16 +1,14 @@
-# CRASH5 — plan12 / spec14: targeted duplicate validation
+# CRASH5 — spec14/plan12 revision2: named timers
 
-Source: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536); canonical [spec](spec.md), [plan](plan.md). User approved next proposal and explicitly waived waiting for further approvals. Existing dedicated checkout/feature reused.
+Source: [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536); [spec](spec.md), [plan](plan.md). User explicitly redirects to measuring real code sections. T288–292 optimization implementation/runtime tasks are superseded and deferred; they were not completed. Their uncommitted scaffold is archived outside the product tree; attempted build executed0tests.
 
-- [x] T286 Write/present spec14/plan12/tasks in specs/1536-complete-wound-materialization, execute Spec Kit phases/consistency and save a verified remote checkpoint. Evidence: actual phases completed, written files presented under explicit waiver; source checkpoint5f06240 read back fromGitHub; bridge-equivalent consistency checked after expanding compressed S14-3 mapping (initial overly literal check rejected the compressed label, not a requirement).
-- [x] T287 [US1] Trace exact preparation repetitions and physical/lifetime boundaries; resolve one safe seam and genuine short test inputs in recovery/crash5/T287-validation-design.md and plan.md before product edits, or record no-safe-change evidence. Evidence: T287-validation-design.md rejects authority reuse, resolves exact lexical/physical ordinary-reader reduction and initial retry/nullable/shared-consumer gates; no product edits yet.
-- [ ] T288 [US2] Add causal short regression/negative coverage for the resolved seam in the existing test projects; observe RED, implement one justified fix in the exact T287 production files, run GREEN and audit changed XML.
-- [ ] T289 [US2] Build XML and run exact impacted short categories/metadata; retain one new source-bound owned component comparison and evidence under recovery/crash5 without replaying spec13 or increasing30/120s limits.
-- [ ] T290 [US2] Separate independent SOURCE/PREP review of the coherent diff/tests/evidence and corrected findings; commit/push/readback in the existing branch before expensive work.
-- [ ] T291 [US3] Only after measured improvement and accepted source, refresh genuine source42 artifact once if compiled fingerprint changed, validate/publish binding and execute one original-assertion seeded Windows cut0; record actual failure/PASS/NOT_EXECUTED and cleanup under recovery/crash5.
-- [ ] T292 [US3] Independent final findings/runtime/evidence review, verified remote save and clean recovery; reconcile current outcomes and preserved historical failures in the existing checkpoint.
+- [x] T293 Record latest measurement-only instruction in spec.md/plan.md/tasks.md and restore deferred optimization scaffolding; actual Spec Kit phases/consistency and remote checkpoint precede instrumentation.
+- [ ] T294 [US1] Add optional named passive timing scopes and bounded resumer output in the exact production/integration call sites; tiny observer controls, no optimization.
+- [ ] T295 [US1] Fresh XML build, exact bounded timer controls and affected metadata; independent SOURCE/PREP review and verified remote save.
+- [ ] T296 [US2] Generate/bind one new genuine source42 artifact for accepted final source, then one actual profiled seeded Windows cut0 with unchanged budgets; retain raw named timing records/unfinished operations and cleanup.
+- [ ] T297 [US2] Produce actual timing table and findings under recovery/crash5; independently review evidence and verify remote save/readback/fresh recovery. Original Windows0/5/LinuxUNRUN remain separate.
 
-Dependencies: T286→T287→T288→T289→T290→T291→T292. Parent implements the coherent block; separate source consultation is read-only. No concurrent edits/parallel implementation required. Research gate must be resolved before product changes; full runtime gate cannot be bypassed by a successful unrelated component.
+Dependencies:T293→T294→T295→T296→T297. No costly run before instrumented-source acceptance; no optimization, all-five rerun or retry.
 
 ---
 
