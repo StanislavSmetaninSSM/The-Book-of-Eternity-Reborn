@@ -72,30 +72,55 @@ public partial class StoryService
     internal Task<MortalJointStoryResult> AppendMortalJointStoryAsync(FileSystemManager.CanonicalWriteLease lease,
         MortalQteDecisionPublication.JointProgressionPhaseCapability applied) => CompleteMortalJointStoryAsync(lease, applied, append: true);
 
+    /// <summary>
+    /// Reads authenticated current story data, optionally appends the exact row, then verifies readback.
+    /// </summary>
+    /// <param name="lease">
+    /// The active participating lease used by the supplied phase and this story owner.
+    /// </param>
+    /// <param name="applied">
+    /// A freshly issued applied-phase capability for this filesystem and lease.
+    /// </param>
+    /// <param name="append">
+    /// Whether an unappended row may be written; <see langword="false"/> only observes its current disposition.
+    /// </param>
+    /// <returns>
+    /// The actual story disposition and current proof when verified, or the existing refusal/uncertainty result.
+    /// </returns>
     private async Task<MortalJointStoryResult> CompleteMortalJointStoryAsync(FileSystemManager.CanonicalWriteLease lease,
         MortalQteDecisionPublication.JointProgressionPhaseCapability applied, bool append)
     {
         var publicationAttempted = false;
         try
         {
+            using var t318Timer1 = _fs.MeasureOperation("JointStoryComplete.ReadInitialSourceAsync");
             var source = await ReadMortalJointStorySourceAsync(lease, applied);
+            t318Timer1?.Dispose();
             if (!source.AlreadyAppended && !append) return new(MortalJointStoryDisposition.OriginalUnappended, null, null);
             if (!source.AlreadyAppended)
             {
                 // Check exact before-images again immediately before the existing
                 // trusted append. No new lease or independent mechanical writer.
+                using var t318Timer2 = _fs.MeasureOperation("JointStoryComplete.ReadBeforeAppendSourceAsync");
                 var fresh = await ReadMortalJointStorySourceAsync(lease, applied);
+                t318Timer2?.Dispose();
                 if (fresh.AlreadyAppended || fresh.Path != source.Path || fresh.Row != source.Row ||
                     !SameJointStoryBytes(fresh.Current, source.Current)) throw new InvalidDataException("joint_story_before_changed");
                 publicationAttempted = true;
+                using var t318Timer3 = _fs.MeasureOperation("JointStoryComplete.AppendAtomicAsync");
                 await _fs.AppendFileAtomicAsync(lease, source.Path, source.Row + "\n");
+                t318Timer3?.Dispose();
             }
+            using var t318Timer4 = _fs.MeasureOperation("JointStoryComplete.ReadBackSourceAsync");
             var readback = await ReadMortalJointStorySourceAsync(lease, applied);
+            t318Timer4?.Dispose();
             if (!readback.AlreadyAppended || readback.Path != source.Path || readback.Row != source.Row ||
                 !SameJointStoryBytes(readback.Current, source.After)) throw new InvalidDataException("joint_story_exact_readback_failed");
             var proof = new MortalJointStoryProof(MortalJointStoryIssuer, this, lease, applied,
                 source.Path, source.Row, source.After, source.Histories);
+            using var t318Timer5 = _fs.MeasureOperation("JointStoryComplete.ValidateIssuedProofAsync");
             await proof.ValidateCurrentAsync(_fs, lease);
+            t318Timer5?.Dispose();
             return new(source.AlreadyAppended ? MortalJointStoryDisposition.AlreadyAppended :
                 MortalJointStoryDisposition.AppendedAndVerified, proof, null);
         }
@@ -116,21 +141,42 @@ public partial class StoryService
     private sealed record JointStorySource(string Path, string Row, byte[]? Current, byte[] After,
         bool AlreadyAppended, IReadOnlyDictionary<string, string> Histories);
 
+    /// <summary>
+    /// Verifies the current original, output and histories against the supplied phase and computes exact story data.
+    /// </summary>
+    /// <param name="lease">
+    /// The active participating lease for all reads and current checks.
+    /// </param>
+    /// <param name="applied">
+    /// The existing phase capability, revalidated against current production data before and after the source reads.
+    /// </param>
+    /// <returns>
+    /// Verified current row, before/after bytes and history bindings; no append is performed here.
+    /// </returns>
     private async Task<JointStorySource> ReadMortalJointStorySourceAsync(FileSystemManager.CanonicalWriteLease lease,
         MortalQteDecisionPublication.JointProgressionPhaseCapability applied)
     {
+        using var t318Timer6 = _fs.MeasureOperation("JointStorySource.VerifyCurrentSessionOperation");
         _fs.VerifyCurrentSessionOperation(lease);
+        t318Timer6?.Dispose();
+        using var t318Timer8 = _fs.MeasureOperation("JointStorySource.ValidateAppliedBeforeAsync");
         await applied.ValidateCurrentAsync(_fs, lease);
+        t318Timer8?.Dispose();
         if (applied.Phase != "applied") throw new InvalidDataException("joint_story_progression_not_applied");
+        using var t318Timer7 = _fs.MeasureOperation("JointStorySource.ReadOriginal");
         var read = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, ["game_state/meta/soul_state.json"]);
+        t318Timer7?.Dispose();
         if (!read.Success || read.Snapshot is not { } original || original.Realm != "mortal_world" ||
             original.SessionId != applied.SessionIdForOwner || original.RequestId != applied.RequestIdForOwner ||
             original.SnapshotToken != applied.SnapshotTokenForOwner || original.TurnNumber != applied.TurnForOwner)
             throw new InvalidDataException("joint_story_original_binding");
+        using var t318Timer10 = _fs.MeasureOperation("JointStorySource.ReadManifestAsync");
         var manifest = StrictJsonAuthority.Deserialize<LiveTurnPendingSnapshotManifest>(
             (await _fs.ReadFileAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath)) ??
                 throw new InvalidDataException("joint_story_manifest_missing"), LiveTurnPreparationService.ManifestJsonOptions,
             "joint actual original manifest") ?? throw new InvalidDataException("joint_story_manifest_null");
+        t318Timer10?.Dispose();
+        using var t318Timer11 = _fs.MeasureOperation("JointStorySource.ReadSourceObjectsAsync");
         var beforeSoul = ReadJointStoryObject(original.ReadRequiredBytes("game_state/meta/soul_state.json"), "joint original soul");
         var images = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
         async Task<JsonObject?> ReadObject(string path)
@@ -146,13 +192,19 @@ public partial class StoryService
         var narrativeRoot = await ReadObject("output/narrative_response.json") ?? throw new InvalidDataException("joint_story_narrative_missing");
         var narrative = PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(ReadJointStoryString(narrativeRoot, "response"));
         if (string.IsNullOrWhiteSpace(narrative)) throw new InvalidDataException("joint_story_narrative_empty");
+        t318Timer11?.Dispose();
+        using var t318Timer12 = _fs.MeasureOperation("JointStorySource.BindContinuationAsync");
         var bound = await MortalQteDecisionPublication.TryBindExactJointContinuationAsync(_fs, lease,
             original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber);
         if (bound is null || !bound.Success) throw new InvalidDataException("joint_story_owned_output_refused");
+        t318Timer12?.Dispose();
+        using var t318Timer13 = _fs.MeasureOperation("JointStorySource.ReadReferencesAsync");
         _ = await ReadObject(JointStoryRowInputs.LocationPath) ?? throw new InvalidDataException("joint_story_location_missing");
         // Keep conditional reads and their validation order behind actual output proof.
         foreach (var referencePath in GetMortalJointStoryReferenceReadPaths(manifest.PlayerAction))
             await ReadObject(referencePath);
+        t318Timer13?.Dispose();
+        using var t318Timer14 = _fs.MeasureOperation("JointStorySource.CalculateRow");
         var generation = _fs.ReadLocalGenerationSnapshot(lease).Binding.Id;
         var calculation = CalculateMortalJointStoryRow(new(generation, original.RequestId, original.TurnNumber,
             realm, incarnation, manifest.PlayerAction, applied.PreparedAtUtcForOwner,
@@ -161,16 +213,22 @@ public partial class StoryService
             images.GetValueOrDefault(JointStoryRowInputs.NpcPath)));
         var row = calculation.RowJson;
         var path = calculation.Path;
+        t318Timer14?.Dispose();
+        using var t318Timer15 = _fs.MeasureOperation("JointStorySource.ClassifyHistoryAsync");
         var histories = manifest.ClientOwnedValidationHashes ?? throw new InvalidDataException("joint_story_original_histories_missing");
         RequireJointStoryHistoryInventory(histories);
         var current = await _fs.ReadFileBytesAsync(lease, path);
         var (prefix, already) = ClassifyJointStoryPrefix(path, current, row, histories, original.TurnNumber, original.RequestId, generation);
         var after = (prefix ?? Encoding.UTF8.GetPreamble()).Concat(Encoding.UTF8.GetBytes(row + "\n")).ToArray();
+        t318Timer15?.Dispose();
+        using var t318Timer16 = _fs.MeasureOperation("JointStorySource.VerifyOtherHistoriesAsync");
         foreach (var history in histories.Where(pair => !string.Equals(pair.Key, path, StringComparison.OrdinalIgnoreCase)))
         {
             var bytes = await _fs.ReadFileBytesAsync(lease, history.Key);
             if (!MatchesJointStoryOriginalText(history.Value, bytes)) throw new InvalidDataException("joint_story_unrelated_history_changed: " + history.Key);
         }
+        t318Timer16?.Dispose();
+        using var t318Timer17 = _fs.MeasureOperation("JointStorySource.VerifyHistoryInventory");
         var actualNames = GameEngine.SelectOriginalStoryContinuityFiles(_fs.EnumerateFiles(lease, "*"));
         var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var name in actualNames)
@@ -180,10 +238,15 @@ public partial class StoryService
             if (!string.Equals(name, path, StringComparison.OrdinalIgnoreCase) && !histories.ContainsKey(name))
                 throw new InvalidDataException("joint_story_unlisted_history: " + name);
         }
+        t318Timer17?.Dispose();
+        using var t318Timer18 = _fs.MeasureOperation("JointStorySource.RecheckSourceImagesAsync");
         foreach (var image in images)
             if (!SameJointStoryBytes(image.Value, await _fs.ReadFileBytesAsync(lease, image.Key)))
                 throw new InvalidDataException("joint_story_output_source_changed: " + image.Key);
+        t318Timer18?.Dispose();
+        using var t318Timer9 = _fs.MeasureOperation("JointStorySource.ValidateAppliedAfterAsync");
         await applied.ValidateCurrentAsync(_fs, lease);
+        t318Timer9?.Dispose();
         return new(path, row, current, after, already, new Dictionary<string, string>(histories, StringComparer.OrdinalIgnoreCase));
     }
 

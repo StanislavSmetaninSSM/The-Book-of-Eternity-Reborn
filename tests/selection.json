@@ -2,48 +2,24 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "fr063-joint-fixture-acquisition-controls",
-      "reason": "T317 distinct opt-in and exact DATA export role/parent/identity/hash controls without game setup.",
-      "contracts": ["Ordinary default remains disabled; unsupported scope refuses; exported DATA grants no authority."]
-    },
-    {
-      "category": "fr063-joint-interface-seed-input-contracts",
-      "reason": "T317 adds a source-bound seeded selection to the unchanged importer and preserves platform/cut refusal.",
-      "contracts": ["Genuine source42 binding and independent copy; no rebinding old data."]
-    },
-    {
-      "category": "fr063-joint-cleanup-images",
-      "reason": "T313 retained actual cleanup byte/absence leaf and publisher callback, independent of expensive gameplay setup.",
+      "category": "fr063-joint-applied-data-transport",
+      "reason": "T318 new exact immutable DATA importer and refusal contract; independent copies.",
       "contracts": [
-        "Exact before/after images; first refusal prevents later reads or deletion; retained bytes/absence unchanged."
-      ]
-    },
-    {
-      "category": "fr063-joint-cleanup-cost-components",
-      "reason": "T313 actual leaf validation versus reader cost and real source drift, without gameplay reconstruction. Constructor output wiring is also exercised by existing hash-mode controls.",
-      "contracts": [
-        "Actual generic destructive validator, exact-byte and legacy dispatch unchanged; source drift refuses; all named measurements retained."
-      ]
-    },
-    {
-      "category": "fr063-joint-cleanup-data-capture",
-      "reason": "T313a immutable observed diagnostic DATA export and refusal controls before real cleanup boundary capture.",
-      "contracts": [
-        "No authority issued; uncapped diagnostics and original failures preserved."
-      ]
-    },
-    {
-      "category": "crash5-named-operation-timers",
-      "reason": "T313 new cleanup scopes depend on passive/idempotent observer and failure-isolation behavior.",
-      "contracts": [
-        "No authority issued; uncapped diagnostics and original failures preserved."
+        "Full index/bytes/directories/absence verified before writing; no authority."
       ]
     },
     {
       "category": "crash5-named-timing-output",
-      "reason": "T313/T313a new observer wrapper must retain all ordinary named timing records without quotas.",
+      "reason": "T318 reuses collector through internal access; every timing must remain uncapped.",
       "contracts": [
-        "No authority issued; uncapped diagnostics and original failures preserved."
+        "Every boundary retained beyond former limit."
+      ]
+    },
+    {
+      "category": "fr063-joint-applied-story-components",
+      "reason": "T318 actual fresh phase/story proof and source drift on genuine substituted input; explicit runtime after SOURCE/PREP acceptance.",
+      "contracts": [
+        "Real owner/current original; exact append/repeat; changed bytes refuse, no other game writes."
       ]
     }
   ]

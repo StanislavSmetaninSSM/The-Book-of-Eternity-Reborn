@@ -10,7 +10,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// Serializes every observed operation boundary to diagnostic output in sequence order.
     /// An end boundary records elapsed time without implying successful completion.
     /// </summary>
-    private sealed class JointOperationTimings
+    internal sealed class JointOperationTimings
     {
         private readonly object _gate = new();
         private readonly long _started = Stopwatch.GetTimestamp();

@@ -12,7 +12,7 @@ Dependencies T317 qualifiedDATA→T318a/b/c PREP→review→T318d measurement→
 # CRASH5 — spec15 revision5 / plan13 revision5: fixture acquisition and real component work
 
 - [x] T316 [US1] Preserve/analyze actual T315FAIL and complete diagnostics; minimal canonical parser/checks, comparable-scope findings and separate evidence review. T316-final-review.json: separate Astra/high accepted, DLL-count P3 closed, all historical/current checks exact. No inner cleanup measurement or OS cause claimed.
-- [ ] T317 [US2] Test-first distinct Windows fixture-only acquisition: real producer73 and actual accepted checkpoint/export, diagnostic resumer74, unchanged identity/budgets/default ordinary assertions, all DATA/diagnostics and verified cleanup. Fresh XML/catalog/review/save/matching seed before one probe. Fixture PASS is not recovery PASS.
+- [x] T317 [US2] Test-first distinct Windows fixture-only acquisition completed: actual1PASS/producer73/resumer74, prepared223/applied221files, all2499diagnosticrecords, bothownedrootsremoved/absent,4DLL/seedunchanged. Actual test11:27.1815829; T317-fixture-acquisition-outcome/raw and T317-final-review.json: independent Astra/high accepted without findings. Fixture PASS is not recovery PASS.
 - [ ] T318 [US2/US3] Prepare smallest actual fresh-proof component from available prepared/applied DATA; measure and preserve negative controls; use internal support APIs if needed. Write any cause-driven production correction before implementation; return to unchanged original runtime gate afterward.
 
 T315 remains FAIL/open; T313/T314 accepted component/source prep is retained. Original220 Windowsfive0/5, LinuxUNRUN. No unchanged full retry or diagnostic quotas. Dependencies T316→T317→T318→original qualification.

@@ -2,6 +2,65 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-applied-story-components",
+  "responsibility": "T318 direct actual phase/story owners on independent captured DATA: append/readback/current proof/repeat exactly once/story-drift refusal; separate changed-narrative refusal with no append. All named timings retained.",
+  "excludes": "No source42/Stage43/full game fixture, crash run, cleanup eligibility, performance threshold, imported authority or original recovery PASS. Requires separate SOURCE/PREP review.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointAppliedStoryComponentTests.cs",
+    "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs",
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgression.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-applied-data-transport",
+      "when": "Observed DATA template transport changes."
+    },
+    {
+      "id": "crash5-named-timing-output",
+      "when": "Shared uncapped collector changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 6,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointAppliedStoryComponentTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-applied-data-transport",
+  "responsibility": "T318 immutable observed applied DATA: exact archive/member/index/role/namespace/absence checks before writing; independent copies and source preservation.",
+  "excludes": "Synthetic bytes never qualify game original/phase/story authority; no game setup or crash run.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointAppliedDataTemplate.cs",
+    "BookOfEternityClient.IntegrationTests/JointAppliedDataTemplateTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointAppliedDataTemplateTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-fixture-acquisition-controls",
   "responsibility": "Distinct fixture-only opt-in: default disabled, exact Windows seeded ordinary cut0, malformed/unsupported selection refused before work; exact observed DATA export/role/PID/parent/hash controls.",
   "excludes": "No fixture acquisition runtime, actual game proof, original recovery, Linux or timeout change.",
