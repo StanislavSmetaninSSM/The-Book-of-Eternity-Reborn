@@ -1,3 +1,111 @@
+# T263-cut0 — actual shared-window result
+
+**Spec9 runtime:** Windows0/5PASS, 1/5 attempted at shared820/max600/category15m. T263-cut0 FAILED; completed=True, category timeout=False, duration 00:13:40.8952276; owned fixture cleanup=True, child EOF/join=True, unchanged3DLL=True. Dependent cuts stopped; no unchanged retry or automatic further limit increase. Diagnose actual evidence before a new plan. Original220 five NOT_RERUN; T219/T254/T259 failures retained; LinuxUNRUN.
+
+Run 20261020-105531-740-69100-917e6115d736405ea73d921db06b415b-categories; compiled 2c05158f9b7f37de4cb67b529bfd2704d352a386; metadata 682aa3911b4f010109b3415a6791f7dcabd2d513. Raw ZIP SHA256 A6A4369CD5392FF1BA1CF2C9569DECAAE771BC15334EB32205FDF543B11EDE8F. Historical T219 fixture retained. Callback counts describe observations, not successful physical I/O; an exhausted activity quota suppresses later samples without establishing a hang.
+
+```json
+[
+  {
+    "Pid": 80120,
+    "ExitCode": 73,
+    "Eof": true,
+    "Joined": true,
+    "Failure": null,
+    "Budget": {
+      "TotalSeconds": 820,
+      "ChildCapSeconds": 600,
+      "ElapsedAtWaitSeconds": 0.0289191,
+      "ChildWaitSeconds": 600
+    },
+    "StageCount": 4,
+    "ActivitySamples": 0,
+    "LastActivity": null,
+    "LastStage": {
+      "Boundary": "crash5_stage_v1",
+      "RunId": "871ed22be44f454697629e0a95c9ad86",
+      "Nonce": "34c33167a4104a678846df692c24b7a1",
+      "Pid": 80120,
+      "BirthKind": "windows-process-start-utc-ticks",
+      "Cut": 0,
+      "Stage": "exit",
+      "Transition": "enter",
+      "ElapsedMilliseconds": 413091.1216,
+      "ErrorType": null
+    }
+  },
+  {
+    "Pid": 63948,
+    "ExitCode": -1,
+    "Eof": true,
+    "Joined": true,
+    "Failure": "System.TimeoutException: The operation has timed out.\r\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceNativeChildAsync(String role, String root, String output, Int32 cut, String own, JointInterfaceCrashOwnedContainer ownership, Boolean observeLive, String deliveryNonce, Boolean extendedSourceProbe, Boolean extendedWindowsCrash, Nullable`1 sharedWindowsCrashStarted) in D:\\Code\\The-Book-of-Eternity-Reborn-crash5-windows-20261019\\BookOfEternityClient.IntegrationTests\\GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 317",
+    "Budget": {
+      "TotalSeconds": 820,
+      "ChildCapSeconds": 600,
+      "ElapsedAtWaitSeconds": 414.1091563,
+      "ChildWaitSeconds": 405.8908437
+    },
+    "StageCount": 41,
+    "ActivitySamples": 24,
+    "LastActivity": {
+      "Boundary": "crash5_stage_v1",
+      "RunId": "871ed22be44f454697629e0a95c9ad86",
+      "Nonce": "34c33167a4104a678846df692c24b7a1",
+      "Pid": 63948,
+      "BirthKind": "windows-process-start-utc-ticks",
+      "Cut": 0,
+      "Stage": "resume-activity",
+      "Transition": "enter",
+      "ElapsedMilliseconds": 320590.7241,
+      "ErrorType": null,
+      "ResumeActivity": {
+        "Phase": "MortalJointCustodyCaptureCompletedBeforePreparation",
+        "CanonicalInitial": 23889,
+        "ExactInitial": 0,
+        "CanonicalOpened": 0,
+        "CanonicalContended": 0,
+        "MainContended": 0,
+        "Publications": 0,
+        "Recoveries": 0,
+        "LastPublication": null,
+        "LastRecovery": null,
+        "Limited": true
+      }
+    },
+    "LastStage": {
+      "Boundary": "crash5_stage_v1",
+      "RunId": "871ed22be44f454697629e0a95c9ad86",
+      "Nonce": "34c33167a4104a678846df692c24b7a1",
+      "Pid": 63948,
+      "BirthKind": "windows-process-start-utc-ticks",
+      "Cut": 0,
+      "Stage": "resume-activity",
+      "Transition": "enter",
+      "ElapsedMilliseconds": 320590.7241,
+      "ErrorType": null,
+      "ResumeActivity": {
+        "Phase": "MortalJointCustodyCaptureCompletedBeforePreparation",
+        "CanonicalInitial": 23889,
+        "ExactInitial": 0,
+        "CanonicalOpened": 0,
+        "CanonicalContended": 0,
+        "MainContended": 0,
+        "Publications": 0,
+        "Recoveries": 0,
+        "LastPublication": null,
+        "LastRecovery": null,
+        "Limited": true
+      }
+    }
+  }
+]
+```
+
+Test failure: System.TimeoutException : The operation has timed out.
+
+---
+
 # T262 — shared Windows budget qualification
 
 **T262 PREP:** compiled2c05158f9b7f37de4cb67b529bfd2704d352a386;43/43 budget controls PASS/0skip after causal26PASS17FAIL. Fresh XML build42.88s/0errors/changedXML0; catalog valid, default PlanOnly237, explicit69cases/10descriptors. Metadata executes0tests. Both independent P2 source findings corrected and focused source review accepted; final bound PREP accepted by separate gpt-6.1-sol/xhigh at 9960a73515479cc033fff1d84c00e8b3d5e41824. Source/DLL/raw archive T262-prep.json/zip. T263 shared820/max600/category15m UNRUN; Windows0/5PASS, LinuxUNRUN.
