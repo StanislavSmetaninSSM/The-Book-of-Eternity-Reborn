@@ -3,6 +3,8 @@
 - [ ] T338 [US1/US2] Parent TDD: shared strict observed-DATA transport with distinct AppliedBeforeStory/cleanup-entry wrappers; extract actual terminal and destructive-original leaves at unchanged production positions/timers; preserve parser wrapper/logger semantics; new direct fresh-lease component controls and one read-only profile Fact. Relevant XML/catalog/exact PlanOnly/targeted controls, complete source-bound evidence/recovery and separate SOURCE/PREP review before profile. No GameEngine/generator/original/Linux runtime.
 - [ ] T339 [US2/US3] After T338 acceptance run exactly one2min Windows fresh-copy cleanup-validator profile; retain all raw/refs, real validator outcomes, wall/CPU/counts/unfinished scopes, whole game/generation invariance and owner closing/ownedroot cleanup. Analyze actual outcome without stage/eligibility/owner latency overclaim; separate final coherent evidence review/recovery. No retry to fix reporting and no generation/rebinding.
 
+T338 WIP: initial13caseRED completed11oldAppliedPASS/2expectedcleanupFormatFAIL, full raw/source snapshots retained in T338-red-outcome/raw. No GameEngine or genuine DATA profile executed.
+
 T337 investigation accepted; implementation does not yet establish captured DATA eligibility. T338→T339; original recovery/coldfive/Linux stay open. Every measurement is a real component observation, never a simulated owner or deletion authorization.
 
 ---

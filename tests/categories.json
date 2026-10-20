@@ -29259,6 +29259,35 @@
       ]
     }
   ]
+},
+{
+  "id": "fr063-joint-cleanup-data-transport",
+  "responsibility": "T338 explicit cleanup-entry Operation/Cut/Parent provenance and exact immutable DATA transport, namespace/absences and independent copies.",
+  "excludes": "Synthetic DATA grants no game authority; no GameEngine/source42 or recovery execution.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointObservedDataTemplate.cs",
+    "BookOfEternityClient.IntegrationTests/JointCleanupDataTemplate.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-applied-data-transport",
+      "when": "Shared observed-DATA transport changes must preserve the old strict role."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointCleanupDataTemplateTests.*"
+      ]
+    }
+  ]
 }
 ]
 }
