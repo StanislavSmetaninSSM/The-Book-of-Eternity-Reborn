@@ -1,7 +1,7 @@
 # CRASH5 — spec14/plan12 revision3: complete diagnostic output
 
 - [x] T298 Preserve T296 failed partial run/raw timings and record user's explicit no-quota/root-cause correction in spec/plan/tasks; actual Spec Kit phases/consistency.
-- [ ] T299 Remove diagnostic output quotas, add enclosing joint-story/post-publication timers, observe causal short RED→GREEN beyond former limits, validate XML/affected metadata.
+- [x] T299 Remove diagnostic output quotas, add enclosing joint-story/post-publication timers, observe causal short RED→GREEN beyond former limits, validate XML/affected metadata. Evidence:71literal scopes; old1025vs2200 plus3stage truncation FAILs; corrected15/15 complete/0skip, XML0errors/changedXML0; T300-prep.json/zip.
 - [ ] T300 Independent SOURCE/PREP review, exact source/DLL binding and saved remote checkpoint before corrected runtime.
 - [ ] T301 Generate/bind current genuine source42 if needed, measure corrected instrumented scenario with full raw diagnostics, preserve actual failure/cleanup.
 - [ ] T302 Trace measured dominant/stalled sections to a supported cause; final independent evidence review and remote recovery. Remains open if only partial/localized observations exist.
