@@ -50,16 +50,26 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// <param name="extendedWindowsCrash">
     /// Whether this explicitly selected Windows case shares an 820 second observation window with at most 600 seconds per child wait.
     /// </param>
+    /// <param name="seedArtifactPath">
+    /// The exact existing source42 artifact for the explicit ordinary Windows cut0;
+    /// <see langword="null"/> preserves the original source-turn preparation path.
+    /// </param>
     /// <returns>
     /// Completion after the original game and process assertions.
     /// </returns>
     private async Task RunJointInterfaceActualProcessLossAsync(int cut, string? fault = null, bool diagnostic = false,
-        bool extendedWindowsCrash = false)
+        bool extendedWindowsCrash = false, string? seedArtifactPath = null)
     {
         if (extendedWindowsCrash && !OperatingSystem.IsWindows())
             throw new PlatformNotSupportedException("Extended crash qualification is a local Windows selection.");
         var mode = new JointInterfaceCrashMode(cut, diagnostic, fault);
         _ = JointInterfaceCrashProcessSupport.SelectBackend(OperatingSystem.IsWindows(), OperatingSystem.IsLinux(), mode);
+        JointInterfaceSeedCrashInput? source42Seed = null;
+        if (seedArtifactPath is not null)
+        {
+            if (!extendedWindowsCrash) throw new InvalidDataException("Seeded cut0 requires the existing shared Windows crash budget.");
+            source42Seed = JointInterfaceSeedCrashInput.Bind(seedArtifactPath, TestRepoPaths.RepoRoot, OperatingSystem.IsWindows(), mode);
+        }
         using var classOwned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         var capture = JointInterfaceCrashProcessSupport.UsesManagedCapture(mode, () => JointInterfaceManagedCapture.Enabled);
         var own = capture ? JointInterfaceManagedCapture.ClaimOwnedDirectory(cut, fault)
@@ -70,6 +80,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var parentMetadata = JsonSerializer.SerializeToNode(new
         { Nonce = nonce, ParentPid = Environment.ProcessId, Cut = cut, Fault = fault, Diagnostic = diagnostic })!.AsObject();
         if (!diagnostic && fault == null) parentMetadata["RunId"] = Guid.NewGuid().ToString("N");
+        if (source42Seed is not null) parentMetadata["Source42Seed"] = JsonSerializer.SerializeToNode(source42Seed);
         File.WriteAllText(Path.Combine(own, "parent.json"), parentMetadata.ToJsonString());
         var cutPath = Path.Combine(own, "cut.json");
         var sharedWindowsCrashStarted = extendedWindowsCrash ? Stopwatch.GetTimestamp() : (long?)null;
@@ -88,6 +99,16 @@ public sealed partial class GameEngineTurnLifecycleTests
         var root = atCut["Root"]!.GetValue<string>();
         Assert.StartsWith(Path.GetFullPath(Path.Combine(own, "tmp")) + Path.DirectorySeparatorChar, Path.GetFullPath(root));
         Assert.True(Directory.Exists(root)); // abrupt original did not run managed fixture disposal
+        if (source42Seed is not null)
+        {
+            var imported = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "source-seed-import.json")))!.AsObject();
+            Assert.Equal(original.Pid, imported["Pid"]!.GetValue<int>());
+            Assert.Equal(nonce, imported["Nonce"]!.GetValue<string>());
+            Assert.Equal(root, imported["Root"]!.GetValue<string>());
+            Assert.Equal(source42Seed.ManifestSha256, imported["ManifestSha256"]!.GetValue<string>());
+            Assert.Equal(42, imported["Metadata"]!["TurnNumber"]!.GetValue<int>());
+            WritePhysicalInjuryDiagnostic("joint_source_seed_import_at_actual_cut", imported);
+        }
         Assert.Equal(0, atCut["CommonCallbacks"]!.GetValue<int>()); Assert.Equal(42, atCut["Turn"]!.GetValue<int>());
         Assert.NotNull(atCut["JournalBase64"]); Assert.Equal(cut, atCut["Cut"]!.GetValue<int>());
         var output = Path.Combine(own, "resume.json");
@@ -449,7 +470,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// Validates mode and drives the producer to the original abrupt exit boundary.
     /// </summary>
     /// <param name="ignoredRoot">
-    /// Dispatcher placeholder; the producer creates its own fixture.
+    /// Dispatcher placeholder; the producer creates or independently imports its own fixture.
     /// </param>
     /// <param name="output">
     /// Owned cut record filename.
@@ -465,19 +486,38 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// </returns>
     public static async Task WriteJointInterfaceOriginalCrashAsync(string ignoredRoot, string output, int cut, string own)
     {
-        _ = JointInterfaceCrashProcessSupport.ReadAndValidateEntryMode(own, cut, OperatingSystem.IsWindows(), OperatingSystem.IsLinux());
+        var mode = JointInterfaceCrashProcessSupport.ReadAndValidateEntryMode(own, cut, OperatingSystem.IsWindows(), OperatingSystem.IsLinux());
         Assert.InRange(cut, 0, 4);
         CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-GB");
         var parent = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "parent.json")))!.AsObject();
+        var source42Seed = JointInterfaceSeedCrashInput.Read(parent, OperatingSystem.IsWindows(), mode);
         var stages = JointInterfaceCrashStageReport.CreateForOrdinary(parent, cut);
         stages?.Observe("fixture", "enter");
-        using var fixture = new GameEngineTurnLifecycleTests(new JointInterfaceConsoleOutput());
+        JointInterfaceCrashSeedMetadata? sourceSeedMetadata = null;
+        GameEngineTurnLifecycleTests fixture;
+        if (source42Seed is null)
+            fixture = new GameEngineTurnLifecycleTests(new JointInterfaceConsoleOutput());
+        else
+        {
+            var importStarted = Stopwatch.GetTimestamp();
+            var template = source42Seed.Open(TestRepoPaths.RepoRoot);
+            var root = Path.Combine(own, "tmp", "boe-joint-seeded-" + Guid.NewGuid().ToString("N"));
+            sourceSeedMetadata = await template.MaterializeAsync(root);
+            fixture = new GameEngineTurnLifecycleTests(new JointInterfaceConsoleOutput(), root);
+            File.WriteAllText(Path.Combine(own, "source-seed-import.json"), JsonSerializer.Serialize(new
+            {
+                Pid = Environment.ProcessId, Nonce = parent["Nonce"]!.GetValue<string>(), Root = root,
+                source42Seed.ManifestSha256, template.ContractFingerprint, template.FileCount, template.PayloadBytes,
+                Metadata = sourceSeedMetadata, ImportSeconds = Stopwatch.GetElapsedTime(importStarted).TotalSeconds
+            }));
+        }
+        using var ownedFixture = fixture;
         stages?.Observe("fixture", "return");
         var scenario = cut == 2 ? "Crash:PublishedCulture" : cut == 4 ? "Crash:Error" : "Crash:Changed";
         using var probe = new JointInterfaceLifecycleProbe(fixture, scenario);
         probe.ConfigureActualCrash(cut, output, own, stages);
         stages?.Observe("engine", "enter");
-        await fixture.RunJointCompletionControlAsync(false, useLiveCaller: true, interfaceLifecycleProbe: probe);
+        await fixture.RunJointCompletionControlAsync(false, useLiveCaller: true, interfaceLifecycleProbe: probe, sourceSeed: sourceSeedMetadata);
         stages?.Observe("engine", "return");
         // An unarmed/missing cut must fail after actual old/new work, never write
         // a synthetic cut file or claim that an exception simulated process loss.

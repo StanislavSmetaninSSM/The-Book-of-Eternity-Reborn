@@ -21,30 +21,104 @@ public sealed partial class GameEngineTurnLifecycleTests
     public Task GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce() =>
         RunJointCompletionControlAsync(nonzeroProgression: true);
 
+    /// <summary>
+    /// Executes natural Stage43 and joint completion after a genuine source turn or a checked independent source copy.
+    /// </summary>
+    /// <param name="nonzeroProgression">
+    /// Whether to advance the public world clock by one cycle before Stage43 captures its original.
+    /// </param>
+    /// <param name="pauseAppliedForCold">
+    /// Whether to pause after applied outcome validation and continue through the existing cold consumer.
+    /// </param>
+    /// <param name="pauseUnappliedForCold">
+    /// Whether to pause after common readback, before progression, for the existing unapplied cold consumer.
+    /// </param>
+    /// <param name="refusalScenario">
+    /// An existing cold-consumer refusal case, or <see langword="null"/> for normal completion.
+    /// </param>
+    /// <param name="newPhysicalRootForCold">
+    /// Whether the existing cold consumer receives an independent copy of its paused durable namespace.
+    /// </param>
+    /// <param name="activeTailScenario">
+    /// An existing authored lifecycle-tail case, or <see langword="null"/> for the genuine inactive tail.
+    /// </param>
+    /// <param name="useLiveCaller">
+    /// Whether the actual player-turn caller stages and waits for Stage43 rather than entering the late consumer.
+    /// </param>
+    /// <param name="recoverRetainedStoryRow">
+    /// Whether the existing cold consumer checks recovery with its retained story row.
+    /// </param>
+    /// <param name="normalizeNarrativeBeforeCheckpoint">
+    /// Whether to author the existing newline normalization case before the interface checkpoint.
+    /// </param>
+    /// <param name="observeSettledCommonPlan">
+    /// An optional read-only observer of the actual retained common plan after its lease closes.
+    /// </param>
+    /// <param name="postOriginalAutomaticSubmission">
+    /// Whether to author the existing automatic submission case after the original is captured.
+    /// </param>
+    /// <param name="attachActualOwnerProbe">
+    /// An optional observer attached to the fresh actual Stage43 engine before entry.
+    /// </param>
+    /// <param name="currentCaptureProbe">
+    /// An optional existing probe of actual current-owner capture boundaries.
+    /// </param>
+    /// <param name="interfaceLifecycleProbe">
+    /// An optional existing probe of actual interface publication and completion boundaries.
+    /// </param>
+    /// <param name="sourceSeed">
+    /// Detached metadata from a checked materialized source42 copy for the explicit live crash consumer;
+    /// <see langword="null"/> runs the original genuine source-turn path.
+    /// </param>
+    /// <returns>
+    /// Completion after the selected actual lifecycle and its original state assertions.
+    /// </returns>
     private async Task RunJointCompletionControlAsync(bool nonzeroProgression, bool pauseAppliedForCold = false, bool pauseUnappliedForCold = false,
         string? refusalScenario = null, bool newPhysicalRootForCold = false, string? activeTailScenario = null,
         bool useLiveCaller = false, bool recoverRetainedStoryRow = false, bool normalizeNarrativeBeforeCheckpoint = false,
         Action<AcceptedMechanicsPlan?>? observeSettledCommonPlan = null,
         bool postOriginalAutomaticSubmission = false, Action<GameEngine>? attachActualOwnerProbe = null,
         JointCaptureCutProbe? currentCaptureProbe = null,
-        JointInterfaceLifecycleProbe? interfaceLifecycleProbe = null)
+        JointInterfaceLifecycleProbe? interfaceLifecycleProbe = null, JointInterfaceCrashSeedMetadata? sourceSeed = null)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
-        IDisposable? sourceInput = null;
-        QteStoryRun source;
-        try
+        string sourceSessionId;
+        string sourceRequestId;
+        string sourceSnapshotToken;
+        MortalWoundOccurrence occurrence;
+        Dictionary<string, byte[]?> priorLifecycleTail;
+        if (sourceSeed is not null)
         {
-            source = await RunActualQteStorySourceAsync(physicalDeclaration: true, physicalMaximum: 2,
-                retainLiveInput: input => sourceInput = input,
-                configureBeforePreparation: ConfigureJointCompletionWorldBeforeOriginalAsync);
+            Assert.True(useLiveCaller);
+            Assert.False(nonzeroProgression);
+            Assert.NotNull(interfaceLifecycleProbe);
+            occurrence = await AssertImportedJointSeedWorldAsync(_fs, sourceSeed);
+            priorLifecycleTail = await AssertJointPriorLifecycleInactiveBaselineAsync(sourceSeed.SessionId, sourceSeed.RequestId);
+            sourceSessionId = sourceSeed.SessionId;
+            sourceRequestId = sourceSeed.RequestId;
+            sourceSnapshotToken = sourceSeed.SnapshotToken;
         }
-        finally { sourceInput?.Dispose(); }
-        Assert.Null(source.Failure);
-        Assert.True(source.ActionObserved);
-        Assert.NotNull(source.Source);
-        await AssertGenuinePendingQteSourceAsync(source); // Actual effect-free source10->5, not the old160->155 world.
-        var occurrence = await AssertActualPhysicalOccurrenceAsync(source, 2);
-        var priorLifecycleTail = await AssertJointPriorLifecycleInactiveBaselineAsync(source);
+        else
+        {
+            IDisposable? sourceInput = null;
+            QteStoryRun source;
+            try
+            {
+                source = await RunActualQteStorySourceAsync(physicalDeclaration: true, physicalMaximum: 2,
+                    retainLiveInput: input => sourceInput = input,
+                    configureBeforePreparation: ConfigureJointCompletionWorldBeforeOriginalAsync);
+            }
+            finally { sourceInput?.Dispose(); }
+            Assert.Null(source.Failure);
+            Assert.True(source.ActionObserved);
+            Assert.NotNull(source.Source);
+            await AssertGenuinePendingQteSourceAsync(source); // Actual effect-free source10->5, not the old160->155 world.
+            occurrence = await AssertActualPhysicalOccurrenceAsync(source, 2);
+            priorLifecycleTail = await AssertJointPriorLifecycleInactiveBaselineAsync(source);
+            sourceSessionId = source.Source.SessionId;
+            sourceRequestId = source.Source.RequestId;
+            sourceSnapshotToken = source.SnapshotToken!;
+        }
         var jointOriginalTail = activeTailScenario is null ? priorLifecycleTail :
             await AuthorJointActiveTailBeforeOriginalAsync(activeTailScenario, priorLifecycleTail);
         // Detached expectations only: the real owner must consume the reminder
@@ -135,7 +209,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         attachActualOwnerProbe?.Invoke(engine);
         currentCaptureProbe?.Attach(engine);
         interfaceLifecycleProbe?.Attach(engine);
-        GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(source.Source!.SessionId, 42);
+        GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(sourceSessionId, 42);
         interfaceLifecycleProbe?.ConfigureBeforeOriginal();
         await GetPrivateField<StateManager>(engine, "_stateManager").RefreshGameStateAsync();
         if (!useLiveCaller)
@@ -179,9 +253,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                 await AssertJointNaturalStage43OriginalAndRollbackAsync(lease, original, jointOriginalTail, priorQteReminder);
                 Assert.Equal(43, original.TurnNumber);
                 interfaceLifecycleProbe?.ObserveActualOriginalMetadata(original);
-                Assert.Equal(source.Source.SessionId, original.SessionId);
-                Assert.NotEqual(source.Source.RequestId, original.RequestId);
-                Assert.NotEqual(source.SnapshotToken, original.SnapshotToken);
+                Assert.Equal(sourceSessionId, original.SessionId);
+                Assert.NotEqual(sourceRequestId, original.RequestId);
+                Assert.NotEqual(sourceSnapshotToken, original.SnapshotToken);
                 Assert.Equal("mortal_world", original.Realm);
                 var offer = Assert.Single(MortalQteWoundOpportunityProjection.Project(original));
                 Assert.Equal(occurrence.OpportunityRef, offer["opportunityRef"]!.GetValue<string>());
@@ -304,7 +378,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             }
             WritePhysicalInjuryDiagnostic("fr063_joint_completion_actual_prerequisites", new
             {
-                Source = new { source.Source.SessionId, source.Source.RequestId, source.SnapshotToken, source.Source.TurnNumber },
+                Source = new { SessionId = sourceSessionId, RequestId = sourceRequestId, SnapshotToken = sourceSnapshotToken, TurnNumber = 42 },
                 Original = new { original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber, original.Realm },
                 nonzeroProgression, generation, occurrence.OpportunityRef, Scene = scene, Draft = decision,
                 FullRequest = WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(request), Command = heldCommand,
@@ -860,10 +934,36 @@ public sealed partial class GameEngineTurnLifecycleTests
                 SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
     }
 
+    /// <summary>
+    /// Confirms the genuine source engine returned at turn42 before reading its durable inactive tail.
+    /// </summary>
+    /// <param name="source">
+    /// The actual completed source-turn run, including its original engine and captured request.
+    /// </param>
+    /// <returns>
+    /// Exact inactive-tail bytes read without issuing acknowledgments or authority.
+    /// </returns>
     private async Task<Dictionary<string, byte[]?>> AssertJointPriorLifecycleInactiveBaselineAsync(QteStoryRun source)
     {
         Assert.NotNull(source.Engine);
         Assert.Equal(42, GetPrivateField<GameLoop>(source.Engine!, "_gameLoop").TurnNumber);
+        return await AssertJointPriorLifecycleInactiveBaselineAsync(source.Source!.SessionId, source.Source.RequestId);
+    }
+
+    /// <summary>
+    /// Reads the source42 inactive tail and checks its durable tuple through the production predicate.
+    /// </summary>
+    /// <param name="sourceSessionId">
+    /// The session identifier retained in the genuine source checkpoint.
+    /// </param>
+    /// <param name="sourceRequestId">
+    /// The completed turn42 request identifier retained in that checkpoint.
+    /// </param>
+    /// <returns>
+    /// Exact inactive-tail bytes, unchanged by the read-only checks.
+    /// </returns>
+    private async Task<Dictionary<string, byte[]?>> AssertJointPriorLifecycleInactiveBaselineAsync(string sourceSessionId, string sourceRequestId)
+    {
         await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
         Assert.Null(await _fs.ReadFileBytesAsync(lease, "input/turn_request.json"));
         Assert.Null(await _fs.ReadFileBytesAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath));
@@ -886,8 +986,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Null(runtime["activeScene"]);
         var priorQte = ParseJsonObjectBytes(Assert.IsType<byte[]>(images[QteDeferredEffectContinuation.StatePath]));
         Assert.Equal("terminal", priorQte["state"]!.GetValue<string>());
-        Assert.Equal(source.Source!.SessionId, priorQte["clientStoryAppend"]!["source"]!["sessionId"]!.GetValue<string>());
-        Assert.Equal(source.Source.RequestId, priorQte["clientStoryAppend"]!["source"]!["requestId"]!.GetValue<string>());
+        Assert.Equal(sourceSessionId, priorQte["clientStoryAppend"]!["source"]!["sessionId"]!.GetValue<string>());
+        Assert.Equal(sourceRequestId, priorQte["clientStoryAppend"]!["source"]!["requestId"]!.GetValue<string>());
         Assert.Equal(42, priorQte["clientStoryAppend"]!["source"]!["turnNumber"]!.GetValue<int>());
         if (images["game_state/player/status_changes.json"] is { } changesBytes &&
             ParseJsonObjectBytes(changesBytes)["statsIncreased"] is { } stats)
@@ -896,7 +996,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal(image.Value, await _fs.ReadFileBytesAsync(lease, image.Key));
         WritePhysicalInjuryDiagnostic("fr063_joint_actual_prior42_inactive_tail", new
         {
-            source.Source.SessionId, source.Source.RequestId, PriorTurn = 42, BeforeJointOriginalTurn = 43,
+            SessionId = sourceSessionId, RequestId = sourceRequestId, PriorTurn = 42, BeforeJointOriginalTurn = 43,
             ProcessedLevel = 1, UnspentStatPoints = 0, ActualLifecycleImages = images,
             ComputedCharacteristics = computedBytes, FixtureAuthoredAcknowledgment = false
         });

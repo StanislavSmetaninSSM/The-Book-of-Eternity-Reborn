@@ -12,5 +12,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// </returns>
     [Fact]
     public Task JointInterface_SeededWindowsCrashCut0PreparedReentersCurrentOwner()
-        => throw new NotSupportedException("Seeded cut0 integration is not implemented.");
+        => RunJointInterfaceActualProcessLossAsync(0, extendedWindowsCrash: true,
+            seedArtifactPath: Path.Combine(TestRepoPaths.RepoRoot, "specs", "1536-complete-wound-materialization",
+                "fixtures", "joint-interface-source42", "artifact"));
 }

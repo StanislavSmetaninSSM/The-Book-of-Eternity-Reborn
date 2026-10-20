@@ -1,0 +1,2 @@
+# Exact generated seed bytes must survive Git checkout without newline conversion.
+artifact/** -text

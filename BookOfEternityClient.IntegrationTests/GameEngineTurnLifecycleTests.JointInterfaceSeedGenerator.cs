@@ -177,9 +177,9 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// Detached source tuple and occurrence provenance against which copied records are checked.
     /// </param>
     /// <returns>
-    /// A task that completes after the production predicates and source invariants pass.
+    /// The parsed physical occurrence after the production predicates and source invariants pass.
     /// </returns>
-    private static async Task AssertImportedJointSeedWorldAsync(FileSystemManager files, JointInterfaceCrashSeedMetadata metadata)
+    private static async Task<MortalWoundOccurrence> AssertImportedJointSeedWorldAsync(FileSystemManager files, JointInterfaceCrashSeedMetadata metadata)
     {
         await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
         await GameEngine.ValidateCurrentMortalJointInactiveTailAsync(files, lease, 43);
@@ -223,5 +223,6 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(42, terminal["acceptedAtTurn"]!.GetValue<int>());
         Assert.Null(JsonNode.Parse((await files.ReadFileAsync(lease, QteSceneService.QteRuntimePath))!)["activeScene"]);
         lease.EnsureNoPendingLocalDecision();
+        return occurrence;
     }
 }
