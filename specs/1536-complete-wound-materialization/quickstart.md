@@ -1,6 +1,6 @@
 # Spec12 / plan10 — current seeded cut0 preparation
 
-T277 SOURCE/PREP accepted; T278 genuine generation passed once with source f479d42a72f7412871e797575a1b1bd2c6dabd07. Published82files/513708bytes plus manifest match their Git blobs; all38directories exist in the current local artifact. T278-seed-binding.json records the exact local consumer binding. Focused binding accepted Astra/high at21b88351f; exactlyone T279 remains UNRUN and may now proceed on this complete local artifact.
+T279 completed exactly one seeded Windows cut0: 1 executed FAIL/0skip, selection complete; test12:37.809, runner12:58.319. Import0.9744731s, actual producer exit73 at155.266s; distinct resumer exhausted unchanged600s (shared820/max600/category15m), no gameplay verdict. Both EOF/join, two owned roots removed/absent,3DLL and83artifactfiles unchanged; T219 retained. Compiledf479d42a72f7412871e797575a1b1bd2c6dabd07/runtime metadata68cd09b70d85d5added82ff1a99ab11ab9005204. T279-seeded-cut0-outcome.json/assessment.json/raw.zip retain evidence. No retry/cuts1-4/production change; Windows original0/5, LinuxUNRUN. T280 final independent evidence/recovery review pending. See [readable result](recovery/crash5/T279-result.md). The permitted T279 attempt is consumed; commands below are historical setup/restoration reference and do not authorize another run.
 
 ## Explicit artifact restoration
 

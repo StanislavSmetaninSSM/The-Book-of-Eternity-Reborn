@@ -1,3 +1,9 @@
+# T280 — final seeded cut0 evidence review pending
+
+T279 completed exactly one seeded Windows cut0: 1 executed FAIL/0skip, selection complete; test12:37.809, runner12:58.319. Import0.9744731s, actual producer exit73 at155.266s; distinct resumer exhausted unchanged600s (shared820/max600/category15m), no gameplay verdict. Both EOF/join, two owned roots removed/absent,3DLL and83artifactfiles unchanged; T219 retained. Compiledf479d42a72f7412871e797575a1b1bd2c6dabd07/runtime metadata68cd09b70d85d5added82ff1a99ab11ab9005204. T279-seeded-cut0-outcome.json/assessment.json/raw.zip retain evidence. No retry/cuts1-4/production change; Windows original0/5, LinuxUNRUN. T280 final independent evidence/recovery review pending.
+
+---
+
 # T278 — current local seed binding accepted
 
 T278 binding ACCEPTED by separate gpt-6-astra/high at21b88351fcb82bc43fe745f7861b739acd4c3625: exactlyone genuine generatorPASS/0skip,source203.401s;82files513708bytes,all96archivefiles/all83Gitartifactfiles/all38localdirs and1769currentinputfingerprint verified;3DLLunchanged. Newmanifest5439B2F4…,FP07644F81…;current complete local artifact/exact working-source closure only. Git checkout requires explicit empty-directory/input-byte restoration, no fallback. Exactlyone T279 seededcut0 authorized by this gate; UNRUN so far. OriginalWindows0/5/LinuxUNRUN.
