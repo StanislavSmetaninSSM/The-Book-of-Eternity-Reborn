@@ -2,9 +2,10 @@ from pathlib import Path
 from collections import defaultdict
 import json,hashlib,zipfile,xml.etree.ElementTree as ET,sys
 
-def analyze(evidence):
+def analyze(evidence, report="T327"):
     load=lambda p:json.loads(p.read_text(encoding='utf-8-sig'))
-    outcome=load(evidence/'T327-profile-outcome.json')
+    assert report in ('T327','T330')
+    outcome=load(evidence/(report+'-profile-outcome.json'))
     sha=lambda b:hashlib.sha256(b).hexdigest().upper()
     archive=evidence/outcome['Archive'];assert sha(archive.read_bytes())==outcome['SHA256']
     with zipfile.ZipFile(archive) as z:
@@ -29,6 +30,7 @@ def analyze(evidence):
         timings=[item for item in records if item.get('Boundary')=='joint_operation_timing']
         duplicate_in_trx=stream==timings
         if not duplicate_in_trx:
+            assert report=='T327', 'Only the immutable T327 sharing failure permits an absent TRX duplicate'
             message=results[0].find('.//t:Message',ns)
             assert not stream and results[0].get('outcome')=='Failed' and message is not None
             assert 'System.IO.IOException' in message.text and diagnostics[0].split('/')[-1] in message.text
@@ -72,9 +74,10 @@ def analyze(evidence):
 
 def main():
     evidence=Path(__file__).resolve().parent
-    # Installed canonical script accepts an explicit evidence directory; external preparation defaults to this checkout.
+    # Default to the archive beside this canonical script; accept an explicit evidence directory.
     if '--evidence' in sys.argv:evidence=Path(sys.argv[sys.argv.index('--evidence')+1])
-    result=analyze(evidence);text=json.dumps(result,indent=2,ensure_ascii=False)+'\n';target=evidence/'T327-timings.json'
+    report=sys.argv[sys.argv.index('--report')+1] if '--report' in sys.argv else 'T327'
+    result=analyze(evidence,report);text=json.dumps(result,indent=2,ensure_ascii=False)+'\n';target=evidence/(report+'-timings.json')
     if '--check' in sys.argv:assert target.read_text(encoding='utf-8')==text
     else:target.write_text(text,encoding='utf-8',newline='\n')
     print(json.dumps({k:v for k,v in result.items() if k not in ['Aggregates','Intervals']},ensure_ascii=False))
