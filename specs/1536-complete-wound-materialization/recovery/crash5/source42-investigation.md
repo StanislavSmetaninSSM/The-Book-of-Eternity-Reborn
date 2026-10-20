@@ -222,3 +222,21 @@ T253 metadata refused draft22m categories at66098c1b7 before any GREEN tests/gam
 T253 correction RED atd189af358:25complete/24PASS/1expectedFAIL, exact resumer expected220 versus actual600, no timeout/skip, cleanup true. Raw T253-correction-red.json/zip includes rejected draft catalog log and build. Minimal correction returns600 only for producer and220 for resumer; source eligibility/default220 and ownership unchanged. Fresh GREEN/PREP pending.
 
 T253 final PREP compiled652bdd76a45ce2abc8b94eed145bbeea628cff93:25/25PASS0skip, complete/no timeout/cleanup true. XML build50.91s/0errors/10900baseline warnings/changedXML0; four changed APIs/docs inspected. Catalog exit0; default PlanOnly205 (discovery, not execution) excludes new gameplay; combined PlanOnly12cases/8descriptors verifies original source1/5m, extended1/12m, original five5/15m and five individual Windows1/15m.3DLL hashes/versions bound; production/native diff empty. T253-prep.zip SHA256 ABD9B40EA18C1B5ECF98EA710FAD74D3299C9C6C4BE401CA68652000ACA60D47. Independent SOURCE/PREP pending; T254/T255 UNRUN.
+
+<!-- spec7-windows-results -->
+## Spec7 — текущие Windows результаты
+
+**Windows qualification spec7:** 0/5 cases PASS; 1/5 attempted. Producer600s/resumer220s/category15m. Остальные случаи ещё не квалифицированы; продолжать только по gate T254/T255. Original220 five не повторены, T219/T244 history сохранена; Linux UNRUN.
+
+| Cut | Result | Test duration | Producer / resumer exits | Evidence |
+| --- | --- | --- | --- | --- |
+| 0 | Failed | 00:10:16.9394853 | 73/-1 | [outcome](T254-cut0-outcome.json), [raw](T254-cut0-raw.zip) |
+| 1 | UNRUN | — | — | — |
+| 2 | UNRUN | — | — | — |
+| 3 | UNRUN | — | — | — |
+| 4 | UNRUN | — | — | — |
+
+Each outcome binds compiled source, metadata HEAD, one pre-start attempt, raw TRX/summary, actual child identity/EOF/join and parent fixture cleanup. Per-cut raw ZIP retains the qualified DLL binding. A timeout/failure or incomplete result is not PASS; no automatic retry. Historical T219 fixture remains out of scope.
+<!-- /spec7-windows-results -->
+
+T254 cut0 result:producer85988 reached real requested exit73 at395.163s; resumer52692 entered late-first5.237s, last existing finalization-after checkpoint29.199s and did not return before220s. Timeout does not establish whether this is slow work or an indefinite wait. Original child EOF/join and both parent owned roots cleanup confirmed; historical T219 fixture preserved. No cut1..4 run is permitted by current gate. Next step is read-only causal analysis of the resumer path before proposing instrumentation or timeout changes.

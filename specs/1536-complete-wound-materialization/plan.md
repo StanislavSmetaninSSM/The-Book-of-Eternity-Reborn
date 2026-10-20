@@ -1,5 +1,7 @@
 # CRASH5 — plan5: отдельные Windows crash/restart cases
 
+**Windows qualification spec7:** 0/5 cases PASS; 1/5 attempted. Producer600s/resumer220s/category15m. Остальные случаи ещё не квалифицированы; продолжать только по gate T254/T255. Original220 five не повторены, T219/T244 history сохранена; Linux UNRUN.
+
 **T253 уточнение до gameplay:** metadata-проверка отклонила draft22m: каталог допускает1…15m на категорию. Сам runner не меняется. Текущий контракт — producer600s/resumer220s/category15m; только producer выполняет измеренную source42 preparation. Потребность resumer в большем времени пока не установлена. Draft600/600/22 не использовался для gameplay; initial RED сохранён, correction RED проверяет сохранение220 resumer перед минимальным исправлением.
 
 Canonical [spec7](spec.md), [tasks T252…T256](tasks.md), [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Spec Kit setup-plan/setup-tasks/check-prerequisites выполнены для существующей feature; Superpowers brainstorming/writing-plans/TDD/executing-plans/debugging/review/verification продолжаются inline. User review waived, дополнительного согласия не ждать. Один parent developer и отдельный routine gpt-6.1-sol/xhigh reviewer; isolated checkout/branch reused.

@@ -91,3 +91,5 @@ T251 closed: Sol6.1/xhigh accepted5149447e0 evidence; clean GitHub recovery261fi
 T253 checkpoint: initial source review missed catalog1..15 maximum; actual PREP rejected22 before any gameplay. Revised policy extends only measured producer600, keeps resumer220, categories15. Initial RED25=18PASS7FAIL and correction RED25=24PASS1FAIL retained; final25PASS/source652, XML0errors/changedXML0/catalog/default205 and12case PlanOnly accepted by scripts. Future budget planning must inspect category maximum separately from runner overall maximum. No routing/model change or measured savings inferred; independent final PREP pending.
 
 T253 independent SOURCE/PREP accepted Sol6.1/xhigh at295549bf4 with compiled652, no outstanding findings. Single T254cut0 next; T255 gated on full case PASS. No further build needed for current selected DLLs.
+
+Spec7 cut0: Failed, CaseQualified=False, run20261020-094923-048-81732-bb41d852f2164eac8935f6ae5aa74ee3-categories, source652bdd76a45ce2abc8b94eed145bbeea628cff93; exact evidence in specs/1536-complete-wound-materialization/recovery/crash5/T254-cut0-outcome.json. Current 0/5PASS; Linux UNRUN.

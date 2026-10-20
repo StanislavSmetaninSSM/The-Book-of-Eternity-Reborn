@@ -1,6 +1,8 @@
 # Текущая работа: spec7 / plan5
 
-[Spec7](spec.md), [plan5](plan.md), [tasks](tasks.md), T252…T256. T250 source42 PASS258.780s; independent review/recovery T251 приняты. Следующий шаг — пять отдельно выбранных Windows cut0…4, producer600s/resumer220s и15m/category; код и SOURCE/PREP приняты (compiled652bdd76a,25PASS, reviewer gpt-6.1-sol/xhigh); gameplay qualification ещё UNRUN. Original Theory220/Linux NativeLineage остаются прежними. Ниже сохранена история; новые результаты будут записаны отдельно.
+**Windows qualification spec7:** 0/5 cases PASS; 1/5 attempted. Producer600s/resumer220s/category15m. Остальные случаи ещё не квалифицированы; продолжать только по gate T254/T255. Original220 five не повторены, T219/T244 history сохранена; Linux UNRUN.
+
+[Spec7](spec.md), [plan5](plan.md), [tasks](tasks.md), T252…T256. T250 source42 PASS258.780s; independent review/recovery T251 приняты. Следующий шаг — пять отдельно выбранных Windows cut0…4, producer600s/resumer220s и15m/category; код и SOURCE/PREP приняты (compiled652bdd76a,25PASS, reviewer gpt-6.1-sol/xhigh); gameplay qualification отражена выше. Original Theory220/Linux NativeLineage остаются прежними. Ниже сохранена история; новые результаты будут записаны отдельно.
 
 ---
 
