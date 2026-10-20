@@ -105,3 +105,5 @@ T259 completed FAIL child220, category not timed out. Producer73 at414.722s; res
 T260 accepted Sol6.1/xhigh at04624368e with focused wording fixes;290-file fresh recovery. T261 spec9/plan7 shared820s/max600 test-only experiment; user waiver, original budgets/production/native preserved. New43policy controls, default237/explicit69 metadata; T262SOURCE/PREP before T263singlecut0, T264onlyafterPASS.
 
 T262 record: compiled2c05158f9,43GREEN/XML0errors/changedXML0/default237/explicit69; independent bound PREP review pending. T263 runtime not executed; original game assertions retained, LinuxUNRUN.
+
+T262 accept: compiled2c05158f9,43GREEN/XML0errors/changedXML0/default237/explicit69; independent PREP accepted at 9960a73515479cc033fff1d84c00e8b3d5e41824. T263 runtime not executed; original game assertions retained, LinuxUNRUN.

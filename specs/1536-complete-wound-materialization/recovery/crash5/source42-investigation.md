@@ -1,6 +1,6 @@
 # T262 — shared Windows budget qualification
 
-**T262 PREP:** compiled2c05158f9b7f37de4cb67b529bfd2704d352a386;43/43 budget controls PASS/0skip after causal26PASS17FAIL. Fresh XML build42.88s/0errors/changedXML0; catalog valid, default PlanOnly237, explicit69cases/10descriptors. Metadata executes0tests. Both independent P2 source findings corrected and focused source review accepted; final bound PREP review pending. Source/DLL/raw archive T262-prep.json/zip. T263 shared820/max600/category15m UNRUN; Windows0/5PASS, LinuxUNRUN.
+**T262 PREP:** compiled2c05158f9b7f37de4cb67b529bfd2704d352a386;43/43 budget controls PASS/0skip after causal26PASS17FAIL. Fresh XML build42.88s/0errors/changedXML0; catalog valid, default PlanOnly237, explicit69cases/10descriptors. Metadata executes0tests. Both independent P2 source findings corrected and focused source review accepted; final bound PREP accepted by separate gpt-6.1-sol/xhigh at 9960a73515479cc033fff1d84c00e8b3d5e41824. Source/DLL/raw archive T262-prep.json/zip. T263 shared820/max600/category15m UNRUN; Windows0/5PASS, LinuxUNRUN.
 
 42 archived files; SHA256 DE34FF35938BE5AC099652FD1D37D255C10DCC83E9070186D1E0B95D4E77908B. Separate initial GREEN remains preserved before reviewer corrections. Production/native unchanged since652bdd76a. Existing14 stage controls retain their b056 binding; they were not rerun without changed instrumentation.
 

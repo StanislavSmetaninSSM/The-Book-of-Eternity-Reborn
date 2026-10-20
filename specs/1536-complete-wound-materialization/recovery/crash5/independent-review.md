@@ -1,3 +1,9 @@
+# T262 — SOURCE/PREP accepted
+
+Separate gpt-6.1-sol/xhigh accepted compiled2c05158f9b7f37de4cb67b529bfd2704d352a386 and bound evidence 9960a73515479cc033fff1d84c00e8b3d5e41824. Two P2 wiring findings corrected: final pre-launch recheck after setup, nullable elapsed/budget evidence on post-launch exhaustion. Causal RED26PASS17FAIL, fresh GREEN43PASS, XML0errors/changedXML0, catalog/default237/explicit69 and source/DLL/raw archive verified. Original assertions/cleanup/production/native and fixed policies retained. T263 is one new bounded cut0 attempt; no five PASS or Linux runtime claim.
+
+---
+
 # T262 — focused SOURCE corrections before runtime
 
 Separate gpt-6.1-sol/xhigh found two P2 wiring gaps at3df56557e after43GREEN: the pre-launch check preceded metadata/start-info setup, and post-launch expiry threw before shared budget metadata existed. Parent confirmed both. Recheck now sits directly before Process.Start after setup. Elapsed/820/600 snapshot is seeded before final selection, with nullable ChildWaitSeconds on expiry; existing finally still owns cleanup. No original assertion/policy/production change. Pure43GREEN and initial XML evidence preserved separately in T262-initial-green.json/zip. Fresh final build/affected controls and focused review remain required. No other SOURCE/XML/catalog/docs finding; independent rawRED43/26PASS17FAIL confirmed.

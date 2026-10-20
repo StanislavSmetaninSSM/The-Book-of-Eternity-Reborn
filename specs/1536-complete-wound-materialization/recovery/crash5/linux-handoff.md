@@ -1,6 +1,6 @@
 # Текущая работа: spec9 / plan7
 
-**T262 PREP:** compiled2c05158f9b7f37de4cb67b529bfd2704d352a386;43/43 budget controls PASS/0skip after causal26PASS17FAIL. Fresh XML build42.88s/0errors/changedXML0; catalog valid, default PlanOnly237, explicit69cases/10descriptors. Metadata executes0tests. Both independent P2 source findings corrected and focused source review accepted; final bound PREP review pending. Source/DLL/raw archive T262-prep.json/zip. T263 shared820/max600/category15m UNRUN; Windows0/5PASS, LinuxUNRUN.
+**T262 PREP:** compiled2c05158f9b7f37de4cb67b529bfd2704d352a386;43/43 budget controls PASS/0skip after causal26PASS17FAIL. Fresh XML build42.88s/0errors/changedXML0; catalog valid, default PlanOnly237, explicit69cases/10descriptors. Metadata executes0tests. Both independent P2 source findings corrected and focused source review accepted; final bound PREP accepted by separate gpt-6.1-sol/xhigh at 9960a73515479cc033fff1d84c00e8b3d5e41824. Source/DLL/raw archive T262-prep.json/zip. T263 shared820/max600/category15m UNRUN; Windows0/5PASS, LinuxUNRUN.
 
 Original assertions, identity, cleanup and Linux NativeLineage remain unchanged. Original220 five NOT_RERUN; T219/T254/T259 failures preserved.
 
