@@ -13,6 +13,8 @@ T322 generator actual1PASS/run20261021-003520-760-6000-49bb718fb4c84e25861817fa8
 
 T322 separate Astra/high bindingaccepted4c1afe588 without findings:96archivefiles/1783recipes/83Gitartifactfiles/4DLL/199recoveryblobs verified, historicalwholefixture/source-record intact. T322-binding-review.json permits exactlyone ordinaryT323seededcut0 at unchanged820/600/15m; originalcoldfive0/5/LinuxUNRUN. Artifact CRLF DATA retainedbyte-exact despite unfilteredgitwhitespacecheck; source/prosecheck excludingDATA passed. No C#change sinceaccepted d41f80f347.
 
+T323 actual originalseededcut0 FAIL/TimeoutException atunchanged600childwait; body12:33.2382874/run20261021-004553-398-7796-8a8ce06528814c24a6d89b16302e85c6-categories. Producer73/resumer-1, bothEOF/join,2rootsremoved/absent,4DLL+seedunchanged. All3197namedrecords retained; lastbegin JointPhase.ReadCompletedProofAsync at598068.3332ms, parentstack/cause tobeverifiedbyT324. No cleanupcaptureevent/archive. T323-profile-cut0-outcome/raw/childstreams and T323-cleanup-data.json preserved; no retry or qualification. Nextcanonical offlineparser/causalanalysis, independentreview, newcheapactualcomponent/correction.
+
 ---
 
 # CRASH5 — plan13 revision7: remove one repeated story-source read
