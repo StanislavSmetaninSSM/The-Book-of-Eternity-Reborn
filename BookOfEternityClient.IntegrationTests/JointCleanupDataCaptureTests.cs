@@ -102,6 +102,31 @@ public sealed class JointCleanupDataCaptureTests
     }
 
     /// <summary>
+    /// Reports absence according to physical file and directory visibility, including case aliases.
+    /// </summary>
+    /// <param name="directory">
+    /// <see langword="true"/> creates a directory at the probe; otherwise creates a differently cased file.
+    /// </param>
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void Capture_ProbePresence_UsesPhysicalNamespace(bool directory)
+    {
+        using var fixture = new CaptureFixture();
+        var probe = Path.Combine(fixture.Source, "game_session/ready/turn_error.json");
+        if (directory) Directory.CreateDirectory(probe);
+        else File.WriteAllText(Path.Combine(Path.GetDirectoryName(probe)!, "Turn_Error.json"), "observed malformed signal");
+        var physicallyPresent = File.Exists(probe) || Directory.Exists(probe);
+        JointCleanupDataCapture.Capture(fixture.Source, fixture.Archive, new());
+        using var archive = ZipFile.OpenRead(fixture.Archive);
+        using var reader = new StreamReader(archive.GetEntry("manifest.json")!.Open());
+        var manifest = JsonNode.Parse(reader.ReadToEnd())!;
+        var absent = manifest["Absent"]!.AsArray().Select(node => node!.GetValue<string>()).ToArray();
+        if (physicallyPresent) Assert.DoesNotContain("game_session/ready/turn_error.json", absent);
+        else Assert.Contains("game_session/ready/turn_error.json", absent);
+    }
+
+    /// <summary>
     /// Owns all mutable data for one test, including output, and removes only that root.
     /// </summary>
     private sealed class CaptureFixture : IDisposable

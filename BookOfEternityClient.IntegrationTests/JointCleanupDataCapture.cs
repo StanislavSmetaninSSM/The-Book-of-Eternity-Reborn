@@ -60,7 +60,8 @@ internal static class JointCleanupDataCapture
             images.Add(path, File.ReadAllBytes(scope.ValidateFile(Path.Combine(root, path), allowMissing: false)));
         var probes = new[] { "ready/turn_complete.json", "ready/turn_error.json", "input/turn_request.json",
             "game_state/control/validation_repair_request.json", "game_state/control/validation_repair_ready.json" };
-        var absent = probes.Select(path => "game_session/" + path).Where(path => !images.ContainsKey(path)).ToArray();
+        var absent = probes.Select(path => "game_session/" + path).Where(path =>
+            !File.Exists(Path.Combine(root, path)) && !Directory.Exists(Path.Combine(root, path))).ToArray();
         var builds = new[] { typeof(GameEngine).Assembly, typeof(JointCleanupDataCapture).Assembly,
             typeof(PendingTurnSnapshotTestAuthority).Assembly }.Distinct().Select(assembly => new
         {
