@@ -1,8 +1,8 @@
 # CRASH5 — spec15 revision6 / plan13 revision6: real phase/story components
 
-- [ ] T318a [US2] Publish exact actual applied DATA/provenance; test-first independent importer with byte/index/absence/refusal/source-preservation controls, no imported authority.
+- [x] T318a [US2] Exact actual applied DATA/provenance published; importer9FAIL→9PASS, directory-parent1FAIL/9PASS→10PASS, reviewer aliasP2 regression1FAIL/10PASS→11PASS; independent copies/namespace/bytes/absence/source-preservation controls. No imported authority. T318-prep/v2 and source-review accepted.
 - [ ] T318b [US2] Direct real phase/story component positive/repeat/drift and separate narrative-refusal cases on independent copies/new real leases; no heavy game setup or fabricated proof.
-- [ ] T318c [US3] Passive named inner scopes with source-preservation proof; XML/control/catalog/PlanOnly, independent coherent SOURCE/PREP and remote recovery before the component probe.
+- [x] T318c [US3] 26passive scopes/2productionfiles preserve original businesssource; XML0errors, transport11PASS/uncappedcollectorPASS, catalog850/11961, exact14casePlanOnly0execution. Separate Astra/high SOURCE/PREP accepted512f2c62d;3runtimeDLLbindings/172Git-exactrecoveryfiles verified. Actual2servicecases stillUNRUN at PREP.
 - [ ] T318d [US3] Measure actual wrappers/costs without quotas; preserve negatives/raw/cleanup, independent final review and next written cause-driven correction. Recovery still open.
 
 Dependencies T317 qualifiedDATA→T318a/b/c PREP→review→T318d measurement→next correction→original gate. Original T315FAIL/Windowsfive0/5/LinuxUNRUN unchanged. No diagnostic quotas or unchanged full retry.
