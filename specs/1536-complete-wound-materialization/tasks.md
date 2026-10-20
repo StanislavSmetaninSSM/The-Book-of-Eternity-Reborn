@@ -1,3 +1,11 @@
+# CRASH5 — spec15 revision15 / plan13 revision15: cleanup-entry DATA investigation
+
+- [ ] T337 [US1/US2] Read-only bounded investigation of T333 cleanup-entry DATA and current real cleanup/validation APIs: preserve provenance/missing-native limits, map fresh lease/original/applied/story/projection proof construction without GameEngine, identify smallest shared test-support entry points and named measurements, produce concrete next implementation scope. Actual Spec Kit plan/tasks/analyze, independent consultation/review and remote recovery. No C# edits, gameplay, generator, original retry or measurement runtime in this investigation.
+
+T335–336 diagnostic transport SOURCE/PREP is independently accepted; original recovery/coldfive/Linux remain open. T337 findings do not authorize production implementation or a probe; write the resulting concrete scope separately first. Reuse the active feature and standing review-wait waiver.
+
+---
+
 # CRASH5 — spec15 revision14a / plan13 revision14a: durable full diagnostics
 
 - [x] T334 [US1/US3] Preserve and independently inspect actual T333serializationFAIL/available raw/missing resumer limits and captured DATA; actual phases/consistency and bounded read-only direct/native API/owner consultation before implementation. No runtime.

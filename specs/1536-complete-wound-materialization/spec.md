@@ -1,3 +1,16 @@
+# CRASH5 — spec15 revision15: reach real cleanup through cheap fresh-validation inputs
+
+Issue1536; taskT337, investigation only. The user authorizes new internal/public test-support entry points to remove expensive game setup. T335–336 uncapped artifact transport is accepted at924d47b5 (compiledb80); no diagnostic quotas, native retirement or Windows wait policies change. Original recovery remains open.
+
+- CLEANUP-1 / US1: inspect the already retained T333 cleanup-entry DATA (221payloadfiles/1503472bytes/62directories, archiveSHA D2ACF9B8B958F7800E1335B35C0C873E928792C82ADABF5707C57286EB329740). Preserve exact bytes/absences and source/run context. Its self PID is not independent native identity; entry capture does not prove eligibility, completion or quiescence. Existing AppliedBeforeStory loader intentionally rejects it: this manifest has Operation/Cut/Parent provenance, no Role or Original tuple. Do not relabel it to satisfy that loader or reuse live authority.
+- CLEANUP-2 / US2: map the smallest actual production path that reconstructs current original/applied/story/projection/terminal checks with a new real FileSystemManager, owning lease and SessionOperationContext on an independent copy, without GameEngine/source42 preparation. Identify explicit internal test-support seams if needed. Keep proof provenance/issuer restrictions, all existing semantic fences and the T325 ABA counterexample. No fake proof object, cached validation or weakened completion assertion.
+- CLEANUP-3 / US2: deliver exact source/API map, feasible component boundaries and acceptance criteria for the next measured implementation. Use named real code sections, I/O counts/bytes and wall/CPU with nesting limits. Substituted policy steps can test ordering but cannot establish real validation runtime. Prefer genuine DATA-driven leaves or one shared production runner; avoid a separate cleanup algorithm in tests.
+- CLEANUP-4 / US3: actual Spec Kit phases/consistency, bounded architectural consultation where useful, parent reconciliation, independent review and durable recovery. Investigation starts no game/native child, generator, original recovery or C# probe and changes no production/test C# source. The following implementation/probe requires a new written concrete scope; this spike grants no execution authority.
+
+Preserved: accepted uncapped diagnostic files/refs and primary-error/EOF/ownership separation; trusted-local storage and schema/current canonical-state integrity; original820/600/15min policy and Linux NativeLineage; historical raw/parser/seed source bindings. No game/GM/player/schema/prompt/example behavior change. Unresolved until source audit: exact proof-constructing entry point, cleanup DATA eligibility for current code, narrow helper/import API and first actual measurement selection.
+
+---
+
 # CRASH5 — spec15 revision14a: preserve every child diagnostic outside fixture cleanup
 
 Issue1536; actual T333FAIL exposes a JSON scalar transport failure (reported length169321202), not an independently recorded resumer timeout/verdict. Full resumer output did not survive; available14rawfiles and structurally verified221file cleanup-entry DATA retained in T334-inspection. T333 original/fullraw acceptance stays unmet, no unchanged retry.

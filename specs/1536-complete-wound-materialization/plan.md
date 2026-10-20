@@ -1,3 +1,15 @@
+# CRASH5 — plan13 revision15: source audit before real cleanup measurement
+
+Spec15r15; T337 read-only spike. Apply systematic-debugging/writing-plans/Spec Kit with the existing isolated checkout; no duplicate Superpowers artifacts. T335–336 accepted; full recovery remains open.
+
+1. Parent verifies immutable T333 cleanup archive namespace/hash/manifest/provenance against retained inspection and identifies DATA/authority limits. Review existing JointAppliedDataTemplate/Profile tests as patterns; current role-specific importer must not silently accept different provenance. Record absent native evidence explicitly; no runtime copy/materialization or probe yet.
+2. Bounded separate actual Astra/high consultation resolves one concrete architecture question: smallest production-used internal entry points/fresh proof path to execute real cleanup components with this DATA without GameEngine or source42. Read current cleanup, validators, proof types and existing tests; return precise API changes, preserved refusal/freshness boundaries, cheap correctness controls and named real measurements. No edits/test execution. Parent owns implementation later and avoids duplicating that source walk.
+3. Reconcile into one concise findings record and concrete next scope, including rejected unsafe authority shortcuts. Actual plan/tasks/prerequisites/consistency and independent coherent investigation review; save/push/readback/clean recovery before long consultation/review. Mark T337 complete only with actual source evidence, not a proposed capability. Do not execute measurements or implement the recommendation under this spike.
+
+No generator/original/five/Linux runtime or new C# change. Raw output transport stays unlimited; timing data outside fixture cleanup with complete files/hashes/status, no scalar raw-stream envelope. New component inputs must be immutable DATA, per-test independent roots and fresh real authority; no cross-call cache or boundary coalescing. User's existing autonomy/review-wait waiver applies after actual written spec is presented.
+
+---
+
 # CRASH5 — plan13 revision14a: uncapped durable output transport, cheap verification
 
 Spec15r14a; T334–336. Apply systematic-debugging/executing-plans/TDD/verification with the existing isolated branch, canonical Spec Kit phases/consistency, parent implementation and separate Astra/high review. No game/prompt/example contract change.
