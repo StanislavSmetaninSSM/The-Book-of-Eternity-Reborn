@@ -408,7 +408,7 @@ public sealed class JointInterfaceCrashSeedTests
     /// <summary>
     /// Owns a small literal synthetic namespace and independently writes the documented artifact schema.
     /// </summary>
-    private sealed class SeedFixture : IDisposable
+    internal sealed class SeedFixture : IDisposable
     {
         /// <summary>
         /// Creates a unique existing parent for artifacts and imports owned solely by this test.

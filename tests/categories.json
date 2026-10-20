@@ -2,6 +2,71 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-interface-seed-input-contracts",
+  "responsibility": "Spec12 closed seed selection, Windows cut0 mode, exact manifest binding/current fingerprint and fail-without-fallback controls using physical synthetic DATA.",
+  "excludes": "No genuine source42 generation, Stage43/crash/current-owner or Linux qualification.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointInterfaceSeedCrashInput.cs",
+    "BookOfEternityClient.IntegrationTests/JointInterfaceSeedCrashInputTests.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-interface-seed-contracts",
+      "when": "Immutable codec, fingerprint or adoption changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointInterfaceSeedCrashInputTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-interface-seeded-windows-cut0",
+  "responsibility": "Spec12 explicit genuine immutable source42 import, natural Stage43 and original cut0 crash/current-owner assertions through existing Windows owner/shared820max600.",
+  "excludes": "No original cold five, Linux, other cuts, source regeneration, default/CI selection or automatic retry.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointSeededWindowsCrash.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-interface-seed-input-contracts",
+      "when": "Selection metadata or artifact binding changes."
+    },
+    {
+      "id": "fr063-joint-interface-probe-budget-contracts",
+      "when": "Shared Windows child budget or process contracts change."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 15,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterface_SeededWindowsCrashCut0PreparedReentersCurrentOwner"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-interface-seed-generation",
   "responsibility": "Explicit spec11 actual source42 preparation, quiescent durable export, and read-only validation of two independent imports.",
   "excludes": "No Stage43/crash/current-owner runtime, Linux or original-five qualification; excluded from default selection.",

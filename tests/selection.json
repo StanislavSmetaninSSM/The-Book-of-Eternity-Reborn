@@ -143,6 +143,13 @@
       "contracts": [
         "Exact independent bytes, isolation and integrity refusal without live source42 fallback; constructor adoption cannot overwrite seed state."
       ]
+    },
+    {
+      "category": "fr063-joint-interface-seed-input-contracts",
+      "reason": "Spec12 explicit seed-selection and current artifact integrity; bounded controls only.",
+      "contracts": [
+        "Absent metadata preserves legacy path; malformed/missing/stale input refuses without source-generation fallback."
+      ]
     }
   ]
 }
