@@ -1,0 +1,172 @@
+using System.Text.Json;
+using Xunit;
+
+namespace BookOfEternityClient.Tests;
+
+public sealed partial class JointBundleComponentTests
+{
+    private sealed partial class Fixture
+    {
+        /// <summary>
+        /// Verifies all declared admission names and balanced nesting in the first already recorded direct copy.
+        /// Runs after the existing semantic, refusal, restoration and normal-abort controls.
+        /// </summary>
+        /// <param name="range">
+        /// Half-open offsets returned by the existing direct-copy helper; no additional copy is performed.
+        /// </param>
+        internal void AssertJointAdmissionTimingTree((int Start, int End) range)
+        {
+            var rows = ReadAdmissionTimingRange(range);
+            string[] required =
+            [
+                "JointContinuation.ValidateSeal",
+                "JointContinuation.ComputeFingerprint",
+                "JointContinuation.HashBeforeImages",
+                "JointPreparation.PreparedAgrees",
+                "JointPreparation.Replay",
+                "JointEffectInput.Compose",
+                "JointEffectInput.Build",
+                "WoundPreparation.PrepareCore",
+                "WoundPreparation.ValidateInput",
+                "JointFinalAdmission.Baseline",
+                "TreatmentResources.Finalize"
+            ];
+            var missing = required.Where(name => !rows.Any(row => row.Name == name && row.Boundary == "begin")).ToArray();
+            Assert.True(missing.Length == 0, "Missing required joint admission timing names: " + string.Join(", ", missing));
+            foreach (var name in required)
+            {
+                var began = rows.Count(row => row.Name == name && row.Boundary == "begin");
+                var ended = rows.Count(row => row.Name == name && row.Boundary == "end");
+                Assert.True(began > 0, name);
+                Assert.Equal(began, ended);
+            }
+
+            var nodes = ReadStrictAdmissionTree(rows);
+            string[][] chains =
+            [
+                ["JointPreparation.PreparedAgrees", "JointPreparation.Replay", "WoundPreparation.PrepareCore", "WoundPreparation.ValidateInput"],
+                ["JointEffectInput.Compose", "JointEffectInput.Build"],
+                ["WoundPlanner.JointFinalAdmission", "JointFinalAdmission.Baseline"]
+            ];
+            foreach (var chain in chains)
+                Assert.True(nodes.Any(node => HasAdmissionTimingChain(node, chain, 0)),
+                    "Missing nested timing chain: " + string.Join(" > ", chain));
+            Assert.True(nodes.Any(node =>
+                node.Name == "JointContinuation.ValidateSeal" &&
+                node.Children.Any(child => child.Name == "TreatmentResources.Finalize") &&
+                HasAdmissionTimingChain(node,
+                    ["JointContinuation.ValidateSeal", "JointContinuation.ComputeFingerprint", "JointContinuation.HashBeforeImages"], 0)),
+                "One continuation seal must contain resource finalization and fingerprint/before-image hashing.");
+            _output.WriteLine(JsonSerializer.Serialize(new
+            {
+                Kind = "JointAdmissionTimingTree", range.Start, range.End, Events = rows.Length,
+                RequiredNames = required, StrictLifo = true, DeclaredChains = chains,
+                SealContainsResourceAndFingerprintHash = true
+            }));
+        }
+
+        /// <summary>
+        /// Requires an already recorded failed supplied-stage guard to stop before final validation.
+        /// </summary>
+        /// <param name="phase">
+        /// The prepared or effect refusal label associated with this recorded constructor call.
+        /// </param>
+        /// <param name="range">
+        /// The half-open offsets surrounding only that existing failed constructor call.
+        /// </param>
+        private void AssertNoFinalValidationInRecordedRange(string phase, (int Start, int End) range)
+        {
+            var rows = ReadAdmissionTimingRange(range);
+            Assert.DoesNotContain(rows, row => row.Name == "WoundPlanCache.ValidateFinalResult");
+            _output.WriteLine(JsonSerializer.Serialize(new
+            {
+                Kind = "JointAdmissionRefusalTiming", Phase = phase, range.Start, range.End,
+                Events = rows.Length, FinalValidationAbsent = true
+            }));
+        }
+
+        /// <summary>
+        /// Selects an exact existing observation interval without changing or limiting the uncapped capture.
+        /// </summary>
+        /// <param name="range">
+        /// Valid half-open offsets into the retained observation queue.
+        /// </param>
+        /// <returns>
+        /// All observations in that interval, in their original order.
+        /// </returns>
+        private (string Name, string Boundary, double Milliseconds)[] ReadAdmissionTimingRange((int Start, int End) range)
+        {
+            var observations = _observations.ToArray();
+            Assert.InRange(range.Start, 0, observations.Length);
+            Assert.InRange(range.End, range.Start, observations.Length);
+            Assert.True(range.End > range.Start, "The recorded timing interval must be nonempty.");
+            return observations.Skip(range.Start).Take(range.End - range.Start).ToArray();
+        }
+
+        /// <summary>
+        /// Builds the recorded tree while requiring matching begin/end events in strict LIFO order.
+        /// </summary>
+        /// <param name="rows">
+        /// Every event from one complete synchronous observation interval, in original order.
+        /// </param>
+        /// <returns>
+        /// Every node, retaining its direct children for the declared chain checks.
+        /// </returns>
+        private static IReadOnlyList<AdmissionTimingNode> ReadStrictAdmissionTree(
+            (string Name, string Boundary, double Milliseconds)[] rows)
+        {
+            var nodes = new List<AdmissionTimingNode>();
+            var stack = new Stack<AdmissionTimingNode>();
+            foreach (var row in rows)
+            {
+                Assert.True(double.IsFinite(row.Milliseconds) && row.Milliseconds >= 0);
+                if (row.Boundary == "begin")
+                {
+                    var node = new AdmissionTimingNode(row.Name, []);
+                    nodes.Add(node);
+                    if (stack.TryPeek(out var parent)) parent.Children.Add(node);
+                    stack.Push(node);
+                }
+                else
+                {
+                    Assert.Equal("end", row.Boundary);
+                    Assert.NotEmpty(stack);
+                    Assert.Equal(stack.Pop().Name, row.Name);
+                }
+            }
+            Assert.Empty(stack);
+            return nodes;
+        }
+
+        /// <summary>
+        /// Matches a declared chain through direct recorded child relationships.
+        /// </summary>
+        /// <param name="node">
+        /// The current observed node to compare.
+        /// </param>
+        /// <param name="names">
+        /// The nonempty ordered chain of names expected in one tree.
+        /// </param>
+        /// <param name="position">
+        /// The current chain position; callers start at zero.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> when this node and its direct descendants match the remaining complete chain; otherwise <see langword="false"/>.
+        /// </returns>
+        private static bool HasAdmissionTimingChain(AdmissionTimingNode node, IReadOnlyList<string> names, int position) =>
+            node.Name == names[position] &&
+            (position == names.Count - 1 ||
+                node.Children.Any(child => HasAdmissionTimingChain(child, names, position + 1)));
+
+        /// <summary>
+        /// Retains only an observed timing name and its direct children.
+        /// </summary>
+        /// <param name="Name">
+        /// The exact name received by the existing observer.
+        /// </param>
+        /// <param name="Children">
+        /// All direct child scopes, in original begin order.
+        /// </param>
+        private sealed record AdmissionTimingNode(string Name, List<AdmissionTimingNode> Children);
+    }
+}

@@ -11,7 +11,7 @@ public sealed partial class JointBundleComponentTests
     /// Runs retained joint-copy contracts with genuinely bound stages and normal owned fixture closing.
     /// </summary>
     /// <returns>
-    /// Completion after direct-copy, constructor, mutation, corruption restoration and abort-parity checks.
+    /// Completion after direct-copy, constructor, mutation, corruption restoration, abort parity and timing-tree checks.
     /// </returns>
     [Fact]
     public async Task JointCopy_RetainsAdmissionDetachmentAndRefusalContracts()
@@ -20,8 +20,9 @@ public sealed partial class JointBundleComponentTests
         await fixture.InitializeAsync();
         var bound = await fixture.PrepareBoundJointAsync();
         Assert.True(bound.Success, JsonSerializer.Serialize(bound.Issues));
-        fixture.AssertDirectJointCopyRetainsAdmissionWithoutFinalReduction();
+        var directCopy = fixture.AssertDirectJointCopyRetainsAdmissionWithoutFinalReduction();
         fixture.AssertJointCopyContracts(bound.Input!, bound.Authority!);
+        fixture.AssertJointAdmissionTimingTree(directCopy);
     }
 
     private sealed partial class Fixture
@@ -30,7 +31,10 @@ public sealed partial class JointBundleComponentTests
         /// Copies the genuinely bound joint bundle in its own complete observation slice.
         /// Requires preparation, effect and final admission while refusing redundant final reduction.
         /// </summary>
-        internal void AssertDirectJointCopyRetainsAdmissionWithoutFinalReduction()
+        /// <returns>
+        /// The half-open observation offsets of this existing direct-copy scope; the end offset is exclusive.
+        /// </returns>
+        internal (int Start, int End) AssertDirectJointCopyRetainsAdmissionWithoutFinalReduction()
         {
             var bundle = _jointBundle ?? throw new InvalidOperationException("A genuine joint binding is required.");
             var offset = ResetCandidateCapture("DirectJointCopy");
@@ -38,6 +42,7 @@ public sealed partial class JointBundleComponentTests
             using (Files.EnterOperationTimingContext())
             using (Files.MeasureOperation("JointBundleCandidate.DirectJointCopy"))
                 copy = bundle.DetachedCopy();
+            var end = _observations.Count;
             var counts = CompleteCandidateCapture("DirectJointCopy", offset);
             Assert.True(counts.GetValueOrDefault("WoundPlanCache.ValidatePreparedResult") > 0);
             Assert.True(counts.GetValueOrDefault("WoundEffect.AcceptEffectResult") > 0);
@@ -48,11 +53,13 @@ public sealed partial class JointBundleComponentTests
             Assert.NotSame(bundle, copy);
             Assert.Equal(bundle.BundleFingerprint, copy.BundleFingerprint);
             Assert.Equal(bundle.WoundFinalPlanFingerprint, copy.WoundFinalPlanFingerprint);
+            return (offset, end);
         }
 
         /// <summary>
         /// Checks retained-copy data isolation, normal-constructor replay and refusal parity using this fixture's real joint source.
         /// Supports a dedicated copy case or execution after candidate oracles, before normal fixture closing.
+        /// Checks that recorded prepared/effect refusals stop before final validation.
         /// </summary>
         /// <param name="input">
         /// The genuinely bound common input from this fixture's successful joint preparation.
@@ -100,9 +107,12 @@ public sealed partial class JointBundleComponentTests
                 {
                     Binding = bundle.Input.Binding with { RequestId = "foreign_copy_request_" + _nonce }
                 };
+                var preparedRefusalStart = _observations.Count;
                 var preparedFailure = Assert.Throws<ArgumentException>(() =>
                     new AcceptedMechanicsWoundStageBundle(changed, bundle.PreparedPlan, bundle.EffectBatchPlan, bundle.FinalPlan));
+                var preparedRefusalEnd = _observations.Count;
                 Assert.Equal("preparedPlan", preparedFailure.ParamName);
+                AssertNoFinalValidationInRecordedRange("Prepared", (preparedRefusalStart, preparedRefusalEnd));
                 var effect = bundle.EffectBatchPlan;
                 var commands = effect.EffectInput.RawCommands.DeepClone().AsObject();
                 commands["component_invalid"] = true;
@@ -110,9 +120,12 @@ public sealed partial class JointBundleComponentTests
                 // This is deliberately invalid DATA with genuine unchanged companions, not a new issuer or guard.
                 var changedEffect = WoundEffectBatchAcceptedPlan.Create(bundle.PreparedPlan, changedEffectInput,
                     effect.EffectPlan, effect.ApplicationResults, effect.TerminationResults);
+                var effectRefusalStart = _observations.Count;
                 var effectFailure = Assert.Throws<ArgumentException>(() =>
                     new AcceptedMechanicsWoundStageBundle(bundle.Input, bundle.PreparedPlan, changedEffect, bundle.FinalPlan));
+                var effectRefusalEnd = _observations.Count;
                 Assert.Equal("effectBatchPlan", effectFailure.ParamName);
+                AssertNoFinalValidationInRecordedRange("Effect", (effectRefusalStart, effectRefusalEnd));
             }
 
             using (Files.MeasureOperation("JointBundleCandidate.RetainedHistoryCorruption"))
