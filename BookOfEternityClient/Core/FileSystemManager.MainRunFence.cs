@@ -230,6 +230,12 @@ public partial class FileSystemManager
             _access.FreezeForTerminalClose();
             await _access.Remote!.CompleteAsync(outcome,closingFailed);
         }
+        /// <summary>
+        /// Checks this main admission's existing remote, original-owner or guarded persisted-state route.
+        /// </summary>
+        /// <param name="lease">
+        /// The current lease, or <see langword="null"/> for the existing lease-free checks; lease-specific generation checks remain conditional.
+        /// </param>
         internal void Validate(CanonicalWriteLease? lease)
         {
             if(_closed || _access==null)throw GmSessionRunPersistence.Invalid();
@@ -237,34 +243,53 @@ public partial class FileSystemManager
             if(lease?.Purpose==CanonicalWritePurpose.SessionFinalization && !BoundClosing)
                 throw GmSessionRunPersistence.Invalid();
             if(_access.Remote is { } remote) {
+                using var remoteTiming = _files.MeasureOperation("MainAdmission.Validate.Remote");
                 if(lease?.Purpose==CanonicalWritePurpose.SessionReplacement)throw GmSessionRunPersistence.Invalid();
-                remote.Validate(_files.BasePath,lease?.Purpose==CanonicalWritePurpose.SessionFinalization);
+                using (_files.MeasureOperation("MainAdmission.Validate.RemoteCheck"))
+                    remote.Validate(_files.BasePath,lease?.Purpose==CanonicalWritePurpose.SessionFinalization);
                 if(OperatingSystem.IsWindows() && !(Closing && lease?.Purpose==CanonicalWritePurpose.SessionFinalization))
-                    _files.RequireAbsentMainWorkerInventory();
+                    using (_files.MeasureOperation("MainAdmission.Validate.WorkerInventory"))
+                        _files.RequireAbsentMainWorkerInventory();
                 if(_access.WorkerObservationRequired && !(Closing && lease?.Purpose==CanonicalWritePurpose.SessionFinalization)) {
                     // This observation can only withdraw an already granted
                     // original connection. It cannot grant/replace inventory authority.
+                    using var observationTiming = _files.MeasureOperation("MainAdmission.Validate.WorkerObservation");
                     var observed=GmWorkerRunLedger.ObserveAsync(new(_files.BasePath)).GetAwaiter().GetResult();
                     if(observed.Kind!=WorkerRunObservationKind.Quiescent)throw GmSessionRunPersistence.Invalid();
                 }
-                if(lease!=null && _files.ReadLocalGenerationSnapshotBelowWorkerFence(lease).Binding.Id!=remote.Identity.GenerationId)throw GmSessionRunPersistence.Invalid();
+                if(lease!=null)
+                    using (_files.MeasureOperation("MainAdmission.Validate.GenerationRead"))
+                        if(_files.ReadLocalGenerationSnapshotBelowWorkerFence(lease).Binding.Id!=remote.Identity.GenerationId)throw GmSessionRunPersistence.Invalid();
                 return;
             }
             if(_access.Original is { } a)
             {
+                using var originalTiming = _files.MeasureOperation("MainAdmission.Validate.OriginalOwner");
                 if(a.Pin!=null && lease?.Purpose==CanonicalWritePurpose.SessionReplacement)throw GmSessionRunPersistence.Invalid();
-                a.Owner.ValidateAccess(a,lease?.Purpose==CanonicalWritePurpose.SessionFinalization);
-                if(a.Pin!=null && lease!=null &&
-                    _files.ReadLocalGenerationSnapshotBelowWorkerFence(lease).Binding.Id!=a.Owner.Identity.GenerationId)
-                    throw GmSessionRunPersistence.Invalid();
+                using (_files.MeasureOperation("MainAdmission.Validate.OriginalOwnerCheck"))
+                    a.Owner.ValidateAccess(a,lease?.Purpose==CanonicalWritePurpose.SessionFinalization);
+                if(a.Pin!=null && lease!=null)
+                    using (_files.MeasureOperation("MainAdmission.Validate.GenerationRead"))
+                        if(_files.ReadLocalGenerationSnapshotBelowWorkerFence(lease).Binding.Id!=a.Owner.Identity.GenerationId)
+                            throw GmSessionRunPersistence.Invalid();
                 return;
             }
-            _access.Guard!.Validate();
-            if(OperatingSystem.IsWindows())_files.RequireAbsentMainWorkerInventory();
-            _access.Workers?.ValidateMainAdmission(_files,_workerPurpose);
-            var bytes=GmSessionRunPersistence.Read(_files.BasePath);
+            using var guardTiming = _files.MeasureOperation("MainAdmission.Validate.Guard");
+            using (_files.MeasureOperation("MainAdmission.Validate.GuardCheck"))
+                _access.Guard!.Validate();
+            if(OperatingSystem.IsWindows())
+                using (_files.MeasureOperation("MainAdmission.Validate.WorkerInventory"))
+                    _files.RequireAbsentMainWorkerInventory();
+            if(_access.Workers is { } workers)
+                using (_files.MeasureOperation("MainAdmission.Validate.WorkerObservation"))
+                    workers.ValidateMainAdmission(_files,_workerPurpose);
+            byte[]? bytes;
+            using (_files.MeasureOperation("MainAdmission.Validate.PersistenceRead"))
+                bytes=GmSessionRunPersistence.Read(_files.BasePath);
             if(bytes==null)return;
-            var r=GmSessionRunRecordCodec.Decode(bytes);
+            GmSessionRunRecord r;
+            using (_files.MeasureOperation("MainAdmission.Validate.DecodePersistence"))
+                r=GmSessionRunRecordCodec.Decode(bytes);
             var backend=OperatingSystem.IsWindows()?GmSessionRunBackend.WindowsJob:GmSessionRunBackend.LinuxSupervisor;
             if(r.Disposition!=GmSessionRunDisposition.Stopped || r.Identity.Backend!=backend ||
                 !GmSessionRunValidation.AdmissionRootMatches(r.Identity.RootKey,_files.BasePath,backend))throw GmSessionRunPersistence.Invalid();
@@ -509,12 +534,24 @@ public partial class FileSystemManager
     }
     // Negative admission is observed without creating or adopting a worker
     // ledger. The Windows main route cannot reinterpret a Linux-only inventory.
+    /// <summary>
+    /// Requires worker inventory absence under the original root gate without creating or adopting an inventory.
+    /// </summary>
     internal void RequireAbsentMainWorkerInventory()
     {
+        using var operationTiming = MeasureOperation("MainAdmission.WorkerInventory.GateAndBody");
         var root=CanonicalRootAuthorityIdentity;
         lock(root.WorkerContextGate) {
+            using var bodyTiming = MeasureOperation("MainAdmission.WorkerInventory.Body");
             if(root.WorkerContext!=null)throw GmSessionRunPersistence.Invalid();
-            var observed=new TrustedLocalFileScope([BasePath]).ObserveNamespace(new WorkerLedgerTarget(BasePath).DirectoryPath);
+            TrustedLocalFileScope scope;
+            using (MeasureOperation("MainAdmission.WorkerInventory.ScopeConstruction"))
+            using (EnterOperationTimingContext())
+                scope=new TrustedLocalFileScope([BasePath]);
+            TrustedLocalNamespaceObservation observed;
+            using (MeasureOperation("MainAdmission.WorkerInventory.ObserveNamespace"))
+            using (EnterOperationTimingContext())
+                observed=scope.ObserveNamespace(new WorkerLedgerTarget(BasePath).DirectoryPath);
             if(observed.BlockingFileAncestor!=null || observed.Kind!=TrustedLocalNamespaceKind.Missing)
                 throw GmSessionRunPersistence.Invalid();
         }

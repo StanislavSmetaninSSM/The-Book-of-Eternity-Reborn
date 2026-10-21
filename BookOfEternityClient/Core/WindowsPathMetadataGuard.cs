@@ -319,6 +319,7 @@ internal sealed class WindowsPathMetadataProvider : IWindowsPathMetadataProvider
     {
         var directory = new DirectoryInfo(path);
         ObserveAttempt(path, role, PathMetadataQueryKind.DirectoryRefresh);
+        using var refreshTiming = FileSystemManager.MeasureCurrentOperation("WindowsMetadata.DirectoryRefreshAndCachedRead");
         directory.Refresh();
         var exists = directory.Exists;
         return new(exists, exists ? directory.Attributes : null);
@@ -332,6 +333,7 @@ internal sealed class WindowsPathMetadataProvider : IWindowsPathMetadataProvider
 
         var file = new FileInfo(path);
         ObserveAttempt(path, role, PathMetadataQueryKind.FileRefresh);
+        using var refreshTiming = FileSystemManager.MeasureCurrentOperation("WindowsMetadata.FileRefreshAndCachedRead");
         file.Refresh();
         var exists = file.Exists;
         return new(exists, exists ? file.Attributes : null);
@@ -341,21 +343,24 @@ internal sealed class WindowsPathMetadataProvider : IWindowsPathMetadataProvider
     public bool LegacyDirectoryExists(string path, PathMetadataRole role)
     {
         ObserveAttempt(path, role, PathMetadataQueryKind.DirectoryExists);
-        return Directory.Exists(path);
+        using (FileSystemManager.MeasureCurrentOperation("WindowsMetadata.LegacyDirectoryExists"))
+            return Directory.Exists(path);
     }
 
     /// <inheritdoc />
     public bool LegacyFileExists(string path, PathMetadataRole role)
     {
         ObserveAttempt(path, role, PathMetadataQueryKind.FileExists);
-        return File.Exists(path);
+        using (FileSystemManager.MeasureCurrentOperation("WindowsMetadata.LegacyFileExists"))
+            return File.Exists(path);
     }
 
     /// <inheritdoc />
     public bool IsReparsePoint(string path, PathMetadataRole role)
     {
         ObserveAttempt(path, role, PathMetadataQueryKind.IsReparsePoint);
-        return FileSystemManager.IsReparsePoint(path);
+        using (FileSystemManager.MeasureCurrentOperation("WindowsMetadata.LegacyIsReparsePoint"))
+            return FileSystemManager.IsReparsePoint(path);
     }
 
     /// <summary>

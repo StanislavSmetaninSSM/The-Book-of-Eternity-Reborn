@@ -1,3 +1,10 @@
+# CRASH5 — revision42 tasks: exact costly leaves in original Windows failure
+
+- [ ] T405 [US2/US3] Complete actual600FAIL/full-original archive accounting, exact timer design, canonical phases/consistency and retained outputs.
+- [ ] T406 [US2/US3] Passive named original-path admission/metadata/pure-work timers with preserved control flow and XML.
+- [ ] T407 [US2/US3] Current-source original fixture-backed Windows cut0 with unchanged budgets/assertions and complete raw/closing; recursively measure expensive residuals to exact leaves.
+- [ ] T408 [US1/US2/US3] Independent coherent review and exact saved recovery; report measured culprit leaves, not coarse enclosing durations or component analogies.
+
 # CRASH5 — revision41 tasks: observe inside the slow writes
 
 - [x] T401 [US2/US3] Written measured-depth spec/design, actual canonical phases/equivalent consistency,56 retained binary outputs and honest archived-input missing-name RED.

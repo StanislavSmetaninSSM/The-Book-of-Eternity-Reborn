@@ -69,12 +69,15 @@ public partial class FileSystemManager
         EnsureCanonicalPathStillSafe(relativePath, expectedPath);
         t351Safety?.Dispose();
         using var t351Scope = MeasureOperation("OrdinaryExists.PrepareScope");
-        var scope = new TrustedLocalFileScope([GameSessionPath]);
+        TrustedLocalFileScope scope;
+        using (EnterOperationTimingContext())
+            scope = new TrustedLocalFileScope([GameSessionPath]);
         t351Scope?.Dispose();
         using var t351Presence = MeasureOperation("OrdinaryExists.ValidateFileAndPresence");
         // ValidateFile is the non-following type/permission check. File.Exists
         // supplies presence only after invalid/unreadable entries have failed.
-        return File.Exists(scope.ValidateFile(expectedPath));
+        using (EnterOperationTimingContext())
+            return File.Exists(scope.ValidateFile(expectedPath));
     }
 
     /// <summary>
@@ -108,7 +111,9 @@ public partial class FileSystemManager
         var expectedPath = ResolvePath(relativePath);
         resolveTiming?.Dispose();
         using var scopeTiming = MeasureOperation("OrdinaryRead.Async.CreateScope");
-        var scope = new TrustedLocalFileScope([GameSessionPath]);
+        TrustedLocalFileScope scope;
+        using (EnterOperationTimingContext())
+            scope = new TrustedLocalFileScope([GameSessionPath]);
         scopeTiming?.Dispose();
         t326Async1?.Dispose();
         FileStream? stream;
@@ -127,6 +132,7 @@ public partial class FileSystemManager
                     EnsureCanonicalPathStillSafe(relativePath, expectedPath);
                 string admittedPath;
                 using (MeasureOperation("OrdinaryRead.Async.Admission.ValidateFile"))
+                using (EnterOperationTimingContext())
                     admittedPath = scope.ValidateFile(expectedPath);
                 bool exists;
                 using (MeasureOperation("OrdinaryRead.Async.Admission.FileExists"))
@@ -177,16 +183,31 @@ public partial class FileSystemManager
             }
         }
 
-        await using (stream)
+        IDisposable? disposalTiming = null;
+        try
         {
-            using var t326AsyncRead = MeasureOperation("OrdinaryRead.Async.ReadOpenedSnapshotAsync");
-            var snapshot = await ReadOpenedOrdinarySnapshotAsync(stream, scope, relativePath, expectedPath, cancellationToken);
-            if (lease != null) EnsureValidCanonicalWriteLease(lease);
-            t326AsyncRead?.Dispose();
+            await using (stream)
+            {
+                try
+                {
+                    using var t326AsyncRead = MeasureOperation("OrdinaryRead.Async.ReadOpenedSnapshotAsync");
+                    var snapshot = await ReadOpenedOrdinarySnapshotAsync(stream, scope, relativePath, expectedPath, cancellationToken);
+                    if (lease != null) EnsureValidCanonicalWriteLease(lease);
+                    t326AsyncRead?.Dispose();
 #if DEBUG
-            diagnosticOutcome = "present"; diagnosticBytes = snapshot.Content.Length;
+                    diagnosticOutcome = "present"; diagnosticBytes = snapshot.Content.Length;
 #endif
-            return snapshot;
+                    return snapshot;
+                }
+                finally
+                {
+                    disposalTiming = MeasureOperation("OrdinaryRead.Async.DisposeStream");
+                }
+            }
+        }
+        finally
+        {
+            disposalTiming?.Dispose();
         }
 
 #if DEBUG
@@ -234,7 +255,9 @@ public partial class FileSystemManager
         var expectedPath = ResolvePath(relativePath);
         resolveTiming?.Dispose();
         using var scopeTiming = MeasureOperation("OrdinaryRead.Sync.CreateScope");
-        var scope = new TrustedLocalFileScope([GameSessionPath]);
+        TrustedLocalFileScope scope;
+        using (EnterOperationTimingContext())
+            scope = new TrustedLocalFileScope([GameSessionPath]);
         scopeTiming?.Dispose();
         t326Sync1?.Dispose();
         for (var attempt = 0; ; attempt++)
@@ -251,6 +274,7 @@ public partial class FileSystemManager
                     EnsureCanonicalPathStillSafe(relativePath, expectedPath);
                 string admittedPath;
                 using (MeasureOperation("OrdinaryRead.Sync.Admission.ValidateFile"))
+                using (EnterOperationTimingContext())
                     admittedPath = scope.ValidateFile(expectedPath);
                 bool exists;
                 using (MeasureOperation("OrdinaryRead.Sync.Admission.FileExists"))
@@ -396,6 +420,7 @@ public partial class FileSystemManager
         dataFailure = null;
         string path;
         using (MeasureOperation("OrdinaryRead.Open.ValidateFile"))
+        using (EnterOperationTimingContext())
             path = scope.ValidateFile(expectedPath);
         try
         {
@@ -405,12 +430,16 @@ public partial class FileSystemManager
         }
         catch (FileNotFoundException)
         {
-            using (MeasureOperation("OrdinaryRead.Open.RevalidateMissing")) scope.ValidateFile(path);
+            using (MeasureOperation("OrdinaryRead.Open.RevalidateMissing"))
+            using (EnterOperationTimingContext())
+                scope.ValidateFile(path);
             return null;
         }
         catch (DirectoryNotFoundException)
         {
-            using (MeasureOperation("OrdinaryRead.Open.RevalidateMissing")) scope.ValidateFile(path);
+            using (MeasureOperation("OrdinaryRead.Open.RevalidateMissing"))
+            using (EnterOperationTimingContext())
+                scope.ValidateFile(path);
             return null;
         }
         catch (Exception error) when (nullableDataFailure &&
@@ -456,6 +485,7 @@ public partial class FileSystemManager
     private void CompleteOrdinaryRead(TrustedLocalFileScope scope, string relativePath, string expectedPath)
     {
         using (MeasureOperation("OrdinaryRead.Complete.ValidateFile"))
+        using (EnterOperationTimingContext())
             scope.ValidateFile(expectedPath, allowMissing: false);
         using (MeasureOperation("OrdinaryRead.Complete.CanonicalSafety"))
             EnsureCanonicalPathStillSafe(relativePath, expectedPath);

@@ -1,3 +1,4 @@
+using BookOfEternityClient.Core;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.Text.Json;
@@ -165,8 +166,18 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
     internal WoundMaterializationEnvelope GetPreparedCarrierImage() =>
         _selectedResolution is null ? ProvisionalAfter : Before;
 
+    /// <summary>
+    /// Recompiles the retained selected graph and compares its original graph fingerprint.
+    /// </summary>
+    /// <param name="compilation">
+    /// Receives the agreeing selected graph, or <see langword="null"/> when no agreeing graph is available.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when the retained selection recompiles to the same fingerprint; otherwise, <see langword="false"/>.
+    /// </returns>
     internal bool TryRecomposeSelectedGraph(out MortalWoundTreatmentSelectedGraphCompilation? compilation)
     {
+        using var originalLeafTiming = FileSystemManager.MeasureCurrentOperation("TreatmentOutcome.RecomposeSelectedGraph");
         compilation = null;
         if (_selectedResolution is null) return false;
         var result = MortalWoundTreatmentOutcomePublicationPlanner.CompileSelectedGraph(_before,
@@ -182,8 +193,18 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
         .Select(static seal => seal.ComplicationId!)
         .ToArray();
 
+    /// <summary>
+    /// Checks the retained treatment selection, canonical wound images and preparation fingerprint against the resolution.
+    /// </summary>
+    /// <param name="resolution">
+    /// The detached treatment resolution whose original agreement checks are evaluated in order.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when all existing selection and preparation checks agree; otherwise, <see langword="false"/>. Existing uncaught data errors propagate.
+    /// </returns>
     internal bool AgreesWith(MortalWoundTreatmentResolution resolution)
     {
+        using var originalLeafTiming = FileSystemManager.MeasureCurrentOperation("TreatmentOutcome.AgreesWith");
         if (!MortalWoundTreatmentOutcomePublicationPlanner.DetachedSelectionAgrees(
                 resolution, CurrentGameMinute) ||
             _selection != SelectionSeal.From(resolution) ||
@@ -300,12 +321,28 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
         }
     }
 
+    /// <summary>
+    /// Compares the two wound envelopes using their existing canonical serialization and ordinal comparison.
+    /// </summary>
+    /// <param name="left">
+    /// The first wound envelope, serialized before the second.
+    /// </param>
+    /// <param name="right">
+    /// The second wound envelope to serialize and compare.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when the canonical strings are ordinally equal; otherwise, <see langword="false"/>. Serialization errors propagate.
+    /// </returns>
     private static bool CanonicalWoundsEqual(
         WoundMaterializationEnvelope left,
-        WoundMaterializationEnvelope right) => string.Equals(
-        WoundMaterializationContract.SerializeCanonical(left),
-        WoundMaterializationContract.SerializeCanonical(right),
-        StringComparison.Ordinal);
+        WoundMaterializationEnvelope right)
+    {
+        using var originalLeafTiming = FileSystemManager.MeasureCurrentOperation("TreatmentOutcome.CanonicalWoundsEqual");
+        return string.Equals(
+            WoundMaterializationContract.SerializeCanonical(left),
+            WoundMaterializationContract.SerializeCanonical(right),
+            StringComparison.Ordinal);
+    }
 
     private static bool ProjectionsEqual(
         MortalWoundTreatmentSeverityReductionProjection left,
@@ -522,10 +559,32 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
         }).ToImmutableArray()
     };
 
+    /// <summary>
+    /// Recompiles the selected treatment graph from its current detached request and resolution evidence.
+    /// </summary>
+    /// <param name="before">
+    /// The canonical wound before the selected treatment.
+    /// </param>
+    /// <param name="request">
+    /// The original detached request whose source wound and fingerprint must agree.
+    /// </param>
+    /// <param name="resolution">
+    /// The selected terminal resolution supplying declared operations and outcome intents.
+    /// </param>
+    /// <param name="transitionId">
+    /// The transition identifier checked against the resolution.
+    /// </param>
+    /// <param name="currentGameMinute">
+    /// The game minute used by the original selection and compilation checks.
+    /// </param>
+    /// <returns>
+    /// The original selected-graph compilation or its existing validation issues.
+    /// </returns>
     internal static MortalWoundTreatmentSelectedGraphCompilationResult CompileSelectedGraph(
         WoundMaterializationEnvelope before, MortalWoundTreatmentAttemptRequest request,
         MortalWoundTreatmentResolution resolution, string transitionId, long currentGameMinute)
     {
+        using var originalLeafTiming = FileSystemManager.MeasureCurrentOperation("TreatmentOutcome.CompileSelectedGraph");
         try
         {
             if (!DetachedSelectionAgrees(resolution, currentGameMinute) ||
@@ -1196,6 +1255,30 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
         return true;
     }
 
+    /// <summary>
+    /// Computes the original preparation fingerprint from canonical wound images, resolution fields and ordered intents.
+    /// </summary>
+    /// <param name="before">
+    /// The original canonical before image.
+    /// </param>
+    /// <param name="provisionalAfter">
+    /// The provisional after image in the original fingerprint field order.
+    /// </param>
+    /// <param name="resolution">
+    /// The detached resolution supplying mode evidence and ordered intent fields.
+    /// </param>
+    /// <param name="transitionId">
+    /// The transition identifier included unchanged.
+    /// </param>
+    /// <param name="currentGameMinute">
+    /// The game minute included using the original invariant formatting.
+    /// </param>
+    /// <param name="severityReductionFingerprint">
+    /// The optional reduction fingerprint; <see langword="null"/> retains its distinct null framing.
+    /// </param>
+    /// <returns>
+    /// The original versioned preparation digest, with its existing field and intent ordering.
+    /// </returns>
     internal static string ComputePreparationFingerprint(
         WoundMaterializationEnvelope before,
         WoundMaterializationEnvelope provisionalAfter,
@@ -1204,6 +1287,7 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
         long currentGameMinute,
         string? severityReductionFingerprint)
     {
+        using var originalLeafTiming = FileSystemManager.MeasureCurrentOperation("TreatmentOutcome.ComputePreparationFingerprint");
         MortalWoundTreatmentResolution.TryRecomputeModeEvidenceFingerprint(resolution, out var modeEvidenceFingerprint);
         var fields = new List<string?>
         {
@@ -1374,12 +1458,31 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
         };
     }
 
+    /// <summary>
+    /// Compares declared operations and the actual and expected treatment intents in their original order.
+    /// </summary>
+    /// <param name="request">
+    /// The detached request used for the original intent-specific preparation checks.
+    /// </param>
+    /// <param name="declared">
+    /// The declared treatment operations in order.
+    /// </param>
+    /// <param name="actual">
+    /// The actual ordered outcome intents.
+    /// </param>
+    /// <param name="expected">
+    /// The independently derived intents to compare with the actual sequence.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when counts and each existing intent-specific comparison agree; otherwise, <see langword="false"/>.
+    /// </returns>
     internal static bool OrderedIntentsAgree(
         MortalWoundTreatmentAttemptRequest request,
         IReadOnlyList<MortalWoundTreatmentOperation> declared,
         IReadOnlyList<MortalWoundTreatmentOutcomeIntent> actual,
         IReadOnlyList<MortalWoundTreatmentOutcomeIntent> expected)
     {
+        using var originalLeafTiming = FileSystemManager.MeasureCurrentOperation("TreatmentOutcome.OrderedIntentsAgree");
         if (actual.Count != expected.Count || declared.Count != actual.Count)
             return false;
         for (var index = 0; index < actual.Count; index++)

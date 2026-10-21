@@ -240,11 +240,24 @@ internal static partial class WoundAcceptedTurnPlanner
                 context.OwnerCompanionAfterImages.Count == 0 && context.OwnerTransitions.Count == 0 &&
                 context.ExecutionSequenceOffset == 0 && context.TerminalOwners.ToHashSet().SetEquals(TerminalOwners);
         }
+        /// <summary>
+        /// Validates the common seal before the existing fresh resource and progression checks.
+        /// </summary>
+        /// <param name="files">
+        /// The filesystem owner whose current resource and progression state is checked.
+        /// </param>
+        /// <param name="lease">
+        /// The caller-owned active canonical lease retained through the existing checks.
+        /// </param>
+        /// <returns>
+        /// Completion after the existing seal, resource and progression validations succeed.
+        /// </returns>
         internal async Task ValidateCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
         {
             using var innerTiming1 = files.MeasureOperation("JointCommonAuthority.ValidateCurrentAsync");
             using var innerTiming2 = files.MeasureOperation("JointCommonAuthority.ValidateSeal");
-            if (!HasValidSeal) throw new InvalidDataException("The private joint common authority changed.");
+            using (files.EnterOperationTimingContext())
+                if (!HasValidSeal) throw new InvalidDataException("The private joint common authority changed.");
             innerTiming2?.Dispose();
             await ValidateJointRepairResourcePublicationAsync(files, lease, _resources);
             await Progression.ValidateCurrentAsync(files, lease);

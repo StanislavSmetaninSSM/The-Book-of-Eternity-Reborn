@@ -101,6 +101,7 @@ internal sealed class TrustedLocalFileScope
     /// </param>
     internal TrustedLocalFileScope(IEnumerable<string> roots, IEnumerable<string>? exactFiles = null)
     {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("TrustedScope.Construct");
         ArgumentNullException.ThrowIfNull(roots);
         _roots = roots.Select(Normalize).Distinct(PathComparer).ToArray();
         _exactFiles = new HashSet<string>((exactFiles ?? []).Select(Normalize), PathComparer);
@@ -129,6 +130,7 @@ internal sealed class TrustedLocalFileScope
     /// </returns>
     internal string ValidateFile(string path, bool allowMissing = true)
     {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("TrustedScope.ValidateFile");
         var normalized = Normalize(path);
         EnsureAllowed(normalized, file: true);
         ValidateDirectories(Path.GetDirectoryName(normalized)!, allowMissing: true);
@@ -255,6 +257,7 @@ internal sealed class TrustedLocalFileScope
     /// </returns>
     internal TrustedLocalNamespaceObservation ObserveNamespace(string path)
     {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("TrustedScope.ObserveNamespace");
         var normalized = ValidateNamespacePath(path);
         var ancestors = new Stack<string>();
         for (var ancestor = Path.GetDirectoryName(normalized); ancestor != null; ancestor = Path.GetDirectoryName(ancestor))
@@ -347,6 +350,7 @@ internal sealed class TrustedLocalFileScope
     /// </param>
     private static void ValidateDirectories(string path, bool allowMissing, Func<string, EntryKind> observeEntry)
     {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("TrustedScope.ValidateDirectories");
         var ancestors = new Stack<string>();
         for (string? current = path; current != null; current = Path.GetDirectoryName(current))
             ancestors.Push(current);
@@ -387,10 +391,23 @@ internal sealed class TrustedLocalFileScope
         Other
     }
 
+    /// <summary>
+    /// Classifies one entry through the original metadata query and platform-specific type checks.
+    /// </summary>
+    /// <param name="path">
+    /// The exact name passed to the existing non-following classifier.
+    /// </param>
+    /// <returns>
+    /// The observed entry kind, including missing for the original missing-file exceptions; other failures retain their original propagation.
+    /// </returns>
     private static EntryKind Probe(string path)
     {
         FileAttributes attributes;
-        try { attributes = File.GetAttributes(path); }
+        try
+        {
+            using var operationTiming = FileSystemManager.MeasureCurrentOperation("TrustedScope.Probe.GetAttributes");
+            attributes = File.GetAttributes(path);
+        }
         catch (FileNotFoundException) { return EntryKind.Missing; }
         catch (DirectoryNotFoundException) { return EntryKind.Missing; }
         if ((attributes & FileAttributes.ReparsePoint) != 0)

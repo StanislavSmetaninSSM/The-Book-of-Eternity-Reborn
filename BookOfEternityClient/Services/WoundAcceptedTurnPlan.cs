@@ -1,3 +1,4 @@
+using BookOfEternityClient.Core;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -3371,10 +3372,21 @@ internal static class WoundAcceptedTurnFingerprints
 
 internal static class WoundAcceptedTurnFingerprintWriter
 {
+    /// <summary>
+    /// Frames ordered nullable fields and computes their original UTF-8 SHA-256 fingerprint.
+    /// </summary>
+    /// <param name="fields">
+    /// The ordered fields; a <see langword="null"/> sequence is rejected, while null entries retain their distinct length framing.
+    /// </param>
+    /// <returns>
+    /// The original lowercase hexadecimal SHA-256 digest with its existing prefix.
+    /// </returns>
     internal static string Compute(IEnumerable<string?> fields)
     {
+        using var originalLeafTiming = FileSystemManager.MeasureCurrentOperation("FingerprintWriter.Compute");
         ArgumentNullException.ThrowIfNull(fields);
         var builder = new StringBuilder();
+        using var framingTiming = FileSystemManager.MeasureCurrentOperation("FingerprintWriter.FrameFields");
         foreach (var field in fields)
         {
             if (field is null)
@@ -3387,18 +3399,42 @@ internal static class WoundAcceptedTurnFingerprintWriter
             builder.Append(':');
             builder.Append(field);
         }
-        var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(builder.ToString()));
-        return "sha256:" + Convert.ToHexString(bytes).ToLowerInvariant();
+        framingTiming?.Dispose();
+        string framed;
+        using (FileSystemManager.MeasureCurrentOperation("FingerprintWriter.BuildString"))
+            framed = builder.ToString();
+        byte[] encoded;
+        using (FileSystemManager.MeasureCurrentOperation("FingerprintWriter.EncodeUtf8"))
+            encoded = Encoding.UTF8.GetBytes(framed);
+        byte[] bytes;
+        using (FileSystemManager.MeasureCurrentOperation("FingerprintWriter.SHA256"))
+            bytes = SHA256.HashData(encoded);
+        using (FileSystemManager.MeasureCurrentOperation("FingerprintWriter.FormatHex"))
+            return "sha256:" + Convert.ToHexString(bytes).ToLowerInvariant();
     }
 
+    /// <summary>
+    /// Clones JSON into the existing ordinal property order and serializes it with the original compact options.
+    /// </summary>
+    /// <param name="node">
+    /// The JSON node to canonicalize; <see langword="null"/> returns <see langword="null"/>.
+    /// </param>
+    /// <returns>
+    /// The original compact canonical JSON, or <see langword="null"/> for a null node.
+    /// </returns>
     internal static string? CanonicalJson(JsonNode? node)
     {
+        using var originalLeafTiming = FileSystemManager.MeasureCurrentOperation("FingerprintWriter.CanonicalJson");
         if (node is null)
             return null;
-        return CanonicalizeJson(node)!.ToJsonString(new JsonSerializerOptions
-        {
-            WriteIndented = false
-        });
+        JsonNode? canonical;
+        using (FileSystemManager.MeasureCurrentOperation("FingerprintWriter.CanonicalizeJson"))
+            canonical = CanonicalizeJson(node);
+        using (FileSystemManager.MeasureCurrentOperation("FingerprintWriter.SerializeJson"))
+            return canonical!.ToJsonString(new JsonSerializerOptions
+            {
+                WriteIndented = false
+            });
     }
 
     private static JsonNode? CanonicalizeJson(JsonNode? node) => node switch

@@ -693,8 +693,19 @@ public partial class FileSystemManager
         }
     }
 
+    /// <summary>
+    /// Resolves a canonical session-relative path and performs the existing fresh namespace and reparse-point checks.
+    /// </summary>
+    /// <param name="relativePath">
+    /// The session-relative name; <see langword="null"/> is refused and an empty value retains the session-root route.
+    /// </param>
+    /// <returns>
+    /// The validated absolute path; malformed, escaping or unsafe names retain their original refusals.
+    /// </returns>
     public string ResolvePath(string relativePath)
     {
+        using var operationContext = EnterOperationTimingContext();
+        using var operationTiming = MeasureOperation("CanonicalPath.Resolve");
         ArgumentNullException.ThrowIfNull(relativePath);
         var sessionRoot = Path.GetFullPath(GameSessionPath).TrimEnd(
             Path.DirectorySeparatorChar,
@@ -724,10 +735,11 @@ public partial class FileSystemManager
             throw new InvalidDataException("Canonical game-session path escapes game_session.");
         }
 
-        EnsureNoExistingReparsePoint(
-            sessionRoot,
-            fullPath,
-            "Canonical game-session");
+        using (MeasureOperation("CanonicalPath.WindowsMetadata"))
+            EnsureNoExistingReparsePoint(
+                sessionRoot,
+                fullPath,
+                "Canonical game-session");
         return fullPath;
     }
 
@@ -4487,13 +4499,28 @@ public partial class FileSystemManager
         }
     }
 
+    /// <summary>
+    /// Revalidates the supplied physical lease and its existing main and worker admission in the original order.
+    /// </summary>
+    /// <param name="writeLease">
+    /// The original caller-owned lease; inactive or foreign leases are refused before later checks.
+    /// </param>
     private void EnsureValidCanonicalWriteLease(CanonicalWriteLease writeLease)
     {
-        EnsurePhysicalCanonicalWriteLease(writeLease);
-        writeLease.MainAdmission?.Validate(writeLease);
+        using var operationContext = EnterOperationTimingContext();
+        using var operationTiming = MeasureOperation("Lease.Validate.Total");
+        using (MeasureOperation("Lease.Validate.Physical"))
+            EnsurePhysicalCanonicalWriteLease(writeLease);
+        if (writeLease.MainAdmission is { } mainAdmission)
+            using (MeasureOperation("Lease.Validate.MainAdmission"))
+                mainAdmission.Validate(writeLease);
         if(writeLease.Purpose==CanonicalWritePurpose.MainMetadata)return;
-        writeLease.WorkerPurpose?.ValidateRoot(this);
-        CanonicalRootAuthorityIdentity.WorkerContext?.ValidateCanonical(this, writeLease);
+        if (writeLease.WorkerPurpose is { } workerPurpose)
+            using (MeasureOperation("Lease.Validate.WorkerPurpose"))
+                workerPurpose.ValidateRoot(this);
+        if (CanonicalRootAuthorityIdentity.WorkerContext is { } workerContext)
+            using (MeasureOperation("Lease.Validate.WorkerContext"))
+                workerContext.ValidateCanonical(this, writeLease);
     }
 
     private void EnsurePhysicalCanonicalWriteLease(CanonicalWriteLease writeLease)

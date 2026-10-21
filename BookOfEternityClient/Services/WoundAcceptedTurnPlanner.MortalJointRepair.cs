@@ -255,9 +255,12 @@ internal static partial class WoundAcceptedTurnPlanner
         internal async Task ValidateCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
         {
             using var namedOperationTimer20 = files.MeasureOperation("Continuation.ValidateCurrentAsync");
-            files.EnsureCanonicalWriteLeaseActive(lease);
-            if (!ReferenceEquals(files, _files) || !files.IsCurrentSessionGeneration(lease, Generation) || !HasValidSeal)
-                throw new InvalidDataException("Joint preparation belongs to a stale or foreign physical owner.");
+            using (files.EnterOperationTimingContext())
+            {
+                files.EnsureCanonicalWriteLeaseActive(lease);
+                if (!ReferenceEquals(files, _files) || !files.IsCurrentSessionGeneration(lease, Generation) || !HasValidSeal)
+                    throw new InvalidDataException("Joint preparation belongs to a stale or foreign physical owner.");
+            }
             using var namedOperationTimer21 = files.MeasureOperation("Continuation.ReadSnapshot");
             var original = MortalQteWoundOpportunityProjection.ReadSnapshot(files, lease);
             namedOperationTimer21?.Dispose();
@@ -276,11 +279,12 @@ internal static partial class WoundAcceptedTurnPlanner
             using var namedOperationTimer23 = files.MeasureOperation("Continuation.ReadPublicationBaselines");
             var baselines = ReadPublicationBaselines(files, lease);
             namedOperationTimer23?.Dispose();
-            if (baselines.Issues.Count != 0 || WoundAcceptedTurnFingerprints.ComputeInput(new WoundAcceptedTurnInput(
-                    _acquisitionInput.Binding, _acquisitionInput.Opportunities, _acquisitionInput.Transitions,
-                    baselines.WoundCarriers!, baselines.WoundIdentity!, baselines.WoundHistory!,
-                    baselines.EffectCarriers, baselines.EffectIdentity)) != WoundAcceptedTurnFingerprints.ComputeInput(_acquisitionInput))
-                throw new InvalidDataException("The joint wound/effect baseline changed while its guards were captured.");
+            using (files.EnterOperationTimingContext())
+                if (baselines.Issues.Count != 0 || WoundAcceptedTurnFingerprints.ComputeInput(new WoundAcceptedTurnInput(
+                        _acquisitionInput.Binding, _acquisitionInput.Opportunities, _acquisitionInput.Transitions,
+                        baselines.WoundCarriers!, baselines.WoundIdentity!, baselines.WoundHistory!,
+                        baselines.EffectCarriers, baselines.EffectIdentity)) != WoundAcceptedTurnFingerprints.ComputeInput(_acquisitionInput))
+                    throw new InvalidDataException("The joint wound/effect baseline changed while its guards were captured.");
             using var namedOperationTimer24 = files.MeasureOperation("Continuation.InspectConfirmedHeldClaim");
             var confirmed = AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(files, lease, Request, Finalization);
             namedOperationTimer24?.Dispose();

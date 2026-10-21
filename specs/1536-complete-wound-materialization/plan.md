@@ -1,3 +1,10 @@
+# CRASH5 — plan13 revision42: original timeout, descend to concrete operations
+
+1. T405: actual archive checks and complete original critical-path/leaf accounting; written source-guided insertion design, canonical phases/consistency, retained outputs. No component replay.
+2. T406: passive original-path lease/main admission/metadata/remaining seal timers and short synchronous contexts; preserved flow, accurate multiline XML. Retain full records and original durable transport. Source review checks exact expressions/branches and no context across await.
+3. T407: save/publish/recover changed source, full-reference XML/pins, genuine current-source seed generation through the existing case and archived source binding, then one exact original fixture-backed Windows cut0 under unchanged budgets. Archive complete raw/errors/owned closing before analysis. Rank disjoint critical-path spans then actual internal leaves and repetition counts, accounting observer overhead. Continue the same diagnostic depth on any substantial residual; do not claim completion at a coarse boundary.
+4. T408: independent complex coherent review of original requirements, exact source/tests/docs diff and actual full raw/leaf attribution; correct findings, relevant verification and exact remote recovery. Final answer reports exact expensive operations/counts/times and source-specific limits. No performance fix or original timeout resolution claimed merely from passing components.
+
 # CRASH5 — plan13 revision41: next measured writer children
 
 Reuse feature1536, existing isolated checkout and user review-wait waiver. This is the next diagnostic depth, not a production fix. Canonical Spec Kit phases/equivalent analysis and Superpowers debugging/execution/verification/independent review apply.

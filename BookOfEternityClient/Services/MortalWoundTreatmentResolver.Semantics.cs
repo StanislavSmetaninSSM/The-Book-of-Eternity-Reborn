@@ -1,3 +1,4 @@
+using BookOfEternityClient.Core;
 using System.Globalization;
 using System.Collections.Immutable;
 
@@ -273,10 +274,23 @@ internal sealed partial class MortalWoundTreatmentResolution
                 nameof(evidence))
         };
 
+    /// <summary>
+    /// Recomputes mode evidence through the original request, route and mode-specific graph checks.
+    /// </summary>
+    /// <param name="resolution">
+    /// The detached treatment resolution to inspect; <see langword="null"/> is rejected.
+    /// </param>
+    /// <param name="fingerprint">
+    /// Receives the mode fingerprint produced by the original checks, or <see langword="null"/> when none is produced.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when the existing mode-evidence checks succeed; otherwise, <see langword="false"/>.
+    /// </returns>
     internal static bool TryRecomputeModeEvidenceFingerprint(
         MortalWoundTreatmentResolution resolution,
         out string? fingerprint)
     {
+        using var originalLeafTiming = FileSystemManager.MeasureCurrentOperation("TreatmentResolution.RecomputeModeEvidence");
         ArgumentNullException.ThrowIfNull(resolution);
         fingerprint = null;
         var request = resolution.RequestAuthority;

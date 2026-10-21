@@ -1,3 +1,4 @@
+using BookOfEternityClient.Core;
 using System.Buffers;
 using System.Collections.Immutable;
 using System.Globalization;
@@ -446,10 +447,21 @@ internal static class WoundMaterializationContract
         }
     }
 
+    /// <summary>
+    /// Writes the wound envelope using the existing fixed JSON field order and writer options.
+    /// </summary>
+    /// <param name="wound">
+    /// The wound envelope to serialize; <see langword="null"/> is rejected.
+    /// </param>
+    /// <returns>
+    /// The original compact canonical JSON string.
+    /// </returns>
     internal static string SerializeCanonical(WoundMaterializationEnvelope wound)
     {
+        using var originalLeafTiming = FileSystemManager.MeasureCurrentOperation("WoundCanonical.Serialize");
         ArgumentNullException.ThrowIfNull(wound);
         var buffer = new ArrayBufferWriter<byte>();
+        using var jsonTiming = FileSystemManager.MeasureCurrentOperation("WoundCanonical.WriteJson");
         using (var writer = new Utf8JsonWriter(
                    buffer,
                    new JsonWriterOptions
@@ -477,7 +489,9 @@ internal static class WoundMaterializationContract
             writer.WriteEndObject();
         }
 
-        return Encoding.UTF8.GetString(buffer.WrittenSpan);
+        jsonTiming?.Dispose();
+        using (FileSystemManager.MeasureCurrentOperation("WoundCanonical.DecodeUtf8"))
+            return Encoding.UTF8.GetString(buffer.WrittenSpan);
     }
 
     private static WoundOwnerCoordinate ParseOwner(

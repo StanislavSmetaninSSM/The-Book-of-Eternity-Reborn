@@ -1004,10 +1004,23 @@ internal static partial class MortalWoundTreatmentResourceComposer
         }
     }
 
+    /// <summary>
+    /// Compares resolution fields with the same request coordinates, route, course and authority evidence.
+    /// </summary>
+    /// <param name="resolution">
+    /// The terminal resolution whose outer fields are checked.
+    /// </param>
+    /// <param name="request">
+    /// The retained detached request supplying the expected fields and authorities.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when the existing exact field comparisons agree; otherwise, <see langword="false"/>.
+    /// </returns>
     private static bool HasExactResolutionRequestAgreement(
         MortalWoundTreatmentResolution resolution,
         MortalWoundTreatmentAttemptRequest request)
     {
+        using var originalLeafTiming = FileSystemManager.MeasureCurrentOperation("TreatmentResources.ResolutionRequestAgreement");
         var requirement = request.RequirementAuthority;
         var resource = request.ResourceAuthority;
         var isCourse = string.Equals(request.Mode, "course", StringComparison.Ordinal);
@@ -1123,10 +1136,35 @@ internal static partial class MortalWoundTreatmentResourceComposer
         => TrySelectCurrentClaims(resolution.Mode, resolution.CourseMilestoneOrdinal,
             resolution.ResourceAuthority, trigger, out selectedClaimFingerprints, out issue);
 
+    /// <summary>
+    /// Selects the original ordered reservation claims for the mode, course milestone and consumption trigger.
+    /// </summary>
+    /// <param name="mode">
+    /// The treatment mode used by the existing claim-selection policy.
+    /// </param>
+    /// <param name="courseMilestoneOrdinal">
+    /// The optional course ordinal; <see langword="null"/> retains the nonmilestone selection path.
+    /// </param>
+    /// <param name="resource">
+    /// The reservation authority containing the declared claims.
+    /// </param>
+    /// <param name="trigger">
+    /// The consumption trigger; the existing none trigger selects an empty sequence.
+    /// </param>
+    /// <param name="selectedClaimFingerprints">
+    /// Receives the original selected claim list, including any partial selection on refusal.
+    /// </param>
+    /// <param name="issue">
+    /// Receives the original refusal issue, or <see langword="null"/> when no issue is produced.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when the existing selector accepts the claim partition; otherwise, <see langword="false"/>.
+    /// </returns>
     private static bool TrySelectCurrentClaims(string mode, int? courseMilestoneOrdinal,
         MortalWoundTreatmentResourceReservationAuthority resource, string trigger,
         out IReadOnlyList<string>? selectedClaimFingerprints, out ValidationIssue? issue)
     {
+        using var originalLeafTiming = FileSystemManager.MeasureCurrentOperation("TreatmentResources.SelectCurrentClaims");
         var selected = new List<string>();
         var selectedSet = new HashSet<string>(StringComparer.Ordinal);
         selectedClaimFingerprints = selected;

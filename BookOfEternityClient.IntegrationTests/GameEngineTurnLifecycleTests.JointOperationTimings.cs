@@ -16,6 +16,10 @@ public sealed partial class GameEngineTurnLifecycleTests
         private readonly long _started = Stopwatch.GetTimestamp();
         private readonly TextWriter _output;
         private long _sequence;
+        private long _completedObservations;
+        private long _gateWaitTicks;
+        private long _buildAndSerializeTicks;
+        private long _writeTicks;
 
         /// <summary>
         /// Selects the writer receiving serialized operation timing records.
@@ -30,6 +34,7 @@ public sealed partial class GameEngineTurnLifecycleTests
 
         /// <summary>
         /// Writes the observed boundary with its duration and the next sequence number.
+        /// Includes cumulative costs of completed prior observations so interrupted output retains observer accounting.
         /// </summary>
         /// <param name="name">
         /// Literal name of the operation section being observed.
@@ -42,9 +47,12 @@ public sealed partial class GameEngineTurnLifecycleTests
         /// </param>
         public void Observe(string name, string boundary, TimeSpan elapsed)
         {
+            var requested = Stopwatch.GetTimestamp();
             lock (_gate)
             {
-                _output.WriteLine(JsonSerializer.Serialize(new
+                var entered = Stopwatch.GetTimestamp();
+                var buildStarted = Stopwatch.GetTimestamp();
+                var record = JsonSerializer.Serialize(new
                 {
                     Boundary = "joint_operation_timing",
                     Operation = name,
@@ -52,8 +60,19 @@ public sealed partial class GameEngineTurnLifecycleTests
                     Milliseconds = elapsed.TotalMilliseconds,
                     Sequence = ++_sequence,
                     PID = Environment.ProcessId,
-                    TotalElapsedMilliseconds = Stopwatch.GetElapsedTime(_started).TotalMilliseconds
-                }));
+                    TotalElapsedMilliseconds = Stopwatch.GetElapsedTime(_started).TotalMilliseconds,
+                    ObserverCompletedBefore = _completedObservations,
+                    ObserverGateMillisecondsBefore = _gateWaitTicks * 1000d / Stopwatch.Frequency,
+                    ObserverBuildSerializeMillisecondsBefore = _buildAndSerializeTicks * 1000d / Stopwatch.Frequency,
+                    ObserverWriteMillisecondsBefore = _writeTicks * 1000d / Stopwatch.Frequency
+                });
+                var writeStarted = Stopwatch.GetTimestamp();
+                _output.WriteLine(record);
+                var written = Stopwatch.GetTimestamp();
+                _gateWaitTicks += entered - requested;
+                _buildAndSerializeTicks += writeStarted - buildStarted;
+                _writeTicks += written - writeStarted;
+                _completedObservations++;
             }
         }
     }
