@@ -1,5 +1,8 @@
 # CRASH5 — plan13 revision20: fixture-only real GameState history consumer
 
+T347 SOURCE/PREP53eaf6e0e: two direct actual consumer cases authored but UNRUN;2existing logger controls freshlyPASS (21prior unaffected cases retained by exact source),2XML0errors/nochanged-file warnings,20XMLblocks inspected, catalog/exact2logger+2componentplans0executed,4DLL+4copies bound and394exactsource recovery. Full61-file archive SHAAA219C05F0F273F852B36025FABCB33241B5B80F184825C2A9E3D12805EBBDB0 includes source/diff/equivalence/phase metadata and exact guarded T348runner/per-case losslessparser/cross-check. Pre-source guard correctly refusedfffdirtybeforeanybuild/tests during final evidence completion; noattempt consumed/resultsdiscarded. Final independent SOURCE/PREP and metadata recovery pending; T348components remainUNRUN.
+
+
 Spec15r20; T347 SOURCE/PREP → T348 one2case actual category. Reuse isolated issue1536 branch, existing .NET8/SDK10 tooling and actual Spec Kit phases/consistency. User waives approval waiting, not verification/review. No product behavior change; new integration cases are the experiment itself, not a reason to create tests mirroring test helpers. Superpowers systematic-debugging, writing-plans/execution, independent review and verification apply.
 
 1. Persist T346 acceptance, write/present r20 and run actual setup-plan/setup-tasks/prerequisites plus HISTORY-1..4 consistency. Maintain ordinary issue/constitution trace, no duplicate plan. Scope is tests/shared diagnostic helper only.
