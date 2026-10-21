@@ -1,3 +1,10 @@
+# CRASH5 — plan13 revision40: recursive measurement of dominant sections
+
+1. T397: preserve user priority correction and whole archived-tree evidence; write/present this scope under the standing review-wait waiver, run actual canonical phases/consistency and record exact timer/context placements before code. Retain current outputs before builds.
+2. T398: implement only passive nested timers in ordinary-original/backup/snapshot and common-binding heavy gaps, plus focused coverage assertions. Preserve all production/test contracts and document changed APIs with accurate multiline XML. Archived timing replay must expose the missing names without another expensive RED fixture run.
+3. T399: current selected XML/source/pin checks, relevant passive context controls and one existing copy-only probe under its unchanged budget; archive all raw on success/failure/timeout, then analyze the entire tree and named heavy substeps. Record missing context coverage and overhead honestly. No optimization or unrelated broad test run.
+4. T400: independent coherent source/tests/docs/evidence review, corrections and relevant checks, exact clean remote recovery. Choose further measurement or a separately specified fix from the dominant actual child operations. r39 acceptance remains separate and unclaimed until its real controls and review are complete.
+
 # CRASH5 — plan13 revision39: privately immutable fingerprint constituents
 
 1. T393: canonical phases/consistency and written source-supported private ownership contract; retain current eight outputs (40total). Add constructor-only passive capture if needed and genuine no-rehash/count expectations after all existing semantic controls. Run one real causal RED on current recomputing implementation; preserve raw/closing before optimization.
