@@ -119,11 +119,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             : uncapturedRoot!;
         var storagePlacement = new { ExplicitParent = ownedContainerParent, SelectedParent = Path.GetDirectoryName(own), OwnedRoot = own };
         parentMetadata["StoragePlacement"] = JsonSerializer.SerializeToNode(storagePlacement);
-        _directGachaOutput?.WriteLine("JOINT_CRASH_STORAGE " + JsonSerializer.Serialize(storagePlacement));
         Directory.CreateDirectory(Path.Combine(own, "tmp"));
         using var owned = new JointInterfaceCrashOwnedContainer(own, line => _directGachaOutput?.WriteLine(line), capture, failures);
         try
         {
+        _directGachaOutput?.WriteLine("JOINT_CRASH_STORAGE " + JsonSerializer.Serialize(storagePlacement));
         if (seedPackageRoot is not null)
         {
             var hydratedArtifact = Path.Combine(own, "source42-artifact");
