@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "fr063-joint-late-terminal-fixture-layout",
-      "reason": "T344 changes only shared profile DATA preparation; exact unchanged prior22 controls are retained, real profile remains separately gated.",
+      "category": "fr063-joint-component-diagnostics-controls",
+      "reason": "T347 moves the exact existing logger body to a shared generic helper; these2existing direct controls are the only affected completed runtime checks. New2case consumer components remain separately opt-in until SOURCE/PREP acceptance.",
       "contracts": [
-        "Fresh independent owned ancestors before unchanged strict immutable DATA import; no production/authority/diagnostic change."
+        "Complete messages/exceptions and deferred diagnostic storage failures; no diagnostic quotas or primary-outcome replacement."
       ]
     }
   ]

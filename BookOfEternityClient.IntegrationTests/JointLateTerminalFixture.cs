@@ -1,4 +1,3 @@
-using System.Text.Json;
 using BookOfEternityClient.Core;
 using Microsoft.Extensions.Logging;
 
@@ -38,7 +37,7 @@ internal static class JointLateTerminalFixture
     /// A logger retaining full messages and exceptions at every level without granting game authority.
     /// </returns>
     internal static ILogger<GameEngine> CreateLogger(TextWriter writer, JointCleanupProfileDiagnosticCapture capture) =>
-        new FixtureLogger(writer, capture);
+        new JointComponentDiagnosticLogger<GameEngine>(writer, capture, "joint_late_engine_log");
 
     /// <summary>
     /// Refreshes real state and adopts its observed session and story turn under the exact existing generation.
@@ -72,36 +71,5 @@ internal static class JointLateTerminalFixture
                 await runtime.Engine.BindCurrentSessionRuntimeFromRefreshedStateAsync();
             return true;
         });
-    }
-
-    /// <summary>
-    /// Writes complete engine messages without letting diagnostic failures alter the engine's result.
-    /// </summary>
-    /// <param name="writer">
-    /// The external synchronized writer owned by the current profile.
-    /// </param>
-    /// <param name="capture">
-    /// The current profile's deferred diagnostic error ledger.
-    /// </param>
-    private sealed class FixtureLogger(TextWriter writer, JointCleanupProfileDiagnosticCapture capture) : ILogger<GameEngine>
-    {
-        /// <inheritdoc/>
-        public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
-
-        /// <inheritdoc/>
-        public bool IsEnabled(LogLevel logLevel) => true;
-
-        /// <inheritdoc/>
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
-            Func<TState, Exception?, string> formatter)
-        {
-            try
-            {
-                writer.WriteLine(JsonSerializer.Serialize(new { Boundary = "joint_late_engine_log",
-                    Level = logLevel.ToString(), EventId = eventId.Id,
-                    Message = formatter(state, exception), Exception = exception?.ToString() }));
-            }
-            catch (Exception error) { capture.RecordDiagnosticFailure(error, "engine-log"); }
-        }
     }
 }

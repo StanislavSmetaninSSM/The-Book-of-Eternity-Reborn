@@ -2,6 +2,56 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-component-diagnostics-controls",
+  "responsibility": "T347 shared generic full diagnostic logger retains original engine-wrapper message/exception completeness and deferred storage failure behavior.",
+  "excludes": "No GameEngine construction, DATA import or real consumer profile.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointComponentDiagnosticLogger.cs",
+    "BookOfEternityClient.IntegrationTests/JointLateTerminalFixture.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointLateTerminalControlsTests.EngineLoggerKeepsCompleteMessageAndException",
+        "BookOfEternityClient.Tests.JointLateTerminalControlsTests.EngineLoggerDefersStorageFailureWithoutReplacingGameOutcome"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-history-consumer-components",
+  "responsibility": "T348 two direct current-DATA real GameState/story consumer cases: valid data and deterministic transient pending-wave refusal inside actual continuation binder. SOURCE/PREP acceptance required before opt-in execution.",
+  "excludes": "No GameEngine/world/turn preparation, generation bootstrap, private proof injection, full late owner/cleanup, original/five/Linux qualification.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointHistoryConsumerComponentTests.cs",
+    "BookOfEternityClient.IntegrationTests/JointHistoryConsumerFixture.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointHistoryConsumerComponentTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-late-terminal-fixture-layout",
   "responsibility": "T344 independent missing-ancestor profile DATA setup regression through the same direct helper used by the real profile.",
   "excludes": "No GameEngine, generated world/turn, actual owner profile or historical recovery qualification.",
