@@ -81,7 +81,7 @@ T335–336 diagnostic transport SOURCE/PREP is independently accepted; original 
 
 T335–336 accepted SOURCE/PREP: code b80, reviewed metadata a6fef0f1, actual90/90PASS and all raw/bindings/19ownedroot absences verified. [PREP](recovery/crash5/T336-final-prep.json), [independent final acceptance](recovery/crash5/T336-final-review.json). Original recovery/coldfive/Linux remain open; source778seed is not rebound.
 
-Routing checkpoint: parent implemented, separate actual Astra/high reviewer found2P2s; both causally reproduced in8cheap cases (5FAIL/1PASS) and corrected, final90PASS. No repeated game/generator run. Long-line correctness control1.9367131s is not game-speed evidence; usage/cost comparison unavailable. Keep current parent/independent review routing; no weakening or automatic escalation justified by this block.
+Routing checkpoint: parent implemented, separate actual Astra/high reviewer found2P2s; both causally reproduced in6cheap cases (5FAIL/1PASS) and corrected, final90PASS. No repeated game/generator run. Long-line correctness control1.9367131s is not game-speed evidence; usage/cost comparison unavailable. Keep current parent/independent review routing; no weakening or automatic escalation justified by this block.
 
 Dependencies T334→T335→T336. Original T333fullraw/recovery acceptance stays unmet after actual failed attempt; no unchanged retry or diagnostic quota. Next real cleanup-DATA investigation requires separate written scope.
 
