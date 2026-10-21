@@ -1,4 +1,7 @@
-# T364 genuine source42 — artifact review pending
+# T364 genuine source42 — independently accepted
+
+Separate gpt-6-astra/high reviewer `/root/review_t364_genuine_carrier` accepted metadatafe17899a3d9931a505f99c0f9eeff4ff6d35840e with no unresolved findings. Independently verified every581recovered workingGitblob, all103rawmembers/40dirs, all3loadedassemblies/all8DLLpins/1818inputfingerprint/82payloadfiles/39ZIPdirs/7emptyleaves/twoimports/closing. Immutable3DATAfiles exact in primary/recovery/Git; control.gitattributes uses ordinary checkout line endings and is text-equivalent/Git-exact in recovery. SupplementalT364-carrier-recovery.json records parent checks. ConsumerReady now true only after this verdict; save/push/recover acceptance before T365. No Stage43/crash/Linux acceptance.
+
 
 One genuine current generator completed: one planned/completed/PASS, no skip/timeout/duplicate. Runner179.0945999s; TRX158.3354464s. Actual source42 preparation154.8525668s, capture/export/open1.0866270s, independent copy materialization0.0762435s/0.0708757s and read-only validation0.3094900s/0.3020938s. Original source audio/root and both independent copy roots closed; result confirms cleanup. Existing category descriptor6minutes is unchanged; the generic runner reports its unchanged11minute aggregate outer timeout including overhead. No bound increase or repeated attempt.
 
