@@ -1,7 +1,16 @@
+# CRASH5 — spec15 revision28 / plan13 revision28: changed full-owner probe
+
+- [ ] T361 [US1/US2/US3] SOURCE/PREP only: actual Spec Kit phases/consistency, existing exact full-owner1case NoBuild PlanOnly0executed, unchanged owner/profile source and accepted current4DLL+4copies/T333input bindings. Fresh T362 tools with one-attempt/2minuteTOTAL/runnerSHA/independentlyacceptedT359+T360/release/currentgeneration guards; full raw/open+closed ancestry/unknownresponse/closing/rootretention interpretation, no quotas. Separate complex PREP review and saved/pushed/clean recovery before T362. No build/replay of unchanged passing controls or actual owner yet.
+- [ ] T362 [US2/US3] After saved/recoveredacceptedT361, at most one changed-source full-owner Windows observation, existing one-case category and2minuteTOTAL. Archive all raw before interpretation, retain all timers/ancestry/counts/DATA/cohort/G/response/repeat/actual+independentclosing/newroot outcome. Separate actual-result review/recovery; no unchangedretry/limitincrease/original/five/Linux/source42/rebind/native/NativeLineage/protectedrootcleanup.
+
+T359/T360 accepted evidence remains binding. Historical T357 timeout0completed/unknownresponse+closing retained. This phase does not turn old failures into passes.
+
+---
+
 # CRASH5 — spec15 revision27 / plan13 revision27: Windows metadata fold
 
 - [x] T359 [US1/US2/US3] SOURCE/PREP: actual Spec Kit phases/consistency; coherent typed internal guard/provider/passivequeryhook with exact legacy REDadapter and minimal detached/real fixtures; >=9causalrealcountRED then FSI role-preserving GREEN. ExactLinux/unrelatedsourceequivalence, affected read/runtime/mutation/bytes/timestamp/lease/cancellation controls, selectedXML0introducedwarnings/catalog/exactplans/current4DLL+4copies/input/fullraw. Separate complex Astra/high review and clean remote recovery; no actual game workload yet.
-- [ ] T360 [US2/US3] Only after saved/recoveredacceptedT359, at most one changed two-case Windows actual history-consumer measurement with existing2minute totalbound/newguard. Fullall-event/count/ancestry/writerledger/DATA/G/refusal/closing/rootretention analysis and independent actual-result review. No unchangedretry/budgetincrease/fullowner/original/five/Linux/source42/rebind/protectedrootcleanup.
+- [x] T360 [US2/US3] Only after saved/recoveredacceptedT359, at most one changed two-case Windows actual history-consumer measurement with existing2minute totalbound/newguard. Fullall-event/count/ancestry/writerledger/DATA/G/refusal/closing/rootretention analysis and independent actual-result review. No unchangedretry/budgetincrease/fullowner/original/five/Linux/source42/rebind/protectedrootcleanup.
 
 T358 complete source-only acceptance: T358-final-review.json. T357 remains timeout0completed/unknownresponse+closing/newrootretained. User approval-wait waiver persists; no diagnostic quotas orcachedfreshness.
 

@@ -1,3 +1,16 @@
+# CRASH5 — spec15 revision28: changed-source full-owner observation
+
+Issue1536. Accepted T359 Windows metadata fold and independently accepted T360 actual consumer result: both cases pass with every measured operation count unchanged; positive21.1421378s/negative11.9408827s versus prior23.6814014s/14.2016943s, separate instrumented observations, not a controlled benchmark. User explicitly waives approval waiting and authorizes continued autonomous recovery investigation. This is a bounded measurement; no new production implementation.
+
+- OWNER2-1 / US1: use accepted compiled34cedb381820f390b033450713b1cad6ff94d329 and immutable T333 cleanup DATA, real fresh services/expected-session owner/proofs/current generation. The full-owner profile body, fake-free fixture import and all assertions remain exact versus accepted T356/T357 source. No source42/world/turn preparation, no historical authority/seed rebind or fabricated completion.
+- OWNER2-2 / US2: T361 prepares only the exact existing fr063-joint-late-terminal-profile category, one descriptor/one case, category2minutes and TOTAL2minutes. Exact current DLL+dependency/input/source/remote/recovery bindings, at most one new T362 attempt, exact reviewed runner SHA and prior independentT359SOURCE/PREP+T360actualresult acceptance guards. No automatic retry/budget increase, no production/native/Linux/NativeLineage changes.
+- OWNER2-3 / US2/US3: T362 preserves full raw output/diagnostic DATA without quotas for PASS/FAIL/TIMEOUT, every closed/open timing scope and all storage/footprint ancestry/counts. Report actual selector/test verdict separately from process cleanup. Require exact expected survivor/cohort/G/installed response/inert repeat/actual outer disposal/independent closing/owned-root absence for a qualified PASS. Missing/unreached fields remain unknown. Prefix DATA equality is not closing; no writer ledger attribution absent source evidence, no transfer of T360 percentages.
+- OWNER2-4 / US3: actual Spec Kit plan/tasks/prerequisites and consistency before preparation/PlanOnly, independent complex PREP review and saved/pushed/clean-recovered acceptance before any T362 runtime. Independent actual-result review after measurement. Old T345/T357 unknown-closing roots and auto-rejected ACL root remain protected, metadata-only existence checks. New incomplete roots retained; never manually delete/restore them. No original five/Linux/historical600second recovery qualification or historicalcause inference.
+
+Acceptance is an honestly preserved, exactly bound one-case changed-source observation with all assertions intact, including failure/incompleteness. It does not redefine prior recovery criteria or count a timeout as success. Further source changes or measurements require new measured justification and tracked scope. Human approval-wait waiver does not waive independent review.
+
+---
+
 # CRASH5 — spec15 revision27: role-preserving Windows path metadata folding
 
 Issue1536; accepted T358 source investigation at6c04e0f43. User explicitly authorizes autonomous implementation without approval waiting, cheap independent fixtures/typed APIs and uncappeddiagnostics. T357 remains a bounded timeout, not recovery success.

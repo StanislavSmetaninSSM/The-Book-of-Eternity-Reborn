@@ -1,3 +1,16 @@
+# CRASH5 — plan13 revision28: remeasure real late owner after accepted metadata fold
+
+Spec15r28/OWNER2-1..4; T359 implementation/prep accepted and T360 actual two-consumer result independently accepted. Current compiled34cedb3818. Existing isolated branch, user review-wait waiver. Continue Spec Kit/Superpowers execution, verification and mandatory separate review. No new behavior/code to develop or mirror-tests to add.
+
+1. Present actual r28 spec/plan/tasks; actual setup-plan/setup-tasks/prerequisites, bridge-equivalent consistency and source drift check. Confirm full owner helper/test/dependencies are unchanged apart from already accepted Windows metadata fold; classify this as one changed-source investigation, not an unchanged retry of T357.
+2. T361: prepare a fresh T362 wrapper/archive/parser using accepted T357 mechanisms, preserve total/category2minute bound, one-attempt/release/source/input/DLL/runner-SHA guards. Add explicit acceptedT359/T360 prerequisite checks and metadata-only protection for T357's retained root. Use corrected unknown-response parser; full diagnostics and every timing/ancestry survive all outcomes. No SOURCE42 or original/native/Linux commands.
+3. One NoBuild PlanOnly of exact full-owner category (1descriptor/1case,0executed), not another XML build or replay of already passed69/2cases. Bind unchanged current4DLL+4copies, immutableinput and profile source bytes; retain existing accepted build/source evidence. Save/push/recover coherent PREP with exact tools/phases, separate Astra/high review. Record/push/recover its acceptance before consumption.
+4. T362 at most one actual current-source full-owner profile through existing test-csharp runner, with real lifecycle/recovery/proof/physical checks and complete diagnostics. Archive raw before interpretation; account every closed/open scope, last reached boundary, storage/footprint ancestry, DATA/cohort/G/response/repeat/actual+independentclosing and new-root retention/cleanup. Complete qualifiedPASS requires all original assertions/one complete verdict and exact resulting cohort; otherwise preserve FAIL/TIMEOUT/unknown without retry/cleanup. Independent actual-result review and clean recovery. Reassess next work from measured outcome.
+
+Observed T360 improvement and structural query reduction justify one full-owner observation; do not claim a speedup guarantee or predict completion. All old protected roots are immutable to this workflow except metadata existence observation. No process-cold/native-retirement/original-five/Linux qualification follows from a local completed profile. No writer percentages transferred from a separate consumer and no diagnostic quotas.
+
+---
+
 # CRASH5 — plan13 revision27: implement component-local Windows metadata observations
 
 Spec15r27/FOLD-1..4. T358 separately acceptedAstra/high at6c04e0f43; current compiled44320b27e. Existing isolated task branch; user approval-wait waiver. Continue Superpowers TDD/planning/execution/independent review/verification with actual Spec Kit phases/consistency. Parent owns integration/verification; one bounded Sol6.1/high implementer owns coherent guard+fixtures, parent owns external guardedbuild/catalog/evidence. Separate Astra/high reviewer. No concurrent edits to shared files.
