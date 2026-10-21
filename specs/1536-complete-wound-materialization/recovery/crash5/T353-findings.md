@@ -65,4 +65,4 @@ For d relative path segments with all root/intermediate directories present, sou
 
 An implementation scope must explicitly settle these details in canonical spec/plan/tasks before code. Restrict the new traversal entry to storage-evidence probes; other generation/deletion/publication callers keep their existing traversal. Eliminating a second open necessarily changes internal observation timing during artificially timed ACL changes; do not claim equivalence for every such transition or a filesystem snapshot. The supported gates and original error classes must remain. No implemented primitive or measured speedup is claimed by this document.
 
-Independent complex review pending. T345 uncertain root and previous raw evidence remain retained. Original/full-owner/five/Linux qualification remains open.
+Independent separate actual Astra/high review accepted without findings at53b8b11ef; [acceptance](T353-final-review.json),440exact remote recovery and9independently sampled blobs. T345 uncertain root and previous raw evidence remain retained. Original/full-owner/five/Linux qualification remains open.

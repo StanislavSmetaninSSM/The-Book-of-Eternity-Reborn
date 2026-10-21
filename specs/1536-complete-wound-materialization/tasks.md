@@ -1,6 +1,15 @@
+# CRASH5 — spec15 revision24 / plan13 revision24: fresh storage directory probes
+
+- [ ] T354 [US1/US2/US3] SOURCE/PREP: minimal independent real filesystem/native-attempt fixtures and scoped typed hooks, causal count RED against original algorithm; storage-only Windows same-handle implementation with original error fallback/both path checks/retained parents and exact Linux/other-caller behavior. Fresh selected XML/build/catalog/exact plans/new+12+6+narrowbootstrap GREEN, source/DLL/input/raw evidence and separate coherent Astra/high review plus clean remote recovery. No actual game component runtime yet.
+- [ ] T355 [US2/US3] Only after saved/recovered accepted T354, at most one changed2case Windows actual consumer measurement with existing2minute totalcommand bound/new guard. Full diagnostics/counts/wallCPU/originalrefusal/physicalDATA/G/closing/retention and independent actual-result review. No unchanged retry/budget increase, original/fullowner/generator/rebind/five/Linux run or protected-root deletion.
+
+T353 complete: source rejects missing-read shortcut; T353-final-review.json. No diagnostic quotas/cached proof or skipped admission. Original recovery remains unresolved.
+
+---
+
 # CRASH5 — spec15 revision23 / plan13 revision23: missing async text admission
 
-- [ ] T353 [US1/US2/US3] Source investigation only: map public async text absence, existing FileExists observation/follow-up and full lease responsibilities; bounded Astra/high consultation on recovery/concurrency; record counterexamples or safe narrow design, minimal fixture/typed-hook/category acceptance map, no runtime/production behavior. Independent complex review and clean remote recovery before marking complete. Then define implementation against findings without waiting for user permission.
+- [x] T353 [US1/US2/US3] Source investigation only: map public async text absence, existing FileExists observation/follow-up and full lease responsibilities; bounded Astra/high consultation on recovery/concurrency; record counterexamples or safe narrow design, minimal fixture/typed-hook/category acceptance map, no runtime/production behavior. Independent complex review and clean remote recovery before marking complete. Then define implementation against findings without waiting for user permission.
 
 T352 accepted without findings at aac4cc67d, saved cc033ae6b/438 exact recovery. Original/fullowner/five/Linux remain unqualified; T345 uncertain root retained. No diagnostic quotas, cached proof, weakened physical freshness or unchanged expensive replay.
 
