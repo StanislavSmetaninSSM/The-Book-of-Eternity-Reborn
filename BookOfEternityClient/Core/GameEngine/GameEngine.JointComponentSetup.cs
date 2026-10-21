@@ -46,11 +46,37 @@ public partial class GameEngine
     /// <returns>
     /// Data coordinates of the newly written, authenticated current ordinary original.
     /// </returns>
-    internal Task<JointComponentOriginal> PrepareOrdinaryOriginalForComponentAsync(
+    internal async Task<JointComponentOriginal> PrepareOrdinaryOriginalForComponentAsync(
         FileSystemManager.CanonicalWriteLease lease,
         TurnRequest request)
     {
-        return Task.FromException<JointComponentOriginal>(new NotSupportedException("T383 component setup is not implemented yet."));
+        RequireJointComponentSetupEntry(lease);
+        ArgumentNullException.ThrowIfNull(request);
+        ArgumentException.ThrowIfNullOrWhiteSpace(request.SessionId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(request.RequestId);
+        if (request.TurnNumber < 1)
+            throw new ArgumentOutOfRangeException(nameof(request), "An ordinary original requires a positive turn number.");
+        if (request.ProgressionControl is null)
+            throw new ArgumentException("A joint component original requires progression control.", nameof(request));
+
+        var requestJson = JsonSerializer.Serialize(request, JsonOpts);
+        var detachedRequest = JsonSerializer.Deserialize<TurnRequest>(requestJson, JsonOpts) ??
+            throw new InvalidDataException("The component request could not be detached.");
+        var generation = _fs.ReadLocalGenerationSnapshot(lease).Binding.Id ??
+            throw new InvalidDataException("A joint component original requires an existing session generation.");
+        var backup = await CreatePreTurnBackup(lease, Guid.NewGuid().ToString("N"));
+        RegisterOrdinaryTurnStagingValidationSnapshotFiles(backup);
+        await CreateCanonicalBaselineSnapshotAsync(
+            lease, detachedRequest, backup, OrdinaryPlayerTurnSourceLabel);
+        await _fs.WriteFileAtomicAsync(lease, LiveTurnPreparationService.TurnRequestPath, requestJson);
+
+        var frame = await LoadValidatedPendingTurnSnapshotContextAsync(
+            await LoadPendingTurnSnapshotManifestAsync(), requireCurrentContext: true) ??
+            throw new InvalidDataException("The component original failed current snapshot authentication.");
+        var original = new JointComponentOriginal(detachedRequest.SessionId, detachedRequest.RequestId,
+            frame.Payload.ManifestPayloadHash, detachedRequest.TurnNumber, generation);
+        RequireJointComponentOriginalAgreement(lease, original, frame);
+        return original;
     }
 
     /// <summary>
@@ -71,13 +97,17 @@ public partial class GameEngine
     /// <returns>
     /// The genuine mechanical admission issued by the existing engine factory under this lease.
     /// </returns>
-    internal Task<MortalJointRepairMechanicalAdmission> CreateJointMechanicalAdmissionForComponentAsync(
+    internal async Task<MortalJointRepairMechanicalAdmission> CreateJointMechanicalAdmissionForComponentAsync(
         FileSystemManager.CanonicalWriteLease lease,
         JointComponentOriginal expected,
         AcceptedMechanicsWoundStageBundle bundle,
         object continuation)
     {
-        return Task.FromException<MortalJointRepairMechanicalAdmission>(new NotSupportedException("T383 component setup is not implemented yet."));
+        RequireJointComponentSetupEntry(lease);
+        ArgumentNullException.ThrowIfNull(bundle);
+        ArgumentNullException.ThrowIfNull(continuation);
+        var frame = await LoadJointComponentOriginalFrameAsync(lease, expected);
+        return await CreateMortalJointRepairMechanicalAdmissionAsync(lease, frame, bundle, continuation);
     }
 
     /// <summary>
@@ -92,10 +122,83 @@ public partial class GameEngine
     /// <returns>
     /// The genuine progression source issued by the existing engine factory under this lease.
     /// </returns>
-    internal Task<MortalJointProgressionSource> CaptureJointProgressionForComponentAsync(
+    internal async Task<MortalJointProgressionSource> CaptureJointProgressionForComponentAsync(
         FileSystemManager.CanonicalWriteLease lease,
         JointComponentOriginal expected)
     {
-        return Task.FromException<MortalJointProgressionSource>(new NotSupportedException("T383 component setup is not implemented yet."));
+        var frame = await LoadJointComponentOriginalFrameAsync(lease, expected);
+        return await CaptureMortalJointProgressionSourceAsync(lease, frame);
+    }
+
+    /// <summary>
+    /// Requires ordinary lease ownership and refuses interference with a live original or publication owner.
+    /// </summary>
+    /// <param name="lease">
+    /// The active ordinary canonical write lease belonging to this engine's filesystem.
+    /// </param>
+    private void RequireJointComponentSetupEntry(FileSystemManager.CanonicalWriteLease lease)
+    {
+        ArgumentNullException.ThrowIfNull(lease);
+        _fs.EnsureCanonicalWriteLeaseActive(lease);
+        RequireOrdinaryJointRepairLease(lease);
+        if (_hotOrdinaryOriginal is { State: not "Ended" } ||
+            _mortalJointPublicationAttempt is { Live: true })
+            throw new InvalidOperationException("Joint component setup cannot replace or borrow a live engine owner.");
+    }
+
+    /// <summary>
+    /// Reloads a private authenticated frame and compares the caller's data coordinates against it.
+    /// </summary>
+    /// <param name="lease">
+    /// The active ordinary canonical write lease owned by the caller.
+    /// </param>
+    /// <param name="expected">
+    /// Non-null data coordinates that confer no authority to construct or replace a frame.
+    /// </param>
+    /// <returns>
+    /// The private frame authenticated from the actual manifest, authority, source bytes and current request.
+    /// </returns>
+    private async Task<ValidatedPendingTurnSnapshotContext> LoadJointComponentOriginalFrameAsync(
+        FileSystemManager.CanonicalWriteLease lease,
+        JointComponentOriginal expected)
+    {
+        RequireJointComponentSetupEntry(lease);
+        ArgumentNullException.ThrowIfNull(expected);
+        var frame = await LoadValidatedPendingTurnSnapshotContextAsync(
+            await LoadPendingTurnSnapshotManifestAsync(), requireCurrentContext: true) ??
+            throw new InvalidDataException("The current component original failed snapshot authentication.");
+        RequireJointComponentOriginalAgreement(lease, expected, frame);
+        return frame;
+    }
+
+    /// <summary>
+    /// Compares ordinary source identity and physical generation after actual snapshot authentication.
+    /// </summary>
+    /// <param name="lease">
+    /// The active ordinary canonical write lease owned by the caller.
+    /// </param>
+    /// <param name="expected">
+    /// The data coordinates expected by the component caller.
+    /// </param>
+    /// <param name="frame">
+    /// The actual private frame returned by current snapshot authentication.
+    /// </param>
+    private void RequireJointComponentOriginalAgreement(
+        FileSystemManager.CanonicalWriteLease lease,
+        JointComponentOriginal expected,
+        ValidatedPendingTurnSnapshotContext frame)
+    {
+        RequireJointComponentSetupEntry(lease);
+        if (frame.SourceLabel != OrdinaryPlayerTurnSourceLabel ||
+            string.IsNullOrWhiteSpace(expected.SessionId) ||
+            string.IsNullOrWhiteSpace(expected.RequestId) ||
+            string.IsNullOrWhiteSpace(expected.SnapshotToken) ||
+            expected.Turn < 1 ||
+            frame.SessionId != expected.SessionId ||
+            frame.RequestId != expected.RequestId ||
+            frame.Payload.ManifestPayloadHash != expected.SnapshotToken ||
+            frame.TurnNumber != expected.Turn ||
+            !_fs.IsCurrentSessionGeneration(lease, expected.Generation))
+            throw new InvalidDataException("The component coordinates do not match the current ordinary original and generation.");
     }
 }
