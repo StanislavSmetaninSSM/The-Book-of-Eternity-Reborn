@@ -2,6 +2,30 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-late-terminal-oracle-controls",
+  "responsibility": "T342 causal tiny DATA controls for complete inert-repeat inventory/runtime and normalized full interface option contents/order/nullable-field semantics.",
+  "excludes": "No GameEngine, world/filesystem preparation, actual owner profile, generator or original recovery.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointLateTerminalAssertions.cs",
+    "BookOfEternityClient.IntegrationTests/JointLateTerminalProfileTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointLateTerminalOracleTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-late-terminal-owner-refusal",
   "responsibility": "Exact actual late-owner refusal for a foreign runtime session, requiring the intended reason and unchanged original game images/directories.",
   "excludes": "No repeat of9unchanged adoption/generation/diagnostic cases or real full-cleanup profile.",

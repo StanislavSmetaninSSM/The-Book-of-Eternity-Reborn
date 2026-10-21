@@ -17,6 +17,8 @@ T342 GREEN WIP: direct controls first produced actual expected API-compilation R
 
 T342 initial PREP b54a2cb45: XML2builds0errors, catalog/10control+1profilePlanOnly,10/10PASS (individual cases0.006–4.982s; category command28.019s, not game runtime),4DLL+copies and357exact recovery.61indexed rawfiles retained inT342-initial-prep/raw. Self-review strengthens foreign refusal to require its exact logged cause (another held boundary must not satisfy it) and moves outer-task completion flags inside cost measurement so diagnostic-write failure cannot relabel a completed owner. No production change; retain9exact unchanged cases, freshly run only1changed refusal after final source build/catalog/PlanOnly/binding. Full owner profile remains unrun and requires independent SOURCE/PREP acceptance.
 
+T342 pre-review PREP88fe67b9e: stricter actual foreign reason1PASS +9retained exact,2XML0errors, catalog/10+1+1plans,230newXMLlines inspected,4DLL+copies and359exact recovery;70indexed rawfiles inT342-pre-review-prep/raw. Separate actual Astra/high source/evidence review found2P2oracle gaps (T342-source-review-initial): repeat lacked directories/session and interface options checked only length. Other source/ownership/selection sound. Extract the existing weak assertions unchanged into direct internal test helpers, add12tiny adversarial DATA cases including nullable-field semantics, observe causal RED before strengthening assertions; no game object/profile/production change. Final acceptance remains withheld until GREEN, fresh final source binding and focused finding/evidence follow-up. Retain the10unchanged runtime/adoption/diagnostic cases; no unchanged retry.
+
 ---
 
 # CRASH5 — plan13 revision17: bounded source audit before another runtime

@@ -149,14 +149,14 @@ public sealed class JointLateTerminalProfileTests
                             Assert.Equal(generationBefore, File.ReadAllBytes(files.SessionGenerationPath));
                             VerifyInstalledResponse(root, response!.Value, runtime);
                         }
-                        var repeatBefore = JointCleanupValidatorTestData.CaptureImages(root);
-                        var repeatResponse = response.Value.GetRawText();
+                        JointLateTerminalObservation repeatBefore;
+                        using (files.MeasureOperation("LateProfile.CaptureRepeatBaseline"))
+                            repeatBefore = Observe(root, runtime);
                         var repeat = await JointCleanupValidatorProfileTests.MeasureAsync(files, raw, capture, "LateProfile.InertRepeat",
                             runtime.Engine.ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync);
                         Assert.False(repeat);
-                        AssertImagesEqual(repeatBefore, JointCleanupValidatorTestData.CaptureImages(root));
-                        Assert.Equal(repeatResponse, runtime.Engine.CaptureCurrentResponseForTesting()!.Value.GetRawText());
-                        Assert.Equal(manifest.TurnNumber, runtime.GameLoop.TurnNumber);
+                        using (files.MeasureOperation("LateProfile.RepeatOracles"))
+                            JointLateTerminalAssertions.VerifyInertRepeat(repeatBefore, Observe(root, runtime));
                         report["InertRepeatVerified"] = true;
                         return true;
                     }, observeOriginalClose: (close, observed, remote) =>
@@ -295,13 +295,28 @@ public sealed class JointLateTerminalProfileTests
         Assert.Equal(PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(narrative.RootElement.GetProperty("response").GetString()),
             response.GetProperty("response").GetString());
         using var ui = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "game_session", "output", "interface_updates.json")));
-        if (ui.RootElement.TryGetProperty("image_prompt", out var image))
-            Assert.Equal(image.GetString(), response.GetProperty("image_prompt").GetString());
-        if (ui.RootElement.TryGetProperty("dialogueOptions", out var options))
-            Assert.Equal(options.GetArrayLength(), response.GetProperty("dialogueOptions").GetArrayLength());
+        JointLateTerminalAssertions.VerifyInterfaceResponse(response, ui.RootElement);
         Assert.Equal(runtime.StateManager.CurrentState.PlayerStatus.CurrentCondition,
             response.GetProperty("playerStatus").GetProperty("currentCondition").GetString());
     }
+
+    /// <summary>
+    /// Captures independent ordinary game and runtime DATA without issuing validation or cleanup authority.
+    /// </summary>
+    /// <param name="root">
+    /// The independent fixture root observed without modifying it.
+    /// </param>
+    /// <param name="runtime">
+    /// The actual runtime whose installed response and session tuple are observed.
+    /// </param>
+    /// <returns>
+    /// The complete observation used for the inert-repeat comparison; an absent installed response refuses.
+    /// </returns>
+    private static JointLateTerminalObservation Observe(string root, GameEngineTestRuntime runtime) =>
+        new(JointCleanupValidatorTestData.CaptureImages(root), JointCleanupValidatorTestData.CaptureDirectories(root),
+            runtime.GameLoop.SessionId, runtime.GameLoop.TurnNumber,
+            runtime.Engine.CaptureCurrentResponseForTesting()?.GetRawText()
+                ?? throw new InvalidDataException("The actual runtime lost its installed response."));
 
     /// <summary>
     /// Saves the complete profile observation without embedding raw diagnostic streams in a JSON scalar.

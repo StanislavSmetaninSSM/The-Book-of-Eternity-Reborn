@@ -7,6 +7,13 @@
       "contracts": [
         "Direct typed access with independent minimal fixtures; unchanged production caller/body and real authority/ownership; no quota or hidden diagnostic failure."
       ]
+    },
+    {
+      "category": "fr063-joint-late-terminal-oracle-controls",
+      "reason": "Independent2P2: prevent directory/session or same-count dialogue-option false positives with tiny direct DATA fixtures.",
+      "contracts": [
+        "Complete repeat and normalized installed interface response oracles, including optional nullable fields."
+      ]
     }
   ]
 }
