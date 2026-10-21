@@ -1,5 +1,9 @@
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
+using System.Globalization;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
@@ -8,6 +12,7 @@ namespace BookOfEternityClient.Tests;
 /// <summary>
 /// Checks actual constructor wiring and read-only existing registry observations without preparing a game world.
 /// </summary>
+[Collection(GameEngineTurnLifecycleCollection.CollectionName)]
 public sealed class JointInterfaceTypedRuntimeTests
 {
     /// <summary>
@@ -62,10 +67,69 @@ public sealed class JointInterfaceTypedRuntimeTests
         {
             Assert.True(runtime.QteSceneService.UsesInputSource(SystemConsoleInputSource.Instance));
             Assert.False(runtime.QteSceneService.UsesInputSource(null));
+            var observation = runtime.Engine.CaptureMortalJointRuntimeObservation();
+            Assert.False(observation.CheckpointPresent);
+            Assert.False(observation.CanonicalRefreshPresent);
+            Assert.False(observation.FreshCheckpointPresent);
+            Assert.False(observation.ReadyPresent);
+            Assert.False(observation.FreshConsumed);
+            Assert.False(observation.PreparationHeld);
+            Assert.Null(observation.Issues);
         }
         finally
         {
             await runtime.AudioService.DisposeAsync();
+        }
+    }
+
+    /// <summary>
+    /// Demonstrates the real cut2 culture contrast while the frozen computed DATA retains its original parse decision.
+    /// </summary>
+    /// <returns>
+    /// Completion after real ordinary validation under both cultures and unchanged frozen-record decoding.
+    /// </returns>
+    [Fact]
+    public async Task PublishedCultureFixtureRetainsFrozenParseAcceptedWhileOrdinaryUsValidationRejects()
+    {
+        var root = NewRoot();
+        using var cleanup = new CleanupOwnedFixture(root, Console.WriteLine);
+        var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+        Directory.CreateDirectory(Path.Combine(files.GameSessionPath, "output"));
+        var bytes = Encoding.UTF8.GetBytes("{\"dialogueOptions\":[\"Продолжить разговор.\"],\"timestamp\":\"13/02/2026\"}");
+        File.WriteAllBytes(Path.Combine(files.GameSessionPath, MortalJointInterfacePublication.InterfacePath), bytes);
+        var validator = new ValidationService(files, NullLogger<ValidationService>.Instance);
+        var prior = CultureInfo.CurrentCulture;
+        try
+        {
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-GB");
+            Assert.True(DateTimeOffset.TryParse("13/02/2026", out _));
+            Assert.DoesNotContain(await validator.ValidateAcceptedTurnInterfacePayloadAsync(),
+                issue => issue.Code == "interface_updates_invalid_timestamp");
+            var fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(["synthetic-culture-data"]);
+            var prepared = MortalJointInterfacePublication.CreatePrepared(new JsonObject
+            {
+                ["sessionGeneration"] = "generation", ["sessionId"] = "session", ["requestId"] = "request",
+                ["snapshotToken"] = "snapshot", ["turnNumber"] = 43, ["realm"] = "mortal_world",
+                ["stageOrdinal"] = 1, ["readyOrdinal"] = 2, ["iterationOrdinal"] = 3,
+                ["checkpointFingerprint"] = fingerprint, ["operationKey"] = "operation", ["attemptId"] = "attempt",
+                ["requestFingerprint"] = fingerprint
+            }, new JsonObject { ["graph"] = "synthetic-DATA-without-live-authority" }, fingerprint,
+                new MortalJointInterfacePublication.ComputedResult(bytes, bytes, "NoWrite", false, null,
+                    "Object", "ParseAccepted", []));
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+            Assert.False(DateTimeOffset.TryParse("13/02/2026", out _));
+            Assert.Contains(await validator.ValidateAcceptedTurnInterfacePayloadAsync(),
+                issue => issue.Code == "interface_updates_invalid_timestamp" && issue.Severity == IssueSeverity.Error);
+            var frozen = MortalJointInterfacePublication.Read(JsonSerializer.SerializeToElement(prepared.AsPublished().ToJson()));
+            Assert.Equal("Published", frozen.State);
+            Assert.False(frozen.HasErrors);
+            Assert.Equal("ParseAccepted", frozen.ToJson()["timestampCheck"]!["timestamp"]!.GetValue<string>());
+            Assert.Equal(bytes, frozen.AfterBytes);
+            Assert.Equal(bytes, File.ReadAllBytes(Path.Combine(files.GameSessionPath, MortalJointInterfacePublication.InterfacePath)));
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = prior;
         }
     }
 

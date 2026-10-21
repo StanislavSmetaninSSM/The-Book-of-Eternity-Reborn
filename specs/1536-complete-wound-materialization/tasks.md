@@ -1,3 +1,11 @@
+# CRASH5 — spec15 revision30 / plan13 revision30: portable five-cut fixture carrier
+
+T363 remains open and additionally owns FIX5-7: causal synthetic package RED→GREEN, explicit closed ZIP+binding preserving empty directories, pure mode guard before artifact IO, hydration inside the existing actual crash owned container, unchanged original codec physical inventory/legacy paths/native ownership/all original assertions, complete source/PREP evidence and independent complex review. This is part of the same coherent T363 block, not a new independent gameplay feature.
+
+T364 additionally packages the single genuinely generated current source42 artifact into the exact immutable carrier and closed binding, independently verifies manifest/payload/all directories/current producer+actual DLL provenance and exact clean Git recovery before artifact acceptance. T365/T366 gates, bounds and original all-oracles requirements remain unchanged below. No tasks are marked complete by this amendment.
+
+---
+
 # CRASH5 — spec15 revision29 / plan13 revision29: typed fixture-backed original scenarios
 
 - [ ] T363 [US1/US2/US3] SOURCE/PREP: actualSpecKitphases/consistency, coherent explicitclosedfive-cutfixtureusage with legacycut0schema/guard/defaultpreservation; typedgenerator/ordinarycrash path withoutprivate/internalreflection, realservice/hook/input carriers/directinternalplayerturn and readonlyexisting-slot observations withoutauthority. MeaningfulminimalRED→GREEN/codec/mode/physicaldrift/culture/wiring/observations/affectedcontrols, selectedXML0introducedwarnings/catalog/exactfiveone-caseplans0executed/current4DLL+4copies/fullraw/source/native/Linuxequivalence. Separatecomplexindependentreview/cleanremote recovery. No genuinegenerator orcrashworkloadyet.

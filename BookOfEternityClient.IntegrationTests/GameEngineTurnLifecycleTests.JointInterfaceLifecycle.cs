@@ -80,6 +80,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         private readonly List<JsonObject> _resultCommits = [];
         private readonly Dictionary<string, byte[]?> _mechanicalBefore = new(StringComparer.Ordinal);
         private GameEngine? _engine;
+        private GameEngineTestRuntime? _runtime;
         private GameEngineSessionFinalizationHooks? _priorHooks;
         private byte[]? _submitted;
         private byte[]? _warningPublicSeed;
@@ -95,15 +96,23 @@ public sealed partial class GameEngineTurnLifecycleTests
         internal bool ExpectsAbsentInterface => scenario == "Absent";
         internal bool ExpectsHeld => scenario is "Error" or "InterfaceClose" or "ReadRace" or "ReadyDrift" or "CommonFault" or "Terminal" or "TerminalFault" or "CutResume";
 
-        internal void Attach(GameEngine engine)
+        /// <summary>
+        /// Composes the actual checkpoint observer before the engine is constructed.
+        /// </summary>
+        /// <param name="priorHooks">
+        /// The caller's actual hooks, or <see langword="null"/> when no prior observer is configured.
+        /// </param>
+        /// <returns>
+        /// Hooks that await the original observer before this probe's existing checkpoint observations.
+        /// </returns>
+        internal GameEngineSessionFinalizationHooks ComposeFinalizationHooks(GameEngineSessionFinalizationHooks? priorHooks)
         {
-            Assert.Null(_engine);
-            _engine = engine;
-            _priorHooks = GetPrivateFieldValue<GameEngineSessionFinalizationHooks?>(engine, "_sessionFinalizationHooks");
-            engine.ConfigureSessionFinalizationHooksForTesting(new GameEngineSessionFinalizationHooks
+            _priorHooks = priorHooks;
+            return new GameEngineSessionFinalizationHooks
             {
                 AtCheckpointAsync = async checkpoint =>
                 {
+                    var engine = Assert.IsType<GameEngine>(_engine);
                     if (_priorHooks?.AtCheckpointAsync is { } prior) await prior(checkpoint);
                     if (checkpoint == SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization &&
                         scenario.StartsWith("Selector:", StringComparison.Ordinal))
@@ -126,7 +135,20 @@ public sealed partial class GameEngineTurnLifecycleTests
                     if (scenario == "CutResume" && _captureCallbacks == 1)
                         throw _uncertainCutFailure;
                 }
-            });
+            };
+        }
+
+        /// <summary>
+        /// Attaches observations to the actual constructed runtime after its composed hooks are injected.
+        /// </summary>
+        /// <param name="runtime">
+        /// The same engine, loop and services produced by the real lifecycle factory.
+        /// </param>
+        internal void Attach(GameEngineTestRuntime runtime)
+        {
+            Assert.Null(_engine);
+            _runtime = runtime;
+            _engine = runtime.Engine;
             AttachInitialCloseObservation();
             AttachOuterCloseObservation();
             AttachReturnedReadRace();
@@ -301,7 +323,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Callback = _captureCallbacks, InterfaceAtCapture = _interfaceAtCapture,
                 Submitted = Raw(_submitted), AtCapture = Raw(_atCapture), Final = Raw(final),
                 Publications = _publications.ToArray(), FirstActualMarker = _firstMarker,
-                ActualTurn = GetPrivateField<GameLoop>(_engine!, "_gameLoop").TurnNumber,
+                ActualTurn = _runtime!.GameLoop.TurnNumber,
                 CompletionObservedBeforeOwnedCleanup = _completionObserved,
                 Scope = "Full existing ordinary completion/inert-repeat already returned; actual I members are distinct from marker cohorts"
             });
@@ -389,7 +411,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             { scenario, Result = result.ToJson(), Interface = Raw(ReadPhysical(InterfacePath)), Mtime = Mtime(),
                 MechanicalBefore = _mechanicalBefore.ToDictionary(row => row.Key, row => Raw(row.Value)),
                 MechanicalAfter = after.ToDictionary(row => row.Key, row => Raw(row.Value)), Trace = _publications,
-                ActualTurn = GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber, OwningDiagnostics = owningDiagnostics });
+                ActualTurn = _runtime!.GameLoop.TurnNumber, OwningDiagnostics = owningDiagnostics });
             Assert.Equal("Prepared", result.State); Assert.True(result.HasErrors);
             var error = Assert.Single(result.Issues.Where(issue => issue.Severity == IssueSeverity.Error));
             Assert.Equal("interface_updates_unknown_field", error.Code);
@@ -399,9 +421,10 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.False(Assert.IsType<byte[]>(_submitted).AsSpan().SequenceEqual(Assert.IsType<byte[]>(result.AfterBytes)));
             Assert.Equal(_submitted, ReadPhysical(InterfacePath)); Assert.Equal(_submittedMtime, Mtime());
             Assert.Equal(0, _captureCallbacks); // Prepared is positive reach evidence; capture/preparation did not begin
-            Assert.Equal(42, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
-            Assert.True(GetPrivateFieldValue<bool>(engine, "_mortalJointInterfaceFreshConsumed"));
-            Assert.True(GetPrivateFieldValue<bool>(engine, "_mortalJointInterfacePreparationHeld"));
+            Assert.Equal(42, _runtime!.GameLoop.TurnNumber);
+            var observation = engine.CaptureMortalJointRuntimeObservation();
+            Assert.True(observation.FreshConsumed);
+            Assert.True(observation.PreparationHeld);
             foreach (var (path, before) in _mechanicalBefore) Assert.Equal(before, after[path]);
             await AssertActualRetainingOwnersAsync(engine);
             if (scenario is "Terminal" or "TerminalFault") await AssertWholeTerminalAsync(engine);

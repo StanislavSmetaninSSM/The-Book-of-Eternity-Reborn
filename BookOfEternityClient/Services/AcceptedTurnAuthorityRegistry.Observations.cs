@@ -26,18 +26,50 @@ internal readonly record struct ExistingJointPublicationObservation(
 internal static partial class AcceptedTurnAuthorityRegistry
 {
     /// <summary>
-    /// Provides the neutral absence scaffold for a read-only existing-slot observation during causal RED verification.
-    /// This scaffold is not used by runtime assertions and does not initialize or mutate authority.
+    /// Observes one existing slot and its retained publication flags under the original slot and state locks.
+    /// No slot, generation, state, receipt or capability is created, replaced, consumed or cleared.
     /// </summary>
     /// <param name="identity">
     /// The existing root identity to inspect; <see langword="null"/> is rejected.
     /// </param>
     /// <returns>
-    /// Neutral absence until the positive existing-slot control has demonstrated its causal RED failure.
+    /// Detached presence DATA. Absence is distinct from an existing state whose reservation and receipt are clear.
+    /// This observation does not establish current-generation or publication authority.
     /// </returns>
     internal static ExistingJointPublicationObservation ObserveExistingJointPublication(CanonicalRootIdentity identity)
     {
         ArgumentNullException.ThrowIfNull(identity);
-        return default;
+        return RootSlots.TryGetValue(identity, out var slot) ? slot.ObserveJointPublication() : default;
+    }
+
+    private sealed partial class RootAuthoritySlot
+    {
+        /// <summary>
+        /// Reads the existing state under the slot lock without generation lookup or replacement.
+        /// </summary>
+        /// <returns>
+        /// Presence DATA from the same retained state, or a present-slot/absent-state observation.
+        /// </returns>
+        internal ExistingJointPublicationObservation ObserveJointPublication()
+        {
+            lock (_gate)
+                return _state?.ObserveJointPublication() ?? new(true, false, false, false);
+        }
+    }
+
+    private sealed partial class AcceptedTurnAuthorityState
+    {
+        /// <summary>
+        /// Reads reservation and open-receipt presence under the existing authority-state lock.
+        /// </summary>
+        /// <returns>
+        /// Detached flags for this existing state without exposing the retained owner objects.
+        /// </returns>
+        internal ExistingJointPublicationObservation ObserveJointPublication()
+        {
+            lock (_gate)
+                return new(true, true, _mortalWoundTreatmentPublicationReservation is not null,
+                    _openJointRepairPublicationReceipt is not null);
+        }
     }
 }

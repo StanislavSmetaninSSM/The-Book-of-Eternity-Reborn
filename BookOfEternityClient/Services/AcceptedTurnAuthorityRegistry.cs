@@ -1688,7 +1688,7 @@ internal static partial class AcceptedTurnAuthorityRegistry
             identity.SessionGenerationRevision, expectedFactory, checkPlansAndItems);
     }
 
-    private sealed class RootAuthoritySlot
+    private sealed partial class RootAuthoritySlot
     {
         private readonly object _gate = new();
         private string? _generation;

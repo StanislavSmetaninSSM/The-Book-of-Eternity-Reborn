@@ -228,9 +228,20 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.False(_fs.FileExists("ready/turn_error.json"));
     }
 
+    /// <summary>
+    /// Retains the actual constructed source runtime and observations from the real QTE story flow.
+    /// </summary>
     private sealed class QteStoryRun
     {
-        internal GameEngine? Engine;
+        /// <summary>
+        /// Retains the actual engine services and hooks, or <see langword="null"/> before construction.
+        /// </summary>
+        internal GameEngineTestRuntime? Runtime;
+
+        /// <summary>
+        /// Gets the actual constructed engine, or <see langword="null"/> before construction.
+        /// </summary>
+        internal GameEngine? Engine => Runtime?.Engine;
         internal TurnRequest? Source;
         internal string? SnapshotToken;
         internal Exception? Failure;
@@ -372,7 +383,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             if (preacceptMutation != null)
             {
                 await _fs.WriteFileAtomicAsync(QteStoryPath, "{\"turn\":42,\"player\":\"GM wrote history\",\"narrative\":\"forbidden\"}\n");
-                run.PreacceptIssues = await GetPrivateField<ValidationService>(run.Engine!, "_validator").ValidateGameStateAsync(GameStateValidationPhase.ClientOwnedControlFiles);
+                run.PreacceptIssues = await run.Runtime!.ValidationService.ValidateGameStateAsync(GameStateValidationPhase.ClientOwnedControlFiles);
                 throw new OperationCanceledException("Stop after real original GM history admission check.");
             }
             var authoredOffer = BuildPhysicalInjuryOffer(declared: physicalDeclaration, maximum: physicalMaximum);
@@ -397,29 +408,35 @@ public sealed partial class GameEngineTurnLifecycleTests
             sourceStages?.Observe("source-author", "return");
             if (mode != "ordinary") throw new OperationCanceledException("Original real request/output staged before separate ready recovery.");
         }
-        GameEngine NewEngine(bool hooks)
+        GameEngineTestRuntime NewEngine(bool hooks)
         {
-            var engine = CreateGameEngine(input, settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },
-                finalizationHooks: hooks ? new GameEngineSessionFinalizationHooks { AtCheckpointAsync = Author } : null);
-            SetPrivateField(GetPrivateField<QteSceneService>(engine, "_qteSceneService"), "_inputSource", input);
-            GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession("session_qte_story_append", 41);
-            return engine;
+            var runtime = CreateGameEngineRuntime(_fs, input,
+                settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },
+                finalizationHooks: hooks ? new GameEngineSessionFinalizationHooks { AtCheckpointAsync = Author } : null,
+                qteInputSource: input);
+            runtime.GameLoop.SetSession("session_qte_story_append", 41);
+            return runtime;
         }
-        run.Engine = NewEngine(true);
+        run.Runtime = NewEngine(true);
         await _fs.WriteFileAtomicAsync("game_state/history/chat_log.json", new JsonObject { ["sessionId"] = "session_qte_story_append", ["entries"] = new JsonArray() }.ToJsonString());
-        await GetPrivateField<StateManager>(run.Engine, "_stateManager").RefreshGameStateAsync();
+        await run.Runtime.StateManager.RefreshGameStateAsync();
         sourceStages?.Observe("source-turn", "enter");
-        run.Failure = await Record.ExceptionAsync(() => InvokePrivateTaskAsync(run.Engine, "ProcessPlayerTurn", QteStoryAction, null));
+        run.Failure = await Record.ExceptionAsync(() => run.Engine!.ProcessPlayerTurn(QteStoryAction));
         sourceStages?.Observe("source-turn", run.Failure is null ? "return" : "error", run.Failure?.GetType().Name);
         if (mode != "ordinary")
         {
             Assert.IsType<OperationCanceledException>(run.Failure);
             Assert.True(stagedReady);
             Assert.False(_fs.FileExists(QteStoryPath));
-            run.Engine = NewEngine(false);
-            await GetPrivateField<StateManager>(run.Engine, "_stateManager").RefreshGameStateAsync();
-            run.Failure = await Record.ExceptionAsync(() => InvokePrivateTaskAsync(run.Engine,
-                mode == "recovered_ready" ? "WaitForGmResponse" : "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync"));
+            run.Runtime = NewEngine(false);
+            await run.Runtime.StateManager.RefreshGameStateAsync();
+            run.Failure = await Record.ExceptionAsync(async () =>
+            {
+                if (mode == "recovered_ready")
+                    await InvokePrivateTaskAsync(run.Engine!, "WaitForGmResponse");
+                else
+                    await run.Engine!.ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync();
+            });
         }
         if (bounded && !run.ActionObserved)
         {
@@ -427,7 +444,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             // for this bounded fixture's unreached source/action boundary.
             try
             {
-                var issues = await GetPrivateField<ValidationService>(run.Engine!, "_validator").ValidateGameStateAsync();
+                var issues = await run.Runtime!.ValidationService.ValidateGameStateAsync();
                 WritePhysicalInjuryDiagnostic("qte_story_bounded_early_refusal", new
                 {
                     SourceObserved = run.Source != null, run.ActionObserved,

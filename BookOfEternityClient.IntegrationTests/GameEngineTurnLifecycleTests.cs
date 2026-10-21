@@ -10984,7 +10984,6 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     /// </param>
     /// <param name="qteInputSource">
     /// Optional independent QTE input; <see langword="null"/> preserves the original system source.
-    /// This RED scaffold accepts the argument without forwarding it to the QTE constructor yet.
     /// </param>
     /// <returns>
     /// The engine and the same state, loop, audio, validation, QTE and hooks supplied during construction.
@@ -11039,7 +11038,8 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             validator,
             normalizer,
             stateManager,
-            NullLogger<QteSceneService>.Instance);
+            NullLogger<QteSceneService>.Instance,
+            qteInputSource);
 
         var engine = new GameEngine(
             fs,

@@ -2,6 +2,212 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-five-fixture-package-contracts",
+  "responsibility": "T363 closed SHA256-bound ZIP fixture transport, exact independent bytes and explicit empty-directory entries, malformed/digest/inventory/path/type refusals and owned hydration controls without gameplay.",
+  "excludes": "No genuine source42 generation, game world, player turn, process crash or Linux qualification. No artifact repair, weaker physical inventory or imported authority.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointInterfaceSeedPackage.cs",
+    "BookOfEternityClient.IntegrationTests/JointInterfaceSeedPackageTests.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointFixtureBackedWindowsCrash.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-five-fixture-contracts",
+      "when": "Explicit five-cut mode or artifact transport changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointInterfaceSeedPackageTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-fixture-windows-cut0",
+  "responsibility": "T363 explicit Windows fixture-backed original crash scenario cut0; independently materialized genuine current source42 followed by natural Stage43, abrupt producer loss and separate current resumer with original mechanics/history/interface/cleanup/held oracles.",
+  "excludes": "Not an unchanged original test identity, source42 generation or Linux qualification. Requires independently accepted current artifact/actual DLL binding and sequential cut0 admission gate. No diagnostic quota or process bound increase.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointWindowsCrash.cs",
+    "BookOfEternityClient.IntegrationTests/JointInterfaceSeedCrashInput.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-interface-seed-generation",
+      "when": "Run separately once after SOURCE/PREP acceptance and bind the freshly generated artifact to the actual current DLLs before admitting any five-cut consumer."
+    },
+    {
+      "id": "fr063-joint-five-fixture-contracts",
+      "when": "Closed fixture mode or typed execution seam changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 15,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceFixtureBackedWindows_Cut0_Prepared"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-fixture-windows-cut1",
+  "responsibility": "T363 explicit Windows fixture-backed original crash scenario cut1; independently materialized genuine current source42 followed by natural Stage43, abrupt producer loss and separate current resumer with original mechanics/history/interface/cleanup/held oracles.",
+  "excludes": "Not an unchanged original test identity, source42 generation or Linux qualification. Requires independently accepted current artifact/actual DLL binding and sequential cut0 admission gate. No diagnostic quota or process bound increase.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointWindowsCrash.cs",
+    "BookOfEternityClient.IntegrationTests/JointInterfaceSeedCrashInput.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-interface-seed-generation",
+      "when": "Run separately once after SOURCE/PREP acceptance and bind the freshly generated artifact to the actual current DLLs before admitting any five-cut consumer."
+    },
+    {
+      "id": "fr063-joint-five-fixture-contracts",
+      "when": "Closed fixture mode or typed execution seam changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 15,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceFixtureBackedWindows_Cut1_IApplied"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-fixture-windows-cut2",
+  "responsibility": "T363 explicit Windows fixture-backed original crash scenario cut2; independently materialized genuine current source42 followed by natural Stage43, abrupt producer loss and separate current resumer with original mechanics/history/interface/cleanup/held oracles.",
+  "excludes": "Not an unchanged original test identity, source42 generation or Linux qualification. Requires independently accepted current artifact/actual DLL binding and sequential cut0 admission gate. No diagnostic quota or process bound increase.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointWindowsCrash.cs",
+    "BookOfEternityClient.IntegrationTests/JointInterfaceSeedCrashInput.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-interface-seed-generation",
+      "when": "Run separately once after SOURCE/PREP acceptance and bind the freshly generated artifact to the actual current DLLs before admitting any five-cut consumer."
+    },
+    {
+      "id": "fr063-joint-five-fixture-contracts",
+      "when": "Closed fixture mode or typed execution seam changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 15,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceFixtureBackedWindows_Cut2_PublishedCulture"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-fixture-windows-cut3",
+  "responsibility": "T363 explicit Windows fixture-backed original crash scenario cut3; independently materialized genuine current source42 followed by natural Stage43, abrupt producer loss and separate current resumer with original mechanics/history/interface/cleanup/held oracles.",
+  "excludes": "Not an unchanged original test identity, source42 generation or Linux qualification. Requires independently accepted current artifact/actual DLL binding and sequential cut0 admission gate. No diagnostic quota or process bound increase.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointWindowsCrash.cs",
+    "BookOfEternityClient.IntegrationTests/JointInterfaceSeedCrashInput.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-interface-seed-generation",
+      "when": "Run separately once after SOURCE/PREP acceptance and bind the freshly generated artifact to the actual current DLLs before admitting any five-cut consumer."
+    },
+    {
+      "id": "fr063-joint-five-fixture-contracts",
+      "when": "Closed fixture mode or typed execution seam changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 15,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceFixtureBackedWindows_Cut3_First2Held"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-fixture-windows-cut4",
+  "responsibility": "T363 explicit Windows fixture-backed original crash scenario cut4; independently materialized genuine current source42 followed by natural Stage43, abrupt producer loss and separate current resumer with original mechanics/history/interface/cleanup/held oracles.",
+  "excludes": "Not an unchanged original test identity, source42 generation or Linux qualification. Requires independently accepted current artifact/actual DLL binding and sequential cut0 admission gate. No diagnostic quota or process bound increase.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointWindowsCrash.cs",
+    "BookOfEternityClient.IntegrationTests/JointInterfaceSeedCrashInput.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-interface-seed-generation",
+      "when": "Run separately once after SOURCE/PREP acceptance and bind the freshly generated artifact to the actual current DLLs before admitting any five-cut consumer."
+    },
+    {
+      "id": "fr063-joint-five-fixture-contracts",
+      "when": "Closed fixture mode or typed execution seam changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 15,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceFixtureBackedWindows_Cut4_ErrorPrepared"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-five-fixture-contracts",
   "responsibility": "T363 explicit closed five-cut fixture metadata, synthetic checked imports, actual typed constructor wiring and read-only existing registry observation controls.",
   "excludes": "No genuine source42 generation, game world, player turn, process crash or original five/Linux qualification. No authority imported through fixture data or diagnostic quotas.",

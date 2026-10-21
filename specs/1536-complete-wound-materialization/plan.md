@@ -1,3 +1,16 @@
+# CRASH5 — plan13 revision30: preserve fixture empty directories through Git
+
+Canonical revision29 remains the execution plan; this amendment resolves its concrete durable-carrier portability gap, without weakening any game/physical/ownership contract. Actual Spec Kit plan/tasks/prerequisites and bridge consistency are required before package code. Continue the existing developer owner and separate complex independent review.
+
+1. Retain T363's verified26-case causal RED and16 legacy passes. Record the seven-directory/all82file clean-recovery counterexample; present actual r30 using the existing user approval-wait waiver.
+2. Add a minimal explicit ZIP carrier API and independent synthetic package controls. First hand off a compilable carrier RED scaffold while approved typed-runtime migration may continue; parent runs source-bound causal package RED before enabling its behavior. Then GREEN implements closed entry/path/type/digest/manifest inventory validation and fresh hydration. No game/world/turn/crash in these controls and no changed original codec missing-directory refusal.
+3. Wire package hydration only into the explicit new five-cut branch, after pure mode validation and inside the existing child-owning crash container before any child launch. Preserve legacy raw seed selection, original all scenario assertions, existing ownership/retirement/EOF/join and retained-root behavior. New five Facts select the new immutable package and closed binding; hashes are fixture DATA authored after genuine generation, not compiled constants requiring a source rebuild.
+4. Include package GREEN/affected controls, zero introduced XML warnings, exact five/legacy/generator discovery0executed, source/DLL equivalence and full raw in the same coherent T363 SOURCE/PREP independent review. T364's single current genuine generator then produces exact ZIP carrier + closed binding and proves manifest/payload/directory/actual-producer/DLL identity, including clean Git recovery, before independent artifact acceptance and T365. Existing6m generator and820/600/15m process bounds are unchanged.
+
+No unrelated legacy migration, historical artifact repair, diagnostic quota, physical fence removal, source42 rebind, additional generation fallback or protected-root mutation.
+
+---
+
 # CRASH5 — plan13 revision29: prepare fixture-backed original five before generating once
 
 Spec15r29/FIX5-1..6; accepted compiled34cedb3818 baseline, T362complete currentlocalowner. User approval-wait waiver. Continue Superpowers brainstorming/design/TDD/execution/independentreview/verification through canonical Spec Kit artifacts, existing isolated branch. One Sol6.1/high implementation owner for coherent C#/tests, parent integrates catalog/harness/evidence, separate Astra/high complex SOURCE/PREP reviewer; do not use consultation author as own design reviewer.

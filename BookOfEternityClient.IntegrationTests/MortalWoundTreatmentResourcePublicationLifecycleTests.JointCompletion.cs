@@ -173,8 +173,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         JsonObject heldCommand = new();
 
         GameEngine engine = null!;
-        engine = CreateGameEngine(input, settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },
-            finalizationHooks: new GameEngineSessionFinalizationHooks
+        var finalizationHooks = new GameEngineSessionFinalizationHooks
             {
                 AtCheckpointAsync = checkpoint =>
                 {
@@ -205,13 +204,18 @@ public sealed partial class GameEngineTurnLifecycleTests
                     }
                     return Task.CompletedTask;
                 }
-            }, logger: logger);
+            };
+        var runtime = CreateGameEngineRuntime(_fs, input,
+            settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },
+            finalizationHooks: interfaceLifecycleProbe?.ComposeFinalizationHooks(finalizationHooks) ?? finalizationHooks,
+            logger: logger);
+        engine = runtime.Engine;
         attachActualOwnerProbe?.Invoke(engine);
         currentCaptureProbe?.Attach(engine);
-        interfaceLifecycleProbe?.Attach(engine);
-        GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(sourceSessionId, 42);
+        interfaceLifecycleProbe?.Attach(runtime);
+        runtime.GameLoop.SetSession(sourceSessionId, 42);
         interfaceLifecycleProbe?.ConfigureBeforeOriginal();
-        await GetPrivateField<StateManager>(engine, "_stateManager").RefreshGameStateAsync();
+        await runtime.StateManager.RefreshGameStateAsync();
         if (!useLiveCaller)
             await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
             {
@@ -415,10 +419,10 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 if (useLiveCaller)
                 {
-                    await InvokePrivateTaskAsync(engine, "ProcessPlayerTurn", "Осмотреть ушиб.", null);
+                    await engine.ProcessPlayerTurn("Осмотреть ушиб.");
                     liveCallerReturned = true;
                 }
-                else handled = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
+                else handled = await engine.ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync();
             });
         }
         finally { _consolePublicationObserver = null; }
@@ -430,7 +434,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             entered, HandledByActualLateCaller = useLiveCaller ? (bool?)null : handled,
             liveCallerReturned, liveWaitEntered, jointOriginalAuthored,
             Failure = failure?.ToString(), ObserverFailure = observerFailure?.ToString(), EngineDiagnostics = logger.Describe(),
-            ActualTurn = GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber, InputKeyAvailable = input.KeyAvailable,
+            ActualTurn = runtime.GameLoop.TurnNumber, InputKeyAvailable = input.KeyAvailable,
             Publications = publications, ReportRemovalHistory = reportRemovalHistory,
             Milestones = milestones.Select(m => new { m.Path, Raw = m.Raw,
                 Images = m.Images.ToDictionary(pair => pair.Key, pair => pair.Value is null ? null : Convert.ToBase64String(pair.Value)) }),
@@ -554,7 +558,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Dictionary<string, byte[]?> complete;
         await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
             complete = await CaptureConfirmedClaimReadImagesAsync(_fs, lease);
-        var repeat = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
+        var repeat = await engine.ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync();
         Dictionary<string, byte[]?> repeated;
         await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
         {
@@ -562,10 +566,10 @@ public sealed partial class GameEngineTurnLifecycleTests
             await AssertConfirmedClaimReadImagesAsync(_fs, lease, complete);
         }
         WritePhysicalInjuryDiagnostic("fr063_joint_completion_inert_repeat", new
-        { repeat, Turn = GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber,
+        { repeat, Turn = runtime.GameLoop.TurnNumber,
             Before = MortalArchiveDigests(complete), After = MortalArchiveDigests(repeated), FullBytesEqual = true });
         Assert.False(repeat);
-        Assert.Equal(43, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
+        Assert.Equal(43, runtime.GameLoop.TurnNumber);
         interfaceLifecycleProbe?.ObserveCompletionBeforeCleanup();
         if (interfaceLifecycleProbe is not null) await interfaceLifecycleProbe.ObserveNewOrdinaryBeforeCleanupAsync(engine);
 
@@ -771,49 +775,23 @@ public sealed partial class GameEngineTurnLifecycleTests
     }
 
 
+    /// <summary>
+    /// Writes complete detached engine diagnostics without reflecting over or serializing retained authority.
+    /// </summary>
+    /// <param name="engine">
+    /// The actual engine at the existing synchronous lifecycle observation boundary.
+    /// </param>
     private void WriteJointInMemoryOwnerSnapshot(GameEngine engine)
     {
-        // Diagnostic reflection over EXISTING retained state only. Never serialize
-        // the checkpoint, plan, frame, receipt or capability, and never call an owner.
-        var checkpointPresent = GetPrivateFieldValue<object?>(engine, "_mortalJointRepairCheckpoint") is not null;
-        var correctionReady = GetPrivateFieldValue<bool>(engine, "_mortalJointRepairCorrectionReady");
-        var refresh = GetPrivateFieldValue<object?>(engine, "_mortalJointRepairCanonicalRefresh");
-        var dispositionProperty = refresh?.GetType().GetProperty("Disposition");
-        var issuesProperty = refresh?.GetType().GetProperty("Issues");
-        var disposition = dispositionProperty?.GetValue(refresh)?.ToString();
-        var issues = issuesProperty?.GetValue(refresh) as IReadOnlyList<ValidationIssue>;
-        const int maximumIssues = 32;
-        object BoundedField(string? value, int limit) => new
-        {
-            Value = value is null || value.Length <= limit ? value : value[..limit],
-            OriginalLength = value?.Length, Truncated = value is not null && value.Length > limit,
-            FullUtf8Sha256 = value is null ? null : Convert.ToHexString(
-                System.Security.Cryptography.SHA256.HashData(Encoding.UTF8.GetBytes(value)))
-        };
-        // Only public diagnostic strings enter this complete projection/digest;
-        // the underlying result and original full owner-outcome emission stay intact.
-        var fullIssueProjection = issues?.Select(issue => new { issue.Code, issue.FilePath, issue.Message }).ToArray();
+        var observation = engine.CaptureMortalJointRuntimeObservation();
         WritePhysicalInjuryDiagnostic("fr063_joint_in_memory_owner_snapshot_before_filesystem", new
         {
-            CheckpointPresent = checkpointPresent, CorrectionReady = correctionReady,
-            CanonicalRefreshPresent = refresh is not null,
-            CanonicalDispositionPropertyPresent = dispositionProperty is not null,
-            CanonicalDisposition = disposition,
-            IssuePropertyPresent = issuesProperty is not null, IssueCollectionPresent = issues is not null,
-            IssueCount = issues?.Count, MaximumReportedIssues = maximumIssues,
-            ReportedIssueCount = issues is null ? (int?)null : Math.Min(issues.Count, maximumIssues),
-            IssueRowsTruncated = issues is not null && issues.Count > maximumIssues,
-            CompletePublicIssueProjectionSha256 = fullIssueProjection is null ? null : Convert.ToHexString(
-                System.Security.Cryptography.SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(fullIssueProjection))),
-            Issues = issues?.Take(maximumIssues).Select((issue, index) => new
-            {
-                Index = index, Code = BoundedField(issue.Code, 256),
-                FilePath = BoundedField(issue.FilePath, 512), Message = BoundedField(issue.Message, 1024)
-            }).ToArray(),
+            observation.CheckpointPresent, observation.CorrectionReady, observation.CanonicalRefreshPresent,
+            observation.CanonicalDisposition, IssueCollectionPresent = observation.Issues is not null,
+            IssueCount = observation.Issues?.Count, Issues = observation.Issues,
             Scope = "Existing in-memory diagnostics only; no authority issued or filesystem admission performed"
         });
     }
-
     private static (Dictionary<string, byte[]?> Current, string Reminder)
         BuildJointNaturalStage43CurrentExpectation(IReadOnlyDictionary<string, byte[]?> originalImages)
     {
@@ -946,7 +924,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     private async Task<Dictionary<string, byte[]?>> AssertJointPriorLifecycleInactiveBaselineAsync(QteStoryRun source)
     {
         Assert.NotNull(source.Engine);
-        Assert.Equal(42, GetPrivateField<GameLoop>(source.Engine!, "_gameLoop").TurnNumber);
+        Assert.Equal(42, source.Runtime!.GameLoop.TurnNumber);
         return await AssertJointPriorLifecycleInactiveBaselineAsync(source.Source!.SessionId, source.Source.RequestId);
     }
 

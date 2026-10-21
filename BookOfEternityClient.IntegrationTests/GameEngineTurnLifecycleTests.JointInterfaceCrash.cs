@@ -51,18 +51,22 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// Whether this explicitly selected Windows case shares an 820 second observation window with at most 600 seconds per child wait.
     /// </param>
     /// <param name="seedArtifactPath">
-    /// The exact existing source42 artifact for the explicit ordinary Windows cut0;
+    /// The exact existing source42 artifact for a supported ordinary Windows fixture selection;
     /// <see langword="null"/> preserves the original source-turn preparation path.
     /// </param>
     /// <param name="fixtureAcquisitionOnly">
     /// Whether the distinct seeded Windows cut0 probe exports actual prepared/applied DATA
     /// and expects diagnostic exit74 rather than asserting gameplay completion.
     /// </param>
+    /// <param name="seedUsage">
+    /// The explicit five-cut usage, or <see langword="null"/> for the unchanged legacy cut0-only opt-in.
+    /// </param>
     /// <returns>
     /// Completion after the selected probe's process and DATA assertions, or the original game assertions.
     /// </returns>
     private async Task RunJointInterfaceActualProcessLossAsync(int cut, string? fault = null, bool diagnostic = false,
-        bool extendedWindowsCrash = false, string? seedArtifactPath = null, bool fixtureAcquisitionOnly = false)
+        bool extendedWindowsCrash = false, string? seedArtifactPath = null, bool fixtureAcquisitionOnly = false,
+        string? seedUsage = null)
     {
         if (extendedWindowsCrash && !OperatingSystem.IsWindows())
             throw new PlatformNotSupportedException("Extended crash qualification is a local Windows selection.");
@@ -70,11 +74,14 @@ public sealed partial class GameEngineTurnLifecycleTests
         _ = JointInterfaceCrashProcessSupport.SelectBackend(OperatingSystem.IsWindows(), OperatingSystem.IsLinux(), mode);
         if (fixtureAcquisitionOnly && (!extendedWindowsCrash || seedArtifactPath is null))
             throw new InvalidDataException("Fixture acquisition requires an explicit seeded Windows selection.");
+        if (seedUsage is not null && seedArtifactPath is null)
+            throw new InvalidDataException("Explicit source42 fixture usage requires an artifact selection.");
         JointInterfaceSeedCrashInput? source42Seed = null;
         if (seedArtifactPath is not null)
         {
             if (!extendedWindowsCrash) throw new InvalidDataException("Seeded cut0 requires the existing shared Windows crash budget.");
-            source42Seed = JointInterfaceSeedCrashInput.Bind(seedArtifactPath, TestRepoPaths.RepoRoot, OperatingSystem.IsWindows(), mode);
+            source42Seed = JointInterfaceSeedCrashInput.Bind(seedArtifactPath, TestRepoPaths.RepoRoot,
+                OperatingSystem.IsWindows(), mode, seedUsage, fixtureAcquisitionOnly);
         }
         var nonce = Guid.NewGuid().ToString("N");
         var parentMetadata = JsonSerializer.SerializeToNode(new
@@ -636,10 +643,11 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// </returns>
     public static async Task WriteJointInterfaceCurrentResumeAsync(string root, string output, int cut, string own)
     {
-        _ = JointInterfaceCrashProcessSupport.ReadAndValidateEntryMode(own, cut, OperatingSystem.IsWindows(), OperatingSystem.IsLinux());
+        var mode = JointInterfaceCrashProcessSupport.ReadAndValidateEntryMode(own, cut, OperatingSystem.IsWindows(), OperatingSystem.IsLinux());
         CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
         var parent = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "parent.json")))!.AsObject();
         var fixtureAcquisitionOnly = JointInterfaceFixtureAcquisition.ReadAndValidate(parent, OperatingSystem.IsWindows());
+        _ = JointInterfaceSeedCrashInput.Read(parent, OperatingSystem.IsWindows(), mode);
         var fixtureExports = new JsonArray();
         var stages = JointInterfaceCrashStageReport.CreateForOrdinary(parent, cut);
         var resumeActivity = OperatingSystem.IsWindows() && stages != null ? new JointInterfaceResumeActivity(stages) : null;
@@ -659,11 +667,11 @@ public sealed partial class GameEngineTurnLifecycleTests
         var policyRejected = false;
         if (cut == 2)
         {
-            var contrast = factory.CreateGameEngine(new QueuedConsoleInputSource([]), InertRealmSettings);
-            await using var contrastAudio = GetPrivateField<AudioService>(contrast, "_audioService");
+            var contrast = CreateGameEngineRuntime(factory._fs, new QueuedConsoleInputSource([]), InertRealmSettings);
+            await using var contrastAudio = contrast.AudioService;
             var raw = new JsonObject { ["dialogueOptions"] = new JsonArray("Продолжить разговор."), ["timestamp"] = "13/02/2026" };
             await factory._fs.WriteFileAtomicAsync(MortalJointInterfacePublication.InterfacePath, raw.ToJsonString());
-            var issues = await GetPrivateField<ValidationService>(contrast, "_validator").ValidateAcceptedTurnInterfacePayloadAsync();
+            var issues = await contrast.ValidationService.ValidateAcceptedTurnInterfacePayloadAsync();
             policyRejected = issues.Any(issue => issue.Code == "interface_updates_invalid_timestamp" && issue.Severity == IssueSeverity.Error);
             Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "iobs_independent_ordinary_policy_contrast", Culture = CultureInfo.CurrentCulture.Name,
                 Raw = raw, Issues = issues, SeparateOwnedRoot = factory._rootPath }));
@@ -735,8 +743,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         ILogger<GameEngine> engineLogger = diagnostic.Enabled ? new JointInterfaceResumeDiagnosticLogger(log, diagnostic) : log;
         diagnostic.Observe("engine-enter");
         stages?.Observe("engine", "enter");
-        var engine = factory.CreateGameEngine(new QueuedConsoleInputSource([]), settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },
-            fileSystem: files, logger: engineLogger, finalizationHooks: new GameEngineSessionFinalizationHooks
+        var runtime = CreateGameEngineRuntime(files, new QueuedConsoleInputSource([]), settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },
+            logger: engineLogger, finalizationHooks: new GameEngineSessionFinalizationHooks
             { AtCheckpointAsync = async point =>
                 {
                     diagnostic.Observe("finalization-enter", point.ToString());
@@ -779,12 +787,13 @@ public sealed partial class GameEngineTurnLifecycleTests
                     if (resumeActivity != null) resumeActivity.Checkpoint(point, false);
                     else stages?.Observe("finalization-after", "return");
                 } });
+        var engine = runtime.Engine;
         diagnostic.Observe("engine-return");
         stages?.Observe("engine", "return");
-        await using var audio = GetPrivateField<AudioService>(engine, "_audioService");
-        var noFresh = GetPrivateFieldValue<object?>(engine, "_mortalJointRepairCheckpoint") is null &&
-            GetPrivateFieldValue<string?>(engine, "_mortalJointInterfaceFreshCheckpoint") is null &&
-            GetPrivateFieldValue<object?>(engine, "_mortalJointInterfaceReady") is null;
+        await using var audio = runtime.AudioService;
+        var freshObservation = engine.CaptureMortalJointRuntimeObservation();
+        var noFresh = !freshObservation.CheckpointPresent && !freshObservation.FreshCheckpointPresent &&
+            !freshObservation.ReadyPresent;
         Assert.True(noFresh);
         MortalJointInterfacePublication.Record? result = null;
         Dictionary<string, byte[]?>? before = null, after = null, repeated = null;
@@ -842,11 +851,11 @@ public sealed partial class GameEngineTurnLifecycleTests
                 else Assert.False(pending.ContainsKey(MortalJointInterfacePublication.PendingField));
                 diagnostic.Observe("runtime-refresh-enter");
                 stages?.Observe("snapshot-refresh", "enter");
-                await GetPrivateField<StateManager>(engine, "_stateManager").RefreshGameStateReadOnlyAsync(lease);
+                await runtime.StateManager.RefreshGameStateReadOnlyAsync(lease);
                 diagnostic.Observe("runtime-refresh-return");
                 stages?.Observe("snapshot-refresh", "return");
-                Assert.Equal(42, GetPrivateField<StateManager>(engine, "_stateManager").CurrentState.TurnNumber);
-                GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(original.SessionId, 42);
+                Assert.Equal(42, runtime.StateManager.CurrentState.TurnNumber);
+                runtime.GameLoop.SetSession(original.SessionId, 42);
                 if (fault is not null)
                 {
                     Assert.Equal(0, cut); Assert.NotNull(result); Assert.Equal("Prepared", result.State);
@@ -884,7 +893,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 using (files.MeasureOperation("FixtureData.ExportPreparedOriginal"))
                     fixtureExports.Add(JointInterfaceFixtureAcquisition.Capture(root,
                         Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "joint-cleanup-captures"), "PreparedOriginal", parent));
-            handled = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
+            handled = await engine.ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync();
             namedResumerTimer1?.Dispose();
             diagnostic.Observe("late-first-return", handled.ToString());
             resumeActivity?.Complete();
@@ -908,7 +917,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     var option = Assert.IsType<JsonObject>(Assert.Single(image["dialogueOptions"]!.AsArray()));
                     Assert.Equal("[NI_CONTROL:second]Продолжить обычный ответ.", option["text"]!.GetValue<string>());
                     Assert.Equal("[NI_ACTION:first][NI_CONTROL:second]Продолжить обычный ответ.", option["inputValue"]!.GetValue<string>());
-                    Assert.Equal(43, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
+                    Assert.Equal(43, runtime.GameLoop.TurnNumber);
                     await AssertJointInterfaceResumedMechanicalOutcomeAsync(files, lease, before, current.Binding);
                     foreach (var path in new[] { AcceptedMechanicsPlan.WoundCommandPath, WoundAcceptedTurnSnapshotContract.PendingResolutionPath,
                         MortalWoundOpportunityAdapter.DecisionPath, "input/turn_request.json", "ready/turn_complete.json",
@@ -918,7 +927,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 }
                 else
                 {
-                    Assert.Equal(42, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
+                    Assert.Equal(42, runtime.GameLoop.TurnNumber);
                     Assert.Equal(recoveredPending, await files.ReadFileBytesAsync(lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath));
                     Assert.Equal(before.Keys.Order(StringComparer.Ordinal), after.Keys.Order(StringComparer.Ordinal));
                     foreach (var (path, bytes) in before) Assert.Equal(bytes, after[path]);
@@ -933,7 +942,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             diagnostic.Observe("late-second-enter");
             stages?.Observe("late-repeat", "enter");
             using var namedResumerTimer2 = files.MeasureOperation("Resumer.SecondCurrentOwnerCall");
-            second = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
+            second = await engine.ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync();
             namedResumerTimer2?.Dispose();
             diagnostic.Observe("late-second-return", second.ToString());
             stages?.Observe("late-repeat", "return");
@@ -947,7 +956,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 await AssertConfirmedClaimReadImagesAsync(files, lease, after);
             }
             Assert.Equal(fault is null && cut < 2 ? 1 : 0, changingI); Assert.True(actualCaller);
-            if (completed) Assert.False(second!.Value); else Assert.True(GetPrivateFieldValue<bool>(engine, "_mortalJointInterfacePreparationHeld"));
+            if (completed) Assert.False(second!.Value); else Assert.True(engine.CaptureMortalJointRuntimeObservation().PreparationHeld);
         }
         catch (Exception error) { failure = error; throw; }
         finally
@@ -1005,18 +1014,22 @@ public sealed partial class GameEngineTurnLifecycleTests
             Meaning = "Independent 2→0 charge, 5→2 damage, exactly two target-turn resource rows and create/treat suffix; full current proof was frozen before cleanup" }));
     }
 
+    /// <summary>
+    /// Requires the actual existing current publisher state to have released its reservation and open receipt.
+    /// </summary>
+    /// <param name="files">
+    /// The real filesystem whose current physical completion proof was already checked by the caller.
+    /// </param>
     private static void AssertActualJointInterfaceRegistrySettled(FileSystemManager files)
     {
-        // Observe the slot created by THIS real current common publisher. This
-        // diagnostic lookup neither initializes a state nor supplies capability.
-        var roots = typeof(AcceptedTurnAuthorityRegistry).GetField("RootSlots", BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null)!;
-        object?[] arguments = [files.CanonicalRootAuthorityIdentity, null];
-        Assert.True((bool)roots.GetType().GetMethod("TryGetValue")!.Invoke(roots, arguments)!);
-        var state = GetPrivateField<object>(arguments[1]!, "_state");
-        Assert.Null(GetPrivateFieldValue<object?>(state, "_mortalWoundTreatmentPublicationReservation"));
-        Assert.Null(GetPrivateFieldValue<object?>(state, "_openJointRepairPublicationReceipt"));
+        var observation = AcceptedTurnAuthorityRegistry.ObserveExistingJointPublication(files.CanonicalRootAuthorityIdentity);
+        Assert.True(observation.RootSlotPresent);
+        Assert.True(observation.AuthorityStatePresent);
+        Assert.False(observation.TreatmentReservationPresent);
+        Assert.False(observation.OpenJointRepairReceiptPresent);
         Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "iobs_actual_current_common_claim_settled",
-            Root = files.BasePath, ActualState = state.GetType().FullName, ReservationAbsent = true, OpenTakeAbsent = true,
+            Root = files.BasePath, observation.RootSlotPresent, observation.AuthorityStatePresent,
+            ReservationAbsent = !observation.TreatmentReservationPresent, OpenTakeAbsent = !observation.OpenJointRepairReceiptPresent,
             Meaning = "Actual completed physical proof precedes this read of existing owner state, not a fabricated receipt or old-process claim" }));
     }
 
@@ -1089,7 +1102,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Phase = phase.ToString(), Index = index, JournalBase64 = Convert.ToBase64String(journalBytes),
                 ActualPending = ReadPhysical(WoundAcceptedTurnSnapshotContract.PendingResolutionPath), PendingMemberAfter = pendingBytes,
                 Interface = ReadPhysical(InterfacePath), InterfaceMtime = Mtime(), Result = record?.ToJson(), Checkpoint = checkpoint,
-                CommonCallbacks = _captureCallbacks, FirstMarker = _firstMarker, Turn = GetPrivateField<GameLoop>(_engine!, "_gameLoop").TurnNumber,
+                CommonCallbacks = _captureCallbacks, FirstMarker = _firstMarker, Turn = _runtime!.GameLoop.TurnNumber,
                 MechanicalBefore = _mechanicalBefore, MechanicalAtCut = _mechanicalBefore.Keys.ToDictionary(path => path, ReadPhysical),
                 AmbientParseAccepted = DateTimeOffset.TryParse("13/02/2026", out _), Culture = CultureInfo.CurrentCulture.Name,
                 Dependencies = MortalArchiveDependencyContext(), Loaded = MortalArchiveLoadedDependencyBindings() }, _crashStages));

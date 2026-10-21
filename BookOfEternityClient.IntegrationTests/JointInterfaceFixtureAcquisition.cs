@@ -35,7 +35,7 @@ internal static class JointInterfaceFixtureAcquisition
         if (!parent["FixtureAcquisitionOnly"]!.GetValue<bool>()) return false;
         Require(windows && parent["Cut"] is JsonValue cut && cut.TryGetValue<int>(out var index) && index == 0 &&
             parent["Diagnostic"] is JsonValue diagnostic && diagnostic.TryGetValue<bool>(out var enabled) && !enabled &&
-            parent["Fault"] is null && parent["Source42Seed"] is JsonObject);
+            parent["Fault"] is null && parent["Source42Seed"] is JsonObject selection && !selection.ContainsKey("Usage"));
         return true;
     }
 

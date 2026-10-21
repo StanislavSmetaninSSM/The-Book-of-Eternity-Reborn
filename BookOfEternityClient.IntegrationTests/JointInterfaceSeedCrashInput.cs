@@ -27,7 +27,7 @@ internal sealed record JointInterfaceSeedCrashInput(string ArtifactPath, string 
     internal const string OrdinaryWindowsFiveCutsUsage = "ordinary-windows-five-cuts-v1";
 
     /// <summary>
-    /// Validates an ordinary Windows cut0 artifact and binds its exact manifest to the current source contracts.
+    /// Validates a supported ordinary Windows artifact selection and binds its exact manifest to current source contracts.
     /// </summary>
     /// <param name="artifactPath">
     /// The absolute existing artifact directory; missing or invalid artifacts are refused without generation.
@@ -39,11 +39,10 @@ internal sealed record JointInterfaceSeedCrashInput(string ArtifactPath, string 
     /// Whether the requested crash consumer runs on Windows.
     /// </param>
     /// <param name="mode">
-    /// The ordinary cut0 mode, with diagnostics disabled and no integrity fault.
+    /// The ordinary crash mode, with diagnostics disabled and no integrity fault.
     /// </param>
     /// <param name="usage">
     /// An explicit fixture usage; <see langword="null"/> preserves the legacy cut0-only contract.
-    /// Explicit usage remains refused by the legacy-equivalent RED scaffold.
     /// </param>
     /// <param name="fixtureAcquisitionOnly">
     /// Whether separate fixture acquisition was requested; the default is <see langword="false"/>.
@@ -54,10 +53,9 @@ internal sealed record JointInterfaceSeedCrashInput(string ArtifactPath, string 
     internal static JointInterfaceSeedCrashInput Bind(string artifactPath, string repoRoot, bool windows,
         JointInterfaceCrashMode mode, string? usage = null, bool fixtureAcquisitionOnly = false)
     {
-        ValidateUsage(usage);
-        ValidateMode(windows, mode);
+        ValidateMode(windows, mode, usage, fixtureAcquisitionOnly);
         var path = NormalizeArtifactPath(artifactPath);
-        var selection = new JointInterfaceSeedCrashInput(path, ReadManifestDigest(path));
+        var selection = new JointInterfaceSeedCrashInput(path, ReadManifestDigest(path), usage);
         _ = selection.Open(repoRoot);
         return selection;
     }
@@ -72,7 +70,7 @@ internal sealed record JointInterfaceSeedCrashInput(string ArtifactPath, string 
     /// Whether the requested crash consumer runs on Windows.
     /// </param>
     /// <param name="mode">
-    /// The crash mode, which must be ordinary Windows cut0 when a selection is present.
+    /// The ordinary Windows crash mode. Absent usage permits only cut0; explicit five-cut usage permits cuts0 through4.
     /// </param>
     /// <returns>
     /// The validated detached selection, or <see langword="null"/> only when Source42Seed is absent.
@@ -82,24 +80,30 @@ internal sealed record JointInterfaceSeedCrashInput(string ArtifactPath, string 
         ArgumentNullException.ThrowIfNull(parent);
         if (!parent.TryGetPropertyValue("Source42Seed", out var node))
             return null;
-        ValidateMode(windows, mode);
         try
         {
+            string? usage = null;
             if (node is JsonObject explicitSelection && explicitSelection.TryGetPropertyValue("Usage", out var usageNode))
             {
-                if (usageNode is not JsonValue usageValue || !usageValue.TryGetValue<string>(out var usage) || usage is null)
+                if (usageNode is not JsonValue usageValue || !usageValue.TryGetValue<string>(out usage) || usage is null)
                     throw new InvalidDataException("Source42Seed Usage must be an explicit supported string.");
-                ValidateUsage(usage);
             }
-            if (node is not JsonObject selection || selection.Count != 2 ||
-                selection.Any(property => property.Key is not ("ArtifactPath" or "ManifestSha256")) ||
+            var acquisition = false;
+            if (usage is not null && parent.TryGetPropertyValue("FixtureAcquisitionOnly", out var acquisitionNode) &&
+                (acquisitionNode is not JsonValue acquisitionValue || !acquisitionValue.TryGetValue<bool>(out acquisition)))
+                throw new InvalidDataException("FixtureAcquisitionOnly must be a Boolean when present.");
+            ValidateMode(windows, mode, usage, acquisition);
+            if (node is not JsonObject selection || selection.Count != (usage is null ? 2 : 3) ||
+                selection.Any(property => property.Key is not ("ArtifactPath" or "ManifestSha256" or "Usage")) ||
                 !selection.TryGetPropertyValue("ArtifactPath", out var pathNode) ||
                 !selection.TryGetPropertyValue("ManifestSha256", out var digestNode) ||
                 pathNode is not JsonValue pathValue || !pathValue.TryGetValue<string>(out var path) || path is null ||
                 digestNode is not JsonValue digestValue || !digestValue.TryGetValue<string>(out var digest) || digest is null)
-                throw new InvalidDataException("Source42Seed must contain exactly ArtifactPath and ManifestSha256 string members.");
+                throw new InvalidDataException(usage is null
+                    ? "Source42Seed must contain exactly ArtifactPath and ManifestSha256 string members."
+                    : "Source42Seed must contain exactly ArtifactPath, ManifestSha256 and Usage string members.");
             ValidateDigest(digest);
-            return new JointInterfaceSeedCrashInput(NormalizeArtifactPath(path), digest);
+            return new JointInterfaceSeedCrashInput(NormalizeArtifactPath(path), digest, usage);
         }
         catch (ArgumentException error)
         {
@@ -138,30 +142,44 @@ internal sealed record JointInterfaceSeedCrashInput(string ArtifactPath, string 
     }
 
     /// <summary>
-    /// Preserves the legacy-only behavior while the explicit usage is under causal RED verification.
+    /// Rejects every explicit usage outside the closed ordinary Windows five-cut fixture contract.
     /// </summary>
     /// <param name="usage">
-    /// The explicit usage spelling; only absence is accepted by this scaffold.
+    /// The exact explicit usage spelling, or <see langword="null"/> for the original legacy selection.
     /// </param>
     private static void ValidateUsage(string? usage)
     {
-        if (usage is not null)
-            throw new InvalidDataException("Explicit Source42Seed usage is not implemented.");
+        if (usage is not null && usage != OrdinaryWindowsFiveCutsUsage)
+            throw new InvalidDataException("Source42Seed Usage is unknown or unsupported.");
     }
 
     /// <summary>
-    /// Refuses seed opt-in outside ordinary Windows cut0 before any artifact or repository access.
+    /// Refuses unsupported seed opt-ins before any artifact or repository access.
     /// </summary>
     /// <param name="windows">
     /// Whether the requested consumer runs on Windows.
     /// </param>
     /// <param name="mode">
-    /// The required non-null ordinary cut0 mode with no diagnostic or integrity fault.
+    /// The required ordinary mode with no diagnostic or integrity fault.
     /// </param>
-    private static void ValidateMode(bool windows, JointInterfaceCrashMode mode)
+    /// <param name="usage">
+    /// The explicit five-cut usage, or <see langword="null"/> for the unchanged legacy cut0 contract.
+    /// </param>
+    /// <param name="fixtureAcquisitionOnly">
+    /// Whether acquisition was requested; explicit five-cut usage cannot be combined with it.
+    /// </param>
+    private static void ValidateMode(bool windows, JointInterfaceCrashMode mode,
+        string? usage = null, bool fixtureAcquisitionOnly = false)
     {
-        if (!windows || mode is not { Cut: 0, Diagnostic: false, Fault: null })
-            throw new InvalidDataException("Source42Seed is permitted only for ordinary Windows cut0.");
+        ValidateUsage(usage);
+        if (usage is null)
+        {
+            if (!windows || mode is not { Cut: 0, Diagnostic: false, Fault: null })
+                throw new InvalidDataException("Source42Seed is permitted only for ordinary Windows cut0.");
+            return;
+        }
+        if (!windows || fixtureAcquisitionOnly || mode is not { Cut: >= 0 and <= 4, Diagnostic: false, Fault: null })
+            throw new InvalidDataException("Explicit five-cut Source42Seed usage requires ordinary Windows cuts0 through4 without fixture acquisition.");
     }
 
     /// <summary>

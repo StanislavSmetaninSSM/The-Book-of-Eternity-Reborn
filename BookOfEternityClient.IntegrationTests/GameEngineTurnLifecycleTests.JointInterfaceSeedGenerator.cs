@@ -55,7 +55,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             await AssertJointPriorLifecycleInactiveBaselineAsync(source);
             input?.Dispose();
             input = null;
-            var audio = GetPrivateField<AudioService>(source.Engine!, "_audioService");
+            var audio = source.Runtime!.AudioService;
             await audio.DisposeAsync();
             audioClosed = true;
             Assert.NotEqual(AudioOutcome.CleanupUncertain, audio.Status.Outcome);
@@ -102,8 +102,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         finally
         {
             input?.Dispose();
-            if (!audioClosed && source?.Engine is { } engine)
-                await GetPrivateField<AudioService>(engine, "_audioService").DisposeAsync();
+            if (!audioClosed && source?.Runtime is { } sourceRuntime)
+                await sourceRuntime.AudioService.DisposeAsync();
             CultureInfo.CurrentCulture = culture;
             CultureInfo.CurrentUICulture = uiCulture;
             foreach (var root in copies)
