@@ -104,10 +104,10 @@ internal static partial class AcceptedTurnAuthorityRegistry
         FileSystemManager.CanonicalWriteLease lease, AcceptedMechanicsInput input,
         WoundAcceptedTurnPlanner.MortalJointRepairCommonAuthority authority)
     {
-        using var context = files.EnterOperationTimingContext();
-        using var totalTiming = files.MeasureOperation("JointCandidate.Registry.Total");
-        using var stateTiming = files.MeasureOperation("JointCandidate.Registry.State");
-        var state = GetState(files, lease);
+        using var context = files?.EnterOperationTimingContext();
+        using var totalTiming = files?.MeasureOperation("JointCandidate.Registry.Total");
+        using var stateTiming = files?.MeasureOperation("JointCandidate.Registry.State");
+        var state = GetState(files!, lease);
         stateTiming?.Dispose();
         return state.CreateJointRepairCommonCandidate(input, authority);
     }
