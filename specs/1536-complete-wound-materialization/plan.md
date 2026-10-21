@@ -1,3 +1,11 @@
+# CRASH5 — plan13 revision34: test-only explicit fixture placement
+
+Execute spec15r34/FIXTUREPLACE-1..4 in the existing dedicated checkout using Spec Kit planning/tasks/consistency plus Superpowers brainstorming, writing-plans, TDD/debugging, execution, independent review and verification. User approval-wait waiver remains explicit.
+
+1. T375: present actual canonical artifacts; run plan/tasks/prerequisite phases and bridge consistency before code. Preserve f620 eight binary outputs before rebuild. Add typed placement controls with a minimal compilable default-only seam, explicit small category and focused selection; save/recover WIP before causal RED. No full game or fixture generation.
+2. T376: implement mode/ordinary-parent/fresh-path selection and pass optional parent only from the Windows five wrapper; select new v2 package path, leaving historical v1 bytes/binding intact. Preserve managed-capture/default/NativeLineage branches and original driver assertions/retirement. Add selected-parent/path diagnostics. Complete new GREEN plus affected existing process-start/budget/package/ownership refusal controls, exact discovery/counts, full raw, all fresh roots absent and XML changed-file validation. Review every changed API comment and actual diff.
+3. T377: save/push/recover coherent source/tests/catalog/docs/evidence. Independent separate-context complex review (Astra/high) against original requirements and preserved contracts; fix validated findings and run affected checks. Record exact new source/binaries and that v1 is unqualified/v2 ungenerated. No runtime admission or performance claim. Only then separately plan genuine v2 preparation and actual location experiment.
+
 # CRASH5 — plan13 revision33: nested ordinary-read diagnostics with causal fixture coverage
 
 Spec15r33/READSECTION-1..4 is a bounded additive diagnostic change, not a production performance fix. Existing dedicated checkout and approval-wait waiver apply. Continue Superpowers TDD/debugging/execution/review/verification through canonical Spec Kit records.
