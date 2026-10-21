@@ -57,7 +57,7 @@ public partial class FileSystemManager
     private bool HasStorageEvidence(string root)
     {
         using var t351Evidence = MeasureOperation("StorageEvidence.ProbeAndEnumerate");
-        var kind = PhysicalFileAuthority.ProbeNamespaceEntryFromRoot(_basePath, root, "Storage evidence root");
+        var kind = PhysicalFileAuthority.ProbeStorageEvidenceNamespaceEntryFromRoot(_basePath, root, "Storage evidence root");
         if (kind == PhysicalFileAuthority.NamespaceEntryKind.Missing) return false;
         if (kind != PhysicalFileAuthority.NamespaceEntryKind.Directory)
             throw new InvalidDataException("Storage evidence root is not an ordinary directory: " + root);

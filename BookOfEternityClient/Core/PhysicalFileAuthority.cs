@@ -6,6 +6,9 @@ using Microsoft.Win32.SafeHandles;
 
 namespace BookOfEternityClient.Core;
 
+/// <summary>
+/// Validates filesystem namespace entries and manages physical file and directory authorities.
+/// </summary>
 internal static partial class PhysicalFileAuthority
 {
     private const uint DeleteAccess = 0x00010000;
@@ -110,7 +113,7 @@ internal static partial class PhysicalFileAuthority
     /// Optional scoped observer of actual Windows native open attempts.
     /// </param>
     /// <returns>
-    /// The fresh observed entry kind, including Missing for native errors2or3.
+    /// The fresh observed entry kind, including Missing for native errors 2 or 3.
     /// </returns>
     internal static NamespaceEntryKind ProbeNamespaceEntry(
         StableDirectory parent,
@@ -185,16 +188,16 @@ internal static partial class PhysicalFileAuthority
     /// Classifies one fresh namespace entry through the original physical traversal.
     /// </summary>
     /// <param name="rootPath">
-    /// Existing physical root; the target must be a strict descendant.
+    /// Root path resolved to an absolute physical anchor; it may be missing, and the target must be a strict descendant.
     /// </param>
     /// <param name="expectedPath">
-    /// Absolute entry to classify without following its final component.
+    /// Target path resolved to an absolute entry whose final component is not followed.
     /// </param>
     /// <param name="authorityName">
     /// Description included in existing authority refusals.
     /// </param>
     /// <param name="hooks">
-    /// Optional per-invocation observations and controlled test boundaries; null preserves ordinary operation.
+    /// Optional per-invocation observations and controlled test boundaries; <see langword="null"/> preserves ordinary operation.
     /// </param>
     /// <returns>
     /// The observed final entry kind, or Missing after a missing validated ancestor.
@@ -205,7 +208,7 @@ internal static partial class PhysicalFileAuthority
         string expectedPath,
         string authorityName,
         PhysicalNamespaceProbeHooks? hooks = null) =>
-        ProbeNamespaceEntryFromRootCore(rootPath, expectedPath, authorityName, hooks);
+        ProbeNamespaceEntryFromRootCore(rootPath, expectedPath, authorityName, hooks, combineDirectoryOpens: false);
 
     internal static StableDirectory EnsureStableDirectory(
         string rootPath,

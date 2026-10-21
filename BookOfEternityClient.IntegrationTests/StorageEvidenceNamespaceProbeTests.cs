@@ -105,7 +105,8 @@ public sealed class StorageEvidenceNamespaceProbeTests
         else if (situation == "outside") target = Path.Combine(fixture.Root, "outside-name");
         else if (situation == "same-root") target = fixture.Source;
         var before = fixture.CaptureFiles();
-        CompareOutcome(fixture.Source, target);
+        CompareOutcome(fixture.Source, target, situation.StartsWith("missing", StringComparison.Ordinal)
+            ? PhysicalFileAuthority.NamespaceEntryKind.Missing : null);
         Assert.Equal(before, fixture.CaptureFiles());
     }
 
@@ -134,12 +135,11 @@ public sealed class StorageEvidenceNamespaceProbeTests
     /// Preserves original refusal classes when combined access fails before metadata classification.
     /// </summary>
     /// <param name="denial">
-    /// A regular file denying data access, or a directory denying listing or attribute access.
+    /// A regular file denying data access, or a directory denying listing access.
     /// </param>
     [Theory]
     [InlineData("file-data")]
     [InlineData("directory-list")]
-    [InlineData("directory-attributes")]
     public void FailedCombinedOpen_UsesOriginalAccessAndTypeRefusal(string denial)
     {
         if (!OperatingSystem.IsWindows()) return;
@@ -149,20 +149,66 @@ public sealed class StorageEvidenceNamespaceProbeTests
         if (file) File.WriteAllText(parent, "retained-data");
         else Directory.CreateDirectory(parent);
         var target = Path.Combine(parent, "leaf");
-        var rights = denial == "directory-attributes" ? FileSystemRights.ReadAttributes : FileSystemRights.ReadData;
+        var rights = FileSystemRights.ReadData;
+        var originalAttempts = new List<PhysicalNamespaceOpenAttempt>();
         var attempts = new List<PhysicalNamespaceOpenAttempt>();
-        fixture.WithDeniedAccess(parent, file, rights, () =>
+        try
         {
-            var original = Record.Exception(() => Probe(fixture.Source, target, false, []));
-            var storage = Record.Exception(() => Probe(fixture.Source, target, true, attempts));
-            Assert.NotNull(original);
-            Assert.NotNull(storage);
-            Assert.Equal(original.GetType(), storage.GetType());
-            if (file) Assert.IsType<InvalidDataException>(storage);
-            else Assert.IsType<UnauthorizedAccessException>(storage);
-        });
-        if (file) Assert.Equal("retained-data", File.ReadAllText(parent));
-        WriteAttempts([], attempts);
+            fixture.WithDeniedAccess(parent, file, rights, () =>
+            {
+                var original = Record.Exception(() => Probe(fixture.Source, target, false, originalAttempts));
+                var storage = Record.Exception(() => Probe(fixture.Source, target, true, attempts));
+                Assert.NotNull(original);
+                Assert.NotNull(storage);
+                Assert.Equal(original.GetType(), storage.GetType());
+                if (file) Assert.IsType<InvalidDataException>(storage);
+                else Assert.IsType<UnauthorizedAccessException>(storage);
+                Assert.Contains(attempts, item => item.Path == parent && item.Kind == PhysicalNamespaceOpenKind.NamespaceEntry);
+            });
+            if (file) Assert.Equal("retained-data", File.ReadAllText(parent));
+        }
+        finally { WriteAttempts(originalAttempts, attempts); }
+    }
+
+    /// <summary>
+    /// Exercises actual attribute denial after parent admission, including NTFS's parent-list permission rule.
+    /// </summary>
+    [Fact]
+    public void AttributeDenialAfterParentAdmission_RetainsOriginalRefusalAndReleasesHandles()
+    {
+        if (!OperatingSystem.IsWindows()) return;
+        using var fixture = new ProbeFixture();
+        var leaf = fixture.PrepareLeaf(1, "directory");
+        var originalAttempts = new List<PhysicalNamespaceOpenAttempt>();
+        var storageAttempts = new List<PhysicalNamespaceOpenAttempt>();
+        try
+        {
+            foreach (var storage in new[] { false, true })
+            {
+                using var childDenial = fixture.DenyAccess(leaf, false, FileSystemRights.ReadAttributes);
+                IDisposable? parentDenial = null;
+                try
+                {
+                    var hooks = new PhysicalNamespaceProbeHooks
+                    {
+                        ObserveNativeOpen = (storage ? storageAttempts : originalAttempts).Add,
+                        // Existing parent handles retain their granted access. Denying
+                        // later listing prevents NTFS from granting child attributes
+                        // through the parent's listing permission.
+                        BeforeLeafProbe = _ => parentDenial = fixture.DenyAccess(fixture.Source, false, FileSystemRights.ListDirectory)
+                    };
+                    var error = Record.Exception(() =>
+                    {
+                        if (storage) PhysicalFileAuthority.ProbeStorageEvidenceNamespaceEntryFromRoot(fixture.Source, leaf, "Attribute fixture", hooks);
+                        else PhysicalFileAuthority.ProbeNamespaceEntryFromRoot(fixture.Source, leaf, "Attribute fixture", hooks);
+                    });
+                    Assert.IsType<UnauthorizedAccessException>(error);
+                }
+                finally { parentDenial?.Dispose(); }
+            }
+            Assert.Empty(Directory.EnumerateFileSystemEntries(leaf));
+        }
+        finally { WriteAttempts(originalAttempts, storageAttempts); }
     }
 
     /// <summary>
@@ -176,7 +222,7 @@ public sealed class StorageEvidenceNamespaceProbeTests
         var parent = Path.Combine(fixture.Source, "exclusive-file");
         File.WriteAllText(parent, "exclusive");
         using (new FileStream(parent, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
-            CompareOutcome(fixture.Source, Path.Combine(parent, "leaf"));
+            CompareOutcome(fixture.Source, Path.Combine(parent, "leaf"), requireInvalidData: false);
         Assert.Equal("exclusive", File.ReadAllText(parent));
     }
 
@@ -205,7 +251,7 @@ public sealed class StorageEvidenceNamespaceProbeTests
         else if (boundary == "parent") link = parent;
         else { Directory.CreateDirectory(parent); link = target; }
         fixture.CreateJunction(link, outside);
-        CompareOutcome(fixture.Source, target);
+        CompareOutcome(fixture.Source, target, boundary == "leaf" ? PhysicalFileAuthority.NamespaceEntryKind.ReparsePoint : null);
         Assert.Equal("outside-bytes", File.ReadAllText(retained));
         Assert.Single(Directory.EnumerateFileSystemEntries(outside));
     }
@@ -342,6 +388,43 @@ public sealed class StorageEvidenceNamespaceProbeTests
     }
 
     /// <summary>
+    /// Rejects an intermediate junction inserted after root opening and before child admission.
+    /// </summary>
+    [Fact]
+    public void AfterRootOpen_RejectsNewIntermediateJunctionWithoutFollowingTarget()
+    {
+        if (!OperatingSystem.IsWindows()) return;
+        using var fixture = new ProbeFixture();
+        var parent = Path.Combine(fixture.Source, "pending-parent");
+        Directory.CreateDirectory(parent);
+        var outside = Path.Combine(fixture.Root, "independent-target");
+        Directory.CreateDirectory(outside);
+        var retained = Path.Combine(outside, "retained.txt");
+        File.WriteAllText(retained, "unchanged-outside");
+        var attempts = new List<PhysicalNamespaceOpenAttempt>();
+        var injected = 0;
+        try
+        {
+            Assert.Throws<InvalidDataException>(() => PhysicalFileAuthority.ProbeStorageEvidenceNamespaceEntryFromRoot(
+                fixture.Source, Path.Combine(parent, "leaf"), "Replacement fixture", new PhysicalNamespaceProbeHooks
+                {
+                    ObserveNativeOpen = attempts.Add,
+                    BeforeDirectoryHandleValidation = path =>
+                    {
+                        if (path != fixture.Source) return;
+                        injected++;
+                        Directory.Delete(parent);
+                        fixture.CreateJunction(parent, outside);
+                    }
+                }));
+            Assert.Equal(1, injected);
+            Assert.Equal("unchanged-outside", File.ReadAllText(retained));
+            Assert.Single(Directory.EnumerateFileSystemEntries(outside));
+        }
+        finally { WriteAttempts([], attempts); }
+    }
+
+    /// <summary>
     /// Observes later creation and deletion with independent fresh native attempts on every call.
     /// </summary>
     [Fact]
@@ -427,13 +510,32 @@ public sealed class StorageEvidenceNamespaceProbeTests
     /// <param name="target">
     /// Requested descendant or deliberately invalid relationship.
     /// </param>
-    private void CompareOutcome(string root, string target)
+    /// <param name="expectedKind">
+    /// Expected successful classification, or <see langword="null"/> when the original entry must refuse.
+    /// </param>
+    /// <param name="requireInvalidData">
+    /// Whether refusal must be <see cref="InvalidDataException"/>; false permits the original platform sharing failure class.
+    /// </param>
+    private void CompareOutcome(string root, string target, PhysicalFileAuthority.NamespaceEntryKind? expectedKind = null,
+        bool requireInvalidData = true)
     {
         var originalAttempts = new List<PhysicalNamespaceOpenAttempt>();
         var storageAttempts = new List<PhysicalNamespaceOpenAttempt>();
         PhysicalFileAuthority.NamespaceEntryKind? original = null, storage = null;
         var originalError = Record.Exception(() => { original = Probe(root, target, false, originalAttempts); });
         var storageError = Record.Exception(() => { storage = Probe(root, target, true, storageAttempts); });
+        if (expectedKind.HasValue)
+        {
+            Assert.Null(originalError);
+            Assert.Null(storageError);
+            Assert.Equal(expectedKind, original);
+        }
+        else
+        {
+            Assert.NotNull(originalError);
+            Assert.NotNull(storageError);
+            if (requireInvalidData) Assert.IsType<InvalidDataException>(originalError);
+        }
         Assert.Equal(original, storage);
         Assert.Equal(originalError?.GetType(), storageError?.GetType());
         WriteAttempts(originalAttempts, storageAttempts);
@@ -458,6 +560,8 @@ public sealed class StorageEvidenceNamespaceProbeTests
     {
         private readonly List<string> _junctions = [];
         private readonly string _parent;
+        private int _activeDenials;
+        private bool _retainRoot;
 
         /// <summary>
         /// Creates independent ordinary directories without game bootstrap or generation.
@@ -533,29 +637,87 @@ public sealed class StorageEvidenceNamespaceProbeTests
         [SupportedOSPlatform("windows")]
         internal void WithDeniedAccess(string path, bool file, FileSystemRights rights, Action action)
         {
+            using var denial = DenyAccess(path, file, rights);
+            action();
+        }
+
+        /// <summary>
+        /// Installs one owned denial whose disposal explicitly persists and verifies the original DACL.
+        /// </summary>
+        /// <param name="path">
+        /// Strict descendant of this independent fixture root.
+        /// </param>
+        /// <param name="file">
+        /// Whether the existing entry is a file rather than a directory.
+        /// </param>
+        /// <param name="rights">
+        /// Access bits denied only to the current user during the returned scope.
+        /// </param>
+        /// <returns>
+        /// A single-use restoration scope; a failed restoration retains the root instead of attempting cleanup.
+        /// </returns>
+        [SupportedOSPlatform("windows")]
+        internal IDisposable DenyAccess(string path, bool file, FileSystemRights rights)
+        {
             RequireOwned(path);
             using var identity = WindowsIdentity.GetCurrent();
             var sid = identity.User ?? throw new InvalidOperationException("Current user SID is absent.");
-            if (file)
+            var original = ReadSecurity(path, file);
+            var descriptor = original.GetSecurityDescriptorBinaryForm();
+            var originalDacl = original.GetSecurityDescriptorSddlForm(AccessControlSections.Access);
+            FileSystemSecurity changed = file ? new FileSecurity() : new DirectorySecurity();
+            changed.SetSecurityDescriptorBinaryForm(descriptor, AccessControlSections.Access);
+            changed.AddAccessRule(new(sid, rights, AccessControlType.Deny));
+            _activeDenials++;
+            try { PersistSecurity(path, file, changed); }
+            catch { _retainRoot = true; throw; }
+            return new RestorationScope(() =>
             {
-                var entry = new FileInfo(path);
-                var original = entry.GetAccessControl();
-                var changed = new FileSecurity();
-                changed.SetSecurityDescriptorBinaryForm(original.GetSecurityDescriptorBinaryForm());
-                changed.AddAccessRule(new(sid, rights, AccessControlType.Deny));
-                try { entry.SetAccessControl(changed); action(); }
-                finally { entry.SetAccessControl(original); }
-            }
-            else
-            {
-                var entry = new DirectoryInfo(path);
-                var original = entry.GetAccessControl();
-                var changed = new DirectorySecurity();
-                changed.SetSecurityDescriptorBinaryForm(original.GetSecurityDescriptorBinaryForm());
-                changed.AddAccessRule(new(sid, rights, AccessControlType.Deny));
-                try { entry.SetAccessControl(changed); action(); }
-                finally { entry.SetAccessControl(original); }
-            }
+                try
+                {
+                    FileSystemSecurity restored = file ? new FileSecurity() : new DirectorySecurity();
+                    restored.SetSecurityDescriptorBinaryForm(descriptor, AccessControlSections.Access);
+                    PersistSecurity(path, file, restored);
+                    Assert.Equal(originalDacl, ReadSecurity(path, file).GetSecurityDescriptorSddlForm(AccessControlSections.Access));
+                    _activeDenials--;
+                }
+                catch { _retainRoot = true; throw; }
+            });
+        }
+
+        /// <summary>
+        /// Reads the descriptor of one already checked owned entry.
+        /// </summary>
+        /// <param name="path">
+        /// Existing owned absolute path.
+        /// </param>
+        /// <param name="file">
+        /// True for an ordinary file; false for a directory.
+        /// </param>
+        /// <returns>
+        /// The original descriptor used only by this fixture's temporary denial scope.
+        /// </returns>
+        [SupportedOSPlatform("windows")]
+        private static FileSystemSecurity ReadSecurity(string path, bool file) =>
+            file ? new FileInfo(path).GetAccessControl() : new DirectoryInfo(path).GetAccessControl();
+
+        /// <summary>
+        /// Persists a descriptor whose access section has explicitly been marked modified.
+        /// </summary>
+        /// <param name="path">
+        /// Existing owned absolute path.
+        /// </param>
+        /// <param name="file">
+        /// True for an ordinary file; false for a directory.
+        /// </param>
+        /// <param name="security">
+        /// Descriptor of the matching file or directory type.
+        /// </param>
+        [SupportedOSPlatform("windows")]
+        private static void PersistSecurity(string path, bool file, FileSystemSecurity security)
+        {
+            if (file) new FileInfo(path).SetAccessControl((FileSecurity)security);
+            else new DirectoryInfo(path).SetAccessControl((DirectorySecurity)security);
         }
 
         /// <summary>
@@ -597,12 +759,35 @@ public sealed class StorageEvidenceNamespaceProbeTests
             var resolved = Path.GetFullPath(Root);
             if (!resolved.StartsWith(_parent + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
                 throw new InvalidDataException("Fixture cleanup escaped its declared parent.");
+            if (_retainRoot || _activeDenials != 0)
+                throw new InvalidOperationException("Fixture ACL restoration is unresolved; root retained: " + resolved);
             foreach (var junction in _junctions)
             {
                 RequireOwned(junction);
                 if (Directory.Exists(junction)) Directory.Delete(junction, recursive: false);
             }
             Directory.Delete(resolved, recursive: true);
+        }
+
+        /// <summary>
+        /// Invokes one owned restoration at most once, including when restoration fails.
+        /// </summary>
+        private sealed class RestorationScope : IDisposable
+        {
+            private Action? _restore;
+
+            /// <summary>
+            /// Captures the original-descriptor restoration operation.
+            /// </summary>
+            /// <param name="restore">
+            /// Exact restoration for one newly created owned entry.
+            /// </param>
+            internal RestorationScope(Action restore) => _restore = restore;
+
+            /// <summary>
+            /// Persists and verifies the original descriptor without retrying a failed restoration.
+            /// </summary>
+            public void Dispose() => Interlocked.Exchange(ref _restore, null)?.Invoke();
         }
     }
 }

@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+
 namespace BookOfEternityClient.Core;
 
 /// <summary>
@@ -67,16 +69,16 @@ internal static partial class PhysicalFileAuthority
     /// Classifies a storage-evidence entry through a fresh physical traversal.
     /// </summary>
     /// <param name="rootPath">
-    /// Existing physical root; the target must be a strict descendant.
+    /// Root path resolved to an absolute physical anchor; it may be missing, and the target must be a strict descendant.
     /// </param>
     /// <param name="expectedPath">
-    /// Absolute entry to classify without following its final component.
+    /// Target path resolved to an absolute entry whose final component is not followed.
     /// </param>
     /// <param name="authorityName">
     /// Description included in existing authority refusals.
     /// </param>
     /// <param name="hooks">
-    /// Optional per-invocation observations and controlled test boundaries; null preserves ordinary operation.
+    /// Optional per-invocation observations and controlled test boundaries; <see langword="null"/> preserves ordinary operation.
     /// </param>
     /// <returns>
     /// The observed final entry kind, or Missing after a missing validated ancestor.
@@ -87,22 +89,26 @@ internal static partial class PhysicalFileAuthority
         string expectedPath,
         string authorityName,
         PhysicalNamespaceProbeHooks? hooks = null) =>
-        ProbeNamespaceEntryFromRootCore(rootPath, expectedPath, authorityName, hooks);
+        ProbeNamespaceEntryFromRootCore(rootPath, expectedPath, authorityName, hooks, combineDirectoryOpens: true);
 
     /// <summary>
     /// Performs the original per-call root and ancestor traversal without retaining results across calls.
     /// </summary>
     /// <param name="rootPath">
-    /// Existing physical root; the target must be a strict descendant.
+    /// Root path resolved to an absolute physical anchor; it may be missing, and the target must be a strict descendant.
     /// </param>
     /// <param name="expectedPath">
-    /// Absolute entry to classify without following its final component.
+    /// Target path resolved to an absolute entry whose final component is not followed.
     /// </param>
     /// <param name="authorityName">
     /// Description included in existing authority refusals.
     /// </param>
     /// <param name="hooks">
-    /// Optional per-invocation observations and controlled test boundaries; null preserves ordinary operation.
+    /// Optional per-invocation observations and controlled test boundaries; <see langword="null"/> preserves ordinary operation.
+    /// </param>
+    /// <param name="combineDirectoryOpens">
+    /// True enables the Windows storage-specific successful-directory combination; false retains original traversal.
+    /// Non-Windows traversal always uses the original sequence.
     /// </param>
     /// <returns>
     /// The observed final entry kind, or Missing after a missing validated ancestor.
@@ -112,7 +118,8 @@ internal static partial class PhysicalFileAuthority
         string rootPath,
         string expectedPath,
         string authorityName,
-        PhysicalNamespaceProbeHooks? hooks)
+        PhysicalNamespaceProbeHooks? hooks,
+        bool combineDirectoryOpens)
     {
         var root = Path.GetFullPath(rootPath).TrimEnd(
             Path.DirectorySeparatorChar,
@@ -149,52 +156,69 @@ internal static partial class PhysicalFileAuthority
                        rootParentPath,
                        authorityName + " root parent", hooks: hooks))
             {
-                var rootKind = ProbeNamespaceEntry(
-                    rootParent,
-                    root,
-                    authorityName + " root", hooks);
-                if (rootKind == NamespaceEntryKind.Missing)
-                    return NamespaceEntryKind.Missing;
-                if (rootKind != NamespaceEntryKind.Directory)
+                if (combineDirectoryOpens && OperatingSystem.IsWindows())
                 {
-                    throw new InvalidDataException(
-                        $"{authorityName} root is not a physical directory.");
+                    current = OpenStorageProbeDirectory(rootParent, root, authorityName, rootEntry: true, hooks);
+                    if (current == null) return NamespaceEntryKind.Missing;
                 }
-
-                try
+                else
                 {
-                    current = OpenStableDirectory(root, authorityName, hooks: hooks);
-                }
-                catch (DirectoryNotFoundException)
-                {
-                    rootKind = ProbeNamespaceEntry(
+                    var rootKind = ProbeNamespaceEntry(
                         rootParent,
                         root,
                         authorityName + " root", hooks);
                     if (rootKind == NamespaceEntryKind.Missing)
                         return NamespaceEntryKind.Missing;
-                    throw;
+                    if (rootKind != NamespaceEntryKind.Directory)
+                    {
+                        throw new InvalidDataException(
+                            $"{authorityName} root is not a physical directory.");
+                    }
+
+                    try
+                    {
+                        current = OpenStableDirectory(root, authorityName, hooks: hooks);
+                    }
+                    catch (DirectoryNotFoundException)
+                    {
+                        rootKind = ProbeNamespaceEntry(
+                            rootParent,
+                            root,
+                            authorityName + " root", hooks);
+                        if (rootKind == NamespaceEntryKind.Missing)
+                            return NamespaceEntryKind.Missing;
+                        throw;
+                    }
                 }
             }
 
             for (var index = 0; index < segments.Length - 1; index++)
             {
                 var childPath = Path.Combine(current.FullPath, segments[index]);
-                var childKind = ProbeNamespaceEntry(
-                    current,
-                    childPath,
-                    authorityName + " parent", hooks: hooks);
-                if (childKind == NamespaceEntryKind.Missing)
-                    return NamespaceEntryKind.Missing;
-                if (childKind != NamespaceEntryKind.Directory)
+                StableDirectory? child;
+                if (combineDirectoryOpens && OperatingSystem.IsWindows())
                 {
-                    throw new InvalidDataException(
-                        $"{authorityName} parent is not a physical directory.");
+                    child = OpenStorageProbeDirectory(current, childPath, authorityName, rootEntry: false, hooks);
+                    if (child == null) return NamespaceEntryKind.Missing;
                 }
+                else
+                {
+                    var childKind = ProbeNamespaceEntry(
+                        current,
+                        childPath,
+                        authorityName + " parent", hooks: hooks);
+                    if (childKind == NamespaceEntryKind.Missing)
+                        return NamespaceEntryKind.Missing;
+                    if (childKind != NamespaceEntryKind.Directory)
+                    {
+                        throw new InvalidDataException(
+                            $"{authorityName} parent is not a physical directory.");
+                    }
 
-                var child = OpenStableDirectory(
-                    childPath,
-                    authorityName + " parent", hooks: hooks);
+                    child = OpenStableDirectory(
+                        childPath,
+                        authorityName + " parent", hooks: hooks);
+                }
                 current.Dispose();
                 current = child;
             }
@@ -208,6 +232,114 @@ internal static partial class PhysicalFileAuthority
         finally
         {
             current?.Dispose();
+        }
+    }
+
+    /// <summary>
+    /// Opens and validates a successful Windows traversal directory on one fresh non-following handle.
+    /// </summary>
+    /// <param name="parent">
+    /// Retained direct parent, kept alive until the child has passed validation.
+    /// </param>
+    /// <param name="expectedPath">
+    /// Absolute child directory path to classify and retain.
+    /// </param>
+    /// <param name="authorityName">
+    /// Original traversal description used for matching refusal messages.
+    /// </param>
+    /// <param name="rootEntry">
+    /// True for the root component; false for an intermediate parent component.
+    /// </param>
+    /// <param name="hooks">
+    /// Per-invocation observations and controlled validation boundaries, or <see langword="null"/>.
+    /// </param>
+    /// <returns>
+    /// Owned stable directory, or <see langword="null"/> after a native missing-entry result.
+    /// Nonmissing open errors use the original classification and opening sequence.
+    /// </returns>
+    private static StableDirectory? OpenStorageProbeDirectory(
+        StableDirectory parent, string expectedPath, string authorityName, bool rootEntry,
+        PhysicalNamespaceProbeHooks? hooks)
+    {
+        var entryName = authorityName + (rootEntry ? " root" : " parent");
+        EnsureDirectChild(parent, expectedPath, entryName);
+        var normalizedPath = Path.GetFullPath(expectedPath);
+        var access = FileReadAttributes | FileListDirectory | SynchronizeAccess;
+        var share = FileShareRead | FileShareWrite;
+        var flags = FileFlagOpenReparsePoint | FileFlagBackupSemantics;
+        ObserveNamespaceNativeOpen(hooks, normalizedPath, access, share, flags,
+            PhysicalNamespaceOpenKind.CombinedDirectory);
+        var handle = CreateFile(ToWindowsExtendedPath(normalizedPath), access, share, IntPtr.Zero,
+            OpenExisting, flags, IntPtr.Zero);
+        if (handle.IsInvalid)
+        {
+            var error = Marshal.GetLastWin32Error();
+            handle.Dispose();
+            if (error is ErrorFileNotFound or ErrorPathNotFound) return null;
+            // Listing access is also file-data access. Preserve the original
+            // metadata-first refusal when combined access fails on a bad parent.
+            return OpenStorageProbeDirectoryWithOriginalSequence(parent, normalizedPath, authorityName, rootEntry, hooks);
+        }
+
+        try
+        {
+            hooks?.BeforeDirectoryHandleValidation?.Invoke(normalizedPath);
+            EnsureHandleMatchesExpectedPath(handle, normalizedPath, entryName, FileNameOpened);
+            var attributeTag = GetAttributeTag(handle, entryName);
+            if ((attributeTag.FileAttributes & FileAttributes.ReparsePoint) != 0 ||
+                (attributeTag.FileAttributes & FileAttributes.Directory) == 0)
+                throw new InvalidDataException(entryName + " is not a physical directory.");
+            // Opened-name and normalized-name checks have distinct contracts;
+            // both remain on this same newly opened authority.
+            EnsureHandleMatchesExpectedPath(handle, normalizedPath, rootEntry ? authorityName : entryName);
+            return new StableDirectory(normalizedPath, handle);
+        }
+        catch
+        {
+            handle.Dispose();
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Retains the original metadata-first directory sequence after a combined native open fails.
+    /// </summary>
+    /// <param name="parent">
+    /// Retained direct parent, kept alive until the child has passed validation.
+    /// </param>
+    /// <param name="expectedPath">
+    /// Absolute child directory path to classify and retain.
+    /// </param>
+    /// <param name="authorityName">
+    /// Original traversal description used for matching refusal messages.
+    /// </param>
+    /// <param name="rootEntry">
+    /// True for the root component; false for an intermediate parent component.
+    /// </param>
+    /// <param name="hooks">
+    /// Per-invocation observations and controlled validation boundaries, or <see langword="null"/>.
+    /// </param>
+    /// <returns>
+    /// Owned original directory authority, or <see langword="null"/> after the original missing-entry observation.
+    /// </returns>
+    private static StableDirectory? OpenStorageProbeDirectoryWithOriginalSequence(
+        StableDirectory parent, string expectedPath, string authorityName, bool rootEntry,
+        PhysicalNamespaceProbeHooks? hooks)
+    {
+        var entryName = authorityName + (rootEntry ? " root" : " parent");
+        var kind = ProbeNamespaceEntry(parent, expectedPath, entryName, hooks);
+        if (kind == NamespaceEntryKind.Missing) return null;
+        if (kind != NamespaceEntryKind.Directory)
+            throw new InvalidDataException(entryName + " is not a physical directory.");
+        try
+        {
+            return OpenStableDirectory(expectedPath, rootEntry ? authorityName : entryName, hooks: hooks);
+        }
+        catch (DirectoryNotFoundException) when (rootEntry)
+        {
+            kind = ProbeNamespaceEntry(parent, expectedPath, entryName, hooks);
+            if (kind == NamespaceEntryKind.Missing) return null;
+            throw;
         }
     }
 
