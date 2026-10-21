@@ -15,10 +15,12 @@ internal static class JointLateTerminalFixture
     /// </summary>
     /// <param name="ownedRoot">
     /// The ordinary caller-owned directory containing a nonexistent <c>copy</c> child.
+    /// Missing owned-directory ancestors are created before strict DATA import.
     /// The caller retains responsibility for this directory and its cleanup.
     /// </param>
     internal static void MaterializeObservedCleanupData(string ownedRoot)
     {
+        Directory.CreateDirectory(ownedRoot);
         JointCleanupDataTemplate.Materialize(JointCleanupValidatorTestData.ArchivePath,
             JointCleanupValidatorTestData.ArchiveSha256, Path.Combine(ownedRoot, "copy"));
     }
