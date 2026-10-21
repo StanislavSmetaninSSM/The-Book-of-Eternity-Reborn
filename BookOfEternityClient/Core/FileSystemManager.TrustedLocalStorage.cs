@@ -43,8 +43,20 @@ public partial class FileSystemManager
         ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root)
     ];
 
+    /// <summary>
+    /// Probes the existing storage root without following namespace links and checks for entries.
+    /// </summary>
+    /// <param name="root">
+    /// Absolute storage root passed to the existing authority probe.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> for a nonempty ordinary directory;
+    /// otherwise, <see langword="false"/> for a missing or empty directory.
+    /// Invalid namespace entries retain their existing refusal.
+    /// </returns>
     private bool HasStorageEvidence(string root)
     {
+        using var t351Evidence = MeasureOperation("StorageEvidence.ProbeAndEnumerate");
         var kind = PhysicalFileAuthority.ProbeNamespaceEntryFromRoot(_basePath, root, "Storage evidence root");
         if (kind == PhysicalFileAuthority.NamespaceEntryKind.Missing) return false;
         if (kind != PhysicalFileAuthority.NamespaceEntryKind.Directory)

@@ -2,6 +2,8 @@
 
 Spec15r22; T351 SOURCE/PREP → T352 one changed actual two-case measurement. T350 accepted at4ec464c8f, compiled eb8a903ca; full all-event reconciliation and416exact recovery in T350-final-review.json. Keep active feature/constitution/isolated branch, Superpowers systematic debugging/TDD/planning/execution/independent review/verification and actual Spec Kit phases. User waives approval waiting; engineering checks remain.
 
+T351 causal RED d9247f4e7:6/6completed expected Assert.NotEmpty failure, presence/refusal/DATA assertions succeeded before missing-events oracle;77.66sXML0errors,33rawfiles ZIP289AFBFC0D9939BD22C41073F3120D2953A4595B5E024F4F92872530754EB824. GREEN adds named timers/XML only; exact whole-file logical equivalence after stripping additive scopes/XML and restoring identical arrow expression, all shared helpers/consumer/diagnostic+12physical test sources unchanged. Fresh final verification pending; no actual components.
+
 T351 RED WIP:6direct physical DATA cases and separate6+12categories authored; no production code changes or actual components. New assertions require currently absent timers, so expected6causal assertionFAIL after clean saved source build/plan.
 
 1. Persist T350 acceptance, write/present r22, actual setup-plan/setup-tasks/prerequisites and EXISTS-1..4 consistency. Source reads show FileExists probes OrdinaryFileExistsCore and pending-publication storage before/following reads; T350 residuals do not yet attribute their cost.

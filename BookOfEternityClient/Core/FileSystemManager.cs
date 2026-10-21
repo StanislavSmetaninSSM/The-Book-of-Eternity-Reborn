@@ -1920,8 +1920,19 @@ public partial class FileSystemManager
     private static bool IsTransientFileAccessException(Exception ex) =>
         ex is IOException or UnauthorizedAccessException;
 
+    /// <summary>
+    /// Observes ordinary canonical file presence after the existing publication recovery and follow-up probes.
+    /// </summary>
+    /// <param name="relativePath">
+    /// Session-relative file path; <see langword="null"/> is rejected during path resolution.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when an ordinary file is observed; otherwise, <see langword="false"/> for absence.
+    /// Invalid namespace entries retain their existing refusal behavior.
+    /// </returns>
     public bool FileExists(string relativePath)
     {
+        using var t351Exists = MeasureOperation("CanonicalExists.FileExists");
         RecoverPendingFilePublicationsBeforeCanonicalRead();
         var exists = OrdinaryFileExistsCore(relativePath);
         InvokeAfterCanonicalReadAttempt(relativePath);
@@ -4543,8 +4554,17 @@ public partial class FileSystemManager
             _basePath,
             PhysicalPublicationTransactionsRootPath);
 
-    private bool HasPendingFilePublications() =>
-        HasStorageEvidence(LocalPublicationRoot) || HasStorageEvidence(PhysicalPublicationTransactionsRootPath);
+    /// <summary>
+    /// Checks the existing local and physical publication storage for recovery evidence.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true"/> when either root contains entries; otherwise, <see langword="false"/> when both are missing or empty.
+    /// </returns>
+    private bool HasPendingFilePublications()
+    {
+        using var t351Pending = MeasureOperation("ReadPublication.HasPending");
+        return HasStorageEvidence(LocalPublicationRoot) || HasStorageEvidence(PhysicalPublicationTransactionsRootPath);
+    }
 
     private static InProcessMutationState AcquireInProcessMutationState(
         string fullPath)
@@ -4643,10 +4663,22 @@ public partial class FileSystemManager
         }
     }
 
+    /// <summary>
+    /// Uses the existing quiescence lease to settle publication evidence before an asynchronous canonical read.
+    /// </summary>
+    /// <param name="cancellationToken">
+    /// Cancellation forwarded to lease acquisition when recovery is needed.
+    /// An ambient canonical lease or absent evidence does not require acquisition.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> after the quiescence lease is acquired and disposed;
+    /// otherwise, <see langword="false"/> when an ambient owner or absent evidence makes recovery unnecessary.
+    /// </returns>
     private async Task<bool>
         RecoverPendingFilePublicationsBeforeCanonicalReadAsync(
             CancellationToken cancellationToken)
     {
+        using var t351Recovery = MeasureOperation("ReadPublication.RecoverBeforeReadAsync");
         if (HasAmbientCanonicalLease() ||
             !HasPendingFilePublications())
             return false;
@@ -4657,8 +4689,16 @@ public partial class FileSystemManager
         return true;
     }
 
+    /// <summary>
+    /// Uses the existing quiescence lease to settle publication evidence before a synchronous canonical read.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true"/> after the quiescence lease is acquired and disposed;
+    /// otherwise, <see langword="false"/> when an ambient owner or absent evidence makes recovery unnecessary.
+    /// </returns>
     private bool RecoverPendingFilePublicationsBeforeCanonicalRead()
     {
+        using var t351Recovery = MeasureOperation("ReadPublication.RecoverBeforeReadSync");
         if (HasAmbientCanonicalLease() ||
             !HasPendingFilePublications())
             return false;

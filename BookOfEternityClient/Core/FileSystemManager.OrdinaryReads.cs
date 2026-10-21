@@ -49,11 +49,29 @@ public partial class FileSystemManager
         CancellationToken cancellationToken, CanonicalWriteLease? lease = null) =>
         (await ReadOrdinaryFileSnapshotCoreAsync(relativePath, cancellationToken, lease))?.Content;
 
+    /// <summary>
+    /// Classifies ordinary file presence through the existing path and local-scope checks.
+    /// </summary>
+    /// <param name="relativePath">
+    /// Session-relative file path passed unchanged to the canonical resolver and safety check.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> for an existing regular file; otherwise, <see langword="false"/> for absence.
+    /// Invalid file authority retains its existing exception.
+    /// </returns>
     private bool OrdinaryFileExistsCore(string relativePath)
     {
+        using var t351Total = MeasureOperation("OrdinaryExists.Total");
+        using var t351Resolve = MeasureOperation("OrdinaryExists.ResolvePath");
         var expectedPath = ResolvePath(relativePath);
+        t351Resolve?.Dispose();
+        using var t351Safety = MeasureOperation("OrdinaryExists.CanonicalSafety");
         EnsureCanonicalPathStillSafe(relativePath, expectedPath);
+        t351Safety?.Dispose();
+        using var t351Scope = MeasureOperation("OrdinaryExists.PrepareScope");
         var scope = new TrustedLocalFileScope([GameSessionPath]);
+        t351Scope?.Dispose();
+        using var t351Presence = MeasureOperation("OrdinaryExists.ValidateFileAndPresence");
         // ValidateFile is the non-following type/permission check. File.Exists
         // supplies presence only after invalid/unreadable entries have failed.
         return File.Exists(scope.ValidateFile(expectedPath));
