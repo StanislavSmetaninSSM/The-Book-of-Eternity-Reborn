@@ -1,3 +1,14 @@
+# CRASH5 — spec15 revision29 / plan13 revision29: typed fixture-backed original scenarios
+
+- [ ] T363 [US1/US2/US3] SOURCE/PREP: actualSpecKitphases/consistency, coherent explicitclosedfive-cutfixtureusage with legacycut0schema/guard/defaultpreservation; typedgenerator/ordinarycrash path withoutprivate/internalreflection, realservice/hook/input carriers/directinternalplayerturn and readonlyexisting-slot observations withoutauthority. MeaningfulminimalRED→GREEN/codec/mode/physicaldrift/culture/wiring/observations/affectedcontrols, selectedXML0introducedwarnings/catalog/exactfiveone-caseplans0executed/current4DLL+4copies/fullraw/source/native/Linuxequivalence. Separatecomplexindependentreview/cleanremote recovery. No genuinegenerator orcrashworkloadyet.
+- [ ] T364 [US2/US3] After acceptedfinalT363source/PREP, one genuine current source42 generation with two independentcopies/quiescent original/sourceaudio+rootclosing; immutable newartifact/manifest/broadinputclosure/actualDLL+producingversion verification, preservehistorical778artifactwithoutrebind. Separateindependentartifact/bindingacceptance andcleanrecovery before T365. No crashyet.
+- [ ] T365 [US2/US3] After accepted/recoveredT364, atmostone explicitfixture-backedWindowscut0, same820shared/600child/15minbounds/newguard andALLoriginalprocess/mechanical/turn43/interface/history/cleanup/inertrepeatassertions. Fulluncappedraw/DLL/input/identity/nonce/PID/EOFjoin/rootretention; independentactualresultreview/recovery. No unchangedretry orLinuxqualification. Failedgate doesnotadmit T366.
+- [ ] T366 [US2/US3] OnlyafteractualacceptedT365PASS, oneeach explicitfixture-backedcut1..4sequentially on sameimmutablecurrentartifact/DLL, percaseexistingbounds/fulloriginalassertions(cut2realenGB/enUScontrast,cut3-4hold42/errors). Fullraw/ownership/cleanup/independentactualreview andexactscenarioidentityaccounting; no unchangedretry/limitincrease/sourcechanges/relabeloldoriginalidentities. Stopdependentworkonunsettledownership;Linuxpreparedonly.
+
+T362complete localfullowner acceptance is binding evidence, not originalfive/Linux recovery. Old failures/protectedroots remain unchanged, diagnosticquotas forbidden. User autonomous/review-wait waiver remains active.
+
+---
+
 # CRASH5 — spec15 revision28 / plan13 revision28: changed full-owner probe
 
 - [x] T361 [US1/US2/US3] SOURCE/PREP only: actual Spec Kit phases/consistency, existing exact full-owner1case NoBuild PlanOnly0executed, unchanged owner/profile source and accepted current4DLL+4copies/T333input bindings. Fresh T362 tools with one-attempt/2minuteTOTAL/runnerSHA/independentlyacceptedT359+T360/release/currentgeneration guards; full raw/open+closed ancestry/unknownresponse/closing/rootretention interpretation, no quotas. Separate complex PREP review and saved/pushed/clean recovery before T362. No build/replay of unchanged passing controls or actual owner yet.
