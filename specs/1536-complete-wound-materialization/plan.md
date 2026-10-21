@@ -1,5 +1,8 @@
 # CRASH5 — plan13 revision18: shared construction and real owner on fixture DATA
 
+T344 SOURCE/PREP accepted without findings by separate actual Astra/high at32013bbf; T344-source-review.json records all56archive entries,4DLL+copies,1newPASS+22unchanged retained, strict-importer equivalence and376exact remote recovery. Record/push/readback/recover this release, then execute exactlyone corrected T345 Windows profile with the archived guarded runner (SHA9D16798ACE5F510022B2B180C2F01E607D5C11E019E438034E4D6B994EC0DBBE), explicit2minute totalcommand timeout and new attempt identity. Preserve/analyze/review honest full outcome; no broader qualification.
+
+
 T343 actual outcome (d8a82b051 release, compiledc2f54939d): one completed FAIL, command wall21.3827499s, category7.3854661s and body0.0563501s, no timeout. Strict DATA materialization refused the missing `TestResults/joint-late-owned` ancestor before FileSystemManager/services/owner construction;0timing boundaries, complete closed empty JSONL, owned root absent, input/DLL unchanged. Full19-file archive/outcome retained. Root cause is the caller omitting `Directory.CreateDirectory(owned)`, present in the working component profile; no historical recovery measurement occurred. Separate Astra/high outcome review accepted; missing-ancestor setup defect escaped prior review and is recorded honestly in T343-final-review.json.
 
 T344 causal RED0cde2270c: new direct same-layout regression failed as expected in0.2059157s at a unique missing ancestor; XMLbuild0errors78.049s, command21.860s,1completedFAIL/no timeout,20indexed fullraw files/SHA4AE00FB695618E6EDF1C5E2A4BB792CC38B7B2859D4CAFA98825FD6C34FD9B7E. GREEN creates only the caller-owned ordinary directory before unchanged strict import.
