@@ -1,3 +1,15 @@
+# CRASH5 — spec15 revision19: trace completed-continuation proof fanout
+
+Issue1536; read-only investigation T346 from the actual T345 timeout. User explicitly authorizes autonomous continuation and meaningful test seams/fixtures, waives approval waiting, and forbids diagnostic quotas. Apply brainstorming as a source/trace spike through Spec Kit; the deliverable is a concrete source-backed correction proposal, not production implementation or another profile run.
+
+- FANOUT-1 / US1: account for the79completed private-proof footprint stages in the durable T345 trace, especially the48.954s completed-continuation subtree within50.071s accepted validation. Map real callers, repeated phase/binding/validation scopes and fresh-read boundaries to source. Retain all intervals/counts and distinguish inclusive wall/observer overhead from CPU/native I/O and incomplete work.
+- FANOUT-2 / US2: identify the smallest shared API/data-fixture seam or production simplification that removes unrelated setup/redundant computation while preserving private proof issuance, current generation, T325 pending-wave ABA/transient mutations, arbitrary direct filesystem mutation refusal, original/rollback selectors, publication/afterimages and real ownership. Compare narrower isolated component probe against production optimization; repetition or a held lease alone never establishes removable checks. State unresolved facts explicitly.
+- FANOUT-3 / US3: deliver source locations, exact proposed contracts, positive/negative/cross-domain regression selection and a bounded next implementation/probe proposal; independently review, save/push/readback/recover. No C#/native/runner changes, materialization, GameEngine construction, builds/tests/profiles, source42/Stage43/generator/rebind/original/five/Linux execution under T346. Do not delete retained T345 or protected historical roots. Full diagnostics remain uncapped.
+
+Acceptance: complete durable-prefix fanout accounting and source-backed recommendation with freshness/ownership constraints and verification plan, independently reviewed and recoverable. The original recovery hang remains unresolved; source investigation does not itself authorize production changes. Before implementing a selected correction, update canonical spec/plan/tasks and recheck consistency; user's explicit review-wait waiver remains active.
+
+---
+
 # CRASH5 — spec15 revision18: fixture-based real late-terminal completion
 
 Issue1536; implement the accepted T340 source recommendation under the user's 2026-10-21 explicit autonomous-work/review-wait waiver and T341 testing rules. Scope is testability and measurement, not a claimed fix for historical recovery. Reuse immutable cleanup-entry DATA D2ACF9B8… and actual fresh production validators/owners; no source42 or Stage43 setup.

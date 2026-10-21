@@ -1,3 +1,15 @@
+# CRASH5 — plan13 revision19: source/trace fanout investigation
+
+Spec15r19; T346 source-only spike. Existing isolated issue1536 checkout/branch and constitution apply. Use systematic debugging, writing-plans/executing-plans for the investigation and independent complex review; no behavior change/TDD runtime yet. Reuse T345 complete raw/lossless analysis and T325 freshness evidence. No duplicate Superpowers plan.
+
+1. Run actual Spec Kit setup-plan/setup-tasks/prerequisites; bridge-equivalent FANOUT-1..3 consistency before investigation execution. Record explicit scope/unknowns and waived approval wait; preserve current spec/plan/tasks and previous evidence.
+2. Parent accounts for proof stages/continuation subtrees from retained intervals. One bounded read-only source consultation may examine the distinct difficult freshness/coalescing contract; no shared edits or duplicate full investigation. Trace actual49s consumer and its validation calls, compare safe minimal component fixture/API versus production reduction, reject unsupported cache/fence removal.
+3. Write T346-findings with exact code locations, measured fanout and unknowns, preserved invariants, proposed shared contract plus required adversarial T325/direct-FS negatives and category-only verification. Save/push/readback/recover, obtain independent coherent review, reconcile findings and checkpoint. Only then select/update the next implementation scope. No runtime or production change in this spike.
+
+Dependency: T345 raw/analysis saved (outcome review pending) → T346 source/trace findings → separately tracked selected correction. Diagnostic sizes/counts/retention remain unlimited. T345 owned DATA stays retained; protocol closing is unknown.
+
+---
+
 # CRASH5 — plan13 revision18: shared construction and real owner on fixture DATA
 
 T345 actual: total2minute timeout124/120.294s,1planned/0completed/no test verdict; complete97,860,429byte durable JSONLprefix,525834valid events/262912closed+10unfinished scopes, continuous/no parse errors. Serviceconstruction29.407ms; accepted validation50.071s (completed-continuation48.954s),79footprint stages and39844managed reads. Cleanup before-image verification reached; no publication/completion/closing/repeat verdict. All220gamefiles/60dirs/gen equal in independent readonly observation; ownedroot retained. Full raw/lossless analysis/maps/findings preserved, independent outcome review pending; no unchanged retry, limit increase or historical fix claim.
