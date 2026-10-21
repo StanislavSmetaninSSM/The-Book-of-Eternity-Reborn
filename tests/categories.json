@@ -2,6 +2,30 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-late-terminal-owner-refusal",
+  "responsibility": "Exact actual late-owner refusal for a foreign runtime session, requiring the intended reason and unchanged original game images/directories.",
+  "excludes": "No repeat of9unchanged adoption/generation/diagnostic cases or real full-cleanup profile.",
+  "changeHints": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+    "BookOfEternityClient.IntegrationTests/JointLateTerminalControlsTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointLateTerminalControlsTests.ActualLateOwnerHoldsForeignRuntimeWithoutCleanup"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-late-terminal-controls",
   "responsibility": "T342 direct minimal-fixture runtime adoption, observed-session/generation refusals, actual foreign-runtime late-owner no-cleanup and uncapped engine diagnostic failure controls.",
   "excludes": "No world/turn preparation or complete cleanup profile, generator, original recovery or Linux qualification.",

@@ -122,10 +122,11 @@ public sealed class JointLateTerminalProfileTests
             report["ConstructionPreservedGameAndGeneration"] = true;
             WriteReport(reportPath, report);
             outerAttempted = true;
-            try
+            await JointCleanupValidatorProfileTests.MeasureAsync(files, raw, capture, "LateProfile.OuterExpectedSession", async () =>
             {
-                await JointCleanupValidatorProfileTests.MeasureAsync(files, raw, capture, "LateProfile.OuterExpectedSession", () =>
-                    SessionOperationContext.RunParticipatingExpectedSessionAsync(files, generation, async () =>
+                try
+                {
+                    var completed = await SessionOperationContext.RunParticipatingExpectedSessionAsync(files, generation, async () =>
                     {
                         await JointLateTerminalFixture.RefreshAndAdoptAsync(runtime, files, generation);
                         Assert.Equal(manifest.SessionId, runtime.GameLoop.SessionId);
@@ -164,10 +165,12 @@ public sealed class JointLateTerminalProfileTests
                         remoteClose = close;
                         remoteCloseObserved = observed;
                         wasRemote = remote;
-                    }));
-                outerCompleted = true;
-            }
-            finally { outerAwaitSettled = true; }
+                    });
+                    outerCompleted = true;
+                    return completed;
+                }
+                finally { outerAwaitSettled = true; }
+            });
             verified = true;
         }
         catch (Exception error) { RecordFailure(error, "setup-or-real-owner"); }

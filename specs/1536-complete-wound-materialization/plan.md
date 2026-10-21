@@ -15,6 +15,8 @@ Interfaces: controls/profile consume the shared factory bundle and production ad
 
 T342 GREEN WIP: direct controls first produced actual expected API-compilation RED9errors/76.80s/0tests at43382+new test source (T342-api-red/raw). Shared real factory is extracted with exact original73construction lines, parent added unchanged adoption/late-owner seams, independent response snapshot, real preparation adapter and separately opt-in full-owner profile. Full external engine logger also preserves messages/exceptions and defers storage failures, covered by2cheap controls; no historical24message/2000character logger is reused. Source-equivalence confirms adoption position/body, late owner body and factory expressions; fresh XML/catalog/PlanOnly/control runtime, full binding and independent SOURCE/PREP acceptance pending. No owner profile, generator, original or Linux runtime executed.
 
+T342 initial PREP b54a2cb45: XML2builds0errors, catalog/10control+1profilePlanOnly,10/10PASS (individual cases0.006–4.982s; category command28.019s, not game runtime),4DLL+copies and357exact recovery.61indexed rawfiles retained inT342-initial-prep/raw. Self-review strengthens foreign refusal to require its exact logged cause (another held boundary must not satisfy it) and moves outer-task completion flags inside cost measurement so diagnostic-write failure cannot relabel a completed owner. No production change; retain9exact unchanged cases, freshly run only1changed refusal after final source build/catalog/PlanOnly/binding. Full owner profile remains unrun and requires independent SOURCE/PREP acceptance.
+
 ---
 
 # CRASH5 — plan13 revision17: bounded source audit before another runtime

@@ -170,7 +170,10 @@ public sealed class JointLateTerminalControlsTests
             generation = files.ReadExistingSessionGeneration(lease)!;
         var before = JointCleanupValidatorTestData.CaptureImages(root);
         var directories = JointCleanupValidatorTestData.CaptureDirectories(root);
-        var runtime = GameEngineTurnLifecycleTests.CreateGameEngineRuntime(files);
+        using var diagnostic = new StringWriter();
+        var capture = new JointCleanupProfileDiagnosticCapture(diagnostic);
+        var runtime = GameEngineTurnLifecycleTests.CreateGameEngineRuntime(files,
+            logger: JointLateTerminalFixture.CreateLogger(diagnostic, capture));
         await SessionOperationContext.RunParticipatingExpectedSessionAsync(files, generation, async () =>
         {
             await JointLateTerminalFixture.RefreshAndAdoptAsync(runtime, files, generation);
@@ -178,6 +181,8 @@ public sealed class JointLateTerminalControlsTests
             Assert.True(await runtime.Engine.ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync());
             return true;
         });
+        Assert.Contains("The runtime session/turn is unrelated to the authenticated joint original.", diagnostic.ToString());
+        Assert.True(capture.Complete);
         Assert.Null(runtime.Engine.CaptureCurrentResponseForTesting());
         Assert.Equal(before.OrderBy(pair => pair.Key), JointCleanupValidatorTestData.CaptureImages(root).OrderBy(pair => pair.Key));
         Assert.Equal(directories, JointCleanupValidatorTestData.CaptureDirectories(root));
