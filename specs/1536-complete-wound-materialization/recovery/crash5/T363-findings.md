@@ -1,4 +1,7 @@
-# T363 typed fixture route — work in progress
+# T363 typed fixture route — SOURCE/PREP independently accepted
+
+Separate gpt-6-astra/high reviewer `/root/review_t363_source_prep` accepted compiled ffa87dcba1e6f1a1c7cb107a9427692e2d806543 and metadata2b6c4237879f02ace2cd7db5b36c06d2b0589900 with no unresolved findings. Independently verified all119rawmembers/all8DLLhashes/205actualPASS/plans/XML/sourcecontracts/futuretools; reviewer independently sampled12 recoveryblobs, parent fullrecord verifies571. See T363-source-review.json. T363 complete; save/recover acceptance before one T364 generator. T364–366 and Linux remain unqualified.
+
 
 Final source/PREP evidence at `ffa87dcba1e6f1a1c7cb107a9427692e2d806543`: 50 new and 155 affected cases all PASS, no skips/timeouts/duplicates. New bodies sum 2.0633893s/max 0.7656804s; both XML builds0errors/0introduced changed-line warnings. Five new facts, legacy5+1 and generator1 discover exactly with0game execution. Full raw index SHA256 75D152D2491252787032FBCF3F6F07996ABE362A0C0E00BD6472FDC3CCA86D2E; four current DLLs and four dependency copies source-bound. Actual logger RED reproduced both old caps; corrected culture control PASS; final logger records every enabled long message and exception without caps. Static inverse projections preserve original player-turn/QTE/codec/native/launcher/freshness contracts. Future generator and crash runner hashes and complete reviewed source/runner/catalog/input closure recorded. Independent complex acceptance remains pending; T363–366 not yet marked complete.
 
