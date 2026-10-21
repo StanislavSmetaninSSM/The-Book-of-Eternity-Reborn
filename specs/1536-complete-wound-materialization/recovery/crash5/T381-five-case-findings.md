@@ -1,6 +1,6 @@
 # T380–T381 — actual five original fixture-backed Windows scenarios
 
-All five distinct scenarios passed once on the same independently accepted current v2 package and compiled source `9c401c7d85c2a3776ff2228bdb5a3c3ee611dbee`. Cut0 has separate accepted actual-result review; the remaining four ran serially after saved/recovered acceptance, with per-case full raw, qualification, settled process ownership and clean saved recovery before the next case. Four-case coherent independent review is pending. No source/build or genuine source42 regeneration occurred between cases.
+All five distinct scenarios passed once on the same independently accepted current v2 package and compiled source `9c401c7d85c2a3776ff2228bdb5a3c3ee611dbee`. Cut0 has separate accepted actual-result review; the remaining four ran serially after saved/recovered acceptance, with per-case full raw, qualification, settled process ownership and clean saved recovery before the next case. Four-case coherent independent Astra/high review accepted metadata24501728ce5d3edde9251d698b26dda69ce9a76f; see T381-final-review.json. The summary raw archive retains the pre-review snapshot; this current status records actual acceptance. No source/build or genuine source42 regeneration occurred between cases.
 
 | Cut | Expected result observed | Command seconds | First current owner, inclusive seconds | Ordinary reads | Timing events |
 | --- | --- | ---: | ---: | ---: | ---: |
