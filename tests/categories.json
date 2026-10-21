@@ -2,6 +2,116 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "portable-canonical-path-metadata-unit-controls",
+  "responsibility": "T359 detached production-guard ordering/root/false-attribute/fallback/error/fresh-call DATA controls, without filesystem authority.",
+  "excludes": "No game/world/turn/source42 preparation, original recovery/full-owner/five/Linux native qualification, diagnostic quota or retained authority.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.cs",
+    "BookOfEternityClient/Core/WindowsPathMetadataGuard.cs",
+    "BookOfEternityClient.Tests/WindowsPathMetadataGuardTests.cs"
+  ],
+  "related": [
+    {
+      "id": "portable-storage-read-construction-boundaries",
+      "when": "Canonical path metadata or fresh read-boundary behavior changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.WindowsPathMetadataGuardTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "portable-canonical-path-metadata-windows-controls",
+  "responsibility": "T359 tiny real Windows metadata adapter/walker/public ResolvePath outcomes and managed API query counts, root/type/link/fresh-call/passive-observer controls.",
+  "excludes": "No game/world/turn/source42 preparation, original recovery/full-owner/five/Linux native qualification, diagnostic quota or retained authority.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.cs",
+    "BookOfEternityClient/Core/WindowsPathMetadataGuard.cs",
+    "BookOfEternityClient.IntegrationTests/WindowsPathMetadataIntegrationTests.cs"
+  ],
+  "related": [
+    {
+      "id": "portable-storage-read-construction-boundaries",
+      "when": "Canonical path metadata or fresh read-boundary behavior changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.WindowsPathMetadataIntegrationTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "portable-canonical-path-metadata-affected-controls",
+  "responsibility": "T359 exact shared-path ordinary bytes/BOM/hardlink/timestamp/lease/cancellation/lock and canonical/runtime mutation/root/lock/generation/staging/worker confinement consumers. Existing six read-construction boundary methods are selected separately without duplicates.",
+  "excludes": "No game/world/turn/source42 preparation, original recovery/full-owner/five/Linux native qualification, diagnostic quota or retained authority.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.cs",
+    "BookOfEternityClient/Core/WindowsPathMetadataGuard.cs"
+  ],
+  "related": [
+    {
+      "id": "portable-storage-read-construction-boundaries",
+      "when": "Canonical path metadata or fresh read-boundary behavior changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.FileSystemManagerTests.CanonicalFileOperations_RejectExistingReparsePointAncestor",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.AtomicWrite_RechecksReparseConfinementAtMutationBoundary",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.RuntimeDirectoryMove_RechecksReparseConfinementAtMutationBoundary",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.AcquireCanonicalWriteLease_RejectsRuntimeRootReparsePoint",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.AcquireCanonicalWriteLease_RejectsRuntimeLockDirectoryReparsePoint",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.SessionGeneration_RejectsRuntimeSiblingReparsePoint",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.LoadTransactionStaging_RejectsRuntimeSiblingReparsePoint",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.WorkerApplyTransaction_RejectsRuntimeSiblingReparsePoint",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable"
+      ]
+    },
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding",
+        "BookOfEternityClient.Tests.PortableOrdinaryReadTests.HardLinkedOrdinaryInputReachesCoordinatedPublicationWithoutChangingOutsideAlias",
+        "BookOfEternityClient.Tests.PortableOrdinaryReadTests.SnapshotTimestampAndBytesBelongToTheOpenedFile",
+        "BookOfEternityClient.Tests.PortableOrdinaryReadTests.LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening",
+        "BookOfEternityClient.Tests.PortableOrdinaryReadTests.CancellationBeforeOrAtOpenDoesNotConsumeBytes",
+        "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.OrdinaryStreamCompletionRejectsLinkedOrWrongTypeName"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-storage-namespace-probe-controls",
   "responsibility": "T354 Windows-only real storage namespace traversal on independent tiny ordinary fixtures: actual native-open counts, original missing/type/link/access/sharing refusals, retained ancestors, failure disposal, fresh observations and actual empty/unresolved read admission. No injected native success.",
   "excludes": "No game/world/turn bootstrap, source42 generation, historical/cold process qualification or Linux execution.",

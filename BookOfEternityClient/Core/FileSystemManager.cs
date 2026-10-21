@@ -10,6 +10,12 @@ namespace BookOfEternityClient.Core;
 internal sealed class FileSystemManagerHooks
 {
     /// <summary>
+    /// Observes actual Windows path-walk managed metadata attempts; <see langword="null"/> disables diagnostics.
+    /// The callback must not mutate storage or authority. Observer exceptions are ignored.
+    /// </summary>
+    internal Action<PathMetadataQuery>? PathMetadataQueryObserver { get; init; }
+
+    /// <summary>
     /// Observes a named operation's begin and elapsed end; a missing observer disables timing.
     /// This diagnostic must not mutate game state or authority; observer exceptions are ignored.
     /// </summary>
@@ -758,11 +764,29 @@ public partial class FileSystemManager
             Path.AltDirectorySeparatorChar);
     }
 
-    private static void EnsureNoExistingReparsePoint(
+    /// <summary>
+    /// Refuses observed root or descendant reparse traversal at the existing path-validation boundary.
+    /// </summary>
+    /// <param name="authorityRoot">
+    /// The normalized authority root, queried as a directory only.
+    /// </param>
+    /// <param name="fullPath">
+    /// The normalized and contained root or descendant candidate.
+    /// </param>
+    /// <param name="authorityName">
+    /// The authority label retained in existing root and descendant refusal messages.
+    /// </param>
+    private void EnsureNoExistingReparsePoint(
         string authorityRoot,
         string fullPath,
         string authorityName)
     {
+        if (OperatingSystem.IsWindows())
+        {
+            WindowsPathMetadataGuard.Ensure(authorityRoot, fullPath, authorityName, _hooks?.PathMetadataQueryObserver);
+            return;
+        }
+
         var current = authorityRoot;
         if (Directory.Exists(current) && IsReparsePoint(current))
             throw new InvalidDataException($"{authorityName} root cannot be a reparse point.");
