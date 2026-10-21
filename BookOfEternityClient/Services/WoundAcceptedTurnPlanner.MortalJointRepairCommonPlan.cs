@@ -323,54 +323,134 @@ internal static partial class WoundAcceptedTurnPlanner
     }
 
     /// <summary>
-    /// Reserved typed entry for the normal resource/progression validation and bound common-input prefix.
-    /// The causal test first observes this unimplemented entry before the existing prefix is shared.
+    /// Retains actual authority issuance so a later preparation exception follows the normal abort path.
+    /// </summary>
+    private sealed class JointRepairCommonInputPreparationState
+    {
+        /// <summary>
+        /// Gets or sets the authority returned by the real common-authority factory, remaining
+        /// <see langword="null"/> until that factory succeeds.
+        /// </summary>
+        internal MortalJointRepairCommonAuthority? Authority { get; set; }
+    }
+
+    /// <summary>
+    /// Runs the normal common-input prefix for a component caller without creating or sealing a candidate.
+    /// Handled preparation exceptions abort an issued authority before returning normal failure issues;
+    /// an abort exception or an exception outside the normal filter propagates to the caller.
     /// </summary>
     /// <param name="files">
-    /// The actual filesystem owning the resource and progression authorities.
+    /// The physical filesystem owning the actual resource and progression authorities.
     /// </param>
     /// <param name="lease">
-    /// The active canonical write lease retained by the caller.
+    /// The active canonical write lease owned and eventually closed by the caller.
     /// </param>
     /// <param name="resourceAuthority">
-    /// The actual resource-publication authority produced by the preceding normal factories.
+    /// The genuine resource-publication authority validated by the unchanged normal prefix.
     /// </param>
     /// <param name="progression">
-    /// The genuine current progression source for this same original.
+    /// The genuine progression source validated by the unchanged normal prefix.
     /// </param>
     /// <returns>
-    /// A faulted task until the shared normal prefix is implemented.
+    /// The actually bound input and common authority on success, or the original preparation issues.
+    /// Ordinary issue returns preserve the normal prefix's absence of an exception-driven abort.
     /// </returns>
-    internal static Task<JointRepairBoundCommonInputResult> PrepareJointRepairBoundCommonInputForComponentAsync(
+    internal static async Task<JointRepairBoundCommonInputResult> PrepareJointRepairBoundCommonInputForComponentAsync(
         FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, object resourceAuthority,
-        GameEngine.MortalJointProgressionSource progression) =>
-        Task.FromException<JointRepairBoundCommonInputResult>(new NotSupportedException("T383 bound common-input prefix is not implemented yet."));
+        GameEngine.MortalJointProgressionSource progression)
+    {
+        var preparation = new JointRepairCommonInputPreparationState();
+        try
+        {
+            return await PrepareJointRepairBoundCommonInputCoreAsync(files, lease, resourceAuthority, progression, preparation);
+        }
+        catch (Exception error) when (error is InvalidDataException or InvalidOperationException or ArgumentException or
+            System.Text.Json.JsonException or IOException or OverflowException)
+        {
+            if (preparation.Authority is { } authority) AcceptedTurnAuthorityRegistry.AbortMortalJointRepairPublication(files, lease,
+                authority.Continuation, authority.Reservation);
+            return new(null, null, JointPreparationFailure("common_plan_invalid", error.Message).Issues);
+        }
+    }
+
+    /// <summary>
+    /// Runs the shared normal validation, retained calculation, authority issuance, composition and input binding.
+    /// </summary>
+    /// <param name="files">
+    /// The physical filesystem owning the actual resource and progression authorities.
+    /// </param>
+    /// <param name="lease">
+    /// The caller-owned active canonical write lease used by every unchanged prefix operation.
+    /// </param>
+    /// <param name="resourceAuthority">
+    /// The actual resource-publication authority to validate before accessing its retained calculation.
+    /// </param>
+    /// <param name="progression">
+    /// The actual progression source to validate before common calculation and authority issuance.
+    /// </param>
+    /// <param name="preparation">
+    /// Private mutable state that retains the issued authority for the caller's normal exception-driven abort.
+    /// </param>
+    /// <returns>
+    /// The bound input and genuine common authority, or the original calculation or composition issues.
+    /// Exceptions propagate to the calling entry's unchanged filter and abort handling.
+    /// </returns>
+    private static async Task<JointRepairBoundCommonInputResult> PrepareJointRepairBoundCommonInputCoreAsync(
+        FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, object resourceAuthority,
+        GameEngine.MortalJointProgressionSource progression, JointRepairCommonInputPreparationState preparation)
+    {
+        await ValidateJointRepairResourcePublicationAsync(files, lease, resourceAuthority);
+        await progression.ValidateCurrentAsync(files, lease);
+        var resources = (JointResourcePublicationAuthority)resourceAuthority;
+        var calculationIssues = await resources.EnsureCommonCalculationAsync(JointCommonCalculationIssuer, files, lease);
+        if (calculationIssues.Count != 0) return new(null, null, calculationIssues);
+        using var innerTiming5 = files.MeasureOperation("JointCommon.CreateAuthority");
+        var authority = resources.GetOrCreateCommonAuthority(JointCommonAuthorityIssuer, progression);
+        preparation.Authority = authority;
+        innerTiming5?.Dispose();
+        using var innerTiming6 = files.MeasureOperation("JointCommon.ComposeInputAsync");
+        var composed = await AcceptedMechanicsWoundCommonInputComposer.ComposeJointRepairAsync(files, lease, authority);
+        innerTiming6?.Dispose();
+        if (!composed.Success || composed.Input is null) return new(null, null, composed.Issues);
+        using var innerTiming7 = files.MeasureOperation("JointCommon.BindInput");
+        authority.BindInput(JointCommonAuthorityIssuer, composed.Input);
+        innerTiming7?.Dispose();
+        return new(composed.Input, authority, composed.Issues);
+    }
 
     // One owner constructs the common input and receives a raw, untakeable cache
     // candidate. Fresh physical/source/capability checks precede sealing that SAME
     // candidate under its unchanged cache fence and current reservation.
+    /// <summary>
+    /// Creates a raw common candidate from the normal bound input, then applies the existing fresh admission
+    /// and resource-bound checks before sealing that same candidate under its current fence and reservation.
+    /// Handled exceptions abort any issued common authority; abort exceptions propagate to the caller.
+    /// </summary>
+    /// <param name="files">
+    /// The physical filesystem owning the actual resource and progression authorities.
+    /// </param>
+    /// <param name="lease">
+    /// The active canonical write lease owned and eventually closed by the caller.
+    /// </param>
+    /// <param name="resourceAuthority">
+    /// The genuine resource-publication authority validated by the shared normal prefix.
+    /// </param>
+    /// <param name="progression">
+    /// The genuine progression source validated by the shared normal prefix.
+    /// </param>
+    /// <returns>
+    /// The normal sealed planning result, an unchanged early issue result, or normal handled-exception issues.
+    /// </returns>
     internal static async Task<AcceptedMechanicsPlanningResult> CreateJointRepairCommonPlanAsync(
         FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, object resourceAuthority,
         GameEngine.MortalJointProgressionSource progression)
     {
-        MortalJointRepairCommonAuthority? authority = null;
+        var preparation = new JointRepairCommonInputPreparationState();
         try
         {
-            await ValidateJointRepairResourcePublicationAsync(files, lease, resourceAuthority);
-            await progression.ValidateCurrentAsync(files, lease);
-            var resources = (JointResourcePublicationAuthority)resourceAuthority;
-            var calculationIssues = await resources.EnsureCommonCalculationAsync(JointCommonCalculationIssuer, files, lease);
-            if (calculationIssues.Count != 0) return new(null, calculationIssues);
-            using var innerTiming5 = files.MeasureOperation("JointCommon.CreateAuthority");
-            authority = resources.GetOrCreateCommonAuthority(JointCommonAuthorityIssuer, progression);
-            innerTiming5?.Dispose();
-            using var innerTiming6 = files.MeasureOperation("JointCommon.ComposeInputAsync");
-            var composed = await AcceptedMechanicsWoundCommonInputComposer.ComposeJointRepairAsync(files, lease, authority);
-            innerTiming6?.Dispose();
+            var composed = await PrepareJointRepairBoundCommonInputCoreAsync(files, lease, resourceAuthority, progression, preparation);
             if (!composed.Success || composed.Input is null) return new(null, composed.Issues);
-            using var innerTiming7 = files.MeasureOperation("JointCommon.BindInput");
-            authority.BindInput(JointCommonAuthorityIssuer, composed.Input);
-            innerTiming7?.Dispose();
+            var authority = composed.Authority!;
             using var innerTiming8 = files.MeasureOperation("JointCommon.CreateRegistryCandidate");
             var raw = AcceptedTurnAuthorityRegistry.CreateJointRepairCommonCandidate(files, lease, composed.Input, authority);
             innerTiming8?.Dispose();
@@ -398,7 +478,7 @@ internal static partial class WoundAcceptedTurnPlanner
         catch (Exception error) when (error is InvalidDataException or InvalidOperationException or ArgumentException or
             System.Text.Json.JsonException or IOException or OverflowException)
         {
-            if (authority is not null) AcceptedTurnAuthorityRegistry.AbortMortalJointRepairPublication(files, lease,
+            if (preparation.Authority is { } authority) AcceptedTurnAuthorityRegistry.AbortMortalJointRepairPublication(files, lease,
                 authority.Continuation, authority.Reservation);
             return new(null, JointPreparationFailure("common_plan_invalid", error.Message).Issues);
         }

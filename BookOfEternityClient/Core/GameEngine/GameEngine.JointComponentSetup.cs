@@ -132,6 +132,54 @@ public partial class GameEngine
     }
 
     /// <summary>
+    /// Contains observations from a real unissued Beginning owner; this data grants no lifecycle or publication authority.
+    /// </summary>
+    /// <param name="Ordinal">
+    /// The stage ordinal allocated to the actual Beginning owner.
+    /// </param>
+    /// <param name="Refusals">
+    /// The operation names observed throwing the exact existing busy-owner refusal.
+    /// </param>
+    /// <param name="NoAuthorityIssued">
+    /// Whether the actual owner's producer, evidence, preparation and custody fields remain unissued.
+    /// </param>
+    /// <param name="Ended">
+    /// Whether that same current owner ended with its allocated stage ordinal unchanged.
+    /// </param>
+    /// <param name="ReadyUnchanged">
+    /// Whether the initially absent ready observation and its ordinal remain unchanged.
+    /// </param>
+    internal sealed record BeginningOwnerComponentRefusalReport(long Ordinal, IReadOnlyList<string> Refusals,
+        bool NoAuthorityIssued, bool Ended, bool ReadyUnchanged);
+
+    /// <summary>
+    /// Reserves the typed closed Beginning-owner probe entry for a causal missing-entry control.
+    /// This prototype issues no owner or authority and deliberately remains unavailable.
+    /// </summary>
+    /// <param name="lease">
+    /// The actual caller-owned lease prepared by the genuine fixture.
+    /// </param>
+    /// <param name="expected">
+    /// The genuine ordinary-original coordinates passed by that fixture.
+    /// </param>
+    /// <param name="bundle">
+    /// The genuinely completed joint wound stages from the normal factories.
+    /// </param>
+    /// <param name="continuation">
+    /// The actual current joint continuation from normal preparation.
+    /// </param>
+    /// <param name="throwAfterProbes">
+    /// Reserved for checking the implemented probe's finally path; defaults to false.
+    /// </param>
+    /// <returns>
+    /// A faulted task reporting the deliberately unimplemented entry.
+    /// </returns>
+    internal Task<BeginningOwnerComponentRefusalReport> ProbeBeginningOwnerRefusalsForComponentAsync(
+        FileSystemManager.CanonicalWriteLease lease, JointComponentOriginal expected,
+        AcceptedMechanicsWoundStageBundle bundle, object continuation, bool throwAfterProbes = false) =>
+        Task.FromException<BeginningOwnerComponentRefusalReport>(new NotSupportedException("T383 Beginning-owner probe is not implemented yet."));
+
+    /// <summary>
     /// Requires ordinary lease ownership and refuses interference with a live original or publication owner.
     /// </summary>
     /// <param name="lease">

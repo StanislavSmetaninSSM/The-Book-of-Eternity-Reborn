@@ -8,6 +8,8 @@ T378–T381 completed and independently accepted at compiled9c401/v2, acceptance
 
 T383 dependency detail: existing real engine/service constructor may host unchanged issuers without game loop, world or full DATA preparation; new typed caller-lease snapshot/mechanical/progression wrappers and shared bound common-input prefix preserve current-byte authentication, live-owner refusal and catch/abort. Data-only fixture seeding excludes reflected export helpers. Actual cost, genuine factories, miss/hit/fence/refusal and retention evidence still required. No T382–384 task is completed by the10new+6affected diagnostic PASS.
 
+T383 Beginning-owner substeps: retain bounded Astra/high SOURCE-only design consultation; actual canonical phases/consistency and presented waiver-based refinement; missing closed-probe causal RED on genuine owners; shared private begin-core and closed authenticated probe; real3-wrapper+nested/no-steal/finally/ordinal/restoration evidence plus ordinary9 refusal controls. Preserve normal Stage placement and all BUNDLETRACE requirements. Leave Issued/Staged/live-joint/custody runtime unclaimed; do not replace them with a synthetic successful guard.
+
 # CRASH5 — revision35 tasks: genuine current fixture and finite D-local qualification
 
 - [x] T378 [US2/US3] Actual canonical phases/bridge consistency/current selected binary and historical pins, unchanged-source gate; one genuine existing source42 generator with two checked imports and original audio/source/copy closing, complete uncapped raw even on failure.

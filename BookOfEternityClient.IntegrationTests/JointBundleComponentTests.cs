@@ -27,13 +27,14 @@ public sealed partial class JointBundleComponentTests
 
     /// <summary>
     /// Obtains a genuine ordinary original and progression source from small canonical data and the real issuers.
+    /// Rejects foreign coordinates and leases, a disposed lease, and corrupted current request or authority bytes.
     /// </summary>
     [Fact]
     public async Task OrdinaryOriginal_UsesNormalSnapshotAndProgressionFactories()
     {
         await using var fixture = new Fixture(_output);
         await fixture.InitializeAsync();
-        var original = await fixture.PrepareOriginalAsync(41);
+        var original = await fixture.PrepareOriginalAsync(43);
         var read = PendingTurnSnapshotReader.ReadCurrent(fixture.Files, fixture.Lease,
             ["game_state/meta/soul_state.json", ProgressionScheduleService.SchedulePath]);
         Assert.True(read.Success, JsonSerializer.Serialize(read.Issues));
@@ -42,6 +43,7 @@ public sealed partial class JointBundleComponentTests
         Assert.Equal(original.SnapshotToken, read.Snapshot.SnapshotToken);
         Assert.Equal(original.Turn, read.Snapshot.TurnNumber);
         Assert.True(fixture.Files.IsCurrentSessionGeneration(fixture.Lease, original.Generation));
+        await fixture.AssertOrdinaryOriginalRefusalsAsync(original);
         using var timing = fixture.Files.MeasureOperation("JointBundleFixture.CaptureProgression");
         var progression = await fixture.Runtime.Engine.CaptureJointProgressionForComponentAsync(
             fixture.Lease, original);
