@@ -13,6 +13,8 @@ Spec15r18, issue1536, T342 SOURCE/PREP → T343 one measured outcome. Existing i
 
 Interfaces: controls/profile consume the shared factory bundle and production adoption/late-owner/response snapshot; profile consumes existing strict DATA importer and uncapped diagnostic capture. No new persistent data model or external API. NativeLineage/Windows owner implementations unchanged. Review focus: fixture does not replace subject; no default-world initialization, reflection, authority injection, hidden pre-baseline changes, lock-held reentrancy, remote/local closing conflation, weakened cleanup cohort/retained data or incomplete diagnostics treated as PASS. Original hang/publication graph remains open until actually reproduced/explained.
 
+T342 GREEN WIP: direct controls first produced actual expected API-compilation RED9errors/76.80s/0tests at43382+new test source (T342-api-red/raw). Shared real factory is extracted with exact original73construction lines, parent added unchanged adoption/late-owner seams, independent response snapshot, real preparation adapter and separately opt-in full-owner profile. Full external engine logger also preserves messages/exceptions and defers storage failures, covered by2cheap controls; no historical24message/2000character logger is reused. Source-equivalence confirms adoption position/body, late owner body and factory expressions; fresh XML/catalog/PlanOnly/control runtime, full binding and independent SOURCE/PREP acceptance pending. No owner profile, generator, original or Linux runtime executed.
+
 ---
 
 # CRASH5 — plan13 revision17: bounded source audit before another runtime

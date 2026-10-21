@@ -162,6 +162,16 @@ public partial class GameEngine
         _logger = logger;
     }
 
+    /// <summary>
+    /// Captures independent response DATA for direct test observations without exposing the mutable runtime response.
+    /// </summary>
+    /// <returns>
+    /// A serialized copy of the currently installed response, or <see langword="null"/> when no response is installed.
+    /// The snapshot does not grant validation, publication or cleanup authority.
+    /// </returns>
+    internal JsonElement? CaptureCurrentResponseForTesting() =>
+        _lastResponse is null ? null : JsonSerializer.SerializeToElement(_lastResponse, JsonOpts);
+
     internal void ConfigureSessionFinalizationHooksForTesting(
         GameEngineSessionFinalizationHooks? hooks)
     {

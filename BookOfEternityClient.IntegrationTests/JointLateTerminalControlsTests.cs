@@ -1,6 +1,7 @@
 using System.Text.Json;
 using BookOfEternityClient.Core;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -10,6 +11,41 @@ namespace BookOfEternityClient.Tests;
 /// </summary>
 public sealed class JointLateTerminalControlsTests
 {
+    /// <summary>
+    /// Retains a complete long engine diagnostic and its exception instead of the historical short message tail.
+    /// </summary>
+    [Fact]
+    public void EngineLoggerKeepsCompleteMessageAndException()
+    {
+        using var writer = new StringWriter();
+        var capture = new JointCleanupProfileDiagnosticCapture(writer);
+        var logger = JointLateTerminalFixture.CreateLogger(writer, capture);
+        var message = new string('x', 4097) + "-complete-tail";
+        var error = new InvalidDataException("complete-engine-failure");
+        logger.LogError(error, "{Message}", message);
+        using var row = JsonDocument.Parse(writer.ToString());
+        Assert.Equal(message, row.RootElement.GetProperty("Message").GetString());
+        Assert.Equal(error.ToString(), row.RootElement.GetProperty("Exception").GetString());
+        Assert.True(capture.Complete);
+    }
+
+    /// <summary>
+    /// Makes engine-log storage failure explicit without throwing it into the actual game operation.
+    /// </summary>
+    [Fact]
+    public void EngineLoggerDefersStorageFailureWithoutReplacingGameOutcome()
+    {
+        using var writer = new StringWriter();
+        var capture = new JointCleanupProfileDiagnosticCapture(writer);
+        var logger = JointLateTerminalFixture.CreateLogger(writer, capture);
+        writer.Dispose();
+        logger.LogWarning("lost-engine-log");
+        Assert.False(capture.Complete);
+        var failure = Assert.Single(capture.GetFailures());
+        Assert.Equal("engine-log", failure.Stage);
+        Assert.IsType<ObjectDisposedException>(failure.Error);
+    }
+
     /// <summary>
     /// Derives the runtime session and maximum story turn through the same entry used by production loading.
     /// </summary>

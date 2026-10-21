@@ -882,7 +882,14 @@ public partial class GameEngine
     // GAME LOOP
     // ═══════════════════════════════════════════════
 
-    private async Task<bool> ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync()
+    /// <summary>
+    /// Processes late terminal evidence and idle transitions through the current participating session owner.
+    /// </summary>
+    /// <returns>
+    /// Whether the pass reports handled or held work, including a staged idle wait.
+    /// A false result can also follow verified joint completion; neither value alone proves cleanup success.
+    /// </returns>
+    internal async Task<bool> ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync()
     {
         var stagedIdle = false;
         var handled = await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>

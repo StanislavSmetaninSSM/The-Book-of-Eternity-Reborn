@@ -10938,7 +10938,9 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     /// <param name="logger">
     /// Engine diagnostics sink, or <see langword="null"/> to retain the default null logger.
     /// </param>
-    /// <param name="loadHooks">Optional cuts in the real save loader.</param>
+    /// <param name="loadHooks">
+    /// Optional cuts in the real save loader; <see langword="null"/> leaves them disabled.
+    /// </param>
     /// <returns>
     /// An engine using real lifecycle services and the supplied test overrides.
     /// </returns>
@@ -10950,7 +10952,49 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         Microsoft.Extensions.Logging.ILogger<GameEngine>? logger = null,
         SaveLoadServiceHooks? loadHooks = null)
     {
-        var fs = fileSystem ?? _fs;
+        return CreateGameEngineRuntime(
+            fileSystem ?? _fs,
+            inputSource,
+            configureSettings,
+            finalizationHooks,
+            logger,
+            loadHooks).Engine;
+    }
+
+    /// <summary>
+    /// Builds real lifecycle services for the supplied filesystem and exposes their shared runtime objects.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// The non-null canonical filesystem used by every constructed service.
+    /// </param>
+    /// <param name="inputSource">
+    /// Console input override, or <see langword="null"/> for the engine's default input source.
+    /// </param>
+    /// <param name="configureSettings">
+    /// Optional settings customization applied before service construction.
+    /// </param>
+    /// <param name="finalizationHooks">
+    /// Optional hooks for accepted-session finalization; <see langword="null"/> leaves them disabled.
+    /// </param>
+    /// <param name="logger">
+    /// Engine diagnostics sink, or <see langword="null"/> to retain the default null logger.
+    /// </param>
+    /// <param name="loadHooks">
+    /// Optional cuts in the real save loader; <see langword="null"/> leaves them disabled.
+    /// </param>
+    /// <returns>
+    /// The engine and the same state manager and game loop supplied to its constructor.
+    /// </returns>
+    internal static GameEngineTestRuntime CreateGameEngineRuntime(
+        FileSystemManager fileSystem,
+        IConsoleInputSource? inputSource = null,
+        Action<GameSettings>? configureSettings = null,
+        GameEngineSessionFinalizationHooks? finalizationHooks = null,
+        Microsoft.Extensions.Logging.ILogger<GameEngine>? logger = null,
+        SaveLoadServiceHooks? loadHooks = null)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        var fs = fileSystem;
         var settings = new GameSettings();
         configureSettings?.Invoke(settings);
         var stateManager = new StateManager(fs, settings, NullLogger<StateManager>.Instance);
@@ -11024,7 +11068,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             logger ?? NullLogger<GameEngine>.Instance,
             inputSource);
         engine.ConfigureSessionFinalizationHooksForTesting(finalizationHooks);
-        return engine;
+        return new GameEngineTestRuntime(engine, stateManager, gameLoop);
     }
 
     private void ArmCanonicalWriteFailure(string relativePath, int matchingWrite = 1)

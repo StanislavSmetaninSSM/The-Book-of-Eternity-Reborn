@@ -539,6 +539,24 @@ public partial class GameEngine
         });
     }
 
+    /// <summary>
+    /// Adopts the refreshed state's session and the maximum turn read from the current session's stories.
+    /// The existing loading fallback creates a session identifier when the refreshed state has none.
+    /// </summary>
+    /// <returns>
+    /// Completion after the story-derived runtime tuple is installed in the game loop.
+    /// Existing participating session checks apply to the story reads.
+    /// </returns>
+    internal async Task BindCurrentSessionRuntimeFromRefreshedStateAsync()
+    {
+        var state = _stateManager.CurrentState;
+        var sessionId = !string.IsNullOrWhiteSpace(state.SessionId)
+            ? state.SessionId
+            : Guid.NewGuid().ToString();
+        var turnNumber = await DetectCurrentSessionTurnNumberAsync();
+        _gameLoop.SetSession(sessionId, turnNumber);
+    }
+
     private async Task ContinueCurrentSessionFlow()
     {
         if (!await HasCurrentSessionAsync())
@@ -561,12 +579,7 @@ public partial class GameEngine
                 await _stateManager.RefreshGameStateReadOnlyAsync(lease);
                 return true;
             });
-        var state = _stateManager.CurrentState;
-        var sessionId = !string.IsNullOrWhiteSpace(state.SessionId)
-            ? state.SessionId
-            : Guid.NewGuid().ToString();
-        var turnNumber = await DetectCurrentSessionTurnNumberAsync();
-        _gameLoop.SetSession(sessionId, turnNumber);
+        await BindCurrentSessionRuntimeFromRefreshedStateAsync();
 
         var restoredResponse = await BuildGameResponseFromFiles();
         _lastResponse = MergeWithLastResponse(restoredResponse);

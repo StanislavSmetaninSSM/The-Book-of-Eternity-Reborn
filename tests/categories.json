@@ -2,6 +2,61 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-late-terminal-controls",
+  "responsibility": "T342 direct minimal-fixture runtime adoption, observed-session/generation refusals, actual foreign-runtime late-owner no-cleanup and uncapped engine diagnostic failure controls.",
+  "excludes": "No world/turn preparation or complete cleanup profile, generator, original recovery or Linux qualification.",
+  "changeHints": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+    "BookOfEternityClient.IntegrationTests/JointLateTerminalFixture.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-late-terminal-profile",
+      "when": "Only after separate SOURCE/PREP acceptance, when measuring real accepted validation and full cleanup on observed DATA."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointLateTerminalControlsTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-late-terminal-profile",
+  "responsibility": "T343 opt-in one fresh-engine actual late-terminal owner on already-applied cleanup DATA with full completion/cohort/retained/runtime/response/repeat and closing evidence. SOURCE/PREP acceptance required.",
+  "excludes": "No process-cold/native-retirement or source42/Stage43 graph, generator/rebind/original/five/Linux run; no forged proof or owner from DATA.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointLateTerminalProfileTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointLateTerminalProfileTests.ActualCleanupData_ProfilesFreshEngineLateOwnerWithoutWorldPreparation"
+      ]
+    }
+  ]
+},
+{
   "id": "portable-storage-read-completion",
   "responsibility": "T329a exact single actual Windows after-open completion control: move the open leaf within the owned fixture, replace its empty parent by the existing native junction helper, require unchanged InvalidDataException and both byte images.",
   "excludes": "No repeat of the66unchanged passing constructor/scalar/batch/before-open controls, no production reader/share/native change, GameEngine/source42/original run or Linux qualification.",
