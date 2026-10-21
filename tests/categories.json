@@ -2,6 +2,31 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-bundle-component-setup",
+  "responsibility": "One tiny genuine ordinary-original and progression setup control over typed canonical data and the real issuer host, with complete setup timings and exact owned closing.",
+  "excludes": "No game loop, full world/DATA/source42 generation, original crash/five/Linux runtime, fake authority, reflected helpers or diagnostic quota. Does not yet qualify a joint candidate.",
+  "changeHints": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.JointComponentSetup.cs",
+    "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.ComponentSeed.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointBundleComponentTests.OrdinaryOriginal_UsesNormalSnapshotAndProgressionFactories"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-wound-bundle-copy-contracts",
   "responsibility": "Two existing pure typed wound-stage controls: detached mutable graph and rejection of every cross-swapped stage, isolated from broad game/planning categories.",
   "excludes": "No reflection harness, world/game/source42/crash/Linux runtime or diagnostic quota.",
