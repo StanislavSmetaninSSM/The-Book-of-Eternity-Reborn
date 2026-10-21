@@ -183,6 +183,19 @@ public sealed partial class JointBundleComponentTests
             var hold = AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(Files, Lease, request, finalization.Finalization!);
             Assert.True(hold.IsValid, JsonSerializer.Serialize(hold.Issues));
             Assert.Equal(MortalWoundTreatmentResourceReservationState.ConfirmedHeld, hold.State);
+            using (Files.MeasureOperation("JointBundleFixture.RotateTreatmentLease"))
+            {
+                var previousLease = Lease;
+                try
+                {
+                    await previousLease.DisposeAsync();
+                    _lease = null;
+                    _lease = await Files.AcquireCanonicalWriteLeaseAsync();
+                }
+                catch { _retained = true; throw; }
+                Assert.False(previousLease.IsActive);
+                Assert.True(Files.IsCurrentSessionGeneration(Lease, original.Generation));
+            }
             var projectionSource = MortalQteWoundOpportunityProjection.ReadSnapshot(Files, Lease);
             Assert.Equal(original.RequestId, projectionSource.RequestId);
             var opportunity = Assert.Single(MortalQteWoundOpportunityProjection.Project(projectionSource));
