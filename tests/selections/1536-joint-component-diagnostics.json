@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "fr063-joint-component-diagnostics",
+      "reason": "Two tiny typed controls: complete component diagnostics readable before test completion and observer storage failure refusing a complete report.",
+      "contracts": [
+        "Complete uncapped observations survive per-test buffering; persistence failure cannot become a complete artifact."
+      ]
+    }
+  ]
+}

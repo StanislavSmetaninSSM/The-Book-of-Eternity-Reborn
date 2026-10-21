@@ -2,6 +2,36 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-component-diagnostics",
+  "responsibility": "Two tiny typed controls: complete component diagnostics readable before test completion and observer storage failure refusing a complete report.",
+  "excludes": "No game, real engine, joint issuance, process launch, reflection or diagnostic quota.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointBundleDiagnosticOutput.cs",
+    "BookOfEternityClient.IntegrationTests/JointBundleDiagnosticOutputTests.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-bundle-candidate",
+      "when": "When changing component diagnostic persistence."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointBundleDiagnosticOutputTests.RecordsAreReadableBeforeCloseWithoutDiagnosticQuota",
+        "BookOfEternityClient.Tests.JointBundleDiagnosticOutputTests.ObserverWriteFailurePreventsCompleteReport"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-bundle-candidate",
   "responsibility": "One genuinely issued small joint fixture: actual candidate miss and hit, complete nested timings/counters, retained plan, unchanged canonical bytes, foreign-input refusal and stale-fence controls.",
   "excludes": "No game loop/full world/full Stage42/source42 package/crash five/Linux; no fake authority/reflection/diagnostic quotas. This is diagnostic qualification, not a production optimization.",
