@@ -299,7 +299,8 @@ internal static class WindowsPathMetadataGuard
 }
 
 /// <summary>
-/// Executes the original real metadata APIs and passively reports their actual managed attempts.
+/// Observes fresh component-local Windows metadata and retains the original APIs for fallback decisions.
+/// Passive diagnostics report managed attempts without retaining physical observations between calls.
 /// </summary>
 internal sealed class WindowsPathMetadataProvider : IWindowsPathMetadataProvider
 {
@@ -314,12 +315,27 @@ internal sealed class WindowsPathMetadataProvider : IWindowsPathMetadataProvider
     internal WindowsPathMetadataProvider(Action<PathMetadataQuery>? observer) => _observer = observer;
 
     /// <inheritdoc />
-    public PathMetadataObservation ObserveDirectory(string path, PathMetadataRole role) =>
-        new(LegacyDirectoryExists(path, role), null);
+    public PathMetadataObservation ObserveDirectory(string path, PathMetadataRole role)
+    {
+        var directory = new DirectoryInfo(path);
+        ObserveAttempt(path, role, PathMetadataQueryKind.DirectoryRefresh);
+        directory.Refresh();
+        var exists = directory.Exists;
+        return new(exists, exists ? directory.Attributes : null);
+    }
 
     /// <inheritdoc />
-    public PathMetadataObservation ObserveFile(string path, PathMetadataRole role) =>
-        new(LegacyFileExists(path, role), null);
+    public PathMetadataObservation ObserveFile(string path, PathMetadataRole role)
+    {
+        if (Path.EndsInDirectorySeparator(path))
+            return new(LegacyFileExists(path, role), null);
+
+        var file = new FileInfo(path);
+        ObserveAttempt(path, role, PathMetadataQueryKind.FileRefresh);
+        file.Refresh();
+        var exists = file.Exists;
+        return new(exists, exists ? file.Attributes : null);
+    }
 
     /// <inheritdoc />
     public bool LegacyDirectoryExists(string path, PathMetadataRole role)

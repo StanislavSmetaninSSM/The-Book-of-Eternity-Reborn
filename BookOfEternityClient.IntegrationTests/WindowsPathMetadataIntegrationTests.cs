@@ -404,8 +404,8 @@ public sealed class WindowsPathMetadataIntegrationTests : IDisposable
     /// <param name="path">
     /// The candidate, which must be strictly beneath this instance's GUID root.
     /// </param>
-    private void AssertOwned(string path) => Assert.True(Path.GetFullPath(path).StartsWith(
-        Path.GetFullPath(_root) + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase));
+    private void AssertOwned(string path) => Assert.StartsWith(
+        Path.GetFullPath(_root) + Path.DirectorySeparatorChar, Path.GetFullPath(path), StringComparison.OrdinalIgnoreCase);
 
     /// <summary>
     /// Attempts the full query receipt, then removes tracked links and the validated GUID-owned root.
@@ -425,7 +425,7 @@ public sealed class WindowsPathMetadataIntegrationTests : IDisposable
         try
         {
             var absolute = Path.GetFullPath(_root);
-            Assert.True(absolute.StartsWith(_parent + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase));
+            Assert.StartsWith(_parent + Path.DirectorySeparatorChar, absolute, StringComparison.OrdinalIgnoreCase);
             Assert.True(Guid.TryParseExact(Path.GetFileName(absolute), "N", out _));
             foreach (var link in _fileLinks)
             {
