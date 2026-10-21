@@ -1,0 +1,3 @@
+# Immutable genuine v2 DATA and explicit ZIP directories remain byte exact.
+package/** -text
+source-record.json -text
