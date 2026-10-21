@@ -339,7 +339,7 @@ public sealed class JointInterfaceCrashStorageTests
             {
                 Assert.True(TrustedLocalFileScope.IsWithinDirectory(junction, Root, Path.DirectorySeparatorChar));
                 if (!Path.Exists(junction)) continue;
-                Assert.NotEqual(0, File.GetAttributes(junction) & FileAttributes.ReparsePoint);
+                Assert.Equal(FileAttributes.ReparsePoint, File.GetAttributes(junction) & FileAttributes.ReparsePoint);
                 Directory.Delete(junction, recursive: false);
                 Assert.False(Path.Exists(junction));
             }
