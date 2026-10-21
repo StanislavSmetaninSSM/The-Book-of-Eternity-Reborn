@@ -421,6 +421,33 @@ public partial class GameEngine
         finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty); }
     }
 
+    /// <summary>
+    /// Produces the existing canonical baseline, detached authority and manifest under the caller's lease.
+    /// Passive sections distinguish initialization, inventory, member capture, authentication data and publication.
+    /// </summary>
+    /// <param name="writeLease">
+    /// The active caller-owned canonical write lease reused by all existing reads and writes.
+    /// </param>
+    /// <param name="request">
+    /// The request whose turn coordinates, controls and metadata populate the snapshot manifest.
+    /// </param>
+    /// <param name="rollbackSnapshot">
+    /// Existing rollback evidence and inventory, or <see langword="null"/> for the existing current-inventory path.
+    /// </param>
+    /// <param name="sourceLabel">
+    /// The optional source label copied into the manifest; <see langword="null"/> is copied unchanged.
+    /// </param>
+    /// <param name="browserAction">
+    /// The optional browser binding supplying its existing identifiers and original-condition capture.
+    /// </param>
+    /// <param name="hotOwner">
+    /// The actual hot original owner selecting hot producer cleanup and issuance observation,
+    /// or <see langword="null"/> for ordinary snapshot cleanup.
+    /// </param>
+    /// <returns>
+    /// The captured logical-to-snapshot file map after the existing manifest and authority writes succeed.
+    /// Existing failure and publication-uncertainty behavior is preserved.
+    /// </returns>
     private async Task<Dictionary<string, string>> CreateCanonicalBaselineSnapshotAsync(
         FileSystemManager.CanonicalWriteLease writeLease,
         TurnRequest request,
@@ -429,10 +456,18 @@ public partial class GameEngine
         PendingPlayerActionService.Binding? browserAction = null,
         HotOrdinaryOriginal? hotOwner = null)
     {
+        using var totalTiming = _fs.MeasureOperation("OriginalSnapshot.Total");
+        using var initialInventoryTiming = _fs.MeasureOperation("OriginalSnapshot.InitialInventory");
         RequireExactEngineSnapshotInventory(writeLease, rollbackSnapshot);
+        initialInventoryTiming?.Dispose();
+        using var terminalTiming = _fs.MeasureOperation("OriginalSnapshot.DeleteTerminalFailure");
         await DeleteTerminalProtocolFailureRequestAsync(writeLease);
+        terminalTiming?.Dispose();
+        using var cleanupTiming = _fs.MeasureOperation("OriginalSnapshot.CleanupPrevious");
         if (hotOwner is null) CleanupPendingTurnSnapshot(writeLease, rollbackSnapshot?.BackupFiles.Values);
         else CleanupHotOriginalProducerSnapshot(hotOwner, writeLease, request, rollbackSnapshot);
+        cleanupTiming?.Dispose();
+        using var presenceTiming = _fs.MeasureOperation("OriginalSnapshot.ObserveInitializationPresence");
         var conflictStateExistedBeforeInitialization = _fs.FileExists(
             writeLease,
             AfterlifeSpiritualConflictState.StatePath);
@@ -445,10 +480,14 @@ public partial class GameEngine
         var globalFlagStateExistedBeforeInitialization = _fs.FileExists(
             writeLease,
             AfterlifeGlobalFlagState.StatePath);
+        presenceTiming?.Dispose();
+        using var initializeTiming = _fs.MeasureOperation("OriginalSnapshot.InitializeAfterlife");
         await EnsureAfterlifeSpiritualConflictStateInitializedForSnapshotAsync(writeLease);
         await EnsureAfterlifeEntityProfileStateInitializedForSnapshotAsync(writeLease);
         await EnsureAfterlifeChronicleStateInitializedForSnapshotAsync(writeLease);
         await EnsureAfterlifeGlobalFlagStateInitializedForSnapshotAsync(writeLease);
+        initializeTiming?.Dispose();
+        using var initializedBackupTiming = _fs.MeasureOperation("OriginalSnapshot.RegisterInitializedBackups");
         await RegisterAfterlifeSpiritualConflictRollbackBackupIfInitializedAsync(
             writeLease,
             request,
@@ -470,10 +509,16 @@ public partial class GameEngine
             rollbackSnapshot,
             globalFlagStateExistedBeforeInitialization);
 
+        initializedBackupTiming?.Dispose();
+        using var finalInventoryTiming = _fs.MeasureOperation("OriginalSnapshot.FinalInventory");
         RequireExactEngineSnapshotInventory(writeLease, rollbackSnapshot);
+        finalInventoryTiming?.Dispose();
         var files = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         var snapshotHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        using var clientHashesTiming = _fs.MeasureOperation("OriginalSnapshot.CaptureClientOwnedHashes");
         var clientOwnedValidationHashes = await CaptureClientOwnedValidationHashesAsync(writeLease);
+        clientHashesTiming?.Dispose();
+        using var inventoryTiming = _fs.MeasureOperation("OriginalSnapshot.BuildInventory");
         var rollbackBaselineFiles = rollbackSnapshot?.BaselineFiles is { Count: > 0 }
             ? new HashSet<string>(rollbackSnapshot.BaselineFiles, StringComparer.OrdinalIgnoreCase)
             : new HashSet<string>(EnumerateRollbackTrackedFiles(writeLease), StringComparer.OrdinalIgnoreCase);
@@ -515,8 +560,11 @@ public partial class GameEngine
         }
         snapshotFiles.UnionWith(PendingTurnSnapshotPathPresenceV1.LogicalPaths);
 
+        inventoryTiming?.Dispose();
+        using var membersTiming = _fs.MeasureOperation("OriginalSnapshot.CaptureMembers");
         foreach (var file in snapshotFiles.OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
         {
+            using var memberTiming = _fs.MeasureOperation("OriginalSnapshot.Member:" + file);
             await SnapshotFileOrRollbackBackupIfPresentAsync(
                 writeLease,
                 file,
@@ -524,6 +572,8 @@ public partial class GameEngine
                 files,
                 snapshotHashes);
         }
+        membersTiming?.Dispose();
+        using var manifestTiming = _fs.MeasureOperation("OriginalSnapshot.BuildManifest");
         var originalPathPresenceV1 =
             PendingTurnSnapshotPathPresenceV1.Create(files, snapshotHashes);
 
@@ -554,7 +604,11 @@ public partial class GameEngine
             BrowserSessionGeneration = browserAction?.Generation,
             BrowserOriginalMainCondition = browserAction == null ? null : _fs.CaptureBrowserOriginalCondition(writeLease, browserAction.Generation)
         };
+        manifestTiming?.Dispose();
+        using var manifestHashTiming = _fs.MeasureOperation("OriginalSnapshot.ComputeManifestHash");
         manifest.ManifestPayloadHash = ComputePendingTurnManifestPayloadHash(manifest);
+        manifestHashTiming?.Dispose();
+        using var authorityTiming = _fs.MeasureOperation("OriginalSnapshot.CreateAuthorityJson");
         var authorityJson = PendingTurnSnapshotAuthority.CreateDetachedAuthorityJson(
             manifest,
             SnapshotHashJsonOpts,
@@ -571,17 +625,22 @@ public partial class GameEngine
             static snapshotManifest => snapshotManifest.RollbackBackups,
             relativePath => ReadRelativeFileBytesFromWorkspace(writeLease, relativePath));
 
+        authorityTiming?.Dispose();
+        using var serializeTiming = _fs.MeasureOperation("OriginalSnapshot.SerializeManifest");
         var manifestJson = JsonSerializer.Serialize(manifest, JsonOpts);
+        serializeTiming?.Dispose();
         try
         {
-            await _fs.WriteFileAtomicAsync(
-                writeLease,
-                PendingTurnSnapshotManifestPath,
-                manifestJson);
-            await _fs.WriteFileAtomicAsync(
-                writeLease,
-                PendingTurnSnapshotAuthority.AuthorityPath,
-                authorityJson);
+            using (var publishTiming = _fs.MeasureOperation("OriginalSnapshot.WriteManifest"))
+                await _fs.WriteFileAtomicAsync(
+                    writeLease,
+                    PendingTurnSnapshotManifestPath,
+                    manifestJson);
+            using (var publishTiming = _fs.MeasureOperation("OriginalSnapshot.WriteAuthority"))
+                await _fs.WriteFileAtomicAsync(
+                    writeLease,
+                    PendingTurnSnapshotAuthority.AuthorityPath,
+                    authorityJson);
             if (hotOwner is not null) ObserveHotOriginalIssued(hotOwner, writeLease, manifest, manifestJson, authorityJson);
         }
         catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
@@ -2159,34 +2218,61 @@ public partial class GameEngine
         finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty); }
     }
 
+    /// <summary>
+    /// Captures the existing tracked rollback baseline and overlays persistent Explorer rollback evidence.
+    /// Passive timers retain every member's read, write and hash without changing capture or cleanup behavior.
+    /// </summary>
+    /// <param name="writeLease">
+    /// The active caller-owned canonical write lease used for inventory and member operations.
+    /// </param>
+    /// <param name="backupId">
+    /// The caller's identifier appended to the existing rollback member suffix.
+    /// </param>
+    /// <returns>
+    /// The completed baseline, backup paths and byte hashes after the existing Explorer overlay.
+    /// Existing partial-capture cleanup and publication-uncertainty failures still propagate.
+    /// </returns>
     private async Task<RollbackSnapshot> CreatePreTurnBackup(
         FileSystemManager.CanonicalWriteLease writeLease,
         string backupId)
     {
+        using var totalTiming = _fs.MeasureOperation("OriginalBackup.Total");
+        using var inventoryTiming = _fs.MeasureOperation("OriginalBackup.RequireInventory");
         RequireExactEngineSnapshotInventory(writeLease);
+        inventoryTiming?.Dispose();
         var snapshot = new RollbackSnapshot();
         var createdBackupPaths = new List<string>();
+        using var trackedTiming = _fs.MeasureOperation("OriginalBackup.EnumerateTracked");
         var trackedFiles = EnumerateRollbackTrackedFiles(writeLease).ToArray();
+        trackedTiming?.Dispose();
         try
         {
             foreach (var file in trackedFiles)
             {
+                using var memberTiming = _fs.MeasureOperation("OriginalBackup.Member:" + file);
+                using var readTiming = _fs.MeasureOperation("OriginalBackup.Read:" + file);
                 var content = await _fs.ReadFileBytesAsync(writeLease, file) ??
                               throw new IOException(
                                   $"Canonical file '{file}' disappeared while its rollback baseline was captured.");
+                readTiming?.Dispose();
                 var backupPath = file + $".rollback.{backupId}";
+                using var writeTiming = _fs.MeasureOperation("OriginalBackup.Write:" + file);
                 await _fs.WriteFileAtomicBytesAsync(writeLease, backupPath, content);
+                writeTiming?.Dispose();
                 createdBackupPaths.Add(backupPath);
                 snapshot.BaselineFiles.Add(file);
                 snapshot.BackupFiles[file] = backupPath;
-                snapshot.BackupHashes[file] = ComputeSha256(content);
+                using (var hashTiming = _fs.MeasureOperation("OriginalBackup.Hash:" + file))
+                    snapshot.BackupHashes[file] = ComputeSha256(content);
             }
 
-            await OverlayPersistentExplorerLocalTurnRollbackArtifactsAsync(writeLease, snapshot);
+            using (var overlayTiming = _fs.MeasureOperation("OriginalBackup.OverlayExplorer"))
+                await OverlayPersistentExplorerLocalTurnRollbackArtifactsAsync(writeLease, snapshot);
             return snapshot;
         }
         catch (Exception captureException) when (captureException is not CoordinatedStatePublicationUncertainException)
         {
+            using var cleanupTiming = _fs.MeasureOperation("OriginalBackup.FailureCleanup");
             var cleanupErrors = new List<Exception>();
             foreach (var backupPath in createdBackupPaths)
             {

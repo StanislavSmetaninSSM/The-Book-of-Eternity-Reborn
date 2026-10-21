@@ -56,6 +56,7 @@ public partial class GameEngine
         FileSystemManager.CanonicalWriteLease lease,
         TurnRequest request)
     {
+        using var entryTiming = _fs.MeasureOperation("JointOriginal.ValidateEntryAndRequest");
         RequireJointComponentSetupEntry(lease);
         ArgumentNullException.ThrowIfNull(request);
         ArgumentException.ThrowIfNullOrWhiteSpace(request.SessionId);
@@ -65,20 +66,39 @@ public partial class GameEngine
         if (request.ProgressionControl is null)
             throw new ArgumentException("A joint component original requires progression control.", nameof(request));
 
+        entryTiming?.Dispose();
+        using var requestTiming = _fs.MeasureOperation("JointOriginal.DetachRequest");
         var requestJson = JsonSerializer.Serialize(request, JsonOpts);
         var detachedRequest = JsonSerializer.Deserialize<TurnRequest>(requestJson, JsonOpts) ??
             throw new InvalidDataException("The component request could not be detached.");
+        requestTiming?.Dispose();
+        using var generationTiming = _fs.MeasureOperation("JointOriginal.ReadGeneration");
         var generation = _fs.ReadLocalGenerationSnapshot(lease).Binding.Id ??
             throw new InvalidDataException("A joint component original requires an existing session generation.");
+        generationTiming?.Dispose();
+        using var backupTiming = _fs.MeasureOperation("JointOriginal.CreateBackup");
         var backup = await CreatePreTurnBackup(lease, Guid.NewGuid().ToString("N"));
+        backupTiming?.Dispose();
+        using var registerTiming = _fs.MeasureOperation("JointOriginal.RegisterValidationFiles");
         RegisterOrdinaryTurnStagingValidationSnapshotFiles(backup);
+        registerTiming?.Dispose();
+        using var snapshotTiming = _fs.MeasureOperation("JointOriginal.CreateSnapshot");
         await CreateCanonicalBaselineSnapshotAsync(
             lease, detachedRequest, backup, OrdinaryPlayerTurnSourceLabel);
+        snapshotTiming?.Dispose();
+        using var writeTiming = _fs.MeasureOperation("JointOriginal.WriteRequest");
         await _fs.WriteFileAtomicAsync(lease, LiveTurnPreparationService.TurnRequestPath, requestJson);
+        writeTiming?.Dispose();
 
+        using var manifestTiming = _fs.MeasureOperation("JointOriginal.LoadManifest");
+        var manifest = await LoadPendingTurnSnapshotManifestCoreAsync(lease);
+        manifestTiming?.Dispose();
+        using var authenticationTiming = _fs.MeasureOperation("JointOriginal.AuthenticateSnapshot");
         var frame = await LoadValidatedPendingTurnSnapshotContextCoreAsync(
-            await LoadPendingTurnSnapshotManifestCoreAsync(lease), requireCurrentContext: true, writeLease: lease) ??
+            manifest, requireCurrentContext: true, writeLease: lease) ??
             throw new InvalidDataException("The component original failed current snapshot authentication.");
+        authenticationTiming?.Dispose();
+        using var agreementTiming = _fs.MeasureOperation("JointOriginal.RequireAgreement");
         var original = new JointComponentOriginal(detachedRequest.SessionId, detachedRequest.RequestId,
             frame.Payload.ManifestPayloadHash, detachedRequest.TurnNumber, generation);
         RequireJointComponentOriginalAgreement(lease, original, frame);
