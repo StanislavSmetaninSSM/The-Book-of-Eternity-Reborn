@@ -1,5 +1,8 @@
 # T365 cut0 — complete failed attempt, not scenario qualification
 
+Separate gpt-6-astra/high reviewer `/root/review_t363_source_prep` accepted failed-evidence/settlement at metadata cc48a60f788f9e7e3a74be7a54369b24946e3318 with no unresolved findings. Independently reconstructed every303timingaggregate/allrawmembers/all221nestedpayloads/all7supplementmembers/all589recoveredGitblobs; exactscopeandlimits agree. CaseQualifiedfalse / OwnershipSettledtrue. See T365-fixture-cut0-final-review.json. T365 remains unsatisfied; T366 closed.
+
+
 One planned/completed test FAIL: original resumer600second wait expired (TimeoutException at JointInterfaceCrash.cs415). Command739.9991692s/TRX718.3364325s. Producer PID31272 abruptly exited73; resumer PID34760 was terminated by the existing owned timeout path, exit-1. Both Exited/EOF/Joined true, no cleanup failures, complete persisted stdout/stderr, both exact new parent-owned roots absent. Old protected roots unchanged. No retry, bound increase or dependent T366 launch.
 
 Full33file raw archive C962B9ED6D64E7CE55FDA93791A7FF7DEE09B4CD68FCB2EEF69A7D1459A9A81F was preserved before interpretation. Resumerstdout226058672bytes, SHA84DF9299D9D377CD095F15F0D1784C0C76112386F58AA9E19F8735D02A695562. Every timing Sequence1..1202992 is continuous:601493closed scopes and6open, with no nesting/parse loss. Last open leaf JointCleanup.VerifyImage.ReadAsync started599841.1514ms; VerifyAfterImagesAsync began598872.5753ms inside CleanupEligibleTerminalAsync525756.5154ms. First actual owner call began3783.8338ms and never returned.
