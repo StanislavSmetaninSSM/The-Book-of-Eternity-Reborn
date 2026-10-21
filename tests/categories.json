@@ -2,6 +2,34 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-diagnostic-write-controls",
+  "responsibility": "T349 complete per-name timing serializer/write cost, deterministic successful/failed boundary and clock-failure fixtures, primary/secondary outcomes and full diagnostic logger.",
+  "excludes": "No world/turn/GameEngine construction, DATA import or actual consumer measurement.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointCleanupProfileDiagnosticCapture.cs",
+    "BookOfEternityClient.IntegrationTests/JointCleanupProfileDiagnosticCaptureTests.cs"
+  ],
+  "related": [
+    "fr063-joint-history-consumer-components"
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointCleanupProfileDiagnosticCaptureTests.*",
+        "BookOfEternityClient.Tests.JointLateTerminalControlsTests.EngineLoggerKeepsCompleteMessageAndException",
+        "BookOfEternityClient.Tests.JointLateTerminalControlsTests.EngineLoggerDefersStorageFailureWithoutReplacingGameOutcome"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-component-diagnostics-controls",
   "responsibility": "T347 shared generic full diagnostic logger retains original engine-wrapper message/exception completeness and deferred storage failure behavior.",
   "excludes": "No GameEngine construction, DATA import or real consumer profile.",

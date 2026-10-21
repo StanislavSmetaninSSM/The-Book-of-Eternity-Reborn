@@ -18,7 +18,42 @@ internal sealed class JointCleanupProfileDiagnosticCapture
     /// <param name="writer">
     /// The profile's external timing writer, kept open through owner close and cleanup.
     /// </param>
-    internal JointCleanupProfileDiagnosticCapture(TextWriter writer) => _timings = new(writer);
+    /// <param name="timeProvider">
+    /// Monotonic diagnostic clock, or <see langword="null"/> for <see cref="TimeProvider.System"/>.
+    /// </param>
+    internal JointCleanupProfileDiagnosticCapture(TextWriter writer, TimeProvider? timeProvider = null) => _timings = new(writer);
+
+    /// <summary>
+    /// Returns a detached ledger of every named timing-write attempt.
+    /// </summary>
+    /// <returns>
+    /// Per-operation and boundary write costs, including failed and unmeasured attempts.
+    /// </returns>
+    internal WriteCost[] GetWriteCosts() => [];
+
+    /// <summary>
+    /// Describes the measured serializer and synchronous writer span for a literal timer boundary.
+    /// </summary>
+    /// <param name="Operation">
+    /// Literal operation name supplied by the production hook.
+    /// </param>
+    /// <param name="State">
+    /// Literal begin or end boundary supplied by that hook.
+    /// </param>
+    /// <param name="Attempted">
+    /// Every attempted timing write for this name and boundary.
+    /// </param>
+    /// <param name="Stored">
+    /// Writes whose serializer and writer returned successfully.
+    /// </param>
+    /// <param name="Measured">
+    /// Attempts with both monotonic timestamps and a computed duration, including failed writes.
+    /// </param>
+    /// <param name="SerializationAndWriteElapsed">
+    /// Summed elapsed serializer, inner lock and synchronous writer time; excludes outer gate wait and accounting.
+    /// </param>
+    internal readonly record struct WriteCost(string Operation, string State, long Attempted, long Stored,
+        long Measured, TimeSpan SerializationAndWriteElapsed);
 
     /// <summary>
     /// Gets the number of timing boundaries offered to the observer, without a quota.

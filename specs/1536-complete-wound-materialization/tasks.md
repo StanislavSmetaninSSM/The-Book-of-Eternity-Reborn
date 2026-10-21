@@ -1,6 +1,6 @@
 # CRASH5 — spec15 revision21 / plan13 revision21: diagnostic writer cost
 
-- [ ] T349 [US1/US2/US3] SOURCE/PREP: monotonic complete named serializer/write ledger around unchanged timing writes, typed clock/in-memory failure fixtures and additive actual-consumer reports. Causal RED/GREEN,6cheap diagnostic controls,2XML/catalog/exact6+2plans/source equivalence/current4DLL+copies/input/fullraw, separate coherent review and remote clean recovery. Preserve every raw record/deferred outcome and all production/proof/closing oracles; no quotas/buffering changes/runtime component yet.
+- [ ] T349 [US1/US2/US3] SOURCE/PREP: monotonic complete named serializer/write ledger around unchanged timing writes, typed clock/in-memory failure fixtures and additive actual-consumer reports. Causal RED/GREEN,8cheap diagnostic controls,2XML/catalog/exact8+2plans/source equivalence/current4DLL+copies/input/fullraw, separate coherent review and remote clean recovery. Preserve every raw record/deferred outcome and all production/proof/closing oracles; no quotas/buffering changes/runtime component yet.
 - [ ] T350 [US2/US3] After accepted saved/recovered T349, exactlyone changed2case Windows measurement with explicit2minute totalcommand budget. Preserve/analyze full actual outcome/ledger/counts/wallCPU/raw/closing/DATA/retention and independent review. No unchanged retry/budget increase, original/full-owner/generator/rebind/five/Linux execution or protected-root deletion.
 
 T348 accepted atf6fdb631 by separate actual Astra/high context; T348-final-review.json. Both actual component cases passed; historical recovery qualification remains open. Writer self-cost is a hypothesis to measure, not an established cause or optimization claim.
@@ -81,7 +81,7 @@ T335–336 diagnostic transport SOURCE/PREP is independently accepted; original 
 
 T335–336 accepted SOURCE/PREP: code b80, reviewed metadata a6fef0f1, actual90/90PASS and all raw/bindings/19ownedroot absences verified. [PREP](recovery/crash5/T336-final-prep.json), [independent final acceptance](recovery/crash5/T336-final-review.json). Original recovery/coldfive/Linux remain open; source778seed is not rebound.
 
-Routing checkpoint: parent implemented, separate actual Astra/high reviewer found2P2s; both causally reproduced in6cheap cases (5FAIL/1PASS) and corrected, final90PASS. No repeated game/generator run. Long-line correctness control1.9367131s is not game-speed evidence; usage/cost comparison unavailable. Keep current parent/independent review routing; no weakening or automatic escalation justified by this block.
+Routing checkpoint: parent implemented, separate actual Astra/high reviewer found2P2s; both causally reproduced in8cheap cases (5FAIL/1PASS) and corrected, final90PASS. No repeated game/generator run. Long-line correctness control1.9367131s is not game-speed evidence; usage/cost comparison unavailable. Keep current parent/independent review routing; no weakening or automatic escalation justified by this block.
 
 Dependencies T334→T335→T336. Original T333fullraw/recovery acceptance stays unmet after actual failed attempt; no unchanged retry or diagnostic quota. Next real cleanup-DATA investigation requires separate written scope.
 

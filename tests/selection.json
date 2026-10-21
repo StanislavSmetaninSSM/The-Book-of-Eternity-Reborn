@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "fr063-joint-component-diagnostics-controls",
-      "reason": "T347 moves the exact existing logger body to a shared generic helper; these2existing direct controls are the only affected completed runtime checks. New2case consumer components remain separately opt-in until SOURCE/PREP acceptance.",
+      "category": "fr063-joint-diagnostic-write-controls",
+      "reason": "T349 instruments every attempted timing write and adds a typed clock seam;8cheap diagnostic controls cover exact cost accounting plus original write/clock failure precedence and complete logger behavior. Actual2case components stay separately gated until SOURCE/PREP acceptance.",
       "contracts": [
-        "Complete messages/exceptions and deferred diagnostic storage failures; no diagnostic quotas or primary-outcome replacement."
+        "Uncapped complete diagnostic output, per-name writer-cost ledger and deferred errors without changing game outcomes."
       ]
     }
   ]
