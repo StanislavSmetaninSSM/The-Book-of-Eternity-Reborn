@@ -1489,7 +1489,31 @@ public partial class GameEngine
         PendingPlayerActionService.Staged? BrowserStaged,
         HotOrdinaryOriginal? HotOrigin = null, string? HotRequestJson = null);
 
-    private async Task ProcessPlayerTurn(
+    /// <summary>
+    /// Stages and finalizes an ordinary console or bound browser player turn through its existing session owner.
+    /// </summary>
+    /// <param name="action">
+    /// The player action passed to the original turn staging and finalization path.
+    /// </param>
+    /// <param name="extraSystemReminder">
+    /// An optional staging reminder; <see langword="null"/> adds no extra reminder.
+    /// </param>
+    /// <param name="waitingTitle">
+    /// An optional waiting title; <see langword="null"/> selects the existing player-safe title.
+    /// </param>
+    /// <param name="waitingText">
+    /// Optional waiting text; <see langword="null"/> selects the existing player-safe text.
+    /// </param>
+    /// <param name="playerFacingTurn">
+    /// Whether finalization treats the turn as player-facing; defaults to <see langword="true"/>.
+    /// </param>
+    /// <param name="browserAction">
+    /// The existing browser action binding, or <see langword="null"/> for the ordinary continuous console owner.
+    /// </param>
+    /// <returns>
+    /// Completion after the existing staging, terminal wait and finalization flow returns or propagates its failure.
+    /// </returns>
+    internal async Task ProcessPlayerTurn(
         string action,
         string? extraSystemReminder = null,
         string? waitingTitle = null,

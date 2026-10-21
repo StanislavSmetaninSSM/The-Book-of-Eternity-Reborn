@@ -6357,7 +6357,28 @@ public sealed partial class QteSceneService
     private static string FormatCompactPhysicalKeyLabel(ConsoleKey key) =>
         QteKeyInput.FormatPromptLabel(key).Replace(" / ", "/", StringComparison.Ordinal);
 
-    private bool TryReadImmediateKey(out ConsoleKeyInfo key)
+    /// <summary>
+    /// Checks whether this service retained the exact supplied constructor input dependency.
+    /// </summary>
+    /// <param name="inputSource">
+    /// The candidate input instance; <see langword="null"/> never matches the configured source.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> only for the retained input instance; otherwise, <see langword="false"/>.
+    /// </returns>
+    internal bool UsesInputSource(IConsoleInputSource? inputSource) => ReferenceEquals(_inputSource, inputSource);
+
+    /// <summary>
+    /// Consumes one immediately available key from this service's configured input without waiting for a key.
+    /// </summary>
+    /// <param name="key">
+    /// The consumed key on success, or the default value when no key is available.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when a key was consumed; otherwise, <see langword="false"/>.
+    /// Exceptions from the configured input remain observable by the caller.
+    /// </returns>
+    internal bool TryReadImmediateKey(out ConsoleKeyInfo key)
     {
         return TryReadImmediateKey(_inputSource, out key);
     }

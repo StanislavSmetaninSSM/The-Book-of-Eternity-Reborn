@@ -10982,8 +10982,12 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     /// <param name="loadHooks">
     /// Optional cuts in the real save loader; <see langword="null"/> leaves them disabled.
     /// </param>
+    /// <param name="qteInputSource">
+    /// Optional independent QTE input; <see langword="null"/> preserves the original system source.
+    /// This RED scaffold accepts the argument without forwarding it to the QTE constructor yet.
+    /// </param>
     /// <returns>
-    /// The engine and the same state manager and game loop supplied to its constructor.
+    /// The engine and the same state, loop, audio, validation, QTE and hooks supplied during construction.
     /// </returns>
     internal static GameEngineTestRuntime CreateGameEngineRuntime(
         FileSystemManager fileSystem,
@@ -10991,7 +10995,8 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         Action<GameSettings>? configureSettings = null,
         GameEngineSessionFinalizationHooks? finalizationHooks = null,
         Microsoft.Extensions.Logging.ILogger<GameEngine>? logger = null,
-        SaveLoadServiceHooks? loadHooks = null)
+        SaveLoadServiceHooks? loadHooks = null,
+        IConsoleInputSource? qteInputSource = null)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
         var fs = fileSystem;
@@ -11068,7 +11073,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             logger ?? NullLogger<GameEngine>.Instance,
             inputSource);
         engine.ConfigureSessionFinalizationHooksForTesting(finalizationHooks);
-        return new GameEngineTestRuntime(engine, stateManager, gameLoop);
+        return new GameEngineTestRuntime(engine, stateManager, gameLoop, audioService, validator, qteSceneService, finalizationHooks);
     }
 
     private void ArmCanonicalWriteFailure(string relativePath, int matchingWrite = 1)

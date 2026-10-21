@@ -2,6 +2,39 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-five-fixture-contracts",
+  "responsibility": "T363 explicit closed five-cut fixture metadata, synthetic checked imports, actual typed constructor wiring and read-only existing registry observation controls.",
+  "excludes": "No genuine source42 generation, game world, player turn, process crash or original five/Linux qualification. No authority imported through fixture data or diagnostic quotas.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointInterfaceSeedCrashInput.cs",
+    "BookOfEternityClient.IntegrationTests/JointInterfaceFiveCutSeedInputTests.cs",
+    "BookOfEternityClient.IntegrationTests/JointInterfaceTypedRuntimeTests.cs",
+    "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.Observations.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-interface-seed-input-contracts",
+      "when": "Legacy metadata shape or mode guards change."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointInterfaceFiveCutSeedInputTests.*",
+        "BookOfEternityClient.Tests.JointInterfaceTypedRuntimeTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "portable-canonical-path-metadata-unit-controls",
   "responsibility": "T359 detached production-guard ordering/root/false-attribute/fallback/error/fresh-call DATA controls, without filesystem authority.",
   "excludes": "No game/world/turn/source42 preparation, original recovery/full-owner/five/Linux native qualification, diagnostic quota or retained authority.",

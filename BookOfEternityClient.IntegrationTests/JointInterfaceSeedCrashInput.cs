@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Tests;
@@ -13,8 +14,18 @@ namespace BookOfEternityClient.Tests;
 /// <param name="ManifestSha256">
 /// The uppercase SHA256 digest of the exact selected manifest bytes.
 /// </param>
-internal sealed record JointInterfaceSeedCrashInput(string ArtifactPath, string ManifestSha256)
+/// <param name="Usage">
+/// An explicit closed fixture usage, or <see langword="null"/> for the original two-field cut0 selection.
+/// The default value is omitted from serialized legacy metadata.
+/// </param>
+internal sealed record JointInterfaceSeedCrashInput(string ArtifactPath, string ManifestSha256,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? Usage = null)
 {
+    /// <summary>
+    /// Identifies the explicit ordinary Windows fixture usage for the original five cuts.
+    /// </summary>
+    internal const string OrdinaryWindowsFiveCutsUsage = "ordinary-windows-five-cuts-v1";
+
     /// <summary>
     /// Validates an ordinary Windows cut0 artifact and binds its exact manifest to the current source contracts.
     /// </summary>
@@ -30,12 +41,20 @@ internal sealed record JointInterfaceSeedCrashInput(string ArtifactPath, string 
     /// <param name="mode">
     /// The ordinary cut0 mode, with diagnostics disabled and no integrity fault.
     /// </param>
+    /// <param name="usage">
+    /// An explicit fixture usage; <see langword="null"/> preserves the legacy cut0-only contract.
+    /// Explicit usage remains refused by the legacy-equivalent RED scaffold.
+    /// </param>
+    /// <param name="fixtureAcquisitionOnly">
+    /// Whether separate fixture acquisition was requested; the default is <see langword="false"/>.
+    /// </param>
     /// <returns>
     /// A detached selection containing the validated artifact path and exact manifest digest.
     /// </returns>
     internal static JointInterfaceSeedCrashInput Bind(string artifactPath, string repoRoot, bool windows,
-        JointInterfaceCrashMode mode)
+        JointInterfaceCrashMode mode, string? usage = null, bool fixtureAcquisitionOnly = false)
     {
+        ValidateUsage(usage);
         ValidateMode(windows, mode);
         var path = NormalizeArtifactPath(artifactPath);
         var selection = new JointInterfaceSeedCrashInput(path, ReadManifestDigest(path));
@@ -66,6 +85,12 @@ internal sealed record JointInterfaceSeedCrashInput(string ArtifactPath, string 
         ValidateMode(windows, mode);
         try
         {
+            if (node is JsonObject explicitSelection && explicitSelection.TryGetPropertyValue("Usage", out var usageNode))
+            {
+                if (usageNode is not JsonValue usageValue || !usageValue.TryGetValue<string>(out var usage) || usage is null)
+                    throw new InvalidDataException("Source42Seed Usage must be an explicit supported string.");
+                ValidateUsage(usage);
+            }
             if (node is not JsonObject selection || selection.Count != 2 ||
                 selection.Any(property => property.Key is not ("ArtifactPath" or "ManifestSha256")) ||
                 !selection.TryGetPropertyValue("ArtifactPath", out var pathNode) ||
@@ -93,6 +118,7 @@ internal sealed record JointInterfaceSeedCrashInput(string ArtifactPath, string 
     /// </returns>
     internal JointInterfaceCrashSeed Open(string repoRoot)
     {
+        ValidateUsage(Usage);
         ValidateDigest(ManifestSha256);
         var path = NormalizeArtifactPath(ArtifactPath);
         if (ReadManifestDigest(path) != ManifestSha256)
@@ -109,6 +135,18 @@ internal sealed record JointInterfaceSeedCrashInput(string ArtifactPath, string 
         {
             throw new InvalidDataException("The selected source42 artifact cannot be opened as checked ordinary data.", error);
         }
+    }
+
+    /// <summary>
+    /// Preserves the legacy-only behavior while the explicit usage is under causal RED verification.
+    /// </summary>
+    /// <param name="usage">
+    /// The explicit usage spelling; only absence is accepted by this scaffold.
+    /// </param>
+    private static void ValidateUsage(string? usage)
+    {
+        if (usage is not null)
+            throw new InvalidDataException("Explicit Source42Seed usage is not implemented.");
     }
 
     /// <summary>
