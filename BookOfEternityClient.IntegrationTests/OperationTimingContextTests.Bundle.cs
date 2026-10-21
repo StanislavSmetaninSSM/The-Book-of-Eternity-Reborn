@@ -52,8 +52,10 @@ public sealed partial class OperationTimingContextTests
     {
         using var fixture = new Fixture(_output);
         var bundle = CreateOrdinaryBundle();
-        var changed = bundle.Input;
-        changed.PreTurnIdentityIndex["diagnostic-mutation"] = true;
+        var changed = bundle.Input with
+        {
+            Binding = bundle.Input.Binding with { RequestId = "request_diagnostic_foreign" }
+        };
         var trace = new Trace(_output);
         var files = fixture.Create(trace.Observe);
         using (files.EnterOperationTimingContext())
