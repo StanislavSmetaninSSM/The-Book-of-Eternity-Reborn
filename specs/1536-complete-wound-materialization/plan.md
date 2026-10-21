@@ -1,5 +1,8 @@
 # CRASH5 — plan13 revision18: shared construction and real owner on fixture DATA
 
+T345 actual: total2minute timeout124/120.294s,1planned/0completed/no test verdict; complete97,860,429byte durable JSONLprefix,525834valid events/262912closed+10unfinished scopes, continuous/no parse errors. Serviceconstruction29.407ms; accepted validation50.071s (completed-continuation48.954s),79footprint stages and39844managed reads. Cleanup before-image verification reached; no publication/completion/closing/repeat verdict. All220gamefiles/60dirs/gen equal in independent readonly observation; ownedroot retained. Full raw/lossless analysis/maps/findings preserved, independent outcome review pending; no unchanged retry, limit increase or historical fix claim.
+
+
 T344 SOURCE/PREP accepted without findings by separate actual Astra/high at32013bbf; T344-source-review.json records all56archive entries,4DLL+copies,1newPASS+22unchanged retained, strict-importer equivalence and376exact remote recovery. Record/push/readback/recover this release, then execute exactlyone corrected T345 Windows profile with the archived guarded runner (SHA9D16798ACE5F510022B2B180C2F01E607D5C11E019E438034E4D6B994EC0DBBE), explicit2minute totalcommand timeout and new attempt identity. Preserve/analyze/review honest full outcome; no broader qualification.
 
 
