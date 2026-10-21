@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "fr063-joint-private-fingerprint-data",
+      "reason": "Direct immutable DATA reference, alias isolation and one-time hashing controls for r39.",
+      "contracts": [
+        "IMMUTABLEFP-1/2/5: derive exact fields and hashes from owned actual data without supplying hashes, authority or successful-admission flags."
+      ]
+    }
+  ]
+}

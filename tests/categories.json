@@ -2,11 +2,40 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-private-fingerprint-data",
+  "responsibility": "Three cheap DATA-only controls for exact original joint fingerprint fields and digest, ordinal nullable byte hashes, insertion order, supplied/returned alias isolation, one hashing capture and fresh scalar-dependent final digests.",
+  "excludes": "No game, joint issuer, authority substitution, reflection, candidate or canonical writes; DATA coverage does not qualify T383 or performance.",
+  "changeHints": [
+    "BookOfEternityClient/Services/JointPrivateFingerprintData.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs",
+    "BookOfEternityClient.IntegrationTests/JointPrivateFingerprintDataTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointPrivateFingerprintDataTests.CapturedDataMatchesOriginalFieldsAndOrdinalByteHashes",
+        "BookOfEternityClient.Tests.JointPrivateFingerprintDataTests.SuppliedAndReturnedAliasesCannotChangeCapturedData",
+        "BookOfEternityClient.Tests.JointPrivateFingerprintDataTests.CaptureHashesOnceWhileEveryFinalDigestUsesCurrentScalarFields"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-bundle-copy-controls",
-  "responsibility": "One genuinely issued joint fixture runs the direct-copy, constructor-reference, copy-of-copy, mutation, invalid-stage, private-history corruption/restoration and normal-abort parity controls.",
-  "excludes": "No candidate miss/hit or Beginning-owner work, game loop/full world/source42/crash/Linux, fake authority, reflection or diagnostic quota. Coverage only; does not qualify T383 or performance.",
+  "responsibility": "One genuinely issued joint fixture runs direct-copy, constructor-reference, copy-of-copy, mutation, invalid-stage, current physical-byte refusal/restoration, private-history restoration, normal-abort parity and immutable fingerprint work controls.",
+  "excludes": "No candidate miss/hit or Beginning-owner work, game loop/full world/source42/crash/Linux, fake authority, reflection or diagnostic quota. Bounded copy observations do not qualify T383 or original workload speed.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.Copy.cs",
+    "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.CurrentBytes.cs",
+    "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.AdmissionTimings.cs",
     "BookOfEternityClient/Services/AcceptedMechanicsPlan.cs",
     "BookOfEternityClient/Services/WoundAcceptedTurnPlanCache.cs"
   ],

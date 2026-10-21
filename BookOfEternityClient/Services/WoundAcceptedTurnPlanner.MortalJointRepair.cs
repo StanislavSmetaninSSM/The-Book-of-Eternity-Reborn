@@ -1,4 +1,3 @@
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
@@ -14,9 +13,8 @@ internal static partial class WoundAcceptedTurnPlanner
     private sealed class JointRepairContinuationAuthority
     {
         private readonly FileSystemManager _files;
-        private readonly Dictionary<string, byte[]?> _before;
+        private readonly JointPrivateFingerprintData _fingerprintData;
         private readonly WoundAcceptedTurnInput _acquisitionInput;
-        private readonly JsonObject _acquisitionCommandRoot;
         private readonly WoundAcceptedTurnInput _treatmentInput;
         private readonly MortalWoundTreatmentOutcomePreparation _outcome;
         private readonly WoundEffectOperationBatch? _treatmentBatch;
@@ -80,16 +78,17 @@ internal static partial class WoundAcceptedTurnPlanner
             if (!ReferenceEquals(issuer, JointRepairIssuer)) throw new InvalidOperationException("Joint preparation requires its private issuer.");
             _files = files; Generation = generation; Checkpoint = checkpoint;
             _acquisitionInput = WoundAcceptedTurnData.CloneInput(acquisitionInput)!;
-            _acquisitionCommandRoot = acquisitionCommandRoot.DeepClone().AsObject();
+            var commandRoot = acquisitionCommandRoot.DeepClone().AsObject();
             _treatmentInput = WoundAcceptedTurnData.CloneInput(treatmentInput)!;
             Accepted = accepted; Request = request; Resolution = resolution; Finalization = finalization;
             _outcome = outcome.DetachedCopy(); _treatmentBatch = rematerialization.Batch;
             Rematerialization = rematerialization.Authority;
-            _before = before.ToDictionary(pair => pair.Key, pair => pair.Value?.ToArray(), StringComparer.Ordinal);
+            var beforeImages = JointPrivateFingerprintData.BeforeImages.Copy(before);
             using (files.EnterOperationTimingContext())
             using (FileSystemManager.MeasureCurrentOperation("JointContinuation.InitialFingerprint"))
             {
-                Fingerprint = ComputeFingerprint();
+                Fingerprint = CaptureInitialFingerprint(commandRoot, beforeImages, out var fingerprintData);
+                _fingerprintData = fingerprintData;
             }
         }
         internal string Generation { get; }
@@ -100,20 +99,35 @@ internal static partial class WoundAcceptedTurnPlanner
         internal MortalWoundTreatmentResourceFinalization Finalization { get; }
         internal MortalWoundTreatmentRematerializationAuthority? Rematerialization { get; }
         internal WoundAcceptedTurnInput AcquisitionInput => WoundAcceptedTurnData.CloneInput(_acquisitionInput)!;
-        internal JsonObject AcquisitionCommandRoot => _acquisitionCommandRoot.DeepClone().AsObject();
-        internal byte[] ReadAcceptedNarrative() => _before["output/narrative_response.json"]?.ToArray()
+        /// <summary>
+        /// Gets a detached command view reconstructed from its exact immutable serialization.
+        /// </summary>
+        internal JsonObject AcquisitionCommandRoot => _fingerprintData.ReadCommandRoot();
+        /// <summary>
+        /// Reads a detached copy of the retained accepted narrative.
+        /// </summary>
+        /// <returns>
+        /// The original narrative bytes; an absent captured narrative is rejected.
+        /// </returns>
+        internal byte[] ReadAcceptedNarrative() => _fingerprintData.ReadBeforeBytes("output/narrative_response.json")
             ?? throw new InvalidDataException("The sealed joint continuation has no accepted narrative.");
+        /// <summary>
+        /// Reads and validates the retained interface publication when this checkpoint uses one.
+        /// </summary>
+        /// <returns>
+        /// The retained publication record, or <see langword="null"/> for a legacy checkpoint.
+        /// </returns>
         internal MortalJointInterfacePublication.Record? ReadPublishedInterface()
         {
             if (!Checkpoint.UsesInterfacePublication) return null;
             var pending = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
-                _before[WoundAcceptedTurnSnapshotContract.PendingResolutionPath] ?? throw new InvalidDataException("joint_interface_pending_missing")),
+                _fingerprintData.ReadBeforeBytes(WoundAcceptedTurnSnapshotContract.PendingResolutionPath) ?? throw new InvalidDataException("joint_interface_pending_missing")),
                 SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "sealed joint interface result")!;
             var result = MortalJointInterfacePublication.Read(System.Text.Json.JsonSerializer.SerializeToElement(
                 pending[MortalJointInterfacePublication.PendingField] ?? throw new InvalidDataException("joint_interface_result_missing")));
             result.RequireLegacyPending(pending);
             if (result.State != "Published" || result.HasErrors || !MortalJointInterfacePublication.BytesEqual(
-                    result.AfterBytes, _before[MortalJointInterfacePublication.InterfacePath]))
+                    result.AfterBytes, _fingerprintData.ReadBeforeBytes(MortalJointInterfacePublication.InterfacePath)))
                 throw new InvalidDataException("joint_interface_result_not_consumed_current");
             return result;
         }
@@ -121,17 +135,29 @@ internal static partial class WoundAcceptedTurnPlanner
         internal MortalWoundTreatmentOutcomePreparation Outcome => _outcome.DetachedCopy();
         internal WoundEffectOperationBatch? TreatmentBatch => _treatmentBatch is null ? null : WoundAcceptedTurnData.CloneOperationBatch(_treatmentBatch);
         internal string Fingerprint { get; }
+        /// <summary>
+        /// Parses detached effect source roots from the private before-images.
+        /// </summary>
+        /// <returns>
+        /// A fresh source map with null values for captured absent files.
+        /// </returns>
         internal IReadOnlyDictionary<string, JsonNode?> ReadEffectSourceRoots() =>
             EffectAcceptedTurnInputComposer.SourceAuthorityPaths.ToDictionary(path => path, path =>
-                _before[path] is not { } bytes ? null : (JsonNode?)StrictJsonAuthority.Deserialize<JsonObject>(
+                _fingerprintData.ReadBeforeBytes(path) is not { } bytes ? null : (JsonNode?)StrictJsonAuthority.Deserialize<JsonObject>(
                     new UTF8Encoding(false, true).GetString(bytes).TrimStart('\uFEFF'),
                     SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, path), StringComparer.Ordinal);
+        /// <summary>
+        /// Parses and checks the captured acquisition command against its original opportunities.
+        /// </summary>
+        /// <returns>
+        /// The single acquisition command; mixed or malformed command roots are rejected.
+        /// </returns>
         internal IReadOnlyList<WoundResponseCommandDraft> ReadAcquisitionCommands()
         {
             // This root came only from the factory's fresh actual corrected QTE
             // adapter, not the physical homogeneous treatment command or a caller.
             var parsed = WoundResponseInputComposer.ParseCommandRoot(
-                System.Text.Json.JsonSerializer.SerializeToElement(_acquisitionCommandRoot),
+                System.Text.Json.JsonSerializer.SerializeToElement(_fingerprintData.ReadCommandRoot()),
                 _acquisitionInput.Opportunities);
             if (!parsed.Success || parsed.Commands.Count != 1 || parsed.TreatmentCommands.Count != 0 ||
                 parsed.AcceptedTransitionCommands.Count != 0)
@@ -160,30 +186,72 @@ internal static partial class WoundAcceptedTurnPlanner
         }
 
         /// <summary>
-        /// Computes the seal over retained joint inputs, companion fingerprints and ordered private before-image bytes.
+        /// Captures immutable private fields in their original evaluation order and computes the initial seal.
+        /// </summary>
+        /// <param name="commandRoot">
+        /// The private command clone, serialized after acquisition fingerprinting and before treatment fingerprinting.
+        /// </param>
+        /// <param name="beforeImages">
+        /// Bytes already copied in source insertion order before initial fingerprint computation.
+        /// </param>
+        /// <param name="fingerprintData">
+        /// Receives the prefix captured before live scalar reads, together with byte hashes derived after those reads.
+        /// </param>
+        /// <returns>
+        /// The original field-sequence digest; it grants no fresh-owner or current-file guarantee.
+        /// </returns>
+        private string CaptureInitialFingerprint(JsonObject commandRoot,
+            JointPrivateFingerprintData.BeforeImages beforeImages, out JointPrivateFingerprintData fingerprintData)
+        {
+            using var operationTiming = FileSystemManager.MeasureCurrentOperation("JointContinuation.ComputeFingerprint");
+            var fields = new List<string?> { JointRepairDomain, Generation };
+            var prefix = JointPrivateFingerprintData.Prefix.Capture(Checkpoint.ToJsonObject(),
+                _acquisitionInput, commandRoot, _treatmentInput);
+            prefix.AppendTo(fields);
+            fields.AddRange(new string?[]
+            {
+                Accepted.AcceptedStateFingerprint,
+                Request.RequestFingerprint, Resolution.ResultFingerprint, Resolution.ResolutionAuthorityFingerprint,
+                Finalization.FinalizationFingerprint, _outcome.Fingerprint, Rematerialization?.AuthoritySeal
+            });
+            fingerprintData = JointPrivateFingerprintData.Capture(prefix, beforeImages);
+            fingerprintData.AppendBeforeFields(fields);
+            return WoundAcceptedTurnFingerprintWriter.Compute(fields);
+        }
+
+        /// <summary>
+        /// Recomputes the final seal using immutable private fields and fresh companion scalar reads.
         /// </summary>
         /// <returns>
-        /// The digest of this retained graph, including a distinct null marker for an absent before-image.
+        /// The digest of the current retained graph; byte hashing is reused only for privately owned immutable data.
         /// </returns>
         private string ComputeFingerprint()
         {
             using var operationTiming = FileSystemManager.MeasureCurrentOperation("JointContinuation.ComputeFingerprint");
-            var fields = new List<string?>
+            var fields = new List<string?> { JointRepairDomain, Generation };
+            _fingerprintData.AppendPrefix(fields);
+            fields.AddRange(new string?[]
             {
-                JointRepairDomain, Generation, Checkpoint.ToJsonObject()["fingerprint"]!.GetValue<string>(),
-                WoundAcceptedTurnFingerprints.ComputeInput(_acquisitionInput),
-                _acquisitionCommandRoot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
-                WoundAcceptedTurnFingerprints.ComputeInput(_treatmentInput), Accepted.AcceptedStateFingerprint,
+                Accepted.AcceptedStateFingerprint,
                 Request.RequestFingerprint, Resolution.ResultFingerprint, Resolution.ResolutionAuthorityFingerprint,
                 Finalization.FinalizationFingerprint, _outcome.Fingerprint, Rematerialization?.AuthoritySeal
-            };
-            using (FileSystemManager.MeasureCurrentOperation("JointContinuation.HashBeforeImages"))
-            {
-                foreach (var (path, bytes) in _before.OrderBy(pair => pair.Key, StringComparer.Ordinal))
-                { fields.Add(path); fields.Add(bytes is null ? null : Convert.ToHexString(SHA256.HashData(bytes))); }
-            }
+            });
+            _fingerprintData.AppendBeforeFields(fields);
             return WoundAcceptedTurnFingerprintWriter.Compute(fields);
         }
+
+        /// <summary>
+        /// Revalidates the actual owner, original, insertion-ordered file bytes, baselines and confirmed held claim.
+        /// </summary>
+        /// <param name="files">
+        /// The same physical file manager retained by the continuation.
+        /// </param>
+        /// <param name="lease">
+        /// The caller-owned active canonical write lease used for every current file read.
+        /// </param>
+        /// <returns>
+        /// A task completing only after the existing live guards succeed.
+        /// </returns>
         internal async Task ValidateCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
         {
             using var namedOperationTimer20 = files.MeasureOperation("Continuation.ValidateCurrentAsync");
@@ -198,10 +266,10 @@ internal static partial class WoundAcceptedTurnPlanner
                 original.SnapshotToken != binding.SnapshotToken || original.TurnNumber != binding.Turn || original.Realm != binding.Realm)
                 throw new InvalidDataException("The actual joint original no longer matches its independently bound sources.");
             using var namedOperationTimer22 = files.MeasureOperation("Continuation.CompareBeforeImages");
-            foreach (var (path, expected) in _before)
+            foreach (var path in _fingerprintData.ReadBeforePaths())
             {
                 var actual = await files.ReadFileBytesAsync(lease, path);
-                if (expected is null ? actual is not null : actual is null || !expected.AsSpan().SequenceEqual(actual))
+                if (!_fingerprintData.MatchesBefore(path, actual))
                     throw new InvalidDataException("Joint preparation before-image changed: " + path);
             }
             namedOperationTimer22?.Dispose();

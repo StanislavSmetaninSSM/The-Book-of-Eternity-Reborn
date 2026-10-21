@@ -2,10 +2,38 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "fr063-joint-bundle-candidate",
-      "reason": "One genuinely issued small joint fixture: actual candidate miss and hit, complete nested timings/counters, retained plan, unchanged canonical bytes, foreign-input refusal and stale-fence controls.",
+      "category": "fr063-joint-private-fingerprint-data",
+      "reason": "r39 immutable private fingerprint DATA reference, alias isolation and one actual hash capture.",
       "contracts": [
-        "BUNDLETRACE-2/3: genuine issuer path, actual one miss/hit, complete uncapped observations, original candidate/refusal/fence semantics and fresh-root closing."
+        "IMMUTABLEFP-1/2/5: exact field order, serialization, nullable byte hashes and immutable ownership."
+      ]
+    },
+    {
+      "category": "fr063-joint-bundle-copy-controls",
+      "reason": "Existing genuine joint-copy semantics, current physical-byte refusal/restoration and admission timing tree.",
+      "contracts": [
+        "IMMUTABLEFP-3/4/5: zero repeated before-image hashing, all 63 fresh seal/resource checks, honest initial hash and existing refusal/restoration/abort controls."
+      ]
+    },
+    {
+      "category": "fr063-operation-timing-context-controls",
+      "reason": "Retain twelve existing passive timing-context and ordinary bundle compatibility controls.",
+      "contracts": [
+        "Original observer routing, nested restoration, exception isolation and ordinary full-replay behavior."
+      ]
+    },
+    {
+      "category": "fr063-wound-bundle-copy-contracts",
+      "reason": "Retain the two pure typed detachment and cross-swapped stage refusal controls.",
+      "contracts": [
+        "Complete mutable-graph detachment and every existing cross-stage refusal."
+      ]
+    },
+    {
+      "category": "crash5-named-operation-timers",
+      "reason": "Retain the four existing passive operation-timer controls used by the unchanged observation mechanism.",
+      "contracts": [
+        "Disabled observation, idempotent closing, original result and exception with throwing receivers."
       ]
     }
   ]
