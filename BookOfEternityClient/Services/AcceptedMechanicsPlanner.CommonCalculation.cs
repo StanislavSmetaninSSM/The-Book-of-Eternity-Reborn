@@ -1,3 +1,4 @@
+using BookOfEternityClient.Core;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -465,8 +466,21 @@ internal static partial class AcceptedMechanicsPlanner
             touched.ToArray(), consumed.ToArray(), resourceResult, effectPlan, carrierComposition), Array.Empty<ValidationIssue>());
     }
 
+    /// <summary>
+    /// Assembles a joint plan from the authority's retained calculation after checking the bound input.
+    /// </summary>
+    /// <param name="input">
+    /// The complete input bearing its issued joint common authority.
+    /// </param>
+    /// <param name="fingerprint">
+    /// The expected planning input fingerprint checked before assembly.
+    /// </param>
+    /// <returns>
+    /// The assembled joint candidate, or refusal issues when the bound input does not agree.
+    /// </returns>
     internal static AcceptedMechanicsPlanningResult AssembleRetainedJointPlan(AcceptedMechanicsInput input, string fingerprint)
     {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("JointCommon.AssembleRetainedPlan");
         if (input.PlanningContext?.JointRepairCommonAuthority is not { } authority || !authority.MatchesInput(input) ||
             fingerprint != AcceptedMechanicsPlanFingerprints.ComputePlanningInput(input))
             return new(null, Issue("accepted_mechanics_joint_retained_input_invalid", "the exact bound joint input", "foreign input"));

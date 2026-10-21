@@ -1,3 +1,4 @@
+using BookOfEternityClient.Core;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Security.Cryptography;
@@ -373,18 +374,36 @@ internal sealed class AcceptedMechanicsWoundStageBundle
     private readonly Dictionary<string, EffectAcceptedTerminationResult>
         _terminationResults;
 
+    /// <summary>
+    /// Validates the complete wound stage handoff and retains detached copies of its data.
+    /// </summary>
+    /// <param name="input">
+    /// The wound input whose binding and full graph must agree with the supplied stages.
+    /// </param>
+    /// <param name="preparedPlan">
+    /// The prepared wound stage to validate against <paramref name="input"/>.
+    /// </param>
+    /// <param name="effectBatchPlan">
+    /// The accepted effect stage to validate against <paramref name="preparedPlan"/>.
+    /// </param>
+    /// <param name="finalPlan">
+    /// The final wound stage to validate against the prepared and effect handoff.
+    /// </param>
     internal AcceptedMechanicsWoundStageBundle(
         WoundAcceptedTurnInput input,
         WoundPreparedAcceptedTurnPlan preparedPlan,
         WoundEffectBatchAcceptedPlan effectBatchPlan,
         WoundAcceptedTurnPlan finalPlan)
     {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("WoundBundle.Constructor");
         ArgumentNullException.ThrowIfNull(input);
         ArgumentNullException.ThrowIfNull(preparedPlan);
         ArgumentNullException.ThrowIfNull(effectBatchPlan);
         ArgumentNullException.ThrowIfNull(finalPlan);
 
+        using var inputTiming = FileSystemManager.MeasureCurrentOperation("WoundBundle.InputFingerprint");
         var inputFingerprint = WoundAcceptedTurnFingerprints.ComputeInput(input);
+        inputTiming?.Dispose();
         var validatedPrepared = WoundAcceptedTurnPlanCache.ValidatePreparedResult(
             input,
             inputFingerprint,
@@ -425,6 +444,7 @@ internal sealed class AcceptedMechanicsWoundStageBundle
                 "The final wound stage does not match the full detached handoff.",
                 nameof(finalPlan));
         }
+        using var crossChecksTiming = FileSystemManager.MeasureCurrentOperation("WoundBundle.CrossChecksAndDetach");
         RequireEqual(
             inputFingerprint,
             preparedPlan.InputFingerprint,
@@ -592,8 +612,17 @@ internal sealed class AcceptedMechanicsWoundStageBundle
                     WoundAcceptedTurnData.CloneTerminationResult(pair.Value),
                 StringComparer.Ordinal));
 
-    internal AcceptedMechanicsWoundStageBundle DetachedCopy() =>
-        new(_input, _preparedPlan, _effectBatchPlan, _finalPlan);
+    /// <summary>
+    /// Creates another fully validated bundle with a detached mutable data graph.
+    /// </summary>
+    /// <returns>
+    /// A distinct validated bundle preserving this bundle's authority references and fingerprints.
+    /// </returns>
+    internal AcceptedMechanicsWoundStageBundle DetachedCopy()
+    {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("WoundBundle.DetachedCopy");
+        return new(_input, _preparedPlan, _effectBatchPlan, _finalPlan);
+    }
 
     private static Dictionary<string, EffectAcceptedApplicationResult>
         CreateApplicationMap(
@@ -937,8 +966,17 @@ internal sealed class AcceptedMechanicsPlanningContext
     internal ResourceCommandCompositionResult Commands { get; }
     internal JsonObject EffectIdentityRoot => _effectIdentityRoot.DeepClone().AsObject();
     internal EffectAcceptedTurnPlan? EffectPlan { get; }
-    internal AcceptedMechanicsWoundStageBundle? WoundStageBundle =>
-        _woundStageBundle?.DetachedCopy();
+    /// <summary>
+    /// Gets a detached, fully validated wound bundle when this object contains wound stages.
+    /// </summary>
+    internal AcceptedMechanicsWoundStageBundle? WoundStageBundle
+    {
+        get
+        {
+            using var operationTiming = FileSystemManager.MeasureCurrentOperation("WoundBundle.ContextGetter");
+            return _woundStageBundle?.DetachedCopy();
+        }
+    }
     internal MortalWoundCanonicalAnchorPlan? WoundAnchorPlan =>
         _woundAnchorPlan?.DetachedCopy();
     internal AcceptedMechanicsDirectWoundPublicationAuthority?
@@ -1576,8 +1614,17 @@ internal sealed class AcceptedMechanicsPlan
 
     internal EffectAcceptedTurnPlan? EffectPlan { get; }
 
-    internal AcceptedMechanicsWoundStageBundle? WoundStageBundle =>
-        _woundStageBundle?.DetachedCopy();
+    /// <summary>
+    /// Gets a detached, fully validated wound bundle when this object contains wound stages.
+    /// </summary>
+    internal AcceptedMechanicsWoundStageBundle? WoundStageBundle
+    {
+        get
+        {
+            using var operationTiming = FileSystemManager.MeasureCurrentOperation("WoundBundle.PlanGetter");
+            return _woundStageBundle?.DetachedCopy();
+        }
+    }
 
     internal bool IsMortalReceiptOnlyWoundPublication { get; }
 

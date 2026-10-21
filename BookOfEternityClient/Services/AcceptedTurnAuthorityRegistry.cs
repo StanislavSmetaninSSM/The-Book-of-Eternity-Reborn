@@ -3258,9 +3258,19 @@ internal static partial class AcceptedTurnAuthorityRegistry
             }
         }
 
+        /// <summary>
+        /// Compares supplied wound stages with the registry's current prepared, effect and final stages.
+        /// </summary>
+        /// <param name="input">
+        /// The complete common input whose wound stages are checked.
+        /// </param>
+        /// <returns>
+        /// A mismatch description when the stages disagree; otherwise, <see langword="null"/>.
+        /// </returns>
         private string? GetCommonWoundStageMismatch(
             AcceptedMechanicsInput input)
         {
+            using var operationTiming = FileSystemManager.MeasureCurrentOperation("JointCandidate.Registry.StageAgreement");
             ArgumentNullException.ThrowIfNull(input);
             try
             {

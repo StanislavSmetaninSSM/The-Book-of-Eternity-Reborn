@@ -72,7 +72,17 @@ internal static partial class WoundAcceptedTurnPlanner
         internal MortalItemAcceptedTurnNormalizationSnapshot ItemsForRegistry => Baseline.Items;
         internal object Continuation => Baseline.Continuation;
         internal object Reservation => Baseline.Reservation;
-        internal AcceptedMechanicsWoundStageBundle Bundle => Baseline.Bundle.DetachedCopy();
+        /// <summary>
+        /// Gets a fully validated detached copy of the common authority's retained wound bundle.
+        /// </summary>
+        internal AcceptedMechanicsWoundStageBundle Bundle
+        {
+            get
+            {
+                using var operationTiming = FileSystemManager.MeasureCurrentOperation("JointCommonAuthority.Bundle");
+                return Baseline.Bundle.DetachedCopy();
+            }
+        }
         internal MortalWoundCanonicalAnchorPlan Anchors => Baseline.Anchors.DetachedCopy();
         internal MortalWoundTreatmentAcceptedStateAuthority Accepted => ReadJointRepairAcceptedState(Continuation);
         internal MortalWoundTreatmentAttemptRequest Request => ReadJoint().Request;
@@ -92,12 +102,35 @@ internal static partial class WoundAcceptedTurnPlanner
         internal string Fingerprint { get; }
         private JointRepairContinuationAuthority ReadJoint() => TryReadJointRepair(Continuation, out var joint)
             ? joint : throw new InvalidDataException("The joint common continuation changed.");
-        private string ComputeFingerprint() => WoundAcceptedTurnFingerprintWriter.Compute(new string?[] {
-            "book_of_eternity.mortal_joint_repair.common_authority.v1", _resources.Fingerprint,
-            Baseline.Fingerprint, GetJointRepairContinuationFingerprint(Continuation), Bundle.BundleFingerprint, Anchors.Fingerprint,
-            Progression.Fingerprint, OutputBasis.Fingerprint });
-        internal bool HasValidSeal => _resources.HasValidSeal() && _resources.HasRetainedCommonCalculation &&
-            Baseline.HasValidSeal && Progression.HasValidSeal && ComputeFingerprint() == Fingerprint;
+        /// <summary>
+        /// Computes the common authority seal from its retained owners, bundle, anchors, progression and output basis.
+        /// </summary>
+        /// <returns>
+        /// The deterministic fingerprint used to verify this common authority.
+        /// </returns>
+        private string ComputeFingerprint()
+        {
+            using var operationTiming = FileSystemManager.MeasureCurrentOperation("JointCommonAuthority.ComputeFingerprint");
+            return WoundAcceptedTurnFingerprintWriter.Compute(new string?[] {
+                "book_of_eternity.mortal_joint_repair.common_authority.v1", _resources.Fingerprint,
+                Baseline.Fingerprint, GetJointRepairContinuationFingerprint(Continuation), Bundle.BundleFingerprint, Anchors.Fingerprint,
+                Progression.Fingerprint, OutputBasis.Fingerprint });
+        }
+        /// <summary>
+        /// Checks the current retained resource, baseline, progression and common authority seals.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> when every seal agrees; otherwise, <see langword="false"/>.
+        /// </returns>
+        internal bool HasValidSeal
+        {
+            get
+            {
+                using var operationTiming = FileSystemManager.MeasureCurrentOperation("JointCommonAuthority.HasValidSeal");
+                return _resources.HasValidSeal() && _resources.HasRetainedCommonCalculation &&
+                    Baseline.HasValidSeal && Progression.HasValidSeal && ComputeFingerprint() == Fingerprint;
+            }
+        }
         internal bool AgreesWith(AcceptedMechanicsWoundStageBundle? bundle, MortalWoundCanonicalAnchorPlan? anchors,
             ResourceOwnerAuthority owners) => HasValidSeal && bundle is not null && anchors is not null &&
             ReferenceEquals(bundle.PreparedPlan.JointRepairContinuationAuthority, Continuation) &&
@@ -116,23 +149,48 @@ internal static partial class WoundAcceptedTurnPlanner
             _planningInputFingerprint = AcceptedMechanicsPlanFingerprints.ComputePlanningInput(input);
             _bindingFingerprint = AcceptedMechanicsPlanFingerprints.ComputeInput(input.CreateBinding());
         }
-        internal bool MatchesInput(AcceptedMechanicsInput input) => HasValidSeal && _resources.RetainedInputAgrees(input) &&
-            _planningInputFingerprint is not null &&
-            ReferenceEquals(input.PlanningContext?.JointRepairCommonAuthority, this) && AgreesWithContext(input.PlanningContext) &&
-            _planningInputFingerprint == AcceptedMechanicsPlanFingerprints.ComputePlanningInput(input) &&
-            _bindingFingerprint == AcceptedMechanicsPlanFingerprints.ComputeInput(input.CreateBinding());
-        internal bool AgreesWithContext(AcceptedMechanicsPlanningContext context) =>
-            AgreesWith(context.WoundStageBundle, context.WoundAnchorPlan, context.Owners) && _resources.RetainedContextAgrees(context) &&
-            context.TreatmentResourcePublicationAuthority is null && context.DirectWoundPublicationAuthority is null &&
-            context.State.Fingerprint == State.Fingerprint && context.History.Fingerprint == History.Fingerprint &&
-            JsonNode.DeepEquals(context.DefinitionRoot, Definitions.ToCanonicalRoot()) &&
-            context.RegisteredSystemOutcomes.Count == 1 && ReferenceEquals(context.RegisteredSystemOutcomes[0], RegisteredOutcome) &&
-            ResourceMutationSourceCatalog.Create(RegisteredOutcome.SourceExports).Catalog?.Fingerprint == context.Sources.Fingerprint &&
-            JsonNode.DeepEquals(context.Commands.Root, ResourceAcceptedTurnInputComposer.Parse(null).Root) &&
-            AcceptedMechanicsCarrierAssembler.ValidateInitialEffectPlan(context.EffectPlan, Bundle).Count == 0 &&
-            context.CapacityTransitions.Count == 0 && context.OwnerCapacityDrafts.Count == 0 &&
-            context.OwnerCompanionAfterImages.Count == 0 && context.OwnerTransitions.Count == 0 &&
-            context.ExecutionSequenceOffset == 0 && context.TerminalOwners.ToHashSet().SetEquals(TerminalOwners);
+        /// <summary>
+        /// Checks that the complete input still agrees with this authority's bound planning and binding fingerprints.
+        /// </summary>
+        /// <param name="input">
+        /// The common input whose context, resources and fingerprints must still agree.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> when the sealed and bound input agrees; otherwise, <see langword="false"/>.
+        /// </returns>
+        internal bool MatchesInput(AcceptedMechanicsInput input)
+        {
+            using var operationTiming = FileSystemManager.MeasureCurrentOperation("JointCommonAuthority.MatchesInput");
+            return HasValidSeal && _resources.RetainedInputAgrees(input) &&
+                _planningInputFingerprint is not null &&
+                ReferenceEquals(input.PlanningContext?.JointRepairCommonAuthority, this) && AgreesWithContext(input.PlanningContext) &&
+                _planningInputFingerprint == AcceptedMechanicsPlanFingerprints.ComputePlanningInput(input) &&
+                _bindingFingerprint == AcceptedMechanicsPlanFingerprints.ComputeInput(input.CreateBinding());
+        }
+        /// <summary>
+        /// Checks the full wound, resource, owner and retained calculation context in its existing short-circuit order.
+        /// </summary>
+        /// <param name="context">
+        /// The planning context to compare with the issued common authority.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> when all context checks agree; otherwise, <see langword="false"/>.
+        /// </returns>
+        internal bool AgreesWithContext(AcceptedMechanicsPlanningContext context)
+        {
+            using var operationTiming = FileSystemManager.MeasureCurrentOperation("JointCommonAuthority.AgreesWithContext");
+            return AgreesWith(context.WoundStageBundle, context.WoundAnchorPlan, context.Owners) && _resources.RetainedContextAgrees(context) &&
+                context.TreatmentResourcePublicationAuthority is null && context.DirectWoundPublicationAuthority is null &&
+                context.State.Fingerprint == State.Fingerprint && context.History.Fingerprint == History.Fingerprint &&
+                JsonNode.DeepEquals(context.DefinitionRoot, Definitions.ToCanonicalRoot()) &&
+                context.RegisteredSystemOutcomes.Count == 1 && ReferenceEquals(context.RegisteredSystemOutcomes[0], RegisteredOutcome) &&
+                ResourceMutationSourceCatalog.Create(RegisteredOutcome.SourceExports).Catalog?.Fingerprint == context.Sources.Fingerprint &&
+                JsonNode.DeepEquals(context.Commands.Root, ResourceAcceptedTurnInputComposer.Parse(null).Root) &&
+                AcceptedMechanicsCarrierAssembler.ValidateInitialEffectPlan(context.EffectPlan, Bundle).Count == 0 &&
+                context.CapacityTransitions.Count == 0 && context.OwnerCapacityDrafts.Count == 0 &&
+                context.OwnerCompanionAfterImages.Count == 0 && context.OwnerTransitions.Count == 0 &&
+                context.ExecutionSequenceOffset == 0 && context.TerminalOwners.ToHashSet().SetEquals(TerminalOwners);
+        }
         internal async Task ValidateCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
         {
             using var innerTiming1 = files.MeasureOperation("JointCommonAuthority.ValidateCurrentAsync");

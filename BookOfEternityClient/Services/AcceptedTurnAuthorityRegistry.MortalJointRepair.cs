@@ -82,10 +82,35 @@ internal static partial class AcceptedTurnAuthorityRegistry
 
     internal sealed record JointCommonCandidateResult(AcceptedMechanicsPlanningResult Result,
         AcceptedMechanicsPlanCache.JointCandidateFence? Fence);
+    /// <summary>
+    /// Creates an unsealed joint candidate through the current registry while observing synchronous nested work.
+    /// </summary>
+    /// <param name="files">
+    /// The filesystem whose current session owns the registry and optional passive receiver.
+    /// </param>
+    /// <param name="lease">
+    /// The active canonical write lease used to obtain the participating registry state.
+    /// </param>
+    /// <param name="input">
+    /// The complete common input bound by the joint authority.
+    /// </param>
+    /// <param name="authority">
+    /// The genuinely issued joint common authority for the current reservation.
+    /// </param>
+    /// <returns>
+    /// The raw candidate and its cache fence, or refusal issues with no fence.
+    /// </returns>
     internal static JointCommonCandidateResult CreateJointRepairCommonCandidate(FileSystemManager files,
         FileSystemManager.CanonicalWriteLease lease, AcceptedMechanicsInput input,
-        WoundAcceptedTurnPlanner.MortalJointRepairCommonAuthority authority) =>
-        GetState(files, lease).CreateJointRepairCommonCandidate(input, authority);
+        WoundAcceptedTurnPlanner.MortalJointRepairCommonAuthority authority)
+    {
+        using var context = files.EnterOperationTimingContext();
+        using var totalTiming = files.MeasureOperation("JointCandidate.Registry.Total");
+        using var stateTiming = files.MeasureOperation("JointCandidate.Registry.State");
+        var state = GetState(files, lease);
+        stateTiming?.Dispose();
+        return state.CreateJointRepairCommonCandidate(input, authority);
+    }
     internal static AcceptedMechanicsPlanningResult SealJointRepairCommonCandidate(FileSystemManager files,
         FileSystemManager.CanonicalWriteLease lease, AcceptedMechanicsInput input,
         WoundAcceptedTurnPlanner.MortalJointRepairCommonAuthority authority,
@@ -99,11 +124,26 @@ internal static partial class AcceptedTurnAuthorityRegistry
     {
         private WoundAcceptedTurnPlanner.MortalJointRepairCommonAuthority? _validatedJointRepairCommonAuthority;
         private AcceptedMechanicsPlan? _validatedJointRepairCommonPlan;
+        /// <summary>
+        /// Checks the current joint reservation, wound stages and confirmed hold before creating a raw cache candidate.
+        /// </summary>
+        /// <param name="input">
+        /// The complete common input bound to <paramref name="authority"/>.
+        /// </param>
+        /// <param name="authority">
+        /// The issued joint common authority whose current reservation and accepted state must still agree.
+        /// </param>
+        /// <returns>
+        /// The unsealed candidate and fence, or refusal issues without a fence.
+        /// </returns>
         internal JointCommonCandidateResult CreateJointRepairCommonCandidate(AcceptedMechanicsInput input,
             WoundAcceptedTurnPlanner.MortalJointRepairCommonAuthority authority)
         {
+            using var lockWaitTiming = FileSystemManager.MeasureCurrentOperation("JointCandidate.Registry.LockWait");
             lock (_gate)
             {
+                lockWaitTiming?.Dispose();
+                using var lockWorkTiming = FileSystemManager.MeasureCurrentOperation("JointCandidate.Registry.LockWork");
                 if (!OwnsJointRepairPublicationReservation(authority.Continuation, authority.Reservation) ||
                     !authority.MatchesInput(input) || GetCommonWoundStageMismatch(input) is not null ||
                     !ReferenceEquals(authority.Accepted, _mortalWoundTreatmentAcceptedState))
@@ -236,8 +276,23 @@ internal static partial class AcceptedTurnAuthorityRegistry
             }
         }
 
-        private bool OwnsJointRepairPublicationReservation(object continuation, object reservation) =>
-            _openJointRepairPublicationReceipt is null && JointRepairPublicationReservationAgrees(continuation, reservation);
+        /// <summary>
+        /// Checks that the exact joint reservation is current and has no open publication receipt.
+        /// </summary>
+        /// <param name="continuation">
+        /// The private continuation expected to own the reservation.
+        /// </param>
+        /// <param name="reservation">
+        /// The exact reservation object to compare against the current registry slot.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> when the reservation and continuation still agree; otherwise, <see langword="false"/>.
+        /// </returns>
+        private bool OwnsJointRepairPublicationReservation(object continuation, object reservation)
+        {
+            using var operationTiming = FileSystemManager.MeasureCurrentOperation("JointCandidate.Registry.Reservation");
+            return _openJointRepairPublicationReceipt is null && JointRepairPublicationReservationAgrees(continuation, reservation);
+        }
 
         private bool JointRepairPublicationReservationAgrees(object continuation, object reservation) =>
             _mortalWoundTreatmentPublicationFingerprint is null &&

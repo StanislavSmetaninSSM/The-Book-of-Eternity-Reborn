@@ -1,3 +1,5 @@
+using BookOfEternityClient.Core;
+
 namespace BookOfEternityClient.Services;
 
 internal sealed partial class AcceptedMechanicsPlanCache
@@ -58,20 +60,41 @@ internal sealed partial class AcceptedMechanicsPlanCache
 
     // Planning is allowed here; validation/takeability is not. Fresh final source
     // IO runs outside both cache and registry monitors before the exact fence seals.
+    /// <summary>
+    /// Selects or assembles an unsealed joint candidate and rotates the cache fence under the existing gate.
+    /// </summary>
+    /// <param name="input">
+    /// The complete common input bound to <paramref name="authority"/>.
+    /// </param>
+    /// <param name="authority">
+    /// The issued joint common authority required to agree with the input and any retained result.
+    /// </param>
+    /// <returns>
+    /// The validated planning envelope and a new fence on success, or refusal issues without a fence.
+    /// </returns>
     internal (AcceptedMechanicsPlanningResult Result, JointCandidateFence? Fence) CreateJointCandidate(
         AcceptedMechanicsInput input, WoundAcceptedTurnPlanner.MortalJointRepairCommonAuthority authority)
     {
+        using var lockWaitTiming = FileSystemManager.MeasureCurrentOperation("JointCandidate.Cache.LockWait");
         lock (_gate)
         {
+            lockWaitTiming?.Dispose();
+            using var lockWorkTiming = FileSystemManager.MeasureCurrentOperation("JointCandidate.Cache.LockWork");
             if (!authority.MatchesInput(input) || input.ValidationIssues.Count != 0)
                 return (new(null, input.ValidationIssues.Count != 0 ? input.ValidationIssues : JointCacheIssue("foreign input")), null);
             ClearWoundRepairWaveCore();
             InvalidateValidatedCore();
+            using var fingerprintTiming = FileSystemManager.MeasureCurrentOperation("JointCandidate.Cache.Fingerprint");
             var fingerprint = AcceptedMechanicsPlanFingerprints.ComputePlanningInput(input);
+            fingerprintTiming?.Dispose();
+            using var selectionTiming = FileSystemManager.MeasureCurrentOperation("JointCandidate.Cache.SelectOrAssemble");
             var planned = _inputFingerprint == fingerprint && _planningResult is not null &&
                 ReferenceEquals(_planningResult.Plan?.JointRepairCommonAuthority, authority)
                 ? _planningResult : AcceptedMechanicsPlanner.AssembleRetainedJointPlan(input, fingerprint);
+            selectionTiming?.Dispose();
+            using var validationTiming = FileSystemManager.MeasureCurrentOperation("JointCandidate.Cache.ValidateResult");
             var result = ValidatePlannerResult(input, fingerprint, planned);
+            validationTiming?.Dispose();
             if (!result.Success) { InvalidateAllCore(); return (result, null); }
             _inputFingerprint = fingerprint;
             _planningResult = result;

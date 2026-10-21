@@ -1,3 +1,5 @@
+using BookOfEternityClient.Core;
+
 namespace BookOfEternityClient.Services;
 
 internal delegate WoundAcceptedTurnPreparationResult WoundAcceptedTurnPreparationFactory(
@@ -499,11 +501,27 @@ internal sealed class WoundAcceptedTurnPlanCache
         }
     }
 
+    /// <summary>
+    /// Validates a prepared result against its complete input and sealed wound authority.
+    /// </summary>
+    /// <param name="input">
+    /// The complete wound input for the prepared result.
+    /// </param>
+    /// <param name="inputFingerprint">
+    /// The expected fingerprint of <paramref name="input"/>.
+    /// </param>
+    /// <param name="result">
+    /// The preparation envelope whose plan and issues are checked.
+    /// </param>
+    /// <returns>
+    /// The accepted preparation result, or refusal issues when its envelope or authority does not agree.
+    /// </returns>
     internal static WoundAcceptedTurnPreparationResult ValidatePreparedResult(
         WoundAcceptedTurnInput input,
         string inputFingerprint,
         WoundAcceptedTurnPreparationResult result)
     {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("WoundPlanCache.ValidatePreparedResult");
         try
         {
             var plan = result.Plan;
@@ -829,11 +847,27 @@ internal sealed class WoundAcceptedTurnPlanCache
         return true;
     }
 
+    /// <summary>
+    /// Validates a final result and replays finalization against the complete prepared and effect stages.
+    /// </summary>
+    /// <param name="prepared">
+    /// The prepared wound authority for the expected handoff.
+    /// </param>
+    /// <param name="effectPlan">
+    /// The accepted effect stage whose result must agree with the final plan.
+    /// </param>
+    /// <param name="result">
+    /// The final result envelope whose fingerprints and authority are checked.
+    /// </param>
+    /// <returns>
+    /// The accepted final result, or refusal issues for a malformed or inconsistent handoff.
+    /// </returns>
     internal static WoundAcceptedTurnPlanningResult ValidateFinalResult(
         WoundPreparedAcceptedTurnPlan prepared,
         WoundEffectBatchAcceptedPlan effectPlan,
         WoundAcceptedTurnPlanningResult result)
     {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("WoundPlanCache.ValidateFinalResult");
         try
         {
             var plan = result.Plan;
@@ -871,11 +905,13 @@ internal sealed class WoundAcceptedTurnPlanCache
                 plan.IdentityIndexAfterImage,
                 plan.HistoryAfterImage,
                 plan.TransitionIntents);
+            using var replayTiming = FileSystemManager.MeasureCurrentOperation("WoundPlanCache.FinalizationReplay");
             var replay = WoundAcceptedTurnPlanner.Finalize(
                 WoundAcceptedTurnData.ClonePreparedPlan(prepared)!,
                 new WoundEffectBatchPlanningResult(
                     effectPlan,
                     Array.Empty<ValidationIssue>()));
+            replayTiming?.Dispose();
             var canonicalFinal = replay.Success
                 ? replay.Plan!.WoundFinalPlanFingerprint
                 : null;

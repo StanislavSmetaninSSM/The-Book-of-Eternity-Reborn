@@ -1,3 +1,4 @@
+using BookOfEternityClient.Core;
 using System.Collections.ObjectModel;
 using System.Globalization;
 
@@ -730,11 +731,27 @@ internal sealed class MortalWoundTreatmentResourceReservationRegistry
         return true;
     }
 
+    /// <summary>
+    /// Observes the exact confirmed treatment resource hold without changing its reservation state.
+    /// </summary>
+    /// <param name="registryCapability">
+    /// The capability required for registry-authorized confirmed-hold access.
+    /// </param>
+    /// <param name="request">
+    /// The non-null issued treatment request whose persisted hold is checked.
+    /// </param>
+    /// <param name="finalization">
+    /// The non-null finalization expected to agree with the held request.
+    /// </param>
+    /// <returns>
+    /// The confirmed-hold evidence when all checks agree, or refusal issues describing the mismatch.
+    /// </returns>
     internal MortalWoundTreatmentResourceConfirmedHoldProbe ProbeConfirmed(
         object registryCapability,
         MortalWoundTreatmentAttemptRequest request,
         MortalWoundTreatmentResourceFinalization finalization)
     {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("TreatmentResources.ProbeConfirmed");
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(finalization);
         if (!AcceptedTurnAuthorityRegistry.IsTreatmentResourceRegistryCapability(

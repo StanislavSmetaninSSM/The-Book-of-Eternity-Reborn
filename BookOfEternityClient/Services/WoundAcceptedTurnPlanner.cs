@@ -1,3 +1,4 @@
+using BookOfEternityClient.Core;
 using System.Security.Cryptography;
 using System.Collections.Immutable;
 using System.Text;
@@ -80,11 +81,27 @@ internal static class WoundEffectBatchPlanner
         return AcceptEffectResult(prepared, effectInput, ordinary);
     }
 
+    /// <summary>
+    /// Checks an ordinary effect result against the prepared wound authority and its composed input.
+    /// </summary>
+    /// <param name="prepared">
+    /// The sealed prepared wound stage; live owned drafts are refused by this ordinary path.
+    /// </param>
+    /// <param name="composedInput">
+    /// The complete effect input expected to agree with the prepared wound sources.
+    /// </param>
+    /// <param name="effectResult">
+    /// The ordinary effect planning result to validate and accept.
+    /// </param>
+    /// <returns>
+    /// The accepted wound effect batch, or issues describing the invalid handoff.
+    /// </returns>
     internal static WoundEffectBatchPlanningResult AcceptEffectResult(
         WoundPreparedAcceptedTurnPlan prepared,
         EffectAcceptedTurnInput composedInput,
         EffectAcceptedTurnPlanningResult effectResult)
     {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("WoundEffect.AcceptEffectResult");
         ArgumentNullException.ThrowIfNull(prepared);
         ArgumentNullException.ThrowIfNull(composedInput);
         ArgumentNullException.ThrowIfNull(effectResult);
@@ -417,10 +434,23 @@ internal static partial class WoundAcceptedTurnPlanner
             Array.Empty<ValidationIssue>());
     }
 
+    /// <summary>
+    /// Finalizes the prepared wound stage using the validated effect handoff.
+    /// </summary>
+    /// <param name="prepared">
+    /// The non-null prepared wound stage passed to ordinary finalization.
+    /// </param>
+    /// <param name="effectResult">
+    /// The non-null effect result passed to the finalization core.
+    /// </param>
+    /// <returns>
+    /// The completed wound plan, or issues refusing the effect handoff.
+    /// </returns>
     internal static WoundAcceptedTurnPlanningResult Finalize(
         WoundPreparedAcceptedTurnPlan prepared,
         WoundEffectBatchPlanningResult effectResult)
     {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("WoundPlanner.Finalize");
         ArgumentNullException.ThrowIfNull(prepared);
         ArgumentNullException.ThrowIfNull(effectResult);
 
