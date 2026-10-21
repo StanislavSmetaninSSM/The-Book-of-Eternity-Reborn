@@ -37,6 +37,7 @@
   "excludes": "No game loop/full world/full Stage42/source42 package/crash five/Linux; no fake authority/reflection/diagnostic quotas. This is diagnostic qualification, not a production optimization.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.Candidate.cs",
+    "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.Copy.cs",
     "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.JointSetup.cs",
     "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.PhysicalSource.cs",
     "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs"

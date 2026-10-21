@@ -18,6 +18,7 @@ public sealed partial class JointBundleComponentTests
         await fixture.InitializeAsync();
         var bound = await fixture.PrepareBoundJointAsync();
         Assert.True(bound.Success, JsonSerializer.Serialize(bound.Issues));
+        fixture.AssertDirectJointCopyRetainsAdmissionWithoutFinalReduction();
         var input = bound.Input!;
         var authority = bound.Authority!;
         var before = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
