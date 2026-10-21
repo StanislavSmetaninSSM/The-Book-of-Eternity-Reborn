@@ -1,3 +1,16 @@
+# CRASH5 — spec15 revision23: missing-text-read admission investigation
+
+Issue1536. T352 actual two-case measurement and independent Sol6.1/xhigh reconstruction accepted at aac4cc67d, saved cc033ae6b (438 exact remote recovery). Positive storage-evidence probes6264/7.6596399s versus ordinary existence223/95.8486ms. User authorizes continued autonomous work, minimal fixtures/typed seams/no reflection and uncapped diagnostics; approval waiting is explicitly waived.
+
+- ABSENCE-1 / US1: investigate the public async text ReadFileAsync missing-result path and compare its unconditional quiescence acquisition with the existing FileExists fresh follow-up/mutation-observation protocol. Map actual source calls, not timer ancestry alone. Identify exact recovery/current-generation/browser/load/worker/console/physical-namespace and failure-precedence contracts supplied by the existing lease.
+- ABSENCE-2 / US2: decide whether the existing same-project mechanism can safely remove unconditional acquisition for stable absent text without caches or cross-fence proof reuse. Consider active/completed in-process writers, parent replacement, cross-process publication/quarantine gaps, pending/invalid evidence and operation binding. A concrete counterexample or a source-backed narrow design is a valid investigation outcome. Do not weaken acceptance criteria to obtain a fast path.
+- ABSENCE-3 / US2: specify minimal independent physical fixtures and meaningful typed gap hooks required for causal RED/GREEN and retained real integration/refusal controls. No game/world/turn/source42 preparation merely to test read admission. Keep full real subject coverage, all raw diagnostic records and current physical freshness. If the proposed shortcut is unsafe, choose a concrete narrower direction from source and measurements.
+- ABSENCE-4 / US3: deliver a source/contract/test map with exact files/lines and explicit unresolved questions, separate independent review and remote clean recovery. This revision is investigation only: no production/test behavior changes, builds, tests, new game profiles, source42 generation/rebind, original/five/Linux runs or protected-root deletion. Implementation needs the resulting explicit canonical plan/tasks before code.
+
+Acceptance: all admission responsibilities inventoried, no unsupported safety or speedup claim, deterministic fixture requirements tied to preserved contracts, and an actionable next scope. T345 retained root and all previous evidence remain untouched. No GM/player capability or authored schema changes; prompts/examples require no update for this source investigation.
+
+---
+
 # CRASH5 — spec15 revision22: ordinary existence and publication-probe timers
 
 Issue1536; accepted T350 limits timing serializer/write to about4%positive/2.2%negative consumer wall, not an explanation of the remaining cost. User authorizes autonomous work without approval waiting and requires cheap independent fixtures, typed seams/no reflection and no diagnostic quotas. Measure the currently untimed existence/publication work before selecting any optimization.

@@ -1,3 +1,17 @@
+# CRASH5 — plan13 revision23: determine a safe missing-text-read scope
+
+Spec15r23 / issue1536 / T353 investigation. Existing isolated task branch, explicit no-approval-wait waiver, Superpowers systematic debugging/brainstorming/planning/review/verification with Spec Kit as canonical record. T352 accepted and saved/recovered cc033ae6b; no historical hang fix or original qualification.
+
+1. Actual Spec Kit setup-plan/setup-tasks/prerequisite checks and ABSENCE-1..4 consistency before investigation deliverables. Preserve earlier canonical history; no duplicate plan.
+2. Parent inventories ReadFileAsync, ordinary reads, pending roots, real lease acquisition, mutation observation, operation/main/worker/current-generation/browser/console admission and affected existing tests. A bounded read-only Astra/high consultation addresses the concrete unresolved concurrency/recovery risk; no parallel implementation.
+3. Compare stable absence against the existing FileExists protocol. Explicitly distinguish its two pending roots from the additional evidence classified by full acquisition. Require current freshness and original refusal/error ordering, no inherited frozen proof or result cache. Do not infer that an existing narrower method authorizes broad reuse.
+4. Record exact source contract map, counterexamples/design constraints and minimal deterministic test/category plan in T353-findings.md. If safe production design is not established, say so and select the next bounded direction. No runtime, build, artificial journal success or world bootstrap in this investigation.
+5. Save WIP remotely before review; separate Astra/high reviewer checks concurrency/recovery conclusions against actual source and original requirements. Parent resolves findings, saves acceptance and clean exact remote recovery, then scopes implementation in canonical artifacts and continues autonomously.
+
+Open: can missing async text avoid full quiescence while preserving every recovery/evidence/current-generation fence; does same-process observation plus visible journals cover cross-process publication gaps? No fast-path implementation assumed.
+
+---
+
 # CRASH5 — plan13 revision22: isolate existence/publication work
 
 Spec15r22; T351 SOURCE/PREP → T352 one changed actual two-case measurement. T350 accepted at4ec464c8f, compiled eb8a903ca; full all-event reconciliation and416exact recovery in T350-final-review.json. Keep active feature/constitution/isolated branch, Superpowers systematic debugging/TDD/planning/execution/independent review/verification and actual Spec Kit phases. User waives approval waiting; engineering checks remain.

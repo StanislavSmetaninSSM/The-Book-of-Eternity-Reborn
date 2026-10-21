@@ -1,3 +1,11 @@
+# CRASH5 — spec15 revision23 / plan13 revision23: missing async text admission
+
+- [ ] T353 [US1/US2/US3] Source investigation only: map public async text absence, existing FileExists observation/follow-up and full lease responsibilities; bounded Astra/high consultation on recovery/concurrency; record counterexamples or safe narrow design, minimal fixture/typed-hook/category acceptance map, no runtime/production behavior. Independent complex review and clean remote recovery before marking complete. Then define implementation against findings without waiting for user permission.
+
+T352 accepted without findings at aac4cc67d, saved cc033ae6b/438 exact recovery. Original/fullowner/five/Linux remain unqualified; T345 uncertain root retained. No diagnostic quotas, cached proof, weakened physical freshness or unchanged expensive replay.
+
+---
+
 # CRASH5 — spec15 revision22 / plan13 revision22: existence/publication timers
 
 - [x] T351 [US1/US2/US3] SOURCE/PREP:6minimal per-case existence/invalid/observer-failure DATA controls with causal RED; additive named existing-observer scopes only in actual existence/pending-publication/recovery/storage-evidence methods, exact logical-source equivalence and XML. Fresh18GREEN(6new+12existing physical/recovery),2XML/catalog/exact6+12+2plans/current4DLL+copies/input/fullraw, retain8unaffectedT349diagnostic passes; separate coherent independent review and remote clean recovery before component runtime.
