@@ -37,7 +37,10 @@ public sealed class JointBundleDiagnosticOutputTests
             output.WriteLine("{0}:{1}", index, message);
             output.Timings.Observe("control." + index, "end", TimeSpan.FromTicks(index));
         }
-        var live = File.ReadAllLines(output.RecordsPath);
+        string[] live;
+        using (var input = new FileStream(output.RecordsPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+        using (var reader = new StreamReader(input))
+            live = reader.ReadToEnd().Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
         Assert.Equal(2200, live.Length);
         for (var index = 0; index < 1100; index++)
         {
