@@ -192,14 +192,22 @@ public sealed partial class JointBundleComponentTests
                 ["woundRef"] = "component_impact", ["proposal"] = GameEngineTurnLifecycleTests.CreateMortalComponentProposal()
             };
             decision["proposal"]!["severity"] = "III";
+            var timestamp = DateTime.UtcNow.ToString("O");
             await Files.WriteFileAtomicAsync(Lease, MortalWoundOpportunityAdapter.DecisionPath, decision.ToJsonString());
-            await Files.WriteFileAtomicAsync(Lease, "output/narrative_response.json", JsonSerializer.Serialize(new { response = scene }));
-            await Files.WriteFileAtomicAsync(Lease, "output/interface_updates.json", "{\"dialogueOptions\":[]}");
+            await Files.WriteFileAtomicAsync(Lease, "output/narrative_response.json", JsonSerializer.Serialize(new { response = scene, timestamp }));
+            await Files.WriteFileAtomicAsync(Lease, "output/interface_updates.json", JsonSerializer.Serialize(new { dialogueOptions = Array.Empty<object>(), timestamp }));
+            await Files.WriteFileAtomicAsync(Lease, "output/debug_logs.json", JsonSerializer.Serialize(new
+            {
+                timestamp, gm_thoughts_markdown = "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: нет\n" +
+                    "- Why relevant: Уже запечатанное клиентом лечение и описание собственного пореза; нового решения NPC нет.\n" +
+                    "- Actors outside scope: Field medic\n- Why outside scope: Нет нового взаимодействия, реплик или изменений NPC.\n\n" +
+                    "## Reasoning\n- The client owns the held treatment. The physical QTE draft supplies its complete acquisition narration."
+            }));
             await Files.WriteFileAtomicAsync(Lease, "ready/turn_complete.json", JsonSerializer.Serialize(new
             {
                 sessionId = original.SessionId, requestId = original.RequestId, turnNumber = original.Turn,
-                status = "success", filesModified = new[] { MortalWoundOpportunityAdapter.DecisionPath,
-                    "output/narrative_response.json", "output/interface_updates.json" }
+                status = "success", timestamp, filesModified = new[] { MortalWoundOpportunityAdapter.DecisionPath,
+                    "output/narrative_response.json", "output/interface_updates.json", "output/debug_logs.json" }
             }));
             var captured = await MortalJointRepairCheckpoint.CaptureAsync(Files, Lease,
                 original.SessionId, original.RequestId, original.SnapshotToken, original.Turn);
