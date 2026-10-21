@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using BookOfEternityClient.Core;
 using Xunit;
@@ -179,6 +180,36 @@ public sealed class JointInterfaceCrashStorageTests
     }
 
     /// <summary>
+    /// Refuses a real Windows junction at the selected parent or its ancestor without changing the target.
+    /// </summary>
+    /// <param name="linkedAncestor">
+    /// Whether the requested parent is an ordinary child below the junction rather than the junction itself.
+    /// </param>
+    [Theory]
+    [InlineData(false)] [InlineData(true)]
+    public void ExplicitParent_RefusesRealJunctionBoundary(bool linkedAncestor)
+    {
+        Assert.True(OperatingSystem.IsWindows(), "This explicit Windows placement category requires Windows.");
+        using var fixture = new StorageFixture(_output);
+        var target = Path.Combine(fixture.Root, "outside-target");
+        var targetParent = linkedAncestor ? Path.Combine(target, "ordinary-child") : target;
+        Directory.CreateDirectory(targetParent);
+        var sentinel = Path.Combine(targetParent, "sentinel");
+        File.WriteAllText(sentinel, "outside unchanged");
+        var link = Path.Combine(fixture.Root, "junction");
+        fixture.CreateJunction(link, target);
+        var requested = linkedAncestor ? Path.Combine(link, "ordinary-child") : link;
+        var nonce = Guid.NewGuid().ToString("N");
+        Assert.Throws<InvalidDataException>(() => JointInterfaceCrashStorage.SelectOwnedRoot(
+            Path.GetTempPath(), requested, nonce, Eligible(0)));
+        Assert.False(Path.Exists(Path.Combine(targetParent, "boe-joint-interface-crash-" + nonce)));
+        Assert.Equal("outside unchanged", File.ReadAllText(sentinel));
+        Assert.Equal(new[] { sentinel }, Directory.GetFileSystemEntries(targetParent));
+        _output.WriteLine(JsonSerializer.Serialize(new { RequestedParent = requested, TargetParent = targetParent,
+            Refused = true, SentinelUnchanged = true, CandidateAllocated = false }));
+    }
+
+    /// <summary>
     /// Builds the exact existing eligible package selection for a cut.
     /// </summary>
     /// <param name="cut">
@@ -214,6 +245,8 @@ public sealed class JointInterfaceCrashStorageTests
     {
         private readonly ITestOutputHelper _output;
         private readonly string _parent;
+        private readonly List<string> _junctions = [];
+        private bool _unsettledHelper;
 
         /// <summary>
         /// Gets the exact newly created root.
@@ -241,12 +274,75 @@ public sealed class JointInterfaceCrashStorageTests
         }
 
         /// <summary>
+        /// Creates one junction between strict descendants of this fixture using the installed Windows builtin.
+        /// </summary>
+        /// <param name="path">
+        /// The fresh owned link name, removed literally before ordinary fixture cleanup.
+        /// </param>
+        /// <param name="target">
+        /// The existing ordinary owned target. Neither name may contain a quote or percent expansion character.
+        /// </param>
+        internal void CreateJunction(string path, string target)
+        {
+            foreach (var name in new[] { path, target })
+            {
+                Assert.True(TrustedLocalFileScope.IsWithinDirectory(name, Root, Path.DirectorySeparatorChar));
+                Assert.DoesNotContain('"', name);
+                Assert.DoesNotContain('%', name);
+            }
+            Assert.False(Path.Exists(path));
+            _junctions.Add(path);
+            using var process = Process.Start(new ProcessStartInfo(
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "cmd.exe"),
+                $"/d /v:off /c mklink /J \"{path}\" \"{target}\"")
+            {
+                UseShellExecute = false, CreateNoWindow = true,
+                RedirectStandardOutput = true, RedirectStandardError = true
+            }) ?? throw new InvalidOperationException("The owned junction builtin did not start.");
+            _unsettledHelper = true;
+            using var stdout = new MemoryStream();
+            using var stderr = new MemoryStream();
+            var stdoutDrain = process.StandardOutput.BaseStream.CopyToAsync(stdout);
+            var stderrDrain = process.StandardError.BaseStream.CopyToAsync(stderr);
+            try
+            {
+                if (!process.WaitForExit(10000))
+                    throw new TimeoutException("The owned junction builtin did not exit within ten seconds.");
+            }
+            finally
+            {
+                if (!process.HasExited) process.Kill();
+                if (!process.WaitForExit(10000))
+                    throw new TimeoutException("The original junction process retirement remains unconfirmed.");
+                _unsettledHelper = false;
+                Task.WhenAll(stdoutDrain, stderrDrain).GetAwaiter().GetResult();
+                _output.WriteLine(JsonSerializer.Serialize(new { Junction = path, Target = target, process.ExitCode,
+                    OriginalProcessJoined = true, StdoutBase64 = Convert.ToBase64String(stdout.ToArray()),
+                    StderrBase64 = Convert.ToBase64String(stderr.ToArray()) }));
+            }
+            Assert.Equal(0, process.ExitCode);
+        }
+
+        /// <summary>
         /// Checks the exact owned root before non-following cleanup and emits its final absence.
         /// </summary>
         public void Dispose()
         {
             Assert.Equal(_parent, Path.GetDirectoryName(Root));
             Assert.Equal("untouched", File.ReadAllText(Marker));
+            if (_unsettledHelper)
+            {
+                _output.WriteLine(JsonSerializer.Serialize(new { Root, Closing = false, RetainedForUnsettledJunctionProcess = true }));
+                throw new InvalidOperationException("The owned fixture is retained until the original junction helper retires.");
+            }
+            foreach (var junction in _junctions)
+            {
+                Assert.True(TrustedLocalFileScope.IsWithinDirectory(junction, Root, Path.DirectorySeparatorChar));
+                if (!Path.Exists(junction)) continue;
+                Assert.NotEqual(0, File.GetAttributes(junction) & FileAttributes.ReparsePoint);
+                Directory.Delete(junction, recursive: false);
+                Assert.False(Path.Exists(junction));
+            }
             new TrustedLocalFileScope([_parent]).DeleteOwnedTree(Root);
             var closed = !Path.Exists(Root);
             _output.WriteLine(JsonSerializer.Serialize(new { Root, Closing = closed }));
