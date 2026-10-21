@@ -1,15 +1,17 @@
 # CRASH5 — revision43 tasks: exact native leaves and historical parent
 
-- [ ] T409 [US2/US3] T407 complete all-path findings/correction,72 retained outputs, exact native/root-selection design and actual canonical phases/consistency.
-- [ ] T410 [US2/US3] Passive native/storage leaf spans and opt-in existing test parent selector; XML/pins/affected controls/source review with preserved contracts.
-- [ ] T411 [US2/US3] Genuine current-source original-leaf-v2 and full original C:/Temp cut0 under unchanged bounds; complete raw/closing and recursive exact-leaf attribution.
+- [x] T409 [US2/US3] T407 complete all-path findings/correction,72 retained outputs, exact native/root-selection design and actual canonical phases/consistency.
+- [x] T410 [US2/US3] Passive native/storage leaf spans and opt-in existing test parent selector; XML/pins/affected controls/source review with preserved contracts.
+- [x] T411 [US2/US3] Genuine current-source original-leaf-v2 and full original C:/Temp cut0 under unchanged bounds; complete raw/closing and recursive exact-leaf attribution.
 - [ ] T412 [US1/US2/US3] Independent coherent original-requirements/native/result review and exact saved recovery; close original exact-cause tasks only with evidence.
+
+Evidence for T409–T411 and joint T407 diagnosis: `recovery/crash5/T411-findings.md` and complete raw/all-path reports; real C600 FAIL remains FAIL. T412/T408 final independent report and saved recovery remain pending. Historical per-API/OS cause, speedfix, five Windows cuts and Linux are unqualified.
 
 # CRASH5 — revision42 tasks: exact costly leaves in original Windows failure
 
 - [x] T405 [US2/US3] Complete actual600FAIL/full-original archive accounting, exact timer design, canonical phases/consistency and retained outputs.
 - [x] T406 [US2/US3] Passive named original-path admission/metadata/pure-work timers with preserved control flow and XML.
-- [ ] T407 [US2/US3] Current-source original fixture-backed Windows cut0 with unchanged budgets/assertions and complete raw/closing; recursively measure expensive residuals to exact leaves.
+- [x] T407 [US2/US3] Current-source original fixture-backed Windows cut0 with unchanged budgets/assertions and complete raw/closing; recursively measure expensive residuals to exact leaves.
 - [ ] T408 [US1/US2/US3] Independent coherent review and exact saved recovery; report measured culprit leaves, not coarse enclosing durations or component analogies.
 
 # CRASH5 — revision41 tasks: observe inside the slow writes

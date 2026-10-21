@@ -1,3 +1,3 @@
-# Immutable genuine original-leaf-v1 DATA and explicit ZIP directories remain byte exact.
+# Immutable genuine original-leaf-v2 DATA and explicit ZIP directories remain byte exact.
 package/** -text
 source-record.json -text
