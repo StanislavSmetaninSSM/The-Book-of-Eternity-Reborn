@@ -5,6 +5,8 @@
 - [ ] T380 [US2/US3] After current v2 acceptance, one original fixture-backed Windows cut0 using accepted explicit D-local placement, unchanged bounds/oracles and full raw/actual binding/path/timer/ownership/closing checks; independent actual result review and saved recovery.
 - [ ] T381 [US2/US3] Conditional on independently accepted actual T380PASS/settled ownership, remaining four original cuts serially with same accepted v2/binaries, full distinct oracles/evidence/closing and coherent independent review; stop on failure, update handoff honestly. No Linux run.
 
+T380 actual cut0 passed once: command404.3932276seconds, archived original case/ownership qualification positive,2,593,772continuous timing records/1,296,886closed/zeroopen. Full raw34files and analysis6files preserved; independent actual-result review and saved recovery pending. First current-owner call275.8153seconds, nested publication174.9561/commonplan86.8526seconds; inclusive scopes overlap. This does not qualify T381 or establish a production optimization/hardware cause.
+
 T375–T377 accepted test-only placement source;94PASS. T365 remains consumed FAIL/settled, T366 closed. Hardware C SSD/D HDD is recorded, not a causal conclusion. Autonomous-work approval-wait waiver applies; no diagnostic quotas.
 
 # CRASH5 — revision34 tasks: explicit fixture placement
