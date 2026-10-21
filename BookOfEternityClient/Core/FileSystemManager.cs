@@ -954,7 +954,7 @@ public partial class FileSystemManager
     /// Canonical session-relative member or subtree to operate on.
     /// </param>
     /// <param name="content">
-    /// Content to publish or append.
+    /// The exact byte content to publish through the existing selected writer.
     /// </param>
     /// <returns>
     /// Completion after the operation and its required cleanup finish.
@@ -964,18 +964,28 @@ public partial class FileSystemManager
         string relativePath,
         byte[] content)
     {
+        using var totalTiming = MeasureOperation("OrdinaryWrite.Total");
+        using var admissionTiming = MeasureOperation("OrdinaryWrite.Admission");
         using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
+        admissionTiming?.Dispose();
+        using var selectionTiming = MeasureOperation("OrdinaryWrite.SelectWriter");
         if (UsesTrustedLocalWriter(writeLease, relativePath))
         {
+            selectionTiming?.Dispose();
+            using var trustedTiming = MeasureOperation("OrdinaryWrite.TrustedWriter");
             await WriteTrustedLocalFileAsync(writeLease, relativePath, content);
             return;
         }
+        selectionTiming?.Dispose();
+        using var legacyIntentTiming = MeasureOperation("OrdinaryWrite.LegacyIntent");
         await RecordCanonicalMutationIntentAsync(
             writeLease,
             relativePath,
             content);
+        legacyIntentTiming?.Dispose();
+        using var legacyWriteTiming = MeasureOperation("OrdinaryWrite.LegacyWrite");
         var publication =
             await WriteFileAtomicBytesCoreAsync(
                 relativePath,
@@ -984,6 +994,8 @@ public partial class FileSystemManager
                     RecordCanonicalMutationNonPublicationAsync(
                         writeLease,
                         relativePath));
+        legacyWriteTiming?.Dispose();
+        using var legacyPublicationTiming = MeasureOperation("OrdinaryWrite.LegacyPublication");
         await RecordCanonicalMutationPublicationAsync(
             writeLease,
             relativePath,

@@ -216,44 +216,140 @@ internal sealed partial class TrustedLocalFilePublication
         return PublishCore(lease, generation, changes, observer, attempt: null);
     }
 
+    /// <summary>
+    /// Publishes the original declared byte changes through generation checks, member preparation and journaled publication.
+    /// </summary>
+    /// <param name="lease">
+    /// The caller-owned active canonical write lease.
+    /// </param>
+    /// <param name="generation">
+    /// The original expected generation binding, including explicit generation absence.
+    /// </param>
+    /// <param name="changes">
+    /// The declared paths and before/after bytes; absent bytes retain their existing meaning.
+    /// </param>
+    /// <param name="observer">
+    /// The existing phase callback, or <see langword="null"/> when no callback is installed.
+    /// </param>
+    /// <param name="attempt">
+    /// The existing outcome-tracking state, or <see langword="null"/> for the direct publication route.
+    /// </param>
+    /// <returns>
+    /// The original committed publication result; validation and publication failures propagate to the existing caller.
+    /// </returns>
     private TrustedLocalPublicationResult PublishCore(FileSystemManager.CanonicalWriteLease lease,
         TrustedLocalGeneration generation, IReadOnlyList<TrustedLocalFileChange> changes,
         Action<TrustedLocalPublicationPhase, int>? observer, PublicationAttempt? attempt)
     {
+        using var totalTiming = _files.MeasureOperation("TrustedPublication.Core");
         _files.EnsureWorkerPurposePublication(lease, generation, changes);
-        BeginPublication(lease, generation, changes.Count);
+        using (_files.MeasureOperation("TrustedPublication.Core.Begin"))
+            BeginPublication(lease, generation, changes.Count);
+        using var imagesTiming = _files.MeasureOperation("TrustedPublication.Core.PrepareImages");
         var members = changes.Select(change => new Member
         {
             Path = ValidateMemberPath(change.Path),
             Before = TrustedLocalFileImage.FromBytes(change.Before),
             After = TrustedLocalFileImage.FromBytes(change.After)
         }).ToArray();
-        return PublishMembers(lease, generation, members, 1, observer, attempt);
+        imagesTiming?.Dispose();
+        using (_files.MeasureOperation("TrustedPublication.Core.PublishMembers"))
+            return PublishMembers(lease, generation, members, 1, observer, attempt);
     }
 
+    /// <summary>
+    /// Recovers and checks the original generation and nonempty member set before publication.
+    /// </summary>
+    /// <param name="lease">
+    /// The caller-owned active canonical write lease.
+    /// </param>
+    /// <param name="generation">
+    /// The original expected generation binding, including explicit generation absence.
+    /// </param>
+    /// <param name="changeCount">
+    /// The original number of declared members; zero retains its existing refusal.
+    /// </param>
     private void BeginPublication(FileSystemManager.CanonicalWriteLease lease, TrustedLocalGeneration generation, int changeCount)
     {
+        using var totalTiming = _files.MeasureOperation("TrustedPublication.Begin");
         _files.EnsureCanonicalWriteLeaseActive(lease);
-        Recover(lease);
-        ValidateGeneration(generation);
-        if (ReadGeneration(lease) != generation)
-            throw Conflict("The expected session generation is not current.");
+        using (_files.MeasureOperation("TrustedPublication.Begin.Recover"))
+            Recover(lease);
+        using (_files.MeasureOperation("TrustedPublication.Begin.ValidateGeneration"))
+            ValidateGeneration(generation);
+        using (_files.MeasureOperation("TrustedPublication.Begin.ReadGeneration"))
+            if (ReadGeneration(lease) != generation)
+                throw Conflict("The expected session generation is not current.");
         if (changeCount == 0)
             throw Conflict("A publication must declare at least one member.");
     }
 
+    /// <summary>
+    /// Applies then commits the declared member images through the existing journal protocol.
+    /// </summary>
+    /// <param name="lease">
+    /// The caller-owned active canonical write lease.
+    /// </param>
+    /// <param name="generation">
+    /// The original expected generation binding, including explicit generation absence.
+    /// </param>
+    /// <param name="members">
+    /// The existing validated-path member images in their declared order.
+    /// </param>
+    /// <param name="format">
+    /// The original journal format version.
+    /// </param>
+    /// <param name="observer">
+    /// The existing phase callback, or <see langword="null"/> when no callback is installed.
+    /// </param>
+    /// <param name="attempt">
+    /// The existing outcome-tracking state, or <see langword="null"/> for the direct publication route.
+    /// </param>
+    /// <returns>
+    /// The original committed result from the same journal and members.
+    /// </returns>
     private TrustedLocalPublicationResult PublishMembers(FileSystemManager.CanonicalWriteLease lease,
         TrustedLocalGeneration generation, Member[] members, int format,
         Action<TrustedLocalPublicationPhase, int>? observer, PublicationAttempt? attempt)
     {
-        var journal = ApplyMembers(lease, generation, members, format, observer, attempt);
-        return CommitMembers(lease, journal, observer, attempt);
+        using var totalTiming = _files.MeasureOperation("TrustedPublication.Members");
+        Journal journal;
+        using (_files.MeasureOperation("TrustedPublication.Members.Apply"))
+            journal = ApplyMembers(lease, generation, members, format, observer, attempt);
+        using (_files.MeasureOperation("TrustedPublication.Members.Commit"))
+            return CommitMembers(lease, journal, observer, attempt);
     }
 
+    /// <summary>
+    /// Stages the original intent and applies each member while retaining all before-image checks and phase callbacks.
+    /// </summary>
+    /// <param name="lease">
+    /// The caller-owned active canonical write lease.
+    /// </param>
+    /// <param name="generation">
+    /// The original expected generation binding, including explicit generation absence.
+    /// </param>
+    /// <param name="members">
+    /// The existing validated-path member images in their declared order.
+    /// </param>
+    /// <param name="format">
+    /// The original journal format version.
+    /// </param>
+    /// <param name="observer">
+    /// The existing phase callback, or <see langword="null"/> when no callback is installed.
+    /// </param>
+    /// <param name="attempt">
+    /// The existing outcome-tracking state, or <see langword="null"/> for the direct publication route.
+    /// </param>
+    /// <returns>
+    /// The same rebound intent journal after the original member publications finish.
+    /// </returns>
     private Journal ApplyMembers(FileSystemManager.CanonicalWriteLease lease,
         TrustedLocalGeneration generation, Member[] members, int format,
         Action<TrustedLocalPublicationPhase, int>? observer, PublicationAttempt? attempt)
     {
+        using var totalTiming = _files.MeasureOperation("TrustedPublication.Apply");
+        using var validationTiming = _files.MeasureOperation("TrustedPublication.Apply.ValidateJournalAndBefore");
         if (members.Select(member => member.Path).Distinct(MemberComparer).Count() != members.Length)
             throw Conflict("A publication contains duplicate members.");
         var generationMember = members.SingleOrDefault(member => MemberComparer.Equals(member.Path, _generationPath));
@@ -273,32 +369,41 @@ internal sealed partial class TrustedLocalFilePublication
         foreach (var member in members)
             if (!Matches(member.Path, member.Before))
                 throw Conflict("A publication member does not match its expected before image.");
+        validationTiming?.Dispose();
+        using var scratchTiming = _files.MeasureOperation("TrustedPublication.Apply.PrepareScratch");
         var scratch = ScratchScope(journal);
         foreach (var path in ScratchPaths(journal))
             if (File.Exists(scratch.ValidateFile(path)))
                 throw Conflict("A publication scratch name already exists.");
 
-        journal = WriteJournal(IntentStage, journal);
+        scratchTiming?.Dispose();
+        using (_files.MeasureOperation("TrustedPublication.Intent.WriteJournal"))
+            journal = WriteJournal(IntentStage, journal);
         if(attempt!=null)attempt.Prepared=journal;
         Observe(lease, observer, TrustedLocalPublicationPhase.IntentStaged);
+        using var intentTiming = _files.MeasureOperation("TrustedPublication.Intent.PublishAndRebind");
         File.Move(_journalScope.ValidateFile(IntentStage, false), _journalScope.ValidateFile(Active), overwrite: false);
         if (attempt != null) attempt.IntentPublished = true;
         journal = RebindJournal(journal, Active);
         members = journal.Members;
         if (attempt != null) attempt.Prepared = journal;
         Observe(lease, observer, TrustedLocalPublicationPhase.IntentPublished);
+        intentTiming?.Dispose();
         for (var index = 0; index < members.Length; index++)
         {
             var member = members[index];
             if (member.After.Exists)
             {
+                using var stageTiming = _files.MeasureOperation("TrustedPublication.Member.Stage");
                 WriteNew(scratch, ScratchPath(journal, index, rollback: false), member.After);
                 Observe(lease, observer, TrustedLocalPublicationPhase.MemberStaged, index);
             }
             // Detect accidental changes before replacing a name. The canonical
             // lease serializes participating writers; hostile races are excluded.
-            if (!Matches(member.Path, member.Before))
-                throw Conflict("A member changed before its publication.");
+            using (_files.MeasureOperation("TrustedPublication.Member.CompareBefore"))
+                if (!Matches(member.Path, member.Before))
+                    throw Conflict("A member changed before its publication.");
+            using var publicationTiming = _files.MeasureOperation("TrustedPublication.Member.Publish");
             if (member.After.Exists)
                 File.Move(scratch.ValidateFile(ScratchPath(journal, index, false), false),
                     _scope.ValidateFile(member.Path), overwrite: member.Before.Exists);
@@ -309,20 +414,46 @@ internal sealed partial class TrustedLocalFilePublication
         return journal;
     }
 
+    /// <summary>
+    /// Commits the existing applied journal, records its original decision and performs the original cleanup.
+    /// </summary>
+    /// <param name="lease">
+    /// The caller-owned active canonical write lease.
+    /// </param>
+    /// <param name="journal">
+    /// The actual applied journal to preflight and mark committed.
+    /// </param>
+    /// <param name="observer">
+    /// The existing phase callback, or <see langword="null"/> when no callback is installed.
+    /// </param>
+    /// <param name="attempt">
+    /// The existing outcome-tracking state, or <see langword="null"/> for the direct publication route.
+    /// </param>
+    /// <returns>
+    /// The original result recorded before the committed callback and cleanup.
+    /// </returns>
     private TrustedLocalPublicationResult CommitMembers(FileSystemManager.CanonicalWriteLease lease,
         Journal journal, Action<TrustedLocalPublicationPhase, int>? observer, PublicationAttempt? attempt)
     {
-        Preflight(lease, journal, requireAfter: true);
+        using var totalTiming = _files.MeasureOperation("TrustedPublication.Commit");
+        using (_files.MeasureOperation("TrustedPublication.Commit.Preflight"))
+            Preflight(lease, journal, requireAfter: true);
         journal = journal with { Committed = true };
-        journal = WriteJournal(CommitStage, journal);
+        using (_files.MeasureOperation("TrustedPublication.Commit.WriteJournal"))
+            journal = WriteJournal(CommitStage, journal);
         Observe(lease, observer, TrustedLocalPublicationPhase.CommitStaged);
+        using var publicationTiming = _files.MeasureOperation("TrustedPublication.Commit.PublishAndRebind");
         File.Move(_journalScope.ValidateFile(CommitStage, false), _journalScope.ValidateFile(Active, false), overwrite: true);
         journal = RebindJournal(journal, Active);
+        publicationTiming?.Dispose();
+        using var resultTiming = _files.MeasureOperation("TrustedPublication.Commit.BuildResult");
         var result = new TrustedLocalPublicationResult(journal.TransactionId, journal.GenerationAfter,
             journal.Members.Select(member => new TrustedLocalPublishedMember(member.Path, member.After.Exists, member.After.Sha256)).ToArray());
         if (attempt != null) attempt.Committed = result;
         Observe(lease, observer, TrustedLocalPublicationPhase.Committed);
-        Cleanup(lease, journal, observer);
+        resultTiming?.Dispose();
+        using (_files.MeasureOperation("TrustedPublication.Commit.Cleanup"))
+            Cleanup(lease, journal, observer);
         return result;
     }
 
@@ -602,17 +733,81 @@ internal sealed partial class TrustedLocalFilePublication
     private static IEnumerable<string> ScratchPaths(Journal journal) => Enumerable.Range(0, journal.Members.Length)
         .SelectMany(index => new[] { ScratchPath(journal, index, false), ScratchPath(journal, index, true) });
     private static TrustedLocalFileScope ScratchScope(Journal journal) => new([], ScratchPaths(journal));
+    /// <summary>
+    /// Writes a new scratch file through the original open, content, disk-flush and stream-disposal sequence.
+    /// </summary>
+    /// <param name="scope">
+    /// The caller-owned trusted scope that validates the exact scratch path before opening.
+    /// </param>
+    /// <param name="path">
+    /// The new scratch path; an existing file retains the original create-new failure.
+    /// </param>
+    /// <param name="bytes">
+    /// The exact bytes written by the existing stream call.
+    /// </param>
     private static void WriteNew(TrustedLocalFileScope scope, string path, byte[] bytes)
     {
-        using var stream = new FileStream(scope.ValidateFile(path), FileMode.CreateNew, FileAccess.Write, FileShare.None);
-        stream.Write(bytes);
-        stream.Flush(flushToDisk: true);
+        using var totalTiming = FileSystemManager.MeasureCurrentOperation("TrustedWriteNew.Bytes.Total");
+        using var openTiming = FileSystemManager.MeasureCurrentOperation("TrustedWriteNew.Bytes.Open");
+        IDisposable? disposalTiming = null;
+        try
+        {
+            using var stream = new FileStream(scope.ValidateFile(path), FileMode.CreateNew, FileAccess.Write, FileShare.None);
+            try
+            {
+                openTiming?.Dispose();
+                using (FileSystemManager.MeasureCurrentOperation("TrustedWriteNew.Bytes.Write"))
+                    stream.Write(bytes);
+                using (FileSystemManager.MeasureCurrentOperation("TrustedWriteNew.Bytes.FlushToDisk"))
+                    stream.Flush(flushToDisk: true);
+            }
+            finally
+            {
+                disposalTiming = FileSystemManager.MeasureCurrentOperation("TrustedWriteNew.Bytes.Dispose");
+            }
+        }
+        finally
+        {
+            disposalTiming?.Dispose();
+        }
     }
+    /// <summary>
+    /// Writes a new scratch file through the original open, content, disk-flush and stream-disposal sequence.
+    /// </summary>
+    /// <param name="scope">
+    /// The caller-owned trusted scope that validates the exact scratch path before opening.
+    /// </param>
+    /// <param name="path">
+    /// The new scratch path; an existing file retains the original create-new failure.
+    /// </param>
+    /// <param name="image">
+    /// The actual retained image copied by its existing copy operation.
+    /// </param>
     private static void WriteNew(TrustedLocalFileScope scope, string path, TrustedLocalFileImage image)
     {
-        using var stream = new FileStream(scope.ValidateFile(path), FileMode.CreateNew, FileAccess.Write, FileShare.None);
-        image.CopyTo(stream);
-        stream.Flush(flushToDisk: true);
+        using var totalTiming = FileSystemManager.MeasureCurrentOperation("TrustedWriteNew.Image.Total");
+        using var openTiming = FileSystemManager.MeasureCurrentOperation("TrustedWriteNew.Image.Open");
+        IDisposable? disposalTiming = null;
+        try
+        {
+            using var stream = new FileStream(scope.ValidateFile(path), FileMode.CreateNew, FileAccess.Write, FileShare.None);
+            try
+            {
+                openTiming?.Dispose();
+                using (FileSystemManager.MeasureCurrentOperation("TrustedWriteNew.Image.Copy"))
+                    image.CopyTo(stream);
+                using (FileSystemManager.MeasureCurrentOperation("TrustedWriteNew.Image.FlushToDisk"))
+                    stream.Flush(flushToDisk: true);
+            }
+            finally
+            {
+                disposalTiming = FileSystemManager.MeasureCurrentOperation("TrustedWriteNew.Image.Dispose");
+            }
+        }
+        finally
+        {
+            disposalTiming?.Dispose();
+        }
     }
 
     private void Observe(FileSystemManager.CanonicalWriteLease lease, Action<TrustedLocalPublicationPhase, int>? observer,

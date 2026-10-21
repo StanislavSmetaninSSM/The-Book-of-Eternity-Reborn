@@ -244,15 +244,24 @@ public partial class FileSystemManager
         IReadOnlyList<CanonicalLocalFileChange> changes, CancellationToken cancellationToken = default,
         Func<Task>? validatePreparedNamespace = null)
     {
+        using var totalTiming = MeasureOperation("LocalPublication.Total");
+        using var admissionTiming = MeasureOperation("LocalPublication.Admission");
         using var validationMutation = BeginValidationMutation(lease);
         lease.EnsureNoPendingLocalDecision();
         VerifyCurrentSessionOperation(lease);
         if (changes.Count == 0 || changes.Any(change => !UsesTrustedLocalWriter(lease, change.RelativePath)))
             throw new InvalidOperationException("A local publication requires ordinary declared canonical members.");
-        var generation = GetOrCreateSessionGeneration(lease);
-        return await PublishLocalCoreAsync(lease, TrustedLocalGeneration.Existing(generation),
-            changes.Select(change => new TrustedLocalFileChange(ResolvePath(change.RelativePath), change.Before, change.After)).ToArray(),
-            cancellationToken, validatePreparedNamespace);
+        admissionTiming?.Dispose();
+        string generation;
+        using (MeasureOperation("LocalPublication.GetGeneration"))
+            generation = GetOrCreateSessionGeneration(lease);
+        var binding = TrustedLocalGeneration.Existing(generation);
+        TrustedLocalFileChange[] preparedChanges;
+        using (MeasureOperation("LocalPublication.PrepareChanges"))
+            preparedChanges = changes.Select(change => new TrustedLocalFileChange(ResolvePath(change.RelativePath), change.Before, change.After)).ToArray();
+        using (MeasureOperation("LocalPublication.PublishCore"))
+            return await PublishLocalCoreAsync(lease, binding, preparedChanges,
+                cancellationToken, validatePreparedNamespace);
     }
 
     /// <summary>
@@ -283,6 +292,8 @@ public partial class FileSystemManager
         TrustedLocalGeneration generation, IReadOnlyList<TrustedLocalFileChange> changes, CancellationToken cancellationToken,
         Func<Task>? validatePreparedNamespace = null, bool standaloneDarenProfile = false)
     {
+        using var totalTiming = MeasureOperation("LocalPublication.Core.Total");
+        using var admissionTiming = MeasureOperation("LocalPublication.Core.Admission");
         using var validationMutation = BeginValidationMutation(lease);
         lease.EnsureNoPendingLocalDecision();
         if (standaloneDarenProfile)
@@ -292,12 +303,15 @@ public partial class FileSystemManager
                 throw new InvalidOperationException("Standalone Daren publication requires its exact registered member.");
         }
         EnsureWorkerPurposePublication(lease, generation, changes);
+        admissionTiming?.Dispose();
         if (lease.BrowserLocalAccess is { } browser)
         {
+            using var browserIntentTiming = MeasureOperation("LocalPublication.Core.BrowserIntent");
             browser.Validate();
             foreach (var change in changes)
                 if (browser.RecordIntent != null) await browser.RecordIntent(change.Path, change.After);
         }
+        using var prepareScopeTiming = MeasureOperation("LocalPublication.Core.PrepareScope");
         var scope = new TrustedLocalFileScope([BasePath]);
         var registrations = new List<InProcessMutationRegistration>();
         try
@@ -308,6 +322,8 @@ public partial class FileSystemManager
                 scope.ValidateFile(change.Path);
                 registrations.Add(new InProcessMutationRegistration(change.Path));
             }
+            prepareScopeTiming?.Dispose();
+            using var boundaryTiming = MeasureOperation("LocalPublication.Core.ValidateMutationBoundaries");
             var windows = OperatingSystem.IsWindows();
             var generationPath = TrustedLocalFilePublication.NormalizeAuthorityPath(SessionGenerationPath, windows);
             foreach (var change in changes)
@@ -331,25 +347,40 @@ public partial class FileSystemManager
                 EnsureCanonicalMutationBoundary(relative, canonicalPath);
                 await InvokeAfterCanonicalMutationBoundaryValidatedAsync(relative);
             }
+            boundaryTiming?.Dispose();
+            using var beforePublishTiming = MeasureOperation("LocalPublication.Core.AdmissionBeforePublish");
             cancellationToken.ThrowIfCancellationRequested();
             VerifyCurrentSessionOperation(lease);
             EnsureWorkerPurposePublication(lease, generation, changes);
+            beforePublishTiming?.Dispose();
             var publisher = new TrustedLocalFilePublication(this, scope);
             for (var attempt = 0; ; attempt++)
             {
-                EnsureWorkerPurposePublication(lease, generation, changes);
-                if (validatePreparedNamespace != null) await validatePreparedNamespace();
-                var outcome = publisher.PublishWithOutcome(lease, generation, changes, _hooks?.LocalPublicationObserver);
+                using (MeasureOperation("LocalPublication.Core.AdmissionBeforePublish"))
+                    EnsureWorkerPurposePublication(lease, generation, changes);
+                if (validatePreparedNamespace != null)
+                {
+                    using var namespaceTiming = MeasureOperation("LocalPublication.Core.ValidatePreparedNamespace");
+                    await validatePreparedNamespace();
+                }
+                TrustedLocalPublicationOutcome outcome;
+                using (MeasureOperation("LocalPublication.Attempt.PublishWithOutcome"))
+                using (EnterOperationTimingContext())
+                {
+                    outcome = publisher.PublishWithOutcome(lease, generation, changes, _hooks?.LocalPublicationObserver);
+                }
                 if (outcome.Disposition != TrustedLocalPublicationDisposition.RolledBack ||
                     outcome.Failure is InvalidDataException || outcome.Failure == null ||
                     !IsTransientFileAccessException(outcome.Failure) || attempt >= TransientFileAccessRetryCount - 1)
                     return outcome;
-                await Task.Delay(TransientFileAccessRetryDelay, cancellationToken);
+                using (MeasureOperation("LocalPublication.Core.RetryDelay"))
+                    await Task.Delay(TransientFileAccessRetryDelay, cancellationToken);
                 VerifyCurrentSessionOperation(lease);
             }
         }
         finally
         {
+            using var registrationsTiming = MeasureOperation("LocalPublication.Core.FinallyRegistrations");
             foreach (var registration in registrations) registration.Dispose();
         }
     }
@@ -416,9 +447,29 @@ public partial class FileSystemManager
         }
     }
 
+    /// <summary>
+    /// Publishes an ordinary member and enforces the original trusted-local committed-outcome contract.
+    /// </summary>
+    /// <param name="lease">
+    /// The caller-owned active canonical write lease.
+    /// </param>
+    /// <param name="relativePath">
+    /// The ordinary canonical session-relative member to publish.
+    /// </param>
+    /// <param name="desired">
+    /// Desired bytes, or <see langword="null"/> to request deletion.
+    /// </param>
+    /// <returns>
+    /// Completion after the original publication outcome is required to be committed; original failure mapping is retained.
+    /// </returns>
     private async Task WriteTrustedLocalFileAsync(CanonicalWriteLease lease, string relativePath, byte[]? desired)
     {
-        RequireCommittedLocalPublication(await PublishOrdinaryFileWithOutcomeAsync(lease, relativePath, desired));
+        using var totalTiming = MeasureOperation("TrustedWrite.Total");
+        TrustedLocalPublicationOutcome outcome;
+        using (MeasureOperation("TrustedWrite.PublishOutcome"))
+            outcome = await PublishOrdinaryFileWithOutcomeAsync(lease, relativePath, desired);
+        using (MeasureOperation("TrustedWrite.RequireCommitted"))
+            RequireCommittedLocalPublication(outcome);
     }
 
     // The ordinary facade and retained script command use the same publication.
@@ -441,13 +492,19 @@ public partial class FileSystemManager
     internal async Task<TrustedLocalPublicationOutcome> PublishOrdinaryFileWithOutcomeAsync(
         CanonicalWriteLease lease, string relativePath, byte[]? desired)
     {
+        using var totalTiming = MeasureOperation("OrdinaryPublication.Total");
+        using var admissionTiming = MeasureOperation("OrdinaryPublication.Admission");
         using var validationMutation = BeginValidationMutation(lease);
         EnsureWorkerGeneralMutationAllowed(lease);
         lease.EnsureNoPendingLocalDecision();
         if (!UsesTrustedLocalWriter(lease, relativePath))
             throw new InvalidOperationException("An ordinary outcome requires the current local writer.");
-        var before = await ReadLocalFileBytesAsync(lease, relativePath);
-        return await PublishLocalFilesAsync(lease, [new(relativePath, before, desired)]);
+        admissionTiming?.Dispose();
+        byte[]? before;
+        using (MeasureOperation("OrdinaryPublication.ReadBefore"))
+            before = await ReadLocalFileBytesAsync(lease, relativePath);
+        using (MeasureOperation("OrdinaryPublication.PublishLocal"))
+            return await PublishLocalFilesAsync(lease, [new(relativePath, before, desired)]);
     }
 
     /// <summary>

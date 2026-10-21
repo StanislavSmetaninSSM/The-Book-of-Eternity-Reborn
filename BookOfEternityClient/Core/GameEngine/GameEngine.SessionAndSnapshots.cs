@@ -1176,6 +1176,27 @@ public partial class GameEngine
         await InvokeSnapshotFileCapturedAsync(relativePath);
     }
 
+    /// <summary>
+    /// Captures the selected current or rollback source into the pending snapshot while retaining the caller's maps and callback.
+    /// </summary>
+    /// <param name="writeLease">
+    /// The caller-owned active canonical write lease used for both source read and snapshot write.
+    /// </param>
+    /// <param name="relativePath">
+    /// The canonical session-relative member to capture.
+    /// </param>
+    /// <param name="rollbackSnapshot">
+    /// The existing rollback snapshot, or <see langword="null"/> to read the current member. Validation-snapshot members retain their current-source route.
+    /// </param>
+    /// <param name="files">
+    /// The caller-owned map receiving the snapshot path only when source bytes are present.
+    /// </param>
+    /// <param name="snapshotHashes">
+    /// The caller-owned map receiving the hash of those exact captured bytes.
+    /// </param>
+    /// <returns>
+    /// Completion after the original capture callback, or without a write or map changes when the selected source is absent.
+    /// </returns>
     private async Task SnapshotFileOrRollbackBackupIfPresentAsync(
         FileSystemManager.CanonicalWriteLease writeLease,
         string relativePath,
@@ -1183,6 +1204,7 @@ public partial class GameEngine
         IDictionary<string, string> files,
         IDictionary<string, string> snapshotHashes)
     {
+        using var readTiming = _fs.MeasureOperation("OriginalSnapshot.Member.Read");
         byte[]? content = null;
         var useCurrentValidationState =
             rollbackSnapshot?.ValidationSnapshotFiles.Contains(relativePath) == true;
@@ -1196,14 +1218,19 @@ public partial class GameEngine
             content = await _fs.ReadFileBytesAsync(writeLease, relativePath);
         }
 
+        readTiming?.Dispose();
         if (content == null)
             return;
 
         var snapshotPath = $"{PendingTurnSnapshotDirectory}/{relativePath}";
-        await _fs.WriteFileAtomicBytesAsync(writeLease, snapshotPath, content);
+        using (_fs.MeasureOperation("OriginalSnapshot.Member.Write"))
+            await _fs.WriteFileAtomicBytesAsync(writeLease, snapshotPath, content);
+        using var captureTiming = _fs.MeasureOperation("OriginalSnapshot.Member.CaptureHashAndMaps");
         files[relativePath] = snapshotPath;
         snapshotHashes[relativePath] = ComputeSha256(content);
-        await InvokeSnapshotFileCapturedAsync(relativePath);
+        captureTiming?.Dispose();
+        using (_fs.MeasureOperation("OriginalSnapshot.Member.Callback"))
+            await InvokeSnapshotFileCapturedAsync(relativePath);
     }
 
     private async Task CleanupPendingTurnSnapshotAsync(IEnumerable<string>? preservedRollbackPaths = null)
