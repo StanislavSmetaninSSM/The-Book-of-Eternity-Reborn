@@ -2,6 +2,31 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-operation-timing-context-controls",
+  "responsibility": "T382 seven tiny typed passive synchronous timing-context controls: disabled/direct compatibility, complete and throwing receivers, exception restoration, nested routing/suppression/idempotence and thread isolation.",
+  "excludes": "No game/world/source42/crash/Linux runtime or authority substitution, private reflection, diagnostic quotas or old-root cleanup.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.OperationTimingContext.cs",
+    "BookOfEternityClient/Core/FileSystemManager.OperationTiming.cs",
+    "BookOfEternityClient.IntegrationTests/OperationTimingContextTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.OperationTimingContextTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-windows-fixture-placement",
   "responsibility": "T375\u2013T37733 tiny typed explicit-parent/fresh-child/default/mode/refusal/sentinel/environment controls, including two real Windows junctions made by owned local builtins; no game.",
   "excludes": "No source42 generation, crash replay, Linux execution, protected roots, global environment changes or diagnostic quotas.",

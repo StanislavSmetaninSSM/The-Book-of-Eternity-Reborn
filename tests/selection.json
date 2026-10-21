@@ -2,17 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "fr063-joint-windows-fixture-placement",
-      "reason": "T375\u2013T37733 tiny typed explicit-parent/fresh-child/default/mode/refusal/sentinel/environment controls, including two real Windows junctions made by owned local builtins; no game.",
+      "category": "fr063-operation-timing-context-controls",
+      "reason": "T382 seven tiny typed passive synchronous timing-context controls: disabled/direct compatibility, complete and throwing receivers, exception restoration, nested routing/suppression/idempotence and thread isolation.",
       "contracts": [
-        "Explicit parent only for ordinary Windows package five; fresh checked child, unchanged default/Linux/capture, original source/manifest/generation/game/owner/EOF/join/cleanup/inert-repeat and820/600second limits. Full diagnostics without quotas."
-      ]
-    },
-    {
-      "category": "fr063-joint-windows-fixture-placement-consumers",
-      "reason": "T376 affected existing literal child-start, shared-budget, mode/capture/retirement/output and immutable package/seed refusal controls.",
-      "contracts": [
-        "Explicit parent only for ordinary Windows package five; fresh checked child, unchanged default/Linux/capture, original source/manifest/generation/game/owner/EOF/join/cleanup/inert-repeat and820/600second limits. Full diagnostics without quotas."
+        "Passive current-thread synchronous computation observation; nested receiver/suppression/exception/thread restoration, original operations unchanged, complete uncapped diagnostics and exact fresh-root closing."
       ]
     }
   ]

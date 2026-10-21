@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "fr063-operation-timing-context-controls",
+      "reason": "T382 seven tiny typed passive synchronous timing-context controls: disabled/direct compatibility, complete and throwing receivers, exception restoration, nested routing/suppression/idempotence and thread isolation.",
+      "contracts": [
+        "Passive current-thread synchronous computation observation; nested receiver/suppression/exception/thread restoration, original operations unchanged, complete uncapped diagnostics and exact fresh-root closing."
+      ]
+    }
+  ]
+}
