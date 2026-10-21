@@ -1,6 +1,11 @@
+# CRASH5 — spec15 revision20 / plan13 revision20: direct history-consumer fixtures
+
+- [ ] T347 [US1/US2/US3] SOURCE/PREP: share existing full logger generically without behavior drift and verify only2affected existing controls; implement2direct actual history-consumer fixture cases (positive plus T325 transient pending-wave refusal) using existing typed real issuer/current-generation/lease APIs, full immutable DATA/oracles/uncapped diagnostics/closing contracts. No GameEngine/world/turn/authority injection/production code change. Fresh XML/catalog/exact plans/source-equivalence/4DLL+copies/input/raw and independent coherent acceptance plus remote recovery before actual components.
+- [ ] T348 [US2/US3] After saved/recovered T347 SOURCE/PREP, one guarded Windows2case component category with explicit2minute totalcommand bound; preserve/review full actual results, timers/CPU/proofcounts/issues/failures/DATA/gen/closing/retention and raw. No unchanged retry, limit increase, full-owner/original/generator/rebind/five/Linux run; continue cause-driven work.
+
 # CRASH5 — spec15 revision19 / plan13 revision19: completed-continuation fanout
 
-- [ ] T346 [US1/US2/US3] Source/trace-only investigation: account for79proof footprint stages and48.954s completed-continuation fanout from T345's full durable trace; map actual consumers/freshness boundaries, recommend minimal shared API/fixture or safe redundant-computation reduction, preserve T325/direct-FS/private authority/publication/ownership, specify adversarial controls and category-only verification. No code/build/test/profile/materialization/generator/rebind/original/five/Linux execution or retained-root deletion. Independent coherent review and remote clean recovery of findings before next implementation scope.
+- [x] T346 [US1/US2/US3] Source/trace-only investigation: account for79proof footprint stages and48.954s completed-continuation fanout from T345's full durable trace; map actual consumers/freshness boundaries, recommend minimal shared API/fixture or safe redundant-computation reduction, preserve T325/direct-FS/private authority/publication/ownership, specify adversarial controls and category-only verification. No code/build/test/profile/materialization/generator/rebind/original/five/Linux execution or retained-root deletion. Independent coherent review and remote clean recovery of findings before next implementation scope.
 
 # CRASH5 — spec15 revision18 / plan13 revision18: fixture-based real owner
 
