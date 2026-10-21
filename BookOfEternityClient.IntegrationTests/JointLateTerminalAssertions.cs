@@ -1,4 +1,8 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Core;
+using BookOfEternityClient.Models;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -31,7 +35,7 @@ internal sealed record JointLateTerminalObservation(
 internal static class JointLateTerminalAssertions
 {
     /// <summary>
-    /// Compares the observations surrounding a repeated actual late-owner call.
+    /// Requires unchanged files, directories, response and complete runtime tuple around a repeated actual late-owner call.
     /// </summary>
     /// <param name="before">
     /// The independently captured observation immediately before the repeat.
@@ -42,24 +46,42 @@ internal static class JointLateTerminalAssertions
     internal static void VerifyInertRepeat(JointLateTerminalObservation before, JointLateTerminalObservation after)
     {
         Assert.Equal(before.Images.OrderBy(pair => pair.Key, StringComparer.Ordinal), after.Images.OrderBy(pair => pair.Key, StringComparer.Ordinal));
+        Assert.Equal(before.Directories, after.Directories);
+        Assert.Equal(before.SessionId, after.SessionId);
         Assert.Equal(before.ResponseJson, after.ResponseJson);
         Assert.Equal(before.TurnNumber, after.TurnNumber);
     }
 
     /// <summary>
-    /// Checks installed interface response DATA against retained accepted interface output.
+    /// Requires the complete normalized option objects in order and the expected nullable image prompt.
     /// </summary>
     /// <param name="response">
     /// The independent snapshot of the actual installed response.
     /// </param>
     /// <param name="expectedInterface">
-    /// The retained accepted interface DATA, with optional image prompt and dialogue options.
+    /// The retained accepted interface DATA; absent or null optional fields use the production omission semantics.
     /// </param>
     internal static void VerifyInterfaceResponse(JsonElement response, JsonElement expectedInterface)
     {
-        if (expectedInterface.TryGetProperty("image_prompt", out var image))
-            Assert.Equal(image.GetString(), response.GetProperty("image_prompt").GetString());
-        if (expectedInterface.TryGetProperty("dialogueOptions", out var options))
-            Assert.Equal(options.GetArrayLength(), response.GetProperty("dialogueOptions").GetArrayLength());
+        var expectedImage = expectedInterface.TryGetProperty("image_prompt", out var image) ? image.GetString() : null;
+        var actualImage = response.TryGetProperty("image_prompt", out var installedImage) ? installedImage.GetString() : null;
+        Assert.Equal(expectedImage, actualImage);
+        DialogueOption[]? expectedOptions = null;
+        if (expectedInterface.TryGetProperty("dialogueOptions", out var options) && options.ValueKind == JsonValueKind.Array)
+        {
+            expectedOptions = JsonSerializer.Deserialize<DialogueOption[]>(options.GetRawText());
+            if (expectedOptions is not null)
+                foreach (var option in expectedOptions)
+                {
+                    var text = PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(option.Text);
+                    var input = PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(option.InputValue);
+                    option.InputValue = DialogueOptionControlTagNormalizer.ResolveInputValue(text, input);
+                    option.Text = DialogueOptionControlTagNormalizer.NormalizeVisibleText(text);
+                }
+        }
+        var expected = JsonSerializer.SerializeToNode(expectedOptions, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+        var actual = response.TryGetProperty("dialogueOptions", out var installed)
+            ? JsonNode.Parse(installed.GetRawText()) : null;
+        Assert.True(JsonNode.DeepEquals(expected, actual), "Installed dialogue option contents or order differ from the normalized accepted interface DATA.");
     }
 }
