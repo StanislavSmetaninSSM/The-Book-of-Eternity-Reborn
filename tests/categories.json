@@ -3,12 +3,13 @@
     "categories": [
 {
   "id": "fr063-operation-timing-context-controls",
-  "responsibility": "T382 seven tiny typed passive synchronous timing-context controls: disabled/direct compatibility, complete and throwing receivers, exception restoration, nested routing/suppression/idempotence and thread isolation.",
+  "responsibility": "T382 ten tiny typed passive timing-context and real ordinary bundle controls: disabled/direct compatibility, complete and throwing receivers, exception restoration, nested routing/suppression/idempotence and thread isolation.",
   "excludes": "No game/world/source42/crash/Linux runtime or authority substitution, private reflection, diagnostic quotas or old-root cleanup.",
   "changeHints": [
     "BookOfEternityClient/Core/FileSystemManager.OperationTimingContext.cs",
     "BookOfEternityClient/Core/FileSystemManager.OperationTiming.cs",
-    "BookOfEternityClient.IntegrationTests/OperationTimingContextTests.cs"
+    "BookOfEternityClient.IntegrationTests/OperationTimingContextTests.cs",
+    "BookOfEternityClient.IntegrationTests/OperationTimingContextTests.Bundle.cs"
   ],
   "related": [],
   "requirements": {
