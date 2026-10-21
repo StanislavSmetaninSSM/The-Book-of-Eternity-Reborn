@@ -8,7 +8,7 @@ GREEN changes only the real provider's two observation methods/class XML plus tw
 
 Full GREEN archive104indexedfiles, CRC and allSHA verified: `9138C3B0B0140A84844775F239D280103D4613950E4B925C233BD1048C83A7B2`. It includes future T360 runner/analysis sources; this prepares one changed two-case actual consumer under existing2minute TOTAL bound after saved/recovered independent acceptance. Future runner is bound by exact SHA in SOURCE/PREP; summary rejects incomplete/vacuous outcomes. No future workload has run. Protected roots receive only metadata existence checks, no enumeration/cleanup retry.
 
-Independent separate complex SOURCE/PREP review remains pending. T359 is not complete until accepted and clean remote recovery is verified. Original recovery/fullowner/five/Linux remain unqualified; no historical hang cause or native syscall/wall speedup claim.
+Independent separate actual Astra/high SOURCE/PREP review accepted without findings atc252d630e; `T359-source-review.json`. Reviewer independently verified all503cleanrecoveryGitblobs and exactremoteHEAD. Save/recover this acceptance before the single T360measurement. Original recovery/fullowner/five/Linux remain unqualified; no historical hang cause or native syscall/wall speedup claim.
 
 ---
 
@@ -37,3 +37,5 @@ No introduced XML documentation warnings were found on the new APIs. The build r
 Full raw evidence: `T359-red.json` and `T359-red-raw.zip` (50 indexed files, CRC and every SHA verified), analysis `T359-red-analysis.json`; complete external analysis tools in `T359-red-analysis-tools.zip`. Source equivalence and exact recovery are included in the raw archive. Original scripts' first offline parser attempts rejected CRLF receipts and then correctly exposed the two analyzer warnings; those were parser/reporting issues, no runtime retry or source behavior change.
 
 Next: fresh component-local DirectoryInfo/FileInfo observation under the accepted role/fallback/trailing-separator/temporal contracts, then new and affected boundary controls, exact source/XML/bindings, separate complex SOURCE/PREP review. No claim that full recovery has been fixed or its historical timeout explained. All protected roots remain untouched.
+
+Routing checkpoint: bounded actual Sol6.1/high implementer produced GREEN in the first behavioral attempt after the verified RED; two routine xUnit style warnings corrected. Separate actual Astra/high reviewer accepted the completed coherent source/tests/docs/tools block with no findings. No comparative token/cost claim is supported. Parent inspected the actual diff and verification rather than repeating passing fixtures.
