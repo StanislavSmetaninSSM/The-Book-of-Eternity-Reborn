@@ -321,7 +321,11 @@ internal static partial class WoundAcceptedTurnPlanner
     /// Exact detached state used by this operation's validation and generation checks.
     /// </param>
     /// <param name="draftBefore">
-    /// Actual live proof, or <see langword="null"/> for ordinary original preparation.
+    /// Actual live proof, or <see langword="null"/> for preparation without a live proof.
+    /// </param>
+    /// <param name="jointRepairContinuationAuthority">
+    /// The actual private joint continuation to append after acquisition preparation,
+    /// or <see langword="null"/> for other preparation families.
     /// </param>
     /// <returns>
     /// Prepared operations and their retained authority, or validation failures.
@@ -331,7 +335,12 @@ internal static partial class WoundAcceptedTurnPlanner
         EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundBeforeAuthority? draftBefore,
         object? jointRepairContinuationAuthority = null)
     {
-        var validation = WoundAcceptedTurnPlannerCore.ValidateInput(input, operationBefore);
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("WoundPreparation.PrepareCore");
+        WoundAcceptedTurnPlannerCore.ValidatedInput validation;
+        using (FileSystemManager.MeasureCurrentOperation("WoundPreparation.ValidateInput"))
+        {
+            validation = WoundAcceptedTurnPlannerCore.ValidateInput(input, operationBefore);
+        }
         if (validation.Issues.Count != 0)
         {
             return new WoundAcceptedTurnPreparationResult(

@@ -118,6 +118,8 @@ internal static partial class WoundAcceptedTurnPlannerCore
             !WoundAcceptedTurnPlanner.JointRepairEffectInputAgrees(prepared, accepted.EffectInput))
             return FailedFinal("wound_plan_joint_final_invalid", "Joint finalization requires its whole private preparation and one effect stage.",
                 "current private joint preparation and exact effect input", "changed authority or effect input");
+        using var baselineTiming = BookOfEternityClient.Core.FileSystemManager.MeasureCurrentOperation(
+            "JointFinalAdmission.Baseline");
         var baseline = prepared.BaselineAuthority;
         var catalog = WoundCarrierCatalog.Build(baseline.PreTurnCarriers);
         var identity = WoundIdentityState.Parse(baseline.PreTurnIdentityIndex.ToJsonString(), WoundIdentityState.StatePath);

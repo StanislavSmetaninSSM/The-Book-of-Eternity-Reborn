@@ -801,9 +801,19 @@ internal static partial class MortalWoundTreatmentResourceComposer
         }
     }
 
+    /// <summary>
+    /// Derives resource finalization from agreeing detached treatment resolution and request evidence.
+    /// </summary>
+    /// <param name="resolution">
+    /// The terminal resolution to validate; <see langword="null"/> returns the existing missing-resolution refusal.
+    /// </param>
+    /// <returns>
+    /// The checked resource finalization or the original validation refusal issues.
+    /// </returns>
     internal static MortalWoundTreatmentResourceFinalizationResult Finalize(
         MortalWoundTreatmentResolution resolution)
     {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("TreatmentResources.Finalize");
         try
         {
             if (resolution is null)

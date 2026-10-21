@@ -88,14 +88,36 @@ internal static partial class WoundAcceptedTurnPlanner
                 throw new InvalidDataException("The privately retained corrected acquisition command is not one exact closed CREATE source.");
             return parsed.Commands;
         }
-        internal bool HasValidSeal => ReferenceEquals(Resolution.RequestAuthority, Request) &&
-            _outcome.AgreesWith(Resolution) && Finalization.RequestFingerprint == Request.RequestFingerprint &&
-            Finalization.ResultFingerprint == Resolution.ResultFingerprint &&
-            Finalization.ResourceAuthorityFingerprint == Request.ResourceAuthority.AuthorityFingerprint &&
-            MortalWoundTreatmentResourceComposer.Finalize(Resolution).Finalization?.FinalizationFingerprint == Finalization.FinalizationFingerprint &&
-            ComputeFingerprint() == Fingerprint;
+        /// <summary>
+        /// Checks retained request, resolution and resource agreement together with the recomputed private graph seal.
+        /// </summary>
+        /// <value>
+        /// <see langword="true"/> when every retained agreement matches; otherwise <see langword="false"/>.
+        /// Existing malformed-data exceptions propagate.
+        /// </value>
+        internal bool HasValidSeal
+        {
+            get
+            {
+                using var operationTiming = FileSystemManager.MeasureCurrentOperation("JointContinuation.ValidateSeal");
+                return ReferenceEquals(Resolution.RequestAuthority, Request) &&
+                    _outcome.AgreesWith(Resolution) && Finalization.RequestFingerprint == Request.RequestFingerprint &&
+                    Finalization.ResultFingerprint == Resolution.ResultFingerprint &&
+                    Finalization.ResourceAuthorityFingerprint == Request.ResourceAuthority.AuthorityFingerprint &&
+                    MortalWoundTreatmentResourceComposer.Finalize(Resolution).Finalization?.FinalizationFingerprint == Finalization.FinalizationFingerprint &&
+                    ComputeFingerprint() == Fingerprint;
+            }
+        }
+
+        /// <summary>
+        /// Computes the seal over retained joint inputs, companion fingerprints and ordered private before-image bytes.
+        /// </summary>
+        /// <returns>
+        /// The digest of this retained graph, including a distinct null marker for an absent before-image.
+        /// </returns>
         private string ComputeFingerprint()
         {
+            using var operationTiming = FileSystemManager.MeasureCurrentOperation("JointContinuation.ComputeFingerprint");
             var fields = new List<string?>
             {
                 JointRepairDomain, Generation, Checkpoint.ToJsonObject()["fingerprint"]!.GetValue<string>(),
@@ -105,8 +127,11 @@ internal static partial class WoundAcceptedTurnPlanner
                 Request.RequestFingerprint, Resolution.ResultFingerprint, Resolution.ResolutionAuthorityFingerprint,
                 Finalization.FinalizationFingerprint, _outcome.Fingerprint, Rematerialization?.AuthoritySeal
             };
-            foreach (var (path, bytes) in _before.OrderBy(pair => pair.Key, StringComparer.Ordinal))
-            { fields.Add(path); fields.Add(bytes is null ? null : Convert.ToHexString(SHA256.HashData(bytes))); }
+            using (FileSystemManager.MeasureCurrentOperation("JointContinuation.HashBeforeImages"))
+            {
+                foreach (var (path, bytes) in _before.OrderBy(pair => pair.Key, StringComparer.Ordinal))
+                { fields.Add(path); fields.Add(bytes is null ? null : Convert.ToHexString(SHA256.HashData(bytes))); }
+            }
             return WoundAcceptedTurnFingerprintWriter.Compute(fields);
         }
         internal async Task ValidateCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
@@ -344,10 +369,21 @@ internal static partial class WoundAcceptedTurnPlanner
         return batch.PreparedWoundId == joint.Outcome.Before.WoundId && TryReadJointRepairFinal(prepared, out view);
     }
 
+    /// <summary>
+    /// Composes the joint effect input from its agreeing private preparation and retained acquisition provenance.
+    /// </summary>
+    /// <param name="prepared">
+    /// The non-null whole joint preparation whose actual companion and source data must still agree.
+    /// </param>
+    /// <returns>
+    /// The composed effect input with bound diagnostic locations; mismatched preparation or provenance is refused.
+    /// </returns>
     internal static EffectAcceptedTurnInput ComposeJointRepairEffectInput(WoundPreparedAcceptedTurnPlan prepared)
     {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("JointEffectInput.Compose");
         if (!JointRepairPreparedAgrees(prepared) || !TryReadJointRepair(prepared.JointRepairContinuationAuthority, out var joint))
             throw new InvalidDataException("Joint effect input requires the complete private preparation.");
+        using var buildTiming = FileSystemManager.MeasureCurrentOperation("JointEffectInput.Build");
         var binding = joint.AcquisitionInput.Binding;
         var original = joint.AcquisitionInput;
         var sources = joint.ReadEffectSourceRoots();
@@ -418,8 +454,19 @@ internal static partial class WoundAcceptedTurnPlanner
         return values.All(value => ResourceMaterializationContract.IsExactIdentifier(value) && seen.Add(value) &&
             aliases.Add(MortalLocationIdentityState.BuildConfusableKey(value)));
     }
+    /// <summary>
+    /// Checks the complete retained joint preparation against its actual private companion and deterministic replay.
+    /// </summary>
+    /// <param name="prepared">
+    /// The non-null prepared stage whose family, ordered allocations, contribution data and replay seal are compared.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when every retained comparison and replay agrees; otherwise <see langword="false"/>.
+    /// Existing malformed-data exceptions propagate.
+    /// </returns>
     internal static bool JointRepairPreparedAgrees(WoundPreparedAcceptedTurnPlan prepared)
     {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("JointPreparation.PreparedAgrees");
         if (!TryReadJointRepair(prepared.JointRepairContinuationAuthority, out var joint) ||
             prepared.TreatmentContinuationAuthority is not null || prepared.RecoveryContinuationAuthority is not null || prepared.DraftBefore is not null ||
             prepared.PreparedWounds.Count != 2 || prepared.AllocatedWoundIds.Count != 2 || prepared.AllocatedTransitionIds.Count != 2 ||
@@ -442,8 +489,12 @@ internal static partial class WoundAcceptedTurnPlanner
             prepared.EffectOperationBatches[1].TransitionAuthority.AuthoritySeal == expected.TransitionAuthority.AuthoritySeal;
         if (!batchAgrees) return false;
         // Recompute the complete private contribution graph, not just caller-supplied
-        // hashes. This is an uncached pure replay with the same deterministic allocator.
-        var replay = PrepareJointRepairCandidate(joint.AcquisitionInput, prepared.JointRepairContinuationAuthority!);
+        // hashes. The deterministic preparation replay also rechecks companion authorities.
+        WoundAcceptedTurnPreparationResult replay;
+        using (FileSystemManager.MeasureCurrentOperation("JointPreparation.Replay"))
+        {
+            replay = PrepareJointRepairCandidate(joint.AcquisitionInput, prepared.JointRepairContinuationAuthority!);
+        }
         return replay.Success && replay.Plan is not null &&
             replay.Plan.WoundPreparationFingerprint == prepared.WoundPreparationFingerprint;
     }
