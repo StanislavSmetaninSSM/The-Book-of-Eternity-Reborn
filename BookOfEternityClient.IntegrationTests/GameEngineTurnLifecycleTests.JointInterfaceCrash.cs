@@ -110,11 +110,13 @@ public sealed partial class GameEngineTurnLifecycleTests
         try
         {
         var capture = JointInterfaceCrashProcessSupport.UsesManagedCapture(mode, () => JointInterfaceManagedCapture.Enabled);
-        var uncapturedRoot = JointInterfaceCrashStorage.SelectOwnedRoot(Path.GetTempPath(), ownedContainerParent,
-            Guid.NewGuid().ToString("N"), new(OperatingSystem.IsWindows(), extendedWindowsCrash,
-                seedPackageRoot is not null, seedArtifactPath is not null, fixtureAcquisitionOnly, capture, mode));
+        var uncapturedRoot = !capture || ownedContainerParent is not null
+            ? JointInterfaceCrashStorage.SelectOwnedRoot(Path.GetTempPath(), ownedContainerParent,
+                Guid.NewGuid().ToString("N"), new(OperatingSystem.IsWindows(), extendedWindowsCrash,
+                    seedPackageRoot is not null, seedArtifactPath is not null, fixtureAcquisitionOnly, capture, mode))
+            : null;
         var own = capture ? JointInterfaceManagedCapture.ClaimOwnedDirectory(cut, fault)
-            : uncapturedRoot;
+            : uncapturedRoot!;
         var storagePlacement = new { ExplicitParent = ownedContainerParent, SelectedParent = Path.GetDirectoryName(own), OwnedRoot = own };
         parentMetadata["StoragePlacement"] = JsonSerializer.SerializeToNode(storagePlacement);
         _directGachaOutput?.WriteLine("JOINT_CRASH_STORAGE " + JsonSerializer.Serialize(storagePlacement));
