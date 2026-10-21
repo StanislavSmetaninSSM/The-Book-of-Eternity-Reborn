@@ -12,7 +12,7 @@
     "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs"
   ],
   "related": [
-    "fr063-joint-bundle-component-setup"
+    { "id": "fr063-joint-bundle-component-setup", "when": "When changing authenticated ordinary-original, progression or owned fixture preparation." }
   ],
   "requirements": {
     "frontendBuild": false,
