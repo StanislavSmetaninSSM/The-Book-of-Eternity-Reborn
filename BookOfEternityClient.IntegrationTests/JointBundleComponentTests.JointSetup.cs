@@ -33,7 +33,26 @@ public sealed partial class JointBundleComponentTests
                 new JsonObject { ["levelUpStatPointsAwardedThroughLevel"] = 1, ["unspentStatPoints"] = 0 }.ToJsonString());
             var original = await PrepareOriginalAsync(44);
             MortalJointRepairCheckpoint.RejectedCapture capture;
-            try { capture = await PrepareHeldRepairAsync(original); }
+            try
+            {
+                await PrepareHeldRepairOutputsAsync(original);
+                using (Files.MeasureOperation("JointBundleFixture.RotateTreatmentLease"))
+                {
+                    var previousLease = Lease;
+                    try
+                    {
+                        await previousLease.DisposeAsync();
+                        _lease = null;
+                        // This caller owns the remaining phase: the normal synchronous
+                        // acquisition entry installs AsyncLocal registration here.
+                        _lease = await Files.AcquireCanonicalWriteLeaseAsync();
+                    }
+                    catch { _retained = true; throw; }
+                    Assert.False(previousLease.IsActive);
+                    Assert.True(Files.IsCurrentSessionGeneration(Lease, original.Generation));
+                }
+                capture = await CaptureCorrectedJointRepairAsync(original);
+            }
             catch (CoordinatedStatePublicationUncertainException) { _retained = true; throw; }
             WoundAcceptedTurnPlanner.JointRepairPreparationAuthorityResult preparation;
             using (Files.MeasureOperation("JointBundleFixture.CreateJointPreparation"))
@@ -127,16 +146,16 @@ public sealed partial class JointBundleComponentTests
         }
 
         /// <summary>
-        /// Creates and confirms a genuine guaranteed treatment request, then installs its rejected repair wave
-        /// and changes only the authorized public severity leaf for normal reconstruction.
+        /// Creates and confirms a genuine guaranteed treatment request and writes its rejected public outputs.
+        /// The owning caller begins the separate recovery lease phase before capturing a private repair wave.
         /// </summary>
         /// <param name="original">
         /// Data coordinates of the current independently authenticated decision original.
         /// </param>
         /// <returns>
-        /// The genuine lease-local rejected capture used by the normal correction factory.
+        /// A task completing after the genuine held command and timestamped rejected outputs are persisted.
         /// </returns>
-        private async Task<MortalJointRepairCheckpoint.RejectedCapture> PrepareHeldRepairAsync(
+        private async Task PrepareHeldRepairOutputsAsync(
             GameEngine.JointComponentOriginal original)
         {
             using var timing = Files.MeasureOperation("JointBundleFixture.PrepareHeldRepair");
@@ -183,19 +202,6 @@ public sealed partial class JointBundleComponentTests
             var hold = AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(Files, Lease, request, finalization.Finalization!);
             Assert.True(hold.IsValid, JsonSerializer.Serialize(hold.Issues));
             Assert.Equal(MortalWoundTreatmentResourceReservationState.ConfirmedHeld, hold.State);
-            using (Files.MeasureOperation("JointBundleFixture.RotateTreatmentLease"))
-            {
-                var previousLease = Lease;
-                try
-                {
-                    await previousLease.DisposeAsync();
-                    _lease = null;
-                    _lease = await Files.AcquireCanonicalWriteLeaseAsync();
-                }
-                catch { _retained = true; throw; }
-                Assert.False(previousLease.IsActive);
-                Assert.True(Files.IsCurrentSessionGeneration(Lease, original.Generation));
-            }
             var projectionSource = MortalQteWoundOpportunityProjection.ReadSnapshot(Files, Lease);
             Assert.Equal(original.RequestId, projectionSource.RequestId);
             var opportunity = Assert.Single(MortalQteWoundOpportunityProjection.Project(projectionSource));
@@ -222,12 +228,30 @@ public sealed partial class JointBundleComponentTests
                 status = "success", timestamp, filesModified = new[] { MortalWoundOpportunityAdapter.DecisionPath,
                     "output/narrative_response.json", "output/interface_updates.json", "output/debug_logs.json" }
             }));
+        }
+
+        /// <summary>
+        /// Captures and installs the genuine rejected repair under the caller's final participating lease,
+        /// then changes only the public severity leaf for the normal correction factory.
+        /// </summary>
+        /// <param name="original">
+        /// The actual decision-original coordinates, unchanged across the ordinary lease phase boundary.
+        /// </param>
+        /// <returns>
+        /// The private rejected capture bound to the same lease used by the remaining joint preparation.
+        /// </returns>
+        private async Task<MortalJointRepairCheckpoint.RejectedCapture> CaptureCorrectedJointRepairAsync(
+            GameEngine.JointComponentOriginal original)
+        {
+            using var timing = Files.MeasureOperation("JointBundleFixture.CaptureCorrectedRepair");
             var captured = await MortalJointRepairCheckpoint.CaptureAsync(Files, Lease,
                 original.SessionId, original.RequestId, original.SnapshotToken, original.Turn);
             Assert.True(captured.IsValid, JsonSerializer.Serialize(captured.Issues));
             var capture = captured.Capture!;
             Assert.NotNull(capture);
             await Files.WriteFileAtomicAsync(Lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath, capture.Pending.ToJsonString());
+            var decision = JsonNode.Parse((await Files.ReadFileAsync(Lease, MortalWoundOpportunityAdapter.DecisionPath))!)!.AsObject();
+            Assert.Equal("III", decision["proposal"]!["severity"]!.GetValue<string>());
             decision["proposal"]!["severity"] = "II";
             await Files.WriteFileAtomicAsync(Lease, MortalWoundOpportunityAdapter.DecisionPath, decision.ToJsonString());
             return capture;
