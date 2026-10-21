@@ -1,3 +1,12 @@
+# CRASH5 — plan13 revision41: next measured writer children
+
+Reuse feature1536, existing isolated checkout and user review-wait waiver. This is the next diagnostic depth, not a production fix. Canonical Spec Kit phases/equivalent analysis and Superpowers debugging/execution/verification/independent review apply.
+
+1. T401: record r40 measured gaps, written spec/plan/tasks and exact insertion design; run actual canonical phases/equivalent consistency; retain current8 binaries with old48 verified. Replay old ordinary raw to show new writer names absent without a fresh expensive RED runtime.
+2. T402: instrument only FileSystemManager.cs lease byte writer, FileSystemManager.TrustedLocalStorage.cs existing ordinary/local facades, TrustedLocalFilePublication.cs existing synchronous publication/WriteNew methods and GameEngine.SessionAndSnapshots.cs selected member helper. Static deep WriteNew uses the short synchronous current context; no context crosses await. Preserve all existing transactions, repeated checks, flushes, callbacks, exception/abort/cleanup behavior. Add accurate multiline XML to changed APIs and no unrelated edits.
+3. T403: save/publish/recover WIP; full-reference integration XML build once; verify changed XML/compiler lines, exact current dependency closure and all retained/native/v2 pins. Run existing ordinary-original/refusal1 and context12 only, same budgets. Archive all raw before parsing, verify every member, then require actual nested writer/publication/flush names and strict balanced tree; retain all aggregate/path data. Select next call by measured residual, no benchmark claims.
+4. T404: independent complex review of exact coherent diff, original requirements, archived full oracles/closing/tree/build/pins. Correct validated findings with relevant verification; save final evidence and exact remote recovery. No original candidate/five/Linux or whole publication qualification.
+
 # CRASH5 — plan13 revision40: recursive measurement of dominant sections
 
 1. T397: preserve user priority correction and whole archived-tree evidence; write/present this scope under the standing review-wait waiver, run actual canonical phases/consistency and record exact timer/context placements before code. Retain current outputs before builds.
