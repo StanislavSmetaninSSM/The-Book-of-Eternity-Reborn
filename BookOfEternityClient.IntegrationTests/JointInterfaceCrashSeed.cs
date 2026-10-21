@@ -46,9 +46,20 @@ internal sealed record JointInterfaceCrashSeedMetadata(
 /// </summary>
 internal sealed class JointInterfaceCrashSeed
 {
-    private const int MaximumFiles = 8192;
-    private const long MaximumPayloadBytes = 256L * 1024 * 1024;
-    private const int MaximumManifestBytes = 4 * 1024 * 1024;
+    /// <summary>
+    /// Limits the durable fixture format's payload-file inventory.
+    /// </summary>
+    internal const int MaximumFiles = 8192;
+
+    /// <summary>
+    /// Limits the durable fixture format's total uncompressed payload bytes.
+    /// </summary>
+    internal const long MaximumPayloadBytes = 256L * 1024 * 1024;
+
+    /// <summary>
+    /// Limits the durable fixture format's manifest bytes and derived directory inventory.
+    /// </summary>
+    internal const int MaximumManifestBytes = 4 * 1024 * 1024;
     private const string GenerationPath = ".boe_runtime/session-generation/current.json";
     private readonly string _artifactPath;
     private readonly Dictionary<string, byte[]> _files;
@@ -282,6 +293,76 @@ internal sealed class JointInterfaceCrashSeed
             throw new IOException("A seed import cannot be created inside its source artifact.");
         await WriteNewRootAsync(root, scope => WritePayloadAsync(scope, root, _files, _directories));
         return Metadata;
+    }
+
+    /// <summary>
+    /// Checks detached carrier contents with the original codec's schema, names, provenance and generation rules.
+    /// Physical hydration must still pass <see cref="Open"/> before the artifact is used.
+    /// </summary>
+    /// <param name="manifestBytes">
+    /// The exact bounded manifest bytes transported by the carrier; <see langword="null"/> is rejected.
+    /// </param>
+    /// <param name="files">
+    /// Complete payload bytes keyed by portable relative paths, with no manifest or directory entries.
+    /// A <see langword="null"/> collection is rejected.
+    /// </param>
+    /// <param name="directories">
+    /// Every explicitly transported payload directory; absence is never repaired from a file's ancestors.
+    /// A <see langword="null"/> collection is rejected.
+    /// </param>
+    /// <returns>
+    /// The validated manifest contract fingerprint, for the mandatory physical codec check after hydration.
+    /// </returns>
+    internal static string ValidateTransportSnapshot(byte[] manifestBytes,
+        IReadOnlyDictionary<string, byte[]> files, IReadOnlyCollection<string> directories)
+    {
+        ArgumentNullException.ThrowIfNull(manifestBytes);
+        ArgumentNullException.ThrowIfNull(files);
+        ArgumentNullException.ThrowIfNull(directories);
+        if (manifestBytes.Length > MaximumManifestBytes || files.Count > MaximumFiles ||
+            directories.Count > MaximumManifestBytes / 3)
+            throw new InvalidDataException("The carrier snapshot exceeds the seed format bounds.");
+        try
+        {
+            using var document = JsonDocument.Parse(manifestBytes);
+            var manifest = ReadObject(document.RootElement,
+                "version", "contractFingerprint", "metadata", "directories", "files");
+            if (manifest["version"].ValueKind != JsonValueKind.Number ||
+                !manifest["version"].TryGetInt32(out var version) || version != 1)
+                throw new InvalidDataException("The seed manifest version is unsupported.");
+            var fingerprint = ReadString(manifest["contractFingerprint"]);
+            ValidateDigest(fingerprint);
+            var metadata = ReadMetadata(manifest["metadata"]);
+            if (manifest["directories"].ValueKind != JsonValueKind.Array || manifest["files"].ValueKind != JsonValueKind.Array)
+                throw new InvalidDataException("The seed inventory must contain arrays.");
+            var expectedDirectories = manifest["directories"].EnumerateArray().Select(ReadString).ToArray();
+            var expectedFiles = new HashSet<string>(StringComparer.Ordinal);
+            long total = 0;
+            foreach (var element in manifest["files"].EnumerateArray())
+            {
+                var file = ReadObject(element, "path", "length", "sha256");
+                var path = ReadString(file["path"]);
+                var digest = ReadString(file["sha256"]);
+                ValidateDigest(digest);
+                if (expectedFiles.Count == MaximumFiles || !expectedFiles.Add(path) ||
+                    file["length"].ValueKind != JsonValueKind.Number ||
+                    !file["length"].TryGetInt64(out var length) || length < 0 || length > MaximumPayloadBytes - total)
+                    throw new InvalidDataException("The carrier manifest file inventory is invalid.");
+                total += length;
+                if (!files.TryGetValue(path, out var bytes) || bytes.LongLength != length || Digest(bytes) != digest)
+                    throw new InvalidDataException("The carrier payload does not match the seed manifest.");
+            }
+            ValidateNames(expectedFiles, expectedDirectories);
+            if (!expectedFiles.SetEquals(files.Keys) ||
+                !expectedDirectories.Order(StringComparer.Ordinal).SequenceEqual(directories.Order(StringComparer.Ordinal), StringComparer.Ordinal))
+                throw new InvalidDataException("The carrier must transport the exact declared file and directory inventory.");
+            ValidateGeneration(metadata, files);
+            return fingerprint;
+        }
+        catch (JsonException error)
+        {
+            throw new InvalidDataException("The carrier seed manifest is not valid JSON.", error);
+        }
     }
 
     /// <summary>

@@ -61,12 +61,16 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// <param name="seedUsage">
     /// The explicit five-cut usage, or <see langword="null"/> for the unchanged legacy cut0-only opt-in.
     /// </param>
+    /// <param name="seedPackageRoot">
+    /// The explicit closed five-cut package directory, or <see langword="null"/> for the original raw/default branches.
+    /// Hydration remains inside the actual child-owning crash container until confirmed retirement.
+    /// </param>
     /// <returns>
     /// Completion after the selected probe's process and DATA assertions, or the original game assertions.
     /// </returns>
     private async Task RunJointInterfaceActualProcessLossAsync(int cut, string? fault = null, bool diagnostic = false,
         bool extendedWindowsCrash = false, string? seedArtifactPath = null, bool fixtureAcquisitionOnly = false,
-        string? seedUsage = null)
+        string? seedUsage = null, string? seedPackageRoot = null)
     {
         if (extendedWindowsCrash && !OperatingSystem.IsWindows())
             throw new PlatformNotSupportedException("Extended crash qualification is a local Windows selection.");
@@ -74,7 +78,14 @@ public sealed partial class GameEngineTurnLifecycleTests
         _ = JointInterfaceCrashProcessSupport.SelectBackend(OperatingSystem.IsWindows(), OperatingSystem.IsLinux(), mode);
         if (fixtureAcquisitionOnly && (!extendedWindowsCrash || seedArtifactPath is null))
             throw new InvalidDataException("Fixture acquisition requires an explicit seeded Windows selection.");
-        if (seedUsage is not null && seedArtifactPath is null)
+        if (seedPackageRoot is not null)
+        {
+            if (!extendedWindowsCrash || seedArtifactPath is not null || fixtureAcquisitionOnly ||
+                seedUsage != JointInterfaceSeedCrashInput.OrdinaryWindowsFiveCutsUsage)
+                throw new InvalidDataException("A five-cut package requires its exclusive ordinary Windows fixture selection.");
+            JointInterfaceSeedCrashInput.ValidateMode(OperatingSystem.IsWindows(), mode, seedUsage, fixtureAcquisitionOnly);
+        }
+        if (seedUsage is not null && seedArtifactPath is null && seedPackageRoot is null)
             throw new InvalidDataException("Explicit source42 fixture usage requires an artifact selection.");
         JointInterfaceSeedCrashInput? source42Seed = null;
         if (seedArtifactPath is not null)
@@ -101,6 +112,15 @@ public sealed partial class GameEngineTurnLifecycleTests
         using var owned = new JointInterfaceCrashOwnedContainer(own, line => _directGachaOutput?.WriteLine(line), capture, failures);
         try
         {
+        if (seedPackageRoot is not null)
+        {
+            var hydratedArtifact = Path.Combine(own, "source42-artifact");
+            JointInterfaceSeedPackage.Hydrate(seedPackageRoot, hydratedArtifact);
+            source42Seed = JointInterfaceSeedCrashInput.Bind(hydratedArtifact, TestRepoPaths.RepoRoot,
+                OperatingSystem.IsWindows(), mode, seedUsage, fixtureAcquisitionOnly);
+            parentMetadata["Source42Seed"] = JsonSerializer.SerializeToNode(source42Seed);
+            Assert.Equal(source42Seed, JointInterfaceSeedCrashInput.Read(parentMetadata, OperatingSystem.IsWindows(), mode));
+        }
         File.WriteAllText(Path.Combine(own, "parent.json"), parentMetadata.ToJsonString());
         var cutPath = Path.Combine(own, "cut.json");
         var sharedWindowsCrashStarted = extendedWindowsCrash ? Stopwatch.GetTimestamp() : (long?)null;

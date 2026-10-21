@@ -168,7 +168,7 @@ internal sealed record JointInterfaceSeedCrashInput(string ArtifactPath, string 
     /// <param name="fixtureAcquisitionOnly">
     /// Whether acquisition was requested; explicit five-cut usage cannot be combined with it.
     /// </param>
-    private static void ValidateMode(bool windows, JointInterfaceCrashMode mode,
+    internal static void ValidateMode(bool windows, JointInterfaceCrashMode mode,
         string? usage = null, bool fixtureAcquisitionOnly = false)
     {
         ValidateUsage(usage);

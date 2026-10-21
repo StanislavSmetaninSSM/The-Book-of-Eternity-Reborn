@@ -50,7 +50,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     public Task JointInterfaceFixtureBackedWindows_Cut4_ErrorPrepared() => RunFixtureBackedWindowsCutAsync(4);
 
     /// <summary>
-    /// Selects the distinct current five-cut artifact and the existing shared Windows crash observation bounds.
+    /// Selects the distinct current five-cut package and the existing shared Windows crash observation bounds.
     /// </summary>
     /// <param name="cut">
     /// The original cut index from zero through four.
@@ -60,7 +60,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// </returns>
     private Task RunFixtureBackedWindowsCutAsync(int cut) => RunJointInterfaceActualProcessLossAsync(cut,
         extendedWindowsCrash: true,
-        seedArtifactPath: Path.Combine(TestRepoPaths.RepoRoot, "specs", "1536-complete-wound-materialization",
-            "fixtures", "joint-interface-source42-five-v1", "artifact"),
+        seedPackageRoot: Path.Combine(TestRepoPaths.RepoRoot, "specs", "1536-complete-wound-materialization",
+            "fixtures", "joint-interface-source42-five-v1", "package"),
         seedUsage: JointInterfaceSeedCrashInput.OrdinaryWindowsFiveCutsUsage);
 }

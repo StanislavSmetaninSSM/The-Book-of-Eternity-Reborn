@@ -36,6 +36,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var copyCleanup = false;
         var sourceCleanup = false;
         string? failure = null;
+        string? loadedAssembliesFailure = null;
         JointInterfaceCrashSeed? seed = null;
         try
         {
@@ -111,13 +112,23 @@ public sealed partial class GameEngineTurnLifecycleTests
             new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line)).Dispose();
             copyCleanup = copies.All(root => !Directory.Exists(root) && !File.Exists(root));
             sourceCleanup = !Directory.Exists(_rootPath) && !File.Exists(_rootPath);
+            object[] loadedAssemblies = [];
+            try
+            {
+                loadedAssemblies = CaptureJointSeedLoadedAssemblies();
+            }
+            catch (Exception error)
+            {
+                loadedAssembliesFailure = error.ToString();
+            }
             var manifest = Path.Combine(artifactPath, "manifest.json");
             var result = new
             {
-                SchemaVersion = 1, Qualified = qualified && copyCleanup && sourceCleanup, Failure = failure,
+                SchemaVersion = 1, Qualified = qualified && copyCleanup && sourceCleanup && loadedAssembliesFailure is null, Failure = failure,
                 ArtifactPath = artifactPath, ManifestSha256 = File.Exists(manifest) ? Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(manifest))) : null,
                 seed?.ContractFingerprint, seed?.FileCount, seed?.PayloadBytes, seed?.Metadata,
                 Timings = timings, TotalSeconds = clock.Elapsed.TotalSeconds, CopyCleanup = copyCleanup, SourceCleanup = sourceCleanup,
+                LoadedAssemblies = loadedAssemblies, LoadedAssembliesFailure = loadedAssembliesFailure,
                 ProductionValidation = "fresh FileSystemManager and local lease per independent root; read-only inactive-tail/resource/occurrence predicates",
                 Scope = "source42 preparation/loading only; no Stage43, crash or current-owner qualification"
             };
@@ -126,7 +137,39 @@ public sealed partial class GameEngineTurnLifecycleTests
         }
         Assert.True(copyCleanup);
         Assert.True(sourceCleanup);
+        Assert.Null(loadedAssembliesFailure);
     }
+
+    /// <summary>
+    /// Captures public metadata and exact current file hashes for the actual Core and Integration assembly instances.
+    /// Every loaded TestSupport instance is included without assuming a particular assembly load context.
+    /// </summary>
+    /// <returns>
+    /// Complete selected assembly rows with names, physical paths, SHA256, informational versions and actual load contexts.
+    /// Missing physical assembly provenance is an error rather than a qualified empty result.
+    /// </returns>
+    private static object[] CaptureJointSeedLoadedAssemblies() =>
+        new[] { typeof(GameEngine).Assembly, typeof(GameEngineTurnLifecycleTests).Assembly }
+            .Concat(AppDomain.CurrentDomain.GetAssemblies().Where(assembly =>
+                assembly.GetName().Name == "BookOfEternityClient.TestSupport"))
+            .Distinct().OrderBy(assembly => assembly.FullName, StringComparer.Ordinal)
+            .Select(assembly =>
+            {
+                var path = assembly.Location;
+                if (string.IsNullOrWhiteSpace(path) || !Path.IsPathFullyQualified(path))
+                    throw new InvalidDataException("A producing assembly lacks an explicit physical file path.");
+                var version = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+                if (string.IsNullOrWhiteSpace(version))
+                    throw new InvalidDataException("A producing assembly lacks an informational version.");
+                var context = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(assembly);
+                return (object)new
+                {
+                    Name = assembly.GetName().Name, Path = path,
+                    Sha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path))),
+                    InformationalVersion = version, LoadContext = context?.Name,
+                    IsDefaultContext = ReferenceEquals(System.Runtime.Loader.AssemblyLoadContext.Default, context)
+                };
+            }).ToArray();
 
     /// <summary>
     /// Captures stable durable bytes while proving the local operation has no outstanding publication or worker ownership.
