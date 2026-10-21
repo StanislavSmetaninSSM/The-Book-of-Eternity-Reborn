@@ -1,3 +1,17 @@
+# T359 — Windows metadata folding: GREEN SOURCE/PREP
+
+Compiled `34cedb381820f390b033450713b1cad6ff94d329`: fresh **69/69 PASS** (41 new detached/real cases +28 exact affected read/mutation/runtime/lease/bytes/timestamp/cancellation controls). Both XML builds succeed, no introduced API/XML/analyzer warnings. Catalog and exact new41/affected28/component2 PlanOnly inventories pass, zero component workloads executed. Four DLLs and four dependency copies match this source and immutable T333input remains exact. `T359-green-analysis.json`, `T359-source-prep.json` and `T359-green.json` contain the full bindings and actual results.
+
+All nine former count failures now pass with fresh component-local FSI observations: directory depths1/2/4 use2/3/5 managed requests; file and missing use3/4/6. Complete27real receipts retained and all27new owned roots absent. The41new TRX test bodies sum376.5488ms, maximum52.0532ms; selected command29.28963s includes runner startup/discovery. Separate affected command40.8995278s; XML builds50.1054478s and11.8755298s. These clocks are different and do not establish gameplay speedup.
+
+GREEN changes only the real provider's two observation methods/class XML plus two analyzer-correct containment assertions. Exactly one local DirectoryInfo/FileInfo Refresh then uninterrupted Exists and conditional cached Attributes; no retained objects/cross-call DATA, no callback in the sequence. Root/segment/fallback/original reparse decisions unchanged; trailing-separator files use the legacy decision. FileSystemManager inverse source projection reproduces the whole baseline exactly, including Linux and unrelated behavior. The accepted intra-walk temporal limit remains; no filesystem snapshot guarantee.
+
+Full GREEN archive104indexedfiles, CRC and allSHA verified: `9138C3B0B0140A84844775F239D280103D4613950E4B925C233BD1048C83A7B2`. It includes future T360 runner/analysis sources; this prepares one changed two-case actual consumer under existing2minute TOTAL bound after saved/recovered independent acceptance. Future runner is bound by exact SHA in SOURCE/PREP; summary rejects incomplete/vacuous outcomes. No future workload has run. Protected roots receive only metadata existence checks, no enumeration/cleanup retry.
+
+Independent separate complex SOURCE/PREP review remains pending. T359 is not complete until accepted and clean remote recovery is verified. Original recovery/fullowner/five/Linux remain unqualified; no historical hang cause or native syscall/wall speedup claim.
+
+---
+
 # T359 — Windows metadata folding: causal RED
 
 Canonical spec15r27/plan13r27, FOLD-1..4; T359 remains open. No actual game workload, generator, full owner, original five or Linux test was executed.
