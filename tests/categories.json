@@ -2,6 +2,71 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-ordinary-read-section-timing-controls",
+  "responsibility": "T371–T372 eighteen tiny typed sync/async regular/missing/invalid-leaf, disappearing-open and real-lease nullable data/path controls, complete or throwing observer, full balanced nested timing evidence and exact owned closing.",
+  "excludes": "No game/world preparation, source42, process crash, native/security configuration or old-root cleanup.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+    "BookOfEternityClient.IntegrationTests/OrdinaryReadSectionTimingTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.OrdinaryReadSectionTimingTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-ordinary-read-section-consumers",
+  "responsibility": "T372 exact affected ordinary-reader consumers: bytes/text/BOM/missing/real leases/cancellation/opened timestamps, brief sharing retry, physical invalid-entry/junction boundaries and pending publication recovery/refusal.",
+  "excludes": "No full suite, Linux FIFO launch, game/world bootstrap, source42, historical ACL fixture or long crash run.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+    "BookOfEternityClient.IntegrationTests/OrdinaryReadSectionTimingTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding",
+        "BookOfEternityClient.Tests.PortableOrdinaryReadTests.HardLinkedOrdinaryInputReachesCoordinatedPublicationWithoutChangingOutsideAlias",
+        "BookOfEternityClient.Tests.PortableOrdinaryReadTests.SnapshotTimestampAndBytesBelongToTheOpenedFile",
+        "BookOfEternityClient.Tests.PortableOrdinaryReadTests.LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening",
+        "BookOfEternityClient.Tests.PortableOrdinaryReadTests.CancellationBeforeOrAtOpenDoesNotConsumeBytes"
+      ]
+    },
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileSync_DirectoryAtOptionalFileBoundaryFailsClosed",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileSync_RegularFileAtIntermediateParentFailsClosed",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_ParentReplacedByJunctionBeforeOpenFailsClosed",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_ParentReplacedByJunctionAfterOpenFailsClosed",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_RecoversPublishedUncommittedPublicationBeforeCanonicalRead",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_FinalizesCommittedPublicationBeforeCanonicalRead",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_UnknownPublicationIdentityFencesAndRetainsEvidence"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-five-logger-contract",
   "responsibility": "Complete enabled engine diagnostic retention, full long messages and exceptions in arrival order without a game world.",
   "excludes": "No source42 generation, player turn, process crash, engine construction or Linux qualification. No diagnostic quota.",

@@ -1,3 +1,15 @@
+# CRASH5 — plan13 revision33: nested ordinary-read diagnostics with causal fixture coverage
+
+Spec15r33/READSECTION-1..4 is a bounded additive diagnostic change, not a production performance fix. Existing dedicated checkout and approval-wait waiver apply. Continue Superpowers TDD/debugging/execution/review/verification through canonical Spec Kit records.
+
+1. Present actualr33, run Spec Kit plan/tasks/prerequisite phases and bridge consistency before test/production code. Preserve accepted T370/consultation findings. Copy/hash the eight old DLL outputs before selected builds replace them; immutable package remains unchanged and source-bound to historicalffa87 only.
+2. T371: write minimal independent regular/missing/invalid-entry sync/async complete/throwing-observer and missing-open tests, full event output and exact owned-root cleanup; categorize explicitly, select actual changed/affected contracts and PlanOnly/discovery. Publish WIP tests/catalog/selection and recover before causal RED. Run only new bounded controls; preserve all failures and verify they fail for absent new spans, not setup/compiler faults.
+3. T372: add nested timing scopes around unchanged statements. Shared open helper retains original validation outside FileStream catch, same catch/retry/nullability/cleanup semantics; scope timing around missing revalidation too. Build XML, inspect all new/changed docs, run new GREEN and relevant existing portable ordinary-reader/existence/nullable/refusal controls, preserve exact planned/completed cases and full raw. No broad suite/old protected-root cleanup.
+4. T373: rebuild isolated typed diagnostic harness against new actual current Core bytes; do not overwrite historical harness outputs. Record new source/runtime/dependency/output provenance and truthful invalidation of historical fixture for new source. Guard one T374 matrix, archive/analyze unchanged workload plus all new sections. Save/push/recover coherent source/tests/catalog/docs/PREP, separate independent complex review, address findings and save/recover acceptance.
+5. T374: one matrix576+12 with all payload/schedule/inventory/binding/closing checks, uncapped complete callbacks; full raw first, verified archived inputs, per-section/distribution/count results, independent actual findings review and clean recovery. No changed bounds, long game/source42/Linux run or automatic optimization from this diagnostic change.
+
+---
+
 # CRASH5 — plan13 revision32: typed internal guarded-read component profile
 
 Spec15r32/READPROFILE-1..4 is an investigation delivering findings, using existing approved isolation and user approval-wait waiver. Continue Superpowers brainstorming/debugging, writing-plans, execution, independent review and verification through these canonical Spec Kit artifacts.

@@ -2,31 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "fr063-storage-namespace-probe-controls",
-      "reason": "T354 Windows-only real storage namespace traversal on independent tiny ordinary fixtures: actual native-open counts, original missing/type/link/access/sharing refusals, retained ancestors, failure disposal, fresh observations and actual empty/unresolved read admission. No injected native success.",
+      "category": "fr063-ordinary-read-section-timing-controls",
+      "reason": "T371–T372 eighteen tiny typed sync/async regular/missing/invalid-leaf, disappearing-open and real-lease nullable data/path controls, complete or throwing observer, full balanced nested timing evidence and exact owned closing.",
       "contracts": [
-        "Fresh physical namespace/generation/evidence/ownership and original refusal preserved; scoped native observations do not fabricate authority or replace outcomes."
+        "Additive nested existing timing only; real data/absence/namespace refusal, exact lease/cancellation/hook/retry/nullable semantics and fresh physical checks unchanged. All diagnostics retained; no game setup or changed timeout."
       ]
     },
     {
-      "category": "fr063-storage-evidence-bootstrap-controls",
-      "reason": "T354 eight existing current bootstrap/evidence/generation cases: three unresolved legacy roots, ordinary empty roots, neutral direct-gacha dirs, two unknown/linked browser structures and stale bound writer generation.",
+      "category": "fr063-ordinary-read-section-consumers",
+      "reason": "T372 exact affected ordinary-reader consumers: bytes/text/BOM/missing/real leases/cancellation/opened timestamps, brief sharing retry, physical invalid-entry/junction boundaries and pending publication recovery/refusal.",
       "contracts": [
-        "Fresh physical namespace/generation/evidence/ownership and original refusal preserved; scoped native observations do not fabricate authority or replace outcomes."
-      ]
-    },
-    {
-      "category": "fr063-ordinary-existence-physical-controls",
-      "reason": "T351 twelve exact existing ordinary existence/race/publication recovery/finalization/unknown-identity/lease/invalid-entry controls affected by additive central timing scopes.",
-      "contracts": [
-        "Fresh physical namespace/generation/evidence/ownership and original refusal preserved; scoped native observations do not fabricate authority or replace outcomes."
-      ]
-    },
-    {
-      "category": "fr063-ordinary-existence-timing-controls",
-      "reason": "T351 six minimal physical existence/absence/invalid-entry controls with complete or throwing passive timing observer; unchanged DATA and balanced named scopes.",
-      "contracts": [
-        "Fresh physical namespace/generation/evidence/ownership and original refusal preserved; scoped native observations do not fabricate authority or replace outcomes."
+        "Additive nested existing timing only; real data/absence/namespace refusal, exact lease/cancellation/hook/retry/nullable semantics and fresh physical checks unchanged. All diagnostics retained; no game setup or changed timeout."
       ]
     }
   ]
