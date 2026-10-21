@@ -1,6 +1,6 @@
 # CRASH5 — revision34 tasks: explicit fixture placement
 
-- [ ] T375 [US2/US3] Actual canonical spec/plan/tasks phases, bridge consistency and retained f620 binaries; tiny typed placement controls/category/selection and saved/recovered causal RED with no game or fixture generation.
+- [x] T375 [US2/US3] Actual canonical spec/plan/tasks phases, bridge consistency and retained f620 binaries; tiny typed placement controls/category/selection and saved/recovered causal RED with no game or fixture generation.
 - [ ] T376 [US2/US3] Mode-restricted explicit ordinary parent/fresh child helper, shared-driver optional argument and Windows-five-only repository-parent/v2 selection, unchanged ownership/oracles/limits/default/Linux/capture; XML build, GREEN and bounded affected controls, complete raw and cleanup evidence.
 - [ ] T377 [US2/US3] Exact diff/provenance/history/v2-not-generated consistency, coherent independent complex source/tests/docs review and clean remote recovery. No long game or Linux run; later current-source genuine v2 qualification required.
 
