@@ -1,5 +1,8 @@
 # CRASH5 — plan13 revision20: fixture-only real GameState history consumer
 
+T347 SOURCE/PREP independently accepted without findings at32bebf803 (compiled53eaf6e0): T347-source-review.json,61rawfiles/hash,2loggerPASS/21retained,2componentcases stillUNRUN,4DLL+copies and396exactremote recovery verified. Save/readback/recover this decision, then exactlyone guarded T348Windows2case category with explicit2minute totalcommand timeout; runnerhash14B39EDBDFA5FA9D33BF2423973D08E6176820AD86E4819CC5E6811FD1401B0D. Full actual outcome/unknowns retained and independently reviewed; no broader recovery qualification.
+
+
 T347 SOURCE/PREP53eaf6e0e: two direct actual consumer cases authored but UNRUN;2existing logger controls freshlyPASS (21prior unaffected cases retained by exact source),2XML0errors/nochanged-file warnings,20XMLblocks inspected, catalog/exact2logger+2componentplans0executed,4DLL+4copies bound and394exactsource recovery. Full61-file archive SHAAA219C05F0F273F852B36025FABCB33241B5B80F184825C2A9E3D12805EBBDB0 includes source/diff/equivalence/phase metadata and exact guarded T348runner/per-case losslessparser/cross-check. Pre-source guard correctly refusedfffdirtybeforeanybuild/tests during final evidence completion; noattempt consumed/resultsdiscarded. Final independent SOURCE/PREP and metadata recovery pending; T348components remainUNRUN.
 
 
