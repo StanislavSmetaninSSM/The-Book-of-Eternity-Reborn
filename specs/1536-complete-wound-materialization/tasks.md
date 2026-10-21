@@ -3,7 +3,7 @@
 - [x] T389 [US2/US3] Canonical phases/consistency and source design; retain current binaries, add genuine first-copy timing-tree expectations and obtain missing-name causal RED with full raw/closing/provenance.
 - [x] T390 [US2/US3] Eleven passive named spans in the four agreed source files; exact evaluation/guard/refusal/catch contracts, accurate XML and unchanged r37 production semantics.
 - [x] T391 [US2/US3] Current XML/focused checks and one actual unchanged-budget copy-only GREEN with complete original contracts, all timing names/tree/closing/full raw; verified archived-input inclusive/exclusive findings and observer costs.
-- [ ] T392 [US1/US2/US3] Independent coherent complex review, validated corrections and exact clean remote recovery; evidence-backed next-fix decision, no original-workload speedup claim.
+- [x] T392 [US1/US2/US3] Independent coherent complex review, validated corrections and exact clean remote recovery; evidence-backed next-fix decision, no original-workload speedup claim.
 
 Prior T386 bounded implementation is accepted, T385 complete; T383/T387/T388 overall and whole r36/r37 remain open. The user's explicit autonomous-work waiver removes approval waits, not canonical phases, verification or independent review. No production optimization is authorized by this investigation.
 
