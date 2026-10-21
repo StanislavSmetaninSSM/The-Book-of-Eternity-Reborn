@@ -1,5 +1,8 @@
 # CRASH5 — plan13 revision20: fixture-only real GameState history consumer
 
+T348 actual2/2PASS, complete category80.543s/explicit2minute bound; positivebody32.652s (copy1.176/realissuance9.466/consumer21.640s, processCPU21.906s), negativebody27.944s with exact transient-footprint refusal/restoration. Full40,293,583JSONLbytes,218814events/109407closed intervals/no gaps/errors/open scopes;2writers closed and attempted=stored, allgame/gen unchanged, actualouterdisposal+independentafterconditions passed, bothownrootsabsent.22indexedrawfiles ZIP1A8CD539365C78E31579098F262F8F99C3210F4A79364952E5609D53E60307BF, losslessallinterval analysis/fullreports retained; independent outcome review pending. No original/five/Linux/full-owner/historical fix claim. Nextcandidate observer self-cost measurement, not fence removal.
+
+
 T347 SOURCE/PREP independently accepted without findings at32bebf803 (compiled53eaf6e0): T347-source-review.json,61rawfiles/hash,2loggerPASS/21retained,2componentcases stillUNRUN,4DLL+copies and396exactremote recovery verified. Save/readback/recover this decision, then exactlyone guarded T348Windows2case category with explicit2minute totalcommand timeout; runnerhash14B39EDBDFA5FA9D33BF2423973D08E6176820AD86E4819CC5E6811FD1401B0D. Full actual outcome/unknowns retained and independently reviewed; no broader recovery qualification.
 
 
