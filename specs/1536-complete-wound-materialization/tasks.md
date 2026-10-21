@@ -1,7 +1,7 @@
 # CRASH5 — spec15 revision24 / plan13 revision24: fresh storage directory probes
 
 - [x] T354 [US1/US2/US3] SOURCE/PREP: minimal independent real filesystem/native-attempt fixtures and scoped typed hooks, causal count RED against original algorithm; storage-only Windows same-handle implementation with original error fallback/both path checks/retained parents and exact Linux/other-caller behavior. Fresh selected XML/build/catalog/exact plans/new+12+6+narrowbootstrap GREEN, source/DLL/input/raw evidence and separate coherent Astra/high review plus clean remote recovery. No actual game component runtime yet.
-- [ ] T355 [US2/US3] Only after saved/recovered accepted T354, at most one changed2case Windows actual consumer measurement with existing2minute totalcommand bound/new guard. Full diagnostics/counts/wallCPU/originalrefusal/physicalDATA/G/closing/retention and independent actual-result review. No unchanged retry/budget increase, original/fullowner/generator/rebind/five/Linux run or protected-root deletion.
+- [x] T355 [US2/US3] Only after saved/recovered accepted T354, at most one changed2case Windows actual consumer measurement with existing2minute totalcommand bound/new guard. Full diagnostics/counts/wallCPU/originalrefusal/physicalDATA/G/closing/retention and independent actual-result review. No unchanged retry/budget increase, original/fullowner/generator/rebind/five/Linux run or protected-root deletion.
 
 T353 complete: source rejects missing-read shortcut; T353-final-review.json. No diagnostic quotas/cached proof or skipped admission. Original recovery remains unresolved.
 
