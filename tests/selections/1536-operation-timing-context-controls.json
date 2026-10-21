@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "fr063-operation-timing-context-controls",
-      "reason": "T382 ten tiny typed passive timing-context and real ordinary bundle controls: disabled/direct compatibility, complete and throwing receivers, exception restoration, nested routing/suppression/idempotence and thread isolation.",
+      "reason": "T382 twelve tiny typed passive timing-context, real ordinary bundle and original registry null-guard controls: disabled/direct compatibility, complete and throwing receivers, exception restoration, nested routing/suppression/idempotence and thread isolation.",
       "contracts": [
         "Passive current-thread synchronous computation observation; nested receiver/suppression/exception/thread restoration, original operations unchanged, complete uncapped diagnostics and exact fresh-root closing."
       ]

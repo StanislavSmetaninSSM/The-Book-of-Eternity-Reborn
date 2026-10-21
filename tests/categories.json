@@ -29,7 +29,7 @@
 },
 {
   "id": "fr063-operation-timing-context-controls",
-  "responsibility": "T382 ten tiny typed passive timing-context and real ordinary bundle controls: disabled/direct compatibility, complete and throwing receivers, exception restoration, nested routing/suppression/idempotence and thread isolation.",
+  "responsibility": "T382 twelve tiny typed passive timing-context, real ordinary bundle and original registry null-guard controls: disabled/direct compatibility, complete and throwing receivers, exception restoration, nested routing/suppression/idempotence and thread isolation.",
   "excludes": "No game/world/source42/crash/Linux runtime or authority substitution, private reflection, diagnostic quotas or old-root cleanup.",
   "changeHints": [
     "BookOfEternityClient/Core/FileSystemManager.OperationTimingContext.cs",
