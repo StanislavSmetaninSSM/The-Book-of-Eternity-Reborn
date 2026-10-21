@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "fr063-joint-windows-fixture-placement",
-      "reason": "T375\u2013T37631 tiny typed explicit fixture-parent/fresh-child/default/mode/refusal/sentinel/child-local environment controls; no game or child launch.",
+      "reason": "T375\u2013T37733 tiny typed explicit-parent/fresh-child/default/mode/refusal/sentinel/environment controls, including two real Windows junctions made by owned local builtins; no game.",
       "contracts": [
         "Explicit parent only for ordinary Windows package five; fresh checked child, unchanged default/Linux/capture, original source/manifest/generation/game/owner/EOF/join/cleanup/inert-repeat and820/600second limits. Full diagnostics without quotas."
       ]
