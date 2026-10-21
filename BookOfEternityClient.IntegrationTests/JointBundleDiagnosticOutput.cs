@@ -172,15 +172,39 @@ internal sealed class JointBundleDiagnosticOutput : ITestOutputHelper, IDisposab
         WriteLine(string.Format(CultureInfo.CurrentCulture, format, args));
 
     /// <summary>
-    /// Closes the writer in the deliberately incomplete RED scaffold.
-    /// Hashing, reporting and deferred-failure checks remain unimplemented for the causal controls.
+    /// Flushes and closes the actual writer, hashes its exact bytes and refuses any diagnostic failure.
+    /// Repeated calls preserve the first completion outcome rather than erasing earlier errors.
     /// </summary>
     internal void Finish()
     {
-        // Deliberately incomplete RED scaffold: close only, without reporting or failure checks.
-        if (_finished) return;
-        _finished = true;
-        _writer.Dispose();
+        lock (_gate)
+        {
+            if (!_finished)
+            {
+                _finished = true;
+                Attempt(() => _writer.Flush(), "writer-flush");
+                Attempt(() => { _writer.Dispose(); _writerClosed = true; }, "writer-close");
+                if (_writerClosed)
+                    Attempt(() =>
+                    {
+                        using var input = File.OpenRead(RecordsPath);
+                        _bytes = input.Length;
+                        _sha256 = Convert.ToHexString(SHA256.HashData(input));
+                    }, "records-hash");
+                if (!Timings.Complete || _attempted != _stored)
+                    Attempt(() => throw new InvalidDataException("Not every diagnostic attempt was stored."), "capture-incomplete");
+                PersistReport();
+                Attempt(() => _referenceOutput.WriteLine(JsonSerializer.Serialize(new
+                {
+                    Kind = "JointBundleDiagnosticFinished", RecordsPath, ReportPath,
+                    WriterClosed = _writerClosed, StoredBytes = _bytes, Sha256 = _sha256,
+                    DiagnosticComplete = IsComplete
+                })), "completion-reference");
+                // A compact-output failure must also remain in the durable report.
+                if (_finishFailures.Count != 0) PersistReport();
+            }
+            ThrowIfFailed();
+        }
     }
 
     /// <summary>

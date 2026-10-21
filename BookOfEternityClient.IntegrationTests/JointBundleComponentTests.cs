@@ -18,10 +18,10 @@ public sealed partial class JointBundleComponentTests
     private readonly ITestOutputHelper _output;
 
     /// <summary>
-    /// Retains the complete setup, diagnostic and ownership output for this test.
+    /// Selects the case receiver for compact references to durable component diagnostics.
     /// </summary>
     /// <param name="output">
-    /// The current test output receiver, without a diagnostic retention limit.
+    /// The actual xUnit receiver for paths, status and the final fixture closing receipt.
     /// </param>
     public JointBundleComponentTests(ITestOutputHelper output) => _output = output;
 
@@ -32,7 +32,7 @@ public sealed partial class JointBundleComponentTests
     [Fact]
     public async Task OrdinaryOriginal_UsesNormalSnapshotAndProgressionFactories()
     {
-        await using var fixture = new Fixture(_output);
+        await using var fixture = new Fixture(_output, nameof(OrdinaryOriginal_UsesNormalSnapshotAndProgressionFactories));
         await fixture.InitializeAsync();
         var original = await fixture.PrepareOriginalAsync(43);
         var read = PendingTurnSnapshotReader.ReadCurrent(fixture.Files, fixture.Lease,
@@ -59,27 +59,33 @@ public sealed partial class JointBundleComponentTests
     {
         private readonly string _parent;
         private readonly string _owned;
-        private readonly string _nonce = Guid.NewGuid().ToString("N");
-        private readonly ITestOutputHelper _output;
+        private readonly string _nonce;
+        private readonly JointBundleDiagnosticOutput _output;
         private FileSystemManager.CanonicalWriteLease? _lease;
         private GameEngineTestRuntime? _runtime;
         private ProgressionControl? _progression;
         private bool _retained;
+        private bool _disposed;
+        private Exception? _disposeFailure;
         private readonly System.Collections.Concurrent.ConcurrentQueue<(string Name, string Boundary, double Milliseconds)> _observations = new();
 
         /// <summary>
-        /// Allocates only an ordinary nonce-owned container and its empty game namespace.
+        /// Registers independent diagnostics, then allocates an ordinary nonce-owned game container.
         /// </summary>
         /// <param name="output">
-        /// The receiver for all boundaries and exact closing or retention evidence.
+        /// The actual xUnit receiver for compact references and the closing receipt.
         /// </param>
-        internal Fixture(ITestOutputHelper output)
+        /// <param name="caseName">
+        /// The actual nonempty test case name registered before allocating game files.
+        /// </param>
+        internal Fixture(ITestOutputHelper output, string caseName)
         {
             var started = Stopwatch.GetTimestamp();
-            _output = output;
+            _output = new JointBundleDiagnosticOutput(caseName, output);
+            _nonce = _output.FixtureNonce;
             _parent = Path.GetFullPath(Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "joint-bundle-component"));
             Directory.CreateDirectory(_parent);
-            _owned = Path.Combine(_parent, _nonce);
+            _owned = _output.ExpectedOwnedRoot;
             if (Directory.Exists(_owned) || File.Exists(_owned)) throw new InvalidDataException("Component destination exists.");
             Directory.CreateDirectory(_owned);
             File.WriteAllText(Path.Combine(_owned, ".fixture-owner"), _nonce);
@@ -94,6 +100,11 @@ public sealed partial class JointBundleComponentTests
                 Owned = _owned, Game = game
             }));
         }
+
+        /// <summary>
+        /// Gets the authoritative complete diagnostics receiver for this fixture.
+        /// </summary>
+        internal JointBundleDiagnosticOutput Output => _output;
 
         /// <summary>
         /// Gets the actual filesystem rooted inside this fixture's owned container.
@@ -178,7 +189,8 @@ public sealed partial class JointBundleComponentTests
         }
 
         /// <summary>
-        /// Emits every timing boundary immediately without trimming its name, count or elapsed duration.
+        /// Retains every observation for candidate slicing and immediately offers it to the uncapped persistent capture.
+        /// Storage failures remain in that capture and must refuse complete fixture closing.
         /// </summary>
         /// <param name="name">
         /// The literal operation name received from the real filesystem or setup phase.
@@ -192,29 +204,34 @@ public sealed partial class JointBundleComponentTests
         private void Observe(string name, string boundary, TimeSpan elapsed)
         {
             _observations.Enqueue((name, boundary, elapsed.TotalMilliseconds));
-            _output.WriteLine(JsonSerializer.Serialize(new
-            {
-                Name = name, Boundary = boundary, Milliseconds = elapsed.TotalMilliseconds,
-                Thread = Environment.CurrentManagedThreadId
-            }));
+            _output.Timings.Observe(name, boundary, elapsed);
         }
 
         /// <summary>
-        /// Aborts an unpublished joint reservation, then closes the actual services and lease before
-        /// deleting only this marked ordinary container.
-        /// Failure or publication uncertainty retains the container and reports its exact location.
+        /// Aborts an unpublished reservation and closes services and lease, then finishes diagnostics
+        /// before deleting only this marked container. Failure before deletion retains the root.
+        /// A late final-receipt failure fails closing but cannot retain an already deleted root.
         /// </summary>
         /// <returns>
         /// A task completing after resource closing and the owned-root closing or retention receipt.
         /// </returns>
         public async ValueTask DisposeAsync()
         {
+            if (_disposed)
+            {
+                if (_disposeFailure is not null)
+                    System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(_disposeFailure).Throw();
+                return;
+            }
+            _disposed = true;
             var failures = new List<Exception>();
             try { CloseJointReservation(); }
             catch (Exception failure) { failures.Add(failure); _retained = true; }
             try { if (_runtime is not null) await _runtime.AudioService.DisposeAsync(); }
             catch (Exception failure) { failures.Add(failure); _retained = true; }
             try { if (_lease is not null) await _lease.DisposeAsync(); }
+            catch (Exception failure) { failures.Add(failure); _retained = true; }
+            try { _output.Finish(); }
             catch (Exception failure) { failures.Add(failure); _retained = true; }
             try
             {
@@ -228,8 +245,17 @@ public sealed partial class JointBundleComponentTests
                 }
             }
             catch (Exception failure) { failures.Add(failure); _retained = true; }
-            _output.WriteLine(JsonSerializer.Serialize(new { Owned = _owned, Retained = _retained, Closing = !Directory.Exists(_owned) }));
-            if (failures.Count != 0) throw new AggregateException("Component closing failed; owned container retained.", failures);
+            try
+            {
+                _output.RecordFixtureClosing(_owned, _retained, !Directory.Exists(_owned),
+                    failures.Select(failure => failure.ToString()).ToArray());
+            }
+            catch (Exception failure) { failures.Add(failure); _retained = true; }
+            if (failures.Count != 0)
+            {
+                _disposeFailure = new AggregateException("Component closing failed; inspect the actual root and diagnostic receipts.", failures);
+                throw _disposeFailure;
+            }
             if (!_retained) Assert.False(Directory.Exists(_owned));
         }
     }

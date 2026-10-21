@@ -14,7 +14,7 @@ public sealed partial class JointBundleComponentTests
     [Fact]
     public async Task JointCandidate_MissAndHit_PreservePlanAndRotateFence()
     {
-        await using var fixture = new Fixture(_output);
+        await using var fixture = new Fixture(_output, nameof(JointCandidate_MissAndHit_PreservePlanAndRotateFence));
         await fixture.InitializeAsync();
         var bound = await fixture.PrepareBoundJointAsync();
         Assert.True(bound.Success, JsonSerializer.Serialize(bound.Issues));
@@ -46,7 +46,7 @@ public sealed partial class JointBundleComponentTests
         Assert.NotSame(miss.Fence!.Fence, hit.Fence!.Fence);
         Assert.Same(miss.Fence.Cache, hit.Fence.Cache);
         Assert.Equal(miss.Result.Plan!.PreparedPlanFingerprint, hit.Result.Plan!.PreparedPlanFingerprint);
-        _output.WriteLine(JsonSerializer.Serialize(new
+        fixture.Output.WriteLine(JsonSerializer.Serialize(new
         {
             Kind = "JointCandidateResults", input.SessionId, input.RequestId, input.SnapshotToken, input.Turn,
             hit.Result.Plan.InputFingerprint, hit.Result.Plan.PreparedPlanFingerprint,
@@ -69,8 +69,9 @@ public sealed partial class JointBundleComponentTests
         Assert.Same(hit.Result.Plan, stillCached.Result.Plan);
         foreach (var row in before)
             Assert.Equal(row.Value, await fixture.Files.ReadFileBytesAsync(fixture.Lease, row.Key));
-        _output.WriteLine(JsonSerializer.Serialize(new { Kind = "JointCandidateOracles", ForeignInputRefused = true,
+        fixture.Output.WriteLine(JsonSerializer.Serialize(new { Kind = "JointCandidateOracles", ForeignInputRefused = true,
             StaleFenceRevocationInert = true, UnchangedCanonicalPaths = before.Keys.ToArray(), Published = false }));
+        await fixture.AssertPreparedBeginningOwnerRefusalsAsync();
     }
 
     private sealed partial class Fixture
@@ -113,7 +114,7 @@ public sealed partial class JointBundleComponentTests
                 Kind = "CandidateCaptureCompleted", Phase = phase, Offset = offset, EndOffset = _observations.Count,
                 Operations = groups.Select(group => new { Name = group.Key, Count = group.Count(),
                     InclusiveMilliseconds = group.Sum(row => row.Milliseconds) }).ToArray(),
-                Observer = "Immediate uncapped JSON output; observer overhead and a small fixture limit attribution to larger runs."
+                Observer = "Uncapped AutoFlush JSONL with measured timing-write costs; observer overhead and this small fixture limit attribution to larger runs."
             }));
             return counts;
         }

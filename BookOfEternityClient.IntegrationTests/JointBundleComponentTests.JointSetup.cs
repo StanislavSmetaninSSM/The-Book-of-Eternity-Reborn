@@ -15,6 +15,8 @@ public sealed partial class JointBundleComponentTests
 
     private sealed partial class Fixture
     {
+        private GameEngine.JointComponentOriginal? _jointOriginal;
+        private AcceptedMechanicsWoundStageBundle? _jointBundle;
         private object? _jointContinuation;
         private object? _jointReservation;
         /// <summary>
@@ -112,7 +114,8 @@ public sealed partial class JointBundleComponentTests
                         Files, Lease, resources.Authority!, progression);
                     if (bound.Success)
                     {
-                        await AssertBeginningOwnerRefusalsAsync(original, bundle, continuation);
+                        _jointOriginal = original;
+                        _jointBundle = bundle;
                         _jointContinuation = continuation;
                         _jointReservation = reservation;
                     }
@@ -134,6 +137,19 @@ public sealed partial class JointBundleComponentTests
         }
 
         /// <summary>
+        /// Runs all real Beginning-owner refusal scopes after candidate measurement and unchanged-byte oracles.
+        /// </summary>
+        /// <returns>
+        /// Completion after the saved genuine original, bundle and continuation pass the existing refusal helper.
+        /// </returns>
+        internal Task AssertPreparedBeginningOwnerRefusalsAsync()
+        {
+            if (_jointOriginal is null || _jointBundle is null || _jointContinuation is null || _jointReservation is null)
+                throw new InvalidOperationException("A successful genuine joint binding is required.");
+            return AssertBeginningOwnerRefusalsAsync(_jointOriginal, _jointBundle, _jointContinuation);
+        }
+
+        /// <summary>
         /// Releases only this fixture's actual unpublished joint reservation through the normal registry abort.
         /// </summary>
         private void CloseJointReservation()
@@ -141,6 +157,8 @@ public sealed partial class JointBundleComponentTests
             if (_jointContinuation is not null && _jointReservation is not null)
             {
                 AcceptedTurnAuthorityRegistry.AbortMortalJointRepairPublication(Files, Lease, _jointContinuation, _jointReservation);
+                _jointOriginal = null;
+                _jointBundle = null;
                 _jointContinuation = null;
                 _jointReservation = null;
             }
