@@ -109,7 +109,7 @@ internal static class JointInterfaceSeedPackage
             }).GetAwaiter().GetResult();
         }
         catch (Exception error) when (error is JsonException or ArgumentException or NotSupportedException ||
-            error is IOException and not InvalidDataException || error is UnauthorizedAccessException)
+            error is IOException || error is UnauthorizedAccessException)
         {
             throw new InvalidDataException("The fixture carrier cannot be hydrated as checked ordinary data.", error);
         }
