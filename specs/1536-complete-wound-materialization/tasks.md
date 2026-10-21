@@ -1,3 +1,12 @@
+# CRASH5 — spec15 revision18 / plan13 revision18: fixture-based real owner
+
+- [ ] T342 [US1/US2/US3] Direct minimal-fixture controls first; extract unchanged production runtime adoption, expose unchanged late owner internally and independent response DATA snapshot; share the exact real-service test factory without monolithic fixture/world/disposal. Add separately categorized real owner profile with preconstruction/original/cohort/retained/gen/runtime/response/repeat oracles, actual existing owner/lease lifecycle, honest remote callback versus awaited outer closing and uncapped prewritten external diagnostics. Fresh XML/build/catalog/exact PlanOnly/affected controls, full source/input/DLL/raw binding, source equivalence and separate coherent Astra/high SOURCE/PREP review plus remote recovery. No GameEngine gameplay profile/generator/original/Linux execution before acceptance.
+- [ ] T343 [US2/US3] After T342 SOURCE/PREP acceptance, exactly one two-minute Windows fresh-engine real late-terminal profile on immutable cleanup-entry DATA; preserve complete raw/timers/refs, actual validators/cohort/publication/readback/runtime/response/repeat outcome, process CPU, closing and owned cleanup/uncertain retention. Analyze and independently review honest outcome; continue from actual slow/refusal boundary. No unchanged retry/limit increase, fixture regeneration/rebind/source42/Stage43/original/five/Linux runtime.
+
+Dependency: T340 accepted investigation + T341 rules → T342 accepted SOURCE/PREP → T343 one actual measurement. User's 2026-10-21 message explicitly authorizes autonomous work without review waiting. Written r18 scope is presented; engineering checks and separate review remain required.
+
+---
+
 # Issue #1536 — T341: правила написания тестов
 
 - [x] T341 Documentation-only request, 2026-10-21: extend `docs/testing.md` and its `AGENTS.md` entry with the existing category policy, no reflection access to private/internal members, direct `InternalsVisibleTo` test contracts, minimal independent fixtures instead of unrelated expensive game construction, and explicit permission to add test seams/refactor existing code across the project. Preserve real subject/integrity/ownership/cold-path coverage; named measurements and uncapped diagnostics. Verify requirements, links and diff; obtain independent review and remote readback/clean recovery. No code, tests, catalog/selection, builds or runtime execution in this block. This does not extend T340's investigation scope or accept its pending review.
@@ -8,9 +17,11 @@ Accepted documentation at92b5b61dc: all requested rules covered, diff whitespace
 
 # CRASH5 — spec15 revision17 / plan13 revision17: smallest genuine next probe
 
-- [ ] T340 [US1/US2/US3] Read-only source/API investigation after accepted T339: map missing cold caller/real owner/remaining cleanup work; bounded architecture consultation; specify the cheapest genuine probe/new production-used seams with real authority, preserved T325/freshness/ownership/refusal contracts and cheap controls; compare alternatives, record unknowns and concrete next scope. Actual Spec Kit phases/consistency, separate independent review and remote clean recovery. No C#/native/runner change, materialization, test/profile/generator/original/five/Linux execution or source42 rebind in this spike.
+- [x] T340 [US1/US2/US3] Read-only source/API investigation after accepted T339: map missing cold caller/real owner/remaining cleanup work; bounded architecture consultation; specify the cheapest genuine probe/new production-used seams with real authority, preserved T325/freshness/ownership/refusal contracts and cheap controls; compare alternatives, record unknowns and concrete next scope. Actual Spec Kit phases/consistency, separate independent review and remote clean recovery. No C#/native/runner change, materialization, test/profile/generator/original/five/Linux execution or source42 rebind in this spike.
 
 T338 SOURCE/PREP and T339 actual component outcome are independently accepted; original recovery/coldfive/Linux remain open. T340 produces findings, not production implementation permission or an executed owner simulation.
+
+T340 source correction0f429e0a independently accepted conditionally on recovery; condition fulfilled atf879f4a5e with345Git-exact clean recovery blobs and remote readback. [Final source review](recovery/crash5/T340-final-review.json). T341 subsequently documented test design; no C# changes since69cb.
 
 ---
 
