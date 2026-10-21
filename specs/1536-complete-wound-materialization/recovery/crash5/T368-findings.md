@@ -1,6 +1,6 @@
 # T368 — tiny public ordinary-read cost findings
 
-Independent actual-result review pending. This investigation does not qualify T365 or admit T366.
+Independent actual-result review accepted at metadataae326d51ab4a3933d86608628930f799acaba70e by separate gpt-6.1-sol/xhigh context `/root/review_t367_readcost_prep`; no unresolved findings. All602selected recoveredGitblobs/all10raw/all8analysis members and all matrix statistics independently verified; see T368-final-review.json. This investigation does not qualify T365 or admit T366.
 
 One matrix at saved/recovered92f969e2308cc8fd2eafc2f00269dbce9de36515, existing game sourceffa87dcba1e6f1a1c7cb107a9427692e2d806543. Command5.419132s; harness including setup/closing3.7246362s. Complete1536measured+8warmup actual calls,2048bytes each;3094continuous trace rows, every begin matched. Exact payload/inventory, both exact newly owned roots removed,20probe and11original pins unchanged. Runtime.NET8.0.31; actualCore hash/version and shared-framework ILogger hash/path/version recorded. Full raw10indexedfiles, no quota; archive/index/CRC/all entry hashes checked before interpreting archived report/trace. Counterbalanced96C-first/96D-first per method.
 
