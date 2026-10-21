@@ -10,7 +10,7 @@
 - [x] T397 [US2/US3] User correction, complete archived-tree ranking, written canonical phases/consistency and exact passive timer/context design; retain current outputs.
 - [x] T398 [US2/US3] Named nested timers and synchronous context coverage in the measured heavy sections, preserved flow and multiline XML; honest archived-input missing-name RED and existing fixture coverage assertions.
 - [x] T399 [US2/US3] Selected current XML/pins, one existing ordinary-original/refusal probe, context controls and one genuine copy-only probe under unchanged budgets; full verified raw/closing and complete hierarchical heavy-child findings, with unknowns explicit.
-- [ ] T400 [US1/US2/US3] Independent coherent review, validated corrections/relevant verification and exact saved recovery; evidence-backed next action without optimization or original workload qualification.
+- [x] T400 [US1/US2/US3] Independent coherent review, validated corrections/relevant verification and exact saved recovery; evidence-backed next action without optimization or original workload qualification.
 
 r39 genuine GREEN was not started before the user's priority correction. Its source/focused results remain saved WIP; T394-T396 are open. Earlier original candidate/r36/r37 criteria remain open. Existing autonomous-work authority waives review waiting, not specification, engineering or independent review.
 
