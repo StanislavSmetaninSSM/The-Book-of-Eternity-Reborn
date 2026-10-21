@@ -1,3 +1,12 @@
+# CRASH5 — revision35 tasks: genuine current fixture and finite D-local qualification
+
+- [ ] T378 [US2/US3] Actual canonical phases/bridge consistency/current selected binary and historical pins, unchanged-source gate; one genuine existing source42 generator with two checked imports and original audio/source/copy closing, complete uncapped raw even on failure.
+- [ ] T379 [US2/US3] Verified archived-input generator/fingerprint/binding/inventory analysis; genuine new v2 carrier with explicit empty directories, exact Git/recovery DATA and independent complex artifact review; ConsumerReady only after accepted saved recovery. No v1 rebind.
+- [ ] T380 [US2/US3] After current v2 acceptance, one original fixture-backed Windows cut0 using accepted explicit D-local placement, unchanged bounds/oracles and full raw/actual binding/path/timer/ownership/closing checks; independent actual result review and saved recovery.
+- [ ] T381 [US2/US3] Conditional on independently accepted actual T380PASS/settled ownership, remaining four original cuts serially with same accepted v2/binaries, full distinct oracles/evidence/closing and coherent independent review; stop on failure, update handoff honestly. No Linux run.
+
+T375–T377 accepted test-only placement source;94PASS. T365 remains consumed FAIL/settled, T366 closed. Hardware C SSD/D HDD is recorded, not a causal conclusion. Autonomous-work approval-wait waiver applies; no diagnostic quotas.
+
 # CRASH5 — revision34 tasks: explicit fixture placement
 
 - [x] T375 [US2/US3] Actual canonical spec/plan/tasks phases, bridge consistency and retained f620 binaries; tiny typed placement controls/category/selection and saved/recovered causal RED with no game or fixture generation.
