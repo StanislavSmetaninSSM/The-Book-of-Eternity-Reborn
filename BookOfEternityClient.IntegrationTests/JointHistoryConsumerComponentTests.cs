@@ -190,11 +190,14 @@ public sealed class JointHistoryConsumerComponentTests
                             report["ReturnedIssues"] = issues;
                             report["IssuesWereReturned"] = issues is not null;
                             report["ConsumerException"] = consumerFailure?.ToString();
+                            report["ConsumerSecondaryFailures"] = consumerFailure?.Data.Cast<System.Collections.DictionaryEntry>()
+                                .Select(entry => new { Stage = entry.Key.ToString(), Error = entry.Value?.ToString() }).ToArray();
                             try
                             {
                                 raw.WriteLine(JsonSerializer.Serialize(new { Boundary = "joint_history_consumer_outcome",
                                     ReturnedIssues = issues, IssuesWereReturned = issues is not null,
-                                    Exception = consumerFailure?.ToString(), Observation = observation.Describe() }));
+                                    Exception = consumerFailure?.ToString(), SecondaryFailures = report["ConsumerSecondaryFailures"],
+                                    Observation = observation.Describe() }));
                             }
                             catch (Exception error) { capture.RecordDiagnosticFailure(error, "consumer-outcome-report"); }
                             if (consumerFailure is not null && (!transientPendingWave ||
@@ -256,6 +259,8 @@ public sealed class JointHistoryConsumerComponentTests
             report["ReturnedIssues"] = issues;
             report["IssuesWereReturned"] = issues is not null;
             report["ConsumerException"] = consumerFailure?.ToString();
+            report["ConsumerSecondaryFailures"] = consumerFailure?.Data.Cast<System.Collections.DictionaryEntry>()
+                .Select(entry => new { Stage = entry.Key.ToString(), Error = entry.Value?.ToString() }).ToArray();
             report["Observation"] = observation?.Describe();
             if (files is not null && raw is not null && capture is not null && outerAwaitSettled)
             {
@@ -332,6 +337,9 @@ public sealed class JointHistoryConsumerComponentTests
             report["Status"] = failure is null && outcomeVerified && outerCompleted && afterconditionClosed &&
                 dataUnchanged && writerClosed && capture?.Complete == true && !Directory.Exists(owned) ? "passed" : "failed";
             report["Failures"] = failures.ToArray();
+            report["Failure"] = failure?.ToString();
+            report["SecondaryFailures"] = failure?.Data.Cast<System.Collections.DictionaryEntry>()
+                .Select(entry => new { Stage = entry.Key.ToString(), Error = entry.Value?.ToString() }).ToArray();
             Attempt(() => WriteReport(reportPath, report), "report-file");
         }
         if (failure is not null)
