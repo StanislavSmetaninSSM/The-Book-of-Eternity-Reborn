@@ -2,7 +2,7 @@
 
 - [x] T371 [US2/US3] Actual Spec Kit phases/consistency, retained old binary pins, minimal typed fixture tests/category/selection and saved/recovered causal RED for missing nested ordinary-read sections; no production edit before RED.
 - [x] T372 [US2/US3] Add only nested existing observer timings preserving all read/open/refusal/nullable/lease/order checks; multiline XML/build, new GREEN and bounded relevant existing reader controls, complete raw/counts/closing evidence.
-- [ ] T373 [US2/US3] Current new-source diagnostic harness/PREP/runtime/pins/guarded one-matrix analysis tools, historical fixture not requalified, coherent independent complex review and clean remote recovery before T374.
+- [x] T373 [US2/US3] Current new-source diagnostic harness/PREP/runtime/pins/guarded one-matrix analysis tools, historical fixture not requalified, coherent independent complex review and clean remote recovery before T374.
 - [ ] T374 [US2/US3] One admitted unchanged576+12tiny matrix with full nested events/raw/archived analysis, accurate scope/observer/hardware limits, independent actual-result review and saved clean recovery. No production performance fix or game/Linux run.
 
 T367–T370 accepted diagnostic investigations. T365 consumed FAIL/settled, T366 closed. No diagnostic quotas, private reflection or expensive game setup for these controls. Existing autonomous-work/approval-wait waiver applies.
