@@ -31,17 +31,38 @@ internal static partial class WoundAcceptedTurnPlanner
         internal MortalTreatmentItemCommandEnvelope ItemEnvelope { get; }
         internal MortalItemAcceptedTurnNormalizationSnapshot Items => _items.Clone();
         internal string Fingerprint { get; }
-        private string ComputeFingerprint() => WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        /// <summary>
+        /// Computes the retained common-baseline seal from its original companion fingerprints.
+        /// </summary>
+        /// <returns>
+        /// The deterministic digest; it does not establish current file or lease ownership.
+        /// </returns>
+        private string ComputeFingerprint()
         {
-            "book_of_eternity.mortal_joint_repair.common_baseline.v1",
-            GetJointRepairContinuationFingerprint(Continuation), Mechanical.Fingerprint,
-            Bundle.BundleFingerprint, Anchors.Fingerprint, Skills.Fingerprint, ItemEnvelope.Fingerprint,
-            _items.ProofFingerprint, _items.ProjectionProofFingerprint
-        });
-        internal bool HasValidSeal => ReferenceEquals(Bundle.PreparedPlan.JointRepairContinuationAuthority, Continuation) &&
-            JointRepairFinalPlanAgrees(Bundle) && Anchors.AgreesWith(Bundle) && ItemEnvelope.IsEmpty &&
-            TryReadTreatmentSkillProjectionForEnvelopeSemantics(Skills, Reservation, out _) &&
-            _items.HasFinalPublicationBaseline && _items.RecomputesFinalPublicationBaseline() && ComputeFingerprint() == Fingerprint;
+            using var operationTiming = FileSystemManager.MeasureCurrentOperation("JointBaseline.ComputeFingerprint");
+            return WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+            {
+                "book_of_eternity.mortal_joint_repair.common_baseline.v1",
+                GetJointRepairContinuationFingerprint(Continuation), Mechanical.Fingerprint,
+                Bundle.BundleFingerprint, Anchors.Fingerprint, Skills.Fingerprint, ItemEnvelope.Fingerprint,
+                _items.ProofFingerprint, _items.ProjectionProofFingerprint
+            });
+        }
+        /// <summary>
+        /// Gets whether the retained joint stages, anchors, empty envelope, skill semantics and full item-baseline seal agree.
+        /// Returns <see langword="true"/> only when every original short-circuit check agrees; otherwise, <see langword="false"/>.
+        /// </summary>
+        internal bool HasValidSeal
+        {
+            get
+            {
+                using var operationTiming = FileSystemManager.MeasureCurrentOperation("JointBaseline.HasValidSeal");
+                return ReferenceEquals(Bundle.PreparedPlan.JointRepairContinuationAuthority, Continuation) &&
+                    JointRepairFinalPlanAgrees(Bundle) && Anchors.AgreesWith(Bundle) && ItemEnvelope.IsEmpty &&
+                    TryReadTreatmentSkillProjectionForEnvelopeSemantics(Skills, Reservation, out _) &&
+                    _items.HasFinalPublicationBaseline && _items.RecomputesFinalPublicationBaseline() && ComputeFingerprint() == Fingerprint;
+            }
+        }
     }
 
     internal sealed record JointCommonBaselineResult(object? Authority, IReadOnlyList<ValidationIssue> Issues)
@@ -102,13 +123,33 @@ internal static partial class WoundAcceptedTurnPlanner
         { return new(null, JointPreparationFailure("common_baseline_invalid", error.Message).Issues); }
     }
 
+    /// <summary>
+    /// Revalidates the private baseline seal, current continuation, mechanical source and confirmed item slot.
+    /// </summary>
+    /// <param name="files">
+    /// The physical file manager used by every current check and passive timing.
+    /// </param>
+    /// <param name="lease">
+    /// The caller-owned active canonical write lease.
+    /// </param>
+    /// <param name="value">
+    /// The actual private common baseline; foreign values are refused before later validation.
+    /// </param>
+    /// <returns>
+    /// Completion after the existing checks succeed; failures propagate unchanged.
+    /// </returns>
     internal static async Task ValidateJointRepairCommonBaselineAsync(FileSystemManager files,
         FileSystemManager.CanonicalWriteLease lease, object value)
     {
         using var innerTiming1 = files.MeasureOperation("JointBaseline.ValidateCurrentAsync");
         using var innerTiming2 = files.MeasureOperation("JointBaseline.ValidateSeal");
-        if (value is not JointCommonBaselineAuthority authority || !authority.HasValidSeal)
-            throw new InvalidDataException("Invalid private joint common baseline.");
+        JointCommonBaselineAuthority authority;
+        using (files.EnterOperationTimingContext())
+        {
+            if (value is not JointCommonBaselineAuthority actual || !actual.HasValidSeal)
+                throw new InvalidDataException("Invalid private joint common baseline.");
+            authority = actual;
+        }
         innerTiming2?.Dispose();
         await ValidateJointRepairCurrentAsync(files, lease, authority.Continuation);
         using var innerTiming3 = files.MeasureOperation("JointBaseline.ValidateMechanicalAsync");

@@ -72,8 +72,15 @@ internal static partial class WoundAcceptedTurnPlanner
             MortalWoundTreatmentResourcePublicationAuthority.CreateRegisteredIdentityFactory(_identitySeed);
         internal IReadOnlyDictionary<string, JsonNode?> ExactFinalItemRoots =>
             MortalItemAcceptedTurnNormalizationSnapshot.CloneRoots(_finalItemRoots);
+        /// <summary>
+        /// Recomputes the resource-publication seal from its retained baseline, resource and item data.
+        /// </summary>
+        /// <returns>
+        /// The deterministic digest of the original ordered fields and roots.
+        /// </returns>
         private string ComputeFingerprint()
         {
+            using var operationTiming = FileSystemManager.MeasureCurrentOperation("JointResources.ComputeFingerprint");
             var fields = new List<string?> { "book_of_eternity.mortal_joint_repair.resource_publication.v1",
                 Baseline.Fingerprint, WoundAcceptedTurnFingerprintWriter.CanonicalJson(_definitions.ToCanonicalRoot()), _state.Fingerprint, _history.Fingerprint,
                 _baselineOwners.Fingerprint, FinalOwners.Fingerprint, _identitySeed, _resources.Fingerprint,
@@ -84,24 +91,37 @@ internal static partial class WoundAcceptedTurnPlanner
             { fields.Add(row.Key); fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(row.Value)); }
             return WoundAcceptedTurnFingerprintWriter.Compute(fields);
         }
+        /// <summary>
+        /// Rechecks the resource, baseline, finalization, item and effect-source agreements in their existing order.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> when every retained seal and replay agrees; otherwise, <see langword="false"/>.
+        /// </returns>
         internal bool HasValidSeal()
         {
+            using var operationTiming = FileSystemManager.MeasureCurrentOperation("JointResources.HasValidSeal");
             if (!Baseline.HasValidSeal || !_resources.HasValidSeal() || Fingerprint != ComputeFingerprint() ||
                 !TryReadJointRepair(Baseline.Continuation, out var joint) ||
                 MortalWoundTreatmentResourceComposer.Finalize(joint.Resolution).Finalization?.FinalizationFingerprint != joint.Finalization.FinalizationFingerprint)
                 return false;
             if (_items is not null)
             {
-                var replay = MortalItemConsumptionPlanner.Plan(_items.Input);
+                MortalItemConsumptionPlanningResult replay;
+                using (FileSystemManager.MeasureCurrentOperation("JointResources.ReplayItemConsumption"))
+                    replay = MortalItemConsumptionPlanner.Plan(_items.Input);
                 if (!replay.IsValid || replay.Fingerprint != _items.Consumption.Fingerprint ||
                     !MortalWoundTreatmentItemOwnerSuccessor.IsExactSuccessor(_baselineOwners, TerminalOwners, FinalOwners)) return false;
             }
             else if (FinalOwners.Fingerprint != _baselineOwners.Fingerprint) return false;
             var sources = MortalItemAcceptedTurnNormalizationSnapshot.CloneRoots(joint.ReadEffectSourceRoots());
+            using var heavyEffectBeforeTiming = FileSystemManager.MeasureCurrentOperation("JointResources.BuildEffectSourceBefore");
             var before = EffectAcceptedTurnInputComposer.BuildCanonicalSourceAuthority(sources, Baseline.Bundle.PreparedPlan);
+            heavyEffectBeforeTiming?.Dispose();
             foreach (var path in EffectAcceptedTurnInputComposer.SourceAuthorityPaths)
                 if (_finalItemRoots.TryGetValue(path, out var root)) sources[path] = root?.DeepClone();
+            using var heavyEffectAfterTiming = FileSystemManager.MeasureCurrentOperation("JointResources.BuildEffectSourceAfter");
             var after = EffectAcceptedTurnInputComposer.BuildCanonicalSourceAuthority(sources, Baseline.Bundle.PreparedPlan);
+            heavyEffectAfterTiming?.Dispose();
             return before.Issues.Count == 0 && after.Issues.Count == 0 &&
                 before.CanonicalFingerprint == EffectBeforeFingerprint && after.CanonicalFingerprint == EffectAfterFingerprint;
         }
@@ -264,6 +284,7 @@ internal static partial class WoundAcceptedTurnPlanner
         await JointRepairValidationCoordinator.ValidateResourceAsync(
             () =>
             {
+                using var operationContext = files.EnterOperationTimingContext();
                 using var sealTiming = files.MeasureOperation("JointResources.ValidateSeal");
                 if (value is not JointResourcePublicationAuthority current || !current.HasValidSeal())
                     throw new InvalidDataException("Invalid private joint resource publication authority.");

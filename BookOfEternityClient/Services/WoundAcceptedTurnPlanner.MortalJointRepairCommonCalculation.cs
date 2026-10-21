@@ -26,6 +26,21 @@ internal static partial class WoundAcceptedTurnPlanner
         // No caller-supplied C, candidate map or factory. The existing resource
         // owner captures its own data and computes once before common issuance.
         // A failed/in-flight attempt is held; this owner cannot recompute it.
+        /// <summary>
+        /// Captures and retains the one common calculation between the existing fresh resource checks.
+        /// </summary>
+        /// <param name="issuer">
+        /// The private calculation issuer; foreign issuers are refused before current validation.
+        /// </param>
+        /// <param name="files">
+        /// The physical file manager used by current validation and passive timings.
+        /// </param>
+        /// <param name="lease">
+        /// The caller-owned active write lease used for every current-source operation.
+        /// </param>
+        /// <returns>
+        /// The original capture/calculation issues, or an empty issue list after successful retention.
+        /// </returns>
         internal async Task<IReadOnlyList<ValidationIssue>> EnsureCommonCalculationAsync(object issuer,
             FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
         {
@@ -45,8 +60,10 @@ internal static partial class WoundAcceptedTurnPlanner
             if (captured.Inputs is not { } inputs) return captured.Issues;
             var binding = bundle.Input.Binding;
             using var innerTiming3 = files.MeasureOperation("JointCalculation.CalculateArtifacts");
-            var calculated = AcceptedMechanicsPlanner.CalculateUnboundedCommonArtifacts(
-                inputs, binding.SessionId, binding.RequestId, bundle.EffectBatchPlan.EffectInput.RawCommands);
+            AcceptedMechanicsPlanner.CommonArtifactBuildResult calculated;
+            using (files.EnterOperationTimingContext())
+                calculated = AcceptedMechanicsPlanner.CalculateUnboundedCommonArtifacts(
+                    inputs, binding.SessionId, binding.RequestId, bundle.EffectBatchPlan.EffectInput.RawCommands);
             innerTiming3?.Dispose();
             if (calculated.Calculation is not { } artifacts) return calculated.Issues;
             await ValidateJointRepairResourcePublicationAsync(files, lease, this);
@@ -56,8 +73,18 @@ internal static partial class WoundAcceptedTurnPlanner
             return Array.Empty<ValidationIssue>();
         }
 
+        /// <summary>
+        /// Compares retained calculation data with the planning context in the existing short-circuit order.
+        /// </summary>
+        /// <param name="context">
+        /// The actual planning context to compare with this owner's retained calculation.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> when the retained owner and all compared data agree; otherwise, <see langword="false"/>.
+        /// </returns>
         internal bool RetainedContextAgrees(AcceptedMechanicsPlanningContext context)
         {
+            using var operationTiming = FileSystemManager.MeasureCurrentOperation("JointCalculation.RetainedContextAgrees");
             if (!HasRetainedCommonCalculation) return false;
             var inputs = RetainedCalculationInputs;
             return inputs.Definitions.ToCanonicalJson() == context.Definitions.ToCanonicalJson() &&

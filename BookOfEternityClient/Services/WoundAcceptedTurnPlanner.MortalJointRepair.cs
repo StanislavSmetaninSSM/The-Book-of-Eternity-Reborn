@@ -524,12 +524,26 @@ internal static partial class WoundAcceptedTurnPlanner
         WoundAcceptedTurnFingerprints.ComputeEffectInput(prepared, ComposeJointRepairEffectInput(prepared)) ==
         WoundAcceptedTurnFingerprints.ComputeEffectInput(prepared, input);
 
+    /// <summary>
+    /// Replays the retained joint stages and compares their complete final-plan fingerprint.
+    /// </summary>
+    /// <param name="bundle">
+    /// The complete retained joint bundle whose prepared and effect stages must first agree.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when both stage agreements and the real final replay agree; otherwise, <see langword="false"/>.
+    /// </returns>
     internal static bool JointRepairFinalPlanAgrees(AcceptedMechanicsWoundStageBundle bundle)
     {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("JointFinal.ReplayAgreement");
         if (!JointRepairPreparedAgrees(bundle.PreparedPlan) ||
             !JointRepairEffectInputAgrees(bundle.PreparedPlan, bundle.EffectBatchPlan.EffectInput)) return false;
-        var replay = WoundAcceptedTurnPlannerCore.Finalize(bundle.PreparedPlan,
-            new WoundEffectBatchPlanningResult(bundle.EffectBatchPlan, Array.Empty<ValidationIssue>()));
+        WoundAcceptedTurnPlanningResult replay;
+        using (FileSystemManager.MeasureCurrentOperation("JointFinal.ReplayAgreement.Finalize"))
+        {
+            replay = WoundAcceptedTurnPlannerCore.Finalize(bundle.PreparedPlan,
+                new WoundEffectBatchPlanningResult(bundle.EffectBatchPlan, Array.Empty<ValidationIssue>()));
+        }
         return replay.Success && replay.Plan!.WoundFinalPlanFingerprint == bundle.WoundFinalPlanFingerprint;
     }
 

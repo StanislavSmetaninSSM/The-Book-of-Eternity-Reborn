@@ -14,14 +14,30 @@ internal static partial class WoundAcceptedTurnPlanner
         private readonly Dictionary<string, CanonicalBeforeImage> _before;
         private string? _planningInputFingerprint;
         private string? _bindingFingerprint;
+        /// <summary>
+        /// Captures the common authority from its genuine resource owner and agreeing progression source.
+        /// </summary>
+        /// <param name="issuer">
+        /// The private common-authority issuer; any other object is refused.
+        /// </param>
+        /// <param name="resources">
+        /// The complete private resource-publication authority, including its retained calculation.
+        /// </param>
+        /// <param name="progression">
+        /// The genuine progression source whose seal and frame must agree with the resource owner's bundle.
+        /// </param>
         internal MortalJointRepairCommonAuthority(object issuer, object resources, GameEngine.MortalJointProgressionSource progression)
         {
+            using var heavyConstructorTiming = FileSystemManager.MeasureCurrentOperation("JointCommonAuthority.Construct");
+            using var heavyOwnerTiming = FileSystemManager.MeasureCurrentOperation("JointCommonAuthority.Construct.CheckOwners");
             if (!ReferenceEquals(issuer, JointCommonAuthorityIssuer) ||
                 resources is not JointResourcePublicationAuthority actual || !actual.HasValidSeal() ||
                 !actual.HasRetainedCommonCalculation || !progression.HasValidSeal)
                 throw new InvalidOperationException("Joint common input requires its private complete resource owner.");
+            heavyOwnerTiming?.Dispose();
             _resources = actual;
             Progression = progression;
+            using var heavyTimingJointCommonAuthorityConstructCaptureBeforeImages = FileSystemManager.MeasureCurrentOperation("JointCommonAuthority.Construct.CaptureBeforeImages");
             var binding = Bundle.Input.Binding;
             if (!progression.MatchesFrame(binding.SessionId, binding.RequestId, binding.SnapshotToken, binding.Turn))
                 throw new InvalidDataException("The authentic progression basis belongs to a different joint original.");
@@ -33,6 +49,8 @@ internal static partial class WoundAcceptedTurnPlanner
                     throw new InvalidDataException("Joint progression/common before-image disagreement: " + row.Key);
                 _before[row.Key] = new(row.Value.Existed, row.Value.Bytes?.ToArray());
             }
+            heavyTimingJointCommonAuthorityConstructCaptureBeforeImages?.Dispose();
+            using var heavyTimingJointCommonAuthorityConstructCaptureOutputBasis = FileSystemManager.MeasureCurrentOperation("JointCommonAuthority.Construct.CaptureOutputBasis");
             var joint = ReadJoint();
             var publishedInterface = joint.ReadPublishedInterface();
             if (publishedInterface is not null)
@@ -61,6 +79,7 @@ internal static partial class WoundAcceptedTurnPlanner
                 throw new InvalidDataException("The sealed acquisition local ref must reproduce the SAME CREATE operation.");
             OutputBasis = MortalJointAcceptedOutputBasis.Capture(localRef, creates[0].WoundId,
                 creates[0].TransitionId, joint.ReadAcceptedNarrative(), publishedInterface);
+            heavyTimingJointCommonAuthorityConstructCaptureOutputBasis?.Dispose();
             Fingerprint = ComputeFingerprint();
         }
         internal GameEngine.MortalJointProgressionSource Progression { get; }
@@ -131,11 +150,39 @@ internal static partial class WoundAcceptedTurnPlanner
                     Baseline.HasValidSeal && Progression.HasValidSeal && ComputeFingerprint() == Fingerprint;
             }
         }
+        /// <summary>
+        /// Checks the retained common seal and its exact wound, anchor and resource-owner agreement.
+        /// </summary>
+        /// <param name="bundle">
+        /// The wound bundle to compare; a <see langword="null"/> value does not agree.
+        /// </param>
+        /// <param name="anchors">
+        /// The anchor plan to compare; a <see langword="null"/> value does not agree.
+        /// </param>
+        /// <param name="owners">
+        /// The resource-owner authority whose fingerprint must agree.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> when every original short-circuit check agrees; otherwise, <see langword="false"/>.
+        /// </returns>
         internal bool AgreesWith(AcceptedMechanicsWoundStageBundle? bundle, MortalWoundCanonicalAnchorPlan? anchors,
-            ResourceOwnerAuthority owners) => HasValidSeal && bundle is not null && anchors is not null &&
-            ReferenceEquals(bundle.PreparedPlan.JointRepairContinuationAuthority, Continuation) &&
-            bundle.BundleFingerprint == Bundle.BundleFingerprint && anchors.Fingerprint == Anchors.Fingerprint &&
-            anchors.AgreesWith(bundle) && owners.Fingerprint == Owners.Fingerprint;
+            ResourceOwnerAuthority owners)
+        {
+            using var operationTiming = FileSystemManager.MeasureCurrentOperation("JointCommonAuthority.AgreesWith");
+            return HasValidSeal && bundle is not null && anchors is not null &&
+                ReferenceEquals(bundle.PreparedPlan.JointRepairContinuationAuthority, Continuation) &&
+                bundle.BundleFingerprint == Bundle.BundleFingerprint && anchors.Fingerprint == Anchors.Fingerprint &&
+                anchors.AgreesWith(bundle) && owners.Fingerprint == Owners.Fingerprint;
+        }
+        /// <summary>
+        /// Binds the actual common input once, or checks an already-bound input without replacing its fingerprints.
+        /// </summary>
+        /// <param name="issuer">
+        /// The private common-authority issuer.
+        /// </param>
+        /// <param name="input">
+        /// The input whose genuine planning context and complete retained data must agree with this authority.
+        /// </param>
         internal void BindInput(object issuer, AcceptedMechanicsInput input)
         {
             if (!ReferenceEquals(issuer, JointCommonAuthorityIssuer) ||
@@ -146,8 +193,10 @@ internal static partial class WoundAcceptedTurnPlanner
                 if (!MatchesInput(input)) throw new InvalidDataException("The already-bound joint input changed.");
                 return;
             }
-            _planningInputFingerprint = AcceptedMechanicsPlanFingerprints.ComputePlanningInput(input);
-            _bindingFingerprint = AcceptedMechanicsPlanFingerprints.ComputeInput(input.CreateBinding());
+            using (FileSystemManager.MeasureCurrentOperation("JointCommonAuthority.BindInput.ComputePlanningFingerprint"))
+                _planningInputFingerprint = AcceptedMechanicsPlanFingerprints.ComputePlanningInput(input);
+            using (FileSystemManager.MeasureCurrentOperation("JointCommonAuthority.BindInput.ComputeBindingFingerprint"))
+                _bindingFingerprint = AcceptedMechanicsPlanFingerprints.ComputeInput(input.CreateBinding());
         }
         /// <summary>
         /// Checks that the complete input still agrees with this authority's bound planning and binding fingerprints.
@@ -405,15 +454,20 @@ internal static partial class WoundAcceptedTurnPlanner
         var calculationIssues = await resources.EnsureCommonCalculationAsync(JointCommonCalculationIssuer, files, lease);
         if (calculationIssues.Count != 0) return new(null, null, calculationIssues);
         using var innerTiming5 = files.MeasureOperation("JointCommon.CreateAuthority");
-        var authority = resources.GetOrCreateCommonAuthority(JointCommonAuthorityIssuer, progression);
-        preparation.Authority = authority;
+        MortalJointRepairCommonAuthority authority;
+        using (files.EnterOperationTimingContext())
+        {
+            authority = resources.GetOrCreateCommonAuthority(JointCommonAuthorityIssuer, progression);
+            preparation.Authority = authority;
+        }
         innerTiming5?.Dispose();
         using var innerTiming6 = files.MeasureOperation("JointCommon.ComposeInputAsync");
         var composed = await AcceptedMechanicsWoundCommonInputComposer.ComposeJointRepairAsync(files, lease, authority);
         innerTiming6?.Dispose();
         if (!composed.Success || composed.Input is null) return new(null, null, composed.Issues);
         using var innerTiming7 = files.MeasureOperation("JointCommon.BindInput");
-        authority.BindInput(JointCommonAuthorityIssuer, composed.Input);
+        using (files.EnterOperationTimingContext())
+            authority.BindInput(JointCommonAuthorityIssuer, composed.Input);
         innerTiming7?.Dispose();
         return new(composed.Input, authority, composed.Issues);
     }

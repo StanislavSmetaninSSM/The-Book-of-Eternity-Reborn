@@ -12,7 +12,7 @@ public sealed partial class JointBundleComponentTests
     /// </summary>
     /// <returns>
     /// Completion after direct-copy, current-byte refusal and restoration, constructor, mutation, history restoration,
-    /// abort parity and timing-tree checks.
+    /// abort parity, admission-tree and heavy preparation timing-coverage checks.
     /// </returns>
     [Fact]
     public async Task JointCopy_RetainsAdmissionDetachmentAndRefusalContracts()
@@ -25,6 +25,7 @@ public sealed partial class JointBundleComponentTests
         await fixture.AssertJointCurrentBytesRefusedAndRestoredAsync();
         fixture.AssertJointCopyContracts(bound.Input!, bound.Authority!);
         fixture.AssertJointAdmissionTimingTree(directCopy);
+        fixture.AssertJointHeavyPreparationTimingTree(directCopy);
     }
 
     private sealed partial class Fixture
