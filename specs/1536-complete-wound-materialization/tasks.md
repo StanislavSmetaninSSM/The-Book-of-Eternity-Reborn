@@ -1,3 +1,12 @@
+# CRASH5 — revision37 tasks: preserve admission and avoid repeated joint final reduction
+
+- [ ] T385 [US2/US3] Actual canonical phases/consistency and reviewed source design, retained binary/protected-root provenance; typed genuine direct-copy causal RED with exact source/output/closing evidence before production implementation.
+- [ ] T386 [US2/US3] Share exact normal and joint finalization admission, add private retained-joint copy path omitting only redundant final graph reduction; preserve live companions/fingerprints/detachment and all normal/refusal contracts, typed mutation/corruption/invalidation controls and XML documentation.
+- [ ] T387 [US2/US3] Focused GREEN/affected checks and one changed-source full genuine miss/hit under unchanged category budget with complete original refusal/byte/Beginning/closing oracles, uncapped verified raw, actual counts/times/results/observer cost and current provenance. Do not mark T383 complete from partial observations.
+- [ ] T388 [US1/US2/US3] Independent coherent complex review, corrected findings/relevant verification and exact clean remote recovery. Evidence-backed speed conclusion only; no original five/Linux qualification or diagnostic quota.
+
+T382–384 and all earlier criteria remain in force below. Existing review-wait waiver permits autonomous execution, not acceptance changes or omitted verification. No production optimization was part of r36.
+
 # CRASH5 — revision36 tasks: repeated bundle reconstruction diagnostics
 
 - [ ] T382 [US1/US2/US3] Actual canonical Spec Kit phases/consistency and retained eight current outputs; minimal typed diagnostic/fixture controls with causal RED, passive scoped unchanged-flow instrumentation and needed genuine normal test entry, exact categories/focused GREEN/affected checks/full raw/XML/source/binary provenance. No game or source42 generation.

@@ -1,3 +1,14 @@
+# CRASH5 — plan13 revision37: retained joint copy without repeated final reduction
+
+Execute COPYREDUCTION-1..5 in the same dedicated checkout. Existing user review-wait waiver applies, with actual written canonical presentation/phases/consistency before code. r36 partial source/evidence is independently accepted only within its stated incomplete boundaries.
+
+1. T385: preserve current binaries and uncleared roots; inspect shared finalization admission and all alias/companion contracts against the Astra source consultation. Add typed direct-copy causal expectations to the genuine fixture before enabling the new production branch. Separate normal initial/full-copy behavior and declared source/binary bindings. Archive actual RED and any incomplete outcome before interpretation.
+2. T386: share existing Finalize handoff and joint-final admission without reordering predicates/catches. Add only a private joint retained-copy route, reusing every admission/fingerprint/detachment check while omitting final graph reducers. Keep other families and all current-state/registry/publication paths. Test returned mutation, copy-of-copy, invalid supplied stage, retained private-data corruption and applicable normal invalidation parity through typed paths. Fix the touched nullable projection access explicitly; no new reflection.
+3. T387: XML build and exact focused controls/affected categories, full uncapped diagnostics and pin closure. One changed-source genuine candidate case with all previous oracles and original two-minute category bound. Verify miss/hit counters and final results, real diagnostic write costs and normal closing; no success claim from partial slices. Add a further normally issued variant only if needed to cover a distinct changed branch, explicitly categorized before execution; do not substitute fake authority or a longer unchanged probe.
+4. T388: separate complex Astra/high coherent source/tests/result review, validated corrections/relevant verification and exact saved GitHub recovery. Compare actual measurements with r36 partial baseline under explicit sink/warm-up/size limits; no projected savings or original-workload qualification.
+
+Do not remove a guard to obtain PASS. Any unresolved predicate/failure-order equivalence keeps the original full copy path and remains explicit. Retain T383 criteria rather than changing them to fit the implementation.
+
 # CRASH5 — plan13 revision36: scoped bundle diagnostics and a tiny genuine fixture
 
 Execute spec15r36/BUNDLETRACE-1..4 in the existing dedicated clean recovered checkout; explicit approval-wait waiver applies. Continue Superpowers systematic debugging, brainstorming/design through these canonical Spec Kit artifacts, writing-plans, TDD, execution, independent review and verification. No new worktree or user-visible task required.
