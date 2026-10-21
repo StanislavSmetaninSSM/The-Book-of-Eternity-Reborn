@@ -183,9 +183,9 @@ public sealed partial class JointBundleComponentTests
             var hold = AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(Files, Lease, request, finalization.Finalization!);
             Assert.True(hold.IsValid, JsonSerializer.Serialize(hold.Issues));
             Assert.Equal(MortalWoundTreatmentResourceReservationState.ConfirmedHeld, hold.State);
-            var read = PendingTurnSnapshotReader.ReadCurrent(Files, Lease, [MortalWoundOccurrenceState.StatePath]);
-            Assert.True(read.Success, JsonSerializer.Serialize(read.Issues));
-            var opportunity = Assert.Single(MortalQteWoundOpportunityProjection.Project(read.Snapshot!));
+            var projectionSource = MortalQteWoundOpportunityProjection.ReadSnapshot(Files, Lease);
+            Assert.Equal(original.RequestId, projectionSource.RequestId);
+            var opportunity = Assert.Single(MortalQteWoundOpportunityProjection.Project(projectionSource));
             var decision = new JsonObject
             {
                 ["opportunityRef"] = opportunity["opportunityRef"]!.DeepClone(), ["decision"] = "materialize",
