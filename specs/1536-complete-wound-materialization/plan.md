@@ -21,6 +21,8 @@ T342 pre-review PREP88fe67b9e: stricter actual foreign reason1PASS +9retained ex
 
 T342 causal oracle RED7e7a87b7a:12completed,3PASS/9expectedFAIL,2named method families+nullable-field case;19indexed rawfiles/SHA9F3303EC1E8BF5C1FE922DE9FE324CF30AF24D2A3C8FC800A72412F9EB3EA8D0. Eight cases reproduce the two missing-oracle false positives; one exposes nullable-field false refusal. No GameEngine/filesystem/world/profile. GREEN adds exact directories/session, complete normalized DialogueOption objects/order and correct optional null omissions; production is unchanged. Fresh final XML/catalog/22overall+12oracle+1profileplans and12oracleGREEN required, retaining10unchanged actual runtime/adoption/diagnostic cases. Explicit T343 command timeout must be2minutes: runner otherwise adds5preparation minutes to category budgets; category metadata alone is not a2minute hard bound. No profile has executed.
 
+T342 corrected GREEN/PREP c2f54939d:12/12new oraclePASS +10retained exact prior cases =22distinct, not22rerun;2XML0errors/no introduced changed-file warnings,299newXMLlines inspected, catalog/22overall+12oracle+1profileplans0executed,4DLL+4copies current-source bound and366exact clean recovery.72indexed complete rawfiles ZIP7386A039B555728DCA3DFF690D140231B3793B48BEA7A702C8B9D79FD4D0BEC2 inT342-final-prep/raw; exact guarded run_T343.ps1 included and hashed, command has -TimeoutMinutes2 including preparation. Same separate Astra/high reviewer confirms both P2 source fixes, final evidence/recovery/runner acceptance pending. Real owner profile remains UNRUN; no original/generator/Linux release.
+
 ---
 
 # CRASH5 — plan13 revision17: bounded source audit before another runtime
