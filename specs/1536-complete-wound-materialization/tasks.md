@@ -1,3 +1,12 @@
+# CRASH5 — spec15 revision31 / plan13 revision31: ordinary-read cost spike
+
+- [ ] T367 [US2/US3] SOURCE/PREP investigation: actual Spec Kit phases/consistency, external .NET8 public-API-only fixed-input ordinary-read harness, exact existing DLL/source/carrier references, two fresh nonce-owned tiny fixtures, full counterbalanced async text/byte plain/guarded matrix diagnostics, accurate XML/build and separate independent completed-harness review/clean recovery. No matrix or game execution yet.
+- [ ] T368 [US2/US3] After accepted/recoveredT367, one complete finite matrix with every payload/inventory/runtime/binary/root-ownership/closing check, full raw before interpretation, exact measured/warm-up counts and descriptive duration distributions; independent result review and clean recovery. Findings only, no production fix or unchanged game retry.
+
+T365 attempt is consumed FAIL with settled ownership (T365-fixture-cut0-final-review.json); its acceptance criteria remain unmet and T366 stays closed. T363/T364 accepted evidence/current immutable fixture remain unchanged. Existing user autonomy/approval-wait waiver applies; diagnostic quotas remain forbidden.
+
+---
+
 # CRASH5 — spec15 revision30 / plan13 revision30: portable five-cut fixture carrier
 
 T364 genuine current source42/carrier independently accepted at metadatafe17899a3d9931a505f99c0f9eeff4ff6d35840e / compiledffa87dcba1e6f1a1c7cb107a9427692e2d806543 (T364-binding-review.json;1actualgeneratorPASS,82payloadfiles,39explicitZIPdirs,7emptyleaves,all581recoveredGitblobs independently verified). Save/recover acceptance before T365onecut0. T365/T366 remain open; no crash/Linux outcome yet.
