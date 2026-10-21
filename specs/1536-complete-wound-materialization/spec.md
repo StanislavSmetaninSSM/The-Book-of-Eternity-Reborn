@@ -1,3 +1,16 @@
+# CRASH5 — spec15 revision21: measure diagnostic writer cost
+
+Issue1536; follow independently accepted T348 actual two-case fixture results. User authorizes autonomous work and waives approval waiting; T341 fixture/typed API/no-reflection and uncapped diagnostics rules remain active. Measured consumer21.640s/processCPU21.906s includes diagnostics; its cause is not yet attributed.
+
+- WRITE-COST-1 / US1: measure each attempted existing timing serializer+writer call, including failed writes, with a monotonic clock. Retain a complete per-operation/per-boundary ledger (attempted/stored/total elapsed), with no entry/size/retention quotas. Preserve every original raw JSONL record/schema/order and deferred primary/secondary error semantics. State that this span includes serializer, inner lock and synchronous writer/AutoFlush, excludes outer lock wait and accounting, and is not native I/O or CPU attribution. No observer recursion or added raw events.
+- WRITE-COST-2 / US2: use a typed optional TimeProvider seam and tiny deterministic in-memory fixtures in the existing observer-failure controls. Cover successful and failed begin/end writes, later records, separate named operations/boundaries and independent snapshots. No reflection, real sleeps, world/turn/service bootstrap or new expensive object preparation. Keep existing complete-message and deferred logger controls.
+- WRITE-COST-3 / US2: record the whole ledger plus totals in both actual history-consumer final reports, preserving all raw/timers/CPU/actual proof/refusal/DATA/generation/closing/root oracles exactly. Do not change buffering/flush strategy, production read checks or NativeLineage. Measure before deciding any optimization.
+- WRITE-COST-4 / US3: causal RED/GREEN controls, fresh relevant XML builds/documentation review, category inventory and exact diagnostic/component plans, source equivalence and current DLL/input bindings. Independent coherent SOURCE/PREP review and remote clean recovery precede at most one new two-case Windows measurement with explicit2minute totalcommand bound. Save/review actual outcome, no unchanged retry/budget increase. Compare measured writer cost as a portion of same-run wall time; cross-run differences alone are not speedup evidence.
+
+Acceptance: complete named writer ledger reconciles exactly with all attempted/stored raw timing counts for both cases; failed writes remain visible and cannot replace primary game outcomes; all original component oracles still pass or honest incomplete/failure is retained. This is measurement/testability only. Historical recovery fix, full-owner/original/five/Linux execution, source42 generation/rebind and protected-root deletion remain outside this block.
+
+---
+
 # CRASH5 — spec15 revision20: real history-consumer fixture tests
 
 Issue1536; follow independently accepted T346 source investigation under the user's explicit autonomous-work/approval-wait waiver and fixture/typed-API/no-reflection rules. This bounded testability block implements direct tests of the existing actual history consumer, not production optimization or a historical hang fix.

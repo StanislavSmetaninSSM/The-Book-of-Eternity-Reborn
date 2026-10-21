@@ -1,7 +1,16 @@
+# CRASH5 — spec15 revision21 / plan13 revision21: diagnostic writer cost
+
+- [ ] T349 [US1/US2/US3] SOURCE/PREP: monotonic complete named serializer/write ledger around unchanged timing writes, typed clock/in-memory failure fixtures and additive actual-consumer reports. Causal RED/GREEN,6cheap diagnostic controls,2XML/catalog/exact6+2plans/source equivalence/current4DLL+copies/input/fullraw, separate coherent review and remote clean recovery. Preserve every raw record/deferred outcome and all production/proof/closing oracles; no quotas/buffering changes/runtime component yet.
+- [ ] T350 [US2/US3] After accepted saved/recovered T349, exactlyone changed2case Windows measurement with explicit2minute totalcommand budget. Preserve/analyze full actual outcome/ledger/counts/wallCPU/raw/closing/DATA/retention and independent review. No unchanged retry/budget increase, original/full-owner/generator/rebind/five/Linux execution or protected-root deletion.
+
+T348 accepted atf6fdb631 by separate actual Astra/high context; T348-final-review.json. Both actual component cases passed; historical recovery qualification remains open. Writer self-cost is a hypothesis to measure, not an established cause or optimization claim.
+
+---
+
 # CRASH5 — spec15 revision20 / plan13 revision20: direct history-consumer fixtures
 
 - [x] T347 [US1/US2/US3] SOURCE/PREP: share existing full logger generically without behavior drift and verify only2affected existing controls; implement2direct actual history-consumer fixture cases (positive plus T325 transient pending-wave refusal) using existing typed real issuer/current-generation/lease APIs, full immutable DATA/oracles/uncapped diagnostics/closing contracts. No GameEngine/world/turn/authority injection/production code change. Fresh XML/catalog/exact plans/source-equivalence/4DLL+copies/input/raw and independent coherent acceptance plus remote recovery before actual components.
-- [ ] T348 [US2/US3] After saved/recovered T347 SOURCE/PREP, one guarded Windows2case component category with explicit2minute totalcommand bound; preserve/review full actual results, timers/CPU/proofcounts/issues/failures/DATA/gen/closing/retention and raw. No unchanged retry, limit increase, full-owner/original/generator/rebind/five/Linux run; continue cause-driven work.
+- [x] T348 [US2/US3] After saved/recovered T347 SOURCE/PREP, one guarded Windows2case component category with explicit2minute totalcommand bound; preserve/review full actual results, timers/CPU/proofcounts/issues/failures/DATA/gen/closing/retention and raw. No unchanged retry, limit increase, full-owner/original/generator/rebind/five/Linux run; continue cause-driven work.
 
 # CRASH5 — spec15 revision19 / plan13 revision19: completed-continuation fanout
 
