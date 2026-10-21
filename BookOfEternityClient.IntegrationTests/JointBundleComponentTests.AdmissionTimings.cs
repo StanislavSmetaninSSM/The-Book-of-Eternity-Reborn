@@ -8,8 +8,8 @@ public sealed partial class JointBundleComponentTests
     private sealed partial class Fixture
     {
         /// <summary>
-        /// Verifies all declared admission names and balanced nesting in the first already recorded direct copy.
-        /// Runs after the existing semantic, refusal, restoration and normal-abort controls.
+        /// Verifies the retained admission tree and exact seal/resource inventory without per-copy private byte hashing.
+        /// Checks initial constructor hashing separately after all existing semantic, refusal, restoration and abort controls.
         /// </summary>
         /// <param name="range">
         /// Half-open offsets returned by the existing direct-copy helper; no additional copy is performed.
@@ -21,7 +21,6 @@ public sealed partial class JointBundleComponentTests
             [
                 "JointContinuation.ValidateSeal",
                 "JointContinuation.ComputeFingerprint",
-                "JointContinuation.HashBeforeImages",
                 "JointPreparation.PreparedAgrees",
                 "JointPreparation.Replay",
                 "JointEffectInput.Compose",
@@ -55,14 +54,47 @@ public sealed partial class JointBundleComponentTests
                 node.Name == "JointContinuation.ValidateSeal" &&
                 node.Children.Any(child => child.Name == "TreatmentResources.Finalize") &&
                 HasAdmissionTimingChain(node,
-                    ["JointContinuation.ValidateSeal", "JointContinuation.ComputeFingerprint", "JointContinuation.HashBeforeImages"], 0)),
-                "One continuation seal must contain resource finalization and fingerprint/before-image hashing.");
+                    ["JointContinuation.ValidateSeal", "JointContinuation.ComputeFingerprint"], 0)),
+                "One continuation seal must contain resource finalization and the freshly assembled final fingerprint.");
+            var sealBegins = rows.Count(row => row.Name == "JointContinuation.ValidateSeal" && row.Boundary == "begin");
+            var sealEnds = rows.Count(row => row.Name == "JointContinuation.ValidateSeal" && row.Boundary == "end");
+            var resourceBegins = rows.Count(row => row.Name == "TreatmentResources.Finalize" && row.Boundary == "begin");
+            var resourceEnds = rows.Count(row => row.Name == "TreatmentResources.Finalize" && row.Boundary == "end");
+            Assert.Equal(63, sealBegins);
+            Assert.Equal(63, sealEnds);
+            Assert.Equal(63, resourceBegins);
+            Assert.Equal(63, resourceEnds);
+
+            var beforeCopy = ReadAdmissionTimingRange((0, range.Start));
+            Assert.Single(beforeCopy.Where(row => row.Name == "JointContinuation.InitialFingerprint" && row.Boundary == "begin"));
+            Assert.Single(beforeCopy.Where(row => row.Name == "JointContinuation.InitialFingerprint" && row.Boundary == "end"));
+            var initialStart = Array.FindIndex(beforeCopy,
+                row => row.Name == "JointContinuation.InitialFingerprint" && row.Boundary == "begin");
+            var initialEnd = Array.FindIndex(beforeCopy, initialStart + 1,
+                row => row.Name == "JointContinuation.InitialFingerprint" && row.Boundary == "end");
+            var initialRows = beforeCopy.Skip(initialStart).Take(initialEnd - initialStart + 1).ToArray();
+            _ = ReadStrictAdmissionTree(initialRows);
+            Assert.Single(initialRows.Where(row => row.Name == "JointContinuation.ComputeFingerprint" && row.Boundary == "begin"));
+            Assert.Single(initialRows.Where(row => row.Name == "JointContinuation.ComputeFingerprint" && row.Boundary == "end"));
+            Assert.Single(initialRows.Where(row => row.Name == "JointContinuation.HashBeforeImages" && row.Boundary == "begin"));
+            Assert.Single(initialRows.Where(row => row.Name == "JointContinuation.HashBeforeImages" && row.Boundary == "end"));
+            var copyHashBegins = rows.Count(row => row.Name == "JointContinuation.HashBeforeImages" && row.Boundary == "begin");
+            _output.WriteLine(JsonSerializer.Serialize(new
+            {
+                Kind = "JointImmutableFingerprintWork", range.Start, range.End,
+                SealBegins = sealBegins, SealEnds = sealEnds, ResourceBegins = resourceBegins, ResourceEnds = resourceEnds,
+                InitialStart = initialStart, InitialEnd = initialEnd + 1, InitialFingerprintCount = 1,
+                InitialBeforeImageHashCount = 1, CopyBeforeImageHashCount = copyHashBegins,
+                ExpectedCopyBeforeImageHashCount = 0
+            }));
             _output.WriteLine(JsonSerializer.Serialize(new
             {
                 Kind = "JointAdmissionTimingTree", range.Start, range.End, Events = rows.Length,
                 RequiredNames = required, StrictLifo = true, DeclaredChains = chains,
-                SealContainsResourceAndFingerprintHash = true
+                SealContainsResourceAndFingerprint = true
             }));
+            Assert.Equal(0, copyHashBegins);
+            Assert.DoesNotContain(rows, row => row.Name == "JointContinuation.HashBeforeImages");
         }
 
         /// <summary>

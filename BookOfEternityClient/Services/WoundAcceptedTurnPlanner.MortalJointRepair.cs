@@ -20,6 +20,52 @@ internal static partial class WoundAcceptedTurnPlanner
         private readonly WoundAcceptedTurnInput _treatmentInput;
         private readonly MortalWoundTreatmentOutcomePreparation _outcome;
         private readonly WoundEffectOperationBatch? _treatmentBatch;
+        /// <summary>
+        /// Retains the issued joint preparation's detached DATA and actual companions, then computes its original fingerprint.
+        /// </summary>
+        /// <param name="issuer">
+        /// The existing private issuer identity; a different value is refused.
+        /// </param>
+        /// <param name="files">
+        /// The non-null filesystem host for current validation and synchronous fingerprint diagnostics.
+        /// </param>
+        /// <param name="generation">
+        /// The generation captured by the owning preparation.
+        /// </param>
+        /// <param name="checkpoint">
+        /// The rejected-repair checkpoint whose retained fingerprint participates in the joint seal.
+        /// </param>
+        /// <param name="acquisitionInput">
+        /// The acquisition input copied into private retained DATA with its actual companions.
+        /// </param>
+        /// <param name="treatmentInput">
+        /// The treatment input copied into private retained DATA with its actual companions.
+        /// </param>
+        /// <param name="acquisitionCommandRoot">
+        /// The corrected acquisition command JSON to deep-copy before fingerprinting.
+        /// </param>
+        /// <param name="accepted">
+        /// The genuine accepted treatment-state companion retained by identity.
+        /// </param>
+        /// <param name="request">
+        /// The actual treatment request companion retained by identity.
+        /// </param>
+        /// <param name="resolution">
+        /// The actual treatment resolution companion retained by identity.
+        /// </param>
+        /// <param name="finalization">
+        /// The actual resource finalization companion retained by identity.
+        /// </param>
+        /// <param name="outcome">
+        /// The outcome preparation to retain as a detached copy.
+        /// </param>
+        /// <param name="rematerialization">
+        /// The successful rematerialization result supplying its existing optional batch and authority.
+        /// </param>
+        /// <param name="before">
+        /// The before-image DATA to copy in supplied enumeration order; <see langword="null"/> values denote absent files,
+        /// and byte arrays are cloned.
+        /// </param>
         internal JointRepairContinuationAuthority(object issuer, FileSystemManager files,
             string generation, MortalJointRepairCheckpoint checkpoint,
             WoundAcceptedTurnInput acquisitionInput, WoundAcceptedTurnInput treatmentInput,
@@ -40,7 +86,11 @@ internal static partial class WoundAcceptedTurnPlanner
             _outcome = outcome.DetachedCopy(); _treatmentBatch = rematerialization.Batch;
             Rematerialization = rematerialization.Authority;
             _before = before.ToDictionary(pair => pair.Key, pair => pair.Value?.ToArray(), StringComparer.Ordinal);
-            Fingerprint = ComputeFingerprint();
+            using (files.EnterOperationTimingContext())
+            using (FileSystemManager.MeasureCurrentOperation("JointContinuation.InitialFingerprint"))
+            {
+                Fingerprint = ComputeFingerprint();
+            }
         }
         internal string Generation { get; }
         internal MortalJointRepairCheckpoint Checkpoint { get; }
