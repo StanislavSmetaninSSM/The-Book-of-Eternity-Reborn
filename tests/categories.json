@@ -2,6 +2,32 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-wound-bundle-copy-contracts",
+  "responsibility": "Two existing pure typed wound-stage controls: detached mutable graph and rejection of every cross-swapped stage, isolated from broad game/planning categories.",
+  "excludes": "No reflection harness, world/game/source42/crash/Linux runtime or diagnostic quota.",
+  "changeHints": [
+    "BookOfEternityClient/Services/AcceptedMechanicsPlan.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanCache.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonStageBundle_DetachesFullGraphAgainstReturnedMutation",
+        "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonStageBundle_RejectsEveryCrossSwappedStage"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-operation-timing-context-controls",
   "responsibility": "T382 ten tiny typed passive timing-context and real ordinary bundle controls: disabled/direct compatibility, complete and throwing receivers, exception restoration, nested routing/suppression/idempotence and thread isolation.",
   "excludes": "No game/world/source42/crash/Linux runtime or authority substitution, private reflection, diagnostic quotas or old-root cleanup.",
@@ -17239,8 +17265,6 @@
                         "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPreparedFingerprint_CoversCompleteTopLevelEffectPlan",
                         "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPreparedFingerprint_CoversResultMapsAndAfterImages",
                         "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPreparedFingerprint_IsComputedOnlyFromDetachedPlan",
-                        "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonStageBundle_DetachesFullGraphAgainstReturnedMutation",
-                        "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonStageBundle_RejectsEveryCrossSwappedStage",
                         "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundDirectCommonAuthority_RejectsForeignLiveAuthority",
                         "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundDirectCommonAuthority_RejectsInvalidCanonicalClock",
                         "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundDirectCommonAuthority_RejectsMixedCreateAndWorsenPhase",

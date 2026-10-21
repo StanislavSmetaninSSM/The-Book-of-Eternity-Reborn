@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "fr063-wound-bundle-copy-contracts",
+      "reason": "Two existing pure typed wound-stage controls: detached mutable graph and rejection of every cross-swapped stage, isolated from broad game/planning categories.",
+      "contracts": [
+        "Complete bundle detachment and cross-stage refusal after passive instrumentation."
+      ]
+    },
+    {
+      "category": "crash5-named-operation-timers",
+      "reason": "Reuse of the unchanged existing OperationTimer by the new current-thread context.",
+      "contracts": [
+        "Disabled observation, one closing event, original exception and result preserved with a throwing receiver."
+      ]
+    }
+  ]
+}
