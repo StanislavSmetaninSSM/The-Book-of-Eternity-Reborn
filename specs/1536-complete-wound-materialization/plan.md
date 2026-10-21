@@ -1,3 +1,10 @@
+# CRASH5 — plan13 revision39: privately immutable fingerprint constituents
+
+1. T393: canonical phases/consistency and written source-supported private ownership contract; retain current eight outputs (40total). Add constructor-only passive capture if needed and genuine no-rehash/count expectations after all existing semantic controls. Run one real causal RED on current recomputing implementation; preserve raw/closing before optimization.
+2. T394: implement privately owned immutable DATA constituents and exact initial ordering; keep live agreements/final digest/fresh boundary checks. Add typed cheap DATA reference/alias/order/byte-edge tests and current-byte refusal/restoration to the genuine case. Accurate multiline XML on every changed API; no raw authority/test flag/reflection.
+3. T395: full-reference XML build, focused DATA controls plus current affected tests and one actual unchanged-budget copy-only GREEN. Verify initial capture versus zero per-copy hashing, unchanged seal/resource inventory, exact results/refusals/owned closing, full raw/current pins. Analyze actual timing with r38 limits; no candidate or original-game replay in this intervention.
+4. T396: separate Astra/high coherent review, address validated findings with relevant checks, exact clean saved remote recovery. Close only this bounded optimization when evidence supports it. Then decide the separately scoped fixture-preparation change and later original candidate qualification; do not relax any old criterion.
+
 # CRASH5 — plan13 revision38: retained-admission internal timings
 
 1. T389: preserve current outputs and protected roots; record source consultation/canonical phases/consistency and present the written investigation under the existing approval-wait waiver. Add only typed observation-tree expectations to the existing genuine copy-only fixture; capture one causal missing-name RED and full closing/raw/provenance before instrumenting production.

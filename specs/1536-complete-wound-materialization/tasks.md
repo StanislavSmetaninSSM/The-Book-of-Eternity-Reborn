@@ -1,3 +1,12 @@
+# CRASH5 — revision39 tasks: immutable private fingerprint DATA
+
+- [ ] T393 [US2/US3] Written contract/design/canonical phases/consistency, retained outputs and genuine63-to-zero before-hash causal RED after existing semantic controls; full raw and closing.
+- [ ] T394 [US2/US3] Single immutable private DATA source and exact field/order/byte semantics; all live seal/companion/current admission checks retained; typed cheap DATA tests/current-byte refusal-restoration and accurate XML.
+- [ ] T395 [US2/US3] Focused DATA/current compatibility controls, XML/source/pin verification and one genuine copy-only GREEN with initial capture, zero per-copy hashes,63 unchanged checks, full raw/closing and honest measured comparison.
+- [ ] T396 [US1/US2/US3] Independent coherent complex review, corrected findings/relevant verification and exact clean remote recovery; actual bounded optimization conclusion with original workload criteria preserved.
+
+r38 diagnostic investigation is independently accepted complete. Original T383/T387/T388 and whole r36/r37 remain open. Existing autonomous-work waiver removes approval waiting only; canonical phases, actual causal verification and separate review remain mandatory.
+
 # CRASH5 — revision38 tasks: retained-admission internal timings
 
 - [x] T389 [US2/US3] Canonical phases/consistency and source design; retain current binaries, add genuine first-copy timing-tree expectations and obtain missing-name causal RED with full raw/closing/provenance.
