@@ -9,9 +9,7 @@
     "BookOfEternityClient.IntegrationTests/JointCleanupProfileDiagnosticCapture.cs",
     "BookOfEternityClient.IntegrationTests/JointCleanupProfileDiagnosticCaptureTests.cs"
   ],
-  "related": [
-    "fr063-joint-history-consumer-components"
-  ],
+  "related": [{ "id": "fr063-joint-history-consumer-components", "when": "Only after independent SOURCE/PREP acceptance for the separately gated two-case actual measurement." }],
   "requirements": {
     "frontendBuild": false,
     "exclusive": false

@@ -2,6 +2,8 @@
 
 Spec15r21; T349 SOURCE/PREP then T350 one changed measurement. Reuse active feature/constitution/isolated branch; apply Superpowers brainstorming/systematic-debugging, TDD, planning/execution, independent review and verification through canonical Spec Kit artifacts. Explicit human review waiting is waived.
 
+T349 initial preparation a12614030: integration XML build0errors/79.328s; category reader refused a new related entry encoded as a string rather than required {id,when}. No discovery/runtime cases executed and no causal RED yet. Correct catalog only, retain built a126 C# by exact-source equivalence and current binaries, then execute corrected plan/8controls under a new attempt identity; no repeated build. Full initial failure/log remains archived.
+
 T349 RED WIP: existing3writer-failure cases now require exact named write costs;2clock-failure cases require diagnostic isolation. API scaffolding returns an empty ledger, no measurement implementation.8cheap cases selected; expected causal RED5FAIL/3PASS after source save/recovery. No actual consumer run.
 
 1. Persist T348 independent acceptance (2/2PASS, command80.5426384s/category67.0006128s; full218814 events/109407 intervals and402exact recovery). Write/present r21, run actual setup-plan/setup-tasks/prerequisites and WRITE-COST consistency before code.
