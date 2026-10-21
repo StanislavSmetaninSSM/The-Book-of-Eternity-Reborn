@@ -50,7 +50,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     public Task JointInterfaceFixtureBackedWindows_Cut4_ErrorPrepared() => RunFixtureBackedWindowsCutAsync(4);
 
     /// <summary>
-    /// Selects the distinct current five-cut package and the existing shared Windows crash observation bounds.
+    /// Selects the distinct v2 five-cut package, repository-parent storage and existing shared Windows crash bounds.
     /// </summary>
     /// <param name="cut">
     /// The original cut index from zero through four.
@@ -61,6 +61,8 @@ public sealed partial class GameEngineTurnLifecycleTests
     private Task RunFixtureBackedWindowsCutAsync(int cut) => RunJointInterfaceActualProcessLossAsync(cut,
         extendedWindowsCrash: true,
         seedPackageRoot: Path.Combine(TestRepoPaths.RepoRoot, "specs", "1536-complete-wound-materialization",
-            "fixtures", "joint-interface-source42-five-v1", "package"),
-        seedUsage: JointInterfaceSeedCrashInput.OrdinaryWindowsFiveCutsUsage);
+            "fixtures", "joint-interface-source42-five-v2", "package"),
+        seedUsage: JointInterfaceSeedCrashInput.OrdinaryWindowsFiveCutsUsage,
+        ownedContainerParent: Path.GetDirectoryName(TestRepoPaths.RepoRoot)
+            ?? throw new InvalidDataException("Fixture-backed crash storage requires the checkout's explicit parent."));
 }

@@ -109,7 +109,7 @@ public sealed class JointInterfaceCrashStorageTests
             "relative" => "relative-placement", "empty" => "", "blank" => " ",
             _ => throw new ArgumentOutOfRangeException(nameof(kind))
         };
-        Assert.ThrowsAny<Exception>(() => JointInterfaceCrashStorage.SelectOwnedRoot(
+        Assert.Throws<InvalidDataException>(() => JointInterfaceCrashStorage.SelectOwnedRoot(
             Path.GetTempPath(), parent, Guid.NewGuid().ToString("N"), Eligible(0)));
         Assert.False(Path.Exists(missing));
         Assert.Equal("untouched", File.ReadAllText(fixture.Marker));

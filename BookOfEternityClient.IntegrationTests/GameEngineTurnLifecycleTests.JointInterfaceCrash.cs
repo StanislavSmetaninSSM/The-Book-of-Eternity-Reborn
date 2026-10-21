@@ -65,12 +65,16 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// The explicit closed five-cut package directory, or <see langword="null"/> for the original raw/default branches.
     /// Hydration remains inside the actual child-owning crash container until confirmed retirement.
     /// </param>
+    /// <param name="ownedContainerParent">
+    /// An explicit existing ordinary parent for the ordinary Windows five-cut package selection only.
+    /// <see langword="null"/> preserves temporary or managed-capture placement; no global environment is changed.
+    /// </param>
     /// <returns>
     /// Completion after the selected probe's process and DATA assertions, or the original game assertions.
     /// </returns>
     private async Task RunJointInterfaceActualProcessLossAsync(int cut, string? fault = null, bool diagnostic = false,
         bool extendedWindowsCrash = false, string? seedArtifactPath = null, bool fixtureAcquisitionOnly = false,
-        string? seedUsage = null, string? seedPackageRoot = null)
+        string? seedUsage = null, string? seedPackageRoot = null, string? ownedContainerParent = null)
     {
         if (extendedWindowsCrash && !OperatingSystem.IsWindows())
             throw new PlatformNotSupportedException("Extended crash qualification is a local Windows selection.");
@@ -106,8 +110,14 @@ public sealed partial class GameEngineTurnLifecycleTests
         try
         {
         var capture = JointInterfaceCrashProcessSupport.UsesManagedCapture(mode, () => JointInterfaceManagedCapture.Enabled);
+        var uncapturedRoot = JointInterfaceCrashStorage.SelectOwnedRoot(Path.GetTempPath(), ownedContainerParent,
+            Guid.NewGuid().ToString("N"), new(OperatingSystem.IsWindows(), extendedWindowsCrash,
+                seedPackageRoot is not null, seedArtifactPath is not null, fixtureAcquisitionOnly, capture, mode));
         var own = capture ? JointInterfaceManagedCapture.ClaimOwnedDirectory(cut, fault)
-            : Path.Combine(Path.GetTempPath(), "boe-joint-interface-crash-" + Guid.NewGuid().ToString("N"));
+            : uncapturedRoot;
+        var storagePlacement = new { ExplicitParent = ownedContainerParent, SelectedParent = Path.GetDirectoryName(own), OwnedRoot = own };
+        parentMetadata["StoragePlacement"] = JsonSerializer.SerializeToNode(storagePlacement);
+        _directGachaOutput?.WriteLine("JOINT_CRASH_STORAGE " + JsonSerializer.Serialize(storagePlacement));
         Directory.CreateDirectory(Path.Combine(own, "tmp"));
         using var owned = new JointInterfaceCrashOwnedContainer(own, line => _directGachaOutput?.WriteLine(line), capture, failures);
         try
