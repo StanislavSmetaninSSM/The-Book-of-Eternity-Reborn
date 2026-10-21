@@ -8,6 +8,8 @@ internal sealed class JointCleanupProfileDiagnosticCapture
 {
     private readonly GameEngineTurnLifecycleTests.JointOperationTimings _timings;
     private readonly object _gate = new();
+    private readonly TimeProvider _clock;
+    private readonly Dictionary<(string Name, string State), WriteCost> _writeCosts = new();
     private readonly List<(Exception Error, string Stage)> _failures = new();
     private long _attempted;
     private long _stored;
@@ -21,7 +23,11 @@ internal sealed class JointCleanupProfileDiagnosticCapture
     /// <param name="timeProvider">
     /// Monotonic diagnostic clock, or <see langword="null"/> for <see cref="TimeProvider.System"/>.
     /// </param>
-    internal JointCleanupProfileDiagnosticCapture(TextWriter writer, TimeProvider? timeProvider = null) => _timings = new(writer);
+    internal JointCleanupProfileDiagnosticCapture(TextWriter writer, TimeProvider? timeProvider = null)
+    {
+        _timings = new(writer);
+        _clock = timeProvider ?? TimeProvider.System;
+    }
 
     /// <summary>
     /// Returns a detached ledger of every named timing-write attempt.
@@ -29,7 +35,11 @@ internal sealed class JointCleanupProfileDiagnosticCapture
     /// <returns>
     /// Per-operation and boundary write costs, including failed and unmeasured attempts.
     /// </returns>
-    internal WriteCost[] GetWriteCosts() => [];
+    internal WriteCost[] GetWriteCosts()
+    {
+        lock (_gate) return _writeCosts.Values.OrderBy(row => row.Operation, StringComparer.Ordinal)
+            .ThenBy(row => row.State, StringComparer.Ordinal).ToArray();
+    }
 
     /// <summary>
     /// Describes the measured serializer and synchronous writer span for a literal timer boundary.
@@ -73,6 +83,7 @@ internal sealed class JointCleanupProfileDiagnosticCapture
 
     /// <summary>
     /// Observes a real timer boundary using the existing serializer and sequence numbering.
+    /// Measures each serializer/write attempt while deferring storage and clock failures.
     /// </summary>
     /// <param name="name">
     /// The literal operation name received from the production hook.
@@ -88,17 +99,46 @@ internal sealed class JointCleanupProfileDiagnosticCapture
         lock (_gate)
         {
             _attempted++;
+            long? started = null, ended = null;
+            Exception? startFailure = null, endFailure = null;
+            var stored = false;
+            try { started = _clock.GetTimestamp(); }
+            catch (Exception error) { startFailure = error; }
             try
             {
-                _timings.Observe(name, boundary, elapsed);
+                try { _timings.Observe(name, boundary, elapsed); }
+                finally
+                {
+                    try { ended = _clock.GetTimestamp(); }
+                    catch (Exception error) { endFailure = error; }
+                }
                 _stored++;
+                stored = true;
             }
             catch (Exception error)
             {
-                // The production hook isolates observation errors. Retain them here before
-                // that boundary, while allowing the actual validator and later writes to run.
+                // Retain the original writer failure before secondary measurement errors.
                 _failures.Add((error, "timing-observer:" + name + ":" + boundary));
             }
+            if (startFailure is not null)
+                _failures.Add((startFailure, "timing-write-clock-start:" + name + ":" + boundary));
+            if (endFailure is not null)
+                _failures.Add((endFailure, "timing-write-clock-end:" + name + ":" + boundary));
+            var measured = false;
+            var writeElapsed = TimeSpan.Zero;
+            if (started is { } start && ended is { } end)
+            {
+                try { writeElapsed = _clock.GetElapsedTime(start, end); measured = true; }
+                catch (Exception error) { _failures.Add((error, "timing-write-clock-elapsed:" + name + ":" + boundary)); }
+            }
+            try
+            {
+                _writeCosts.TryGetValue((name, boundary), out var previous);
+                _writeCosts[(name, boundary)] = new WriteCost(name, boundary, previous.Attempted + 1,
+                    previous.Stored + (stored ? 1 : 0), previous.Measured + (measured ? 1 : 0),
+                    previous.SerializationAndWriteElapsed + writeElapsed);
+            }
+            catch (Exception error) { _failures.Add((error, "timing-write-accounting:" + name + ":" + boundary)); }
         }
     }
 

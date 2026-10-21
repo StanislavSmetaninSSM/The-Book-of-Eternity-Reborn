@@ -75,7 +75,7 @@ public sealed class JointCleanupProfileDiagnosticCaptureTests
         Assert.Equal(2, capture.Attempted);
         Assert.Equal(1, capture.Stored);
         Assert.False(capture.Complete);
-        Assert.Contains(capture.GetFailures(), row => ReferenceEquals(row.Error, writer.Failure));
+        Assert.Same(writer.Failure, capture.GetFailures()[0].Error);
         Assert.Contains(capture.GetFailures(), row => ReferenceEquals(row.Error, clock.Failure));
         var costs = capture.GetWriteCosts();
         var first = Assert.Single(costs, row => row.Operation == "first");

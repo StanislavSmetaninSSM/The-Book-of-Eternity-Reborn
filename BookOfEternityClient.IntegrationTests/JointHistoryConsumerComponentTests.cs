@@ -174,6 +174,7 @@ public sealed class JointHistoryConsumerComponentTests
                                     return (Manifest: manifest, Proof: proof);
                                 });
                             // The real history proof acquires fresh leases. The issuance lease is already disposed here.
+                            report["TimingWriteCostsBeforeConsumer"] = capture.GetWriteCosts();
                             WriteReport(reportPath, report);
                             using (validator.UsePrevalidatedPendingTurnSnapshotScope(issued.Manifest))
                             {
@@ -185,7 +186,11 @@ public sealed class JointHistoryConsumerComponentTests
                                         () => validator.ValidateMortalJointStoryGameStateAsync(issued.Proof));
                                 }
                                 catch (Exception error) { consumerFailure = error; }
-                                finally { observation.EndConsumer(); }
+                                finally
+                                {
+                                    observation.EndConsumer();
+                                    report["TimingWriteCostsAfterConsumer"] = capture.GetWriteCosts();
+                                }
                             }
                             report["ReturnedIssues"] = issues;
                             report["IssuesWereReturned"] = issues is not null;
@@ -328,6 +333,20 @@ public sealed class JointHistoryConsumerComponentTests
             report["TimingCaptureComplete"] = capture?.Complete;
             report["TimingBoundariesAttempted"] = capture?.Attempted;
             report["TimingBoundariesStored"] = capture?.Stored;
+            Attempt(() =>
+            {
+                var costs = capture?.GetWriteCosts();
+                report["TimingWriteCosts"] = costs;
+                report["TimingWriteCostTotals"] = costs is null ? null : new
+                {
+                    Attempted = costs.Sum(row => row.Attempted), Stored = costs.Sum(row => row.Stored),
+                    Measured = costs.Sum(row => row.Measured),
+                    SerializationAndWriteMilliseconds = costs.Sum(row => row.SerializationAndWriteElapsed.TotalMilliseconds)
+                };
+                report["TimingWriteCostContract"] = "Monotonic serializer + inner timing lock + synchronous writer/AutoFlush; " +
+                    "excludes outer capture-gate wait, clock/accounting overhead and non-timing logger/cost/report writes. " +
+                    "All named attempts retained without quotas; measured includes failed writes.";
+            }, "timing-write-cost-report");
             if (writerClosed)
                 Attempt(() => { using var input = File.OpenRead(diagnosticPath); report["StoredBytes"] = input.Length;
                     report["Sha256"] = Convert.ToHexString(SHA256.HashData(input)); }, "diagnostic-hash");
