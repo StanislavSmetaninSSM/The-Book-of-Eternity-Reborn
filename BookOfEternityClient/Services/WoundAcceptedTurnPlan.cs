@@ -1415,6 +1415,58 @@ internal sealed class WoundAcceptedTurnPlan
             WoundAcceptedTurnData.CloneTransitionIntent);
     }
 
+    /// <summary>
+    /// Inserts one fresh marker into this plan's actual private history for a synchronous refusal control.
+    /// It grants no authority and leaves every stored seal and graph reference unchanged.
+    /// </summary>
+    /// <returns>
+    /// An opaque scope that removes only its marker; dispose it before normal owner closing.
+    /// </returns>
+    internal IDisposable DamagePrivateHistoryForComponent()
+    {
+        var history = _historyAfterImage ??
+            throw new InvalidOperationException("A retained final history is required for this control.");
+        var marker = "component_damage_" + Guid.NewGuid().ToString("N");
+        history.Add(marker, true);
+        return new PrivateHistoryDamage(history, marker);
+    }
+
+    /// <summary>
+    /// Restores only the fresh DATA marker inserted by its owning synchronous control.
+    /// </summary>
+    private sealed class PrivateHistoryDamage : IDisposable
+    {
+        private readonly JsonObject _history;
+        private readonly string _marker;
+        private bool _disposed;
+
+        /// <summary>
+        /// Retains the damaged private object without exposing it to the test caller.
+        /// </summary>
+        /// <param name="history">
+        /// The exact private history object whose reference must remain unchanged.
+        /// </param>
+        /// <param name="marker">
+        /// The fresh key inserted by the damage entry and removed on restoration.
+        /// </param>
+        internal PrivateHistoryDamage(JsonObject history, string marker)
+        {
+            _history = history;
+            _marker = marker;
+        }
+
+        /// <summary>
+        /// Removes this scope's marker exactly once without changing any other data or seals.
+        /// </summary>
+        public void Dispose()
+        {
+            if (_disposed) return;
+            if (!_history.Remove(_marker))
+                throw new InvalidOperationException("The private history damage marker was lost before restoration.");
+            _disposed = true;
+        }
+    }
+
     internal WoundAcceptedTurnBinding Binding =>
         WoundAcceptedTurnData.CloneBinding(_binding)!;
     internal string BindingFingerprint { get; }

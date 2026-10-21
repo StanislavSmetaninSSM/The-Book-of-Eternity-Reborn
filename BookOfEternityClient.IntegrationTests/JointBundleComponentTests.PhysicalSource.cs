@@ -176,8 +176,10 @@ public sealed partial class JointBundleComponentTests
                 Assert.Equal(new ResourceCoordinate("mortal_world", ResourceOwnerKind.Player, "player_current", "health"),
                     mutation.Transition.Coordinate);
                 var producer = QtePhysicalWoundOccurrenceProducer.Create(source, selection, ordinary);
-                Assert.True(producer.FinalizedProjection.Success, JsonSerializer.Serialize(producer.FinalizedProjection.Issues));
-                Assert.Single(producer.FinalizedProjection.Harms);
+                var finalizedProjection = producer.FinalizedProjection ??
+                    throw new InvalidOperationException("The completed physical producer did not return its projection.");
+                Assert.True(finalizedProjection.Success, JsonSerializer.Serialize(finalizedProjection.Issues));
+                Assert.Single(finalizedProjection.Harms);
                 var completed = AcceptedMechanicsPlanner.CompleteQtePhysicalWoundOccurrenceReduction(reduction, producer, roots);
                 Assert.Equal(AcceptedMechanicsPlanner.AcceptedMechanicsReductionKind.CompletedOrdinaryReduction, completed.Kind);
                 Assert.Same(ordinary.Resources, completed.Completed!.Resources);

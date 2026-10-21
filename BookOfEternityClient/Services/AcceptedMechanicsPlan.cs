@@ -394,6 +394,46 @@ internal sealed class AcceptedMechanicsWoundStageBundle
         WoundPreparedAcceptedTurnPlan preparedPlan,
         WoundEffectBatchAcceptedPlan effectBatchPlan,
         WoundAcceptedTurnPlan finalPlan)
+        : this(input, preparedPlan, effectBatchPlan, finalPlan, null)
+    {
+    }
+
+    /// <summary>
+    /// Copies only this existing joint source's private retained graph through current admission and seal checks.
+    /// </summary>
+    /// <param name="source">
+    /// The already constructed exclusive joint bundle supplying all four private stages.
+    /// </param>
+    private AcceptedMechanicsWoundStageBundle(AcceptedMechanicsWoundStageBundle source)
+        : this(source._input, source._preparedPlan, source._effectBatchPlan, source._finalPlan, source)
+    {
+    }
+
+    /// <summary>
+    /// Applies the common ordered stage validation, cross-checks and deep detachment.
+    /// </summary>
+    /// <param name="input">
+    /// The complete input graph to validate and clone.
+    /// </param>
+    /// <param name="preparedPlan">
+    /// The prepared stage whose current authority and fingerprints must agree with the input.
+    /// </param>
+    /// <param name="effectBatchPlan">
+    /// The effect stage whose accepted results and seals must agree with preparation.
+    /// </param>
+    /// <param name="finalPlan">
+    /// The final graph whose seals, allocations and result maps must agree with the preceding stages.
+    /// </param>
+    /// <param name="retainedSource">
+    /// <see langword="null"/> requests full final replay. Otherwise only the private source constructor supplies
+    /// this same existing joint bundle's private graphs for retained-reduction validation.
+    /// </param>
+    private AcceptedMechanicsWoundStageBundle(
+        WoundAcceptedTurnInput input,
+        WoundPreparedAcceptedTurnPlan preparedPlan,
+        WoundEffectBatchAcceptedPlan effectBatchPlan,
+        WoundAcceptedTurnPlan finalPlan,
+        AcceptedMechanicsWoundStageBundle? retainedSource)
     {
         using var operationTiming = FileSystemManager.MeasureCurrentOperation("WoundBundle.Constructor");
         ArgumentNullException.ThrowIfNull(input);
@@ -432,12 +472,14 @@ internal sealed class AcceptedMechanicsWoundStageBundle
                 "The effect wound stage does not match the full detached preparation.",
                 nameof(effectBatchPlan));
         }
-        var validatedFinal = WoundAcceptedTurnPlanCache.ValidateFinalResult(
-            preparedPlan,
-            effectBatchPlan,
-            new WoundAcceptedTurnPlanningResult(
-                finalPlan,
-                Array.Empty<ValidationIssue>()));
+        var validatedFinal = retainedSource is null
+            ? WoundAcceptedTurnPlanCache.ValidateFinalResult(
+                preparedPlan,
+                effectBatchPlan,
+                new WoundAcceptedTurnPlanningResult(
+                    finalPlan,
+                    Array.Empty<ValidationIssue>()))
+            : WoundAcceptedTurnPlanCache.ValidateRetainedJointFinalResult(retainedSource);
         if (!validatedFinal.Success)
         {
             throw new ArgumentException(
@@ -613,7 +655,9 @@ internal sealed class AcceptedMechanicsWoundStageBundle
                 StringComparer.Ordinal));
 
     /// <summary>
-    /// Creates another fully validated bundle with a detached mutable data graph.
+    /// Creates another admitted bundle with a detached mutable data graph.
+    /// Joint copies repeat current preparation, effect and final admission and graph seals;
+    /// their retained final reduction is reused. Other families retain full final replay.
     /// </summary>
     /// <returns>
     /// A distinct validated bundle preserving this bundle's authority references and fingerprints.
@@ -621,8 +665,23 @@ internal sealed class AcceptedMechanicsWoundStageBundle
     internal AcceptedMechanicsWoundStageBundle DetachedCopy()
     {
         using var operationTiming = FileSystemManager.MeasureCurrentOperation("WoundBundle.DetachedCopy");
-        return new(_input, _preparedPlan, _effectBatchPlan, _finalPlan);
+        return _preparedPlan.JointRepairContinuationAuthority is not null &&
+            _preparedPlan.TreatmentContinuationAuthority is null &&
+            _preparedPlan.RecoveryContinuationAuthority is null
+            ? new(this)
+            : new(_input, _preparedPlan, _effectBatchPlan, _finalPlan);
     }
+
+
+    /// <summary>
+    /// Damages only the private final-history DATA for a synchronous refusal control.
+    /// The returned scope removes its fresh marker without exporting the graph or changing any seal.
+    /// </summary>
+    /// <returns>
+    /// An opaque restorer that must be disposed before normal publication-abort or fixture closing.
+    /// </returns>
+    internal IDisposable DamageRetainedFinalHistoryForComponent() =>
+        _finalPlan.DamagePrivateHistoryForComponent();
 
     private static Dictionary<string, EffectAcceptedApplicationResult>
         CreateApplicationMap(

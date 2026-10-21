@@ -223,7 +223,8 @@ public sealed partial class JointBundleComponentTests
             Assert.Equal(MortalWoundTreatmentResourceReservationState.ConfirmedHeld, hold.State);
             var projectionSource = MortalQteWoundOpportunityProjection.ReadSnapshot(Files, Lease);
             Assert.Equal(original.RequestId, projectionSource.RequestId);
-            var opportunity = Assert.Single(MortalQteWoundOpportunityProjection.Project(projectionSource));
+            var opportunity = Assert.Single(MortalQteWoundOpportunityProjection.Project(projectionSource)) ??
+                throw new InvalidOperationException("The genuine joint projection returned a null opportunity.");
             var decision = new JsonObject
             {
                 ["opportunityRef"] = opportunity["opportunityRef"]!.DeepClone(), ["decision"] = "materialize",

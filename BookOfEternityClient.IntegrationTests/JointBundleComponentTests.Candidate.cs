@@ -61,18 +61,26 @@ public sealed partial class JointBundleComponentTests
         var foreign = new AcceptedMechanicsInput(input.SessionId, "foreign_request", input.SnapshotToken, input.Realm, input.Turn,
             input.AcceptedEvents, input.ResourceCommands, input.EffectCommands, input.PendingInput, input.InternalInputs,
             input.AuthorityFingerprints, input.BeforeImages, input.ValidationIssues, input.PlanningContext, input.WoundCommands, input.WoundInput);
-        var refused = AcceptedTurnAuthorityRegistry.CreateJointRepairCommonCandidate(fixture.Files, fixture.Lease, foreign, authority);
+        AcceptedTurnAuthorityRegistry.JointCommonCandidateResult refused;
+        using (fixture.Files.MeasureOperation("JointBundleCandidate.ForeignInputRefusal"))
+            refused = AcceptedTurnAuthorityRegistry.CreateJointRepairCommonCandidate(fixture.Files, fixture.Lease, foreign, authority);
         Assert.False(refused.Result.Success);
         Assert.Null(refused.Fence);
-        AcceptedTurnAuthorityRegistry.RevokeJointRepairCommonCandidate(fixture.Files, fixture.Lease, authority, miss.Fence);
-        var stillCached = AcceptedTurnAuthorityRegistry.CreateJointRepairCommonCandidate(fixture.Files, fixture.Lease, input, authority);
+        using (fixture.Files.MeasureOperation("JointBundleCandidate.StaleFenceRevocation"))
+            AcceptedTurnAuthorityRegistry.RevokeJointRepairCommonCandidate(fixture.Files, fixture.Lease, authority, miss.Fence);
+        AcceptedTurnAuthorityRegistry.JointCommonCandidateResult stillCached;
+        using (fixture.Files.MeasureOperation("JointBundleCandidate.CachedAfterStaleFence"))
+            stillCached = AcceptedTurnAuthorityRegistry.CreateJointRepairCommonCandidate(fixture.Files, fixture.Lease, input, authority);
         Assert.True(stillCached.Result.Success, JsonSerializer.Serialize(stillCached.Result.Issues));
         Assert.Same(hit.Result.Plan, stillCached.Result.Plan);
-        foreach (var row in before)
-            Assert.Equal(row.Value, await fixture.Files.ReadFileBytesAsync(fixture.Lease, row.Key));
+        using (fixture.Files.MeasureOperation("JointBundleCandidate.UnchangedCanonicalBytes"))
+            foreach (var row in before)
+                Assert.Equal(row.Value, await fixture.Files.ReadFileBytesAsync(fixture.Lease, row.Key));
         fixture.Output.WriteLine(JsonSerializer.Serialize(new { Kind = "JointCandidateOracles", ForeignInputRefused = true,
             StaleFenceRevocationInert = true, UnchangedCanonicalPaths = before.Keys.ToArray(), Published = false }));
-        await fixture.AssertPreparedBeginningOwnerRefusalsAsync();
+        using (fixture.Files.MeasureOperation("JointBundleCandidate.BeginningOwnerRefusals"))
+            await fixture.AssertPreparedBeginningOwnerRefusalsAsync();
+        fixture.AssertJointCopyContracts(input, authority);
     }
 
     private sealed partial class Fixture

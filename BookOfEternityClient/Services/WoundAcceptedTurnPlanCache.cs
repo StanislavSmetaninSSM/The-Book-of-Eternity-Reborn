@@ -865,7 +865,56 @@ internal sealed class WoundAcceptedTurnPlanCache
     internal static WoundAcceptedTurnPlanningResult ValidateFinalResult(
         WoundPreparedAcceptedTurnPlan prepared,
         WoundEffectBatchAcceptedPlan effectPlan,
-        WoundAcceptedTurnPlanningResult result)
+        WoundAcceptedTurnPlanningResult result) =>
+        ValidateFinalResultCore(prepared, effectPlan, result, null);
+
+    /// <summary>
+    /// Validates a genuinely constructed joint bundle's retained final data through the normal final envelope checks.
+    /// Repeats shared live admission while omitting only reconstruction of that source's final graphs.
+    /// </summary>
+    /// <param name="source">
+    /// The existing bundle supplying all detached stages and its original retained final seal.
+    /// Other authority families use the original full finalization path.
+    /// </param>
+    /// <returns>
+    /// The validated retained final result or the same envelope, handoff and fingerprint refusal mapping.
+    /// </returns>
+    internal static WoundAcceptedTurnPlanningResult ValidateRetainedJointFinalResult(
+        AcceptedMechanicsWoundStageBundle source)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        var prepared = source.PreparedPlan;
+        var effectPlan = source.EffectBatchPlan;
+        var result = new WoundAcceptedTurnPlanningResult(source.FinalPlan, Array.Empty<ValidationIssue>());
+        var exclusiveJoint = prepared.JointRepairContinuationAuthority is not null &&
+            prepared.TreatmentContinuationAuthority is null && prepared.RecoveryContinuationAuthority is null;
+        return ValidateFinalResultCore(prepared, effectPlan, result, exclusiveJoint ? source : null);
+    }
+
+    /// <summary>
+    /// Applies the unchanged final result envelope, recomputed seals, ordered allocations and refusal mapping.
+    /// </summary>
+    /// <param name="prepared">
+    /// The prepared stage supplying binding and allocation expectations.
+    /// </param>
+    /// <param name="effectPlan">
+    /// The accepted effect stage supplying handoff seals.
+    /// </param>
+    /// <param name="result">
+    /// The actual final result envelope, validated before replay admission.
+    /// </param>
+    /// <param name="retainedSource">
+    /// <see langword="null"/> requests normal full replay. A constructed exclusive joint source supplies its retained final seal
+    /// only after the shared finalization and joint admission checks succeed.
+    /// </param>
+    /// <returns>
+    /// The original accepted result or final-result refusal, with unchanged short-circuit order and catch mapping.
+    /// </returns>
+    private static WoundAcceptedTurnPlanningResult ValidateFinalResultCore(
+        WoundPreparedAcceptedTurnPlan prepared,
+        WoundEffectBatchAcceptedPlan effectPlan,
+        WoundAcceptedTurnPlanningResult result,
+        AcceptedMechanicsWoundStageBundle? retainedSource)
     {
         using var operationTiming = FileSystemManager.MeasureCurrentOperation("WoundPlanCache.ValidateFinalResult");
         try
@@ -905,16 +954,32 @@ internal sealed class WoundAcceptedTurnPlanCache
                 plan.IdentityIndexAfterImage,
                 plan.HistoryAfterImage,
                 plan.TransitionIntents);
-            using var replayTiming = FileSystemManager.MeasureCurrentOperation("WoundPlanCache.FinalizationReplay");
-            var replay = WoundAcceptedTurnPlanner.Finalize(
-                WoundAcceptedTurnData.ClonePreparedPlan(prepared)!,
-                new WoundEffectBatchPlanningResult(
-                    effectPlan,
-                    Array.Empty<ValidationIssue>()));
-            replayTiming?.Dispose();
-            var canonicalFinal = replay.Success
-                ? replay.Plan!.WoundFinalPlanFingerprint
-                : null;
+            string? canonicalFinal;
+            if (retainedSource is null)
+            {
+                using var replayTiming = FileSystemManager.MeasureCurrentOperation("WoundPlanCache.FinalizationReplay");
+                var replay = WoundAcceptedTurnPlanner.Finalize(
+                    WoundAcceptedTurnData.ClonePreparedPlan(prepared)!,
+                    new WoundEffectBatchPlanningResult(
+                        effectPlan,
+                        Array.Empty<ValidationIssue>()));
+                replayTiming?.Dispose();
+                canonicalFinal = replay.Success
+                    ? replay.Plan!.WoundFinalPlanFingerprint
+                    : null;
+            }
+            else
+            {
+                // Only the private bundle copy route supplies an already constructed source.
+                // Recheck its live companions and handoff; reuse only its retained reduction result.
+                var replayPrepared = WoundAcceptedTurnData.ClonePreparedPlan(prepared)!;
+                var effectResult = new WoundEffectBatchPlanningResult(effectPlan, Array.Empty<ValidationIssue>());
+                var refused = WoundAcceptedTurnPlannerCore.ValidateFinalizationHandoff(
+                    replayPrepared, effectResult, out var accepted, out _, out _);
+                if (refused is null)
+                    refused = WoundAcceptedTurnPlannerCore.ValidateJointFinalAdmission(replayPrepared, accepted!);
+                canonicalFinal = refused is null ? retainedSource.WoundFinalPlanFingerprint : null;
+            }
             if (!string.Equals(
                     plan.BindingFingerprint,
                     prepared.BindingFingerprint,

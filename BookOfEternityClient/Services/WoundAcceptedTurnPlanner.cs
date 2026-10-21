@@ -555,10 +555,64 @@ internal static partial class WoundAcceptedTurnPlannerCore
             null,
             new[] { NewIssue(code, message, expected, actual) });
 
+    /// <summary>
+    /// Validates the complete ordinary finalization handoff, then executes its original family reducer.
+    /// </summary>
+    /// <param name="prepared">
+    /// The prepared wound stage whose current companions and detached seals must still agree.
+    /// </param>
+    /// <param name="effectResult">
+    /// The effect-stage result envelope to validate before any final graph is reduced.
+    /// </param>
+    /// <returns>
+    /// The normally reduced final plan or the original handoff or reducer refusal issues.
+    /// </returns>
     internal static WoundAcceptedTurnPlanningResult Finalize(
         WoundPreparedAcceptedTurnPlan prepared,
         WoundEffectBatchPlanningResult effectResult)
     {
+        var refused = ValidateFinalizationHandoff(prepared, effectResult, out var accepted, out var applications, out var recoveryContinuation);
+        if (refused is not null) return refused;
+        return recoveryContinuation
+            ? ComposeRecoveryContinuationFinalPlan(prepared, accepted!)
+            : ComposeFinalPlan(prepared, accepted!, applications!);
+    }
+
+    /// <summary>
+    /// Repeats every pre-reduction handoff predicate in its original order without building final graphs.
+    /// </summary>
+    /// <param name="prepared">
+    /// The prepared stage, including its actual companion references and detached payload.
+    /// </param>
+    /// <param name="effectResult">
+    /// The effect result whose envelope, seals, ordered inventory and derived results are checked.
+    /// </param>
+    /// <param name="accepted">
+    /// Receives the same detached effect stage used by these checks; <see langword="null"/> until its original assignment point.
+    /// It is DATA for the selected reducer and grants no new authority.
+    /// </param>
+    /// <param name="applications">
+    /// Receives the exact ordered application list used by inventory and agreement checks.
+    /// Remains <see langword="null"/> for an earlier refusal or the original early recovery dispatch.
+    /// </param>
+    /// <param name="recoveryContinuation">
+    /// Receives <see langword="true"/> only when the original recovery-family dispatch point is reached;
+    /// it selects that reducer and does not authorize or replace any validation.
+    /// </param>
+    /// <returns>
+    /// The original refusal result, or <see langword="null"/> when this handoff is admitted for its family reducer.
+    /// </returns>
+    internal static WoundAcceptedTurnPlanningResult? ValidateFinalizationHandoff(
+        WoundPreparedAcceptedTurnPlan prepared,
+        WoundEffectBatchPlanningResult effectResult,
+        out WoundEffectBatchAcceptedPlan? accepted,
+        out IReadOnlyList<EffectAcceptedApplicationResult>? applications,
+        out bool recoveryContinuation)
+    {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("WoundPlanner.FinalizationHandoff");
+        accepted = null;
+        applications = null;
+        recoveryContinuation = false;
         if (prepared.DraftBefore != null)
             return FailedFinal("spiritual_wound_owned_application_required",
                 "Live wounds are reduced from actual owned insertion facts before common final publication.",
@@ -591,7 +645,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
         if (preparedIssues.Count != 0)
             return new WoundAcceptedTurnPlanningResult(null, preparedIssues);
 
-        var accepted = effectResult.Plan;
+        accepted = effectResult.Plan;
         try
         {
             var actualPreparation = WoundAcceptedTurnFingerprints.ComputePreparation(prepared);
@@ -652,7 +706,10 @@ internal static partial class WoundAcceptedTurnPlannerCore
             return new WoundAcceptedTurnPlanningResult(null, new[] { shapeIssue });
 
         if (prepared.RecoveryContinuationAuthority is not null)
-            return ComposeRecoveryContinuationFinalPlan(prepared, accepted);
+        {
+            recoveryContinuation = true;
+            return null;
+        }
 
         var expectedApplications = prepared.EffectOperationBatches
             .SelectMany(static batch => batch.RootApplications)
@@ -660,7 +717,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
         var expectedTerminations = prepared.EffectOperationBatches
             .SelectMany(static batch => batch.TerminalOperations)
             .ToArray();
-        var applications = accepted.ApplicationResults;
+        applications = accepted.ApplicationResults;
         var terminations = accepted.TerminationResults;
         if (applications.Count != expectedApplications.Length ||
             terminations.Count != expectedTerminations.Length ||
@@ -737,7 +794,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 "well-formed but divergent termination result");
         }
 
-        return ComposeFinalPlan(prepared, accepted, applications);
+        return null;
     }
 
     private static ValidationIssue? ValidateAcceptedResultShape(
