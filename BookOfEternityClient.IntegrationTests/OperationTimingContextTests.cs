@@ -55,12 +55,12 @@ public sealed class OperationTimingContextTests
         var trace = new Trace(_output, throwingObserver);
         var files = fixture.Create(trace.Observe);
         var expected = new InvalidDataException("operation failure sentinel");
-        var actual = Assert.Throws<InvalidDataException>(() =>
+        var actual = Assert.Throws<InvalidDataException>((Action)(() =>
         {
             using var context = files.EnterOperationTimingContext();
             using var operation = FileSystemManager.MeasureCurrentOperation("throwing-body");
             throw expected;
-        });
+        }));
         Assert.Same(expected, actual);
         Assert.Null(FileSystemManager.MeasureCurrentOperation("after-failure"));
         AssertEvents(trace, ("throwing-body", "begin"), ("throwing-body", "end"));
