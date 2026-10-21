@@ -1,3 +1,10 @@
+# CRASH5 — plan13 revision43: finish native depth on original C route
+
+1. T409: record T407 exact501name/634074path evidence and correction, retained72outputs, source-guided native design; actual canonical plan/tasks/prerequisite phases and equivalent consistency. Present written scope under existing wait waiver.
+2. T410: passive native/storage spans with native-error/handle/branch contracts preserved; opt-in existing helper parent selection and fresh original-leaf-v2 literal before generation. Full XML/source/pin verification, cheap affected controls and independent coherent source check before runtime.
+3. T411: existing genuine source42 generator once with full archived source/copy/closing verification, exact new immutable package and saved recovery. Run exactly original fixture-backed cut0 with BOE_TEST_JOINT_CRASH_PARENT=C:/Temp and restore parent process environment afterwards. Same600/820/15, no protected-root walk or cleanup. Full raw before all-row/path/native/cost analysis even on failure; deeper actual leaves instead of another broad gap.
+4. T412: independent coherent final source/tests/docs and raw/correction/native attribution review, relevant corrections/checks and exact saved recovery. Report exact costly operations/counts/times and original evidence limits. Do not claim a speed fix or OS/disk cause.
+
 # CRASH5 — plan13 revision42: original timeout, descend to concrete operations
 
 1. T405: actual archive checks and complete original critical-path/leaf accounting; written source-guided insertion design, canonical phases/consistency, retained outputs. No component replay.

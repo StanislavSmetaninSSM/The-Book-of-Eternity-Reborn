@@ -50,7 +50,8 @@ public sealed partial class GameEngineTurnLifecycleTests
     public Task JointInterfaceFixtureBackedWindows_Cut4_ErrorPrepared() => RunFixtureBackedWindowsCutAsync(4);
 
     /// <summary>
-    /// Selects the separately generated current diagnostic package, repository-parent storage and existing shared Windows crash bounds.
+    /// Selects the current diagnostic package and original shared Windows crash bounds.
+    /// An unset <c>BOE_TEST_JOINT_CRASH_PARENT</c> retains repository-parent storage; a provided value must be absolute.
     /// </summary>
     /// <param name="cut">
     /// The original cut index from zero through four.
@@ -58,11 +59,17 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// <returns>
     /// The unchanged original scenario flow after explicit checked fixture selection.
     /// </returns>
-    private Task RunFixtureBackedWindowsCutAsync(int cut) => RunJointInterfaceActualProcessLossAsync(cut,
-        extendedWindowsCrash: true,
-        seedPackageRoot: Path.Combine(TestRepoPaths.RepoRoot, "specs", "1536-complete-wound-materialization",
-            "fixtures", "joint-interface-source42-original-leaf-v1", "package"),
-        seedUsage: JointInterfaceSeedCrashInput.OrdinaryWindowsFiveCutsUsage,
-        ownedContainerParent: Path.GetDirectoryName(TestRepoPaths.RepoRoot)
-            ?? throw new InvalidDataException("Fixture-backed crash storage requires the checkout's explicit parent."));
+    private Task RunFixtureBackedWindowsCutAsync(int cut)
+    {
+        var requestedParent = Environment.GetEnvironmentVariable("BOE_TEST_JOINT_CRASH_PARENT");
+        if (requestedParent is not null && !Path.IsPathFullyQualified(requestedParent))
+            throw new InvalidDataException("The diagnostic crash parent must be an absolute path when provided.");
+        return RunJointInterfaceActualProcessLossAsync(cut,
+            extendedWindowsCrash: true,
+            seedPackageRoot: Path.Combine(TestRepoPaths.RepoRoot, "specs", "1536-complete-wound-materialization",
+                "fixtures", "joint-interface-source42-original-leaf-v2", "package"),
+            seedUsage: JointInterfaceSeedCrashInput.OrdinaryWindowsFiveCutsUsage,
+            ownedContainerParent: requestedParent ?? (Path.GetDirectoryName(TestRepoPaths.RepoRoot)
+                ?? throw new InvalidDataException("Fixture-backed crash storage requires the checkout's explicit parent.")));
+    }
 }

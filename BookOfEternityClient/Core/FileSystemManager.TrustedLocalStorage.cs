@@ -57,11 +57,15 @@ public partial class FileSystemManager
     private bool HasStorageEvidence(string root)
     {
         using var t351Evidence = MeasureOperation("StorageEvidence.ProbeAndEnumerate");
-        var kind = PhysicalFileAuthority.ProbeStorageEvidenceNamespaceEntryFromRoot(_basePath, root, "Storage evidence root");
+        PhysicalFileAuthority.NamespaceEntryKind kind;
+        using (MeasureOperation("StorageEvidence.Probe"))
+        using (EnterOperationTimingContext())
+            kind = PhysicalFileAuthority.ProbeStorageEvidenceNamespaceEntryFromRoot(_basePath, root, "Storage evidence root");
         if (kind == PhysicalFileAuthority.NamespaceEntryKind.Missing) return false;
         if (kind != PhysicalFileAuthority.NamespaceEntryKind.Directory)
             throw new InvalidDataException("Storage evidence root is not an ordinary directory: " + root);
-        return Directory.EnumerateFileSystemEntries(root).Any();
+        using (MeasureOperation("StorageEvidence.Enumerate"))
+            return Directory.EnumerateFileSystemEntries(root).Any();
     }
 
     private void EnsureNoLegacyStorageEvidence(CanonicalWriteLease? ownedBrowser = null,

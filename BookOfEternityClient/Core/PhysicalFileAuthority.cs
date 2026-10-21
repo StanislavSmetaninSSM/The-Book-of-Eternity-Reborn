@@ -149,23 +149,27 @@ internal static partial class PhysicalFileAuthority
         var flags = FileFlagOpenReparsePoint | FileFlagBackupSemantics;
         ObserveNamespaceNativeOpen(hooks, normalizedPath, access, share, flags,
             PhysicalNamespaceOpenKind.NamespaceEntry);
-        var handle = CreateFile(
-            ToWindowsExtendedPath(normalizedPath),
-            access,
-            share,
-            IntPtr.Zero,
-            OpenExisting,
-            flags,
-            IntPtr.Zero);
-        if (handle.IsInvalid)
+        SafeFileHandle handle;
+        using (FileSystemManager.MeasureCurrentOperation("WindowsNative.CreateFileW.NamespaceEntry"))
         {
-            var error = Marshal.GetLastWin32Error();
-            handle.Dispose();
-            if (error is ErrorFileNotFound or ErrorPathNotFound)
-                return NamespaceEntryKind.Missing;
-            throw CreateIoException(
-                $"Could not inspect {authorityName} namespace entry.",
-                error);
+            handle = CreateFile(
+                ToWindowsExtendedPath(normalizedPath),
+                access,
+                share,
+                IntPtr.Zero,
+                OpenExisting,
+                flags,
+                IntPtr.Zero);
+            if (handle.IsInvalid)
+            {
+                var error = Marshal.GetLastWin32Error();
+                handle.Dispose();
+                if (error is ErrorFileNotFound or ErrorPathNotFound)
+                    return NamespaceEntryKind.Missing;
+                throw CreateIoException(
+                    $"Could not inspect {authorityName} namespace entry.",
+                    error);
+            }
         }
 
         using (handle)
@@ -471,21 +475,25 @@ internal static partial class PhysicalFileAuthority
         var flags = FileFlagBackupSemantics;
         ObserveNamespaceNativeOpen(hooks, normalizedPath, access, share, flags,
             PhysicalNamespaceOpenKind.DirectoryAuthority);
-        var handle = CreateFile(
-            ToWindowsExtendedPath(normalizedPath),
-            access,
-            share,
-            IntPtr.Zero,
-            OpenExisting,
-            flags,
-            IntPtr.Zero);
-        if (handle.IsInvalid)
+        SafeFileHandle handle;
+        using (FileSystemManager.MeasureCurrentOperation("WindowsNative.CreateFileW.DirectoryAuthority"))
         {
-            var error = Marshal.GetLastWin32Error();
-            handle.Dispose();
-            throw CreateIoException(
-                $"Could not open {authorityName} directory authority.",
-                error);
+            handle = CreateFile(
+                ToWindowsExtendedPath(normalizedPath),
+                access,
+                share,
+                IntPtr.Zero,
+                OpenExisting,
+                flags,
+                IntPtr.Zero);
+            if (handle.IsInvalid)
+            {
+                var error = Marshal.GetLastWin32Error();
+                handle.Dispose();
+                throw CreateIoException(
+                    $"Could not open {authorityName} directory authority.",
+                    error);
+            }
         }
 
         try
@@ -1503,6 +1511,21 @@ internal static partial class PhysicalFileAuthority
         return true;
     }
 
+    /// <summary>
+    /// Checks <paramref name="handle"/> against <paramref name="expectedPath"/> and then the existing regular-file single-link constraint; other platforms return without these checks.
+    /// </summary>
+    /// <param name="handle">
+    /// The caller-owned opened handle; this check does not dispose it.
+    /// </param>
+    /// <param name="expectedPath">
+    /// The expected physical path compared with the opened handle name.
+    /// </param>
+    /// <param name="authorityName">
+    /// The description retained in existing authority refusals.
+    /// </param>
+    /// <param name="flags">
+    /// Native final-name flags; zero retains the existing normalized-name request.
+    /// </param>
     internal static void EnsureHandleMatchesExpectedPath(
         SafeFileHandle handle,
         string expectedPath,
@@ -1512,6 +1535,7 @@ internal static partial class PhysicalFileAuthority
         if (!OperatingSystem.IsWindows())
             return;
 
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("PhysicalFileAuthority.ValidateHandle");
         EnsureHandlePathMatchesExpectedPath(
             handle,
             expectedPath,
@@ -1520,6 +1544,21 @@ internal static partial class PhysicalFileAuthority
         EnsureRegularFileHasSingleLink(handle, authorityName);
     }
 
+    /// <summary>
+    /// Compares the Windows name of <paramref name="handle"/> with <paramref name="expectedPath"/>; other platforms return without this comparison.
+    /// </summary>
+    /// <param name="handle">
+    /// The caller-owned opened handle; this check does not dispose it.
+    /// </param>
+    /// <param name="expectedPath">
+    /// The expected physical path compared with the opened handle name.
+    /// </param>
+    /// <param name="authorityName">
+    /// The description retained in existing authority refusals.
+    /// </param>
+    /// <param name="flags">
+    /// Native final-name flags; zero retains the existing normalized-name request.
+    /// </param>
     internal static void EnsureHandlePathMatchesExpectedPath(
         SafeFileHandle handle,
         string expectedPath,
@@ -1529,6 +1568,7 @@ internal static partial class PhysicalFileAuthority
         if (!OperatingSystem.IsWindows())
             return;
 
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("PhysicalFileAuthority.ValidateHandlePath");
         var openedPath = NormalizeWindowsHandlePath(GetFinalPath(handle, flags));
         var normalizedExpectedPath = NormalizeWindowsHandlePath(expectedPath);
         if (!PathsEqual(openedPath, normalizedExpectedPath))
@@ -1558,6 +1598,18 @@ internal static partial class PhysicalFileAuthority
         }
     }
 
+    /// <summary>
+    /// Reads the native final name of <paramref name="handle"/>, retrying with the required buffer capacity and retaining native error capture.
+    /// </summary>
+    /// <param name="handle">
+    /// The caller-owned handle whose final native name is requested.
+    /// </param>
+    /// <param name="flags">
+    /// Native final-name flags; zero retains the existing normalized-name request.
+    /// </param>
+    /// <returns>
+    /// The native handle path before the caller applies Windows path normalization.
+    /// </returns>
     internal static string GetFinalPath(
         SafeFileHandle handle,
         uint flags = 0)
@@ -1566,16 +1618,20 @@ internal static partial class PhysicalFileAuthority
         while (true)
         {
             var buffer = new StringBuilder(capacity);
-            var length = GetFinalPathNameByHandle(
-                handle,
-                buffer,
-                (uint)buffer.Capacity,
-                flags);
-            if (length == 0)
+            uint length;
+            using (FileSystemManager.MeasureCurrentOperation("WindowsNative.GetFinalPathNameByHandle"))
             {
-                throw new IOException(
-                    "Could not resolve an opened physical file handle.",
-                    new Win32Exception(Marshal.GetLastWin32Error()));
+                length = GetFinalPathNameByHandle(
+                    handle,
+                    buffer,
+                    (uint)buffer.Capacity,
+                    flags);
+                if (length == 0)
+                {
+                    throw new IOException(
+                        "Could not resolve an opened physical file handle.",
+                        new Win32Exception(Marshal.GetLastWin32Error()));
+                }
             }
 
             if (length < buffer.Capacity)
@@ -1761,10 +1817,23 @@ internal static partial class PhysicalFileAuthority
         return true;
     }
 
+    /// <summary>
+    /// Reads the Windows attribute tag for <paramref name="handle"/> and preserves the existing native-error refusal.
+    /// </summary>
+    /// <param name="handle">
+    /// The caller-owned opened handle to inspect.
+    /// </param>
+    /// <param name="authorityName">
+    /// The description retained in the existing native-error refusal.
+    /// </param>
+    /// <returns>
+    /// The native attribute and reparse-tag data for the opened object.
+    /// </returns>
     private static FileAttributeTag GetAttributeTag(
         SafeFileHandle handle,
         string authorityName)
     {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("WindowsNative.GetFileInformationByHandleEx.AttributeTag");
         if (!GetFileInformationByHandleEx(
                 handle,
                 FileAttributeTagInfo,
@@ -1807,10 +1876,23 @@ internal static partial class PhysicalFileAuthority
         }
     }
 
+    /// <summary>
+    /// Reads the Windows standard information for <paramref name="handle"/> and preserves the existing native-error refusal.
+    /// </summary>
+    /// <param name="handle">
+    /// The caller-owned opened handle to inspect.
+    /// </param>
+    /// <param name="authorityName">
+    /// The description retained in the existing native-error refusal.
+    /// </param>
+    /// <returns>
+    /// The native standard information, including directory kind and link count.
+    /// </returns>
     private static FileStandardInfo GetStandardInfo(
         SafeFileHandle handle,
         string authorityName)
     {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("WindowsNative.GetFileInformationByHandleEx.StandardInfo");
         if (!GetFileInformationByHandleEx(
                 handle,
                 FileStandardInfoClass,

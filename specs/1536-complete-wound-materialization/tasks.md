@@ -1,7 +1,14 @@
+# CRASH5 — revision43 tasks: exact native leaves and historical parent
+
+- [ ] T409 [US2/US3] T407 complete all-path findings/correction,72 retained outputs, exact native/root-selection design and actual canonical phases/consistency.
+- [ ] T410 [US2/US3] Passive native/storage leaf spans and opt-in existing test parent selector; XML/pins/affected controls/source review with preserved contracts.
+- [ ] T411 [US2/US3] Genuine current-source original-leaf-v2 and full original C:/Temp cut0 under unchanged bounds; complete raw/closing and recursive exact-leaf attribution.
+- [ ] T412 [US1/US2/US3] Independent coherent original-requirements/native/result review and exact saved recovery; close original exact-cause tasks only with evidence.
+
 # CRASH5 — revision42 tasks: exact costly leaves in original Windows failure
 
-- [ ] T405 [US2/US3] Complete actual600FAIL/full-original archive accounting, exact timer design, canonical phases/consistency and retained outputs.
-- [ ] T406 [US2/US3] Passive named original-path admission/metadata/pure-work timers with preserved control flow and XML.
+- [x] T405 [US2/US3] Complete actual600FAIL/full-original archive accounting, exact timer design, canonical phases/consistency and retained outputs.
+- [x] T406 [US2/US3] Passive named original-path admission/metadata/pure-work timers with preserved control flow and XML.
 - [ ] T407 [US2/US3] Current-source original fixture-backed Windows cut0 with unchanged budgets/assertions and complete raw/closing; recursively measure expensive residuals to exact leaves.
 - [ ] T408 [US1/US2/US3] Independent coherent review and exact saved recovery; report measured culprit leaves, not coarse enclosing durations or component analogies.
 

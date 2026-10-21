@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using Microsoft.Win32.SafeHandles;
 
 namespace BookOfEternityClient.Core;
 
@@ -121,6 +122,7 @@ internal static partial class PhysicalFileAuthority
         PhysicalNamespaceProbeHooks? hooks,
         bool combineDirectoryOpens)
     {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("PhysicalNamespace.Traverse");
         var root = Path.GetFullPath(rootPath).TrimEnd(
             Path.DirectorySeparatorChar,
             Path.AltDirectorySeparatorChar);
@@ -261,6 +263,7 @@ internal static partial class PhysicalFileAuthority
         StableDirectory parent, string expectedPath, string authorityName, bool rootEntry,
         PhysicalNamespaceProbeHooks? hooks)
     {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("PhysicalNamespace.OpenStorageDirectory");
         var entryName = authorityName + (rootEntry ? " root" : " parent");
         EnsureDirectChild(parent, expectedPath, entryName);
         var normalizedPath = Path.GetFullPath(expectedPath);
@@ -269,16 +272,20 @@ internal static partial class PhysicalFileAuthority
         var flags = FileFlagOpenReparsePoint | FileFlagBackupSemantics;
         ObserveNamespaceNativeOpen(hooks, normalizedPath, access, share, flags,
             PhysicalNamespaceOpenKind.CombinedDirectory);
-        var handle = CreateFile(ToWindowsExtendedPath(normalizedPath), access, share, IntPtr.Zero,
-            OpenExisting, flags, IntPtr.Zero);
-        if (handle.IsInvalid)
+        SafeFileHandle handle;
+        using (FileSystemManager.MeasureCurrentOperation("WindowsNative.CreateFileW.CombinedDirectory"))
         {
-            var error = Marshal.GetLastWin32Error();
-            handle.Dispose();
-            if (error is ErrorFileNotFound or ErrorPathNotFound) return null;
-            // Listing access is also file-data access. Preserve the original
-            // metadata-first refusal when combined access fails on a bad parent.
-            return OpenStorageProbeDirectoryWithOriginalSequence(parent, normalizedPath, authorityName, rootEntry, hooks);
+            handle = CreateFile(ToWindowsExtendedPath(normalizedPath), access, share, IntPtr.Zero,
+                OpenExisting, flags, IntPtr.Zero);
+            if (handle.IsInvalid)
+            {
+                var error = Marshal.GetLastWin32Error();
+                handle.Dispose();
+                if (error is ErrorFileNotFound or ErrorPathNotFound) return null;
+                // Listing access is also file-data access. Preserve the original
+                // metadata-first refusal when combined access fails on a bad parent.
+                return OpenStorageProbeDirectoryWithOriginalSequence(parent, normalizedPath, authorityName, rootEntry, hooks);
+            }
         }
 
         try
@@ -326,6 +333,7 @@ internal static partial class PhysicalFileAuthority
         StableDirectory parent, string expectedPath, string authorityName, bool rootEntry,
         PhysicalNamespaceProbeHooks? hooks)
     {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("PhysicalNamespace.OpenStorageDirectory.Fallback");
         var entryName = authorityName + (rootEntry ? " root" : " parent");
         var kind = ProbeNamespaceEntry(parent, expectedPath, entryName, hooks);
         if (kind == NamespaceEntryKind.Missing) return null;
