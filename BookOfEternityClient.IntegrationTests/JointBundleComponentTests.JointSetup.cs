@@ -112,8 +112,6 @@ public sealed partial class JointBundleComponentTests
                         Files, Lease, resources.Authority!, progression);
                     if (bound.Success)
                     {
-                        // Temporary causal entry call; the fully asserted scopes follow it.
-                        await Runtime.Engine.ProbeBeginningOwnerRefusalsForComponentAsync(Lease, original, bundle, continuation);
                         await AssertBeginningOwnerRefusalsAsync(original, bundle, continuation);
                         _jointContinuation = continuation;
                         _jointReservation = reservation;

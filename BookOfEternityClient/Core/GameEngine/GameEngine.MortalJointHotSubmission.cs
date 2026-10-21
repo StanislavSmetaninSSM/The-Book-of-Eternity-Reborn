@@ -75,6 +75,29 @@ public partial class GameEngine
         PendingTurnSnapshotReader.OriginalReadEvidence Evidence, JsonObject OriginalOperations,
         Dictionary<string, byte[]?> Current, JsonArray OriginalInputs);
 
+    /// <summary>
+    /// Creates and retains the ordinary owner's Beginning phase without entering its producer or issuing authority.
+    /// </summary>
+    /// <param name="ordinal">
+    /// The stage ordinal already allocated by the calling lifecycle.
+    /// </param>
+    /// <param name="generation">
+    /// The physical session generation already captured by the calling lifecycle.
+    /// </param>
+    /// <param name="browserBinding">
+    /// The actual browser action binding, or <see langword="null"/> for an ordinary console owner.
+    /// </param>
+    /// <returns>
+    /// The private Beginning owner retained in this engine's current ordinary-owner slot.
+    /// </returns>
+    private HotOrdinaryOriginal BeginHotOrdinaryOriginal(long ordinal, string generation,
+        PendingPlayerActionService.Binding? browserBinding)
+    {
+        var owner = new HotOrdinaryOriginal(ordinal, generation, browserBinding);
+        _hotOrdinaryOriginal = owner;
+        return owner;
+    }
+
     private void EndHotOrdinaryOriginal(string reason)
     {
         if (_hotOrdinaryOriginal is { } origin) origin.State = "Ended";

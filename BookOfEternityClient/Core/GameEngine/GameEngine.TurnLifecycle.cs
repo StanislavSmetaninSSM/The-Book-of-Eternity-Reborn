@@ -1631,6 +1631,27 @@ public partial class GameEngine
         }
     }
 
+    /// <summary>
+    /// Validates current game state and prepares the ordinary original, request and rollback evidence for one stage.
+    /// </summary>
+    /// <param name="action">
+    /// The player action included in the prepared request.
+    /// </param>
+    /// <param name="extraSystemReminder">
+    /// An optional additional reminder; <see langword="null"/> supplies no caller reminder.
+    /// </param>
+    /// <param name="browserAction">
+    /// The actual browser action binding, or <see langword="null"/> for console staging.
+    /// </param>
+    /// <param name="sessionGeneration">
+    /// The physical generation captured by the enclosing stage lifecycle.
+    /// </param>
+    /// <param name="ordinal">
+    /// The ordinary stage ordinal allocated by the enclosing lifecycle.
+    /// </param>
+    /// <returns>
+    /// The prepared original and request, or <see langword="null"/> when current game-state validation refuses staging.
+    /// </returns>
     private async Task<PlayerTurnPreparation?> StagePlayerTurnBodyAsync(
         string action, string? extraSystemReminder, PendingPlayerActionService.Binding? browserAction,
         string sessionGeneration, long ordinal)
@@ -1641,8 +1662,7 @@ public partial class GameEngine
         if (!await ValidateCurrentGameStateOrShowErrorsAsync("перед отправкой хода"))
             return null;
 
-        var hotOrigin = new HotOrdinaryOriginal(ordinal, sessionGeneration, browserAction);
-        _hotOrdinaryOriginal = hotOrigin;
+        var hotOrigin = BeginHotOrdinaryOriginal(ordinal, sessionGeneration, browserAction);
         string? finalRequestJson = null;
         var stagedExplorerRollback = _explorer.ConsumePendingLocalTurnRollbackSnapshot();
         RollbackSnapshot? backedUpFiles = null;
