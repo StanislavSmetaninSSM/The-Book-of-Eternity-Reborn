@@ -10,7 +10,7 @@ namespace BookOfEternityClient.Tests;
 /// <summary>
 /// Checks passive synchronous timing scopes without constructing game state.
 /// </summary>
-public sealed class OperationTimingContextTests
+public sealed partial class OperationTimingContextTests
 {
     private readonly ITestOutputHelper _output;
 
