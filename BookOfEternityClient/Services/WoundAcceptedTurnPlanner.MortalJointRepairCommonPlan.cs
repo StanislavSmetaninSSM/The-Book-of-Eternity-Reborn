@@ -294,6 +294,58 @@ internal static partial class WoundAcceptedTurnPlanner
         proof.PreparedFingerprint == candidate.PreparedPlanFingerprint &&
         proof.PreparedFingerprint == AcceptedMechanicsPlanFingerprints.ComputePrepared(candidate);
 
+    /// <summary>
+    /// Carries a genuinely bound common input and its issued authority, or the original preparation issues.
+    /// Constructing this result does not issue authority or bypass current candidate validation.
+    /// </summary>
+    /// <param name="Input">
+    /// The input bound by the normal common-input prefix, or <see langword="null"/> when preparation failed.
+    /// </param>
+    /// <param name="Authority">
+    /// The genuine authority that bound <paramref name="Input"/>, or <see langword="null"/> on failure.
+    /// </param>
+    /// <param name="Issues">
+    /// The original calculation or composition issues, or the normal failure issues for a handled exception.
+    /// </param>
+    internal sealed record JointRepairBoundCommonInputResult(
+        AcceptedMechanicsInput? Input,
+        MortalJointRepairCommonAuthority? Authority,
+        IReadOnlyList<ValidationIssue> Issues)
+    {
+        /// <summary>
+        /// Determines whether preparation returned both the bound input and genuine authority without issues.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> when both values are present and there are no issues; otherwise,
+        /// <see langword="false"/>.
+        /// </returns>
+        internal bool Success => Input is not null && Authority is not null && Issues.Count == 0;
+    }
+
+    /// <summary>
+    /// Reserved typed entry for the normal resource/progression validation and bound common-input prefix.
+    /// The causal test first observes this unimplemented entry before the existing prefix is shared.
+    /// </summary>
+    /// <param name="files">
+    /// The actual filesystem owning the resource and progression authorities.
+    /// </param>
+    /// <param name="lease">
+    /// The active canonical write lease retained by the caller.
+    /// </param>
+    /// <param name="resourceAuthority">
+    /// The actual resource-publication authority produced by the preceding normal factories.
+    /// </param>
+    /// <param name="progression">
+    /// The genuine current progression source for this same original.
+    /// </param>
+    /// <returns>
+    /// A faulted task until the shared normal prefix is implemented.
+    /// </returns>
+    internal static Task<JointRepairBoundCommonInputResult> PrepareJointRepairBoundCommonInputForComponentAsync(
+        FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, object resourceAuthority,
+        GameEngine.MortalJointProgressionSource progression) =>
+        Task.FromException<JointRepairBoundCommonInputResult>(new NotSupportedException("T383 bound common-input prefix is not implemented yet."));
+
     // One owner constructs the common input and receives a raw, untakeable cache
     // candidate. Fresh physical/source/capability checks precede sealing that SAME
     // candidate under its unchanged cache fence and current reservation.

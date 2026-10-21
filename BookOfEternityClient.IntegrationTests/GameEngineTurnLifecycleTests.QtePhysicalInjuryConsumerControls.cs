@@ -395,7 +395,13 @@ public sealed partial class GameEngineTurnLifecycleTests
         return result;
     }
 
-    private static JsonObject CreateMortalComponentProposal()
+    /// <summary>
+    /// Creates public proposal JSON for one superficial physical wound without issuing fixture authority.
+    /// </summary>
+    /// <returns>
+    /// A fresh proposal containing the complete existing creation grammar and its acquisition narration.
+    /// </returns>
+    internal static JsonObject CreateMortalComponentProposal()
     {
         // Public GM JSON only, copied from the existing creation grammar. No fixture authority.
         var definition = EffectMaterializationTestFixture.CreateDefinition("periodic_damage");

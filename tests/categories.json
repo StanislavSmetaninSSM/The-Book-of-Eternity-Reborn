@@ -2,6 +2,34 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-bundle-candidate",
+  "responsibility": "One genuinely issued small joint fixture: actual candidate miss and hit, complete nested timings/counters, retained plan, unchanged canonical bytes, foreign-input refusal and stale-fence controls.",
+  "excludes": "No game loop/full world/full Stage42/source42 package/crash five/Linux; no fake authority/reflection/diagnostic quotas. This is diagnostic qualification, not a production optimization.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.Candidate.cs",
+    "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.JointSetup.cs",
+    "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.PhysicalSource.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs"
+  ],
+  "related": [
+    "fr063-joint-bundle-component-setup"
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointBundleComponentTests.JointCandidate_MissAndHit_PreservePlanAndRotateFence"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-bundle-component-setup",
   "responsibility": "One tiny genuine ordinary-original and progression setup control over typed canonical data and the real issuer host, with complete setup timings and exact owned closing.",
   "excludes": "No game loop, full world/DATA/source42 generation, original crash/five/Linux runtime, fake authority, reflected helpers or diagnostic quota. Does not yet qualify a joint candidate.",

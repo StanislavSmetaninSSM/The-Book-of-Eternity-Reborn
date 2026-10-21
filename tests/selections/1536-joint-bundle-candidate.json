@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "fr063-joint-bundle-candidate",
+      "reason": "One genuinely issued small joint fixture: actual candidate miss and hit, complete nested timings/counters, retained plan, unchanged canonical bytes, foreign-input refusal and stale-fence controls.",
+      "contracts": [
+        "BUNDLETRACE-2/3: genuine issuer path, actual one miss/hit, complete uncapped observations, original candidate/refusal/fence semantics and fresh-root closing."
+      ]
+    }
+  ]
+}

@@ -63,6 +63,7 @@ public sealed partial class JointBundleComponentTests
         private GameEngineTestRuntime? _runtime;
         private ProgressionControl? _progression;
         private bool _retained;
+        private readonly System.Collections.Concurrent.ConcurrentQueue<(string Name, string Boundary, double Milliseconds)> _observations = new();
 
         /// <summary>
         /// Allocates only an ordinary nonce-owned container and its empty game namespace.
@@ -186,15 +187,19 @@ public sealed partial class JointBundleComponentTests
         /// <param name="elapsed">
         /// Zero for begin, or the inclusive elapsed duration for end.
         /// </param>
-        private void Observe(string name, string boundary, TimeSpan elapsed) =>
+        private void Observe(string name, string boundary, TimeSpan elapsed)
+        {
+            _observations.Enqueue((name, boundary, elapsed.TotalMilliseconds));
             _output.WriteLine(JsonSerializer.Serialize(new
             {
                 Name = name, Boundary = boundary, Milliseconds = elapsed.TotalMilliseconds,
                 Thread = Environment.CurrentManagedThreadId
             }));
+        }
 
         /// <summary>
-        /// Closes the actual services and lease before deleting only this marked ordinary container.
+        /// Aborts an unpublished joint reservation, then closes the actual services and lease before
+        /// deleting only this marked ordinary container.
         /// Failure or publication uncertainty retains the container and reports its exact location.
         /// </summary>
         /// <returns>
@@ -203,6 +208,8 @@ public sealed partial class JointBundleComponentTests
         public async ValueTask DisposeAsync()
         {
             var failures = new List<Exception>();
+            try { CloseJointReservation(); }
+            catch (Exception failure) { failures.Add(failure); _retained = true; }
             try { if (_runtime is not null) await _runtime.AudioService.DisposeAsync(); }
             catch (Exception failure) { failures.Add(failure); _retained = true; }
             try { if (_lease is not null) await _lease.DisposeAsync(); }
