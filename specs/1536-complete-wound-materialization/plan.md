@@ -23,6 +23,8 @@ T342 causal oracle RED7e7a87b7a:12completed,3PASS/9expectedFAIL,2named method fa
 
 T342 corrected GREEN/PREP c2f54939d:12/12new oraclePASS +10retained exact prior cases =22distinct, not22rerun;2XML0errors/no introduced changed-file warnings,299newXMLlines inspected, catalog/22overall+12oracle+1profileplans0executed,4DLL+4copies current-source bound and366exact clean recovery.72indexed complete rawfiles ZIP7386A039B555728DCA3DFF690D140231B3793B48BEA7A702C8B9D79FD4D0BEC2 inT342-final-prep/raw; exact guarded run_T343.ps1 included and hashed, command has -TimeoutMinutes2 including preparation. Same separate Astra/high reviewer confirms both P2 source fixes, final evidence/recovery/runner acceptance pending. Real owner profile remains UNRUN; no original/generator/Linux release.
 
+T342 SOURCE/PREP independently accepted at7d8eb14dc by actual separate Astra/high reviewer (T342-source-review.json). Both oracle P2s causally reproduced and resolved;22distinct passing controls, complete raw/bindings and368exact parent recovery verified. Release exactlyone existing T343 Windows current-owner replay with explicit2minute command bound after this decision is saved/readback/recovered. No C#/build/passing-control repeat needed. Continue from actual measured outcome. No measured productivity/model savings claim; parent self-review and independent oracle findings caused documented rework. Historical hangs remain unresolved.
+
 ---
 
 # CRASH5 — plan13 revision17: bounded source audit before another runtime
