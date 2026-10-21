@@ -1,3 +1,16 @@
+# CRASH5 — plan13 revision25: one bounded current-source real owner replay
+
+Spec15r25 / OWNER-1..4, active issue1536 feature. T355 independently accepted atbb8c08825 and saved46cadd8ba (467exactclean recovery); compiled current44320b27e. User approval-wait waiver persists. Apply Superpowers systematic debugging/planning/execution/review/verification with canonical Spec Kit records.
+
+1. Present actual r25 spec/plan/tasks; run setup-plan, setup-tasks and prerequisite checks and bridge-equivalent consistency before the agreed probe. No new production/test source behavior; causal RED/GREEN for current optimization is retained from acceptedT354. No blanket rebuild/repeated controls.
+2. T356: source-contract map for existing real profile/fixture/factory, exact historical051487-to-current dependency differences and limitations; new guarded runner derived from T345 with current acceptedT354 source/prep and fresh1case PlanOnly. Guard checks acceptedT356 prep, exact source/8binaries/input, canonical/release/remote recovery and unused identity before runtime. Read-only preparation preserves every relevant native/read/recovery/admission/owner fence. Offline parser preserves all raw and explicit unfinished records, no clipping or inclusive-sum attribution. Archive tools and prep evidence, save/push/clean recover, separate actual Astra/high complex review of coherent prep before runtime; save acceptance/recover again.
+3. T357 only after accepted release: at most one unchanged2minute-total Windows command for the ONE existing full-owner fixture on changed current source. No runtime outside this category, budget increase or automatic retry. Collect actual runner/TRX/report/raw/roots/DLL/input outcomes, even if timeout. Never treat a process exit/kill as local game closing.
+4. Lossless offline analysis of all complete event records and partial trailing data, closed intervals, open scopes, operation counts and physical-check ancestry; reached processCPU/wall boundaries without invented writer-cost metrics. Independently verify before/after DATA/G and expected cohort when present, actual vsindependent closing and retained root ifunknown. Separate actual-result review; update tasks only with evidence. Scope next change from measured residual/fanout or independent minimal subject fixtures; retain original process-cold/five/Linux qualification gap.
+
+Risk: real owner graph still performs many fresh proof checks and may exceed2minutes. That is an observed bounded result, not a reason to raise limits/remove checks/cache authority. Initial report may remain in_progress and noTRX on timeout; raw observations plus source evidence must preserve that uncertainty. Existing response/install/repeat stages cannot be inferred from pre-cleanup DATA. Protect T345 uncertain root and rejected ACL root; metadata-only existence checks, no enumeration of ACL root.
+
+---
+
 # CRASH5 — plan13 revision24: combine successful storage probe directory opens
 
 Spec15r24, issue1536. T353 accepted by separate actual Astra/high at53b8b11ef (T353-final-review.json). Existing isolated published branch; explicit approval-wait waiver. Superpowers TDD/planning/execution/independent review/verification plus actual Spec Kit phases and canonical PROBE-1..4 consistency.
