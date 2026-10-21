@@ -1,6 +1,6 @@
 # T374 — nested ordinary-read section findings
 
-Independent actual-result review pending. Diagnostic change only; no performance improvement or game outcome established. T365 remains consumed FAIL/settled and T366 closed.
+Independent actual-result review accepted at metadata2234ce72aaab925e97f986a9296b85146d4ba3d6 by separate gpt-6.1-sol/xhigh context `/root/review_t367_readcost_prep`; no unresolved findings. All632selected recovery Gitblobs, full raw/callbacks/statistics independently verified; see T374-final-review.json. Diagnostic change only; no performance improvement or game outcome established. T365 remains consumed FAIL/settled and T366 closed.
 
 One actual matrix at accepted/recovered a037bd312d765b4862bfa9b871280be9e3daf403; current compiledsource f62087f51c36efaf8f8d000445983079566f3f7f, actualCore47B9C7C088CAE2EC503FA3CE2AB79D4F48D0DF72E74A82682D1B9DC78174710E. Command2.6406438s/harness2.3720587s. Complete576measured+12warmup actual2048byte text calls,1378continuous outer rows,11662complete buffered callbacks (4802closed scopes/2058WindowsPathMetadataGuard attempts/196observed calls). All payload/inventory/schedule/runtime/60original+20probe pins qualified; both exact new roots removed. Raw10indexedfiles archived before interpretation; archive/index/CRC/size/everymemberSHA checked and archived inputs alone parsed. No diagnostic quotas.
 
