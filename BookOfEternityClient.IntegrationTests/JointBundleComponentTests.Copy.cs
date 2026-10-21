@@ -11,7 +11,8 @@ public sealed partial class JointBundleComponentTests
     /// Runs retained joint-copy contracts with genuinely bound stages and normal owned fixture closing.
     /// </summary>
     /// <returns>
-    /// Completion after direct-copy, constructor, mutation, corruption restoration, abort parity and timing-tree checks.
+    /// Completion after direct-copy, current-byte refusal and restoration, constructor, mutation, history restoration,
+    /// abort parity and timing-tree checks.
     /// </returns>
     [Fact]
     public async Task JointCopy_RetainsAdmissionDetachmentAndRefusalContracts()
@@ -21,6 +22,7 @@ public sealed partial class JointBundleComponentTests
         var bound = await fixture.PrepareBoundJointAsync();
         Assert.True(bound.Success, JsonSerializer.Serialize(bound.Issues));
         var directCopy = fixture.AssertDirectJointCopyRetainsAdmissionWithoutFinalReduction();
+        await fixture.AssertJointCurrentBytesRefusedAndRestoredAsync();
         fixture.AssertJointCopyContracts(bound.Input!, bound.Authority!);
         fixture.AssertJointAdmissionTimingTree(directCopy);
     }
