@@ -156,7 +156,17 @@ public sealed partial class JointBundleComponentTests
                     fingerprints, roots, [], context);
                 var reduction = AcceptedMechanicsPlanner.ReduceAcceptedPlan(
                     input, AcceptedMechanicsPlanFingerprints.ComputePlanningInput(input));
-                Assert.Equal(AcceptedMechanicsPlanner.AcceptedMechanicsReductionKind.CompletedOrdinaryReduction, reduction.Kind);
+                _output.WriteLine(JsonSerializer.Serialize(new
+                {
+                    Kind = "PhysicalOrdinaryReduction", Outcome = reduction.Kind.ToString(), reduction.Issues,
+                    Source = sourceOriginal, Roots = roots, input.AuthorityFingerprints,
+                    EffectInput = effectInput, EffectResultIssues = effectResult.Issues,
+                    EffectSourceFingerprint = effects.SourceAuthorityFingerprint,
+                    EffectTargetFingerprint = effects.TargetAuthorityFingerprint,
+                    EffectCarrierFingerprint = effects.CarrierAuthorityFingerprint
+                }));
+                Assert.True(reduction.Kind == AcceptedMechanicsPlanner.AcceptedMechanicsReductionKind.CompletedOrdinaryReduction,
+                    JsonSerializer.Serialize(reduction.Issues));
                 var ordinary = reduction.Completed!;
                 var mutation = Assert.Single(ordinary.Resources.EffectBoundaryTranscript!.ResourceMutations
                     .Where(row => row.Transition.EventRef == eventRef));
