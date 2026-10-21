@@ -6,6 +6,8 @@
 
 T378–T381 completed and independently accepted at compiled9c401/v2, acceptance saved/recovered before this source work. Current v2/historical evidence stays immutable; new builds require their own provenance and cannot silently reuse old qualification. OriginalT365FAIL/T366closed/LinuxUNRUN and protected roots remain unchanged. User waived approval waiting, not engineering/review; diagnostics remain uncapped.
 
+T383 dependency detail: existing real engine/service constructor may host unchanged issuers without game loop, world or full DATA preparation; new typed caller-lease snapshot/mechanical/progression wrappers and shared bound common-input prefix preserve current-byte authentication, live-owner refusal and catch/abort. Data-only fixture seeding excludes reflected export helpers. Actual cost, genuine factories, miss/hit/fence/refusal and retention evidence still required. No T382–384 task is completed by the10new+6affected diagnostic PASS.
+
 # CRASH5 — revision35 tasks: genuine current fixture and finite D-local qualification
 
 - [x] T378 [US2/US3] Actual canonical phases/bridge consistency/current selected binary and historical pins, unchanged-source gate; one genuine existing source42 generator with two checked imports and original audio/source/copy closing, complete uncapped raw even on failure.
