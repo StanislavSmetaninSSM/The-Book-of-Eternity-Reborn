@@ -11,6 +11,19 @@ namespace BookOfEternityClient.Tests;
 internal static class JointLateTerminalFixture
 {
     /// <summary>
+    /// Imports immutable cleanup DATA into the caller's independent profile layout.
+    /// </summary>
+    /// <param name="ownedRoot">
+    /// The ordinary caller-owned directory containing a nonexistent <c>copy</c> child.
+    /// The caller retains responsibility for this directory and its cleanup.
+    /// </param>
+    internal static void MaterializeObservedCleanupData(string ownedRoot)
+    {
+        JointCleanupDataTemplate.Materialize(JointCleanupValidatorTestData.ArchivePath,
+            JointCleanupValidatorTestData.ArchiveSha256, Path.Combine(ownedRoot, "copy"));
+    }
+
+    /// <summary>
     /// Creates an uncapped engine logger whose storage failures remain in the deferred diagnostic ledger.
     /// </summary>
     /// <param name="writer">

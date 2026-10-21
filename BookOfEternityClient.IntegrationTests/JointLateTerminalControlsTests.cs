@@ -12,6 +12,23 @@ namespace BookOfEternityClient.Tests;
 public sealed class JointLateTerminalControlsTests
 {
     /// <summary>
+    /// Imports profile DATA when both owned-directory ancestors are initially absent.
+    /// Existing shared test-result directories cannot satisfy this regression's precondition.
+    /// </summary>
+    [Fact]
+    public void ObservedCleanupPreparationCreatesMissingOwnedAncestors()
+    {
+        var container = Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "joint-late-fixture-" + Guid.NewGuid().ToString("N"));
+        var owned = Path.Combine(container, "owned");
+        var root = Path.Combine(owned, "copy");
+        Assert.False(Directory.Exists(container));
+        using var cleanup = new CleanupOwnedFixture(container, Console.WriteLine);
+        JointLateTerminalFixture.MaterializeObservedCleanupData(owned);
+        Assert.True(File.Exists(Path.Combine(root, ".boe_runtime", "session-generation", "current.json")));
+        Assert.True(File.Exists(Path.Combine(root, "game_session", "output", "interface_updates.json")));
+    }
+
+    /// <summary>
     /// Retains a complete long engine diagnostic and its exception instead of the historical short message tail.
     /// </summary>
     [Fact]

@@ -91,8 +91,7 @@ public sealed class JointLateTerminalProfileTests
                 new UTF8Encoding(false)) { AutoFlush = true });
             capture = new JointCleanupProfileDiagnosticCapture(raw);
             var setup = Stopwatch.StartNew();
-            JointCleanupDataTemplate.Materialize(JointCleanupValidatorTestData.ArchivePath,
-                JointCleanupValidatorTestData.ArchiveSha256, root);
+            JointLateTerminalFixture.MaterializeObservedCleanupData(owned);
             before = JointCleanupValidatorTestData.CaptureImages(root);
             var directoriesBefore = JointCleanupValidatorTestData.CaptureDirectories(root);
             report["BeforeGameImages"] = before;
