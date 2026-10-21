@@ -1,7 +1,15 @@
+# CRASH5 — spec15 revision26 / plan13 revision26: per-call metadata source study
+
+- [ ] T358 [US1/US2/US3] Investigation only: actual Spec Kit phases/consistency, shared ResolvePath/runtime helper and ordinary-read source contract/error/order map, bounded actual Astra/high consultation, safe Windows-only per-call fold or counterexample, minimal independent typed-seam/real-file RED/GREEN/category verification design. No C#/build/test/PlanOnly/runtime/cache/fence removal. Separate complex independent review and exact remote/clean recovery before completion; next implementation requires canonical scope.
+
+T357 bounded observation is complete as evidence, not game recovery: timeout120.2556262s,0completed/noTRX;666040events/333014closed/12open, allDATA/Ginputexact, response/repeat/closingunknown. Newa0e2395332bb422faae662dee3e9a652root retained; no unchangedretry ormanualcleanup. Historical original/five/Linux unqualified.
+
+---
+
 # CRASH5 — spec15 revision25 / plan13 revision25: fresh-engine owner observation
 
 - [x] T356 [US1/US2/US3] SOURCE/PREP investigation: actual Spec Kit phases/consistency; existing real full-owner fixture/source/dependency map, fresh exact1case PlanOnly, current443source/4DLL+4copies/input binding, new one-use same2minute-total guard and lossless offline tools. No C#/project/category changes or rebuild/unchanged controls. Save/push/clean recover and separate complex Astra/high review before any owner runtime.
-- [ ] T357 [US1/US2/US3] After saved/recovered acceptedT356, at most one changed current-source Windows real owner fixture observation with total2minute bound. Preserve all raw, analyze every available timer/open scope/probe ancestry/reachedCPUwall; independently check DATA/G/cohort/response/repeat/actual+independent closing and root status without inferring unreached stages. Retain uncertain roots, no cleanup retry; independent actual-result review and durable remote recovery. No original/five/Linux/source42/rebind or diagnostic quotas.
+- [x] T357 [US1/US2/US3] After saved/recovered acceptedT356, at most one changed current-source Windows real owner fixture observation with total2minute bound. Preserve all raw, analyze every available timer/open scope/probe ancestry/reachedCPUwall; independently check DATA/G/cohort/response/repeat/actual+independent closing and root status without inferring unreached stages. Retain uncertain roots, no cleanup retry; independent actual-result review and durable remote recovery. No original/five/Linux/source42/rebind or diagnostic quotas.
 
 T355 complete:2/2actualPASS, all281156events/140578intervals and10891ancestries, exact prior operation counts, DATA/G/refusal/closing verified; T355-final-review.json. Full-owner and historical original remain open.
 
