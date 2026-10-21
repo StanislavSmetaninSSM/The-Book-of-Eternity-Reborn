@@ -1,7 +1,16 @@
+# CRASH5 — spec15 revision22 / plan13 revision22: existence/publication timers
+
+- [ ] T351 [US1/US2/US3] SOURCE/PREP:6minimal per-case existence/invalid/observer-failure DATA controls with causal RED; additive named existing-observer scopes only in actual existence/pending-publication/recovery/storage-evidence methods, exact logical-source equivalence and XML. Fresh18GREEN(6new+12existing physical/recovery),2XML/catalog/exact6+12+2plans/current4DLL+copies/input/fullraw, retain8unaffectedT349diagnostic passes; separate coherent independent review and remote clean recovery before component runtime.
+- [ ] T352 [US2/US3] After saved/recovered accepted T351, exactlyone2case Windows measurement with explicit2minute totalcommand bound/new guard. Full all-event/raw-prefix/writecost/count/stage/CPU/DATA/originalrefusal/closing/root evidence and independent review. No unchanged retry/budget increase, fullowner/original/generator/rebind/five/Linux runtime or protected-root deletion.
+
+T350 accepted: writer span3.9787%positive/2.2433%negative, all218814events/109407intervals and immutable DATA/closing verified. Historical hang unresolved. Current block measures missing stages; no optimization preclaimed. Explicit user approval-wait waiver remains active.
+
+---
+
 # CRASH5 — spec15 revision21 / plan13 revision21: diagnostic writer cost
 
 - [x] T349 [US1/US2/US3] SOURCE/PREP: monotonic complete named serializer/write ledger around unchanged timing writes, typed clock/in-memory failure fixtures and additive actual-consumer reports. Causal RED/GREEN,8cheap diagnostic controls,2XML/catalog/exact8+2plans/source equivalence/current4DLL+copies/input/fullraw, separate coherent review and remote clean recovery. Preserve every raw record/deferred outcome and all production/proof/closing oracles; no quotas/buffering changes/runtime component yet.
-- [ ] T350 [US2/US3] After accepted saved/recovered T349, exactlyone changed2case Windows measurement with explicit2minute totalcommand budget. Preserve/analyze full actual outcome/ledger/counts/wallCPU/raw/closing/DATA/retention and independent review. No unchanged retry/budget increase, original/full-owner/generator/rebind/five/Linux execution or protected-root deletion.
+- [x] T350 [US2/US3] After accepted saved/recovered T349, exactlyone changed2case Windows measurement with explicit2minute totalcommand budget. Preserve/analyze full actual outcome/ledger/counts/wallCPU/raw/closing/DATA/retention and independent review. No unchanged retry/budget increase, original/full-owner/generator/rebind/five/Linux execution or protected-root deletion.
 
 T348 accepted atf6fdb631 by separate actual Astra/high context; T348-final-review.json. Both actual component cases passed; historical recovery qualification remains open. Writer self-cost is a hypothesis to measure, not an established cause or optimization claim.
 

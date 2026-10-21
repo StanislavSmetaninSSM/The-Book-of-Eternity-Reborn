@@ -1,3 +1,17 @@
+# CRASH5 — plan13 revision22: isolate existence/publication work
+
+Spec15r22; T351 SOURCE/PREP → T352 one changed actual two-case measurement. T350 accepted at4ec464c8f, compiled eb8a903ca; full all-event reconciliation and416exact recovery in T350-final-review.json. Keep active feature/constitution/isolated branch, Superpowers systematic debugging/TDD/planning/execution/independent review/verification and actual Spec Kit phases. User waives approval waiting; engineering checks remain.
+
+1. Persist T350 acceptance, write/present r22, actual setup-plan/setup-tasks/prerequisites and EXISTS-1..4 consistency. Source reads show FileExists probes OrdinaryFileExistsCore and pending-publication storage before/following reads; T350 residuals do not yet attribute their cost.
+2. Parent adds direct OrdinaryExistenceTimingTests with6per-case ordinary fixtures: present/absent/directory × normal/throwing observer. Existing typed hook receives every event; no reflection, game/bootstrap/current-generation creation or live owner. Require intended existence/refusal and inert files/dirs plus balanced required literal timing boundaries. Observe6causal assertion RED before adding scopes; only these6execute in RED.
+3. Add existing MeasureOperation scopes only: FileSystemManager.cs public FileExists + HasPendingFilePublications + sync/async RecoverPending...; OrdinaryReads.cs OrdinaryFileExistsCore named resolve/safety/scope/admission spans; TrustedLocalStorage.cs HasStorageEvidence. Preserve original statements and short circuit, pending journal/follow-up/mutation probes and original lease/disposal. Existing helper remains exact and isolates observer failures. No new read/lease/process APIs, fake authority or production behavior optimization.
+4. Relevant category ownership:6newtiming controls;12exact existing physical controls (8FileExists+3async publication recovery/finalization/identity+1sync invalid-file). Fresh integration+unit XML, inspect every changed/new XML, catalog and exact6+12+2plans; final6+12GREEN, retain unchanged8T349diagnostic controls.4DLL+copies/current input/source-equivalence/full raw. SOURCE/PREP separate review and remote clean recovery before actual components.
+5. T352 one2case actual Windows category, explicit2minute totalcommand timeout and new guard. Use unchanged real issuer/consumer/transient negative/closing/DATA and full writer-cost snapshots. Lossless all-event interval/ancestry analysis and exact raw-prefix ledger reconciliation; map inclusive scopes versus disjoint residuals without double counting. Preserve retained roots on unknown closing, full available prefix on timeout. Independently review and persist actual outcome; choose later correction from evidence. No fullowner/original/five/Linux/generator/rebind or budget increase.
+
+Risks: new scopes increase observer work (still measured/no quotas); avoid recursive diagnostics and non-idempotent double end. FileExists follow-up/pending recovery is correctness-sensitive: source equivalence plus actual race/ownership tests required, no lease/cache shortcut. New test state is physical existence DATA because that is the subject, not an unrelated initialized world.
+
+---
+
 # CRASH5 — plan13 revision21: unbounded diagnostic self-cost ledger
 
 Spec15r21; T349 SOURCE/PREP then T350 one changed measurement. Reuse active feature/constitution/isolated branch; apply Superpowers brainstorming/systematic-debugging, TDD, planning/execution, independent review and verification through canonical Spec Kit artifacts. Explicit human review waiting is waived.
