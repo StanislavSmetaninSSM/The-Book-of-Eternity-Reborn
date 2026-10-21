@@ -203,7 +203,7 @@ public sealed partial class JointBundleComponentTests
         public async ValueTask DisposeAsync()
         {
             var failures = new List<Exception>();
-            try { _runtime?.AudioService.Dispose(); }
+            try { if (_runtime is not null) await _runtime.AudioService.DisposeAsync(); }
             catch (Exception failure) { failures.Add(failure); _retained = true; }
             try { if (_lease is not null) await _lease.DisposeAsync(); }
             catch (Exception failure) { failures.Add(failure); _retained = true; }

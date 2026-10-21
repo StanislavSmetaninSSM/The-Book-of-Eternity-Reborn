@@ -1,5 +1,7 @@
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Services;
+using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
