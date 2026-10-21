@@ -2,6 +2,8 @@
 
 Spec15r23 / issue1536 / T353 investigation. Existing isolated task branch, explicit no-approval-wait waiver, Superpowers systematic debugging/brainstorming/planning/review/verification with Spec Kit as canonical record. T352 accepted and saved/recovered cc033ae6b; no historical hang fix or original qualification.
 
+T353 source findings: direct FileExists-style absence bypass rejected by concrete recovery/generation/external-writer counterexamples. Narrow next candidate is a fresh same-handle Windows directory probe with original failed-open fallback and both path checks retained; no implementation or performance claim. T353-findings.md, separate complex review pending. No C# change/build/test.
+
 1. Actual Spec Kit setup-plan/setup-tasks/prerequisite checks and ABSENCE-1..4 consistency before investigation deliverables. Preserve earlier canonical history; no duplicate plan.
 2. Parent inventories ReadFileAsync, ordinary reads, pending roots, real lease acquisition, mutation observation, operation/main/worker/current-generation/browser/console admission and affected existing tests. A bounded read-only Astra/high consultation addresses the concrete unresolved concurrency/recovery risk; no parallel implementation.
 3. Compare stable absence against the existing FileExists protocol. Explicitly distinguish its two pending roots from the additional evidence classified by full acquisition. Require current freshness and original refusal/error ordering, no inherited frozen proof or result cache. Do not infer that an existing narrower method authorizes broad reuse.
