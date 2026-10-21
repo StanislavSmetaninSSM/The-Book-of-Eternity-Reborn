@@ -2,17 +2,31 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "fr063-ordinary-existence-timing-controls",
-      "reason": "T351 six minimal physical existence/absence/invalid-entry controls with complete or throwing passive timing observer; unchanged DATA and balanced named scopes.",
+      "category": "fr063-storage-namespace-probe-controls",
+      "reason": "T354 Windows-only real storage namespace traversal on independent tiny ordinary fixtures: actual native-open counts, original missing/type/link/access/sharing refusals, retained ancestors, failure disposal, fresh observations and actual empty/unresolved read admission. No injected native success.",
       "contracts": [
-        "Passive diagnostic hooks preserve all ordinary existence/recovery/freshness/lease/classification outcomes; no diagnostic quotas or game bootstrap."
+        "Fresh physical namespace/generation/evidence/ownership and original refusal preserved; scoped native observations do not fabricate authority or replace outcomes."
+      ]
+    },
+    {
+      "category": "fr063-storage-evidence-bootstrap-controls",
+      "reason": "T354 eight existing current bootstrap/evidence/generation cases: three unresolved legacy roots, ordinary empty roots, neutral direct-gacha dirs, two unknown/linked browser structures and stale bound writer generation.",
+      "contracts": [
+        "Fresh physical namespace/generation/evidence/ownership and original refusal preserved; scoped native observations do not fabricate authority or replace outcomes."
       ]
     },
     {
       "category": "fr063-ordinary-existence-physical-controls",
       "reason": "T351 twelve exact existing ordinary existence/race/publication recovery/finalization/unknown-identity/lease/invalid-entry controls affected by additive central timing scopes.",
       "contracts": [
-        "Passive diagnostic hooks preserve all ordinary existence/recovery/freshness/lease/classification outcomes; no diagnostic quotas or game bootstrap."
+        "Fresh physical namespace/generation/evidence/ownership and original refusal preserved; scoped native observations do not fabricate authority or replace outcomes."
+      ]
+    },
+    {
+      "category": "fr063-ordinary-existence-timing-controls",
+      "reason": "T351 six minimal physical existence/absence/invalid-entry controls with complete or throwing passive timing observer; unchanged DATA and balanced named scopes.",
+      "contracts": [
+        "Fresh physical namespace/generation/evidence/ownership and original refusal preserved; scoped native observations do not fabricate authority or replace outcomes."
       ]
     }
   ]

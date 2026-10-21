@@ -6,7 +6,7 @@ using Microsoft.Win32.SafeHandles;
 
 namespace BookOfEternityClient.Core;
 
-internal static class PhysicalFileAuthority
+internal static partial class PhysicalFileAuthority
 {
     private const uint DeleteAccess = 0x00010000;
     private const uint SynchronizeAccess = 0x00100000;
@@ -94,10 +94,29 @@ internal static class PhysicalFileAuthority
         ReparsePoint
     }
 
+    /// <summary>
+    /// Classifies a direct child using a fresh non-following metadata handle on Windows.
+    /// </summary>
+    /// <param name="parent">
+    /// Existing stable authority for the entry's direct parent.
+    /// </param>
+    /// <param name="expectedPath">
+    /// Absolute child path whose final component is not followed.
+    /// </param>
+    /// <param name="authorityName">
+    /// Description included in authority failures.
+    /// </param>
+    /// <param name="hooks">
+    /// Optional scoped observer of actual Windows native open attempts.
+    /// </param>
+    /// <returns>
+    /// The fresh observed entry kind, including Missing for native errors2or3.
+    /// </returns>
     internal static NamespaceEntryKind ProbeNamespaceEntry(
         StableDirectory parent,
         string expectedPath,
-        string authorityName)
+        string authorityName,
+        PhysicalNamespaceProbeHooks? hooks = null)
     {
         EnsureDirectChild(parent, expectedPath, authorityName);
         var normalizedPath = Path.GetFullPath(expectedPath);
@@ -122,13 +141,18 @@ internal static class PhysicalFileAuthority
             }
         }
 
+        var access = FileReadAttributes | SynchronizeAccess;
+        var share = FileShareRead | FileShareWrite;
+        var flags = FileFlagOpenReparsePoint | FileFlagBackupSemantics;
+        ObserveNamespaceNativeOpen(hooks, normalizedPath, access, share, flags,
+            PhysicalNamespaceOpenKind.NamespaceEntry);
         var handle = CreateFile(
             ToWindowsExtendedPath(normalizedPath),
-            FileReadAttributes | SynchronizeAccess,
-            FileShareRead | FileShareWrite,
+            access,
+            share,
             IntPtr.Zero,
             OpenExisting,
-            FileFlagOpenReparsePoint | FileFlagBackupSemantics,
+            flags,
             IntPtr.Zero);
         if (handle.IsInvalid)
         {
@@ -157,106 +181,31 @@ internal static class PhysicalFileAuthority
         }
     }
 
+    /// <summary>
+    /// Classifies one fresh namespace entry through the original physical traversal.
+    /// </summary>
+    /// <param name="rootPath">
+    /// Existing physical root; the target must be a strict descendant.
+    /// </param>
+    /// <param name="expectedPath">
+    /// Absolute entry to classify without following its final component.
+    /// </param>
+    /// <param name="authorityName">
+    /// Description included in existing authority refusals.
+    /// </param>
+    /// <param name="hooks">
+    /// Optional per-invocation observations and controlled test boundaries; null preserves ordinary operation.
+    /// </param>
+    /// <returns>
+    /// The observed final entry kind, or Missing after a missing validated ancestor.
+    /// Invalid ancestors and authority failures retain their exceptions.
+    /// </returns>
     internal static NamespaceEntryKind ProbeNamespaceEntryFromRoot(
         string rootPath,
         string expectedPath,
-        string authorityName)
-    {
-        var root = Path.GetFullPath(rootPath).TrimEnd(
-            Path.DirectorySeparatorChar,
-            Path.AltDirectorySeparatorChar);
-        var expected = Path.GetFullPath(expectedPath);
-        if (!IsSameOrDescendant(expected, root) ||
-            PathsEqual(expected, root))
-        {
-            throw new InvalidDataException(
-                $"{authorityName} entry is outside its physical root.");
-        }
-
-        var segments = Path.GetRelativePath(root, expected).Split(
-            [Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar],
-            StringSplitOptions.RemoveEmptyEntries);
-        if (segments.Length == 0 ||
-            segments.Any(segment => segment is "." or ".."))
-        {
-            throw new InvalidDataException(
-                $"{authorityName} namespace path is invalid.");
-        }
-
-        StableDirectory? current = null;
-        try
-        {
-            var rootParentPath = Path.GetDirectoryName(root);
-            if (rootParentPath == null)
-            {
-                throw new InvalidDataException(
-                    $"{authorityName} physical root has no parent directory.");
-            }
-
-            using (var rootParent = OpenStableDirectory(
-                       rootParentPath,
-                       authorityName + " root parent"))
-            {
-                var rootKind = ProbeNamespaceEntry(
-                    rootParent,
-                    root,
-                    authorityName + " root");
-                if (rootKind == NamespaceEntryKind.Missing)
-                    return NamespaceEntryKind.Missing;
-                if (rootKind != NamespaceEntryKind.Directory)
-                {
-                    throw new InvalidDataException(
-                        $"{authorityName} root is not a physical directory.");
-                }
-
-                try
-                {
-                    current = OpenStableDirectory(root, authorityName);
-                }
-                catch (DirectoryNotFoundException)
-                {
-                    rootKind = ProbeNamespaceEntry(
-                        rootParent,
-                        root,
-                        authorityName + " root");
-                    if (rootKind == NamespaceEntryKind.Missing)
-                        return NamespaceEntryKind.Missing;
-                    throw;
-                }
-            }
-
-            for (var index = 0; index < segments.Length - 1; index++)
-            {
-                var childPath = Path.Combine(current.FullPath, segments[index]);
-                var childKind = ProbeNamespaceEntry(
-                    current,
-                    childPath,
-                    authorityName + " parent");
-                if (childKind == NamespaceEntryKind.Missing)
-                    return NamespaceEntryKind.Missing;
-                if (childKind != NamespaceEntryKind.Directory)
-                {
-                    throw new InvalidDataException(
-                        $"{authorityName} parent is not a physical directory.");
-                }
-
-                var child = OpenStableDirectory(
-                    childPath,
-                    authorityName + " parent");
-                current.Dispose();
-                current = child;
-            }
-
-            return ProbeNamespaceEntry(
-                current,
-                expected,
-                authorityName);
-        }
-        finally
-        {
-            current?.Dispose();
-        }
-    }
+        string authorityName,
+        PhysicalNamespaceProbeHooks? hooks = null) =>
+        ProbeNamespaceEntryFromRootCore(rootPath, expectedPath, authorityName, hooks);
 
     internal static StableDirectory EnsureStableDirectory(
         string rootPath,
@@ -473,11 +422,33 @@ internal static class PhysicalFileAuthority
             authorityName);
     }
 
+    /// <summary>
+    /// Opens the existing directory authority and retains its configured rename exclusion.
+    /// </summary>
+    /// <param name="expectedPath">
+    /// Existing absolute directory path.
+    /// </param>
+    /// <param name="authorityName">
+    /// Description included in authority failures.
+    /// </param>
+    /// <param name="allowRename">
+    /// Whether the returned authority also requests delete access for its caller's rename operations.
+    /// </param>
+    /// <param name="shareDelete">
+    /// Whether other handles may request delete access; false retains ordinary rename exclusion.
+    /// </param>
+    /// <param name="hooks">
+    /// Optional per-invocation native observations and a controlled validation boundary.
+    /// </param>
+    /// <returns>
+    /// An owned directory authority that the caller must dispose.
+    /// </returns>
     internal static StableDirectory OpenStableDirectory(
         string expectedPath,
         string authorityName,
         bool allowRename = false,
-        bool shareDelete = false)
+        bool shareDelete = false,
+        PhysicalNamespaceProbeHooks? hooks = null)
     {
         var normalizedPath = Path.GetFullPath(expectedPath);
         if (!Directory.Exists(normalizedPath))
@@ -492,15 +463,18 @@ internal static class PhysicalFileAuthority
         var access = FileListDirectory | SynchronizeAccess;
         if (allowRename)
             access |= DeleteAccess;
+        var share = FileShareRead | FileShareWrite |
+            (shareDelete ? FileShareDelete : 0);
+        var flags = FileFlagBackupSemantics;
+        ObserveNamespaceNativeOpen(hooks, normalizedPath, access, share, flags,
+            PhysicalNamespaceOpenKind.DirectoryAuthority);
         var handle = CreateFile(
             ToWindowsExtendedPath(normalizedPath),
             access,
-            FileShareRead |
-            FileShareWrite |
-            (shareDelete ? FileShareDelete : 0),
+            share,
             IntPtr.Zero,
             OpenExisting,
-            FileFlagBackupSemantics,
+            flags,
             IntPtr.Zero);
         if (handle.IsInvalid)
         {
@@ -513,6 +487,7 @@ internal static class PhysicalFileAuthority
 
         try
         {
+            hooks?.BeforeDirectoryHandleValidation?.Invoke(normalizedPath);
             EnsureHandleMatchesExpectedPath(
                 handle,
                 normalizedPath,
