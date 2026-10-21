@@ -1,7 +1,7 @@
 # CRASH5 — spec15 revision32 / plan13 revision32: guarded-read component investigation
 
 - [x] T369 [US2/US3] SOURCE/PREP: actual Spec Kit phases/consistency; isolated existing-friend .NET8 diagnostic build with typed internal sync/public async calls and full buffered named timing/managed metadata observations; exact tiny fixtures, unobserved/plain controls, XML/build/provenance, independent coherent review and clean remote recovery. No matrix/game runtime yet.
-- [ ] T370 [US2/US3] After accepted/recoveredT369, one complete576measured+12warmup text-read matrix with exact schedule/data/inventory/runtime/pins/closing, full raw before archived-input analysis, named inclusive section/count/observer comparisons, independent actual findings review and recovery. No production fix or long game replay.
+- [x] T370 [US2/US3] After accepted/recoveredT369, one complete576measured+12warmup text-read matrix with exact schedule/data/inventory/runtime/pins/closing, full raw before archived-input analysis, named inclusive section/count/observer comparisons, independent actual findings review and recovery. No production fix or long game replay.
 
 T367/T368 investigation accepted (T367-source-review.json/T368-final-review.json); current game sourceffa87 remains unchanged. T365 consumed FAIL with ownership settled, T366 closed. C SSD/D HDD supplied by user; diagnostics uncapped. Existing autonomous-work/approval-wait waiver applies.
 

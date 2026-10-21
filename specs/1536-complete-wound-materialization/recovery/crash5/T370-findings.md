@@ -1,6 +1,6 @@
 # T370 — named guarded-read component findings
 
-Independent actual-result review pending. Investigation only: T365 consumed FAIL remains unsatisfied, T366 closed.
+Independent actual-result review accepted at metadata58f3c8f4616c15488c793480c5579fceea62211c by separate gpt-6.1-sol/xhigh context `/root/review_t367_readcost_prep`; no unresolved findings. All613selected recoveryGitblobs/fullraw/callbacks/statistics independently verified; see T370-final-review.json. Investigation only: T365 consumed FAIL remains unsatisfied, T366 closed.
 
 One actual matrix at accepted/recoveredba2ff07895174544b2c94a7cd91d95833b8d49b8; unchanged game sourceffa87dcba1e6f1a1c7cb107a9427692e2d806543. Command1.9004912seconds, harness1.6099617seconds including setup/closing. Complete576measured+12warmup calls,1378continuous outer rows,7938buffered internal events. Exact schedule/root-first24/24/method-position8, payload2048bytes, inventory/closing, runtimeCore/probe/ILogger and20new+31preserved pins qualified. Both exact newly owned roots absent. No game/world/explicit-lease/source42/Linux execution, main/test rebuild, overwritten repository assembly or private reflection. All10raw members archived before analysis, CRC/size/SHA/archive/index verified; every parsed input comes from archived bytes. Diagnostics uncapped.
 
