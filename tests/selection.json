@@ -2,10 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "fr063-joint-diagnostic-write-controls",
-      "reason": "T349 instruments every attempted timing write and adds a typed clock seam;8cheap diagnostic controls cover exact cost accounting plus original write/clock failure precedence and complete logger behavior. Actual2case components stay separately gated until SOURCE/PREP acceptance.",
+      "category": "fr063-ordinary-existence-timing-controls",
+      "reason": "T351 six minimal physical existence/absence/invalid-entry controls with complete or throwing passive timing observer; unchanged DATA and balanced named scopes.",
       "contracts": [
-        "Uncapped complete diagnostic output, per-name writer-cost ledger and deferred errors without changing game outcomes."
+        "Passive diagnostic hooks preserve all ordinary existence/recovery/freshness/lease/classification outcomes; no diagnostic quotas or game bootstrap."
+      ]
+    },
+    {
+      "category": "fr063-ordinary-existence-physical-controls",
+      "reason": "T351 twelve exact existing ordinary existence/race/publication recovery/finalization/unknown-identity/lease/invalid-entry controls affected by additive central timing scopes.",
+      "contracts": [
+        "Passive diagnostic hooks preserve all ordinary existence/recovery/freshness/lease/classification outcomes; no diagnostic quotas or game bootstrap."
       ]
     }
   ]

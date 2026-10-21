@@ -2,6 +2,69 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-ordinary-existence-timing-controls",
+  "responsibility": "T351 six minimal physical existence/absence/invalid-entry controls with complete or throwing passive timing observer; unchanged DATA and balanced named scopes.",
+  "excludes": "No game/world/turn bootstrap or actual history-consumer measurement.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.cs",
+    "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+    "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+    "BookOfEternityClient.IntegrationTests/OrdinaryExistenceTimingTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.OrdinaryExistenceTimingTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-ordinary-existence-physical-controls",
+  "responsibility": "T351 twelve exact existing ordinary existence/race/publication recovery/finalization/unknown-identity/lease/invalid-entry controls affected by additive central timing scopes.",
+  "excludes": "No game/world/turn bootstrap or actual history-consumer measurement.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.cs",
+    "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+    "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+    "BookOfEternityClient.IntegrationTests/OrdinaryExistenceTimingTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RegularFileAtIntermediateParentFailsClosed",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_FilePublishedAfterInitialAbsentProbe_RechecksUnderQuiescenceLease",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeSavePublicationWaitsForLeaseBeforeReportingAbsence",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeDirectoryPublicationWaitsForLeaseBeforeClassifyingDestination",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_DirectoryAtFileAuthorityFailsClosed",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_OwnedLeaseWithPendingPublicationDoesNotReacquire",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_AbsentTargetWithoutPublication_DoesNotAcquireCanonicalWriteLease",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_WriterRegistersInsideFollowUpProbeGap_WaitsForPublication",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_RecoversPublishedUncommittedPublicationBeforeCanonicalRead",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_FinalizesCommittedPublicationBeforeCanonicalRead",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileBytesAsync_UnknownPublicationIdentityFencesAndRetainsEvidence",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileSync_DirectoryAtOptionalFileBoundaryFailsClosed"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-diagnostic-write-controls",
   "responsibility": "T349 complete per-name timing serializer/write cost, deterministic successful/failed boundary and clock-failure fixtures, primary/secondary outcomes and full diagnostic logger.",
   "excludes": "No world/turn/GameEngine construction, DATA import or actual consumer measurement.",
