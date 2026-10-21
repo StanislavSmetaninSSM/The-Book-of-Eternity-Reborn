@@ -1,3 +1,14 @@
+# CRASH5 — plan13 revision32: typed internal guarded-read component profile
+
+Spec15r32/READPROFILE-1..4 is an investigation delivering findings, using existing approved isolation and user approval-wait waiver. Continue Superpowers brainstorming/debugging, writing-plans, execution, independent review and verification through these canonical Spec Kit artifacts.
+
+1. Preserve accepted T368 evidence/current original DLL/carrier binding. Present actualr32; run actual Spec Kit plan/tasks/prerequisite phases and bridge consistency before external diagnostic code or execution.
+2. T369 SOURCE/PREP: isolated external .NET8 diagnostic build named BookOfEternityClient.Tests through the already compiled friend contract; direct typed internal constructor/hooks/ReadFileSync, existing Core DLL reference and installed shared-framework ILogger, no ProjectReference/main/test rebuild or output replacement. Copy the accepted tiny fixture's ownership/inventory/nonrecursive closing discipline. Capture all timing+metadata events in memory during observed calls, write full events after measurement, retain failed-call records; unobserved controls use hooks:null and plain controls use System.IO. Six methods/two roots/threewaves/sixteeniterations, exact counterbalance and12warmups. Accurate XML/build, full source/tool/output pins, independent completed-harness review and saved clean recovery.
+3. T370 one atomic admitted matrix; all payload/inventory/binding/runtime/source/closing invariants. Full raw first even if interrupted/failed, no old-root walk or recursive cleanup, verified archived inputs only for interpretation. Check all576+12calls, every observed callback event and nested timing closure. Report named inclusive sections/metadata attempts without summing overlapping scopes; compare observed versus unobserved within root to expose perturbation. Preserve complete raw without quotas. Independent actual-result review, save/recover; do not replay unchanged.
+4. Select a separate correctness-preserving change only after named component findings. No long game/source42/Linux runtime in this investigation and no criterion weakened to turn historical failure into PASS.
+
+---
+
 # CRASH5 — plan13 revision31: bounded ordinary-read environment investigation
 
 Spec15r31/READCOST-1..4, spike deliverable is measured findings only. Reuse current feature and isolated checkout; existing user approval-wait waiver. Continue Superpowers debugging/planning/execution/review/verification on these canonical records. No production implementation is authorized by this investigation.
