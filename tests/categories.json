@@ -2,6 +2,64 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-five-logger-contract",
+  "responsibility": "Complete enabled engine diagnostic retention, full long messages and exceptions in arrival order without a game world.",
+  "excludes": "No source42 generation, player turn, process crash, engine construction or Linux qualification. No diagnostic quota.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineDiagnosticLoggerTests.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-five-fixture-contracts",
+      "when": "Complete T363 constructor/mode/culture qualification."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineDiagnosticLoggerTests.RetainsEveryLongMessageAndFullExceptionInArrivalOrder"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-five-culture-contract",
+  "responsibility": "Actual en-GB acceptance and en-US rejection retain the exact accepted physical UTF-8 image and frozen ParseAccepted decision without a source turn.",
+  "excludes": "No source42 generation, player turn, process crash, engine construction or Linux qualification. No diagnostic quota.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointInterfaceTypedRuntimeTests.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-five-fixture-contracts",
+      "when": "Complete T363 constructor/mode/culture qualification."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointInterfaceTypedRuntimeTests.PublishedCultureFixtureRetainsFrozenParseAcceptedWhileOrdinaryUsValidationRejects"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-five-fixture-package-contracts",
   "responsibility": "T363 closed SHA256-bound ZIP fixture transport, exact independent bytes and explicit empty-directory entries, malformed/digest/inventory/path/type refusals and owned hydration controls without gameplay.",
   "excludes": "No genuine source42 generation, game world, player turn, process crash or Linux qualification. No artifact repair, weaker physical inventory or imported authority.",

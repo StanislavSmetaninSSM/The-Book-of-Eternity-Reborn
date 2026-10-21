@@ -477,7 +477,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// <summary>
     /// Retains bounded information and warning diagnostics from the actual engine so fixture failures reveal their production phase.
     /// </summary>
-    private sealed class SpiritualLifecycleTestLogger : ILogger<GameEngine>
+    internal sealed class SpiritualLifecycleTestLogger : ILogger<GameEngine>
     {
         private readonly ConcurrentQueue<string> _messages = new();
 

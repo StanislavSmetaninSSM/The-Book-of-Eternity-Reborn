@@ -105,6 +105,10 @@ public sealed class JointInterfaceTypedRuntimeTests
             Assert.True(DateTimeOffset.TryParse("13/02/2026", out _));
             Assert.DoesNotContain(await validator.ValidateAcceptedTurnInterfacePayloadAsync(),
                 issue => issue.Code == "interface_updates_invalid_timestamp");
+            // Ordinary validation may project legacy dialogue strings before accepting their timestamp.
+            // Freeze that actual accepted image before changing culture; the later refusal must preserve it.
+            var acceptedBytes = File.ReadAllBytes(Path.Combine(files.GameSessionPath, MortalJointInterfacePublication.InterfacePath));
+            Assert.Equal("13/02/2026", JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(acceptedBytes))!["timestamp"]!.GetValue<string>());
             var fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(["synthetic-culture-data"]);
             var prepared = MortalJointInterfacePublication.CreatePrepared(new JsonObject
             {
@@ -114,7 +118,7 @@ public sealed class JointInterfaceTypedRuntimeTests
                 ["checkpointFingerprint"] = fingerprint, ["operationKey"] = "operation", ["attemptId"] = "attempt",
                 ["requestFingerprint"] = fingerprint
             }, new JsonObject { ["graph"] = "synthetic-DATA-without-live-authority" }, fingerprint,
-                new MortalJointInterfacePublication.ComputedResult(bytes, bytes, "NoWrite", false, null,
+                new MortalJointInterfacePublication.ComputedResult(acceptedBytes, acceptedBytes, "NoWrite", false, null,
                     "Object", "ParseAccepted", []));
             CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
             Assert.False(DateTimeOffset.TryParse("13/02/2026", out _));
@@ -124,8 +128,8 @@ public sealed class JointInterfaceTypedRuntimeTests
             Assert.Equal("Published", frozen.State);
             Assert.False(frozen.HasErrors);
             Assert.Equal("ParseAccepted", frozen.ToJson()["timestampCheck"]!["timestamp"]!.GetValue<string>());
-            Assert.Equal(bytes, frozen.AfterBytes);
-            Assert.Equal(bytes, File.ReadAllBytes(Path.Combine(files.GameSessionPath, MortalJointInterfacePublication.InterfacePath)));
+            Assert.Equal(acceptedBytes, frozen.AfterBytes);
+            Assert.Equal(acceptedBytes, File.ReadAllBytes(Path.Combine(files.GameSessionPath, MortalJointInterfacePublication.InterfacePath)));
         }
         finally
         {
