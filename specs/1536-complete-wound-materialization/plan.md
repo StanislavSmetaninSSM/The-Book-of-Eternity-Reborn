@@ -6,7 +6,7 @@ Spec15r19; T346 source-only spike. Existing isolated issue1536 checkout/branch a
 2. Parent accounts for proof stages/continuation subtrees from retained intervals. One bounded read-only source consultation may examine the distinct difficult freshness/coalescing contract; no shared edits or duplicate full investigation. Trace actual49s consumer and its validation calls, compare safe minimal component fixture/API versus production reduction, reject unsupported cache/fence removal.
 3. Write T346-findings with exact code locations, measured fanout and unknowns, preserved invariants, proposed shared contract plus required adversarial T325/direct-FS negatives and category-only verification. Save/push/readback/recover, obtain independent coherent review, reconcile findings and checkpoint. Only then select/update the next implementation scope. No runtime or production change in this spike.
 
-Dependency: T345 raw/analysis saved (outcome review pending) → T346 source/trace findings → separately tracked selected correction. Diagnostic sizes/counts/retention remain unlimited. T345 owned DATA stays retained; protocol closing is unknown.
+Dependency: T345 raw/analysis independently accepted at1324a933 (T345-final-review.json) → T346 source/trace findings → separately tracked selected correction. Diagnostic sizes/counts/retention remain unlimited. T345 owned DATA stays retained; protocol closing is unknown.
 
 ---
 
