@@ -1,3 +1,11 @@
+# CRASH5 — revision36 tasks: repeated bundle reconstruction diagnostics
+
+- [ ] T382 [US1/US2/US3] Actual canonical Spec Kit phases/consistency and retained eight current outputs; minimal typed diagnostic/fixture controls with causal RED, passive scoped unchanged-flow instrumentation and needed genuine normal test entry, exact categories/focused GREEN/affected checks/full raw/XML/source/binary provenance. No game or source42 generation.
+- [ ] T383 [US2/US3] Qualify genuine minimal joint miss+hit fixture; one measured miss and hit after capture reset, uncapped raw/actual nested counters/times/results/after-images/closing and verified archived-input findings. Ordinary fixture is not joint attribution; leave criterion open until real evidence exists.
+- [ ] T384 [US1/US2/US3] Coherent independent complex source/tests/docs/result review, validated corrections/affected verification and clean saved remote recovery; evidence-backed next optimization decision, no speculative production cache or broad requalification.
+
+T378–T381 completed and independently accepted at compiled9c401/v2, acceptance saved/recovered before this source work. Current v2/historical evidence stays immutable; new builds require their own provenance and cannot silently reuse old qualification. OriginalT365FAIL/T366closed/LinuxUNRUN and protected roots remain unchanged. User waived approval waiting, not engineering/review; diagnostics remain uncapped.
+
 # CRASH5 — revision35 tasks: genuine current fixture and finite D-local qualification
 
 - [x] T378 [US2/US3] Actual canonical phases/bridge consistency/current selected binary and historical pins, unchanged-source gate; one genuine existing source42 generator with two checked imports and original audio/source/copy closing, complete uncapped raw even on failure.
