@@ -195,7 +195,12 @@ public sealed class StorageEvidenceNamespaceProbeTests
                         // Existing parent handles retain their granted access. Denying
                         // later listing prevents NTFS from granting child attributes
                         // through the parent's listing permission.
-                        BeforeLeafProbe = _ => parentDenial = fixture.DenyAccess(fixture.Source, false, FileSystemRights.ListDirectory)
+                        BeforeLeafProbe = _ =>
+                        {
+                            if (!OperatingSystem.IsWindows())
+                                throw new PlatformNotSupportedException("Windows fixture boundary.");
+                            parentDenial = fixture.DenyAccess(fixture.Source, false, FileSystemRights.ListDirectory);
+                        }
                     };
                     var error = Record.Exception(() =>
                     {
