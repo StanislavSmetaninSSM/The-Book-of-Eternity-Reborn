@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "fr063-joint-bundle-copy-controls",
+      "reason": "Reach the existing genuine joint-copy contracts in their own case with normal owned closing.",
+      "contracts": [
+        "COPYREDUCTION-4: direct admission without final reduction, full constructor replay, copy-of-copy and mutation isolation, invalid-stage and private-corruption refusal/restoration, normal-abort parity.",
+        "T387 coverage only: this case does not qualify T383, the complete candidate or performance."
+      ]
+    }
+  ]
+}

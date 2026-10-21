@@ -2,6 +2,31 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-bundle-copy-controls",
+  "responsibility": "One genuinely issued joint fixture runs the direct-copy, constructor-reference, copy-of-copy, mutation, invalid-stage, private-history corruption/restoration and normal-abort parity controls.",
+  "excludes": "No candidate miss/hit or Beginning-owner work, game loop/full world/source42/crash/Linux, fake authority, reflection or diagnostic quota. Coverage only; does not qualify T383 or performance.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.Copy.cs",
+    "BookOfEternityClient/Services/AcceptedMechanicsPlan.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanCache.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointBundleComponentTests.JointCopy_RetainsAdmissionDetachmentAndRefusalContracts"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-component-diagnostics",
   "responsibility": "Two tiny typed controls: complete component diagnostics readable before test completion and observer storage failure refusing a complete report.",
   "excludes": "No game, real engine, joint issuance, process launch, reflection or diagnostic quota.",

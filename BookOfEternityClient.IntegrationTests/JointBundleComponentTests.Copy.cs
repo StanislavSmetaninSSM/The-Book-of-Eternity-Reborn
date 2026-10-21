@@ -7,6 +7,23 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class JointBundleComponentTests
 {
+    /// <summary>
+    /// Runs retained joint-copy contracts with genuinely bound stages and normal owned fixture closing.
+    /// </summary>
+    /// <returns>
+    /// Completion after direct-copy, constructor, mutation, corruption restoration and abort-parity checks.
+    /// </returns>
+    [Fact]
+    public async Task JointCopy_RetainsAdmissionDetachmentAndRefusalContracts()
+    {
+        await using var fixture = new Fixture(_output, nameof(JointCopy_RetainsAdmissionDetachmentAndRefusalContracts));
+        await fixture.InitializeAsync();
+        var bound = await fixture.PrepareBoundJointAsync();
+        Assert.True(bound.Success, JsonSerializer.Serialize(bound.Issues));
+        fixture.AssertDirectJointCopyRetainsAdmissionWithoutFinalReduction();
+        fixture.AssertJointCopyContracts(bound.Input!, bound.Authority!);
+    }
+
     private sealed partial class Fixture
     {
         /// <summary>
@@ -34,14 +51,15 @@ public sealed partial class JointBundleComponentTests
         }
 
         /// <summary>
-        /// Checks retained-copy data isolation, normal-constructor replay and refusal parity using this same real joint source.
-        /// Runs after the original candidate and Beginning-owner oracles, before normal fixture closing.
+        /// Checks retained-copy data isolation, normal-constructor replay and refusal parity using this fixture's real joint source.
+        /// Supports a dedicated copy case or execution after candidate oracles, before normal fixture closing.
         /// </summary>
         /// <param name="input">
-        /// The genuinely bound common input used by the completed candidate observations.
+        /// The genuinely bound common input from this fixture's successful joint preparation.
         /// </param>
         /// <param name="authority">
-        /// The same genuinely issued common authority; it is refused after normal reservation abort.
+        /// The genuinely issued common authority paired with <paramref name="input"/>;
+        /// it is refused after normal reservation abort.
         /// </param>
         internal void AssertJointCopyContracts(
             AcceptedMechanicsInput input, WoundAcceptedTurnPlanner.MortalJointRepairCommonAuthority authority)
