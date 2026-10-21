@@ -66,18 +66,18 @@ public sealed partial class JointBundleComponentTests
             Assert.Equal(63, resourceEnds);
 
             var beforeCopy = ReadAdmissionTimingRange((0, range.Start));
-            Assert.Single(beforeCopy.Where(row => row.Name == "JointContinuation.InitialFingerprint" && row.Boundary == "begin"));
-            Assert.Single(beforeCopy.Where(row => row.Name == "JointContinuation.InitialFingerprint" && row.Boundary == "end"));
+            Assert.Single(beforeCopy, row => row.Name == "JointContinuation.InitialFingerprint" && row.Boundary == "begin");
+            Assert.Single(beforeCopy, row => row.Name == "JointContinuation.InitialFingerprint" && row.Boundary == "end");
             var initialStart = Array.FindIndex(beforeCopy,
                 row => row.Name == "JointContinuation.InitialFingerprint" && row.Boundary == "begin");
             var initialEnd = Array.FindIndex(beforeCopy, initialStart + 1,
                 row => row.Name == "JointContinuation.InitialFingerprint" && row.Boundary == "end");
             var initialRows = beforeCopy.Skip(initialStart).Take(initialEnd - initialStart + 1).ToArray();
             _ = ReadStrictAdmissionTree(initialRows);
-            Assert.Single(initialRows.Where(row => row.Name == "JointContinuation.ComputeFingerprint" && row.Boundary == "begin"));
-            Assert.Single(initialRows.Where(row => row.Name == "JointContinuation.ComputeFingerprint" && row.Boundary == "end"));
-            Assert.Single(initialRows.Where(row => row.Name == "JointContinuation.HashBeforeImages" && row.Boundary == "begin"));
-            Assert.Single(initialRows.Where(row => row.Name == "JointContinuation.HashBeforeImages" && row.Boundary == "end"));
+            Assert.Single(initialRows, row => row.Name == "JointContinuation.ComputeFingerprint" && row.Boundary == "begin");
+            Assert.Single(initialRows, row => row.Name == "JointContinuation.ComputeFingerprint" && row.Boundary == "end");
+            Assert.Single(initialRows, row => row.Name == "JointContinuation.HashBeforeImages" && row.Boundary == "begin");
+            Assert.Single(initialRows, row => row.Name == "JointContinuation.HashBeforeImages" && row.Boundary == "end");
             var copyHashBegins = rows.Count(row => row.Name == "JointContinuation.HashBeforeImages" && row.Boundary == "begin");
             _output.WriteLine(JsonSerializer.Serialize(new
             {
