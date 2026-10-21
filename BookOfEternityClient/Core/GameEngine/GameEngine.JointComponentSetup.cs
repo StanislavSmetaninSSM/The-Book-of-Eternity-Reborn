@@ -33,6 +33,7 @@ public partial class GameEngine
 
     /// <summary>
     /// Creates an ordinary original through the engine's backup and snapshot producers for component work.
+    /// Snapshot authentication reuses the caller's existing lease for every authority, source and context read.
     /// This operation does not create a hot staging owner or enter the game loop.
     /// Failure may leave preparation artifacts for the caller to retain or clean; no rollback completion is implied.
     /// </summary>
@@ -70,8 +71,8 @@ public partial class GameEngine
             lease, detachedRequest, backup, OrdinaryPlayerTurnSourceLabel);
         await _fs.WriteFileAtomicAsync(lease, LiveTurnPreparationService.TurnRequestPath, requestJson);
 
-        var frame = await LoadValidatedPendingTurnSnapshotContextAsync(
-            await LoadPendingTurnSnapshotManifestAsync(), requireCurrentContext: true) ??
+        var frame = await LoadValidatedPendingTurnSnapshotContextCoreAsync(
+            await LoadPendingTurnSnapshotManifestCoreAsync(lease), requireCurrentContext: true, writeLease: lease) ??
             throw new InvalidDataException("The component original failed current snapshot authentication.");
         var original = new JointComponentOriginal(detachedRequest.SessionId, detachedRequest.RequestId,
             frame.Payload.ManifestPayloadHash, detachedRequest.TurnNumber, generation);
@@ -147,7 +148,8 @@ public partial class GameEngine
     }
 
     /// <summary>
-    /// Reloads a private authenticated frame and compares the caller's data coordinates against it.
+    /// Reloads a private authenticated frame through the caller's existing lease and compares
+    /// the caller's data coordinates against it.
     /// </summary>
     /// <param name="lease">
     /// The active ordinary canonical write lease owned by the caller.
@@ -164,8 +166,8 @@ public partial class GameEngine
     {
         RequireJointComponentSetupEntry(lease);
         ArgumentNullException.ThrowIfNull(expected);
-        var frame = await LoadValidatedPendingTurnSnapshotContextAsync(
-            await LoadPendingTurnSnapshotManifestAsync(), requireCurrentContext: true) ??
+        var frame = await LoadValidatedPendingTurnSnapshotContextCoreAsync(
+            await LoadPendingTurnSnapshotManifestCoreAsync(lease), requireCurrentContext: true, writeLease: lease) ??
             throw new InvalidDataException("The current component original failed snapshot authentication.");
         RequireJointComponentOriginalAgreement(lease, expected, frame);
         return frame;

@@ -886,9 +886,33 @@ public partial class GameEngine
         return true;
     }
 
-    private async Task<PendingTurnSnapshotManifest?> LoadPendingTurnSnapshotManifestAsync()
+    /// <summary>
+    /// Loads the pending snapshot manifest using the existing public filesystem read behavior.
+    /// </summary>
+    /// <returns>
+    /// The parsed manifest, or <see langword="null"/> when its text is absent, blank or cannot be deserialized.
+    /// Filesystem read failures propagate before deserialization.
+    /// </returns>
+    private Task<PendingTurnSnapshotManifest?> LoadPendingTurnSnapshotManifestAsync() =>
+        LoadPendingTurnSnapshotManifestCoreAsync(writeLease: null);
+
+    /// <summary>
+    /// Loads the pending snapshot manifest through an existing caller lease or the public filesystem reader.
+    /// </summary>
+    /// <param name="writeLease">
+    /// The caller-owned active lease to reuse, or <see langword="null"/> to preserve public read admission
+    /// and publication-recovery behavior.
+    /// </param>
+    /// <returns>
+    /// The parsed manifest, or <see langword="null"/> when its text is absent, blank or cannot be deserialized.
+    /// Filesystem read failures propagate before deserialization.
+    /// </returns>
+    private async Task<PendingTurnSnapshotManifest?> LoadPendingTurnSnapshotManifestCoreAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease)
     {
-        var json = await _fs.ReadFileAsync(PendingTurnSnapshotManifestPath);
+        var json = writeLease is null
+            ? await _fs.ReadFileAsync(PendingTurnSnapshotManifestPath)
+            : await _fs.ReadFileAsync(writeLease, PendingTurnSnapshotManifestPath);
         if (string.IsNullOrWhiteSpace(json))
             return null;
 
@@ -934,24 +958,84 @@ public partial class GameEngine
         string RequestId,
         int TurnNumber);
 
-    private async Task<bool> IsCurrentPendingTurnSnapshotAsync(PendingTurnSnapshotManifest manifest)
+    /// <summary>
+    /// Checks repair, turn and completion contexts in order through the existing public filesystem reads.
+    /// </summary>
+    /// <param name="manifest">
+    /// The manifest whose session, request and turn coordinates must match a current context.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when the first matching context is found; otherwise, <see langword="false"/>.
+    /// Filesystem read failures propagate.
+    /// </returns>
+    private Task<bool> IsCurrentPendingTurnSnapshotAsync(PendingTurnSnapshotManifest manifest) =>
+        IsCurrentPendingTurnSnapshotCoreAsync(manifest, writeLease: null);
+
+    /// <summary>
+    /// Checks repair, turn and completion contexts in their existing order using one read-admission mode.
+    /// </summary>
+    /// <param name="manifest">
+    /// The manifest whose session, request and turn coordinates must match a current context.
+    /// </param>
+    /// <param name="writeLease">
+    /// The caller-owned active lease reused for every context read, or <see langword="null"/> to retain
+    /// public read admission and publication-recovery behavior.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when the first matching context is found; otherwise, <see langword="false"/>.
+    /// Filesystem read failures propagate.
+    /// </returns>
+    private async Task<bool> IsCurrentPendingTurnSnapshotCoreAsync(
+        PendingTurnSnapshotManifest manifest,
+        FileSystemManager.CanonicalWriteLease? writeLease)
     {
         const string repairRequestPath = "game_state/control/validation_repair_request.json";
-        var repairContext = await ReadPendingTurnSnapshotRequestContextAsync(repairRequestPath);
+        var repairContext = await ReadPendingTurnSnapshotRequestContextCoreAsync(repairRequestPath, writeLease);
         if (DoesPendingTurnRequestContextMatchManifest(manifest, repairContext))
             return true;
 
-        var turnContext = await ReadPendingTurnSnapshotRequestContextAsync("input/turn_request.json");
+        var turnContext = await ReadPendingTurnSnapshotRequestContextCoreAsync("input/turn_request.json", writeLease);
         if (DoesPendingTurnRequestContextMatchManifest(manifest, turnContext))
             return true;
 
-        var completionContext = await ReadPendingTurnSnapshotRequestContextAsync("ready/turn_complete.json");
+        var completionContext = await ReadPendingTurnSnapshotRequestContextCoreAsync("ready/turn_complete.json", writeLease);
         return DoesPendingTurnRequestContextMatchManifest(manifest, completionContext);
     }
 
-    private async Task<PendingTurnSnapshotRequestContext?> ReadPendingTurnSnapshotRequestContextAsync(string relativePath)
+    /// <summary>
+    /// Reads request coordinates using the existing public filesystem read behavior.
+    /// </summary>
+    /// <param name="relativePath">
+    /// The context path passed unchanged to the filesystem reader.
+    /// </param>
+    /// <returns>
+    /// The parsed object coordinates, with empty identifiers and a zero turn for absent or mistyped fields,
+    /// or <see langword="null"/> for absent, blank, malformed or non-object JSON. Read failures propagate.
+    /// </returns>
+    private Task<PendingTurnSnapshotRequestContext?> ReadPendingTurnSnapshotRequestContextAsync(string relativePath) =>
+        ReadPendingTurnSnapshotRequestContextCoreAsync(relativePath, writeLease: null);
+
+    /// <summary>
+    /// Reads request coordinates through the caller's existing lease or the public filesystem reader.
+    /// </summary>
+    /// <param name="relativePath">
+    /// The context path passed unchanged to the selected filesystem reader.
+    /// </param>
+    /// <param name="writeLease">
+    /// The caller-owned active lease to reuse, or <see langword="null"/> to preserve public read admission
+    /// and publication-recovery behavior.
+    /// </param>
+    /// <returns>
+    /// The parsed object coordinates, with empty identifiers and a zero turn for absent or mistyped fields,
+    /// or <see langword="null"/> for absent, blank, malformed or non-object JSON. Read failures propagate.
+    /// </returns>
+    private async Task<PendingTurnSnapshotRequestContext?> ReadPendingTurnSnapshotRequestContextCoreAsync(
+        string relativePath,
+        FileSystemManager.CanonicalWriteLease? writeLease)
     {
-        var json = await _fs.ReadFileAsync(relativePath);
+        var json = writeLease is null
+            ? await _fs.ReadFileAsync(relativePath)
+            : await _fs.ReadFileAsync(writeLease, relativePath);
         if (string.IsNullOrWhiteSpace(json))
             return null;
 
@@ -1141,14 +1225,55 @@ public partial class GameEngine
         return (await LoadValidatedPendingTurnSnapshotContextAsync(manifest, requireCurrentContext))?.Payload;
     }
 
-    private async Task<ValidatedPendingTurnSnapshotContext?> LoadValidatedPendingTurnSnapshotContextAsync(
+    /// <summary>
+    /// Authenticates a snapshot manifest and its source bytes through the existing public filesystem reads.
+    /// </summary>
+    /// <param name="manifest">
+    /// The manifest to authenticate, or <see langword="null"/> to return no context without reading files.
+    /// </param>
+    /// <param name="requireCurrentContext">
+    /// Defaults to <see langword="true"/> to require a matching repair, turn or completion context.
+    /// <see langword="false"/> skips only that current-context comparison.
+    /// </param>
+    /// <returns>
+    /// The authenticated private context, or <see langword="null"/> when the manifest, signed authority,
+    /// source evidence or required current-context agreement is unavailable or invalid.
+    /// </returns>
+    private Task<ValidatedPendingTurnSnapshotContext?> LoadValidatedPendingTurnSnapshotContextAsync(
         PendingTurnSnapshotManifest? manifest,
-        bool requireCurrentContext = true)
+        bool requireCurrentContext = true) =>
+        LoadValidatedPendingTurnSnapshotContextCoreAsync(manifest, requireCurrentContext, writeLease: null);
+
+    /// <summary>
+    /// Authenticates snapshot authority, source bytes and any required current context in one read-admission mode.
+    /// </summary>
+    /// <param name="manifest">
+    /// The manifest to authenticate, or <see langword="null"/> to return no context without reading files.
+    /// </param>
+    /// <param name="requireCurrentContext">
+    /// <see langword="true"/> requires a matching repair, turn or completion context;
+    /// <see langword="false"/> skips only that current-context comparison.
+    /// </param>
+    /// <param name="writeLease">
+    /// The caller-owned active lease reused for authority, source-byte and context reads, or
+    /// <see langword="null"/> to preserve public read admission and publication-recovery behavior.
+    /// </param>
+    /// <returns>
+    /// The authenticated private context, or <see langword="null"/> when the manifest, signed authority,
+    /// source evidence or required current-context agreement is unavailable or invalid.
+    /// Existing read and validation exceptions retain their normal propagation or reader-level handling.
+    /// </returns>
+    private async Task<ValidatedPendingTurnSnapshotContext?> LoadValidatedPendingTurnSnapshotContextCoreAsync(
+        PendingTurnSnapshotManifest? manifest,
+        bool requireCurrentContext,
+        FileSystemManager.CanonicalWriteLease? writeLease)
     {
         if (manifest == null)
             return null;
 
-        var authorityJson = await _fs.ReadFileAsync(PendingTurnSnapshotAuthority.AuthorityPath);
+        var authorityJson = writeLease is null
+            ? await _fs.ReadFileAsync(PendingTurnSnapshotAuthority.AuthorityPath)
+            : await _fs.ReadFileAsync(writeLease, PendingTurnSnapshotAuthority.AuthorityPath);
         if (!PendingTurnSnapshotAuthority.TryValidateManifestForDestructiveAuthority(
                 manifest,
                 authorityJson,
@@ -1164,14 +1289,16 @@ public partial class GameEngine
                 static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
                 static snapshotManifest => snapshotManifest.SourceLabel,
                 static snapshotManifest => snapshotManifest.RollbackBackups,
-                ReadRelativeFileBytesFromWorkspace,
+                relativePath => writeLease is null
+                    ? ReadRelativeFileBytesFromWorkspace(relativePath)
+                    : ReadRelativeFileBytesFromWorkspace(writeLease, relativePath),
                 out var payload,
                 out _))
         {
             return null;
         }
 
-        if (requireCurrentContext && !await IsCurrentPendingTurnSnapshotAsync(manifest))
+        if (requireCurrentContext && !await IsCurrentPendingTurnSnapshotCoreAsync(manifest, writeLease))
             return null;
 
         return new ValidatedPendingTurnSnapshotContext
