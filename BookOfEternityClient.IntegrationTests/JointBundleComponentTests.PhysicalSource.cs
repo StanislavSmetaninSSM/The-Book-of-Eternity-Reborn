@@ -19,7 +19,8 @@ public sealed partial class JointBundleComponentTests
         /// Coordinated publication uncertainty retains this fixture's owned container.
         /// </summary>
         /// <param name="sourceOriginal">
-        /// The genuinely prepared current ordinary original for turn 41. Its data coordinates are checked
+        /// The genuinely prepared current ordinary original for turn 43, after the seeded wound's creation at 42.
+        /// Its data coordinates are checked
         /// against the actual source and generation; they do not grant producer or publication authority.
         /// </param>
         /// <returns>
@@ -33,7 +34,7 @@ public sealed partial class JointBundleComponentTests
             {
                 ArgumentNullException.ThrowIfNull(sourceOriginal);
                 Files.EnsureCanonicalWriteLeaseActive(Lease);
-                Assert.Equal(41, sourceOriginal.Turn);
+                Assert.Equal(43, sourceOriginal.Turn);
                 Assert.True(Files.IsCurrentSessionGeneration(Lease, sourceOriginal.Generation));
                 Assert.False(Files.FileExists(Lease, MortalWoundOccurrenceState.StatePath));
 
@@ -43,9 +44,9 @@ public sealed partial class JointBundleComponentTests
                         sourceOriginal.SessionId, sourceOriginal.RequestId, sourceOriginal.SnapshotToken, sourceOriginal.Turn);
                 Assert.Equal(sourceOriginal.Generation, source.Generation);
 
-                const string eventRef = "turn_41:qte_terminal:1:resource:1";
+                const string eventRef = "turn_43:qte_terminal:1:resource:1";
                 const string cause = "A falling stone strikes the player.";
-                var selection = new QteTerminalResourceSelection(41, "qte_component_impact", "impact",
+                var selection = new QteTerminalResourceSelection(43, "qte_component_impact", "impact",
                     "brace", "success", 1, "health_damage", new JsonObject
                     {
                         ["resourceChanges"] = new JsonArray(new JsonObject
@@ -233,7 +234,7 @@ public sealed partial class JointBundleComponentTests
                 Assert.Equal(source.SessionId, occurrence.SourceSessionId);
                 Assert.Equal(source.RequestId, occurrence.SourceRequestId);
                 Assert.Equal(source.SnapshotToken, occurrence.SourceSnapshotToken);
-                Assert.Equal(41, occurrence.SourceTurn);
+                Assert.Equal(43, occurrence.SourceTurn);
                 Assert.Equal("qte", occurrence.AdapterKind);
                 Assert.Equal("physical", occurrence.Domain);
                 Assert.Equal("mortal_qte_terminal_health_damage_v1", occurrence.ProfileKey);

@@ -27,11 +27,11 @@ public sealed partial class JointBundleComponentTests
         internal async Task<WoundAcceptedTurnPlanner.JointRepairBoundCommonInputResult> PrepareBoundJointAsync()
         {
             using var timing = Files.MeasureOperation("JointBundleFixture.PrepareBoundJoint");
-            var source = await PrepareOriginalAsync(41);
+            var source = await PrepareOriginalAsync(43);
             await PreparePhysicalOccurrenceAsync(source);
             await Files.WriteFileAtomicAsync(Lease, "game_state/player/stat_points.json",
                 new JsonObject { ["levelUpStatPointsAwardedThroughLevel"] = 1, ["unspentStatPoints"] = 0 }.ToJsonString());
-            var original = await PrepareOriginalAsync(42);
+            var original = await PrepareOriginalAsync(44);
             MortalJointRepairCheckpoint.RejectedCapture capture;
             try { capture = await PrepareHeldRepairAsync(original); }
             catch (CoordinatedStatePublicationUncertainException) { _retained = true; throw; }
