@@ -3,7 +3,7 @@
 - [x] T401 [US2/US3] Written measured-depth spec/design, actual canonical phases/equivalent consistency,56 retained binary outputs and honest archived-input missing-name RED.
 - [x] T402 [US2/US3] Passive writer/publication/member/open/copy/flush/disposal spans with unchanged execution contracts and accurate multiline XML.
 - [x] T403 [US2/US3] Current XML/pins and existing ordinary-original1/context12 under unchanged budgets; full verified raw/strict tree/closing and measured deepest child findings.
-- [ ] T404 [US1/US2/US3] Independent coherent review, validated corrections/relevant checks and exact saved recovery; report actual attribution and remaining gaps without an optimization claim.
+- [x] T404 [US1/US2/US3] Independent coherent review, validated corrections/relevant checks and exact saved recovery; report actual attribution and remaining gaps without an optimization claim.
 
 # CRASH5 — revision40 tasks: measure inside the heaviest sections
 
