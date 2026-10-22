@@ -1,6 +1,13 @@
 {
   "schemaVersion": 1,
   "selections": [
+{
+  "category": "fr063-trusted-local-request-observations",
+  "reason": "ATTRFOLD-1..4: causal production-path counters and cheap request-local metadata safety controls.",
+  "contracts": [
+    "Each synchronous admission request observes its own paths once; later requests remain fresh and authority is unchanged."
+  ]
+},
     {
       "category": "fr063-joint-private-fingerprint-data",
       "reason": "r39 immutable private fingerprint DATA reference, alias isolation and one actual hash capture.",

@@ -2,6 +2,32 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-trusted-local-request-observations",
+  "responsibility": "Cheap real Windows admission-count and request-local freshness, refusal and passive-observer controls on independent tiny roots.",
+  "excludes": "No game, world, worker launch, full fixture preparation, reflection, synthetic authority or diagnostic quota.",
+  "changeHints": [
+    "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+    "BookOfEternityClient/Core/GmSessionRunPersistence.cs",
+    "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+    "BookOfEternityClient.Tests/TrustedLocalRequestObservationTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.TrustedLocalRequestObservationTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-private-fingerprint-data",
   "responsibility": "Three cheap DATA-only controls for exact original joint fingerprint fields and digest, ordinal nullable byte hashes, insertion order, supplied/returned alias isolation, one hashing capture and fresh scalar-dependent final digests.",
   "excludes": "No game, joint issuer, authority substitution, reflection, candidate or canonical writes; DATA coverage does not qualify T383 or performance.",
