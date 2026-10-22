@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
 {
+  "category": "fr063-reserved-validation-read-set",
+  "reason": "FANOUT-2/3/5: causal physical reads and retained lease/source integrity with unlimited diagnostics.",
+  "contracts": [
+    "Entry and exit freshly observe every distinct source, reuse remains within one exact reserved owner phase."
+  ]
+},
+{
   "category": "fr063-trusted-local-request-observations",
   "reason": "ATTRFOLD-1..4: causal production-path counters and cheap request-local metadata safety controls.",
   "contracts": [

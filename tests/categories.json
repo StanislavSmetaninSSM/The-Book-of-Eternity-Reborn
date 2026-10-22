@@ -2,6 +2,32 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-reserved-validation-read-set",
+  "responsibility": "Reserved QTE read-set source counts, exact lease and current-byte exit proof on tiny typed real fixtures.",
+  "excludes": "No game preparation, reflection, fabricated authority, full suite or diagnostic quota.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.ValidationReadSet.cs",
+    "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+    "BookOfEternityClient/Core/FileSystemManager.PendingSnapshotValidationRead.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.ReservedValidationReadSetTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-trusted-local-request-observations",
   "responsibility": "Cheap real Windows admission-count and request-local freshness, refusal and passive-observer controls on independent tiny roots.",
   "excludes": "No game, world, worker launch, full fixture preparation, reflection, synthetic authority or diagnostic quota.",
