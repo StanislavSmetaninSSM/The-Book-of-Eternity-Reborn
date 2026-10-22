@@ -10,6 +10,87 @@ namespace BookOfEternityClient.Tests;
 public sealed class OperationValidationStorageTests
 {
     /// <summary>
+    /// Recomputes rather than returning a selected hit invalidated by its copy callback.
+    /// </summary>
+    /// <param name="forceFresh">
+    /// Whether the copy callback opens a fresh scope instead of catching a failed child request.
+    /// </param>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task HitCopyInvalidationRequiresFreshComputation(bool forceFresh)
+    {
+        using var operation = new DefaultOperationValidationService().BeginOperation();
+        var arm = false;
+        var calls = 0;
+        var child = new OperationComputation<int>("failed-child", 1, value => value);
+        var rule = new OperationComputation<int>("copy-reentrancy", 1, value =>
+        {
+            if (arm)
+            {
+                arm = false;
+                if (forceFresh) { using var fresh = operation.ForceFresh(); }
+                else
+                {
+                    var failed = operation.GetOrComputeAsync(child, new object(), [],
+                        _ => Task.FromException<int>(new IOException("expected child failure")));
+                    Assert.True(failed.IsCompleted);
+                    Assert.IsType<IOException>(failed.Exception?.InnerException);
+                }
+            }
+            return value;
+        });
+        var input = new object();
+        Task<int> Compute(CancellationToken _) { calls++; return Task.FromResult(7); }
+        Assert.Equal(7, await operation.GetOrComputeAsync(rule, input, [], Compute));
+        arm = true;
+        Assert.Equal(7, await operation.GetOrComputeAsync(rule, input, [], Compute));
+        Assert.Equal(2, calls);
+        Assert.Equal(0, operation.CaptureState().Entries);
+    }
+
+    /// <summary>
+    /// Refuses reuse if an independent overlapping request invalidates a paused hit-copy callback.
+    /// </summary>
+    [Fact]
+    public async Task IndependentOverlapInvalidatesPausedHitBeforeItEscapes()
+    {
+        using var operation = new DefaultOperationValidationService().BeginOperation();
+        var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        using var release = new ManualResetEventSlim();
+        var arm = false;
+        var calls = 0;
+        var rule = new OperationComputation<int>("paused-hit", 1, value =>
+        {
+            if (arm)
+            {
+                arm = false;
+                entered.TrySetResult();
+                if (!release.Wait(TimeSpan.FromSeconds(5))) throw new TimeoutException("Hit-copy barrier was not released.");
+            }
+            return value;
+        });
+        var input = new object();
+        Task<int> Compute(CancellationToken _) { calls++; return Task.FromResult(7); }
+        await operation.GetOrComputeAsync(rule, input, [], Compute);
+        arm = true;
+        var hit = Task.Run(() => operation.GetOrComputeAsync(rule, input, [], Compute));
+        try
+        {
+            await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            var other = new OperationComputation<int>("refused-overlap", 1, value => value);
+            await Assert.ThrowsAsync<InvalidOperationException>(() => operation.GetOrComputeAsync(other, new object(), [], _ => Task.FromResult(0)));
+        }
+        finally
+        {
+            release.Set();
+            await hit.WaitAsync(TimeSpan.FromSeconds(5));
+        }
+        Assert.Equal(2, calls);
+        Assert.Equal(0, operation.CaptureState().Entries);
+    }
+
+    /// <summary>
     /// Revalidates source versions before TTL and releases expiring storage on operation close.
     /// </summary>
     [Fact]
