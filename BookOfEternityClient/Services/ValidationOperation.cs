@@ -162,15 +162,26 @@ internal sealed class ValidationOperation : IDisposable
             }
             if (entry is not null && VersionsAreCurrent(entry.Versions))
             {
+                bool reuse;
                 lock (_gate)
                 {
                     RequireActive(frame);
-                    MergeVersions(frame, entry.Versions);
+                    reuse = frame.Eligible && frame.Fresh is null;
+                    if (reuse) MergeVersions(frame, entry.Versions);
                 }
-                var reused = computation.Copy((TResult)entry.Value!);
-                cancellationToken.ThrowIfCancellationRequested();
-                RequireCurrent(frame);
-                return reused;
+                if (reuse)
+                {
+                    var reused = computation.Copy((TResult)entry.Value!);
+                    cancellationToken.ThrowIfCancellationRequested();
+                    RequireCurrent(frame);
+                    cancellationToken.ThrowIfCancellationRequested();
+                    lock (_gate)
+                    {
+                        RequireActive(frame);
+                        if (frame.Eligible && frame.Fresh is null) return reused;
+                    }
+                }
+                // Callbacks may retire a selected hit while still permitting an uncached fresh computation.
             }
 
             // A stale logical key is replaced, never retained once for every historical version.
@@ -207,6 +218,7 @@ internal sealed class ValidationOperation : IDisposable
                 if (remove) storage.Cache.Remove(key);
             }
             RequireCurrent(frame);
+            cancellationToken.ThrowIfCancellationRequested();
             return result;
         }
         catch
