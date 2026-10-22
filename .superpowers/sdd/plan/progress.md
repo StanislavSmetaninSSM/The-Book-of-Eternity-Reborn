@@ -1,4 +1,22 @@
-# Current checkpoint: r53 actual source DATA owners; final verification pending
+# Current checkpoint: r53 source GREEN; genuine input and original measurement next
+
+Current Windows source qualification (2026-10-23): production/test source
+`d04f6a2dd1353b4704670e237cc21fee3268a181`; XML builds105.2993/64.7909s,
+eight matching DLL/source/dependency copies; native lineage sources unchanged.
+37root-source cases PASS30.1763s;157affected cases PASS304.1922s over9descriptors,
+including6actual no-write owners with positive/raw-drift controls. Selection and
+owned/runtime cleanup complete. Discovery-only catalog PASS; PlanOnly194cases,
+10descriptors,0executed. XML895added lines,0format/changed-line warnings.
+Actual two-full-proof comparison:758->254physical source reads (66.49% fewer),
+36880->17860attributes (51.57% fewer),672DATA reuses, identical game images.
+This is small owning-sequence evidence, not an original600s/full-game speedup.
+Compiling causal RED retained locally:4776888f5 late references/physical close
+33cases30PASS3FAIL;5f7d4dcd1 closing/fresh-lifetime37cases33PASS4FAIL. Corrected
+private close fence excludes new work, and exact physical guard survives owner
+disposal until all source/fresh scopes drain. Independent Astra/high correction
+review found no new static blocker; final source gate is recorded locally.
+Source42 generation/two imports and original600 remain UNRUN at this checkpoint.
+No diagnostic quota; all machine output stays outside Git on D:.
 
 Canonical feature1536 FILEOP1..8 / T448-452, autonomous owner review-wait waiver.
 Source DATA uses existing DefaultOperationValidationService/ValidationOperation;
