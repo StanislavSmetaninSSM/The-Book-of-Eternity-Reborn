@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
 {
+  "category": "core-recovery-file-validation",
+  "reason": "RECACHE1..5 causal first consumer: eight real source requests, full root/lease mutation invalidation, fresh and matching readset/close controls; cheap independent files and unlimited timing.",
+  "contracts": [
+    "RECACHE-1..5 / T427 production filesystem adapter."
+  ]
+},
+{
     "category": "core-service-cache",
     "reason": "Extensible production cache mechanisms: presence, comparers, lifecycle, backend ownership and controlled-clock TTL/idle timer cleanup.",
     "contracts": [

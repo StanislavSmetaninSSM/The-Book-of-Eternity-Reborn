@@ -2,6 +2,41 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "core-recovery-file-validation",
+  "responsibility": "Real filesystem DATA fact reuse in one original recovery/publication lease: body/attribute counts, epoch invalidation including failed/no-op/absence/writer overlap, exact borrowed QTE reservation, fresh boundaries and close.",
+  "excludes": "No world generation, reflection, fake authority issuance, TTL authority proof, diagnostics quotas or original600s runtime in this category.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.OperationValidation.cs",
+    "BookOfEternityClient/Core/CanonicalValidationEpoch.cs",
+    "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+    "BookOfEternityClient.Tests/RecoveryFileValidationTests.cs"
+  ],
+  "related": [
+    {
+      "id": "core-operation-validation-cache",
+      "when": "General coordinator/storage contract changes, rather than only this filesystem adapter."
+    },
+    {
+      "id": "fr063-reserved-validation-read-set",
+      "when": "Matching borrowed QTE reservation eligibility/readset routing changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.RecoveryFileValidationTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "core-service-cache",
   "responsibility": "Extensible production cache mechanisms: presence, comparers, lifecycle, backend ownership and controlled-clock TTL/idle timer cleanup.",
   "excludes": "No game/filesystem setup, reflection, diagnostic quota, real TTL waiting or full suite.",
