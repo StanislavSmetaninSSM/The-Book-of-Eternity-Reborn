@@ -5,7 +5,7 @@
 - [x] T415 [US2/US3] Count/depth/freshness/role/error/real Windows authority GREEN, selected affected categories and XML-enabled build; uncapped diagnostics, actual call-only timing, retained binaries and independent coherent source/tests/docs review before original qualification.
 - [ ] T416 [US1/US2/US3] Genuine current-source fixture if needed, saved checkpoint and one original C:/Temp cut0 under unchanged600/820/15 with all assertions, complete raw/process settlement, matched completed-milestone GetAttributes analysis, full outcome, independent final review and exact clean remote recovery. Keep timeout-fix acceptance open on failure; no observer optimization, broader cache, unrelated/Linux work or larger budget.
 
-T413 delivers only the requested plan. T414–T416 remain unstarted; completing documentation must not mark code/tests or original timeout resolution complete. ATTRFOLD-1 maps toT414/T415; ATTRFOLD-2 toT414/T415 review andT416; ATTRFOLD-3 toT414 RED/T415 GREEN/T416 common-milestone measurement; ATTRFOLD-4 toT415/T416. Existing T407–T412 measured-cause acceptance and historical evidence remain unchanged.
+At T413 planning closure, T414–T416 were unstarted; documentation alone did not qualify code/tests. Current execution: T414/T415 complete with20+151PASS; T416 actual C600FAIL and complete matched measurement retained, final independent review/recovery pending. Original timeout resolution remains OPEN. ATTRFOLD-1 maps toT414/T415; ATTRFOLD-2 toT414/T415 review andT416; ATTRFOLD-3 toT414 RED/T415 GREEN/T416 common-milestone measurement; ATTRFOLD-4 toT415/T416. Existing T407–T412 measured-cause acceptance and historical evidence remain unchanged.
 
 # CRASH5 — revision43 tasks: exact native leaves and historical parent
 
