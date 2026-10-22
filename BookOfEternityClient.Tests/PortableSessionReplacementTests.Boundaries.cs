@@ -121,7 +121,11 @@ public sealed partial class PortableSessionReplacementTests
                 throw new CutFailure();
             }
         });
-        await Assert.ThrowsAsync<InvalidDataException>(() => files.ClearGameStateAsync());
+        var uncertainty = await Assert.ThrowsAsync<CoordinatedStatePublicationUncertainException>(() => files.ClearGameStateAsync());
+        var failures = Assert.IsType<AggregateException>(uncertainty.InnerException).InnerExceptions;
+        Assert.Single(failures.OfType<CutFailure>());
+        Assert.Equal("A publication member contains unknown bytes; evidence retained.",
+            Assert.Single(failures.OfType<InvalidDataException>()).Message);
         Assert.NotNull(firstPath); Assert.NotNull(changedPath); Assert.NotNull(journal);
         Assert.False(File.Exists(firstPath));
         Assert.Equal(new byte[] { 99 }, File.ReadAllBytes(changedPath));
@@ -150,7 +154,11 @@ public sealed partial class PortableSessionReplacementTests
                 throw new CutFailure();
             }
         });
-        await Assert.ThrowsAsync<InvalidDataException>(() => files.ClearGameStateAsync());
+        var uncertainty = await Assert.ThrowsAsync<CoordinatedStatePublicationUncertainException>(() => files.ClearGameStateAsync());
+        var failures = Assert.IsType<AggregateException>(uncertainty.InnerException).InnerExceptions;
+        Assert.Single(failures.OfType<CutFailure>());
+        Assert.Equal("The journal belongs to a different session generation.",
+            Assert.Single(failures.OfType<InvalidDataException>()).Message);
         Assert.NotNull(firstPath); Assert.NotNull(journal);
         Assert.False(File.Exists(firstPath));
         await Assert.ThrowsAsync<InvalidDataException>(() => ReadGeneration());

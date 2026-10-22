@@ -6,6 +6,10 @@
 **Spec:** spec.md revision50; contracts/recovery-validation.md, preserved OPCACHE/CACHEPORT contracts.
 **Architecture:** one operation per real issuing publication lease, root-shared no-IO mutation epochs, exact private input identities. Live authority guards outside cached successful DATA facts; recursive ForceFresh at authoritative takes/callbacks. Canonical IO remains FileSystemManager, no artificial source repository. .NET8/C#/xUnit/PowerShell7, existing isolated branch.
 
+## T436 — diagnostic-only original measurement before acceptance
+
+The user's original600s request and waiver authorize this investigation; independent bounded Astra/high scheduling review found no concrete correctness blocker. Finish current test-only exception corrections; retain202 unchanged source-bound PASS controls, recheck affected37 and XML/catalog. Pin source/runner/all dependency copies and exact remote recovery. Generate/verify the genuine new source42 slot with unchanged checks. Execute one original600/820/15 into an isolated C:/Temp container, all assertions/native settlement/diagnostics unchanged, no simultaneous giant-raw reads. Preserve every stored raw byte before analysis. Findings do not complete T428 or T429: warm actual Take is still open and all final acceptance gates remain required. Do not automatically retry on timeout or continue other cuts. Review scheduling and actual script hashes independently before runtime.
+
 ## Global constraints and review focus
 
 No diagnostic quotas/test-budget increases/reflection/whole-suite run/new NuGet dependencies/GM/schema/native changes. Keep fresh inventory/readback and existing request/guard counts. Review active no-op/failed/compensated mutations; other managers/accesses and close; callback raw drift and descendants; source epoch change during await; proof identity versus mutable authority. Every new/changed API has readable multiline XML. Preserve exact old binary/raw outputs before a build overwrites them. Parent owns coherent implementation, separate bounded Astra/high consultation answers root eligibility; separate reviewer accepts implementation/result.
