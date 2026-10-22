@@ -1613,6 +1613,18 @@ public partial class FileSystemManager
 #endif
     }
 
+    /// <summary>
+    /// Reads text using the declared lease and original ordinary or protected reader.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Active lease owned by this manager, validated with the original main and worker admission.
+    /// </param>
+    /// <param name="relativePath">
+    /// Original session-relative spelling; invalid or null paths retain their original refusal.
+    /// </param>
+    /// <returns>
+    /// The observed content, or <see langword="null"/> for an absent source.
+    /// </returns>
     internal async Task<string?> ReadFileAsync(
         CanonicalWriteLease writeLease,
         string relativePath)
@@ -1682,6 +1694,18 @@ public partial class FileSystemManager
             cancellationToken);
     }
 
+    /// <summary>
+    /// Reads detached bytes using the declared lease and original source reader.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Active lease owned by this manager, validated with the original main and worker admission.
+    /// </param>
+    /// <param name="relativePath">
+    /// Original session-relative spelling; invalid or null paths retain their original refusal.
+    /// </param>
+    /// <returns>
+    /// The observed content, or <see langword="null"/> for an absent source.
+    /// </returns>
     internal async Task<byte[]?> ReadFileBytesAsync(
         CanonicalWriteLease writeLease,
         string relativePath)
@@ -1707,6 +1731,18 @@ public partial class FileSystemManager
 #endif
     }
 
+    /// <summary>
+    /// Reads detached content and timestamp using the declared lease and original reader family.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Active lease owned by this manager, validated with the original main and worker admission.
+    /// </param>
+    /// <param name="relativePath">
+    /// Original session-relative spelling; invalid or null paths retain their original refusal.
+    /// </param>
+    /// <returns>
+    /// The observed content, or <see langword="null"/> for an absent source.
+    /// </returns>
     internal async Task<CanonicalFileReadSnapshot?> ReadFileSnapshotAsync(
         CanonicalWriteLease writeLease,
         string relativePath)
@@ -1782,6 +1818,18 @@ public partial class FileSystemManager
 #endif
     }
 
+    /// <summary>
+    /// Reads text synchronously under the supplied original lease without acquiring a new lease.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Active lease owned by this manager, validated with the original main and worker admission.
+    /// </param>
+    /// <param name="relativePath">
+    /// Original session-relative spelling; invalid or null paths retain their original refusal.
+    /// </param>
+    /// <returns>
+    /// The observed content, or <see langword="null"/> for an absent source.
+    /// </returns>
     internal string? ReadFileSync(
         CanonicalWriteLease writeLease,
         string relativePath)
@@ -1812,6 +1860,18 @@ public partial class FileSystemManager
         return reader.ReadToEnd();
     }
 
+    /// <summary>
+    /// Reads detached bytes synchronously while retaining original admission checks.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Active lease owned by this manager, validated with the original main and worker admission.
+    /// </param>
+    /// <param name="relativePath">
+    /// Original session-relative spelling; invalid or null paths retain their original refusal.
+    /// </param>
+    /// <returns>
+    /// The observed content, or <see langword="null"/> for an absent source.
+    /// </returns>
     internal byte[]? ReadFileBytesSync(CanonicalWriteLease writeLease, string relativePath)
     {
         EnsureValidCanonicalWriteLease(writeLease);

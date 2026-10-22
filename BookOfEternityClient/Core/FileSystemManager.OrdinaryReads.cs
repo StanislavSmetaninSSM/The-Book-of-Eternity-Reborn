@@ -30,6 +30,18 @@ public partial class FileSystemManager
 
     // These entrypoints are deliberately explicit. Browser v6 rollback reads
     // tracked before-images before attaching its physical mutation recorder.
+    /// <summary>
+    /// Reads original protected bytes without publication recovery while retaining the caller's declared lease identity.
+    /// </summary>
+    /// <param name="lease">
+    /// Active original lease validated before reading.
+    /// </param>
+    /// <param name="relativePath">
+    /// Original session-relative spelling passed unchanged to the protected reader.
+    /// </param>
+    /// <returns>
+    /// Original content or <see langword="null"/> for observed absence.
+    /// </returns>
     internal Task<byte[]?> ReadOriginalFileBytesAsync(CanonicalWriteLease lease, string relativePath)
     {
         EnsureValidCanonicalWriteLease(lease);

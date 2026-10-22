@@ -18,17 +18,23 @@ public sealed class ReservedValidationReadSetTests(ITestOutputHelper output)
     /// <summary>
     /// Requires only first and exit source observations for repeated consumers of four distinct read identities.
     /// </summary>
-    [Fact]
-    public async Task RepeatedConsumersReadEachSourceOnlyAtEntryAndExit()
+    /// <param name="reserved">
+    /// Whether to use the bounded read set or measure the same original fresh reader workload.
+    /// </param>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task RepeatedConsumersReadEachSourceOnlyAtEntryAndExit(bool reserved)
     {
         using var fixture = new Fixture(output);
         var files = fixture.Create();
         await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
         files.GetOrCreateSessionGeneration(lease);
         fixture.Recording = true;
-        await using var readSet = files.TryBeginReservedValidationReadSet(lease);
-        Assert.NotNull(readSet);
-        await readSet.OpenAsync();
+        using var timingContext = files.EnterOperationTimingContext();
+        var clock = System.Diagnostics.Stopwatch.StartNew();
+        await using var readSet = reserved ? files.TryBeginReservedValidationReadSet(lease) : null;
+        if (reserved) { Assert.NotNull(readSet); await readSet.OpenAsync(); }
         for (var i = 0; i < 12; i++)
         {
             Assert.Equal("original", files.ReadFileSync(lease, "present.txt"));
@@ -36,8 +42,337 @@ public sealed class ReservedValidationReadSetTests(ITestOutputHelper output)
             Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
             Assert.Null(await files.ReadFileAsync(lease, "missing.txt"));
         }
+        if (readSet != null) await readSet.CompleteAsync();
+        output.WriteLine(JsonSerializer.Serialize(new { Reserved = reserved, Requests = 48,
+            PhysicalReads = fixture.PhysicalReads, Seconds = clock.Elapsed.TotalSeconds }));
+        Assert.Equal(reserved ? 8 : 48, fixture.PhysicalReads);
+    }
+
+    /// <summary>
+    /// Refuses changed content, absence, timestamp and exact generation bytes before a successful result can escape.
+    /// </summary>
+    /// <param name="change">
+    /// The source condition deliberately changed after the first read.
+    /// </param>
+    [Theory]
+    [InlineData("bytes")]
+    [InlineData("same-time-bytes")]
+    [InlineData("delete")]
+    [InlineData("appearance")]
+    [InlineData("timestamp")]
+    [InlineData("generation-bytes")]
+    public async Task FreshExitProofRefusesSourceDrift(string change)
+    {
+        using var fixture = new Fixture(output);
+        var files = fixture.Create();
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        await using var readSet = files.TryBeginReservedValidationReadSet(lease);
+        Assert.NotNull(readSet);
+        await readSet.OpenAsync();
+        Assert.Equal("original", files.ReadFileSync(lease, "present.txt"));
+        Assert.Null(files.ReadFileSync(lease, "missing.txt"));
+        var path = files.ResolvePath("present.txt");
+        var timestamp = File.GetLastWriteTimeUtc(path);
+        switch (change)
+        {
+            case "bytes": File.WriteAllText(path, "modified"); break;
+            case "same-time-bytes": File.WriteAllText(path, "modified"); File.SetLastWriteTimeUtc(path, timestamp); break;
+            case "delete": File.Delete(path); break;
+            case "appearance": File.WriteAllText(files.ResolvePath("missing.txt"), "appeared"); break;
+            case "timestamp": File.SetLastWriteTimeUtc(path, timestamp.AddMinutes(1)); break;
+            case "generation-bytes": File.AppendAllText(files.SessionGenerationPath, "\n"); break;
+            default: throw new ArgumentOutOfRangeException(nameof(change));
+        }
+        await Assert.ThrowsAsync<InvalidDataException>(() => readSet.CompleteAsync());
+    }
+
+    /// <summary>
+    /// Keeps cached source buffers private and preserves lease-free, explicit and asynchronous identities.
+    /// </summary>
+    [Fact]
+    public async Task BuffersAreDetachedAndReadContractsRemainDistinct()
+    {
+        using var fixture = new Fixture(output);
+        var files = fixture.Create();
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        fixture.Recording = true;
+        await using var readSet = files.TryBeginReservedValidationReadSet(lease);
+        Assert.NotNull(readSet); await readSet.OpenAsync();
+        var bytes = files.ReadFileBytesSync(lease, "present.txt")!;
+        bytes[0] = 0;
+        Assert.Equal("original", files.ReadFileSync(lease, "present.txt"));
+        Assert.Equal("original", files.ReadFileSync("present.txt"));
+        Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
         await readSet.CompleteAsync();
-        Assert.Equal(8, fixture.PhysicalReads);
+        Assert.Equal(6, fixture.PhysicalReads);
+    }
+
+    /// <summary>
+    /// Preserves protected reader families and explicit versus lease-free semantics with real native handles.
+    /// </summary>
+    /// <param name="asynchronous">
+    /// Whether to use asynchronous native source reads instead of synchronous ones.
+    /// </param>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ProtectedReadersRetainPhysicalValidationAndDistinctLeaseModes(bool asynchronous)
+    {
+        using var fixture = new Fixture(output);
+        var physical = 0;
+        var files = fixture.Create(record => new FileSystemManagerHooks
+        {
+            OperationTimingObserver = record,
+            CanonicalReadActivityObserver = _ => physical++
+        });
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        await using var readSet = files.TryBeginReservedValidationReadSet(lease);
+        Assert.NotNull(readSet); await readSet.OpenAsync();
+        var family = asynchronous ? FileSystemManager.ValidationSnapshotFamily.ProtectedAsync :
+            FileSystemManager.ValidationSnapshotFamily.ProtectedSync;
+        for (var i = 0; i < 8; i++)
+            foreach (var declared in new FileSystemManager.CanonicalWriteLease?[] { lease, null })
+            {
+                var snapshot = asynchronous
+                    ? await readSet.ReadAsync("present.txt", family, declared, CancellationToken.None)
+                    : readSet.Read("present.txt", family, declared);
+                Assert.Equal("original", FileSystemManager.DecodeFileBytes(snapshot!.Content));
+            }
+        await readSet.CompleteAsync();
+        Assert.Equal(4, physical);
+    }
+
+    /// <summary>
+    /// Preserves cancellation even for an already observed source and refuses success after that failed consumer.
+    /// </summary>
+    [Fact]
+    public async Task CancelledReuseDoesNotReturnCachedContent()
+    {
+        using var fixture = new Fixture(output);
+        var files = fixture.Create();
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        await using var readSet = files.TryBeginReservedValidationReadSet(lease);
+        Assert.NotNull(readSet); await readSet.OpenAsync();
+        await readSet.ReadAsync("present.txt", FileSystemManager.ValidationSnapshotFamily.OrdinaryAsync, lease, CancellationToken.None);
+        using var cancellation = new CancellationTokenSource();
+        cancellation.Cancel();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => readSet.ReadAsync("present.txt",
+            FileSystemManager.ValidationSnapshotFamily.OrdinaryAsync, lease, cancellation.Token));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => readSet.CompleteAsync());
+    }
+
+    /// <summary>
+    /// Keeps the original resumer's passive activity and publication/lock observations eligible without inventing reads.
+    /// </summary>
+    [Fact]
+    public async Task ResumerHookConfigurationRemainsEligibleAndPhysicalEventsStayTruthful()
+    {
+        using var fixture = new Fixture(output);
+        var canonical = 0;
+        var files = fixture.Create(record => new FileSystemManagerHooks
+        {
+            OperationTimingObserver = record,
+            CanonicalReadActivityObserver = _ => canonical++,
+            ExactPhysicalReadActivityObserver = _ => { },
+            AfterCanonicalWriteLockOpenedAsync = () => Task.CompletedTask,
+            CanonicalWriteLockContendedAsync = () => Task.CompletedTask,
+            MainOwnerLockContendedAsync = () => Task.CompletedTask,
+            LocalPublicationObserver = (_, _) => { },
+            LocalPublicationRecoveryObserver = (_, _) => { }
+        });
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        await using var readSet = files.TryBeginReservedValidationReadSet(lease);
+        Assert.NotNull(readSet); await readSet.OpenAsync();
+        for (var i = 0; i < 12; i++) Assert.Equal("original", files.ReadFileSync(lease, "present.txt"));
+        Assert.Equal(1, canonical);
+        await readSet.CompleteAsync();
+        Assert.Equal(2, canonical);
+    }
+
+    /// <summary>
+    /// Leaves unsupported entry on the original fresh path without nesting reservations or adopting mutations.
+    /// </summary>
+    /// <param name="mode">
+    /// Existing reservation, mutation, pending decision or arbitrary read hook that makes entry unsupported.
+    /// </param>
+    [Theory]
+    [InlineData("reservation")]
+    [InlineData("mutation")]
+    [InlineData("pending")]
+    [InlineData("hook")]
+    [InlineData("metadata-observer")]
+    public async Task UnsupportedEntryRetainsFreshReaders(string mode)
+    {
+        using var fixture = new Fixture(output);
+        var calls = 0;
+        var files = fixture.Create(record => new FileSystemManagerHooks
+        {
+            OperationTimingObserver = record,
+            AfterCanonicalReadInitialValidationAsync = mode == "hook" ? _ => { calls++; return Task.CompletedTask; } : null,
+            PathMetadataQueryObserver = mode == "metadata-observer" ? _ => { } : null
+        });
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        await using var outer = mode == "reservation" ? files.BeginBorrowedPendingSnapshotValidationRead(lease) : null;
+        using var mutation = mode == "mutation" ? lease.MainAdmission!.BeginMutation() : null;
+        if (mode == "pending") lease.PendingLocalDecision = new object();
+        Assert.Null(files.TryBeginReservedValidationReadSet(lease));
+        lease.PendingLocalDecision = null;
+        fixture.Recording = true;
+        Assert.Equal("original", files.ReadFileSync(lease, "present.txt"));
+        File.WriteAllText(files.ResolvePath("present.txt"), "modified");
+        Assert.Equal("modified", files.ReadFileSync(lease, "present.txt"));
+        Assert.Equal(2, fixture.PhysicalReads);
+        if (mode == "hook") Assert.Equal(2, calls);
+    }
+
+    /// <summary>
+    /// Refuses participating writes and teardown during the reservation, then releases it without owning the lease.
+    /// </summary>
+    [Fact]
+    public async Task ReservationExcludesMutationAndTeardownUntilDisposed()
+    {
+        using var fixture = new Fixture(output);
+        var files = fixture.Create();
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        var readSet = files.TryBeginReservedValidationReadSet(lease);
+        Assert.NotNull(readSet);
+        try
+        {
+            await readSet.OpenAsync();
+            Assert.Throws<InvalidOperationException>(() => lease.MainAdmission!.BeginMutation());
+            await Assert.ThrowsAsync<InvalidOperationException>(() => lease.DisposeAsync().AsTask());
+            Assert.Equal("original", files.ReadFileSync(lease, "present.txt"));
+            await readSet.CompleteAsync();
+        }
+        finally { await readSet.DisposeAsync(); }
+        Assert.True(lease.IsActive);
+        using var mutation = lease.MainAdmission!.BeginMutation();
+    }
+
+    /// <summary>
+    /// Does not allow a retired or foreign execution-flow consumer to reuse retained observations.
+    /// </summary>
+    /// <param name="mode">
+    /// Whether to leave the exact flow or invoke a scope after its disposal.
+    /// </param>
+    [Theory]
+    [InlineData("foreign-flow")]
+    [InlineData("disposed")]
+    public async Task ForeignOrRetiredScopesRefuse(string mode)
+    {
+        using var fixture = new Fixture(output);
+        var files = fixture.Create();
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        var readSet = files.TryBeginReservedValidationReadSet(lease);
+        Assert.NotNull(readSet);
+        try
+        {
+            await readSet.OpenAsync();
+            if (mode == "disposed") await readSet.DisposeAsync();
+            Task action;
+            using (ExecutionContext.SuppressFlow())
+                action = Task.Run(() => readSet.Read("present.txt", FileSystemManager.ValidationSnapshotFamily.OrdinarySync, lease));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => action);
+            if (mode != "disposed") await Assert.ThrowsAsync<InvalidOperationException>(() => readSet.CompleteAsync());
+        }
+        finally { await readSet.DisposeAsync(); }
+        Assert.Equal("original", files.ReadFileSync(lease, "present.txt"));
+    }
+
+    /// <summary>
+    /// Keeps passive receiver faults and synchronous or flowing asynchronous diagnostic reads outside the functional cache.
+    /// </summary>
+    /// <param name="mode">
+    /// Timing, activity, throwing or asynchronous descendant observation to exercise.
+    /// </param>
+    [Theory]
+    [InlineData("timing-throw")]
+    [InlineData("timing-reenter")]
+    [InlineData("activity-throw")]
+    [InlineData("activity-reenter")]
+    [InlineData("async-descendant")]
+    public async Task PassiveObserversCannotPoisonFunctionalReads(string mode)
+    {
+        using var fixture = new Fixture(output);
+        FileSystemManager? files = null;
+        var active = false;
+        var triggered = 0;
+        Task? diagnostic = null;
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        void Observe()
+        {
+            if (!active || Interlocked.Exchange(ref triggered, 1) != 0) return;
+            if (mode.EndsWith("throw", StringComparison.Ordinal)) throw new IOException("passive receiver");
+            if (mode == "async-descendant")
+                diagnostic = Task.Run(async () => { await release.Task; Assert.Equal("original", files!.ReadFileSync("present.txt")); });
+            else Assert.Equal("original", files!.ReadFileSync("present.txt"));
+        }
+        files = fixture.Create(record => new FileSystemManagerHooks
+        {
+            OperationTimingObserver = (name, boundary, elapsed) =>
+            {
+                record(name, boundary, elapsed);
+                if (mode.StartsWith("timing", StringComparison.Ordinal) || mode == "async-descendant") Observe();
+            },
+            CanonicalReadActivityObserver = _ => { if (mode.StartsWith("activity", StringComparison.Ordinal)) Observe(); },
+            ExactPhysicalReadActivityObserver = _ => { }
+        });
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        await using var readSet = files.TryBeginReservedValidationReadSet(lease);
+        Assert.NotNull(readSet); await readSet.OpenAsync();
+        active = true;
+        Assert.Equal("original", files.ReadFileSync(lease, "present.txt"));
+        release.TrySetResult();
+        if (diagnostic != null) await diagnostic;
+        Assert.Equal("original", files.ReadFileSync(lease, "present.txt"));
+        await readSet.CompleteAsync();
+        Assert.Equal(1, triggered);
+    }
+
+    /// <summary>
+    /// Latches actual overlapping functional consumers and refuses both the in-flight result and final proof.
+    /// </summary>
+    [Fact]
+    public async Task ConcurrentFunctionalReadersInvalidateThePhase()
+    {
+        using var fixture = new Fixture(output);
+        var started = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var finished = new ManualResetEventSlim();
+        var active = false;
+        var files = fixture.Create(record => new FileSystemManagerHooks
+        {
+            OperationTimingObserver = record,
+            CanonicalReadActivityObserver = _ =>
+            {
+                if (!active) return;
+                started.TrySetResult();
+                if (!finished.Wait(TimeSpan.FromSeconds(10))) throw new TimeoutException("Contender did not settle.");
+            }
+        });
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        await using var readSet = files.TryBeginReservedValidationReadSet(lease);
+        Assert.NotNull(readSet); await readSet.OpenAsync();
+        var contender = Task.Run(async () =>
+        {
+            await started.Task;
+            try { Assert.Throws<InvalidOperationException>(() => files.ReadFileSync(lease, "present.txt")); }
+            finally { finished.Set(); }
+        });
+        active = true;
+        await Assert.ThrowsAsync<InvalidOperationException>(() => files.ReadFileAsync(lease, "present.txt"));
+        await contender;
+        await Assert.ThrowsAsync<InvalidOperationException>(() => readSet.CompleteAsync());
+        finished.Dispose();
     }
 
     /// <summary>
@@ -50,7 +385,7 @@ public sealed class ReservedValidationReadSetTests(ITestOutputHelper output)
     {
         private readonly string _nonce = Guid.NewGuid().ToString("N");
         private readonly string _parent = Path.GetFullPath("C:/Temp");
-        private readonly ConcurrentQueue<(string Name, string Boundary, double Seconds)> _events = new();
+        private readonly ConcurrentQueue<(bool Measured, string Name, string Boundary, double Seconds)> _events = new();
         private string? _root;
 
         /// <summary>
@@ -61,7 +396,7 @@ public sealed class ReservedValidationReadSetTests(ITestOutputHelper output)
         /// <summary>
         /// Gets the number of completed ordinary physical snapshot requests in the measured phase.
         /// </summary>
-        internal int PhysicalReads => _events.Count(e => e.Boundary == "end" &&
+        internal int PhysicalReads => _events.Count(e => e.Measured && e.Boundary == "end" &&
             e.Name is "OrdinaryRead.Sync.Total" or "OrdinaryRead.Async.Total");
 
         /// <summary>
@@ -70,20 +405,20 @@ public sealed class ReservedValidationReadSetTests(ITestOutputHelper output)
         /// <returns>
         /// The actual manager for this fixture's newly owned root.
         /// </returns>
-        internal FileSystemManager Create()
+        /// <param name="hooks">
+        /// Optional typed hook factory receiving the complete timing recorder; null selects passive timing only.
+        /// </param>
+        internal FileSystemManager Create(Func<Action<string, string, TimeSpan>, FileSystemManagerHooks>? hooks = null)
         {
             _root = Path.Combine(_parent, "boe-reserved-read-" + _nonce);
             Directory.CreateDirectory(Path.Combine(_root, "game_session"));
             File.WriteAllText(Path.Combine(_root, ".fixture-owner"), _nonce);
             File.WriteAllText(Path.Combine(_root, "game_session", "present.txt"), "original");
+            void Record(string name, string boundary, TimeSpan elapsed)
+            { _events.Enqueue((Recording, name, boundary, elapsed.TotalSeconds)); }
             return new(_root, NullLogger<FileSystemManager>.Instance,
-                PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
-                {
-                    OperationTimingObserver = (name, boundary, elapsed) =>
-                    {
-                        if (Recording) _events.Enqueue((name, boundary, elapsed.TotalSeconds));
-                    }
-                });
+                PhysicalLoadTransactionOperations.Instance,
+                hooks?.Invoke(Record) ?? new FileSystemManagerHooks { OperationTimingObserver = Record });
         }
 
         /// <summary>
@@ -91,7 +426,7 @@ public sealed class ReservedValidationReadSetTests(ITestOutputHelper output)
         /// </summary>
         public void Dispose()
         {
-            output.WriteLine(JsonSerializer.Serialize(_events.Select(e => new { e.Name, e.Boundary, e.Seconds })));
+            output.WriteLine(JsonSerializer.Serialize(_events.Select(e => new { e.Measured, e.Name, e.Boundary, e.Seconds })));
             if (_root == null) return;
             var scope = new TrustedLocalFileScope([_parent]);
             if (Path.GetDirectoryName(_root) != _parent ||

@@ -4,14 +4,18 @@ public partial class FileSystemManager
 {
     private readonly AsyncLocal<ReservedValidationReadSet?> _validationReadSet = new();
     private static readonly AsyncLocal<int> ValidationReuseSuppression = new();
+    private static readonly AsyncLocal<int> ValidationDiagnosticScopes = new();
 
     /// <summary>
     /// Prevents diagnostic receiver reads and their asynchronous descendants from joining a functional read set.
     /// </summary>
     /// <returns>
-    /// A scope restoring only the previous diagnostic routing value; diagnostics themselves remain enabled.
+    /// A scope restoring the previous diagnostic routing value, or <see langword="null"/> outside validation routing.
+    /// Diagnostics themselves remain enabled.
     /// </returns>
-    private static IDisposable SuppressValidationReuse() => new ValidationDiagnosticSuppression();
+    private static IDisposable? SuppressValidationReuse() =>
+        ValidationDiagnosticScopes.Value == 0 && ValidationReuseSuppression.Value == 0
+            ? null : new ValidationDiagnosticSuppression();
 
     /// <summary>
     /// Restores flowing diagnostic suppression without providing filesystem authority.
@@ -60,13 +64,14 @@ public partial class FileSystemManager
         if (reservation == null) return null;
         var scope = new ReservedValidationReadSet(this, lease, reservation);
         _validationReadSet.Value = scope;
+        ValidationDiagnosticScopes.Value++;
         return scope;
     }
 
     /// <summary>
     /// Selects the original reader contract independently of path spelling and explicit lease mode.
     /// </summary>
-    private enum ValidationSnapshotFamily { OrdinarySync, OrdinaryAsync, ProtectedSync, ProtectedAsync }
+    internal enum ValidationSnapshotFamily { OrdinarySync, OrdinaryAsync, ProtectedSync, ProtectedAsync }
 
     /// <summary>
     /// Dispatches protected synchronous snapshot DATA while preserving the original declared lease identity.
@@ -139,9 +144,12 @@ public partial class FileSystemManager
     /// Fresh content and timestamp, or <see langword="null"/> for original observed absence.
     /// </returns>
     private CanonicalFileReadSnapshot? ReadValidationSource(string path, ValidationSnapshotFamily family, CanonicalWriteLease? lease) =>
-        family == ValidationSnapshotFamily.OrdinarySync
-            ? ReadOrdinaryFileSnapshotCore(path, lease, out _, nullableDataFailure: false)
-            : ReadFileSnapshotUncached(path);
+        family switch
+        {
+            ValidationSnapshotFamily.OrdinarySync => ReadOrdinaryFileSnapshotCore(path, lease, out _, nullableDataFailure: false),
+            ValidationSnapshotFamily.ProtectedSync => ReadFileSnapshotUncached(path),
+            _ => throw new ArgumentOutOfRangeException(nameof(family))
+        };
 
     /// <summary>
     /// Invokes the original asynchronous source reader without entering read-set dispatch again.
@@ -163,9 +171,12 @@ public partial class FileSystemManager
     /// </returns>
     private Task<CanonicalFileReadSnapshot?> ReadValidationSourceAsync(string path, ValidationSnapshotFamily family,
         CanonicalWriteLease? lease, CancellationToken token) =>
-        family == ValidationSnapshotFamily.OrdinaryAsync
-            ? ReadOrdinaryFileSnapshotUncachedAsync(path, token, lease)
-            : ReadFileSnapshotUncachedAsync(path, token);
+        family switch
+        {
+            ValidationSnapshotFamily.OrdinaryAsync => ReadOrdinaryFileSnapshotUncachedAsync(path, token, lease),
+            ValidationSnapshotFamily.ProtectedAsync => ReadFileSnapshotUncachedAsync(path, token),
+            _ => throw new ArgumentOutOfRangeException(nameof(family))
+        };
 
     /// <summary>
     /// Retains private source DATA for one exact reserved owner and proves every dependency freshly before success.
@@ -264,12 +275,20 @@ public partial class FileSystemManager
         private void RequireAuthority()
         {
             using var bypass = SuppressValidationReuse();
+            RequireRetainedFlow();
+            _lease.EnsureNoPendingLocalDecision();
+            _files.EnsureValidCanonicalWriteLease(_lease);
+        }
+
+        /// <summary>
+        /// Checks exact retained lifetime and registration after source work without duplicating full admission.
+        /// </summary>
+        private void RequireRetainedFlow()
+        {
             _files.RequirePendingSnapshotLeaseFlow(_lease, _owner, _registration);
             if (!ReferenceEquals(MainAdmissions.Value, _owner) ||
                 !ReferenceEquals(_files._ambientCanonicalLease.Value, _registration))
                 throw new InvalidOperationException("Validation read left its exact retained registration.");
-            _lease.EnsureNoPendingLocalDecision();
-            _files.EnsureValidCanonicalWriteLease(_lease);
         }
 
         /// <summary>
@@ -299,7 +318,7 @@ public partial class FileSystemManager
         /// <returns>
         /// Detached content/timestamp or observed absence; errors invalidate the phase and propagate.
         /// </returns>
-        private CanonicalFileReadSnapshot? Read(string path, ValidationSnapshotFamily family, CanonicalWriteLease? declaredLease)
+        internal CanonicalFileReadSnapshot? Read(string path, ValidationSnapshotFamily family, CanonicalWriteLease? declaredLease)
         {
             Enter();
             try
@@ -314,7 +333,7 @@ public partial class FileSystemManager
                     _snapshots.Add(key, snapshot); _order.Add(key);
                 }
                 else { using var reuse = _files.MeasureOperation("ValidationReadSet.ReuseSync"); }
-                RequireAuthority();
+                RequireRetainedFlow();
                 lock (_state) { RequireHealthy(); return Copy(snapshot); }
             }
             catch { Fail(); throw; }
@@ -339,7 +358,7 @@ public partial class FileSystemManager
         /// <returns>
         /// Detached content/timestamp or absence; cancellation and original errors propagate and invalidate reuse.
         /// </returns>
-        private async Task<CanonicalFileReadSnapshot?> ReadAsync(string path, ValidationSnapshotFamily family,
+        internal async Task<CanonicalFileReadSnapshot?> ReadAsync(string path, ValidationSnapshotFamily family,
             CanonicalWriteLease? declaredLease, CancellationToken token)
         {
             Enter();
@@ -355,7 +374,7 @@ public partial class FileSystemManager
                     _snapshots.Add(key, snapshot); _order.Add(key);
                 }
                 else { using var reuse = _files.MeasureOperation("ValidationReadSet.ReuseAsync"); }
-                token.ThrowIfCancellationRequested(); RequireAuthority();
+                token.ThrowIfCancellationRequested(); RequireRetainedFlow();
                 lock (_state) { RequireHealthy(); return Copy(snapshot); }
             }
             catch { Fail(); throw; }
@@ -425,7 +444,11 @@ public partial class FileSystemManager
                 if (_busy) { _failed = true; throw new InvalidOperationException("Validation operation is still running."); }
                 _closed = true; _snapshots.Clear(); _order.Clear(); _generation = null;
             }
-            if (ReferenceEquals(_files._validationReadSet.Value, this)) _files._validationReadSet.Value = null;
+            if (ReferenceEquals(_files._validationReadSet.Value, this))
+            {
+                _files._validationReadSet.Value = null;
+                ValidationDiagnosticScopes.Value--;
+            }
             return _reservation.DisposeAsync();
         }
     }
