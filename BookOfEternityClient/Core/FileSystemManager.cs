@@ -319,6 +319,60 @@ public partial class FileSystemManager
         private FileStream? _stream;
         private PhysicalFileAuthority.StableDirectory? _parentAuthority;
         private AmbientCanonicalLeaseRegistration? _ambientRegistration;
+        private readonly object _sourceState = new();
+        private SourceDataOperation? _sourceOwner;
+        private bool _sourceClosing;
+
+        /// <summary>
+        /// Registers the exact DATA owner without replacing another owner or crossing physical close intent.
+        /// </summary>
+        /// <param name="owner">
+        /// Operation responsible for settling its actual source work.
+        /// </param>
+        /// <returns>
+        /// Whether this live lease retains that exact owner while physical close has not begun.
+        /// </returns>
+        internal bool TryAttachSourceOwner(SourceDataOperation owner)
+        {
+            lock (_sourceState)
+            {
+                if (_sourceClosing || !IsActive || _sourceOwner != null && !ReferenceEquals(_sourceOwner, owner)) return false;
+                _sourceOwner = owner;
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Releases only the matching DATA guard after its source work has drained.
+        /// </summary>
+        /// <param name="owner">
+        /// Exact registered owner; a foreign or already removed owner has no effect.
+        /// </param>
+        internal void DetachSourceOwner(SourceDataOperation owner)
+        {
+            lock (_sourceState) if (ReferenceEquals(_sourceOwner, owner)) _sourceOwner = null;
+        }
+
+        /// <summary>
+        /// Excludes new DATA owners before capturing the guard that must settle prior to physical teardown.
+        /// </summary>
+        /// <returns>
+        /// The exact retained DATA owner, or no guard when this lease has no source operation.
+        /// </returns>
+        private SourceDataOperation? BeginSourceClose()
+        {
+            lock (_sourceState)
+            {
+                if (_sourceClosing) throw new InvalidOperationException("The canonical lease is already closing.");
+                _sourceClosing = true;
+                return _sourceOwner;
+            }
+        }
+
+        /// <summary>
+        /// Ends close intent after refusal or completed teardown; it grants no authority to a closed lease.
+        /// </summary>
+        private void EndSourceClose() { lock (_sourceState) _sourceClosing = false; }
 
         internal CanonicalWriteLease(
             FileSystemManager owner,
@@ -366,15 +420,26 @@ public partial class FileSystemManager
         public async ValueTask DisposeAsync()
         {
             Exception? sourceFailure = null;
-            var sourceOperation = ValidationReuseSuppression.Value == 0 ? Owner._sourceDataOperation.Value : null;
-            // Preserve original reservation refusal before attempting asynchronous DATA settlement.
-            if (sourceOperation != null) MainAdmission?.RequireNoWorldReadConflict(MainAdmission.WorldRecoveryIssuance);
+            var sourceOperation = BeginSourceClose() ??
+                (ValidationReuseSuppression.Value == 0 ? Owner._sourceDataOperation.Value : null);
             try
             {
-                if (sourceOperation != null) await sourceOperation.BeforeLeaseCloseAsync(this);
+                // Refuse outstanding work before detaching resources, even after ambient owner disposal.
+                if (sourceOperation != null)
+                {
+                    MainAdmission?.RequireNoWorldReadConflict(MainAdmission.WorldRecoveryIssuance);
+                    sourceOperation.BeginLeaseClose(this);
+                    try { await sourceOperation.BeforeLeaseCloseAsync(this); }
+                    catch (Exception error) { sourceFailure = error; }
+                }
+                MainAdmission?.BeginPhysicalLeaseClose();
             }
-            catch (Exception error) { sourceFailure = error; }
-            MainAdmission?.BeginPhysicalLeaseClose();
+            catch
+            {
+                sourceOperation?.CancelLeaseClose(this);
+                EndSourceClose();
+                throw;
+            }
             var stream = _stream;
             var parentAuthority = _parentAuthority;
             var externalPublicationContext =
@@ -412,6 +477,8 @@ public partial class FileSystemManager
             finally
             {
                 _ambientRegistration = null;
+                try { sourceOperation?.LeaseClosed(this); }
+                finally { EndSourceClose(); }
             }
             if (failure != null)
             {

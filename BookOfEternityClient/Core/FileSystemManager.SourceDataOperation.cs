@@ -72,6 +72,7 @@ public partial class FileSystemManager
         private MainAdmission? _verifiedEntry;
         private AmbientCanonicalLeaseRegistration? _verifiedRegistration;
         private CanonicalWriteLease? _generationLease;
+        private CanonicalWriteLease? _closingLease;
         private bool _busy;
         private volatile bool _failed;
         private volatile bool _completed;
@@ -130,7 +131,7 @@ public partial class FileSystemManager
             {
                 lock (_gate)
                     return _busy || _keys.Count != 0 || _touched.Count != 0 || _lease != null || _generation != null ||
-                        _generationLease != null || SourceReadBarrierForTests != null || GenerationReadBarrierForTests != null ||
+                        _generationLease != null || _closingLease != null || SourceReadBarrierForTests != null || GenerationReadBarrierForTests != null ||
                         _verifiedLease != null || _verifiedEntry != null || _verifiedRegistration != null;
             }
         }
@@ -154,9 +155,10 @@ public partial class FileSystemManager
         {
             lock (_gate)
             {
-                if (_closed || _failed || _completed || _suspended != 0 || _busy) return;
+                if (_closed || _failed || _completed || _suspended != 0 || _busy || _closingLease != null) return;
                 if (_lease == null || !_lease.IsActive)
                 {
+                    if (!lease.TryAttachSourceOwner(this)) return;
                     _lease = lease;
                     ClearReceipt();
                 }
@@ -217,6 +219,7 @@ public partial class FileSystemManager
                 ObjectDisposedException.ThrowIf(_closed, this);
                 if (_suspended != 0) return false;
                 RequireOpen();
+                if (_closingLease != null) throw new InvalidOperationException("The source adapter is closing.");
                 if (_busy) { _failed = true; throw new InvalidOperationException("Overlapping source operation."); }
                 ClearReceipt();
                 if (declared != null)
@@ -225,6 +228,8 @@ public partial class FileSystemManager
                         throw new InvalidOperationException("Source operation supplied a foreign lease.");
                     _lease = declared;
                 }
+                if (_lease != null && !_lease.TryAttachSourceOwner(this))
+                    throw new InvalidOperationException("The source lease is closing or belongs to another DATA owner.");
                 _busy = true;
             }
             try
@@ -234,7 +239,7 @@ public partial class FileSystemManager
                 RequireOpen();
                 if (!eligible)
                 {
-                    lock (_gate) _busy = false;
+                    LeaveWork();
                     return false;
                 }
                 if (_rootVersion != null && !ReferenceEquals(_rootVersion, root))
@@ -248,7 +253,7 @@ public partial class FileSystemManager
             catch
             {
                 _failed = true;
-                lock (_gate) _busy = false;
+                LeaveWork();
                 throw;
             }
         }
@@ -368,10 +373,11 @@ public partial class FileSystemManager
                 if (!task.IsCompleted) throw new InvalidOperationException("A synchronous source computation did not settle synchronously.");
                 var value = task.GetAwaiter().GetResult();
                 if (!computed) { using var reuse = _files.MeasureOperation("OperationFileData.ReuseSync"); }
+                RequireOpen();
                 return value;
             }
             catch { _failed = true; throw; }
-            finally { lock (_gate) _busy = false; }
+            finally { LeaveWork(); }
         }
 
         /// <summary>
@@ -410,10 +416,11 @@ public partial class FileSystemManager
                     return await _files.ReadValidationSourceAsync(path, family, declared, ct);
                 }, token);
                 if (!computed) { using var reuse = _files.MeasureOperation("OperationFileData.ReuseAsync"); }
+                RequireOpen();
                 return value;
             }
             catch { _failed = true; throw; }
-            finally { lock (_gate) _busy = false; }
+            finally { LeaveWork(); }
         }
 
         /// <summary>
@@ -480,7 +487,7 @@ public partial class FileSystemManager
                 _verifiedRegistration = lease.AmbientRegistration;
             }
             catch { _failed = true; throw; }
-            finally { lock (_gate) _busy = false; }
+            finally { LeaveWork(); }
         }
 
         /// <summary>
@@ -514,6 +521,7 @@ public partial class FileSystemManager
             {
                 ObjectDisposedException.ThrowIf(_closed, this);
                 if (_busy) throw new InvalidOperationException("Mutation overlaps source work.");
+                if (_closingLease != null) throw new InvalidOperationException("Mutation conflicts with a closing DATA adapter.");
                 independent = _suspended != 0;
                 expected = null;
                 entry = null;
@@ -538,7 +546,7 @@ public partial class FileSystemManager
                 try { RequireOpen(); Retire(); return token; }
                 catch { token.Dispose(); throw; }
             }
-            finally { lock (_gate) _busy = false; }
+            finally { LeaveWork(); }
         }
 
         /// <summary>
@@ -577,9 +585,79 @@ public partial class FileSystemManager
             }
             finally
             {
-                // A new lease must establish its own fresh adapter. No admission survives this close.
-                _lease = null;
+                lock (_gate) ClearReceipt();
+            }
+        }
+
+        /// <summary>
+        /// Excludes new functional reads before a bound physical lease starts its fresh closing fence.
+        /// </summary>
+        /// <param name="lease">
+        /// Exact lease retaining this source guard, including after ambient operation disposal.
+        /// </param>
+        internal void BeginLeaseClose(CanonicalWriteLease lease)
+        {
+            lock (_gate)
+            {
+                if (!ReferenceEquals(_lease, lease)) return;
+                if (_busy) throw new InvalidOperationException("Pending source work must settle before its physical lease closes.");
+                _closingLease = lease;
+            }
+        }
+
+        /// <summary>
+        /// Restores the adapter after original admission refused teardown before resource detachment.
+        /// </summary>
+        /// <param name="lease">
+        /// Exact lease whose attempted close was refused.
+        /// </param>
+        internal void CancelLeaseClose(CanonicalWriteLease lease)
+        {
+            lock (_gate) if (ReferenceEquals(_closingLease, lease)) _closingLease = null;
+        }
+
+        /// <summary>
+        /// Drops the exact adapter only after the original physical lease has attempted all cleanup.
+        /// </summary>
+        /// <param name="lease">
+        /// Original lease whose physical resources have finished teardown.
+        /// </param>
+        internal void LeaseClosed(CanonicalWriteLease lease)
+        {
+            lock (_gate)
+            {
+                lease.DetachSourceOwner(this);
+                if (ReferenceEquals(_lease, lease)) _lease = null;
+                if (ReferenceEquals(_generationLease, lease)) _generationLease = null;
+                if (ReferenceEquals(_closingLease, lease)) _closingLease = null;
                 ClearReceipt();
+                if (_closed && !_busy) DropLocalReferences();
+            }
+        }
+
+        /// <summary>
+        /// Releases the serial slot and clears any local references published after disposal began.
+        /// </summary>
+        private void LeaveWork()
+        {
+            lock (_gate)
+            {
+                _busy = false;
+                if (_closed) DropLocalReferences();
+            }
+        }
+
+        /// <summary>
+        /// Releases local DATA bookkeeping after source work drains while retaining an active physical close guard.
+        /// </summary>
+        private void DropLocalReferences()
+        {
+            _keys.Clear(); _touched.Clear(); _generation = null; _generationLease = null;
+            _rootVersion = null; SourceReadBarrierForTests = null; GenerationReadBarrierForTests = null; ClearReceipt();
+            if (_closingLease == null)
+            {
+                _lease?.DetachSourceOwner(this);
+                _lease = null;
             }
         }
 
@@ -637,12 +715,15 @@ public partial class FileSystemManager
         /// </summary>
         public void Dispose()
         {
-            if (_closed) return;
-            _closed = true;
+            lock (_gate)
+            {
+                if (_closed) return;
+                _closed = true;
+                if (!_busy) DropLocalReferences();
+            }
             try
             {
-                _operation.Dispose(); _keys.Clear(); _touched.Clear(); _lease = null; _generation = null;
-                _generationLease = null; SourceReadBarrierForTests = null; GenerationReadBarrierForTests = null; ClearReceipt();
+                _operation.Dispose();
             }
             finally
             {

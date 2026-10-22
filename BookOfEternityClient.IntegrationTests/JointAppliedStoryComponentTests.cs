@@ -116,7 +116,7 @@ public sealed class JointAppliedStoryComponentTests
                         timings.Observe(name, boundary, elapsed);
                     },
                     RecoveryValidationObserver = metrics => validationMetrics.Add(metrics),
-                    BeforeCanonicalReadOpenAsync = phaseOnly ? null : _ =>
+                    BeforeCanonicalReadOpenAsync = !changeDuringReadback ? null : _ =>
                     {
                         if (changeDuringReadback && readbackStarted && !injectedReadbackDrift)
                         {
