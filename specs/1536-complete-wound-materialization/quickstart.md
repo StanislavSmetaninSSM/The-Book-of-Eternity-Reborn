@@ -1,3 +1,7 @@
+# Revision50 — qualify real recovery integration
+
+Issue1536. Read r50 spec/plan/tasks and contracts/recovery-validation.md. Execute T435,T427,T428,T429 in order; user waived approval waits. Cheap source-bound causal RED/GREEN first, complete full raw/binaries before builds. Preserve32 original reserved-read controls and existing generic architecture acceptance; no unrelated suite. Real Cut0 C:/Temp600/820/15 only after current build/input/review/saved recovery gates. Keep diagnostic self-cost accounting and all events; an executed timeout is reported as such, not success.
+
 # Revision49 — qualify the DW10 architecture migration
 
 Issue1536 / CACHEPORT-1..7 / T431–434. Read spec.md/plan.md and contracts/service-cache.md. User explicitly waived review waits. Reuse existing isolated branch; preserve T426 GREEN archive/outputs before build. Run actual pinned Spec Kit phases and bridge-equivalent consistency; publish WIP first.

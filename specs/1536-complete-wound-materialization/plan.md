@@ -1,3 +1,37 @@
+# Recovery filesystem cache integration — revision50 implementation plan
+
+> REQUIRED: superpowers:executing-plans inline, TDD, systematic-debugging, independent complex gpt-6-astra/high review. User waived all approval waits; present actual artifacts without pausing. Canonical Spec Kit records only.
+
+**Goal:** Issue1536 / RECACHE-1..6: connect accepted operation cache to real mechanical/continuation DATA and measure unchanged original600/820/15.
+**Spec:** spec.md revision50; contracts/recovery-validation.md, preserved OPCACHE/CACHEPORT contracts.
+**Architecture:** one operation per real issuing publication lease, root-shared no-IO mutation epochs, exact private input identities. Live authority guards outside cached successful DATA facts; recursive ForceFresh at authoritative takes/callbacks. Canonical IO remains FileSystemManager, no artificial source repository. .NET8/C#/xUnit/PowerShell7, existing isolated branch.
+
+## Global constraints and review focus
+
+No diagnostic quotas/test-budget increases/reflection/whole-suite run/new packages/GM/schema/native changes. Keep fresh inventory/readback and existing request/guard counts. Review active no-op/failed/compensated mutations; other managers/accesses and close; callback raw drift and descendants; source epoch change during await; proof identity versus mutable authority. Every new/changed API has readable multiline XML. Preserve exact old binary/raw outputs before a build overwrites them. Parent owns coherent implementation, separate bounded Astra/high consultation answers root eligibility; separate reviewer accepts implementation/result.
+
+## T435 — source decision, canonical phases and saved preflight
+
+- [ ] Confirm remote ba702c71d, current governance and retained architecture62case source-bound proof. Audit actual35/31 call lifetimes against mutation envelopes; read-only consultation records decisive anchors and remaining writer/callback coverage. Write/present spec/plan/tasks/exact contract. Run actual pinned setup-plan/setup-tasks/prerequisites and bridge-equivalent consistency; publish explicit WIP. Reuse existing isolated clone; no new worktree needed.
+
+## T427 — typed RED then domain integration
+
+Files: new Core/CanonicalValidationEpoch.cs and Core/FileSystemManager.OperationValidation.cs; modify CanonicalRootIdentity.cs, FileSystemManager.MainRunFence.cs and four directory/namespace bridges (FileSystemManager.cs, SessionReplacement.cs, LoadNamespace.cs, LoadReplacement.cs). Split only DATA bodies in GameEngine.MortalJointRepairMechanicalAdmission.cs and WoundAcceptedTurnPlanner.MortalJointRepair.cs; exact evidence identity seam in PendingTurnSnapshotReader.Observed.cs. Begin/dispose scope in GameEngine.MortalJointRepairCanonicalPublication.cs. ForceFresh in GameEngine finalization callback, AcceptedTurnAuthorityRegistry.MortalJointRepairPublication.cs and CanonicalStateNormalizer.MortalJointRepair.cs. New RecoveryFileValidationTests.cs / relevant lightweight data fixture; retire only4r46 cases and inert option in ReservedValidationReadSetTests.cs / ValidationReadSet.cs. Existing generic core unchanged.
+
+- [ ] Introduce compiling fresh-only adapter and typed test seams. Write cheap real-file8request causal controls and epoch/admission/close/callback/absence/write/concurrency/fresh controls. Preserve original32 assertions. Save/push source, XML build and selected meaningful RED; archive full raw/outputs before implementation build.
+- [ ] Implement root token begin/end+MainAccess coherent capture; bridge four uncovered writers before effects/cleanup. Install exact synchronous lease scope and passive routing. Use DefaultOperationValidationService.ValidateAsync facts with complete identity/dependency; no callbacks under state lock and no monitor across await. Reject/drop late/foreign contexts; fresh fallback for unsupported route. Add request/source/reuse/fresh timers.
+- [ ] Move expensive mechanical and continuation DATA into original helpers; retain owner/fingerprint/evidence identity/seal and final claim live on each call. Error clears operation reuse. ForceFresh before both takes and later transaction fences; bracket finalization hooks over await. Save/push GREEN source, build and only impacted categories. Verify actual body1vs8 and real attributes, writes/failures/no-op/namespace/other-manager invalidation; record any new defect before another expensive run.
+
+## T428 — qualification/review and original input
+
+- [ ] Preserve all prior outputs; XML-enabled current unit/integration reference builds, introduced XML audit, category selection/catalog completeness and owned closing. Select new core-recovery-file-validation, original reserved-read coverage, original-evidence/source lineage, main-access mutation/namespace and joint publication negative/integration controls from actual diff; reasons in selection.json, no aggregate suite. Final selection follows source impact and independent review.
+- [ ] One separate complex Astra/high coherent diff review against original requirements and selected evidence; fix validated findings and repeat affected checks only. Save/recover accepted code/evidence. Qualify genuine current-source immutable input package at a new slot if source bindings require it, using existing genuine generator and full package checks; never relabel old source package.
+
+## T429 — one genuine original and measured report
+
+- [ ] Pin exact runner/source/binaries/package/remote receipt; run original Cut0 C:/Temp600/820/15 once, all raw and native/owned cleanup. Reuse original observer self-cost fields already in JointOperationTimings; no collector reduction. Preserve full capture first, then stream-analyze every row/path, source/reuse/fresh/request counts and exclusive operation/observer durations. Reconcile incomplete tails honestly.
+- [ ] Compare same completed publication milestones to T416/T420 and report root cause/effect, dominant sections, real observer cost and remaining timeout/error if any. Separate independent result/evidence review (same reviewer may continue), save/push full lossless artifacts/metadata and verify exact clean remote recovery. Mark only actually verified tasks complete; do not re-run unchanged original or infer HDD cause.
+
 # DW10 cache infrastructure implementation plan — revision49
 
 > REQUIRED: superpowers:executing-plans inline with TDD; one independent complex Astra/high review of the coherent code/tests/docs. Canonical Spec Kit artifacts replace duplicate Superpowers plans. User explicitly waived approval waits.

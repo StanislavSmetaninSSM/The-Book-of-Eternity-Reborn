@@ -1,3 +1,14 @@
+# CRASH5 — revision50: production recovery filesystem cache and original measurement
+
+Issue1536 / RECACHE-1..6. User explicitly authorized implementation/original600s measurement and waived approval waits. Existing T427–429 continue after accepted T431–434 architecture; parent owns coherent code and evidence, separate complex Astra/high review.
+
+- [x] T435 [US1/US3] Audit actual35mechanical/31baseline phase/admission and complete writer/callback coverage; write/present r50 artifacts/exact contract, execute pinned Spec Kit phases/consistency, preserve architecture outputs and publish WIP.
+- [ ] T427 [US1/US2/US3] Compiling cheap real-file/issued-original causal RED; root-shared no-active-mutation epochs, four writer bridges, exact real lease scope using general service; cache only mechanical/continuation DATA, live authority guards and fresh takes/callbacks. Preserve32 prior reserved-read controls and retire only4superseded r46 cases/option. Prove body8->1/actual attributes and invalidation/refusal parity with typed fixtures; full uncapped raw/outputs retained.
+- [ ] T428 [US1/US2/US3] Current-source XML/build/affected categories/catalog/cleanup/source pins; separate complex independent full code/test/doc review accepted and findings resolved; current-source genuine input qualification and exact clean GitHub recovery before original.
+- [ ] T429 [US3] One genuine unchanged Cut0 C:/Temp600child/820shared/15min original, unlimited diagnostics/full native owned settlement; full raw preserved before all-row/path/exclusive/self-observer analysis and T416/T420 matched comparison; independent result review, final saved exact recovery and measured user report.
+
+RECACHE-1/2/3 -> T435/T427/T428; RECACHE-4/5 -> T427/T428; RECACHE-6 -> T428/T429. Dependencies: T435 -> T427 -> T428 -> T429. Prior accepted infrastructure remains qualified separately; original timeout is open until actual result.
+
 # CRASH5 — revision49: DW10 architecture implementation tasks
 
 Issue1536; CACHEPORT-1..7. User explicitly authorized implementation and waived approval waits on2026-10-22. Parent owns one coherent infrastructure migration, independent complex Astra/high reviews the completed block. Existing T427–429 recovery integration/performance tasks remain required after this migration.

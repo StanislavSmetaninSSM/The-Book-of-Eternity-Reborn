@@ -1,3 +1,11 @@
+# Revision50 — source-grounded recovery adapter decision
+
+Issue1536. Baseline ba702c71d architecture accepted, final code a7847d391. Concrete root cause remains repeated expensive mechanical/continuation source DATA checks; T420 original still timed out with1882834GetAttributes/378.8108048s and35mechanical/31baseline calls. Diagnostics are independently accounted, not capped.
+
+Read-only source trace: AcquireCanonicalWriteLeaseAsync finishes storage recovery before returning (FileSystemManager.cs4408–4460). PublishCurrentMortalJointRepairAsync acquires lease first, then constructs all preparation/mechanical/common/preflight/take steps. Ordinary canonical reads skip pending-file recovery under that ambient lease. 31baseline calls comprise14QTE entry/exit pairs plus common creation1/resource creation2;35mechanical are those31plus creation/read-empty/common-explicit/registry-seal4. Thus strict zero-active-writer versioning has a genuine eligible phase; do not ignore a broad own writer.
+
+Chosen approach: root-shared mutation object epochs plus exact lease-scoped successful DATA facts in accepted general service. Alternative full physical admission on every hit previously added449680metadata calls/23.7015975s in T420; repeat neither that design nor whole-QTE result caching. Whole-root coarse invalidation intentionally trades some misses for complete dependencies; TTL does not establish validity. Four known namespace bridges must be covered before enablement. Independent bounded Astra/high consultation checks these concrete gates; implementation/review/runtime remain pending.
+
 # Revision49 — implementation decisions following DW10 analysis
 
 Issue1536 / CACHEPORT-1..7. User approved moving from T430 analysis to implementation, independently and without approval waits.
