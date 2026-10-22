@@ -1,26 +1,52 @@
-# Current checkpoint: r51 FULL measuredFAIL; authorized OFF comparison next
+# Current checkpoint: r51 progression reuse implemented; original OFF passes
 
-Sourcead10/currentpackageunchanged. Originalfull1FAILactual600s timeout;case744.5731s/command768.5414s; producer21432exit73,resumer39332exit-1,EOF/join/cleanup true. 31rawpayloads9,179,136,064B verifiedDZIP638,726,721B SHA637CD9F4... Full25,123,309timingrows/12,561,648closed/607,247paths reconciled;0negative residual,13open scopes; last599770.8683ms. 2,941,267attrs164.9331s; observerbuild82.1957+write104.9431=187.1388s, gate1.2638separate. Progression121closedrequests=77sources+44reuses; eligibleadapter92=48+44; all46scope reports closedempty. Bothnewandoldfirstpublication768880attrs;new254.4068s vsold242.9864s, no stage/overall acceleration claim. Further45fullproofreads130.2656sinclusive; broadcachingneedsnew recovery/freshnesscontracts, donotremoveguards. T443-off-decision.json qualifies actualobserver-offcomparison, samead10all8/package/600/820/15. No analysis/runtime active. Instrumented source+Dbackup andfullraw retained; previousT429 retaineduntilcomparison/review/retirement. Next save/recover metadata; preflightoffatomicclaim; originaloffonce; completeoracles/outcome/streams/hash; independentresultreview/humanreport/finalretention/recovery. Fivepreexistingstaticguardfailuresremain; no allgreenclaim. T442/443notcompleteuntilresultsreviewed.
+Canonical feature specs/1536-complete-wound-materialization revision51 PROGDATA1..6,
+spec.md/plan.md/tasks.md. T439 actual pinned Spec Kit phases/consistency/presentation
+and autonomous review-wait waiver; T440 causal RED; T441 production GREEN complete.
+Production implementation0f9e211ab, final compiled sourcead10e0750; all8DLLs/copies
+and native2pins exact, XML builds0errors/389changed XML lines0changed warnings.
+Cheap16/16PASS:8requests source8->1/reuse7, attributes992->124; disabled8/992.
+Actual private proof/phase RED2bodies -> GREEN1/1reuse, unchanged files/closedempty;
+recovery/fresh/mutation/copy/failure contracts remain. Existing affected controls
+293actualcases/assertions across source-qualified cohorts288PASS/5pre-existing
+sourceguardFAIL, no allgreenclaim or altered assertions. Source selection catalog
+12218methods/911categories valid; PlanOnly274planned/0executed; PS22PASS/story3PASS.
+Genuine new source42 package82files/513706bytes/1861fingerprintinputs, generator
+PASS182.5067s,2independent read-only imports, actual loaded provenance verified.
 
-# Current checkpoint: r51 original readiness after genuine current input
+Full original600/820/15: FAIL actualresumer600, testcase744.5730611s/command768.5413532s.
+All25,123,309timingrows/12,561,648closedintervals/607,247paths reconciled;0negative
+residuals/13open at timeout. Attributes2,941,267/164.9331s; observerbuild+write
+187.1388s (not a duration-subtraction predictor). Closed progression121logical
+requests=77bodies+44reuses; eligible92=48+44;46reported scopes closedempty.
+Matched first publication still768880attrs, prior242.9864/current254.4068s:
+no cache-only whole-case acceleration established. Full raw31payloads9,179,136,064B
+in638,726,721B archiveSHA637CD9F4..., allpayloadSHA/CRC verified onD.
 
-C#compiledsourcead10 unchanged. Independent Astra/high SOURCE_GATE_ACCEPTED with5unchanged baseline source-guardfailures:293actualcases/assertions288PASS/5FAIL acrossqualifiedsettledruns, no allgreenclaim. F1/V1closed. XMLboth0errors,389changedXMLlines0warnings, all8DLL/copies/native2exact. Catalog12218methods/911categories valid;13descriptors274planned/0executed. PS22PASS, story3PASS andall1.920GBhashesverifiedD. GenuinegeneratorPASS182.5067s/twoindependentimports/cleanup;82files513706bytes/sourcefingerprint1861inputs/actual3loadedassemblies exact. NewcarrierINPUT written tonew progression-data-v1 slot, oldimmutablepackage untouched. Exact inputzip/manifest/payload/directories verified; no Stage43precompute/rebind. Humanresultsreport saved; allmachineevidence D only. Next push/recover exactinputmetadata, independentinput/preflight audit, originalfull600/820/15 withuncappedstreams; thenallrows/closedmilestonesanalysis andconditionaloff sameDLL/package. Original stillUNRUN/T442–443open. Fullinstrumented physicalsource+8DLL archive retainedD; previouscompleteT429 retained untilnewcompleteverifiedsettled.
+Actual same-source/DLL/input OFF comparison PASS; original600/820/15 unchanged.
+Resumer scalar exit390.104173s, first owner380.9853871s, repeat0.8700029s;
+testcase500.8214906s/command527.0498258s. Producer73/different resumer0;
+actual caller/turn43/Published proof/interface/resource+wound histories/one commit/
+fresh authority absent/temporary cleanup/inert repeat all original assertions pass.
+84after/repeat images equal,53reported scopes closedempty; identity/EOF/join/all
+streamSHA/owned-runtime cleanup qualified. Complete OFF30payloads8,721,474B in
+2,764,542B archiveSHAC23D7A90..., independently verified. Detailed timings absent
+mean disabled/unobserved, not zero work. Full staysFAIL; only actual Cut0 is qualified,
+not othercuts/Linux/fullsuite or historical Take. Ordinary gameplay has no observer
+by default; harness full default remains explicitly opt-in observation-off for comparison.
 
-# Current checkpoint: r51 final sourcead10; input/original next
-
-Both current XML builds0errors (83.36/53.21s), all8DLL uniformactualsource/copies/native2unchanged;389XMLlines0changed-linewarnings. Production cache/new16fixture bytes unchanged since accepted0f9. Finalcheap170executed167PASS/3FAIL: actualpair1PASS,transportincluding5rootcontrolsPASS,launchPASS,adapter82including24newPASS. Three integration inventory guards independently proven identical atbasee157; retain actual failures, no assertion changes. Prior driver postprocessing expected1newdirectory but selftests create nested resultdirs; top outcome selected by exactcategoryset aftersettled, no runtime replay/unknowncommandseconds not invented. Split original unit15+PS3 selectors verbatim into bounded test-category-runner-contracts, original integration source guards intact; next execute skipped runner category and discovery/plan. Storyfixed3/3PASS196.60commandseconds, fullrawdirectlyD and streamreferences; F1/OOMcorrections reviewed. Instrumented physical2674source/binary payloads preservedD ZIP142673265B/allhashesverified; origin-onlysourcead10 recovered28blobs. Final source/input/review readiness and originalfull600/820/15 stillpending; conditionaloff same source/DLL/package. D-only diagnostics, uncapped fullmode; previouscompleteT429 retained until verified replacement.
-
-# Current checkpoint: r51 post-recovery progression DATA; T442 harness correction RED
-
-Production code0f9: unit16/16 and actual pair1/1PASS, source2to1; borrowed/owned/fresh/mutation controls retained. Affected attempt on0f9 metadata8b2 completed67corePASS, story2PASS/1FAIL due pre-existing whole-file diagnostic string OOM, later selection/transport/launch categories NOT executed. Full3storyraw files1.920GB moved to D only after settled; no collection cap. Separate Astra/high review found no production defect and F1 story output root bypass; both harness issues now corrected with streaming file SHA references and configured parent. Generator/cleanup output also uses configured root. New root tests cover default/configured/invalid/explicit parent without global env changes. T443 inactive observation capability is prepared before final genuine source42 generation so full/off can share exact source/DLL/package; Observation causalRED on67a242: integration67cases53PASS/14expectedFAIL (new24controls10PASS/14FAIL), later15unitcases skipped fail-fast; no timeout/cleanup complete. Helper now implemented exact full/off guards and child metadata, only detailed observer null for off; semantic callbacks/defaultfull/native budgets retained. Next uniform current XML+selected controls/review+genuine input+full original600, conditional off. No timeout success claimed; raw/machine evidence remains D only.
-
-# Current checkpoint: T441 causal GREEN complete; T442 controls/review next
-
-Canonical r51 PROGDATA1..6 #1536; code0f9e211ab saved/pushed and full remote SHA verified. T439 actual pinned phases/consistency and presented artifacts complete. T440 source1d16 causal RED16complete1PASS15expectedFAIL, actual private phase1FAIL Expected1Actual2 after unchanged-file assertion; source/DLL/raw verified. T441 unit16/16PASS (28.1926284s command), actual private proof/phase1/1PASS (34.8616017s), no timeout and complete owned/runtime cleanup. Unit8requests8->1bodies/992->124attrs; disabled8/992 retained. Actual phase2->1DATA bodies, service2requests/1source/1reuse, no fallback/fresh, inner recovery1mutation begin/end retained, closed0entries/dependencies and unchanged all game files. All old phase/proof stage counts same; exact raw129646->114208 contiguous rows, closed phase4800.5316->4271.7439ms; whole-fixture attrs24764->21776. Inclusive times include diagnostics, do not add nested timers or claim original/no-diagnostic speedup.
-
-Current XML full-ref unit+integration0errors; all8DLLs uniform actual0f9 source and Core/Support copies byte exact; native2source pins unchanged;258changed XML lines audited0introduced-line compiler warnings. Evidence/tool/paired raw and all results at D:/BoeDiagnostics/progression-r51-20261023 (T440-red-evidence.json, T441-pair-comparison.json, T441-current-binaries.json). Previous complete T429 remains retained pending real replacement. Source code implementation and4harness/docs helper files parent-inspected, no open internal finding. Independent complex reviewer must be separate actual Astra/high per current user policy; helper Sol6.1/high cannot review own changes. Current human-only metadata checkpoint does not require rebuilding unchanged code0f9; wrapper verifies exact8DLLs plus runtime/catalog/source diff before NoBuild.
-
-Next run7selected existing categories without repeating the already-passed16+1, discovery-only catalog/plan and complete independent coherent review. Then genuine NEW progression-data-v1 source42 input generation/two imports/closed carrier verification and exact origin recovery before one original600/820/15 in C:/Temp. Full child streams and category output go directly to configured D-only diagnostic root; no raw/JSON/archives into Git. No diagnostic-off switch implemented yet; conditional decision follows actual instrumented600. Original600 UNRUN for r51; T427–429 remain open. User autonomous/review-wait waiver applies; all engineering and source/input/ownership gates retained.
+Separate independent gpt-6-astra/high accepted source/input/FULL honest outcome,
+OFF actual original assertions, paired archive evidence and bounded assessment;
+no introduced source finding. F1/V1/PREF1 corrected and closed. Full observer remains
+uncapped; source/DLL snapshot preserved separatelyD. Further broad reuse needs
+separate recovery/dependency/authority design;390s is still expensive. Final human
+report recovery/crash5/T442-progression-data-results.md. No tests/runtime active.
+Final documentation/retention scope independently accepted; exact25file retirement
+completed13,224,974,454bytes, alltargets absent/current3retainedarchives rehashed.
+T442/T443 complete as bounded implementation/measurement deliverables; FULL stillFAIL,
+oldTake/othercuts/Linux remain open. Human-only closure commit/origin recovery next.
+D:/BoeDiagnostics/progression-r51-20261023 contains complete current pair, source
+snapshot/current derivation/compact comparisons; Git has no diagnostics.
 
 # Historical checkpoint: T438 remaining story cost investigation
 

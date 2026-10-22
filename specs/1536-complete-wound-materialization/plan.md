@@ -93,6 +93,19 @@ now using the samead10DLLs/new immutable carrier; no runtime concurrent analysis
 Detailed source/binaries remain separately preservedD. Preserve original assertions
 and600/820/15, interpret absent timing rows as unobserved, not zero work.
 
+Off comparison completedPASS with the samead10 source/DLL/input and unchanged
+600/820/15: resumer scalar exit390.104173s, first owner380.9853871s,
+repeat0.8700029s; testcase500.8214906s/command527.0498258s. All original Cut0
+turn43/history/wound/interface/one-commit/inert-repeat assertions execute unchanged;
+84after/repeat images equal, all53reported scopes closedempty, native/stream/cleanup
+qualified. Full remainsFAIL600. Independent complex reviewer accepted actual
+outcome and observation boundary. Further broad proof reuse requires separate
+recovery/dependency/authority design; no whole-case cache-only speedup is established.
+Retain instrumented source snapshot and current paired captures outsideGit; retire
+superseded raw and duplicate loose copies after verified replacement. Report in
+recovery/crash5/T442-progression-data-results.md; no further game rerun required
+for unchanged human documentation or retention bookkeeping.
+
 ## Review focus
 
 - A no-evidence recovery rotates epoch; no retained pre-recovery result survives.

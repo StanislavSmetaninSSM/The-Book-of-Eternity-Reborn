@@ -1,5 +1,12 @@
 # Revision51: post-recovery progression DATA measurement
 
+The bounded change is implemented and the original Windows Cut0 passes with
+detailed operation timings disabled: resumer390.1042s within its unchanged600s
+limit; testcase500.8215s and whole command527.0498s. The fully instrumented run
+still times out at600s. This establishes an actual completed recovery, not a
+cache-only whole-case speedup. Other Windows cuts, Linux and the full suite were
+not qualified by these two runs.
+
 Production source `ad10e075047300c8c9438c70880a4649c57b1466` (cache implementation
 `0f9e211abf7f8cff9446c895b86788e313f628e1`, unchanged thereafter). The typed result
 is reused only for the same private parsed root in the stable proof/phase span.
@@ -72,10 +79,43 @@ no Git output. One analysis provenance-reference typo was corrected by explicit
 postprocessing (raw index is the SHA/CRC receipt); no timing/count/path changes or
 runtime replay. Exact executed parser version remains in the verified raw archive.
 
-Conditional off comparison: **PENDING**. A measured assessment authorizes it because
-further broad caching is a larger contract change. Same source/DLLs/input are pinned.
-Full remains uncapped; off, if selected after measured assessment, omits only detailed
-operation timing and its optional cleanup snapshot. Scalar stage/recovery metrics,
-semantic publication/proof callbacks, all gameplay/history/interface/inert-repeat
-oracles, complete native streams/EOF/settlement and budgets remain identical.
-No timeout resolution or whole-game acceleration is claimed before actual outcome.
+Conditional off comparison: **PASS**, same compiledad10 source,8DLLs and genuine
+input, rehashed after both runs. Original600child/820shared/15minute category
+bounds remain. Actual resumer scalar exit390.104173s; first current-owner call
+380.9853871s, repeat0.8700029s. Testcase500.8214906s; whole command527.0498258s.
+The scalar exit is a child-stage timestamp, not the parent command duration.
+
+Original producer exits73; different identified resumer exits0. Original assertions
+execute unchanged: actual caller enters, turn43 completes, full Published proof and
+interface match, resource/wound histories agree, exactly one changing interface
+commit occurs, fresh authority is absent before entry and temporary artifacts are
+removed. Second entry returnsfalse and all84 final/repeat images are byte-equal.
+All53reported recovery scopes close empty. Native identity/EOF/join/stream hashes
+and owned/runtime cleanup pass. Independent separate-context gpt-6-astra/high
+checked the actual original assertions and complete output, not only the test status.
+
+Off omits detailed operation timing and its optional cleanup snapshot. Scalar
+stage/recovery metrics, semantic publication/proof callbacks, all original oracles
+and complete native streams remain. No record/byte cap was added. Detailed timing
+coverage in off is **disabled/unobserved**, not zero filesystem work. Its verified
+30payload archive contains8,721,474raw bytes in2,764,542compressed bytes onD.
+Full remains an actualFAIL; off does not retroactively qualify that run.
+
+Further optimization is possible, but this narrow cache did not remove the
+768880attribute checks in the matched first publication. Wider proof reuse needs
+a separate dependency/recovery/authority design with causal file fixtures; simply
+retaining proof across recovery would violate the current freshness contract.
+This block stops at the requested bounded change and actual off comparison.
+The390s recovery remains expensive for a game. One successful run is not a
+repeatability or performance guarantee, and no cache-only percentage is claimed.
+Keep the typed reuse and use off for ordinary timing measurements; the physical
+instrumented source/DLL snapshot and complete current full/off captures remain
+separately onD for reuse. Git contains source, immutable input and human findings only.
+
+Retention after verified replacement and independent scope review:25exact old or
+duplicate files removed,13,224,974,454bytes freed. This includes the preceding
+original raw/large derivation, current full loose copies already preserved in its
+verified archive, superseded cheap story traces and the old whole-string OOM TRX.
+Current full/off archives, instrumented source/DLL snapshot, current full derivation,
+small prior comparisons and test/qualification/review receipts remain onD.
+No game root, immutable input or checkout file was a retirement target.
