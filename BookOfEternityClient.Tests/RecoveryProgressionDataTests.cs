@@ -70,18 +70,18 @@ public sealed class RecoveryProgressionDataTests(ITestOutputHelper output)
     }
 
     /// <summary>
-    /// Preserves real no-journal recovery barriers and permits reuse only after their mutation boundaries.
+    /// Preserves fresh no-journal recovery inspection without falsely invalidating unchanged DATA.
     /// </summary>
     /// <param name="recoverBetween">
     /// Whether an additional recovery occurs between DATA requests instead of before their first source.
     /// </param>
     /// <returns>
-    /// Completion after observing one source after both barriers, or a new source after intervening recovery.
+    /// Completion after one source serves requests before and after successful no-evidence recovery.
     /// </returns>
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task ActualRecoveryBeforeFirstSourceAllowsReuseButRecoveryBetweenInvalidates(bool recoverBetween)
+    public async Task ActualNoEvidenceRecoveryPreservesDataBeforeAndBetweenRequests(bool recoverBetween)
     {
         using var fixture = new Fixture(output);
         var files = fixture.Files;
@@ -106,9 +106,9 @@ public sealed class RecoveryProgressionDataTests(ITestOutputHelper output)
         await files.ComputeRecoveryDataAsync(computation, input, lease, Source);
         await files.ComputeRecoveryDataAsync(computation, input, lease, Source);
         fixture.Evidence("ActualRecovery", bodies, scope);
-        Assert.Equal(recoverBetween ? 2 : 1, bodies);
+        Assert.Equal(1, bodies);
         var metrics = scope.CaptureMetrics();
-        Assert.True(metrics.MutationBegins > 0);
+        Assert.Equal(0, metrics.MutationBegins);
         Assert.Equal(metrics.MutationBegins, metrics.MutationEnds);
         Assert.Equal(0, metrics.ActiveMutations);
     }

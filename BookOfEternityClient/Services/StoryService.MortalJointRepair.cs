@@ -93,12 +93,17 @@ public partial class StoryService
         MortalQteDecisionPublication.JointProgressionPhaseCapability applied, bool append)
     {
         var publicationAttempted = false;
+        using var sourceOperation = _fs.BeginSourceDataOperationIfNeeded();
         try
         {
             using var t318Timer1 = _fs.MeasureOperation("JointStoryComplete.ReadInitialSourceAsync");
             var source = await ReadMortalJointStorySourceAsync(lease, applied);
             t318Timer1?.Dispose();
-            if (!source.AlreadyAppended && !append) return new(MortalJointStoryDisposition.OriginalUnappended, null, null);
+            if (!source.AlreadyAppended && !append)
+            {
+                if (sourceOperation != null) await sourceOperation.CompleteAsync();
+                return new(MortalJointStoryDisposition.OriginalUnappended, null, null);
+            }
             if (!source.AlreadyAppended)
             {
                 // Check exact before-images again immediately before the existing
@@ -110,6 +115,7 @@ public partial class StoryService
                     !SameJointStoryBytes(fresh.Current, source.Current)) throw new InvalidDataException("joint_story_before_changed");
                 publicationAttempted = true;
                 using var t318Timer3 = _fs.MeasureOperation("JointStoryComplete.AppendAtomicAsync");
+                await _fs.VerifySourceDataAsync(lease);
                 await _fs.AppendFileAtomicAsync(lease, source.Path, source.Row + "\n");
                 t318Timer3?.Dispose();
             }
@@ -126,6 +132,7 @@ public partial class StoryService
             var proof = new MortalJointStoryProof(MortalJointStoryIssuer, this, lease, applied,
                 source.Path, source.Row, source.After, source.Histories);
             t318Timer4?.Dispose();
+            if (sourceOperation != null) await sourceOperation.CompleteAsync();
             return new(source.AlreadyAppended ? MortalJointStoryDisposition.AlreadyAppended :
                 MortalJointStoryDisposition.AppendedAndVerified, proof, null);
         }

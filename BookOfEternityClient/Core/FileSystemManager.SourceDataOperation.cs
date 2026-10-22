@@ -14,6 +14,7 @@ public partial class FileSystemManager
     /// </returns>
     internal SourceDataOperation? BeginSourceDataOperationIfNeeded()
     {
+        if (ValidationReuseSuppression.Value != 0) return null;
         if (_sourceDataOperation.Value is { } current)
         {
             current.RequireOpen();
@@ -24,6 +25,30 @@ public partial class FileSystemManager
         ValidationDiagnosticScopes.Value++;
         return operation;
     }
+
+    /// <summary>
+    /// Freshly verifies provisional DATA at a selected original effect boundary.
+    /// </summary>
+    /// <param name="lease">
+    /// Original caller-owned lease under which the effect will be admitted.
+    /// </param>
+    /// <returns>
+    /// Completion after verification, or immediate completion outside a source operation.
+    /// </returns>
+    internal Task VerifySourceDataAsync(CanonicalWriteLease lease) =>
+        ValidationReuseSuppression.Value == 0 && _sourceDataOperation.Value is { } operation
+            ? operation.VerifyAsync(lease) : Task.CompletedTask;
+
+    /// <summary>
+    /// Consumes the verified source transition before the selected synchronous runtime effect.
+    /// </summary>
+    /// <param name="lease">
+    /// Exact original physical lease retained throughout the synchronous effect.
+    /// </param>
+    /// <returns>
+    /// Original mutation token that must remain live until the effect has finished.
+    /// </returns>
+    internal IDisposable BeginVerifiedSourceEffect(CanonicalWriteLease lease) => BeginValidationMutation(lease);
 
     /// <summary>
     /// Owns the existing general service storage for one selected source DATA operation.
@@ -42,6 +67,10 @@ public partial class FileSystemManager
         private object _segment = new();
         private object? _rootVersion;
         private object? _verifiedVersion;
+        private CanonicalWriteLease? _verifiedLease;
+        private MainAdmission? _verifiedEntry;
+        private AmbientCanonicalLeaseRegistration? _verifiedRegistration;
+        private CanonicalWriteLease? _generationLease;
         private bool _busy;
         private bool _failed;
         private bool _completed;
@@ -90,7 +119,11 @@ public partial class FileSystemManager
             lock (_gate)
             {
                 if (_closed || _failed || _completed || _suspended != 0 || _busy) return;
-                if (_lease == null || !_lease.IsActive) _lease = lease;
+                if (_lease == null || !_lease.IsActive)
+                {
+                    _lease = lease;
+                    ClearReceipt();
+                }
             }
         }
 
@@ -111,7 +144,7 @@ public partial class FileSystemManager
             var root = _files.CanonicalRootAuthorityIdentity;
             lock (root.WorkerContextGate)
                 return root.WorkerContext == null && lease.MainAdmission != null &&
-                    lease.MainAdmission.TryCaptureRecoveryValidationVersion(lease, null, out version);
+                    lease.MainAdmission.TryCaptureSourceDataVersion(lease, out version);
         }
 
         /// <summary>
@@ -149,6 +182,7 @@ public partial class FileSystemManager
                 if (_suspended != 0) return false;
                 RequireOpen();
                 if (_busy) { _failed = true; throw new InvalidOperationException("Overlapping source operation."); }
+                ClearReceipt();
                 if (declared != null)
                 {
                     if (_lease != null && _lease.IsActive && !ReferenceEquals(_lease, declared))
@@ -163,9 +197,34 @@ public partial class FileSystemManager
                 }
                 _busy = true;
                 _rootVersion = root;
-                _verifiedVersion = null;
                 return true;
             }
+        }
+
+        /// <summary>
+        /// Admits each new physical adapter freshly before selecting provisional DATA.
+        /// </summary>
+        private void BindGeneration()
+        {
+            if (ReferenceEquals(_generationLease, _lease)) return;
+            var generation = _files.ReadLocalGenerationSnapshot(_lease!);
+            if (generation.Bytes == null || _generation != null &&
+                (generation.Binding != _generation.Binding || _generation.Bytes == null ||
+                    !generation.Bytes.AsSpan().SequenceEqual(_generation.Bytes)))
+                throw new InvalidDataException("Source operation generation changed between admitted leases.");
+            _generation ??= generation;
+            _generationLease = _lease;
+        }
+
+        /// <summary>
+        /// Retires the one-use verification receipt without granting approval to another adapter.
+        /// </summary>
+        private void ClearReceipt()
+        {
+            _verifiedVersion = null;
+            _verifiedLease = null;
+            _verifiedEntry = null;
+            _verifiedRegistration = null;
         }
 
         /// <summary>
@@ -216,7 +275,7 @@ public partial class FileSystemManager
             try
             {
                 using var request = _files.MeasureOperation("OperationFileData.RequestSync");
-                _generation ??= _files.ReadLocalGenerationSnapshot(_lease!);
+                BindGeneration();
                 var computed = false;
                 var task = _operation.GetOrComputeAsync(Snapshot, Key(path, family, declared), [this], _ =>
                 {
@@ -259,7 +318,7 @@ public partial class FileSystemManager
             try
             {
                 using var request = _files.MeasureOperation("OperationFileData.RequestAsync");
-                _generation ??= _files.ReadLocalGenerationSnapshot(_lease!);
+                BindGeneration();
                 var computed = false;
                 var value = await _operation.GetOrComputeAsync(Snapshot, Key(path, family, declared), [this], async ct =>
                 {
@@ -321,6 +380,9 @@ public partial class FileSystemManager
                 if (!TryRootVersion(out root) || !ReferenceEquals(root, _rootVersion))
                     throw new InvalidOperationException("Source fence version changed during verification.");
                 _verifiedVersion = root;
+                _verifiedLease = lease;
+                _verifiedEntry = MainAdmissions.Value;
+                _verifiedRegistration = lease.AmbientRegistration;
             }
             catch { _failed = true; throw; }
             finally { lock (_gate) _busy = false; }
@@ -358,15 +420,17 @@ public partial class FileSystemManager
                 if (_suspended != 0) return admission.BeginMutation();
                 RequireOpen();
                 expected = _touched.Count == 0 ? null : _verifiedVersion;
-                if (_touched.Count != 0 && (expected == null || !TryRootVersion(out var root) || !ReferenceEquals(root, expected)))
+                if (_touched.Count != 0 && (expected == null || !ReferenceEquals(_verifiedLease, _lease) ||
+                    !ReferenceEquals(_verifiedEntry, MainAdmissions.Value) ||
+                    !ReferenceEquals(_verifiedRegistration, _lease?.AmbientRegistration) ||
+                    !TryRootVersion(out var root) || !ReferenceEquals(root, expected)))
                     throw new InvalidOperationException("Mutation requires a freshly verified source operation.");
                 _busy = true;
-                _verifiedVersion = null;
             }
             try
             {
-                var token = admission.BeginMutation(expected);
-                try { Retire(); return token; }
+                var token = admission.BeginMutation(expected, expected == null ? null : _verifiedEntry);
+                try { RequireOpen(); Retire(); return token; }
                 catch { token.Dispose(); throw; }
             }
             finally { lock (_gate) _busy = false; }
@@ -410,6 +474,7 @@ public partial class FileSystemManager
             {
                 // A new lease must establish its own fresh adapter. No admission survives this close.
                 _lease = null;
+                ClearReceipt();
             }
         }
 
@@ -427,8 +492,9 @@ public partial class FileSystemManager
             _keys.Clear();
             _touched.Clear();
             _generation = null;
+            _generationLease = null;
             _rootVersion = null;
-            _verifiedVersion = null;
+            ClearReceipt();
             _segment = new();
         }
 

@@ -38,6 +38,7 @@ public partial class CharacteristicsService
         MortalQteDecisionPublication.JointProgressionPhaseCapability applied, bool write)
     {
         var publicationAttempted = false;
+        using var sourceOperation = _fs.BeginSourceDataOperationIfNeeded();
         try
         {
             _fs.EnsureCanonicalWriteLeaseActive(lease);
@@ -53,6 +54,7 @@ public partial class CharacteristicsService
             await applied.ValidateCurrentAsync(_fs, lease);
             if (write)
             {
+                await _fs.VerifySourceDataAsync(lease);
                 publicationAttempted = true;
                 await _fs.WriteFileAtomicAsync(lease, JointDerivedProjectionPath,
                     CanonicalJsonUtf8.DecodeOneOptionalBom(expected));
@@ -76,6 +78,7 @@ public partial class CharacteristicsService
             }
             await calculator.ValidateJointProjectionReadsAsync();
             await applied.ValidateCurrentAsync(_fs, lease);
+            if (sourceOperation != null) await sourceOperation.CompleteAsync();
             return new(write ? JointDerivedProjectionDisposition.WrittenAndVerified :
                 JointDerivedProjectionDisposition.ExistingVerified, null);
         }

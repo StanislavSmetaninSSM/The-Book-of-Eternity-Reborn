@@ -81,6 +81,7 @@ internal sealed class MortalJointRepairPublicationTransaction
     internal async Task<MortalJointRepairPublicationSettlement> CompensateAndRearmAsync(FileSystemManager files,
         FileSystemManager.CanonicalWriteLease lease)
     {
+        using var independentSource = files.ForceFreshRecoveryValidation();
         try
         {
             EnsureOwner(files, lease);

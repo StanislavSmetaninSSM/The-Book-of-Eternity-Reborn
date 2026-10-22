@@ -60,6 +60,7 @@ public partial class GameEngine
             !SameMortalJointOriginalFrame(publication.Frame, frame, frame.TurnNumber))
             return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;
 
+        using var sourceOperation = _fs.BeginSourceDataOperationIfNeeded();
         MortalQteDecisionPublication.JointProgressionPhaseCapability observedPhase;
         StoryService.MortalJointStoryProof? existingStory = null;
         WoundAcceptedTurnOutputBindingResult? appliedOutput = null;
@@ -185,6 +186,7 @@ public partial class GameEngine
             using var namedCompletionTimer21 = _fs.MeasureOperation("JointCompletion.ValidateAppliedProgressionAsync");
             await applied.ValidateCurrentAsync(_fs, lease);
             namedCompletionTimer21?.Dispose();
+            if (sourceOperation != null) await sourceOperation.CompleteAsync();
         }
         namedCompletionFinalLease?.Dispose();
         // This is a dedicated prerequisite disposition, never generic Accepted.

@@ -142,6 +142,7 @@ public partial class GameEngine
             await suffix.ValidateCurrentAsync(_fs, lease);
             cleanupTimer17?.Dispose();
             using var cleanupTimer18 = _fs.MeasureOperation("JointCleanup.PublishLocalFilesAsync");
+            await _fs.VerifySourceDataAsync(lease);
             var outcome = await _fs.PublishLocalFilesAsync(lease, members,
                 validatePreparedNamespace: async () =>
                 {

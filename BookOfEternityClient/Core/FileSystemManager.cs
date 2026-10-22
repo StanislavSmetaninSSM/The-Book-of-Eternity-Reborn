@@ -365,13 +365,13 @@ public partial class FileSystemManager
         /// </returns>
         public async ValueTask DisposeAsync()
         {
-            // Preserve original reservation refusal before attempting asynchronous DATA settlement.
-            MainAdmission?.RequireNoWorldReadConflict(MainAdmission.WorldRecoveryIssuance);
             Exception? sourceFailure = null;
+            var sourceOperation = ValidationReuseSuppression.Value == 0 ? Owner._sourceDataOperation.Value : null;
+            // Preserve original reservation refusal before attempting asynchronous DATA settlement.
+            if (sourceOperation != null) MainAdmission?.RequireNoWorldReadConflict(MainAdmission.WorldRecoveryIssuance);
             try
             {
-                if (ValidationReuseSuppression.Value == 0 && Owner._sourceDataOperation.Value is { } operation)
-                    await operation.BeforeLeaseCloseAsync(this);
+                if (sourceOperation != null) await sourceOperation.BeforeLeaseCloseAsync(this);
             }
             catch (Exception error) { sourceFailure = error; }
             MainAdmission?.BeginPhysicalLeaseClose();

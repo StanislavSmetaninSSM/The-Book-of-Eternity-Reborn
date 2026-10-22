@@ -17,16 +17,18 @@ internal static partial class MortalQteDecisionPublication
     internal static async Task<JointProgressionPublicationResult> CommitJointProgressionPhaseAsync(FileSystemManager files,
         FileSystemManager.CanonicalWriteLease lease, JointProgressionPhaseCapability capability)
     {
+        using var sourceOperation = files.BeginSourceDataOperationIfNeeded();
         byte[]? appliedMarker = null;
         var knownCommitted = false;
         try
         {
             await capability.ValidateCurrentAsync(files, lease);
             if (capability.Phase == "applied")
-                return await ReadFreshAppliedResultAsync(files, lease, capability, capability.MarkerBefore,
-                    JointProgressionPublicationDisposition.AlreadyApplied);
+                return await CompleteAsync(await ReadFreshAppliedResultAsync(files, lease, capability, capability.MarkerBefore,
+                    JointProgressionPublicationDisposition.AlreadyApplied));
             appliedMarker = capability.CreateAppliedMarker(JointProgressionPhaseIssuer);
             var changes = CreateJointProgressionPhaseChanges(capability, appliedMarker, restore: false);
+            await files.VerifySourceDataAsync(lease);
             if (!capability.TryConsume(JointProgressionPhaseIssuer)) return JointPhaseHeld("The exact phase capability is already consumed.");
             // One existing trusted publication. The unchanged report is guard-
             // only: the full exact source/phase proof in the publisher callback
@@ -41,8 +43,8 @@ internal static partial class MortalQteDecisionPublication
             knownCommitted = true;
             files.RequireCommittedLocalPublication(outcome);
             await RequireJointPhaseImagesAsync(files, lease, capability, appliedMarker, applied: true);
-            return await ReadFreshAppliedResultAsync(files, lease, capability, appliedMarker,
-                JointProgressionPublicationDisposition.Applied);
+            return await CompleteAsync(await ReadFreshAppliedResultAsync(files, lease, capability, appliedMarker,
+                JointProgressionPublicationDisposition.Applied));
         }
         catch (CoordinatedStatePublicationUncertainException error)
         {
@@ -56,6 +58,12 @@ internal static partial class MortalQteDecisionPublication
         {
             if (!knownCommitted || appliedMarker is null) return JointPhaseHeld(error.Message);
             return await CompensateKnownJointProgressionAsync(files, lease, capability, appliedMarker, error.Message);
+        }
+
+        async Task<JointProgressionPublicationResult> CompleteAsync(JointProgressionPublicationResult result)
+        {
+            if (sourceOperation != null) await sourceOperation.CompleteAsync();
+            return result;
         }
     }
 
@@ -121,6 +129,7 @@ internal static partial class MortalQteDecisionPublication
     private static async Task<JointProgressionPublicationResult> CompensateKnownJointProgressionAsync(FileSystemManager files,
         FileSystemManager.CanonicalWriteLease lease, JointProgressionPhaseCapability original, byte[] appliedMarker, string failure)
     {
+        using var independentSource = files.ForceFreshRecoveryValidation();
         try
         {
             // Known commitment alone is insufficient. BEFORE any restore, prove

@@ -50,6 +50,7 @@ public partial class GameEngine
         await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
         {
             RequireOrdinaryJointRepairLease(lease);
+            using var sourceOperation = _fs.BeginSourceDataOperationIfNeeded();
             using var recoveryValidation = _fs.BeginRecoveryValidation(lease);
             // The raw intake lease owns no plan. Reconstruct BOTH owners and the
             // still-confirmed original request here, under the canonical lease.
@@ -174,6 +175,9 @@ public partial class GameEngine
                 _logger.LogError(error,
                     "Joint canonical publication retained {Disposition} after an exception.", result.Disposition);
             }
+
+            if (sourceOperation != null && result.Disposition == MortalJointRepairPublicationDisposition.Committed && result.Completed != null)
+                await sourceOperation.CompleteAsync();
 
             MortalJointRepairCanonicalRefresh Refused(IReadOnlyList<ValidationIssue> issues)
             {

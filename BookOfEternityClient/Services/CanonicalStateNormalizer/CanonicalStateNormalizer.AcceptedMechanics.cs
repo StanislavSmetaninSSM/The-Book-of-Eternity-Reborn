@@ -330,6 +330,7 @@ public partial class CanonicalStateNormalizer
             innerTiming9?.Dispose();
             using var innerTiming10 = _fs.MeasureOperation("MechanicsPublish.PublishLocalBatchAsync");
             jointTransaction?.BindIntendedMembers(JointBatchPublicationIssuer, prepared);
+            if (jointTransaction != null) await _fs.VerifySourceDataAsync(_writeLease);
             _fs.RequireCommittedLocalPublication(await _fs.PublishLocalFilesAsync(_writeLease, prepared));
             jointTransaction?.ObserveCommittedBatch(JointBatchPublicationIssuer);
             innerTiming10?.Dispose();

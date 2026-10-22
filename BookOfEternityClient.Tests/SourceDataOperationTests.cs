@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Text;
 using System.Text.Json;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 using Xunit.Abstractions;
@@ -258,6 +259,223 @@ public sealed class SourceDataOperationTests(ITestOutputHelper output)
     }
 
     /// <summary>
+    /// Keeps successful physical no-evidence recovery from retiring unchanged file DATA.
+    /// </summary>
+    /// <returns>
+    /// Completion after one original and one final physical source with no mutation transitions.
+    /// </returns>
+    [Fact]
+    public async Task NoEvidenceRecoveryReusesAlreadyReadData()
+    {
+        using var fixture = new SourceOperationFixture(output);
+        var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        using var operation = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(operation);
+        var before = files.CanonicalRootAuthorityIdentity.ValidationEpoch.CaptureActivity();
+        fixture.Recording = true;
+        for (var i = 0; i < 8; i++)
+        {
+            files.ResolveBackupPublicationRecovery(lease);
+            Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+        }
+        await operation.CompleteAsync();
+        Assert.Equal(2, fixture.PresentSources);
+        Assert.Equal(before, files.CanonicalRootAuthorityIdentity.ValidationEpoch.CaptureActivity());
+    }
+
+    /// <summary>
+    /// Runs actual committed-journal cleanup under independent fresh recovery authority.
+    /// </summary>
+    /// <returns>
+    /// Completion after real cleanup retires cached DATA and removes its original journal.
+    /// </returns>
+    [Fact]
+    public async Task ActualJournalCleanupRetiresDataAndSettlesIndependently()
+    {
+        using var fixture = new SourceOperationFixture(output);
+        var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        fixture.OnPublication = (phase, _) =>
+        {
+            if (phase == TrustedLocalPublicationPhase.Committed) throw new IOException("retain actual committed cleanup debt");
+        };
+        File.WriteAllText(files.ResolvePath("debt.json"), "{}");
+        Assert.True(await CoordinatedStateWriteHelper.TryCommitAsync(files, lease,
+            new CoordinatedStateWriteHelper.PlannedWrite("debt.json", "{}", "{\"n\":1}")));
+        fixture.OnPublication = null;
+        var journal = Path.Combine(files.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
+        Assert.True(File.Exists(journal));
+        using var operation = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(operation);
+        fixture.Recording = true;
+        Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+        var before = files.CanonicalRootAuthorityIdentity.ValidationEpoch.CaptureActivity();
+        files.ResolveBackupPublicationRecovery(lease);
+        Assert.False(File.Exists(journal));
+        Assert.True(files.CanonicalRootAuthorityIdentity.ValidationEpoch.CaptureActivity().Begins > before.Begins);
+        Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+        await operation.CompleteAsync();
+        Assert.Equal(3, fixture.PresentSources);
+    }
+
+    /// <summary>
+    /// Releases the physical lock even when a raw edit makes lease-close verification refuse.
+    /// </summary>
+    /// <returns>
+    /// Completion after the failed close releases its owned resources and another manager acquires the lock.
+    /// </returns>
+    [Fact]
+    public async Task FailedCloseFenceReleasesOriginalPhysicalResources()
+    {
+        using var fixture = new SourceOperationFixture(output);
+        var files = fixture.Files;
+        var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        using var operation = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(operation);
+        Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+        File.WriteAllText(fixture.PresentPath, "modified");
+        await Assert.ThrowsAsync<InvalidDataException>(async () => await lease.DisposeAsync());
+        Assert.False(lease.IsActive);
+        var other = new FileSystemManager(fixture.Root, NullLogger<FileSystemManager>.Instance);
+        await using var later = await other.AcquireCanonicalWriteLeaseAsync();
+        Assert.True(later.IsActive);
+    }
+
+    /// <summary>
+    /// Invalidates a one-use effect receipt when another source observation occurs.
+    /// </summary>
+    /// <returns>
+    /// Completion after the real writer refuses until the new observation receives its own fence.
+    /// </returns>
+    [Fact]
+    public async Task SourceReadAfterVerificationRequiresAnotherFence()
+    {
+        using var fixture = new SourceOperationFixture(output);
+        var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        using var operation = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(operation);
+        Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+        await operation.VerifyAsync(lease);
+        Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => files.WriteFileAtomicAsync(lease, "effect.txt", "forbidden"));
+        await operation.VerifyAsync(lease);
+        await files.WriteFileAtomicAsync(lease, "present.txt", "changed");
+        Assert.Equal("changed", await files.ReadFileAsync(lease, "present.txt"));
+        await operation.CompleteAsync();
+    }
+
+    /// <summary>
+    /// Retires DATA throughout an independently authorized callback and its awaited descendants.
+    /// </summary>
+    /// <returns>
+    /// Completion after fresh callback observations and a newly established post-callback source.
+    /// </returns>
+    [Fact]
+    public async Task FreshCallbackCannotReviveEarlierData()
+    {
+        using var fixture = new SourceOperationFixture(output);
+        var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        using var operation = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(operation);
+        fixture.Recording = true;
+        Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+        using (files.ForceFreshRecoveryValidation())
+        {
+            File.WriteAllText(fixture.PresentPath, "callback");
+            Assert.Equal("callback", await files.ReadFileAsync(lease, "present.txt"));
+            await Task.Yield();
+            Assert.Equal("callback", await files.ReadFileAsync(lease, "present.txt"));
+        }
+        Assert.Equal("callback", await files.ReadFileAsync(lease, "present.txt"));
+        Assert.Equal("callback", await files.ReadFileAsync(lease, "present.txt"));
+        await operation.CompleteAsync();
+        Assert.Equal(5, fixture.PresentSources);
+    }
+
+    /// <summary>
+    /// Retires source DATA even when the original write has equal bytes or fails before publication.
+    /// </summary>
+    /// <param name="invalidPath">
+    /// Whether the attempted writer fails on its original invalid path rather than publishing equal bytes.
+    /// </param>
+    /// <returns>
+    /// Completion after a later segment reads the physical source once and freshly verifies it once.
+    /// </returns>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task SameBytesAndFailedWriterRetireData(bool invalidPath)
+    {
+        using var fixture = new SourceOperationFixture(output);
+        var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        using var operation = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(operation);
+        Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+        await operation.VerifyAsync(lease);
+        if (invalidPath)
+            Assert.NotNull(await Record.ExceptionAsync(() => files.WriteFileAtomicAsync(lease, "../outside.txt", "forbidden")));
+        else await files.WriteFileAtomicAsync(lease, "present.txt", "original");
+        fixture.Recording = true;
+        for (var i = 0; i < 8; i++) Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+        await operation.CompleteAsync();
+        Assert.Equal(2, fixture.PresentSources);
+    }
+
+    /// <summary>
+    /// Rechecks the exact verified root version atomically when a mutation token is registered.
+    /// </summary>
+    [Fact]
+    public void RootEpochRejectsAnInterveningMutationAtRegistration()
+    {
+        var epoch = new CanonicalValidationEpoch();
+        Assert.True(epoch.TryCapture(out var verified));
+        var intervening = new object();
+        epoch.Begin(intervening);
+        epoch.End(intervening);
+        Assert.Throws<InvalidOperationException>(() => epoch.Begin(new object(), verified));
+        Assert.Equal((1L, 1L, 0), epoch.CaptureActivity());
+    }
+
+    /// <summary>
+    /// Admits a replacement physical lease freshly and never revives a prior lease's source receipt.
+    /// </summary>
+    /// <returns>
+    /// Completion after observing changed physical bytes and requiring a new pre-write fence.
+    /// </returns>
+    [Fact]
+    public async Task ReplacementLeaseRequiresNewDataAndVerification()
+    {
+        using var fixture = new SourceOperationFixture(output);
+        var files = fixture.Files;
+        using var operation = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(operation);
+        await using (var first = await files.AcquireCanonicalWriteLeaseAsync())
+        {
+            files.GetOrCreateSessionGeneration(first);
+            Assert.Equal("original", await files.ReadFileAsync(first, "present.txt"));
+            await operation.VerifyAsync(first);
+        }
+        File.WriteAllText(fixture.PresentPath, "modified");
+        await using var second = await files.AcquireCanonicalWriteLeaseAsync();
+        Assert.Equal("modified", await files.ReadFileAsync(second, "present.txt"));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => files.WriteFileAtomicAsync(second, "effect.txt", "forbidden"));
+        await operation.VerifyAsync(second);
+        await files.WriteFileAtomicAsync(second, "present.txt", "final");
+        Assert.Equal("final", await files.ReadFileAsync(second, "present.txt"));
+        await operation.CompleteAsync();
+    }
+
+    /// <summary>
     /// Owns tiny real files, actual source counters and complete passive timing output.
     /// </summary>
     private sealed class SourceOperationFixture : IDisposable
@@ -287,7 +505,8 @@ public sealed class SourceDataOperationTests(ITestOutputHelper output)
                     {
                         if (Recording && path == "present.txt") Interlocked.Increment(ref _presentSources);
                     },
-                    OperationTimingObserver = (name, boundary, elapsed) => _rows.Enqueue((name, boundary, elapsed.TotalMilliseconds))
+                    OperationTimingObserver = (name, boundary, elapsed) => _rows.Enqueue((name, boundary, elapsed.TotalMilliseconds)),
+                    LocalPublicationObserver = (phase, ordinal) => OnPublication?.Invoke(phase, ordinal)
                 });
         }
 
@@ -305,6 +524,11 @@ public sealed class SourceDataOperationTests(ITestOutputHelper output)
         /// Gets the production manager issuing every real lease and source read.
         /// </summary>
         internal FileSystemManager Files { get; }
+
+        /// <summary>
+        /// Gets or sets the actual publication hook used to retain known committed cleanup debt.
+        /// </summary>
+        internal Action<TrustedLocalPublicationPhase, int>? OnPublication { get; set; }
 
         /// <summary>
         /// Gets or sets whether actual opened present-file sources contribute to the counter.

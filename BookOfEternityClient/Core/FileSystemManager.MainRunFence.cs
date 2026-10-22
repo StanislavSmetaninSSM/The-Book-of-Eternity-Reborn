@@ -221,12 +221,15 @@ public partial class FileSystemManager
         /// <param name="expectedVersion">
         /// Exact verified root version required at registration, or no version for original independent authority.
         /// </param>
+        /// <param name="expectedEntry">
+        /// Exact entry that verified DATA, or no entry for independent original authority.
+        /// </param>
         /// <returns>
         /// An independent token retained until the operation and its cleanup end.
         /// </returns>
-        internal MainMutationReservation BeginMutation(object? expectedVersion = null) =>
+        internal MainMutationReservation BeginMutation(object? expectedVersion = null, MainAdmission? expectedEntry = null) =>
             (_access ?? throw new InvalidOperationException("Mutation admission is no longer active."))
-                .BeginMutation(this, WorldRecoveryIssuance, expectedVersion);
+                .BeginMutation(this, WorldRecoveryIssuance, expectedVersion, expectedEntry);
 
         /// <summary>
         /// Applies the original mutation exclusion before fresh no-effect recovery inspection.
@@ -265,6 +268,28 @@ public partial class FileSystemManager
             }
             return found && access != null &&
                 access.TryCaptureRecoveryValidationVersion(this, _files, lease, compatibleRead, out version);
+        }
+
+        /// <summary>
+        /// Captures a DATA version only when every live borrower belongs to this exact current ancestry.
+        /// </summary>
+        /// <param name="lease">
+        /// Original physical lease still owned by this admission.
+        /// </param>
+        /// <param name="version">
+        /// Current root token, or no reusable token for a conflicting sibling or retired ancestry.
+        /// </param>
+        /// <returns>
+        /// Whether source DATA can participate without widening the existing borrower contract.
+        /// </returns>
+        internal bool TryCaptureSourceDataVersion(CanonicalWriteLease lease, out object? version)
+        {
+            var ancestors = new HashSet<MainAdmission>(ReferenceEqualityComparer.Instance);
+            for (var current = MainAdmissions.Value; current != null; current = current.Parent)
+                ancestors.Add(current);
+            version = null;
+            return ancestors.Contains(this) && _access != null &&
+                _access.TryCaptureRecoveryValidationVersion(this, _files, lease, null, out version, ancestors);
         }
 
         /// <summary>
@@ -429,11 +454,15 @@ public partial class FileSystemManager
         /// <param name="version">
         /// Current root version on success, or <see langword="null"/> when reuse is unsupported.
         /// </param>
+        /// <param name="ancestors">
+        /// Exact allowed borrower ancestry for file DATA, or no extra restriction for the original fact adapter.
+        /// </param>
         /// <returns>
         /// <see langword="true"/> if the original access remains eligible and its root has no active mutation; otherwise, <see langword="false"/>.
         /// </returns>
         internal bool TryCaptureRecoveryValidationVersion(MainAdmission admission, FileSystemManager files,
-            CanonicalWriteLease lease, ValidationReadReservation? compatibleRead, out object? version)
+            CanonicalWriteLease lease, ValidationReadReservation? compatibleRead, out object? version,
+            HashSet<MainAdmission>? ancestors = null)
         {
             lock (_state)
             {
@@ -449,6 +478,7 @@ public partial class FileSystemManager
                     (_worldRead != null && (!ReferenceEquals(_worldRead, compatibleRead) || compatibleRead!.Closed ||
                         !ReferenceEquals(compatibleRead.RetainedPhysicalAdmission, admission))) ||
                     _admissions.Any(p => p.Closed || p.Closing || p.BoundClosing || p.MetadataOnly ||
+                        ancestors != null && !ancestors.Contains(p) ||
                         (p.PhysicalScope && !ReferenceEquals(p, admission))))
                     return false;
                 return owner.RootIdentity.ValidationEpoch.TryCapture(out version);
@@ -575,15 +605,26 @@ public partial class FileSystemManager
         /// <param name="expectedVersion">
         /// Exact fresh fence version checked atomically by the root, or no version for independent authority.
         /// </param>
+        /// <param name="expectedEntry">
+        /// Exact source-verifying entry whose current ancestry must remain exclusive through registration.
+        /// </param>
         /// <returns>
         /// A separately tracked token; nested tokens cannot release each other.
         /// </returns>
         internal MainMutationReservation BeginMutation(MainAdmission admission, ValidationReadReservation? recoveryIssuance,
-            object? expectedVersion = null)
+            object? expectedVersion = null, MainAdmission? expectedEntry = null)
         {
             lock (_state)
             {
                 RequireMutationAvailable(admission, recoveryIssuance);
+                if (expectedVersion != null)
+                {
+                    var ancestors = new HashSet<MainAdmission>(ReferenceEqualityComparer.Instance);
+                    for (var current = MainAdmissions.Value; current != null; current = current.Parent) ancestors.Add(current);
+                    if (!ReferenceEquals(MainAdmissions.Value, expectedEntry) || !ancestors.Contains(admission) ||
+                        _admissions.Any(p => p.Closed || p.Closing || p.BoundClosing || p.MetadataOnly || !ancestors.Contains(p)))
+                        throw new InvalidOperationException("The verified source entry changed before mutation admission.");
+                }
                 var token = new MainMutationReservation(ReleaseMutation);
                 _mutations.Add(token);
                 try { owner.RootIdentity.ValidationEpoch.Begin(token, expectedVersion); }
