@@ -727,15 +727,60 @@ public sealed class SourceDataOperationTests(ITestOutputHelper output)
         var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         operation.SourceReadBarrierForTests = release.Task;
         var first = files.ReadFileAsync(lease, "present.txt");
+        Exception? closeFailure;
         try
         {
             Assert.False(first.IsCompleted);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await lease.DisposeAsync());
-            Assert.True(lease.IsActive);
+            closeFailure = await Record.ExceptionAsync(async () => await lease.DisposeAsync());
         }
-        finally { release.TrySetResult(); }
+        finally
+        {
+            release.TrySetResult();
+            await Record.ExceptionAsync(async () => await first);
+        }
+        Assert.IsType<InvalidOperationException>(closeFailure);
+        Assert.True(lease.IsActive);
         Assert.Equal("original", await first);
         await operation.CompleteAsync();
+    }
+
+    /// <summary>
+    /// Keeps unfinished source ownership visible to its physical lease after ambient owner disposal.
+    /// </summary>
+    /// <returns>
+    /// Completion after premature physical close refuses, the late source settles and both owners close empty.
+    /// </returns>
+    [Fact]
+    public async Task DisposedPendingSourceStillPreventsPrematurePhysicalClose()
+    {
+        using var fixture = new SourceOperationFixture(output);
+        var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        var operation = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(operation);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        operation.SourceReadBarrierForTests = release.Task;
+        var first = files.ReadFileAsync(lease, "present.txt");
+        Exception? closeFailure;
+        Exception? lateFailure = null;
+        try
+        {
+            Assert.False(first.IsCompleted);
+            operation.Dispose();
+            closeFailure = await Record.ExceptionAsync(async () => await lease.DisposeAsync());
+        }
+        finally
+        {
+            operation.Dispose();
+            release.TrySetResult();
+            lateFailure = await Record.ExceptionAsync(async () => await first);
+        }
+        Assert.IsType<InvalidOperationException>(closeFailure);
+        Assert.True(lease.IsActive);
+        Assert.IsType<ObjectDisposedException>(lateFailure);
+        Assert.False(operation.HasRetainedSourceReferences);
+        Assert.Equal(new ValidationOperationState(0, 0, true), operation.CaptureState());
     }
 
     /// <summary>
