@@ -1,3 +1,14 @@
+# CRASH5 — revision45 tasks: remove repeated attribute-call fanout
+
+Source issue1536; spec FANOUT-1..5. Dependency chain T417 ->T418 ->T419 ->T420, one parent implementation block and separate coherent independent review; no parallel source edits.
+
+- [ ] T417 [US1/US2/US3] Reconcile every T416 path/call, locate concrete source multipliers and preserved validity boundaries; resolve the production design in spec/plan with exact files, causal counter targets and negative controls, actual Spec Kit phases/equivalent consistency and presented written scope.
+- [ ] T418 [US2/US3] Preserve output pins; add minimal typed real-path causal count RED, implement the selected redundant-work removal and accurate multiline XML; preserve actual owner/lease/generation/path/error/current-byte checks and uncapped passive diagnostics.
+- [ ] T419 [US2/US3] Causal GREEN and selected affected refusal/freshness/real-authority controls, XML-enabled builds and catalog plan/discovery; full evidence and independent coherent complex source/test/doc review before original execution.
+- [ ] T420 [US1/US2/US3] Genuine source-bound input if needed, one original Windows C:/Temp600/820/15 Cut0 with complete raw and real owned closing, equal-completed-milestone count/time comparison, honest full-case result, independent final review and exact saved remote recovery. Original timeout resolution remains OPEN unless all original success oracles pass.
+
+FANOUT-1 mapsT417; FANOUT-2 mapsT417–419; FANOUT-3 mapsT418–419; FANOUT-4 mapsT419–420; FANOUT-5 maps every task. Findings/plan alone cannot close implementation. Preserve all earlier measured FAIL/success qualifications and historical unfinished tasks.
+
 # CRASH5 — revision44 tasks: bounded GetAttributes duplication fix
 
 - [x] T413 [US1/US2/US3] Planning only: canonical r44 spec/plan/tasks, actual existing-feature phases and equivalent consistency, separate source-informed complex review, presented actual specification and exact saved recovery. Evidence: T413-planning-consistency.json/T413-plan-review.json and plan checkpoint. No production edit, build or test.
