@@ -1,9 +1,23 @@
 {
   "schemaVersion": 1,
   "selections": [
+{
+    "category": "core-service-cache",
+    "reason": "Extensible production cache mechanisms: presence, comparers, lifecycle, backend ownership and controlled-clock TTL/idle timer cleanup.",
+    "contracts": [
+        "CACHEPORT-1..7: DW10-based general production architecture, cheap fixtures and preserved source/close/copy contracts."
+    ]
+},
+{
+    "category": "core-repository-cache",
+    "reason": "Production repository-service-cache composition: copies, real source save/delete, failed-write invalidation, shared async serialization and close/reentrant refusal.",
+    "contracts": [
+        "CACHEPORT-1..7: DW10-based general production architecture, cheap fixtures and preserved source/close/copy contracts."
+    ]
+},
     {
       "category": "core-operation-validation-cache",
-      "reason": "Cheap typed production service controls for per-operation values/facts, complete versions/dependencies, copying, fresh failure and memory lifetime before filesystem integration.",
+      "reason": "Existing26 typed coordinator controls plus injected NoCache/storage/aliasing/fault/outside-monitor behavior during the DW10 architecture migration.",
       "contracts": [
         "OPCACHE-1..4/7/9: reusable production service, temporary operation data and meaningful causal execution counts."
       ]

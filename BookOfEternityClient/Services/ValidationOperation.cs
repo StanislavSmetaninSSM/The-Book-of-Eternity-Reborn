@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using BookOfEternityClient.Services.Caching;
 
 namespace BookOfEternityClient.Services;
 
@@ -18,7 +19,15 @@ internal sealed class ValidationOperation : IDisposable
     /// <summary>
     /// Creates an initially empty operation context.
     /// </summary>
-    internal ValidationOperation() { }
+    /// <param name="storage">
+    /// Exclusively owned storage for this context, never shared with another operation.
+    /// </param>
+    internal ValidationOperation(ServiceCacheStorage<EntryKey, Entry> storage) { storage.ClaimValidationOperation(); }
+
+    /// <summary>
+    /// Reports whether the current thread holds the coordinator monitor for typed diagnostics.
+    /// </summary>
+    internal bool IsStateMonitorHeld => Monitor.IsEntered(_gate);
 
     /// <summary>
     /// Clears prior results and selects fresh computation without cache insertion throughout a nested scope.
@@ -455,12 +464,12 @@ internal sealed class ValidationOperation : IDisposable
     /// <param name="Input">
     /// Complete stable input and policy identity.
     /// </param>
-    private readonly record struct EntryKey(object Computation, object Input);
+    internal readonly record struct EntryKey(object Computation, object Input);
 
     /// <summary>
     /// Compares and hashes only stable reference identities of a logical key.
     /// </summary>
-    private sealed class EntryKeyComparer : IEqualityComparer<EntryKey>
+    internal sealed class EntryKeyComparer : IEqualityComparer<EntryKey>
     {
         /// <inheritdoc />
         public bool Equals(EntryKey x, EntryKey y) => Same(x, y);
@@ -496,7 +505,7 @@ internal sealed class ValidationOperation : IDisposable
     /// <param name="Versions">
     /// Detached complete direct and transitive versions; no computation delegate is retained.
     /// </param>
-    private sealed record Entry(object? Value, IOperationDependency[] Declaration,
+    internal sealed record Entry(object? Value, IOperationDependency[] Declaration,
         KeyValuePair<IOperationDependency, object>[] Versions);
 
     /// <summary>

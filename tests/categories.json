@@ -2,6 +2,54 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "core-service-cache",
+  "responsibility": "Extensible production cache mechanisms: presence, comparers, lifecycle, backend ownership and controlled-clock TTL/idle timer cleanup.",
+  "excludes": "No game/filesystem setup, reflection, diagnostic quota, real TTL waiting or full suite.",
+  "changeHints": [
+    "BookOfEternityClient/Services/Caching/",
+    "BookOfEternityClient.Tests/ServiceCacheTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.ServiceCacheTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "core-repository-cache",
+  "responsibility": "Production repository-service-cache composition: copies, real source save/delete, failed-write invalidation, shared async serialization and close/reentrant refusal.",
+  "excludes": "No game/filesystem setup, reflection, diagnostic quota, real TTL waiting or full suite.",
+  "changeHints": [
+    "BookOfEternityClient/Services/Caching/",
+    "BookOfEternityClient.Tests/RepositoryCacheServiceTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.RepositoryCacheServiceTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "core-operation-validation-cache",
   "responsibility": "General temporary operation computation and validation facts: typed values, exact dependencies, copying, lifecycle and async refusal controls on cheap fixtures.",
   "excludes": "No game, filesystem preparation, authority substitution, broad suite or diagnostic quota.",
@@ -21,7 +69,8 @@
     {
       "project": "unit",
       "tests": [
-        "BookOfEternityClient.Tests.OperationValidationServiceTests.*"
+        "BookOfEternityClient.Tests.OperationValidationServiceTests.*",
+        "BookOfEternityClient.Tests.OperationValidationStorageTests.*"
       ]
     }
   ]

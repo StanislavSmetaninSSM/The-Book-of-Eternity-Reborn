@@ -1,22 +1,40 @@
+using BookOfEternityClient.Services.Caching;
+
 namespace BookOfEternityClient.Services;
 
 /// <summary>
-/// Creates independent temporary contexts for game computations and data validation.
+/// Defines creation of independent temporary validation contexts.
 /// </summary>
-internal sealed class OperationValidationService
+internal abstract class OperationValidationService
 {
-    /// <summary>
-    /// Creates a stateless factory that retains no operation results.
-    /// </summary>
-    internal OperationValidationService() { }
-
     /// <summary>
     /// Creates a context whose caller must dispose at the end of its whole operation.
     /// </summary>
     /// <returns>
     /// A new context with no relationship to results from earlier operations.
     /// </returns>
-    internal ValidationOperation BeginOperation() => new();
+    internal abstract ValidationOperation BeginOperation();
+}
+
+/// <summary>
+/// Creates contexts with configured, exclusively owned cache mechanisms.
+/// </summary>
+internal sealed class DefaultOperationValidationService : OperationValidationService
+{
+    private readonly Func<ServiceCache<ValidationOperation.EntryKey, ValidationOperation.Entry>> _cacheFactory;
+
+    /// <summary>
+    /// Selects how each context creates its own storage mechanism.
+    /// </summary>
+    /// <param name="cacheFactory">
+    /// Returns an unclaimed backend per operation; null selects an identity-keyed dictionary.
+    /// </param>
+    internal DefaultOperationValidationService(Func<ServiceCache<ValidationOperation.EntryKey, ValidationOperation.Entry>>? cacheFactory = null) =>
+        _cacheFactory = cacheFactory ?? (() => new DictionaryCache<ValidationOperation.EntryKey, ValidationOperation.Entry>(new ValidationOperation.EntryKeyComparer()));
+
+    /// <inheritdoc />
+    internal override ValidationOperation BeginOperation() =>
+        new(new ServiceCacheStorage<ValidationOperation.EntryKey, ValidationOperation.Entry>(_cacheFactory()));
 }
 
 /// <summary>

@@ -18,7 +18,7 @@ public sealed class OperationValidationServiceTests(ITestOutputHelper output)
     [Fact]
     public async Task RepeatedValueComputationsExecuteOncePerOperation()
     {
-        var service = new OperationValidationService();
+        var service = new DefaultOperationValidationService();
         var rule = new OperationComputation<int>("fixture.value", 1, value => value);
         var input = new object();
         var executions = 0;
@@ -48,7 +48,7 @@ public sealed class OperationValidationServiceTests(ITestOutputHelper output)
     [Fact]
     public async Task SuccessfulValidationFactsExecuteOncePerOperation()
     {
-        var service = new OperationValidationService();
+        var service = new DefaultOperationValidationService();
         var rule = new OperationValidationRule("fixture.validation", 1);
         var input = new object();
         var executions = 0;
@@ -70,7 +70,7 @@ public sealed class OperationValidationServiceTests(ITestOutputHelper output)
     [Fact]
     public async Task FalseZeroNullAndEmptyArePresentValues()
     {
-        using var operation = new OperationValidationService().BeginOperation();
+        using var operation = new DefaultOperationValidationService().BeginOperation();
         var executions = 0;
         async Task Check<T>(T value)
         {
@@ -94,7 +94,7 @@ public sealed class OperationValidationServiceTests(ITestOutputHelper output)
     [Fact]
     public async Task MutableResultsAreCopiedIntoAndOutOfTheCache()
     {
-        using var operation = new OperationValidationService().BeginOperation();
+        using var operation = new DefaultOperationValidationService().BeginOperation();
         var source = new[] { 1, 2 };
         var executions = 0;
         var rule = new OperationComputation<int[]>("fixture.array", 1, value => value.ToArray());
@@ -113,7 +113,7 @@ public sealed class OperationValidationServiceTests(ITestOutputHelper output)
     [Fact]
     public async Task DistinctRulesAndInputsDoNotShareResults()
     {
-        using var operation = new OperationValidationService().BeginOperation();
+        using var operation = new DefaultOperationValidationService().BeginOperation();
         var rule = new OperationComputation<int>("fixture.identity", 1, value => value);
         var otherRule = new OperationComputation<int>("fixture.identity", 1, value => value);
         var input = new EqualInput();
@@ -133,7 +133,7 @@ public sealed class OperationValidationServiceTests(ITestOutputHelper output)
     [Fact]
     public async Task DirectDeclarationAndVersionChangesCannotHitAnOlderEntry()
     {
-        using var operation = new OperationValidationService().BeginOperation();
+        using var operation = new DefaultOperationValidationService().BeginOperation();
         var rule = new OperationComputation<int>("fixture.dependencies", 1, value => value);
         var input = new object();
         var a = new Dependency();
@@ -159,7 +159,7 @@ public sealed class OperationValidationServiceTests(ITestOutputHelper output)
     [Fact]
     public async Task ChangingTheSuppliedDeclarationCannotRewriteTheStoredDeclaration()
     {
-        using var operation = new OperationValidationService().BeginOperation();
+        using var operation = new DefaultOperationValidationService().BeginOperation();
         var rule = new OperationComputation<int>("fixture.declaration.copy", 1, value => value);
         var input = new object();
         IOperationDependency[] declaration = [new Dependency()];
@@ -177,7 +177,7 @@ public sealed class OperationValidationServiceTests(ITestOutputHelper output)
     [Fact]
     public async Task VersionChangeWhileCopyingAHitCannotEscape()
     {
-        using var operation = new OperationValidationService().BeginOperation();
+        using var operation = new DefaultOperationValidationService().BeginOperation();
         var dependency = new Dependency();
         var changeDuringCopy = false;
         var rule = new OperationComputation<int>("fixture.hit.version", 1, value =>
@@ -203,7 +203,7 @@ public sealed class OperationValidationServiceTests(ITestOutputHelper output)
     [Fact]
     public async Task ChildHitsContributeTransitiveDependencies()
     {
-        using var operation = new OperationValidationService().BeginOperation();
+        using var operation = new DefaultOperationValidationService().BeginOperation();
         var childRule = new OperationComputation<int>("fixture.child", 1, value => value);
         var parentRule = new OperationComputation<int>("fixture.parent", 1, value => value);
         var childInput = new object();
@@ -234,7 +234,7 @@ public sealed class OperationValidationServiceTests(ITestOutputHelper output)
     [Fact]
     public async Task IneligibleChildrenPreventParentCaching()
     {
-        using var operation = new OperationValidationService().BeginOperation();
+        using var operation = new DefaultOperationValidationService().BeginOperation();
         var childRule = new OperationComputation<int>("fixture.untracked.child", 1, value => value);
         var parentRule = new OperationComputation<int>("fixture.untracked.parent", 1, value => value);
         var input = new object();
@@ -259,7 +259,7 @@ public sealed class OperationValidationServiceTests(ITestOutputHelper output)
     [Fact]
     public async Task ForceFreshPropagatesAndDoesNotInsertResults()
     {
-        using var operation = new OperationValidationService().BeginOperation();
+        using var operation = new DefaultOperationValidationService().BeginOperation();
         var rule = new OperationComputation<int>("fixture.fresh", 1, value => value);
         var input = new object();
         var executions = 0;
@@ -289,7 +289,7 @@ public sealed class OperationValidationServiceTests(ITestOutputHelper output)
     [InlineData(true)]
     public async Task FailedFreshRequestCannotResurrectChildOrParent(bool cancel)
     {
-        using var operation = new OperationValidationService().BeginOperation();
+        using var operation = new DefaultOperationValidationService().BeginOperation();
         var child = new OperationComputation<int>("fixture.failure.child", 1, value => value);
         var parent = new OperationComputation<int>("fixture.failure.parent", 1, value => value);
         var input = new object();
@@ -324,7 +324,7 @@ public sealed class OperationValidationServiceTests(ITestOutputHelper output)
     [Fact]
     public async Task CaughtChildFailurePoisonsTheActiveParent()
     {
-        using var operation = new OperationValidationService().BeginOperation();
+        using var operation = new DefaultOperationValidationService().BeginOperation();
         var parent = new OperationComputation<int>("fixture.catching.parent", 1, value => value);
         var child = new OperationComputation<int>("fixture.catching.child", 1, value => value);
         var input = new object();
@@ -352,7 +352,7 @@ public sealed class OperationValidationServiceTests(ITestOutputHelper output)
     [Fact]
     public async Task AnyFailedComputationRetiresEarlierSuccesses()
     {
-        using var operation = new OperationValidationService().BeginOperation();
+        using var operation = new DefaultOperationValidationService().BeginOperation();
         var rule = new OperationComputation<int>("fixture.before.failure", 1, value => value);
         var failing = new OperationComputation<int>("fixture.failure", 1, value => value);
         var input = new object();
@@ -371,7 +371,7 @@ public sealed class OperationValidationServiceTests(ITestOutputHelper output)
     [Fact]
     public async Task VersionChangeDuringAwaitCannotPublishSuccess()
     {
-        using var operation = new OperationValidationService().BeginOperation();
+        using var operation = new DefaultOperationValidationService().BeginOperation();
         var rule = new OperationComputation<int>("fixture.await", 1, value => value);
         var dependency = new Dependency();
         var input = new object();
@@ -397,7 +397,7 @@ public sealed class OperationValidationServiceTests(ITestOutputHelper output)
     [Fact]
     public async Task RecursiveSameKeyIsRefusedWithoutAnUnboundedFixture()
     {
-        using var operation = new OperationValidationService().BeginOperation();
+        using var operation = new DefaultOperationValidationService().BeginOperation();
         var rule = new OperationComputation<int>("fixture.recursion", 1, value => value);
         var input = new object();
         var executions = 0;
@@ -418,7 +418,7 @@ public sealed class OperationValidationServiceTests(ITestOutputHelper output)
     [Fact]
     public async Task IndependentParallelUseIsRefused()
     {
-        using var operation = new OperationValidationService().BeginOperation();
+        using var operation = new DefaultOperationValidationService().BeginOperation();
         var rule = new OperationComputation<int>("fixture.parallel", 1, value => value);
         var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -453,7 +453,7 @@ public sealed class OperationValidationServiceTests(ITestOutputHelper output)
     [InlineData("cancel")]
     public async Task ClosingTheWholeOperationClearsItsRetainedData(string outcome)
     {
-        var operation = new OperationValidationService().BeginOperation();
+        var operation = new DefaultOperationValidationService().BeginOperation();
         var rule = new OperationComputation<int[]>("fixture.lifetime", 1, value => value.ToArray());
         var dependency = new Dependency();
         try
@@ -483,7 +483,7 @@ public sealed class OperationValidationServiceTests(ITestOutputHelper output)
     [Fact]
     public async Task ClosingDuringAwaitPreventsLateInsertion()
     {
-        var operation = new OperationValidationService().BeginOperation();
+        var operation = new DefaultOperationValidationService().BeginOperation();
         var rule = new OperationComputation<int>("fixture.close.pending", 1, value => value);
         var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -506,7 +506,7 @@ public sealed class OperationValidationServiceTests(ITestOutputHelper output)
     [Fact]
     public async Task ClosingDoesNotReplaceAnOriginalComputationError()
     {
-        var operation = new OperationValidationService().BeginOperation();
+        var operation = new DefaultOperationValidationService().BeginOperation();
         var rule = new OperationComputation<int>("fixture.primary.error", 1, value => value);
         var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -534,7 +534,7 @@ public sealed class OperationValidationServiceTests(ITestOutputHelper output)
     [InlineData(true)]
     public async Task CapturedDescendantsCannotReviveRetiredFrames(bool closeOperation)
     {
-        using var operation = new OperationValidationService().BeginOperation();
+        using var operation = new DefaultOperationValidationService().BeginOperation();
         var rule = new OperationComputation<int>("fixture.descendant", 1, value => value);
         var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         Task<int>? descendant = null;
@@ -561,7 +561,7 @@ public sealed class OperationValidationServiceTests(ITestOutputHelper output)
     [Fact]
     public async Task CancellationBeforeAHitDoesNotReturnTheCachedValue()
     {
-        using var operation = new OperationValidationService().BeginOperation();
+        using var operation = new DefaultOperationValidationService().BeginOperation();
         var rule = new OperationComputation<int>("fixture.cancel.hit", 1, value => value);
         var input = new object();
         var executions = 0;
