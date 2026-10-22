@@ -2,6 +2,31 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "core-operation-validation-cache",
+  "responsibility": "General temporary operation computation and validation facts: typed values, exact dependencies, copying, lifecycle and async refusal controls on cheap fixtures.",
+  "excludes": "No game, filesystem preparation, authority substitution, broad suite or diagnostic quota.",
+  "changeHints": [
+    "BookOfEternityClient/Services/OperationValidationService.cs",
+    "BookOfEternityClient/Services/ValidationOperation.cs",
+    "BookOfEternityClient.Tests/OperationValidationServiceTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.OperationValidationServiceTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-reserved-validation-read-set",
   "responsibility": "Reserved QTE source and actual request-admission counts, exact guarded reservation, current-byte exit proof and conservative controls on tiny typed real fixtures.",
   "excludes": "No game preparation, reflection, fabricated authority, full suite or diagnostic quota.",

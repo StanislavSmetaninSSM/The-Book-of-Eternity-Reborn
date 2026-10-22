@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "core-operation-validation-cache",
+      "reason": "Cheap typed production service controls for per-operation values/facts, complete versions/dependencies, copying, fresh failure and memory lifetime before filesystem integration.",
+      "contracts": [
+        "OPCACHE-1..4/7/9: reusable production service, temporary operation data and meaningful causal execution counts."
+      ]
+    },
+    {
       "category": "fr063-reserved-validation-read-set",
       "reason": "Source and added request-admission counts for real lease-free/explicit consumers, strict absence/current bytes/generation, retained ownership, overlap and passive observers.",
       "contracts": [

@@ -4,7 +4,7 @@ Issue1536 / active spec OPCACHE-1..10 / canonical plan revision47. Parent owns i
 
 ## US1 — reusable service and values
 
-- [ ] T425 [US1/US2/US3] Actual written r47 contract/planning phases + source consultation, full T422 RED/raw/binary preservation, equivalent read-only consistency, presented artifacts, bounded save and exact recovery. Design does not qualify implementation.
+- [x] T425 [US1/US2/US3] Actual written r47 contract/planning phases + source consultation, full T422 RED/raw/binary preservation, equivalent read-only consistency, presented artifacts, bounded save and exact recovery. Design does not qualify implementation. Evidence: T425-design-review.json accepts D1/D2 corrections;1a7e666aba9c8d8b5e15c7eddec21aa23be0705b recovered1207 exact Git blobs, clean and remote-matched (T425-design-recovery.json).
 - [ ] T426 [US1/US2] Generic typed ephemeral operation service with values/facts, exact versions/dependencies/copying, false/0/null, child-hit dependencies, ForceFresh, failure/cancel/recursion/overlap/close and late-descendant controls. Cheap meaningful causal RED/GREEN, explicit new category, multiline XML and current-source evidence.
 
 ## US2 — preserve correctness while avoiding repeated DATA checks
