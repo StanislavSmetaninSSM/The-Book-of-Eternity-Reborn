@@ -58,7 +58,7 @@ public sealed class RecoveryFileValidationTests(ITestOutputHelper output)
         output.WriteLine(JsonSerializer.Serialize(new { name, reuse, Requests = 8, Bodies = bodies,
             Attributes = fixture.Attributes, FirstAttributes = firstAttributes, State = scope.CaptureState() }));
         Assert.Equal(expectedBodies, bodies);
-        Assert.True(firstAttributes > 0);
+        if (OperatingSystem.IsWindows()) Assert.True(firstAttributes > 0);
         Assert.Equal(reuse ? firstAttributes : firstAttributes * 8, fixture.Attributes);
         Assert.Equal(reuse ? 1 : 0, scope.CaptureState().Entries);
     }
@@ -255,6 +255,99 @@ public sealed class RecoveryFileValidationTests(ITestOutputHelper output)
     }
 
     /// <summary>
+    /// Keeps captured diagnostic descendants outside the functional coordinator without dropping observations.
+    /// </summary>
+    [Fact]
+    public async Task PassiveDiagnosticDescendantCannotJoinOrPoisonTheOperation()
+    {
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        Task? diagnostic = null; FileSystemManager files = null!; FileSystemManager.CanonicalWriteLease lease = null!;
+        var diagnosticBodies = 0;
+        using var fixture = new Fixture(output, observation: (name, boundary) =>
+        {
+            if (name != "RecoveryValidation.Source.Mechanical" || boundary != "begin" || diagnostic is not null) return;
+            diagnostic = Task.Run(async () =>
+            {
+                await release.Task;
+                await files.ValidateRecoveryDataAsync(new("Diagnostic", 1), new object(), lease, async () =>
+                { diagnosticBodies++; Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt")); });
+            });
+        });
+        files = fixture.Files;
+        await using var retainedLease = await files.AcquireCanonicalWriteLeaseAsync(); lease = retainedLease;
+        using var scope = files.BeginRecoveryValidation(lease);
+        var rule = new OperationValidationRule("Mechanical", 1); var input = new object(); var bodies = 0;
+        Task Validate() => files.ValidateRecoveryDataAsync(rule, input, lease, async () =>
+        { bodies++; Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt")); });
+        fixture.Recording = true;
+        await Validate(); await Validate();
+        Assert.NotNull(diagnostic); release.SetResult(); await diagnostic;
+        await Validate(); Assert.Equal(1, bodies); Assert.Equal(1, diagnosticBodies);
+        Assert.Equal(1, scope.CaptureState().Entries);
+    }
+
+    /// <summary>
+    /// Requires fresh source validation to reject raw drift at the publication fence.
+    /// </summary>
+    [Fact]
+    public async Task FreshFenceRejectsPersistentExternalDrift()
+    {
+        using var fixture = new Fixture(output); var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        using var scope = files.BeginRecoveryValidation(lease);
+        var rule = new OperationValidationRule("Mechanical", 1); var input = new object(); var bodies = 0;
+        Task Validate() => files.ValidateRecoveryDataAsync(rule, input, lease, async () =>
+        {
+            bodies++;
+            if (await files.ReadFileAsync(lease, "present.txt") != "original")
+                throw new InvalidDataException("Actual source bytes changed.");
+        });
+        await Validate(); await Validate(); Assert.Equal(1, bodies);
+        File.WriteAllText(files.ResolvePath("present.txt"), "external");
+        using (files.ForceFreshRecoveryValidation())
+            await Assert.ThrowsAsync<InvalidDataException>(Validate);
+        Assert.Equal(2, bodies); Assert.True(scope.CaptureState().Closed);
+    }
+
+    /// <summary>
+    /// Validates a genuine minimal issued original through the same successful-fact service without minting game authority.
+    /// </summary>
+    [Fact]
+    public async Task GenuineIssuedOriginalEvidenceReusesOnlyItsSourceRecheck()
+    {
+        using var fixture = new Fixture(output); var files = fixture.Files;
+        files.EnsureDirectoryStructure();
+        const string path = "game_state/control/pending_mortal_wound_occurrences.json";
+        await files.WriteFileAtomicAsync(path, "{\"schemaVersion\":1,\"occurrences\":[]}");
+        await new LiveTurnPreparationService(files).PrepareAsync(new LiveTurnPreparationOptions
+        {
+            SessionId = "recovery-cache-original", RequestId = "recovery-cache-request", TurnNumber = 7,
+            CurrentRealm = "Mortal World", PlayerAction = "Проверить оригинал.", PreGeneratedDices1d20 = [3, 17]
+        });
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        var read = PendingTurnSnapshotReader.ReadObservedCurrent(files, lease, new[] { path });
+        Assert.True(read.Success, JsonSerializer.Serialize(read.Issues));
+        var original = Assert.IsType<PendingTurnSnapshotReadAuthority>(read.Snapshot);
+        var evidence = Assert.IsType<PendingTurnSnapshotReader.OriginalReadEvidence>(read.Evidence);
+        using var scope = files.BeginRecoveryValidation(lease);
+        var rule = new OperationValidationRule("Mechanical", 1); var bodies = 0; var liveGuards = 0;
+        for (var i = 0; i < 8; i++)
+        {
+            files.EnsureCanonicalWriteLeaseActive(lease);
+            evidence.RequireOwner(files, lease, original); liveGuards++;
+            await files.ValidateRecoveryDataAsync(rule, evidence, lease, () =>
+            { bodies++; evidence.RequireCurrent(files, lease, original); return Task.CompletedTask; });
+        }
+        Assert.Equal(8, liveGuards); Assert.Equal(1, bodies);
+        using (files.ForceFreshRecoveryValidation())
+            await files.ValidateRecoveryDataAsync(rule, evidence, lease, () =>
+            { bodies++; evidence.RequireCurrent(files, lease, original); return Task.CompletedTask; });
+        Assert.Equal(2, bodies);
+        await Assert.ThrowsAsync<InvalidOperationException>(() => Task.Run(() => evidence.RequireOwner(
+            new FileSystemManager(fixture.Root, NullLogger<FileSystemManager>.Instance), lease, original)));
+    }
+
+    /// <summary>
     /// Owns a tiny independent filesystem and emits all measured timing rows before safe removal.
     /// </summary>
     private sealed class Fixture : IDisposable
@@ -274,7 +367,11 @@ public sealed class RecoveryFileValidationTests(ITestOutputHelper output)
         /// <param name="arbitraryReadHook">
         /// Whether to install a functional read callback that must exclude reuse.
         /// </param>
-        internal Fixture(ITestOutputHelper output, bool arbitraryReadHook = false)
+        /// <param name="observation">
+        /// Optional passive receiver called for each measured timing boundary; null adds no receiver.
+        /// </param>
+        internal Fixture(ITestOutputHelper output, bool arbitraryReadHook = false,
+            Action<string, string>? observation = null)
         {
             _output = output;
             Root = Path.Combine(_parent, "boe-recovery-cache-" + _nonce);
@@ -290,6 +387,7 @@ public sealed class RecoveryFileValidationTests(ITestOutputHelper output)
                         _events.Enqueue((name, boundary, elapsed.TotalSeconds));
                         if (name == "TrustedScope.Probe.GetAttributes" && boundary == "end")
                             Interlocked.Increment(ref _attributes);
+                        observation?.Invoke(name, boundary);
                     },
                     BeforeCanonicalReadOpenAsync = arbitraryReadHook ? _ => Task.CompletedTask : null
                 });

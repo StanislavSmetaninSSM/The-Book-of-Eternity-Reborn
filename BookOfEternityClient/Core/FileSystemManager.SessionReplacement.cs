@@ -21,9 +21,22 @@ public partial class FileSystemManager
         return windows ? relative.Replace('\\', '/') : relative;
     }
 
+    /// <summary>
+    /// Publishes one original session replacement while tracking preparation, namespace changes and cleanup as a mutation.
+    /// </summary>
+    /// <param name="lease">
+    /// Original valid session-replacement lease retained by the caller.
+    /// </param>
+    /// <param name="clearGameState">
+    /// Whether the existing clear contract also replaces game state and its required directory structure.
+    /// </param>
+    /// <returns>
+    /// The replacement generation after the existing committed-outcome requirement succeeds.
+    /// </returns>
     private async Task<string> PublishSessionReplacementAsync(CanonicalWriteLease lease, bool clearGameState)
     {
         EnsureValidSessionReplacementLease(lease);
+        using var validationMutation = BeginValidationMutation(lease);
         VerifyCurrentSessionOperation(lease);
         if (lease.MutationIntentRecorder != null || lease.IsLegacyStorageRecovery)
             throw new InvalidOperationException("Common session replacement cannot run inside a legacy transaction.");

@@ -19,14 +19,19 @@ public sealed partial class JointBundleComponentTests
         private AcceptedMechanicsWoundStageBundle? _jointBundle;
         private object? _jointContinuation;
         private object? _jointReservation;
+        private object? _jointBaseline;
         /// <summary>
         /// Produces a real source occurrence, treatment hold, corrected repair, wound stages and common-input owners.
         /// No game loop, full turn staging, fake authority or publication transaction is entered.
         /// </summary>
+        /// <param name="observeBound">
+        /// Optional typed probe invoked after genuine binding in the flow that owns the exact issuing lease.
+        /// A null value performs no observation.
+        /// </param>
         /// <returns>
         /// The normal shared prefix's bound input and genuine common authority, or its reported issues.
         /// </returns>
-        internal async Task<WoundAcceptedTurnPlanner.JointRepairBoundCommonInputResult> PrepareBoundJointAsync()
+        internal async Task<WoundAcceptedTurnPlanner.JointRepairBoundCommonInputResult> PrepareBoundJointAsync(Func<Task>? observeBound = null)
         {
             using var timing = Files.MeasureOperation("JointBundleFixture.PrepareBoundJoint");
             var source = await PrepareOriginalAsync(43);
@@ -118,6 +123,8 @@ public sealed partial class JointBundleComponentTests
                         _jointBundle = bundle;
                         _jointContinuation = continuation;
                         _jointReservation = reservation;
+                        _jointBaseline = baseline.Authority;
+                        if (observeBound is not null) await observeBound();
                     }
                     else
                         AcceptedTurnAuthorityRegistry.AbortMortalJointRepairPublication(Files, Lease, continuation, reservation);
@@ -161,6 +168,7 @@ public sealed partial class JointBundleComponentTests
                 _jointBundle = null;
                 _jointContinuation = null;
                 _jointReservation = null;
+                _jointBaseline = null;
             }
         }
 

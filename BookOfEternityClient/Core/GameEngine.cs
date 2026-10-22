@@ -184,11 +184,21 @@ public partial class GameEngine
         _snapshotPublicationHooks = hooks;
     }
 
-    private Task InvokeSessionFinalizationCheckpointAsync(
+    /// <summary>
+    /// Runs an existing finalization callback inside a fresh recovery-validation boundary.
+    /// </summary>
+    /// <param name="checkpoint">
+    /// Actual reached checkpoint passed unchanged to the callback.
+    /// </param>
+    /// <returns>
+    /// Completion after the callback settles; its exception remains authoritative.
+    /// </returns>
+    private async Task InvokeSessionFinalizationCheckpointAsync(
         SessionFinalizationCheckpoint checkpoint)
     {
-        return _sessionFinalizationHooks?.AtCheckpointAsync?.Invoke(checkpoint)
-               ?? Task.CompletedTask;
+        if (_sessionFinalizationHooks?.AtCheckpointAsync is not { } callback) return;
+        using var freshSource = _fs.ForceFreshRecoveryValidation();
+        await callback(checkpoint);
     }
 
     private Task InvokeSnapshotFileCapturedAsync(string relativePath) =>

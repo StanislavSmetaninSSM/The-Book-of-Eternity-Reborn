@@ -41,8 +41,18 @@ public partial class CanonicalStateNormalizer
             _writeLease ?? throw new InvalidOperationException("Joint take requires its participating issuing lease."),
             preflight.Preparation);
 
+    /// <summary>
+    /// Checks actual taken inventory, receipt lineage and candidate admission within a fresh source boundary.
+    /// </summary>
+    /// <param name="receipt">
+    /// The exact exclusive receipt retained by the owning joint transaction.
+    /// </param>
+    /// <returns>
+    /// Completion after the original taken-input checks succeed; refusals propagate to the owning coordinator.
+    /// </returns>
     private async Task ValidateTakenJointPublicationInputsAsync(MortalJointRepairPublicationTakeReceipt receipt)
     {
+        using var freshSource = _fs.ForceFreshRecoveryValidation();
         using var innerTiming1 = _fs.MeasureOperation("JointPublish.ValidateTakenInputsAsync");
         var lease = _writeLease ?? throw new InvalidOperationException("Joint publication requires its issuing lease.");
         using var innerTiming2 = _fs.MeasureOperation("JointPublish.ValidateTakenInventoryAsync");

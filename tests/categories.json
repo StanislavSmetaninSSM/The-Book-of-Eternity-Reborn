@@ -2,6 +2,31 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "core-recovery-joint-source-integration",
+  "responsibility": "Two minimal genuine issued joint fixtures compare8real mechanical/continuation wrapper calls with/without DATA reuse; retain every live claim/item/owner guard, reject changed physical bytes and revoked real memory item slot without generating a world.",
+  "excludes": "No original600s process scenario, full game loop, fake proof, reflected private access or uncapped-output truncation.",
+  "changeHints": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs",
+    "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.RecoveryCache.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointBundleComponentTests.RecoverySourceCache_PreservesGenuineProofsLiveSlotsAndChangedByteRefusal"
+      ]
+    }
+  ]
+},
+{
   "id": "core-recovery-file-validation",
   "responsibility": "Real filesystem DATA fact reuse in one original recovery/publication lease: body/attribute counts, epoch invalidation including failed/no-op/absence/writer overlap, exact borrowed QTE reservation, fresh boundaries and close.",
   "excludes": "No world generation, reflection, fake authority issuance, TTL authority proof, diagnostics quotas or original600s runtime in this category.",
@@ -112,7 +137,7 @@
 },
 {
   "id": "fr063-reserved-validation-read-set",
-  "responsibility": "Reserved QTE source and actual request-admission counts, exact guarded reservation, current-byte exit proof and conservative controls on tiny typed real fixtures.",
+  "responsibility": "Original32 reserved QTE source/lease/overlap/cancellation/absence and fresh exit-proof controls; healthy borrowed readiness also gates outer recovery DATA reuse. Four inert r46 option-specific cases are retired with saved causal RED.",
   "excludes": "No game preparation, reflection, fabricated authority, full suite or diagnostic quota.",
   "changeHints": [
     "BookOfEternityClient/Core/FileSystemManager.ValidationReadSet.cs",

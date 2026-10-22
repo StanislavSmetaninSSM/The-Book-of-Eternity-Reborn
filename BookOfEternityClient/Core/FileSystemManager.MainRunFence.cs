@@ -89,6 +89,24 @@ public partial class FileSystemManager
         /// </param>
         internal MainAdmission(FileSystemManager files,MainAdmission? parent,GmSessionRunCoordinator.Access? requested,bool participating, ValidationReadReservation? worldIssuance, bool physicalScope)
         {_files=files;_parent=parent;_requested=requested;_participating=participating;_worldIssuance=worldIssuance;PhysicalScope=physicalScope;}
+        /// <summary>
+        /// Acquires or retains the original main access through its existing ownership route.
+        /// </summary>
+        /// <param name="token">
+        /// Cancellation for physical guard or remote acquisition.
+        /// </param>
+        /// <param name="closing">
+        /// Whether this frame must borrow an actual bound closing operation.
+        /// </param>
+        /// <param name="quiescentOnly">
+        /// Whether active original pins and remote operations must be refused.
+        /// </param>
+        /// <param name="workerPurpose">
+        /// Existing worker purpose to retain, or <see langword="null"/> for ordinary admission.
+        /// </param>
+        /// <returns>
+        /// Completion after this frame has acquired or retained and validated its original access.
+        /// </returns>
         internal async Task AcquireAsync(CancellationToken token=default,bool closing=false,bool quiescentOnly=false, GmWorkerCanonicalPurpose? workerPurpose=null)
         {
             _workerPurpose=workerPurpose;
@@ -122,8 +140,10 @@ public partial class FileSystemManager
                 var remote=await GmMainOperationClient.OpenAsync(_files,token,browserOriginal?.ActiveIdentity);
                 _access=new(this,null,null,remote,workerObservationRequired:knownWorkers);_retainedRemote=remote;_ownsRemote=true;WasRemote=true;return;
             }
+            var mainOwnerContended = _files._hooks?.MainOwnerLockContendedAsync;
             _access=new(this,await GmMainOwnerGuard.AcquireAsync(_files.BasePath,token,
-                _files._hooks?.MainOwnerLockContendedAsync,CanonicalWriteLockRetryCount,TransientFileAccessRetryDelay),null);
+                mainOwnerContended == null ? null : () => _files.InvokeRecoveryValidationCallbackAsync(mainOwnerContended),
+                CanonicalWriteLockRetryCount,TransientFileAccessRetryDelay),null);
             try{
                 // A known inventory requires its original durable coordinator,
                 // even with disabled helpers, before canonical recovery/leases.
@@ -204,6 +224,38 @@ public partial class FileSystemManager
         internal MainMutationReservation BeginMutation() =>
             (_access ?? throw new InvalidOperationException("Mutation admission is no longer active."))
                 .BeginMutation(this, WorldRecoveryIssuance);
+
+        /// <summary>
+        /// Captures a root validation version through this frame's original physical access without filesystem checks.
+        /// The caller retains the root worker-context gate for this capture.
+        /// </summary>
+        /// <param name="lease">
+        /// Original ordinary lease whose manager and physical admission must remain unchanged and active.
+        /// </param>
+        /// <param name="compatibleRead">
+        /// Exact healthy borrowed read reservation established by the caller, or <see langword="null"/> outside a read set.
+        /// </param>
+        /// <param name="version">
+        /// Current root identity on success, or <see langword="null"/> when this access cannot support reuse.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if this original access is eligible and no root mutation is active; otherwise, <see langword="false"/>.
+        /// </returns>
+        internal bool TryCaptureRecoveryValidationVersion(CanonicalWriteLease lease,
+            ValidationReadReservation? compatibleRead, out object? version)
+        {
+            var access = _access;
+            version = null;
+            var found = false;
+            for (var current = MainAdmissions.Value; current != null; current = current.Parent)
+            {
+                if (current.RootIdentity == RootIdentity && (current.Closed || current.Closing || current.BoundClosing))
+                    return false;
+                if (ReferenceEquals(current, this)) found = true;
+            }
+            return found && access != null &&
+                access.TryCaptureRecoveryValidationVersion(this, _files, lease, compatibleRead, out version);
+        }
 
         /// <summary>
         /// Starts physical teardown atomically with read reservation, before detaching any lease resource.
@@ -349,6 +401,51 @@ public partial class FileSystemManager
         private readonly HashSet<MainMutationReservation> _mutations = [];
         private ValidationReadReservation? _worldRead;
         /// <summary>
+        /// Checks the exact ordinary physical admission and captures its root version under shared access state.
+        /// The caller retains the root worker-context gate before entering this state lock.
+        /// </summary>
+        /// <param name="admission">
+        /// Original physical frame belonging to this shared access.
+        /// </param>
+        /// <param name="files">
+        /// Manager that issued <paramref name="admission"/> and must own <paramref name="lease"/>.
+        /// </param>
+        /// <param name="lease">
+        /// Original active ordinary lease; special authority and pending decision routes are ineligible.
+        /// </param>
+        /// <param name="compatibleRead">
+        /// Exact healthy borrowed read reservation, or <see langword="null"/> to require unreserved access.
+        /// </param>
+        /// <param name="version">
+        /// Current root version on success, or <see langword="null"/> when reuse is unsupported.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if the original access remains eligible and its root has no active mutation; otherwise, <see langword="false"/>.
+        /// </returns>
+        internal bool TryCaptureRecoveryValidationVersion(MainAdmission admission, FileSystemManager files,
+            CanonicalWriteLease lease, ValidationReadReservation? compatibleRead, out object? version)
+        {
+            lock (_state)
+            {
+                version = null;
+                if (_frozen || _references == 0 || owner.Closed || !_admissions.Contains(admission) || !admission.PhysicalScope ||
+                    !ReferenceEquals(lease.Owner, files) || !ReferenceEquals(lease.MainAdmission, admission) ||
+                    !lease.IsActive || lease.Purpose != CanonicalWritePurpose.SessionMutation ||
+                    lease.WorkerPurpose != null || lease.WorkerRootPin != null || lease.PendingLocalDecision != null ||
+                    lease.MutationIntentRecorder != null || lease.IsLegacyStorageRecovery || lease.BrowserLocalAccess != null ||
+                    files.HasBrowserOriginalOperation || remote != null || Workers != null || workerObservationRequired ||
+                    original?.MetadataOnly == true || original?.Owner.AdmissionClosed == true ||
+                    owner.RootIdentity.WorkerContext != null || _mutations.Count != 0 || _physicalClosing.Count != 0 ||
+                    (_worldRead != null && (!ReferenceEquals(_worldRead, compatibleRead) || compatibleRead!.Closed ||
+                        !ReferenceEquals(compatibleRead.RetainedPhysicalAdmission, admission))) ||
+                    _admissions.Any(p => p.Closed || p.Closing || p.BoundClosing || p.MetadataOnly ||
+                        (p.PhysicalScope && !ReferenceEquals(p, admission))))
+                    return false;
+                return owner.RootIdentity.ValidationEpoch.TryCapture(out version);
+            }
+        }
+
+        /// <summary>
         /// Reserves shared access without mutations, closing or unrelated physical or sibling borrowers.
         /// </summary>
         /// <param name="scope">
@@ -457,7 +554,7 @@ public partial class FileSystemManager
         }
 
         /// <summary>
-        /// Atomically admits a mutation only outside a reserved read, except its exact owned opening recovery.
+        /// Atomically registers a local and root mutation outside a reserved read, except its exact owned opening recovery.
         /// </summary>
         /// <param name="admission">
         /// Original live admission performing the mutation.
@@ -477,19 +574,28 @@ public partial class FileSystemManager
                     throw new InvalidOperationException("Mutation conflicts with reserved or closing original access.");
                 var token = new MainMutationReservation(ReleaseMutation);
                 _mutations.Add(token);
+                try { owner.RootIdentity.ValidationEpoch.Begin(token); }
+                catch
+                {
+                    _mutations.Remove(token);
+                    throw;
+                }
                 return token;
             }
         }
 
         /// <summary>
-        /// Removes only the supplied mutation identity under the shared state lock.
+        /// Removes the supplied local mutation identity, then retires its root identity last under shared state.
         /// </summary>
         /// <param name="token">
         /// Token issued by this access; a foreign or retired token has no effect.
         /// </param>
         private void ReleaseMutation(MainMutationReservation token)
         {
-            lock (_state) _mutations.Remove(token);
+            lock (_state)
+            {
+                if (_mutations.Remove(token)) owner.RootIdentity.ValidationEpoch.End(token);
+            }
         }
 
         /// <summary>

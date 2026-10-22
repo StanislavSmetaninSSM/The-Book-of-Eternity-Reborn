@@ -33,16 +33,46 @@ internal static partial class PendingTurnSnapshotReader
             _snapshot = snapshot ?? throw new ArgumentNullException(nameof(snapshot));
         }
 
+        /// <summary>
+        /// Revalidates the exact issued owner identity and all captured original source observations.
+        /// </summary>
+        /// <param name="fs">
+        /// Manager retained by the original reader.
+        /// </param>
+        /// <param name="lease">
+        /// Exact original physical lease, which source readers must still accept.
+        /// </param>
+        /// <param name="issuedSnapshot">
+        /// The exact snapshot issued together with this evidence.
+        /// </param>
         internal void RequireCurrent(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease,
+            PendingTurnSnapshotReadAuthority issuedSnapshot)
+        {
+            RequireOwner(fs, lease, issuedSnapshot);
+            var issues = new List<ValidationIssue>();
+            if (!_source.Recheck(issues))
+                throw new InvalidDataException(string.Join("; ", issues.Select(issue =>
+                    $"{issue.Code}: {issue.FilePath}: {issue.Actual}")));
+        }
+
+        /// <summary>
+        /// Checks exact evidence identity without replacing its separate physical source recheck.
+        /// </summary>
+        /// <param name="fs">
+        /// Manager retained by this evidence; a different instance is refused.
+        /// </param>
+        /// <param name="lease">
+        /// Exact lease retained by this evidence, never a reacquired replacement.
+        /// </param>
+        /// <param name="issuedSnapshot">
+        /// Exact issued snapshot identity; detached data cannot replace it.
+        /// </param>
+        internal void RequireOwner(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease,
             PendingTurnSnapshotReadAuthority issuedSnapshot)
         {
             if (!ReferenceEquals(fs, _source.Files) || !ReferenceEquals(lease, _source.Lease) ||
                 !ReferenceEquals(issuedSnapshot, _snapshot))
                 throw new InvalidOperationException("Original evidence requires its exact owner, lease and issued snapshot.");
-            var issues = new List<ValidationIssue>();
-            if (!_source.Recheck(issues))
-                throw new InvalidDataException(string.Join("; ", issues.Select(issue =>
-                    $"{issue.Code}: {issue.FilePath}: {issue.Actual}")));
         }
 
         // Every export is detached data. It cannot mint/rebind evidence after the lease ends.

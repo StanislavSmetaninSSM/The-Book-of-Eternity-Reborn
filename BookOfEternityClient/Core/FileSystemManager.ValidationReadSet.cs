@@ -47,17 +47,11 @@ public partial class FileSystemManager
     /// <param name="lease">
     /// Exact caller-owned canonical lease, retained without acquisition or ownership transfer.
     /// </param>
-    /// <param name="allowRetainedGuardAdmission">
-    /// Whether a guarded reservation may use retained admission checks; <see langword="false"/> keeps full request checks.
-    /// </param>
     /// <returns>
     /// An unopened scope requiring completion and disposal, or <see langword="null"/> for fresh unsupported execution.
     /// </returns>
-    internal ReservedValidationReadSet? TryBeginReservedValidationReadSet(CanonicalWriteLease lease,
-        bool allowRetainedGuardAdmission = true)
+    internal ReservedValidationReadSet? TryBeginReservedValidationReadSet(CanonicalWriteLease lease)
     {
-        // The conservative option is introduced before changing admission behavior for the causal control.
-        _ = allowRetainedGuardAdmission;
         // Arbitrary read callbacks can change sources between observations. Decide before activation.
         if (_validationReadSet.Value != null || ValidationReuseSuppression.Value != 0 ||
             _hooks?.PathMetadataQueryObserver != null ||
@@ -219,6 +213,34 @@ public partial class FileSystemManager
         {
             _files = files; _lease = lease; _reservation = reservation;
             _owner = lease.MainAdmission!; _registration = lease.AmbientRegistration!;
+        }
+
+        /// <summary>
+        /// Exports only a healthy ready reservation identity for no-IO outer DATA eligibility.
+        /// </summary>
+        /// <param name="files">
+        /// Exact manager required to match this read set.
+        /// </param>
+        /// <param name="lease">
+        /// Exact retained physical lease, never transferred to the caller.
+        /// </param>
+        /// <param name="reservation">
+        /// Receives the ready original reservation on success, otherwise null.
+        /// </param>
+        /// <returns>
+        /// True only after successful opening and before failure, completion, overlap or close.
+        /// </returns>
+        internal bool TryGetActiveReservation(FileSystemManager files, CanonicalWriteLease lease,
+            out ValidationReadReservation? reservation)
+        {
+            lock (_state)
+            {
+                reservation = null;
+                if (!ReferenceEquals(files, _files) || !ReferenceEquals(lease, _lease) ||
+                    !_opened || _failed || _closed || _completing || _busy) return false;
+                reservation = _reservation;
+                return true;
+            }
         }
 
         /// <summary>

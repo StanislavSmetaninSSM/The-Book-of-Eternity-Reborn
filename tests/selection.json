@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
 {
+  "category": "core-recovery-joint-source-integration",
+  "reason": "RECACHE3..5 actual issued production wrappers: repeated DATA source reduction and unchanged live confirmed-claim/item-slot/owner guards, supported physical-byte invalidation and real memory slot revocation.",
+  "contracts": [
+    "T427/T428 genuine minimal fixture, no world generation or fake authority."
+  ]
+},
+{
   "category": "core-recovery-file-validation",
   "reason": "RECACHE1..5 causal first consumer: eight real source requests, full root/lease mutation invalidation, fresh and matching readset/close controls; cheap independent files and unlimited timing.",
   "contracts": [
@@ -31,7 +38,7 @@
     },
     {
       "category": "fr063-reserved-validation-read-set",
-      "reason": "Source and added request-admission counts for real lease-free/explicit consumers, strict absence/current bytes/generation, retained ownership, overlap and passive observers.",
+      "reason": "Preserve32original real lease-free/explicit QTE readset controls: strict absence/current bytes/generation/lease/overlap/closing/passive observers; add ready borrowed-reservation eligibility for the outer DATA service. Retire only4superseded r46 option cases with their retained RED.",
       "contracts": [
         "ADMISSION-1..5/FANOUT-2/3/5: remove only added guarded request admission while preserving original source and full boundary integrity."
       ]

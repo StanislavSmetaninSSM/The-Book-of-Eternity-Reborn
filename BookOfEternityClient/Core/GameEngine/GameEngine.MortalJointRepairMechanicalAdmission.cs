@@ -22,6 +22,7 @@ public partial class GameEngine
         private readonly string _generation;
         private readonly PendingTurnSnapshotReadAuthority _originalSnapshot;
         private readonly PendingTurnSnapshotReader.OriginalReadEvidence _originalEvidence;
+        private static readonly OperationValidationRule MechanicalDataRule = new("Mechanical", 1);
         internal MortalJointRepairMechanicalAdmission(object issuer, FileSystemManager files,
             FileSystemManager.CanonicalWriteLease lease, string generation, WoundAcceptedTurnBinding binding,
             IReadOnlyDictionary<string, byte[]?> before, PendingTurnSnapshotReadAuthority originalSnapshot,
@@ -46,17 +47,60 @@ public partial class GameEngine
             { fields.Add(path); fields.Add(bytes is null ? null : Convert.ToHexString(SHA256.HashData(bytes))); }
             return WoundAcceptedTurnFingerprintWriter.Compute(fields);
         }
+        /// <summary>
+        /// Rechecks live ownership and the exact private proof before validating its reusable source DATA.
+        /// </summary>
+        /// <param name="files">
+        /// The exact manager retained by the issued mechanical proof.
+        /// </param>
+        /// <param name="lease">
+        /// Original active physical lease, never replaced by a cached fact.
+        /// </param>
+        /// <param name="binding">
+        /// Current caller frame which must agree with the private captured binding.
+        /// </param>
+        /// <returns>
+        /// Completion after live guards and current source DATA succeed.
+        /// </returns>
         internal async Task ValidateCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
             WoundAcceptedTurnBinding binding)
         {
             using var innerTiming1 = files.MeasureOperation("JointMechanical.ValidateCurrentAsync");
-            using var innerTiming2 = files.MeasureOperation("JointMechanical.ValidateOwnerAndFingerprint");
-            files.EnsureCanonicalWriteLeaseActive(lease);
-            if (!ReferenceEquals(files, _files) || !ReferenceEquals(lease, _lease) ||
-                !files.IsCurrentSessionGeneration(lease, _generation) || ComputeFingerprint() != Fingerprint ||
-                WoundAcceptedTurnFingerprints.ComputeBinding(binding) != WoundAcceptedTurnFingerprints.ComputeBinding(_binding))
-                throw new InvalidDataException("Joint mechanical admission belongs to a stale or foreign owner/frame.");
-            innerTiming2?.Dispose();
+            try
+            {
+                using (files.MeasureOperation("JointMechanical.ValidateOwnerAndFingerprint"))
+                {
+                    files.EnsureCanonicalWriteLeaseActive(lease);
+                    if (!ReferenceEquals(files, _files) || !ReferenceEquals(lease, _lease) ||
+                        !files.IsCurrentSessionGeneration(lease, _generation) || ComputeFingerprint() != Fingerprint ||
+                        WoundAcceptedTurnFingerprints.ComputeBinding(binding) != WoundAcceptedTurnFingerprints.ComputeBinding(_binding))
+                        throw new InvalidDataException("Joint mechanical admission belongs to a stale or foreign owner/frame.");
+                    _originalEvidence.RequireOwner(files, lease, _originalSnapshot);
+                }
+                await files.ValidateRecoveryDataAsync(MechanicalDataRule, this, lease,
+                    () => ValidateSourceDataAsync(files, lease, _binding));
+            }
+            catch { files.InvalidateRecoveryValidationAfterFailure(); throw; }
+        }
+
+        /// <summary>
+        /// Checks the original source closure, snapshot frame and ordered before-images without issuing authority.
+        /// </summary>
+        /// <param name="files">
+        /// Exact source manager already checked by the live wrapper.
+        /// </param>
+        /// <param name="lease">
+        /// Original active lease used for all real source reads.
+        /// </param>
+        /// <param name="binding">
+        /// Private captured frame, immutable for this proof identity.
+        /// </param>
+        /// <returns>
+        /// Completion after the unchanged physical DATA validation body succeeds.
+        /// </returns>
+        private async Task ValidateSourceDataAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
+            WoundAcceptedTurnBinding binding)
+        {
             using var innerTiming3 = files.MeasureOperation("JointMechanical.RequireCurrentOriginalEvidence");
             _originalEvidence.RequireCurrent(files, lease, _originalSnapshot);
             innerTiming3?.Dispose();

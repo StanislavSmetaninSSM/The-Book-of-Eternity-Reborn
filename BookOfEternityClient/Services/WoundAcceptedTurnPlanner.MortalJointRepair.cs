@@ -13,6 +13,7 @@ internal static partial class WoundAcceptedTurnPlanner
     private sealed class JointRepairContinuationAuthority
     {
         private readonly FileSystemManager _files;
+        private static readonly OperationValidationRule ContinuationDataRule = new("Continuation", 1);
         private readonly JointPrivateFingerprintData _fingerprintData;
         private readonly WoundAcceptedTurnInput _acquisitionInput;
         private readonly WoundAcceptedTurnInput _treatmentInput;
@@ -254,13 +255,40 @@ internal static partial class WoundAcceptedTurnPlanner
         /// </returns>
         internal async Task ValidateCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
         {
-            using var namedOperationTimer20 = files.MeasureOperation("Continuation.ValidateCurrentAsync");
-            using (files.EnterOperationTimingContext())
+            try
             {
-                files.EnsureCanonicalWriteLeaseActive(lease);
-                if (!ReferenceEquals(files, _files) || !files.IsCurrentSessionGeneration(lease, Generation) || !HasValidSeal)
-                    throw new InvalidDataException("Joint preparation belongs to a stale or foreign physical owner.");
+                using var namedOperationTimer20 = files.MeasureOperation("Continuation.ValidateCurrentAsync");
+                using (files.EnterOperationTimingContext())
+                {
+                    files.EnsureCanonicalWriteLeaseActive(lease);
+                    if (!ReferenceEquals(files, _files) || !files.IsCurrentSessionGeneration(lease, Generation) || !HasValidSeal)
+                        throw new InvalidDataException("Joint preparation belongs to a stale or foreign physical owner.");
+                }
+                await files.ValidateRecoveryDataAsync(ContinuationDataRule, this, lease,
+                    () => ValidateSourceDataAsync(files, lease));
+                using var namedOperationTimer24 = files.MeasureOperation("Continuation.InspectConfirmedHeldClaim");
+                var confirmed = AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(files, lease, Request, Finalization);
+                namedOperationTimer24?.Dispose();
+                if (!confirmed.IsValid || confirmed.State != MortalWoundTreatmentResourceReservationState.ConfirmedHeld)
+                    throw new InvalidDataException("The same joint request must still own its confirmed resource agreement.");
             }
+            catch { files.InvalidateRecoveryValidationAfterFailure(); throw; }
+        }
+
+        /// <summary>
+        /// Checks snapshot/frame, ordered before-images and publication-baseline DATA without changing claims.
+        /// </summary>
+        /// <param name="files">
+        /// Exact physical manager already checked by the live continuation wrapper.
+        /// </param>
+        /// <param name="lease">
+        /// Original active lease used for the unchanged real DATA readers.
+        /// </param>
+        /// <returns>
+        /// Completion after all original DATA comparisons succeed.
+        /// </returns>
+        private async Task ValidateSourceDataAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
+        {
             using var namedOperationTimer21 = files.MeasureOperation("Continuation.ReadSnapshot");
             var original = MortalQteWoundOpportunityProjection.ReadSnapshot(files, lease);
             namedOperationTimer21?.Dispose();
@@ -285,12 +313,8 @@ internal static partial class WoundAcceptedTurnPlanner
                         baselines.WoundCarriers!, baselines.WoundIdentity!, baselines.WoundHistory!,
                         baselines.EffectCarriers, baselines.EffectIdentity)) != WoundAcceptedTurnFingerprints.ComputeInput(_acquisitionInput))
                     throw new InvalidDataException("The joint wound/effect baseline changed while its guards were captured.");
-            using var namedOperationTimer24 = files.MeasureOperation("Continuation.InspectConfirmedHeldClaim");
-            var confirmed = AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(files, lease, Request, Finalization);
-            namedOperationTimer24?.Dispose();
-            if (!confirmed.IsValid || confirmed.State != MortalWoundTreatmentResourceReservationState.ConfirmedHeld)
-                throw new InvalidDataException("The same joint request must still own its confirmed resource agreement.");
         }
+
     }
 
     internal sealed record JointRepairPreparationAuthorityResult(

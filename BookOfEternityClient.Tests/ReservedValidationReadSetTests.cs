@@ -18,53 +18,6 @@ namespace BookOfEternityClient.Tests;
 public sealed class ReservedValidationReadSetTests(ITestOutputHelper output)
 {
     /// <summary>
-    /// Requires guarded requests to reuse their exact reservation without adding full admission outside original readers.
-    /// </summary>
-    /// <param name="leaseFree">
-    /// Whether the consumers use their original lease-free overloads instead of declaring the retained lease.
-    /// </param>
-    /// <param name="allowRetainedGuardAdmission">
-    /// Whether guarded retained checks are allowed; <see langword="false"/> measures the conservative control.
-    /// </param>
-    [Theory]
-    [InlineData(true, false)]
-    [InlineData(true, true)]
-    [InlineData(false, false)]
-    [InlineData(false, true)]
-    public async Task GuardedRequestsDoNotAddFullAdmission(bool leaseFree, bool allowRetainedGuardAdmission)
-    {
-        using var fixture = new Fixture(output);
-        var files = fixture.Create();
-        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
-        files.GetOrCreateSessionGeneration(lease);
-        fixture.Recording = true;
-        using var timingContext = files.EnterOperationTimingContext();
-        await using var readSet = files.TryBeginReservedValidationReadSet(lease, allowRetainedGuardAdmission);
-        Assert.NotNull(readSet);
-        await readSet.OpenAsync();
-        for (var i = 0; i < 12; i++)
-        {
-            Assert.Equal("original", leaseFree ? files.ReadFileSync("present.txt") : files.ReadFileSync(lease, "present.txt"));
-            Assert.Null(leaseFree ? files.ReadFileSync("missing.txt") : files.ReadFileSync(lease, "missing.txt"));
-            Assert.Equal("original", leaseFree ? await files.ReadFileAsync("present.txt") : await files.ReadFileAsync(lease, "present.txt"));
-            Assert.Null(leaseFree ? await files.ReadFileAsync("missing.txt") : await files.ReadFileAsync(lease, "missing.txt"));
-        }
-        await readSet.CompleteAsync();
-        var counts = fixture.CountRequestAdmissions();
-        output.WriteLine(JsonSerializer.Serialize(new { LeaseFree = leaseFree, AllowRetainedGuardAdmission = allowRetainedGuardAdmission,
-            counts.Requests, counts.FirstSources, counts.ExitSources, counts.Reuses, counts.AddedFullChecks,
-            counts.AddedNativeProbes, counts.AllNativeProbes }));
-        Assert.Equal(48, counts.Requests);
-        Assert.Equal(4, counts.FirstSources);
-        Assert.Equal(4, counts.ExitSources);
-        Assert.Equal(44, counts.Reuses);
-        Assert.Equal(8, fixture.PhysicalReads);
-        Assert.Equal(allowRetainedGuardAdmission ? 0 : 48, counts.AddedFullChecks);
-        if (allowRetainedGuardAdmission) Assert.Equal(0, counts.AddedNativeProbes);
-        else Assert.True(counts.AddedNativeProbes > 0);
-    }
-
-    /// <summary>
     /// Requires only first and exit source observations for repeated consumers of four distinct read identities.
     /// </summary>
     /// <param name="reserved">

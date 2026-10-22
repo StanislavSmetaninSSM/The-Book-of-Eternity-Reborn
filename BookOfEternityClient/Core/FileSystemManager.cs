@@ -653,13 +653,16 @@ public partial class FileSystemManager
 #endif
     }
 
+    /// <summary>
+    /// Creates required canonical directories through the original acquired lease and registered mutation route.
+    /// </summary>
     public void EnsureDirectoryStructure()
     {
         var writeLease = AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
         try
         {
             RecoverInterruptedLoadTransaction(writeLease);
-            EnsureDirectoryStructureCore();
+            EnsureDirectoryStructure(writeLease);
         }
         finally
         {
@@ -4310,6 +4313,21 @@ public partial class FileSystemManager
         }
     }
 
+    /// <summary>
+    /// Acquires the original physical write lease and completes its existing storage recovery before returning.
+    /// </summary>
+    /// <param name="purpose">
+    /// The existing canonical write purpose governing the original admission path.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Cancellation observed by the existing physical acquisition and recovery operations.
+    /// </param>
+    /// <param name="workerPurpose">
+    /// Actual worker purpose when acquiring for a worker, or <see langword="null"/> for ordinary work.
+    /// </param>
+    /// <returns>
+    /// The acquired original lease; acquisition callbacks cannot cross an active recovery reuse boundary.
+    /// </returns>
     private async Task<CanonicalWriteLease> AcquireCanonicalWriteLeaseCoreAsync(
         CanonicalWritePurpose purpose,
         CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose = null)
@@ -4345,7 +4363,7 @@ public partial class FileSystemManager
                 _browserAdmissionDiagnostic?.Contended();
 #endif
                 if (_hooks?.CanonicalWriteLockContendedAsync != null)
-                    await _hooks.CanonicalWriteLockContendedAsync();
+                    await InvokeRecoveryValidationCallbackAsync(_hooks.CanonicalWriteLockContendedAsync);
                 await Task.Delay(TransientFileAccessRetryDelay, cancellationToken);
                 continue;
             }
@@ -4358,7 +4376,7 @@ public partial class FileSystemManager
             try
             {
                 if (_hooks?.AfterCanonicalWriteLockOpenedAsync != null)
-                    await _hooks.AfterCanonicalWriteLockOpenedAsync();
+                    await InvokeRecoveryValidationCallbackAsync(_hooks.AfterCanonicalWriteLockOpenedAsync);
                 EnsureRuntimePathIsSafe(lockPath);
                 PhysicalFileAuthority.EnsureHandleMatchesExpectedPath(
                     stream.SafeFileHandle,

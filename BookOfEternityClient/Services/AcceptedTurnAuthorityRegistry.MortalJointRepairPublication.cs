@@ -16,10 +16,26 @@ internal static partial class AcceptedTurnAuthorityRegistry
     internal sealed record JointRepairPublicationTakenProbe(bool IsValid, IReadOnlyList<ValidationIssue> Issues,
         MortalWoundTreatmentResourceReservationState? State);
 
+    /// <summary>
+    /// Checks fresh inventory and complete authority sources before taking both original publication slots.
+    /// </summary>
+    /// <param name="files">
+    /// Manager owning the participating physical source and registry.
+    /// </param>
+    /// <param name="lease">
+    /// Exact issuing lease retained through take and subsequent settlement.
+    /// </param>
+    /// <param name="preparation">
+    /// Private complete preparation whose source checks must run freshly at this boundary.
+    /// </param>
+    /// <returns>
+    /// The original take receipt or refusal; cached DATA facts never substitute for this source fence.
+    /// </returns>
     internal static async Task<JointRepairPublicationTakeResult> TakeJointRepairPublicationAsync(
         FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
         MortalJointRepairPublicationPreparation preparation)
     {
+        using var freshSource = files.ForceFreshRecoveryValidation();
         // Full source/before-image proof precedes BOTH cache takes. The owning
         // lease remains participating through the future batch and settlement.
         await preparation.ValidateInventoryCurrentAsync(files, lease);

@@ -16,6 +16,21 @@ public partial class GameEngine
 
     private MortalJointRepairCanonicalRefresh? _mortalJointRepairCanonicalRefresh;
 
+    /// <summary>
+    /// Publishes the actual joint repair under one issuing lease and temporary source-validation context.
+    /// </summary>
+    /// <param name="frame">
+    /// The actual corrected admitted frame whose original lineage must remain current.
+    /// </param>
+    /// <param name="expectedTurn">
+    /// Turn owned by the current joint correction.
+    /// </param>
+    /// <param name="backups">
+    /// Existing backup names used by the original coordinated validation and publication path.
+    /// </param>
+    /// <returns>
+    /// The retained committed or uncertain owning result, preserving all original source and settlement checks.
+    /// </returns>
     private async Task<MortalJointRepairCanonicalRefresh> PublishCurrentMortalJointRepairAsync(
         ValidatedPendingTurnSnapshotContext frame, int expectedTurn,
         IReadOnlyDictionary<string, string> backups)
@@ -35,6 +50,7 @@ public partial class GameEngine
         await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
         {
             RequireOrdinaryJointRepairLease(lease);
+            using var recoveryValidation = _fs.BeginRecoveryValidation(lease);
             // The raw intake lease owns no plan. Reconstruct BOTH owners and the
             // still-confirmed original request here, under the canonical lease.
             using var namedOperationTimer2 = _fs.MeasureOperation("GameEngine.InspectOrdinaryMortalJointRepairAsync");
