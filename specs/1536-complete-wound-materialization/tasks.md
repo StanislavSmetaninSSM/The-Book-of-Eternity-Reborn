@@ -2,7 +2,7 @@
 
 Source issue1536; spec FANOUT-1..5. Dependency chain T417 ->T418 ->T419 ->T420, one parent implementation block and separate coherent independent review; no parallel source edits.
 
-- [ ] T417 [US1/US2/US3] Reconcile every T416 path/call, locate concrete source multipliers and preserved validity boundaries; resolve the production design in spec/plan with exact files, causal counter targets and negative controls, actual Spec Kit phases/equivalent consistency and presented written scope.
+- [x] T417 [US1/US2/US3] Reconcile every T416 path/call, locate concrete source multipliers and preserved validity boundaries; resolve the production design in spec/plan with exact files, causal counter targets and negative controls, actual Spec Kit phases/equivalent consistency and presented written scope.
 - [ ] T418 [US2/US3] Preserve output pins; add minimal typed real-path causal count RED, implement the selected redundant-work removal and accurate multiline XML; preserve actual owner/lease/generation/path/error/current-byte checks and uncapped passive diagnostics.
 - [ ] T419 [US2/US3] Causal GREEN and selected affected refusal/freshness/real-authority controls, XML-enabled builds and catalog plan/discovery; full evidence and independent coherent complex source/test/doc review before original execution.
 - [ ] T420 [US1/US2/US3] Genuine source-bound input if needed, one original Windows C:/Temp600/820/15 Cut0 with complete raw and real owned closing, equal-completed-milestone count/time comparison, honest full-case result, independent final review and exact saved remote recovery. Original timeout resolution remains OPEN unless all original success oracles pass.
