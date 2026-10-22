@@ -8,6 +8,8 @@ T414 causal RED at bd5104a34: three actual Windows consumers FAIL only on expect
 
 T414 implementation at e10a518d4 has genuine GREEN20/20 Windows cases,327ms execution/26.1231099s command, exact8/7/7 actual probes on both repeated requests, refusal/freshness/throwing/nested receiver and original worker context controls. Both full-reference XML builds PASS. Complete raw/build/pin/selection bytes retained and verified in T415-focused-green.zip/json. T414 complete; T415 affected categories running and coherent independent source review pending; T416 still unrun. No timeout improvement is established by the tiny fixtures.
 
+T415 affected verification:151/151 actual cases PASS,0fail/0skip,117.9148933s, exact owned cleanup; complete raw and selection archived byte-for-byte in T415-affected-controls.zip/json. New native fixture category now explicitly routes CI to windows-latest, matching existing native admission categories. This catalog-only correction does not change C# or assertions. Retain the current e10 outputs and refresh final XML-built source metadata before genuine generation; passing20+151 controls remain evidence for identical C# source and are not blindly repeated. Original600 case still unrun.
+
 ## Design and implementation sequence
 
 1. T413: run actual existing-feature Spec Kit plan/tasks setup and prerequisite checks; skip only their optional extension commit/context hooks. Write these canonical sections, perform a bridge-equivalent requirement/contract/task consistency check, obtain independent source-informed review of this planning block and save/recover it. Present actual written specification for user review. No production or execution authorization is inferred from finishing this investigation/plan.

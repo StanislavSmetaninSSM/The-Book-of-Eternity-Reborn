@@ -14,7 +14,8 @@
   "related": [],
   "requirements": {
     "frontendBuild": false,
-    "exclusive": true
+    "exclusive": true,
+    "ciRunner": "windows-latest"
   },
   "timeoutMinutes": 1,
   "expectedSeconds": null,
