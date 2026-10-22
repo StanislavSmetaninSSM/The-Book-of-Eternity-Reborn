@@ -76,6 +76,6 @@ internal sealed record RecoveryValidationMetrics
     /// <summary>
     /// Gets retained DATA and dependency counts plus general-service storage closure.
     /// </summary>
-    public ValidationOperationState State { get; init; }
+    public required ValidationOperationState State { get; init; }
 
 }

@@ -486,6 +486,24 @@ public sealed class RecoveryFileValidationTests(ITestOutputHelper output)
     }
 
     /// <summary>
+    /// Refuses missing genuine bound input without manufacturing a candidate or authority.
+    /// </summary>
+    [Fact]
+    public async Task BoundComponentEntryCannotCreateAuthorityFromAnEmptyResult()
+    {
+        using var fixture = new Fixture(output);
+        await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+        var missing = new WoundAcceptedTurnPlanner.JointRepairBoundCommonInputResult(null, null, []);
+        var result = await WoundAcceptedTurnPlanner.CreateJointRepairCommonPlanFromBoundForComponentAsync(
+            fixture.Files, lease, missing);
+        Assert.False(result.Success);
+        Assert.Null(result.Plan);
+        Assert.NotEmpty(result.Issues);
+        await Assert.ThrowsAsync<ArgumentNullException>(() =>
+            WoundAcceptedTurnPlanner.CreateJointRepairCommonPlanFromBoundForComponentAsync(fixture.Files, lease, null!));
+    }
+
+    /// <summary>
     /// Owns a tiny independent filesystem and emits all measured timing rows before safe removal.
     /// </summary>
     private sealed class Fixture : IDisposable

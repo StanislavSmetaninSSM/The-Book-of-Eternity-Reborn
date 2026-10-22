@@ -517,30 +517,7 @@ internal static partial class WoundAcceptedTurnPlanner
         {
             var composed = await PrepareJointRepairBoundCommonInputCoreAsync(files, lease, resourceAuthority, progression, preparation);
             if (!composed.Success || composed.Input is null) return new(null, composed.Issues);
-            var authority = composed.Authority!;
-            using var innerTiming8 = files.MeasureOperation("JointCommon.CreateRegistryCandidate");
-            var raw = AcceptedTurnAuthorityRegistry.CreateJointRepairCommonCandidate(files, lease, composed.Input, authority);
-            innerTiming8?.Dispose();
-            if (!raw.Result.Success || raw.Result.Plan is not { } candidate || raw.Fence is null) return raw.Result;
-            using var innerTiming9 = files.MeasureOperation("JointCommon.CandidateAdmissionGate");
-            var issues = MortalWoundTreatmentCapabilityAuthority.CandidateAdmissionGate.ValidateJoint(authority, candidate);
-            innerTiming9?.Dispose();
-            if (issues.Count != 0)
-            {
-                AcceptedTurnAuthorityRegistry.RevokeJointRepairCommonCandidate(files, lease, authority, raw.Fence);
-                return new(null, issues.Select(MortalWoundOpportunityAdapter.PrivateSourceIssue).ToArray());
-            }
-            var boundIssues = await authority.ValidateCandidateResourceBoundsAsync(files, lease, candidate);
-            if (boundIssues.Count != 0)
-            {
-                AcceptedTurnAuthorityRegistry.RevokeJointRepairCommonCandidate(files, lease, authority, raw.Fence);
-                return new(null, boundIssues.Select(MortalWoundOpportunityAdapter.PrivateSourceIssue).ToArray());
-            }
-            await authority.ValidateCurrentAsync(files, lease);
-            var proof = new JointCandidateAdmissionProof(JointCandidateAdmissionIssuer, authority, candidate, candidate.PreparedPlanFingerprint);
-            using var innerTiming10 = files.MeasureOperation("JointCommon.SealRegistryCandidate");
-            return AcceptedTurnAuthorityRegistry.SealJointRepairCommonCandidate(files, lease, composed.Input, authority,
-                raw.Fence, proof, candidate);
+            return await SealBoundJointRepairCommonPlanAsync(files, lease, composed.Input, composed.Authority!);
         }
         catch (Exception error) when (error is InvalidDataException or InvalidOperationException or ArgumentException or
             System.Text.Json.JsonException or IOException or OverflowException)
@@ -550,4 +527,89 @@ internal static partial class WoundAcceptedTurnPlanner
             return new(null, JointPreparationFailure("common_plan_invalid", error.Message).Issues);
         }
     }
+
+    /// <summary>
+    /// Creates and seals a real candidate from an already issued component input through the normal shared suffix.
+    /// This entry avoids repeating common-input preparation; the normal suffix issues its proof after admission.
+    /// </summary>
+    /// <param name="files">
+    /// Physical manager owning the input's actual registry, resources and current generation.
+    /// </param>
+    /// <param name="lease">
+    /// Original active physical lease retained and eventually closed by the component fixture.
+    /// </param>
+    /// <param name="bound">
+    /// Genuine bound input and authority from the normal prefix. Missing members are refused;
+    /// constructing a result does not bypass the suffix's binding, live resource and source admission checks.
+    /// A null result is rejected before any candidate work.
+    /// </param>
+    /// <returns>
+    /// The normal sealed planning result or admission issues; handled exceptions abort the actual retained authority.
+    /// </returns>
+    internal static async Task<AcceptedMechanicsPlanningResult> CreateJointRepairCommonPlanFromBoundForComponentAsync(
+        FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, JointRepairBoundCommonInputResult bound)
+    {
+        ArgumentNullException.ThrowIfNull(bound);
+        if (!bound.Success || bound.Input is null || bound.Authority is null)
+            return new(null, JointPreparationFailure("common_plan_invalid", "A genuine bound common input is required.").Issues);
+        try
+        {
+            return await SealBoundJointRepairCommonPlanAsync(files, lease, bound.Input, bound.Authority);
+        }
+        catch (Exception error) when (error is InvalidDataException or InvalidOperationException or ArgumentException or
+            System.Text.Json.JsonException or IOException or OverflowException)
+        {
+            AcceptedTurnAuthorityRegistry.AbortMortalJointRepairPublication(files, lease,
+                bound.Authority.Continuation, bound.Authority.Reservation);
+            return new(null, JointPreparationFailure("common_plan_invalid", error.Message).Issues);
+        }
+    }
+
+    /// <summary>
+    /// Runs the unchanged candidate creation, admission, current-source validation and sealing suffix.
+    /// </summary>
+    /// <param name="files">
+    /// Actual physical manager supplying the participating registry and source validators.
+    /// </param>
+    /// <param name="lease">
+    /// Original active lease used by every unchanged registry and authority check.
+    /// </param>
+    /// <param name="input">
+    /// Complete input previously bound to the private authority; the registry rechecks that agreement.
+    /// </param>
+    /// <param name="authority">
+    /// Genuine issued common authority whose reservation, resource bounds and current sources must still validate.
+    /// </param>
+    /// <returns>
+    /// A sealed candidate or the original admission issues; exceptions propagate to the entry's abort handling.
+    /// </returns>
+    private static async Task<AcceptedMechanicsPlanningResult> SealBoundJointRepairCommonPlanAsync(
+        FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, AcceptedMechanicsInput input,
+        MortalJointRepairCommonAuthority authority)
+    {
+        using var innerTiming8 = files.MeasureOperation("JointCommon.CreateRegistryCandidate");
+        var raw = AcceptedTurnAuthorityRegistry.CreateJointRepairCommonCandidate(files, lease, input, authority);
+        innerTiming8?.Dispose();
+        if (!raw.Result.Success || raw.Result.Plan is not { } candidate || raw.Fence is null) return raw.Result;
+        using var innerTiming9 = files.MeasureOperation("JointCommon.CandidateAdmissionGate");
+        var issues = MortalWoundTreatmentCapabilityAuthority.CandidateAdmissionGate.ValidateJoint(authority, candidate);
+        innerTiming9?.Dispose();
+        if (issues.Count != 0)
+        {
+            AcceptedTurnAuthorityRegistry.RevokeJointRepairCommonCandidate(files, lease, authority, raw.Fence);
+            return new(null, issues.Select(MortalWoundOpportunityAdapter.PrivateSourceIssue).ToArray());
+        }
+        var boundIssues = await authority.ValidateCandidateResourceBoundsAsync(files, lease, candidate);
+        if (boundIssues.Count != 0)
+        {
+            AcceptedTurnAuthorityRegistry.RevokeJointRepairCommonCandidate(files, lease, authority, raw.Fence);
+            return new(null, boundIssues.Select(MortalWoundOpportunityAdapter.PrivateSourceIssue).ToArray());
+        }
+        await authority.ValidateCurrentAsync(files, lease);
+        var proof = new JointCandidateAdmissionProof(JointCandidateAdmissionIssuer, authority, candidate, candidate.PreparedPlanFingerprint);
+        using var innerTiming10 = files.MeasureOperation("JointCommon.SealRegistryCandidate");
+        return AcceptedTurnAuthorityRegistry.SealJointRepairCommonCandidate(files, lease, input, authority,
+            raw.Fence, proof, candidate);
+    }
+
 }

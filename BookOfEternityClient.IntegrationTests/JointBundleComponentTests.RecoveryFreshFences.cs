@@ -111,12 +111,10 @@ public sealed partial class JointBundleComponentTests
         internal async Task AssertWarmTakeRefusesRawContextDriftAsync()
         {
             using var scope = Files.BeginRecoveryValidation(Lease);
-            var resources = _jointResourceAuthority ?? throw new InvalidOperationException("A genuine resource authority is required.");
-            var progression = _jointProgression ?? throw new InvalidOperationException("A genuine progression source is required.");
             var bound = _jointBound ?? throw new InvalidOperationException("A genuine bound common input is required.");
             AcceptedMechanicsPlanningResult common;
             using (Files.MeasureOperation("RecoveryTake.PrepareCommonPlan"))
-                common = await WoundAcceptedTurnPlanner.CreateJointRepairCommonPlanAsync(Files, Lease, resources, progression);
+                common = await WoundAcceptedTurnPlanner.CreateJointRepairCommonPlanFromBoundForComponentAsync(Files, Lease, bound);
             Assert.True(common.Success, JsonSerializer.Serialize(common.Issues));
             var plan = Assert.IsType<AcceptedMechanicsPlan>(common.Plan);
             Assert.Same(bound.Authority, plan.JointRepairCommonAuthority);
