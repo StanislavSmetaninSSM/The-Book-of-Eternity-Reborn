@@ -102,7 +102,7 @@ public partial class FileSystemManager
         if (!ReferenceEquals(lease.Owner, this) || !lease.IsActive || physical is null ||
             !ReferenceEquals(MainAdmissions.Value, entry) || lease.AmbientRegistration?.Active != true ||
             !ReferenceEquals(_ambientCanonicalLease.Value, lease.AmbientRegistration)) return false;
-        for (var current = entry; current is not null; current = current.Parent)
+        for (MainAdmission? current = entry; current is not null; current = current.Parent)
         {
             if (!current.Acquired || current.Closed || current.Closing || current.BoundClosing || current.MetadataOnly ||
                 current.RootIdentity != CanonicalRootAuthorityIdentity || !current.SharesAccess(physical) ||
