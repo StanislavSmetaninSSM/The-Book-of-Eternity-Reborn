@@ -2,6 +2,67 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-progression-data-integration",
+  "responsibility": "One real phase-reader proof/DATA pair on a minimal independent actual-applied-data template: one progression source body instead of two, one general-service reuse, unchanged canonical files and closed empty owned scope.",
+  "excludes": "No GameEngine, world/source42 generation, story append, arbitrary read hook, fake authority, original600s or diagnostic quota.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointAppliedStoryComponentTests.cs",
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgression.cs",
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointAppliedStoryComponentTests.ActualAppliedData_PhaseReaderReusesProgressionBody"
+      ]
+    }
+  ]
+},
+{
+  "id": "core-recovery-progression-data",
+  "responsibility": "Typed post-recovery DATA reuse on tiny independent real files: source/attribute counts, detached values, exact identity, recovery no-op/mutation/fresh/hook/failure boundaries and owned or borrowed scope closure.",
+  "excludes": "No game/world generation, fake proof/authority, reflection, cross-proof cache, diagnostic cap or original600s process case.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/RecoveryProgressionDataTests.cs",
+    "BookOfEternityClient/Core/FileSystemManager.OperationValidation.cs",
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgression.cs",
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs"
+  ],
+  "related": [
+    {
+      "id": "core-recovery-file-validation",
+      "when": "Shared FSM operation adapter or scope lifetime changes."
+    },
+    {
+      "id": "fr063-joint-applied-story-components",
+      "when": "Production phase-reader or applied story freshness changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.RecoveryProgressionDataTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "core-recovery-mutation-bridges",
   "responsibility": "Eight tiny real-file controls directly observe all four directory/session/load mutation envelopes at physical effects and pre-core revalidation, including rollback and failure retirement.",
   "excludes": "No world generation, fake replacement lease, acquisition-only epoch assertion, reflection or diagnostic quota.",
@@ -1519,7 +1580,9 @@
     {
       "project": "integration",
       "tests": [
-        "BookOfEternityClient.Tests.JointAppliedStoryComponentTests.*"
+        "BookOfEternityClient.Tests.JointAppliedStoryComponentTests.ActualAppliedData_AppendsOnceThenRefusesStoryDrift",
+        "BookOfEternityClient.Tests.JointAppliedStoryComponentTests.ActualAppliedData_RefusesChangedNarrativeWithoutAppend",
+        "BookOfEternityClient.Tests.JointAppliedStoryComponentTests.ActualAppliedData_RefusesDriftDuringRetainedReadback"
       ]
     }
   ]

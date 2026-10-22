@@ -198,6 +198,7 @@ internal static partial class MortalQteDecisionPublication
     private static async Task<JointProgressionData> ValidateJointProgressionDataAsync(FileSystemManager files,
         FileSystemManager.CanonicalWriteLease lease, JsonObject root)
     {
+        using var dataBody = files.MeasureOperation("JointProgression.ValidateDataBodyAsync");
         var progression = ClosedMap(root["progression"], JointProgressionFields);
         if (JointInteger(progression, "version") != 1) throw Invalid("joint_progression_version");
         var phase = Text(progression, "phase");

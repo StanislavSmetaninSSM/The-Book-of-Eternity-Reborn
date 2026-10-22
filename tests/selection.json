@@ -1,144 +1,46 @@
 {
   "schemaVersion": 1,
   "selections": [
-{
-  "category": "core-recovery-mutation-bridges",
-  "reason": "RECACHE2/5 direct actual-effect envelope coverage for all four bridges, independent of prior acquisition mutations.",
-  "contracts": [
-    "T427/T428 root epoch and complete cleanup."
-  ]
-},
-{
-  "category": "core-recovery-joint-take-fence",
-  "reason": "Actual publication take rejects raw ContextText drift after both genuine DATA facts are warm; unchanged inventory and both real authority slots are verified.",
-  "contracts": [
-    "RECACHE-4/5 actual warm-cache production boundary."
-  ]
-},
-{
-  "category": "core-recovery-finalization-fence",
-  "reason": "Actual engine checkpoint dispatcher keeps nested source reads fresh across await and normal/throwing callbacks, then refuses persistent raw drift.",
-  "contracts": [
-    "RECACHE-4/5 actual warm-cache production boundary."
-  ]
-},
-{
-  "category": "core-recovery-joint-source-integration",
-  "reason": "RECACHE3..5 actual issued production wrappers: repeated DATA source reduction and unchanged live confirmed-claim/item-slot/owner guards, supported physical-byte invalidation and real memory slot revocation.",
-  "contracts": [
-    "T427/T428 genuine minimal fixture, no world generation or fake authority."
-  ]
-},
-{
-  "category": "core-recovery-file-validation",
-  "reason": "RECACHE1..5 causal first consumer: eight real source requests, full root/lease mutation invalidation, fresh and matching readset/close controls; cheap independent files and unlimited timing.",
-  "contracts": [
-    "RECACHE-1..5 / T427 production filesystem adapter."
-  ]
-},
-{
-    "category": "core-service-cache",
-    "reason": "Extensible production cache mechanisms: presence, comparers, lifecycle, backend ownership and controlled-clock TTL/idle timer cleanup.",
-    "contracts": [
-        "CACHEPORT-1..7: DW10-based general production architecture, cheap fixtures and preserved source/close/copy contracts."
-    ]
-},
-{
-    "category": "core-repository-cache",
-    "reason": "Production repository-service-cache composition: copies, real source save/delete, failed-write invalidation, shared async serialization and close/reentrant refusal.",
-    "contracts": [
-        "CACHEPORT-1..7: DW10-based general production architecture, cheap fixtures and preserved source/close/copy contracts."
-    ]
-},
+    {
+      "category": "core-recovery-progression-data",
+      "reason": "PROGDATA1..4 typed DATA causal body/attribute reduction and all cheap integrity/copy/lifetime boundaries.",
+      "contracts": [
+        "#1536 revision51 PROGDATA1..5 / T440–442; original600s selected separately after current input qualification."
+      ]
+    },
+    {
+      "category": "fr063-joint-progression-data-integration",
+      "reason": "PROGDATA1..4 direct actual private production proof/phase pair; prove source2to1 before original600s, with real independently materialized files and unchanged state.",
+      "contracts": [
+        "#1536 revision51 / T440–442."
+      ]
+    },
+    {
+      "category": "core-recovery-file-validation",
+      "reason": "Preserve existing fact adapter behavior, mutation versions, passive observations and source failures while adding typed dispatch.",
+      "contracts": [
+        "#1536 revision51 PROGDATA1..5 / T440–442; original600s selected separately after current input qualification."
+      ]
+    },
+    {
+      "category": "core-recovery-mutation-bridges",
+      "reason": "Preserve actual root invalidation envelopes used as typed result dependencies.",
+      "contracts": [
+        "#1536 revision51 PROGDATA1..5 / T440–442; original600s selected separately after current input qualification."
+      ]
+    },
     {
       "category": "core-operation-validation-cache",
-      "reason": "Existing26 typed coordinator controls plus injected NoCache/storage/aliasing/fault/outside-monitor behavior during the DW10 architecture migration.",
+      "reason": "Typed result copying, no-op/default values, version/concurrency/fresh/close behavior of the reused general coordinator.",
       "contracts": [
-        "OPCACHE-1..4/7/9: reusable production service, temporary operation data and meaningful causal execution counts."
+        "#1536 revision51 PROGDATA1..5 / T440–442; original600s selected separately after current input qualification."
       ]
     },
     {
-      "category": "fr063-reserved-validation-read-set",
-      "reason": "Preserve32original real lease-free/explicit QTE readset controls: strict absence/current bytes/generation/lease/overlap/closing/passive observers; add ready borrowed-reservation eligibility for the outer DATA service. Retire only4superseded r46 option cases with their retained RED.",
+      "category": "fr063-joint-applied-story-components",
+      "reason": "Affected actual phase/proof/story consumer preserves current source and readback refusal through the modified phase-reader.",
       "contracts": [
-        "ADMISSION-1..5/FANOUT-2/3/5: remove only added guarded request admission while preserving original source and full boundary integrity."
-      ]
-    },
-    {
-      "category": "fr063-operation-timing-context-controls",
-      "reason": "Unchanged timing context routing, nesting and receiver error isolation.",
-      "contracts": [
-        "FANOUT-2/3/5: preserve original integrity while eliminating only phase-redundant source reads."
-      ]
-    },
-    {
-      "category": "fr063-ordinary-read-section-timing-controls",
-      "reason": "Fresh ordinary reader family, nullable refusal and actual physical diagnostics.",
-      "contracts": [
-        "FANOUT-2/3/5: preserve original integrity while eliminating only phase-redundant source reads."
-      ]
-    },
-    {
-      "category": "fr063-joint-validation-dedup-contracts",
-      "reason": "Keep exactly two original baseline checks.",
-      "contracts": [
-        "FANOUT-2/3/5: preserve original integrity while eliminating only phase-redundant source reads."
-      ]
-    },
-    {
-      "category": "fr063-joint-validation-dedup-refusals",
-      "reason": "Preserve entry/exit drift and primary preparation error sequencing.",
-      "contracts": [
-        "FANOUT-2/3/5: preserve original integrity while eliminating only phase-redundant source reads."
-      ]
-    },
-    {
-      "category": "pending-snapshot-qte-custody",
-      "reason": "Original borrowed reservation custody and teardown exclusion.",
-      "contracts": [
-        "FANOUT-2/3/5: preserve original integrity while eliminating only phase-redundant source reads."
-      ]
-    },
-    {
-      "category": "pending-snapshot-qte-mutation",
-      "reason": "Original mutation exclusion on retained shared access.",
-      "contracts": [
-        "FANOUT-2/3/5: preserve original integrity while eliminating only phase-redundant source reads."
-      ]
-    },
-    {
-      "category": "pending-snapshot-qte-proof",
-      "reason": "Original byte/generation/signed source proof.",
-      "contracts": [
-        "FANOUT-2/3/5: preserve original integrity while eliminating only phase-redundant source reads."
-      ]
-    },
-    {
-      "category": "pending-snapshot-validation-contracts",
-      "reason": "Existing owned and borrowed snapshot reservation/source safety.",
-      "contracts": [
-        "FANOUT-2/3/5: preserve original integrity while eliminating only phase-redundant source reads."
-      ]
-    },
-    {
-      "category": "gm-main-run-fence",
-      "reason": "Main access retention, original guard and mutation refusals.",
-      "contracts": [
-        "FANOUT-2/3/5: preserve original integrity while eliminating only phase-redundant source reads."
-      ]
-    },
-    {
-      "category": "fr063-trusted-local-request-observations",
-      "reason": "Retain r44 actual root/target probe freshness and passive receiver behavior.",
-      "contracts": [
-        "FANOUT-2/3/5: preserve original integrity while eliminating only phase-redundant source reads."
-      ]
-    },
-    {
-      "category": "fr063-observed-original-reader",
-      "reason": "Actual original source issuer/current-lease compatibility.",
-      "contracts": [
-        "FANOUT-2/3/5: preserve original integrity while eliminating only phase-redundant source reads."
+        "#1536 revision51 PROGDATA1..5 / T440–442; original600s selected separately after current input qualification."
       ]
     }
   ]

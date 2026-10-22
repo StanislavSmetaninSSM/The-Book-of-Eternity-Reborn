@@ -66,6 +66,46 @@ public partial class FileSystemManager
             ? validate() : scope.ValidateAsync(rule, inputIdentity, lease, validate);
 
     /// <summary>
+    /// Computes detached source DATA for the caller's current recovery segment.
+    /// </summary>
+    /// <typeparam name="TResult">
+    /// The DATA result whose mutable values are detached by <paramref name="computation"/>.
+    /// </typeparam>
+    /// <param name="computation">
+    /// Stable algorithm identity and defensive copy policy.
+    /// </param>
+    /// <param name="inputIdentity">
+    /// Exact private identity covering the unchanged algorithm inputs.
+    /// </param>
+    /// <param name="lease">
+    /// The caller's original physical lease, verified by the source and its live guards.
+    /// </param>
+    /// <param name="compute">
+    /// Original source work that returns DATA and grants no authority.
+    /// </param>
+    /// <returns>
+    /// A detached successful source result; failures are not converted to results.
+    /// </returns>
+    internal async Task<TResult> ComputeRecoveryDataAsync<TResult>(OperationComputation<TResult> computation,
+        object inputIdentity, CanonicalWriteLease lease, Func<Task<TResult>> compute) =>
+        computation.Copy(await compute());
+
+    /// <summary>
+    /// Creates an owned recovery segment only when the current flow has none.
+    /// </summary>
+    /// <param name="lease">
+    /// Original physical lease used by a newly created segment.
+    /// </param>
+    /// <returns>
+    /// A new scope for the caller to dispose, or <see langword="null"/> when borrowing an
+    /// existing scope or running outside functional validation in passive diagnostics.
+    /// A borrowed scope keeps its original ownership and eligibility rules.
+    /// </returns>
+    internal RecoveryValidationScope? BeginRecoveryValidationIfNeeded(CanonicalWriteLease lease) =>
+        ValidationReuseSuppression.Value != 0 || _recoveryValidation.Value is not null
+            ? null : BeginRecoveryValidation(lease);
+
+    /// <summary>
     /// Clears reuse around an authority-bearing source fence or arbitrary callback.
     /// </summary>
     /// <returns>

@@ -23,6 +23,9 @@ mutation epochs and fresh scopes decide eligibility. No new storage/repository.
    fresh source. Add independent file fixtures and category
    `core-recovery-progression-data`. First demonstrate8actual bodies instead1
    with complete real attribute/timing counts, compiling without fake authority.
+   Add a single phase-only real DATA case in JointAppliedStoryComponentTests.cs
+   and category fr063-joint-progression-data-integration; a passive body timer
+   proves2to1 on the actual private production pair, not only the generic adapter.
 3. T441: generalize RecoveryValidationScope dispatch to typed computation while
    preserving all existing fact metrics/failure/fallback behavior. Add
    `BeginRecoveryValidationIfNeeded` without disposing a borrowed scope. In

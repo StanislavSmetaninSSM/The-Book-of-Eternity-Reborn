@@ -53,6 +53,15 @@ public sealed class JointAppliedStoryComponentTests
     public Task ActualAppliedData_RefusesDriftDuringRetainedReadback() => RunAsync(false, true);
 
     /// <summary>
+    /// Reuses only progression DATA between the real completed proof and phase reader on an independent file copy.
+    /// </summary>
+    /// <returns>
+    /// Completion after one source body, one reuse, unchanged files and owned scope closure.
+    /// </returns>
+    [Fact]
+    public Task ActualAppliedData_PhaseReaderReusesProgressionBody() => RunAsync(false, phaseOnly: true);
+
+    /// <summary>
     /// Runs one actual service case on a new physical root and a freshly issued participating lease.
     /// </summary>
     /// <param name="changeNarrativeBeforeStory">
@@ -62,10 +71,13 @@ public sealed class JointAppliedStoryComponentTests
     /// Whether the existing canonical read hook changes narrative at the first post-append readback read.
     /// The default <see langword="false"/> leaves that readback unchanged.
     /// </param>
+    /// <param name="phaseOnly">
+    /// Whether to qualify the real phase DATA pair without installing an arbitrary read hook or running story setup.
+    /// </param>
     /// <returns>
     /// Completion after real assertions, complete timing output and disposal of only this case's root.
     /// </returns>
-    private async Task RunAsync(bool changeNarrativeBeforeStory, bool changeDuringReadback = false)
+    private async Task RunAsync(bool changeNarrativeBeforeStory, bool changeDuringReadback = false, bool phaseOnly = false)
     {
         var diagnostics = Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "joint-story-components");
         Directory.CreateDirectory(diagnostics);
@@ -87,6 +99,8 @@ public sealed class JointAppliedStoryComponentTests
             var sourceReads = 0;
             var readbackStarted = false;
             var injectedReadbackDrift = false;
+            var progressionBodies = 0;
+            var validationMetrics = new List<RecoveryValidationMetrics>();
             Dictionary<string, string>? readbackDamagedImages = null;
             var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,
                 PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
@@ -97,9 +111,12 @@ public sealed class JointAppliedStoryComponentTests
                             sourceReads++;
                         if (name == "JointStoryComplete.ReadBackSourceAsync" && boundary == "begin")
                             readbackStarted = true;
+                        if (name == "JointProgression.ValidateDataBodyAsync" && boundary == "begin")
+                            Interlocked.Increment(ref progressionBodies);
                         timings.Observe(name, boundary, elapsed);
                     },
-                    BeforeCanonicalReadOpenAsync = _ =>
+                    RecoveryValidationObserver = metrics => validationMetrics.Add(metrics),
+                    BeforeCanonicalReadOpenAsync = phaseOnly ? null : _ =>
                     {
                         if (changeDuringReadback && readbackStarted && !injectedReadbackDrift)
                         {
@@ -129,11 +146,26 @@ public sealed class JointAppliedStoryComponentTests
                 Assert.Equal(tuple["RequestId"]!.GetValue<string>(), original.RequestId);
                 Assert.Equal(tuple["SnapshotToken"]!.GetValue<string>(), original.SnapshotToken);
                 Assert.Equal(43, original.TurnNumber);
+                var phaseBefore = phaseOnly ? CaptureImages(root) : null;
                 using var phaseTimer = files.MeasureOperation("Component.ReadAppliedPhaseAsync");
                 var applied = await MortalQteDecisionPublication.ReadJointProgressionPhaseAsync(files, lease,
                     original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber);
                 phaseTimer?.Dispose();
                 Assert.Equal("applied", applied.Phase);
+                if (phaseOnly)
+                {
+                    raw.WriteLine(JsonSerializer.Serialize(new { Boundary = "progression_data_pair", Bodies = progressionBodies,
+                        Metrics = validationMetrics }));
+                    Assert.Equal(phaseBefore!.OrderBy(pair => pair.Key), CaptureImages(root).OrderBy(pair => pair.Key));
+                    Assert.Equal(1, progressionBodies);
+                    var metrics = Assert.Single(validationMetrics);
+                    Assert.Equal(2, metrics.Requests);
+                    Assert.Equal(1, metrics.Sources);
+                    Assert.Equal(1, metrics.Reuses);
+                    Assert.True(metrics.Closed);
+                    Assert.Equal(new ValidationOperationState(0, 0, true), metrics.State);
+                    return true;
+                }
                 var story = new StoryService(files, NullLogger<StoryService>.Instance);
                 if (changeNarrativeBeforeStory)
                 {
