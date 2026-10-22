@@ -220,7 +220,8 @@ public sealed class ReservedValidationReadSetTests(ITestOutputHelper output)
         });
         if (!signedAbsence)
         {
-            var manifest = JsonNode.Parse(await files.ReadFileAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath))!.AsObject();
+            var manifest = JsonNode.Parse(await files.ReadFileAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath)
+                ?? throw new InvalidDataException("Prepared original manifest is missing."))!.AsObject();
             manifest.Remove("originalPathPresenceV1");
             manifest["manifestPayloadHash"] = PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
             await files.WriteFileAtomicAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath, manifest.ToJsonString());
