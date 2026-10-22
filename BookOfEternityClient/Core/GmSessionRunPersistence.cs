@@ -24,10 +24,24 @@ internal sealed class GmSessionRunPersistence
             throw new PlatformNotSupportedException("Main run durability adapter is not qualified on this platform.");
         _guard=guard;_observe=observe;
     }
+    /// <summary>
+    /// Reads bounded main-run metadata after fresh root, namespace and file admission.
+    /// </summary>
+    /// <param name="root">
+    /// The absolute trusted-local root whose parent must exist as an ordinary directory.
+    /// </param>
+    /// <param name="ownStage">
+    /// An optional caller-owned staging path permitted alongside main.json; <see langword="null"/> permits none.
+    /// </param>
+    /// <returns>
+    /// The complete bounded record bytes, or <see langword="null"/> when the admitted run namespace is absent.
+    /// Invalid namespace contents and metadata read failures propagate.
+    /// </returns>
     internal static byte[]? Read(string root,string? ownStage=null)
     {
-        var scope=new TrustedLocalFileScope([root]);var dir=Path.Combine(root,".boe_runtime","gm-runs");
-        var observed=scope.ObserveNamespace(dir);
+        // Join tolerates null so construction retains the original invalid-root refusal before target admission.
+        var dir=Path.Join(root,".boe_runtime","gm-runs");
+        var scope=TrustedLocalFileScope.CreateAndObserveNamespace(root,dir,out var observed);
         if(observed.BlockingFileAncestor!=null)throw Invalid();
         if(observed.Kind==TrustedLocalNamespaceKind.Missing)return null;
         dir=scope.ValidateDirectory(dir,false);
@@ -171,10 +185,13 @@ internal sealed class GmMainOwnerGuard : IDisposable
             try{guard.Validate();return guard;}catch{guard.Dispose();throw;}
         }
     }
+    /// <summary>
+    /// Freshly checks the retained guard's root and required file, then authenticates its real open handle.
+    /// </summary>
     internal void Validate()
     {
         var stream=_stream??throw GmSessionRunPersistence.Invalid();
-        new TrustedLocalFileScope([Root]).ValidateFile(_path,false);
+        TrustedLocalFileScope.ValidateRootAndRequiredFile(Root,_path);
         PhysicalFileAuthority.EnsureHandleMatchesExpectedPath(stream.SafeFileHandle,_path,"Main original owner guard");
     }
     public void Dispose()=>Interlocked.Exchange(ref _stream,null)?.Dispose();

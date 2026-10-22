@@ -100,6 +100,24 @@ internal sealed class TrustedLocalFileScope
     /// Optional exact file names with existing safe parents. A <see langword="null"/> sequence adds no exact grants.
     /// </param>
     internal TrustedLocalFileScope(IEnumerable<string> roots, IEnumerable<string>? exactFiles = null)
+        : this(roots, exactFiles, Probe)
+    {
+    }
+
+    /// <summary>
+    /// Checks construction grants through the current request's classifier without retaining it.
+    /// </summary>
+    /// <param name="roots">
+    /// Non-null explicit directory grants with required parents and optionally absent roots.
+    /// </param>
+    /// <param name="exactFiles">
+    /// Optional exact file grants; <see langword="null"/> adds none.
+    /// </param>
+    /// <param name="observeEntry">
+    /// The request-local classifier; its errors propagate and neither it nor its observations are stored.
+    /// </param>
+    private TrustedLocalFileScope(IEnumerable<string> roots, IEnumerable<string>? exactFiles,
+        Func<string, EntryKind> observeEntry)
     {
         using var operationTiming = FileSystemManager.MeasureCurrentOperation("TrustedScope.Construct");
         ArgumentNullException.ThrowIfNull(roots);
@@ -110,10 +128,97 @@ internal sealed class TrustedLocalFileScope
 
         foreach (var root in _roots)
         {
-            ValidateConstructionRoot(root, Probe);
+            ValidateConstructionRoot(root, observeEntry);
         }
         foreach (var parent in _exactFiles.Select(file => Path.GetDirectoryName(file)!).Distinct(PathComparer))
-            ValidateDirectories(parent, allowMissing: false);
+            ValidateDirectories(parent, allowMissing: false, observeEntry);
+    }
+
+    /// <summary>
+    /// Checks a root and its required file with one observation of each shared path in this request.
+    /// </summary>
+    /// <param name="root">
+    /// The absolute directory grant with an existing ordinary parent; the root itself may be absent.
+    /// </param>
+    /// <param name="path">
+    /// The absolute granted file name, which must be present and ordinary.
+    /// </param>
+    /// <param name="observeEntry">
+    /// Optional request-local classifier for isolated fixtures; <see langword="null"/> uses real metadata.
+    /// No classifier or observation survives this call, and classifier errors propagate unchanged.
+    /// </param>
+    internal static void ValidateRootAndRequiredFile(string root, string path,
+        Func<string, EntryKind>? observeEntry = null)
+    {
+        var observeOnce = ObserveOnce(observeEntry ?? Probe);
+        var scope = new TrustedLocalFileScope([root], null, observeOnce);
+        scope.ValidateFile(path, allowMissing: false, observeOnce);
+    }
+
+    /// <summary>
+    /// Checks a root and one namespace with request-local observations, returning only ordinary grants and DATA.
+    /// </summary>
+    /// <param name="root">
+    /// The absolute directory grant with a required ordinary parent and optionally absent root.
+    /// </param>
+    /// <param name="path">
+    /// The absolute granted namespace name to observe after construction checks.
+    /// </param>
+    /// <param name="observation">
+    /// The observed ordinary kind and optional blocking file ancestor; this does not grant authority.
+    /// </param>
+    /// <param name="observeEntry">
+    /// Optional invocation-local fixture classifier; <see langword="null"/> queries real metadata.
+    /// Exceptions propagate without being cached; the returned scope retains no classifier or observations.
+    /// </param>
+    /// <param name="timingOwner">
+    /// Optional manager whose existing phase receiver and synchronous contexts should be used.
+    /// <see langword="null"/> leaves the current timing context unchanged.
+    /// </param>
+    /// <param name="constructionOperationName">
+    /// Optional construction phase name for <paramref name="timingOwner"/>; <see langword="null"/> omits that phase timer.
+    /// </param>
+    /// <param name="observationOperationName">
+    /// Optional namespace phase name for <paramref name="timingOwner"/>; <see langword="null"/> omits that phase timer.
+    /// </param>
+    /// <returns>
+    /// An ordinary scope retaining only normalized grants. Every later operation performs its own fresh checks.
+    /// </returns>
+    internal static TrustedLocalFileScope CreateAndObserveNamespace(string root, string path,
+        out TrustedLocalNamespaceObservation observation, Func<string, EntryKind>? observeEntry = null,
+        FileSystemManager? timingOwner = null, string? constructionOperationName = null,
+        string? observationOperationName = null)
+    {
+        var observeOnce = ObserveOnce(observeEntry ?? Probe);
+        TrustedLocalFileScope scope;
+        using (constructionOperationName is null ? null : timingOwner?.MeasureOperation(constructionOperationName))
+        using (timingOwner?.EnterOperationTimingContext())
+            scope = new TrustedLocalFileScope([root], null, observeOnce);
+        using (observationOperationName is null ? null : timingOwner?.MeasureOperation(observationOperationName))
+        using (timingOwner?.EnterOperationTimingContext())
+            observation = scope.ObserveNamespace(path, observeOnce);
+        return scope;
+    }
+
+    /// <summary>
+    /// Shares completed classifications only within the caller's synchronous validation request.
+    /// </summary>
+    /// <param name="observeEntry">
+    /// The real or isolated-fixture classifier; exceptions propagate and are never recorded as observations.
+    /// </param>
+    /// <returns>
+    /// A local observer that must be discarded when the request returns or throws, before any later operation.
+    /// </returns>
+    private static Func<string, EntryKind> ObserveOnce(Func<string, EntryKind> observeEntry)
+    {
+        var observations = new Dictionary<string, EntryKind>(PathComparer);
+        return path =>
+        {
+            if (observations.TryGetValue(path, out var kind)) return kind;
+            kind = observeEntry(path);
+            observations.Add(path, kind);
+            return kind;
+        };
     }
 
     /// <summary>
@@ -129,12 +234,30 @@ internal sealed class TrustedLocalFileScope
     /// The normalized granted name after all ancestor and leaf checks succeed.
     /// </returns>
     internal string ValidateFile(string path, bool allowMissing = true)
+        => ValidateFile(path, allowMissing, Probe);
+
+    /// <summary>
+    /// Checks one file through the current request's classifier without storing observations on this scope.
+    /// </summary>
+    /// <param name="path">
+    /// The absolute granted file name to normalize and inspect.
+    /// </param>
+    /// <param name="allowMissing">
+    /// Whether an absent leaf is accepted instead of throwing <see cref="FileNotFoundException"/>.
+    /// </param>
+    /// <param name="observeEntry">
+    /// The current request's non-null classifier, whose failures propagate unchanged.
+    /// </param>
+    /// <returns>
+    /// The normalized admitted name, without opening the file or retaining authority for a later operation.
+    /// </returns>
+    private string ValidateFile(string path, bool allowMissing, Func<string, EntryKind> observeEntry)
     {
         using var operationTiming = FileSystemManager.MeasureCurrentOperation("TrustedScope.ValidateFile");
         var normalized = Normalize(path);
         EnsureAllowed(normalized, file: true);
-        ValidateDirectories(Path.GetDirectoryName(normalized)!, allowMissing: true);
-        ValidateFileLeaf(normalized, allowMissing);
+        ValidateDirectories(Path.GetDirectoryName(normalized)!, allowMissing: true, observeEntry);
+        ValidateFileLeaf(normalized, allowMissing, observeEntry);
         return normalized;
     }
 
@@ -173,8 +296,23 @@ internal sealed class TrustedLocalFileScope
     /// Whether a missing leaf is accepted instead of throwing <see cref="FileNotFoundException"/>.
     /// </param>
     private static void ValidateFileLeaf(string normalized, bool allowMissing)
+        => ValidateFileLeaf(normalized, allowMissing, Probe);
+
+    /// <summary>
+    /// Applies required-file and ordinary-kind rules to the current request's leaf observation.
+    /// </summary>
+    /// <param name="normalized">
+    /// The normalized granted leaf with ancestors already checked by this request.
+    /// </param>
+    /// <param name="allowMissing">
+    /// Whether an absent leaf is accepted instead of throwing <see cref="FileNotFoundException"/>.
+    /// </param>
+    /// <param name="observeEntry">
+    /// The current request's classifier; its exceptions propagate unchanged.
+    /// </param>
+    private static void ValidateFileLeaf(string normalized, bool allowMissing, Func<string, EntryKind> observeEntry)
     {
-        var kind = Probe(normalized);
+        var kind = observeEntry(normalized);
         if (kind == EntryKind.Missing && !allowMissing)
             throw new FileNotFoundException("The required local file is absent.", normalized);
         if (kind is not (EntryKind.RegularFile or EntryKind.Missing))
@@ -256,6 +394,21 @@ internal sealed class TrustedLocalFileScope
     /// The ordinary kind and optional file blocker; the caller must match any blocker against admitted evidence.
     /// </returns>
     internal TrustedLocalNamespaceObservation ObserveNamespace(string path)
+        => ObserveNamespace(path, Probe);
+
+    /// <summary>
+    /// Observes one namespace through the current request's classifier while retaining blocker semantics.
+    /// </summary>
+    /// <param name="path">
+    /// The absolute granted namespace name to normalize and inspect.
+    /// </param>
+    /// <param name="observeEntry">
+    /// The current request's non-null classifier, whose failures propagate unchanged.
+    /// </param>
+    /// <returns>
+    /// The ordinary kind and optional blocking regular-file ancestor, without mutation or retained authority.
+    /// </returns>
+    private TrustedLocalNamespaceObservation ObserveNamespace(string path, Func<string, EntryKind> observeEntry)
     {
         using var operationTiming = FileSystemManager.MeasureCurrentOperation("TrustedScope.ObserveNamespace");
         var normalized = ValidateNamespacePath(path);
@@ -264,13 +417,13 @@ internal sealed class TrustedLocalFileScope
             ancestors.Push(ancestor);
         foreach (var ancestor in ancestors)
         {
-            var kind = Probe(ancestor);
+            var kind = observeEntry(ancestor);
             if (kind == EntryKind.Missing) return new(TrustedLocalNamespaceKind.Missing, null);
             if (kind == EntryKind.RegularFile) return new(TrustedLocalNamespaceKind.Missing, ancestor);
             if (kind != EntryKind.Directory)
                 throw new InvalidDataException("A namespace ancestor is linked or not an ordinary entry: " + ancestor);
         }
-        return Probe(normalized) switch
+        return observeEntry(normalized) switch
         {
             EntryKind.Missing => new(TrustedLocalNamespaceKind.Missing, null),
             EntryKind.RegularFile => new(TrustedLocalNamespaceKind.File, null),

@@ -544,14 +544,10 @@ public partial class FileSystemManager
         lock(root.WorkerContextGate) {
             using var bodyTiming = MeasureOperation("MainAdmission.WorkerInventory.Body");
             if(root.WorkerContext!=null)throw GmSessionRunPersistence.Invalid();
-            TrustedLocalFileScope scope;
-            using (MeasureOperation("MainAdmission.WorkerInventory.ScopeConstruction"))
-            using (EnterOperationTimingContext())
-                scope=new TrustedLocalFileScope([BasePath]);
-            TrustedLocalNamespaceObservation observed;
-            using (MeasureOperation("MainAdmission.WorkerInventory.ObserveNamespace"))
-            using (EnterOperationTimingContext())
-                observed=scope.ObserveNamespace(new WorkerLedgerTarget(BasePath).DirectoryPath);
+            TrustedLocalFileScope.CreateAndObserveNamespace(BasePath,
+                new WorkerLedgerTarget(BasePath).DirectoryPath,out var observed,timingOwner:this,
+                constructionOperationName:"MainAdmission.WorkerInventory.ScopeConstruction",
+                observationOperationName:"MainAdmission.WorkerInventory.ObserveNamespace");
             if(observed.BlockingFileAncestor!=null || observed.Kind!=TrustedLocalNamespaceKind.Missing)
                 throw GmSessionRunPersistence.Invalid();
         }
