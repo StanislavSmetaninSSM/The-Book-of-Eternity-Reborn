@@ -200,7 +200,12 @@ public sealed class RecoveryMutationBridgeTests(ITestOutputHelper output)
                     replacement, Revalidate);
         });
 
-        Assert.True(revalidations >= 2);
+        Assert.True(revalidations >= 2, JsonSerializer.Serialize(new
+        {
+            Revalidations = revalidations, Failure = failure?.ToString(), Outcome = outcome?.Disposition.ToString(),
+            OutcomeFailure = outcome?.Failure?.ToString(), Observations = fixture.Observations.Select(row => new
+            { row.Stage, row.Active, row.CanCapture, row.EffectObserved }).ToArray()
+        }));
         fixture.AssertObservations(expectedDepth: 1);
         Assert.Contains(fixture.Observations, row => row.Stage == "RevalidateBeforeDirectory");
         if (failAfterDirectory)
