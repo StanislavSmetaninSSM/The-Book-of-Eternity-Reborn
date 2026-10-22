@@ -185,6 +185,18 @@ public partial class GameEngine
     }
 
     /// <summary>
+    /// Invokes the real finalization callback dispatcher for a bounded typed diagnostic control.
+    /// </summary>
+    /// <param name="checkpoint">
+    /// Actual checkpoint value forwarded unchanged; this entry grants no publication authority.
+    /// </param>
+    /// <returns>
+    /// The real dispatch task, including fresh-boundary lifetime and original callback failures.
+    /// </returns>
+    internal Task InvokeSessionFinalizationCheckpointForTestingAsync(SessionFinalizationCheckpoint checkpoint) =>
+        InvokeSessionFinalizationCheckpointAsync(checkpoint);
+
+    /// <summary>
     /// Runs an existing finalization callback inside a fresh recovery-validation boundary.
     /// </summary>
     /// <param name="checkpoint">

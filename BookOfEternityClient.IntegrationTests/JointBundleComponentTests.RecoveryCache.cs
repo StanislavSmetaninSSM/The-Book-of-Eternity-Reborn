@@ -55,6 +55,7 @@ public sealed partial class JointBundleComponentTests
             Assert.Equal(1, itemCounts.GetValueOrDefault("JointBaseline.ConfirmItemBaseline"));
             Assert.Equal(reuse ? 0 : 1, itemCounts.GetValueOrDefault("RecoveryValidation.Source.Mechanical"));
             Assert.Equal(reuse ? 0 : 1, itemCounts.GetValueOrDefault("RecoveryValidation.Source.Continuation"));
+            Assert.Equal(new ValidationOperationState(0, 0, true), nextOperation.CaptureState());
         });
         Assert.True(bound.Success, JsonSerializer.Serialize(bound.Issues));
     }

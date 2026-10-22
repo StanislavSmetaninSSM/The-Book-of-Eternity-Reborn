@@ -78,6 +78,7 @@ public sealed class RecoveryFileValidationTests(ITestOutputHelper output)
         using var fixture = new Fixture(output);
         var files = fixture.Files;
         await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
         using var scope = files.BeginRecoveryValidation(lease);
         var rule = new OperationValidationRule("Mechanical", 1); var input = new object(); var bodies = 0;
         var expected = "original";
@@ -104,6 +105,7 @@ public sealed class RecoveryFileValidationTests(ITestOutputHelper output)
     {
         using var fixture = new Fixture(output); var files = fixture.Files;
         await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
         using var scope = files.BeginRecoveryValidation(lease);
         var rule = new OperationValidationRule("Continuation", 1); var input = new object(); var bodies = 0;
         string? expected = null;
@@ -255,6 +257,41 @@ public sealed class RecoveryFileValidationTests(ITestOutputHelper output)
     }
 
     /// <summary>
+    /// Keeps the documented passive metadata receiver eligible without losing any of its real observations.
+    /// </summary>
+    [Fact]
+    public async Task PassiveMetadataDiagnosticsDoNotDisableSourceReuse()
+    {
+        using var fixture = new Fixture(output, passiveMetadata: true); var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        using var scope = files.BeginRecoveryValidation(lease);
+        var rule = new OperationValidationRule("Mechanical", 1); var input = new object(); var bodies = 0;
+        for (var i = 0; i < 4; i++) await files.ValidateRecoveryDataAsync(rule, input, lease, async () =>
+        { bodies++; Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt")); });
+        Assert.Equal(1, bodies);
+        if (OperatingSystem.IsWindows()) Assert.True(fixture.MetadataQueries > 0);
+    }
+
+    /// <summary>
+    /// Keeps the original generation segment fresh after its in-memory generation revision changes.
+    /// </summary>
+    [Fact]
+    public async Task GenerationRevisionChangeCannotReviveAnOldSegment()
+    {
+        using var fixture = new Fixture(output); var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        using var scope = files.BeginRecoveryValidation(lease);
+        var rule = new OperationValidationRule("Mechanical", 1); var input = new object(); var bodies = 0;
+        Task Validate() => files.ValidateRecoveryDataAsync(rule, input, lease, async () =>
+        { bodies++; Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt")); });
+        await Validate(); await Validate(); Assert.Equal(1, bodies);
+        files.CanonicalRootAuthorityIdentity.AdvanceSessionGenerationRevision();
+        await Validate(); await Validate(); Assert.Equal(3, bodies);
+    }
+
+    /// <summary>
     /// Keeps captured diagnostic descendants outside the functional coordinator without dropping observations.
     /// </summary>
     [Fact]
@@ -357,6 +394,7 @@ public sealed class RecoveryFileValidationTests(ITestOutputHelper output)
         private readonly string _nonce = Guid.NewGuid().ToString("N");
         private readonly ConcurrentQueue<(string Name, string Boundary, double Seconds)> _events = new();
         private int _attributes;
+        private int _metadataQueries;
 
         /// <summary>
         /// Creates only the real files needed by this test's source body.
@@ -370,8 +408,11 @@ public sealed class RecoveryFileValidationTests(ITestOutputHelper output)
         /// <param name="observation">
         /// Optional passive receiver called for each measured timing boundary; null adds no receiver.
         /// </param>
+        /// <param name="passiveMetadata">
+        /// Whether to record actual metadata queries through their documented passive receiver.
+        /// </param>
         internal Fixture(ITestOutputHelper output, bool arbitraryReadHook = false,
-            Action<string, string>? observation = null)
+            Action<string, string>? observation = null, bool passiveMetadata = false)
         {
             _output = output;
             Root = Path.Combine(_parent, "boe-recovery-cache-" + _nonce);
@@ -389,7 +430,8 @@ public sealed class RecoveryFileValidationTests(ITestOutputHelper output)
                             Interlocked.Increment(ref _attributes);
                         observation?.Invoke(name, boundary);
                     },
-                    BeforeCanonicalReadOpenAsync = arbitraryReadHook ? _ => Task.CompletedTask : null
+                    BeforeCanonicalReadOpenAsync = arbitraryReadHook ? _ => Task.CompletedTask : null,
+                    PathMetadataQueryObserver = passiveMetadata ? _ => Interlocked.Increment(ref _metadataQueries) : null
                 });
         }
 
@@ -412,6 +454,11 @@ public sealed class RecoveryFileValidationTests(ITestOutputHelper output)
         /// Gets the number of actual completed attribute probes in measured source work.
         /// </summary>
         internal int Attributes => Volatile.Read(ref _attributes);
+
+        /// <summary>
+        /// Gets the number of actual passive metadata records delivered without a quota.
+        /// </summary>
+        internal int MetadataQueries => Volatile.Read(ref _metadataQueries);
 
         /// <summary>
         /// Emits every retained row and removes only the exact marked fixture tree.

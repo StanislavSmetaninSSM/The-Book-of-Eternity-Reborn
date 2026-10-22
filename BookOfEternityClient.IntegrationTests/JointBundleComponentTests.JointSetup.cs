@@ -20,6 +20,9 @@ public sealed partial class JointBundleComponentTests
         private object? _jointContinuation;
         private object? _jointReservation;
         private object? _jointBaseline;
+        private object? _jointResourceAuthority;
+        private GameEngine.MortalJointProgressionSource? _jointProgression;
+        private WoundAcceptedTurnPlanner.JointRepairBoundCommonInputResult? _jointBound;
         /// <summary>
         /// Produces a real source occurrence, treatment hold, corrected repair, wound stages and common-input owners.
         /// No game loop, full turn staging, fake authority or publication transaction is entered.
@@ -61,6 +64,7 @@ public sealed partial class JointBundleComponentTests
                 capture = await CaptureCorrectedJointRepairAsync(original);
             }
             catch (CoordinatedStatePublicationUncertainException) { _retained = true; throw; }
+            using var preparationValidation = Files.BeginRecoveryValidation(Lease);
             WoundAcceptedTurnPlanner.JointRepairPreparationAuthorityResult preparation;
             using (Files.MeasureOperation("JointBundleFixture.CreateJointPreparation"))
                 preparation = await WoundAcceptedTurnPlanner.CreateJointRepairPreparationAsync(Files, Lease, capture);
@@ -124,6 +128,10 @@ public sealed partial class JointBundleComponentTests
                         _jointContinuation = continuation;
                         _jointReservation = reservation;
                         _jointBaseline = baseline.Authority;
+                        _jointResourceAuthority = resources.Authority;
+                        _jointProgression = progression;
+                        _jointBound = bound;
+                        preparationValidation.Dispose();
                         if (observeBound is not null) await observeBound();
                     }
                     else
@@ -169,6 +177,9 @@ public sealed partial class JointBundleComponentTests
                 _jointContinuation = null;
                 _jointReservation = null;
                 _jointBaseline = null;
+                _jointResourceAuthority = null;
+                _jointProgression = null;
+                _jointBound = null;
             }
         }
 
