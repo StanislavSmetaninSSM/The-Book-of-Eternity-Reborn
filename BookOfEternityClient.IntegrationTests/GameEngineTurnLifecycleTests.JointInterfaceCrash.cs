@@ -745,6 +745,10 @@ public sealed partial class GameEngineTurnLifecycleTests
                 }
                 finally { operationTimings.Observe("JointCleanup.DiagnosticDataCapture", "end", captureClock.Elapsed); }
             },
+            RecoveryValidationObserver = metrics => Console.WriteLine(JsonSerializer.Serialize(new
+            {
+                Boundary = "recovery_validation_metrics", Metrics = metrics
+            })),
             CanonicalReadActivityObserver = resumeActivity is null ? null : _ => resumeActivity.Observe(JointResumeObservation.CanonicalInitial),
             ExactPhysicalReadActivityObserver = resumeActivity is null ? null : _ => resumeActivity.Observe(JointResumeObservation.ExactInitial),
             AfterCanonicalWriteLockOpenedAsync = resumeActivity is null ? null : () => { resumeActivity.Observe(JointResumeObservation.CanonicalOpened); return Task.CompletedTask; },

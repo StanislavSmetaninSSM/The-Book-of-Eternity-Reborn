@@ -10,40 +10,43 @@ public sealed partial class JointBundleComponentTests
     /// <summary>
     /// Compares repeated genuine issued mechanical and continuation checks while retaining all live authority guards.
     /// </summary>
-    /// <param name="reuse">
-    /// Whether the same production source validators may reuse successful DATA facts.
-    /// </param>
-    [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public async Task RecoverySourceCache_PreservesGenuineProofsLiveSlotsAndChangedByteRefusal(bool reuse)
+    [Fact]
+    public async Task RecoverySourceCache_PreservesGenuineProofsLiveSlotsAndChangedByteRefusal()
     {
         await using var fixture = new Fixture(_output, nameof(RecoverySourceCache_PreservesGenuineProofsLiveSlotsAndChangedByteRefusal));
         await fixture.InitializeAsync();
         var bound = await fixture.PrepareBoundJointAsync(async () =>
         {
-            using var scope = fixture.Files.BeginRecoveryValidation(fixture.Lease, reuse);
-            var start = fixture.ResetCandidateCapture("RecoveryDataEightRequests");
-            for (var i = 0; i < 8; i++) await fixture.ValidateRetainedRecoveryBaselineAsync();
-            var counts = fixture.CompleteCandidateCapture("RecoveryDataEightRequests", start);
-            foreach (var name in new[] { "Mechanical", "Continuation" })
+            // The signed preparation is the same input for both source modes. Rebuilding it
+            // for each theory row would test preparation twice instead of this adapter.
+            foreach (var reuse in new[] { false, true })
             {
-                Assert.Equal(8, counts.GetValueOrDefault("RecoveryValidation.Request." + name));
-                Assert.Equal(reuse ? 1 : 8, counts.GetValueOrDefault("RecoveryValidation.Source." + name));
-                Assert.Equal(reuse ? 7 : 0, counts.GetValueOrDefault("RecoveryValidation.Reuse." + name));
+                using var scope = fixture.Files.BeginRecoveryValidation(fixture.Lease, reuse);
+                var phase = "RecoveryDataEightRequests" + (reuse ? "Enabled" : "Disabled");
+                var start = fixture.ResetCandidateCapture(phase);
+                for (var i = 0; i < 8; i++) await fixture.ValidateRetainedRecoveryBaselineAsync();
+                var counts = fixture.CompleteCandidateCapture(phase, start);
+                foreach (var name in new[] { "Mechanical", "Continuation" })
+                {
+                    Assert.Equal(8, counts.GetValueOrDefault("RecoveryValidation.Request." + name));
+                    Assert.Equal(reuse ? 1 : 8, counts.GetValueOrDefault("RecoveryValidation.Source." + name));
+                    Assert.Equal(reuse ? 7 : 0, counts.GetValueOrDefault("RecoveryValidation.Reuse." + name));
+                }
+                Assert.Equal(8, counts.GetValueOrDefault("JointMechanical.ValidateOwnerAndFingerprint"));
+                Assert.Equal(8, counts.GetValueOrDefault("Continuation.InspectConfirmedHeldClaim"));
+                Assert.Equal(8, counts.GetValueOrDefault("JointBaseline.ConfirmItemBaseline"));
+                Assert.Equal(reuse ? 2 : 0, scope.CaptureState().Entries);
+                fixture.Output.WriteLine(JsonSerializer.Serialize(new { Kind = "RecoveryRealProofCounts", Reuse = reuse,
+                    RequestsPerValidator = 8, Counts = counts, Metrics = scope.CaptureMetrics(), State = scope.CaptureState() }));
             }
-            Assert.Equal(8, counts.GetValueOrDefault("JointMechanical.ValidateOwnerAndFingerprint"));
-            Assert.Equal(8, counts.GetValueOrDefault("Continuation.InspectConfirmedHeldClaim"));
-            Assert.Equal(8, counts.GetValueOrDefault("JointBaseline.ConfirmItemBaseline"));
-            Assert.Equal(reuse ? 2 : 0, scope.CaptureState().Entries);
-            fixture.Output.WriteLine(JsonSerializer.Serialize(new { Kind = "RecoveryRealProofCounts", Reuse = reuse,
-                RequestsPerValidator = 8, Counts = counts, State = scope.CaptureState() }));
 
             // Supported physical writes must invalidate an already warm continuation fact.
-            await fixture.AssertJointCurrentBytesRefusedAndRestoredAsync();
-            scope.Dispose();
-            Assert.True(scope.CaptureState().Closed);
-            using var nextOperation = fixture.Files.BeginRecoveryValidation(fixture.Lease, reuse);
+            using (var changedBytes = fixture.Files.BeginRecoveryValidation(fixture.Lease))
+            {
+                await fixture.ValidateRetainedRecoveryBaselineAsync();
+                await fixture.AssertJointCurrentBytesRefusedAndRestoredAsync();
+            }
+            using var nextOperation = fixture.Files.BeginRecoveryValidation(fixture.Lease);
             await fixture.ValidateRetainedRecoveryBaselineAsync();
             var itemStart = fixture.ResetCandidateCapture("RecoveryLiveItemSlotRefusal");
             fixture.AbortRetainedRecoveryItemSlot();
@@ -53,8 +56,8 @@ public sealed partial class JointBundleComponentTests
             Assert.Equal(1, itemCounts.GetValueOrDefault("Continuation.InspectConfirmedHeldClaim"));
             Assert.Equal(1, itemCounts.GetValueOrDefault("JointMechanical.ValidateOwnerAndFingerprint"));
             Assert.Equal(1, itemCounts.GetValueOrDefault("JointBaseline.ConfirmItemBaseline"));
-            Assert.Equal(reuse ? 0 : 1, itemCounts.GetValueOrDefault("RecoveryValidation.Source.Mechanical"));
-            Assert.Equal(reuse ? 0 : 1, itemCounts.GetValueOrDefault("RecoveryValidation.Source.Continuation"));
+            Assert.Equal(0, itemCounts.GetValueOrDefault("RecoveryValidation.Source.Mechanical"));
+            Assert.Equal(0, itemCounts.GetValueOrDefault("RecoveryValidation.Source.Continuation"));
             Assert.Equal(new ValidationOperationState(0, 0, true), nextOperation.CaptureState());
         });
         Assert.True(bound.Success, JsonSerializer.Serialize(bound.Issues));

@@ -2,6 +2,20 @@
   "schemaVersion": 1,
   "selections": [
 {
+  "category": "core-recovery-joint-take-fence",
+  "reason": "Actual publication take rejects raw ContextText drift after both genuine DATA facts are warm; unchanged inventory and both real authority slots are verified.",
+  "contracts": [
+    "RECACHE-4/5 actual warm-cache production boundary."
+  ]
+},
+{
+  "category": "core-recovery-finalization-fence",
+  "reason": "Actual engine checkpoint dispatcher keeps nested source reads fresh across await and normal/throwing callbacks, then refuses persistent raw drift.",
+  "contracts": [
+    "RECACHE-4/5 actual warm-cache production boundary."
+  ]
+},
+{
   "category": "core-recovery-joint-source-integration",
   "reason": "RECACHE3..5 actual issued production wrappers: repeated DATA source reduction and unchanged live confirmed-claim/item-slot/owner guards, supported physical-byte invalidation and real memory slot revocation.",
   "contracts": [

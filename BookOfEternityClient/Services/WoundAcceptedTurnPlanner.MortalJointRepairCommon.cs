@@ -141,24 +141,32 @@ internal static partial class WoundAcceptedTurnPlanner
     internal static async Task ValidateJointRepairCommonBaselineAsync(FileSystemManager files,
         FileSystemManager.CanonicalWriteLease lease, object value)
     {
-        using var innerTiming1 = files.MeasureOperation("JointBaseline.ValidateCurrentAsync");
-        using var innerTiming2 = files.MeasureOperation("JointBaseline.ValidateSeal");
-        JointCommonBaselineAuthority authority;
-        using (files.EnterOperationTimingContext())
+        try
         {
-            if (value is not JointCommonBaselineAuthority actual || !actual.HasValidSeal)
-                throw new InvalidDataException("Invalid private joint common baseline.");
-            authority = actual;
+            using var innerTiming1 = files.MeasureOperation("JointBaseline.ValidateCurrentAsync");
+            using var innerTiming2 = files.MeasureOperation("JointBaseline.ValidateSeal");
+            JointCommonBaselineAuthority authority;
+            using (files.EnterOperationTimingContext())
+            {
+                if (value is not JointCommonBaselineAuthority actual || !actual.HasValidSeal)
+                    throw new InvalidDataException("Invalid private joint common baseline.");
+                authority = actual;
+            }
+            innerTiming2?.Dispose();
+            await ValidateJointRepairCurrentAsync(files, lease, authority.Continuation);
+            using var innerTiming3 = files.MeasureOperation("JointBaseline.ValidateMechanicalAsync");
+            await authority.Mechanical.ValidateCurrentAsync(files, lease, authority.Bundle.Input.Binding);
+            innerTiming3?.Dispose();
+            using var innerTiming4 = files.MeasureOperation("JointBaseline.ConfirmItemBaseline");
+            if (!AcceptedTurnAuthorityRegistry.ConfirmsMortalJointRepairItemBaseline(files, lease,
+                    authority.Continuation, authority.Reservation, authority.Items))
+                throw new InvalidDataException("The actual current item slot no longer owns the complete sealed joint baseline.");
+            innerTiming4?.Dispose();
         }
-        innerTiming2?.Dispose();
-        await ValidateJointRepairCurrentAsync(files, lease, authority.Continuation);
-        using var innerTiming3 = files.MeasureOperation("JointBaseline.ValidateMechanicalAsync");
-        await authority.Mechanical.ValidateCurrentAsync(files, lease, authority.Bundle.Input.Binding);
-        innerTiming3?.Dispose();
-        using var innerTiming4 = files.MeasureOperation("JointBaseline.ConfirmItemBaseline");
-        if (!AcceptedTurnAuthorityRegistry.ConfirmsMortalJointRepairItemBaseline(files, lease,
-                authority.Continuation, authority.Reservation, authority.Items))
-            throw new InvalidDataException("The actual current item slot no longer owns the complete sealed joint baseline.");
-        innerTiming4?.Dispose();
+        catch
+        {
+            files.InvalidateRecoveryValidationAfterFailure();
+            throw;
+        }
     }
 }

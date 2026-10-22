@@ -61,6 +61,13 @@ public sealed class RecoveryFileValidationTests(ITestOutputHelper output)
         if (OperatingSystem.IsWindows()) Assert.True(firstAttributes > 0);
         Assert.Equal(reuse ? firstAttributes : firstAttributes * 8, fixture.Attributes);
         Assert.Equal(reuse ? 1 : 0, scope.CaptureState().Entries);
+        var metrics = scope.CaptureMetrics();
+        Assert.Equal(8, metrics.Requests);
+        Assert.Equal(expectedBodies, metrics.Sources);
+        Assert.Equal(8 - expectedBodies, metrics.Reuses);
+        Assert.Equal(reuse ? 0 : 8, metrics.FreshFallbacks);
+        Assert.Equal(0, metrics.MutationBegins);
+        Assert.Equal(0, metrics.MutationEnds);
     }
 
     /// <summary>
@@ -95,6 +102,10 @@ public sealed class RecoveryFileValidationTests(ITestOutputHelper output)
         }
         await Validate(); await Validate();
         Assert.Equal(2, bodies);
+        var metrics = scope.CaptureMetrics();
+        Assert.True(metrics.MutationBegins > 0);
+        Assert.Equal(metrics.MutationBegins, metrics.MutationEnds);
+        Assert.Equal(0, metrics.ActiveMutations);
     }
 
     /// <summary>
@@ -262,15 +273,42 @@ public sealed class RecoveryFileValidationTests(ITestOutputHelper output)
     [Fact]
     public async Task PassiveMetadataDiagnosticsDoNotDisableSourceReuse()
     {
-        using var fixture = new Fixture(output, passiveMetadata: true); var files = fixture.Files;
-        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        Task? diagnostic = null;
+        FileSystemManager files = null!;
+        FileSystemManager.CanonicalWriteLease lease = null!;
+        var diagnosticBodies = 0;
+        var observing = false;
+        using var fixture = new Fixture(output, passiveMetadata: true, metadataObservation: _ =>
+        {
+            if (!observing || diagnostic is not null) return;
+            diagnostic = Task.Run(async () =>
+            {
+                await release.Task;
+                await files.ValidateRecoveryDataAsync(new("MetadataDiagnostic", 1), new object(), lease, async () =>
+                { diagnosticBodies++; Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt")); });
+            });
+        });
+        files = fixture.Files;
+        await using var retainedLease = await files.AcquireCanonicalWriteLeaseAsync();
+        lease = retainedLease;
         files.GetOrCreateSessionGeneration(lease);
         using var scope = files.BeginRecoveryValidation(lease);
+        observing = true;
         var rule = new OperationValidationRule("Mechanical", 1); var input = new object(); var bodies = 0;
         for (var i = 0; i < 4; i++) await files.ValidateRecoveryDataAsync(rule, input, lease, async () =>
         { bodies++; Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt")); });
         Assert.Equal(1, bodies);
-        if (OperatingSystem.IsWindows()) Assert.True(fixture.MetadataQueries > 0);
+        if (OperatingSystem.IsWindows())
+        {
+            Assert.True(fixture.MetadataQueries > 0);
+            Assert.NotNull(diagnostic);
+            release.SetResult();
+            await diagnostic;
+            Assert.Equal(1, diagnosticBodies);
+            Assert.Equal(1, scope.CaptureState().Entries);
+            Assert.Equal(4, scope.CaptureMetrics().Requests);
+        }
     }
 
     /// <summary>
@@ -411,8 +449,12 @@ public sealed class RecoveryFileValidationTests(ITestOutputHelper output)
         /// <param name="passiveMetadata">
         /// Whether to record actual metadata queries through their documented passive receiver.
         /// </param>
+        /// <param name="metadataObservation">
+        /// Optional passive receiver used to observe captured diagnostic descendants; null adds no receiver.
+        /// </param>
         internal Fixture(ITestOutputHelper output, bool arbitraryReadHook = false,
-            Action<string, string>? observation = null, bool passiveMetadata = false)
+            Action<string, string>? observation = null, bool passiveMetadata = false,
+            Action<PathMetadataQuery>? metadataObservation = null)
         {
             _output = output;
             Root = Path.Combine(_parent, "boe-recovery-cache-" + _nonce);
@@ -431,7 +473,11 @@ public sealed class RecoveryFileValidationTests(ITestOutputHelper output)
                         observation?.Invoke(name, boundary);
                     },
                     BeforeCanonicalReadOpenAsync = arbitraryReadHook ? _ => Task.CompletedTask : null,
-                    PathMetadataQueryObserver = passiveMetadata ? _ => Interlocked.Increment(ref _metadataQueries) : null
+                    PathMetadataQueryObserver = passiveMetadata || metadataObservation is not null ? query =>
+                    {
+                        Interlocked.Increment(ref _metadataQueries);
+                        metadataObservation?.Invoke(query);
+                    } : null
                 });
         }
 

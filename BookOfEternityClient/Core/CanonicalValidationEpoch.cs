@@ -8,6 +8,8 @@ internal sealed class CanonicalValidationEpoch
     private readonly object _state = new();
     private readonly HashSet<object> _mutations = new(ReferenceEqualityComparer.Instance);
     private object _version = new();
+    private long _begins;
+    private long _ends;
 
     /// <summary>
     /// Registers an exact mutation identity and changes the version before its effects begin.
@@ -24,6 +26,7 @@ internal sealed class CanonicalValidationEpoch
             if (!_mutations.Add(mutation))
                 throw new InvalidOperationException("The canonical mutation is already registered.");
             _version = nextVersion;
+            unchecked { _begins++; }
         }
     }
 
@@ -42,6 +45,7 @@ internal sealed class CanonicalValidationEpoch
             var nextVersion = new object();
             _mutations.Remove(mutation);
             _version = nextVersion;
+            unchecked { _ends++; }
         }
     }
 
@@ -62,4 +66,17 @@ internal sealed class CanonicalValidationEpoch
             return version != null;
         }
     }
+
+    /// <summary>
+    /// Captures diagnostic transition totals without exposing the authoritative version identity.
+    /// </summary>
+    /// <returns>
+    /// Begin and end totals plus the number of currently active identities, captured under the epoch gate.
+    /// These counters never establish authority or cache eligibility.
+    /// </returns>
+    internal (long Begins, long Ends, int Active) CaptureActivity()
+    {
+        lock (_state) return (_begins, _ends, _mutations.Count);
+    }
+
 }

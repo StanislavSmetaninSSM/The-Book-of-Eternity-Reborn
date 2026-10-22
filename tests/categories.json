@@ -2,8 +2,56 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "core-recovery-joint-take-fence",
+  "responsibility": "Actual publication take rejects raw ContextText drift after both genuine DATA facts are warm; unchanged inventory and both real authority slots are verified.",
+  "excludes": "No fake proof, world generation, complete game loop, original process scenario or diagnostic quota.",
+  "changeHints": [
+    "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointRepairPublication.cs",
+    "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.RecoveryFreshFences.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointBundleComponentTests.RecoveryTakeFence_RejectsRawContextDriftBeforeBothRealSlotTakes"
+      ]
+    }
+  ]
+},
+{
+  "id": "core-recovery-finalization-fence",
+  "responsibility": "Actual engine checkpoint dispatcher keeps nested source reads fresh across await and normal/throwing callbacks, then refuses persistent raw drift.",
+  "excludes": "No genuine joint preparation, world generation, original process scenario or diagnostic quota.",
+  "changeHints": [
+    "BookOfEternityClient/Core/GameEngine.cs",
+    "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.RecoveryFreshFences.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointBundleComponentTests.RecoveryFinalizationDispatcher_KeepsFreshBoundaryAcrossAwaitAndFailure"
+      ]
+    }
+  ]
+},
+{
   "id": "core-recovery-joint-source-integration",
-  "responsibility": "Two minimal genuine issued joint fixtures compare8real mechanical/continuation wrapper calls with/without DATA reuse; retain every live claim/item/owner guard, reject changed physical bytes and revoked real memory item slot without generating a world.",
+  "responsibility": "One minimal genuine issued joint fixture compares8real mechanical/continuation wrapper calls with/without DATA reuse; retain every live claim/item/owner guard, reject changed physical bytes and revoked real memory item slot without generating a world.",
   "excludes": "No original600s process scenario, full game loop, fake proof, reflected private access or uncapped-output truncation.",
   "changeHints": [
     "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs",

@@ -7,6 +7,19 @@ public partial class FileSystemManager
     private readonly AsyncLocal<RecoveryValidationScope?> _recoveryValidation = new();
 
     /// <summary>
+    /// Delivers every passive metadata record outside functional validation participation.
+    /// </summary>
+    /// <param name="query">
+    /// Actual metadata query attempt retained unchanged for the receiver.
+    /// </param>
+    private void ObservePassivePathMetadata(PathMetadataQuery query)
+    {
+        using var diagnostic = SuppressValidationReuse();
+        try { _hooks?.PathMetadataQueryObserver?.Invoke(query); }
+        catch (Exception) { /* Passive observation cannot replace a filesystem result. */ }
+    }
+
+    /// <summary>
     /// Registers temporary source-validation results for one exact publication lease.
     /// </summary>
     /// <param name="lease">
@@ -94,6 +107,16 @@ public partial class FileSystemManager
         private readonly IOperationDependency[] _dependencies;
         private int _closed;
         private volatile bool _failed;
+        private readonly Guid _diagnosticId = Guid.NewGuid();
+        private readonly (long Begins, long Ends, int Active) _initialActivity;
+        private long _requests;
+        private long _sources;
+        private long _reuses;
+        private long _fallbacks;
+        private long _freshSources;
+        private long _freshBoundaries;
+        private int _freshDepth;
+        private int _failureClosures;
 
         /// <summary>
         /// Retains the exact manager and lease for the caller-owned operation.
@@ -115,6 +138,7 @@ public partial class FileSystemManager
             _generationRevision = files.CanonicalRootAuthorityIdentity.SessionGenerationRevision;
             _reuseEnabled = reuseEnabled && files.SupportsRecoveryDataReuse();
             _dependencies = [this];
+            _initialActivity = files.CanonicalRootAuthorityIdentity.ValidationEpoch.CaptureActivity();
         }
 
         /// <summary>
@@ -140,10 +164,14 @@ public partial class FileSystemManager
         {
             ObjectDisposedException.ThrowIf(Volatile.Read(ref _closed) != 0, this);
             using var request = _files.MeasureOperation("RecoveryValidation.Request." + rule.Computation.Name);
+            Interlocked.Increment(ref _requests);
             var sourceExecuted = false;
+            var fallback = false;
             async Task Source()
             {
                 sourceExecuted = true;
+                Interlocked.Increment(ref _sources);
+                if (fallback || Volatile.Read(ref _freshDepth) != 0) Interlocked.Increment(ref _freshSources);
                 using var timing = _files.MeasureOperation("RecoveryValidation.Source." + rule.Computation.Name);
                 await validate();
             }
@@ -151,6 +179,8 @@ public partial class FileSystemManager
             {
                 if (!ReferenceEquals(lease, _lease) || !TryCaptureVersion(out _))
                 {
+                    fallback = true;
+                    Interlocked.Increment(ref _fallbacks);
                     using var fresh = _files.MeasureOperation("RecoveryValidation.Fresh." + rule.Computation.Name);
                     await Source();
                 }
@@ -158,6 +188,7 @@ public partial class FileSystemManager
                     await _operation.ValidateAsync(rule, inputIdentity, _dependencies, _ => Source());
                 if (!sourceExecuted)
                 {
+                    Interlocked.Increment(ref _reuses);
                     using var reuse = _files.MeasureOperation("RecoveryValidation.Reuse." + rule.Computation.Name);
                 }
             }
@@ -201,7 +232,8 @@ public partial class FileSystemManager
         internal IDisposable? ForceFresh()
         {
             ObjectDisposedException.ThrowIf(Volatile.Read(ref _closed) != 0, this);
-            return _failed ? null : _operation.ForceFresh();
+            Interlocked.Increment(ref _freshBoundaries);
+            return _failed ? null : new RecoveryFreshBoundary(this, _operation.ForceFresh());
         }
 
         /// <summary>
@@ -213,11 +245,83 @@ public partial class FileSystemManager
         internal ValidationOperationState CaptureState() => _operation.CaptureState();
 
         /// <summary>
+        /// Captures actual request, execution and invalidation observations without accessing retained DATA.
+        /// </summary>
+        /// <returns>
+        /// Counter observations for this segment; root transitions include other managers of the same root.
+        /// </returns>
+        internal RecoveryValidationMetrics CaptureMetrics()
+        {
+            var activity = _files.CanonicalRootAuthorityIdentity.ValidationEpoch.CaptureActivity();
+            return new RecoveryValidationMetrics
+            {
+                OperationId = _diagnosticId,
+                Requests = Interlocked.Read(ref _requests), Sources = Interlocked.Read(ref _sources),
+                Reuses = Interlocked.Read(ref _reuses), FreshFallbacks = Interlocked.Read(ref _fallbacks),
+                FreshSources = Interlocked.Read(ref _freshSources), FreshBoundaries = Interlocked.Read(ref _freshBoundaries),
+                FailureClosures = Volatile.Read(ref _failureClosures),
+                MutationBegins = unchecked(activity.Begins - _initialActivity.Begins),
+                MutationEnds = unchecked(activity.Ends - _initialActivity.Ends), ActiveMutations = activity.Active,
+                GenerationChanged = _files.CanonicalRootAuthorityIdentity.SessionGenerationRevision != _generationRevision,
+                Closed = Volatile.Read(ref _closed) != 0, State = _operation.CaptureState()
+            };
+        }
+
+        /// <summary>
+        /// Delivers complete operation counters outside every authority gate and isolates passive receiver failures.
+        /// </summary>
+        private void EmitDiagnostics()
+        {
+            if (_files._hooks?.RecoveryValidationObserver is not { } observer) return;
+            using var diagnostic = SuppressValidationReuse();
+            using var timing = _files.MeasureOperation("RecoveryValidation.ExportDiagnostics");
+            try { observer(CaptureMetrics()); }
+            catch (Exception) { /* Passive diagnostics cannot replace the operation outcome. */ }
+        }
+
+        /// <summary>
+        /// Observes the full lifetime of an existing fresh boundary without changing its validation contract.
+        /// </summary>
+        private sealed class RecoveryFreshBoundary : IDisposable
+        {
+            private readonly RecoveryValidationScope _owner;
+            private readonly IDisposable _inner;
+            private int _closed;
+
+            /// <summary>
+            /// Records an active fresh boundary after its underlying service has entered it.
+            /// </summary>
+            /// <param name="owner">
+            /// Exact recovery segment receiving scalar diagnostic observations.
+            /// </param>
+            /// <param name="inner">
+            /// Existing general-service boundary whose disposal restores fresh routing.
+            /// </param>
+            internal RecoveryFreshBoundary(RecoveryValidationScope owner, IDisposable inner)
+            {
+                _owner = owner;
+                _inner = inner;
+                Interlocked.Increment(ref owner._freshDepth);
+            }
+
+            /// <summary>
+            /// Restores the underlying boundary once and then retires its diagnostic depth.
+            /// </summary>
+            public void Dispose()
+            {
+                if (Interlocked.Exchange(ref _closed, 1) != 0) return;
+                try { _inner.Dispose(); }
+                finally { Interlocked.Decrement(ref _owner._freshDepth); }
+            }
+        }
+
+        /// <summary>
         /// Closes reusable storage after failure while preserving the primary exception.
         /// </summary>
         internal void CloseCache()
         {
             _failed = true;
+            Interlocked.CompareExchange(ref _failureClosures, 1, 0);
             try { _operation.Dispose(); }
             catch { /* Cleanup cannot replace the original validation refusal. */ }
         }
@@ -231,6 +335,7 @@ public partial class FileSystemManager
             try { _operation.Dispose(); }
             finally
             {
+                EmitDiagnostics();
                 if (ReferenceEquals(_files._recoveryValidation.Value, this))
                 {
                     _files._recoveryValidation.Value = null;
@@ -248,7 +353,6 @@ public partial class FileSystemManager
     /// </returns>
     private bool SupportsRecoveryDataReuse() =>
         ReferenceEquals(_loadTransactionOperations, PhysicalLoadTransactionOperations.Instance) &&
-        _hooks?.PathMetadataQueryObserver is null &&
         _hooks?.BeforeCanonicalReadOpenAsync is null && _hooks?.AfterCanonicalReadInitialValidationAsync is null &&
         _hooks?.BeforeRuntimeFileReadOpenAsync is null && _hooks?.AfterRuntimeFileReadOpenedAsync is null &&
         _hooks?.AfterRuntimeFileReadInitialValidationAsync is null && _hooks?.AfterExactPhysicalReadInitialValidationAsync is null &&

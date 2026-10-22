@@ -21,6 +21,12 @@ internal sealed class FileSystemManagerHooks
     /// </summary>
     internal Action<string, string, TimeSpan>? OperationTimingObserver { get; init; }
 
+    /// <summary>
+    /// Observes complete recovery-segment counters at close without a quota; null disables export.
+    /// The receiver and its descendants must not mutate storage or authority. Receiver exceptions are ignored.
+    /// </summary>
+    internal Action<RecoveryValidationMetrics>? RecoveryValidationObserver { get; init; }
+
 #if DEBUG
     /// <summary>
     /// Observes an existing physical snapshot-evidence read; null disables the observation.
@@ -808,7 +814,8 @@ public partial class FileSystemManager
     {
         if (OperatingSystem.IsWindows())
         {
-            WindowsPathMetadataGuard.Ensure(authorityRoot, fullPath, authorityName, _hooks?.PathMetadataQueryObserver);
+            WindowsPathMetadataGuard.Ensure(authorityRoot, fullPath, authorityName,
+                _hooks?.PathMetadataQueryObserver is null ? null : ObservePassivePathMetadata);
             return;
         }
 
