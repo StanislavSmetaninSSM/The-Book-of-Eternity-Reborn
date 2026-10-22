@@ -78,6 +78,12 @@ selectors remain whole in test-selection-contracts, failures explicitly unresolv
 Catalog/runner metadata revision is pinned separately from unchanged compiledad10.
 Story3/3PASS onad10 after streaming/raw-root fix, no timeout, complete cleanup.
 
+The moved fast descriptor completed15cases13PASS/2FAIL: unchanged resolver
+partial inventory and old npm lookup source-string guards. Classify baseline
+without modifying either assertion. Split the still-skipped3PowerShell selectors
+verbatim again into test-category-powershell-contracts; fast15 remain together.
+All baseline failures remain reported; no green aggregate or timeout acceptance.
+
 ## Review focus
 
 - A no-evidence recovery rotates epoch; no retained pre-recovery result survives.

@@ -77,6 +77,13 @@
       "contracts": [
         "PROGDATA5/6; no removed test, altered assertion or budget."
       ]
+    },
+    {
+      "category": "test-category-powershell-contracts",
+      "reason": "Execute the three unchanged PowerShell adapter scripts separately after two existing fast source guards caused fail-fast; retain every original assertion and actual failure.",
+      "contracts": [
+        "PROGDATA5; catalog/report/command admission, no runtime behavior change."
+      ]
     }
   ]
 }

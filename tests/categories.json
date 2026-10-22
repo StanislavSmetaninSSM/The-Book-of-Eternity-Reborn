@@ -15201,7 +15201,7 @@
 },
 {
   "id": "test-category-runner-contracts",
-  "responsibility": "Bounded PowerShell catalog/report/runner and fast process-cleanup contracts, split verbatim from test-selection-contracts.",
+  "responsibility": "Fast runner, owned-process and associated source-boundary contracts, retained verbatim from the original selection category.",
   "excludes": "Integration source inventory and gameplay correctness remain in their existing categories.",
   "changeHints": [
     "scripts/test-csharp.ps1",
@@ -15211,7 +15211,42 @@
     "tests/selection.json"
   ],
   "related": [
-    { "id": "test-selection-contracts", "when": "Integration source inventory contracts remain selected and reported independently." }
+    {
+      "id": "test-selection-contracts",
+      "when": "Integration source inventory contracts remain selected and reported independently."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.FastTestBoundaryTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "test-category-powershell-contracts",
+  "responsibility": "PowerShell catalog, report and command-admission adapter assertions; each script retains its full original assertion set.",
+  "excludes": "CSharp source inventory and owned-process controls are reported separately, including pre-existing guard failures.",
+  "changeHints": [
+    "scripts/test-csharp.ps1",
+    "scripts/testing/**",
+    "scripts/tests/**",
+    "tests/categories.json",
+    "tests/selection.json"
+  ],
+  "related": [
+    {
+      "id": "test-category-runner-contracts",
+      "when": "Runner changes also affect fast owned-process contracts."
+    }
   ],
   "requirements": {
     "frontendBuild": false,
@@ -15226,12 +15261,6 @@
         "scripts/tests/test-category-catalog.tests.ps1",
         "scripts/tests/test-category-reports.tests.ps1",
         "scripts/tests/test-category-runner.tests.ps1"
-      ]
-    },
-    {
-      "project": "unit",
-      "tests": [
-        "BookOfEternityClient.Tests.FastTestBoundaryTests.*"
       ]
     }
   ]
