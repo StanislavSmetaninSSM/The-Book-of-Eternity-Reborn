@@ -1,3 +1,21 @@
+# Full-proof reserved-read integration — revision52
+
+PROOFREAD1..6 / T444–447. New internal generic FileSystemManager helper
+ReadStableRecoveryDataAsync<TResult>(CanonicalWriteLease,Func<Task<TResult>>)
+owns only an optional existing ReservedValidationReadSet: TryBegin, Open,
+original read plan, Complete, then return; finally DisposeAsync. Preserve primary
+failure when disposal also fails. It stores no proof/capability itself and adds
+no alternate cache. Nested/unsupported routes retain existing reader semantics
+and enclosing owner's completion responsibility.
+
+ReadJointCompletedProofAsync retains recovery+stable marker comparison, then
+dispatches the unchanged remaining validator through this helper. Extracted
+private body consumes the same fs/lease/inspection/root/stableMarker and returns
+the original CompletedProof only after all original checks; helper finalizes fresh
+physical exit validation before caller receives it. No live authority check or
+recovery is memoized; no bytes/absence/timestamps/generation check is skipped at
+the fresh exit. Existing QTE readset behavior and all negative controls remain.
+
 # Progression DATA integration — revision51 addition
 
 PROGDATA1..6 / T439–443: add typed result support to the accepted r50 adapter,

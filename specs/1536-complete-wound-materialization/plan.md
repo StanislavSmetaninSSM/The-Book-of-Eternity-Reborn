@@ -1,3 +1,64 @@
+# Full-proof reserved reads — revision52 implementation plan
+
+> REQUIRED: Superpowers executing-plans inline, TDD, systematic-debugging,
+> independent separate complex gpt-6-astra/high review and verified completion.
+
+**Goal:** issue1536 / PROOFREAD1..6, reduce repeated file source checks inside one
+read-only completed proof and measure unchanged original600s with full diagnostics.
+**Spec:** spec.md revision52; contracts/recovery-validation.md revision52.
+**Architecture:** existing ReservedValidationReadSet, one optional lifecycle
+envelope after recovery, every unique source freshly verified before return.
+**Stack:** existing .NET8/SDK10, Windows/PowerShell7/xUnit; no new dependencies.
+**Base:**0ed6dd80fa09d505436c9c1fc86fa1c1744073de; existing isolated user clone/branch.
+
+Constitution: existing issue/feature, client DATA-only/no GM/schema changes,
+category-only verification, typed seams/minimal independent fixtures, no authority
+cache, source/human records only inGit. User waiver removes approval waits, not
+engineering/review/source/input/ownership gates. Optional auto-stage hooks skipped.
+
+T444: record root cause/source map and3alternatives in spec; actual pinned
+setup-plan/setup-tasks/prerequisites; equivalent artifact consistency. Present
+absolute links before code. Save/push canonical artifacts and verify origin.
+
+T445: add compiling helper initially pass-through in
+Core/FileSystemManager.RecoveryProofReads.cs. New unit RecoveryProofReadTests.cs
+uses real files+issued leases,8read source-vs-first/exit counts and named timers.
+Demonstrate RED, then implement existing readset lifecycle as above; do not modify
+readset algorithm/admission/recovery. In Services/MortalQteDecisionPublication.
+MortalJointRepair.cs extract the post-recovery body without altering its statements
+or order. Connect helper after stableMarker comparison. New integration
+JointCompletedProofReadTests.cs copies existing immutable joint-applied-data and
+calls typed real completed-proof entry; compare enabled against a no-effect read
+hook selecting original fallback, byte-identical images/outputs and actual probe
+counts. Inject raw footprint drift after observation and require refusal. New
+categories core-recovery-proof-reads and fr063-joint-proof-reads-integration own
+only these tests. All fixture output streams D unbounded with SHA references.
+
+T446: choose related reserved-readset/lifetime/ordinary-reader/operation-cache/
+progression/affected publication categories by actual diff; don't repeat unrelated
+passed runs or run aggregates. Update tests/selection.json, XML full-reference
+builds/unit+integration, introduced XML audit, catalog/PlanOnly. Save WIP and obtain
+independent coherent source/test/doc/selection review. Fact selects NEW immutable
+joint-interface-source42-proof-reads-v1/package before final build. Generate actual
+current source42/two independent imports, qualify every payload/hash/fingerprint/
+actual DLL, commit only INPUT+human provenance; recover origin exact before runtime.
+
+T447: one original Cut0 using same C:/Temp600child/820shared/15minute category,
+BOE_TEST_JOINT_TIMINGS=full and BOE_TEST_DIAGNOSTIC_ROOT=D:/BoeDiagnostics/proof-reads-r52-20261023.
+NoBuild requires freshly bound8DLLs. Full source streams, native identities,
+EOF/join/game oracles/cleanup retained; no analyzer competes while running. Archive
+all raw and verify allpayloadSHA/CRC; analyze allrows/readset/observer and matched
+closed first-publication/proof paths against r51. Record honest actual outcome,
+independent final review, human findings/source final commit/origin recovery and
+verified-replacement retention. Do not infer absent/open durations or remove guards.
+
+Review focus/test mapping: raw same-size bytes+restoredmtime (T445), cached absence
+becomespresent/namespace replacement (T445/existing readset controls), generation
+and exact other-manager/lease ownership (T445), nested/passive/late-close/failure
+preserving original exception (T445/related readset controls), actual private proof
+has no result before fresh exit and identical semantic assertion order (T445/T446).
+Dependencies444->445->446->447; PROOFREAD1/2/3->445,4->445/446,5->446/447,6->447.
+
 # Progression DATA reuse — revision51 implementation plan
 
 > REQUIRED: superpowers:executing-plans inline, test-driven-development,

@@ -1,3 +1,12 @@
+# CRASH5 — revision52 reserved reads within a completed proof
+
+Issue1536; owner2026-10-23 requests safe reuse of repeated full file checks,
+implementation, unchanged original600s measurement and unlimited diagnostics.
+- [ ] T444 [US3] Investigate measured full-proof sources; write/present r52 spec/contract/plan/tasks through pinned Spec Kit phases and consistency, publish before implementation. Reuse current isolated clone and retained r51 measurements.
+- [ ] T445 [US1/US2] Compiling causal RED then GREEN for a typed stable-read envelope using the existing ReservedValidationReadSet, minimal independent files, fresh exit proof and negative controls. Integrate only after inner recovery in the joint completed-proof reader; retain its whole algorithm/order and disposal/failure behavior. Demonstrate actual proof attribute reduction and unchanged bytes with a small immutable DATA copy; unsupported hooks stay fresh.
+- [ ] T446 [US3] Current XML builds/comment audit/catalog/selected affected controls, independent complex Astra/high coherent source/test/doc review; qualify genuine NEW current-source source42 input/two imports, save and recover exact source/input before the real case. No old input rebinding or diagnostics in Git.
+- [ ] T447 [US3] One actual same Cut0 with600child/820shared/15minute category and full uncapped diagnostics onD; verify owned settlement/all output, analyze all timing records, compare equal completed milestones against r51 and report honest outcome/remaining costs. Independent result review, exact final recovery, retire superseded raw only after verified replacement. No off run unless separately justified/authorized; no aggregate suite.
+
 # CRASH5 — revision51 progression DATA reuse
 
 Issue1536, requested2026-10-23, autonomous execution. Canonical spec/plan/contractr51.

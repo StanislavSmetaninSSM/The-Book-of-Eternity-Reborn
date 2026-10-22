@@ -1,3 +1,68 @@
+# CRASH5 — revision52: repeated file reads inside a full proof
+
+Source issue[1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536).
+Owner2026-10-23: identify repeatable full file checks that can be reused without
+integrity loss, implement them and repeat the original600s case with unlimited
+diagnostics. Autonomous execution and standing review-wait waiver apply; written
+artifacts are still presented before code. Active existing feature is reused.
+
+Measured r51 evidence:77 source snapshot reads25.9298s,77 original projection
+reads28.5699s,77 footprint checks44.3684s inclusive. These overlap nested physical
+probes/observer costs and do not predict savings. First closed publication still
+768880attributes. Full r51 times out600; actual observation-off completes390.1042s.
+
+Considered: memoizing a completed proof across recovery risks stale authority and
+untracked raw drift; content-hash parse caching still pays expensive reads; use
+the existing reserved read-set protocol only inside one read-only proof (chosen).
+No new global cache or authority repository is introduced.
+
+- PROOFREAD-1: start optional reserved source reads only AFTER the existing inner
+  ResolveBackupPublicationRecovery and stable marker recovery comparison. Keep
+  both original recovery calls, all full proof statements/order, live lease,
+  generation, tuple, original, footprint, resource/history/receipt/output/interface,
+  inactive-tail/progression and marker checks. No complete proof memoization.
+- PROOFREAD-2: use existing ReservedValidationReadSet DATA identity (raw ordinal
+  path, reader family, explicit lease), copies, exact borrowed reservation and
+  admission/lifetime checks. One source observation may serve repeated identical
+  reads inside this phase. Before a result escapes, freshly re-read every touched
+  source and compare bytes, absence, timestamps and generation through original
+  source paths. Return no result if exit proof fails. Dispose private buffers and
+  only owned reservation on every exit, preserving the primary failure.
+- PROOFREAD-3: unsupported arbitrary read hooks/custom or incompatible ownership
+  use unchanged fresh paths; passive diagnostic receiver reads cannot join the
+  functional cache. Mutation/other-manager writers must retain existing refusal
+  under reservation; raw external file/absence/namespace/generation changes must
+  be caught by the fresh exit proof. Do not replace source checks with mtime-only
+  or root-epoch-only assumptions. Nested read sets keep original ownership.
+- PROOFREAD-4: causal minimal real-file RED/GREEN through a typed internal seam,
+  no reflection/world generation. Show8identical reads require only first+fresh
+  exit source versus8fresh reads, with actual attributes and uncapped named timers.
+  Cover copies, absence/create, same-size raw drift with restored timestamp,
+  generation/namespace changes, callback fallback, failure, reservation closing
+  and other-manager writes. Real small applied-DATA proof must show lower actual
+  attributes with identical outputs/game bytes; otherwise investigate before
+  claiming a production optimization or spending the original run.
+- PROOFREAD-5: selected category ownership/inventory and XML builds, independent
+  separate complex gpt-6-astra/high review, source-bound8DLLs and genuine NEW
+  current-source source42 fixture imports/exact remote recovery precede one real
+  Cut0 on C:/Temp under600child/820shared/15minute category. Keep every original
+  turn43/history/interface/inert-repeat assertion and native lineage/EOF/join/
+  ownership cleanup. Full collection is uncapped; no concurrent heavy analyzer.
+- PROOFREAD-6: retain complete raw locallyD, analyze all rows/observer costs and
+  actual readset request/source/reuse/exit counts. Compare equal completed stages
+  with r51; incomplete600prefix counts are not a speedup percentage. Report actual
+  PASS/FAIL and remaining costs honestly. Preserve instrumented source for reuse;
+  Git holds source/immutable test INPUT/human Markdown only. Retire prior raw after
+  complete verified settled replacement and retain compact comparisons.
+
+Acceptance: cheap causal source/attribute reduction plus refusal parity; actual
+whole-proof file fixture improvement with unchanged data; original measured
+outcome and reviewed bounded implementation. No guaranteed600s PASS or whole-game
+speedup is presumed. Do not relabel5pre-existing catalog/source-guard failures.
+Scope excludes other four cuts/Linux, journal/recovery/schema/GM/player changes,
+cross-call whole-proof reuse and widening existing callback support. Broad source
+selection changes require renewed written scope; review waits remain waived.
+
 # CRASH5 — revision51: progression DATA reuse after recovery
 
 Issue [1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536).
