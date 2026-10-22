@@ -3,9 +3,9 @@
   "selections": [
     {
       "category": "fr063-reserved-validation-read-set",
-      "reason": "Source counts, strict signed absence, current bytes/generation, retained ownership, overlap settlement and passive observers.",
+      "reason": "Source and added request-admission counts for real lease-free/explicit consumers, strict absence/current bytes/generation, retained ownership, overlap and passive observers.",
       "contracts": [
-        "FANOUT-2/3/5: preserve original integrity while eliminating only phase-redundant source reads."
+        "ADMISSION-1..5/FANOUT-2/3/5: remove only added guarded request admission while preserving original source and full boundary integrity."
       ]
     },
     {

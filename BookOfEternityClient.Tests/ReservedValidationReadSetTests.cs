@@ -18,6 +18,53 @@ namespace BookOfEternityClient.Tests;
 public sealed class ReservedValidationReadSetTests(ITestOutputHelper output)
 {
     /// <summary>
+    /// Requires guarded requests to reuse their exact reservation without adding full admission outside original readers.
+    /// </summary>
+    /// <param name="leaseFree">
+    /// Whether the consumers use their original lease-free overloads instead of declaring the retained lease.
+    /// </param>
+    /// <param name="allowRetainedGuardAdmission">
+    /// Whether guarded retained checks are allowed; <see langword="false"/> measures the conservative control.
+    /// </param>
+    [Theory]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    public async Task GuardedRequestsDoNotAddFullAdmission(bool leaseFree, bool allowRetainedGuardAdmission)
+    {
+        using var fixture = new Fixture(output);
+        var files = fixture.Create();
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        fixture.Recording = true;
+        using var timingContext = files.EnterOperationTimingContext();
+        await using var readSet = files.TryBeginReservedValidationReadSet(lease, allowRetainedGuardAdmission);
+        Assert.NotNull(readSet);
+        await readSet.OpenAsync();
+        for (var i = 0; i < 12; i++)
+        {
+            Assert.Equal("original", leaseFree ? files.ReadFileSync("present.txt") : files.ReadFileSync(lease, "present.txt"));
+            Assert.Null(leaseFree ? files.ReadFileSync("missing.txt") : files.ReadFileSync(lease, "missing.txt"));
+            Assert.Equal("original", leaseFree ? await files.ReadFileAsync("present.txt") : await files.ReadFileAsync(lease, "present.txt"));
+            Assert.Null(leaseFree ? await files.ReadFileAsync("missing.txt") : await files.ReadFileAsync(lease, "missing.txt"));
+        }
+        await readSet.CompleteAsync();
+        var counts = fixture.CountRequestAdmissions();
+        output.WriteLine(JsonSerializer.Serialize(new { LeaseFree = leaseFree, AllowRetainedGuardAdmission = allowRetainedGuardAdmission,
+            counts.Requests, counts.FirstSources, counts.ExitSources, counts.Reuses, counts.AddedFullChecks,
+            counts.AddedNativeProbes, counts.AllNativeProbes }));
+        Assert.Equal(48, counts.Requests);
+        Assert.Equal(4, counts.FirstSources);
+        Assert.Equal(4, counts.ExitSources);
+        Assert.Equal(44, counts.Reuses);
+        Assert.Equal(8, fixture.PhysicalReads);
+        Assert.Equal(allowRetainedGuardAdmission ? 0 : 48, counts.AddedFullChecks);
+        if (allowRetainedGuardAdmission) Assert.Equal(0, counts.AddedNativeProbes);
+        else Assert.True(counts.AddedNativeProbes > 0);
+    }
+
+    /// <summary>
     /// Requires only first and exit source observations for repeated consumers of four distinct read identities.
     /// </summary>
     /// <param name="reserved">
@@ -505,6 +552,45 @@ public sealed class ReservedValidationReadSetTests(ITestOutputHelper output)
         /// </summary>
         internal int PhysicalReads => _events.Count(e => e.Measured && e.Boundary == "end" &&
             e.Name is "OrdinaryRead.Sync.Total" or "OrdinaryRead.Async.Total");
+
+        /// <summary>
+        /// Reconciles completed request/source timers and native admission probes from their actual nesting.
+        /// </summary>
+        /// <returns>
+        /// Counts of requests, first and exit sources, reuses, added request-only guard/native probes and all recorded probes.
+        /// Invalid timing nesting fails the control instead of silently dropping records.
+        /// </returns>
+        internal (int Requests, int FirstSources, int ExitSources, int Reuses, int AddedFullChecks,
+            int AddedNativeProbes, int AllNativeProbes) CountRequestAdmissions()
+        {
+            var stack = new Stack<string>();
+            var requests = 0; var first = 0; var exits = 0; var reuses = 0;
+            var full = 0; var addedNative = 0; var allNative = 0;
+            foreach (var item in _events)
+            {
+                if (item.Boundary == "begin") { stack.Push(item.Name); continue; }
+                Assert.Equal("end", item.Boundary);
+                Assert.NotEmpty(stack);
+                Assert.Equal(item.Name, stack.Peek());
+                if (item.Measured)
+                {
+                    if (item.Name is "ValidationReadSet.RequestSync" or "ValidationReadSet.RequestAsync") requests++;
+                    if (item.Name is "ValidationReadSet.SourceSync" or "ValidationReadSet.SourceAsync") first++;
+                    if (item.Name == "ValidationReadSet.ExitSource") exits++;
+                    if (item.Name is "ValidationReadSet.ReuseSync" or "ValidationReadSet.ReuseAsync") reuses++;
+                    if (item.Name == "TrustedScope.Probe.GetAttributes") allNative++;
+                    if (stack.Any(n => n is "ValidationReadSet.RequestSync" or "ValidationReadSet.RequestAsync") &&
+                        !stack.Any(n => n is "ValidationReadSet.SourceSync" or "ValidationReadSet.SourceAsync"))
+                    {
+                        if (item.Name == "MainAdmission.Validate.GuardCheck") full++;
+                        if (item.Name == "TrustedScope.Probe.GetAttributes") addedNative++;
+                    }
+                }
+                stack.Pop();
+            }
+            Assert.Empty(stack);
+            return (requests, first, exits, reuses, full, addedNative, allNative);
+        }
 
         /// <summary>
         /// Creates real ordinary files and a manager using passive timing observations only.

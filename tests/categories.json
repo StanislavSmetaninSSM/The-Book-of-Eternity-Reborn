@@ -3,7 +3,7 @@
     "categories": [
 {
   "id": "fr063-reserved-validation-read-set",
-  "responsibility": "Reserved QTE read-set source counts, exact lease and current-byte exit proof on tiny typed real fixtures.",
+  "responsibility": "Reserved QTE source and actual request-admission counts, exact guarded reservation, current-byte exit proof and conservative controls on tiny typed real fixtures.",
   "excludes": "No game preparation, reflection, fabricated authority, full suite or diagnostic quota.",
   "changeHints": [
     "BookOfEternityClient/Core/FileSystemManager.ValidationReadSet.cs",

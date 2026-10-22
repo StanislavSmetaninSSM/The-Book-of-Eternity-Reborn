@@ -47,11 +47,17 @@ public partial class FileSystemManager
     /// <param name="lease">
     /// Exact caller-owned canonical lease, retained without acquisition or ownership transfer.
     /// </param>
+    /// <param name="allowRetainedGuardAdmission">
+    /// Whether a guarded reservation may use retained admission checks; <see langword="false"/> keeps full request checks.
+    /// </param>
     /// <returns>
     /// An unopened scope requiring completion and disposal, or <see langword="null"/> for fresh unsupported execution.
     /// </returns>
-    internal ReservedValidationReadSet? TryBeginReservedValidationReadSet(CanonicalWriteLease lease)
+    internal ReservedValidationReadSet? TryBeginReservedValidationReadSet(CanonicalWriteLease lease,
+        bool allowRetainedGuardAdmission = true)
     {
+        // The conservative option is introduced before changing admission behavior for the causal control.
+        _ = allowRetainedGuardAdmission;
         // Arbitrary read callbacks can change sources between observations. Decide before activation.
         if (_validationReadSet.Value != null || ValidationReuseSuppression.Value != 0 ||
             _hooks?.PathMetadataQueryObserver != null ||

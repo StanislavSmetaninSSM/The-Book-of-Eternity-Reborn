@@ -2,12 +2,14 @@
 
 Issue1536 / ADMISSION-1..6 / T421->T422->T423->T424. Parent owns coherent implementation; separate complex Astra/high review. No parallel source edits.
 
-- [ ] T421 [US1/US2/US3] Actual phase/consultation/source-based design, canonical spec/plan/research/model/quickstart/tasks, presented written amendment and equivalent consistency, preserved output/save/recovery gate. No production changes.
+- [x] T421 [US1/US2/US3] Actual phase/consultation/source-based design, canonical spec/plan/research/model/quickstart/tasks, presented written amendment and equivalent consistency, preserved output/save/recovery gate. No production changes.
 - [ ] T422 [US2/US3] Real lease-free causal RED then exact guarded-reservation memory checks, conservative-mode seam and focused counter/freshness/authority/lifetime/overlap GREEN; original source/full boundary checks and uncapped diagnostics retained; accurate multiline XML.
 - [ ] T423 [US2/US3] Selected affected categories, XML builds/comment audit, catalog, immutable input slot/output retention and independent coherent complex source/test/doc review before original execution.
 - [ ] T424 [US1/US2/US3] Genuine changed-source input as needed, one original C:/Temp600/820/15, complete raw/owned settlement/all-row counts and same closed-publication comparison to T416/T420; honest actual result, final independent review and exact saved recovery. Timeout resolution remains OPEN unless all original success oracles pass.
 
 ADMISSION-1/2 mapsT421–423; ADMISSION-3/4/5 mapsT422–423 and actualT424 result; ADMISSION-6 mapsT423–424. No planning-only completion or acceptance weakening.
+
+T421 completed at132c2d6a6, actually recovered1200 exact blobs. Written design ACCEPTED by separate source-informed Astra/high consultation review;120 retained old/current output pins verified before any build. T422 causal RED begins with only the conservative-option seam (behavior still r45) and four real count controls; no optimized implementation or original replay yet.
 
 # CRASH5 — revision45 tasks: remove repeated attribute-call fanout
 
