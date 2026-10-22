@@ -476,6 +476,128 @@ public sealed class SourceDataOperationTests(ITestOutputHelper output)
     }
 
     /// <summary>
+    /// Invalidates an adapter's receipt without depending on Windows acquisition recovery invalidation.
+    /// </summary>
+    /// <returns>
+    /// Completion after a retired and readmitted adapter cannot authorize a writer from its old receipt.
+    /// </returns>
+    [Fact]
+    public async Task RetiredAdapterCannotLendItsReceiptToReadmission()
+    {
+        using var fixture = new SourceOperationFixture(output);
+        var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        using var operation = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(operation);
+        Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+        await operation.VerifyAsync(lease);
+        var epoch = files.CanonicalRootAuthorityIdentity.ValidationEpoch.CaptureActivity();
+        // Exercise the real adapter-retirement transition while retaining the real physical lock.
+        // This is a component boundary test; the separate replacement-lease case acquires both real leases.
+        await operation.BeforeLeaseCloseAsync(lease);
+        var stamp = File.GetLastWriteTimeUtc(fixture.PresentPath);
+        File.WriteAllText(fixture.PresentPath, "modified");
+        File.SetLastWriteTimeUtc(fixture.PresentPath, stamp);
+        operation.Observe(lease);
+        await Assert.ThrowsAsync<InvalidOperationException>(() => files.WriteFileAtomicAsync(lease, "effect.txt", "forbidden"));
+        Assert.Equal(epoch, files.CanonicalRootAuthorityIdentity.ValidationEpoch.CaptureActivity());
+        Assert.False(File.Exists(files.ResolvePath("effect.txt")));
+    }
+
+    /// <summary>
+    /// Lets independent fresh recovery bypass a failed DATA owner without reviving it afterward.
+    /// </summary>
+    /// <returns>
+    /// Completion after original helper, nested owner, fence and writer routes run freshly during recovery only.
+    /// </returns>
+    [Fact]
+    public async Task FailedOwnerDoesNotBlockIndependentlyFreshRecovery()
+    {
+        using var fixture = new SourceOperationFixture(output);
+        var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        using var operation = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(operation);
+        Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+        File.WriteAllText(fixture.PresentPath, "modified");
+        await Assert.ThrowsAsync<InvalidDataException>(operation.CompleteAsync);
+        using (files.ForceFreshRecoveryValidation())
+        {
+            Assert.Null(files.BeginSourceDataOperationIfNeeded());
+            Assert.Equal("modified", await files.ReadStableRecoveryDataAsync(lease,
+                () => files.ReadFileAsync(lease, "present.txt")));
+            await files.VerifySourceDataAsync(lease);
+            await operation.VerifyAsync(lease);
+            await files.WriteFileAtomicAsync(lease, "present.txt", "recovered");
+            Assert.Equal("recovered", await files.ReadFileAsync(lease, "present.txt"));
+        }
+        await Assert.ThrowsAsync<InvalidOperationException>(() => files.ReadFileAsync(lease, "present.txt"));
+        Assert.Equal(0, operation.CaptureState().Entries);
+        Assert.Equal("recovered", File.ReadAllText(fixture.PresentPath));
+    }
+
+    /// <summary>
+    /// Excludes passive diagnostic descendants from the functional owner and its disposal lifetime.
+    /// </summary>
+    /// <returns>
+    /// Completion after the functional cache closes empty and a captured passive read remains an original fresh read.
+    /// </returns>
+    [Fact]
+    public async Task PassiveDescendantNeverJoinsFunctionalData()
+    {
+        using var fixture = new SourceOperationFixture(output);
+        var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        File.WriteAllText(files.ResolvePath("passive.txt"), "passive");
+        var operation = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(operation);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        Task<string?>? passive = null;
+        fixture.OnRead = path =>
+        {
+            if (path == "present.txt") passive ??= Task.Run(async () =>
+            { await release.Task; return await files.ReadFileAsync(lease, "passive.txt"); });
+        };
+        try
+        {
+            for (var i = 0; i < 8; i++) Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+            Assert.Equal(1, operation.CaptureState().Entries);
+            await operation.CompleteAsync();
+        }
+        finally { operation.Dispose(); release.TrySetResult(); }
+        Assert.NotNull(passive);
+        Assert.Equal("passive", await passive);
+        Assert.Equal(new ValidationOperationState(0, 0, true), operation.CaptureState());
+    }
+
+    /// <summary>
+    /// Refuses cached effect approval once its actual participating entry begins closing.
+    /// </summary>
+    /// <returns>
+    /// Completion after both source success and actual write are refused without creating a target.
+    /// </returns>
+    [Fact]
+    public async Task ClosingEntryCannotApproveCachedEffects()
+    {
+        using var fixture = new SourceOperationFixture(output);
+        var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        await using var entry = files.BeginParticipatingMainAdmission();
+        await entry.AcquireAsync();
+        using var operation = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(operation);
+        Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+        entry.BeginClosing();
+        Assert.NotNull(await Record.ExceptionAsync(() => operation.VerifyAsync(lease)));
+        Assert.NotNull(await Record.ExceptionAsync(() => files.WriteFileAtomicAsync(lease, "effect.txt", "forbidden")));
+        Assert.False(File.Exists(files.ResolvePath("effect.txt")));
+    }
+
+    /// <summary>
     /// Owns tiny real files, actual source counters and complete passive timing output.
     /// </summary>
     private sealed class SourceOperationFixture : IDisposable
@@ -504,6 +626,7 @@ public sealed class SourceDataOperationTests(ITestOutputHelper output)
                     CanonicalReadActivityObserver = path =>
                     {
                         if (Recording && path == "present.txt") Interlocked.Increment(ref _presentSources);
+                        OnRead?.Invoke(path);
                     },
                     OperationTimingObserver = (name, boundary, elapsed) => _rows.Enqueue((name, boundary, elapsed.TotalMilliseconds)),
                     LocalPublicationObserver = (phase, ordinal) => OnPublication?.Invoke(phase, ordinal)
@@ -529,6 +652,11 @@ public sealed class SourceDataOperationTests(ITestOutputHelper output)
         /// Gets or sets the actual publication hook used to retain known committed cleanup debt.
         /// </summary>
         internal Action<TrustedLocalPublicationPhase, int>? OnPublication { get; set; }
+
+        /// <summary>
+        /// Gets or sets the passive physical-read receiver used by diagnostic descendant controls.
+        /// </summary>
+        internal Action<string>? OnRead { get; set; }
 
         /// <summary>
         /// Gets or sets whether actual opened present-file sources contribute to the counter.
