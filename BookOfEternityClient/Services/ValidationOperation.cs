@@ -13,6 +13,26 @@ internal sealed class ValidationOperation : IDisposable
     internal ValidationOperation() { }
 
     /// <summary>
+    /// Selects fresh computation throughout a caller-owned nested scope.
+    /// </summary>
+    /// <returns>
+    /// A scope that the caller disposes after all of its nested computations settle.
+    /// </returns>
+    internal IDisposable ForceFresh()
+    {
+        ObjectDisposedException.ThrowIf(_closed, this);
+        return new FreshBaselineScope();
+    }
+
+    /// <summary>
+    /// Captures retained payload counts without exporting input or result references.
+    /// </summary>
+    /// <returns>
+    /// The actual retained entry/dependency counts and the context's closed state.
+    /// </returns>
+    internal ValidationOperationState CaptureState() => new(0, 0, _closed);
+
+    /// <summary>
     /// Computes a typed result under the operation's explicit input and dependency contract.
     /// </summary>
     /// <typeparam name="TResult">
@@ -91,4 +111,29 @@ internal sealed class ValidationOperation : IDisposable
     /// Closes the context so subsequent requests cannot use it.
     /// </summary>
     public void Dispose() => _closed = true;
+
+    /// <summary>
+    /// Represents a fresh scope while the causal baseline still executes every request.
+    /// </summary>
+    private sealed class FreshBaselineScope : IDisposable
+    {
+        /// <summary>
+        /// Completes a scope that retains no values or state in the fresh-only baseline.
+        /// </summary>
+        public void Dispose() { }
+    }
 }
+
+/// <summary>
+/// Reports operation-owned retained payload counts without retaining those payloads itself.
+/// </summary>
+/// <param name="Entries">
+/// Number of completed values or validation facts retained by the operation.
+/// </param>
+/// <param name="Dependencies">
+/// Number of distinct source domains retained by its current entries and active frames.
+/// </param>
+/// <param name="Closed">
+/// Whether the owning operation has been closed and no further result may escape it.
+/// </param>
+internal sealed record ValidationOperationState(int Entries, int Dependencies, bool Closed);
