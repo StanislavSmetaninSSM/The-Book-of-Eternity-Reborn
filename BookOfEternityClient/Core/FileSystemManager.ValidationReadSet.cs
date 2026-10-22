@@ -186,6 +186,7 @@ public partial class FileSystemManager
         private readonly FileSystemManager _files;
         private readonly CanonicalWriteLease _lease;
         private readonly MainAdmission _owner;
+        private readonly MainAdmission _entryAdmission;
         private readonly AmbientCanonicalLeaseRegistration _registration;
         private readonly PendingSnapshotValidationReadScope _reservation;
         private readonly Dictionary<(string Path, ValidationSnapshotFamily Family, bool Explicit), CanonicalFileReadSnapshot?> _snapshots = new();
@@ -213,6 +214,7 @@ public partial class FileSystemManager
         {
             _files = files; _lease = lease; _reservation = reservation;
             _owner = lease.MainAdmission!; _registration = lease.AmbientRegistration!;
+            _entryAdmission = reservation.EntryAdmission;
         }
 
         /// <summary>
@@ -318,13 +320,12 @@ public partial class FileSystemManager
         }
 
         /// <summary>
-        /// Checks exact retained lifetime and registration after source work without duplicating full admission.
+        /// Checks the captured entry frame, its live physical-owner ancestry and exact registration after source work.
         /// </summary>
         private void RequireRetainedFlow()
         {
             _files.RequirePendingSnapshotLeaseFlow(_lease, _owner, _registration);
-            if (!ReferenceEquals(MainAdmissions.Value, _owner) ||
-                !ReferenceEquals(_files._ambientCanonicalLease.Value, _registration))
+            if (!_files.IsBorrowedValidationReadFlowCurrent(_lease, _entryAdmission))
                 throw new InvalidOperationException("Validation read left its exact retained registration.");
         }
 

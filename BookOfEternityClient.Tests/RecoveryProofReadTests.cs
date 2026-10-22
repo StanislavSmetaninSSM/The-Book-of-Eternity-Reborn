@@ -254,6 +254,8 @@ public sealed class RecoveryProofReadTests(ITestOutputHelper output)
         else Assert.True(await Read());
         Assert.Equal(1, fixture.Count("ValidationReadSet.Open"));
         Assert.False(File.Exists(Path.Combine(fixture.Root, "game_session", "other.txt")));
+        await files.WriteFileAtomicAsync(lease, "after.txt", "reservation released");
+        await lease.DisposeAsync();
         await other.WriteFileAtomicAsync("other.txt", "released");
         Assert.Equal("released", File.ReadAllText(Path.Combine(fixture.Root, "game_session", "other.txt")));
     }

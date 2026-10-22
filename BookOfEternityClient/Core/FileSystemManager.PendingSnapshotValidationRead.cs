@@ -61,7 +61,7 @@ public partial class FileSystemManager
     }
 
     /// <summary>
-    /// Tries to reserve an ordinary lease whose exact active flow has no conflicting read or mutation.
+    /// Tries to reserve an ordinary physical lease through its exact live entry frame and original access ancestry.
     /// </summary>
     /// <param name="lease">
     /// Caller-owned session mutation lease; unsupported purposes, pending decisions and foreign flows are ineligible.
@@ -72,15 +72,44 @@ public partial class FileSystemManager
     private PendingSnapshotValidationReadScope? TryBeginBorrowedValidationReservation(CanonicalWriteLease lease)
     {
         var owner = lease.MainAdmission;
+        var entry = MainAdmissions.Value;
         if (!ReferenceEquals(lease.Owner, this) || !lease.IsActive || HasBrowserOriginalOperation ||
             lease.BrowserLocalAccess != null || lease.Purpose != CanonicalWritePurpose.SessionMutation ||
             lease.WorkerPurpose != null || lease.IsLegacyStorageRecovery || lease.MutationIntentRecorder != null ||
             lease.PendingLocalDecision != null || owner == null || !owner.PhysicalScope || owner.Closed ||
             owner.Closing || owner.BoundClosing || owner.MetadataOnly ||
-            !ReferenceEquals(MainAdmissions.Value, owner) || lease.AmbientRegistration?.Active != true ||
-            !ReferenceEquals(_ambientCanonicalLease.Value, lease.AmbientRegistration)) return null;
-        var scope = new PendingSnapshotValidationReadScope(this, owner, lease);
-        return owner.TryReserveWorldRead(scope) ? scope : null;
+            entry is null || !IsBorrowedValidationReadFlowCurrent(lease, entry)) return null;
+        var scope = new PendingSnapshotValidationReadScope(this, entry, lease);
+        return entry.TryReserveWorldRead(scope) ? scope : null;
+    }
+
+    /// <summary>
+    /// Checks an exact captured entry frame and its live ancestry without performing or reusing physical admission.
+    /// </summary>
+    /// <param name="lease">
+    /// Original active physical lease whose owner must occur in the entry frame's ancestry.
+    /// </param>
+    /// <param name="entry">
+    /// Exact current frame captured at reservation entry; a later descendant or sibling is not interchangeable.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> only for an uninterrupted live acquired same-root and same-access chain to the original
+    /// physical owner, with the original exact ambient lease registration; otherwise, <see langword="false"/>.
+    /// </returns>
+    private bool IsBorrowedValidationReadFlowCurrent(CanonicalWriteLease lease, MainAdmission entry)
+    {
+        var physical = lease.MainAdmission;
+        if (!ReferenceEquals(lease.Owner, this) || !lease.IsActive || physical is null ||
+            !ReferenceEquals(MainAdmissions.Value, entry) || lease.AmbientRegistration?.Active != true ||
+            !ReferenceEquals(_ambientCanonicalLease.Value, lease.AmbientRegistration)) return false;
+        for (var current = entry; current is not null; current = current.Parent)
+        {
+            if (!current.Acquired || current.Closed || current.Closing || current.BoundClosing || current.MetadataOnly ||
+                current.RootIdentity != CanonicalRootAuthorityIdentity || !current.SharesAccess(physical) ||
+                current.PhysicalScope && !ReferenceEquals(current, physical)) return false;
+            if (ReferenceEquals(current, physical)) return true;
+        }
+        return false;
     }
 
     /// <summary>
@@ -121,7 +150,8 @@ public partial class FileSystemManager
     /// Manager that issued this reservation and owns its lease.
     /// </param>
     /// <param name="owner">
-    /// The already admitted original main frame retained by acquisition.
+    /// Exact admitted entry frame that retains access and owns the read reservation.
+    /// For a borrowed lease, its original physical owner remains separately retained by that lease.
     /// </param>
     /// <param name="borrowedLease">
     /// Original caller-owned lease, or <see langword="null"/> to own the separate acquisition.
@@ -130,6 +160,12 @@ public partial class FileSystemManager
         CanonicalWriteLease? borrowedLease = null)
         : ValidationReadReservation, IAsyncDisposable
     {
+        /// <summary>
+        /// Gets the exact main frame through which this reservation was entered and will be released.
+        /// It may be a participating frame above the retained original physical lease owner.
+        /// </summary>
+        internal MainAdmission EntryAdmission => owner;
+
         /// <summary>
         /// The one owned acquisition issued synchronously by the manager; unused for a borrowed lease.
         /// </summary>

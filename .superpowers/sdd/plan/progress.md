@@ -1,27 +1,34 @@
-# Current checkpoint: r52 causal RED qualified; GREEN candidate builds next
+# Current checkpoint: r52 actual flow refusal reproduced; exact-entry correction next
 
-Issue1536 / PROOFREAD1..6, T444complete (pinned SpecKit phases/consistency/presented
-written artifacts, autonomous wait waiver); canonical spec/plan/tasks/contractr52.
-Baseline compiledsource32c1bb8d9: XML0errors bothprojects88.48/54.43s,8DLLsuniform
-and independently bytehashed8payload baseline archive38103299B retainedD.
-Unit10complete3PASS/7expectedFAIL: fallback/failure/nested already work, source
-coalescing absent and5rawdrifts return without exit-refusal. Both sync/async8reads
-664attributes. Actualsmallproof2expectedFAIL: fresh/eligibleboth18440attrs/0opens;
-rawhistory changed after its first read but before return was not refused. All
-12cases complete, notimeout, owned/runtimecleanuptrue,3complete rawfiles105128949B
-rehashed. No new original runtime. Historical5catalogfailures remain separate.
+Canonical spec/plan/tasks/contractr52 PROOFREAD1..6+3a, issue1536. T444complete,
+amended exact-entry scope presented and pinned plan/tasks/prerequisites repeated;
+autonomous wait waiver. Existing isolated clone/taskbranch; no new original yet.
+Baseline32c1 bothXML0errors/8DLLuniform, unit3PASS7expectedFAIL, realproof2expectedFAIL
+18440attrs0opens and unrefusedpostreadhistorydrift. Entire130post-recovery proof
+body extracted verbatim SHA12E4E19F...; no original proof statement/order removed.
+Candidate572a unit10/10PASS:8async664->518attrs,8sync664->614;1source7reuse1exit,
+all5rawdrifts/fallback/primaryfailure/nested controlsPASS. Actualproof still2FAIL/
+0opens/18440attrs; expected game context has participating frames above physical
+lease owner. Separate Astra/high confirmed3coordinated exact-top/ancestry guards,
+R52-F1; F2 requires realothermanager writer-refusal test insidehelper.
 
-GREEN candidate implements optional existing ReservedValidationReadSet lifecycle
-in ReadStableRecoveryDataAsync: Open/read/Complete then return, Dispose preserving
-primaryerror. Jointcompletedproof keeps recovery+stablemarker check beforehelper;
-entire postrecoverybody128lines extracted verbatim (exactSHA receiptD), no proof
-statement/order removed. Fact now selects NEW proof-reads-v1 input slot, currently
-UNGENERATED; old carriers immutable. Need both fresh builds then10unit/2realproof
-GREEN with actuallowerattributes and rawdrift refusal before broad/original tests.
-All uncapped evidence D:/BoeDiagnostics/proof-reads-r52-20261023; no diagnosticGit.
-Source/test coherent complex independent review, genuine current input/twoimports,
-origin recovery and original600/820/15/fulldiagnostics stillpending. Currentr51
-pair/sourcebackup retained until new complete verified settled replacement.
+Amended b307 source/unit-only XMLbuild0errors86.29s; integrationDLLs still572a,
+not8uniform (onlyunitselected). New14unitcomplete10PASS4FAIL49.69s:2bounddepths
+correctlyfail0opens; boundwriter gotIOException from absentreservation; directwriter
+refusalworked but its post-plan retry hit still-heldphysicallease (fixturebug).
+Correct retry closesoriginallease first; also proves reservation release by a
+supported original-owner write beforeclosing. No budgets/diagnostic limits changed.
+
+Current correction retains exact entry frame plus uninterruptedlive/acquired
+same-root/same-access ancestry to originalphysicalowner and exactambientreg;
+reserves throughentry, checks samecapturedtop/liveness on everyread/exit. Original
+physicallease remainsowner; MainAccess atomic sibling/mutation/physical-close
+predicates/file unchanged. Causalrealflowtests precede thisfix. Next freshbothXML
+builds,14unit +2actualproof (mustlowerattrs/denyhistorydrift), affectedcontrols/
+catalog/XMLaudit, targeted independentreview beforegenuineNEW source42 carrier,
+originrecovery and one original600/820/15/fulluncappedDdiagnostics. No original
+release from failedproof/no hypotheticalspeedup. FivehistoricalcatalogFAIL separate.
+Allmachineevidence D:/BoeDiagnostics/proof-reads-r52-20261023; no diagnosticsGit.
 
 # Historical checkpoint: r51 progression reuse implemented; original OFF passes
 
