@@ -115,6 +115,27 @@ public partial class FileSystemManager
         internal Task? SourceReadBarrierForTests { get; set; }
 
         /// <summary>
+        /// Gets or sets an optional fixture barrier between fresh generation observation and local binding.
+        /// A null value leaves binding unchanged; this barrier supplies no data or authority.
+        /// </summary>
+        internal Task? GenerationReadBarrierForTests { get; set; }
+
+        /// <summary>
+        /// Gets whether active work or local bookkeeping still retains source dependencies.
+        /// This diagnostic predicate grants no authority and never inspects file contents.
+        /// </summary>
+        internal bool HasRetainedSourceReferences
+        {
+            get
+            {
+                lock (_gate)
+                    return _busy || _keys.Count != 0 || _touched.Count != 0 || _lease != null || _generation != null ||
+                        _generationLease != null || SourceReadBarrierForTests != null || GenerationReadBarrierForTests != null ||
+                        _verifiedLease != null || _verifiedEntry != null || _verifiedRegistration != null;
+            }
+        }
+
+        /// <summary>
         /// Refuses use after the owning operation has closed.
         /// </summary>
         internal void RequireOpen()
@@ -238,13 +259,43 @@ public partial class FileSystemManager
         private void BindGeneration()
         {
             if (ReferenceEquals(_generationLease, _lease)) return;
+            var generation = ReadGenerationForBinding();
+            _generation ??= generation;
+            _generationLease = _lease;
+        }
+
+        /// <summary>
+        /// Performs the same fresh adapter binding with an optional deterministic fixture barrier.
+        /// </summary>
+        /// <param name="token">
+        /// Original read cancellation, including cancellation while the fixture barrier is pending.
+        /// </param>
+        /// <returns>
+        /// Completion after the fresh generation observation is bound to its current adapter.
+        /// </returns>
+        private async Task BindGenerationAsync(CancellationToken token)
+        {
+            if (ReferenceEquals(_generationLease, _lease)) return;
+            var generation = ReadGenerationForBinding();
+            if (GenerationReadBarrierForTests is { } barrier) await barrier.WaitAsync(token);
+            _generation ??= generation;
+            _generationLease = _lease;
+        }
+
+        /// <summary>
+        /// Reads uncached generation bytes and compares any prior provisional observation.
+        /// </summary>
+        /// <returns>
+        /// Exact current generation bytes after the original physical admission checks.
+        /// </returns>
+        private LocalSessionGenerationSnapshot ReadGenerationForBinding()
+        {
             var generation = _files.ReadLocalGenerationSnapshot(_lease!);
             if (generation.Bytes == null || _generation != null &&
                 (generation.Binding != _generation.Binding || _generation.Bytes == null ||
                     !generation.Bytes.AsSpan().SequenceEqual(_generation.Bytes)))
                 throw new InvalidDataException("Source operation generation changed between admitted leases.");
-            _generation ??= generation;
-            _generationLease = _lease;
+            return generation;
         }
 
         /// <summary>
@@ -349,7 +400,7 @@ public partial class FileSystemManager
             try
             {
                 using var request = _files.MeasureOperation("OperationFileData.RequestAsync");
-                BindGeneration();
+                await BindGenerationAsync(token);
                 var computed = false;
                 var value = await _operation.GetOrComputeAsync(Snapshot, Key(path, family, declared), [this], async ct =>
                 {
@@ -591,7 +642,7 @@ public partial class FileSystemManager
             try
             {
                 _operation.Dispose(); _keys.Clear(); _touched.Clear(); _lease = null; _generation = null;
-                _generationLease = null; SourceReadBarrierForTests = null; ClearReceipt();
+                _generationLease = null; SourceReadBarrierForTests = null; GenerationReadBarrierForTests = null; ClearReceipt();
             }
             finally
             {

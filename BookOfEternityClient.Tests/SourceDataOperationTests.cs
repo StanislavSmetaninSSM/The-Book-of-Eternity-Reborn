@@ -685,6 +685,60 @@ public sealed class SourceDataOperationTests(ITestOutputHelper output)
     }
 
     /// <summary>
+    /// Exposes disposal between actual generation observation and its local bookkeeping publication.
+    /// </summary>
+    /// <returns>
+    /// Completion after the late read refuses and no generation, key, adapter or barrier reference remains.
+    /// </returns>
+    [Fact]
+    public async Task DisposalDuringGenerationBindingClearsLateReferences()
+    {
+        using var fixture = new SourceOperationFixture(output);
+        var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        var operation = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(operation);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        operation.GenerationReadBarrierForTests = release.Task;
+        var first = files.ReadFileAsync(lease, "present.txt");
+        try { Assert.False(first.IsCompleted); operation.Dispose(); }
+        finally { operation.Dispose(); release.TrySetResult(); }
+        await Assert.ThrowsAsync<ObjectDisposedException>(async () => await first);
+        Assert.False(operation.HasRetainedSourceReferences);
+        Assert.Equal(new ValidationOperationState(0, 0, true), operation.CaptureState());
+    }
+
+    /// <summary>
+    /// Refuses physical lease teardown while the original source operation still owns pending work.
+    /// </summary>
+    /// <returns>
+    /// Completion after close refusal leaves the real lease live, source settlement and normal later close.
+    /// </returns>
+    [Fact]
+    public async Task PendingSourcePreventsPrematurePhysicalClose()
+    {
+        using var fixture = new SourceOperationFixture(output);
+        var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        using var operation = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(operation);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        operation.SourceReadBarrierForTests = release.Task;
+        var first = files.ReadFileAsync(lease, "present.txt");
+        try
+        {
+            Assert.False(first.IsCompleted);
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await lease.DisposeAsync());
+            Assert.True(lease.IsActive);
+        }
+        finally { release.TrySetResult(); }
+        Assert.Equal("original", await first);
+        await operation.CompleteAsync();
+    }
+
+    /// <summary>
     /// Owns tiny real files, actual source counters and complete passive timing output.
     /// </summary>
     private sealed class SourceOperationFixture : IDisposable
