@@ -33,11 +33,36 @@ verified; compact comparison findings may remain. Incomplete collection never
 replaces the previous complete measurement. `.gitignore` excludes crash5 output
 while allowing source and Markdown; fixture directories remain unaffected.
 
-Status: local rewrite and per-commit preservation verified; independent review,
-explicit leased publication, fresh remote verification and local retirement are
-pending. No C# build/test is required for this output/history/documentation-only
-block; verification concerns exact trees, refs, fixture preservation and ignore
-coverage. GitHub internal object reclamation is not controlled by a force push.
+Completed: independent gpt-6-astra/high review accepted the exact filter, all
+546 commit trees, parent links and six-file policy diff. Explicit atomic leased
+pushes replaced only the affected branch; verified remote checkpoint
+`1e28cbe0bed5027157af523f985a0ce24373ffa0` was fetched into a fresh GitHub-only
+repository without local objects or alternates. All 1,348 output paths are absent
+throughout reachable history, no old rewritten commit is reachable, all 117
+fixtures remain, and the other 436 advertised refs are unchanged. All 1,348
+former output paths and six future-output examples are ignored; source and
+fixture ignore behavior is preserved.
+
+Local retirement removed the exact 1,348 former output files plus 5,306 old
+child-output/runner files: 62,201,718,953 working-copy bytes. The newest archive
+was rechecked after its move to D: (52 payloads, SHA-256 and CRC all pass).
+Native Git GC reduced primary object storage from about 9.27 GiB to 3.14 GiB;
+none of the 223 former output blobs larger than 2 MB remains in its local
+object store. Protected game roots were neither traversed nor removed.
+
+An automatic policy check rejected recursive removal of temporary clone
+directories, without a detailed reason. They were retained. A separate native
+Git cleanup removed their obsolete diagnostic refs and proved all surviving
+refs, HEADs, indexes, reflogs and pseudorefs depend only on pinned primary clean
+history before GC. Connectivity passed for the primary and three temporary
+clones; two optional commit-graph caches were rebuilt after source GC. These
+source/metadata copies must never restore the obsolete diagnostic history.
+
+No C# build/test was run for this output/history/documentation-only block;
+verification covered exact trees, refs, fixtures, ignore rules and connectivity.
+Detailed machine evidence stays local on D:. GitHub internal object reclamation
+is not controlled or proven by a force push. T427–429 acceptance remains open;
+this cleanup does not change the original timed-out measurement into a pass.
 
 ## T436 — diagnostic-only original measurement before acceptance (historical scheduling)
 
