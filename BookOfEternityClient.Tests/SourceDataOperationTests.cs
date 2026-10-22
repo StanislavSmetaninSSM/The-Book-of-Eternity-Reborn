@@ -784,6 +784,77 @@ public sealed class SourceDataOperationTests(ITestOutputHelper output)
     }
 
     /// <summary>
+    /// Excludes new functional work after an exact physical adapter has declared closing intent.
+    /// </summary>
+    /// <param name="readFirst">
+    /// Whether the operation contains provisional DATA or is still empty before close intent.
+    /// </param>
+    /// <returns>
+    /// Completion after verification, completion and fresh-scope admission refuse until close is cancelled.
+    /// </returns>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ClosingAdapterExcludesNewFunctionalWork(bool readFirst)
+    {
+        using var fixture = new SourceOperationFixture(output);
+        var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        using var operation = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(operation);
+        operation.Observe(lease);
+        if (readFirst) Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+        operation.BeginLeaseClose(lease);
+        try
+        {
+            Assert.IsType<InvalidOperationException>(await Record.ExceptionAsync(() => operation.VerifyAsync(lease)));
+            Assert.IsType<InvalidOperationException>(await Record.ExceptionAsync(() => operation.CompleteAsync()));
+            Assert.Throws<InvalidOperationException>(() => { using var fresh = operation.Suspend(); });
+            Assert.True(lease.IsActive);
+        }
+        finally { operation.CancelLeaseClose(lease); }
+        Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+        await operation.CompleteAsync();
+    }
+
+    /// <summary>
+    /// Keeps an admitted fresh protocol visible to physical teardown even when its DATA owner closes.
+    /// </summary>
+    /// <param name="disposeOwner">
+    /// Whether to dispose the ambient DATA owner before attempting physical lease closure.
+    /// </param>
+    /// <returns>
+    /// Completion after close refuses during the protocol and succeeds after its final scope drains.
+    /// </returns>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ActiveFreshProtocolPreventsPrematurePhysicalClose(bool disposeOwner)
+    {
+        using var fixture = new SourceOperationFixture(output);
+        var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        using var operation = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(operation);
+        Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+        var fresh = operation.Suspend();
+        Exception? failure;
+        try
+        {
+            if (disposeOwner) operation.Dispose();
+            failure = await Record.ExceptionAsync(async () => await lease.DisposeAsync());
+            Assert.True(operation.HasRetainedSourceReferences);
+        }
+        finally { fresh.Dispose(); }
+        Assert.IsType<InvalidOperationException>(failure);
+        Assert.True(lease.IsActive);
+        if (disposeOwner) Assert.False(operation.HasRetainedSourceReferences);
+        else await operation.CompleteAsync();
+    }
+
+    /// <summary>
     /// Owns tiny real files, actual source counters and complete passive timing output.
     /// </summary>
     private sealed class SourceOperationFixture : IDisposable
