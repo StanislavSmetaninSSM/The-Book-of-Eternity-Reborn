@@ -1,6 +1,8 @@
 using System.Collections.Concurrent;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 using Xunit.Abstractions;
@@ -195,6 +197,54 @@ public sealed class ReservedValidationReadSetTests(ITestOutputHelper output)
     }
 
     /// <summary>
+    /// Preserves the real strict signed-absence decision inside a read set, including refusal of a valid legacy original.
+    /// </summary>
+    /// <param name="signedAbsence">
+    /// Whether the actual prepared original retains its signed optional-path presence map.
+    /// </param>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task StrictSignedAbsenceMatchesTheFreshOriginalReader(bool signedAbsence)
+    {
+        using var fixture = new Fixture(output);
+        var files = fixture.Create();
+        files.EnsureDirectoryStructure();
+        const string required = "game_state/control/pending_mortal_wound_occurrences.json";
+        const string optional = "game_state/wounds/mortal_qte_decision_publication.json";
+        await files.WriteFileAtomicAsync(required, "{\"schemaVersion\":1,\"occurrences\":[]}");
+        await new LiveTurnPreparationService(files).PrepareAsync(new LiveTurnPreparationOptions
+        {
+            SessionId = "reserved-absence-session", RequestId = "reserved-absence-request", TurnNumber = 42,
+            CurrentRealm = "Mortal World", PlayerAction = "Check the original", PreGeneratedDices1d20 = [3, 17]
+        });
+        if (!signedAbsence)
+        {
+            var manifest = JsonNode.Parse(await files.ReadFileAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath))!.AsObject();
+            manifest.Remove("originalPathPresenceV1");
+            manifest["manifestPayloadHash"] = PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
+            await files.WriteFileAtomicAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath, manifest.ToJsonString());
+            await PendingTurnSnapshotTestAuthority.WriteAuthorityForManifestAsync(files, manifest);
+        }
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        var weak = PendingTurnSnapshotReader.ReadCurrent(files, lease, new PendingTurnSnapshotPathSelection([required], [optional]));
+        Assert.True(weak.Success, JsonSerializer.Serialize(weak.Issues));
+        var strict = PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths([required], [optional]);
+        var fresh = PendingTurnSnapshotReader.ReadCurrent(files, lease, strict);
+        Assert.Equal(signedAbsence, fresh.Success);
+        await using var readSet = files.TryBeginReservedValidationReadSet(lease);
+        Assert.NotNull(readSet); await readSet.OpenAsync();
+        for (var i = 0; i < 2; i++)
+        {
+            var current = PendingTurnSnapshotReader.ReadCurrent(files, lease, strict);
+            Assert.Equal(fresh.Success, current.Success);
+            Assert.Equal(JsonSerializer.Serialize(fresh.Issues), JsonSerializer.Serialize(current.Issues));
+            if (signedAbsence) Assert.Contains(optional, current.Snapshot!.AbsentLogicalPaths);
+        }
+        await readSet.CompleteAsync();
+    }
+
+    /// <summary>
     /// Leaves unsupported entry on the original fresh path without nesting reservations or adopting mutations.
     /// </summary>
     /// <param name="mode">
@@ -306,6 +356,8 @@ public sealed class ReservedValidationReadSetTests(ITestOutputHelper output)
         var active = false;
         var triggered = 0;
         Task? diagnostic = null;
+        Exception? diagnosticError = null;
+        var synchronousReadSucceeded = false;
         var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         void Observe()
         {
@@ -313,7 +365,11 @@ public sealed class ReservedValidationReadSetTests(ITestOutputHelper output)
             if (mode.EndsWith("throw", StringComparison.Ordinal)) throw new IOException("passive receiver");
             if (mode == "async-descendant")
                 diagnostic = Task.Run(async () => { await release.Task; Assert.Equal("original", files!.ReadFileSync("present.txt")); });
-            else Assert.Equal("original", files!.ReadFileSync("present.txt"));
+            else
+            {
+                try { Assert.Equal("original", files!.ReadFileSync("present.txt")); synchronousReadSucceeded = true; }
+                catch (Exception error) { diagnosticError = error; throw; }
+            }
         }
         files = fixture.Create(record => new FileSystemManagerHooks
         {
@@ -336,6 +392,8 @@ public sealed class ReservedValidationReadSetTests(ITestOutputHelper output)
         Assert.Equal("original", files.ReadFileSync(lease, "present.txt"));
         await readSet.CompleteAsync();
         Assert.Equal(1, triggered);
+        Assert.Null(diagnosticError);
+        if (mode is "timing-reenter" or "activity-reenter") Assert.True(synchronousReadSucceeded);
     }
 
     /// <summary>

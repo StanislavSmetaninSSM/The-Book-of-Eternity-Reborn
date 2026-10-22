@@ -193,6 +193,8 @@ public partial class FileSystemManager
         private readonly object _state = new();
         private LocalSessionGenerationSnapshot? _generation;
         private bool _opened, _busy, _failed, _completing, _closed;
+        private TaskCompletionSource? _drained;
+        private Task? _closeTask;
 
         /// <summary>
         /// Binds the exact lease and registration already retained by the successfully issued reservation.
@@ -254,7 +256,14 @@ public partial class FileSystemManager
         /// <summary>
         /// Releases the operation slot after all source work and result validation have ended.
         /// </summary>
-        private void Leave() { lock (_state) _busy = false; }
+        private void Leave()
+        {
+            lock (_state)
+            {
+                _busy = false;
+                _drained?.TrySetResult();
+            }
+        }
 
         /// <summary>
         /// Invalidates reuse after any admitted operation fails.
@@ -434,22 +443,48 @@ public partial class FileSystemManager
         /// Retires routing and source buffers and releases only this phase's borrowed reservation.
         /// </summary>
         /// <returns>
-        /// Completion after reservation release; the caller-owned lease remains active.
+        /// Completion after any admitted operation settles and the reservation releases; the caller-owned lease remains active.
         /// </returns>
         public ValueTask DisposeAsync()
         {
-            lock (_state)
-            {
-                if (_closed) return ValueTask.CompletedTask;
-                if (_busy) { _failed = true; throw new InvalidOperationException("Validation operation is still running."); }
-                _closed = true; _snapshots.Clear(); _order.Clear(); _generation = null;
-            }
             if (ReferenceEquals(_files._validationReadSet.Value, this))
             {
                 _files._validationReadSet.Value = null;
                 ValidationDiagnosticScopes.Value--;
             }
-            return _reservation.DisposeAsync();
+            lock (_state)
+            {
+                if (_closeTask != null) return new ValueTask(_closeTask);
+                _closed = true;
+                Task drain = Task.CompletedTask;
+                if (_busy)
+                {
+                    _failed = true;
+                    _drained = new(TaskCreationOptions.RunContinuationsAsynchronously);
+                    drain = _drained.Task;
+                }
+                _closeTask = CloseAfterReadAsync(drain);
+                return new ValueTask(_closeTask);
+            }
+        }
+
+        /// <summary>
+        /// Waits for the admitted reader before clearing its private buffers and releasing its borrowed reservation.
+        /// </summary>
+        /// <param name="drain">
+        /// Completion of the already admitted operation, or a completed task when no operation is active.
+        /// </param>
+        /// <returns>
+        /// Completion after release, including propagation of any actual reservation-close failure.
+        /// </returns>
+        private async Task CloseAfterReadAsync(Task drain)
+        {
+            await drain;
+            lock (_state)
+            {
+                _snapshots.Clear(); _order.Clear(); _generation = null;
+            }
+            await _reservation.DisposeAsync();
         }
     }
 }

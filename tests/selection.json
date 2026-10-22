@@ -1,53 +1,88 @@
 {
   "schemaVersion": 1,
   "selections": [
-{
-  "category": "fr063-reserved-validation-read-set",
-  "reason": "FANOUT-2/3/5: causal physical reads and retained lease/source integrity with unlimited diagnostics.",
-  "contracts": [
-    "Entry and exit freshly observe every distinct source, reuse remains within one exact reserved owner phase."
-  ]
-},
-{
-  "category": "fr063-trusted-local-request-observations",
-  "reason": "ATTRFOLD-1..4: causal production-path counters and cheap request-local metadata safety controls.",
-  "contracts": [
-    "Each synchronous admission request observes its own paths once; later requests remain fresh and authority is unchanged."
-  ]
-},
     {
-      "category": "fr063-joint-private-fingerprint-data",
-      "reason": "r39 immutable private fingerprint DATA reference, alias isolation and one actual hash capture.",
+      "category": "fr063-reserved-validation-read-set",
+      "reason": "Source counts, strict signed absence, current bytes/generation, retained ownership, overlap settlement and passive observers.",
       "contracts": [
-        "IMMUTABLEFP-1/2/5: exact field order, serialization, nullable byte hashes and immutable ownership."
-      ]
-    },
-    {
-      "category": "fr063-joint-bundle-copy-controls",
-      "reason": "Existing genuine joint-copy semantics, current physical-byte refusal/restoration and admission timing tree.",
-      "contracts": [
-        "IMMUTABLEFP-3/4/5: zero repeated before-image hashing, all 63 fresh seal/resource checks, honest initial hash and existing refusal/restoration/abort controls."
+        "FANOUT-2/3/5: preserve original integrity while eliminating only phase-redundant source reads."
       ]
     },
     {
       "category": "fr063-operation-timing-context-controls",
-      "reason": "Retain twelve existing passive timing-context and ordinary bundle compatibility controls.",
+      "reason": "Unchanged timing context routing, nesting and receiver error isolation.",
       "contracts": [
-        "Original observer routing, nested restoration, exception isolation and ordinary full-replay behavior."
+        "FANOUT-2/3/5: preserve original integrity while eliminating only phase-redundant source reads."
       ]
     },
     {
-      "category": "fr063-wound-bundle-copy-contracts",
-      "reason": "Retain the two pure typed detachment and cross-swapped stage refusal controls.",
+      "category": "fr063-ordinary-read-section-timing-controls",
+      "reason": "Fresh ordinary reader family, nullable refusal and actual physical diagnostics.",
       "contracts": [
-        "Complete mutable-graph detachment and every existing cross-stage refusal."
+        "FANOUT-2/3/5: preserve original integrity while eliminating only phase-redundant source reads."
       ]
     },
     {
-      "category": "crash5-named-operation-timers",
-      "reason": "Retain the four existing passive operation-timer controls used by the unchanged observation mechanism.",
+      "category": "fr063-joint-validation-dedup-contracts",
+      "reason": "Keep exactly two original baseline checks.",
       "contracts": [
-        "Disabled observation, idempotent closing, original result and exception with throwing receivers."
+        "FANOUT-2/3/5: preserve original integrity while eliminating only phase-redundant source reads."
+      ]
+    },
+    {
+      "category": "fr063-joint-validation-dedup-refusals",
+      "reason": "Preserve entry/exit drift and primary preparation error sequencing.",
+      "contracts": [
+        "FANOUT-2/3/5: preserve original integrity while eliminating only phase-redundant source reads."
+      ]
+    },
+    {
+      "category": "pending-snapshot-qte-custody",
+      "reason": "Original borrowed reservation custody and teardown exclusion.",
+      "contracts": [
+        "FANOUT-2/3/5: preserve original integrity while eliminating only phase-redundant source reads."
+      ]
+    },
+    {
+      "category": "pending-snapshot-qte-mutation",
+      "reason": "Original mutation exclusion on retained shared access.",
+      "contracts": [
+        "FANOUT-2/3/5: preserve original integrity while eliminating only phase-redundant source reads."
+      ]
+    },
+    {
+      "category": "pending-snapshot-qte-proof",
+      "reason": "Original byte/generation/signed source proof.",
+      "contracts": [
+        "FANOUT-2/3/5: preserve original integrity while eliminating only phase-redundant source reads."
+      ]
+    },
+    {
+      "category": "pending-snapshot-validation-contracts",
+      "reason": "Existing owned and borrowed snapshot reservation/source safety.",
+      "contracts": [
+        "FANOUT-2/3/5: preserve original integrity while eliminating only phase-redundant source reads."
+      ]
+    },
+    {
+      "category": "gm-main-run-fence",
+      "reason": "Main access retention, original guard and mutation refusals.",
+      "contracts": [
+        "FANOUT-2/3/5: preserve original integrity while eliminating only phase-redundant source reads."
+      ]
+    },
+    {
+      "category": "fr063-trusted-local-request-observations",
+      "reason": "Retain r44 actual root/target probe freshness and passive receiver behavior.",
+      "contracts": [
+        "FANOUT-2/3/5: preserve original integrity while eliminating only phase-redundant source reads."
+      ]
+    },
+    {
+      "category": "fr063-observed-original-reader",
+      "reason": "Actual original source issuer/current-lease compatibility.",
+      "contracts": [
+        "FANOUT-2/3/5: preserve original integrity while eliminating only phase-redundant source reads."
       ]
     }
   ]
