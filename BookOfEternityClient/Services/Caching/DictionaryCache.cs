@@ -4,7 +4,7 @@ namespace BookOfEternityClient.Services.Caching;
 /// Retains comparer-selected entries until explicitly removed or the owner closes the cache.
 /// </summary>
 /// <typeparam name="TKey">
-/// The non-null key type.
+/// The non-<see langword="null"/> key type.
 /// </typeparam>
 /// <typeparam name="TValue">
 /// The caller-owned value type.

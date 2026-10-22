@@ -43,7 +43,8 @@ public sealed class CacheExpirationPolicy
     public TimeSpan? SlidingLifetime { get; }
 
     /// <summary>
-    /// Gets the interval at which the backend removes idle expired entries.
+    /// Gets the requested interval for removing idle expired entries.
+    /// Timer scheduling rounds to whole milliseconds and may use shorter intervals for long requests.
     /// </summary>
     public TimeSpan SweepInterval { get; }
 }

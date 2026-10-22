@@ -1,7 +1,7 @@
 namespace BookOfEternityClient.Services.Caching;
 
 /// <summary>
-/// Distinguishes source absence from present values, including null and defaults.
+/// Distinguishes source absence from present values, including <see langword="null"/> and defaults.
 /// </summary>
 /// <typeparam name="TValue">
 /// The source value type.
@@ -18,7 +18,7 @@ public readonly record struct CacheLookup<TValue>(bool Found, TValue Value);
 /// Reads and changes a domain's real source independently of its cache.
 /// </summary>
 /// <typeparam name="TKey">
-/// The domain's non-null key type.
+/// The domain's non-<see langword="null"/> key type.
 /// </typeparam>
 /// <typeparam name="TValue">
 /// The original source value type.
@@ -35,7 +35,7 @@ public interface ICacheRepository<TKey, TValue> where TKey : notnull
     /// Cancellation for source work.
     /// </param>
     /// <returns>
-    /// Source presence and value, with absence distinct from a present null.
+    /// Source presence and value, with absence distinct from a present <see langword="null"/>.
     /// </returns>
     Task<CacheLookup<TValue>> ReadAsync(TKey key, CancellationToken cancellationToken);
 

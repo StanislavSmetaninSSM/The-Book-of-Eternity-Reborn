@@ -27,7 +27,7 @@ internal sealed class DefaultOperationValidationService : OperationValidationSer
     /// Selects how each context creates its own storage mechanism.
     /// </summary>
     /// <param name="cacheFactory">
-    /// Returns an unclaimed backend per operation; null selects an identity-keyed dictionary.
+    /// Returns an unclaimed backend per operation; <see langword="null"/> selects an identity-keyed dictionary.
     /// </param>
     internal DefaultOperationValidationService(Func<ServiceCache<ValidationOperation.EntryKey, ValidationOperation.Entry>>? cacheFactory = null) =>
         _cacheFactory = cacheFactory ?? (() => new DictionaryCache<ValidationOperation.EntryKey, ValidationOperation.Entry>(new ValidationOperation.EntryKeyComparer()));

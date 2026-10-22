@@ -4,7 +4,7 @@ namespace BookOfEternityClient.Services.Caching;
 /// Retains entries within configured monotonic lifetimes and periodically evicts idle entries.
 /// </summary>
 /// <typeparam name="TKey">
-/// The non-null key type.
+/// The non-<see langword="null"/> key type.
 /// </typeparam>
 /// <typeparam name="TValue">
 /// The caller-owned value type.
@@ -20,7 +20,7 @@ public sealed class MemoryCache<TKey, TValue> : ServiceCache<TKey, TValue> where
     /// Creates independent expiring storage with an owned periodic timer.
     /// </summary>
     /// <param name="policy">
-    /// The non-null positive retention policy.
+    /// The non-<see langword="null"/> positive retention policy.
     /// </param>
     /// <param name="timeProvider">
     /// The monotonic clock and timer provider, or <see langword="null"/> for the system provider.
@@ -35,8 +35,11 @@ public sealed class MemoryCache<TKey, TValue> : ServiceCache<TKey, TValue> where
         _policy = policy;
         _timeProvider = timeProvider ?? TimeProvider.System;
         _values = new Dictionary<TKey, CacheEntry>(Comparer);
+        // Scheduling granularity/range does not change timestamp-based entry lifetimes.
+        var interval = TimeSpan.FromMilliseconds(Math.Clamp(Math.Ceiling(policy.SweepInterval.TotalMilliseconds),
+            1d, 4_294_967_294d));
         _timer = _timeProvider.CreateTimer(static state => ((MemoryCache<TKey, TValue>)state!).Sweep(),
-            this, policy.SweepInterval, policy.SweepInterval);
+            this, interval, interval);
     }
 
     /// <summary>

@@ -4,7 +4,7 @@ namespace BookOfEternityClient.Services.Caching;
 /// Provides the cache lifecycle contract while retaining no submitted entries.
 /// </summary>
 /// <typeparam name="TKey">
-/// The non-null key type.
+/// The non-<see langword="null"/> key type.
 /// </typeparam>
 /// <typeparam name="TValue">
 /// The caller-owned value type.

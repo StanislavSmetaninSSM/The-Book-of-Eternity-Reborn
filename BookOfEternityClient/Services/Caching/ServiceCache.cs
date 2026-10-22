@@ -5,7 +5,7 @@ namespace BookOfEternityClient.Services.Caching;
 /// Backend hooks perform only synchronous memory work and do not call source services.
 /// </summary>
 /// <typeparam name="TKey">
-/// The non-null key type.
+/// The non-<see langword="null"/> key type.
 /// </typeparam>
 /// <typeparam name="TValue">
 /// The stored value type; default and <see langword="null"/> values remain distinguishable from absence.
@@ -56,7 +56,7 @@ public abstract class ServiceCache<TKey, TValue> : IDisposable where TKey : notn
     /// Looks up a value and reports presence independently from its value.
     /// </summary>
     /// <param name="key">
-    /// The non-null key to find.
+    /// The non-<see langword="null"/> key to find.
     /// </param>
     /// <param name="value">
     /// The retained value on success, or the default value when absent.
@@ -78,7 +78,7 @@ public abstract class ServiceCache<TKey, TValue> : IDisposable where TKey : notn
     /// Replaces a value without taking ownership of its disposable resources.
     /// </summary>
     /// <param name="key">
-    /// The non-null key to insert or replace.
+    /// The non-<see langword="null"/> key to insert or replace.
     /// </param>
     /// <param name="value">
     /// The value to retain, including default or <see langword="null"/> when supported by the value type.
@@ -97,7 +97,7 @@ public abstract class ServiceCache<TKey, TValue> : IDisposable where TKey : notn
     /// Removes the entry selected by the key comparer.
     /// </summary>
     /// <param name="key">
-    /// The non-null key to remove.
+    /// The non-<see langword="null"/> key to remove.
     /// </param>
     /// <returns>
     /// <see langword="true"/> when an eligible entry was removed; otherwise, <see langword="false"/>.
@@ -180,7 +180,7 @@ public abstract class ServiceCache<TKey, TValue> : IDisposable where TKey : notn
     /// Looks up an entry synchronously while the cache synchronization gate is held.
     /// </summary>
     /// <param name="key">
-    /// The non-null key to find.
+    /// The non-<see langword="null"/> key to find.
     /// </param>
     /// <param name="value">
     /// The found value, or default when absent.
@@ -194,7 +194,7 @@ public abstract class ServiceCache<TKey, TValue> : IDisposable where TKey : notn
     /// Inserts or replaces an entry synchronously while the cache gate is held.
     /// </summary>
     /// <param name="key">
-    /// The non-null key to replace.
+    /// The non-<see langword="null"/> key to replace.
     /// </param>
     /// <param name="value">
     /// The value to retain without copying or disposing it.
@@ -205,7 +205,7 @@ public abstract class ServiceCache<TKey, TValue> : IDisposable where TKey : notn
     /// Removes an entry synchronously while the cache gate is held.
     /// </summary>
     /// <param name="key">
-    /// The non-null key to remove.
+    /// The non-<see langword="null"/> key to remove.
     /// </param>
     /// <returns>
     /// <see langword="true"/> when an eligible entry was removed; otherwise, <see langword="false"/>.

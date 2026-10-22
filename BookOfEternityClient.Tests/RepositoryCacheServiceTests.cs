@@ -28,7 +28,7 @@ public sealed class RepositoryCacheServiceTests
     }
 
     /// <summary>
-    /// Distinguishes present null from absence and does not retain missing source data.
+    /// Distinguishes present <see langword="null"/> from absence and does not retain missing source data.
     /// </summary>
     [Fact]
     public async Task NullIsCachedAndAbsenceIsReloaded()

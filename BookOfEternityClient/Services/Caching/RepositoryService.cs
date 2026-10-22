@@ -64,7 +64,7 @@ public abstract class RepositoryService<TKey, TValue> where TKey : notnull
 /// The source key type.
 /// </typeparam>
 /// <typeparam name="TValue">
-/// The source value type, including legitimate null/default values.
+/// The source value type, including legitimate <see langword="null"/>/default values.
 /// </typeparam>
 public sealed class DefaultRepositoryService<TKey, TValue> : RepositoryService<TKey, TValue> where TKey : notnull
 {
@@ -82,7 +82,7 @@ public sealed class DefaultRepositoryService<TKey, TValue> : RepositoryService<T
     /// Borrowed owner-controlled cache and shared source serialization gate.
     /// </param>
     /// <param name="copy">
-    /// Detaches mutable values, or returns immutable/permitted null values unchanged.
+    /// Detaches mutable values, or returns immutable/permitted <see langword="null"/> values unchanged.
     /// </param>
     public DefaultRepositoryService(ICacheRepository<TKey, TValue> repository,
         IServiceCacheStorage<TKey, TValue> storage, Func<TValue, TValue> copy)
