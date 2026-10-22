@@ -15211,7 +15211,7 @@
     "tests/selection.json"
   ],
   "related": [
-    "test-selection-contracts"
+    { "id": "test-selection-contracts", "when": "Integration source inventory contracts remain selected and reported independently." }
   ],
   "requirements": {
     "frontendBuild": false,
