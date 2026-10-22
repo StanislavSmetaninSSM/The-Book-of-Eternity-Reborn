@@ -2,87 +2,52 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "core-recovery-progression-data",
-      "reason": "PROGDATA1..4 typed DATA causal body/attribute reduction and all cheap integrity/copy/lifetime boundaries.",
+      "category": "core-recovery-proof-reads",
+      "reason": "New typed lifecycle/causal actual sources and exit-integrity controls.",
       "contracts": [
-        "#1536 revision51 PROGDATA1..5 / T440–442; original600s selected separately after current input qualification."
+        "#1536 revision52 PROOFREAD1..6 / T445\u2013447; real original600 selected separately after qualified current input/source review."
+      ]
+    },
+    {
+      "category": "fr063-joint-proof-reads-integration",
+      "reason": "Real completed-proof consumer equivalence, attribute reduction and exit refusal.",
+      "contracts": [
+        "#1536 revision52 PROOFREAD1..6 / T445\u2013447; real original600 selected separately after qualified current input/source review."
+      ]
+    },
+    {
+      "category": "fr063-reserved-validation-read-set",
+      "reason": "Preserve existing exact ownership, drift, overlap, cancellation, passive and source-family controls.",
+      "contracts": [
+        "#1536 revision52 PROOFREAD1..6 / T445\u2013447; real original600 selected separately after qualified current input/source review."
+      ]
+    },
+    {
+      "category": "core-recovery-progression-data",
+      "reason": "Proof envelope must preserve existing typed progression cache dependency/freshness semantics.",
+      "contracts": [
+        "#1536 revision52 PROOFREAD1..6 / T445\u2013447; real original600 selected separately after qualified current input/source review."
       ]
     },
     {
       "category": "fr063-joint-progression-data-integration",
-      "reason": "PROGDATA1..4 direct actual private production proof/phase pair; prove source2to1 before original600s, with real independently materialized files and unchanged state.",
+      "reason": "Keep actual production progression proof/phase reuse and unchanged-state oracle.",
       "contracts": [
-        "#1536 revision51 / T440–442."
-      ]
-    },
-    {
-      "category": "core-recovery-file-validation",
-      "reason": "Preserve existing fact adapter behavior, mutation versions, passive observations and source failures while adding typed dispatch.",
-      "contracts": [
-        "#1536 revision51 PROGDATA1..5 / T440–442; original600s selected separately after current input qualification."
-      ]
-    },
-    {
-      "category": "core-recovery-mutation-bridges",
-      "reason": "Preserve actual root invalidation envelopes used as typed result dependencies.",
-      "contracts": [
-        "#1536 revision51 PROGDATA1..5 / T440–442; original600s selected separately after current input qualification."
-      ]
-    },
-    {
-      "category": "core-operation-validation-cache",
-      "reason": "Typed result copying, no-op/default values, version/concurrency/fresh/close behavior of the reused general coordinator.",
-      "contracts": [
-        "#1536 revision51 PROGDATA1..5 / T440–442; original600s selected separately after current input qualification."
+        "#1536 revision52 PROOFREAD1..6 / T445\u2013447; real original600 selected separately after qualified current input/source review."
       ]
     },
     {
       "category": "fr063-joint-applied-story-components",
-      "reason": "Affected actual phase/proof/story consumer preserves current source and readback refusal through the modified phase-reader.",
+      "reason": "Preserve real proof/story append/repeat/drift/readback refusal consumers.",
       "contracts": [
-        "#1536 revision51 PROGDATA1..5 / T440–442; original600s selected separately after current input qualification."
-      ]
-    },
-    {
-      "category": "test-selection-contracts",
-      "reason": "Optional diagnostic output root must preserve category planning and runner defaults/refusals.",
-      "contracts": [
-        "PROGDATA5 / T442 D-only full diagnostic storage, unchanged ownership and streams."
-      ]
-    },
-    {
-      "category": "fr063-joint-child-output-transport",
-      "reason": "Preserve uncapped exact child streams, hashes, storage-failure and EOF semantics with configurable external default parent.",
-      "contracts": [
-        "PROGDATA5 / T442 D-only full diagnostic storage, unchanged ownership and streams."
-      ]
-    },
-    {
-      "category": "fr063-joint-child-output-launch-boundaries",
-      "reason": "Preserve capture creation before launch, original process settlement and failure handling after output relocation.",
-      "contracts": [
-        "PROGDATA5 / T442 D-only full diagnostic storage, unchanged ownership and streams."
+        "#1536 revision52 PROOFREAD1..6 / T445\u2013447; real original600 selected separately after qualified current input/source review."
       ]
     },
     {
       "category": "fr063-joint-interface-crash-adapter-contracts",
-      "reason": "Explicit full/off observation configuration must preserve original mode/native/timeout boundaries; cheap typed parser controls only.",
+      "reason": "New immutable input literal must preserve original role/budget/observation/launch contract.",
       "contracts": [
-        "PROGDATA6 / T442–443; no runtime budget or semantic gate changes."
-      ]
-    },
-    {
-      "category": "test-category-runner-contracts",
-      "reason": "Verbatim split executes previously fail-fast-skipped unit15 and PowerShell3 runner controls while preserving the complete original integration inventory category and its three pre-existing failures.",
-      "contracts": [
-        "PROGDATA5/6; no removed test, altered assertion or budget."
-      ]
-    },
-    {
-      "category": "test-category-powershell-contracts",
-      "reason": "Execute the three unchanged PowerShell adapter scripts separately after two existing fast source guards caused fail-fast; retain every original assertion and actual failure.",
-      "contracts": [
-        "PROGDATA5; catalog/report/command admission, no runtime behavior change."
+        "#1536 revision52 PROOFREAD1..6 / T445\u2013447; real original600 selected separately after qualified current input/source review."
       ]
     }
   ]

@@ -2,6 +2,67 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "core-recovery-proof-reads",
+  "responsibility": "Stable post-recovery source-read lifecycle: causal first-plus-exit versus eight reads, raw bytes/absence/time/generation/namespace refusal, copies, hook fallback, failure and borrowed ownership on cheap independent files.",
+  "excludes": "No whole world preparation, reflection, authority cache, cross-recovery reuse, aggregate suite or diagnostic quota.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.RecoveryProofReads.cs",
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-reserved-validation-read-set",
+      "when": "Existing source-read reservation/exit/ownership contract is used or modified."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.RecoveryProofReadTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-proof-reads-integration",
+  "responsibility": "Actual complete joint-proof reader on small independently copied applied DATA: real attribute reduction versus fresh hook fallback, unchanged game images and raw history drift refusal before return.",
+  "excludes": "No whole world preparation, reflection, authority cache, cross-recovery reuse, aggregate suite or diagnostic quota.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.RecoveryProofReads.cs",
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-reserved-validation-read-set",
+      "when": "Existing source-read reservation/exit/ownership contract is used or modified."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointCompletedProofReadTests.*"
+      ]
+    }
+  ]
+},
+
+{
   "id": "fr063-joint-progression-data-integration",
   "responsibility": "One real phase-reader proof/DATA pair on a minimal independent actual-applied-data template: one progression source body instead of two, one general-service reuse, unchanged canonical files and closed empty owned scope.",
   "excludes": "No GameEngine, world/source42 generation, story append, arbitrary read hook, fake authority, original600s or diagnostic quota.",
