@@ -1,3 +1,64 @@
+# T430 — перенос архитектуры DW10 в общий кэш игры
+
+Issue1536 / spec и plan revision48. Это результат чтения исходников и рекомендация по переносу архитектуры, а не утверждение об уже выполненном переносе. DW10 HEAD 691c0f0d9a1f23d445ec7087d05b720a7321c752; прочитанные source-каталоги совпадают с HEAD. В DW10 есть посторонние незавершённые изменения, которые анализ не затрагивал. Общий операционный компонент игры проверен на f6dedbd1ff94c90be8d54774994aa3fe1919184a; к восстановлению игры он ещё не подключён. Нет причин отказываться от структуры DW10: она становится основой рекомендуемого решения.
+
+## Что фактически устроено в DW10
+
+Проверен цельный пример ScreenPreset, а не только классы с похожими именами:
+
+| Уровень | Фактическая ответственность | Источник в D:/Code/DW10 |
+| --- | --- | --- |
+| Предметный контракт | Abstract ScreenPresetService определяет операции получения, сохранения и удаления. | Dynamicweb.CoreUI/Data/ScreenConfiguration/ScreenPresetService.cs:9 |
+| Реализация сервиса | DefaultScreenPresetService получает repository и два IServiceCacheStorage через конструктор. Читает кэш, после успешного Save сохраняет результат в кэш; Delete удаляет данные через repository и очищает соответствующие ключи. | Dynamicweb.CoreUI/Data/ScreenConfiguration/DefaultScreenPresetService.cs:9,100,113 |
+| Repository | ScreenPresetRepository выполняет чтение/запись первичных данных в SQL, отдельно от сервисных правил и кэша. | Dynamicweb.CoreUI/Data/ScreenConfiguration/ScreenPresetRepository.cs:13 |
+| CacheStorage | IServiceCacheStorage содержит выбранный ServiceCache, очистку, информацию и смену реализации. DefaultScreenPresetServiceCacheStorage связывает InitializeCache/FetchOnNotFound/RefreshOnClear с repository. | src/Core/Dynamicweb.Core/Caching/IServiceCacheStorage.cs:11; Dynamicweb.CoreUI/Data/ScreenConfiguration/DefaultScreenPresetServiceCacheStorage.cs:8 |
+| Общая база | Abstract ServiceCache задаёт virtual/abstract точки чтения, сохранения, удаления, очистки и загрузки отсутствующих значений. | src/Core/Dynamicweb.Core/Caching/ServiceCache.cs:17,31,116,124,271,343 |
+| Реализации | DictionaryCache — словарь с управляемой инициализацией; MemoryCache — хранение с политикой истечения и invalidation; NoCache — выполнение загрузки без удержания результатов. | src/Core/Dynamicweb.Core/Caching/DictionaryCache.cs:15; MemoryCache.cs:18; NoCache.cs:12 |
+| Срок хранения | MemoryCache.CustomExpiration задаёт sliding expiration; CacheItemPolicy содержит absolute/sliding expiration и зависимости. | src/Core/Dynamicweb.Core/Caching/MemoryCache.cs:32,149; CacheItemPolicy.cs:25,54,60 |
+| Время жизни объектов | DI регистрирует ScreenPresetService/repository transient, а два CacheStorage singleton: время жизни сервиса и его кэша намеренно разделено. | Dynamicweb.CoreUI/CoreUIDependencyProvider.cs:58–65 |
+
+Таким образом, архитектура сочетает **наследование механизмов** и **композицию предметных сервисов**. Она не требует, чтобы каждый Service наследовался от самого Cache. Есть и кэш без repository: ScreenPresetsByUserIdServiceCacheStorage хранит временные пользовательские переопределения через set/get/clear. Для вычисленных значений игры аналогично допустим factory вместо искусственного repository без собственного источника данных.
+
+## Что ограничивает текущий код игры
+
+OperationValidationService — sealed-фабрика BeginOperation; ValidationOperation — sealed-контекст с собственным Dictionary. Типизированные вычисления, копии, зависимости, факты проверки и завершение операции уже работают, но смена контейнера, политики удержания и общей реализации get/set/remove не предусмотрена. Простое снятие sealed не добавит этих точек расширения: словарь и жизненный цикл останутся внутри private-полей.
+
+T426 поэтому сохраняет ценность как проверенный координатор валидации, но ещё не представляет всю архитектуру, которую предлагает пользователь. Прошли 26 тестов; в причинном тесте 8 запросов дали 1 вычисление. Это не измерение восстановления. Код пока не используется в производственном восстановлении, поэтому сейчас подходящий момент отделить инфраструктуру до массового подключения.
+
+## Рекомендуемая структура переноса
+
+1. **ServiceCache<TKey,TValue>** — общая расширяемая база с явными TryGet/Get, Set, Remove, Clear и Dispose. Защищённые точки реализации позволяют наследникам менять чтение, сохранение, вытеснение и взаимодействие с контейнером. Наличие записи отделено от значения. Это общий механизм, пригодный всем игровым подсистемам, а не тип восстановления.
+2. **DictionaryCache / MemoryCache / NoCache** — реализации того же контракта. DictionaryCache получает область владельца; MemoryCache — политику absolute/sliding expiration; NoCache даёт настоящий сопоставимый контроль без хранения. Наследники могут добавлять специализированное хранение и политику, не дублируя сервисную логику.
+3. **IServiceCacheStorage<TKey,TValue>** — предметно настроенный кэш с отдельным жизненным циклом, информацией и invalidation. Валидационный storage создаёт отдельную область операции. Кэш сессии или TTL выбирается другим сервисом явно; завершение одной операции очищает только её область, а не общий store других сервисов.
+4. **Предметные Service / DefaultService** — сервис объединяет repository, cache storage и правила. Для валидации это развитие OperationValidationService и default-реализация с текущим координатором ValidationOperation; для другой подсистемы — собственный предметный Service с теми же инфраструктурными контрактами. Репозиторий передаётся через конструктор, как в DW10.
+5. **Repository** — типизированный доступ к исходным данным предметной области. В игре он опирается на существующий FileSystemManager и его настоящие lease/source-контракты. Он не становится вторым владельцем canonical state и не заменяет NativeLineage/AcceptedTurnAuthorityRegistry. Сохранение через repository остаётся настоящей записью источника; запись в CacheStorage — только обновлением кэша результата.
+6. **Политика срока жизни и контекст** — до конца операции, до конца сессии либо absolute/sliding TTL. Срок хранения отвечает за удержание памяти; версии/зависимости/владелец — за допустимость использования. Даже ещё не истёкшая запись с изменившейся зависимостью недействительна. Для исходных recovery validation facts остаётся операционная область с немедленной очисткой при success/error/cancel. Иной сервис может хранить другие данные дольше; старое подтверждение игрового полномочия из-за этого не продлевается.
+
+Названия здесь определяют роли рекомендуемой архитектуры; точные интерфейсы будущего переноса должны быть записаны до реализации. Текущее ядро проверки версий/копирования/fresh fences переносится в эту структуру, а не выбрасывается ради повторной разработки.
+
+## Какие договорённости игры нужно сохранить при переносе
+
+- **False/0/null:** в DW10 GetCache возвращает default, а miss-loader пропускает null; MemoryCache.SetCacheInternal тоже отвергает null. Игра уже различает присутствие null/false и отсутствие записи. Общая архитектура переносится с явным TryGet/Found и при необходимости непрозрачной оболочкой значения, чтобы этот контракт не потерять.
+- **Сравнение ключей:** ServiceCache DW10 выбирает OrdinalIgnoreCase для string. Игровые пути и различные политики чтения требуют своего явного comparer; raw path/reader family/strict absence не объединяются. Общая база должна принимать нужную политику ключа.
+- **Async:** DW10 синхронно вызывает FetchOnNotFound внутри write-lock в ServiceCache.GetCache. Игровой координатор выполняет async factory/IO вне monitor; этот контракт сохраняется. Новый storage должен поддерживать безопасную работу разных контекстов, не вводя скрытого ожидания собственного in-flight вычисления.
+- **Изменяемые объекты:** текущие защитные копии и live seal/input checks сохраняются независимо от реализации storage. Таймер или замена словаря не защищают от изменения выданного объекта.
+- **Области очистки:** нынешний _entries.Clear безопасен потому, что словарь личный. При общем backend Invalidate/ForceFresh/Dispose очищают только свой scope; закрытая операция не может вернуть или снова занести запись. Уже проверенное D1 совпадение объявления зависимостей и D2 запрет старого успеха после fresh failure также сохраняются.
+- **Сохранение источника:** правила версии root до мутации и после её cleanup/compensation не заменяются простым SetCache после успешного Save. Все живые claim/item/lease проверки, fresh take/publication, native expected-before/readback/settlement остаются прежними. Механизм срока хранения сам по себе их не заменяет.
+- **Создание реализаций:** смена backend может использовать typed factory/DI. DW10 TrySwitchCache использует Activator, но архитектура не требует переносить именно этот механизм конструирования. Массовая инициализация всех игровых объектов также не обязательна: выбранный FetchOnNotFound выполняет нужную работу при miss.
+- **Доступность наследования:** сам ServiceCache в DW10 публичный и абстрактный, но его конструктор internal (ServiceCache.cs:96). Наследники внутри сборки доступны, а внешнему коду для прямого наследования нужен другой уровень доступа. В игровом варианте доступность базы и конструктора задаётся явно под требуемое расширение; одного удаления sealed недостаточно.
+
+Эти пункты — адаптация реализации к контрактам игры внутри выбранной DW10-архитектуры, а не основание отказываться от неё.
+
+## Предлагаемый порядок работ
+
+1. Записать конкретные ServiceCache/Storage/Policy/Service/Repository интерфейсы и критерии следующего implementation revision. Сохранить текущий T426 как доказанный baseline.
+2. Вынести личный Dictionary из ValidationOperation в операционный CacheStorage; добавить NoCache через тот же контракт. Прогнать существующие26 сценариев и общие тесты storage, включая отсутствие/null/false, scoped clear и подмену реализации.
+3. Добавить MemoryCache с настраиваемым absolute/sliding TTL и тестовым источником времени. Проверять истечение без Sleep и без многоминутного теста. Подтвердить, что invalidation действует до TTL, разные области не очищают друг друга, а закрытая операция не оживает в долгоживущем backend.
+4. Оформить первый специализированный Service и Repository-адаптер для mechanical/continuation DATA. Завершить T427 writer/hook/lease/fresh-fence proof gates; соответствующая source-консультация сохранена, но не является разрешением включить неподтверждённый кэш. Whole-QTE bind/restore остаётся настоящим действием.
+5. Выполнить current-source selected/XML/category checks и независимый coherent review, затем один genuine исходный Cut0 с неизменными600/820/15 и полной диагностикой. Сравнить actual DATA executions/GetAttributes/времена; одно переименование/разделение классов не считается ускорением.
+
+Не требуется сразу переносить все сервисы игры, distributed cache, SQL backend, глобальные уведомления и административный UI DW10. Рекомендуется переносить его архитектурные роли и реальные точки расширения с первым измеряемым игровым потребителем. Диагностика не ограничивается. На момент этого анализа новых C#-изменений/сборок/игровых прогонов после T426 GREEN не выполнялось.
+
 # T425 — generic temporary operation cache decision
 
 Issue1536 / spec revision47 OPCACHE-1..10 / source c2c83d9c6228fcda10f4f0d40cd956b33e4427b3. User clarified scope and lifetime: general service throughout game, computed values or successful checks, operation-owned payloads cleared on success/error/cancellation. No global cross-operation cache. Existing explicit autonomous-work permission applies.

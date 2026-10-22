@@ -1,3 +1,19 @@
+# T430 — DW10-based architecture roles under investigation
+
+Issue1536 / revision48. These are proposed roles for the next implementation contract, not already implemented types or permission to change production behavior during analysis.
+
+| Role | Responsibility | Extension and lifetime |
+| --- | --- | --- |
+| ServiceCache<TKey,TValue> | Common get/put/remove/clear contract, explicit found/missing, typed keys. | Inheritable storage operations and explicit key/copy policies. |
+| DictionaryCache / MemoryCache / NoCache | Concrete retention mechanisms behind the same cache API. | Operation-owned dictionary, configured absolute/sliding TTL, or no retained values. |
+| IServiceCacheStorage<TKey,TValue> | Domain configuration, selected implementation and scoped invalidation. | Separate lifetime from transient domain service; shared backend needs scope identity. |
+| Domain Service / DefaultService | Combines repository, storage and business rules. | Constructor substitution and specialized service implementations. |
+| Repository | Typed access to the actual source. | File-backed implementation retains existing FileSystemManager ownership/source protocols; pure computed values may use a factory. |
+| Lifetime policy / scope | Declares operation, session or TTL retention and who closes/clears it. | A closed operation's entries remain unusable even if another backend can retain other data longer. |
+| Validation coordinator / envelope | Preserves complete inputs/dependencies/versions, defensive copies, failure/close/ForceFresh and fresh publication proof. | Reuse current T426 contracts; cache backend replacement does not mint authority or prolong a validation fact. |
+
+Avoid conflating a repository's source save with cache Set, storage expiration with data freshness, and a shared cache's global clear with one operation's disposal. No save schema or migration is introduced by this investigation.
+
 # T425 — operation-owned cache model
 
 Issue1536 / spec and plan revision47. All entities below are implementation contracts, not claims that code already exists.

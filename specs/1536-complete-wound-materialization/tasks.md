@@ -1,3 +1,11 @@
+# CRASH5 — revision48 tasks: DW10 architecture investigation
+
+Issue1536 / DWARCH-1..5 / canonical spec/plan revision48. Latest user direction is analysis toward adopting DW10's Service–Repository–CacheStorage architecture. Production integration T427–429 is deferred while this investigation closes; no original criterion is weakened or qualified.
+
+- [ ] T430 [US1/US2/US3] Read actual local DW10 caching/domain/DI sources and governance without modifying it; compare current sealed factory/private dictionary; recommend DW10-based extensible service/repository/storage/lifetime structure with operation and TTL ownership boundaries; write canonical findings/model/migration sequence and actual Spec Kit consistency; independent source-based investigation review, saved/pushed exact recovery. No production refactor or new runtime in this investigation.
+
+Coverage: DWARCH-1 -> source/provenance; DWARCH-2 -> responsibility/extension comparison; DWARCH-3 -> preserved invariants and scoped lifetime; DWARCH-4 -> model/migration/contracts; DWARCH-5 -> canonical phases/review/recovery, all owned by T430. Research completion is not implementation approval or timeout resolution.
+
 # CRASH5 — revision47 tasks: general temporary operation cache
 
 Issue1536 / active spec OPCACHE-1..10 / canonical plan revision47. Parent owns inline execution; separate independent Astra/high reviews the completed coherent block. No parallel implementation. User's existing approval-wait waiver applies; actual written spec/plan/tasks are presented and checked.
@@ -5,7 +13,7 @@ Issue1536 / active spec OPCACHE-1..10 / canonical plan revision47. Parent owns i
 ## US1 — reusable service and values
 
 - [x] T425 [US1/US2/US3] Actual written r47 contract/planning phases + source consultation, full T422 RED/raw/binary preservation, equivalent read-only consistency, presented artifacts, bounded save and exact recovery. Design does not qualify implementation. Evidence: T425-design-review.json accepts D1/D2 corrections;1a7e666aba9c8d8b5e15c7eddec21aa23be0705b recovered1207 exact Git blobs, clean and remote-matched (T425-design-recovery.json).
-- [ ] T426 [US1/US2] Generic typed ephemeral operation service with values/facts, exact versions/dependencies/copying, false/0/null, child-hit dependencies, ForceFresh, failure/cancel/recursion/overlap/close and late-descendant controls. Cheap meaningful causal RED/GREEN, explicit new category, multiline XML and current-source evidence.
+- [x] T426 [US1/US2] Generic typed ephemeral operation service with values/facts, exact versions/dependencies/copying, false/0/null, child-hit dependencies, ForceFresh, failure/cancel/recursion/overlap/close and late-descendant controls. Cheap meaningful causal RED/GREEN, explicit new category, multiline XML and current-source evidence. Actual f6dedbd1f:26PASS/0FAIL, category6.8966613s/command23.0143525s/case-duration sum0.1213347s, complete selection/closing. XML full-reference build0errors;75blocks/3files audited,0introduced-file warnings (10011historical). Full T426-green.zip/qualification/XML audit preserved. This is the generic component milestone; T428 independent implementation acceptance and T427 production integration remain pending.
 
 ## US2 — preserve correctness while avoiding repeated DATA checks
 

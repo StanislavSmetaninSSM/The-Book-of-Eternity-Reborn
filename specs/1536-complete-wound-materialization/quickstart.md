@@ -1,3 +1,13 @@
+# T430 — DW10 architecture analysis
+
+Issue1536 / active canonical revision48. Read the new research.md top section for actual local source evidence and the proposed DW10-based migration. This block is source analysis only; no DW10 edits/build/tests/external actions or new game execution.
+
+Current generic component is f6dedbd1f:26PASS, source/outputs unchanged, full T426-green.zip and qualification retained,75XML blocks checked with no new-file warnings. No unchanged rerun is needed for this documentation-only investigation. The complete game timeout remains open.
+
+T430 records Service/Repository/CacheStorage/ServiceCache roles, inheritance, DI lifetimes, Dictionary/Memory/NoCache backends and operation/session/TTL policies. Check adaptation of null/default presence, comparer, async IO outside locks, clones, version/fresh authority and scoped clear. T427 domain-coverage consultation remains a future pre-enable gate; adapter and original execution are deferred by the user-directed analysis.
+
+Run the actual pinned Spec Kit plan/tasks/prerequisites and equivalent read-only consistency; independently review the complete source-based findings; save/push/recover exact artifacts. A subsequent implementation amendment must define exact interfaces/tasks before production refactoring. Keep diagnostics uncapped and do not copy DW10 source into the game repository.
+
 # T425–429 — general temporary cache qualification
 
 Issue1536 / active spec and plan revision47 OPCACHE-1..10. No generic cache implementation or new original run has been qualified yet. User clarifications require a production reusable service, value/fact distinction and per-operation cleanup; standing approval-wait waiver applies. Read canonical spec.md/plan.md/tasks.md top revision47 before acting; r46 below is superseded history.
