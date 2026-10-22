@@ -33,8 +33,9 @@ must be established from actual source and measured repeated work.
    recovery. Leave T427–429 runtime acceptance open.
 
 Deliverable: `recovery/crash5/T438-story-cache-findings.md`; analysis and separate
-Astra/high review accepted, T438-F1 resolved. Exact final remote recovery remains
-for closeout. Story1945021 attributes/96.623s; sibling proof stages152.568s
+Astra/high review accepted, T438-F1 resolved. Origin-only recovery9db3f4cd3
+verified18 exact source/contract/document blobs and matching tree identity;
+T438 is complete as investigation only. Story1945021 attributes/96.623s; sibling proof stages152.568s
 (includes44.018s observer and2.201s test checkpoint); duplicate progression41
 passes/17.820s. Both no-evidence recovery barriers invalidate whole-reader reuse.
 First conditional candidate: typed DATA within a qualified post-recovery segment.
