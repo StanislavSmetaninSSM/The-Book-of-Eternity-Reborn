@@ -6,6 +6,31 @@
 **Spec:** spec.md revision50; contracts/recovery-validation.md, preserved OPCACHE/CACHEPORT contracts.
 **Architecture:** one operation per real issuing publication lease, root-shared no-IO mutation epochs, exact private input identities. Live authority guards outside cached successful DATA facts; recursive ForceFresh at authoritative takes/callbacks. Canonical IO remains FileSystemManager, no artificial source repository. .NET8/C#/xUnit/PowerShell7, existing isolated branch.
 
+## T438 — remaining story/progression cost investigation
+
+Owner request: continue analysis of the already retained original measurement and
+record where further caching is justified. Reuse T436/T429 evidence; no new
+runtime test or production behavior change in this block. The current cache's
+only production activation is the mechanical publication lease; story has its
+own leases, source reads, writes and cleanup callbacks. Their cache eligibility
+must be established from actual source and measured repeated work.
+
+1. Stream every retained invocation-path aggregate and reconcile all closed-leaf
+   counts/durations with the verified exact summary. Partition story, publication
+   and other work without adding nested inclusive timers. Keep open-tail and
+   observer bookkeeping costs explicit.
+2. Rank repeated proof/source/phase/history work in the story and cleanup paths;
+   trace caller chains and the actual objects/identities and mutations involved.
+3. Write human findings with measurements and source anchors, separate facts from
+   hypotheses, and specify eligible pure DATA reuse versus live guards and fresh
+   publication boundaries. Detailed machine output stays under the latest D:
+   measurement; preserve the original archive and complete analysis.
+4. Independently review the coherent findings against source/evidence, resolve
+   substantiated issues, and publish only source/documentation with exact remote
+   recovery. Leave T427–429 runtime acceptance open.
+
+Deliverable: `recovery/crash5/T438-story-cache-findings.md`; status in progress.
+
 ## T437 — owner-directed diagnostic history cleanup and local retention
 
 The owner explicitly requested removal of every diagnostic output uploaded by
