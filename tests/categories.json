@@ -2,6 +2,32 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "core-recovery-mutation-bridges",
+  "responsibility": "Eight tiny real-file controls directly observe all four directory/session/load mutation envelopes at physical effects and pre-core revalidation, including rollback and failure retirement.",
+  "excludes": "No world generation, fake replacement lease, acquisition-only epoch assertion, reflection or diagnostic quota.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/RecoveryMutationBridgeTests.cs",
+    "BookOfEternityClient/Core/FileSystemManager.LoadReplacement.cs",
+    "BookOfEternityClient/Core/FileSystemManager.LoadNamespace.cs",
+    "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.RecoveryMutationBridgeTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "core-recovery-joint-take-fence",
   "responsibility": "Actual publication take rejects raw ContextText drift after both genuine DATA facts are warm; unchanged inventory and both real authority slots are verified.",
   "excludes": "No fake proof, world generation, complete game loop, original process scenario or diagnostic quota.",

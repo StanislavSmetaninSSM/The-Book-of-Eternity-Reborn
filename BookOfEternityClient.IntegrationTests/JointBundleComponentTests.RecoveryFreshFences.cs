@@ -110,16 +110,21 @@ public sealed partial class JointBundleComponentTests
         /// </returns>
         internal async Task AssertWarmTakeRefusesRawContextDriftAsync()
         {
+            using var scope = Files.BeginRecoveryValidation(Lease);
             var resources = _jointResourceAuthority ?? throw new InvalidOperationException("A genuine resource authority is required.");
             var progression = _jointProgression ?? throw new InvalidOperationException("A genuine progression source is required.");
             var bound = _jointBound ?? throw new InvalidOperationException("A genuine bound common input is required.");
-            var common = await WoundAcceptedTurnPlanner.CreateJointRepairCommonPlanAsync(Files, Lease, resources, progression);
+            AcceptedMechanicsPlanningResult common;
+            using (Files.MeasureOperation("RecoveryTake.PrepareCommonPlan"))
+                common = await WoundAcceptedTurnPlanner.CreateJointRepairCommonPlanAsync(Files, Lease, resources, progression);
             Assert.True(common.Success, JsonSerializer.Serialize(common.Issues));
             var plan = Assert.IsType<AcceptedMechanicsPlan>(common.Plan);
             Assert.Same(bound.Authority, plan.JointRepairCommonAuthority);
             Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(Files, Lease, out var binding, out var selected));
             Assert.Equal(plan.PreparedPlanFingerprint, selected.Plan!.PreparedPlanFingerprint);
-            var preparation = await MortalJointRepairPublicationPreparation.CreateAsync(Files, Lease, plan, binding);
+            MortalJointRepairPublicationPreparation preparation;
+            using (Files.MeasureOperation("RecoveryTake.PreparePublication"))
+                preparation = await MortalJointRepairPublicationPreparation.CreateAsync(Files, Lease, plan, binding);
             const string path = "ready/turn_complete.json";
             Assert.False(preparation.BeforeImages.ContainsKey(path));
             Assert.DoesNotContain(path, preparation.MemberPaths);
@@ -127,7 +132,9 @@ public sealed partial class JointBundleComponentTests
             var original = await File.ReadAllBytesAsync(physical);
             var changed = original.Concat(new[] { (byte)' ' }).ToArray();
             AssertJointSlotsAvailable(preparation);
-            using var scope = Files.BeginRecoveryValidation(Lease);
+            // Candidate preparation is part of this same operation. Start the measured
+            // two-request comparison with an empty fact set, preserving all earlier diagnostics.
+            using (Files.ForceFreshRecoveryValidation()) { }
             var warmStart = ResetCandidateCapture("RecoveryActualTakeWarmFacts");
             await ValidateRetainedRecoveryBaselineAsync();
             await ValidateRetainedRecoveryBaselineAsync();

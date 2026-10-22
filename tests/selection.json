@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
 {
+  "category": "core-recovery-mutation-bridges",
+  "reason": "RECACHE2/5 direct actual-effect envelope coverage for all four bridges, independent of prior acquisition mutations.",
+  "contracts": [
+    "T427/T428 root epoch and complete cleanup."
+  ]
+},
+{
   "category": "core-recovery-joint-take-fence",
   "reason": "Actual publication take rejects raw ContextText drift after both genuine DATA facts are warm; unchanged inventory and both real authority slots are verified.",
   "contracts": [

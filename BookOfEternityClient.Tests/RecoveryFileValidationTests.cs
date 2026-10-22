@@ -423,6 +423,69 @@ public sealed class RecoveryFileValidationTests(ITestOutputHelper output)
     }
 
     /// <summary>
+    /// Keeps a passive descendant's actual live refusal or fresh read from retiring functional facts.
+    /// </summary>
+    /// <param name="freshRead">
+    /// Whether the passive descendant requests a fresh source boundary instead of provoking a private-seal refusal.
+    /// </param>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task PassiveDiagnosticLiveRefusalAndFreshReadCannotRetireFunctionalFacts(bool freshRead)
+    {
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        Task? diagnostic = null;
+        FileSystemManager files = null!;
+        FileSystemManager.CanonicalWriteLease lease = null!;
+        var diagnosticBodies = 0;
+        using var fixture = new Fixture(output, observation: (name, boundary) =>
+        {
+            if (name != "RecoveryValidation.Source.Mechanical" || boundary != "begin" || diagnostic is not null) return;
+            diagnostic = Task.Run(async () =>
+            {
+                await release.Task;
+                if (freshRead)
+                {
+                    using var fresh = files.ForceFreshRecoveryValidation();
+                    await files.ValidateRecoveryDataAsync(new("PassiveFreshRead", 1), new object(), lease, async () =>
+                    { diagnosticBodies++; Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt")); });
+                }
+                else
+                {
+                    var refusal = await Assert.ThrowsAsync<InvalidDataException>(() =>
+                        WoundAcceptedTurnPlanner.ValidateJointRepairCommonBaselineAsync(files, lease, new object()));
+                    Assert.Contains("Invalid private joint common baseline", refusal.Message, StringComparison.Ordinal);
+                }
+            });
+        });
+        files = fixture.Files;
+        await using var retainedLease = await files.AcquireCanonicalWriteLeaseAsync();
+        lease = retainedLease;
+        files.GetOrCreateSessionGeneration(lease);
+        using var scope = files.BeginRecoveryValidation(lease);
+        var input = new object();
+        var rule = new OperationValidationRule("Mechanical", 1);
+        var bodies = 0;
+        Task Validate() => files.ValidateRecoveryDataAsync(rule, input, lease, async () =>
+        { bodies++; Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt")); });
+        fixture.Recording = true;
+        await Validate();
+        await Validate();
+        Assert.Equal(1, bodies);
+        Assert.NotNull(diagnostic);
+        release.SetResult();
+        await diagnostic;
+        Assert.Equal(freshRead ? 1 : 0, diagnosticBodies);
+        Assert.Equal(new ValidationOperationState(1, 1, false), scope.CaptureState());
+        await Validate();
+        Assert.Equal(1, bodies);
+        var metrics = scope.CaptureMetrics();
+        Assert.Equal(3, metrics.Requests);
+        Assert.Equal(0, metrics.FailureClosures);
+        Assert.Equal(0, metrics.FreshBoundaries);
+    }
+
+    /// <summary>
     /// Owns a tiny independent filesystem and emits all measured timing rows before safe removal.
     /// </summary>
     private sealed class Fixture : IDisposable
