@@ -1,4 +1,26 @@
-# CRASH5 — revision46 tasks: remove added request admissions
+# CRASH5 — revision47 tasks: general temporary operation cache
+
+Issue1536 / active spec OPCACHE-1..10 / canonical plan revision47. Parent owns inline execution; separate independent Astra/high reviews the completed coherent block. No parallel implementation. User's existing approval-wait waiver applies; actual written spec/plan/tasks are presented and checked.
+
+## US1 — reusable service and values
+
+- [ ] T425 [US1/US2/US3] Actual written r47 contract/planning phases + source consultation, full T422 RED/raw/binary preservation, equivalent read-only consistency, presented artifacts, bounded save and exact recovery. Design does not qualify implementation.
+- [ ] T426 [US1/US2] Generic typed ephemeral operation service with values/facts, exact versions/dependencies/copying, false/0/null, child-hit dependencies, ForceFresh, failure/cancel/recursion/overlap/close and late-descendant controls. Cheap meaningful causal RED/GREEN, explicit new category, multiline XML and current-source evidence.
+
+## US2 — preserve correctness while avoiding repeated DATA checks
+
+- [ ] T427 [US1/US2/US3] Audit/cover root-shared mutations and owner/lease/hook eligibility; minimal real DATA causal fixture; bind general context to actual recovery and publication lease; cache mechanical/continuation DATA only; retain seals/claims/item guards and force fresh source before takes/later transaction boundaries. Prove actual attribute/body reduction and mutation/absence/namespace/owner/in-memory refusal parity. Retire only superseded r46 seam/four tests with their full saved RED; preserve32 original reserved-read tests.
+
+## US3 — measured original result
+
+- [ ] T428 [US1/US2/US3] Current-source selected affected categories, XML builds/comment audit/catalog/closing, exact binaries and immutable input/source gates, independent coherent complex code/test/doc review, saved clean source recovery before original.
+- [ ] T429 [US3] One genuine changed-source original Cut0 C:/Temp600/820/15 after gates, complete uncapped raw/all-row/path/fresh/native timing and owned settlement, matched T416/T420 comparison, honest full outcome, final independent review and exact remote recovery.
+
+Dependencies: T425 -> T426 -> T427 -> T428 -> T429. OPCACHE-1/2/3/4/7 -> T426/T427/T428; OPCACHE-5/6/8 -> T427/T428; OPCACHE-9 -> T426/T427/T428/T429; OPCACHE-10 -> T428/T429. Whole-game migration and direct whole-QTE memoization are not required for this first block.
+
+Historical r46 T422–424 below are **superseded, not completed**. T422 finished only one causal RED:34 cases /32PASS /2expectedFAIL, no timeout, owned/runtime cleanup true. No retained-guard optimization was implemented. Full49-payload archive T422-causal-red.zip (53816536 bytes, SHA256 4AC5AC7DF252D793FAA9F6060159717FED9EDA26B42E3D47204D0403CE4E55FE) and qualification retain this result and exact current binaries. Historical T421 planning was complete for its original scope; T420 remains measured FAIL and overall timeout acceptance OPEN.
+
+# CRASH5 — revision46 tasks: remove added request admissions [historical; superseded]
 
 Issue1536 / ADMISSION-1..6 / T421->T422->T423->T424. Parent owns coherent implementation; separate complex Astra/high review. No parallel source edits.
 
