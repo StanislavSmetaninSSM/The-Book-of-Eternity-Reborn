@@ -180,6 +180,10 @@ public sealed class RecoveryMutationBridgeTests(ITestOutputHelper output)
         CanonicalLoadNamespacePlan? plan = null;
         if (namespacePublication)
         {
+            // Normal load preparation has already initialized publication storage.
+            // This direct bridge fixture supplies that prerequisite before measuring its envelope.
+            new TrustedLocalFileScope([fixture.Root]).EnsureDirectory(
+                Path.Combine(fixture.Files.RuntimeRootPath, "trusted-local-publication-v1"));
             var source = Path.Combine(fixture.Root, "selected-source.bin");
             File.WriteAllBytes(source, [41]);
             var snapshot = fixture.Files.CaptureLoadReplacementNamespace(lease, source);
