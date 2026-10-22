@@ -1,3 +1,14 @@
+# CRASH5 — revision46 tasks: remove added request admissions
+
+Issue1536 / ADMISSION-1..6 / T421->T422->T423->T424. Parent owns coherent implementation; separate complex Astra/high review. No parallel source edits.
+
+- [ ] T421 [US1/US2/US3] Actual phase/consultation/source-based design, canonical spec/plan/research/model/quickstart/tasks, presented written amendment and equivalent consistency, preserved output/save/recovery gate. No production changes.
+- [ ] T422 [US2/US3] Real lease-free causal RED then exact guarded-reservation memory checks, conservative-mode seam and focused counter/freshness/authority/lifetime/overlap GREEN; original source/full boundary checks and uncapped diagnostics retained; accurate multiline XML.
+- [ ] T423 [US2/US3] Selected affected categories, XML builds/comment audit, catalog, immutable input slot/output retention and independent coherent complex source/test/doc review before original execution.
+- [ ] T424 [US1/US2/US3] Genuine changed-source input as needed, one original C:/Temp600/820/15, complete raw/owned settlement/all-row counts and same closed-publication comparison to T416/T420; honest actual result, final independent review and exact saved recovery. Timeout resolution remains OPEN unless all original success oracles pass.
+
+ADMISSION-1/2 mapsT421–423; ADMISSION-3/4/5 mapsT422–423 and actualT424 result; ADMISSION-6 mapsT423–424. No planning-only completion or acceptance weakening.
+
 # CRASH5 — revision45 tasks: remove repeated attribute-call fanout
 
 Source issue1536; spec FANOUT-1..5. Dependency chain T417 ->T418 ->T419 ->T420, one parent implementation block and separate coherent independent review; no parallel source edits.
@@ -5,9 +16,9 @@ Source issue1536; spec FANOUT-1..5. Dependency chain T417 ->T418 ->T419 ->T420, 
 - [x] T417 [US1/US2/US3] Reconcile every T416 path/call, locate concrete source multipliers and preserved validity boundaries; resolve the production design in spec/plan with exact files, causal counter targets and negative controls, actual Spec Kit phases/equivalent consistency and presented written scope.
 - [x] T418 [US2/US3] Preserve output pins; add minimal typed real-path causal count RED, implement the selected redundant-work removal and accurate multiline XML; preserve actual owner/lease/generation/path/error/current-byte checks and uncapped passive diagnostics.
 - [x] T419 [US2/US3] Causal GREEN and selected affected refusal/freshness/real-authority controls, XML-enabled builds and catalog plan/discovery; full evidence and independent coherent complex source/test/doc review before original execution.
-- [ ] T420 [US1/US2/US3] Genuine source-bound input if needed, one original Windows C:/Temp600/820/15 Cut0 with complete raw and real owned closing, equal-completed-milestone count/time comparison, honest full-case result, independent final review and exact saved remote recovery. Original timeout resolution remains OPEN unless all original success oracles pass.
+- [x] T420 [US1/US2/US3] Genuine source-bound input if needed, one original Windows C:/Temp600/820/15 Cut0 with complete raw and real owned closing, equal-completed-milestone count/time comparison, honest full-case result, independent final review and exact saved remote recovery. Original timeout resolution remains OPEN unless all original success oracles pass.
 
-T420 measured child600FAIL:79982 fewer probes in the structurally matched closed publication,378.8108s versus359.9428s. Exact attribution identifies449680 newly added per-request authority probes. All events/paths retained; raw/tools/outcome95d11d07c recovered1183 exact blobs. Final coherent review/analysis packaging/recovery pending; see recovery/crash5/T420-findings.md. Acceptance unchanged.
+T420 complete as measured child600FAIL:79982 fewer probes but378.8108s versus359.9428s. Exact attribution identifies449680 added per-request authority probes. Full31-payload analysis archive and coherent independent final review accepted; evidence1f9b5181f actually recovered1191 exact blobs (T420-evidence-recovery.json). No acceleration/full-goal/timeout-success acceptance. See T420-findings.md. Acceptance unchanged; T421–424 track the justified correction separately.
 
 FANOUT-1 mapsT417; FANOUT-2 mapsT417–419; FANOUT-3 mapsT418–419; FANOUT-4 mapsT419–420; FANOUT-5 maps every task. Findings/plan alone cannot close implementation. Preserve all earlier measured FAIL/success qualifications and historical unfinished tasks.
 
