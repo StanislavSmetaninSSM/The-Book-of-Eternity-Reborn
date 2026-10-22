@@ -598,6 +598,93 @@ public sealed class SourceDataOperationTests(ITestOutputHelper output)
     }
 
     /// <summary>
+    /// Refuses overlapping DATA consumers and settles both tasks before releasing their physical lease.
+    /// </summary>
+    /// <returns>
+    /// Completion after the actual source coordinator rejects overlap and retains no reusable result.
+    /// </returns>
+    [Fact]
+    public async Task OverlappingSourcesCannotReturnMixedData()
+    {
+        using var fixture = new SourceOperationFixture(output);
+        var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        using var operation = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(operation);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        operation.SourceReadBarrierForTests = release.Task;
+        var first = files.ReadFileAsync(lease, "present.txt");
+        try
+        {
+            Assert.False(first.IsCompleted);
+            Assert.True(operation.CaptureState().Dependencies > 0);
+            await Assert.ThrowsAsync<InvalidOperationException>(() => files.ReadFileAsync(lease, "present.txt"));
+        }
+        finally { release.TrySetResult(); }
+        await Assert.ThrowsAsync<InvalidOperationException>(async () => await first);
+        Assert.Equal(0, operation.CaptureState().Entries);
+    }
+
+    /// <summary>
+    /// Closes the general cache while an actual asynchronous source is pending and rejects its late result.
+    /// </summary>
+    /// <returns>
+    /// Completion after the captured source settles and the disposed service remains empty.
+    /// </returns>
+    [Fact]
+    public async Task DisposalDuringSourceRejectsLateResult()
+    {
+        using var fixture = new SourceOperationFixture(output);
+        var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        var operation = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(operation);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        operation.SourceReadBarrierForTests = release.Task;
+        var first = files.ReadFileAsync(lease, "present.txt");
+        try { Assert.False(first.IsCompleted); operation.Dispose(); }
+        finally { operation.Dispose(); release.TrySetResult(); }
+        await Assert.ThrowsAsync<ObjectDisposedException>(async () => await first);
+        Assert.Equal(new ValidationOperationState(0, 0, true), operation.CaptureState());
+    }
+
+    /// <summary>
+    /// Uses the actual runtime advancement seam while avoiding expensive game-engine construction.
+    /// </summary>
+    /// <param name="drift">
+    /// Whether untracked bytes change after the source was cached and before advancement.
+    /// </param>
+    /// <returns>
+    /// Completion after exactly one valid advance or refusal with the original turn intact.
+    /// </returns>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ActualRuntimeAdvanceRequiresFreshData(bool drift)
+    {
+        using var fixture = new SourceOperationFixture(output);
+        var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        using var operation = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(operation);
+        var loop = new GameLoop();
+        loop.SetSession("fixture", 42);
+        Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+        if (drift) File.WriteAllText(fixture.PresentPath, "modified");
+        if (drift)
+            await Assert.ThrowsAsync<InvalidDataException>(() => GameEngine.AdvanceVerifiedMortalJointRuntimeAsync(files, lease, loop, 43));
+        else
+        {
+            await GameEngine.AdvanceVerifiedMortalJointRuntimeAsync(files, lease, loop, 43);
+            await operation.CompleteAsync();
+        }
+        Assert.Equal(drift ? 42 : 43, loop.TurnNumber);
+    }
+
+    /// <summary>
     /// Owns tiny real files, actual source counters and complete passive timing output.
     /// </summary>
     private sealed class SourceOperationFixture : IDisposable

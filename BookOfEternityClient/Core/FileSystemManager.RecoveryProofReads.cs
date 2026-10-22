@@ -3,7 +3,7 @@ namespace BookOfEternityClient.Core;
 public partial class FileSystemManager
 {
     /// <summary>
-    /// Coalesces source DATA reads at a stable post-recovery boundary and proves them freshly before returning.
+    /// Coalesces post-recovery DATA inside an owning operation or a standalone verified read plan.
     /// </summary>
     /// <typeparam name="TResult">
     /// The result produced by the original plan; this method does not retain authority objects.
@@ -13,17 +13,19 @@ public partial class FileSystemManager
     /// </param>
     /// <param name="read">
     /// Original read-only source plan. Its exceptions propagate unchanged. Unsupported or nested
-    /// routes retain their original reader semantics and an enclosing read-set owner's completion contract.
+    /// routes retain their original reader semantics and the enclosing owner's completion contract.
     /// </param>
     /// <returns>
-    /// The original result after the owned source set passes fresh byte, absence, timestamp and
-    /// generation checks. No result is returned when the plan or its exit proof fails.
+    /// Provisional internal DATA when borrowing the owning operation's mandatory effect/success fences.
+    /// A standalone plan returns only after its own fresh byte, absence, timestamp and generation proof.
+    /// Independent fresh protocols bypass the failed DATA owner without reviving its state.
     /// </returns>
     internal async Task<TResult> ReadStableRecoveryDataAsync<TResult>(CanonicalWriteLease lease, Func<Task<TResult>> read)
     {
         ArgumentNullException.ThrowIfNull(read);
         if (_sourceDataOperation.Value is { } operation && ValidationReuseSuppression.Value == 0 && CanReuseSourceData)
         {
+            if (operation.IsSuspended) return await read();
             operation.RequireOpen();
             operation.Observe(lease);
             return await read();

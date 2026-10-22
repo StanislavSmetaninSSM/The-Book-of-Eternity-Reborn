@@ -40,6 +40,31 @@ no-effect recovery distinction, actual debt, changed/failed/same-byte writers,
 raw restoredmtime/absence/namespace/generation, source copies, late/overlap/closing,
 callback/passive and mandatory pre-effect/no-write-return refusal controls.
 
+Execution evidence before final qualification:7098984e6 baseline11unit1PASS/10causalFAIL
+and3actual2PASS/1causalFAIL; ef006c863 core11unit+3actualPASS, actual two full
+proofs758->254physical sources and36880->17860attributes with identical game
+images. These are small DATA-owner measurements, not original600s improvement.
+08ea8ad16 sibling/entry controls13unit11PASS/2causalFAIL;258c672d8 corrected22unit
+and151relatedPASS with complete cleanup.117c4a963 failed-owner fresh routing
+control26unit25PASS/1causalFAIL. Final GREEN/review/input/original remain gated.
+
+Owner inventory: publication creates/borrows inside its physical lease; post-
+publication completion and story reconciliation span their actual nested leases
+and complete inside the final live lease. Standalone progression/story/projection
+owners complete before returning AlreadyApplied/AlreadyAppended/ExistingVerified;
+borrowers remain provisional to their actual outer owner. Pre-write/delete owners
+await VerifySourceDataAsync; the runtime advancement seam executes the same actual
+GameLoop.IncrementTurn under the one-use atomic root transition. Independent
+take/callback/journal/known-commit compensation bypass DATA without reviving failed
+owners. The fixture-only asynchronous source barrier supplies no DATA/authority.
+
+Platform limit: Windows lease acquisition still runs an arbitrary original legacy
+recovery callback and retires DATA under its independent fresh protocol. No claim
+of reuse across those acquisition transitions is made. The no-effect optimization
+applies to the trusted-local wrapper's freshly admitted evidence classification;
+legacy handlers retain their original mutation protocol. Same-lease adapter-
+retirement and genuine replacement-lease controls cover their distinct contracts.
+
 T450: source DATA owner through existing ValidationOperation, operation-owned key
 interner and keys-only dependency ledger. Keep semantic cache lifetime unchanged.
 Route original ordinary/protected sync/async leaves; preserve strict existing

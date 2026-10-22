@@ -1,9 +1,16 @@
 {
   "schemaVersion": 1,
   "selections": [
+{
+  "category": "fr063-joint-operation-boundaries",
+  "reason": "Verify actual cached no-write boundaries before qualifying the original600 run.",
+  "contracts": [
+    "#1536 revision53 FILEOP4/7 / T449-451."
+  ]
+},
     {
       "category": "core-operation-source-data",
-      "reason": "Compiling causal RED for owning file DATA/fresh effect protocol on minimal files; original600 remains gated.",
+      "reason": "Owning DATA integrity, reuse, actual runtime effect, source overlap, fresh compensation and lifetime controls on minimal files; original600 separately gated.",
       "contracts": [
         "#1536 revision53 FILEOP1..8 / T449\u2013452; same original600 separately after qualified source/input and source review."
       ]

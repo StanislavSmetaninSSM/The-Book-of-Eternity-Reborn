@@ -141,13 +141,7 @@ public partial class GameEngine
                 if (projection.Disposition != CharacteristicsService.JointDerivedProjectionDisposition.ExistingVerified)
                     return HoldMortalJointStoryTurn("The derived projection changed during story publication: " + projection.Failure);
                 if (_gameLoop.SessionId != frame.SessionId) throw new InvalidDataException("joint_story_turn_runtime_session_drift");
-                if (_gameLoop.TurnNumber == frame.TurnNumber - 1)
-                {
-                    await _fs.VerifySourceDataAsync(lease);
-                    using var runtimeEffect = _fs.BeginVerifiedSourceEffect(lease);
-                    _gameLoop.IncrementTurn();
-                }
-                else if (_gameLoop.TurnNumber != frame.TurnNumber) throw new InvalidDataException("joint_story_turn_runtime_drift");
+                await AdvanceVerifiedMortalJointRuntimeAsync(_fs, lease, _gameLoop, frame.TurnNumber);
                 using var namedJointStoryTimer14 = _fs.MeasureOperation("JointStory.CleanupEligibleTerminalAsync");
                 cleanup = await CleanupEligibleMortalJointTerminalAsync(lease, frame);
                 namedJointStoryTimer14?.Dispose();
@@ -179,6 +173,36 @@ public partial class GameEngine
             _logger.LogError(error, "Joint story/turn owner blocked after {Source}; no destructive ordinary fallback or cleanup.", source);
             return HoldMortalJointStoryTurn(error.Message);
         }
+    }
+
+    /// <summary>
+    /// Advances the selected joint runtime only after its provisional source closure has been freshly verified.
+    /// </summary>
+    /// <param name="files">
+    /// Manager owning the current source operation and original physical lease.
+    /// </param>
+    /// <param name="lease">
+    /// Exact caller-owned lease retained until advancement and its mutation token finish.
+    /// </param>
+    /// <param name="gameLoop">
+    /// Actual runtime tracker; this method creates no game objects or canonical state.
+    /// </param>
+    /// <param name="expectedTurn">
+    /// Authenticated turn to reach; an already equal turn is unchanged and any other predecessor refuses.
+    /// </param>
+    /// <returns>
+    /// Completion after the exact one-step advance, or unchanged completion for the already reached turn.
+    /// </returns>
+    internal static async Task AdvanceVerifiedMortalJointRuntimeAsync(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease, GameLoop gameLoop, int expectedTurn)
+    {
+        if (gameLoop.TurnNumber == expectedTurn - 1)
+        {
+            await files.VerifySourceDataAsync(lease);
+            using var runtimeEffect = files.BeginVerifiedSourceEffect(lease);
+            gameLoop.IncrementTurn();
+        }
+        else if (gameLoop.TurnNumber != expectedTurn) throw new InvalidDataException("joint_story_turn_runtime_drift");
     }
 
     // Applicability only, borrowed lease only. The direct validator must still

@@ -17,6 +17,7 @@ public partial class FileSystemManager
         if (ValidationReuseSuppression.Value != 0) return null;
         if (_sourceDataOperation.Value is { } current)
         {
+            if (current.IsSuspended) return null;
             current.RequireOpen();
             return null;
         }
@@ -72,10 +73,10 @@ public partial class FileSystemManager
         private AmbientCanonicalLeaseRegistration? _verifiedRegistration;
         private CanonicalWriteLease? _generationLease;
         private bool _busy;
-        private bool _failed;
-        private bool _completed;
-        private int _suspended;
-        private bool _closed;
+        private volatile bool _failed;
+        private volatile bool _completed;
+        private volatile int _suspended;
+        private volatile bool _closed;
 
         /// <summary>
         /// Identifies source DATA without retaining a second copy of its payload.
@@ -98,6 +99,20 @@ public partial class FileSystemManager
         /// Exact manager registering this owner in its calling flow.
         /// </param>
         internal SourceDataOperation(FileSystemManager files) => _files = files;
+
+        /// <summary>
+        /// Gets whether an independently authorized fresh protocol currently bypasses provisional DATA.
+        /// </summary>
+        internal bool IsSuspended
+        {
+            get { ObjectDisposedException.ThrowIf(_closed, this); return _suspended != 0; }
+        }
+
+        /// <summary>
+        /// Gets or sets an optional fixture barrier before the original asynchronous source computation.
+        /// A null value leaves source work unchanged; the barrier neither supplies DATA nor grants authority.
+        /// </summary>
+        internal Task? SourceReadBarrierForTests { get; set; }
 
         /// <summary>
         /// Refuses use after the owning operation has closed.
@@ -189,15 +204,31 @@ public partial class FileSystemManager
                         throw new InvalidOperationException("Source operation supplied a foreign lease.");
                     _lease = declared;
                 }
-                if (!_files.CanReuseSourceData || !TryRootVersion(out var root)) return false;
+                _busy = true;
+            }
+            try
+            {
+                object? root = null;
+                var eligible = _files.CanReuseSourceData && TryRootVersion(out root);
+                RequireOpen();
+                if (!eligible)
+                {
+                    lock (_gate) _busy = false;
+                    return false;
+                }
                 if (_rootVersion != null && !ReferenceEquals(_rootVersion, root))
                 {
                     _failed = true;
                     throw new InvalidOperationException("Canonical data changed before the source operation settled.");
                 }
-                _busy = true;
                 _rootVersion = root;
                 return true;
+            }
+            catch
+            {
+                _failed = true;
+                lock (_gate) _busy = false;
+                throw;
             }
         }
 
@@ -324,6 +355,7 @@ public partial class FileSystemManager
                 {
                     computed = true;
                     using var source = _files.MeasureOperation("OperationFileData.SourceAsync");
+                    if (SourceReadBarrierForTests is { } barrier) await barrier.WaitAsync(ct);
                     return await _files.ReadValidationSourceAsync(path, family, declared, ct);
                 }, token);
                 if (!computed) { using var reuse = _files.MeasureOperation("OperationFileData.ReuseAsync"); }
@@ -344,12 +376,24 @@ public partial class FileSystemManager
         /// </returns>
         internal async Task VerifyAsync(CanonicalWriteLease lease)
         {
+            bool independent;
             lock (_gate)
             {
-                RequireOpen();
-                if (_busy || _suspended != 0) throw new InvalidOperationException("A source fence requires serial original access.");
-                if (_lease != null && !ReferenceEquals(lease, _lease)) throw new InvalidOperationException("Source fence supplied a foreign lease.");
-                _busy = true;
+                ObjectDisposedException.ThrowIf(_closed, this);
+                independent = _suspended != 0;
+                if (!independent)
+                {
+                    RequireOpen();
+                    if (_busy) throw new InvalidOperationException("A source fence requires serial original access.");
+                    if (_lease != null && !ReferenceEquals(lease, _lease)) throw new InvalidOperationException("Source fence supplied a foreign lease.");
+                    _busy = true;
+                }
+            }
+            if (independent)
+            {
+                // The fresh protocol owns its original admission and checks; this issues no receipt.
+                _files.EnsureCanonicalWriteLeaseActive(lease);
+                return;
             }
             try
             {
@@ -413,23 +457,33 @@ public partial class FileSystemManager
         internal MainMutationReservation BeginMutation(MainAdmission admission)
         {
             object? expected;
+            MainAdmission? entry;
+            bool independent;
             lock (_gate)
             {
                 ObjectDisposedException.ThrowIf(_closed, this);
                 if (_busy) throw new InvalidOperationException("Mutation overlaps source work.");
-                if (_suspended != 0) return admission.BeginMutation();
-                RequireOpen();
-                expected = _touched.Count == 0 ? null : _verifiedVersion;
-                if (_touched.Count != 0 && (expected == null || !ReferenceEquals(_verifiedLease, _lease) ||
-                    !ReferenceEquals(_verifiedEntry, MainAdmissions.Value) ||
-                    !ReferenceEquals(_verifiedRegistration, _lease?.AmbientRegistration) ||
-                    !TryRootVersion(out var root) || !ReferenceEquals(root, expected)))
-                    throw new InvalidOperationException("Mutation requires a freshly verified source operation.");
-                _busy = true;
+                independent = _suspended != 0;
+                expected = null;
+                entry = null;
+                if (!independent)
+                {
+                    RequireOpen();
+                    expected = _touched.Count == 0 ? null : _verifiedVersion;
+                    entry = expected == null ? null : _verifiedEntry;
+                    if (_touched.Count != 0 && (expected == null || !ReferenceEquals(_verifiedLease, _lease) ||
+                        !ReferenceEquals(entry, MainAdmissions.Value) ||
+                        !ReferenceEquals(_verifiedRegistration, _lease?.AmbientRegistration)))
+                        throw new InvalidOperationException("Mutation requires a freshly verified source operation.");
+                    _busy = true;
+                }
             }
+            if (independent) return admission.BeginMutation();
             try
             {
-                var token = admission.BeginMutation(expected, expected == null ? null : _verifiedEntry);
+                if (expected != null && (!TryRootVersion(out var root) || !ReferenceEquals(root, expected)))
+                    throw new InvalidOperationException("The verified source root changed before mutation admission.");
+                var token = admission.BeginMutation(expected, entry);
                 try { RequireOpen(); Retire(); return token; }
                 catch { token.Dispose(); throw; }
             }
@@ -534,7 +588,11 @@ public partial class FileSystemManager
         {
             if (_closed) return;
             _closed = true;
-            try { _operation.Dispose(); _keys.Clear(); _touched.Clear(); _lease = null; _generation = null; }
+            try
+            {
+                _operation.Dispose(); _keys.Clear(); _touched.Clear(); _lease = null; _generation = null;
+                _generationLease = null; SourceReadBarrierForTests = null; ClearReceipt();
+            }
             finally
             {
                 if (ReferenceEquals(_files._sourceDataOperation.Value, this))

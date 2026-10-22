@@ -2,6 +2,38 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-operation-boundaries",
+  "responsibility": "Real AlreadyApplied, AlreadyAppended and ExistingVerified owner fences with source reuse and raw drift refusal on independent applied file DATA.",
+  "excludes": "No game-engine or world construction, reflection, original crash run or diagnostic quota.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.SourceDataOperation.cs",
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgressionPublication.cs",
+    "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs",
+    "BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs"
+  ],
+  "related": [
+    {
+      "id": "core-operation-source-data",
+      "when": "Root source DATA ownership and pre-effect protocol changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 6,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointOperationBoundaryTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "core-operation-source-data",
   "responsibility": "Whole-operation source DATA through existing cache: physical first/final reads, nested proof reuse, raw drift refusal, actual writer fence and closed child ownership on tiny independent files.",
   "excludes": "No world setup, reflection, authority cache, aggregate suite or diagnostic quota.",

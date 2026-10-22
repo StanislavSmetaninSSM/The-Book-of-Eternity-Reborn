@@ -107,3 +107,23 @@ Current-source original package slot is `fixtures/joint-interface-source42-recov
 Passive counter contract: each segment exports actual request/source/reuse/fresh-fallback/fresh-boundary/failure-closure totals and root mutation Begin/End transitions, including other managers. The reference epoch remains the authority protocol; numeric diagnostic totals never establish eligibility. Full timing and metadata records remain uncapped. Final common-baseline refusal (including private seal and item slot) closes the operation store and preserves the original exception.
 
 Component candidate fixture: CreateJointRepairCommonPlanFromBoundForComponentAsync accepts only the normal prefix result and calls the same extracted SealBoundJointRepairCommonPlanAsync suffix as production. Registry reservation/stages/input/confirmed-claim checks, capability admission, resource bounds, current sources, private proof issuance, fence and final sealing are unchanged. No caller-supplied proof or replacement authority is accepted. Missing/null input is refused. This avoids redoing a measured44s bound-input prefix when testing the later take fence.
+# Revision53 execution boundaries
+
+Source DATA owners complete while their final physical adapter is live. The
+standalone progression, story and projection services fence actual no-write
+success; selected nested borrowers remain provisional until the outer owner.
+Actual runtime advancement calls the tested static GameEngine seam with its real
+GameLoop and an atomic verified mutation transition. Raw file changes remain
+detectable through fresh original readers, including restored timestamps.
+
+Suspended independent recovery may use the original helper, borrow, fence and
+writer routes after a DATA-owner failure; none may restore that failed owner's
+reuse afterward. Passive diagnostic descendants bypass this owner. Fixture source
+barriers hold actual asynchronous work, never fabricate DATA or authority.
+
+Windows arbitrary legacy acquisition recovery remains independently fresh and
+retires the DATA segment; the current measured gain covers admitted stable
+segments, not an asserted cross-acquisition cache hit. Trusted-local successful
+no-evidence classification preserves its epoch after the original exclusion and
+physical evidence check. Real retained journal debt uses its original mutation
+and recovery protocol.

@@ -1,4 +1,29 @@
-# Current checkpoint: r53 whole-operation file DATA requested; implementation next
+# Current checkpoint: r53 actual source DATA owners; final verification pending
+
+Canonical feature1536 FILEOP1..8 / T448-452, autonomous owner review-wait waiver.
+Source DATA uses existing DefaultOperationValidationService/ValidationOperation;
+one operation key interner and keys-only ledger, no competing payload dictionary.
+Owner/lease/entry/registration receipt is checked atomically with root mutation;
+selected effects and success are freshly fenced under a live physical adapter.
+No diagnostic cap; all raw output D-only. Source42/input/original600 UNRUN.
+
+Evidence:7098984e6 compiling baseline11unit1PASS10causalFAIL,3actual2PASS1FAIL.
+ef006c86311unit+3actualPASS, two full DATA proofs758->254physical sources and
+36880->17860attributes with identical game bytes.08ea8ad16 ownership controls
+11PASS2causalFAIL;258c672d8 corrected22unit+151relatedPASS, all settled and clean.
+117c4a963 failed-owner fresh control25PASS1causalFAIL (unit-only build, not eight
+uniform DLL qualification). Final candidate corrects helper/borrow/fence routing
+while retaining the failed latch; adds actual no-write/runtime/lifetime controls.
+Independent Astra/high review requires these current controls and doc corrections;
+T451 source acceptance remains pending, no original or full-game gain claimed.
+
+Windows legacy acquisition remains an independent fresh protocol and retires the
+source segment; demonstrated reuse is within admitted stable segments. Genuine
+lease replacement and same-lease adapter-retirement controls are separate. Do not
+claim across-acquisition hits from the two-proof result. Final qualify current8DLL,
+genuine source42/two imports, exact origin, then same600/820/15 full Cut0/all rows.
+
+# Historical checkpoint: r53 whole-operation file DATA requested; implementation next
 
 Latest user explicitly rejects per-proof repeated fresh reads and requests using
 existing cache for already-read data throughout whole recovery. No approval wait;
