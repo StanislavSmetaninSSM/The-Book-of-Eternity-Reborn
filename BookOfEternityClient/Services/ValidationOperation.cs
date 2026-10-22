@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace BookOfEternityClient.Services;
 
 /// <summary>
@@ -5,6 +7,12 @@ namespace BookOfEternityClient.Services;
 /// </summary>
 internal sealed class ValidationOperation : IDisposable
 {
+    private readonly object _gate = new();
+    private readonly Dictionary<EntryKey, Entry> _entries = new(new EntryKeyComparer());
+    private readonly AsyncLocal<Frame?> _flow = new();
+    private readonly AsyncLocal<FreshScope?> _freshFlow = new();
+    private Frame? _top;
+    private FreshScope? _fresh;
     private bool _closed;
 
     /// <summary>
@@ -13,15 +21,28 @@ internal sealed class ValidationOperation : IDisposable
     internal ValidationOperation() { }
 
     /// <summary>
-    /// Selects fresh computation throughout a caller-owned nested scope.
+    /// Clears prior results and selects fresh computation without cache insertion throughout a nested scope.
     /// </summary>
     /// <returns>
     /// A scope that the caller disposes after all of its nested computations settle.
     /// </returns>
     internal IDisposable ForceFresh()
     {
-        ObjectDisposedException.ThrowIf(_closed, this);
-        return new FreshBaselineScope();
+        FreshScope scope;
+        lock (_gate)
+        {
+            RequireOpen();
+            if (!ReferenceEquals(_top, _flow.Value) || !ReferenceEquals(_fresh, _freshFlow.Value))
+            {
+                InvalidateAndPoison();
+                throw new InvalidOperationException("A fresh scope requires the operation's active serial flow.");
+            }
+            InvalidateAndPoison();
+            scope = new FreshScope(this, _fresh);
+            _fresh = scope;
+        }
+        _freshFlow.Value = scope;
+        return scope;
     }
 
     /// <summary>
@@ -30,10 +51,21 @@ internal sealed class ValidationOperation : IDisposable
     /// <returns>
     /// The actual retained entry/dependency counts and the context's closed state.
     /// </returns>
-    internal ValidationOperationState CaptureState() => new(0, 0, _closed);
+    internal ValidationOperationState CaptureState()
+    {
+        lock (_gate)
+        {
+            var domains = new HashSet<IOperationDependency>(ReferenceEqualityComparer.Instance);
+            foreach (var entry in _entries.Values)
+                foreach (var dependency in entry.Versions) domains.Add(dependency.Key);
+            for (var frame = _top; frame is not null; frame = frame.Parent)
+                foreach (var dependency in frame.Versions.Keys) domains.Add(dependency);
+            return new(_entries.Count, domains.Count, _closed);
+        }
+    }
 
     /// <summary>
-    /// Computes a typed result under the operation's explicit input and dependency contract.
+    /// Reuses or computes a detached typed result under complete input and dependency declarations.
     /// </summary>
     /// <typeparam name="TResult">
     /// The computation result type, which may legitimately contain its default value.
@@ -54,23 +86,83 @@ internal sealed class ValidationOperation : IDisposable
     /// Cancellation observed before and after the original computation.
     /// </param>
     /// <returns>
-    /// A detached result of the original typed computation.
+    /// A detached successful result, including legitimate default values; failed computations are never retained.
     /// </returns>
     internal async Task<TResult> GetOrComputeAsync<TResult>(OperationComputation<TResult> computation,
         object inputIdentity, IReadOnlyList<IOperationDependency> dependencies,
         Func<CancellationToken, Task<TResult>> compute, CancellationToken cancellationToken = default)
     {
-        ObjectDisposedException.ThrowIf(_closed, this);
-        ArgumentNullException.ThrowIfNull(computation);
-        ArgumentNullException.ThrowIfNull(inputIdentity);
-        ArgumentNullException.ThrowIfNull(dependencies);
-        ArgumentNullException.ThrowIfNull(compute);
-        cancellationToken.ThrowIfCancellationRequested();
-        // Fresh-only baseline for the observed causal RED; no reuse is implemented yet.
-        var value = await compute(cancellationToken);
-        cancellationToken.ThrowIfCancellationRequested();
-        ObjectDisposedException.ThrowIf(_closed, this);
-        return computation.Copy(value);
+        var parent = _flow.Value;
+        Frame? frame = null;
+        try
+        {
+            ArgumentNullException.ThrowIfNull(computation);
+            ArgumentNullException.ThrowIfNull(inputIdentity);
+            ArgumentNullException.ThrowIfNull(dependencies);
+            ArgumentNullException.ThrowIfNull(compute);
+            var declaration = dependencies.ToArray();
+            foreach (var dependency in declaration) ArgumentNullException.ThrowIfNull(dependency);
+            frame = Enter(new EntryKey(computation, inputIdentity), parent);
+            _flow.Value = frame;
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var versions = CaptureVersions(declaration, out var eligible);
+            Entry? entry;
+            lock (_gate)
+            {
+                RequireActive(frame);
+                frame.Eligible &= eligible;
+                MergeVersions(frame, versions);
+                entry = frame.Eligible && frame.Fresh is null &&
+                    _entries.TryGetValue(frame.Key!.Value, out var candidate) &&
+                    SameDeclaration(declaration, candidate.Declaration) ? candidate : null;
+            }
+            if (entry is not null && VersionsAreCurrent(entry.Versions))
+            {
+                lock (_gate)
+                {
+                    RequireActive(frame);
+                    MergeVersions(frame, entry.Versions);
+                }
+                var reused = computation.Copy((TResult)entry.Value!);
+                cancellationToken.ThrowIfCancellationRequested();
+                RequireCurrent(frame);
+                return reused;
+            }
+
+            // A stale logical key is replaced, never retained once for every historical version.
+            lock (_gate)
+            {
+                RequireActive(frame);
+                _entries.Remove(frame.Key!.Value);
+            }
+            var computed = await compute(cancellationToken).ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+            RequireCurrent(frame);
+            bool retain;
+            lock (_gate) retain = frame.Eligible && frame.Fresh is null;
+            var stored = computation.Copy(computed);
+            var result = retain ? computation.Copy(stored) : stored;
+            cancellationToken.ThrowIfCancellationRequested();
+            RequireCurrent(frame);
+            lock (_gate)
+            {
+                RequireActive(frame);
+                if (retain && frame.Eligible && frame.Fresh is null)
+                    _entries[frame.Key!.Value] = new Entry(stored, declaration, frame.Versions.ToArray());
+            }
+            return result;
+        }
+        catch
+        {
+            lock (_gate) InvalidateAndPoison();
+            throw;
+        }
+        finally
+        {
+            if (frame is not null) Finish(frame);
+            _flow.Value = parent;
+        }
     }
 
     /// <summary>
@@ -108,19 +200,368 @@ internal sealed class ValidationOperation : IDisposable
     }
 
     /// <summary>
-    /// Closes the context so subsequent requests cannot use it.
+    /// Clears operation-owned references and prevents late requests or in-flight work from retaining a result.
     /// </summary>
-    public void Dispose() => _closed = true;
+    public void Dispose()
+    {
+        lock (_gate) Close();
+        _flow.Value = null;
+        _freshFlow.Value = null;
+    }
 
     /// <summary>
-    /// Represents a fresh scope while the causal baseline still executes every request.
+    /// Enters one serial request without mistaking inherited routing for current ownership.
     /// </summary>
-    private sealed class FreshBaselineScope : IDisposable
+    /// <param name="key">
+    /// Exact registered algorithm and immutable or independently guarded input identity.
+    /// </param>
+    /// <param name="parent">
+    /// Caller-flow parent, which must still be the operation's active top frame.
+    /// </param>
+    /// <returns>
+    /// A new request frame owned by this flow.
+    /// </returns>
+    private Frame Enter(EntryKey key, Frame? parent)
     {
+        lock (_gate)
+        {
+            RequireOpen();
+            if (!ReferenceEquals(_top, parent) || !ReferenceEquals(_fresh, _freshFlow.Value))
+                throw new InvalidOperationException("Overlapping or stale operation consumers cannot share a request flow.");
+            for (var ancestor = parent; ancestor is not null; ancestor = ancestor.Parent)
+                if (ancestor.Key is { } active && EntryKeyComparer.Same(active, key))
+                    throw new InvalidOperationException("A computation cannot recursively request its own pending key.");
+            return _top = new Frame(parent, key, _fresh);
+        }
+    }
+
+    /// <summary>
+    /// Captures declared versions without holding an operation monitor while calling providers.
+    /// </summary>
+    /// <param name="declaration">
+    /// Detached ordered direct dependency identities.
+    /// </param>
+    /// <param name="eligible">
+    /// Whether every declared source supplied an eligible non-null version token.
+    /// </param>
+    /// <returns>
+    /// All known eligible source versions; an unknown domain prevents retention rather than granting success.
+    /// </returns>
+    private static Dictionary<IOperationDependency, object> CaptureVersions(IOperationDependency[] declaration,
+        out bool eligible)
+    {
+        var versions = new Dictionary<IOperationDependency, object>(ReferenceEqualityComparer.Instance);
+        eligible = true;
+        foreach (var dependency in declaration)
+        {
+            if (!dependency.TryCaptureVersion(out var version) || version is null)
+            {
+                eligible = false;
+                continue;
+            }
+            if (versions.TryGetValue(dependency, out var previous) && !ReferenceEquals(previous, version))
+                throw new InvalidOperationException("A source version changed while its declaration was captured.");
+            versions[dependency] = version;
+        }
+        return versions;
+    }
+
+    /// <summary>
+    /// Compares dependency declarations by stable provider/domain identity and original order.
+    /// </summary>
+    /// <param name="left">
+    /// The current request's detached declaration.
+    /// </param>
+    /// <param name="right">
+    /// The declaration that issued an earlier result.
+    /// </param>
+    /// <returns>
+    /// True only when both lists contain the same identities in the same order.
+    /// </returns>
+    private static bool SameDeclaration(IOperationDependency[] left, IOperationDependency[] right)
+    {
+        if (left.Length != right.Length) return false;
+        for (var index = 0; index < left.Length; index++)
+            if (!ReferenceEquals(left[index], right[index])) return false;
+        return true;
+    }
+
+    /// <summary>
+    /// Observes every retained direct or transitive token without holding an operation lock.
+    /// </summary>
+    /// <param name="versions">
+    /// Detached expected source versions.
+    /// </param>
+    /// <returns>
+    /// True only when every provider remains eligible at the exact same version.
+    /// </returns>
+    private static bool VersionsAreCurrent(IEnumerable<KeyValuePair<IOperationDependency, object>> versions)
+    {
+        foreach (var pair in versions)
+            if (!pair.Key.TryCaptureVersion(out var current) || !ReferenceEquals(current, pair.Value)) return false;
+        return true;
+    }
+
+    /// <summary>
+    /// Imports child or direct versions under the operation monitor, detecting incompatible observations.
+    /// </summary>
+    /// <param name="frame">
+    /// Current destination frame.
+    /// </param>
+    /// <param name="versions">
+    /// Detached versions supplied by a dependency capture or successful child hit.
+    /// </param>
+    private static void MergeVersions(Frame frame, IEnumerable<KeyValuePair<IOperationDependency, object>> versions)
+    {
+        foreach (var pair in versions)
+        {
+            if (frame.Versions.TryGetValue(pair.Key, out var previous) && !ReferenceEquals(previous, pair.Value))
+                throw new InvalidOperationException("Nested computations observed different versions of one source domain.");
+            frame.Versions[pair.Key] = pair.Value;
+        }
+    }
+
+    /// <summary>
+    /// Checks both live frame ownership and all known versions before a value can escape or be stored.
+    /// </summary>
+    /// <param name="frame">
+    /// Exact request frame whose source observations must still apply.
+    /// </param>
+    private void RequireCurrent(Frame frame)
+    {
+        KeyValuePair<IOperationDependency, object>[] versions;
+        lock (_gate)
+        {
+            RequireActive(frame);
+            versions = frame.Versions.ToArray();
+        }
+        if (!VersionsAreCurrent(versions))
+            throw new InvalidOperationException("A computation's source version changed before completion.");
+        lock (_gate) RequireActive(frame);
+    }
+
+    /// <summary>
+    /// Checks a request's exact active identities while the operation monitor is held.
+    /// </summary>
+    /// <param name="frame">
+    /// Expected serial request frame.
+    /// </param>
+    private void RequireActive(Frame frame)
+    {
+        RequireOpen();
+        if (!ReferenceEquals(_top, frame) || !ReferenceEquals(_flow.Value, frame) ||
+            !ReferenceEquals(_fresh, _freshFlow.Value) || frame.Fresh is { Closed: true })
+            throw new InvalidOperationException("The computation lost its active operation or fresh-scope flow.");
+    }
+
+    /// <summary>
+    /// Refuses use after close while the operation monitor is held.
+    /// </summary>
+    private void RequireOpen() => ObjectDisposedException.ThrowIf(_closed, this);
+
+    /// <summary>
+    /// Clears previous successes and prevents active ancestors from republishing them after a caught failure.
+    /// </summary>
+    private void InvalidateAndPoison()
+    {
+        _entries.Clear();
+        for (var frame = _top; frame is not null; frame = frame.Parent) frame.Eligible = false;
+    }
+
+    /// <summary>
+    /// Propagates dependencies and eligibility to the parent and removes completed-frame payload references.
+    /// </summary>
+    /// <param name="frame">
+    /// The settled request frame, including one whose computation failed.
+    /// </param>
+    private void Finish(Frame frame)
+    {
+        lock (_gate)
+        {
+            if (!_closed)
+            {
+                if (!ReferenceEquals(_top, frame)) Close();
+                else
+                {
+                    var parent = frame.Parent;
+                    if (parent is not null)
+                    {
+                        parent.Eligible &= frame.Eligible;
+                        foreach (var pair in frame.Versions)
+                        {
+                            if (parent.Versions.TryGetValue(pair.Key, out var previous) && !ReferenceEquals(previous, pair.Value))
+                                parent.Eligible = false;
+                            else parent.Versions[pair.Key] = pair.Value;
+                        }
+                    }
+                    _top = parent;
+                }
+            }
+            frame.Clear();
+        }
+    }
+
+    /// <summary>
+    /// Releases a fresh scope without allowing an out-of-order close to revive an older context.
+    /// </summary>
+    /// <param name="scope">
+    /// Exact fresh scope being disposed.
+    /// </param>
+    private void ReleaseFresh(FreshScope scope)
+    {
+        FreshScope? previous;
+        lock (_gate)
+        {
+            previous = scope.Previous;
+            if (!_closed && (!ReferenceEquals(_fresh, scope) || !ReferenceEquals(_freshFlow.Value, scope))) Close();
+            if (!_closed) _fresh = previous;
+            scope.Retire();
+        }
+        _freshFlow.Value = _closed ? null : previous;
+    }
+
+    /// <summary>
+    /// Atomically clears operation-owned references without disposing caller-owned values or throwing on cleanup.
+    /// </summary>
+    private void Close()
+    {
+        _closed = true;
+        _entries.Clear();
+        _entries.TrimExcess();
+        var frame = _top;
+        _top = null;
+        while (frame is not null)
+        {
+            var parent = frame.Parent;
+            frame.Clear();
+            frame = parent;
+        }
+        var scope = _fresh;
+        _fresh = null;
+        while (scope is not null)
+        {
+            var previous = scope.Previous;
+            scope.Retire();
+            scope = previous;
+        }
+    }
+
+    /// <summary>
+    /// Keys results by object identity without invoking mutable input equality or content hashing.
+    /// </summary>
+    /// <param name="Computation">
+    /// Registered algorithm descriptor instance.
+    /// </param>
+    /// <param name="Input">
+    /// Complete stable input and policy identity.
+    /// </param>
+    private readonly record struct EntryKey(object Computation, object Input);
+
+    /// <summary>
+    /// Compares and hashes only stable reference identities of a logical key.
+    /// </summary>
+    private sealed class EntryKeyComparer : IEqualityComparer<EntryKey>
+    {
+        /// <inheritdoc />
+        public bool Equals(EntryKey x, EntryKey y) => Same(x, y);
+
+        /// <inheritdoc />
+        public int GetHashCode(EntryKey obj) => HashCode.Combine(RuntimeHelpers.GetHashCode(obj.Computation), RuntimeHelpers.GetHashCode(obj.Input));
+
         /// <summary>
-        /// Completes a scope that retains no values or state in the fresh-only baseline.
+        /// Compares two request keys without calling input equality implementations.
         /// </summary>
-        public void Dispose() { }
+        /// <param name="left">
+        /// First request key.
+        /// </param>
+        /// <param name="right">
+        /// Second request key.
+        /// </param>
+        /// <returns>
+        /// True only for the exact same algorithm and input objects.
+        /// </returns>
+        internal static bool Same(EntryKey left, EntryKey right) =>
+            ReferenceEquals(left.Computation, right.Computation) && ReferenceEquals(left.Input, right.Input);
+    }
+
+    /// <summary>
+    /// Retains only a detached completed value, detached declaration and exact dependency tokens.
+    /// </summary>
+    /// <param name="Value">
+    /// Owned immutable or defensively copied result, including a legitimate null.
+    /// </param>
+    /// <param name="Declaration">
+    /// Detached ordered direct provider/domain identities.
+    /// </param>
+    /// <param name="Versions">
+    /// Detached complete direct and transitive versions; no computation delegate is retained.
+    /// </param>
+    private sealed record Entry(object? Value, IOperationDependency[] Declaration,
+        KeyValuePair<IOperationDependency, object>[] Versions);
+
+    /// <summary>
+    /// Tracks one serial request until its dependencies have been propagated and its temporary references cleared.
+    /// </summary>
+    /// <param name="parent">
+    /// Exact active caller frame, or null at the operation root.
+    /// </param>
+    /// <param name="key">
+    /// Stable current algorithm and input identities.
+    /// </param>
+    /// <param name="fresh">
+    /// Fresh scope active on entry, or null for ordinary reuse eligibility.
+    /// </param>
+    private sealed class Frame(Frame? parent, EntryKey key, FreshScope? fresh)
+    {
+        internal Frame? Parent = parent;
+        internal EntryKey? Key = key;
+        internal FreshScope? Fresh = fresh;
+        internal bool Eligible = true;
+        internal readonly Dictionary<IOperationDependency, object> Versions = new(ReferenceEqualityComparer.Instance);
+
+        /// <summary>
+        /// Removes request-owned input, parent and dependency references on settlement or operation close.
+        /// </summary>
+        internal void Clear()
+        {
+            Parent = null;
+            Key = null;
+            Fresh = null;
+            Eligible = false;
+            Versions.Clear();
+            Versions.TrimExcess();
+        }
+    }
+
+    /// <summary>
+    /// Keeps a fresh subtree distinct from ordinary reuse while holding no computation payload itself.
+    /// </summary>
+    /// <param name="owner">
+    /// Context that issued this scope.
+    /// </param>
+    /// <param name="previous">
+    /// Enclosing fresh scope, or null at the fresh root.
+    /// </param>
+    private sealed class FreshScope(ValidationOperation owner, FreshScope? previous) : IDisposable
+    {
+        private ValidationOperation? _owner = owner;
+        internal FreshScope? Previous = previous;
+        internal bool Closed;
+
+        /// <summary>
+        /// Retires scope-owned routing references without changing the caller's operation result.
+        /// </summary>
+        internal void Retire()
+        {
+            Closed = true;
+            _owner = null;
+            Previous = null;
+        }
+
+        /// <summary>
+        /// Releases this scope once; cleanup never replaces a primary computation failure.
+        /// </summary>
+        public void Dispose() => Interlocked.Exchange(ref _owner, null)?.ReleaseFresh(this);
     }
 }
 

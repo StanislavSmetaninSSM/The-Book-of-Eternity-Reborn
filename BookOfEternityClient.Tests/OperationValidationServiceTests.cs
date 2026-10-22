@@ -154,6 +154,50 @@ public sealed class OperationValidationServiceTests(ITestOutputHelper output)
     }
 
     /// <summary>
+    /// Detaches a supplied declaration so later list edits cannot rewrite an older entry's domains.
+    /// </summary>
+    [Fact]
+    public async Task ChangingTheSuppliedDeclarationCannotRewriteTheStoredDeclaration()
+    {
+        using var operation = new OperationValidationService().BeginOperation();
+        var rule = new OperationComputation<int>("fixture.declaration.copy", 1, value => value);
+        var input = new object();
+        IOperationDependency[] declaration = [new Dependency()];
+        var executions = 0;
+        Task<int> Compute(CancellationToken _) { executions++; return Task.FromResult(7); }
+        await operation.GetOrComputeAsync(rule, input, declaration, Compute);
+        declaration[0] = new Dependency();
+        await operation.GetOrComputeAsync(rule, input, declaration, Compute);
+        Assert.Equal(2, executions);
+    }
+
+    /// <summary>
+    /// Rechecks dependencies after copying a hit instead of returning a result from a changed version.
+    /// </summary>
+    [Fact]
+    public async Task VersionChangeWhileCopyingAHitCannotEscape()
+    {
+        using var operation = new OperationValidationService().BeginOperation();
+        var dependency = new Dependency();
+        var changeDuringCopy = false;
+        var rule = new OperationComputation<int>("fixture.hit.version", 1, value =>
+        {
+            if (changeDuringCopy) dependency.Advance();
+            return value;
+        });
+        var input = new object();
+        var executions = 0;
+        Task<int> Compute(CancellationToken _) { executions++; return Task.FromResult(7); }
+        await operation.GetOrComputeAsync(rule, input, [dependency], Compute);
+        changeDuringCopy = true;
+        await Assert.ThrowsAsync<InvalidOperationException>(() => operation.GetOrComputeAsync(rule, input, [dependency], Compute));
+        Assert.Equal(0, operation.CaptureState().Entries);
+        changeDuringCopy = false;
+        await operation.GetOrComputeAsync(rule, input, [dependency], Compute);
+        Assert.Equal(2, executions);
+    }
+
+    /// <summary>
     /// Carries a child's dependency through a child hit into a retained parent result.
     /// </summary>
     [Fact]
@@ -477,6 +521,56 @@ public sealed class OperationValidationServiceTests(ITestOutputHelper output)
         operation.Dispose();
         release.SetResult();
         Assert.Same(original, await Assert.ThrowsAsync<InvalidDataException>(() => pending));
+    }
+
+    /// <summary>
+    /// Refuses inherited routing after its original frame ends or its whole operation closes.
+    /// </summary>
+    /// <param name="closeOperation">
+    /// Whether to close the whole context before releasing the captured descendant.
+    /// </param>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task CapturedDescendantsCannotReviveRetiredFrames(bool closeOperation)
+    {
+        using var operation = new OperationValidationService().BeginOperation();
+        var rule = new OperationComputation<int>("fixture.descendant", 1, value => value);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        Task<int>? descendant = null;
+        await operation.GetOrComputeAsync(rule, new object(), [], _ =>
+        {
+            descendant = Task.Run(async () =>
+            {
+                await release.Task;
+                return await operation.GetOrComputeAsync(rule, new object(), [], _ => Task.FromResult(7));
+            });
+            return Task.FromResult(7);
+        });
+        Assert.NotNull(descendant);
+        if (closeOperation) operation.Dispose();
+        release.SetResult();
+        if (closeOperation) await Assert.ThrowsAsync<ObjectDisposedException>(() => descendant);
+        else await Assert.ThrowsAsync<InvalidOperationException>(() => descendant);
+        Assert.Equal(0, operation.CaptureState().Entries);
+    }
+
+    /// <summary>
+    /// Observes cancellation before a hit and retires earlier positives for the cancelled request.
+    /// </summary>
+    [Fact]
+    public async Task CancellationBeforeAHitDoesNotReturnTheCachedValue()
+    {
+        using var operation = new OperationValidationService().BeginOperation();
+        var rule = new OperationComputation<int>("fixture.cancel.hit", 1, value => value);
+        var input = new object();
+        var executions = 0;
+        Task<int> Compute(CancellationToken _) { executions++; return Task.FromResult(7); }
+        await operation.GetOrComputeAsync(rule, input, [], Compute);
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => operation.GetOrComputeAsync(rule, input, [], Compute,
+            new CancellationToken(true)));
+        await operation.GetOrComputeAsync(rule, input, [], Compute);
+        Assert.Equal(2, executions);
     }
 
     /// <summary>

@@ -38,6 +38,7 @@ internal sealed class OperationComputation<TResult>
     /// </param>
     /// <param name="copy">
     /// Detaches mutable values or returns immutable values unchanged, including permitted null values.
+    /// The registered policy must not capture operation-owned payloads in a longer-lived descriptor.
     /// </param>
     internal OperationComputation(string name, int revision, Func<TResult, TResult> copy)
     {
@@ -77,7 +78,8 @@ internal interface IOperationDependency
     /// A non-null, never-reused token on success; otherwise no reusable version is available.
     /// </param>
     /// <returns>
-    /// True when the domain is eligible and the token represents its current version; otherwise false.
+    /// <see langword="true"/> when the domain is eligible and the token represents its current version;
+    /// otherwise <see langword="false"/>.
     /// </returns>
     bool TryCaptureVersion(out object? version);
 }
