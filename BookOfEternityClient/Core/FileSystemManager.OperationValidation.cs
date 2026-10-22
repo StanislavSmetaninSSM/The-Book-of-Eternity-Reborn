@@ -87,8 +87,19 @@ public partial class FileSystemManager
     /// A detached successful source result; failures are not converted to results.
     /// </returns>
     internal async Task<TResult> ComputeRecoveryDataAsync<TResult>(OperationComputation<TResult> computation,
-        object inputIdentity, CanonicalWriteLease lease, Func<Task<TResult>> compute) =>
-        computation.Copy(await compute());
+        object inputIdentity, CanonicalWriteLease lease, Func<Task<TResult>> compute)
+    {
+        try
+        {
+            ArgumentNullException.ThrowIfNull(computation);
+            ArgumentNullException.ThrowIfNull(inputIdentity);
+            ArgumentNullException.ThrowIfNull(compute);
+            return ValidationReuseSuppression.Value != 0 || _recoveryValidation.Value is not { } scope
+                ? computation.Copy(await compute())
+                : await scope.ComputeAsync(computation, inputIdentity, lease, compute);
+        }
+        catch { InvalidateRecoveryValidationAfterFailure(); throw; }
+    }
 
     /// <summary>
     /// Creates an owned recovery segment only when the current flow has none.
@@ -235,6 +246,65 @@ public partial class FileSystemManager
                     Interlocked.Increment(ref _reuses);
                     using var reuse = _files.MeasureOperation("RecoveryValidation.Reuse." + rule.Computation.Name);
                 }
+            }
+            catch { CloseCache(); throw; }
+        }
+
+        /// <summary>
+        /// Computes detached DATA or reuses it under this segment's exact live root version.
+        /// </summary>
+        /// <typeparam name="TResult">
+        /// The result type detached by the registered computation.
+        /// </typeparam>
+        /// <param name="computation">
+        /// Stable algorithm descriptor and defensive copy policy.
+        /// </param>
+        /// <param name="inputIdentity">
+        /// Exact private identity covering the unchanged DATA inputs.
+        /// </param>
+        /// <param name="lease">
+        /// Original requested physical lease; a different lease selects fresh source work.
+        /// </param>
+        /// <param name="compute">
+        /// Actual source computation, invoked on a miss or unsupported fresh route.
+        /// </param>
+        /// <returns>
+        /// A detached result after current source validation; errors retire reusable state.
+        /// </returns>
+        internal async Task<TResult> ComputeAsync<TResult>(OperationComputation<TResult> computation,
+            object inputIdentity, CanonicalWriteLease lease, Func<Task<TResult>> compute)
+        {
+            ObjectDisposedException.ThrowIf(Volatile.Read(ref _closed) != 0, this);
+            using var request = _files.MeasureOperation("RecoveryValidation.Request." + computation.Name);
+            Interlocked.Increment(ref _requests);
+            var sourceExecuted = false;
+            var fallback = false;
+            async Task<TResult> Source()
+            {
+                sourceExecuted = true;
+                Interlocked.Increment(ref _sources);
+                if (fallback || Volatile.Read(ref _freshDepth) != 0) Interlocked.Increment(ref _freshSources);
+                using var timing = _files.MeasureOperation("RecoveryValidation.Source." + computation.Name);
+                return await compute();
+            }
+            try
+            {
+                TResult result;
+                if (!ReferenceEquals(lease, _lease) || !TryCaptureVersion(out _))
+                {
+                    fallback = true;
+                    Interlocked.Increment(ref _fallbacks);
+                    using var fresh = _files.MeasureOperation("RecoveryValidation.Fresh." + computation.Name);
+                    result = computation.Copy(await Source());
+                }
+                else
+                    result = await _operation.GetOrComputeAsync(computation, inputIdentity, _dependencies, _ => Source());
+                if (!sourceExecuted)
+                {
+                    Interlocked.Increment(ref _reuses);
+                    using var reuse = _files.MeasureOperation("RecoveryValidation.Reuse." + computation.Name);
+                }
+                return result;
             }
             catch { CloseCache(); throw; }
         }

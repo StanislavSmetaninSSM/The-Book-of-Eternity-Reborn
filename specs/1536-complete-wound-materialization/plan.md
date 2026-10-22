@@ -41,6 +41,13 @@ mutation epochs and fresh scopes decide eligibility. No new storage/repository.
    Save WIP before long checks/review. Independent coherent code/test/docs review
    must accept selection and freshness. Qualify genuine current-source new-slot
    original input, recover source from origin, then original600/820/15 once.
+   Harness support: scripts/test-csharp.ps1 and JointChildOutputCapture.cs accept
+   optional absolute BOE_TEST_DIAGNOSTIC_ROOT for D:-only output; early validation
+   and all default/explicit-parent behavior remain. JointFixtureBackedWindowsCrash.cs
+   selects NEW joint-interface-source42-progression-data-v1/package; generate and
+   qualify it genuinely, never rebind the old package. docs/testing.md documents
+   the test-only option. Select test-selection-contracts and exact child-output
+   transport/launch categories for these support changes.
    Full output streams directly to D: outside checkout. Analyze all collected rows
    and confirm actual per-request DATA behavior before claiming production effect.
 5. T443: write honest results. If broad proof/recovery redesign is needed next,

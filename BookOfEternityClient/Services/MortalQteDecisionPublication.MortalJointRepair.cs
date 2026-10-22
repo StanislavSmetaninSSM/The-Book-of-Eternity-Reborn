@@ -332,7 +332,7 @@ internal static partial class MortalQteDecisionPublication
         await GameEngine.ValidateCurrentMortalJointInactiveTailAsync(fs, lease, snapshot.TurnNumber);
         t326ProofTail1?.Dispose();
         using var t326ProofTail2 = fs.MeasureOperation("JointProof.ValidateProgressionAsync");
-        await ValidateJointProgressionDataAsync(fs, lease, root);
+        await ReadJointProgressionDataAsync(fs, lease, root);
         t326ProofTail2?.Dispose();
         using var t326ProofTail3 = fs.MeasureOperation("JointProof.ValidatePublicOutputsAfterAsync");
         await RequireExactJointPublicOutputsAsync(fs, lease, root, basis);

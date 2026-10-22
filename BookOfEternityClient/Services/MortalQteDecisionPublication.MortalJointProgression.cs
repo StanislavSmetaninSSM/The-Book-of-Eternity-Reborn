@@ -118,6 +118,53 @@ internal static partial class MortalQteDecisionPublication
         ProgressionScheduleService.FrozenMortalCalculation Calculation);
 
     /// <summary>
+    /// Identifies progression DATA independently of the proof and capability authority that surround it.
+    /// </summary>
+    private static readonly OperationComputation<JointProgressionData> JointProgressionComputation =
+        new("JointProgression", 1, CopyJointProgressionData);
+
+    /// <summary>
+    /// Detaches every mutable calculation image from the retained DATA result.
+    /// </summary>
+    /// <param name="data">
+    /// Successful progression values whose strings are immutable and whose image arrays must be copied.
+    /// </param>
+    /// <returns>
+    /// Independent DATA with no authority or mutable array shared with the source.
+    /// </returns>
+    private static JointProgressionData CopyJointProgressionData(JointProgressionData data)
+    {
+        var calculation = data.Calculation;
+        return new(data.Phase, data.BasisFingerprint, new(
+            new(calculation.ScheduleBefore.Existed, calculation.ScheduleBefore.Bytes?.ToArray()),
+            new(calculation.ReportBefore.Existed, calculation.ReportBefore.Bytes?.ToArray()),
+            new(calculation.ScheduleAfter.Existed, calculation.ScheduleAfter.Bytes?.ToArray()),
+            new(calculation.ReportAfter.Existed, calculation.ReportAfter.Bytes?.ToArray()),
+            calculation.MutationFingerprint));
+    }
+
+    /// <summary>
+    /// Shares only DATA for the unchanged private root used by one proof and its phase reader.
+    /// </summary>
+    /// <param name="files">
+    /// Manager whose active operation supplies exact lease and root-version dependencies.
+    /// </param>
+    /// <param name="lease">
+    /// Original physical lease; all caller and source authority checks remain live.
+    /// </param>
+    /// <param name="root">
+    /// Private parsed proof root, neither exposed nor mutated between these two DATA sites.
+    /// A separately parsed root has a distinct identity even when its bytes are equal.
+    /// </param>
+    /// <returns>
+    /// Detached progression DATA; unsupported or changed segments execute the original validator.
+    /// </returns>
+    private static Task<JointProgressionData> ReadJointProgressionDataAsync(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease, JsonObject root) =>
+        files.ComputeRecoveryDataAsync(JointProgressionComputation, root, lease,
+            () => ValidateJointProgressionDataAsync(files, lease, root));
+
+    /// <summary>
     /// Reconstructs a lease-bound progression capability from the actual current original and completed publication proof.
     /// </summary>
     /// <param name="files">
@@ -144,36 +191,47 @@ internal static partial class MortalQteDecisionPublication
     internal static async Task<JointProgressionPhaseCapability> ReadJointProgressionPhaseAsync(FileSystemManager files,
         FileSystemManager.CanonicalWriteLease lease, string sessionId, string requestId, string snapshotToken, int turn)
     {
-        using var t318Timer19 = files.MeasureOperation("JointPhase.VerifyLease");
-        files.EnsureCanonicalWriteLeaseActive(lease);
-        t318Timer19?.Dispose();
-        // Existing recovery resolves its own journal debt before phase/category
-        // classification. Unknown debt throws; it is never interpreted as absence.
-        using var t318Timer20 = files.MeasureOperation("JointPhase.ResolveRecovery");
-        files.ResolveBackupPublicationRecovery(lease);
-        t318Timer20?.Dispose();
-        using var t318Timer21 = files.MeasureOperation("JointPhase.ReadMarkerAsync");
-        var marker = await files.ReadFileBytesAsync(lease, StatePath) ?? throw Invalid("joint_progression_marker_missing");
-        t318Timer21?.Dispose();
-        using var t318Timer22 = files.MeasureOperation("JointPhase.ReadCompletedProofAsync");
-        var proof = await ReadCompletedProofAsync(files, lease, ReadInspectionSnapshot(files, lease));
-        t318Timer22?.Dispose();
-        using var t318Timer23 = files.MeasureOperation("JointPhase.VerifyTupleAndNoContinuationAsync");
-        RequireJointCompletionTuple(proof, sessionId, requestId, snapshotToken, turn);
-        await RequireNoJointContinuationCommandsAsync(files, lease);
-        t318Timer23?.Dispose();
-        using var t318Timer24 = files.MeasureOperation("JointPhase.ReadDecisionAsync");
-        var decision = await files.ReadFileBytesAsync(lease, MortalWoundOpportunityAdapter.DecisionPath);
-        if (decision is not null && Text(proof.Root, "decisionPayloadFingerprint") != ComputeDecisionPayloadFingerprint(decision))
-            throw Invalid("joint_progression_changed_public_decision");
-        t318Timer24?.Dispose();
-        using var t318Timer25 = files.MeasureOperation("JointPhase.ValidateProgressionDataAsync");
-        var data = await ValidateJointProgressionDataAsync(files, lease, proof.Root);
-        t318Timer25?.Dispose();
-        using var t318Timer26 = files.MeasureOperation("JointPhase.RecheckMarkerAsync");
-        if (!Same(marker, await files.ReadFileBytesAsync(lease, StatePath))) throw Invalid("joint_progression_marker_drift");
-        t318Timer26?.Dispose();
-        return new(JointProgressionPhaseIssuer, files, lease, marker, proof.Root, data.Phase, data.BasisFingerprint, data.Calculation, decision);
+        FileSystemManager.RecoveryValidationScope? ownedDataScope = null;
+        try
+        {
+            using var t318Timer19 = files.MeasureOperation("JointPhase.VerifyLease");
+            files.EnsureCanonicalWriteLeaseActive(lease);
+            t318Timer19?.Dispose();
+            // Existing recovery resolves its own journal debt before phase/category
+            // classification. Unknown debt throws; it is never interpreted as absence.
+            using var t318Timer20 = files.MeasureOperation("JointPhase.ResolveRecovery");
+            files.ResolveBackupPublicationRecovery(lease);
+            t318Timer20?.Dispose();
+            ownedDataScope = files.BeginRecoveryValidationIfNeeded(lease);
+            using var t318Timer21 = files.MeasureOperation("JointPhase.ReadMarkerAsync");
+            var marker = await files.ReadFileBytesAsync(lease, StatePath) ?? throw Invalid("joint_progression_marker_missing");
+            t318Timer21?.Dispose();
+            using var t318Timer22 = files.MeasureOperation("JointPhase.ReadCompletedProofAsync");
+            var proof = await ReadCompletedProofAsync(files, lease, ReadInspectionSnapshot(files, lease));
+            t318Timer22?.Dispose();
+            using var t318Timer23 = files.MeasureOperation("JointPhase.VerifyTupleAndNoContinuationAsync");
+            RequireJointCompletionTuple(proof, sessionId, requestId, snapshotToken, turn);
+            await RequireNoJointContinuationCommandsAsync(files, lease);
+            t318Timer23?.Dispose();
+            using var t318Timer24 = files.MeasureOperation("JointPhase.ReadDecisionAsync");
+            var decision = await files.ReadFileBytesAsync(lease, MortalWoundOpportunityAdapter.DecisionPath);
+            if (decision is not null && Text(proof.Root, "decisionPayloadFingerprint") != ComputeDecisionPayloadFingerprint(decision))
+                throw Invalid("joint_progression_changed_public_decision");
+            t318Timer24?.Dispose();
+            using var t318Timer25 = files.MeasureOperation("JointPhase.ValidateProgressionDataAsync");
+            var data = await ReadJointProgressionDataAsync(files, lease, proof.Root);
+            t318Timer25?.Dispose();
+            using var t318Timer26 = files.MeasureOperation("JointPhase.RecheckMarkerAsync");
+            if (!Same(marker, await files.ReadFileBytesAsync(lease, StatePath))) throw Invalid("joint_progression_marker_drift");
+            t318Timer26?.Dispose();
+            return new(JointProgressionPhaseIssuer, files, lease, marker, proof.Root, data.Phase, data.BasisFingerprint, data.Calculation, decision);
+        }
+        catch
+        {
+            files.InvalidateRecoveryValidationAfterFailure();
+            throw;
+        }
+        finally { ownedDataScope?.Dispose(); }
     }
 
     private static async Task<JsonObject> CreateJointProgressionUnappliedAsync(FileSystemManager files,
@@ -195,6 +253,21 @@ internal static partial class MortalQteDecisionPublication
         };
     }
 
+    /// <summary>
+    /// Revalidates progression shape, recomposition, signed original and exact current source images.
+    /// </summary>
+    /// <param name="files">
+    /// Manager providing the actual current canonical files and immutable calculation policy.
+    /// </param>
+    /// <param name="lease">
+    /// Original active lease used by every source read.
+    /// </param>
+    /// <param name="root">
+    /// Private completed publication root whose progression and original bindings must agree.
+    /// </param>
+    /// <returns>
+    /// Current validated phase, basis fingerprint and recomposed calculation; invalid inputs throw.
+    /// </returns>
     private static async Task<JointProgressionData> ValidateJointProgressionDataAsync(FileSystemManager files,
         FileSystemManager.CanonicalWriteLease lease, JsonObject root)
     {

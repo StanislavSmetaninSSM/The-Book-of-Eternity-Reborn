@@ -42,6 +42,27 @@
       "contracts": [
         "#1536 revision51 PROGDATA1..5 / T440–442; original600s selected separately after current input qualification."
       ]
+    },
+    {
+      "category": "test-selection-contracts",
+      "reason": "Optional diagnostic output root must preserve category planning and runner defaults/refusals.",
+      "contracts": [
+        "PROGDATA5 / T442 D-only full diagnostic storage, unchanged ownership and streams."
+      ]
+    },
+    {
+      "category": "fr063-joint-child-output-transport",
+      "reason": "Preserve uncapped exact child streams, hashes, storage-failure and EOF semantics with configurable external default parent.",
+      "contracts": [
+        "PROGDATA5 / T442 D-only full diagnostic storage, unchanged ownership and streams."
+      ]
+    },
+    {
+      "category": "fr063-joint-child-output-launch-boundaries",
+      "reason": "Preserve capture creation before launch, original process settlement and failure handling after output relocation.",
+      "contracts": [
+        "PROGDATA5 / T442 D-only full diagnostic storage, unchanged ownership and streams."
+      ]
     }
   ]
 }

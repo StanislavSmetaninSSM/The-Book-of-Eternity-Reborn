@@ -38,7 +38,9 @@ internal sealed class JointChildOutputCapture
     /// Parent-known source, run and role metadata; never child-derived authority.
     /// </param>
     /// <param name="artifactParent">
-    /// Optional independent test artifact directory; null selects the repository TestResults directory.
+    /// Optional independent test artifact directory, taking priority over environment configuration.
+    /// A <see langword="null"/> value selects the joint-child-output directory under
+    /// BOE_TEST_DIAGNOSTIC_ROOT when provided, or under the repository TestResults directory otherwise.
     /// </param>
     /// <param name="openWriter">
     /// Optional storage fault seam; null creates UTF8-noBOM AutoFlush writers.
@@ -57,7 +59,7 @@ internal sealed class JointChildOutputCapture
         _fixtureRoot = Path.GetFullPath(fixtureRoot);
         _inspect = inspect ?? Inspect;
         _writeManifest = writeManifest ?? WriteManifest;
-        var parent = Path.GetFullPath(artifactParent ?? Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "joint-child-output"));
+        var parent = Path.GetFullPath(artifactParent ?? ResolveDefaultArtifactParent());
         var fixture = Path.TrimEndingDirectorySeparator(Path.GetFullPath(fixtureRoot));
         var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
         if (parent.Equals(fixture, comparison) || parent.StartsWith(fixture + Path.DirectorySeparatorChar, comparison))
@@ -81,6 +83,25 @@ internal sealed class JointChildOutputCapture
                 { JointInterfaceCrashProcessSupport.PreserveFailure(primary, error, "capture-preparation-close"); }
             throw;
         }
+    }
+
+    /// <summary>
+    /// Resolves the default child artifact parent without creating directories or opening output files.
+    /// </summary>
+    /// <returns>
+    /// The absolute joint-child-output directory under BOE_TEST_DIAGNOSTIC_ROOT when provided,
+    /// or under the repository TestResults directory otherwise. A provided empty, whitespace
+    /// or nonabsolute root throws <see cref="InvalidDataException"/> before artifact creation.
+    /// </returns>
+    internal static string ResolveDefaultArtifactParent()
+    {
+        var requestedRoot = Environment.GetEnvironmentVariable("BOE_TEST_DIAGNOSTIC_ROOT");
+        if (requestedRoot is not null &&
+            (string.IsNullOrWhiteSpace(requestedRoot) || !Path.IsPathFullyQualified(requestedRoot)))
+            throw new InvalidDataException("BOE_TEST_DIAGNOSTIC_ROOT must be a nonempty absolute path when provided.");
+        return Path.GetFullPath(requestedRoot is null
+            ? Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "joint-child-output")
+            : Path.Combine(requestedRoot, "joint-child-output"));
     }
 
     /// <summary>

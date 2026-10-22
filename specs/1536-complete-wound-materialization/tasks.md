@@ -2,7 +2,7 @@
 
 Issue1536, requested2026-10-23, autonomous execution. Canonical spec/plan/contractr51.
 - [x] T439 [US3] Write/present r51 scope and typed DATA/freshness contract; actual pinned Spec Kit phases and consistency; publish before implementation. Reuse T438 evidence and isolated clone.
-- [ ] T440 [US1/US2] New cheap typed real-file fixture/category through compiling fresh baseline; causal RED8bodies vs1, real attributes and complete timing. No reflection/world generation or invented authority.
+- [x] T440 [US1/US2] New cheap typed real-file fixture/category through compiling fresh baseline; causal RED8bodies vs1, real attributes and complete timing. No reflection/world generation or invented authority.
 - [ ] T441 [US1/US2] Typed general-service adapter, owned/borrowed scope and private progression copy descriptor; preserve both recovery barriers/full proof/live guards. GREEN copies/identity/recovery/mutation/absence/await/hook/failure/closing controls, same production implementation.
 - [ ] T442 [US3] Current XML builds/catalog/selected affected controls and coherent independent complex Astra/high review; genuine current-source input qualification/exact origin recovery; one original600/820/15 with unlimited diagnostics and real owned settlement. Reconcile full measurements, actual production source/reuse and equal milestones; truthful failure remains failure.
 - [ ] T443 [US3] Assess remaining optimization honestly; if broad recovery/proof redesign is required, preserve instrumented source separately and run authorized diagnostic-off comparison with unchanged gameplay/budget/ownership assertions. Publish human findings/source only, exact recovery and D: latest-complete retention; no diagnostic uploads.
