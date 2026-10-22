@@ -63,6 +63,13 @@
       "contracts": [
         "PROGDATA5 / T442 D-only full diagnostic storage, unchanged ownership and streams."
       ]
+    },
+    {
+      "category": "fr063-joint-interface-crash-adapter-contracts",
+      "reason": "Explicit full/off observation configuration must preserve original mode/native/timeout boundaries; cheap typed parser controls only.",
+      "contracts": [
+        "PROGDATA6 / T442–443; no runtime budget or semantic gate changes."
+      ]
     }
   ]
 }

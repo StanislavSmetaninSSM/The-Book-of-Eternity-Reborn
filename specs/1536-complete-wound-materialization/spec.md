@@ -6,6 +6,16 @@ then run the genuine original600s case and honestly assess further optimization.
 Owner explicitly requests autonomous work; the standing waiver of review waits
 applies. Written artifacts are presented before code; engineering/review gates remain.
 
+Revision51 execution clarification: prepare the inactive detailed-timing switch
+before final source42 generation, because all harness C# participates in the input
+fingerprint. Full remains the default and the first original measurement is full.
+The conditional second measurement selects off using parent metadata/environment
+only, with identical compiled source, package and semantic assertions. Retain
+scalar progress/recovery metrics and complete owned child streams in both modes;
+disable only detailed operation timing and its optional cleanup snapshot capture.
+No diagnostic quotas are introduced. Full file output is referenced by path,
+length and streaming SHA-256 instead of duplicated as one in-memory test string.
+
 - PROGDATA-1: reuse only the typed `ValidateJointProgressionDataAsync` result
   between completed-proof and phase-reader on the same private, unchanged root
   object inside one invocation. Use the existing general operation service and

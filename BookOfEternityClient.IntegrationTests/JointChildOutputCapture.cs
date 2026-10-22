@@ -93,9 +93,21 @@ internal sealed class JointChildOutputCapture
     /// or under the repository TestResults directory otherwise. A provided empty, whitespace
     /// or nonabsolute root throws <see cref="InvalidDataException"/> before artifact creation.
     /// </returns>
-    internal static string ResolveDefaultArtifactParent()
+    internal static string ResolveDefaultArtifactParent() =>
+        ResolveDefaultArtifactParent(Environment.GetEnvironmentVariable("BOE_TEST_DIAGNOSTIC_ROOT"));
+
+    /// <summary>
+    /// Resolves an explicit diagnostic root using the same validation as environment configuration.
+    /// </summary>
+    /// <param name="requestedRoot">
+    /// An absolute root, or <see langword="null"/> for repository TestResults. Empty, whitespace
+    /// or relative values are rejected before any directory or file is created.
+    /// </param>
+    /// <returns>
+    /// The normalized joint-child-output directory under the selected root.
+    /// </returns>
+    internal static string ResolveDefaultArtifactParent(string? requestedRoot)
     {
-        var requestedRoot = Environment.GetEnvironmentVariable("BOE_TEST_DIAGNOSTIC_ROOT");
         if (requestedRoot is not null &&
             (string.IsNullOrWhiteSpace(requestedRoot) || !Path.IsPathFullyQualified(requestedRoot)))
             throw new InvalidDataException("BOE_TEST_DIAGNOSTIC_ROOT must be a nonempty absolute path when provided.");

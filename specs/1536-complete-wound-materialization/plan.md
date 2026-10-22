@@ -15,6 +15,17 @@ mutation epochs and fresh scopes decide eligibility. No new storage/repository.
 
 ## Implementation and verification
 
+Execution correction: the first seven-category attempt completed67 core cases
+PASS, then story cases2PASS/1FAIL because existing File.ReadAllText(raw) exhausted
+memory; subsequent categories were not run. Independent review also found story
+raw ignored the configured output root. Fix both without limiting collection,
+rerun affected story/pair/output controls and run skipped selections. Preserve
+earlier unchanged core/unit evidence. Prepare and cheaply test the inactive full/off
+timing capability before genuine source42 generation: changing harness C# later
+would invalidate its broad fingerprint. Both original measurements then use the
+same source/DLLs/package. Off retains scalar stages/recovery metrics, semantic
+publication/proof callbacks and complete owned stream/EOF/settlement evidence.
+
 1. T439: write/present r51 spec/contract; execute pinned Spec Kit plan/tasks/
    prerequisites and equivalent consistency check. Reuse prior T438 findings,
    current constitution and existing isolation. Skip optional auto-stage hooks.

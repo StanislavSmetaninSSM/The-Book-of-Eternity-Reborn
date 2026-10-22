@@ -79,7 +79,7 @@ public sealed class JointAppliedStoryComponentTests
     /// </returns>
     private async Task RunAsync(bool changeNarrativeBeforeStory, bool changeDuringReadback = false, bool phaseOnly = false)
     {
-        var diagnostics = Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "joint-story-components");
+        var diagnostics = Path.Combine(Path.GetDirectoryName(JointChildOutputCapture.ResolveDefaultArtifactParent())!, "joint-story-components");
         Directory.CreateDirectory(diagnostics);
         var diagnosticsPath = Path.Combine(diagnostics, Guid.NewGuid().ToString("N") + ".jsonl");
         using var raw = new StreamWriter(new FileStream(diagnosticsPath, FileMode.CreateNew, FileAccess.Write, FileShare.Read)) { AutoFlush = true };
@@ -232,8 +232,10 @@ public sealed class JointAppliedStoryComponentTests
         finally
         {
             raw.Dispose();
-            _output.WriteLine(JsonSerializer.Serialize(new { Boundary = "joint_component_diagnostics", Path = diagnosticsPath }));
-            _output.WriteLine(File.ReadAllText(diagnosticsPath));
+            using var diagnosticInput = File.OpenRead(diagnosticsPath);
+            _output.WriteLine(JsonSerializer.Serialize(new { Boundary = "joint_component_diagnostics", Path = diagnosticsPath,
+                Bytes = diagnosticInput.Length, Sha256 = Convert.ToHexString(SHA256.HashData(diagnosticInput)),
+                Complete = true, Representation = "complete-utf8-jsonl-file" }));
             Assert.Equal(archiveBefore, File.ReadAllBytes(archive));
         }
     }

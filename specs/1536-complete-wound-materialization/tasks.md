@@ -1,6 +1,10 @@
 # CRASH5 — revision51 progression DATA reuse
 
 Issue1536, requested2026-10-23, autonomous execution. Canonical spec/plan/contractr51.
+T442 correction scope: stream-hash raw references instead of whole-file test
+strings; route story/cleanup raw directly through configured D: output root;
+complete the skipped controls after the first story OOM. Prepare T443's inactive
+timing toggle before final input generation to preserve identical comparison input.
 - [x] T439 [US3] Write/present r51 scope and typed DATA/freshness contract; actual pinned Spec Kit phases and consistency; publish before implementation. Reuse T438 evidence and isolated clone.
 - [x] T440 [US1/US2] New cheap typed real-file fixture/category through compiling fresh baseline; causal RED8bodies vs1, real attributes and complete timing. No reflection/world generation or invented authority.
 - [x] T441 [US1/US2] Typed general-service adapter, owned/borrowed scope and private progression copy descriptor; preserve both recovery barriers/full proof/live guards. GREEN copies/identity/recovery/mutation/absence/await/hook/failure/closing controls, same production implementation.

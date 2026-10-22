@@ -21,7 +21,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     public async Task JointInterfaceSeedGenerator_ActualSource42ExportsAndLoadsTwoIndependentCopies()
     {
         Assert.True(OperatingSystem.IsWindows());
-        var artifactParent = Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "joint-interface-seeds", Guid.NewGuid().ToString("N"));
+        var artifactParent = Path.Combine(Path.GetDirectoryName(JointChildOutputCapture.ResolveDefaultArtifactParent())!, "joint-interface-seeds", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(artifactParent);
         var artifactPath = Path.Combine(artifactParent, "artifact");
         var copies = new[] { Path.Combine(artifactParent, "copy-one"), Path.Combine(artifactParent, "copy-two") };
