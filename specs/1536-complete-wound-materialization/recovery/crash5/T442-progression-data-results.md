@@ -40,7 +40,40 @@ Every file/directory/length/hash, actual loaded assembly provenance and source
 fingerprint checked. No old package rebinding. Only package input/binding, attributes
 and human README enter Git. Generator receipts/qualification JSON/raw stay onD.
 
-Original full600/820/15 measurement: PENDING. Conditional off comparison: PENDING.
+Original full600/820/15: **FAIL System.TimeoutException**, actual resumer600s;
+case744.5731s, whole command768.5414s. Producer exit73, resumer exit-1;
+identity/EOF/join/cleanup and every stream SHA verified. No final gameplay success
+or inert-repeat qualification is inferred from the incomplete trace.
+
+Full25123309timing records /12561648closed intervals /607247invocation paths parsed;
+all rows/sequence/counters and zero negative residuals reconciled. Last complete
+collector599770.8683ms;13scopes remain open at timeout. Whole prefix2941267attribute
+calls/164.9331s; observer build82.1957s+write104.9431s=187.1388s; gate1.2638s is
+separate. These counters omit the final observer call and other unmeasured overhead;
+do not subtract them to invent an uninstrumented duration.
+
+Actual closed progression accounting:121logical requests=77source bodies+44reuses
+(76completed-proof calls+45phase calls). Eligible adapter92requests=48sources+44reuses;
+other29bodies remain fresh outside this context. All46reported scopes close with
+zero entries/dependencies. One paired phase correctly falls back fresh. The45phase
+second checks total0.5712s including that fallback, versus prior51checks22.1259s;
+differing counts/progress prohibit treating this as a whole-case speedup.
+
+The identical first completed publication still performs768880attribute calls:
+prior242.9864s/current254.4068s. This stage did not improve; whole600prefix comparison
+also differs in progress. Remaining45completed phase proof reads total130.2656s
+inclusive (overlapping nested probes/observer), with a further open proof at timeout.
+Wider reuse requires redesigning recovery/fresh boundaries and proof dependencies;
+no live check is removed merely to reduce counts. The bounded next step is the
+authorized actual observation-off comparison with unchanged source/DLL/package.
+
+Full raw31payloads/9179136064bytes saved onD in638726721byte verified ZIP;
+no Git output. One analysis provenance-reference typo was corrected by explicit
+postprocessing (raw index is the SHA/CRC receipt); no timing/count/path changes or
+runtime replay. Exact executed parser version remains in the verified raw archive.
+
+Conditional off comparison: **PENDING**. A measured assessment authorizes it because
+further broad caching is a larger contract change. Same source/DLLs/input are pinned.
 Full remains uncapped; off, if selected after measured assessment, omits only detailed
 operation timing and its optional cleanup snapshot. Scalar stage/recovery metrics,
 semantic publication/proof callbacks, all gameplay/history/interface/inert-repeat

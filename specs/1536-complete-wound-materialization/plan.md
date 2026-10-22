@@ -84,6 +84,15 @@ without modifying either assertion. Split the still-skipped3PowerShell selectors
 verbatim again into test-category-powershell-contracts; fast15 remain together.
 All baseline failures remain reported; no green aggregate or timeout acceptance.
 
+Full original completedFAIL at600child timeout; actual44progression reuses qualified,
+all25123309timing rows parsed. Same first publication254.407s vs prior242.986s with
+unchanged768880attributes: no overall acceleration claim. Attribute164.933s and
+observed build/write187.139s remain;45phase full-proof reads130.266s inclusive.
+Further reuse crosses recovery/fresh contracts. Execute authorized Off comparison
+now using the samead10DLLs/new immutable carrier; no runtime concurrent analysis.
+Detailed source/binaries remain separately preservedD. Preserve original assertions
+and600/820/15, interpret absent timing rows as unobserved, not zero work.
+
 ## Review focus
 
 - A no-evidence recovery rotates epoch; no retained pre-recovery result survives.
