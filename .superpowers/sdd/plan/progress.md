@@ -1,4 +1,58 @@
-# Current checkpoint: r52 real proof overhead isolated; original-reader policy next
+# Current checkpoint: r53 whole-operation file DATA requested; implementation next
+
+Latest user explicitly rejects per-proof repeated fresh reads and requests using
+existing cache for already-read data throughout whole recovery. No approval wait;
+same feature1536 and isolated branch. FILEOP1..8 canonical spec/plan/tasks/contract
+written before code; pinned plan/tasks/prerequisites and equivalent consistency
+performed. Separate actual Astra/high architectural consultation complete. T448
+done; T449RED/T450implementation/T451qualification/T452original still pending.
+
+Current productionC# source4ba4eb94902ac7091365f2558637b2ab76e00de9 unchanged.
+Verified r52:16unit+2actualproof+132related=150PASS, all selections complete,
+cleanuptrue. Actualproof18440->17885attrs(3.0098%),1open186reuses/driftrefused;
+14earlier causal controls and sources retainedD. Catalog discovery0exit, PlanOnly
+8descriptors150planned0executed, XML261addedlines0changedwarnings/bothbuilds0,
+8DLLsources/dependencycopies exact/native2Git+physicalpinsunchanged. Independent
+R52F1/F2closed. No source42 proof-reads-v1 package generated; no r52original600run.
+Do not call150passing cheap cases a full-game gain or a passing600s outcome.
+
+Source evidence: existing semantic cache already Continuation41/3/38,Mechanical
+35/3/32; no-op recovery epoch rotates are real but secondary. Dominant77wholeproof
+read fanout persists across new parsed roots/local phases/leases. New implementation
+must reuse FILE DATA through existing DefaultOperationValidationService /
+ValidationOperation at actual owning operation. Stable interning(rawpath,family,
+explicit), copied snapshots; ledgerONLYkey/version/order (no second bytesdict).
+Semantic facts/capabilities remain exactlease; rootFileDATA onlyprovisional across
+admitted lease adapters. Standalone r52 helper strict/fresh exit remains; selected
+owning internal proofs borrow root DATA without per-proof exit.
+
+Architectural decisions: explicit awaited pre-effect/success fences; synchronous
+source adapter only accepts immediate completed sync computation (no asyncI/O
+blocking); sync mutation guard refuses unverified pending DATA. One-use exact
+operation/adapter/root-version fence receipt checked atomically with mutation
+Begin to close supported-mutation race. Independent journal recovery/compensation
+must RETIRE provisional DATA and run original owning protocol, not compare partial
+rollback state with obsolete cached bytes. Existing independent fresh take/callback
+protocols clear/bypass DATA and retain all their original physical source checks.
+No-effect recovery fresh-classifies evidence with unchanged atomic exclusion
+predicate and no epoch rotation; actualevidence takes original mutation token.
+
+Boundary inventory from separateconsult: TryReconcileMortalJointStoryTurnAsync,
+ValidateMortalJointPostPublicationAsync, PublishCurrentMortalJointRepairAsync;
+progression commit/AlreadyApplied, story append/readback/AlreadyAppended,
+projection write/ExistingVerified, terminal cleanup, runtimeIncrementTurn,
+successful owningreturn, physicalleaseclose, existing take/callback ForceFresh,
+alltrackedBeginValidationMutation sites. Never clear expected payloads before
+verification; journal authority is an explicit different transition. Root epoch
+does not detect rawwrites, rawsame-size/mtime drift stillmustfail BEFORE effects.
+
+Evidence r53 D:/BoeDiagnostics/operation-files-r53-20261023. Old r52 evidence
+D:/BoeDiagnostics/proof-reads-r52-20261023 and current r51 full/off comparison pair
+retained until verified new fullreplacement. Never uploaddiagnostics; immutable
+currenttestINPUT/humanMarkdown/source only. Same original600/820/15FULL uncappedD,
+C:/Temp; no heavyanalysisduringcollection, no newOFFcurrentlyplanned, no fullsuite.
+
+# Historical checkpoint: r52 real proof overhead isolated; original-reader policy next
 
 Source73645 bothXML builds PASS93.3671/55.0574s,8DLLuniform. Actual14unitPASS
 24.8390s including bounddepth1/2 and direct/bound other-manager refusal/release.

@@ -1,3 +1,84 @@
+# CRASH5 — revision53: use the existing cache for whole-operation file DATA
+
+Owner steering2026-10-23: already-read files must use the existing cache across
+the whole recovery operation, rather than repeatedly re-reading them in nested
+proofs. Autonomous implementation/review-wait waiver persists. Same existing
+feature/issue1536 and isolated clone; no new user-visible task or new backend.
+
+Measured r52 source4ba:16unit+2actualproof+132related PASS; actual small proof
+18440->17885attributes/186reuses, only3.0098% reduction. Local proof scopes still
+read143source identities and143fresh exit identities per full proof. r51 real
+600trace contains77full-proof source reads; existing semantic cache already has
+Continuation41requests/3sources/38reuse and Mechanical35/3/32. Removing no-effect
+invalidation alone is valid but insufficient. No original600 was run for r52.
+
+- FILEOP-1: one owning operation uses existing DefaultOperationValidationService /
+  ValidationOperation for detached file snapshots. Intern ordinal raw-path,
+  reader-family and explicit-mode key objects for that operation. Re-parsing a
+  proof root must not create a new file identity. Store bytes/timestamps/absence
+  only in existing service storage; a dependency ledger holds keys/version/order,
+  never another payload dictionary. Dispose everything at owning operation end.
+- FILEOP-2: selected actual joint recovery/publication/completion/story owners
+  create or borrow the context. Exact live lease adapters retain original current
+  manager/root/registration/generation and failure/overlap/lifetime restrictions.
+  Cross-lease DATA is provisional; admit the new lease freshly and never reuse a
+  capability/admission or an old adapter as authority. Existing semantic fact
+  caches retain their established lease-specific contract.
+- FILEOP-3: all original proof algorithms/order and explicit reader/live guards
+  remain. Ordinary/protected sync/async DATA leaves use the existing service.
+  Generation, worker/native/lock authority, registries and journal evidence are
+  never cached as file DATA. Under an owning context the r52 helper borrows DATA
+  and omits its duplicate per-proof143-source exit. Standalone helper remains
+  verified before returning. Pure internal recomputation is provisional until
+  the owning fresh fence; this explicit change replaces per-proof freshness only
+  on that selected owning route, not arbitrary external/capability boundaries.
+- FILEOP-4: freshly verify the complete touched-source closure through original
+  uncached readers before take/write/delete, runtime turn advancement, successful
+  owning return and no-write success (AlreadyApplied/AlreadyAppended/ExistingVerified).
+  Compare exact bytes/absence/timestamps plus fresh generation/authority/version.
+  Retrieve expected values from existing service before any ForceFresh clear;
+  missing/retired expected values cannot silently become a new baseline. Keep
+  existing before-image/readback/take checks. Failure returns no successful proof
+  or effect based on a stale segment. Root epochs cannot detect raw external edits.
+- FILEOP-5: real changed/same-byte/failed/compensated/other-manager writes retire
+  the segment before effects. Freshly admitted no-evidence recovery performs the
+  existing physical evidence check but does not rotate a mutation epoch. Preserve
+  exact original mutation-exclusion predicate before classification; actual debt
+  retains mutation reservation, admission/evidence recheck, recovery and cleanup.
+  Failed classification closes reusable state. Do not cache journal absence.
+- FILEOP-6: arbitrary callback/fresh boundaries still clear/bypass DATA and retire
+  prior provisional routing; passive diagnostics and descendants cannot join or
+  poison functional caches. Never block on unfinished async source work in the
+  synchronous reader adapter. Settle the pre-effect sync-writer fence design
+  explicitly before code; no unverified mutation is an acceptable fallback.
+- FILEOP-7: compiling causal RED/GREEN with independent cheap files and real
+  applied-DATA owners. Prove multiple nested/new-root proofs reuse source DATA
+  across one operation; real mutations re-read; raw same-size restored-mtime,
+  absence/namespace/generation drift is refused before actual effect/success;
+  foreign/old/sibling/overlap/closing/callback/failure routes preserve integrity.
+  Real small owning sequence must show substantial reduction, not another claim
+  based only on a toy cache lookup. XML/category/independent complex review apply.
+- FILEOP-8: after qualifying current8DLLs, new genuine source42/two imports and
+  exact source/input origin recovery, run the unchanged original Cut0 at
+  600child/820shared/15minute onC:/Temp with uncapped full diagnostics onD. Analyze
+  all timing rows and matched closed r51 milestones, report actual PASS/FAIL and
+  observer/source costs honestly. Source/human Markdown/immutable INPUT only inGit;
+  retire superseded raw only after verified settled replacement.
+
+Resolved engineering contract: explicit awaited source fences at actual owners;
+synchronous readers use only immediately completed sync computations, never block
+on unfinished async I/O. Synchronous mutation admission refuses unverified DATA.
+Pass a one-use exact owner/adapter/version fence into the mutation registration,
+and atomically check that version when the root mutation token begins. Clearing
+the ledger alone is not permission to mutate. Journal-authorized recovery or
+compensation retires provisional DATA and runs its original fresh owning protocol;
+it must not compare partial rollback state to obsolete cached before-images.
+Existing independent fresh take/callback protocols discard/bypass old DATA and
+retain their original complete source checks; do not add a redundant old-data
+comparison in front of a legitimately independent recovery authority. Inventory
+and negative tests must distinguish these transitions explicitly. No gameplay/
+schema/GM/native protocol change, global/time-only cache or blanket fresh-check removal.
+
 # CRASH5 — revision52: repeated file reads inside a full proof
 
 Source issue[1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536).

@@ -1,9 +1,21 @@
+# CRASH5 — revision53 whole-operation file DATA through existing cache
+
+Owner steering2026-10-23: use already-read DATA through existing cache over the
+whole operation. New material scope replaces pending r52 original measurement;
+no r52 original was executed. Same feature/branch; autonomous review-wait waiver.
+- [x] T448 [US3] Track/present FILEOP1..8 spec/plan/contract; actual pinned phases and consistency; resolve synchronous pre-effect boundary through bounded independent architecture consultation before code.
+- [ ] T449 [US1/US2] Compiling causal RED for repeated real file DATA across nested proofs/current adapters with existing service, fresh effect/success refusal and mutation/no-effect/lifetime/ownership controls. No reflection or world preparation.
+- [ ] T450 [US1/US2] Implement root DATA owner/lease adapters/typed source dispatch/stable key interning/keys-only ledger via existing service, fresh transition protocol and honest diagnostics. Preserve original proof algorithms and source/authority/write checks. Remove false successful no-evidence invalidation with exact exclusion predicates.
+- [ ] T451 [US3] Verify cheap GREEN and substantial actual small owning-sequence reduction, affected category/XML/catalog controls and independent complex review; source-only push, qualify genuine current8DLL/source42/twoimports and exact origin before original.
+- [ ] T452 [US3] Same actual600/820/15 full uncapped Cut0; original oracles/settlement, full raw hashes/analysis/matched timings and honest outcome, independent result review, final source recovery and verified-replacement raw retention.
+
+
 # CRASH5 — revision52 reserved reads within a completed proof
 
 Issue1536; owner2026-10-23 requests safe reuse of repeated full file checks,
 implementation, unchanged original600s measurement and unlimited diagnostics.
 - [x] T444 [US3] Investigate measured full-proof sources; write/present r52 spec/contract/plan/tasks through pinned Spec Kit phases and consistency, publish before implementation. Reuse current isolated clone and retained r51 measurements.
-- [ ] T445 [US1/US2] Compiling causal RED then GREEN for a typed stable-read envelope using the existing ReservedValidationReadSet, minimal independent files, fresh exit proof and negative controls. Integrate only after inner recovery in the joint completed-proof reader; retain its whole algorithm/order and disposal/failure behavior. Demonstrate actual proof attribute reduction and unchanged bytes with a small immutable DATA copy; unsupported hooks stay fresh.
+- [x] T445 [US1/US2] Compiling causal RED then GREEN for a typed stable-read envelope using the existing ReservedValidationReadSet, minimal independent files, fresh exit proof and negative controls. Integrate only after inner recovery in the joint completed-proof reader; retain its whole algorithm/order and disposal/failure behavior. Demonstrate actual proof attribute reduction and unchanged bytes with a small immutable DATA copy; unsupported hooks stay fresh.
   T445 measured correction: actual proof source572a still0opens/18440attrs,
   while unit10PASS. PROOFREAD3a exact captured participating-entry frame support
   is now explicit; causal one/two-level bound tests plus other-manager refusal

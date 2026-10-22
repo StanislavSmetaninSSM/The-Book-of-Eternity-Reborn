@@ -1,3 +1,86 @@
+# Whole-operation file DATA — revision53 implementation plan
+
+Canonical spec FILEOP1..8, issue1536. User explicitly redirected the active task
+from per-proof reads to existing whole-operation cache reuse. r52 code4ba remains
+a verified causal baseline; its original600/input tasks were not executed. Reuse
+existing feature and autonomous waiver; engineering/source/review gates remain.
+
+T448: actual systematic source/timing investigation, bounded separate Astra/high
+architectural consultation, written/presented spec/plan/tasks/contract, pinned
+Spec Kit phases and equivalent consistency before production code. Resolve the
+synchronous pre-effect boundary without unsafe blocking or unverified effects.
+
+T448 architectural decision (separate actual gpt-6-astra/high consultation):
+use explicit awaited owning fences, not global Task.Run(async).GetResult. Sync
+source adapter accepts only immediate completion from synchronous source work.
+Synchronous writer gate refuses dirty ledger. A verified boundary yields a one-use
+exact operation/adapter/root-version receipt, atomically checked with root mutation
+Begin to close supported-mutation race. Keep raw before-image guards independently.
+Journal recovery/compensation retire provisional DATA before original independent
+owning recovery; do not demand stale expected-byte equality during rollback. A
+successful empty recovery preserves version after exact admission/classification;
+all failure cases close reuse. Existing independent ForceFresh take/callback
+protocols discard/bypass DATA while retaining their full source algorithms.
+Audit late-boundary success/IncrementTurn separately from file mutation receipts.
+
+Implementation owner layout: selected GameEngine recovery/publication/completion/
+story scopes create/borrow one source DATA operation using the existing general
+service. Existing semantic RecoveryValidationScope contexts remain lease-local;
+no borrowed-metrics change or competing byte dictionary. A fresh lease adapter
+checks exact current manager/lease/registration/generation; its source dependency
+can inspect the same root epoch without IO. A lease's pending dependency closure
+is verified before lease close; old adapters cannot act after it. Shared DATA
+may be selected on the next admitted lease only provisionally, with all required
+fresh effect/success checks. Do not claim cross-lease authority reuse.
+
+T449: minimal typed compiling RED for repeated sync/async source identities across
+nested/new-root readers and multiple exact lease adapters in one operation. Same
+operation service backend; disabled baseline uses original physical readers. Add
+no-effect recovery distinction, actual debt, changed/failed/same-byte writers,
+raw restoredmtime/absence/namespace/generation, source copies, late/overlap/closing,
+callback/passive and mandatory pre-effect/no-write-return refusal controls.
+
+T450: source DATA owner through existing ValidationOperation, operation-owned key
+interner and keys-only dependency ledger. Keep semantic cache lifetime unchanged.
+Route original ordinary/protected sync/async leaves; preserve strict existing
+readset precedence and standalone r52 helper. Selected owned internal proofs
+borrow root DATA and avoid their local exit pass. Add exact live lease adapters,
+root/generation version eligibility, failure closure and disposal, uncapped named
+request/source/reuse/fence/source-exit observations. No cached authority/journal.
+
+Fresh boundary inventory: before existing take/publication/delete and callbacks;
+canonical lease close; progression Applied/AlreadyApplied; story append/readback
+and AlreadyAppended; projection write/ExistingVerified; terminal cleanup; before
+runtime IncrementTurn and successful owning return. Existing writer before-image,
+source tuple/original/seal/marker/output/claim guards remain. Audit actual owners:
+GameEngine.MortalJointStoryTurn, MortalJointRepairCompletion/CanonicalPublication,
+MortalJointProgressionPublication, StoryService/CharacteristicsService joint code,
+MortalJointTerminalCleanup, original ForceFresh callback sites and all tracked
+BeginValidationMutation entrypoints. Never call ForceFresh before getting expected
+file values. Unexpected cache loss/overlap/source drift refuses; it never reseeds
+the expected baseline or allows an unverified effect.
+
+No-effect recovery: factor exact atomic MainAccess mutation-eligibility predicate
+for a non-mutating admission check. Existing admitted fresh evidence classification
+returns without an epoch change only if successful and empty. Evidence path takes
+original mutation token before effects and repeats required admission/evidence;
+actual recovery/generation/cleanup unchanged. Failure closes reusable operation.
+Measured r51 semantic cache already good; do not misreport this as the main fix.
+
+T451: cheap causal GREEN plus substantial reduction on an actual small owning
+story/progression sequence, required affected categories only, current catalog /
+PlanOnly / XML builds+introduced-doc audit, independent separate Astra/high review.
+Commit/push source-only before long run. Qualify genuine NEW current-source source42
+carrier/two imports and every payload/fingerprint/loaded DLL; recover exact origin.
+The unused proof-reads-v1 slot may be generated from the final source (it has never
+been created or rebound); label documentation accurately as owning file DATA.
+
+T452: one actual same600/820/15 Cut0 full uncappedD diagnostics, no heavy analysis
+while collecting. Verify original gameplay oracles/native identity/EOF/join/cleanup;
+archive with every payload SHA/CRC, parse ALL timing rows, matched closed milestone
+comparison against r51. Independent result review, truthful human findings/source
+push/final recovery and verified replacement retention. No aggregate/full suite.
+
 # Full-proof reserved reads — revision52 implementation plan
 
 > REQUIRED: Superpowers executing-plans inline, TDD, systematic-debugging,

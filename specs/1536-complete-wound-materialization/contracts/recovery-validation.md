@@ -1,3 +1,32 @@
+# Whole-operation source DATA — revision53 contract
+
+FILEOP1..8 / T448–452. Existing ValidationOperation stores detached file snapshots
+under operation-interned ordinal(path, reader-family, explicit-mode) key objects.
+Operation root is actual recovery/completion/story owner; no JsonObject-root cache
+identity and no second payload dictionary. Lease/capability facts remain local.
+Only keys/order/version in fresh-dependency ledger. Every original algorithm and
+explicit live/source check remains; nested pure proofs may consume provisional
+DATA until mandatory take/write/delete/callback/lease/runtime/success fence.
+
+Fresh closure obtains expected payloads from existing service before clearing,
+reads originals uncached, compares bytes/absence/time/generation and verifies live
+adapter/root version. Missing expected entry fails; root epoch is not a raw drift
+detector. No old adapter/capability survives lease close. Actual writes invalidate;
+successful fresh no-evidence recovery alone does not. Unknown/unsafe evidence and
+failed admission close reuse, preserving original recovery disposition.
+
+Default strict readset and standalone verified helper remain unchanged; selected
+owning route omits duplicate per-proof exits. All no-write success branches and
+turn advancement still fence. Pre-effect contract is explicit awaited
+owner fences plus synchronous mutation refusal for dirty DATA and one-use exact
+adapter/root-version receipt atomically checked at mutation Begin. Synchronous
+read adapters accept immediate completed sync computation only. Independent
+journal recovery/compensation retire DATA and retain original owning recovery
+authority; stale closure equality must not block rollback. Existing independent
+fresh take/callback protocols discard/bypass source DATA and retain complete
+physical source checks. No global sync-over-async fence is added.
+Full source diagnostics are unbounded andD-only. Same original600/820/15 retained.
+
 Revision52 PROOFREAD3b: strict per-request read-set admission remains the default.
 Only the stable post-recovery read helper selects original-reader admission.
 That mode adds no duplicate full lease check at read-set dispatch: original
