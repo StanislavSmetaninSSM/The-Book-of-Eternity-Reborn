@@ -198,6 +198,66 @@ public sealed class SourceDataOperationTests(ITestOutputHelper output)
     }
 
     /// <summary>
+    /// Keeps source reads fresh while an unrelated live sibling borrows the original access.
+    /// </summary>
+    /// <returns>
+    /// Completion after eight sibling-conflicted physical reads and later first/final reuse.
+    /// </returns>
+    [Fact]
+    public async Task ExistingSiblingKeepsSourcesFreshUntilItCloses()
+    {
+        using var fixture = new SourceOperationFixture(output);
+        var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        using var operation = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(operation);
+        var ready = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var sibling = Task.Run(async () =>
+        {
+            await using var frame = files.BeginParticipatingMainAdmission();
+            try { await frame.AcquireAsync(); ready.TrySetResult(); await release.Task; }
+            catch (Exception error) { ready.TrySetException(error); throw; }
+        });
+        fixture.Recording = true;
+        try
+        {
+            await ready.Task;
+            for (var i = 0; i < 8; i++) Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+            Assert.Equal(8, fixture.PresentSources);
+            Assert.Equal(0, operation.CaptureState().Entries);
+        }
+        finally { release.TrySetResult(); await sibling; }
+        for (var i = 0; i < 8; i++) Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+        await operation.CompleteAsync();
+        Assert.Equal(10, fixture.PresentSources);
+    }
+
+    /// <summary>
+    /// Prevents a newly admitted descendant from consuming another entry's verified receipt.
+    /// </summary>
+    /// <returns>
+    /// Completion after an actual writer refuses before creating its target.
+    /// </returns>
+    [Fact]
+    public async Task AnotherEntryCannotConsumeVerifiedReceipt()
+    {
+        using var fixture = new SourceOperationFixture(output);
+        var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        using var operation = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(operation);
+        Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+        await operation.VerifyAsync(lease);
+        await using var entry = files.BeginParticipatingMainAdmission();
+        await entry.AcquireAsync();
+        await Assert.ThrowsAsync<InvalidOperationException>(() => files.WriteFileAtomicAsync(lease, "effect.txt", "forbidden"));
+        Assert.False(File.Exists(Path.Combine(fixture.Root, "game_session", "effect.txt")));
+    }
+
+    /// <summary>
     /// Owns tiny real files, actual source counters and complete passive timing output.
     /// </summary>
     private sealed class SourceOperationFixture : IDisposable
