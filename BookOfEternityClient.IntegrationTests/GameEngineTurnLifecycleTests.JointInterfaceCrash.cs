@@ -69,12 +69,17 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// An explicit existing ordinary parent for the ordinary Windows five-cut package selection only.
     /// <see langword="null"/> preserves temporary or managed-capture placement; no global environment is changed.
     /// </param>
+    /// <param name="observationMode">
+    /// Full detailed timing by default. Off is permitted only for an ordinary extended seeded Windows selection
+    /// and preserves scalar observations, gameplay assertions, process ownership and all existing budgets.
+    /// </param>
     /// <returns>
     /// Completion after the selected probe's process and DATA assertions, or the original game assertions.
     /// </returns>
     private async Task RunJointInterfaceActualProcessLossAsync(int cut, string? fault = null, bool diagnostic = false,
         bool extendedWindowsCrash = false, string? seedArtifactPath = null, bool fixtureAcquisitionOnly = false,
-        string? seedUsage = null, string? seedPackageRoot = null, string? ownedContainerParent = null)
+        string? seedUsage = null, string? seedPackageRoot = null, string? ownedContainerParent = null,
+        JointInterfaceObservationMode observationMode = JointInterfaceObservationMode.Full)
     {
         if (extendedWindowsCrash && !OperatingSystem.IsWindows())
             throw new PlatformNotSupportedException("Extended crash qualification is a local Windows selection.");
@@ -91,6 +96,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         }
         if (seedUsage is not null && seedArtifactPath is null && seedPackageRoot is null)
             throw new InvalidDataException("Explicit source42 fixture usage requires an artifact selection.");
+        JointInterfaceCrashObservation.Validate(observationMode, OperatingSystem.IsWindows(), extendedWindowsCrash,
+            seedArtifactPath is not null || seedPackageRoot is not null, fixtureAcquisitionOnly, mode);
         JointInterfaceSeedCrashInput? source42Seed = null;
         if (seedArtifactPath is not null)
         {
@@ -100,7 +107,10 @@ public sealed partial class GameEngineTurnLifecycleTests
         }
         var nonce = Guid.NewGuid().ToString("N");
         var parentMetadata = JsonSerializer.SerializeToNode(new
-        { Nonce = nonce, ParentPid = Environment.ProcessId, Cut = cut, Fault = fault, Diagnostic = diagnostic })!.AsObject();
+        {
+            Nonce = nonce, ParentPid = Environment.ProcessId, Cut = cut, Fault = fault, Diagnostic = diagnostic,
+            ObservationMode = observationMode.ToString().ToLowerInvariant(), ExtendedWindowsCrash = extendedWindowsCrash
+        })!.AsObject();
         if (!diagnostic && fault == null) parentMetadata["RunId"] = Guid.NewGuid().ToString("N");
         if (source42Seed is not null) parentMetadata["Source42Seed"] = JsonSerializer.SerializeToNode(source42Seed);
         if (fixtureAcquisitionOnly) parentMetadata["FixtureAcquisitionOnly"] = true;
@@ -619,8 +629,16 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.InRange(cut, 0, 4);
         CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-GB");
         var parent = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "parent.json")))!.AsObject();
-        _ = JointInterfaceFixtureAcquisition.ReadAndValidate(parent, OperatingSystem.IsWindows());
+        var fixtureAcquisitionOnly = JointInterfaceFixtureAcquisition.ReadAndValidate(parent, OperatingSystem.IsWindows());
         var source42Seed = JointInterfaceSeedCrashInput.Read(parent, OperatingSystem.IsWindows(), mode);
+        var observationMode = JointInterfaceCrashObservation.Read(parent, OperatingSystem.IsWindows(),
+            source42Seed is not null, fixtureAcquisitionOnly, mode);
+        Console.WriteLine(JsonSerializer.Serialize(new
+        {
+            Boundary = "joint_observation_mode", Role = "producer", Pid = Environment.ProcessId,
+            Nonce = parent["Nonce"]!.GetValue<string>(), Cut = cut,
+            ObservationMode = observationMode.ToString().ToLowerInvariant()
+        }));
         var stages = JointInterfaceCrashStageReport.CreateForOrdinary(parent, cut);
         stages?.Observe("fixture", "enter");
         JointInterfaceCrashSeedMetadata? sourceSeedMetadata = null;
@@ -679,11 +697,20 @@ public sealed partial class GameEngineTurnLifecycleTests
         CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
         var parent = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "parent.json")))!.AsObject();
         var fixtureAcquisitionOnly = JointInterfaceFixtureAcquisition.ReadAndValidate(parent, OperatingSystem.IsWindows());
-        _ = JointInterfaceSeedCrashInput.Read(parent, OperatingSystem.IsWindows(), mode);
+        var source42Seed = JointInterfaceSeedCrashInput.Read(parent, OperatingSystem.IsWindows(), mode);
+        var observationMode = JointInterfaceCrashObservation.Read(parent, OperatingSystem.IsWindows(),
+            source42Seed is not null, fixtureAcquisitionOnly, mode);
+        Console.WriteLine(JsonSerializer.Serialize(new
+        {
+            Boundary = "joint_observation_mode", Role = "resumer", Pid = Environment.ProcessId,
+            Nonce = parent["Nonce"]!.GetValue<string>(), Cut = cut,
+            ObservationMode = observationMode.ToString().ToLowerInvariant()
+        }));
         var fixtureExports = new JsonArray();
         var stages = JointInterfaceCrashStageReport.CreateForOrdinary(parent, cut);
         var resumeActivity = OperatingSystem.IsWindows() && stages != null ? new JointInterfaceResumeActivity(stages) : null;
-        var operationTimings = OperatingSystem.IsWindows() && stages != null ? new JointOperationTimings() : null;
+        var operationTimings = OperatingSystem.IsWindows() && stages != null &&
+            observationMode == JointInterfaceObservationMode.Full ? new JointOperationTimings() : null;
         var atCut = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "cut.json")))!.AsObject();
         var fault = parent["Fault"]?.GetValue<string>();
         Assert.Equal(root, atCut["Root"]!.GetValue<string>()); Assert.Equal(cut, atCut["Cut"]!.GetValue<int>());
@@ -723,7 +750,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 operationTimings.Observe(name, boundary, elapsed);
                 if (name != "JointStory.CleanupEligibleTerminalAsync" || boundary != "begin" ||
                     Interlocked.CompareExchange(ref cleanupDataCaptured, 1, 0) != 0) return;
-                var captureDirectory = Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "joint-cleanup-captures");
+                var captureDirectory = Path.Combine(Path.GetDirectoryName(JointChildOutputCapture.ResolveDefaultArtifactParent())!,
+                    "joint-cleanup-captures");
                 var archive = Path.Combine(captureDirectory, Guid.NewGuid().ToString("N") + ".zip");
                 operationTimings.Observe("JointCleanup.DiagnosticDataCapture", "begin", TimeSpan.Zero);
                 var captureClock = System.Diagnostics.Stopwatch.StartNew();

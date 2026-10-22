@@ -33,7 +33,12 @@ internal static class JointInterfaceCrashObservation
     /// <returns>
     /// The selected observation mode, independent of the original scenario's diagnostic flag.
     /// </returns>
-    internal static JointInterfaceObservationMode Parse(string? setting) => JointInterfaceObservationMode.Full;
+    internal static JointInterfaceObservationMode Parse(string? setting) => setting switch
+    {
+        null or "full" => JointInterfaceObservationMode.Full,
+        "off" => JointInterfaceObservationMode.Off,
+        _ => throw new InvalidDataException("BOE_TEST_JOINT_TIMINGS must be exactly full or off when provided.")
+    };
 
     /// <summary>
     /// Checks that timing suppression is limited to the explicitly selected ordinary seeded Windows scenario.
@@ -59,8 +64,13 @@ internal static class JointInterfaceCrashObservation
     internal static void Validate(JointInterfaceObservationMode observation, bool windows,
         bool extendedWindowsCrash, bool seeded, bool fixtureAcquisitionOnly, JointInterfaceCrashMode mode)
     {
-        if (observation != JointInterfaceObservationMode.Full)
-            throw new InvalidDataException("Only full observation is currently available.");
+        ArgumentNullException.ThrowIfNull(mode);
+        if (!Enum.IsDefined(observation))
+            throw new InvalidDataException("The detailed observation mode is undefined.");
+        if (observation == JointInterfaceObservationMode.Off &&
+            (!windows || !extendedWindowsCrash || !seeded || fixtureAcquisitionOnly ||
+                mode.Diagnostic || mode.Fault is not null || mode.Cut is < 0 or > 4))
+            throw new InvalidDataException("Detailed timing suppression requires an ordinary extended seeded Windows crash selection.");
     }
 
     /// <summary>
@@ -86,5 +96,21 @@ internal static class JointInterfaceCrashObservation
     /// A validated detailed observation mode; malformed metadata is refused before fixture creation.
     /// </returns>
     internal static JointInterfaceObservationMode Read(JsonObject parent, bool windows, bool seeded,
-        bool fixtureAcquisitionOnly, JointInterfaceCrashMode mode) => JointInterfaceObservationMode.Full;
+        bool fixtureAcquisitionOnly, JointInterfaceCrashMode mode)
+    {
+        ArgumentNullException.ThrowIfNull(parent);
+        string? setting = null;
+        if (parent.TryGetPropertyValue("ObservationMode", out var observationNode) &&
+            (observationNode is not JsonValue observationValue ||
+                !observationValue.TryGetValue<string>(out setting) || setting is null))
+            throw new InvalidDataException("ObservationMode must be an explicit full or off string when provided.");
+        var extendedWindowsCrash = false;
+        if (parent.TryGetPropertyValue("ExtendedWindowsCrash", out var extendedNode) &&
+            (extendedNode is not JsonValue extendedValue ||
+                !extendedValue.TryGetValue<bool>(out extendedWindowsCrash)))
+            throw new InvalidDataException("ExtendedWindowsCrash must be a Boolean when provided.");
+        var observation = Parse(setting);
+        Validate(observation, windows, extendedWindowsCrash, seeded, fixtureAcquisitionOnly, mode);
+        return observation;
+    }
 }

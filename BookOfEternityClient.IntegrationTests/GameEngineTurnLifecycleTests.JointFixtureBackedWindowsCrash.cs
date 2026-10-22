@@ -53,6 +53,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// Selects the current diagnostic package and original shared Windows crash bounds.
     /// An unset <c>BOE_TEST_JOINT_CRASH_PARENT</c> retains repository-parent storage; a provided value must be absolute.
     /// Validates optional BOE_TEST_DIAGNOSTIC_ROOT configuration before creating the disposable fixture.
+    /// BOE_TEST_JOINT_TIMINGS defaults to full; an explicit off value omits only detailed timing observation.
     /// </summary>
     /// <param name="cut">
     /// The original cut index from zero through four.
@@ -66,12 +67,14 @@ public sealed partial class GameEngineTurnLifecycleTests
         if (requestedParent is not null && !Path.IsPathFullyQualified(requestedParent))
             throw new InvalidDataException("The diagnostic crash parent must be an absolute path when provided.");
         _ = JointChildOutputCapture.ResolveDefaultArtifactParent();
+        var observationMode = JointInterfaceCrashObservation.Parse(Environment.GetEnvironmentVariable("BOE_TEST_JOINT_TIMINGS"));
         return RunJointInterfaceActualProcessLossAsync(cut,
             extendedWindowsCrash: true,
             seedPackageRoot: Path.Combine(TestRepoPaths.RepoRoot, "specs", "1536-complete-wound-materialization",
                 "fixtures", "joint-interface-source42-progression-data-v1", "package"),
             seedUsage: JointInterfaceSeedCrashInput.OrdinaryWindowsFiveCutsUsage,
             ownedContainerParent: requestedParent ?? (Path.GetDirectoryName(TestRepoPaths.RepoRoot)
-                ?? throw new InvalidDataException("Fixture-backed crash storage requires the checkout's explicit parent.")));
+                ?? throw new InvalidDataException("Fixture-backed crash storage requires the checkout's explicit parent.")),
+            observationMode: observationMode);
     }
 }
