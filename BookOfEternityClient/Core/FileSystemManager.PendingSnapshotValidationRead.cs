@@ -61,6 +61,29 @@ public partial class FileSystemManager
     }
 
     /// <summary>
+    /// Tries to reserve an ordinary lease whose exact active flow has no conflicting read or mutation.
+    /// </summary>
+    /// <param name="lease">
+    /// Caller-owned session mutation lease; unsupported purposes, pending decisions and foreign flows are ineligible.
+    /// </param>
+    /// <returns>
+    /// The unopened borrowed reservation, or <see langword="null"/> when entry is unsupported without changing authority.
+    /// </returns>
+    private PendingSnapshotValidationReadScope? TryBeginBorrowedValidationReservation(CanonicalWriteLease lease)
+    {
+        var owner = lease.MainAdmission;
+        if (!ReferenceEquals(lease.Owner, this) || !lease.IsActive || HasBrowserOriginalOperation ||
+            lease.BrowserLocalAccess != null || lease.Purpose != CanonicalWritePurpose.SessionMutation ||
+            lease.WorkerPurpose != null || lease.IsLegacyStorageRecovery || lease.MutationIntentRecorder != null ||
+            lease.PendingLocalDecision != null || owner == null || !owner.PhysicalScope || owner.Closed ||
+            owner.Closing || owner.BoundClosing || owner.MetadataOnly ||
+            !ReferenceEquals(MainAdmissions.Value, owner) || lease.AmbientRegistration?.Active != true ||
+            !ReferenceEquals(_ambientCanonicalLease.Value, lease.AmbientRegistration)) return null;
+        var scope = new PendingSnapshotValidationReadScope(this, owner, lease);
+        return owner.TryReserveWorldRead(scope) ? scope : null;
+    }
+
+    /// <summary>
     /// Requires the exact active lease registration and physical admission in the current ancestry.
     /// </summary>
     /// <param name="lease">

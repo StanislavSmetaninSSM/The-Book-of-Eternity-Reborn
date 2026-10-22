@@ -33,7 +33,7 @@ public partial class FileSystemManager
     internal Task<byte[]?> ReadOriginalFileBytesAsync(CanonicalWriteLease lease, string relativePath)
     {
         EnsureValidCanonicalWriteLease(lease);
-        return ReadFileBytesCoreAsync(relativePath);
+        return ReadFileBytesCoreAsync(relativePath, CancellationToken.None, lease);
     }
 
     internal bool OriginalFileExists(CanonicalWriteLease lease, string relativePath)
@@ -95,7 +95,7 @@ public partial class FileSystemManager
     /// <returns>
     /// The opened file's content and timestamp, or <see langword="null"/> for observed absence; original validation and data errors propagate.
     /// </returns>
-    private async Task<CanonicalFileReadSnapshot?> ReadOrdinaryFileSnapshotCoreAsync(
+    private async Task<CanonicalFileReadSnapshot?> ReadOrdinaryFileSnapshotUncachedAsync(
         string relativePath, CancellationToken cancellationToken, CanonicalWriteLease? lease = null)
     {
 #if DEBUG
@@ -165,6 +165,7 @@ public partial class FileSystemManager
                 using var t326AsyncAfterHook = MeasureOperation("OrdinaryRead.Async.AfterOpenHookAsync");
                 if (_hooks?.AfterCanonicalReadInitialValidationAsync != null)
                     await _hooks.AfterCanonicalReadInitialValidationAsync(relativePath);
+                ObservePassiveRead(_hooks?.CanonicalReadActivityObserver, relativePath);
                 t326AsyncAfterHook?.Dispose();
                 break;
             }
@@ -217,9 +218,44 @@ public partial class FileSystemManager
 #endif
     }
 
+    /// <summary>
+    /// Dispatches an ordinary synchronous snapshot through an eligible reserved read set or its original fresh reader.
+    /// </summary>
+    /// <param name="relativePath">
+    /// Original session-relative spelling, unchanged for identity and physical resolution.
+    /// </param>
+    /// <param name="lease">
+    /// Declared ordinary lease, or <see langword="null"/> for the original lease-free path.
+    /// </param>
+    /// <returns>
+    /// Detached source content and timestamp, or <see langword="null"/> for observed absence.
+    /// </returns>
     private CanonicalFileReadSnapshot? ReadOrdinaryFileSnapshotCore(
         string relativePath, CanonicalWriteLease? lease = null) =>
-        ReadOrdinaryFileSnapshotCore(relativePath, lease, out _, nullableDataFailure: false);
+        _validationReadSet.Value is { } phase && ValidationReuseSuppression.Value == 0
+            ? phase.Read(relativePath, ValidationSnapshotFamily.OrdinarySync, lease)
+            : ReadOrdinaryFileSnapshotCore(relativePath, lease, out _, nullableDataFailure: false);
+
+    /// <summary>
+    /// Dispatches an ordinary asynchronous snapshot through an eligible reserved read set or its original fresh reader.
+    /// </summary>
+    /// <param name="relativePath">
+    /// Original session-relative spelling used by the existing reader.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Cancellation observed by fresh reads and before reused results.
+    /// </param>
+    /// <param name="lease">
+    /// Original declared lease, or <see langword="null"/> for lease-free semantics.
+    /// </param>
+    /// <returns>
+    /// Detached content/timestamp or absence, preserving original source errors.
+    /// </returns>
+    private Task<CanonicalFileReadSnapshot?> ReadOrdinaryFileSnapshotCoreAsync(
+        string relativePath, CancellationToken cancellationToken, CanonicalWriteLease? lease = null) =>
+        _validationReadSet.Value is { } phase && ValidationReuseSuppression.Value == 0
+            ? phase.ReadAsync(relativePath, ValidationSnapshotFamily.OrdinaryAsync, lease, cancellationToken)
+            : ReadOrdinaryFileSnapshotUncachedAsync(relativePath, cancellationToken, lease);
 
     /// <summary>
     /// Reads the original synchronous ordinary snapshot while keeping optional data failures distinct from path authority.
@@ -311,6 +347,7 @@ public partial class FileSystemManager
                     using var t326SyncCopy = MeasureOperation("OrdinaryRead.Sync.HookAndCopy");
                     // Preserve the default reader's original data/check/materialization order.
                     _hooks?.AfterCanonicalReadInitialValidationAsync?.Invoke(relativePath).GetAwaiter().GetResult();
+                    ObservePassiveRead(_hooks?.CanonicalReadActivityObserver, relativePath);
                     var timestamp = File.GetLastWriteTimeUtc(stream.SafeFileHandle);
                     using var buffer = CreateOrdinaryReadBuffer(stream);
                     stream.CopyTo(buffer);
@@ -331,6 +368,7 @@ public partial class FileSystemManager
                     using var t326SyncNullableCopy = MeasureOperation("OrdinaryRead.Sync.NullableHookAndCopy");
                     // The existing synchronous reader has only the post-open hook.
                     _hooks?.AfterCanonicalReadInitialValidationAsync?.Invoke(relativePath).GetAwaiter().GetResult();
+                    ObservePassiveRead(_hooks?.CanonicalReadActivityObserver, relativePath);
                     var timestamp = File.GetLastWriteTimeUtc(stream.SafeFileHandle);
                     using var buffer = CreateOrdinaryReadBuffer(stream);
                     stream.CopyTo(buffer);

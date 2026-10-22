@@ -154,6 +154,25 @@ public partial class FileSystemManager
             _worldReservedAccess = access;
         }
         /// <summary>
+        /// Atomically reserves available shared access without treating unsupported entry as a read failure.
+        /// </summary>
+        /// <param name="scope">
+        /// New read identity retaining this frame's physical admission.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if reserved; otherwise, <see langword="false"/> without changing shared state.
+        /// </returns>
+        internal bool TryReserveWorldRead(ValidationReadReservation scope)
+        {
+            var access = _access;
+            if (_closed || access == null) return false;
+            var ancestors = new HashSet<MainAdmission>();
+            for (var p = this; p != null; p = p.Parent) ancestors.Add(p);
+            if (!access.TryReserveWorldRead(scope, ancestors)) return false;
+            _worldReservedAccess = access;
+            return true;
+        }
+        /// <summary>
         /// Releases this frame's original read reservation.
         /// </summary>
         /// <param name="scope">
@@ -340,6 +359,23 @@ public partial class FileSystemManager
         /// </param>
         internal void ReserveWorldRead(ValidationReadReservation scope, HashSet<MainAdmission> ancestors)
         {
+            if (!TryReserveWorldRead(scope, ancestors))
+                throw new InvalidOperationException("World read phase conflicts with an existing original admission.");
+        }
+        /// <summary>
+        /// Checks availability and installs one read reservation under the same shared state lock.
+        /// </summary>
+        /// <param name="scope">
+        /// New read reservation, never a request to nest an existing one.
+        /// </param>
+        /// <param name="ancestors">
+        /// The exact retained owner ancestry allowed to remain active.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if reserved; otherwise, <see langword="false"/> with no reservation installed.
+        /// </returns>
+        internal bool TryReserveWorldRead(ValidationReadReservation scope, HashSet<MainAdmission> ancestors)
+        {
             lock (_state)
             {
                 var retained = scope.RetainedPhysicalAdmission;
@@ -348,8 +384,9 @@ public partial class FileSystemManager
                     (retained != null && (!retained.PhysicalScope || !_admissions.Contains(retained))) ||
                     _admissions.Any(p => p.Closed || p.Closing || p.BoundClosing || !ancestors.Contains(p) ||
                         (p.PhysicalScope && !ReferenceEquals(p, retained))))
-                    throw new InvalidOperationException("World read phase conflicts with an existing original admission.");
+                    return false;
                 _worldRead = scope;
+                return true;
             }
         }
         /// <summary>

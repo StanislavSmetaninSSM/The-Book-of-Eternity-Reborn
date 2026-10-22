@@ -1,5 +1,7 @@
 # CRASH5 — plan13 revision45: trace and remove repeated validation work
 
+T418 source amendment: also add the same passive physical-read notification beside the existing callback in FileSystemManager.OrdinaryReadStreams.cs and FileSystemManager.TrustedLocalStorage.cs. These two readers remain fresh, with all stream/recovery semantics unchanged; this preserves diagnostic coverage when the resumer moves its passive receiver from the arbitrary callback to the explicit passive one. No cache dispatch is added to either reader.
+
 ## T417 design gate incorporated before implementation
 
 Independent gpt-6-astra/high accepted the source-informed design with obligations (recovery/crash5/T417-design-review.json). MainRunFence.cs and PendingSnapshotValidationRead.cs are additionally in the bounded file scope: atomic TryReserveWorldRead and TryBeginBorrowed reservation issuance must return unsupported before activation for outer reservations, mutations, pending decisions or unsupported flow. Existing throwing APIs retain their behavior. No nested reservation is authorized.

@@ -61,6 +61,7 @@ public partial class FileSystemManager
         /// </param>
         private void Notify(string boundary, TimeSpan elapsed)
         {
+            using var diagnostic = SuppressValidationReuse();
             try { _observer(_name, boundary, elapsed); }
             catch (Exception) { /* Optional observation must not change the measured operation. */ }
         }

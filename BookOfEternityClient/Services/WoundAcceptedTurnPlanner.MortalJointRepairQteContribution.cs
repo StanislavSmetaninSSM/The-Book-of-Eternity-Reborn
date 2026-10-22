@@ -12,7 +12,7 @@ internal static partial class WoundAcceptedTurnPlanner
         IReadOnlyDictionary<string, JsonObject> AfterImages);
 
     /// <summary>
-    /// Recomputes detached QTE data with fresh baseline checks before and after its reads.
+    /// Recomputes detached QTE data with both baseline checks and a fresh exit proof for an eligible reserved source read set.
     /// </summary>
     /// <param name="files">
     /// The filesystem containing the actual current original and corrected command.
@@ -29,10 +29,23 @@ internal static partial class WoundAcceptedTurnPlanner
     private static async Task<JointQteContribution> RecomputeJointQteContributionAsync(
         FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, JointCommonBaselineAuthority baseline)
     {
-        var prepared = await JointRepairValidationCoordinator.RecomputeWithBaselineAsync(
-            () => ValidateJointRepairCommonBaselineAsync(files, lease, baseline),
-            () => PrepareJointQteContributionAsync(files, lease, baseline));
-        return new(WoundAcceptedTurnFingerprintWriter.Compute(prepared.Fields), prepared.AfterImages);
+        var readSet = files.TryBeginReservedValidationReadSet(lease);
+        Exception? primaryFailure = null;
+        try
+        {
+            if (readSet != null) await readSet.OpenAsync();
+            var prepared = await JointRepairValidationCoordinator.RecomputeWithBaselineAsync(
+                () => ValidateJointRepairCommonBaselineAsync(files, lease, baseline),
+                () => PrepareJointQteContributionAsync(files, lease, baseline));
+            if (readSet != null) await readSet.CompleteAsync();
+            return new(WoundAcceptedTurnFingerprintWriter.Compute(prepared.Fields), prepared.AfterImages);
+        }
+        catch (Exception error) { primaryFailure = error; throw; }
+        finally
+        {
+            try { if (readSet != null) await readSet.DisposeAsync(); }
+            catch when (primaryFailure != null) { /* Preserve the original computation or proof refusal. */ }
+        }
     }
 
     /// <summary>

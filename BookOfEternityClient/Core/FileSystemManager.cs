@@ -57,6 +57,16 @@ internal sealed class FileSystemManagerHooks
     internal Func<Task>? BeforeSessionLifecycleLockOpenAsync { get; init; }
     internal Func<Task>? AfterSessionLifecycleLockOpenedAsync { get; init; }
     internal Func<string, Task>? BeforeCanonicalMutationAsync { get; init; }
+    /// <summary>
+    /// Observes an actual canonical read after initial validation; null disables observation.
+    /// The synchronous receiver and its descendants must not mutate storage or authority. Receiver faults are ignored.
+    /// </summary>
+    internal Action<string>? CanonicalReadActivityObserver { get; init; }
+    /// <summary>
+    /// Observes an actual exact physical read after initial validation; null disables observation.
+    /// The receiver must not mutate storage or authority. Receiver faults are ignored and diagnostic reads bypass reuse.
+    /// </summary>
+    internal Action<string>? ExactPhysicalReadActivityObserver { get; init; }
     internal Func<string, Task>? BeforeCanonicalReadOpenAsync { get; init; }
     internal Func<string, Task>? AfterCanonicalReadInitialValidationAsync { get; init; }
     internal Func<Task>? SessionOperationClosingAsync { get; init; }
@@ -1615,7 +1625,7 @@ public partial class FileSystemManager
         EnsureValidCanonicalWriteLease(writeLease);
         var result = UsesTrustedLocalWriter(writeLease, relativePath)
             ? await ReadOrdinaryFileCoreAsync(relativePath, writeLease)
-            : await ReadFileCoreAsync(relativePath);
+            : await ReadFileCoreAsync(relativePath, writeLease);
 
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "explicit-text-async", "semantic", result == null ? "returned-missing" : "returned-present");
@@ -1628,11 +1638,23 @@ public partial class FileSystemManager
 #endif
     }
 
-    private async Task<string?> ReadFileCoreAsync(string relativePath)
+    /// <summary>
+    /// Decodes the original protected snapshot using BOM-aware text semantics.
+    /// </summary>
+    /// <param name="relativePath">
+    /// Original session-relative file spelling.
+    /// </param>
+    /// <param name="lease">
+    /// Declared lease for read-set identity, or <see langword="null"/> for the original lease-free reader.
+    /// </param>
+    /// <returns>
+    /// Decoded text or <see langword="null"/> for observed absence.
+    /// </returns>
+    private async Task<string?> ReadFileCoreAsync(string relativePath, CanonicalWriteLease? lease = null)
     {
         var snapshot = await ReadFileSnapshotCoreAsync(
             relativePath,
-            CancellationToken.None);
+            CancellationToken.None, lease);
         if (snapshot == null)
             return null;
 
@@ -1672,7 +1694,7 @@ public partial class FileSystemManager
         EnsureValidCanonicalWriteLease(writeLease);
         var result = UsesTrustedLocalWriter(writeLease, relativePath)
             ? await ReadOrdinaryFileBytesCoreAsync(relativePath, CancellationToken.None, writeLease)
-            : await ReadFileBytesCoreAsync(relativePath, CancellationToken.None);
+            : await ReadFileBytesCoreAsync(relativePath, CancellationToken.None, writeLease);
 
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "explicit-bytes-async", "semantic", result == null ? "returned-missing" : "returned-present");
@@ -1697,7 +1719,7 @@ public partial class FileSystemManager
         EnsureValidCanonicalWriteLease(writeLease);
         var result = UsesTrustedLocalWriter(writeLease, relativePath)
             ? await ReadOrdinaryFileSnapshotCoreAsync(relativePath, CancellationToken.None, writeLease)
-            : await ReadFileSnapshotCoreAsync(relativePath, CancellationToken.None);
+            : await ReadFileSnapshotCoreAsync(relativePath, CancellationToken.None, writeLease);
 
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "explicit-snapshot-async", "semantic", result == null ? "returned-missing" : "returned-present");
@@ -1769,7 +1791,7 @@ public partial class FileSystemManager
         // its ambient execution context did not flow to this synchronous caller.
         return DecodeFileSnapshot(UsesTrustedLocalWriter(writeLease, relativePath)
             ? ReadOrdinaryFileSnapshotCore(relativePath, writeLease)
-            : ReadFileSnapshotCore(relativePath));
+            : ReadFileSnapshotCore(relativePath, writeLease));
     }
 
     private static string? DecodeFileSnapshot(CanonicalFileReadSnapshot? snapshot)
@@ -1795,7 +1817,7 @@ public partial class FileSystemManager
         EnsureValidCanonicalWriteLease(writeLease);
         var snapshot = UsesTrustedLocalWriter(writeLease, relativePath)
             ? ReadOrdinaryFileSnapshotCore(relativePath, writeLease)
-            : ReadFileSnapshotCore(relativePath);
+            : ReadFileSnapshotCore(relativePath, writeLease);
         EnsureValidCanonicalWriteLease(writeLease);
         return snapshot?.Content;
     }
@@ -1901,17 +1923,44 @@ public partial class FileSystemManager
 #endif
     }
 
+    /// <summary>
+    /// Returns detached bytes from the original protected snapshot reader.
+    /// </summary>
+    /// <param name="relativePath">
+    /// Original relative path spelling.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Cancellation for the original asynchronous read.
+    /// </param>
+    /// <param name="lease">
+    /// Original declared lease, or <see langword="null"/> for lease-free semantics.
+    /// </param>
+    /// <returns>
+    /// Read bytes, or <see langword="null"/> for absence.
+    /// </returns>
     private async Task<byte[]?> ReadFileBytesCoreAsync(
         string relativePath,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken, CanonicalWriteLease? lease = null)
     {
         var snapshot = await ReadFileSnapshotCoreAsync(
             relativePath,
-            cancellationToken);
+            cancellationToken, lease);
         return snapshot?.Content;
     }
 
-    private async Task<CanonicalFileReadSnapshot?> ReadFileSnapshotCoreAsync(
+    /// <summary>
+    /// Reads the protected asynchronous source through its unchanged handle and retry contract.
+    /// </summary>
+    /// <param name="relativePath">
+    /// Original file spelling passed to the canonical resolver.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Cancellation for open, retry and copy operations.
+    /// </param>
+    /// <returns>
+    /// Fresh bytes/timestamp or observed absence.
+    /// </returns>
+    private async Task<CanonicalFileReadSnapshot?> ReadFileSnapshotUncachedAsync(
         string relativePath,
         CancellationToken cancellationToken)
     {
@@ -2271,7 +2320,16 @@ public partial class FileSystemManager
             requireSingleLink: false);
     }
 
-    private CanonicalFileReadSnapshot? ReadFileSnapshotCore(
+    /// <summary>
+    /// Reads a fresh protected synchronous snapshot with the original native handle completion checks.
+    /// </summary>
+    /// <param name="relativePath">
+    /// Original path spelling to resolve and validate.
+    /// </param>
+    /// <returns>
+    /// Fresh bytes/timestamp or observed absence; original path and data refusals propagate.
+    /// </returns>
+    private CanonicalFileReadSnapshot? ReadFileSnapshotUncached(
         string relativePath)
     {
         for (var attempt = 0; ; attempt++)
@@ -2300,6 +2358,7 @@ public partial class FileSystemManager
                     ?.Invoke(relativePath)
                     .GetAwaiter()
                     .GetResult();
+                ObservePassiveRead(_hooks?.CanonicalReadActivityObserver, relativePath);
                 var lastWriteTimeUtc = File.GetLastWriteTimeUtc(
                     stream.SafeFileHandle);
                 using var buffer = stream.Length is > 0 and <= int.MaxValue
@@ -6138,6 +6197,7 @@ public partial class FileSystemManager
                 ?.Invoke(expectedPath)
                 .GetAwaiter()
                 .GetResult();
+            ObservePassiveRead(_hooks?.ExactPhysicalReadActivityObserver, expectedPath);
             return new StableReadFile(
                 stream,
                 parentAuthority,
@@ -6188,6 +6248,7 @@ public partial class FileSystemManager
                 await _hooks.AfterCanonicalReadInitialValidationAsync(
                     relativePath);
             }
+            ObservePassiveRead(_hooks?.CanonicalReadActivityObserver, relativePath);
             return new StableReadFile(
                 stream,
                 parentAuthority,

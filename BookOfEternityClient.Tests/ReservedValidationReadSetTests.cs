@@ -26,6 +26,9 @@ public sealed class ReservedValidationReadSetTests(ITestOutputHelper output)
         await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
         files.GetOrCreateSessionGeneration(lease);
         fixture.Recording = true;
+        await using var readSet = files.TryBeginReservedValidationReadSet(lease);
+        Assert.NotNull(readSet);
+        await readSet.OpenAsync();
         for (var i = 0; i < 12; i++)
         {
             Assert.Equal("original", files.ReadFileSync(lease, "present.txt"));
@@ -33,6 +36,7 @@ public sealed class ReservedValidationReadSetTests(ITestOutputHelper output)
             Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
             Assert.Null(await files.ReadFileAsync(lease, "missing.txt"));
         }
+        await readSet.CompleteAsync();
         Assert.Equal(8, fixture.PhysicalReads);
     }
 

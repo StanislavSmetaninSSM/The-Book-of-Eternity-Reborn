@@ -42,6 +42,7 @@ public partial class FileSystemManager
             if (stream == null) return null;
             if (_hooks?.AfterCanonicalReadInitialValidationAsync != null)
                 await _hooks.AfterCanonicalReadInitialValidationAsync(relativePath);
+                ObservePassiveRead(_hooks?.CanonicalReadActivityObserver, relativePath);
             ResolveBackupPublicationRecovery(lease);
             return new OrdinaryReadFile(this, lease, scope, relativePath, expectedPath, stream);
         }
