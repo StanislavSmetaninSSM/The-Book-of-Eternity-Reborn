@@ -365,6 +365,15 @@ public partial class FileSystemManager
         /// </returns>
         public async ValueTask DisposeAsync()
         {
+            // Preserve original reservation refusal before attempting asynchronous DATA settlement.
+            MainAdmission?.RequireNoWorldReadConflict(MainAdmission.WorldRecoveryIssuance);
+            Exception? sourceFailure = null;
+            try
+            {
+                if (ValidationReuseSuppression.Value == 0 && Owner._sourceDataOperation.Value is { } operation)
+                    await operation.BeforeLeaseCloseAsync(this);
+            }
+            catch (Exception error) { sourceFailure = error; }
             MainAdmission?.BeginPhysicalLeaseClose();
             var stream = _stream;
             var parentAuthority = _parentAuthority;
@@ -377,7 +386,7 @@ public partial class FileSystemManager
             MutationIntentRecorder = null;
             BrowserLocalAccess?.Dispose();
             var mainForFailure = MainAdmission;
-            Exception? failure = null;
+            Exception? failure = sourceFailure;
             void RetainFailure(Exception next) =>
                 failure = failure == null ? next : new AggregateException(failure, next);
 
@@ -4310,6 +4319,7 @@ public partial class FileSystemManager
             writeLease.MainAdmission=mainAdmission;
             registration.Activate();
             writeLease.AmbientRegistration = registration;
+            if (ValidationReuseSuppression.Value == 0) _sourceDataOperation.Value?.Observe(writeLease);
             return writeLease;
         }
         catch
@@ -4681,8 +4691,11 @@ public partial class FileSystemManager
         EnsureMainBeforeRecovery(writeLease, diagnosticOrigin);
     }
 
-    internal void EnsureCanonicalWriteLeaseActive(CanonicalWriteLease writeLease) =>
+    internal void EnsureCanonicalWriteLeaseActive(CanonicalWriteLease writeLease)
+    {
         EnsureValidCanonicalWriteLease(writeLease);
+        if (ValidationReuseSuppression.Value == 0) _sourceDataOperation.Value?.Observe(writeLease);
+    }
 
     private void EnsureValidSessionReplacementLease(CanonicalWriteLease writeLease)
     {

@@ -22,6 +22,12 @@ public partial class FileSystemManager
     internal async Task<TResult> ReadStableRecoveryDataAsync<TResult>(CanonicalWriteLease lease, Func<Task<TResult>> read)
     {
         ArgumentNullException.ThrowIfNull(read);
+        if (_sourceDataOperation.Value is { } operation && ValidationReuseSuppression.Value == 0 && CanReuseSourceData)
+        {
+            operation.RequireOpen();
+            operation.Observe(lease);
+            return await read();
+        }
         var readSet = TryBeginReservedValidationReadSetCore(lease, preserveOriginalAdmission: true);
         Exception? primaryFailure = null;
         try

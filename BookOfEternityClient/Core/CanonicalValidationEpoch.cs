@@ -17,11 +17,17 @@ internal sealed class CanonicalValidationEpoch
     /// <param name="mutation">
     /// Non-null identity retained through the mutation and all of its cleanup; duplicate registration is rejected.
     /// </param>
-    internal void Begin(object mutation)
+    /// <param name="expectedVersion">
+    /// A fresh fence's exact root identity, or no version for an independently authorized original mutation.
+    /// A supplied identity is checked atomically before registration and effects.
+    /// </param>
+    internal void Begin(object mutation, object? expectedVersion = null)
     {
         ArgumentNullException.ThrowIfNull(mutation);
         lock (_state)
         {
+            if (expectedVersion != null && (_mutations.Count != 0 || !ReferenceEquals(expectedVersion, _version)))
+                throw new InvalidOperationException("The verified canonical version changed before mutation admission.");
             var nextVersion = new object();
             if (!_mutations.Add(mutation))
                 throw new InvalidOperationException("The canonical mutation is already registered.");

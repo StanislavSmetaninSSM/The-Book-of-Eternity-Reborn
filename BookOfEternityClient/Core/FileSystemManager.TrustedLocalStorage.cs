@@ -26,6 +26,7 @@ public partial class FileSystemManager
     /// </returns>
     internal async Task RunLegacyStorageRecoveryAsync(CanonicalWriteLease lease, Func<Task> recovery)
     {
+        using var independentSource = ValidationReuseSuppression.Value == 0 ? _sourceDataOperation.Value?.Suspend() : null;
         using var validationMutation = BeginValidationMutation(lease);
         EnsureCanonicalWriteLeaseActive(lease);
         lease.EnsureNoPendingLocalDecision();
@@ -145,14 +146,31 @@ public partial class FileSystemManager
     /// </param>
     private void RecoverTrustedLocalStorage(CanonicalWriteLease lease)
     {
-        using var validationMutation = BeginValidationMutation(lease);
-        EnsureWorkerRecoveryAdmission(lease,"trusted-local-recovery-wrapper");
-        lease.EnsureNoPendingLocalDecision();
-        var hasEvidence = HasStorageEvidence(LocalPublicationRoot);
+        bool hasEvidence;
+        try
+        {
+            EnsurePhysicalCanonicalWriteLease(lease);
+            (lease.MainAdmission ?? throw new InvalidOperationException("Recovery requires its original admission."))
+                .RequireMutationAvailable();
+            EnsureWorkerRecoveryAdmission(lease,"trusted-local-recovery-wrapper");
+            lease.EnsureNoPendingLocalDecision();
+            hasEvidence = HasStorageEvidence(LocalPublicationRoot);
+        }
+        catch
+        {
+            InvalidateRecoveryValidationAfterFailure();
+            throw;
+        }
 #if DEBUG
         _browserAdmissionDiagnostic?.Recovery(hasEvidence);
 #endif
         if (!hasEvidence) return;
+        // Existing journal authority owns recovery; provisional DATA must never obstruct compensation.
+        using var independentSource = ValidationReuseSuppression.Value == 0 ? _sourceDataOperation.Value?.Suspend() : null;
+        using var validationMutation = BeginValidationMutation(lease);
+        EnsureWorkerRecoveryAdmission(lease,"trusted-local-recovery-wrapper");
+        lease.EnsureNoPendingLocalDecision();
+        if (!HasStorageEvidence(LocalPublicationRoot)) return;
         var before = ReadExistingSessionGeneration(lease);
         new TrustedLocalFilePublication(this, new TrustedLocalFileScope([BasePath]))
             .Recover(lease, _hooks?.LocalPublicationRecoveryObserver);

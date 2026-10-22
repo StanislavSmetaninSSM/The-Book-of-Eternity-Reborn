@@ -246,7 +246,9 @@ public partial class FileSystemManager
         string relativePath, CanonicalWriteLease? lease = null) =>
         _validationReadSet.Value is { } phase && ValidationReuseSuppression.Value == 0
             ? phase.Read(relativePath, ValidationSnapshotFamily.OrdinarySync, lease)
-            : ReadOrdinaryFileSnapshotCore(relativePath, lease, out _, nullableDataFailure: false);
+            : _sourceDataOperation.Value is { } operation && ValidationReuseSuppression.Value == 0
+                ? operation.Read(relativePath, ValidationSnapshotFamily.OrdinarySync, lease)
+                : ReadOrdinaryFileSnapshotCore(relativePath, lease, out _, nullableDataFailure: false);
 
     /// <summary>
     /// Dispatches an ordinary asynchronous snapshot through an eligible reserved read set or its original fresh reader.
@@ -267,7 +269,9 @@ public partial class FileSystemManager
         string relativePath, CancellationToken cancellationToken, CanonicalWriteLease? lease = null) =>
         _validationReadSet.Value is { } phase && ValidationReuseSuppression.Value == 0
             ? phase.ReadAsync(relativePath, ValidationSnapshotFamily.OrdinaryAsync, lease, cancellationToken)
-            : ReadOrdinaryFileSnapshotUncachedAsync(relativePath, cancellationToken, lease);
+            : _sourceDataOperation.Value is { } operation && ValidationReuseSuppression.Value == 0
+                ? operation.ReadAsync(relativePath, ValidationSnapshotFamily.OrdinaryAsync, lease, cancellationToken)
+                : ReadOrdinaryFileSnapshotUncachedAsync(relativePath, cancellationToken, lease);
 
     /// <summary>
     /// Reads the original synchronous ordinary snapshot while keeping optional data failures distinct from path authority.

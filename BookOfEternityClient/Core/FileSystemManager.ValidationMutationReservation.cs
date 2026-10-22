@@ -30,8 +30,9 @@ public partial class FileSystemManager
     private MainMutationReservation BeginValidationMutation(CanonicalWriteLease lease)
     {
         EnsurePhysicalCanonicalWriteLease(lease);
-        return (lease.MainAdmission ?? throw new InvalidOperationException("Mutation requires its original admission."))
-            .BeginMutation();
+        var admission = lease.MainAdmission ?? throw new InvalidOperationException("Mutation requires its original admission.");
+        return _sourceDataOperation.Value is { } operation && ValidationReuseSuppression.Value == 0
+            ? operation.BeginMutation(admission) : admission.BeginMutation();
     }
 
     /// <summary>
@@ -44,7 +45,8 @@ public partial class FileSystemManager
     {
         for (var frame = MainAdmissions.Value; frame != null; frame = frame.Parent)
             if (!frame.Closed && frame.Acquired && frame.PhysicalScope && frame.RootIdentity == CanonicalRootAuthorityIdentity)
-                return frame.BeginMutation();
+                return _sourceDataOperation.Value is { } operation && ValidationReuseSuppression.Value == 0
+                    ? operation.BeginMutation(frame) : frame.BeginMutation();
         throw new InvalidOperationException("A private canonical writer requires its original physical admission.");
     }
 }

@@ -122,8 +122,34 @@ public partial class FileSystemManager
     /// <returns>
     /// A restoring fresh scope, or null outside functional recovery validation and in passive diagnostic routing.
     /// </returns>
-    internal IDisposable? ForceFreshRecoveryValidation() =>
-        ValidationReuseSuppression.Value != 0 ? null : _recoveryValidation.Value?.ForceFresh();
+    internal IDisposable? ForceFreshRecoveryValidation()
+    {
+        if (ValidationReuseSuppression.Value != 0) return null;
+        var source = _sourceDataOperation.Value?.Suspend();
+        try { return new RecoverySourceFreshBoundary(source, _recoveryValidation.Value?.ForceFresh()); }
+        catch { source?.Dispose(); throw; }
+    }
+
+    /// <summary>
+    /// Retires both independent DATA caches across the same original fresh protocol.
+    /// </summary>
+    /// <param name="source">
+    /// Whole-operation source bypass, or no active source owner.
+    /// </param>
+    /// <param name="facts">
+    /// Original semantic fresh scope, or no active semantic owner.
+    /// </param>
+    private sealed class RecoverySourceFreshBoundary(IDisposable? source, IDisposable? facts) : IDisposable
+    {
+        /// <summary>
+        /// Restores both routing scopes even when the original scope refuses disposal.
+        /// </summary>
+        public void Dispose()
+        {
+            try { facts?.Dispose(); }
+            finally { source?.Dispose(); }
+        }
+    }
 
     /// <summary>
     /// Runs an arbitrary callback inside a fresh boundary for its complete asynchronous lifetime.
@@ -145,7 +171,11 @@ public partial class FileSystemManager
     /// </summary>
     internal void InvalidateRecoveryValidationAfterFailure()
     {
-        if (ValidationReuseSuppression.Value == 0) _recoveryValidation.Value?.CloseCache();
+        if (ValidationReuseSuppression.Value == 0)
+        {
+            _recoveryValidation.Value?.CloseCache();
+            _sourceDataOperation.Value?.Fail();
+        }
     }
 
     /// <summary>

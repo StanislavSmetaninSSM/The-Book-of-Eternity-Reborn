@@ -28,11 +28,39 @@ public partial class FileSystemManager
     /// <summary>
     /// Owns the existing general service storage for one selected source DATA operation.
     /// </summary>
-    internal sealed class SourceDataOperation : IDisposable
+    internal sealed class SourceDataOperation : IDisposable, IOperationDependency
     {
         private readonly FileSystemManager _files;
         private readonly ValidationOperation _operation = new DefaultOperationValidationService().BeginOperation();
+        private static readonly OperationComputation<CanonicalFileReadSnapshot?> Snapshot = new(
+            "Operation.FileSnapshot", 1, value => value == null ? null : new((byte[])value.Content.Clone(), value.LastWriteTimeUtc));
+        private readonly object _gate = new();
+        private readonly Dictionary<(string Path, ValidationSnapshotFamily Family, bool Explicit), SourceKey> _keys = new();
+        private readonly List<SourceKey> _touched = new();
+        private CanonicalWriteLease? _lease;
+        private LocalSessionGenerationSnapshot? _generation;
+        private object _segment = new();
+        private object? _rootVersion;
+        private object? _verifiedVersion;
+        private bool _busy;
+        private bool _failed;
+        private bool _completed;
+        private int _suspended;
         private bool _closed;
+
+        /// <summary>
+        /// Identifies source DATA without retaining a second copy of its payload.
+        /// </summary>
+        /// <param name="Path">
+        /// Raw ordinal path spelling supplied to the original reader.
+        /// </param>
+        /// <param name="Family">
+        /// Original reader contract whose source observations remain independent.
+        /// </param>
+        /// <param name="Explicit">
+        /// Whether the original reader declared its lease explicitly.
+        /// </param>
+        private sealed record SourceKey(string Path, ValidationSnapshotFamily Family, bool Explicit);
 
         /// <summary>
         /// Creates an independent operation through the existing service backend.
@@ -45,7 +73,206 @@ public partial class FileSystemManager
         /// <summary>
         /// Refuses use after the owning operation has closed.
         /// </summary>
-        internal void RequireOpen() => ObjectDisposedException.ThrowIf(_closed, this);
+        internal void RequireOpen()
+        {
+            ObjectDisposedException.ThrowIf(_closed, this);
+            if (_failed || _completed) throw new InvalidOperationException("The source operation is no longer available.");
+        }
+
+        /// <summary>
+        /// Observes the actual lease without admitting or retaining any new authority.
+        /// </summary>
+        /// <param name="lease">
+        /// Lease supplied by original acquisition or an explicitly admitted reader.
+        /// </param>
+        internal void Observe(CanonicalWriteLease lease)
+        {
+            lock (_gate)
+            {
+                if (_closed || _failed || _completed || _suspended != 0 || _busy) return;
+                if (_lease == null || !_lease.IsActive) _lease = lease;
+            }
+        }
+
+        /// <summary>
+        /// Captures only a live original ordinary lease's in-memory root version.
+        /// </summary>
+        /// <param name="version">
+        /// Exact root version, or no version for unsupported original access.
+        /// </param>
+        /// <returns>
+        /// Whether the current registration and admission can serve operation DATA.
+        /// </returns>
+        private bool TryRootVersion(out object? version)
+        {
+            version = null;
+            if (_lease is not { } lease || MainAdmissions.Value is not { } entry ||
+                !_files.IsBorrowedValidationReadFlowCurrent(lease, entry)) return false;
+            var root = _files.CanonicalRootAuthorityIdentity;
+            lock (root.WorkerContextGate)
+                return root.WorkerContext == null && lease.MainAdmission != null &&
+                    lease.MainAdmission.TryCaptureRecoveryValidationVersion(lease, null, out version);
+        }
+
+        /// <summary>
+        /// Supplies the existing service with this segment's identity after pure live checks.
+        /// </summary>
+        /// <param name="version">
+        /// Segment identity when the exact root remains unchanged, otherwise no reusable version.
+        /// </param>
+        /// <returns>
+        /// Whether a DATA result can be retained or reused in this operation.
+        /// </returns>
+        public bool TryCaptureVersion(out object? version)
+        {
+            version = null;
+            if (_closed || _failed || _suspended != 0 || !TryRootVersion(out var root) ||
+                !ReferenceEquals(root, _rootVersion)) return false;
+            version = _segment;
+            return true;
+        }
+
+        /// <summary>
+        /// Enters one serial functional read, preserving unsupported fresh reader routes.
+        /// </summary>
+        /// <param name="declared">
+        /// Original explicitly supplied lease, or no declared lease for the original implicit reader.
+        /// </param>
+        /// <returns>
+        /// Whether the original source can participate in DATA reuse.
+        /// </returns>
+        private bool EnterRead(CanonicalWriteLease? declared)
+        {
+            lock (_gate)
+            {
+                ObjectDisposedException.ThrowIf(_closed, this);
+                if (_suspended != 0) return false;
+                RequireOpen();
+                if (_busy) { _failed = true; throw new InvalidOperationException("Overlapping source operation."); }
+                if (declared != null)
+                {
+                    if (_lease != null && _lease.IsActive && !ReferenceEquals(_lease, declared))
+                        throw new InvalidOperationException("Source operation supplied a foreign lease.");
+                    _lease = declared;
+                }
+                if (!_files.CanReuseSourceData || !TryRootVersion(out var root)) return false;
+                if (_rootVersion != null && !ReferenceEquals(_rootVersion, root))
+                {
+                    _failed = true;
+                    throw new InvalidOperationException("Canonical data changed before the source operation settled.");
+                }
+                _busy = true;
+                _rootVersion = root;
+                _verifiedVersion = null;
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Creates a stable operation-local key and records its first touch without duplicating DATA.
+        /// </summary>
+        /// <param name="path">
+        /// Raw ordinal spelling passed unchanged to the original reader.
+        /// </param>
+        /// <param name="family">
+        /// Original synchronous or asynchronous reader contract.
+        /// </param>
+        /// <param name="declared">
+        /// Original declared lease, or no declaration for implicit reads.
+        /// </param>
+        /// <returns>
+        /// The stable identity used by the existing general cache service.
+        /// </returns>
+        private SourceKey Key(string path, ValidationSnapshotFamily family, CanonicalWriteLease? declared)
+        {
+            var identity = (path, family, declared != null);
+            if (!_keys.TryGetValue(identity, out var key))
+            {
+                key = new(path, family, declared != null);
+                _keys.Add(identity, key);
+                _touched.Add(key);
+            }
+            return key;
+        }
+
+        /// <summary>
+        /// Reuses synchronous source DATA without blocking on unfinished asynchronous work.
+        /// </summary>
+        /// <param name="path">
+        /// Original raw source path.
+        /// </param>
+        /// <param name="family">
+        /// Original synchronous reader family.
+        /// </param>
+        /// <param name="declared">
+        /// Original declared lease or no declaration.
+        /// </param>
+        /// <returns>
+        /// Detached source bytes and timestamp, or the original observed absence.
+        /// </returns>
+        internal CanonicalFileReadSnapshot? Read(string path, ValidationSnapshotFamily family, CanonicalWriteLease? declared)
+        {
+            if (!EnterRead(declared)) return _files.ReadValidationSource(path, family, declared);
+            try
+            {
+                using var request = _files.MeasureOperation("OperationFileData.RequestSync");
+                _generation ??= _files.ReadLocalGenerationSnapshot(_lease!);
+                var computed = false;
+                var task = _operation.GetOrComputeAsync(Snapshot, Key(path, family, declared), [this], _ =>
+                {
+                    computed = true;
+                    using var source = _files.MeasureOperation("OperationFileData.SourceSync");
+                    return Task.FromResult(_files.ReadValidationSource(path, family, declared));
+                });
+                if (!task.IsCompleted) throw new InvalidOperationException("A synchronous source computation did not settle synchronously.");
+                var value = task.GetAwaiter().GetResult();
+                if (!computed) { using var reuse = _files.MeasureOperation("OperationFileData.ReuseSync"); }
+                return value;
+            }
+            catch { _failed = true; throw; }
+            finally { lock (_gate) _busy = false; }
+        }
+
+        /// <summary>
+        /// Reuses asynchronous source DATA through the existing general service.
+        /// </summary>
+        /// <param name="path">
+        /// Original raw source path.
+        /// </param>
+        /// <param name="family">
+        /// Original asynchronous reader family.
+        /// </param>
+        /// <param name="declared">
+        /// Original declared lease or no declaration.
+        /// </param>
+        /// <param name="token">
+        /// Cancellation observed before both fresh reads and cache hits.
+        /// </param>
+        /// <returns>
+        /// Detached source bytes and timestamp, or observed absence.
+        /// </returns>
+        internal async Task<CanonicalFileReadSnapshot?> ReadAsync(string path, ValidationSnapshotFamily family,
+            CanonicalWriteLease? declared, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!EnterRead(declared)) return await _files.ReadValidationSourceAsync(path, family, declared, token);
+            try
+            {
+                using var request = _files.MeasureOperation("OperationFileData.RequestAsync");
+                _generation ??= _files.ReadLocalGenerationSnapshot(_lease!);
+                var computed = false;
+                var value = await _operation.GetOrComputeAsync(Snapshot, Key(path, family, declared), [this], async ct =>
+                {
+                    computed = true;
+                    using var source = _files.MeasureOperation("OperationFileData.SourceAsync");
+                    return await _files.ReadValidationSourceAsync(path, family, declared, ct);
+                }, token);
+                if (!computed) { using var reuse = _files.MeasureOperation("OperationFileData.ReuseAsync"); }
+                return value;
+            }
+            catch { _failed = true; throw; }
+            finally { lock (_gate) _busy = false; }
+        }
 
         /// <summary>
         /// Verifies pending source dependencies before a caller consumes them under its original lease.
@@ -56,11 +283,47 @@ public partial class FileSystemManager
         /// <returns>
         /// Completion after the source fence succeeds.
         /// </returns>
-        internal Task VerifyAsync(CanonicalWriteLease lease)
+        internal async Task VerifyAsync(CanonicalWriteLease lease)
         {
-            RequireOpen();
-            _files.EnsureCanonicalWriteLeaseActive(lease);
-            return Task.CompletedTask;
+            lock (_gate)
+            {
+                RequireOpen();
+                if (_busy || _suspended != 0) throw new InvalidOperationException("A source fence requires serial original access.");
+                if (_lease != null && !ReferenceEquals(lease, _lease)) throw new InvalidOperationException("Source fence supplied a foreign lease.");
+                _busy = true;
+            }
+            try
+            {
+                using var fence = _files.MeasureOperation("OperationFileData.FreshFence");
+                _files.EnsureCanonicalWriteLeaseActive(lease);
+                if (_touched.Count == 0) return;
+                if (!TryRootVersion(out var root) || !ReferenceEquals(root, _rootVersion))
+                    throw new InvalidOperationException("Source fence lost its original version.");
+                foreach (var key in _touched)
+                {
+                    // A missing expected cache entry is a refusal, never a newly observed baseline.
+                    var expected = await _operation.GetOrComputeAsync(Snapshot, key, [this], _ =>
+                        throw new InvalidOperationException("Expected source DATA was retired before its fence."));
+                    using var source = _files.MeasureOperation("OperationFileData.FreshSource");
+                    var declared = key.Explicit ? lease : null;
+                    var fresh = key.Family is ValidationSnapshotFamily.OrdinaryAsync or ValidationSnapshotFamily.ProtectedAsync
+                        ? await _files.ReadValidationSourceAsync(key.Path, key.Family, declared, CancellationToken.None)
+                        : _files.ReadValidationSource(key.Path, key.Family, declared);
+                    if ((fresh == null) != (expected == null) || fresh != null &&
+                        (fresh.LastWriteTimeUtc != expected!.LastWriteTimeUtc || !fresh.Content.AsSpan().SequenceEqual(expected.Content)))
+                        throw new InvalidDataException("Operation source changed: " + key.Path);
+                }
+                var generation = _files.ReadLocalGenerationSnapshot(lease);
+                if (generation.Binding != _generation!.Binding || generation.Bytes == null || _generation.Bytes == null ||
+                    !generation.Bytes.AsSpan().SequenceEqual(_generation.Bytes))
+                    throw new InvalidDataException("Operation generation bytes changed.");
+                _files.EnsureCanonicalWriteLeaseActive(lease);
+                if (!TryRootVersion(out root) || !ReferenceEquals(root, _rootVersion))
+                    throw new InvalidOperationException("Source fence version changed during verification.");
+                _verifiedVersion = root;
+            }
+            catch { _failed = true; throw; }
+            finally { lock (_gate) _busy = false; }
         }
 
         /// <summary>
@@ -69,10 +332,125 @@ public partial class FileSystemManager
         /// <returns>
         /// Completion after all retained source dependencies have been verified.
         /// </returns>
-        internal Task CompleteAsync()
+        internal async Task CompleteAsync()
         {
             RequireOpen();
-            return Task.CompletedTask;
+            if (_touched.Count != 0) await VerifyAsync(_lease ?? throw new InvalidOperationException("Source fence lost its lease."));
+            _completed = true;
+        }
+
+        /// <summary>
+        /// Registers an original mutation atomically against a one-use verified root version.
+        /// </summary>
+        /// <param name="admission">
+        /// Exact admission still responsible for the original writer.
+        /// </param>
+        /// <returns>
+        /// Original mutation reservation after provisional DATA has been retired.
+        /// </returns>
+        internal MainMutationReservation BeginMutation(MainAdmission admission)
+        {
+            object? expected;
+            lock (_gate)
+            {
+                ObjectDisposedException.ThrowIf(_closed, this);
+                if (_busy) throw new InvalidOperationException("Mutation overlaps source work.");
+                if (_suspended != 0) return admission.BeginMutation();
+                RequireOpen();
+                expected = _touched.Count == 0 ? null : _verifiedVersion;
+                if (_touched.Count != 0 && (expected == null || !TryRootVersion(out var root) || !ReferenceEquals(root, expected)))
+                    throw new InvalidOperationException("Mutation requires a freshly verified source operation.");
+                _busy = true;
+                _verifiedVersion = null;
+            }
+            try
+            {
+                var token = admission.BeginMutation(expected);
+                try { Retire(); return token; }
+                catch { token.Dispose(); throw; }
+            }
+            finally { lock (_gate) _busy = false; }
+        }
+
+        /// <summary>
+        /// Clears provisional DATA before an independently authorized fresh protocol runs.
+        /// </summary>
+        /// <returns>
+        /// A serial restoring scope that bypasses DATA for the complete fresh protocol.
+        /// </returns>
+        internal IDisposable Suspend()
+        {
+            lock (_gate)
+            {
+                ObjectDisposedException.ThrowIf(_closed, this);
+                if (_busy) throw new InvalidOperationException("Fresh protocol overlaps source work.");
+                Retire();
+                _suspended++;
+            }
+            return new SourceFreshScope(this);
+        }
+
+        /// <summary>
+        /// Verifies provisional dependencies before their physical lease closes.
+        /// </summary>
+        /// <param name="lease">
+        /// Original physical lease about to release its resources.
+        /// </param>
+        /// <returns>
+        /// Completion after pending DATA has settled, without owning lease disposal.
+        /// </returns>
+        internal async Task BeforeLeaseCloseAsync(CanonicalWriteLease lease)
+        {
+            if (_closed || !ReferenceEquals(_lease, lease)) return;
+            try
+            {
+                if (!_failed && !_completed && _suspended == 0 && _touched.Count != 0) await VerifyAsync(lease);
+            }
+            finally
+            {
+                // A new lease must establish its own fresh adapter. No admission survives this close.
+                _lease = null;
+            }
+        }
+
+        /// <summary>
+        /// Invalidates functional reuse after original source or authority failure.
+        /// </summary>
+        internal void Fail() => _failed = true;
+
+        /// <summary>
+        /// Removes payloads from the existing cache and rotates operation-local identities.
+        /// </summary>
+        private void Retire()
+        {
+            using var fresh = _operation.ForceFresh();
+            _keys.Clear();
+            _touched.Clear();
+            _generation = null;
+            _rootVersion = null;
+            _verifiedVersion = null;
+            _segment = new();
+        }
+
+        /// <summary>
+        /// Restores source routing after an independently authorized fresh protocol settles.
+        /// </summary>
+        /// <param name="owner">
+        /// Exact operation whose nested suspension is being closed.
+        /// </param>
+        private sealed class SourceFreshScope(SourceDataOperation owner) : IDisposable
+        {
+            private bool _closed;
+
+            /// <summary>
+            /// Releases this nested bypass once without restoring retired DATA.
+            /// </summary>
+            public void Dispose()
+            {
+                if (_closed) return;
+                _closed = true;
+                lock (owner._gate) owner._suspended--;
+            }
         }
 
         /// <summary>
@@ -90,7 +468,7 @@ public partial class FileSystemManager
         {
             if (_closed) return;
             _closed = true;
-            try { _operation.Dispose(); }
+            try { _operation.Dispose(); _keys.Clear(); _touched.Clear(); _lease = null; _generation = null; }
             finally
             {
                 if (ReferenceEquals(_files._sourceDataOperation.Value, this))

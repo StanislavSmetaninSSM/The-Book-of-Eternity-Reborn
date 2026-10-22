@@ -218,12 +218,22 @@ public partial class FileSystemManager
         /// <summary>
         /// Registers one mutation on this actual access before its first awaited or physical effect.
         /// </summary>
+        /// <param name="expectedVersion">
+        /// Exact verified root version required at registration, or no version for original independent authority.
+        /// </param>
         /// <returns>
         /// An independent token retained until the operation and its cleanup end.
         /// </returns>
-        internal MainMutationReservation BeginMutation() =>
+        internal MainMutationReservation BeginMutation(object? expectedVersion = null) =>
             (_access ?? throw new InvalidOperationException("Mutation admission is no longer active."))
-                .BeginMutation(this, WorldRecoveryIssuance);
+                .BeginMutation(this, WorldRecoveryIssuance, expectedVersion);
+
+        /// <summary>
+        /// Applies the original mutation exclusion before fresh no-effect recovery inspection.
+        /// </summary>
+        internal void RequireMutationAvailable() =>
+            (_access ?? throw new InvalidOperationException("Mutation admission is no longer active."))
+                .RequireMutationAvailable(this, WorldRecoveryIssuance);
 
         /// <summary>
         /// Captures a root validation version through this frame's original physical access without filesystem checks.
@@ -562,25 +572,46 @@ public partial class FileSystemManager
         /// <param name="recoveryIssuance">
         /// Exact opening recovery identity, or <see langword="null"/> for ordinary mutation.
         /// </param>
+        /// <param name="expectedVersion">
+        /// Exact fresh fence version checked atomically by the root, or no version for independent authority.
+        /// </param>
         /// <returns>
         /// A separately tracked token; nested tokens cannot release each other.
         /// </returns>
-        internal MainMutationReservation BeginMutation(MainAdmission admission, ValidationReadReservation? recoveryIssuance)
+        internal MainMutationReservation BeginMutation(MainAdmission admission, ValidationReadReservation? recoveryIssuance,
+            object? expectedVersion = null)
         {
             lock (_state)
             {
-                if (_frozen || admission.Closed || !_admissions.Contains(admission) || _physicalClosing.Contains(admission) ||
-                    (_worldRead != null && !(ReferenceEquals(_worldRead, recoveryIssuance) && recoveryIssuance!.Opening)))
-                    throw new InvalidOperationException("Mutation conflicts with reserved or closing original access.");
+                RequireMutationAvailable(admission, recoveryIssuance);
                 var token = new MainMutationReservation(ReleaseMutation);
                 _mutations.Add(token);
-                try { owner.RootIdentity.ValidationEpoch.Begin(token); }
+                try { owner.RootIdentity.ValidationEpoch.Begin(token, expectedVersion); }
                 catch
                 {
                     _mutations.Remove(token);
                     throw;
                 }
                 return token;
+            }
+        }
+
+        /// <summary>
+        /// Checks the identical mutation predicate without registering a no-effect inspection as a write.
+        /// </summary>
+        /// <param name="admission">
+        /// Original live admission performing the inspection or mutation.
+        /// </param>
+        /// <param name="recoveryIssuance">
+        /// Exact opening reservation, or no special recovery issuance.
+        /// </param>
+        internal void RequireMutationAvailable(MainAdmission admission, ValidationReadReservation? recoveryIssuance)
+        {
+            lock (_state)
+            {
+                if (_frozen || admission.Closed || !_admissions.Contains(admission) || _physicalClosing.Contains(admission) ||
+                    (_worldRead != null && !(ReferenceEquals(_worldRead, recoveryIssuance) && recoveryIssuance!.Opening)))
+                    throw new InvalidOperationException("Mutation conflicts with reserved or closing original access.");
             }
         }
 

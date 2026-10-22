@@ -70,13 +70,7 @@ public partial class FileSystemManager
         bool preserveOriginalAdmission)
     {
         // Arbitrary read callbacks can change sources between observations. Decide before activation.
-        if (_validationReadSet.Value != null || ValidationReuseSuppression.Value != 0 ||
-            _hooks?.PathMetadataQueryObserver != null ||
-            _hooks?.BeforeCanonicalReadOpenAsync != null || _hooks?.AfterCanonicalReadInitialValidationAsync != null ||
-            _hooks?.BeforeRuntimeFileReadOpenAsync != null || _hooks?.AfterRuntimeFileReadOpenedAsync != null ||
-            _hooks?.AfterRuntimeFileReadInitialValidationAsync != null || _hooks?.AfterExactPhysicalReadInitialValidationAsync != null ||
-            _hooks?.AfterPhysicalFileAuthorityValidatedAsync != null || _hooks?.AfterCanonicalReadAttemptAsync != null ||
-            _hooks?.BeforeCanonicalExistenceFollowUpProbeAsync != null) return null;
+        if (_validationReadSet.Value != null || ValidationReuseSuppression.Value != 0 || !CanReuseSourceData) return null;
         var reservation = TryBeginBorrowedValidationReservation(lease);
         if (reservation == null) return null;
         var scope = new ReservedValidationReadSet(this, lease, reservation, preserveOriginalAdmission);
@@ -89,6 +83,17 @@ public partial class FileSystemManager
     /// Selects the original reader contract independently of path spelling and explicit lease mode.
     /// </summary>
     internal enum ValidationSnapshotFamily { OrdinarySync, OrdinaryAsync, ProtectedSync, ProtectedAsync }
+
+    /// <summary>
+    /// Determines whether arbitrary source callbacks require the unchanged uncached reader route.
+    /// </summary>
+    private bool CanReuseSourceData =>
+        _hooks?.PathMetadataQueryObserver == null &&
+        _hooks?.BeforeCanonicalReadOpenAsync == null && _hooks?.AfterCanonicalReadInitialValidationAsync == null &&
+        _hooks?.BeforeRuntimeFileReadOpenAsync == null && _hooks?.AfterRuntimeFileReadOpenedAsync == null &&
+        _hooks?.AfterRuntimeFileReadInitialValidationAsync == null && _hooks?.AfterExactPhysicalReadInitialValidationAsync == null &&
+        _hooks?.AfterPhysicalFileAuthorityValidatedAsync == null && _hooks?.AfterCanonicalReadAttemptAsync == null &&
+        _hooks?.BeforeCanonicalExistenceFollowUpProbeAsync == null;
 
     /// <summary>
     /// Dispatches protected synchronous snapshot DATA while preserving the original declared lease identity.
@@ -105,7 +110,9 @@ public partial class FileSystemManager
     private CanonicalFileReadSnapshot? ReadFileSnapshotCore(string relativePath, CanonicalWriteLease? lease = null) =>
         _validationReadSet.Value is { } phase && ValidationReuseSuppression.Value == 0
             ? phase.Read(relativePath, ValidationSnapshotFamily.ProtectedSync, lease)
-            : ReadFileSnapshotUncached(relativePath);
+            : _sourceDataOperation.Value is { } operation && ValidationReuseSuppression.Value == 0
+                ? operation.Read(relativePath, ValidationSnapshotFamily.ProtectedSync, lease)
+                : ReadFileSnapshotUncached(relativePath);
 
     /// <summary>
     /// Dispatches protected asynchronous snapshot DATA while retaining original cancellation and lease identity.
@@ -126,7 +133,9 @@ public partial class FileSystemManager
         CancellationToken cancellationToken, CanonicalWriteLease? lease = null) =>
         _validationReadSet.Value is { } phase && ValidationReuseSuppression.Value == 0
             ? phase.ReadAsync(relativePath, ValidationSnapshotFamily.ProtectedAsync, lease, cancellationToken)
-            : ReadFileSnapshotUncachedAsync(relativePath, cancellationToken);
+            : _sourceDataOperation.Value is { } operation && ValidationReuseSuppression.Value == 0
+                ? operation.ReadAsync(relativePath, ValidationSnapshotFamily.ProtectedAsync, lease, cancellationToken)
+                : ReadFileSnapshotUncachedAsync(relativePath, cancellationToken);
 
     /// <summary>
     /// Invokes a passive physical-read activity receiver without allowing its reads to join a functional read set.
