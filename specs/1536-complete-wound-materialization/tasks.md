@@ -7,6 +7,8 @@ Source issue1536; spec FANOUT-1..5. Dependency chain T417 ->T418 ->T419 ->T420, 
 - [x] T419 [US2/US3] Causal GREEN and selected affected refusal/freshness/real-authority controls, XML-enabled builds and catalog plan/discovery; full evidence and independent coherent complex source/test/doc review before original execution.
 - [ ] T420 [US1/US2/US3] Genuine source-bound input if needed, one original Windows C:/Temp600/820/15 Cut0 with complete raw and real owned closing, equal-completed-milestone count/time comparison, honest full-case result, independent final review and exact saved remote recovery. Original timeout resolution remains OPEN unless all original success oracles pass.
 
+T420 measured child600FAIL:79982 fewer probes in the structurally matched closed publication,378.8108s versus359.9428s. Exact attribution identifies449680 newly added per-request authority probes. All events/paths retained; raw/tools/outcome95d11d07c recovered1183 exact blobs. Final coherent review/analysis packaging/recovery pending; see recovery/crash5/T420-findings.md. Acceptance unchanged.
+
 FANOUT-1 mapsT417; FANOUT-2 mapsT417–419; FANOUT-3 mapsT418–419; FANOUT-4 mapsT419–420; FANOUT-5 maps every task. Findings/plan alone cannot close implementation. Preserve all earlier measured FAIL/success qualifications and historical unfinished tasks.
 
 # CRASH5 — revision44 tasks: bounded GetAttributes duplication fix
