@@ -48,6 +48,26 @@ public sealed class JointCompletedProofReadTests(ITestOutputHelper output)
         _ = await RunAsync(freshHook: false, drift: true);
 
     /// <summary>
+    /// Shares already-read file DATA between independently parsed complete proofs in one owning operation.
+    /// </summary>
+    /// <returns>
+    /// Completion after at least a quarter of actual source opens are removed with fewer attribute probes and identical game bytes.
+    /// </returns>
+    [Fact]
+    public async Task ActualOwningOperationReusesFilesBetweenIndependentProofs()
+    {
+        var fresh = await RunAsync(freshHook: true, drift: false, repetitions: 2, owningOperation: true);
+        var cached = await RunAsync(freshHook: false, drift: false, repetitions: 2, owningOperation: true);
+        output.WriteLine(JsonSerializer.Serialize(new { Fresh = fresh, Cached = cached }));
+        Assert.Equal(fresh.GameImages.OrderBy(x => x.Key), cached.GameImages.OrderBy(x => x.Key));
+        Assert.Equal(0, cached.ReadSetOpens);
+        Assert.True(cached.SourceReads.Values.Sum() * 4 < fresh.SourceReads.Values.Sum() * 3,
+            $"Owning sources {cached.SourceReads.Values.Sum()} must be at least25% below fresh {fresh.SourceReads.Values.Sum()}.");
+        Assert.True(cached.Attributes < fresh.Attributes);
+        Assert.True(cached.Reuses > 0);
+    }
+
+    /// <summary>
     /// Retains only measured counters and immutable game-image hashes from one independently closed copy.
     /// </summary>
     /// <param name="Attributes">
@@ -62,8 +82,11 @@ public sealed class JointCompletedProofReadTests(ITestOutputHelper output)
     /// <param name="GameImages">
     /// Exact game-session path-to-hash mapping after the read or deliberate refusal.
     /// </param>
+    /// <param name="SourceReads">
+    /// Actual canonical physical source-read events for every observed relative path.
+    /// </param>
     private sealed record Observation(int Attributes, int ReadSetOpens, int Reuses,
-        Dictionary<string, string> GameImages);
+        Dictionary<string, string> GameImages, Dictionary<string, int> SourceReads);
 
     /// <summary>
     /// Runs the production proof on a verified DATA template without building a game world.
@@ -74,10 +97,16 @@ public sealed class JointCompletedProofReadTests(ITestOutputHelper output)
     /// <param name="drift">
     /// Changes current wound history after its initial proof read to exercise the physical exit fence.
     /// </param>
+    /// <param name="repetitions">
+    /// Number of independent original entry calls; each parses its own private proof root.
+    /// </param>
+    /// <param name="owningOperation">
+    /// Whether the complete sequence belongs to one explicitly completed source DATA operation.
+    /// </param>
     /// <returns>
     /// Exact observed counters and game-image hashes after native-independent source validation.
     /// </returns>
-    private async Task<Observation> RunAsync(bool freshHook, bool drift)
+    private async Task<Observation> RunAsync(bool freshHook, bool drift, int repetitions = 1, bool owningOperation = false)
     {
         var diagnosticParent = Path.Combine(Path.GetDirectoryName(JointChildOutputCapture.ResolveDefaultArtifactParent())!, "joint-proof-reads");
         Directory.CreateDirectory(diagnosticParent);
@@ -97,11 +126,16 @@ public sealed class JointCompletedProofReadTests(ITestOutputHelper output)
             var manifest = JointAppliedDataTemplate.Materialize(archive, record["ArchiveSHA256"]!.GetValue<string>(), root);
             var measuring = false;
             var attributes = 0; var opens = 0; var reuses = 0; var injected = false;
+            var sourceReads = new Dictionary<string, int>(StringComparer.Ordinal);
             Dictionary<string, string>? damaged = null;
             var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,
                 PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
                 {
                     BeforeCanonicalReadOpenAsync = freshHook ? _ => Task.CompletedTask : null,
+                    CanonicalReadActivityObserver = path =>
+                    {
+                        if (measuring) sourceReads[path] = sourceReads.GetValueOrDefault(path) + 1;
+                    },
                     OperationTimingObserver = (name, boundary, elapsed) =>
                     {
                         timings.Observe(name, boundary, elapsed);
@@ -109,6 +143,7 @@ public sealed class JointCompletedProofReadTests(ITestOutputHelper output)
                         if (name == "TrustedScope.Probe.GetAttributes" && boundary == "end") attributes++;
                         if (name == "ValidationReadSet.Open" && boundary == "begin") opens++;
                         if (name is "ValidationReadSet.ReuseSync" or "ValidationReadSet.ReuseAsync" && boundary == "begin") reuses++;
+                        if (name is "OperationFileData.ReuseSync" or "OperationFileData.ReuseAsync" && boundary == "begin") reuses++;
                         if (drift && !injected && name == "JointProof.ValidateResourcesAsync" && boundary == "begin")
                         {
                             injected = true;
@@ -126,11 +161,16 @@ public sealed class JointCompletedProofReadTests(ITestOutputHelper output)
                 measuring = true;
                 try
                 {
+                    using var operation = owningOperation ? files.BeginSourceDataOperationIfNeeded() : null;
                     Task Read() => MortalQteDecisionPublication.ValidateCurrentJointCompletionAsync(files, lease,
                         tuple["SessionId"]!.GetValue<string>(), tuple["RequestId"]!.GetValue<string>(),
                         tuple["SnapshotToken"]!.GetValue<string>(), tuple["TurnNumber"]!.GetValue<int>());
-                    if (drift) await Assert.ThrowsAsync<InvalidDataException>(Read);
-                    else await Read();
+                    for (var repetition = 0; repetition < repetitions; repetition++)
+                    {
+                        if (drift) await Assert.ThrowsAsync<InvalidDataException>(Read);
+                        else await Read();
+                    }
+                    if (operation is not null) await operation.CompleteAsync();
                 }
                 finally { measuring = false; }
                 return true;
@@ -138,7 +178,7 @@ public sealed class JointCompletedProofReadTests(ITestOutputHelper output)
             var after = CaptureImages(root);
             Assert.Equal((drift ? Assert.IsType<Dictionary<string, string>>(damaged) : before).OrderBy(x => x.Key), after.OrderBy(x => x.Key));
             if (drift) Assert.True(injected);
-            return new(attributes, opens, reuses, after);
+            return new(attributes, opens, reuses, after, sourceReads);
         }
         finally
         {

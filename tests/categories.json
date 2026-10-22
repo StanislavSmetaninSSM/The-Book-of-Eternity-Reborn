@@ -2,6 +2,41 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "core-operation-source-data",
+  "responsibility": "Whole-operation source DATA through existing cache: physical first/final reads, nested proof reuse, raw drift refusal, actual writer fence and closed child ownership on tiny independent files.",
+  "excludes": "No world setup, reflection, authority cache, aggregate suite or diagnostic quota.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.SourceDataOperation.cs",
+    "BookOfEternityClient/Core/FileSystemManager.ValidationMutationReservation.cs",
+    "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-reserved-validation-read-set",
+      "when": "Preserve standalone/strict reader contracts."
+    },
+    {
+      "id": "fr063-joint-proof-reads-integration",
+      "when": "Verify actual independently parsed proofs share source DATA."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SourceDataOperationTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "core-recovery-proof-reads",
   "responsibility": "Stable post-recovery source-read lifecycle: causal first-plus-exit versus eight reads, raw bytes/absence/time/generation/namespace refusal, copies, hook fallback, failure and borrowed ownership on cheap independent files.",
   "excludes": "No whole world preparation, reflection, authority cache, cross-recovery reuse, aggregate suite or diagnostic quota.",

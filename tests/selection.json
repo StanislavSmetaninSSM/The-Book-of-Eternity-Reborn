@@ -2,52 +2,59 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "core-operation-source-data",
+      "reason": "Compiling causal RED for owning file DATA/fresh effect protocol on minimal files; original600 remains gated.",
+      "contracts": [
+        "#1536 revision53 FILEOP1..8 / T449\u2013452; same original600 separately after qualified source/input and source review."
+      ]
+    },
+    {
       "category": "core-recovery-proof-reads",
       "reason": "New typed lifecycle/causal actual sources and exit-integrity controls.",
       "contracts": [
-        "#1536 revision52 PROOFREAD1..6 / T445\u2013447; real original600 selected separately after qualified current input/source review."
+        "#1536 revision53 FILEOP1..8 / T449\u2013452; same original600 separately after qualified source/input and source review."
       ]
     },
     {
       "category": "fr063-joint-proof-reads-integration",
       "reason": "Real completed-proof consumer equivalence, attribute reduction and exit refusal.",
       "contracts": [
-        "#1536 revision52 PROOFREAD1..6 / T445\u2013447; real original600 selected separately after qualified current input/source review."
+        "#1536 revision53 FILEOP1..8 / T449\u2013452; same original600 separately after qualified source/input and source review."
       ]
     },
     {
       "category": "fr063-reserved-validation-read-set",
       "reason": "Preserve existing exact ownership, drift, overlap, cancellation, passive and source-family controls.",
       "contracts": [
-        "#1536 revision52 PROOFREAD1..6 / T445\u2013447; real original600 selected separately after qualified current input/source review."
+        "#1536 revision53 FILEOP1..8 / T449\u2013452; same original600 separately after qualified source/input and source review."
       ]
     },
     {
       "category": "core-recovery-progression-data",
       "reason": "Proof envelope must preserve existing typed progression cache dependency/freshness semantics.",
       "contracts": [
-        "#1536 revision52 PROOFREAD1..6 / T445\u2013447; real original600 selected separately after qualified current input/source review."
+        "#1536 revision53 FILEOP1..8 / T449\u2013452; same original600 separately after qualified source/input and source review."
       ]
     },
     {
       "category": "fr063-joint-progression-data-integration",
       "reason": "Keep actual production progression proof/phase reuse and unchanged-state oracle.",
       "contracts": [
-        "#1536 revision52 PROOFREAD1..6 / T445\u2013447; real original600 selected separately after qualified current input/source review."
+        "#1536 revision53 FILEOP1..8 / T449\u2013452; same original600 separately after qualified source/input and source review."
       ]
     },
     {
       "category": "fr063-joint-applied-story-components",
       "reason": "Preserve real proof/story append/repeat/drift/readback refusal consumers.",
       "contracts": [
-        "#1536 revision52 PROOFREAD1..6 / T445\u2013447; real original600 selected separately after qualified current input/source review."
+        "#1536 revision53 FILEOP1..8 / T449\u2013452; same original600 separately after qualified source/input and source review."
       ]
     },
     {
       "category": "fr063-joint-interface-crash-adapter-contracts",
       "reason": "New immutable input literal must preserve original role/budget/observation/launch contract.",
       "contracts": [
-        "#1536 revision52 PROOFREAD1..6 / T445\u2013447; real original600 selected separately after qualified current input/source review."
+        "#1536 revision53 FILEOP1..8 / T449\u2013452; same original600 separately after qualified source/input and source review."
       ]
     }
   ]

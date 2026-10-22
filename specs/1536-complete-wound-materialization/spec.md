@@ -56,7 +56,9 @@ invalidation alone is valid but insufficient. No original600 was run for r52.
   across one operation; real mutations re-read; raw same-size restored-mtime,
   absence/namespace/generation drift is refused before actual effect/success;
   foreign/old/sibling/overlap/closing/callback/failure routes preserve integrity.
-  Real small owning sequence must show substantial reduction, not another claim
+  Real small owning sequence of two independently parsed complete proofs must
+  remove at least25% of actual source opens and reduce attributes with unchanged
+  game bytes; this quantifies substantial reduction before implementation, not another claim
   based only on a toy cache lookup. XML/category/independent complex review apply.
 - FILEOP-8: after qualifying current8DLLs, new genuine source42/two imports and
   exact source/input origin recovery, run the unchanged original Cut0 at
