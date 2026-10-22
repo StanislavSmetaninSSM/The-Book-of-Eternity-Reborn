@@ -201,6 +201,24 @@ internal static partial class MortalQteDecisionPublication
         return SerializePublicationRoot(root);
     }
 
+    /// <summary>
+    /// Resolves recovery before validating a joint completion through a bounded source read set.
+    /// </summary>
+    /// <param name="fs">
+    /// Manager providing the actual original, current files and retained lease admission.
+    /// </param>
+    /// <param name="lease">
+    /// The original active canonical lease; this reader does not take its ownership.
+    /// </param>
+    /// <param name="inspection">
+    /// Earlier inspected original tuple, still compared against the current authenticated snapshot.
+    /// </param>
+    /// <param name="root">
+    /// Private parsed marker that must match the marker recovered before the read-only phase.
+    /// </param>
+    /// <returns>
+    /// The original completion proof only after every original check and an owned fresh source exit succeeds.
+    /// </returns>
     private static async Task<CompletedProof> ReadJointCompletedProofAsync(FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease lease, PendingTurnSnapshotReadAuthority inspection, JsonObject root)
     {
@@ -211,6 +229,34 @@ internal static partial class MortalQteDecisionPublication
             SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "current recovered joint completion");
         if (!JsonNode.DeepEquals(root, recovered)) throw Invalid("joint_marker_recovery_changed");
         t326Proof0?.Dispose();
+        return await fs.ReadStableRecoveryDataAsync(lease,
+            () => ReadJointCompletedProofDataAsync(fs, lease, inspection, root, stableMarker));
+    }
+
+    /// <summary>
+    /// Executes the complete original joint proof algorithm inside the caller's post-recovery read phase.
+    /// </summary>
+    /// <param name="fs">
+    /// Manager whose original source readers retain their admission and namespace checks.
+    /// </param>
+    /// <param name="lease">
+    /// The same physical lease used for the recovered marker and each live proof guard.
+    /// </param>
+    /// <param name="inspection">
+    /// Original inspected tuple compared with the newly read signed source.
+    /// </param>
+    /// <param name="root">
+    /// Private immutable marker DATA validated by the unchanged proof algorithm.
+    /// </param>
+    /// <param name="stableMarker">
+    /// Exact post-recovery marker bytes compared again at the original final marker fence.
+    /// </param>
+    /// <returns>
+    /// The original DATA proof, which its enclosing source phase must finalize before exposing it.
+    /// </returns>
+    private static async Task<CompletedProof> ReadJointCompletedProofDataAsync(FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease lease, PendingTurnSnapshotReadAuthority inspection, JsonObject root, byte[] stableMarker)
+    {
         using var t326Proof1 = fs.MeasureOperation("JointProof.ValidateSealAndGeneration");
         var outputBasis = MortalJointAcceptedOutputBasis.Read(root["outputBinding"]);
         var fields = outputBasis.InterfacePublication is null ? JointFields : JointFields.Append("niPublication").ToArray();

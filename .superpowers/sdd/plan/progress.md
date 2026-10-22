@@ -1,17 +1,27 @@
-# Current checkpoint: r52 proof source reuse; causal RED next
+# Current checkpoint: r52 causal RED qualified; GREEN candidate builds next
 
-Issue1536 / PROOFREAD1..6 canonical spec.md/plan.md/tasks.md and recovery-validation
-contractr52. T444 written/presented, actual pinned SpecKit plan/tasks/prerequisites
-and equivalent6requirement consistency complete; standing autonomous review-wait
-waiver. Existing isolated D clone/taskbranch reused. Planningb0c9c13e4 and causal
-baseline0e48e7bae saved/pushed. New ReadStableRecoveryDataAsync pass-through and
-cheap unit/actualsmallproof tests prepare causal RED; production proof unchanged.
-Existing ReservedValidationReadSet selected with mandatory full source exit proof
-after recovery, no new authority cache. r51 paired evidence retainedD; new original
-UNRUN; no diagnostic cap/upload. Next fresh8DLL XML builds, two causal categories,
-then minimal lifecycle/integration GREEN. Output D:/BoeDiagnostics/proof-reads-r52-20261023.
-5historicalcatalogfailures remain. Helper-preparation quoting failed before any
-script action; source-only WIP push succeeded; this metadata corrects the checkpoint.
+Issue1536 / PROOFREAD1..6, T444complete (pinned SpecKit phases/consistency/presented
+written artifacts, autonomous wait waiver); canonical spec/plan/tasks/contractr52.
+Baseline compiledsource32c1bb8d9: XML0errors bothprojects88.48/54.43s,8DLLsuniform
+and independently bytehashed8payload baseline archive38103299B retainedD.
+Unit10complete3PASS/7expectedFAIL: fallback/failure/nested already work, source
+coalescing absent and5rawdrifts return without exit-refusal. Both sync/async8reads
+664attributes. Actualsmallproof2expectedFAIL: fresh/eligibleboth18440attrs/0opens;
+rawhistory changed after its first read but before return was not refused. All
+12cases complete, notimeout, owned/runtimecleanuptrue,3complete rawfiles105128949B
+rehashed. No new original runtime. Historical5catalogfailures remain separate.
+
+GREEN candidate implements optional existing ReservedValidationReadSet lifecycle
+in ReadStableRecoveryDataAsync: Open/read/Complete then return, Dispose preserving
+primaryerror. Jointcompletedproof keeps recovery+stablemarker check beforehelper;
+entire postrecoverybody128lines extracted verbatim (exactSHA receiptD), no proof
+statement/order removed. Fact now selects NEW proof-reads-v1 input slot, currently
+UNGENERATED; old carriers immutable. Need both fresh builds then10unit/2realproof
+GREEN with actuallowerattributes and rawdrift refusal before broad/original tests.
+All uncapped evidence D:/BoeDiagnostics/proof-reads-r52-20261023; no diagnosticGit.
+Source/test coherent complex independent review, genuine current input/twoimports,
+origin recovery and original600/820/15/fulldiagnostics stillpending. Currentr51
+pair/sourcebackup retained until new complete verified settled replacement.
 
 # Historical checkpoint: r51 progression reuse implemented; original OFF passes
 
