@@ -1,0 +1,2 @@
+# Exact byte chunks, never truncated diagnostics.
+*.part -text
