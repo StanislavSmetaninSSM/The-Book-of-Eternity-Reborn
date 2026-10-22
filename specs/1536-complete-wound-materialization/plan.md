@@ -67,7 +67,18 @@ mutation epochs and fresh scopes decide eligibility. No new storage/repository.
 
 PROGDATA1/2/3 -> T440/T441; PROGDATA4 -> T440/T441/T442;
 PROGDATA5 -> T442; PROGDATA6 -> T443. Dependencies:439->440->441->442->443.
-Current status: planning; no code/build/test changes yet. T427–429 remain open.
+Current source0f9e211ab: T439 planning and T440 causal RED complete. T441 new
+unit16/16PASS, actual private proof/phase1/1PASS: body2->1, requests2/source1/reuse1,
+closed empty state and unchanged game files. Basic8requests source8->1 and actual
+attributes992->124; disabled path remains8sources/992attributes. Both XML builds
+0errors,8DLLs uniform source/copies and native2source pins exact;258changed XML
+lines inspected with0introduced-line warnings. Actual pair raw129646->114208
+contiguous rows; closed phase4800.5316->4271.7439ms, whole-fixture attributes
+24764->21776 (1393.1385->1205.9238ms); all existing phase/proof stage counts same.
+These are small-fixture instrumented results, not original600s evidence or a
+no-diagnostics estimate. Full raw/tool/verification records stay on D:.
+T442 selected prior controls/catalog/independent review/input/original pending;
+T443 conditional diagnostic-off pending. T427–429 remain open.
 
 # Recovery filesystem cache integration — revision50 implementation plan
 
