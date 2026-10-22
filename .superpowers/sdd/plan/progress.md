@@ -1,4 +1,19 @@
-# Current checkpoint: r51 progression reuse implemented; original OFF passes
+# Current checkpoint: r52 proof source reuse; causal RED next
+
+Issue1536 / PROOFREAD1..6 canonical spec.md/plan.md/tasks.md and recovery-validation
+contractr52. T444 written/presented, actual pinned SpecKit plan/tasks/prerequisites
+and equivalent6requirement consistency complete; standing autonomous review-wait
+waiver. Existing isolated D clone/taskbranch reused. Planningb0c9c13e4 and causal
+baseline0e48e7bae saved/pushed. New ReadStableRecoveryDataAsync pass-through and
+cheap unit/actualsmallproof tests prepare causal RED; production proof unchanged.
+Existing ReservedValidationReadSet selected with mandatory full source exit proof
+after recovery, no new authority cache. r51 paired evidence retainedD; new original
+UNRUN; no diagnostic cap/upload. Next fresh8DLL XML builds, two causal categories,
+then minimal lifecycle/integration GREEN. Output D:/BoeDiagnostics/proof-reads-r52-20261023.
+5historicalcatalogfailures remain. Helper-preparation quoting failed before any
+script action; source-only WIP push succeeded; this metadata corrects the checkpoint.
+
+# Historical checkpoint: r51 progression reuse implemented; original OFF passes
 
 Canonical feature specs/1536-complete-wound-materialization revision51 PROGDATA1..6,
 spec.md/plan.md/tasks.md. T439 actual pinned Spec Kit phases/consistency/presentation
