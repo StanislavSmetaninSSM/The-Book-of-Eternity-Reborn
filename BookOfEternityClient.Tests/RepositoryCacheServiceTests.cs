@@ -74,6 +74,9 @@ public sealed class RepositoryCacheServiceTests
     /// <summary>
     /// Clears an earlier result even when a real source write changes data then fails.
     /// </summary>
+    /// <param name="delete">
+    /// Whether the failing source mutation deletes instead of saves the record.
+    /// </param>
     [Theory]
     [InlineData(false)]
     [InlineData(true)]

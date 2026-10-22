@@ -9,6 +9,19 @@ namespace BookOfEternityClient.Tests;
 public sealed class ServiceCacheTests
 {
     /// <summary>
+    /// Accepts a positive long maintenance policy on the real system timer without changing retention.
+    /// </summary>
+    [Fact]
+    public void SystemTimerSupportsLongMaintenancePolicy()
+    {
+        using var cache = new MemoryCache<string, int>(
+            new CacheExpirationPolicy(TimeSpan.FromDays(400), null, TimeSpan.FromDays(365)));
+        cache.Set("a", 1);
+        Assert.True(cache.TryGet("a", out var value));
+        Assert.Equal(1, value);
+    }
+
+    /// <summary>
     /// Distinguishes cache absence from stored default values.
     /// </summary>
     /// <param name="backend">

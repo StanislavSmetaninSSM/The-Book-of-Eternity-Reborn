@@ -15,7 +15,7 @@ public sealed class NoCache<TKey, TValue> : ServiceCache<TKey, TValue> where TKe
     /// Creates a backend that always reports cache misses.
     /// </summary>
     /// <param name="comparer">
-    /// The key comparer, or null for default equality.
+    /// The key comparer, or <see langword="null"/> for default equality.
     /// </param>
     public NoCache(IEqualityComparer<TKey>? comparer = null) : base(comparer) { }
 

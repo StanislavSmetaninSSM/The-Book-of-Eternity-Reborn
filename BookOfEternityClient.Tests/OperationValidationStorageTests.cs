@@ -10,6 +10,54 @@ namespace BookOfEternityClient.Tests;
 public sealed class OperationValidationStorageTests
 {
     /// <summary>
+    /// Revalidates source versions before TTL and releases expiring storage on operation close.
+    /// </summary>
+    [Fact]
+    public async Task MemoryRetentionNeverExtendsVersionOrOperationValidity()
+    {
+        var clock = new ManualCacheTimeProvider();
+        var service = new DefaultOperationValidationService(() =>
+            new MemoryCache<ValidationOperation.EntryKey, ValidationOperation.Entry>(
+                new CacheExpirationPolicy(TimeSpan.FromSeconds(20), null, TimeSpan.FromSeconds(1)), clock));
+        var dependency = new VersionedDependency();
+        var rule = new OperationComputation<int>("memory-version", 1, v => v);
+        var input = new IdentityOnlyInput();
+        var calls = 0;
+        Task<int> Compute(CancellationToken _) => Task.FromResult(++calls);
+        using (var operation = service.BeginOperation())
+        {
+            Assert.Equal(1, await operation.GetOrComputeAsync(rule, input, [dependency], Compute));
+            Assert.Equal(1, await operation.GetOrComputeAsync(rule, input, [dependency], Compute));
+            dependency.Change();
+            Assert.Equal(2, await operation.GetOrComputeAsync(rule, input, [dependency], Compute));
+            clock.Advance(TimeSpan.FromSeconds(20));
+            Assert.Equal(3, await operation.GetOrComputeAsync(rule, input, [dependency], Compute));
+            Assert.Equal(1, clock.ActiveTimers);
+        }
+        Assert.Equal(0, clock.ActiveTimers);
+        using (var next = service.BeginOperation())
+            Assert.Equal(4, await next.GetOrComputeAsync(rule, input, [dependency], Compute));
+        Assert.Equal(0, clock.ActiveTimers);
+    }
+
+    /// <summary>
+    /// Verifies envelope identities even when a configured backend comparer merges logical keys.
+    /// </summary>
+    [Fact]
+    public async Task BackendKeyCollisionCannotReturnAnotherInputsResult()
+    {
+        var service = new DefaultOperationValidationService(() =>
+            new DictionaryCache<ValidationOperation.EntryKey, ValidationOperation.Entry>(new MergingComparer()));
+        using var operation = service.BeginOperation();
+        var rule = new OperationComputation<int>("collision", 1, v => v);
+        var first = new object();
+        var second = new object();
+        Assert.Equal(1, await operation.GetOrComputeAsync(rule, first, [], _ => Task.FromResult(1)));
+        Assert.Equal(2, await operation.GetOrComputeAsync(rule, second, [], _ => Task.FromResult(2)));
+        Assert.Equal(1, await operation.GetOrComputeAsync(rule, first, [], _ => Task.FromResult(1)));
+    }
+
+    /// <summary>
     /// Selects no retention through the same production computation path.
     /// </summary>
     [Fact]
@@ -103,6 +151,42 @@ public sealed class OperationValidationStorageTests
         Assert.Same(primary, error);
         Assert.True(operation.CaptureState().Closed);
         Assert.Equal(0, operation.CaptureState().Entries);
+    }
+
+    /// <summary>
+    /// Supplies a nonreused memory token without touching a filesystem.
+    /// </summary>
+    private sealed class VersionedDependency : IOperationDependency
+    {
+        private object _token = new();
+        /// <summary>
+        /// Retires the previous version before any subsequent cache lookup.
+        /// </summary>
+        internal void Change() => _token = new();
+        /// <inheritdoc />
+        public bool TryCaptureVersion(out object? version) { version = _token; return true; }
+    }
+
+    /// <summary>
+    /// Refuses content-based equality so a backend must preserve the coordinator's identity keys.
+    /// </summary>
+    private sealed class IdentityOnlyInput
+    {
+        /// <inheritdoc />
+        public override bool Equals(object? obj) => throw new InvalidOperationException("Input equality must not be used.");
+        /// <inheritdoc />
+        public override int GetHashCode() => throw new InvalidOperationException("Input hashing must not be used.");
+    }
+
+    /// <summary>
+    /// Deliberately collides backend keys to verify the coordinator's independent envelope guard.
+    /// </summary>
+    private sealed class MergingComparer : IEqualityComparer<ValidationOperation.EntryKey>
+    {
+        /// <inheritdoc />
+        public bool Equals(ValidationOperation.EntryKey x, ValidationOperation.EntryKey y) => true;
+        /// <inheritdoc />
+        public int GetHashCode(ValidationOperation.EntryKey obj) => 0;
     }
 
     /// <summary>

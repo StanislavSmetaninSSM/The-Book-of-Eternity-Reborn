@@ -2,20 +2,23 @@ namespace BookOfEternityClient.Services.Caching;
 
 /// <summary>
 /// Defines synchronized storage operations for a caller-owned temporary cache.
+/// Backend hooks perform only synchronous memory work and do not call source services.
 /// </summary>
 /// <typeparam name="TKey">
 /// The non-null key type.
 /// </typeparam>
 /// <typeparam name="TValue">
-/// The stored value type; default and null values remain distinguishable from absence.
+/// The stored value type; default and <see langword="null"/> values remain distinguishable from absence.
 /// </typeparam>
 public abstract class ServiceCache<TKey, TValue> : IDisposable where TKey : notnull
 {
+    private bool _storageClaimed;
+
     /// <summary>
     /// Initializes the key comparer used by a storage mechanism.
     /// </summary>
     /// <param name="comparer">
-    /// The comparer, or null to use the default equality comparer.
+    /// The comparer, or <see langword="null"/> to use the default equality comparer.
     /// </param>
     protected ServiceCache(IEqualityComparer<TKey>? comparer = null) => Comparer = comparer ?? EqualityComparer<TKey>.Default;
 
@@ -37,7 +40,17 @@ public abstract class ServiceCache<TKey, TValue> : IDisposable where TKey : notn
     /// <summary>
     /// Gets the number of current entries without renewing sliding retention.
     /// </summary>
-    public int Count => GetSnapshotCore().Length;
+    public int Count
+    {
+        get
+        {
+            lock (SyncRoot)
+            {
+                ObjectDisposedException.ThrowIf(IsDisposed, this);
+                return GetSnapshotCore().Length;
+            }
+        }
+    }
 
     /// <summary>
     /// Looks up a value and reports presence independently from its value.
@@ -49,9 +62,17 @@ public abstract class ServiceCache<TKey, TValue> : IDisposable where TKey : notn
     /// The retained value on success, or the default value when absent.
     /// </param>
     /// <returns>
-    /// True when an eligible entry exists; otherwise, false.
+    /// <see langword="true"/> when an eligible entry exists; otherwise, <see langword="false"/>.
     /// </returns>
-    public bool TryGet(TKey key, out TValue value) => TryGetCore(key, out value);
+    public bool TryGet(TKey key, out TValue value)
+    {
+        lock (SyncRoot)
+        {
+            ObjectDisposedException.ThrowIf(IsDisposed, this);
+            ArgumentNullException.ThrowIfNull(key);
+            return TryGetCore(key, out value);
+        }
+    }
 
     /// <summary>
     /// Replaces a value without taking ownership of its disposable resources.
@@ -60,9 +81,17 @@ public abstract class ServiceCache<TKey, TValue> : IDisposable where TKey : notn
     /// The non-null key to insert or replace.
     /// </param>
     /// <param name="value">
-    /// The value to retain, including default or null when supported by the value type.
+    /// The value to retain, including default or <see langword="null"/> when supported by the value type.
     /// </param>
-    public void Set(TKey key, TValue value) => SetCore(key, value);
+    public void Set(TKey key, TValue value)
+    {
+        lock (SyncRoot)
+        {
+            ObjectDisposedException.ThrowIf(IsDisposed, this);
+            ArgumentNullException.ThrowIfNull(key);
+            SetCore(key, value);
+        }
+    }
 
     /// <summary>
     /// Removes the entry selected by the key comparer.
@@ -71,14 +100,29 @@ public abstract class ServiceCache<TKey, TValue> : IDisposable where TKey : notn
     /// The non-null key to remove.
     /// </param>
     /// <returns>
-    /// True when a retained entry was removed; otherwise, false.
+    /// <see langword="true"/> when an eligible entry was removed; otherwise, <see langword="false"/>.
     /// </returns>
-    public bool Remove(TKey key) => RemoveCore(key);
+    public bool Remove(TKey key)
+    {
+        lock (SyncRoot)
+        {
+            ObjectDisposedException.ThrowIf(IsDisposed, this);
+            ArgumentNullException.ThrowIfNull(key);
+            return RemoveCore(key);
+        }
+    }
 
     /// <summary>
     /// Releases all retained entries without disposing caller-owned keys or values.
     /// </summary>
-    public void Clear() => ClearCore();
+    public void Clear()
+    {
+        lock (SyncRoot)
+        {
+            ObjectDisposedException.ThrowIf(IsDisposed, this);
+            ClearCore();
+        }
+    }
 
     /// <summary>
     /// Copies current key-value pairs without renewing sliding retention.
@@ -86,17 +130,51 @@ public abstract class ServiceCache<TKey, TValue> : IDisposable where TKey : notn
     /// <returns>
     /// A detached array containing eligible entries; values themselves are not copied.
     /// </returns>
-    public KeyValuePair<TKey, TValue>[] GetSnapshot() => GetSnapshotCore();
+    public KeyValuePair<TKey, TValue>[] GetSnapshot()
+    {
+        lock (SyncRoot)
+        {
+            ObjectDisposedException.ThrowIf(IsDisposed, this);
+            return GetSnapshotCore();
+        }
+    }
 
     /// <summary>
     /// Claims this backend for one storage owner over its entire lifetime.
     /// </summary>
-    internal void ClaimStorageOwnership() { }
+    internal void ClaimStorageOwnership()
+    {
+        lock (SyncRoot)
+        {
+            ObjectDisposedException.ThrowIf(IsDisposed, this);
+            if (_storageClaimed)
+                throw new InvalidOperationException("The cache already belongs to a storage owner.");
+            _storageClaimed = true;
+        }
+    }
 
     /// <summary>
     /// Closes the cache and releases its owned storage resources.
     /// </summary>
-    public void Dispose() => DisposeCore();
+    public void Dispose()
+    {
+        lock (SyncRoot)
+        {
+            if (IsDisposed) return;
+            IsDisposed = true;
+            try
+            {
+                ClearCore();
+            }
+            catch
+            {
+                try { DisposeCore(); }
+                catch { /* Preserve the primary storage cleanup failure. */ }
+                throw;
+            }
+            DisposeCore();
+        }
+    }
 
     /// <summary>
     /// Looks up an entry synchronously while the cache synchronization gate is held.
@@ -108,7 +186,7 @@ public abstract class ServiceCache<TKey, TValue> : IDisposable where TKey : notn
     /// The found value, or default when absent.
     /// </param>
     /// <returns>
-    /// True when the entry is present; otherwise, false.
+    /// <see langword="true"/> when the entry is present; otherwise, <see langword="false"/>.
     /// </returns>
     protected abstract bool TryGetCore(TKey key, out TValue value);
 
@@ -130,7 +208,7 @@ public abstract class ServiceCache<TKey, TValue> : IDisposable where TKey : notn
     /// The non-null key to remove.
     /// </param>
     /// <returns>
-    /// True when a retained entry was removed; otherwise, false.
+    /// <see langword="true"/> when an eligible entry was removed; otherwise, <see langword="false"/>.
     /// </returns>
     protected abstract bool RemoveCore(TKey key);
 

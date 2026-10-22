@@ -9,7 +9,7 @@ namespace BookOfEternityClient.Services;
 internal sealed class ValidationOperation : IDisposable
 {
     private readonly object _gate = new();
-    private readonly Dictionary<EntryKey, Entry> _entries = new(new EntryKeyComparer());
+    private ServiceCacheStorage<EntryKey, Entry>? _storage;
     private readonly AsyncLocal<Frame?> _flow = new();
     private readonly AsyncLocal<FreshScope?> _freshFlow = new();
     private Frame? _top;
@@ -22,7 +22,12 @@ internal sealed class ValidationOperation : IDisposable
     /// <param name="storage">
     /// Exclusively owned storage for this context, never shared with another operation.
     /// </param>
-    internal ValidationOperation(ServiceCacheStorage<EntryKey, Entry> storage) { storage.ClaimValidationOperation(); }
+    internal ValidationOperation(ServiceCacheStorage<EntryKey, Entry> storage)
+    {
+        ArgumentNullException.ThrowIfNull(storage);
+        storage.ClaimValidationOperation();
+        _storage = storage;
+    }
 
     /// <summary>
     /// Reports whether the current thread holds the coordinator monitor for typed diagnostics.
@@ -37,21 +42,23 @@ internal sealed class ValidationOperation : IDisposable
     /// </returns>
     internal IDisposable ForceFresh()
     {
-        FreshScope scope;
-        lock (_gate)
+        try
         {
-            RequireOpen();
-            if (!ReferenceEquals(_top, _flow.Value) || !ReferenceEquals(_fresh, _freshFlow.Value))
+            FreshScope scope;
+            lock (_gate)
             {
+                RequireOpen();
+                if (!ReferenceEquals(_top, _flow.Value) || !ReferenceEquals(_fresh, _freshFlow.Value))
+                    throw new InvalidOperationException("A fresh scope requires the operation's active serial flow.");
                 InvalidateAndPoison();
-                throw new InvalidOperationException("A fresh scope requires the operation's active serial flow.");
+                scope = new FreshScope(this, _fresh);
+                _fresh = scope;
             }
-            InvalidateAndPoison();
-            scope = new FreshScope(this, _fresh);
-            _fresh = scope;
+            _freshFlow.Value = scope;
+            ClearEntries();
+            return scope;
         }
-        _freshFlow.Value = scope;
-        return scope;
+        catch { InvalidateAfterFailure(); throw; }
     }
 
     /// <summary>
@@ -62,14 +69,29 @@ internal sealed class ValidationOperation : IDisposable
     /// </returns>
     internal ValidationOperationState CaptureState()
     {
+        ServiceCacheStorage<EntryKey, Entry> storage;
         lock (_gate)
         {
+            if (_closed) return new(0, 0, true);
+            storage = _storage!;
+        }
+        KeyValuePair<EntryKey, Entry>[] entries;
+        try { entries = storage.Cache.GetSnapshot(); }
+        catch
+        {
+            lock (_gate) { if (_closed) return new(0, 0, true); }
+            Dispose();
+            throw;
+        }
+        lock (_gate)
+        {
+            if (_closed) return new(0, 0, true);
             var domains = new HashSet<IOperationDependency>(ReferenceEqualityComparer.Instance);
-            foreach (var entry in _entries.Values)
-                foreach (var dependency in entry.Versions) domains.Add(dependency.Key);
+            foreach (var entry in entries)
+                foreach (var dependency in entry.Value.Versions) domains.Add(dependency.Key);
             for (var frame = _top; frame is not null; frame = frame.Parent)
                 foreach (var dependency in frame.Versions.Keys) domains.Add(dependency);
-            return new(_entries.Count, domains.Count, _closed);
+            return new(entries.Length, domains.Count, false);
         }
     }
 
@@ -111,20 +133,32 @@ internal sealed class ValidationOperation : IDisposable
             ArgumentNullException.ThrowIfNull(compute);
             var declaration = dependencies.ToArray();
             foreach (var dependency in declaration) ArgumentNullException.ThrowIfNull(dependency);
-            frame = Enter(new EntryKey(computation, inputIdentity), parent);
+            var key = new EntryKey(computation, inputIdentity);
+            frame = Enter(key, parent);
             _flow.Value = frame;
             cancellationToken.ThrowIfCancellationRequested();
 
             var versions = CaptureVersions(declaration, out var eligible);
-            Entry? entry;
+            ServiceCacheStorage<EntryKey, Entry> storage;
+            bool lookup;
             lock (_gate)
             {
                 RequireActive(frame);
                 frame.Eligible &= eligible;
                 MergeVersions(frame, versions);
-                entry = frame.Eligible && frame.Fresh is null &&
-                    _entries.TryGetValue(frame.Key!.Value, out var candidate) &&
-                    SameDeclaration(declaration, candidate.Declaration) ? candidate : null;
+                storage = _storage!;
+                lookup = frame.Eligible && frame.Fresh is null;
+            }
+            Entry? entry = null;
+            if (lookup && storage.Cache.TryGet(key, out var candidate))
+            {
+                lock (_gate)
+                {
+                    RequireActive(frame);
+                    if (frame.Eligible && frame.Fresh is null && candidate is not null &&
+                        EntryKeyComparer.Same(key, candidate.Key) && SameDeclaration(declaration, candidate.Declaration))
+                        entry = candidate;
+                }
             }
             if (entry is not null && VersionsAreCurrent(entry.Versions))
             {
@@ -143,8 +177,8 @@ internal sealed class ValidationOperation : IDisposable
             lock (_gate)
             {
                 RequireActive(frame);
-                _entries.Remove(frame.Key!.Value);
             }
+            storage.Cache.Remove(key);
             var computed = await compute(cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
             RequireCurrent(frame);
@@ -154,17 +188,30 @@ internal sealed class ValidationOperation : IDisposable
             var result = retain ? computation.Copy(stored) : stored;
             cancellationToken.ThrowIfCancellationRequested();
             RequireCurrent(frame);
+            Entry? replacement = null;
             lock (_gate)
             {
                 RequireActive(frame);
                 if (retain && frame.Eligible && frame.Fresh is null)
-                    _entries[frame.Key!.Value] = new Entry(stored, declaration, frame.Versions.ToArray());
+                    replacement = new Entry(key, stored, declaration, frame.Versions.ToArray());
             }
+            if (replacement is not null)
+            {
+                storage.Cache.Set(key, replacement);
+                bool remove;
+                lock (_gate)
+                {
+                    RequireActive(frame);
+                    remove = !frame.Eligible || frame.Fresh is not null;
+                }
+                if (remove) storage.Cache.Remove(key);
+            }
+            RequireCurrent(frame);
             return result;
         }
         catch
         {
-            lock (_gate) InvalidateAndPoison();
+            InvalidateAfterFailure();
             throw;
         }
         finally
@@ -213,7 +260,9 @@ internal sealed class ValidationOperation : IDisposable
     /// </summary>
     public void Dispose()
     {
-        lock (_gate) Close();
+        ServiceCacheStorage<EntryKey, Entry>? storage;
+        lock (_gate) storage = Close();
+        DisposeStorage(storage);
         _flow.Value = null;
         _freshFlow.Value = null;
     }
@@ -373,8 +422,27 @@ internal sealed class ValidationOperation : IDisposable
     /// </summary>
     private void InvalidateAndPoison()
     {
-        _entries.Clear();
         for (var frame = _top; frame is not null; frame = frame.Parent) frame.Eligible = false;
+    }
+
+    /// <summary>
+    /// Clears retained results outside the coordinator monitor.
+    /// </summary>
+    private void ClearEntries()
+    {
+        ServiceCacheStorage<EntryKey, Entry>? storage;
+        lock (_gate) storage = _storage;
+        storage?.Cache.Clear();
+    }
+
+    /// <summary>
+    /// Invalidates a failed request without allowing cleanup to replace its primary error.
+    /// </summary>
+    private void InvalidateAfterFailure()
+    {
+        lock (_gate) InvalidateAndPoison();
+        try { ClearEntries(); }
+        catch { Dispose(); }
     }
 
     /// <summary>
@@ -385,11 +453,12 @@ internal sealed class ValidationOperation : IDisposable
     /// </param>
     private void Finish(Frame frame)
     {
+        ServiceCacheStorage<EntryKey, Entry>? retired = null;
         lock (_gate)
         {
             if (!_closed)
             {
-                if (!ReferenceEquals(_top, frame)) Close();
+                if (!ReferenceEquals(_top, frame)) retired = Close();
                 else
                 {
                     var parent = frame.Parent;
@@ -408,6 +477,7 @@ internal sealed class ValidationOperation : IDisposable
             }
             frame.Clear();
         }
+        DisposeStorage(retired);
     }
 
     /// <summary>
@@ -419,24 +489,30 @@ internal sealed class ValidationOperation : IDisposable
     private void ReleaseFresh(FreshScope scope)
     {
         FreshScope? previous;
+        ServiceCacheStorage<EntryKey, Entry>? retired = null;
         lock (_gate)
         {
             previous = scope.Previous;
-            if (!_closed && (!ReferenceEquals(_fresh, scope) || !ReferenceEquals(_freshFlow.Value, scope))) Close();
+            if (!_closed && (!ReferenceEquals(_fresh, scope) || !ReferenceEquals(_freshFlow.Value, scope))) retired = Close();
             if (!_closed) _fresh = previous;
             scope.Retire();
         }
+        DisposeStorage(retired);
         _freshFlow.Value = _closed ? null : previous;
     }
 
     /// <summary>
     /// Atomically clears operation-owned references without disposing caller-owned values or throwing on cleanup.
     /// </summary>
-    private void Close()
+    /// <returns>
+    /// The retired storage owner to dispose after releasing the coordinator monitor, or null after an earlier close.
+    /// </returns>
+    private ServiceCacheStorage<EntryKey, Entry>? Close()
     {
+        if (_closed) return null;
         _closed = true;
-        _entries.Clear();
-        _entries.TrimExcess();
+        var storage = _storage;
+        _storage = null;
         var frame = _top;
         _top = null;
         while (frame is not null)
@@ -453,6 +529,19 @@ internal sealed class ValidationOperation : IDisposable
             scope.Retire();
             scope = previous;
         }
+        return storage;
+    }
+
+    /// <summary>
+    /// Retires an owned backend outside the coordinator monitor without masking a primary failure.
+    /// </summary>
+    /// <param name="storage">
+    /// Exclusively owned retired storage, or null if already released.
+    /// </param>
+    private static void DisposeStorage(ServiceCacheStorage<EntryKey, Entry>? storage)
+    {
+        try { storage?.Dispose(); }
+        catch { /* The context and backend are closed; preserve the caller's primary error. */ }
     }
 
     /// <summary>
@@ -464,7 +553,14 @@ internal sealed class ValidationOperation : IDisposable
     /// <param name="Input">
     /// Complete stable input and policy identity.
     /// </param>
-    internal readonly record struct EntryKey(object Computation, object Input);
+    internal readonly record struct EntryKey(object Computation, object Input)
+    {
+        /// <inheritdoc />
+        public bool Equals(EntryKey other) => EntryKeyComparer.Same(this, other);
+
+        /// <inheritdoc />
+        public override int GetHashCode() => HashCode.Combine(RuntimeHelpers.GetHashCode(Computation), RuntimeHelpers.GetHashCode(Input));
+    }
 
     /// <summary>
     /// Compares and hashes only stable reference identities of a logical key.
@@ -496,6 +592,9 @@ internal sealed class ValidationOperation : IDisposable
     /// <summary>
     /// Retains only a detached completed value, detached declaration and exact dependency tokens.
     /// </summary>
+    /// <param name="Key">
+    /// Exact original algorithm/input identities, checked even if a configured backend merges keys.
+    /// </param>
     /// <param name="Value">
     /// Owned immutable or defensively copied result, including a legitimate null.
     /// </param>
@@ -505,7 +604,7 @@ internal sealed class ValidationOperation : IDisposable
     /// <param name="Versions">
     /// Detached complete direct and transitive versions; no computation delegate is retained.
     /// </param>
-    internal sealed record Entry(object? Value, IOperationDependency[] Declaration,
+    internal sealed record Entry(EntryKey Key, object? Value, IOperationDependency[] Declaration,
         KeyValuePair<IOperationDependency, object>[] Versions);
 
     /// <summary>

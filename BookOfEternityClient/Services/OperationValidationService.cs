@@ -33,8 +33,17 @@ internal sealed class DefaultOperationValidationService : OperationValidationSer
         _cacheFactory = cacheFactory ?? (() => new DictionaryCache<ValidationOperation.EntryKey, ValidationOperation.Entry>(new ValidationOperation.EntryKeyComparer()));
 
     /// <inheritdoc />
-    internal override ValidationOperation BeginOperation() =>
-        new(new ServiceCacheStorage<ValidationOperation.EntryKey, ValidationOperation.Entry>(_cacheFactory()));
+    internal override ValidationOperation BeginOperation()
+    {
+        var storage = new ServiceCacheStorage<ValidationOperation.EntryKey, ValidationOperation.Entry>(_cacheFactory());
+        try { return new ValidationOperation(storage); }
+        catch
+        {
+            try { storage.Dispose(); }
+            catch { /* Do not replace the construction failure with a secondary backend cleanup failure. */ }
+            throw;
+        }
+    }
 }
 
 /// <summary>
