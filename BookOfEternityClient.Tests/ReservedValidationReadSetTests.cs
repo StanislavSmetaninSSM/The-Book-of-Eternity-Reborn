@@ -376,6 +376,54 @@ public sealed class ReservedValidationReadSetTests(ITestOutputHelper output)
     }
 
     /// <summary>
+    /// Drains a still-running admitted read before releasing ownership after an overlapping owner completion fails.
+    /// </summary>
+    [Fact]
+    public async Task OwnerCloseWaitsForAdmittedReadThenReleasesReservation()
+    {
+        using var fixture = new Fixture(output);
+        var started = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        using var release = new ManualResetEventSlim();
+        var active = false;
+        var files = fixture.Create(record => new FileSystemManagerHooks
+        {
+            OperationTimingObserver = record,
+            CanonicalReadActivityObserver = _ =>
+            {
+                if (!active) return;
+                started.TrySetResult();
+                release.Wait();
+            }
+        });
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        var readSet = files.TryBeginReservedValidationReadSet(lease);
+        Assert.NotNull(readSet); await readSet.OpenAsync();
+        active = true;
+        var reader = Task.Run(() => files.ReadFileAsync(lease, "present.txt"));
+        try
+        {
+            await started.Task;
+            await Assert.ThrowsAsync<InvalidOperationException>(() => readSet.CompleteAsync());
+            var closing = readSet.DisposeAsync().AsTask();
+            Assert.False(closing.IsCompleted);
+            Assert.Throws<InvalidOperationException>(() => lease.MainAdmission!.BeginMutation());
+            release.Set();
+            await Assert.ThrowsAsync<InvalidOperationException>(() => reader);
+            await closing;
+            Assert.True(lease.IsActive);
+            using var mutation = lease.MainAdmission!.BeginMutation();
+            Assert.Equal("original", files.ReadFileSync(lease, "present.txt"));
+        }
+        finally
+        {
+            release.Set();
+            try { await reader; } catch (InvalidOperationException) { }
+            await readSet.DisposeAsync();
+        }
+    }
+
+    /// <summary>
     /// Owns an isolated marked root, exact timing observations and ordinary file payloads.
     /// </summary>
     /// <param name="output">
