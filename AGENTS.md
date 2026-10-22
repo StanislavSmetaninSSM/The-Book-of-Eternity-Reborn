@@ -96,7 +96,19 @@ The user explicitly permits adding test entry points and refactoring existing
 code throughout the project for this purpose, within the tracked task and review.
 Keep production and tests on the same implementation, preserve integrity and
 ownership checks, and retain genuine integration/cold-path coverage. Measure slow
-sections by name; do not impose diagnostic record, total-size or retention quotas.
+sections by name; do not cap diagnostic records or bytes during collection.
+
+Diagnostic output is local-only. Never commit or upload raw logs, TRX, generated
+analysis/qualification/review dumps, archives or split archive parts to GitHub;
+compression and splitting do not make diagnostic output repository content.
+Commit source, test fixture inputs, documentation/specifications and compact
+human-written verification findings. Store measurement output on D: outside the
+checkout, currently D:\BoeDiagnostics. Keep the newest complete verified
+measurement; after its capture and ownership cleanup are verified, remove older
+raw measurements. An incomplete capture does not replace the previous complete
+one. Keep small comparison findings; never treat game saves as diagnostic output.
+This user-directed retention policy supersedes historical unlimited-retention
+wording and does not limit collection within a measurement.
 
 ## Spec Kit and Hermes/Codex orchestration guardrail
 

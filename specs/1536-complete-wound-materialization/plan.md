@@ -6,7 +6,40 @@
 **Spec:** spec.md revision50; contracts/recovery-validation.md, preserved OPCACHE/CACHEPORT contracts.
 **Architecture:** one operation per real issuing publication lease, root-shared no-IO mutation epochs, exact private input identities. Live authority guards outside cached successful DATA facts; recursive ForceFresh at authoritative takes/callbacks. Canonical IO remains FileSystemManager, no artificial source repository. .NET8/C#/xUnit/PowerShell7, existing isolated branch.
 
-## T436 — diagnostic-only original measurement before acceptance
+## T437 — owner-directed diagnostic history cleanup and local retention
+
+The owner explicitly requested removal of every diagnostic output uploaded by
+this task, including reachable Git history, and local D: retention of only the
+newest complete verified measurement. This maintenance action supersedes prior
+remote diagnostic archival and indefinite retention instructions; collection
+itself remains uncapped. Game code, assertions, budgets and all fixture inputs
+are unchanged. No new runtime measurement is authorized by this cleanup.
+
+Server audit: 45 heads, one tag and 391 pull refs; only
+`1536-crash5-linux-windows-spec-20261019` contains this diagnostic history.
+Exact path filtering removes 1,348 generated output paths (6,598,188,337 logical
+bytes at the previous tip) while retaining 80 crash5 source/Markdown/attribute
+files and all 117 immutable fixture files. All 546 mapped commits have their
+entire non-output trees verified unchanged; 538 commit IDs change. Original
+history remains locally available only until publication and fresh remote
+verification finish. Do not merge or push that obsolete history back.
+
+The latest T429 completed diagnostic measurement (a timeout, not a passing game
+recovery) is local at `D:\BoeDiagnostics\latest-T429-20261022`. Its 686,215,820-byte
+raw ZIP retains SHA-256
+`DFC0F18F4E02FAFFEB33A5C17CAB99E3ADA763F6458EB6204142DBD9039FFEFC`.
+Prior raw is retired after the new full capture and its resource cleanup are
+verified; compact comparison findings may remain. Incomplete collection never
+replaces the previous complete measurement. `.gitignore` excludes crash5 output
+while allowing source and Markdown; fixture directories remain unaffected.
+
+Status: local rewrite and per-commit preservation verified; independent review,
+explicit leased publication, fresh remote verification and local retirement are
+pending. No C# build/test is required for this output/history/documentation-only
+block; verification concerns exact trees, refs, fixture preservation and ignore
+coverage. GitHub internal object reclamation is not controlled by a force push.
+
+## T436 — diagnostic-only original measurement before acceptance (historical scheduling)
 
 The user's original600s request and waiver authorize this investigation; independent bounded Astra/high scheduling review found no concrete correctness blocker. Finish current test-only exception corrections; retain202 unchanged source-bound PASS controls, recheck affected37 and XML/catalog. Pin source/runner/all dependency copies and exact remote recovery. Generate/verify the genuine new source42 slot with unchanged checks. Execute one original600/820/15 into an isolated C:/Temp container, all assertions/native settlement/diagnostics unchanged, no simultaneous giant-raw reads. Preserve every stored raw byte before analysis. Findings do not complete T428 or T429: warm actual Take is still open and all final acceptance gates remain required. Do not automatically retry on timeout or continue other cuts. Review scheduling and actual script hashes independently before runtime.
 

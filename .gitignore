@@ -29,3 +29,14 @@
 
 /tests/fixtures/PortableStorageCrashHost/bin/
 /tests/fixtures/PortableStorageCrashHost/obj/
+
+# Diagnostic output stays outside Git. Preserve source tools and human findings.
+/diagnostics/
+/specs/1536-complete-wound-materialization/recovery/crash5/**/*
+!/specs/1536-complete-wound-materialization/recovery/crash5/**/
+!/specs/1536-complete-wound-materialization/recovery/crash5/**/*.md
+!/specs/1536-complete-wound-materialization/recovery/crash5/**/*.cs
+!/specs/1536-complete-wound-materialization/recovery/crash5/**/*.csproj
+!/specs/1536-complete-wound-materialization/recovery/crash5/**/*.ps1
+!/specs/1536-complete-wound-materialization/recovery/crash5/**/*.py
+!/specs/1536-complete-wound-materialization/recovery/crash5/**/.gitattributes

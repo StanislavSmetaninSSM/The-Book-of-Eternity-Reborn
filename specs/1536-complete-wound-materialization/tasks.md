@@ -1,5 +1,7 @@
 # CRASH5 — revision50: production recovery filesystem cache and original measurement
 
+- [ ] T437 [US3 maintenance] Remove all uploaded diagnostic outputs and their historical versions from affected GitHub refs using an exact path manifest; preserve source, Markdown and all immutable fixture inputs. Audit heads/tags/PR refs, verify every rewritten commit's non-output tree, obtain independent review, publish with explicit leased ref update, and verify fresh remote recovery. Store only the newest complete verified measurement on D: outside Git; retire older raw measurements after replacement, retain compact comparison findings, and prevent diagnostics from entering Git again. No game code, assertions, budgets or diagnostic collection limits change.
+
 Issue1536 / RECACHE-1..6. User explicitly authorized implementation/original600s measurement and waived approval waits. Existing T427–429 continue after accepted T431–434 architecture; parent owns coherent code and evidence, separate complex Astra/high review.
 
 - [x] T435 [US1/US3] Audit actual35mechanical/31baseline phase/admission and complete writer/callback coverage; write/present r50 artifacts/exact contract, execute pinned Spec Kit phases/consistency, preserve architecture outputs and publish WIP.
