@@ -34,6 +34,21 @@ counts. Inject raw footprint drift after observation and require refusal. New
 categories core-recovery-proof-reads and fr063-joint-proof-reads-integration own
 only these tests. All fixture output streams D unbounded with SHA references.
 
+T445 execution correction after actual source572a evidence: unit10PASS but actual
+proof2FAIL/0opens/18440attributes. Independent reviewer R52-F1 confirms exact-top
+and physical-owner-only ancestry decline SessionOperationContext's participating
+descendant; removing one check would not fix the other two. Record amended spec
+before implementation. Add causal RED unit one/two-level bound flows and explicit
+other-manager writer refusal (R52-F2). In Core/FileSystemManager.
+PendingSnapshotValidationRead.cs capture/recheck exact entry-frame ancestry with
+original physical owner and exact ambient lease registration; reserve through
+entry frame and expose its identity to existing read set. In ValidationReadSet.cs
+retain/recheck that captured frame, not a permissive later descendant. Do not alter
+MainAccess.TryReserveWorldRead atomic sibling/mutation/physical-close predicates,
+source identities/copy/exit algorithm or recovery. Actual proof must then pass
+with lower attributes and drift refusal before original release. Historical
+checkpoint128bodylines is a typo; extraction receipt proves130verbatim lines.
+
 T446: choose related reserved-readset/lifetime/ordinary-reader/operation-cache/
 progression/affected publication categories by actual diff; don't repeat unrelated
 passed runs or run aggregates. Update tests/selection.json, XML full-reference

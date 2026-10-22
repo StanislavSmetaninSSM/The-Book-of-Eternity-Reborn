@@ -192,6 +192,73 @@ public sealed class RecoveryProofReadTests(ITestOutputHelper output)
     }
 
     /// <summary>
+    /// Uses the exact participating entry frame while retaining its original physical lease ancestor.
+    /// </summary>
+    /// <param name="depth">
+    /// One or two nested participating session frames above the same physical owner.
+    /// </param>
+    /// <returns>
+    /// Completion after one source-set lifetime with repeated DATA and a fresh exit proof.
+    /// </returns>
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    public async Task BoundSessionEntryRetainsExactParticipatingAncestry(int depth)
+    {
+        using var fixture = new ProofReadFixture(output);
+        var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        var generation = files.GetOrCreateSessionGeneration(lease);
+        Task<int> Bound(int remaining) => remaining == 0
+            ? files.ReadStableRecoveryDataAsync(lease, async () =>
+            {
+                for (var i = 0; i < 8; i++) Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+                return 19;
+            })
+            : SessionOperationContext.RunBoundAsync(files, generation, lease, () => Bound(remaining - 1));
+        Assert.Equal(19, await Bound(depth));
+        Assert.Equal(1, fixture.Count("ValidationReadSet.Open"));
+        Assert.Equal(1, fixture.Count("ValidationReadSet.SourceAsync"));
+        Assert.Equal(7, fixture.Count("ValidationReadSet.ReuseAsync"));
+        Assert.Equal(1, fixture.Count("ValidationReadSet.ExitProof"));
+    }
+
+    /// <summary>
+    /// Refuses a second real manager's writer while this helper reserves the shared root.
+    /// </summary>
+    /// <param name="bound">
+    /// Whether to execute inside the actual participating session frame rather than directly under the lease.
+    /// </param>
+    /// <returns>
+    /// Completion after temporary writer refusal, unchanged source bytes and a later successful writer.
+    /// </returns>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task OtherManagerCannotWriteDuringReservedPlan(bool bound)
+    {
+        using var fixture = new ProofReadFixture(output);
+        var files = fixture.Files;
+        var other = new FileSystemManager(fixture.Root, NullLogger<FileSystemManager>.Instance);
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        var generation = files.GetOrCreateSessionGeneration(lease);
+        Task<bool> Read() => files.ReadStableRecoveryDataAsync(lease, async () =>
+        {
+            Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+            var refusal = await Assert.ThrowsAsync<InvalidOperationException>(() => other.WriteFileAtomicAsync("other.txt", "forbidden"));
+            Assert.Contains("reserv", refusal.Message, StringComparison.OrdinalIgnoreCase);
+            Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+            return true;
+        });
+        if (bound) Assert.True(await SessionOperationContext.RunBoundAsync(files, generation, lease, Read));
+        else Assert.True(await Read());
+        Assert.Equal(1, fixture.Count("ValidationReadSet.Open"));
+        Assert.False(File.Exists(Path.Combine(fixture.Root, "game_session", "other.txt")));
+        await other.WriteFileAtomicAsync("other.txt", "released");
+        Assert.Equal("released", File.ReadAllText(Path.Combine(fixture.Root, "game_session", "other.txt")));
+    }
+
+    /// <summary>
     /// Owns only one nonce-qualified temporary directory and complete timing observations.
     /// </summary>
     private sealed class ProofReadFixture : IDisposable

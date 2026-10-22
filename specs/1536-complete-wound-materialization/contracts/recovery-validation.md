@@ -1,3 +1,13 @@
+Revision52 actual-flow clarification PROOFREAD3a: retain exact entry MainAdmission
+separately from the physical lease owner. It may be a participating descendant
+only with an uninterrupted acquired/live same-root/same-access chain to that
+owner and the original exact ambient lease registration. No extra physical or
+metadata frame; no closed/closing/bound-closing frame. Reserve using entry ancestry,
+but retain original physical lease/admission. Every read/exit must still have that
+exact captured top and live chain; new descendants/siblings/late closed flows are
+not interchangeable. Existing atomic MainAccess reservation predicates and all
+source/fresh exit checks remain unchanged. No authority result is cached.
+
 # Full-proof reserved-read integration — revision52
 
 PROOFREAD1..6 / T444–447. New internal generic FileSystemManager helper

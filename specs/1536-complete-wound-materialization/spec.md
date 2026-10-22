@@ -34,6 +34,17 @@ No new global cache or authority repository is introduced.
   under reservation; raw external file/absence/namespace/generation changes must
   be caught by the fresh exit proof. Do not replace source checks with mtime-only
   or root-epoch-only assumptions. Nested read sets keep original ownership.
+- PROOFREAD-3a (measured execution clarification): an ordinary completed proof runs
+  inside a participating SessionOperationContext descendant of the physical lease
+  frame. The old exact-physical-top eligibility rejects this real route. Support
+  only an exact captured entry frame whose uninterrupted live/acquired same-root,
+  same-access ancestry reaches the original physical lease owner; reject extra
+  physical, metadata, foreign, sibling, closed/closing/bound-closing frames. Reserve
+  through that captured entry frame while retaining the original physical lease.
+  Recheck that exact entry top, its live ancestry and the same ambient registration
+  on every read/exit. Existing atomic MainAccess mutation/sibling/physical-close
+  refusal stays unchanged. Add explicit other-manager writer refusal under this
+  helper and one/two-level participating-flow controls, through typed APIs.
 - PROOFREAD-4: causal minimal real-file RED/GREEN through a typed internal seam,
   no reflection/world generation. Show8identical reads require only first+fresh
   exit source versus8fresh reads, with actual attributes and uncapped named timers.
