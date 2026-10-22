@@ -1,3 +1,38 @@
+# DW10 cache infrastructure implementation plan — revision49
+
+> REQUIRED: superpowers:executing-plans inline with TDD; one independent complex Astra/high review of the coherent code/tests/docs. Canonical Spec Kit artifacts replace duplicate Superpowers plans. User explicitly waived approval waits.
+
+**Goal:** implement the DW10 cache/service/repository roles and move the tested validation context onto replaceable storage. Issue1536 / CACHEPORT-1..7 / [exact contract](contracts/service-cache.md).
+**Architecture:** separate mechanism inheritance, configured storage ownership and domain source orchestration. Default validation remains per-operation; generic repository services may borrow session/TTL storage. Preserve all OPCACHE semantics; no game filesystem integration in this infrastructure block.
+**Tech:** .NET8, C#, TimeProvider/ITimer, xUnit, existing IVT, PowerShell7 category runner, no dependencies. Existing isolated clone/branch from eb48126395e8dd807e661480193d8acea946aad3 already published and clean.
+
+## Review focus and global constraints
+
+False/null presence; timer cleanup without access; aliasing of two scopes; async/source reentrancy and close; backend fault/cleanup preserving primary error. Do not hold coordinator monitor across virtual storage/copy/provider/source callbacks or await. Generic hooks remain memory-only under their own cache synchronization. Repository serialization uses async semaphore, not monitor across IO; storage owner controls disposal. Exact original600/820/15 and all diagnostic data remain unchanged. No GM-facing/schema change, hence no prompt/example updates.
+
+## T431 — written exact contract and safe baseline
+
+1. Present spec/plan/tasks/contract; standing waiver permits immediate continuation. Run actual setup-plan/setup-tasks/check-prerequisites supported switches; manual bridge-equivalent requirements/signature/phase consistency, record no unresolved decisions. Optional git hooks consciously skipped in favor of explicit bounded publication.
+2. Verify T426-green.zip hash/all30 payloads/3current outputs before build; reuse current clone (not main). Update existing ledger, commit/push planning WIP, verify remote SHA.
+
+## T432 — one coherent RED/GREEN migration
+
+Files: new Services/Caching/{ServiceCache,DictionaryCache,NoCache,CacheExpirationPolicy,MemoryCache,IServiceCacheStorage,ServiceCacheStorage,ICacheRepository,RepositoryService}.cs; new Tests/{ServiceCacheTests,RepositoryCacheServiceTests,OperationValidationStorageTests}.cs; modify Services/{OperationValidationService,ValidationOperation}.cs, existing26-test constructors only, categories.json/selection.json. Exact signatures and behaviors are in contracts/service-cache.md.
+
+1. Write compiling storage/service seams with fresh-only/no-retention behavior and new behavioral tests. Existing operation26 remain baseline. Meaningful RED is wrong hit/load/expiry/invalidation/extension behavior, never undefined API/compilation failure. Save/push exact RED source and run XML full-reference build + selected categories; preserve complete raw/binaries.
+2. Implement base lifecycle and hooks; comparer-aware Dictionary and NoCache; MemoryCache policy/monotonic clock/owned idle timer. Tests assert exact boundary expiry/reset/no sliding on Count, no Sleep and independent fixtures.
+3. Implement storage claims/disposal and async shared source gate; repository/default service cache-aside, copy ownership and source-write invalidation in finally; preserve original source exceptions and reject self-reentrant gate. Test partial source mutation, concurrency and close on waiting/in-flight calls with TaskCompletionSource barriers (no timing guess).
+4. Move operation entries into storage outside `_gate`, retaining exact current identity/declaration/version/fresh/failure/close/descendant rules. Change instantiation to DefaultOperationValidationService. Add backend, aliasing, expiry-before-version, throwing hook and outside-monitor controls; retain original26 assertions.
+5. Save/push GREEN source, XML build and only affected categories; preserve complete raw and exact outputs. Investigate failures by source/counters; no timeout increases, broad run or unchanged rerun.
+
+## T433 — verify and independent review
+
+Run discovery-only catalog/PlanOnly, all selected actual planned/completed counts and cleanup, audit introduced XML blocks and XML-enabled compiler warnings. Preserve evidence before any new build. Review exact eb4812639..current coherent diff with original/r49 contracts and source-bound results, independent complex Astra/high. Fix validated findings with focused regression evidence; repeat only affected checks. Architecture pass does not qualify T427 filesystem protocol/T429 original runtime.
+
+## T434 — durable closure
+
+Update existing progress/checkpoint and tasks only with actual evidence. Commit/push bounded source/evidence, verify remote, refresh separate clean recovery and compare exact listed Git blobs. Report implemented components/tests/limitations. T427–429 remain the next game-specific work; do not mark timeout fixed or expand to unrelated Linux/Windows scenarios.
+
 # CRASH5 — revision48 DW10 architecture investigation plan
 
 Issue1536 / active spec DWARCH-1..5 / T430. Deliverable is the source-based architectural comparison and concrete migration recommendation in research.md, not a production refactor. Parent performs read-only analysis; a separate independent complex review checks conclusions and preserved contracts. Use the existing feature and clone. All r47 original performance criteria remain open.

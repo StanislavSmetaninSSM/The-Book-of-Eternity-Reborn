@@ -1,3 +1,11 @@
+# Revision49 — implementation decisions following DW10 analysis
+
+Issue1536 / CACHEPORT-1..7. User approved moving from T430 analysis to implementation, independently and without approval waits.
+
+Selected: preserve DW10 mechanism inheritance + domain composition and move current validation onto configurable storage. Merely unsealing the current context leaves private dictionary/lifetime fixed; directly copying synchronous miss callbacks under write-lock conflicts with async source work. Therefore inherited hooks remain synchronous memory operations, while source loading uses an async gate outside cache/coordinator monitors. Distinct storage per validation operation avoids cross-operation authority reuse. Other domain services can share their own storage lifecycle and configured TTL; generic repository orchestration shares that storage's async gate across transient services. No source callback under the cache monitor.
+
+No dependency is needed: .NET8 TimeProvider/ITimer supplies monotonic TTL and idle cleanup. A controlled test clock delivers timer callbacks without real delay. Explicit presence permits false/0/null and caller-provided comparer preserves path policies. Domain copy functions isolate mutable values; storage does not dispose caller payloads. Save/Delete invalidate before and after actual source attempt, including partial failure; next read observes normalized source instead of trusting submitted input. Computing domains keep factories; no artificial repository is added to validation. The real FileSystemManager-backed repository/root writer protocol belongs to existing T427, after this architecture has passed cheap tests/review.
+
 # T430 — перенос архитектуры DW10 в общий кэш игры
 
 Issue1536 / spec и plan revision48. Это результат чтения исходников и рекомендация по переносу архитектуры, а не утверждение об уже выполненном переносе. DW10 HEAD 691c0f0d9a1f23d445ec7087d05b720a7321c752; прочитанные source-каталоги совпадают с HEAD. В DW10 есть посторонние незавершённые изменения, которые анализ не затрагивал. Общий операционный компонент игры проверен на f6dedbd1ff94c90be8d54774994aa3fe1919184a; к восстановлению игры он ещё не подключён. Нет причин отказываться от структуры DW10: она становится основой рекомендуемого решения.

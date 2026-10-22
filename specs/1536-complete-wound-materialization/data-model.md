@@ -1,3 +1,9 @@
+# Revision49 — implemented roles and ownership contract
+
+Issue1536; CACHEPORT-1..7; exact proposed APIs in contracts/service-cache.md. This section becomes implementation evidence only after T432–434.
+
+ServiceCache owns in-memory entries and timer lifecycle through nonvirtual public guards + protected storage hooks; CacheExpirationPolicy describes retention only. ServiceCacheStorage exclusively owns one backend, shared async repository gate and close state; it may be borrowed by multiple repository services, but each ValidationOperation exclusively claims a distinct wrapper/backend. DefaultRepositoryService borrows repository/storage/copy policy; source remains authoritative. DefaultOperationValidationService creates new storage, and ValidationOperation owns it until close. EntryKey/Entry retain exact current identities/declarations/versions and defensive values. No payload/authority crosses operation scopes, even when a configured backend supports longer retention for other domains.
+
 # T430 — DW10-based architecture roles under investigation
 
 Issue1536 / revision48. These are proposed roles for the next implementation contract, not already implemented types or permission to change production behavior during analysis.

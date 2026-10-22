@@ -1,3 +1,11 @@
+# Revision49 — qualify the DW10 architecture migration
+
+Issue1536 / CACHEPORT-1..7 / T431–434. Read spec.md/plan.md and contracts/service-cache.md. User explicitly waived review waits. Reuse existing isolated branch; preserve T426 GREEN archive/outputs before build. Run actual pinned Spec Kit phases and bridge-equivalent consistency; publish WIP first.
+
+Use XML-enabled full-reference `dotnet build BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-restore -p:GenerateDocumentationFile=true`, then runner `-Category core-service-cache,core-repository-cache,core-operation-validation-cache -NoBuild -Parallelism 1` from PowerShell7 (array syntax as required). Run discovery-only catalog/PlanOnly; no aggregate suite. Preserve complete raw, attempt/counts/cleanup, source and exact binaries after RED and GREEN. Test TTL with controlled clock and concurrency with barriers, no Sleep or real game.
+
+Review completed code/tests/docs independently, address findings and run affected checks; save/push and exact clean recovery. This qualifies cache architecture only. Existing T427–429 remain for game-specific DATA integration and genuine original600/820/15 measurement; no diagnostic caps or performance claim here.
+
 # T430 — DW10 architecture analysis
 
 Issue1536 / active canonical revision48. Read the new research.md top section for actual local source evidence and the proposed DW10-based migration. This block is source analysis only; no DW10 edits/build/tests/external actions or new game execution.

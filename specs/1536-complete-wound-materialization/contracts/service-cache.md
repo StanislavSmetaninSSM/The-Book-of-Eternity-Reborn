@@ -1,0 +1,31 @@
+# DW10 cache infrastructure contract — revision49
+
+Issue1536 / CACHEPORT-1..7. Namespace BookOfEternityClient.Services.Caching; public cache/repository infrastructure, internal validation-specific keys/results. No new packages (.NET8 TimeProvider/ITimer). Source inspiration: local DW10 T430-source-provenance.json; adapt implementation without copying private reference source.
+
+## Storage mechanisms
+
+- `public abstract class ServiceCache<TKey,TValue> : IDisposable where TKey : notnull`: protected ctor `(IEqualityComparer<TKey>? comparer = null)`; public `bool TryGet(TKey key, out TValue value)`, `void Set(TKey key,TValue value)`, `bool Remove(TKey key)`, `void Clear()`, `KeyValuePair<TKey,TValue>[] GetSnapshot()`, `int Count`, `void Dispose()`. Nonvirtual public guards own synchronization/closed checks; protected abstract TryGetCore/SetCore/RemoveCore/ClearCore/GetSnapshotCore and virtual DisposeCore provide inheritance. Hooks are synchronous memory operations, never source IO/async/reentrant service callbacks. Count/snapshot do not refresh sliding expiry. Key/value disposal is caller responsibility. Internal one-time storage ownership claim prevents backend aliasing.
+- `DictionaryCache<TKey,TValue>`: ordinary comparer-aware dictionary; clear removes retained capacity.
+- `NoCache<TKey,TValue>`: never retains Set; TryGet false; snapshot empty, Remove false. Same lifecycle guards.
+- `CacheExpirationPolicy(TimeSpan? absoluteLifetime, TimeSpan? slidingLifetime, TimeSpan sweepInterval)`: immutable positive durations; at least one lifetime; fixed absolute from Set plus sliding from last successful TryGet, whichever expires first.
+- `MemoryCache<TKey,TValue>(CacheExpirationPolicy policy, TimeProvider? timeProvider = null, IEqualityComparer<TKey>? comparer = null)`: monotonic timestamps; expiration on reads/snapshot and periodic owned timer; reset lifetimes on replacement; stop timer/clear on Dispose.
+
+## Domain composition
+
+- `CacheLookup<TValue>(bool Found,TValue Value)` separates absent source from present null/default.
+- `IServiceCacheStorage<TKey,TValue> : IDisposable`: readonly `ServiceCache<TKey,TValue> Cache`; `Task<TResult> ExecuteAsync<TResult>(Func<CancellationToken,Task<TResult>> action, CancellationToken cancellationToken = default)`. Serialized async repository gate is shared by all services using that exact storage; no monitor held across action/await. Reentrant action flow is refused; waiting callers observe close/cancel; close clears cache immediately, no late result is returned. Dispose does not dispose caller payloads. Validation accesses Cache directly under its own serial ownership, outside its operation monitor.
+- `ServiceCacheStorage<TKey,TValue>(ServiceCache<TKey,TValue> cache)` owns one newly claimed backend. Reject duplicate claim without disposing/clearing the original. Internal one-time operation claim rejects reusing the same wrapper for two contexts, even sequentially.
+- `ICacheRepository<TKey,TValue>`: `Task<CacheLookup<TValue>> ReadAsync(TKey key,CancellationToken cancellationToken)`, `Task SaveAsync(TKey key,TValue value,CancellationToken cancellationToken)`, `Task DeleteAsync(TKey key,CancellationToken cancellationToken)`. Repository implements real domain source IO; cache never becomes canonical authority.
+- `abstract RepositoryService<TKey,TValue>`: abstract ReadAsync/SaveAsync/DeleteAsync with same signatures (default cancellation optional). `DefaultRepositoryService<TKey,TValue>(ICacheRepository<TKey,TValue> repository,IServiceCacheStorage<TKey,TValue> storage,Func<TValue,TValue> copy)` implements cache-aside through storage.ExecuteAsync. It borrows storage (caller closes operation/session lifetime) and never disposes repository. Read miss loads once, checks cancellation/close, copies input to cache and result, absent not retained. Save/Delete clear before source and in finally; do not cache possibly normalized submitted input. Cleanup failure must not replace the original repository failure; close storage on invalidation failure so stale results cannot escape.
+
+## Validation integration
+
+- `internal abstract OperationValidationService` exposes `internal abstract ValidationOperation BeginOperation()`.
+- `internal sealed DefaultOperationValidationService` takes an optional `Func<ServiceCache<ValidationOperation.EntryKey,ValidationOperation.Entry>> cacheFactory`; default creates DictionaryCache using the existing identity comparer. Each BeginOperation constructs its own ServiceCacheStorage and ValidationOperation. Computations keep original factory; no artificial repository wrapper.
+- ValidationOperation ctor receives its owned IServiceCacheStorage. EntryKey/Entry/comparer become internal typed seam, no reflection. It snapshots metadata under `_gate`, calls Cache outside `_gate`, then rechecks frame/eligibility/close before accepting/inserting/returning. Invalidation poisons frames under gate and clears storage after release. Close retires frame/fresh references under gate then disposes storage outside. Reentrant/throwing storage callbacks cannot grant stale success; cleanup preserves a primary error. Copy/provider/source delegates remain outside monitor. Existing exact algorithm/input/declaration identity stays intact.
+
+## Explicit test contracts
+
+Storage: absent vs false/0/null, case comparer, overwrite/remove/clear, derived hook dispatch, duplicate backend claim, separate scope clear, post-close refusal, absolute/sliding/combined expiration, replacement reset, snapshot no refresh, idle timer eviction and timer disposal.
+Repository: cache hit/load counts, absent/null, detached mutable values, real Save/Delete and post-write normalized readback, source partial-write failures invalidate, errors/cancel not cached, concurrent Read/Save across shared storage serialized, recursive callback refused, close during load/wait prevents late escape, storage lifetime independent of borrowed services.
+Validation: existing26 cases preserved with only Default implementation construction; new NoCache vs Dictionary/Memory operation results, version invalidation before TTL, per-operation fresh ownership, duplicate backend/storage refusal without clearing original, failed backend primary error, close during pending work, and storage hooks execute outside coordinator monitor. All fixtures per-test and memory-only.

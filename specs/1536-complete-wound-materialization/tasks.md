@@ -1,3 +1,14 @@
+# CRASH5 — revision49: DW10 architecture implementation tasks
+
+Issue1536; CACHEPORT-1..7. User explicitly authorized implementation and waived approval waits on2026-10-22. Parent owns one coherent infrastructure migration, independent complex Astra/high reviews the completed block. Existing T427–429 recovery integration/performance tasks remain required after this migration.
+
+- [ ] T431 [US1] Write/present exact r49 spec/contract/plan, execute actual pinned Spec Kit plan/tasks/prerequisite phases and bridge-equivalent consistency, publish WIP before source implementation. Preserve T426 outputs first; reuse the isolated user clone/branch.
+- [ ] T432 [US1/US2] Test-first production cache architecture: extensible ServiceCache; Dictionary/Memory/NoCache; explicit presence, comparer, expiration policy/controlled clock, idle expiry and cleanup; CacheStorage lifecycle/async serialized source gate; abstract Repository/Service + default cache-aside implementation; abstract/default OperationValidationService and injectable operation-owned storage. Preserve all26 coordinator controls and add cheap storage/repository/backend/close/failure/TTL controls. No virtual storage/source/copy/provider callback under the coordinator monitor; source awaits outside cache monitors. Capture actual compiling behavioral RED before enabling behavior, then GREEN. Add explicit category ownership/selection and readable XML for every changed/new API.
+- [ ] T433 [US3] Save/push exact source, XML-enabled full-reference build; selected new storage/repository categories and existing operation26, discovery-only catalog/selection check, XML/comment audit, actual counts/closing/raw/binary hashes; one independent coherent architectural code/test/doc review and resolve substantiated findings. Do not rerun unchanged passing categories without new risk.
+- [ ] T434 [US3] Reconcile actual findings and scope, save/push evidence and existing progress checkpoint, independently recover exact Git blobs and verify clean remote HEAD. Report architecture completion separately from still-open T427 game adapter/T428 broader integration/T429 original600/820/15. No diagnostic limits or game speedup claim.
+
+Dependencies: T431 -> T432 -> T433 -> T434. CACHEPORT-1/2 -> T432;3/4 -> T432/T433;5 -> T432/T433;6/7 -> T431/T433/T434. No source mutation-clock protocol or gameplay changes are included in this cache infrastructure block.
+
 # CRASH5 — revision48 tasks: DW10 architecture investigation
 
 Issue1536 / DWARCH-1..5 / canonical spec/plan revision48. Latest user direction is analysis toward adopting DW10's Service–Repository–CacheStorage architecture. Production integration T427–429 is deferred while this investigation closes; no original criterion is weakened or qualified.
