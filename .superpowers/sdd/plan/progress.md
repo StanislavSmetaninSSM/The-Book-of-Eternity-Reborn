@@ -1,4 +1,25 @@
-# Current checkpoint: r52 actual flow refusal reproduced; exact-entry correction next
+# Current checkpoint: r52 real proof overhead isolated; original-reader policy next
+
+Source73645 bothXML builds PASS93.3671/55.0574s,8DLLuniform. Actual14unitPASS
+24.8390s including bounddepth1/2 and direct/bound other-manager refusal/release.
+Actual whole-proof2cases complete1PASS1FAIL37.1241s: historydrift refused, but
+cached24136attrs vs18440fresh despite1open/186reuse. All3raw diagnostic files
+complete/hash verified. Full row analysis:329requests/143sources/186reuses,
+6251attrs in added request authority,6470attrs in required fresh exit sources.
+Separate Astra/high consultation rejects cross-operation namespace caching and
+accepts a narrow original-reader admission policy relative to original semantics.
+
+PROOFREAD3b written/presented, pinned plan/tasks/prerequisites repeated/equivalent
+consistency updated before policy code. Existing strict readset entry unchanged;
+private issuance only stable helper: exact flow/pending/cancellation/declaredlease/
+overlap/failure stay; original explicit reader/physical source guards and full
+opening/every-source+generation exit proof stay. No cached authority result.
+Added sibling-flow and atomic bound-entry closing negative tests. Need fresh
+bothXML builds,16unit/2actualproof and affected controls/catalog/XMLaudit before
+sourcegate/current genuine input/original600. No original released; no speedup
+claim. Raw evidence onlyD; prior complete r51 comparison still retained.
+
+# Historical r52 checkpoint: actual flow refusal reproduced; exact-entry correction
 
 Canonical spec/plan/tasks/contractr52 PROOFREAD1..6+3a, issue1536. T444complete,
 amended exact-entry scope presented and pinned plan/tasks/prerequisites repeated;

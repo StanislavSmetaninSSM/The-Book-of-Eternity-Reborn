@@ -22,7 +22,7 @@ public partial class FileSystemManager
     internal async Task<TResult> ReadStableRecoveryDataAsync<TResult>(CanonicalWriteLease lease, Func<Task<TResult>> read)
     {
         ArgumentNullException.ThrowIfNull(read);
-        var readSet = TryBeginReservedValidationReadSet(lease);
+        var readSet = TryBeginReservedValidationReadSetCore(lease, preserveOriginalAdmission: true);
         Exception? primaryFailure = null;
         try
         {

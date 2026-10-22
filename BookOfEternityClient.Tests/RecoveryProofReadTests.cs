@@ -261,6 +261,82 @@ public sealed class RecoveryProofReadTests(ITestOutputHelper output)
     }
 
     /// <summary>
+    /// Keeps an existing sibling admission on the original fresh path until that sibling closes.
+    /// </summary>
+    /// <returns>
+    /// Completion after fallback during sibling ownership and normal reserved reuse after its release.
+    /// </returns>
+    [Fact]
+    public async Task ExistingSiblingFlowKeepsReadsFreshUntilItCloses()
+    {
+        using var fixture = new ProofReadFixture(output);
+        var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        var ready = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var sibling = Task.Run(async () =>
+        {
+            await using var frame = files.BeginParticipatingMainAdmission();
+            try
+            {
+                await frame.AcquireAsync();
+                ready.TrySetResult();
+                await release.Task;
+            }
+            catch (Exception error) { ready.TrySetException(error); throw; }
+        });
+        async Task<bool> Read()
+        {
+            for (var i = 0; i < 8; i++) Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+            return true;
+        }
+        try
+        {
+            await ready.Task;
+            Assert.True(await files.ReadStableRecoveryDataAsync(lease, Read));
+            Assert.Equal(0, fixture.Count("ValidationReadSet.Open"));
+        }
+        finally { release.TrySetResult(); await sibling; }
+        Assert.True(await files.ReadStableRecoveryDataAsync(lease, Read));
+        Assert.Equal(1, fixture.Count("ValidationReadSet.Open"));
+        Assert.Equal(1, fixture.Count("ValidationReadSet.SourceAsync"));
+        Assert.Equal(7, fixture.Count("ValidationReadSet.ReuseAsync"));
+        Assert.Equal(1, fixture.Count("ValidationReadSet.ExitSource"));
+    }
+
+    /// <summary>
+    /// Refuses closing the exact participating entry before changing its closing state.
+    /// </summary>
+    /// <returns>
+    /// Completion after an atomic closing refusal, successful source exit and normal later closing.
+    /// </returns>
+    [Fact]
+    public async Task BoundEntryCannotBeginClosingDuringReservedPlan()
+    {
+        using var fixture = new ProofReadFixture(output);
+        var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        await using var entry = files.BeginParticipatingMainAdmission();
+        await entry.AcquireAsync();
+        Assert.True(await files.ReadStableRecoveryDataAsync(lease, async () =>
+        {
+            Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+            var refusal = Assert.Throws<InvalidOperationException>(entry.BeginClosing);
+            Assert.Contains("validation", refusal.Message, StringComparison.OrdinalIgnoreCase);
+            Assert.False(entry.BoundClosing);
+            Assert.False(entry.Closed);
+            Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+            return true;
+        }));
+        Assert.Equal(1, fixture.Count("ValidationReadSet.Open"));
+        Assert.Equal(1, fixture.Count("ValidationReadSet.ExitSource"));
+        entry.BeginClosing();
+        Assert.True(entry.BoundClosing);
+    }
+
+    /// <summary>
     /// Owns only one nonce-qualified temporary directory and complete timing observations.
     /// </summary>
     private sealed class ProofReadFixture : IDisposable

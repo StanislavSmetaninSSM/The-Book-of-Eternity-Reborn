@@ -45,6 +45,19 @@ No new global cache or authority repository is introduced.
   on every read/exit. Existing atomic MainAccess mutation/sibling/physical-close
   refusal stays unchanged. Add explicit other-manager writer refusal under this
   helper and one/two-level participating-flow controls, through typed APIs.
+- PROOFREAD-3b (measured admission correction): source73645 proves actual reuse
+  and raw-history refusal, but adds6251attributes through329extra full lease
+  validations and6470 through143fresh exit sources:24136vs18440fresh attributes.
+  Retain the established strict read-set default unchanged. Only the stable
+  post-recovery helper may request original-reader admission: each request keeps
+  exact captured flow, pending-decision, declared-lease, cancellation, overlap and
+  failure guards; every original explicit reader entrypoint retains its full
+  admission, and each physical source retains its original checks. Lease-free
+  readers retain their original contract. Opening/completion still perform full
+  fresh authority validation and every touched source/generation is freshly
+  verified on exit. No admission result or namespace classification is cached.
+  Cover sibling-flow refusal and atomic bound-entry closing refusal. Compare
+  actual reduction to the same fresh baseline; do not change that assertion.
 - PROOFREAD-4: causal minimal real-file RED/GREEN through a typed internal seam,
   no reflection/world generation. Show8identical reads require only first+fresh
   exit source versus8fresh reads, with actual attributes and uncapped named timers.

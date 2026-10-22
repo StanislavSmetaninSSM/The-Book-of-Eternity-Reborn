@@ -50,7 +50,24 @@ public partial class FileSystemManager
     /// <returns>
     /// An unopened scope requiring completion and disposal, or <see langword="null"/> for fresh unsupported execution.
     /// </returns>
-    internal ReservedValidationReadSet? TryBeginReservedValidationReadSet(CanonicalWriteLease lease)
+    internal ReservedValidationReadSet? TryBeginReservedValidationReadSet(CanonicalWriteLease lease) =>
+        TryBeginReservedValidationReadSetCore(lease, preserveOriginalAdmission: false);
+
+    /// <summary>
+    /// Issues the existing reservation with a privately selected per-request admission policy.
+    /// </summary>
+    /// <param name="lease">
+    /// Exact caller-owned canonical lease retained without ownership transfer.
+    /// </param>
+    /// <param name="preserveOriginalAdmission">
+    /// Whether the stable post-recovery helper retains original reader admission without an added full lease check.
+    /// Both values freshly validate opening, every original physical source and completion.
+    /// </param>
+    /// <returns>
+    /// An unopened scope, or <see langword="null"/> for the original fresh fallback.
+    /// </returns>
+    private ReservedValidationReadSet? TryBeginReservedValidationReadSetCore(CanonicalWriteLease lease,
+        bool preserveOriginalAdmission)
     {
         // Arbitrary read callbacks can change sources between observations. Decide before activation.
         if (_validationReadSet.Value != null || ValidationReuseSuppression.Value != 0 ||
@@ -62,7 +79,7 @@ public partial class FileSystemManager
             _hooks?.BeforeCanonicalExistenceFollowUpProbeAsync != null) return null;
         var reservation = TryBeginBorrowedValidationReservation(lease);
         if (reservation == null) return null;
-        var scope = new ReservedValidationReadSet(this, lease, reservation);
+        var scope = new ReservedValidationReadSet(this, lease, reservation, preserveOriginalAdmission);
         _validationReadSet.Value = scope;
         ValidationDiagnosticScopes.Value++;
         return scope;
@@ -189,6 +206,7 @@ public partial class FileSystemManager
         private readonly MainAdmission _entryAdmission;
         private readonly AmbientCanonicalLeaseRegistration _registration;
         private readonly PendingSnapshotValidationReadScope _reservation;
+        private readonly bool _preserveOriginalAdmission;
         private readonly Dictionary<(string Path, ValidationSnapshotFamily Family, bool Explicit), CanonicalFileReadSnapshot?> _snapshots = new();
         private readonly List<(string Path, ValidationSnapshotFamily Family, bool Explicit)> _order = [];
         private readonly object _state = new();
@@ -209,12 +227,16 @@ public partial class FileSystemManager
         /// <param name="reservation">
         /// Exact successfully installed borrowed exclusion reservation.
         /// </param>
+        /// <param name="preserveOriginalAdmission">
+        /// Whether requests retain original reader admission without an added full check; opening and completion remain fresh.
+        /// </param>
         internal ReservedValidationReadSet(FileSystemManager files, CanonicalWriteLease lease,
-            PendingSnapshotValidationReadScope reservation)
+            PendingSnapshotValidationReadScope reservation, bool preserveOriginalAdmission)
         {
             _files = files; _lease = lease; _reservation = reservation;
             _owner = lease.MainAdmission!; _registration = lease.AmbientRegistration!;
             _entryAdmission = reservation.EntryAdmission;
+            _preserveOriginalAdmission = preserveOriginalAdmission;
         }
 
         /// <summary>
@@ -320,6 +342,19 @@ public partial class FileSystemManager
         }
 
         /// <summary>
+        /// Checks every request's retained flow and pending decision while preserving its selected reader admission.
+        /// </summary>
+        private void RequireReadAuthority()
+        {
+            if (_preserveOriginalAdmission)
+            {
+                RequireRetainedFlow();
+                _lease.EnsureNoPendingLocalDecision();
+            }
+            else RequireAuthority();
+        }
+
+        /// <summary>
         /// Checks the captured entry frame, its live physical-owner ancestry and exact registration after source work.
         /// </summary>
         private void RequireRetainedFlow()
@@ -362,7 +397,7 @@ public partial class FileSystemManager
             try
             {
                 using var request = _files.MeasureOperation("ValidationReadSet.RequestSync");
-                RequireDeclaredLease(declaredLease); RequireAuthority();
+                RequireDeclaredLease(declaredLease); RequireReadAuthority();
                 var key = (path, family, declaredLease != null);
                 if (!_snapshots.TryGetValue(key, out var snapshot))
                 {
@@ -403,7 +438,7 @@ public partial class FileSystemManager
             try
             {
                 using var request = _files.MeasureOperation("ValidationReadSet.RequestAsync");
-                token.ThrowIfCancellationRequested(); RequireDeclaredLease(declaredLease); RequireAuthority();
+                token.ThrowIfCancellationRequested(); RequireDeclaredLease(declaredLease); RequireReadAuthority();
                 var key = (path, family, declaredLease != null);
                 if (!_snapshots.TryGetValue(key, out var snapshot))
                 {

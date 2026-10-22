@@ -1,3 +1,12 @@
+Revision52 PROOFREAD3b: strict per-request read-set admission remains the default.
+Only the stable post-recovery read helper selects original-reader admission.
+That mode adds no duplicate full lease check at read-set dispatch: original
+explicit entrypoints and physical readers remain unchanged. Exact retained flow,
+pending decisions, cancellation, declared lease, overlap/failure guards still
+apply to every request. Full fresh authority remains at Open/Complete, with every
+source/generation freshly checked before any plan result escapes. No cached
+authority/namespace observations, no cross-proof cache or relaxed exit proof.
+
 Revision52 actual-flow clarification PROOFREAD3a: retain exact entry MainAdmission
 separately from the physical lease owner. It may be a participating descendant
 only with an uninterrupted acquired/live same-root/same-access chain to that

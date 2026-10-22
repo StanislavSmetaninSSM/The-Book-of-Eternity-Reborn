@@ -49,6 +49,19 @@ source identities/copy/exit algorithm or recovery. Actual proof must then pass
 with lower attributes and drift refusal before original release. Historical
 checkpoint128bodylines is a typo; extraction receipt proves130verbatim lines.
 
+T445 measured admission correction PROOFREAD3b: current736 real proof opens,
+reuses186times and catches raw drift, but costs24136attrs vs18440fresh. Complete
+timing breakdown isolates329added full admission calls/6251attrs plus143fresh exit
+reads/6470attrs. Separate Astra/high architectural consultation confirms that
+explicit original entrypoints already validate the lease; original lease-free
+sync reader does not add this full check. Introduce a proof-only admission policy
+on the existing read set: strict remains default for existing QTE consumers;
+stable post-recovery helper uses original-reader admission, retains pure exact
+flow/pending decision and all other request controls. Source/open/exit and public
+reader full guards remain unchanged. No namespace DATA caching or narrower exit.
+Existing real-proof reduction failure is the causal RED. Add sibling-flow and
+bound-entry atomic closing negative cases, then fresh builds and affected tests.
+
 T446: choose related reserved-readset/lifetime/ordinary-reader/operation-cache/
 progression/affected publication categories by actual diff; don't repeat unrelated
 passed runs or run aggregates. Update tests/selection.json, XML full-reference
