@@ -16,6 +16,8 @@ T430 records Service/Repository/CacheStorage/ServiceCache roles, inheritance, DI
 
 Run the actual pinned Spec Kit plan/tasks/prerequisites and equivalent read-only consistency; independently review the complete source-based findings; save/push/recover exact artifacts. A subsequent implementation amendment must define exact interfaces/tasks before production refactoring. Keep diagnostics uncapped and do not copy DW10 source into the game repository.
 
+Current evidence: initial architecture59/59PASS on b278; independent review regression36case RED33/3 then focused36/36PASS on a784. XML259blocks/15files,0changed-file warnings; unchanged26 original assertions. Catalog on416 validates12174methods/902categories, selected plan62cases,0test bodies (fresh integration build for inventory only). Do not rerun unchanged selections solely for status updates. Final targeted review resolution and clean recovery remain before closure.
+
 # T425–429 — general temporary cache qualification
 
 Issue1536 / active spec and plan revision47 OPCACHE-1..10. No generic cache implementation or new original run has been qualified yet. User clarifications require a production reusable service, value/fact distinction and per-operation cleanup; standing approval-wait waiver applies. Read canonical spec.md/plan.md/tasks.md top revision47 before acting; r46 below is superseded history.
