@@ -130,7 +130,7 @@ public partial class FileSystemManager
             get
             {
                 lock (_gate)
-                    return _busy || _keys.Count != 0 || _touched.Count != 0 || _lease != null || _generation != null ||
+                    return _busy || _suspended != 0 || _keys.Count != 0 || _touched.Count != 0 || _lease != null || _generation != null ||
                         _generationLease != null || _closingLease != null || SourceReadBarrierForTests != null || GenerationReadBarrierForTests != null ||
                         _verifiedLease != null || _verifiedEntry != null || _verifiedRegistration != null;
             }
@@ -432,12 +432,28 @@ public partial class FileSystemManager
         /// <returns>
         /// Completion after the source fence succeeds.
         /// </returns>
-        internal async Task VerifyAsync(CanonicalWriteLease lease)
+        internal Task VerifyAsync(CanonicalWriteLease lease) => VerifyCoreAsync(lease, closingFence: false);
+
+        /// <summary>
+        /// Runs the source fence with exclusive admission for the exact adapter's physical closing path.
+        /// </summary>
+        /// <param name="lease">
+        /// Exact original lease whose dependencies are being verified.
+        /// </param>
+        /// <param name="closingFence">
+        /// Whether the caller is the private closing path for the already declared exact adapter.
+        /// </param>
+        /// <returns>
+        /// Completion after the admitted source fence settles outside the bookkeeping monitor.
+        /// </returns>
+        private async Task VerifyCoreAsync(CanonicalWriteLease lease, bool closingFence)
         {
             bool independent;
             lock (_gate)
             {
                 ObjectDisposedException.ThrowIf(_closed, this);
+                if (_closingLease != null && (!closingFence || !ReferenceEquals(_closingLease, lease)))
+                    throw new InvalidOperationException("The source adapter is closing.");
                 independent = _suspended != 0;
                 if (!independent)
                 {
@@ -498,9 +514,23 @@ public partial class FileSystemManager
         /// </returns>
         internal async Task CompleteAsync()
         {
-            RequireOpen();
-            if (_touched.Count != 0) await VerifyAsync(_lease ?? throw new InvalidOperationException("Source fence lost its lease."));
-            _completed = true;
+            CanonicalWriteLease? lease;
+            lock (_gate)
+            {
+                RequireOpen();
+                if (_closingLease != null || _busy || _suspended != 0)
+                    throw new InvalidOperationException("Source completion requires serial original access.");
+                lease = _touched.Count == 0 ? null : _lease ?? throw new InvalidOperationException("Source fence lost its lease.");
+                if (lease == null) { _completed = true; return; }
+            }
+            await VerifyAsync(lease);
+            lock (_gate)
+            {
+                RequireOpen();
+                if (_closingLease != null || _busy || _suspended != 0 || _verifiedVersion == null)
+                    throw new InvalidOperationException("Source completion lost its verified serial access.");
+                _completed = true;
+            }
         }
 
         /// <summary>
@@ -561,6 +591,7 @@ public partial class FileSystemManager
             {
                 ObjectDisposedException.ThrowIf(_closed, this);
                 if (_busy) throw new InvalidOperationException("Fresh protocol overlaps source work.");
+                if (_closingLease != null) throw new InvalidOperationException("Fresh protocol conflicts with a closing DATA adapter.");
                 Retire();
                 _suspended++;
             }
@@ -578,10 +609,17 @@ public partial class FileSystemManager
         /// </returns>
         internal async Task BeforeLeaseCloseAsync(CanonicalWriteLease lease)
         {
-            if (_closed || !ReferenceEquals(_lease, lease)) return;
+            bool verify;
+            bool closingFence;
+            lock (_gate)
+            {
+                if (_closed || !ReferenceEquals(_lease, lease)) return;
+                verify = !_failed && !_completed && _suspended == 0 && _touched.Count != 0;
+                closingFence = ReferenceEquals(_closingLease, lease);
+            }
             try
             {
-                if (!_failed && !_completed && _suspended == 0 && _touched.Count != 0) await VerifyAsync(lease);
+                if (verify) await VerifyCoreAsync(lease, closingFence);
             }
             finally
             {
@@ -600,7 +638,7 @@ public partial class FileSystemManager
             lock (_gate)
             {
                 if (!ReferenceEquals(_lease, lease)) return;
-                if (_busy) throw new InvalidOperationException("Pending source work must settle before its physical lease closes.");
+                if (_busy || _suspended != 0) throw new InvalidOperationException("Pending source work must settle before its physical lease closes.");
                 _closingLease = lease;
             }
         }
@@ -631,7 +669,7 @@ public partial class FileSystemManager
                 if (ReferenceEquals(_generationLease, lease)) _generationLease = null;
                 if (ReferenceEquals(_closingLease, lease)) _closingLease = null;
                 ClearReceipt();
-                if (_closed && !_busy) DropLocalReferences();
+                if (_closed && !_busy && _suspended == 0) DropLocalReferences();
             }
         }
 
@@ -643,7 +681,7 @@ public partial class FileSystemManager
             lock (_gate)
             {
                 _busy = false;
-                if (_closed) DropLocalReferences();
+                if (_closed && _suspended == 0) DropLocalReferences();
             }
         }
 
@@ -698,7 +736,11 @@ public partial class FileSystemManager
             {
                 if (_closed) return;
                 _closed = true;
-                lock (owner._gate) owner._suspended--;
+                lock (owner._gate)
+                {
+                    owner._suspended--;
+                    if (owner._closed && !owner._busy && owner._suspended == 0) owner.DropLocalReferences();
+                }
             }
         }
 
@@ -719,7 +761,7 @@ public partial class FileSystemManager
             {
                 if (_closed) return;
                 _closed = true;
-                if (!_busy) DropLocalReferences();
+                if (!_busy && _suspended == 0) DropLocalReferences();
             }
             try
             {

@@ -14,8 +14,14 @@ ef006c86311unit+3actualPASS, two full DATA proofs758->254physical sources and
 117c4a963 failed-owner fresh control25PASS1causalFAIL (unit-only build, not eight
 uniform DLL qualification). Final candidate corrects helper/borrow/fence routing
 while retaining the failed latch; adds actual no-write/runtime/lifetime controls.
-Independent Astra/high review requires these current controls and doc corrections;
-T451 source acceptance remains pending, no original or full-game gain claimed.
+Additional causal evidence:4776888f5 compiled33unit30PASS3FAIL for late local
+references and premature physical teardown;5f7d4dcd1 compiled37unit33PASS4FAIL
+for new verification/fresh scopes entering after close intent and active fresh
+protocols losing their physical guard. All selections settled, cleanup succeeded.
+Candidate now excludes ordinary work during close, uses a private closing fence
+and retains the exact lease guard until active source/fresh scopes drain. Builds
+and GREEN for this correction remain pending; independent Astra/high source gate
+is still open. No original or full-game gain claimed.
 
 Windows legacy acquisition remains an independent fresh protocol and retires the
 source segment; demonstrated reuse is within admitted stable segments. Genuine
