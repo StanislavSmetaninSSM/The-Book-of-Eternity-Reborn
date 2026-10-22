@@ -1,4 +1,6 @@
-# Current checkpoint: T427 production integration written, central GREEN pending
+# Current checkpoint: T427 review regressions reproduced; genuine integration RED next
+
+Source045c9b506: full-reference XML unit build passed;20 complete cases19PASS/1 causalFAIL (passive metadata observer:4 bodies instead1), command28.5930793s, no timeout and complete owned/runtime closing. Prior fixture generation-preparation errors corrected and explicit generation-revision fresh-path control passes. Full69payload T427-review-red.zip51176982bytes SHAD43C7A1ED088DA3FC4317FE248F8902F70A867D790264D1598A65D34528A6B86 verified everySHA/CRC; unit and integration outputs preserved before next build. Initial independent Astra/high review has two unaccepted P2 findings: passive metadata diagnostics disable reuse; final common item-slot refusal does not close warmed cache. Next genuine2row integration reproduces the latter before corrections. Original600s run and current input generation remain UNRUN; no performance/completion claim.
 
 Issue1536 r50 RECACHE1..6. Actual source9cd565f1b causalRED: XML build84.1013953s0errors;15complete cases3PASS/12expectedFAIL (8source bodies instead1, no stale-close/inflight epoch rejection), command23.7128951s, no timeout/complete owned-runtime closing. Full39payload T427-red.zip29028867bytes SHA84C260B3C6DE8C522E5825876220D0D4AA029C7F7736FF87DE5C7F544E7389AF, everySHA/CRC and compiledoutputs preserved, pushed705d2a61a.
 
