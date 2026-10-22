@@ -1,3 +1,24 @@
+# Progression DATA integration — revision51 addition
+
+PROGDATA1..6 / T439–443: add typed result support to the accepted r50 adapter,
+using the same general service, source counters, root dependency, failure closure
+and fresh scopes. Source result and every returned mutable image are detached.
+The only new semantic key is the private root object shared by the two progression
+calls inside a phase-reader invocation; it is never exposed/mutated on that path.
+A later parsed root is a new key, even for equal bytes. No authority is retained.
+
+Both recovery calls remain before the first reusable DATA computation. The outer
+phase owns a new operation only if no operation is already registered. Borrowed
+contexts retain ownership, dependency eligibility and fresh state. Any phase
+failure closes reusable state. No-evidence/failed/compensated/other-manager
+mutations invalidate; unsupported/active mutation routes run source without reuse.
+
+Keep all original checks before/between/after the two DATA sites. Raw external
+editing is still observed at fresh publication boundaries, not detected by epoch.
+No new valid-save/GM/player/schema/native behavior; no prompt/example updates.
+Diagnostics are uncapped and D:-only. Diagnostic-off is a separate owner-authorized
+observation experiment, not changed gameplay assertions or increased budget.
+
 # Recovery validation adapter — revision50 exact contract
 
 Issue1536 / RECACHE1..6. DefaultOperationValidationService remains the actual storage/coordinator; no alternate cache algorithm or fake repository.

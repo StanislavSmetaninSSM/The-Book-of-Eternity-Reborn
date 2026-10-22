@@ -1,3 +1,64 @@
+# Progression DATA reuse — revision51 implementation plan
+
+> REQUIRED: superpowers:executing-plans inline, test-driven-development,
+> systematic-debugging, independent complex gpt-6-astra/high review.
+
+**Goal:** #1536 / PROGDATA1..6: remove a repeated progression DATA body after recovery,
+prove integrity cheaply, measure original600s, then conditionally measure without diagnostics.
+**Spec:** spec.md revision51 and contracts/recovery-validation.md revision51.
+**Architecture:** add typed-result dispatch to the existing FSM operation adapter;
+private root reference is the input identity for this one proof/phase invocation.
+BeginRecoveryValidationIfNeeded creates or borrows one caller-flow context; root
+mutation epochs and fresh scopes decide eligibility. No new storage/repository.
+**Stack:** .NET8/C#, SDK10, PowerShell7, xUnit; existing isolated user clone/branch.
+**Base:** e157b52fb2eace74a330fe47fdd13e6b63e6fdd9; branch1536-crash5-linux-windows-spec-20261019.
+
+## Implementation and verification
+
+1. T439: write/present r51 spec/contract; execute pinned Spec Kit plan/tasks/
+   prerequisites and equivalent consistency check. Reuse prior T438 findings,
+   current constitution and existing isolation. Skip optional auto-stage hooks.
+2. T440: add `ComputeRecoveryDataAsync<TResult>(OperationComputation<TResult>,
+   object, CanonicalWriteLease, Func<Task<TResult>>)` initially using the unchanged
+   fresh source. Add independent file fixtures and category
+   `core-recovery-progression-data`. First demonstrate8actual bodies instead1
+   with complete real attribute/timing counts, compiling without fake authority.
+3. T441: generalize RecoveryValidationScope dispatch to typed computation while
+   preserving all existing fact metrics/failure/fallback behavior. Add
+   `BeginRecoveryValidationIfNeeded` without disposing a borrowed scope. In
+   MortalQteDecisionPublication.MortalJointProgression.cs introduce the private
+   copied DATA descriptor/helper, use it at both existing calls; open the scope
+   after outer recovery and close cache on any phase failure. Inner call is in
+   MortalQteDecisionPublication.MortalJointRepair.cs. No changed CompletedProof
+   schema or skipped full proof. GREEN includes all PROGDATA4 controls.
+4. T442: XML full-reference build of unit+integration, catalog and exact selection;
+   select new fixture category, existing core-recovery-file-validation,
+   core-recovery-mutation-bridges and core-operation-validation-cache, plus current
+   progression/publication consumers determined from catalog. Inspect changed XML.
+   Save WIP before long checks/review. Independent coherent code/test/docs review
+   must accept selection and freshness. Qualify genuine current-source new-slot
+   original input, recover source from origin, then original600/820/15 once.
+   Full output streams directly to D: outside checkout. Analyze all collected rows
+   and confirm actual per-request DATA behavior before claiming production effect.
+5. T443: write honest results. If broad proof/recovery redesign is needed next,
+   preserve instrumented source, implement a diagnostic-off mode which changes
+   observation only, review affected harness assertions, run the same scenario
+   once without diagnostics and report outcome/time. Do not infer this duration
+   from observer subtraction. Save/recover source and human findings only.
+
+## Review focus
+
+- A no-evidence recovery rotates epoch; no retained pre-recovery result survives.
+- Mutation/fresh/await/callback between first and second DATA request forces source.
+- Returned/source calculation arrays cannot modify retained values.
+- Borrowed parent remains active on success and closes reusable state on failure.
+- Diagnostic-off preserves all gameplay/ownership assertions and bounds; full
+  diagnostics mode stays uncapped and separately reproducible.
+
+PROGDATA1/2/3 -> T440/T441; PROGDATA4 -> T440/T441/T442;
+PROGDATA5 -> T442; PROGDATA6 -> T443. Dependencies:439->440->441->442->443.
+Current status: planning; no code/build/test changes yet. T427–429 remain open.
+
 # Recovery filesystem cache integration — revision50 implementation plan
 
 > REQUIRED: superpowers:executing-plans inline, TDD, systematic-debugging, independent complex gpt-6-astra/high review. User waived all approval waits; present actual artifacts without pausing. Canonical Spec Kit records only.

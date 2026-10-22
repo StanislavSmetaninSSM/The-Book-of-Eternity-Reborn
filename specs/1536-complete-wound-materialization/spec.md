@@ -1,3 +1,57 @@
+# CRASH5 — revision51: progression DATA reuse after recovery
+
+Issue [1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536).
+Owner request2026-10-23: implement the narrow T438 candidate, prove it cheaply,
+then run the genuine original600s case and honestly assess further optimization.
+Owner explicitly requests autonomous work; the standing waiver of review waits
+applies. Written artifacts are presented before code; engineering/review gates remain.
+
+- PROGDATA-1: reuse only the typed `ValidateJointProgressionDataAsync` result
+  between completed-proof and phase-reader on the same private, unchanged root
+  object inside one invocation. Use the existing general operation service and
+  exact real lease/root epoch dependency. No whole proof/capability cache or
+  cross-proof/lease reuse. Deep-copy all four calculation images into/out of cache.
+- PROGDATA-2: keep both existing recovery calls, including no-evidence mutation
+  invalidation. Open an owned context after outer recovery if none exists;
+  otherwise borrow the existing context without closing it on success. Inner
+  recovery happens before the first DATA computation. Any intervening mutation,
+  generation/lease loss, fresh boundary, unsupported hook, failure or close
+  excludes stale success. Arbitrary raw drift remains checked at existing fresh
+  publication boundaries; root epoch alone does not detect external editing.
+- PROGDATA-3: retain ordering and execution of current lease/owner/generation,
+  capability consumed/binding, full proof, tuple/no-commands, public outputs,
+  decision and final marker checks. Only the second eligible DATA body is avoided.
+  A failure anywhere in the phase-reader retires borrowed/owned reusable state.
+- PROGDATA-4: cheap independent real-file fixtures through typed production APIs,
+  no reflection or world generation. Compiling causal RED8source bodies vs1;
+  GREEN proves actual attribute reduction, copies, exact identity, recovery no-op,
+  same-byte/failed write, absence/namespace, other-manager, await mutation,
+  fresh callback, hook fallback, error and owned/borrowed closing behavior.
+  New tests have a category owner; existing affected controls remain required.
+- PROGDATA-5: XML-enabled builds, category inventory/selection, independent complex
+  gpt-6-astra/high review, source/input qualification and remote recovery precede
+  one unchanged real Windows Cut0 on C:/Temp:600s child/820s shared/15min category.
+  Full uncapped diagnostics, actual ownership settlement and original gameplay
+  assertions remain. Compare equal completed milestones and report actual outcome,
+  counts, DATA source/reuse and observer time without double-counting nested spans.
+- PROGDATA-6: if remaining optimization requires a broad recovery/proof redesign,
+  preserve the instrumented code at its Git revision and separately on D:, disable
+  diagnostic observation only, and repeat the same real scenario under the same
+  bounds/assertions. This is an explicitly authorized separate measurement, not
+  a record cap or estimate by subtraction. Report both modes and unresolved costs.
+
+Acceptance: causal fixture reduction with negative integrity controls; actual
+production reuse observed in the original run; truthful full-case pass/fail and
+measured comparison; review and exact remote source recovery. A timeout is not
+success. Do not promise the17.820s prior inclusive cost as a saving.
+
+Scope excludes broader snapshot/footprint caching, journal/recovery changes,
+GM/player/save/schema/native contract changes, Linux and other four crash cuts.
+No GM prompt/example updates: this is client-owned DATA reuse with unchanged
+observable accepted-turn behavior. Diagnostics/machine reports/archives remain
+local-only on D:, retain newest complete verified settled measurement only;
+keep compact comparison findings. Collection has no count/byte limit.
+
 # CRASH5 — revision50: файловые проверки восстановления на общем сервисе
 
 Issue1536 / T435,T427–429. Пользователь прямо поручил подключить файловые проверки к перенесённому сервису, сохранить целостность и повторить исходный600s тест с замерами; согласования явно отменены. Результат — production-потребитель общей инфраструктуры, реальные проверки и полный измеренный исход, а не только API или успешные unit-тесты. Сохраняются OPCACHE-1..10 и CACHEPORT-1..7.
