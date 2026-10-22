@@ -70,6 +70,13 @@
       "contracts": [
         "PROGDATA6 / T442–443; no runtime budget or semantic gate changes."
       ]
+    },
+    {
+      "category": "test-category-runner-contracts",
+      "reason": "Verbatim split executes previously fail-fast-skipped unit15 and PowerShell3 runner controls while preserving the complete original integration inventory category and its three pre-existing failures.",
+      "contracts": [
+        "PROGDATA5/6; no removed test, altered assertion or budget."
+      ]
     }
   ]
 }

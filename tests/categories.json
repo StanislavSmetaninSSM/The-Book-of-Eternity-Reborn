@@ -15173,46 +15173,69 @@
             ]
         },
         {
-            "id": "test-selection-contracts",
-            "responsibility": "Catalog selection, runner safety, test inventory, and process cleanup contracts.",
-            "excludes": "Gameplay rules, GM contracts, and frontend rendering.",
-            "changeHints": [
-                "scripts/test-csharp.ps1",
-                "scripts/testing/**",
-                "scripts/tests/**",
-                "tests/categories.json",
-                "tests/selection.json"
-            ],
-            "related": [],
-            "requirements": {
-                "frontendBuild": false,
-                "exclusive": true
-            },
-            "timeoutMinutes": 5,
-            "expectedSeconds": 95.89,
-            "selectors": [
-                {
-                    "project": "integration",
-                    "tests": [
-                        "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.*"
-                    ]
-                },
-                {
-                    "project": "powershell",
-                    "tests": [
-                        "scripts/tests/test-category-catalog.tests.ps1",
-                        "scripts/tests/test-category-reports.tests.ps1",
-                        "scripts/tests/test-category-runner.tests.ps1"
-                    ]
-                },
-                {
-                    "project": "unit",
-                    "tests": [
-                        "BookOfEternityClient.Tests.FastTestBoundaryTests.*"
-                    ]
-                }
-            ]
-        },
+  "id": "test-selection-contracts",
+  "responsibility": "Integration source inventory, category placement, reviewed partial-family and validation-call contracts.",
+  "excludes": "Gameplay rules, GM contracts, and frontend rendering.",
+  "changeHints": [
+    "scripts/test-csharp.ps1",
+    "scripts/testing/**",
+    "scripts/tests/**",
+    "tests/categories.json",
+    "tests/selection.json"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": 95.89,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "test-category-runner-contracts",
+  "responsibility": "Bounded PowerShell catalog/report/runner and fast process-cleanup contracts, split verbatim from test-selection-contracts.",
+  "excludes": "Integration source inventory and gameplay correctness remain in their existing categories.",
+  "changeHints": [
+    "scripts/test-csharp.ps1",
+    "scripts/testing/**",
+    "scripts/tests/**",
+    "tests/categories.json",
+    "tests/selection.json"
+  ],
+  "related": [
+    "test-selection-contracts"
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "powershell",
+      "tests": [
+        "scripts/tests/test-category-catalog.tests.ps1",
+        "scripts/tests/test-category-reports.tests.ps1",
+        "scripts/tests/test-category-runner.tests.ps1"
+      ]
+    },
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.FastTestBoundaryTests.*"
+      ]
+    }
+  ]
+},
         {
             "id": "test-fixture-integrity",
             "responsibility": "Test fixture isolation, examples integrity, and local test environment setup.",

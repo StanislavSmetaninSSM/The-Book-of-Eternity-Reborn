@@ -67,6 +67,17 @@ publication/proof callbacks and complete owned stream/EOF/settlement evidence.
    once without diagnostics and report outcome/time. Do not infer this duration
    from observer subtraction. Save/recover source and human findings only.
 
+Current verification correction: final cheap selection executed170cases167PASS/3FAIL,
+including actual pair, transport/root5, launch and adapter82 (new24 allPASS).
+Three inventory guards fail identically at basee157 and currentad10: partial-name
+ownership of synthetic/nested names, Guardian12discovered/11reviewed files, broad
+validation14sites/8budget. Separate Astra/high classified every input unchanged.
+Do not modify these assertions/manifests. Move existing unit15+PowerShell3 selectors
+verbatim into test-category-runner-contracts; original integration inventory
+selectors remain whole in test-selection-contracts, failures explicitly unresolved.
+Catalog/runner metadata revision is pinned separately from unchanged compiledad10.
+Story3/3PASS onad10 after streaming/raw-root fix, no timeout, complete cleanup.
+
 ## Review focus
 
 - A no-evidence recovery rotates epoch; no retained pre-recovery result survives.
