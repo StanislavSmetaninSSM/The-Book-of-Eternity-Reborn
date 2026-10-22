@@ -23,13 +23,22 @@ must be established from actual source and measured repeated work.
    trace caller chains and the actual objects/identities and mutations involved.
 3. Write human findings with measurements and source anchors, separate facts from
    hypotheses, and specify eligible pure DATA reuse versus live guards and fresh
-   publication boundaries. Detailed machine output stays under the latest D:
+   publication boundaries. Explicitly account for recovery at both phase-reader
+   and full-proof entry: no-evidence recovery also rotates the epoch, so stable
+   post-recovery DATA segments need causal qualification before any reuse claim.
+   Detailed machine output stays under the latest D:
    measurement; preserve the original archive and complete analysis.
 4. Independently review the coherent findings against source/evidence, resolve
    substantiated issues, and publish only source/documentation with exact remote
    recovery. Leave T427–429 runtime acceptance open.
 
-Deliverable: `recovery/crash5/T438-story-cache-findings.md`; status in progress.
+Deliverable: `recovery/crash5/T438-story-cache-findings.md`; analysis and separate
+Astra/high review accepted, T438-F1 resolved. Exact final remote recovery remains
+for closeout. Story1945021 attributes/96.623s; sibling proof stages152.568s
+(includes44.018s observer and2.201s test checkpoint); duplicate progression41
+passes/17.820s. Both no-evidence recovery barriers invalidate whole-reader reuse.
+First conditional candidate: typed DATA within a qualified post-recovery segment.
+No production change or new runtime; T427–429 remain open.
 
 ## T437 — owner-directed diagnostic history cleanup and local retention
 

@@ -111,32 +111,61 @@ mutation begin/end, ноль failure closures и active mutations, состоя�
 а не только к прежнему read-set. В story такого открытия нет; существующие два
 DATA-правила подключены только к mechanical/continuation-подготовке механики.
 
-Первое обоснованное продолжение — подключить общий сервис к **DATA-проверкам
-phase/completed-original**, повторно используемым story и projection. Отдельный
-словарь для `GetAttributes` и кэш целого разрешающего proof/capability не нужны.
+### Конкретное препятствие: recovery сам меняет версию
 
-Предлагаемая последовательность для следующего implementation-блока:
+На обычном lease `ReadJointProgressionPhaseAsync` сначала вызывает
+`ResolveBackupPublicationRecovery`, а затем `ReadJointCompletedProofAsync`
+вызывает его ещё раз. Обычная ветка resolver вызывает
+`RecoverTrustedLocalStorage`; тот **сначала** начинает `BeginValidationMutation`
+и только затем проверяет `HasStorageEvidence`. Даже возврат без journal evidence
+завершает mutation и меняет opaque epoch. Это две существующие границы на одном
+phase-read, а не только гипотетическая запись между вызовами.
+См. [phase recovery](../../../../BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgression.cs#L152),
+[proof recovery](../../../../BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs#L207),
+[resolver](../../../../BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs#L31),
+[no-op recovery](../../../../BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs#L146).
 
-1. Открывать контекст отдельно внутри каждого подходящего реального физического
-   lease, начиная с финальной материализации story. Данные между разными lease
-   не переносить. Открытие контекста само по себе ничего не ускоряет: новые DATA
-   тела должны быть явно подключены к сервису.
-2. Отделить повторяемую DATA-сверку в `JointProgressionPhaseCapability` от живых
-   owner/lease/generation/consumed-проверок. Для одной уже выданной capability
-   допустимый кандидат identity — её точный приватный экземпляр; зависимости —
-   тот же lease/root и текущий согласованный mutation epoch. Нельзя выдавать
-   старую capability или кэшированное полномочие как результат.
-3. Для повторного результата progression использовать уже существующие
-   `OperationComputation<TResult>` / `ValidationOperation.GetOrComputeAsync`:
-   копируемые DATA-значения и настоящие файловые источники. Текущий FSM-адаптер
-   предоставляет только validation-fact путь; typed-result адаптер потребует
-   отдельного изменения. Root JSON вновь разбирается в разных reader-вызовах:
-   его новая reference identity не обеспечит reuse между такими вызовами.
-   Нужна доказанная immutable DATA identity; конкретный ключ ещё не утверждён.
-4. Исходный snapshot/projection и footprint являются следующими кандидатами
-   внутри того же сервиса после causal-проверки шага 2. Общая стоимость их
-   повторений измерена, но точные потенциальные hits неизвестны: в текущем trace
-   нет identity capability и полного списка версий для каждого вызова.
+Поэтому обёртка всего phase-reader или full-proof тела в текущий сервис не
+сохранит пригодный повторный успех: вычисление само изменит свою зависимость.
+Перенос recovery перед каждым cache-request тоже меняет epoch перед каждым
+request. Одно открытие story-контекста эту проблему не решает. Recovery,
+классификацию journal debt и no-op invalidation нельзя пропускать ради hits.
+Повторное использование по точному экземпляру capability само по себе также
+недостаточно: это не доказательство неизменной версии.
+
+### Следующие кандидаты и порядок проверки
+
+Обоснованное направление — **DATA-проверки phase/completed-original**,
+повторяемые story и projection. Отдельный словарь для `GetAttributes` и кэш
+целого разрешающего proof/capability не нужны. Но работоспособность конкретных
+cache-сегментов ещё предстоит доказать; измеренная стоимость не равна экономии.
+
+1. Первый узкий кандидат — передача копируемого результата
+   `ValidateJointProgressionDataAsync` из полного proof в его phase-reader.
+   Оба вызова находятся после внутренних recovery-границ. Между ними остаются
+   проверки public outputs, final marker, tuple/commands и decision: их свежесть
+   сохраняется. До реализации нужно на настоящем lease доказать, что на всём
+   пути нет intervening mutation, fresh boundary, callback или изменения
+   зависимости. При их появлении второй DATA-вызов обязан выполниться свежим.
+   **41 повтор / 17,820 с** — верхний измеренный объём этого второго прохода,
+   не обещанное ускорение и не число будущих hits.
+2. Для такого результата использовать существующие `OperationComputation<TResult>`
+   / `ValidationOperation.GetOrComputeAsync`, immutable DATA identity, defensive
+   copies и настоящие файловые зависимости. Текущий FSM-адаптер предоставляет
+   только validation-fact путь; typed-result адаптер потребует отдельного
+   изменения. Новый reference вновь разобранного root JSON не даст reuse между
+   reader-вызовами. Готовый ключ и допустимость конкретного lease ещё не доказаны.
+3. Для reuse между разными full-proof/phase-вызовами сначала отдельно исследовать
+   расположение recovery и стабильных DATA-сегментов. Сохранить обе существующие
+   recovery-границы, no-op invalidation и live owner/lease/generation/consumed
+   guards. Нельзя объявить recovery выполненным «один раз на lease» без отдельного
+   доказательства обработки нового debt, callbacks и внешних изменений. Текущее
+   исследование такого изменения контракта не разрешает.
+4. Открывать контекст отдельно внутри подходящего реального физического lease
+   только после квалификации его eligibility и стабильного сегмента; данные между
+   lease не переносить. Snapshot/projection и footprint — следующие измеренные
+   кандидаты внутри того же сервиса. Точные потенциальные hits неизвестны: trace
+   не содержит identity capability и полный список версий каждого вызова.
 
 Обязательные свежие границы: phase publication, запись вычисленных характеристик,
 append истории, cleanup batch, callbacks и повторное получение lease. Активная,
@@ -155,8 +184,11 @@ append истории, cleanup batch, callbacks и повторное получ
 
 ## Проверка следующего изменения
 
-До нового тяжёлого прогона нужны дешёвые причинные файловые фикстуры: одинаковые
-DATA-запросы при неизменной версии сокращают тела и реальные `GetAttributes`;
+До нового тяжёлого прогона нужны дешёвые причинные файловые фикстуры. Сначала
+воспроизвести обе реальные recovery-границы, включая отсутствие evidence, и
+доказать отказ от reuse при изменении epoch. Затем проверить узкий post-recovery
+сегмент: одинаковые DATA-запросы при неизменной версии сокращают тела и реальные
+`GetAttributes`;
 живые guards выполняются каждый раз. Затем write/delete/absence/namespace,
 другой manager, изменение версии во время await, consumed/owner/lease loss,
 ошибка/отмена/закрытие и fresh publication callback должны исключать reuse.
@@ -171,4 +203,10 @@ DATA-запросы при неизменной версии сокращают 
 `D:\BoeDiagnostics\latest-T429-20261022\T438-remaining-branch-analysis.json`.
 Там сохранены все выбранные semantic paths, все partitions, reconciliations,
 фактическая запись metrics и хеши инструментов. Сырые данные и машинный отчёт
-в GitHub не загружаются. Независимая проверка результатов — перед закрытием T438.
+в GitHub не загружаются.
+
+Независимая проверка отдельным gpt-6-astra/high приняла T438 как исследование:
+числа, вложенность таймеров, источники и происхождение анализа сверены;
+замечание T438-F1 о двух recovery-границах исправлено и закрыто. Новых открытых
+замечаний нет. Локальная запись — `T438-independent-review.json` в том же
+каталоге D:. Это не приёмка будущего кэша или исходного игрового теста.
