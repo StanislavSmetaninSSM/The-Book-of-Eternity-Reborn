@@ -69,9 +69,10 @@ public partial class FileSystemManager
     /// Clears reuse around an authority-bearing source fence or arbitrary callback.
     /// </summary>
     /// <returns>
-    /// A restoring fresh scope, or null outside recovery validation.
+    /// A restoring fresh scope, or null outside functional recovery validation and in passive diagnostic routing.
     /// </returns>
-    internal IDisposable? ForceFreshRecoveryValidation() => _recoveryValidation.Value?.ForceFresh();
+    internal IDisposable? ForceFreshRecoveryValidation() =>
+        ValidationReuseSuppression.Value != 0 ? null : _recoveryValidation.Value?.ForceFresh();
 
     /// <summary>
     /// Runs an arbitrary callback inside a fresh boundary for its complete asynchronous lifetime.
@@ -91,7 +92,10 @@ public partial class FileSystemManager
     /// <summary>
     /// Revokes source reuse after a live authority or source failure without masking it.
     /// </summary>
-    internal void InvalidateRecoveryValidationAfterFailure() => _recoveryValidation.Value?.CloseCache();
+    internal void InvalidateRecoveryValidationAfterFailure()
+    {
+        if (ValidationReuseSuppression.Value == 0) _recoveryValidation.Value?.CloseCache();
+    }
 
     /// <summary>
     /// Owns the general service context for one original physical publication lease.

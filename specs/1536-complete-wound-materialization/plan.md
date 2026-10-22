@@ -8,11 +8,11 @@
 
 ## Global constraints and review focus
 
-No diagnostic quotas/test-budget increases/reflection/whole-suite run/new packages/GM/schema/native changes. Keep fresh inventory/readback and existing request/guard counts. Review active no-op/failed/compensated mutations; other managers/accesses and close; callback raw drift and descendants; source epoch change during await; proof identity versus mutable authority. Every new/changed API has readable multiline XML. Preserve exact old binary/raw outputs before a build overwrites them. Parent owns coherent implementation, separate bounded Astra/high consultation answers root eligibility; separate reviewer accepts implementation/result.
+No diagnostic quotas/test-budget increases/reflection/whole-suite run/new NuGet dependencies/GM/schema/native changes. Keep fresh inventory/readback and existing request/guard counts. Review active no-op/failed/compensated mutations; other managers/accesses and close; callback raw drift and descendants; source epoch change during await; proof identity versus mutable authority. Every new/changed API has readable multiline XML. Preserve exact old binary/raw outputs before a build overwrites them. Parent owns coherent implementation, separate bounded Astra/high consultation answers root eligibility; separate reviewer accepts implementation/result.
 
 ## T435 — source decision, canonical phases and saved preflight
 
-- [ ] Confirm remote ba702c71d, current governance and retained architecture62case source-bound proof. Audit actual35/31 call lifetimes against mutation envelopes; read-only consultation records decisive anchors and remaining writer/callback coverage. Write/present spec/plan/tasks/exact contract. Run actual pinned setup-plan/setup-tasks/prerequisites and bridge-equivalent consistency; publish explicit WIP. Reuse existing isolated clone; no new worktree needed.
+- [x] Confirm remote ba702c71d, current governance and retained architecture62case source-bound proof. Audit actual35/31 call lifetimes against mutation envelopes; read-only consultation records decisive anchors and remaining writer/callback coverage. Write/present spec/plan/tasks/exact contract. Run actual pinned setup-plan/setup-tasks/prerequisites and bridge-equivalent consistency; publish explicit WIP. Reuse existing isolated clone; no new worktree needed.
 
 ## T427 — typed RED then domain integration
 
