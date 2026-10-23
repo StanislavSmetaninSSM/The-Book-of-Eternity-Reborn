@@ -259,12 +259,16 @@ public partial class FileSystemManager
     /// <param name="validatePreparedNamespace">
     /// Optional namespace validation callback before publication; <see langword="null"/> adds no callback.
     /// </param>
+    /// <param name="reusePreparedProofData">
+    /// Requests cleanup proof DATA reuse inside the prepared callback. The default
+    /// <see langword="false"/> retains the ordinary publication path.
+    /// </param>
     /// <returns>
     /// The original committed, rolled-back or uncertain publication outcome.
     /// </returns>
     internal async Task<TrustedLocalPublicationOutcome> PublishLocalFilesAsync(CanonicalWriteLease lease,
         IReadOnlyList<CanonicalLocalFileChange> changes, CancellationToken cancellationToken = default,
-        Func<Task>? validatePreparedNamespace = null)
+        Func<Task>? validatePreparedNamespace = null, bool reusePreparedProofData = false)
     {
         using var totalTiming = MeasureOperation("LocalPublication.Total");
         using var admissionTiming = MeasureOperation("LocalPublication.Admission");

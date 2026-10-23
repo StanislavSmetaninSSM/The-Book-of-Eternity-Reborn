@@ -161,7 +161,7 @@ public partial class GameEngine
                     await RequireMortalJointCleanupImagesAsync(lease, members, retained, after: false);
                     cleanupTimer23?.Dispose();
                     cleanupTimer19?.Dispose();
-                });
+                }, reusePreparedProofData: true);
             cleanupTimer18?.Dispose();
             using var cleanupTimer24 = _fs.MeasureOperation("JointCleanup.ClassifyCommittedPublication");
             if (outcome.Disposition != TrustedLocalPublicationDisposition.Committed)

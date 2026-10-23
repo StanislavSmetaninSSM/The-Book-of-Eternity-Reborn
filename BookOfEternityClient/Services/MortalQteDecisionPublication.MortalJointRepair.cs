@@ -229,7 +229,7 @@ internal static partial class MortalQteDecisionPublication
             SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "current recovered joint completion");
         if (!JsonNode.DeepEquals(root, recovered)) throw Invalid("joint_marker_recovery_changed");
         t326Proof0?.Dispose();
-        return await fs.ReadStableRecoveryDataAsync(lease,
+        return await fs.ReadCleanupCompletedProofDataAsync(lease,
             () => ReadJointCompletedProofDataAsync(fs, lease, inspection, root, stableMarker));
     }
 

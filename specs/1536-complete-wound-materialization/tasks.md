@@ -3,7 +3,7 @@
 Issue #1536; spec CLEAN_CACHE1..8 and current plan.md. Autonomous execution and
 explicit specification-review waiver; current isolated clone/branch reused.
 
-- [ ] T485 Source/lifetime audit; canonical spec/plan/tasks, actual pinned Spec Kit
+- [x] T485 Source/lifetime audit; canonical spec/plan/tasks, actual pinned Spec Kit
   phases and consistency, publish/recover design before implementation.
 - [ ] T486 Typed forwarding helper/opt-in plus cheap actual publisher callback
   causal RED proving repeated completed-proof/history source reads are uncoalesced.

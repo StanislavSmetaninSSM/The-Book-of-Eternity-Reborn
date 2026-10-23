@@ -2,6 +2,41 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "core-cleanup-proof-data-reuse",
+  "responsibility": "Actual opted-in trusted-local prepared cleanup callback reuses post-recovery completed-proof/history source DATA through the existing service while preserving exact publisher mutations, fresh sources and original outcomes.",
+  "excludes": "No full game-world setup, cached capability/permission, generic mutation bypass, native benchmark budget change or diagnostic quota.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.CleanupProofDataReads.cs",
+    "BookOfEternityClient/Core/FileSystemManager.RecoveryProofReads.cs",
+    "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+    "BookOfEternityClient.Tests/CleanupProofDataReuseTests.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-reserved-validation-read-set",
+      "when": "Shared source/readset exclusion or completion proof changes."
+    },
+    {
+      "id": "core-operation-source-data",
+      "when": "Independent source lifetime, fresh routing or mutation interaction changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.CleanupProofDataReuseTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "core-game-state-phase-selection",
   "responsibility": "Exact existing GameState phase/state-file selection, ordered issue equivalence and invocation isolation controls affected by source DATA phase integration.",
   "excludes": "No full validation world, unrelated repair packets or aggregate selection.",

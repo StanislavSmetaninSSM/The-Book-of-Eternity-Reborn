@@ -17,8 +17,13 @@ before returning DATA. The generic stable capture/permissions remain unchanged.
 Bounded separate Astra/high read-only consultation finished; different reviewer
 required. Sol6.1/high external helper prepared r61 tools16 syntax/21 synthetic
 controls PASS; no game execution, builds, capture reads or deletion.
-T485 spec/design written; pinned phases/consistency/publication pending.
-T486..490 UNRUN. No performance result claimed and no r61 production code written.
+T485 complete: pinned plan/tasks/prerequisites actually ran; equivalent consistency
+8 requirements / 6 tasks, no uncovered criteria or constitution conflicts. Written
+spec/plan/tasks presented under the owner's review-wait waiver. Design86de75eec669f7ff7d38c9bc86a9019cfced7cc7
+pushed/recovered11 exact blobs/no alternates. T486 WIP forwarding-only helper,
+ignored default-false publication opt-in, actual proof/cleanup routing and two cheap
+causal cases prepared. Coalescing implementation and tests/builds still UNRUN.
+No r61 performance result claimed; T487..490 UNRUN.
 
 # Previous accepted r60 checkpoint
 

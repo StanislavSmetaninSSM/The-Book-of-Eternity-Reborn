@@ -49,7 +49,7 @@ with unchanged bytes; recovery before each window; raw same-time/absence/generat
 drift; callback retry/closing flow and post-publication reads cannot reuse before-images.
 No authority object is a cached value. Producer hook fallback remains untouched.
 
-- [ ] T485 CLEAN_CACHE1..8: source/lifetime audit, written spec/design, actual pinned
+- [x] T485 CLEAN_CACHE1..8: source/lifetime audit, written spec/design, actual pinned
   Spec Kit plan/tasks/prerequisites and equivalent consistency, publish/recover.
 - [ ] T486 CLEAN_CACHE2..5: forwarding opt-in/helper seam and causal cheap publisher
   fixture RED; eight same-family reads inside prepared callback must use initial
