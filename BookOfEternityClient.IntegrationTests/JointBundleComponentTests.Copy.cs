@@ -8,7 +8,7 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class JointBundleComponentTests
 {
     /// <summary>
-    /// Runs retained joint-copy contracts with genuinely bound stages and normal owned fixture closing.
+    /// Runs retained joint-copy contracts with genuinely bound stages in one source DATA operation and normal owned fixture closing.
     /// </summary>
     /// <returns>
     /// Completion after direct-copy, current-byte refusal and restoration, constructor, mutation, history restoration,
@@ -19,6 +19,8 @@ public sealed partial class JointBundleComponentTests
     {
         await using var fixture = new Fixture(_output, nameof(JointCopy_RetainsAdmissionDetachmentAndRefusalContracts));
         await fixture.InitializeAsync();
+        using var source = fixture.Files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(source);
         var bound = await fixture.PrepareBoundJointAsync();
         Assert.True(bound.Success, JsonSerializer.Serialize(bound.Issues));
         var directCopy = fixture.AssertDirectJointCopyRetainsAdmissionWithoutFinalReduction();
@@ -26,6 +28,7 @@ public sealed partial class JointBundleComponentTests
         fixture.AssertJointCopyContracts(bound.Input!, bound.Authority!);
         fixture.AssertJointAdmissionTimingTree(directCopy);
         fixture.AssertJointHeavyPreparationTimingTree(directCopy);
+        await source.CompleteAsync();
     }
 
     private sealed partial class Fixture

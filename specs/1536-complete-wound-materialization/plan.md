@@ -49,6 +49,15 @@ reviews the coherent final implementation, tests, docs and measured result.
 
 ## Settled bounded integration and current evidence
 
+The retained full common copy fixture at6d reached its unchanged120s bound before
+any assertion; its cold setup did not select a whole SourceDataOperation. Keep
+every existing copy/current-byte/constructor/history/abort/timing assertion and
+the same budget, but own the existing source DATA lifetime around the coherent
+fixture operation, including real lease rotation and mutation/final fences. This
+also exercises warmed current-byte refusal/restoration through the production
+service. Timeout0executed is not a failing cache assertion or a completed control.
+Rebuild both XML targets/current8DLLs and requalify before input generation.
+
 Actual implementation borrows SourceDataOperation's existing context through
 GetCurrentSemanticDataOperation; it adds no second DATA backend. Operation-owned
 structural providers release comparison values and callbacks at closure. A second
