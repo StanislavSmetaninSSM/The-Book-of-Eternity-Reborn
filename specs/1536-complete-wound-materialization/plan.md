@@ -20,8 +20,10 @@ recovered46blobs. One original FULL Cut0 PASS563.0177496s, command586.1932591s;
 all20383164events parsed, no open/truncated scopes. Matched first publication
 254.4067617->218.2767856s,768880->568033attributes;36294DATA reuses. One pre-existing
 observer-capture self-time anomaly is explicitly explained; no clipping. See
-[T452 human findings](T452-operation-source-results.md). Final result review,
-102file local raw retirement and final checkpoint recovery remain pending.
+[T452 human findings](T452-operation-source-results.md). Final result interpretation and102file14,189,582,072Braw retirement accepted
+by separate actualAstra/high,0openintroducedfindings. Source+humanfindings837107d09
+recovered fromorigin47blobs/treeexact/noalternates; final bookkeeping push/ref
+verification follows without code/test rerun.
 No diagnostic quota; all machine output stays outside Git on D:.
 
 Canonical spec FILEOP1..8, issue1536. User explicitly redirected the active task

@@ -7,7 +7,7 @@ no r52 original was executed. Same feature/branch; autonomous review-wait waiver
 - [x] T449 [US1/US2] Compiling causal RED for repeated real file DATA across nested proofs/current adapters with existing service, fresh effect/success refusal and mutation/no-effect/lifetime/ownership controls. No reflection or world preparation.
 - [x] T450 [US1/US2] Implement root DATA owner/lease adapters/typed source dispatch/stable key interning/keys-only ledger via existing service, fresh transition protocol and honest diagnostics. Preserve original proof algorithms and source/authority/write checks. Remove false successful no-evidence invalidation with exact exclusion predicates.
 - [x] T451 [US3] Verify cheap GREEN and substantial actual small owning-sequence reduction, affected category/XML/catalog controls and independent complex review; source-only push, qualify genuine current8DLL/source42/twoimports and exact origin before original.
-- [ ] T452 [US3] Same actual600/820/15 full uncapped Cut0; original oracles/settlement, full raw hashes/analysis/matched timings and honest outcome, independent result review, final source recovery and verified-replacement raw retention.
+- [x] T452 [US3] Same actual600/820/15 full uncapped Cut0; original oracles/settlement, full raw hashes/analysis/matched timings and honest outcome, independent result review, final source recovery and verified-replacement raw retention.
 
 
 # CRASH5 — revision52 reserved reads within a completed proof
