@@ -14,7 +14,7 @@ existing isolated branch, explicit autonomous review-wait waiver. No broad suite
   and independent launch gate for unchanged original600/820/15 full diagnostics.
 - [x] T483 Same actual Cut0 Windows original-full with uncapped both-role timings,
   native73/0/original assertions, stream EOF/join and owned cleanup; full archive.
-- [ ] T484 All-row timing/count comparison to r59 and honest human findings;
+- [x] T484 All-row timing/count comparison to r59 and honest human findings;
   independent outcome/retention/final review, exact old diagnostic retirement,
   final source-only remote persistence/recovery. Completion needs actual evidence.
 

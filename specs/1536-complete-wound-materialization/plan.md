@@ -75,7 +75,7 @@ no reflection/expensive world. All diagnostics uncapped D:, C:fixture. Preserve
 - [x] T483 GS_CACHE6: one fresh original-full same Cut0 fixture/native limits,
   full producer+resumer timing, original assertions/ownership/EOF/join/cleanup.
   No heavy live reads; archive/verify complete capture after settlement.
-- [ ] T484 GS_CACHE7: parse every row, compare exact r59 counts/GameState graphs,
+- [x] T484 GS_CACHE7: parse every row, compare exact r59 counts/GameState graphs,
   probe/admission/observer/testcase costs, investigate any large new regression.
   Human report, independent final/retention review, retire exact old diagnostics
   only after verified complete replacement; publish/recover final closure.

@@ -1,4 +1,4 @@
-# Current checkpoint: r60 original and all-row analysis PASS; outcome review pending
+# Current checkpoint: r60 measured GameState DATA reuse and verified retention
 
 Issue #1536, GS_CACHE1..7 / T479..T484. Owner 2026-10-24 authorizes existing-service
 GameState DATA reuse, cheap fixtures and the same 600/820/15 original with uncapped
@@ -53,10 +53,21 @@ count remains 1013910 but timings improved too: do not attribute the whole
 38.2442711 producer / 65.6808808 resumer seconds, already inclusive. Retain the
 one negative cleanup arithmetic residual; never clamp it or claim pure CPU.
 
-Keep r59 full archive/leaf until the complete r60 all-row analysis and independent
-outcome/retention review accept the replacement. Diagnostics stay on D:, never Git.
-No retention has executed. Human report written; independent outcome/retention/final
-review and source-only remote closure remain pending.
+Independent Astra/high FinalOutcomeGate accepted the actual original, every
+replacement archive member and both runs' full-leaf/summary/all-named comparison
+bindings; zero unresolved findings. Docs WIP 40a200bfe2317dd5ac503ec26bca6fe7d4d5bdd5
+was pushed and recovered with 27 exact blobs/no alternates. The separate exact
+retention admission accepted plan SHA33D85090DE0B8490E2E26C99BE18515A71A769966EABF9070E4FF64A613CD38C
+and helper SHA967A018D216D24107E180A458B387D15E5D6702B00D06ECB652DF5ABDE71E316.
+T484-retention-executed.json: Completed, four exact ordinary files unlinked,
+6350562524 B; all targets absent, all parents retained, every replacement member
+SHA/CRC reverified, 19 protected files rehashed before/after. Deleted only r59 raw
+ZIP/full leaf and the two current stdout duplicates already retained in the ZIP.
+Current full ZIP/index/leaf, both compact comparisons, new INPUT and r51 reusable
+instrumented source/binaries remain protected. Diagnostics stay D: only.
+T479..T484 evidence is recorded in the measured human report and canonical tasks.
+Final documentation/publication checks inspect the actual current diff and fresh
+origin recovery receipt; they do not rerun unchanged tests or source qualification.
 
 # Previous accepted r58 checkpoint
 # Current checkpoint: r58 investigation reviewed; no causal claim for unmeasured growth
