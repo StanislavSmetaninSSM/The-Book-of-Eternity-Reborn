@@ -1,9 +1,9 @@
-# Current checkpoint: r61 source accepted; genuine INPUT awaiting launch admission
+# Current checkpoint: r61 original PASS; all-row timing comparison in progress
 
 Issue#1536 CLEAN_CACHE1..8 / T485..490; canonical spec/plan/tasks. Owner explicitly
 authorizes autonomous work, specification-review wait waiver, uncapped diagnostics,
 cheap fixtures and same original600/820/15. Current isolated clone/branch reused.
-T485..487 complete. Exact publisher post-recovery DATA windows retain actualtwo
+T485..489 complete; T490 in progress. Exact publisher post-recovery DATA windows retain actualtwo
 publisher mutations; complete local/root set and epoch, original registration/
 ancestry/generation guards. Existing service owns detached snapshots only; fresh
 original completion bytes/absence/timestamps/generation/owner, publication image
@@ -38,11 +38,22 @@ Optional composite preflight/archive preserves actual evidence/source attributio
 T488 source gate accepted. Genuine current source42 generation1/1PASS180.5484689s,
 two fresh read-only production imports,82files513711B /1878fingerprintinputs,
 source/copycleanup and actualloaded8DLLbindings verified, no Stage43 precomputation.
-New immutable joint-interface-source42-cleanup-proof-cache-v1 INPUT is being saved
-with this checkpoint. Exact archive binding appears in its package/package.json.
-InputGate/currentmetadata origin-recovery/atomiclaunch pending; T489..490 UNRUN.
-No r61 performance improvement claimed. Accepted r60 whole434.6855800s and full
-rawZIP/leaf stay protected until complete independently accepted replacement.
+New immutable joint-interface-source42-cleanup-proof-cache-v1 INPUT saved at
+metadata26c5553e82b0f50bff0857623f4cef7b9adfea0d. Source/Input gates accepted,
+origin recovery37exactblobs/noalternates, original atomic launch admitted.
+T489 actual original1/1PASS494.5938554s versus r60434.6855800s (+59.9082754s);
+command518.1876971s, same600/820/15, native73/0, identity/EOF/join/cleanup true,
+ContractIssues[]. No benchmark/live large analysis overlap. Full uncapped archive
+114members/5552039814rawB/395778999zipB/SHA1F7F13B9DD69011A8CAF7C46D3595E9A6964680EAE609DE806341A341A1D060F;
+independent everymember length/SHA/CRC verification passed.
+Initial all-row parser stopped at producer line3487973: exact98B known console
+prefix followed by intact timer sequence3487941/PID53464. Raw untouched/no skip.
+Admitted external framing repair177A47DF8B35785A700944F004A344866F090D065EB68D30FE5C0747BFB9029A,
+36syntheticcontrolsPASS; executed-vs-archived analyzer provenance explicit.
+Whole archive rerun in progress, no new game/test execution. Human report:
+specs/1536-complete-wound-materialization/T490-cleanup-proof-data-reuse-measurement.md.
+No r61 performance improvement or slowdown cause claimed before full comparison.
+Accepted r60 full rawZIP/leaf protected until complete outcome/retention admission.
 C:SSD actual benchmark fixtures / D:HDD uncappeddiagnostics. Git contains source,
 small immutable testINPUT/specs/humanfindings, no timerstreams/nativeoutputlogs.
 

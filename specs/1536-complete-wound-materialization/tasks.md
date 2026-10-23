@@ -9,10 +9,10 @@ explicit specification-review waiver; current isolated clone/branch reused.
   causal RED proving repeated completed-proof/history source reads are uncoalesced.
 - [x] T487 Exact publisher post-recovery windows, existing service/repository DATA,
   production cleanup proof routing; GREEN plus integrity/refusal/lifecycle controls.
-- [ ] T488 XML/source/eight DLL/native/catalog/selection qualification; independent
+- [x] T488 XML/source/eight DLL/native/catalog/selection qualification; independent
   source review; genuine new source42/twoimports/immutable INPUT, remote recovery
   and independent launch admission for the unchanged original600/820/15.
-- [ ] T489 Same actual Windows Cut0 full uncapped producer/resumer original;
+- [x] T489 Same actual Windows Cut0 full uncapped producer/resumer original;
   native73/0/all original assertions/identity/EOF/join/cleanup; full archive.
 - [ ] T490 Every-row r60 comparison, concrete cleanup/proof/history timings and
   counts, human findings, independent outcome/retention/final review, exact verified

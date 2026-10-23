@@ -64,10 +64,10 @@ No authority object is a cached value. Producer hook fallback remains untouched.
   and fresh completion sources rather than eight independent sources.
 - [x] T487 CLEAN_CACHE1..5: exact typed publisher subwindows, existing-service DATA,
   completed-proof/history path integration; causal GREEN and integrity/fallback tests.
-- [ ] T488 CLEAN_CACHE3..6: current XML/eight DLL/native/catalog/PlanOnly/selected
+- [x] T488 CLEAN_CACHE3..6: current XML/eight DLL/native/catalog/PlanOnly/selected
   controls; independent source review; genuine source42/twoimports/new immutable
   INPUT, exact remote publication/recovery and independent atomic launch admission.
-- [ ] T489 CLEAN_CACHE6..7: same original Cut0 full600/820/15, native73/0 and original
+- [x] T489 CLEAN_CACHE6..7: same original Cut0 full600/820/15, native73/0 and original
   assertions, EOF/join/owned cleanup; complete verified archive after settlement.
 - [ ] T490 CLEAN_CACHE7..8: every-row r60 comparison, named cleanup/proof/history/read
   and observer metrics, honest report, independent outcome/retention/final review,
