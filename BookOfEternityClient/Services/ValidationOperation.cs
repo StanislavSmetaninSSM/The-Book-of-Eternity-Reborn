@@ -35,6 +35,21 @@ internal sealed class ValidationOperation : IDisposable
     internal bool IsStateMonitorHeld => Monitor.IsEntered(_gate);
 
     /// <summary>
+    /// Supplies the initial unregistered structural-provider seam for operation-lifetime controls.
+    /// </summary>
+    /// <param name="inputIdentity">
+    /// Exact owner identity intended to bind one complete structural capture.
+    /// </param>
+    /// <param name="capture">
+    /// The complete current structural capture for that owner.
+    /// </param>
+    /// <returns>
+    /// An independently constructed provider until operation ownership is implemented.
+    /// </returns>
+    internal OperationStructuralDependency GetStructuralDependency(object inputIdentity,
+        Func<OperationStructuralSnapshot?> capture) => new(capture);
+
+    /// <summary>
     /// Clears prior results and selects fresh computation without cache insertion throughout a nested scope.
     /// </summary>
     /// <returns>

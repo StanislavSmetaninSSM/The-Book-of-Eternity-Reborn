@@ -10,6 +10,47 @@ namespace BookOfEternityClient.Tests;
 public sealed class OperationStructuralDependencyTests
 {
     /// <summary>
+    /// Binds one actual provider per owner so identical requests retain exact dependency declarations.
+    /// </summary>
+    [Fact]
+    public void SameOwnerReusesRegisteredProvider()
+    {
+        using var operation = new DefaultOperationValidationService().BeginOperation();
+        var owner = new object();
+        Func<OperationStructuralSnapshot?> capture = () => new(["same"], []);
+        Assert.Same(operation.GetStructuralDependency(owner, capture),
+            operation.GetStructuralDependency(owner, capture));
+    }
+
+    /// <summary>
+    /// Releases provider comparison DATA when its whole operation closes.
+    /// </summary>
+    [Fact]
+    public void OperationDisposalReleasesComparisonSnapshot()
+    {
+        var operation = new DefaultOperationValidationService().BeginOperation();
+        var dependency = operation.GetStructuralDependency(new object(), () => new(["private DATA"], []));
+        Assert.True(dependency.TryCaptureVersion(out _));
+        Assert.True(dependency.HasCapturedSnapshot);
+        operation.Dispose();
+        Assert.False(dependency.HasCapturedSnapshot);
+        Assert.False(dependency.TryCaptureVersion(out _));
+    }
+
+    /// <summary>
+    /// Rejects a changed capture policy under an already bound owner identity.
+    /// </summary>
+    [Fact]
+    public void SameOwnerCannotReplaceItsCapturePolicy()
+    {
+        using var operation = new DefaultOperationValidationService().BeginOperation();
+        var owner = new object();
+        operation.GetStructuralDependency(owner, () => new(["first"], []));
+        Assert.ThrowsAny<InvalidOperationException>(() =>
+            operation.GetStructuralDependency(owner, () => new(["different policy"], [])));
+    }
+
+    /// <summary>
     /// Compares ordered nullable values and actual companion identities without accepting equal-looking replacements.
     /// </summary>
     [Fact]

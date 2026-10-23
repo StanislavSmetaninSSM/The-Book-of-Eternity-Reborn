@@ -973,7 +973,25 @@ internal static class MortalWoundTreatmentOutcomeIntentComposer
             authorityFingerprint
         });
 
-    private static string IntentFingerprint(
+    /// <summary>
+    /// Computes the original ordered treatment intent digest from detached operation DATA.
+    /// </summary>
+    /// <param name="requestFingerprint">
+    /// The original request fingerprint included unchanged.
+    /// </param>
+    /// <param name="ordinal">
+    /// The operation ordinal included using invariant formatting.
+    /// </param>
+    /// <param name="operation">
+    /// The detached operation whose kind and complete declared values are included.
+    /// </param>
+    /// <param name="declaredFingerprint">
+    /// The original declared-operation digest included unchanged.
+    /// </param>
+    /// <returns>
+    /// The deterministic versioned intent digest; it grants no live authority.
+    /// </returns>
+    internal static string IntentFingerprint(
         string requestFingerprint,
         int ordinal,
         MortalWoundTreatmentOperation operation,

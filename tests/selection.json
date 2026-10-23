@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "core-treatment-semantic-data",
+      "reason": "Causal actual semantic-source reduction and changed aliased request refusal without game construction.",
+      "contracts": [
+        "#1536 SEMANTIC1..6 / T462-464"
+      ]
+    },
+    {
       "category": "core-operation-structural-data",
       "reason": "Causal structural identity/data mismatch and malformed capture must not reuse success.",
       "contracts": [

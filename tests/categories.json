@@ -2,6 +2,39 @@
     "schemaVersion": 1,
     "categories": [
 {
+      "id": "core-treatment-semantic-data",
+      "responsibility": "Actual detached guaranteed treatment agreement and resource finalization source counts with exact immutable INPUT; aliased restored wound mutation, restoration and independent operation lifetimes.",
+      "excludes": "No registry, live request mint, world/game loop, native owner, reflection, permission-cache truth or diagnostic quota.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalWoundTreatmentSemanticData.cs",
+        "BookOfEternityClient.Tests/TreatmentSemanticDataTests.cs"
+      ],
+      "related": [
+        {
+          "id": "core-operation-structural-data",
+          "when": "Complete semantic input guards or lifetime registration change."
+        },
+        {
+          "id": "fr063-joint-bundle-copy-controls",
+          "when": "Actual issued continuation or replay integration changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.TreatmentSemanticDataTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "core-operation-structural-data",
       "responsibility": "Complete typed structural DATA comparison and never-reused dependency versions: alias changes, restore, ineligible/malformed capture, source drift and capture outside coordinator monitor.",
       "excludes": "No game, permissions cache, reflection, world construction, async waits or diagnostic quotas.",
