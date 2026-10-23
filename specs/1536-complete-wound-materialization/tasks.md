@@ -3,7 +3,7 @@
 Issue#1536; PRODUCER1..7; owner2026-10-23 explicit autonomous instrumentation+same600s run.
 - [x] T474 [US3] Source-grounded design, canonical artifacts, actual pinned phases
   and equivalent consistency; publish tracked probe before implementation.
-- [ ] T475 [US3] Cheap compiling causal RED/GREEN, nullable actual fixture-manager
+- [x] T475 [US3] Cheap compiling causal RED/GREEN, nullable actual fixture-manager
   observer seam and producer/scenario nested timers; original hooks/cut preserved.
 - [ ] T476 [US3] Current XML/binaries/native/catalog/selected affected controls and
   independent source review; genuine new source42/two imports and exact remote

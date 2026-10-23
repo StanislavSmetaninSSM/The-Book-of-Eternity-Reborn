@@ -1,3 +1,24 @@
+# Current checkpoint: r59 source accepted; fresh INPUT qualified, original unrun
+
+Issue#1536 PRODUCER1..7/T474..478, branch1536-crash5-linux-windows-spec-20261019.
+Compiled source9b88938cb159051b25582c200cb7596a185d437e. Both XML builds PASS:
+Tests87.152s/Integration54.189s,8actualDLLs uniform and dependency copies exact,
+NativeLineage source/physical pins unchanged;18newXMLlines0issues. Selected
+7descriptors89/89PASS in72.382s,0duplicates/underfill/timeout,owned/runtimecleanup
+true. Catalog12334methods925categories valid; independent actual Astra/high
+FinalSourceGate accepted0findings, original hooks/native73/600/820/15 preserved.
+Genuine NEW source42 generator1/1PASS179.690s,2independent production imports,
+source/copies cleanuptrue;82files513709B,1874contractinputs,allSHA/inventory/CRC,
+3actuallyloadedassemblies/current8DLLs verified. Immutable INPUT only under
+fixtures/joint-interface-source42-producer-timers-v1. No Stage43 precomputation.
+Machine receipts/logs remainD:/BoeDiagnostics/producer-timers-r59-20261023 only.
+Next:exactremoteINPUTrecovery+independentInputGate, then one qualified original
+FULL600/820/15 with no backgroundlargeI/O; archive/everyrowparse/outcome review.
+No r59 original launch/result/speedup asserted. Current r57 raw stays protected.
+Routing checkpoint: one developer owns C#; separateSol6.1/high externaltools and
+Astra/high independent review; no substantive source finding/rework so far.
+
+# Earlier r59 RED checkpoint
 # Current checkpoint: r59 producer instrumentation, causal RED confirmed
 
 Issue#1536 PRODUCER1..7/T474..478. Canonical r59 spec/plan/tasks presented under

@@ -7,7 +7,7 @@ Existing isolated branch/clone reused. Canonical spec above; logs outside Git.
 - [x] T474: Audit real producer manager/driver/callback/cut and collector/parser
   contracts; record design, pinned plan/tasks/prerequisites and equivalent
   consistency; publish before test or implementation changes.
-- [ ] T475: Compiling causal RED then GREEN using minimal adopted directories for
+- [x] T475: Compiling causal RED then GREEN using minimal adopted directories for
   observer-enabled/disabled real fixture manager and nested original readers.
   Wire full producer observation and named expensive scenario stages, preserve
   all existing hooks and real abrupt cut; multiline XML on changed APIs.
