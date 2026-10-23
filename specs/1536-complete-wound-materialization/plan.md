@@ -99,6 +99,27 @@ returned-copy isolation and abort parity. The genuine stage testcase56seconds
 includes more controls than RED54seconds, so no wall-time improvement follows
 from these fixture times. Original100second target remains unverified.
 
+Final qualified sourceaf8106d2e: both XML builds94.624/62.643s, eight actual
+matching DLL/dependency copies and unchanged native pins; all521introduced XML
+lines audited with zero format or changed-line compiler warnings. Current254unit
+and18integration cases PASS, all15descriptors complete/cleanup settled. Existing
+copy case84.799s/category91.424s fits its unchanged120s limit with every original
+fresh timing/current-byte/private-history/abort assertion. New warmed stage case
+49.298s also PASS. Catalog/selection/runner unchanged since accepted discovery;
+921categories/12316methods and272planned cases verified. Separate actual
+Astra/high accepted final source gate, zero unresolved findings. Its review caught
+failure/callback lifetime issues in test preparation before final qualification;
+one earlier whole-setup attempt correctly refused a synthetic write. No measured
+model-cost or wall-time saving is inferred from the review/rework.
+
+The real current-source source42 generator PASS150.675s with two independent
+read-only production imports and successful source/copy cleanup. Its new immutable
+INPUT carrier has82files/513711payload bytes,1870fingerprint inputs; every
+payload/inventory/ZIP CRC and three loaded assembly hashes were checked against
+current8DLLs. No rebinding or Stage43 precomputation. Detailed diagnostic evidence
+staysD. Publish/recover exact source+INPUT and independent input gate still precede
+the same original FULL600/820/15; no r56 whole-case gain claimed yet.
+
 ## Task steps and checks
 
 T461: track/present spec, settle consultation, pinned Spec Kit phases, plan/tasks

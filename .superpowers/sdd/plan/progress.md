@@ -1,22 +1,26 @@
-# Current checkpoint: r56 guarded semantic DATA implementation
+# Current checkpoint: r56 source qualified; original measurement pending
 
 Issue1536 SEMANTIC1..8/T461..465; autonomous specification-review waiver.
-T461 source consultation and actual pinned Spec Kit phases/consistency complete.
-Source51d60b155 both XML builds/current8DLLs complete. T462 actual causal RED: semantic4cases2PASS/2source-countFAIL
-(eight actual agreements instead of one; independent operations four instead
-of two); structural11cases8PASS/3ownership-policy-lifetimeFAIL. Native synchronous,
-lookup and existing operation cache59/59PASS, full selection and owned cleanup.
-New raw remains outside Git under D:/BoeDiagnostics/semantic-cache-r56-20261023.
-Guarded guaranteed stabilization outcome/finalization and preparation/final DATA
-are integrated. Actual stage-only issuer RED40preparation/8final -> GREEN1/1
-for8equal outputs, fresh handoff/joint admission8/8, warm private-history refusal,
-restoration, mutable-copy and abort parity PASS. RED testcase54s/GREEN56s include
-different work/observer overhead and do not establish a wall-time gain. Tiny25
-semantic/structural controls PASS at4391; current additional failure/unsupported/
-disposed-JSON/hidden-fact tests and full affected selection remain to qualify.
-Independent actual Astra/high found0critical/important source defects at51d;
-verification gate pending. XML keywords/coverage/checkpoint polish underway.
-No original r56 FULL or100second target achievement claimed; r54raw retained.
+T461/T462/T463 complete: pinned Spec Kit phases/consistency, causal source-count
+RED and guarded implementation through existing service. Actual genuine stages
+40preparation/8final ->1/1 for8equal results; both fresh admissions8/8. No cached
+publication permission. Complete guard covers hidden facts, exact companion refs,
+private outcomes and independently supplied current final history/copies.
+Qualified sourceaf8106d2ec4cd755f9307990488cf92a7934d7f7: bothXMLbuilds
+94.624/62.643s,8actualmatchingDLLs/nativepins;521introducedXMLlines,0new warnings/
+format errors. Current254unit+18integration=272PASS/15descriptors/cleanup complete.
+Existing complete copy testcase84.799s in unchanged120s; new stagecase49.298s.
+Separate actual Astra/high final source gate accepted,0unresolved. Review caught
+fixture failure/callback lifetime boundaries; one earlier synthetic-write wrapper
+correctly failed the existing fresh pre-effect guard. Final optional cache owns
+only read-only common setup, closes before all fresh original caller controls.
+Current genuine source42 generator/twoimports PASS150.675s,82files/513711bytes;
+allpayloads/inventory/CRC/fingerprint/currentloaded3assemblies verified against8.
+New carrier is immutable INPUT only; all diagnostics stay outside Git onD.
+T464 source/input publishing/exact remote recovery and independent input gate are
+pending; T465 same original FULL600/820/15 not launched. No100sec gain claimed.
+r54 latest complete raw retained until verified accepted replacement and reviewed
+exact file-only retirement; protected game roots remain untouched.
 
 # Historical checkpoint: r55 large-runtime investigation accepted
 
