@@ -27,8 +27,6 @@ public sealed class JointProducerTimingTests
         var root = Path.Combine(Path.GetTempPath(), "boe-producer-timing-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(root);
         const string content = "Исходные данные 🕰";
-        var subject = Path.Combine(root, "subject.txt");
-        await File.WriteAllTextAsync(subject, content);
         using var output = new StringWriter();
         var timings = new GameEngineTurnLifecycleTests.JointOperationTimings(output);
         using (var fixture = observed
@@ -36,6 +34,9 @@ public sealed class JointProducerTimingTests
             : new GameEngineTurnLifecycleTests(null, root))
         {
             var files = fixture.DiagnosticFiles;
+            var subject = files.ResolvePath("subject.txt");
+            Directory.CreateDirectory(Path.GetDirectoryName(subject)!);
+            await File.WriteAllTextAsync(subject, content);
             string? actual;
             using (files.MeasureOperation("Producer.Control.Read"))
                 actual = asynchronous ? await files.ReadFileAsync("subject.txt") : files.ReadFileSync("subject.txt");
