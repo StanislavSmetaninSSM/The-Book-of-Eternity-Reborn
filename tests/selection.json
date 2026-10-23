@@ -2,6 +2,34 @@
   "schemaVersion": 1,
   "selections": [
 {
+  "category": "core-operation-validation-cache",
+  "reason": "Shared GetOrCompute/noncomputing lookup coordinator, backend and dependency invariants.",
+  "contracts": [
+    "#1536 LEASEDATA1..8 / T456"
+  ]
+},
+{
+  "category": "gm-main-metadata-native-windows",
+  "reason": "Fresh main metadata admission and native namespace controls remain mandatory outside provisional DATA hits.",
+  "contracts": [
+    "#1536 LEASEDATA1..8 / T456"
+  ]
+},
+{
+  "category": "gm-main-owner-native-windows",
+  "reason": "Fresh owner/worker inventory absence and metadata dispositions remain mandatory.",
+  "contracts": [
+    "#1536 LEASEDATA1..8 / T456"
+  ]
+},
+{
+  "category": "fr063-trusted-local-request-observations",
+  "reason": "Keep original request-local namespace freshness and passive observer isolation.",
+  "contracts": [
+    "#1536 LEASEDATA1..8 / T456"
+  ]
+},
+{
   "category": "core-lease-data-admission",
   "reason": "Revision54 causal minimal-file and cache-service contracts before same original600 measurement.",
   "contracts": [

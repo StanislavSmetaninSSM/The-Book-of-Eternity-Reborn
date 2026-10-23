@@ -222,6 +222,113 @@ public sealed class LeaseDataAdmissionTests(ITestOutputHelper output)
     }
 
     /// <summary>
+    /// Preserves protected reader dispatch and BOM-aware decoding while sharing detached DATA.
+    /// </summary>
+    /// <param name="synchronous">
+    /// Whether to use the original synchronous protected reader family.
+    /// </param>
+    /// <returns>
+    /// Completion after exact BOM bytes, decoded text, zero hit admission and a fresh source fence agree.
+    /// </returns>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ProtectedBomDataKeepsItsOriginalReaderFamily(bool synchronous)
+    {
+        using var fixture = new Fixture(output);
+        var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        var path = BookOfEternityClient.Services.ExplorerLocalTurnRollbackArtifacts.Root + "/fixture.txt";
+        var physical = files.ResolvePath(path);
+        Directory.CreateDirectory(Path.GetDirectoryName(physical)!);
+        var bytes = Encoding.Unicode.GetPreamble().Concat(Encoding.Unicode.GetBytes("original")).ToArray();
+        File.WriteAllBytes(physical, bytes);
+        using var operation = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(operation);
+        Assert.False(files.UsesTrustedLocalWriter(lease, path));
+        Assert.Equal("original", synchronous ? files.ReadFileSync(lease, path) : await files.ReadFileAsync(lease, path));
+        fixture.Counts.Clear();
+        Assert.Equal("original", synchronous ? files.ReadFileSync(lease, path) : await files.ReadFileAsync(lease, path));
+        var cached = synchronous ? files.ReadFileBytesSync(lease, path) : await files.ReadFileBytesAsync(lease, path);
+        Assert.Equal(bytes, cached);
+        cached![0] = 0;
+        Assert.Equal(bytes, synchronous ? files.ReadFileBytesSync(lease, path) : await files.ReadFileBytesAsync(lease, path));
+        Assert.Equal(0, fixture.Count("Lease.Validate.Total"));
+        Assert.Equal(3, fixture.Count("LeaseDataHit.Reuse"));
+        await operation.CompleteAsync();
+    }
+
+    /// <summary>
+    /// Gives a strict reserved read set precedence over a previously warmed fast alias.
+    /// </summary>
+    /// <returns>
+    /// Completion after strict reads retain original full admission and both owners freshly complete.
+    /// </returns>
+    [Fact]
+    public async Task StrictReadSetOverridesAnAlreadyWarmedAlias()
+    {
+        using var fixture = new Fixture(output);
+        var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        using var operation = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(operation);
+        Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+        Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+        Assert.Equal(1, fixture.Count("LeaseDataHit.Reuse"));
+        await using (var readSet = files.TryBeginReservedValidationReadSet(lease))
+        {
+            Assert.NotNull(readSet);
+            await readSet.OpenAsync();
+            fixture.Counts.Clear();
+            Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+            Assert.Equal(0, fixture.Count("LeaseDataHit.Reuse"));
+            Assert.True(fixture.Count("Lease.Validate.Total") > 0);
+            await readSet.CompleteAsync();
+        }
+        await operation.CompleteAsync();
+    }
+
+    /// <summary>
+    /// Refuses warmed alias reuse while a newly live sibling holds original participating access.
+    /// </summary>
+    /// <returns>
+    /// Completion after all sibling work settles and the original owner freshly completes.
+    /// </returns>
+    [Fact]
+    public async Task NewLiveSiblingDisablesAnAlreadyWarmedAlias()
+    {
+        using var fixture = new Fixture(output);
+        var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        using var operation = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(operation);
+        Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+        Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+        Assert.Equal(1, fixture.Count("LeaseDataHit.Reuse"));
+        var ready = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var sibling = Task.Run(async () =>
+        {
+            await using var frame = files.BeginParticipatingMainAdmission();
+            try { await frame.AcquireAsync(); ready.TrySetResult(); await release.Task; }
+            catch (Exception error) { ready.TrySetException(error); throw; }
+        });
+        try
+        {
+            await ready.Task;
+            fixture.Counts.Clear();
+            Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+            Assert.Equal(0, fixture.Count("LeaseDataHit.Reuse"));
+            Assert.True(fixture.Count("Lease.Validate.Total") > 0);
+        }
+        finally { release.TrySetResult(); await sibling; }
+        await operation.CompleteAsync();
+    }
+
+    /// <summary>
     /// Calls the selected actual reader and mutates returned bytes to test detachment.
     /// </summary>
     /// <param name="files">

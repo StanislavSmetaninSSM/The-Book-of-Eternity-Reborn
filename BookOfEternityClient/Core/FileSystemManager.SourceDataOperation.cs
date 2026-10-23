@@ -417,11 +417,19 @@ public partial class FileSystemManager
         /// </param>
         internal void RegisterDeclaredRoute(CanonicalWriteLease lease, string path, ValidationSnapshotFamily family)
         {
+            object segment;
+            lock (_gate)
+            {
+                if (_closed || _failed || _completed || _suspended != 0 || _busy || _closingLease != null) return;
+                segment = _segment;
+            }
+            // Never hold the source monitor while capturing external root/admission state.
+            if (!TryRootVersion(out var root)) return;
             lock (_gate)
             {
                 if (_closed || _failed || _completed || _suspended != 0 || _busy || _closingLease != null ||
                     !ReferenceEquals(_generationLease, lease) || !ReferenceEquals(_lease, lease) ||
-                    !TryRootVersion(out var root) || !ReferenceEquals(root, _rootVersion)) return;
+                    !ReferenceEquals(segment, _segment) || !ReferenceEquals(root, _rootVersion)) return;
                 if (_keys.TryGetValue((path, family, true), out var key))
                     _declaredRoutes[(path, family is ValidationSnapshotFamily.OrdinaryAsync or ValidationSnapshotFamily.ProtectedAsync)] = key;
             }
@@ -460,15 +468,25 @@ public partial class FileSystemManager
             if (!EnterRead(lease)) return false;
             try
             {
-                using var request = _files.MeasureOperation("LeaseDataHit.Request");
-                var lookup = _operation.TryGetAsync(Snapshot, key, [this]);
-                if (!lookup.IsCompleted) throw new InvalidOperationException("A cache-only source lookup did not settle synchronously.");
-                var result = lookup.GetAwaiter().GetResult();
+                OperationLookup<CanonicalFileReadSnapshot?> result;
+                using (_files.MeasureOperation("LeaseDataHit.Request"))
+                {
+                    var lookup = _operation.TryGetAsync(Snapshot, key, [this]);
+                    if (!lookup.IsCompleted) throw new InvalidOperationException("A cache-only source lookup did not settle synchronously.");
+                    result = lookup.GetAwaiter().GetResult();
+                    RequireOpen();
+                    if (result.Found)
+                    {
+                        _pendingDeclaredData = true;
+                        using var reuse = _files.MeasureOperation("LeaseDataHit.Reuse");
+                    }
+                }
+                // Every passive timing callback has settled before final live admission.
                 RequireOpen();
                 if (!result.Found) return false;
-                _pendingDeclaredData = true;
+                if (!TryRootVersion(out var root) || !ReferenceEquals(root, _rootVersion))
+                    throw new InvalidOperationException("The cached DATA owner lost its original live root.");
                 snapshot = result.Value;
-                using var reuse = _files.MeasureOperation("LeaseDataHit.Reuse");
                 return true;
             }
             catch { _failed = true; throw; }
