@@ -1,4 +1,4 @@
-# Current checkpoint: r54 current-source379 selected PASS; qualify fresh source42
+# Current checkpoint: r54 current-source379 PASS and genuine new input qualified
 
 Feature1536 LEASEDATA1..8/T453–457; canonical spec/plan/tasks and user review-wait
 waiver apply. Code781e9051ed2b3febddd2d7fc5dc15e4bbc06a768, XML8DLL qualified,
@@ -20,6 +20,13 @@ source/input acceptance, source-only push/exact remote recovery; one unchanged
 T453–455done; T456partial; T457UNRUN. Diagnostics are uncapped/outsideGitD:
 D:/BoeDiagnostics/lease-validation-r54-20261023. Accepted r53raw retained until
 complete verified replacement; protected roots never touched.
+
+Genuine source42 T456-source42-generation PASS180.7799s;82files/513711B,
+1866-input fingerprint and both independent production imports verified/current
+loaded assemblies match781/8DLL. Source/copies cleaned. Immutable NEW input in
+fixtures/joint-interface-source42-lease-data-v1; original UNRUN. FinalSourceGate
+accepted781 by independent Astra/high. Next:push/recover exact input metadata,
+InputGate acceptance; then one-use preflight and same original FULL600/820/15.
 
 # Historical checkpoint: r53 original FULL PASS accepted; raw retirement complete
 

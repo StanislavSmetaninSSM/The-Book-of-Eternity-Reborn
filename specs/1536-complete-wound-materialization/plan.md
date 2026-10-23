@@ -81,6 +81,13 @@ and attributes, retain8DATA hits and fresh final closure. Causal timer lifetime 
 55executed/49PASS6FAIL precedes corrected final59lease controls. Source review
 static findings corrected; source/input gate and original600 are still pending.
 
+Current genuine source42 generator PASS180.7799s:82files/513711payload bytes,
+two independent normal production imports, complete source/copy cleanup. Current
+1866-input fingerprint, manifest/payload inventories/hashes, producer781version
+and three actually loaded DLLs verified against qualified8DLL. NEW immutable
+lease-data-v1 slot contains only input carrier/README, no precomputed Stage43 or
+rebound old package. InputGate and exact remote recovery still precede original.
+
 # Whole-operation file DATA — revision53 implementation plan
 
 Current Windows source qualification (2026-10-23): production/test source
