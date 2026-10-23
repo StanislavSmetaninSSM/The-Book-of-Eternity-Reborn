@@ -1,55 +1,62 @@
-# Current checkpoint: r60 design; implementation and new measurements UNRUN
+# Current checkpoint: r60 original and all-row analysis PASS; outcome review pending
 
-Issue#1536 GS_CACHE1..7/T479..484. Owner2026-10-24 authorizes existing-service
-GameState DATA reuse, cheap fixtures and same600/820/15 original; uncapped
-producer/resumer diagnostics, autonomous execution/no approval wait.
-Base34b7abfa38db2439df6736aada8afcada197e529; r59 complete accepted original
-518.6110156s. Its full ZIP/leaf/compact summaries remain D:protected until a
-new complete verified accepted replacement. No machine diagnostics in Git.
-Spec/plan/tasks current r60. Chosen source-lifetime/data reuse rather than full
-verdict: CrossReferences/MetaMisc phases; original lifecycle and guardian-musings nested
-lease mode preserved. Existing service/backend, no generation bootstrap.
-Pinned plan/tasks/prerequisites invoked; equivalent consistency maps all seven
-GS_CACHE requirements to T479..484, no uncovered acceptance or constitution
-conflict. Narrow scope chosen after nested-lease audit; ambient fallback keeps
-existing pending/browser read protocols unchanged. T479 design complete.
-Bounded Sol6.1/high external tools preparation; separate Astra/high read-only
-lifetime consultation, independent different reviewer required. T480 causal RED source3897f5f8a: XML Tests buildPASS85.506s;2/2 intended
-assertion failures expected2 actual8 physicalreads (async.5633/sync.2887s),
-selectioncomplete,notimeout,bothcleanupsTRUE. T480complete; literal wording
-consistency-check assertion corrected without changing any requirements.
-T481 WIP: owned normal bound source phase/implicit existing-service hit wired
-onlyCrossReferences/MetaMisc; ambient/browser/worker/reserved/guardiancompletion
-remainoriginal.20cheapcasesexecuted17PASS3fixtureFAIL: writerbeforeimagereadwascounted,
-changedselectionmultipliers{}lackedmandatoryfivecoefficientarray. Bothcausal
-sync/async now2readsPASS; rawdrift/copy/fallback/failurePASS. XMLbothprojectsPASS
-86.148/53.178s,8DLLuniform. Fixturepreconditionscorrected;21stcase nowmodels
-closedpriorlease/liveparent eligibility, causalRED53bb3a0e0 XMLbuildPASS87.004s,21executed20PASS1FAIL expected2actual8
-onlyclosedpriorleasecase; no timeout,cleanupsTRUE. Corrected entry selection
-skips onlyclosednon-owningremoteheads, rejectsanysame-rootclosedremoteowner
-beforeownacquisition; allactualAcquire andfinalhitguardsunchanged. Corrected359bGREEN21/21PASS, complete,no timeout/bothcleanupsTRUE.
-T482 initialcatalog/PlanOnly15descriptors276casesPASS,XML294newlines0changed
-warnings/errors,8DLL/nativePASS. Firstfullselectionstoppedfirstsourceguard:
-14stalehashslots9filespreexisting/unchangedsince34btaskbase, allother275UNRUN.
-IndependentAstra/highrecomputedhistorical/currenthashes+reviewedexactpinned
-revision..34bdiffs,explicitlyaccepted14pin-onlyrefresh. No productionchange.
-Finalcompiledsource7eea8c922a044f857e12196e7cccabbcb7da0977: XMLbothbuilds
-88.883/53.628s,8DLL/nativePASS;294newXMLlines0newwarnings/formaterrors;
-catalog12348methods/927categoriesPASS;15descriptor276casePlanOnlyPASS.
-T482-pinned-controls COMPLETE276/276PASS372.4707543s, all15descriptors,
-no timeout/owned+runtimecleanupTRUE. IndependentAstra/highFinalSourceGate
-acceptedexactsource,0unresolvedintroducedfindings; rawreview D:only.
-GenuineNEWsource42generator1/1PASS180.5654231scommand, twoindependentread-only
-productionimports, source/copiescleaned. Newimmutablegame-state-cache-v1INPUT
-82files513705B,1875fingerprintinputs; allpayloadSHA/ZIPCRC/current3loadedDLLs/
-8dependencybindingsverified. ArchiveSHAC6D681D1EE34DA6BA4B5187486E8EF245DAC4FFE4351F7C7ED41353DC273396A.
-INPUT/metadataindependentreview+atomiclaunchgatepending; original600/820/15
-T483-fullUNRUN. No measuredperformancebenefitclaimedfromcheapcontrols. No source
-integrityfailure validated. IndependentAstra/highsourcegate staysdraft. Existing producer
-fixture installs potential mutable read-hook delegates even when callbacks are
-inactive: preserve those hooks/freshfallback; do not claim producercacheactivation.
-Source pins updated WIP requiring independent acceptance; new typedhelper/source
-service included in closure. No newINPUT or originalmeasurement result yet.
+Issue #1536, GS_CACHE1..7 / T479..T484. Owner 2026-10-24 authorizes existing-service
+GameState DATA reuse, cheap fixtures and the same 600/820/15 original with uncapped
+producer/resumer diagnostics. Autonomous execution and review-wait waiver apply.
+Canonical spec.md, plan.md and tasks.md track this block. The actual pinned Spec
+Kit plan/tasks/prerequisites phases and equivalent consistency check were used.
+Superpowers brainstorming, writing-plans, TDD, inline execution and independent
+review apply; a separate Astra/high lifetime consultation did not review its own work.
+
+Base: 34b7abfa38db2439df6736aada8afcada197e529. Final compiled source:
+7eea8c922a044f857e12196e7cccabbcb7da0977. GameState CrossReferences and MetaMisc
+reuse implicit ordinary DATA through the existing service with fresh entry and
+completion fences; actual ordered rules still run. No whole-verdict cache,
+generation bootstrap, new cache backend or weakening of unsupported flows.
+Ambient leases, browser/worker/reserved flows and guardian completion retain their
+original routes. Producer fixture mutable read hooks retain the original fallback.
+
+T479..T482 complete. Causal RED: expected 2, actual 8 physical reads, both sync
+and async. A separate closed-prior-lease case failed causally before its eligibility
+correction. Final cheap GameState controls: 21/21 PASS. The complete impact selection
+passed 276/276 cases in 15 categories, 372.4707543 s, no timeout and both cleanups true.
+Both XML builds passed (88.8827872 / 53.6281573 s); 294 new XML lines, no changed-line
+warnings or multiline-format errors. Eight DLL/dependency copies and native pins
+verified. Catalog: 12348 methods / 927 categories; selected PlanOnly: 276 cases.
+Fourteen preexisting stale pin occurrences across nine unchanged baseline files
+were independently audited and explicitly admitted for an exact pin-only refresh.
+
+Genuine new source42 generation passed 1/1 and two independent read-only production
+imports. Immutable game-state-cache-v1 INPUT: 82 files, 513705 B, 1875 fingerprint
+inputs. Archive SHA C6D681D1EE34DA6BA4B5187486E8EF245DAC4FFE4351F7C7ED41353DC273396A.
+Exact launch metadata a422e06c13d778df29d2f6bd13ffbfd5675f0277 was pushed and recovered
+from origin with all 26 blobs exact. Separate Astra/high FinalSourceGate and InputGate
+accepted with zero unresolved introduced findings. Atomic launch preflight passed.
+
+T483 complete: T483-original-full PASS, testcase 434.6855800 s versus r59
+518.6110156 s; command 457.3015591 s. Same 600-child/820-shared/15-minute category,
+C: fixture / D: diagnostics, native exits 73/0, identity/EOF/join and both cleanups
+passed. No heavy live trace reading during the timed run. Complete replacement
+archive: 124 members, 5526168005 raw B, 392868844 compressed B, SHA
+ED0C068B8166ABC516779ADD9B77E3483BB4FED7AC33F8FDD29586FAE12816DF.
+All 124 archived payload sizes, SHA and CRC independently reverified by all-row
+analysis. All 14759154 timing events parsed: producer 5339788 / 2669885 closed /
+18 authentic interrupted; resumer 9419366 / 4709683 closed / 0 open. Leaf SHA
+C226542475F5E45B8099281E2DE0427C56A192FC2C352EC3024C68317ADCDDAF.
+T484-game-state-data-reuse-measurement.md records exact matched r59/r60 evidence.
+Two resumer GameState passes: 75.0325504 -> 42.2791565 s. CrossReferences:
+9.9201095 -> 1.5302380 s; MetaMisc: 20.0591039 -> 1.3080859 s; 404 real DATA hits.
+The entire resumer reductions of 95960 GetAttributes, 3812 lease validations and
+4166 probe/enumerations occur in these selected phases. Producer GetAttributes
+count remains 1013910 but timings improved too: do not attribute the whole
+83.9254356 s testcase reduction to caching. Observer build/write costs are
+38.2442711 producer / 65.6808808 resumer seconds, already inclusive. Retain the
+one negative cleanup arithmetic residual; never clamp it or claim pure CPU.
+
+Keep r59 full archive/leaf until the complete r60 all-row analysis and independent
+outcome/retention review accept the replacement. Diagnostics stay on D:, never Git.
+No retention has executed. Human report written; independent outcome/retention/final
+review and source-only remote closure remain pending.
 
 # Previous accepted r58 checkpoint
 # Current checkpoint: r58 investigation reviewed; no causal claim for unmeasured growth

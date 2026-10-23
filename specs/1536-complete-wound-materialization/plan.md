@@ -67,12 +67,12 @@ no reflection/expensive world. All diagnostics uncapped D:, C:fixture. Preserve
 - [x] T481 GS_CACHE1..4: implement selected retained lifetime, existing-service
   implicit hit and GameState CrossReferences/MetaMisc integration. GREEN original causal tests,
   fail-closed drift/fallback/lifetime controls; inspect changed XML APIs.
-- [ ] T482 GS_CACHE4..6: XML builds, current eight DLL/native/source bindings,
+- [x] T482 GS_CACHE4..6: XML builds, current eight DLL/native/source bindings,
   impact-selected category catalog/PlanOnly and cheap controls. Separate complex
   source review. Genuine new source42 generation and two production imports into
   immutable joint-interface-source42-game-state-cache-v1 slot; publish/recover
   exact source/input and independent input/launch qualification.
-- [ ] T483 GS_CACHE6: one fresh original-full same Cut0 fixture/native limits,
+- [x] T483 GS_CACHE6: one fresh original-full same Cut0 fixture/native limits,
   full producer+resumer timing, original assertions/ownership/EOF/join/cleanup.
   No heavy live reads; archive/verify complete capture after settlement.
 - [ ] T484 GS_CACHE7: parse every row, compare exact r59 counts/GameState graphs,

@@ -9,10 +9,10 @@ existing isolated branch, explicit autonomous review-wait waiver. No broad suite
   actual duplicate reads/admission evidence plus integrity/fallback controls.
 - [x] T481 Existing-service GameState source block/implicit-hit integration;
   GREEN, exact raw source/generation fences and original context/issue behavior.
-- [ ] T482 Current XML/source/DLL/native/catalog/selected controls; independent
+- [x] T482 Current XML/source/DLL/native/catalog/selected controls; independent
   source review; genuine new source42/twoimports/immutable INPUT; publish/recover
   and independent launch gate for unchanged original600/820/15 full diagnostics.
-- [ ] T483 Same actual Cut0 Windows original-full with uncapped both-role timings,
+- [x] T483 Same actual Cut0 Windows original-full with uncapped both-role timings,
   native73/0/original assertions, stream EOF/join and owned cleanup; full archive.
 - [ ] T484 All-row timing/count comparison to r59 and honest human findings;
   independent outcome/retention/final review, exact old diagnostic retirement,
