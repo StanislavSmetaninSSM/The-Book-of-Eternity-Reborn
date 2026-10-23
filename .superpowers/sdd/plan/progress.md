@@ -22,6 +22,15 @@ No performance improvement claimed. T488..490 UNRUN. r60 full434.6855800s archiv
 and leaf remain protected until a complete independently accepted replacement.
 Diagnostics uncapped and external D:, actual game fixtures C:SSD; no diagnostic Git.
 
+Qualification checkpoint: final a13b426db builds88.9905591/53.0382367s,
+eightcopies/nativepins/XML367lines/catalog12360methods928categories allverified.
+Selection18categories327cases stopped11/19descriptors after175PASS/7FAIL152.1808224s.
+All7failures are FileNotFound for retired T333 archive before tested code; no runtime
+regression established. Separately versioned exact accepted r60 cleanup-entry DATA
+fixture697337B/A99035C7... admitted for current prerequisites, original transport
+validator/provenance/fault assertions unchanged. Fixture and source correction WIP;
+qualification must rerun to completion before new source42/full original.
+
 # Previous accepted r60 checkpoint
 
 # Current checkpoint: r60 measured GameState DATA reuse and verified retention

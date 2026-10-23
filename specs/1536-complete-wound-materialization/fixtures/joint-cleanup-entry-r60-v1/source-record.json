@@ -1,0 +1,37 @@
+{
+  "SchemaVersion": 1,
+  "Purpose": "Immutable inert test INPUT, not diagnostic timing/output or live game authority. Original capture bytes and provenance are unchanged.",
+  "Archive": "cleanup-entry.zip",
+  "ArchiveSHA256": "A99035C7FFBB67E15D3F08240A035AE0D8DC255F2708AC9AFE587DE279870311",
+  "ArchiveBytes": 697337,
+  "Source": "7eea8c922a044f857e12196e7cccabbcb7da0977",
+  "OriginalRun": "T483-original-full",
+  "OriginalArchiveSHA256": "ED0C068B8166ABC516779ADD9B77E3483BB4FED7AC33F8FDD29586FAE12816DF",
+  "OriginalArchiveMember": "artifacts/joint-cleanup-captures/0cef3348a0aa4a08992dcf83fd5b7745.zip",
+  "PayloadFiles": 221,
+  "PayloadBytes": 1503466,
+  "Provenance": {
+    "Operation": "JointStory.CleanupEligibleTerminalAsync",
+    "Cut": 0,
+    "Parent": {
+      "Nonce": "55c75d4bee624bb89bf8ceb7769778cb",
+      "ParentPid": 13992,
+      "Cut": 0,
+      "Fault": null,
+      "Diagnostic": false,
+      "ObservationMode": "full",
+      "ExtendedWindowsCrash": true,
+      "RunId": "e1f19b0a54294fc6aa1f714df6f51012",
+      "StoragePlacement": {
+        "ExplicitParent": "C:/Temp",
+        "SelectedParent": "C:\\Temp",
+        "OwnedRoot": "C:\\Temp\\boe-joint-interface-crash-a4c75f37d7f24e00a83ef1e35c5dfb12"
+      },
+      "Source42Seed": {
+        "ArtifactPath": "C:\\Temp\\boe-joint-interface-crash-a4c75f37d7f24e00a83ef1e35c5dfb12\\source42-artifact",
+        "ManifestSha256": "2849AD9C390E88640E7648DE73918DCA5D4A2C295A9FE332C6590815118BDF53",
+        "Usage": "ordinary-windows-five-cuts-v1"
+      }
+    }
+  }
+}

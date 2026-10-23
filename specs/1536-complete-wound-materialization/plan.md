@@ -37,6 +37,9 @@ Interfaces / file responsibilities:
   publisher callback; existing before/after image and generation checks remain.
 - Tests/CleanupProofDataReuseTests.cs (under BookOfEternityClient.Tests): minimal
   nonce-owned files and actual publisher/helper/service, typed seams, uncapped output.
+- IntegrationTests/JointCleanupValidatorTestData.cs and fixtures/joint-cleanup-entry-r60-v1:
+  explicitly replace missing retired T333 prerequisite with exact accepted r60 inert
+  DATA, retaining strict provenance/source inventory and all original fault assertions.
 - tests/categories.json/selection.json: coherent ownership and affected contracts;
   current closure source pins and integration immutable INPUT slot move with source.
 

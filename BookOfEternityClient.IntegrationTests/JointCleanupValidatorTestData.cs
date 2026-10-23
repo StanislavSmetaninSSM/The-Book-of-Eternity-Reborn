@@ -14,13 +14,13 @@ internal static class JointCleanupValidatorTestData
     /// <summary>
     /// Binds the exact retained archive bytes without rebinding capture provenance.
     /// </summary>
-    internal const string ArchiveSha256 = "D2ACF9B8B958F7800E1335B35C0C873E928792C82ADABF5707C57286EB329740";
+    internal const string ArchiveSha256 = "A99035C7FFBB67E15D3F08240A035AE0D8DC255F2708AC9AFE587DE279870311";
 
     /// <summary>
-    /// Locates the unchanged cleanup-entry archive retained from the original failed run.
+    /// Locates the versioned immutable r60 cleanup-entry DATA fixture with unchanged capture provenance.
     /// </summary>
     internal static string ArchivePath => Path.Combine(TestRepoPaths.RepoRoot, "specs",
-        "1536-complete-wound-materialization", "recovery", "crash5", "T333-cleanup-data-0-raw.zip");
+        "1536-complete-wound-materialization", "fixtures", "joint-cleanup-entry-r60-v1", "cleanup-entry.zip");
 
     /// <summary>
     /// Parses ordinary manifest DATA using the production serializer options and participating reader.

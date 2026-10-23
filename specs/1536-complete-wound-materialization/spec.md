@@ -38,6 +38,10 @@ apply. Base24c4525343fde38557d077716277d01aa4fc2bba; accepted r60 testcase434.68
   fallback/extra mutation, failure/cancellation/closing/retry, detached copies,
   original recovery before windows and fresh readback after publication. No new
   reflection or expensive world construction. New/changed APIs use multiline XML.
+  The existing cleanup/history component prerequisites use a separately versioned
+  compact genuine r60 cleanup-entry DATA fixture after their retired T333 archive
+  was found missing. Preserve exact capture bytes/provenance and strict transport
+  validation; no diagnostic streams enter Git and no original fault assertion changes.
 - CLEAN_CACHE6: Current source/eight DLL/native/XML/catalog/selected contracts and
   independent complex review precede a genuine NEW source42/two production imports
   in immutable joint-interface-source42-cleanup-proof-cache-v1. Publish/recover exact
