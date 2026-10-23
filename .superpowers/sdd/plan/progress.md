@@ -1,51 +1,26 @@
-# Current checkpoint: r53 source GREEN; genuine input and original measurement next
+# Current checkpoint: r53 original FULL PASS; final result review/retention pending
 
-Current Windows source qualification (2026-10-23): production/test source
-`d04f6a2dd1353b4704670e237cc21fee3268a181`; XML builds105.2993/64.7909s,
-eight matching DLL/source/dependency copies; native lineage sources unchanged.
-37root-source cases PASS30.1763s;157affected cases PASS304.1922s over9descriptors,
-including6actual no-write owners with positive/raw-drift controls. Selection and
-owned/runtime cleanup complete. Discovery-only catalog PASS; PlanOnly194cases,
-10descriptors,0executed. XML895added lines,0format/changed-line warnings.
-Actual two-full-proof comparison:758->254physical source reads (66.49% fewer),
-36880->17860attributes (51.57% fewer),672DATA reuses, identical game images.
-This is small owning-sequence evidence, not an original600s/full-game speedup.
-Compiling causal RED retained locally:4776888f5 late references/physical close
-33cases30PASS3FAIL;5f7d4dcd1 closing/fresh-lifetime37cases33PASS4FAIL. Corrected
-private close fence excludes new work, and exact physical guard survives owner
-disposal until all source/fresh scopes drain. Independent Astra/high correction
-review found no new static blocker; final source gate is recorded locally.
-Source42 generation/two imports and original600 remain UNRUN at this checkpoint.
-No diagnostic quota; all machine output stays outside Git on D:.
+Feature1536 FILEOP1..8 / T448–452. Code d04f6a2dd1353b4704670e237cc21fee3268a181;
+original run HEAD2ad54b47f46dd3bbaab23722c6575c5b96201ac1. Source/input/launch
+gates accepted by independent actual Astra/high;194targetedPASS, both XML builds,
+catalog/PlanOnly and eight uniform DLL/native pins qualified. New genuine source42
+82files/twoimports qualified;46exact origin-only blobs/tree verified.
 
-Canonical feature1536 FILEOP1..8 / T448-452, autonomous owner review-wait waiver.
-Source DATA uses existing DefaultOperationValidationService/ValidationOperation;
-one operation key interner and keys-only ledger, no competing payload dictionary.
-Owner/lease/entry/registration receipt is checked atomically with root mutation;
-selected effects and success are freshly fenced under a live physical adapter.
-No diagnostic cap; all raw output D-only. Source42/input/original600 UNRUN.
+T452-original-full single unchanged600/820/15 FULL Cut0 PASS:case563.0177496s,
+category570.84633s, command586.1932591s. Producer73/resumer0;nativebirth/EOF/join,
+originalturn43/onecommit/7absentterminalfiles/84inertrepeatimages andcleanupPASS.
+All20383164events/10191582closed/497508paths parsed;0open/truncated. Matched first
+publication254.4067617->218.2767856s;768880->568033attrs;36294DATAreuses. Whole
+trace1883762attrs/94.138868s is unequal-work vs oldtimeout, not whole-case%gain.
+Measuredobserverbuild/write131.8149095s. One negative cleanupself residual comes
+from740.9105ms diagnostic capture emitted before parentstopwatch; retained and
+explained, no clipping. Human findings:T452-operation-source-results.md.
 
-Evidence:7098984e6 compiling baseline11unit1PASS10causalFAIL,3actual2PASS1FAIL.
-ef006c86311unit+3actualPASS, two full DATA proofs758->254physical sources and
-36880->17860attributes with identical game bytes.08ea8ad16 ownership controls
-11PASS2causalFAIL;258c672d8 corrected22unit+151relatedPASS, all settled and clean.
-117c4a963 failed-owner fresh control25PASS1causalFAIL (unit-only build, not eight
-uniform DLL qualification). Final candidate corrects helper/borrow/fence routing
-while retaining the failed latch; adds actual no-write/runtime/lifetime controls.
-Additional causal evidence:4776888f5 compiled33unit30PASS3FAIL for late local
-references and premature physical teardown;5f7d4dcd1 compiled37unit33PASS4FAIL
-for new verification/fresh scopes entering after close intent and active fresh
-protocols losing their physical guard. All selections settled, cleanup succeeded.
-Candidate now excludes ordinary work during close, uses a private closing fence
-and retains the exact lease guard until active source/fresh scopes drain. Builds
-and GREEN for this correction remain pending; independent Astra/high source gate
-is still open. No original or full-game gain claimed.
-
-Windows legacy acquisition remains an independent fresh protocol and retires the
-source segment; demonstrated reuse is within admitted stable segments. Genuine
-lease replacement and same-lease adapter-retirement controls are separate. Do not
-claim across-acquisition hits from the two-proof result. Final qualify current8DLL,
-genuine source42/two imports, exact origin, then same600/820/15 full Cut0/all rows.
+All machine output localD-only. New full31payload archive7428530264rawB verified
+SHA/CRC;ZIP514135197B SHA384C8E2CC2772099F40230BDEC7F0E74A65B041DABB72E0902FF11D7B26B79CB.
+Next: independent final interpretation/doc/exact102file14.19GBretention admission,
+execute frozenplan (no directories/game inputs), review receipt, publish/recover
+final source/findings. No new original/diagnostic-off/aggregate run is planned.
 
 # Historical checkpoint: r53 whole-operation file DATA requested; implementation next
 
