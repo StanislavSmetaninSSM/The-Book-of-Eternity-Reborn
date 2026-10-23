@@ -156,10 +156,10 @@ internal static partial class WoundAcceptedTurnPlanner
         /// Evaluates the expected preparation seal using this exact continuation's private acquisition input.
         /// </summary>
         /// <param name="compute">
-        /// The unchanged deterministic replay source, returning null for its original refusal.
+        /// The unchanged deterministic replay source, returning <see langword="null"/> for its original refusal.
         /// </param>
         /// <returns>
-        /// The expected successful preparation seal, or null for refusal.
+        /// The expected successful preparation seal, or <see langword="null"/> for refusal.
         /// </returns>
         internal string? ReadPreparationFingerprint(Func<string?> compute) =>
             _semanticData.ReadPreparationFingerprint(StageReplayOperation, compute);
@@ -496,13 +496,13 @@ internal static partial class WoundAcceptedTurnPlanner
     /// A detached persistence representation of that resolution.
     /// </param>
     /// <param name="TreatmentBatch">
-    /// A detached optional treatment batch; null means no rematerialization.
+    /// A detached optional treatment batch; <see langword="null"/> means no rematerialization.
     /// </param>
     /// <param name="SemanticData">
     /// The original continuation's structurally guarded DATA evaluator.
     /// </param>
     /// <param name="Operation">
-    /// The eligible already owning operation, or null for original computation.
+    /// The eligible already owning operation, or <see langword="null"/> for original computation.
     /// </param>
     internal sealed record JointRepairFinalView(
         MortalWoundTreatmentOutcomePreparation Outcome, MortalWoundTreatmentResolution Resolution,

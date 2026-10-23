@@ -179,7 +179,7 @@ internal sealed class ValidationOperation : IDisposable
     /// Computes or reuses synchronous DATA through the shared operation protocol without waiting for asynchronous work.
     /// </summary>
     /// <typeparam name="TResult">
-    /// The registered result type, including permitted null and default values.
+    /// The registered result type, including permitted <see langword="null"/> and default values.
     /// </typeparam>
     /// <param name="computation">
     /// Exact registered computation identity and defensive copy policy.

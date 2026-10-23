@@ -40,10 +40,10 @@ internal sealed partial class MortalWoundTreatmentSemanticData
     /// Reuses outcome agreement DATA only while the complete supported structural input remains equal.
     /// </summary>
     /// <param name="operation">
-    /// The optional whole-operation cache context; null preserves the original uncached computation.
+    /// The optional whole-operation cache context; <see langword="null"/> preserves the original uncached computation.
     /// </param>
     /// <returns>
-    /// True when the original retained-outcome agreement succeeds; otherwise false.
+    /// <see langword="true"/> when the original retained-outcome agreement succeeds; otherwise <see langword="false"/>.
     /// </returns>
     internal bool ReadOutcomeAgreement(ValidationOperation? operation) =>
         Read(operation, OutcomeAgreement, () => _outcome.AgreesWith(_resolution));
@@ -52,10 +52,10 @@ internal sealed partial class MortalWoundTreatmentSemanticData
     /// Reuses the checked resource finalization fingerprint as DATA without retaining a live permission.
     /// </summary>
     /// <param name="operation">
-    /// The optional whole-operation cache context; null preserves the original uncached computation.
+    /// The optional whole-operation cache context; <see langword="null"/> preserves the original uncached computation.
     /// </param>
     /// <returns>
-    /// The original checked finalization fingerprint, or null for the original refusal.
+    /// The original checked finalization fingerprint, or <see langword="null"/> for the original refusal.
     /// </returns>
     internal string? ReadFinalizationFingerprint(ValidationOperation? operation) =>
         Read(operation, FinalizationFingerprint, () =>
@@ -68,7 +68,7 @@ internal sealed partial class MortalWoundTreatmentSemanticData
     /// Immutable scalar result retained by the registered computation.
     /// </typeparam>
     /// <param name="operation">
-    /// The owning temporary context, or null for an unchanged direct source call.
+    /// The owning temporary context, or <see langword="null"/> for an unchanged direct source call.
     /// </param>
     /// <param name="computation">
     /// The exact algorithm and scalar copy descriptor.
@@ -77,7 +77,7 @@ internal sealed partial class MortalWoundTreatmentSemanticData
     /// The original deterministic source using this owner's retained inputs.
     /// </param>
     /// <returns>
-    /// The original computed or structurally current retained result, including null and false.
+    /// The original computed or structurally current retained result, including <see langword="null"/> and <see langword="false"/>.
     /// </returns>
     private TResult Read<TResult>(ValidationOperation? operation, OperationComputation<TResult> computation,
         Func<TResult> compute)
@@ -91,7 +91,7 @@ internal sealed partial class MortalWoundTreatmentSemanticData
     /// Captures supported detached guaranteed stabilization DATA without invoking domain validation or live I/O.
     /// </summary>
     /// <returns>
-    /// Exact ordered current values and companion identities, or null for an unaudited graph shape.
+    /// Exact ordered current values and companion identities, or <see langword="null"/> for an unaudited graph shape.
     /// </returns>
     private OperationStructuralSnapshot? CaptureCurrent()
     {

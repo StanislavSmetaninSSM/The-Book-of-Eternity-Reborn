@@ -14,7 +14,7 @@ internal sealed class OperationStructuralSnapshot
     /// Detaches the owner-defined ordered values and companion reference sequence.
     /// </summary>
     /// <param name="values">
-    /// Complete ordered immutable structural values; null and empty remain distinct.
+    /// Complete ordered immutable structural values; <see langword="null"/> and empty remain distinct.
     /// </param>
     /// <param name="identities">
     /// Actual nullable companion identities whose equality must use reference identity.
@@ -34,7 +34,7 @@ internal sealed class OperationStructuralSnapshot
     /// The independently captured current DATA snapshot.
     /// </param>
     /// <returns>
-    /// True only when all ordinal values and actual reference identities agree.
+    /// <see langword="true"/> only when all ordinal values and actual reference identities agree.
     /// </returns>
     internal bool Matches(OperationStructuralSnapshot other)
     {
@@ -62,7 +62,7 @@ internal sealed class OperationStructuralDependency : IOperationDependency
     /// Selects the complete current DATA capture without domain validation or I/O.
     /// </summary>
     /// <param name="capture">
-    /// Captures complete owner-defined DATA, or null when reuse is not eligible.
+    /// Captures complete owner-defined DATA, or <see langword="null"/> when reuse is not eligible.
     /// </param>
     internal OperationStructuralDependency(Func<OperationStructuralSnapshot?> capture)
     {

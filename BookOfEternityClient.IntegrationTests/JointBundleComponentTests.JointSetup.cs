@@ -54,13 +54,13 @@ public sealed partial class JointBundleComponentTests
         /// Runs the shared genuine source and stage preparation, optionally continuing through common publication binding.
         /// </summary>
         /// <param name="includeCommonBinding">
-        /// True requests the existing complete common fixture; false stops after retaining the wound stage bundle.
+        /// <see langword="true"/> requests the existing complete common fixture; <see langword="false"/> stops after retaining the wound stage bundle.
         /// </param>
         /// <param name="observeBound">
-        /// Optional original common-binding observation; null performs no callback.
+        /// Optional original common-binding observation; <see langword="null"/> performs no callback.
         /// </param>
         /// <returns>
-        /// The original common result when requested, or null after successful stage-only preparation.
+        /// The original common result when requested, or <see langword="null"/> after successful stage-only preparation.
         /// </returns>
         private async Task<WoundAcceptedTurnPlanner.JointRepairBoundCommonInputResult?> PrepareJointFixtureAsync(
             bool includeCommonBinding, Func<Task>? observeBound)

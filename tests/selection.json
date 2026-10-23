@@ -2,6 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "fr063-joint-bundle-copy-controls",
+      "reason": "Preserve the complete existing uncached constructor/copy/current-byte/private-history/abort and exact timing-tree controls alongside the new warmed stage-only fixture.",
+      "contracts": ["#1536 SEMANTIC3..6 / T464 independent review coverage"]
+    },
+    {
       "category": "fr063-joint-semantic-data-controls",
       "reason": "Actual genuine-owner stage sources must fall to one without weakening fresh handoff, history corruption, mutable-copy or abort refusal contracts.",
       "contracts": [

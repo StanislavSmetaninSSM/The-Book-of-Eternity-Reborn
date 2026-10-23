@@ -13,13 +13,13 @@ internal sealed partial class MortalWoundTreatmentSemanticData
     /// Reuses a successful deterministic preparation seal under the complete retained semantic input guard.
     /// </summary>
     /// <param name="operation">
-    /// The eligible operation, or null when the privately retained input contour is unsupported.
+    /// The eligible operation, or <see langword="null"/> when the privately retained input contour is unsupported.
     /// </param>
     /// <param name="compute">
     /// The original replay over this continuation's privately owned acquisition input.
     /// </param>
     /// <returns>
-    /// The expected preparation fingerprint, or null for the original replay refusal.
+    /// The expected preparation fingerprint, or <see langword="null"/> for the original replay refusal.
     /// </returns>
     internal string? ReadPreparationFingerprint(ValidationOperation? operation, Func<string?> compute)
     {
@@ -36,7 +36,7 @@ internal sealed partial class MortalWoundTreatmentSemanticData
     /// Reuses successful pure reduction DATA after the original fresh handoff and joint admission.
     /// </summary>
     /// <param name="operation">
-    /// The eligible operation, or null when the privately retained input contour is unsupported.
+    /// The eligible operation, or <see langword="null"/> when the privately retained input contour is unsupported.
     /// </param>
     /// <param name="admittedInput">
     /// Already freshly verified preparation, baseline and effect DATA seals with their actual companions.
@@ -71,15 +71,15 @@ internal sealed partial class MortalWoundTreatmentSemanticData
     private sealed class StageReplayRefusedException : Exception
     {
         /// <summary>
-        /// Retains the original final refusal when present; a null value represents preparation refusal.
+        /// Retains the original final refusal when present; a <see langword="null"/> value represents preparation refusal.
         /// </summary>
         /// <param name="result">
-        /// The original detached final refusal envelope, or null for an unavailable preparation seal.
+        /// The original detached final refusal envelope, or <see langword="null"/> for an unavailable preparation seal.
         /// </param>
         internal StageReplayRefusedException(WoundAcceptedTurnPlanningResult? result) => Result = result;
 
         /// <summary>
-        /// Gets the original detached final refusal, or null for preparation refusal.
+        /// Gets the original detached final refusal, or <see langword="null"/> for preparation refusal.
         /// </summary>
         internal WoundAcceptedTurnPlanningResult? Result { get; }
     }

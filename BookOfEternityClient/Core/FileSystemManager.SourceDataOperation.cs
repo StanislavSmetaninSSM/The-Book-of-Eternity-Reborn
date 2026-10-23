@@ -91,7 +91,7 @@ public partial class FileSystemManager
     /// Selects the already owning whole-operation service for pure semantic DATA computations.
     /// </summary>
     /// <returns>
-    /// The existing temporary context, or null outside an eligible source lifetime or during fresh diagnostics.
+    /// The existing temporary context, or <see langword="null"/> outside an eligible source lifetime or during fresh diagnostics.
     /// This selection grants no filesystem, claim or publication authority.
     /// </returns>
     internal ValidationOperation? GetCurrentSemanticDataOperation() =>

@@ -2,16 +2,21 @@
 
 Issue1536 SEMANTIC1..8/T461..465; autonomous specification-review waiver.
 T461 source consultation and actual pinned Spec Kit phases/consistency complete.
-Source3bff4ed09 builds with XML enabled; unit closure only, eight-DLL uniformity
-not yet qualified. T462 actual causal RED: semantic4cases2PASS/2source-countFAIL
+Source51d60b155 both XML builds/current8DLLs complete. T462 actual causal RED: semantic4cases2PASS/2source-countFAIL
 (eight actual agreements instead of one; independent operations four instead
 of two); structural11cases8PASS/3ownership-policy-lifetimeFAIL. Native synchronous,
 lookup and existing operation cache59/59PASS, full selection and owned cleanup.
 New raw remains outside Git under D:/BoeDiagnostics/semantic-cache-r56-20261023.
-Implementing exact operation-owned structural guards and audited guaranteed
-stabilization outcome/finalization DATA. Other shapes retain original sources.
-Preparation/final reduction integration and same original FULL remain pending;
-no speedup or100second target achievement claimed. r54 full raw remains retained.
+Guarded guaranteed stabilization outcome/finalization and preparation/final DATA
+are integrated. Actual stage-only issuer RED40preparation/8final -> GREEN1/1
+for8equal outputs, fresh handoff/joint admission8/8, warm private-history refusal,
+restoration, mutable-copy and abort parity PASS. RED testcase54s/GREEN56s include
+different work/observer overhead and do not establish a wall-time gain. Tiny25
+semantic/structural controls PASS at4391; current additional failure/unsupported/
+disposed-JSON/hidden-fact tests and full affected selection remain to qualify.
+Independent actual Astra/high found0critical/important source defects at51d;
+verification gate pending. XML keywords/coverage/checkpoint polish underway.
+No original r56 FULL or100second target achievement claimed; r54raw retained.
 
 # Historical checkpoint: r55 large-runtime investigation accepted
 

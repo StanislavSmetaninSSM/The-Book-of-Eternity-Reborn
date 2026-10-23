@@ -19,18 +19,18 @@ reviews the coherent final implementation, tests, docs and measured result.
   compares current DATA and rotates never-reused version. Malformed/unsupported
   capture disables reuse and preserves original source/refusal mapping. This is
   comparison/version evidence, not a second computed-result cache.
-- Core/FileSystemManager.SemanticData.cs plus SourceDataOperation: synchronous
-  GetOrComputeSemanticData<TResult>(descriptor,inputIdentity,dependency,compute)
-  uses existing whole-operation ValidationOperation storage. Outside an eligible
+- Core/FileSystemManager.SourceDataOperation.cs: synchronous
+  GetCurrentSemanticDataOperation borrows existing whole-operation
+  ValidationOperation storage. Outside an eligible
   owner/suppressed diagnostics/fresh protocols, execute original source. Exact
   lifetime/serial ownership and observer-end disposal refusal remain effective.
-- Services/MortalWoundTreatmentSemanticData.cs plus typed capture methods on
-  outcome/deterioration owners: cover complete mutable request wound/owned source
+- Services/MortalWoundTreatmentSemanticData.cs: cover complete supported mutable request wound/owned source
   definitions/DefinitionFacts/provenance, ordered resolution operations/intents,
-  evidence/private deterioration, actual companion identities and scalar seals.
+  evidence, actual companion identities and scalar seals. Private deterioration
+  and selected-graph contours remain unsupported and execute original sources.
   No public-only JSON/reflection/recursive domain validation/fingerprint guard.
-  Already audited deeply detached private outcome clones can use exact private
-  identities; shared selected request/mode evidence remains structurally guarded.
+  Already audited deeply detached private outcome clones use exact private
+  identities; the shared request/mode evidence remains structurally guarded.
 - Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs: split HasValidSeal's
   original ordered outcome agreement and finalization-seal computations into
   versioned DATA descriptors. Keep cheap original identity/scalar checks and
@@ -78,7 +78,11 @@ The initial full-common fixture timed out before new assertions; its complete
 4.568M-row retained trace identified unrelated common binding preparation. The
 stage-only factory preserves the original complete factory and reservation
 closing; its RED testcase completed54seconds without changing the120second limit
-or diagnostics. GREEN and original100second target remain unverified.
+or diagnostics. Source51d60b155 stage GREEN proves40->1preparation and8->1final,
+fresh handoff/joint admission8/8, warm private-history refusal/restoration,
+returned-copy isolation and abort parity. The genuine stage testcase56seconds
+includes more controls than RED54seconds, so no wall-time improvement follows
+from these fixture times. Original100second target remains unverified.
 
 ## Task steps and checks
 

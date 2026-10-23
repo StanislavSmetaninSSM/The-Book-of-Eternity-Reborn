@@ -18,10 +18,10 @@ public partial class FileSystemManager
     /// Selects a passive receiver for synchronous computations without constructing a physical filesystem host.
     /// </summary>
     /// <param name="observer">
-    /// The receiver to select; null temporarily suppresses an enclosing receiver.
+    /// The receiver to select; <see langword="null"/> temporarily suppresses an enclosing receiver.
     /// </param>
     /// <returns>
-    /// A restoring scope when the receiver context changes; otherwise null.
+    /// A restoring scope when the receiver context changes; otherwise <see langword="null"/>.
     /// The scope must remain on its entering thread and must not span an await.
     /// </returns>
     internal static IDisposable? EnterOperationTimingContext(Action<string, string, TimeSpan>? observer)

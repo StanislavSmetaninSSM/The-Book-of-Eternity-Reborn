@@ -252,6 +252,31 @@ public sealed class TreatmentSemanticDataTests
     }
 
     /// <summary>
+    /// Invalidates agreement when hidden definition facts change while public resolution JSON remains identical.
+    /// </summary>
+    [Fact]
+    public void HiddenDefinitionFactsCannotUseWarmedAgreement()
+    {
+        using var fixture = new Fixture(_output);
+        using var operation = new DefaultOperationValidationService().BeginOperation();
+        using (fixture.EnterTimingContext())
+        {
+            Assert.True(fixture.Data.ReadOutcomeAgreement(operation));
+            Assert.True(fixture.Data.ReadOutcomeAgreement(operation));
+            var publicBefore = JsonSerializer.Serialize(fixture.Resolution);
+            fixture.DefinitionFacts.Add(new("semantic_extra_fact", "{}", [], false));
+            Assert.Equal(publicBefore, JsonSerializer.Serialize(fixture.Resolution));
+            var expected = fixture.Outcome.AgreesWith(fixture.Resolution);
+            var start = fixture.Count("TreatmentOutcome.AgreesWith");
+            Assert.Equal(expected, fixture.Data.ReadOutcomeAgreement(operation));
+            Assert.Equal(start + 1, fixture.Count("TreatmentOutcome.AgreesWith"));
+            fixture.DefinitionFacts.RemoveAt(fixture.DefinitionFacts.Count - 1);
+            Assert.True(fixture.Data.ReadOutcomeAgreement(operation));
+            Assert.Equal(4, fixture.Count("TreatmentOutcome.AgreesWith"));
+        }
+    }
+
+    /// <summary>
     /// Performs independent semantic computation after a prior whole operation has ended.
     /// </summary>
     [Fact]
@@ -300,10 +325,18 @@ public sealed class TreatmentSemanticDataTests
             Assert.NotNull(parsed);
             Symptoms = parsed.RouteSourceWound.Display.VisibleSymptoms.ToList();
             Routes = parsed.RouteSourceWound.Treatment.Routes.ToList();
+            DefinitionFacts = parsed.RouteSourceWound.Consequences.OwnedEffectSources.DefinitionFacts.ToList();
             var wound = parsed.RouteSourceWound with
             {
                 Display = parsed.RouteSourceWound.Display with { VisibleSymptoms = Symptoms },
-                Treatment = parsed.RouteSourceWound.Treatment with { Routes = Routes }
+                Treatment = parsed.RouteSourceWound.Treatment with { Routes = Routes },
+                Consequences = parsed.RouteSourceWound.Consequences with
+                {
+                    OwnedEffectSources = parsed.RouteSourceWound.Consequences.OwnedEffectSources with
+                    {
+                        DefinitionFacts = DefinitionFacts
+                    }
+                }
             };
             var request = MortalWoundTreatmentAttemptRequest.RestoreDetached(parsed.Mode, parsed.Coordinates,
                 parsed.MilestoneOrdinal, wound, parsed.RouteSourceWoundFingerprint, parsed.ModeAuthority,
@@ -378,6 +411,11 @@ public sealed class TreatmentSemanticDataTests
         /// Gets caller-owned route entries whose hidden provenance can change independently of public JSON.
         /// </summary>
         internal List<WoundTreatmentRoute> Routes { get; }
+
+        /// <summary>
+        /// Gets caller-owned hidden definition facts omitted from the public resolution JSON.
+        /// </summary>
+        internal List<WoundOwnedEffectDefinitionFact> DefinitionFacts { get; }
 
         /// <summary>
         /// Gets the deliberately aliased caller-owned collection retained by the restored request.

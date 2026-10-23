@@ -28,7 +28,7 @@ public sealed class ValidationOperationSynchronousTests
     /// Retains legitimate default values independently of source invocation count.
     /// </summary>
     /// <param name="value">
-    /// The immutable value, including null, false and zero.
+    /// The immutable value, including <see langword="null"/>, <see langword="false"/> and zero.
     /// </param>
     [Theory]
     [InlineData(null)]
