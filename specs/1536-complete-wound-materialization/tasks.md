@@ -6,7 +6,7 @@ Issue#1536; REGRESSION1..5; owner2026-10-23 autonomous investigation, large cost
 - [x] T472 [US3] Resolve large regressed graphs to measured nested operations and
   source callsites; quantify added QTE replay/proof costs, unchanged-count
   per-call growth and observer contribution; identify limits of causal evidence.
-- [ ] T473 [US3] Record human findings, equivalent consistency/arithmetic checks,
+- [x] T473 [US3] Record human findings, equivalent consistency/arithmetic checks,
   independent review and exact published recovery; preserve current uncapped
   diagnostics on D: and introduce no production/test changes or new original run.
 

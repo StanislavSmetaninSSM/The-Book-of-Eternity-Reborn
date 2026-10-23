@@ -12,7 +12,7 @@ No C# change/build/test or new original run is planned.
   retained baseline summaries/milestones and unchanged source callsites. Quantify
   QTE replay work versus savings and distinguish count versus per-call growth.
   Record unobservable producer/storage/CPU causes explicitly; no guessed fix.
-- [ ] T473: Write concise human report with exact code references and evidence,
+- [x] T473: Write concise human report with exact code references and evidence,
   check REGRESSION1..5 coverage and arithmetic, obtain separate review, address
   findings, publish and verify exact remote recovery. Do not rerun passing C#
   selections for analysis-only documentation. Keep diagnostic output outside Git.

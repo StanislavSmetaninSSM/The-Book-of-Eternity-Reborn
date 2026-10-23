@@ -1,4 +1,4 @@
-# Current checkpoint: r58 measured regression investigation; independent review pending
+# Current checkpoint: r58 investigation reviewed; no causal claim for unmeasured growth
 
 Issue#1536 REGRESSION1..5/T471..473. T471/T472 analysis complete; T473 report
 written, pending independent review and final publication/recovery. Source/tests/
@@ -18,6 +18,9 @@ Actual pinned plan/tasks/prerequisites plus equivalent consistency and arithmeti
 checks PASS. Method systematic-debugging/writing-plans/inline execution; analysis
 only so no C# RED/GREEN/build/category run is warranted.
 
+
+Root cause of producer internal/operation-mean growth remains unestablished;
+this accepted investigation does not claim a fixed regression or new speedup.
 # Historical accepted r57 checkpoint
 
 # Current checkpoint: r57 complete; QTE14to2, whole test422.426s, no overall speedup
