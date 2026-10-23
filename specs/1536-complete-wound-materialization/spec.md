@@ -1,3 +1,30 @@
+# CRASH5 — revision55 unchanged total runtime investigation
+
+Source issue: #1536. User2026-10-23 asks why the whole testcase barely changed,
+which precise remaining sections are expensive and which DATA may be cached
+without weakening integrity. Deliverable is a measured investigation and proposed
+cache contracts, not production implementation. Existing autonomous review-wait
+waiver remains; existing source781 and r54 FULL remain the measured code/input.
+
+- RUNTIME-1: Reconcile r53/r54 testcase, pre-resumer budget, measured owner and
+  other elapsed time with explicit clock boundaries; distinguish observed deltas
+  from unmeasured internal causes and single-run noise.
+- RUNTIME-2: Analyze every saved r54 invocation-path aggregate and retained r53
+  named aggregates; identify concrete nested expensive leaves/call chains and
+  counts. Never add overlapping inclusive times or claim residuals are CPU.
+- RUNTIME-3: For prioritized cache candidates identify exact API/data identity,
+  lifetime, mutation/copy rules, invalidation and fresh authority/effect guards.
+  Separate safe immutable computation reuse from unproven file/permission reuse.
+- RUNTIME-4: Preserve full uncapped diagnostics on D: outside Git. Reuse the
+  complete verified existing measurement; declare any missing observations and
+  justify any additional probe before execution. No behavioral changes here.
+- RUNTIME-5: Save concise human findings in this feature; independent review of
+  numbers/source contracts, exact scoped diff and final remote recovery required.
+
+Acceptance: clock reconciliation and concrete cost table, source-linked causal
+fanout, ranked cache candidates with preserved integrity and honest uncertainty.
+No production code, test limits, schema, GM behavior or prior oracle changes.
+
 # CRASH5 — revision54: skip repeated filesystem admission for genuine provisional DATA hits
 
 Issue1536. Owner2026-10-23 requests safe caching of repeated Lease.Validate.Total

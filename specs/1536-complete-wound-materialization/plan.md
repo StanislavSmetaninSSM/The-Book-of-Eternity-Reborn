@@ -1,3 +1,28 @@
+# Runtime reconciliation — revision55 investigation plan
+
+Issue#1536; RUNTIME-1..5. Method: systematic-debugging and writing-plans, parent
+owns investigation; independent actual Astra/high reviews the completed report.
+Spec: spec.md revision55. Python standard library + existing full r54 evidence,
+retained compact r53 evidence, exact source781/final metadata4cc3b7fb7.
+
+- T458: Pin remote/current source and archive; reconcile clocks from original
+  outcomes, native budgets and complete stage/timing records. Analyze all saved
+  paths once; save full derived tables under D:/BoeDiagnostics/runtime-r55-20261023.
+  Verify all counted leaf/caller partitions against their source aggregates.
+- T459: Trace heavy bundle/canonical/fingerprint/readset call chains in source.
+  Record what a cache key must contain and which immutable computation/copy may
+  be reused; preserve actual fresh authority, write/completion/callback fences.
+  Report absence of argument-identity/uniqueness measurements honestly. A probe
+  is conditional on an explicit missing question, not a routine full rerun.
+- T460: Write T460-runtime-investigation.md; source/spec/task consistency and
+  independent review, then source-only publish/exact remote recovery. No C# tests
+  or builds unless implementation/test instrumentation actually changes.
+
+Review focus: inclusive overlaps, unequal whole-trace work, producer stage clocks
+versus parent time, copies of mutable JSON/DTOs, cache-key circular fingerprints,
+fresh filesystem authority versus immutable proof DATA. No unsupported speedup.
+T458 covers1/2/4;T459 covers2/3/4;T460 coversall requirements and final acceptance.
+
 # Lease DATA hit admission — revision54 implementation plan
 
 Issue1536 / LEASEDATA1..8. Parent executes inline with Superpowers TDD/debugging;
