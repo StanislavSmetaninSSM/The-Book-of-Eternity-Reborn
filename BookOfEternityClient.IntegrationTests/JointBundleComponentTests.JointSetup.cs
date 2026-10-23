@@ -178,9 +178,13 @@ public sealed partial class JointBundleComponentTests
                         _jointResourceAuthority = resources.Authority;
                         _jointProgression = progression;
                         _jointBound = bound;
+                        if (sourceData is not null)
+                        {
+                            await sourceData.CompleteAsync();
+                            sourceData.Dispose();
+                        }
                         preparationValidation.Dispose();
                         if (observeBound is not null) await observeBound();
-                        if (sourceData is not null) await sourceData.CompleteAsync();
                     }
                     else
                         AcceptedTurnAuthorityRegistry.AbortMortalJointRepairPublication(Files, Lease, continuation, reservation);
