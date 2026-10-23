@@ -5,8 +5,8 @@
   "id": "core-lease-data-admission",
   "responsibility": "Genuine warmed declared DATA hits avoid filesystem admission while fresh escape fences reject raw main/worker/namespace drift.",
   "excludes": "No world construction, reflection, aggregate suite, diagnostic quota or cached authority.",
-  "changeHints": [],
-  "related": [],
+  "changeHints": ["BookOfEternityClient/Core/FileSystemManager.SourceDataOperation.cs", "BookOfEternityClient/Core/FileSystemManager.cs"],
+  "related": [{"id":"core-operation-source-data", "when":"Whole-operation source ownership or effect fences change."}],
   "requirements": {
     "frontendBuild": false,
     "exclusive": true,
@@ -27,8 +27,8 @@
   "id": "core-operation-lookup",
   "responsibility": "Noncomputing existing service lookup: exact declarations, defaults, copied DATA, dependencies, cancellation and serial ownership.",
   "excludes": "No world construction, reflection, aggregate suite, diagnostic quota or cached authority.",
-  "changeHints": [],
-  "related": [],
+  "changeHints": ["BookOfEternityClient/Services/ValidationOperation.cs"],
+  "related": [{"id":"core-operation-validation-cache", "when":"Shared coordinator or storage behavior changes."}],
   "requirements": {
     "frontendBuild": false,
     "exclusive": true,
