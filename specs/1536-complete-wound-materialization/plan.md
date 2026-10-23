@@ -88,6 +88,19 @@ and three actually loaded DLLs verified against qualified8DLL. NEW immutable
 lease-data-v1 slot contains only input carrier/README, no precomputed Stage43 or
 rebound old package. InputGate and exact remote recovery still precede original.
 
+Actual T457 original FULL PASS562.5566634s/command585.8569083s, unchanged
+600/820/15. Native settlement and original gameplay/idempotence oracles preserved.
+All19259568timing events/9629784closed scopes/465718paths analyzed,0open/truncated.
+9254genuine fast hits; same40090requests/3796initialsources/36294reuses. Lease
+calls52028->42489/time111.130->98.977s; attributes under lease1144616->934758.
+Matched publication218.277->218.709s: NO duration speedup; whole case563.018->
+562.557s practically unchanged. Callback fresh fences21->22/source reads3321->3502
+are preserved real integrity work. Raw31payloads7016240225B archived489171687B,
+SHA581DBA66201ED77F81A579C3C56453DA5251AEB5FF795F5F985D590B1393A8D2.
+Human report:T457-lease-data-results.md. Source/InputGate accepted by independent
+Astra/high; result+retention gate pending; T457notyetcomplete. Frozen retention
+252files10994451477B, no directory/input deletion; old194case names all in379PASS.
+
 # Whole-operation file DATA — revision53 implementation plan
 
 Current Windows source qualification (2026-10-23): production/test source

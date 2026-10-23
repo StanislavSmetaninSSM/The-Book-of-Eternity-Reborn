@@ -1,32 +1,25 @@
-# Current checkpoint: r54 current-source379 PASS and genuine new input qualified
+# Current checkpoint: r54 original FULL PASS; complete profile; outcome/retention review
 
-Feature1536 LEASEDATA1..8/T453–457; canonical spec/plan/tasks and user review-wait
-waiver apply. Code781e9051ed2b3febddd2d7fc5dc15e4bbc06a768, XML8DLL qualified,
-native source pins unchanged; added XML367lines/0introduced warning or format
-errors. Actual143unit+236affected PASS; all16descriptors complete, cleanup true.
-Catalog discovery passed; PlanOnly379cases/16descriptors,0execution. Current
-source/test/doc review corrected timer callback disposal/epoch escapes (causal
-55RED49PASS6FAIL), external root capture occurs outside source monitor; final
-local exact owner acceptance follows it under short source monitor. Catalog
-encoding restored; affected selection explicit. No unresolved static findings.
-
-Actual10reader/presence controls: each8repeated cache DATA results now0full
-lease validations/0attributes instead of8(or16syncbytes). Fresh fences/main/worker
-refusals, callbacks, real runtime advance, writes, strict/sibling/BOM, lifecycle
-and existing coordinator behavior verified. No whole-game speedup claimed yet.
-Next:genuine NEW source42lease-data-v1 current-code input/twoimports; independent
-source/input acceptance, source-only push/exact remote recovery; one unchanged
-600child/820shared/15min FULL Cut0, allrows/matchedr53/results+retention review.
-T453–455done; T456partial; T457UNRUN. Diagnostics are uncapped/outsideGitD:
-D:/BoeDiagnostics/lease-validation-r54-20261023. Accepted r53raw retained until
-complete verified replacement; protected roots never touched.
-
-Genuine source42 T456-source42-generation PASS180.7799s;82files/513711B,
-1866-input fingerprint and both independent production imports verified/current
-loaded assemblies match781/8DLL. Source/copies cleaned. Immutable NEW input in
-fixtures/joint-interface-source42-lease-data-v1; original UNRUN. FinalSourceGate
-accepted781 by independent Astra/high. Next:push/recover exact input metadata,
-InputGate acceptance; then one-use preflight and same original FULL600/820/15.
+Code781e9051ed2b3febddd2d7fc5dc15e4bbc06a768; actual benchmark metadata
+be0c22e00a66fdc34d2024570bb750b0aa6782d2.379selected PASS/XML8DLL/source/input
+gates accepted;56origin blobs/tree/remotehead recovered without alternates.
+Actual same FULL600/820/15 PASS562.5566634s (command585.8569083s); native cleanup
+and original43/mechanical/7removed/onecommit/84inert-file oracles preserved.
+No whole-case or matched-publication duration speedup claimed. Actual Lease
+calls52028->42489,time111.130->98.977s,attributes1144616->934758.9254fast DATA
+hits; unchanged40090requests/3796initialsources/36294reuses. First owning call
+421.936->411.689s; publication218.277->218.709s. Fresh callback fence adds181
+freshsource reads and one fence; no integrity work is misreported as removed.
+All19259568timingevents/9629784closed/465718paths analyzed;0open/truncated.
+Fullraw31payloads7016240225B,ZIP489171687B,verifiedSHA/CRC; current raw staysD:
+D:/BoeDiagnostics/lease-validation-r54-20261023. Complete result
+T457-lease-data-results.md. One known negative cleanup self-subtraction retained
+and explained; leaf/matched-inclusive measurements unaffected.
+T453–456done. T457pending independent result+frozenretention admission/execution
+and final source-only push/exact origin. Frozen plan252files10994451477B; every
+old194case name included in current379PASS. Never delete directories or INPUT;
+keep current archive/all-row analysis/qualified current evidence and reusable
+r51instrumented source backup. No more original run or source change required.
 
 # Historical checkpoint: r53 original FULL PASS accepted; raw retirement complete
 
