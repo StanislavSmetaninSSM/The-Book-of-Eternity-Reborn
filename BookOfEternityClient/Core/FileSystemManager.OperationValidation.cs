@@ -160,7 +160,7 @@ public partial class FileSystemManager
     /// <returns>
     /// Completion after the callback settles and its fresh boundary is closed.
     /// </returns>
-    private async Task InvokeRecoveryValidationCallbackAsync(Func<Task> callback)
+    internal async Task InvokeRecoveryValidationCallbackAsync(Func<Task> callback)
     {
         using var fresh = ForceFreshRecoveryValidation();
         await callback();

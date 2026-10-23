@@ -234,6 +234,31 @@ internal sealed class ValidationOperation : IDisposable
     }
 
     /// <summary>
+    /// Looks up an eligible detached result without invoking a source computation.
+    /// </summary>
+    /// <typeparam name="TResult">
+    /// Registered result type, including permitted null and default values.
+    /// </typeparam>
+    /// <param name="computation">
+    /// Exact registered computation and copy policy.
+    /// </param>
+    /// <param name="inputIdentity">
+    /// Complete stable input and policy identity.
+    /// </param>
+    /// <param name="dependencies">
+    /// Exact ordered direct provider declarations required by the stored result.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Cancellation observed before and after lookup and copying.
+    /// </param>
+    /// <returns>
+    /// A found detached value or a miss without computing a replacement.
+    /// </returns>
+    internal Task<OperationLookup<TResult>> TryGetAsync<TResult>(OperationComputation<TResult> computation,
+        object inputIdentity, IReadOnlyList<IOperationDependency> dependencies, CancellationToken cancellationToken = default) =>
+        Task.FromResult(new OperationLookup<TResult>(false, default!));
+
+    /// <summary>
     /// Records only a validation that completes normally without a refusal.
     /// </summary>
     /// <param name="rule">

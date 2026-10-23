@@ -2,6 +2,20 @@
   "schemaVersion": 1,
   "selections": [
 {
+  "category": "core-lease-data-admission",
+  "reason": "Revision54 causal minimal-file and cache-service contracts before same original600 measurement.",
+  "contracts": [
+    "#1536 LEASEDATA1..8 / T454-457"
+  ]
+},
+{
+  "category": "core-operation-lookup",
+  "reason": "Revision54 causal minimal-file and cache-service contracts before same original600 measurement.",
+  "contracts": [
+    "#1536 LEASEDATA1..8 / T454-457"
+  ]
+},
+{
   "category": "fr063-joint-operation-boundaries",
   "reason": "Verify actual cached no-write boundaries before qualifying the original600 run.",
   "contracts": [
