@@ -52,10 +52,14 @@ reviews the coherent final implementation, tests, docs and measured result.
 The retained full common copy fixture at6d reached its unchanged120s bound before
 any assertion; its cold setup did not select a whole SourceDataOperation. Keep
 every existing copy/current-byte/constructor/history/abort/timing assertion and
-the same budget, but own the existing source DATA lifetime around the coherent
-fixture operation, including real lease rotation and mutation/final fences. This
-also exercises warmed current-byte refusal/restoration through the production
-service. Timeout0executed is not a failing cache assertion or a completed control.
+the same budget, but own the existing source DATA lifetime through common setup
+and direct copy, including real lease rotation and mutation/final fences. Complete
+and dispose it before the intentional current-byte refusal/restoration segment:
+the original live refusal permanently fails its owner, so restoration must keep
+the original fresh lifetime. Independent review caught this boundary before any
+test execution of the first proposed wrapper; that build was cancelled. All
+remaining original controls stay fresh. Timeout0executed is not a failing cache
+assertion or a completed control.
 Rebuild both XML targets/current8DLLs and requalify before input generation.
 
 Actual implementation borrows SourceDataOperation's existing context through

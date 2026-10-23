@@ -8,7 +8,7 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class JointBundleComponentTests
 {
     /// <summary>
-    /// Runs retained joint-copy contracts with genuinely bound stages in one source DATA operation and normal owned fixture closing.
+    /// Runs retained joint-copy contracts with shared source DATA during setup and direct copy, followed by fresh refusal controls.
     /// </summary>
     /// <returns>
     /// Completion after direct-copy, current-byte refusal and restoration, constructor, mutation, history restoration,
@@ -19,16 +19,20 @@ public sealed partial class JointBundleComponentTests
     {
         await using var fixture = new Fixture(_output, nameof(JointCopy_RetainsAdmissionDetachmentAndRefusalContracts));
         await fixture.InitializeAsync();
-        using var source = fixture.Files.BeginSourceDataOperationIfNeeded();
-        Assert.NotNull(source);
-        var bound = await fixture.PrepareBoundJointAsync();
-        Assert.True(bound.Success, JsonSerializer.Serialize(bound.Issues));
-        var directCopy = fixture.AssertDirectJointCopyRetainsAdmissionWithoutFinalReduction();
+        WoundAcceptedTurnPlanner.JointRepairBoundCommonInputResult bound;
+        (int Start, int End) directCopy;
+        using (var source = fixture.Files.BeginSourceDataOperationIfNeeded())
+        {
+            Assert.NotNull(source);
+            bound = await fixture.PrepareBoundJointAsync();
+            Assert.True(bound.Success, JsonSerializer.Serialize(bound.Issues));
+            directCopy = fixture.AssertDirectJointCopyRetainsAdmissionWithoutFinalReduction();
+            await source.CompleteAsync();
+        }
         await fixture.AssertJointCurrentBytesRefusedAndRestoredAsync();
         fixture.AssertJointCopyContracts(bound.Input!, bound.Authority!);
         fixture.AssertJointAdmissionTimingTree(directCopy);
         fixture.AssertJointHeavyPreparationTimingTree(directCopy);
-        await source.CompleteAsync();
     }
 
     private sealed partial class Fixture
