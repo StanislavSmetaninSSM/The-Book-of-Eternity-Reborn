@@ -1071,6 +1071,95 @@ internal static partial class AcceptedTurnAuthorityRegistry
         }
     }
 
+    /// <summary>
+    /// Supplies the initial causal seam for fresh registry eligibility of detached joint QTE calculation DATA.
+    /// </summary>
+    /// <param name="files">
+    /// The filesystem whose existing root slot must remain current.
+    /// </param>
+    /// <param name="lease">
+    /// The active canonical lease expected by the accepted-state authority.
+    /// </param>
+    /// <param name="accepted">
+    /// The exact retained accepted-state authority used by the original calculation.
+    /// </param>
+    /// <param name="request">
+    /// The original recovered held request whose restoration would have to remain idempotent.
+    /// </param>
+    /// <param name="finalization">
+    /// The finalization whose request and resource companion fields must still agree.
+    /// </param>
+    /// <returns>
+    /// <see langword="false"/> until fresh eligibility inspection is implemented; original preparation remains required.
+    /// </returns>
+    internal static bool CanReuseMortalJointQteCalculation(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease, MortalWoundTreatmentAcceptedStateAuthority accepted,
+        MortalWoundTreatmentAttemptRequest request, MortalWoundTreatmentResourceFinalization finalization) => false;
+
+    /// <summary>
+    /// Carries fresh registry facts for the non-authorizing idempotent-state policy without issuing any capability.
+    /// </summary>
+    /// <param name="CurrentAcceptedState">
+    /// The exact accepted-state identity currently registered, or <see langword="null"/> when absent.
+    /// </param>
+    /// <param name="ExpectedAcceptedState">
+    /// The accepted-state identity retained by the original calculation.
+    /// </param>
+    /// <param name="CurrentRootAndLease">
+    /// Whether the existing root slot, physical generation, revision and exact lease all remain current.
+    /// </param>
+    /// <param name="RecoveryCompleted">
+    /// Whether the registry already completed its persisted request recovery phase.
+    /// </param>
+    /// <param name="Requests">
+    /// The registry-owned recovered request array.
+    /// </param>
+    /// <param name="HeldRequests">
+    /// The registry-owned recovered held request array.
+    /// </param>
+    /// <param name="FinalizedRequests">
+    /// The registry-owned recovered finalized request array, which must be empty for this contour.
+    /// </param>
+    /// <param name="ExpectedRequest">
+    /// The exact original held request retained by the calculation.
+    /// </param>
+    /// <param name="FinalizationRequestFingerprint">
+    /// The candidate finalization's request fingerprint.
+    /// </param>
+    /// <param name="FinalizationResourceFingerprint">
+    /// The candidate finalization's resource authority fingerprint.
+    /// </param>
+    /// <param name="FinalizationReservationId">
+    /// The candidate finalization's reservation identity, including <see langword="null"/> for no reservation.
+    /// </param>
+    /// <param name="HasRestartBlocker">
+    /// Whether unresolved compensation requires a session restart.
+    /// </param>
+    /// <param name="HasValidatedHandoff">
+    /// Whether a validated treatment publication handoff is retained.
+    /// </param>
+    /// <param name="HasOpenReceipt">
+    /// Whether an unsettled treatment publication receipt is retained.
+    /// </param>
+    internal readonly record struct MortalJointQteRegistryEligibilityState(
+        object? CurrentAcceptedState, object ExpectedAcceptedState, bool CurrentRootAndLease,
+        bool RecoveryCompleted, MortalWoundTreatmentAttemptRequest[] Requests,
+        MortalWoundTreatmentAttemptRequest[] HeldRequests, MortalWoundTreatmentAttemptRequest[] FinalizedRequests,
+        MortalWoundTreatmentAttemptRequest ExpectedRequest, string FinalizationRequestFingerprint,
+        string FinalizationResourceFingerprint, string? FinalizationReservationId,
+        bool HasRestartBlocker, bool HasValidatedHandoff, bool HasOpenReceipt);
+
+    /// <summary>
+    /// Supplies the initial causal seam for the shared pure joint QTE registry idempotence policy.
+    /// </summary>
+    /// <param name="state">
+    /// Fresh exact registry identities and recovered-set facts; these facts grant no publication authority.
+    /// </param>
+    /// <returns>
+    /// <see langword="false"/> until the idempotent-state policy is implemented.
+    /// </returns>
+    internal static bool IsMortalJointQteCalculationStateIdempotent(MortalJointQteRegistryEligibilityState state) => false;
+
     internal static bool HasLiveMortalWoundProcedureReservationAgreement(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,

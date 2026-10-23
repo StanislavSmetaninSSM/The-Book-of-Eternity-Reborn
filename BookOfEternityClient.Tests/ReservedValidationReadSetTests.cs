@@ -18,6 +18,41 @@ namespace BookOfEternityClient.Tests;
 public sealed class ReservedValidationReadSetTests(ITestOutputHelper output)
 {
     /// <summary>
+    /// Replays all retained identities into a different phase, keeping family and explicit lease mode separate.
+    /// </summary>
+    [Fact]
+    public async Task ObservationMetadataReplaysExactReaderIdentitiesIntoFreshExitProof()
+    {
+        using var fixture = new Fixture(output);
+        var files = fixture.Create();
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        FileSystemManager.ValidationReadObservations observations;
+        await using (var first = files.TryBeginReservedValidationReadSet(lease))
+        {
+            Assert.NotNull(first);
+            await first.OpenAsync();
+            Assert.Equal("original", files.ReadFileSync(lease, "present.txt"));
+            Assert.Equal("original", files.ReadFileSync("present.txt"));
+            Assert.Null(await files.ReadFileAsync(lease, "missing.txt"));
+            Assert.Null(await files.ReadFileAsync("missing.txt"));
+            observations = first.CaptureObservations();
+            Assert.Equal(4, observations.Count);
+            await first.CompleteAsync();
+        }
+        fixture.Recording = true;
+        await using (var second = files.TryBeginReservedValidationReadSet(lease))
+        {
+            Assert.NotNull(second);
+            await second.OpenAsync();
+            Assert.True(await second.MatchesObservationsAsync(observations));
+            Assert.Equal(4, second.CaptureObservations().Count);
+            await second.CompleteAsync();
+        }
+        Assert.Equal(8, fixture.PhysicalReads);
+    }
+
+    /// <summary>
     /// Requires only first and exit source observations for repeated consumers of four distinct read identities.
     /// </summary>
     /// <param name="reserved">

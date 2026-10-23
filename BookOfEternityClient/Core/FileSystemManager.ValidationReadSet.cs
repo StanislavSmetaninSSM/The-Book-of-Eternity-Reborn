@@ -207,7 +207,7 @@ public partial class FileSystemManager
     /// <summary>
     /// Retains private source DATA for one exact reserved owner and proves every dependency freshly before success.
     /// </summary>
-    internal sealed class ReservedValidationReadSet : IAsyncDisposable
+    internal sealed partial class ReservedValidationReadSet : IAsyncDisposable
     {
         private readonly FileSystemManager _files;
         private readonly CanonicalWriteLease _lease;

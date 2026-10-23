@@ -2,6 +2,17 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "core-joint-qte-registry-eligibility",
+  "responsibility": "Fresh typed eligibility for skipping only idempotent joint QTE accepted-state binding and persisted request restoration, with exact owners, recovered sets and publication blockers.",
+  "excludes": "No reservation minting, gameplay setup, authority substitution or permission cache.",
+  "changeHints": ["BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs", "BookOfEternityClient.Tests/JointQteRegistryEligibilityTests.cs"],
+  "related": [{ "id": "core-joint-qte-contribution-data", "when": "QTE reuse eligibility or original-path fallback changes." }],
+  "requirements": { "frontendBuild": false, "exclusive": true },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.JointQteRegistryEligibilityTests.*"] }]
+},
+{
   "id": "core-joint-qte-contribution-data",
   "responsibility": "The production QTE calculation boundary reuses detached DATA while preserving exact structural/source observations, live eligibility and fresh entry/exit proofs on tiny independent file fixtures.",
   "excludes": "No game-world construction, issued-authority substitution, original recovery benchmark or aggregate suite.",

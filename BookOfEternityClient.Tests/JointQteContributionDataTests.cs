@@ -120,6 +120,81 @@ public sealed class JointQteContributionDataTests(ITestOutputHelper output)
     }
 
     /// <summary>
+    /// Rejects a successful calculation if its structural DATA changes during an asynchronous source.
+    /// </summary>
+    [Fact]
+    public async Task StructuralMutationDuringAwaitCannotEscape()
+    {
+        using var fixture = new Fixture(output);
+        await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+        fixture.Files.GetOrCreateSessionGeneration(lease);
+        using var scope = fixture.Files.BeginRecoveryValidation(lease);
+        fixture.AfterSource = async () => { await Task.Yield(); fixture.History["value"] = "changed during await"; };
+        await Assert.ThrowsAsync<InvalidOperationException>(() => fixture.ReadAsync(lease));
+        Assert.Equal(0, fixture.CompletedProofs);
+        Assert.Equal(0, scope.CaptureState().Entries);
+    }
+
+    /// <summary>
+    /// Preserves original failure identity and retires successful DATA computed before a failed exit.
+    /// </summary>
+    /// <param name="stage">
+    /// Original entry, source or exit boundary that refuses.
+    /// </param>
+    [Theory]
+    [InlineData("entry")]
+    [InlineData("source")]
+    [InlineData("exit")]
+    public async Task FailedBoundaryRetiresDataAndKeepsFirstException(string stage)
+    {
+        using var fixture = new Fixture(output);
+        await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+        fixture.Files.GetOrCreateSessionGeneration(lease);
+        using var scope = fixture.Files.BeginRecoveryValidation(lease);
+        var error = new InvalidDataException("original " + stage);
+        fixture.BaselineError = stage == "source" ? null : error;
+        fixture.FailBaselineAt = stage == "entry" ? 1 : 2;
+        fixture.SourceError = stage == "source" ? error : null;
+        Assert.Same(error, await Assert.ThrowsAsync<InvalidDataException>(() => fixture.ReadAsync(lease)));
+        Assert.Equal(stage == "entry" ? 0 : 1, fixture.Bodies);
+        Assert.Equal(stage == "exit" ? 2 : 1, fixture.BaselineChecks);
+        Assert.Equal(0, fixture.CompletedProofs);
+        Assert.Equal(0, scope.CaptureState().Entries);
+        fixture.BaselineError = fixture.SourceError = null;
+        var before = fixture.Bodies;
+        await fixture.ReadAsync(lease);
+        await fixture.ReadAsync(lease);
+        Assert.Equal(before + 2, fixture.Bodies);
+    }
+
+    /// <summary>
+    /// Explicit fresh work retires retained QTE DATA and a later operation starts independently.
+    /// </summary>
+    [Fact]
+    public async Task FreshAndIndependentOperationsExecuteTheirOwnSources()
+    {
+        using var fixture = new Fixture(output);
+        await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+        fixture.Files.GetOrCreateSessionGeneration(lease);
+        using (fixture.Files.BeginRecoveryValidation(lease))
+        {
+            await fixture.ReadAsync(lease);
+            await fixture.ReadAsync(lease);
+            Assert.Equal(1, fixture.Bodies);
+            using (fixture.Files.ForceFreshRecoveryValidation()) await fixture.ReadAsync(lease);
+            await fixture.ReadAsync(lease);
+            await fixture.ReadAsync(lease);
+            Assert.Equal(3, fixture.Bodies);
+        }
+        using (fixture.Files.BeginRecoveryValidation(lease))
+        {
+            await fixture.ReadAsync(lease);
+            await fixture.ReadAsync(lease);
+            Assert.Equal(4, fixture.Bodies);
+        }
+    }
+
+    /// <summary>
     /// Owns only a marked ordinary file fixture and independent mutable calculation DATA.
     /// </summary>
     private sealed class Fixture : IDisposable
@@ -182,6 +257,26 @@ public sealed class JointQteContributionDataTests(ITestOutputHelper output)
         internal int CompletedProofs { get; private set; }
 
         /// <summary>
+        /// Gets or sets an optional action after source DATA is calculated, before its asynchronous return.
+        /// </summary>
+        internal Func<Task>? AfterSource { get; set; }
+
+        /// <summary>
+        /// Gets or sets the original source refusal, or null for successful calculation.
+        /// </summary>
+        internal Exception? SourceError { get; set; }
+
+        /// <summary>
+        /// Gets or sets the original baseline refusal, or null for successful checks.
+        /// </summary>
+        internal Exception? BaselineError { get; set; }
+
+        /// <summary>
+        /// Gets or sets the one-based baseline check at which the optional refusal occurs.
+        /// </summary>
+        internal int FailBaselineAt { get; set; }
+
+        /// <summary>
         /// Executes the production QTE boundary with one small replaceable calculation source.
         /// </summary>
         /// <param name="lease">
@@ -193,13 +288,21 @@ public sealed class JointQteContributionDataTests(ITestOutputHelper output)
         internal async Task<JointQtePreparedData> ReadAsync(FileSystemManager.CanonicalWriteLease lease)
         {
             var result = await JointQteContributionData.RecomputeAsync(Files, lease, _owner, _capture,
-                () => Eligible, () => { BaselineChecks++; return Task.CompletedTask; }, async () =>
+                () => Eligible, () =>
+                {
+                    BaselineChecks++;
+                    if (BaselineError != null && BaselineChecks == FailBaselineAt) throw BaselineError;
+                    return Task.CompletedTask;
+                }, async () =>
                 {
                     Bodies++;
+                    if (SourceError != null) throw SourceError;
                     var source = await Files.ReadFileAsync(lease, "treatment-source.json");
                     var optional = Files.ReadFileSync(lease, "optional.txt");
-                    return new([source, History["value"]!.GetValue<string>()],
+                    var data = new JointQtePreparedData([source, History["value"]!.GetValue<string>()],
                         new Dictionary<string, JsonObject> { ["successor"] = new() { ["source"] = source, ["optional"] = optional } });
+                    if (AfterSource != null) await AfterSource();
+                    return data;
                 });
             CompletedProofs++;
             return result;
