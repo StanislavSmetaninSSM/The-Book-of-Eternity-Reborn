@@ -1,4 +1,31 @@
-# Current checkpoint: r57 QTE production cache GREEN; legacy timing expectation corrected, qualification pending
+# Current checkpoint: r57 current228PASS and source gate accepted; genuine INPUT generated, publication gate pending
+
+Current compiled source159019476ddf29d3b41d4eda5f5c00c989032c15; source gate
+accepted by independent separate Astra/high with0unresolved findings. XML builds
+103.508s/74.157s PASS,8actualDLL/dependency copies uniform, native pins unchanged;
+490added XML lines/0format errors/0changed-line warnings. Catalog/plan retained
+fromacc because exact method identities/categories/selection unchanged in the
+timing-only correction; independent reviewer verified that reuse.
+Actual current T469-timing-unit226/226PASS11descriptors142.210s; current genuine
+T469-timing-controls2/2PASS2descriptors228.981s. Copy88.668s body/category96.737s;
+QTE107.912s body/category115.859s, bothwithin unchanged120s. All actual current
+TRX, raw hashes, initial assembly identities and closing reports verified; no
+timeout/underfill/duplicates, owned/runtime cleanuptrue. Copy retains original
+63seal/63resource and all refusal/history/abort checks plus new per-reuse proof.
+
+Genuine current159 source42 generator1/1PASS178.261s command, two independent
+read-only production imports, source/copy cleanuptrue. Qualified immutable INPUT:
+82files/513709bytes, ZIP320417bytes; all payload/inventory/SHA/CRC and3actually
+loaded assemblies verified against current8DLL. Contract1873inputs fingerprint
+ED4052DC08B07303E851868D15F3A679DD587C475BE4B51E0D900876EEA4559D;
+ZIP486D81A39CB573528FB9D2D020214878CA904D1E403ACB0CC9D77DA07DC3C573.
+No rebinding and no Stage43 precomputation. Small INPUT under fixtures/
+joint-interface-source42-qte-cache-v1 only; detailed diagnostics remainD, neverGit.
+Next publish this INPUT/metadata, exactremote recovery and independent InputGate,
+then unchanged original FULL600child/820shared/15min,C:game/D:uncappeddiagnostics.
+Originalr57 NOTexecuted yet, performance NOTclaimed. Older raw NOTretired.
+
+# Historical r57 checkpoint before current qualification
 
 Qualified production source acc6109259fcd93fb2ad0adf14832c6ffdd55659:
 both XML builds PASS (90.889s/53.857s), actual8DLL uniform/dependency copies,
