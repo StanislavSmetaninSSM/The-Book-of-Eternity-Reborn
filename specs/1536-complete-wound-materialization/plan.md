@@ -1,3 +1,95 @@
+# Repeated QTE reconstruction DATA — revision57 implementation plan
+
+Goal: reuse unchanged detached QTE calculation via existing service, keeping all
+authority/source checks; measure original600/820/15 against r56399.9290962s.
+Spec:spec.md QTECACHE1..7, issue#1536. Inline execution through writing-plans,
+executing-plans/TDD; independent Astra/high complex review. Autonomous review-wait
+waiver continues. Existing isolated clone/branch retained, no new worktree.
+Technical context:C#/.NET8, current filesystem/registry/service, no new dependency.
+
+## Source-grounded decision and preserved boundaries
+
+Prepare returns DATA but internally exports/binds treatment authority and restores
+claims. Therefore caching its complete detached output requires BOTH replay of
+its actual file observations AND fresh proof that skipped registry operations
+would be idempotent. Common baseline alone omits treatment-only original blobs.
+The bounded independent Astra/high consultation found this gap before code.
+
+Cache only with an active healthy ReservedValidationReadSet and existing eligible
+RecoveryValidationScope. Capture successful read observations as immutable DATA:
+raw ordinal path, original sync/async family, explicit lease mode, exact content
+digest/timestamp/absence. On every reuse, replay through the CURRENT read set and
+compare; this enlists all sources in its existing fresh exit proof. On mismatch,
+force fresh operation work and execute original Prepare, preserving refusal order.
+No retained reader/readset/capability object. Unsupported hooks/readsets stay fresh.
+
+Fresh registry eligibility must require exact current accepted-state/lease,
+completed persisted request recovery and same recovered held request/finalization;
+no restart blocker, validated publication handoff or open publication receipt.
+Otherwise execute original source rather than inventing a refusal. Existing
+baseline checks retain confirmed-held probing; the predicate grants no permission.
+
+Typed structural capture must cover actual mutable final-history JSON, mechanical
+decision before-image bytes/absence and actual immutable private companions,
+binding/command/fingerprint scalar values. The existing service compares current
+capture before and after source/hit, rather than treating identity/seal as data.
+Original entry/exit baseline, resource seal/comparison, readset Complete and
+primary failure/disposal stay. Any outer failure invalidates both operation caches.
+
+## Files and interfaces / ordered execution
+
+- [ ] T466: current spec/plan/tasks, research/data-model/quickstart top amendments;
+  pinned setup-plan/setup-tasks/check-prerequisites, bridge-equivalent consistency
+  and source-only design checkpoint. Hooks are optional; commit bundled design
+  explicitly, no branch creation or agent-context overwrite.
+- [ ] T467: new JointQteContributionDataTests on tiny independent C: ordinary files;
+  real source callback and production cache boundary, structural aliases, repeated
+  requests and copy isolation. Extend ReservedValidationReadSetTests for actual
+  witnessed bytes/absence/timestamp and sync/async/declared distinctions, drift
+  between phases and fresh exit proof. Compile a direct-source seam first and
+  observe repetition failure; new inventory/category/selection owned before runs.
+- [ ] T468: new Services/JointQteContributionData.cs defines detached fields/images/
+  source-observation envelope and production ReadAsync boundary. Existing
+  FileSystemManager.ComputeRecoveryDataAsync gains optional complete structural
+  capture; original callers retain identical protocol. RecoveryValidationScope
+  registers exact provider and includes it alongside live root dependency.
+  Core/FileSystemManager.ValidationReadSet.Observations.cs captures/replays only
+  read metadata; existing Read/ReadAsync/Complete algorithms remain authoritative.
+  Registry narrow fresh eligibility and tests in a separate coherent helper;
+  planner's private baseline owns one stable capture delegate. Integrate in
+  Recompute's existing compute callback; named original source timers stay on
+  actual miss work, add cache/witness/eligibility timers without diagnostic caps.
+- [ ] T469: XML builds both projects/current8DLL/native pins; selected cache,
+  observation/coordinator/source/recovery consumers and one genuine owner component
+  where needed. Check genuine source count reduction and fresh refusal/copy/abort
+  integration. Independent reviewer sees exact full diff, spec and all evidence.
+  Genuine current generator/new source42 slot/twoimports, source-only publication,
+  clean remote recovery before original; retain no machine evidence inGit.
+- [ ] T470: identical Cut0 FULL600child/820shared/15min, C: game/D: uncapped logs;
+  all original oracles, native ownership/settlement and complete trace SHA/CRC,
+  all-row analysis, matched source counts/phases and observer costs against r56.
+  Honest gain/regression, no double-counting or100second promise. Separate final
+  review, verified replacement then exact old raw retention, final push/recovery.
+
+## Review focus and tests
+
+1. Treatment-only signed original changes: witnessed source replay detects bytes
+   even with unchanged timestamp; source fallback retains original refusal.
+2. Mutable final-history alias unchanged refs/seals: structural guard changes
+   version and runs original computation; A->B->A cannot resurrect changed entry.
+3. Registry handoff/restart/recovery state: live eligibility false preserves full
+   original binding/restoration path; no cached predicate or recreated authority.
+4. Entry/source/exit/proof/disposal failure: no finalized contribution escapes;
+   retained early successful DATA is invalidated. Keep exact first exception.
+5. Other lease/owner/operation/fresh/observer and mutable returned images: existing
+   service lifetime and detached copies, typed negative fixtures; no game setup.
+
+Constitution gates:tracked1536; no schema/GM/player behavior change; test-first;
+same existing cache backend, local runtime only; category-only bounded verification;
+remote checkpoints and independent complex review; all gates satisfied by plan.
+Spec/plan/tasks consistency:T466 covers design;T467/468 cover QTECACHE1..4;
+T469 covers5/6;T470 covers6/7. No unresolved product choice or scope expansion.
+
 # Guarded semantic DATA — revision56 implementation plan
 
 Goal: remove the large shared repeated semantic/replay graph without caching

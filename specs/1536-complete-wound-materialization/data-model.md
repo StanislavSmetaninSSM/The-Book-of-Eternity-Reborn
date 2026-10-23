@@ -1,3 +1,15 @@
+# Revision57 — detached QTE calculation DATA
+
+Issue1536/T466. Cache envelope contains copied fingerprint fields, independent
+successor JSON and immutable source observation metadata (ordinal path, original
+reader family, explicit mode, digest/timestamp or absence). It contains no lease,
+registry owner, rejected capture or publication capability. Existing operation
+storage owns its lifetime. Actual private baseline owns stable structural capture
+policy; complete current history/before-image values and exact companions determine
+eligibility. Every hit re-enlists source observations in the current readset;
+fresh baseline/registry/exit proof retains authority. Fresh/failure/close retires
+the service, and exported JSON cannot mutate its retained payload.
+
 # Revision49 — implemented roles and ownership contract
 
 Issue1536; CACHEPORT-1..7; implemented APIs in contracts/service-cache.md. T432 production implementation, T433 source-bound tests/XML/catalog/independent review and T434 published accepted metadata/clean remote recovery are complete. This describes the general infrastructure, not an enabled game-filesystem adapter.

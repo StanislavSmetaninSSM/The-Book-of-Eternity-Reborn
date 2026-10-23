@@ -1,3 +1,17 @@
+# Revision57 — verify repeated QTE DATA
+
+Issue1536/T466..470. Read current spec/plan/tasks. First compile and run causal
+RED/cheap GREEN for QTE DATA/observation/structural/registry controls using selected
+categories only. Build both selected projects with XML, qualify current8DLL/native
+pins/catalog and exact test counts; inspect genuine issuer integration where needed.
+Independent source gate precedes genuine current-source generator/new source42
+INPUT/twoimports and source-only push/clean remote recovery. Then run the SAME
+fr063-joint-fixture-windows-cut0,600child/820shared/15min. Compare to r56 original
+399.9290962s and actual QTE Prepare14/Reconstruct14/Correction14 source counts.
+Uncapped diagnostics goD:/BoeDiagnostics/qte-cache-r57-20261023; never stage them.
+Current-source helper copies live outsideGit inD:/BoeDiagnostics/tools/*r57*.
+No old raw retirement until complete new capture/cleanup/hash verification.
+
 # Revision50 — qualify real recovery integration
 
 Issue1536. Read r50 spec/plan/tasks and contracts/recovery-validation.md. Execute T435,T427,T428,T429 in order; user waived approval waits. Cheap source-bound causal RED/GREEN first, complete full raw/binaries before builds. Preserve32 original reserved-read controls and existing generic architecture acceptance; no unrelated suite. Real Cut0 C:/Temp600/820/15 only after current build/input/review/saved recovery gates. Keep diagnostic self-cost accounting and all events; an executed timeout is reported as such, not success.

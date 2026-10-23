@@ -1,3 +1,70 @@
+# CRASH5 — revision57 repeated QTE reconstruction DATA
+
+Source issue:#1536. Owner2026-10-23 requests caching repeated QTE reconstruction
+through the existing service, integrity controls on cheap fixtures, followed by
+the identical600-second original with timings and uncapped diagnostics. Existing
+autonomous approval/review-wait waiver applies. Baseline accepted r56 original
+399.9290962s, measured codeaf8106d2ec4cd755f9307990488cf92a7934d7f7;
+current source/checkpoint6de46c81ebee59f3f9d2f3f879508e9905fce980.
+
+## Requested result and bounded approach
+
+Avoid reconstructing unchanged QTE calculation DATA repeatedly within one stable
+whole-operation lifetime. Existing measurement:14 Prepare calls28.3068178s,
+including14 Reconstruct20.08533s and14 Correction5.5321971s. These are nested,
+not additive gains. Recompute wrapper retains entry/exit baseline and reserved
+read-set proof;13 resource revalidations44.5927451s include18.3467019s outside
+Prepare. No promised100second improvement and no removal of fresh authority.
+
+Prefer reusing the detached contribution (fingerprint fields and successor DATA)
+after successful original reconstruction, using existing temporary operation
+storage. Alternative of caching RejectedCapture/current admission is rejected:
+those objects contain lease-local capabilities. A pure parsing-only cache would
+leave the measured reconstruction graph repeated. Exact dependency mapping is a
+T466 design deliverable; any unsupported graph keeps the original computation.
+
+## Preserved contracts and acceptance
+
+- QTECACHE1: Use the existing operation cache/service and lifetime, with no second
+  payload dictionary, global success flag, persisted cache or new gameplay API.
+  Only successful detached calculation DATA may be reused; cached DATA issues no
+  authority, reservation, original-source capability or publication permission.
+- QTECACHE2: Bind to the exact private baseline/continuation and complete actual
+  structural/source inputs read by QTE reconstruction/correction, including
+  frame, lease/generation, corrected command/pending/narrative/draft, original
+  manifest/authority/observed bytes and supplied final history/before-images.
+  Same references or retained fingerprints alone do not prove mutable equality.
+- QTECACHE3: Preserve original entry/exit baseline checks, active lease and current
+  registration, confirmed-held claim, current source/final read-set/effect proof,
+  resource seal and companion comparisons. Preserve original refusal order and
+  failure/disposal behavior. Never reuse across fresh/mutation, failure, owner
+  close/replacement or unsupported input; keep externally returned graphs detached.
+- QTECACHE4: Cheap independent typed/file fixtures exercise actual production
+  cache boundary with a compiling causal RED before implementation, then GREEN:
+  repeated successful source count falls, identical DATA, mutable export isolation,
+  changed nested/source/absence/frame inputs refuse/recompute, A->B->A and fresh/
+  failure/close semantics remain correct. No reflection or expensive game setup
+  when test subject is detached DATA/dependency control; genuine issuer coverage
+  remains where issuer integration is the subject.
+- QTECACHE5: Accurate multiline XML on changed APIs, named source/count timings
+  and affected category selection with negative/cross-consumer controls. Fresh
+  builds/8DLL/native pins/catalog and separate independent complex review precede
+  full measurement; fixture inputs must be generated genuinely by current code.
+- QTECACHE6: Same original fixture-backed Cut0 scenario,600child/820shared/15min,
+  same C: game/D: logs placement, source42/twoimports and all original gameplay,
+  idempotence and native settlement oracles. No larger timeout or aggregate suite.
+- QTECACHE7: Capture/analyze all diagnostic records without quotas. Compare full
+  case and matched phases/source counts to r56, distinguish observer costs and
+  overlapping timers, report honest improvement or regression. Raw diagnostic
+  files stayD outside Git; remove older raw only after verified complete replacement
+  and owned cleanup. Keep compact human results, source and immutable INPUT inGit.
+
+No GM prompt/schema/gameplay rule change is intended: this is client-owned DATA
+reuse under the current authority contract. No native/process redesign, broad
+game-state cache, diagnostic OFF run or unrelated microoptimization. Exact safe
+source dependency binding is initially unresolved and must be settled in the plan
+before implementation; no user decision is required unless the scope changes.
+
 # CRASH5 — revision56 guarded semantic DATA cache
 
 Source issue:#1536. User2026-10-23 authorizes implementation focused on the

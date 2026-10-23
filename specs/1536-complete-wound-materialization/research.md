@@ -1,3 +1,23 @@
+# Revision57 — QTE cache boundary decision
+
+Issue1536/T466. Existing PrepareJointQteContributionAsync returns fields/images
+but Reconstruct internally binds treatment accepted state/restores persisted claims.
+Common baseline authenticates selected QTE original paths, not all treatment
+snapshot blobs; readset completion proves only its own observed identities.
+Therefore retain complete actual successful read observations and replay them
+through each current phase before reuse. Bytes/absence/timestamp and original
+reader-family/declaredness remain distinct. Existing ComputeRecoveryDataAsync
+supplies exact lease/root/generation service dependency; add typed structural
+capture for mutable actual final history and private input companions.
+
+Fresh existing HasCurrentAdmissionAuthority plus a narrow registry probe must
+prove skipped binding/restoration would be idempotent (same completed recovered
+held request, no restart/handoff/open receipt). False/unsupported means original
+source, never refusal. RejectedCapture is never retained. Any outer proof failure
+invalidates early DATA. Alternatives: baseline-only whole cache misses sources;
+capability cache grants stale permission; parsing-only leaves measured graph;
+rewriting all Export internals is unnecessarily broad. No gameplay/GM change.
+
 # Revision50 — source-grounded recovery adapter decision
 
 Issue1536. Baseline ba702c71d architecture accepted, final code a7847d391. Concrete root cause remains repeated expensive mechanical/continuation source DATA checks; T420 original still timed out with1882834GetAttributes/378.8108048s and35mechanical/31baseline calls. Diagnostics are independently accounted, not capped.
