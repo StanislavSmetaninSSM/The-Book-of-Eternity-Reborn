@@ -13,7 +13,8 @@ public partial class FileSystemManager
     /// The result constructed by the original phase on its current source data.
     /// </typeparam>
     /// <param name="read">
-    /// The original read-only phase; its exception remains the primary failure.
+    /// The original read-only phase, which must not acquire another canonical lease or
+    /// perform effects. Its exception remains the primary failure.
     /// </param>
     /// <returns>
     /// The original phase result after a fresh source fence for eligible DATA reuse;
@@ -22,11 +23,15 @@ public partial class FileSystemManager
     internal async Task<TResult> ReadGameStateDataAsync<TResult>(Func<Task<TResult>> read)
     {
         ArgumentNullException.ThrowIfNull(read);
+        var entry = MainAdmissions.Value;
+        // Async lease disposal may leave its closed physical head in this caller.
+        // Never compact an owned remote close into a new eligible source lifetime.
+        while (entry is { Closed: true, OwnsRemote: false }) entry = entry.Parent;
         if (ValidationReuseSuppression.Value != 0 || !CanReuseSourceData || HasBrowserOriginalOperation ||
             HasAmbientCanonicalLease() || _validationReadSet.Value != null ||
             _sourceDataOperation.Value is { IsSuspended: true } ||
             !SessionOperationContext.TryGetExpectedGeneration(BasePath, out _) ||
-            MainAdmissions.Value is not { } entry || !ReferenceEquals(entry.RootIdentity, CanonicalRootAuthorityIdentity))
+            entry == null || !ReferenceEquals(entry.RootIdentity, CanonicalRootAuthorityIdentity))
         {
             using var fallback = MeasureOperation("GameStateData.Fallback");
             return await read();

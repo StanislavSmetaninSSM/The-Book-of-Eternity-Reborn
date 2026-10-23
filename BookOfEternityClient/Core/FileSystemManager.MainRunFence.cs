@@ -168,9 +168,16 @@ public partial class FileSystemManager
         /// </returns>
         internal bool CanStartSourceDataRead()
         {
-            if (!ReferenceEquals(MainAdmissions.Value, this) || _access == null) return false;
+            var entry = MainAdmissions.Value;
+            while (entry is { Closed: true, OwnsRemote: false }) entry = entry.Parent;
+            if (!ReferenceEquals(entry, this) || _access == null) return false;
             var ancestors = new HashSet<MainAdmission>(ReferenceEqualityComparer.Instance);
-            for (var current = this; current != null; current = current.Parent) ancestors.Add(current);
+            for (var current = MainAdmissions.Value; current != null; current = current.Parent)
+            {
+                if (current.Closed && current.OwnsRemote && ReferenceEquals(current.RootIdentity, RootIdentity))
+                    return false;
+                ancestors.Add(current);
+            }
             return _access.CanStartSourceDataRead(this, ancestors);
         }
         /// <summary>

@@ -24,7 +24,10 @@ remainoriginal.20cheapcasesexecuted17PASS3fixtureFAIL: writerbeforeimagereadwasc
 changedselectionmultipliers{}lackedmandatoryfivecoefficientarray. Bothcausal
 sync/async now2readsPASS; rawdrift/copy/fallback/failurePASS. XMLbothprojectsPASS
 86.148/53.178s,8DLLuniform. Fixturepreconditionscorrected;21stcase nowmodels
-closedpriorlease/liveparent eligibility, compilingcausalREDpending. No source
+closedpriorlease/liveparent eligibility, causalRED53bb3a0e0 XMLbuildPASS87.004s,21executed20PASS1FAIL expected2actual8
+onlyclosedpriorleasecase; no timeout,cleanupsTRUE. Corrected entry selection
+skips onlyclosednon-owningremoteheads, rejectsanysame-rootclosedremoteowner
+beforeownacquisition; allactualAcquire andfinalhitguardsunchanged. GREENpending. No source
 integrityfailure validated. IndependentAstra/highsourcegate staysdraft. Existing producer
 fixture installs potential mutable read-hook delegates even when callbacks are
 inactive: preserve those hooks/freshfallback; do not claim producercacheactivation.
