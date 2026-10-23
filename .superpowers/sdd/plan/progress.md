@@ -1,89 +1,41 @@
-# Current checkpoint: r59 all-row findings ready; final review/retention pending
+# Current checkpoint: r59 measured, reviewed and retained; publication closure
 
-Source9b88938cb/originalINPUTmetadata889c02169,1actualFULLrunPASS518.6110156s,
-command542.1126068s. Native73/0,full600/820/15,identities/EOF/join/cleanupPASS.
-All101archivepayloads independentlySHA/CRC reverified;ALL15514946timingevents
-parsed:producer5339784/2669883closed/18authenticatedinterrupted,resumer10175162/
-5087581closed/0open. Producer0negative residuals;resumer1derivednegative0.564s
-explicitly retained/notusedforproducer. No caps, no fabricatedclosedscopes.
-Producermajor:prevalidation39.3495s(CrossReferences11.0219/MetaMisc9.4425),
-backup11.4691(snapshot66writes9.1193),canonical12.0573(72members9.8919),
-actualrepairWait34.5131(sync9.6662/lease7.0800/async5.7329/checkpoint3.9152),
-resourcevalidation7.1067+9.1974,refresh14.4924observedprefix(namespace5.8391).
-Producerattrs1013910/57.436927s,observerbuildwrite46.3905613s;notadditivewith
-parents,no diagnostic-off estimate. CurrentnewQTE contribution cache NOTREACHED
-beforeCut0/CommonCallbacks0;oldcheckpointQTEwork remains8rejected+4corrected.
-Historical+14.7305532:durableUTCpartition11.2320806+3.4825406-.0308325 plus
-.0467645differentclockboundaries. Exactoldcalleedeltaremainsunobserved.
-All555priorresumeropcountsidentical;only2newouterAcceptedValidationtimers,
-collector+26.4856195s,observer+9.7844299s,attrs+7.5298388s same1532966calls.
-Humanfindings:T478-producer-timing-investigation.md. Machinefullleaf554039976B
-SHA29BF1E84CCDEEBE6A0CD00D448CCE9EA83872667ABF7F62CB3F0FB9054F65D5B;
-fullsummary/35largegraphs/UTC+all555comparison/D:only. NewfullZIP1B19...retained.
-Next:independentoutcome/report/exactretentionplanreview,thenapproved5fileunlink
-(old3largediagnostics+2redundantcurrentrawstreams,completecurrentZIPprotected),
-postcheck/reportpublication/exactremoterecovery. No deletion yet/no rootcauseclaim
-forhistoricalpercallgrowth. No gameplay/cache optimization in this block.
+Issue#1536 PRODUCER1..7/T474..478. Measured source9b88938cb159051b25582c200cb7596a185d437e;
+originalINPUT/launchmetadata889c021697cc4656748fe23a0102e6b05d5b3f38. One original
+FULL600/820/15 PASS518.6110156s(command542.1126068),native73/0,identity/EOF/join/
+cleanupPASS. BothXMLbuilds/8DLL/nativepins/18XMLlines/catalogPASS;89/89selected
+cheapcontrolsPASS; genuineNEWsource42/twoimports1/1PASS179.690s,82files513709B.
+CausalRED4be25:2enabledAssert.NotEmptyFAIL/2disabledPASS;earlierwrongfixturepath
+error disclosed separately. Nullableobserver preservesoriginalhooks/defaultcoldpath.
+Canonical spec/plan/tasks are r59; actualpinnedphases/equivalentconsistency used.
 
-# Prior r59 verified-run checkpoint
-# Current checkpoint: r59 original PASS, full archive verified; analysis pending
+All101archivepayloadsSHA/CRC twiceindependentlyverified;ALL15514946eventsparsed:
+producer5339784/2669883closed/18authenticinterrupted,resumer10175162/5087581closed.
+Producer0negative residuals;1resumerderivednegative0.564sretained/notusedproducer.
+Majorproducer:prevalidation39.35(Cross11.02/Meta9.44),backup11.47/canon12.06,
+repairWait34.51(sync9.67/lease7.08/async5.73/checkpoint3.92),resources16.30,
+refresh14.49observedprefix(namespace5.84). Attrs1013910/57.436927s;
+observerbuildwrite46.3905613s,nodiagnostic-offestimate. NewQTEcontributioncache
+NOTREACHEDbeforeCut0/CommonCallbacks0;oldcheckpointQTEworkremains8rejected+4corrected.
+Historical+14.7305532 partitions11.2320806+3.4825406-.0308325+.0467645boundary;
+exactoldcalleedeltaremainsunknown. All555oldresumercountsidentical,2newoutertimers;
+same1532966attrs+7.52984s,observer+9.78443s;noCPU/disk/GCcausalityassertion.
+Humanfindings:T478-producer-timing-investigation.md. D:currentZIP101members
+415943496B SHA1B19BCB4564BD0E1D3B903723E4872DE13E124C1E231DD70EFD41317A7C8E069;
+fullleaf554039976B SHA29BF1E84CCDEEBE6A0CD00D448CCE9EA83872667ABF7F62CB3F0FB9054F65D5B.
+No caps/no live largeI/O in timedrun. Newfullarchive/leaf/35graphs/UTCcomparison
+retainedD:only. Independentsource/input/parser/outcome/retention gates actual
+Astra/high accepted0findings. Approved5exactfiles6313335022B unlinked;10protected
+files pre/postSHAverified,alltargetsabsent/parentspresent. CurrentcompleteZIP
+containsidenticalnewrawstdout;oldcompactcomparisons+r51sourcebackupretained.
 
-Original source9b88938cb,launchmetadata889c02169. Independent source/input gates
-accepted and23exactremote blobs recovered before freshoneuseoriginallaunch.
-T477-original-full completed:actualcase518.6110156sPASS,command542.1126068s,
-600/820/15 unchanged,1/1case,no timeout/underfill,owned/runtimecleanuptrue.
-Bothnative identities/birth/nonce/exits73and0/EOF/join complete;all4streamsSHA
-verified. Producer1949147523B,resumer3715332412B,bothstderr0. No livelargetrace
-read/hash/archive/parser during timedexecution;onlysmallrun/capturemetadata polls.
-D:complete archive T477-original-full-raw.zip:101members5709023067rawB,
-415943496ZIPB,SHA1B19BCB4564BD0E1D3B903723E4872DE13E124C1E231DD70EFD41317A7C8E069;
-everypayload rereadSHA/CRC verified. All-rowtimingparser/attribution/report and
-independent finaloutcome/retention stillpending. Nohistoricalcalleecauseclaim.
-13syntheticparsercontrolsPASS,independentreview0findings;actualnative metadata
-functionqualifiesbothroles. Existingr57rawstaysprotecteduntilacceptedreplacement.
-Next:parsecompletearchive,descendbigproducercosts,reportactualclock/observerlimits.
-
-# Prior r59 source checkpoint
-# Current checkpoint: r59 source accepted; fresh INPUT qualified, original unrun
-
-Issue#1536 PRODUCER1..7/T474..478, branch1536-crash5-linux-windows-spec-20261019.
-Compiled source9b88938cb159051b25582c200cb7596a185d437e. Both XML builds PASS:
-Tests87.152s/Integration54.189s,8actualDLLs uniform and dependency copies exact,
-NativeLineage source/physical pins unchanged;18newXMLlines0issues. Selected
-7descriptors89/89PASS in72.382s,0duplicates/underfill/timeout,owned/runtimecleanup
-true. Catalog12334methods925categories valid; independent actual Astra/high
-FinalSourceGate accepted0findings, original hooks/native73/600/820/15 preserved.
-Genuine NEW source42 generator1/1PASS179.690s,2independent production imports,
-source/copies cleanuptrue;82files513709B,1874contractinputs,allSHA/inventory/CRC,
-3actuallyloadedassemblies/current8DLLs verified. Immutable INPUT only under
-fixtures/joint-interface-source42-producer-timers-v1. No Stage43 precomputation.
-Machine receipts/logs remainD:/BoeDiagnostics/producer-timers-r59-20261023 only.
-Next:exactremoteINPUTrecovery+independentInputGate, then one qualified original
-FULL600/820/15 with no backgroundlargeI/O; archive/everyrowparse/outcome review.
-No r59 original launch/result/speedup asserted. Current r57 raw stays protected.
-Routing checkpoint: one developer owns C#; separateSol6.1/high externaltools and
-Astra/high independent review; no substantive source finding/rework so far.
-
-# Earlier r59 RED checkpoint
-# Current checkpoint: r59 producer instrumentation, causal RED confirmed
-
-Issue#1536 PRODUCER1..7/T474..478. Canonical r59 spec/plan/tasks presented under
-explicit autonomous review waiver; pinned phases and equivalent consistency done.
-Design81568 published. RED4be25 source XML integration build105.109s/0errors:
-4 cheap real adopted-manager cases completed,2disabledPASS/2enabledFAIL at
-Assert.NotEmpty, correct file bytes. Earlier b1f path-precondition error is
-recorded separately, not counted as causal RED. Raw evidence stays D: only.
-GREEN now wires nullable observer through existing fixture hooks, full-mode
-producer/import/cut scopes and nested scenario/player-stage/repair boundaries.
-No algorithm/cache/authority/native cut/budget change. Final8DLL XML builds,
-selected cheap controls, independent source review, genuine new source42/two
-imports, published exact input recovery all remain BEFORE original600/820/15.
-No original r59 launch or new accepted measurement yet; current r57 raw protected.
-Historical cut timestamps partition +14.6837887s producer-birth gap into
-+11.2320806 before corrected interface mtime, +3.4825406 until fallback sample,
--.0308325 thereafter. These are wallclock anchors, not old nested causal timers.
-External receipts/tools:D:/BoeDiagnostics/producer-timers-r59-20261023.
-
+One developer owned C#; separateSol6.1/high tools and independentAstra/highreview.
+Observedrework:fixturepathpreconditioncorrectedbeforecausalRED;helperplain-text
+parserhandlingcorrectedbeforeactualanalysis. No substantiveintroducedsourcefinding;
+1actualneworiginalPASS,no passingC#selectionrepeat afterMD-onlychanges. No claimed
+quality/costsaving fromrouting. No gameplay/cache optimization in this probe.
+Final closing commit records this verified outcome; exactremoteref/recovery and
+independent post-retention/publication closure must be checked before final reply.
 # Previous accepted r58 checkpoint
 # Current checkpoint: r58 investigation reviewed; no causal claim for unmeasured growth
 

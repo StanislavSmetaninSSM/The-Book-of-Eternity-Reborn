@@ -19,7 +19,7 @@ Existing isolated branch/clone reused. Canonical spec above; logs outside Git.
   Verify all original oracles and native ownership/birth/EOF/join/cleanup; archive
   all output. Parse every record, explicitly classify expected interrupted
   producer scopes at actual cut, identify nested large sources and observer cost.
-- [ ] T478: Reconcile old/current budget/birth/durable-clock evidence. Resolve
+- [x] T478: Reconcile old/current budget/birth/durable-clock evidence. Resolve
   any remaining large opaque stage with additional nested evidence or justified
   matched control. Human findings, independent outcome/retention review, exact
   superseded diagnostic retirement only after verified replacement, final remote

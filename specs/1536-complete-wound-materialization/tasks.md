@@ -11,7 +11,7 @@ Issue#1536; PRODUCER1..7; owner2026-10-23 explicit autonomous instrumentation+sa
 - [x] T477 [US3] Same600/820/15 original with full uncapped producer+resumer capture,
   all oracles/native settlement; archive/validate/analyze every diagnostic record
   and expected interrupted producer scopes at authentic crash boundary.
-- [ ] T478 [US3] Concrete nested producer attribution against defensible old/current
+- [x] T478 [US3] Concrete nested producer attribution against defensible old/current
   evidence, resolve large opaque work with necessary focused probe, honest causal
   limits; independent final review, verified retention and published recovery.
 
