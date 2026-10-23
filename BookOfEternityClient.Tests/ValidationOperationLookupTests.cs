@@ -217,7 +217,7 @@ public sealed class ValidationOperationLookupTests
         /// The current stable token.
         /// </param>
         /// <returns>
-        /// True because this fixture domain is eligible until its version changes.
+        /// <see langword="true"/> because this fixture domain is eligible until its version changes.
         /// </returns>
         public bool TryCaptureVersion(out object? version) { version = _version; return true; }
     }

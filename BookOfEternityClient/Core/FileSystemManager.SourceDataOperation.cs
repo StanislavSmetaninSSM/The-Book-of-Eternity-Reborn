@@ -19,10 +19,10 @@ public partial class FileSystemManager
     /// Whether the normal reader uses its asynchronous family.
     /// </param>
     /// <param name="snapshot">
-    /// Detached provisional DATA on a hit, including null for recorded absence; otherwise null.
+    /// Detached provisional DATA on a hit, including <see langword="null"/> for recorded absence; otherwise <see langword="null"/>.
     /// </param>
     /// <returns>
-    /// True only for a present eligible service entry; false preserves the original full reader route.
+    /// <see langword="true"/> only for a present eligible service entry; <see langword="false"/> preserves the original full reader route.
     /// </returns>
     private bool TryReadDeclaredSourceData(CanonicalWriteLease lease, string path, bool asynchronous,
         out CanonicalFileReadSnapshot? snapshot)
@@ -448,10 +448,10 @@ public partial class FileSystemManager
         /// Whether to select the previously recorded asynchronous reader policy.
         /// </param>
         /// <param name="snapshot">
-        /// Detached stored DATA, including null absence, when the result is a hit; otherwise null.
+        /// Detached stored DATA, including <see langword="null"/> absence, when the result is a hit; otherwise <see langword="null"/>.
         /// </param>
         /// <returns>
-        /// True for an actual eligible service hit; false never computes, probes or grants permission.
+        /// <see langword="true"/> for an actual eligible service hit; <see langword="false"/> never computes, probes or grants permission.
         /// </returns>
         internal bool TryReadDeclaredSnapshot(CanonicalWriteLease lease, string path, bool asynchronous,
             out CanonicalFileReadSnapshot? snapshot)
@@ -484,10 +484,17 @@ public partial class FileSystemManager
                 // Every passive timing callback has settled before final live admission.
                 RequireOpen();
                 if (!result.Found) return false;
-                if (!TryRootVersion(out var root) || !ReferenceEquals(root, _rootVersion))
-                    throw new InvalidOperationException("The cached DATA owner lost its original live root.");
-                snapshot = result.Value;
-                return true;
+                var eligible = TryRootVersion(out var root);
+                lock (_gate)
+                {
+                    // External capture may have waited while disposal or adapter teardown began.
+                    RequireOpen();
+                    if (!eligible || !ReferenceEquals(_lease, lease) || !ReferenceEquals(_generationLease, lease) ||
+                        _closingLease != null || !ReferenceEquals(root, _rootVersion))
+                        throw new InvalidOperationException("The cached DATA owner lost its original live root.");
+                    snapshot = result.Value;
+                    return true;
+                }
             }
             catch { _failed = true; throw; }
             finally { LeaveWork(); }

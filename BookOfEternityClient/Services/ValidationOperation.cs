@@ -147,7 +147,7 @@ internal sealed class ValidationOperation : IDisposable
     /// Ordered complete direct dependency declaration.
     /// </param>
     /// <param name="compute">
-    /// Original source computation, or null for a noncomputing lookup.
+    /// Original source computation, or <see langword="null"/> for a noncomputing lookup.
     /// </param>
     /// <param name="cancellationToken">
     /// Cancellation observed throughout lookup, source computation and copying.
