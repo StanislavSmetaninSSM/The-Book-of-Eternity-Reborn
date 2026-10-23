@@ -55,7 +55,7 @@ internal static class JointQteContributionData
     /// Complete typed capture policy used by the existing operation dependency.
     /// </param>
     /// <returns>
-    /// Current immutable comparison DATA, or null when the original source must decide the result.
+    /// Current immutable comparison DATA, or <see langword="null"/> when the original source must decide the result.
     /// </returns>
     private static OperationStructuralSnapshot? CaptureInput(Func<OperationStructuralSnapshot?> capture)
     {
@@ -77,10 +77,10 @@ internal static class JointQteContributionData
     /// Exact private baseline identity.
     /// </param>
     /// <param name="capture">
-    /// Stable complete structural capture policy; unsupported inputs return null.
+    /// Stable complete structural capture policy; unsupported inputs return <see langword="null"/>.
     /// </param>
     /// <param name="canReuse">
-    /// Fresh eligibility for skipping only idempotent registry operations; false selects the source.
+    /// Fresh eligibility for skipping only idempotent registry operations; <see langword="false"/> selects the source.
     /// </param>
     /// <param name="validateBaseline">
     /// Original fresh baseline validation required at entry and exit.
@@ -139,10 +139,10 @@ internal static class JointQteContributionData
     /// Stable complete current structural capture policy.
     /// </param>
     /// <param name="readSet">
-    /// Current reserved phase, or null for original source execution.
+    /// Current reserved phase, or <see langword="null"/> for original source execution.
     /// </param>
     /// <param name="canReuse">
-    /// Fresh non-authorizing registry eligibility; false preserves original binding/restoration.
+    /// Fresh non-authorizing registry eligibility; <see langword="false"/> preserves original binding/restoration.
     /// </param>
     /// <param name="compute">
     /// Original successful calculation source, including its existing refusal mapping.

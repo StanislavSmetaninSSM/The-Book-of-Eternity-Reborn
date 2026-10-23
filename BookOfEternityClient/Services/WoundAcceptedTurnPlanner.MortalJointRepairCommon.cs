@@ -43,7 +43,7 @@ internal static partial class WoundAcceptedTurnPlanner
         /// Captures actual mutable calculation inputs and immutable private companion identities without issuing authority.
         /// </summary>
         /// <returns>
-        /// Complete ordered comparison DATA, or null when the original calculation must handle an unsupported input.
+        /// Complete ordered comparison DATA, or <see langword="null"/> when the original calculation must handle an unsupported input.
         /// </returns>
         private OperationStructuralSnapshot? CaptureQteCalculationInput()
         {

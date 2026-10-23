@@ -2,7 +2,10 @@
 
 Issue1536/T466. Cache envelope contains copied fingerprint fields, independent
 successor JSON and immutable source observation metadata (ordinal path, original
-reader family, explicit mode, digest/timestamp or absence). It contains no lease,
+reader family, explicit mode, digest/timestamp or absence). A null reader-family
+tag denotes an original FileExists presence-only observation, whose result is
+freshly reprobed and included in completion rather than substituted from cache.
+It contains no lease,
 registry owner, rejected capture or publication capability. Existing operation
 storage owns its lifetime. Actual private baseline owns stable structural capture
 policy; complete current history/before-image values and exact companions determine

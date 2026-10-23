@@ -49,7 +49,7 @@ public sealed partial class JointBundleComponentTests
                 Assert.Equal(3, counts.GetValueOrDefault("ValidationReadSet.ExitProof"));
             }
             await Files.VerifySourceDataAsync(Lease);
-            var context = Files.ResolvePath("ready/turn_complete.json");
+            var context = Files.ResolvePath("game_state/control/validation_repair_request.json");
             Assert.False(File.Exists(context));
             Directory.CreateDirectory(Path.GetDirectoryName(context)!);
             try

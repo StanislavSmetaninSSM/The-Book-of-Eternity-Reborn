@@ -85,7 +85,7 @@ public partial class FileSystemManager
     /// </param>
     /// <param name="capture">
     /// Optional stable complete structural capture policy for mutable input DATA.
-    /// A null policy keeps the original immutable-input identity contract.
+    /// A <see langword="null"/> policy keeps the original immutable-input identity contract.
     /// </param>
     /// <returns>
     /// A detached successful source result; failures are not converted to results.
@@ -305,7 +305,7 @@ public partial class FileSystemManager
         /// Actual source computation, invoked on a miss or unsupported fresh route.
         /// </param>
         /// <param name="capture">
-        /// Stable complete mutable-input capture policy, or null for the original immutable identity contract.
+        /// Stable complete mutable-input capture policy, or <see langword="null"/> for the original immutable identity contract.
         /// </param>
         /// <returns>
         /// A detached result after current source validation; errors retire reusable state.

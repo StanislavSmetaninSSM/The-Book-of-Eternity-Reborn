@@ -2262,15 +2262,30 @@ public partial class FileSystemManager
                 }
             }
         }
+        RememberValidationPresence(relativePath, null, exists);
         return exists;
     }
 
+    /// <summary>
+    /// Observes file presence through the original explicitly leased reader and records any active validation dependency.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease, validated before selecting its existing reader contract.
+    /// </param>
+    /// <param name="relativePath">
+    /// Raw session-relative path passed unchanged to the original presence reader.
+    /// </param>
+    /// <returns>
+    /// True for an existing ordinary file; false for absence. Original namespace and lease failures propagate.
+    /// </returns>
     internal bool FileExists(CanonicalWriteLease writeLease, string relativePath)
     {
         EnsureValidCanonicalWriteLease(writeLease);
-        return UsesTrustedLocalWriter(writeLease, relativePath)
+        var exists = UsesTrustedLocalWriter(writeLease, relativePath)
             ? OrdinaryFileExistsCore(relativePath)
             : FileExistsCore(relativePath);
+        RememberValidationPresence(relativePath, writeLease, exists);
+        return exists;
     }
 
     private bool FileExistsCore(string relativePath)

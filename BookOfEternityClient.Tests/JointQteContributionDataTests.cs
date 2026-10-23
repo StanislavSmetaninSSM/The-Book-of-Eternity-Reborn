@@ -290,12 +290,12 @@ public sealed class JointQteContributionDataTests(ITestOutputHelper output)
         internal Func<Task>? AfterSource { get; set; }
 
         /// <summary>
-        /// Gets or sets the original source refusal, or null for successful calculation.
+        /// Gets or sets the original source refusal, or <see langword="null"/> for successful calculation.
         /// </summary>
         internal Exception? SourceError { get; set; }
 
         /// <summary>
-        /// Gets or sets the original baseline refusal, or null for successful checks.
+        /// Gets or sets the original baseline refusal, or <see langword="null"/> for successful checks.
         /// </summary>
         internal Exception? BaselineError { get; set; }
 

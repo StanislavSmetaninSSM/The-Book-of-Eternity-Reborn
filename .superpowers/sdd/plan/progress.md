@@ -1,5 +1,15 @@
 # Current checkpoint: r57 causal RED verified, first GREEN candidate pending checks
 
+P1 causal presence REDc0fff7e6a XMLbothPASS8uniform: QTE15complete13PASS/2expected
+FAIL (FileExists-only appearance returned no refusal); readset32complete31PASS/
+1expectedFAIL (0vs2presenceidentities). Genuine88.878s body completed3requests/
+1actualreconstruction/6baseline/3exitproof assertions, then FAILED the negative
+fixture precondition: ready/turn_complete.json already exists. Not a causal product
+failure or PASS. All owned/runtime cleanuptrue, no timeout. Corrected negative
+path is absent validation_repair_request.json; P1 production correction records
+actual presence without replacing original probes, replays it and proves it at
+fresh completion. GREEN and renewed independent source gate still pending.
+
 Candidate37d765144 XMLbothPASS(94.542s/58.296s),8DLLuniform. Actualcheap63/63PASS:
 QTE13,registry19,readset31. Independent fresh Astra/high reviewed complete diff
 and found P1 source-closure gap: FileExists-only lifecycle absence was not captured.

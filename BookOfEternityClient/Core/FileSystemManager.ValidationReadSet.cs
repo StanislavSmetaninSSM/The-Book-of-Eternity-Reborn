@@ -501,6 +501,12 @@ public partial class FileSystemManager
                         (fresh.LastWriteTimeUtc != original!.LastWriteTimeUtc || !fresh.Content.AsSpan().SequenceEqual(original.Content)))
                         throw new InvalidDataException("Reserved validation source changed: " + key.Path);
                 }
+                foreach (var key in _presenceOrder)
+                {
+                    using var source = _files.MeasureOperation("ValidationReadSet.ExitPresence");
+                    if (ProbePresence(key.Path, key.Explicit) != _presence[key])
+                        throw new InvalidDataException("Reserved validation presence changed: " + key.Path);
+                }
                 var generation = _files.ReadLocalGenerationSnapshot(_lease);
                 if (generation.Binding != _generation!.Binding || generation.Bytes == null ||
                     !generation.Bytes.AsSpan().SequenceEqual(_generation.Bytes))
@@ -555,7 +561,7 @@ public partial class FileSystemManager
             await drain;
             lock (_state)
             {
-                _snapshots.Clear(); _order.Clear(); _generation = null;
+                _snapshots.Clear(); _order.Clear(); _presence.Clear(); _presenceOrder.Clear(); _generation = null;
             }
             await _reservation.DisposeAsync();
         }

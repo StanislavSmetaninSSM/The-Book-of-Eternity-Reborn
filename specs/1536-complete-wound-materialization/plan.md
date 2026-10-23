@@ -18,7 +18,10 @@ The bounded independent Astra/high consultation found this gap before code.
 Cache only with an active healthy ReservedValidationReadSet and existing eligible
 RecoveryValidationScope. Capture successful read observations as immutable DATA:
 raw ordinal path, original sync/async family, explicit lease mode, exact content
-digest/timestamp/absence. On every reuse, replay through the CURRENT read set and
+digest/timestamp/absence. Include FileExists-only presence sources separately,
+keeping explicit/ambient mode and running the original probe each time; the
+presence map records comparison metadata and never substitutes a cached probe.
+On every reuse, replay through the CURRENT read set and
 compare; this enlists all sources in its existing fresh exit proof. On mismatch,
 force fresh operation work and execute original Prepare, preserving refusal order.
 No retained reader/readset/capability object. Unsupported hooks/readsets stay fresh.
@@ -54,7 +57,9 @@ primary failure/disposal stay. Any outer failure invalidates both operation cach
   capture; original callers retain identical protocol. RecoveryValidationScope
   registers exact provider and includes it alongside live root dependency.
   Core/FileSystemManager.ValidationReadSet.Observations.cs captures/replays only
-  read metadata; existing Read/ReadAsync/Complete algorithms remain authoritative.
+  read metadata, including successful original FileExists observations from
+  FileSystemManager.cs. Existing Read/ReadAsync contracts remain authoritative;
+  Complete additionally proves recorded presence using each original reader.
   Registry narrow fresh eligibility and tests in a separate coherent helper;
   planner's private baseline owns one stable capture delegate. Integrate in
   Recompute's existing compute callback; named original source timers stay on
