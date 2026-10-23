@@ -10,6 +10,7 @@ public sealed partial class JointBundleComponentTests
         /// <summary>
         /// Checks heavy setup coverage over the complete already recorded interval before the first direct copy.
         /// Runs after all existing semantic, refusal, restoration, abort and admission-tree controls.
+        /// Requires an original QTE calculation and fresh source proofs around every reused contribution.
         /// </summary>
         /// <param name="directCopy">
         /// The existing direct-copy offsets; only its start selects the preceding setup observations.
@@ -62,11 +63,21 @@ public sealed partial class JointBundleComponentTests
                 ["JointCommon.ComposeInputAsync", "JointInput.ComposeAsync", "JointInput.Compose.DetachBundle"],
                 ["JointCommon.BindInput", "JointCommonAuthority.BindInput.ComputePlanningFingerprint"],
                 ["JointBaseline.ValidateSeal", "JointBaseline.HasValidSeal", "JointFinal.ReplayAgreement"],
-                ["JointResources.RecomputeQteAsync", "JointQte.PrepareAsync"]
+                ["JointResources.RecomputeQteAsync", "JointQte.ValidateCachedSources", "JointQte.CalculationReused"]
             ];
             foreach (var chain in chains)
                 Assert.True(nodes.Any(node => HasAdmissionTimingChain(node, chain, 0)),
                     "Missing heavy preparation timing chain: " + string.Join(" > ", chain));
+            var qteRecomputations = nodes.Where(node => node.Name == "JointResources.RecomputeQteAsync").ToArray();
+            Assert.NotEmpty(qteRecomputations);
+            foreach (var node in qteRecomputations)
+            {
+                Assert.Equal(2, node.Children.Count(child => child.Name == "JointBaseline.ValidateCurrentAsync"));
+                Assert.Single(node.Children, child => child.Name == "ValidationReadSet.ExitProof");
+                Assert.True(HasAdmissionTimingChain(node, chains[^1], 0));
+                Assert.False(HasHeavyTimingDescendant(node, "JointQte.PrepareAsync"));
+                Assert.False(HasHeavyTimingDescendant(node, "JointQte.ChangedCacheSource"));
+            }
             Assert.True(nodes.Any(node => node.Name == "OriginalBackup.Total" &&
                 HasHeavyTimingDescendant(node, "OriginalBackup.Read:")),
                 "Actual per-path backup reads must occur inside an original backup.");
@@ -75,6 +86,8 @@ public sealed partial class JointBundleComponentTests
                 Kind = "JointHeavyPreparationTimingTree", Start = 0, End = directCopy.Start,
                 Events = rows.Length, RequiredPatterns = required, Inventory = inventory,
                 StrictLifo = true, DeclaredChains = chains, BackupReadInsideBackup = true,
+                QteRecomputations = qteRecomputations.Length, QteBaselineChecksPerReuse = 2,
+                QteExitProofsPerReuse = 1, RepeatedQteCalculationAbsent = true,
                 OptionalItemMarkers = inventory.Where(entry =>
                     entry.Name == "JointResources.ReplayItemConsumption" ||
                     entry.Name.StartsWith("ItemBaseline.", StringComparison.Ordinal)).ToArray()

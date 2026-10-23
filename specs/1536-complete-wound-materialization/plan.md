@@ -41,17 +41,17 @@ primary failure/disposal stay. Any outer failure invalidates both operation cach
 
 ## Files and interfaces / ordered execution
 
-- [ ] T466: current spec/plan/tasks, research/data-model/quickstart top amendments;
+- [x] T466: current spec/plan/tasks, research/data-model/quickstart top amendments;
   pinned setup-plan/setup-tasks/check-prerequisites, bridge-equivalent consistency
   and source-only design checkpoint. Hooks are optional; commit bundled design
   explicitly, no branch creation or agent-context overwrite.
-- [ ] T467: new JointQteContributionDataTests on tiny independent C: ordinary files;
+- [x] T467: new JointQteContributionDataTests on tiny independent C: ordinary files;
   real source callback and production cache boundary, structural aliases, repeated
   requests and copy isolation. Extend ReservedValidationReadSetTests for actual
   witnessed bytes/absence/timestamp and sync/async/declared distinctions, drift
   between phases and fresh exit proof. Compile a direct-source seam first and
   observe repetition failure; new inventory/category/selection owned before runs.
-- [ ] T468: new Services/JointQteContributionData.cs defines detached fields/images/
+- [x] T468: new Services/JointQteContributionData.cs defines detached fields/images/
   source-observation envelope and production ReadAsync boundary. Existing
   FileSystemManager.ComputeRecoveryDataAsync gains optional complete structural
   capture; original callers retain identical protocol. RecoveryValidationScope

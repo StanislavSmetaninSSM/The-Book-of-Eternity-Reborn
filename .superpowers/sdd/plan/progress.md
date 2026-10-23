@@ -1,4 +1,36 @@
-# Current checkpoint: r57 causal RED verified, first GREEN candidate pending checks
+# Current checkpoint: r57 QTE production cache GREEN; legacy timing expectation corrected, qualification pending
+
+Qualified production source acc6109259fcd93fb2ad0adf14832c6ffdd55659:
+both XML builds PASS (90.889s/53.857s), actual8DLL uniform/dependency copies,
+489 added XML lines/0format errors/0changed-line warnings; catalog12333methods/
+924categories valid, planned13descriptors/228cases. Actual226/226 selected cheap,
+cache, readset, coordinator and input controls PASS, complete11descriptors.
+Genuine T469-qte-genuine-current PASS: 3requests/1actualPrepare/Reconstruct/
+Correction/2reuses/6baseline/3exitproof checks, then expected original refusal
+after absent validation_repair_request.json appears; cache retired and owned
+closing complete. Command108.575s/category92.664s within original120s.
+
+T469-final-controls first copy attempt timed out120.066s,0/2cases completed,
+owner/runtime cleanuptrue. Full retained trace1765518events ends in BindCommonInput,
+not copy assertions; measured observer build/write41.541s at last row, unrecorded
+tail unknown. One same-source retry T469-copy-observer-retry completed86.066s body,
+115.006s command, no timeout, all actual copy/current-byte/history/abort/63seal/
+63resource checks passed. Final heavy-coverage assertion failed because it still
+required repeated RecomputeQteAsync>PrepareAsync, the exact work r57 removes.
+Correct only that timing contract: original cold Prepare still required globally;
+each repeated QTE must record source replay/reuse,2baseline checks and1exit proof,
+with no repeated Prepare or fresh fallback. All gameplay/63/refusal assertions and
+budgets unchanged. Test-only correction now awaits new XML/current8DLL qualification
+and same selected checks. Independent Astra/high found no new source defect;
+source gate remains pending. Background baseline trace analysis overlapped retry;
+its wall time is not attributed solely to source changes.
+
+No r57 source42 or original FULL executed. Next: publish corrected checkpoint,
+compile current source, actual GREEN, independent source gate, genuine new source42,
+two imports, source-only INPUT publication/remote recovery, unchanged600/820/15 FULL.
+No diagnostic quota, diagnostics remain D only, no older raw retired yet.
+
+# Historical r57 checkpoints
 
 P1 causal presence REDc0fff7e6a XMLbothPASS8uniform: QTE15complete13PASS/2expected
 FAIL (FileExists-only appearance returned no refusal); readset32complete31PASS/
