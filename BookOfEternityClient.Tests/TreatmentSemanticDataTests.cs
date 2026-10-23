@@ -150,6 +150,108 @@ public sealed class TreatmentSemanticDataTests
     }
 
     /// <summary>
+    /// Preserves preparation refusal and source exceptions without retaining an unavailable expected seal.
+    /// </summary>
+    [Fact]
+    public void PreparationRefusalIsNotRetained()
+    {
+        using var fixture = new Fixture(_output);
+        using var operation = new DefaultOperationValidationService().BeginOperation();
+        var sources = 0;
+        string? Refuse() { sources++; return null; }
+        Assert.Null(fixture.Data.ReadPreparationFingerprint(operation, Refuse));
+        Assert.Null(fixture.Data.ReadPreparationFingerprint(operation, Refuse));
+        Assert.Equal(2, sources);
+        Assert.Equal(0, operation.CaptureState().Entries);
+        var expected = new FormatException("original preparation failure");
+        Assert.Same(expected, Assert.Throws<FormatException>(() =>
+            fixture.Data.ReadPreparationFingerprint(operation, () => throw expected)));
+    }
+
+    /// <summary>
+    /// Preserves pure final reduction refusal issues and retries the original source instead of retaining failure.
+    /// </summary>
+    [Fact]
+    public void FinalReductionRefusalIsNotRetained()
+    {
+        using var fixture = new Fixture(_output);
+        using var operation = new DefaultOperationValidationService().BeginOperation();
+        var admittedInput = new OperationStructuralSnapshot(["refusal DATA control"], [fixture.Resolution]);
+        var original = new WoundAcceptedTurnPlanningResult(null,
+            [WoundAcceptedTurnPlannerCore.NewIssue("semantic_test_refusal", "original refusal", "expected", "actual")]);
+        var sources = 0;
+        WoundAcceptedTurnPlanningResult Refuse() { sources++; return original; }
+        var first = fixture.Data.ReadFinalReduction(operation, admittedInput, Refuse);
+        var second = fixture.Data.ReadFinalReduction(operation, admittedInput, Refuse);
+        Assert.False(first.Success);
+        Assert.False(second.Success);
+        Assert.Equal(JsonSerializer.Serialize(original.Issues), JsonSerializer.Serialize(second.Issues));
+        Assert.Equal(2, sources);
+        Assert.Equal(0, operation.CaptureState().Entries);
+    }
+
+    /// <summary>
+    /// Keeps unaudited ordered intent shapes on their original semantic computation paths.
+    /// </summary>
+    [Fact]
+    public void UnsupportedIntentShapePreservesOriginalSources()
+    {
+        using var fixture = new Fixture(_output);
+        using var operation = new DefaultOperationValidationService().BeginOperation();
+        var original = fixture.Resolution;
+        var request = original.RequestAuthority;
+        MortalWoundTreatmentOperation[] declared = [new MortalWoundStabilizeOperation(), new MortalWoundStabilizeOperation()];
+        var intents = declared.Select((value, ordinal) =>
+        {
+            var fingerprint = MortalWoundTreatmentOutcomeIntentComposer.DeclaredFingerprint(ordinal, value);
+            return MortalWoundStabilizeOutcomeIntent.Create(ordinal, fingerprint,
+                MortalWoundTreatmentOutcomeIntentComposer.IntentFingerprint(request.RequestFingerprint, ordinal, value, fingerprint));
+        }).ToArray();
+        var unsupported = MortalWoundTreatmentResolution.Create(original.Mode, original.Coordinates,
+            original.AttemptDisposition, original.ResultCategory, original.SelectedOutcomeIndex, original.Interruption,
+            declared, intents, null, original.ConsumptionTrigger, null, null, null, request,
+            original.ModeEvidence, original.RouteFingerprint, original.RouteCompletion);
+        var data = new MortalWoundTreatmentSemanticData(fixture.Outcome, unsupported);
+        using (fixture.EnterTimingContext())
+        {
+            for (var i = 0; i < 2; i++)
+            {
+                Assert.False(data.ReadOutcomeAgreement(operation));
+                Assert.Null(data.ReadFinalizationFingerprint(operation));
+            }
+            Assert.Equal(2, fixture.Count("TreatmentOutcome.AgreesWith"));
+            Assert.Equal(2, fixture.Count("TreatmentResources.Finalize"));
+            Assert.Equal(0, operation.CaptureState().Entries);
+        }
+    }
+
+    /// <summary>
+    /// Preserves original refusal or exception mapping when an aliased JSON document becomes unavailable after warming.
+    /// </summary>
+    [Fact]
+    public void DisposedAliasedJsonCannotReusePriorAgreement()
+    {
+        using var fixture = new Fixture(_output);
+        using var operation = new DefaultOperationValidationService().BeginOperation();
+        var original = fixture.Routes[0];
+        using var document = JsonDocument.Parse(original.ResourcePolicy.GetRawText());
+        fixture.Routes[0] = original with { ResourcePolicy = document.RootElement };
+        using (fixture.EnterTimingContext())
+        {
+            Assert.True(fixture.Data.ReadOutcomeAgreement(operation));
+            document.Dispose();
+            var expected = false;
+            var actual = false;
+            var sourceError = Record.Exception(() => expected = fixture.Outcome.AgreesWith(fixture.Resolution));
+            var cachedError = Record.Exception(() => actual = fixture.Data.ReadOutcomeAgreement(operation));
+            Assert.Equal(sourceError?.GetType(), cachedError?.GetType());
+            Assert.Equal(sourceError?.Message, cachedError?.Message);
+            Assert.Equal(expected, actual);
+            Assert.Equal(3, fixture.Count("TreatmentOutcome.AgreesWith"));
+        }
+    }
+
+    /// <summary>
     /// Performs independent semantic computation after a prior whole operation has ended.
     /// </summary>
     [Fact]

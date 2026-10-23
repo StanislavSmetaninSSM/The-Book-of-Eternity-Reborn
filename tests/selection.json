@@ -4,7 +4,9 @@
     {
       "category": "fr063-joint-semantic-data-controls",
       "reason": "Actual genuine-owner stage sources must fall to one without weakening fresh handoff, history corruption, mutable-copy or abort refusal contracts.",
-      "contracts": ["#1536 SEMANTIC1..6 / T462-464"]
+      "contracts": [
+        "#1536 SEMANTIC1..6 / T462-464"
+      ]
     },
     {
       "category": "core-treatment-semantic-data",
@@ -24,21 +26,77 @@
       "category": "core-operation-synchronous",
       "reason": "Causal native synchronous reuse and lifetime/dependency failures on independent in-memory values.",
       "contracts": [
-        "#1536 SEMANTIC1..6 / T462-464; initial synchronous seam selection, expand by actual integration contracts before final review."
+        "#1536 SEMANTIC1..6 / T462-464; shared protocol covered alongside semantic and physical consumers."
       ]
     },
     {
       "category": "core-operation-validation-cache",
       "reason": "Preserve original coordinator, dependency propagation, fresh/cancel/copy/backend invariants.",
       "contracts": [
-        "#1536 SEMANTIC1..6 / T462-464; initial synchronous seam selection, expand by actual integration contracts before final review."
+        "#1536 SEMANTIC1..6 / T462-464; shared protocol covered alongside semantic and physical consumers."
       ]
     },
     {
       "category": "core-operation-lookup",
       "reason": "Shared lookup/compute entry protocol must preserve genuine misses and hits.",
       "contracts": [
-        "#1536 SEMANTIC1..6 / T462-464; initial synchronous seam selection, expand by actual integration contracts before final review."
+        "#1536 SEMANTIC1..6 / T462-464; shared protocol covered alongside semantic and physical consumers."
+      ]
+    },
+    {
+      "category": "core-operation-source-data",
+      "reason": "Shared whole-operation service now contains both semantic DATA and file DATA; preserve source fences, writes, drift, suspension and completion behavior.",
+      "contracts": [
+        "#1536 SEMANTIC1..7 / T464 affected-contract selection"
+      ]
+    },
+    {
+      "category": "core-lease-data-admission",
+      "reason": "Keep declared read admission and fresh callback/physical escape fences while borrowing the same operation for semantic DATA.",
+      "contracts": [
+        "#1536 SEMANTIC1..7 / T464 affected-contract selection"
+      ]
+    },
+    {
+      "category": "core-recovery-file-validation",
+      "reason": "Cross-consumer regression coverage for the shared synchronous/asynchronous coordinator, current leases and source mutation invalidation.",
+      "contracts": [
+        "#1536 SEMANTIC1..7 / T464 affected-contract selection"
+      ]
+    },
+    {
+      "category": "core-recovery-progression-data",
+      "reason": "Keep progression DATA reuse and fresh recovery boundaries in the existing operation service.",
+      "contracts": [
+        "#1536 SEMANTIC1..7 / T464 affected-contract selection"
+      ]
+    },
+    {
+      "category": "core-service-cache",
+      "reason": "The existing backend remains the only result storage; preserve storage ownership, lifecycle and default presence contracts.",
+      "contracts": [
+        "#1536 SEMANTIC1..7 / T464 affected-contract selection"
+      ]
+    },
+    {
+      "category": "core-repository-cache",
+      "reason": "Shared storage/repository composition must retain close, failed-source and reentrant callback behavior.",
+      "contracts": [
+        "#1536 SEMANTIC1..7 / T464 affected-contract selection"
+      ]
+    },
+    {
+      "category": "crash5-named-operation-timers",
+      "reason": "The passive synchronous observer context now has a direct file-free entry while timer failure/exception semantics stay unchanged.",
+      "contracts": [
+        "#1536 SEMANTIC1..7 / T464 affected-contract selection"
+      ]
+    },
+    {
+      "category": "fr063-joint-interface-seed-input-contracts",
+      "reason": "The original measurement selects a genuinely new current-source semantic DATA seed slot; closed input selection and failure-without-fallback remain enforced.",
+      "contracts": [
+        "#1536 SEMANTIC1..7 / T464 affected-contract selection"
       ]
     }
   ]

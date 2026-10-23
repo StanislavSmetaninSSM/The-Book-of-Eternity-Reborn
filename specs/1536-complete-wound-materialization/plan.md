@@ -47,6 +47,39 @@ reviews the coherent final implementation, tests, docs and measured result.
   shared fanout, current-source/effect/damage/copy/abort integration. Existing
   categories remain owned; new bounded categories explicitly catalogued.
 
+## Settled bounded integration and current evidence
+
+Actual implementation borrows SourceDataOperation's existing context through
+GetCurrentSemanticDataOperation; it adds no second DATA backend. Operation-owned
+structural providers release comparison values and callbacks at closure. A second
+metadata-only registry interns exact admitted structural inputs into opaque IDs;
+fresh/failure/closure clears it. No mutable current-call context or global cache.
+
+Initial eligibility is the audited guaranteed single-stabilize contour: no
+selected graph or private deterioration intent. Full typed public resolution DATA
+is supplemented with hidden owned sources/DefinitionFacts, route/diagnosis source
+paths, claim provenance and exact companions. Unsupported shapes execute original
+sources. Private outcome images are deeply detached and covered by their actual
+owner identity. Structural capture invokes no timing/observer callbacks.
+
+Preparation caches only its expected successful seal over the private detached
+acquisition input, with no OriginalSourceGuarantee, treatment batch or
+rematerialization companion. All current candidate comparisons remain outside.
+Final DATA reduction follows fresh original finalization handoff and joint
+admission. Its key includes the separately verified baseline seal, preparation,
+effect-input/effect-plan seals and exact continuation/effect companions. The
+supplied final graph is still independently recomputed, including private history.
+Original failed stage results cross cache failure invalidation and remain uncached.
+
+Actual source4391f414c: XML builds/eight uniform DLLs; tiny semantic/structural25
+PASS. Genuine stage-only fixture causal RED: eight matching results caused40
+preparation replays and8 final reductions while both fresh admissions ran8times.
+The initial full-common fixture timed out before new assertions; its complete
+4.568M-row retained trace identified unrelated common binding preparation. The
+stage-only factory preserves the original complete factory and reservation
+closing; its RED testcase completed54seconds without changing the120second limit
+or diagnostics. GREEN and original100second target remain unverified.
+
 ## Task steps and checks
 
 T461: track/present spec, settle consultation, pinned Spec Kit phases, plan/tasks

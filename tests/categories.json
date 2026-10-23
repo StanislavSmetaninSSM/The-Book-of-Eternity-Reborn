@@ -3,12 +3,13 @@
     "categories": [
 {
   "id": "fr063-joint-semantic-data-controls",
-  "responsibility": "One genuine issuer integration repeats preparation and final stages eight times in the existing whole-operation service and retains fresh admission, damaged-history, mutation, constructor and abort refusal controls.",
+  "responsibility": "One genuine source/stage-only issuer fixture repeats preparation and final stages eight times in the existing whole-operation service and retains fresh admission, damaged-history, mutation, constructor and abort refusal controls.",
   "excludes": "No game loop, full world, fake issuer, reflection, diagnostic quota or original-workload performance claim.",
   "changeHints": [
     "BookOfEternityClient/Services/MortalWoundTreatmentSemanticData.StageReplays.cs",
     "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs",
     "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairFinal.cs",
+    "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.JointSetup.cs",
     "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.SemanticData.cs"
   ],
   "related": [
@@ -2083,7 +2084,7 @@
             "id": "crash5-named-operation-timers",
             "responsibility": "Passive named begin/end timer contract: disabled observer, elapsed/idempotent end, observer failure isolation and primary exception preservation.",
             "excludes": "No engine, source42 generation, crash/restart or performance optimization.",
-            "changeHints": ["BookOfEternityClient/Core/FileSystemManager.OperationTiming.cs", "BookOfEternityClient.Tests/NamedOperationTimingTests.cs"],
+            "changeHints": ["BookOfEternityClient/Core/FileSystemManager.OperationTiming.cs", "BookOfEternityClient/Core/FileSystemManager.OperationTimingContext.cs", "BookOfEternityClient.Tests/NamedOperationTimingTests.cs"],
             "related": [],
             "requirements": { "frontendBuild": false, "exclusive": false },
             "timeoutMinutes": 2,

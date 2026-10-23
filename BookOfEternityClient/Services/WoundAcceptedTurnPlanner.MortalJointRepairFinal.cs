@@ -28,18 +28,21 @@ internal static partial class WoundAcceptedTurnPlannerCore
             var refused = ReadJointFinalAdmission(prepared, accepted, out var admission);
             if (refused is not null) return refused;
             var joint = admission!.Joint;
+            var effectInput = accepted.EffectInput;
             // FinalizationHandoff freshly verified these seals and actual payloads
             // before this private family dispatch. Preparation does not include the
             // baseline seal, so the baseline must remain a separate input value.
             var admittedInput = new OperationStructuralSnapshot(
             [
-                prepared.WoundPreparationFingerprint, prepared.BaselineAuthority.AuthoritySeal,
+                prepared.WoundPreparationFingerprint, admission.Baseline.AuthoritySeal,
                 accepted.EffectInputFingerprint, accepted.EffectAcceptedTurnPlanFingerprint,
                 prepared.BindingFingerprint, prepared.InputFingerprint
             ],
             [
-                prepared.JointRepairContinuationAuthority, accepted.EffectInput.SourceAuthority,
-                accepted.EffectInput.TargetAuthority, accepted.EffectInput.SkillScopeAuthority
+                prepared.JointRepairContinuationAuthority, effectInput.SourceAuthority,
+                effectInput.TargetAuthority, effectInput.SkillScopeAuthority,
+                effectInput.WoundApplicationLocations, effectInput.PreallocatedCombatantIdentities,
+                effectInput.TargetAuthorityInput?.CombatantIdentities
             ]);
             return joint.SemanticData.ReadFinalReduction(joint.Operation, admittedInput,
                 () => ReduceJointFinalPlan(prepared, accepted, applications, admission));
