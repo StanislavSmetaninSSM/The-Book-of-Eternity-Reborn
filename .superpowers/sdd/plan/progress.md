@@ -1,4 +1,20 @@
-# Current checkpoint: r54 original FULL PASS; accepted profile; retention executed
+# Current checkpoint: r55 large-runtime investigation accepted
+
+Issue1536 RUNTIME1..5/T458..460; measured source781/runbe0, retained r54 FULL.
+No production/test changes or new game run. Actual independent Astra/high
+accepted352fa1fd9 investigation,0unresolved. Result:T460-runtime-investigation.md.
+Firstowner411.689=publication218.709+history114.571+directpost57.089+other21.320s.
+Prewait+13.258s offsets owner-10.248s plusother-3.472s: testcase-0.461s. Internal
+producer cause unknown; no invented attribution or speedup. Large shared graphs:
+continuation seal7786/79.142s, finalreplay84/50.982s, preparation1185/47.956s,
+bundlecopy58/48.752s; nested/overlapping. Game-state twice72.330s. Cache proposals
+require immutable/versioned private DATA, independent copies and fresh live/effect
+fences; existing private-history refusal retained. User excludes microoptimizations.
+Full diagnostic analysis outside Git:D:/BoeDiagnostics/runtime-r55-20261023;
+original r54 archive retained. Final metadata/origin receipt with independent
+closing gate stays outside Git. No implementation/probe inferred from findings.
+
+# Historical checkpoint: r54 original FULL PASS; accepted profile; retention executed
 
 Code781e9051ed2b3febddd2d7fc5dc15e4bbc06a768; actual benchmark metadata
 be0c22e00a66fdc34d2024570bb750b0aa6782d2.379selected PASS/XML8DLL/source/input

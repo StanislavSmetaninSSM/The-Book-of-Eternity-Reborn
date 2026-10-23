@@ -3,7 +3,7 @@
 Issue#1536; RUNTIME-1..5; investigation-only, current uncapped r54 FULL retained.
 - [x] T458 [US3] Reconcile observed r53/r54 clocks and all r54 named/path costs; verify disjoint leaf/caller partitions and record unobserved producer internal deltas.
 - [x] T459 [US1/US2] Source-trace concrete remaining fanout and rank safe cache candidates with exact keys/lifetimes/copies/invalidation/fresh integrity boundaries; no production fix.
-- [ ] T460 [US3] Human findings, cross-artifact consistency and independent numbers/contracts review; source-only push/exact origin recovery, explicit probe/test status.
+- [x] T460 [US3] Human findings, cross-artifact consistency and independent numbers/contracts review; source-only push/exact origin recovery, explicit probe/test status.
 
 Dependencies:T458->T459->T460.1/2/4->T458;2/3/4->T459;1..5->T460.
 

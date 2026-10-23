@@ -23,6 +23,14 @@ versus parent time, copies of mutable JSON/DTOs, cache-key circular fingerprints
 fresh filesystem authority versus immutable proof DATA. No unsupported speedup.
 T458 covers1/2/4;T459 covers2/3/4;T460 coversall requirements and final acceptance.
 
+Investigation completed against existing complete r54 evidence, no production/test
+changes or new game run. T458..460 done. Independent actual Astra/high accepted
+352fa1fd9 investigation with zero unresolved findings. Human findings:
+T460-runtime-investigation.md. Main target is repeated continuation/plan replay
+and bundle validation; no microoptimization implementation. Internal producer
+prewait growth remains unmeasured and is explicitly not attributed to the change.
+Final metadata push/exact origin receipt is retained outside Git onD with review.
+
 # Lease DATA hit admission — revision54 implementation plan
 
 Issue1536 / LEASEDATA1..8. Parent executes inline with Superpowers TDD/debugging;
