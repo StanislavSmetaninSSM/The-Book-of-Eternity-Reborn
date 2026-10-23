@@ -49,17 +49,19 @@ reviews the coherent final implementation, tests, docs and measured result.
 
 ## Settled bounded integration and current evidence
 
-The retained full common copy fixture at6d reached its unchanged120s bound before
-any assertion; its cold setup did not select a whole SourceDataOperation. Keep
-every existing copy/current-byte/constructor/history/abort/timing assertion and
-the same budget, but own the existing source DATA lifetime through common setup
-and direct copy, including real lease rotation and mutation/final fences. Complete
-and dispose it before the intentional current-byte refusal/restoration segment:
-the original live refusal permanently fails its owner, so restoration must keep
-the original fresh lifetime. Independent review caught this boundary before any
-test execution of the first proposed wrapper; that build was cancelled. All
-remaining original controls stay fresh. Timeout0executed is not a failing cache
-assertion or a completed control.
+The retained full common copy fixture at6d reached its unchanged120s bound with
+zero completed testcases. Full fixture-row scan: setup106.9427s, including common
+binding49.3700s; direct copy completed0.9664s before later controls timed out.
+Own the existing source DATA lifetime only in the read-only common suffix after
+all fixture writes, lease rotation, reservation and stage construction. Complete
+and dispose it before returning to the caller. Preserve every original fresh
+copy/current-byte/constructor/history/abort/timing assertion, including the exact
+uncached admission tree. Other callers default to the original fresh lifetime.
+Independent review caught the first wrapper's expected-failure lifetime before
+tests; its build was cancelled. The second wrapper refused an earlier synthetic
+write at41.36s because it had no fresh pre-effect receipt: preserve that production
+guard and keep synthetic fixture writes outside the selected source lifetime.
+No timeout/failure is counted as a completed successful control.
 Rebuild both XML targets/current8DLLs and requalify before input generation.
 
 Actual implementation borrows SourceDataOperation's existing context through

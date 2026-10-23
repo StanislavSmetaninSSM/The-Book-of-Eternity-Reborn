@@ -31,11 +31,16 @@ public sealed partial class JointBundleComponentTests
         /// Optional typed probe invoked after genuine binding in the flow that owns the exact issuing lease.
         /// A null value performs no observation.
         /// </param>
+        /// <param name="reuseStableData">
+        /// <see langword="true"/> owns a source DATA operation only during read-only common binding, after all fixture writes.
+        /// <see langword="false"/> preserves the existing fresh setup. The operation closes before returning to caller controls.
+        /// </param>
         /// <returns>
         /// The normal shared prefix's bound input and genuine common authority, or its reported issues.
         /// </returns>
-        internal async Task<WoundAcceptedTurnPlanner.JointRepairBoundCommonInputResult> PrepareBoundJointAsync(Func<Task>? observeBound = null)
-            => await PrepareJointFixtureAsync(includeCommonBinding: true, observeBound) ??
+        internal async Task<WoundAcceptedTurnPlanner.JointRepairBoundCommonInputResult> PrepareBoundJointAsync(
+            Func<Task>? observeBound = null, bool reuseStableData = false)
+            => await PrepareJointFixtureAsync(includeCommonBinding: true, observeBound, reuseStableData) ??
                 throw new InvalidOperationException("Common fixture preparation did not return its requested binding.");
 
         /// <summary>
@@ -59,11 +64,14 @@ public sealed partial class JointBundleComponentTests
         /// <param name="observeBound">
         /// Optional original common-binding observation; <see langword="null"/> performs no callback.
         /// </param>
+        /// <param name="reuseStableData">
+        /// Whether to own source DATA during the read-only common-binding suffix; the default leaves its original lifetime unchanged.
+        /// </param>
         /// <returns>
         /// The original common result when requested, or <see langword="null"/> after successful stage-only preparation.
         /// </returns>
         private async Task<WoundAcceptedTurnPlanner.JointRepairBoundCommonInputResult?> PrepareJointFixtureAsync(
-            bool includeCommonBinding, Func<Task>? observeBound)
+            bool includeCommonBinding, Func<Task>? observeBound, bool reuseStableData = false)
         {
             using var timing = Files.MeasureOperation("JointBundleFixture.PrepareBoundJoint");
             var source = await PrepareOriginalAsync(43);
@@ -133,6 +141,8 @@ public sealed partial class JointBundleComponentTests
                     _jointReservation = reservation;
                     return null;
                 }
+                using var sourceData = reuseStableData ? Files.BeginSourceDataOperationIfNeeded() : null;
+                if (reuseStableData) Assert.NotNull(sourceData);
                 var anchors = MortalWoundCanonicalAnchorPlan.CreateJointRepair(Files, Lease, bundle);
                 Assert.True(anchors.Success, JsonSerializer.Serialize(anchors.Issues));
                 using (Files.MeasureOperation("JointBundleFixture.ValidateRawItems"))
@@ -170,6 +180,7 @@ public sealed partial class JointBundleComponentTests
                         _jointBound = bound;
                         preparationValidation.Dispose();
                         if (observeBound is not null) await observeBound();
+                        if (sourceData is not null) await sourceData.CompleteAsync();
                     }
                     else
                         AcceptedTurnAuthorityRegistry.AbortMortalJointRepairPublication(Files, Lease, continuation, reservation);
