@@ -240,7 +240,7 @@ public partial class FileSystemManager
         /// Whether requests retain original reader admission without an added full check; opening and completion remain fresh.
         /// </param>
         /// <param name="cleanupWindow">
-        /// Exact publisher-issued DATA version, or null for the original reserved-reader storage policy.
+        /// Exact publisher-issued DATA version, or <see langword="null"/> for the original reserved-reader storage policy.
         /// </param>
         internal ReservedValidationReadSet(FileSystemManager files, CanonicalWriteLease lease,
             PendingSnapshotValidationReadScope reservation, bool preserveOriginalAdmission,

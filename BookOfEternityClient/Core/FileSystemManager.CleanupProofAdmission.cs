@@ -17,13 +17,13 @@ public partial class FileSystemManager
         /// Actual inner publisher mutation token.
         /// </param>
         /// <param name="reservation">
-        /// This window's installed reservation, or null before its atomic installation.
+        /// This window's installed reservation, or <see langword="null"/> before its atomic installation.
         /// </param>
         /// <param name="version">
-        /// Current exact root version on success, otherwise null.
+        /// Current exact root version on success, otherwise <see langword="null"/>.
         /// </param>
         /// <returns>
-        /// True for the exclusive live ancestry and exact complete mutation sets; false grants no authority.
+        /// <see langword="true"/> for the exclusive live ancestry and exact complete mutation sets; <see langword="false"/> grants no authority.
         /// </returns>
         internal bool TryCapturePreparedProofVersion(CanonicalWriteLease lease, MainMutationReservation outer,
             MainMutationReservation core, ValidationReadReservation? reservation, out object? version)
@@ -57,16 +57,17 @@ public partial class FileSystemManager
         /// Core publisher's distinct retained token.
         /// </param>
         /// <param name="reservation">
-        /// Exact compatible reservation, or null before installation.
+        /// Exact compatible reservation, or <see langword="null"/> before installation.
         /// </param>
         /// <param name="ancestors">
         /// Complete live entry ancestry; unrelated borrowers are ineligible.
         /// </param>
         /// <param name="version">
-        /// Exact opaque root version on success, otherwise null.
+        /// Exact opaque root version on success, otherwise <see langword="null"/>.
         /// </param>
         /// <returns>
-        /// True only for eligible ordinary access with the exact two local and root mutation identities.
+        /// <see langword="true"/> only for eligible ordinary access with the exact two local and root mutation identities;
+        /// otherwise, <see langword="false"/>.
         /// </returns>
         internal bool TryCapturePreparedProofVersion(MainAdmission admission, FileSystemManager files,
             CanonicalWriteLease lease, MainMutationReservation outer, MainMutationReservation core,

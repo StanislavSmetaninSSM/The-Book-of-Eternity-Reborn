@@ -202,7 +202,7 @@ public partial class FileSystemManager
         /// New read identity retaining this frame's physical admission.
         /// </param>
         /// <param name="preparedWindow">
-        /// Exact publisher DATA window, or null to require no active mutations.
+        /// Exact publisher DATA window, or <see langword="null"/> to require no active mutations.
         /// </param>
         /// <returns>
         /// <see langword="true"/> if reserved; otherwise, <see langword="false"/> without changing shared state.
@@ -559,7 +559,7 @@ public partial class FileSystemManager
         /// The exact retained owner ancestry allowed to remain active.
         /// </param>
         /// <param name="preparedWindow">
-        /// Publisher-issued exact mutation window, or null for the original mutation-free reservation.
+        /// Publisher-issued exact mutation window, or <see langword="null"/> for the original mutation-free reservation.
         /// </param>
         /// <returns>
         /// <see langword="true"/> if reserved; otherwise, <see langword="false"/> with no reservation installed.

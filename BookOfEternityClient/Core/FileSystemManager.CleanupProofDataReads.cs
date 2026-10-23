@@ -136,7 +136,7 @@ public partial class FileSystemManager
         /// Captures eligibility after recovery without changing ordinary root quiescence.
         /// </summary>
         /// <returns>
-        /// True for the live issuer and exact two-token root and local set; false selects fresh fallback.
+        /// <see langword="true"/> for the live issuer and exact two-token root and local set; <see langword="false"/> selects fresh fallback.
         /// </returns>
         internal bool TryOpen() => TryCurrent(out _version);
 
@@ -147,7 +147,8 @@ public partial class FileSystemManager
         /// Actual shared-access mutation identities inspected under its state lock.
         /// </param>
         /// <returns>
-        /// True only for the exact two identities and unchanged opaque root version.
+        /// <see langword="true"/> only for the exact two identities and unchanged opaque root version;
+        /// otherwise, <see langword="false"/>.
         /// </returns>
         internal bool MatchesMutations(HashSet<MainMutationReservation> mutations) =>
             _context is { Active: true } && mutations.Count == 2 && mutations.Contains(_context.Outer) &&
@@ -168,10 +169,11 @@ public partial class FileSystemManager
         /// Captures the current no-IO identity through the original worker and main state gates.
         /// </summary>
         /// <param name="version">
-        /// Exact current root identity on success, otherwise null.
+        /// Exact current root identity on success, otherwise <see langword="null"/>.
         /// </param>
         /// <returns>
-        /// True only while the original issuer, registration, entry and complete mutation sets remain current.
+        /// <see langword="true"/> only while the original issuer, registration, entry and complete mutation sets remain current;
+        /// otherwise, <see langword="false"/>.
         /// </returns>
         private bool TryCurrent(out object? version)
         {

@@ -14,7 +14,10 @@ Expanded independent cheap fixtures16/16 GREEN. Actual sync/async2sources vs RED
 all raw drift/mutation/cancellation/retry/close/copy/fresh-readback controls passed.
 Source d2205efdb XML unit build92.0169006s; cheap run30.9703310s.
 T488 WIP: current18-category impact selection, exact transitive source pins and
-new immutable INPUT slot. Final two-project build/qualification/review UNRUN.
+new immutable INPUT slot. Both current XML builds PASS94.5171720/55.0702919s; all8copiesuniform.
+Independent review requests XML keyword/outcome clarity; corrected before final
+source qualification, requiring exact new pins/build binding. No runtime defect
+reported so far; final categories/review/input/original UNRUN.
 No performance improvement claimed. T488..490 UNRUN. r60 full434.6855800s archive
 and leaf remain protected until a complete independently accepted replacement.
 Diagnostics uncapped and external D:, actual game fixtures C:SSD; no diagnostic Git.

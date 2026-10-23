@@ -36,7 +36,7 @@ public partial class FileSystemManager
         /// Original reader identity.
         /// </param>
         /// <param name="declaredLease">
-        /// Exact original explicit lease, or null for original ambient semantics.
+        /// Exact original explicit lease, or <see langword="null"/> for original ambient semantics.
         /// </param>
         /// <returns>
         /// Detached source DATA; original source and dependency failures propagate.
@@ -65,7 +65,7 @@ public partial class FileSystemManager
         /// Original reader identity, including its asynchronous family.
         /// </param>
         /// <param name="declaredLease">
-        /// Exact original explicit lease, or null for ambient semantics.
+        /// Exact original explicit lease, or <see langword="null"/> for ambient semantics.
         /// </param>
         /// <param name="token">
         /// Original token, checked on hits as well as physical reads.

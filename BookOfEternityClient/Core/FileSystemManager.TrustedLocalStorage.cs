@@ -313,7 +313,7 @@ public partial class FileSystemManager
     /// Whether publication is restricted to the registered standalone profile member.
     /// </param>
     /// <param name="preparedProofMutation">
-    /// The opted-in cleanup publisher's actual outer mutation token, or null for ordinary publication.
+    /// The opted-in cleanup publisher's actual outer mutation token, or <see langword="null"/> for ordinary publication.
     /// </param>
     /// <returns>
     /// The original committed, rolled-back or uncertain publication outcome.

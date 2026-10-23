@@ -83,10 +83,11 @@ internal sealed class CanonicalValidationEpoch
     /// The core publisher's distinct actual mutation identity.
     /// </param>
     /// <param name="version">
-    /// The current opaque version on an exact match, otherwise null.
+    /// The current opaque version on an exact match, otherwise <see langword="null"/>.
     /// </param>
     /// <returns>
-    /// True only while these two distinct identities are the complete active set.
+    /// <see langword="true"/> only while these two distinct identities are the complete active set;
+    /// otherwise, <see langword="false"/>.
     /// </returns>
     internal bool TryCapturePreparedPublisher(object first, object second, out object? version)
     {
