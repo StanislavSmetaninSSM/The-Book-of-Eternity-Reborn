@@ -7,7 +7,7 @@ existing isolated branch, explicit autonomous review-wait waiver. No broad suite
   and equivalent consistency; publish/recover design before implementation.
 - [x] T480 Minimal typed GameState/service/read fixture causal RED and category;
   actual duplicate reads/admission evidence plus integrity/fallback controls.
-- [ ] T481 Existing-service GameState source block/implicit-hit integration;
+- [x] T481 Existing-service GameState source block/implicit-hit integration;
   GREEN, exact raw source/generation fences and original context/issue behavior.
 - [ ] T482 Current XML/source/DLL/native/catalog/selected controls; independent
   source review; genuine new source42/twoimports/immutable INPUT; publish/recover

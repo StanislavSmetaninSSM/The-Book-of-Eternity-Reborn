@@ -27,7 +27,13 @@ sync/async now2readsPASS; rawdrift/copy/fallback/failurePASS. XMLbothprojectsPAS
 closedpriorlease/liveparent eligibility, causalRED53bb3a0e0 XMLbuildPASS87.004s,21executed20PASS1FAIL expected2actual8
 onlyclosedpriorleasecase; no timeout,cleanupsTRUE. Corrected entry selection
 skips onlyclosednon-owningremoteheads, rejectsanysame-rootclosedremoteowner
-beforeownacquisition; allactualAcquire andfinalhitguardsunchanged. GREENpending. No source
+beforeownacquisition; allactualAcquire andfinalhitguardsunchanged. Corrected359bGREEN21/21PASS, complete,no timeout/bothcleanupsTRUE.
+T482 initialcatalog/PlanOnly15descriptors276casesPASS,XML294newlines0changed
+warnings/errors,8DLL/nativePASS. Firstfullselectionstoppedfirstsourceguard:
+14stalehashslots9filespreexisting/unchangedsince34btaskbase, allother275UNRUN.
+IndependentAstra/highrecomputedhistorical/currenthashes+reviewedexactpinned
+revision..34bdiffs,explicitlyaccepted14pin-onlyrefresh. No productionchange.
+Pin-onlysourcequalification/review/input/fulloriginalstillpending. No source
 integrityfailure validated. IndependentAstra/highsourcegate staysdraft. Existing producer
 fixture installs potential mutable read-hook delegates even when callbacks are
 inactive: preserve those hooks/freshfallback; do not claim producercacheactivation.

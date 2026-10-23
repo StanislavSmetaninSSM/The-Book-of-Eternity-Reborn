@@ -64,7 +64,7 @@ no reflection/expensive world. All diagnostics uncapped D:, C:fixture. Preserve
   work. Negative controls: same-time bytes, absence, generation, owner/lifetime,
   changed selection/story context, mutable-hook fallback, failures and fresh next
   call. Publish clean RED source/build/evidence before implementation.
-- [ ] T481 GS_CACHE1..4: implement selected retained lifetime, existing-service
+- [x] T481 GS_CACHE1..4: implement selected retained lifetime, existing-service
   implicit hit and GameState CrossReferences/MetaMisc integration. GREEN original causal tests,
   fail-closed drift/fallback/lifetime controls; inspect changed XML APIs.
 - [ ] T482 GS_CACHE4..6: XML builds, current eight DLL/native/source bindings,
