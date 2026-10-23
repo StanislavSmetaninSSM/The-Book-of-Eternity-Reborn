@@ -57,7 +57,7 @@ no reflection/expensive world. All diagnostics uncapped D:, C:fixture. Preserve
 - [x] T479 GS_CACHE1..7: publish written spec/design; actual pinned Spec Kit setup
   plan/tasks/prerequisites plus equivalent non-destructive consistency. Confirm
   eligibility/nested-lease audit and existing branch remote recovery.
-- [ ] T480 GS_CACHE1..5: add GameStateDataReuseTests.cs and coherent category.
+- [x] T480 GS_CACHE1..5: add GameStateDataReuseTests.cs and coherent category.
   Compiling RED uses original behavior through a typed no-reuse seam: repeated
   real implicit sync/async reads still admit/physically read repeatedly; expect
   coalescing. Actual selected validator phases compare ordered issues/source

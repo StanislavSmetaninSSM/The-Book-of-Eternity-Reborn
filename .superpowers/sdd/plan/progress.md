@@ -14,8 +14,17 @@ GS_CACHE requirements to T479..484, no uncovered acceptance or constitution
 conflict. Narrow scope chosen after nested-lease audit; ambient fallback keeps
 existing pending/browser read protocols unchanged. T479 design complete.
 Bounded Sol6.1/high external tools preparation; separate Astra/high read-only
-lifetime consultation, independent different reviewer required. T480 compiling causal RED pair and original forwarding seam are saved WIP;
-no build/test/INPUT/implementation or performance result claimed yet.
+lifetime consultation, independent different reviewer required. T480 causal RED source3897f5f8a: XML Tests buildPASS85.506s;2/2 intended
+assertion failures expected2 actual8 physicalreads (async.5633/sync.2887s),
+selectioncomplete,notimeout,bothcleanupsTRUE. T480complete; literal wording
+consistency-check assertion corrected without changing any requirements.
+T481 WIP: owned normal bound source phase/implicit existing-service hit wired
+onlyCrossReferences/MetaMisc; ambient/browser/worker/reserved/guardiancompletion
+remainoriginal.20cheapcaseswritten, GREEN/build/review pending. Existing producer
+fixture installs potential mutable read-hook delegates even when callbacks are
+inactive: preserve those hooks/freshfallback; do not claim producercacheactivation.
+Source pins updated WIP requiring independent acceptance; new typedhelper/source
+service included in closure. No newINPUT or originalmeasurement result yet.
 
 # Previous accepted r58 checkpoint
 # Current checkpoint: r58 investigation reviewed; no causal claim for unmeasured growth

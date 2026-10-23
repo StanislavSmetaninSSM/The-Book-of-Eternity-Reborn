@@ -159,6 +159,21 @@ public partial class FileSystemManager
         internal bool Acquired=>_access!=null && !_closed;
         internal bool SharesAccess(MainAdmission other)=>_access!=null && ReferenceEquals(_access,other._access);
         /// <summary>
+        /// Tests whether this exact ordinary entry can start a selected DATA read lifetime.
+        /// The caller retains the root worker-context gate; this predicate grants no access.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> for live unreserved ordinary access with only its current
+        /// ancestors retained; otherwise, <see langword="false"/> preserves the original route.
+        /// </returns>
+        internal bool CanStartSourceDataRead()
+        {
+            if (!ReferenceEquals(MainAdmissions.Value, this) || _access == null) return false;
+            var ancestors = new HashSet<MainAdmission>(ReferenceEqualityComparer.Instance);
+            for (var current = this; current != null; current = current.Parent) ancestors.Add(current);
+            return _access.CanStartSourceDataRead(this, ancestors);
+        }
+        /// <summary>
         /// Reserves this frame's actual shared access for one validation read lifetime.
         /// </summary>
         /// <param name="scope">
@@ -435,6 +450,31 @@ public partial class FileSystemManager
         private readonly HashSet<MainAdmission> _physicalClosing = [];
         private readonly HashSet<MainMutationReservation> _mutations = [];
         private ValidationReadReservation? _worldRead;
+        /// <summary>
+        /// Selects ordinary DATA eligibility before acquiring any new physical lease.
+        /// The caller retains the root worker-context gate before this state lock.
+        /// </summary>
+        /// <param name="entry">
+        /// Exact current acquired entry whose existing access will be retained.
+        /// </param>
+        /// <param name="ancestors">
+        /// Exact calling ancestry; siblings and already held physical frames are ineligible.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> only for an active normal unreserved session access;
+        /// otherwise, <see langword="false"/> without creating or recovering anything.
+        /// </returns>
+        internal bool CanStartSourceDataRead(MainAdmission entry, HashSet<MainAdmission> ancestors)
+        {
+            lock (_state)
+                return !_frozen && _references != 0 && !owner.Closed && _admissions.Contains(entry) &&
+                    remote == null && Workers == null && !workerObservationRequired &&
+                    original?.MetadataOnly != true && original?.Owner.AdmissionClosed != true &&
+                    owner.RootIdentity.WorkerContext == null && _worldRead == null &&
+                    _mutations.Count == 0 && _physicalClosing.Count == 0 &&
+                    !_admissions.Any(p => p.Closed || p.Closing || p.BoundClosing || p.MetadataOnly ||
+                        p.PhysicalScope || !ancestors.Contains(p));
+        }
         /// <summary>
         /// Checks the exact ordinary physical admission and captures its root version under shared access state.
         /// The caller retains the root worker-context gate before entering this state lock.

@@ -1667,6 +1667,7 @@ public partial class FileSystemManager
         try
         {
 #endif
+        if (TryReadImplicitGameStateData(relativePath, true, out var cached)) return DecodeFileSnapshot(cached);
         await RecoverPendingFilePublicationsBeforeCanonicalReadAsync(
             CancellationToken.None);
         var result = await ReadOrdinaryFileCoreAsync(relativePath);
@@ -1878,6 +1879,7 @@ public partial class FileSystemManager
         try
         {
 #endif
+        if (TryReadImplicitGameStateData(relativePath, false, out var cached)) return DecodeFileSnapshot(cached);
         RecoverPendingFilePublicationsBeforeCanonicalRead();
         var snapshot = ReadOrdinaryFileSnapshotCore(relativePath);
 #if DEBUG
@@ -2001,6 +2003,7 @@ public partial class FileSystemManager
         try
         {
 #endif
+        if (TryReadImplicitGameStateData(relativePath, false, out var cached)) return cached?.Content;
         RecoverPendingFilePublicationsBeforeCanonicalRead();
         var snapshot = ReadOrdinaryFileSnapshotCore(relativePath);
 #if DEBUG
@@ -2056,6 +2059,8 @@ public partial class FileSystemManager
         try
         {
 #endif
+        cancellationToken.ThrowIfCancellationRequested();
+        if (TryReadImplicitGameStateData(relativePath, true, out var cached)) return cached?.Content;
         await RecoverPendingFilePublicationsBeforeCanonicalReadAsync(
             cancellationToken);
         var result = await ReadOrdinaryFileBytesCoreAsync(

@@ -488,11 +488,72 @@ public partial class FileSystemManager
                 RequireOpen();
                 if (!ReferenceEquals(_generationLease, lease) || !_declaredRoutes.TryGetValue((path, asynchronous), out key!)) return false;
             }
+            return TryReadCachedSnapshot(lease, key, "LeaseDataHit", out snapshot);
+        }
+
+        /// <summary>
+        /// Selects an existing implicit ordinary entry without changing its original reader identity.
+        /// </summary>
+        /// <param name="lease">
+        /// Exact adapter retained by the selected GameState source phase.
+        /// </param>
+        /// <param name="path">
+        /// Original raw ordinal path spelling, with no alias normalization.
+        /// </param>
+        /// <param name="asynchronous">
+        /// Whether the original implicit reader uses the asynchronous ordinary policy.
+        /// </param>
+        /// <param name="snapshot">
+        /// Detached existing DATA, or <see langword="null"/> for absence or a miss.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> for an eligible hit; otherwise, <see langword="false"/>
+        /// retains the original implicit reader and its first source observation.
+        /// </returns>
+        internal bool TryReadImplicitSnapshot(CanonicalWriteLease lease, string path, bool asynchronous,
+            out CanonicalFileReadSnapshot? snapshot)
+        {
+            snapshot = null;
+            SourceKey key;
+            var family = asynchronous ? ValidationSnapshotFamily.OrdinaryAsync : ValidationSnapshotFamily.OrdinarySync;
+            lock (_gate)
+            {
+                ObjectDisposedException.ThrowIf(_closed, this);
+                if (_suspended != 0) return false;
+                RequireOpen();
+                if (!ReferenceEquals(_generationLease, lease) || !_keys.TryGetValue((path, family, false), out key!)) return false;
+            }
+            return TryReadCachedSnapshot(lease, key, "GameStateDataHit", out snapshot);
+        }
+
+        /// <summary>
+        /// Uses the existing service and final live guard for both exact original reader contracts.
+        /// </summary>
+        /// <param name="lease">
+        /// Exact current adapter, whose generation binding must remain live after passive callbacks.
+        /// </param>
+        /// <param name="key">
+        /// Previously observed source identity, preserving path, family and declaration policy.
+        /// </param>
+        /// <param name="timingPrefix">
+        /// Named diagnostic family distinguishing declared and selected implicit DATA requests.
+        /// </param>
+        /// <param name="snapshot">
+        /// Detached service DATA on a hit; otherwise, <see langword="null"/>.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> only after a hit and final live check; <see langword="false"/>
+        /// never computes source data or supplies filesystem authority.
+        /// </returns>
+        private bool TryReadCachedSnapshot(CanonicalWriteLease lease, SourceKey key, string timingPrefix,
+            out CanonicalFileReadSnapshot? snapshot)
+        {
+            snapshot = null;
             if (!EnterRead(lease)) return false;
             try
             {
                 OperationLookup<CanonicalFileReadSnapshot?> result;
-                using (_files.MeasureOperation("LeaseDataHit.Request"))
+                using (_files.MeasureOperation(timingPrefix + ".Request"))
                 {
                     var lookup = _operation.TryGetAsync(Snapshot, key, [this]);
                     if (!lookup.IsCompleted) throw new InvalidOperationException("A cache-only source lookup did not settle synchronously.");
@@ -501,7 +562,7 @@ public partial class FileSystemManager
                     if (result.Found)
                     {
                         _pendingDeclaredData = true;
-                        using var reuse = _files.MeasureOperation("LeaseDataHit.Reuse");
+                        using var reuse = _files.MeasureOperation(timingPrefix + ".Reuse");
                     }
                 }
                 // Every passive timing callback has settled before final live admission.

@@ -3,7 +3,105 @@
   "selections": [
     {
       "category": "core-game-state-data-reuse",
-      "reason": "Causal real implicit GameState source coalescing and fail-closed source lifetime controls.",
+      "reason": "New causal source reuse, byte/absence/generation drift and fallback/copy/lifetime controls.",
+      "contracts": [
+        "#1536 GS_CACHE1..7 / T479-484"
+      ]
+    },
+    {
+      "category": "core-game-state-phase-selection",
+      "reason": "Preserve actual selected phases/state files and ordered issues.",
+      "contracts": [
+        "#1536 GS_CACHE1..7 / T479-484"
+      ]
+    },
+    {
+      "category": "core-operation-source-data",
+      "reason": "Existing whole-operation service/fences/write/owner contracts shared by new scope.",
+      "contracts": [
+        "#1536 GS_CACHE1..7 / T479-484"
+      ]
+    },
+    {
+      "category": "core-lease-data-admission",
+      "reason": "Declared cache-only lookup shares the extracted final live guard.",
+      "contracts": [
+        "#1536 GS_CACHE1..7 / T479-484"
+      ]
+    },
+    {
+      "category": "fr063-reserved-validation-read-set",
+      "reason": "Preserve strict readset precedence and existing exclusion/fresh source proofs.",
+      "contracts": [
+        "#1536 GS_CACHE1..7 / T479-484"
+      ]
+    },
+    {
+      "category": "fr063-operation-timing-context-controls",
+      "reason": "Implicit fast reads retain passive routing and complete diagnostics.",
+      "contracts": [
+        "#1536 GS_CACHE1..7 / T479-484"
+      ]
+    },
+    {
+      "category": "pending-snapshot-validation-meta-proof",
+      "reason": "Actual browser Meta source, scope eligibility and unchanged ordered issues.",
+      "contracts": [
+        "#1536 GS_CACHE1..7 / T479-484"
+      ]
+    },
+    {
+      "category": "pending-snapshot-validation-meta-reservation",
+      "reason": "Existing browser/reserved sibling and override mutation exclusion.",
+      "contracts": [
+        "#1536 GS_CACHE1..7 / T479-484"
+      ]
+    },
+    {
+      "category": "pending-snapshot-validation-meta-ownership",
+      "reason": "Existing original browser admission and owning close behavior.",
+      "contracts": [
+        "#1536 GS_CACHE1..7 / T479-484"
+      ]
+    },
+    {
+      "category": "c5-browser-admission-source-guards",
+      "reason": "Explicit source-pin review for changed shared files and new transitive helper.",
+      "contracts": [
+        "#1536 GS_CACHE1..7 / T479-484"
+      ]
+    },
+    {
+      "category": "fr063-joint-producer-timing-controls",
+      "reason": "Preserve actual producer hooks/null observer; no diagnostic suppression.",
+      "contracts": [
+        "#1536 GS_CACHE1..7 / T479-484"
+      ]
+    },
+    {
+      "category": "crash5-named-timing-output",
+      "reason": "Uncapped existing collector beyond former1024limit.",
+      "contracts": [
+        "#1536 GS_CACHE1..7 / T479-484"
+      ]
+    },
+    {
+      "category": "fr063-joint-interface-crash-stage-contracts",
+      "reason": "Unchanged original cut and native identity contracts.",
+      "contracts": [
+        "#1536 GS_CACHE1..7 / T479-484"
+      ]
+    },
+    {
+      "category": "fr063-joint-child-output-transport",
+      "reason": "Full native stream EOF/join transport.",
+      "contracts": [
+        "#1536 GS_CACHE1..7 / T479-484"
+      ]
+    },
+    {
+      "category": "fr063-joint-interface-seed-input-contracts",
+      "reason": "Genuine current source42 INPUT selection with no fallback/rebinding.",
       "contracts": [
         "#1536 GS_CACHE1..7 / T479-484"
       ]

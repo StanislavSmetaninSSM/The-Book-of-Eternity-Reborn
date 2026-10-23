@@ -2,6 +2,34 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "core-game-state-phase-selection",
+  "responsibility": "Exact existing GameState phase/state-file selection, ordered issue equivalence and invocation isolation controls affected by source DATA phase integration.",
+  "excludes": "No full validation world, unrelated repair packets or aggregate selection.",
+  "changeHints": [
+    "BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs"
+  ],
+  "related": [
+    {
+      "id": "core-game-state-data-reuse",
+      "when": "GameState source lifetime or eligibility changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.ValidationPhaseSelectionTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "core-game-state-data-reuse",
   "responsibility": "Actual selected GameState source lifetimes coalesce repeated implicit reads through the existing service while retaining fresh source and generation fences, detached DATA, independent calls and original unsupported fallback.",
   "excludes": "No full world, game engine, fabricated authority, reflection, browser authorization cache, native recovery benchmark or diagnostic quota.",
@@ -15686,7 +15714,6 @@
                     "project": "unit",
                     "tests": [
                         "BookOfEternityClient.Tests.CriticalStateHealthServiceTests.*",
-                        "BookOfEternityClient.Tests.ValidationPhaseSelectionTests.*",
                         "BookOfEternityClient.Tests.ValidationRepairRequestTests.*",
                         "BookOfEternityClient.Tests.ValidationSourceGuardTests.*"
                     ]

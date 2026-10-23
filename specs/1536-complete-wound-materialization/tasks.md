@@ -5,7 +5,7 @@ existing isolated branch, explicit autonomous review-wait waiver. No broad suite
 
 - [x] T479 Source/lifetime audit, written spec/plan/tasks, pinned Spec Kit phases
   and equivalent consistency; publish/recover design before implementation.
-- [ ] T480 Minimal typed GameState/service/read fixture causal RED and category;
+- [x] T480 Minimal typed GameState/service/read fixture causal RED and category;
   actual duplicate reads/admission evidence plus integrity/fallback controls.
 - [ ] T481 Existing-service GameState source block/implicit-hit integration;
   GREEN, exact raw source/generation fences and original context/issue behavior.

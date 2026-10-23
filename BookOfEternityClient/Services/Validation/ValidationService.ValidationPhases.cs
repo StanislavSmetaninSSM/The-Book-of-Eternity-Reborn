@@ -73,6 +73,26 @@ public partial class ValidationService
         }
     }
 
+    /// <summary>
+    /// Reuses selected read-only source DATA while preserving the actual phase and its ordered issues.
+    /// </summary>
+    /// <param name="validate">
+    /// Original CrossReferences or MetaMisc phase; no verdict is retained between invocations.
+    /// </param>
+    /// <returns>
+    /// Completion after the selected phase's fresh source proof, or its original unsupported route.
+    /// </returns>
+    private async Task RunReusableGameStateSourcePhaseAsync(Func<Task> validate)
+    {
+        // Completed guardian comparison owns a nested lease and keeps its original route.
+        if (_guardianMusingsPublication.Value is { Enabled: true, Completion: not null })
+        {
+            await validate();
+            return;
+        }
+        await _fs.ReadGameStateDataAsync(async () => { await validate(); return true; });
+    }
+
     private bool IsGameStateValidationInProgress
         => _activeGameStateValidationSelection.Value != null;
 
@@ -137,7 +157,7 @@ public partial class ValidationService
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("CrossReferences", null);
 #endif
             using var innerTiming8 = _fs.MeasureOperation("GameState.CrossReferences");
-            await ValidateCrossReferences(issues);
+            await RunReusableGameStateSourcePhaseAsync(() => ValidateCrossReferences(issues));
         }
         if (phases.Includes(GameStateValidationPhase.RivalAndResidentCrossReferences) &&
             !phases.Includes(GameStateValidationPhase.CrossReferences))
@@ -208,7 +228,7 @@ public partial class ValidationService
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("MetaMiscStateFiles", null);
 #endif
             using var innerTiming16 = _fs.MeasureOperation("GameState.MetaMiscStateFiles");
-            await ValidateMetaMiscStateFiles(issues);
+            await RunReusableGameStateSourcePhaseAsync(() => ValidateMetaMiscStateFiles(issues));
         }
         else if (phases.Includes(GameStateValidationPhase.GuardianProjectStateFiles))
         {
