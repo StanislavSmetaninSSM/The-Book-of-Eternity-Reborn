@@ -79,14 +79,14 @@ owned/runtime cleanup true. Catalog discovery passed; PlanOnly379/16,0executed.
 Ten warmed reader/presence controls each remove all8/16 repeated lease admissions
 and attributes, retain8DATA hits and fresh final closure. Causal timer lifetime RED
 55executed/49PASS6FAIL precedes corrected final59lease controls. Source review
-static findings corrected; source/input gate and original600 are still pending.
+static findings corrected; source/input gates and actual original600 accepted.
 
 Current genuine source42 generator PASS180.7799s:82files/513711payload bytes,
 two independent normal production imports, complete source/copy cleanup. Current
 1866-input fingerprint, manifest/payload inventories/hashes, producer781version
 and three actually loaded DLLs verified against qualified8DLL. NEW immutable
 lease-data-v1 slot contains only input carrier/README, no precomputed Stage43 or
-rebound old package. InputGate and exact remote recovery still precede original.
+rebound old package. InputGate and exact remote recovery passed before original.
 
 Actual T457 original FULL PASS562.5566634s/command585.8569083s, unchanged
 600/820/15. Native settlement and original gameplay/idempotence oracles preserved.
@@ -98,8 +98,12 @@ Matched publication218.277->218.709s: NO duration speedup; whole case563.018->
 are preserved real integrity work. Raw31payloads7016240225B archived489171687B,
 SHA581DBA66201ED77F81A579C3C56453DA5251AEB5FF795F5F985D590B1393A8D2.
 Human report:T457-lease-data-results.md. Source/InputGate accepted by independent
-Astra/high; result+retention gate pending; T457notyetcomplete. Frozen retention
-252files10994451477B, no directory/input deletion; old194case names all in379PASS.
+Astra/high; source/input/outcome and frozen retention gates accepted. T453..457
+complete. Exact file-only retention executed:252files10994451477B, all removed
+paths absent; current archive/reusable instrumented backup SHA rechecked. No
+directory/input deletion; old194case names all in379PASS. Current archive/all-row
+analysis/current379/qualified evidence and compact causal/comparison records stayD.
+Final metadata checkpoint is source-only; exact origin recovery follows its push.
 
 # Whole-operation file DATA — revision53 implementation plan
 

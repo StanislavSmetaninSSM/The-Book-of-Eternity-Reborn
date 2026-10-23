@@ -1,4 +1,4 @@
-# Current checkpoint: r54 original FULL PASS; complete profile; outcome/retention review
+# Current checkpoint: r54 original FULL PASS; accepted profile; retention executed
 
 Code781e9051ed2b3febddd2d7fc5dc15e4bbc06a768; actual benchmark metadata
 be0c22e00a66fdc34d2024570bb750b0aa6782d2.379selected PASS/XML8DLL/source/input
@@ -15,11 +15,14 @@ Fullraw31payloads7016240225B,ZIP489171687B,verifiedSHA/CRC; current raw staysD:
 D:/BoeDiagnostics/lease-validation-r54-20261023. Complete result
 T457-lease-data-results.md. One known negative cleanup self-subtraction retained
 and explained; leaf/matched-inclusive measurements unaffected.
-T453–456done. T457pending independent result+frozenretention admission/execution
-and final source-only push/exact origin. Frozen plan252files10994451477B; every
-old194case name included in current379PASS. Never delete directories or INPUT;
-keep current archive/all-row analysis/qualified current evidence and reusable
-r51instrumented source backup. No more original run or source change required.
+T453–457done. Independent actual Astra/high accepted source/input/outcome and
+frozen retention gates. Exact file-only retention completed252files10994451477B;
+all removed paths absent; current archive/reusable r51instrumented backup SHA
+rechecked. Every old194case name included in current379PASS. No directory or
+INPUT deletion. Current archive/all-row analysis/qualified current evidence,
+compact causal/comparison records and reusable r51instrumented source backup
+remainD. Final source-only checkpoint push/exact origin recovery follows; receipt
+is kept outside Git with the review. No more original run or source change needed.
 
 # Historical checkpoint: r53 original FULL PASS accepted; raw retirement complete
 
