@@ -1,5 +1,11 @@
 # Current checkpoint: r57 causal RED verified, first GREEN candidate pending checks
 
+Candidate37d765144 XMLbothPASS(94.542s/58.296s),8DLLuniform. Actualcheap63/63PASS:
+QTE13,registry19,readset31. Independent fresh Astra/high reviewed complete diff
+and found P1 source-closure gap: FileExists-only lifecycle absence was not captured.
+Source gateNOTaccepted. Add causal presence-only and genuine warmed-context refusal
+before correction; no source42/full launch. Existing r56 retained evidence remains.
+
 Issue1536/QTECACHE1..7/T466..470; base6de46c81ebee59f3f9d2f3f879508e9905fce980.
 User explicitly authorizes autonomous implementation/cheap fixtures/same original
 600/820/15, no approval waits or diagnostic caps. Written r57 spec presented;

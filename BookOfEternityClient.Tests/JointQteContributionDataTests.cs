@@ -17,6 +17,34 @@ namespace BookOfEternityClient.Tests;
 public sealed class JointQteContributionDataTests(ITestOutputHelper output)
 {
     /// <summary>
+    /// Requires a previously absent lifecycle context observed only through FileExists to trigger the original refusal.
+    /// </summary>
+    /// <param name="path">
+    /// Actual lifecycle context path that appears between successful read phases.
+    /// </param>
+    [Theory]
+    [InlineData("ready/turn_complete.json")]
+    [InlineData("game_state/control/validation_repair_request.json")]
+    public async Task PresenceOnlyLifecycleAppearanceRunsOriginalRefusal(string path)
+    {
+        using var fixture = new Fixture(output);
+        fixture.PresencePath = path;
+        await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+        fixture.Files.GetOrCreateSessionGeneration(lease);
+        using var scope = fixture.Files.BeginRecoveryValidation(lease);
+        await fixture.ReadAsync(lease);
+        await fixture.ReadAsync(lease);
+        Assert.Equal(1, fixture.Bodies);
+        var physical = fixture.Files.ResolvePath(path);
+        Directory.CreateDirectory(Path.GetDirectoryName(physical)!);
+        File.WriteAllText(physical, "{}");
+        var error = await Assert.ThrowsAsync<InvalidDataException>(() => fixture.ReadAsync(lease));
+        Assert.Equal("original lifecycle context conflict", error.Message);
+        Assert.Equal(2, fixture.Bodies);
+        Assert.Equal(0, scope.CaptureState().Entries);
+    }
+
+    /// <summary>
     /// Reuses a stable calculation while preserving every fresh entry, exit and source proof.
     /// </summary>
     /// <param name="eligible">
@@ -277,6 +305,11 @@ public sealed class JointQteContributionDataTests(ITestOutputHelper output)
         internal int FailBaselineAt { get; set; }
 
         /// <summary>
+        /// Gets or sets an optional lifecycle context checked by the original source through FileExists only.
+        /// </summary>
+        internal string? PresencePath { get; set; }
+
+        /// <summary>
         /// Executes the production QTE boundary with one small replaceable calculation source.
         /// </summary>
         /// <param name="lease">
@@ -297,6 +330,8 @@ public sealed class JointQteContributionDataTests(ITestOutputHelper output)
                 {
                     Bodies++;
                     if (SourceError != null) throw SourceError;
+                    if (PresencePath != null && Files.FileExists(PresencePath))
+                        throw new InvalidDataException("original lifecycle context conflict");
                     var source = await Files.ReadFileAsync(lease, "treatment-source.json");
                     var optional = Files.ReadFileSync(lease, "optional.txt");
                     var data = new JointQtePreparedData([source, History["value"]!.GetValue<string>()],

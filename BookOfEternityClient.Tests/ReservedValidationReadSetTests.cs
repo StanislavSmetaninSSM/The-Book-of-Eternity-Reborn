@@ -18,6 +18,36 @@ namespace BookOfEternityClient.Tests;
 public sealed class ReservedValidationReadSetTests(ITestOutputHelper output)
 {
     /// <summary>
+    /// Enlists presence-only observations in both replay and fresh completion without merging explicit and ambient probes.
+    /// </summary>
+    [Fact]
+    public async Task PresenceOnlyObservationsRetainModeAndFreshExitAbsence()
+    {
+        using var fixture = new Fixture(output);
+        var files = fixture.Create();
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        FileSystemManager.ValidationReadObservations observations;
+        await using (var first = files.TryBeginReservedValidationReadSet(lease))
+        {
+            Assert.NotNull(first);
+            await first.OpenAsync();
+            Assert.False(files.FileExists("missing.txt"));
+            Assert.False(files.FileExists(lease, "missing.txt"));
+            observations = first.CaptureObservations();
+            Assert.Equal(2, observations.Count);
+            await first.CompleteAsync();
+        }
+        await using var second = files.TryBeginReservedValidationReadSet(lease);
+        Assert.NotNull(second);
+        await second.OpenAsync();
+        Assert.True(await second.MatchesObservationsAsync(observations));
+        Assert.Equal(2, second.CaptureObservations().Count);
+        File.WriteAllText(files.ResolvePath("missing.txt"), "appeared after replay");
+        await Assert.ThrowsAsync<InvalidDataException>(() => second.CompleteAsync());
+    }
+
+    /// <summary>
     /// Replays all retained identities into a different phase, keeping family and explicit lease mode separate.
     /// </summary>
     [Fact]
