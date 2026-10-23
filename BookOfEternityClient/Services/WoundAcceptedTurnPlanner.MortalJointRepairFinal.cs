@@ -28,45 +28,86 @@ internal static partial class WoundAcceptedTurnPlannerCore
             var refused = ReadJointFinalAdmission(prepared, accepted, out var admission);
             if (refused is not null) return refused;
             var joint = admission!.Joint;
-            var baseline = admission.Baseline;
-            var catalog = admission.Catalog;
-            var identity = admission.Identity;
-            var history = admission.History;
-            var before = admission.Before;
-
-            // The shared effect stage has already authenticated the complete ordered
-            // result inventory. Each pure reducer receives only its own applications.
-            var acquisitionRefs = prepared.EffectOperationBatches[0].RootApplications
-                .Select(row => row.ApplicationRef).ToHashSet(StringComparer.Ordinal);
-            var acquisition = ReduceAcquisitionContributions(prepared, catalog, identity, history,
-                applications.Where(row => acquisitionRefs.Contains(row.ApplicationRef)).ToArray(), acquisitionCount: 1);
-            if (acquisition.Value is not { } acquired) return new(null, acquisition.Issues);
-            var treatmentRefs = (joint.TreatmentBatch?.RootApplications ?? Array.Empty<WoundRootEffectApplication>())
-                .Select(row => row.ApplicationRef).ToHashSet(StringComparer.Ordinal);
-            var treatment = ReduceTreatmentContribution(joint.Outcome, joint.Resolution, joint.Outcome.TransitionId,
-                joint.PersistedResult, joint.TreatmentBatch,
-                applications.Where(row => treatmentRefs.Contains(row.ApplicationRef)).ToArray(),
-                before, checked(history.NextOrdinal + acquired.HistoryRows.Count));
-            if (treatment.Value is not { } treated) return new(null, treatment.Issues);
-            var union = CombineJointRepairContributions(acquired, treated, history.NextOrdinal);
-            if (union.Value is not { } contributions) return new(null, union.Issues);
-            // Build each canonical root once from typed contributions, never merge
-            // independently finalized JSON/identity/history afterimages.
-            var assembled = AssembleWoundContributions(new WoundOperationBeforeData(baseline.PreTurnCarriers,
-                baseline.PreTurnIdentityIndex, baseline.PreTurnHistory, null, null), history, contributions);
-            if (assembled.State is not { } state) return new(null, assembled.Issues);
-            var fingerprint = WoundAcceptedTurnFingerprints.ComputeFinal(prepared, accepted,
-                state.Contributions, state.Identity, state.History, state.Intents);
-            return new(new WoundAcceptedTurnPlan(prepared.Binding, prepared.BindingFingerprint, prepared.InputFingerprint,
-                accepted.WoundPreparationFingerprint, accepted.EffectInputFingerprint, accepted.EffectAcceptedTurnPlanFingerprint,
-                fingerprint, prepared.AllocatedWoundIds, prepared.AllocatedTransitionIds,
-                state.Contributions, state.Identity, state.History, state.Intents), Array.Empty<ValidationIssue>());
+            // FinalizationHandoff freshly verified these seals and actual payloads
+            // before this private family dispatch. Preparation does not include the
+            // baseline seal, so the baseline must remain a separate input value.
+            var admittedInput = new OperationStructuralSnapshot(
+            [
+                prepared.WoundPreparationFingerprint, prepared.BaselineAuthority.AuthoritySeal,
+                accepted.EffectInputFingerprint, accepted.EffectAcceptedTurnPlanFingerprint,
+                prepared.BindingFingerprint, prepared.InputFingerprint
+            ],
+            [
+                prepared.JointRepairContinuationAuthority, accepted.EffectInput.SourceAuthority,
+                accepted.EffectInput.TargetAuthority, accepted.EffectInput.SkillScopeAuthority
+            ]);
+            return joint.SemanticData.ReadFinalReduction(joint.Operation, admittedInput,
+                () => ReduceJointFinalPlan(prepared, accepted, applications, admission));
         }
         catch (Exception error) when (error is ArgumentException or InvalidOperationException or JsonException or
             NullReferenceException or OverflowException or InvalidDataException)
         {
             return JointFinalFailure(error);
         }
+    }
+
+    /// <summary>
+    /// Reduces freshly admitted detached joint DATA into independent final after-images.
+    /// </summary>
+    /// <param name="prepared">
+    /// The exact preparation already checked by the finalization handoff and joint admission.
+    /// </param>
+    /// <param name="accepted">
+    /// The same accepted effect result whose actual seals and ordered inventory were freshly verified.
+    /// </param>
+    /// <param name="applications">
+    /// The complete ordered detached application results admitted for this invocation.
+    /// </param>
+    /// <param name="admission">
+    /// The original agreeing baseline, catalog, identity, history and retained joint contribution DATA.
+    /// </param>
+    /// <returns>
+    /// The independently assembled final plan or the unchanged pure reduction refusal.
+    /// </returns>
+    private static WoundAcceptedTurnPlanningResult ReduceJointFinalPlan(WoundPreparedAcceptedTurnPlan prepared,
+        WoundEffectBatchAcceptedPlan accepted, IReadOnlyList<EffectAcceptedApplicationResult> applications,
+        JointFinalAdmission admission)
+    {
+        using var reductionTiming = BookOfEternityClient.Core.FileSystemManager.MeasureCurrentOperation("JointFinal.Reduce");
+        var joint = admission.Joint;
+        var baseline = admission.Baseline;
+        var catalog = admission.Catalog;
+        var identity = admission.Identity;
+        var history = admission.History;
+        var before = admission.Before;
+
+        // The shared effect stage has already authenticated the complete ordered
+        // result inventory. Each pure reducer receives only its own applications.
+        var acquisitionRefs = prepared.EffectOperationBatches[0].RootApplications
+            .Select(row => row.ApplicationRef).ToHashSet(StringComparer.Ordinal);
+        var acquisition = ReduceAcquisitionContributions(prepared, catalog, identity, history,
+            applications.Where(row => acquisitionRefs.Contains(row.ApplicationRef)).ToArray(), acquisitionCount: 1);
+        if (acquisition.Value is not { } acquired) return new(null, acquisition.Issues);
+        var treatmentRefs = (joint.TreatmentBatch?.RootApplications ?? Array.Empty<WoundRootEffectApplication>())
+            .Select(row => row.ApplicationRef).ToHashSet(StringComparer.Ordinal);
+        var treatment = ReduceTreatmentContribution(joint.Outcome, joint.Resolution, joint.Outcome.TransitionId,
+            joint.PersistedResult, joint.TreatmentBatch,
+            applications.Where(row => treatmentRefs.Contains(row.ApplicationRef)).ToArray(),
+            before, checked(history.NextOrdinal + acquired.HistoryRows.Count));
+        if (treatment.Value is not { } treated) return new(null, treatment.Issues);
+        var union = CombineJointRepairContributions(acquired, treated, history.NextOrdinal);
+        if (union.Value is not { } contributions) return new(null, union.Issues);
+        // Build each canonical root once from typed contributions, never merge
+        // independently finalized JSON/identity/history afterimages.
+        var assembled = AssembleWoundContributions(new WoundOperationBeforeData(baseline.PreTurnCarriers,
+            baseline.PreTurnIdentityIndex, baseline.PreTurnHistory, null, null), history, contributions);
+        if (assembled.State is not { } state) return new(null, assembled.Issues);
+        var fingerprint = WoundAcceptedTurnFingerprints.ComputeFinal(prepared, accepted,
+            state.Contributions, state.Identity, state.History, state.Intents);
+        return new(new WoundAcceptedTurnPlan(prepared.Binding, prepared.BindingFingerprint, prepared.InputFingerprint,
+            accepted.WoundPreparationFingerprint, accepted.EffectInputFingerprint, accepted.EffectAcceptedTurnPlanFingerprint,
+            fingerprint, prepared.AllocatedWoundIds, prepared.AllocatedTransitionIds,
+            state.Contributions, state.Identity, state.History, state.Intents), Array.Empty<ValidationIssue>());
     }
 
     /// <summary>

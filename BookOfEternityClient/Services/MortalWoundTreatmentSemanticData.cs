@@ -7,7 +7,7 @@ namespace BookOfEternityClient.Services;
 /// <summary>
 /// Evaluates retained treatment agreement DATA separately from live publication authority.
 /// </summary>
-internal sealed class MortalWoundTreatmentSemanticData
+internal sealed partial class MortalWoundTreatmentSemanticData
 {
     private readonly MortalWoundTreatmentOutcomePreparation _outcome;
     private readonly MortalWoundTreatmentResolution _resolution;

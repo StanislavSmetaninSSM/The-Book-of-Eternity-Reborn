@@ -2,6 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "fr063-joint-semantic-data-controls",
+      "reason": "Actual genuine-owner stage sources must fall to one without weakening fresh handoff, history corruption, mutable-copy or abort refusal contracts.",
+      "contracts": ["#1536 SEMANTIC1..6 / T462-464"]
+    },
+    {
       "category": "core-treatment-semantic-data",
       "reason": "Causal actual semantic-source reduction and changed aliased request refusal without game construction.",
       "contracts": [

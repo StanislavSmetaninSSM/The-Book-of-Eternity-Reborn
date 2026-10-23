@@ -3,7 +3,6 @@ using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
-using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -32,7 +31,7 @@ public sealed class TreatmentSemanticDataTests
     {
         using var fixture = new Fixture(_output);
         using var operation = new DefaultOperationValidationService().BeginOperation();
-        using (fixture.Files.EnterOperationTimingContext())
+        using (fixture.EnterTimingContext())
         {
             var expected = MortalWoundTreatmentResourceComposer.Finalize(fixture.Resolution).Finalization;
             Assert.NotNull(expected);
@@ -55,7 +54,7 @@ public sealed class TreatmentSemanticDataTests
     public void MissingOperationPreservesUncachedSources()
     {
         using var fixture = new Fixture(_output);
-        using (fixture.Files.EnterOperationTimingContext())
+        using (fixture.EnterTimingContext())
         {
             for (var i = 0; i < 3; i++) Assert.True(fixture.Data.ReadOutcomeAgreement(null));
             Assert.Equal(3, fixture.Count("TreatmentOutcome.AgreesWith"));
@@ -70,7 +69,7 @@ public sealed class TreatmentSemanticDataTests
     {
         using var fixture = new Fixture(_output);
         using var operation = new DefaultOperationValidationService().BeginOperation();
-        using (fixture.Files.EnterOperationTimingContext())
+        using (fixture.EnterTimingContext())
         {
             Assert.True(fixture.Data.ReadOutcomeAgreement(operation));
             var request = fixture.Resolution.RequestAuthority;
@@ -93,7 +92,7 @@ public sealed class TreatmentSemanticDataTests
     {
         using var fixture = new Fixture(_output);
         using var operation = new DefaultOperationValidationService().BeginOperation();
-        using (fixture.Files.EnterOperationTimingContext())
+        using (fixture.EnterTimingContext())
         {
             var expected = fixture.Data.ReadFinalizationFingerprint(operation);
             Assert.NotNull(expected);
@@ -114,7 +113,7 @@ public sealed class TreatmentSemanticDataTests
     {
         using var fixture = new Fixture(_output);
         using var operation = new DefaultOperationValidationService().BeginOperation();
-        using (fixture.Files.EnterOperationTimingContext())
+        using (fixture.EnterTimingContext())
         {
             Assert.True(fixture.Data.ReadOutcomeAgreement(operation));
             Assert.True(fixture.Data.ReadOutcomeAgreement(operation));
@@ -139,7 +138,7 @@ public sealed class TreatmentSemanticDataTests
     public void NewOperationDoesNotReusePriorOperationResult()
     {
         using var fixture = new Fixture(_output);
-        using (fixture.Files.EnterOperationTimingContext())
+        using (fixture.EnterTimingContext())
         {
             using (var first = new DefaultOperationValidationService().BeginOperation())
             {
@@ -220,20 +219,16 @@ public sealed class TreatmentSemanticDataTests
                 @"D:\BoeDiagnostics\semantic-cache-r56-20261023", "treatment-semantic-unit");
             Directory.CreateDirectory(diagnostics);
             _diagnosticPath = Path.Combine(diagnostics, nonce + ".jsonl");
-            Files = new FileSystemManager(Path.Combine(Path.GetTempPath(), "boe-semantic-unit-" + nonce),
-                NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance,
-                new FileSystemManagerHooks
-                {
-                    OperationTimingObserver = (name, boundary, elapsed) =>
-                        _observations.Add((name, boundary, elapsed.TotalMilliseconds))
-                });
-            Assert.False(Directory.Exists(Path.Combine(Path.GetTempPath(), "boe-semantic-unit-" + nonce)));
         }
 
         /// <summary>
-        /// Gets the real manager used solely for the synchronous passive timing context.
+        /// Selects the complete passive observation receiver without creating a game directory or filesystem owner.
         /// </summary>
-        internal FileSystemManager Files { get; }
+        /// <returns>
+        /// A restoring synchronous timing scope that must not span an await.
+        /// </returns>
+        internal IDisposable? EnterTimingContext() => FileSystemManager.EnterOperationTimingContext(
+            (name, boundary, elapsed) => _observations.Add((name, boundary, elapsed.TotalMilliseconds)));
 
         /// <summary>
         /// Gets the real detached resolution reconstructed from immutable INPUT.

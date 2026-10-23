@@ -12,9 +12,20 @@ public partial class FileSystemManager
     /// A restoring scope when observation context changes; otherwise, <see langword="null"/>.
     /// The scope must remain within synchronous work and must not span an await.
     /// </returns>
-    internal IDisposable? EnterOperationTimingContext()
+    internal IDisposable? EnterOperationTimingContext() => EnterOperationTimingContext(_hooks?.OperationTimingObserver);
+
+    /// <summary>
+    /// Selects a passive receiver for synchronous computations without constructing a physical filesystem host.
+    /// </summary>
+    /// <param name="observer">
+    /// The receiver to select; null temporarily suppresses an enclosing receiver.
+    /// </param>
+    /// <returns>
+    /// A restoring scope when the receiver context changes; otherwise null.
+    /// The scope must remain on its entering thread and must not span an await.
+    /// </returns>
+    internal static IDisposable? EnterOperationTimingContext(Action<string, string, TimeSpan>? observer)
     {
-        var observer = _hooks?.OperationTimingObserver;
         if (observer is null && _operationTimingContext is null) return null;
         var context = new OperationTimingContext(_operationTimingContext, observer);
         _operationTimingContext = context;

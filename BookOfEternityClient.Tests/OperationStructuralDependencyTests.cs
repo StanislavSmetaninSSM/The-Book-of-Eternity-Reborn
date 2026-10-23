@@ -10,6 +10,95 @@ namespace BookOfEternityClient.Tests;
 public sealed class OperationStructuralDependencyTests
 {
     /// <summary>
+    /// Interns complete equal logical inputs under one exact owner without depending on snapshot object identity.
+    /// </summary>
+    [Fact]
+    public void EqualStructuralInputsReuseExactOperationIdentity()
+    {
+        using var operation = new DefaultOperationValidationService().BeginOperation();
+        var owner = new object();
+        var companion = new object();
+        var first = operation.GetStructuralInputIdentity(owner, new(["first", null, ""], [companion, null]));
+        Assert.Same(first, operation.GetStructuralInputIdentity(owner,
+            new(["first", null, ""], [companion, null])));
+    }
+
+    /// <summary>
+    /// Separates nullable values, ordering, actual companion references and exact owner identities.
+    /// </summary>
+    [Fact]
+    public void ChangedStructuralInputsRequireDifferentOperationIdentity()
+    {
+        using var operation = new DefaultOperationValidationService().BeginOperation();
+        var owner = new object();
+        var companion = new object();
+        var first = operation.GetStructuralInputIdentity(owner, new(["first", null, ""], [companion, null]));
+        Assert.NotSame(first, operation.GetStructuralInputIdentity(owner,
+            new(["first", "", ""], [companion, null])));
+        Assert.NotSame(first, operation.GetStructuralInputIdentity(owner,
+            new([null, "first", ""], [companion, null])));
+        Assert.NotSame(first, operation.GetStructuralInputIdentity(owner,
+            new(["first", null, ""], [new object(), null])));
+        Assert.NotSame(first, operation.GetStructuralInputIdentity(owner,
+            new(["first", null, ""], [null, companion])));
+        Assert.NotSame(first, operation.GetStructuralInputIdentity(new object(),
+            new(["first", null, ""], [companion, null])));
+    }
+
+    /// <summary>
+    /// Retires prior logical input identities at fresh and failure boundaries while retaining the open operation.
+    /// </summary>
+    [Fact]
+    public void FreshAndFailureRetireStructuralInputIdentityMetadata()
+    {
+        using var operation = new DefaultOperationValidationService().BeginOperation();
+        var owner = new object();
+        var snapshot = new OperationStructuralSnapshot(["same"], []);
+        var first = operation.GetStructuralInputIdentity(owner, snapshot);
+        object fresh;
+        using (operation.ForceFresh())
+        {
+            fresh = operation.GetStructuralInputIdentity(owner, snapshot);
+            Assert.NotSame(first, fresh);
+            Assert.Same(fresh, operation.GetStructuralInputIdentity(owner, new(["same"], [])));
+        }
+        var rule = new OperationComputation<int>("structural.input-failure", 1, value => value);
+        Assert.Throws<FormatException>(() => operation.GetOrCompute(rule, new object(), [],
+            () => throw new FormatException("original source refusal")));
+        var afterFailure = operation.GetStructuralInputIdentity(owner, snapshot);
+        Assert.NotSame(fresh, afterFailure);
+        Assert.Same(afterFailure, operation.GetStructuralInputIdentity(owner, new(["same"], [])));
+    }
+
+    /// <summary>
+    /// Keeps logical input identity metadata private to one whole operation even for the same owner and snapshot.
+    /// </summary>
+    [Fact]
+    public void StructuralInputIdentityCannotCrossOperationLifetime()
+    {
+        using var first = new DefaultOperationValidationService().BeginOperation();
+        using var second = new DefaultOperationValidationService().BeginOperation();
+        var owner = new object();
+        var snapshot = new OperationStructuralSnapshot(["same"], []);
+        Assert.NotSame(first.GetStructuralInputIdentity(owner, snapshot),
+            second.GetStructuralInputIdentity(owner, snapshot));
+    }
+
+    /// <summary>
+    /// Refuses structural input metadata requests after the owning operation has closed.
+    /// </summary>
+    [Fact]
+    public void ClosedOperationRefusesStructuralInputIdentity()
+    {
+        var operation = new DefaultOperationValidationService().BeginOperation();
+        var owner = new object();
+        var snapshot = new OperationStructuralSnapshot(["same"], []);
+        operation.GetStructuralInputIdentity(owner, snapshot);
+        operation.Dispose();
+        Assert.Throws<ObjectDisposedException>(() => operation.GetStructuralInputIdentity(owner, snapshot));
+    }
+
+    /// <summary>
     /// Clears comparison DATA at fresh and failure boundaries without retiring a still-open provider.
     /// </summary>
     [Fact]

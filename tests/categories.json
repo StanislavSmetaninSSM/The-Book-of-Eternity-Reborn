@@ -2,6 +2,27 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-semantic-data-controls",
+  "responsibility": "One genuine issuer integration repeats preparation and final stages eight times in the existing whole-operation service and retains fresh admission, damaged-history, mutation, constructor and abort refusal controls.",
+  "excludes": "No game loop, full world, fake issuer, reflection, diagnostic quota or original-workload performance claim.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalWoundTreatmentSemanticData.StageReplays.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairFinal.cs",
+    "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.SemanticData.cs"
+  ],
+  "related": [
+    { "id": "core-treatment-semantic-data", "when": "Structural semantic capture or computation rules change." },
+    { "id": "fr063-joint-bundle-copy-controls", "when": "The joint stage integration or original copy admission changes." }
+  ],
+  "requirements": { "frontendBuild": false, "exclusive": true },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    { "project": "integration", "tests": ["BookOfEternityClient.Tests.JointBundleComponentTests.JointSemanticData_ReusesStageSourcesAndPreservesRefusals"] }
+  ]
+},
+{
       "id": "core-treatment-semantic-data",
       "responsibility": "Actual detached guaranteed treatment agreement and resource finalization source counts with exact immutable INPUT; aliased restored wound mutation, restoration and independent operation lifetimes.",
       "excludes": "No registry, live request mint, world/game loop, native owner, reflection, permission-cache truth or diagnostic quota.",

@@ -75,6 +75,20 @@ internal sealed class ValidationOperation : IDisposable
     }
 
     /// <summary>
+    /// Supplies the initial causal seam for operation-owned structural input identity metadata.
+    /// </summary>
+    /// <param name="owner">
+    /// Exact owner identity intended to group structurally equivalent logical inputs.
+    /// </param>
+    /// <param name="snapshot">
+    /// Complete ordered structural values and actual companion references for the logical input.
+    /// </param>
+    /// <returns>
+    /// A new independent identity until operation-owned structural interning is implemented.
+    /// </returns>
+    internal object GetStructuralInputIdentity(object owner, OperationStructuralSnapshot snapshot) => new object();
+
+    /// <summary>
     /// Clears prior results and selects fresh computation without cache insertion throughout a nested scope.
     /// </summary>
     /// <returns>

@@ -19,6 +19,7 @@ internal static partial class WoundAcceptedTurnPlanner
         private readonly WoundAcceptedTurnInput _treatmentInput;
         private readonly MortalWoundTreatmentOutcomePreparation _outcome;
         private readonly MortalWoundTreatmentSemanticData _semanticData;
+        private readonly bool _stageReplayEligible;
         private readonly WoundEffectOperationBatch? _treatmentBatch;
         /// <summary>
         /// Retains the issued joint preparation's detached DATA and actual companions, then computes its original fingerprint.
@@ -86,6 +87,8 @@ internal static partial class WoundAcceptedTurnPlanner
             _outcome = outcome.DetachedCopy(); _treatmentBatch = rematerialization.Batch;
             _semanticData = new(_outcome, resolution);
             Rematerialization = rematerialization.Authority;
+            _stageReplayEligible = _treatmentBatch is null && Rematerialization is null &&
+                _acquisitionInput.Opportunities.All(opportunity => opportunity.OriginalSourceGuarantee is null);
             var beforeImages = JointPrivateFingerprintData.BeforeImages.Copy(before);
             using (files.EnterOperationTimingContext())
             using (FileSystemManager.MeasureCurrentOperation("JointContinuation.InitialFingerprint"))
@@ -138,6 +141,28 @@ internal static partial class WoundAcceptedTurnPlanner
         internal MortalWoundTreatmentOutcomePreparation Outcome => _outcome.DetachedCopy();
         internal WoundEffectOperationBatch? TreatmentBatch => _treatmentBatch is null ? null : WoundAcceptedTurnData.CloneOperationBatch(_treatmentBatch);
         internal string Fingerprint { get; }
+        /// <summary>
+        /// Gets the original operation only when every retained acquisition companion is privately owned.
+        /// </summary>
+        internal ValidationOperation? StageReplayOperation => _stageReplayEligible
+            ? _files.GetCurrentSemanticDataOperation() : null;
+
+        /// <summary>
+        /// Gets this exact continuation's non-authorizing semantic DATA evaluator.
+        /// </summary>
+        internal MortalWoundTreatmentSemanticData SemanticData => _semanticData;
+
+        /// <summary>
+        /// Evaluates the expected preparation seal using this exact continuation's private acquisition input.
+        /// </summary>
+        /// <param name="compute">
+        /// The unchanged deterministic replay source, returning null for its original refusal.
+        /// </param>
+        /// <returns>
+        /// The expected successful preparation seal, or null for refusal.
+        /// </returns>
+        internal string? ReadPreparationFingerprint(Func<string?> compute) =>
+            _semanticData.ReadPreparationFingerprint(StageReplayOperation, compute);
         /// <summary>
         /// Parses detached effect source roots from the private before-images.
         /// </summary>
@@ -458,9 +483,31 @@ internal static partial class WoundAcceptedTurnPlanner
 
     // Detached views are non-authorizing. All readers first authenticate the whole
     // private prepared graph; neither a common frame nor a caller batch issues one.
+    /// <summary>
+    /// Exposes detached joint DATA after its original preparation admission.
+    /// </summary>
+    /// <param name="Outcome">
+    /// An independent detached outcome image.
+    /// </param>
+    /// <param name="Resolution">
+    /// The exact retained resolution companion.
+    /// </param>
+    /// <param name="PersistedResult">
+    /// A detached persistence representation of that resolution.
+    /// </param>
+    /// <param name="TreatmentBatch">
+    /// A detached optional treatment batch; null means no rematerialization.
+    /// </param>
+    /// <param name="SemanticData">
+    /// The original continuation's structurally guarded DATA evaluator.
+    /// </param>
+    /// <param name="Operation">
+    /// The eligible already owning operation, or null for original computation.
+    /// </param>
     internal sealed record JointRepairFinalView(
         MortalWoundTreatmentOutcomePreparation Outcome, MortalWoundTreatmentResolution Resolution,
-        MortalWoundTreatmentPersistedResult PersistedResult, WoundEffectOperationBatch? TreatmentBatch);
+        MortalWoundTreatmentPersistedResult PersistedResult, WoundEffectOperationBatch? TreatmentBatch,
+        MortalWoundTreatmentSemanticData SemanticData, ValidationOperation? Operation);
 
     internal static bool TryReadJointRepairFinal(WoundPreparedAcceptedTurnPlan prepared,
         out JointRepairFinalView view)
@@ -469,7 +516,8 @@ internal static partial class WoundAcceptedTurnPlanner
         if (!JointRepairPreparedAgrees(prepared) ||
             !TryReadJointRepair(prepared.JointRepairContinuationAuthority, out var joint)) return false;
         view = new(joint.Outcome, joint.Resolution,
-            MortalWoundTreatmentPersistedResult.Create(joint.Resolution), joint.TreatmentBatch);
+            MortalWoundTreatmentPersistedResult.Create(joint.Resolution), joint.TreatmentBatch,
+            joint.SemanticData, joint.StageReplayOperation);
         return true;
     }
 
@@ -653,12 +701,12 @@ internal static partial class WoundAcceptedTurnPlanner
         if (!batchAgrees) return false;
         // Recompute the complete private contribution graph, not just caller-supplied
         // hashes. The deterministic preparation replay also rechecks companion authorities.
-        WoundAcceptedTurnPreparationResult replay;
-        using (FileSystemManager.MeasureCurrentOperation("JointPreparation.Replay"))
+        var expectedFingerprint = joint.ReadPreparationFingerprint(() =>
         {
-            replay = PrepareJointRepairCandidate(joint.AcquisitionInput, prepared.JointRepairContinuationAuthority!);
-        }
-        return replay.Success && replay.Plan is not null &&
-            replay.Plan.WoundPreparationFingerprint == prepared.WoundPreparationFingerprint;
+            using var replayTiming = FileSystemManager.MeasureCurrentOperation("JointPreparation.Replay");
+            var replay = PrepareJointRepairCandidate(joint.AcquisitionInput, prepared.JointRepairContinuationAuthority!);
+            return replay.Success && replay.Plan is not null ? replay.Plan.WoundPreparationFingerprint : null;
+        });
+        return expectedFingerprint is not null && expectedFingerprint == prepared.WoundPreparationFingerprint;
     }
 }
