@@ -88,6 +88,17 @@ public partial class FileSystemManager
     }
 
     /// <summary>
+    /// Selects the already owning whole-operation service for pure semantic DATA computations.
+    /// </summary>
+    /// <returns>
+    /// The existing temporary context, or null outside an eligible source lifetime or during fresh diagnostics.
+    /// This selection grants no filesystem, claim or publication authority.
+    /// </returns>
+    internal ValidationOperation? GetCurrentSemanticDataOperation() =>
+        ValidationReuseSuppression.Value == 0 && _sourceDataOperation.Value is { } current && !current.IsSuspended
+            ? current.GetSemanticDataOperation() : null;
+
+    /// <summary>
     /// Freshly verifies provisional DATA at a selected original effect boundary.
     /// </summary>
     /// <param name="lease">
@@ -205,6 +216,18 @@ public partial class FileSystemManager
         {
             ObjectDisposedException.ThrowIf(_closed, this);
             if (_failed || _completed) throw new InvalidOperationException("The source operation is no longer available.");
+        }
+
+        /// <summary>
+        /// Borrows the existing service context after verifying its owning source lifetime remains open.
+        /// </summary>
+        /// <returns>
+        /// The same owned service storage used by the current whole operation.
+        /// </returns>
+        internal ValidationOperation GetSemanticDataOperation()
+        {
+            RequireOpen();
+            return _operation;
         }
 
         /// <summary>

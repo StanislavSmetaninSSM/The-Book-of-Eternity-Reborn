@@ -18,6 +18,7 @@ internal static partial class WoundAcceptedTurnPlanner
         private readonly WoundAcceptedTurnInput _acquisitionInput;
         private readonly WoundAcceptedTurnInput _treatmentInput;
         private readonly MortalWoundTreatmentOutcomePreparation _outcome;
+        private readonly MortalWoundTreatmentSemanticData _semanticData;
         private readonly WoundEffectOperationBatch? _treatmentBatch;
         /// <summary>
         /// Retains the issued joint preparation's detached DATA and actual companions, then computes its original fingerprint.
@@ -83,6 +84,7 @@ internal static partial class WoundAcceptedTurnPlanner
             _treatmentInput = WoundAcceptedTurnData.CloneInput(treatmentInput)!;
             Accepted = accepted; Request = request; Resolution = resolution; Finalization = finalization;
             _outcome = outcome.DetachedCopy(); _treatmentBatch = rematerialization.Batch;
+            _semanticData = new(_outcome, resolution);
             Rematerialization = rematerialization.Authority;
             var beforeImages = JointPrivateFingerprintData.BeforeImages.Copy(before);
             using (files.EnterOperationTimingContext())
@@ -177,11 +179,12 @@ internal static partial class WoundAcceptedTurnPlanner
             get
             {
                 using var operationTiming = FileSystemManager.MeasureCurrentOperation("JointContinuation.ValidateSeal");
+                var operation = _files.GetCurrentSemanticDataOperation();
                 return ReferenceEquals(Resolution.RequestAuthority, Request) &&
-                    _outcome.AgreesWith(Resolution) && Finalization.RequestFingerprint == Request.RequestFingerprint &&
+                    _semanticData.ReadOutcomeAgreement(operation) && Finalization.RequestFingerprint == Request.RequestFingerprint &&
                     Finalization.ResultFingerprint == Resolution.ResultFingerprint &&
                     Finalization.ResourceAuthorityFingerprint == Request.ResourceAuthority.AuthorityFingerprint &&
-                    MortalWoundTreatmentResourceComposer.Finalize(Resolution).Finalization?.FinalizationFingerprint == Finalization.FinalizationFingerprint &&
+                    _semanticData.ReadFinalizationFingerprint(operation) == Finalization.FinalizationFingerprint &&
                     ComputeFingerprint() == Fingerprint;
             }
         }

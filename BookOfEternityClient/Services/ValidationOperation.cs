@@ -12,6 +12,8 @@ internal sealed class ValidationOperation : IDisposable
     private ServiceCacheStorage<EntryKey, Entry>? _storage;
     private readonly AsyncLocal<Frame?> _flow = new();
     private readonly AsyncLocal<FreshScope?> _freshFlow = new();
+    private readonly Dictionary<object, OperationStructuralDependency> _structuralDependencies =
+        new(ReferenceEqualityComparer.Instance);
     private Frame? _top;
     private FreshScope? _fresh;
     private bool _closed;
@@ -35,19 +37,42 @@ internal sealed class ValidationOperation : IDisposable
     internal bool IsStateMonitorHeld => Monitor.IsEntered(_gate);
 
     /// <summary>
-    /// Supplies the initial unregistered structural-provider seam for operation-lifetime controls.
+    /// Binds one complete structural capture policy to an exact owner for this operation's lifetime.
     /// </summary>
     /// <param name="inputIdentity">
-    /// Exact owner identity intended to bind one complete structural capture.
+    /// Exact owner identity, compared only by reference, for one complete structural capture.
     /// </param>
     /// <param name="capture">
-    /// The complete current structural capture for that owner.
+    /// The complete current structural capture for that owner; subsequent requests must supply this exact delegate.
     /// </param>
     /// <returns>
-    /// An independently constructed provider until operation ownership is implemented.
+    /// The operation-owned provider already bound to the owner, or a newly registered provider.
     /// </returns>
     internal OperationStructuralDependency GetStructuralDependency(object inputIdentity,
-        Func<OperationStructuralSnapshot?> capture) => new(capture);
+        Func<OperationStructuralSnapshot?> capture)
+    {
+        try
+        {
+            ArgumentNullException.ThrowIfNull(inputIdentity);
+            ArgumentNullException.ThrowIfNull(capture);
+            lock (_gate)
+            {
+                RequireOpen();
+                if (!ReferenceEquals(_top, _flow.Value) || !ReferenceEquals(_fresh, _freshFlow.Value))
+                    throw new InvalidOperationException("Structural dependencies require the operation's active serial flow.");
+                if (_structuralDependencies.TryGetValue(inputIdentity, out var dependency))
+                {
+                    if (!dependency.HasCapturePolicy(capture))
+                        throw new InvalidOperationException("An operation owner cannot replace its structural capture policy.");
+                    return dependency;
+                }
+                dependency = new OperationStructuralDependency(capture);
+                _structuralDependencies.Add(inputIdentity, dependency);
+                return dependency;
+            }
+        }
+        catch { InvalidateAfterFailure(); throw; }
+    }
 
     /// <summary>
     /// Clears prior results and selects fresh computation without cache insertion throughout a nested scope.
@@ -551,11 +576,13 @@ internal sealed class ValidationOperation : IDisposable
     private void RequireOpen() => ObjectDisposedException.ThrowIf(_closed, this);
 
     /// <summary>
-    /// Clears previous successes and prevents active ancestors from republishing them after a caught failure.
+    /// Clears structural comparison evidence and prevents active ancestors from republishing prior successes.
+    /// Active structural observations receive a new token after recapture and therefore require a new request.
     /// </summary>
     private void InvalidateAndPoison()
     {
         for (var frame = _top; frame is not null; frame = frame.Parent) frame.Eligible = false;
+        foreach (var dependency in _structuralDependencies.Values) dependency.ClearCapturedSnapshot();
     }
 
     /// <summary>
@@ -646,6 +673,8 @@ internal sealed class ValidationOperation : IDisposable
         _closed = true;
         var storage = _storage;
         _storage = null;
+        foreach (var dependency in _structuralDependencies.Values) dependency.Retire();
+        _structuralDependencies.Clear();
         var frame = _top;
         _top = null;
         while (frame is not null)

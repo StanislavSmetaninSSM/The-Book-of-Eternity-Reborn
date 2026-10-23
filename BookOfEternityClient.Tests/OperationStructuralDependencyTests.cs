@@ -10,6 +10,46 @@ namespace BookOfEternityClient.Tests;
 public sealed class OperationStructuralDependencyTests
 {
     /// <summary>
+    /// Clears comparison DATA at fresh and failure boundaries without retiring a still-open provider.
+    /// </summary>
+    [Fact]
+    public void FreshAndFailureReleasePriorComparisonData()
+    {
+        using var operation = new DefaultOperationValidationService().BeginOperation();
+        var dependency = operation.GetStructuralDependency(new object(), () => new(["same DATA"], []));
+        Assert.True(dependency.TryCaptureVersion(out var first));
+        using (operation.ForceFresh()) Assert.False(dependency.HasCapturedSnapshot);
+        Assert.True(dependency.TryCaptureVersion(out var afterFresh));
+        Assert.NotSame(first, afterFresh);
+        var rule = new OperationComputation<int>("structural.throw", 1, value => value);
+        Assert.Throws<FormatException>(() => operation.GetOrCompute(rule, new object(), [dependency],
+            () => throw new FormatException("source refused")));
+        Assert.False(dependency.HasCapturedSnapshot);
+        Assert.True(dependency.TryCaptureVersion(out var afterFailure));
+        Assert.NotSame(afterFresh, afterFailure);
+    }
+
+    /// <summary>
+    /// Prevents a capture callback from rehydrating evidence after closing its owning operation.
+    /// </summary>
+    [Fact]
+    public void CaptureCannotRepopulateAfterDisposingOperation()
+    {
+        var operation = new DefaultOperationValidationService().BeginOperation();
+        var calls = 0;
+        var dependency = operation.GetStructuralDependency(new object(), () =>
+        {
+            calls++;
+            operation.Dispose();
+            return new(["too late"], []);
+        });
+        Assert.False(dependency.TryCaptureVersion(out _));
+        Assert.False(dependency.HasCapturedSnapshot);
+        Assert.False(dependency.TryCaptureVersion(out _));
+        Assert.Equal(1, calls);
+    }
+
+    /// <summary>
     /// Binds one actual provider per owner so identical requests retain exact dependency declarations.
     /// </summary>
     [Fact]

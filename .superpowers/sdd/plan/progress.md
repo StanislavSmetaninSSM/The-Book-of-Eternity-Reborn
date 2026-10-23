@@ -1,4 +1,19 @@
-# Current checkpoint: r55 large-runtime investigation accepted
+# Current checkpoint: r56 guarded semantic DATA implementation
+
+Issue1536 SEMANTIC1..8/T461..465; autonomous specification-review waiver.
+T461 source consultation and actual pinned Spec Kit phases/consistency complete.
+Source3bff4ed09 builds with XML enabled; unit closure only, eight-DLL uniformity
+not yet qualified. T462 actual causal RED: semantic4cases2PASS/2source-countFAIL
+(eight actual agreements instead of one; independent operations four instead
+of two); structural11cases8PASS/3ownership-policy-lifetimeFAIL. Native synchronous,
+lookup and existing operation cache59/59PASS, full selection and owned cleanup.
+New raw remains outside Git under D:/BoeDiagnostics/semantic-cache-r56-20261023.
+Implementing exact operation-owned structural guards and audited guaranteed
+stabilization outcome/finalization DATA. Other shapes retain original sources.
+Preparation/final reduction integration and same original FULL remain pending;
+no speedup or100second target achievement claimed. r54 full raw remains retained.
+
+# Historical checkpoint: r55 large-runtime investigation accepted
 
 Issue1536 RUNTIME1..5/T458..460; measured source781/runbe0, retained r54 FULL.
 No production/test changes or new game run. Actual independent Astra/high

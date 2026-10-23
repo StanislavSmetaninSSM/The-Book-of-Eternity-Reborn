@@ -86,6 +86,53 @@ public sealed class TreatmentSemanticDataTests
     }
 
     /// <summary>
+    /// Invalidates resource finalization DATA when a caller-owned wound changes under the same request.
+    /// </summary>
+    [Fact]
+    public void WarmedFinalizationRefusesChangedAliasedWound()
+    {
+        using var fixture = new Fixture(_output);
+        using var operation = new DefaultOperationValidationService().BeginOperation();
+        using (fixture.Files.EnterOperationTimingContext())
+        {
+            var expected = fixture.Data.ReadFinalizationFingerprint(operation);
+            Assert.NotNull(expected);
+            Assert.Equal(expected, fixture.Data.ReadFinalizationFingerprint(operation));
+            fixture.Symptoms.Add("changed resource request wound");
+            Assert.Null(fixture.Data.ReadFinalizationFingerprint(operation));
+            fixture.Symptoms.RemoveAt(fixture.Symptoms.Count - 1);
+            Assert.Equal(expected, fixture.Data.ReadFinalizationFingerprint(operation));
+            Assert.Equal(3, fixture.Count("TreatmentResources.Finalize"));
+        }
+    }
+
+    /// <summary>
+    /// Recomputes agreement when internal route provenance changes although public JSON remains equal.
+    /// </summary>
+    [Fact]
+    public void InternalRouteProvenanceCannotUseWarmedAgreement()
+    {
+        using var fixture = new Fixture(_output);
+        using var operation = new DefaultOperationValidationService().BeginOperation();
+        using (fixture.Files.EnterOperationTimingContext())
+        {
+            Assert.True(fixture.Data.ReadOutcomeAgreement(operation));
+            Assert.True(fixture.Data.ReadOutcomeAgreement(operation));
+            var original = fixture.Routes[0];
+            var publicBefore = JsonSerializer.Serialize(fixture.Resolution);
+            fixture.Routes[0] = original with { SourcePath = original.SourcePath + ".changed" };
+            Assert.Equal(publicBefore, JsonSerializer.Serialize(fixture.Resolution));
+            var originalResult = fixture.Outcome.AgreesWith(fixture.Resolution);
+            var sourceStart = fixture.Count("TreatmentOutcome.AgreesWith");
+            Assert.Equal(originalResult, fixture.Data.ReadOutcomeAgreement(operation));
+            Assert.Equal(sourceStart + 1, fixture.Count("TreatmentOutcome.AgreesWith"));
+            fixture.Routes[0] = original;
+            Assert.True(fixture.Data.ReadOutcomeAgreement(operation));
+            Assert.Equal(4, fixture.Count("TreatmentOutcome.AgreesWith"));
+        }
+    }
+
+    /// <summary>
     /// Performs independent semantic computation after a prior whole operation has ended.
     /// </summary>
     [Fact]
@@ -133,9 +180,11 @@ public sealed class TreatmentSemanticDataTests
                 "semantic-fixture.request", issues, out var parsed), JsonSerializer.Serialize(issues));
             Assert.NotNull(parsed);
             Symptoms = parsed.RouteSourceWound.Display.VisibleSymptoms.ToList();
+            Routes = parsed.RouteSourceWound.Treatment.Routes.ToList();
             var wound = parsed.RouteSourceWound with
             {
-                Display = parsed.RouteSourceWound.Display with { VisibleSymptoms = Symptoms }
+                Display = parsed.RouteSourceWound.Display with { VisibleSymptoms = Symptoms },
+                Treatment = parsed.RouteSourceWound.Treatment with { Routes = Routes }
             };
             var request = MortalWoundTreatmentAttemptRequest.RestoreDetached(parsed.Mode, parsed.Coordinates,
                 parsed.MilestoneOrdinal, wound, parsed.RouteSourceWoundFingerprint, parsed.ModeAuthority,
@@ -165,6 +214,7 @@ public sealed class TreatmentSemanticDataTests
                 MortalWoundTreatmentOutcomePublicationPlanner.ComputePreparationFingerprint(wound, after,
                     Resolution, transition, minute, null), Resolution);
             Data = new(outcome, Resolution);
+            Outcome = outcome;
             var nonce = Guid.NewGuid().ToString("N");
             var diagnostics = Path.Combine(Environment.GetEnvironmentVariable("BOE_TEST_DIAGNOSTIC_ROOT") ??
                 @"D:\BoeDiagnostics\semantic-cache-r56-20261023", "treatment-semantic-unit");
@@ -177,6 +227,7 @@ public sealed class TreatmentSemanticDataTests
                     OperationTimingObserver = (name, boundary, elapsed) =>
                         _observations.Add((name, boundary, elapsed.TotalMilliseconds))
                 });
+            Assert.False(Directory.Exists(Path.Combine(Path.GetTempPath(), "boe-semantic-unit-" + nonce)));
         }
 
         /// <summary>
@@ -193,6 +244,16 @@ public sealed class TreatmentSemanticDataTests
         /// Gets the production semantic evaluator used by the source-count controls.
         /// </summary>
         internal MortalWoundTreatmentSemanticData Data { get; }
+
+        /// <summary>
+        /// Gets the real retained outcome for uncached refusal parity controls.
+        /// </summary>
+        internal MortalWoundTreatmentOutcomePreparation Outcome { get; }
+
+        /// <summary>
+        /// Gets caller-owned route entries whose hidden provenance can change independently of public JSON.
+        /// </summary>
+        internal List<WoundTreatmentRoute> Routes { get; }
 
         /// <summary>
         /// Gets the deliberately aliased caller-owned collection retained by the restored request.

@@ -53,9 +53,10 @@ internal sealed class OperationStructuralSnapshot
 internal sealed class OperationStructuralDependency : IOperationDependency
 {
     private readonly object _gate = new();
-    private readonly Func<OperationStructuralSnapshot?> _capture;
+    private Func<OperationStructuralSnapshot?>? _capture;
     private OperationStructuralSnapshot? _snapshot;
     private object _version = new();
+    private object _captureGeneration = new();
 
     /// <summary>
     /// Selects the complete current DATA capture without domain validation or I/O.
@@ -77,11 +78,64 @@ internal sealed class OperationStructuralDependency : IOperationDependency
         get { lock (_gate) return _snapshot is not null; }
     }
 
+    /// <summary>
+    /// Checks the exact capture delegate bound to this provider without invoking it.
+    /// </summary>
+    /// <param name="capture">
+    /// The proposed complete structural capture policy.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> if the provider is live and bound to this exact delegate; otherwise, <see langword="false"/>.
+    /// </returns>
+    internal bool HasCapturePolicy(Func<OperationStructuralSnapshot?> capture)
+    {
+        lock (_gate) return ReferenceEquals(_capture, capture);
+    }
+
+    /// <summary>
+    /// Releases retained comparison DATA and invalidates captures already running outside the monitor.
+    /// </summary>
+    internal void ClearCapturedSnapshot()
+    {
+        lock (_gate)
+        {
+            _snapshot = null;
+            _version = new();
+            _captureGeneration = new();
+        }
+    }
+
+    /// <summary>
+    /// Permanently releases comparison DATA and the capture callback when the owning operation closes.
+    /// </summary>
+    internal void Retire()
+    {
+        lock (_gate)
+        {
+            _capture = null;
+            _snapshot = null;
+            _version = new();
+            _captureGeneration = new();
+        }
+    }
+
     /// <inheritdoc />
     public bool TryCaptureVersion(out object? version)
     {
+        Func<OperationStructuralSnapshot?> capture;
+        object generation;
+        lock (_gate)
+        {
+            if (_capture is null)
+            {
+                version = null;
+                return false;
+            }
+            capture = _capture;
+            generation = _captureGeneration;
+        }
         OperationStructuralSnapshot? current;
-        try { current = _capture(); }
+        try { current = capture(); }
         catch (Exception error) when (error is ArgumentException or InvalidOperationException or
             JsonException or OverflowException or NullReferenceException or NotSupportedException)
         {
@@ -89,6 +143,11 @@ internal sealed class OperationStructuralDependency : IOperationDependency
         }
         lock (_gate)
         {
+            if (_capture is null || !ReferenceEquals(generation, _captureGeneration))
+            {
+                version = null;
+                return false;
+            }
             if (current is null)
             {
                 _snapshot = null;
