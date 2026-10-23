@@ -2,52 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "fr063-joint-producer-timing-controls",
-      "reason": "Actual adopted producer-manager observer routing and disabled cold path.",
+      "category": "core-game-state-data-reuse",
+      "reason": "Causal real implicit GameState source coalescing and fail-closed source lifetime controls.",
       "contracts": [
-        "#1536 PRODUCER1..7 / T474-478"
-      ]
-    },
-    {
-      "category": "crash5-named-timing-output",
-      "reason": "Existing collector retains all boundaries beyond the former1024limit.",
-      "contracts": [
-        "#1536 PRODUCER1..7 / T474-478"
-      ]
-    },
-    {
-      "category": "fr063-operation-timing-context-controls",
-      "reason": "Nested passive routing, suppression and exception isolation remain valid.",
-      "contracts": [
-        "#1536 PRODUCER1..7 / T474-478"
-      ]
-    },
-    {
-      "category": "fr063-ordinary-read-section-timing-controls",
-      "reason": "Actual nested source reader diagnostics and unchanged data/refusal semantics.",
-      "contracts": [
-        "#1536 PRODUCER1..7 / T474-478"
-      ]
-    },
-    {
-      "category": "fr063-joint-interface-crash-stage-contracts",
-      "reason": "Original native-stage identity and expected exit cut remain correlated.",
-      "contracts": [
-        "#1536 PRODUCER1..7 / T474-478"
-      ]
-    },
-    {
-      "category": "fr063-joint-child-output-transport",
-      "reason": "Complete native child stream persistence, EOF and join contracts.",
-      "contracts": [
-        "#1536 PRODUCER1..7 / T474-478"
-      ]
-    },
-    {
-      "category": "fr063-joint-interface-seed-input-contracts",
-      "reason": "New genuine current-source INPUT selection remains closed with no fallback.",
-      "contracts": [
-        "#1536 PRODUCER1..7 / T474-478"
+        "#1536 GS_CACHE1..7 / T479-484"
       ]
     }
   ]

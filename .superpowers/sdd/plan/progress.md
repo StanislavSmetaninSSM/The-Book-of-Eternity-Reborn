@@ -14,8 +14,8 @@ GS_CACHE requirements to T479..484, no uncovered acceptance or constitution
 conflict. Narrow scope chosen after nested-lease audit; ambient fallback keeps
 existing pending/browser read protocols unchanged. T479 design complete.
 Bounded Sol6.1/high external tools preparation; separate Astra/high read-only
-lifetime consultation, independent different reviewer required. No new test,
-build, INPUT, implementation or performance result claimed yet.
+lifetime consultation, independent different reviewer required. T480 compiling causal RED pair and original forwarding seam are saved WIP;
+no build/test/INPUT/implementation or performance result claimed yet.
 
 # Previous accepted r58 checkpoint
 # Current checkpoint: r58 investigation reviewed; no causal claim for unmeasured growth

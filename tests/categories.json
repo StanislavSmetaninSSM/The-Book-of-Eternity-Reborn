@@ -2,6 +2,17 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "core-game-state-data-reuse",
+  "responsibility": "Actual selected GameState source lifetimes coalesce repeated implicit reads through the existing service while retaining fresh source and generation fences, detached DATA, independent calls and original unsupported fallback.",
+  "excludes": "No full world, game engine, fabricated authority, reflection, browser authorization cache, native recovery benchmark or diagnostic quota.",
+  "changeHints": ["BookOfEternityClient/Core/FileSystemManager.GameStateDataReads.cs", "BookOfEternityClient/Core/FileSystemManager.SourceDataOperation.cs", "BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs", "BookOfEternityClient.Tests/GameStateDataReuseTests.cs"],
+  "related": [{ "id": "core-operation-source-data", "when": "Shared temporary source service, reader key identity or final proof behavior changes." }],
+  "requirements": { "frontendBuild": false, "exclusive": true },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.GameStateDataReuseTests.*"] }]
+},
+{
   "id": "fr063-joint-qte-data-controls",
   "responsibility": "One genuine common/resource owner proves actual repeated QTE reconstruction sources collapse while both baseline checks and the current reserved source exit proof remain fresh on each call.",
   "excludes": "No game loop, full-world fixture, invented authority, timeout increase or original-workload performance claim.",
