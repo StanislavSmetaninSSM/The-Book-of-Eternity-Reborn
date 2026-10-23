@@ -130,7 +130,9 @@ passing component traces also archived111258803B. Human findings and residual
 caveat: T465-semantic-cache-results.md. Independent Astra/high outcome/retention
 admission accepted,0unresolved; actual exact-file retirement126files13775795779B
 complete, all126paths absent. Latest full/component archives and reusable r51
-instrumented source backup SHA rechecked. Final source/checkpoint recovery pending.
+instrumented source backup SHA rechecked. Final source/report/checkpoint e79ff4d1e
+recovered36exact remote blobs/tree without alternates. T461..465 complete; final
+bookkeeping changes no measured code or acceptance criteria.
 
 ## Task steps and checks
 

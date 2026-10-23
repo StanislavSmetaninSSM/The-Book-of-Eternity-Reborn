@@ -1,4 +1,4 @@
-# Current checkpoint: r56 outcome accepted; retention executed; final recovery pending
+# Current checkpoint: r56 complete; original FULL improved162.628seconds
 
 Issue1536 SEMANTIC1..8/T461..465, autonomous review-wait waiver.
 Qualified sourceaf8106d2ec4cd755f9307990488cf92a7934d7f7; original run/input
@@ -26,7 +26,9 @@ retention acceptedbyactualAstra/high,0unresolved. Exact reviewed126files
 13775795779B retired; all126paths absent. Currentfull/componentarchive and r51
 instrumentedsourcebackup SHA rechecked. Oldcompactoutcomes/case lists/RED/failure
 records remain; no379prior-case rerun claim. Protectedgame/INPUTpaths untouched;
-no directory removal. Final source/report/checkpoint push/recovery pending.
+no directory removal. Final source/report/checkpoint e79ff4d1e recovered36exact
+remote blobs/tree/noalternates. T461..465complete; closing bookkeeping leaves
+tested source/INPUT/scenario/budgets unchanged. No further run or code change needed.
 
 # Historical checkpoint: r55 large-runtime investigation accepted
 
