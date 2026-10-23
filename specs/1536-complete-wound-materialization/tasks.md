@@ -1,3 +1,23 @@
+# CRASH5 — revision59 detailed producer timings
+
+Issue#1536; PRODUCER1..7; owner2026-10-23 explicit autonomous instrumentation+same600s run.
+- [ ] T474 [US3] Source-grounded design, canonical artifacts, actual pinned phases
+  and equivalent consistency; publish tracked probe before implementation.
+- [ ] T475 [US3] Cheap compiling causal RED/GREEN, nullable actual fixture-manager
+  observer seam and producer/scenario nested timers; original hooks/cut preserved.
+- [ ] T476 [US3] Current XML/binaries/native/catalog/selected affected controls and
+  independent source review; genuine new source42/two imports and exact remote
+  source/input qualification before original.
+- [ ] T477 [US3] Same600/820/15 original with full uncapped producer+resumer capture,
+  all oracles/native settlement; archive/validate/analyze every diagnostic record
+  and expected interrupted producer scopes at authentic crash boundary.
+- [ ] T478 [US3] Concrete nested producer attribution against defensible old/current
+  evidence, resolve large opaque work with necessary focused probe, honest causal
+  limits; independent final review, verified retention and published recovery.
+
+Coverage:1/2->T474/475/476;3->T475/476/477;4->T476/477;5/6->T477/478;7->T476/478.
+Dependencies:T474->T475->T476->T477->T478.
+
 # CRASH5 — revision58 QTE-cache regression investigation
 
 Issue#1536; REGRESSION1..5; owner2026-10-23 autonomous investigation, large costs only.

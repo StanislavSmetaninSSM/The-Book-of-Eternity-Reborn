@@ -1,3 +1,58 @@
+# CRASH5 — revision59 detailed producer timings
+
+Source issue: #1536. Owner2026-10-23 explicitly requests detailed producer timers,
+the same original600-second test, and concrete attribution of the previously
+observed +14.7305532s before resumer wait. Diagnostics remain uncapped; autonomous
+execution and review-wait waiver apply. Reuse the current feature and clone.
+
+## Design and preserved contracts
+
+- PRODUCER1: Connect the actual producer fixture's FileSystemManager to the
+  existing JointOperationTimings observer in full Windows observation mode.
+  Add named boundaries for source42 verification, driver/runtime setup, real
+  player-turn entry and expensive authored-original callback stages. Keep
+  native exit73 at the actual requested cut,600child/820shared/15min, C:game/D:logs,
+  resumer behavior and every existing original assertion unchanged.
+- PRODUCER2: Use the established collector and a nullable typed fixture seam;
+  ordinary unobserved fixtures retain null observer. No reflection, no new game
+  cache/permission, suppressed diagnostics or filters. Cheap independent adopted
+  directories prove real nested filesystem observation and disabled mode.
+- PRODUCER3: Preserve abrupt-crash semantics. Producer scopes open at native exit
+  are reported as interrupted at the authenticated cut, not successful/closed
+  or malformed records. Verify closed-prefix timing integrity and retain all
+  open scopes with their observed elapsed lower bounds. Account separately for
+  new producer observer costs and coarse monotonic boundaries.
+- PRODUCER4: Fresh XML builds, exact binaries/native pins, affected cheap categories
+  and independent review precede a genuine newly generated source42 INPUT/two
+  imports and the full original. Save/recover source and input before launching.
+  No existing INPUT rebinding, larger budget or broad suite.
+- PRODUCER5: Analyze every produced diagnostic record and nested large graphs.
+  Compare the existing accepted r56/r57 disjoint clocks and retained checkpoint
+  timestamps where their source semantics justify alignment. If a large new
+  interval still lacks resolution, add nested timers and a justified bounded
+  probe before stopping; do not substitute one huge unnamed cost.
+- PRODUCER6: Distinguish current measured costs from historical delta attribution.
+  Missing old producer timers cannot be fabricated; one newly instrumented run
+  cannot itself prove which historical call changed by14.73s. Use retained
+  durable timestamps or a focused matched control when necessary, state exact
+  evidence limits, and never infer disk/GC/CPU cause from elapsed time alone.
+- PRODUCER7: Human findings/code/specs only in Git, full raw/analysis on D:. Preserve
+  the latest verified complete measurement until a complete verified replacement
+  is accepted; only then retire exact superseded diagnostic files. Independent
+  final review, source-only publication and exact remote recovery are required.
+
+Approaches considered: coarse producer envelopes alone leave nested causes
+unknown; a new profiling framework adds unnecessary machinery. Chosen: reuse
+the same uncapped nested observer plus explicit scenario-stage boundaries.
+The choice is the implementer's within the owner's autonomy authorization.
+
+Acceptance: actual producer emits detailed nested timings and authenticated
+expected-cut evidence; cheap fixtures/selected controls and unchanged original
+oracles pass, or failures are reported honestly. The report identifies concrete
+large producer operations and defensible contributors to the before-resumer
+growth, including observer effects and any remaining unobservable historical cause.
+No performance optimization or gameplay/schema change is part of this probe.
+
 # CRASH5 — revision58 QTE-cache regression investigation
 
 Source issue: #1536. Owner2026-10-23 requests the concrete measured reasons the

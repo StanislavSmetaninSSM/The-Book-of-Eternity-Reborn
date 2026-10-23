@@ -1,3 +1,35 @@
+# CRASH5 — revision59 detailed producer timing plan
+
+Issue#1536; PRODUCER1..7. Method: Superpowers brainstorming, writing-plans,
+systematic-debugging, TDD and inline execution; separate independent review.
+Existing isolated branch/clone reused. Canonical spec above; logs outside Git.
+
+- [ ] T474: Audit real producer manager/driver/callback/cut and collector/parser
+  contracts; record design, pinned plan/tasks/prerequisites and equivalent
+  consistency; publish before test or implementation changes.
+- [ ] T475: Compiling causal RED then GREEN using minimal adopted directories for
+  observer-enabled/disabled real fixture manager and nested original readers.
+  Wire full producer observation and named expensive scenario stages, preserve
+  all existing hooks and real abrupt cut; multiline XML on changed APIs.
+- [ ] T476: Current XML builds/binary/native/comment/catalog and affected cheap
+  diagnostic/seed/capture controls; independent full source review. Generate
+  genuinely new source42 INPUT/two imports, immutable new slot, publish/recover
+  exact source/input and qualify original600/820/15 launch.
+- [ ] T477: Same Cut0 original with uncapped producer+resumer full diagnostics.
+  Verify all original oracles and native ownership/birth/EOF/join/cleanup; archive
+  all output. Parse every record, explicitly classify expected interrupted
+  producer scopes at actual cut, identify nested large sources and observer cost.
+- [ ] T478: Reconcile old/current budget/birth/durable-clock evidence. Resolve
+  any remaining large opaque stage with additional nested evidence or justified
+  matched control. Human findings, independent outcome/retention review, exact
+  superseded diagnostic retirement only after verified replacement, final remote
+  publication/recovery. No speculative optimization or diagnostic-off run.
+
+Dependencies:T474->T475->T476->T477->T478. Review focus: unchanged null-observer
+cold path, original mutation hooks, expected native abrupt scopes, truthful
+producer/resumer clocks, genuine input binding and no historical attribution
+from unmatched instrumentation. No duplicate Superpowers plan/spec.
+
 # CRASH5 — revision58 QTE-cache regression investigation plan
 
 Issue#1536; spec REGRESSION1..5. Method: systematic-debugging and writing-plans;
