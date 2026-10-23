@@ -15,7 +15,7 @@ Existing isolated branch/clone reused. Canonical spec above; logs outside Git.
   diagnostic/seed/capture controls; independent full source review. Generate
   genuinely new source42 INPUT/two imports, immutable new slot, publish/recover
   exact source/input and qualify original600/820/15 launch.
-- [ ] T477: Same Cut0 original with uncapped producer+resumer full diagnostics.
+- [x] T477: Same Cut0 original with uncapped producer+resumer full diagnostics.
   Verify all original oracles and native ownership/birth/EOF/join/cleanup; archive
   all output. Parse every record, explicitly classify expected interrupted
   producer scopes at actual cut, identify nested large sources and observer cost.

@@ -8,7 +8,7 @@ Issue#1536; PRODUCER1..7; owner2026-10-23 explicit autonomous instrumentation+sa
 - [x] T476 [US3] Current XML/binaries/native/catalog/selected affected controls and
   independent source review; genuine new source42/two imports and exact remote
   source/input qualification before original.
-- [ ] T477 [US3] Same600/820/15 original with full uncapped producer+resumer capture,
+- [x] T477 [US3] Same600/820/15 original with full uncapped producer+resumer capture,
   all oracles/native settlement; archive/validate/analyze every diagnostic record
   and expected interrupted producer scopes at authentic crash boundary.
 - [ ] T478 [US3] Concrete nested producer attribution against defensible old/current

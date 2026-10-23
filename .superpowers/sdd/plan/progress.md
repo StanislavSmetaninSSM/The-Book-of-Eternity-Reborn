@@ -1,3 +1,31 @@
+# Current checkpoint: r59 all-row findings ready; final review/retention pending
+
+Source9b88938cb/originalINPUTmetadata889c02169,1actualFULLrunPASS518.6110156s,
+command542.1126068s. Native73/0,full600/820/15,identities/EOF/join/cleanupPASS.
+All101archivepayloads independentlySHA/CRC reverified;ALL15514946timingevents
+parsed:producer5339784/2669883closed/18authenticatedinterrupted,resumer10175162/
+5087581closed/0open. Producer0negative residuals;resumer1derivednegative0.564s
+explicitly retained/notusedforproducer. No caps, no fabricatedclosedscopes.
+Producermajor:prevalidation39.3495s(CrossReferences11.0219/MetaMisc9.4425),
+backup11.4691(snapshot66writes9.1193),canonical12.0573(72members9.8919),
+actualrepairWait34.5131(sync9.6662/lease7.0800/async5.7329/checkpoint3.9152),
+resourcevalidation7.1067+9.1974,refresh14.4924observedprefix(namespace5.8391).
+Producerattrs1013910/57.436927s,observerbuildwrite46.3905613s;notadditivewith
+parents,no diagnostic-off estimate. CurrentnewQTE contribution cache NOTREACHED
+beforeCut0/CommonCallbacks0;oldcheckpointQTEwork remains8rejected+4corrected.
+Historical+14.7305532:durableUTCpartition11.2320806+3.4825406-.0308325 plus
+.0467645differentclockboundaries. Exactoldcalleedeltaremainsunobserved.
+All555priorresumeropcountsidentical;only2newouterAcceptedValidationtimers,
+collector+26.4856195s,observer+9.7844299s,attrs+7.5298388s same1532966calls.
+Humanfindings:T478-producer-timing-investigation.md. Machinefullleaf554039976B
+SHA29BF1E84CCDEEBE6A0CD00D448CCE9EA83872667ABF7F62CB3F0FB9054F65D5B;
+fullsummary/35largegraphs/UTC+all555comparison/D:only. NewfullZIP1B19...retained.
+Next:independentoutcome/report/exactretentionplanreview,thenapproved5fileunlink
+(old3largediagnostics+2redundantcurrentrawstreams,completecurrentZIPprotected),
+postcheck/reportpublication/exactremoterecovery. No deletion yet/no rootcauseclaim
+forhistoricalpercallgrowth. No gameplay/cache optimization in this block.
+
+# Prior r59 verified-run checkpoint
 # Current checkpoint: r59 original PASS, full archive verified; analysis pending
 
 Original source9b88938cb,launchmetadata889c02169. Independent source/input gates
