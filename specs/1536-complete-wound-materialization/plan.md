@@ -54,7 +54,7 @@ No authority object is a cached value. Producer hook fallback remains untouched.
 - [x] T486 CLEAN_CACHE2..5: forwarding opt-in/helper seam and causal cheap publisher
   fixture RED; eight same-family reads inside prepared callback must use initial
   and fresh completion sources rather than eight independent sources.
-- [ ] T487 CLEAN_CACHE1..5: exact typed publisher subwindows, existing-service DATA,
+- [x] T487 CLEAN_CACHE1..5: exact typed publisher subwindows, existing-service DATA,
   completed-proof/history path integration; causal GREEN and integrity/fallback tests.
 - [ ] T488 CLEAN_CACHE3..6: current XML/eight DLL/native/catalog/PlanOnly/selected
   controls; independent source review; genuine source42/twoimports/new immutable

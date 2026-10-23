@@ -8,9 +8,13 @@ pushed/fresh-origin recovered17 exact blobs. XML unit build89.0134121s PASS.
 Actual publisher callback causal RED2/2: sync and async Expected2 Actual8 sources,
 after committed images and fresh readbacks already passed. No timeout; owned and
 runtime cleanup true. Receipts T486-causal-red-build/run/binaries under D:r61.
-T487 WIP: retain exact two publisher mutation identities, independent post-recovery
+T487 implemented: retain exact two publisher mutation identities, independent post-recovery
 windows only, existing general service snapshot DATA, mandatory fresh source proof.
-Expanded independent cheap fixtures16cases integrated; GREEN/build UNRUN.
+Expanded independent cheap fixtures16/16 GREEN. Actual sync/async2sources vs RED8;
+all raw drift/mutation/cancellation/retry/close/copy/fresh-readback controls passed.
+Source d2205efdb XML unit build92.0169006s; cheap run30.9703310s.
+T488 WIP: current18-category impact selection, exact transitive source pins and
+new immutable INPUT slot. Final two-project build/qualification/review UNRUN.
 No performance improvement claimed. T488..490 UNRUN. r60 full434.6855800s archive
 and leaf remain protected until a complete independently accepted replacement.
 Diagnostics uncapped and external D:, actual game fixtures C:SSD; no diagnostic Git.

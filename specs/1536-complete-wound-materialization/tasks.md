@@ -7,7 +7,7 @@ explicit specification-review waiver; current isolated clone/branch reused.
   phases and consistency, publish/recover design before implementation.
 - [x] T486 Typed forwarding helper/opt-in plus cheap actual publisher callback
   causal RED proving repeated completed-proof/history source reads are uncoalesced.
-- [ ] T487 Exact publisher post-recovery windows, existing service/repository DATA,
+- [x] T487 Exact publisher post-recovery windows, existing service/repository DATA,
   production cleanup proof routing; GREEN plus integrity/refusal/lifecycle controls.
 - [ ] T488 XML/source/eight DLL/native/catalog/selection qualification; independent
   source review; genuine new source42/twoimports/immutable INPUT, remote recovery
