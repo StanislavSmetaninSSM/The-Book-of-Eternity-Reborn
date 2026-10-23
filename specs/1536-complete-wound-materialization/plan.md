@@ -64,7 +64,7 @@ primary failure/disposal stay. Any outer failure invalidates both operation cach
   planner's private baseline owns one stable capture delegate. Integrate in
   Recompute's existing compute callback; named original source timers stay on
   actual miss work, add cache/witness/eligibility timers without diagnostic caps.
-- [ ] T469: XML builds both projects/current8DLL/native pins; selected cache,
+- [x] T469: XML builds both projects/current8DLL/native pins; selected cache,
   observation/coordinator/source/recovery consumers and one genuine owner component
   where needed. Check genuine source count reduction and fresh refusal/copy/abort
   integration. Independent reviewer sees exact full diff, spec and all evidence.

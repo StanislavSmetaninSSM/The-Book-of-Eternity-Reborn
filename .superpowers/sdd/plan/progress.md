@@ -1,4 +1,64 @@
-# Current checkpoint: r57 current228PASS and source gate accepted; genuine INPUT generated, publication gate pending
+# Current checkpoint: r57 outcome/retention accepted and executed; final publication/recovery pending
+
+Independent Astra/high FinalOutcomeGate and exact RetentionAdmission accepted,
+0unresolved findings. FrozenplanSHA2DA698896EE02A935C2D8D1192A5147A7E869D3BA0303612159E111F9C4555D4
+executed file-only:14files14046868060B removed, alltargetsabsent/12parentdirs
+stillpresent/39protected filespresent. Actualpostcheck rehashed newfull479E0B2B,
+newcomponent9C1C8021 and reusable r51backupB6DE0DE6; allmatch. Game/INPUT/directories
+untouched. Compact oldresults/caselists/errors/firstinterference note preserved;
+latest complete raw/analysis retainedD. No diagnostic files staged inGit.
+Scientific result remains negative forwholecase:399.9290962->422.4258539s;
+QTE14->2 and completeQTE recheck saves7.3165883s. No new source changes or retest.
+Next commit/push onlythe4reviewedMDs, recoveractualremotehead, independent scoped
+postretirement/publication verification; then final completed bookkeeping.
+
+# Historical r57 checkpoint before admitted retention
+
+Source159019476ddf29d3b41d4eda5f5c00c989032c15; run/input metadata
+6ea873479c11fb30304b1ec8079138813d9137c3. Independent source+Input gates
+accepted, current228/228 selected PASS13descriptors, bothXML/8DLL/native/catalog
+and genuine new source42/twoimports/SHA/CRC/fingerprint/remote34blobs verified.
+T469 complete. No production/test changes after qualified source.
+
+T470-original-clean actualPASS422.4258539s case/446.8772799scommand versus accepted
+r56399.9290962s/420.5155208s: wholecase SLOWER22.4967577s(+5.625%), NOoverall
+acceleration claim. Sameoriginal600child/820shared/15min,C:game/D:uncappedlogs;
+native22312exit73/24568exit0, exactbirth/EOF/join/streamSHA/owner-runtimecleanuptrue.
+All original turn43/mechanics/history/interface/onepublication/7terminal/84inert
+oracles PASS. Firstfull431.2075810sPASS has disclosed accidental growing-log
+reader interference; not the primary pair. Only ownreader stopped, effectunknown.
+ONE qualified clean repeat preserved source/input/scenario; no backgroundlarge
+reads/archive/analysis/review during clean test. Original15helperbytes unchanged,
+unique clean claim/tools independently reviewed before execution.
+
+Actual ALL10175158events/5087579closed/194385paths,0open/truncated;1knownnegative
+cleanupresidual retained with source observer-before-timer caveat, noCPU inference.
+QTE Prepare/Reconstruct/Correction14->2; Prepare28.306818->4.561796s. Actual12reuse,
+2sources: initialCreateResource and preserved ForceFresh inTake. Complete13resource
+rechecks44.592745->37.276157s, benefit7.316588s. Within them baseline26 retained
+10.297595->13.391574s, exit13 retained7.857140->9.918236s,12source-replays11.262574s.
+Fullpub108.588802->105.476011s, commonplan42.476698->34.664193s, normalize35.726936
+->42.254896s, cleanup29.912849->34.757605s; nested durations not additive. Case
+partition delta: sharedbudget-before-resumerwait+14.730553s, firstowner+7.200369s,
+remaining+0.565836s. Producer internal cause not established. GetAttributes fewer
+1680111->1532966 yet79.000->80.536s; no storage-causality claim. Observer build/write
+72.866662->74.601862s, no diagnostic-OFF prediction. Current human report
+T470-qte-cache-results.md records negative whole result honestly.
+
+Cleanraw3730018678B/ZIP268663459B/51members SHA479E0B2BD6661BE95540C5B23217226B10F79A4EE83701128C4F7B7674473C6F;
+current2componentraw2061438880B/ZIP145605442B/12members SHA9C1C8021F555DEDC70C67560C44A56B5210DB824B19BFF3CE5447E07B066C8BA.
+Independent reviewer already verified every archived payload/hash/CRC/size. All
+raw/machine artifacts D only. Frozen exact retentionproposal preparing, nofiles
+retired. Next coherent closingreview ofallrow/attribution/humanreport/plan, then
+admitted file-only retirement, postchecks, finalMDpublication/remote recovery.
+
+Routing assessment: separate Astra/high review found the FileExists-only source
+closure gap before the original run; causal and genuine regressions were added.
+Genuine copy verification caught a stale timing expectation after caching; its
+replacement strengthened per-call fresh-proof assertions. No model savings or
+universal performance improvement inferred; no standing routing change warranted.
+
+# Historical r57 checkpoint before original measurement
 
 Current compiled source159019476ddf29d3b41d4eda5f5c00c989032c15; source gate
 accepted by independent separate Astra/high with0unresolved findings. XML builds
