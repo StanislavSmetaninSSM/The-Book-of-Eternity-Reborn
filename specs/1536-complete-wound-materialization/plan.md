@@ -1,3 +1,89 @@
+# Guarded semantic DATA — revision56 implementation plan
+
+Goal: remove the large shared repeated semantic/replay graph without caching
+current authority; measure the same600/820/15FULL case against562.5566634s.
+Spec:spec.md revision56 / issue#1536 / SEMANTIC1..8. Parent executes inline using
+writing-plans/executing-plans/TDD. Actual Astra/high bounded architecture consult
+resolved identity-only/public-serializer hazards; separate independent Astra/high
+reviews the coherent final implementation, tests, docs and measured result.
+
+## Files and interfaces
+
+- Services/ValidationOperation.cs: synchronous GetOrCompute<TResult>(
+  OperationComputation<TResult>,object,IReadOnlyList<IOperationDependency>,
+  Func<TResult>) shares original exact entry/dependency/copy/serial/failure core.
+  No blocking unfinished tasks or callbacks under coordinator monitor.
+- Services/OperationStructuralSnapshot.cs: immutable typed ordered comparison
+  evidence with exact scalar/null/order values and actual reference identities;
+  OperationStructuralDependency(Func<OperationStructuralSnapshot?> capture)
+  compares current DATA and rotates never-reused version. Malformed/unsupported
+  capture disables reuse and preserves original source/refusal mapping. This is
+  comparison/version evidence, not a second computed-result cache.
+- Core/FileSystemManager.SemanticData.cs plus SourceDataOperation: synchronous
+  GetOrComputeSemanticData<TResult>(descriptor,inputIdentity,dependency,compute)
+  uses existing whole-operation ValidationOperation storage. Outside an eligible
+  owner/suppressed diagnostics/fresh protocols, execute original source. Exact
+  lifetime/serial ownership and observer-end disposal refusal remain effective.
+- Services/MortalWoundTreatmentSemanticData.cs plus typed capture methods on
+  outcome/deterioration owners: cover complete mutable request wound/owned source
+  definitions/DefinitionFacts/provenance, ordered resolution operations/intents,
+  evidence/private deterioration, actual companion identities and scalar seals.
+  No public-only JSON/reflection/recursive domain validation/fingerprint guard.
+  Already audited deeply detached private outcome clones can use exact private
+  identities; shared selected request/mode evidence remains structurally guarded.
+- Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs: split HasValidSeal's
+  original ordered outcome agreement and finalization-seal computations into
+  versioned DATA descriptors. Keep cheap original identity/scalar checks and
+  final seal comparison outside; do not cache HasValidSeal permission predicate.
+  JointRepairPreparedAgrees reuses deterministic preparation replay output seal,
+  not its current candidate acceptance; exact complete input dependency required.
+- Final replay integration at JointRepairFinalPlanAgrees/related final reduction:
+  reuse deterministic expected result, retaining current handoff/joint admission
+  and current-plan checks. Bundle current private-history detection stays; no
+  blanket validated-copy shortcut. Scalar common bundle fingerprint may avoid
+  exporting a mutable copy only after preserved original bundle admission.
+- Tests: operation sync/version/structural unit controls, typed minimal treatment
+  semantic evaluator fixtures; one genuine issuer-backed component for actual
+  shared fanout, current-source/effect/damage/copy/abort integration. Existing
+  categories remain owned; new bounded categories explicitly catalogued.
+
+## Task steps and checks
+
+T461: track/present spec, settle consultation, pinned Spec Kit phases, plan/tasks
+and consistency; publish design WIP before implementation. User review waits
+explicitly waived. Alternatives/invariants remain in canonical spec, no duplicate
+Superpowers spec/plan. Existing isolated checkout/branch reused.
+T462: compile new direct typed seams and causal RED. Service native-sync tests
+exercise actual nested/fresh/disposal/version/copy behavior. Structural guards
+cover changed nested alias under unchanged identities/seals, hidden owned sources,
+ordered operations/private deterioration, disposed JSON and restored content.
+Actual evaluator repeated8sources must reduce to1 only after implementation;
+source-count assertions and full result equality, no wall-time thresholds.
+T463: minimum guarded service + real continuation/preparation/final integration;
+GREEN on tiny fixtures then genuine bounded component with raw drift/private
+history/restoration/aborted reservation and external copies. If a replay input
+cannot be completely guarded, preserve original path and record that exclusion;
+do not broaden graph contracts or invent a safe cache boundary.
+T464: actual current XML builds,8DLL/native pins, introduced XML audit,
+catalog/PlanOnly and affected category selection with reasons; independent complex
+review/corrections. New current-source source42 slot real generator/twoimports,
+all payload/fingerprint/binding checks, source-only push and exact origin recovery.
+T465: unchanged original FULL600child/820shared/15min onC: game/D: uncapped logs,
+complete native settlement/oracles/all-row archival analysis. Compare same first
+publication/large semantic costs, actual testcase and100sec target. Independent
+result review, final source-only checkpoint/recovery; exact old raw retirement
+only after accepted verified complete replacement. Never run aggregate suites.
+
+## Review focus
+
+Current alias mutation versus private immutable clones; omitted internal/private
+DATA; nested dependency propagation; malformed-source refusal order; diagnostic
+observer changes/disposal and concurrent operation; fresh claims/files/lease/
+generation before effects and completion; private-history damage/restore parity;
+mutable result copy isolation; source-qualified genuine input and unchanged oracles.
+Coverage:1/2/3->T462/463/464;4->T461/462/463/464;5->T462/463;6/7->T464;
+8->T464/465. Each task checked only with actual evidence;100sec remains unclaimed.
+
 # Runtime reconciliation — revision55 investigation plan
 
 Issue#1536; RUNTIME-1..5. Method: systematic-debugging and writing-plans, parent

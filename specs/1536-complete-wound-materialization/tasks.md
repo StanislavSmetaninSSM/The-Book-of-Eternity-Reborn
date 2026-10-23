@@ -1,3 +1,16 @@
+# CRASH5 — revision56 guarded semantic DATA
+
+Issue#1536; SEMANTIC1..8; userautonomy/review-wait waiver preserved. Target another
+100seconds on the same600/820/15 original; only actual full measurement proves it.
+- [x] T461 [US1/US2] Written/presented spec, source-grounded guard design/consultation, pinned plan/tasks/prerequisites and consistency, publish before code.
+- [ ] T462 [US1/US2] Compiling causal RED on tiny typed fixtures for synchronous service/complete structural dependencies and actual treatment/replay source counts; current categories/input slot tracked.
+- [ ] T463 [US1/US2] Implement guarded deterministic continuation/preparation/final DATA through existing service; GREEN/fresh authority and alias/private-history/copy/abort controls; no permission cache.
+- [ ] T464 [US3] Current XML builds/8DLL/native pins/audit/catalog/affected selection; independent complex source review, genuine new source42/twoimports, source-only publish/exact remote recovery.
+- [ ] T465 [US3] Same uncapped FULL original600/820/15 with all oracles/native settlement, all-row/large-cost analysis and honest100sec result; independent outcome/retention/final checkpoint recovery.
+
+Dependencies:T461->T462->T463->T464->T465.1/2/3->462/463/464;4->461/462/463/464;
+5->462/463;6/7->464;8->464/465. No new user-visible task/thread or GM/schema change.
+
 # CRASH5 — revision55 runtime investigation
 
 Issue#1536; RUNTIME-1..5; investigation-only, current uncapped r54 FULL retained.

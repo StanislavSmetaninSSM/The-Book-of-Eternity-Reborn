@@ -1,3 +1,73 @@
+# CRASH5 — revision56 guarded semantic DATA cache
+
+Source issue:#1536. User2026-10-23 authorizes implementation focused on the
+largest repeated computation graphs. Desired outcome: materially reduce the same
+original Windows recovery case; another100seconds saved would meet the owner's
+stated victory target. Baseline r54 FULL562.5566634s, code781e9051, runbe0c22e00;
+accepted r55 investigation at1aeddaf32. A measured100second gain is a target,
+not a promised result or permission to skip correctness/test work.
+
+## Scope and selected approach
+
+Use the existing operation validation service for repeated continuation agreement,
+resource finalization and deterministic preparation/final stage DATA. Cover the
+shared replay/bundle validation fanout, not isolated micro-I/O calls. A caller-
+owned exact typed structural snapshot/dependency must cover every mutable field
+and actual companion identity read by the original computation. Cache keys use
+rule identity/version and exact private input identity plus dependency version;
+constructing a key must not repeat the expensive original replay/fingerprint.
+
+Alternatives rejected: a global cache of hash strings/HasValidSeal=true misses
+mutable aliases and fresh authority; rebuilding the whole treatment model as
+immutable is broader than the measured shared graph. Recommended: guard complete
+semantic DATA in its owner, share results through existing cache, keep live
+acceptance outside. Public JSON serialization alone is incomplete because
+internal/private consequence/evidence fields are part of original checks.
+
+## Preserved contracts and acceptance
+
+- SEMANTIC-1: Cache repeated pure continuation/outcome/resource and stage replay
+  computations over their complete unchanged inputs using existing service and
+  operation lifetime. No parallel dictionary of payloads or permanent authority
+  cache; dispose/retire operation storage on completion/failure/cancellation.
+- SEMANTIC-2: Typed owner-defined guard covers mutable nested wound/request/
+  resolution/intents/evidence/private history DATA, exact issuer/companion refs,
+  algorithm version and order/null/absence distinctions. No reflection to reach
+  private members, public-only serializer proof, or stored-seal-only identity.
+- SEMANTIC-3: Changed nested DATA with unchanged refs/seals must refuse/recompute
+  under original algorithm and refusal order; failures never become reusable
+  success. Existing private-history corruption/restoration and abort parity stay.
+  Mutable returned graphs remain independent; no callback executes under cache
+  coordinator monitor, no blocking unfinished Task from sync consumers.
+- SEMANTIC-4: Live registration/lease/generation, reservation/confirmed held claim,
+  filesystem/current source and pre-effect/callback/final completion guards remain
+  fresh. Semantic DATA never grants publication authority. Closed/replaced or
+  concurrent owner and diagnostic observer callbacks cannot issue stale results.
+- SEMANTIC-5: First demonstrate compiling causal RED then GREEN and real reduction
+  in expensive original compute counts using tiny independent typed fixtures.
+  Meaningful internal test seams/IVT are permitted. Use one genuine source-backed
+  component only where issuer/admission integration itself is under test.
+- SEMANTIC-6: Preserve/extend accurate named timings and all diagnostic records;
+  select categories from affected contracts and negative/cross-consumer coverage.
+  XML comments for changed/new APIs are multiline/accurate; qualify current8DLLs,
+  native source pins, catalog and selected actual cases, with independent review.
+- SEMANTIC-7: Requalify a genuinely new current-source source42 INPUT through its
+  real generator/two independent imports and fingerprints; source-only publish
+  and exact remote recovery precede actual original run. Same600child/820shared/
+  15min category and same original gameplay/idempotence/native settlement oracles.
+- SEMANTIC-8: One full uncapped original measurement on the same C: game/D: logs
+  placement; full trace analysis/matched phases and honest overall delta versus
+  r54. Report whether100sec target is met, no double-counting or OFF prediction.
+  Diagnostics stayD outside Git. Retire old raw only after verified complete
+  replacement/cleanup and independent exact file-only retention admission.
+
+No gameplay/GM/schema changes, worker/native lifecycle redesign, broad game-state
+validation cache, diagnostic quotas, test-limit inflation or aggregate suites.
+Architecture detail to settle before code: exact complete structural projection
+and shared operation binding (T461 consultation); never assume readonly is deeply
+immutable. User's continuing autonomous approval/review-wait waiver applies;
+written spec is presented for correction before implementation.
+
 # CRASH5 — revision55 unchanged total runtime investigation
 
 Source issue: #1536. User2026-10-23 asks why the whole testcase barely changed,
