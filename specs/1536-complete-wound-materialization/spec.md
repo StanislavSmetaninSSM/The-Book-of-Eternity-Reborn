@@ -1,3 +1,84 @@
+# CRASH5 — revision54: skip repeated filesystem admission for genuine provisional DATA hits
+
+Issue1536. Owner2026-10-23 requests safe caching of repeated Lease.Validate.Total
+work, implementation and the same full600s measurement; diagnostic quotas remain
+forbidden, D-only retention/source-only Git and autonomous review waiver persist.
+Reuse feature1536/isolated branch; prior r53 accepted dc8183973 remains baseline.
+
+Measured r53:52028Lease.Validate.Total/111.130s inclusive,1144616attributes/58.632848s
+under it. Guard/main-inventory/persistence bodies repeat54190times; byte cache
+already returns36294hits. Existing wrappers still replay full filesystem admission
+BEFORE lookup, including memory-only returns. Originalfull Cut0PASS563.017750s,
+matched first publication218.276786s/568033attributes. All prior outcomes retained.
+
+User storyUS1: reduce redundant filesystem work when a selected read returns
+already captured provisional bytes/absence from the existing operation service.
+User storyUS2: raw main/worker/path drift and in-memory authority changes cannot
+authorize any effect or owning successful result. User storyUS3: measured causal
+fixtures, independent review and unchanged genuine original600 comparison.
+
+- LEASEDATA-1: fast route is ONLY a genuine existing ValidationOperation DATA hit,
+  including cached null. Add noncomputing typed lookup to the same service; a miss
+  never calls a computation, invents a baseline or poisons the owner. Preserve
+  versions, declarations, copy policy, serial-flow/failure/close/ForceFresh rules.
+- LEASEDATA-2: before-hit checks retain exact physical manager/lease/current entry,
+  ambient registration, admitted ancestry, healthy root/segment and first-adapter
+  generation binding. No new adapter/first read/foreign or retired context may use
+  the shortcut. No filesystem authority result, worker absence, native handle or
+  main-record disposition is cached as permission. Strict readset and suppression
+  retain precedence; only selected normal declared reader wrappers participate.
+- LEASEDATA-3: establish exact reader-family/explicit-mode/raw ordinal path identity
+  AFTER the original full dispatch decision and successful source route. A later
+  cache-only lookup must not call UsesTrustedLocalWriter/ResolvePath or guess an
+  ordinary/protected family. Route aliases retain keys only, no second payload
+  cache; retire them with the operation/segment. Preserve text/BOM/bytes/snapshot
+  contracts. Cache misses run the original wrapper/source and all full guards.
+- LEASEDATA-4: this explicitly amends r53's every-wrapper physical admission for
+  memory-only provisional hits. It grants NO successful owning proof/capability or
+  effect. Every hit invalidates the one-use receipt. Full original lease/main/worker
+  admission and source/generation closure still precede actual read misses,
+  writes/takes/deletes, runtime increment, no-write owning success and lease close.
+  No change to EnsureCanonicalWriteLeaseActive or general MainAdmission.Validate.
+- LEASEDATA-5: audit every escape of provisional DATA. Generic arbitrary callback
+  and session checkpoint routes must await an actual original authority/source
+  fence after a fast hit BEFORE clearing/bypassing caches and invoking user code.
+  ForceFresh alone is not a fence. Independent take/recovery/compensation may
+  discard old DATA only while retaining their existing complete fresh proof;
+  partial rollback must never compare against obsolete provisional before-images.
+- LEASEDATA-6: tiny independent real-file fixtures, no reflection/world setup.
+  Warm one actual declared read, then eight cache hits must execute0full lease
+  validations/physical sources/path resolutions while final closure remains full.
+  Both sync/async normal reader families and cached absence/copies must participate.
+  Raw main.json absent->active/malformed, worker missing->file/directory/link,
+  namespace/guard change after hits must refuse BEFORE callback/write/runtime/
+  owning success; genuine miss and explicit EnsureActive retain immediate refusal.
+  Other manager/lease/entry/sibling, epoch mutation, replacement, strict readset,
+  passive reentry/descendants, overlap, failure and disposal retain original rules.
+  Generic noncomputing lookup covers miss/null/false/default/copy/dependency and
+  failure/close/ForceFresh/nesting/overlap without hidden source invocation.
+- LEASEDATA-7: actual compiling causal RED then GREEN and affected category-only
+  verification, XML-enabled builds/changed-doc audit, discovery catalog/PlanOnly,
+  separate complex Astra/high source/test/doc review. No aggregate/Fast/full suite.
+  If warmed actual wrappers do not remove full admission work, investigate before
+  original; do not claim static normalization as filesystem cache improvement.
+- LEASEDATA-8: qualify genuine new current-source source42/twoimports/eight DLLs,
+  exact origin recovery and one-use launch; same original Cut0 C:/Temp600child/
+  820shared/15min, full uncapped diagnosticsD. Preserve original gameplay/native/
+  cleanup assertions. Parse ALL rows/paths, explain timer anomalies, compare equal
+  completed milestones against r53 and report actual outcome with no invented
+  diagnostic-off estimate. Retire older raw only after verified complete new
+  replacement, retaining compact causal/comparison findings and all source inputs.
+
+Scope excludes broad authority caching/namespace classification sharing between
+fresh fences, new directory pinning protocol, new storage backend, OS privileges,
+native process changes, GM/game/schema/rules changes, othercuts/Linux qualification.
+Compared alternatives: sharing namespace observations without pins is unsafe;
+immutable-path caching alone does not address dominant attributes; a new Windows
+pinned-chain protocol adds independent platform/ownership contracts. Chosen route
+removes redundant admission on existing memory DATA hits while preserving fresh
+authority at actual sources/escapes. Execution stays parent-owned; independent
+consultation/review does not implement code. No unresolved product choice.
+
 # CRASH5 — revision53: use the existing cache for whole-operation file DATA
 
 Owner steering2026-10-23: already-read files must use the existing cache across

@@ -1,4 +1,29 @@
-# Current checkpoint: r53 original FULL PASS accepted; raw retirement complete
+# Current checkpoint: r54 genuine cached DATA hits before repeated lease admission
+
+Issue1536/LEASEDATA1..8/T453–457. User explicitly requests Lease.Validate.Total
+optimization + same full600s measurement, uncapped diagnosticsD/autonomous waiver.
+Canonical r54 spec/plan/tasks/contract written and presented; actual pinned SpecKit
+plan/tasks/prerequisites + equivalent consistency. T453done; implementation UNRUN.
+Sourcebaseline dc81839730450baae10942cb13f59913de5b1be7 exact local+remote clean.
+
+Bounded independent actual Astra/high consultation rejected cross-fence namespace
+classification reuse: later original checks are deliberately fresh. Chosen explicit
+r54 contract is genuine detached provisional DATA hit from existing service before
+wrapper filesystem admission. Exact current bound adapter/entry/registration/epoch
+checks stay live, and recorded exact reader dispatch avoids UsesTrustedLocalWriter
+IO on a hit. Miss/firstbinding/general EnsureActive/source/effect/success/close all
+retain fullguards. Generic callbacks and session checkpoints must await actual
+fence after fast results before original ForceFresh; independent compensation's
+own fresh proof remains distinct. No new authority cache/backend/native protocol.
+
+Next:T454 compiling lookup+actual wrapper causal RED on tiny files; T455minimum
+implementation/causalGREEN; T456affected category/XML/catalog/independent source
+review+genuine new source42/twoimports/exactorigin; T457same600/820/15FULL Cut0,
+allrows/equal r53 milestones/accepted result+retention/finalsource recovery.
+Evidence:D:/BoeDiagnostics/lease-validation-r54-20261023. Retain accepted r53raw
+until a complete verified replacement. No diagnostic dump is Git content.
+
+# Historical checkpoint: r53 original FULL PASS accepted; raw retirement complete
 
 Feature1536 FILEOP1..8 / T448–452. Code d04f6a2dd1353b4704670e237cc21fee3268a181;
 original run HEAD2ad54b47f46dd3bbaab23722c6575c5b96201ac1. Source/input/launch

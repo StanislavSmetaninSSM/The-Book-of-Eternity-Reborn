@@ -1,3 +1,15 @@
+# CRASH5 — revision54 lease validation for actual cached DATA
+
+Issue1536, LEASEDATA1..8; autonomous source/spec review-wait waiver preserved.
+- [x] T453 [US1/US2] Investigate exact Lease.Validate fanout/current recovery and source/escape map; written/presented r54 spec/plan/contract, actual pinned phases/equivalent consistency, publish before production code.
+- [ ] T454 [US1/US2] Compiling causal RED for noncomputing existing-service lookup and actual warmed declared readers with full/raw counters and all integrity/escape/lifetime controls on minimal fixtures. Categories and current genuine input slot tracked before implementation.
+- [ ] T455 [US1/US2] Implement shared noncomputing service lookup, exact successful-dispatch keys and cache-only provisional hit route before original wrapper guard; original miss/full guard/fresh effects/callback escape proof intact. GREEN evidence and XML for changed APIs.
+- [ ] T456 [US3] XML-enabled current builds/8DLL/native pins/comment audit/catalog/selected affected controls, independent complex review; qualify genuinely new current-source source42/twoimports, source-only publish and exact origin recovery before original.
+- [ ] T457 [US3] One same actual600/820/15 FULL Cut0 with uncappedD diagnostics, original oracles/native settlement, all-row/matched r53 analysis, honest result and independent result review; reviewed exact old-raw retirement, final source/checkpoint push/recovery.
+
+Dependencies:T453->T454->T455->T456->T457. LEASEDATA1/2/3->T454/455/456;
+4/5/6->T453/454/455/456;7->T456;8->T456/457. No new user-visible task/thread.
+
 # CRASH5 — revision53 whole-operation file DATA through existing cache
 
 Owner steering2026-10-23: use already-read DATA through existing cache over the

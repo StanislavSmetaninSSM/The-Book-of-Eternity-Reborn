@@ -1,3 +1,75 @@
+# Lease DATA hit admission — revision54 implementation plan
+
+Issue1536 / LEASEDATA1..8. Parent executes inline with Superpowers TDD/debugging;
+separate actual Astra/high reviews the coherent block. User review waits waived.
+Spec:spec.md revision54. C#/.NET8, existing DefaultOperationValidationService and
+ValidationOperation; existing isolated checkout/branch, no dependencies/backend.
+
+T453 design/investigation: retain r53 full/raw and exact currentdc source recovery.
+Trace actual wrapper prefix/family decision and all callback/effect escape sites.
+Reject cross-fence path-classification memoization; record consulted cache-only
+DATA decision. Run pinned Spec Kit plan/tasks/prerequisites and consistency.
+
+T454/T455 interfaces/files and RED->GREEN:
+- Services/ValidationOperation.cs: typed noncomputing TryGet result (Found,Value),
+  sharing the existing lookup/dependency/copy/serial machinery with GetOrCompute.
+  A missing entry returns NotFound without calling a source; cached null is Found.
+  No virtual/source/copy/provider callback under coordinator monitor. Sync caller
+  may consume only an immediately completed lookup; never block async source work.
+  Exact API:TryGetAsync<TResult>(OperationComputation<TResult>,object,
+  IReadOnlyList<IOperationDependency>,CancellationToken=default) returns
+  Task<OperationLookup<TResult>>; immutable lookup has bool Found and TResult Value.
+  GetOrComputeAsync and TryGetAsync share one private core with nullable source;
+  the null-source miss returns NotFound before any computation/removal/reseeding.
+- Core/FileSystemManager.SourceDataOperation.cs: TryReadDeclaredSnapshot cache-only
+  admission, existing key interner/service/ledger, exact successful-dispatch alias
+  identity (rawpath,normal declared sync/async policy)->existingSourceKey. No bytes
+  or authority duplicate. Exact current bound adapter and healthy pure root checks;
+  serial slot/receipt invalidation/lifetime guard apply through return. Retire alias
+  and pending-fast-result state on all original segment/operation closing paths.
+  TryReadDeclaredSnapshot(CanonicalWriteLease,string,bool asynchronous,out
+  CanonicalFileReadSnapshot?) is synchronous/noncomputing. RegisterDeclaredRoute
+  records only existing SourceKey from successful original dispatch/read. Aliases
+  key ordinal rawpath+normal-declared sync/async policy. Pending fast-result flag
+  survives until verified source fence or retirement; no namespace fact is stored.
+- Core/FileSystemManager.cs selected declared text/bytes/snapshot async and text/
+  bytes sync wrappers: attempt known exact DATA hit BEFORE full prefix/family IO;
+  miss executes original statements in original order and registers successful
+  reader dispatch. No changes to writes/general EnsureActive/MainAdmission guards.
+- Core/FileSystemManager.OperationValidation.cs and Core/GameEngine.cs checkpoint:
+  central typed async callback boundary awaits required full source/authority fence
+  after new fast DATA issuance before original fresh bypass/callback. Independent
+  take/compensation protocols retain fresh proofs; never demand stale rollback
+  equality. Keep typed seam callable in unit tests without GameEngine/world setup.
+  InvokeRecoveryValidationCallbackAsync(Func<Task>) becomes internal/shared;
+  await VerifyPendingDeclaredSourceDataAsync before its original ForceFresh. The
+  GameEngine session checkpoint delegates to this exact method. Only new pending
+  fast-hit results request this extra awaited closure; independent suspended
+  reconstruction is unchanged. A SourceDataOperation fresh fence clears the flag.
+- Tests/ValidationOperationLookupTests.cs and LeaseDataAdmissionTests.cs: compiling
+  generic lookup RED and warmed actual-wrapper counter RED; complete real files,
+  named timers and all raw toD. Then implement minimum coherent fix and GREEN.
+- tests/categories.json/selection.json: bounded ownership/reasons for new lookup/
+  lease-hit contracts and affected existing source/generic/main/strict/proof/effect
+  consumers; no selection based solely on path hints. Current testINPUT consumer
+  gets a genuinely new immutable source42 slot before final build qualification.
+
+Review focus/preserved contracts: raw authority drift after a hit before callback
+escape; UsesTrustedLocalWriter must not execute during hit detection; cached null
+is distinct from miss; lookup cannot grant authority to replacement/current-entry
+siblings; failed owner cannot obstruct independent fresh compensation. Tests name
+all of these, plus copied DATA, strict scope/passive routing, scope drainage and
+new adapter binding. Shared service API tests preserve existing coordinator guards.
+
+T456: current XML builds/binding/audit/catalog/targeted GREEN, independent complex
+review, source-only push; new real producer/twoimports fingerprint/payload/current
+loaded DLL checks and exact origin recovery. T457: one actual unchanged full600/
+820/15 Cut0, all output/owned settlement/full archive SHA/CRC/all-row analysis,
+equal-first-publication r53comparison and honest remaining costs; independent result
+review, exact file-only retired old raw/current duplicates, final source recovery.
+No new off measurement unless evidence justifies it; no performance promise before
+measured source fixtures and original. No GM contract change, thus no GM examples.
+
 # Whole-operation file DATA — revision53 implementation plan
 
 Current Windows source qualification (2026-10-23): production/test source

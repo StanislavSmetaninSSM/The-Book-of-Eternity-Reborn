@@ -1,3 +1,22 @@
+# Provisional cached DATA admission — revision54 contract
+
+LEASEDATA1..8/T453–457. r53 exact byte cache remains the sole DATA store. Only a
+genuine stored snapshot/absence can bypass repeated filesystem admission at a
+selected declared read wrapper. Current physical lease/manager/entry/registration/
+ancestry/rootsegment checks remain live/pure. First binding and any miss retain
+original full checks. Recorded successful normal-reader dispatch selects exact
+family; no path IO/routing guess before lookup. Each hit clears the mutation receipt.
+
+Cached DATA is provisional, never a grant/capability. Original full MainAdmission/
+worker/physical checks and dependency closure remain at sources, effects, success
+and adapter close. Arbitrary callback/checkpoint must fence before dropping cache
+and calling outward after fast results; independent recovery may discard old DATA
+only with its own unchanged fresh proof. Generic service lookup distinguishes
+Found(null) and NotFound without computation or poisoning. Strict scopes/passive
+suppression/failed or retired lifetimes cannot take this route. This explicit
+amendment supersedes per-wrapper full admission ONLY for these genuine DATA hits,
+not MainAdmission.Validate generally or standalone namespace/authority APIs.
+
 # Whole-operation source DATA — revision53 contract
 
 FILEOP1..8 / T448–452. Existing ValidationOperation stores detached file snapshots
