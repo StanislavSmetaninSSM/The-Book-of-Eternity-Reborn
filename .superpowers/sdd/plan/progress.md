@@ -1,10 +1,11 @@
 # Current checkpoint: r58 investigation reviewed; no causal claim for unmeasured growth
 
-Issue#1536 REGRESSION1..5/T471..473. T471/T472 analysis complete; T473 report
-written, pending independent review and final publication/recovery. Source/tests/
-INPUT unchanged159019476/meta6ea; starting accepted headf37407b8e.
+Issue#1536 REGRESSION1..5/T471..473 complete as an investigation. Independent
+Astra/high accepted the actual corrected report with0unresolved findings;
+e62fa5924WIP recovered36exactremote blobs/tree/noalternates. Final completion
+status is published separately. Source/tests/INPUT unchanged159019476/meta6ea.
 All555namedcounts OUTSIDE matched publication exactly equal; outside attributes
-1,141,247 both,53.8034303->58.4084756s. QTE cache hit still111source reads:
+1,141,247 both,53.8034303->58.4084756s. QTE cache hit averages111source reads:
 12hits/1332actualopens/85,140attrs4.8584289s,11.2625739s whole replay;
 capture source cause traced to MatchesObservationsAsync/ReadValidationSource.
 Take16.526->22.182s, cleanup29.913->34.758s with prepared-story10.541->12.402s;
