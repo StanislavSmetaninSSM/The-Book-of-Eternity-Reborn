@@ -14,7 +14,7 @@ explicit specification-review waiver; current isolated clone/branch reused.
   and independent launch admission for the unchanged original600/820/15.
 - [x] T489 Same actual Windows Cut0 full uncapped producer/resumer original;
   native73/0/all original assertions/identity/EOF/join/cleanup; full archive.
-- [ ] T490 Every-row r60 comparison, concrete cleanup/proof/history timings and
+- [x] T490 Every-row r60 comparison, concrete cleanup/proof/history timings and
   counts, human findings, independent outcome/retention/final review, exact verified
   superseded diagnostic retirement and final source-only publication/recovery.
 
@@ -26,7 +26,8 @@ Evidence: [T490 measurement report](T490-cleanup-proof-data-reuse-measurement.md
 Actual original1/1PASS494.5938554s; explicit327PASS composite; full14753018event
 analysis;930DATAhits, cleanupopens-240/attrs-2960/lease+170; no elapsed gain.
 Independent outcome/retention accepted, exact4files6331115903B retired with30
-protectedfiles rehashed before/after. Final documentation/publication pending.
+protectedfiles rehashed before/after. Final documentation accepted; exact closing
+publication/recovery is evidenced by origin-recovery-<SHA>.json on D:.
 
 # CRASH5 — revision60 GameState DATA reuse (owner2026-10-24)
 

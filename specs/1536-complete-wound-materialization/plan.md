@@ -69,7 +69,7 @@ No authority object is a cached value. Producer hook fallback remains untouched.
   INPUT, exact remote publication/recovery and independent atomic launch admission.
 - [x] T489 CLEAN_CACHE6..7: same original Cut0 full600/820/15, native73/0 and original
   assertions, EOF/join/owned cleanup; complete verified archive after settlement.
-- [ ] T490 CLEAN_CACHE7..8: every-row r60 comparison, named cleanup/proof/history/read
+- [x] T490 CLEAN_CACHE7..8: every-row r60 comparison, named cleanup/proof/history/read
   and observer metrics, honest report, independent outcome/retention/final review,
   verified replacement of old diagnostics and source-only final remote closure.
 
@@ -84,7 +84,8 @@ Exact cleanup5windows/930DATAhits, opens3098->2858, attrs268711->265751, lease+1
 cleanup34.3435089->39.5569894s, no elapsed gain claimed. All14753018events parsed,
 114ZIPmembers independently verified. Outcome and exact4file6331115903B retirement
 accepted; execution Completed,30protectedfiles rehashed before/after. Final
-documentation/publication closure pending. Evidence and honest cost comparison:
+documentation accepted; closing publication/recovery binds the exact final commit
+in origin-recovery-<SHA>.json on D:. Evidence and honest cost comparison:
 [T490 measurement report](T490-cleanup-proof-data-reuse-measurement.md).
 
 # CRASH5 — revision60 GameState source DATA reuse plan

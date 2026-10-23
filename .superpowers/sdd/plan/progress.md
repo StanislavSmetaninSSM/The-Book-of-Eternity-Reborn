@@ -1,9 +1,9 @@
-# Current checkpoint: r61 measured DATA reuse; outcome and exact retention accepted
+# Current checkpoint: r61 measured DATA reuse; final source/outcome/retention accepted
 
 Issue#1536 CLEAN_CACHE1..8 / T485..490; canonical spec/plan/tasks. Owner explicitly
 authorizes autonomous work, specification-review wait waiver, uncapped diagnostics,
 cheap fixtures and same original600/820/15. Current isolated clone/branch reused.
-T485..489 complete; T490 final documentation/publication closure. Exact publisher post-recovery DATA windows retain actualtwo
+T485..490 complete; final exact publication/recovery recorded separately. Exact publisher post-recovery DATA windows retain actualtwo
 publisher mutations; complete local/root set and epoch, original registration/
 ancestry/generation guards. Existing service owns detached snapshots only; fresh
 original completion bytes/absence/timestamps/generation/owner, publication image
@@ -67,11 +67,15 @@ Completed:4ordinaryfiles6331115903B removed (oldr60ZIP/leaf+current2stdoutcopies
 Latestfullr61ZIP/index/leaf/allselectedcleanup/compactcomparisons,source42INPUT
 and reusable r51instrumentationbackup retained. ReceiptT490-retention-executed.json.
 WIPmeasurementreportda7bf86eeb17286a45d6b83acddd018ca0a61ac6 pushed and recovered
-fromorigin38exactblobs/noalternates. Finalretention/report/taskclosure review
-and finalsource-only push/recovery pending; no more build/test reruns justified.
+fromorigin38exactblobs/noalternates; subsequent929277202b113d310493bf02479aa92d70db343f
+also recovered38exactblobs/noalternates. Finalretentionexecution/report/taskclosure
+review accepted0unresolvedfindings, including boundedcheckbox/statusclosureedits.
+Exact finalsource-only publication/recovery is tied to this checkpoint's commit
+by origin-recovery-<SHA>.json on D:; no more build/test reruns justified.
 Workflowcheckpoint: two preexistingqualificationprerequisites corrected with
 preservedfailures, one actualtransportprefix needed narrowstrictparserrepair.
-Independentreview found0introducedsource/outcomefindings; no savings or elapsed
+InitialP3XMLkeyword/predicatecontractfinding corrected ina13b426db beforequalification.
+Independentreview found0unresolvedintroducedsource/outcomefindings; no savings or elapsed
 performancegain attributed to agentrouting. Parentowns coherentblock, bounded
 Sol6.1/high externaltools, separateAstra/high review; keep currentrouting.
 C:SSD actual benchmark fixtures / D:HDD uncappeddiagnostics. Git contains source,
