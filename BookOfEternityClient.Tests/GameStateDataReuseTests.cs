@@ -47,6 +47,36 @@ public sealed class GameStateDataReuseTests(ITestOutputHelper output)
     }
 
     /// <summary>
+    /// Reuses sources after a preceding physical phase closes inside the same live participating session.
+    /// </summary>
+    /// <returns>
+    /// Completion after the closed physical frame cannot hide its still-live participating owner.
+    /// </returns>
+    [Fact]
+    public async Task ClosedPriorPhaseLeaseDoesNotHideLiveParticipatingOwner()
+    {
+        using var fixture = new Fixture(output);
+        await fixture.InitializeGenerationAsync();
+        await SessionOperationContext.RunParticipatingCurrentSessionAsync(fixture.Files, async () =>
+        {
+            await using (var prior = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
+            {
+                Assert.Equal("original", await fixture.Files.ReadFileAsync(prior, "present.txt"));
+            }
+            fixture.Recording = true;
+            await fixture.Files.ReadGameStateDataAsync(async () =>
+            {
+                for (var index = 0; index < 8; index++)
+                    Assert.Equal("original", await fixture.Files.ReadFileAsync("present.txt"));
+                return true;
+            });
+        });
+        Assert.Equal(2, fixture.Reads("present.txt"));
+        Assert.Equal(1, fixture.TimingBegins("GameStateData.Phase"));
+        Assert.Equal(0, fixture.TimingBegins("GameStateData.Fallback"));
+    }
+
+    /// <summary>
     /// Retains an observed absence once and checks it freshly at completion.
     /// </summary>
     /// <param name="synchronous">
@@ -165,7 +195,11 @@ public sealed class GameStateDataReuseTests(ITestOutputHelper output)
         for (var call = 0; call < 2; call++)
         {
             if (call == 1 && writeBetween)
+            {
+                fixture.Recording = false;
                 await fixture.Files.WriteFileAtomicAsync("present.txt", "changed");
+                fixture.Recording = true;
+            }
             var expected = call == 1 && writeBetween ? "changed" : "original";
             await SessionOperationContext.RunParticipatingCurrentSessionAsync(fixture.Files, () =>
                 fixture.Files.ReadGameStateDataAsync(async () =>
@@ -416,7 +450,7 @@ public sealed class GameStateDataReuseTests(ITestOutputHelper output)
         Assert.True(fresh.Reads(path) >= 2);
 
         var otherPath = "game_state/misc/multipliers.json";
-        cached.WriteRaw(otherPath, "{}");
+        cached.WriteRaw(otherPath, "{\"multipliers\":[1,1,1,1,1]}");
         cached.WriteRaw(path, "{broken");
         var changedSelection = new GameStateValidationSelection(GameStateValidationPhase.MetaMiscStateFiles, [otherPath]);
         var next = await SessionOperationContext.RunParticipatingCurrentSessionAsync(cached.Files,

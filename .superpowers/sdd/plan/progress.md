@@ -20,7 +20,12 @@ selectioncomplete,notimeout,bothcleanupsTRUE. T480complete; literal wording
 consistency-check assertion corrected without changing any requirements.
 T481 WIP: owned normal bound source phase/implicit existing-service hit wired
 onlyCrossReferences/MetaMisc; ambient/browser/worker/reserved/guardiancompletion
-remainoriginal.20cheapcaseswritten, GREEN/build/review pending. Existing producer
+remainoriginal.20cheapcasesexecuted17PASS3fixtureFAIL: writerbeforeimagereadwascounted,
+changedselectionmultipliers{}lackedmandatoryfivecoefficientarray. Bothcausal
+sync/async now2readsPASS; rawdrift/copy/fallback/failurePASS. XMLbothprojectsPASS
+86.148/53.178s,8DLLuniform. Fixturepreconditionscorrected;21stcase nowmodels
+closedpriorlease/liveparent eligibility, compilingcausalREDpending. No source
+integrityfailure validated. IndependentAstra/highsourcegate staysdraft. Existing producer
 fixture installs potential mutable read-hook delegates even when callbacks are
 inactive: preserve those hooks/freshfallback; do not claim producercacheactivation.
 Source pins updated WIP requiring independent acceptance; new typedhelper/source
