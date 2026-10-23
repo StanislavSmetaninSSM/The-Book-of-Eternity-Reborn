@@ -70,6 +70,17 @@ review, exact file-only retired old raw/current duplicates, final source recover
 No new off measurement unless evidence justifies it; no performance promise before
 measured source fixtures and original. No GM contract change, thus no GM examples.
 
+Current qualified code781e9051ed2b3febddd2d7fc5dc15e4bbc06a768: XML builds
+84.5592/52.3613s; eight DLL/dependency copies actually match this source. Both
+native-lineage source pins unchanged.367 introduced XML lines audited:0format
+errors and0changed-line compiler warnings (preexisting warnings remain). Actual
+unit143/143PASS61.7381s and affected236/236PASS338.5873s;16descriptors complete,
+owned/runtime cleanup true. Catalog discovery passed; PlanOnly379/16,0executed.
+Ten warmed reader/presence controls each remove all8/16 repeated lease admissions
+and attributes, retain8DATA hits and fresh final closure. Causal timer lifetime RED
+55executed/49PASS6FAIL precedes corrected final59lease controls. Source review
+static findings corrected; source/input gate and original600 are still pending.
+
 # Whole-operation file DATA — revision53 implementation plan
 
 Current Windows source qualification (2026-10-23): production/test source

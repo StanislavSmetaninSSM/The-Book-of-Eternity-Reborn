@@ -1,27 +1,25 @@
-# Current checkpoint: r54 genuine cached DATA hits before repeated lease admission
+# Current checkpoint: r54 current-source379 selected PASS; qualify fresh source42
 
-Issue1536/LEASEDATA1..8/T453–457. User explicitly requests Lease.Validate.Total
-optimization + same full600s measurement, uncapped diagnosticsD/autonomous waiver.
-Canonical r54 spec/plan/tasks/contract written and presented; actual pinned SpecKit
-plan/tasks/prerequisites + equivalent consistency. T453done; implementation UNRUN.
-Sourcebaseline dc81839730450baae10942cb13f59913de5b1be7 exact local+remote clean.
+Feature1536 LEASEDATA1..8/T453–457; canonical spec/plan/tasks and user review-wait
+waiver apply. Code781e9051ed2b3febddd2d7fc5dc15e4bbc06a768, XML8DLL qualified,
+native source pins unchanged; added XML367lines/0introduced warning or format
+errors. Actual143unit+236affected PASS; all16descriptors complete, cleanup true.
+Catalog discovery passed; PlanOnly379cases/16descriptors,0execution. Current
+source/test/doc review corrected timer callback disposal/epoch escapes (causal
+55RED49PASS6FAIL), external root capture occurs outside source monitor; final
+local exact owner acceptance follows it under short source monitor. Catalog
+encoding restored; affected selection explicit. No unresolved static findings.
 
-Bounded independent actual Astra/high consultation rejected cross-fence namespace
-classification reuse: later original checks are deliberately fresh. Chosen explicit
-r54 contract is genuine detached provisional DATA hit from existing service before
-wrapper filesystem admission. Exact current bound adapter/entry/registration/epoch
-checks stay live, and recorded exact reader dispatch avoids UsesTrustedLocalWriter
-IO on a hit. Miss/firstbinding/general EnsureActive/source/effect/success/close all
-retain fullguards. Generic callbacks and session checkpoints must await actual
-fence after fast results before original ForceFresh; independent compensation's
-own fresh proof remains distinct. No new authority cache/backend/native protocol.
-
-Next:T454 compiling lookup+actual wrapper causal RED on tiny files; T455minimum
-implementation/causalGREEN; T456affected category/XML/catalog/independent source
-review+genuine new source42/twoimports/exactorigin; T457same600/820/15FULL Cut0,
-allrows/equal r53 milestones/accepted result+retention/finalsource recovery.
-Evidence:D:/BoeDiagnostics/lease-validation-r54-20261023. Retain accepted r53raw
-until a complete verified replacement. No diagnostic dump is Git content.
+Actual10reader/presence controls: each8repeated cache DATA results now0full
+lease validations/0attributes instead of8(or16syncbytes). Fresh fences/main/worker
+refusals, callbacks, real runtime advance, writes, strict/sibling/BOM, lifecycle
+and existing coordinator behavior verified. No whole-game speedup claimed yet.
+Next:genuine NEW source42lease-data-v1 current-code input/twoimports; independent
+source/input acceptance, source-only push/exact remote recovery; one unchanged
+600child/820shared/15min FULL Cut0, allrows/matchedr53/results+retention review.
+T453–455done; T456partial; T457UNRUN. Diagnostics are uncapped/outsideGitD:
+D:/BoeDiagnostics/lease-validation-r54-20261023. Accepted r53raw retained until
+complete verified replacement; protected roots never touched.
 
 # Historical checkpoint: r53 original FULL PASS accepted; raw retirement complete
 
