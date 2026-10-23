@@ -162,6 +162,66 @@ public sealed class LeaseDataAdmissionTests(ITestOutputHelper output)
     }
 
     /// <summary>
+    /// Refuses owner disposal or supported epoch changes from every diagnostic callback in the fast path.
+    /// </summary>
+    /// <param name="timer">
+    /// Actual fast-path timer whose passive observer introduces the change.
+    /// </param>
+    /// <param name="boundary">
+    /// Begin or end notification at which the observer changes the owner.
+    /// </param>
+    /// <param name="close">
+    /// Whether to close the owner rather than advance the supported root epoch.
+    /// </param>
+    /// <returns>
+    /// Completion after no cached result escapes its closed owner or superseded root version.
+    /// </returns>
+    [Theory]
+    [InlineData("LeaseDataHit.Request", "begin", true)]
+    [InlineData("LeaseDataHit.Request", "end", true)]
+    [InlineData("LeaseDataHit.Reuse", "begin", true)]
+    [InlineData("LeaseDataHit.Reuse", "end", true)]
+    [InlineData("LeaseDataHit.Request", "begin", false)]
+    [InlineData("LeaseDataHit.Request", "end", false)]
+    [InlineData("LeaseDataHit.Reuse", "begin", false)]
+    [InlineData("LeaseDataHit.Reuse", "end", false)]
+    public async Task ObserverCannotReturnClosedOrSupersededData(string timer, string boundary, bool close)
+    {
+        using var fixture = new Fixture(output);
+        var files = fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        files.GetOrCreateSessionGeneration(lease);
+        using var operation = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(operation);
+        Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+        var changed = false;
+        fixture.OnTiming = (name, phase) =>
+        {
+            if (changed || name != timer || phase != boundary) return;
+            changed = true;
+            if (close) operation.Dispose();
+            else
+            {
+                var mutation = new object();
+                files.CanonicalRootAuthorityIdentity.ValidationEpoch.Begin(mutation);
+                files.CanonicalRootAuthorityIdentity.ValidationEpoch.End(mutation);
+            }
+        };
+        try
+        {
+            var failure = await Record.ExceptionAsync(() => files.ReadFileAsync(lease, "present.txt"));
+            Assert.True(changed);
+            if (close)
+            {
+                Assert.IsType<ObjectDisposedException>(failure);
+                Assert.False(operation.HasRetainedSourceReferences);
+            }
+            else Assert.IsType<InvalidOperationException>(failure);
+        }
+        finally { fixture.OnTiming = null; operation.Fail(); }
+    }
+
+    /// <summary>
     /// Calls the selected actual reader and mutates returned bytes to test detachment.
     /// </summary>
     /// <param name="files">
@@ -231,6 +291,7 @@ public sealed class LeaseDataAdmissionTests(ITestOutputHelper output)
                     {
                         lock (_raw) _raw.WriteLine(JsonSerializer.Serialize(new { Name = name, Boundary = boundary, Milliseconds = elapsed.TotalMilliseconds }));
                         if (boundary == "end") Counts.AddOrUpdate(name, 1, (_, count) => count + 1);
+                        OnTiming?.Invoke(name, boundary);
                     }
                 });
         }
@@ -249,6 +310,11 @@ public sealed class LeaseDataAdmissionTests(ITestOutputHelper output)
         /// Gets the actual manager used by all fixture calls.
         /// </summary>
         internal FileSystemManager Files { get; }
+
+        /// <summary>
+        /// Gets or sets a passive diagnostic callback; it supplies no functional DATA or permission.
+        /// </summary>
+        internal Action<string, string>? OnTiming { get; set; }
 
         /// <summary>
         /// Gets counters whose resets never remove raw diagnostic rows.

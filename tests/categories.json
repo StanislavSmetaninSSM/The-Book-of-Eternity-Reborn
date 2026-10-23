@@ -5,8 +5,16 @@
   "id": "core-lease-data-admission",
   "responsibility": "Genuine warmed declared DATA hits avoid filesystem admission while fresh escape fences reject raw main/worker/namespace drift.",
   "excludes": "No world construction, reflection, aggregate suite, diagnostic quota or cached authority.",
-  "changeHints": ["BookOfEternityClient/Core/FileSystemManager.SourceDataOperation.cs", "BookOfEternityClient/Core/FileSystemManager.cs"],
-  "related": [{"id":"core-operation-source-data", "when":"Whole-operation source ownership or effect fences change."}],
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.SourceDataOperation.cs",
+    "BookOfEternityClient/Core/FileSystemManager.cs"
+  ],
+  "related": [
+    {
+      "id": "core-operation-source-data",
+      "when": "Whole-operation source ownership or effect fences change."
+    }
+  ],
   "requirements": {
     "frontendBuild": false,
     "exclusive": true,
@@ -27,8 +35,15 @@
   "id": "core-operation-lookup",
   "responsibility": "Noncomputing existing service lookup: exact declarations, defaults, copied DATA, dependencies, cancellation and serial ownership.",
   "excludes": "No world construction, reflection, aggregate suite, diagnostic quota or cached authority.",
-  "changeHints": ["BookOfEternityClient/Services/ValidationOperation.cs"],
-  "related": [{"id":"core-operation-validation-cache", "when":"Shared coordinator or storage behavior changes."}],
+  "changeHints": [
+    "BookOfEternityClient/Services/ValidationOperation.cs"
+  ],
+  "related": [
+    {
+      "id": "core-operation-validation-cache",
+      "when": "Shared coordinator or storage behavior changes."
+    }
+  ],
   "requirements": {
     "frontendBuild": false,
     "exclusive": true,
@@ -749,7 +764,7 @@
 },
 {
   "id": "fr063-ordinary-read-section-timing-controls",
-  "responsibility": "T371вЂ“T372 eighteen tiny typed sync/async regular/missing/invalid-leaf, disappearing-open and real-lease nullable data/path controls, complete or throwing observer, full balanced nested timing evidence and exact owned closing.",
+  "responsibility": "T371–T372 eighteen tiny typed sync/async regular/missing/invalid-leaf, disappearing-open and real-lease nullable data/path controls, complete or throwing observer, full balanced nested timing evidence and exact owned closing.",
   "excludes": "No game/world preparation, source42, process crash, native/security configuration or old-root cleanup.",
   "changeHints": [
     "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
@@ -3615,7 +3630,7 @@
     },
 {
   "id": "fr063-hot-joint-owner-refusals",
-  "responsibility": "#1536 T179-Pd.3b HS-IMPL-F03: Actual prior42в†’ProcessPlayerTurn/Stage43в†’corrected joint publication. At real pre-reservation/reserved read and delegated native mutation cuts inspect the actual attempt/lease/frame/capture only; refuse not-reserved, independent foreign FS/lease, same-engine Begin reentry and delegated close without receipt/slot change. Real original flow must still commit its full union once; retained diagnostics expire.",
+  "responsibility": "#1536 T179-Pd.3b HS-IMPL-F03: Actual prior42→ProcessPlayerTurn/Stage43→corrected joint publication. At real pre-reservation/reserved read and delegated native mutation cuts inspect the actual attempt/lease/frame/capture only; refuse not-reserved, independent foreign FS/lease, same-engine Begin reentry and delegated close without receipt/slot change. Real original flow must still commit its full union once; retained diagnostics expire.",
   "excludes": "No seeded issuer/capture/lease/engine checkpoint, no same-owner abort probe. Exact failed-Begin IO/G hook absent and OPEN; no full reservation mismatch/pending/native failure/S/B/M3/fullF1 qualification.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotJointOwnerRefusals.cs"
@@ -3644,7 +3659,7 @@
 },
 {
   "id": "fr063-hot-browser-stage-lifetime",
-  "responsibility": "#1536 T179-Pd.3b HS-IMPL-F03: Two actual QueueBrowserInputв†’ProcessPlayerTurn cases: Staged acknowledgement is observed at real TerminalWaitStarted only after outer Stage operation returned; a one-shot existing SessionOperationClosing fault while AwaitingStagingOwnerReturn yields Ended/unavailable, no wait/ack and exact retained staged original/request/browser slot. Positive correlated terminal error settles ordinary cleanup.",
+  "responsibility": "#1536 T179-Pd.3b HS-IMPL-F03: Two actual QueueBrowserInput→ProcessPlayerTurn cases: Staged acknowledgement is observed at real TerminalWaitStarted only after outer Stage operation returned; a one-shot existing SessionOperationClosing fault while AwaitingStagingOwnerReturn yields Ended/unavailable, no wait/ack and exact retained staged original/request/browser slot. Positive correlated terminal error settles ordinary cleanup.",
   "excludes": "No manual original producer as HOT positive; no observeOriginalClose substitute, remote CompleteAsync/DisposeAsync or isolated Ready Ld close claim. No visual/browser DOM/fullF1/T197/newQTE/S/B/M3.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotBrowserStageLifetime.cs"
@@ -3673,7 +3688,7 @@
 },
 {
   "id": "fr063-hot-worker-ready-disposition",
-  "responsibility": "#1536 T179-Pd.3b HS-IMPL-F03/HS-WORKER-F01: On the supported native WindowsJob host, two genuine ordinary Stageв†’actual Wait/engine-dispatched process workerв†’real apply cases. Worker proposal uses actual task context/hash. Real worker-generated Ready is consumed but HOT stays unavailable; one-shot Ready publication IO fault armed by correlated durable proposal-applied event exercises actual accepted-apply/no-Ready direct return. Audit/task/trajectory/current bytes/G/strict cleanup must prove route, no dispatch field seeding.",
+  "responsibility": "#1536 T179-Pd.3b HS-IMPL-F03/HS-WORKER-F01: On the supported native WindowsJob host, two genuine ordinary Stage→actual Wait/engine-dispatched process worker→real apply cases. Worker proposal uses actual task context/hash. Real worker-generated Ready is consumed but HOT stays unavailable; one-shot Ready publication IO fault armed by correlated durable proposal-applied event exercises actual accepted-apply/no-Ready direct return. Audit/task/trajectory/current bytes/G/strict cleanup must prove route, no dispatch field seeding.",
   "excludes": "No component-only delegator/private accepted flag/fake original proof; ordinary worker behavior retained. Ordinary Linux WorkerRelease is intentionally unavailable; pwsh configuration does not admit it. No Linux positive worker qualification. This is unsupported HOT worker disposition only, not worker semantic source admission/native uncertainty/fullF1/S/B/M3.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotWorkerDisposition.cs"
@@ -4575,7 +4590,7 @@
     {
       "id": "fr063-hot-joint-attempt-ownership",
       "responsibility": "#1536 T179-Pd.3b HS01 causal source: real prior42, actual ProcessPlayerTurn/Stage43, public stats/level authored AFTER original, native severity repair and complete public resubmission with Ready last. The genuine status_changes original is structurally uncovered, not authenticated absent; its public submitted-present input must reach the exact existing uncovered-present refusal. Existing exact held/refusal/source/turn/no-common-consequence oracles precede the missing private detached custody/attempt diagnostic RED. Future GREEN must prove actual Stage lineage, consumed Ready, current source custody and registry-owned predelegation close; no full semantic admission. Current source implements the bounded custody/attempt/registry-close seam as unqualified WIP; this unchanged genuine positive case must reach source-reviewed GREEN and cannot be replaced by a stub/unconditional Unavailable.",
-      "excludes": "First HS01 source fixture only; HS02вЂ“16, drift/foreign/delegated/browser/worker/failure/cold coverage remain future, never inferred from this case. No pre-original input substitute, private field seeding, issuer construction, original rewriting, active behavior, S/B/M3/P-A/fullF1 or runtime release. Actual execution requires fresh BOTH/catalog/PlanOnly, independent SOURCE/FIXTURE/SELECTION, first protected Late2 and separate frozen EVIDENCE.",
+      "excludes": "First HS01 source fixture only; HS02–16, drift/foreign/delegated/browser/worker/failure/cold coverage remain future, never inferred from this case. No pre-original input substitute, private field seeding, issuer construction, original rewriting, active behavior, S/B/M3/P-A/fullF1 or runtime release. Actual execution requires fresh BOTH/catalog/PlanOnly, independent SOURCE/FIXTURE/SELECTION, first protected Late2 and separate frozen EVIDENCE.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.HotSubmissionCustody.cs",
         "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs"
@@ -5122,7 +5137,7 @@
         {
             "id": "fr063-guaranteed-live-joint-repair-entrance",
             "responsibility": "#1536 J1 single genuine outer ordinary live-owner causal Fact. Actual declared QTE42/maxII/source10->5, official43/same generation, real homogeneous treatment Prepare/Create/distributor-confirmed energy2 request. One severityIII public draft and exact scene/Ready enter the real participating late-idle validation/repair loop. Actual committed public repair or protected diagnostic plus private graph is captured before queued Escape. Required genuine severity wave/full private request persistence is the first owning oracle; authoring UNRUN, not an observed production RED.",
-            "excludes": "Qualified component pending2/ordinary13/API/QTE/archive/baselines; no direct adapter/pending composer/precomposed common plan, synthetic repair packet/authority, repeated reservation, copied original, caller binding bypass or production J2вЂ“J6. ConfirmedHeld is witnessed before entry, not inferred as a registry read at dispatch. No correction/completion/compensation/cold/new-root or full-FR qualification in this first case. No broad family/globalCI/runner change.",
+            "excludes": "Qualified component pending2/ordinary13/API/QTE/archive/baselines; no direct adapter/pending composer/precomposed common plan, synthetic repair packet/authority, repeated reservation, copied original, caller binding bypass or production J2–J6. ConfirmedHeld is witnessed before entry, not inferred as a registry read at dispatch. No correction/completion/compensation/cold/new-root or full-FR qualification in this first case. No broad family/globalCI/runner change.",
             "changeHints": [
                 "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.LiveRepair.cs",
                 "specs/1536-complete-wound-materialization/spec.md",
@@ -5502,7 +5517,7 @@
         },
         {
             "id": "qte-physical-injury-consumer-archive",
-            "responsibility": "#1536 retained qualification authoring only: one integration theory/four cases. Actual SaveGame ZIP and fresh child LoadGame/rebind into a unique new root, pending/consumed Г— NONE/CREATE. Genuine source42 finalizedhealth155/original occurrence precedes Save42 or actual completed ordinary43/story43 then Save43. ZIP entries/hash and exclusions are observed. Child fresh process/factory/binary pins/replacement generation derives loop from actual loaded chat/story and stages genuine NEW43/44. Pending offered original42 source consumes once; consumed offers empty/no draft preserves source/receipt/wound/create-transition identities without reallocation. Resource owner authority and allowed Afterlife profile projection use typed agreement; exact archive-entry/loaded immutable bytes are checked before new turn. New44 CREATE may lawfully tick resource/effect/history; no blanket after-new-turn mechanical byte equality.",
+            "responsibility": "#1536 retained qualification authoring only: one integration theory/four cases. Actual SaveGame ZIP and fresh child LoadGame/rebind into a unique new root, pending/consumed × NONE/CREATE. Genuine source42 finalizedhealth155/original occurrence precedes Save42 or actual completed ordinary43/story43 then Save43. ZIP entries/hash and exclusions are observed. Child fresh process/factory/binary pins/replacement generation derives loop from actual loaded chat/story and stages genuine NEW43/44. Pending offered original42 source consumes once; consumed offers empty/no draft preserves source/receipt/wound/create-transition identities without reallocation. Resource owner authority and allowed Afterlife profile projection use typed agreement; exact archive-entry/loaded immutable bytes are checked before new turn. New44 CREATE may lawfully tick resource/effect/history; no blanket after-new-turn mechanical byte equality.",
             "excludes": "No previously qualified baseline/finite-cohort rerun, direct adapter/composer/normalizer substitute, copied/re-signed snapshot, invented receipt/hash/authority, SaveLoad transport exception, new key/framework/harness/provider/model/worker/Windows/C5/journal or full T070 qualification claim. Source/fresh build/discovery/catalog/runtime UNRUN until mandatory independent SOURCE/FIXTURE/SELECTION.",
             "changeHints": [
                 "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs",
@@ -5538,7 +5553,7 @@
         },
         {
             "id": "qte-physical-injury-consumer-durable-session",
-            "responsibility": "#1536 retained qualification authoring only: one integration theory/four cases. Actual same-physical-root fresh child process/factory/cache after controlled parent pause at existing AcceptedOutcomeValidatedBeforeMaterialization, following real common publication but before story43. NONE/CREATE Г— exact/changed public decision. Genuine originalN43/ready/backups remain in place and are checked, no archive load or source copy. Independently applied ordinaryDamage1 follows captured155 (CREATE ownedDamage3 thenDamage1 to151; NONE to154). Child loop42 runs actual late-idle caller; exact completes43/story-once, second idle no repeat and owned-source/transient cleanup. Changed-valid refusal MUST preserve whole already committed mechanics/receipt/marker and no story43; known outer pre-turn rollback risk stays a strict first-actual oracle, not assumed pass or adapter bypass.",
+            "responsibility": "#1536 retained qualification authoring only: one integration theory/four cases. Actual same-physical-root fresh child process/factory/cache after controlled parent pause at existing AcceptedOutcomeValidatedBeforeMaterialization, following real common publication but before story43. NONE/CREATE × exact/changed public decision. Genuine originalN43/ready/backups remain in place and are checked, no archive load or source copy. Independently applied ordinaryDamage1 follows captured155 (CREATE ownedDamage3 thenDamage1 to151; NONE to154). Child loop42 runs actual late-idle caller; exact completes43/story-once, second idle no repeat and owned-source/transient cleanup. Changed-valid refusal MUST preserve whole already committed mechanics/receipt/marker and no story43; known outer pre-turn rollback risk stays a strict first-actual oracle, not assumed pass or adapter bypass.",
             "excludes": "No previously qualified baseline/finite-cohort rerun, direct adapter/composer/normalizer substitute, copied/re-signed snapshot, invented receipt/hash/authority, SaveLoad transport exception, new key/framework/harness/provider/model/worker/Windows/C5/journal or full T070 qualification claim. Source/fresh build/discovery/catalog/runtime UNRUN until mandatory independent SOURCE/FIXTURE/SELECTION.",
             "changeHints": [
                 "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs",
@@ -5703,7 +5718,7 @@
         },
         {
             "id": "qte-physical-injury-consumer-admission-diagnostic",
-            "responsibility": "#1536 bounded diagnosis of accepted391d first NONE admission prerequisite failure whose underlying diagnostic is unobserved. Historical first diagnostic selected one existing component method/four rows (NONE/CREATE Г— exact/changed replay), frozen separately; its current same-method selector includes seven rows after the bounded whole-payload correction adds three lawful changed-CREATE variants, intentionally overlapping qte-physical-injury-consumer-common-controls. Independently owned actual QTE42/health155/occurrence precedes actual StagePlayerTurn43 and official Reader. Existing first Assert.Empty exposes returned ordinary resource/wound admission paths/messages without entering a GM repair wait; subsequent direct common normalizer propagates publication exception/stack if admission succeeds. This is component diagnosis, not a third protected NONE run or proof of full ordinary completion.",
+            "responsibility": "#1536 bounded diagnosis of accepted391d first NONE admission prerequisite failure whose underlying diagnostic is unobserved. Historical first diagnostic selected one existing component method/four rows (NONE/CREATE × exact/changed replay), frozen separately; its current same-method selector includes seven rows after the bounded whole-payload correction adds three lawful changed-CREATE variants, intentionally overlapping qte-physical-injury-consumer-common-controls. Independently owned actual QTE42/health155/occurrence precedes actual StagePlayerTurn43 and official Reader. Existing first Assert.Empty exposes returned ordinary resource/wound admission paths/messages without entering a GM repair wait; subsequent direct common normalizer propagates publication exception/stack if admission succeeds. This is component diagnosis, not a third protected NONE run or proof of full ordinary completion.",
             "excludes": "No source/fixture/protected causal Fact changes, inferred production fix, fabricated source/receipt/hash, new harness/observer, paid/model/provider call, whole common18-row category, unrelated passing qualifiers, archive/newroot/freshprocess/aggregate/Windows/C5/journal qualification.",
             "changeHints": [
                 "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerControls.cs",
@@ -5735,7 +5750,7 @@
         },
         {
             "id": "qte-physical-injury-consumer-repair",
-            "responsibility": "#1536 finding3 actual MAIN-GM full-resubmission control: two theory wrappers/eight original rows (severity/location/narration/downstream consequence-resource Г— lawful correction/unrelated proposal drift), sharing one unchanged private body. Three accepted construction-drift rows retain their original wrapper; five failed exact-construction/narration rows use the dedicated wrapper. Real QTE42/health155/occurrence precedes actual ProcessPlayerTurn43 and official signed safe offer. Existing committed format1 repair-request observer authors only public full ordinary outputs and matching repair-ready. Exact source/packet/generation, pre-revocation issued-command where reachable, rollback, bounded correction and once-only publication/refusal remain asserted. Client-owned QTE runtime is not a GM resubmission target; source-bound Mortal narration-only repair retains the whole draft and exact ordinary scene target.",
+            "responsibility": "#1536 finding3 actual MAIN-GM full-resubmission control: two theory wrappers/eight original rows (severity/location/narration/downstream consequence-resource × lawful correction/unrelated proposal drift), sharing one unchanged private body. Three accepted construction-drift rows retain their original wrapper; five failed exact-construction/narration rows use the dedicated wrapper. Real QTE42/health155/occurrence precedes actual ProcessPlayerTurn43 and official signed safe offer. Existing committed format1 repair-request observer authors only public full ordinary outputs and matching repair-ready. Exact source/packet/generation, pre-revocation issued-command where reachable, rollback, bounded correction and once-only publication/refusal remain asserted. Client-owned QTE runtime is not a GM resubmission target; source-bound Mortal narration-only repair retains the whole draft and exact ordinary scene target.",
             "excludes": "No TaskBuilder-only roundtrip claim, fabricated accepted command or source, worker/model/provider call, rollback-to-worker draft bridge, skill failure before command staging, archive/child qualification or aggregate suite.",
             "changeHints": [
                 "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerRepair.cs",
@@ -8916,7 +8931,7 @@
         {
             "id": "native-spiritual-staged-worker-publication",
             "responsibility": "Original Windows pwsh.exe staged worker A/B publication and original signed cold recovery; compile/discovery only on Linux.",
-            "excludes": "Other spiritual lifecycle cases, B2вЂ“B5 development, live providers and whole-migration acceptance. Worker owner requires native Windows; file owners use controlled file responders.",
+            "excludes": "Other spiritual lifecycle cases, B2–B5 development, live providers and whole-migration acceptance. Worker owner requires native Windows; file owners use controlled file responders.",
             "changeHints": [
                 "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.Spiritual*.cs",
                 "BookOfEternityClient.IntegrationTests/SpiritualLifecyclePublicationWitness.cs"
@@ -8941,7 +8956,7 @@
         {
             "id": "portable-spiritual-midpublication-recovery",
             "responsibility": "Original independent mixed cut between committed resource and wound publication, exact copied generation and signed authority, cold all-before/all-after recovery.",
-            "excludes": "Other spiritual lifecycle cases, B2вЂ“B5 development, live providers and whole-migration acceptance. Worker owner requires native Windows; file owners use controlled file responders.",
+            "excludes": "Other spiritual lifecycle cases, B2–B5 development, live providers and whole-migration acceptance. Worker owner requires native Windows; file owners use controlled file responders.",
             "changeHints": [
                 "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.Spiritual*.cs",
                 "BookOfEternityClient.IntegrationTests/SpiritualLifecyclePublicationWitness.cs"
@@ -8965,7 +8980,7 @@
         {
             "id": "portable-spiritual-staged-committed-recovery",
             "responsibility": "Original cold recovery after accepted A before Ready cleanup, requiring separately issued B Ready.",
-            "excludes": "Other spiritual lifecycle cases, B2вЂ“B5 development, live providers and whole-migration acceptance. Worker owner requires native Windows; file owners use controlled file responders.",
+            "excludes": "Other spiritual lifecycle cases, B2–B5 development, live providers and whole-migration acceptance. Worker owner requires native Windows; file owners use controlled file responders.",
             "changeHints": [
                 "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.Spiritual*.cs",
                 "BookOfEternityClient.IntegrationTests/SpiritualLifecyclePublicationWitness.cs"
@@ -8989,7 +9004,7 @@
         {
             "id": "portable-spiritual-staged-file-publication",
             "responsibility": "Original staged file A/B publication, stale Ready refusal and orphan Ready blocking with actual journal witnesses and settled actors.",
-            "excludes": "Other spiritual lifecycle cases, B2вЂ“B5 development, live providers and whole-migration acceptance. Worker owner requires native Windows; file owners use controlled file responders.",
+            "excludes": "Other spiritual lifecycle cases, B2–B5 development, live providers and whole-migration acceptance. Worker owner requires native Windows; file owners use controlled file responders.",
             "changeHints": [
                 "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.Spiritual*.cs",
                 "BookOfEternityClient.IntegrationTests/SpiritualLifecyclePublicationWitness.cs"
@@ -9039,7 +9054,7 @@
         },
         {
             "id": "portable-mods-original-ui-detail",
-            "responsibility": "Isolated original /РјРѕРґС‹ detail-panel manual-opening-path oracle; exact current path label and single line are required, all other technical/error checks preserved.",
+            "responsibility": "Isolated original /моды detail-panel manual-opening-path oracle; exact current path label and single line are required, all other technical/error checks preserved.",
             "excludes": "Unchanged choices Fact already passed baseline; actual desktop launch, entire Explorer UI, runtime/settings mutation and native qualification.",
             "changeHints": [
                 "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs",
@@ -9063,7 +9078,7 @@
         },
         {
             "id": "portable-mods-original-ui",
-            "responsibility": "Two original /РјРѕРґС‹ Explorer panels: detail loop and player-facing choices after canonical listing admission, preserving hidden-error checks and exact manual-opening path contract.",
+            "responsibility": "Two original /моды Explorer panels: detail loop and player-facing choices after canonical listing admission, preserving hidden-error checks and exact manual-opening path contract.",
             "excludes": "Actual desktop launch, complete Explorer UI, settings mutation, manifest atomicity and native qualification.",
             "changeHints": [
                 "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs",
@@ -11181,7 +11196,7 @@
         },
         {
             "id": "daren-standalone-browser-dispatch",
-            "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent Г— commit/rollback), no broader browser cohort.",
+            "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent × commit/rollback), no broader browser cohort.",
             "excludes": "No stub profile consumer, gameplay/economy/tier/text/model changes, live console/provider/saves/browser or Windows/fullgame qualification.",
             "changeHints": [
                 "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",
@@ -29866,7 +29881,7 @@
         },
         {
             "id": "portable-save-load-literal-names-linux",
-            "responsibility": "Exact native Linux payload spelling through held enumeration and actual Saveв†’typed Loadв†’Save; independent manifested Load commit/real rollback. Distinguish literal backslash from hierarchy, trailing backslash file, component backslash and arbitrary case pair; exact ZIP claims/hash/bytes, original generation/namespace/source/library/owned scratch.",
+            "responsibility": "Exact native Linux payload spelling through held enumeration and actual Save→typed Load→Save; independent manifested Load commit/real rollback. Distinguish literal backslash from hierarchy, trailing backslash file, component backslash and arbitrary case pair; exact ZIP claims/hash/bytes, original generation/namespace/source/library/owned scratch.",
             "excludes": "No signed pending producer acceptance, literal save destination names, Windows literal-name support, broad Save/Load suite or hostile owner races. Existing fixed-authority/path/hash/budget refusals remain.",
             "changeHints": [
                 "BookOfEternityClient/Core/FileSystemManager.cs",
@@ -30500,7 +30515,7 @@
         },
         {
             "id": "c5-browser-admission-diagnostics",
-            "responsibility": "#1553 bounded DEBUG opt-in original-browser profiling collector: synchronous nested self/inclusive wall accounting, concurrent branch isolation, finite row cap, disabled/invalid owned admission, create-only failure-isolated export and finite overhead calibration. Per-action sums never stand for latency; bounded engine-window contained/crossing attribution is distinct from external Helperв†’Acceptance. Content aggregation is ReaderFamilyГ—full immutable labels with no Path dimension; bounded real late-terminal branch failure/idle control distinguishes late observation from warm terminal wait. Real Meta residual source-group control compares disabled/enabled ordered reads/issues/input bytes and original failure/parent restoration; finite logical labels have no Path dimension.",
+            "responsibility": "#1553 bounded DEBUG opt-in original-browser profiling collector: synchronous nested self/inclusive wall accounting, concurrent branch isolation, finite row cap, disabled/invalid owned admission, create-only failure-isolated export and finite overhead calibration. Per-action sums never stand for latency; bounded engine-window contained/crossing attribution is distinct from external Helper→Acceptance. Content aggregation is ReaderFamily×full immutable labels with no Path dimension; bounded real late-terminal branch failure/idle control distinguishes late observation from warm terminal wait. Real Meta residual source-group control compares disabled/enabled ordered reads/issues/input bytes and original failure/parent restoration; finite logical labels have no Path dimension.",
             "excludes": "No product proof optimization, actual full C5 execution, latency/SLA, cross-lease PASS reuse, release telemetry or native Windows qualification.",
             "changeHints": [
                 "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.Diagnostics.cs",
