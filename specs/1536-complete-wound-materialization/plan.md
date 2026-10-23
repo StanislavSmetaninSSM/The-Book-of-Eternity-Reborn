@@ -11,7 +11,7 @@ Existing isolated branch/clone reused. Canonical spec above; logs outside Git.
   observer-enabled/disabled real fixture manager and nested original readers.
   Wire full producer observation and named expensive scenario stages, preserve
   all existing hooks and real abrupt cut; multiline XML on changed APIs.
-- [ ] T476: Current XML builds/binary/native/comment/catalog and affected cheap
+- [x] T476: Current XML builds/binary/native/comment/catalog and affected cheap
   diagnostic/seed/capture controls; independent full source review. Generate
   genuinely new source42 INPUT/two imports, immutable new slot, publish/recover
   exact source/input and qualify original600/820/15 launch.

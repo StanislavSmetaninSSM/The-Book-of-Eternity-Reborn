@@ -5,7 +5,7 @@ Issue#1536; PRODUCER1..7; owner2026-10-23 explicit autonomous instrumentation+sa
   and equivalent consistency; publish tracked probe before implementation.
 - [x] T475 [US3] Cheap compiling causal RED/GREEN, nullable actual fixture-manager
   observer seam and producer/scenario nested timers; original hooks/cut preserved.
-- [ ] T476 [US3] Current XML/binaries/native/catalog/selected affected controls and
+- [x] T476 [US3] Current XML/binaries/native/catalog/selected affected controls and
   independent source review; genuine new source42/two imports and exact remote
   source/input qualification before original.
 - [ ] T477 [US3] Same600/820/15 original with full uncapped producer+resumer capture,

@@ -1,3 +1,21 @@
+# Current checkpoint: r59 original PASS, full archive verified; analysis pending
+
+Original source9b88938cb,launchmetadata889c02169. Independent source/input gates
+accepted and23exactremote blobs recovered before freshoneuseoriginallaunch.
+T477-original-full completed:actualcase518.6110156sPASS,command542.1126068s,
+600/820/15 unchanged,1/1case,no timeout/underfill,owned/runtimecleanuptrue.
+Bothnative identities/birth/nonce/exits73and0/EOF/join complete;all4streamsSHA
+verified. Producer1949147523B,resumer3715332412B,bothstderr0. No livelargetrace
+read/hash/archive/parser during timedexecution;onlysmallrun/capturemetadata polls.
+D:complete archive T477-original-full-raw.zip:101members5709023067rawB,
+415943496ZIPB,SHA1B19BCB4564BD0E1D3B903723E4872DE13E124C1E231DD70EFD41317A7C8E069;
+everypayload rereadSHA/CRC verified. All-rowtimingparser/attribution/report and
+independent finaloutcome/retention stillpending. Nohistoricalcalleecauseclaim.
+13syntheticparsercontrolsPASS,independentreview0findings;actualnative metadata
+functionqualifiesbothroles. Existingr57rawstaysprotecteduntilacceptedreplacement.
+Next:parsecompletearchive,descendbigproducercosts,reportactualclock/observerlimits.
+
+# Prior r59 source checkpoint
 # Current checkpoint: r59 source accepted; fresh INPUT qualified, original unrun
 
 Issue#1536 PRODUCER1..7/T474..478, branch1536-crash5-linux-windows-spec-20261019.
