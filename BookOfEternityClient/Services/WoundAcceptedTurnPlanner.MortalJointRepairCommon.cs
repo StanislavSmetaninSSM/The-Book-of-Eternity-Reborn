@@ -10,6 +10,7 @@ internal static partial class WoundAcceptedTurnPlanner
     private sealed class JointCommonBaselineAuthority
     {
         private readonly MortalItemAcceptedTurnNormalizationSnapshot _items;
+        private readonly Func<OperationStructuralSnapshot?> _qteDataCapture;
         internal JointCommonBaselineAuthority(object issuer, object continuation, object reservation,
             GameEngine.MortalJointRepairMechanicalAdmission mechanical, AcceptedMechanicsWoundStageBundle bundle,
             MortalWoundCanonicalAnchorPlan anchors, TreatmentSkillProjectionAuthority skills,
@@ -21,6 +22,7 @@ internal static partial class WoundAcceptedTurnPlanner
             Bundle = bundle.DetachedCopy(); Anchors = anchors.DetachedCopy(); Skills = skills;
             ItemEnvelope = itemEnvelope.Clone(); _items = items.Clone();
             Fingerprint = ComputeFingerprint();
+            _qteDataCapture = CaptureQteCalculationInput;
         }
         internal object Continuation { get; }
         internal object Reservation { get; }
@@ -31,6 +33,38 @@ internal static partial class WoundAcceptedTurnPlanner
         internal MortalTreatmentItemCommandEnvelope ItemEnvelope { get; }
         internal MortalItemAcceptedTurnNormalizationSnapshot Items => _items.Clone();
         internal string Fingerprint { get; }
+
+        /// <summary>
+        /// Gets the stable policy for this baseline's complete current QTE calculation DATA.
+        /// </summary>
+        internal Func<OperationStructuralSnapshot?> QteDataCapture => _qteDataCapture;
+
+        /// <summary>
+        /// Captures actual mutable calculation inputs and immutable private companion identities without issuing authority.
+        /// </summary>
+        /// <returns>
+        /// Complete ordered comparison DATA, or null when the original calculation must handle an unsupported input.
+        /// </returns>
+        private OperationStructuralSnapshot? CaptureQteCalculationInput()
+        {
+            if (Continuation is not JointRepairContinuationAuthority joint ||
+                !Mechanical.BeforeImages.TryGetValue(MortalWoundOpportunityAdapter.DecisionPath, out var draft)) return null;
+            var binding = joint.AcquisitionInput.Binding;
+            return new(new string?[]
+            {
+                Fingerprint, joint.Fingerprint,
+                System.Text.Json.JsonSerializer.Serialize(binding),
+                joint.Checkpoint.ToJsonObject().ToJsonString(), joint.AcquisitionCommandRoot.ToJsonString(),
+                joint.Accepted.AcceptedStateFingerprint, joint.Request.RequestFingerprint,
+                joint.Resolution.ResolutionAuthorityFingerprint,
+                Bundle.FinalPlan.HistoryAfterImage.ToJsonString(),
+                draft.Existed.ToString(), draft.Bytes is { } bytes ? Convert.ToBase64String(bytes) : null, draft.Fingerprint
+            }, new object?[]
+            {
+                this, joint, Mechanical, Bundle, Anchors, Skills, ItemEnvelope, Reservation,
+                joint.Accepted, joint.Request, joint.Resolution
+            });
+        }
         /// <summary>
         /// Computes the retained common-baseline seal from its original companion fingerprints.
         /// </summary>

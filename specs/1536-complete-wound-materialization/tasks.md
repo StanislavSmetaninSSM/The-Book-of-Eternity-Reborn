@@ -2,8 +2,8 @@
 
 Issue#1536; QTECACHE1..7. Owner2026-10-23 explicitly authorizes implementation,
 cheap fixtures and the same600-second original with uncapped diagnostics, autonomously.
-- [ ] T466 [US1/US2] Audit exact QTE source/private dependencies and fresh barriers; present written specification, execute pinned Spec Kit plan/tasks and consistency, publish design before code.
-- [ ] T467 [US1/US2] Add compiling causal RED on cheap typed/file fixtures proving actual QTE DATA source repetition, detached results, source/structural changes, original refusal order and operation lifetime; assign categories.
+- [x] T466 [US1/US2] Exact source/private dependency and live idempotent-registry audit with independent Astra/high consultation; written spec presented under autonomy waiver, actual pinned plan/tasks/prerequisites and equivalent consistency, design80da373d8 published. Current1ad556e8a recovered22exact remote blobs/tree/noalternates.
+- [x] T467 [US1/US2] Current1ad XMLunitbuild0errors; actual13QTE cases:9causalFAIL/4PASS (8sources vs1); registry18:1causalFAIL/17PASS; readset31:1causalFAIL/30PASS (0vs4observedidentities). All62cases complete, no timeout, owned/runtime cleanuptrue. Raw evidenceD only; original source path/capabilities unchanged before GREEN.
 - [ ] T468 [US1/US2] Reuse successful detached QTE reconstruction contribution through existing service, preserving fresh admissions, source proof, original algorithms, independent mutable exports and fail/close retirement. Demonstrate GREEN and original source-count reduction.
 - [ ] T469 [US3] Verify affected categories/current XML builds/8DLL/native/catalog, independent complex review, genuine new current-source source42/twoimports; publish source/input and verify exact clean remote recovery before original.
 - [ ] T470 [US3] Run the identical FULL600/820/15 with uncappedD diagnostics; analyze complete trace against r56399.9290962s, original oracles/cleanup, independent outcome/retention review, source-only report/checkpoint push/recovery. Retire older raw only after verified complete replacement.

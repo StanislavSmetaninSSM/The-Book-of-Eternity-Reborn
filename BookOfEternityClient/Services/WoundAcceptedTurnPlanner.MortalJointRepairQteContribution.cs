@@ -12,7 +12,7 @@ internal static partial class WoundAcceptedTurnPlanner
         IReadOnlyDictionary<string, JsonObject> AfterImages);
 
     /// <summary>
-    /// Recomputes detached QTE data with both baseline checks and a fresh exit proof for an eligible reserved source read set.
+    /// Computes or reuses detached QTE DATA with both baseline checks and a fresh exit proof for every reserved source.
     /// </summary>
     /// <param name="files">
     /// The filesystem containing the actual current original and corrected command.
@@ -29,23 +29,13 @@ internal static partial class WoundAcceptedTurnPlanner
     private static async Task<JointQteContribution> RecomputeJointQteContributionAsync(
         FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, JointCommonBaselineAuthority baseline)
     {
-        var readSet = files.TryBeginReservedValidationReadSet(lease);
-        Exception? primaryFailure = null;
-        try
-        {
-            if (readSet != null) await readSet.OpenAsync();
-            var prepared = await JointRepairValidationCoordinator.RecomputeWithBaselineAsync(
-                () => ValidateJointRepairCommonBaselineAsync(files, lease, baseline),
-                () => PrepareJointQteContributionAsync(files, lease, baseline));
-            if (readSet != null) await readSet.CompleteAsync();
-            return new(WoundAcceptedTurnFingerprintWriter.Compute(prepared.Fields), prepared.AfterImages);
-        }
-        catch (Exception error) { primaryFailure = error; throw; }
-        finally
-        {
-            try { if (readSet != null) await readSet.DisposeAsync(); }
-            catch when (primaryFailure != null) { /* Preserve the original computation or proof refusal. */ }
-        }
+        var prepared = await JointQteContributionData.RecomputeAsync(files, lease, baseline, baseline.QteDataCapture,
+            () => baseline.Continuation is JointRepairContinuationAuthority joint &&
+                AcceptedTurnAuthorityRegistry.CanReuseMortalJointQteCalculation(files, lease,
+                    joint.Accepted, joint.Request, joint.Finalization),
+            () => ValidateJointRepairCommonBaselineAsync(files, lease, baseline),
+            () => PrepareJointQteContributionAsync(files, lease, baseline));
+        return new(WoundAcceptedTurnFingerprintWriter.Compute(prepared.Fields), prepared.AfterImages);
     }
 
     /// <summary>
@@ -63,7 +53,7 @@ internal static partial class WoundAcceptedTurnPlanner
     /// <returns>
     /// Detached fingerprint fields and successor images for finalization after the exit check.
     /// </returns>
-    private static async Task<(List<string?> Fields, IReadOnlyDictionary<string, JsonObject> AfterImages)>
+    private static async Task<JointQtePreparedData>
         PrepareJointQteContributionAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
             JointCommonBaselineAuthority baseline)
     {
@@ -159,7 +149,7 @@ internal static partial class WoundAcceptedTurnPlanner
             foreach (var row in successors.OrderBy(row => row.Key, StringComparer.Ordinal))
             { fields.Add(row.Key); fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(row.Value)); }
             heavyTimingJointQteBuildSuccessorsAndFields?.Dispose();
-            return (fields, successors);
+            return new(fields, successors);
         }
     }
 }

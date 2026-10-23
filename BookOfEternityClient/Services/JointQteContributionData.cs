@@ -1,4 +1,5 @@
 using System.Text.Json.Nodes;
+using System.Text.Json;
 using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
@@ -20,8 +21,51 @@ internal sealed record JointQtePreparedData(List<string?> Fields,
 /// </summary>
 internal static class JointQteContributionData
 {
+    private static readonly OperationComputation<CachedCalculation> Calculation = new(
+        "JointQte.ContributionData", 1, value => new(Copy(value.Data), value.Observations));
+
     /// <summary>
-    /// Reads detached calculation DATA for one already admitted baseline and current read phase.
+    /// Retains detached calculation values and immutable source comparison metadata only.
+    /// </summary>
+    /// <param name="Data">
+    /// Independently copied fields and successor images.
+    /// </param>
+    /// <param name="Observations">
+    /// Immutable source metadata with no reader or registry capability.
+    /// </param>
+    private sealed record CachedCalculation(JointQtePreparedData Data,
+        FileSystemManager.ValidationReadObservations Observations);
+
+    /// <summary>
+    /// Detaches every mutable field collection, dictionary and JSON node.
+    /// </summary>
+    /// <param name="data">
+    /// Successful original or retained calculation DATA.
+    /// </param>
+    /// <returns>
+    /// Independent calculation values with no mutable object shared with the source.
+    /// </returns>
+    private static JointQtePreparedData Copy(JointQtePreparedData data) => new(data.Fields.ToList(),
+        data.AfterImages.ToDictionary(row => row.Key, row => row.Value.DeepClone().AsObject(), StringComparer.Ordinal));
+
+    /// <summary>
+    /// Captures optional comparison DATA without replacing the original source refusal for an unsupported shape.
+    /// </summary>
+    /// <param name="capture">
+    /// Complete typed capture policy used by the existing operation dependency.
+    /// </param>
+    /// <returns>
+    /// Current immutable comparison DATA, or null when the original source must decide the result.
+    /// </returns>
+    private static OperationStructuralSnapshot? CaptureInput(Func<OperationStructuralSnapshot?> capture)
+    {
+        try { return capture(); }
+        catch (Exception error) when (error is ArgumentException or InvalidOperationException or
+            JsonException or OverflowException or NullReferenceException or NotSupportedException) { return null; }
+    }
+
+    /// <summary>
+    /// Computes or reuses detached calculation DATA between the original fresh baseline and source-proof boundaries.
     /// </summary>
     /// <param name="files">
     /// Actual manager owning the current operation and read phase.
@@ -57,7 +101,8 @@ internal static class JointQteContributionData
         try
         {
             if (readSet != null) await readSet.OpenAsync();
-            var prepared = await JointRepairValidationCoordinator.RecomputeWithBaselineAsync(validateBaseline, compute);
+            var prepared = await JointRepairValidationCoordinator.RecomputeWithBaselineAsync(validateBaseline,
+                () => ReadAsync(files, lease, owner, capture, readSet, canReuse, compute));
             if (readSet != null) await readSet.CompleteAsync();
             return prepared;
         }
@@ -70,7 +115,75 @@ internal static class JointQteContributionData
         finally
         {
             try { if (readSet != null) await readSet.DisposeAsync(); }
-            catch when (primaryFailure != null) { /* Preserve the original refusal. */ }
+            catch
+            {
+                files.InvalidateRecoveryValidationAfterFailure();
+                if (primaryFailure == null) throw;
+            }
         }
+    }
+
+    /// <summary>
+    /// Reuses calculation DATA only after current registry eligibility and complete source replay.
+    /// </summary>
+    /// <param name="files">
+    /// Actual file manager supplying the existing operation service.
+    /// </param>
+    /// <param name="lease">
+    /// Current original lease retained by the caller.
+    /// </param>
+    /// <param name="owner">
+    /// Exact private input owner for this calculation.
+    /// </param>
+    /// <param name="capture">
+    /// Stable complete current structural capture policy.
+    /// </param>
+    /// <param name="readSet">
+    /// Current reserved phase, or null for original source execution.
+    /// </param>
+    /// <param name="canReuse">
+    /// Fresh non-authorizing registry eligibility; false preserves original binding/restoration.
+    /// </param>
+    /// <param name="compute">
+    /// Original successful calculation source, including its existing refusal mapping.
+    /// </param>
+    /// <returns>
+    /// Independent calculation DATA, still subject to the surrounding baseline and exit proof.
+    /// </returns>
+    private static async Task<JointQtePreparedData> ReadAsync(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease, object owner,
+        Func<OperationStructuralSnapshot?> capture, FileSystemManager.ReservedValidationReadSet? readSet,
+        Func<bool> canReuse, Func<Task<JointQtePreparedData>> compute)
+    {
+        bool Eligible()
+        {
+            using var timing = files.MeasureOperation("JointQte.LiveCacheEligibility");
+            return canReuse();
+        }
+        if (readSet == null || !Eligible()) return Copy(await compute());
+        var input = CaptureInput(capture);
+        if (input == null) return Copy(await compute());
+        var computed = false;
+        async Task<CachedCalculation> Source()
+        {
+            computed = true;
+            using var timing = files.MeasureOperation("JointQte.CalculationSource");
+            var data = await compute();
+            return new(data, readSet.CaptureObservations());
+        }
+        var retained = await files.ComputeRecoveryDataAsync(Calculation, owner, lease, Source, capture);
+        if (!computed)
+        {
+            using var replay = files.MeasureOperation("JointQte.ValidateCachedSources");
+            if (!Eligible() || !await readSet.MatchesObservationsAsync(retained.Observations) || !Eligible() ||
+                CaptureInput(capture) is not { } currentInput || !input.Matches(currentInput))
+            {
+                using var fresh = files.ForceFreshRecoveryValidation();
+                using var fallback = files.MeasureOperation("JointQte.ChangedCacheSource");
+                return Copy(await compute());
+            }
+            using var reused = files.MeasureOperation("JointQte.CalculationReused");
+        }
+        return retained.Data;
     }
 }

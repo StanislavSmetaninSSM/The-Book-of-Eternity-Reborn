@@ -83,11 +83,16 @@ public partial class FileSystemManager
     /// <param name="compute">
     /// Original source work that returns DATA and grants no authority.
     /// </param>
+    /// <param name="capture">
+    /// Optional stable complete structural capture policy for mutable input DATA.
+    /// A null policy keeps the original immutable-input identity contract.
+    /// </param>
     /// <returns>
     /// A detached successful source result; failures are not converted to results.
     /// </returns>
     internal async Task<TResult> ComputeRecoveryDataAsync<TResult>(OperationComputation<TResult> computation,
-        object inputIdentity, CanonicalWriteLease lease, Func<Task<TResult>> compute)
+        object inputIdentity, CanonicalWriteLease lease, Func<Task<TResult>> compute,
+        Func<OperationStructuralSnapshot?>? capture = null)
     {
         try
         {
@@ -96,7 +101,7 @@ public partial class FileSystemManager
             ArgumentNullException.ThrowIfNull(compute);
             return ValidationReuseSuppression.Value != 0 || _recoveryValidation.Value is not { } scope
                 ? computation.Copy(await compute())
-                : await scope.ComputeAsync(computation, inputIdentity, lease, compute);
+                : await scope.ComputeAsync(computation, inputIdentity, lease, compute, capture);
         }
         catch { InvalidateRecoveryValidationAfterFailure(); throw; }
     }
@@ -299,11 +304,15 @@ public partial class FileSystemManager
         /// <param name="compute">
         /// Actual source computation, invoked on a miss or unsupported fresh route.
         /// </param>
+        /// <param name="capture">
+        /// Stable complete mutable-input capture policy, or null for the original immutable identity contract.
+        /// </param>
         /// <returns>
         /// A detached result after current source validation; errors retire reusable state.
         /// </returns>
         internal async Task<TResult> ComputeAsync<TResult>(OperationComputation<TResult> computation,
-            object inputIdentity, CanonicalWriteLease lease, Func<Task<TResult>> compute)
+            object inputIdentity, CanonicalWriteLease lease, Func<Task<TResult>> compute,
+            Func<OperationStructuralSnapshot?>? capture = null)
         {
             ObjectDisposedException.ThrowIf(Volatile.Read(ref _closed) != 0, this);
             using var request = _files.MeasureOperation("RecoveryValidation.Request." + computation.Name);
@@ -329,7 +338,11 @@ public partial class FileSystemManager
                     result = computation.Copy(await Source());
                 }
                 else
-                    result = await _operation.GetOrComputeAsync(computation, inputIdentity, _dependencies, _ => Source());
+                {
+                    var dependencies = capture == null ? _dependencies :
+                        new IOperationDependency[] { this, _operation.GetStructuralDependency(inputIdentity, capture) };
+                    result = await _operation.GetOrComputeAsync(computation, inputIdentity, dependencies, _ => Source());
+                }
                 if (!sourceExecuted)
                 {
                     Interlocked.Increment(ref _reuses);

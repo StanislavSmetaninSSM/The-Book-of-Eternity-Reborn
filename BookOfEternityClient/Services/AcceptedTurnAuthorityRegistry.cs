@@ -1072,7 +1072,7 @@ internal static partial class AcceptedTurnAuthorityRegistry
     }
 
     /// <summary>
-    /// Supplies the initial causal seam for fresh registry eligibility of detached joint QTE calculation DATA.
+    /// Checks fresh existing registry state before reusing detached joint QTE calculation DATA without rebinding or restoring claims.
     /// </summary>
     /// <param name="files">
     /// The filesystem whose existing root slot must remain current.
@@ -1090,11 +1090,37 @@ internal static partial class AcceptedTurnAuthorityRegistry
     /// The finalization whose request and resource companion fields must still agree.
     /// </param>
     /// <returns>
-    /// <see langword="false"/> until fresh eligibility inspection is implemented; original preparation remains required.
+    /// <see langword="true"/> only when binding and recovery would be idempotent for the exact current owner and held request;
+    /// otherwise, <see langword="false"/> so the original preparation performs its own ordered checks.
     /// </returns>
     internal static bool CanReuseMortalJointQteCalculation(FileSystemManager files,
         FileSystemManager.CanonicalWriteLease lease, MortalWoundTreatmentAcceptedStateAuthority accepted,
-        MortalWoundTreatmentAttemptRequest request, MortalWoundTreatmentResourceFinalization finalization) => false;
+        MortalWoundTreatmentAttemptRequest request, MortalWoundTreatmentResourceFinalization finalization)
+    {
+        if (files is null || lease is null || accepted is null || request is null || finalization is null)
+            return false;
+        try
+        {
+            // Lease and physical generation readers can invoke observers. Complete
+            // them before entering registry monitors, then inspect only existing state.
+            if (!accepted.IsLeaseBoundTo(files, lease))
+                return false;
+            var generation = files.ReadExistingSessionGeneration(lease);
+            if (generation is null)
+                return false;
+            var identity = files.CanonicalRootAuthorityIdentity;
+            var revision = identity.SessionGenerationRevision;
+            return RootSlots.TryGetValue(identity, out var slot) &&
+                   slot.CanReuseMortalJointQteCalculation(files, lease, generation, revision,
+                       accepted, request, finalization);
+        }
+        catch (Exception)
+        {
+            // Eligibility is optional and grants no authority. Preserve original
+            // preparation and its refusal ordering whenever this inspection is unavailable.
+            return false;
+        }
+    }
 
     /// <summary>
     /// Carries fresh registry facts for the non-authorizing idempotent-state policy without issuing any capability.
@@ -1150,15 +1176,34 @@ internal static partial class AcceptedTurnAuthorityRegistry
         bool HasRestartBlocker, bool HasValidatedHandoff, bool HasOpenReceipt);
 
     /// <summary>
-    /// Supplies the initial causal seam for the shared pure joint QTE registry idempotence policy.
+    /// Checks exact retained identities and finalization companions without issuing authority or retaining the result.
     /// </summary>
     /// <param name="state">
     /// Fresh exact registry identities and recovered-set facts; these facts grant no publication authority.
     /// </param>
     /// <returns>
-    /// <see langword="false"/> until the idempotent-state policy is implemented.
+    /// <see langword="true"/> only for completed recovery of the same single held request under an unchanged current owner,
+    /// with matching finalization companions and no publication boundary; otherwise, <see langword="false"/>.
     /// </returns>
-    internal static bool IsMortalJointQteCalculationStateIdempotent(MortalJointQteRegistryEligibilityState state) => false;
+    internal static bool IsMortalJointQteCalculationStateIdempotent(MortalJointQteRegistryEligibilityState state)
+    {
+        if (!state.CurrentRootAndLease || !state.RecoveryCompleted ||
+            state.ExpectedAcceptedState is null ||
+            !ReferenceEquals(state.CurrentAcceptedState, state.ExpectedAcceptedState) ||
+            state.HasRestartBlocker || state.HasValidatedHandoff || state.HasOpenReceipt ||
+            state.ExpectedRequest is null || state.Requests is not { Length: 1 } ||
+            state.HeldRequests is not { Length: 1 } || state.FinalizedRequests is not { Length: 0 } ||
+            !ReferenceEquals(state.Requests[0], state.ExpectedRequest) ||
+            !ReferenceEquals(state.HeldRequests[0], state.ExpectedRequest))
+            return false;
+        var resource = state.ExpectedRequest.ResourceAuthority;
+        return string.Equals(state.FinalizationRequestFingerprint,
+                   state.ExpectedRequest.RequestFingerprint, StringComparison.Ordinal) &&
+               string.Equals(state.FinalizationResourceFingerprint,
+                   resource.AuthorityFingerprint, StringComparison.Ordinal) &&
+               string.Equals(state.FinalizationReservationId,
+                   resource.ReservationId, StringComparison.Ordinal);
+    }
 
     internal static bool HasLiveMortalWoundProcedureReservationAgreement(
         FileSystemManager fileSystem,
@@ -1783,6 +1828,51 @@ internal static partial class AcceptedTurnAuthorityRegistry
         private string? _generation;
         private long _revision = -1;
         private AcceptedTurnAuthorityState? _state;
+
+        /// <summary>
+        /// Inspects the existing matching root slot without creating or replacing its accepted-turn state.
+        /// </summary>
+        /// <param name="files">
+        /// The exact filesystem owning the current canonical lease.
+        /// </param>
+        /// <param name="lease">
+        /// The lease already checked against the accepted-state authority outside registry monitors.
+        /// </param>
+        /// <param name="generation">
+        /// The current physical generation read before entering the registry monitor.
+        /// </param>
+        /// <param name="revision">
+        /// The root generation revision observed after physical reads completed.
+        /// </param>
+        /// <param name="accepted">
+        /// The exact accepted-state authority retained by the calculation.
+        /// </param>
+        /// <param name="request">
+        /// The exact original recovered held request.
+        /// </param>
+        /// <param name="finalization">
+        /// The candidate finalization whose request and resource companion metadata must agree.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if this unchanged slot retains an idempotent recovery state and the lease remains active;
+        /// otherwise, <see langword="false"/>.
+        /// </returns>
+        internal bool CanReuseMortalJointQteCalculation(FileSystemManager files,
+            FileSystemManager.CanonicalWriteLease lease, string generation, long revision,
+            MortalWoundTreatmentAcceptedStateAuthority accepted, MortalWoundTreatmentAttemptRequest request,
+            MortalWoundTreatmentResourceFinalization finalization)
+        {
+            lock (_gate)
+            {
+                if (_state is null || _revision != revision ||
+                    !string.Equals(_generation, generation, StringComparison.Ordinal) ||
+                    !ReferenceEquals(lease.Owner, files) || !lease.IsActive ||
+                    files.CanonicalRootAuthorityIdentity.SessionGenerationRevision != revision)
+                    return false;
+                return _state.CanReuseMortalJointQteCalculation(generation, revision, accepted, request, finalization) &&
+                       lease.IsActive && files.CanonicalRootAuthorityIdentity.SessionGenerationRevision == revision;
+            }
+        }
 
         /// <summary>
         /// Inspects the existing bound state without replacing a stale generation or slot.
@@ -2833,6 +2923,46 @@ internal static partial class AcceptedTurnAuthorityRegistry
                    reservation.SourceRolls[selectedOrdinal] == 1 &&
                    string.Equals(rollActorKind, "player", StringComparison.Ordinal) &&
                    string.Equals(rollActorId, "player_current", StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Evaluates fresh idempotent binding and recovery facts without restoring claims or probing publication permission.
+        /// </summary>
+        /// <param name="generation">
+        /// The physical generation already checked against the containing root slot.
+        /// </param>
+        /// <param name="revision">
+        /// The current generation revision already checked against the containing root slot.
+        /// </param>
+        /// <param name="accepted">
+        /// The exact accepted-state authority retained by the original calculation.
+        /// </param>
+        /// <param name="request">
+        /// The exact original recovered held request retained by the calculation.
+        /// </param>
+        /// <param name="finalization">
+        /// The candidate finalization with matching request, resource authority and reservation metadata.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> only while the current registry facts satisfy the shared pure idempotence policy;
+        /// otherwise, <see langword="false"/>.
+        /// </returns>
+        internal bool CanReuseMortalJointQteCalculation(string generation, long revision,
+            MortalWoundTreatmentAcceptedStateAuthority accepted, MortalWoundTreatmentAttemptRequest request,
+            MortalWoundTreatmentResourceFinalization finalization)
+        {
+            lock (_gate)
+            {
+                return IsMortalJointQteCalculationStateIdempotent(new(
+                    _mortalWoundTreatmentAcceptedState, accepted,
+                    _rootGenerationBound && _sessionGenerationRevision == revision &&
+                    string.Equals(_sessionGeneration, generation, StringComparison.Ordinal),
+                    _procedureClaimRecoveryCompleted, _recoveredTreatmentRequests,
+                    _recoveredHeldTreatmentRequests, _recoveredFinalizedTreatmentRequests, request,
+                    finalization.RequestFingerprint, finalization.ResourceAuthorityFingerprint,
+                    finalization.ReservationId, _treatmentPublicationRestartBlockerFingerprint is not null,
+                    _validatedTreatmentPublicationHandoff is not null, _openTreatmentPublicationReceipt is not null));
+            }
         }
 
         internal bool IsCurrentMortalWoundTreatmentAcceptedState(

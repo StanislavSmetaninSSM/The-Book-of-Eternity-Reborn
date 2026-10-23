@@ -2,6 +2,17 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-qte-data-controls",
+  "responsibility": "One genuine common/resource owner proves actual repeated QTE reconstruction sources collapse while both baseline checks and the current reserved source exit proof remain fresh on each call.",
+  "excludes": "No game loop, full-world fixture, invented authority, timeout increase or original-workload performance claim.",
+  "changeHints": ["BookOfEternityClient.IntegrationTests/JointBundleComponentTests.QteData.cs", "BookOfEternityClient/Services/JointQteContributionData.cs"],
+  "related": [{ "id": "core-joint-qte-contribution-data", "when": "QTE calculation DATA/source guard changes." }, { "id": "fr063-joint-bundle-copy-controls", "when": "Private baseline, source mutation, copy or abort contracts change." }],
+  "requirements": { "frontendBuild": false, "exclusive": true },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.JointBundleComponentTests.JointQteData_ReusesActualReconstructionAndRetainsFreshProofs"] }]
+},
+{
   "id": "core-joint-qte-registry-eligibility",
   "responsibility": "Fresh typed eligibility for skipping only idempotent joint QTE accepted-state binding and persisted request restoration, with exact owners, recovered sets and publication blockers.",
   "excludes": "No reservation minting, gameplay setup, authority substitution or permission cache.",

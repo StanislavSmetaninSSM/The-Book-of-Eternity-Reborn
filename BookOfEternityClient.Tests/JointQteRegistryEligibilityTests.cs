@@ -18,6 +18,20 @@ public sealed class JointQteRegistryEligibilityTests
     {
         var state = CreateState();
         Assert.True(AcceptedTurnAuthorityRegistry.IsMortalJointQteCalculationStateIdempotent(state));
+        Assert.False(AcceptedTurnAuthorityRegistry.IsMortalJointQteCalculationStateIdempotent(
+            state with { HasOpenReceipt = true }));
+        Assert.True(AcceptedTurnAuthorityRegistry.IsMortalJointQteCalculationStateIdempotent(state));
+    }
+
+    /// <summary>
+    /// Preserves original preparation when the optional facade or pure policy lacks required input facts.
+    /// </summary>
+    [Fact]
+    public void MissingEligibilityInputsRequireOriginalPreparation()
+    {
+        Assert.False(AcceptedTurnAuthorityRegistry.CanReuseMortalJointQteCalculation(
+            null!, null!, null!, null!, null!));
+        Assert.False(AcceptedTurnAuthorityRegistry.IsMortalJointQteCalculationStateIdempotent(default));
     }
 
     /// <summary>

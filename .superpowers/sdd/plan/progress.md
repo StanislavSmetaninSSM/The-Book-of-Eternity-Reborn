@@ -1,4 +1,4 @@
-# Current checkpoint: r57 QTE cache design, implementation pending
+# Current checkpoint: r57 causal RED verified, first GREEN candidate pending checks
 
 Issue1536/QTECACHE1..7/T466..470; base6de46c81ebee59f3f9d2f3f879508e9905fce980.
 User explicitly authorizes autonomous implementation/cheap fixtures/same original
@@ -7,8 +7,16 @@ pinned plan/tasks phases executed, bridge-equivalent consistency mapped in plan.
 Independent Astra/high bounded consultation found treatment-only source coverage
 and live registry side effects: require actual read-observation replay and narrow
 idempotent eligibility. Existing service only; no cached permission/capture.
-Next:T467 compiling cheap causal RED after source-only design checkpoint.
-No r57 builds/tests/source42/original executed. All r56 retained evidence remains.
+T467 actual published1ad XMLunitbuild0errors101.34s; QTE13complete9causalFAIL/
+4PASS (eight sources vsone), registry18complete1causalFAIL/17PASS, readset31complete
+1causalFAIL/30PASS (zero vsfour exact observed identities). All owned/runtime
+cleanuptrue; no timeout. Existing failure-order controls pass before caching.
+T468 candidate nowuses existing ComputeRecoveryDataAsync plus structural dependency,
+full read-observation replay and fresh registry idempotence; same shared production
+boundary exposes typed cheap seams. Genuine component adds3requests/1expectedsource
+and6baseline/3exitproof assertions. Current-source fixture slot qte-cache-v1 awaits
+genuine generation after final qualification. Next:build candidate/cheap GREEN.
+No r57 source42/original executed; first candidate/review unaccepted. All r56 retained evidence remains.
 Interface preflight:T467 fixture seam ->T468 same production DATA boundary;
 T468 descriptor/observations ->T469 source-bound current builds/review ->T470
 genuine unchanged-budget measurement. No task interface conflict; original

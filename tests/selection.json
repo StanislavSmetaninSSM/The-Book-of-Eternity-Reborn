@@ -2,106 +2,94 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "fr063-joint-bundle-copy-controls",
-      "reason": "Preserve the complete existing uncached constructor/copy/current-byte/private-history/abort and exact timing-tree controls alongside the new warmed stage-only fixture.",
-      "contracts": ["#1536 SEMANTIC3..6 / T464 independent review coverage"]
-    },
-    {
-      "category": "fr063-joint-semantic-data-controls",
-      "reason": "Actual genuine-owner stage sources must fall to one without weakening fresh handoff, history corruption, mutable-copy or abort refusal contracts.",
+      "category": "core-joint-qte-contribution-data",
+      "reason": "Actual shared QTE DATA boundary: repeated computation, complete source witnesses, structural aliases, copies and fresh/failed operation controls.",
       "contracts": [
-        "#1536 SEMANTIC1..6 / T462-464"
+        "#1536 QTECACHE1..7 / T466-470"
       ]
     },
     {
-      "category": "core-treatment-semantic-data",
-      "reason": "Causal actual semantic-source reduction and changed aliased request refusal without game construction.",
+      "category": "core-joint-qte-registry-eligibility",
+      "reason": "Fresh exact registry owner/recovered held request and special publication blockers must select only idempotent reuse.",
       "contracts": [
-        "#1536 SEMANTIC1..6 / T462-464"
+        "#1536 QTECACHE1..7 / T466-470"
       ]
     },
     {
-      "category": "core-operation-structural-data",
-      "reason": "Causal structural identity/data mismatch and malformed capture must not reuse success.",
+      "category": "fr063-reserved-validation-read-set",
+      "reason": "Observation capture/replay changes the current read-set contract; retain all exact reader, source drift, generation, overlap and exit proof controls.",
       "contracts": [
-        "#1536 SEMANTIC1..6 / T462-464"
-      ]
-    },
-    {
-      "category": "core-operation-synchronous",
-      "reason": "Causal native synchronous reuse and lifetime/dependency failures on independent in-memory values.",
-      "contracts": [
-        "#1536 SEMANTIC1..6 / T462-464; shared protocol covered alongside semantic and physical consumers."
-      ]
-    },
-    {
-      "category": "core-operation-validation-cache",
-      "reason": "Preserve original coordinator, dependency propagation, fresh/cancel/copy/backend invariants.",
-      "contracts": [
-        "#1536 SEMANTIC1..6 / T462-464; shared protocol covered alongside semantic and physical consumers."
-      ]
-    },
-    {
-      "category": "core-operation-lookup",
-      "reason": "Shared lookup/compute entry protocol must preserve genuine misses and hits.",
-      "contracts": [
-        "#1536 SEMANTIC1..6 / T462-464; shared protocol covered alongside semantic and physical consumers."
-      ]
-    },
-    {
-      "category": "core-operation-source-data",
-      "reason": "Shared whole-operation service now contains both semantic DATA and file DATA; preserve source fences, writes, drift, suspension and completion behavior.",
-      "contracts": [
-        "#1536 SEMANTIC1..7 / T464 affected-contract selection"
-      ]
-    },
-    {
-      "category": "core-lease-data-admission",
-      "reason": "Keep declared read admission and fresh callback/physical escape fences while borrowing the same operation for semantic DATA.",
-      "contracts": [
-        "#1536 SEMANTIC1..7 / T464 affected-contract selection"
-      ]
-    },
-    {
-      "category": "core-recovery-file-validation",
-      "reason": "Cross-consumer regression coverage for the shared synchronous/asynchronous coordinator, current leases and source mutation invalidation.",
-      "contracts": [
-        "#1536 SEMANTIC1..7 / T464 affected-contract selection"
+        "#1536 QTECACHE1..7 / T466-470"
       ]
     },
     {
       "category": "core-recovery-progression-data",
-      "reason": "Keep progression DATA reuse and fresh recovery boundaries in the existing operation service.",
+      "reason": "The existing ComputeRecoveryDataAsync now optionally registers a structural dependency; preserve its original progression consumer and all file/lease/fresh lifetime behavior.",
       "contracts": [
-        "#1536 SEMANTIC1..7 / T464 affected-contract selection"
+        "#1536 QTECACHE1..7 / T466-470"
       ]
     },
     {
-      "category": "core-service-cache",
-      "reason": "The existing backend remains the only result storage; preserve storage ownership, lifecycle and default presence contracts.",
+      "category": "core-recovery-file-validation",
+      "reason": "Cross-consumer recovery scope validation and live root/lease/source failures must still retire retained DATA.",
       "contracts": [
-        "#1536 SEMANTIC1..7 / T464 affected-contract selection"
+        "#1536 QTECACHE1..7 / T466-470"
       ]
     },
     {
-      "category": "core-repository-cache",
-      "reason": "Shared storage/repository composition must retain close, failed-source and reentrant callback behavior.",
+      "category": "core-operation-structural-data",
+      "reason": "Complete structural dependency versions and malformed/changed input must preserve source execution and never resurrect old results.",
       "contracts": [
-        "#1536 SEMANTIC1..7 / T464 affected-contract selection"
+        "#1536 QTECACHE1..7 / T466-470"
       ]
     },
     {
-      "category": "crash5-named-operation-timers",
-      "reason": "The passive synchronous observer context now has a direct file-free entry while timer failure/exception semantics stay unchanged.",
+      "category": "core-operation-validation-cache",
+      "reason": "Shared existing service backend must retain dependency propagation, copying, serial flow, cancellation and fresh/failure closure.",
       "contracts": [
-        "#1536 SEMANTIC1..7 / T464 affected-contract selection"
+        "#1536 QTECACHE1..7 / T466-470"
+      ]
+    },
+    {
+      "category": "core-operation-source-data",
+      "reason": "QTE source replay/fresh fallback interacts with the whole-operation file owner; retain mutation/fresh/completion fences.",
+      "contracts": [
+        "#1536 QTECACHE1..7 / T466-470"
+      ]
+    },
+    {
+      "category": "fr063-joint-validation-dedup-contracts",
+      "reason": "Keep exactly the original baseline entry/exit pair around successful QTE DATA.",
+      "contracts": [
+        "#1536 QTECACHE1..7 / T466-470"
+      ]
+    },
+    {
+      "category": "fr063-joint-validation-dedup-refusals",
+      "reason": "Keep original short-circuit refusal order and first exception for seal/source/baseline/companion failures.",
+      "contracts": [
+        "#1536 QTECACHE1..7 / T466-470"
       ]
     },
     {
       "category": "fr063-joint-interface-seed-input-contracts",
-      "reason": "The original measurement selects a genuinely new current-source semantic DATA seed slot; closed input selection and failure-without-fallback remain enforced.",
+      "reason": "The original measurement selects a genuinely new current-source source42 slot and preserves closed input/no fallback contracts.",
       "contracts": [
-        "#1536 SEMANTIC1..7 / T464 affected-contract selection"
+        "#1536 QTECACHE1..7 / T466-470"
+      ]
+    },
+    {
+      "category": "fr063-joint-qte-data-controls",
+      "reason": "One genuine resource/baseline/held owner must demonstrate actual original QTE source counts and fresh entry/exit proof counts.",
+      "contracts": [
+        "#1536 QTECACHE1..7 / T466-470"
+      ]
+    },
+    {
+      "category": "fr063-joint-bundle-copy-controls",
+      "reason": "Preserve genuine private-history/source mutation, independent copy and abort/current ownership contracts around common/resource integration.",
+      "contracts": [
+        "#1536 QTECACHE1..7 / T466-470"
       ]
     }
   ]

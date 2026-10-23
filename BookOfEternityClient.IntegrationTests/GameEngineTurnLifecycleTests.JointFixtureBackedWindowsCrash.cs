@@ -71,7 +71,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         return RunJointInterfaceActualProcessLossAsync(cut,
             extendedWindowsCrash: true,
             seedPackageRoot: Path.Combine(TestRepoPaths.RepoRoot, "specs", "1536-complete-wound-materialization",
-                "fixtures", "joint-interface-source42-semantic-data-v1", "package"),
+                "fixtures", "joint-interface-source42-qte-cache-v1", "package"),
             seedUsage: JointInterfaceSeedCrashInput.OrdinaryWindowsFiveCutsUsage,
             ownedContainerParent: requestedParent ?? (Path.GetDirectoryName(TestRepoPaths.RepoRoot)
                 ?? throw new InvalidDataException("Fixture-backed crash storage requires the checkout's explicit parent.")),
