@@ -162,6 +162,7 @@ public partial class FileSystemManager
     /// </returns>
     internal async Task InvokeRecoveryValidationCallbackAsync(Func<Task> callback)
     {
+        await VerifyPendingDeclaredSourceDataAsync();
         using var fresh = ForceFreshRecoveryValidation();
         await callback();
     }

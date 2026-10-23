@@ -209,8 +209,7 @@ public partial class GameEngine
         SessionFinalizationCheckpoint checkpoint)
     {
         if (_sessionFinalizationHooks?.AtCheckpointAsync is not { } callback) return;
-        using var freshSource = _fs.ForceFreshRecoveryValidation();
-        await callback(checkpoint);
+        await _fs.InvokeRecoveryValidationCallbackAsync(() => callback(checkpoint));
     }
 
     private Task InvokeSnapshotFileCapturedAsync(string relativePath) =>

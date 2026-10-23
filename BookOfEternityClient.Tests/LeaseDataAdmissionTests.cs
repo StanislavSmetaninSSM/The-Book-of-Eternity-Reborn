@@ -56,10 +56,14 @@ public sealed class LeaseDataAdmissionTests(ITestOutputHelper output)
         var expected = present ? "original" : null;
         Assert.Equal(expected, await Read(files, lease, path, reader));
         fixture.Counts.Clear();
+        var started = System.Diagnostics.Stopwatch.GetTimestamp();
         for (var i = 0; i < 8; i++) Assert.Equal(expected, await Read(files, lease, path, reader));
+        var reuseMilliseconds = System.Diagnostics.Stopwatch.GetElapsedTime(started).TotalMilliseconds;
         Assert.Equal(0, fixture.Count("Lease.Validate.Total"));
         Assert.Equal(0, fixture.Count("CanonicalPath.Resolve"));
         Assert.Equal(8, fixture.Count("LeaseDataHit.Reuse"));
+        Assert.Equal(0, fixture.Count("TrustedScope.Probe.GetAttributes"));
+        output.WriteLine(JsonSerializer.Serialize(new { Boundary = "lease_data_reuse", reader, present, Repeats = 8, reuseMilliseconds, FullAdmissions = fixture.Count("Lease.Validate.Total"), Attributes = fixture.Count("TrustedScope.Probe.GetAttributes") }));
         await operation.CompleteAsync();
         Assert.True(fixture.Count("Lease.Validate.Total") > 0);
         Assert.True(fixture.Count("OperationFileData.FreshSource") > 0);
@@ -73,8 +77,8 @@ public sealed class LeaseDataAdmissionTests(ITestOutputHelper output)
     /// </returns>
     public static IEnumerable<object[]> DriftCases()
     {
-        foreach (var drift in new[] { "main-running", "main-malformed", "worker-directory", "worker-file", "namespace" })
-        foreach (var boundary in new[] { "callback", "completion", "write", "explicit-admission", "miss" })
+        foreach (var drift in new[] { "main-running", "main-malformed", "worker-directory", "worker-file", "worker-link", "namespace" })
+        foreach (var boundary in new[] { "callback", "completion", "write", "runtime", "explicit-admission", "miss" })
             yield return [drift, boundary];
     }
 
@@ -103,6 +107,8 @@ public sealed class LeaseDataAdmissionTests(ITestOutputHelper output)
         Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
         fixture.Drift(drift);
         var called = false;
+        var loop = new GameLoop();
+        loop.SetSession("fixture", 42);
         try
         {
             Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
@@ -113,6 +119,7 @@ public sealed class LeaseDataAdmissionTests(ITestOutputHelper output)
                     case "callback": await files.InvokeRecoveryValidationCallbackAsync(() => { called = true; return Task.CompletedTask; }); break;
                     case "completion": await operation.CompleteAsync(); break;
                     case "write": await files.VerifySourceDataAsync(lease); await files.WriteFileAtomicAsync(lease, "effect.txt", "forbidden"); break;
+                    case "runtime": await GameEngine.AdvanceVerifiedMortalJointRuntimeAsync(files, lease, loop, 43); break;
                     case "explicit-admission": files.EnsureCanonicalWriteLeaseActive(lease); break;
                     case "miss": await files.ReadFileAsync(lease, "new-miss.txt"); break;
                     default: throw new ArgumentOutOfRangeException(nameof(boundary));
@@ -120,6 +127,7 @@ public sealed class LeaseDataAdmissionTests(ITestOutputHelper output)
             });
             Assert.NotNull(failure);
             Assert.False(called);
+            Assert.Equal(42, loop.TurnNumber);
             Assert.False(File.Exists(Path.Combine(fixture.Root, "game_session", "effect.txt")));
         }
         finally { operation.Fail(); }
@@ -197,6 +205,7 @@ public sealed class LeaseDataAdmissionTests(ITestOutputHelper output)
         private readonly string _nonce = Guid.NewGuid().ToString("N");
         private readonly StreamWriter _raw;
         private readonly string _rawPath;
+        private string? _junction;
 
         /// <summary>
         /// Creates a real manager, minimal source and complete passive timing receiver.
@@ -278,6 +287,7 @@ public sealed class LeaseDataAdmissionTests(ITestOutputHelper output)
                 case "main-malformed": Directory.CreateDirectory(Path.GetDirectoryName(main)!); File.WriteAllText(main, "malformed"); break;
                 case "worker-directory": Directory.CreateDirectory(workers); break;
                 case "worker-file": Directory.CreateDirectory(Path.GetDirectoryName(workers)!); File.WriteAllText(workers, "blocker"); break;
+                case "worker-link": CreateOwnedJunction(workers); break;
                 case "namespace":
                     var directory = Path.GetDirectoryName(main)!;
                     Assert.False(Directory.Exists(directory));
@@ -289,6 +299,35 @@ public sealed class LeaseDataAdmissionTests(ITestOutputHelper output)
         }
 
         /// <summary>
+        /// Creates one native junction whose link and target are both descendants of this verified fixture root.
+        /// </summary>
+        /// <param name="path">
+        /// Exact absent worker-inventory entry owned by this fixture.
+        /// </param>
+        private void CreateOwnedJunction(string path)
+        {
+            Assert.True(OperatingSystem.IsWindows());
+            Assert.Equal(_nonce, File.ReadAllText(Path.Combine(Root, ".fixture-owner")));
+            var target = Path.Combine(Root, "junction-target");
+            Assert.True(Path.GetFullPath(path).StartsWith(Path.GetFullPath(Root) + Path.DirectorySeparatorChar, StringComparison.Ordinal));
+            Assert.DoesNotContain('"', path + target);
+            Assert.DoesNotContain('%', path + target);
+            Assert.False(Path.Exists(path));
+            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+            Directory.CreateDirectory(target);
+            _junction = path;
+            var start = new System.Diagnostics.ProcessStartInfo(Path.Combine(Environment.SystemDirectory, "cmd.exe"),
+                $"/d /v:off /c mklink /J \"{path}\" \"{target}\"")
+            { UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true };
+            using var process = System.Diagnostics.Process.Start(start) ?? throw new IOException("Owned junction helper did not start.");
+            var stdout = process.StandardOutput.ReadToEndAsync();
+            var stderr = process.StandardError.ReadToEndAsync();
+            if (!process.WaitForExit(10000)) { process.Kill(entireProcessTree: true); process.WaitForExit(); }
+            Assert.True(process.ExitCode == 0, stdout.GetAwaiter().GetResult() + stderr.GetAwaiter().GetResult());
+            Assert.True(File.GetAttributes(path).HasFlag(FileAttributes.ReparsePoint));
+        }
+
+        /// <summary>
         /// Closes every diagnostic row and removes only the verified nonce-owned root.
         /// </summary>
         public void Dispose()
@@ -296,6 +335,12 @@ public sealed class LeaseDataAdmissionTests(ITestOutputHelper output)
             _raw.Dispose();
             Assert.Equal("boe-lease-data-" + _nonce, Path.GetFileName(Root));
             Assert.Equal(_nonce, File.ReadAllText(Path.Combine(Root, ".fixture-owner")));
+            if (_junction != null && Path.Exists(_junction))
+            {
+                Assert.True(Path.GetFullPath(_junction).StartsWith(Path.GetFullPath(Root) + Path.DirectorySeparatorChar, StringComparison.Ordinal));
+                Assert.True(File.GetAttributes(_junction).HasFlag(FileAttributes.ReparsePoint));
+                Directory.Delete(_junction, recursive: false);
+            }
             new TrustedLocalFileScope([Path.GetTempPath()]).DeleteOwnedTree(Root);
             using var stream = File.OpenRead(_rawPath);
             _output.WriteLine(JsonSerializer.Serialize(new { Boundary = "lease_data_diagnostics", Path = _rawPath, Bytes = stream.Length,

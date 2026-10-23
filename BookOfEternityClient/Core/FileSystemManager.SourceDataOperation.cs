@@ -7,6 +7,66 @@ public partial class FileSystemManager
     private readonly AsyncLocal<SourceDataOperation?> _sourceDataOperation = new();
 
     /// <summary>
+    /// Selects genuine provisional DATA before filesystem admission only for a known declared reader policy.
+    /// </summary>
+    /// <param name="lease">
+    /// Exact current adapter whose first source read already passed full admission.
+    /// </param>
+    /// <param name="path">
+    /// Exact raw ordinal path previously dispatched by the normal declared reader.
+    /// </param>
+    /// <param name="asynchronous">
+    /// Whether the normal reader uses its asynchronous family.
+    /// </param>
+    /// <param name="snapshot">
+    /// Detached provisional DATA on a hit, including null for recorded absence; otherwise null.
+    /// </param>
+    /// <returns>
+    /// True only for a present eligible service entry; false preserves the original full reader route.
+    /// </returns>
+    private bool TryReadDeclaredSourceData(CanonicalWriteLease lease, string path, bool asynchronous,
+        out CanonicalFileReadSnapshot? snapshot)
+    {
+        snapshot = null;
+        return _validationReadSet.Value == null && ValidationReuseSuppression.Value == 0 &&
+            _sourceDataOperation.Value is { } operation && operation.TryReadDeclaredSnapshot(lease, path, asynchronous, out snapshot);
+    }
+
+    /// <summary>
+    /// Records the actual successful normal reader dispatch without retaining DATA or namespace facts twice.
+    /// </summary>
+    /// <param name="lease">
+    /// Original fully admitted physical adapter.
+    /// </param>
+    /// <param name="path">
+    /// Original raw ordinal path spelling.
+    /// </param>
+    /// <param name="asynchronous">
+    /// Whether the normal reader used its asynchronous family.
+    /// </param>
+    /// <param name="ordinary">
+    /// Actual original dispatch decision, made by the unchanged filesystem route.
+    /// </param>
+    private void RememberDeclaredSourceRoute(CanonicalWriteLease lease, string path, bool asynchronous, bool ordinary)
+    {
+        if (_validationReadSet.Value != null || ValidationReuseSuppression.Value != 0) return;
+        var family = asynchronous
+            ? ordinary ? ValidationSnapshotFamily.OrdinaryAsync : ValidationSnapshotFamily.ProtectedAsync
+            : ordinary ? ValidationSnapshotFamily.OrdinarySync : ValidationSnapshotFamily.ProtectedSync;
+        _sourceDataOperation.Value?.RegisterDeclaredRoute(lease, path, family);
+    }
+
+    /// <summary>
+    /// Freshly closes issued fast DATA before an arbitrary callback can consume it outside the owning protocol.
+    /// </summary>
+    /// <returns>
+    /// Completion after the original full authority and source fence, or immediately when no fast DATA is pending.
+    /// </returns>
+    private Task VerifyPendingDeclaredSourceDataAsync() =>
+        ValidationReuseSuppression.Value == 0 && _sourceDataOperation.Value is { } operation
+            ? operation.VerifyPendingDeclaredDataAsync() : Task.CompletedTask;
+
+    /// <summary>
     /// Registers an owning source DATA lifetime or borrows the operation already present in this flow.
     /// </summary>
     /// <returns>
@@ -62,6 +122,7 @@ public partial class FileSystemManager
             "Operation.FileSnapshot", 1, value => value == null ? null : new((byte[])value.Content.Clone(), value.LastWriteTimeUtc));
         private readonly object _gate = new();
         private readonly Dictionary<(string Path, ValidationSnapshotFamily Family, bool Explicit), SourceKey> _keys = new();
+        private readonly Dictionary<(string Path, bool Async), SourceKey> _declaredRoutes = new();
         private readonly List<SourceKey> _touched = new();
         private CanonicalWriteLease? _lease;
         private LocalSessionGenerationSnapshot? _generation;
@@ -74,6 +135,7 @@ public partial class FileSystemManager
         private CanonicalWriteLease? _generationLease;
         private CanonicalWriteLease? _closingLease;
         private bool _busy;
+        private bool _pendingDeclaredData;
         private volatile bool _failed;
         private volatile bool _completed;
         private volatile int _suspended;
@@ -130,7 +192,7 @@ public partial class FileSystemManager
             get
             {
                 lock (_gate)
-                    return _busy || _suspended != 0 || _keys.Count != 0 || _touched.Count != 0 || _lease != null || _generation != null ||
+                    return _busy || _suspended != 0 || _keys.Count != 0 || _declaredRoutes.Count != 0 || _pendingDeclaredData || _touched.Count != 0 || _lease != null || _generation != null ||
                         _generationLease != null || _closingLease != null || SourceReadBarrierForTests != null || GenerationReadBarrierForTests != null ||
                         _verifiedLease != null || _verifiedEntry != null || _verifiedRegistration != null;
             }
@@ -342,6 +404,97 @@ public partial class FileSystemManager
         }
 
         /// <summary>
+        /// Registers only an already stored explicit source identity from the successful original reader route.
+        /// </summary>
+        /// <param name="lease">
+        /// Exact original adapter whose fresh generation has already been bound.
+        /// </param>
+        /// <param name="path">
+        /// Original raw ordinal spelling, without normalization or alias inference.
+        /// </param>
+        /// <param name="family">
+        /// Actual original synchronous or asynchronous, ordinary or protected reader family.
+        /// </param>
+        internal void RegisterDeclaredRoute(CanonicalWriteLease lease, string path, ValidationSnapshotFamily family)
+        {
+            lock (_gate)
+            {
+                if (_closed || _failed || _completed || _suspended != 0 || _busy || _closingLease != null ||
+                    !ReferenceEquals(_generationLease, lease) || !ReferenceEquals(_lease, lease) ||
+                    !TryRootVersion(out var root) || !ReferenceEquals(root, _rootVersion)) return;
+                if (_keys.TryGetValue((path, family, true), out var key))
+                    _declaredRoutes[(path, family is ValidationSnapshotFamily.OrdinaryAsync or ValidationSnapshotFamily.ProtectedAsync)] = key;
+            }
+        }
+
+        /// <summary>
+        /// Issues detached provisional DATA without source IO or filesystem authority classification.
+        /// </summary>
+        /// <param name="lease">
+        /// Exact live current physical adapter; a first or replacement adapter retains full admission.
+        /// </param>
+        /// <param name="path">
+        /// Exact raw ordinal normal-reader spelling.
+        /// </param>
+        /// <param name="asynchronous">
+        /// Whether to select the previously recorded asynchronous reader policy.
+        /// </param>
+        /// <param name="snapshot">
+        /// Detached stored DATA, including null absence, when the result is a hit; otherwise null.
+        /// </param>
+        /// <returns>
+        /// True for an actual eligible service hit; false never computes, probes or grants permission.
+        /// </returns>
+        internal bool TryReadDeclaredSnapshot(CanonicalWriteLease lease, string path, bool asynchronous,
+            out CanonicalFileReadSnapshot? snapshot)
+        {
+            snapshot = null;
+            SourceKey key;
+            lock (_gate)
+            {
+                ObjectDisposedException.ThrowIf(_closed, this);
+                if (_suspended != 0) return false;
+                RequireOpen();
+                if (!ReferenceEquals(_generationLease, lease) || !_declaredRoutes.TryGetValue((path, asynchronous), out key!)) return false;
+            }
+            if (!EnterRead(lease)) return false;
+            try
+            {
+                using var request = _files.MeasureOperation("LeaseDataHit.Request");
+                var lookup = _operation.TryGetAsync(Snapshot, key, [this]);
+                if (!lookup.IsCompleted) throw new InvalidOperationException("A cache-only source lookup did not settle synchronously.");
+                var result = lookup.GetAwaiter().GetResult();
+                RequireOpen();
+                if (!result.Found) return false;
+                _pendingDeclaredData = true;
+                snapshot = result.Value;
+                using var reuse = _files.MeasureOperation("LeaseDataHit.Reuse");
+                return true;
+            }
+            catch { _failed = true; throw; }
+            finally { LeaveWork(); }
+        }
+
+        /// <summary>
+        /// Awaits the original full source fence before fast provisional results reach an arbitrary callback.
+        /// </summary>
+        /// <returns>
+        /// Completion after verification, or immediately during an independently fresh protocol or without pending DATA.
+        /// </returns>
+        internal Task VerifyPendingDeclaredDataAsync()
+        {
+            CanonicalWriteLease lease;
+            lock (_gate)
+            {
+                ObjectDisposedException.ThrowIf(_closed, this);
+                if (_suspended != 0 || !_pendingDeclaredData) return Task.CompletedTask;
+                RequireOpen();
+                lease = _lease ?? throw new InvalidOperationException("Pending DATA lost its original adapter.");
+            }
+            return VerifyAsync(lease);
+        }
+
+        /// <summary>
         /// Reuses synchronous source DATA without blocking on unfinished asynchronous work.
         /// </summary>
         /// <param name="path">
@@ -501,6 +654,7 @@ public partial class FileSystemManager
                 _verifiedLease = lease;
                 _verifiedEntry = MainAdmissions.Value;
                 _verifiedRegistration = lease.AmbientRegistration;
+                _pendingDeclaredData = false;
             }
             catch { _failed = true; throw; }
             finally { LeaveWork(); }
@@ -668,6 +822,8 @@ public partial class FileSystemManager
                 if (ReferenceEquals(_lease, lease)) _lease = null;
                 if (ReferenceEquals(_generationLease, lease)) _generationLease = null;
                 if (ReferenceEquals(_closingLease, lease)) _closingLease = null;
+                _declaredRoutes.Clear();
+                _pendingDeclaredData = false;
                 ClearReceipt();
                 if (_closed && !_busy && _suspended == 0) DropLocalReferences();
             }
@@ -690,7 +846,7 @@ public partial class FileSystemManager
         /// </summary>
         private void DropLocalReferences()
         {
-            _keys.Clear(); _touched.Clear(); _generation = null; _generationLease = null;
+            _keys.Clear(); _declaredRoutes.Clear(); _pendingDeclaredData = false; _touched.Clear(); _generation = null; _generationLease = null;
             _rootVersion = null; SourceReadBarrierForTests = null; GenerationReadBarrierForTests = null; ClearReceipt();
             if (_closingLease == null)
             {
@@ -711,6 +867,8 @@ public partial class FileSystemManager
         {
             using var fresh = _operation.ForceFresh();
             _keys.Clear();
+            _declaredRoutes.Clear();
+            _pendingDeclaredData = false;
             _touched.Clear();
             _generation = null;
             _generationLease = null;

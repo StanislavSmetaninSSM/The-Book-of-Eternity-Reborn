@@ -1703,7 +1703,8 @@ public partial class FileSystemManager
     /// Reads text using the declared lease and original ordinary or protected reader.
     /// </summary>
     /// <param name="writeLease">
-    /// Active lease owned by this manager, validated with the original main and worker admission.
+    /// Original manager-owned lease. Fresh source reads retain full main and worker admission;
+    /// cached provisional DATA requires its exact live bound adapter and the owning fresh effect or success fence.
     /// </param>
     /// <param name="relativePath">
     /// Original session-relative spelling; invalid or null paths retain their original refusal.
@@ -1720,10 +1721,14 @@ public partial class FileSystemManager
         try
         {
 #endif
+        if (TryReadDeclaredSourceData(writeLease, relativePath, true, out var cached)) return DecodeFileSnapshot(cached);
         EnsureValidCanonicalWriteLease(writeLease);
-        var result = UsesTrustedLocalWriter(writeLease, relativePath)
+        var ordinary = UsesTrustedLocalWriter(writeLease, relativePath);
+        var result = ordinary
             ? await ReadOrdinaryFileCoreAsync(relativePath, writeLease)
             : await ReadFileCoreAsync(relativePath, writeLease);
+
+        RememberDeclaredSourceRoute(writeLease, relativePath, true, ordinary);
 
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "explicit-text-async", "semantic", result == null ? "returned-missing" : "returned-present");
@@ -1784,7 +1789,8 @@ public partial class FileSystemManager
     /// Reads detached bytes using the declared lease and original source reader.
     /// </summary>
     /// <param name="writeLease">
-    /// Active lease owned by this manager, validated with the original main and worker admission.
+    /// Original manager-owned lease. Fresh source reads retain full main and worker admission;
+    /// cached provisional DATA requires its exact live bound adapter and the owning fresh effect or success fence.
     /// </param>
     /// <param name="relativePath">
     /// Original session-relative spelling; invalid or null paths retain their original refusal.
@@ -1801,10 +1807,14 @@ public partial class FileSystemManager
         try
         {
 #endif
+        if (TryReadDeclaredSourceData(writeLease, relativePath, true, out var cached)) return cached?.Content;
         EnsureValidCanonicalWriteLease(writeLease);
-        var result = UsesTrustedLocalWriter(writeLease, relativePath)
+        var ordinary = UsesTrustedLocalWriter(writeLease, relativePath);
+        var result = ordinary
             ? await ReadOrdinaryFileBytesCoreAsync(relativePath, CancellationToken.None, writeLease)
             : await ReadFileBytesCoreAsync(relativePath, CancellationToken.None, writeLease);
+
+        RememberDeclaredSourceRoute(writeLease, relativePath, true, ordinary);
 
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "explicit-bytes-async", "semantic", result == null ? "returned-missing" : "returned-present");
@@ -1821,7 +1831,8 @@ public partial class FileSystemManager
     /// Reads detached content and timestamp using the declared lease and original reader family.
     /// </summary>
     /// <param name="writeLease">
-    /// Active lease owned by this manager, validated with the original main and worker admission.
+    /// Original manager-owned lease. Fresh source reads retain full main and worker admission;
+    /// cached provisional DATA requires its exact live bound adapter and the owning fresh effect or success fence.
     /// </param>
     /// <param name="relativePath">
     /// Original session-relative spelling; invalid or null paths retain their original refusal.
@@ -1838,10 +1849,14 @@ public partial class FileSystemManager
         try
         {
 #endif
+        if (TryReadDeclaredSourceData(writeLease, relativePath, true, out var cached)) return cached;
         EnsureValidCanonicalWriteLease(writeLease);
-        var result = UsesTrustedLocalWriter(writeLease, relativePath)
+        var ordinary = UsesTrustedLocalWriter(writeLease, relativePath);
+        var result = ordinary
             ? await ReadOrdinaryFileSnapshotCoreAsync(relativePath, CancellationToken.None, writeLease)
             : await ReadFileSnapshotCoreAsync(relativePath, CancellationToken.None, writeLease);
+
+        RememberDeclaredSourceRoute(writeLease, relativePath, true, ordinary);
 
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "explicit-snapshot-async", "semantic", result == null ? "returned-missing" : "returned-present");
@@ -1908,7 +1923,8 @@ public partial class FileSystemManager
     /// Reads text synchronously under the supplied original lease without acquiring a new lease.
     /// </summary>
     /// <param name="writeLease">
-    /// Active lease owned by this manager, validated with the original main and worker admission.
+    /// Original manager-owned lease. Fresh source reads retain full main and worker admission;
+    /// cached provisional DATA requires its exact live bound adapter and the owning fresh effect or success fence.
     /// </param>
     /// <param name="relativePath">
     /// Original session-relative spelling; invalid or null paths retain their original refusal.
@@ -1920,12 +1936,16 @@ public partial class FileSystemManager
         CanonicalWriteLease writeLease,
         string relativePath)
     {
+        if (TryReadDeclaredSourceData(writeLease, relativePath, false, out var cached)) return DecodeFileSnapshot(cached);
         EnsureValidCanonicalWriteLease(writeLease);
         // The explicit lease already supplies publication quiescence, even when
         // its ambient execution context did not flow to this synchronous caller.
-        return DecodeFileSnapshot(UsesTrustedLocalWriter(writeLease, relativePath)
+        var ordinary = UsesTrustedLocalWriter(writeLease, relativePath);
+        var result = DecodeFileSnapshot(ordinary
             ? ReadOrdinaryFileSnapshotCore(relativePath, writeLease)
             : ReadFileSnapshotCore(relativePath, writeLease));
+        RememberDeclaredSourceRoute(writeLease, relativePath, false, ordinary);
+        return result;
     }
 
     private static string? DecodeFileSnapshot(CanonicalFileReadSnapshot? snapshot)
@@ -1950,7 +1970,8 @@ public partial class FileSystemManager
     /// Reads detached bytes synchronously while retaining original admission checks.
     /// </summary>
     /// <param name="writeLease">
-    /// Active lease owned by this manager, validated with the original main and worker admission.
+    /// Original manager-owned lease. Fresh source reads retain full main and worker admission;
+    /// cached provisional DATA requires its exact live bound adapter and the owning fresh effect or success fence.
     /// </param>
     /// <param name="relativePath">
     /// Original session-relative spelling; invalid or null paths retain their original refusal.
@@ -1960,11 +1981,14 @@ public partial class FileSystemManager
     /// </returns>
     internal byte[]? ReadFileBytesSync(CanonicalWriteLease writeLease, string relativePath)
     {
+        if (TryReadDeclaredSourceData(writeLease, relativePath, false, out var cached)) return cached?.Content;
         EnsureValidCanonicalWriteLease(writeLease);
-        var snapshot = UsesTrustedLocalWriter(writeLease, relativePath)
+        var ordinary = UsesTrustedLocalWriter(writeLease, relativePath);
+        var snapshot = ordinary
             ? ReadOrdinaryFileSnapshotCore(relativePath, writeLease)
             : ReadFileSnapshotCore(relativePath, writeLease);
         EnsureValidCanonicalWriteLease(writeLease);
+        RememberDeclaredSourceRoute(writeLease, relativePath, false, ordinary);
         return snapshot?.Content;
     }
 

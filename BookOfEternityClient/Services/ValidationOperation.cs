@@ -123,6 +123,42 @@ internal sealed class ValidationOperation : IDisposable
         object inputIdentity, IReadOnlyList<IOperationDependency> dependencies,
         Func<CancellationToken, Task<TResult>> compute, CancellationToken cancellationToken = default)
     {
+        if (compute is null)
+        {
+            InvalidateAfterFailure();
+            throw new ArgumentNullException(nameof(compute));
+        }
+        return (await GetOrLookupAsync(computation, inputIdentity, dependencies, compute, cancellationToken).ConfigureAwait(false)).Value;
+    }
+
+    /// <summary>
+    /// Shares exact dependency, copying and serial ownership rules between computing and noncomputing requests.
+    /// </summary>
+    /// <typeparam name="TResult">
+    /// Registered result type, including legitimate default values.
+    /// </typeparam>
+    /// <param name="computation">
+    /// Exact computation identity and copy policy.
+    /// </param>
+    /// <param name="inputIdentity">
+    /// Complete stable input and policy identity.
+    /// </param>
+    /// <param name="dependencies">
+    /// Ordered complete direct dependency declaration.
+    /// </param>
+    /// <param name="compute">
+    /// Original source computation, or null for a noncomputing lookup.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Cancellation observed throughout lookup, source computation and copying.
+    /// </param>
+    /// <returns>
+    /// A detached found result, or a miss when no source was requested and no eligible entry exists.
+    /// </returns>
+    private async Task<OperationLookup<TResult>> GetOrLookupAsync<TResult>(OperationComputation<TResult> computation,
+        object inputIdentity, IReadOnlyList<IOperationDependency> dependencies,
+        Func<CancellationToken, Task<TResult>>? compute, CancellationToken cancellationToken = default)
+    {
         var parent = _flow.Value;
         Frame? frame = null;
         try
@@ -130,7 +166,6 @@ internal sealed class ValidationOperation : IDisposable
             ArgumentNullException.ThrowIfNull(computation);
             ArgumentNullException.ThrowIfNull(inputIdentity);
             ArgumentNullException.ThrowIfNull(dependencies);
-            ArgumentNullException.ThrowIfNull(compute);
             var declaration = dependencies.ToArray();
             foreach (var dependency in declaration) ArgumentNullException.ThrowIfNull(dependency);
             var key = new EntryKey(computation, inputIdentity);
@@ -178,10 +213,17 @@ internal sealed class ValidationOperation : IDisposable
                     lock (_gate)
                     {
                         RequireActive(frame);
-                        if (frame.Eligible && frame.Fresh is null) return reused;
+                        if (frame.Eligible && frame.Fresh is null) return new(true, reused);
                     }
                 }
                 // Callbacks may retire a selected hit while still permitting an uncached fresh computation.
+            }
+
+            if (compute is null)
+            {
+                RequireCurrent(frame);
+                cancellationToken.ThrowIfCancellationRequested();
+                return new(false, default!);
             }
 
             // A stale logical key is replaced, never retained once for every historical version.
@@ -219,7 +261,7 @@ internal sealed class ValidationOperation : IDisposable
             }
             RequireCurrent(frame);
             cancellationToken.ThrowIfCancellationRequested();
-            return result;
+            return new(true, result);
         }
         catch
         {
@@ -256,7 +298,7 @@ internal sealed class ValidationOperation : IDisposable
     /// </returns>
     internal Task<OperationLookup<TResult>> TryGetAsync<TResult>(OperationComputation<TResult> computation,
         object inputIdentity, IReadOnlyList<IOperationDependency> dependencies, CancellationToken cancellationToken = default) =>
-        Task.FromResult(new OperationLookup<TResult>(false, default!));
+        GetOrLookupAsync(computation, inputIdentity, dependencies, null, cancellationToken);
 
     /// <summary>
     /// Records only a validation that completes normally without a refusal.
