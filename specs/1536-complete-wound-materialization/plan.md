@@ -51,7 +51,7 @@ No authority object is a cached value. Producer hook fallback remains untouched.
 
 - [x] T485 CLEAN_CACHE1..8: source/lifetime audit, written spec/design, actual pinned
   Spec Kit plan/tasks/prerequisites and equivalent consistency, publish/recover.
-- [ ] T486 CLEAN_CACHE2..5: forwarding opt-in/helper seam and causal cheap publisher
+- [x] T486 CLEAN_CACHE2..5: forwarding opt-in/helper seam and causal cheap publisher
   fixture RED; eight same-family reads inside prepared callback must use initial
   and fresh completion sources rather than eight independent sources.
 - [ ] T487 CLEAN_CACHE1..5: exact typed publisher subwindows, existing-service DATA,

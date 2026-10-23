@@ -44,7 +44,7 @@ public partial class FileSystemManager
         var frame=new MainAdmission(this,parent,GmSessionRunCoordinator.Current,participating,worldIssuance,physicalScope);
         MainAdmissions.Value=frame;return frame;
     }
-    internal sealed class MainAdmission : IDisposable,IAsyncDisposable
+    internal sealed partial class MainAdmission : IDisposable,IAsyncDisposable
     {
         private readonly FileSystemManager _files;
         private readonly MainAdmission? _parent;
@@ -201,16 +201,19 @@ public partial class FileSystemManager
         /// <param name="scope">
         /// New read identity retaining this frame's physical admission.
         /// </param>
+        /// <param name="preparedWindow">
+        /// Exact publisher DATA window, or null to require no active mutations.
+        /// </param>
         /// <returns>
         /// <see langword="true"/> if reserved; otherwise, <see langword="false"/> without changing shared state.
         /// </returns>
-        internal bool TryReserveWorldRead(ValidationReadReservation scope)
+        internal bool TryReserveWorldRead(ValidationReadReservation scope, CleanupProofReadWindow? preparedWindow = null)
         {
             var access = _access;
             if (_closed || access == null) return false;
             var ancestors = new HashSet<MainAdmission>();
             for (var p = this; p != null; p = p.Parent) ancestors.Add(p);
-            if (!access.TryReserveWorldRead(scope, ancestors)) return false;
+            if (!access.TryReserveWorldRead(scope, ancestors, preparedWindow)) return false;
             _worldReservedAccess = access;
             return true;
         }
@@ -448,7 +451,7 @@ public partial class FileSystemManager
             }
         }
     }
-    private sealed class MainAccess(MainAdmission owner, GmMainOwnerGuard? guard,GmSessionRunCoordinator.Access? original,GmMainOperationClient? remote=null,bool workerObservationRequired=false)
+    private sealed partial class MainAccess(MainAdmission owner, GmMainOwnerGuard? guard,GmSessionRunCoordinator.Access? original,GmMainOperationClient? remote=null,bool workerObservationRequired=false)
     {
         private readonly object _state = new();
         private int _references=1;
@@ -555,16 +558,21 @@ public partial class FileSystemManager
         /// <param name="ancestors">
         /// The exact retained owner ancestry allowed to remain active.
         /// </param>
+        /// <param name="preparedWindow">
+        /// Publisher-issued exact mutation window, or null for the original mutation-free reservation.
+        /// </param>
         /// <returns>
         /// <see langword="true"/> if reserved; otherwise, <see langword="false"/> with no reservation installed.
         /// </returns>
-        internal bool TryReserveWorldRead(ValidationReadReservation scope, HashSet<MainAdmission> ancestors)
+        internal bool TryReserveWorldRead(ValidationReadReservation scope, HashSet<MainAdmission> ancestors,
+            CleanupProofReadWindow? preparedWindow = null)
         {
             lock (_state)
             {
                 var retained = scope.RetainedPhysicalAdmission;
                 if (_frozen || _worldRead != null || _references == 0 ||
-                    _mutations.Count != 0 || _physicalClosing.Count != 0 ||
+                    (preparedWindow == null ? _mutations.Count != 0 : !preparedWindow.MatchesMutations(_mutations)) ||
+                    _physicalClosing.Count != 0 ||
                     (retained != null && (!retained.PhysicalScope || !_admissions.Contains(retained))) ||
                     _admissions.Any(p => p.Closed || p.Closing || p.BoundClosing || !ancestors.Contains(p) ||
                         (p.PhysicalScope && !ReferenceEquals(p, retained))))

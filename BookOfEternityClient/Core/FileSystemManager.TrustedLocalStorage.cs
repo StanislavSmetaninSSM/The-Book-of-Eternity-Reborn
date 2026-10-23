@@ -287,7 +287,8 @@ public partial class FileSystemManager
             preparedChanges = changes.Select(change => new TrustedLocalFileChange(ResolvePath(change.RelativePath), change.Before, change.After)).ToArray();
         using (MeasureOperation("LocalPublication.PublishCore"))
             return await PublishLocalCoreAsync(lease, binding, preparedChanges,
-                cancellationToken, validatePreparedNamespace);
+                cancellationToken, validatePreparedNamespace,
+                preparedProofMutation: reusePreparedProofData ? validationMutation : null);
     }
 
     /// <summary>
@@ -311,12 +312,16 @@ public partial class FileSystemManager
     /// <param name="standaloneDarenProfile">
     /// Whether publication is restricted to the registered standalone profile member.
     /// </param>
+    /// <param name="preparedProofMutation">
+    /// The opted-in cleanup publisher's actual outer mutation token, or null for ordinary publication.
+    /// </param>
     /// <returns>
     /// The original committed, rolled-back or uncertain publication outcome.
     /// </returns>
     private async Task<TrustedLocalPublicationOutcome> PublishLocalCoreAsync(CanonicalWriteLease lease,
         TrustedLocalGeneration generation, IReadOnlyList<TrustedLocalFileChange> changes, CancellationToken cancellationToken,
-        Func<Task>? validatePreparedNamespace = null, bool standaloneDarenProfile = false)
+        Func<Task>? validatePreparedNamespace = null, bool standaloneDarenProfile = false,
+        MainMutationReservation? preparedProofMutation = null)
     {
         using var totalTiming = MeasureOperation("LocalPublication.Core.Total");
         using var admissionTiming = MeasureOperation("LocalPublication.Core.Admission");
@@ -387,7 +392,16 @@ public partial class FileSystemManager
                 if (validatePreparedNamespace != null)
                 {
                     using var namespaceTiming = MeasureOperation("LocalPublication.Core.ValidatePreparedNamespace");
-                    await validatePreparedNamespace();
+                    var previous = _cleanupProofReadContext.Value;
+                    var context = preparedProofMutation == null ? null :
+                        new CleanupProofReadContext(lease, preparedProofMutation, validationMutation, generation.Id);
+                    _cleanupProofReadContext.Value = context;
+                    try { await validatePreparedNamespace(); }
+                    finally
+                    {
+                        if (context != null) context.Active = false;
+                        _cleanupProofReadContext.Value = previous;
+                    }
                 }
                 TrustedLocalPublicationOutcome outcome;
                 using (MeasureOperation("LocalPublication.Attempt.PublishWithOutcome"))

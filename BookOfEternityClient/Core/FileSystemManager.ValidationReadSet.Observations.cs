@@ -161,7 +161,7 @@ public partial class FileSystemManager
                 RequireRetainedFlow();
                 var rows = _order.Select(key =>
                 {
-                    var snapshot = _snapshots[key];
+                    var snapshot = RetainedSnapshot(key);
                     return (key.Path, (ValidationSnapshotFamily?)key.Family, key.Explicit, snapshot != null,
                         snapshot?.LastWriteTimeUtc ?? default, snapshot == null ? null :
                             Convert.ToHexString(SHA256.HashData(snapshot.Content)));

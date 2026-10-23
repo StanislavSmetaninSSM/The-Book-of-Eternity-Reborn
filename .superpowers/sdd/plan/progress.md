@@ -1,29 +1,19 @@
-# Current checkpoint: r61 design and causal probe pending
+# Current checkpoint: r61 causal RED confirmed; implementation WIP
 
-Owner 2026-10-24 authorizes cleanup completed-proof/history DATA caching through
-existing service, cheap fixtures and unchanged original600/820/15 full diagnostics.
-Autonomous work/specification review-wait waiver persists. Issue#1536,
-CLEAN_CACHE1..8 / T485..490, canonical current spec/plan/tasks.
-Base24c4525343fde38557d077716277d01aa4fc2bba matches remote branch and clean local HEAD.
-Accepted r60 source7eea8c922, testcase434.6855800s; its full archive/leaf remain
-protected until a complete independently accepted replacement exists. D:diagnostics,
-C:SSD game fixture. No quotas, native/budget/oracle changes or broad test suites.
-
-Audit: prepared callback holds two actual publisher mutation identities. Ordinary
-read reservation cannot open; reserving the whole callback would block real recovery.
-Chosen narrow post-recovery DATA windows retain both tokens, compare the exact local
-and root set/version, forbid new writes while reserved and freshly verify sources
-before returning DATA. The generic stable capture/permissions remain unchanged.
-Bounded separate Astra/high read-only consultation finished; different reviewer
-required. Sol6.1/high external helper prepared r61 tools16 syntax/21 synthetic
-controls PASS; no game execution, builds, capture reads or deletion.
-T485 complete: pinned plan/tasks/prerequisites actually ran; equivalent consistency
-8 requirements / 6 tasks, no uncovered criteria or constitution conflicts. Written
-spec/plan/tasks presented under the owner's review-wait waiver. Design86de75eec669f7ff7d38c9bc86a9019cfced7cc7
-pushed/recovered11 exact blobs/no alternates. T486 WIP forwarding-only helper,
-ignored default-false publication opt-in, actual proof/cleanup routing and two cheap
-causal cases prepared. Coalescing implementation and tests/builds still UNRUN.
-No r61 performance result claimed; T487..490 UNRUN.
+Issue#1536 CLEAN_CACHE1..8 / T485..490. Owner authorizes autonomous work and
+specification-review wait waiver. Current spec/plan/tasks are canonical.
+T485 complete: pinned phases and 8-requirement/6-task consistency PASS.
+T486 complete: forwarding-only source36dc75c931eec01dea9102bb4cf1aa1dc62ff648
+pushed/fresh-origin recovered17 exact blobs. XML unit build89.0134121s PASS.
+Actual publisher callback causal RED2/2: sync and async Expected2 Actual8 sources,
+after committed images and fresh readbacks already passed. No timeout; owned and
+runtime cleanup true. Receipts T486-causal-red-build/run/binaries under D:r61.
+T487 WIP: retain exact two publisher mutation identities, independent post-recovery
+windows only, existing general service snapshot DATA, mandatory fresh source proof.
+Expanded independent cheap fixtures16cases integrated; GREEN/build UNRUN.
+No performance improvement claimed. T488..490 UNRUN. r60 full434.6855800s archive
+and leaf remain protected until a complete independently accepted replacement.
+Diagnostics uncapped and external D:, actual game fixtures C:SSD; no diagnostic Git.
 
 # Previous accepted r60 checkpoint
 

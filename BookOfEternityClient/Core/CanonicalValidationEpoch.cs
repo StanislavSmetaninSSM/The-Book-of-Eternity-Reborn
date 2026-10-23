@@ -74,6 +74,31 @@ internal sealed class CanonicalValidationEpoch
     }
 
     /// <summary>
+    /// Captures a prepared publisher's exact two retained mutations without declaring the root quiescent.
+    /// </summary>
+    /// <param name="first">
+    /// The outer publisher's actual mutation identity.
+    /// </param>
+    /// <param name="second">
+    /// The core publisher's distinct actual mutation identity.
+    /// </param>
+    /// <param name="version">
+    /// The current opaque version on an exact match, otherwise null.
+    /// </param>
+    /// <returns>
+    /// True only while these two distinct identities are the complete active set.
+    /// </returns>
+    internal bool TryCapturePreparedPublisher(object first, object second, out object? version)
+    {
+        lock (_state)
+        {
+            version = !ReferenceEquals(first, second) && _mutations.Count == 2 &&
+                _mutations.Contains(first) && _mutations.Contains(second) ? _version : null;
+            return version != null;
+        }
+    }
+
+    /// <summary>
     /// Captures diagnostic transition totals without exposing the authoritative version identity.
     /// </summary>
     /// <returns>

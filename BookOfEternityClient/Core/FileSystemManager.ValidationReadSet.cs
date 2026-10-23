@@ -239,13 +239,19 @@ public partial class FileSystemManager
         /// <param name="preserveOriginalAdmission">
         /// Whether requests retain original reader admission without an added full check; opening and completion remain fresh.
         /// </param>
+        /// <param name="cleanupWindow">
+        /// Exact publisher-issued DATA version, or null for the original reserved-reader storage policy.
+        /// </param>
         internal ReservedValidationReadSet(FileSystemManager files, CanonicalWriteLease lease,
-            PendingSnapshotValidationReadScope reservation, bool preserveOriginalAdmission)
+            PendingSnapshotValidationReadScope reservation, bool preserveOriginalAdmission,
+            CleanupProofReadWindow? cleanupWindow = null)
         {
             _files = files; _lease = lease; _reservation = reservation;
             _owner = lease.MainAdmission!; _registration = lease.AmbientRegistration!;
             _entryAdmission = reservation.EntryAdmission;
             _preserveOriginalAdmission = preserveOriginalAdmission;
+            _cleanupWindow = cleanupWindow;
+            if (cleanupWindow != null) _cleanupData = new Services.DefaultOperationValidationService().BeginOperation();
         }
 
         /// <summary>
@@ -291,6 +297,7 @@ public partial class FileSystemManager
                 await _reservation.OpenAsync();
                 _generation = _files.ReadLocalGenerationSnapshot(_lease);
                 if (_generation.Bytes == null) throw new InvalidDataException("Validation requires an existing generation.");
+                _cleanupWindow?.RequireGeneration(_generation);
                 RequireAuthority();
                 lock (_state) { RequireHealthy(); _opened = true; }
             }
@@ -371,6 +378,7 @@ public partial class FileSystemManager
             _files.RequirePendingSnapshotLeaseFlow(_lease, _owner, _registration);
             if (!_files.IsBorrowedValidationReadFlowCurrent(_lease, _entryAdmission))
                 throw new InvalidOperationException("Validation read left its exact retained registration.");
+            _cleanupWindow?.RequireCurrent();
         }
 
         /// <summary>
@@ -408,7 +416,10 @@ public partial class FileSystemManager
                 using var request = _files.MeasureOperation("ValidationReadSet.RequestSync");
                 RequireDeclaredLease(declaredLease); RequireReadAuthority();
                 var key = (path, family, declaredLease != null);
-                if (!_snapshots.TryGetValue(key, out var snapshot))
+                CanonicalFileReadSnapshot? snapshot;
+                if (_cleanupWindow != null)
+                    snapshot = ReadCleanupData(key, declaredLease);
+                else if (!_snapshots.TryGetValue(key, out snapshot))
                 {
                     using var source = _files.MeasureOperation("ValidationReadSet.SourceSync");
                     snapshot = _files.ReadValidationSource(path, family, declaredLease);
@@ -449,7 +460,10 @@ public partial class FileSystemManager
                 using var request = _files.MeasureOperation("ValidationReadSet.RequestAsync");
                 token.ThrowIfCancellationRequested(); RequireDeclaredLease(declaredLease); RequireReadAuthority();
                 var key = (path, family, declaredLease != null);
-                if (!_snapshots.TryGetValue(key, out var snapshot))
+                CanonicalFileReadSnapshot? snapshot;
+                if (_cleanupWindow != null)
+                    snapshot = await ReadCleanupDataAsync(key, declaredLease, token);
+                else if (!_snapshots.TryGetValue(key, out snapshot))
                 {
                     using var source = _files.MeasureOperation("ValidationReadSet.SourceAsync");
                     snapshot = await _files.ReadValidationSourceAsync(path, family, declaredLease, token);
@@ -496,7 +510,7 @@ public partial class FileSystemManager
                     var fresh = key.Family is ValidationSnapshotFamily.OrdinaryAsync or ValidationSnapshotFamily.ProtectedAsync
                         ? await _files.ReadValidationSourceAsync(key.Path, key.Family, declared, CancellationToken.None)
                         : _files.ReadValidationSource(key.Path, key.Family, declared);
-                    var original = _snapshots[key];
+                    var original = RetainedSnapshot(key);
                     if ((fresh == null) != (original == null) || fresh != null &&
                         (fresh.LastWriteTimeUtc != original!.LastWriteTimeUtc || !fresh.Content.AsSpan().SequenceEqual(original.Content)))
                         throw new InvalidDataException("Reserved validation source changed: " + key.Path);
@@ -562,6 +576,7 @@ public partial class FileSystemManager
             lock (_state)
             {
                 _snapshots.Clear(); _order.Clear(); _presence.Clear(); _presenceOrder.Clear(); _generation = null;
+                _cleanupData?.Dispose(); _cleanupKeys.Clear();
             }
             await _reservation.DisposeAsync();
         }

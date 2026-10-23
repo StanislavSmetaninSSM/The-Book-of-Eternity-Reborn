@@ -5,7 +5,7 @@ explicit specification-review waiver; current isolated clone/branch reused.
 
 - [x] T485 Source/lifetime audit; canonical spec/plan/tasks, actual pinned Spec Kit
   phases and consistency, publish/recover design before implementation.
-- [ ] T486 Typed forwarding helper/opt-in plus cheap actual publisher callback
+- [x] T486 Typed forwarding helper/opt-in plus cheap actual publisher callback
   causal RED proving repeated completed-proof/history source reads are uncoalesced.
 - [ ] T487 Exact publisher post-recovery windows, existing service/repository DATA,
   production cleanup proof routing; GREEN plus integrity/refusal/lifecycle controls.
