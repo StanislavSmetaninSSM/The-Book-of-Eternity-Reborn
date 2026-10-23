@@ -22,6 +22,12 @@ Mapping: 1/2/3/4 -> T485/486/487/488; 5 -> T486/487/488;
 6 -> T488/489; 7 -> T489/490; 8 -> T488/490.
 Dependencies: T485 -> T486 -> T487 -> T488 -> T489 -> T490.
 
+Evidence: [T490 measurement report](T490-cleanup-proof-data-reuse-measurement.md).
+Actual original1/1PASS494.5938554s; explicit327PASS composite; full14753018event
+analysis;930DATAhits, cleanupopens-240/attrs-2960/lease+170; no elapsed gain.
+Independent outcome/retention accepted, exact4files6331115903B retired with30
+protectedfiles rehashed before/after. Final documentation/publication pending.
+
 # CRASH5 — revision60 GameState DATA reuse (owner2026-10-24)
 
 Canonical spec GS_CACHE1..7; plan.md current r60 section. Inline TDD execution,

@@ -78,6 +78,15 @@ existing Sol6.1/high helper owns external tools only; independent reviewer is a
 separate Astra/high context, distinct from the bounded architectural consultation.
 No broad aggregate suite, budget expansion, diagnostic cap or changed original oracle.
 
+Measured r61 checkpoint (compiled1e6b947b7 / originalmetadata26c5553e8): original
+1/1PASS494.5938554s versus r60434.6855800s; same600/820/15, native73/0, cleanup true.
+Exact cleanup5windows/930DATAhits, opens3098->2858, attrs268711->265751, lease+170;
+cleanup34.3435089->39.5569894s, no elapsed gain claimed. All14753018events parsed,
+114ZIPmembers independently verified. Outcome and exact4file6331115903B retirement
+accepted; execution Completed,30protectedfiles rehashed before/after. Final
+documentation/publication closure pending. Evidence and honest cost comparison:
+[T490 measurement report](T490-cleanup-proof-data-reuse-measurement.md).
+
 # CRASH5 — revision60 GameState source DATA reuse plan
 
 > Execution: Superpowers writing-plans, TDD and executing-plans inline; separate

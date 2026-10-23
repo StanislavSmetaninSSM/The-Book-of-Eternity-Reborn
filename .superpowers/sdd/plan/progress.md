@@ -1,9 +1,9 @@
-# Current checkpoint: r61 original PASS; all-row timing comparison in progress
+# Current checkpoint: r61 measured DATA reuse; outcome and exact retention accepted
 
 Issue#1536 CLEAN_CACHE1..8 / T485..490; canonical spec/plan/tasks. Owner explicitly
 authorizes autonomous work, specification-review wait waiver, uncapped diagnostics,
 cheap fixtures and same original600/820/15. Current isolated clone/branch reused.
-T485..489 complete; T490 in progress. Exact publisher post-recovery DATA windows retain actualtwo
+T485..489 complete; T490 final documentation/publication closure. Exact publisher post-recovery DATA windows retain actualtwo
 publisher mutations; complete local/root set and epoch, original registration/
 ancestry/generation guards. Existing service owns detached snapshots only; fresh
 original completion bytes/absence/timestamps/generation/owner, publication image
@@ -50,10 +50,30 @@ Initial all-row parser stopped at producer line3487973: exact98B known console
 prefix followed by intact timer sequence3487941/PID53464. Raw untouched/no skip.
 Admitted external framing repair177A47DF8B35785A700944F004A344866F090D065EB68D30FE5C0747BFB9029A,
 36syntheticcontrolsPASS; executed-vs-archived analyzer provenance explicit.
-Whole archive rerun in progress, no new game/test execution. Human report:
+Whole archive/allrows PASS14753018events: producer5339788/2669885closed/18authentic
+interruptedprefixes, resumer9413230/4706615closed/0interrupted. Actual5windows,
+930hits/715initialsources+715freshExitSource. Exactcleanupopens3098->2858,
+attrs268711->265751(-2960),Lease5659->5829(+170),proof14/history22unchanged.
+Cleanup34.3435089->39.5569894s; preparedNamespace18.6429093->21.8295892;
+proof10.7585031->12.0984896. Wholeelapsedgain NOT demonstrated. ProducerALLnamed
+countsidenticalbutcollector+16.0388832s, resumer+45.0424179s; observerbuild/write
+38.2442711->43.3390328 and65.6808808->81.6162218s. No hardwarecause inferred;
+nestedlevels notadditive, negativecleanupresidual retained. Human report:
 specs/1536-complete-wound-materialization/T490-cleanup-proof-data-reuse-measurement.md.
-No r61 performance improvement or slowdown cause claimed before full comparison.
-Accepted r60 full rawZIP/leaf protected until complete outcome/retention admission.
+IndependentactualAstra/high accepted source/INPUT/parser/extractor/FinalOutcomeGate
+and frozenexactRetentionGate,0unresolvedintroducedfindings. Retentionexecution
+Completed:4ordinaryfiles6331115903B removed (oldr60ZIP/leaf+current2stdoutcopies);
+114replacementmembersreverified,30protectedSHA before/after, parentskept, noerror.
+Latestfullr61ZIP/index/leaf/allselectedcleanup/compactcomparisons,source42INPUT
+and reusable r51instrumentationbackup retained. ReceiptT490-retention-executed.json.
+WIPmeasurementreportda7bf86eeb17286a45d6b83acddd018ca0a61ac6 pushed and recovered
+fromorigin38exactblobs/noalternates. Finalretention/report/taskclosure review
+and finalsource-only push/recovery pending; no more build/test reruns justified.
+Workflowcheckpoint: two preexistingqualificationprerequisites corrected with
+preservedfailures, one actualtransportprefix needed narrowstrictparserrepair.
+Independentreview found0introducedsource/outcomefindings; no savings or elapsed
+performancegain attributed to agentrouting. Parentowns coherentblock, bounded
+Sol6.1/high externaltools, separateAstra/high review; keep currentrouting.
 C:SSD actual benchmark fixtures / D:HDD uncappeddiagnostics. Git contains source,
 small immutable testINPUT/specs/humanfindings, no timerstreams/nativeoutputlogs.
 
