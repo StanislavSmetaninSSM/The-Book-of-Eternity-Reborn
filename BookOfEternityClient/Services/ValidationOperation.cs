@@ -96,6 +96,30 @@ internal sealed class ValidationOperation : IDisposable
     }
 
     /// <summary>
+    /// Executes the synchronous source through the initial uncached compilation seam.
+    /// </summary>
+    /// <typeparam name="TResult">
+    /// The result supplied by the original computation.
+    /// </typeparam>
+    /// <param name="computation">
+    /// Registered computation whose synchronous protocol is qualified by the causal controls.
+    /// </param>
+    /// <param name="inputIdentity">
+    /// Exact input identity intended for the shared operation protocol.
+    /// </param>
+    /// <param name="dependencies">
+    /// Complete ordered dependency declaration intended for the shared operation protocol.
+    /// </param>
+    /// <param name="compute">
+    /// Original synchronous computation invoked without blocking.
+    /// </param>
+    /// <returns>
+    /// The original source result without reuse until the synchronous protocol is implemented.
+    /// </returns>
+    internal TResult GetOrCompute<TResult>(OperationComputation<TResult> computation, object inputIdentity,
+        IReadOnlyList<IOperationDependency> dependencies, Func<TResult> compute) => compute();
+
+    /// <summary>
     /// Reuses or computes a detached typed result under complete input and dependency declarations.
     /// </summary>
     /// <typeparam name="TResult">

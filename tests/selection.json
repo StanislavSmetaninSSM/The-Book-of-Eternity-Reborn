@@ -1,109 +1,25 @@
 {
   "schemaVersion": 1,
   "selections": [
-{
-  "category": "core-operation-validation-cache",
-  "reason": "Shared GetOrCompute/noncomputing lookup coordinator, backend and dependency invariants.",
-  "contracts": [
-    "#1536 LEASEDATA1..8 / T456"
-  ]
-},
-{
-  "category": "gm-main-metadata-native-windows",
-  "reason": "Fresh main metadata admission and native namespace controls remain mandatory outside provisional DATA hits.",
-  "contracts": [
-    "#1536 LEASEDATA1..8 / T456"
-  ]
-},
-{
-  "category": "gm-main-owner-native-windows",
-  "reason": "Fresh owner/worker inventory absence and metadata dispositions remain mandatory.",
-  "contracts": [
-    "#1536 LEASEDATA1..8 / T456"
-  ]
-},
-{
-  "category": "fr063-trusted-local-request-observations",
-  "reason": "Keep original request-local namespace freshness and passive observer isolation.",
-  "contracts": [
-    "#1536 LEASEDATA1..8 / T456"
-  ]
-},
-{
-  "category": "core-lease-data-admission",
-  "reason": "Revision54 causal minimal-file and cache-service contracts before same original600 measurement.",
-  "contracts": [
-    "#1536 LEASEDATA1..8 / T454-457"
-  ]
-},
-{
-  "category": "core-operation-lookup",
-  "reason": "Revision54 causal minimal-file and cache-service contracts before same original600 measurement.",
-  "contracts": [
-    "#1536 LEASEDATA1..8 / T454-457"
-  ]
-},
-{
-  "category": "fr063-joint-operation-boundaries",
-  "reason": "Verify actual cached no-write boundaries before qualifying the original600 run.",
-  "contracts": [
-    "#1536 revision53 FILEOP4/7 / T449-451."
-  ]
-},
     {
-      "category": "core-operation-source-data",
-      "reason": "Owning DATA integrity, reuse, actual runtime effect, source overlap, fresh compensation and lifetime controls on minimal files; original600 separately gated.",
+      "category": "core-operation-synchronous",
+      "reason": "Causal native synchronous reuse and lifetime/dependency failures on independent in-memory values.",
       "contracts": [
-        "#1536 revision53 FILEOP1..8 / T449\u2013452; same original600 separately after qualified source/input and source review."
+        "#1536 SEMANTIC1..6 / T462-464; initial synchronous seam selection, expand by actual integration contracts before final review."
       ]
     },
     {
-      "category": "core-recovery-proof-reads",
-      "reason": "New typed lifecycle/causal actual sources and exit-integrity controls.",
+      "category": "core-operation-validation-cache",
+      "reason": "Preserve original coordinator, dependency propagation, fresh/cancel/copy/backend invariants.",
       "contracts": [
-        "#1536 revision53 FILEOP1..8 / T449\u2013452; same original600 separately after qualified source/input and source review."
+        "#1536 SEMANTIC1..6 / T462-464; initial synchronous seam selection, expand by actual integration contracts before final review."
       ]
     },
     {
-      "category": "fr063-joint-proof-reads-integration",
-      "reason": "Real completed-proof consumer equivalence, attribute reduction and exit refusal.",
+      "category": "core-operation-lookup",
+      "reason": "Shared lookup/compute entry protocol must preserve genuine misses and hits.",
       "contracts": [
-        "#1536 revision53 FILEOP1..8 / T449\u2013452; same original600 separately after qualified source/input and source review."
-      ]
-    },
-    {
-      "category": "fr063-reserved-validation-read-set",
-      "reason": "Preserve existing exact ownership, drift, overlap, cancellation, passive and source-family controls.",
-      "contracts": [
-        "#1536 revision53 FILEOP1..8 / T449\u2013452; same original600 separately after qualified source/input and source review."
-      ]
-    },
-    {
-      "category": "core-recovery-progression-data",
-      "reason": "Proof envelope must preserve existing typed progression cache dependency/freshness semantics.",
-      "contracts": [
-        "#1536 revision53 FILEOP1..8 / T449\u2013452; same original600 separately after qualified source/input and source review."
-      ]
-    },
-    {
-      "category": "fr063-joint-progression-data-integration",
-      "reason": "Keep actual production progression proof/phase reuse and unchanged-state oracle.",
-      "contracts": [
-        "#1536 revision53 FILEOP1..8 / T449\u2013452; same original600 separately after qualified source/input and source review."
-      ]
-    },
-    {
-      "category": "fr063-joint-applied-story-components",
-      "reason": "Preserve real proof/story append/repeat/drift/readback refusal consumers.",
-      "contracts": [
-        "#1536 revision53 FILEOP1..8 / T449\u2013452; same original600 separately after qualified source/input and source review."
-      ]
-    },
-    {
-      "category": "fr063-joint-interface-crash-adapter-contracts",
-      "reason": "New immutable input literal must preserve original role/budget/observation/launch contract.",
-      "contracts": [
-        "#1536 revision53 FILEOP1..8 / T449\u2013452; same original600 separately after qualified source/input and source review."
+        "#1536 SEMANTIC1..6 / T462-464; initial synchronous seam selection, expand by actual integration contracts before final review."
       ]
     }
   ]
