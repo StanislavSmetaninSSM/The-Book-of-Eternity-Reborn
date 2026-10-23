@@ -2,94 +2,52 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "core-joint-qte-contribution-data",
-      "reason": "Actual shared QTE DATA boundary: repeated computation, complete source witnesses, structural aliases, copies and fresh/failed operation controls.",
+      "category": "fr063-joint-producer-timing-controls",
+      "reason": "Actual adopted producer-manager observer routing and disabled cold path.",
       "contracts": [
-        "#1536 QTECACHE1..7 / T466-470"
+        "#1536 PRODUCER1..7 / T474-478"
       ]
     },
     {
-      "category": "core-joint-qte-registry-eligibility",
-      "reason": "Fresh exact registry owner/recovered held request and special publication blockers must select only idempotent reuse.",
+      "category": "crash5-named-timing-output",
+      "reason": "Existing collector retains all boundaries beyond the former1024limit.",
       "contracts": [
-        "#1536 QTECACHE1..7 / T466-470"
+        "#1536 PRODUCER1..7 / T474-478"
       ]
     },
     {
-      "category": "fr063-reserved-validation-read-set",
-      "reason": "Observation capture/replay changes the current read-set contract; retain all exact reader, source drift, generation, overlap and exit proof controls.",
+      "category": "fr063-operation-timing-context-controls",
+      "reason": "Nested passive routing, suppression and exception isolation remain valid.",
       "contracts": [
-        "#1536 QTECACHE1..7 / T466-470"
+        "#1536 PRODUCER1..7 / T474-478"
       ]
     },
     {
-      "category": "core-recovery-progression-data",
-      "reason": "The existing ComputeRecoveryDataAsync now optionally registers a structural dependency; preserve its original progression consumer and all file/lease/fresh lifetime behavior.",
+      "category": "fr063-ordinary-read-section-timing-controls",
+      "reason": "Actual nested source reader diagnostics and unchanged data/refusal semantics.",
       "contracts": [
-        "#1536 QTECACHE1..7 / T466-470"
+        "#1536 PRODUCER1..7 / T474-478"
       ]
     },
     {
-      "category": "core-recovery-file-validation",
-      "reason": "Cross-consumer recovery scope validation and live root/lease/source failures must still retire retained DATA.",
+      "category": "fr063-joint-interface-crash-stage-contracts",
+      "reason": "Original native-stage identity and expected exit cut remain correlated.",
       "contracts": [
-        "#1536 QTECACHE1..7 / T466-470"
+        "#1536 PRODUCER1..7 / T474-478"
       ]
     },
     {
-      "category": "core-operation-structural-data",
-      "reason": "Complete structural dependency versions and malformed/changed input must preserve source execution and never resurrect old results.",
+      "category": "fr063-joint-child-output-transport",
+      "reason": "Complete native child stream persistence, EOF and join contracts.",
       "contracts": [
-        "#1536 QTECACHE1..7 / T466-470"
-      ]
-    },
-    {
-      "category": "core-operation-validation-cache",
-      "reason": "Shared existing service backend must retain dependency propagation, copying, serial flow, cancellation and fresh/failure closure.",
-      "contracts": [
-        "#1536 QTECACHE1..7 / T466-470"
-      ]
-    },
-    {
-      "category": "core-operation-source-data",
-      "reason": "QTE source replay/fresh fallback interacts with the whole-operation file owner; retain mutation/fresh/completion fences.",
-      "contracts": [
-        "#1536 QTECACHE1..7 / T466-470"
-      ]
-    },
-    {
-      "category": "fr063-joint-validation-dedup-contracts",
-      "reason": "Keep exactly the original baseline entry/exit pair around successful QTE DATA.",
-      "contracts": [
-        "#1536 QTECACHE1..7 / T466-470"
-      ]
-    },
-    {
-      "category": "fr063-joint-validation-dedup-refusals",
-      "reason": "Keep original short-circuit refusal order and first exception for seal/source/baseline/companion failures.",
-      "contracts": [
-        "#1536 QTECACHE1..7 / T466-470"
+        "#1536 PRODUCER1..7 / T474-478"
       ]
     },
     {
       "category": "fr063-joint-interface-seed-input-contracts",
-      "reason": "The original measurement selects a genuinely new current-source source42 slot and preserves closed input/no fallback contracts.",
+      "reason": "New genuine current-source INPUT selection remains closed with no fallback.",
       "contracts": [
-        "#1536 QTECACHE1..7 / T466-470"
-      ]
-    },
-    {
-      "category": "fr063-joint-qte-data-controls",
-      "reason": "One genuine resource/baseline/held owner must demonstrate actual original QTE source counts and fresh entry/exit proof counts.",
-      "contracts": [
-        "#1536 QTECACHE1..7 / T466-470"
-      ]
-    },
-    {
-      "category": "fr063-joint-bundle-copy-controls",
-      "reason": "Preserve genuine private-history/source mutation, independent copy and abort/current ownership contracts around common/resource integration.",
-      "contracts": [
-        "#1536 QTECACHE1..7 / T466-470"
+        "#1536 PRODUCER1..7 / T474-478"
       ]
     }
   ]

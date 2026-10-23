@@ -88,7 +88,11 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     /// <param name="adoptedRoot">
     /// An existing validated owned copy to preserve; <see langword="null"/> initializes a fresh world.
     /// </param>
-    private GameEngineTurnLifecycleTests(ITestOutputHelper? output, string? adoptedRoot)
+    /// <param name="operationTimingObserver">
+    /// Passive observer of the fixture's actual manager; <see langword="null"/> keeps ordinary fixtures unobserved.
+    /// </param>
+    internal GameEngineTurnLifecycleTests(ITestOutputHelper? output, string? adoptedRoot,
+        Action<string, string, TimeSpan>? operationTimingObserver = null)
     {
         _directGachaOutput = output;
         _rootPath = adoptedRoot is null
@@ -119,6 +123,11 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             .GetResult();
         }
     }
+
+    /// <summary>
+    /// Gets the actual fixture manager for typed diagnostic controls on independently adopted files.
+    /// </summary>
+    internal FileSystemManager DiagnosticFiles => _fs;
 
     [Fact]
     public void TryDescribeInvalidTriggerLifeEndRuntimeContext_MortalPreTurnAndMortalCurrent_IsReadable()

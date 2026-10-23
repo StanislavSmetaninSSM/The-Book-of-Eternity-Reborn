@@ -31170,6 +31170,36 @@
       ]
     }
   ]
+},
+{
+  "id": "fr063-joint-producer-timing-controls",
+  "responsibility": "T475 four independent adopted-file fixture controls for the actual producer manager: sync/async data, default null observer and complete nested timing/PID/sequence accounting.",
+  "excludes": "No game/world preparation, source42 generation, native crash, authority substitution, private reflection, diagnostic quotas or old-root cleanup.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+    "BookOfEternityClient.IntegrationTests/JointProducerTimingTests.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs"
+  ],
+  "related": [
+    {
+      "id": "crash5-named-timing-output",
+      "when": "Existing collector output or sequence contracts change."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointProducerTimingTests.*"
+      ]
+    }
+  ]
 }
 ]
 }
