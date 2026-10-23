@@ -180,7 +180,8 @@ public partial class FileSystemManager
         /// Complete successful source metadata retained with detached calculation DATA.
         /// </param>
         /// <returns>
-        /// True when all current bytes, absence and timestamps agree; <see langword="false"/> selects the original calculation.
+        /// <see langword="true"/> when all current bytes, absence and timestamps agree;
+        /// <see langword="false"/> selects the original calculation.
         /// Reader failures propagate rather than becoming a match or calculation permission.
         /// </returns>
         internal async Task<bool> MatchesObservationsAsync(ValidationReadObservations observations)

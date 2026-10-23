@@ -2276,7 +2276,8 @@ public partial class FileSystemManager
     /// Raw session-relative path passed unchanged to the original presence reader.
     /// </param>
     /// <returns>
-    /// True for an existing ordinary file; false for absence. Original namespace and lease failures propagate.
+    /// <see langword="true"/> for an existing ordinary file; <see langword="false"/> for absence.
+    /// Original namespace and lease failures propagate.
     /// </returns>
     internal bool FileExists(CanonicalWriteLease writeLease, string relativePath)
     {
