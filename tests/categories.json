@@ -2,6 +2,20 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "core-joint-qte-contribution-data",
+  "responsibility": "The production QTE calculation boundary reuses detached DATA while preserving exact structural/source observations, live eligibility and fresh entry/exit proofs on tiny independent file fixtures.",
+  "excludes": "No game-world construction, issued-authority substitution, original recovery benchmark or aggregate suite.",
+  "changeHints": ["BookOfEternityClient/Services/JointQteContributionData.cs", "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairQteContribution.cs", "BookOfEternityClient/Core/FileSystemManager.ValidationReadSet.Observations.cs"],
+  "related": [
+    { "id": "fr063-reserved-validation-read-set", "when": "Source observations or proof replay change." },
+    { "id": "core-recovery-progression-data", "when": "Shared recovery computation dispatch changes." }
+  ],
+  "requirements": { "frontendBuild": false, "exclusive": true },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.JointQteContributionDataTests.*"] }]
+},
+{
   "id": "fr063-joint-semantic-data-controls",
   "responsibility": "One genuine source/stage-only issuer fixture repeats preparation and final stages eight times in the existing whole-operation service and retains fresh admission, damaged-history, mutation, constructor and abort refusal controls.",
   "excludes": "No game loop, full world, fake issuer, reflection, diagnostic quota or original-workload performance claim.",
