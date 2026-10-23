@@ -1,3 +1,23 @@
+# CRASH5 — revision60 GameState DATA reuse (owner2026-10-24)
+
+Canonical spec GS_CACHE1..7; plan.md current r60 section. Inline TDD execution,
+existing isolated branch, explicit autonomous review-wait waiver. No broad suite.
+
+- [x] T479 Source/lifetime audit, written spec/plan/tasks, pinned Spec Kit phases
+  and equivalent consistency; publish/recover design before implementation.
+- [ ] T480 Minimal typed GameState/service/read fixture causal RED and category;
+  actual duplicate reads/admission evidence plus integrity/fallback controls.
+- [ ] T481 Existing-service GameState source block/implicit-hit integration;
+  GREEN, exact raw source/generation fences and original context/issue behavior.
+- [ ] T482 Current XML/source/DLL/native/catalog/selected controls; independent
+  source review; genuine new source42/twoimports/immutable INPUT; publish/recover
+  and independent launch gate for unchanged original600/820/15 full diagnostics.
+- [ ] T483 Same actual Cut0 Windows original-full with uncapped both-role timings,
+  native73/0/original assertions, stream EOF/join and owned cleanup; full archive.
+- [ ] T484 All-row timing/count comparison to r59 and honest human findings;
+  independent outcome/retention/final review, exact old diagnostic retirement,
+  final source-only remote persistence/recovery. Completion needs actual evidence.
+
 # CRASH5 — revision59 detailed producer timings
 
 Issue#1536; PRODUCER1..7; owner2026-10-23 explicit autonomous instrumentation+same600s run.

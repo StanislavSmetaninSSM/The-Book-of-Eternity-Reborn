@@ -1,3 +1,93 @@
+# CRASH5 — revision60 GameState source DATA reuse plan
+
+> Execution: Superpowers writing-plans, TDD and executing-plans inline; separate
+> independent Astra/high review of the coherent source/tests/evidence block.
+
+Goal: coalesce repeated GameState file DATA through the existing temporary service,
+retaining exact source/owner fences; measure the same original600/820/15.
+Spec: spec.md GS_CACHE1..7. Issue#1536. Tech:C#/.NET8, existing filesystem,
+DefaultOperationValidationService/ValidationOperation, no dependency/framework.
+Existing isolated task clone reused. Autonomous specification review-wait waiver.
+
+## Design / research / interfaces
+
+Read-only source audit: most validation readers are implicit text/sync calls.
+SourceDataOperation already caches their snapshots, but repeated callers still
+run outer publication/admission work. Its fast cache-only path currently serves
+only declared lease reads. GameState post-publication owns a source operation,
+but closes its phase lease before calling ordinary validators. Whole-verdict
+reuse is invalid because progression/story context changes between invocations.
+
+- Add Core/FileSystemManager.GameStateDataReads.cs with internal
+  Task<TResult> ReadGameStateDataAsync<TResult>(Func<Task<TResult>> read).
+  Gate to an existing bound normal console operation without an ambient lease;
+  exact borrowed-lease support is deferred, preserving the original route there; browser/worker/read reservations/hooks/foreign
+  or unsupported generation contexts preserve the old route. Never bootstrap
+  generation for cache. Own one normal lease only in an already-authorized bound
+  session; ambient, unbound and unsupported entry retains the original route.
+- Reuse BeginSourceDataOperationIfNeeded and its existing general service. Mark
+  the exact GameState read adapter in AsyncLocal for this selected source block.
+  Original first reads create implicit OrdinarySync/OrdinaryAsync entries.
+  Add cache-only implicit lookup in SourceDataOperation reusing the same hit
+  implementation/entry keys/defensive copies/live checks as declared reads.
+  Hook routing, raw ordinal identity and family remain independent. Every
+  arbitrary callback and source-success/effect boundary retains fresh proof.
+- In FileSystemManager.cs implicit text async/sync (and affected byte/snapshot
+  readers if consumed by this block), select eligible existing DATA before repeated
+  outer publication/admission work. No new generic global implicit fast route:
+  only the exact selected GameState adapter may take this path.
+- ValidationService.ValidationPhases.cs wraps only the existing CrossReferences
+  and MetaMiscStateFiles phase bodies separately in this source block. Other
+  phases/lifecycle execute unchanged with actual accepted-story/progression
+  context. Meta-only browser path stays original. Enabled guardian-musings completion keeps its old
+  path because its comparison reader acquires its own lease. No cached issue list.
+- Freshly verify touched source bytes/absence/timestamps/generation before the
+  block's success; complete only a newly owned source service. Borrowed outer
+  operation keeps its existing lifetime/effect/final completion fences. Propagate
+  primary failure, retire reuse, release only owned resources, restore AsyncLocals.
+
+Constitution check: #1536 tracked, atomic/current data and local path integrity
+preserved; no gameplay/schema/OS privilege contract changes, no new cache backend.
+Cheap tests use real service/readers on nonce-owned minimal files and typed APIs,
+no reflection/expensive world. All diagnostics uncapped D:, C:fixture. Preserve
+600child/820shared/15min and original native73/0/EOF/join/cleanup; no broad suites.
+
+## Tasks / acceptance mapping
+
+- [x] T479 GS_CACHE1..7: publish written spec/design; actual pinned Spec Kit setup
+  plan/tasks/prerequisites plus equivalent non-destructive consistency. Confirm
+  eligibility/nested-lease audit and existing branch remote recovery.
+- [ ] T480 GS_CACHE1..5: add GameStateDataReuseTests.cs and coherent category.
+  Compiling RED uses original behavior through a typed no-reuse seam: repeated
+  real implicit sync/async reads still admit/physically read repeatedly; expect
+  coalescing. Actual selected validator phases compare ordered issues/source
+  work. Negative controls: same-time bytes, absence, generation, owner/lifetime,
+  changed selection/story context, mutable-hook fallback, failures and fresh next
+  call. Publish clean RED source/build/evidence before implementation.
+- [ ] T481 GS_CACHE1..4: implement selected retained lifetime, existing-service
+  implicit hit and GameState CrossReferences/MetaMisc integration. GREEN original causal tests,
+  fail-closed drift/fallback/lifetime controls; inspect changed XML APIs.
+- [ ] T482 GS_CACHE4..6: XML builds, current eight DLL/native/source bindings,
+  impact-selected category catalog/PlanOnly and cheap controls. Separate complex
+  source review. Genuine new source42 generation and two production imports into
+  immutable joint-interface-source42-game-state-cache-v1 slot; publish/recover
+  exact source/input and independent input/launch qualification.
+- [ ] T483 GS_CACHE6: one fresh original-full same Cut0 fixture/native limits,
+  full producer+resumer timing, original assertions/ownership/EOF/join/cleanup.
+  No heavy live reads; archive/verify complete capture after settlement.
+- [ ] T484 GS_CACHE7: parse every row, compare exact r59 counts/GameState graphs,
+  probe/admission/observer/testcase costs, investigate any large new regression.
+  Human report, independent final/retention review, retire exact old diagnostics
+  only after verified complete replacement; publish/recover final closure.
+
+Dependencies:T479->T480->T481->T482->T483->T484. Parent owns C#; bounded separate
+Sol6.1/high tool preparation is independent; Astra/high consult read-only on the
+specific lifetime hazard, different Astra/high context reviews implementation.
+Review focus: nested lease deadlocks; unbound/bootstrap/worker/browser fallback;
+implicit-vs-explicit identity and null/absence/BOM; changed/disposed flow and raw
+same-time mutations; no stale success after observer/callback or final proof.
+Do not weaken acceptance or reinterpret an interrupted run as a passing result.
+
 # CRASH5 — revision59 detailed producer timing plan
 
 Issue#1536; PRODUCER1..7. Method: Superpowers brainstorming, writing-plans,

@@ -1,41 +1,22 @@
-# Current checkpoint: r59 measured, reviewed and retained; publication closure
+# Current checkpoint: r60 design; implementation and new measurements UNRUN
 
-Issue#1536 PRODUCER1..7/T474..478. Measured source9b88938cb159051b25582c200cb7596a185d437e;
-originalINPUT/launchmetadata889c021697cc4656748fe23a0102e6b05d5b3f38. One original
-FULL600/820/15 PASS518.6110156s(command542.1126068),native73/0,identity/EOF/join/
-cleanupPASS. BothXMLbuilds/8DLL/nativepins/18XMLlines/catalogPASS;89/89selected
-cheapcontrolsPASS; genuineNEWsource42/twoimports1/1PASS179.690s,82files513709B.
-CausalRED4be25:2enabledAssert.NotEmptyFAIL/2disabledPASS;earlierwrongfixturepath
-error disclosed separately. Nullableobserver preservesoriginalhooks/defaultcoldpath.
-Canonical spec/plan/tasks are r59; actualpinnedphases/equivalentconsistency used.
+Issue#1536 GS_CACHE1..7/T479..484. Owner2026-10-24 authorizes existing-service
+GameState DATA reuse, cheap fixtures and same600/820/15 original; uncapped
+producer/resumer diagnostics, autonomous execution/no approval wait.
+Base34b7abfa38db2439df6736aada8afcada197e529; r59 complete accepted original
+518.6110156s. Its full ZIP/leaf/compact summaries remain D:protected until a
+new complete verified accepted replacement. No machine diagnostics in Git.
+Spec/plan/tasks current r60. Chosen source-lifetime/data reuse rather than full
+verdict: CrossReferences/MetaMisc phases; original lifecycle and guardian-musings nested
+lease mode preserved. Existing service/backend, no generation bootstrap.
+Pinned plan/tasks/prerequisites invoked; equivalent consistency maps all seven
+GS_CACHE requirements to T479..484, no uncovered acceptance or constitution
+conflict. Narrow scope chosen after nested-lease audit; ambient fallback keeps
+existing pending/browser read protocols unchanged. T479 design complete.
+Bounded Sol6.1/high external tools preparation; separate Astra/high read-only
+lifetime consultation, independent different reviewer required. No new test,
+build, INPUT, implementation or performance result claimed yet.
 
-All101archivepayloadsSHA/CRC twiceindependentlyverified;ALL15514946eventsparsed:
-producer5339784/2669883closed/18authenticinterrupted,resumer10175162/5087581closed.
-Producer0negative residuals;1resumerderivednegative0.564sretained/notusedproducer.
-Majorproducer:prevalidation39.35(Cross11.02/Meta9.44),backup11.47/canon12.06,
-repairWait34.51(sync9.67/lease7.08/async5.73/checkpoint3.92),resources16.30,
-refresh14.49observedprefix(namespace5.84). Attrs1013910/57.436927s;
-observerbuildwrite46.3905613s,nodiagnostic-offestimate. NewQTEcontributioncache
-NOTREACHEDbeforeCut0/CommonCallbacks0;oldcheckpointQTEworkremains8rejected+4corrected.
-Historical+14.7305532 partitions11.2320806+3.4825406-.0308325+.0467645boundary;
-exactoldcalleedeltaremainsunknown. All555oldresumercountsidentical,2newoutertimers;
-same1532966attrs+7.52984s,observer+9.78443s;noCPU/disk/GCcausalityassertion.
-Humanfindings:T478-producer-timing-investigation.md. D:currentZIP101members
-415943496B SHA1B19BCB4564BD0E1D3B903723E4872DE13E124C1E231DD70EFD41317A7C8E069;
-fullleaf554039976B SHA29BF1E84CCDEEBE6A0CD00D448CCE9EA83872667ABF7F62CB3F0FB9054F65D5B.
-No caps/no live largeI/O in timedrun. Newfullarchive/leaf/35graphs/UTCcomparison
-retainedD:only. Independentsource/input/parser/outcome/retention gates actual
-Astra/high accepted0findings. Approved5exactfiles6313335022B unlinked;10protected
-files pre/postSHAverified,alltargetsabsent/parentspresent. CurrentcompleteZIP
-containsidenticalnewrawstdout;oldcompactcomparisons+r51sourcebackupretained.
-
-One developer owned C#; separateSol6.1/high tools and independentAstra/highreview.
-Observedrework:fixturepathpreconditioncorrectedbeforecausalRED;helperplain-text
-parserhandlingcorrectedbeforeactualanalysis. No substantiveintroducedsourcefinding;
-1actualneworiginalPASS,no passingC#selectionrepeat afterMD-onlychanges. No claimed
-quality/costsaving fromrouting. No gameplay/cache optimization in this probe.
-Final closing commit records this verified outcome; exactremoteref/recovery and
-independent post-retention/publication closure must be checked before final reply.
 # Previous accepted r58 checkpoint
 # Current checkpoint: r58 investigation reviewed; no causal claim for unmeasured growth
 

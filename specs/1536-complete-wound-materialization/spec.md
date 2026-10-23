@@ -1,3 +1,58 @@
+# CRASH5 — revision60 GameState source DATA reuse
+
+Issue #1536. Owner2026-10-24 requests production reuse of repeated GameState
+checks through the existing service, cheap fixture integrity controls and the
+same original600-second example with uncapped timing. Autonomous execution and
+explicit review-wait waiver apply. Reuse this feature and isolated checkout.
+
+- GS_CACHE1: Reuse unchanged source DATA used repeatedly by GameState validators
+  through the existing operation validation service/repository. Cache contents
+  and derived pure DATA, never ownership, lease, permission, publication or an
+  unconstrained whole-validation verdict. Keep ordered issues and selected phases.
+- GS_CACHE2: Bound reuse to one admitted read lifetime/unchanged source segment.
+  Retain exact raw path, original reader policy/family, session/generation and
+  relevant validation context. Changed progression/story context must execute its
+  actual rules. No cross-operation retained mutable cache or new cache framework.
+- GS_CACHE3: Preserve fresh original owner/physical admission at entry and source
+  completion. Compare touched bytes, absence, timestamp and generation freshly
+  before success/effect. Any failure, disposal, write, callback freshness boundary
+  or changed owner/segment invalidates or bypasses reuse. Never authorize an
+  effect from a cached result. Keep actual independent end/publication proofs.
+- GS_CACHE4: Unsupported browser/worker/pending-decision/foreign/closed flows and
+  mutation-capable hooks retain their original fresh route or original refusal.
+  Do not create session generation merely to enable caching. Diagnostic observers
+  stay passive, exception-isolated and uncapped. No asynchronous thread-local
+  timing context spanning awaits and no new reflection in tests.
+- GS_CACHE5: Minimal independent fixtures use actual service/readers/validator
+  phases and typed seams. Compiling causal RED then GREEN must demonstrate fewer
+  repeated reads/admissions, unchanged bytes and ordered issues, fresh subsequent
+  operations, raw same-timestamp byte/absence/generation drift rejection, and
+  supported fallback/cleanup. XML documentation and selected category controls
+  cover changed APIs and contracts; broad aggregate suites remain forbidden.
+- GS_CACHE6: Publish/recover reviewed current source, genuine NEW source42 INPUT
+  with two read-only production imports, and exact binary/native bindings. Repeat
+  the same Windows Cut0 original600child/820shared/15min, C:fixture/D:diagnostics,
+  all original oracles, native exit73/0, identity/EOF/join/owned cleanup unchanged.
+  Both producer and resumer keep detailed full diagnostics without record/byte
+  limits; no large live analysis I/O during the timed testcase.
+- GS_CACHE7: Parse all diagnostic records and compare r59 baseline518.6110156s:
+  testcase, GameState phases/source/admission/probe counts and measured observer
+  cost. Inclusive times are not additive and per-call timing variance is not
+  proof of disk/CPU causality. Report actual improvement/regression honestly.
+  Save human findings/code/docs only to Git. Retain D:latest complete accepted
+  raw/analysis; retire exact superseded diagnostics only after independent review
+  and verified complete replacement. No Ready/cleanup redesign or diagnostic-off
+  measurement in this block unless a measured new issue requires tracked scope.
+
+Approaches: caching the whole GameState result is rejected because progression
+and accepted-story state can change between passes. A second unrelated cache
+would duplicate existing lifetime/invalidation contracts. Chosen: connect actual
+GameState repeated source work to the established temporary DATA service with
+fresh entry/completion fences and original unsupported routes. Exact read-scope
+integration is resolved by source audit before implementation, not guessed from
+inclusive timer totals. Acceptance requires causal cheap evidence, unchanged
+integrity controls and the full measured original result; no promised100s gain.
+
 # CRASH5 — revision59 detailed producer timings
 
 Source issue: #1536. Owner2026-10-23 explicitly requests detailed producer timers,
