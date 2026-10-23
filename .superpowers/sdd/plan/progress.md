@@ -1,48 +1,50 @@
-# Current checkpoint: r61 causal RED confirmed; implementation WIP
+# Current checkpoint: r61 source accepted; genuine INPUT awaiting launch admission
 
-Issue#1536 CLEAN_CACHE1..8 / T485..490. Owner authorizes autonomous work and
-specification-review wait waiver. Current spec/plan/tasks are canonical.
-T485 complete: pinned phases and 8-requirement/6-task consistency PASS.
-T486 complete: forwarding-only source36dc75c931eec01dea9102bb4cf1aa1dc62ff648
-pushed/fresh-origin recovered17 exact blobs. XML unit build89.0134121s PASS.
-Actual publisher callback causal RED2/2: sync and async Expected2 Actual8 sources,
-after committed images and fresh readbacks already passed. No timeout; owned and
-runtime cleanup true. Receipts T486-causal-red-build/run/binaries under D:r61.
-T487 implemented: retain exact two publisher mutation identities, independent post-recovery
-windows only, existing general service snapshot DATA, mandatory fresh source proof.
-Expanded independent cheap fixtures16/16 GREEN. Actual sync/async2sources vs RED8;
-all raw drift/mutation/cancellation/retry/close/copy/fresh-readback controls passed.
-Source d2205efdb XML unit build92.0169006s; cheap run30.9703310s.
-T488 WIP: current18-category impact selection, exact transitive source pins and
-new immutable INPUT slot. Both current XML builds PASS94.5171720/55.0702919s; all8copiesuniform.
-Independent review requests XML keyword/outcome clarity; corrected before final
-source qualification, requiring exact new pins/build binding. No runtime defect
-reported so far; final categories/review/input/original UNRUN.
-No performance improvement claimed. T488..490 UNRUN. r60 full434.6855800s archive
-and leaf remain protected until a complete independently accepted replacement.
-Diagnostics uncapped and external D:, actual game fixtures C:SSD; no diagnostic Git.
+Issue#1536 CLEAN_CACHE1..8 / T485..490; canonical spec/plan/tasks. Owner explicitly
+authorizes autonomous work, specification-review wait waiver, uncapped diagnostics,
+cheap fixtures and same original600/820/15. Current isolated clone/branch reused.
+T485..487 complete. Exact publisher post-recovery DATA windows retain actualtwo
+publisher mutations; complete local/root set and epoch, original registration/
+ancestry/generation guards. Existing service owns detached snapshots only; fresh
+original completion bytes/absence/timestamps/generation/owner, publication image
+proofs, recovery, unsupported fallback and retries remain authoritative. No verdict,
+capability or cleanup permission cache; ordinary global quiescence unchanged.
 
-Qualification checkpoint: final a13b426db builds88.9905591/53.0382367s,
-eightcopies/nativepins/XML367lines/catalog12360methods928categories allverified.
-Selection18categories327cases stopped11/19descriptors after175PASS/7FAIL152.1808224s.
-All7failures are FileNotFound for retired T333 archive before tested code; no runtime
-regression established. Separately versioned exact accepted r60 cleanup-entry DATA
-fixture697337B/A99035C7... admitted for current prerequisites, original transport
-validator/provenance/fault assertions unchanged. Fixture and source correction WIP;
-qualification must rerun to completion before new source42/full original.
+Causal RED36dc75c sync+async Expected2 Actual8 after real publication/readback.
+GREENd2205efdb cheap16/16, actual2sources, rawdrift/absence/generation/roottransition,
+writer/cancel/retry/close/copy/freshreadback controls passed. Final compiledsource
+1e6b947b7d9e64c1b5af7c2c7847426524463551. XML builds91.0596153/54.2858501s PASS,
+all8DLL/dependencycopies and nativepins verified,374newXMLlines no introduced
+format/referencewarnings. Catalog12360methods928categories,18selectedcategories /
+19descriptors327cases; actual planning evidence carried forward with unchanged
+methods/signatures/selectors, not relabeled as another execution.
 
-Current sourcefbdf360aa bothXML builds88.3643906/54.3286691s PASS,8copiesuniform,
-XML368newlines clean. Full actual selected qualification327/327complete326PASS1FAIL,
-345.9094331s; allcleanup/history/proof cases nowPASS, no timeout, bothcleanuptrue.
-Sole failure is preexisting stale disposed-Publish exception-type assertion; original
-runtime publication/admission/recovery bodies unchanged vs24c. Independent review
-confirms current original-admission IOException refusal precedes active-lease check.
-Narrow TEST-only correction now expects exactIOException AND real admission-refusal
-marker, inactivelease and unchanged target/generation/journal; closed/foreign recovery
-InvalidOperation assertions unchanged. Fresh portable category will execute at final
-source; unchanged prior categories may carry forward only through explicit exact
-source/test/selector/TRX equivalence and independent composite admission. Old failed
-receipt retained unchanged; no old pass relabeled as a new-source execution.
+Qualification discovered two preexisting prerequisites, not a cache runtime defect:
+missing retiredT333 rawfixture (7FileNotFound beforetestedcode) now separately
+versioned exact genuine r60 inert DATA221files/697337B/A99035C7... with unchanged
+strict provenance/materializer/fault assertions; disposed-Publish stale exception
+assertion now exact existing IOException+private admission-refusal marker, inactive
+lease/noeffects/unchangedgeneration/journal checks. Closed/foreign Recover refusals
+unchanged; production/admission bodies identical to base. Old failures preserved.
+Actualfullselected sourcefbdf327complete326PASS1staleFAIL345.9094331s; corrected
+wholeportablecategory source1e6b71/71PASS34.0451921s. Explicit audited composite
+A08D7A0CE9438073B0BABD5A69C8241F9996EA7005DD5F86888D062121DEF7B0 covers exactly
+256 unchanged prior nonportable passes +71 current portable passes. Source, test
+body outside one assertion, selectors, exact cases and33actualevidencefiles checked;
+no old result relabeled current, no failure waived or requirement removed.
+Separate actual Astra/high independent source review accepted1e6b with0openfindings.
+Optional composite preflight/archive preserves actual evidence/source attribution.
+
+T488 source gate accepted. Genuine current source42 generation1/1PASS180.5484689s,
+two fresh read-only production imports,82files513711B /1878fingerprintinputs,
+source/copycleanup and actualloaded8DLLbindings verified, no Stage43 precomputation.
+New immutable joint-interface-source42-cleanup-proof-cache-v1 INPUT is being saved
+with this checkpoint. Exact archive binding appears in its package/package.json.
+InputGate/currentmetadata origin-recovery/atomiclaunch pending; T489..490 UNRUN.
+No r61 performance improvement claimed. Accepted r60 whole434.6855800s and full
+rawZIP/leaf stay protected until complete independently accepted replacement.
+C:SSD actual benchmark fixtures / D:HDD uncappeddiagnostics. Git contains source,
+small immutable testINPUT/specs/humanfindings, no timerstreams/nativeoutputlogs.
 
 # Previous accepted r60 checkpoint
 
