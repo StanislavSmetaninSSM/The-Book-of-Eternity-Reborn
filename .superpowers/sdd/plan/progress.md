@@ -1,26 +1,32 @@
-# Current checkpoint: r56 source qualified; original measurement pending
+# Current checkpoint: r56 outcome accepted; retention executed; final recovery pending
 
-Issue1536 SEMANTIC1..8/T461..465; autonomous specification-review waiver.
-T461/T462/T463 complete: pinned Spec Kit phases/consistency, causal source-count
-RED and guarded implementation through existing service. Actual genuine stages
-40preparation/8final ->1/1 for8equal results; both fresh admissions8/8. No cached
-publication permission. Complete guard covers hidden facts, exact companion refs,
-private outcomes and independently supplied current final history/copies.
-Qualified sourceaf8106d2ec4cd755f9307990488cf92a7934d7f7: bothXMLbuilds
-94.624/62.643s,8actualmatchingDLLs/nativepins;521introducedXMLlines,0new warnings/
-format errors. Current254unit+18integration=272PASS/15descriptors/cleanup complete.
-Existing complete copy testcase84.799s in unchanged120s; new stagecase49.298s.
-Separate actual Astra/high final source gate accepted,0unresolved. Review caught
-fixture failure/callback lifetime boundaries; one earlier synthetic-write wrapper
-correctly failed the existing fresh pre-effect guard. Final optional cache owns
-only read-only common setup, closes before all fresh original caller controls.
-Current genuine source42 generator/twoimports PASS150.675s,82files/513711bytes;
-allpayloads/inventory/CRC/fingerprint/currentloaded3assemblies verified against8.
-New carrier is immutable INPUT only; all diagnostics stay outside Git onD.
-T464 source/input publishing/exact remote recovery and independent input gate are
-pending; T465 same original FULL600/820/15 not launched. No100sec gain claimed.
-r54 latest complete raw retained until verified accepted replacement and reviewed
-exact file-only retirement; protected game roots remain untouched.
+Issue1536 SEMANTIC1..8/T461..465, autonomous review-wait waiver.
+Qualified sourceaf8106d2ec4cd755f9307990488cf92a7934d7f7; original run/input
+metadatac85061e89faad666fe250af90a8a22f368f587ca. T461..464 complete: actual
+pinned Spec Kit phases/consistency and causal RED, existing-service guarded DATA,
+current272PASS/15descriptors/XML521lines/8DLL/nativepins/catalog; genuine82file
+source42/twoimports/allhashes/CRC/1870fingerprintinputs/3loadedDLLs,35exactremote
+blobs/tree/noalternates. Actual independent Astra/high source+input gates accepted.
+Same original FULL600/820/15 PASS399.9290962s vs562.5566634s: saved162.6275672s
+(28.9087%). Command420.5155208s. Firstowner411.689->277.052s; matchedpublication
+218.709->108.589s. Nested groups not added. Actual agreements7871->309,
+resources7820->338, preparation1185->48; all84outerfinalreplays and58copies remain.
+Original43/mechanics/history/interface/onecommit/7terminal/84inertfile assertions
+PASS; native expected73/resumer0, exactbirth/EOF/join/cleanup andstreamSHAverified.
+All10869214events/5434607closed/211060paths analyzed,0open/truncated. One known
+negativecleanup residual (-449.8ms) explained by462.105ms diagnostic snapshot
+inside begin-observer before actual timer start; never CPU/cleanup self speedup.
+Measured observer build+write130.901->72.867s overlaps timings, no OFF prediction.
+Full46payload SHA/CRC archive281946782B from3976985826rawB; SHA
+7EDB8538827BE5D57ECD56B87C51244083B52933FF039204008C5CE3B893ACAF.
+Latest two complete passing component traces also verified111258803B localarchive.
+Human report:T465-semantic-cache-results.md. Detailed logs/archives onlyD outsideGit;
+new source42 ZIP320457B is immutable INPUT, not diagnostics. T465closing outcome/
+retention acceptedbyactualAstra/high,0unresolved. Exact reviewed126files
+13775795779B retired; all126paths absent. Currentfull/componentarchive and r51
+instrumentedsourcebackup SHA rechecked. Oldcompactoutcomes/case lists/RED/failure
+records remain; no379prior-case rerun claim. Protectedgame/INPUTpaths untouched;
+no directory removal. Final source/report/checkpoint push/recovery pending.
 
 # Historical checkpoint: r55 large-runtime investigation accepted
 

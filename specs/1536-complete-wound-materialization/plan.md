@@ -120,6 +120,18 @@ current8DLLs. No rebinding or Stage43 precomputation. Detailed diagnostic eviden
 staysD. Publish/recover exact source+INPUT and independent input gate still precede
 the same original FULL600/820/15; no r56 whole-case gain claimed yet.
 
+T465 actual original FULL PASS399.9290962s vs562.5566634s: saved162.6275672s
+(28.9087%), unchanged600/820/15 and all original assertions/native settlement.
+Matched publication218.7086209->108.5888016s; source agreement7871->309,
+resources7820->338, preparation1185->48; fresh outer final replay84 retained.
+All10869214events/5434607closed intervals/211060paths analyzed,0open/truncated.
+Full46payload archive3976985826rawB/281946782ZIPB SHA/CRC verified; latest two
+passing component traces also archived111258803B. Human findings and residual
+caveat: T465-semantic-cache-results.md. Independent Astra/high outcome/retention
+admission accepted,0unresolved; actual exact-file retirement126files13775795779B
+complete, all126paths absent. Latest full/component archives and reusable r51
+instrumented source backup SHA rechecked. Final source/checkpoint recovery pending.
+
 ## Task steps and checks
 
 T461: track/present spec, settle consultation, pinned Spec Kit phases, plan/tasks
