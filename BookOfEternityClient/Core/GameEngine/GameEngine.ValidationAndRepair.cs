@@ -257,6 +257,7 @@ public partial class GameEngine
         ValidationService.GuardianMusingsPublicationCapture.GuardianMusingsCompletedValidation?
             guardianMusingsForRepair = null)
     {
+        using var stateTiming = _fs.MeasureOperation("PlayerTurn.ValidateCurrentState.Total");
         var repairAttempt = 0;
         List<ValidationIssue>? lastRepairErrors = null;
         IReadOnlyCollection<ValidationIssue>? outputFreshnessRepairErrors = initialCanonicalRepairErrors;
@@ -269,7 +270,8 @@ public partial class GameEngine
 
         while (true)
         {
-            await EnsureClientOwnedSystemFilesHealthyAsync();
+            using (_fs.MeasureOperation("PlayerTurn.ValidateCurrentState.SystemHealth"))
+                await EnsureClientOwnedSystemFilesHealthyAsync();
             // Install in this flow after the fresh read-only lease has closed.
             // Each genuine repair completion permits exactly one validation iteration.
             using var repairedMusingsScope = repairResubmissionCompleted && guardianMusingsForRepair is not null
@@ -282,6 +284,7 @@ public partial class GameEngine
             using (_fs.BrowserDiagnosticLogical(null, source))
 #endif
             {
+                using var rawStateTiming = _fs.MeasureOperation("PlayerTurn.ValidateCurrentState.GameState");
                 issues = source == PostAcceptedMaterializedStateValidationSource && !_fs.HasBrowserOriginalOperation
                     ? await _validator.ValidatePostMaterializedGameStateAsync()
                     : await _validator.ValidateGameStateAsync();
@@ -470,6 +473,7 @@ public partial class GameEngine
         int expectedTurn,
         ProgressionControl? progressionControl)
     {
+        using var acceptedTiming = _fs.MeasureOperation("PlayerTurn.AcceptedValidation.Total");
         if (_mortalJointRepairCanonicalRefresh?.Frame is { } detachedFrame &&
             !SameMortalJointOriginalFrame(detachedFrame, activeSnapshotContext, expectedTurn))
             _mortalJointRepairCanonicalRefresh = null; // bookkeeping only; no physical signal/source cleanup
@@ -575,6 +579,7 @@ public partial class GameEngine
         string source, ValidatedPendingTurnSnapshotContext? activeSnapshotContext, RollbackSnapshot? rollbackSnapshot,
         int expectedTurn, ProgressionControl? progressionControl, Func<Task> beforeDestructiveRefusal)
     {
+        using var coreTiming = _fs.MeasureOperation("PlayerTurn.AcceptedValidation.Core");
         _acceptedTurnWoundNotifications = Array.Empty<WoundPlayerNotification>();
         _acceptedTurnSpiritualOutput = null;
         _acceptedTurnSpiritualConflictValidation = null;
@@ -605,13 +610,16 @@ public partial class GameEngine
 
         while (true)
         {
+            using var iterationTiming = _fs.MeasureOperation("PlayerTurn.AcceptedValidation.Iteration");
             _mortalJointInterfaceValidationIteration++;
-            await EnsureClientOwnedSystemFilesHealthyAsync();
+            using (_fs.MeasureOperation("PlayerTurn.AcceptedValidation.SystemHealth"))
+                await EnsureClientOwnedSystemFilesHealthyAsync();
             var spiritualAdmission = SpiritualContinuationAdmission.Admitted;
             UpstreamAcceptedTurnValidation upstreamValidation;
 #if DEBUG
             using (_fs.BrowserDiagnosticLogical(null, "accepted-upstream-raw"))
 #endif
+            using (_fs.MeasureOperation("PlayerTurn.AcceptedValidation.UpstreamRawState"))
             using (var upstreamSnapshotScope = _validator.UsePrevalidatedPendingTurnSnapshotScope(activeSnapshotContext?.Manifest))
                 upstreamValidation = await CollectAcceptedTurnUpstreamRawStateIssuesAsync();
             if (upstreamValidation.RejectSpiritualBoundary)
@@ -622,7 +630,8 @@ public partial class GameEngine
             var rawIssues = upstreamValidation.Issues.ToList();
             if (!rawIssues.Any(issue => issue.Severity == IssueSeverity.Error))
             {
-                spiritualAdmission = await ContinueAcceptedSpiritualTurnAsync(source, expectedTurn, activeSnapshotContext);
+                using (_fs.MeasureOperation("PlayerTurn.AcceptedValidation.SpiritualContinuation"))
+                    spiritualAdmission = await ContinueAcceptedSpiritualTurnAsync(source, expectedTurn, activeSnapshotContext);
                 if (spiritualAdmission == SpiritualContinuationAdmission.Rejected)
                     return AcceptedTurnValidationDisposition.TerminalRejected;
                 if (spiritualAdmission == SpiritualContinuationAdmission.RetryableHeld)
@@ -634,8 +643,10 @@ public partial class GameEngine
 #if DEBUG
             using var diagnosticAcceptedCaller = _fs.BrowserDiagnosticLogical(null, "accepted-validation-loop");
 #endif
-            rawIssues.AddRange(await ValidateResourceAndMortalGuaranteedTreatmentAsync(
-                !rawIssues.Any(static issue => issue.Severity == IssueSeverity.Error), activeSnapshotContext, expectedTurn));
+            using (_fs.MeasureOperation("PlayerTurn.AcceptedValidation.ResourceAndTreatment"))
+                rawIssues.AddRange(await ValidateResourceAndMortalGuaranteedTreatmentAsync(
+                    !rawIssues.Any(static issue => issue.Severity == IssueSeverity.Error), activeSnapshotContext, expectedTurn));
+            using var retryTiming = _fs.MeasureOperation("PlayerTurn.AcceptedValidation.CheckRetryObligations");
             if (spiritualAdmission == SpiritualContinuationAdmission.RequiresInitialResourceValidation &&
                 !rawIssues.Any(issue => issue.Severity == IssueSeverity.Error))
             {
@@ -724,8 +735,10 @@ public partial class GameEngine
                 }
             }
             var rawErrors = PrioritizeValidationErrors(rawIssues.Where(i => i.Severity == IssueSeverity.Error)).ToList();
+            retryTiming?.Dispose();
             if (rawErrors.Count > 0)
             {
+                using var repairTiming = _fs.MeasureOperation("PlayerTurn.AcceptedValidation.PrepareAndWaitRepair");
                 await beforeDestructiveRefusal();
                 criticalRepairAttempt++;
                 _logger.LogError(
@@ -840,6 +853,7 @@ public partial class GameEngine
                         }
                     }
                 }
+                using var repairWaitTiming = _fs.MeasureOperation("PlayerTurn.AcceptedValidation.WaitForContractRepair");
                 if (!await WaitForContractRepairAsync(
                         source,
                         rawErrors,
@@ -860,6 +874,7 @@ public partial class GameEngine
                         rollbackSnapshot,
                         "validation_failed");
                 }
+                repairWaitTiming?.Dispose();
                 lastCriticalRepairStartedAtUtc = rawRepairStartedAtUtc;
                 lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
                     rawErrors,
@@ -871,6 +886,7 @@ public partial class GameEngine
             AcceptedTurnCanonicalRefreshResult canonicalRefresh;
             try
             {
+                using var refreshTiming = _fs.MeasureOperation("PlayerTurn.AcceptedValidation.RefreshCanonicalState");
                 canonicalRefresh = await RefreshAcceptedTurnCanonicalStateForValidationAsync(
                     expectedTurn,
                     activeSnapshotContext);

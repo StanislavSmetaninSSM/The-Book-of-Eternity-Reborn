@@ -64,7 +64,12 @@ public sealed class JointProducerTimingTests
                     Assert.Equal(++sequence, value.GetProperty("Sequence").GetInt64());
                     Assert.Equal(Environment.ProcessId, value.GetProperty("PID").GetInt32());
                     var name = value.GetProperty("Operation").GetString()!;
-                    if (value.GetProperty("State").GetString() == "begin") stack.Push(name);
+                    if (value.GetProperty("State").GetString() == "begin")
+                    {
+                        if (name == (asynchronous ? "OrdinaryRead.Async.Total" : "OrdinaryRead.Sync.Total"))
+                            Assert.Contains("Producer.Control.Read", stack);
+                        stack.Push(name);
+                    }
                     else
                     {
                         Assert.NotEmpty(stack);
@@ -73,7 +78,8 @@ public sealed class JointProducerTimingTests
                     }
                 }
                 Assert.Empty(stack);
-                Assert.Equal("Producer.Control.Read", rows[0].RootElement.GetProperty("Operation").GetString());
+                Assert.Contains(rows, row => row.RootElement.GetProperty("Operation").GetString() ==
+                    "Producer.Control.Read" && row.RootElement.GetProperty("State").GetString() == "begin");
                 Assert.Equal("Producer.Control.Read", rows[^1].RootElement.GetProperty("Operation").GetString());
             }
             finally { foreach (var row in rows) row.Dispose(); }

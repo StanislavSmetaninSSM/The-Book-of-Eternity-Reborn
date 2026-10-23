@@ -1615,6 +1615,7 @@ public partial class GameEngine
     private async Task<PlayerTurnPreparation?> StagePlayerTurnAsync(
         string action, string? extraSystemReminder, PendingPlayerActionService.Binding? browserAction)
     {
+        using var stageTiming = _fs.MeasureOperation("PlayerTurn.Stage.Total");
         EndHotOrdinaryOriginal("SubsequentOrdinaryStage");
         var ordinal = ++_hotStageOrdinal;
         try
@@ -1659,8 +1660,9 @@ public partial class GameEngine
         using var browserOriginalScope = browserAction == null ? null : _fs.BeginBrowserOriginalOperation(browserAction);
         // Reserve/refuse before health validation can remove an unrelated request.
         if (browserAction != null) await ClaimBrowserPreparationAsync(browserAction);
-        if (!await ValidateCurrentGameStateOrShowErrorsAsync("перед отправкой хода"))
-            return null;
+        using (_fs.MeasureOperation("PlayerTurn.Stage.ValidateBeforeTurn"))
+            if (!await ValidateCurrentGameStateOrShowErrorsAsync("перед отправкой хода"))
+                return null;
 
         var hotOrigin = BeginHotOrdinaryOriginal(ordinal, sessionGeneration, browserAction);
         string? finalRequestJson = null;
@@ -1674,10 +1676,12 @@ public partial class GameEngine
         {
             // Create backup of game state files before sending turn (for escape-rollback)
             var backupId = DateTime.UtcNow.Ticks.ToString();
-            backedUpFiles = await CreatePreTurnBackup(backupId);
+            using (_fs.MeasureOperation("PlayerTurn.Stage.CreatePreTurnBackup"))
+                backedUpFiles = await CreatePreTurnBackup(backupId);
             OverlayExplorerLocalRollbackSnapshot(backedUpFiles, stagedExplorerRollback);
 
             // Write turn request
+            using var reminderTiming = _fs.MeasureOperation("PlayerTurn.Stage.BuildRequestAndReminder");
             request = new TurnRequest
             {
                 SessionId = _gameLoop.SessionId,
@@ -1688,22 +1692,31 @@ public partial class GameEngine
                 SystemReminder = await BuildTurnSystemReminderAsync(extraSystemReminder)
             };
             if (browserAction != null) request.RequestId = browserAction.ActionId;
-            request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();
-            await AttachPendingDiceAndGachaAsync(request);
-            request.AfterlifeSpiritualConflictPreview = await new AfterlifeSpiritualConflictTurnPreviewService(_fs)
-                .BuildAsync(request.TurnNumber, request.PreGeneratedDices1d20, _stateManager.CurrentState.CurrentRealm);
+            reminderTiming?.Dispose();
+            using (_fs.MeasureOperation("PlayerTurn.Stage.BuildProgressionControl"))
+                request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();
+            using (_fs.MeasureOperation("PlayerTurn.Stage.AttachDiceAndGacha"))
+                await AttachPendingDiceAndGachaAsync(request);
+            using (_fs.MeasureOperation("PlayerTurn.Stage.BuildSpiritualPreview"))
+                request.AfterlifeSpiritualConflictPreview = await new AfterlifeSpiritualConflictTurnPreviewService(_fs)
+                    .BuildAsync(request.TurnNumber, request.PreGeneratedDices1d20, _stateManager.CurrentState.CurrentRealm);
             RegisterOrdinaryTurnStagingValidationSnapshotFiles(backedUpFiles);
+            using var skillsTiming = _fs.MeasureOperation("PlayerTurn.Stage.LoadSkillScope");
             var skillScopeAuthority = await EffectMechanicsSnapshot
                 .LoadCurrentSkillScopeAuthorityAsync(_fs);
             request.EffectSkillScopeCatalog = skillScopeAuthority
                 .CreateGmCatalog()
                 .DeepClone()
                 .AsObject();
+            skillsTiming?.Dispose();
+            using var baselineTiming = _fs.MeasureOperation("PlayerTurn.Stage.CreateCanonicalBaseline");
             var canonicalSnapshot = await CreateOrdinaryCanonicalBaselineSnapshotAsync(hotOrigin, request, backedUpFiles, browserAction);
+            baselineTiming?.Dispose();
 
             // Attach computed characteristics for GM reference
             try
             {
+                using var characteristicsTiming = _fs.MeasureOperation("PlayerTurn.Stage.ComputeCharacteristics");
                 var computed = await _charService.ComputeAsync();
                 var charContext = new Dictionary<string, object>();
                 foreach (var (name, stat) in computed.Stats)
@@ -1736,6 +1749,7 @@ public partial class GameEngine
             }
             else
             {
+                using var projectionTiming = _fs.MeasureOperation("PlayerTurn.Stage.PublishProjectedRequest");
                 await using var stagingLease = await _fs.AcquireCanonicalWriteLeaseAsync();
                 await _fs.WriteFileAtomicAsync(stagingLease, "input/turn_request.json", requestJson);
                 var provisional = new CanonicalBeforeImage(true,
@@ -1757,6 +1771,7 @@ public partial class GameEngine
             request = projectedRequest;
             finalRequestJson = requestJson;
 
+            using var snapshotTiming = _fs.MeasureOperation("PlayerTurn.Stage.LoadValidatedSnapshot");
             var activeManifest = await LoadPendingTurnSnapshotManifestAsync();
             activeSnapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(activeManifest);
             if (activeSnapshotContext == null)
@@ -1842,6 +1857,7 @@ public partial class GameEngine
     private async Task FinalizePlayerTurnAsync(
         PlayerTurnPreparation preparation, string action, bool playerFacingTurn, TerminalSignalWaitOutcome waitOutcome)
     {
+        using var finalizationTiming = _fs.MeasureOperation("PlayerTurn.Finalize.Total");
         var backedUpFiles = preparation.Backup;
         var request = preparation.Request;
         var activeSnapshotContext = preparation.SnapshotContext;

@@ -640,18 +640,23 @@ public sealed partial class GameEngineTurnLifecycleTests
             ObservationMode = observationMode.ToString().ToLowerInvariant()
         }));
         var stages = JointInterfaceCrashStageReport.CreateForOrdinary(parent, cut);
+        var operationTimings = OperatingSystem.IsWindows() && stages != null &&
+            observationMode == JointInterfaceObservationMode.Full ? new JointOperationTimings() : null;
+        Action<string, string, TimeSpan>? timingObserver = operationTimings is null ? null : operationTimings.Observe;
+        operationTimings?.Observe("Producer.ImportFixture", "begin", TimeSpan.Zero);
+        var fixtureStarted = Stopwatch.GetTimestamp();
         stages?.Observe("fixture", "enter");
         JointInterfaceCrashSeedMetadata? sourceSeedMetadata = null;
         GameEngineTurnLifecycleTests fixture;
         if (source42Seed is null)
-            fixture = new GameEngineTurnLifecycleTests(new JointInterfaceConsoleOutput());
+            fixture = new GameEngineTurnLifecycleTests(new JointInterfaceConsoleOutput(), null, timingObserver);
         else
         {
             var importStarted = Stopwatch.GetTimestamp();
             var template = source42Seed.Open(TestRepoPaths.RepoRoot);
             var root = Path.Combine(own, "tmp", "boe-joint-seeded-" + Guid.NewGuid().ToString("N"));
             sourceSeedMetadata = await template.MaterializeAsync(root);
-            fixture = new GameEngineTurnLifecycleTests(new JointInterfaceConsoleOutput(), root);
+            fixture = new GameEngineTurnLifecycleTests(new JointInterfaceConsoleOutput(), root, timingObserver);
             File.WriteAllText(Path.Combine(own, "source-seed-import.json"), JsonSerializer.Serialize(new
             {
                 Pid = Environment.ProcessId, Nonce = parent["Nonce"]!.GetValue<string>(), Root = root,
@@ -661,10 +666,12 @@ public sealed partial class GameEngineTurnLifecycleTests
         }
         using var ownedFixture = fixture;
         stages?.Observe("fixture", "return");
+        operationTimings?.Observe("Producer.ImportFixture", "end", Stopwatch.GetElapsedTime(fixtureStarted));
         var scenario = cut == 2 ? "Crash:PublishedCulture" : cut == 4 ? "Crash:Error" : "Crash:Changed";
         using var probe = new JointInterfaceLifecycleProbe(fixture, scenario);
         probe.ConfigureActualCrash(cut, output, own, stages);
         stages?.Observe("engine", "enter");
+        using var producerEngine = fixture._fs.MeasureOperation("Producer.EngineUntilActualCut");
         await fixture.RunJointCompletionControlAsync(false, useLiveCaller: true, interfaceLifecycleProbe: probe, sourceSeed: sourceSeedMetadata);
         stages?.Observe("engine", "return");
         // An unarmed/missing cut must fail after actual old/new work, never write
@@ -1159,17 +1166,20 @@ public sealed partial class GameEngineTurnLifecycleTests
             if (cut == 1) Assert.False(journal.RootElement.GetProperty("Committed").GetBoolean());
             else Assert.True(journal.RootElement.GetProperty("Committed").GetBoolean());
             foreach (var (path, bytes) in _mechanicalBefore) Assert.Equal(bytes, ReadPhysical(path));
-            _crashStages?.Observe("exit", "enter");
-            File.WriteAllText(_crashOutput!, JointInterfaceCrashProcessSupport.SerializeCurrentIdentity(new
-            { Nonce = parent["Nonce"]!.GetValue<string>(),
-                ParentPid = parent["ParentPid"]!.GetValue<int>(), Root = fixture._fs.BasePath, Cut = cut,
-                Phase = phase.ToString(), Index = index, JournalBase64 = Convert.ToBase64String(journalBytes),
-                ActualPending = ReadPhysical(WoundAcceptedTurnSnapshotContract.PendingResolutionPath), PendingMemberAfter = pendingBytes,
-                Interface = ReadPhysical(InterfacePath), InterfaceMtime = Mtime(), Result = record?.ToJson(), Checkpoint = checkpoint,
-                CommonCallbacks = _captureCallbacks, FirstMarker = _firstMarker, Turn = _runtime!.GameLoop.TurnNumber,
-                MechanicalBefore = _mechanicalBefore, MechanicalAtCut = _mechanicalBefore.Keys.ToDictionary(path => path, ReadPhysical),
-                AmbientParseAccepted = DateTimeOffset.TryParse("13/02/2026", out _), Culture = CultureInfo.CurrentCulture.Name,
-                Dependencies = MortalArchiveDependencyContext(), Loaded = MortalArchiveLoadedDependencyBindings() }, _crashStages));
+            using (fixture._fs.MeasureOperation("Producer.AuthenticatedCrashCut"))
+            {
+                _crashStages?.Observe("exit", "enter");
+                File.WriteAllText(_crashOutput!, JointInterfaceCrashProcessSupport.SerializeCurrentIdentity(new
+                { Nonce = parent["Nonce"]!.GetValue<string>(),
+                    ParentPid = parent["ParentPid"]!.GetValue<int>(), Root = fixture._fs.BasePath, Cut = cut,
+                    Phase = phase.ToString(), Index = index, JournalBase64 = Convert.ToBase64String(journalBytes),
+                    ActualPending = ReadPhysical(WoundAcceptedTurnSnapshotContract.PendingResolutionPath), PendingMemberAfter = pendingBytes,
+                    Interface = ReadPhysical(InterfacePath), InterfaceMtime = Mtime(), Result = record?.ToJson(), Checkpoint = checkpoint,
+                    CommonCallbacks = _captureCallbacks, FirstMarker = _firstMarker, Turn = _runtime!.GameLoop.TurnNumber,
+                    MechanicalBefore = _mechanicalBefore, MechanicalAtCut = _mechanicalBefore.Keys.ToDictionary(path => path, ReadPhysical),
+                    AmbientParseAccepted = DateTimeOffset.TryParse("13/02/2026", out _), Culture = CultureInfo.CurrentCulture.Name,
+                    Dependencies = MortalArchiveDependencyContext(), Loaded = MortalArchiveLoadedDependencyBindings() }, _crashStages));
+            }
             Console.Out.Flush(); Console.Error.Flush();
             Environment.Exit(73); // actual abrupt process exit; no catch, finally, release or compensation
         }

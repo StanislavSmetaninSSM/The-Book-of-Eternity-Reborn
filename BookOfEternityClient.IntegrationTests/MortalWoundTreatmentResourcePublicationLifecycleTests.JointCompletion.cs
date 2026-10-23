@@ -81,6 +81,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         JointCaptureCutProbe? currentCaptureProbe = null,
         JointInterfaceLifecycleProbe? interfaceLifecycleProbe = null, JointInterfaceCrashSeedMetadata? sourceSeed = null)
     {
+        using var scenarioTiming = _fs.MeasureOperation("JointScenario.UntilCompletionOrActualCut");
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         string sourceSessionId;
         string sourceRequestId;
@@ -92,8 +93,10 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.True(useLiveCaller);
             Assert.False(nonzeroProgression);
             Assert.NotNull(interfaceLifecycleProbe);
-            occurrence = await AssertImportedJointSeedWorldAsync(_fs, sourceSeed);
-            priorLifecycleTail = await AssertJointPriorLifecycleInactiveBaselineAsync(sourceSeed.SessionId, sourceSeed.RequestId);
+            using (_fs.MeasureOperation("JointScenario.Seed.ValidateImportedWorld"))
+                occurrence = await AssertImportedJointSeedWorldAsync(_fs, sourceSeed);
+            using (_fs.MeasureOperation("JointScenario.Seed.ValidateInactiveTail"))
+                priorLifecycleTail = await AssertJointPriorLifecycleInactiveBaselineAsync(sourceSeed.SessionId, sourceSeed.RequestId);
             sourceSessionId = sourceSeed.SessionId;
             sourceRequestId = sourceSeed.RequestId;
             sourceSnapshotToken = sourceSeed.SnapshotToken;
@@ -205,6 +208,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     return Task.CompletedTask;
                 }
             };
+        using var runtimeSetupTiming = _fs.MeasureOperation("JointScenario.Runtime.CreateAndConfigure");
         var runtime = CreateGameEngineRuntime(_fs, input,
             settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },
             finalizationHooks: interfaceLifecycleProbe?.ComposeFinalizationHooks(finalizationHooks) ?? finalizationHooks,
@@ -215,7 +219,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         interfaceLifecycleProbe?.Attach(runtime);
         runtime.GameLoop.SetSession(sourceSessionId, 42);
         interfaceLifecycleProbe?.ConfigureBeforeOriginal();
-        await runtime.StateManager.RefreshGameStateAsync();
+        runtimeSetupTiming?.Dispose();
+        using (_fs.MeasureOperation("JointScenario.Runtime.RefreshInitialState"))
+            await runtime.StateManager.RefreshGameStateAsync();
         if (!useLiveCaller)
             await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
             {
@@ -227,8 +233,11 @@ public sealed partial class GameEngineTurnLifecycleTests
 
         async Task PrepareJointOriginalAsync()
         {
+            using var prepareTiming = _fs.MeasureOperation("JointScenario.Original.PrepareRejectedResponse");
+            using var originalTiming = _fs.MeasureOperation("JointScenario.Original.ReadAndPrepareTreatment");
             await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
             {
+                using var originalReadTiming = _fs.MeasureOperation("JointScenario.Original.ReadSnapshotAndProgression");
                 generation = Assert.IsType<string>(_fs.ReadLocalGenerationSnapshot(lease).Binding.Id);
                 original = MortalQteWoundOpportunityProjection.ReadSnapshot(_fs, lease);
                 // The progression basis is the SIGNED original, not the later
@@ -251,6 +260,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 signedOriginalSchedule = progressionOriginal.ReadRequiredBytes(ProgressionScheduleService.SchedulePath).ToArray();
                 WritePhysicalInjuryDiagnostic("fr063_joint_signed_original_schedule_before_owner", new
                 { original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber, ScheduleBytes = signedOriginalSchedule });
+                originalReadTiming?.Dispose();
+                using var naturalImagesTiming = _fs.MeasureOperation("JointScenario.Original.VerifyNaturalStage43");
                 foreach (var image in jointCurrentTail)
                     AssertJointNaturalStage43Image("current", image.Key, image.Value,
                         await _fs.ReadFileBytesAsync(lease, image.Key));
@@ -261,6 +272,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.NotEqual(sourceRequestId, original.RequestId);
                 Assert.NotEqual(sourceSnapshotToken, original.SnapshotToken);
                 Assert.Equal("mortal_world", original.Realm);
+                naturalImagesTiming?.Dispose();
+                using var calculationContext = _fs.EnterOperationTimingContext();
+                using var exportTiming = _fs.MeasureOperation("JointScenario.Original.ExportTreatmentAuthority");
                 var offer = Assert.Single(MortalQteWoundOpportunityProjection.Project(original));
                 Assert.Equal(occurrence.OpportunityRef, offer["opportunityRef"]!.GetValue<string>());
                 Assert.Equal("II", offer["maximumSeverity"]!.GetValue<string>());
@@ -268,6 +282,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.True(exported.IsValid, DescribeValidationIssues(exported.Issues));
                 var accepted = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(exported.Authority);
                 AssertPendingTreatmentTuple(original, accepted.Binding);
+                exportTiming?.Dispose();
+                using var requestTiming = _fs.MeasureOperation("JointScenario.Original.PrepareGuaranteedRequest");
                 var history = ReadCurrentTreatmentHistory(_fs);
                 var wound = ReadCurrentTreatmentWound(_fs);
                 var prepared = MortalWoundTreatmentPlanner.PrepareGuaranteedRequest(accepted, history, wound,
@@ -276,13 +292,19 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.True(prepared.IsValid, DescribeValidationIssues(prepared.Issues));
                 request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(prepared.Request);
                 Assert.Equal(2m, Assert.Single(request.ResourceAuthority.Claims).Quantity);
+                requestTiming?.Dispose();
+                using var resolveTiming = _fs.MeasureOperation("JointScenario.Original.ResolveGuaranteedAttempt");
                 var resolved = MortalWoundTreatmentPlanner.CreateGuaranteedAttempt(request, history, wound, accepted);
                 Assert.Equal("Resolved", resolved.Disposition);
                 Assert.Empty(resolved.Issues);
                 var resolution = Assert.IsType<MortalWoundTreatmentResolution>(resolved.Resolution);
+                resolveTiming?.Dispose();
+                using var finalizeTiming = _fs.MeasureOperation("JointScenario.Original.FinalizeResources");
                 var finalized = MortalWoundTreatmentResourceComposer.Finalize(resolution);
                 Assert.True(finalized.IsValid, DescribeValidationIssues(finalized.Issues));
                 finalization = Assert.IsType<MortalWoundTreatmentResourceFinalization>(finalized.Finalization);
+                finalizeTiming?.Dispose();
+                using var composeTiming = _fs.MeasureOperation("JointScenario.Original.ComposeRejectedCommand");
                 var command = WoundResponseInputComposer.ComposeMortalWoundTreatmentCommandRoot(accepted.Binding, resolution, scene);
                 var parsed = WoundResponseInputComposer.ParseCommandRoot(JsonSerializer.SerializeToElement(command));
                 Assert.True(parsed.Success, DescribeValidationIssues(parsed.Issues));
@@ -291,10 +313,15 @@ public sealed partial class GameEngineTurnLifecycleTests
                 decision = new JsonObject { ["opportunityRef"] = occurrence.OpportunityRef, ["decision"] = "materialize",
                     ["woundRef"] = "live_pending_impact", ["proposal"] = CreateMortalComponentProposal() };
                 decision["proposal"]!["severity"] = "III"; // Only this public severity leaf contradicts the genuine maximumII.
+                composeTiming?.Dispose();
+                calculationContext?.Dispose(); // Synchronous observation context never crosses the lease-disposal await.
             }
-            await new StateDistributor(_fs, NullLogger<StateDistributor>.Instance)
-                .DistributeAsync(new GameResponse { Response = scene }, composition);
+            originalTiming?.Dispose();
+            using (_fs.MeasureOperation("JointScenario.Original.DistributeRejectedCommand"))
+                await new StateDistributor(_fs, NullLogger<StateDistributor>.Instance)
+                    .DistributeAsync(new GameResponse { Response = scene }, composition);
 
+            using var readbackTiming = _fs.MeasureOperation("JointScenario.Original.ValidateClaimAndAuthorOutputs");
             await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
             {
                 Assert.Equal(generation, _fs.ReadLocalGenerationSnapshot(lease).Binding.Id);
@@ -321,8 +348,10 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.True(JsonNode.DeepEquals(WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(request), treatment.Request));
                 Assert.Equal(scene, treatment.FinalSceneText);
                 Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(_fs, lease));
+                using var outputTiming = _fs.MeasureOperation("JointScenario.Original.WriteInitialPublicOutputs");
                 await WriteLiveRepairOrdinaryOutputsAsync(lease, original, decision,
                     normalizeNarrativeBeforeCheckpoint ? scene.Replace("\n", "`n", StringComparison.Ordinal) : scene);
+                outputTiming?.Dispose();
                 if (interfaceLifecycleProbe is not null)
                     await interfaceLifecycleProbe.ConfigureInitialIntakeAsync(lease, original);
                 if (postOriginalAutomaticSubmission)
@@ -367,7 +396,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 if (nonzeroProgression)
                     authoredProgressionReport = Assert.IsType<byte[]>(
                         await _fs.ReadFileBytesAsync(lease, ProgressionScheduleService.ReportPath)).ToArray();
-                before = await CaptureConfirmedClaimReadImagesAsync(_fs, lease);
+                using (_fs.MeasureOperation("JointScenario.Original.CaptureBeforeImages"))
+                    before = await CaptureConfirmedClaimReadImagesAsync(_fs, lease);
                 if (activeTailScenario is not null || postOriginalAutomaticSubmission)
                     Assert.False(before.ContainsKey("game_state/control/gm_trajectory_ledger.jsonl"));
                 var actualRequest = StrictJsonAuthority.Deserialize<TurnRequest>(
@@ -380,6 +410,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 if (activeTailScenario is null && !postOriginalAutomaticSubmission)
                     await GameEngine.ValidateCurrentMortalJointInactiveTailAsync(_fs, lease, original.TurnNumber);
             }
+            readbackTiming?.Dispose();
             WritePhysicalInjuryDiagnostic("fr063_joint_completion_actual_prerequisites", new
             {
                 Source = new { SessionId = sourceSessionId, RequestId = sourceRequestId, SnapshotToken = sourceSnapshotToken, TurnNumber = 42 },
@@ -419,6 +450,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 if (useLiveCaller)
                 {
+                    using var driverTiming = _fs.MeasureOperation("JointScenario.Driver.ProcessPlayerTurn");
                     await engine.ProcessPlayerTurn("Осмотреть ушиб.");
                     liveCallerReturned = true;
                 }
@@ -575,6 +607,7 @@ public sealed partial class GameEngineTurnLifecycleTests
 
         void ObserveActualRepair(TrustedLocalPublicationPhase phase, int index)
         {
+            using var repairObserverTiming = _fs.MeasureOperation("JointScenario.Repair.ObservePublication");
             if (!jointOriginalAuthored || phase != TrustedLocalPublicationPhase.Committed || observerFailure is not null) return;
             try
             {
@@ -667,6 +700,10 @@ public sealed partial class GameEngineTurnLifecycleTests
                         foreach (var publicOutput in resubmittedPublicOutputs)
                         {
                             if (publicOutput.Key == MortalWoundOpportunityAdapter.DecisionPath) continue;
+                            using var writeTiming = _fs.MeasureOperation(
+                                publicOutput.Key == MortalJointInterfacePublication.InterfacePath
+                                    ? "JointScenario.Repair.WriteCorrectedInterface"
+                                    : "JointScenario.Repair.WriteCorrectedPublicOutput");
                             File.WriteAllBytes(_fs.ResolvePath(publicOutput.Key), publicOutput.Value);
                         }
                         File.WriteAllText(_fs.ResolvePath(MortalWoundOpportunityAdapter.DecisionPath),

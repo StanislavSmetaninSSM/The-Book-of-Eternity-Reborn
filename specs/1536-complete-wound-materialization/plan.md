@@ -4,7 +4,7 @@ Issue#1536; PRODUCER1..7. Method: Superpowers brainstorming, writing-plans,
 systematic-debugging, TDD and inline execution; separate independent review.
 Existing isolated branch/clone reused. Canonical spec above; logs outside Git.
 
-- [ ] T474: Audit real producer manager/driver/callback/cut and collector/parser
+- [x] T474: Audit real producer manager/driver/callback/cut and collector/parser
   contracts; record design, pinned plan/tasks/prerequisites and equivalent
   consistency; publish before test or implementation changes.
 - [ ] T475: Compiling causal RED then GREEN using minimal adopted directories for

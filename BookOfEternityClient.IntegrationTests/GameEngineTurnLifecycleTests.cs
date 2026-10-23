@@ -106,6 +106,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             PhysicalLoadTransactionOperations.Instance,
             new FileSystemManagerHooks
             {
+                OperationTimingObserver = operationTimingObserver,
                 BeforeCanonicalMutationAsync = BeforeCanonicalMutationAsync,
                 AfterCanonicalReadInitialValidationAsync = path => _consoleCanonicalReadObserver?.Invoke(path) ?? Task.CompletedTask,
                 SessionOperationClosingAsync = () => _consoleSessionClosingObserver?.Invoke() ?? Task.CompletedTask,

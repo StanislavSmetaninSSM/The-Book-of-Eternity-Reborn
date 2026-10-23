@@ -1,3 +1,23 @@
+# Current checkpoint: r59 producer instrumentation, causal RED confirmed
+
+Issue#1536 PRODUCER1..7/T474..478. Canonical r59 spec/plan/tasks presented under
+explicit autonomous review waiver; pinned phases and equivalent consistency done.
+Design81568 published. RED4be25 source XML integration build105.109s/0errors:
+4 cheap real adopted-manager cases completed,2disabledPASS/2enabledFAIL at
+Assert.NotEmpty, correct file bytes. Earlier b1f path-precondition error is
+recorded separately, not counted as causal RED. Raw evidence stays D: only.
+GREEN now wires nullable observer through existing fixture hooks, full-mode
+producer/import/cut scopes and nested scenario/player-stage/repair boundaries.
+No algorithm/cache/authority/native cut/budget change. Final8DLL XML builds,
+selected cheap controls, independent source review, genuine new source42/two
+imports, published exact input recovery all remain BEFORE original600/820/15.
+No original r59 launch or new accepted measurement yet; current r57 raw protected.
+Historical cut timestamps partition +14.6837887s producer-birth gap into
++11.2320806 before corrected interface mtime, +3.4825406 until fallback sample,
+-.0308325 thereafter. These are wallclock anchors, not old nested causal timers.
+External receipts/tools:D:/BoeDiagnostics/producer-timers-r59-20261023.
+
+# Previous accepted r58 checkpoint
 # Current checkpoint: r58 investigation reviewed; no causal claim for unmeasured growth
 
 Issue#1536 REGRESSION1..5/T471..473 complete as an investigation. Independent

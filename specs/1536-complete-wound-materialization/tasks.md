@@ -1,7 +1,7 @@
 # CRASH5 — revision59 detailed producer timings
 
 Issue#1536; PRODUCER1..7; owner2026-10-23 explicit autonomous instrumentation+same600s run.
-- [ ] T474 [US3] Source-grounded design, canonical artifacts, actual pinned phases
+- [x] T474 [US3] Source-grounded design, canonical artifacts, actual pinned phases
   and equivalent consistency; publish tracked probe before implementation.
 - [ ] T475 [US3] Cheap compiling causal RED/GREEN, nullable actual fixture-manager
   observer seam and producer/scenario nested timers; original hooks/cut preserved.
