@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "core-operation-structural-data",
+      "reason": "Causal structural identity/data mismatch and malformed capture must not reuse success.",
+      "contracts": [
+        "#1536 SEMANTIC1..6 / T462-464"
+      ]
+    },
+    {
       "category": "core-operation-synchronous",
       "reason": "Causal native synchronous reuse and lifetime/dependency failures on independent in-memory values.",
       "contracts": [

@@ -2,6 +2,39 @@
     "schemaVersion": 1,
     "categories": [
 {
+      "id": "core-operation-structural-data",
+      "responsibility": "Complete typed structural DATA comparison and never-reused dependency versions: alias changes, restore, ineligible/malformed capture, source drift and capture outside coordinator monitor.",
+      "excludes": "No game, permissions cache, reflection, world construction, async waits or diagnostic quotas.",
+      "changeHints": [
+        "BookOfEternityClient/Services/OperationStructuralSnapshot.cs",
+        "BookOfEternityClient.Tests/OperationStructuralDependencyTests.cs"
+      ],
+      "related": [
+        {
+          "id": "core-operation-synchronous",
+          "when": "The guarded synchronous computation entry changes."
+        },
+        {
+          "id": "core-operation-validation-cache",
+          "when": "Version or coordinator contracts change."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.OperationStructuralDependencyTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "core-operation-synchronous",
       "responsibility": "Synchronous existing-service computation: reuse, defaults, exact nested dependencies, fresh scopes, copy invalidation, failure, recursion and disposal on tiny in-memory inputs.",
       "excludes": "No game, world, reflection, async blocking, permissions cache or diagnostic quota.",

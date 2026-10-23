@@ -96,28 +96,43 @@ internal sealed class ValidationOperation : IDisposable
     }
 
     /// <summary>
-    /// Executes the synchronous source through the initial uncached compilation seam.
+    /// Computes or reuses synchronous DATA through the shared operation protocol without waiting for asynchronous work.
     /// </summary>
     /// <typeparam name="TResult">
-    /// The result supplied by the original computation.
+    /// The registered result type, including permitted null and default values.
     /// </typeparam>
     /// <param name="computation">
-    /// Registered computation whose synchronous protocol is qualified by the causal controls.
+    /// Exact registered computation identity and defensive copy policy.
     /// </param>
     /// <param name="inputIdentity">
-    /// Exact input identity intended for the shared operation protocol.
+    /// Complete stable input and policy identity.
     /// </param>
     /// <param name="dependencies">
-    /// Complete ordered dependency declaration intended for the shared operation protocol.
+    /// Complete ordered direct dependency declaration.
     /// </param>
     /// <param name="compute">
-    /// Original synchronous computation invoked without blocking.
+    /// Original synchronous source invoked only when an eligible result is unavailable.
     /// </param>
     /// <returns>
-    /// The original source result without reuse until the synchronous protocol is implemented.
+    /// A detached successful result under the same ownership, dependency and failure checks as asynchronous requests.
     /// </returns>
     internal TResult GetOrCompute<TResult>(OperationComputation<TResult> computation, object inputIdentity,
-        IReadOnlyList<IOperationDependency> dependencies, Func<TResult> compute) => compute();
+        IReadOnlyList<IOperationDependency> dependencies, Func<TResult> compute)
+    {
+        if (compute is null)
+        {
+            InvalidateAfterFailure();
+            throw new ArgumentNullException(nameof(compute));
+        }
+        var request = GetOrLookupCoreAsync(computation, inputIdentity, dependencies,
+            _ => Task.FromResult(compute()));
+        if (!request.IsCompleted)
+        {
+            InvalidateAfterFailure();
+            throw new InvalidOperationException("A synchronous computation did not settle synchronously.");
+        }
+        return request.GetAwaiter().GetResult().Value;
+    }
 
     /// <summary>
     /// Reuses or computes a detached typed result under complete input and dependency declarations.
@@ -152,7 +167,7 @@ internal sealed class ValidationOperation : IDisposable
             InvalidateAfterFailure();
             throw new ArgumentNullException(nameof(compute));
         }
-        return (await GetOrLookupAsync(computation, inputIdentity, dependencies, compute, cancellationToken).ConfigureAwait(false)).Value;
+        return (await GetOrLookupCoreAsync(computation, inputIdentity, dependencies, compute, cancellationToken).ConfigureAwait(false)).Value;
     }
 
     /// <summary>
@@ -179,7 +194,7 @@ internal sealed class ValidationOperation : IDisposable
     /// <returns>
     /// A detached found result, or a miss when no source was requested and no eligible entry exists.
     /// </returns>
-    private async Task<OperationLookup<TResult>> GetOrLookupAsync<TResult>(OperationComputation<TResult> computation,
+    private async ValueTask<OperationLookup<TResult>> GetOrLookupCoreAsync<TResult>(OperationComputation<TResult> computation,
         object inputIdentity, IReadOnlyList<IOperationDependency> dependencies,
         Func<CancellationToken, Task<TResult>>? compute, CancellationToken cancellationToken = default)
     {
@@ -322,7 +337,7 @@ internal sealed class ValidationOperation : IDisposable
     /// </returns>
     internal Task<OperationLookup<TResult>> TryGetAsync<TResult>(OperationComputation<TResult> computation,
         object inputIdentity, IReadOnlyList<IOperationDependency> dependencies, CancellationToken cancellationToken = default) =>
-        GetOrLookupAsync(computation, inputIdentity, dependencies, null, cancellationToken);
+        GetOrLookupCoreAsync(computation, inputIdentity, dependencies, null, cancellationToken).AsTask();
 
     /// <summary>
     /// Records only a validation that completes normally without a refusal.
