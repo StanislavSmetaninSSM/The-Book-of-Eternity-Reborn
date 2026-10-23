@@ -5,10 +5,10 @@ execute inline, one independent review of the coherent completed investigation.
 Existing isolated checkout and accepted r56/r57 artifacts are reused.
 No C# change/build/test or new original run is planned.
 
-- [ ] T471: Verify source/evidence bindings and compare disjoint whole-case cuts,
+- [x] T471: Verify source/evidence bindings and compare disjoint whole-case cuts,
   root/major-child timers, named aggregate counts/costs and observer counters.
   Produce external exact comparison; validate sum and overlap assumptions.
-- [ ] T472: Descend into the largest growth graphs using current all-path data,
+- [x] T472: Descend into the largest growth graphs using current all-path data,
   retained baseline summaries/milestones and unchanged source callsites. Quantify
   QTE replay work versus savings and distinguish count versus per-call growth.
   Record unobservable producer/storage/CPU causes explicitly; no guessed fix.

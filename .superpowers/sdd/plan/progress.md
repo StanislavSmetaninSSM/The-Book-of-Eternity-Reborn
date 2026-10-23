@@ -1,3 +1,25 @@
+# Current checkpoint: r58 measured regression investigation; independent review pending
+
+Issue#1536 REGRESSION1..5/T471..473. T471/T472 analysis complete; T473 report
+written, pending independent review and final publication/recovery. Source/tests/
+INPUT unchanged159019476/meta6ea; starting accepted headf37407b8e.
+All555namedcounts OUTSIDE matched publication exactly equal; outside attributes
+1,141,247 both,53.8034303->58.4084756s. QTE cache hit still111source reads:
+12hits/1332actualopens/85,140attrs4.8584289s,11.2625739s whole replay;
+capture source cause traced to MatchesObservationsAsync/ReadValidationSource.
+Take16.526->22.182s, cleanup29.913->34.758s with prepared-story10.541->12.402s;
+named current child graphs/source references in T473. Case disjoint parts
++14.7305532 prewait,-7.3165883 QTE,+14.5169574 otherfirstowner,+.5658358 rest.
+Not a root-cause claim for changed operation mean or producer internals:
+producer has no detailed observer; historical r56raw intentionally retired;
+CPU/GC/storage cause unobserved. No production fix/new run/quota/deletion.
+External full derivations and verified source hashes:D:/BoeDiagnostics/runtime-r58-20261023.
+Actual pinned plan/tasks/prerequisites plus equivalent consistency and arithmetic
+checks PASS. Method systematic-debugging/writing-plans/inline execution; analysis
+only so no C# RED/GREEN/build/category run is warranted.
+
+# Historical accepted r57 checkpoint
+
 # Current checkpoint: r57 complete; QTE14to2, whole test422.426s, no overall speedup
 
 T466..470 complete with independent source/Input/outcome/retention/execution/
