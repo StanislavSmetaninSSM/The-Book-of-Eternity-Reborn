@@ -35,6 +35,35 @@ public sealed partial class JointBundleComponentTests
         /// The normal shared prefix's bound input and genuine common authority, or its reported issues.
         /// </returns>
         internal async Task<WoundAcceptedTurnPlanner.JointRepairBoundCommonInputResult> PrepareBoundJointAsync(Func<Task>? observeBound = null)
+            => await PrepareJointFixtureAsync(includeCommonBinding: true, observeBound) ??
+                throw new InvalidOperationException("Common fixture preparation did not return its requested binding.");
+
+        /// <summary>
+        /// Produces only the genuinely issued wound stages and retains their normal reservation for owned closing.
+        /// </summary>
+        /// <returns>
+        /// The genuine detached stage bundle, without preparing unrelated common resources, progression or publication input.
+        /// </returns>
+        internal async Task<AcceptedMechanicsWoundStageBundle> PrepareJointStagesAsync()
+        {
+            _ = await PrepareJointFixtureAsync(includeCommonBinding: false, observeBound: null);
+            return _jointBundle ?? throw new InvalidOperationException("Joint stage preparation did not retain its bundle.");
+        }
+
+        /// <summary>
+        /// Runs the shared genuine source and stage preparation, optionally continuing through common publication binding.
+        /// </summary>
+        /// <param name="includeCommonBinding">
+        /// True requests the existing complete common fixture; false stops after retaining the wound stage bundle.
+        /// </param>
+        /// <param name="observeBound">
+        /// Optional original common-binding observation; null performs no callback.
+        /// </param>
+        /// <returns>
+        /// The original common result when requested, or null after successful stage-only preparation.
+        /// </returns>
+        private async Task<WoundAcceptedTurnPlanner.JointRepairBoundCommonInputResult?> PrepareJointFixtureAsync(
+            bool includeCommonBinding, Func<Task>? observeBound)
         {
             using var timing = Files.MeasureOperation("JointBundleFixture.PrepareBoundJoint");
             var source = await PrepareOriginalAsync(43);
@@ -95,6 +124,14 @@ public sealed partial class JointBundleComponentTests
                         Files, Lease, prepared.Plan!, effects, continuation, reservation);
                     Assert.True(final.Success, JsonSerializer.Serialize(final.Issues));
                     bundle = new AcceptedMechanicsWoundStageBundle(preparation.Input!, prepared.Plan!, effects.Plan!, final.Plan!);
+                }
+                if (!includeCommonBinding)
+                {
+                    _jointOriginal = original;
+                    _jointBundle = bundle;
+                    _jointContinuation = continuation;
+                    _jointReservation = reservation;
+                    return null;
                 }
                 var anchors = MortalWoundCanonicalAnchorPlan.CreateJointRepair(Files, Lease, bundle);
                 Assert.True(anchors.Success, JsonSerializer.Serialize(anchors.Issues));

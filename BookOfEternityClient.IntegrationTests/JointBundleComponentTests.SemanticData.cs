@@ -17,9 +17,8 @@ public sealed partial class JointBundleComponentTests
     {
         await using var fixture = new Fixture(_output, nameof(JointSemanticData_ReusesStageSourcesAndPreservesRefusals));
         await fixture.InitializeAsync();
-        var bound = await fixture.PrepareBoundJointAsync();
-        Assert.True(bound.Success, JsonSerializer.Serialize(bound.Issues));
-        await fixture.AssertSemanticStageReuseAsync(bound.Input!, bound.Authority!);
+        _ = await fixture.PrepareJointStagesAsync();
+        await fixture.AssertSemanticStageReuseAsync();
     }
 
     private sealed partial class Fixture
@@ -27,17 +26,10 @@ public sealed partial class JointBundleComponentTests
         /// <summary>
         /// Executes the real preparation and final stages eight times in one selected whole-operation cache lifetime.
         /// </summary>
-        /// <param name="input">
-        /// The genuinely bound common input produced by this fixture's real issuer.
-        /// </param>
-        /// <param name="authority">
-        /// The matching private common authority retained for the existing refusal and abort controls.
-        /// </param>
         /// <returns>
         /// Completion after unchanged fresh admission, warm-data refusal controls and the successful-return source fence.
         /// </returns>
-        internal async Task AssertSemanticStageReuseAsync(AcceptedMechanicsInput input,
-            WoundAcceptedTurnPlanner.MortalJointRepairCommonAuthority authority)
+        internal async Task AssertSemanticStageReuseAsync()
         {
             var bundle = _jointBundle ?? throw new InvalidOperationException("A genuine joint binding is required.");
             using var source = Files.BeginSourceDataOperationIfNeeded();
@@ -59,11 +51,47 @@ public sealed partial class JointBundleComponentTests
                 Assert.True(counts.GetValueOrDefault("WoundPlanner.JointFinalAdmission") >= 8);
                 Assert.Equal(1, counts.GetValueOrDefault("JointPreparation.Replay"));
                 Assert.Equal(1, counts.GetValueOrDefault("JointFinal.Reduce"));
-                // Reuse the original constructor/copy/mutable-return/private-history
-                // corruption/restoration and aborted reservation parity controls.
-                AssertJointCopyContracts(input, authority);
+                AssertWarmSemanticCopyContracts(bundle);
             }
             await source.CompleteAsync();
+        }
+
+        /// <summary>
+        /// Rechecks independent returned DATA and damaged private history against warmed expected reduction DATA.
+        /// </summary>
+        /// <param name="bundle">
+        /// The genuinely issued stage bundle whose normal unpublished reservation remains owned by this fixture.
+        /// </param>
+        private void AssertWarmSemanticCopyContracts(AcceptedMechanicsWoundStageBundle bundle)
+        {
+            var expected = ReadBundleView(bundle);
+            var copy = bundle.DetachedCopy();
+            MutateReturnedBundleData(copy);
+            Assert.Equal(expected, ReadBundleView(copy));
+            Assert.Equal(expected, ReadBundleView(bundle));
+            using (bundle.DamageRetainedFinalHistoryForComponent())
+            {
+                var fullFailure = Assert.Throws<ArgumentException>(() =>
+                    new AcceptedMechanicsWoundStageBundle(bundle.Input, bundle.PreparedPlan,
+                        bundle.EffectBatchPlan, bundle.FinalPlan));
+                var copyFailure = Assert.Throws<ArgumentException>(() => bundle.DetachedCopy());
+                Assert.Equal("finalPlan", fullFailure.ParamName);
+                Assert.Equal(fullFailure.ParamName, copyFailure.ParamName);
+                Assert.Equal(fullFailure.Message, copyFailure.Message);
+            }
+            Assert.Equal(expected, ReadBundleView(bundle.DetachedCopy()));
+            CloseJointReservation();
+            AcceptedMechanicsWoundStageBundle? fullAfterAbort = null, copyAfterAbort = null;
+            var fullError = Record.Exception(() => fullAfterAbort = new(bundle.Input, bundle.PreparedPlan,
+                bundle.EffectBatchPlan, bundle.FinalPlan));
+            var copyError = Record.Exception(() => copyAfterAbort = bundle.DetachedCopy());
+            Assert.Equal(fullError?.GetType(), copyError?.GetType());
+            Assert.Equal(fullError?.Message, copyError?.Message);
+            if (fullError is null)
+            {
+                Assert.Equal(expected, ReadBundleView(fullAfterAbort!));
+                Assert.Equal(expected, ReadBundleView(copyAfterAbort!));
+            }
         }
     }
 }

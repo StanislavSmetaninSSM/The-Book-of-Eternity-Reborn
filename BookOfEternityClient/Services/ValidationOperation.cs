@@ -14,6 +14,8 @@ internal sealed class ValidationOperation : IDisposable
     private readonly AsyncLocal<FreshScope?> _freshFlow = new();
     private readonly Dictionary<object, OperationStructuralDependency> _structuralDependencies =
         new(ReferenceEqualityComparer.Instance);
+    private readonly Dictionary<object, List<(OperationStructuralSnapshot Snapshot, object Identity)>> _structuralInputs =
+        new(ReferenceEqualityComparer.Instance);
     private Frame? _top;
     private FreshScope? _fresh;
     private bool _closed;
@@ -75,18 +77,42 @@ internal sealed class ValidationOperation : IDisposable
     }
 
     /// <summary>
-    /// Supplies the initial causal seam for operation-owned structural input identity metadata.
+    /// Interns an exact logical input identity from complete structural evidence within this operation.
     /// </summary>
     /// <param name="owner">
-    /// Exact owner identity intended to group structurally equivalent logical inputs.
+    /// Exact owner identity, compared only by reference, grouping structurally equivalent logical inputs.
     /// </param>
     /// <param name="snapshot">
     /// Complete ordered structural values and actual companion references for the logical input.
     /// </param>
     /// <returns>
-    /// A new independent identity until operation-owned structural interning is implemented.
+    /// An opaque identity shared only by the same owner and matching snapshot until an explicit fresh scope, failure or close.
     /// </returns>
-    internal object GetStructuralInputIdentity(object owner, OperationStructuralSnapshot snapshot) => new object();
+    internal object GetStructuralInputIdentity(object owner, OperationStructuralSnapshot snapshot)
+    {
+        try
+        {
+            ArgumentNullException.ThrowIfNull(owner);
+            ArgumentNullException.ThrowIfNull(snapshot);
+            lock (_gate)
+            {
+                RequireOpen();
+                if (!ReferenceEquals(_top, _flow.Value) || !ReferenceEquals(_fresh, _freshFlow.Value))
+                    throw new InvalidOperationException("Structural input identities require the operation's active serial flow.");
+                if (!_structuralInputs.TryGetValue(owner, out var inputs))
+                {
+                    inputs = [];
+                    _structuralInputs.Add(owner, inputs);
+                }
+                foreach (var input in inputs)
+                    if (input.Snapshot.Matches(snapshot)) return input.Identity;
+                var identity = new object();
+                inputs.Add((snapshot, identity));
+                return identity;
+            }
+        }
+        catch { InvalidateAfterFailure(); throw; }
+    }
 
     /// <summary>
     /// Clears prior results and selects fresh computation without cache insertion throughout a nested scope.
@@ -590,13 +616,14 @@ internal sealed class ValidationOperation : IDisposable
     private void RequireOpen() => ObjectDisposedException.ThrowIf(_closed, this);
 
     /// <summary>
-    /// Clears structural comparison evidence and prevents active ancestors from republishing prior successes.
+    /// Clears structural comparison and input identity metadata and prevents active ancestors from republishing prior successes.
     /// Active structural observations receive a new token after recapture and therefore require a new request.
     /// </summary>
     private void InvalidateAndPoison()
     {
         for (var frame = _top; frame is not null; frame = frame.Parent) frame.Eligible = false;
         foreach (var dependency in _structuralDependencies.Values) dependency.ClearCapturedSnapshot();
+        _structuralInputs.Clear();
     }
 
     /// <summary>
@@ -689,6 +716,7 @@ internal sealed class ValidationOperation : IDisposable
         _storage = null;
         foreach (var dependency in _structuralDependencies.Values) dependency.Retire();
         _structuralDependencies.Clear();
+        _structuralInputs.Clear();
         var frame = _top;
         _top = null;
         while (frame is not null)

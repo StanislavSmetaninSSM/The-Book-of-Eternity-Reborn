@@ -21,6 +21,10 @@ public sealed class OperationStructuralDependencyTests
         var first = operation.GetStructuralInputIdentity(owner, new(["first", null, ""], [companion, null]));
         Assert.Same(first, operation.GetStructuralInputIdentity(owner,
             new(["first", null, ""], [companion, null])));
+        Assert.NotSame(first, operation.GetStructuralInputIdentity(owner,
+            new(["changed", null, ""], [companion, null])));
+        Assert.Same(first, operation.GetStructuralInputIdentity(owner,
+            new(["first", null, ""], [companion, null])));
     }
 
     /// <summary>

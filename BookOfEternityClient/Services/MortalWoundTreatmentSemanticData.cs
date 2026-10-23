@@ -82,7 +82,6 @@ internal sealed partial class MortalWoundTreatmentSemanticData
     private TResult Read<TResult>(ValidationOperation? operation, OperationComputation<TResult> computation,
         Func<TResult> compute)
     {
-        using var timing = FileSystemManager.MeasureCurrentOperation(computation.Name);
         if (operation is null) return compute();
         var dependency = operation.GetStructuralDependency(this, _capture);
         return operation.GetOrCompute(computation, this, [dependency], compute);

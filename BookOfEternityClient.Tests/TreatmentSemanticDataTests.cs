@@ -132,6 +132,24 @@ public sealed class TreatmentSemanticDataTests
     }
 
     /// <summary>
+    /// Refuses a computed result when an original source observer changes its request before cache completion.
+    /// </summary>
+    [Fact]
+    public void SourceObserverCannotReturnChangedRequestAsCurrent()
+    {
+        using var fixture = new Fixture(_output);
+        using var operation = new DefaultOperationValidationService().BeginOperation();
+        fixture.OnObservation = (name, boundary) =>
+        {
+            if (name == "TreatmentOutcome.AgreesWith" && boundary == "end")
+                fixture.Symptoms.Add("changed during original source observation");
+        };
+        using (fixture.EnterTimingContext())
+            Assert.ThrowsAny<InvalidOperationException>(() => fixture.Data.ReadOutcomeAgreement(operation));
+        Assert.Equal(0, operation.CaptureState().Entries);
+    }
+
+    /// <summary>
     /// Performs independent semantic computation after a prior whole operation has ended.
     /// </summary>
     [Fact]
@@ -228,7 +246,16 @@ public sealed class TreatmentSemanticDataTests
         /// A restoring synchronous timing scope that must not span an await.
         /// </returns>
         internal IDisposable? EnterTimingContext() => FileSystemManager.EnterOperationTimingContext(
-            (name, boundary, elapsed) => _observations.Add((name, boundary, elapsed.TotalMilliseconds)));
+            (name, boundary, elapsed) =>
+            {
+                _observations.Add((name, boundary, elapsed.TotalMilliseconds));
+                OnObservation?.Invoke(name, boundary);
+            });
+
+        /// <summary>
+        /// Gets or sets the optional typed mutation control invoked after retaining each original observation.
+        /// </summary>
+        internal Action<string, string>? OnObservation { get; set; }
 
         /// <summary>
         /// Gets the real detached resolution reconstructed from immutable INPUT.
