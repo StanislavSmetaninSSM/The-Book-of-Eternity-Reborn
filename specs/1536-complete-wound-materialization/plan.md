@@ -70,7 +70,7 @@ primary failure/disposal stay. Any outer failure invalidates both operation cach
   integration. Independent reviewer sees exact full diff, spec and all evidence.
   Genuine current generator/new source42 slot/twoimports, source-only publication,
   clean remote recovery before original; retain no machine evidence inGit.
-- [ ] T470: identical Cut0 FULL600child/820shared/15min, C: game/D: uncapped logs;
+- [x] T470: identical Cut0 FULL600child/820shared/15min, C: game/D: uncapped logs;
   all original oracles, native ownership/settlement and complete trace SHA/CRC,
   all-row analysis, matched source counts/phases and observer costs against r56.
   Honest gain/regression, no double-counting or100second promise. Separate final

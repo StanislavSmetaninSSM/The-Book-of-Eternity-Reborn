@@ -1,4 +1,18 @@
-# Current checkpoint: r57 outcome/retention accepted and executed; final publication/recovery pending
+# Current checkpoint: r57 complete; QTE14to2, whole test422.426s, no overall speedup
+
+T466..470 complete with independent source/Input/outcome/retention/execution/
+publication gates accepted,0unresolved findings. Published f1cb016f2ac1593f877d42e4bff9feca90872dbc
+and exact35remote blobs/tree recovered/noalternates/clean. Independent reviewer
+rechecked all14retired targetsabsent/12parentdirsretained/39protectedfilehashes;
+actualacceptedreport scientific prefix unchanged. Only final completed-status
+bookkeeping follows this verified publication; no source/tests/INPUT changes.
+Current originalWindows result422.4258539s vs399.9290962s remains SLOWER22.4967577s.
+QTE14->2,12reuse; wholeQTErecheck saves7.3165883s. All diagnostic rows retained
+in latest verified D archives;14oldraw/duplicatefiles14046868060B retired exactly.
+Human result:T470-qte-cache-results.md. No additional optimization or test run
+started after completion of this bounded request.
+
+# Historical r57 checkpoint before publication acceptance
 
 Independent Astra/high FinalOutcomeGate and exact RetentionAdmission accepted,
 0unresolved findings. FrozenplanSHA2DA698896EE02A935C2D8D1192A5147A7E869D3BA0303612159E111F9C4555D4
