@@ -1,3 +1,27 @@
+# CRASH5 — revision61 cleanup completed-proof/history DATA reuse
+
+Issue #1536; spec CLEAN_CACHE1..8 and current plan.md. Autonomous execution and
+explicit specification-review waiver; current isolated clone/branch reused.
+
+- [ ] T485 Source/lifetime audit; canonical spec/plan/tasks, actual pinned Spec Kit
+  phases and consistency, publish/recover design before implementation.
+- [ ] T486 Typed forwarding helper/opt-in plus cheap actual publisher callback
+  causal RED proving repeated completed-proof/history source reads are uncoalesced.
+- [ ] T487 Exact publisher post-recovery windows, existing service/repository DATA,
+  production cleanup proof routing; GREEN plus integrity/refusal/lifecycle controls.
+- [ ] T488 XML/source/eight DLL/native/catalog/selection qualification; independent
+  source review; genuine new source42/twoimports/immutable INPUT, remote recovery
+  and independent launch admission for the unchanged original600/820/15.
+- [ ] T489 Same actual Windows Cut0 full uncapped producer/resumer original;
+  native73/0/all original assertions/identity/EOF/join/cleanup; full archive.
+- [ ] T490 Every-row r60 comparison, concrete cleanup/proof/history timings and
+  counts, human findings, independent outcome/retention/final review, exact verified
+  superseded diagnostic retirement and final source-only publication/recovery.
+
+Mapping: 1/2/3/4 -> T485/486/487/488; 5 -> T486/487/488;
+6 -> T488/489; 7 -> T489/490; 8 -> T488/490.
+Dependencies: T485 -> T486 -> T487 -> T488 -> T489 -> T490.
+
 # CRASH5 — revision60 GameState DATA reuse (owner2026-10-24)
 
 Canonical spec GS_CACHE1..7; plan.md current r60 section. Inline TDD execution,

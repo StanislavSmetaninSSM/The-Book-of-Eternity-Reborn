@@ -1,3 +1,75 @@
+# CRASH5 — revision61 cleanup completed-proof/history DATA reuse plan
+
+> Execute canonical tasks with Superpowers writing-plans, TDD and inline
+> executing-plans; separate independent Astra/high review of the coherent block.
+
+Goal: coalesce repeated proof/history source reads during cleanup without retaining
+permission or weakening fresh boundaries. Spec: spec.md CLEAN_CACHE1..8. Issue #1536.
+Tech: existing C#/.NET8, ValidationOperation service/repository, borrowed read sets.
+Reuse the current isolated clone/branch; autonomous specification-review waiver.
+
+Research: r60 cleanup34.3435089s contains prepared namespace18.6429093s/story12.3591064s;
+14 completed-proof reads inside cleanup10.7585031s. Existing read sets reject active
+publisher mutations, and a whole-callback reservation blocks its actual recovery.
+Separate Astra/high consultation confirms narrow AFTER-recovery windows and exact
+publisher token-set recognition; that consultation cannot serve as source review.
+
+Interfaces / file responsibilities:
+- Core/FileSystemManager.CleanupProofDataReads.cs (new): typed private publisher
+  context/read-window comparison dependency; ReadCleanupCompletedProofDataAsync<T>
+  uses a fresh reserved subwindow when eligible, otherwise original stable reader.
+- Core/FileSystemManager.TrustedLocalStorage.cs: internal PublishLocalFilesAsync
+  optional reusePreparedProofData=false; only actual cleanup opts in. Pass the
+  real outer token to PublishLocalCoreAsync; each callback attempt retains exact
+  outer/inner mutation identities and closes its context before actual publication.
+- Core/CanonicalValidationEpoch.cs and FileSystemManager.MainRunFence.cs: a separate
+  exact-existing-token read-window capture/recognition, never relax generic stable
+  capture or ordinary reservations. The normal root remains mutation-active.
+- Core/FileSystemManager.ValidationReadReservation.cs, PendingSnapshotValidationRead.cs,
+  ValidationReadSet.cs: optional exact publisher window; ordinary callers unchanged.
+  Guard opening, each result and completion; forbid newly entering mutations while
+  reserved. Read-set cleanup mode stores snapshots through ValidationOperation with
+  detached copy policy; key maps hold identities only, not duplicate payloads.
+- Services/MortalQteDecisionPublication.MortalJointRepair.cs: only the existing
+  post-recovery proof DATA helper routes through the new selected adapter. Actual
+  proof checks/capability creation/history algorithms remain original.
+- Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs: opt in only its actual
+  publisher callback; existing before/after image and generation checks remain.
+- Tests/CleanupProofDataReuseTests.cs (under BookOfEternityClient.Tests): minimal
+  nonce-owned files and actual publisher/helper/service, typed seams, uncapped output.
+- tests/categories.json/selection.json: coherent ownership and affected contracts;
+  current closure source pins and integration immutable INPUT slot move with source.
+
+Constitution: #1536 traced; accepted-turn atomicity, existing path/generation/bytes
+contracts and no OS privilege requirement retained. No GM-facing contract changes,
+so no prompt/example rewrite. No new cache backend or product dependency.
+
+Review focus: exact two tokens vs any same-lease mutation; extra token starts/ends
+with unchanged bytes; recovery before each window; raw same-time/absence/generation
+drift; callback retry/closing flow and post-publication reads cannot reuse before-images.
+No authority object is a cached value. Producer hook fallback remains untouched.
+
+- [ ] T485 CLEAN_CACHE1..8: source/lifetime audit, written spec/design, actual pinned
+  Spec Kit plan/tasks/prerequisites and equivalent consistency, publish/recover.
+- [ ] T486 CLEAN_CACHE2..5: forwarding opt-in/helper seam and causal cheap publisher
+  fixture RED; eight same-family reads inside prepared callback must use initial
+  and fresh completion sources rather than eight independent sources.
+- [ ] T487 CLEAN_CACHE1..5: exact typed publisher subwindows, existing-service DATA,
+  completed-proof/history path integration; causal GREEN and integrity/fallback tests.
+- [ ] T488 CLEAN_CACHE3..6: current XML/eight DLL/native/catalog/PlanOnly/selected
+  controls; independent source review; genuine source42/twoimports/new immutable
+  INPUT, exact remote publication/recovery and independent atomic launch admission.
+- [ ] T489 CLEAN_CACHE6..7: same original Cut0 full600/820/15, native73/0 and original
+  assertions, EOF/join/owned cleanup; complete verified archive after settlement.
+- [ ] T490 CLEAN_CACHE7..8: every-row r60 comparison, named cleanup/proof/history/read
+  and observer metrics, honest report, independent outcome/retention/final review,
+  verified replacement of old diagnostics and source-only final remote closure.
+
+Dependencies: T485 -> T486 -> T487 -> T488 -> T489 -> T490. Parent owns production;
+existing Sol6.1/high helper owns external tools only; independent reviewer is a
+separate Astra/high context, distinct from the bounded architectural consultation.
+No broad aggregate suite, budget expansion, diagnostic cap or changed original oracle.
+
 # CRASH5 — revision60 GameState source DATA reuse plan
 
 > Execution: Superpowers writing-plans, TDD and executing-plans inline; separate

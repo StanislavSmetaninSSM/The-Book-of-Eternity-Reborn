@@ -1,3 +1,71 @@
+# CRASH5 — revision61 cleanup completed-proof/history DATA reuse
+
+Source issue: #1536. Owner 2026-10-24 requests existing-service caching of repeated
+completed proof/history work during terminal cleanup, cheap fixtures and the same
+original600-second scenario. Autonomous execution and explicit review-wait waiver
+apply. Base24c4525343fde38557d077716277d01aa4fc2bba; accepted r60 testcase434.6855800s.
+
+- CLEAN_CACHE1: Reuse repeated file DATA consumed by completed-proof and history
+  validation during cleanup through the existing DefaultOperationValidationService
+  and repository. No whole cleanup verdict, lease, story/phase capability, receipt,
+  deletion authority or publication permission may be cached or reconstructed from
+  a cached permission. Existing ordered original proof algorithms still execute.
+- CLEAN_CACHE2: Scope reuse to a newly admitted post-recovery read subwindow within
+  the actual opted-in trusted-local cleanup publisher callback. Recovery and the
+  recovered marker read happen first. Never hold a read reservation across another
+  recovery, publication, runtime effect or capability issuance. Never import or
+  revive the outer suspended/retired source operation's DATA. Each retry/window
+  starts a fresh temporary service and releases all retained buffers on close.
+- CLEAN_CACHE3: The actual publisher alone issues the typed callback comparison
+  context bound to its manager, exact lease/registration/entry ancestry/generation,
+  attempt and exact two existing publication mutation identities. Its post-recovery
+  read reservation may recognize only that exact local AND root mutation set;
+  all original admission and worker/browser/refusal predicates remain. Existing
+  publisher tokens stay active; the root is never globally declared quiescent.
+  Extra/foreign mutation, sibling/closing ownership, unsupported hooks or flow
+  keep the original route or refusal. An active read window rejects new writes.
+- CLEAN_CACHE4: Preserve raw ordinal path, reader family/declaration and absence
+  versus empty bytes. Every hit returns detached DATA after the current window
+  guard. Any begin/end mutation transition during a window invalidates it even
+  when final bytes match. Freshly compare touched bytes, absence, timestamps,
+  generation and original live owner at completion before DATA escapes. Retain
+  original pre-publication ownership/image proofs and fresh post-publication
+  generation/after-image verification. No journal/namespace/claim shortcuts.
+- CLEAN_CACHE5: Cheap independent real-file fixtures exercise the actual publisher,
+  its callback, helper and existing service via typed internal APIs/IVT, with a
+  compiling causal RED then GREEN showing fewer repeated physical reads. Cover
+  exact images/outcomes, source and same-time drift, generation/absence changes,
+  fallback/extra mutation, failure/cancellation/closing/retry, detached copies,
+  original recovery before windows and fresh readback after publication. No new
+  reflection or expensive world construction. New/changed APIs use multiline XML.
+- CLEAN_CACHE6: Current source/eight DLL/native/XML/catalog/selected contracts and
+  independent complex review precede a genuine NEW source42/two production imports
+  in immutable joint-interface-source42-cleanup-proof-cache-v1. Publish/recover exact
+  source/INPUT and admit one atomic same Cut0 original600child/820shared/15min,
+  C:fixture/D:diagnostics, native73/0, identity/EOF/join/owned cleanup unchanged.
+- CLEAN_CACHE7: Keep full producer/resumer diagnostics without record/byte quotas.
+  No heavy live trace analysis during the timed testcase. Analyze every record
+  and compare r60434.6855800s, cleanup/prepared namespace/history/completed-proof
+  call/read counts and observer costs. Nested inclusive times are not additive;
+  distinguish actual reuse/count reduction from timing variance. No promised gain.
+- CLEAN_CACHE8: Save source/test INPUT/specs/human findings only in Git. Latest
+  complete accepted full capture/analysis stays on D:; retire exact superseded r60
+  raw/leaf and duplicate current streams only after complete replacement verification
+  and independent outcome/retention admission. Keep compact evidence and the reusable
+  instrumented source backup. Independent final review and remote recovery close work.
+
+Approaches: a whole cached completed-proof/history result would conflate DATA and
+live authority; a parsing-only cache would miss the measured repeated filesystem
+work. Chosen by the implementer under the owner's autonomy instruction: narrowly
+coalesce source snapshots inside each actual post-recovery proof used by history
+validation, including the expensive prepared callback. Publisher-specific exclusion
+extends the existing read-set engine; existing general service stores its DATA.
+No new backend, global cache or change to gameplay/GM schema or prompts is needed.
+
+The old generic reader/reservation paths stay unchanged by default. Unresolved
+entry-shape details must be audited before code; scope must not silently expand to
+holding a reservation across the whole callback or weakening recovery participation.
+
 # CRASH5 — revision60 GameState source DATA reuse
 
 Issue #1536. Owner2026-10-24 requests production reuse of repeated GameState

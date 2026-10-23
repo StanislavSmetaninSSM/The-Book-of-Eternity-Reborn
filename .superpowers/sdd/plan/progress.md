@@ -1,3 +1,27 @@
+# Current checkpoint: r61 design and causal probe pending
+
+Owner 2026-10-24 authorizes cleanup completed-proof/history DATA caching through
+existing service, cheap fixtures and unchanged original600/820/15 full diagnostics.
+Autonomous work/specification review-wait waiver persists. Issue#1536,
+CLEAN_CACHE1..8 / T485..490, canonical current spec/plan/tasks.
+Base24c4525343fde38557d077716277d01aa4fc2bba matches remote branch and clean local HEAD.
+Accepted r60 source7eea8c922, testcase434.6855800s; its full archive/leaf remain
+protected until a complete independently accepted replacement exists. D:diagnostics,
+C:SSD game fixture. No quotas, native/budget/oracle changes or broad test suites.
+
+Audit: prepared callback holds two actual publisher mutation identities. Ordinary
+read reservation cannot open; reserving the whole callback would block real recovery.
+Chosen narrow post-recovery DATA windows retain both tokens, compare the exact local
+and root set/version, forbid new writes while reserved and freshly verify sources
+before returning DATA. The generic stable capture/permissions remain unchanged.
+Bounded separate Astra/high read-only consultation finished; different reviewer
+required. Sol6.1/high external helper prepared r61 tools16 syntax/21 synthetic
+controls PASS; no game execution, builds, capture reads or deletion.
+T485 spec/design written; pinned phases/consistency/publication pending.
+T486..490 UNRUN. No performance result claimed and no r61 production code written.
+
+# Previous accepted r60 checkpoint
+
 # Current checkpoint: r60 measured GameState DATA reuse and verified retention
 
 Issue #1536, GS_CACHE1..7 / T479..T484. Owner 2026-10-24 authorizes existing-service
