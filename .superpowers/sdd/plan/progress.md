@@ -31,6 +31,19 @@ fixture697337B/A99035C7... admitted for current prerequisites, original transpor
 validator/provenance/fault assertions unchanged. Fixture and source correction WIP;
 qualification must rerun to completion before new source42/full original.
 
+Current sourcefbdf360aa bothXML builds88.3643906/54.3286691s PASS,8copiesuniform,
+XML368newlines clean. Full actual selected qualification327/327complete326PASS1FAIL,
+345.9094331s; allcleanup/history/proof cases nowPASS, no timeout, bothcleanuptrue.
+Sole failure is preexisting stale disposed-Publish exception-type assertion; original
+runtime publication/admission/recovery bodies unchanged vs24c. Independent review
+confirms current original-admission IOException refusal precedes active-lease check.
+Narrow TEST-only correction now expects exactIOException AND real admission-refusal
+marker, inactivelease and unchanged target/generation/journal; closed/foreign recovery
+InvalidOperation assertions unchanged. Fresh portable category will execute at final
+source; unchanged prior categories may carry forward only through explicit exact
+source/test/selector/TRX equivalence and independent composite admission. Old failed
+receipt retained unchanged; no old pass relabeled as a new-source execution.
+
 # Previous accepted r60 checkpoint
 
 # Current checkpoint: r60 measured GameState DATA reuse and verified retention

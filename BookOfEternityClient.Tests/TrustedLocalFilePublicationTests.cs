@@ -179,17 +179,33 @@ public sealed class TrustedLocalFilePublicationTests : IDisposable
         AssertClean();
     }
 
+    /// <summary>
+    /// Refuses publication through a closed original admission and recovery through closed or foreign leases.
+    /// </summary>
+    /// <returns>
+    /// Completion after exact admission refusals, absent target and unchanged generation and journal are verified.
+    /// </returns>
     [Fact]
     public async Task Publish_RequiresItsOwnActiveCanonicalLease()
     {
         var lease = await _files.AcquireCanonicalWriteLeaseAsync();
         await lease.DisposeAsync();
-        Assert.Throws<InvalidOperationException>(() => Publisher().Publish(lease, TrustedLocalGeneration.Existing(_generation), [new(Member("a"), null, [1])]));
+        Assert.False(lease.IsActive);
+        var target = Member("a");
+        var generationBefore = File.ReadAllBytes(_files.SessionGenerationPath);
+        var refused = Assert.Throws<IOException>(() => Publisher().Publish(lease,
+            TrustedLocalGeneration.Existing(_generation), [new(target, null, [1])]));
+        Assert.True(GmSessionRunPersistence.IsAdmissionRefusal(refused));
+        AssertImage(target, null);
+        AssertImage(_files.SessionGenerationPath, generationBefore);
+        AssertClean();
         Assert.Throws<InvalidOperationException>(() => Publisher().Recover(lease));
         var otherRoot = Path.Combine(_sandbox, "other"); Directory.CreateDirectory(otherRoot);
         var other = new FileSystemManager(otherRoot, NullLogger<FileSystemManager>.Instance);
         await using var otherLease = await other.AcquireCanonicalWriteLeaseAsync();
         Assert.Throws<InvalidOperationException>(() => Publisher().Recover(otherLease));
+        AssertImage(target, null);
+        AssertImage(_files.SessionGenerationPath, generationBefore);
         AssertClean();
     }
 

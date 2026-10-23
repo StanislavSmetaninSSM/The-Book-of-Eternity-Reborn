@@ -40,6 +40,11 @@ Interfaces / file responsibilities:
 - IntegrationTests/JointCleanupValidatorTestData.cs and fixtures/joint-cleanup-entry-r60-v1:
   explicitly replace missing retired T333 prerequisite with exact accepted r60 inert
   DATA, retaining strict provenance/source inventory and all original fault assertions.
+- Tests/TrustedLocalFilePublicationTests.cs: align the existing disposed-Publish
+  assertion with its unchanged exact original-admission IOException marker and
+  strengthen no-effect images, retaining closed/foreign recovery refusals. Preserve
+  failed evidence; rerun this whole affected category, carry unchanged categories
+  only with explicit source/test/selector and complete-case equivalence review.
 - tests/categories.json/selection.json: coherent ownership and affected contracts;
   current closure source pins and integration immutable INPUT slot move with source.
 
