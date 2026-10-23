@@ -1,3 +1,17 @@
+# CRASH5 — revision58 QTE-cache regression investigation
+
+Issue#1536; REGRESSION1..5; owner2026-10-23 autonomous investigation, large costs only.
+- [ ] T471 [US3] Bind accepted r56/r57 evidence and reconcile disjoint testcase,
+  command and major phase deltas without inclusive double counting.
+- [ ] T472 [US3] Resolve large regressed graphs to measured nested operations and
+  source callsites; quantify added QTE replay/proof costs, unchanged-count
+  per-call growth and observer contribution; identify limits of causal evidence.
+- [ ] T473 [US3] Record human findings, equivalent consistency/arithmetic checks,
+  independent review and exact published recovery; preserve current uncapped
+  diagnostics on D: and introduce no production/test changes or new original run.
+
+Dependencies:T471->T472->T473. REGRESSION1->T471;2/3/4->T472;5->T473.
+
 # CRASH5 — revision57 repeated QTE reconstruction DATA
 
 Issue#1536; QTECACHE1..7. Owner2026-10-23 explicitly authorizes implementation,

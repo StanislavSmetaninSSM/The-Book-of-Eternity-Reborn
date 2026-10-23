@@ -1,3 +1,31 @@
+# CRASH5 — revision58 QTE-cache regression investigation
+
+Source issue: #1536. Owner2026-10-23 requests the concrete measured reasons the
+same complete testcase slowed after QTE caching, focusing on large costs and
+preserving uncapped diagnostics. Investigation only; no production optimization
+or test-contract change is authorized by this task. Autonomous execution applies.
+
+- REGRESSION1: Reconcile accepted r56 399.9290962s with clean r57 422.4258539s,
+  distinguishing testcase/command/child clocks and disjoint phase boundaries.
+- REGRESSION2: Descend into the large regressed graphs to named operations and
+  source callsites. Separate added work/counts from slower unchanged work and
+  measured observer work. Never sum overlapping inclusive timers.
+- REGRESSION3: Quantify the new QTE source-replay cost and retained fresh proofs
+  against removed reconstruction; identify the major costs which consumed it.
+- REGRESSION4: State concrete established causes, falsified hypotheses and
+  missing evidence separately. No storage/CPU/GC causality from wall time alone,
+  no microoptimization or unsupported speedup promise. Retained r56 summaries
+  may be used; its intentionally retired raw cannot be reconstructed by assertion.
+- REGRESSION5: Human findings and exact source references in T473 report, external
+  machine evidence on D: only, separate independent review, published/recoverable
+  checkpoint. Current full/component archives remain protected. No new expensive
+  original run, quota, deletion or gameplay/schema/GM contract change in this block.
+
+Acceptance: exact +22.4967577s arithmetic is explained at observable boundaries;
+large inside-boundary deltas are resolved to the finest supported existing
+timers/callsites, with graph coverage and causal limits explicit. Findings are
+useful for choosing the next large intervention, not a claim of a new fix.
+
 # CRASH5 — revision57 repeated QTE reconstruction DATA
 
 Source issue:#1536. Owner2026-10-23 requests caching repeated QTE reconstruction

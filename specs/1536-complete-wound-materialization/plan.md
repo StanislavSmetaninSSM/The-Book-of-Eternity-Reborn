@@ -1,3 +1,25 @@
+# CRASH5 — revision58 QTE-cache regression investigation plan
+
+Issue#1536; spec REGRESSION1..5. Method: systematic-debugging and writing-plans;
+execute inline, one independent review of the coherent completed investigation.
+Existing isolated checkout and accepted r56/r57 artifacts are reused.
+No C# change/build/test or new original run is planned.
+
+- [ ] T471: Verify source/evidence bindings and compare disjoint whole-case cuts,
+  root/major-child timers, named aggregate counts/costs and observer counters.
+  Produce external exact comparison; validate sum and overlap assumptions.
+- [ ] T472: Descend into the largest growth graphs using current all-path data,
+  retained baseline summaries/milestones and unchanged source callsites. Quantify
+  QTE replay work versus savings and distinguish count versus per-call growth.
+  Record unobservable producer/storage/CPU causes explicitly; no guessed fix.
+- [ ] T473: Write concise human report with exact code references and evidence,
+  check REGRESSION1..5 coverage and arithmetic, obtain separate review, address
+  findings, publish and verify exact remote recovery. Do not rerun passing C#
+  selections for analysis-only documentation. Keep diagnostic output outside Git.
+
+Dependencies: T471 -> T472 -> T473. Files: canonical spec/plan/tasks, one human
+T473 report and existing progress checkpoint. Machine derivations/tools remain D:.
+
 # Repeated QTE reconstruction DATA — revision57 implementation plan
 
 Goal: reuse unchanged detached QTE calculation via existing service, keeping all
