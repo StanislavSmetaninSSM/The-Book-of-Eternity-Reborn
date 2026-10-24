@@ -1,3 +1,16 @@
+# r65 code independently accepted; genuine current-source seed begins next
+
+QualifiedSource1fc4e7cfcc84d4ea5808decdb8dbb2656ef2cd19, fresh XML97.868/
+61.396s PASS,8uniform physical binary/native pins verified independently.
+Astra/high T508-final-code-review Accepted, no unresolvedfindings; reportSHA
+B1ED846C03366E099A6171B36D72CE815342910511A26CA8B0DCDCF49A51C0B7;
+bindingSHA8C35E913434C1FFDBA3BE6FCE8AAD10C6EA8EE11C6F0A9AB5A7C0FEF9FE6F1DD.
+219distinct selected casesPASS across exact receipts, final affected72PASS. Four
+XML wording corrections only since behavior5ff. Genuine new source42 INPUT generation
+is now authorized by completed cheap/code gates; no old INPUT rebind. T508 readiness
+still pending seed qualification/frozen admission; T509 original pair unrun.
+Uncapped diagnostics D-only; previous complete r64 evidence/CPU/GC/INPUT protected.
+
 # r65 final behavior verified; documentation-only qualification and seed pending
 
 5ff05b8db fresh XML98.141/61.245s,8uniform DLLs. T508-final3affected
