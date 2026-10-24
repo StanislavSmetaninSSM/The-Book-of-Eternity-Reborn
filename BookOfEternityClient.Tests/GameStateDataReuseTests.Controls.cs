@@ -96,7 +96,7 @@ public sealed partial class GameStateDataReuseTests
         string generation;
         await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
             generation = fixture.Files.GetOrCreateSessionGeneration(lease);
-        fixture.WriteRaw(marker, ConsoleLocalTurnRollbackArtifacts.CreateMarker(cohort, generation));
+        fixture.WriteRaw(marker, Encoding.UTF8.GetString(ConsoleLocalTurnRollbackArtifacts.CreateMarker(cohort, generation)));
         files[marker] = marker;
         hashes[marker] = PendingTurnSnapshotAuthority.ComputeSha256(File.ReadAllBytes(fixture.RawPath(marker)));
         foreach (var (path, content) in new[]
