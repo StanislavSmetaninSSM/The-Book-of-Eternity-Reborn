@@ -1,4 +1,4 @@
-# r68 T522 GREEN complete; current profiling admission pending
+# r68 current original/profile complete; findings/outcome/retention review pending
 
 Canonical REM1..8/T519..525, existing feature/branch, autonomous review-wait waiver.
 Original read-only analysis T520 verified32checks/19pins; current163.3117708s
@@ -15,13 +15,26 @@ controls. Existing arbitrary-observer eligibility untouched. Sealed accumulator
 executes no user callbacks/I/O/suppression. Collector disabled by default; strict
 first-resumer-window only. Accepted7272 binaries backed up/CRC on D.
 
-Independent complex Astra/high reviewer inspected exact code/RED/GREEN8DLL and
-317TRX; no confirmed correctness findings, final metadata review pending.
-T519/520/522 complete; T523 review/new genuine INPUT/frozen admission next,
-then T524 one600/820/15 original, T525 all-record/current-large-scope analysis and
-outcome/exact retention, T521 final report/publication. No old INPUT rebind;
-no original admitted yet, no raw deletion. C fixtures/D uncapped diagnostics;
-no competing work during timed original, allCPU/GC/INPUT/backups protected.
+Independent complex Astra/high code review Accepted BEFFA1113... / ready116refs
+BF00CED461... / independent admissionC5EECCDA.... Genuine new source42 generator
+PASS191.14commandSeconds/twoimports/82files513711B/no rebind. Metadataacce19b54
+source-only remote recovered73blobs before original. Same600/820/15/frozenCPU-GC/
+Cfixtures/Doutput/no competing work/noquota.
+
+T524-profile original PASS276.1231591TRX; first173.6956649/root173.6943117,
+complete0open0late/561names/4,023,919completed. Existing first counters exactly
+26950/592900/269500/323400 and432controlhits. All native/oracle/cleanup/runtime
+passed; independently replayed33archive members/144JSON+2text/all561timers.
+File.GetAttributes1,036,393/56.954556s, directorychains47.863193s, Windowsmetadata
+24.511423s inclusive/overlapping; mainGuard31.548973s, freshfence19.880140s.
+Detailed current human findings T521 report: prioritize safe invocation-scoped
+metadata DATA through existing service; larger cross-call window needs explicit
+stability protocol. Bundle6.27s/QTEalreadyreused lowerpriority; no100s guarantee.
+New first+10.3838941vsoldOFF not causal overhead attribution.
+
+T519/520/522/523/524 complete. T525 coherent report/outcome/exact retention review
+pending, T521 final publication pending. No original rerun/cache-policy/native/GM
+change; no raw deletion yet. AllCPU/GC/INPUT/instrumentation/binary backups protected.
 
 # r67 coherent block complete; final source-only publication
 

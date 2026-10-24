@@ -9,9 +9,9 @@ Source issue#1536; spec REM1..8 and plan.md. Autonomous review-wait waiver.
 - [x] T522 [US1] Sealed passive recorder/routing, actual adopted-fixture RED/GREEN,
   unchanged callback/cache/integrity/window/concurrency contracts; XML/uniform8DLL,
   317 cases in10 explicit categories and typed strict selection; baseline backup.
-- [ ] T523 [US1] Independent coherent review/corrections, genuinely new current-
+- [x] T523 [US1] Independent coherent review/corrections, genuinely new current-
   source42/twoimports, frozen source/binary/package/runtime admission and review.
-- [ ] T524 [US1] One same600/820/15 actual resumer-first profiling original,
+- [x] T524 [US1] One same600/820/15 actual resumer-first profiling original,
   cacheON/legacyOFF/forwardersOFF/passiveON, C fixtures/D output/no competition.
 - [ ] T525 [US1] Every captured record/name/window/oracle/runtime analyzed; current
   large-section findings, independent outcome/retention, exact raw replacement.
