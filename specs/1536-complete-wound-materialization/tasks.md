@@ -5,7 +5,7 @@ Issue#1536; spec PATH1..7 / plan.md. Continuing autonomous review-wait waiver.
 - [x] T526 Establish canonical phases/prerequisites/consistency in
   specs/1536-complete-wound-materialization/{spec,plan,tasks}.md; written links,
   source-only checkpoint/remote recovery and qualified8a backup before builds.
-- [ ] T527 [US1] Cheap typed phase/actual ordinary-reader RED/GREEN and minimal
+- [x] T527 [US1] Cheap typed phase/actual ordinary-reader RED/GREEN and minimal
   Core existing-service adapter/routing/control/counters; parent/API/role/lifetime/
   fresh/worker/hook/error/refusal/source-integrity coverage, XML/category/selection.
 - [ ] T528 [US1] Independent coherent review and corrections, XML/uniform8DLL;

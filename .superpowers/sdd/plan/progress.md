@@ -34,15 +34,18 @@ Added switch-off retirement, fixture/static timing and actual validation-suppres
 controls. SuppressValidationReuse made internal typed test entry without behavior
 change (no reflection); XMLfalse keyword corrected. Strict test-only ordinary path
 reuse metadata/env and producer/resumer phase counts added before final build.
-Actual impacted selection14 completed at2c86d6d2c: testsPASS/complete/bothcleanup;
+Actual impacted selection14 completed at2c86d6d2c:380distinctPASS/complete/bothcleanup;
 all8XML DLLs uniform. Strict control/retirement/timing/suppression and consumer
-race/cancellation/worker/source-fence cases pass. Exact distinct total in final
-receipt/report; no aggregate suite. Independent static reviewer no correctness
-finding, remaining minor Null XMLfixed here. Only this XML comment changed after
-functional verification; fresh final XML8DLL binding next, no redundant functional
-rerun justified. Final catalog/selection discovery still required. Same-new-binary/
-INPUT off/on original pair each600/820/15 to isolate measured benefit. No genuine
-newINPUT/original yet. D-only/noquotas; all baselinebackup/runtime/input protected.
+race/cancellation/worker/source-fence cases pass;17descriptors/14categories dedup
+verified380unique IDs. Final qualified227183db6/XML88.3703+52.7387s,8DLLuniform
+binding1E45473F...D0C6E. Functional2c86->qualified227 only1XMLcomment; no redundant
+380rerun. CatalogPASS/0executed/0duplicateIDs, PlanOnly17descriptors/380cases.
+Independent complex code/selection review Accepted46A6BF45.../0unresolved.
+T526/527 complete; T528 genuine new source42/twoimports/frozen admission next.
+No old INPUT rebind; original off/onpair not yet admitted. Same600/820/15,
+Cfixtures/Doutput/noquotas/frozenCPU-GC/no competing work. Current counted phase
+requests are not a global metadata census; final report will preserve that limit.
+All baseline8a backup/CPU-GC/input/instrumentation protected.
 
 # r68 coherent block complete; final source-only closure
 
