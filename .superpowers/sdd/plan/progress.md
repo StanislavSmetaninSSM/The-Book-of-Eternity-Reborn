@@ -1,14 +1,23 @@
-# r68 WIP remaining recovery costs investigation
+# r68 findings WIP; independent review pending
 
-Owner asks large sections of latest163s and safe further service DATA reuse.
-Canonical REM1..5/T519..521; spec/plan/tasks actual phases and read-only consistency
-5req/3tasks/100%/0findings. Scope existing measurements/source only, no C#/newrun.
-Current r67 OFF partition first163.3117708s; internal method times unavailable.
-Do not relabel historical r62 FULL timing as current; legacy observer disables
-existing directory reuse. Findings will specify a cache-preserving future probe.
-All accepted r67/currentarchives/CPU/GC/INPUT/backups untouched; rawD-only/noquota.
-Written links under continuing autonomous review-wait waiver. Independent complex
-review of completed findings required; no implementation delegation.
+Owner asks large current163s sections and safe further service DATA caching.
+Canonical REM1..5/T519..521; actual SpecKit phases/prerequisites/read-only consistency
+5requirements/3tasks/100%/0findings; presented written links under autonomous waiver.
+Planningb71864853 published/remote65blobs exact. No runtime/build/test/INPUT changes.
+D evidenceT520-evidence.json SHA046C4C47261C502E484E02B7D39063D1F2AE502AB471B577D16524C11B63C5CA,
+32checks/19sourcepins. Current nonoverlapping majorgaps16.0182716/115.3186501/
+29.8064416s plus2.1684075=163.3117708. These are marker intervals, not internal
+method attribution. Currentcounters26950admissions/323400directoryhits/432control
+hits are cumulative;53closedsemanticIDs are not an exhaustive filesystem census.
+Historical r62 FULL aggregates exact against acceptedr66compact; no rawreplay
+claim or transfer into163s. Big candidates: provisional read/admission batch needs
+new protocol/freshproof; bundle DATA projection/replay requires owner/fullstructural
+dependencies and currentseals, no cachedverdict. Singleclone/replay/projection tiny
+paths rejected. QTE/progression/cleanup/GameState alreadyreuse; no duplicatefix.
+LegacyFULL observer disables directoryreuse; future sealedpassive accumulator
+outlined, not implemented. Human reportT521-remaining-recovery-costs.md pending
+independent complexreview; all accepted r67 archives/runtime/input/backups unchanged.
+RawD-only/noquotas/no retirement. Source-only findings checkpoint before review.
 
 # r67 coherent block complete; final source-only publication
 

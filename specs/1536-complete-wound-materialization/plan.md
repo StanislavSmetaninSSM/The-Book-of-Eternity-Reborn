@@ -19,9 +19,9 @@ Service reuse must retain exact structural owner/dependencies, operation lifetim
 mutable-result detachment and fresh authority/bytes/absence/generation/effect fences.
 No cached validation verdicts. Source getters may do full admitted reconstruction.
 
-- [ ] T519 Reuse feature, write spec/plan/tasks through actual phases, prerequisite
+- [x] T519 Reuse feature, write spec/plan/tasks through actual phases, prerequisite
   and read-only consistency; present written scope and publish/recover checkpoint.
-- [ ] T520 [US1] Extract all current stage/semantic/counter evidence and provenance-
+- [x] T520 [US1] Extract all current stage/semantic/counter evidence and provenance-
   bound historical aggregates into D; verify exact arithmetic/source pins; map
   large candidates and already-cached paths, plus missing measurement protocol.
 - [ ] T521 [US1] Write T521-remaining-recovery-costs.md, independent evidence/code/
