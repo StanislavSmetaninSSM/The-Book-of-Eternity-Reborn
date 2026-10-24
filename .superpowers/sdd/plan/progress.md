@@ -1,3 +1,21 @@
+# r70 coherent read-only audit complete — final publication verification
+
+Issue#1536; AUD1..5/T531..534 complete. Current accepted r69 profile and all563names
+verified,13actual source hashes/anchors and precise arithmetic reconciled. Report
+T534-remaining-cache-candidates.md SHA3EEC216F...DBD64 accepted by independent
+Astra/high context in T534-independent-review.json (072836BC...704C),0unresolved.
+One minor prose finding corrected: CleanupProofData.Fallback participation depends
+on source/read-set eligibility, rather than always opening a cache. Existing early
+hits/receipt/freshness routes checked. No runtime/selector/GM/schema/native/input
+change; no cheap probe or new original was run for this investigation. Actual
+r69 off/on originals remain PASS269.4711405/263.1057419s, first168.4595757/
+164.8300682s. Proposed shared-directory batch has unproved eligible coverage and
+savings; start cheap typed metadata attribution, preserve all fresh boundaries,
+track any implementation separately. No100s guarantee or global verdict cache.
+All raw data still D-only/uncapped, none deleted in r70. Final source-only closure
+will be verified by fresh empty remote-only recovery and D final-publication receipt;
+current report/spec/plan unchanged since accepted review, closure tasks/progress only.
+
 # r70 findings ready for independent review
 
 Issue#1536; AUD1..5/T531..534. T531 checkpoint fbeea24514e3594cead2f99c69e849e81db67f8d

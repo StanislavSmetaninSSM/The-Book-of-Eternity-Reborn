@@ -9,7 +9,7 @@ Issue#1536; spec AUD1..5 / plan.md. Read-only US1(P1), standing autonomous waive
 - [x] T533 [US1] Current source audit of major remaining pre-hit/fresh paths;
   candidate DATA/owner/key/lifetime/invalidation/detachment/fresh fence contracts
   and cheap attribution probe where necessary, no production implementation.
-- [ ] T534 [US1] T534-remaining-cache-candidates.md evidence-backed findings,
+- [x] T534 [US1] T534-remaining-cache-candidates.md evidence-backed findings,
   independent coherent review/fixes, source-only publication/remote-only recovery.
 
 T531->532->533->534. AUD1->532/534; AUD2/3/4->533/534; AUD5->531/534.
