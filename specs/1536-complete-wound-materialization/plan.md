@@ -1,3 +1,46 @@
+# r71 Shared Ordinary Preparation/Main Admission DATA Implementation Plan
+
+> Inline Superpowers executing-plans/TDD/systematic-debugging; parent implements,
+> separate complex independent review. Canonical Spec Kit artifacts, issue#1536.
+
+Goal: avoid repeated common ancestor classification in the initial synchronous
+ordinary read admission through existing service-backed directory DATA.
+Architecture: explicit optional phase parameter through EnsureValidCanonicalWriteLease
+and MainAdmission.Validate, then BeginAdmissionDirectoryObservations. Admission source
+can borrow eligible phase positive DATA; never store borrowed DATA in its own cache.
+ReadPathObservationPhase exposes typed underlying-source classification outcome and
+same-owner eligibility. Existing default-null call paths remain fresh.
+Stack: C#/.NET8/current SDK, PowerShell7 categories, D-local qualification/CPU-GC.
+Spec: FUSE1..7, base58bf65497; existing isolated branch, qualified227 baseline.
+
+- [ ] T535 Canonical phases/prerequisites/consistency, written links under waiver,
+  source-only checkpoint/recovery and qualified baseline8DLL backup before builds.
+- [ ] T536 [US1] New IntegrationTests/SharedReadAdmissionDirectoryTests.cs/category:
+  pure actual-classifier composition path intersection and manager declared sync/
+  async reduction RED before wiring. Use existing LifecycleProducerReadForwarder
+  fixture and OperationTimingAccumulator; minimal comparison property seam only.
+- [ ] T537 [US1] Minimal Core phase/admission source-count API, explicit optional
+  parameter wiring only initial checks in OrdinaryReads; strict owner/flags/lifetime
+  and original authority. GREEN query/hit/bytes/mtime; negative same-mtime/absence/
+  path/guard/main-record/worker/generation/owner/thread/close/callback controls.
+  Introduce test-only Joint shared-directory strict metadata/control and counts.
+- [ ] T538 [US1] Coherent independent code/tests/selection review/fixes; affected
+  bounded categories and catalog/PlanOnly. XML8DLL/new genuine source42/twoimports,
+  frozen exact source/binary/INPUT/runtime and independent original admission.
+- [ ] T539 [US2] Conditional same qualified DLL/INPUT off/on original pair with
+  unchanged600/820/15/oracles/native cleanup, current timers and cumulative counts.
+- [ ] T540 [US2] T540-shared-read-admission.md honest effect/limits, every named
+  capture reconciled; independent outcome/exact retention review and source-only
+  final publication/recovery. Failed cheap gate records negative result instead.
+
+T535->536->537->538->539->540. FUSE1/2/3->536/537/538; FUSE4/5->536/537/538;
+FUSE6->535/538/539; FUSE7->535/540. Research/data model/contracts/cheap acceptance
+live here and spec; no duplicate plan. Constitution trusted-local single-player,
+external editing open save unsupported, no OS privilege/native/process/GM changes.
+Review focus: foreign phase; borrowed DATA retained after outer close; source counters
+mislabel service requests as syscalls; phase surviving first await; caching leaf/
+main/worker success. Hook/suppression/remote/worker original routes remain.
+
 # r70 — Remaining Large Cache Audit Plan
 
 Issue#1536; spec AUD1..5. Superpowers systematic-debugging/inline execution;

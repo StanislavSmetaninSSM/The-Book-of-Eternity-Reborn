@@ -1,3 +1,53 @@
+# r71 — Share directory DATA between ordinary preparation and initial main admission
+
+Issue #1536. Owner says continue after r70 recommendation: cheap actual fixtures
+first, conditional same600-second original after proven effect. Standing autonomous
+execution/specification-review-wait waiver applies. US1(P1): remove repeated common
+ancestor classifications within the existing synchronous preparation. US2(P2):
+measure the accepted implementation on the original without weakening integrity.
+
+- FUSE1: Explicitly pass the actual manager-owned ReadPathObservationPhase only to
+  the ordinary reader's initial lease/main admission. Existing ValidationOperation/
+  ServiceCacheStorage retains positive directory DATA; exact ordinal component and
+  API/role identities remain separate. BasePath/GameSessionPath grants stay distinct.
+- FUSE2: Same owner, root version, synchronous thread and eligible callback-free
+  ordinary route required at each shared lookup. Close before open/await/callback/
+  retry/effect; no ambient lookup, new async batch or whole-operation verdict cache.
+  Foreign owner, worker, suppression, observer, mutation, close/error/reentry and
+  disabled comparison switches keep original fresh behavior. Supersedes r69 PATH2's
+  no-directory-DATA-to-main restriction only for this explicit initial admission.
+- FUSE3: Lexical/confinement/type/refusal order, fresh guard leaf/native handle/path,
+  worker inventory and main persistence bytes, original physical lease/generation,
+  source bytes/absence/mtime and effect/exit fences stay unchanged. Share no leaf,
+  negative/error observation or authority/capability. Directory DATA borrowed from
+  the outer phase must not survive retirement through the inner invocation cache.
+- FUSE4: Cheap typed pure composition proves exact common path intersection and
+  separate required-file queries. Actual manager sync/async declared reads prove
+  fewer real Probe.GetAttributes calls and actual shared hits, equal bytes/mtime,
+  and preserved negative/fallback/mutation/ownership controls. Use existing passive
+  named accumulator/counts, no arbitrary metadata observer or expensive game setup.
+  TDD RED must fail on absent sharing, not compilation. No reflection.
+- FUSE5: Counters accurately distinguish physical classifier calls from borrowed
+  DATA and invocation-local hits; combined series can overlap and are not a global
+  census. Test-only strict off/on metadata toggles sharing only, existing caches on.
+  Default gameplay sharing accepted only after cheap effect/integrity and review.
+  C# APIs receive accurate multiline XML docs; explicit bounded category selection.
+- FUSE6: Fresh XML/uniform8DLL qualification, independent complex code review and
+  genuine new source42/twoimports before original. Same-DLL/new-INPUT off/on pair,
+  each600child/820shared/15category, C fixtures/D uncapped diagnostics, sealed first
+  resumer timing/frozen CPU-GC/no competing work. Original ownership/oracles/cleanup
+  unchanged. If cheap gate fails, no expensive original or enabled unproved route.
+- FUSE7: Human source/count/time findings T540-shared-read-admission.md; independent
+  outcome/retention review, source-only checkpoints and exact remote recovery. Keep
+  latest accepted raw until replacement accepted; preserve INPUT/CPU-GC/instrument/
+  binary backups. No raw Git content or diagnostic quotas. No GM/schema/native change.
+
+Approaches: choose explicit sharing inside existing synchronous phase; defer a
+read-only batch spanning awaits (separate stability/reservation proof); reject
+cached main validation success. Acceptance is actual metadata source reduction
+with the preserved contracts, followed by honest conditional original comparison.
+No saved-seconds promise and no unapproved broader lifetime.
+
 # r70 — Remaining large cache opportunities after r69
 
 Issue #1536. Owner requests: finish r69, then use measurements to determine

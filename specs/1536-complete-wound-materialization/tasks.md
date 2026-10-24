@@ -1,3 +1,24 @@
+# CRASH5 — revision71 shared preparation/main-admission directory DATA
+
+Issue#1536; FUSE1..7 / plan.md, autonomous specification-review-wait waiver.
+
+- [ ] T535 Canonical phases/prerequisites/consistency, presented links; source-only
+  checkpoint/recovery, qualified227 eight-DLL backup before replacement.
+- [ ] T536 [US1] Typed pure/actual manager cheap fixture source-reduction RED,
+  category ownership, existing sealed passive measurement and minimal control seam.
+- [ ] T537 [US1] Existing-service phase/admission sharing, accurate physical-source/
+  borrowed-hit counts, explicit same-owner initial-only wiring, strict comparison
+  controls; GREEN actual sources/equal data and negative/fallback/lifetime integrity.
+- [ ] T538 [US1] Independent coherent review/fixes, affected categories/catalog/
+  PlanOnly/XMLuniform8; conditional genuine new source42/twoimports/frozen admission.
+- [ ] T539 [US2] Conditional600child/820shared/15category off/on originals, same DLL/
+  INPUT, frozen CPU-GC/current passive timings/native/oracles/cleanup unchanged.
+- [ ] T540 [US2] T540-shared-read-admission.md current evidence/limits, independent
+  outcome/exact retention/source-only publication/recovery; no expensive run if gate fails.
+
+FUSE1/2/3->536/537/538; FUSE4/5->536/537/538; FUSE6->535/538/539;
+FUSE7->535/540. T535->536->537->538->539->540. No wider async batch or cached verdict.
+
 # CRASH5 — revision70 remaining large cache audit
 
 Issue#1536; spec AUD1..5 / plan.md. Read-only US1(P1), standing autonomous waiver.

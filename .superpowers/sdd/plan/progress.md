@@ -1,3 +1,14 @@
+# r71 shared synchronous preparation/admission DATA — started
+
+Issue#1536; base58bf65497d6f5436c000fbeb4e4770be82afa92c verified against remote ref.
+User continues r70 recommendation, standing autonomous review-wait waiver. Canonical
+FUSE1..7/T535..540. Explicit initial same-manager synchronous sharing chosen; broader
+await batch deferred. Preserve fresh leaf/native/main-record/workers/bytes/generation,
+no cached authority or ambient context. Cheap actual source/hit reduction and integrity
+are mandatory before new genuine INPUT/original. Existing qualified227/baseline r69
+accepted raw protected. No code/build/test/probe/original yet; source-only publication
+and baseline backup first. Raw D-only/uncapped, parent owns coherent implementation.
+
 # r70 coherent read-only audit complete — final publication verification
 
 Issue#1536; AUD1..5/T531..534 complete. Current accepted r69 profile and all563names
