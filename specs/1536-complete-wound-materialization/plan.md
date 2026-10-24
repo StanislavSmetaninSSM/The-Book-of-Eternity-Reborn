@@ -6,18 +6,23 @@
 Goal: one repeated r61 original with external CPU/GC evidence; no production fix.
 Architecture: existing category runner/native process lifecycle remains untouched.
 A D-local Python orchestrator holds birth-verified Windows process handles and
-attaches a pinned standard .NET counter collector only to its two native children.
-Tech: Python/ctypes Win32, .NET8 System.Runtime EventCounters, pinned dotnet-counters
-under D:, existing r61 helpers adapted for a NEW r62 run/claim/output identity.
+attaches a D-local raw .NET counter collector only to its two native children.
+Tech: Python/ctypes Win32, .NET8 System.Runtime EventCounters, raw-counter wrapper
+using pinned dotnet-counters8.0.547301 diagnostic libraries under D:, existing r61
+helpers adapted for a NEW r62 run/claim/output identity.
 Reuse the current isolated clone/branch. No game/test build or new source42.
 
 Research / alternatives: r61 original494.5938554s, r60434.6855800s; producer all named
 counts identical but slower, so one rerun tests repeatability rather than proving
 cache regression. .NET8.0.31 exposes total-pause-time-by-gc backed by
 GC.GetTotalPauseDuration, an IncrementingPollingCounter with a reset baseline.
-The old time-in-gc percentage is not the requested pause duration. External tooling
-is not installed yet; select one exact stable official version and validate its
-actual export/schema/normalization in T492. An internal game change/rebuild would
+The old time-in-gc percentage is not the requested pause duration. The pinned
+8.0.547301 CLI JSON/CSV exports omit IntervalSec and normalize values, so they cannot
+provide exact interval increments. A small D-only .NET8 raw-counter wrapper uses
+the same installed NETCore.Client/TraceEvent libraries and retains raw payload
+Increment/IntervalSec/units. Validate export/lifecycle behavior in T492; wrapper
+compilation is separate tooling and never rebuilds or overwrites game DLLs.
+An internal game change/rebuild would
 invalidate the agreed comparison. Full startup GC coverage requires suspension,
 which is excluded. All gaps and observer perturbation remain explicit.
 
@@ -61,7 +66,7 @@ External CPU is cumulative kernel+user, not GC-adjusted wall time. Separate cloc
 GC/CPU/observer/inclusive scopes are not additive. Additional observers change total
 system load; one rerun cannot establish a causal cache regression.
 
-- [ ] T491 CPUGC1..8: audit retained source/DLL/INPUT and existing native hooks;
+- [x] T491 CPUGC1..8: audit retained source/DLL/INPUT and existing native hooks;
   write canonical specification/plan/tasks via actual pinned Spec Kit phases,
   consistency check; publish/recover new checkpoint before tool implementation.
 - [ ] T492 CPUGC3..5/8: implement external observation/preflight/derivation helpers;

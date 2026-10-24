@@ -20,12 +20,20 @@ Tiny native manifests support discovery; initial Identity is null, so handle onl
 actual birth-bound capture/owner evidence and validate against final original native
 outcome. No broad process kill or machine security setting change.
 
-T491 plan/tasks/setup phases and consistency being completed. T492 helpers must
+T491 complete: actual pinned plan/tasks/prerequisites phases, 8requirements/5tasks,
+0consistencygaps; all8DLL/native/inputhashes matched. Published026570fbf0f64da634beb8900af715dfaaf66f92
+and freshremote-only38blob/noalternates recovery passed. T492 helpers must
 pass synthetic + short separate .NET8 tooling controls and independent review before
 ONE T493 launch. Current Droot D:/BoeDiagnostics/repeat-cpu-gc-r62-20261024.
 Parent owns metadata/runner integration, existing actualSol6.1/high helper tools only,
 separate actualAstra/high independent review; no shared-file edits or heavy live
-analysis. No original/rebuild/collector installation has run yet.
+analysis. PinnedCLI8.0.547301 installed onlyonD; its exports omitIntervalSec. Separate
+.NET8 raw-counter tooling wrapper preserves exactincrements/intervals. Cheap
+controls/toolimplementation in progress; no game rebuild/seedgen/originallaunch.
+T492 parentpreflight:11evidence/gatecontrolsPASS,4syntaxchecks; no claim/launchcreated.
+Rawcounterwrapper+shorttoolingfixture compile separately onD withXMLdoc; observer
+syntheticcontrols pass, realnormal/abruptfixture validation pending. Postsettlement
+adapters preserve r61strictparser/retainedattribution; runtime schema pendingfreeze.
 
 # Previous accepted r61 checkpoint
 

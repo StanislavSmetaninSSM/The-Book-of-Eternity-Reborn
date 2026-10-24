@@ -3,7 +3,7 @@
 Issue #1536; spec CPUGC1..8 and current plan.md. Owner approved ONE repeat with
 runtime observations; autonomous review-wait waiver, existing isolated clone.
 
-- [ ] T491 Audit retained bindings/native hooks; canonical Spec Kit phases and
+- [x] T491 Audit retained bindings/native hooks; canonical Spec Kit phases and
   consistency, source-only published/recovered investigation checkpoint before tools.
 - [ ] T492 External birth-bound CPU + .NET8 pause-counter helpers, pinned D-local
   collector, synthetic and cheap real tooling controls; independent exact admission.

@@ -26,7 +26,8 @@ compiled source1e6b947b7d9e64c1b5af7c2c7847426524463551.
   intervals with a pinned D-local diagnostics tool. Treat this IncrementingPollingCounter
   according to its interval-increment/rate export semantics in milliseconds,
   not absolute lifetime totals or percent time-in-gc. Preserve actual interval
-  duration where needed; never sum a normalized rate as if it were milliseconds. Keep all original counter output and attach/first/last/exit evidence.
+  duration where needed; never sum a normalized rate as if it were milliseconds.
+  Keep all original counter output and attach/first/last/exit evidence.
   Startup/baseline/final-unpublished/abrupt-EOF gaps stay unknown; missing samples
   are never zero and overlapping GC/CPU/wall/diagnostic times are not added.
 - CPUGC5: Prove observer/export/parser behavior first on cheap synthetic controls
@@ -61,11 +62,16 @@ observations cannot address the CPU/GC question. Neither is selected. One repeat
 is approved, not an A/B series or production implementation. GM/gameplay/schema
 contracts are unchanged; Mortal World/afterlife prompts/examples need no update.
 
-Research decisions: dotnet-counters is not currently installed; install a pinned
-supported version only in D:/BoeDiagnostics tooling after the plan/consistency
-phase. .NET8.0.31 is installed and exposes the required counter. Exact CLI export,
-attach/exit handling and counter first-poll semantics must pass T492 controls before
-launch. No zero-coverage substitution or startup diagnostic suspension is allowed.
+Research decisions: discovery found no installed diagnostics CLI. After the
+plan/consistency checkpoint, dotnet-counters8.0.547301 was installed only under
+D:/BoeDiagnostics tooling. .NET8.0.31 exposes the required counter. The pinned
+CLI JSON/CSV exports normalize values but omit
+IntervalSec; those exports cannot recover exact pause increments. Use a small
+D-only .NET8 raw-counter wrapper with the same installed diagnostic libraries,
+recording the original Increment/IntervalSec/units payload. Its own source/build
+and dependency hashes are tooling evidence, never a game rebuild. Attach/exit
+handling and counter first-poll semantics must pass T492 controls before launch.
+No zero-coverage substitution or startup diagnostic suspension is allowed.
 
 # CRASH5 — revision61 cleanup completed-proof/history DATA reuse
 
