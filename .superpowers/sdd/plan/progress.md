@@ -1,120 +1,53 @@
-# r67 outcome accepted; exact retention executed, final receipt closure
+# r67 coherent block complete; final source-only publication
 
-Separate Astra/high outcome review Accepted/no unresolved findings SHA
-19EE2DFB37C4B8F55E004C3AAA0DF1D3A17BF7656D894B156AC2F68B558BBD2F.
-Independently all131archive members/originaloracles/runtime/arithmetic/109targets/
-485protected reviewed; reportcorrectly preserves fullsourcecount increase+3.
-Exact accepted executor Completed:109leaves326921503B retired;485protected
-before/after unchanged and currentfull+cheap archives unchanged. No recursion
-or diagnosticquota; all CPU/GC/INPUT/instrumentation/binarybackups kept.
-Human report retentionstatus updated to actual completed results. No code/native/
-DLL/INPUT changes after qualified7272. Final narrow receipt/docstatus closure
-and source-only publication complete the coherentblock, T518 pendingthatclosure.
+Canonical FWD1..7/T514..518 complete; source issue#1536. Actual SpecKit plan/tasks/
+prerequisites and read-only bridge consistency7req/5tasks/100%/0findings. Written
+spec/plan/tasks presented under continuing autonomous review-wait waiver. Existing
+isolated branch reused. Parent owns coherent implementation; separate complex
+Astra/high independent review, no implementation agent or new user-visible task.
 
-# r67 T517 PASS; T518 outcome and exact retention review pending
+Typed TestSupport read-observer holder; only ordinary extended seeded WindowsCut0
+producer defaults absent empty hooks. All other defaults, race/error observers,
+late-attach refusals, source/generation/effect fences, native ownership and game
+contracts preserved. Production code/cache/native/GM interfaces unchanged.
+No reflection or world setup in new tiny actual-constructor fixtures.
 
-Same metadataa4c03a251/code7272/8DLL/INPUT; forwarded+ordinary original each1PASS,
-600/820/15 unchanged, producer73/resumer0/nativebirth/EOF/join/oracles/cleanupPASS.
+Meaningful RED10:5PASS/5causalFAIL; GREEN234distinct selected cases PASS.
+Actual sync+async8->2sourceevents,7fastHits,456directoryhits; byte drift, operation
+close/default callbacks/order/delay/errors PASS. No cheap wall-speedup claim.
+Final XML qualified7272b0e293d5d8a360f8ce5cb1bd1b4eff631c5e, all8DLL uniform;
+source binding3C61B8DBD08354C61FEFD2666168196B9560150C5F4888531746B8F4A9C17C28.
+Only XML/docs since functionalb999; no unnecessary repeated234test run. Catalog
+PASS/0executed/0duplicateIDs. Genuine generator1PASS184.3056s/twoindependentimports/
+82files513709B/SourceCleanup+CopyCleanup. NewINPUT, never old-source rebinding.
+
+Same metadataa4c03a251/8DLL/INPUT original forwarded+ordinary each1PASS;
+600child/820shared/15category/oracles/native73+0/birth/EOF/join/cleanup unchanged.
 TRX283.9837495->264.5061081s(-19.4776414);producer107.3968871->87.5950595s;
-first163.3554324->163.3117708s unchanged.299940producerdirectoryhits,4control
-fast hits; total sourceevents9307->9310(+3),no full-read reduction claim.
-Producer kernel83.296875->63.8125s;total110.09375->89.96875s. ResumerCPUunchanged.
-GC observed intervals only; no fullcoverage or CPU/GC/wall subtraction.
-All remaining records retained without quotas/timingsOFF both. Each142nativeJSON/
-2text/33archive members rehashed+CRC verified; native source unchanged.
-Human reportT518-producer-read-forwarder-measurement.md; singleorderedpairlimits.
-Complete cheap archive65members/250380412rawB verified,9,698,301B compressed,
-SHA9817783F2940EE45B499BF8F28C5458069C2ED0D2899259BE4DC45CE66C9F910.
-Exact retention planSHA FAB054A19B440D6372FDB0F427841E5237EC9F891265B306A71E3166B76A7440:
-109files326921503B,485protected; no deletion yet. Current full+cheap/CPU/GC/INPUT/
-instrumentation/binarybackups protected; retire oldr65originals and verified
-current duplicates onlyafter independentoutcome/retentionacceptance. AllrawD-only.
+first recovery163.3554324->163.3117708s unchanged.299940directoryhits and4control
+fastHits; totalcanonicalsourceevents9307->9310(+3), no full-read reduction claim.
+Producer kernel83.296875->63.8125s,total110.09375->89.96875s. ResumerCPU unchanged;
+GC deliveredintervals only, no fullcoverage/subtraction. Oneorderedpair/no100s
+promise. Human reportT518-producer-read-forwarder-measurement.md has exactlimits.
+DetailedtimersOFF both; remaining stage/scalar/oracle/rawCPU-GC uncapped, allD-only.
+No raw diagnostics/TRX/generated analysis/reviews/archives uploaded to Git.
 
-# r67 T516 complete; original same-source pair admitted
+Independent code reviewA211925C..C22465; readinessF602C8D9..643A05 accepted114pins.
+Outcome19EE2DFB37C4B8F55E004C3AAA0DF1D3A17BF7656D894B156AC2F68B558BBD2F
+accepted all131archive members/nativeoracles/runtime/arithmetic/report/retention.
+Exact accepted executor Completed:109leaves326921503B retired;485protected and
+allcurrentarchives unchanged. Oldr65originalarchives, verifiedduplicates and3old
+buildlogs removed; allold/new CPU/GC/INPUT/instrumentation/binarybackups kept.
+Receipt0DCE48A3CD3DDF4BDB87A95B4A02C6E06DD75A66B41B2920D018554E2D257034.
+Mechanical closure2AEC78E231F69013DD260C3107ED4249199A3432160994BF04908323F9523F3C
+accepted; nonblocking deletion-summary wording corrected. No unresolved findings.
 
-Final code7272/binding3C61B8DB..17C28;234cheapPASS/catalogPASS/code reviewAccepted.
-Genuine source42 generator1PASS184.3056s;82files513709B/twoimports/SourceCleanup/
-CopyCleanup; newfingerprintE983F995..F2F4C5, archiveF6EA7C0A..C708CC. No rebind.
-Frozen readiness82669C84F48EA9BD036466CC51EA29F0F3E09F849076DACCE919C5AEC4C8BAE8
-114pins independently verified/admitted by separate Astra/high review SHA
-F602C8D9335BCDFE670CEB6D6C8843CBF9B3F1A2251DF065CFBE20A554643A05.
-T517 forwarded(on) then ordinary(off), same8DLL/INPUT/metadataHEAD; both existing
-cacheson, detailedtimingsOFF, remainingdiagnosticsuncapped, frozenCPU/GCcollector,
-Cfixtures/Dartifacts,600child/820shared/15category unchanged. No competing work.
-This metadata-only checkpoint precedes originals; outcomes andbenefit unmeasured.
-Old complete measurement/input/runtime/instrumentation/backups stillprotected.
-
-# r67 cheap gate and independent code review accepted; genuine input next
-
-Canonical FWD1..7/T514..518. Final source7272b0e29/binding
-3C61B8DBD08354C61FEFD2666168196B9560150C5F4888531746B8F4A9C17C28;
-fresh XML89.409/49.233s, all8uniform. GREEN234distinctPASS,10actualtinyfixture
-cases,8->2sourceevents/7fastHits/456directoryhits; integrity/callback/close PASS.
-Final XML-only diff since tested b999, no behavior change or repeated234run.
-Catalog discoveryPASS24.968s/0executed/0duplicates. Separate Astra/high review
-Accepted/no unresolved findings SHA
-A211925C9746687BD84A17F126AC4A47B3FC8EFC09A23E3BE66F0FD1D7C22465.
-External zero-effect analyzer controls7PASS. Genuine newsource42/twoimports next;
-no oldINPUT rebind. Originals remain unadmitted until frozen readiness review.
-Allraw D-only/uncapped, old complete r65/runtime/input/backups protected.
-
-# r67 final XML qualification WIP
-
-Independent reviewer confirmed actual234distinct GREEN PASS and all8DLL bytes,
-RED fivecausal failures, cheap8->2/7hits/456directoryhits; no behaviorblocker.
-Remaining2XML keyword references corrected together. Prior7e124 provisional
-qualification87.880/52.585s uniform, now final fresh8DLL source build required.
-No repeated behavior checks for XML-only corrections. Extra qualification build
-is workflow rework cost, not game performance. Reviewer independently verified
-external analyzer7controls incl zeroeffect acceptance; compare mode labels fixed.
-T516 final source binding and genuine input still pending; no original launch.
-
-# r67 T516 qualification WIP; cheap gate satisfied
-
-GREEN b99919301 fresh XML8DLL uniform,7selected categories PASS. Actual tiny
-constructor async+sync target sources8->2,fast hits0->7, directorycontexts0->57
-and hits0->456.10newfixturecases PASS incl same-timebyte drift, next-op/failure
-close, guarded lateattachment, defaultcallbacks/order/delay/errors. No cheap wall
-speedup claimed: extra phase entry/freshproof has cost; original effect unmeasured.
-Independent Astra/high code review found no correctness blocker sofar; XML
-contract descriptions corrected and stale catalog count removed. Documentation
-only since GREEN; fresh qualified8DLL build next, generator onlyafter final review.
-External analyzer corrected per independentfinding: original zero effect must be
-archived/reported, never rejected solely for zero selected-phasehits. No originals
-yet; allraw D-only/uncapped. Latest r65 input/runtime/archives protected.
-
-# r67 T515 GREEN implementation WIP
-
-Fresh XML8DLL RED source097b23b24 builds101.722/58.515s; real tiny-fixture10cases
-5PASS/5meaningfulFAIL:8vs2source reads(sync/async),16vs4next-op,missing
-source exit fence in fallback,late-refusal fixture still8sources. Callback order,
-delay and both primary errors PASS. D uncapped RED preserved; no original run.
-Conditional null hooks now implemented; default true/guarded late setters intact.
-Closed producer env/parent/child validation added; only ordinary extended seeded
-WindowsCut0 defaults absenthooks. Othercuts/platforms/fault/acquisition unchanged.
-Passive per-path source census emitted at realcut; resumer control validated but
-hooks unchanged. GREEN and new metadata cases unrun; fresh build/checks next.
-
-# r67 T515 RED scaffolding WIP
-
-Typed holder extracted original unconditional forwarding into actual lifecycle
-constructor; default semantics unchanged. New tiny adopted-root tests assert
-conditional absent-hook source reuse, directory hits and integrity. Conditional
-delegate creation deliberately not implemented yet: compiling/running meaningful
-RED next. No original run admitted; builds/tests unrun. Explicit category/selection
-added; allraw D-only/no quotas. T514 planning098099e4 published/recovered59blobs,
-verified current8DLL backup38,387,619B on D. Source checkpoint before build.
-
-# r67 WIP ordinary producer read forwarders; cheap-first gate
-
-Canonical FWD1..7/T514..518; spec/plan/tasks written and presented under continuing
-autonomous review-wait waiver. Actual SpecKit phases/prerequisites and read-only
-bridge consistency:7requirements/5tasks/100%/0findings. Baseline current8DLL backup
-verified on D, original r65 input/runtime/archives unchanged. No code/build/test
-yet. Parent owns implementation; mandatory separate complex Astra/high review.
-No production cache/authority changes; cheap real-fixture reduction and integrity
-required before same-new-binary/input original600 pair. All diagnostics D-only,
-uncapped. This source-only planning checkpoint is WIP, not acceptance.
+Routing checkpoint: one parent developer plus independent Astra/high review
+caught missing XML references, zero-effect analyzer rejection and summary labels;
+corrected/verified. Extra XML qualification build is rework cost, not game time.
+No new review cycle for this factual status consolidation. This final source-only
+checkpoint is followed by exact remote-only recovery and a D-local publication
+receipt; no C#/DLL/native/INPUT/helper changes after accepted qualification.
 
 # r66 read-only investigation complete; final source-only publication
 

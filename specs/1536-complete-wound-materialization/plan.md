@@ -57,7 +57,7 @@ Parent/child mode selection must refuse invalid routes before opening fixture.
   package validation and frozen same-input original admission; source checkpoint.
 - [x] T517 Two sequential originalCut0 controls forwarded/ordinary on sameDLL/INPUT,
   directory/cache onboth, timingsOFF, frozen external observer, no competing work.
-- [ ] T518 Every record/archive/oracle/runtime/count/time comparison, human report,
+- [x] T518 Every record/archive/oracle/runtime/count/time comparison, human report,
   independent outcome/retention review, exact superseded raw replacement and publish.
 
 T514->515->516->517->518. Cheap acceptance: eight target reads fewer actual opens

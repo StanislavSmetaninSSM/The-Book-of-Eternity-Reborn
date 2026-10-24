@@ -14,7 +14,7 @@ continuing autonomous review-wait waiver. Existing isolated branch reused.
   frozen package/observer/modes/budgets and source-only original admission.
 - [x] T517 [US2] Same-new-DLL/INPUT forwarded versus ordinary originalCut0 pair,
   existing caches onboth/timingsOFF,600/820/15/native/oracles/cleanup unchanged.
-- [ ] T518 [US2] Record complete count/time/runtime analysis in this feature's
+- [x] T518 [US2] Record complete count/time/runtime analysis in this feature's
   T518-producer-read-forwarder-measurement.md; independent archive/outcome/retention
   review, exact old-raw replacement and clean source-only publication/recovery.
 
