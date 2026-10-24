@@ -1,3 +1,50 @@
+# r69 Ordinary Read Preparation Directory DATA Plan
+
+> Inline execution with Superpowers executing-plans/TDD/systematic-debugging;
+> parent owns implementation, separate independent complex review. Issue#1536.
+
+**Goal:** Remove repeated positive-directory observations in ordinary preparation.
+**Architecture:** explicit disposable ReadPathObservationPhase uses existing
+ValidationOperation, distinct typed TrustedScope/Windows DATA keys, no ambient
+routing; ordinary readers pass it only during preparation and initial admission.
+Owner manager records passive counts once on close; no user callback. Existing
+public path and nonordinary routes retain their fresh default.
+**Stack:** current C#/.NET8/PowerShell categories, D Python/frozen CPU-GC.
+**Spec:** spec.md PATH1..7. Existing feature/branch, base7d507b511.
+
+- [ ] T526 Canonical spec/phases/tasks/prerequisites/consistency; present actual
+  written links under waiver; source-only checkpoint/recovery and baseline backup.
+- [ ] T527 [US1] Add Core/ReadPathObservationPhase.cs backed by existing service;
+  FileSystemManager ordinary-phase typed entry/stats/control, explicit path/scope
+  overloads and ordinary-read injection. First cheap RED adapter/unwired actual
+  route, then GREEN. Own coherent IntegrationTests/OrdinaryReadPathPhaseTests.cs
+  and small category; reuse adopted fixture, no expensive world. Verify each
+  positive parent at most once per API/role/phase; off/on actual sync+async query
+  reduction with equal bytes/mtime; fresh phases/retries/callback fallback/failure/
+  changed-directory/lexical/reparse/cancellation/source fences. Default cannot be
+  accepted until these controls pass. Record counts before any US2 admission.
+- [ ] T528 [US1] Independent full diff/tests/category/contract review and validated
+  fixes, XML8DLL qualification. If US1 passes, genuinely new source42/twoimports,
+  strict first-window/original reuse metadata and frozen admission. If it fails,
+  remove unproven gameplay routing and record bounded negative findings instead.
+- [ ] T529 [US2] Conditional same original600/820/15 with cache enabled and passive
+  profiling/frozen CPU-GC; actual ordinary counters, every current timer/name and
+  original native/mechanics/bytes/repeat/cleanup all reconciled. No competing work.
+- [ ] T530 [US2] Human T530-ordinary-read-path-data.md findings, source/key/lifetime/
+  scope/measurement limits, independent outcome and exact retention. Source-only
+  publication/recovery. If gate fails, explicitly mark expensive branch not run
+  with evidence; do not redefine acceptance or call failed optimization complete.
+
+T526->527->528->529->530. PATH1/2/3->527/528; PATH4->527/528;
+PATH5->527/528/529; PATH6->526/528/529; PATH7->526/530.
+Constitution: local single-player, concurrent external editing unsupported; lexical
+confinement/state/receipt/generation/process ownership unchanged. No dependencies,
+GM capability or schema changes. Tests use typed fixtures and real production code.
+Review focus: cache accidentally surviving first await/open; fallback exception
+replacement; cross-provider/role alias; caching leaf/absence or authority; worker/
+observer/fresh bypass; duplicate counter disposal; cheap test proving only a mock.
+Research decisions, DATA model and proof scenarios live here/spec, not duplicate docs.
+
 # r68 Current Recovery Cost Investigation Plan
 
 Inline Superpowers execution/TDD/systematic-debugging; parent owns implementation,

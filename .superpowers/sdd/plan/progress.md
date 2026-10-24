@@ -1,3 +1,19 @@
+# r69 planning WIP — ordinary-read preparation positive-directory DATA
+
+Issue#1536/base7d507b511; source remote SHA verified before edits. Owner accepts
+recommended next large cache candidate and standing autonomous review-wait waiver.
+PATH1..7/T526..530 in active1536feature; short explicit phase selected, broad
+batch protocol deferred. Main/worker/native/leaf/fresh authority unchanged, no
+ambient routing or whole-operation validation verdict. Existing service only.
+Cheap actual query reduction/integrity is mandatory before expensive original;
+safety and coverage not presumed. No C# edits/build/test/newINPUT/original yet.
+Parent implementation + separate complex review; no new user-visible task.
+T526 phases actual setup-plan/setup-tasks/prerequisites completed; local prerequisite
+script lacks RequireSpec so existing spec checked explicitly. Bridge consistency
+7requirements/5tasks/100%/0gaps. Qualified8a8DLL backup verifiedCRC/allmembers on D.
+Written spec/plan/tasks linked before implementation under standing waiver. Optional
+git extension hooks satisfied by explicit checkpoint. Next: T527 cheap TDD/routing.
+
 # r68 coherent block complete; final source-only closure
 
 Canonical REM1..8/T519..525, existing feature/branch, autonomous review-wait waiver.

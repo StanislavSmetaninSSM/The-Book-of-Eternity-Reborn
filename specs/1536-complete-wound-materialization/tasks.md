@@ -1,3 +1,27 @@
+# CRASH5 — revision69 ordinary-read preparation directory DATA
+
+Issue#1536; spec PATH1..7 / plan.md. Continuing autonomous review-wait waiver.
+
+- [x] T526 Establish canonical phases/prerequisites/consistency in
+  specs/1536-complete-wound-materialization/{spec,plan,tasks}.md; written links,
+  source-only checkpoint/remote recovery and qualified8a backup before builds.
+- [ ] T527 [US1] Cheap typed phase/actual ordinary-reader RED/GREEN and minimal
+  Core existing-service adapter/routing/control/counters; parent/API/role/lifetime/
+  fresh/worker/hook/error/refusal/source-integrity coverage, XML/category/selection.
+- [ ] T528 [US1] Independent coherent review and corrections, XML/uniform8DLL;
+  cheap gate decides original admission. Only positive gate gets genuine new
+  source42/twoimports, frozen provenance/budgets/CPU-GC/passive admission review.
+- [ ] T529 [US2] Conditional original600/820/15 with measured phase DATA reuse,
+  first-window timers and all original oracles/native/cleanup/runtime reconciled.
+- [ ] T530 [US2] T530-ordinary-read-path-data.md honest findings; independent
+  outcome/exact-retention/source-only final publication and remote recovery.
+
+T526->527->528->529->530. PATH1/2/3->527/528; PATH4->527/528;
+PATH5->527/528/529; PATH6->526/528/529; PATH7->526/530.
+No expensive run without actual cheap reduction and unchanged integrity. An
+unsuccessful probe is recorded explicitly and does not meet optimization acceptance.
+
+
 # CRASH5 — revision68 current recovery cost investigation
 
 Source issue#1536; spec REM1..8 and plan.md. Autonomous review-wait waiver.

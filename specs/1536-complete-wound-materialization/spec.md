@@ -1,3 +1,64 @@
+# r69 — Ordinary-read preparation directory DATA reuse
+
+Issue #1536. Owner accepts the next large filesystem candidate after r68 measured
+1,036,393 TrustedScope.GetAttributes/56.954556s, directorychains47.863193s and
+Windows path metadata24.511423s (overlapping). Continue independently under the
+explicit standing specification-review-wait waiver; no diagnostic quotas.
+
+US1(P1): prove a bounded directory observation phase reduces repeated physical
+classification in actual ordinary readers while preserving current refusals.
+US2(P2), dependent on US1: integrate the proven phase in gameplay, verify affected
+contracts, then measure the unchanged original600-limit scenario with passive
+profiling. No promised saving; a failed cheap gate does not authorize a full run.
+
+- PATH1: Reuse existing ValidationOperation/ServiceCacheStorage, not a new global
+  cache. Explicit phase owner and exact ordinal validated component/API/backend/
+  role keys; only successful positive ordinary-directory DATA. Keep TrustedScope
+  EntryKind and Windows directory observations semantically separate. No cached
+  file/absence/error, validation/lease/authority verdict or mutable shared result.
+- PATH2: Lifetime is synchronous ordinary-read preparation/admission only; close
+  before ordinary file open, arbitrary callback, await, retry continuation, effect
+  or return/failure. No ambient cache routing. Main/worker/native/generation checks
+  keep their original fresh route and receive no directory cache. A later phase,
+  read or retry starts fresh; actual source/exit fences remain fresh and unchanged.
+- PATH3: Preserve lexical validation/confinement/order, optional/required/root/leaf
+  roles, reparse/special/missing/IO/access refusals, cancellation and exception
+  mapping. Unsupported workers, arbitrary read/path/timing callbacks, validation
+  suppression/fresh routes retain uncached behavior. Passive sealed accumulator
+  remains compatible. Concurrent external editing of open saves remains unsupported
+  by the constitution; add no new threat model or OS privilege requirement. Pin
+  existing race/hook refusals and between-phase path replacement with cheap tests.
+- PATH4: Typed independent minimal fixtures, no reflection/world bootstrap. TDD:
+  failed reuse controls before wiring, GREEN positive directory reuse with actual
+  sync/async ordinary-read source-query reduction and equal returned bytes/mtime;
+  separate API roles/negative kinds/close/failure/callback/cancellation/refusal tests.
+  Actual manager must own the lifetime. Pure adapter tests alone cannot admit US2.
+- PATH5: Test-only reuse off/on control and passive phase counts, default gameplay
+  reuse on only after US1. No arbitrary classifier callback introduced on ordinary
+  gameplay. Strict original route metadata/defaults/budgets remain; no silent
+  selection expansion. Multiline accurate C# XML on changed/new APIs; fresh XML
+  builds for affected projects, explicit categories and catalog/selection audit.
+- PATH6: Independent complex coherent code review; backup current qualified8a
+  binaries before replacing them, fresh uniform8DLL and genuinely new source42/
+  twoimports before any original. Same600child/820shared/15category, C fixtures/D
+  uncapped data, frozen CPU/GC and passive first-window profiling/no competition.
+  Compare current source/counters/timings honestly; no nested sums or causal saving
+  from unrelated runs. If cheap reduction absent or integrity unproved, report
+  that result and retain the original reader route without expensive original.
+- PATH7: Human findings in this feature, independent outcome/report/exact-retention
+  review, latest complete raw replacement only after acceptance. Keep all CPU/GC/
+  INPUT/instrumentation/binary backups. Source-only checkpoints and exact remote
+  recovery, no raw logs/TRX/generated dumps/archives in Git. No GM/native/gameplay
+  state/schema/interface change, so GM examples/prompts need no update.
+
+Approaches: (chosen) explicit short ordinary-read phase, positive directory DATA
+through the existing service; (deferred) wider batch/read-window protocol requiring
+separate stability design; (rejected) cache an entire validation or path string.
+Short-phase safety and substantial eligible coverage are not established yet:
+US1 is a real acceptance gate, not a presumption from synchronous execution.
+Acceptance: cheap actual-source reduction with unchanged relevant integrity and
+refusal contracts, then conditional original measurements and honest limits.
+
 # r68 — Current large recovery costs with cache-preserving profiling
 
 Issue #1536. Owner asks which large sections occupy the remaining163s and what
