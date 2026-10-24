@@ -1,4 +1,20 @@
-# Current checkpoint: r63 complete original/analysis PASS; independent outcome pending
+# Current checkpoint: r63 outcome accepted; exact retirement complete; final docs pending
+
+T499 independent outcome CB54F2C3298BA9288A72810382DE977A0D9212F797B64232E18CC706FF7D5BFA
+and148payload integrity26F0511A512A9D3BF5D3A07B2B8D2AE910FF32C4D7ACF3097835B461568E8217
+accepted; currentfullarchive B37... all136nativeJSON/2nonJSON and runtime replay.
+Frozenretentionv2 E2680C6CEA78D0272194F528F11190A9C2DF3DFF991C5487298C4EF79063BE20
+andexactplanC157... independently admitted; execution Completed4files969983166B,
+177protectedfreshfullhashbefore/after, all148CRC/SHA fresh, parentsretained.
+Receipt T500-retention-executed.json SHA9CB7E8B2CCE2090D77FD155F1871AA0C05E0681FD652F49B8B42BCFF45C01298.
+No source/game/input changes or rerun. T496..499 complete; T500 finaldocumentation/
+publication pending. Newsource-only checkpoint7e38fa87df183efe4e684b23eb858f541020c41d
+pushed/fresh40blob recovered; measurement metadata staysbb3285695. Finalreport
+contains measuredfirstresume186.4575919s/repeat.9375692s andqualifiedcacheopinion:
+no demonstrated additional100s target; directory/admission reuse needs external
+pathidentity freshness, generation/owner/mutation/publication fences. No newcachefix.
+
+## Earlier analysis checkpoint
 
 Versioned v3 corrected two external parser/source-contract omissions: outer
 JOINT_CRASH_STORAGE framing and real abrupt producer exit/enter before native73.

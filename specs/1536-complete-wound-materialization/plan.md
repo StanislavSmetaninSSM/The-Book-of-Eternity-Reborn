@@ -64,15 +64,15 @@ or source optimization is authorized by this measurement.
   selected cheap contract category; independent exact source/INPUT/observer/mode
   admission before a fresh original-off claim.
   Exact admission accepted at bb3285695. Actual67/67 contracts passed.
-  ONE original-off settled exit0/TRX PASS308.9104597s; T498/T499 evidence
-  acceptance pending source-defined JOINT_CRASH_STORAGE parser correction.
+  ONE original-off settled exit0/TRX PASS308.9104597s. Versioned external
+  corrections for storage framing and producer exit/enter source contract accepted.
   Preserve original13tools/claim and add separately reviewed versioned analysis;
   include correction/tools/controls/review in the new archive. No original rerun.
 - [x] T498 OFF1..3: ONE original-off with unchanged DLL/INPUT/oracles/budgets.
   ActualTRX PASS308.9104597s; v3 source-backed external repairs separately admitted,
   68controls/2syntax and complete actual-stream replay. Alloriginal/native/runtime
-  oracles PASS; archive148payloads SHA/CRCverified; T499 independent outcome pending.
-- [ ] T499 OFF2/3/6: full capture/every payload/every remaining record analysis,
+  oracles PASS; archive148payloads SHA/CRCverified; T499 independently accepted.
+- [x] T499 OFF2/3/6: full capture/every payload/every remaining record analysis,
   runtime/stage/elapsed comparison against r62; independent outcome acceptance.
 - [ ] T500 OFF5/7: human findings, exact admitted older raw/leaf/duplicate retirement,
   final independent documentation review and exact source-only remote recovery.

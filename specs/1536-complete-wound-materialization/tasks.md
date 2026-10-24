@@ -9,7 +9,7 @@ autonomous execution/spec-review wait waiver persists. Existing isolated clone.
   controls and process-observation-budget category; independent exact admission.
 - [x] T498 ONE original T498-original-off with same600/820/15, native73/0,
   original oracle, source/INPUT/native custody and uncapped remaining output.
-- [ ] T499 Complete archive and all remaining off-record/runtime/stage analysis;
+- [x] T499 Complete archive and all remaining off-record/runtime/stage analysis;
   honest full/off comparison; independent original/runtime outcome acceptance.
 - [ ] T500 Human report; exact admitted r62 heavy ZIP/leaf/new duplicate retirement,
   final independent documentation and exact source-only publication/recovery.
@@ -18,14 +18,14 @@ Coverage: OFF1->496/497/498; OFF2->497/498/499; OFF3->497/498/499;
 OFF4->497; OFF5->496/499/500; OFF6->499; OFF7->496/497/499/500.
 Order T496->497->498->499->500. No game rebuild/new seed/other cut/OS/new cache fix.
 
-Execution checkpoint: exact T497 admission accepted at metadata bb3285695,
-33pure/5syntax +44parser/2syntax +actual67/67selectedcontracts. ONE T498 run
-settled exit0; actualTRX PASS308.9104597s, command332.4545723s. Full native/outcome
-verification pending T499: source-defined JOINT_CRASH_STORAGE outer record exposed
-a parser defect. Versioned postsettlement repair, unchanged original13tools/claim,
-no rerun. V3 separately accepted after68controls+2syntax and actual-stream replay;
-outcome/native/runtime/original oracles PASS, archive148payloads allSHA/CRCverified,
-comparison complete. T498 complete; independent T499 outcome and T500 pending.
+Execution evidence: T497 exact admission at metadata bb3285695; 33pure/5syntax,
+actual67/67contracts. ONE T498 PASS308.9104597s, command332.4545723s, no rerun.
+Two external parser/source-fixture defects closed by separately reviewed v2/v3;
+68controls/2syntax and complete actual-stream replay. Original13tools/claim intact.
+T499 outcome/native/runtime/original oracles PASS; independently verified all148
+archive payloads/all136nativeJSON+2unknownlines; comparison -219.1913744s accepted.
+T500 exact retirement completed4files969983166B/177protectedbeforeafter, freshfull
+SHA/CRC and native-original preservation; final docs/publication still pending.
 
 # CRASH5 — revision62 unchanged repeat with external CPU/GC observation
 
