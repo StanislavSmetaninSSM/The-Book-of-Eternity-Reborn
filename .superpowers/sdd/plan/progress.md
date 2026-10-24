@@ -34,10 +34,15 @@ Added switch-off retirement, fixture/static timing and actual validation-suppres
 controls. SuppressValidationReuse made internal typed test entry without behavior
 change (no reflection); XMLfalse keyword corrected. Strict test-only ordinary path
 reuse metadata/env and producer/resumer phase counts added before final build.
-Actual impacted selection14 categories, no broad suite; off/on same-new-binary/
-INPUT original comparison planned to isolate benefit, each same600/820/15 and frozen
-passiveCPU/GC. No new INPUT/original yet. Next: final fresh8DLL/XML and selected
-checks/review. All raw D-only/noquotas, baseline8a backup retained.
+Actual impacted selection14 completed at2c86d6d2c: testsPASS/complete/bothcleanup;
+all8XML DLLs uniform. Strict control/retirement/timing/suppression and consumer
+race/cancellation/worker/source-fence cases pass. Exact distinct total in final
+receipt/report; no aggregate suite. Independent static reviewer no correctness
+finding, remaining minor Null XMLfixed here. Only this XML comment changed after
+functional verification; fresh final XML8DLL binding next, no redundant functional
+rerun justified. Final catalog/selection discovery still required. Same-new-binary/
+INPUT off/on original pair each600/820/15 to isolate measured benefit. No genuine
+newINPUT/original yet. D-only/noquotas; all baselinebackup/runtime/input protected.
 
 # r68 coherent block complete; final source-only closure
 

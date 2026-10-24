@@ -11,7 +11,7 @@ internal static class JointOrdinaryReadPathControl
     /// Parses a closed explicit cache comparison setting before fixture access.
     /// </summary>
     /// <param name="setting">
-    /// Null or exactly on enables the production default; exactly off selects fresh classification.
+    /// <see langword="null"/> or exactly on enables the production default; exactly off selects fresh classification.
     /// </param>
     /// <returns>
     /// <see langword="true"/> for production reuse; <see langword="false"/> for the fresh comparison route.
