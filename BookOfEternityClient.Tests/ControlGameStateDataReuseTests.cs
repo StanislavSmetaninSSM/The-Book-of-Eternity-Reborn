@@ -237,13 +237,13 @@ public sealed class ControlGameStateDataReuseTests(ITestOutputHelper output)
             () => new ValidationService(fixture.Files, NullLogger<ValidationService>.Instance).ValidateGameStateAsync(phase));
 
     /// <summary>
-    /// Creates a two-source snapshot with genuine hashes, current request and detached authority.
+    /// Creates a small snapshot with genuine hashes, current request and detached authority.
     /// </summary>
     /// <param name="fixture">
     /// The exclusively owned file fixture receiving the immutable before-images.
     /// </param>
     /// <returns>
-    /// Completion after the existing production authority builder publishes the fixture envelope.
+    /// Completion after constructing the real authority envelope and admitting the finalized fixture cohort.
     /// </returns>
     private static async Task PrepareControlSnapshotAsync(Fixture fixture)
     {

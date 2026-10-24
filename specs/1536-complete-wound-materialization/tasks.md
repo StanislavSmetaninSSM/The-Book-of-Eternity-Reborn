@@ -4,7 +4,7 @@ Issue #1536; spec GS1..6; plan.md. Owner's autonomous execution/review-wait waiv
 
 - [x] T506 Research selected phase/lease contracts; write canonical spec/plan/tasks,
   read-only consistency, baseline backup and remote-only recovery checkpoint.
-- [ ] T507 [US1] Cheap RED/GREEN selected-phase/real-snapshot fixtures, minimal
+- [x] T507 [US1] Cheap RED/GREEN selected-phase/real-snapshot fixtures, minimal
   existing-service adapter, typed fixture entry, XML docs, categories/selection.
 - [ ] T508 [US1] Independent coherent code/test/selection review; fresh XML builds,
   impacted checks and genuine new current-source42 INPUT; freeze/publish readiness.

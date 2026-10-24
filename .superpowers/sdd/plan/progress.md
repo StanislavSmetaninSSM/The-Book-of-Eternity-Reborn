@@ -1,3 +1,15 @@
+# r65 final behavior verified; documentation-only qualification and seed pending
+
+5ff05b8db fresh XML98.141/61.245s,8uniform DLLs. T508-final3affected
+categories72/72PASS, selection complete/owned/runtime cleanup PASS. Counter exact
+regression7general/0selected-fastPASS; both fresh fences retained. Prior unchanged
+mode/seed/package consumers passed in9a25053de218/218block. Distinct selected
+cases219 across evidence, not290 unique cases. Independent reviewer found no
+counter/fallback correctness issue; four narrow XML wording corrections now applied
+and require fresh build/source qualification (no behavior rerun warranted).
+T507 complete; T508 code acceptance/current-source genuine seed/readiness pending;
+T509/510 original A/B/archive/report/retention remain unrun. r64 evidence protected.
+
 # r65 WIP: selected218checks passed; declared-hit regression RED then correction
 
 9a25053de fresh XML85.619/53.179s,8uniform current DLLs. T508-corrected

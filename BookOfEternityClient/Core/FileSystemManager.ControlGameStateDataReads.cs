@@ -80,7 +80,7 @@ public partial class FileSystemManager
     /// Captures passive cumulative phase work, including failed calls, without running observers.
     /// </summary>
     /// <returns>
-    /// Per-phase elapsed wall time and actual implicit service hits; source verification remains included in time.
+    /// Per-phase elapsed wall time and returned service hits, with the selected implicit route counted separately.
     /// </returns>
     internal ControlGameStateStatistics CaptureControlGameStateStatistics() => new(
         new(Interlocked.Read(ref _clientControlCalls), Interlocked.Read(ref _clientControlHits), Interlocked.Read(ref _clientControlFastHits),
@@ -110,7 +110,7 @@ public partial class FileSystemManager
     /// Hits through the selected phase adapter that avoid the original ordinary reader entry.
     /// </param>
     /// <param name="ElapsedMilliseconds">
-    /// Summed wall time of those invocations, including entry and fresh source verification.
+    /// Summed wall time of those invocations; eligible phases include entry and fresh source verification.
     /// </param>
     internal readonly record struct ControlGameStatePhaseStatistics(long Calls, long SourceHits, long FastSourceHits, double ElapsedMilliseconds);
 
