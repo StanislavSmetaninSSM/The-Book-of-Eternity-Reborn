@@ -77,7 +77,7 @@ system load; one rerun cannot establish a causal cache regression.
   CPU/GC/export/lifecycle controls, independent helper review, exact launch admission.
 - [x] T493 CPUGC1..4/8: ONE same full Cut0/600/820/15 original without rebuild or
   seed generation; observe two exact native roles, preserve all raw data, settlement.
-- [ ] T494 CPUGC4/6: complete verified archive/every-row native analysis, compare
+- [x] T494 CPUGC4/6: complete verified archive/every-row native analysis, compare
   r61 and retained r60, CPU/GC coverage + observer costs; independent outcome review.
 - [ ] T495 CPUGC7..8: honest human result, exact accepted old-data/duplicate-stream
   retirement, final independent review and source-only publication/remote recovery.

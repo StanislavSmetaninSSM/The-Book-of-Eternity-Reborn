@@ -1,59 +1,51 @@
-# Current checkpoint: r62 original PASS; complete derivation pending
+# Current checkpoint: r62 original/outcome accepted; exact retention and final docs pending
 
-Issue #1536 CPUGC1..8 / T491..495, canonical spec/plan/tasks. Owner2026-10-24 approved
-ONE control repeat with CPU/GC observation; autonomous specification-review waiver.
-Base38e0459353329537aeb2ecbd221fe29964e162db verified against origin. Existing
-compiledsource1e6b947b7d9e64c1b5af7c2c7847426524463551, eight exact DLL copies and
-immutable source42 cleanup-proof-cache-v1 must remain unchanged; no game/test build
-or seed regeneration. Same600/820/15, full uncapped diag, C:SSD fixture/D:HDD output.
+Issue#1536 CPUGC1..8 / T491..495, canonical spec.md/plan.md/tasks.md. Owner approved
+ONE unchanged original repeat with external CPU/GC; autonomous review-wait waiver.
+Compiled source1e6b947b7d9e64c1b5af7c2c7847426524463551, measurement metadata
+ba34bb68a4b78f486db4f47ca50eb6eba8a667b4. Eight DLL/dependencycopies/nativepins
+and immutable source42 cleanup-proof-cache-v1 unchanged. No game/test rebuild,
+seed generation or second original. Same600/820/15, C:SSD/D:HDD, uncapped output.
 
-Investigation only: r61 passed494.5938554s vs r60434.6855800s. New DATA cache930hits,
-cleanupopens-240/attrs-2960/lease+170, no elapsedgain; systemic cause unknown.
-One repeat tests repeatability, not causal regression. Prior r61 fullZIP/leaf and
-small r60 comparisons remain protected until complete accepted replacement.
+T491..494 complete: actual pinned SpecKit plan/tasks/prerequisites, 8requirements/
+5tasks/0gaps; published/recovered source-only checkpoints026570fbf/557a82c35/
+ba34bb68a/a7ae7cd1e with38remote-onlyblobs/noalternates. Exact source/INPUT/observer
+admission before one-use T493; originalPASS1/1 case528.1018341s vs494.5938554s
+(+33.5079787), command556.342442s. Native73/0/PIDbirth/EOFjoin/originaloracle/
+owned+runtimecleanup PASS. Observer settled0.0446226s; complete runtime probe.
 
-Selected external retained Windows CPU handles bound to exact native PID/birth;
-1second .NET8 System.Runtime total-pause-time-by-gc using pinned D-local collector.
-Counter is increment/rate, not lifetime/percent. Startup/firstbaseline/finalpoll/EOF
-gaps remain unknown; no startup suspension or game launch command change.
-Tiny native manifests support discovery; initial Identity is null, so handle only
-actual birth-bound capture/owner evidence and validate against final original native
-outcome. No broad process kill or machine security setting change.
+Every144archivepayloadSHA/CRC and all14753018timingevents verified; producer
+5339788events2669885closed18authinterrupted, resumer9413230/4706615/0. ALL609/563
+namedcounts identical to r61. Producerlastcollector162.8344123->190.6383047s
+(+27.8038924), resumer308.2444287->308.6029988(+.3585701). Producerdiag
+43.3390328->53.8491168(+10.510084), GetAttributes53.9408924->62.868913(+8.9280206)
+with1013910calls. Resumerdiag81.6162218->81.0817392, attrs85.2102482->85.888878
+with1434046calls. Nested/inclusive/differentorigin times not added; negative
+cleanupadjustedresidual-.8214259 retained. No system cause/cache regression inferred.
 
-T491 complete: actual pinned plan/tasks/prerequisites phases, 8requirements/5tasks,
-0consistencygaps; all8DLL/native/inputhashes matched. Published026570fbf0f64da634beb8900af715dfaaf66f92
-and freshremote-only38blob/noalternates recovery passed. T492 helpers must
-pass synthetic + short separate .NET8 tooling controls and independent review before
-ONE T493 launch. Current Droot D:/BoeDiagnostics/repeat-cpu-gc-r62-20261024.
-Parent owns metadata/runner integration, existing actualSol6.1/high helper tools only,
-separate actualAstra/high independent review; no shared-file edits or heavy live
-analysis. PinnedCLI8.0.547301 installed onlyonD; its exports omitIntervalSec. Separate
-.NET8 raw-counter tooling wrapper preserves exactincrements/intervals. Cheap
-controls/toolimplementation in progress; no game rebuild/seedgen/originallaunch.
-T492 parentpreflight:31evidence/gate/environment/interruptioncontrolsPASS,
-4syntaxchecks; exact launch environment is checked; BaseException settles owned
-observers and final receipt precedes rethrow. No claim/launchcreated.
-Rawcounterwrapper+shorttoolingfixture compile separately onD withXMLdoc; observer
-syntheticcontrols pass; realnormal/abruptfixture controls are being frozen.
-Independent preliminary review found CPU final-sample ordering race and incorrect
-retained composite metadata attribution; both have causal controls/corrections.
-Pinned CLI exports raw Increment, not normalized values: source plus all9actual
-CLI/raw samples agree; IntervalSec is omitted. Earlier contrary wording corrected.
-Raw wrapper adds exact interval/payload and IPC instance-birth checks. Postsettlement
-adapters preserve r61strictparser/retainedattribution; runtime schema pendingfreeze.
+CPUfinal producer184.84375s(user60.78125/kernel124.0625), resumer310.328125s
+(user143.03125/kernel167.296875), birth-bound retained handles afterexit. Delivered
+GC763.671ms/190samples and4470.498ms/309samples; startup/baseline/unpublishedtail
+remain unknown. ObserverthreadCPU.59375s, collectorCPU1.640625/1.578125s; EventPipe
+inside-game effect not separately measured. PinnedCLI exports rawIncrement (not
+normalized), omitsIntervalSec; source+actualsample comparison corrected earlier
+claim. Externalwrapper preserves fullpayload/interval and IPCinstancebirth.
 
-T492 accepted independently with zero unresolved findings; actual frozen helper,
-source and reused INPUT gates in new T492-independent-review.json. T493 ONE actual
-original PASS1/1 at measured metadata ba34bb68a4b78f486db4f47ca50eb6eba8a667b4:
-case528.1018341s, command556.342442s, observer settlement0.0446226s. Original
-native73/0 and ownership/identity/oracle cleanup passed; RuntimeProbeComplete and
-InvestigationComplete true in the outcome (every-row derivation still pending).
-External final CPU producer184.84375s(user60.78125/kernel124.0625),
-resumer310.328125s(user143.03125/kernel167.296875). Delivered GC increments
-763.671ms/190samples and4470.498ms/309samples; startup/baseline/unpublishedtail
-remain unknown. Observer thread CPU0.59375s; collector CPU1.640625/1.578125s.
-Case +33.5079787s versus r61; no cause or cache regression inferred. T494 full
-archive/every-row analysis running; no second original. T495/retirement pending.
+ActualSol6.1/high bounded helper ownership and separate actualAstra/high review
+retained. Review closed real CPUfinalordering, interruption/environment and retained
+composite-attribution issues with causal/negative controls before full launch;
+fresh missing binding receipt added. No savings inferred from routing. T492 immutable
+review7DF42E31..., T494 independent outcome6BA919EA... accepted0findings, full
+archive verificationF23A0135... and analysisEC238983... . T495 exact4file retirement
+and final human docs review pending; no measurement deletion performed yet.
+
+Droot D:/BoeDiagnostics/repeat-cpu-gc-r62-20261024. ZIP416560557B/144members/
+5450205421rawB SHA B4C4BA13B773EE18AAA9E103AD34E69A37943C0FBAD58BE0B893EE24B2563980.
+LeafSHA04BAA63B5AC8E5354DC92C2291CCA8B77EA9D2443304453F94704ECB7561F580.
+Human report specs/1536-complete-wound-materialization/T495-repeat-cpu-gc-measurement.md.
+Newestarchive/leaf/runtimeoriginals/compactcomparison/INPUT/r51 protected; oldr61
+ZIP/leaf remain until exact independent retention admission. Git receives only
+human/canonical documents; no raw/log/generatedanalysis uploads.
 
 # Previous accepted r61 checkpoint
 

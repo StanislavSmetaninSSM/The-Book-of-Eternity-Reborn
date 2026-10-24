@@ -9,7 +9,7 @@ runtime observations; autonomous review-wait waiver, existing isolated clone.
   collector, synthetic and cheap real tooling controls; independent exact admission.
 - [x] T493 ONE original full600/820/15 Windows Cut0, same DLL/INPUT and original
   assertions/native73/0/identity/EOF/join/owned cleanup, full uncapped runtime output.
-- [ ] T494 Complete archive/every-row comparison against r61/r60; CPU/GC interval
+- [x] T494 Complete archive/every-row comparison against r61/r60; CPU/GC interval
   coverage, observer costs, honest repeatability findings; independent outcome review.
 - [ ] T495 Human findings and exact admitted old-data/duplicate-stream replacement;
   independent final review, source-only publication and exact remote recovery.
