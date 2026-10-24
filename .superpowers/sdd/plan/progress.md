@@ -40,7 +40,10 @@ T503-affected seven explicit categories247/247PASS,18new cheap cases including
 real junction/wrong native handle and ambient callback; all planned counts/cleanup
 complete. Latest200call measurement4400->2000queries,.3067116->.1741372s.
 Astra/high source findings corrected; exact final INPUT/ready/outcome review pending.
-No original launched. Two additional narrow existing five-cut/package controls
+No original launched. T503-package-controls49/49PASS; genuine current-source42
+generator1/1PASS, command180.19s. Original fingerprint/hashes verified on82files/
+513713B, current-source package kept on D only. Final independent ready review
+pending before two controls. Two additional narrow existing five-cut/package controls
 selected for external package adoption. Broad source fingerprint unchanged.
 Parent implementation owner; separate independent review mandatory, latest user
 model routing supersedes repository's historical standing Astra/XHigh exception.
