@@ -1,4 +1,4 @@
-# r69 planning WIP — ordinary-read preparation positive-directory DATA
+# r69 coherent block complete; final source-only closure
 
 Issue#1536/base7d507b511; source remote SHA verified before edits. Owner accepts
 recommended next large cache candidate and standing autonomous review-wait waiver.
@@ -55,10 +55,22 @@ newcreation.099981s, fullphase28.006194inclusive notoverhead; prep+3.0075141s ve
 admission-6.7076858s. Resumerkernel-8.375/user+4.71875CPU. Win is real butmodest,
 no100s/no universalbenchmark claim. Both native/oracles/cleanup/runtime PASS;
 independent66ZIPmembers/292JSON+4text/all563comparisonrows verified.
-T530 humanreport written; coherentreport/exactretention review pending, no deletion.
-Latest user requests further largecache investigation AFTER this block, using fresh
-measurements; next scope is read-only callers/cache-hit/fences audit, not production
-verdict caching. Preserve allCPU-GC/INPUT/instrumentation/binarybackups; raw D-only.
+T530 complete: report97AD2BB3.../same-source measured2.15%first and2.36%whole,
+independent outcome Accepted303D9FD0.../0unresolved;160currentarchive members
+verified. Exactretention135Dleaves93,394,365B removed,785protected unchanged and
+currentarchives unchanged. Oldr68originalZIP+verifiedlatestduplicates retired;
+allCPU-GC/INPUT/instrumentation/binary backups remain. Finalsource-only publication
+and narrowmechanicalclosure bind unchangedreport/qualified227/120readyrefs.
+All5r69 tasks complete, no raw inGit/no quotas/no native/schema/GM changes.
+
+Routing checkpoint: parentowned coherentcode/TDD/measurement; independentcomplex
+Astra/high found no productioncorrectnessdefect, requested focusedeligibility tests,
+fixed2XMLkeyword comments and one strict-analyzerBoolean evidence gap. One compile
+name collision corrected. Functional380 executedonce, XML-onlyqualification reran
+builds nottests; originals wereonefrozen off/onpair. No invented productivitygain.
+Latest user explicitly requests AFTER closingthisblock to measure/analyze further
+largecachecandidates. Nextscope read-only callers/knownDATAhits/freshfence audit using
+latest563timers; no further productionchange authorized by currentresults alone.
 
 # r68 coherent block complete; final source-only closure
 

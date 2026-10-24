@@ -13,7 +13,7 @@ Issue#1536; spec PATH1..7 / plan.md. Continuing autonomous review-wait waiver.
   source42/twoimports, frozen provenance/budgets/CPU-GC/passive admission review.
 - [x] T529 [US2] Conditional same-new-binary/INPUT off/on originals, each600/820/15, with phase DATA reuse,
   first-window timers and all original oracles/native/cleanup/runtime reconciled.
-- [ ] T530 [US2] T530-ordinary-read-path-data.md honest findings; independent
+- [x] T530 [US2] T530-ordinary-read-path-data.md honest findings; independent
   outcome/exact-retention/source-only final publication and remote recovery.
 
 T526->527->528->529->530. PATH1/2/3->527/528; PATH4->527/528;
