@@ -7,7 +7,7 @@ autonomous execution/spec-review wait waiver persists. Existing isolated clone.
   consistency; explicit two-category selection; source-only publish/recovery.
 - [x] T497 External off preflight/runner/parser/archive helpers, cheap pure
   controls and process-observation-budget category; independent exact admission.
-- [ ] T498 ONE original T498-original-off with same600/820/15, native73/0,
+- [x] T498 ONE original T498-original-off with same600/820/15, native73/0,
   original oracle, source/INPUT/native custody and uncapped remaining output.
 - [ ] T499 Complete archive and all remaining off-record/runtime/stage analysis;
   honest full/off comparison; independent original/runtime outcome acceptance.
@@ -23,7 +23,9 @@ Execution checkpoint: exact T497 admission accepted at metadata bb3285695,
 settled exit0; actualTRX PASS308.9104597s, command332.4545723s. Full native/outcome
 verification pending T499: source-defined JOINT_CRASH_STORAGE outer record exposed
 a parser defect. Versioned postsettlement repair, unchanged original13tools/claim,
-no rerun. T498 remains open until its complete original/custody oracles are parsed.
+no rerun. V3 separately accepted after68controls+2syntax and actual-stream replay;
+outcome/native/runtime/original oracles PASS, archive148payloads allSHA/CRCverified,
+comparison complete. T498 complete; independent T499 outcome and T500 pending.
 
 # CRASH5 — revision62 unchanged repeat with external CPU/GC observation
 

@@ -68,7 +68,10 @@ or source optimization is authorized by this measurement.
   acceptance pending source-defined JOINT_CRASH_STORAGE parser correction.
   Preserve original13tools/claim and add separately reviewed versioned analysis;
   include correction/tools/controls/review in the new archive. No original rerun.
-- [ ] T498 OFF1..3: ONE original-off with unchanged DLL/INPUT/oracles/budgets.
+- [x] T498 OFF1..3: ONE original-off with unchanged DLL/INPUT/oracles/budgets.
+  ActualTRX PASS308.9104597s; v3 source-backed external repairs separately admitted,
+  68controls/2syntax and complete actual-stream replay. Alloriginal/native/runtime
+  oracles PASS; archive148payloads SHA/CRCverified; T499 independent outcome pending.
 - [ ] T499 OFF2/3/6: full capture/every payload/every remaining record analysis,
   runtime/stage/elapsed comparison against r62; independent outcome acceptance.
 - [ ] T500 OFF5/7: human findings, exact admitted older raw/leaf/duplicate retirement,

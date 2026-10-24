@@ -1,4 +1,17 @@
-# Current checkpoint: r63 original OFF PASS; complete outcome verification pending
+# Current checkpoint: r63 complete original/analysis PASS; independent outcome pending
+
+Versioned v3 corrected two external parser/source-contract omissions: outer
+JOINT_CRASH_STORAGE framing and real abrupt producer exit/enter before native73.
+68controls/2syntax and source/real-stream replay passed; separate v2/v3 review
+gates accepted. Original13tools/claim/T497 review unchanged. Outcome confirms all
+original/native73/0/oracle/closedrecovery/runtime/cleanup contracts, no issues.
+Archive148files/82955604rawB/31898224zipB SHA B37E4D0078486850F5DCC0F042373DB726000590550A7D1916DB0DA697F00913,
+allpayloadSHA/CRC and archivednative/runtime replay PASS. Full/off528.1018341→
+308.9104597s (-219.1913744s), firstresume186.4575919s/repeat.9375692s.
+T496/497/498 complete; T499 independent outcome and T500 still pending. Oldr62
+heavy evidence not deleted. Human report includes honest further-cache opinion.
+
+## Earlier execution checkpoint
 
 T497 independent exact admission accepted at bb3285695bc0824fdd237d2fa4cc1e6a1771c601
 with zero unresolved findings. ONE T498-original-off settled exit0; actualTRX
