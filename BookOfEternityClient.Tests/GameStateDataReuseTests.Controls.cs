@@ -127,6 +127,22 @@ public sealed partial class GameStateDataReuseTests
         fixture.WriteRaw("game_state/control/pending_turn_snapshot.json", manifest.ToJsonString());
         fixture.WriteRaw("input/turn_request.json",
             "{\"sessionId\":\"session\",\"requestId\":\"request\",\"turnNumber\":42,\"timestamp\":\"time\",\"playerAction\":\"action\"}");
-        await PendingTurnSnapshotTestAuthority.WriteAuthorityForManifestAsync(fixture.Files, manifest);
+        var options = new JsonSerializerOptions
+        {
+            DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        };
+        static Dictionary<string, string> Map(JsonObject value, string key) => value[key]!.AsObject()
+            .ToDictionary(pair => pair.Key, pair => pair.Value!.GetValue<string>());
+        var authority = PendingTurnSnapshotAuthority.CreateDetachedAuthorityJson(manifest, options,
+            m => m["manifestPayloadHash"]!.GetValue<string>(), (m, h) => m["manifestPayloadHash"] = h,
+            m => m["sessionId"]!.GetValue<string>(), m => m["requestId"]!.GetValue<string>(), m => m["turnNumber"]!.GetValue<int>(),
+            m => Map(m, "files"), m => Map(m, "snapshotFileHashes"), m => Map(m, "clientOwnedValidationHashes"),
+            m => m["rollbackBaselineFiles"]!.AsArray().Select(n => n!.GetValue<string>()),
+            m => m["sourceLabel"]!.GetValue<string>(), m => Map(m, "rollbackBackups"),
+            p => File.ReadAllBytes(fixture.RawPath(p)), hashSnapshotBytesExactly: true);
+        fixture.WriteRaw(PendingTurnSnapshotAuthority.AuthorityPath, authority);
+        await using var admitted = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
     }
 }
