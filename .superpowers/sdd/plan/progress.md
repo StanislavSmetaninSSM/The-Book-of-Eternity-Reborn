@@ -1,3 +1,16 @@
+# r65 WIP: selected218checks passed; declared-hit regression RED then correction
+
+9a25053de fresh XML85.619/53.179s,8uniform current DLLs. T508-corrected
+6categories218/218PASS, all counts complete and owned/runtime cleanup PASS.
+New13controls PASS: selected ClientOwned .392027vs3.910720s /32fast hits;
+Realm .288495vs.799870s /15fast hits. Cheap fixture effect only, no original claim.
+Independent delta review found declared-lease fast-hit counter omission. New exact
+regression87eb28a6b compiled24.684s;14cases13PASS/1FAIL, expected7hits/actual0.
+Counter centralized at final guarded cache-return boundary with explicit selected
+implicit identity; removes duplicate outer count. General Read/ReadAsync counts
+retained. Final XML/shared-source verification and review acceptance pending.
+No original/seed generation started; r64 complete baseline retained unchanged.
+
 # r65 WIP: independent review corrections; final cheap verification pending
 
 Candidate c4960f103 XML builds90.261/53.083s PASS,8uniform DLLs. First GREEN

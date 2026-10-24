@@ -488,7 +488,7 @@ public partial class FileSystemManager
                 RequireOpen();
                 if (!ReferenceEquals(_generationLease, lease) || !_declaredRoutes.TryGetValue((path, asynchronous), out key!)) return false;
             }
-            return TryReadCachedSnapshot(lease, key, "LeaseDataHit", out snapshot);
+            return TryReadCachedSnapshot(lease, key, "LeaseDataHit", selectedGameState: false, out snapshot);
         }
 
         /// <summary>
@@ -523,7 +523,7 @@ public partial class FileSystemManager
                 RequireOpen();
                 if (!ReferenceEquals(_generationLease, lease) || !_keys.TryGetValue((path, family, false), out key!)) return false;
             }
-            return TryReadCachedSnapshot(lease, key, "GameStateDataHit", out snapshot);
+            return TryReadCachedSnapshot(lease, key, "GameStateDataHit", selectedGameState: true, out snapshot);
         }
 
         /// <summary>
@@ -538,6 +538,9 @@ public partial class FileSystemManager
         /// <param name="timingPrefix">
         /// Named diagnostic family distinguishing declared and selected implicit DATA requests.
         /// </param>
+        /// <param name="selectedGameState">
+        /// Whether this hit belongs to the selected implicit GameState adapter rather than a declared lease reader.
+        /// </param>
         /// <param name="snapshot">
         /// Detached service DATA on a hit; otherwise, <see langword="null"/>.
         /// </param>
@@ -546,7 +549,7 @@ public partial class FileSystemManager
         /// never computes source data or supplies filesystem authority.
         /// </returns>
         private bool TryReadCachedSnapshot(CanonicalWriteLease lease, SourceKey key, string timingPrefix,
-            out CanonicalFileReadSnapshot? snapshot)
+            bool selectedGameState, out CanonicalFileReadSnapshot? snapshot)
         {
             snapshot = null;
             if (!EnterRead(lease)) return false;
@@ -577,6 +580,7 @@ public partial class FileSystemManager
                         _closingLease != null || !ReferenceEquals(root, _rootVersion))
                         throw new InvalidOperationException("The cached DATA owner lost its original live root.");
                     snapshot = result.Value;
+                    _files.RecordControlGameStateSourceHit(fast: selectedGameState);
                     return true;
                 }
             }
