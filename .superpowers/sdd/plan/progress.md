@@ -1,3 +1,34 @@
+# Current checkpoint: r62 unchanged original repeat preparation
+
+Issue #1536 CPUGC1..8 / T491..495, canonical spec/plan/tasks. Owner2026-10-24 approved
+ONE control repeat with CPU/GC observation; autonomous specification-review waiver.
+Base38e0459353329537aeb2ecbd221fe29964e162db verified against origin. Existing
+compiledsource1e6b947b7d9e64c1b5af7c2c7847426524463551, eight exact DLL copies and
+immutable source42 cleanup-proof-cache-v1 must remain unchanged; no game/test build
+or seed regeneration. Same600/820/15, full uncapped diag, C:SSD fixture/D:HDD output.
+
+Investigation only: r61 passed494.5938554s vs r60434.6855800s. New DATA cache930hits,
+cleanupopens-240/attrs-2960/lease+170, no elapsedgain; systemic cause unknown.
+One repeat tests repeatability, not causal regression. Prior r61 fullZIP/leaf and
+small r60 comparisons remain protected until complete accepted replacement.
+
+Selected external retained Windows CPU handles bound to exact native PID/birth;
+1second .NET8 System.Runtime total-pause-time-by-gc using pinned D-local collector.
+Counter is increment/rate, not lifetime/percent. Startup/firstbaseline/finalpoll/EOF
+gaps remain unknown; no startup suspension or game launch command change.
+Tiny native manifests support discovery; initial Identity is null, so handle only
+actual birth-bound capture/owner evidence and validate against final original native
+outcome. No broad process kill or machine security setting change.
+
+T491 plan/tasks/setup phases and consistency being completed. T492 helpers must
+pass synthetic + short separate .NET8 tooling controls and independent review before
+ONE T493 launch. Current Droot D:/BoeDiagnostics/repeat-cpu-gc-r62-20261024.
+Parent owns metadata/runner integration, existing actualSol6.1/high helper tools only,
+separate actualAstra/high independent review; no shared-file edits or heavy live
+analysis. No original/rebuild/collector installation has run yet.
+
+# Previous accepted r61 checkpoint
+
 # Current checkpoint: r61 measured DATA reuse; final source/outcome/retention accepted
 
 Issue#1536 CLEAN_CACHE1..8 / T485..490; canonical spec/plan/tasks. Owner explicitly

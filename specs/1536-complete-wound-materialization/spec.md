@@ -1,3 +1,72 @@
+# CRASH5 — revision62 one unchanged original repeat with external CPU/GC observation
+
+Source issue: #1536. Owner2026-10-24 approved one control repeat after r61
+494.5938554s versus r60434.6855800s. Deliverable is an investigation and honest
+comparison, not another cache change. Autonomous execution and explicit
+specification-review wait waiver persist. Base38e0459353329537aeb2ecbd221fe29964e162db;
+compiled source1e6b947b7d9e64c1b5af7c2c7847426524463551.
+
+- CPUGC1: Execute ONE additional actual Windows Cut0 testcase using the exact
+  existing eight qualified DLL/dependency copies and immutable source42 cleanup
+  proof INPUT. Verify their hashes, source closure and retained qualification;
+  no game/test rebuild, new seed generation, source/selector/assertion changes,
+  old result relabeling, or repeat of consumed r61 atomic launch claims.
+- CPUGC2: Preserve the same native launch command/lifecycle, original oracle and
+  600second child /820second shared /15minute category limits, native73/0,
+  PID/birth/EOF/join/owned/runtime cleanup. C:SSD fixture and D:HDD full diagnostics
+  remain. No diagnostic record/byte caps, large live trace reads, hashing/archive
+  work or other agent-owned heavy jobs during the timed case. No startup suspension.
+- CPUGC3: Observe each native child's CPU externally via a retained Windows
+  QUERY_LIMITED_INFORMATION|SYNCHRONIZE handle, exact PID plus verified birth from
+  tiny child manifests or exact owner-bound discovery, finally matched to the
+  original native capture/outcome. Preserve user/kernel CPU and final lifetime
+  totals after exit, sample timestamps and failures. Never infer CPU as wall-minus-GC
+  or use PID alone. Record the external collectors' own measured CPU/overhead too.
+- CPUGC4: Collect .NET8 System.Runtime total-pause-time-by-gc externally at 1second
+  intervals with a pinned D-local diagnostics tool. Treat this IncrementingPollingCounter
+  according to its interval-increment/rate export semantics in milliseconds,
+  not absolute lifetime totals or percent time-in-gc. Preserve actual interval
+  duration where needed; never sum a normalized rate as if it were milliseconds. Keep all original counter output and attach/first/last/exit evidence.
+  Startup/baseline/final-unpublished/abrupt-EOF gaps stay unknown; missing samples
+  are never zero and overlapping GC/CPU/wall/diagnostic times are not added.
+- CPUGC5: Prove observer/export/parser behavior first on cheap synthetic controls
+  and an independent short .NET8 allocation/forced-GC fixture outside the repository.
+  A diagnostic fixture/tool build on D: is allowed; game assemblies remain byte
+  identical. Cover identity mismatch, child exit, real positive pause increments,
+  units/schema, startup baseline, incomplete intervals and owned observer cleanup.
+  Independent review must admit exact helpers and one-use repeat preflight before
+  the original launch; no global tracing/privilege/security-setting changes.
+- CPUGC6: Keep native timings and compare every record against r61 and retained
+  r60 compact evidence: actual testcase vs command duration, per-role named counts,
+  major inclusive phases, file probes, diagnostic build/write costs, and CPU/GC
+  observations with explicit coverage. Quantify repeatability without declaring
+  cache regression or a system cause from one additional run. Added observers may
+  perturb timing; absent historical CPU/GC prevents direct historical subtraction.
+- CPUGC7: Keep the previous complete r61 ZIP/leaf until the new capture, complete
+  every-row derivation and owned cleanup are verified and independently accepted.
+  Then retire only exact superseded heavy raw/leaf and current duplicate native
+  streams under D:, retaining newest full evidence, runtime counter originals,
+  compact comparisons, immutable INPUT and reusable r51 instrumentation backup.
+  No recursive deletion or game/fixture/source removal.
+- CPUGC8: Canonical Spec Kit phases/consistency, source-only checkpoint publication
+  and remote recovery precede the long repeat. Final independent outcome/retention
+  review and verified final publication close the investigation. Git receives
+  documentation/specs/source only; raw counters/logs/generated analyses stay on D:.
+  A successful game test with missing CPU/GC is reported as an incomplete probe.
+
+Approaches: selected external, birth-bound CPU plus standard .NET8 interval pause
+counter preserves exact game assemblies. In-process instrumentation would require
+rebuilding the game and change the agreed comparison; a repeat without runtime
+observations cannot address the CPU/GC question. Neither is selected. One repeat
+is approved, not an A/B series or production implementation. GM/gameplay/schema
+contracts are unchanged; Mortal World/afterlife prompts/examples need no update.
+
+Research decisions: dotnet-counters is not currently installed; install a pinned
+supported version only in D:/BoeDiagnostics tooling after the plan/consistency
+phase. .NET8.0.31 is installed and exposes the required counter. Exact CLI export,
+attach/exit handling and counter first-poll semantics must pass T492 controls before
+launch. No zero-coverage substitution or startup diagnostic suspension is allowed.
+
 # CRASH5 — revision61 cleanup completed-proof/history DATA reuse
 
 Source issue: #1536. Owner 2026-10-24 requests existing-service caching of repeated

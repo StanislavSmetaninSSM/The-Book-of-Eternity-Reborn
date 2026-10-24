@@ -1,3 +1,84 @@
+# CRASH5 — revision62 controlled unchanged original repeat plan
+
+> Execute canonical tasks with Superpowers executing-plans, cheap observer controls,
+> and separate independent Astra/high review. Spec: spec.md CPUGC1..8, issue #1536.
+
+Goal: one repeated r61 original with external CPU/GC evidence; no production fix.
+Architecture: existing category runner/native process lifecycle remains untouched.
+A D-local Python orchestrator holds birth-verified Windows process handles and
+attaches a pinned standard .NET counter collector only to its two native children.
+Tech: Python/ctypes Win32, .NET8 System.Runtime EventCounters, pinned dotnet-counters
+under D:, existing r61 helpers adapted for a NEW r62 run/claim/output identity.
+Reuse the current isolated clone/branch. No game/test build or new source42.
+
+Research / alternatives: r61 original494.5938554s, r60434.6855800s; producer all named
+counts identical but slower, so one rerun tests repeatability rather than proving
+cache regression. .NET8.0.31 exposes total-pause-time-by-gc backed by
+GC.GetTotalPauseDuration, an IncrementingPollingCounter with a reset baseline.
+The old time-in-gc percentage is not the requested pause duration. External tooling
+is not installed yet; select one exact stable official version and validate its
+actual export/schema/normalization in T492. An internal game change/rebuild would
+invalidate the agreed comparison. Full startup GC coverage requires suspension,
+which is excluded. All gaps and observer perturbation remain explicit.
+
+External file responsibilities (D:/BoeDiagnostics/tools, no Git diagnostics):
+- r62_runtime_observer.py: narrow child discovery, birth-verified retained Win32
+  query/synchronize handles, 1second CPU snapshots and final lifetime totals;
+  exact collector ownership/start/exit accounting and small identity manifests.
+- r62 runtime collector/parser helpers: pinned installed tool identity, one
+  System.Runtime pause counter, raw output and validated increment/rate units,
+  coverage/failure data. Never fabricate data from absent intervals.
+- validate_r62_runtime_observer.py plus separate D-local .NET8 diagnostic fixture:
+  synthetic lifecycle/export cases and real positive CPU/GC, identity mismatch,
+  final CPU after exit and normal/abrupt observer shutdown. Fixture build cannot
+  touch game sources/output directories.
+- r62 preflight/runner: retain exact r61 binding/qualification/INPUT references
+  with their original source attribution, current clean metadata HEAD and fresh
+  remote recovery. One new exclusive claim/launch for T493-original-full only.
+  Existing r61 claims/results and DLL/source closure cannot be rewritten.
+- r62 outcome/archive/all-row derivation/comparison: same independently reviewed
+  r61 parser strictness, native identities and authenticated interruption; include
+  every runtime raw file in the new full archive and record executed helper hashes.
+- r62 retention helper: frozen exact-file replacement plan after complete accepted
+  outcome; newest archive/leaf/counter originals retained, old r61 compact tables
+  and exact baseline hashes protected. No deletion before independent admission.
+
+Canonical repo edits only spec.md, plan.md, tasks.md, existing progress checkpoint,
+then one human T495 result report. No public/game API or contract, GM prompt,
+selector, category, timeout, native source or immutable INPUT changes.
+
+Constitution check: tracked #1536; no game/state authority changes; same approved
+category only, independent mutable game fixture, uncapped local diagnostics;
+source-only persistence and independent review retained. External fixture is tooling,
+not a substitute for the actual original. No broad suite or OS privilege change.
+
+Review focus: capture identity initially null; read only complete small manifests,
+use narrow owner/argv checks for any fallback, bind CPU handle birth to final native
+identity. Original native lifecycle must not wait for observers. GC CounterType and
+normalization/IntervalSec must match real exporter. Unknown startup/tail isn't zero.
+Observer process shutdown cannot target game processes or use broad process kills.
+External CPU is cumulative kernel+user, not GC-adjusted wall time. Separate clocks,
+GC/CPU/observer/inclusive scopes are not additive. Additional observers change total
+system load; one rerun cannot establish a causal cache regression.
+
+- [ ] T491 CPUGC1..8: audit retained source/DLL/INPUT and existing native hooks;
+  write canonical specification/plan/tasks via actual pinned Spec Kit phases,
+  consistency check; publish/recover new checkpoint before tool implementation.
+- [ ] T492 CPUGC3..5/8: implement external observation/preflight/derivation helpers;
+  install one exact official collector only on D:; synthetic + cheap real .NET8
+  CPU/GC/export/lifecycle controls, independent helper review, exact launch admission.
+- [ ] T493 CPUGC1..4/8: ONE same full Cut0/600/820/15 original without rebuild or
+  seed generation; observe two exact native roles, preserve all raw data, settlement.
+- [ ] T494 CPUGC4/6: complete verified archive/every-row native analysis, compare
+  r61 and retained r60, CPU/GC coverage + observer costs; independent outcome review.
+- [ ] T495 CPUGC7..8: honest human result, exact accepted old-data/duplicate-stream
+  retirement, final independent review and source-only publication/remote recovery.
+
+Dependencies: T491 -> T492 -> T493 -> T494 -> T495. Helper ownership can run in
+parallel with parent metadata/preflight integration, never shared-file edits.
+Original execution and archive/analysis/deletion remain sequential. User authorizes
+one repeat; do not autonomously start an A/B series after this investigation.
+
 # CRASH5 — revision61 cleanup completed-proof/history DATA reuse plan
 
 > Execute canonical tasks with Superpowers writing-plans, TDD and inline
