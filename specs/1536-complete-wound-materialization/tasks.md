@@ -6,7 +6,7 @@ Issue #1536; spec GS1..6; plan.md. Owner's autonomous execution/review-wait waiv
   read-only consistency, baseline backup and remote-only recovery checkpoint.
 - [x] T507 [US1] Cheap RED/GREEN selected-phase/real-snapshot fixtures, minimal
   existing-service adapter, typed fixture entry, XML docs, categories/selection.
-- [ ] T508 [US1] Independent coherent code/test/selection review; fresh XML builds,
+- [x] T508 [US1] Independent coherent code/test/selection review; fresh XML builds,
   impacted checks and genuine new current-source42 INPUT; freeze/publish readiness.
 - [ ] T509 [US2] Two original Windows Cut0 controls with only phase reuse off/on,
   same new DLL/INPUT, directory cache on,600/820/15/oracles/native ownership unchanged.

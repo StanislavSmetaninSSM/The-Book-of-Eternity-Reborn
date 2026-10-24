@@ -1,3 +1,16 @@
+# r65 T508 complete: exact original pair independently admitted
+
+Qualified code1fc4e7cfc unchanged,219distinct cheap checks plus genuine generator
+PASS. Frozen ready SHA56AAEEBAE4B84006CBBACB076334F4ADCA5C8FE018F53C0B3AA0662158B1E1A9;114references
+independently verified,82payload files513709B and all current8DLLs match.
+Astra/high separate review Accepted,0unresolved; reviewSHA
+346BEE668C6B8D6958328C4C6EB56DC005A4ABDC8DFBB28521EE97F194688A48.
+T509 will run sequential sameDLL/INPUT newcontrol off/on, directory cache onboth,
+detailed timers offboth, native/original oracles and600/820/15 unchanged.
+This is a docs-only post-admission checkpoint; frozen metadata aeb28caa0 and
+ready/tools/code/input remain immutable. No original launched yet. No diagnostics
+quota; D-only output, prior complete r64 retained until independent outcome review.
+
 # r65 current-source INPUT qualified; freeze original readiness next
 
 T508-genuine-source42 PASS1/1, command182.376s; genuine source42 and two independent
