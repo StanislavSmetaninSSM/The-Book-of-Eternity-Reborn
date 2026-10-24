@@ -54,6 +54,8 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// An unset <c>BOE_TEST_JOINT_CRASH_PARENT</c> retains repository-parent storage; a provided value must be absolute.
     /// Validates optional BOE_TEST_DIAGNOSTIC_ROOT configuration before creating the disposable fixture.
     /// BOE_TEST_JOINT_TIMINGS defaults to full; an explicit off value omits only detailed timing observation.
+    /// BOE_TEST_JOINT_SEED_ARTIFACT optionally selects an external genuine current-source artifact through ordinary fingerprint validation.
+    /// BOE_TEST_JOINT_ADMISSION_CACHE optionally selects the restricted fresh-classifier comparison.
     /// </summary>
     /// <param name="cut">
     /// The original cut index from zero through four.
@@ -68,13 +70,18 @@ public sealed partial class GameEngineTurnLifecycleTests
             throw new InvalidDataException("The diagnostic crash parent must be an absolute path when provided.");
         _ = JointChildOutputCapture.ResolveDefaultArtifactParent();
         var observationMode = JointInterfaceCrashObservation.Parse(Environment.GetEnvironmentVariable("BOE_TEST_JOINT_TIMINGS"));
+        var seedArtifact = Environment.GetEnvironmentVariable("BOE_TEST_JOINT_SEED_ARTIFACT");
+        if (seedArtifact is not null && !Path.IsPathFullyQualified(seedArtifact))
+            throw new InvalidDataException("An external source42 artifact must have an absolute path.");
+        var reuse = JointAdmissionDirectoryControl.Parse(Environment.GetEnvironmentVariable("BOE_TEST_JOINT_ADMISSION_CACHE"));
         return RunJointInterfaceActualProcessLossAsync(cut,
             extendedWindowsCrash: true,
-            seedPackageRoot: Path.Combine(TestRepoPaths.RepoRoot, "specs", "1536-complete-wound-materialization",
-                "fixtures", "joint-interface-source42-cleanup-proof-cache-v1", "package"),
+            seedArtifactPath: seedArtifact,
+            seedPackageRoot: seedArtifact is null ? Path.Combine(TestRepoPaths.RepoRoot, "specs", "1536-complete-wound-materialization",
+                "fixtures", "joint-interface-source42-cleanup-proof-cache-v1", "package") : null,
             seedUsage: JointInterfaceSeedCrashInput.OrdinaryWindowsFiveCutsUsage,
             ownedContainerParent: requestedParent ?? (Path.GetDirectoryName(TestRepoPaths.RepoRoot)
                 ?? throw new InvalidDataException("Fixture-backed crash storage requires the checkout's explicit parent.")),
-            observationMode: observationMode);
+            observationMode: observationMode, admissionDirectoryReuse: reuse);
     }
 }

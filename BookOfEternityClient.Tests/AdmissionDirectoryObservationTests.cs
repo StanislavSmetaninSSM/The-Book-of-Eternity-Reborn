@@ -15,6 +15,9 @@ public sealed class AdmissionDirectoryObservationTests : IDisposable
 {
     private readonly string _sandbox = Path.GetFullPath(Path.Combine("C:/Temp", "boe-admission-directory-" + Guid.NewGuid().ToString("N")));
     private readonly ITestOutputHelper _output;
+    /// <summary>
+    /// Gets this test's absolute independent root.
+    /// </summary>
     private string Root => Path.Combine(_sandbox, "owned", "root");
 
     /// <summary>
@@ -73,13 +76,84 @@ public sealed class AdmissionDirectoryObservationTests : IDisposable
     }
 
     /// <summary>
-    /// Measures actual composed guard, inventory and persistence helpers while every later admission remains fresh.
+    /// Keeps unrelated names and differently spelled identities outside the selected root's entries.
     /// </summary>
     [Fact]
-    public void ComposedAdmissionReusesDirectoriesAndNextCallStillQueriesThem()
+    public void UnrelatedAndOrdinalNamesCannotBorrowDirectoryData()
+    {
+        var queries = 0;
+        using var context = new AdmissionDirectoryObservations(Root, _ => { queries++; return EntryKind.Directory; });
+        context.Observe(Root);
+        context.Observe(Root.ToUpperInvariant());
+        var unrelated = Path.Combine(_sandbox, "sibling");
+        context.Observe(unrelated);
+        context.Observe(unrelated);
+        Assert.Equal(4, queries);
+        Assert.Equal(1, context.CaptureState().Entries);
+    }
+
+    /// <summary>
+    /// Requires original classifier failure to close and clear every previously retained result.
+    /// </summary>
+    [Fact]
+    public void SourceFailureClosesAndClearsTheInvocation()
+    {
+        var error = new IOException("owned fixture failure");
+        using var context = new AdmissionDirectoryObservations(Root,
+            path => path == Root ? EntryKind.Directory : throw error);
+        context.Observe(Root);
+        Assert.Same(error, Record.Exception(() => context.Observe(Path.Combine(Root, "leaf"))));
+        Assert.True(context.CaptureState().Closed);
+        Assert.Equal(0, context.CaptureState().Entries);
+        Assert.Throws<ObjectDisposedException>(() => context.Observe(Root));
+    }
+
+    /// <summary>
+    /// Rejects reentry from an injected source instead of sharing partially observed directory DATA.
+    /// </summary>
+    [Fact]
+    public void SourceReentryClosesTheInvocation()
+    {
+        AdmissionDirectoryObservations context = null!;
+        using var owned = context = new AdmissionDirectoryObservations(Root, path => context.Observe(path));
+        Assert.Throws<InvalidOperationException>(() => context.Observe(Root));
+        Assert.True(context.CaptureState().Closed);
+        Assert.Equal(0, context.CaptureState().Entries);
+    }
+
+    /// <summary>
+    /// Leaves every composed helper fresh when an arbitrary detailed diagnostic callback is installed.
+    /// </summary>
+    /// <returns>
+    /// Completion after actual guard acquisition and callback-route validation.
+    /// </returns>
+    [Fact]
+    public async Task DetailedCallbacksUseTheOriginalUnsharedRoute()
+    {
+        var calls = 0;
+        var files = new FileSystemManager(Root, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+            { OperationTimingObserver = (_, _, _) => calls++ });
+        using var main = files.BeginMainAdmission();
+        await main.AcquireAsync();
+        var before = calls;
+        main.Validate(null);
+        Assert.True(calls > before);
+        Assert.Equal(0, files.CaptureAdmissionDirectoryStatistics().Invocations);
+    }
+
+    /// <summary>
+    /// Measures actual composed guard, inventory and persistence helpers while every later admission remains fresh.
+    /// </summary>
+    /// <returns>
+    /// Completion after acquiring and checking the actual ordinary guard.
+    /// </returns>
+    [Fact]
+    public async Task ComposedAdmissionReusesDirectoriesAndNextCallStillQueriesThem()
     {
         var files = new FileSystemManager(Root, NullLogger<FileSystemManager>.Instance);
         using var main = files.BeginMainAdmission();
+        await main.AcquireAsync();
         files.AdmissionDirectoryReuseEnabled = false;
         var before = files.CaptureAdmissionDirectoryStatistics();
         main.Validate(null);
@@ -101,8 +175,11 @@ public sealed class AdmissionDirectoryObservationTests : IDisposable
     /// <summary>
     /// Requires current main-record bytes and namespace membership to be checked on every admission.
     /// </summary>
+    /// <returns>
+    /// Completion after acquiring and checking the actual ordinary guard.
+    /// </returns>
     [Fact]
-    public void CurrentMainRecordAndUnexpectedNamespaceEntryRemainFresh()
+    public async Task CurrentMainRecordAndUnexpectedNamespaceEntryRemainFresh()
     {
         var files = new FileSystemManager(Root, NullLogger<FileSystemManager>.Instance);
         var identity = new GmSessionRunIdentity(files.BasePath, Guid.NewGuid().ToString("N"),
@@ -114,11 +191,17 @@ public sealed class AdmissionDirectoryObservationTests : IDisposable
         var path = Path.Combine(directory, "main.json");
         File.WriteAllBytes(path, GmSessionRunRecordCodec.Encode(stopped));
         using var main = files.BeginMainAdmission();
+        await main.AcquireAsync();
         main.Validate(null);
         File.WriteAllBytes(path, GmSessionRunRecordCodec.Encode(stopped with { Disposition = GmSessionRunDisposition.Running, StopEvidence = null }));
         Assert.Throws<IOException>(() => main.Validate(null));
         File.WriteAllBytes(path, GmSessionRunRecordCodec.Encode(stopped));
         main.Validate(null);
+        File.WriteAllText(path, "{");
+        Assert.ThrowsAny<Exception>(() => main.Validate(null));
+        File.Delete(path);
+        Assert.Throws<FileNotFoundException>(() => main.Validate(null));
+        File.WriteAllBytes(path, GmSessionRunRecordCodec.Encode(stopped));
         File.WriteAllText(Path.Combine(directory, "unexpected.json"), "{}");
         Assert.Throws<IOException>(() => main.Validate(null));
     }
@@ -126,11 +209,15 @@ public sealed class AdmissionDirectoryObservationTests : IDisposable
     /// <summary>
     /// Reports named uncached and cached costs on the genuine composed path, without flaky wall-time assertions.
     /// </summary>
+    /// <returns>
+    /// Completion after acquiring and checking the actual ordinary guard.
+    /// </returns>
     [Fact]
-    public void ComposedPathMeasurementsPreserveTheSameNumberOfAdmissions()
+    public async Task ComposedPathMeasurementsPreserveTheSameNumberOfAdmissions()
     {
         var files = new FileSystemManager(Root, NullLogger<FileSystemManager>.Instance);
         using var main = files.BeginMainAdmission();
+        await main.AcquireAsync();
         const int calls = 200;
         var queryCounts = new List<long>();
         foreach (var enabled in new[] { false, true })

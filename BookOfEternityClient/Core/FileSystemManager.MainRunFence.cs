@@ -409,25 +409,25 @@ public partial class FileSystemManager
                 ? _files.BeginAdmissionDirectoryObservations() : null;
             try
             {
-            using var guardTiming = _files.MeasureOperation("MainAdmission.Validate.Guard");
-            using (_files.MeasureOperation("MainAdmission.Validate.GuardCheck"))
-                _access.Guard!.Validate(observations);
-            if(OperatingSystem.IsWindows())
-                using (_files.MeasureOperation("MainAdmission.Validate.WorkerInventory"))
-                    _files.RequireAbsentMainWorkerInventory(observations);
-            if(_access.Workers is { } workers)
-                using (_files.MeasureOperation("MainAdmission.Validate.WorkerObservation"))
-                    workers.ValidateMainAdmission(_files,_workerPurpose);
-            byte[]? bytes;
-            using (_files.MeasureOperation("MainAdmission.Validate.PersistenceRead"))
-                bytes=GmSessionRunPersistence.Read(_files.BasePath,observations:observations);
-            if(bytes==null)return;
-            GmSessionRunRecord r;
-            using (_files.MeasureOperation("MainAdmission.Validate.DecodePersistence"))
-                r=GmSessionRunRecordCodec.Decode(bytes);
-            var backend=OperatingSystem.IsWindows()?GmSessionRunBackend.WindowsJob:GmSessionRunBackend.LinuxSupervisor;
-            if(r.Disposition!=GmSessionRunDisposition.Stopped || r.Identity.Backend!=backend ||
-                !GmSessionRunValidation.AdmissionRootMatches(r.Identity.RootKey,_files.BasePath,backend))throw GmSessionRunPersistence.Invalid();
+                using var guardTiming = _files.MeasureOperation("MainAdmission.Validate.Guard");
+                using (_files.MeasureOperation("MainAdmission.Validate.GuardCheck"))
+                    _access.Guard!.Validate(observations);
+                if(OperatingSystem.IsWindows())
+                    using (_files.MeasureOperation("MainAdmission.Validate.WorkerInventory"))
+                        _files.RequireAbsentMainWorkerInventory(observations);
+                if(_access.Workers is { } workers)
+                    using (_files.MeasureOperation("MainAdmission.Validate.WorkerObservation"))
+                        workers.ValidateMainAdmission(_files,_workerPurpose);
+                byte[]? bytes;
+                using (_files.MeasureOperation("MainAdmission.Validate.PersistenceRead"))
+                    bytes=GmSessionRunPersistence.Read(_files.BasePath,observations:observations);
+                if(bytes==null)return;
+                GmSessionRunRecord r;
+                using (_files.MeasureOperation("MainAdmission.Validate.DecodePersistence"))
+                    r=GmSessionRunRecordCodec.Decode(bytes);
+                var backend=OperatingSystem.IsWindows()?GmSessionRunBackend.WindowsJob:GmSessionRunBackend.LinuxSupervisor;
+                if(r.Disposition!=GmSessionRunDisposition.Stopped || r.Identity.Backend!=backend ||
+                    !GmSessionRunValidation.AdmissionRootMatches(r.Identity.RootKey,_files.BasePath,backend))throw GmSessionRunPersistence.Invalid();
             }
             finally { _files.EndAdmissionDirectoryObservations(observations); }
         }

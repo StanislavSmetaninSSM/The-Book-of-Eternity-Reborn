@@ -42,8 +42,15 @@ internal readonly record struct AdmissionDirectoryStatistics(long Invocations, l
 internal sealed class AdmissionDirectoryObservations : IDisposable
 {
     private readonly Func<string, TrustedLocalFileScope.EntryKind> _probe;
+    private readonly string _root;
+    private readonly bool _enableReuse;
+    private readonly ValidationOperation _operation = new DefaultOperationValidationService().BeginOperation();
+    private readonly Dictionary<string, object> _keys = new(StringComparer.Ordinal);
+    private static readonly OperationComputation<TrustedLocalFileScope.EntryKind> DirectoryData =
+        new("MainAdmission.PositiveDirectoryData", 1, value => value);
     private bool _closed;
-    private long _requests, _queries;
+    private bool _observing;
+    private long _requests, _queries, _hits;
 
     /// <summary>
     /// Selects the exact root, original classifier and per-invocation reuse policy.
@@ -61,6 +68,9 @@ internal sealed class AdmissionDirectoryObservations : IDisposable
         Func<string, TrustedLocalFileScope.EntryKind>? probe = null, bool enableReuse = true)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
+        if (!Path.IsPathFullyQualified(root)) throw new ArgumentException("The root must be absolute.", nameof(root));
+        _root = Path.TrimEndingDirectorySeparator(Path.GetFullPath(root));
+        _enableReuse = enableReuse;
         _probe = probe ?? TrustedLocalFileScope.Probe;
     }
 
@@ -76,10 +86,37 @@ internal sealed class AdmissionDirectoryObservations : IDisposable
     internal TrustedLocalFileScope.EntryKind Observe(string path)
     {
         ObjectDisposedException.ThrowIf(_closed, this);
+        if (_observing)
+        {
+            Dispose();
+            throw new InvalidOperationException("Admission observations cannot be reentered.");
+        }
+        _observing = true;
         _requests++;
-        _queries++;
-        try { return _probe(path); }
+        try
+        {
+            if (_keys.TryGetValue(path, out var key))
+            {
+                var cached = _operation.GetOrCompute(DirectoryData, key, [],
+                    () => throw new InvalidOperationException("Retained directory DATA is unavailable."));
+                if (cached != TrustedLocalFileScope.EntryKind.Directory)
+                    throw new InvalidOperationException("Retained DATA is not a positive directory observation.");
+                _hits++;
+                return cached;
+            }
+            _queries++;
+            var kind = _probe(path);
+            ObjectDisposedException.ThrowIf(_closed, this);
+            if (_enableReuse && kind == TrustedLocalFileScope.EntryKind.Directory && IsRelated(path))
+            {
+                key = new object();
+                _operation.GetOrCompute(DirectoryData, key, [], () => kind);
+                _keys.Add(path, key);
+            }
+            return kind;
+        }
         catch { Dispose(); throw; }
+        finally { _observing = false; }
     }
 
     /// <summary>
@@ -88,7 +125,7 @@ internal sealed class AdmissionDirectoryObservations : IDisposable
     /// <returns>
     /// Counts for this invocation only.
     /// </returns>
-    internal AdmissionDirectoryStatistics CaptureStatistics() => new(1, _requests, _queries, 0);
+    internal AdmissionDirectoryStatistics CaptureStatistics() => new(1, _requests, _queries, _hits);
 
     /// <summary>
     /// Reports retained service state without exposing cached paths or permissions.
@@ -96,10 +133,29 @@ internal sealed class AdmissionDirectoryObservations : IDisposable
     /// <returns>
     /// Entry/dependency counts and whether the lifetime has closed.
     /// </returns>
-    internal ValidationOperationState CaptureState() => new(0, 0, _closed);
+    internal ValidationOperationState CaptureState() => _operation.CaptureState();
+
+    /// <summary>
+    /// Restricts identities to exact ordinal components under the selected root or its ancestors.
+    /// </summary>
+    /// <param name="path">
+    /// Normalized component supplied after the caller's spelling and grant checks.
+    /// </param>
+    /// <returns>
+    /// True for the root or a component-related name; false for unrelated names.
+    /// </returns>
+    private bool IsRelated(string path) => string.Equals(path, _root, StringComparison.Ordinal) ||
+        path.StartsWith(_root.EndsWith(Path.DirectorySeparatorChar) ? _root : _root + Path.DirectorySeparatorChar, StringComparison.Ordinal) ||
+        _root.StartsWith(path.EndsWith(Path.DirectorySeparatorChar) ? path : path + Path.DirectorySeparatorChar, StringComparison.Ordinal);
 
     /// <summary>
     /// Ends this invocation before any later admission can use its observations.
     /// </summary>
-    public void Dispose() => _closed = true;
+    public void Dispose()
+    {
+        if (_closed) return;
+        _closed = true;
+        _keys.Clear();
+        _operation.Dispose();
+    }
 }
