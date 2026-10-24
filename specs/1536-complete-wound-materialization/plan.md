@@ -32,7 +32,7 @@ safe without explicit fresh-fence design. No GM contract/example change.
 - [x] T512 Extract all saved relevant scalar/count/stage records, reconcile current
   phases and historical top costs; inspect exact current source paths for strong
   candidates, existing cache coverage, key/lifetime/fences and rejected alternatives.
-- [ ] T513 Write T513-remaining-cache-candidates.md with ranked evidence, actionable
+- [x] T513 Write T513-remaining-cache-candidates.md with ranked evidence, actionable
   cheap fixture/probe acceptance and uncertainty; independent review, factual diff
   check and exact remote recovery. No behavior tests rerun for read-only docs.
 

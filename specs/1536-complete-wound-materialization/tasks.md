@@ -9,7 +9,7 @@ backed next cache candidates with preserved integrity and an executable cheap pr
 - [x] T512 [US1] Audit retained r65 measurements/historical timing summaries and
   exact current source; record DATA/key/lifetime/fences and rejected alternatives
   in specs/1536-complete-wound-materialization/T513-remaining-cache-candidates.md.
-- [ ] T513 [US1] Finish ranked findings/cheap probe acceptance in the same report;
+- [x] T513 [US1] Finish ranked findings/cheap probe acceptance in the same report;
   verify provenance/arithmetic/source references, independent coherent review,
   source-only publication and exact clean remote recovery.
 

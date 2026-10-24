@@ -1,35 +1,23 @@
-# r66 findings drafted; independent evidence/contract review pending
+# r66 read-only investigation complete; final source-only publication
 
-T511 tracked phases/consistency/checkpoint recovered2ff5b6dfc(58exactblobs).
-T512 read-only saved data/source audit complete;25 analysis checksPASS, D evidence
-SHA426599B2EFAEEBDA5DB1024BB2E895A617EB45EAC691ACC8269B0D6A60E8D6AA.
-Current r65 first163.8738651/producer106.4729472; no internal timing inference from
-OFF. Found fixture's two permanent no-op read-forwarders categorically disable
-existing source and directory caches; ordinaryCrashChanged installers leave their
-sinks empty. Removing blocker is not proof other eligibility gates pass; proposed
-cheap typed probe first, benefitunmeasured/test-only. Main-game bulk fresh-source
-admission needs explicit transactional design, not a cachedpermission. Repeated
-woundbundle DATA is a narrower conditional candidate; retained final alreadyreused.
-Historical r62 costs clearly separated fromcurrent; QTE/cleanup alreadycached.
-Report T513-remaining-cache-candidates.md; T513 independentreview/publicationpending.
-No C#/tests/selector/INPUT/GMcontract changes, no builds/neworiginals, noquota,
-latest complete r65 archives/runtime/input/backups retainedunchanged.
-
-# r66 WIP: remaining large cache candidates investigation
-
-Owner asks autonomous follow-up search after accepted r65. Base15b8b1149 clean/
-remote recovered; r65 final mechanical acceptance6BEB3B5E... verified. New canonical
-NEXT1..5/T511..513 are read-only; no production/test/selector/native/INPUT/budget
-change or new original run authorized by this investigation. Brainstorming+bridge,
-writing-plans and SpecKit plan/tasks/prerequisite phases actually applied;
-read-only equivalent consistency5requirements/3tasks/100%/0findings. Current script
-lacks skill's RequireSpec switch: supported prerequisite flags plus explicit spec
-existence check passed after initial binding error; no script edits. Optional
-commit/context hooks replaced by explicit checkpoints. Spec presented under prior
-review-wait waiver, inline execution preserved. Next reconcile retained measurements
-and exact source; keep latest complete r65 evidence/runtime/input/backups unchanged.
-No100s promise, no zero-work inference from detailed timers OFF. Findings are the
-deliverable, not a production cache implementation. D-only raw/script evidence.
+Owner asks further caching search after acceptedr65. Canonical NEXT1..5/T511..513,
+brainstorming+bridge/writing-plans/executing-plans/systematic-debugging; actual
+SpecKit setup-plan/tasks/prerequisites +read-only equivalent consistency5req/3tasks/
+100%/0gaps. Local script lacks RequireSpec switch; supported flags+explicit spec
+check passed after binding error, scripts unchanged. Optional hooks use checkpoints.
+Spec/plan/tasks presented under explicit continuing review-wait waiver. Planning
+2ff5b6dfc and findings28b023fb9 published/remotely recovered58/59exactblobs.
+D evidenceSHA426599B2EFAEEBDA5DB1024BB2E895A617EB45EAC691ACC8269B0D6A60E8D6AA,
+25checksPASS/19sourcepins. Current OFF vs historical detailed costs kept separate.
+Concrete next TEST candidate: permanent no-op readforwarders disable existingcache;
+ordinaryCrashChanged sinks staynull. Othereligibility/gain stillrequirecheapfixture.
+Main-game bulkfreshread needs protocolproof, bundle DATA narrowerconditionalprobe;
+no cachedverdict or claimed100s. QTE/cleanup alreadycached. ReportT513 accepted
+by separateAstra/high independentreviewSHA DD8671723CE289C9357A6BF81CE57EA6372DE63C5D8C27CE4356EDEA38F34A03.
+Two tiny historical decimal corrections independently identified and sourcechecked.
+No C#/tests/selector/native/INPUT/GM changes, builds/neworiginals or quotas; latest
+full r65/runtime/input/backups retainedunchanged. No new measuredspeedup claimed.
+Final docs/receipt correction review and remote-only recovery close publication.
 
 # r65 coherent block complete; final mechanical verification/publication
 
