@@ -1,3 +1,16 @@
+# r65 WIP: meaningful RED verified, minimal adapter and scalar counters implemented
+
+T506 canonical phases/consistency +remote restore complete. T507 RED5 source
+0864866af: XML unit build28.739s (unchanged reference DLLs),26cases22PASS/4FAIL,
+all4 actual selected phases preserve ordered issues and fail exactly phase count
+expected1/actual0. Prior two compile/scaffold failures and two invalid fixture
+admission failures are NOT RED evidence. Pure production authority construction
+now precedes first storage admission; no integrity code weakened.
+New minimal adapter delegates to existing source service; joint-story and guardian
+completed-comparison calls preserve original route. Counter/timer records added
+for genuine600s effect. New same-time drift fixtures, GREEN/build/review pending.
+No diagnostics in Git; r64 complete evidence and binary backup retained D-only.
+
 # r65 WIP: control/realm DATA reuse tracked, implementation not started
 
 Owner autonomous authorization; GS1..6/T506..510. Base e2e5bc45d verified against

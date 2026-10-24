@@ -126,8 +126,11 @@ public partial class FileSystemManager
     private bool TryReadImplicitGameStateData(string path, bool asynchronous, out CanonicalFileReadSnapshot? snapshot)
     {
         snapshot = null;
-        return ValidationReuseSuppression.Value == 0 && _validationReadSet.Value == null &&
+        var hit = ValidationReuseSuppression.Value == 0 && _validationReadSet.Value == null &&
             _gameStateDataReadLease.Value is { } lease && _sourceDataOperation.Value is { } operation &&
             operation.TryReadImplicitSnapshot(lease, path, asynchronous, out snapshot);
+        if (hit && _controlGameStateReadActivity.Value is { Closed: false } activity)
+            Interlocked.Increment(ref activity.SourceHits);
+        return hit;
     }
 }

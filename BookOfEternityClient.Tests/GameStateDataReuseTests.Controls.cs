@@ -45,12 +45,17 @@ public sealed partial class GameStateDataReuseTests
         Assert.Equal(IssueImages(expected), IssueImages(actual));
         Assert.Equal(1, cached.TimingBegins("GameStateData.Phase"));
         Assert.Equal(0, fresh.TimingBegins("GameStateData.Phase"));
+        var counts = cached.Files.CaptureControlGameStateStatistics();
+        var observed = realm ? counts.RealmSegregation : counts.ClientOwnedControlFiles;
+        Assert.Equal(1, observed.Calls);
+        Assert.True(observed.ElapsedMilliseconds > 0);
         if (!invalidAuthority)
         {
             Assert.DoesNotContain(actual, issue => issue.Code?.Contains("missing_validated") == true ||
                 issue.Code == "client_owned_pending_snapshot_manifest_modified");
             Assert.True(cached.Reads("game_state/control/pending_turn_snapshot.json") <
                 fresh.Reads("game_state/control/pending_turn_snapshot.json"));
+            Assert.True(observed.SourceHits > 0);
         }
         else Assert.NotEmpty(actual);
 
@@ -58,6 +63,43 @@ public sealed partial class GameStateDataReuseTests
         var changed = await ValidateControlAsync(cached, phase);
         Assert.NotEmpty(changed);
         Assert.Equal(2, cached.TimingBegins("GameStateData.Phase"));
+    }
+
+    /// <summary>
+    /// Refuses changed tracked or snapshot bytes at the actual phase exit despite unchanged timestamps.
+    /// </summary>
+    /// <param name="realm">
+    /// Whether to change a current RealmSegregation source rather than a client-owned snapshot source.
+    /// </param>
+    /// <returns>
+    /// Completion after a real source-fence failure and a subsequent fresh uncached comparison.
+    /// </returns>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task SelectedControlPhaseRejectsSameTimeSourceDrift(bool realm)
+    {
+        using var fixture = new Fixture(output);
+        await fixture.InitializeGenerationAsync();
+        await PrepareControlSnapshotAsync(fixture);
+        var path = realm ? "game_state/guardians/guardian_state.json"
+            : "game_state/control/pending_turn_snapshot/soul_state.json";
+        var timestamp = File.GetLastWriteTimeUtc(fixture.RawPath(path));
+        var changed = false;
+        fixture.OnTiming = (name, boundary) =>
+        {
+            if (changed || name != "GameStateData.ValidateSources" || boundary != "begin") return;
+            fixture.WriteRaw(path, "{\"changed\":true}");
+            File.SetLastWriteTimeUtc(fixture.RawPath(path), timestamp);
+            changed = true;
+        };
+        var phase = realm ? GameStateValidationPhase.RealmSegregation : GameStateValidationPhase.ClientOwnedControlFiles;
+        var failure = await Record.ExceptionAsync(() => ValidateControlAsync(fixture, phase));
+        Assert.True(changed);
+        Assert.IsType<InvalidDataException>(failure);
+        fixture.OnTiming = null;
+        fixture.Files.ControlGameStateDataReuseEnabled = false;
+        Assert.NotEmpty(await ValidateControlAsync(fixture, phase));
     }
 
     /// <summary>

@@ -378,7 +378,10 @@ public partial class ValidationService
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("ClientOwnedControlFiles", null);
 #endif
             using var innerTiming33 = _fs.MeasureOperation("GameState.ClientOwnedControlFiles");
-            await ValidateClientOwnedControlFilesAsync(issues, acceptedStoryAppend, jointStoryProof);
+            await _fs.ReadControlGameStateDataAsync(realm: false,
+                originalOnly: jointStoryProof != null ||
+                    _guardianMusingsPublication.Value is { Enabled: true, Completion: not null },
+                () => ValidateClientOwnedControlFilesAsync(issues, acceptedStoryAppend, jointStoryProof));
         }
         if (phases.Includes(GameStateValidationPhase.RealmSegregation))
         {
@@ -386,7 +389,9 @@ public partial class ValidationService
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("RealmSegregation", null);
 #endif
             using var innerTiming34 = _fs.MeasureOperation("GameState.RealmSegregation");
-            await ValidateRealmSegregationAsync(issues);
+            await _fs.ReadControlGameStateDataAsync(realm: true,
+                originalOnly: _guardianMusingsPublication.Value is { Enabled: true, Completion: not null },
+                () => ValidateRealmSegregationAsync(issues));
         }
     }
 

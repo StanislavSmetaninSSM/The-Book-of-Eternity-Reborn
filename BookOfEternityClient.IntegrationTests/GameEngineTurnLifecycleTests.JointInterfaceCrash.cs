@@ -76,13 +76,16 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// <param name="admissionDirectoryReuse">
     /// Production reuse by default; false selects only the explicitly validated ordinary seeded Windows cut0 control.
     /// </param>
+    /// <param name="controlGameStateDataReuse">
+    /// Production source DATA reuse by default; false selects the restricted ordinary Windows cut0 control.
+    /// </param>
     /// <returns>
     /// Completion after the selected probe's process and DATA assertions, or the original game assertions.
     /// </returns>
     private async Task RunJointInterfaceActualProcessLossAsync(int cut, string? fault = null, bool diagnostic = false,
         bool extendedWindowsCrash = false, string? seedArtifactPath = null, bool fixtureAcquisitionOnly = false,
         string? seedUsage = null, string? seedPackageRoot = null, string? ownedContainerParent = null,
-        JointInterfaceObservationMode observationMode = JointInterfaceObservationMode.Full, bool admissionDirectoryReuse = true)
+        JointInterfaceObservationMode observationMode = JointInterfaceObservationMode.Full, bool admissionDirectoryReuse = true, bool controlGameStateDataReuse = true)
     {
         if (extendedWindowsCrash && !OperatingSystem.IsWindows())
             throw new PlatformNotSupportedException("Extended crash qualification is a local Windows selection.");
@@ -106,6 +109,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             ["ObservationMode"] = observationMode.ToString().ToLowerInvariant(),
             ["ExtendedWindowsCrash"] = extendedWindowsCrash
         }, OperatingSystem.IsWindows(), seedArtifactPath is not null || seedPackageRoot is not null, fixtureAcquisitionOnly, mode);
+        JointControlGameStateDataControl.Validate(controlGameStateDataReuse, new JsonObject
+        {
+            ["ObservationMode"] = observationMode.ToString().ToLowerInvariant(),
+            ["ExtendedWindowsCrash"] = extendedWindowsCrash
+        }, OperatingSystem.IsWindows(), seedArtifactPath is not null || seedPackageRoot is not null, fixtureAcquisitionOnly, mode);
         JointInterfaceSeedCrashInput? source42Seed = null;
         if (seedArtifactPath is not null)
         {
@@ -118,7 +126,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             Nonce = nonce, ParentPid = Environment.ProcessId, Cut = cut, Fault = fault, Diagnostic = diagnostic,
             ObservationMode = observationMode.ToString().ToLowerInvariant(), ExtendedWindowsCrash = extendedWindowsCrash,
-            AdmissionDirectoryReuse = admissionDirectoryReuse
+            AdmissionDirectoryReuse = admissionDirectoryReuse, ControlGameStateDataReuse = controlGameStateDataReuse
         })!.AsObject();
         if (!diagnostic && fault == null) parentMetadata["RunId"] = Guid.NewGuid().ToString("N");
         if (source42Seed is not null) parentMetadata["Source42Seed"] = JsonSerializer.SerializeToNode(source42Seed);
@@ -644,6 +652,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             source42Seed is not null, fixtureAcquisitionOnly, mode);
         var admissionDirectoryReuse = JointAdmissionDirectoryControl.Read(parent, OperatingSystem.IsWindows(),
             source42Seed is not null, fixtureAcquisitionOnly, mode);
+        var controlGameStateDataReuse = JointControlGameStateDataControl.Read(parent, OperatingSystem.IsWindows(),
+            source42Seed is not null, fixtureAcquisitionOnly, mode);
         Console.WriteLine(JsonSerializer.Serialize(new
         {
             Boundary = "joint_observation_mode", Role = "producer", Pid = Environment.ProcessId,
@@ -676,6 +686,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             }));
         }
         fixture._fs.AdmissionDirectoryReuseEnabled = admissionDirectoryReuse;
+        fixture._fs.ControlGameStateDataReuseEnabled = controlGameStateDataReuse;
         using var ownedFixture = fixture;
         stages?.Observe("fixture", "return");
         operationTimings?.Observe("Producer.ImportFixture", "end", Stopwatch.GetElapsedTime(fixtureStarted));
@@ -720,6 +731,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         var observationMode = JointInterfaceCrashObservation.Read(parent, OperatingSystem.IsWindows(),
             source42Seed is not null, fixtureAcquisitionOnly, mode);
         var admissionDirectoryReuse = JointAdmissionDirectoryControl.Read(parent, OperatingSystem.IsWindows(),
+            source42Seed is not null, fixtureAcquisitionOnly, mode);
+        var controlGameStateDataReuse = JointControlGameStateDataControl.Read(parent, OperatingSystem.IsWindows(),
             source42Seed is not null, fixtureAcquisitionOnly, mode);
         Console.WriteLine(JsonSerializer.Serialize(new
         {
@@ -823,6 +836,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             }
         });
         files.AdmissionDirectoryReuseEnabled = admissionDirectoryReuse;
+        files.ControlGameStateDataReuseEnabled = controlGameStateDataReuse;
         diagnostic.Observe("file-system-return");
         stages?.Observe("file-system", "return");
         var log = new SpiritualLifecycleTestLogger();
@@ -986,6 +1000,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             stages?.Observe("late-first", "return");
             Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "admission_directory_counts", Role = "resumer", Stage = "first",
                 Pid = Environment.ProcessId, Enabled = admissionDirectoryReuse, Counts = files.CaptureAdmissionDirectoryStatistics() }));
+            Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "control_game_state_counts", Role = "resumer", Stage = "first",
+                Pid = Environment.ProcessId, Enabled = controlGameStateDataReuse, Counts = files.CaptureControlGameStateStatistics() }));
             var firstLogsAfter = log.Describe();
             RequireCurrentInterfaceGuard(1, firstLogsBefore, firstLogsAfter);
             await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
@@ -1036,6 +1052,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             stages?.Observe("late-repeat", "return");
             Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "admission_directory_counts", Role = "resumer", Stage = "repeat",
                 Pid = Environment.ProcessId, Enabled = admissionDirectoryReuse, Counts = files.CaptureAdmissionDirectoryStatistics() }));
+            Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "control_game_state_counts", Role = "resumer", Stage = "repeat",
+                Pid = Environment.ProcessId, Enabled = controlGameStateDataReuse, Counts = files.CaptureControlGameStateStatistics() }));
             var secondLogsAfter = log.Describe();
             RequireCurrentInterfaceGuard(2, secondLogsBefore, secondLogsAfter);
             await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
@@ -1202,6 +1220,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "admission_directory_counts", Role = "producer", Stage = "cut",
                 Pid = Environment.ProcessId, Enabled = fixture._fs.AdmissionDirectoryReuseEnabled,
                 Counts = fixture._fs.CaptureAdmissionDirectoryStatistics() }));
+            Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "control_game_state_counts", Role = "producer", Stage = "cut",
+                Pid = Environment.ProcessId, Enabled = fixture._fs.ControlGameStateDataReuseEnabled,
+                Counts = fixture._fs.CaptureControlGameStateStatistics() }));
             Console.Out.Flush(); Console.Error.Flush();
             Environment.Exit(73); // actual abrupt process exit; no catch, finally, release or compensation
         }
