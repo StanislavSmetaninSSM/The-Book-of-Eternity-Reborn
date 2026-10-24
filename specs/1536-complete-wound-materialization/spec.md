@@ -1,3 +1,62 @@
+# CRASH5 — revision64 admission-local directory DATA reuse
+
+Issue #1536. Owner2026-10-24 requests autonomous investigation, safe reuse through
+the existing cache service, cheap fixtures and a real effect measurement. Base
+e10f2b559e286c1fa6a2d469342929dc633f70c4; r63 OFF baseline308.9104597s,
+first resume186.4575919s, completed repeat.9375692s. No promised speedup.
+
+- DIR1: Remove repeated directory classifications within one synchronous
+  ordinary MainAdmission.Validate invocation through the existing temporary
+  cache service. The context ends before Validate returns or throws; no result
+  survives into another admission, await, mutation, recovery or publication.
+- DIR2: Reuse only successful ordinary-directory DATA at exact ordinal normalized
+  component names under, or ancestral to, the exact context root. Validate raw
+  grants/path syntax first. File/missing/link/other classifications, worker
+  inventory verdicts, persisted bytes/decoding and native handle/path authority
+  remain fresh. Existing order, refusal and worker/remote/original routes remain.
+- DIR3: No Boolean admission/lease/native authority cache, TTL or process-global
+  namespace cache. Unsupported observers/callbacks/worker contexts retain the
+  original route. Failure/disposal releases all entries; later invocations must
+  observe changed files, main record, namespace or directory kinds as before.
+- DIR4: Prefer explicit typed observation plumbing and isolated fixture entry
+  points. Production and tests use the same implementation; no reflection or
+  expensive game setup for unit contracts. Record actual requests/source queries/
+  reuse counts and measure the composed path, not only a standalone dictionary.
+- DIR5: RED/GREEN cheap fixtures prove shared-directory query elimination,
+  fresh leaves and next-invocation changes, invalid paths/kinds, main-record and
+  inventory refusal, guard mismatch, source failure and disposal. Run impacted
+  categories only, including unchanged held-lease-before-write and native guard
+  consumers. XML-document new/changed C# APIs and build with documentation enabled.
+- DIR6: After cheap verification and independent review, freshly build/requalify
+  changed binaries and the retained immutable source42 INPUT without relabeling
+  old source/metadata evidence. Run one original Windows Cut0 with the same
+  child600/shared820/category15, C fixture/D diagnostics, timings OFF and unchanged
+  external CPU/GC observer. Keep all original assertions/native73/0/EOF/join.
+- DIR7: Preserve uncapped remaining diagnostics and the existing full-observation
+  implementation. Compare actual testcase/first-call/CPU and exact observation
+  counts against r63, explicitly retaining variation/coverage limits. No arbitrary
+  new timeout or lower integrity criterion may manufacture a pass or speedup.
+- DIR8: Keep source/checkpoints/report in Git and raw output on D only. Preserve
+  r63 complete evidence until the new complete measurement is independently
+  accepted; then replace only exact superseded/duplicate diagnostic files while
+  preserving original CPU/GC, compact comparisons, INPUT and instrumentation backup.
+
+Approaches considered: a whole-recovery namespace/admission snapshot could save
+more calls but changes freshness and effect/completion fences; defer it. Existing
+per-helper ObserveOnce already removes duplicates inside one helper; repeating
+that change gives no new benefit. Selected parent design shares positive directory
+observations between the guard, worker namespace and persistence helpers during
+one synchronous admission, preserving all three algorithms and fresh later calls.
+Bounded Astra/high consultation identified the same safe scope and the cross-call
+fence risk. Local trusted-single-player contract does not promise hostile-owner
+race resistance, but supported path/schema/generation/crash integrity and existing
+fresh checks are preserved. No GM-facing behavior/field/prompt/example changes.
+
+Unresolved before implementation: exact eligible callback fallback and composed
+fixture query reduction are pinned by T502; any broader lifetime needs a revised
+specification. Review-wait waiver and autonomous execution remain explicit owner
+instructions; the written spec is still presented for inspection before coding.
+
 # CRASH5 — revision63 same-binary measurement with detailed timings off
 
 Source issue #1536. Owner2026-10-24 accepted the proposed next measurement after

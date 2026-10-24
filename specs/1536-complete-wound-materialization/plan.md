@@ -1,3 +1,77 @@
+# CRASH5 — revision64 admission-local directory reuse plan
+
+> Execute with Superpowers executing-plans, TDD, separate independent review.
+> Canonical spec DIR1..8, tasks T501..505, issue #1536.
+
+Goal: eliminate repeated positive directory probes during one ordinary synchronous
+admission without retaining any admission success or changing subsequent checks.
+Architecture: explicit disposable directory observation context backed by the
+existing DefaultOperationValidationService/ValidationOperation. Keys are ordinal
+component identities local to this invocation/root. Store only Directory results;
+all other kinds query the original source. No ambient/global cache or new package.
+Tech: existing C#/.NET8 application, .NET10 SDK, PowerShell7 category runner;
+isolated current clone/branch reused, base e10f2b559. C:SSD fixtures/D:HDD output.
+
+Research/design: guard, Windows worker absence and main-run persistence each
+construct/check overlapping root chains inside MainAdmission.Validate. Existing
+ObserveOnce shares data only within one helper. A single explicit context can
+deduplicate their common directories while each helper still validates grants,
+leaf kinds, enumeration, bytes and native handle/path identity. Later calls get
+new contexts. Cross-call admission caching would require new fresh-fence rules;
+it is excluded. Bounded independent Astra/high consultation confirmed this scope.
+Constitution check: trusted local player contract preserved; no accepted-turn,
+generation/path/native recovery or GM-authored contract changes. No prompt/example
+update is needed. Existing service architecture, no reflection, per-test fixtures.
+
+Files/interfaces:
+- NEW Core/AdmissionDirectoryObservations.cs: internal IDisposable observation
+  owner, normalized exact root, original probe dependency for typed cheap fixtures,
+  Observe(path), captured request/query/hit/retained counts; dispose/failure clears.
+  DefaultOperationValidationService.BeginOperation + synchronous GetOrCompute;
+  private ordinal identity map is not an alternative result cache.
+- Core/TrustedLocalFileScope.cs: explicit optional observation plumbing through
+  construction, directory/file/namespace helpers; retain current fresh defaults
+  and original private grant/refusal algorithms. Original physical probe usable
+  through a documented internal typed fixture entry. Scope never retains context.
+- Core/GmSessionRunPersistence.cs: pass context only through read validation and
+  guard namespace checks; actual bytes/enumeration/decoder/native authority fresh.
+- Core/FileSystemManager.MainRunFence.cs: one context only in eligible ordinary
+  guard branch; remote/original/worker/callback/diagnostic fallback unchanged.
+  Disposal ends before method return/throw; later calls and all fences stay fresh.
+- NEW Core/FileSystemManager.AdmissionDirectoryObservations.cs: typed aggregate
+  counters and optional internal fixture enable/disable selection; no callbacks
+  inside observation lifetime and no cached permission exposed.
+- NEW Tests/AdmissionDirectoryObservationTests.cs: cheap classifier and real-file
+  composed fixtures, directly typed APIs, no expensive engine. Existing guard/
+  namespace/main-run tests preserved. New coherent category +explicit selection.
+- IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs only if
+  needed: uncapped scalar classifier totals after actual first/repeat calls;
+  no changed oracle/budget/mode/fixture semantics. Validate INPUT fingerprint first.
+
+Review focus/tests: next invocation sees replaced/missing/link directories and
+changed Running/malformed/missing/extra main metadata; file/absence observations
+are never reused; ordinal names/grants preserved; failed/reentrant/closed context
+cannot retain entries; guard-handle checks execute every time. Observer hooks or
+worker/remote/original routes preserve original behavior. Real fixture composed
+query reduction must outweigh service overhead before the expensive experiment.
+
+- [ ] T501 Research, written spec/plan/tasks phases and consistency, baseline pins,
+  source-only remote checkpoint; present spec/plan under autonomous review waiver.
+- [ ] T502 RED cheap observation/composed fixtures, minimal service integration,
+  XML docs, categories/selection; GREEN impacted namespace/main/admission tests.
+- [ ] T503 Independently review coherent implementation/test/diff/selection; fix
+  validated findings, freshly qualify changed binaries and immutable INPUT; publish.
+- [ ] T504 ONE original OFF Cut0, unchanged600/820/15/oracles/native73/0; full
+  uncapped remaining records and same external CPU/GC; source/binary/INPUT binding.
+- [ ] T505 Verify complete archive/all records and measured effect vs308.9104597;
+  independent outcome/retention/docs, exact diagnostic replacement, publication.
+
+Coverage DIR1/2/3->501/502/503; DIR4/5->502/503; DIR6->503/504;
+DIR7->504/505; DIR8->501/503/505. No unresolved product decision; predicate and
+fixture evidence decide eligibility. If source shows no safe composable scope,
+record that finding rather than widen lifetime or weaken an existing check.
+Optional SpecKit git/agent-context hooks: explicit checkpoint commits used.
+
 # CRASH5 — revision63 detailed-timings-off measurement plan
 
 > Execute with Superpowers executing-plans, cheap external controls, and separate

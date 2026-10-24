@@ -1,4 +1,31 @@
-# Current checkpoint: r63 T496..500 complete; reviewed report published/recovered
+# Current checkpoint: r64 planning; admission-local directory DATA candidate
+
+Owner2026-10-24 requests safe directory/admission reuse, cheap fixtures and effect
+measurement autonomously. Base e10f2b559e286c1fa6a2d469342929dc633f70c4 equals
+freshremote ref, clean isolated checkout. Existing issue1536, canonical DIR1..8 /
+T501..505; no new feature directory. PriorOFF308.9104597s/first186.4575919/repeat.9375692.
+Parent source investigation and bounded Astra/high consultation find repeated root
+chains within guard/worker/main-record helpers. Select one synchronous admission
+context through existing ValidationOperation, positive directories only; original
+leaves/bytes/native authentication and every later invocation remain fresh.
+Cross-call permission caching deferred. No production edits or test/build runs yet.
+Brainstorming+bridge/systematic-debugging/writing-plans invoked; actual plan phase
+reused existing artifact. Tasks/prerequisite/analyze equivalent and checkpoint next.
+Actual plan/tasks/prerequisite phases PASS; bridge read-only consistency8DIR/
+5tasks/0gaps, optional hooks only, constitution aligned. Spec/plan presented with
+existing explicit autonomous review-wait waiver. R63 accepted raw/index/outcome/
+comparison pins captured; all8DLLs rehashed and backed up outside Git at
+T501-r63-qualified-binaries.zip SHA BE3FB1D003F463991DF24B4634D0E81901857D0A7CF004E32D0325CB84A3850D.
+Ruling: cache only Directory results; fresh leaves/missing/link/other and native
+identity always execute. Disable composed reuse for arbitrary source hooks,
+active worker observation and detailed operation receivers; no callbacks are
+introduced inside a caching context. Aggregate counters are typed passive data.
+Parent implementation owner; separate independent review mandatory, latest user
+model routing supersedes repository's historical standing Astra/XHigh exception.
+D root planned D:/BoeDiagnostics/admission-directory-r64-20261024; preserve r63 data
+until independently accepted complete new measurement. No diagnostic caps/Git dumps.
+
+## Previous completed r63 checkpoint
 
 Finaldocumentation45BA04E7A83D95140761AC333C5C5610EAD3B2A791818C763556EC05F086AE15
 accepted exact fourMDblobs. Published9de81ce7bd40b95db69769fcd9b783bf2e9ca099

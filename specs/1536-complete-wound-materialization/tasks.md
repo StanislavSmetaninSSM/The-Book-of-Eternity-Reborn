@@ -1,3 +1,24 @@
+# CRASH5 — revision64 admission-local directory observations
+
+Issue #1536, DIR1..8, plan.md. Autonomous implementation/testing/measurement and
+review-wait waiver from owner2026-10-24. Existing isolated branch, e10f2b559 base.
+
+- [ ] T501 Source/contract consultation, canonical spec/plan/tasks phases and
+  equivalent consistency; exact r63 baseline pins; source-only checkpoint/recovery.
+- [ ] T502 Cheap RED/GREEN fixtures, existing service context +explicit production
+  wiring, XML documentation, coherent category/selection and impacted checks.
+- [ ] T503 Independent coherent code/tests/selection review and corrections;
+  fresh binary/source/immutable-INPUT qualification and remote checkpoint.
+- [ ] T504 ONE original OFF Windows Cut0 with same600/820/15, native73/0,
+  original assertions/ownership, uncapped remaining output and CPU/GC observation.
+- [ ] T505 Complete archive/all-record comparison against r63; independent outcome,
+  exact old-data replacement preserving CPU/GC/INPUT/backup, human report/publication.
+
+DIR1/2/3->501/502/503; DIR4/5->502/503; DIR6->503/504; DIR7->504/505;
+DIR8->501/503/505. T501->502->503->504->505. Parent owns coherent implementation;
+bounded Astra/high admission consultation performed, independent reviewer separate.
+No cross-call permission cache, fixture generation, new timeout or broad-suite run.
+
 # CRASH5 — revision63 same-binary timing-off measurement
 
 Issue#1536, canonical spec OFF1..7 and plan.md. Owner approved next off measurement;
