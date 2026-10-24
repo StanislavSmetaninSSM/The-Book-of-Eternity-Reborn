@@ -41,11 +41,24 @@ verified380unique IDs. Final qualified227183db6/XML88.3703+52.7387s,8DLLuniform
 binding1E45473F...D0C6E. Functional2c86->qualified227 only1XMLcomment; no redundant
 380rerun. CatalogPASS/0executed/0duplicateIDs, PlanOnly17descriptors/380cases.
 Independent complex code/selection review Accepted46A6BF45.../0unresolved.
-T526/527 complete; T528 genuine new source42/twoimports/frozen admission next.
-No old INPUT rebind; original off/onpair not yet admitted. Same600/820/15,
-Cfixtures/Doutput/noquotas/frozenCPU-GC/no competing work. Current counted phase
-requests are not a global metadata census; final report will preserve that limit.
-All baseline8a backup/CPU-GC/input/instrumentation protected.
+T526/527/528/529 complete. Genuine newsource42 1PASS183.1284commandseconds/
+82files513713B/twoimports/cleanup; packageEDFD71FB...04963D/fingerprint0703D8EF....
+Revised readiness73E3AC70.../120refs, independentadmissionDE5C717E...; strictnew
+parent bool analyzer corrected numeric0/1 acceptance with24purecontrols, noC#change.
+Same metadata044/qualified227/8DLL/INPUT off/onoriginals PASS600/820/15/uncapped/
+frozenCPU-GC/noheavycompetition. TRX269.4711405->263.1057419(-6.3653986s), first
+stage168.4595757->164.8300682(-3.6295075s), namedroot168.4585351->164.8291649.
+Attrs1,036,393->936,265, WindowsDirRefresh348,307->290,045 (first-windowmanaged
+attempts); on16688phase scopes, cumulativefirst161475hits includes320setup phases.
+Existingdirectoryand432controlhits unchanged. Complete561/563names/noopen/late;
+newcreation.099981s, fullphase28.006194inclusive notoverhead; prep+3.0075141s versus
+admission-6.7076858s. Resumerkernel-8.375/user+4.71875CPU. Win is real butmodest,
+no100s/no universalbenchmark claim. Both native/oracles/cleanup/runtime PASS;
+independent66ZIPmembers/292JSON+4text/all563comparisonrows verified.
+T530 humanreport written; coherentreport/exactretention review pending, no deletion.
+Latest user requests further largecache investigation AFTER this block, using fresh
+measurements; next scope is read-only callers/cache-hit/fences audit, not production
+verdict caching. Preserve allCPU-GC/INPUT/instrumentation/binarybackups; raw D-only.
 
 # r68 coherent block complete; final source-only closure
 
