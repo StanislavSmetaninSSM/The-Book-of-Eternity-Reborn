@@ -59,9 +59,9 @@ query reduction must outweigh service overhead before the expensive experiment.
   source-only remote checkpoint; present spec/plan under autonomous review waiver.
 - [x] T502 RED cheap observation/composed fixtures, minimal service integration,
   XML docs, categories/selection; GREEN impacted namespace/main/admission tests.
-- [ ] T503 Independently review coherent implementation/test/diff/selection; fix
+- [x] T503 Independently review coherent implementation/test/diff/selection; fix
   validated findings, freshly qualify changed binaries and immutable INPUT; publish.
-- [ ] T504 Two original OFF Cut0 controls on the same new genuine current-source
+- [x] T504 Two original OFF Cut0 controls on the same new genuine current-source
   INPUT and binaries, only explicit typed fixture cache toggle differs;
   unchanged600/820/15/oracles/native73/0, uncapped records and same external CPU/GC.
 - [ ] T505 Verify complete archive/all records and measured effect vs308.9104597;

@@ -1,3 +1,13 @@
+# r64 measurement checkpoint; T505 outcome review/retention pending
+
+Both admitted originals PASS, sameDLL/INPUT, no rerun:304.2993138->293.5759423s;
+first182.9493643->169.0139987s. Source queries637560->289800,28980admissions
+unchanged. Native/runtime/original oracles and archive all-record replay PASS.
+Separate external v2 analyzer corrects producer-zero context assumption; v1/ready
+immutable, producer hook fallback preserved. Report T505-admission-directory-reuse-measurement.md.
+Independent coherent outcome/report/retention review pending. No diagnostic data
+staged in Git. Current raw/archive on D only; superseded raw deletion not yet run.
+
 # Current checkpoint: r64 implemented; corrected cheap/source checks PASS
 
 Owner2026-10-24 requests safe directory/admission reuse, cheap fixtures and effect
