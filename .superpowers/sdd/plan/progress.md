@@ -9,6 +9,12 @@ chains within guard/worker/main-record helpers. Select one synchronous admission
 context through existing ValidationOperation, positive directories only; original
 leaves/bytes/native authentication and every later invocation remain fresh.
 Cross-call permission caching deferred. No production edits or test/build runs yet.
+Planningcheckpoint53bdb9e06431b3508f56b07ccdf799769da9d1e5 published/fresh40blob
+remote-only recovered. T501 source/phase/consistency and baseline preservation done.
+Research amendment: broad source fingerprint makes old r63 INPUT ineligible after
+C# edits. Preserve that strict contract; generate one genuine new source42 only
+after cheap viability and use TWO same-binary/same-INPUT OFF cache on/off controls.
+User informed; autonomous scope/review waiver applies, no altered acceptance claim.
 Brainstorming+bridge/systematic-debugging/writing-plans invoked; actual plan phase
 reused existing artifact. Tasks/prerequisite/analyze equivalent and checkpoint next.
 Actual plan/tasks/prerequisite phases PASS; bridge read-only consistency8DIR/

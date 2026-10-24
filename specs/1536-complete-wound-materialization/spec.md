@@ -28,10 +28,13 @@ first resume186.4575919s, completed repeat.9375692s. No promised speedup.
   categories only, including unchanged held-lease-before-write and native guard
   consumers. XML-document new/changed C# APIs and build with documentation enabled.
 - DIR6: After cheap verification and independent review, freshly build/requalify
-  changed binaries and the retained immutable source42 INPUT without relabeling
-  old source/metadata evidence. Run one original Windows Cut0 with the same
+  changed binaries and generate one genuine current-source42 INPUT. The broad
+  fingerprint covers all changed C# and refuses r63's old INPUT; do not rebind it
+  or weaken that check. Compare two Windows Cut0 runs using the exact same new
+  DLLs/INPUT, changing only an explicit test-only cache on/off selection, with the same
   child600/shared820/category15, C fixture/D diagnostics, timings OFF and unchanged
   external CPU/GC observer. Keep all original assertions/native73/0/EOF/join.
+  Preserve r63 as historical context, not the same-INPUT causal control.
 - DIR7: Preserve uncapped remaining diagnostics and the existing full-observation
   implementation. Compare actual testcase/first-call/CPU and exact observation
   counts against r63, explicitly retaining variation/coverage limits. No arbitrary
@@ -51,6 +54,12 @@ Bounded Astra/high consultation identified the same safe scope and the cross-cal
 fence risk. Local trusted-single-player contract does not promise hostile-owner
 race resistance, but supported path/schema/generation/crash integrity and existing
 fresh checks are preserved. No GM-facing behavior/field/prompt/example changes.
+
+Research amendment before code: source fingerprint includes all application/
+integration/support C#, so genuine new fixture generation and a two-run same-input
+A/B control replace the original proposed single r63-input run. This scope is
+presented explicitly under the owner's continuing autonomous review-wait waiver.
+No generation or A/B original begins until cheap tests show a viable candidate.
 
 Unresolved before implementation: exact eligible callback fallback and composed
 fixture query reduction are pinned by T502; any broader lifetime needs a revised

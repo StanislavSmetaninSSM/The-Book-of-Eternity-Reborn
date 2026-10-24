@@ -405,18 +405,22 @@ public partial class FileSystemManager
                             throw GmSessionRunPersistence.Invalid();
                 return;
             }
+            var observations = _access.Workers == null && !_access.WorkerObservationRequired
+                ? _files.BeginAdmissionDirectoryObservations() : null;
+            try
+            {
             using var guardTiming = _files.MeasureOperation("MainAdmission.Validate.Guard");
             using (_files.MeasureOperation("MainAdmission.Validate.GuardCheck"))
-                _access.Guard!.Validate();
+                _access.Guard!.Validate(observations);
             if(OperatingSystem.IsWindows())
                 using (_files.MeasureOperation("MainAdmission.Validate.WorkerInventory"))
-                    _files.RequireAbsentMainWorkerInventory();
+                    _files.RequireAbsentMainWorkerInventory(observations);
             if(_access.Workers is { } workers)
                 using (_files.MeasureOperation("MainAdmission.Validate.WorkerObservation"))
                     workers.ValidateMainAdmission(_files,_workerPurpose);
             byte[]? bytes;
             using (_files.MeasureOperation("MainAdmission.Validate.PersistenceRead"))
-                bytes=GmSessionRunPersistence.Read(_files.BasePath);
+                bytes=GmSessionRunPersistence.Read(_files.BasePath,observations:observations);
             if(bytes==null)return;
             GmSessionRunRecord r;
             using (_files.MeasureOperation("MainAdmission.Validate.DecodePersistence"))
@@ -424,6 +428,8 @@ public partial class FileSystemManager
             var backend=OperatingSystem.IsWindows()?GmSessionRunBackend.WindowsJob:GmSessionRunBackend.LinuxSupervisor;
             if(r.Disposition!=GmSessionRunDisposition.Stopped || r.Identity.Backend!=backend ||
                 !GmSessionRunValidation.AdmissionRootMatches(r.Identity.RootKey,_files.BasePath,backend))throw GmSessionRunPersistence.Invalid();
+            }
+            finally { _files.EndAdmissionDirectoryObservations(observations); }
         }
         public async ValueTask DisposeAsync()
         {
@@ -807,7 +813,11 @@ public partial class FileSystemManager
     /// <summary>
     /// Requires worker inventory absence under the original root gate without creating or adopting an inventory.
     /// </summary>
-    internal void RequireAbsentMainWorkerInventory()
+    /// <param name="observations">
+    /// Optional directory DATA shared only within this synchronous admission; null keeps independent fresh helpers.
+    /// Inventory absence is always freshly observed.
+    /// </param>
+    internal void RequireAbsentMainWorkerInventory(AdmissionDirectoryObservations? observations=null)
     {
         using var operationTiming = MeasureOperation("MainAdmission.WorkerInventory.GateAndBody");
         var root=CanonicalRootAuthorityIdentity;
@@ -815,7 +825,8 @@ public partial class FileSystemManager
             using var bodyTiming = MeasureOperation("MainAdmission.WorkerInventory.Body");
             if(root.WorkerContext!=null)throw GmSessionRunPersistence.Invalid();
             TrustedLocalFileScope.CreateAndObserveNamespace(BasePath,
-                new WorkerLedgerTarget(BasePath).DirectoryPath,out var observed,timingOwner:this,
+                new WorkerLedgerTarget(BasePath).DirectoryPath,out var observed,
+                observeEntry:observations==null?null:observations.Observe,timingOwner:this,
                 constructionOperationName:"MainAdmission.WorkerInventory.ScopeConstruction",
                 observationOperationName:"MainAdmission.WorkerInventory.ObserveNamespace");
             if(observed.BlockingFileAncestor!=null || observed.Kind!=TrustedLocalNamespaceKind.Missing)

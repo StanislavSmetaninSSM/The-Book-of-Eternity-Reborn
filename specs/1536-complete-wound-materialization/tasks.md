@@ -9,7 +9,8 @@ review-wait waiver from owner2026-10-24. Existing isolated branch, e10f2b559 bas
   wiring, XML documentation, coherent category/selection and impacted checks.
 - [ ] T503 Independent coherent code/tests/selection review and corrections;
   fresh binary/source/immutable-INPUT qualification and remote checkpoint.
-- [ ] T504 ONE original OFF Windows Cut0 with same600/820/15, native73/0,
+- [ ] T504 Two OFF Windows Cut0 controls on one new genuine current-source INPUT
+  and the same DLLs, explicit typed fixture cache toggle only; same600/820/15, native73/0,
   original assertions/ownership, uncapped remaining output and CPU/GC observation.
 - [ ] T505 Complete archive/all-record comparison against r63; independent outcome,
   exact old-data replacement preserving CPU/GC/INPUT/backup, human report/publication.
@@ -17,7 +18,9 @@ review-wait waiver from owner2026-10-24. Existing isolated branch, e10f2b559 bas
 DIR1/2/3->501/502/503; DIR4/5->502/503; DIR6->503/504; DIR7->504/505;
 DIR8->501/503/505. T501->502->503->504->505. Parent owns coherent implementation;
 bounded Astra/high admission consultation performed, independent reviewer separate.
-No cross-call permission cache, fixture generation, new timeout or broad-suite run.
+No cross-call permission cache, new timeout or broad-suite run. One fresh genuine
+fixture generation after cheap success is required by the unchanged source
+fingerprint; no old INPUT rebind. This amendment precedes production edits.
 
 # CRASH5 — revision63 same-binary timing-off measurement
 

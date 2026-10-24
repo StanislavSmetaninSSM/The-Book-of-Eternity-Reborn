@@ -2,17 +2,31 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "fr063-joint-interface-probe-budget-contracts",
-      "reason": "Existing pure off-mode/parent-child metadata refusal and original finite Windows budget contracts before activating the off observation path.",
+      "category": "core-admission-directory-observations",
+      "reason": "Admission-local positive directory sharing and fresh later calls on cheap fixtures.",
       "contracts": [
-        "#1536 OFF1..4 / T496-499"
+        "#1536 DIR1..6 / T502-503"
       ]
     },
     {
-      "category": "fr063-joint-fixture-windows-cut0",
-      "reason": "One unchanged-binary original Cut0 crash/recovery with explicit detailed timings off, same immutable INPUT, native identity/custody and original integrity assertions.",
+      "category": "fr063-trusted-local-request-observations",
+      "reason": "Existing helper request scope and native guard authentication remain intact.",
       "contracts": [
-        "#1536 OFF1..7 / T496-500"
+        "#1536 DIR1..6 / T502-503"
+      ]
+    },
+    {
+      "category": "portable-storage-construction-probes",
+      "reason": "Grant normalization and construction refusal contracts remain intact.",
+      "contracts": [
+        "#1536 DIR1..6 / T502-503"
+      ]
+    },
+    {
+      "category": "gm-main-run-fence",
+      "reason": "Held-lease main record and main/worker authority refusal remain fresh.",
+      "contracts": [
+        "#1536 DIR1..6 / T502-503"
       ]
     }
   ]

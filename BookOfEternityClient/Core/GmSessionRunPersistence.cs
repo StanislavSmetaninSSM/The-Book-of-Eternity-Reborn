@@ -33,26 +33,47 @@ internal sealed class GmSessionRunPersistence
     /// <param name="ownStage">
     /// An optional caller-owned staging path permitted alongside main.json; <see langword="null"/> permits none.
     /// </param>
+    /// <param name="observations">
+    /// Optional directory DATA context for this synchronous admission; null preserves fresh independent helpers.
+    /// Leaf classification, namespace enumeration and record bytes are never supplied by this context.
+    /// </param>
     /// <returns>
     /// The complete bounded record bytes, or <see langword="null"/> when the admitted run namespace is absent.
     /// Invalid namespace contents and metadata read failures propagate.
     /// </returns>
-    internal static byte[]? Read(string root,string? ownStage=null)
+    internal static byte[]? Read(string root,string? ownStage=null,AdmissionDirectoryObservations? observations=null)
     {
         // Join tolerates null so construction retains the original invalid-root refusal before target admission.
         var dir=Path.Join(root,".boe_runtime","gm-runs");
-        var scope=TrustedLocalFileScope.CreateAndObserveNamespace(root,dir,out var observed);
+        Func<string,TrustedLocalFileScope.EntryKind>? observeEntry=observations==null?null:observations.Observe;
+        var scope=TrustedLocalFileScope.CreateAndObserveNamespace(root,dir,out var observed,observeEntry);
         if(observed.BlockingFileAncestor!=null)throw Invalid();
         if(observed.Kind==TrustedLocalNamespaceKind.Missing)return null;
-        dir=scope.ValidateDirectory(dir,false);
-        if(ownStage!=null)ownStage=scope.ValidateFile(ownStage);
+        dir=observeEntry==null?scope.ValidateDirectory(dir,false):scope.ValidateDirectory(dir,false,observeEntry);
+        if(ownStage!=null)ownStage=observeEntry==null?scope.ValidateFile(ownStage):scope.ValidateFile(ownStage,true,observeEntry);
         foreach(var p in Directory.EnumerateFileSystemEntries(dir))
             if(p!=Path.Combine(dir,"main.json") && p!=ownStage)throw Invalid();
-        return ReadBounded(scope,Path.Combine(dir,"main.json"));
+        return ReadBounded(scope,Path.Combine(dir,"main.json"),observations);
     }
-    internal static byte[] ReadBounded(TrustedLocalFileScope scope,string path)
+    /// <summary>
+    /// Reads and decodes the original bounded file after ordinary file admission.
+    /// </summary>
+    /// <param name="scope">
+    /// Original grants used to validate the requested file.
+    /// </param>
+    /// <param name="path">
+    /// Fully qualified required main record or owned staging file.
+    /// </param>
+    /// <param name="observations">
+    /// Optional invocation-local directory DATA; null keeps independent fresh checks.
+    /// </param>
+    /// <returns>
+    /// Fresh complete bytes after length, exact EOF and schema validation.
+    /// </returns>
+    internal static byte[] ReadBounded(TrustedLocalFileScope scope,string path,AdmissionDirectoryObservations? observations=null)
     {
-        using var f=new FileStream(scope.ValidateFile(path,false),FileMode.Open,FileAccess.Read,FileShare.ReadWrite|FileShare.Delete);
+        var admitted=observations==null?scope.ValidateFile(path,false):scope.ValidateFile(path,false,observations.Observe);
+        using var f=new FileStream(admitted,FileMode.Open,FileAccess.Read,FileShare.ReadWrite|FileShare.Delete);
         var length=f.Length;if(length is <1 or >GmSessionRunRecordCodec.MaximumBytes)throw Invalid();
         var bytes=new byte[(int)length];f.ReadExactly(bytes);if(f.ReadByte()!=-1)throw Invalid();
         _=GmSessionRunRecordCodec.Decode(bytes);return bytes;
@@ -186,12 +207,16 @@ internal sealed class GmMainOwnerGuard : IDisposable
         }
     }
     /// <summary>
-    /// Freshly checks the retained guard's root and required file, then authenticates its real open handle.
+    /// Checks the retained guard's namespace and authenticates its real open handle on every call.
     /// </summary>
-    internal void Validate()
+    /// <param name="observations">
+    /// Optional DATA for shared ordinary directories in this synchronous admission; null keeps independent checks.
+    /// Required guard-file and native handle/path authentication remain fresh.
+    /// </param>
+    internal void Validate(AdmissionDirectoryObservations? observations=null)
     {
         var stream=_stream??throw GmSessionRunPersistence.Invalid();
-        TrustedLocalFileScope.ValidateRootAndRequiredFile(Root,_path);
+        TrustedLocalFileScope.ValidateRootAndRequiredFile(Root,_path,observations==null?null:observations.Observe);
         PhysicalFileAuthority.EnsureHandleMatchesExpectedPath(stream.SafeFileHandle,_path,"Main original owner guard");
     }
     public void Dispose()=>Interlocked.Exchange(ref _stream,null)?.Dispose();

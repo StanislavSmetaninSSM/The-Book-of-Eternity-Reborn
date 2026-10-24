@@ -61,10 +61,13 @@ query reduction must outweigh service overhead before the expensive experiment.
   XML docs, categories/selection; GREEN impacted namespace/main/admission tests.
 - [ ] T503 Independently review coherent implementation/test/diff/selection; fix
   validated findings, freshly qualify changed binaries and immutable INPUT; publish.
-- [ ] T504 ONE original OFF Cut0, unchanged600/820/15/oracles/native73/0; full
-  uncapped remaining records and same external CPU/GC; source/binary/INPUT binding.
+- [ ] T504 Two original OFF Cut0 controls on the same new genuine current-source
+  INPUT and binaries, only explicit typed fixture cache toggle differs;
+  unchanged600/820/15/oracles/native73/0, uncapped records and same external CPU/GC.
 - [ ] T505 Verify complete archive/all records and measured effect vs308.9104597;
   independent outcome/retention/docs, exact diagnostic replacement, publication.
+  The r63-input fingerprint cannot survive C# changes: generate once after cheap
+  success; never rewrite/rebind old INPUT or relax its broad source check.
 
 Coverage DIR1/2/3->501/502/503; DIR4/5->502/503; DIR6->503/504;
 DIR7->504/505; DIR8->501/503/505. No unresolved product decision; predicate and

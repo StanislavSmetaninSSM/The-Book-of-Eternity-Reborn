@@ -251,7 +251,7 @@ internal sealed class TrustedLocalFileScope
     /// <returns>
     /// The normalized admitted name, without opening the file or retaining authority for a later operation.
     /// </returns>
-    private string ValidateFile(string path, bool allowMissing, Func<string, EntryKind> observeEntry)
+    internal string ValidateFile(string path, bool allowMissing, Func<string, EntryKind> observeEntry)
     {
         using var operationTiming = FileSystemManager.MeasureCurrentOperation("TrustedScope.ValidateFile");
         var normalized = Normalize(path);
@@ -360,11 +360,40 @@ internal sealed class TrustedLocalFileScope
             Directory.Delete(ValidateDirectory(directories[index], allowMissing: false), recursive: false);
     }
 
-    internal string ValidateDirectory(string path, bool allowMissing = true)
+    /// <summary>
+    /// Freshly validates one granted directory and its ancestors.
+    /// </summary>
+    /// <param name="path">
+    /// Fully qualified directory name admitted by this scope.
+    /// </param>
+    /// <param name="allowMissing">
+    /// Whether an absent directory terminates the chain successfully.
+    /// </param>
+    /// <returns>
+    /// The normalized admitted name.
+    /// </returns>
+    internal string ValidateDirectory(string path, bool allowMissing = true) => ValidateDirectory(path, allowMissing, Probe);
+
+    /// <summary>
+    /// Validates a directory through the current synchronous request's classifier.
+    /// </summary>
+    /// <param name="path">
+    /// Fully qualified directory name to validate against the existing grants.
+    /// </param>
+    /// <param name="allowMissing">
+    /// Whether an absent directory terminates the chain successfully.
+    /// </param>
+    /// <param name="observeEntry">
+    /// Request-local classifier which is neither stored nor returned by this scope.
+    /// </param>
+    /// <returns>
+    /// The normalized name after the original grant and kind checks.
+    /// </returns>
+    internal string ValidateDirectory(string path, bool allowMissing, Func<string, EntryKind> observeEntry)
     {
         var normalized = Normalize(path);
         EnsureAllowed(normalized, file: false);
-        ValidateDirectories(normalized, allowMissing);
+        ValidateDirectories(normalized, allowMissing, observeEntry);
         return normalized;
     }
 
@@ -553,7 +582,7 @@ internal sealed class TrustedLocalFileScope
     /// <returns>
     /// The observed entry kind, including missing for the original missing-file exceptions; other failures retain their original propagation.
     /// </returns>
-    private static EntryKind Probe(string path)
+    internal static EntryKind Probe(string path)
     {
         FileAttributes attributes;
         try

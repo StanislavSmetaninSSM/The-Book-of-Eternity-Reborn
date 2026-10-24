@@ -2,6 +2,43 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "core-admission-directory-observations",
+  "responsibility": "Shares only positive directory DATA across composed helpers in one synchronous ordinary main admission through the existing validation service; every later admission, leaf, byte read and native handle check stays fresh.",
+  "excludes": "No world setup, cross-call permission cache, remote/original/worker authority shortcut or diagnostic quota.",
+  "changeHints": [
+    "BookOfEternityClient/Core/AdmissionDirectoryObservations.cs",
+    "BookOfEternityClient/Core/FileSystemManager.AdmissionDirectoryObservations.cs",
+    "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+    "BookOfEternityClient/Core/GmSessionRunPersistence.cs",
+    "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+    "BookOfEternityClient.Tests/AdmissionDirectoryObservationTests.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-trusted-local-request-observations",
+      "when": "Trusted-local helper classifications or freshness change."
+    },
+    {
+      "id": "gm-main-run-fence",
+      "when": "Main admission authority or persisted-state refusal changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.AdmissionDirectoryObservationTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "core-cleanup-proof-data-reuse",
   "responsibility": "Actual opted-in trusted-local prepared cleanup callback reuses post-recovery completed-proof/history source DATA through the existing service while preserving exact publisher mutations, fresh sources and original outcomes.",
   "excludes": "No full game-world setup, cached capability/permission, generic mutation bypass, native benchmark budget change or diagnostic quota.",
