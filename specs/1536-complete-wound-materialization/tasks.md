@@ -13,14 +13,22 @@ Source issue#1536; spec REM1..8 and plan.md. Autonomous review-wait waiver.
   source42/twoimports, frozen source/binary/package/runtime admission and review.
 - [x] T524 [US1] One same600/820/15 actual resumer-first profiling original,
   cacheON/legacyOFF/forwardersOFF/passiveON, C fixtures/D output/no competition.
-- [ ] T525 [US1] Every captured record/name/window/oracle/runtime analyzed; current
+- [x] T525 [US1] Every captured record/name/window/oracle/runtime analyzed; current
   large-section findings, independent outcome/retention, exact raw replacement.
-- [ ] T521 [US1] Final T521-remaining-recovery-costs.md evidence-backed report,
+- [x] T521 [US1] Final T521-remaining-recovery-costs.md evidence-backed report,
   no micro-optimization or speculative seconds; final source-only publication.
 
 T519->520->522->523->524->525->521. REM1/2->520/524/525/521;
 REM3/4->520/525/521; REM5->519/523/525/521; REM6->522/523;
 REM7->522/523/524; REM8->523/524/525/521. No cache-policy/native/GM changes.
+
+Evidence: qualified8a2b8db93/XML8DLL; meaningfulRED10(7PASS/3causalFAIL),
+GREEN317PASS/10explicit categories; genuineINPUT1PASS/twoimports; T524-profile
+1PASS276.1231591TRX/first173.6956649s/561names/4,023,919complete/noquotas.
+Current exacteligibility unchanged; native/oracles/CPU-GC/cleanupPASS. D T525
+summary/allrecord outcome review DAAD4C09...; exact91leaves268618693Bretired,
+626protected unchanged, currentoriginal+cheap102members rehashed. Final report
+AB8A354F...A4580, no cache optimization/no100s promise; finalsource-only closure.
 
 # CRASH5 — revision67 ordinary producer read forwarders
 
