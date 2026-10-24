@@ -1,3 +1,17 @@
+# r67 cheap gate and independent code review accepted; genuine input next
+
+Canonical FWD1..7/T514..518. Final source7272b0e29/binding
+3C61B8DBD08354C61FEFD2666168196B9560150C5F4888531746B8F4A9C17C28;
+fresh XML89.409/49.233s, all8uniform. GREEN234distinctPASS,10actualtinyfixture
+cases,8->2sourceevents/7fastHits/456directoryhits; integrity/callback/close PASS.
+Final XML-only diff since tested b999, no behavior change or repeated234run.
+Catalog discoveryPASS24.968s/0executed/0duplicates. Separate Astra/high review
+Accepted/no unresolved findings SHA
+A211925C9746687BD84A17F126AC4A47B3FC8EFC09A23E3BE66F0FD1D7C22465.
+External zero-effect analyzer controls7PASS. Genuine newsource42/twoimports next;
+no oldINPUT rebind. Originals remain unadmitted until frozen readiness review.
+Allraw D-only/uncapped, old complete r65/runtime/input/backups protected.
+
 # r67 final XML qualification WIP
 
 Independent reviewer confirmed actual234distinct GREEN PASS and all8DLL bytes,
