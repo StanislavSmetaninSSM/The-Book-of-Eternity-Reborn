@@ -1,4 +1,4 @@
-# Current checkpoint: r62 original/outcome accepted; exact retention and final docs pending
+# Current checkpoint: r62 measured repeat, complete analysis and exact retention verified
 
 Issue#1536 CPUGC1..8 / T491..495, canonical spec.md/plan.md/tasks.md. Owner approved
 ONE unchanged original repeat with external CPU/GC; autonomous review-wait waiver.
@@ -7,7 +7,7 @@ ba34bb68a4b78f486db4f47ca50eb6eba8a667b4. Eight DLL/dependencycopies/nativepins
 and immutable source42 cleanup-proof-cache-v1 unchanged. No game/test rebuild,
 seed generation or second original. Same600/820/15, C:SSD/D:HDD, uncapped output.
 
-T491..494 complete: actual pinned SpecKit plan/tasks/prerequisites, 8requirements/
+T491..495 evidence: actual pinned SpecKit plan/tasks/prerequisites, 8requirements/
 5tasks/0gaps; published/recovered source-only checkpoints026570fbf/557a82c35/
 ba34bb68a/a7ae7cd1e with38remote-onlyblobs/noalternates. Exact source/INPUT/observer
 admission before one-use T493; originalPASS1/1 case528.1018341s vs494.5938554s
@@ -36,15 +36,17 @@ retained. Review closed real CPUfinalordering, interruption/environment and reta
 composite-attribution issues with causal/negative controls before full launch;
 fresh missing binding receipt added. No savings inferred from routing. T492 immutable
 review7DF42E31..., T494 independent outcome6BA919EA... accepted0findings, full
-archive verificationF23A0135... and analysisEC238983... . T495 exact4file retirement
-and final human docs review pending; no measurement deletion performed yet.
+archive verificationF23A0135... and analysisEC238983... . T495 retention admitted
+C7C45F21..., exact4file execution Completed/6323904496B;154protected rehashed
+before/after, allparents remain. Final corrected docs receive affected-only review;
+final source-only publication/recovery closes this checkpoint.
 
 Droot D:/BoeDiagnostics/repeat-cpu-gc-r62-20261024. ZIP416560557B/144members/
 5450205421rawB SHA B4C4BA13B773EE18AAA9E103AD34E69A37943C0FBAD58BE0B893EE24B2563980.
 LeafSHA04BAA63B5AC8E5354DC92C2291CCA8B77EA9D2443304453F94704ECB7561F580.
 Human report specs/1536-complete-wound-materialization/T495-repeat-cpu-gc-measurement.md.
 Newestarchive/leaf/runtimeoriginals/compactcomparison/INPUT/r51 protected; oldr61
-ZIP/leaf remain until exact independent retention admission. Git receives only
+ZIP/leaf and two newest duplicate native stdout retired by exact admitted plan. Git receives only
 human/canonical documents; no raw/log/generatedanalysis uploads.
 
 # Previous accepted r61 checkpoint

@@ -11,7 +11,7 @@ runtime observations; autonomous review-wait waiver, existing isolated clone.
   assertions/native73/0/identity/EOF/join/owned cleanup, full uncapped runtime output.
 - [x] T494 Complete archive/every-row comparison against r61/r60; CPU/GC interval
   coverage, observer costs, honest repeatability findings; independent outcome review.
-- [ ] T495 Human findings and exact admitted old-data/duplicate-stream replacement;
+- [x] T495 Human findings and exact admitted old-data/duplicate-stream replacement;
   independent final review, source-only publication and exact remote recovery.
 
 Mapping: CPUGC1/2 -> T491/492/493; 3/4/5 -> T491/492/493/494;

@@ -79,7 +79,7 @@ system load; one rerun cannot establish a causal cache regression.
   seed generation; observe two exact native roles, preserve all raw data, settlement.
 - [x] T494 CPUGC4/6: complete verified archive/every-row native analysis, compare
   r61 and retained r60, CPU/GC coverage + observer costs; independent outcome review.
-- [ ] T495 CPUGC7..8: honest human result, exact accepted old-data/duplicate-stream
+- [x] T495 CPUGC7..8: honest human result, exact accepted old-data/duplicate-stream
   retirement, final independent review and source-only publication/remote recovery.
 
 Dependencies: T491 -> T492 -> T493 -> T494 -> T495. Helper ownership can run in
