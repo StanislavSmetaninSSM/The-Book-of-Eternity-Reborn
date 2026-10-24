@@ -194,6 +194,33 @@ public sealed class ControlGameStateDataReuseTests(ITestOutputHelper output)
     }
 
     /// <summary>
+    /// Counts actual declared-lease DATA hits separately from the selected implicit GameState route.
+    /// </summary>
+    /// <returns>
+    /// Completion after seven genuine hits and a fresh exit proof contribute exactly seven general hits.
+    /// </returns>
+    [Fact]
+    public async Task OriginalOnlyControlCountsDeclaredHitsWithoutCountingFreshExit()
+    {
+        using var fixture = new Fixture(output);
+        await fixture.InitializeGenerationAsync();
+        await SessionOperationContext.RunParticipatingCurrentSessionAsync(fixture.Files, () =>
+            fixture.Files.ReadControlGameStateDataAsync(realm: false, originalOnly: true, async () =>
+            {
+                await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+                using var source = fixture.Files.BeginSourceDataOperationIfNeeded();
+                Assert.NotNull(source);
+                source.Observe(lease);
+                for (var index = 0; index < 8; index++)
+                    Assert.Equal("original", await fixture.Files.ReadFileAsync(lease, "present.txt"));
+                await source.CompleteAsync();
+            }));
+        var counts = fixture.Files.CaptureControlGameStateStatistics().ClientOwnedControlFiles;
+        Assert.Equal(7, counts.SourceHits);
+        Assert.Equal(0, counts.FastSourceHits);
+    }
+
+    /// <summary>
     /// Executes the ordinary participating phase without constructing a game or granting a verdict.
     /// </summary>
     /// <param name="fixture">
