@@ -11,7 +11,7 @@ autonomous execution/spec-review wait waiver persists. Existing isolated clone.
   original oracle, source/INPUT/native custody and uncapped remaining output.
 - [x] T499 Complete archive and all remaining off-record/runtime/stage analysis;
   honest full/off comparison; independent original/runtime outcome acceptance.
-- [ ] T500 Human report; exact admitted r62 heavy ZIP/leaf/new duplicate retirement,
+- [x] T500 Human report; exact admitted r62 heavy ZIP/leaf/new duplicate retirement,
   final independent documentation and exact source-only publication/recovery.
 
 Coverage: OFF1->496/497/498; OFF2->497/498/499; OFF3->497/498/499;
@@ -25,7 +25,11 @@ Two external parser/source-fixture defects closed by separately reviewed v2/v3;
 T499 outcome/native/runtime/original oracles PASS; independently verified all148
 archive payloads/all136nativeJSON+2unknownlines; comparison -219.1913744s accepted.
 T500 exact retirement completed4files969983166B/177protectedbeforeafter, freshfull
-SHA/CRC and native-original preservation; final docs/publication still pending.
+SHA/CRC and native-original preservation. Final documentation independently
+accepted (45BA04E7...) and exact reviewed blobs published/recovered at
+9de81ce7bd40b95db69769fcd9b783bf2e9ca099:40remote-onlyblobs/noalternates,
+clean/no newdiagnostics. Final mechanical closure receives its own D-local
+publication receipt; source1e6 and measurementmetadataBB remain unchanged.
 
 # CRASH5 — revision62 unchanged repeat with external CPU/GC observation
 

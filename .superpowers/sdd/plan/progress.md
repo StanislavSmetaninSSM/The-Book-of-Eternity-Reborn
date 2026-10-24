@@ -1,4 +1,14 @@
-# Current checkpoint: r63 outcome accepted; exact retirement complete; final docs pending
+# Current checkpoint: r63 T496..500 complete; reviewed report published/recovered
+
+Finaldocumentation45BA04E7A83D95140761AC333C5C5610EAD3B2A791818C763556EC05F086AE15
+accepted exact fourMDblobs. Published9de81ce7bd40b95db69769fcd9b783bf2e9ca099
+and freshly recovered40remote-onlyblobs/noalternates, remotehead/tree exact,
+clean/no newdiagnosticpaths. T500 now closed on that actual evidence; this purely
+mechanical status/checkbox delta gets affected-delta review and finalsource-only
+push/recovery in T500-final-publication.json. Report content/runtime/source1e6/
+measurementmetadataBB/INPUT/archive/outcome/retention all unchanged.
+
+## Earlier retirement checkpoint
 
 T499 independent outcome CB54F2C3298BA9288A72810382DE977A0D9212F797B64232E18CC706FF7D5BFA
 and148payload integrity26F0511A512A9D3BF5D3A07B2B8D2AE910FF32C4D7ACF3097835B461568E8217

@@ -74,8 +74,11 @@ or source optimization is authorized by this measurement.
   oracles PASS; archive148payloads SHA/CRCverified; T499 independently accepted.
 - [x] T499 OFF2/3/6: full capture/every payload/every remaining record analysis,
   runtime/stage/elapsed comparison against r62; independent outcome acceptance.
-- [ ] T500 OFF5/7: human findings, exact admitted older raw/leaf/duplicate retirement,
+- [x] T500 OFF5/7: human findings, exact admitted older raw/leaf/duplicate retirement,
   final independent documentation review and exact source-only remote recovery.
+  Review45BA04E7... accepted; exact reviewed documentation9de81ce7bd40b95db69769fcd9b783bf2e9ca099
+  published/fresh40remote-onlyblobs recovered, noalternates/no newdiagnostics/clean.
+  Final mechanical closure is verified by its separate D-local publication receipt.
 
 Dependencies T496->497->498->499->500; all seven requirements covered. Optional
 SpecKit git/agent-context hooks are not mandatory; explicit source checkpoint
