@@ -30,9 +30,16 @@ separate actualAstra/high independent review; no shared-file edits or heavy live
 analysis. PinnedCLI8.0.547301 installed onlyonD; its exports omitIntervalSec. Separate
 .NET8 raw-counter tooling wrapper preserves exactincrements/intervals. Cheap
 controls/toolimplementation in progress; no game rebuild/seedgen/originallaunch.
-T492 parentpreflight:11evidence/gatecontrolsPASS,4syntaxchecks; no claim/launchcreated.
+T492 parentpreflight:31evidence/gate/environment/interruptioncontrolsPASS,
+4syntaxchecks; exact launch environment is checked; BaseException settles owned
+observers and final receipt precedes rethrow. No claim/launchcreated.
 Rawcounterwrapper+shorttoolingfixture compile separately onD withXMLdoc; observer
-syntheticcontrols pass, realnormal/abruptfixture validation pending. Postsettlement
+syntheticcontrols pass; realnormal/abruptfixture controls are being frozen.
+Independent preliminary review found CPU final-sample ordering race and incorrect
+retained composite metadata attribution; both have causal controls/corrections.
+Pinned CLI exports raw Increment, not normalized values: source plus all9actual
+CLI/raw samples agree; IntervalSec is omitted. Earlier contrary wording corrected.
+Raw wrapper adds exact interval/payload and IPC instance-birth checks. Postsettlement
 adapters preserve r61strictparser/retainedattribution; runtime schema pendingfreeze.
 
 # Previous accepted r61 checkpoint

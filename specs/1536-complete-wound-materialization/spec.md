@@ -24,9 +24,9 @@ compiled source1e6b947b7d9e64c1b5af7c2c7847426524463551.
   or use PID alone. Record the external collectors' own measured CPU/overhead too.
 - CPUGC4: Collect .NET8 System.Runtime total-pause-time-by-gc externally at 1second
   intervals with a pinned D-local diagnostics tool. Treat this IncrementingPollingCounter
-  according to its interval-increment/rate export semantics in milliseconds,
-  not absolute lifetime totals or percent time-in-gc. Preserve actual interval
-  duration where needed; never sum a normalized rate as if it were milliseconds.
+  as raw interval increments in milliseconds, not absolute lifetime totals or
+  percent time-in-gc. Verify the pinned exporter semantics against source and real
+  output; retain actual IntervalSec, which its standard JSON/CSV exports omit.
   Keep all original counter output and attach/first/last/exit evidence.
   Startup/baseline/final-unpublished/abrupt-EOF gaps stay unknown; missing samples
   are never zero and overlapping GC/CPU/wall/diagnostic times are not added.
@@ -65,9 +65,11 @@ contracts are unchanged; Mortal World/afterlife prompts/examples need no update.
 Research decisions: discovery found no installed diagnostics CLI. After the
 plan/consistency checkpoint, dotnet-counters8.0.547301 was installed only under
 D:/BoeDiagnostics tooling. .NET8.0.31 exposes the required counter. The pinned
-CLI JSON/CSV exports normalize values but omit
-IntervalSec; those exports cannot recover exact pause increments. Use a small
-D-only .NET8 raw-counter wrapper with the same installed diagnostic libraries,
+CLI JSON/CSV exports retain raw Increment values, despite their Rate label,
+but omit IntervalSec. Exact pinned source and a real nine-sample comparison
+corrected the earlier normalization claim: those increments CAN be summed.
+Use a small D-only .NET8 raw-counter wrapper for actual interval/full payload
+and IPC instance-birth checks, with the same installed diagnostic libraries,
 recording the original Increment/IntervalSec/units payload. Its own source/build
 and dependency hashes are tooling evidence, never a game rebuild. Attach/exit
 handling and counter first-poll semantics must pass T492 controls before launch.

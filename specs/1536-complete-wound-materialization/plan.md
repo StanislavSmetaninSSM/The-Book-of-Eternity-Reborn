@@ -17,8 +17,11 @@ counts identical but slower, so one rerun tests repeatability rather than provin
 cache regression. .NET8.0.31 exposes total-pause-time-by-gc backed by
 GC.GetTotalPauseDuration, an IncrementingPollingCounter with a reset baseline.
 The old time-in-gc percentage is not the requested pause duration. The pinned
-8.0.547301 CLI JSON/CSV exports omit IntervalSec and normalize values, so they cannot
-provide exact interval increments. A small D-only .NET8 raw-counter wrapper uses
+8.0.547301 CLI JSON/CSV exports retain raw Increment values (despite their Rate
+label) and omit IntervalSec. Source and a real nine-sample comparison corrected
+the earlier normalization claim: increments can be summed. A small D-only .NET8
+raw-counter wrapper adds actual interval/full payload and IPC instance-birth
+checks. It uses
 the same installed NETCore.Client/TraceEvent libraries and retains raw payload
 Increment/IntervalSec/units. Validate export/lifecycle behavior in T492; wrapper
 compilation is separate tooling and never rebuilds or overwrites game DLLs.
@@ -59,8 +62,8 @@ not a substitute for the actual original. No broad suite or OS privilege change.
 
 Review focus: capture identity initially null; read only complete small manifests,
 use narrow owner/argv checks for any fallback, bind CPU handle birth to final native
-identity. Original native lifecycle must not wait for observers. GC CounterType and
-normalization/IntervalSec must match real exporter. Unknown startup/tail isn't zero.
+identity. Original native lifecycle must not wait for observers. GC CounterType, raw Increment and
+IntervalSec semantics must match pinned source and real exporter. Unknown startup/tail isn't zero.
 Observer process shutdown cannot target game processes or use broad process kills.
 External CPU is cumulative kernel+user, not GC-adjusted wall time. Separate clocks,
 GC/CPU/observer/inclusive scopes are not additive. Additional observers change total
