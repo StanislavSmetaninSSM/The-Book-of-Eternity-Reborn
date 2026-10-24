@@ -1,32 +1,26 @@
-# r68 additional diagnostic probe tasks
+# CRASH5 — revision68 current recovery cost investigation
 
-Source #1536; amended spec REM6..8/plan. User autonomous waiver persists.
-- [ ] T522 [US1] Sealed passive named counters, existing scope/context routing,
-  meaningful cheap actual-manager RED/GREEN, source/directory/cache/observer/window/
-  exception/concurrency/noquota contracts; XML and category/selection.
-- [ ] T523 [US1] Independent coherent review/corrections, baseline8DLL backup,
-  fresh uniform8DLL/XML, genuine new source42/twoimports and frozen admission.
-- [ ] T524 [US1] Actual resumer-first profiling original with same600/820/15,
-  Cfixtures/Doutput, cacheON/callbacktimersOFF/frozen CPU-GC/no competing work.
-- [ ] T525 [US1] Analyze every captured record and named scope; current big-section
-  findings in T521 report, independent outcome/retention and exact raw replacement.
+Source issue#1536; spec REM1..8 and plan.md. Autonomous review-wait waiver.
 
-T519->520->522->523->524->525->521. No cache-policy/game/native/GM change.
+- [x] T519 Canonical spec/plan/tasks through actual phases, prerequisites and
+  consistency; written links, source-only checkpoint and remote recovery.
+- [x] T520 [US1] Verify all current r67 marker/counter/semantic evidence and r62
+  provenance, exact arithmetic/source pins; map large DATA candidates and gaps.
+- [x] T522 [US1] Sealed passive recorder/routing, actual adopted-fixture RED/GREEN,
+  unchanged callback/cache/integrity/window/concurrency contracts; XML/uniform8DLL,
+  317 cases in10 explicit categories and typed strict selection; baseline backup.
+- [ ] T523 [US1] Independent coherent review/corrections, genuinely new current-
+  source42/twoimports, frozen source/binary/package/runtime admission and review.
+- [ ] T524 [US1] One same600/820/15 actual resumer-first profiling original,
+  cacheON/legacyOFF/forwardersOFF/passiveON, C fixtures/D output/no competition.
+- [ ] T525 [US1] Every captured record/name/window/oracle/runtime analyzed; current
+  large-section findings, independent outcome/retention, exact raw replacement.
+- [ ] T521 [US1] Final T521-remaining-recovery-costs.md evidence-backed report,
+  no micro-optimization or speculative seconds; final source-only publication.
 
-# CRASH5 — revision68 remaining recovery cost investigation
-
-Source issue #1536; spec REM1..5; plan.md r68. Findings-only US1, no C#/runtime.
-
-- [x] T519 Establish spec/plan/tasks through actual Spec Kit phases, prerequisite
-  and read-only consistency; written links, source-only checkpoint/remote recovery.
-- [x] T520 [US1] Audit current accepted r67 markers/metrics/counters and historical
-  named aggregates; verify provenance/exact arithmetic/current source; rank only
-  large DATA candidates with existing service keys/lifetimes/freshness constraints.
-- [ ] T521 [US1] Record findings/limits/probe in T521-remaining-recovery-costs.md;
-  independent coherent review, corrections and source-only publication/recovery.
-
-REM1/2->520/521; REM3/4->520/521; REM5->519/521. T519->520->521.
-No new code/test/build/INPUT/original, quotas or diagnostic retirement.
+T519->520->522->523->524->525->521. REM1/2->520/524/525/521;
+REM3/4->520/525/521; REM5->519/523/525/521; REM6->522/523;
+REM7->522/523/524; REM8->523/524/525/521. No cache-policy/native/GM changes.
 
 # CRASH5 — revision67 ordinary producer read forwarders
 

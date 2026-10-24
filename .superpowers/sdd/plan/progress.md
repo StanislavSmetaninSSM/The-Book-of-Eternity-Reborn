@@ -1,15 +1,27 @@
-# r68 T522 RED scaffolding WIP
+# r68 T522 GREEN complete; current profiling admission pending
 
-Sealed accumulator and typed optional hook/fixture injection added; actual manager
-MeasureOperation/current context deliberately still unwired. New10cheap cases
-assert source2/fast7/directory456 plus actual recordednames, staticcontext restore,
-callbackfallback, windows/late/failure/concurrent/noquota controls. MeaningfulRED
-expected for3unwired actualrecording cases; no original admitted. Initial RED
-build failed on xUnit throw-lambda overload (CS0619); explicit Action corrects it.
-This compile failure is not counted as RED evidence; fresh corrected build next. Fresh Integration
-XML build only before RED category; full8DLL qualification reserved for GREEN.
-No authority/cache-policy/native/GM changes. AllrawD-only/noquotas. Amendedspec
-REM6..8/T522..525 presented under autonomouswaiver; backup7272current8DLL onD.
+Canonical REM1..8/T519..525, existing feature/branch, autonomous review-wait waiver.
+Original read-only analysis T520 verified32checks/19pins; current163.3117708s
+retained OFF has115.3186501s unresolved internally. Passive profiling amendment
+was presented before code; no actual cache optimization authorized or implemented.
+
+Qualified source8a2b8db939f6da3c2a4dc72c1dc975e0dd581af6. Meaningful RED10:
+7PASS/3empty-actual-recording FAIL; prior compile failure explicitly not RED.
+GREEN317distinct PASS in10explicit categories; complete descriptors/exit0/both
+cleanup flags. Fresh Tests+Integration XML builds success; all8DLL uniform.
+Tiny actual fixtures show2sourceevents/7fastHits/456directoryhits with recorded
+names; byte drift/default/callback/context/window/late/exception/concurrency/noquota
+controls. Existing arbitrary-observer eligibility untouched. Sealed accumulator
+executes no user callbacks/I/O/suppression. Collector disabled by default; strict
+first-resumer-window only. Accepted7272 binaries backed up/CRC on D.
+
+Independent complex Astra/high reviewer inspected exact code/RED/GREEN8DLL and
+317TRX; no confirmed correctness findings, final metadata review pending.
+T519/520/522 complete; T523 review/new genuine INPUT/frozen admission next,
+then T524 one600/820/15 original, T525 all-record/current-large-scope analysis and
+outcome/exact retention, T521 final report/publication. No old INPUT rebind;
+no original admitted yet, no raw deletion. C fixtures/D uncapped diagnostics;
+no competing work during timed original, allCPU/GC/INPUT/backups protected.
 
 # r67 coherent block complete; final source-only publication
 

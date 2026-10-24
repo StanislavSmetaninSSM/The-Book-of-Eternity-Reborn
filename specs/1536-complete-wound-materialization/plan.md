@@ -1,64 +1,37 @@
-# r68 amended profiling plan
+# r68 Current Recovery Cost Investigation Plan
 
-> Inline execution/TDD/systematic-debugging; separate independent complex review.
-> Canonical REM1..8, issue#1536. Existing branch, no delegated implementation.
+Inline Superpowers execution/TDD/systematic-debugging; parent owns implementation,
+separate complex independent review. Spec REM1..8, issue#1536; existing branch.
 
-**Goal:** Obtain current large internal sections without disabling existing caches.
-**Architecture:** sealed passive accumulator, existing timing scope routing, strict
-resumer-only first-call window. No arbitrary callbacks or relaxed eligibility.
-**Tech Stack:** existing .NET8/C#/PowerShell categories/D Python/frozen CPU-GC.
-**Spec:** spec.md r68 amendment REM6..8 plus retained REM1..5.
+Goal: identify current large internal costs without disabling existing caches.
+Architecture: sealed passive accumulator routes existing named scopes into one
+strict resumer-first window. No arbitrary callbacks or relaxed eligibility.
+Stack: existing .NET8/C#/PowerShell category runner, D Python, frozen CPU/GC.
 
-- [ ] T522 Add typed recorder/cheap real fixture controls; meaningful unwired RED,
-  GREEN routing; no legacy suppression changes, XML/category/selection verification.
-- [ ] T523 Independent coherent review/fixes, fresh8DLL/XML, genuine new source42/
-  twoimports, strict frozen profile admission; backup accepted7272 binaries first.
-- [ ] T524 One actual Cut0 profiling original600/820/15, first-call window, existing
-  cachesON and legacy timersOFF, frozen CPU/GC, no competing work or quotas.
-- [ ] T525 All-row/window/native/CPU-GC analysis, update T521 report with current
-  internal large timings and safe candidates; independent outcome/exact retention.
-- [ ] T521 Complete original findings task and final source-only publication.
+1. T519 Establish canonical phases, prerequisites and read-only consistency; present
+   actual written links under waiver and publish/recover source-only checkpoint.
+2. T520 Verify retained current gaps/counters and historical timing provenance;
+   map large DATA candidates/already-cached paths and missing current evidence.
+3. T522 Typed recorder and actual-manager cheap RED/GREEN, unchanged callback/cache
+   contracts; XML/uniform8DLL, bounded10-category selection and baseline backup.
+4. T523 Independent coherent review/fixes; genuinely new source42/twoimports;
+   exact package/hash/runtime qualification and independent frozen admission.
+5. T524 One original profiling run with same600/820/15/native/oracles/cleanup,
+   cachesON/legacyOFF/forwardersOFF/passiveON, C fixtures/D output, no competition.
+6. T525 Analyze all records/names/window/native/runtime, update human findings;
+   independent outcome/exact retention review, preserve protected dependencies.
+7. T521 Final evidence-backed large-section/candidate report, verification and
+   source-only publication/remote recovery; no actual cache optimization.
 
-T519->T520->T522->T523->T524->T525->T521. REM6->522/523; REM7->522/523/524;
-REM8->523/524/525/521. Read-only initial findings remain historical context; do not
-claim their old timings resolve current163s. Do not sum nested timed scopes.
-Review focus: no arbitrary-user-code execution from recorder, unchanged cache
-eligibility/callback refusal, exact window closure/late counts/thread isolation,
-source integrity, failure preservation, real INPUT and native ownership.
-
-# r68 Remaining Recovery Cost Investigation Plan
-
-> Inline Superpowers executing-plans/systematic-debugging; independent complex
-> review. Spec REM1..5, issue #1536. Existing isolated branch; no implementation.
-
-**Goal:** Rank large remaining recovery work using exact retained evidence.
-**Architecture:** Read current accepted archive/semantic stages and old detailed
-aggregates; pin current source and map potential DATA reuse versus fresh authority.
-**Tech Stack:** Existing D-local Python/PowerShell/Git; no build or runtime launch.
-**Spec:** spec.md REM1..5, tasks T519..521; basee6b1727f8/source7272.
-
-## Constraints and review focus
-
-Current OFF markers are intervals, not internal-method timings. Historical r62
-has expensive observation and predates r64/r65; never sum nested totals or call it
-current163s. Preserve all complete archives/CPU/GC/INPUT/instrumentation/backups;
-all raw D-only, no quotas. No C#/test/selector/native/DLL/GM changes; no C# rerun.
-Service reuse must retain exact structural owner/dependencies, operation lifetime,
-mutable-result detachment and fresh authority/bytes/absence/generation/effect fences.
-No cached validation verdicts. Source getters may do full admitted reconstruction.
-
-- [x] T519 Reuse feature, write spec/plan/tasks through actual phases, prerequisite
-  and read-only consistency; present written scope and publish/recover checkpoint.
-- [x] T520 [US1] Extract all current stage/semantic/counter evidence and provenance-
-  bound historical aggregates into D; verify exact arithmetic/source pins; map
-  large candidates and already-cached paths, plus missing measurement protocol.
-- [ ] T521 [US1] Write T521-remaining-recovery-costs.md, independent evidence/code/
-  findings review and corrections; source-only final publication/recovery.
-
-T519->520->521. REM1/2->520/521; REM3/4->520/521; REM5->519/521.
-No research/data-model/contract duplication is needed for this evidence-only slice;
-source/key/lifetime/acceptance decisions live in the human findings report.
-Optional git/context extension hooks use explicit source-only checkpoints.
+T519->520->522->523->524->525->521. REM1/2->520/524/525/521;
+REM3/4->520/525/521; REM5->519/523/525/521; REM6->522/523;
+REM7->522/523/524; REM8->523/524/525/521. No uncovered requirement.
+Review: no user-code execution from recorder; unchanged eligibility/fallback;
+window closure/late counters/context/concurrency; byte drift and detached data;
+original source/native ownership and genuine INPUT. Historical inclusive timings
+are context only; do not add overlapping scopes or claim current exclusive costs.
+No extra plan hierarchy. All artifacts raw on D without quotas; protect prior
+accepted baseline until complete replacement and retain CPU/GC/INPUT/backups.
 
 # r67 Ordinary Producer Read Forwarders Implementation Plan
 

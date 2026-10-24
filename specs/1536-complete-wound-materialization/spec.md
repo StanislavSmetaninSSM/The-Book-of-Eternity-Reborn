@@ -1,73 +1,52 @@
-# r68 amendment — cache-preserving current recovery profiling
+# r68 — Current large recovery costs with cache-preserving profiling
 
-Source issue #1536; original owner request requires current large internal sections.
-Retained OFF intervals cannot resolve115s internally and legacy FULL changes cache
-eligibility. Continuing autonomous approval waiver covers the necessary diagnostic
-probe; no production cache optimization is authorized by this investigation.
+Issue #1536. Owner asks which large sections occupy the remaining163s and what
+can safely reuse DATA through the existing service, using measurements rather
+than micro-optimizations. Autonomous execution and specification-review-wait waiver
+remain explicit. Initial read-only evidence cannot subdivide115s; the diagnostic
+amendment adds necessary passive profiling, not a production cache optimization.
 
-REM1..5 remain evidence/large-candidate requirements. REM6 adds a sealed internal
-passive named timing accumulator with no caller delegate, callbacks, storage I/O,
-validation suppression or authority behavior. Existing arbitrary-observer gates
-remain unchanged. Default absent accumulator keeps current behavior. Every scope
-contributes started/completed/count/inclusive/max data; no count/byte quota.
-A window reports unclosed/late scopes explicitly; incomplete capture cannot be
-claimed as an exhaustive current partition. No nested-timer double counting.
+- REM1: Bind accepted r67 ordinary archive/source7272 and current qualified source;
+  derive exact nonoverlapping first-recovery marker intervals.
+- REM2: Separate current measured methods/counters from historical r62 FULL data.
+  Never add nested scopes, transfer old seconds into163s, or promise100s savings.
+- REM3: Audit only large DATA candidates through the existing validation service:
+  full structural owner/key/dependencies, operation lifetime, invalidation, detached
+  mutable results and fresh authority/bytes/absence/generation/effect fences.
+  Never cache an authority or validation verdict.
+- REM4: Identify already-cached QTE/progression/cleanup/GameState paths and exclude
+  micro-optimizations. Distinguish legacy FULL observer eligibility from passive
+  profiling; preserve all existing arbitrary-observer fallback/refusal contracts.
+- REM5: Save compact human findings and D-local source/hash/arithmetic evidence;
+  independent review, source-only publication and exact remote recovery. No raw
+  diagnostics in Git, no record/byte quotas.
+- REM6: Sealed internal passive named accumulator has no caller delegates, storage
+  I/O, validation suppression or authority behavior. Existing timing/context paths
+  prefer legacy callbacks; default absent recorder preserves ordinary behavior.
+  Every invocation contributes started/completed/inclusive/max data without quota;
+  detached thread-safe snapshots expose open/late/incomplete windows. Synchronous
+  context selection/suppression/restoration does not cross awaits or change cache
+  eligibility. No nested-scope sum is presented as an exclusive partition.
+- REM7: Strict test-only metadata/environment selects only resumer first recovery,
+  ordinary extended seeded WindowsCut0, callback timersOFF, existing cachesON,
+  producer forwardersOFF. Cheap actual adopted fixtures prove2sourceevents/7fast
+  hits/456directoryhits and integrity/callback/window/exception/concurrency controls.
+  Fresh XML/uniform8DLL and genuinely new source42/twoimports precede original.
+- REM8: One same-scenario original600child/820shared/15category profiling run,
+  frozen external CPU/GC, no competing work, C fixtures and uncapped D output.
+  Analyze every captured record/name, completeness and actual current large costs;
+  disclose profiling overhead/eligibility limits. Independent code/admission/outcome
+  review, archived evidence and exact latest-measurement retention after acceptance.
+  Protect all CPU/GC/INPUT/instrumentation/binary backups.
 
-The same existing MeasureOperation/MeasureCurrentOperation hooks route into this
-accumulator only when no legacy callback observer is selected. Synchronous timing
-contexts restore/suppress both destinations without crossing awaits. Window data
-is thread-safe, detached and cannot invoke user code. Existing source/directory
-cache eligibility remains demonstrably equal to ordinary OFF mode.
-
-REM7: strict test-only parent metadata/environment selects this window ONLY for
-resumer first recovery in ordinary extended seeded WindowsCut0/timingsOFF; producer
-and resumer gameplay/native600/820/15/oracles stay unchanged. Cheap real adopted
-fixtures must prove2sourceevents/7fastHits/456directoryhits, callback fallback,
-window/late/exception/concurrency/noquota controls before original admission.
-Fresh uniform8DLL/XML and genuine new source42/twoimports required; no old rebind.
-
-REM8: one new same-scenario600-limit profiling original with frozen external CPU/GC,
-no competing work, C fixtures/D uncapped artifacts. Record actual current internal
-large scopes and stage totals, overhead/eligibility limits and source/current-vs-
-historical distinction. Independent complex code/admission/outcome review; archive
-and exact latest-measurement retention after acceptance; source-only publication.
-No GM/interface/native/cache-policy changes. Preserve prior baseline until accepted
-replacement; all CPU/GC/INPUT/instrumentation/binary backups remain protected.
-
-Files: new Core/OperationTimingAccumulator.cs; existing timing/context/hooks routing;
-typed lifecycle diagnostic injection; pure/tiny real fixture category; strict test
-selection/parent-child export. Scope is diagnostic investigation, not a cache fix.
-Written material scope amendment presented before code; review wait already waived.
-
-# r68 Remaining Recovery Cost Investigation
-
-Source: issue #1536; owner asks which large sections occupy the remaining163s and
-what can safely reuse DATA through the existing service, using measurements.
-Continuing autonomous review-wait waiver applies; deliverable is findings only.
-
-- REM1: Bind latest accepted r67 ordinary archive, qualified source7272 and actual
-  current source; derive exact nonoverlapping first-recovery marker intervals.
-- REM2: Separate current measured phase/counter evidence from historical r62
-  detailed timings. Never add nested timers or transfer historical seconds into163s.
-- REM3: Audit only large candidates: repeated wound-bundle computations and bulk
-  first-read/fresh-source admission work. Map to current callers, cache service,
-  owner/key/lifetime/invalidation and preserved fresh fences; no cached verdict.
-- REM4: Identify already-cached QTE/progression/cleanup/GameState paths; no repeat
-  optimization claims. Explain why current legacy detailed observation changes
-  directory-cache eligibility; outline a cache-preserving probe if needed.
-- REM5: Save compact human findings/current-data limits and D-local source/hash/
-  arithmetic evidence, independent review and source-only remote recovery.
-
-Original read-only subphase is complete; the amendment above authorizes the necessary
-cache-preserving diagnostic probe. No game cache optimization is included.
-Approaches: reuse current OFF markers plus provenance-bound old aggregates (chosen
-for this read-only question); rerun legacy FULL (reject because it disables directory
-reuse); a sealed passive aggregate counter without arbitrary callbacks is a future
-measurement design, requiring cheap eligibility controls before any original.
-Unresolved: current internal-method seconds and prospective cache saving remain
-unknown where the retained current measurement has no named timers.
-Acceptance: exact current163.3117708s partition, evidence-bound large candidates,
-explicit safety/measurement gaps, no speculative seconds or micro-optimization.
+Scope: Core passive accumulator/routing; typed lifecycle injection; cheap fixture
+and strict selector controls; first-call export; measurement and findings only.
+No game/cache-policy/native/GM-interface change. No new cache implementation.
+Unresolved until measurement: current internal seconds, safe prospective savings,
+and whether remaining broad admission cost requires a new batch protocol.
+Acceptance: actual current internal large-scope table with source-bound safe DATA
+candidates, intact existing eligibility/integrity/oracles and explicit evidence
+limits. Written amendment was presented before code; review wait explicitly waived.
 
 # CRASH5 — revision67 ordinary producer read forwarders
 

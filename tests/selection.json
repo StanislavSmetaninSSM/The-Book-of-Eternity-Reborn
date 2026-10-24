@@ -2,52 +2,73 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "core-producer-read-forwarders",
-      "reason": "Cheap actual-constructor causal control and callback/integrity contracts.",
+      "category": "core-passive-recovery-timing",
+      "reason": "Passive actual-manager timing, eligibility, lifecycle and integrity.",
       "contracts": [
-        "#1536 FWD1..7 / T514..518"
+        "#1536 REM1..8 / T519..525"
+      ]
+    },
+    {
+      "category": "fr063-operation-timing-context-controls",
+      "reason": "Synchronous context selection/suppression/restoration and callback contracts.",
+      "contracts": [
+        "#1536 REM1..8 / T519..525"
+      ]
+    },
+    {
+      "category": "core-producer-read-forwarders",
+      "reason": "Original fixture forwarding defaults and callback/integrity controls.",
+      "contracts": [
+        "#1536 REM1..8 / T519..525"
       ]
     },
     {
       "category": "core-admission-directory-observations",
-      "reason": "Directory eligibility restored only for absent arbitrary hooks.",
+      "reason": "Directory eligibility unchanged with passive recorder.",
       "contracts": [
-        "#1536 FWD1..7 / T514..518"
+        "#1536 REM1..8 / T519..525"
       ]
     },
     {
       "category": "core-control-game-state-data",
-      "reason": "Preserve original phase DATA and final fence contracts.",
+      "reason": "Control DATA phases and final fences remain intact.",
       "contracts": [
-        "#1536 FWD1..7 / T514..518"
+        "#1536 REM1..8 / T519..525"
       ]
     },
     {
       "category": "core-game-state-data-reuse",
-      "reason": "Preserve reader lifetime, changed source and unsupported fallback.",
+      "reason": "GameState source lifetime and changed-byte refusal.",
       "contracts": [
-        "#1536 FWD1..7 / T514..518"
+        "#1536 REM1..8 / T519..525"
+      ]
+    },
+    {
+      "category": "core-operation-source-data",
+      "reason": "Operation DATA integrity and read-set lifetime.",
+      "contracts": [
+        "#1536 REM1..8 / T519..525"
       ]
     },
     {
       "category": "fr063-joint-interface-probe-budget-contracts",
-      "reason": "Strict producer control and original process budgets.",
+      "reason": "Strict passive route metadata and original process budgets.",
       "contracts": [
-        "#1536 FWD1..7 / T514..518"
+        "#1536 REM1..8 / T519..525"
       ]
     },
     {
       "category": "fr063-joint-interface-seed-contracts",
-      "reason": "Current-source fingerprint and carrier refusal.",
+      "reason": "Current-source fingerprints and carrier refusal.",
       "contracts": [
-        "#1536 FWD1..7 / T514..518"
+        "#1536 REM1..8 / T519..525"
       ]
     },
     {
       "category": "fr063-joint-five-fixture-package-contracts",
       "reason": "Genuine current-source package exact hydration.",
       "contracts": [
-        "#1536 FWD1..7 / T514..518"
+        "#1536 REM1..8 / T519..525"
       ]
     }
   ]
