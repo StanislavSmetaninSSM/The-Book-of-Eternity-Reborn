@@ -13,8 +13,8 @@ public sealed partial class GameStateDataReuseTests
     /// <summary>
     /// Runs the actual control or realm phase against a tiny genuine snapshot and fresh fallback.
     /// </summary>
-    /// <param name="phase">
-    /// The single read-only phase selected by the production validator.
+    /// <param name="realm">
+    /// Whether to select RealmSegregation instead of ClientOwnedControlFiles.
     /// </param>
     /// <param name="invalidAuthority">
     /// Whether to replace the detached authority with malformed bytes before validation.
@@ -23,13 +23,14 @@ public sealed partial class GameStateDataReuseTests
     /// Completion after ordered issue parity, actual DATA reuse and changed-source detection.
     /// </returns>
     [Theory]
-    [InlineData(GameStateValidationPhase.ClientOwnedControlFiles, false)]
-    [InlineData(GameStateValidationPhase.ClientOwnedControlFiles, true)]
-    [InlineData(GameStateValidationPhase.RealmSegregation, false)]
-    [InlineData(GameStateValidationPhase.RealmSegregation, true)]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
     public async Task SelectedControlPhasePreservesSourcesAndOrderedIssues(
-        GameStateValidationPhase phase, bool invalidAuthority)
+        bool realm, bool invalidAuthority)
     {
+        var phase = realm ? GameStateValidationPhase.RealmSegregation : GameStateValidationPhase.ClientOwnedControlFiles;
         using var cached = new Fixture(output);
         using var fresh = new Fixture(output, mutableReadHook: true);
         foreach (var fixture in new[] { cached, fresh })
