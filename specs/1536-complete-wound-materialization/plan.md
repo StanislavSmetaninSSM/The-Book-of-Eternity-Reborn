@@ -1,3 +1,37 @@
+# r68 Remaining Recovery Cost Investigation Plan
+
+> Inline Superpowers executing-plans/systematic-debugging; independent complex
+> review. Spec REM1..5, issue #1536. Existing isolated branch; no implementation.
+
+**Goal:** Rank large remaining recovery work using exact retained evidence.
+**Architecture:** Read current accepted archive/semantic stages and old detailed
+aggregates; pin current source and map potential DATA reuse versus fresh authority.
+**Tech Stack:** Existing D-local Python/PowerShell/Git; no build or runtime launch.
+**Spec:** spec.md REM1..5, tasks T519..521; basee6b1727f8/source7272.
+
+## Constraints and review focus
+
+Current OFF markers are intervals, not internal-method timings. Historical r62
+has expensive observation and predates r64/r65; never sum nested totals or call it
+current163s. Preserve all complete archives/CPU/GC/INPUT/instrumentation/backups;
+all raw D-only, no quotas. No C#/test/selector/native/DLL/GM changes; no C# rerun.
+Service reuse must retain exact structural owner/dependencies, operation lifetime,
+mutable-result detachment and fresh authority/bytes/absence/generation/effect fences.
+No cached validation verdicts. Source getters may do full admitted reconstruction.
+
+- [ ] T519 Reuse feature, write spec/plan/tasks through actual phases, prerequisite
+  and read-only consistency; present written scope and publish/recover checkpoint.
+- [ ] T520 [US1] Extract all current stage/semantic/counter evidence and provenance-
+  bound historical aggregates into D; verify exact arithmetic/source pins; map
+  large candidates and already-cached paths, plus missing measurement protocol.
+- [ ] T521 [US1] Write T521-remaining-recovery-costs.md, independent evidence/code/
+  findings review and corrections; source-only final publication/recovery.
+
+T519->520->521. REM1/2->520/521; REM3/4->520/521; REM5->519/521.
+No research/data-model/contract duplication is needed for this evidence-only slice;
+source/key/lifetime/acceptance decisions live in the human findings report.
+Optional git/context extension hooks use explicit source-only checkpoints.
+
 # r67 Ordinary Producer Read Forwarders Implementation Plan
 
 > Inline execution with Superpowers executing-plans/TDD/systematic-debugging;

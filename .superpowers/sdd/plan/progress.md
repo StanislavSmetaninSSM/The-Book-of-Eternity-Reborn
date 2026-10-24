@@ -1,3 +1,15 @@
+# r68 WIP remaining recovery costs investigation
+
+Owner asks large sections of latest163s and safe further service DATA reuse.
+Canonical REM1..5/T519..521; spec/plan/tasks actual phases and read-only consistency
+5req/3tasks/100%/0findings. Scope existing measurements/source only, no C#/newrun.
+Current r67 OFF partition first163.3117708s; internal method times unavailable.
+Do not relabel historical r62 FULL timing as current; legacy observer disables
+existing directory reuse. Findings will specify a cache-preserving future probe.
+All accepted r67/currentarchives/CPU/GC/INPUT/backups untouched; rawD-only/noquota.
+Written links under continuing autonomous review-wait waiver. Independent complex
+review of completed findings required; no implementation delegation.
+
 # r67 coherent block complete; final source-only publication
 
 Canonical FWD1..7/T514..518 complete; source issue#1536. Actual SpecKit plan/tasks/

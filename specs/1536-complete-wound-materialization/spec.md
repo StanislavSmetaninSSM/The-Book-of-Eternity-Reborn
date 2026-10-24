@@ -1,3 +1,34 @@
+# r68 Remaining Recovery Cost Investigation
+
+Source: issue #1536; owner asks which large sections occupy the remaining163s and
+what can safely reuse DATA through the existing service, using measurements.
+Continuing autonomous review-wait waiver applies; deliverable is findings only.
+
+- REM1: Bind latest accepted r67 ordinary archive, qualified source7272 and actual
+  current source; derive exact nonoverlapping first-recovery marker intervals.
+- REM2: Separate current measured phase/counter evidence from historical r62
+  detailed timings. Never add nested timers or transfer historical seconds into163s.
+- REM3: Audit only large candidates: repeated wound-bundle computations and bulk
+  first-read/fresh-source admission work. Map to current callers, cache service,
+  owner/key/lifetime/invalidation and preserved fresh fences; no cached verdict.
+- REM4: Identify already-cached QTE/progression/cleanup/GameState paths; no repeat
+  optimization claims. Explain why current legacy detailed observation changes
+  directory-cache eligibility; outline a cache-preserving probe if needed.
+- REM5: Save compact human findings/current-data limits and D-local source/hash/
+  arithmetic evidence, independent review and source-only remote recovery.
+
+No C#/test/category/DLL/native/INPUT/runtime changes, new original run, raw-data
+retirement or diagnostic quotas in this investigation. Any new measurement or
+implementation is a separate agreed probe, not authorized by this findings task.
+Approaches: reuse current OFF markers plus provenance-bound old aggregates (chosen
+for this read-only question); rerun legacy FULL (reject because it disables directory
+reuse); a sealed passive aggregate counter without arbitrary callbacks is a future
+measurement design, requiring cheap eligibility controls before any original.
+Unresolved: current internal-method seconds and prospective cache saving remain
+unknown where the retained current measurement has no named timers.
+Acceptance: exact current163.3117708s partition, evidence-bound large candidates,
+explicit safety/measurement gaps, no speculative seconds or micro-optimization.
+
 # CRASH5 — revision67 ordinary producer read forwarders
 
 Issue #1536. Owner2026-10-24 approves removing unused read handlers from the

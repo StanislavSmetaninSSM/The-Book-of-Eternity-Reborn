@@ -1,3 +1,18 @@
+# CRASH5 — revision68 remaining recovery cost investigation
+
+Source issue #1536; spec REM1..5; plan.md r68. Findings-only US1, no C#/runtime.
+
+- [ ] T519 Establish spec/plan/tasks through actual Spec Kit phases, prerequisite
+  and read-only consistency; written links, source-only checkpoint/remote recovery.
+- [ ] T520 [US1] Audit current accepted r67 markers/metrics/counters and historical
+  named aggregates; verify provenance/exact arithmetic/current source; rank only
+  large DATA candidates with existing service keys/lifetimes/freshness constraints.
+- [ ] T521 [US1] Record findings/limits/probe in T521-remaining-recovery-costs.md;
+  independent coherent review, corrections and source-only publication/recovery.
+
+REM1/2->520/521; REM3/4->520/521; REM5->519/521. T519->520->521.
+No new code/test/build/INPUT/original, quotas or diagnostic retirement.
+
 # CRASH5 — revision67 ordinary producer read forwarders
 
 Issue #1536; spec FWD1..7; plan.md. User conditional cheap-first authorization and
