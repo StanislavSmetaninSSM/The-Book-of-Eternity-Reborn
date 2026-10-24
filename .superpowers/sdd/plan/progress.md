@@ -12,7 +12,10 @@ T526 phases actual setup-plan/setup-tasks/prerequisites completed; local prerequ
 script lacks RequireSpec so existing spec checked explicitly. Bridge consistency
 7requirements/5tasks/100%/0gaps. Qualified8a8DLL backup verifiedCRC/allmembers on D.
 Written spec/plan/tasks linked before implementation under standing waiver. Optional
-git extension hooks satisfied by explicit checkpoint. Next: T527 cheap TDD/routing.
+git extension hooks satisfied by explicit checkpoint. T527 RED scaffolding: typed phase currently forwards all original classifier work,
+service entries empty; real manager not wired.15cheap cases expect4causal reuse/
+actual-route failures; not run yet. No caching implementation/gameplay routing yet.
+Next: fresh Integration XML build and only core-ordinary-read-path-data RED.
 
 # r68 coherent block complete; final source-only closure
 
