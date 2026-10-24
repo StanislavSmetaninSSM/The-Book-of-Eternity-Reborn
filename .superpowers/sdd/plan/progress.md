@@ -1,4 +1,4 @@
-# Current checkpoint: r63 timing-off measurement planning
+# Current checkpoint: r63 planning/cheap contracts passed; original admission pending
 
 Issue#1536 OFF1..7 / T496..500. Owner2026-10-24 accepted next same-scenario off
 measurement; autonomous specification-review wait waiver persists. Base remote
@@ -10,8 +10,15 @@ No game/test/native/catalog/selector source change or rebuild/new seed required.
 Only tests/selection.json bookkeeping updated to two relevant categories; audit
 that exact exception separately from unchanged runtime/catalog/selector closure.
 
-Canonical actual plan/tasks phases executed; prerequisite/equivalent consistency
-next, then WIP source-only publication/recovery. T496..500 not yet complete.
+T496 complete: actual plan/tasks/prerequisites phases and equivalent7requirements/
+5tasks/0gaps check. Source-only9ab7eaa320d466d3a596f5e3b25c2f94a3e96528 published
+and freshly recovered39remote-onlyblobs/noalternates; eightDLL/native/INPUT hashes
+matched. Historical composite validated at its original source1e6; current runtime
+closure checked with only explicit selection bookkeeping exception. T497 root
+preflight controls33PASS/5syntax; existing cheap process/observation/budget category
+67/67PASS in29.0360932s at metadata9ab7eaa32, compiledsource1e6, no rebuild.
+Bounded off analysis/helper controls are being finalized for independent review.
+T497..500 pending; no original claim or launch created.
 Droot D:/BoeDiagnostics/timing-off-r63-20261024; new Label T498-original-off,
 Modeoff, same600/820/15 and C:SSD/D:HDD. Reuse exact accepted external r62 CPU/GC
 module/payloads/controls with explicit gap semantics. Original not yet launched.

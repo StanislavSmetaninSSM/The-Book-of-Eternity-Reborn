@@ -58,7 +58,7 @@ full raw until accepted replacement; no retroactive outcome/metadata changes.
 No heavy read/hash/archive/build work during the timed case. No second original
 or source optimization is authorized by this measurement.
 
-- [ ] T496 OFF1..7: canonical plan/tasks/prerequisites phases/consistency, source
+- [x] T496 OFF1..7: canonical plan/tasks/prerequisites phases/consistency, source
   and existing off-path audit, explicit selection, publish/recover checkpoint.
 - [ ] T497 OFF1..4/7: frozen preflight/runner/off adapters and cheap controls;
   selected cheap contract category; independent exact source/INPUT/observer/mode

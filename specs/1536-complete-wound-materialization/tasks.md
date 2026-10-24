@@ -3,7 +3,7 @@
 Issue#1536, canonical spec OFF1..7 and plan.md. Owner approved next off measurement;
 autonomous execution/spec-review wait waiver persists. Existing isolated clone.
 
-- [ ] T496 Audit existing off path/retained8DLL/INPUT, canonical phases and
+- [x] T496 Audit existing off path/retained8DLL/INPUT, canonical phases and
   consistency; explicit two-category selection; source-only publish/recovery.
 - [ ] T497 External off preflight/runner/parser/archive helpers, cheap pure
   controls and process-observation-budget category; independent exact admission.
