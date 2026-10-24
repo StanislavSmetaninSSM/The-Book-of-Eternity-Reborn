@@ -2,11 +2,11 @@
 
 Issue#1536; spec AUD1..5 / plan.md. Read-only US1(P1), standing autonomous waiver.
 
-- [ ] T531 Canonical phases/prerequisites/consistency and linked specification;
+- [x] T531 Canonical phases/prerequisites/consistency and linked specification;
   source-only checkpoint/recovery in active1536feature before investigation output.
-- [ ] T532 [US1] D-local accepted cached r69 profile/source/INPUT binding and all563
+- [x] T532 [US1] D-local accepted cached r69 profile/source/INPUT binding and all563
   names/completeness; exact large timing/count inventory and nonadditive limits.
-- [ ] T533 [US1] Current source audit of major remaining pre-hit/fresh paths;
+- [x] T533 [US1] Current source audit of major remaining pre-hit/fresh paths;
   candidate DATA/owner/key/lifetime/invalidation/detachment/fresh fence contracts
   and cheap attribution probe where necessary, no production implementation.
 - [ ] T534 [US1] T534-remaining-cache-candidates.md evidence-backed findings,

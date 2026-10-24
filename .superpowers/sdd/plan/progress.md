@@ -1,3 +1,17 @@
+# r70 findings ready for independent review
+
+Issue#1536; AUD1..5/T531..534. T531 checkpoint fbeea24514e3594cead2f99c69e849e81db67f8d
+remotely recovered80exactblobs/42.23s. Actual plan/tasks/prerequisites plus bridge
+read-only consistency5requirements/4tasks/100%/0findings. T532 all563current cached
+profile rows verified against accepted ZIP:3,898,905complete/0open/late/stage
+164.8300682s. T533 source audit13files rejects universal pre-hit ordinary I/O and
+missing-cache interpretation of CleanupProofData.Fallback. Next prospective large
+candidate: shared positive-directory DATA in an explicit stable read-only batch,
+starting with adjacent synchronous preparation/main admission; original bytes/
+mtime/generation/leaf/native/main-record/worker freshness retained. No measured
+saving beyond r69, no runtime/schema/GM/selection change/new original/probe. Raw
+stays D-only/no caps/deletions. Report T534 written; review/closure pending.
+
 # r70 remaining large cache audit — started
 
 Issue#1536; canonical AUD1..5/T531..534, base d9cf578616abfa3886e38fed621adc5238176620.
