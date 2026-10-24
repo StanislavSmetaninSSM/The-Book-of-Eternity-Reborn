@@ -13,7 +13,7 @@ public partial class FileSystemManager
     /// A scope restoring the previous diagnostic routing value, or <see langword="null"/> outside validation routing.
     /// Diagnostics themselves remain enabled.
     /// </returns>
-    private static IDisposable? SuppressValidationReuse() =>
+    internal static IDisposable? SuppressValidationReuse() =>
         ValidationDiagnosticScopes.Value == 0 && ValidationReuseSuppression.Value == 0
             ? null : new ValidationDiagnosticSuppression();
 

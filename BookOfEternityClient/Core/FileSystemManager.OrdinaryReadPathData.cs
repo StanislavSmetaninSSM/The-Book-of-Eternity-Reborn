@@ -5,7 +5,7 @@ public partial class FileSystemManager
     private long _readPathInvocations, _readPathRequests, _readPathQueries, _readPathHits;
 
     /// <summary>
-    /// Selects ordinary preparation directory DATA reuse; false retains the original source route.
+    /// Selects ordinary preparation directory DATA reuse; <see langword="false"/> retains the original source route.
     /// </summary>
     internal bool OrdinaryReadPathReuseEnabled { get; set; } = true;
 

@@ -299,6 +299,70 @@ public sealed class OrdinaryReadPathPhaseTests(ITestOutputHelper output)
     }
 
     /// <summary>
+    /// Retires a manager-owned phase immediately when its comparison policy is switched off.
+    /// </summary>
+    /// <returns>
+    /// Completion after the independent fixture initialization.
+    /// </returns>
+    [Fact]
+    public async Task DisablingReuseRetiresAlreadyRetainedDirectoryData()
+    {
+        using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, false);
+        await fixture.InitializeAsync();
+        using var phase = fixture.Files.BeginOrdinaryReadPathPhase();
+        Assert.NotNull(phase);
+        phase.ObserveTrusted(Path.GetDirectoryName(fixture.RawPath)!);
+        Assert.Equal(1, phase.CaptureState().Entries);
+        fixture.Files.OrdinaryReadPathReuseEnabled = false;
+        Assert.Null(phase.Active);
+        Assert.True(phase.CaptureState().Closed);
+        Assert.Equal(0, phase.CaptureState().Entries);
+    }
+
+    /// <summary>
+    /// Keeps arbitrary fixture or synchronous-context timing observers on their original fresh route.
+    /// </summary>
+    /// <param name="fixtureObserver">
+    /// Whether to install the observer in fixture hooks instead of the synchronous timing context.
+    /// </param>
+    /// <returns>
+    /// Completion after fixture initialization and the bounded eligibility check.
+    /// </returns>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ArbitraryTimingReceiversCannotOpenAnObservationPhase(bool fixtureObserver)
+    {
+        Action<string, string, TimeSpan> observer = (_, _, _) => { };
+        using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, false,
+            legacyTimings: fixtureObserver ? observer : null);
+        await fixture.InitializeAsync();
+        var before = fixture.Files.CaptureOrdinaryReadPathStatistics();
+        using var context = FileSystemManager.EnterOperationTimingContext(fixtureObserver ? null : observer);
+        Assert.Null(fixture.Files.BeginOrdinaryReadPathPhase());
+        Assert.Equal(0, (fixture.Files.CaptureOrdinaryReadPathStatistics() - before).Invocations);
+    }
+
+    /// <summary>
+    /// Preserves diagnostic suppression inside the actual active validation routing context.
+    /// </summary>
+    /// <returns>
+    /// Completion after the real phase and original source fences close.
+    /// </returns>
+    [Fact]
+    public async Task ActiveValidationSuppressionKeepsTheFreshRoute()
+    {
+        using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, false);
+        await fixture.InitializeAsync();
+        await fixture.ReadEightAsync(after: () =>
+        {
+            using var suppression = FileSystemManager.SuppressValidationReuse();
+            Assert.NotNull(suppression);
+            Assert.Null(fixture.Files.BeginOrdinaryReadPathPhase());
+        });
+    }
+
+    /// <summary>
     /// Supplies only metadata DATA for isolated role and fallback contract tests.
     /// </summary>
     private sealed class Provider : IWindowsPathMetadataProvider

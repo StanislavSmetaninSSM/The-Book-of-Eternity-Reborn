@@ -27,7 +27,7 @@ public path and nonordinary routes retain their fresh default.
   fixes, XML8DLL qualification. If US1 passes, genuinely new source42/twoimports,
   strict first-window/original reuse metadata and frozen admission. If it fails,
   remove unproven gameplay routing and record bounded negative findings instead.
-- [ ] T529 [US2] Conditional same original600/820/15 with cache enabled and passive
+- [ ] T529 [US2] Conditional same-new-binary/INPUT off/on original pair, each600/820/15, with passive
   profiling/frozen CPU-GC; actual ordinary counters, every current timer/name and
   original native/mechanics/bytes/repeat/cleanup all reconciled. No competing work.
 - [ ] T530 [US2] Human T530-ordinary-read-path-data.md findings, source/key/lifetime/

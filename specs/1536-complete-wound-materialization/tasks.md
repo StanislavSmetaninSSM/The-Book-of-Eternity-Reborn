@@ -11,7 +11,7 @@ Issue#1536; spec PATH1..7 / plan.md. Continuing autonomous review-wait waiver.
 - [ ] T528 [US1] Independent coherent review and corrections, XML/uniform8DLL;
   cheap gate decides original admission. Only positive gate gets genuine new
   source42/twoimports, frozen provenance/budgets/CPU-GC/passive admission review.
-- [ ] T529 [US2] Conditional original600/820/15 with measured phase DATA reuse,
+- [ ] T529 [US2] Conditional same-new-binary/INPUT off/on originals, each600/820/15, with phase DATA reuse,
   first-window timers and all original oracles/native/cleanup/runtime reconciled.
 - [ ] T530 [US2] T530-ordinary-read-path-data.md honest findings; independent
   outcome/exact-retention/source-only final publication and remote recovery.

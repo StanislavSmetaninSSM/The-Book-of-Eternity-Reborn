@@ -40,7 +40,7 @@ profiling. No promised saving; a failed cheap gate does not authorize a full run
   builds for affected projects, explicit categories and catalog/selection audit.
 - PATH6: Independent complex coherent code review; backup current qualified8a
   binaries before replacing them, fresh uniform8DLL and genuinely new source42/
-  twoimports before any original. Same600child/820shared/15category, C fixtures/D
+  twoimports before any original. Same-new-binary/INPUT off/on originals, each600child/820shared/15category, C fixtures/D
   uncapped data, frozen CPU/GC and passive first-window profiling/no competition.
   Compare current source/counters/timings honestly; no nested sums or causal saving
   from unrelated runs. If cheap reduction absent or integrity unproved, report

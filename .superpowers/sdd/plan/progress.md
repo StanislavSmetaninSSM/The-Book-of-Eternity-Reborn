@@ -23,9 +23,21 @@ Added between-read bytes/absence/directory, real mutation, reparse, foreign-thre
 and reentry controls; not run yet. Catalog restored exact original formatting
 apart from the new entry (prior WIP serialized unrelated whitespace; final diff
 only new entry). No source/authority cache-policy relaxation or new original.
-First GREEN build failed CS0136: new pattern current conflicted with existing
-Linux local current; renamed readObservations, no test result claimed. Next:
-fresh Integration XML build/new cheap GREEN; US2 still gated.
+First GREEN build failed CS0136 (pattern current collided with Linux current),
+renamed readObservations; no behavioral claim from compile failure. GREEN2 source
+87e12ddf4 XMLIntegration succeeded,21/21 PASS/complete/bothcleanup flags. Actual
+async metadata27->22, sync25->20, each phase13requests/8queries/5hits with bytes/
+mtime equal; mutation/later bytes/absence/directory/reparse/thread/reentry PASS.
+Uniform8 qualification still pending (Integration only so far). Independent complex
+Astra/high static pass no confirmed defect; requested targeted eligibility/selection.
+Added switch-off retirement, fixture/static timing and actual validation-suppression
+controls. SuppressValidationReuse made internal typed test entry without behavior
+change (no reflection); XMLfalse keyword corrected. Strict test-only ordinary path
+reuse metadata/env and producer/resumer phase counts added before final build.
+Actual impacted selection14 categories, no broad suite; off/on same-new-binary/
+INPUT original comparison planned to isolate benefit, each same600/820/15 and frozen
+passiveCPU/GC. No new INPUT/original yet. Next: final fresh8DLL/XML and selected
+checks/review. All raw D-only/noquotas, baseline8a backup retained.
 
 # r68 coherent block complete; final source-only closure
 

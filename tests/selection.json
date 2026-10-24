@@ -3,7 +3,98 @@
   "selections": [
     {
       "category": "core-ordinary-read-path-data",
-      "reason": "T527 meaningful RED: separate cache families and actual sync/async source-query reduction before ordinary routing.",
+      "reason": "New phase DATA, actual query reduction, retirement and callback/timing/suppression gates.",
+      "contracts": [
+        "#1536 PATH1..7 / T526..530"
+      ]
+    },
+    {
+      "category": "fr063-ordinary-read-section-consumers",
+      "reason": "Actual ordinary read surfaces, cancellation, invalid grants and leased ownership consumers.",
+      "contracts": [
+        "#1536 PATH1..7 / T526..530"
+      ]
+    },
+    {
+      "category": "portable-ordinary-readers",
+      "reason": "Portable retries, exact bytes/BOM/absence, original read exceptions and hostile namespace refusals.",
+      "contracts": [
+        "#1536 PATH1..7 / T526..530"
+      ]
+    },
+    {
+      "category": "portable-ordinary-read-windows",
+      "reason": "Windows replacement-before-open, native handle and hard-link refusal consumers.",
+      "contracts": [
+        "#1536 PATH1..7 / T526..530"
+      ]
+    },
+    {
+      "category": "portable-storage-read-construction-boundaries",
+      "reason": "Existing worker/ordinary construction boundary and typed read-source isolation.",
+      "contracts": [
+        "#1536 PATH1..7 / T526..530"
+      ]
+    },
+    {
+      "category": "portable-canonical-path-metadata-unit-controls",
+      "reason": "Original Windows provider root/segment/fallback semantics and errors.",
+      "contracts": [
+        "#1536 PATH1..7 / T526..530"
+      ]
+    },
+    {
+      "category": "portable-canonical-path-metadata-windows-controls",
+      "reason": "Actual Windows directory/file metadata and observer counts.",
+      "contracts": [
+        "#1536 PATH1..7 / T526..530"
+      ]
+    },
+    {
+      "category": "portable-canonical-path-metadata-affected-controls",
+      "reason": "Reparse confinement remains fresh at original read/write boundaries.",
+      "contracts": [
+        "#1536 PATH1..7 / T526..530"
+      ]
+    },
+    {
+      "category": "fr063-trusted-local-request-observations",
+      "reason": "Returned scopes must retain grants alone and later requests remain fresh.",
+      "contracts": [
+        "#1536 PATH1..7 / T526..530"
+      ]
+    },
+    {
+      "category": "core-passive-recovery-timing",
+      "reason": "Sealed passive timing remains compatible with actual source and directory caches.",
+      "contracts": [
+        "#1536 PATH1..7 / T526..530"
+      ]
+    },
+    {
+      "category": "core-operation-source-data",
+      "reason": "Existing service sources, bytes/absence/mtime/version/failure/fresh fences preserved.",
+      "contracts": [
+        "#1536 PATH1..7 / T526..530"
+      ]
+    },
+    {
+      "category": "fr063-joint-interface-probe-budget-contracts",
+      "reason": "New strict test-only control and unchanged original process budget/selector contracts.",
+      "contracts": [
+        "#1536 PATH1..7 / T526..530"
+      ]
+    },
+    {
+      "category": "fr063-joint-interface-seed-contracts",
+      "reason": "Genuine current-source INPUT and fingerprint admission.",
+      "contracts": [
+        "#1536 PATH1..7 / T526..530"
+      ]
+    },
+    {
+      "category": "fr063-joint-five-fixture-package-contracts",
+      "reason": "Exact fresh package inventory/hydration and cleanup.",
       "contracts": [
         "#1536 PATH1..7 / T526..530"
       ]
