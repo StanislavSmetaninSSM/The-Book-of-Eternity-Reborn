@@ -189,7 +189,7 @@ public sealed class LifecycleProducerReadForwarderTests(ITestOutputHelper output
     /// <summary>
     /// Owns a tiny nonce-marked root adopted by the actual lifecycle constructor.
     /// </summary>
-    private sealed class Fixture : IDisposable
+    internal sealed class Fixture : IDisposable
     {
         private readonly string _nonce = Guid.NewGuid().ToString("N");
         private readonly string _root;
@@ -205,7 +205,14 @@ public sealed class LifecycleProducerReadForwarderTests(ITestOutputHelper output
         /// <param name="forwarded">
         /// Explicit hook mode, or <see langword="null"/> to exercise the existing constructor default.
         /// </param>
-        internal Fixture(ITestOutputHelper output, bool? forwarded)
+        /// <param name="passiveTimings">
+        /// Optional sealed accumulator whose measurements must preserve cache eligibility.
+        /// </param>
+        /// <param name="legacyTimings">
+        /// Optional arbitrary timing observer whose existing fallback contract remains unchanged.
+        /// </param>
+        internal Fixture(ITestOutputHelper output, bool? forwarded,
+            OperationTimingAccumulator? passiveTimings = null, Action<string, string, TimeSpan>? legacyTimings = null)
         {
             _output = output;
             _root = Path.Combine(Path.GetTempPath(), "boe-read-forwarders-" + _nonce);
@@ -213,7 +220,9 @@ public sealed class LifecycleProducerReadForwarderTests(ITestOutputHelper output
             File.WriteAllText(Path.Combine(_root, ".fixture-owner"), _nonce);
             File.WriteAllText(RawPath, "original");
             _lifecycle = new GameEngineTurnLifecycleTests(output, _root,
-                readObservers: forwarded.HasValue ? new LifecycleFixtureReadObservers(forwarded.Value) : null);
+                operationTimingObserver: legacyTimings,
+                readObservers: forwarded.HasValue ? new LifecycleFixtureReadObservers(forwarded.Value) : null,
+                passiveOperationTimings: passiveTimings);
         }
 
         /// <summary>

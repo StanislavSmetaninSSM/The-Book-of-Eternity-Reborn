@@ -2,6 +2,38 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "core-passive-recovery-timing",
+  "responsibility": "Sealed passive timing windows preserve actual source/directory cache eligibility, legacy callback fallback, scoped context restoration, counts/late/failure/concurrency/detached output without quotas.",
+  "excludes": "No full game world, cached authority verdict or original process benchmark.",
+  "changeHints": [
+    "BookOfEternityClient/Core/OperationTimingAccumulator.cs",
+    "BookOfEternityClient/Core/FileSystemManager.OperationTiming.cs",
+    "BookOfEternityClient/Core/FileSystemManager.OperationTimingContext.cs",
+    "BookOfEternityClient.IntegrationTests/PassiveRecoveryTimingTests.cs"
+  ],
+  "related": [
+    {
+      "id": "core-producer-read-forwarders",
+      "when": "Actual fixture callback routing changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.PassiveRecoveryTimingTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "core-producer-read-forwarders",
   "responsibility": "Actual adopted lifecycle fixture read hooks: empty-forwarder source/directory reuse control, callback order/delay/errors, fresh byte fence and operation close on tiny independently owned roots.",
   "excludes": "No game-world setup, reflection, production authority change or original process benchmark.",

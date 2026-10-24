@@ -22,6 +22,12 @@ internal sealed class FileSystemManagerHooks
     internal Action<string, string, TimeSpan>? OperationTimingObserver { get; init; }
 
     /// <summary>
+    /// Accumulates optional timing DATA without arbitrary callbacks or changes to reuse eligibility.
+    /// A missing recorder leaves passive accumulation disabled.
+    /// </summary>
+    internal OperationTimingAccumulator? PassiveOperationTimings { get; init; }
+
+    /// <summary>
     /// Observes complete recovery-segment counters at close without a quota; null disables export.
     /// The receiver and its descendants must not mutate storage or authority. Receiver exceptions are ignored.
     /// </summary>

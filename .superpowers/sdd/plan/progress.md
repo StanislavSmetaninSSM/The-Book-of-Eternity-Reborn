@@ -1,13 +1,13 @@
-# r68 WIP necessary cache-preserving diagnostic probe
+# r68 T522 RED scaffolding WIP
 
-Retained findingsT520:32checks/19pins, current marker115.3186501s internally unresolved;
-old FULL295s changes directory eligibility. Owner asks current large sections, so
-spec/plan/tasks amended REM6..8/T522..525 with autonomous review-wait waiver.
-No cache optimization: sealed passive named accumulator without arbitrarycallbacks,
-legacy eligibility untouched, cheap actual2reads/7hits/456directoryhits gate before
-fresh8DLL/newgenuineINPUT/one600-limit profile. Backup current7272eightDLL verified
-onD. Initial source-only r68 findings remain interim, not a final answer. RawD-only/
-uncapped, old accepted r67 remains complete until independently accepted replacement.
+Sealed accumulator and typed optional hook/fixture injection added; actual manager
+MeasureOperation/current context deliberately still unwired. New10cheap cases
+assert source2/fast7/directory456 plus actual recordednames, staticcontext restore,
+callbackfallback, windows/late/failure/concurrent/noquota controls. MeaningfulRED
+expected for3unwired actualrecording cases; no original admitted. Fresh Integration
+XML build only before RED category; full8DLL qualification reserved for GREEN.
+No authority/cache-policy/native/GM changes. AllrawD-only/noquotas. Amendedspec
+REM6..8/T522..525 presented under autonomouswaiver; backup7272current8DLL onD.
 
 # r67 coherent block complete; final source-only publication
 

@@ -109,9 +109,13 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     /// <param name="readObservers">
     /// Explicit read observation and passive counts, or <see langword="null"/> to preserve ordinary late-attachable observers.
     /// </param>
+    /// <param name="passiveOperationTimings">
+    /// A sealed passive recorder, or <see langword="null"/> to omit aggregate timing.
+    /// </param>
     internal GameEngineTurnLifecycleTests(ITestOutputHelper? output, string? adoptedRoot,
         Action<string, string, TimeSpan>? operationTimingObserver = null,
-        LifecycleFixtureReadObservers? readObservers = null)
+        LifecycleFixtureReadObservers? readObservers = null,
+        OperationTimingAccumulator? passiveOperationTimings = null)
     {
         _directGachaOutput = output;
         _readObservers = readObservers ?? new LifecycleFixtureReadObservers();
@@ -127,6 +131,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             new FileSystemManagerHooks
             {
                 OperationTimingObserver = operationTimingObserver,
+                PassiveOperationTimings = passiveOperationTimings,
                 BeforeCanonicalMutationAsync = BeforeCanonicalMutationAsync,
                 CanonicalReadActivityObserver = readObservers is null ? null : readObservers.ObserveCanonicalSource,
                 AfterCanonicalReadInitialValidationAsync = _readObservers.AfterInitialValidationAsync,
