@@ -1,3 +1,33 @@
+# CRASH5 — revision66 remaining large cache candidates investigation
+
+Issue #1536; owner2026-10-24 asks to finish r65 then autonomously look for further
+cache speedups. Base15b8b1149, r65 accepted current first163.8738651s / whole
+282.5673125s. This is a read-only investigation, not authorization to implement
+a new cache or run another original. Continuing explicit review-wait waiver.
+
+- NEXT1: Reconcile latest complete r65 raw stage/scalar/source/CPU evidence and
+  retained older detailed summaries; distinguish current measured costs/counts,
+  historical measurements and unmeasured hypotheses. Never infer zero from OFF.
+- NEXT2: Identify only large repeated source/parse/reconstruction work; map each
+  worthwhile candidate to exact current methods/callers and the existing service.
+  Rank plausible benefit without inventing a new timing or promised100s.
+- NEXT3: For each recommended candidate specify DATA/key/lifetime, eligibility,
+  mutation/generation/error/close invalidation and fresh authority/effect fences;
+  distinguish unsafe verdict/permission caches and already optimized paths.
+- NEXT4: Produce an actionable next cheap-fixture/probe plan for strong candidates,
+  negative integrity cases, and explicit reasons to defer others. No production,
+  test, native, budget, INPUT, category/selection or GM-facing contract changes.
+- NEXT5: Record human findings, independent review and exact source-only remote
+  recovery. Raw extracts/scripts/review receipts D-only, no collection quotas;
+  current complete r65 originals/CPU/GC/INPUT/backups remain protected.
+
+Approaches: first reconcile saved evidence and inspect source (chosen parent call);
+repeat full instrumentation only if a later scoped probe genuinely needs it;
+blindly broaden recovery/admission cache rejected because freshness contracts
+are not performance evidence. Read-only results may conclude that a protocol
+redesign or a fresh named measurement is needed rather than a safe new cache.
+No runtime/data model/API or GM prompt/example change occurs in this task.
+
 # CRASH5 — revision65 ClientOwned/Realm source DATA reuse
 
 Issue #1536; owner2026-10-24 explicitly authorizes autonomous implementation,

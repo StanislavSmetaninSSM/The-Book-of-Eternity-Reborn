@@ -1,3 +1,50 @@
+# r66 Remaining Large Cache Candidates Investigation Plan
+
+> Execute tasks inline with Superpowers executing-plans/systematic-debugging;
+> independent complex review of the finished findings. No implementation agent.
+
+**Goal:** Identify evidence-backed further cache opportunities after r65.
+**Architecture:** Read-only reconciliation of retained measurements and current
+source; map DATA candidates to the existing operation service and fresh fences.
+**Tech Stack:** Existing C#/.NET8 source, D-local Python JSON/ZIP analysis and rg.
+**Spec:** spec.md NEXT1..5; source issue #1536; tasks T511..513.
+
+## Global Constraints
+
+No production/test/native/INPUT/selector/budget changes or new original run.
+No quotas or raw diagnostics in Git; protect accepted r65/runtime/input/backups.
+Current163.8738651s recovery is OFF; historical detailed costs are historical.
+No verdict, permission, native identity or unsupported lifetime cache proposed as
+safe without explicit fresh-fence design. No GM contract/example change.
+
+## Review Focus
+
+- Historical detail misreported as current163s attribution: T512 labels provenance.
+- Nested/inclusive wall/CPU/GC double counting: T512 exact non-additive comparisons.
+- Already cached DATA falsely sold as new work: T512 inspect actual hit/fallback paths.
+- Mutation/callback/lease authority gaps: T512 identify preserved fresh boundaries.
+- Large-looking count mistaken for large cache gain: T513 distinguish proof/hypothesis.
+
+## Task sequence / validation
+
+- [ ] T511 Establish specification/plan/tasks, actual Spec Kit phases and read-only
+  consistency; present canonical links and publish/recover source-only checkpoint.
+- [ ] T512 Extract all saved relevant scalar/count/stage records, reconcile current
+  phases and historical top costs; inspect exact current source paths for strong
+  candidates, existing cache coverage, key/lifetime/fences and rejected alternatives.
+- [ ] T513 Write T513-remaining-cache-candidates.md with ranked evidence, actionable
+  cheap fixture/probe acceptance and uncertainty; independent review, factual diff
+  check and exact remote recovery. No behavior tests rerun for read-only docs.
+
+No external interface or new data model: Phase1 contracts/data-model generation
+not applicable. Findings/report carry the read-only decision and validation guide
+instead of duplicate research/design artifacts. Technology choices already fixed;
+remaining unknowns are investigation deliverables, not implementation decisions.
+Optional plan/tasks/analyze commit/context hooks use explicit source checkpoints;
+no mandatory hooks apply to these phases. T511->512->513, no parallel source work.
+Constitution check PASS: #1536 traceability, local-game integrity unchanged, no
+runtime/GM surface, fresh evidence before conclusions, independent review.
+
 # CRASH5 — revision65 control/realm DATA reuse plan
 
 Issue #1536; canonical GS1..6; tasks T506..510; execute with Superpowers

@@ -1,3 +1,19 @@
+# r66 WIP: remaining large cache candidates investigation
+
+Owner asks autonomous follow-up search after accepted r65. Base15b8b1149 clean/
+remote recovered; r65 final mechanical acceptance6BEB3B5E... verified. New canonical
+NEXT1..5/T511..513 are read-only; no production/test/selector/native/INPUT/budget
+change or new original run authorized by this investigation. Brainstorming+bridge,
+writing-plans and SpecKit plan/tasks/prerequisite phases actually applied;
+read-only equivalent consistency5requirements/3tasks/100%/0findings. Current script
+lacks skill's RequireSpec switch: supported prerequisite flags plus explicit spec
+existence check passed after initial binding error; no script edits. Optional
+commit/context hooks replaced by explicit checkpoints. Spec presented under prior
+review-wait waiver, inline execution preserved. Next reconcile retained measurements
+and exact source; keep latest complete r65 evidence/runtime/input/backups unchanged.
+No100s promise, no zero-work inference from detailed timers OFF. Findings are the
+deliverable, not a production cache implementation. D-only raw/script evidence.
+
 # r65 coherent block complete; final mechanical verification/publication
 
 T506..510 executed: existing-service control/realm DATA wiring,219distinct cheap

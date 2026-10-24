@@ -1,3 +1,23 @@
+# CRASH5 — revision66 remaining cache candidates investigation
+
+Issue #1536; spec NEXT1..5; plan.md. Read-only US1(P1): owner receives evidence-
+backed next cache candidates with preserved integrity and an executable cheap probe.
+
+- [ ] T511 Establish written spec/plan/tasks phases and read-only consistency in
+  specs/1536-complete-wound-materialization/{spec,plan,tasks}.md; present canonical
+  links and publish/recover source-only investigation checkpoint before execution.
+- [ ] T512 [US1] Audit retained r65 measurements/historical timing summaries and
+  exact current source; record DATA/key/lifetime/fences and rejected alternatives
+  in specs/1536-complete-wound-materialization/T513-remaining-cache-candidates.md.
+- [ ] T513 [US1] Finish ranked findings/cheap probe acceptance in the same report;
+  verify provenance/arithmetic/source references, independent coherent review,
+  source-only publication and exact clean remote recovery.
+
+NEXT1/2->512; NEXT3/4->512/513; NEXT5->511/513. T511->512->513.
+No behavior changes or new original run. Current test selection remains unchanged;
+no C# rerun is required for read-only findings. Parent owns investigation; separate
+complex reviewer verifies evidence vs hypothesis and preserved authority boundaries.
+
 # CRASH5 — revision65 ClientOwned/Realm source DATA reuse
 
 Issue #1536; spec GS1..6; plan.md. Owner's autonomous execution/review-wait waiver.
