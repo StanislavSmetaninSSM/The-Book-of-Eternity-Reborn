@@ -8,7 +8,16 @@ Parent source investigation and bounded Astra/high consultation find repeated ro
 chains within guard/worker/main-record helpers. Select one synchronous admission
 context through existing ValidationOperation, positive directories only; original
 leaves/bytes/native authentication and every later invocation remain fresh.
-Cross-call permission caching deferred. No production edits or test/build runs yet.
+Cross-call permission caching deferred. T502 implemented and provisional cheap GREEN.
+RED61d588385: XML build PASS98.35s;8cases4PASS/4FAIL, direct2queries versus1
+expected, composed fixture acquisition corrected. Initial scaffold compile failure
+was3parameterless delegates and was not counted as RED; original overloads retained.
+GREENe5eec3b7a: fresh XML Tests94.74/Integration55.48s;8uniform current DLLs.
+Cheap category12/12PASS;200actual admissions4400->2000sourcequeries,2400hits,
+.2500624->.1712447s. Independent Astra/high review finds ambient thread observer
+fallback missing; regression/fix added, final build/checks pending.
+External genuine current-source package stays D-only and uses existing hydration,
+source fingerprint, storage selection and independent fixture adoption.
 Planningcheckpoint53bdb9e06431b3508f56b07ccdf799769da9d1e5 published/fresh40blob
 remote-only recovered. T501 source/phase/consistency and baseline preservation done.
 Research amendment: broad source fingerprint makes old r63 INPUT ineligible after
