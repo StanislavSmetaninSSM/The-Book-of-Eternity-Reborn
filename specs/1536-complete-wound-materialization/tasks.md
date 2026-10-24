@@ -5,9 +5,9 @@ runtime observations; autonomous review-wait waiver, existing isolated clone.
 
 - [x] T491 Audit retained bindings/native hooks; canonical Spec Kit phases and
   consistency, source-only published/recovered investigation checkpoint before tools.
-- [ ] T492 External birth-bound CPU + .NET8 pause-counter helpers, pinned D-local
+- [x] T492 External birth-bound CPU + .NET8 pause-counter helpers, pinned D-local
   collector, synthetic and cheap real tooling controls; independent exact admission.
-- [ ] T493 ONE original full600/820/15 Windows Cut0, same DLL/INPUT and original
+- [x] T493 ONE original full600/820/15 Windows Cut0, same DLL/INPUT and original
   assertions/native73/0/identity/EOF/join/owned cleanup, full uncapped runtime output.
 - [ ] T494 Complete archive/every-row comparison against r61/r60; CPU/GC interval
   coverage, observer costs, honest repeatability findings; independent outcome review.

@@ -1,4 +1,4 @@
-# Current checkpoint: r62 unchanged original repeat preparation
+# Current checkpoint: r62 original PASS; complete derivation pending
 
 Issue #1536 CPUGC1..8 / T491..495, canonical spec/plan/tasks. Owner2026-10-24 approved
 ONE control repeat with CPU/GC observation; autonomous specification-review waiver.
@@ -41,6 +41,19 @@ Pinned CLI exports raw Increment, not normalized values: source plus all9actual
 CLI/raw samples agree; IntervalSec is omitted. Earlier contrary wording corrected.
 Raw wrapper adds exact interval/payload and IPC instance-birth checks. Postsettlement
 adapters preserve r61strictparser/retainedattribution; runtime schema pendingfreeze.
+
+T492 accepted independently with zero unresolved findings; actual frozen helper,
+source and reused INPUT gates in new T492-independent-review.json. T493 ONE actual
+original PASS1/1 at measured metadata ba34bb68a4b78f486db4f47ca50eb6eba8a667b4:
+case528.1018341s, command556.342442s, observer settlement0.0446226s. Original
+native73/0 and ownership/identity/oracle cleanup passed; RuntimeProbeComplete and
+InvestigationComplete true in the outcome (every-row derivation still pending).
+External final CPU producer184.84375s(user60.78125/kernel124.0625),
+resumer310.328125s(user143.03125/kernel167.296875). Delivered GC increments
+763.671ms/190samples and4470.498ms/309samples; startup/baseline/unpublishedtail
+remain unknown. Observer thread CPU0.59375s; collector CPU1.640625/1.578125s.
+Case +33.5079787s versus r61; no cause or cache regression inferred. T494 full
+archive/every-row analysis running; no second original. T495/retirement pending.
 
 # Previous accepted r61 checkpoint
 

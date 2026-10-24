@@ -72,10 +72,10 @@ system load; one rerun cannot establish a causal cache regression.
 - [x] T491 CPUGC1..8: audit retained source/DLL/INPUT and existing native hooks;
   write canonical specification/plan/tasks via actual pinned Spec Kit phases,
   consistency check; publish/recover new checkpoint before tool implementation.
-- [ ] T492 CPUGC3..5/8: implement external observation/preflight/derivation helpers;
+- [x] T492 CPUGC3..5/8: implement external observation/preflight/derivation helpers;
   install one exact official collector only on D:; synthetic + cheap real .NET8
   CPU/GC/export/lifecycle controls, independent helper review, exact launch admission.
-- [ ] T493 CPUGC1..4/8: ONE same full Cut0/600/820/15 original without rebuild or
+- [x] T493 CPUGC1..4/8: ONE same full Cut0/600/820/15 original without rebuild or
   seed generation; observe two exact native roles, preserve all raw data, settlement.
 - [ ] T494 CPUGC4/6: complete verified archive/every-row native analysis, compare
   r61 and retained r60, CPU/GC coverage + observer costs; independent outcome review.
