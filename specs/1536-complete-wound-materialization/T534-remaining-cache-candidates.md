@@ -75,9 +75,11 @@ ValidatePostPublicationAsync49,276129 с/2вызова, FinalMaterializationLeas
 а RecoverBeforeReadSync0,570158 с не являются основным десятками секунд резервом.
 
 **CleanupProofData.Fallback не означает отсутствие кэша.**82вызова/17,133844 с
-передают управление ReadStableRecoveryDataAsync. Тот заимствует живой source
-operation либо открывает reserved read set; название обозначает отсутствие
-специального prepared-publisher window, а не82полностью некэшированных proof.
+передают управление ReadStableRecoveryDataAsync. При допустимости тот заимствует
+живой source operation либо пытается открыть reserved read set; при suspended
+owner или недопустимом read set сохраняется свежий маршрут. Название обозначает
+отсутствие специального prepared-publisher window и само по себе не доказывает
+82полностью некэшированных proof.
 Специальное окно успешно работало5раз/6,992621 с. В87 proof самое большое тело —
 ValidateFootprintAsync8,015481 с; ReadSourceSnapshot2,479377 с, progression3,031771 с,
 история лечения1,082134 с. Сам факт87вызовов не доказывает87одинаковых входов:
