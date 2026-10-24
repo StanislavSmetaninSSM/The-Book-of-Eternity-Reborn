@@ -12,7 +12,7 @@ review-wait waiver from owner2026-10-24. Existing isolated branch, e10f2b559 bas
 - [x] T504 Two OFF Windows Cut0 controls on one new genuine current-source INPUT
   and the same DLLs, explicit typed fixture cache toggle only; same600/820/15, native73/0,
   original assertions/ownership, uncapped remaining output and CPU/GC observation.
-- [ ] T505 Complete archive/all-record comparison against r63; independent outcome,
+- [x] T505 Complete archive/all-record comparison against r63; independent outcome,
   exact old-data replacement preserving CPU/GC/INPUT/backup, human report/publication.
 
 DIR1/2/3->501/502/503; DIR4/5->502/503; DIR6->503/504; DIR7->504/505;
@@ -21,6 +21,18 @@ bounded Astra/high admission consultation performed, independent reviewer separa
 No cross-call permission cache, new timeout or broad-suite run. One fresh genuine
 fixture generation after cheap success is required by the unchanged source
 fingerprint; no old INPUT rebind. This amendment precedes production edits.
+
+r64 execution evidence: T503-ready SHA6B59ADE57E8FB73F301C78BD7111AC73BC990EB721AE9AC6EA0AA34B1DC8665F;
+Astra/high independent ready and outcome reviews accepted. Code2ff584818, metadata56744ba77.
+297 affected/generator cases +2original controls PASS, no rerun or budget increase.
+A/B304.2993138->293.5759423s, first182.9493643->169.0139987s;
+637560->289800sourcequeries,28980sameadmissions. All66archive members and277native
+JSON records independently replayed. Separate v2 external analysis correction only
+(producer hooks correctly yield zero contexts), original v1/ready preserved.
+T505-retention-execution Completed:18exact files90478108B; both new archives and
+all protected CPU/GC/INPUT/backups unchanged. Raw diagnostics only external D.
+Human report T505-admission-directory-reuse-measurement.md; final source-only Git
+publication/recovery checked after this checkpoint. One ordered pair, no100s claim.
 
 # CRASH5 — revision63 same-binary timing-off measurement
 

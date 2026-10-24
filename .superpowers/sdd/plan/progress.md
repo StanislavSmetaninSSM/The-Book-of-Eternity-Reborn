@@ -1,3 +1,19 @@
+# r64 completed coherent block; final source-only publication
+
+T501..505 complete with code/cheap checks/genuine INPUT/two original controls and
+independent Astra/high readiness/outcome/report/retention acceptance. Both new
+archives remain on D;66members/277nativeJSON independently replayed, no raw Git.
+Whole testcase304.2993138->293.5759423s; first182.9493643->169.0139987s;
+same28980admissions,637560->289800queries. Useful bounded gain, no100s claim.
+Exact18obsolete/archivedduplicate files90478108B retired with review-bound plan;
+all CPU/GC, inputs, instrumentation and binary backups unchanged. v1/ready untouched;
+external v2 analysis corrects producer-zero-context assumption only. Latest routing:
+parent owned implementation; concrete Astra/high consultation and separate complex
+Astra/high review found substantive ambient fallback/coverage/selection/settlement
+issues, fixed and tested. Preserve independent review; no unsupported cost savings.
+Source2ff584818 unchanged. Human report T505-admission-directory-reuse-measurement.md.
+Final clean Git publication/recovery receipt follows this checkpoint.
+
 # r64 measurement checkpoint; T505 outcome review/retention pending
 
 Both admitted originals PASS, sameDLL/INPUT, no rerun:304.2993138->293.5759423s;

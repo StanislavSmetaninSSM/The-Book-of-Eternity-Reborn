@@ -64,7 +64,7 @@ query reduction must outweigh service overhead before the expensive experiment.
 - [x] T504 Two original OFF Cut0 controls on the same new genuine current-source
   INPUT and binaries, only explicit typed fixture cache toggle differs;
   unchanged600/820/15/oracles/native73/0, uncapped records and same external CPU/GC.
-- [ ] T505 Verify complete archive/all records and measured effect vs308.9104597;
+- [x] T505 Verify complete archive/all records and measured effect vs308.9104597;
   independent outcome/retention/docs, exact diagnostic replacement, publication.
   The r63-input fingerprint cannot survive C# changes: generate once after cheap
   success; never rewrite/rebind old INPUT or relax its broad source check.
