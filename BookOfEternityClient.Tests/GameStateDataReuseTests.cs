@@ -15,7 +15,7 @@ namespace BookOfEternityClient.Tests;
 /// <param name="output">
 /// Receives every collected timing record and the verified owned cleanup result.
 /// </param>
-public sealed class GameStateDataReuseTests(ITestOutputHelper output)
+public sealed partial class GameStateDataReuseTests(ITestOutputHelper output)
 {
     /// <summary>
     /// Coalesces eight original implicit requests into one initial source and one fresh final proof.

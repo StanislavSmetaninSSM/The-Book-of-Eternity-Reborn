@@ -2,80 +2,52 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "core-admission-directory-observations",
-      "reason": "Admission-local positive directory sharing and fresh later calls on cheap fixtures.",
+      "category": "core-game-state-data-reuse",
+      "reason": "Selected control/realm production phases, cheap genuine snapshot parity and source fences.",
       "contracts": [
-        "#1536 DIR1..6 / T502-503"
+        "#1536 GS1..6 / T506..510"
       ]
     },
     {
-      "category": "fr063-trusted-local-request-observations",
-      "reason": "Existing helper request scope and native guard authentication remain intact.",
+      "category": "core-operation-source-data",
+      "reason": "Preserve temporary source lifetime, drift and pre-effect invalidation.",
       "contracts": [
-        "#1536 DIR1..6 / T502-503"
-      ]
-    },
-    {
-      "category": "portable-storage-construction-probes",
-      "reason": "Grant normalization and construction refusal contracts remain intact.",
-      "contracts": [
-        "#1536 DIR1..6 / T502-503"
-      ]
-    },
-    {
-      "category": "gm-main-run-fence",
-      "reason": "Held-lease main record and main/worker authority refusal remain fresh.",
-      "contracts": [
-        "#1536 DIR1..6 / T502-503"
-      ]
-    },
-    {
-      "category": "gm-main-owner-native-windows",
-      "reason": "Native guard and unchanged Windows inventory/admission behavior across ordinary, extended and drive-case roots.",
-      "contracts": [
-        "#1536 DIR2..5 / T503"
+        "#1536 GS1..6 / T506..510"
       ]
     },
     {
       "category": "fr063-joint-interface-probe-budget-contracts",
-      "reason": "Closed parent/child on-off metadata and unchanged finite original process budget.",
+      "reason": "Strict test-only parent/child phase cache selection with original budgets.",
       "contracts": [
-        "#1536 DIR4..8 / T503-504"
+        "#1536 GS1..6 / T506..510"
       ]
     },
     {
       "category": "fr063-joint-interface-seed-contracts",
-      "reason": "External package retains exact inventory, byte hashes and current-source fingerprint refusals.",
+      "reason": "Unchanged current-source fingerprint and carrier refusal.",
       "contracts": [
-        "#1536 DIR4..8 / T503-504"
-      ]
-    },
-    {
-      "category": "fr063-joint-five-fixture-contracts",
-      "reason": "Existing ordinary five-cut seed mode and typed runtime consumer contracts under package selection.",
-      "contracts": [
-        "#1536 DIR4..6 / T503"
+        "#1536 GS1..6 / T506..510"
       ]
     },
     {
       "category": "fr063-joint-five-fixture-package-contracts",
-      "reason": "Exact package hash, namespace and independent hydration contracts for the newly generated current-source carrier.",
+      "reason": "Genuine new package uses ordinary exact hydration.",
       "contracts": [
-        "#1536 DIR4..6 / T503"
+        "#1536 GS1..6 / T506..510"
       ]
     },
     {
       "category": "fr063-joint-interface-seed-generation",
-      "reason": "One genuine current-source42 preparation and independent read-only copies after cheap cache viability.",
+      "reason": "Generate genuine source42 after code freezes.",
       "contracts": [
-        "#1536 DIR4..8 / T503-504"
+        "#1536 GS1..6 / T506..510"
       ]
     },
     {
       "category": "fr063-joint-fixture-windows-cut0",
-      "reason": "Same current DLLs and genuine INPUT in two OFF controls, only cache selection differs.",
+      "reason": "Same DLL/INPUT original A/B600s with directory reuse on.",
       "contracts": [
-        "#1536 DIR4..8 / T503-504"
+        "#1536 GS1..6 / T506..510"
       ]
     }
   ]
