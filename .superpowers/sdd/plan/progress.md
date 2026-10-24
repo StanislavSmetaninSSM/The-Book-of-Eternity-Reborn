@@ -1,3 +1,17 @@
+# r67 T516 complete; original same-source pair admitted
+
+Final code7272/binding3C61B8DB..17C28;234cheapPASS/catalogPASS/code reviewAccepted.
+Genuine source42 generator1PASS184.3056s;82files513709B/twoimports/SourceCleanup/
+CopyCleanup; newfingerprintE983F995..F2F4C5, archiveF6EA7C0A..C708CC. No rebind.
+Frozen readiness82669C84F48EA9BD036466CC51EA29F0F3E09F849076DACCE919C5AEC4C8BAE8
+114pins independently verified/admitted by separate Astra/high review SHA
+F602C8D9335BCDFE670CEB6D6C8843CBF9B3F1A2251DF065CFBE20A554643A05.
+T517 forwarded(on) then ordinary(off), same8DLL/INPUT/metadataHEAD; both existing
+cacheson, detailedtimingsOFF, remainingdiagnosticsuncapped, frozenCPU/GCcollector,
+Cfixtures/Dartifacts,600child/820shared/15category unchanged. No competing work.
+This metadata-only checkpoint precedes originals; outcomes andbenefit unmeasured.
+Old complete measurement/input/runtime/instrumentation/backups stillprotected.
+
 # r67 cheap gate and independent code review accepted; genuine input next
 
 Canonical FWD1..7/T514..518. Final source7272b0e29/binding

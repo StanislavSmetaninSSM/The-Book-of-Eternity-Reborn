@@ -52,7 +52,7 @@ Parent/child mode selection must refuse invalid routes before opening fixture.
 - [x] T515 Extract original forwarding as minimal RED scaffolding, compile/run
   bounded cheap real-fixture tests; implement missing mode guard/wiring GREEN;
   XML/category/selection and affected consumers. Record actual sources/hits.
-- [ ] T516 Independent coherent review/corrections, fresh8DLL/XML qualification;
+- [x] T516 Independent coherent review/corrections, fresh8DLL/XML qualification;
   ONLY IF cheap source reduction+integrity passed, genuine new source42/twoimports,
   package validation and frozen same-input original admission; source checkpoint.
 - [ ] T517 Two sequential originalCut0 controls forwarded/ordinary on sameDLL/INPUT,

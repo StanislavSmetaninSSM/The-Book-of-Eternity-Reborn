@@ -9,7 +9,7 @@ continuing autonomous review-wait waiver. Existing isolated branch reused.
 - [x] T515 [US1] Extract typed test-support forwarding holder and actual adopted
   lifecycle fixture component tests (no world), meaningful RED/GREEN, guarded
   observation/defaults/integrity/counts, XML docs and bounded category/selection.
-- [ ] T516 [US1] Independent coherent review and affected checks; fresh uniform
+- [x] T516 [US1] Independent coherent review and affected checks; fresh uniform
   eight DLLs/XML; only after cheap effect, genuine new current-source42/twoimports,
   frozen package/observer/modes/budgets and source-only original admission.
 - [ ] T517 [US2] Same-new-DLL/INPUT forwarded versus ordinary originalCut0 pair,
