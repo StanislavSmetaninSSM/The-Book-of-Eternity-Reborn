@@ -55,7 +55,7 @@ Parent/child mode selection must refuse invalid routes before opening fixture.
 - [x] T516 Independent coherent review/corrections, fresh8DLL/XML qualification;
   ONLY IF cheap source reduction+integrity passed, genuine new source42/twoimports,
   package validation and frozen same-input original admission; source checkpoint.
-- [ ] T517 Two sequential originalCut0 controls forwarded/ordinary on sameDLL/INPUT,
+- [x] T517 Two sequential originalCut0 controls forwarded/ordinary on sameDLL/INPUT,
   directory/cache onboth, timingsOFF, frozen external observer, no competing work.
 - [ ] T518 Every record/archive/oracle/runtime/count/time comparison, human report,
   independent outcome/retention review, exact superseded raw replacement and publish.

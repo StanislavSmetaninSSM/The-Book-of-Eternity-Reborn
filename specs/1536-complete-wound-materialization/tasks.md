@@ -12,7 +12,7 @@ continuing autonomous review-wait waiver. Existing isolated branch reused.
 - [x] T516 [US1] Independent coherent review and affected checks; fresh uniform
   eight DLLs/XML; only after cheap effect, genuine new current-source42/twoimports,
   frozen package/observer/modes/budgets and source-only original admission.
-- [ ] T517 [US2] Same-new-DLL/INPUT forwarded versus ordinary originalCut0 pair,
+- [x] T517 [US2] Same-new-DLL/INPUT forwarded versus ordinary originalCut0 pair,
   existing caches onboth/timingsOFF,600/820/15/native/oracles/cleanup unchanged.
 - [ ] T518 [US2] Record complete count/time/runtime analysis in this feature's
   T518-producer-read-forwarder-measurement.md; independent archive/outcome/retention

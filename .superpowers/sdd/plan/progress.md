@@ -1,3 +1,22 @@
+# r67 T517 PASS; T518 outcome and exact retention review pending
+
+Same metadataa4c03a251/code7272/8DLL/INPUT; forwarded+ordinary original each1PASS,
+600/820/15 unchanged, producer73/resumer0/nativebirth/EOF/join/oracles/cleanupPASS.
+TRX283.9837495->264.5061081s(-19.4776414);producer107.3968871->87.5950595s;
+first163.3554324->163.3117708s unchanged.299940producerdirectoryhits,4control
+fast hits; total sourceevents9307->9310(+3),no full-read reduction claim.
+Producer kernel83.296875->63.8125s;total110.09375->89.96875s. ResumerCPUunchanged.
+GC observed intervals only; no fullcoverage or CPU/GC/wall subtraction.
+All remaining records retained without quotas/timingsOFF both. Each142nativeJSON/
+2text/33archive members rehashed+CRC verified; native source unchanged.
+Human reportT518-producer-read-forwarder-measurement.md; singleorderedpairlimits.
+Complete cheap archive65members/250380412rawB verified,9,698,301B compressed,
+SHA9817783F2940EE45B499BF8F28C5458069C2ED0D2899259BE4DC45CE66C9F910.
+Exact retention planSHA FAB054A19B440D6372FDB0F427841E5237EC9F891265B306A71E3166B76A7440:
+109files326921503B,485protected; no deletion yet. Current full+cheap/CPU/GC/INPUT/
+instrumentation/binarybackups protected; retire oldr65originals and verified
+current duplicates onlyafter independentoutcome/retentionacceptance. AllrawD-only.
+
 # r67 T516 complete; original same-source pair admitted
 
 Final code7272/binding3C61B8DB..17C28;234cheapPASS/catalogPASS/code reviewAccepted.
