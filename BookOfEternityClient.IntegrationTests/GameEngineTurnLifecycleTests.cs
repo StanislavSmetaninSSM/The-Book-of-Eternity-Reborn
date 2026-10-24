@@ -62,9 +62,24 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     private readonly FileSystemManager _fs;
     private Action<TrustedLocalPublicationPhase, int>? _consolePublicationObserver;
     private Action<string>? _consoleMutationObserver;
-    private Func<string, Task>? _consoleCanonicalReadObserver;
+    private readonly LifecycleFixtureReadObservers _readObservers;
+    /// <summary>
+    /// Attaches the existing initial read sink through the fixture's explicit observation contract.
+    /// </summary>
+    private Func<string, Task>? _consoleCanonicalReadObserver
+    {
+        get => _readObservers.InitialObserver;
+        set => _readObservers.InitialObserver = value;
+    }
     private Func<Task>? _consoleSessionClosingObserver;
-    private Func<string, Task>? _consoleReturnedCanonicalReadObserver;
+    /// <summary>
+    /// Attaches the existing returned read sink through the fixture's explicit observation contract.
+    /// </summary>
+    private Func<string, Task>? _consoleReturnedCanonicalReadObserver
+    {
+        get => _readObservers.ReturnedObserver;
+        set => _readObservers.ReturnedObserver = value;
+    }
     private string? _armedCanonicalWriteFailurePath;
     private int _remainingCanonicalWriteFailureMatches;
     private readonly ITestOutputHelper? _directGachaOutput;
@@ -91,10 +106,15 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     /// <param name="operationTimingObserver">
     /// Passive observer of the fixture's actual manager; <see langword="null"/> keeps ordinary fixtures unobserved.
     /// </param>
+    /// <param name="readObservers">
+    /// Explicit read observation and passive counts, or null to preserve ordinary late-attachable observers.
+    /// </param>
     internal GameEngineTurnLifecycleTests(ITestOutputHelper? output, string? adoptedRoot,
-        Action<string, string, TimeSpan>? operationTimingObserver = null)
+        Action<string, string, TimeSpan>? operationTimingObserver = null,
+        LifecycleFixtureReadObservers? readObservers = null)
     {
         _directGachaOutput = output;
+        _readObservers = readObservers ?? new LifecycleFixtureReadObservers();
         _rootPath = adoptedRoot is null
             ? Path.Combine(Path.GetTempPath(), "boe-gameengine-turnlifecycle-" + Guid.NewGuid().ToString("N"))
             : Path.GetFullPath(adoptedRoot);
@@ -108,9 +128,10 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             {
                 OperationTimingObserver = operationTimingObserver,
                 BeforeCanonicalMutationAsync = BeforeCanonicalMutationAsync,
-                AfterCanonicalReadInitialValidationAsync = path => _consoleCanonicalReadObserver?.Invoke(path) ?? Task.CompletedTask,
+                CanonicalReadActivityObserver = readObservers is null ? null : readObservers.ObserveCanonicalSource,
+                AfterCanonicalReadInitialValidationAsync = _readObservers.AfterInitialValidationAsync,
                 SessionOperationClosingAsync = () => _consoleSessionClosingObserver?.Invoke() ?? Task.CompletedTask,
-                AfterCanonicalReadAttemptAsync = path => _consoleReturnedCanonicalReadObserver?.Invoke(path) ?? Task.CompletedTask,
+                AfterCanonicalReadAttemptAsync = _readObservers.AfterReadAttemptAsync,
                 LocalPublicationObserver = (phase, index) => _consolePublicationObserver?.Invoke(phase, index)
             });
         if (adoptedRoot is null)
@@ -129,6 +150,11 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     /// Gets the actual fixture manager for typed diagnostic controls on independently adopted files.
     /// </summary>
     internal FileSystemManager DiagnosticFiles => _fs;
+
+    /// <summary>
+    /// Gets the same typed observer holder installed in the actual fixture manager.
+    /// </summary>
+    internal LifecycleFixtureReadObservers DiagnosticReadObservers => _readObservers;
 
     [Fact]
     public void TryDescribeInvalidTriggerLifeEndRuntimeContext_MortalPreTurnAndMortalCurrent_IsReadable()

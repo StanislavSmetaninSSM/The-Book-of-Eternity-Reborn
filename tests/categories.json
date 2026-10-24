@@ -2,6 +2,37 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "core-producer-read-forwarders",
+  "responsibility": "Actual adopted lifecycle fixture read hooks: empty-forwarder source/directory reuse control, callback order/delay/errors, fresh byte fence and operation close on tiny independently owned roots.",
+  "excludes": "No game-world setup, reflection, production authority change or original process benchmark.",
+  "changeHints": [
+    "BookOfEternityClient.TestSupport/LifecycleFixtureReadObservers.cs",
+    "BookOfEternityClient.IntegrationTests/LifecycleProducerReadForwarderTests.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs"
+  ],
+  "related": [
+    {
+      "id": "core-game-state-data-reuse",
+      "when": "Actual source lifetime and fresh fence contracts change."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.LifecycleProducerReadForwarderTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "core-admission-directory-observations",
   "responsibility": "Shares only positive directory DATA across composed helpers in one synchronous ordinary main admission through the existing validation service; every later admission, leaf, byte read and native handle check stays fresh.",
   "excludes": "No world setup, cross-call permission cache, remote/original/worker authority shortcut or diagnostic quota.",

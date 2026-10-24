@@ -1,3 +1,13 @@
+# r67 T515 RED scaffolding WIP
+
+Typed holder extracted original unconditional forwarding into actual lifecycle
+constructor; default semantics unchanged. New tiny adopted-root tests assert
+conditional absent-hook source reuse, directory hits and integrity. Conditional
+delegate creation deliberately not implemented yet: compiling/running meaningful
+RED next. No original run admitted; builds/tests unrun. Explicit category/selection
+added; allraw D-only/no quotas. T514 planning098099e4 published/recovered59blobs,
+verified current8DLL backup38,387,619B on D. Source checkpoint before build.
+
 # r67 WIP ordinary producer read forwarders; cheap-first gate
 
 Canonical FWD1..7/T514..518; spec/plan/tasks written and presented under continuing

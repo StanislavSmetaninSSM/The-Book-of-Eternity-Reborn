@@ -2,45 +2,52 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "core-control-game-state-data",
-      "reason": "Selected actual control and realm DATA contracts on tiny independent snapshots.",
+      "category": "core-producer-read-forwarders",
+      "reason": "Cheap actual-constructor causal control and callback/integrity contracts.",
       "contracts": [
-        "#1536 GS1..6 / T507..510"
+        "#1536 FWD1..7 / T514..518"
+      ]
+    },
+    {
+      "category": "core-admission-directory-observations",
+      "reason": "Directory eligibility restored only for absent arbitrary hooks.",
+      "contracts": [
+        "#1536 FWD1..7 / T514..518"
+      ]
+    },
+    {
+      "category": "core-control-game-state-data",
+      "reason": "Preserve original phase DATA and final fence contracts.",
+      "contracts": [
+        "#1536 FWD1..7 / T514..518"
       ]
     },
     {
       "category": "core-game-state-data-reuse",
-      "reason": "Preserve existing adapter reader identity, fresh fences and unsupported fallback contracts.",
+      "reason": "Preserve reader lifetime, changed source and unsupported fallback.",
       "contracts": [
-        "#1536 GS1..6 / T506..510"
-      ]
-    },
-    {
-      "category": "core-operation-source-data",
-      "reason": "Preserve temporary source lifetime, drift and pre-effect invalidation.",
-      "contracts": [
-        "#1536 GS1..6 / T506..510"
+        "#1536 FWD1..7 / T514..518"
       ]
     },
     {
       "category": "fr063-joint-interface-probe-budget-contracts",
-      "reason": "Strict test-only parent/child phase cache selection with original budgets.",
+      "reason": "Strict producer control and original process budgets.",
       "contracts": [
-        "#1536 GS1..6 / T506..510"
+        "#1536 FWD1..7 / T514..518"
       ]
     },
     {
       "category": "fr063-joint-interface-seed-contracts",
-      "reason": "Unchanged current-source fingerprint and carrier refusal.",
+      "reason": "Current-source fingerprint and carrier refusal.",
       "contracts": [
-        "#1536 GS1..6 / T506..510"
+        "#1536 FWD1..7 / T514..518"
       ]
     },
     {
       "category": "fr063-joint-five-fixture-package-contracts",
-      "reason": "Genuine new package uses ordinary exact hydration.",
+      "reason": "Genuine current-source package exact hydration.",
       "contracts": [
-        "#1536 GS1..6 / T506..510"
+        "#1536 FWD1..7 / T514..518"
       ]
     }
   ]
