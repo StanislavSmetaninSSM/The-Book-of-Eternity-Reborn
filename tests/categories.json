@@ -2,6 +2,38 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "core-shared-read-admission-directories",
+  "responsibility": "Explicit same-manager synchronous directory DATA sharing between ordinary preparation and its initial main admission, real physical source reduction and fresh guard/source integrity.",
+  "excludes": "No world bootstrap, async batch lifetime or cached authority verdict.",
+  "changeHints": [
+    "BookOfEternityClient/Core/ReadPathObservationPhase.cs",
+    "BookOfEternityClient/Core/AdmissionDirectoryObservations.cs",
+    "BookOfEternityClient/Core/FileSystemManager.AdmissionDirectoryObservations.cs",
+    "BookOfEternityClient.IntegrationTests/SharedReadAdmissionDirectoryTests.cs"
+  ],
+  "related": [
+    {
+      "id": "core-ordinary-read-path-data",
+      "when": "Underlying synchronous phase lifetime, API/role identities and callbacks must remain unchanged."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.SharedReadAdmissionDirectoryTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "core-ordinary-read-path-data",
   "responsibility": "Explicit ordinary preparation positive-directory DATA reuse through the existing service, exact API/role keys, original failure fallback and actual sync/async physical query reduction.",
   "excludes": "No game world bootstrap or original process benchmark; no authority verdict caching.",

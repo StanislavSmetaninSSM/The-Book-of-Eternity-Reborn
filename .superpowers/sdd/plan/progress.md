@@ -1,3 +1,14 @@
+# r71 T536 RED candidate — not yet built or run
+
+T535 complete: seven requirements/six tasks/100% read-only consistency, actual
+Spec Kit phases, written links under waiver; checkpoint8ce2b33ea recovered81blobs.
+Qualified227 eight-DLL+binding backup all9CRC/SHA verified on D. New cheap category
+core-shared-read-admission-directories owns real-classifier overlap/required-guard
+and two actual-manager ten-file sync/async off/on reduction cases. Only comparison
+property seam added in production; still unwired, so actual reduction must fail.
+No new probe build/run or production-sharing implementation yet. Existing isolated
+checkout/branch reused; inline execution and TDD, no extra implementer agent.
+
 # r71 shared synchronous preparation/admission DATA — started
 
 Issue#1536; base58bf65497d6f5436c000fbeb4e4770be82afa92c verified against remote ref.

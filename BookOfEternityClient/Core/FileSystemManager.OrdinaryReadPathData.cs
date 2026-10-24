@@ -10,6 +10,11 @@ public partial class FileSystemManager
     internal bool OrdinaryReadPathReuseEnabled { get; set; } = true;
 
     /// <summary>
+    /// Selects explicit positive-directory DATA sharing with the initial ordinary-read main admission.
+    /// </summary>
+    internal bool OrdinaryReadAdmissionReuseEnabled { get; set; } = true;
+
+    /// <summary>
     /// Captures completed ordinary preparation phases without invoking diagnostic callbacks.
     /// </summary>
     /// <returns>
