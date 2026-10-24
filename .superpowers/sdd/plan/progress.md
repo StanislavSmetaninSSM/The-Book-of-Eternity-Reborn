@@ -1,3 +1,19 @@
+# r65 original pair PASS; T510 independent outcome/retention pending
+
+Exact metadata b02632225/source1fc4e7cfc, same8DLL/genuine INPUT, both directoryon,
+new DATA off/on. Each1/1PASS, owned/runtime cleanup/native73/0/EOF/join/oracles PASS.
+TRX301.1907636->282.5673125s; first175.2988103->163.8738651s;
+Client7.8570085->2.788616s/66hits, Realm5.4867063->4.1512681s/366hits.
+Producer113.2575256->106.4729472s with0hits is independent variation, not whole
+18.623s cache attribution.219distinct cheap cases and generator1PASS retained.
+Frozen comparev1 schema KeyError CPU preserved; separate v2 selects actualFinalCpu
+and Decimal endpoints,11controlsPASS; original outcomes/archives unchanged.
+Report T510-control-game-state-data-reuse-measurement.md. Both originals33members
+verified each,283nativeJSON/4nonJSON. Complete cheap84member verifiedZIP32.77MB.
+Exact retention plan159files/1409616802B,352protected prepared; no deletion yet,
+requires independent coherent outcome/report/v2/archive/retention acceptance.
+All diagnostic data D-only/noquotas. T508/509 complete; T510 remains pending.
+
 # r65 T508 complete: exact original pair independently admitted
 
 Qualified code1fc4e7cfc unchanged,219distinct cheap checks plus genuine generator

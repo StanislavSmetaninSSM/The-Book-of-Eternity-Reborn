@@ -8,7 +8,7 @@ Issue #1536; spec GS1..6; plan.md. Owner's autonomous execution/review-wait waiv
   existing-service adapter, typed fixture entry, XML docs, categories/selection.
 - [x] T508 [US1] Independent coherent code/test/selection review; fresh XML builds,
   impacted checks and genuine new current-source42 INPUT; freeze/publish readiness.
-- [ ] T509 [US2] Two original Windows Cut0 controls with only phase reuse off/on,
+- [x] T509 [US2] Two original Windows Cut0 controls with only phase reuse off/on,
   same new DLL/INPUT, directory cache on,600/820/15/oracles/native ownership unchanged.
 - [ ] T510 [US2] Verify all records/archive/runtime and exact phase/whole effect,
   human report, independent outcome/retention review, exact replacement and publish.
