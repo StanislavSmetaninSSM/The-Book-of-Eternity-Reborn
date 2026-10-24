@@ -203,7 +203,7 @@ public sealed class LifecycleProducerReadForwarderTests(ITestOutputHelper output
         /// Receives complete source counts and exact owned cleanup confirmation.
         /// </param>
         /// <param name="forwarded">
-        /// Explicit hook mode, or null to exercise the existing constructor default.
+        /// Explicit hook mode, or <see langword="null"/> to exercise the existing constructor default.
         /// </param>
         internal Fixture(ITestOutputHelper output, bool? forwarded)
         {

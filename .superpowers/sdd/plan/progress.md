@@ -1,3 +1,17 @@
+# r67 T516 qualification WIP; cheap gate satisfied
+
+GREEN b99919301 fresh XML8DLL uniform,7selected categories PASS. Actual tiny
+constructor async+sync target sources8->2,fast hits0->7, directorycontexts0->57
+and hits0->456.10newfixturecases PASS incl same-timebyte drift, next-op/failure
+close, guarded lateattachment, defaultcallbacks/order/delay/errors. No cheap wall
+speedup claimed: extra phase entry/freshproof has cost; original effect unmeasured.
+Independent Astra/high code review found no correctness blocker sofar; XML
+contract descriptions corrected and stale catalog count removed. Documentation
+only since GREEN; fresh qualified8DLL build next, generator onlyafter final review.
+External analyzer corrected per independentfinding: original zero effect must be
+archived/reported, never rejected solely for zero selected-phasehits. No originals
+yet; allraw D-only/uncapped. Latest r65 input/runtime/archives protected.
+
 # r67 T515 GREEN implementation WIP
 
 Fresh XML8DLL RED source097b23b24 builds101.722/58.515s; real tiny-fixture10cases

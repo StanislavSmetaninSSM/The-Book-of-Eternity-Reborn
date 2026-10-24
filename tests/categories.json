@@ -2587,7 +2587,7 @@
 },
 {
   "id": "fr063-joint-interface-probe-budget-contracts",
-  "responsibility": "Spec9 finite shared820/max600 Windows crash budget plus original source/crash policies and adapter mode, identity, stream and custody contracts;43 bounded cases.",
+  "responsibility": "Spec9 finite shared820/max600 Windows crash budget plus original source/crash policies and adapter mode, identity, stream and custody contracts with bounded metadata cases.",
   "excludes": "No real source42/gameplay qualification, Linux startup or diagnostics capture.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/JointInterfaceCrashProcessSupport.cs",

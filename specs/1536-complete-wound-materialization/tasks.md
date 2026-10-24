@@ -3,10 +3,10 @@
 Issue #1536; spec FWD1..7; plan.md. User conditional cheap-first authorization and
 continuing autonomous review-wait waiver. Existing isolated branch reused.
 
-- [ ] T514 Audit exact fixture/eligibility/observer contracts; update canonical
+- [x] T514 Audit exact fixture/eligibility/observer contracts; update canonical
   specs/1536-complete-wound-materialization/{spec,plan,tasks}.md through phases,
   read-only consistency, baseline backup, source-only publication/remote recovery.
-- [ ] T515 [US1] Extract typed test-support forwarding holder and actual adopted
+- [x] T515 [US1] Extract typed test-support forwarding holder and actual adopted
   lifecycle fixture component tests (no world), meaningful RED/GREEN, guarded
   observation/defaults/integrity/counts, XML docs and bounded category/selection.
 - [ ] T516 [US1] Independent coherent review and affected checks; fresh uniform

@@ -56,7 +56,7 @@ public sealed partial class JointInterfaceCrashProcessSupportTests
     }
 
     /// <summary>
-    /// Requires Boolean metadata rather than coercing null, strings or numbers.
+    /// Requires Boolean metadata rather than coercing <see langword="null"/>, strings or numbers.
     /// </summary>
     /// <param name="json">
     /// A malformed parent-authored property value.

@@ -47,9 +47,9 @@ Parent/child mode selection must refuse invalid routes before opening fixture.
 
 ## Execution / verification
 
-- [ ] T514 Audit callers/governance; actual SpecKit plan/tasks/prerequisite and
+- [x] T514 Audit callers/governance; actual SpecKit plan/tasks/prerequisite and
   read-only consistency, baseline8DLL backup, written links and publish/recover.
-- [ ] T515 Extract original forwarding as minimal RED scaffolding, compile/run
+- [x] T515 Extract original forwarding as minimal RED scaffolding, compile/run
   bounded cheap real-fixture tests; implement missing mode guard/wiring GREEN;
   XML/category/selection and affected consumers. Record actual sources/hits.
 - [ ] T516 Independent coherent review/corrections, fresh8DLL/XML qualification;

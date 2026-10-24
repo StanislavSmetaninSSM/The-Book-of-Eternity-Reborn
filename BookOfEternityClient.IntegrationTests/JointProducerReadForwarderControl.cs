@@ -11,10 +11,10 @@ internal static class JointProducerReadForwarderControl
     /// Parses the closed test setting before any fixture access.
     /// </summary>
     /// <param name="setting">
-    /// Exactly on or off; null leaves the caller's route default unspecified.
+    /// Exactly on or off; <see langword="null"/> leaves the caller's route default unspecified.
     /// </param>
     /// <returns>
-    /// True for forwarding, false for absent hooks, or null for the route default.
+    /// True for forwarding, <see langword="false"/> for absent hooks, or <see langword="null"/> for the route default.
     /// </returns>
     internal static bool? Parse(string? setting) => setting switch
     {

@@ -26,12 +26,12 @@ internal sealed class LifecycleFixtureReadObservers
     }
 
     /// <summary>
-    /// Gets the initial read hook, or null for an explicitly unobserved fixture.
+    /// Gets the initial read hook, or <see langword="null"/> for an explicitly unobserved fixture.
     /// </summary>
     internal Func<string, Task>? AfterInitialValidationAsync { get; }
 
     /// <summary>
-    /// Gets the returned read hook, or null for an explicitly unobserved fixture.
+    /// Gets the returned read hook, or <see langword="null"/> for an explicitly unobserved fixture.
     /// </summary>
     internal Func<string, Task>? AfterReadAttemptAsync { get; }
 
@@ -41,7 +41,7 @@ internal sealed class LifecycleFixtureReadObservers
     internal bool ForwardingEnabled => _forwardingEnabled;
 
     /// <summary>
-    /// Gets or attaches the initial observer; disabled fixtures reject non-null attachment.
+    /// Gets or attaches the initial observer; disabled fixtures reject non-<see langword="null"/> attachment.
     /// </summary>
     internal Func<string, Task>? InitialObserver
     {
@@ -55,7 +55,7 @@ internal sealed class LifecycleFixtureReadObservers
     }
 
     /// <summary>
-    /// Gets or attaches the returned observer; disabled fixtures reject non-null attachment.
+    /// Gets or attaches the returned observer; disabled fixtures reject non-<see langword="null"/> attachment.
     /// </summary>
     internal Func<string, Task>? ReturnedObserver
     {

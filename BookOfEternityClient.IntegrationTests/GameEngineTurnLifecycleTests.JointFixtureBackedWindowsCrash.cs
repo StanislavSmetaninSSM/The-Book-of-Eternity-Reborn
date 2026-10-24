@@ -57,6 +57,8 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// BOE_TEST_JOINT_SEED_PACKAGE optionally selects an external genuine current-source package through ordinary fingerprint validation.
     /// BOE_TEST_JOINT_CONTROL_DATA_CACHE optionally selects the restricted fresh control/realm DATA comparison.
     /// BOE_TEST_JOINT_ADMISSION_CACHE optionally selects the restricted fresh-classifier comparison.
+    /// BOE_TEST_JOINT_PRODUCER_READ_FORWARDERS accepts on or off; absent settings disable
+    /// empty read hooks for cut zero and retain forwarding for the other cuts.
     /// </summary>
     /// <param name="cut">
     /// The original cut index from zero through four.
