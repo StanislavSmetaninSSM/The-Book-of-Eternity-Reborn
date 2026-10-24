@@ -1,3 +1,11 @@
+# r65 WIP: control/realm DATA reuse tracked, implementation not started
+
+Owner autonomous authorization; GS1..6/T506..510. Base e2e5bc45d verified against
+remote. Read-only source research, scoped design, cheap/real negative verification
+and same-new-DLL/INPUT A/B600s planned. r64 complete raw/runtime/INPUT retained;
+qualified binaries backed up D-only. No source edits/tests yet. Spec presented
+under explicit review-wait waiver. Native ownership and all authority fences unchanged.
+
 # r64 completed coherent block; final source-only publication
 
 T501..505 complete with code/cheap checks/genuine INPUT/two original controls and

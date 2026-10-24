@@ -1,3 +1,44 @@
+# CRASH5 — revision65 ClientOwned/Realm source DATA reuse
+
+Issue #1536; owner2026-10-24 explicitly authorizes autonomous implementation,
+cheap fixtures and the unchanged600-second original. Base e2e5bc45d; r64
+cached baseline293.5759423s / first169.0139987s. No promised speedup.
+
+- GS1: Route read-only ClientOwnedControlFiles and RealmSegregation source DATA
+  through existing ReadGameStateDataAsync/SourceDataOperation/ValidationOperation.
+  Re-run every validator and preserve all ordered issue fields. No verdict cache.
+- GS2: Preserve source bytes, absent sources, generation/root/admission identity,
+  final fresh source fence, effect invalidation and per-operation disposal.
+  Browser/worker/reserved/hooked/held-lease calls retain original fallback.
+  ClientOwned with non-null jointStoryProof retains its original nested-lease
+  route; guardian completed-comparison fallback also remains. No authority minting.
+- GS3: Cheap independent files exercise actual selected phases against explicit
+  reuse-off controls, repeated-read counts, ordered issues, valid snapshot/current
+  request/authority, changed sources and malformed/missing context. Existing drift,
+  unsupported caller and pre-effect controls remain selected. No reflection/world.
+  A typed canonical manifest serialization entry may support real fixture input;
+  it grants no validation or publication authority.
+- GS4: Add test-only closed on/off selection for these two phases, independent of
+  r64 directory reuse (on in both originals). Retain uncapped scalar phase elapsed
+  and source reuse counts even in the existing detailed-timer OFF measurement.
+  Preserve all full diagnostics and introduce no record/byte quotas.
+- GS5: Fresh XML builds and independent complex review precede one genuine new
+  current-source42 INPUT generation and two original Windows Cut0 controls on
+  the same new DLLs/INPUT. Only new phase reuse off/on differs; C:SSD fixtures,
+  D:HDD diagnostics, detailed timings OFF, child600/shared820/category15, native
+  73/0/EOF/join/oracle/cleanup and frozen external CPU/GC observer unchanged.
+- GS6: Report exact whole/first/repeat and phase times, source counts and overlap/
+  variation limits. Retain prior complete r64 until new complete evidence accepted;
+  then retire exact superseded raw files only, preserving CPU/GC/INPUT/backups.
+  Source/docs in Git; no diagnostics, archives or generated dumps in Git.
+
+Chosen bounded integration extends the existing adapter. A whole admission verdict
+cache or selective global mutation invalidation is outside scope. Splitting the
+joint-story proof protocol is deferred because it changes lease ownership and is
+unnecessary for the source-only path. Mortal/afterlife rules and GM-authored
+contracts do not change: no prompt/example update needed. Written specification
+presented under owner's explicit continuing review-wait waiver.
+
 # CRASH5 — revision64 admission-local directory DATA reuse
 
 Issue #1536. Owner2026-10-24 requests autonomous investigation, safe reuse through

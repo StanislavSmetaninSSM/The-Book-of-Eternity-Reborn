@@ -1,3 +1,43 @@
+# CRASH5 — revision65 control/realm DATA reuse plan
+
+Issue #1536; canonical GS1..6; tasks T506..510; execute with Superpowers
+systematic-debugging, executing-plans, TDD and independent review. Same isolated
+clone/branch; C#/.NET8 on current .NET SDK, PowerShell7 category runner, no packages.
+
+Research: only CrossReferences and MetaMisc currently use the source adapter.
+ClientOwned repeats manifest/snapshot/control/history reads, Realm repeats tracked
+current/baseline reads for diff and semantic filtering. Both rerun current rules.
+Joint-story proof alone acquires its own lease, so its calls explicitly fall back.
+All original service source verification/effect fences and unsupported routes stay.
+
+Design: new internal control-phase adapter in FileSystemManager delegates to
+ReadGameStateDataAsync; typed test switch defaults on. Passive per-phase counters
+and elapsed Stopwatch ticks use no callbacks or retained verdict. Phase-local
+implicit source-hit count is incremented only on genuine service hits, separate
+from fresh source reads counted by fixture's existing passive read observer.
+ValidationPhases wires only the two selected phases; narrow typed canonical DTO
+serialization supports tiny real signed fixtures without private reflection.
+Test-only parent/child control metadata validates before any fixture access;
+append one scalar phase-count record beside existing stage totals.
+
+Constitution: issue traceability, supported state/path/generation/crash integrity,
+trusted-local-player/no privilege, same production/fixture implementation, no GM
+capability change. Existing native owner/supervisor unchanged. No approval waits
+under owner's explicit waiver. Optional SpecKit hooks use explicit checkpoints.
+
+T506 research/spec/plan/tasks + read-only consistency, remote recovery, baseline
+backup. T507 cheap RED then minimal adapter/wiring/tests/docs/category/selection
+GREEN, including existing source drift/fallback. T508 independent code/test review,
+fresh XML builds, seed contracts and genuine new source42 INPUT qualification;
+freeze launch contract/source and remote checkpoint. T509 same DLL/INPUT two
+original600s controls with frozen observer and uncapped output, no competing work.
+T510 complete archive/raw/native/runtime/oracle analysis, honest human report,
+independent outcome/retention review, exact old-data retirement and remote restore.
+
+Dependencies T506->507->508->509->510. No parallel implementer; independent
+Astra/high reviewer verifies the coherent block. Review selection against actual
+diff; no all-suite run, no NoBuild before fresh affected project builds.
+
 # CRASH5 — revision64 admission-local directory reuse plan
 
 > Execute with Superpowers executing-plans, TDD, separate independent review.
