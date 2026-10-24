@@ -1,3 +1,15 @@
+# r67 T515 GREEN implementation WIP
+
+Fresh XML8DLL RED source097b23b24 builds101.722/58.515s; real tiny-fixture10cases
+5PASS/5meaningfulFAIL:8vs2source reads(sync/async),16vs4next-op,missing
+source exit fence in fallback,late-refusal fixture still8sources. Callback order,
+delay and both primary errors PASS. D uncapped RED preserved; no original run.
+Conditional null hooks now implemented; default true/guarded late setters intact.
+Closed producer env/parent/child validation added; only ordinary extended seeded
+WindowsCut0 defaults absenthooks. Othercuts/platforms/fault/acquisition unchanged.
+Passive per-path source census emitted at realcut; resumer control validated but
+hooks unchanged. GREEN and new metadata cases unrun; fresh build/checks next.
+
 # r67 T515 RED scaffolding WIP
 
 Typed holder extracted original unconditional forwarding into actual lifecycle

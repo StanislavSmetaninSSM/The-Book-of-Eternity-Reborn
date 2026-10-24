@@ -79,13 +79,17 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// <param name="controlGameStateDataReuse">
     /// Production source DATA reuse by default; false selects the restricted ordinary Windows cut0 control.
     /// </param>
+    /// <param name="producerReadForwarders">
+    /// Existing read observation by default; false is restricted to the ordinary seeded Windows cut-zero producer.
+    /// </param>
     /// <returns>
     /// Completion after the selected probe's process and DATA assertions, or the original game assertions.
     /// </returns>
     private async Task RunJointInterfaceActualProcessLossAsync(int cut, string? fault = null, bool diagnostic = false,
         bool extendedWindowsCrash = false, string? seedArtifactPath = null, bool fixtureAcquisitionOnly = false,
         string? seedUsage = null, string? seedPackageRoot = null, string? ownedContainerParent = null,
-        JointInterfaceObservationMode observationMode = JointInterfaceObservationMode.Full, bool admissionDirectoryReuse = true, bool controlGameStateDataReuse = true)
+        JointInterfaceObservationMode observationMode = JointInterfaceObservationMode.Full, bool admissionDirectoryReuse = true, bool controlGameStateDataReuse = true,
+        bool producerReadForwarders = true)
     {
         if (extendedWindowsCrash && !OperatingSystem.IsWindows())
             throw new PlatformNotSupportedException("Extended crash qualification is a local Windows selection.");
@@ -114,6 +118,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             ["ObservationMode"] = observationMode.ToString().ToLowerInvariant(),
             ["ExtendedWindowsCrash"] = extendedWindowsCrash
         }, OperatingSystem.IsWindows(), seedArtifactPath is not null || seedPackageRoot is not null, fixtureAcquisitionOnly, mode);
+        JointProducerReadForwarderControl.Validate(producerReadForwarders, new JsonObject
+        {
+            ["ObservationMode"] = observationMode.ToString().ToLowerInvariant(),
+            ["ExtendedWindowsCrash"] = extendedWindowsCrash
+        }, OperatingSystem.IsWindows(), seedArtifactPath is not null || seedPackageRoot is not null, fixtureAcquisitionOnly, mode);
         JointInterfaceSeedCrashInput? source42Seed = null;
         if (seedArtifactPath is not null)
         {
@@ -126,7 +135,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             Nonce = nonce, ParentPid = Environment.ProcessId, Cut = cut, Fault = fault, Diagnostic = diagnostic,
             ObservationMode = observationMode.ToString().ToLowerInvariant(), ExtendedWindowsCrash = extendedWindowsCrash,
-            AdmissionDirectoryReuse = admissionDirectoryReuse, ControlGameStateDataReuse = controlGameStateDataReuse
+            AdmissionDirectoryReuse = admissionDirectoryReuse, ControlGameStateDataReuse = controlGameStateDataReuse,
+            ProducerReadForwarders = producerReadForwarders
         })!.AsObject();
         if (!diagnostic && fault == null) parentMetadata["RunId"] = Guid.NewGuid().ToString("N");
         if (source42Seed is not null) parentMetadata["Source42Seed"] = JsonSerializer.SerializeToNode(source42Seed);
@@ -654,6 +664,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             source42Seed is not null, fixtureAcquisitionOnly, mode);
         var controlGameStateDataReuse = JointControlGameStateDataControl.Read(parent, OperatingSystem.IsWindows(),
             source42Seed is not null, fixtureAcquisitionOnly, mode);
+        var producerReadForwarders = JointProducerReadForwarderControl.Read(parent, OperatingSystem.IsWindows(),
+            source42Seed is not null, fixtureAcquisitionOnly, mode);
         Console.WriteLine(JsonSerializer.Serialize(new
         {
             Boundary = "joint_observation_mode", Role = "producer", Pid = Environment.ProcessId,
@@ -668,16 +680,17 @@ public sealed partial class GameEngineTurnLifecycleTests
         var fixtureStarted = Stopwatch.GetTimestamp();
         stages?.Observe("fixture", "enter");
         JointInterfaceCrashSeedMetadata? sourceSeedMetadata = null;
+        var readObservers = new LifecycleFixtureReadObservers(producerReadForwarders);
         GameEngineTurnLifecycleTests fixture;
         if (source42Seed is null)
-            fixture = new GameEngineTurnLifecycleTests(new JointInterfaceConsoleOutput(), null, timingObserver);
+            fixture = new GameEngineTurnLifecycleTests(new JointInterfaceConsoleOutput(), null, timingObserver, readObservers);
         else
         {
             var importStarted = Stopwatch.GetTimestamp();
             var template = source42Seed.Open(TestRepoPaths.RepoRoot);
             var root = Path.Combine(own, "tmp", "boe-joint-seeded-" + Guid.NewGuid().ToString("N"));
             sourceSeedMetadata = await template.MaterializeAsync(root);
-            fixture = new GameEngineTurnLifecycleTests(new JointInterfaceConsoleOutput(), root, timingObserver);
+            fixture = new GameEngineTurnLifecycleTests(new JointInterfaceConsoleOutput(), root, timingObserver, readObservers);
             File.WriteAllText(Path.Combine(own, "source-seed-import.json"), JsonSerializer.Serialize(new
             {
                 Pid = Environment.ProcessId, Nonce = parent["Nonce"]!.GetValue<string>(), Root = root,
@@ -733,6 +746,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         var admissionDirectoryReuse = JointAdmissionDirectoryControl.Read(parent, OperatingSystem.IsWindows(),
             source42Seed is not null, fixtureAcquisitionOnly, mode);
         var controlGameStateDataReuse = JointControlGameStateDataControl.Read(parent, OperatingSystem.IsWindows(),
+            source42Seed is not null, fixtureAcquisitionOnly, mode);
+        _ = JointProducerReadForwarderControl.Read(parent, OperatingSystem.IsWindows(),
             source42Seed is not null, fixtureAcquisitionOnly, mode);
         Console.WriteLine(JsonSerializer.Serialize(new
         {
@@ -1223,6 +1238,10 @@ public sealed partial class GameEngineTurnLifecycleTests
             Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "control_game_state_counts", Role = "producer", Stage = "cut",
                 Pid = Environment.ProcessId, Enabled = fixture._fs.ControlGameStateDataReuseEnabled,
                 Counts = fixture._fs.CaptureControlGameStateStatistics() }));
+            var sources = fixture._readObservers.CaptureSources();
+            Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "producer_read_forwarder_counts", Role = "producer", Stage = "cut",
+                Pid = Environment.ProcessId, Enabled = fixture._readObservers.ForwardingEnabled,
+                Sources = sources, Total = sources.Values.Sum() }));
             Console.Out.Flush(); Console.Error.Flush();
             Environment.Exit(73); // actual abrupt process exit; no catch, finally, release or compensation
         }

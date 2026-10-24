@@ -21,8 +21,8 @@ internal sealed class LifecycleFixtureReadObservers
     internal LifecycleFixtureReadObservers(bool forwardingEnabled = true)
     {
         _forwardingEnabled = forwardingEnabled;
-        AfterInitialValidationAsync = path => _initial?.Invoke(path) ?? Task.CompletedTask;
-        AfterReadAttemptAsync = path => _returned?.Invoke(path) ?? Task.CompletedTask;
+        AfterInitialValidationAsync = forwardingEnabled ? path => _initial?.Invoke(path) ?? Task.CompletedTask : null;
+        AfterReadAttemptAsync = forwardingEnabled ? path => _returned?.Invoke(path) ?? Task.CompletedTask : null;
     }
 
     /// <summary>
@@ -34,6 +34,11 @@ internal sealed class LifecycleFixtureReadObservers
     /// Gets the returned read hook, or null for an explicitly unobserved fixture.
     /// </summary>
     internal Func<string, Task>? AfterReadAttemptAsync { get; }
+
+    /// <summary>
+    /// Gets whether arbitrary read observers can be attached to this fixture.
+    /// </summary>
+    internal bool ForwardingEnabled => _forwardingEnabled;
 
     /// <summary>
     /// Gets or attaches the initial observer; disabled fixtures reject non-null attachment.

@@ -76,6 +76,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             throw new InvalidDataException("An external source42 package must have an absolute path.");
         var reuse = JointAdmissionDirectoryControl.Parse(Environment.GetEnvironmentVariable("BOE_TEST_JOINT_ADMISSION_CACHE"));
         var controlDataReuse = JointControlGameStateDataControl.Parse(Environment.GetEnvironmentVariable("BOE_TEST_JOINT_CONTROL_DATA_CACHE"));
+        var producerReadForwarders = JointProducerReadForwarderControl.Parse(
+            Environment.GetEnvironmentVariable("BOE_TEST_JOINT_PRODUCER_READ_FORWARDERS")) ?? cut != 0;
         return RunJointInterfaceActualProcessLossAsync(cut,
             extendedWindowsCrash: true,
             seedPackageRoot: seedPackage ?? Path.Combine(TestRepoPaths.RepoRoot, "specs", "1536-complete-wound-materialization",
@@ -83,6 +85,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             seedUsage: JointInterfaceSeedCrashInput.OrdinaryWindowsFiveCutsUsage,
             ownedContainerParent: requestedParent ?? (Path.GetDirectoryName(TestRepoPaths.RepoRoot)
                 ?? throw new InvalidDataException("Fixture-backed crash storage requires the checkout's explicit parent.")),
-            observationMode: observationMode, admissionDirectoryReuse: reuse, controlGameStateDataReuse: controlDataReuse);
+            observationMode: observationMode, admissionDirectoryReuse: reuse, controlGameStateDataReuse: controlDataReuse,
+            producerReadForwarders: producerReadForwarders);
     }
 }
