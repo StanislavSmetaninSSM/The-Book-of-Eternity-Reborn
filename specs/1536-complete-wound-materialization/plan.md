@@ -27,9 +27,9 @@ safe without explicit fresh-fence design. No GM contract/example change.
 
 ## Task sequence / validation
 
-- [ ] T511 Establish specification/plan/tasks, actual Spec Kit phases and read-only
+- [x] T511 Establish specification/plan/tasks, actual Spec Kit phases and read-only
   consistency; present canonical links and publish/recover source-only checkpoint.
-- [ ] T512 Extract all saved relevant scalar/count/stage records, reconcile current
+- [x] T512 Extract all saved relevant scalar/count/stage records, reconcile current
   phases and historical top costs; inspect exact current source paths for strong
   candidates, existing cache coverage, key/lifetime/fences and rejected alternatives.
 - [ ] T513 Write T513-remaining-cache-candidates.md with ranked evidence, actionable

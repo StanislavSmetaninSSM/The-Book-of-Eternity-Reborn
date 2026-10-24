@@ -1,3 +1,20 @@
+# r66 findings drafted; independent evidence/contract review pending
+
+T511 tracked phases/consistency/checkpoint recovered2ff5b6dfc(58exactblobs).
+T512 read-only saved data/source audit complete;25 analysis checksPASS, D evidence
+SHA426599B2EFAEEBDA5DB1024BB2E895A617EB45EAC691ACC8269B0D6A60E8D6AA.
+Current r65 first163.8738651/producer106.4729472; no internal timing inference from
+OFF. Found fixture's two permanent no-op read-forwarders categorically disable
+existing source and directory caches; ordinaryCrashChanged installers leave their
+sinks empty. Removing blocker is not proof other eligibility gates pass; proposed
+cheap typed probe first, benefitunmeasured/test-only. Main-game bulk fresh-source
+admission needs explicit transactional design, not a cachedpermission. Repeated
+woundbundle DATA is a narrower conditional candidate; retained final alreadyreused.
+Historical r62 costs clearly separated fromcurrent; QTE/cleanup alreadycached.
+Report T513-remaining-cache-candidates.md; T513 independentreview/publicationpending.
+No C#/tests/selector/INPUT/GMcontract changes, no builds/neworiginals, noquota,
+latest complete r65 archives/runtime/input/backups retainedunchanged.
+
 # r66 WIP: remaining large cache candidates investigation
 
 Owner asks autonomous follow-up search after accepted r65. Base15b8b1149 clean/

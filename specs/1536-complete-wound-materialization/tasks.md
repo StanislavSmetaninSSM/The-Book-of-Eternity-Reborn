@@ -3,10 +3,10 @@
 Issue #1536; spec NEXT1..5; plan.md. Read-only US1(P1): owner receives evidence-
 backed next cache candidates with preserved integrity and an executable cheap probe.
 
-- [ ] T511 Establish written spec/plan/tasks phases and read-only consistency in
+- [x] T511 Establish written spec/plan/tasks phases and read-only consistency in
   specs/1536-complete-wound-materialization/{spec,plan,tasks}.md; present canonical
   links and publish/recover source-only investigation checkpoint before execution.
-- [ ] T512 [US1] Audit retained r65 measurements/historical timing summaries and
+- [x] T512 [US1] Audit retained r65 measurements/historical timing summaries and
   exact current source; record DATA/key/lifetime/fences and rejected alternatives
   in specs/1536-complete-wound-materialization/T513-remaining-cache-candidates.md.
 - [ ] T513 [US1] Finish ranked findings/cheap probe acceptance in the same report;
