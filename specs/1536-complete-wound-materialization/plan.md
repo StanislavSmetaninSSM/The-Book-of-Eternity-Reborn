@@ -1,3 +1,31 @@
+# r68 amended profiling plan
+
+> Inline execution/TDD/systematic-debugging; separate independent complex review.
+> Canonical REM1..8, issue#1536. Existing branch, no delegated implementation.
+
+**Goal:** Obtain current large internal sections without disabling existing caches.
+**Architecture:** sealed passive accumulator, existing timing scope routing, strict
+resumer-only first-call window. No arbitrary callbacks or relaxed eligibility.
+**Tech Stack:** existing .NET8/C#/PowerShell categories/D Python/frozen CPU-GC.
+**Spec:** spec.md r68 amendment REM6..8 plus retained REM1..5.
+
+- [ ] T522 Add typed recorder/cheap real fixture controls; meaningful unwired RED,
+  GREEN routing; no legacy suppression changes, XML/category/selection verification.
+- [ ] T523 Independent coherent review/fixes, fresh8DLL/XML, genuine new source42/
+  twoimports, strict frozen profile admission; backup accepted7272 binaries first.
+- [ ] T524 One actual Cut0 profiling original600/820/15, first-call window, existing
+  cachesON and legacy timersOFF, frozen CPU/GC, no competing work or quotas.
+- [ ] T525 All-row/window/native/CPU-GC analysis, update T521 report with current
+  internal large timings and safe candidates; independent outcome/exact retention.
+- [ ] T521 Complete original findings task and final source-only publication.
+
+T519->T520->T522->T523->T524->T525->T521. REM6->522/523; REM7->522/523/524;
+REM8->523/524/525/521. Read-only initial findings remain historical context; do not
+claim their old timings resolve current163s. Do not sum nested timed scopes.
+Review focus: no arbitrary-user-code execution from recorder, unchanged cache
+eligibility/callback refusal, exact window closure/late counts/thread isolation,
+source integrity, failure preservation, real INPUT and native ownership.
+
 # r68 Remaining Recovery Cost Investigation Plan
 
 > Inline Superpowers executing-plans/systematic-debugging; independent complex

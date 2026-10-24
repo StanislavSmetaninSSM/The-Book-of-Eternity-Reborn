@@ -1,3 +1,18 @@
+# r68 additional diagnostic probe tasks
+
+Source #1536; amended spec REM6..8/plan. User autonomous waiver persists.
+- [ ] T522 [US1] Sealed passive named counters, existing scope/context routing,
+  meaningful cheap actual-manager RED/GREEN, source/directory/cache/observer/window/
+  exception/concurrency/noquota contracts; XML and category/selection.
+- [ ] T523 [US1] Independent coherent review/corrections, baseline8DLL backup,
+  fresh uniform8DLL/XML, genuine new source42/twoimports and frozen admission.
+- [ ] T524 [US1] Actual resumer-first profiling original with same600/820/15,
+  Cfixtures/Doutput, cacheON/callbacktimersOFF/frozen CPU-GC/no competing work.
+- [ ] T525 [US1] Analyze every captured record and named scope; current big-section
+  findings in T521 report, independent outcome/retention and exact raw replacement.
+
+T519->520->522->523->524->525->521. No cache-policy/game/native/GM change.
+
 # CRASH5 — revision68 remaining recovery cost investigation
 
 Source issue #1536; spec REM1..5; plan.md r68. Findings-only US1, no C#/runtime.

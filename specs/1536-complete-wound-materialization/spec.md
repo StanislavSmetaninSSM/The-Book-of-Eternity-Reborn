@@ -1,3 +1,44 @@
+# r68 amendment — cache-preserving current recovery profiling
+
+Source issue #1536; original owner request requires current large internal sections.
+Retained OFF intervals cannot resolve115s internally and legacy FULL changes cache
+eligibility. Continuing autonomous approval waiver covers the necessary diagnostic
+probe; no production cache optimization is authorized by this investigation.
+
+REM1..5 remain evidence/large-candidate requirements. REM6 adds a sealed internal
+passive named timing accumulator with no caller delegate, callbacks, storage I/O,
+validation suppression or authority behavior. Existing arbitrary-observer gates
+remain unchanged. Default absent accumulator keeps current behavior. Every scope
+contributes started/completed/count/inclusive/max data; no count/byte quota.
+A window reports unclosed/late scopes explicitly; incomplete capture cannot be
+claimed as an exhaustive current partition. No nested-timer double counting.
+
+The same existing MeasureOperation/MeasureCurrentOperation hooks route into this
+accumulator only when no legacy callback observer is selected. Synchronous timing
+contexts restore/suppress both destinations without crossing awaits. Window data
+is thread-safe, detached and cannot invoke user code. Existing source/directory
+cache eligibility remains demonstrably equal to ordinary OFF mode.
+
+REM7: strict test-only parent metadata/environment selects this window ONLY for
+resumer first recovery in ordinary extended seeded WindowsCut0/timingsOFF; producer
+and resumer gameplay/native600/820/15/oracles stay unchanged. Cheap real adopted
+fixtures must prove2sourceevents/7fastHits/456directoryhits, callback fallback,
+window/late/exception/concurrency/noquota controls before original admission.
+Fresh uniform8DLL/XML and genuine new source42/twoimports required; no old rebind.
+
+REM8: one new same-scenario600-limit profiling original with frozen external CPU/GC,
+no competing work, C fixtures/D uncapped artifacts. Record actual current internal
+large scopes and stage totals, overhead/eligibility limits and source/current-vs-
+historical distinction. Independent complex code/admission/outcome review; archive
+and exact latest-measurement retention after acceptance; source-only publication.
+No GM/interface/native/cache-policy changes. Preserve prior baseline until accepted
+replacement; all CPU/GC/INPUT/instrumentation/binary backups remain protected.
+
+Files: new Core/OperationTimingAccumulator.cs; existing timing/context/hooks routing;
+typed lifecycle diagnostic injection; pure/tiny real fixture category; strict test
+selection/parent-child export. Scope is diagnostic investigation, not a cache fix.
+Written material scope amendment presented before code; review wait already waived.
+
 # r68 Remaining Recovery Cost Investigation
 
 Source: issue #1536; owner asks which large sections occupy the remaining163s and
@@ -17,9 +58,8 @@ Continuing autonomous review-wait waiver applies; deliverable is findings only.
 - REM5: Save compact human findings/current-data limits and D-local source/hash/
   arithmetic evidence, independent review and source-only remote recovery.
 
-No C#/test/category/DLL/native/INPUT/runtime changes, new original run, raw-data
-retirement or diagnostic quotas in this investigation. Any new measurement or
-implementation is a separate agreed probe, not authorized by this findings task.
+Original read-only subphase is complete; the amendment above authorizes the necessary
+cache-preserving diagnostic probe. No game cache optimization is included.
 Approaches: reuse current OFF markers plus provenance-bound old aggregates (chosen
 for this read-only question); rerun legacy FULL (reject because it disables directory
 reuse); a sealed passive aggregate counter without arbitrary callbacks is a future
