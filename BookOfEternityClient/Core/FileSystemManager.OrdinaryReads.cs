@@ -118,14 +118,15 @@ public partial class FileSystemManager
 #endif
         using var t326Async0 = this.MeasureOperation("OrdinaryRead.Async.Total");
         cancellationToken.ThrowIfCancellationRequested();
+        using var pathPhase = BeginOrdinaryReadPathPhase();
         using var t326Async1 = this.MeasureOperation("OrdinaryRead.Async.PrepareScope");
         using var resolveTiming = MeasureOperation("OrdinaryRead.Async.ResolvePath");
-        var expectedPath = ResolvePath(relativePath);
+        var expectedPath = ResolvePathForOrdinaryPreparation(relativePath, pathPhase);
         resolveTiming?.Dispose();
         using var scopeTiming = MeasureOperation("OrdinaryRead.Async.CreateScope");
         TrustedLocalFileScope scope;
         using (EnterOperationTimingContext())
-            scope = new TrustedLocalFileScope([GameSessionPath]);
+            scope = TrustedLocalFileScope.CreateForOrdinaryRead(GameSessionPath, pathPhase);
         scopeTiming?.Dispose();
         t326Async1?.Dispose();
         FileStream? stream;
@@ -141,11 +142,12 @@ public partial class FileSystemManager
             {
                 using var t326AsyncAdmission = MeasureOperation("OrdinaryRead.Async.Admission");
                 using (MeasureOperation("OrdinaryRead.Async.Admission.CanonicalSafety"))
-                    EnsureCanonicalPathStillSafe(relativePath, expectedPath);
+                    EnsureCanonicalPathStillSafe(relativePath, expectedPath, pathPhase);
                 string admittedPath;
                 using (MeasureOperation("OrdinaryRead.Async.Admission.ValidateFile"))
                 using (EnterOperationTimingContext())
-                    admittedPath = scope.ValidateFile(expectedPath);
+                    admittedPath = pathPhase?.Active is { } data
+                        ? scope.ValidateFile(expectedPath, allowMissing: true, data.ObserveTrusted) : scope.ValidateFile(expectedPath);
                 bool exists;
                 using (MeasureOperation("OrdinaryRead.Async.Admission.FileExists"))
                     exists = File.Exists(admittedPath);
@@ -157,6 +159,7 @@ public partial class FileSystemManager
                     return null;
                 }
                 t326AsyncAdmission?.Dispose();
+                pathPhase?.Dispose();
                 using var t326AsyncHook = MeasureOperation("OrdinaryRead.Async.BeforeOpenHookAsync");
                 await InvokeBeforeCanonicalReadOpenAsync(relativePath);
                 t326AsyncHook?.Dispose();
@@ -183,6 +186,7 @@ public partial class FileSystemManager
             }
             catch (Exception ex) when (IsTransientOrdinaryReadOpenException(ex) && attempt < TransientFileAccessRetryCount)
             {
+                pathPhase?.Dispose();
 #if DEBUG
                 BrowserDiagnosticContent(relativePath, "ordinary-async", "retry", "open-fault");
 #endif
@@ -191,6 +195,7 @@ public partial class FileSystemManager
             }
             catch
             {
+                pathPhase?.Dispose();
                 if (stream != null) await stream.DisposeAsync();
                 throw;
             }
@@ -301,15 +306,16 @@ public partial class FileSystemManager
         {
 #endif
         using var t326Sync0 = this.MeasureOperation("OrdinaryRead.Sync.Total");
+        using var pathPhase = BeginOrdinaryReadPathPhase();
         dataFailure = null;
         using var t326Sync1 = this.MeasureOperation("OrdinaryRead.Sync.PrepareScope");
         using var resolveTiming = MeasureOperation("OrdinaryRead.Sync.ResolvePath");
-        var expectedPath = ResolvePath(relativePath);
+        var expectedPath = ResolvePathForOrdinaryPreparation(relativePath, pathPhase);
         resolveTiming?.Dispose();
         using var scopeTiming = MeasureOperation("OrdinaryRead.Sync.CreateScope");
         TrustedLocalFileScope scope;
         using (EnterOperationTimingContext())
-            scope = new TrustedLocalFileScope([GameSessionPath]);
+            scope = TrustedLocalFileScope.CreateForOrdinaryRead(GameSessionPath, pathPhase);
         scopeTiming?.Dispose();
         t326Sync1?.Dispose();
         for (var attempt = 0; ; attempt++)
@@ -323,11 +329,12 @@ public partial class FileSystemManager
                 using var t326SyncAdmission = MeasureOperation("OrdinaryRead.Sync.Admission");
                 if (lease != null) EnsureValidCanonicalWriteLease(lease);
                 using (MeasureOperation("OrdinaryRead.Sync.Admission.CanonicalSafety"))
-                    EnsureCanonicalPathStillSafe(relativePath, expectedPath);
+                    EnsureCanonicalPathStillSafe(relativePath, expectedPath, pathPhase);
                 string admittedPath;
                 using (MeasureOperation("OrdinaryRead.Sync.Admission.ValidateFile"))
                 using (EnterOperationTimingContext())
-                    admittedPath = scope.ValidateFile(expectedPath);
+                    admittedPath = pathPhase?.Active is { } data
+                        ? scope.ValidateFile(expectedPath, allowMissing: true, data.ObserveTrusted) : scope.ValidateFile(expectedPath);
                 bool exists;
                 using (MeasureOperation("OrdinaryRead.Sync.Admission.FileExists"))
                     exists = File.Exists(admittedPath);
@@ -339,6 +346,7 @@ public partial class FileSystemManager
                     return null;
                 }
                 t326SyncAdmission?.Dispose();
+                pathPhase?.Dispose();
                 using var t326SyncOpen = MeasureOperation("OrdinaryRead.Sync.ValidateAndOpen");
                 using var stream = OpenValidatedOrdinaryFile(scope, expectedPath, asynchronous: false,
                     out dataFailure, nullableDataFailure, attempt >= TransientFileAccessRetryCount);
@@ -410,6 +418,7 @@ public partial class FileSystemManager
             catch (Exception ex) when (!initialValidationComplete &&
                 IsTransientOrdinaryReadOpenException(ex) && attempt < TransientFileAccessRetryCount)
             {
+                pathPhase?.Dispose();
 #if DEBUG
                 BrowserDiagnosticContent(relativePath, "ordinary-sync", "retry", "open-fault");
 #endif

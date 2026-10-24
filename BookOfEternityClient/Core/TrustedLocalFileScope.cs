@@ -105,6 +105,21 @@ internal sealed class TrustedLocalFileScope
     }
 
     /// <summary>
+    /// Constructs ordinary read grants through one explicit preparation phase without retaining it.
+    /// </summary>
+    /// <param name="root">
+    /// The absolute session directory grant; required parents keep their original validation.
+    /// </param>
+    /// <param name="phase">
+    /// Current preparation DATA, or <see langword="null"/> for original fresh classification.
+    /// </param>
+    /// <returns>
+    /// An ordinary scope retaining only grants; subsequent operations still validate fresh sources.
+    /// </returns>
+    internal static TrustedLocalFileScope CreateForOrdinaryRead(string root, ReadPathObservationPhase? phase) =>
+        new([root], null, phase?.Active is { } current ? current.ObserveTrusted : Probe);
+
+    /// <summary>
     /// Checks construction grants through the current request's classifier without retaining it.
     /// </summary>
     /// <param name="roots">

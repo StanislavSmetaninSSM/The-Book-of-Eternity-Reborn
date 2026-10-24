@@ -12,10 +12,18 @@ T526 phases actual setup-plan/setup-tasks/prerequisites completed; local prerequ
 script lacks RequireSpec so existing spec checked explicitly. Bridge consistency
 7requirements/5tasks/100%/0gaps. Qualified8a8DLL backup verifiedCRC/allmembers on D.
 Written spec/plan/tasks linked before implementation under standing waiver. Optional
-git extension hooks satisfied by explicit checkpoint. T527 RED scaffolding: typed phase currently forwards all original classifier work,
-service entries empty; real manager not wired.15cheap cases expect4causal reuse/
-actual-route failures; not run yet. No caching implementation/gameplay routing yet.
-Next: fresh Integration XML build and only core-ordinary-read-path-data RED.
+git extension hooks satisfied by explicit checkpoint. T527 meaningful RED at a857083ee: XML build succeeded,15cases11PASS/4causalFAIL
+(two source reuse and two actual manager unwired failures). Raw on D only.
+GREEN candidate now routes explicit phase only through original preparation/
+initial admission. Each hit checks quiescent root version and unchanged callback/
+worker eligibility; native/main authority receives no cache; close before first
+open, hook, await or retry delay. Existing service retains separate API/role DATA,
+only positive directories; failures clear it and keep original Windows fallback.
+Added between-read bytes/absence/directory, real mutation, reparse, foreign-thread
+and reentry controls; not run yet. Catalog restored exact original formatting
+apart from the new entry (prior WIP serialized unrelated whitespace; final diff
+only new entry). No source/authority cache-policy relaxation or new original.
+Next: fresh Integration XML build and new cheap category GREEN; US2 still gated.
 
 # r68 coherent block complete; final source-only closure
 

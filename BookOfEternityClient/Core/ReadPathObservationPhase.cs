@@ -10,9 +10,19 @@ internal sealed class ReadPathObservationPhase : IWindowsPathMetadataProvider, I
     private readonly Func<string, TrustedLocalFileScope.EntryKind> _probe;
     private readonly IWindowsPathMetadataProvider _windows;
     private readonly FileSystemManager? _owner;
+    private readonly IDisposable? _timing;
+    private readonly object? _rootVersion;
+    private readonly string _root;
+    private readonly int _thread = Environment.CurrentManagedThreadId;
     private readonly ValidationOperation _operation = new DefaultOperationValidationService().BeginOperation();
+    private readonly Dictionary<string, object> _trustedKeys = new(StringComparer.Ordinal);
+    private readonly Dictionary<(string Path, PathMetadataRole Role), object> _windowsKeys = new();
+    private static readonly OperationComputation<TrustedLocalFileScope.EntryKind> TrustedDirectory =
+        new("OrdinaryRead.PositiveTrustedDirectory", 1, value => value);
+    private static readonly OperationComputation<PathMetadataObservation> WindowsDirectory =
+        new("OrdinaryRead.PositiveWindowsDirectory", 1, value => value);
     private long _requests, _queries, _hits;
-    private bool _closed;
+    private bool _closed, _observing;
 
     /// <summary>
     /// Binds original classifiers and an optional fixed manager counter destination.
@@ -29,15 +39,27 @@ internal sealed class ReadPathObservationPhase : IWindowsPathMetadataProvider, I
     /// <param name="owner">
     /// Optional manager receiving counters once on close, without a caller callback.
     /// </param>
+    /// <param name="rootVersion">
+    /// The manager's captured quiescent version. With an owner, <see langword="null"/> selects fresh fallback;
+    /// isolated classifier fixtures do not require a token.
+    /// </param>
     internal ReadPathObservationPhase(string root, Func<string, TrustedLocalFileScope.EntryKind>? probe = null,
-        IWindowsPathMetadataProvider? windows = null, FileSystemManager? owner = null)
+        IWindowsPathMetadataProvider? windows = null, FileSystemManager? owner = null, object? rootVersion = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
         if (!Path.IsPathFullyQualified(root)) throw new ArgumentException("The root must be absolute.", nameof(root));
         _probe = probe ?? TrustedLocalFileScope.Probe;
         _windows = windows ?? new WindowsPathMetadataProvider(null);
         _owner = owner;
+        _rootVersion = rootVersion;
+        _root = Path.TrimEndingDirectorySeparator(Path.GetFullPath(root));
+        _timing = owner?.MeasureOperation("OrdinaryReadPath.Phase");
     }
+
+    /// <summary>
+    /// Selects this phase only on its original synchronous flow and unchanged manager version.
+    /// </summary>
+    internal ReadPathObservationPhase? Active => CanReuse() ? this : null;
 
     /// <summary>
     /// Observes the original TrustedScope kind without granting access or file authority.
@@ -50,17 +72,63 @@ internal sealed class ReadPathObservationPhase : IWindowsPathMetadataProvider, I
     /// </returns>
     internal TrustedLocalFileScope.EntryKind ObserveTrusted(string path)
     {
-        if (!_closed) { _requests++; _queries++; }
-        try { return _probe(path); }
+        if (!CanReuse()) return _probe(path);
+        Enter();
+        _requests++;
+        try
+        {
+            if (_trustedKeys.TryGetValue(path, out var key))
+            {
+                var retained = _operation.GetOrCompute(TrustedDirectory, key, [],
+                    static () => throw new InvalidOperationException("Retained directory DATA is unavailable."));
+                if (!CanReuse()) return _probe(path);
+                _hits++;
+                return retained;
+            }
+            _queries++;
+            var kind = _probe(path);
+            if (CanReuse() && kind == TrustedLocalFileScope.EntryKind.Directory && IsRelated(path))
+            {
+                key = new object();
+                _operation.GetOrCompute(TrustedDirectory, key, [], () => kind);
+                _trustedKeys.Add(path, key);
+            }
+            return kind;
+        }
         catch { Dispose(); throw; }
+        finally { _observing = false; }
     }
 
     /// <inheritdoc />
     public PathMetadataObservation ObserveDirectory(string path, PathMetadataRole role)
     {
-        if (!_closed) { _requests++; _queries++; }
-        try { return _windows.ObserveDirectory(path, role); }
+        if (!CanReuse()) return _windows.ObserveDirectory(path, role);
+        Enter();
+        _requests++;
+        try
+        {
+            var identity = (path, role);
+            if (_windowsKeys.TryGetValue(identity, out var key))
+            {
+                var retained = _operation.GetOrCompute(WindowsDirectory, key, [],
+                    static () => throw new InvalidOperationException("Retained Windows directory DATA is unavailable."));
+                if (!CanReuse()) return _windows.ObserveDirectory(path, role);
+                _hits++;
+                return retained;
+            }
+            _queries++;
+            var observation = _windows.ObserveDirectory(path, role);
+            if (CanReuse() && observation.Exists && observation.CachedAttributes is { } attributes &&
+                (attributes & FileAttributes.Directory) != 0 && (attributes & FileAttributes.ReparsePoint) == 0 && IsRelated(path))
+            {
+                key = new object();
+                _operation.GetOrCompute(WindowsDirectory, key, [], () => observation);
+                _windowsKeys.Add(identity, key);
+            }
+            return observation;
+        }
         catch { Dispose(); throw; }
+        finally { _observing = false; }
     }
 
     /// <inheritdoc />
@@ -92,13 +160,57 @@ internal sealed class ReadPathObservationPhase : IWindowsPathMetadataProvider, I
     internal ValidationOperationState CaptureState() => _operation.CaptureState();
 
     /// <summary>
+    /// Rejects reentrant classifier execution before it can reuse partially observed DATA.
+    /// </summary>
+    private void Enter()
+    {
+        if (_observing)
+        {
+            Dispose();
+            throw new InvalidOperationException("Ordinary preparation observations cannot be reentered.");
+        }
+        _observing = true;
+    }
+
+    /// <summary>
+    /// Retires DATA after a manager version change; foreign threads use fresh sources.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true"/> only for this open phase's unchanged synchronous flow.
+    /// </returns>
+    private bool CanReuse()
+    {
+        if (_closed || Environment.CurrentManagedThreadId != _thread) return false;
+        if (_owner is null || _rootVersion is { } version && _owner.IsOrdinaryReadPathVersionCurrent(version)) return true;
+        Dispose();
+        return false;
+    }
+
+    /// <summary>
+    /// Restricts directory DATA to exact components related to the selected session root.
+    /// </summary>
+    /// <param name="path">
+    /// Original component spelling, after the caller's lexical and grant validation.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> for the root, descendants or ancestors; otherwise, <see langword="false"/>.
+    /// </returns>
+    private bool IsRelated(string path) => !string.IsNullOrEmpty(path) &&
+        (string.Equals(path, _root, StringComparison.Ordinal) ||
+         path.StartsWith(_root.EndsWith(Path.DirectorySeparatorChar) ? _root : _root + Path.DirectorySeparatorChar, StringComparison.Ordinal) ||
+         _root.StartsWith(path.EndsWith(Path.DirectorySeparatorChar) ? path : path + Path.DirectorySeparatorChar, StringComparison.Ordinal));
+
+    /// <summary>
     /// Clears service DATA and records this phase once; later calls observe fresh sources.
     /// </summary>
     public void Dispose()
     {
         if (_closed) return;
         _closed = true;
+        _trustedKeys.Clear();
+        _windowsKeys.Clear();
         _operation.Dispose();
+        _timing?.Dispose();
         _owner?.RecordOrdinaryReadPathStatistics(CaptureStatistics());
     }
 }

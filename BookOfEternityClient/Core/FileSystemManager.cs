@@ -803,7 +803,21 @@ public partial class FileSystemManager
     /// <returns>
     /// The validated absolute path; malformed, escaping or unsafe names retain their original refusals.
     /// </returns>
-    public string ResolvePath(string relativePath)
+    public string ResolvePath(string relativePath) => ResolvePathForOrdinaryPreparation(relativePath, null);
+
+    /// <summary>
+    /// Resolves the original spelling and confinement checks with optional preparation-only directory DATA.
+    /// </summary>
+    /// <param name="relativePath">
+    /// The original session-relative name, validated before any observation lookup.
+    /// </param>
+    /// <param name="observations">
+    /// The explicit preparation phase, or <see langword="null"/> for original fresh metadata.
+    /// </param>
+    /// <returns>
+    /// The confined absolute path after the unchanged lexical and reparse decisions.
+    /// </returns>
+    private string ResolvePathForOrdinaryPreparation(string relativePath, ReadPathObservationPhase? observations)
     {
         using var operationContext = EnterOperationTimingContext();
         using var operationTiming = MeasureOperation("CanonicalPath.Resolve");
@@ -840,7 +854,7 @@ public partial class FileSystemManager
             EnsureNoExistingReparsePoint(
                 sessionRoot,
                 fullPath,
-                "Canonical game-session");
+                "Canonical game-session", observations);
         return fullPath;
     }
 
@@ -889,15 +903,21 @@ public partial class FileSystemManager
     /// <param name="authorityName">
     /// The authority label retained in existing root and descendant refusal messages.
     /// </param>
+    /// <param name="observations">
+    /// Explicit ordinary preparation DATA, or <see langword="null"/> for the original fresh route.
+    /// </param>
     private void EnsureNoExistingReparsePoint(
         string authorityRoot,
         string fullPath,
-        string authorityName)
+        string authorityName, ReadPathObservationPhase? observations = null)
     {
         if (OperatingSystem.IsWindows())
         {
-            WindowsPathMetadataGuard.Ensure(authorityRoot, fullPath, authorityName,
-                _hooks?.PathMetadataQueryObserver is null ? null : ObservePassivePathMetadata);
+            if (observations?.Active is { } current)
+                WindowsPathMetadataGuard.Ensure(authorityRoot, fullPath, authorityName, current);
+            else
+                WindowsPathMetadataGuard.Ensure(authorityRoot, fullPath, authorityName,
+                    _hooks?.PathMetadataQueryObserver is null ? null : ObservePassivePathMetadata);
             return;
         }
 
@@ -6503,9 +6523,22 @@ public partial class FileSystemManager
         _hooks?.AfterCanonicalMutationBoundaryValidatedAsync?.Invoke(relativePath) ??
         Task.CompletedTask;
 
-    private void EnsureCanonicalPathStillSafe(string relativePath, string expectedFullPath)
+    /// <summary>
+    /// Repeats the original canonical path check and requires the expected resolved name.
+    /// </summary>
+    /// <param name="relativePath">
+    /// Original relative spelling, validated again before any metadata DATA lookup.
+    /// </param>
+    /// <param name="expectedFullPath">
+    /// The previously selected absolute name which the new resolution must equal.
+    /// </param>
+    /// <param name="observations">
+    /// Explicit preparation-only DATA, or <see langword="null"/> to freshly inspect paths.
+    /// </param>
+    private void EnsureCanonicalPathStillSafe(string relativePath, string expectedFullPath,
+        ReadPathObservationPhase? observations = null)
     {
-        var currentFullPath = ResolvePath(relativePath);
+        var currentFullPath = ResolvePathForOrdinaryPreparation(relativePath, observations);
         if (!string.Equals(currentFullPath, expectedFullPath, StringComparison.OrdinalIgnoreCase))
             throw new InvalidDataException("Canonical game-session path identity changed before mutation.");
     }

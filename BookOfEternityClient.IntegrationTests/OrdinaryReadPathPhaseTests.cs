@@ -148,27 +148,138 @@ public sealed class OrdinaryReadPathPhaseTests(ITestOutputHelper output)
         using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, false, recorder);
         await fixture.InitializeAsync();
         var timestamp = File.GetLastWriteTimeUtc(fixture.RawPath);
-        long SourceAttempts(bool enabled)
+        async Task<long> SourceAttempts(bool enabled)
         {
             fixture.Files.OrdinaryReadPathReuseEnabled = enabled;
             using var window = recorder.StartWindow();
             Assert.Equal("original", synchronous ? fixture.Files.ReadFileSync("present.txt") :
-                fixture.Files.ReadFileAsync("present.txt").GetAwaiter().GetResult());
+                await fixture.Files.ReadFileAsync("present.txt"));
             window.Dispose();
             var snapshot = window.Capture();
             Assert.True(snapshot.Complete);
             return snapshot.Rows.Where(row => row.Name is "TrustedScope.Probe.GetAttributes" or
                 "WindowsMetadata.DirectoryRefreshAndCachedRead").Sum(row => row.Completed);
         }
-        var original = SourceAttempts(false);
+        var original = await SourceAttempts(false);
         var before = fixture.Files.CaptureOrdinaryReadPathStatistics();
-        var reused = SourceAttempts(true);
+        var reused = await SourceAttempts(true);
         var counts = fixture.Files.CaptureOrdinaryReadPathStatistics() - before;
         output.WriteLine($"path-phase original={original} reused={reused} counts={counts}");
         Assert.True(counts.Invocations > 0);
         Assert.True(counts.Hits > 0);
         Assert.True(original > reused);
         Assert.Equal(timestamp, File.GetLastWriteTimeUtc(fixture.RawPath));
+    }
+
+    /// <summary>
+    /// Invalidates real manager-owned directory DATA after a supported mutation changes the root token.
+    /// </summary>
+    /// <returns>
+    /// Completion after initialization and the owned mutation have settled.
+    /// </returns>
+    [Fact]
+    public async Task SupportedMutationRetiresTheManagerOwnedPhase()
+    {
+        using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, false);
+        await fixture.InitializeAsync();
+        using var phase = fixture.Files.BeginOrdinaryReadPathPhase();
+        Assert.NotNull(phase);
+        phase.ObserveTrusted(Path.GetDirectoryName(fixture.RawPath)!);
+        Assert.Equal(1, phase.CaptureState().Entries);
+        // Stay on the phase's original synchronous thread while an independent writer settles.
+        fixture.Files.WriteFileAtomicAsync("other.txt", "supported effect").GetAwaiter().GetResult();
+        Assert.Null(phase.Active);
+        Assert.True(phase.CaptureState().Closed);
+        Assert.Equal(0, phase.CaptureState().Entries);
+    }
+
+    /// <summary>
+    /// Makes actual later reads observe changed bytes, absence and a directory replacing the file.
+    /// </summary>
+    /// <param name="synchronous">
+    /// Whether to use the synchronous reader for every fresh request.
+    /// </param>
+    /// <returns>
+    /// Completion after the independent requests and owned cleanup.
+    /// </returns>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task LaterOrdinaryReadsCannotReusePriorBytesOrLeafKinds(bool synchronous)
+    {
+        using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, false);
+        await fixture.InitializeAsync();
+        Task<string?> Read() => synchronous ? Task.FromResult(fixture.Files.ReadFileSync("present.txt")) :
+            fixture.Files.ReadFileAsync("present.txt");
+        Assert.Equal("original", await Read());
+        var timestamp = File.GetLastWriteTimeUtc(fixture.RawPath);
+        File.WriteAllText(fixture.RawPath, "changed!");
+        File.SetLastWriteTimeUtc(fixture.RawPath, timestamp);
+        Assert.Equal("changed!", await Read());
+        File.Delete(fixture.RawPath);
+        Assert.Null(await Read());
+        Directory.CreateDirectory(fixture.RawPath);
+        await Assert.ThrowsAsync<InvalidDataException>(Read);
+    }
+
+    /// <summary>
+    /// Discards previous positive directory observations before a later reparse refusal.
+    /// </summary>
+    [Fact]
+    public void LaterPhasePreservesReparseRefusal()
+    {
+        var provider = new Provider();
+        using (var phase = new ReadPathObservationPhase(Root, windows: provider))
+            WindowsPathMetadataGuard.Ensure(Root, Root, "fixture", phase);
+        provider.Observation = new(true, FileAttributes.Directory | FileAttributes.ReparsePoint);
+        provider.Reparse = true;
+        using var next = new ReadPathObservationPhase(Root, windows: provider);
+        Assert.Throws<InvalidDataException>(() => WindowsPathMetadataGuard.Ensure(Root, Root, "fixture", next));
+    }
+
+    /// <summary>
+    /// Keeps an already retained observation out of a different thread's original source request.
+    /// </summary>
+    /// <returns>
+    /// Completion after the independent classifier call has settled.
+    /// </returns>
+    [Fact]
+    public async Task ForeignThreadUsesFreshClassification()
+    {
+        var sources = 0;
+        using var phase = new ReadPathObservationPhase(Root, _ =>
+        {
+            Interlocked.Increment(ref sources);
+            return TrustedLocalFileScope.EntryKind.Directory;
+        });
+        phase.ObserveTrusted(Root);
+        var completed = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var thread = new Thread(() =>
+        {
+            try { phase.ObserveTrusted(Root); completed.SetResult(); }
+            catch (Exception error) { completed.SetException(error); }
+        }) { IsBackground = true };
+        thread.Start();
+        await completed.Task;
+        thread.Join();
+        Assert.Equal(2, sources);
+        phase.Dispose();
+        Assert.Equal(0, phase.CaptureState().Entries);
+    }
+
+    /// <summary>
+    /// Refuses recursive source execution before it can reuse partially constructed DATA.
+    /// </summary>
+    [Fact]
+    public void ReentrantClassifierRetiresAllData()
+    {
+        ReadPathObservationPhase? phase = null;
+        using (phase = new ReadPathObservationPhase(Root, path => phase!.ObserveTrusted(path)))
+        {
+            Assert.Throws<InvalidOperationException>(() => phase.ObserveTrusted(Root));
+            Assert.True(phase.CaptureState().Closed);
+            Assert.Equal(0, phase.CaptureState().Entries);
+        }
     }
 
     /// <summary>
@@ -210,6 +321,11 @@ public sealed class OrdinaryReadPathPhaseTests(ITestOutputHelper output)
         /// </summary>
         internal IOException? Failure;
 
+        /// <summary>
+        /// Supplies the original final reparse query result.
+        /// </summary>
+        internal bool Reparse;
+
         /// <inheritdoc />
         public PathMetadataObservation ObserveDirectory(string path, PathMetadataRole role)
         {
@@ -228,6 +344,6 @@ public sealed class OrdinaryReadPathPhaseTests(ITestOutputHelper output)
         public bool LegacyFileExists(string path, PathMetadataRole role) => false;
 
         /// <inheritdoc />
-        public bool IsReparsePoint(string path, PathMetadataRole role) => false;
+        public bool IsReparsePoint(string path, PathMetadataRole role) => Reparse;
     }
 }
