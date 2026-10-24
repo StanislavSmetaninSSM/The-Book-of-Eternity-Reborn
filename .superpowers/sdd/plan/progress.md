@@ -1,4 +1,16 @@
-# Current checkpoint: r63 planning/cheap contracts passed; original admission pending
+# Current checkpoint: r63 original OFF PASS; complete outcome verification pending
+
+T497 independent exact admission accepted at bb3285695bc0824fdd237d2fa4cc1e6a1771c601
+with zero unresolved findings. ONE T498-original-off settled exit0; actualTRX
+PASS308.9104597s vs r62full528.1018341s (-219.1913744s/41.5%). Command332.4545723s;
+CPU/GC observer completed/settled. No rebuild/inputgeneration/runtimechange.
+Frozen outcome parser rejected the existing source-defined JOINT_CRASH_STORAGE
+outer line. Fix only versioned postsettlement analysis; preserve original13tools,
+claim/review/run. Full outcome/archive/comparison and independent acceptance pending;
+no second original. Human draft T500-detailed-timings-off-measurement.md.
+T497 complete; T498/499/500 open. No diagnostic deletion before accepted replacement.
+
+## Previous planning checkpoint
 
 Issue#1536 OFF1..7 / T496..500. Owner2026-10-24 accepted next same-scenario off
 measurement; autonomous specification-review wait waiver persists. Base remote

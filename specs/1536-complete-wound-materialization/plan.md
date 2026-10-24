@@ -60,9 +60,14 @@ or source optimization is authorized by this measurement.
 
 - [x] T496 OFF1..7: canonical plan/tasks/prerequisites phases/consistency, source
   and existing off-path audit, explicit selection, publish/recover checkpoint.
-- [ ] T497 OFF1..4/7: frozen preflight/runner/off adapters and cheap controls;
+- [x] T497 OFF1..4/7: frozen preflight/runner/off adapters and cheap controls;
   selected cheap contract category; independent exact source/INPUT/observer/mode
   admission before a fresh original-off claim.
+  Exact admission accepted at bb3285695. Actual67/67 contracts passed.
+  ONE original-off settled exit0/TRX PASS308.9104597s; T498/T499 evidence
+  acceptance pending source-defined JOINT_CRASH_STORAGE parser correction.
+  Preserve original13tools/claim and add separately reviewed versioned analysis;
+  include correction/tools/controls/review in the new archive. No original rerun.
 - [ ] T498 OFF1..3: ONE original-off with unchanged DLL/INPUT/oracles/budgets.
 - [ ] T499 OFF2/3/6: full capture/every payload/every remaining record analysis,
   runtime/stage/elapsed comparison against r62; independent outcome acceptance.
