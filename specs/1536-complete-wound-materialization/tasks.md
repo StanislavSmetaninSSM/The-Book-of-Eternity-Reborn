@@ -1,3 +1,20 @@
+# CRASH5 — revision70 remaining large cache audit
+
+Issue#1536; spec AUD1..5 / plan.md. Read-only US1(P1), standing autonomous waiver.
+
+- [ ] T531 Canonical phases/prerequisites/consistency and linked specification;
+  source-only checkpoint/recovery in active1536feature before investigation output.
+- [ ] T532 [US1] D-local accepted cached r69 profile/source/INPUT binding and all563
+  names/completeness; exact large timing/count inventory and nonadditive limits.
+- [ ] T533 [US1] Current source audit of major remaining pre-hit/fresh paths;
+  candidate DATA/owner/key/lifetime/invalidation/detachment/fresh fence contracts
+  and cheap attribution probe where necessary, no production implementation.
+- [ ] T534 [US1] T534-remaining-cache-candidates.md evidence-backed findings,
+  independent coherent review/fixes, source-only publication/remote-only recovery.
+
+T531->532->533->534. AUD1->532/534; AUD2/3/4->533/534; AUD5->531/534.
+No runtime/GM/schema/test-selection change or new original admitted by this audit.
+
 # CRASH5 — revision69 ordinary-read preparation directory DATA
 
 Issue#1536; spec PATH1..7 / plan.md. Continuing autonomous review-wait waiver.

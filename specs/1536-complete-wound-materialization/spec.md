@@ -1,3 +1,34 @@
+# r70 — Remaining large cache opportunities after r69
+
+Issue #1536. Owner requests: finish r69, then use measurements to determine
+whether more can be cached. Autonomous execution and specification-review-wait
+waiver continue. US1(P1): receive ranked, source-bound current large DATA
+candidates and an honest estimate of what is proved and still unmeasured.
+
+- AUD1: Admit only accepted r69 cached original and its exact source/INPUT/runtime
+  evidence. Verify retained profile completeness and all563 names; preserve the
+  distinction between current timings, old measurements, counts and hypotheses.
+- AUD2: Trace large remaining nested costs to actual current source and existing
+  service routes. Investigate redundant preparation before DATA hits and fresh
+  boundary costs; identify already-cached work and reject micro-optimizations.
+- AUD3: For each recommended candidate state DATA, owner, structural key, lifetime,
+  invalidation, detached result and preserved fresh bytes/absence/mtime/generation/
+  authority/effect fences. Never suggest caching a validation or authority verdict.
+  Existing trusted-local single-player contract stays; no new OS privileges.
+- AUD4: Reuse complete retained measurements when sufficient. If a large suspected
+  cost cannot be attributed, state the exact missing measurement and executable
+  cheap probe; adding diagnostic code or another original requires a tracked
+  amendment with tests/review/qualification, not an untracked implementation.
+- AUD5: Write compact human findings in T534-remaining-cache-candidates.md, verify
+  arithmetic/provenance/source anchors, obtain independent review, publish and
+  verify remote-only recovery. Raw data stays D-only, no quotas/deletions/new
+  heavyweight run for this read-only audit. No production or GM/schema change.
+
+Acceptance: original cached run's large costs reconciled without summing nested
+scopes; ranked candidates tied to real source and explicit safe contracts, with
+measurement gaps and unsupported speedup claims clearly separated. Investigation
+only; production cache changes are outside this block. No unresolved scope decision.
+
 # r69 — Ordinary-read preparation directory DATA reuse
 
 Issue #1536. Owner accepts the next large filesystem candidate after r68 measured

@@ -1,3 +1,15 @@
+# r70 remaining large cache audit — started
+
+Issue#1536; canonical AUD1..5/T531..534, base d9cf578616abfa3886e38fed621adc5238176620.
+Latest user asks for measurements and further cache candidates after finishing r69.
+r69 final_publication receipt PASS: clean exact remote recovery80blobs, all8DLL/
+120readyrefs/785protected intact and135retired absent; independent outcome and
+mechanical reviews accepted. Next block is source/profile audit only; no runtime
+change/new original. Raw uncapped diagnostics stay D-only; no deletions. Standing
+autonomous specification-review-wait waiver applies. Parent handles investigation;
+separate context reviews coherent completed report. Current large costs must be
+source-bound; nested times are not additive and saved seconds remain unproved.
+
 # r69 coherent block complete; final source-only closure
 
 Issue#1536/base7d507b511; source remote SHA verified before edits. Owner accepts

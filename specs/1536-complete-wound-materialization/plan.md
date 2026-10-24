@@ -1,3 +1,31 @@
+# r70 — Remaining Large Cache Audit Plan
+
+Issue#1536; spec AUD1..5. Superpowers systematic-debugging/inline execution;
+Spec Kit phases and read-only consistency; separate independent review.
+Stack: current C# source plus Python/PowerShell read-only analysis on D. Existing
+isolated branch. r69 final closure d9cf57861 is the input, qualified227183db6.
+
+1. T531 Update canonical spec/plan/tasks, actual phase prerequisites and consistency;
+   present links under waiver; source-only checkpoint and remote-only recovery.
+2. T532 [US1] Validate latest accepted cached profile and complete563-name inventory;
+   extract large rows/counts/current stage intervals with D-local provenance.
+3. T533 [US1] Trace only large source routes: existing DATA hit dispatch versus
+   redundant physical work, original fresh boundaries and already-cached results.
+   For each candidate map owner/key/lifetime/invalidation/detach/fresh fences;
+   design a cheap causal probe only if a measured attribution gap remains.
+4. T534 [US1] T534-remaining-cache-candidates.md human findings, verify evidence and
+   diff; independent coherent review, resolve findings, source-only checkpoint and
+   exact remote recovery. No C# builds/tests for unchanged runtime code.
+
+T531->532->533->534. AUD1->532/534; AUD2/3/4->533/534; AUD5->531/534.
+Research/data model/contracts/probe acceptance are in these canonical artifacts
+and final findings; no duplicate plan hierarchy. Constitution gates: issue bound,
+trusted-local integrity/native ownership/GM interface unchanged; no reflection,
+new global cache, raw Git output, diagnostic caps or prior raw deletion. No new
+implementation: a gap is a deliverable, not permission to bypass its admission.
+Risk: flat inclusive timers cannot partition parent time or reveal per-path hit
+coverage. Do not give their sums or hypothetical upper bounds as measured savings.
+
 # r69 Ordinary Read Preparation Directory DATA Plan
 
 > Inline execution with Superpowers executing-plans/TDD/systematic-debugging;
