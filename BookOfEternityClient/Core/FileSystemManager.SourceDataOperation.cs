@@ -636,6 +636,7 @@ public partial class FileSystemManager
                 var value = task.GetAwaiter().GetResult();
                 if (!computed) { using var reuse = _files.MeasureOperation("OperationFileData.ReuseSync"); }
                 RequireOpen();
+                if (!computed) _files.RecordControlGameStateSourceHit(fast: false);
                 return value;
             }
             catch { _failed = true; throw; }
@@ -679,6 +680,7 @@ public partial class FileSystemManager
                 }, token);
                 if (!computed) { using var reuse = _files.MeasureOperation("OperationFileData.ReuseAsync"); }
                 RequireOpen();
+                if (!computed) _files.RecordControlGameStateSourceHit(fast: false);
                 return value;
             }
             catch { _failed = true; throw; }

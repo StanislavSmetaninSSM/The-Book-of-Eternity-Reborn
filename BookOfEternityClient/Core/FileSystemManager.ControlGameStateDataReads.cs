@@ -5,8 +5,8 @@ namespace BookOfEternityClient.Core;
 public partial class FileSystemManager
 {
     private readonly AsyncLocal<ControlGameStateReadActivity?> _controlGameStateReadActivity = new();
-    private long _clientControlCalls, _clientControlHits, _clientControlTicks;
-    private long _realmCalls, _realmHits, _realmTicks;
+    private long _clientControlCalls, _clientControlHits, _clientControlFastHits, _clientControlTicks;
+    private long _realmCalls, _realmHits, _realmFastHits, _realmTicks;
 
     /// <summary>
     /// Selects source DATA reuse for the two control phases; false supplies an internal fixture control.
@@ -50,15 +50,30 @@ public partial class FileSystemManager
             {
                 Interlocked.Increment(ref _realmCalls);
                 Interlocked.Add(ref _realmHits, hits);
+                Interlocked.Add(ref _realmFastHits, Interlocked.Read(ref activity.FastSourceHits));
                 Interlocked.Add(ref _realmTicks, ticks);
             }
             else
             {
                 Interlocked.Increment(ref _clientControlCalls);
                 Interlocked.Add(ref _clientControlHits, hits);
+                Interlocked.Add(ref _clientControlFastHits, Interlocked.Read(ref activity.FastSourceHits));
                 Interlocked.Add(ref _clientControlTicks, ticks);
             }
         }
+    }
+
+    /// <summary>
+    /// Records one returned service hit without retaining data or invoking diagnostic callbacks.
+    /// </summary>
+    /// <param name="fast">
+    /// Whether the selected GameState fast route returned the hit instead of the ordinary source reader.
+    /// </param>
+    private void RecordControlGameStateSourceHit(bool fast)
+    {
+        if (_controlGameStateReadActivity.Value is not { Closed: false } activity) return;
+        Interlocked.Increment(ref activity.SourceHits);
+        if (fast) Interlocked.Increment(ref activity.FastSourceHits);
     }
 
     /// <summary>
@@ -68,9 +83,9 @@ public partial class FileSystemManager
     /// Per-phase elapsed wall time and actual implicit service hits; source verification remains included in time.
     /// </returns>
     internal ControlGameStateStatistics CaptureControlGameStateStatistics() => new(
-        new(Interlocked.Read(ref _clientControlCalls), Interlocked.Read(ref _clientControlHits),
+        new(Interlocked.Read(ref _clientControlCalls), Interlocked.Read(ref _clientControlHits), Interlocked.Read(ref _clientControlFastHits),
             Interlocked.Read(ref _clientControlTicks) * 1000d / Stopwatch.Frequency),
-        new(Interlocked.Read(ref _realmCalls), Interlocked.Read(ref _realmHits),
+        new(Interlocked.Read(ref _realmCalls), Interlocked.Read(ref _realmHits), Interlocked.Read(ref _realmFastHits),
             Interlocked.Read(ref _realmTicks) * 1000d / Stopwatch.Frequency));
 
     /// <summary>
@@ -78,7 +93,7 @@ public partial class FileSystemManager
     /// </summary>
     private sealed class ControlGameStateReadActivity
     {
-        internal long SourceHits;
+        internal long SourceHits, FastSourceHits;
         internal volatile bool Closed;
     }
 
@@ -89,12 +104,15 @@ public partial class FileSystemManager
     /// Completed or failed phase invocations.
     /// </param>
     /// <param name="SourceHits">
-    /// Actual implicit source service hits during the validation body, excluding fresh exit reads.
+    /// Actual returned service hits through fast and ordinary source readers, excluding fresh exit reads.
+    /// </param>
+    /// <param name="FastSourceHits">
+    /// Hits through the selected phase adapter that avoid the original ordinary reader entry.
     /// </param>
     /// <param name="ElapsedMilliseconds">
     /// Summed wall time of those invocations, including entry and fresh source verification.
     /// </param>
-    internal readonly record struct ControlGameStatePhaseStatistics(long Calls, long SourceHits, double ElapsedMilliseconds);
+    internal readonly record struct ControlGameStatePhaseStatistics(long Calls, long SourceHits, long FastSourceHits, double ElapsedMilliseconds);
 
     /// <summary>
     /// Separates cumulative ClientOwnedControlFiles and RealmSegregation observations.

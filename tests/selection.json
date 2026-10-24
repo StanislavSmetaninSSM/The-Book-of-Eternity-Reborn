@@ -2,8 +2,15 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "core-control-game-state-data",
+      "reason": "Selected actual control and realm DATA contracts on tiny independent snapshots.",
+      "contracts": [
+        "#1536 GS1..6 / T507..510"
+      ]
+    },
+    {
       "category": "core-game-state-data-reuse",
-      "reason": "Selected control/realm production phases, cheap genuine snapshot parity and source fences.",
+      "reason": "Preserve existing adapter reader identity, fresh fences and unsupported fallback contracts.",
       "contracts": [
         "#1536 GS1..6 / T506..510"
       ]

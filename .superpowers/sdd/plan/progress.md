@@ -1,7 +1,19 @@
+# r65 WIP: independent review corrections; final cheap verification pending
+
+Candidate c4960f103 XML builds90.261/53.083s PASS,8uniform DLLs. First GREEN
+attempt27cases24PASS/3FAIL; no original launched. Independent Astra/high review
+found incomplete actual-hit accounting, negative/explicit-off fixture gaps and
+RED count typo. Source fences/lease fallbacks inspected intact. Corrected counters
+include ordinary Read/ReadAsync service hits and distinguish new fast hits; fresh
+exit reads remain excluded. Tiny actual repeated context/semantic-no-op fixture,
+canonical guardian path, explicit off/missing/foreign/modified negative parity,
+nested-lease fallback and independent bounded category added. Unrelated catalog
+format restored. RED evidence corrected25/21/4. Review acceptance remains pending.
+
 # r65 WIP: meaningful RED verified, minimal adapter and scalar counters implemented
 
 T506 canonical phases/consistency +remote restore complete. T507 RED5 source
-0864866af: XML unit build28.739s (unchanged reference DLLs),26cases22PASS/4FAIL,
+0864866af: XML unit build28.739s (unchanged reference DLLs),25cases21PASS/4FAIL,
 all4 actual selected phases preserve ordered issues and fail exactly phase count
 expected1/actual0. Prior two compile/scaffold failures and two invalid fixture
 admission failures are NOT RED evidence. Pure production authority construction

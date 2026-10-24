@@ -13,11 +13,13 @@ All original service source verification/effect fences and unsupported routes st
 Design: new internal control-phase adapter in FileSystemManager delegates to
 ReadGameStateDataAsync; typed test switch defaults on. Passive per-phase counters
 and elapsed Stopwatch ticks use no callbacks or retained verdict. Phase-local
-implicit source-hit count is incremented only on genuine service hits, separate
+fast and ordinary source-hit counts are incremented only on genuine returned service hits, separate
 from fresh source reads counted by fixture's existing passive read observer.
 ValidationPhases wires only the two selected phases; narrow typed canonical DTO
 serialization supports tiny real signed fixtures without private reflection.
-Test-only parent/child control metadata validates before any fixture access;
+Dedicated core-control-game-state-data category separates new cohort controls
+from existing shared adapter fixtures. Existing typed authority builder suffices;
+no new manifest serialization API is required. Test-only parent/child control metadata validates before any fixture access;
 append one scalar phase-count record beside existing stage totals.
 
 Constitution: issue traceability, supported state/path/generation/crash integrity,

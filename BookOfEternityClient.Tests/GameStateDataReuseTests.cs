@@ -15,7 +15,7 @@ namespace BookOfEternityClient.Tests;
 /// <param name="output">
 /// Receives every collected timing record and the verified owned cleanup result.
 /// </param>
-public sealed partial class GameStateDataReuseTests(ITestOutputHelper output)
+public sealed class GameStateDataReuseTests(ITestOutputHelper output)
 {
     /// <summary>
     /// Coalesces eight original implicit requests into one initial source and one fresh final proof.
@@ -516,7 +516,7 @@ public sealed partial class GameStateDataReuseTests(ITestOutputHelper output)
     /// <returns>
     /// One complete deterministic image per issue, preserving original ordering.
     /// </returns>
-    private static string[] IssueImages(IEnumerable<ValidationIssue> issues) => issues.Select(issue =>
+    internal static string[] IssueImages(IEnumerable<ValidationIssue> issues) => issues.Select(issue =>
         JsonSerializer.Serialize(new
         {
             issue.FilePath, issue.Severity, issue.Message, issue.Category, issue.Code, issue.Actor,
@@ -526,7 +526,7 @@ public sealed partial class GameStateDataReuseTests(ITestOutputHelper output)
     /// <summary>
     /// Owns only a nonce-marked root, original filesystem manager and uncapped passive observations.
     /// </summary>
-    private sealed class Fixture : IDisposable
+    internal sealed class Fixture : IDisposable
     {
         private readonly ITestOutputHelper _output;
         private readonly string _nonce = Guid.NewGuid().ToString("N");

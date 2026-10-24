@@ -5,10 +5,19 @@ using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
+using Xunit.Abstractions;
+using Fixture = BookOfEternityClient.Tests.GameStateDataReuseTests.Fixture;
+using static BookOfEternityClient.Tests.GameStateDataReuseTests;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed partial class GameStateDataReuseTests
+/// <summary>
+/// Exercises control and realm phase DATA reuse with independent genuine file cohorts.
+/// </summary>
+/// <param name="output">
+/// Receives complete per-fixture sources, timings and scalar phase counts without quotas.
+/// </param>
+public sealed class ControlGameStateDataReuseTests(ITestOutputHelper output)
 {
     /// <summary>
     /// Runs the actual control or realm phase against a tiny genuine snapshot and fresh fallback.
@@ -32,7 +41,7 @@ public sealed partial class GameStateDataReuseTests
     {
         var phase = realm ? GameStateValidationPhase.RealmSegregation : GameStateValidationPhase.ClientOwnedControlFiles;
         using var cached = new Fixture(output);
-        using var fresh = new Fixture(output, mutableReadHook: true);
+        using var fresh = new Fixture(output);
         foreach (var fixture in new[] { cached, fresh })
         {
             await fixture.InitializeGenerationAsync();
@@ -40,8 +49,10 @@ public sealed partial class GameStateDataReuseTests
             if (invalidAuthority) fixture.WriteRaw(PendingTurnSnapshotAuthority.AuthorityPath, "{broken");
             fixture.Recording = true;
         }
+        fresh.Files.ControlGameStateDataReuseEnabled = false;
         var actual = await ValidateControlAsync(cached, phase);
         var expected = await ValidateControlAsync(fresh, phase);
+        output.WriteLine(JsonSerializer.Serialize(new { Phase = phase.ToString(), Cached = cached.Files.CaptureControlGameStateStatistics(), Fresh = fresh.Files.CaptureControlGameStateStatistics() }));
         Assert.Equal(IssueImages(expected), IssueImages(actual));
         Assert.Equal(1, cached.TimingBegins("GameStateData.Phase"));
         Assert.Equal(0, fresh.TimingBegins("GameStateData.Phase"));
@@ -53,9 +64,10 @@ public sealed partial class GameStateDataReuseTests
         {
             Assert.DoesNotContain(actual, issue => issue.Code?.Contains("missing_validated") == true ||
                 issue.Code == "client_owned_pending_snapshot_manifest_modified");
-            Assert.True(cached.Reads("game_state/control/pending_turn_snapshot.json") <
-                fresh.Reads("game_state/control/pending_turn_snapshot.json"));
+            Assert.True(cached.Reads(PendingTurnSnapshotAuthority.AuthorityPath) <
+                fresh.Reads(PendingTurnSnapshotAuthority.AuthorityPath));
             Assert.True(observed.SourceHits > 0);
+            Assert.True(observed.FastSourceHits > 0);
         }
         else Assert.NotEmpty(actual);
 
@@ -82,7 +94,7 @@ public sealed partial class GameStateDataReuseTests
         using var fixture = new Fixture(output);
         await fixture.InitializeGenerationAsync();
         await PrepareControlSnapshotAsync(fixture);
-        var path = realm ? "game_state/guardians/guardian_state.json"
+        var path = realm ? "game_state/meta/guardians.json"
             : "game_state/control/pending_turn_snapshot/soul_state.json";
         var timestamp = File.GetLastWriteTimeUtc(fixture.RawPath(path));
         var changed = false;
@@ -99,7 +111,86 @@ public sealed partial class GameStateDataReuseTests
         Assert.IsType<InvalidDataException>(failure);
         fixture.OnTiming = null;
         fixture.Files.ControlGameStateDataReuseEnabled = false;
-        Assert.NotEmpty(await ValidateControlAsync(fixture, phase));
+        Assert.Contains(await ValidateControlAsync(fixture, phase), issue =>
+            realm ? issue.Code == "realm_segregation_violation" : issue.Code == "client_owned_pending_snapshot_file_modified");
+    }
+
+    /// <summary>
+    /// Preserves exact current-request, control-file and realm refusals with reuse explicitly disabled as a control.
+    /// </summary>
+    /// <param name="realm">
+    /// Whether to select RealmSegregation instead of ClientOwnedControlFiles.
+    /// </param>
+    /// <param name="fault">
+    /// Missing or foreign request context, or a changed phase-owned canonical source.
+    /// </param>
+    /// <returns>
+    /// Completion after both original validators produce identical ordered issues and the specific expected refusal.
+    /// </returns>
+    [Theory]
+    [InlineData(false, "missing-request")]
+    [InlineData(true, "missing-request")]
+    [InlineData(false, "foreign-request")]
+    [InlineData(true, "foreign-request")]
+    [InlineData(false, "modified-source")]
+    [InlineData(true, "modified-source")]
+    public async Task SelectedControlPhasePreservesNegativeContracts(bool realm, string fault)
+    {
+        using var cached = new Fixture(output);
+        using var fresh = new Fixture(output);
+        foreach (var fixture in new[] { cached, fresh })
+        {
+            await fixture.InitializeGenerationAsync();
+            await PrepareControlSnapshotAsync(fixture);
+            switch (fault)
+            {
+                case "missing-request":
+                    File.Delete(fixture.RawPath("input/turn_request.json"));
+                    break;
+                case "foreign-request":
+                    fixture.WriteRaw("input/turn_request.json", "{\"sessionId\":\"foreign\",\"requestId\":\"request\",\"turnNumber\":42}");
+                    break;
+                case "modified-source":
+                    fixture.WriteRaw(realm ? "game_state/meta/guardians.json" : GuardianTradeRequestState.PendingRequestPath,
+                        "{\"guardians\":[{\"guardianId\":\"changed\"}],\"changed\":true}");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(fault));
+            }
+        }
+        fresh.Files.ControlGameStateDataReuseEnabled = false;
+        var phase = realm ? GameStateValidationPhase.RealmSegregation : GameStateValidationPhase.ClientOwnedControlFiles;
+        var actual = await ValidateControlAsync(cached, phase);
+        var expected = await ValidateControlAsync(fresh, phase);
+        Assert.Equal(IssueImages(expected), IssueImages(actual));
+        Assert.Contains(actual, issue => fault == "modified-source"
+            ? realm ? issue.Code == "realm_segregation_violation"
+                : issue.FilePath == GuardianTradeRequestState.PendingRequestPath && issue.Code?.EndsWith("_modified") == true
+            : realm ? issue.Code == "realm_segregation_missing_validated_snapshot_context"
+                : issue.Code == "client_owned_pending_snapshot_manifest_modified");
+        Assert.Equal(1, cached.TimingBegins("GameStateData.Phase"));
+        Assert.Equal(0, fresh.TimingBegins("GameStateData.Phase"));
+    }
+
+    /// <summary>
+    /// Keeps a nested original lease outside the additional source lease used by eligible control phases.
+    /// </summary>
+    /// <returns>
+    /// Completion after the original nested lease reads normally and no selected source phase is entered.
+    /// </returns>
+    [Fact]
+    public async Task OriginalOnlyControlBodyRetainsItsLeaseRoute()
+    {
+        using var fixture = new Fixture(output);
+        await fixture.InitializeGenerationAsync();
+        await SessionOperationContext.RunParticipatingCurrentSessionAsync(fixture.Files, () =>
+            fixture.Files.ReadControlGameStateDataAsync(realm: false, originalOnly: true, async () =>
+            {
+                await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+                Assert.Equal("original", await fixture.Files.ReadFileAsync(lease, "present.txt"));
+            }));
+        Assert.Equal(0, fixture.TimingBegins("GameStateData.Phase"));
+        Assert.Equal(0, fixture.Files.CaptureControlGameStateStatistics().ClientOwnedControlFiles.FastSourceHits);
     }
 
     /// <summary>
@@ -144,7 +235,8 @@ public sealed partial class GameStateDataReuseTests
         foreach (var (path, content) in new[]
         {
             ("game_state/meta/soul_state.json", "{\"currentRealm\":\"Mortal World\"}"),
-            ("game_state/guardians/guardian_state.json", "{\"guardians\":[]}")
+            ("game_state/meta/guardians.json", "{\"guardians\":[]}"),
+            (GuardianTradeRequestState.PendingRequestPath, "{}")
         })
         {
             var snapshot = "game_state/control/pending_turn_snapshot/" + Path.GetFileName(path);
@@ -185,6 +277,7 @@ public sealed partial class GameStateDataReuseTests
             m => m["sourceLabel"]!.GetValue<string>(), m => Map(m, "rollbackBackups"),
             p => File.ReadAllBytes(fixture.RawPath(p)), hashSnapshotBytesExactly: true);
         fixture.WriteRaw(PendingTurnSnapshotAuthority.AuthorityPath, authority);
+        fixture.WriteRaw("game_state/meta/guardians.json", "{ \"guardians\" : [] }");
         await using var admitted = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
     }
 }
