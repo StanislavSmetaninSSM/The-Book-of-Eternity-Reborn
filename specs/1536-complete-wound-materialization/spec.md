@@ -1,3 +1,56 @@
+# CRASH5 — revision63 same-binary measurement with detailed timings off
+
+Source issue #1536. Owner2026-10-24 accepted the proposed next measurement after
+r62 PASS528.1018341s and134.930856s direct diagnostic build/write metrics. Earlier
+autonomous execution and specification-review wait waiver persist. Base
+ dba1e7fb5ac8d743ec179dd8ccc9374094cd24fb; compiled source remains
+1e6b947b7d9e64c1b5af7c2c7847426524463551. Investigation only, no cache/game fix.
+
+- OFF1: Run ONE new original Windows Cut0 with existing BOE_TEST_JOINT_TIMINGS=off.
+  Keep the same eight qualified DLL/dependency copies and immutable source42
+  cleanup-proof-cache-v1 INPUT. No rebuild, generator, game/test/native code,
+  category catalog/selector, oracle or budget change. Only current category
+  selection bookkeeping may change; verify that exact exception separately.
+- OFF2: Preserve actual native73/0, PID/birth, EOF/join, original game assertions,
+  fresh ownership and runtime cleanup, child600/shared820/category15, C:SSD
+  fixture/D:HDD output. Off omits detailed operation observation and its optional
+  cleanup DATA snapshot only; all remaining scalar/stage/oracle output is kept
+  without record/byte caps. Validate both native off markers and absence of
+  detailed timing/snapshot output. Missing detailed metrics mean unobserved work,
+  never zero GetAttributes calls or zero validation costs.
+- OFF3: Retain r62's exact external birth-bound CPU/GC observer and pinned payloads
+  unchanged, same1second interval, no startup suspension. Prove references/hashes
+  and retain exact delivered increments/intervals, gaps, final CPU and collector
+  settlement. Reuse accepted controls unless affected; incomplete runtime data
+  cannot silently become a complete CPU/GC comparison.
+- OFF4: First run the existing cheap process/observation/budget contract category
+  and cheap external parser/preflight controls. Independently admit source/INPUT,
+  mode/parser/selector sufficiency and one-use new off claim before the original.
+  New claim/results never reuse or rebind consumed r62 launch/evidence.
+- OFF5: Preserve full instrumented behavior through unchanged source1e6 in Git,
+  unchanged eight physical binaries and their exact binding manifest; full can
+  be selected again without source rollback/rebuild. Keep r62 full ZIP/leaf until
+  the complete new off capture and all remaining records are independently
+  verified. Then retire only exact superseded r62 heavy ZIP/leaf plus duplicate
+  new native streams, keeping new complete archive, original CPU/GC, small
+  r62/r61 comparisons, INPUT and reusable r51 instrumentation backup.
+- OFF6: Compare actual TRX/command/native stage/CPU/GC against accepted r62
+  full528.1018341s on the same compiled source. Keep observed GC coverage and
+  observer effects explicit; wall/CPU/GC/nested costs are not additive. Report
+  measured observation-mode effect without claiming an algorithm/cache speedup,
+  perfect causal isolation, unobserved operation counts or untested other cuts/OS.
+- OFF7: Reuse this canonical feature, actual plan/tasks phases and equivalent
+  consistency check. Publish/recover source-only checkpoints before long work,
+  independently review completed block/outcome/retention/final docs, and finish
+  with exact remote recovery. Raw logs/archives/generated analyses remain on D:.
+
+Chosen approach: existing runtime off switch preserves exact game assemblies.
+Removing instrumentation in source would require rebuild and alter comparison;
+a lower diagnostic quota would lose records while retaining observation work.
+Neither alternative is selected. Keep the same external CPU/GC observation as
+r62 for the closest available comparison. GM/gameplay/persistence contracts do
+not change; Mortal World/afterlife prompts/examples require no updates.
+
 # CRASH5 — revision62 one unchanged original repeat with external CPU/GC observation
 
 Source issue: #1536. Owner2026-10-24 approved one control repeat after r61

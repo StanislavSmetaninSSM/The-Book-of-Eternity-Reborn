@@ -1,3 +1,79 @@
+# CRASH5 — revision63 detailed-timings-off measurement plan
+
+> Execute with Superpowers executing-plans, cheap external controls, and separate
+> independent review. Canonical spec OFF1..7, tasks T496..500, issue #1536.
+
+Goal: one same-binary ordinary Cut0 off measurement against r62 full528.1018341s.
+Architecture: use the existing validated observation switch only. Keep original
+category runner/native custody/oracle; reuse frozen r62 external CPU/GC observer.
+Tech: .NET8 unchanged game DLLs, existing PowerShell7 category runner, D-local
+Python preflight/orchestration/strict off-record analysis and archive helpers.
+Current isolated clone/branch reused from published dba1e7fb5; no new worktree.
+
+Research: JointInterfaceCrashObservation.Parse accepts exact off; Validate/Read
+allow it only for ordinary extended seeded Windows cuts0..4. Both child entries
+emit an off marker and use null JointOperationTimings/OperationTimingObserver.
+Recovery metrics and original stage/oracle output persist. The optional cleanup
+DATA snapshot lives inside that observer and is also omitted, not game recovery.
+No unknown research decision remains; no product data model or new API is needed.
+Constitution: #1536 tracked, unchanged game/GM/persistence contracts; no prompt or
+example change; current category-only and local diagnostics rules preserved.
+
+External D:/BoeDiagnostics/tools responsibilities:
+- preflight_r63_original.py: constants/new off identity, small pure admission
+  checks, original qualification/binary/INPUT refs, baseline/ref/source audit.
+- run_r63_category.py: one-use off claim/launch/results, reuse execute_category
+  interruption/observer settlement from frozen run_r62_category.py; exact same
+  command and snapshot diagnostics environment validation with off setting.
+- r63_off_analysis.py: outcome/native73/0/identity/EOF/join/stream hashes, strict
+  complete remaining JSON/stage/scalar/off marker parsing, source-backed original
+  resume/repeat invariants, unchanged runtime_observation reuse; archive/index
+  every payload SHA/CRC; r62 full vs new off comparison. No detailed timing leaf
+  or zero-filesystem-work inference when observation is off.
+- validate_r63_preflight.py and validate_r63_off_analysis.py: cheap isolated
+  reference/gate/mode/framing/missing/tamper/negative controls, no real original.
+- recover_r63.py: reviewed r62 remote-only recovery adapted only D roots/identity.
+- retire_r63_measurements.py: optional exact-file retirement after complete accepted
+  new outcome, reviewer-admitted plan, newest archive/CPU/GC/INPUT/backup protection.
+
+The accepted r62 runtime module, pinned manifest/payloads, controls and strict
+runtime classifier remain byte-identical. Do not reinstall or rerun passing real
+CPU/GC controls. New helper output lives only in D:/BoeDiagnostics/timing-off-r63-20261024.
+ClaimLabel T498-original-off, Mode off, child600/shared820/category15. Refuse
+reused claims, mode drift, bad IPC enablement, PID/birth drift or unsettled capture.
+
+Selection: update only tests/selection.json reasons/IDs to
+fr063-joint-interface-probe-budget-contracts (cheap off admission/metadata/budget
+and negative controls) plus fr063-joint-fixture-windows-cut0 (one true original).
+Catalog/selectors stay exact to compiled source. Qualification is retained at its
+original source/metadata; separately audit this explicit bookkeeping exception.
+Reuse retained327case qualification and exact8DLL hashes; a new cheap category
+run supplements off-selection evidence and does not replace original assertions.
+
+Review focus: absent timing rows are unobserved; real off markers/nonce/PID must
+match native capture. Reject missing/duplicate/unknown framed records and wrong
+mode/context; validate actual original completed/repeated result and closed empty
+recovery scopes. Preserve no-cap output and unknown GC startup/tail. Keep r62
+full raw until accepted replacement; no retroactive outcome/metadata changes.
+No heavy read/hash/archive/build work during the timed case. No second original
+or source optimization is authorized by this measurement.
+
+- [ ] T496 OFF1..7: canonical plan/tasks/prerequisites phases/consistency, source
+  and existing off-path audit, explicit selection, publish/recover checkpoint.
+- [ ] T497 OFF1..4/7: frozen preflight/runner/off adapters and cheap controls;
+  selected cheap contract category; independent exact source/INPUT/observer/mode
+  admission before a fresh original-off claim.
+- [ ] T498 OFF1..3: ONE original-off with unchanged DLL/INPUT/oracles/budgets.
+- [ ] T499 OFF2/3/6: full capture/every payload/every remaining record analysis,
+  runtime/stage/elapsed comparison against r62; independent outcome acceptance.
+- [ ] T500 OFF5/7: human findings, exact admitted older raw/leaf/duplicate retirement,
+  final independent documentation review and exact source-only remote recovery.
+
+Dependencies T496->497->498->499->500; all seven requirements covered. Optional
+SpecKit git/agent-context hooks are not mandatory; explicit source checkpoint
+publication/recovery replaces duplicate auto-commit hooks. No behavior change in
+C#; TDD applies to new external pure parsers/admission guards, not unchanged game.
+
 # CRASH5 — revision62 controlled unchanged original repeat plan
 
 > Execute canonical tasks with Superpowers executing-plans, cheap observer controls,

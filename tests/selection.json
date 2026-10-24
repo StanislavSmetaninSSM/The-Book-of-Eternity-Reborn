@@ -2,129 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "core-cleanup-proof-data-reuse",
-      "reason": "Actual publisher causal reuse and complete byte/absence/generation/mutation/lifetime controls.",
+      "category": "fr063-joint-interface-probe-budget-contracts",
+      "reason": "Existing pure off-mode/parent-child metadata refusal and original finite Windows budget contracts before activating the off observation path.",
       "contracts": [
-        "#1536 CLEAN_CACHE1..8 / T485-490"
+        "#1536 OFF1..4 / T496-499"
       ]
     },
     {
-      "category": "core-recovery-proof-reads",
-      "reason": "Original standalone post-recovery source helper and unsupported fallback.",
+      "category": "fr063-joint-fixture-windows-cut0",
+      "reason": "One unchanged-binary original Cut0 crash/recovery with explicit detailed timings off, same immutable INPUT, native identity/custody and original integrity assertions.",
       "contracts": [
-        "#1536 CLEAN_CACHE1..8 / T485-490"
-      ]
-    },
-    {
-      "category": "fr063-reserved-validation-read-set",
-      "reason": "Shared readset original and service-mode source, exclusion, completion and disposal contracts.",
-      "contracts": [
-        "#1536 CLEAN_CACHE1..8 / T485-490"
-      ]
-    },
-    {
-      "category": "core-operation-source-data",
-      "reason": "Independent inner service must preserve failed/suspended outer owner and effect fences.",
-      "contracts": [
-        "#1536 CLEAN_CACHE1..8 / T485-490"
-      ]
-    },
-    {
-      "category": "core-recovery-file-validation",
-      "reason": "Fresh source/generation and original validation rules remain authoritative.",
-      "contracts": [
-        "#1536 CLEAN_CACHE1..8 / T485-490"
-      ]
-    },
-    {
-      "category": "core-recovery-mutation-bridges",
-      "reason": "Exact retained publisher tokens must not relax ordinary mutation/recovery exclusion.",
-      "contracts": [
-        "#1536 CLEAN_CACHE1..8 / T485-490"
-      ]
-    },
-    {
-      "category": "core-game-state-data-reuse",
-      "reason": "Shared dispatch/readset precedence preserves selected implicit GameState DATA.",
-      "contracts": [
-        "#1536 CLEAN_CACHE1..8 / T485-490"
-      ]
-    },
-    {
-      "category": "portable-storage-publication",
-      "reason": "Default-off trusted-local publisher, before/after images and compensation remain unchanged.",
-      "contracts": [
-        "#1536 CLEAN_CACHE1..8 / T485-490"
-      ]
-    },
-    {
-      "category": "fr063-joint-proof-reads-integration",
-      "reason": "Actual completed proof and raw history drift through selected production boundary.",
-      "contracts": [
-        "#1536 CLEAN_CACHE1..8 / T485-490"
-      ]
-    },
-    {
-      "category": "fr063-joint-cleanup-images",
-      "reason": "Actual prepared namespace and fresh target/retained readback images.",
-      "contracts": [
-        "#1536 CLEAN_CACHE1..8 / T485-490"
-      ]
-    },
-    {
-      "category": "fr063-joint-cleanup-validator-controls",
-      "reason": "Terminal cleanup generation, owner and destructive source safeguards.",
-      "contracts": [
-        "#1536 CLEAN_CACHE1..8 / T485-490"
-      ]
-    },
-    {
-      "category": "fr063-joint-history-consumer-components",
-      "reason": "Actual history source binding and transient pending-wave interpretation.",
-      "contracts": [
-        "#1536 CLEAN_CACHE1..8 / T485-490"
-      ]
-    },
-    {
-      "category": "c5-browser-admission-source-guards",
-      "reason": "Explicit review of changed shared source hashes and transitive proof/readset dependencies.",
-      "contracts": [
-        "#1536 CLEAN_CACHE1..8 / T485-490"
-      ]
-    },
-    {
-      "category": "fr063-joint-producer-timing-controls",
-      "reason": "Preserve producer functional hook fallback and full timing contexts.",
-      "contracts": [
-        "#1536 CLEAN_CACHE1..8 / T485-490"
-      ]
-    },
-    {
-      "category": "crash5-named-timing-output",
-      "reason": "Keep complete diagnostic collection beyond former1024record limit.",
-      "contracts": [
-        "#1536 CLEAN_CACHE1..8 / T485-490"
-      ]
-    },
-    {
-      "category": "fr063-joint-interface-crash-stage-contracts",
-      "reason": "Unchanged native cut0 identity and stage contracts.",
-      "contracts": [
-        "#1536 CLEAN_CACHE1..8 / T485-490"
-      ]
-    },
-    {
-      "category": "fr063-joint-child-output-transport",
-      "reason": "Unchanged native full-stream EOF and joined child settlement.",
-      "contracts": [
-        "#1536 CLEAN_CACHE1..8 / T485-490"
-      ]
-    },
-    {
-      "category": "fr063-joint-interface-seed-input-contracts",
-      "reason": "Genuine immutable source42 INPUT cannot be rebound or fall back.",
-      "contracts": [
-        "#1536 CLEAN_CACHE1..8 / T485-490"
+        "#1536 OFF1..7 / T496-500"
       ]
     }
   ]

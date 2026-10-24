@@ -1,3 +1,23 @@
+# CRASH5 — revision63 same-binary timing-off measurement
+
+Issue#1536, canonical spec OFF1..7 and plan.md. Owner approved next off measurement;
+autonomous execution/spec-review wait waiver persists. Existing isolated clone.
+
+- [ ] T496 Audit existing off path/retained8DLL/INPUT, canonical phases and
+  consistency; explicit two-category selection; source-only publish/recovery.
+- [ ] T497 External off preflight/runner/parser/archive helpers, cheap pure
+  controls and process-observation-budget category; independent exact admission.
+- [ ] T498 ONE original T498-original-off with same600/820/15, native73/0,
+  original oracle, source/INPUT/native custody and uncapped remaining output.
+- [ ] T499 Complete archive and all remaining off-record/runtime/stage analysis;
+  honest full/off comparison; independent original/runtime outcome acceptance.
+- [ ] T500 Human report; exact admitted r62 heavy ZIP/leaf/new duplicate retirement,
+  final independent documentation and exact source-only publication/recovery.
+
+Coverage: OFF1->496/497/498; OFF2->497/498/499; OFF3->497/498/499;
+OFF4->497; OFF5->496/499/500; OFF6->499; OFF7->496/497/499/500.
+Order T496->497->498->499->500. No game rebuild/new seed/other cut/OS/new cache fix.
+
 # CRASH5 — revision62 unchanged repeat with external CPU/GC observation
 
 Issue #1536; spec CPUGC1..8 and current plan.md. Owner approved ONE repeat with

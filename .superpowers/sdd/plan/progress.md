@@ -1,3 +1,29 @@
+# Current checkpoint: r63 timing-off measurement planning
+
+Issue#1536 OFF1..7 / T496..500. Owner2026-10-24 accepted next same-scenario off
+measurement; autonomous specification-review wait waiver persists. Base remote
+ dba1e7fb5ac8d743ec179dd8ccc9374094cd24fb verified by ls-remote, existing isolated
+clone reused. Actual compiled source1e6b947b7d9e64c1b5af7c2c7847426524463551.
+Existing exact off switch omits optional detailed operation observation and its
+cleanup DATA capture only; scalar/stage/recovery/original assertions persist.
+No game/test/native/catalog/selector source change or rebuild/new seed required.
+Only tests/selection.json bookkeeping updated to two relevant categories; audit
+that exact exception separately from unchanged runtime/catalog/selector closure.
+
+Canonical actual plan/tasks phases executed; prerequisite/equivalent consistency
+next, then WIP source-only publication/recovery. T496..500 not yet complete.
+Droot D:/BoeDiagnostics/timing-off-r63-20261024; new Label T498-original-off,
+Modeoff, same600/820/15 and C:SSD/D:HDD. Reuse exact accepted external r62 CPU/GC
+module/payloads/controls with explicit gap semantics. Original not yet launched.
+Parent owns preflight/runner, bounded helper may own off analysis; separate
+independent review required. No new production feature/GM changes.
+
+Retain complete r62 full raw ZIP/leaf until off capture/cleanup/all remaining
+records independently accepted. Then exact-file retirement only; preserve newest
+archive/runtime originals, r62 compact comparisons, INPUT and r51 reusable backup.
+Instrumented source1e6 remains in Git and the same physical eight DLLs remain;
+returning to full requires only its existing environment setting.
+
 # Current checkpoint: r62 measured repeat, complete analysis and exact retention verified
 
 Issue#1536 CPUGC1..8 / T491..495, canonical spec.md/plan.md/tasks.md. Owner approved
