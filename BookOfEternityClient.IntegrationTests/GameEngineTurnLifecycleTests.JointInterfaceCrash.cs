@@ -82,6 +82,9 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// <param name="producerReadForwarders">
     /// Existing read observation by default; <see langword="false"/> is restricted to the ordinary seeded Windows cut-zero producer.
     /// </param>
+    /// <param name="passiveRecoveryTimings">
+    /// Whether the restricted ordinary resumer records its first recovery through a sealed accumulator.
+    /// </param>
     /// <returns>
     /// Completion after the selected probe's process and DATA assertions, or the original game assertions.
     /// </returns>
@@ -89,7 +92,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         bool extendedWindowsCrash = false, string? seedArtifactPath = null, bool fixtureAcquisitionOnly = false,
         string? seedUsage = null, string? seedPackageRoot = null, string? ownedContainerParent = null,
         JointInterfaceObservationMode observationMode = JointInterfaceObservationMode.Full, bool admissionDirectoryReuse = true, bool controlGameStateDataReuse = true,
-        bool producerReadForwarders = true)
+        bool producerReadForwarders = true, bool passiveRecoveryTimings = false)
     {
         if (extendedWindowsCrash && !OperatingSystem.IsWindows())
             throw new PlatformNotSupportedException("Extended crash qualification is a local Windows selection.");
@@ -123,6 +126,12 @@ public sealed partial class GameEngineTurnLifecycleTests
             ["ObservationMode"] = observationMode.ToString().ToLowerInvariant(),
             ["ExtendedWindowsCrash"] = extendedWindowsCrash
         }, OperatingSystem.IsWindows(), seedArtifactPath is not null || seedPackageRoot is not null, fixtureAcquisitionOnly, mode);
+        JointPassiveTimingControl.Validate(passiveRecoveryTimings, new JsonObject
+        {
+            ["ObservationMode"] = observationMode.ToString().ToLowerInvariant(), ["ExtendedWindowsCrash"] = extendedWindowsCrash,
+            ["AdmissionDirectoryReuse"] = admissionDirectoryReuse, ["ControlGameStateDataReuse"] = controlGameStateDataReuse,
+            ["ProducerReadForwarders"] = producerReadForwarders
+        }, OperatingSystem.IsWindows(), seedArtifactPath is not null || seedPackageRoot is not null, fixtureAcquisitionOnly, mode);
         JointInterfaceSeedCrashInput? source42Seed = null;
         if (seedArtifactPath is not null)
         {
@@ -136,7 +145,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Nonce = nonce, ParentPid = Environment.ProcessId, Cut = cut, Fault = fault, Diagnostic = diagnostic,
             ObservationMode = observationMode.ToString().ToLowerInvariant(), ExtendedWindowsCrash = extendedWindowsCrash,
             AdmissionDirectoryReuse = admissionDirectoryReuse, ControlGameStateDataReuse = controlGameStateDataReuse,
-            ProducerReadForwarders = producerReadForwarders
+            ProducerReadForwarders = producerReadForwarders, PassiveRecoveryTimings = passiveRecoveryTimings
         })!.AsObject();
         if (!diagnostic && fault == null) parentMetadata["RunId"] = Guid.NewGuid().ToString("N");
         if (source42Seed is not null) parentMetadata["Source42Seed"] = JsonSerializer.SerializeToNode(source42Seed);
@@ -666,6 +675,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             source42Seed is not null, fixtureAcquisitionOnly, mode);
         var producerReadForwarders = JointProducerReadForwarderControl.Read(parent, OperatingSystem.IsWindows(),
             source42Seed is not null, fixtureAcquisitionOnly, mode);
+        _ = JointPassiveTimingControl.Read(parent, OperatingSystem.IsWindows(),
+            source42Seed is not null, fixtureAcquisitionOnly, mode);
         Console.WriteLine(JsonSerializer.Serialize(new
         {
             Boundary = "joint_observation_mode", Role = "producer", Pid = Environment.ProcessId,
@@ -749,6 +760,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             source42Seed is not null, fixtureAcquisitionOnly, mode);
         _ = JointProducerReadForwarderControl.Read(parent, OperatingSystem.IsWindows(),
             source42Seed is not null, fixtureAcquisitionOnly, mode);
+        var passiveRecoveryTimings = JointPassiveTimingControl.Read(parent, OperatingSystem.IsWindows(),
+            source42Seed is not null, fixtureAcquisitionOnly, mode);
+        var passiveTimings = passiveRecoveryTimings ? new OperationTimingAccumulator() : null;
         Console.WriteLine(JsonSerializer.Serialize(new
         {
             Boundary = "joint_observation_mode", Role = "resumer", Pid = Environment.ProcessId,
@@ -794,6 +808,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         stages?.Observe("file-system", "enter");
         files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
         {
+            PassiveOperationTimings = passiveTimings,
             OperationTimingObserver = operationTimings is null ? null : (name, boundary, elapsed) =>
             {
                 operationTimings.Observe(name, boundary, elapsed);
@@ -930,6 +945,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         }
         Exception? failure = null;
         var completed = false;
+        OperationTimingAccumulator.Window? passiveWindow = null;
         try
         {
             PendingTurnSnapshotReadAuthority original;
@@ -1001,6 +1017,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             }
             diagnostic.Observe("preflight-lease-release-return");
             var firstLogsBefore = log.Describe();
+            passiveWindow = passiveTimings?.StartWindow();
             diagnostic.Observe("late-first-enter");
             stages?.Observe("late-first", "enter");
             using var namedResumerTimer1 = files.MeasureOperation("Resumer.FirstCurrentOwnerCall");
@@ -1010,6 +1027,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                         Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "joint-cleanup-captures"), "PreparedOriginal", parent));
             handled = await engine.ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync();
             namedResumerTimer1?.Dispose();
+            passiveWindow?.Dispose();
             diagnostic.Observe("late-first-return", handled.ToString());
             resumeActivity?.Complete();
             stages?.Observe("late-first", "return");
@@ -1084,6 +1102,10 @@ public sealed partial class GameEngineTurnLifecycleTests
         catch (Exception error) { failure = error; throw; }
         finally
         {
+            passiveWindow?.Dispose();
+            if (passiveWindow is not null)
+                Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "recovery_named_aggregate", Role = "resumer",
+                    Stage = "first", Pid = Environment.ProcessId, Limited = false, Snapshot = passiveWindow.Capture() }));
             diagnostic.Observe("resume-finally", failure?.GetType().FullName);
             stages?.Observe(failure == null ? "exit" : "error", failure == null ? "return" : "error", failure?.GetType().FullName);
             File.WriteAllText(output, JointInterfaceCrashProcessSupport.SerializeCurrentIdentity(new

@@ -12,7 +12,8 @@ public partial class FileSystemManager
     /// An idempotent timing scope when observation is enabled; otherwise, <see langword="null"/>.
     /// </returns>
     internal IDisposable? MeasureOperation(string name) =>
-        _hooks?.OperationTimingObserver is { } observer ? new OperationTimer(observer, name) : null;
+        _hooks?.OperationTimingObserver is { } observer ? new OperationTimer(observer, name) :
+        _hooks?.PassiveOperationTimings?.Measure(name);
 
     /// <summary>
     /// Emits diagnostic boundaries without transferring authority or replacing operation failures.

@@ -12,7 +12,8 @@ public partial class FileSystemManager
     /// A restoring scope when observation context changes; otherwise, <see langword="null"/>.
     /// The scope must remain within synchronous work and must not span an await.
     /// </returns>
-    internal IDisposable? EnterOperationTimingContext() => EnterOperationTimingContext(_hooks?.OperationTimingObserver);
+    internal IDisposable? EnterOperationTimingContext() =>
+        EnterOperationTimingContext(_hooks?.OperationTimingObserver, _hooks?.PassiveOperationTimings);
 
     /// <summary>
     /// Selects a passive receiver for synchronous computations without constructing a physical filesystem host.
@@ -25,24 +26,41 @@ public partial class FileSystemManager
     /// The scope must remain on its entering thread and must not span an await.
     /// </returns>
     internal static IDisposable? EnterOperationTimingContext(Action<string, string, TimeSpan>? observer)
+        => EnterOperationTimingContext(observer, null);
+
+    /// <summary>
+    /// Selects synchronous diagnostic destinations without changing observation eligibility.
+    /// </summary>
+    /// <param name="observer">
+    /// The existing arbitrary callback, or <see langword="null"/> when absent.
+    /// </param>
+    /// <param name="recorder">
+    /// The sealed passive recorder, or <see langword="null"/> to suppress enclosing accumulation.
+    /// </param>
+    /// <returns>
+    /// A restoring scope confined to the entering synchronous thread, or <see langword="null"/> when unnecessary.
+    /// </returns>
+    private static IDisposable? EnterOperationTimingContext(Action<string, string, TimeSpan>? observer,
+        OperationTimingAccumulator? recorder)
     {
-        if (observer is null && _operationTimingContext is null) return null;
-        var context = new OperationTimingContext(_operationTimingContext, observer);
+        if (observer is null && recorder is null && _operationTimingContext is null) return null;
+        var context = new OperationTimingContext(_operationTimingContext, observer, recorder);
         _operationTimingContext = context;
         return context;
     }
 
     /// <summary>
-    /// Observes a named synchronous computation through the currently selected passive receiver.
+    /// Observes synchronous work through the selected callback or active sealed accumulator.
     /// </summary>
     /// <param name="name">
     /// The literal operation name emitted without changing the computation's authority.
     /// </param>
     /// <returns>
-    /// An idempotent timer when a receiver is selected; otherwise, <see langword="null"/>.
+    /// An idempotent timer for a callback or active passive window; otherwise, <see langword="null"/>.
     /// </returns>
     internal static IDisposable? MeasureCurrentOperation(string name) =>
-        _operationTimingContext?.Observer is { } observer ? new OperationTimer(observer, name) : null;
+        _operationTimingContext?.Observer is { } observer ? new OperationTimer(observer, name) :
+        _operationTimingContext?.Recorder?.Measure(name);
 
     /// <summary>
     /// Restores the preceding synchronous receiver without flowing observation to another thread.
@@ -58,6 +76,11 @@ public partial class FileSystemManager
         internal Action<string, string, TimeSpan>? Observer { get; }
 
         /// <summary>
+        /// Gets the selected sealed recorder without treating it as an arbitrary callback.
+        /// </summary>
+        internal OperationTimingAccumulator? Recorder { get; }
+
+        /// <summary>
         /// Retains the preceding scope and this manager's passive receiver.
         /// </summary>
         /// <param name="previous">
@@ -66,10 +89,15 @@ public partial class FileSystemManager
         /// <param name="observer">
         /// The selected passive receiver, or <see langword="null"/> to suppress observation.
         /// </param>
-        internal OperationTimingContext(OperationTimingContext? previous, Action<string, string, TimeSpan>? observer)
+        /// <param name="recorder">
+        /// The selected sealed recorder, or <see langword="null"/> to suppress enclosing accumulation.
+        /// </param>
+        internal OperationTimingContext(OperationTimingContext? previous, Action<string, string, TimeSpan>? observer,
+            OperationTimingAccumulator? recorder)
         {
             _previous = previous;
             Observer = observer;
+            Recorder = recorder;
         }
 
         /// <summary>

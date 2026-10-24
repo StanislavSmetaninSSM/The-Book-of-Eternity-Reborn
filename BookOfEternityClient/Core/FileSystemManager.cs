@@ -16,7 +16,7 @@ internal sealed class FileSystemManagerHooks
     internal Action<PathMetadataQuery>? PathMetadataQueryObserver { get; init; }
 
     /// <summary>
-    /// Observes a named operation's begin and elapsed end; a missing observer disables timing.
+    /// Observes a named operation's begin and elapsed end; a missing observer omits callback timing.
     /// This diagnostic must not mutate game state or authority; observer exceptions are ignored.
     /// </summary>
     internal Action<string, string, TimeSpan>? OperationTimingObserver { get; init; }

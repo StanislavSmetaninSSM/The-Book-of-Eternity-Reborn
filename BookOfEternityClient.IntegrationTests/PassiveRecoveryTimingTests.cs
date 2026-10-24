@@ -112,6 +112,36 @@ public sealed class PassiveRecoveryTimingTests(ITestOutputHelper output)
     }
 
     /// <summary>
+    /// Keeps the original fresh byte fence and next-operation lifetime while recording.
+    /// </summary>
+    /// <returns>
+    /// Completion after same-timestamp drift is refused and a new window reads replacement bytes.
+    /// </returns>
+    [Fact]
+    public async Task ActiveRecorderPreservesByteFenceAndFailureClose()
+    {
+        var recorder = new OperationTimingAccumulator();
+        using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, false, recorder);
+        await fixture.InitializeAsync();
+        var timestamp = File.GetLastWriteTimeUtc(fixture.RawPath);
+        using (var first = recorder.StartWindow())
+        {
+            await Assert.ThrowsAsync<InvalidDataException>(() => fixture.ReadEightAsync(after: () =>
+            {
+                File.WriteAllText(fixture.RawPath, "changed!");
+                File.SetLastWriteTimeUtc(fixture.RawPath, timestamp);
+            }));
+            first.Dispose();
+            Assert.True(first.Capture().Complete);
+        }
+        using var second = recorder.StartWindow();
+        await fixture.ReadEightAsync(expected: "changed!");
+        second.Dispose();
+        Assert.True(second.Capture().Complete);
+        Assert.Equal(4, fixture.Observers.ReadCount("present.txt"));
+    }
+
+    /// <summary>
     /// Leaves measurement disabled outside a window and closes each scope once.
     /// </summary>
     [Fact]
