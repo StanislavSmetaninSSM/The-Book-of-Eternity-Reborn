@@ -1,3 +1,21 @@
+# r65 coherent block complete; final mechanical verification/publication
+
+T506..510 executed: existing-service control/realm DATA wiring,219distinct cheap
+PASS, genuine generator1PASS, same8DLL/INPUT original off/on each1PASS.
+TRX301.1907636->282.5673125s; first175.2988103->163.8738651s;
+phases7.8570085->2.788616/5.4867063->4.1512681s,432returnedhits.
+Producer0hits varied6.7845784s; no whole18.623s causal or100s claim.
+Astra/high independent outcome/report/v2/all150archive members/native283+4/runtime/
+retention accepted, reportSHA B174B15A7D7AF48A7BEC8BA288622E8B2C0A067F60ABB37A7F730FE05A406799.
+Exact reviewed plan/executor ran Completed:159files1409616802B retired;
+352protected before/after unchanged, both neworiginal+cheap archives intact.
+CPU/GC/input/instrumentation/binary backups kept; no quota, allrawD-only/noGit.
+Human report T510-control-game-state-data-reuse-measurement.md. No C#/DLL/native
+changes after qualified1fc, measurementmetadata b026. Final narrow receipt/docs
+review plus clean source-only remote publication/recovery close this block.
+Routing: parent coherent implementation, separate complex Astra/high review found
+counter/fixture/selection issues, corrected and verified; independence retained.
+
 # r65 original pair PASS; T510 independent outcome/retention pending
 
 Exact metadata b02632225/source1fc4e7cfc, same8DLL/genuine INPUT, both directoryon,

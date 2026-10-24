@@ -10,7 +10,7 @@ Issue #1536; spec GS1..6; plan.md. Owner's autonomous execution/review-wait waiv
   impacted checks and genuine new current-source42 INPUT; freeze/publish readiness.
 - [x] T509 [US2] Two original Windows Cut0 controls with only phase reuse off/on,
   same new DLL/INPUT, directory cache on,600/820/15/oracles/native ownership unchanged.
-- [ ] T510 [US2] Verify all records/archive/runtime and exact phase/whole effect,
+- [x] T510 [US2] Verify all records/archive/runtime and exact phase/whole effect,
   human report, independent outcome/retention review, exact replacement and publish.
 
 Coverage GS1/2->507/508; GS3->507/508; GS4->507/508/509;
@@ -18,6 +18,18 @@ GS5->508/509; GS6->506/509/510. Order T506->507->508->509->510.
 US1 independently proves source reduction and preserved negative contracts;
 US2 proves genuine current-source workload and honest measured effect. No parallel
 implementation: production and fixture wiring share a coherent block. No100s promise.
+
+r65 execution evidence: qualified1fc4e7cfc; ready56AAEEBA... independent admission
+accepted.219distinct cheap cases, generator1PASS, two originals1/1PASS each.
+Same8DLL/INPUT metadata b02632225;301.1907636->282.5673125s,
+first175.2988103->163.8738651s; two cumulative phases13.3437148->6.9398841s,
+432fast DATA-hits. No100s/whole-delta causal claim; producer0hits varies6.785s.
+Separate analysisv2 corrects CPU/FinalCpu schema lookup and Decimal display only;
+11controlsPASS, frozenv1/originals unchanged. Independent Astra/high outcome/report/
+150archive members/283nativeJSON/4other rows/retention accepted, SHA B174B15A....
+Exact159files1409616802B retired,352protected unchanged, current archives intact.
+Report T510-control-game-state-data-reuse-measurement.md. Final mechanical
+publication/recovery and receipt review follow this docs-only checkpoint.
 
 # CRASH5 — revision64 admission-local directory observations
 
