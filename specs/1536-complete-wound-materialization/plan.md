@@ -57,7 +57,7 @@ query reduction must outweigh service overhead before the expensive experiment.
 
 - [x] T501 Research, written spec/plan/tasks phases and consistency, baseline pins,
   source-only remote checkpoint; present spec/plan under autonomous review waiver.
-- [ ] T502 RED cheap observation/composed fixtures, minimal service integration,
+- [x] T502 RED cheap observation/composed fixtures, minimal service integration,
   XML docs, categories/selection; GREEN impacted namespace/main/admission tests.
 - [ ] T503 Independently review coherent implementation/test/diff/selection; fix
   validated findings, freshly qualify changed binaries and immutable INPUT; publish.

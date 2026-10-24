@@ -1,4 +1,4 @@
-# Current checkpoint: r64 planning; admission-local directory DATA candidate
+# Current checkpoint: r64 implemented; corrected cheap/source checks PASS
 
 Owner2026-10-24 requests safe directory/admission reuse, cheap fixtures and effect
 measurement autonomously. Base e10f2b559e286c1fa6a2d469342929dc633f70c4 equals
@@ -35,6 +35,13 @@ Ruling: cache only Directory results; fresh leaves/missing/link/other and native
 identity always execute. Disable composed reuse for arbitrary source hooks,
 active worker observation and detailed operation receivers; no callbacks are
 introduced inside a caching context. Aggregate counters are typed passive data.
+Corrected source2ff584818 XML builds PASS87.23/52.89s,8current uniform DLLs.
+T503-affected seven explicit categories247/247PASS,18new cheap cases including
+real junction/wrong native handle and ambient callback; all planned counts/cleanup
+complete. Latest200call measurement4400->2000queries,.3067116->.1741372s.
+Astra/high source findings corrected; exact final INPUT/ready/outcome review pending.
+No original launched. Two additional narrow existing five-cut/package controls
+selected for external package adoption. Broad source fingerprint unchanged.
 Parent implementation owner; separate independent review mandatory, latest user
 model routing supersedes repository's historical standing Astra/XHigh exception.
 D root planned D:/BoeDiagnostics/admission-directory-r64-20261024; preserve r63 data

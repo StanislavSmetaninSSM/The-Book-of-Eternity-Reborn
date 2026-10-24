@@ -51,6 +51,20 @@
       ]
     },
     {
+      "category": "fr063-joint-five-fixture-contracts",
+      "reason": "Existing ordinary five-cut seed mode and typed runtime consumer contracts under package selection.",
+      "contracts": [
+        "#1536 DIR4..6 / T503"
+      ]
+    },
+    {
+      "category": "fr063-joint-five-fixture-package-contracts",
+      "reason": "Exact package hash, namespace and independent hydration contracts for the newly generated current-source carrier.",
+      "contracts": [
+        "#1536 DIR4..6 / T503"
+      ]
+    },
+    {
       "category": "fr063-joint-interface-seed-generation",
       "reason": "One genuine current-source42 preparation and independent read-only copies after cheap cache viability.",
       "contracts": [
