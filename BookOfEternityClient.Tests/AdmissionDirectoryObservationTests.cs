@@ -116,7 +116,11 @@ public sealed class AdmissionDirectoryObservationTests : IDisposable
         using var main = files.BeginMainAdmission();
         main.Validate(null);
         File.WriteAllBytes(path, GmSessionRunRecordCodec.Encode(stopped with { Disposition = GmSessionRunDisposition.Running, StopEvidence = null }));
-        Assert.Throws<InvalidDataException>(() => main.Validate(null));
+        Assert.Throws<IOException>(() => main.Validate(null));
+        File.WriteAllBytes(path, GmSessionRunRecordCodec.Encode(stopped));
+        main.Validate(null);
+        File.WriteAllText(Path.Combine(directory, "unexpected.json"), "{}");
+        Assert.Throws<IOException>(() => main.Validate(null));
     }
 
     /// <summary>

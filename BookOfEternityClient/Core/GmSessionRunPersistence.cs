@@ -209,11 +209,16 @@ internal sealed class GmMainOwnerGuard : IDisposable
     /// <summary>
     /// Checks the retained guard's namespace and authenticates its real open handle on every call.
     /// </summary>
+    internal void Validate() => Validate(null);
+
+    /// <summary>
+    /// Authenticates the retained handle while optionally sharing this invocation's directory DATA.
+    /// </summary>
     /// <param name="observations">
     /// Optional DATA for shared ordinary directories in this synchronous admission; null keeps independent checks.
     /// Required guard-file and native handle/path authentication remain fresh.
     /// </param>
-    internal void Validate(AdmissionDirectoryObservations? observations=null)
+    internal void Validate(AdmissionDirectoryObservations? observations)
     {
         var stream=_stream??throw GmSessionRunPersistence.Invalid();
         TrustedLocalFileScope.ValidateRootAndRequiredFile(Root,_path,observations==null?null:observations.Observe);

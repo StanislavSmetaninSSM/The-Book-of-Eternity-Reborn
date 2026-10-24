@@ -813,11 +813,16 @@ public partial class FileSystemManager
     /// <summary>
     /// Requires worker inventory absence under the original root gate without creating or adopting an inventory.
     /// </summary>
+    internal void RequireAbsentMainWorkerInventory() => RequireAbsentMainWorkerInventory(null);
+
+    /// <summary>
+    /// Requires fresh inventory absence while optionally sharing this invocation's positive directory DATA.
+    /// </summary>
     /// <param name="observations">
     /// Optional directory DATA shared only within this synchronous admission; null keeps independent fresh helpers.
     /// Inventory absence is always freshly observed.
     /// </param>
-    internal void RequireAbsentMainWorkerInventory(AdmissionDirectoryObservations? observations=null)
+    internal void RequireAbsentMainWorkerInventory(AdmissionDirectoryObservations? observations)
     {
         using var operationTiming = MeasureOperation("MainAdmission.WorkerInventory.GateAndBody");
         var root=CanonicalRootAuthorityIdentity;
