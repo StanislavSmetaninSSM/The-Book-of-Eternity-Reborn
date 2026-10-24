@@ -27,7 +27,8 @@ public partial class FileSystemManager
     /// </returns>
     private AdmissionDirectoryObservations? BeginAdmissionDirectoryObservations()
     {
-        if (!CanReuseSourceData || _hooks?.OperationTimingObserver != null || ValidationReuseSuppression.Value != 0)
+        if (!CanReuseSourceData || _hooks?.OperationTimingObserver != null ||
+            _operationTimingContext?.Observer != null || ValidationReuseSuppression.Value != 0)
             return null;
         var root = CanonicalRootAuthorityIdentity;
         lock (root.WorkerContextGate)

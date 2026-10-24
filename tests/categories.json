@@ -25,7 +25,8 @@
   ],
   "requirements": {
     "frontendBuild": false,
-    "exclusive": true
+    "exclusive": true,
+    "ciRunner": "windows-latest"
   },
   "timeoutMinutes": 2,
   "expectedSeconds": null,

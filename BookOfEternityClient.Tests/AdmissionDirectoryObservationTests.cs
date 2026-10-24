@@ -143,6 +143,127 @@ public sealed class AdmissionDirectoryObservationTests : IDisposable
     }
 
     /// <summary>
+    /// Disables sharing for an enclosing thread receiver even when this manager has no local hooks.
+    /// </summary>
+    /// <returns>
+    /// Completion after guard acquisition and a synchronous ambient-observer check.
+    /// </returns>
+    [Fact]
+    public async Task AmbientCallbacksUseTheOriginalUnsharedRoute()
+    {
+        var files = new FileSystemManager(Root, NullLogger<FileSystemManager>.Instance);
+        using var main = files.BeginMainAdmission();
+        await main.AcquireAsync();
+        var before = files.CaptureAdmissionDirectoryStatistics();
+        var calls = 0;
+        using (FileSystemManager.EnterOperationTimingContext((_, _, _) => calls++)) main.Validate(null);
+        Assert.True(calls > 0);
+        Assert.Equal(0, (files.CaptureAdmissionDirectoryStatistics() - before).Invocations);
+    }
+
+    /// <summary>
+    /// Refuses newly appearing worker inventory after a successful cached admission without adopting it.
+    /// </summary>
+    /// <param name="file">
+    /// True creates an ordinary file; false creates an empty inventory directory.
+    /// </param>
+    /// <returns>
+    /// Completion after the next actual composed admission refuses unchanged inventory evidence.
+    /// </returns>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task AppearingWorkerInventoryIsFreshlyRefused(bool file)
+    {
+        var files = new FileSystemManager(Root, NullLogger<FileSystemManager>.Instance);
+        using var main = files.BeginMainAdmission();
+        await main.AcquireAsync();
+        main.Validate(null);
+        Assert.True(files.CaptureAdmissionDirectoryStatistics().Hits > 0);
+        var path = Path.Combine(Root, ".boe_runtime", "worker-runs-v1");
+        if (file) File.WriteAllText(path, "owned inventory evidence"); else Directory.CreateDirectory(path);
+        Assert.Throws<IOException>(() => main.Validate(null));
+        if (file) Assert.Equal("owned inventory evidence", File.ReadAllText(path));
+        else Assert.Empty(Directory.GetFileSystemEntries(path));
+        Assert.Null(files.CanonicalRootAuthorityIdentity.WorkerContext);
+    }
+
+    /// <summary>
+    /// Requires native handle authentication even when every shared ancestor is already cached.
+    /// </summary>
+    [Fact]
+    public void CachedDirectoriesCannotAuthenticateTheWrongGuardHandle()
+    {
+        var expected = Path.Combine(Root, "expected.lock");
+        var other = Path.Combine(Root, "other.lock");
+        File.WriteAllText(expected, "expected");
+        File.WriteAllText(other, "other");
+        using var valid = new GmMainOwnerGuard(Root, expected, File.OpenRead(expected));
+        using var wrong = new GmMainOwnerGuard(Root, expected, File.OpenRead(other));
+        using var observations = new AdmissionDirectoryObservations(Root);
+        valid.Validate(observations);
+        valid.Validate(observations);
+        Assert.True(observations.CaptureStatistics().Hits > 0);
+        Assert.Throws<InvalidDataException>(() => wrong.Validate(observations));
+    }
+
+    /// <summary>
+    /// Checks changed directory kinds on the next actual admission after prior positive directory DATA.
+    /// </summary>
+    /// <param name="link">
+    /// True installs an owned junction; false replaces the directory with an ordinary file.
+    /// </param>
+    /// <returns>
+    /// Completion after actual refusal and removal of the owned junction when one was created.
+    /// </returns>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task NextAdmissionRefusesReplacedMetadataDirectory(bool link)
+    {
+        var files = new FileSystemManager(Root, NullLogger<FileSystemManager>.Instance);
+        var identity = new GmSessionRunIdentity(files.BasePath, Guid.NewGuid().ToString("N"),
+            Guid.Empty.ToString("N"), 1, GmSessionRunBackend.WindowsJob, Guid.NewGuid().ToString("N"), "fixture");
+        var bytes = GmSessionRunRecordCodec.Encode(new(1, identity, GmSessionRunDisposition.Stopped,
+            new(identity, GmSessionRunStopKind.OwnedScopeEmpty, identity.BootId)));
+        var directory = Path.Combine(Root, ".boe_runtime", "gm-runs");
+        Directory.CreateDirectory(directory);
+        var record = Path.Combine(directory, "main.json");
+        File.WriteAllBytes(record, bytes);
+        using var main = files.BeginMainAdmission();
+        await main.AcquireAsync();
+        main.Validate(null);
+        Assert.True(files.CaptureAdmissionDirectoryStatistics().Hits > 0);
+        File.Delete(record);
+        Directory.Delete(directory);
+        var target = Path.Combine(_sandbox, "link-target");
+        Directory.CreateDirectory(target);
+        File.WriteAllBytes(Path.Combine(target, "main.json"), bytes);
+        try
+        {
+            if (link)
+            {
+                var start = new ProcessStartInfo("cmd.exe")
+                { UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true };
+                start.ArgumentList.Add("/d"); start.ArgumentList.Add("/c");
+                start.ArgumentList.Add("mklink"); start.ArgumentList.Add("/J");
+                start.ArgumentList.Add(directory); start.ArgumentList.Add(target);
+                using var child = Process.Start(start)!;
+                var stdout = child.StandardOutput.ReadToEndAsync();
+                var stderr = child.StandardError.ReadToEndAsync();
+                using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+                try { await child.WaitForExitAsync(deadline.Token); }
+                finally { if (!child.HasExited) { child.Kill(entireProcessTree: true); await child.WaitForExitAsync(); } }
+                Assert.True(child.ExitCode == 0, await stdout + await stderr);
+            }
+            else File.WriteAllText(directory, "owned blocker");
+            Assert.Throws<InvalidDataException>(() => main.Validate(null));
+            Assert.Equal(bytes, File.ReadAllBytes(Path.Combine(target, "main.json")));
+        }
+        finally { if (link && Directory.Exists(directory)) Directory.Delete(directory); }
+    }
+
+    /// <summary>
     /// Measures actual composed guard, inventory and persistence helpers while every later admission remains fresh.
     /// </summary>
     /// <returns>
@@ -198,7 +319,7 @@ public sealed class AdmissionDirectoryObservationTests : IDisposable
         File.WriteAllBytes(path, GmSessionRunRecordCodec.Encode(stopped));
         main.Validate(null);
         File.WriteAllText(path, "{");
-        Assert.ThrowsAny<Exception>(() => main.Validate(null));
+        Assert.Throws<InvalidDataException>(() => main.Validate(null));
         File.Delete(path);
         Assert.Throws<FileNotFoundException>(() => main.Validate(null));
         File.WriteAllBytes(path, GmSessionRunRecordCodec.Encode(stopped));

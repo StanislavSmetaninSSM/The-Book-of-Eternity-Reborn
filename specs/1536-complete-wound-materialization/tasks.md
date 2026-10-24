@@ -3,7 +3,7 @@
 Issue #1536, DIR1..8, plan.md. Autonomous implementation/testing/measurement and
 review-wait waiver from owner2026-10-24. Existing isolated branch, e10f2b559 base.
 
-- [ ] T501 Source/contract consultation, canonical spec/plan/tasks phases and
+- [x] T501 Source/contract consultation, canonical spec/plan/tasks phases and
   equivalent consistency; exact r63 baseline pins; source-only checkpoint/recovery.
 - [ ] T502 Cheap RED/GREEN fixtures, existing service context +explicit production
   wiring, XML documentation, coherent category/selection and impacted checks.

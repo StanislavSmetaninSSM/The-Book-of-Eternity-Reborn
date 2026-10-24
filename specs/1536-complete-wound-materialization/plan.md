@@ -55,7 +55,7 @@ cannot retain entries; guard-handle checks execute every time. Observer hooks or
 worker/remote/original routes preserve original behavior. Real fixture composed
 query reduction must outweigh service overhead before the expensive experiment.
 
-- [ ] T501 Research, written spec/plan/tasks phases and consistency, baseline pins,
+- [x] T501 Research, written spec/plan/tasks phases and consistency, baseline pins,
   source-only remote checkpoint; present spec/plan under autonomous review waiver.
 - [ ] T502 RED cheap observation/composed fixtures, minimal service integration,
   XML docs, categories/selection; GREEN impacted namespace/main/admission tests.

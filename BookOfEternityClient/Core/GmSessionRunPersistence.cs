@@ -186,7 +186,19 @@ internal sealed class GmMainOwnerGuard : IDisposable
     private FileStream? _stream;
     private readonly string _path;
     internal string Root {get;}
-    private GmMainOwnerGuard(string root,string path,FileStream stream){Root=root;_path=path;_stream=stream;}
+    /// <summary>
+    /// Wraps a caller-owned stream for validation without acquiring or granting main admission.
+    /// </summary>
+    /// <param name="root">
+    /// The absolute trusted-local root to check on every validation.
+    /// </param>
+    /// <param name="path">
+    /// The expected ordinary guard name; the stream must resolve to this name to pass validation.
+    /// </param>
+    /// <param name="stream">
+    /// Open stream transferred to this wrapper for disposal; construction alone does not authenticate it.
+    /// </param>
+    internal GmMainOwnerGuard(string root,string path,FileStream stream){Root=root;_path=path;_stream=stream;}
     internal static async Task<GmMainOwnerGuard> AcquireAsync(string root,CancellationToken token=default,
         Func<Task>? contended=null,int attempts=40,TimeSpan? retryDelay=null)
     {

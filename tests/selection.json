@@ -28,6 +28,41 @@
       "contracts": [
         "#1536 DIR1..6 / T502-503"
       ]
+    },
+    {
+      "category": "gm-main-owner-native-windows",
+      "reason": "Native guard and unchanged Windows inventory/admission behavior across ordinary, extended and drive-case roots.",
+      "contracts": [
+        "#1536 DIR2..5 / T503"
+      ]
+    },
+    {
+      "category": "fr063-joint-interface-probe-budget-contracts",
+      "reason": "Closed parent/child on-off metadata and unchanged finite original process budget.",
+      "contracts": [
+        "#1536 DIR4..8 / T503-504"
+      ]
+    },
+    {
+      "category": "fr063-joint-interface-seed-contracts",
+      "reason": "External package retains exact inventory, byte hashes and current-source fingerprint refusals.",
+      "contracts": [
+        "#1536 DIR4..8 / T503-504"
+      ]
+    },
+    {
+      "category": "fr063-joint-interface-seed-generation",
+      "reason": "One genuine current-source42 preparation and independent read-only copies after cheap cache viability.",
+      "contracts": [
+        "#1536 DIR4..8 / T503-504"
+      ]
+    },
+    {
+      "category": "fr063-joint-fixture-windows-cut0",
+      "reason": "Same current DLLs and genuine INPUT in two OFF controls, only cache selection differs.",
+      "contracts": [
+        "#1536 DIR4..8 / T503-504"
+      ]
     }
   ]
 }
