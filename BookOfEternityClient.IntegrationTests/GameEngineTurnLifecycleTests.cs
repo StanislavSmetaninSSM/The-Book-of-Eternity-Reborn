@@ -107,7 +107,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     /// Passive observer of the fixture's actual manager; <see langword="null"/> keeps ordinary fixtures unobserved.
     /// </param>
     /// <param name="readObservers">
-    /// Explicit read observation and passive counts, or null to preserve ordinary late-attachable observers.
+    /// Explicit read observation and passive counts, or <see langword="null"/> to preserve ordinary late-attachable observers.
     /// </param>
     internal GameEngineTurnLifecycleTests(ITestOutputHelper? output, string? adoptedRoot,
         Action<string, string, TimeSpan>? operationTimingObserver = null,

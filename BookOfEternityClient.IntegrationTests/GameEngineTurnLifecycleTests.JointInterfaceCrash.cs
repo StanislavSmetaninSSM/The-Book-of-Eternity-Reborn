@@ -80,7 +80,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// Production source DATA reuse by default; false selects the restricted ordinary Windows cut0 control.
     /// </param>
     /// <param name="producerReadForwarders">
-    /// Existing read observation by default; false is restricted to the ordinary seeded Windows cut-zero producer.
+    /// Existing read observation by default; <see langword="false"/> is restricted to the ordinary seeded Windows cut-zero producer.
     /// </param>
     /// <returns>
     /// Completion after the selected probe's process and DATA assertions, or the original game assertions.

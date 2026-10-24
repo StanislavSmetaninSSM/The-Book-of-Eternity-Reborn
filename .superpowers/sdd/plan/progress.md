@@ -1,3 +1,14 @@
+# r67 final XML qualification WIP
+
+Independent reviewer confirmed actual234distinct GREEN PASS and all8DLL bytes,
+RED fivecausal failures, cheap8->2/7hits/456directoryhits; no behaviorblocker.
+Remaining2XML keyword references corrected together. Prior7e124 provisional
+qualification87.880/52.585s uniform, now final fresh8DLL source build required.
+No repeated behavior checks for XML-only corrections. Extra qualification build
+is workflow rework cost, not game performance. Reviewer independently verified
+external analyzer7controls incl zeroeffect acceptance; compare mode labels fixed.
+T516 final source binding and genuine input still pending; no original launch.
+
 # r67 T516 qualification WIP; cheap gate satisfied
 
 GREEN b99919301 fresh XML8DLL uniform,7selected categories PASS. Actual tiny
