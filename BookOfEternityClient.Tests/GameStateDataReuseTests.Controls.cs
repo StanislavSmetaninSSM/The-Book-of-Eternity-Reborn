@@ -106,7 +106,7 @@ public sealed partial class GameStateDataReuseTests
         })
         {
             var snapshot = "game_state/control/pending_turn_snapshot/" + Path.GetFileName(path);
-            var backup = cohort + "/" + Path.GetFileName(path);
+            var backup = cohort + "/" + Path.GetFileName(path) + ".rollback.json";
             fixture.WriteRaw(path, content);
             fixture.WriteRaw(snapshot, content);
             fixture.WriteRaw(backup, content);
