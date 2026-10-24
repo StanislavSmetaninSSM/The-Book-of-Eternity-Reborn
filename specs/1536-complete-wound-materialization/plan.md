@@ -1,3 +1,73 @@
+# r67 Ordinary Producer Read Forwarders Implementation Plan
+
+> Inline execution with Superpowers executing-plans/TDD/systematic-debugging;
+> separate independent complex review. Canonical FWD1..7, issue #1536.
+
+**Goal:** Remove inactive producer read forwarders only after cheap causal proof.
+**Architecture:** TestSupport holder owns optional forwarding delegates and guarded
+observer sinks. The actual lifecycle fixture constructor installs those delegates;
+ordinary producer explicitly supplies disabled mode. Default callers retain hooks.
+**Tech Stack:** Existing C#/.NET8, current SDK, PowerShell7 category runner; D-local
+Python qualification/analysis and the unchanged frozen CPU/GC collector.
+**Spec:** spec.md FWD1..7; tasks T514..518; base1ad48c8f9.
+
+## Global constraints / constitution
+
+No production cache/authority/validator/native/GM contract changes. Typed APIs and
+existing InternalsVisibleTo; no reflection/world setup in cheap checks. XML docs
+for changed APIs, fresh affected builds before NoBuild. All raw D-only/no quotas.
+Owner's explicit review-wait waiver, source-only checkpoints and clean remote
+recovery before long build/test/review. Preserve actual600/820/15/oracles/ownership.
+No promised speedup; current r65 remains complete until accepted replacement.
+
+## Interfaces and coherent files
+
+- NEW TestSupport/LifecycleFixtureReadObservers.cs: original enabled delegates,
+  disabled null hooks, guarded late sink setters, passive per-path source counts.
+- IntegrationTests/GameEngineTurnLifecycleTests.cs: optional typed holder in
+  adopted-root constructor; private observer field names become typed properties,
+  keeping all existing direct caller syntax/default forwarding; expose typed probe.
+- NEW IntegrationTests/LifecycleProducerReadForwarderTests.cs: tiny nonce-owned
+  adopted real fixture, actual manager/generation/session and source fence. No world.
+- NEW IntegrationTests/JointProducerReadForwarderControl.cs plus cheap metadata
+  cases: strict nullable environment selection/typed parent metadata and route gate.
+- JointFixtureBackedWindowsCrash/JointInterfaceCrash: ordinaryCut0 defaults off;
+  others default on; validate before fixture, producer only uses holder, emit counts.
+- Category/catalog/selection: new bounded component category plus affected source/
+  directory and existing budget/seed/package consumers. CI has no external INPUT
+  handoff, so genuine generator and originals stay explicit mandatory local gates.
+
+## Review focus
+
+Late attachment must refuse rather than silently disappear. Defaults must preserve
+all race/error/other-cut routes. Empty forwarded control must still demonstrate
+original cache fallback; disabled mode must pass remaining eligibility gates.
+Fresh same-time changed bytes/failure/next operation must not inherit stale DATA.
+Parent/child mode selection must refuse invalid routes before opening fixture.
+
+## Execution / verification
+
+- [ ] T514 Audit callers/governance; actual SpecKit plan/tasks/prerequisite and
+  read-only consistency, baseline8DLL backup, written links and publish/recover.
+- [ ] T515 Extract original forwarding as minimal RED scaffolding, compile/run
+  bounded cheap real-fixture tests; implement missing mode guard/wiring GREEN;
+  XML/category/selection and affected consumers. Record actual sources/hits.
+- [ ] T516 Independent coherent review/corrections, fresh8DLL/XML qualification;
+  ONLY IF cheap source reduction+integrity passed, genuine new source42/twoimports,
+  package validation and frozen same-input original admission; source checkpoint.
+- [ ] T517 Two sequential originalCut0 controls forwarded/ordinary on sameDLL/INPUT,
+  directory/cache onboth, timingsOFF, frozen external observer, no competing work.
+- [ ] T518 Every record/archive/oracle/runtime/count/time comparison, human report,
+  independent outcome/retention review, exact superseded raw replacement and publish.
+
+T514->515->516->517->518. Cheap acceptance: eight target reads fewer actual opens
+than original forwarding, positive source and directory hits; original forwarded
+callbacks/order/failures preserved; changed-source and lifecycle refusals pass.
+If no real effect, stop expensive path and report the failed hypothesis honestly.
+No new external interface or product data-model artifacts. The read-observer mode
+and source-count record are test-only internal contracts covered by cheap cases.
+Optional SpecKit git/context hooks use explicit source checkpoints.
+
 # r66 Remaining Large Cache Candidates Investigation Plan
 
 > Execute tasks inline with Superpowers executing-plans/systematic-debugging;

@@ -1,3 +1,14 @@
+# r67 WIP ordinary producer read forwarders; cheap-first gate
+
+Canonical FWD1..7/T514..518; spec/plan/tasks written and presented under continuing
+autonomous review-wait waiver. Actual SpecKit phases/prerequisites and read-only
+bridge consistency:7requirements/5tasks/100%/0findings. Baseline current8DLL backup
+verified on D, original r65 input/runtime/archives unchanged. No code/build/test
+yet. Parent owns implementation; mandatory separate complex Astra/high review.
+No production cache/authority changes; cheap real-fixture reduction and integrity
+required before same-new-binary/input original600 pair. All diagnostics D-only,
+uncapped. This source-only planning checkpoint is WIP, not acceptance.
+
 # r66 read-only investigation complete; final source-only publication
 
 Owner asks further caching search after acceptedr65. Canonical NEXT1..5/T511..513,

@@ -1,3 +1,51 @@
+# CRASH5 — revision67 ordinary producer read forwarders
+
+Issue #1536. Owner2026-10-24 approves removing unused read handlers from the
+ordinary producer while preserving race/error observation. Cheap real-fixture
+proof of enabled cache/fewer reads/integrity is a HARD prerequisite for an original
+600-second measurement. Autonomous execution and review-wait waiver continue.
+Base1ad48c8f9; latest r65 first163.8738651s/producer106.4729472s/whole282.5673125s
+is historical context, not a same-binary causal control for this change.
+
+- FWD1: Introduce a typed test-support read-observation mode. Existing lifecycle
+  fixtures default to original forwarding, including late observer installation.
+  Only the ordinary extended seeded Windows Cut0 producer defaults to no read
+  forwarders. Other cuts/platforms, faults, diagnostics, acquisition, races and
+  error fixtures preserve original handlers. Production eligibility code unchanged.
+- FWD2: In no-forwarder mode the actual manager receives null for both arbitrary
+  read hooks. Non-null late observer attachment refuses before assignment; null
+  clearing is allowed. Mutation/publication/finalization/crash/close hooks remain.
+  No reflection, cached permission, changed validator/fence or shared live fixture.
+- FWD3: Cheap independently owned adopted roots exercise the actual lifecycle
+  fixture constructor without world/GameEngine initialization. Show real repeated
+  source read reduction and cache hits, while forwarded control preserves reads,
+  callback ordering/delay/errors. Preserve same-mtime drift refusal, next-operation
+  freshness and failure/close disposal. Gate expensive work on this evidence.
+- FWD4: Closed test-only on/off parent/child selection validates before fixture
+  access; missing legacy metadata preserves forwarding. A disabled setting is
+  restricted to the ordinary extended seeded Windows Cut0 route. Record complete
+  passive per-path canonical source counts at the real producer cut without quotas;
+  observations are not a census of all OS reads or File.GetAttributes.
+- FWD5: After cheap success/review, fresh XML builds and all8current DLL copies
+  plus one genuinely new current-source42 INPUT/two imports qualify the change.
+  Do not rebind old INPUT or alter fingerprints. Compare two sequential original
+  controls on the same DLL/INPUT: forwarding on versus off, directory and control
+  DATA caches on both, detailed timers OFF both, C:SSD fixtures/D:HDD output.
+- FWD6: Preserve original native73/0/PID-birth/EOF/join/owned/runtime cleanup,
+  gameplay/history/mechanics/interface and inert-repeat assertions, child600/
+  shared820/category15. Reuse frozen CPU/GC collector. No competing work during
+  original measurement, no diagnostics record/byte quotas or increased timeouts.
+- FWD7: Report actual backend source counts, cache/admission counts, producer,
+  first/repeat/whole times and CPU/GC with overlap/variation limits. Keep latest
+  complete r65 until accepted replacement; exact reviewed retention preserves
+  original CPU/GC/INPUT/backups. Source/docs only in Git; raw diagnostics on D.
+
+Chosen: explicit fixture read-observer holder, guarded typed observer properties,
+shared by cheap real constructor tests and producer. Globally allowing arbitrary
+callbacks through the game cache is rejected. Dynamically treating a currently
+null mutable sink as proof of lifetime eligibility is rejected. No runtime/GM
+contract or prompt/example change; this optimizes the test harness only.
+
 # CRASH5 — revision66 remaining large cache candidates investigation
 
 Issue #1536; owner2026-10-24 asks to finish r65 then autonomously look for further

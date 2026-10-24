@@ -1,3 +1,28 @@
+# CRASH5 — revision67 ordinary producer read forwarders
+
+Issue #1536; spec FWD1..7; plan.md. User conditional cheap-first authorization and
+continuing autonomous review-wait waiver. Existing isolated branch reused.
+
+- [ ] T514 Audit exact fixture/eligibility/observer contracts; update canonical
+  specs/1536-complete-wound-materialization/{spec,plan,tasks}.md through phases,
+  read-only consistency, baseline backup, source-only publication/remote recovery.
+- [ ] T515 [US1] Extract typed test-support forwarding holder and actual adopted
+  lifecycle fixture component tests (no world), meaningful RED/GREEN, guarded
+  observation/defaults/integrity/counts, XML docs and bounded category/selection.
+- [ ] T516 [US1] Independent coherent review and affected checks; fresh uniform
+  eight DLLs/XML; only after cheap effect, genuine new current-source42/twoimports,
+  frozen package/observer/modes/budgets and source-only original admission.
+- [ ] T517 [US2] Same-new-DLL/INPUT forwarded versus ordinary originalCut0 pair,
+  existing caches onboth/timingsOFF,600/820/15/native/oracles/cleanup unchanged.
+- [ ] T518 [US2] Record complete count/time/runtime analysis in this feature's
+  T518-producer-read-forwarder-measurement.md; independent archive/outcome/retention
+  review, exact old-raw replacement and clean source-only publication/recovery.
+
+FWD1/2->515/516; FWD3->515/516; FWD4->515/516/517;
+FWD5/6->516/517/518; FWD7->514/518. T514->515->516->517->518.
+US1 cheap acceptance is required for US2, not a target that can be weakened to run
+an expensive test. Parent owns coherent implementation; separate complex review.
+
 # CRASH5 — revision66 remaining cache candidates investigation
 
 Issue #1536; spec NEXT1..5; plan.md. Read-only US1(P1): owner receives evidence-
