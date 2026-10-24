@@ -23,7 +23,9 @@ Added between-read bytes/absence/directory, real mutation, reparse, foreign-thre
 and reentry controls; not run yet. Catalog restored exact original formatting
 apart from the new entry (prior WIP serialized unrelated whitespace; final diff
 only new entry). No source/authority cache-policy relaxation or new original.
-Next: fresh Integration XML build and new cheap category GREEN; US2 still gated.
+First GREEN build failed CS0136: new pattern current conflicted with existing
+Linux local current; renamed readObservations, no test result claimed. Next:
+fresh Integration XML build/new cheap GREEN; US2 still gated.
 
 # r68 coherent block complete; final source-only closure
 

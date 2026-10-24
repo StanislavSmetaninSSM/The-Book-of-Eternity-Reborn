@@ -913,8 +913,8 @@ public partial class FileSystemManager
     {
         if (OperatingSystem.IsWindows())
         {
-            if (observations?.Active is { } current)
-                WindowsPathMetadataGuard.Ensure(authorityRoot, fullPath, authorityName, current);
+            if (observations?.Active is { } readObservations)
+                WindowsPathMetadataGuard.Ensure(authorityRoot, fullPath, authorityName, readObservations);
             else
                 WindowsPathMetadataGuard.Ensure(authorityRoot, fullPath, authorityName,
                     _hooks?.PathMetadataQueryObserver is null ? null : ObservePassivePathMetadata);
