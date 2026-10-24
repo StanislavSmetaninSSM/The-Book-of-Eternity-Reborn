@@ -36,6 +36,14 @@ original600s controls with frozen observer and uncapped output, no competing wor
 T510 complete archive/raw/native/runtime/oracle analysis, honest human report,
 independent outcome/retention review, exact old-data retirement and remote restore.
 
+CI selection contains the six code/contract categories only. Source42 generation
+and both original controls remain REQUIRED explicit local T508/T509 gates using
+the genuine D-only current package. dotnet-ci.yml has no package/environment
+handoff; running cut0 there would correctly refuse its old checked default INPUT.
+Do not repair that refusal by rebinding the old fixture or weakening fingerprint.
+Independent reviewer verified this metadata-only selection correction. Code,
+qualified8DLLs and the new genuine package remain unchanged.
+
 Dependencies T506->507->508->509->510. No parallel implementer; independent
 Astra/high reviewer verifies the coherent block. Review selection against actual
 diff; no all-suite run, no NoBuild before fresh affected project builds.

@@ -1,3 +1,19 @@
+# r65 current-source INPUT qualified; freeze original readiness next
+
+T508-genuine-source42 PASS1/1, command182.376s; genuine source42 and two independent
+imports read-only qualified with owned cleanup. Source1fc4e7cfc,82files513709B,
+fingerprintD313174A96B358B3E5DB00A82AA7EC9D4DDDA33AA75CAB60A87B5FF587D3A583.
+Package D-only T508-current-source42-package/source42.zip320332B SHA
+3B441541B79D0F377D6451CE431A146971CE371D9952FBB53F760E3AA572430D.
+Every input file/hash/namespace/CRC and actual3loaded assemblies match8qualified
+DLLs; no old INPUT rebind. T508 codeAccepted SHA B1ED846C... remains unchanged.
+CI selection now6passing code/contract categories; generator and both600s original
+controls are REQUIRED explicit local gates. Independent review confirmed CI lacks
+package handoff and default checked r61 INPUT must remain correctly rejected.
+Metadata-only correction, no C#/DLL/input changes. T509 still unrun; next freeze
+ready references, independent exact admission, then same DLL/INPUT off/on pair.
+Previous complete r64 evidence retained; diagnostics remain entirely on D.
+
 # r65 code independently accepted; genuine current-source seed begins next
 
 QualifiedSource1fc4e7cfcc84d4ea5808decdb8dbb2656ef2cd19, fresh XML97.868/

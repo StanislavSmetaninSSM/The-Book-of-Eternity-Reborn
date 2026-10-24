@@ -42,20 +42,6 @@
       "contracts": [
         "#1536 GS1..6 / T506..510"
       ]
-    },
-    {
-      "category": "fr063-joint-interface-seed-generation",
-      "reason": "Generate genuine source42 after code freezes.",
-      "contracts": [
-        "#1536 GS1..6 / T506..510"
-      ]
-    },
-    {
-      "category": "fr063-joint-fixture-windows-cut0",
-      "reason": "Same DLL/INPUT original A/B600s with directory reuse on.",
-      "contracts": [
-        "#1536 GS1..6 / T506..510"
-      ]
     }
   ]
 }
