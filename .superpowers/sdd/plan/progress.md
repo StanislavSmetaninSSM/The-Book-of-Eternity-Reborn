@@ -4,7 +4,9 @@ Sealed accumulator and typed optional hook/fixture injection added; actual manag
 MeasureOperation/current context deliberately still unwired. New10cheap cases
 assert source2/fast7/directory456 plus actual recordednames, staticcontext restore,
 callbackfallback, windows/late/failure/concurrent/noquota controls. MeaningfulRED
-expected for3unwired actualrecording cases; no original admitted. Fresh Integration
+expected for3unwired actualrecording cases; no original admitted. Initial RED
+build failed on xUnit throw-lambda overload (CS0619); explicit Action corrects it.
+This compile failure is not counted as RED evidence; fresh corrected build next. Fresh Integration
 XML build only before RED category; full8DLL qualification reserved for GREEN.
 No authority/cache-policy/native/GM changes. AllrawD-only/noquotas. Amendedspec
 REM6..8/T522..525 presented under autonomouswaiver; backup7272current8DLL onD.

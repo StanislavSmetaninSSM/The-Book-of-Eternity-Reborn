@@ -161,7 +161,8 @@ public sealed class PassiveRecoveryTimingTests(ITestOutputHelper output)
         using var window = recorder.StartWindow();
         Assert.Throws<InvalidOperationException>(() => recorder.StartWindow());
         var failure = new IOException("original body failure");
-        Assert.Same(failure, Record.Exception(() => { using var scope = recorder.Measure("failure"); throw failure; }));
+        Action body = () => { using var scope = recorder.Measure("failure"); throw failure; };
+        Assert.Same(failure, Record.Exception(body));
         window.Dispose();
         Assert.True(window.Capture().Complete);
         Assert.Equal(1, Assert.Single(window.Capture().Rows).Completed);
