@@ -70,9 +70,64 @@ internal sealed class ReadPathObservationPhase : IWindowsPathMetadataProvider, I
     /// <returns>
     /// The original classification; closed phases use fresh source work.
     /// </returns>
-    internal TrustedLocalFileScope.EntryKind ObserveTrusted(string path)
+    internal TrustedLocalFileScope.EntryKind ObserveTrusted(string path) => ObserveTrustedCore(path, out _);
+
+    /// <summary>
+    /// Selects this preparation's directory DATA only for its original eligible manager admission.
+    /// </summary>
+    /// <param name="owner">
+    /// Exact manager requesting the initial admission; another manager is never eligible.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> for this live synchronous phase with both sharing policies enabled;
+    /// otherwise, <see langword="false"/> keeps the original classifier route.
+    /// </returns>
+    internal bool CanShareAdmission(FileSystemManager owner) => _owner != null && ReferenceEquals(_owner, owner) &&
+        owner.OrdinaryReadAdmissionReuseEnabled && owner.AdmissionDirectoryReuseEnabled && CanReuse();
+
+    /// <summary>
+    /// Classifies one initial-admission component and reports whether the original source was queried.
+    /// </summary>
+    /// <param name="path">
+    /// Exact normalized component selected after the admission's original grant checks.
+    /// </param>
+    /// <param name="sourceQueried">
+    /// Receives <see langword="true"/> when the original classifier was attempted, including failure;
+    /// <see langword="false"/> denotes retained DATA or a failure before source access.
+    /// </param>
+    /// <returns>
+    /// Original entry DATA; disabled sharing, closed phases and foreign threads use fresh classification.
+    /// </returns>
+    internal TrustedLocalFileScope.EntryKind ObserveForAdmission(string path, out bool sourceQueried)
     {
-        if (!CanReuse()) return _probe(path);
+        if (_owner is { } owner && (!owner.OrdinaryReadAdmissionReuseEnabled || !owner.AdmissionDirectoryReuseEnabled))
+        {
+            sourceQueried = true;
+            return _probe(path);
+        }
+        return ObserveTrustedCore(path, out sourceQueried);
+    }
+
+    /// <summary>
+    /// Shares eligible positive directory DATA while distinguishing a source attempt from a retained observation.
+    /// </summary>
+    /// <param name="path">
+    /// Exact original classifier spelling.
+    /// </param>
+    /// <param name="sourceQueried">
+    /// Receives whether the original classifier was attempted before completion or failure.
+    /// </param>
+    /// <returns>
+    /// Original entry DATA without file or access authority.
+    /// </returns>
+    private TrustedLocalFileScope.EntryKind ObserveTrustedCore(string path, out bool sourceQueried)
+    {
+        sourceQueried = false;
+        if (!CanReuse())
+        {
+            sourceQueried = true;
+            return _probe(path);
+        }
         Enter();
         _requests++;
         try
@@ -81,11 +136,16 @@ internal sealed class ReadPathObservationPhase : IWindowsPathMetadataProvider, I
             {
                 var retained = _operation.GetOrCompute(TrustedDirectory, key, [],
                     static () => throw new InvalidOperationException("Retained directory DATA is unavailable."));
-                if (!CanReuse()) return _probe(path);
+                if (!CanReuse())
+                {
+                    sourceQueried = true;
+                    return _probe(path);
+                }
                 _hits++;
                 return retained;
             }
             _queries++;
+            sourceQueried = true;
             var kind = _probe(path);
             if (CanReuse() && kind == TrustedLocalFileScope.EntryKind.Directory && IsRelated(path))
             {

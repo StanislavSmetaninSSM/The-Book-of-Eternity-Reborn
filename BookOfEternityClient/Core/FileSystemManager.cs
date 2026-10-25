@@ -4797,7 +4797,11 @@ public partial class FileSystemManager
     /// <param name="writeLease">
     /// The original caller-owned lease; inactive or foreign leases are refused before later checks.
     /// </param>
-    private void EnsureValidCanonicalWriteLease(CanonicalWriteLease writeLease)
+    /// <param name="readPathPhase">
+    /// Optional same-manager synchronous ordinary preparation supplying positive directory DATA
+    /// to its initial admission. A <see langword="null"/> phase retains independent classification.
+    /// </param>
+    private void EnsureValidCanonicalWriteLease(CanonicalWriteLease writeLease, ReadPathObservationPhase? readPathPhase = null)
     {
         using var operationContext = EnterOperationTimingContext();
         using var operationTiming = MeasureOperation("Lease.Validate.Total");
@@ -4805,7 +4809,7 @@ public partial class FileSystemManager
             EnsurePhysicalCanonicalWriteLease(writeLease);
         if (writeLease.MainAdmission is { } mainAdmission)
             using (MeasureOperation("Lease.Validate.MainAdmission"))
-                mainAdmission.Validate(writeLease);
+                mainAdmission.Validate(writeLease, readPathPhase);
         if(writeLease.Purpose==CanonicalWritePurpose.MainMetadata)return;
         if (writeLease.WorkerPurpose is { } workerPurpose)
             using (MeasureOperation("Lease.Validate.WorkerPurpose"))

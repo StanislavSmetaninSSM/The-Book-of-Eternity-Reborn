@@ -367,7 +367,11 @@ public partial class FileSystemManager
         /// <param name="lease">
         /// The current lease, or <see langword="null"/> for the existing lease-free checks; lease-specific generation checks remain conditional.
         /// </param>
-        internal void Validate(CanonicalWriteLease? lease)
+        /// <param name="readPathPhase">
+        /// Optional same-manager initial ordinary preparation; only positive directory DATA can be
+        /// shared. Guard-file, native handle, worker and persistence checks remain fresh.
+        /// </param>
+        internal void Validate(CanonicalWriteLease? lease, ReadPathObservationPhase? readPathPhase = null)
         {
             if(_closed || _access==null)throw GmSessionRunPersistence.Invalid();
             if(lease!=null && !ReferenceEquals(lease.WorkerPurpose,_workerPurpose))throw GmSessionRunPersistence.Invalid();
@@ -406,7 +410,7 @@ public partial class FileSystemManager
                 return;
             }
             var observations = _access.Workers == null && !_access.WorkerObservationRequired
-                ? _files.BeginAdmissionDirectoryObservations() : null;
+                ? _files.BeginAdmissionDirectoryObservations(readPathPhase) : null;
             try
             {
                 using var guardTiming = _files.MeasureOperation("MainAdmission.Validate.Guard");

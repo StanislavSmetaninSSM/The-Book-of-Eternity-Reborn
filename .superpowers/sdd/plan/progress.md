@@ -1,3 +1,19 @@
+# r71 T537 first GREEN candidate — verification pending
+
+T536 meaningful RED source28073cb2c: XML Integration build119.41s/0errors; category
+3cases complete1PASS/2causalFAIL with owned cleanup. Actual async470->470 and sync
+390->390; pure real-classifier guard composition6->3source calls,3common ancestors,
+required guard leaf1both. No reduction claimed from RED. Evidence D T536-red-*.
+Minimal sharing now explicit initial phase through original lease/main validator,
+same-owner/thread/version/flags, default-null elsewhere. Main record/worker/native/
+leaf/source checks unchanged. Inner cache never stores borrowed DATA; source attempt
+flag counts real classifier attempts including thrown errors. Separate SharedHits
+counter denotes borrowed hits, not saved IO (some replace existing inner hits).
+Added actual ten-file source/native/main count comparisons and close/foreign/flags/
+provider/error/native/current-record/worker/mutation/thread/later same-mtime/absence
+refusal cases. No through-await lifetime. Not yet compiled/GREEN; default candidate
+not accepted until verification/review. No new INPUT/original yet.
+
 # r71 T536 RED candidate — not yet built or run
 
 T535 complete: seven requirements/six tasks/100% read-only consistency, actual

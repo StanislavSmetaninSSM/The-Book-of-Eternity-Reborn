@@ -44,6 +44,7 @@ internal sealed class AdmissionDirectoryObservations : IDisposable
     private readonly Func<string, TrustedLocalFileScope.EntryKind> _probe;
     private readonly string _root;
     private readonly bool _enableReuse;
+    private readonly ReadPathObservationPhase? _sharedReadPhase;
     private readonly ValidationOperation _operation = new DefaultOperationValidationService().BeginOperation();
     private readonly Dictionary<string, object> _keys = new(StringComparer.Ordinal);
     private static readonly OperationComputation<TrustedLocalFileScope.EntryKind> DirectoryData =
@@ -51,6 +52,11 @@ internal sealed class AdmissionDirectoryObservations : IDisposable
     private bool _closed;
     private bool _observing;
     private long _requests, _queries, _hits;
+
+    /// <summary>
+    /// Gets the number of observations borrowed from the outer preparation rather than this invocation's cache.
+    /// </summary>
+    internal long SharedHits { get; private set; }
 
     /// <summary>
     /// Selects the exact root, original classifier and per-invocation reuse policy.
@@ -64,14 +70,20 @@ internal sealed class AdmissionDirectoryObservations : IDisposable
     /// <param name="enableReuse">
     /// Whether positive directory observations may be shared in this invocation.
     /// </param>
+    /// <param name="sharedReadPhase">
+    /// Optional caller-admitted outer preparation. It is consulted only with the default physical
+    /// classifier and enabled reuse; borrowed DATA is never retained in this invocation's cache.
+    /// </param>
     internal AdmissionDirectoryObservations(string root,
-        Func<string, TrustedLocalFileScope.EntryKind>? probe = null, bool enableReuse = true)
+        Func<string, TrustedLocalFileScope.EntryKind>? probe = null, bool enableReuse = true,
+        ReadPathObservationPhase? sharedReadPhase = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
         if (!Path.IsPathFullyQualified(root)) throw new ArgumentException("The root must be absolute.", nameof(root));
         _root = Path.TrimEndingDirectorySeparator(Path.GetFullPath(root));
         _enableReuse = enableReuse;
         _probe = probe ?? TrustedLocalFileScope.Probe;
+        _sharedReadPhase = enableReuse && probe == null ? sharedReadPhase : null;
     }
 
     /// <summary>
@@ -104,10 +116,29 @@ internal sealed class AdmissionDirectoryObservations : IDisposable
                 _hits++;
                 return cached;
             }
-            _queries++;
-            var kind = _probe(path);
+            var sourceQueried = false;
+            TrustedLocalFileScope.EntryKind kind;
+            try
+            {
+                if (_sharedReadPhase is { } phase)
+                    kind = phase.ObserveForAdmission(path, out sourceQueried);
+                else
+                {
+                    sourceQueried = true;
+                    kind = _probe(path);
+                }
+            }
+            finally
+            {
+                if (sourceQueried) _queries++;
+            }
             ObjectDisposedException.ThrowIf(_closed, this);
-            if (_enableReuse && kind == TrustedLocalFileScope.EntryKind.Directory && IsRelated(path))
+            if (!sourceQueried)
+            {
+                _hits++;
+                SharedHits++;
+            }
+            if (sourceQueried && _enableReuse && kind == TrustedLocalFileScope.EntryKind.Directory && IsRelated(path))
             {
                 key = new object();
                 _operation.GetOrCompute(DirectoryData, key, [], () => kind);

@@ -1,5 +1,6 @@
 using System.Text.Json;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Services.GmRuntime;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -68,7 +69,7 @@ public sealed class SharedReadAdmissionDirectoryTests(ITestOutputHelper output)
     [InlineData(true)]
     public async Task DeclaredOrdinaryReadsReducePhysicalQueriesWithoutChangingData(bool synchronous)
     {
-        async Task<(long Sources, long PhaseHits, long AdmissionQueries)> Measure(bool enabled)
+        async Task<(long Sources, long PhaseHits, long AdmissionQueries, long BorrowedHits, long MainCalls, long NativeCalls)> Measure(bool enabled)
         {
             var recorder = new OperationTimingAccumulator();
             using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, false, recorder);
@@ -81,6 +82,7 @@ public sealed class SharedReadAdmissionDirectoryTests(ITestOutputHelper output)
             await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
             var phaseBefore = fixture.Files.CaptureOrdinaryReadPathStatistics();
             var admissionBefore = fixture.Files.CaptureAdmissionDirectoryStatistics();
+            var borrowedBefore = fixture.Files.CaptureSharedReadAdmissionHits();
             using var window = recorder.StartWindow();
             foreach (var path in sources)
                 Assert.Equal(path, synchronous ? fixture.Files.ReadFileSync(lease, path) :
@@ -91,14 +93,312 @@ public sealed class SharedReadAdmissionDirectoryTests(ITestOutputHelper output)
             var phase = fixture.Files.CaptureOrdinaryReadPathStatistics() - phaseBefore;
             var admission = fixture.Files.CaptureAdmissionDirectoryStatistics() - admissionBefore;
             var queries = snapshot.Rows.Where(row => row.Name == "TrustedScope.Probe.GetAttributes").Sum(row => row.Completed);
+            var borrowed = fixture.Files.CaptureSharedReadAdmissionHits() - borrowedBefore;
+            var mainCalls = snapshot.Rows.Where(row => row.Name == "MainAdmission.Validate.GuardCheck").Sum(row => row.Completed);
+            var nativeCalls = snapshot.Rows.Where(row => row.Name == "PhysicalFileAuthority.ValidateHandlePath").Sum(row => row.Completed);
             Assert.Equal(timestamps, sources.Select(path => File.GetLastWriteTimeUtc(Path.Combine(fixture.Files.GameSessionPath, path))).ToArray());
-            output.WriteLine(JsonSerializer.Serialize(new { enabled, synchronous, queries, phase, admission, snapshot }));
-            return (queries, phase.Hits, admission.SourceQueries);
+            output.WriteLine(JsonSerializer.Serialize(new { enabled, synchronous, queries, phase, admission, borrowed, mainCalls, nativeCalls, snapshot }));
+            return (queries, phase.Hits, admission.SourceQueries, borrowed, mainCalls, nativeCalls);
         }
         var original = await Measure(false);
         var shared = await Measure(true);
         Assert.True(shared.Sources < original.Sources, $"Physical queries were not reduced: off={original.Sources}, on={shared.Sources}.");
         Assert.True(shared.PhaseHits > original.PhaseHits);
         Assert.True(shared.AdmissionQueries < original.AdmissionQueries);
+        Assert.Equal(0, original.BorrowedHits);
+        Assert.True(shared.BorrowedHits > 0);
+        Assert.True(shared.MainCalls > 0);
+        Assert.True(shared.NativeCalls > 0);
+        Assert.Equal(original.MainCalls, shared.MainCalls);
+        Assert.Equal(original.NativeCalls, shared.NativeCalls);
+    }
+
+    /// <summary>
+    /// Prevents borrowed DATA from escaping through the inner cache after the outer preparation closes.
+    /// </summary>
+    /// <returns>
+    /// Completion after the minimal session has been initialized and the changed leaf observed freshly.
+    /// </returns>
+    [Fact]
+    public async Task BorrowedDirectoryCannotSurviveOuterCloseInTheInnerCache()
+    {
+        using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, false);
+        await fixture.InitializeAsync();
+        var path = Path.Combine(fixture.Files.GameSessionPath, "shared-directory");
+        Directory.CreateDirectory(path);
+        using var phase = fixture.Files.BeginOrdinaryReadPathPhase();
+        Assert.NotNull(phase);
+        Assert.Equal(TrustedLocalFileScope.EntryKind.Directory, phase.ObserveTrusted(path));
+        using var admission = fixture.Files.BeginAdmissionDirectoryObservations(phase);
+        Assert.NotNull(admission);
+        Assert.Equal(TrustedLocalFileScope.EntryKind.Directory, admission.Observe(path));
+        Assert.Equal(1, admission.SharedHits);
+        Assert.Equal(0, admission.CaptureState().Entries);
+        phase.Dispose();
+        Directory.Delete(path);
+        File.WriteAllText(path, "new file kind");
+        Assert.Equal(TrustedLocalFileScope.EntryKind.RegularFile, admission.Observe(path));
+        Assert.Equal(1, admission.CaptureStatistics().SourceQueries);
+        Assert.Equal(1, admission.SharedHits);
+    }
+
+    /// <summary>
+    /// Rejects a foreign owner and disabled policies before selecting shared directory DATA.
+    /// </summary>
+    /// <param name="policy">
+    /// Foreign manager, closed phase, disabled sharing, disabled admission reuse or disabled preparation reuse.
+    /// </param>
+    /// <returns>
+    /// Completion after independent owners are initialized and one original classification is required.
+    /// </returns>
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
+    public async Task ForeignClosedOrDisabledPhasesRetainFreshClassification(int policy)
+    {
+        using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, false);
+        using var other = new LifecycleProducerReadForwarderTests.Fixture(output, false);
+        await fixture.InitializeAsync();
+        await other.InitializeAsync();
+        using var phase = fixture.Files.BeginOrdinaryReadPathPhase();
+        Assert.NotNull(phase);
+        var path = Path.GetPathRoot(fixture.Files.GameSessionPath)!;
+        phase.ObserveTrusted(path);
+        if (policy == 1) phase.Dispose();
+        if (policy == 2) fixture.Files.OrdinaryReadAdmissionReuseEnabled = false;
+        if (policy == 3) fixture.Files.AdmissionDirectoryReuseEnabled = false;
+        if (policy == 4) fixture.Files.OrdinaryReadPathReuseEnabled = false;
+        using var admission = (policy == 0 ? other.Files : fixture.Files).BeginAdmissionDirectoryObservations(phase);
+        Assert.NotNull(admission);
+        Assert.Equal(TrustedLocalFileScope.EntryKind.Directory, admission.Observe(path));
+        Assert.Equal(1, admission.CaptureStatistics().SourceQueries);
+        Assert.Equal(0, admission.SharedHits);
+    }
+
+    /// <summary>
+    /// Checks policy changes on a live inner context without retaining a previously borrowed observation.
+    /// </summary>
+    /// <returns>
+    /// Completion after the disabled sharing policy forces another original classifier attempt.
+    /// </returns>
+    [Fact]
+    public async Task DisablingSharingAfterAHitForcesFreshClassification()
+    {
+        using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, false);
+        await fixture.InitializeAsync();
+        using var phase = fixture.Files.BeginOrdinaryReadPathPhase();
+        Assert.NotNull(phase);
+        var path = fixture.Files.GameSessionPath;
+        phase.ObserveTrusted(path);
+        using var admission = fixture.Files.BeginAdmissionDirectoryObservations(phase);
+        Assert.NotNull(admission);
+        admission.Observe(path);
+        Assert.Equal(1, admission.SharedHits);
+        fixture.Files.OrdinaryReadAdmissionReuseEnabled = false;
+        admission.Observe(path);
+        Assert.Equal(1, admission.SharedHits);
+        Assert.Equal(1, admission.CaptureStatistics().SourceQueries);
+    }
+
+    /// <summary>
+    /// Keeps a custom classifier's DATA separate from the outer phase's different source contract.
+    /// </summary>
+    [Fact]
+    public void CustomClassifierCannotBorrowAnotherProvidersDirectory()
+    {
+        var root = Path.GetTempPath();
+        using var phase = new ReadPathObservationPhase(root, _ => TrustedLocalFileScope.EntryKind.Directory);
+        phase.ObserveTrusted(root);
+        using var admission = new AdmissionDirectoryObservations(root, _ => TrustedLocalFileScope.EntryKind.Other,
+            sharedReadPhase: phase);
+        Assert.Equal(TrustedLocalFileScope.EntryKind.Other, admission.Observe(root));
+        Assert.Equal(0, admission.SharedHits);
+        Assert.Equal(1, admission.CaptureStatistics().SourceQueries);
+    }
+
+    /// <summary>
+    /// Preserves the original source error and counts its attempt rather than reporting a borrowed hit.
+    /// </summary>
+    [Fact]
+    public void SharedSourceFailureRetiresBothContextsAndKeepsItsIdentity()
+    {
+        var failure = new IOException("original classifier failure");
+        using var phase = new ReadPathObservationPhase(Path.GetTempPath(), _ => throw failure);
+        using var admission = new AdmissionDirectoryObservations(Path.GetTempPath(), sharedReadPhase: phase);
+        Assert.Same(failure, Record.Exception(() => admission.Observe(Path.GetTempPath())));
+        Assert.Equal(1, admission.CaptureStatistics().SourceQueries);
+        Assert.Equal(0, admission.SharedHits);
+        Assert.True(admission.CaptureState().Closed);
+        Assert.True(phase.CaptureState().Closed);
+    }
+
+    /// <summary>
+    /// Requires fresh native guard authentication even after common directory DATA has been borrowed.
+    /// </summary>
+    /// <returns>
+    /// Completion after independent guard streams and the tiny owned session have closed.
+    /// </returns>
+    [Fact]
+    public async Task BorrowedDirectoriesCannotAuthenticateTheWrongGuardHandle()
+    {
+        using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, false);
+        await fixture.InitializeAsync();
+        var expected = Path.Combine(fixture.Files.GameSessionPath, "expected.lock");
+        var other = Path.Combine(fixture.Files.GameSessionPath, "other.lock");
+        File.WriteAllText(expected, "expected");
+        File.WriteAllText(other, "other");
+        using var valid = new GmMainOwnerGuard(fixture.Files.BasePath, expected, File.OpenRead(expected));
+        using var wrong = new GmMainOwnerGuard(fixture.Files.BasePath, expected, File.OpenRead(other));
+        using var phase = fixture.Files.BeginOrdinaryReadPathPhase();
+        Assert.NotNull(phase);
+        TrustedLocalFileScope.CreateForOrdinaryRead(fixture.Files.GameSessionPath, phase);
+        using var admission = fixture.Files.BeginAdmissionDirectoryObservations(phase);
+        Assert.NotNull(admission);
+        valid.Validate(admission);
+        Assert.True(admission.SharedHits > 0);
+        Assert.Throws<InvalidDataException>(() => wrong.Validate(admission));
+    }
+
+    /// <summary>
+    /// Keeps persisted main-record bytes and newly appearing worker inventory fresh on the fused route.
+    /// </summary>
+    /// <returns>
+    /// Completion after current main admission and the independent fixture have closed.
+    /// </returns>
+    [Fact]
+    public async Task SharedMainAdmissionStillRefusesChangedRecordAndNewWorkerInventory()
+    {
+        using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, false);
+        await fixture.InitializeAsync();
+        var files = fixture.Files;
+        var identity = new GmSessionRunIdentity(files.BasePath, Guid.NewGuid().ToString("N"),
+            Guid.Empty.ToString("N"), 1, GmSessionRunBackend.WindowsJob, Guid.NewGuid().ToString("N"), "fixture");
+        var stopped = new GmSessionRunRecord(1, identity, GmSessionRunDisposition.Stopped,
+            new(identity, GmSessionRunStopKind.OwnedScopeEmpty, identity.BootId));
+        var directory = Path.Combine(files.BasePath, ".boe_runtime", "gm-runs");
+        Directory.CreateDirectory(directory);
+        var path = Path.Combine(directory, "main.json");
+        var bytes = GmSessionRunRecordCodec.Encode(stopped);
+        File.WriteAllBytes(path, bytes);
+        using var main = files.BeginMainAdmission();
+        await main.AcquireAsync();
+        void ValidateShared()
+        {
+            using var phase = files.BeginOrdinaryReadPathPhase();
+            Assert.NotNull(phase);
+            TrustedLocalFileScope.CreateForOrdinaryRead(files.GameSessionPath, phase);
+            main.Validate(null, phase);
+        }
+        ValidateShared();
+        Assert.True(files.CaptureSharedReadAdmissionHits() > 0);
+        try
+        {
+            File.WriteAllBytes(path, GmSessionRunRecordCodec.Encode(stopped with
+                { Disposition = GmSessionRunDisposition.Running, StopEvidence = null }));
+            Assert.Throws<IOException>(ValidateShared);
+            File.WriteAllText(path, "{");
+            Assert.Throws<InvalidDataException>(ValidateShared);
+            File.Delete(path);
+            Assert.Throws<FileNotFoundException>(ValidateShared);
+        }
+        finally { File.WriteAllBytes(path, bytes); }
+        var inventory = Path.Combine(files.BasePath, ".boe_runtime", "worker-runs-v1");
+        Directory.CreateDirectory(inventory);
+        try { Assert.Throws<IOException>(ValidateShared); }
+        finally { Directory.Delete(inventory); }
+        ValidateShared();
+    }
+
+    /// <summary>
+    /// Retires outer directory DATA after a supported mutation before the inner context can borrow again.
+    /// </summary>
+    /// <returns>
+    /// Completion after initialization and the real manager-owned mutation have settled.
+    /// </returns>
+    [Fact]
+    public async Task SupportedMutationRetiresBorrowedDirectoryData()
+    {
+        using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, false);
+        await fixture.InitializeAsync();
+        using var phase = fixture.Files.BeginOrdinaryReadPathPhase();
+        Assert.NotNull(phase);
+        var path = fixture.Files.GameSessionPath;
+        phase.ObserveTrusted(path);
+        using var admission = fixture.Files.BeginAdmissionDirectoryObservations(phase);
+        Assert.NotNull(admission);
+        admission.Observe(path);
+        Assert.Equal(1, admission.SharedHits);
+        fixture.Files.WriteFileAtomicAsync("other.txt", "supported mutation").GetAwaiter().GetResult();
+        admission.Observe(path);
+        Assert.True(phase.CaptureState().Closed);
+        Assert.Equal(1, admission.SharedHits);
+        Assert.Equal(1, admission.CaptureStatistics().SourceQueries);
+    }
+
+    /// <summary>
+    /// Keeps a foreign thread's main directory context on its original classifier route.
+    /// </summary>
+    /// <returns>
+    /// Completion after the independent thread's classification and cleanup have settled.
+    /// </returns>
+    [Fact]
+    public async Task ForeignThreadCannotBorrowThePreparation()
+    {
+        using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, false);
+        await fixture.InitializeAsync();
+        using var phase = fixture.Files.BeginOrdinaryReadPathPhase();
+        Assert.NotNull(phase);
+        var path = fixture.Files.GameSessionPath;
+        phase.ObserveTrusted(path);
+        var completed = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var thread = new Thread(() =>
+        {
+            try
+            {
+                using var admission = fixture.Files.BeginAdmissionDirectoryObservations(phase);
+                Assert.NotNull(admission);
+                admission.Observe(path);
+                Assert.Equal(0, admission.SharedHits);
+                Assert.Equal(1, admission.CaptureStatistics().SourceQueries);
+                completed.SetResult();
+            }
+            catch (Exception error) { completed.SetException(error); }
+        }) { IsBackground = true };
+        thread.Start();
+        await completed.Task;
+        thread.Join();
+    }
+
+    /// <summary>
+    /// Observes changed same-timestamp bytes, absence and an invalid new leaf on later declared reads.
+    /// </summary>
+    /// <param name="synchronous">
+    /// Whether every request uses the synchronous declared family.
+    /// </param>
+    /// <returns>
+    /// Completion after fresh later requests and original lease cleanup.
+    /// </returns>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task LaterDeclaredReadsRemainFreshAfterDirectorySharing(bool synchronous)
+    {
+        using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, false);
+        await fixture.InitializeAsync();
+        await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+        Task<string?> Read() => synchronous ? Task.FromResult(fixture.Files.ReadFileSync(lease, "present.txt")) :
+            fixture.Files.ReadFileAsync(lease, "present.txt");
+        Assert.Equal("original", await Read());
+        var timestamp = File.GetLastWriteTimeUtc(fixture.RawPath);
+        File.WriteAllText(fixture.RawPath, "changed!");
+        File.SetLastWriteTimeUtc(fixture.RawPath, timestamp);
+        Assert.Equal("changed!", await Read());
+        File.Delete(fixture.RawPath);
+        Assert.Null(await Read());
+        Directory.CreateDirectory(fixture.RawPath);
+        await Assert.ThrowsAsync<InvalidDataException>(Read);
     }
 }

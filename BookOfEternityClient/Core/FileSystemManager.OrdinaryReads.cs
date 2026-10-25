@@ -136,7 +136,11 @@ public partial class FileSystemManager
             BrowserDiagnosticContent(relativePath, "ordinary-async", "physical-attempt", "started");
 #endif
             cancellationToken.ThrowIfCancellationRequested();
-            if (lease != null) EnsureValidCanonicalWriteLease(lease);
+            if (lease != null)
+            {
+                using var leaseTiming = MeasureOperation("OrdinaryRead.Async.LeaseAdmission");
+                EnsureValidCanonicalWriteLease(lease, pathPhase);
+            }
             stream = null;
             try
             {
@@ -327,7 +331,11 @@ public partial class FileSystemManager
             try
             {
                 using var t326SyncAdmission = MeasureOperation("OrdinaryRead.Sync.Admission");
-                if (lease != null) EnsureValidCanonicalWriteLease(lease);
+                if (lease != null)
+                {
+                    using var leaseTiming = MeasureOperation("OrdinaryRead.Sync.Admission.Lease");
+                    EnsureValidCanonicalWriteLease(lease, pathPhase);
+                }
                 using (MeasureOperation("OrdinaryRead.Sync.Admission.CanonicalSafety"))
                     EnsureCanonicalPathStillSafe(relativePath, expectedPath, pathPhase);
                 string admittedPath;
