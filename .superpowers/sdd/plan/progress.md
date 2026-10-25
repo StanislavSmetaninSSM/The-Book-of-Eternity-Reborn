@@ -1,3 +1,23 @@
+# Linux revised PREP evidence — code3688, runtime pending
+
+2026-10-25, branch1536-linux-qualification-20261025/baseb377. Source3688f3bcf23c6ec0fa61c209d8ae3d4ef749f751 independently accepted by separate
+Astra/high lease_boundary_review, no open findings. Fresh integration-only XML
+build03:51.93/6646warnings/0errors; unchanged unitab17/shared637 references retained.
+New integration SHA256e84b87f5c574dc6e14755544fed04f3922cc7a1f60f5296f96795f79e38aa020;
+11DLL/PDB pins and shared-copy identity in external managed-binding-passive-corrected.json.
+No production/native diff; no source/runtime/budget changes beyond test fixtures.
+
+Actual discovery12469methods/940categories/0unmapped/stale, exit0/0executed.
+Remaining23cache categories24descriptors246cases, native6/40, original1/5 all
+PlanOnlyexit0/cleanup complete. Combined distinct cache scope506cases, of which
+260unchanged previously completed and246still pending; prior failed passive11
+is not counted as completed. SOURCE accepted; final independent PREP verdict
+pending on new binding/discovery. Next exact passive11 regression, then remaining
+235only after GREEN, native40 only after full cache gate, original5 only after native.
+No Linux game PASS yet. Current logs/raw remain outside checkout unchanged root.
+Fresh independent GitHub clean-restore clone is downloading current full tree;
+checkout verification still pending, not a test/build claim.
+
 # Linux T552 second runtime finding — passive fixture and exact Linux owner WIP
 
 Run072848-650-15811-8a42b114621a4280b6ba9d6196c54fa2 stopped102/338cases,
