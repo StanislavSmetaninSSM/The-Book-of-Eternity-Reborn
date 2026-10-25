@@ -1,4 +1,14 @@
-# T584 live N source contribution — corrected builds verified, fresh PREP pending
+# T584 live N source contribution — corrected PREP accepted, actual29 next
+
+Independent Astra/high corrected PREP ACCEPT at clean remote checkpoint
+`ebf91b5e2bbd5173123f9853be7530396d21ac99`: no material findings. It rechecked
+all new binary/source/PDB/build receipts and actual catalog/full plan, accepting
+exactly one corrected source29 actual with NoBuild and the unchanged five-minute
+category budget. Only after complete PASS29 and cleanup may remaining101, three
+live and two cold singletons proceed. Fresh GitHub recovery of ebf91b5e2 is clean
+and byte-checked; its only delta from compiled/accepted3cf is progress Markdown.
+Detailed independent report stays outside Git in `preparation-corrected`.
+No corrected runtime result exists at this checkpoint.
 
 Independent Astra/high accepted the narrow corrective diff at
 `3cf5761fe97bdeae8628608263ff58c0b413334d`, with no material findings. All five
