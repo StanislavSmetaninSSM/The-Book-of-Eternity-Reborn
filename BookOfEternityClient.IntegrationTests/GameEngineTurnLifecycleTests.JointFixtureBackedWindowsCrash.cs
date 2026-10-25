@@ -57,6 +57,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// BOE_TEST_JOINT_SEED_PACKAGE optionally selects an external genuine current-source package through ordinary fingerprint validation.
     /// BOE_TEST_JOINT_CONTROL_DATA_CACHE optionally selects the restricted fresh control/realm DATA comparison.
     /// BOE_TEST_JOINT_ADMISSION_CACHE optionally selects the restricted fresh-classifier comparison.
+    /// BOE_TEST_JOINT_READ_ADMISSION_CACHE selects the restricted independent initial-admission comparison.
     /// BOE_TEST_JOINT_READ_PATH_CACHE defaults to on and optionally selects the restricted fresh preparation comparison.
     /// BOE_TEST_JOINT_PASSIVE_TIMINGS optionally enables a sealed first-recovery accumulator with legacy timings off.
     /// BOE_TEST_JOINT_PRODUCER_READ_FORWARDERS accepts on or off; absent settings disable
@@ -84,6 +85,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Environment.GetEnvironmentVariable("BOE_TEST_JOINT_PRODUCER_READ_FORWARDERS")) ?? cut != 0;
         var passiveTimings = JointPassiveTimingControl.Parse(Environment.GetEnvironmentVariable("BOE_TEST_JOINT_PASSIVE_TIMINGS"));
         var readPathReuse = JointOrdinaryReadPathControl.Parse(Environment.GetEnvironmentVariable("BOE_TEST_JOINT_READ_PATH_CACHE"));
+        var readAdmissionReuse = JointReadAdmissionControl.Parse(Environment.GetEnvironmentVariable("BOE_TEST_JOINT_READ_ADMISSION_CACHE"));
         return RunJointInterfaceActualProcessLossAsync(cut,
             extendedWindowsCrash: true,
             seedPackageRoot: seedPackage ?? Path.Combine(TestRepoPaths.RepoRoot, "specs", "1536-complete-wound-materialization",
@@ -93,6 +95,6 @@ public sealed partial class GameEngineTurnLifecycleTests
                 ?? throw new InvalidDataException("Fixture-backed crash storage requires the checkout's explicit parent.")),
             observationMode: observationMode, admissionDirectoryReuse: reuse, controlGameStateDataReuse: controlDataReuse,
             producerReadForwarders: producerReadForwarders, passiveRecoveryTimings: passiveTimings,
-            ordinaryReadPathReuse: readPathReuse);
+            ordinaryReadPathReuse: readPathReuse, ordinaryReadAdmissionReuse: readAdmissionReuse);
     }
 }

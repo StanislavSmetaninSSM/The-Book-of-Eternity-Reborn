@@ -2,6 +2,38 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "core-shared-read-admission-consumers",
+  "responsibility": "Existing cold metadata refusal and held-lease main-record freshness consumers affected by the optional directory DATA parameter.",
+  "excludes": "No unrelated terminal/input/native-stop or browser end-to-end lifecycle selections.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+    "BookOfEternityClient/Core/FileSystemManager.cs"
+  ],
+  "related": [
+    {
+      "id": "gm-main-run-fence",
+      "when": "Other main lifecycle behavior changes beyond initial directory DATA sharing."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation",
+        "BookOfEternityClient.Tests.GmMainRunFenceTests.InitializedMissingOrInvalid_RefusesClearBeforeEffects",
+        "BookOfEternityClient.Tests.GmMainRunFenceTests.HeldLease_RechecksMainRecordBeforeWrite"
+      ]
+    }
+  ]
+},
+{
   "id": "core-shared-read-admission-directories",
   "responsibility": "Explicit same-manager synchronous directory DATA sharing between ordinary preparation and its initial main admission, real physical source reduction and fresh guard/source integrity.",
   "excludes": "No world bootstrap, async batch lifetime or cached authority verdict.",

@@ -1,3 +1,18 @@
+# r71 cheap actual source/integrity gate PASS; final controls prepared
+
+Core source da4048f74: XML Integration0errors,18/18cheapPASS/complete/ownedcleanup.
+Actual10-file asyncGetAttributes470->440, sync390->360; main/native counts40/40 and
+30/30 unchanged, bytes/mtime equal. Each actual mode90borrowed hits, but only30
+physical queries saved (other borrowed hits replace former inner-cache hits).
+Off queries/admission320async240sync; on290/210. Phase counter now also observes
+initial-main work; overlapping series are not a global census. All18cheap cases
+pass. Strict test-only parent/child metadata/env control and3cumulative shared-hit
+records now added; not yet built/verified. Selection19 bounded relevant categories
+includes only3existing MainRun consumers, not unrelated F1native-stop/input cases.
+Coherent independent review/full affected checks/XML8/new genuine INPUT pending;
+no original yet. xUnit1031 in synchronous mutation test intentionally preserves
+phase owner thread, matching prior accepted phase control; no new XML warnings.
+
 # r71 T537 first GREEN candidate — verification pending
 
 T536 meaningful RED source28073cb2c: XML Integration build119.41s/0errors; category
