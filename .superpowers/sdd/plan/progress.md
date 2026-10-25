@@ -1,3 +1,12 @@
+# Linux verification partition — avoid repeating passed regressions
+
+The same38-category impact union is split into explicit diagnostic-regressions3
+and remaining cache-qualification35 selections. First run the tiny routing/collector
+GREEN controls needed for final PREP; after independent acceptance run remaining
+cache contracts once, then the separate native controls and original five. No
+unchanged passing selection is repeated as part of a larger union. All exact
+planned/completed counts and different source/DLL origins will be recorded.
+
 # Linux PREP review corrections — runtime gates still UNRUN
 
 Independent gpt-6.1-sol/xhigh coherent review of frozen637 identified two concrete

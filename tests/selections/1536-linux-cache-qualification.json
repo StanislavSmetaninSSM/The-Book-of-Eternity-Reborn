@@ -240,31 +240,10 @@
       ]
     },
     {
-      "category": "fr063-joint-component-diagnostics",
-      "reason": "Linux accumulated cache qualification: Two tiny typed controls: complete component diagnostics readable before test completion and observer storage failure refusing a complete report.",
-      "contracts": [
-        "#1536 r73 Linux handoff / T551-T552"
-      ]
-    },
-    {
-      "category": "fr063-joint-child-output-transport",
-      "reason": "Linux accumulated cache qualification: Uncapped finite decoded-text artifacts: durable framing, EOF versus persistence, long lines, Unicode, failure precedence and owned evidence retention without gameplay.",
-      "contracts": [
-        "#1536 r73 Linux handoff / T551-T552"
-      ]
-    },
-    {
       "category": "portable-linux-cache-read-consumers",
       "reason": "Four genuine common wrong-type read methods plus three strict linked leaf/ancestor/root methods replace Windows early-return and optional-link owners.",
       "contracts": [
         "#1536 r73 Linux handoff / T551-T552"
-      ]
-    },
-    {
-      "category": "test-diagnostic-paths",
-      "reason": "New common diagnostic resolver must reject invalid input and preserve explicit/default paths without filesystem effects.",
-      "contracts": [
-        "#1536 T551 external raw routing fix"
       ]
     }
   ]
