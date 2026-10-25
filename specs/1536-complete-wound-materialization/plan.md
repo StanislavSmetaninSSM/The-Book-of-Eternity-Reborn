@@ -1,3 +1,35 @@
+# Linux qualification 2026-10-25 — WIP, issue #1536
+
+Base/source: b377c9d1d0c6cfa5ce20b383d84eac069b8d2991; working branch
+`1536-linux-qualification-20261025`, published and exact remote SHA verified.
+Fresh full 57788-file checkout is clean; blob-filtered single-branch clone keeps
+branch history and the entire current tree without old local objects/binaries.
+Debian 13 x64/glibc, local SDK10/.NET8/PowerShell7 toolchain; actual versions and
+native/managed hashes recorded outside checkout in
+`/workspace/tboe-linux-evidence-20261025`. No security settings changed.
+
+- T551: fresh native package (guardian and terminal fixture), both XML builds,
+  catalog discovery, exact bounded Linux impact-selection and original-five/
+  NativeLineage PlanOnly. Independent PREP review before execution.
+- T552: run reviewed cheap common cache contracts and affected Linux consumers;
+  distinguish executed platform bodies from guards, skips and missing results.
+- T553: separate existing `1536-crash5-linux-controls.json`; establish causes of
+  failed/incomplete gates before any ordinary-five attempt.
+- T554: after successful gates, only `fr063-joint-interface-crash-current`:
+  original Theory/cut0..4 and original game oracles, root73/resumer0, identity,
+  EOF/join/owner/cleanup evidence. Use current code budgets unchanged.
+- T555: independent outcome review and compact source-only checkpoint/push with
+  exact remote SHA; raw logs/TRX/JSON/archives stay outside checkout.
+
+Optimization assessment: qualify the existing service/repository/operation DATA
+reuse with source-attempt, invalidation, lifetime and fresh authority tests; no
+new cache or production optimization is proposed. Use existing named timers for
+unresolved measured costs, preserving original callback/cache eligibility.
+No G01/G02, integrity4, broad suite, Windows carriers, new feature, merge or issue
+closure. Keep old raw until a complete replacement and owned cleanup are verified;
+no user saves or tracked historical artifacts are deleted. Documentation changes
+need separate review; passing Windows evidence is not Linux qualification.
+
 # r73 Optimization Policy and Linux Handoff Implementation Plan
 
 > Inline superpowers:executing-plans; separate independent review of the coherent

@@ -1,3 +1,19 @@
+# Linux qualification 2026-10-25 — T551 WIP
+
+Issue#1536; branch1536-linux-qualification-20261025 published at source
+b377c9d1d0c6cfa5ce20b383d84eac069b8d2991, remote SHA verified. Full clean current
+tree57788files obtained from GitHub, no old binaries/objects copied. RootAGENTS,
+performance/workflow/testing, r73handoff and current canonical artifacts read.
+Local native package built successfully with guardian+terminal; SDK10.0.402 and
+PowerShell7.6.8 installed locally; runtime8 preparation completed. Environment
+cache/config is command-scoped outside checkout because home is read-only.
+Native/managed hashes and exact tool versions/discovery are next; no tests run.
+Separate gpt-6.1-sol/xhigh context linux_prep_review is evaluating Linux impact
+selection and will review final PREP. All runtime gates UNRUN, no PASS claimed.
+Raw root/work evidence: /workspace/tboe-linux-evidence-20261025.
+Optimization assessment: qualification-only, existing DATA reuse/fresh fences and
+actual-source-count controls selected; no new cache/production change needed.
+
 # r73 optimization policy and Linux handoff — reviewed and remotely restored
 
 2026-10-25, issue#1536, OPT1..6/T547..550. User requests all accumulated code for
