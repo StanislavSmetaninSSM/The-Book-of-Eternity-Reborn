@@ -6445,7 +6445,7 @@ public partial class FileSystemManager
                 ?.Invoke(expectedPath)
                 .GetAwaiter()
                 .GetResult();
-            ObservePassiveRead(_hooks?.ExactPhysicalReadActivityObserver, expectedPath);
+            ObserveExactPhysicalRead(expectedPath);
             return new StableReadFile(
                 stream,
                 parentAuthority,

@@ -1166,6 +1166,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "recovery_named_aggregate", Role = "resumer",
                     Stage = "first", Pid = Environment.ProcessId, Limited = false, Snapshot = passiveWindow.Capture() }));
             diagnostic.Observe("resume-finally", failure?.GetType().FullName);
+            resumeActivity?.CompletePendingReadTail();
             stages?.Observe(failure == null ? "exit" : "error", failure == null ? "return" : "error", failure?.GetType().FullName);
             File.WriteAllText(output, JointInterfaceCrashProcessSupport.SerializeCurrentIdentity(new
             { Nonce = parent["Nonce"]!.GetValue<string>(),

@@ -58,7 +58,11 @@ reopened/BATCH8 correction recorded: sealed timestamped queue for ordinary
 resumer diagnostics, all events/noquotas, replay original due-sample populations
 before checkpoints/final/error; writer times remain current, deferred/forcedkill
 tail limitation explicit. New actualbindingRED/GREEN/currentqualification/new
-INPUT/secondoriginalpair required. First pair/raw and priorr71raw all retained.
+INPUT/secondoriginalpair required. First pair/raw and priorr71raw all retained. Actualbinding8e1f11763 RED24cases
+23PASS/1causalFAIL: ordinary resumer factory still disablesbatch; fullcallbacks
+fallbackPASS. T543b GREEN timestamped sealedqueue/recording boundary/replay
+beforebothcheckpointedges/finalerrortail implemented; finite all-event/due-sample/
+phase/error/detachment/concurrent-drain fixtures added; currentqualification pending.
 # r71 initial ordinary/main-admission directory DATA — code gate accepted
 
 Canonical specs/1536-complete-wound-materialization plan/spec FUSE1..7, T535..540,

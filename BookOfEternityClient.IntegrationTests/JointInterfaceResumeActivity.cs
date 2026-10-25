@@ -37,6 +37,8 @@ internal sealed class JointInterfaceResumeActivity
 {
     private readonly JointInterfaceCrashStageReport _report;
     private readonly Func<TimeSpan> _elapsed;
+    private readonly long _started = Stopwatch.GetTimestamp();
+    private readonly PassiveReadActivityAccumulator _reads = new();
     private readonly object _gate = new();
     private readonly long[] _counts = new long[7];
     private string _phase = "before-finalization";
@@ -54,8 +56,7 @@ internal sealed class JointInterfaceResumeActivity
     internal JointInterfaceResumeActivity(JointInterfaceCrashStageReport report, Func<TimeSpan>? elapsed = null)
     {
         _report = report;
-        var started = Stopwatch.GetTimestamp();
-        _elapsed = elapsed ?? (() => Stopwatch.GetElapsedTime(started));
+        _elapsed = elapsed ?? (() => Stopwatch.GetElapsedTime(_started));
     }
 
     /// <summary>
@@ -67,9 +68,10 @@ internal sealed class JointInterfaceResumeActivity
     /// <returns>
     /// Bindings retaining separate canonical and exact observation populations.
     /// </returns>
-    internal JointResumeReadBindings CreateReadBindings(bool passive) => new(
-        _ => Observe(JointResumeObservation.CanonicalInitial),
-        _ => Observe(JointResumeObservation.ExactInitial), null);
+    internal JointResumeReadBindings CreateReadBindings(bool passive) => passive
+        ? new(null, null, _reads)
+        : new(_ => Observe(JointResumeObservation.CanonicalInitial),
+            _ => Observe(JointResumeObservation.ExactInitial), null);
 
     /// <summary>
     /// Counts one existing hook invocation without asserting successful I/O.
@@ -82,6 +84,7 @@ internal sealed class JointInterfaceResumeActivity
         if (!Enum.IsDefined(observation)) return;
         lock (_gate)
         {
+            DrainReadActivities();
             _counts[(int)observation]++;
             EmitIfDue();
         }
@@ -101,6 +104,7 @@ internal sealed class JointInterfaceResumeActivity
         var name = Enum.IsDefined(phase) ? phase.ToString() : "Unknown";
         lock (_gate)
         {
+            DrainReadActivities();
             _counts[recovery ? 6 : 5]++;
             if (recovery) _recovery = name; else _publication = name;
             EmitIfDue();
@@ -118,9 +122,10 @@ internal sealed class JointInterfaceResumeActivity
     /// </param>
     internal void Checkpoint(SessionFinalizationCheckpoint checkpoint, bool before)
     {
-        if (before)
+        lock (_gate)
         {
-            lock (_gate)
+            DrainReadActivities();
+            if (before)
             {
                 Emit();
                 Array.Clear(_counts);
@@ -137,7 +142,32 @@ internal sealed class JointInterfaceResumeActivity
     /// </summary>
     internal void Complete()
     {
-        lock (_gate) Emit();
+        lock (_gate) { DrainReadActivities(); Emit(); }
+    }
+
+    /// <summary>
+    /// Flushes a remaining deferred read tail before normal or error terminal output without duplicating an empty tail.
+    /// </summary>
+    internal void CompletePendingReadTail()
+    {
+        lock (_gate) if (DrainReadActivities()) Emit();
+    }
+
+    /// <summary>
+    /// Replays every detached event using recording time for due sampling and the reporter's current time for delivery.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true"/> if events were drained; otherwise, <see langword="false"/>.
+    /// </returns>
+    private bool DrainReadActivities()
+    {
+        var events = _reads.Drain();
+        foreach (var item in events)
+        {
+            _counts[item.Kind == PassiveReadActivityKind.CanonicalInitial ? 0 : 1]++;
+            EmitIfDue(Stopwatch.GetElapsedTime(_started, item.Timestamp));
+        }
+        return events.Length != 0;
     }
 
     /// <summary>
@@ -145,7 +175,17 @@ internal sealed class JointInterfaceResumeActivity
     /// </summary>
     private void EmitIfDue()
     {
-        var elapsed = _elapsed();
+        EmitIfDue(_elapsed());
+    }
+
+    /// <summary>
+    /// Preserves event-triggered due-sample populations using the original event time.
+    /// </summary>
+    /// <param name="elapsed">
+    /// Captured observation time relative to this observer, or the direct callback's current elapsed time.
+    /// </param>
+    private void EmitIfDue(TimeSpan elapsed)
+    {
         if (elapsed < _nextReport) return;
         Emit();
         _nextReport = elapsed + TimeSpan.FromSeconds(15);

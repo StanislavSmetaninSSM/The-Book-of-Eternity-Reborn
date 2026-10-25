@@ -163,7 +163,20 @@ public partial class FileSystemManager
     private void ObserveCanonicalRead(string path)
     {
         _hooks?.PassiveCanonicalReads?.Record(path);
+        _hooks?.PassiveReadActivities?.Record(PassiveReadActivityKind.CanonicalInitial);
         ObservePassiveRead(_hooks?.CanonicalReadActivityObserver, path);
+    }
+
+    /// <summary>
+    /// Records the exact-physical observation boundary without executing the optional diagnostic consumer.
+    /// </summary>
+    /// <param name="path">
+    /// Original exact physical spelling supplied by the read.
+    /// </param>
+    private void ObserveExactPhysicalRead(string path)
+    {
+        _hooks?.PassiveReadActivities?.Record(PassiveReadActivityKind.ExactInitial);
+        ObservePassiveRead(_hooks?.ExactPhysicalReadActivityObserver, path);
     }
 
     /// <summary>
