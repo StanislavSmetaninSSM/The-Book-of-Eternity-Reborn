@@ -1,3 +1,23 @@
+# Linux final52 metadata counter RED — narrow completion design accepted
+
+Run094504-382-30145-b068313b49fe47c5bf1a97efde4d4c94/code3c:10/52completed9PASS/
+1FAIL,02:07.6645230,no timeout/cleanupcomplete. Boundary6+phase1PASS. Proof3:
+mid-proofhistoryrefusal andtwo-proofownerPASS, standaloneattributecomparisonFAIL.
+Fresh9768attrs/172sources, cached10246/165sources; wholeowner2proofs19536->8950attrs,
+344->132sources. Namedstablebody8454->5101, butOpen65+Exit3766(94identities) =>+478.
+Measuredpair907.725->746.590ms isnot a slowdownclaim; strictcounterassertionretained.
+Rawinput/archive/timingfilespreservedexternally. Native40/original5 stillUNRUN.
+
+IndependentAstra confirmscause andacceptsnarrowdesign: explicitSourceDataowneronly
+inValidateCurrentJointCompletionAsync, ownfreshCompletebeforeTasksuccess; generic
+reservedhelperunchanged. No droppingother-managerwrite/closingexclusions. Existing
+FILEOP3supportsverifiedowningreturn; keys/dependencies/owner/invalidation remain
+existingservice. Addlatehistory/absence andouterreservationactualnegativecontrols,
+keepcurrentmid-proofnegative andstrictcost/sourcecountercomparisons. SpecLINUXPROOF/
+plan/tasksT560..563recordbounds beforeproductioncode. Productionnotchangedyet.
+Newproductionhashwillrequirefreshshared/testbuilds andgenuineLinuxDATAregeneration;
+oldsource-record/archivekeptunchanged, no rebinding. CrossOSquestionstillOPEN.
+
 # Linux applied preparation OUTCOME ACCEPTED — final52 cache runtime admitted
 
 SeparateAstra/high acceptedcontrols40 andgenuinegenerator1, exactarchivepayload/

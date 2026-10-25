@@ -1,3 +1,32 @@
+# Linux standalone completion owner implementation plan
+
+> Inline superpowers:executing-plans, mandatory separate Astra/high review.
+Goal: remove measuredsingleproofmetadataregression withoutrelaxingfreshness or
+changing the genericreservedreader. SpecLINUXPROOF1..5 /issue1536.
+Architecture: existingFileSystemManagerSourceDataOperation at one completed-proof
+validation entry, awaititsCompleteAsyncbeforeowningsuccess; outerownersborrowed.
+No newservicecache/key/serializer; existingfullidentity/dependencies/invalidation.
+
+- [ ] T560 Modify only Services/MortalQteDecisionPublication.MortalJointRepair.cs
+  ValidateCurrentJointCompletionAsync: ownusingBeginSourceDataOperationIfNeeded before
+  ReadInspectionSnapshot, keepallbodychecks, CompletebeforeTaskreturn. MultilineXML.
+  Genericreservedhelperunchanged. Independentdesignalreadyacceptedwithfallbackguards.
+- [ ] T561 JointCompletedProofReadTests: keepstrictattributecomparison andexisting
+  mid-proofdrift/two-proof25%sourcecontrols; tracksourcefences, assertownedstandalone
+  Open0/Fence1/lesssources. Addlatefencehistory/continuationappearance2-caseTheory and
+  genuineouterreservedFact: othermanagerwrite+boundentryclosing refused, onlyouter
+  completes. No GameEngine foraccess. Existingservice/genericcontrolsretainprovenance
+  unlessimpactreviewfindsdependency; selectonlyaddressedconsumerregressions.
+- [ ] T562 Groupsourceedits/wholeSOURCEreview beforefreshfullshared/unit/integration
+  XMLbuilds/PDB/catalog/PlanOnly. NativepackageCsourcehashunchanged, noWindowsbinary.
+- [ ] T563 NewexternalLinuxrecordpath, genuinegenerator1 onnewproductionbuild, verify
+  completearchive/capture/closing. Newactualproof6 +42unrun andimpactedsuccesscases
+  only, independentlyverifyunion. Native40thenoriginal5 afterallgates.
+
+Reviewfocus: uncompletedowningsuccess, revivedfailedcontext, nestedreservation,
+unsupportedhooks/currentmutation/sibling contexts, latebytes/absence/generation
+beforeTaskreturn. No changes toproductrequirements/crossOScompatibility orbudgets.
+
 # Linux current applied-DATA preparation implementation plan
 
 > Inline superpowers:executing-plans with mandatory separate Astra/high review.

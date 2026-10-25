@@ -1,3 +1,24 @@
+# Linux standalone completion source-owner amendment — #1536 /2026-10-25
+
+LINUXPROOF1: actualgenuineLinuxDATA counterRED is preserved: standalonecached10246
+attributes vsfresh9768,172->165physicalreads. Namedreadbody saves3353probes but
+opening65+exit3766 adds3831; metadataregression478, notclaimedelapsedslowdown.
+LINUXPROOF2: only ValidateCurrentJointCompletionAsync becomes an explicit whole
+read-only source-DATA owner when noouterownerexists. Scopeincludesinspection/full
+proof/tuple/no-continuation checks; owningCompleteAsyncfreshbyte/absence/timestamp/
+generation/authority/version fence finishes beforeTasksuccess. Borrowedouterowner
+retainsitsclosingcontract. No authorityobjects cached, newcache or serializerchange.
+LINUXPROOF3: generic ReadStableRecoveryDataAsync and its reservation/write/closing
+exclusions unchanged. Existingunsupportedhook/suppression/nonquiescent/suspended/
+failed-owner routes keep originalfresh/refusal behavior; no revivedfailedowner.
+LINUXPROOF4: retainstrictlessattributes andaddstrictlessactualsources, showoneowned
+freshfence/zeroaddedreadset oneligible standalone, zeroemptyfence onunsupportedhook.
+Keepmid-proofrawhistorynegative; addlatefencehistory/continuationabsence negatives
+andactualouterreservedwrite/closing exclusions. Exactrefusal/noescapingreturn.
+LINUXPROOF5: independentSOURCE/PREP/outcome, freshmanagedassemblies and genuinely
+newLinuxDATA afterproductionhashchange. Neverrebindolderrecord/archive. Existing
+nativeC/package andallcategory/gamebudgets unchanged; crossOSproductquestionOPEN.
+
 # Linux T552 current applied-DATA preparation amendment —2026-10-25
 
 Within #1536 Linux qualification and the owner's autonomous technical-work waiver:
