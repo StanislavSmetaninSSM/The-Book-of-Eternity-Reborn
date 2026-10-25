@@ -19,13 +19,16 @@ evidence. This maintenance block does not complete the wound-materialization fea
 
 - [x] T585 Freeze current-source bounded contract, including genuine fresh versus
   physically validated v3 resume and the non-durable N-fault limit; independent design review.
-- [ ] T586 Author causal source-drift and unchanged controls using actual N and
+- [x] T586 Author causal source-drift and unchanged controls using actual N and
   Stage/Ready owners; fresh targeted build/discovery/PREP, preserve the first RED.
 - [ ] T587 Retain actual N read/original/policy-null/projector/write/owning-release
   occurrences in explicit sealed per-invocation plumbing shared with ordinary paths.
 - [ ] T588 Consume/recheck the exact N pass before fresh I Prepared, while Capturing,
   and after the pre-preparation observer; expire on iteration/owner/G/attempt exit.
   Preserve physical v3 resume with explicit HistoricalNUnavailable and no new NI/S claim.
+  Known live N refusal remains sticky for that checkpoint/G in the same engine;
+  expiry or repeated entry cannot select resume to erase it. A new process retains
+  the already stated non-durable limit; a different genuine operation/G is unaffected.
 - [ ] T589 Source/optimization/selection review; fresh affected managed builds,
   catalog/PlanOnly/PREP; cheap negatives and changed-only real writer controls.
 - [ ] T590 Genuine fresh pre-preparation vertical plus narrowly selected current

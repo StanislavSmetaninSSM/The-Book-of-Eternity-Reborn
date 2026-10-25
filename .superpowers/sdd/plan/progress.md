@@ -1,4 +1,21 @@
-# T584 live N source contribution — first actual causal RED, control next
+# T584 live N source contribution — baseline accepted, implementation next
+
+Independent Astra/high paired T586 OUTCOME ACCEPT: drift causal RED 1/1 FAIL and
+separate unchanged 1/1 PASS, same compiled b08dfadd/product. Unchanged ran at
+checkpoint `66aa3482775ad876a62a1ad8f6a37f0472bccb1c`: two actual reads/returns,
+one cut, identical achievements bytes, one preparation; existing full completion
+and inert repeat passed. Framework 220.4319 seconds, category 233.3722 < 300,
+runner wall 250.0168; expected/completed 1/1, no timeout/skip/duplicate, both cleanup
+true and fixture root physically absent. Exact originals and Root verification
+remain in `live-n-T586/actual-unchanged1`. Drift category time 200.3279 seconds;
+its framework 185.9606 and runner wall 219.2098 are separate intervals.
+T586 complete as a causal baseline, not product GREEN. T587–591 implementation,
+source/PREP/negative/green/current resume verification remain OPEN.
+Independent design clarified a necessary same-engine sticky known-N hold keyed
+to checkpoint/G; repeated entry/attempt expiry cannot erase it. New-process loss
+still has the stated non-durable limit; no new schema or historical N is invented.
+Services↔engine pass API is fixed in the canonical plan; next implement one coherent
+producer/consumer block with shared unchanged ordinary cores and disposal.
 
 First `fr063-joint-live-n-source-drift -NoBuild` actual on checkpoint
 `03577d704ae645ecf6a46fc271ab182b1cc690ac` / compiled b08dfadd completed 1/1,

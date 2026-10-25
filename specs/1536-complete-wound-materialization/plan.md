@@ -29,6 +29,10 @@ historical unimplemented-I/child1 description; its frozen bytes remain unchanged
 - Existing Prepared/Published v3 resume is selected only by its existing physically
   verified dispatcher/graph. It continues unchanged, with HistoricalNUnavailable.
   Its read-only current N is not reconstructed historical N, NI or S.
+- A known live fresh-N refusal stays held for the same actual checkpoint/G and
+  engine. Attempt/pass expiry and repeated entry do not erase it. This private
+  refusal flag grants no authority and never substitutes for graph authentication.
+  A different genuine operation/G is unaffected; only a new process loses the flag.
 - A live N fault detected after durable I Prepared does not persist across a crash.
   The existing v3 may then take its qualified current-only continuation. This block
   proves live refusal before common/effects, NOT a durable operation-wide N veto.
@@ -56,10 +60,13 @@ historical unimplemented-I/child1 description; its frozen bytes remain unchanged
 - [x] Freeze this contract and source plan, publish WIP, obtain independent design review.
   Independent Astra/high DESIGN accepted `55c7685`; clarify the Prepared/Published
   write distinction above. SOURCE/fresh PREP/runtime and outcome remain separate gates.
-- [ ] Add real-file/source-drift tests and one genuine Stage/Ready pre-preparation
+- [x] Add real-file/source-drift tests and one genuine Stage/Ready pre-preparation
   contrast before implementation. The baseline must fail because the omitted N
   dependency reaches preparation, not because a method is missing. Compile/PREP
   failures are not causal RED. Use a separate narrow category for the new contracts.
+  T586 paired baseline independently accepted: genuine source drift RED 1/1 FAIL,
+  unchanged 1/1 PASS on compiled b08dfadd and unchanged production. Exact scopes,
+  timings, source pins and cleanup are retained in the checkpoint.
 - [ ] Create `Services/Validation/ValidationService.NarrativeInterfaceInvocation.cs`
   and `.NarrativeInterfaceSources.cs`: owner-issued `NarrativePolicyPass`, explicit
   sealed source session, exact role/ordinal/raw/policy-state/error observations,
@@ -93,9 +100,41 @@ historical unimplemented-I/child1 description; its frozen bytes remain unchanged
   writer preimage/close failure and exact owned-I transition. Then the genuine fresh
   vertical and separately selected Prepared/Published resume controls; inspect full
   raw/cleanup before an outcome claim. Preserve original failures and exact provenance.
+  Include same-engine repeated entry after known Published-N drift: it stays held
+  with no new N/I/projector/UTC/common/effects and unchanged durable images. A new
+  engine without that memory uses the qualified physical v3 route with
+  HistoricalNUnavailable; a different genuine checkpoint/G does not inherit the hold.
 - [ ] Independent outcome review, source-only checkpoint/push/remote SHA and clean
   GitHub recovery. No GM-authored surface changes are intended; explicitly verify
   the prompt/docs/example assessment before completion.
+
+The Services↔engine implementation interface is fixed for this block:
+
+```csharp
+internal Task<NarrativePolicyPass> ValidateAcceptedTurnNarrativePolicyPassAsync();
+internal sealed class NarrativePolicyPass : IDisposable
+{
+    internal IReadOnlyList<ValidationIssue> Issues { get; } // detached copies
+    internal void RequireIssuer(ValidationService validator);
+    internal void RequireOriginalContext(string sessionId, string requestId,
+        string snapshotToken, int turn);
+    internal Task RequireCurrentAsync(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease,
+        MortalJointInterfacePublication.Record? authenticatedInterfaceTransition = null);
+    public void Dispose();
+}
+```
+
+Constructors are private to the actual validator producer. The pass itself is
+DATA, not an engine registration or publication capability. The engine alone
+retains the returned reference and its actual frame/Main/G/iteration/Stage/Ready
+association, authenticates I before supplying that transition, and disposes on
+expiry/failure. The pass checks every actually used original-context policy DATA,
+including the genuine prevalidated/scoped manifest branch; it does not invent
+physical manifest reads for supplied DATA or blanket-refuse the supported branch.
+Exceptions signal unavailable/changed/faulted contribution without altering the
+ordinary N issue/catch contract. Dispose invalidates future closure use and releases
+retained source buffers. Named timers delimit capture and fresh rechecks.
 
 ### Optimization assessment
 
