@@ -1,4 +1,20 @@
-# T584 live N source contribution — corrected before-FIRST-I PASS
+# T584 live N source contribution — both source-drift verticals PASS
+
+Corrected after-capture actual PASS1/1/0skip at runtime
+`55e27426b0e9ca3564b1d5dda56a2d31f898879b`: framework39.8161468s,
+category47.6810992s / runner59.4615711s, no timeout/both cleanups true.
+Broad physical/public observations4/2 are now correctly distinct from actual N
+evaluation1/1 and two explicit fresh rechecks before the capture cut. I prepare1,
+common preparation0; actual achievements drift refusal matches the path exactly.
+All223 cut/after/repeat images and turn42 stay exact, with zero post-cut mutations.
+Initial canonical state is PublicationUncertain with the source issue; the known
+hold sets PreparationHeld on reentry, preserving original mode-specific semantics.
+Root corrected an overstrong external checker assumption about the initial flag;
+no product/test assertion or runtime was changed/repeated for that analysis fix.
+Owned root absent/all33 artifacts unchanged. Full raw/semantic evidence external
+in `live-n-implementation/actual-after-capture-drift-corrected-1`.
+Next is unchanged full completion; cold2 remain UNRUN. Baseline causal RED remains
+separate; the earlier refusal duration is not a general performance comparison.
 
 Integration83f corrected before-FIRST-I actual PASS1/1/0skip at runtime
 `1a611a43709e42b0279ceb204c066de9e5450a7e`: framework53.1716025s,
