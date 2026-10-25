@@ -1,4 +1,26 @@
-# T584 live N source contribution — inverse PREP accepted, ordered53 next
+# T584 live N source contribution — cheap130 verified, heavy PREP next
+
+Ordered53 actual PASS at runtime `f158efc8662952783db754d719bb77e4ff035765`:
+53/53, six of six descriptors complete, zero failures/skips, runner 1:30.9559806,
+no timeout and both cleanup flags true. The strict ordinary-source singleton
+passed FIRST, followed by projection3, reasoning-source1, reserved-read-set32
+and portable-reader16. All 33 current DLL/PDB/XML files remain unchanged.
+Root reconciled complete TRXs against the reviewed plan by exact method/case
+counts: 130 DISTINCT qualified PASS = corrected29 + retained48 + fresh53,
+no duplicate and no single130-run claim. Actual Unit versions remain3cf/8e as
+recorded above; production Game remains3cf / SHA5191FBE7. Historical26/3 and
+49/101 failures remain separately preserved. Full coverage verification and raw:
+external `live-n-implementation/cheap130-coverage-verification.json` and
+`actual-sourceguard53-1`; no raw is committed.
+
+Native package assets were rehashed read-only: all three actual binaries and C
+sources match their manifests and qualifiedR; no NativeLineageOwner/C-source
+delta. Protocol2/linux-x64/minimumGlibc2.38 and original budgets are unchanged.
+This retains prior native controls, not a new native run. First-guardian
+intermittence remains UNKNOWN/open. Independent cheap OUTCOME/heavy PREP comes
+next, then the accepted order: before-FIRST-I drift, after-capture drift, unchanged
+full completion, Prepared cut0, Published cut2. All five are currently UNRUN.
+No Applied DATA generation/rebinding, full original-five replay or Windows run.
 
 Independent Astra/high PREP ACCEPT at clean remote
 `71c78729e7c73c919ca92c901bdcd6fd1d788e02`: one ordered53 NoBuild run, failed
