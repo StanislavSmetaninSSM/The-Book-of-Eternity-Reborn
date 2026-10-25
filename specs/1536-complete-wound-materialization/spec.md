@@ -34,6 +34,8 @@ US2(P2): measure the complete qualified implementation without weakened fences.
   owner/lifetime/worker/hooks/cancellation/overlap/version controls preserve
   refusal. No reflection/game bootstrap. Passive named timers and batch counters
   distinguish requests/source attempts/hits; no byte/record collection quotas.
+  Replace lifecycle source-count Action with a sealed passive accumulator on the
+  same physical-read boundaries; arbitrary observers retain original fallback.
 - BATCH6: Explicit impact categories, discovery/PlanOnly, XML docs/uniform8DLL,
   independent complex code review/fixes before original. Strict test-only parent/
   both-child batch off/on control, other caches enabled. Fresh genuine source42/

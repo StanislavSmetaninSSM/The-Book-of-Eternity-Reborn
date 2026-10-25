@@ -75,6 +75,10 @@ internal sealed class FileSystemManagerHooks
     /// </summary>
     internal Action<string>? CanonicalReadActivityObserver { get; init; }
     /// <summary>
+    /// Counts actual canonical source reads without arbitrary callbacks; <see langword="null"/> omits counting.
+    /// </summary>
+    internal CanonicalReadActivityAccumulator? PassiveCanonicalReads { get; init; }
+    /// <summary>
     /// Observes an actual exact physical read after initial validation; null disables observation.
     /// The receiver must not mutate storage or authority. Receiver faults are ignored and diagnostic reads bypass reuse.
     /// </summary>
@@ -2575,7 +2579,7 @@ public partial class FileSystemManager
                     ?.Invoke(relativePath)
                     .GetAwaiter()
                     .GetResult();
-                ObservePassiveRead(_hooks?.CanonicalReadActivityObserver, relativePath);
+                ObserveCanonicalRead(relativePath);
                 var lastWriteTimeUtc = File.GetLastWriteTimeUtc(
                     stream.SafeFileHandle);
                 using var buffer = stream.Length is > 0 and <= int.MaxValue
@@ -6488,7 +6492,7 @@ public partial class FileSystemManager
                 await _hooks.AfterCanonicalReadInitialValidationAsync(
                     relativePath);
             }
-            ObservePassiveRead(_hooks?.CanonicalReadActivityObserver, relativePath);
+            ObserveCanonicalRead(relativePath);
             return new StableReadFile(
                 stream,
                 parentAuthority,

@@ -155,6 +155,18 @@ public partial class FileSystemManager
     }
 
     /// <summary>
+    /// Records canonical source activity through the sealed counter before any optional caller observer.
+    /// </summary>
+    /// <param name="path">
+    /// Exact original source spelling supplied by the physical reader.
+    /// </param>
+    private void ObserveCanonicalRead(string path)
+    {
+        _hooks?.PassiveCanonicalReads?.Record(path);
+        ObservePassiveRead(_hooks?.CanonicalReadActivityObserver, path);
+    }
+
+    /// <summary>
     /// Invokes the original synchronous source reader without entering the read-set dispatch again.
     /// </summary>
     /// <param name="path">

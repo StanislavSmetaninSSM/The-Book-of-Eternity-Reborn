@@ -15,7 +15,11 @@ links presented under waiver; baseline8DLL ZIP9members verified SHA29F13CA6...DF
 T542 causal four-case metadata reduction fixture written, minimal unused policy seam;
 RED2b981706a four causal FAIL: first queries off=on async448/sync368,
 reserved async600/sync520; fresh read/main/native assertions passed before query assertion.
-T543 explicit new service-backed batch/owner gates wired; GREEN build/run pending.
+T543 explicit new service-backed batch/owner gates wired; Initial0d001e899 GREEN attempt4FAIL/no source reduction: strict callback exclusion
+correctly rejected lifecycle CanonicalReadActivityObserver, even with empty functional
+forwarders. Root cause exact constructor Action. Replaced only passive source count
+with sealed CanonicalReadActivityAccumulator; all physical events retained, no callback
+or cap. Arbitrary observer fallback unchanged. Retest pending.
 All diagnostics uncapped D-only; r71raw/INPUT/CPU-GC/instrument/backups protected.
 
 # r71 initial ordinary/main-admission directory DATA — code gate accepted

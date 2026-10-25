@@ -189,7 +189,7 @@ public partial class FileSystemManager
                 using var t326AsyncAfterHook = MeasureOperation("OrdinaryRead.Async.AfterOpenHookAsync");
                 if (_hooks?.AfterCanonicalReadInitialValidationAsync != null)
                     await _hooks.AfterCanonicalReadInitialValidationAsync(relativePath);
-                ObservePassiveRead(_hooks?.CanonicalReadActivityObserver, relativePath);
+                ObserveCanonicalRead(relativePath);
                 t326AsyncAfterHook?.Dispose();
                 break;
             }
@@ -391,7 +391,7 @@ public partial class FileSystemManager
                     using var t326SyncCopy = MeasureOperation("OrdinaryRead.Sync.HookAndCopy");
                     // Preserve the default reader's original data/check/materialization order.
                     _hooks?.AfterCanonicalReadInitialValidationAsync?.Invoke(relativePath).GetAwaiter().GetResult();
-                    ObservePassiveRead(_hooks?.CanonicalReadActivityObserver, relativePath);
+                    ObserveCanonicalRead(relativePath);
                     var timestamp = File.GetLastWriteTimeUtc(stream.SafeFileHandle);
                     using var buffer = CreateOrdinaryReadBuffer(stream);
                     stream.CopyTo(buffer);
@@ -412,7 +412,7 @@ public partial class FileSystemManager
                     using var t326SyncNullableCopy = MeasureOperation("OrdinaryRead.Sync.NullableHookAndCopy");
                     // The existing synchronous reader has only the post-open hook.
                     _hooks?.AfterCanonicalReadInitialValidationAsync?.Invoke(relativePath).GetAwaiter().GetResult();
-                    ObservePassiveRead(_hooks?.CanonicalReadActivityObserver, relativePath);
+                    ObserveCanonicalRead(relativePath);
                     var timestamp = File.GetLastWriteTimeUtc(stream.SafeFileHandle);
                     using var buffer = CreateOrdinaryReadBuffer(stream);
                     stream.CopyTo(buffer);

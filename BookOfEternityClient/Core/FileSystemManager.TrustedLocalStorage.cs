@@ -480,7 +480,7 @@ public partial class FileSystemManager
             {
                 if (_hooks?.AfterCanonicalReadInitialValidationAsync != null)
                     await _hooks.AfterCanonicalReadInitialValidationAsync(relativePath);
-                ObservePassiveRead(_hooks?.CanonicalReadActivityObserver, relativePath);
+                ObserveCanonicalRead(relativePath);
                 var snapshot = await ReadOpenedOrdinarySnapshotAsync(stream, scope, relativePath, expectedPath, cancellationToken);
                 VerifyCurrentSessionOperation(lease);
                 return snapshot.Content;

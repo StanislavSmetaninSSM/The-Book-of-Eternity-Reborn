@@ -1,4 +1,4 @@
-using System.Collections.Concurrent;
+using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Tests;
 
@@ -8,7 +8,7 @@ namespace BookOfEternityClient.Tests;
 internal sealed class LifecycleFixtureReadObservers
 {
     private readonly bool _forwardingEnabled;
-    private readonly ConcurrentDictionary<string, long> _sources = new(StringComparer.Ordinal);
+    private readonly CanonicalReadActivityAccumulator _sources = new();
     private Func<string, Task>? _initial;
     private Func<string, Task>? _returned;
 
@@ -69,12 +69,9 @@ internal sealed class LifecycleFixtureReadObservers
     }
 
     /// <summary>
-    /// Records one actual canonical source event without retaining file data.
+    /// Gets the sealed source counter installed without an arbitrary callback.
     /// </summary>
-    /// <param name="path">
-    /// The original relative source spelling supplied by the manager.
-    /// </param>
-    internal void ObserveCanonicalSource(string path) => _sources.AddOrUpdate(path, 1, (_, count) => count + 1);
+    internal CanonicalReadActivityAccumulator CanonicalSources => _sources;
 
     /// <summary>
     /// Counts all canonical source events for one exact path.
@@ -85,7 +82,7 @@ internal sealed class LifecycleFixtureReadObservers
     /// <returns>
     /// The complete count, or zero when the path has not been observed.
     /// </returns>
-    internal long ReadCount(string path) => _sources.GetValueOrDefault(path);
+    internal long ReadCount(string path) => _sources.ReadCount(path);
 
     /// <summary>
     /// Copies every source count without imposing a record or byte quota.
@@ -93,5 +90,5 @@ internal sealed class LifecycleFixtureReadObservers
     /// <returns>
     /// Detached per-path canonical source counts; these are not all operating-system reads.
     /// </returns>
-    internal Dictionary<string, long> CaptureSources() => new(_sources, StringComparer.Ordinal);
+    internal Dictionary<string, long> CaptureSources() => _sources.Capture();
 }

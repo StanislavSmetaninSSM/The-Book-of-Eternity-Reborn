@@ -133,7 +133,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
                 OperationTimingObserver = operationTimingObserver,
                 PassiveOperationTimings = passiveOperationTimings,
                 BeforeCanonicalMutationAsync = BeforeCanonicalMutationAsync,
-                CanonicalReadActivityObserver = readObservers is null ? null : readObservers.ObserveCanonicalSource,
+                PassiveCanonicalReads = readObservers?.CanonicalSources,
                 AfterCanonicalReadInitialValidationAsync = _readObservers.AfterInitialValidationAsync,
                 SessionOperationClosingAsync = () => _consoleSessionClosingObserver?.Invoke() ?? Task.CompletedTask,
                 AfterCanonicalReadAttemptAsync = _readObservers.AfterReadAttemptAsync,

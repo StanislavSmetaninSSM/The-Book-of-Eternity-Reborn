@@ -20,7 +20,7 @@ Stack: C#/.NET8/current SDK, PowerShell7 bounded categories, Python D-local tool
 - [ ] T543 [US1] Core/IReadPathObservations.cs and SourceValidationBatch.cs;
   SourceDataOperation/ValidationReadSet owner gates and bounded lifecycle,
   OrdinaryReads+FileSystemManager/MainRunFence/AdmissionDirectoryObservations
-  explicit classifier plumbing. GREEN reduction/equal bytes/mtime/fresh sources;
+  explicit classifier plumbing, sealed source-count accumulator replacing lifecycle Action. GREEN reduction/equal bytes/mtime/fresh sources;
   hook/foreign/close/retry/mutation/overlap/await/refusal and independent fresh
   fence tests. Strict test-only lifecycle control+uncapped batch counters.
 - [ ] T544 [US1] Coherent separate complex review/fixes; affected categories,
