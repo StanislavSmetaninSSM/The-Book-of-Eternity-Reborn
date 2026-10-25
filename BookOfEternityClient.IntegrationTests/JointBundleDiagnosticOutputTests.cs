@@ -82,8 +82,10 @@ public sealed class JointBundleDiagnosticOutputTests
     [Fact]
     public void ObserverWriteFailurePreventsCompleteReport()
     {
+        var controlRoot = Path.Combine(Environment.GetEnvironmentVariable("BOE_TEST_DIAGNOSTIC_ROOT")
+            ?? Path.GetTempPath(), "component-diagnostic-path-controls", Guid.NewGuid().ToString("N"));
         var output = new JointBundleDiagnosticOutput(nameof(ObserverWriteFailurePreventsCompleteReport),
-            _output, disposeWriterForControl: true);
+            _output, disposeWriterForControl: true, repositoryRootForControl: controlRoot);
         // The constructor creates an empty physical namespace; keep it with these retained diagnostics.
         var files = new FileSystemManager(Path.Combine(output.DiagnosticDirectory, "observer-owner"),
             NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance,
