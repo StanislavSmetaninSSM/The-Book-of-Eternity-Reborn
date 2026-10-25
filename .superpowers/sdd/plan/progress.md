@@ -1,3 +1,37 @@
+# Linux T552 fixture regressions GREEN — updated PREP review pending
+
+Sourceab17fde032f3bd5525e03d3e4cebb2813e83c0ab. Fresh unit-only XML02:23.41/
+5743warnings/0errors; integration-only XML05:50.07/6646warnings/0errors (overlapped
+with unit regression, not a timing benchmark). Shared production/TestSupport
+references are unchanged fresh637 binaries, identical copies verified. Updated
+11DLL/PDB binding: managed-binding-platform-corrected.json outside checkout.
+Unitacec7c3be0bd9b21d0ff3b693eb282ab435a831a9c97df94f35fdbad1c929c35;
+integration6e52b49839a5556fd9323345f963898ad8d7b6342a70fc021b2e959f1a23bc43.
+Both test assemblies report sourceab17. Production/native diff b377 remains empty.
+
+Targeted source regression:2descriptors/40planned=completed=passed,0skip/fail/
+duplicate, no timeout,03:56.2373525/cleanup complete; core37 + new realLinux3.
+Raw run071235-118-13914-9836d50c25034eaea507d6d9d4969dc7 under external root.
+Linux counter proves0functional sources after full replacement admission, then
+1per explicit fresh fence; rawdrift/generation failures deny effect and success.
+This validates fixture correction, not production invalidation or a speedup claim.
+
+Updated discovery:12468methods/939categories/0unmapped/stale. Remaining27cache
+categories/28descriptors/338cases PlanOnlyPASS; native6/40 and original1/5 also
+PlanOnlyPASS/0executed on updated DLLs. Exact external selection excludes seven
+already-passed unaffected categories129cases and source37+Linux3 just passed.
+Final cache union if remaining succeeds is507distinct (129+40+338), across explicit
+bindings/runs, not one full current-source execution. Diagnostic31 retained from
+its unchanged code; no repeat passing checks. Integration shared-admission/source-
+batch platform corrections still require their actual runtime bodies.
+
+Astra/high SOURCE reviewab17 has no open findings, reviewed the corrected accepted
+provisional DATA contract and true Linux counters. Updated binding/discovery/GREEN
+packet now awaits final PREP verdict before remaining-cache runtime. Native40 and
+originalfive remainUNRUN. No active policy block, quotas or budget changes.
+All logs/TRX/JSON/native/binding backups remain solely under
+/workspace/tboe-linux-evidence-20261025; no raw/fixtures/saves removed or uploaded.
+
 # Linux T552 platform observation correction — before runtime
 
 Astra/high source review found the new counter proof used a Windows-only named
