@@ -144,7 +144,7 @@ public sealed class JointAppliedStoryComponentTests
                 Assert.Equal(tuple["SessionId"]!.GetValue<string>(), original.SessionId);
                 Assert.Equal(tuple["RequestId"]!.GetValue<string>(), original.RequestId);
                 Assert.Equal(tuple["SnapshotToken"]!.GetValue<string>(), original.SnapshotToken);
-                Assert.Equal(43, original.TurnNumber);
+                Assert.Equal(tuple["TurnNumber"]!.GetValue<int>(), original.TurnNumber);
                 var phaseBefore = phaseOnly ? CaptureImages(root) : null;
                 using var phaseTimer = files.MeasureOperation("Component.ReadAppliedPhaseAsync");
                 var applied = await MortalQteDecisionPublication.ReadJointProgressionPhaseAsync(files, lease,

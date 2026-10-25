@@ -1,3 +1,19 @@
+# Linux final52 input audit — exact tuple, no hidden Windows fallback
+
+SeparateAstra/high audit confirmsall10archive-consumingcases use3explicitplatform
+consumers; Qte/Semanticusegenuinefixtures; reserved/portablehave nooldarchive orOS
+skip/optional-linkPASS. Foundoldphasefixtureturn43constant, corrected toexact
+verifiedmanifestOriginal.TurnNumber. NewLinuxminimalissuerhasfinalturn44; all4tuple
+fieldsnowmatchgenuineinput, no reseal/changedproductrequirement.
+Savedplanactualremaininggroups:boundary6/proof3/phase1/Qte1/Semantic1/reserved32/
+portable8=52. Priorcountgroupbreakdown28/12 wasincorrect, total52unchanged.
+
+Knownrunningcbecompilegroup27359 wasstoppedTERM/exit143afteritsinputbecamesuperseded;
+knownrunning2032compilegroup27652likewisestoppedafterthisreviewfinding,exit143.
+Onlyownedbuildgroups, noactivechildrenremain; neitherqualifiedorran tests. Final
+current-sourcefreshbuildwaits thislastboundedSOURCEdeltareview. Existing454PASS
+retained, allnewcontrols/preparation/runtimegatesstillUNRUN. CrossOSquestionOPEN.
+
 # Linux applied input third selected consumer — bounded routing completion
 
 Exactremainingselectionaudit found fr063-joint-progression-data-integration selects
