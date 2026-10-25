@@ -1,6 +1,12 @@
 # Linux T552 current applied-DATA preparation amendment —2026-10-25
 
 Within #1536 Linux qualification and the owner's autonomous technical-work waiver:
+OPEN PRODUCT QUESTION: does supported current-version user-save/DATA transfer
+Windows<->Linux require a platform-independent frozen byte representation? No
+specific accepted exception was found in the current #1536 handoff/compatibility
+rules. This preparation amendment neither changes an existing product requirement
+nor resolves that question. The observed Windows->Linux replay FAIL stays open;
+new native Linux DATA is only an independent qualification input.
 - LINUXDATA-1: historical Windows AppliedBeforeStory DATA remains byte-exact and
   its CRLF->LF fresh recomposition refusal remains recorded, not normalized,
   resealed, rebound, countedPASS or made a production compatibility feature.

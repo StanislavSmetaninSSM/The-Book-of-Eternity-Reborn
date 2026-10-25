@@ -1,3 +1,16 @@
+# Explicit open product question — cross-OS frozen byte replay remains unresolved
+
+Parent clarification honoured: historicalAppliedBeforeStory isObservedDATA only,
+RecoveryQualified=false; AGENTS67..78 makes oldsnapshotcompatibility conditional on
+explicit acceptedexception, handoff220 warns Windowsfingerprints includeCRLF and
+WindowsDATAdoesnotproveLinux. No specific accepted #1536 crossOStransferexception
+found in currentrules. Whether supportedcurrent-version user-save/DATA transfer
+Windows<->Linux requires independentfrozenbytes is an OPEN PRODUCT QUESTION.
+Do notcallnewLinuxfixture a compatibilityfix or redefineapprovedproductrequirements.
+No fallback, normalization, reseal or legacy-inputrewrite implemented. Existing
+Windows->LinuxFAIL remains recorded/open while independentnativeLinux qualification
+proceeds. Spec LINUXDATA amendment is testpreparation scope only.
+
 # Linux applied-DATA source cause and reviewed bounded preparation plan
 
 Independent Astra/high andSol6.1/xhigh auditsconfirm progressionalgorithm unchanged
