@@ -1,3 +1,18 @@
+# Terminal12 GREEN — current native40 PASS, one bounded recurrence check next
+
+Run121218-431-44595-8f4affc601984c19970d085ddf022789:12planned/completed/PASS,
+exit0/no skip/timeout/duplicates, cleanup complete; original3min category unchanged.
+All actual TRX outcomes passed. Together with current nonterminal24 andMain4,
+current40distinct native cases are PASS on the same3b97DLLs; final OUTCOME pending.
+Positive retirement and intentional Uncertain predicates remain separate claims.
+
+Independent reviewer accepted host causal result/currentMain4 and recommended
+one bounded recurrence of the initially failing terminal-fence before original5.
+Use existing canonical Main4 selection (target once +3companion controls), because
+runner is category-only and method Filter is retired; no new category/runner or
+budget override. Same DLLs/journal/15s guardian/3min category. Initial15s failure
+cause remains OPEN; all earlier evidence/roots retained. Original5 still UNRUN.
+
 # Current Main4 diagnostic PASS — initial15s failure remains unexplained
 
 Run120341-665-44130-90b2aaa2c5ba4c7bb5f292f1ad945df6 on same3b97 DLLs:
