@@ -9,7 +9,7 @@ Issue#1536; FUSE1..7 / plan.md, autonomous specification-review-wait waiver.
 - [x] T537 [US1] Existing-service phase/admission sharing, accurate physical-source/
   borrowed-hit counts, explicit same-owner initial-only wiring, strict comparison
   controls; GREEN actual sources/equal data and negative/fallback/lifetime integrity.
-- [ ] T538 [US1] Independent coherent review/fixes, affected categories/catalog/
+- [x] T538 [US1] Independent coherent review/fixes, affected categories/catalog/
   PlanOnly/XMLuniform8; conditional genuine new source42/twoimports/frozen admission.
 - [ ] T539 [US2] Conditional600child/820shared/15category off/on originals, same DLL/
   INPUT, frozen CPU-GC/current passive timings/native/oracles/cleanup unchanged.
