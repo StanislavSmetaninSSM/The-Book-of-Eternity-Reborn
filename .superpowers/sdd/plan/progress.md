@@ -1,4 +1,16 @@
-# T584 live N source contribution — corrected PREP accepted, actual29 next
+# T584 live N source contribution — corrected29 GREEN, remaining101 next
+
+Corrected first29 actual PASS on compiled/accepted `3cf5761f`, runtime checkpoint
+`d51a3a71de2ef39c39bf80d69d687da19f774d45`: 29/29 PASS, zero failures/skips,
+complete 1/1 descriptor, category 24.7945154s / runner 40.0471741s, no timeout.
+Root parsed the complete TRX, checked all 29 owned roots removed/absent, both
+runner cleanup flags and all 33 DLL/PDB/XML hashes unchanged. The three previously
+failing cases now reach and pass their original strict assertions. Full raw/TRX
+and verification remain outside Git in `live-n-implementation/actual-source29-corrected-1`.
+The first failed26/3 capture remains preserved separately; this is no speedup
+comparison. Next is the reviewed remaining eight cheap categories / nine
+descriptors / 101 cases, using the explicit external subset of tests/selection,
+without repeating29. Three live/two cold cases and final outcome remain UNRUN.
 
 Independent Astra/high corrected PREP ACCEPT at clean remote checkpoint
 `ebf91b5e2bbd5173123f9853be7530396d21ac99`: no material findings. It rechecked
