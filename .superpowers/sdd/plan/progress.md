@@ -1,3 +1,20 @@
+# Source-adapter cheap158 verified — fresh Linux8 PREP pending
+
+Remaining run142024-797-57144-f37fa2fec3844e5b8a87a09c74c12be0:
+4integrationcategories/70cases allPASS, exit0/68.7464428s wall, no timeout/skip/
+duplicate, selection and both cleanups complete. All4TRX outcomes independently
+read by coordinator. Combine with88whole-category PASS (sameE035 production) =158
+verified; the earlier five partial LinuxPASS do not replace the required full8.
+
+Separate SOURCE accepted fixture-only71716b37a9ef24dfd20107a52516ef05330d5507
+without findings. Fresh unit XML exit0/2:04.33/26warnings/0errors; actual Unit
+SHA256A841BBBF.../Info71716. Other10DLL/PDB entries unchanged, sharedcopies uniform,
+18source/PDB checks match. Old Unit6069/PDB preserved externally for provenance
+only, never runtime. Actual bindings in managed-binding-source-adapter-oracle.json.
+Exact Linux8 NoBuild PlanOnly/PREP pending; no code/config drift. GEN remains
+blocked until full166GREEN, then only newE035 Linux DATA, integration16 and cold
+gameplay gates. This checkpoint does not claim full cache or original5 PASS.
+
 # Source-adapter cheap gate:88 whole-category PASS, Linux oracle correction WIP
 
 Run141039-793-54719-c2fa001132d24cd0b2b967c3d4ffa8e0:96executed,
