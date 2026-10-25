@@ -1,3 +1,72 @@
+# Linux qualification current result — 2026-10-25
+
+Working branch `1536-linux-qualification-20261025`, based on the complete original
+`1536-crash5-linux-windows-spec-20261019` tree at
+`b377c9d1d0c6cfa5ce20b383d84eac069b8d2991`; original remote still matches.
+Latest code delta `483befce4e23920c739adb817154e42ea92894c0`; later commits are
+checkpoints. Fresh Linux builds are Game/Support/Unit Info`a9f03ebdc7d58f17c36afdeec469d35b3256eac1`
+and Integration/Bridge Info`483befce4e23920c739adb817154e42ea92894c0`.
+All31 source/PDB pairs and11 shared assembly/PDB paths verified. This explicitly
+separates source-content binding from subsequent checkpoint commit SHA.
+
+Current verified results (final independent original-five outcome and fresh
+GitHub-only recovery still pending at this checkpoint):
+- cache514 exact canonical union,36categories/37descriptorresults:
+  476 reviewed retained Linux results +38 fresh; no uniform-build rerun claim.
+- passive regression66/66 PASS,8descriptors, including queue9/transport9,
+  refreshed passive11/sourcebatch24 and13 related diagnostic/producer controls.
+- NativeLineage40 unique PASS/sixdescriptors retained after independent impact
+  review; extra recurrence4 not double counted. Initial terminal15s failure OPEN.
+- genuine current Linux GEN1/1 PASS, F9/8A25/F70 provenance and full capture.
+- Take/Qte/Semantic3/3 PASS with full source clocks/pairs/queue/write accounting.
+- ordinary NativeLinux causal cut0 1/1 PASS, then original Theory5/5 PASS.
+
+Original attempt `20261025-174504-957-68824-7e2b613c24ec430685d6d050b890778b`:
+exact `./scripts/test-csharp.ps1 -Category fr063-joint-interface-crash-current -NoBuild`,
+1Theory/5planned=5executed=5passed,0skip/duplicate/fail,exit0/no timeout,
+category732.9785108s<900,wall754.3532245s,bothcleanupcomplete.
+Test body seconds: cut0 198.5989994;cut1 194.5665830;cut2 184.9589980;
+cut3 64.7978846;cut4 77.2723739. Framework order1,4,2,0,3 matches the earlier
+ordinary Theory; handoff specifies this one-category command, not numeric sorting.
+Ten genuine native runs/five distinct nonces: everyproducer root73/resumer root0;
+full streams and retained reports hashed, Linux birth identities, EOF/join/scoped
+cleanup and removedownedroots verified. Child220+stop10+EOF10/category15m unchanged.
+No G01/DirectLinux, Windows fixture substitution, diagnostic quota or time-limit change.
+
+Exact source selections:
+[cache](../../../../tests/selections/1536-linux-cache-qualification.json),
+[source adapter](../../../../tests/selections/1536-linux-source-adapter-regression.json),
+[passive](../../../../tests/selections/1536-linux-passive-timing-regression.json),
+[native controls](../../../../tests/selections/1536-crash5-linux-controls.json).
+Five fresh managed XML builds0errors; own Linux native package from cc14.2,
+protocol2/linux-x64/glibc2.38minimum, allthree source/binary hashes verified.
+Production fixes retain fresh source/authority/effect fences: unsupported read
+adapters stay fresh without replacing the source owner's original version;
+completed-proof source DATA uses the existing operation service and closes fresh.
+The existing sealed timer now offers full opt-in scalar events only for three
+expensive controls. RealTake GetAttributes652064→349259, Main18499/Lease17355
+unchanged; cheap sync/async522→322, sources2/Main52/Lease44 unchanged.
+This proves reduced work; controlled elapsed speedup and historical54→113 cause
+are not established.
+
+All raw remains local outside checkout:
+`/workspace/tboe-linux-evidence-20261025`.
+Key full evidence: `passive-cache-514-verification.json`,
+`passive-full-cheap-verification.json`, `linux-applied-passive-full-verification.json`,
+`passive-full-{take,qte,semantic}-verification.json`,
+`passive-cold-cut0-verification.json`, `passive-original-five-verification.json`.
+No raw/TRX/JSON/archive uploaded to GitHub. Old failed/native/original-five captures
+remain; only reviewed superseded GEN raw retired after complete replacements and
+ended owners. Old clean recovery clone7ff was retired as a disposable source copy;
+final fresh GitHub recovery is required anew. User saves and main tracked fixtures
+remain untouched. Largest tracked diagnostic groups/fixture-dependency inventory
+is external `repository-size-inventory.json`; repository cleanup is a separate stage.
+
+Open limits: historical native terminal15s failure cause UNKNOWN despite current40
+and recurrence success; Windows↔Linux frozen-byte replay compatibility question
+OPEN, historical Windows archive unchanged; new fixes are not Windows-qualified.
+Historical failures below remain historical evidence, not current-pass substitution.
+
 # Актуальная передача Астре — r73, код и результаты r72
 
 Дата: 2026-10-25. Задача: [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536).

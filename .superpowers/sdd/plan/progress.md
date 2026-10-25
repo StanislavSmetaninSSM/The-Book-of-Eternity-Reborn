@@ -1,3 +1,24 @@
+# Original ordinary Linux Theory5 PASS, full receipts verified — final review/recovery next
+
+Attempt174504-957-68824-7e2b613c24ec430685d6d050b890778b on sourceF26checkpoint:
+1Theory/5planned/executed/PASS,0fail/skip/duplicate,exit0/no timeout,
+category732.9785108s<900/wall754.3532245s,bothcleanupcomplete. Case bodyseconds:
+cut0 198.5989994;cut1 194.5665830;cut2 184.9589980;cut3 64.7978846;cut4 77.2723739.
+Frameworkactualorder1,4,2,0,3 matches earlieroriginalTheory; samehandoffcommand.
+Ten genuine native runs/fivefreshnonces, everyrootproducer73/resumer0. Everyfull
+stdout/stderr and retainedreport exactbytes/SHA, Linuxbirthidentity/nonce,
+EOF/join/scopedcleanup, endedprocesses/rootabsence and current11DLL/PDB verified.
+Original child220/stop10/EOF10 andcategory15m unchanged. Evidence external
+passive-original-five-verification.json (not Git). Independent finaloutcome pending.
+
+Updated current Linux handoff records builds/selectors/results/fixes/optimization,
+retention and remaining limitations. Original remote still exactb377c9d1... .
+Allcodeafter483 unchanged; no merge/forcepush/branchdeletion/issueclosure or rawupload.
+Next independent finalreview, then freshcompleteGitHub-onlyrecovery of a frozen
+checkpoint, verify remoteSHA/currentcleancheckout and publish recoveryreceipt.
+Oldclone7ffabsent; no falsecurrentrecoverabilityclaim. Current complete captures
+and prior failed/native/original5 preserved; oldGENonlyretiredperreviewedpolicy.
+
 # Ordinary NativeLinux cut0 complete PASS — original Theory5 PREP next
 
 Cache514/full-three outcome independently accepted; separate Astra/high PREP

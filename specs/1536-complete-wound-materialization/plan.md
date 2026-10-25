@@ -47,7 +47,7 @@ source counters and negative fresh fences must prove this before cold gameplay.
   retained report verification and exact category/selection ownership.
 - [x] T573 Bounded adapter binding correction and fresh negative controls,
   coherent independent SOURCE/optimization/selection review.
-- [ ] T574 Fresh managed XML/PDB/native source pins, catalog/PlanOnly/PREP,
+- [x] T574 Fresh managed XML/PDB/native source pins, catalog/PlanOnly/PREP,
   targeted causal/affected regressions and genuine new Linux DATA if required.
 - [ ] T575 Review retained gates and execute complete original5 unchanged;
   independent outcome, checkpoint and verified GitHub-only recovery.
