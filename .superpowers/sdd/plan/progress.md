@@ -1,4 +1,23 @@
-# T584 live N source contribution — design accepted, TDD next
+# T584 live N source contribution — tests SOURCE/build ready, PREP pending
+
+Tests-only source `b08dfadd5b987bc370a9c5452c6a3dac940a1c9d` independently
+SOURCE accepted by Astra/high. Fresh Integration XML build: exit 0, 101 warnings,
+0 errors, 2:52.92; DLL SHA256
+`CA4AAB53B83C0DFCBC1C46A2E2BFE6793474929BB773D5F3E83D99A6ABB91064`,
+informational version b08dfadd. Root verified all loaded assembly hashes, five
+source/PDB document pins and unchanged Game/Support/Unit project trees from the
+earlier fresh Linux builds. Game SHA and genuine Linux applied input still match.
+Catalog discovery VALID 948/12,496; no unmapped/stale selectors, tests executed 0.
+Separate `-Category fr063-joint-live-n-source-drift -PlanOnly -NoBuild` and
+`fr063-joint-live-n-source-unchanged` each select exactly one descriptor/one case,
+five-minute category budget, exit 0 and complete owned/runtime cleanup. Original
+combined `-File -Category A,B` invocation rejected the literal unknown ID before
+workload; retained as CLI preparation failure, never RED. Exact receipts and full
+logs stay outside checkout in `/workspace/tboe-linux-evidence-20261025/live-n-T586`.
+Independent PREP review pending; actual tests 0, product changes 0. After acceptance
+and checked source recovery, run the separately named drift singleton first. A RED
+requires reached genuine corrected N/capture and actual PreparationEntries > 0;
+freeze other failures for diagnosis. Unchanged counterpart remains a separate run.
 
 Cleanup is complete and independently accepted at
 `d4a460bcfc47ce6cd8a111e675659f208895dbee`; exact remote and full clean GitHub
