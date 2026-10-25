@@ -57,9 +57,6 @@ public sealed class AcceptedTurnNarrativeInterfacePolicyBoundaryTests(ITestOutpu
         // Reverse only a strict future 3e extraction to the accepted 3d A first;
         // the four original 3d adapters and original6a9 hash below stay unchanged.
         source = NarrativePolicySourceInventory.ReverseIfPresent(source);
-        source = NarrativePolicySourceInventory.ReverseIfPresent(source);
-        source = NarrativePolicySourceInventory.ReverseIfPresent(source);
-        source = NarrativePolicySourceInventory.ReverseIfPresent(source);
         source = ReasoningPolicySourceInventory.ReverseIfPresent(source);
         var partialPath = Path.Combine(root,
             "BookOfEternityClient/Services/Validation/ValidationService.NarrativeInterfacePolicy.cs");

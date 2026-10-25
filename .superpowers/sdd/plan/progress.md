@@ -1,4 +1,20 @@
-# T584 live N source contribution — source inverse refusal under investigation
+# T584 live N source contribution — strict test-only inverse correction frozen
+
+Source-guard cause reproduced exactly: after the new T587 inverse reached c6e,
+two previously accepted original-lookup amendments (`31c961d` and `2cdd2273`)
+still preceded the older reasoning extraction. Leaving them in place produces
+the actual failed hash `656c5052…`. The correction adds a separately named
+seven-block exact inverse, asserting the complete c6e `26d19650…` intermediate
+and f766 `8a8c5a41…` target before the unchanged old reasoning and ordinary-policy
+guards. Their frozen `8bde0129…` / `6a9ffcb5…` hashes and manifests stay unchanged.
+Three redundant no-op calls are removed. Only two Unit source files changed;
+Game/Support/Bridge/Integration, production behavior and test selection are intact.
+Root independently checked all four historical whole-file hashes and both actual
+partial hashes. Static full-chain proof is external under
+`live-n-implementation/corrections`; C# runtime is still UNRUN after this fix.
+Independent targeted SOURCE review, fresh Unit-only XML build/binding, then the
+causal source singleton and the previously unrun52 are next. Retain prior29+48
+at their actual compiled3cf provenance, without replay or new-binary claims.
 
 Remaining101 attempt on runtime `08f0de626cd433f2b3378de87cfe2e1484116fa9`
 stopped at the strict historical ordinary-source inverse: 49/101 executed,

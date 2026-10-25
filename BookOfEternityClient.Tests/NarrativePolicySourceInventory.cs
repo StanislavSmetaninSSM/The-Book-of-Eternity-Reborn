@@ -1,23 +1,55 @@
+using System.Security.Cryptography;
+using System.Text;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-/// <summary>Exact inverse of only T587 explicit source plumbing and passive scopes. The frozen ordinary hash stays unchanged.</summary>
+/// <summary>Composes exact T587 and prior original-lookup inverses before the unchanged frozen ordinary source guards.</summary>
 internal static class NarrativePolicySourceInventory
 {
-    /// <summary>Restores the reviewed pre-T587 source before the existing reasoning and policy inverses run.</summary>
+    /// <summary>Composes exact T587 and pinned prior original-lookup reversals before the unchanged reasoning and policy inverses run.</summary>
     /// <param name="source">The exact current narrative implementation source.</param>
-    /// <returns>The pre-T587 source, requiring every changed adapter to occur exactly once.</returns>
+    /// <returns>The exact f766d9d source required by the reasoning inverse, with each applicable adapter occurring exactly once.</returns>
     internal static string ReverseIfPresent(string source)
     {
-        if (!source.Contains("bool readOnly = false, NarrativeInterfaceSourceSession? source = null", StringComparison.Ordinal)) return source;
-        foreach (var (current, previous) in Replacements)
+        if (source.Contains("bool readOnly = false, NarrativeInterfaceSourceSession? source = null", StringComparison.Ordinal))
+        {
+            foreach (var (current, previous) in Replacements)
+            {
+                Assert.Equal(1, source.Split(current, StringSplitOptions.None).Length - 1);
+                source = source.Replace(current, previous, StringComparison.Ordinal);
+            }
+            Assert.Equal(PreT587SourceSha256, SourceSha256(source));
+        }
+        return ReversePriorOriginalLookupAmendments(source);
+    }
+
+    private const string PreT587SourceSha256 = "26d196503099018381cacc2e1c3048feab9ef2922f928040df52431532ac7fa6";
+    private const string BeforeOriginalLookupAmendmentsSha256 = "8a8c5a41f1541856af4e0b80a074e4c61b437dc4972c8e6384c3c1810b1e3d0a";
+
+    /// <summary>Reverses only the pinned original-lookup amendments that postdate the frozen reasoning extraction.</summary>
+    /// <param name="source">The exact c6e672de source after T587 has been reversed.</param>
+    /// <returns>The exact f766d9d source required by the existing reasoning inverse.</returns>
+    private static string ReversePriorOriginalLookupAmendments(string source)
+    {
+        // 31c961d222dcd940141cbf05d4805b9f20e7d2a2 added invocation-local
+        // lookup, parser and authentication callback plumbing (29 insertions/13 deletions).
+        // 2cdd2273b44918bc057f8d89d247b8c338db44b7 added its 63 XML lines.
+        // Neither change is part of the old frozen reasoning extraction.
+        if (!source.Contains("CurrentPendingSnapshotLookup(", StringComparison.Ordinal)) return source;
+        Assert.Equal(PreT587SourceSha256, SourceSha256(source));
+        foreach (var (current, previous) in PriorOriginalLookupReplacements)
         {
             Assert.Equal(1, source.Split(current, StringSplitOptions.None).Length - 1);
             source = source.Replace(current, previous, StringComparison.Ordinal);
         }
+        Assert.Equal(BeforeOriginalLookupAmendmentsSha256, SourceSha256(source));
         return source;
     }
+
+    /// <summary>Uses the same UTF8 text hashing convention as both unchanged frozen source guards.</summary>
+    private static string SourceSha256(string source) =>
+        Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(source))).ToLowerInvariant();
 
     private static readonly (string Current, string Previous)[] Replacements =
     [
@@ -1110,4 +1142,280 @@ internal static class NarrativePolicySourceInventory
 """"""" + "\n"
         )
     ];
+    // Exact c6e672de -> f766d9d blocks, including original XML; no generic stripping.
+    private static readonly (string Current, string Previous)[] PriorOriginalLookupReplacements =
+    [
+        (
+"""""""
+            : null;
+    }
+
+    /// <summary>
+    /// Resolves the pending source through an active proof or the existing physical reader.
+    /// </summary>
+    /// <returns>
+    /// Actual source status and manifest; active invocation manifests are independent copies.
+    /// </returns>
+    private ValidatedPendingTurnSnapshotLookup LoadValidatedPendingTurnSnapshotLookupSync()
+    {
+        if (CurrentPendingSnapshotLookup() is { } scoped) return scoped;
+        if (_prevalidatedPendingTurnSnapshotOverride != null)
+            return new ValidatedPendingTurnSnapshotLookup(ValidatedPendingTurnSnapshotStatus.Usable, _prevalidatedPendingTurnSnapshotOverride);
+
+""""""" + "\n",
+"""""""
+            : null;
+    }
+
+    private ValidatedPendingTurnSnapshotLookup LoadValidatedPendingTurnSnapshotLookupSync()
+    {
+        if (_prevalidatedPendingTurnSnapshotOverride != null)
+            return new ValidatedPendingTurnSnapshotLookup(ValidatedPendingTurnSnapshotStatus.Usable, _prevalidatedPendingTurnSnapshotOverride);
+
+""""""" + "\n"
+        ),
+        (
+"""""""
+        GuardianPowerJournalIdentityState? IdentityState,
+        string FailureDescription);
+
+    /// <summary>
+    /// Reads and parses a persisted request using the existing physical or browser read phase.
+    /// </summary>
+    /// <param name="requestPath">
+    /// Root-relative request path to read.
+    /// </param>
+    /// <param name="writeLease">
+    /// Existing explicit lease, or null to use the current ordinary read route.
+    /// </param>
+    /// <returns>
+    /// Request identity, or null when missing or malformed.
+    /// </returns>
+    private PendingTurnRequestValidationContext? LoadPendingTurnRequestValidationContextSync(
+        string requestPath,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
+""""""" + "\n",
+"""""""
+        GuardianPowerJournalIdentityState? IdentityState,
+        string FailureDescription);
+
+    private PendingTurnRequestValidationContext? LoadPendingTurnRequestValidationContextSync(
+        string requestPath,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
+""""""" + "\n"
+        ),
+        (
+"""""""
+            : _fs.ReadFileAsync(writeLease, requestPath)
+                .GetAwaiter()
+                .GetResult();
+        return ParsePendingTurnRequestValidationContext(json);
+    }
+
+    /// <summary>
+    /// Parses the existing request identity contract without manufacturing missing fields.
+    /// </summary>
+    /// <param name="json">
+    /// Physical request text; null, empty or malformed text yields no context.
+    /// </param>
+    /// <returns>
+    /// Parsed turn identity, or null when the existing shape rules are not satisfied.
+    /// </returns>
+    private static PendingTurnRequestValidationContext? ParsePendingTurnRequestValidationContext(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+            return null;
+
+""""""" + "\n",
+"""""""
+            : _fs.ReadFileAsync(writeLease, requestPath)
+                .GetAwaiter()
+                .GetResult();
+        if (string.IsNullOrWhiteSpace(json))
+            return null;
+
+""""""" + "\n"
+        ),
+        (
+"""""""
+        return $"{firstIssue.FilePath}: {firstIssue.Message}";
+    }
+
+    /// <summary>
+    /// Resolves the pending source asynchronously, refusing foreign leases inside a reserved invocation.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Optional original explicit lease; null uses current invocation authority or ordinary reads.
+    /// </param>
+    /// <returns>
+    /// Actual source status and an independent manifest copy when invocation evidence is active.
+    /// </returns>
+    private async Task<ValidatedPendingTurnSnapshotLookup> LoadValidatedPendingTurnSnapshotLookupAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
+    {
+        if (CurrentPendingSnapshotLookup(writeLease) is { } scoped) return scoped;
+        if (_prevalidatedPendingTurnSnapshotOverride != null)
+            return new ValidatedPendingTurnSnapshotLookup(ValidatedPendingTurnSnapshotStatus.Usable, _prevalidatedPendingTurnSnapshotOverride);
+
+""""""" + "\n",
+"""""""
+        return $"{firstIssue.FilePath}: {firstIssue.Message}";
+    }
+
+    private async Task<ValidatedPendingTurnSnapshotLookup> LoadValidatedPendingTurnSnapshotLookupAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
+    {
+        if (_prevalidatedPendingTurnSnapshotOverride != null)
+            return new ValidatedPendingTurnSnapshotLookup(ValidatedPendingTurnSnapshotStatus.Usable, _prevalidatedPendingTurnSnapshotOverride);
+
+""""""" + "\n"
+        ),
+        (
+"""""""
+            : null;
+    }
+
+    /// <summary>
+    /// Applies the existing manifest authority and current-request matching contracts.
+    /// </summary>
+    /// <param name="manifest">
+    /// Parsed source manifest; null is unusable.
+    /// </param>
+    /// <param name="authorityJson">
+    /// Detached authority text, which may be missing or malformed.
+    /// </param>
+    /// <param name="writeLease">
+    /// Existing physical lease, or null for ordinary reader behavior.
+    /// </param>
+    /// <param name="readBytes">
+    /// Optional per-authentication physical byte capture; null preserves the ordinary reader.
+    /// </param>
+    /// <param name="readText">
+    /// Optional request text from the same authentication pass; null reads requests normally.
+    /// </param>
+    /// <returns>
+    /// True only when both reader authority and an existing request context match; otherwise false.
+    /// </returns>
+    private bool IsValidatedPendingTurnSnapshotManifestUsable(
+        ValidationPendingTurnSnapshotManifest? manifest,
+        string? authorityJson,
+        FileSystemManager.CanonicalWriteLease? writeLease = null,
+        Func<string, byte[]?>? readBytes = null,
+        Func<string, string?>? readText = null)
+    {
+        if (manifest == null)
+            return false;
+""""""" + "\n",
+"""""""
+            : null;
+    }
+
+    private bool IsValidatedPendingTurnSnapshotManifestUsable(
+        ValidationPendingTurnSnapshotManifest? manifest,
+        string? authorityJson,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
+    {
+        if (manifest == null)
+            return false;
+""""""" + "\n"
+        ),
+        (
+"""""""
+                static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
+                static snapshotManifest => snapshotManifest.SourceLabel,
+                static snapshotManifest => snapshotManifest.RollbackBackups,
+                relativePath => readBytes != null ? readBytes(relativePath) : ReadRelativeFileBytesFromWorkspace(
+                    relativePath,
+                    writeLease),
+                out _,
+""""""" + "\n",
+"""""""
+                static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
+                static snapshotManifest => snapshotManifest.SourceLabel,
+                static snapshotManifest => snapshotManifest.RollbackBackups,
+                relativePath => ReadRelativeFileBytesFromWorkspace(
+                    relativePath,
+                    writeLease),
+                out _,
+""""""" + "\n"
+        ),
+        (
+"""""""
+
+        return IsValidatedPendingTurnSnapshotManifestCurrent(
+            manifest,
+            writeLease, readText);
+    }
+
+    /// <summary>
+    /// Matches the manifest to the existing repair, input or completion request alternatives.
+    /// </summary>
+    /// <param name="manifest">
+    /// Source identity to match.
+    /// </param>
+    /// <param name="writeLease">
+    /// Optional original lease used by ordinary physical request reads.
+    /// </param>
+    /// <param name="readText">
+    /// Optional text provider for one physical authentication pass; null keeps existing reads.
+    /// </param>
+    /// <returns>
+    /// True when at least one existing request alternative matches; otherwise false.
+    /// </returns>
+    private bool IsValidatedPendingTurnSnapshotManifestCurrent(
+        ValidationPendingTurnSnapshotManifest manifest,
+        FileSystemManager.CanonicalWriteLease? writeLease = null,
+        Func<string, string?>? readText = null)
+    {
+        PendingTurnRequestValidationContext? ReadContext(string path) => readText == null
+            ? LoadPendingTurnRequestValidationContextSync(path, writeLease)
+            : ParsePendingTurnRequestValidationContext(readText(path));
+        const string repairRequestPath = "game_state/control/validation_repair_request.json";
+        var repairContext = ReadContext(repairRequestPath);
+        if (DoesPendingTurnRequestValidationContextMatchManifest(manifest, repairContext))
+            return true;
+
+        var turnContext = ReadContext("input/turn_request.json");
+        if (DoesPendingTurnRequestValidationContextMatchManifest(manifest, turnContext))
+            return true;
+
+        var completionContext = ReadContext("ready/turn_complete.json");
+        return DoesPendingTurnRequestValidationContextMatchManifest(manifest, completionContext);
+    }
+
+""""""" + "\n",
+"""""""
+
+        return IsValidatedPendingTurnSnapshotManifestCurrent(
+            manifest,
+            writeLease);
+    }
+
+    private bool IsValidatedPendingTurnSnapshotManifestCurrent(
+        ValidationPendingTurnSnapshotManifest manifest,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
+    {
+        const string repairRequestPath = "game_state/control/validation_repair_request.json";
+        var repairContext = LoadPendingTurnRequestValidationContextSync(
+            repairRequestPath,
+            writeLease);
+        if (DoesPendingTurnRequestValidationContextMatchManifest(manifest, repairContext))
+            return true;
+
+        var turnContext = LoadPendingTurnRequestValidationContextSync(
+            "input/turn_request.json",
+            writeLease);
+        if (DoesPendingTurnRequestValidationContextMatchManifest(manifest, turnContext))
+            return true;
+
+        var completionContext = LoadPendingTurnRequestValidationContextSync(
+            "ready/turn_complete.json",
+            writeLease);
+        return DoesPendingTurnRequestValidationContextMatchManifest(manifest, completionContext);
+    }
+
+""""""" + "\n"
+        )
+    ];
+
 }
