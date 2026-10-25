@@ -1,4 +1,17 @@
-# T584 live N source contribution — corrected29 GREEN, remaining101 next
+# T584 live N source contribution — source inverse refusal under investigation
+
+Remaining101 attempt on runtime `08f0de626cd433f2b3378de87cfe2e1484116fa9`
+stopped at the strict historical ordinary-source inverse: 49/101 executed,
+48 PASS / 1 FAIL / 0 skip, four of nine descriptors completed; 52 UNRUN.
+The completed passing categories are ordinary-existing13, boundary2 and
+policy-regression33. The failed singleton is
+`SharedExtraction_ReversesToExactReviewedOrdinarySource`; its downstream
+`ReasoningPolicySourceInventory.AssertExtractionAndReverse` final whole-file
+hash differs. The frozen hash and source guard have not been weakened. Cause is
+under investigation; no production fix or unchanged retry is authorized by this
+result. Runner 1:17.0118764, no timeout, both cleanup flags true. Full evidence:
+external `live-n-implementation/actual-remaining101-1`. The prior29 PASS remains
+at its actual compiled provenance. Live/cold gates stay UNRUN.
 
 Corrected first29 actual PASS on compiled/accepted `3cf5761f`, runtime checkpoint
 `d51a3a71de2ef39c39bf80d69d687da19f774d45`: 29/29 PASS, zero failures/skips,
