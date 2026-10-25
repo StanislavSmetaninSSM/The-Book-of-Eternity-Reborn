@@ -76,12 +76,39 @@ internal static partial class MortalQteDecisionPublication
         return true;
     }
 
+    /// <summary>
+    /// Validates the current completed family inside an existing or independently completed source DATA lifetime.
+    /// </summary>
+    /// <param name="files">
+    /// Exact manager whose original readers and source dependencies remain authoritative.
+    /// </param>
+    /// <param name="lease">
+    /// Active caller-owned physical lease; this method neither replaces nor closes it.
+    /// </param>
+    /// <param name="sessionId">
+    /// Expected original session identity.
+    /// </param>
+    /// <param name="requestId">
+    /// Expected original request identity.
+    /// </param>
+    /// <param name="snapshotToken">
+    /// Exact authenticated original token.
+    /// </param>
+    /// <param name="turn">
+    /// Expected original positive turn.
+    /// </param>
+    /// <returns>
+    /// Completion after all original proof and continuation checks and an owning fresh source fence.
+    /// An existing outer source or reserved owner retains its original completion responsibility.
+    /// </returns>
     internal static async Task ValidateCurrentJointCompletionAsync(FileSystemManager files,
         FileSystemManager.CanonicalWriteLease lease, string sessionId, string requestId, string snapshotToken, int turn)
     {
+        using var source = files.BeginSourceDataOperationIfNeeded();
         var proof = await ReadCompletedProofAsync(files, lease, ReadInspectionSnapshot(files, lease));
         RequireJointCompletionTuple(proof, sessionId, requestId, snapshotToken, turn);
         await RequireNoJointContinuationCommandsAsync(files, lease);
+        if (source is not null) await source.CompleteAsync();
     }
 
     internal static async Task<WoundAcceptedTurnOutputBindingResult?> TryBindExactJointContinuationAsync(FileSystemManager files,

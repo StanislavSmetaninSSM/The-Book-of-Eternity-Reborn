@@ -1,3 +1,21 @@
+# Narrow completion owner implementation WIP — coherent SOURCE review before builds
+
+Productiondelta onlyValidateCurrentJointCompletionAsync: existingSourceDataoperation
+owned beforeinspection, completeafteralloriginalproof/tuple/no-continuationchecks,
+disposebeforeTasksucceeds; existingouterownerborrowed. Genericreservedhelper and
+SourceDataimplementationunchanged; no serializer/native/state-schema/budgetchange.
+
+Testskeepstrictlessattributes andnowlessactualsources; eligiblestandAloneOpen0/
+FreshFence1,unsupportedfreshhookemptyFence0. Originalmid-proofhistorynegative and
+ownertwo-proof25%controlretained. Addedlatefreshfencehistory+absentcontinuation
+2-caseTheorywith exactsource/noescapedvalidation; addedactualouterreservedreadset
+withrefusedothermanagerwriter+entryclosing, onlyouterownercompletes/disposes.
+Proofclassnow6cases (previous3+3), totalcacheexpected509 (discoverypending).
+No newruntimeclaim. PriorREDandallartifactsretained; currentLinuxsource-record
+belongsoldgameF6 andwillNOTberebound. Newproductionhash requiresfreshmanagedbuilds
+andgenuineLinuxgeneratorundernewexternalrecord, thenaffectedactualregressions.
+WholeSOURCEreviewfirst; allknowneditsgroupedbeforeonebuildSHA. T560..563WIP.
+
 # Linux final52 metadata counter RED — narrow completion design accepted
 
 Run094504-382-30145-b068313b49fe47c5bf1a97efde4d4c94/code3c:10/52completed9PASS/
