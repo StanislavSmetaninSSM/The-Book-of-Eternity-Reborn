@@ -12,7 +12,7 @@ T005 — обязательный gate: до него следующие зад�
 - [x] T001 Сверить код и GitHub-зависимости, зафиксировать реальные границы трёх систем в `specs/532-golden-mask-backstory/research.md`.
 - [x] T002 Зафиксировать исходный запрос, US1–US3, FR-01–16 и AC-01–06 в `specs/532-golden-mask-backstory/spec.md`, отделив предложения от согласованного канона.
 - [x] T003 Через Spec Kit подготовить проект `plan.md`, `data-model.md`, `contracts/gameplay.md`, `quickstart.md` и этот `tasks.md` в `specs/532-golden-mask-backstory/`; отметить открытые gates.
-- [ ] T004 Проверить согласованность и независимым контекстом проверить полный документальный diff; зафиксировать findings/ограничения в `specs/532-golden-mask-backstory/plan.md`.
+- [x] T004 Проверить согласованность и независимым контекстом проверить полный документальный diff; зафиксировать findings/ограничения в `specs/532-golden-mask-backstory/plan.md`.
 
 ## Phase 2 — условия реализации
 
