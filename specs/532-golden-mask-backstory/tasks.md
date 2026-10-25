@@ -3,20 +3,21 @@
 Вход: [spec](spec.md), [plan](plan.md), [research](research.md).
 2026-10-26: исследование/проектирование; production-работа не начата.
 T005 — обязательный gate: до него следующие задачи не исполняются.
-После выбора D1–D4 каждый срез конкретизируется до exact schema/signatures,
+После рассмотрения уточнённой spec, деталей D2 и D3/D4 каждый срез конкретизируется до exact schema/signatures,
 определений и test assertions; этот список пока не является executable планом.
 Источник задач: #532 / #1519–#1522 / #1514, ссылки и статус в plan/research.
 
 ## Phase 1 — исследование и проектирование
 
 - [x] T001 Сверить код и GitHub-зависимости, зафиксировать реальные границы трёх систем в `specs/532-golden-mask-backstory/research.md`.
-- [x] T002 Зафиксировать исходный запрос, US1–US3, FR-01–16 и AC-01–06 в `specs/532-golden-mask-backstory/spec.md`, отделив предложения от согласованного канона.
+- [x] T002 Зафиксировать исходный запрос, US1–US3 и первичные FR/AC в `specs/532-golden-mask-backstory/spec.md`, отделив предложения от согласованного канона; новое расширение учитывается в T018.
 - [x] T003 Через Spec Kit подготовить проект `plan.md`, `data-model.md`, `contracts/gameplay.md`, `quickstart.md` и этот `tasks.md` в `specs/532-golden-mask-backstory/`; отметить открытые gates.
-- [x] T004 Проверить согласованность и независимым контекстом проверить полный документальный diff; зафиксировать findings/ограничения в `specs/532-golden-mask-backstory/plan.md`.
+- [x] T004 Проверить согласованность и независимым контекстом проверить первоначальный diff `cbd417223..e2b42e268`; findings/ограничения в `specs/532-golden-mask-backstory/plan.md`. Не заменяет ревью T018.
+- [ ] T018 Исследовать уточнённые автором explorable memories для обоих источников и POV владельца: navigation/cast/GM/turn/scheduler/history/recovery и все десять q4. Обновить семь документов этой feature до FR-01–21/AC-01–10; провести consistency и независимое ревью нового блока, опубликовать проверенный remote checkpoint. Только investigation/documentation, без runtime.
 
 ## Phase 2 — условия реализации
 
-- [ ] T005 Получить решения D1–D4 и утверждение точной версии `specs/532-golden-mask-backstory/spec.md`; закрепить tracker расширения, согласовать изменения #1514/#1522, конкретизировать schema/signatures/награду, повторить consistency check.
+- [ ] T005 Получить рассмотрение точной версии `specs/532-golden-mask-backstory/spec.md`, деталей D2 и решений D3/D4 (D1 и основной формат D2 приняты); закрепить tracker расширения, согласовать изменения #1514/#1522, конкретизировать schema/signatures/награду/первую пару сцен и повторить consistency check.
 - [ ] T006 Свести зависимости #1520/#1521/#1522 с новым разделом каталога: `BookOfEternityClient/story_content/saref/catalog.json` (планируемый), `BookOfEternityClient/Services/ActorMaterializationContract.cs`, `BookOfEternityClient/Services/SarefMainStoryState.cs`; разрешить 9/10, mercy_wound и deep-victory расхождения, обновить точные bootstrap/fixtures без legacy fallback.
 
 T006 не объявляет весь открытый epic уже выполненным. Перед работой проверить
@@ -32,20 +33,23 @@ T006 не объявляет весь открытый epic уже выполн�
 
 ## Phase 4 — US2: первая сцена и реальная сила (P1)
 
-Самостоятельная проверка: из минимальной независимой fixture через оба клиента
-начать/приостановить/продолжить сцену, завершить её и применить искусство.
+Самостоятельная проверка: из минимальных независимых fixtures через оба клиента
+исследовать память Маски и один q4: два места, осмотр, разговор с памятью,
+историческая способность, pause/resume и source-specific завершение/награда.
 
-- [ ] T008 [US2] Сначала добавить `BookOfEternityClient.Tests/MemorySceneSessionTests.cs` (новый): source-specific closure, один active owner, pause/reload/resume/failed retry, конфликтующие действия, неизменность личности/жизни; затем `Services/MemorySceneSessionService.cs`, `Services/Validation/ValidationService.MemoryScenes.cs` (новые внутри BookOfEternityClient), общие команды, console/browser и bootstrap/allowlists; сохранить правильный q4.
+- [ ] T008 [US2] Сначала добавить `BookOfEternityClient.Tests/MemorySceneSessionTests.cs` (новый): один active owner, несколько paused, A→B→A, revision/definition mismatch, failed retry, конфликтующие действия и source-specific closure; затем `Services/MemorySceneSessionService.cs`, `Services/Validation/ValidationService.MemoryScenes.cs` (новые внутри BookOfEternityClient) и новый `game_state/meta/memory_scene_state.json` owner. Перевести story.memoryScene в reference/projection, обновить bootstrap/allowlists/save/restore без legacy fallback.
+- [ ] T019 [US2] Сначала `BookOfEternityClient.Tests/MemorySceneExplorationTests.cs` (новый) и targeted frontend fixtures: карта/место/cast/role, move/inspect/talk, no future imagery, malformed context и stale location/actor refusal. Затем новые `Services/PlayerSceneContextResolver.cs`, `Services/MemoryScenePlayerProjection.cs`, `UI/ExplorerMemorySceneCommandResultBuilder.cs`; подключить map/scope, console/browser routing/menu/GameScreen до ordinary refresh. Исправить mutating start alias, сохранить read-only dossier и map selection; movement — отдельное принятое действие. Имена внутри BookOfEternityClient предложены.
+- [ ] T020 [US2] Сначала `BookOfEternityClient.IntegrationTests/MemorySceneTurnIsolationTests.cs` (новый) на настоящий staging/accepted publication/recovery: snapshot binding, scene transcript, сохранённый backlog, отсутствие current-world ticks/изменений, rejected forbidden writes, pause/retry/stale recovery. Затем memory policy в `BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs`, `Services/ProgressionScheduleService.cs`, `Services/StoryService*.cs` и validators/snapshot inventory. В том же срезе `game_master_daemon.ps1` context-pack/normal/repair, `Launcher/GM_Turn_Helper.ps1` и examples/source guards: exact allowed effects, не один дополнительный prompt.
+- [ ] T021 [US2] Сначала `BookOfEternityClient.Tests/MemorySceneActorContextTests.cs` (новый): POV владельца, historical knowledge/actor journals, разговор→перемещение→возврат, способность роли с локальным ресурсом и отсутствие present profile mutation. Затем scene-owned actor context и typed mechanics input/adapters; подготовить одну утверждённую память Маски и один Guardian q4 в story catalog. Полный бой включать по принятому definition, не заявлять готовым от наличия описания abilities; не материализовать исторических акторов в настоящих registries.
 - [ ] T009 [US2] После точного D3 написать `BookOfEternityClient.Tests/GoldenMaskMemoryRewardTests.cs` и `BookOfEternityClient.IntegrationTests/GoldenMaskMemoryPublicationTests.cs` (новые): реальный effect/cost, rejected/recovery/replay, grant только один раз и отказ до него; затем `BookOfEternityClient/Services/GoldenMaskMemoryRewardService.cs` (новый), profile grant route и реальный spiritual-conflict consumer. Связать completion+art одной существующей публикацией, без фиктивного учителя.
 
-Каждая T007–T009 включает RED→GREEN, relevant selected regressions и worked
+Каждая T007–T009/T019–T021 включает RED→GREEN, relevant selected regressions и worked
 example; T009 завершает первый вертикальный срез. Не отмечать T008/T009
 по результату одного read-only меню или теста, лишь повторяющего реализацию.
 
 ## Phase 5 — US3: посещаемый Новый Порядок (P2)
 
-Ниже вариант D1=realm. При выборе hall переписать эти задачи и связанные
-критерии до исполнения, убрав ненужную поддержку третьего типа.
+Отдельный realm выбран автором; точный location/travel contract зависит от D4.
 
 - [ ] T010 [US3] Сначала `BookOfEternityClient.Tests/NewOrderRealmTests.cs` (новый) на все затронутые классификаторы/menus/trade/repair и отказ Mortal fallback; затем `RealmSemantics.cs`, `Models/GameState/AggregatedGameState.cs`, профиль/ресурсные владельцы и точные worker/segregation consumers в BookOfEternityClient, без broad write whitelist.
 - [ ] T011 [US3] Сначала `BookOfEternityClient.IntegrationTests/NewOrderTravelTests.cs` (новый): entry/return, suspended/resolved constraints, crash/replay, сохранность incarnation/progression/history и недействительный return context; затем `BookOfEternityClient/Services/NewOrderState.cs` и `BookOfEternityClient/Core/GameEngine/GameEngine.NewOrder.cs` (новые) через прежний publication owner без reset.
@@ -54,8 +58,8 @@ example; T009 завершает первый вертикальный срез.
 ## Phase 6 — полное содержание и последствия
 
 - [ ] T013 [US1] После рабочего среза внести утверждённые свидетельства/индивидуальные реакции в `OtherGuides/Saref_Character_Bible.md`, десять `OtherGuides/Saref_Guardian_Questlines/*.md` и exact catalog: сохранить 40 историй, агентность Хранителей, последовательность переворот→сердце и необязательность личной линии; проверить source/content guards.
-- [ ] T014 [US2] Наполнить утверждённые определения/награды в планируемом `BookOfEternityClient/story_content/saref/`, синхронизировать `OtherGuides/Saref_Memory_System_Boundaries.md` и GM Examples; для каждой сцены проверить fixed nodes, разрешённый выбор, допустимую неудачу, reward consumer и отсутствие морально обязательного одобрения прошлой тирании.
-- [ ] T015 [US3] В `BookOfEternityClient/Services/NewOrderState.cs` (при D1=realm), Saref ending validator и `OtherGuides/Afterlife_Contract_Matrix.md` реализовать утверждённые последствия каждого финала/связанной души: судьба убежища отдельно от Крыльев, правила доступа и возвращения, сохранение доступа к уже открытым личным воспоминаниям; сначала negative/round-trip fixtures.
+- [ ] T014 [US2] Наполнить утверждённые definitions/rewards в планируемом `BookOfEternityClient/story_content/saref/`, переработать все десять `OtherGuides/Saref_Guardian_Questlines/*.md` под POV самого Хранителя (цели, abilities, узлы, места/cast), синхронизировать `OtherGuides/Saref_Memory_System_Boundaries.md` и GM Examples. Проверить fixed events, разрешённый выбор, неудачу, source-specific reward/prerequisites; отдельно исключить неявную цену нынешнего игрока у Илариона/Вейры. Полное содержание не подменяет рабочий срез T021.
+- [ ] T015 [US3] В `BookOfEternityClient/Services/NewOrderState.cs`, Saref ending validator и `OtherGuides/Afterlife_Contract_Matrix.md` реализовать утверждённые последствия каждого финала/связанной души: судьба убежища отдельно от Крыльев, правила доступа и возвращения, сохранение доступа к уже открытым личным воспоминаниям; сначала negative/round-trip fixtures.
 
 ## Phase 7 — общая проверка срезов
 
@@ -64,8 +68,10 @@ example; T009 завершает первый вертикальный срез.
 
 ## Зависимости и параллельность
 
-T001–T004 → T005 → T006 → T007 → T008 → T009.
-T010–T012 после решения D1/D4 и нужного catalog/actor/location baseline;
+T001–T004 + T018 → T005 → T006 → T007 → T008 → T019/T021 → T020 → T009.
+T019/T021 можно делать независимо после фиксации общего scene contract T008;
+T020 объединяет их в настоящий ход. T009 завершает награду и первый полный путь.
+T010–T012 после решения D4 и нужного catalog/actor/location baseline;
 минимальный memory срез не зависит от наличия нового realm.
 T013/T014 после T009; T015 после T012 и утверждения outcomes.
 T016 сопровождает изменяемые срезы; T017 замыкает принятый объём.
@@ -82,13 +88,23 @@ state/validator/publication должны иметь одного владель�
 | FR-01, FR-04 | T007, T013 |
 | FR-02 | T006, T007, T008, T013 |
 | FR-03 | T007, T008, T014 |
-| FR-05, FR-06, FR-07 | T008, T014 |
+| FR-05, FR-06, FR-07 | T008, T019–T021, T014 |
 | FR-08, FR-09, FR-10 | T009, T014 |
 | FR-11 | T010, T011 |
 | FR-12, FR-13 | T012, T015 |
-| FR-14 | T006–T015 (в каждом срезе), T017 |
+| FR-14 | T006–T015, T019–T021 (в каждом срезе), T017 |
 | FR-15 | T016 и проверки каждого среза |
 | FR-16 | T013, T015 |
+| FR-17 | T019, T021 |
+| FR-18 | T019, T020, T021 |
+| FR-19 | T020, T021 |
+| FR-20 | T008, T019, T020 |
+| FR-21 | T006, T014, T021 |
+
+AC-01→T007/T013; AC-02→T008/T019–T021; AC-03→T009;
+AC-04→T008/T009/T020; AC-05→T010–T012; AC-06→T013–T017;
+AC-07→T019/T021; AC-08→T020/T021; AC-09→T008/T019/T020;
+AC-10→T014/T021. Полная проверка принятого объёма — T017.
 
 Все implementation boxes остаются пустыми. Покрытие задачами не является
-ни подтверждением поведения, ни заменой закрытия D1–D4.
+ни подтверждением поведения, ни заменой G1/G2 в plan.

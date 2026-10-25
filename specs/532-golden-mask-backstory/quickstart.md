@@ -2,7 +2,8 @@
 
 Сейчас это сценарии приёмки, не инструкции запускать уже существующую функцию.
 Production code не изменён; тесты этого поведения UNRUN. Перед запуском:
-утверждены spec/D1–D4, exact definition/награда и trackable task; собраны
+рассмотрена точная spec, закрыты детали D2 и D3/D4 (D1 и основной D2 приняты),
+утверждены exact definitions/награда и trackable task; собраны
 выбранные проекты, добавлены/выбраны владельцы tests/categories.json.
 
 1. **Чистая fixture без раскрытия.** Read-only меню/карта/ручной ввод секретного
@@ -10,9 +11,12 @@ Production code не изменён; тесты этого поведения UN
 2. **Два порядка знания.** Получить доказательство→встретить Сарефа; затем
    на другой fixture сначала встреча→подтверждение. В обоих случаях Сареф
    узнаёт сразу, чужие акторы не получают знание автоматически.
-3. **Одна сцена.** Из минимального допустимого soul/story seed открыть сцену
-   через console и browser action; pause/reload/resume сохраняет принятые узлы,
-   нынешние имя/облик/жизнь. Вторая активная память и внешние действия отказаны.
+3. **Два источника, один runtime.** Из небольших независимых soul/story seeds
+   открыть память Маски и Guardian q4 через console/browser. В каждой минимум
+   два места, объект и собеседник: перейти, осмотреть, поговорить, вернуться.
+   POV — владелец памяти; способность роли действует. Pause/reload/resume
+   сохраняет открытия/разговоры и нынешние имя/облик/жизнь. Проверить start alias,
+   read-only dossier, map selection отдельно от movement. Второй active отказан.
 4. **Разные sources.** Personal proof не закрывает Guardian q4/route; правильный
    q4 продолжает выдавать свои revelation/advantage. Wrong source/ID/revision,
    незавершённые узлы и неразрешённый reward отклонены.
@@ -30,6 +34,29 @@ Production code не изменён; тесты этого поведения UN
 9. **Performance.** Счётчики настоящих чтений определений и зависимых вычислений
    на повторных потребителях одной операции; mutation/retry/rollback/dispose
    требуют свежего результата, соседние fixtures не разделяют mutable state.
+10. **Историческое знание.** Present Сареф знает позднее событие; historical
+    Сареф его не получает. Разговор памяти остаётся в scene-owned журнале,
+    сохраняется после перехода/загрузки, не меняет present actor relation.
+    Скрытые место/предмет/картинка не выходят через player projection.
+11. **Граница хода.** На настоящем staging/finalizer сравнить текущие
+    soul/profile/inventory/actor journals/world/guardian/faction/trade и заранее
+    ненулевой progression backlog до/после нескольких scene turns. Protocol
+    sequence растёт, scene ordinal растёт, настоящее не тикает; выхода catch-up нет.
+    Scene transcript имеет exact owner; ordinary realm history не выдает прошлое
+    за нынешние действия. Разрешённые closure/bookkeeping эффекты проверены отдельно.
+12. **Ошибка GM и repair.** Normal/repair используют один exact scenario и boundary.
+    Попытка изменить настоящий profile/NPC/scheduler отклоняется, rollback/save/recovery
+    сохраняют прежнюю истину. Повреждённый active context не падает в Mortal route.
+13. **Несколько пауз и stale actions.** A→pause→B→pause→reload→A сохраняет A.
+    Старые действия после movement/pause/resume/rollback/attempt смены отказаны;
+    недостижимое место, отсутствующий actor, чужой prop и definition mismatch отказаны.
+14. **Авторский комплект.** Для всех десяти q4 сверить POV, способности, узлы,
+    цели и rewards/prerequisites. Иларион/Вейра не требуют нынешней жертвы/признания
+    из-за неотредактированного текста. Каноническое поражение может завершить память.
+
+Для 3/9/10/13 нужны небольшие typed fixtures без генерации мира; 6/11/12 сохраняют
+настоящий turn/publication/recovery путь. Контроль разрешённых roots не заменяется
+моком «всегда безопасно». Проверки source/примеров не заменяют проверку действия.
 
 Выполнение: `pwsh -File scripts/test-csharp.ps1 -ListCategories`;
 сначала `-Category <конкретные IDs> -PlanOnly`, затем выбранный набор без
