@@ -1,4 +1,36 @@
-# T584 live N source contribution — SOURCE accepted, fresh builds next
+# T584 live N source contribution — fresh builds verified, PREP pending
+
+Fresh Linux XML builds completed at informational/source-checkpoint
+`b7c4ddee32f644262b243d3c805f4356762fa681`, with accepted C# source
+`33d1d48cb2a90887c512bdb546b0481bde92f231`: Game 3:06.31 / 41 warnings,
+Support 29.18s / 23, Bridge 10.47s / 14, Unit 1:40.05 / 27,
+Integration 3:13.11 / 101; all five exit 0, zero errors. Eight new XML parameter
+warnings and one new xUnit string-assertion warning are recorded; small patches
+are prepared externally but not applied during this source freeze. No added
+warning suppression. No product runtime has executed on these new binaries.
+
+Root independently rehashed 33 DLL/PDB/XML files across eleven actual assembly
+copies, checked PE/PDB identity and all 26 changed C# documents against current
+bytes, accepted commit and portable-PDB hashes. Informational versions all pin
+the build checkpoint above; source after acceptance differs only in this progress
+file. Complete catalog discovery is VALID: 952 entries / 12,522 methods. Full
+selection PlanOnly is 15 descriptors / 135 cases; staged cheap selection is
+10 / 130, including the new source category 1 / 29. Discovery and PlanOnly execute
+zero tests. Detailed receipts remain outside Git in
+`/workspace/tboe-linux-evidence-20261025/live-n-implementation/preparation`.
+
+Independent Astra/high PREP review now checks these receipts and staged order:
+new 29 source controls first, then remaining 101 cheap cases without repeating
+unchanged passing cases; only after that gate, before-first-I drift, after-capture
+drift, unchanged full completion, Prepared cut0 and Published cut2. Budgets stay
+unchanged. Selected genuine fixtures create their own original source turns;
+they do not consume Applied DATA templates, so no unrelated generation or old
+record rebinding is required. No Windows run, original-five replay or full suite.
+
+Optimization assessment remains the accepted one below: reuse actual N invocation
+DATA and existing operation/cache infrastructure, retain fresh source/owner checks,
+and require cheap source-count/failure controls before genuine vertical cases.
+Build/metadata success is not product GREEN. PREP/runtime/outcome remain pending.
 
 Independent Astra/high SOURCE ACCEPT `33d1d48cb2a90887c512bdb546b0481bde92f231`
 for the complete bounded producer/consumer, regressions and selection. No material
