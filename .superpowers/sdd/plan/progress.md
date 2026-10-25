@@ -1,3 +1,21 @@
+# Outer-reservation correction SOURCE accepted; fresh integration/PREP evidence
+
+Separate Astra/high accepted d237c0b56da7ecd892a3d476be9f683f25e5f0a9 test-only
+delta. Exact original recovery refusal is required; production guard stays intact.
+Fresh integration XML build exit0/00:03:15.41/6646warnings/0errors; SHA256
+c572a4c2671ad44a37876e833fcb665f7d40b1bea739671bea598c03a32df4f5,
+actual informational version d237. Other10 binding entries unchanged; shared
+copies match and all8source PDB checks match. Catalog12473/942/0unmapped/stale;
+PlanOnly final48/6descriptors exit0/0executed/cleanup complete.
+
+External cache-owner-final-48-selection.json excludes only completed boundary6/
+phase1; exact retained461 union verified unique. Old producer integration8ED DLL/
+PDB preserved for provenance, never execution. Current game41C0/inputE7D252E0
+remain byte-exact; no archive/record rebinding or generator repeat. Only C# delta
+since producer is JointCompletedProofReadTests.cs; template/generator/consumers
+unchanged. Separate PREP delta pending before proof6+remaining42 actual runtime.
+Native40/original5 still UNRUN. Cross-OS question OPEN.
+
 # Completion regression: strict cost GREEN, outer-reservation fixture correction WIP
 
 Run105022-416-34832-88239a0bd75543c49088b4e22fa94937:13/55completed12PASS1FAIL,
