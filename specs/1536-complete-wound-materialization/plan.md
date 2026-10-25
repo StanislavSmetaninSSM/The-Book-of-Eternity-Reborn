@@ -1,3 +1,23 @@
+# Linux original report retention plan
+
+Task1536 T568..571 / LINUXREPORT1..5; autonomous technical preparation.
+Baseline completed all5, with three real holds and a secondary diagnostic gap:
+SIGABRT nullrootexit prevents parent reading resume.json before owned cleanup.
+
+- [ ] T568 Preserve exact full resumer report in an external create-new file,
+  byte-identical to normal output, flushed reference; keep primary failure.
+- [ ] T569 Five small transport cases, ordinary NativeLinux cut0 wrapper/category
+  with exact original body/defaults/limits, never DirectLinux/G01 or qualification5.
+- [ ] T570 Coherent SOURCE/fresh integration XML/PDB/catalog/PlanOnly/PREP;
+  retain cache509/native40/game41/current DATA only through explicit impact review.
+- [ ] T571 Transport5 then one genuine cold NativeLinux cut0, inspect complete
+  Logs and establish actual root cause before production changes/regressions.
+
+Optimization: serialize full payload once and reuse its UTF8 bytes/hash for the
+extra immutable report; all path/integrity checks fresh. No new cache/framework.
+One same-body native case avoids repeating three unrelated cuts to obtain Logs;
+the original complete5 regression remains mandatory after a real correction.
+
 # Linux native fixture correction and named diagnostic plan
 
 Task1536 T564..567 / spec LINUXNATIVE1..5, autonomous technical-work waiver.

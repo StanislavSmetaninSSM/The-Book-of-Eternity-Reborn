@@ -1,3 +1,30 @@
+# Original Linux5 actual baseline RED — report-retention correction SOURCE WIP
+
+Run122135-213-46387-89be7ff88d2145498573e6b2dd1296b1 on game41/3b97 test stack:
+all5executed,cut3+cut4PASS;cut0/1/2FAIL. Exit1,wall00:14:29.9994529,
+category849.0086899s<900, no timeout/skip/duplicates, both cleanups complete.
+Durations:cut0 258.4977557s,cut1 160.9878362s,cut2 205.3011143s,
+cut3 126.0276223s,cut4 84.4410627s. Every producer73; successful resumer3/4exit0.
+All10childcaptures/20streams fully hashed, EOF/join/scopedcleanup confirmed.
+Failed resumers hit actual held-blocked publication then completedProof-null
+assertion; this is not a next-request failure or a proved observer-hook omission.
+
+Diagnostic gap confirmed: SIGABRT yields nullrootexit; unchanged native adapter
+correctly refuses before parent reads resume.json, then normal owned cleanup
+removes it. Full Logs unavailable for failedcases; stdout/stderr/native evidence
+retained externally in original-five-initial-verification.json and run directory.
+Do not weaken native guard, original game assertions or budgets to obtain data.
+
+Independent bounded design accepted LINUXREPORT/T568..571: serialize full resumer
+payload once, byte-identical external create-new report +closed-file reference;
+preserve primary exception, transport5 tiny controls. New Linux cut0 Fact calls
+same private original body with every default, asserts NativeLinux backend,
+uses220+10+10/category15 unchanged. Original Theory5 unchanged; no DirectLinux/
+G01/G02/managedcapture/seed/extendedflags or alternate runner. Single-cut replay
+diagnoses hold and cannot qualify5. SOURCE review/build/PREP/runtime pending.
+Production/native/Support remain unchanged; candidate retentioncache509/native40/
+game41/inputE7 requires impact review. All raw/old roots retained; no deletion.
+
 # Native OUTCOME ACCEPTED — exact original5 next
 
 Separate Astra/high accepted current40uniquePASS/6descriptors and additional4-case

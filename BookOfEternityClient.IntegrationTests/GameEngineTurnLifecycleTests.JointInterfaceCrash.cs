@@ -1173,7 +1173,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             diagnostic.Observe("resume-finally", failure?.GetType().FullName);
             resumeActivity?.CompletePendingReadTail();
             stages?.Observe(failure == null ? "exit" : "error", failure == null ? "return" : "error", failure?.GetType().FullName);
-            File.WriteAllText(output, JointInterfaceCrashProcessSupport.SerializeCurrentIdentity(new
+            var finalReport = JointInterfaceCrashProcessSupport.SerializeCurrentIdentity(new
             { Nonce = parent["Nonce"]!.GetValue<string>(),
                 Root = root, AuxiliaryRoot = factory._rootPath, ActualCallerEntered = actualCaller, Handled = handled, Second = second,
                 Fault = fault, Completed = completed, Held = !completed && failure is null, Failure = failure?.ToString(),
@@ -1184,7 +1184,17 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Result = result?.ToJson(), RecoveredPending = recoveredPending, RecoveredI = recoveredI,
                 Before = before, After = after, Repeated = repeated, Publications = publications, Recovery = recovery, Logs = log.Describe(),
                 IntegrityGuardEntries = integrityGuardEntries, DiagnosticOutputFailure = diagnostic.OutputFailure,
-                Dependencies = MortalArchiveDependencyContext(), Loaded = MortalArchiveLoadedDependencyBindings() }, stages));
+                Dependencies = MortalArchiveDependencyContext(), Loaded = MortalArchiveLoadedDependencyBindings() }, stages);
+            var reportBytes = Encoding.UTF8.GetBytes(finalReport);
+            File.WriteAllBytes(output, reportBytes);
+            var reportPath = Path.Combine(TestDiagnosticPaths.Root, "joint-resume-reports", Guid.NewGuid().ToString("N") + ".json");
+            JointResumeDiagnosticReport.Publish(reportBytes, reportPath, reference =>
+            {
+                Console.WriteLine(JointInterfaceCrashProcessSupport.SerializeCurrentIdentity(new
+                { Boundary = "joint_resume_report_reference", Cut = cut, Nonce = parent["Nonce"]!.GetValue<string>(),
+                    Reference = reference, GrantsAuthority = false }, stages));
+                Console.Out.Flush();
+            }, failure);
         }
     }
 

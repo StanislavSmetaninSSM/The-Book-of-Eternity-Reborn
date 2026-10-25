@@ -2,6 +2,28 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-resume-report-transport",
+  "responsibility": "Five small external resumer report transport controls: exact UTF8/hash/independent files, create-new collision, invalid destinations and original failure preservation.",
+  "excludes": "No game recovery, process launch, capability or original-five qualification.",
+  "changeHints": ["BookOfEternityClient.IntegrationTests/JointResumeDiagnosticReport.cs"],
+  "related": [],
+  "requirements": { "frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04" },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.JointResumeDiagnosticReportTests.*"] }]
+},
+{
+  "id": "fr063-joint-interface-linux-original-cut0",
+  "responsibility": "One Linux-only cut0 replay calls the exact original ordinary NativeLinux body with all default flags and every original game/identity/EOF/join/cleanup assertion; retained report diagnoses known held failure.",
+  "excludes": "No original-five PASS substitution, DirectLinux/G01/G02, seed or carrier, managed capture, fault injection, extended timeout or weakened assertion.",
+  "changeHints": ["BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.LinuxOriginalCut0.cs", "BookOfEternityClient.IntegrationTests/JointResumeDiagnosticReport.cs"],
+  "related": [{ "id": "fr063-joint-interface-crash-current", "when": "Original five must qualify separately after a real correction." }],
+  "requirements": { "frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04" },
+  "timeoutMinutes": 15,
+  "expectedSeconds": null,
+  "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LinuxOriginalCut0RetainsCompleteResumeReport"] }]
+},
+{
   "id": "fr063-joint-linux-applied-input-controls",
   "responsibility": "Explicit Linux applied DATA source configuration and current build/platform/generator/archive/inner provenance refusal before destination writes; independent immutable copies.",
   "excludes": "No game issuer, canonical publication, native process or cross-platform replay qualification.",

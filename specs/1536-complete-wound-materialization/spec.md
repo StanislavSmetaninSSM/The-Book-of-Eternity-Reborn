@@ -1,3 +1,25 @@
+# Linux original report retention amendment — #1536 /2026-10-25
+
+LINUXREPORT1: preserve original baseline5executed/2PASS(cut3,4)/3FAIL(cut0,1,2),
+14:30wall/849.009s category<900/no timeout. The observed held publication causes
+missing completedProof; its reason is not yet known. Do not weaken that oracle.
+LINUXREPORT2: child finally serializes its full existing report once and writes
+identical bytes to ordinary output and a create-new external diagnostic file.
+Emit/flush closed-file reference with SHA/bytes/cut/nonce/child identity. It is
+diagnostic DATA only and cannot authorize recovery. No byte/record quota.
+LINUXREPORT3: preserve an existing primary exception if diagnostic publication
+fails; with no primary, diagnostic failure remains explicit. Use fresh ordinary
+path checks and refuse checkout destinations/overwrites. Cheap transport5 controls.
+LINUXREPORT4: one new Linux-only cut0 Fact calls the exact original private body
+with all defaults (diagnosticfalse, nofault/seed/capture/extendedflags). Assert
+NativeLinux backend. Original Theory5 unchanged; this replay never qualifies5.
+Existing220+10+10 and category15 remain unchanged. DirectLinux/G01/G02 routes
+are not selected or reproduced; no alternative runner or native guard change.
+LINUXREPORT5: coherent independent SOURCE/PREP and fresh integration only while
+game41 remains unchanged, then transport5 and one NativeLinux cut0 for primary
+Logs. Establish a cheap causal regression before any production correction;
+rerun actual original5 after the correction and affected gates/review.
+
 # Linux native fixture correction/diagnostic amendment — #1536 /2026-10-25
 
 LINUXNATIVE1: preserve actual main4 RED (guardian15s deadline/emergency, no primary
