@@ -9,7 +9,7 @@ and Integration/Bridge Info`483befce4e23920c739adb817154e42ea92894c0`.
 All31 source/PDB pairs and11 shared assembly/PDB paths verified. This explicitly
 separates source-content binding from subsequent checkpoint commit SHA.
 
-Current verified results (final independent original-five outcome and fresh
+Current verified results (independent final original-five outcome accepted; fresh
 GitHub-only recovery still pending at this checkpoint):
 - cache514 exact canonical union,36categories/37descriptorresults:
   476 reviewed retained Linux results +38 fresh; no uniform-build rerun claim.
@@ -55,7 +55,7 @@ Key full evidence: `passive-cache-514-verification.json`,
 `passive-full-cheap-verification.json`, `linux-applied-passive-full-verification.json`,
 `passive-full-{take,qte,semantic}-verification.json`,
 `passive-cold-cut0-verification.json`, `passive-original-five-verification.json`.
-No raw/TRX/JSON/archive uploaded to GitHub. Old failed/native/original-five captures
+No raw logs, TRX, diagnostic JSON or diagnostic archives uploaded to GitHub. Old failed/native/original-five captures
 remain; only reviewed superseded GEN raw retired after complete replacements and
 ended owners. Old clean recovery clone7ff was retired as a disposable source copy;
 final fresh GitHub recovery is required anew. User saves and main tracked fixtures
@@ -67,7 +67,7 @@ and recurrence success; Windows↔Linux frozen-byte replay compatibility questio
 OPEN, historical Windows archive unchanged; new fixes are not Windows-qualified.
 Historical failures below remain historical evidence, not current-pass substitution.
 
-# Актуальная передача Астре — r73, код и результаты r72
+# Историческая передача Астре — r73, код и результаты r72
 
 Дата: 2026-10-25. Задача: [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536).
 Репозиторий: [The-Book-of-Eternity-Reborn](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn).
