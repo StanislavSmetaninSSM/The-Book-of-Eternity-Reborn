@@ -1,3 +1,18 @@
+# Report-retention fresh build/planning verified — PREP pending
+
+Accepted SOURCE7fc812326678666ca3fa812e89b83fab7afe05f8 now freshly compiled:
+integration XML exit0/00:04:15.63/6646warnings/0errors, SHA256
+2352f4067da8df7312f622ac247bdc165011ddef0c7beb1b31b3bedc1b979939,
+actualInfo7fc. Other10DLL/PDB entries unchanged, sharedcopies uniform,16source
+PDB checks match. Game41C0/Support72/unitF1/Bridge4507 and Linux inputE7 unchanged.
+Catalog12478methods/944categories/0unmapped/stale; PlanOnly transport5/1descriptor/
+1min andordinaryNativeLinuxcut0/1descriptor/15min both exit0/0executed/cleanup.
+External resume-report-prep-verification.json binds exact artifacts. No runtime
+PASS/RED for newtransport yet; compile-failed b1 artifacts remain unqualified.
+Independent PREP pending, then transport5 and one original cut0 (not original5).
+Cause of actual held publication remains unknown; old five baseline2PASS3FAIL
+unchanged and fully preserved. No production/native/Support/budget changes.
+
 # Report-retention compile correction — tests unrun
 
 SOURCE b1bcee01a accepted independently, then fresh integration build failed
