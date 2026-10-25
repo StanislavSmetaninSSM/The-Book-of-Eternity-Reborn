@@ -6,7 +6,7 @@ Issue#1536; spec BATCH1..7 / plan.md, autonomous specification-review-wait waive
   source-only checkpoint/recovery and qualified1d2 eight-DLL backup.
 - [x] T542 [US1] Cheap real source/reserved sync/async metadata reduction RED,
   category ownership and minimal off/on seam; unchanged bytes/native/source checks.
-- [ ] T543 [US1] Explicit existing-service bounded batch/owner gates/ordinary
+- [x] T543 [US1] Explicit existing-service bounded batch/owner gates/ordinary
   classifier plumbing/strict original control/counters; GREEN and integrity coverage.
 - [ ] T544 [US1] Complex independent coherent review/fixes, bounded affected tests,
   catalog/PlanOnly/XMLuniform8; conditional genuine source42/twoimports/admission.

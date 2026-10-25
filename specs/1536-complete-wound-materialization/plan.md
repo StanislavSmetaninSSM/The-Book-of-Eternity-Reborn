@@ -12,12 +12,12 @@ accept optional observations; protected readers stay fresh. Owner-controlled
 per-read and fresh-loop lifetimes, no ambient lookup or cross-consumer batch.
 Stack: C#/.NET8/current SDK, PowerShell7 bounded categories, Python D-local tools.
 
-- [ ] T541 Canonical phases/prerequisites/consistency and presented written links
+- [x] T541 Canonical phases/prerequisites/consistency and presented written links
   under waiver; source-only publication/recovery; qualified1d2 baseline8DLL backup.
-- [ ] T542 [US1] IntegrationTests/SourceValidationBatchTests.cs real ten-file
+- [x] T542 [US1] IntegrationTests/SourceValidationBatchTests.cs real ten-file
   source/reserved sync/async metadata RED (minimal bool comparison seam only),
   category ownership. Named actual GetAttributes/native/main/source observations.
-- [ ] T543 [US1] Core/IReadPathObservations.cs and SourceValidationBatch.cs;
+- [x] T543 [US1] Core/IReadPathObservations.cs and SourceValidationBatch.cs;
   SourceDataOperation/ValidationReadSet owner gates and bounded lifecycle,
   OrdinaryReads+FileSystemManager/MainRunFence/AdmissionDirectoryObservations
   explicit classifier plumbing, sealed source-count accumulator replacing lifecycle Action. GREEN reduction/equal bytes/mtime/fresh sources;
