@@ -1,72 +1,49 @@
-# r72 common source-validation directory DATA — design recorded
+# r72 common source-validation directory DATA — final code qualified, second pair pending
 
-Issue#1536, BATCH1..7/T541..546 in canonical spec/plan/tasks. Base6921f8838;
-current qualified1d2bd1220 baseline. User autonomy/specification-review wait waived.
-Root cause retained r71:914435GetAttributes/52.2774s, fresh source fences20.7063s
-and8.8902s (overlap). New explicit bounded directory batch selected; no global,
-whole-source-segment or verdict cache. Independent bounded Astra/high design
-consultation supports version/serial proof without new source reservation; existing
-reserved owner uses exact reservation, prepared mutation route stays fresh. Passive
-arbitrary read/activity/timing callbacks excluded. Per-read batch closes before
-consumer return; fresh fence independent epoch closes before generation/ending
-full authority. T541 actual setup-plan/setup-tasks/prerequisites completed; bridge-equivalent
-read-only consistency7requirements/6tasks/100%coverage/0gaps/conflicts. Written
-links presented under waiver; baseline8DLL ZIP9members verified SHA29F13CA6...DF509.
-T542 causal four-case metadata reduction fixture written, minimal unused policy seam;
-RED2b981706a four causal FAIL: first queries off=on async448/sync368,
-reserved async600/sync520; fresh read/main/native assertions passed before query assertion.
-T543 explicit new service-backed batch/owner gates wired; Initial0d001e899 GREEN attempt4FAIL/no source reduction: strict callback exclusion
-correctly rejected lifecycle CanonicalReadActivityObserver, even with empty functional
-forwarders. Root cause exact constructor Action. Replaced only passive source count
-with sealed CanonicalReadActivityAccumulator; all physical events retained, no callback
-or cap. Arbitrary observer fallback unchanged. GREEN2 4cbf68370 4/4PASS: source async initial448->308/fence384->208;
-sync368->258/304->158; reserved async600->460/400->224;sync520->410/320->174.
-20physicalordinaryreads each; main/native equal74/54 source and83/63reserved.
-T543 added rawdrift8/per-readclose/activityfallback2/serviceAPI-role-threadhop/
-retirement5 cheap controls and strict parent/bothchild SourceValidationBatchReuse
-off/on + complete passive counters. D analyzer155purecontrolsPASS, no game runs.
-Affected21 explicit categories selected from changed contracts, no broad suites.
-T544216793b0a XMLuniform8 passed (Tests96.7239s/Integration60.0903s).
-Affected command stopped207cases198PASS/9FAIL at new batch category: eight
-expected InvalidDataException refusals were asserted as IOException incorrectly;
-one suppression fixture had no active validation routing, so suppression was null.
-Corrected only those test setups/assertions; no runtime defect. Independent complex
-Astra/high preliminary code review found only stale preparation/synchronous XML
-wording; generalized affected API/counter comments. One remaining private summary wording was caught before final qualification;
-owned incomplete ab1de4182 XML build stopped at71.3783s (no successful binding
-claimed). Final4c9796cbfc2ca060cb3303616ed7dcb643764b1d XML builds Tests86.3330s/
-Integration51.2419s PASS/all8uniform. Qualified bindingD3B095D7...2B87;420new/changed
-XML lines reviewed/multiline. Finalaffected21categories/24descriptors/562distinct
-PASS,258.4818271s, complete/bothcleanup/no timeout. Catalog12455methods/936categories/
-0unmapped/stale; PlanOnly24/562/0executed. T543 complete. Complex independent
-Astra/high final code review AcceptedA332B1D5...7E144/0unresolved, P3wording fixed.
-Current4c979remote-only recovery94blobs/106.7252s exact. Genuine new source42
-1PASS180.4670s/twoimports/bothcleanup,82files513709B; fingerprintD0C568EA...75EA2.
-Result413F3916...3C6B, package8AC19A8F...2775A/320381B; no rebind. Original
-admission/frozen ready pending; no original launched. Latest r71 raw protected.
-All diagnostics uncapped D-only; r71raw/INPUT/CPU-GC/instrument/backups protected.
+Issue#1536, canonical BATCH1..8/T541..546; autonomy/specification-review wait waived.
+Base6921f8838. Qualified source0b648cd21ae49e757eb37b0c545075fd0dafcf5c; no
+runtime/GM/schema/native authority contract change. New explicit existing-service
+positive-directory DATA lives inside one source read or fresh-source loop; exact
+owner/lease/registration/entry/work/root gates, original leaf/native/main/worker/
+bytes/absence/mtime/generation/effect/closing checks retained. Short r71 thread
+phase unchanged; protected/prepared-active-mutation/arbitrary-callback paths fresh.
+Initial cheap RED2b981706a4causalFAIL; initialGREEN0d0014FAIL caught lifecycle
+activityAction exclusion. Sealed counter4cbf68370 GREEN4PASS:source async448->308
+initial/384->208exit,sync368->258/304->158;reservedasync600->460/400->224,sync520->410/
+320->174;20source reads and main/native74/54/83/63 retained. Initial584-predecessor
+562qualification/21cats/24descPASS at4c979 (9earlier testassert/setup mistakes fixed,
+no runtime defect). Code/admission reviews accepted, genuine source42/twoimports.
+First T545 pair at5d9 metadata bothPASS263.4663568/262.2500806s;first163.9209606/
+161.212649s,565names each, native/oracles/cleanup intact. Actual resumerbatch0/0,
+producer177/9017only: no causal recovery gain attributed. Rootcause manual resumer
+canonical/exact activity Actions. First pair/fullraw retained as coverage probe.
+BATCH8 correction: ordinary actual resumer factory uses sealed timestamped queue
+for EVERY read event, no callbacks/I/O/quotas; capturedtime controls due samples,
+current writer times remain monotonic. Drain before all activity/publication/both
+checkpointedges/final normal-error tail; deferred delivery and forced-kill pending
+tail loss explicit. Full diagnostic callbacks retain fallback. Actualfactory RED
+8e1f11763:24cases23PASS/1causalFAIL. GREEN93b3:44/44PASS, passive2batches/138requests/
+54queries/84hits; fullcallback0. Reviewer P2 caught setup-only cumulative coverage;
+new before/after/Delta wraps actualfirstcall, schema/conservation/cumulative binding
+and positive timed-window delta required.154purewindowcontrolsPASS including causal
+setup-onlyRED; old155schema controls unchanged. P3XMLoptionalobserver wordingfixed.
+Final0b648 XML Tests85.4006s/Integration54.2059sPASS/all8uniform, bindingC399F70E...
+2A737;547new/changedXMLlines reviewed. Affected22cats/25desc/584distinctPASS252.8886s,
+complete/bothcleanup/no timeout. Catalog12462methods/936cats/0unmapped/stale;
+PlanOnly25/584/0executed. Independent complexAstra/high finalcode accepted45E1813C...
+3157,0unresolved. Remote-only0b source98blobs70.0066s exact. T543 complete again.
+Fresh T544b genuine source42 1PASS180.9589s/twoimports/bothcleanup/clean,82files513712B;
+contractBBC9C603...FC63, result226775F5...CE4B, packageD2ABB83F...B8A1/320331B.
+Second frozen admission/600child820shared15cat pair pending, no repeat originalyet.
+All diagnostics uncapped D-only. r71raw and first-r72raw/CPU-GC/INPUT/instrument/
+binarybackups retained; old DLLs verified in T5411d2 and T543b4c9 ZIPs. No raw Git.
+Workflow checkpoint: full probe exposed missed actual consumer binding; independent
+review caught cumulative-window false positive. Future changes must first exercise
+actual diagnostic bindings cheaply and prove timed-window coverage. No model
+routing quality/cost savings inferred from this rework. Parent owns implementation;
+bounded Astra/high design consult, separate Astra/high review and Sol6.1/high
+D-helper tasks used with explicit scope. Current584evidence includes all44new cases.
 
-
-T544 frozen admission Accepted8428D41C...E149F/128pins; metadata5d9e89c70
-remote-only94blobs47.9324s exact. First T545 pair bothPASS263.4663568/262.2500806s,
-first163.9209606/161.212649s; 565scopes each, native/oracles/cleanup intact.
-Critical coverage observation: resumer newbatch0invocations/0hits in BOTH stages;
-producer177batches/9017hits only. No recovery cache speedup attributed. Exactcause
-manual resumer CanonicalReadActivityObserver/ExactPhysicalReadActivityObserver
-at JointInterfaceCrash.cs886/887 remain arbitrary Actions even modeoff. T543
-reopened/BATCH8 correction recorded: sealed timestamped queue for ordinary
-resumer diagnostics, all events/noquotas, replay original due-sample populations
-before checkpoints/final/error; writer times remain current, deferred/forcedkill
-tail limitation explicit. New actualbindingRED/GREEN/currentqualification/new
-INPUT/secondoriginalpair required. First pair/raw and priorr71raw all retained. Actualbinding8e1f11763 RED24cases
-23PASS/1causalFAIL: ordinary resumer factory still disablesbatch; fullcallbacks
-fallbackPASS. T543b GREEN timestamped sealedqueue/recording boundary/replay
-beforebothcheckpointedges/finalerrortail implemented; finite all-event/due-sample/
-phase/error/detachment/concurrent-drain fixtures added; GREEN93b3f1982 44/44PASS; actualpassivefactory positivebatch hits and full
-callback fallback preserved. ReviewP2 found cumulativefirst can falsely accept
-setup-only coverage; added before/after/Delta around actualfirstgamecall, strict
-154purewindowcontrolsPASS (including causalsetup-onlyRED), and fixedP3XMLsummary.
-Currentfinal qualification pending.
 # r71 initial ordinary/main-admission directory DATA — code gate accepted
 
 Canonical specs/1536-complete-wound-materialization plan/spec FUSE1..7, T535..540,

@@ -17,7 +17,7 @@ Stack: C#/.NET8/current SDK, PowerShell7 bounded categories, Python D-local tool
 - [x] T542 [US1] IntegrationTests/SourceValidationBatchTests.cs real ten-file
   source/reserved sync/async metadata RED (minimal bool comparison seam only),
   category ownership. Named actual GetAttributes/native/main/source observations.
-- [ ] T543 [US1] Core/IReadPathObservations.cs and SourceValidationBatch.cs;
+- [x] T543 [US1] Core/IReadPathObservations.cs and SourceValidationBatch.cs;
   SourceDataOperation/ValidationReadSet owner gates and bounded lifecycle,
   OrdinaryReads+FileSystemManager/MainRunFence/AdmissionDirectoryObservations
   explicit classifier plumbing, sealed source-count accumulator replacing lifecycle Action. GREEN reduction/equal bytes/mtime/fresh sources;
