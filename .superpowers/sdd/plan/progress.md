@@ -1,4 +1,23 @@
-# T584 live N source contribution — scoped probe correction WIP
+# T584 live N source contribution — scoped Integration build verified, PREP pending
+
+Independent Astra/high SOURCE ACCEPT `83f7d22f2ca46a1a087ed795eaa79109ec571898`,
+no material findings. Fresh Integration-only XML build on that exact source passed
+2:33.32, zero errors / 101 original warnings. Root rehashed all33 DLL/PDB/XML
+files, checked the new Integration pair and all11 PE/PDB identities/26 exact
+Git/current/PDB sources. The other30 files are unchanged: Game/Support/Bridge
+remain compiled3cf, Unit8e; Integration83f. Old Integration3cf artifacts are
+retained externally as evidence only, never future inputs. Cheap130 retention
+therefore keeps its actual earlier bindings; the changed probe requires new live3.
+
+Fresh PlanOnly selects exactly five singleton descriptors/cases with original
+five-minute category budgets. Actual commands will be separate and ordered
+before-FIRST-I, after-capture, unchanged, Prepared0, Published2. Entry methods and
+genuine null-seed/source42 routes are byte-unchanged; no Applied DATA generation or
+archive rebinding. Clean GitHub recovery83f and all seven deltas from the fully
+verified source base are byte-checked. Detailed evidence is external under
+`live-n-implementation/preparation-live-probe` / `build-live-probe`.
+Fresh independent PREP then the affected first singleton are next; no actual
+has executed on Integration83f yet. Native package and known limits stay unchanged.
 
 The fixture-only correction preserves both existing broad totals (initial physical
 hooks and public-reader return hooks), adds separate counts for the actual active
