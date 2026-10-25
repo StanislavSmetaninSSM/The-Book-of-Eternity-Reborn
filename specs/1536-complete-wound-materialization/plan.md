@@ -45,6 +45,13 @@ Current I/N implementation supersedes that document's historical missing-3b stat
   returns private prefix DATA (ordered issues, terminal/NeedsActorDependencies,
   normalized thoughts/scope/mode/actor type). Ordinary Full consumes the same result
   and then its unchanged dependency tail; default null retains original IO routes.
+- The internal validator entrypoint `EvaluateObservedDebugPrefixAsync(lease)` returns
+  only `DebugPrefixPass` invocation DATA under the real supplied lease; no engine
+  authority. Independent Astra/high DATA-interface clarification accepted this
+  existing-N-style separation. The actual attempt checks Capturing before/after
+  awaiting its producer and privately retains only that returned reference; no
+  external pass import. Cheap tests use the same producer with actual files/lease/
+  genuine preparer, while engine phase/association/fence remain integration gates.
 - Create `.AcceptedTurnReasoningSource.cs`: sealed fixed
   `ReadOriginalDebugAsync`, `ReadDebugForFreshnessAsync`, `ReadDebugForParseAsync`
   and fresh `RequireCurrentAsync(files, lease)`. Private issuer/result retains

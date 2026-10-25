@@ -1,3 +1,23 @@
+# T593 fresh temporal PREP ready — runtime UNRUN
+
+Independent Astra/high SOURCE/FIXTURE/SELECTION accepted ab0a62e9a. Fresh
+Integration-only XML build on that source passed in2:41.62, zero errors/101
+existing warnings, no new warning messages. Production/Game/Support/Bridge and
+Unit are unchanged. Eleven actual PE/PDB pairs,27 exact Git/current/PDB source
+hashes and all33 DLL/PDB/XML files verified: only the three own Integration files
+changed, other30 retained byte-exact. Current Integration compiled ab0a, Game/
+Support/Bridge3cf and Unit8e. Old Integration83f copies remain evidence only.
+Catalog953/12,523 VALID, no stale/unmapped; exact NoBuild PlanOnly selects two
+singleton descriptors/cases,0executed, each original5-minute category budget.
+Both use genuine null-seed/source42 routes; no old DATA archive is rebound.
+Full remote source recoveryab0a verifies30,901 blobs/772,444,763 bytes/clean.
+External complete preparation/build/metadata/recovery records: `dfr-prefix`.
+Independent PREP review is next, then separate temporal expected-RED first and
+unchanged existing positive only after the first actual has been inspected.
+Any failure before the target Prep0 assertion is not causal RED. Actual remains
+UNRUN. The DATA/authority interface clarification is accepted for the later source
+implementation; no production change is included in this preparation checkpoint.
+
 # T593 temporal debug-prefix fixture WIP — 2026-10-25
 
 Tests-only source is ready for independent SOURCE/FIXTURE selection review. One
