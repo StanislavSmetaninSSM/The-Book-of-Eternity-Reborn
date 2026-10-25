@@ -32,8 +32,9 @@ expected InvalidDataException refusals were asserted as IOException incorrectly;
 one suppression fixture had no active validation routing, so suppression was null.
 Corrected only those test setups/assertions; no runtime defect. Independent complex
 Astra/high preliminary code review found only stale preparation/synchronous XML
-wording; generalized affected API/counter comments. Final qualification pending;
-original not yet admitted.
+wording; generalized affected API/counter comments. One remaining private summary wording was caught before final qualification;
+owned incomplete ab1de4182 XML build stopped at71.3783s (no successful binding
+claimed). Final corrected-source XML build/selection pending; original not admitted.
 All diagnostics uncapped D-only; r71raw/INPUT/CPU-GC/instrument/backups protected.
 
 # r71 initial ordinary/main-admission directory DATA — code gate accepted

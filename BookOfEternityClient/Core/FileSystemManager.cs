@@ -810,7 +810,7 @@ public partial class FileSystemManager
     public string ResolvePath(string relativePath) => ResolvePathForOrdinaryPreparation(relativePath, null);
 
     /// <summary>
-    /// Resolves the original spelling and confinement checks with optional preparation-only directory DATA.
+    /// Resolves the original spelling and confinement checks with optional bounded read directory DATA.
     /// </summary>
     /// <param name="relativePath">
     /// The original session-relative name, validated before any observation lookup.
