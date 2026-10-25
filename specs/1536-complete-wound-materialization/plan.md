@@ -15,12 +15,22 @@ source counters and negative fresh fences must prove this before cold gameplay.
 
 - [x] T572 Minimal public sync/async and explicit unsupported-adapter causal RED,
   retained report verification and exact category/selection ownership.
-- [ ] T573 Bounded adapter binding correction and fresh negative controls,
+- [x] T573 Bounded adapter binding correction and fresh negative controls,
   coherent independent SOURCE/optimization/selection review.
 - [ ] T574 Fresh managed XML/PDB/native source pins, catalog/PlanOnly/PREP,
   targeted causal/affected regressions and genuine new Linux DATA if required.
 - [ ] T575 Review retained gates and execute complete original5 unchanged;
   independent outcome, checkpoint and verified GitHub-only recovery.
+
+Independent SOURCE accepted2c073 without findings. Exact impact selection is
+tests/selections/1536-linux-source-adapter-regression.json:15 categories/182cases,
+staged cheap unit9/166 then new genuine Linux input and integration6/16. Retain
+332 prior distinct cases and native40 with original bindings/TRX; they do not
+execute the changed source-adapter branch. Revised union is514, not a single
+uniform-build run. Shared managed copies must be reconciled by fresh builds;
+the new game hash invalidates the prior Linux input. Keep its archive immutable.
+One ordinary NativeLinux cut0 may establish the causal cold GREEN before the
+mandatory complete original5, always the same body/defaults/limits.
 
 # Linux original report retention plan
 

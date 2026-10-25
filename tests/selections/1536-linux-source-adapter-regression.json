@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "core-operation-source-data",
+      "reason": "Whole-operation source owner, normal/foreign/closing adapters, serial access, effect and success fences.",
+      "contracts": [
+        "#1536 LINUXADAPTER1..5 / T572-T575"
+      ]
+    },
+    {
+      "category": "core-operation-source-data-linux",
+      "reason": "Causal unsupported implicit sync/async and explicit adapter regression, retained DATA and fresh byte/absence/generation negatives.",
+      "contracts": [
+        "#1536 LINUXADAPTER1..5 / T572-T575"
+      ]
+    },
+    {
+      "category": "core-game-state-data-reuse",
+      "reason": "Actual GameState read owner creates and observes source adapters; preserve reuse and owning fences.",
+      "contracts": [
+        "#1536 LINUXADAPTER1..5 / T572-T575"
+      ]
+    },
+    {
+      "category": "core-control-game-state-data",
+      "reason": "Control/GameState consumer composes actual source DATA with current source checks.",
+      "contracts": [
+        "#1536 LINUXADAPTER1..5 / T572-T575"
+      ]
+    },
+    {
+      "category": "core-cleanup-proof-data-reuse",
+      "reason": "Cleanup window composes with suspended or failed outer source ownership and must keep exclusions.",
+      "contracts": [
+        "#1536 LINUXADAPTER1..5 / T572-T575"
+      ]
+    },
+    {
+      "category": "core-source-validation-batch",
+      "reason": "Directory DATA batches borrow source owner eligibility, serial ownership and fresh fences.",
+      "contracts": [
+        "#1536 LINUXADAPTER1..5 / T572-T575"
+      ]
+    },
+    {
+      "category": "core-ordinary-read-path-data",
+      "reason": "Original ordinary fresh-reader dispatch and physical probe reductions remain valid around source fallback.",
+      "contracts": [
+        "#1536 LINUXADAPTER1..5 / T572-T575"
+      ]
+    },
+    {
+      "category": "core-passive-recovery-timing",
+      "reason": "Passive timing receivers must preserve source DATA eligibility, source counts and original fallback.",
+      "contracts": [
+        "#1536 LINUXADAPTER1..5 / T572-T575"
+      ]
+    },
+    {
+      "category": "core-producer-read-forwarders",
+      "reason": "Actual producer forwarding fixture composes source DATA and physical read hooks.",
+      "contracts": [
+        "#1536 LINUXADAPTER1..5 / T572-T575"
+      ]
+    },
+    {
+      "category": "core-recovery-joint-take-fence",
+      "reason": "Real common/publication preparation owns source DATA; fresh take refuses changed original snapshots.",
+      "contracts": [
+        "#1536 LINUXADAPTER1..5 / T572-T575"
+      ]
+    },
+    {
+      "category": "fr063-joint-operation-boundaries",
+      "reason": "Actual joint component operations retain owner completion, failure and fresh effect boundaries.",
+      "contracts": [
+        "#1536 LINUXADAPTER1..5 / T572-T575"
+      ]
+    },
+    {
+      "category": "fr063-joint-progression-data-integration",
+      "reason": "Actual progression consumer reads current genuine Linux applied DATA under source ownership.",
+      "contracts": [
+        "#1536 LINUXADAPTER1..5 / T572-T575"
+      ]
+    },
+    {
+      "category": "fr063-joint-proof-reads-integration",
+      "reason": "Actual complete proofs retain source reduction, late byte/absence refusal and outer reservation exclusions.",
+      "contracts": [
+        "#1536 LINUXADAPTER1..5 / T572-T575"
+      ]
+    },
+    {
+      "category": "fr063-joint-qte-data-controls",
+      "reason": "Actual QTE consumer retains measured source reuse and strict physical freshness.",
+      "contracts": [
+        "#1536 LINUXADAPTER1..5 / T572-T575"
+      ]
+    },
+    {
+      "category": "fr063-joint-semantic-data-controls",
+      "reason": "Actual semantic consumer uses source-owned service computations and preserves cold/fresh checks.",
+      "contracts": [
+        "#1536 LINUXADAPTER1..5 / T572-T575"
+      ]
+    }
+  ]
+}

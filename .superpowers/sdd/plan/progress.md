@@ -1,3 +1,19 @@
+# Source-adapter SOURCE accepted — fresh builds and182 affected cases next
+
+Separate Astra/high accepted actual2c07353ccb9bf0c4232da7c7fa2501e9a09ee4dd
+coherent implementation/tests/docs without blocking findings. Per-call physical
+counter finding resolved. Reviewed exact impact: canonical15categories/182fresh
+cases (unit9/166; integration6/16) plus332retained =514distinct after GREEN.
+Native40 retained with prior pins; patch does not change their owner/protocol/
+native/timing contracts. Historical terminal15s intermittent failure stays OPEN.
+Fresh Game/Support/unit/integration builds will reconcile actual shared copies;
+native C/package remains unchanged. New game hash requires new genuine Linux
+DATA record/archive, never a rebinding of E7. PREP and runtime remain pending.
+After cheap unit GREEN and genuine preparation, run affected integration16,
+then causal ordinary cut0 if useful and complete originalTheory5 unchanged.
+No GM-authored capability/schema/command or afterlife contract changes; no GM
+prompt/example update applies to this internal adapter routing correction.
+
 # Source-adapter causal RED verified — narrow correction SOURCE WIP
 
 Run134126-680-51756-05970347a83a4bd5afeb3c90f428d9d3:8executed,
