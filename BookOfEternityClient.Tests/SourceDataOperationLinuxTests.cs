@@ -36,11 +36,11 @@ public sealed class SourceDataOperationLinuxTests(ITestOutputHelper output)
         fixture.Recording = true;
         await using var second = await files.AcquireCanonicalWriteLeaseAsync();
         var guards = fixture.CompletedOperations("MainAdmission.Validate.GuardCheck");
-        var handles = fixture.CompletedOperations("PhysicalFileAuthority.ValidateHandlePath");
+        var leaseValidations = fixture.CompletedOperations("Lease.Validate.Total");
         Assert.Equal("original", await files.ReadFileAsync(second, "present.txt"));
         Assert.Equal(0, fixture.PresentSources);
         Assert.True(fixture.CompletedOperations("MainAdmission.Validate.GuardCheck") > guards);
-        Assert.True(fixture.CompletedOperations("PhysicalFileAuthority.ValidateHandlePath") > handles);
+        Assert.True(fixture.CompletedOperations("Lease.Validate.Total") > leaseValidations);
         Assert.Equal("original", await files.ReadFileAsync(second, "present.txt"));
         Assert.Equal(0, fixture.PresentSources);
         await operation.VerifyAsync(second);

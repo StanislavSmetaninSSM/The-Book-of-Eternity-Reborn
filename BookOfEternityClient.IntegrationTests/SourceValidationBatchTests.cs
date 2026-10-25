@@ -33,7 +33,7 @@ public sealed partial class SourceValidationBatchTests(ITestOutputHelper output)
     [InlineData(true, true)]
     public async Task SourceAndExitBatchesReduceRealQueriesWithFreshSources(bool reserved, bool synchronous)
     {
-        async Task<(long FirstQueries, long ExitQueries, long Main, long Native, long Reads)> Measure(bool enabled)
+        async Task<(long FirstQueries, long ExitQueries, long Main, long Native, long LeaseValidations, long Reads)> Measure(bool enabled)
         {
             var recorder = new OperationTimingAccumulator();
             using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, false, recorder);
@@ -65,13 +65,14 @@ public sealed partial class SourceValidationBatchTests(ITestOutputHelper output)
             var exitQueries = Count(exitSnapshot, "TrustedScope.Probe.GetAttributes");
             var main = Count(firstSnapshot, "MainAdmission.Validate.GuardCheck") + Count(exitSnapshot, "MainAdmission.Validate.GuardCheck");
             var native = Count(firstSnapshot, "PhysicalFileAuthority.ValidateHandlePath") + Count(exitSnapshot, "PhysicalFileAuthority.ValidateHandlePath");
+            var leaseValidations = Count(firstSnapshot, "Lease.Validate.Total") + Count(exitSnapshot, "Lease.Validate.Total");
             var name = synchronous ? "OrdinaryRead.Sync.Total" : "OrdinaryRead.Async.Total";
             var reads = Count(firstSnapshot, name) + Count(exitSnapshot, name);
             Assert.Equal(20, reads);
             Assert.Equal(times, paths.Select(path => File.GetLastWriteTimeUtc(Path.Combine(files.GameSessionPath, path))).ToArray());
             foreach (var path in paths) Assert.Equal(path, File.ReadAllText(Path.Combine(files.GameSessionPath, path)));
-            output.WriteLine(JsonSerializer.Serialize(new { enabled, reserved, synchronous, firstQueries, exitQueries, main, native, reads, firstSnapshot, exitSnapshot }));
-            return (firstQueries, exitQueries, main, native, reads);
+            output.WriteLine(JsonSerializer.Serialize(new { enabled, reserved, synchronous, firstQueries, exitQueries, main, native, leaseValidations, reads, firstSnapshot, exitSnapshot }));
+            return (firstQueries, exitQueries, main, native, leaseValidations, reads);
         }
         var original = await Measure(false);
         var batched = await Measure(true);
@@ -79,9 +80,12 @@ public sealed partial class SourceValidationBatchTests(ITestOutputHelper output)
         Assert.True(batched.ExitQueries < original.ExitQueries, $"Exit source queries: off={original.ExitQueries}, on={batched.ExitQueries}.");
         Assert.Equal(original.Main, batched.Main);
         Assert.Equal(original.Native, batched.Native);
+        Assert.Equal(original.LeaseValidations, batched.LeaseValidations);
         Assert.Equal(original.Reads, batched.Reads);
         Assert.True(batched.Main > 0);
-        Assert.True(batched.Native > 0);
+        Assert.True(batched.LeaseValidations > 0);
+        if (OperatingSystem.IsWindows()) Assert.True(batched.Native > 0);
+        else Assert.Equal(0, batched.Native);
     }
 
     /// <summary>

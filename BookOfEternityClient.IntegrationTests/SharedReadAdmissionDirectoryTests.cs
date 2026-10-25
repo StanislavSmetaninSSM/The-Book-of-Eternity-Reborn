@@ -69,7 +69,7 @@ public sealed class SharedReadAdmissionDirectoryTests(ITestOutputHelper output)
     [InlineData(true)]
     public async Task DeclaredOrdinaryReadsReducePhysicalQueriesWithoutChangingData(bool synchronous)
     {
-        async Task<(long Sources, long PhaseHits, long AdmissionQueries, long BorrowedHits, long MainCalls, long NativeCalls)> Measure(bool enabled)
+        async Task<(long Sources, long PhaseHits, long AdmissionQueries, long BorrowedHits, long MainCalls, long NativeCalls, long LeaseValidations)> Measure(bool enabled)
         {
             var recorder = new OperationTimingAccumulator();
             using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, false, recorder);
@@ -96,9 +96,10 @@ public sealed class SharedReadAdmissionDirectoryTests(ITestOutputHelper output)
             var borrowed = fixture.Files.CaptureSharedReadAdmissionHits() - borrowedBefore;
             var mainCalls = snapshot.Rows.Where(row => row.Name == "MainAdmission.Validate.GuardCheck").Sum(row => row.Completed);
             var nativeCalls = snapshot.Rows.Where(row => row.Name == "PhysicalFileAuthority.ValidateHandlePath").Sum(row => row.Completed);
+            var leaseValidations = snapshot.Rows.Where(row => row.Name == "Lease.Validate.Total").Sum(row => row.Completed);
             Assert.Equal(timestamps, sources.Select(path => File.GetLastWriteTimeUtc(Path.Combine(fixture.Files.GameSessionPath, path))).ToArray());
-            output.WriteLine(JsonSerializer.Serialize(new { enabled, synchronous, queries, phase, admission, borrowed, mainCalls, nativeCalls, snapshot }));
-            return (queries, phase.Hits, admission.SourceQueries, borrowed, mainCalls, nativeCalls);
+            output.WriteLine(JsonSerializer.Serialize(new { enabled, synchronous, queries, phase, admission, borrowed, mainCalls, nativeCalls, leaseValidations, snapshot }));
+            return (queries, phase.Hits, admission.SourceQueries, borrowed, mainCalls, nativeCalls, leaseValidations);
         }
         var original = await Measure(false);
         var shared = await Measure(true);
@@ -108,9 +109,12 @@ public sealed class SharedReadAdmissionDirectoryTests(ITestOutputHelper output)
         Assert.Equal(0, original.BorrowedHits);
         Assert.True(shared.BorrowedHits > 0);
         Assert.True(shared.MainCalls > 0);
-        Assert.True(shared.NativeCalls > 0);
+        Assert.True(shared.LeaseValidations > 0);
+        if (OperatingSystem.IsWindows()) Assert.True(shared.NativeCalls > 0);
+        else Assert.Equal(0, shared.NativeCalls);
         Assert.Equal(original.MainCalls, shared.MainCalls);
         Assert.Equal(original.NativeCalls, shared.NativeCalls);
+        Assert.Equal(original.LeaseValidations, shared.LeaseValidations);
     }
 
     /// <summary>

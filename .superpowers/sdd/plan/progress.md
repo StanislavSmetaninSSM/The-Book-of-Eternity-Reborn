@@ -1,3 +1,22 @@
+# Linux T552 platform observation correction — before runtime
+
+Astra/high source review found the new counter proof used a Windows-only named
+handle timer. PhysicalFileAuthority.EnsureHandlePathMatchesExpectedPath returns
+on Linux before emitting it. Replaced only that impossible assertion with actual
+Lease.Validate.Total, retaining MainAdmission.GuardCheck after-acquisition baseline.
+Source review found the same Windows-only positive assumption in selected shared-
+admission2 and source-batch4 real fixtures. Preserve their Windows native-positive
+assertions and equal counts; on Linux record native0 explicitly while requiring
+positive/equal full lease validations, Main checks and all actual source reductions,
+bytes/mtime/read counts and negative fences. No OS early-return or skipped body.
+No production/native implementation change and no budget change.
+
+First unit fixture XML compile781 completed02:47.83/0errors; its wrong counter
+assertion was caught before runtime, not a qualification PASS. Corrected unit and
+integration test assemblies now need fresh XML rebuilds; unchanged shared references
+remain the successful637 build. Prior accepted unit637/integration9a DLL/PDB proof
+backups are outside checkout, used only for provenance and never execution.
+
 # Linux T552 first runtime FAIL — accepted-contract fixture correction WIP
 
 Actual cache run064208-198-9886-9839820ed41f439eb4e86cfc232dabe7:166/504cases,
