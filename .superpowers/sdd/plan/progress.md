@@ -1,3 +1,14 @@
+# Completion owner PREP ACCEPTED — genuine generator next
+
+Separate Astra/high accepted PREP at b91fa5bc: 11 DLL/PDB entries (not12), eight
+PDB source checks, both successful XML builds, exact discovery/plans and unchanged
+native source/package. Unit executor exit remains explicitly unknown; verified
+MSBuild success/terminated build/fresh binaries are sufficient without a rerun.
+SOURCE retention454+transport40 confirmed with prior bindings, not new-binary PASS.
+Admitted order: genuine generator1 -> verify new game41c0f4e3 input/applied/closing/
+full capture -> affected55 -> native40 -> original5. No runtime result yet.
+New record linux-applied-template-owner/source-record.json; old input unchanged.
+
 # Completion owner builds and planning verified — independent PREP pending
 
 Compiled C# source b18c2851f16ae216c11f0d48d2769336fa2424c2; documentation
