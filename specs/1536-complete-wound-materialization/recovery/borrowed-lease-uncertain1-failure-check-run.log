@@ -1,8 +1,0 @@
-Traceback (most recent call last):
-  File "/tmp/1536-cloud-tools/review/check_l01_borrowed_lease_uncertain1_failure.py", line 183, in <module>
-    for path,x in observed['Mechanical'].items():assert observed_bytes(x)==raw(mechanical[path])
-                                                        ^^^^^^^^^^^^^^^^^
-  File "/tmp/1536-cloud-tools/review/check_l01_borrowed_lease_uncertain1_failure.py", line 178, in observed_bytes
-    assert x['ReadError']is None and not x['Absent'] and x['Bytes']is not None;return b64(x['Bytes'])
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-AssertionError

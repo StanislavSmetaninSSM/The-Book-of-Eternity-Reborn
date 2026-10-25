@@ -1,5 +1,19 @@
 # Linux qualification 2026-10-25 — #1536
 
+## Bounded repository diagnostic-copy retirement — #1536 / 2026-10-25
+
+Qualification commit `04caad9111ed1bf57f63a72517c2a45a6354d92e` remains immutable
+evidence. This maintenance block does not complete the wound-materialization feature.
+- [x] T581 Read-only HEAD inventory and current consumer closure; independent
+  pre-change review of the exact 26,914-path / 3,241,093,559-byte deletion manifest.
+- [x] T582 Retire only those recoverable tracked raw copies, publish the source
+  Git-object index/restore instructions, pin eleven affected evidence links and
+  ignore new diagnostic leaves; retain every fixture/save/input and external raw.
+- [ ] T583 Bounded index/fixture/link/catalog integrity and diff review, commit/push
+  with checked remote SHA; no history rewrite, GC or qualification runtime replay.
+- [ ] T584 Resume the current product frontier T179-Pd/RP01 source admission,
+  reconcile with the existing v3 output basis, implement/review its bounded block.
+
 Canonical handoff r73; source b377c9d1d0c6cfa5ce20b383d84eac069b8d2991.
 - [x] T551 Fresh Linux native/XML builds, exact impact selection/catalog/PlanOnly,
   hashes and independent PREP review.

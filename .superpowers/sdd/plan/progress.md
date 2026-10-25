@@ -1,3 +1,22 @@
+# Authorized bounded HEAD-copy cleanup — applied, verification WIP
+
+Owner prioritized reversible diagnostic-copy cleanup, then continued materialization.
+Independent Astra/high verified exactly 26,914 paths/modes/blob OIDs/lengths from R,
+3,241,093,559 bytes; projected 30,892 paths/766,775,115 bytes before source index/docs.
+The applied staged deletion set matches that manifest exactly. All 921 protected
+fixture/save/provenance files match their original Git blob OIDs and lengths.
+The source index matches every retired path/OID/length, and eleven direct links
+now target immutable R. Production, tests, runner and category catalog are unchanged.
+Runtime inputs/provenance closures, all #1536 fixtures, saves, source/diff/tar/ZIP/image
+artifacts and ordinary JSON remain. No proof hashes or runtime inputs were rebound.
+Historical checker plus dataset reproduction remains at R; latest HEAD copies are
+retired. All external raw remains untouched. No caching/runtime path changed;
+optimization is removal of unconsumed checkout weight, with fresh byte/OID checks.
+T583 catalog discovery and post-change independent review remain UNRUN/PENDING.
+This maintenance block is not product completion. T584 resumes T179-Pd/RP01
+source consumption before common preparation, reconciled with current v3.
+No Windows task/run and no Linux qualification replay are part of this cleanup.
+
 # Linux qualification complete — independent full recovery accepted
 
 Runtime original5 and whole statedLinuxscope independently accepted by Astra/high.

@@ -235,7 +235,7 @@ managed exception were captured. There is no fuller internal trace to supply.
 1. Original root `a4bce4411f7c4cf88f77c80f8f03856b`, generation
    `8d44d89c2d2b4039874f56e8f95424f1`, epoch1 has durable Running; original shell
    PID794616 and helper794597. Running is the archived manifest Result.OriginalRunningRecord; the separately
-   [final record](recovery/evidence/opencode-live/original-bootstrap-lost/play/.boe_runtime/gm-runs/main.json.gz)
+   [final record](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/04caad9111ed1bf57f63a72517c2a45a6354d92e/specs/1553-portable-local-storage/recovery/evidence/opencode-live/original-bootstrap-lost/play/.boe_runtime/gm-runs/main.json.gz)
    is Uncertain/nullStopEvidence, not a Running proof.
 2. Source publishes Running **before** `prepared.ReleaseAsync`
    ([coordinator](../../BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs)).

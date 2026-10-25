@@ -40,3 +40,25 @@
 !/specs/1536-complete-wound-materialization/recovery/crash5/**/*.ps1
 !/specs/1536-complete-wound-materialization/recovery/crash5/**/*.py
 !/specs/1536-complete-wound-materialization/recovery/crash5/**/.gitattributes
+
+# Recoverable historical diagnostic leaves: see docs/diagnostic-retirement.md.
+/specs/1536-complete-wound-materialization/recovery/**/*.json.gz
+/specs/1536-complete-wound-materialization/recovery/**/*.trx.gz
+/specs/1536-complete-wound-materialization/recovery/**/*.log.gz
+/specs/1536-complete-wound-materialization/recovery/**/*.txt.gz
+/specs/1536-complete-wound-materialization/recovery/**/*.raw.gz
+/specs/1536-complete-wound-materialization/recovery/**/*.jsonl.gz
+/specs/1536-complete-wound-materialization/recovery/**/*.log
+/specs/1536-complete-wound-materialization/recovery/**/*.trx
+/specs/1553-portable-local-storage/recovery/**/*.json.gz
+/specs/1553-portable-local-storage/recovery/**/*.trx.gz
+/specs/1553-portable-local-storage/recovery/**/*.log.gz
+/specs/1553-portable-local-storage/recovery/**/*.txt.gz
+/specs/1553-portable-local-storage/recovery/**/*.raw.gz
+/specs/1553-portable-local-storage/recovery/**/*.jsonl.gz
+/specs/1553-portable-local-storage/recovery/**/*.log
+/specs/1553-portable-local-storage/recovery/**/*.trx
+!/specs/1553-portable-local-storage/recovery/evidence/opencode-live/current-turn-paste-refusal/**
+!/specs/1553-portable-local-storage/recovery/evidence/opencode-q1/**
+!/specs/1553-portable-local-storage/recovery/journal-fresh-cloud-20261011/performance-current-c5-baseline/chain/gc-bd38c05c2df3/**
+!/specs/1553-portable-local-storage/recovery/fixtures/**

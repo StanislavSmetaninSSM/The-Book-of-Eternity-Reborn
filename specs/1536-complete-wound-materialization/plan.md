@@ -1,3 +1,15 @@
+# Bounded diagnostic-copy cleanup before the next product block
+
+Owner explicitly authorized recoverable HEAD-copy retirement after read-only
+inventory/review; accepted Linux qualification remains R04caad9111ed1bf57f63a72517c2a45a6354d92e.
+T581..583: exact26,914raw copies/3,241,093,559blobbytes, reviewed source index,
+eleven pinned links/ignore rules, preserved fixtures/saves/current input closures
+and all external raw; metadata/link/diff checks only, no full runtime repetition.
+No history rewrite/GC/branch deletion. Actual receipts in the existing checkpoint.
+Then T584 resumes T179-Pd/RP01 current product source admission with existing
+v3 output basis; crash5 is not completion of wound materialization. Windows is
+deferred until product completion and is not a blocker for this maintenance.
+
 # Linux full passive timing implementation plan
 
 Issue1536 T576..580 / LINUXTIMING1..5. Technical preparation under the existing
@@ -5098,7 +5110,7 @@ Reviewer rehashed ALL54526newGitHubbasefiles/3681361580rawbytes/blob/mode/path s
 
 ## A1 complete source recovery and A1-S01 metadata correction — affected SOURCE pending (2026-10-17)
 
-ONE exact GitHub codeload source archive for `7a9eca35af13fe48c959b8d431087e9c058a45dc` completed/extracted with native0 into new `/workspace/a1-github-full-source-7a9eca35-20261017`, without local source/object/cache transport. Archive3344871045bytes is pinned by SHA256 in the receipt. Full verifier native0 checked **54526 files / 3681361580 raw bytes**, every raw Git blob/SHA256, Git mode and exact path set, including governance/feature documents. [Compressed full-base receipt](recovery/t179pd-training-level-current-full-source-recovery-20261017.json.gz) retains every file pin and verifier text. This restores the full tracked source tree, not Git history or runtime qualification; recovered directories were not built or run.
+ONE exact GitHub codeload source archive for `7a9eca35af13fe48c959b8d431087e9c058a45dc` completed/extracted with native0 into new `/workspace/a1-github-full-source-7a9eca35-20261017`, without local source/object/cache transport. Archive3344871045bytes is pinned by SHA256 in the receipt. Full verifier native0 checked **54526 files / 3681361580 raw bytes**, every raw Git blob/SHA256, Git mode and exact path set, including governance/feature documents. [Compressed full-base receipt](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/04caad9111ed1bf57f63a72517c2a45a6354d92e/specs/1536-complete-wound-materialization/recovery/t179pd-training-level-current-full-source-recovery-20261017.json.gz) retains every file pin and verifier text. This restores the full tracked source tree, not Git history or runtime qualification; recovered directories were not built or run.
 
 [New exact GitHub current delta](recovery/t179pd-training-level-source-prepared-delta-recovery-20261017.json) verifies30files/all26changed paths from7a9 to prepared carrier `3da75b412022f9268d10b289ddf620fee5ab63d3`; [complete combined coverage proof](recovery/t179pd-training-level-current-source-recovery-coverage-20261017.json) checks all **54546 current tracked paths** against the full verified base or overriding verified delta's exact blob/mode and exact combined set. No missing/extra/deleted path or guessed dependency subset; new LevelPolicies source is covered. This recovery/correction metadata carrier still requires its own non-force push/readback/new exact changed delta before any actual. Retain the checked full base and complete deltas; no additional full download/clone is needed.
 
@@ -5394,7 +5406,7 @@ Corrected independent DESIGN review is complete, as recorded below. Remaining ac
 
 Recovery: requested `c4dde0629cc17aad75196ec509d2cdaf621945a3` is an ancestor of the retained task-branch checkpoint `2ab809d4ca590fd5c7583914d40121f0c0ee5699`; no reset or source rollback. A new GitHub-only full current-tree checkout verified all 54,180 tracked files, modes and 3,602,184,081 bytes against Git and the writer, clean including ignored files, without alternates or sparse checkout. Remote branch SHA and main were unchanged. This is source recovery only; restored build/discovery/tests/runtime were NOT_RUN.
 
-The [full source recovery receipt](recovery/t179pd-hot-custody-red2-first-late-recovery-20261016.json.gz) preserves the exact 19,984,004-byte JSON (raw SHA256 `6ec1e2b47c098650533e4ab0c5a4177f045a1e8cda382a70b7c423514a1a5aa9`, gzip SHA256 `fa0043dd16e03517dd8fba92b260bb455e9fd868cbc200791e1981925bcf883c`). The source-recovery wrapper returned native0; its argv/time/log are retained separately. No recovery or runtime tool was changed in this pass.
+The [full source recovery receipt](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/04caad9111ed1bf57f63a72517c2a45a6354d92e/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-first-late-recovery-20261016.json.gz) preserves the exact 19,984,004-byte JSON (raw SHA256 `6ec1e2b47c098650533e4ab0c5a4177f045a1e8cda382a70b7c423514a1a5aa9`, gzip SHA256 `fa0043dd16e03517dd8fba92b260bb455e9fd868cbc200791e1981925bcf883c`). The source-recovery wrapper returned native0; its argv/time/log are retained separately. No recovery or runtime tool was changed in this pass.
 
 Independent DESIGN status: [3e bounded review](recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.md) accepts ordinary-consumed policy extraction and the conditional genuine Capturing prefix only, with zero confirmed findings. Root verified 66 Git pins, four exact diffs, 14 temporary references and all 84 author/reviewer projections; immutable pair and documentary supports are preserved. DFR01–07 remain UNRUN, implementation/actual release sets empty. [Initial final F1 review](recovery/lawful-active-f1-final-design-review-20261016.md) confirmed a current-authorization conflict (F1-FINAL-D01), with no new confirmed mechanical F1 defect; root80pin entries/five exact diffs/17temporary references/25projections verified. Its immutable BLOCKED verdict is preserved. [Corrected independent final review](recovery/lawful-active-f1-final-design-corrected-review-20261016.md) at `709a6bfa973d88616f78966450494248a2756609` closes F1-FINAL-D01 and addresses R2-O03, with no remaining finding in the affected correction. Root34Gitpins/12exactprojections/twoexactdiffs/ninearchives/embedded documentary verifier verified. Main T178–T191 remain unique and unchecked, with 15 F101–F115 and 18 R201–R218 future matrix cases. This is READY FOR USER DISCUSSION, with no implementation or actual-run release.
 

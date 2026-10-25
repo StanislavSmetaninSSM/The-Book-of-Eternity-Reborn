@@ -1,5 +1,0 @@
-Traceback (most recent call last):
-  File "/tmp/1536-cloud-tools/review/check_l01_borrowed_lease_evidence.py", line 351, in <module>
-    rp=Path(args.recovery_receipt);rc=read(rp)
-            ^^^^^^^^^^^^^^^^^^^^^
-AttributeError: 'list' object has no attribute 'recovery_receipt'
