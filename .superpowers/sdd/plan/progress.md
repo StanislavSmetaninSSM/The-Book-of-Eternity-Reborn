@@ -1,3 +1,18 @@
+# T593 independent PREP accepted — first actual released
+
+Independent Astra/high PREP accepted clean576dc1fe6 with no material finding.
+It independently checked33 artifacts/30 unchanged dependencies,11 PE/PDB pairs,
+27 source hashes, actual build/catalog/plan and complete source recovery receipts.
+Release exactly `fr063-joint-reasoning-prefix-before-preparation` first with
+`-NoBuild`, existing5-minute category budget and full external evidence. Combined
+PlanOnly sorts unchanged first, so actual commands MUST be separate in the
+reviewed external execution-order.json. Inspect/classify the full temporal result
+before any unchanged positive. Expected baseline is1FAIL at the zero-preparation
+assertion only after all genuine N/I/Capturing/late-Full issue prerequisites;
+earlier failure is not causal RED. No actual runtime has started in this receipt.
+Source/binaries remain compiled Integrationab0a, Game/Support/Bridge3cf, Unit8e;
+all later deltas are Markdown only. No budget/runner/production/native change.
+
 # T593 fresh temporal PREP ready — runtime UNRUN
 
 Independent Astra/high SOURCE/FIXTURE/SELECTION accepted ab0a62e9a. Fresh
