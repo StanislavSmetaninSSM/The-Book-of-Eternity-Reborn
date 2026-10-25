@@ -915,7 +915,7 @@
 },
 {
   "id": "core-recovery-joint-take-fence",
-  "responsibility": "Actual publication take rejects raw ContextText drift after both genuine DATA facts are warm; unchanged inventory and both real authority slots are verified.",
+  "responsibility": "Actual publication take rejects raw drift in a mechanical-only selected-original snapshot after both genuine DATA facts are warm; unchanged canonical/rollback inventory and both real authority slots are verified.",
   "excludes": "No fake proof, world generation, complete game loop, original process scenario or diagnostic quota.",
   "changeHints": [
     "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointRepairPublication.cs",
@@ -932,7 +932,7 @@
     {
       "project": "integration",
       "tests": [
-        "BookOfEternityClient.Tests.JointBundleComponentTests.RecoveryTakeFence_RejectsRawContextDriftBeforeBothRealSlotTakes"
+        "BookOfEternityClient.Tests.JointBundleComponentTests.RecoveryTakeFence_RejectsRawSelectedOriginalDriftBeforeBothRealSlotTakes"
       ]
     }
   ]

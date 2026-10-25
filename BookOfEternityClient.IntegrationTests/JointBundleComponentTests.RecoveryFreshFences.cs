@@ -12,11 +12,11 @@ public sealed partial class JointBundleComponentTests
     /// The drift preserves inventory agreement and both actual registry slots must remain available.
     /// </summary>
     [Fact]
-    public async Task RecoveryTakeFence_RejectsRawContextDriftBeforeBothRealSlotTakes()
+    public async Task RecoveryTakeFence_RejectsRawSelectedOriginalDriftBeforeBothRealSlotTakes()
     {
-        await using var fixture = new Fixture(_output, nameof(RecoveryTakeFence_RejectsRawContextDriftBeforeBothRealSlotTakes));
+        await using var fixture = new Fixture(_output, nameof(RecoveryTakeFence_RejectsRawSelectedOriginalDriftBeforeBothRealSlotTakes));
         await fixture.InitializeAsync();
-        var bound = await fixture.PrepareBoundJointAsync(fixture.AssertWarmTakeRefusesRawContextDriftAsync, reuseStableData: true);
+        var bound = await fixture.PrepareBoundJointAsync(fixture.AssertWarmTakeRefusesRawSelectedOriginalDriftAsync, reuseStableData: true);
         Assert.True(bound.Success, JsonSerializer.Serialize(bound.Issues));
     }
 
@@ -106,9 +106,9 @@ public sealed partial class JointBundleComponentTests
         /// Builds a genuinely sealed common candidate and proves fresh take checks precede both real slot removals.
         /// </summary>
         /// <returns>
-        /// Completion after isolated raw-context refusal, exact byte restoration and unchanged slot checks.
+        /// Completion after isolated selected-original refusal, exact byte restoration and unchanged slot checks.
         /// </returns>
-        internal async Task AssertWarmTakeRefusesRawContextDriftAsync()
+        internal async Task AssertWarmTakeRefusesRawSelectedOriginalDriftAsync()
         {
             using var scope = Files.BeginRecoveryValidation(Lease);
             var bound = _jointBound ?? throw new InvalidOperationException("A genuine bound common input is required.");
@@ -137,10 +137,20 @@ public sealed partial class JointBundleComponentTests
             Assert.True(preparationCounts.GetValueOrDefault("OperationFileData.ReuseSync") +
                 preparationCounts.GetValueOrDefault("OperationFileData.ReuseAsync") > 0);
             Assert.True(preparationCounts.GetValueOrDefault("OperationFileData.FreshSource") > 0);
-            const string path = "ready/turn_complete.json";
+            const string logicalPath = MortalLocationMaterializationContract.WorldMapPath;
+            var manifest = JsonSerializer.Deserialize<LiveTurnPendingSnapshotManifest>(
+                (await Files.ReadFileAsync(Lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath))!,
+                LiveTurnPreparationService.ManifestJsonOptions);
+            Assert.NotNull(manifest);
+            Assert.True(manifest.Files.TryGetValue(logicalPath, out var path));
+            Assert.False(string.IsNullOrWhiteSpace(path));
+            Assert.Contains(logicalPath, AcceptedMechanicsWoundCommonInputComposer.TreatmentOrdinaryGuardPaths);
+            Assert.DoesNotContain(logicalPath, MortalQteWoundOpportunityProjection.ReadSnapshot(Files, Lease).CoveredLogicalPaths);
+            Assert.True(preparation.BeforeImages.ContainsKey(logicalPath));
             Assert.False(preparation.BeforeImages.ContainsKey(path));
             Assert.DoesNotContain(path, preparation.MemberPaths);
-            var physical = Path.Combine(Files.GameSessionPath, path.Replace('/', Path.DirectorySeparatorChar));
+            Assert.DoesNotContain(path, manifest.RollbackBackups.Values);
+            var physical = Files.ResolvePath(path);
             var original = await File.ReadAllBytesAsync(physical);
             var changed = original.Concat(new[] { (byte)' ' }).ToArray();
             AssertJointSlotsAvailable(preparation);
@@ -162,8 +172,8 @@ public sealed partial class JointBundleComponentTests
             Dictionary<string, int>? counts = null;
             try
             {
-                // Raw IO deliberately bypasses mutation epochs. JSON whitespace preserves the parsed frame,
-                // but the genuine mechanical evidence retained the exact ContextText bytes before this edit.
+                // Raw IO deliberately bypasses mutation epochs. Change only the separate selected snapshot,
+                // not canonical/inventory or rollback bytes. Mechanical evidence retained these exact bytes.
                 await File.WriteAllBytesAsync(physical, changed);
                 Assert.Equal(changed, await File.ReadAllBytesAsync(physical));
                 await ValidateRetainedRecoveryBaselineAsync();
@@ -188,7 +198,8 @@ public sealed partial class JointBundleComponentTests
             }
             var refusal = Assert.IsType<InvalidDataException>(failure);
             Assert.Contains("pending_turn_snapshot_reader_source_changed", refusal.Message, StringComparison.Ordinal);
-            Assert.Contains(path, refusal.Message, StringComparison.Ordinal);
+            Assert.Contains(logicalPath, refusal.Message, StringComparison.Ordinal);
+            Assert.Contains("SelectedOriginal", refusal.Message, StringComparison.Ordinal);
             Assert.Null(taken);
             Assert.NotNull(counts);
             foreach (var name in new[] { "Mechanical", "Continuation" })
@@ -199,7 +210,7 @@ public sealed partial class JointBundleComponentTests
             Assert.Equal(original, await File.ReadAllBytesAsync(physical));
             AssertJointSlotsAvailable(preparation);
             await ValidateRetainedRecoveryBaselineAsync();
-            Output.WriteLine(JsonSerializer.Serialize(new { Kind = "RecoveryActualTakeFence", Path = path,
+            Output.WriteLine(JsonSerializer.Serialize(new { Kind = "RecoveryActualTakeFence", LogicalPath = logicalPath, SnapshotPath = path,
                 InventoryAcceptedRawDrift = true, BothOriginalSlotsPreserved = true, Refusal = refusal.Message, Counts = counts }));
         }
 

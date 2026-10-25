@@ -1,3 +1,29 @@
+# Linux take-fence target reached — stale ContextText isolation fixture corrected WIP
+
+Codef540 run081410-272-21148-34aeb8c576aa48f8a59ca006f27c112a completed1/1,
+0PASS/1FAIL, no timeout,02:08.0553922/categorybody01:43, process+fixture closing
+complete; owned roote71d5a19c97a498a99e2b1260f93206f removed by its normal owner.
+Full external capture2,939,994timingrows/1,070,640,377bytes, report DiagnosticComplete
+and WriterClosed true. All new prep source/reuse/fresh assertions passed:85async+
+34sync sources,209generic sync reuses+65LeaseDataHit,119fresh closing sources.
+CommonPlan26.234782s/Publication21.081775s; no full baseline speedup claim.
+Original Assert.False failed: ready/turn_complete.json IS in actual BeforeImages.
+
+Independent Astra/high source diagnosis: all3ContextText paths belong to progression
+input inventory. Preserve independent source-vs-inventory oracle by using genuine
+manifest.Files[WorldMapPath] separate selected snapshot, not canonical or any
+RollbackBackups path. Mechanical selects this original through existing guards;
+projection inventory reader does not. Typed existing manifest, no new production
+seam/reflection/fake proof/reseal. Assert both path-selection boundaries, unchanged
+canonical inventory membership, snapshot exclusion from BeforeImages/MemberPaths/
+all rollback values. Keep full warm1source+1reuse each, rawwhitespace, cached baseline
+and inventory success, actual fresh take>=1source/0reuse both proofs, exact
+source_changed/SelectedOriginal/logical path refusal, both slots and byte restoration.
+Rename test to RawSelectedOriginalDrift so contract matches actual input. Runtime
+still pending new build/source review. Same3min budget. Production/native unchanged.
+Remaining gate307retainedPASS + target1 +198others; native40/original5UNRUN.
+Old raw and old timeout game root retained, no user saves or fixtures deleted.
+
 # Linux take-fixture revised SOURCE/PREP ACCEPTED — target runtime next
 
 Codef540406a8d7404ccca025e6d1477e0f8c403699d, separate Astra/high SOURCE/PREP
