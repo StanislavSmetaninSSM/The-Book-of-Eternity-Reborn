@@ -1,3 +1,27 @@
+# New GameF9 genuine Linux DATA fully verified — three-case PREP next
+
+Independent cheap66 outcome accepted; separate Astra/high PREP admitted oneGEN
+on original300s. Run170125-046-66646-215585cef2dc45eb82f276f9f95efc10:
+1planned/executed/PASS,exit0,no timeout/skip/duplicate,bothcleanupscomplete;
+wall4:12.4445648,actualcategory210.7169067s<300. No further runtime retry.
+Genuine current issuers/common/canonical/progression publisher output captured
+only after normal publication and source/lease closing; selectable record written
+after fixture owned cleanup. This is inert DATA, never authority or recovery PASS.
+Record linux-applied-template-passive-full/source-record.json under externalroot.
+Archive applied-27f54758f8c04785a78dea71560f6fe2.zip:120846bytes,82files/46dirs,
+SHA2561DB421515CC4E5D22FB5F36ED37BF8211CBB3E4631CF5AE1A961F4803E47EAE3.
+Producer exactGameF9/Integration8A25/SupportF70, Linux/turn44/session02c761e89cf1.
+Fullraw02c761e89cf14c3db2e06339d6047fcc/records.jsonl:1376020136bytes,
+3765804timingrows, SHA2560fdb47b5ea524ffd6ee5f09a40d4e341fc3168c3f7e899c60ee2edc4bb012680.
+Whole archive/payload namespaces/hashes/provenance, every rawJSON row, reporthash,
+closedwriter/owner/rootabsence and endedPID66791 verified. Full external evidence
+linux-applied-passive-full-verification.json; outcome review pending.
+C0AD prior record/archive preserved without rebind. Its old raw retirement can
+occur only after independently verified complete replacement and ended old owners.
+No Take/Qte/Semantic runtime onF9 yet; originalbudgets180/120/120 remain.
+Next independent GEN outcome/three PREP, then exact three cases with full
+original events and strict queue/window/write accounting. Canonical511/514 sofar.
+
 # Full passive cheap gate 66/66 PASS — new genuine Linux input next
 
 Independent Astra/high PREP accepted exactselection8 before runtime. Run
