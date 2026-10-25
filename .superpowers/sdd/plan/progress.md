@@ -1,3 +1,23 @@
+# Linux current applied preparation SOURCE/PREP ACCEPTED — controls40 next
+
+Code3c7284d32280c0751695140511915c77abf1f38a, independentAstra/high accepted:
+freshintegrationXML03:56.70/6646warnings/0errors; integrationSHA256ef17eeef5e83df9a3e4de127f8d7483c73b30de60550836a26ddd4c23b7a854e;
+11DLL/PDB pins/eightchangedsourcechecksums verified, unitab17/shared637 unchanged.
+Catalog12471methods942categories0unmapped/stale. PrepPlan5desc41cases=controls40
+(11appliedtransport+7capture+14cleanuptransport+8newinput) thenseparategenerator1.
+FinalremainingPlan8desc52=boundary6/phase1/proof3/Qte1/Semantic1/reserved32/portable8.
+AllPlanOnlyexit0/0executed/cleanupcomplete. Native40/original5stillUNRUN.
+
+Executeexternal linux-applied-controls-selection.json (fourcategories40cases) first;
+generatoronlyafterGREEN via linux-applied-generator-selection.json. Reproenv:
+BOE_TEST_DIAGNOSTIC_ROOT=/workspace/tboe-linux-evidence-20261025;
+BOE_TEST_LINUX_APPLIED_RECORD=/workspace/tboe-linux-evidence-20261025/linux-applied-template/source-record.json;
+source /workspace/tboe-toolchain-20261025/env.sh, then requiredpwsh scripts/test-csharp.ps1
+-SelectionFile <exactselection> -NoBuild. Generatoroutputrecordmustnotexist beforehand.
+Bothsource/archivesrawexternal, noGitraw. No repeated454unchangedpassingcachecases.
+IndependentGitHubfullrecovery3cclean57,797files/currentinstructions/newsourceexact;
+source-only, nobuild/runtimeinrestore. Originalremote stillb377. CrossOSquestionOPEN.
+
 # Linux final52 input audit — exact tuple, no hidden Windows fallback
 
 SeparateAstra/high audit confirmsall10archive-consumingcases use3explicitplatform
