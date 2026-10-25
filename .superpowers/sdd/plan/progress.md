@@ -1,3 +1,15 @@
+# Linux selected-original fixture SOURCE/PREP ACCEPTED — target runtime next
+
+Sourcef8b635d37fe26cf0e6fb7649bf0fe5df6d1dd2c2 accepted by separate Astra/high:
+11DLL/PDB/current source checksum pins, integration679438043c8796b3b1f18c4f8dd05389ecce3d7cf99dfb93dab6163d2495321a,
+unitab17/shared637 unchanged. XML03:47.69/6646warnings/0errors. Catalog12469methods/
+940categories0unmapped/stale; remaining19descriptors199cases PlanOnlyexit0/0executed.
+TRX union independently confirms307unique retainedPASS, no skipped/duplicate cases.
+Corrected selection reason to selected-original drift; method/catalogalreadycorrect.
+No production/native/budget change. Next one corrected target at original3min, then
+198unrun cache cases, native40 and original5 only after successful preceding gates.
+Binding/catalog/plan/union proof stays solely outside checkout. All old raw retained.
+
 # Linux take-fence target reached — stale ContextText isolation fixture corrected WIP
 
 Codef540 run081410-272-21148-34aeb8c576aa48f8a59ca006f27c112a completed1/1,

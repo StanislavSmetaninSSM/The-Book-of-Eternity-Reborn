@@ -220,7 +220,7 @@
     },
     {
       "category": "core-recovery-joint-take-fence",
-      "reason": "Linux accumulated cache qualification: Actual publication take rejects raw ContextText drift after both genuine DATA facts are warm; unchanged inventory and both real authority slots are verified.",
+      "reason": "Linux accumulated cache qualification: Actual publication take rejects raw selected-original snapshot drift after both genuine DATA facts are warm; unchanged inventory and both real authority slots are verified.",
       "contracts": [
         "#1536 r73 Linux handoff / T551-T552"
       ]
