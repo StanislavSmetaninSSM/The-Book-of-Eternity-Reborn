@@ -1,3 +1,34 @@
+# Linux T552 take-fence category timeout — named-timer cause and bounded fixture WIP
+
+Remaining run075738-689-18827-a8ca489d2c8446ad9589fbdd84d3afed:4/23descriptors,
+36/235completed PASS, then take-fence category180.3410292s/3min timeout, no target
+TRX/result; overall06:10.0278999/exit124, owned/runtime cleanup complete. Generic
+runner text incorrectly says lane30min; CategoryResults proves actual3min limit.
+Prior271+new36=307distinct cachePASS; take1+198other cases remain199UNRUN/incomplete.
+Native40/original5 blocked by cache gate, no Linux game PASS. No budget change.
+
+Full uncapped existing named timers under external component nonce868f727e show
+common binding reached104.918s; RecoveryTake.PrepareCommonPlan began there, no end
+before forced exit around174.172s. Publication preparation never began. Partial
+7,559,445-record capture2,752,241,103bytes retained; no complete report or replacement
+claim. Do not delete it or owned test data. No policy denial occurred.
+
+Source audit with independent Astra/high identifies redundant fresh read-only
+fixture preparation. Apply existing reuseStableData suffix option after fixture
+writes; separately own existing source DATA operation around callback common-plan
+and publication preparation. Complete/Dispose fresh fence before warm facts/rawdrift/
+actual take. Keys/dependencies/owner/lifetime/invalidation remain production's
+existing per-manager source operation; no new cache, authority reuse or production
+change. Real source/reuse and closing fresh-source counters must be positive.
+All original warm recovery counts, changed-byte/inventory agreement, both real
+slot-preservation and actual fresh-take refusal assertions remain. Source40cheap
+contracts already passed; this real target must now freshly build/review/regress.
+
+Independent full clean GitHub restore verified578944cca:57,793trackedfiles, clean,
+all current instructions/checkpoint/new files match remote blobs; source-only
+recovery, no binaries/tests copied or run. Details remain external clean-recovery-
+verification.json. Old raw, fixtures and user saves not deleted.
+
 # Linux passive timer fixture GREEN — remaining cache gate next
 
 Code3688, checkpointdf5, Linux: core-passive-recovery-timing11planned/completed/

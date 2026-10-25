@@ -16,7 +16,7 @@ public sealed partial class JointBundleComponentTests
     {
         await using var fixture = new Fixture(_output, nameof(RecoveryTakeFence_RejectsRawContextDriftBeforeBothRealSlotTakes));
         await fixture.InitializeAsync();
-        var bound = await fixture.PrepareBoundJointAsync(fixture.AssertWarmTakeRefusesRawContextDriftAsync);
+        var bound = await fixture.PrepareBoundJointAsync(fixture.AssertWarmTakeRefusesRawContextDriftAsync, reuseStableData: true);
         Assert.True(bound.Success, JsonSerializer.Serialize(bound.Issues));
     }
 
@@ -112,17 +112,31 @@ public sealed partial class JointBundleComponentTests
         {
             using var scope = Files.BeginRecoveryValidation(Lease);
             var bound = _jointBound ?? throw new InvalidOperationException("A genuine bound common input is required.");
-            AcceptedMechanicsPlanningResult common;
-            using (Files.MeasureOperation("RecoveryTake.PrepareCommonPlan"))
-                common = await WoundAcceptedTurnPlanner.CreateJointRepairCommonPlanFromBoundForComponentAsync(Files, Lease, bound);
-            Assert.True(common.Success, JsonSerializer.Serialize(common.Issues));
-            var plan = Assert.IsType<AcceptedMechanicsPlan>(common.Plan);
-            Assert.Same(bound.Authority, plan.JointRepairCommonAuthority);
-            Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(Files, Lease, out var binding, out var selected));
-            Assert.Equal(plan.PreparedPlanFingerprint, selected.Plan!.PreparedPlanFingerprint);
             MortalJointRepairPublicationPreparation preparation;
-            using (Files.MeasureOperation("RecoveryTake.PreparePublication"))
-                preparation = await MortalJointRepairPublicationPreparation.CreateAsync(Files, Lease, plan, binding);
+            var preparationStart = ResetCandidateCapture("RecoveryTakeReadOnlyPreparation");
+            // This independent read-only suffix uses the existing operation cache. Close its
+            // fresh source fence before warming recovery facts or introducing raw drift below.
+            using (var source = Files.BeginSourceDataOperationIfNeeded())
+            {
+                Assert.NotNull(source);
+                AcceptedMechanicsPlanningResult common;
+                using (Files.MeasureOperation("RecoveryTake.PrepareCommonPlan"))
+                    common = await WoundAcceptedTurnPlanner.CreateJointRepairCommonPlanFromBoundForComponentAsync(Files, Lease, bound);
+                Assert.True(common.Success, JsonSerializer.Serialize(common.Issues));
+                var plan = Assert.IsType<AcceptedMechanicsPlan>(common.Plan);
+                Assert.Same(bound.Authority, plan.JointRepairCommonAuthority);
+                Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(Files, Lease, out var binding, out var selected));
+                Assert.Equal(plan.PreparedPlanFingerprint, selected.Plan!.PreparedPlanFingerprint);
+                using (Files.MeasureOperation("RecoveryTake.PreparePublication"))
+                    preparation = await MortalJointRepairPublicationPreparation.CreateAsync(Files, Lease, plan, binding);
+                await source.CompleteAsync();
+            }
+            var preparationCounts = CompleteCandidateCapture("RecoveryTakeReadOnlyPreparation", preparationStart);
+            Assert.True(preparationCounts.GetValueOrDefault("OperationFileData.SourceSync") +
+                preparationCounts.GetValueOrDefault("OperationFileData.SourceAsync") > 0);
+            Assert.True(preparationCounts.GetValueOrDefault("OperationFileData.ReuseSync") +
+                preparationCounts.GetValueOrDefault("OperationFileData.ReuseAsync") > 0);
+            Assert.True(preparationCounts.GetValueOrDefault("OperationFileData.FreshSource") > 0);
             const string path = "ready/turn_complete.json";
             Assert.False(preparation.BeforeImages.ContainsKey(path));
             Assert.DoesNotContain(path, preparation.MemberPaths);
