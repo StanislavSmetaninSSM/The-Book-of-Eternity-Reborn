@@ -2,6 +2,70 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-live-n-source-drift",
+  "responsibility": "Causal genuine Stage43/corrected Ready pre-intake N achievements physical-read dependency drift at existing completed capture observer. Refuse before real preparation with held runtime and exact no-effect images; first tests-only RED singleton.",
+  "excludes": "No invented N/I/Ready/original, full NI/S/B/M3/F1/T197, cold resume, native crash, Windows qualification or broad fixture replay. Missing API, build, setup or timeout never constitute causal RED.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointNarrativeSource.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairAdmission.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-live-n-source-unchanged",
+      "when": "Qualifying the live actual N dependency contribution requires both the causal changed-source refusal and unchanged full completion."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveNarrativeSourceDriftRefusesBeforePreparation"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-live-n-source-unchanged",
+  "responsibility": "Genuine Stage43/corrected Ready actual N achievements-read unchanged counterpart. Existing full joint completion and inert repeat remain mandatory; one real preparation.",
+  "excludes": "No invented N/I/Ready/original, full NI/S/B/M3/F1/T197, cold resume, native crash, Windows qualification or broad fixture replay. Missing API, build, setup or timeout never constitute causal RED.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointNarrativeSource.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairAdmission.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-live-n-source-drift",
+      "when": "Qualifying the live actual N dependency contribution requires both the causal changed-source refusal and unchanged full completion."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_UnchangedLiveNarrativeSourceCompletesJointOnce"
+      ]
+    }
+  ]
+},
+{
   "id": "core-passive-named-transport",
   "responsibility": "Nine small controls of original full named-event transport, closed queue/aggregate/write accounting, incomplete and failed storage refusal, real metadata reduction versus legacy and aggregate modes, and same-timestamp source drift.",
   "excludes": "No game world, genuine applied DATA generation, gameplay authority, diagnostic quota or expensive three-fixture qualification.",

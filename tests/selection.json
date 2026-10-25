@@ -2,157 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "core-source-validation-batch",
-      "reason": "Real source/reserved sync/async reduction, fresh independent epochs, lifetime/refusal/hooks/API identities and service cleanup.",
+      "category": "fr063-joint-live-n-source-drift",
+      "reason": "Causal genuine Stage43/corrected Ready pre-intake N achievements physical-read dependency drift at existing completed capture observer. Refuse before real preparation with held runtime and exact no-effect images; first tests-only RED singleton.",
       "contracts": [
-        "#1536 BATCH1..8 / T541..546"
+        "#1536 T584/T586 / actual pre-intake N dependency contribution before preparation"
       ]
     },
     {
-      "category": "core-shared-read-admission-directories",
-      "reason": "New explicit shared phase, actual source/native/main counts, retirement/fallback and current record/worker/leaf refusals.",
+      "category": "fr063-joint-live-n-source-unchanged",
+      "reason": "Genuine Stage43/corrected Ready actual N achievements-read unchanged counterpart. Existing full joint completion and inert repeat remain mandatory; one real preparation.",
       "contracts": [
-        "#1536 BATCH1..8 / T541..546"
-      ]
-    },
-    {
-      "category": "core-shared-read-admission-consumers",
-      "reason": "Exact existing cold and held-lease main-record consumers; excludes unrelated native stop/input cases.",
-      "contracts": [
-        "#1536 BATCH1..8 / T541..546"
-      ]
-    },
-    {
-      "category": "core-admission-directory-observations",
-      "reason": "Existing invocation caching, original classifiers, worker/main/native freshness and error isolation.",
-      "contracts": [
-        "#1536 BATCH1..8 / T541..546"
-      ]
-    },
-    {
-      "category": "core-lease-data-admission",
-      "reason": "Existing genuine fast DATA routes retain their ownership and original effect/source fences.",
-      "contracts": [
-        "#1536 BATCH1..8 / T541..546"
-      ]
-    },
-    {
-      "category": "core-operation-source-data",
-      "reason": "First/final source reads and raw drift rejection remain unchanged.",
-      "contracts": [
-        "#1536 BATCH1..8 / T541..546"
-      ]
-    },
-    {
-      "category": "fr063-reserved-validation-read-set",
-      "reason": "Reserved source/lease/overlap and exact fresh exit-proof contracts.",
-      "contracts": [
-        "#1536 BATCH1..8 / T541..546"
-      ]
-    },
-    {
-      "category": "core-ordinary-read-path-data",
-      "reason": "New phase DATA, actual query reduction, retirement and callback/timing/suppression gates.",
-      "contracts": [
-        "#1536 BATCH1..8 / T541..546"
-      ]
-    },
-    {
-      "category": "fr063-ordinary-read-section-consumers",
-      "reason": "Actual ordinary read surfaces, cancellation, invalid grants and leased ownership consumers.",
-      "contracts": [
-        "#1536 BATCH1..8 / T541..546"
-      ]
-    },
-    {
-      "category": "portable-ordinary-readers",
-      "reason": "Portable retries, exact bytes/BOM/absence, original read exceptions and hostile namespace refusals.",
-      "contracts": [
-        "#1536 BATCH1..8 / T541..546"
-      ]
-    },
-    {
-      "category": "portable-ordinary-read-windows",
-      "reason": "Windows replacement-before-open, native handle and hard-link refusal consumers.",
-      "contracts": [
-        "#1536 BATCH1..8 / T541..546"
-      ]
-    },
-    {
-      "category": "portable-storage-read-construction-boundaries",
-      "reason": "Existing worker/ordinary construction boundary and typed read-source isolation.",
-      "contracts": [
-        "#1536 BATCH1..8 / T541..546"
-      ]
-    },
-    {
-      "category": "portable-canonical-path-metadata-unit-controls",
-      "reason": "Original Windows provider root/segment/fallback semantics and errors.",
-      "contracts": [
-        "#1536 BATCH1..8 / T541..546"
-      ]
-    },
-    {
-      "category": "portable-canonical-path-metadata-windows-controls",
-      "reason": "Actual Windows directory/file metadata and observer counts.",
-      "contracts": [
-        "#1536 BATCH1..8 / T541..546"
-      ]
-    },
-    {
-      "category": "portable-canonical-path-metadata-affected-controls",
-      "reason": "Reparse confinement remains fresh at original read/write boundaries.",
-      "contracts": [
-        "#1536 BATCH1..8 / T541..546"
-      ]
-    },
-    {
-      "category": "fr063-trusted-local-request-observations",
-      "reason": "Returned scopes must retain grants alone and later requests remain fresh.",
-      "contracts": [
-        "#1536 BATCH1..8 / T541..546"
-      ]
-    },
-    {
-      "category": "core-passive-recovery-timing",
-      "reason": "Sealed passive timing remains compatible with actual source and directory caches.",
-      "contracts": [
-        "#1536 BATCH1..8 / T541..546"
-      ]
-    },
-    {
-      "category": "fr063-joint-interface-probe-budget-contracts",
-      "reason": "New strict test-only control and unchanged original process budget/selector contracts.",
-      "contracts": [
-        "#1536 BATCH1..8 / T541..546"
-      ]
-    },
-    {
-      "category": "fr063-joint-interface-seed-contracts",
-      "reason": "Genuine current-source INPUT and fingerprint admission.",
-      "contracts": [
-        "#1536 BATCH1..8 / T541..546"
-      ]
-    },
-    {
-      "category": "fr063-joint-five-fixture-package-contracts",
-      "reason": "Exact fresh package inventory/hydration and cleanup.",
-      "contracts": [
-        "#1536 BATCH1..8 / T541..546"
-      ]
-    },
-    {
-      "category": "core-producer-read-forwarders",
-      "reason": "Sealed passive read counter replaces lifecycle Action; preserve all source counts and functional observer fallback.",
-      "contracts": [
-        "#1536 BATCH1..8 / T541..546"
-      ]
-    },
-    {
-      "category": "fr063-joint-interface-crash-stage-contracts",
-      "reason": "Timestamped passive canonical/exact replay, complete populations, checkpoint reset/return, output-error and final-tail drains; unchanged stage identity/monotonic delivery.",
-      "contracts": [
-        "#1536 BATCH8 / T543..544"
+        "#1536 T584/T586 / actual pre-intake N dependency contribution before preparation"
       ]
     }
   ]

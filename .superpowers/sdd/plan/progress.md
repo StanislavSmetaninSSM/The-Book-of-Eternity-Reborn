@@ -8,7 +8,18 @@ One clarified oracle: Prepared may finish its existing frozen I publication;
 neither resume repeats projector/UTC, and Published I is never rewritten.
 The live N contribution does not persist an N fault after Prepared across crash.
 Current-only cold proof has HistoricalNUnavailable, never historical NI/S.
-Next author and prepare actual dependency-drift/unchanged controls before product.
+T586 tests-only WIP adds exactly two independent genuine Stage/Ready cases:
+`fr063-joint-live-n-source-drift` and `fr063-joint-live-n-source-unchanged`, each
+one method with its own existing five-minute category budget. The changed case
+intervenes in actual achievements bytes after the corrected N read/return and
+existing completed-capture observer; target requires zero preparation entries,
+held typed runtime, exact unchanged post-intervention physical images and no effects.
+The unchanged case retains existing full completion/inert-repeat assertions.
+The existing sealed passive named accumulator counts preparation; no profiling
+callback disables DATA reuse. No new reflection or product code. SOURCE/build/
+catalog/PlanOnly/PREP and both actual outcomes remain UNRUN at this WIP save.
+Next fresh affected Integration build and independent fixture/SOURCE/PREP, then
+separately named causal RED. Product implementation remains unstarted.
 No Windows run; initial guardian intermittency and cross-OS DATA remain open.
 
 # Authorized bounded HEAD-copy cleanup — complete, source-only maintenance
