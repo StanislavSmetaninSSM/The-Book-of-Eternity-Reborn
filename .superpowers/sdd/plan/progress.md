@@ -1,3 +1,18 @@
+# Source-adapter preparation verified — independent PREP pending
+
+Catalog discovery exit0:12480methods/944categories, no unmapped/stale ownership.
+Every exact NoBuild PlanOnly exit0/0executed/no timeout/both cleanups complete:
+cheap9/166 (unit5/96+integration4/70), remaining integration6/16, genuinegenerator1/1,
+ordinaryNativeLinuxcut0 1/1, originalTheory1/5. All original category/child budgets
+unchanged. External source-adapter-prep-verification.json binds5actual builds,
+11uniform DLL/PDB entries,18source checks, all plans and3freshly rehashed native
+binary/current-C source pairs. Native package remains the genuine own-session
+Linux package; no C changes since base. New external Linux record still absent.
+Production/test source remains accepted2c073, all compiledInfo7ff; later commits
+only checkpoint/staging wording. Independent PREP now pending, runtimeUNRUN on
+the correction. Cheap166 then onlyifGREEN genuine Linux generation and16 actual
+integration consumers. Candidate union332retained+182fresh/native40, not newPASS.
+
 # Source-adapter fresh builds verified — discovery/plans/PREP next
 
 Frozen build7ff3d0c99c5843f6a6d21f9de90cccbfafa2c7b1, all5actual builds exit0:
