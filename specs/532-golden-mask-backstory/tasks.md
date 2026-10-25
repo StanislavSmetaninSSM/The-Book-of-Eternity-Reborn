@@ -16,7 +16,7 @@ GitHub execution epic: [#1560](https://github.com/StanislavSmetaninSSM/The-Book-
 - [x] T003 Через Spec Kit подготовить проект `plan.md`, `data-model.md`, `contracts/gameplay.md`, `quickstart.md` и этот `tasks.md` в `specs/532-golden-mask-backstory/`; отметить открытые gates.
 - [x] T004 Проверить согласованность и независимым контекстом проверить первоначальный diff `cbd417223..e2b42e268`; findings/ограничения в `specs/532-golden-mask-backstory/plan.md`. Не заменяет ревью T018.
 - [x] T018 Исследовать уточнённые автором explorable memories для обоих источников и POV владельца: navigation/cast/GM/turn/scheduler/history/recovery и все десять q4. Обновить семь документов этой feature до FR-01–21/AC-01–10; провести consistency и независимое ревью нового блока, опубликовать проверенный remote checkpoint. Evidence: `43205fcb7..ef9b05707`, review/checkpoint в plan; только investigation/documentation, без runtime.
-- [ ] T022 По запросу автора оформить полный пакет GitHub-задач #1560–#1570 с сюжетной важностью, native hierarchy/dependencies и связями с прежними story issues; зарегистрировать отдельный follow-up #1571 из #1536/T148. Сверить полноту, независимое ревью, remote readback и mapping. Никакой runtime-реализации или смены статусов чужих задач.
+- [x] T022 По запросу автора оформить полный пакет GitHub-задач #1560–#1570 с сюжетной важностью, native hierarchy/dependencies и связями с прежними story issues; зарегистрировать отдельный follow-up #1571 из #1536/T148. Evidence: 12/12 remote body/label readbacks, 10 native children, 34 exact dependencies, Sol 6.1 XHigh review и checkpoint в plan. Никакой runtime-реализации или смены статусов чужих задач.
 
 ## Phase 2 — условия реализации
 
