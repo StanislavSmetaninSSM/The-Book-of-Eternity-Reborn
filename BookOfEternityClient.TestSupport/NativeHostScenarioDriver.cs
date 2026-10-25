@@ -124,6 +124,7 @@ internal static class NativeHostScenarioDriver
         var longTemp = Path.Combine(output, new string('t', 100));
         var disposeAllowed = false; var hostAliveBeforeDispose = false; var pidfdClosedAfterDispose = false;
         var releaseDenied = false; var canceled = false; GmWorkerStopEvidence? laterStop = null;
+        GmWorkerStopEvidence? outputAuditStopBeforeProtocolClose = null;
         string? hostStdout = null, hostStderr = null; JsonElement? fdAudit = null;
         NamedPipeClientStream? foreign = null;
         if (mode == "constructor-path")
@@ -187,6 +188,10 @@ internal static class NativeHostScenarioDriver
         finally
         {
             Environment.SetEnvironmentVariable("TMPDIR", originalTemp);
+            // Output auditing keeps its protocol intact until the original native
+            // stop; owner-close/EOF scenarios below retain their original ordering.
+            if (mode == "output-audit" && owner is not null)
+                outputAuditStopBeforeProtocolClose = await owner.StopAndObserveAsync();
             await host.DisposeAsync(); // Named-channel owner-close, not helper control EOF.
             foreign?.Dispose();
             if (owner != null && mode != "helper-loss-closed-output")
@@ -211,7 +216,7 @@ internal static class NativeHostScenarioDriver
                 ready, failure, hostPid, supervisorPid, stop, workerReleased = File.Exists(marker),
                 bootstrapDirectoriesAfter = mode == "constructor-path" ? Directory.GetDirectories(longTemp).Length : 0,
                 disposeAllowed, hostAliveBeforeDispose, pidfdClosedAfterDispose, releaseDenied, canceled, laterStop,
-                hostStdout, hostStderr, fdAudit
+                hostStdout, hostStderr, fdAudit, outputAuditStopBeforeProtocolClose
             }));
         }
         return 0; // Assertions live outside the independently reaped scenario driver.

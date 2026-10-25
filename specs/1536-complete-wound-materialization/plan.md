@@ -1,3 +1,25 @@
+# Linux native fixture correction and named diagnostic plan
+
+Task1536 T564..567 / spec LINUXNATIVE1..5, autonomous technical-work waiver.
+Two known findings grouped before builds: output-audit channel-close race and
+lost terminal primary failure. No production root cause is asserted for terminal.
+
+- [ ] T564 Keep output-audit protocol channels live until original native stop;
+  preserve strict stream/FD/cleanup assertions and other owner-close negatives.
+- [ ] T565 Add a small fixture journal using existing named timer scopes; primary
+  failure and actual RPC response before cleanup; phase begin persisted immediately.
+  Receiver context never spans await. Scope only terminal-fence/terminal-bridge.
+- [ ] T566 Independent coherent SOURCE, backup current producer bindings, fresh
+  TestSupport/unit/integration with unchanged production bytes, catalog/PDB/PREP.
+  No game/native rebuild or genuine-input regeneration if game pin remains41C0.
+- [ ] T567 Host8 causal regression, main4/terminal12 diagnostic outcomes and cause
+  correction as justified; accepted complete native40 before original5.
+
+Optimization assessment: timer/response transport is small diagnostic work, not
+cacheable authority. RPC/status/stop must stay fresh. Reuse current immutable
+native package for finite controls; existing mutable terminal/host package fixtures
+keep per-case ownership. Cache509 unchanged by these private native-only helpers.
+
 # Linux standalone completion owner implementation plan
 
 > Inline superpowers:executing-plans, mandatory separate Astra/high review.

@@ -1,3 +1,30 @@
+# Native fixture correction/diagnostic SOURCE WIP — two known findings grouped
+
+Independent subset112246-942-38961-0cec0108bfec43e78504e57ad8d4c3e6:
+24planned/completed,23PASS1FAIL, exit1/00:01:58.1146911/no runner timeout/cleanup.
+Complete bootstrap3+finite-pipe12+owner-retention1=16PASS. Host8 has7PASS1FAIL and
+is not retained as a successful category. Output-audit actual Ready/FD/stdout and
+scoped cleanup passed, but stderr included an extra worker-process-host protocol
+failure: fixture closed private channels before stopping the still-unreleased host.
+Independent Astra/high confirmed this induced EOF versus SIGTERM race.
+
+Grouped test-support correction now stops only output-audit's original native
+owner before closing channels; records first-stop evidence and strengthens the
+existing test to require its positive cleanup/same RunId, retaining exact streams/
+FD assertions. Other owner-close/EOF/bootstrap modes keep their original order.
+No production or native source change. Terminal primary cause remains UNKNOWN.
+
+For terminal-fence/terminal-bridge only, existing FileSystemManager named timers
+now journal StartShell/RPC phases/readiness/setReady/cleanup before a guardian kill.
+Thread-static receiver restored synchronously before awaits; no new reflection,
+clock or authority. Exact primary exception/result and RPC response persisted
+before cleanup. Writer/scopes track completeness without record/byte limits.
+Budgets15s guardian/20s observation and all runtime/original limits unchanged.
+Spec/plan/tasks LINUXNATIVE/T564..567 bound this block before implementation.
+SOURCE review then affected fresh managed builds/PDB/catalog/PREP are pending;
+no claim yet that output-audit or terminal has been fixed. Candidate native16 and
+accepted cache509 retain original bindings; original5 remain UNRUN.
+
 # Native controls actual RED — first4 complete3PASS1FAIL, cause under investigation
 
 Run111422-150-38107-bde72953ab264cea9e7cbde4fd4d459e:4/40complete3PASS1FAIL,

@@ -1,3 +1,26 @@
+# Linux native fixture correction/diagnostic amendment — #1536 /2026-10-25
+
+LINUXNATIVE1: preserve actual main4 RED (guardian15s deadline/emergency, no primary
+scenario report) and host output-audit RED (fixture-induced protocol EOF before
+native stop). Neither partial results nor expected Uncertain qualify native40.
+LINUXNATIVE2: output-audit alone stops the original native owner while its private
+protocol channels remain open, then closes channels and preserves exact streams,
+FD predicates, worker-not-released and scoped retirement assertions. Other owner
+EOF/status-loss/bootstrap modes keep their original ordering and negative checks.
+LINUXNATIVE3: terminal-fence/terminal-bridge fixtures preserve the exact primary
+exception/result before cleanup and use existing FileSystemManager named timers
+for StartShell, RPC connect/write/read, readiness/setReady, stop, server join and
+host disposal. Persist begin/end/actual RPC responses externally, without quotas.
+Close the thread-static timing selection synchronously before awaiting a timer's
+operation. Diagnostic loss cannot become a successful complete diagnostic result.
+LINUXNATIVE4: diagnostic preparation changes only test support; no production,
+native protocol, authority, parser, budget or user-save compatibility changes.
+No new private reflection. Do not infer the primary failure from Stopping alone.
+LINUXNATIVE5: one coherent SOURCE review, fresh affected managed builds/bindings,
+discovery/PlanOnly and PREP, then causal host8 and main4/terminal12. Retain only
+independently accepted whole categories (candidate native16) with original pins.
+Original5 require successful complete native gate; failures are investigated.
+
 # Linux standalone completion source-owner amendment — #1536 /2026-10-25
 
 LINUXPROOF1: actualgenuineLinuxDATA counterRED is preserved: standalonecached10246

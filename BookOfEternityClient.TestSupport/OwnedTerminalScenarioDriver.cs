@@ -109,6 +109,7 @@ internal static partial class OwnedTerminalScenarioDriver
     private static async Task<int> RunBridgeAsync(string mode, string package, string folder,SystemdControlledFixture? systemd=null)
     {
         var result = new Dictionary<string, object?>(); object? host = null; Task? server = null;
+        using var journal = mode is "terminal-fence" or "terminal-bridge" ? new NamedTerminalFixtureJournal(folder, mode) : null;
         using var serverCancellation = new CancellationTokenSource();
         var configuration = new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name;
         var repo = mode.StartsWith("production-main-",StringComparison.Ordinal)?folder:TestRepoPaths.RepoRoot;
@@ -119,13 +120,31 @@ internal static partial class OwnedTerminalScenarioDriver
         object? Invoke(string name, params object?[] args) => type.GetMethod(name, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)!.Invoke(host, args);
         async Task<JsonElement> Rpc(object request)
         {
+            var requestBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(request) + "\n");
+            string? command = null;
+            if (journal is not null)
+            {
+                using var requestDocument = JsonDocument.Parse(requestBytes);
+                if (requestDocument.RootElement.ValueKind == JsonValueKind.Object &&
+                    requestDocument.RootElement.TryGetProperty("command", out var commandElement) &&
+                    commandElement.ValueKind == JsonValueKind.String)
+                    command = commandElement.GetString();
+            }
+            var timingName = "NativeTerminalFixture.Rpc." + command;
+            using var total = journal?.Measure(timingName);
             using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(mode.StartsWith("production-main-relay-",StringComparison.Ordinal)?18:mode=="production-main-driver-held-pin"?12:3));
             using var peer = new NamedPipeClientStream(".", pipe, PipeDirection.InOut, PipeOptions.Asynchronous);
-            await peer.ConnectAsync(deadline.Token);
-            await peer.WriteAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(request) + "\n"), deadline.Token);
-            await peer.FlushAsync(deadline.Token);
+            using (journal?.Measure(timingName + ".Connect")) await peer.ConnectAsync(deadline.Token);
+            using (journal?.Measure(timingName + ".Write"))
+            {
+                await peer.WriteAsync(requestBytes, deadline.Token);
+                await peer.FlushAsync(deadline.Token);
+            }
             using var reader = new StreamReader(peer, Encoding.UTF8, leaveOpen: true);
-            using var doc = JsonDocument.Parse(await reader.ReadLineAsync(deadline.Token) ?? throw new EndOfStreamException());
+            string? response;
+            using (journal?.Measure(timingName + ".Read")) response = await reader.ReadLineAsync(deadline.Token);
+            using var doc = JsonDocument.Parse(response ?? throw new EndOfStreamException());
+            journal?.Record("rpc_response", new { Command = command, Response = doc.RootElement });
             return doc.RootElement.Clone();
         }
         try
@@ -147,7 +166,7 @@ internal static partial class OwnedTerminalScenarioDriver
                 result["Success"]=true;return 0;
             }
             if(mode=="terminal-partial-start")File.SetUnixFileMode(Path.Combine(package,"neutral-cli"),UnixFileMode.UserRead|UnixFileMode.UserWrite);
-            try { await (Task)Invoke("StartShellAsync")!; }
+            try { using (journal?.Measure("NativeTerminalFixture.StartShell")) await (Task)Invoke("StartShellAsync")!; }
             catch(OwnedTerminalStartException ex) when(mode=="terminal-partial-start") {
                 result["PartialExceptionOriginal"]=ReferenceEquals(ex.Owner,type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host));
             }
@@ -168,16 +187,22 @@ internal static partial class OwnedTerminalScenarioDriver
                 result["PartialOwnerRetained"]=type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!=null;
                 return 0;
             }
-            for (var i=0;i<100;i++) {
-                var status=(await Rpc(new { command="status" })).GetProperty("status");
-                if (status.GetProperty("ready").GetBoolean()) break;
-                await Task.Delay(10);
+            using (journal?.Measure("NativeTerminalFixture.Readiness")) {
+                for (var i=0;i<100;i++) {
+                    var status=(await Rpc(new { command="status" })).GetProperty("status");
+                    var observedReady = status.GetProperty("ready").GetBoolean();
+                    journal?.Record("readiness_observation", new { Ready = observedReady });
+                    if (observedReady) break;
+                    await Task.Delay(10);
+                }
             }
             // HTTP admission is checked against observed idle output, never a
             // readiness override. Existing scenarios retain their own controls.
-            var ready = mode=="production-main-relay-http-reads"
-                ? await Rpc(new { command="status" })
-                : await Rpc(new { command="setReady", ready=true });
+            JsonElement ready;
+            using (journal?.Measure("NativeTerminalFixture.SetReady"))
+                ready = mode=="production-main-relay-http-reads"
+                    ? await Rpc(new { command="status" })
+                    : await Rpc(new { command="setReady", ready=true });
             result["Ready"] = ready;
             if (!ready.GetProperty("ok").GetBoolean()) throw new InvalidOperationException("Actual session output did not produce a reliable idle view.");
             if(mode.StartsWith("production-main-early-exit",StringComparison.Ordinal))
@@ -359,23 +384,30 @@ internal static partial class OwnedTerminalScenarioDriver
             result["ScopedStopViaPipe"]=true; result["Success"]=true;
             return 0;
         }
-        catch (Exception ex) { result["Failure"] = ex.ToString(); return 1; }
+        catch (Exception ex) {
+            result["Failure"] = ex.ToString();
+            journal?.Record("primary_failure", result);
+            return 1;
+        }
         finally {
+            journal?.Record("before_cleanup", result);
             if (host != null) {
                 try {
                     var original=type.GetField("_mainRun",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host) as GmSessionRunCoordinator;
-                    await (Task)Invoke("StopShellAsync")!;
+                    using (journal?.Measure("NativeTerminalFixture.Cleanup.StopShell")) await (Task)Invoke("StopShellAsync")!;
                     result["ScopedRetired"] = type.GetField("_pty", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(host) == null;
                     if(mode.StartsWith("production-main-config-recovery-",StringComparison.Ordinal) && original!=null) {
                         result["OriginalConfigRunStopped"]=original.Record?.Disposition==GmSessionRunDisposition.Stopped && !original.RetainsAuthority;
                         if(!(bool)result["OriginalConfigRunStopped"]!)throw new InvalidOperationException("Original config-run coordinator was not fully retired.");
                     }
                 }
-                catch (Exception ex) { result["CleanupFailure"] = ex.ToString(); }
+                catch (Exception ex) { result["CleanupFailure"] = ex.ToString(); journal?.Record("cleanup_failure", result); }
             }
-            await serverCancellation.CancelAsync(); if (server != null) await server;
-            if (host is IDisposable disposable) disposable.Dispose();
+            using (journal?.Measure("NativeTerminalFixture.Cleanup.CancelServer")) await serverCancellation.CancelAsync();
+            if (server != null) { using (journal?.Measure("NativeTerminalFixture.Cleanup.JoinServer")) await server; }
+            if (host is IDisposable disposable) { using (journal?.Measure("NativeTerminalFixture.Cleanup.DisposeHost")) disposable.Dispose(); }
             await File.WriteAllTextAsync(Path.Combine(folder, "scenario.json"), JsonSerializer.Serialize(result));
+            journal?.Complete();
         }
     }
 

@@ -45,6 +45,11 @@ public sealed class GmWorkerNativeHostTests
         Assert.False(result.GetProperty("workerReleased").GetBoolean());
         Assert.Equal(0, result.GetProperty("stop").GetProperty("State").GetInt32());
         Assert.True(result.GetProperty("stop").GetProperty("CleanupComplete").GetBoolean());
+        var beforeClose = result.GetProperty("outputAuditStopBeforeProtocolClose");
+        Assert.Equal(0, beforeClose.GetProperty("State").GetInt32());
+        Assert.True(beforeClose.GetProperty("CleanupComplete").GetBoolean());
+        Assert.False(beforeClose.GetProperty("AuthorityRetained").GetBoolean());
+        Assert.Equal(result.GetProperty("stop").GetProperty("RunId").GetString(), beforeClose.GetProperty("RunId").GetString());
         Assert.Equal("fixture-host-stdout\n", result.GetProperty("hostStdout").GetString());
         Assert.Equal("fixture-host-stderr\n", result.GetProperty("hostStderr").GetString());
         var audit = result.GetProperty("fdAudit");
