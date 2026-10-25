@@ -73,6 +73,9 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// <param name="narrativeSourceProbe">
     /// An optional typed observation of corrected pre-intake narrative sources and the existing capture checkpoint.
     /// </param>
+    /// <param name="reasoningPrefixProbe">
+    /// An optional public corrected-debug author and passive temporal-prefix observer.
+    /// </param>
     /// <returns>
     /// Completion after the selected actual lifecycle and its original state assertions.
     /// </returns>
@@ -83,7 +86,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         bool postOriginalAutomaticSubmission = false, Action<GameEngine>? attachActualOwnerProbe = null,
         JointCaptureCutProbe? currentCaptureProbe = null,
         JointInterfaceLifecycleProbe? interfaceLifecycleProbe = null, JointInterfaceCrashSeedMetadata? sourceSeed = null,
-        JointNarrativeSourceProbe? narrativeSourceProbe = null)
+        JointNarrativeSourceProbe? narrativeSourceProbe = null, JointReasoningPrefixProbe? reasoningPrefixProbe = null)
     {
         using var scenarioTiming = _fs.MeasureOperation("JointScenario.UntilCompletionOrActualCut");
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
@@ -220,6 +223,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             logger: logger);
         engine = runtime.Engine;
         narrativeSourceProbe?.Attach(this, runtime);
+        reasoningPrefixProbe?.Attach(this, runtime);
         attachActualOwnerProbe?.Invoke(engine);
         currentCaptureProbe?.Attach(engine);
         interfaceLifecycleProbe?.Attach(runtime);
@@ -545,6 +549,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal(before[path], dispatch.Images[path]);
         Assert.Equal(signedOriginalSchedule, dispatch.Images[ProgressionScheduleService.SchedulePath]);
         Assert.Equal(1, repairReplies);
+        if (reasoningPrefixProbe is not null)
+        {
+            reasoningPrefixProbe.AssertRefusedBeforePreparation(engine, logger.Describe());
+            return; // Only this selected temporal-prefix refusal; complete default oracles remain below.
+        }
         if (narrativeSourceProbe is { ExpectsHeld: true })
         {
             await narrativeSourceProbe.AssertHeldAsync(engine, logger.Describe());
@@ -705,6 +714,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                             resubmittedPublicOutputs["output/narrative_response.json"] = correctedNarrativeForBinding;
                         }
                         interfaceLifecycleProbe?.ConfigureCorrectedOutputs(resubmittedPublicOutputs);
+                        reasoningPrefixProbe?.ConfigureCorrectedOutputs(resubmittedPublicOutputs);
                         // Offline MAIN-GM resubmits the COMPLETE actual43 public turn
                         // after real baseline restore. The normalized positive additionally
                         // exercises the permitted pre-seal timestamp-only scene correction.
@@ -738,6 +748,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                         Assert.Equal(scene, ParseJsonObjectBytes(resubmittedPublicOutputs["output/narrative_response.json"])["response"]!.GetValue<string>());
                         interfaceLifecycleProbe?.ObserveCorrectedSubmissionReadback();
                         narrativeSourceProbe?.ObserveCorrectedSubmissionReadback();
+                        reasoningPrefixProbe?.ObserveCorrectedSubmissionReadback();
                         // Correlated repair Ready is LAST, after complete public readback.
                         File.WriteAllText(_fs.ResolvePath("game_state/control/validation_repair_ready.json"),
                             JsonSerializer.Serialize(new { sessionId = original.SessionId, requestId = original.RequestId,

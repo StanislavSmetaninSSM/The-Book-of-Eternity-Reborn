@@ -2,101 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "fr063-joint-live-n-source-drift",
-      "reason": "Causal genuine Stage43/corrected Ready pre-intake N achievements physical-read dependency drift at existing completed capture observer. Refuse before real preparation with held runtime and exact no-effect images; first tests-only RED singleton.",
+      "category": "fr063-joint-reasoning-prefix-before-preparation",
+      "reason": "#1536 T593 tests-first temporal causal singleton. Actual corrected empty thoughts precede N; genuine N/I/Capturing and exact late missing_gm_thoughts must precede the expected PreparationStarted>0 versus required0 baseline failure. Fresh Integration build/catalog/PlanOnly and independent SOURCE/PREP are prerequisites; actual remains Root-only.",
       "contracts": [
-        "#1536 T584/T586 / actual pre-intake N dependency contribution before preparation"
+        "#1536 T593 / DFR-HOT1, DFR-HOT3, DFR-HOT4"
       ]
     },
     {
       "category": "fr063-joint-live-n-source-unchanged",
-      "reason": "Genuine Stage43/corrected Ready actual N achievements-read unchanged counterpart. Existing full joint completion and inert repeat remain mandatory; one real preparation.",
+      "reason": "Independent existing genuine unchanged Stage43/corrected Ready full completion and inert repeat counterpart for T593. Existing valid debug prefix and one preparation are preserved; no duplicate full Fact or new DFR API/count assertion at the tests-only baseline. Actual runs separately under Root gates.",
       "contracts": [
-        "#1536 T584/T586 / actual pre-intake N dependency contribution before preparation"
-      ]
-    },
-    {
-      "category": "fr063-joint-live-n-before-first-interface",
-      "reason": "One genuine corrected Stage/Ready N invocation observes achievements, then its actual later quests-read callback changes only consumed achievements bytes. Require live N closure before FIRST I PrepareResult, with zero I preparation/common/effects and an inert held same-engine repeat. Execute after cheap source gate and before unchanged/cold controls.",
-      "contracts": [
-        "#1536 T588/T590 / actual live N before FIRST I Prepared"
-      ]
-    },
-    {
-      "category": "fr063-narrative-policy-pass-sources",
-      "reason": "Actual single ordinary N invocation DATA: no-write and changed normalization, genuine supplied/uncovered originals and swallowed original faults, every initial/followup occurrence, sticky drift, copied diagnostics, issuer/files/G/lease/Dispose refusal, explicit partial cached provenance, actual writer preimage/outcome/owning-close and narrow authenticated I transition DATA matching. Engine authority remains separately tested.",
-      "contracts": [
-        "#1536 T587–590 / actual single-N source capture and fresh versus physical-v3 resume"
-      ]
-    },
-    {
-      "category": "fr063-ordinary-output-policy-boundary",
-      "reason": "Both original public owners still consume the shared policy stages after optional N source capture wiring.",
-      "contracts": [
-        "#1536 T587–590 / actual single-N source capture and fresh versus physical-v3 resume"
-      ]
-    },
-    {
-      "category": "fr063-ordinary-output-policy-source",
-      "reason": "Bounded exact reverse of explicit T587 source plumbing preserves the existing frozen whole ordinary source hash.",
-      "contracts": [
-        "#1536 T587–590 / actual single-N source capture and fresh versus physical-v3 resume"
-      ]
-    },
-    {
-      "category": "fr063-ordinary-output-policy-regression",
-      "reason": "Original ordinary issue order, nullable/catch/read order, no-write and actual writes remain unchanged with source capture disabled.",
-      "contracts": [
-        "#1536 T587–590 / actual single-N source capture and fresh versus physical-v3 resume"
-      ]
-    },
-    {
-      "category": "fr063-ordinary-output-existing",
-      "reason": "Existing narrative and interface validation/normalization consumers use the same changed ordinary cores.",
-      "contracts": [
-        "#1536 T587–590 / actual single-N source capture and fresh versus physical-v3 resume"
-      ]
-    },
-    {
-      "category": "fr063-ordinary-output-projection",
-      "reason": "Existing real-original ordinary output projection consumers remain affected by shared original lookup and writer plumbing.",
-      "contracts": [
-        "#1536 T587–590 / actual single-N source capture and fresh versus physical-v3 resume"
-      ]
-    },
-    {
-      "category": "portable-ordinary-readers",
-      "reason": "Shared public/declared ordinary and protected source dispatch retains exact bytes, absence, real lease admission and original failures.",
-      "contracts": [
-        "#1536 T587–590 / actual single-N source capture and fresh versus physical-v3 resume"
-      ]
-    },
-    {
-      "category": "fr063-reserved-validation-read-set",
-      "reason": "Shared protected dispatch and arbitrary close-dependency factory fallback must preserve reserved read-set freshness and ownership.",
-      "contracts": [
-        "#1536 T587–590 / actual single-N source capture and fresh versus physical-v3 resume"
-      ]
-    },
-    {
-      "category": "fr063-joint-live-n-prepared-resume",
-      "reason": "One actual existing NativeLinux Prepared cut0 resume after live N contribution wiring. Preserve frozen I, exact original game/identity/EOF/join/cleanup assertions and explicit HistoricalNUnavailable disposition; existing child/stop/EOF budgets unchanged.",
-      "contracts": [
-        "#1536 T587–590 / actual single-N source capture and fresh versus physical-v3 resume"
-      ]
-    },
-    {
-      "category": "fr063-joint-live-n-published-resume",
-      "reason": "One actual existing NativeLinux Published cut2 resume after live N contribution wiring. Preserve frozen I, exact original game/identity/EOF/join/cleanup assertions and explicit HistoricalNUnavailable disposition; existing child/stop/EOF budgets unchanged.",
-      "contracts": [
-        "#1536 T587–590 / actual single-N source capture and fresh versus physical-v3 resume"
-      ]
-    },
-    {
-      "category": "fr063-reasoning-prefix-source",
-      "reason": "Its existing whole-file historical inverse directly consumes the changed narrative implementation file; reverse only the exact T587 plumbing first, retaining the old ReasoningPolicySourceInventory and frozen target hash unchanged.",
-      "contracts": [
-        "#1536 T587/T589 / bounded composition with the existing strict whole-file reasoning source guard"
+        "#1536 T593 / genuine unchanged positive contrast; DFR-HOT1/DFR-HOT4"
       ]
     }
   ]

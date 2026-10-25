@@ -79,9 +79,11 @@ Current I/N implementation supersedes that document's historical missing-3b stat
 
 ## T592–598 execution
 
-- [ ] T592 Inspect the complete current source mapping, self-review this bounded
+- [x] T592 Inspect the complete current source mapping, self-review this bounded
   plan and obtain independent design review of closed transport, original policy,
-  actual phase ownership and diagnostic refusal. Publish WIP before long work.
+  actual phase ownership and diagnostic refusal. Independent Astra/high DESIGN
+  ACCEPT at fc666b9b8; no material blocker. Subsequent SOURCE/PREP/runtime are
+  separate gates. Publish WIP before long work.
 - [ ] T593 Add an actual temporal baseline with corrected public debug JSON carrying
   a valid timestamp and empty gm_thoughts_markdown, authored BEFORE actual N.
   With no matching skill/quest claims, N is valid and bytes remain unchanged; old
@@ -104,8 +106,8 @@ Current I/N implementation supersedes that document's historical missing-3b stat
   counts after discovery. Run cheap controls first; retain unrelated prior results
   only with explicit source/binary impact proof.
 - [ ] T597 Run genuine invalid-prefix and unchanged completion separately after
-  cheap gates, plus a DFR-specific source intervention if cheap evidence does not
-  prove its actual engine wiring. Inspect complete raw, exact bytes/turn/effects,
+  cheap gates. A DFR-specific source intervention must prove the actual engine
+  post-observer fence unless a cheap typed test reaches that genuine owner/fence; Inspect complete raw, exact bytes/turn/effects,
   named evaluation/recheck counts and owned cleanup before outcome claims.
 - [ ] T598 Independent outcome/recovery review and source-only remote checkpoint;
   then guardian/resident first-pass projection adapters, full reasoning sources/

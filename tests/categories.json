@@ -2,6 +2,36 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-reasoning-prefix-before-preparation",
+  "responsibility": "T593 genuine Stage43/corrected Ready temporal causal baseline: valid timestamp and empty debug thoughts are authored before actual N. Prove completed N/I and actual Capturing before requiring zero common preparation; old product must reach preparation and late Full missing_gm_thoughts. Complete physical images, stable debug, turn and owned cleanup remain required.",
+  "excludes": "No source-drift claim (N already observes debug), missing-API/compile/reflection RED, fabricated original/Ready/owner, new production callback, Full/S/B/M3/F1/T197 completion, cold/native crash, Windows or broad fixture replay. T594 source closure is a separate causal oracle.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointReasoningPrefix.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-live-n-source-unchanged",
+      "when": "Independent existing genuine valid-prefix full completion/inert repeat counterpart; reuse its exact Fact without a duplicate expensive fixture."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_EmptyReasoningPrefixRefusesBeforeCommonPreparation"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-live-n-before-first-interface",
   "responsibility": "One genuine corrected Stage/Ready N invocation observes achievements, then its actual later quests-read callback changes only consumed achievements bytes. Require live N closure before FIRST I PrepareResult, with zero I preparation/common/effects and an inert held same-engine repeat.",
   "excludes": "No synthetic N invocation/Ready/original/owner, new production callback, cold reconstruction, full NI/S/B/M3/F1/T197, Windows or broad replay. Passive window now begins after corrected public readback; prior baseline timing is not a direct performance comparison.",

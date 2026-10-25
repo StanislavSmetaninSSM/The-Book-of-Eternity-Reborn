@@ -1,3 +1,21 @@
+# T593 temporal debug-prefix fixture WIP — 2026-10-25
+
+Tests-only source is ready for independent SOURCE/FIXTURE selection review. One
+new singleton `fr063-joint-reasoning-prefix-before-preparation` uses the genuine
+source42/Stage43 caller and corrected public submission with valid timestamp but
+empty thoughts, before N. Existing physical callbacks/named timers prove actual
+N/I/Capturing and unchanged debug before the zero-common-preparation assertion;
+old-product RED additionally requires completed late Full/missing_gm_thoughts.
+The positive counterpart reuses `fr063-joint-live-n-source-unchanged`; no duplicate
+expensive Fact. Production/source42/null-seed/native code and budgets unchanged.
+New file plus optional helper plumbing/catalog/current selection only. Static
+JSON ownership and exact inverse to the prior helper pass; builds/discovery/runtime
+are UNRUN. No semantic/source-drift outcome or execution count is claimed yet.
+Raw/review/build preparation will stay external under `dfr-prefix`. Current33
+artifacts still match accepted metadata; prior Integration83f DLL/PDB/XML retained
+externally as evidence only before a future fresh test-only rebuild. No new cache
+or reused mutable fixture was introduced. All old raw and saves remain intact.
+
 # T592 DFR-prefix design WIP — 2026-10-25
 
 Previous bounded N acceptance receipt is remote
@@ -5,8 +23,9 @@ Previous bounded N acceptance receipt is remote
 all30,900 blobs/772,420,677 bytes, clean tree, receipt-only three Markdown delta.
 Next tracked tasks T592–598 implement the accepted bounded T179-Pd.3e HOT prefix.
 Canonical spec/plan describe current typed transport, original policy, phase owner,
-causal temporal versus source oracles and optimization. Independent design review
-is next; no new implementation/build/runtime has occurred. Full materialization
+causal temporal versus source oracles and optimization. Independent Astra/high
+DESIGN accepted fc666b9b8 with no material blocker. Tests-first T593 fixture
+authoring is in progress; production/build/runtime remain unchanged and UNRUN. Full materialization
 and known Windows/guardian/cross-OS/durable-history limits remain open.
 
 # T584/T591 bounded live N contribution accepted — 2026-10-25
