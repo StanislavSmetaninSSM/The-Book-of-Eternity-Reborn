@@ -14,7 +14,7 @@ Issue#1536; spec BATCH1..7 / plan.md, autonomous specification-review-wait waive
   catalog/PlanOnly/XMLuniform8; conditional genuine source42/twoimports/admission.
 - [x] T545 [US2] Conditional same-DLL/INPUT600/820/15 off/on originals with frozen
   uncapped D timings/CPU-GC, original native/oracles/owned cleanup preserved.
-- [ ] T546 [US2] T546-source-validation-batch.md honest measurements/limits,
+- [x] T546 [US2] T546-source-validation-batch.md honest measurements/limits,
   independent outcome/exact retention, source-only final publication/recovery.
 
 BATCH8->543/544/545/546; BATCH1/2/3/4->542/543/544; BATCH5->542/543/544; BATCH6->541/544/545;

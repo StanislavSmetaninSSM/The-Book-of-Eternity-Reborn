@@ -28,7 +28,7 @@ Stack: C#/.NET8/current SDK, PowerShell7 bounded categories, Python D-local tool
   twoimports, frozen original admission/CPU-GC. No original if cheap gate fails.
 - [x] T545 [US2] Same qualified DLL/newINPUT off/on original pair,600/820/15,
   unchanged timings/native/oracles/owned cleanup; no competing heavy work.
-- [ ] T546 [US2] Human findings/counts/full timer union/runtime/current limits,
+- [x] T546 [US2] Human findings/counts/full timer union/runtime/current limits,
   independent outcome+exact retention review; verified archive replacement and
   source-only final publication/remote-only recovery. No raw Git diagnostics.
 

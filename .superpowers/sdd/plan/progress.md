@@ -49,8 +49,18 @@ kernel96.6875->75.7031/user84.5938->86.3125. GC3065.365->3198.152ms partialinter
 fullpausecoveragefalse. Oneorderedpair/no100s/universalclaim. T544/T545 complete.
 T546 humanreport0D3C728F...AF4F/comparison1215A3B1...841C; exactretentionplan
 DD980E4E...B9FD538Dleaves516684040B/1261protected/10expectedworkspacetransitions,
-currentfull33+33andcheap472members verified. Independentoutcome/retentionreview
-pending; no deletionexecuted, allpriorraw retained untilacceptance.
+currentfull33+33andcheap472members verified. Independent complexAstra/high outcome/report/exactretention acceptedC231FA87...
+6DEDC/0unresolved. All538currentarchive members/full306JSON+4text/exact566timer
+union/CPU-GC/native/oracles/157pins and538targets/1261protected/10workspace
+transitions independentlyverified. Exactreviewedexecutor57FE81B4...6049 ran:
+538ordinaryDleaves516684040B retired, all1261protected unchanged/current3ZIPs
+intact. Replaced r71raw+oldcheap andfirstT545zero-coverageprobe raw/duplicates;
+allINPUT/CPU-GC/instrument/wrappers/binarybackups retained. T541..546 complete.
+Report0D3C728F...AF4F unchanged afterreview; no C# edits afterqualification0b.
+Final metadata-only publication is followed by fresh empty remote-only recovery
+and D T546b-final-publication.json; no repeat functional tests for Markdown.
+This recovery scope verifies all task changed blobs/instructions/native/project
+sources, not a newly built full checkout. Dedicated branch/localcopy kept.
 All diagnostics uncapped D-only. r71raw and first-r72raw/CPU-GC/INPUT/instrument/
 binarybackups retained; old DLLs verified in T5411d2 and T543b4c9 ZIPs. No raw Git.
 Workflow checkpoint: full probe exposed missed actual consumer binding; independent
