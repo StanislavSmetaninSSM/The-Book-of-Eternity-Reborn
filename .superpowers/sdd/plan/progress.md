@@ -1,4 +1,4 @@
-# r73 optimization policy and Linux handoff — implemented, review pending
+# r73 optimization policy and Linux handoff — reviewed and remotely restored
 
 2026-10-25, issue#1536, OPT1..6/T547..550. User requests all accumulated code for
 Astra, refreshed handoff and mandatory optimization rules. Base/published remote
@@ -24,8 +24,26 @@ local-onlydiagnostics. No runtime/source changes after0b qualification.
 Initial targeted verifierPASS:30existing relative links acrossactivecontent,
 8API names/current6categoryIDs, ancestor/Markdown-only/diffwhitespace checks.
 Full verification outputD:/BoeDiagnostics/handoff-r73-20261025, neverGit.
-Next:T549 separate Sol6.1/xhigh coherent documentation review/fixes, thenT550
-final push/exactref/freshGitHub-onlyrecovery. Linux runtimeUNRUN; no C# rerun.
+T549 accepted by separate gpt-6.1-sol/xhigh context review_handoff_policy_r73,
+exact ea2cb0fbc..a7bf0288adc446fbb950174d01f151a6f7bfbc96, no actionable findings.
+Parent inspected actual evidence/current diff and API/qualification claims.
+Review receipt local SHA2563DDA914F5524559736F66C4F714F3A535091923DFE26D545EC4510CDA29932B4.
+T550 remote ref a7bf0288 verified; fresh GitHub-only shallow clone (full current
+tree, no old local objects/alternates) restored all57788 trackedfiles including
+2959 code/scriptfiles. HEAD/tree exact, clean status and gitfsck connectivityPASS.
+Initial fullcheckout hit Windows longpaths; repository-local core.longpaths=true
+and restore completed successfully, no OSsetting change. Not a build/test result.
+Evidence: D:/BoeDiagnostics/handoff-r73-20261025/recovery-reviewed-head.json;
+review and other generated outputs also stay outsideGit. Final completion-note
+commit will be fetched into this same remote-only clone and exactref/tree/clean/
+instructions verified before final response. AllT547..550 complete; runtime
+source0b648 unchanged, LinuxUNRUN, no C# tests rerun for Markdown.
+Optimization assessment: no runtime computation is introduced by this docblock;
+new caches are unnecessary. Policy now requires future agents to assess and
+prove reuse through existing services while preserving fresh integrity gates.
+Next owner: Astra uses current branch/latest verified publication SHA, reads
+rootAGENTS/performance/currenthandoff, then tracks freshLinuxPREP/impactselection/
+NativeLineage controls and originalfive. No automatic message or Linux launch.
 
 # r72 common source-validation directory DATA — complete, both pairs analyzed
 

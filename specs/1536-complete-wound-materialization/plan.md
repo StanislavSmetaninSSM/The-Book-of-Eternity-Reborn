@@ -18,11 +18,11 @@ Spec: [r73 requirements](spec.md). Existing dedicated checkout/branch retained.
   docs/development-workflow.md, docs/testing.md, recovery/crash5/linux-handoff.md
   and quickstart.md entry point. Check APIs against current source and r72 report.
   Root/workflow make cacheability rationale and integrity/effect evidence required.
-- [ ] T549 [US1,US2] Targeted link/contract/facts/diff checks and independent
+- [x] T549 [US1,US2] Targeted link/contract/facts/diff checks and independent
   Sol6.1/xhigh documentation review; inspect actual findings and fix validated gaps.
   If review uncovers an unresolved persistence/ownership design, consult Astra/high
   for that concrete risk rather than silently expanding this documentation block.
-- [ ] T550 [US2] Source-only final commit/push, exact remote SHA, fresh remote-only
+- [x] T550 [US2] Source-only final commit/push, exact remote SHA, fresh remote-only
   retrieval and clean restored checkout; record actual verification scope/results
   and provide the code/handoff entry point. No raw artifacts or extra C# run.
 
@@ -36,6 +36,21 @@ evidence mistaken for available cloud inputs. Verify all in T549 against source.
 Optional extension auto-commit/context hooks are not used: exact source-only
 checkpoint staging and manual canonical context updates prevent broad staging.
 No new data model, API or duplicate research/contract documents are necessary.
+
+Verification: setup-plan/setup-tasks/check-prerequisites and r73 consistency PASS;
+30 active relative links, 8 current operation API names and 6 handoff category IDs
+verified. Git diff whitespace/qualified ancestry/Markdown-only checks PASS.
+Separate gpt-6.1-sol/xhigh review of ea2cb0f..a7bf0288 accepted, no findings.
+Fresh GitHub-only shallow clone restored the complete a7bf0288 current tree:
+57788 tracked files/2959 code+script files, clean status, exact tree and Git
+connectivity PASS, no local object borrowing. Initial Windows filename-length
+checkout failure resolved using repository-local core.longpaths and restore;
+no OS setting changed. This verifies retrieval, not builds or Linux execution.
+Final completion-metadata commit is fetched into that same remote-only checkout
+and checked against the exact remote ref before the final handoff response.
+Evidence stays D:/BoeDiagnostics/handoff-r73-20261025; no raw Git content.
+Optimization assessment: this block changes instructions only, so no computation
+needs a new cache or runtime test. Runtime qualified source0b648 remains unchanged.
 
 # r72 Common Source-Validation Batch Implementation Plan
 
