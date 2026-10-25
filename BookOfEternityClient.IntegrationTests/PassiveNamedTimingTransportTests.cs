@@ -154,8 +154,7 @@ public sealed class PassiveNamedTimingTransportTests(ITestOutputHelper output)
             using var window = recorder?.StartWindow(captureEvents: mode == "full");
             if (mode == "full") capture.RequirePassiveTiming();
             measuring = true;
-            using (fixture.Files.EnterOperationTimingContext())
-                await fixture.ReadEightAsync(synchronous);
+            await fixture.ReadEightAsync(synchronous);
             measuring = false;
             window?.Dispose();
             if (window is not null)

@@ -1,3 +1,16 @@
+# Passive SOURCE findings corrected — fresh stack still UNRUN
+
+Independent Astra/high reviewed whole9ea9..b34 passive block. Two blocking
+thread-static context lifetimes found: new metadata comparison and activated Qte
+fixture held EnterOperationTimingContext across await. Removed both outer scopes;
+real readers and seal checks own their synchronous scopes. All six Qte counters
+use existing files.MeasureOperation and every strict oracle remains unchanged.
+Other Core/transport/closing/selection SOURCE had no blocker. Short delta review
+pending; queue GREEN/transport9/three expensive cases/new Linux input UNRUN.
+WIP b34ab411637b048b57052c4431be0c2cf4db7e67 was remotely verified. Original
+remote base still exactlyb377c9d1d0c6cfa5ce20b383d84eac069b8d2991.
+Next: accepted SOURCE delta, freeze one SHA and fresh five managed builds.
+
 # Full passive timing implementation WIP — causal RED verified, coherent SOURCE next
 
 Actual causal RED run161325-202-62100-95c5a9ec365748cb858885b866d4094f on

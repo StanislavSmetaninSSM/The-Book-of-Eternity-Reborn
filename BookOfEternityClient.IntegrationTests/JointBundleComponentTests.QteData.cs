@@ -35,7 +35,8 @@ public sealed partial class JointBundleComponentTests
             using var source = Files.BeginSourceDataOperationIfNeeded();
             Assert.NotNull(source);
             using var validation = Files.BeginRecoveryValidation(Lease);
-            using (Files.EnterOperationTimingContext())
+            // The real async validators own their synchronous timing contexts;
+            // a thread-local context must never span these awaits.
             {
                 var offset = ResetCandidateCapture("QteCalculationSources");
                 for (var i = 0; i < 3; i++)
