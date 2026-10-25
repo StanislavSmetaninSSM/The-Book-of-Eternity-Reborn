@@ -1,9 +1,28 @@
+# Source-adapter fresh builds verified — discovery/plans/PREP next
+
+Frozen build7ff3d0c99c5843f6a6d21f9de90cccbfafa2c7b1, all5actual builds exit0:
+Game4:37.67/33warnings; Support43.89s/23; unit2:23.14/26;
+integration4:24.34/101; bridge14.35s/14. Every build0errors, fresh XML enabled.
+All11actualDLL/PDB entries bound, shared copies uniform, all5Info7ff,18exact
+PDB/source checks match. SHA256 prefixes: GameE0350E9D/Support953EB6F6/
+Unit60695442/Integration3E00F564/BridgeCDD309F7; full pins in external
+managed-binding-source-adapter.json and pdb-source-adapter.json.
+
+Staging wording corrected after review: cheap9/166 includes unit5/96 AND
+integration4/70, not unit-only. Actual category selections were already correct;
+external source-adapter-cheap-selection.json uses both original adapters. These
+four integration controls use independent minimal files/lifecycle fixtures,
+not the old applied archive. New genuine Linux preparation and integration6/16
+follow cheap GREEN. No runtime on corrected code yet. Discovery/NoBuild exact
+plans/PREP next. E7 record/archive unchanged; new record path is external
+linux-applied-template-source-adapter/source-record.json, initially absent.
+
 # Source-adapter SOURCE accepted — fresh builds and182 affected cases next
 
 Separate Astra/high accepted actual2c07353ccb9bf0c4232da7c7fa2501e9a09ee4dd
 coherent implementation/tests/docs without blocking findings. Per-call physical
 counter finding resolved. Reviewed exact impact: canonical15categories/182fresh
-cases (unit9/166; integration6/16) plus332retained =514distinct after GREEN.
+cases (cheap9/166:unit5/96+integration4/70; thenintegration6/16) plus332retained =514distinct after GREEN.
 Native40 retained with prior pins; patch does not change their owner/protocol/
 native/timing contracts. Historical terminal15s intermittent failure stays OPEN.
 Fresh Game/Support/unit/integration builds will reconcile actual shared copies;

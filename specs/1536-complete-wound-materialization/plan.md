@@ -24,7 +24,8 @@ source counters and negative fresh fences must prove this before cold gameplay.
 
 Independent SOURCE accepted2c073 without findings. Exact impact selection is
 tests/selections/1536-linux-source-adapter-regression.json:15 categories/182cases,
-staged cheap unit9/166 then new genuine Linux input and integration6/16. Retain
+staged cheap controls9/166 (unit5/96 and integration4/70), then new genuine Linux
+input and integration6/16. Retain
 332 prior distinct cases and native40 with original bindings/TRX; they do not
 execute the changed source-adapter branch. Revised union is514, not a single
 uniform-build run. Shared managed copies must be reconciled by fresh builds;
