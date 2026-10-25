@@ -29,7 +29,7 @@ evidence. This maintenance block does not complete the wound-materialization fea
   Known live N refusal remains sticky for that checkpoint/G in the same engine;
   expiry or repeated entry cannot select resume to erase it. A new process retains
   the already stated non-durable limit; a different genuine operation/G is unaffected.
-- [ ] T589 Source/optimization/selection review; fresh affected managed builds,
+- [x] T589 Source/optimization/selection review; fresh affected managed builds,
   catalog/PlanOnly/PREP; cheap negatives and changed-only real writer controls.
 - [ ] T590 Genuine fresh pre-preparation vertical plus narrowly selected current
   Prepared/Published resume regressions: no repeated projector/UTC or already
