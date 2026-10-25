@@ -1,3 +1,16 @@
+# Current-game Linux input OUTCOME ACCEPTED — affected55 next
+
+Separate Astra/high accepted actual generator summary/TRX, full archive/payload
+verification/current pins/applied marker/owner closing and complete capture.
+No open input findings; cache55 admitted on the new immutable Linux template.
+Only old generator20c7/records.jsonl (1376504452bytes) retired after new full raw
+verification and old PID29746/root absence/closed report checks. Old archive,
+record/initial/report/verification/TRX, GetAttributes RED measurements and every
+other raw/game root retained; exact retirement record is external.
+Next exact cache-unrun-after-boundary-selection.json: boundary6+phase1+proof6+
+Qte1+Semantic1+reserved32+portable8 =55, 8 descriptors. No source edits/rebuild.
+Then native40 and original5 only after successful cache/outcome gate.
+
 # Current-game genuine Linux generator GREEN — input OUTCOME review pending
 
 Run104312-281-34211-d6563096893b4a86860e59e389232437 on compiled b18/074a:
