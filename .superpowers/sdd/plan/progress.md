@@ -1,3 +1,19 @@
+# Native OUTCOME ACCEPTED — exact original5 next
+
+Separate Astra/high accepted current40uniquePASS/6descriptors and additional4-case
+Main recurrence without unique inflation, exact pins/budgets and full functional
+oracles. Terminal foreground/EOF/scoped retirement remain genuine; intentional
+Uncertain negatives do not replace positive cleanup. T553/T565/T567 complete.
+Historical first15s terminal-fence failure stays OPEN/cause unknown; two current
+diagnostic passes permit bounded qualification, not a claimed intermittent fix.
+Keep its raw and Stopping root unchanged.
+
+Only next admitted command: scripts/test-csharp.ps1 -Category
+fr063-joint-interface-crash-current -NoBuild. Exact original Theory5cases;
+Linux220s child+10sstop+10sEOF/category15min unchanged, own native package/current
+3b97managed runtime. No Windowsfixture/five-v2/source42 substitution or limit edits.
+Original5 are UNRUN at this checkpoint; capture/results outside checkout.
+
 # Native40 + bounded Main recurrence GREEN — final native OUTCOME pending
 
 Additional original Main4 run121603-480-45717-f21dd764517149538a10301afb92bba7:

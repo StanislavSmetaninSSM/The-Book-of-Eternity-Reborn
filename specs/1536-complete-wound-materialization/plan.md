@@ -6,13 +6,13 @@ lost terminal primary failure. No production root cause is asserted for terminal
 
 - [x] T564 Keep output-audit protocol channels live until original native stop;
   preserve strict stream/FD/cleanup assertions and other owner-close negatives.
-- [ ] T565 Add a small fixture journal using existing named timer scopes; primary
+- [x] T565 Add a small fixture journal using existing named timer scopes; primary
   failure and actual RPC response before cleanup; phase begin persisted immediately.
   Receiver context never spans await. Scope only terminal-fence/terminal-bridge.
 - [x] T566 Independent coherent SOURCE, backup current producer bindings, fresh
   TestSupport/unit/integration with unchanged production bytes, catalog/PDB/PREP.
   No game/native rebuild or genuine-input regeneration if game pin remains41C0.
-- [ ] T567 Host8 causal regression, main4/terminal12 diagnostic outcomes and cause
+- [x] T567 Host8 causal regression, main4/terminal12 diagnostic outcomes and cause
   correction as justified; accepted complete native40 before original5.
 
 Optimization assessment: timer/response transport is small diagnostic work, not

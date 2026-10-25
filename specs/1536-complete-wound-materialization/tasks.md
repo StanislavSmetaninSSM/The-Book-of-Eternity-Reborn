@@ -12,11 +12,11 @@ Canonical handoff r73; source b377c9d1d0c6cfa5ce20b383d84eac069b8d2991.
   - [x] T561 Preserve strict comparison and add late/nested actual controls (runtime pending T563).
   - [x] T562 Coherent SOURCE/PREP review, fresh managed builds/bindings/discovery.
   - [x] T563 Genuine new Linux DATA after game-hash change and targeted regression.
-- [ ] T553 Separate original NativeLineage Linux controls and complete evidence.
+- [x] T553 Separate original NativeLineage Linux controls and complete evidence (current40 PASS; historical intermittent OPEN).
   - [x] T564 Output-audit native-stop-before-channel-close fixture correction (causal host8 GREEN).
-  - [ ] T565 Existing namedtimers and primary terminal failure before cleanup.
+  - [x] T565 Existing namedtimers and primary terminal failure before cleanup.
   - [x] T566 Grouped SOURCE/fresh affected managed builds/PDB/catalog/PREP (original effective budgets).
-  - [ ] T567 Causal host8/main4/terminal12 and complete reviewed native40.
+  - [x] T567 Causal host8/main4/terminal12 and complete reviewed native40.
 - [ ] T554 Original five only after gates, unchanged current budgets/oracles.
 - [ ] T555 Independent outcome review, compact findings/remote checkpoint.
 T551->T552->T553->T554->T555. Failed or incomplete gates block dependent work.
