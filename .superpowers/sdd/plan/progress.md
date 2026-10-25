@@ -1,4 +1,21 @@
-# T584 live N source contribution — PREP accepted, first causal actual next
+# T584 live N source contribution — first actual causal RED, control next
+
+First `fr063-joint-live-n-source-drift -NoBuild` actual on checkpoint
+`03577d704ae645ecf6a46fc271ab182b1cc690ac` / compiled b08dfadd completed 1/1,
+FAIL as intended: actual preparation entries 1 versus expected 0 at the primary
+oracle after genuine prerequisites. The source was actually read and returned
+twice after corrected submission; exactly one capture cut appended two whitespace
+bytes to achievements, retaining JSON semantics. Baseline advanced turn 42→43
+and performed 160 post-cut mutations: this is a real omitted dependency, not an
+absent-API or setup failure. Framework body 3:05.961, runner wall 3:39.210;
+exit 1, no skip/timeout/duplicate, complete selection and owned/runtime cleanup.
+The diagnostic fixture root is physically absent. Full TRX/raw/source images and
+Root causal verification stay external under `live-n-T586/actual-red1`.
+Initial tool invocation returned `aborted before dispatch` with no stated reason;
+Root confirmed no run directory/process and retried the identical action once.
+Only the second invocation executed; no alternative runner/environment or duplicate.
+Independent causal EVIDENCE review and separate unchanged control remain pending.
+No production N-pass changes yet; no GREEN or full NI/S claim.
 
 Tests-only source `b08dfadd5b987bc370a9c5452c6a3dac940a1c9d` independently
 SOURCE accepted by Astra/high. Fresh Integration XML build: exit 0, 101 warnings,
