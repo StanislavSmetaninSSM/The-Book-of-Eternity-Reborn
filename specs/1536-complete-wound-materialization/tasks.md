@@ -1,3 +1,23 @@
+# CRASH5 — revision72 common source-validation directory DATA batch
+
+Issue#1536; spec BATCH1..7 / plan.md, autonomous specification-review-wait waiver.
+
+- [ ] T541 Canonical phases/prerequisites/consistency, written specification links,
+  source-only checkpoint/recovery and qualified1d2 eight-DLL backup.
+- [ ] T542 [US1] Cheap real source/reserved sync/async metadata reduction RED,
+  category ownership and minimal off/on seam; unchanged bytes/native/source checks.
+- [ ] T543 [US1] Explicit existing-service bounded batch/owner gates/ordinary
+  classifier plumbing/strict original control/counters; GREEN and integrity coverage.
+- [ ] T544 [US1] Complex independent coherent review/fixes, bounded affected tests,
+  catalog/PlanOnly/XMLuniform8; conditional genuine source42/twoimports/admission.
+- [ ] T545 [US2] Conditional same-DLL/INPUT600/820/15 off/on originals with frozen
+  uncapped D timings/CPU-GC, original native/oracles/owned cleanup preserved.
+- [ ] T546 [US2] T546-source-validation-batch.md honest measurements/limits,
+  independent outcome/exact retention, source-only final publication/recovery.
+
+BATCH1/2/3/4->542/543/544; BATCH5->542/543/544; BATCH6->541/544/545;
+BATCH7->541/546. T541->542->543->544->545->546. No whole-owner/verdict cache.
+
 # CRASH5 — revision71 shared preparation/main-admission directory DATA
 
 Issue#1536; FUSE1..7 / plan.md, autonomous specification-review-wait waiver.

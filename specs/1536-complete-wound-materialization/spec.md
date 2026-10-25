@@ -1,3 +1,62 @@
+# r72 — Common source-validation directory DATA batch
+
+Issue #1536; user explicitly requests shared source checks through the existing
+service, integrity, cheap fixtures and same600-second original with uncapped D
+measurements. Standing autonomous execution/specification-review-wait waiver.
+US1(P1): reduce repeated physical directory checks in bounded source work.
+US2(P2): measure the complete qualified implementation without weakened fences.
+
+- BATCH1: New explicit source-directory batch uses existing ValidationOperation/
+  ServiceCacheStorage for positive directory DATA only, exact ordinal path and
+  separate Trusted/Windows API-role keys. No leaf, absence, error, validation
+  verdict, authority, TTL/global cache or whole SourceDataOperation segment cache.
+- BATCH2: Lifetime is one serial first-source reader or one serial fresh-source
+  verification loop. Never survives return to arbitrary consumer code. FreshFence
+  and ExitProof start independent directory epochs after original full opening
+  authority, dispose before generation/full ending authority. Existing short
+  thread-bound ReadPathObservationPhase keeps its own original lifetime.
+- BATCH3: Every reuse requires exact manager/lease/entry/ambient registration,
+  existing source owner serial slot or exact healthy borrowed reservation, same
+  quiescent root version, callback-free ordinary route and enabled policy. No
+  shared mutable global state; thread hop under serial ownership is supported.
+  Close/error/reentry/retry/overlap/mutation/version/ownership loss permanently
+  retires DATA. Suppression, arbitrary read/activity/physical/timing callbacks,
+  workers, special authority and prepared active-cleanup mutations stay fresh.
+- BATCH4: Explicit optional observation interface reaches ordinary preparation,
+  open, completion and existing main-admission directory classifiers. Lexical/
+  confinement/grants/type/refusal order, fresh file leaf/native handle/path,
+  worker inventory/main persistence bytes, source bytes/absence/mtime/generation,
+  physical closing and expected-version effect/success fences remain. Protected
+  source readers retain original fresh path. No new security or OS privileges.
+- BATCH5: Typed minimal real-file fixtures prove fewer real GetAttributes attempts
+  for sync/async and source/reserved consumers, fresh reads/authority counts and
+  equal bytes/mtime; causal TDD RED then GREEN. Negative drift/absence/namespace/
+  owner/lifetime/worker/hooks/cancellation/overlap/version controls preserve
+  refusal. No reflection/game bootstrap. Passive named timers and batch counters
+  distinguish requests/source attempts/hits; no byte/record collection quotas.
+- BATCH6: Explicit impact categories, discovery/PlanOnly, XML docs/uniform8DLL,
+  independent complex code review/fixes before original. Strict test-only parent/
+  both-child batch off/on control, other caches enabled. Fresh genuine source42/
+  twoimports and frozen INPUT/binary/native/CPU-GC admission. Same qualified DLL/
+  INPUT off/on originals each600child/820shared/15category, Cfixtures/Ddiagnostics,
+  current sealed passive first-window timing, original oracles/native/cleanup.
+  Failed cheap integrity/effect gate prevents expensive original/enabled release.
+- BATCH7: T546-source-validation-batch.md records counts/times/large remaining
+  costs and honest single-pair limits; independent outcome/exact-retention review.
+  Source-only checkpoints/push/verified remote-only recovery. Preserve latest
+  accepted raw until complete accepted replacement; keep INPUT/CPU-GC/instrument/
+  wrappers/binary backups. No raw Git content, GM/schema/native/process changes.
+
+Alternatives: choose explicit bounded directory DATA; reject whole-owner cache
+across consumer returns (arbitrary raw changes need not rotate epoch), cached
+successful authority/FreshFence, and stretching r71 phase across await. Existing
+source serial/root/receipt proof suffices; no new incompatible reservation for
+SourceDataOperation. Reserved completion uses its existing exact reservation.
+Acceptance: fewer actual metadata attempts with unchanged required source and
+native/main checks on cheap fixtures, preserved integrity controls and reviewed
+qualification, then an honest complete original comparison. No promised100s gain.
+No unresolved design choice. No public gameplay/GM contract change.
+
 # r71 — Share directory DATA between ordinary preparation and initial main admission
 
 Issue #1536. Owner says continue after r70 recommendation: cheap actual fixtures

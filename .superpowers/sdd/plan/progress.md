@@ -1,3 +1,20 @@
+# r72 common source-validation directory DATA — design recorded
+
+Issue#1536, BATCH1..7/T541..546 in canonical spec/plan/tasks. Base6921f8838;
+current qualified1d2bd1220 baseline. User autonomy/specification-review wait waived.
+Root cause retained r71:914435GetAttributes/52.2774s, fresh source fences20.7063s
+and8.8902s (overlap). New explicit bounded directory batch selected; no global,
+whole-source-segment or verdict cache. Independent bounded Astra/high design
+consultation supports version/serial proof without new source reservation; existing
+reserved owner uses exact reservation, prepared mutation route stays fresh. Passive
+arbitrary read/activity/timing callbacks excluded. Per-read batch closes before
+consumer return; fresh fence independent epoch closes before generation/ending
+full authority. T541 actual setup-plan/setup-tasks/prerequisites completed; bridge-equivalent
+read-only consistency7requirements/6tasks/100%coverage/0gaps/conflicts. Written
+links presented under waiver; baseline8DLL ZIP9members verified SHA29F13CA6...DF509.
+Pending RED/GREEN/review/qualification/original/outcome.
+All diagnostics uncapped D-only; r71raw/INPUT/CPU-GC/instrument/backups protected.
+
 # r71 initial ordinary/main-admission directory DATA — code gate accepted
 
 Canonical specs/1536-complete-wound-materialization plan/spec FUSE1..7, T535..540,

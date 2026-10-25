@@ -1,3 +1,47 @@
+# r72 Common Source-Validation Batch Implementation Plan
+
+> Inline Superpowers executing-plans/TDD/systematic-debugging; parent owns block,
+> separate complex independent review. Canonical Spec Kit, issue#1536.
+
+Goal: share positive directory DATA during bounded source work, retain all fresh
+source/authority/effect fences. Spec BATCH1..7. Base6921f8838, qualified1d2bd1220.
+Architecture: IReadPathObservations common explicit interface; old synchronous
+phase unchanged. SourceValidationBatch owns existing service DATA and exact owner/
+lease/registration/entry/root proof through async serial work. Ordinary helpers
+accept optional observations; protected readers stay fresh. Owner-controlled
+per-read and fresh-loop lifetimes, no ambient lookup or cross-consumer batch.
+Stack: C#/.NET8/current SDK, PowerShell7 bounded categories, Python D-local tools.
+
+- [ ] T541 Canonical phases/prerequisites/consistency and presented written links
+  under waiver; source-only publication/recovery; qualified1d2 baseline8DLL backup.
+- [ ] T542 [US1] IntegrationTests/SourceValidationBatchTests.cs real ten-file
+  source/reserved sync/async metadata RED (minimal bool comparison seam only),
+  category ownership. Named actual GetAttributes/native/main/source observations.
+- [ ] T543 [US1] Core/IReadPathObservations.cs and SourceValidationBatch.cs;
+  SourceDataOperation/ValidationReadSet owner gates and bounded lifecycle,
+  OrdinaryReads+FileSystemManager/MainRunFence/AdmissionDirectoryObservations
+  explicit classifier plumbing. GREEN reduction/equal bytes/mtime/fresh sources;
+  hook/foreign/close/retry/mutation/overlap/await/refusal and independent fresh
+  fence tests. Strict test-only lifecycle control+uncapped batch counters.
+- [ ] T544 [US1] Coherent separate complex review/fixes; affected categories,
+  catalog/PlanOnly/XMLuniform8 qualification; conditional genuine new source42/
+  twoimports, frozen original admission/CPU-GC. No original if cheap gate fails.
+- [ ] T545 [US2] Same qualified DLL/newINPUT off/on original pair,600/820/15,
+  unchanged timings/native/oracles/owned cleanup; no competing heavy work.
+- [ ] T546 [US2] Human findings/counts/full timer union/runtime/current limits,
+  independent outcome+exact retention review; verified archive replacement and
+  source-only final publication/remote-only recovery. No raw Git diagnostics.
+
+T541->542->543->544->545->546. BATCH1/2/3/4->542/543/544;
+BATCH5->542/543/544; BATCH6->541/544/545; BATCH7->541/546.
+Constitution: trusted-local single-player, no OS privilege; active mutations fresh,
+accepted-turn/source/receipt/state integrity unchanged, pre-release no migration.
+Review focus: first-source DATA leaking into final epoch; async foreign/sibling
+borrower; arbitrary passive callbacks; prepared mutations mistaken for quiescent;
+leaf or negative DATA accidentally retained. Tests assigned T542/543, review544.
+Research/model/contracts live in this plan/spec, no new external API or duplicate
+planning documents. Existing task branch/isolation reused by user preference.
+
 # r71 Shared Ordinary Preparation/Main Admission DATA Implementation Plan
 
 > Inline Superpowers executing-plans/TDD/systematic-debugging; parent implements,
