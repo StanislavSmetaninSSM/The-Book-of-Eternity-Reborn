@@ -20,13 +20,13 @@ executor under autonomous scope, not a new userfeature or claimed crossOSsupport
   copies remain independent. Update JointOperationBoundaryTests,
   JointCompletedProofReadTests and the selected JointAppliedStoryComponentTests
   phase-reader consumer; Windows default unchanged.
-- [ ] T557 JointBundleComponentTests.LinuxApplied.cs LinuxAppliedData_PublishesCurrent-
+- [x] T557 JointBundleComponentTests.LinuxApplied.cs LinuxAppliedData_PublishesCurrent-
   MinimalTemplate uses existing private Fixture in samepartialclass. Genuine bound
   commonplan/cache -> exactpreflightfingerprints -> normalizerCommitted using genuine
   manifest.RollbackBackups -> phaseunapplied -> progressionApplied/capability/witness ->
   freshphaseapplied. Close source/reservation/lease, captureexternalarchive, normal
   fixtureDispose, then create-newsuccessrecord. No rollback/header/marker resealing.
-- [ ] T558 Catalog owners fr063-joint-linux-applied-input-controls(1min) and
+- [x] T558 Catalog owners fr063-joint-linux-applied-input-controls(1min) and
   fr063-joint-linux-applied-preparation(initial5min); exactpreparationselection, fresh
   integration XML/PDB/catalog/PlanOnly, independent SOURCE/PREP, controls8 then
   genuineprep1. Existing defaultspremainunchanged. EnvBOE_TEST_LINUX_APPLIED_RECORD
