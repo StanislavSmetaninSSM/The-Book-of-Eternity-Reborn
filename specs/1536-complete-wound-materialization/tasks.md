@@ -1,7 +1,7 @@
 # Linux qualification 2026-10-25 — #1536
 
 Canonical handoff r73; source b377c9d1d0c6cfa5ce20b383d84eac069b8d2991.
-- [ ] T551 Fresh Linux native/XML builds, exact impact selection/catalog/PlanOnly,
+- [x] T551 Fresh Linux native/XML builds, exact impact selection/catalog/PlanOnly,
   hashes and independent PREP review.
 - [ ] T552 Reviewed cheap common cache/affected-consumer Linux contracts.
 - [ ] T553 Separate original NativeLineage Linux controls and complete evidence.

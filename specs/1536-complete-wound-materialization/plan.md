@@ -1,3 +1,11 @@
+# Linux qualification PREP accepted — 2026-10-25
+
+T551 accepted by separate gpt-6.1-sol/xhigh after coherent source/PDB/selection/
+optimization review and31/31diagnostic GREEN. Source9a6c93cd5, unit/shared637;
+exact bindings in canonical checkpoint. Cache35categories/36descriptors/504cases,
+native6/40 and originalTheory1/5 planned; runtime gates remain pending. Raw outside
+checkout. Execute these stages in order without repeating passed diagnostics.
+
 # Linux qualification 2026-10-25 — WIP, issue #1536
 
 Base/source: b377c9d1d0c6cfa5ce20b383d84eac069b8d2991; working branch
