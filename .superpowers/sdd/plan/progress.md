@@ -1,4 +1,20 @@
-# T584 live N source contribution — before-FIRST-I PASS, after-capture next
+# T584 live N source contribution — after-capture fixture failure preserved
+
+After-capture actual at runtime `51482147df4a18653818005448a72d0a110b9890`
+completed 1/1 FAIL, zero skip, framework60.8812687s / runner87.3455746s,
+no timeout and both cleanup flags true. The actual capture hook was reached,
+but the probe asserted equality between four initial physical-read hooks and two
+public-reader return hooks BEFORE performing its source intervention. New N fresh
+checks legitimately use explicit leased readers with initial hooks and no public
+return hook. The fixture exception was caught by the engine; later RawImages(null)
+masked it with a secondary ArgumentNullException. NO drift was introduced and no
+after-capture gameplay verdict is claimed. Complete raw/TRX/parsed boundaries and
+failure verification remain external in `live-n-implementation/actual-after-capture-drift-1`.
+Owned root absent and all33 files unchanged. Production fences stay intact.
+Next correct the test probe's distinct read phases and missing-cut diagnostic,
+review/fresh Integration build/PREP; unchanged/cold2 stay UNRUN. Before-FIRST-I
+PASS remains at its original actual provenance; affected fixture reruns need an
+explicit impact decision after the correction.
 
 First genuine vertical PASS at runtime `d3df8320d63c3ad5694e93353f89d9e547ad2cfd`:
 `fr063-joint-live-n-before-first-interface`, 1/1 PASS / zero skip, framework
