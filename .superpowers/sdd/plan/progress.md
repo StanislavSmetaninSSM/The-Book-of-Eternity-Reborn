@@ -1,4 +1,18 @@
-# T584 live N source contribution — cheap OUTCOME/heavy PREP accepted
+# T584 live N source contribution — before-FIRST-I PASS, after-capture next
+
+First genuine vertical PASS at runtime `d3df8320d63c3ad5694e93353f89d9e547ad2cfd`:
+`fr063-joint-live-n-before-first-interface`, 1/1 PASS / zero skip, framework
+42.2746440s, category 51.3834303s / runner 65.3346050s, no timeout, both cleanup
+flags true. Actual corrected N source reads/returns2/2 and one later-read cut
+append exactly two whitespace bytes to achievements, preserving JSON semantics.
+The actual engine refuses with `narrative_policy_source_changed` for that path:
+I preparation0, common preparation0, capture callbacks0, turn42 unchanged and all
+223 cut/after/repeat images exact. KnownLiveNHold survives same-engine reentry;
+N/I/preparation scope counts do not grow. Owned root absent; all33 binary files
+unchanged. Full raw/TRX/root semantic checks are external in
+`live-n-implementation/actual-before-first-I-1`.
+This is expected refusal, not a full healing completion or speedup comparison.
+Next accepted singleton: after-capture drift; unchanged and cold2 remain UNRUN.
 
 Independent Astra/high ACCEPT cheap130 OUTCOME and staged heavy5 PREP at remote
 `7f68a17dd8a01ed43de73cbdc1580a5f4e34d39d`, no material findings. It inspected
