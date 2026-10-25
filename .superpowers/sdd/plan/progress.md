@@ -1,3 +1,21 @@
+# Current Main4 diagnostic PASS — initial15s failure remains unexplained
+
+Run120341-665-44130-90b2aaa2c5ba4c7bb5f292f1ad945df6 on same3b97 DLLs:
+4planned/completed/PASS,exit0,00:00:56.7058343,no skip/timeout/duplicate,cleanup.
+Actual3min category and15s guardian unchanged; guardian echildtrue/driver0/
+emergency0/failures0/deadlinefalse. Actual durableRunning, two original dispatches,
+draft/cancel/takeover/resize/scoped stop/retirement assertions all pass.
+Main record endedStopped. Journal fa650fab3aa9416b828d3727da360c94 is complete:
+486rows/141935bytes, all timers balanced/0open/485attempted=stored before final
+marker. No primary failure occurred in this run. StartShell2.6076202s/readiness
+0.226488s; inclusive durations, not a speedup or explanation of initial failure.
+
+This is a current diagnostic PASS, not a claimed fix of the preserved earlier
+15s failure; its primary cause remains OPEN. Exact evidence in external
+native-main-current-4-verification.json. Current native24+4=28distinct PASS;
+terminal12 is next under original3min category/15s guardian. Full native40 and
+original5 remain unqualified; all old failure evidence/roots retained.
+
 # Native nonterminal24 GREEN — output-audit causal fix verified, Main4 next
 
 Run115909-982-42454-f3265f7ad7ae4b9697ce9ff239a36de3 on current3b97Support72/
