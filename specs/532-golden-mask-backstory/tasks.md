@@ -13,7 +13,7 @@ T005 — обязательный gate: до него следующие зад�
 - [x] T002 Зафиксировать исходный запрос, US1–US3 и первичные FR/AC в `specs/532-golden-mask-backstory/spec.md`, отделив предложения от согласованного канона; новое расширение учитывается в T018.
 - [x] T003 Через Spec Kit подготовить проект `plan.md`, `data-model.md`, `contracts/gameplay.md`, `quickstart.md` и этот `tasks.md` в `specs/532-golden-mask-backstory/`; отметить открытые gates.
 - [x] T004 Проверить согласованность и независимым контекстом проверить первоначальный diff `cbd417223..e2b42e268`; findings/ограничения в `specs/532-golden-mask-backstory/plan.md`. Не заменяет ревью T018.
-- [ ] T018 Исследовать уточнённые автором explorable memories для обоих источников и POV владельца: navigation/cast/GM/turn/scheduler/history/recovery и все десять q4. Обновить семь документов этой feature до FR-01–21/AC-01–10; провести consistency и независимое ревью нового блока, опубликовать проверенный remote checkpoint. Только investigation/documentation, без runtime.
+- [x] T018 Исследовать уточнённые автором explorable memories для обоих источников и POV владельца: navigation/cast/GM/turn/scheduler/history/recovery и все десять q4. Обновить семь документов этой feature до FR-01–21/AC-01–10; провести consistency и независимое ревью нового блока, опубликовать проверенный remote checkpoint. Evidence: `43205fcb7..ef9b05707`, review/checkpoint в plan; только investigation/documentation, без runtime.
 
 ## Phase 2 — условия реализации
 
