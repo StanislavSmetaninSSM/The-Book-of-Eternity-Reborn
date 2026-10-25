@@ -1,3 +1,45 @@
+# Linux current applied-DATA preparation implementation plan
+
+> Inline superpowers:executing-plans with mandatory separate Astra/high review.
+Goal: unblock T552 with genuinecurrentLinuxDATA, preserving historicalcross-OSFAIL.
+Architecture: reuse component issuers + normalizer/progression publishers and existing
+observedDATA capture/materializer; independentcopies, no product/runtime change.
+Stack: existing .NET8/C#/xUnit/PowerShell runner, external local diagnostic storage.
+Spec: spec.md LINUXDATA1..5, issue1536. User waived technical clarification waits.
+
+Approaches assessed: readerCRLFcompatibility would add unsupported savecompatibility;
+normalizing/resealinghistoricalZIP would invalidateevidence; generatecurrentLinuxDATA
+through realpublishers fits existinghandoff and preservesfreshauthority. Chosenby
+executor under autonomous scope, not a new userfeature or claimed crossOSsupport.
+
+- [ ] T556 Add exact8 input/transport controls and explicit Linux source selection:
+  JointAppliedDataTemplate.LinuxInput.cs ResolveCurrent()/ResolveLinux(recordPath,
+  expectedGameAssemblySha), immutable JointAppliedDataSource; existing Materialize
+  overload selects Linux provenance with complete verification beforetargetwrite.
+  Rejectmissing/relative/foreignplatform/generator/build/hash/innerprovenance; positive
+  copies remain independent. Update only JointOperationBoundaryTests and
+  JointCompletedProofReadTests selected consumers; Windows default unchanged.
+- [ ] T557 JointBundleComponentTests.LinuxApplied.cs LinuxAppliedData_PublishesCurrent-
+  MinimalTemplate uses existing private Fixture in samepartialclass. Genuine bound
+  commonplan/cache -> exactpreflightfingerprints -> normalizerCommitted using genuine
+  manifest.RollbackBackups -> phaseunapplied -> progressionApplied/capability/witness ->
+  freshphaseapplied. Close source/reservation/lease, captureexternalarchive, normal
+  fixtureDispose, then create-newsuccessrecord. No rollback/header/marker resealing.
+- [ ] T558 Catalog owners fr063-joint-linux-applied-input-controls(1min) and
+  fr063-joint-linux-applied-preparation(initial5min); exactpreparationselection, fresh
+  integration XML/PDB/catalog/PlanOnly, independent SOURCE/PREP, controls8 then
+  genuineprep1. Existing defaultspremainunchanged. EnvBOE_TEST_LINUX_APPLIED_RECORD
+  is an absolute external source-recordpath; outputarchives are nonce-unique.
+- [ ] T559 After successfulcompleteprep/currentfreshappliedread, boundary6 then46
+  remaining; independentlyreview union/evidence. Native40 thenordinary5 retain gates.
+
+Review focus: recordpublishedbeforecleanup, foreignassembly/platformorarchive,
+sharedmutablecopies, fakeappliedphase/progressionunapplied, sourceoperations spanning
+capture or rawinputfallback. All covered by explicit guards and existing real readers.
+Optimization: reuse existing source/recovery service during genuineconstruction;
+materialize one immutablegeneratedDATAtemplate into independentroots rather than
+repeat costlyissuers percase. Fresh transport hash and gamecapabilities remain.
+
 # Linux T552 fixture correction — existing FILEOP contract, no production change
 
 Issue#1536, observed Linux source37 category failure. r53FILEOP-2 permits provisional

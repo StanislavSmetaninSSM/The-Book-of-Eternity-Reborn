@@ -1,3 +1,24 @@
+# Linux applied-DATA source cause and reviewed bounded preparation plan
+
+Independent Astra/high andSol6.1/xhigh auditsconfirm progressionalgorithm unchanged
+from producerddadb tobaseb377. StoredscheduleAfter1064bytes/BOM/28CRLF; equivalentLF
+1036bytes changesmutationfingerprint. IndependentCRLF framing/hash matchesstored
+sha256:7ac0be0a1fed5fc968cb01c3203c42eb4c729a2d0869a9a11d1e30a1632600c9;
+LF givesa868ac2ab347fc5729db932a1389bd4e6b0019e22a65c23d2b3b03a0936c71ee.
+This is genuinecrossOSbyte-replayrefusal, notcorruptarchive/stalefrozenalgorithm.
+PerAGENTS prereleaseguard, nocompatibilityfallback solelyforoldfixture. Historical
+ZIP unchanged; no productionfix or crossOSPASS claimed.
+
+Spec LINUXDATA1..5/plan/tasksT556..559 boundcurrentLinuxDATAprep viaexistinggenuine
+componentissuers -> commonplan -> normalizerCommitted -> realprogressionApplied ->
+freshappliedread. IndependentAstra sourcefeasibilityacceptedwith requiredunapplied-
+thenAppliedsequence. Close sources/reservation/lease beforeexternalcapture; publish
+successrecordonlyafterfixturecleanup. Linuxselectedconsumersrequire explicitrecord,
+currentgamebuild/Linuxproducer/archive/fulltransportbinding; noWindowsfallback.
+Newinitial5minprepbounddoesnotalteranyexistingtest/gamebudget. Controls8 first,
+prep1, failedboundary6 then46unrun. Cache454retained; native40/original5UNRUN.
+This is authorizedLinuxpreparation, notnewgamefeature/savecompatibility scope.
+
 # Linux T552 final-cache common input failure —454distinctPASS,52pending
 
 Run083532-095-23735-b57e8e3e2c964a6488fcc1fc508ac186/codef8b635:11/18descriptors,

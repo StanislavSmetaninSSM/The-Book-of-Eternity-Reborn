@@ -1,3 +1,29 @@
+# Linux T552 current applied-DATA preparation amendment —2026-10-25
+
+Within #1536 Linux qualification and the owner's autonomous technical-work waiver:
+- LINUXDATA-1: historical Windows AppliedBeforeStory DATA remains byte-exact and
+  its CRLF->LF fresh recomposition refusal remains recorded, not normalized,
+  resealed, rebound, countedPASS or made a production compatibility feature.
+  AGENTS pre-release compatibility guardrail applies.
+- LINUXDATA-2: prepare one minimal current Linux AppliedBeforeStory template through
+  the existing genuine component issuers, real common plan, normalizer preflight,
+  canonical publication/settlement and real progression commit. Require Committed,
+  genuineunapplied phase, Applied with capability/witness, then freshapplied phase.
+  No synthetic marker/proof, native-process carrier, world generation or original5.
+- LINUXDATA-3: finish source fresh fences and close actual reservation/lease before
+  capture; publish success record only after normalfixtureclosing/rootcleanup.
+  Existing uncapped timing/capture transport; rawarchive/JSON remain external.
+- LINUXDATA-4: Linux affected applied consumers require explicit external record,
+  current production assembly pin, Linuxgenerator provenance and full archive SHA/
+  namespace/inventory validation before destinationwrites; no Windows fallback.
+  Per-case mutablecopies and fresh production proofs. Immutable DATA template has
+  exactarchive hash/build/platform/generator identity, qualification-session owner,
+  lifetime until sourcebuild/inputchanges, explicit re-generation on invalidation.
+- LINUXDATA-5: cheap input/refusal controls first, separate genuinepreparation next,
+  then previouslyfailed6 +46unrun cachecases. Retain454uniquePASS. Existing native/
+  ordinary/categorylimits unchanged. New distinct PREP operation has initial5min
+  budget for full issuer/publisher/progression/closing, not a gameplay timeout.
+
 # r73 — Linux handoff and mandatory optimization policy
 
 Source issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536.
