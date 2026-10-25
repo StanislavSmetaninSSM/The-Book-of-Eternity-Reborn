@@ -1,3 +1,27 @@
+# Linux affected cache qualification GREEN — 509 distinct cases, OUTCOME pending
+
+Final run110523-448-36804-360a435061074984a707c2bc87204892, compiled integration
+d237/C572 and gameb18/41C0:48planned/completed/PASS,6descriptors, exit0,
+00:04:02.0601874, no skip/timeout/duplicates and both cleanups complete.
+Proof6/Qte1/Semantic1/reserved32/portable8 all passed. Qte78.705s and Semantic47.373s
+stay below their unchanged120s budgets. Strict standalone attributes9768->8633,
+actualsources172->132; two-proof19536->8950attributes/344->132sources. One fresh
+owning fence, original negatives and outer reservation refusal/exclusions PASS.
+Counts prove actual source/probe reduction, not elapsed-time speedup.
+
+Re-read every retained/current TRX and verified all outcomes Passed, no overlaps:
+461retained+48current=509distinct cases,37descriptor results/36categories exactly
+matching tests/selections/1536-linux-cache-qualification.json. Prior bindings and
+source-impact reviews remain attached; this is not a single-build509 rerun.
+Full new Qte capture727596414bytes/2003694timingrows, SHA
+f56f316292744b70735e758daf741b96e049e219aec19683cb591566ed8105c7;
+Semantic331463634bytes/915996rows, SHA
+a50094aae1ab9d6f916d40e27684ed98d5527847e67233ae6121326fc5a33dde.
+Both hashes recomputed completely, writersclosed/attempted=stored/complete,
+ownedroots absent and producerprocesses terminated. Raw and full union packet
+cache-union-509-verification.json remain external. Independent OUTCOME pending;
+native40 and original5 remain UNRUN until acceptance. Cross-OS question OPEN.
+
 # Outer-reservation PREP delta ACCEPTED — actual48 next
 
 Separate Astra/high accepted f3caaa4e fresh integration11bindings/8PDBchecks,
