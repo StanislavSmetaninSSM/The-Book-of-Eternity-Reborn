@@ -1,3 +1,24 @@
+# Current-game genuine Linux generator GREEN — input OUTCOME review pending
+
+Run104312-281-34211-d6563096893b4a86860e59e389232437 on compiled b18/074a:
+1planned/completed/PASS, no skips/duplicates/timeout, exit0 and both cleanups.
+Category204.4121749s <300s; overall00:03:44.7706065. New immutable external
+linux-applied-template-owner/applied-53d25b4c51a24ef7a05248c0eeb44547.zip,
+120808bytes, SHA256 E7D252E018ACD2E872C5A550A5E384CDF35B73E5AC5784F41C95071C0FA375E3.
+All82payload files/46directories/fullnamespace/absence hashes and current game41C0/
+integration8ED6/supportA2E6 pins verified. Actual canonical Committed, genuine
+progression Applied with fresh applied check and source/lease/fixture closing pass;
+owned root cf3fcb7f5c324b59a997dfe504522c01 is absent, producer34339 terminated.
+Record at linux-applied-template-owner/source-record.json, exact actual turn44.
+
+Full external capture1376442470bytes/3765804timingrows, writerclosed/complete,
+attempted=stored. Entire raw SHA recomputed:
+2c239283a05d2a8163dcac2934af5cd4cd6b844b82aa2029ebf85519890d6347.
+Named publisher65.1152066s/wholecallback118.838471s inclusive; no speedup claim.
+Verification packet linux-applied-generation-owner-verification.json is external.
+Separate Astra/high OUTCOME review pending; affected55/native40/original5 unrun.
+All old inputs/archives/counter-RED measurements retained; cross-OS question OPEN.
+
 # Completion owner PREP ACCEPTED — genuine generator next
 
 Separate Astra/high accepted PREP at b91fa5bc: 11 DLL/PDB entries (not12), eight
