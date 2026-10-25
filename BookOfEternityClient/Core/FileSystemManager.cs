@@ -4802,8 +4802,8 @@ public partial class FileSystemManager
     /// The original caller-owned lease; inactive or foreign leases are refused before later checks.
     /// </param>
     /// <param name="readPathPhase">
-    /// Optional same-manager synchronous ordinary preparation supplying positive directory DATA
-    /// to its initial admission. A <see langword="null"/> phase retains independent classification.
+    /// Optional same-manager bounded directory DATA from preparation or a source batch.
+    /// A <see langword="null"/> context retains independent classification.
     /// </param>
     private void EnsureValidCanonicalWriteLease(CanonicalWriteLease writeLease, IReadPathObservations? readPathPhase = null)
     {

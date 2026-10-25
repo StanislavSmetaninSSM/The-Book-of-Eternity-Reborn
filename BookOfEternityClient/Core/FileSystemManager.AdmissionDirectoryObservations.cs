@@ -32,7 +32,7 @@ public partial class FileSystemManager
     /// Creates one explicit observation lifetime only on the ordinary callback-free route.
     /// </summary>
     /// <param name="readPathPhase">
-    /// Optional initial ordinary preparation from this exact manager; foreign, closed or disabled
+    /// Optional bounded read observations from this exact manager; foreign, closed or disabled
     /// phases retain the original independent admission context.
     /// </param>
     /// <returns>

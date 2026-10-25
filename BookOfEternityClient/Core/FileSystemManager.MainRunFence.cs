@@ -368,7 +368,7 @@ public partial class FileSystemManager
         /// The current lease, or <see langword="null"/> for the existing lease-free checks; lease-specific generation checks remain conditional.
         /// </param>
         /// <param name="readPathPhase">
-        /// Optional same-manager initial ordinary preparation; only positive directory DATA can be
+        /// Optional same-manager bounded read observations; only positive directory DATA can be
         /// shared. Guard-file, native handle, worker and persistence checks remain fresh.
         /// </param>
         internal void Validate(CanonicalWriteLease? lease, IReadPathObservations? readPathPhase = null)

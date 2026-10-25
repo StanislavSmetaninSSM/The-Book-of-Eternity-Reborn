@@ -1,5 +1,6 @@
 using System.Text.Json;
 using BookOfEternityClient.Core;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -11,7 +12,7 @@ namespace BookOfEternityClient.Tests;
 /// <param name="output">
 /// Receives uncapped named measurements and owned fixture cleanup evidence.
 /// </param>
-public sealed class SourceValidationBatchTests(ITestOutputHelper output)
+public sealed partial class SourceValidationBatchTests(ITestOutputHelper output)
 {
     /// <summary>
     /// Requires real directory-query reduction while retaining all physical file and main checks.
@@ -81,5 +82,110 @@ public sealed class SourceValidationBatchTests(ITestOutputHelper output)
         Assert.Equal(original.Reads, batched.Reads);
         Assert.True(batched.Main > 0);
         Assert.True(batched.Native > 0);
+    }
+
+    /// <summary>
+    /// Requires an independent fresh directory epoch and original source comparison before success.
+    /// </summary>
+    /// <param name="reserved">
+    /// Whether the exact reservation owns the original source observations.
+    /// </param>
+    /// <param name="change">
+    /// Raw same-timestamp byte change, appearance, disappearance or ancestor type replacement.
+    /// </param>
+    /// <returns>
+    /// Completion after both fresh-loop implementations reject changed source data.
+    /// </returns>
+    [Theory]
+    [InlineData(false, "bytes")]
+    [InlineData(false, "appearance")]
+    [InlineData(false, "disappearance")]
+    [InlineData(false, "ancestor")]
+    [InlineData(true, "bytes")]
+    [InlineData(true, "appearance")]
+    [InlineData(true, "disappearance")]
+    [InlineData(true, "ancestor")]
+    public async Task ExitEpochRejectsRawSourceDrift(bool reserved, string change)
+    {
+        using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, false);
+        await fixture.InitializeAsync();
+        var files = fixture.Files;
+        Directory.CreateDirectory(Path.Combine(files.GameSessionPath, "child"));
+        var relative = change == "ancestor" ? "child/data.txt" : "data.txt";
+        var path = Path.Combine(files.GameSessionPath, relative);
+        if (change != "appearance") File.WriteAllText(path, "original");
+        var stamp = File.GetLastWriteTimeUtc(path);
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        using var owner = reserved ? null : files.BeginSourceDataOperationIfNeeded();
+        await using var set = reserved ? files.TryBeginReservedValidationReadSet(lease) : null;
+        if (reserved) { Assert.NotNull(set); await set.OpenAsync(); }
+        else Assert.NotNull(owner);
+        Assert.Equal(change == "appearance" ? null : "original", await files.ReadFileAsync(lease, relative));
+        Assert.True(files.CaptureSourceValidationBatchStatistics().Hits > 0);
+        if (change == "bytes") { File.WriteAllText(path, "changed!"); File.SetLastWriteTimeUtc(path, stamp); }
+        else if (change == "appearance") File.WriteAllText(path, "appeared");
+        else if (change == "disappearance") File.Delete(path);
+        else
+        {
+            File.Delete(path);
+            Directory.Delete(Path.GetDirectoryName(path)!);
+            File.WriteAllText(Path.GetDirectoryName(path)!, "now a file");
+        }
+        var failure = await Record.ExceptionAsync(() => reserved ? set!.CompleteAsync() : owner!.CompleteAsync());
+        Assert.NotNull(failure);
+        Assert.IsAssignableFrom<IOException>(failure);
+    }
+
+    /// <summary>
+    /// Prevents initial directory DATA from surviving arbitrary consumer code between two source calls.
+    /// </summary>
+    /// <returns>
+    /// Completion after a changed ancestor is freshly refused by the next initial read.
+    /// </returns>
+    [Fact]
+    public async Task InitialBatchClosesBeforeReturningToConsumer()
+    {
+        using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, false);
+        await fixture.InitializeAsync();
+        var files = fixture.Files;
+        var directory = Path.Combine(files.GameSessionPath, "first");
+        Directory.CreateDirectory(directory);
+        File.WriteAllText(Path.Combine(directory, "data.txt"), "original");
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        using var owner = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(owner);
+        Assert.Equal("original", await files.ReadFileAsync(lease, "first/data.txt"));
+        Assert.True(files.CaptureSourceValidationBatchStatistics().Hits > 0);
+        File.Delete(Path.Combine(directory, "data.txt")); Directory.Delete(directory);
+        File.WriteAllText(directory, "now a file");
+        await Assert.ThrowsAsync<InvalidDataException>(() => files.ReadFileAsync(lease, "first/other.txt"));
+    }
+
+    /// <summary>
+    /// Keeps arbitrary activity callbacks and functional read forwarders on the fresh directory route.
+    /// </summary>
+    /// <param name="activityOnly">
+    /// Whether to install only the arbitrary activity receiver rather than the existing functional forwarders.
+    /// </param>
+    /// <returns>
+    /// Completion after source counting and original fallback are verified.
+    /// </returns>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ArbitraryCallbacksKeepFreshDirectoryRoute(bool activityOnly)
+    {
+        using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, !activityOnly);
+        await fixture.InitializeAsync();
+        var calls = 0;
+        var files = activityOnly ? new FileSystemManager(fixture.Files.BasePath, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks { CanonicalReadActivityObserver = _ => calls++ }) : fixture.Files;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        using var owner = files.BeginSourceDataOperationIfNeeded();
+        Assert.NotNull(owner);
+        Assert.Equal("original", await files.ReadFileAsync(lease, "present.txt"));
+        await owner.CompleteAsync();
+        Assert.Equal(0, files.CaptureSourceValidationBatchStatistics().Invocations);
+        if (activityOnly) Assert.True(calls >= 2);
     }
 }

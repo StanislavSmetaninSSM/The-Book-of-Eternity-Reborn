@@ -248,6 +248,25 @@ public partial class FileSystemManager
         }
 
         /// <summary>
+        /// Inspects retained service entry counts without exposing directory DATA or authority.
+        /// </summary>
+        /// <returns>
+        /// Current service state, including closed state after retirement.
+        /// </returns>
+        internal ValidationOperationState CaptureState() { lock (_gate) return _data.CaptureState(); }
+
+        /// <summary>
+        /// Captures this batch's directory work without invoking a classifier.
+        /// </summary>
+        /// <returns>
+        /// Requests, attempted physical classifications and retained positive-directory hits.
+        /// </returns>
+        internal AdmissionDirectoryStatistics CaptureStatistics()
+        {
+            lock (_gate) return new(1, _requests, _queries, _hits);
+        }
+
+        /// <summary>
         /// Restricts DATA to exact components related to the session without changing grant decisions.
         /// </summary>
         /// <param name="path">

@@ -105,16 +105,16 @@ internal sealed class TrustedLocalFileScope
     }
 
     /// <summary>
-    /// Constructs ordinary read grants through one explicit preparation phase without retaining it.
+    /// Constructs ordinary read grants through explicit directory DATA without retaining the context.
     /// </summary>
     /// <param name="root">
     /// The absolute session directory grant; required parents keep their original validation.
     /// </param>
     /// <param name="phase">
-    /// Current preparation DATA, or <see langword="null"/> for original fresh classification.
+    /// Current bounded directory DATA, or <see langword="null"/> for original fresh classification.
     /// </param>
     /// <returns>
-    /// An ordinary scope retaining only grants; subsequent operations still validate fresh sources.
+    /// An ordinary scope retaining only grants; each subsequent operation selects its own classifiers.
     /// </returns>
     internal static TrustedLocalFileScope CreateForOrdinaryRead(string root, IReadPathObservations? phase) =>
         new([root], null, phase?.Active is { } current ? current.ObserveTrusted : Probe);

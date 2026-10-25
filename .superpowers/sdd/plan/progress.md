@@ -19,7 +19,14 @@ T543 explicit new service-backed batch/owner gates wired; Initial0d001e899 GREEN
 correctly rejected lifecycle CanonicalReadActivityObserver, even with empty functional
 forwarders. Root cause exact constructor Action. Replaced only passive source count
 with sealed CanonicalReadActivityAccumulator; all physical events retained, no callback
-or cap. Arbitrary observer fallback unchanged. Retest pending.
+or cap. Arbitrary observer fallback unchanged. GREEN2 4cbf68370 4/4PASS: source async initial448->308/fence384->208;
+sync368->258/304->158; reserved async600->460/400->224;sync520->410/320->174.
+20physicalordinaryreads each; main/native equal74/54 source and83/63reserved.
+T543 added rawdrift8/per-readclose/activityfallback2/serviceAPI-role-threadhop/
+retirement5 cheap controls and strict parent/bothchild SourceValidationBatchReuse
+off/on + complete passive counters. D analyzer155purecontrolsPASS, no game runs.
+Affected21 explicit categories selected from changed contracts, no broad suites.
+T544 full XMLuniform8 build/affected/review pending; original not yet admitted.
 All diagnostics uncapped D-only; r71raw/INPUT/CPU-GC/instrument/backups protected.
 
 # r71 initial ordinary/main-admission directory DATA — code gate accepted
