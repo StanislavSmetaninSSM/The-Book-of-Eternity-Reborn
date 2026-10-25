@@ -1,3 +1,25 @@
+# Passive fresh stack verified — catalog/PREP/cheap GREEN next
+
+Independent SOURCE delta accepted483befce4e23920c739adb817154e42ea92894c0,
+remote verified/clean. Five fresh Linux SDK10.0.402/net8 XML builds exit0/0errors:
+Game5:09.01,Support34.13s,Unit2:38.08,Integration4:44.60,Bridge17.14s.
+Warnings33/23/26/101/14 respectively; original failed Integration build remains
+retained separately. Game/Support/Unit Infoa9f03; Integration/Bridge Info483bef.
+Only private Integration counter type changed aftera9; no uniform Info claim.
+Exact SHA256, each shared DLL/PDB copy agrees (11assembly paths total):
+- Game f9b1f5db0b0013e17a857b2bd8b8e39f8ad7373a93e4dd48abfc9465e1f86388
+- Support f70d398e9da5bcd31cb04f15e3d3388b8471ed033e34b88297df9efdba7970fc
+- Unit 9d42b1b448edb7795221eb26206d2397ee241a86f42fee512565b3661de3b578
+- Integration 8a257c247f71e6606efffafe9be4dab1aeda120a5c222905e18493509b9516ca
+- Bridge 4e0ad5f0340939a36a1847b6f5aff93b0ee86ffccb4b702029e7992ae94c8061
+All31 selected source/PDB pairs match current files; no native C changes. External
+managed-binding-passive-full.json / pdb-passive-full.json preserve exact pins.
+No test GREEN or expensive rerun on this stack yet. New F9 game requires genuine
+new Linux DATA; old C0AD record/archive remain unchanged and unqualified for F9.
+Next exact selection tests/selections/1536-linux-passive-timing-regression.json,
+ValidateCatalog -NoBuild, PlanOnly -NoBuild, independent PREP, runtimecheapgate.
+No original limit, raw retention rule or fresh authority/source fence changed.
+
 # Fresh passive builds: three success, Integration compile mismatch corrected
 
 Full SOURCE accepted by independent Astra/high at a9f03ebdc7d58f17c36afdeec469d35b3256eac1,

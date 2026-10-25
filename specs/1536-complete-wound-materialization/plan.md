@@ -19,7 +19,7 @@ Cheap real-file off/on control proves existing SourceValidationBatch reduces
 actual metadata attempts while bytes, file sources and fresh guards stay equal;
 raw drift still refuses success. Existing service/cache keys/lifetimes unchanged.
 
-- [ ] T576 Preserve timeout/phase evidence and independently review bounded design.
+- [x] T576 Preserve timeout/phase evidence and independently review bounded design.
 - [ ] T577 Causal cheap event/transport controls, existing sealed recorder opt-in queue.
 - [ ] T578 Explicit expensive-control fixture transport and safe closing; real metadata proof;
   coherent implementation/tests/docs/selection SOURCE review.
