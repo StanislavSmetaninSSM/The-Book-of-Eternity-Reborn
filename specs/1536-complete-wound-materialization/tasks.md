@@ -2,11 +2,11 @@
 
 Issue#1536; FUSE1..7 / plan.md, autonomous specification-review-wait waiver.
 
-- [ ] T535 Canonical phases/prerequisites/consistency, presented links; source-only
+- [x] T535 Canonical phases/prerequisites/consistency, presented links; source-only
   checkpoint/recovery, qualified227 eight-DLL backup before replacement.
-- [ ] T536 [US1] Typed pure/actual manager cheap fixture source-reduction RED,
+- [x] T536 [US1] Typed pure/actual manager cheap fixture source-reduction RED,
   category ownership, existing sealed passive measurement and minimal control seam.
-- [ ] T537 [US1] Existing-service phase/admission sharing, accurate physical-source/
+- [x] T537 [US1] Existing-service phase/admission sharing, accurate physical-source/
   borrowed-hit counts, explicit same-owner initial-only wiring, strict comparison
   controls; GREEN actual sources/equal data and negative/fallback/lifetime integrity.
 - [ ] T538 [US1] Independent coherent review/fixes, affected categories/catalog/

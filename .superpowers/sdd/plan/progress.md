@@ -1,55 +1,30 @@
-# r71 cheap actual source/integrity gate PASS; final controls prepared
+# r71 initial ordinary/main-admission directory DATA — code gate accepted
 
-Core source da4048f74: XML Integration0errors,18/18cheapPASS/complete/ownedcleanup.
-Actual10-file asyncGetAttributes470->440, sync390->360; main/native counts40/40 and
-30/30 unchanged, bytes/mtime equal. Each actual mode90borrowed hits, but only30
-physical queries saved (other borrowed hits replace former inner-cache hits).
-Off queries/admission320async240sync; on290/210. Phase counter now also observes
-initial-main work; overlapping series are not a global census. All18cheap cases
-pass. Strict test-only parent/child metadata/env control and3cumulative shared-hit
-records now added; not yet built/verified. Selection19 bounded relevant categories
-includes only3existing MainRun consumers, not unrelated F1native-stop/input cases.
-Coherent independent review/full affected checks/XML8/new genuine INPUT pending;
-no original yet. xUnit1031 in synchronous mutation test intentionally preserves
-phase owner thread, matching prior accepted phase control; no new XML warnings.
-
-# r71 T537 first GREEN candidate — verification pending
-
-T536 meaningful RED source28073cb2c: XML Integration build119.41s/0errors; category
-3cases complete1PASS/2causalFAIL with owned cleanup. Actual async470->470 and sync
-390->390; pure real-classifier guard composition6->3source calls,3common ancestors,
-required guard leaf1both. No reduction claimed from RED. Evidence D T536-red-*.
-Minimal sharing now explicit initial phase through original lease/main validator,
-same-owner/thread/version/flags, default-null elsewhere. Main record/worker/native/
-leaf/source checks unchanged. Inner cache never stores borrowed DATA; source attempt
-flag counts real classifier attempts including thrown errors. Separate SharedHits
-counter denotes borrowed hits, not saved IO (some replace existing inner hits).
-Added actual ten-file source/native/main count comparisons and close/foreign/flags/
-provider/error/native/current-record/worker/mutation/thread/later same-mtime/absence
-refusal cases. No through-await lifetime. Not yet compiled/GREEN; default candidate
-not accepted until verification/review. No new INPUT/original yet.
-
-# r71 T536 RED candidate — not yet built or run
-
-T535 complete: seven requirements/six tasks/100% read-only consistency, actual
-Spec Kit phases, written links under waiver; checkpoint8ce2b33ea recovered81blobs.
-Qualified227 eight-DLL+binding backup all9CRC/SHA verified on D. New cheap category
-core-shared-read-admission-directories owns real-classifier overlap/required-guard
-and two actual-manager ten-file sync/async off/on reduction cases. Only comparison
-property seam added in production; still unwired, so actual reduction must fail.
-No new probe build/run or production-sharing implementation yet. Existing isolated
-checkout/branch reused; inline execution and TDD, no extra implementer agent.
-
-# r71 shared synchronous preparation/admission DATA — started
-
-Issue#1536; base58bf65497d6f5436c000fbeb4e4770be82afa92c verified against remote ref.
-User continues r70 recommendation, standing autonomous review-wait waiver. Canonical
-FUSE1..7/T535..540. Explicit initial same-manager synchronous sharing chosen; broader
-await batch deferred. Preserve fresh leaf/native/main-record/workers/bytes/generation,
-no cached authority or ambient context. Cheap actual source/hit reduction and integrity
-are mandatory before new genuine INPUT/original. Existing qualified227/baseline r69
-accepted raw protected. No code/build/test/probe/original yet; source-only publication
-and baseline backup first. Raw D-only/uncapped, parent owns coherent implementation.
+Canonical specs/1536-complete-wound-materialization plan/spec FUSE1..7, T535..540,
+issue#1536. User continuation/autonomous spec-review waiver; explicit synchronous
+sharing selected, await batch deferred. Existing branch/checkouts reused. Base
+58bf65497, qualified/runtime functional code1d2bd1220d88d79f6f486081d1fac89c87f2595c.
+T535 phases/prerequisites/bridge consistency7requirements/6tasks/100%/0gaps, links
+presented; current227baseline8DLL+binding ZIP all9CRC/SHA verified. T536 RED28073cb2c:
+3cases1PASS/2causalFAIL, async470->470/sync390->390; pure guard6->3source/leaf1both.
+T537 GREENda4048f74:18/18PASS;10-file async470->440/sync390->360, native/main40and30
+unchanged, bytes/mtime equal.90borrowed hits each yield30savedphysicalqueries;
+borrowed hits replace some old inner hits, and widened phase/admission counters
+are overlapping, not a global census. Inner cache retains no borrowed DATA.
+Same owner/thread/root/flags/callback lifetime, fresh leaf/native/main/worker/source/
+generation fences preserved; close before open/await/retry/effect. No cached verdict.
+Final strict shared-admission env/parent/child/defaults/counters integrated. Qualified
+XML builds Tests94.2612s/Integration53.0546s, all8uniform; binding2034ADC8...65DEF.
+Affected19categories/22descriptors/522distinctPASS/complete/bothcleanup241.0346s.
+Catalog valid12445methods/935categories/0unmapped/stale; PlanOnly22/522/0executed.
+Initial catalog attempt used unsupported Audit -Parallelism, refused before discovery;
+corrected command passed without source change. D analyzer25pure controlsPASS.
+Independent complex Astra/high code/selection/verification review Accepted97AC4319...
+DB31A9/0unresolved. No code change after functional qualification. No original yet;
+T538 genuine new source42/twoimports and frozen admission next, then same-new-DLL/
+INPUT600/820/15 off/on pair. Current source-only metadata checkpoint precedes long
+INPUT generation. All diagnostics D-only/uncapped; old acceptedr69raw/CPU-GC/INPUT/
+instrument/binary backups protected. GM/schema/native/process ownership unchanged.
 
 # r70 coherent read-only audit complete — final publication verification
 
