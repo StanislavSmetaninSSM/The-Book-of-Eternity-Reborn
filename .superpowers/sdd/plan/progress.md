@@ -1,3 +1,36 @@
+# Exact three full captures verified — canonical514 union complete, outcome/PREP next
+
+Separate Astra/high accepted GEN outcome and admitted exact3 on unchanged limits.
+Run passive-full-three-results.json:3planned/executed/PASS,exit0,no skip/duplicate/
+timeout,bothcleanupcomplete,253.0413350s wall. Actual case durations:
+Take107.8586441s<180,Qte69.5627395<120,Semantic26.9552334<120.
+All full original clocks/sequence/scope pairs/aggregate durations/closedwindow/
+open0/late0/failed0/pending0/queue attempts=enqueued=drained=stored checked:
+- Take81a94500be4f4a56a0fa763b5c1f20cd:1592583394bytes/3121916events/1560958pairs,
+  SHA165809abc4c5b56f2acb5973ceb1859f0e7207ac44db09eb4f44af12979b2c0a.
+- Qte1304e5737a74482a9f86edbb89ca17c8:821369555bytes/1615560events/807780pairs,
+  SHA0b7326cec7917e582a480f2b4a04aa3c82e399a54a9241d605f734a967b183a3.
+- Semantic50d1dd579a024059a7bb6f4a6a49ab17:398755599bytes/787046events/393523pairs,
+  SHA3ff68dd15b8e185ca01bc692193cd888c1fd482450a28b577b8854544c4bf561.
+Every rawrow parsed and fullSHAverified; ownedrootsgone/testhostsend.11DLL/PDB
+unchanged. Canonical514 exact unique union:476reviewedretained+38fresh,37descriptor
+results; no uniformbuild claim. Additionalqueue9/transport9/diagnostic13 separate.
+Full packet passive-cache-514-verification.json; independent outcome pending.
+RealTake named actualGetAttributes652064(oldfullPASS)→349259; Main18499 and
+Lease17355 unchanged. Different builds/transport; no controlled elapsed attribution
+or explanation of historical54→113 throughput. OldTakefull/failedraw retained.
+
+Authorized only oldGEN51e657.../records.jsonl retired after accepted replacement,
+closedoldreport/rootgone/PID59120gone/hashverified. C0AD archive/record/TRX/report
+remain. Disposable clean GitHub recoveryclone7ff/57802tracked/no changes/untracked/
+ignored/no runtime was retired after independent ownership/process-use review;
+maincheckout/Gitrefs/history/fixtures/raw untouched. Oldclone path now absent,
+receipt recovery-copy-7ff-retirement.json. FinalfreshGitHubrecovery REQUIRED anew.
+Space8.1GB available after copyretirement; current/failed diagnostics retained.
+Next independent exact3/cache514 outcome + one ordinaryNativeLinux cut0 PREP.
+Its NoBuildPlan1case/0executed/exit0; original220+10+10/15m unchanged. Runtimecut0
+and original5 stillUNRUN onF9; old3FAIL/2PASS and historicalnative15s failure OPEN.
+
 # New GameF9 genuine Linux DATA fully verified — three-case PREP next
 
 Independent cheap66 outcome accepted; separate Astra/high PREP admitted oneGEN

@@ -23,7 +23,7 @@ raw drift still refuses success. Existing service/cache keys/lifetimes unchanged
 - [x] T577 Causal cheap event/transport controls, existing sealed recorder opt-in queue.
 - [x] T578 Explicit expensive-control fixture transport and safe closing; real metadata proof;
   coherent implementation/tests/docs/selection SOURCE review.
-- [ ] T579 Fresh builds/PDB/catalog/NoBuild plans/PREP; cheap controls and new
+- [x] T579 Fresh builds/PDB/catalog/NoBuild plans/PREP; cheap controls and new
   genuine Linux input after any game hash change. Review retained results.
 - [ ] T580 Original180s take, full raw/owned cleanup/outcome, then cold/original5;
   compact checkpoints/push/verified clean recovery. No blind repeated run.
