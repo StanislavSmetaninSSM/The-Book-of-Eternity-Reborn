@@ -964,6 +964,8 @@ public partial class FileSystemManager
     public async Task WriteFileAtomicAsync(string relativePath, string content) => await WriteFileAtomicAsync(relativePath, content, null);
 
     /// <summary>Uses the original ordinary writer while retaining its actual preimage and successful public owning return.</summary>
+    /// <param name="relativePath">Original session-relative destination passed unchanged to the selected writer.</param>
+    /// <param name="content">Original text encoded by the existing public writer.</param>
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     internal Task WriteFileAtomicAsync(string relativePath, string content, NarrativeWriteObservation? observation) =>
         WriteFileAtomicBytesAsync(relativePath, EncodeUtf8WithPreamble(content), observation);
@@ -1080,6 +1082,8 @@ public partial class FileSystemManager
     public Task WriteFileAtomicBytesAsync(string relativePath, byte[] content) => WriteFileAtomicBytesAsync(relativePath, content, null);
 
     /// <summary>Retains writer DATA after the original ordinary publication and public lease release.</summary>
+    /// <param name="relativePath">Original session-relative destination passed unchanged to the selected writer.</param>
+    /// <param name="content">Exact bytes passed unchanged to the selected writer.</param>
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     internal async Task WriteFileAtomicBytesAsync(string relativePath, byte[] content, NarrativeWriteObservation? observation)
     {
@@ -1731,6 +1735,7 @@ public partial class FileSystemManager
     public Task<string?> ReadFileAsync(string relativePath) => ReadFileAsync(relativePath, null);
 
     /// <summary>Reads ordinary text while explicitly retaining each actual initial and followup source snapshot.</summary>
+    /// <param name="relativePath">Original session-relative spelling passed unchanged to the public ordinary reader.</param>
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     internal async Task<string?> ReadFileAsync(string relativePath, NarrativeReadObservation? observation)
     {
@@ -1854,6 +1859,7 @@ public partial class FileSystemManager
     }
 
     /// <summary>Observes the existing public bytes reader without changing publication recovery or followups.</summary>
+    /// <param name="relativePath">Original session-relative spelling passed unchanged to the public bytes reader.</param>
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     internal Task<byte[]?> ReadFileBytesObservedAsync(string relativePath, NarrativeReadObservation observation) =>
         ReadFileBytesWithPublicationRecoveryAsync(relativePath, CancellationToken.None, observation);
@@ -1955,6 +1961,7 @@ public partial class FileSystemManager
     internal string? ReadFileSync(string relativePath) => ReadFileSync(relativePath, null);
 
     /// <summary>Observes the unchanged synchronous public text route.</summary>
+    /// <param name="relativePath">Original session-relative spelling passed unchanged to the public synchronous text reader.</param>
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     internal string? ReadFileSync(string relativePath, NarrativeReadObservation? observation)
     {
@@ -2086,6 +2093,7 @@ public partial class FileSystemManager
     internal byte[]? ReadFileBytesSync(string relativePath) => ReadFileBytesSync(relativePath, null);
 
     /// <summary>Observes the unchanged synchronous public bytes route.</summary>
+    /// <param name="relativePath">Original session-relative spelling passed unchanged to the public synchronous bytes reader.</param>
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     internal byte[]? ReadFileBytesSync(string relativePath, NarrativeReadObservation? observation)
     {

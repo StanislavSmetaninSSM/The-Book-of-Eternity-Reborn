@@ -1,4 +1,24 @@
-# T584 live N source contribution — PREP accepted, first 29 controls next
+# T584 live N source contribution — narrow fixture corrections, new checks pending
+
+The three first-run failures were traced to new fixture assumptions, with no
+production behavior correction required. The conditional skill fixture used
+`name` where the existing parser requires `skillName`; its prose also inflected
+the skill name instead of using the exact matching name. Corrected inputs now
+exercise the real conditional walk; the expected two reads, genuine original
+source and missing-delta assertions stay unchanged. Three before/current images
+are explicitly equal so no earlier delta can short-circuit that walk.
+The literal malformed-JSON test now derives the concrete parser exception subtype
+from an independent `JsonDocument.Parse` oracle, retaining exact recorded-state,
+ordinary-issue and no-physical-fault assertions. The generation fixture rotates
+under genuine lifecycle/replacement leases, verifies a changed generation, closes
+them and uses a fresh ordinary lease for the unchanged `generation_changed` oracle.
+
+The same narrow correction adds eight missing XML parameter tags and replaces
+one string `Assert.True` with equal comparison under the identical comparer.
+No production control flow, reader behavior, format, cache or budget changed.
+Independent corrective SOURCE review and fresh builds are pending; the modified
+tests are UNRUN. Cheap fixture preparation remains independent per test, with no
+new shared state or expensive setup. Existing N DATA/fresh-fence assessment stands.
 
 First actual new-source category completed on compiled b7 / accepted source33d1,
 clean runtime HEAD `c97a34ab37a0a66dd06f9ca248ca1a53d1f84864`: 29/29 executed,

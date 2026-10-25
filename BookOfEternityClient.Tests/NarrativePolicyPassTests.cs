@@ -55,7 +55,7 @@ public sealed class NarrativePolicyPassTests(ITestOutputHelper output) : IDispos
         var capture = pass.CaptureDiagnostic();
         Assert.Null(capture.Fault); Assert.True(capture.ProjectionChanged);
         Assert.Equal(1, capture.ProjectorCalls); Assert.Equal(1, capture.WritesStarted); Assert.Equal(1, capture.WritesReturned);
-        Assert.True(string.Equals(Convert.ToHexString(SHA256.HashData(before)), capture.WriterPreimageSha256, StringComparison.OrdinalIgnoreCase));
+        Assert.Equal(Convert.ToHexString(SHA256.HashData(before)), capture.WriterPreimageSha256, StringComparer.OrdinalIgnoreCase);
         if (capture.WriterRoute == "Canonical") Assert.NotNull(capture.WriterPreimageIdentity);
         else { Assert.Equal("Trusted", capture.WriterRoute); Assert.StartsWith("Committed:", capture.WriterOutcome); }
         Assert.Equal("Один\nдва.", JsonDocument.Parse(FileSystemManager.DecodeFileBytes(File.ReadAllBytes(_fixture.Physical(Narrative)))).RootElement.GetProperty("response").GetString());
@@ -201,8 +201,14 @@ public sealed class NarrativePolicyPassTests(ITestOutputHelper output) : IDispos
     {
         await _fixture.SeedValidAsync();
         using var pass = await _fixture.Validator.ValidateAcceptedTurnNarrativePolicyPassAsync();
+        await using (var lifecycle = await _fixture.Files.AcquireSessionLifecycleLeaseAsync())
+        await using (var replacement = await _fixture.Files.AcquireSessionReplacementWriteLeaseAsync(lifecycle))
+        {
+            var before = _fixture.Files.ReadExistingSessionGeneration(replacement);
+            Assert.NotNull(before);
+            Assert.NotEqual(before, _fixture.Files.RotateSessionGeneration(replacement));
+        }
         await using var lease = await _fixture.Files.AcquireCanonicalWriteLeaseAsync();
-        _fixture.Files.RotateSessionGeneration(lease);
         var error = await Assert.ThrowsAsync<InvalidDataException>(() => pass.RequireCurrentAsync(_fixture.Files, lease));
         Assert.Contains("generation_changed", error.Message);
     }
@@ -306,11 +312,17 @@ public sealed class NarrativePolicyPassTests(ITestOutputHelper output) : IDispos
         await _fixture.SeedValidAsync();
         const string passive = "game_state/player/skills_passive.json";
         await _fixture.Files.WriteFileAtomicAsync(passive,
-            """{"passiveSkillChanges":[{"skillId":"skill_seal","name":"Чтение печатей"}]}""");
+            """{"passiveSkillChanges":[{"skillId":"skill_seal","skillName":"Чтение печатей"}]}""");
         await _fixture.Files.WriteFileAtomicAsync("game_state/player/skill_mastery.json", """{"skillMasteryChanges":[]}""");
         var manifest = await PrepareOriginalAsync();
+        foreach (var path in new[] { "game_state/player/skill_mastery.json", "game_state/player/skills_active.json", passive })
+        {
+            Assert.Contains(path, manifest.Files.Keys);
+            Assert.Equal(FileSystemManager.DecodeFileBytes(File.ReadAllBytes(_fixture.Physical(manifest.Files[path]))),
+                FileSystemManager.DecodeFileBytes(File.ReadAllBytes(_fixture.Physical(path))));
+        }
         await _fixture.Files.WriteFileAtomicAsync(Narrative,
-            """{"response":"Твоя подготовка в чтении печатей помогает заметить одну неправильную деталь: свидетельская зарубка смещена на волосок.","timestamp":"2026-01-02T00:00:00Z"}""");
+            """{"response":"Навык «Чтение печатей» помог заметить смещённую зарубку.","timestamp":"2026-01-02T00:00:00Z"}""");
         using var original = _fixture.Validator.UsePrevalidatedPendingTurnSnapshotScope(manifest);
         using var pass = await _fixture.Validator.ValidateAcceptedTurnNarrativePolicyPassAsync();
         var capture = pass.CaptureDiagnostic();
@@ -371,7 +383,12 @@ public sealed class NarrativePolicyPassTests(ITestOutputHelper output) : IDispos
         Assert.Equal(JsonSerializer.Serialize(ordinary), JsonSerializer.Serialize(pass.Issues));
         var captured = pass.CaptureDiagnostic();
         Assert.Null(captured.Fault); Assert.Equal(1, captured.TimestampCalls); Assert.Empty(captured.TimestampIssues);
-        Assert.Contains(captured.Occurrences, value => value.Role == ValidationService.NarrativeSourceRole.Achievements && value.State == disposition);
+        // The ledger retains the parser's actual concrete exception type; the
+        // literal input may produce a framework-specific JsonException subtype.
+        var expected = disposition == nameof(JsonException)
+            ? Assert.ThrowsAny<JsonException>(() => { using var document = JsonDocument.Parse(json); }).GetType().Name
+            : disposition;
+        Assert.Contains(captured.Occurrences, value => value.Role == ValidationService.NarrativeSourceRole.Achievements && value.State == expected);
         await using var lease = await _fixture.Files.AcquireCanonicalWriteLeaseAsync();
         await pass.RequireCurrentAsync(_fixture.Files, lease);
     }
