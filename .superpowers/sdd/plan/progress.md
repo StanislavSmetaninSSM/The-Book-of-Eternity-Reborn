@@ -1,3 +1,19 @@
+# Native nonterminal24 GREEN — output-audit causal fix verified, Main4 next
+
+Run115909-982-42454-f3265f7ad7ae4b9697ce9ff239a36de3 on current3b97Support72/
+unitF1:24planned/completed/PASS,4descriptors,exit0,00:02:12.6304801,no skips/
+duplicates/timeout, both cleanups complete. Actual host8 effective budget2min.
+All24actualTRX unique outcomes Passed. Output-audit exact stdout/stderr now match,
+FD predicates remain correct; first native stop before protocol close is positive
+with CleanupComplete/noAuthority and same RunId as final stop. Other owner-close/
+bootstrap/retention controls pass, so T564 causal regression is GREEN.
+Verification native-nonterminal-current-24-verification.json stays external.
+
+Next independently PREP-admitted Main4 diagnostic run (original3min category/
+15s guardian) on the same DLLs, with existing namedtimers/primaryfailure journal.
+Terminal cause remains UNKNOWN; terminal12/original5 not yet qualified. No further
+source/budget change and no raw/root deletion. Full native40 still incomplete.
+
 # Native fixture PREP ACCEPTED — original nonterminal24 composition restored
 
 PREP found a derived-budget mismatch in the unexecuted pending24 plan: host

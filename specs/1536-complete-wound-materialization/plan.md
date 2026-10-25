@@ -4,7 +4,7 @@ Task1536 T564..567 / spec LINUXNATIVE1..5, autonomous technical-work waiver.
 Two known findings grouped before builds: output-audit channel-close race and
 lost terminal primary failure. No production root cause is asserted for terminal.
 
-- [ ] T564 Keep output-audit protocol channels live until original native stop;
+- [x] T564 Keep output-audit protocol channels live until original native stop;
   preserve strict stream/FD/cleanup assertions and other owner-close negatives.
 - [ ] T565 Add a small fixture journal using existing named timer scopes; primary
   failure and actual RPC response before cleanup; phase begin persisted immediately.
