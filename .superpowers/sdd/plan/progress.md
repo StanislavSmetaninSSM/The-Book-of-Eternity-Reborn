@@ -1,4 +1,22 @@
-# T584 live N source contribution — full SOURCE candidate, review next
+# T584 live N source contribution — SOURCE accepted, fresh builds next
+
+Independent Astra/high SOURCE ACCEPT `33d1d48cb2a90887c512bdb546b0481bde92f231`
+for the complete bounded producer/consumer, regressions and selection. No material
+blocker confirmed; Source DATA/ownership/fresh fences, actual writer return,
+ordinary-policy preservation, sticky hold and explicit physical v3 resume accepted.
+The proposed post-read callback gap was specifically disproved: this explicit
+reader has no public AfterCanonicalReadAttempt callback. No speculative fix made.
+No GM-facing fields/formats changed; this enforces existing Ready-last/source
+integrity and needs no new GM-authored example/schema for this client-owned block.
+Windows canonical preimage branch SOURCE-reviewed, runtime UNRUN/deferred.
+
+Next one fixed-source fresh XML build sequence: Game, Support, Bridge, Unit,
+Integration; then complete discovery-only catalog, exact staged PlanOnly and
+independent PREP. All new-product builds/tests still UNRUN at this checkpoint.
+The actual earlier T586 DLL/PDB set was copied with verified hashes outside Git
+under `live-n-implementation/retained-baseline-binaries` before overwriting build
+outputs. It preserves the measured baseline; fresh new-product tests use new builds.
+No external raw removed. All build/inventory/TRX output remains outside checkout.
 
 The coherent candidate now includes explicit ordinary/protected physical read and
 retry-fault capture, original/scoped policy provenance, real trusted/canonical writer
