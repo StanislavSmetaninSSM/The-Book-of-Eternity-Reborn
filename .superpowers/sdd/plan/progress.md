@@ -1,3 +1,23 @@
+# Native controls actual RED — first4 complete3PASS1FAIL, cause under investigation
+
+Run111422-150-38107-bde72953ab264cea9e7cbde4fd4d459e:4/40complete3PASS1FAIL,
+exit1/00:01:01.8761575, runner no timeout and cleanup complete. Failed actual
+terminal-fence bridge case: guardian reached its original15s deadline, emergency1,
+driverExit137/echildtrue. This child timeout is FAIL, not Linux PASS or policy denial.
+No scenario report: primary failure may be hidden by awaited finally cleanup.
+External native-terminal/e1215586fd0543b487b3590be3517cbc and all evidence retained;
+durable main record endsStopping. Separate expected release-ack Uncertain control
+passed with retained owner/cleanup refusal; that is not positive native cleanup.
+
+No code or limits changed. Independent root-cause review started. To localize
+shared owner versus terminal bridge, run the already-admitted independent24 subset:
+bootstrap3/finite-pipe12/owner-retention1/pool-host8, original budgets/order.
+External native-nonterminal-24-selection.json is a strict subset of the canonical
+Native40 selection. Main4 and terminal12 remain unqualified; original5 UNRUN.
+If a primary failure remains hidden, use existing namedtimers and preserve it
+before cleanup; no private-reflection additions, timeout increases or scope bypass.
+Cache509 accepted remains retained; production/game41/input unchanged.
+
 # Linux cache OUTCOME ACCEPTED — exact NativeLineage40 next
 
 Separate Astra/high reread all37TRX and accepted509distinctPASS/36exactcategories,
