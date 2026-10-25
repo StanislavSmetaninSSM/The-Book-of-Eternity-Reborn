@@ -11,7 +11,7 @@ Issue#1536; FUSE1..7 / plan.md, autonomous specification-review-wait waiver.
   controls; GREEN actual sources/equal data and negative/fallback/lifetime integrity.
 - [x] T538 [US1] Independent coherent review/fixes, affected categories/catalog/
   PlanOnly/XMLuniform8; conditional genuine new source42/twoimports/frozen admission.
-- [ ] T539 [US2] Conditional600child/820shared/15category off/on originals, same DLL/
+- [x] T539 [US2] Conditional600child/820shared/15category off/on originals, same DLL/
   INPUT, frozen CPU-GC/current passive timings/native/oracles/cleanup unchanged.
 - [ ] T540 [US2] T540-shared-read-admission.md current evidence/limits, independent
   outcome/exact retention/source-only publication/recovery; no expensive run if gate fails.

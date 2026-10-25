@@ -24,10 +24,19 @@ DB31A9/0unresolved. No code change after functional qualification. Genuine T538 
 twoimports/source+copycleanup,82files513712B, contract9548AE94...35478. Package
 C59BCDAB...CA4EC/320393B, no rebind. Ready29207A18...02B46/126refs; independent
 frozen original admission Accepted53742CA1...A5AF7,8DLL/native/frozen CPU-GC and all
-payload/parameter/source pins verified. T535..538 complete; original pair next,
-same-new-DLL/INPUT600/820/15, only new sharing off/on; old caches/pathON, legacyOFF/
-passivefirstON/forwardersOFF. No competing heavy work. This metadata-only checkpoint
-precedes original; no original run yet. All diagnostics D-only/uncapped; old acceptedr69raw/CPU-GC/INPUT/
+payload/parameter/source pins verified. T535..539 complete. Same-DLL/INPUT original pair at metadata1204946056ff7958f2fcc8b251b7bc4b12a80a09
+bothPASS: TRX263.7146212->259.7268413s(-3.9877799); producer87.0296702->83.9925761;
+first markers164.7464169->163.7462976(-1.0001193); repeat.8331125->.7539137.
+565names each/3,904,251->3,882,421complete scopes/0open/late; only completed-call
+change is GetAttributes936265->914435(-21830),54.0860888->52.2774072s. Cumulative
+first admission sourcequeries269500->246475, requests/invocations unchanged;
+borrowed first69075 is not saved IO. All298JSON+4text/native73+0/oracles/runtime/
+cleanup verified; new full ZIP33members each. Current large fresh boundaries still
+20.7063s/38fences and8.8902s/19exitproofs; no cached verdict or wider await batch.
+Report T540-shared-read-admission.md written; independent outcome/retention review
+and exact verified raw cleanup/final source-only publication remain. Latest old
+r69raw retained until review; proposed cleanup preserves CPU/GC/INPUT/backups.
+All diagnostics D-only/uncapped; old acceptedr69raw/CPU-GC/INPUT/
 instrument/binary backups protected. GM/schema/native/process ownership unchanged.
 
 # r70 coherent read-only audit complete — final publication verification
