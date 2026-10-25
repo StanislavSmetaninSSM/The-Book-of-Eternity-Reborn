@@ -220,7 +220,7 @@ public sealed class PassiveNamedTimingTransportTests(ITestOutputHelper output)
         Assert.Equal(2, fixture.Observers.ReadCount("present.txt"));
     }
 
-    private sealed record Counts(long Attributes, long MainGuards, long LeaseGuards, int FileSources,
+    private sealed record Counts(long Attributes, long MainGuards, long LeaseGuards, long FileSources,
         AdmissionDirectoryStatistics Directories);
 
     private JointBundleDiagnosticOutput CreateCapture(string name, bool failedWriter = false) =>

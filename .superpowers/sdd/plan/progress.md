@@ -1,3 +1,25 @@
+# Fresh passive builds: three success, Integration compile mismatch corrected
+
+Full SOURCE accepted by independent Astra/high at a9f03ebdc7d58f17c36afdeec469d35b3256eac1,
+remote verified and clean before building. Fresh Game5:09.01/33warnings/0errors,
+Support34.13s/23/0 and Unit2:38.08/26/0 all exit0 with documentation XML.
+Game SHA256f9b1f5db0b0013e17a857b2bd8b8e39f8ad7373a93e4dd48abfc9465e1f86388;
+Support f70d398e9da5bcd31cb04f15e3d3388b8471ed033e34b88297df9efdba7970fc.
+Integration actual exit1/4:25.75/98warnings/1error CS1503 at new transport case172:
+ReadCount returns long, private Counts.FileSources was int. No runtime or stale
+Integration output admitted. Correct field to long without cast or assertion
+change; independent reviewer confirmed this bounded compile correction. Fresh
+Integration and as-yet-unbuilt Bridge remain pending. Game/Support/Unit source
+unchanged by this delta; retain their exact a9-built pins, not a uniform commit
+metadata claim. All five complete outputs/PDB/shared copies still require PREP.
+
+Independent retention review permits476 old cache results, refreshpassive11+
+sourcebatch24, then Take/Qte/Semantic3 = canonical514, conditional on new cheap
+gate. New queue9/transport9 are additional gates. Native40 retained with original
+six descriptors/pins; recurrence4 not double counted, initial terminal15s failure
+OPEN/causeUNKNOWN. Prior cold failures remain OPEN. Existing limits/raw unchanged.
+Next: close one-line SOURCE delta and build Integration/Bridge, exact discovery/PREP.
+
 # Passive SOURCE findings corrected — fresh stack still UNRUN
 
 Independent Astra/high reviewed whole9ea9..b34 passive block. Two blocking
