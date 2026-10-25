@@ -67,23 +67,23 @@ historical unimplemented-I/child1 description; its frozen bytes remain unchanged
   T586 paired baseline independently accepted: genuine source drift RED 1/1 FAIL,
   unchanged 1/1 PASS on compiled b08dfadd and unchanged production. Exact scopes,
   timings, source pins and cleanup are retained in the checkpoint.
-- [ ] Create `Services/Validation/ValidationService.NarrativeInterfaceInvocation.cs`
+- [x] Create `Services/Validation/ValidationService.NarrativeInterfaceInvocation.cs`
   and `.NarrativeInterfaceSources.cs`: owner-issued `NarrativePolicyPass`, explicit
   sealed source session, exact role/ordinal/raw/policy-state/error observations,
   actual issue/projector/write-return DATA. The public API shares the core with
   capture disabled; the engine's detailed entrypoint returns the same invocation.
-- [ ] Thread the source session through the N core in
+- [x] Thread the source session through the N core in
   `ValidationService.AcceptedTurnAndInkFeathers.cs`, achievements in
   `.MetaCodexAndAchievements.cs`, and the actual original-lookup closure.
   Observe each physical leaf before callbacks/catches, including public followups;
   do not replace the nullable policy lookup by a strict ReadObservedCurrent call.
-- [ ] Extend explicit internal reader/writer plumbing in `Core/FileSystemManager.cs`,
+- [x] Extend explicit internal reader/writer plumbing in `Core/FileSystemManager.cs`,
   `.OrdinaryReads.cs`, `.TrustedLocalStorage.cs` and `ReversibleFilePublication.cs`
   only where needed to retain actual consumed bytes and actual writer preimages.
   Null observation arguments preserve existing public routes. Retain the genuine
   trusted outcome before facade handling and canonical destination evidence from
   its existing opened handle; no guessed preimage reread or WithPublication bypass.
-- [ ] In `GameEngine.MortalJointRepairAdmission.cs` retain a private engine-issued
+- [x] In `GameEngine.MortalJointRepairAdmission.cs` retain a private engine-issued
   invocation association bound to files/validator/frame/Main/G/iteration and genuine
   Stage/Ready route. Clear it before every new/skipped N and on exit/failure.
   In `.MortalJointInterfacePublication.cs` fence fresh N before first I preparation.
@@ -91,11 +91,11 @@ historical unimplemented-I/child1 description; its frozen bytes remain unchanged
   consume while Capturing and recheck after the existing observer before preparation.
   Integrate physically authenticated resume disposition without inferring it from
   memory absence; leave current codecs/published I behavior unchanged.
-- [ ] Review the whole source/fixture/selection and optimization block; fresh builds,
+- [x] Review the whole source/fixture/selection and optimization block; fresh builds,
   catalog and exact PlanOnly precede independent PREP and actual selected tests.
   Select existing ordinary-output, real writer/original-reader and I resume consumers
   by changed contracts; do not replay unchanged cache/native/original-five aggregates.
-- [ ] Verify cheap unchanged/changed normalization, conditional absence/policy-null,
+- [x] Verify cheap unchanged/changed normalization, conditional absence/policy-null,
   swallowed fault, repeated-read order, source drift, foreign/expired association,
   writer preimage/close failure and exact owned-I transition. Then the genuine fresh
   vertical and separately selected Prepared/Published resume controls; inspect full

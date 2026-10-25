@@ -1,4 +1,31 @@
-# T584 live N source contribution — Prepared cold0 PASS, Published2 next
+# T584 live N source contribution — all selected135 PASS, final review/recovery
+
+Published cut2 PASS1/1/0skip at runtime `2e881d75a1e0ac53910409d7ce602d8fbab07d49`:
+framework162.5469190s, category172.0028497s / runner185.8505343s, no timeout and
+both cleanups true. Full native verification confirms producer73/resumer0,
+distinct kernel births, EOF/join, four complete streams, two capture manifests,
+one exact retained report and ended processes/removed owned root. Published I is
+not rewritten (changing commits0); frozen binding/images/normalization/fallback/
+timestamp/issues/result fingerprint remain exact. The culture-flip oracle and
+HistoricalNUnavailable child assertion pass. Raw remains external in
+`live-n-implementation/actual-published-cold2-1`.
+
+Whole reviewed selection now has135 DISTINCT qualified PASS: cheap130 plus
+ordered live3/cold2, exact method counts/no overlaps/no single135-run claim.
+Latest five framework seconds: beforeI53.1716025, afterCapture39.8161468,
+unchanged154.6745367, Prepared0 153.1968728, Published2 162.5469190. Four unique
+native runs/two nonces/eight full streams/two full retained reports verified.
+Private N capture/projector run once per live control, with fresh rechecks1/3/3;
+ordinary later policy evaluations remain separate, not consumer recomputation.
+All33 artifacts stay bound to Game/Support/Bridge3cf, Unit8e, Integration83f.
+Source-only audit of every new commit after c6e finds only C#, human Markdown and
+the two source category/selection JSONs; no raw/log/TRX/archive/binary dump added.
+Detailed whole135/capture/optimization/commit audits remain external. No GM-authored
+surface/schema changed; existing Ready-last/source integrity is enforced, with
+the independently accepted no-new-example rationale. Final independent OUTCOME
+and clean GitHub recovery are pending; T584/T591 are not yet accepted complete.
+FullNI/S/B/M3/F1/T197, durable N fault history, Windows and the known earlier
+guardian/cross-OS DATA limits remain open. No further runtime is needed for docs.
 
 Ordinary NativeLinux Prepared cut0 PASS1/1/0skip at runtime
 `26898638b0094e1adbb0987729a990d1dfa61fe3`: category164.575115s /
