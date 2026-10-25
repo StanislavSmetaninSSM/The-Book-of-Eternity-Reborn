@@ -1,4 +1,21 @@
-# T584 live N source contribution — after-capture fixture failure preserved
+# T584 live N source contribution — scoped probe correction WIP
+
+The fixture-only correction preserves both existing broad totals (initial physical
+hooks and public-reader return hooks), adds separate counts for the actual active
+`NarrativePolicy.Evaluate` and `NarrativePolicy.Recheck` scopes, and pairs only
+N evaluation reads/returns. Explicit leased fresh reads are retained and now
+positively required before the after-capture cut. The actual N source preimage
+must also equal the intervention input. Every observed row remains recorded.
+One detached timing snapshot is reused per relevant callback; completion reads
+the source once for both comparisons. Existing sealed named timers are used;
+no new callback, cache, authority or production change is introduced.
+Missing cuts now emit full existing engine diagnostics/read counts before an
+explicit assertion, rather than throwing RawImages(null). All held-state,
+no-effect image/turn, exact source-byte, sticky reentry and full completion
+assertions remain. Corrected code is UNRUN; independent SOURCE and fresh
+Integration-only build/PREP are next. Because the shared probe changed, rerun its
+three live controls in the accepted order, then the unrun cold2; retain cheap130
+at its actual unchanged bindings. Native package/Game/Unit are unaffected.
 
 After-capture actual at runtime `51482147df4a18653818005448a72d0a110b9890`
 completed 1/1 FAIL, zero skip, framework60.8812687s / runner87.3455746s,
