@@ -48,11 +48,14 @@ historical unimplemented-I/child1 description; its frozen bytes remain unchanged
 4. N's pre-I interface image may join ONLY the already authenticated same-iteration
    I before/after transition. No general Ready reseeding or output-drift exemption.
 5. Foreign iteration/frame/Main/G and expired owner refuse. Existing Prepared and
-   Published cold resumes neither invent N history nor re-project/re-sample/re-write I.
+   Published cold resumes never invent N history or repeat projector/UTC. Prepared
+   may finish its original frozen publication; already Published I is not rewritten.
 
 ### T585–591 execution and interfaces
 
-- [ ] Freeze this contract and source plan, publish WIP, obtain independent design review.
+- [x] Freeze this contract and source plan, publish WIP, obtain independent design review.
+  Independent Astra/high DESIGN accepted `55c7685`; clarify the Prepared/Published
+  write distinction above. SOURCE/fresh PREP/runtime and outcome remain separate gates.
 - [ ] Add real-file/source-drift tests and one genuine Stage/Ready pre-preparation
   contrast before implementation. The baseline must fail because the omitted N
   dependency reaches preparation, not because a method is missing. Compile/PREP

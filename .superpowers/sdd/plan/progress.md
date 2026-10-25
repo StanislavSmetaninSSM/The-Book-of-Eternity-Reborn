@@ -1,4 +1,17 @@
-# Authorized bounded HEAD-copy cleanup — applied, verification WIP
+# T584 live N source contribution — design accepted, TDD next
+
+Cleanup is complete and independently accepted at
+`d4a460bcfc47ce6cd8a111e675659f208895dbee`; exact remote and full clean GitHub
+recovery match. T585 plan WIP `55c7685aa413de424f69ce11b70277768d4c9e9e`
+independently DESIGN accepted by Astra/high. T586–591 remain UNRUN/incomplete.
+One clarified oracle: Prepared may finish its existing frozen I publication;
+neither resume repeats projector/UTC, and Published I is never rewritten.
+The live N contribution does not persist an N fault after Prepared across crash.
+Current-only cold proof has HistoricalNUnavailable, never historical NI/S.
+Next author and prepare actual dependency-drift/unchanged controls before product.
+No Windows run; initial guardian intermittency and cross-OS DATA remain open.
+
+# Authorized bounded HEAD-copy cleanup — complete, source-only maintenance
 
 Owner prioritized reversible diagnostic-copy cleanup, then continued materialization.
 Independent Astra/high verified exactly 26,914 paths/modes/blob OIDs/lengths from R,

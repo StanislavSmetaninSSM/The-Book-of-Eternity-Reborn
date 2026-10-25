@@ -17,7 +17,7 @@ evidence. This maintenance block does not complete the wound-materialization fea
 
 ## T584 live narrative source contribution — implementation continuation
 
-- [ ] T585 Freeze current-source bounded contract, including genuine fresh versus
+- [x] T585 Freeze current-source bounded contract, including genuine fresh versus
   physically validated v3 resume and the non-durable N-fault limit; independent design review.
 - [ ] T586 Author causal source-drift and unchanged controls using actual N and
   Stage/Ready owners; fresh targeted build/discovery/PREP, preserve the first RED.
@@ -29,7 +29,8 @@ evidence. This maintenance block does not complete the wound-materialization fea
 - [ ] T589 Source/optimization/selection review; fresh affected managed builds,
   catalog/PlanOnly/PREP; cheap negatives and changed-only real writer controls.
 - [ ] T590 Genuine fresh pre-preparation vertical plus narrowly selected current
-  Prepared/Published resume regressions; no second I projector/write/UTC, owned cleanup.
+  Prepared/Published resume regressions: no repeated projector/UTC or already
+  Published I write; Prepared may finish its one frozen publication. Owned cleanup.
 - [ ] T591 Independent outcome and source persistence review; exact remote SHA,
   clean GitHub source recovery and compact checkpoint, then next remaining #1536 task.
 
