@@ -1,3 +1,23 @@
+# Completion regression: strict cost GREEN, outer-reservation fixture correction WIP
+
+Run105022-416-34832-88239a0bd75543c49088b4e22fa94937:13/55completed12PASS1FAIL,
+exit1/no timeout/both cleanups, wall00:02:09.4297108. Boundary6+phase1 fullyPASS.
+Proof6: strict standalone9768->8633attributes/172->132sources/Open0/Fence1 PASS;
+two-proof19536->8950attributes/344->132sources PASS; mid-proof and bothlate drift
+refusals PASS. Original GetAttributes RED and these measurements stay external.
+Only new outer-reserved test failed: it incorrectly expected completion success
+although unchanged ReadJointCompletedProofAsync first calls recovery, whose
+original World-read reservation guard correctly refuses before proof success.
+
+Test-only correction now requires exact original InvalidOperationException/
+no escaped validation, then unchanged other-manager-write/entry-closing refusal,
+outer fresh Complete/Dispose and successful closing; Open1/Fence0 and game images.
+Production/native/cache comparison/budgets unchanged. SOURCE delta review pending.
+Retain only complete categories:454+boundary6+phase1=461; rerun proof6 plus42unrun
+=48cases after fresh integration-only XML/PDB/PREP. Existing current-game Linux
+template remains valid; no game hash change, no rebuild of game/unit or generator.
+Native40 and original5 remain UNRUN behind cache gate. Cross-OS question OPEN.
+
 # Current-game Linux input OUTCOME ACCEPTED — affected55 next
 
 Separate Astra/high accepted actual generator summary/TRX, full archive/payload

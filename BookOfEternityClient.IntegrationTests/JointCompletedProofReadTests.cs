@@ -66,13 +66,13 @@ public sealed class JointCompletedProofReadTests(ITestOutputHelper output)
         _ = await RunAsync(freshHook: false, drift: true, fenceChange: change);
 
     /// <summary>
-    /// Preserves the existing outer reservation's writer and closing exclusions through the completion entry.
+    /// Preserves the original completion refusal and writer/closing exclusions inside an outer reservation.
     /// </summary>
     /// <returns>
-    /// Completion after genuine proof validation, two refused effects and the outer owner's fresh closing.
+    /// Completion after the exact recovery refusal, two refused effects and the outer owner's fresh closing.
     /// </returns>
     [Fact]
-    public async Task ActualCompletionKeepsOuterReservedPlanExclusions()
+    public async Task ActualCompletionPreservesOuterReservedPlanRefusalAndExclusions()
     {
         var observed = await RunAsync(freshHook: false, drift: false, outerReserved: true);
         Assert.Equal(1, observed.ReadSetOpens);
@@ -142,7 +142,7 @@ public sealed class JointCompletedProofReadTests(ITestOutputHelper output)
     /// Optional late source change; null retains the original mid-proof history injection.
     /// </param>
     /// <param name="outerReserved">
-    /// Whether a real outer reserved reader retains writer and entry-closing exclusions.
+    /// Whether a real outer reader retains the original recovery refusal and writer/entry-closing exclusions.
     /// </param>
     /// <returns>
     /// Exact observed counters and game-image hashes after native-independent source validation.
@@ -228,6 +228,13 @@ public sealed class JointCompletedProofReadTests(ITestOutputHelper output)
                                     refusal.Message, StringComparison.Ordinal);
                                 Assert.Equal(1, fences);
                             }
+                        }
+                        else if (outerReserved)
+                        {
+                            var escaped = false;
+                            var refusal = await Assert.ThrowsAsync<InvalidOperationException>(async () => { await Read(); escaped = true; });
+                            Assert.False(escaped);
+                            Assert.Equal("Original access is reserved by a World read phase.", refusal.Message);
                         }
                         else await Read();
                     }

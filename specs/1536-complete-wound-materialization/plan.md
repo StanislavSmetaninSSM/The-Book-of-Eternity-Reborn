@@ -14,8 +14,9 @@ No newservicecache/key/serializer; existingfullidentity/dependencies/invalidatio
 - [ ] T561 JointCompletedProofReadTests: keepstrictattributecomparison andexisting
   mid-proofdrift/two-proof25%sourcecontrols; tracksourcefences, assertownedstandalone
   Open0/Fence1/lesssources. Addlatefencehistory/continuationappearance2-caseTheory and
-  genuineouterreservedFact: othermanagerwrite+boundentryclosing refused, onlyouter
-  completes. No GameEngine foraccess. Existingservice/genericcontrolsretainprovenance
+  genuineouterreservedFact: completion retains its exact original recovery refusal,
+  othermanagerwrite+boundentryclosing refused, onlyouter completes. No GameEngine
+  foraccess. Existingservice/genericcontrolsretainprovenance
   unlessimpactreviewfindsdependency; selectonlyaddressedconsumerregressions.
 - [ ] T562 Groupsourceedits/wholeSOURCEreview beforefreshfullshared/unit/integration
   XMLbuilds/PDB/catalog/PlanOnly. NativepackageCsourcehashunchanged, noWindowsbinary.

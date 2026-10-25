@@ -14,7 +14,9 @@ failed-owner routes keep originalfresh/refusal behavior; no revivedfailedowner.
 LINUXPROOF4: retainstrictlessattributes andaddstrictlessactualsources, showoneowned
 freshfence/zeroaddedreadset oneligible standalone, zeroemptyfence onunsupportedhook.
 Keepmid-proofrawhistorynegative; addlatefencehistory/continuationabsence negatives
-andactualouterreservedwrite/closing exclusions. Exactrefusal/noescapingreturn.
+andactualouterreservedcompletionrefusal/write/closing exclusions. Recovery retains
+its original World-read reservation refusal; this amendment does not admit it
+inside a pre-existing reserved phase. Exactrefusal/noescapingreturn.
 LINUXPROOF5: independentSOURCE/PREP/outcome, freshmanagedassemblies and genuinely
 newLinuxDATA afterproductionhashchange. Neverrebindolderrecord/archive. Existing
 nativeC/package andallcategory/gamebudgets unchanged; crossOSproductquestionOPEN.
