@@ -1,3 +1,15 @@
+# Report transport5 GREEN — one exact ordinary NativeLinux cut0 next
+
+Run131623-456-49325-c686e82ecb6f417f8672de1318633c19:5planned/completed/PASS,
+exit0/no skip/duplicate/timeout, both cleanups complete. Actual5TRX outcomesPassed;
+external resume-report-transport-verification.json binds results. Exactbytes/hash/
+closedwriter/independentcopies/create-new/invalidpaths/no-env and primary-preserved
+write/callback failures confirmed. No game/recovery authority claimed by controls.
+PREP admits one ordinaryNativeLinuxcut0 replay next via canonical newcategory,
+same private original body/defaults/limits; full Logs retained externally even
+on abort. This is diagnosis, never original5qualification. Baseline2PASS3FAIL
+unchanged, actual holdcause still UNKNOWN; all old raw/roots retained.
+
 # Report-retention PREP ACCEPTED — transport5 next
 
 Separate Astra/high accepted85478ad2 freshintegration11bindings/16PDBchecks,
