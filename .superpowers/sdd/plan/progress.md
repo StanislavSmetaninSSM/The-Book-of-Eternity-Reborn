@@ -62,7 +62,11 @@ INPUT/secondoriginalpair required. First pair/raw and priorr71raw all retained. 
 23PASS/1causalFAIL: ordinary resumer factory still disablesbatch; fullcallbacks
 fallbackPASS. T543b GREEN timestamped sealedqueue/recording boundary/replay
 beforebothcheckpointedges/finalerrortail implemented; finite all-event/due-sample/
-phase/error/detachment/concurrent-drain fixtures added; currentqualification pending.
+phase/error/detachment/concurrent-drain fixtures added; GREEN93b3f1982 44/44PASS; actualpassivefactory positivebatch hits and full
+callback fallback preserved. ReviewP2 found cumulativefirst can falsely accept
+setup-only coverage; added before/after/Delta around actualfirstgamecall, strict
+154purewindowcontrolsPASS (including causalsetup-onlyRED), and fixedP3XMLsummary.
+Currentfinal qualification pending.
 # r71 initial ordinary/main-admission directory DATA — code gate accepted
 
 Canonical specs/1536-complete-wound-materialization plan/spec FUSE1..7, T535..540,

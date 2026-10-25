@@ -49,7 +49,9 @@ US2(P2): measure the complete qualified implementation without weakened fences.
   accepted raw until complete accepted replacement; keep INPUT/CPU-GC/instrument/
   wrappers/binary backups. No raw Git content, GM/schema/native/process changes.
 - BATCH8 (coverage correction after first full pair): require positive actual
-  resumer batch invocations/hits before claiming recovery cache effect. First
+  resumer batch invocation/hit deltas inside the timed first recovery, with
+  strict before/after/cumulative binding and setup-only negative control, before
+  claiming recovery cache effect. First
   T545 pair passed but resumer coverage0: its manual Canonical/Exact activity
   delegates bypassed the sealed lifecycle counter change. Preserve that pair as
   a coverage probe; its163.9209606->161.212649s is not attributed to caching.

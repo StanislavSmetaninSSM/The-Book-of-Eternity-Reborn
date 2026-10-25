@@ -1072,7 +1072,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                 using (files.MeasureOperation("FixtureData.ExportPreparedOriginal"))
                     fixtureExports.Add(JointInterfaceFixtureAcquisition.Capture(root,
                         Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "joint-cleanup-captures"), "PreparedOriginal", parent));
+            var sourceBatchWindowBefore = files.CaptureSourceValidationBatchStatistics();
             handled = await engine.ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync();
+            var sourceBatchWindowAfter = files.CaptureSourceValidationBatchStatistics();
             namedResumerTimer1?.Dispose();
             passiveWindow?.Dispose();
             diagnostic.Observe("late-first-return", handled.ToString());
@@ -1084,6 +1086,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Pid = Environment.ProcessId, Enabled = ordinaryReadAdmissionReuse, Hits = files.CaptureSharedReadAdmissionHits() }));
             Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "source_validation_batch_counts", Role = "resumer", Stage = "first",
                 Pid = Environment.ProcessId, Enabled = files.SourceValidationBatchReuseEnabled, Counts = files.CaptureSourceValidationBatchStatistics() }));
+            Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "source_validation_batch_window_counts", Role = "resumer", Stage = "first",
+                Pid = Environment.ProcessId, Enabled = files.SourceValidationBatchReuseEnabled, Before = sourceBatchWindowBefore,
+                After = sourceBatchWindowAfter, Delta = sourceBatchWindowAfter - sourceBatchWindowBefore }));
             Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "admission_directory_counts", Role = "resumer", Stage = "first",
                 Pid = Environment.ProcessId, Enabled = admissionDirectoryReuse, Counts = files.CaptureAdmissionDirectoryStatistics() }));
             Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "control_game_state_counts", Role = "resumer", Stage = "first",

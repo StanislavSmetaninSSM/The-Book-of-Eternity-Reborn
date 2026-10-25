@@ -168,7 +168,7 @@ public partial class FileSystemManager
     }
 
     /// <summary>
-    /// Records the exact-physical observation boundary without executing the optional diagnostic consumer.
+    /// Records sealed exact-physical activity DATA before invoking the optional original observer.
     /// </summary>
     /// <param name="path">
     /// Original exact physical spelling supplied by the read.
