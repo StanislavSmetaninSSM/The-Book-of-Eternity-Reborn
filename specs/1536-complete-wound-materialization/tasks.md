@@ -11,8 +11,9 @@ evidence. This maintenance block does not complete the wound-materialization fea
   ignore new diagnostic leaves; retain every fixture/save/input and external raw.
 - [ ] T583 Bounded index/fixture/link/catalog integrity and diff review, commit/push
   with checked remote SHA; no history rewrite, GC or qualification runtime replay.
-- [ ] T584 Resume the current product frontier T179-Pd/RP01 source admission,
-  reconcile with the existing v3 output basis, implement/review its bounded block.
+- [ ] T584 Resume T179-Pd/RP01 owner-produced N-pass source proof and its genuine
+  pre-preparation consumer; preserve the already implemented I lifecycle/v3 basis
+  and I Capturing consumer, implement/review the remaining bounded N join.
 
 Canonical handoff r73; source b377c9d1d0c6cfa5ce20b383d84eac069b8d2991.
 - [x] T551 Fresh Linux native/XML builds, exact impact selection/catalog/PlanOnly,

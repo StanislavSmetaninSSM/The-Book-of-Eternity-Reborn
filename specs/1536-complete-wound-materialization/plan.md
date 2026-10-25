@@ -2,12 +2,17 @@
 
 Owner explicitly authorized recoverable HEAD-copy retirement after read-only
 inventory/review; accepted Linux qualification remains R04caad9111ed1bf57f63a72517c2a45a6354d92e.
-T581..583: exact26,914raw copies/3,241,093,559blobbytes, reviewed source index,
+T581..583: exactly 26,914 raw copies/3,241,093,559 blob bytes, reviewed source index,
 eleven pinned links/ignore rules, preserved fixtures/saves/current input closures
 and all external raw; metadata/link/diff checks only, no full runtime repetition.
 No history rewrite/GC/branch deletion. Actual receipts in the existing checkpoint.
-Then T584 resumes T179-Pd/RP01 current product source admission with existing
-v3 output basis; crash5 is not completion of wound materialization. Windows is
+Static verification and independent POST review accepted the exact set and all
+retained runtime inputs; catalog discovery is VALID 946/12,494 with zero executed
+tests. A fresh GitHub filtered full WIP checkout has 30,894 files/772,169,778 bytes;
+history remains intact. Exact receipts and source provenance are in the checkpoint.
+Then T584 resumes T179-Pd/RP01 owner-produced N-pass proof and its source consumer
+before common preparation. I prepare/publish, v3 output basis and the I Capturing
+consumer already exist and must be preserved; crash5 is not complete materialization. Windows is
 deferred until product completion and is not a blocker for this maintenance.
 
 # Linux full passive timing implementation plan

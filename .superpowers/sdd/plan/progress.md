@@ -12,9 +12,26 @@ artifacts and ordinary JSON remain. No proof hashes or runtime inputs were rebou
 Historical checker plus dataset reproduction remains at R; latest HEAD copies are
 retired. All external raw remains untouched. No caching/runtime path changed;
 optimization is removal of unconsumed checkout weight, with fresh byte/OID checks.
-T583 catalog discovery and post-change independent review remain UNRUN/PENDING.
+T583 catalog discovery on clean WIP `4831326dfc75d25dce76531d7139ff243d83b726`:
+`pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -ValidateCatalog -NoBuild`,
+946 categories/12,494 methods/files VALID, no unmapped/stale selectors, zero tests
+executed, exit 0, no timeout, owned cleanup complete (23.919 seconds).
+Independent Astra/high POST review accepted exact retirement and retained blobs.
+Its P2 future-save ignore finding was reproduced and fixed with two anchored
+`recovery/**/saves/**` exceptions; both save probes are unignored and ordinary raw
+remains ignored. No functional runtime repetition is required for this change.
+Fresh GitHub-only `--filter=blob:none --single-branch --no-checkout`, then exact
+detached checkout of WIP `4831326`, recovered all 30,894 files/772,169,778 blob bytes
+in `/workspace/tboe-cleanup-recovery-20261025`; full tree matches, checkout clean,
+all 26,914 retired paths absent and R remains an ancestor. `.git` uses 326 MiB;
+working files use 861 MiB allocated. This is source recovery, not a new build claim.
+Complete local receipts remain under
+`/workspace/tboe-linux-evidence-20261025/cleanup-planning`; no raw was uploaded.
 This maintenance block is not product completion. T584 resumes T179-Pd/RP01
-source consumption before common preparation, reconciled with current v3.
+N-pass source consumption before common preparation, reconciled with current v3.
+Current I prepare/publish, v3 proof and Capturing consumer already exist; the next
+block must not duplicate them. Actual N dependencies/normalization owning return
+and its iteration-bound source consumer remain the required implementation gap.
 No Windows task/run and no Linux qualification replay are part of this cleanup.
 
 # Linux qualification complete — independent full recovery accepted

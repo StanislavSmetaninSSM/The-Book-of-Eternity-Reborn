@@ -58,6 +58,8 @@
 /specs/1553-portable-local-storage/recovery/**/*.jsonl.gz
 /specs/1553-portable-local-storage/recovery/**/*.log
 /specs/1553-portable-local-storage/recovery/**/*.trx
+!/specs/1536-complete-wound-materialization/recovery/**/saves/**
+!/specs/1553-portable-local-storage/recovery/**/saves/**
 !/specs/1553-portable-local-storage/recovery/evidence/opencode-live/current-turn-paste-refusal/**
 !/specs/1553-portable-local-storage/recovery/evidence/opencode-q1/**
 !/specs/1553-portable-local-storage/recovery/journal-fresh-cloud-20261011/performance-current-c5-baseline/chain/gc-bd38c05c2df3/**
