@@ -221,6 +221,7 @@ public sealed partial class JointBundleComponentTests
         /// </summary>
         private void CloseJointReservation()
         {
+            if (_jointPublicationOutcomeUncertain) return;
             if (_jointContinuation is not null && _jointReservation is not null)
             {
                 AcceptedTurnAuthorityRegistry.AbortMortalJointRepairPublication(Files, Lease, _jointContinuation, _jointReservation);

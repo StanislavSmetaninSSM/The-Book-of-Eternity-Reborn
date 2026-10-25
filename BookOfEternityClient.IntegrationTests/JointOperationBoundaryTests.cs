@@ -49,10 +49,10 @@ public sealed class JointOperationBoundaryTests(ITestOutputHelper output)
         using var cleanup = new CleanupOwnedFixture(owned, output.WriteLine);
         try
         {
-            var input = JointAppliedDataTemplate.ResolveCurrent();
-            var archive = input.ArchivePath;
+            var appliedSource = JointAppliedDataTemplate.ResolveCurrent();
+            var archive = appliedSource.ArchivePath;
             var root = Path.Combine(owned, "copy");
-            var manifest = JointAppliedDataTemplate.Materialize(input, root);
+            var manifest = JointAppliedDataTemplate.Materialize(appliedSource, root);
             var armed = false;
             var injected = false;
             var reuses = 0;
@@ -123,7 +123,7 @@ public sealed class JointOperationBoundaryTests(ITestOutputHelper output)
                 Assert.True(reuses > 0, "The actual owning operation must reuse source DATA before this fence.");
                 Assert.Equal((damaged ?? before).OrderBy(pair => pair.Key), CaptureImages(root).OrderBy(pair => pair.Key));
                 output.WriteLine(JsonSerializer.Serialize(new { owner, drift, injected, reuses, GameEngineConstructed = false,
-                    InputSHA256 = input.ArchiveSha256, AllGameImagesPreserved = true }));
+                    InputSHA256 = appliedSource.ArchiveSha256, AllGameImagesPreserved = true }));
                 return true;
             });
         }

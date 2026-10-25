@@ -116,13 +116,13 @@ public sealed class JointCompletedProofReadTests(ITestOutputHelper output)
         var own = Path.Combine(Path.GetTempPath(), "boe-proof-component-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(own);
         using var cleanup = new CleanupOwnedFixture(own, output.WriteLine);
-        var input = JointAppliedDataTemplate.ResolveCurrent();
-        var archive = input.ArchivePath;
+        var appliedSource = JointAppliedDataTemplate.ResolveCurrent();
+        var archive = appliedSource.ArchivePath;
         var archiveHash = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(archive)));
         try
         {
             var root = Path.Combine(own, "copy");
-            var manifest = JointAppliedDataTemplate.Materialize(input, root);
+            var manifest = JointAppliedDataTemplate.Materialize(appliedSource, root);
             var measuring = false;
             var attributes = 0; var opens = 0; var reuses = 0; var injected = false;
             var sourceReads = new Dictionary<string, int>(StringComparer.Ordinal);

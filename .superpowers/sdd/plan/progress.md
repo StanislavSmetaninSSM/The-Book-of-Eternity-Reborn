@@ -1,3 +1,19 @@
+# Linux DATA generator SOURCE review corrections — before runtime
+
+Astra/high found2blockingtestfixtureissues beforeanygeneratorrun. Fixeduncertainty:
+enteredmutatingownerkeeps unknownflag untildefiniteresult; exceptionorreturned
+PublicationUncertain setsretainedroot and throws existinguncertaintytype. Ordinary
+reservationabort is skipped for thisuncertainowner, includingFixtureDispose; no
+successrecord orcapture afterfailure. Added originalper-leaseRecoveryValidation
+scope alongsideSourceData, matchingproductionowner; allTake/publishfreshfencesstay.
+
+Initial70decXMLcompile completed03:14.58 with1CS0136error (newlocalinput collided
+with existingstreamvariable), not a runtimeRED/PASS. RenameddescriptorappliedSource.
+Also require externaldiagnosticroot andordinaryoutputnamespace beforegenerator
+writes, ordinaryrecordfile beforeconsumerparse. Correctedsourcewillfreshlyrebuild;
+unit/shared/production/nativeunchanged. Existing454PASS retained byboundedstatic
+scopeanalysis; no generator/native/original5executions yet. CrossOSFAILstillOPEN.
+
 # Linux applied-DATA preparation implementation WIP — fresh build/review next
 
 T556..558 sourcewritten: eight cheap independent source/input controls; explicit

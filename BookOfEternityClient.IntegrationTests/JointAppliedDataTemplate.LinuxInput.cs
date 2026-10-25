@@ -59,6 +59,7 @@ internal static partial class JointAppliedDataTemplate
         if (string.IsNullOrWhiteSpace(recordPath) || !Path.IsPathFullyQualified(recordPath))
             throw new InvalidDataException("Linux applied DATA requires BOE_TEST_LINUX_APPLIED_RECORD with an absolute external record.");
         RequireExternalPath(recordPath);
+        recordPath = new TrustedLocalFileScope([Path.GetDirectoryName(recordPath)!]).ValidateFile(recordPath, allowMissing: false);
         JsonObject record;
         try { record = JsonNode.Parse(File.ReadAllText(recordPath))?.AsObject() ?? throw new InvalidDataException("Missing Linux input record."); }
         catch (JsonException error) { throw new InvalidDataException("Malformed Linux input record.", error); }
