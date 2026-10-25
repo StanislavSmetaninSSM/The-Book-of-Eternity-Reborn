@@ -1,3 +1,15 @@
+# Linux passive timer fixture GREEN — remaining cache gate next
+
+Code3688, checkpointdf5, Linux: core-passive-recovery-timing11planned/completed/
+passed,0skip/fail/duplicate,31.6538855s, no timeout/cleanup complete.
+Run075623-141-18431-a2bc200459bf4ac4b029696907202a6d outside evidence root.
+Both sync/async independent OFF/ON pairs have identical full admission deltas:
+Invocations52/Requests572/SourceQueries364/Hits208; each2physical sources/7fast hits,
+complete named snapshots and conservation. This fixes a Windows-only test constant,
+not production behavior or a speedup claim. Current distinct cache union271PASS;
+22remaining categories/23descriptors235cases next via exact external
+cache-unrun-after-passive-green-selection.json. Native40/ordinary5 remainUNRUN.
+
 # Linux revised SOURCE/PREP ACCEPTED — code3688, runtime pending
 
 2026-10-25, branch1536-linux-qualification-20261025/baseb377. Source3688f3bcf23c6ec0fa61c209d8ae3d4ef749f751 independently accepted by separate
