@@ -1,3 +1,21 @@
+# Native40 + bounded Main recurrence GREEN — final native OUTCOME pending
+
+Additional original Main4 run121603-480-45717-f21dd764517149538a10301afb92bba7:
+4/4PASS,exit0,00:00:52.9312121,no skip/timeout/duplicates,cleanup complete.
+Same3b97DLLs/3min category/15s guardian; exact original terminal-fence ran once
+with its3canonical companions. Journal d8709c099a98457dac176c436b747658 is complete:
+612records/0open/allnamedscopesbalanced, no primary failure. Guardian echildtrue/
+driver0/emergency0/failures0/no deadline; durable recordStopped and all original
+dispatch/draft/cancel/takeover/resize/scoped-retirement assertions pass.
+
+Re-read all six canonical result TRX:24+4+12=40uniquePASS, exact method/case counts
+match original native40 PlanOnly; recurrence4 is separately recorded, not extra
+unique coverage. External native-current-40-union-verification.json and native-
+main-recurrence-4-verification.json bind actual reports/current11DLL/PDB pins.
+All earlier failures remain FAIL; initial15s cause still OPEN, not fixed by two
+diagnostic passes. Independent final native OUTCOME pending before original5.
+Cache509 accepted unchanged; no new source/budget edits or raw/root deletion.
+
 # Terminal12 GREEN — current native40 PASS, one bounded recurrence check next
 
 Run121218-431-44595-8f4affc601984c19970d085ddf022789:12planned/completed/PASS,
