@@ -1,3 +1,14 @@
+# Linux applied input third selected consumer — bounded routing completion
+
+Exactremainingselectionaudit found fr063-joint-progression-data-integration selects
+JointAppliedStoryComponentTests.ActualAppliedData_PhaseReaderReusesProgressionBody,
+whichalsoimportedhistoricalWindowsZIP. Routeits existingRunAsync throughsameexplicit
+platformsource; selectedboundary/proofread/phase classesnowallcovered. No testoracles,
+production/native/limitschanged. Otherunselectedprofileclassesretainhistoricalinput,
+notclaimedLinuxready. Currentcbecompilewasalreadyrunning; itwillnotqualifythisnew
+routingdelta. Freshfinalintegrationbuild and independentreview are mandatorybefore
+anynewruntime. Preserve454PASS, newtransport/input/generatorchecksnotrunyet.
+
 # Linux DATA generator SOURCE review corrections — before runtime
 
 Astra/high found2blockingtestfixtureissues beforeanygeneratorrun. Fixeduncertainty:

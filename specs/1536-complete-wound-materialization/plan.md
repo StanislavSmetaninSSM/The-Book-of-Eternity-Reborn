@@ -17,8 +17,9 @@ executor under autonomous scope, not a new userfeature or claimed crossOSsupport
   expectedGameAssemblySha), immutable JointAppliedDataSource; existing Materialize
   overload selects Linux provenance with complete verification beforetargetwrite.
   Rejectmissing/relative/foreignplatform/generator/build/hash/innerprovenance; positive
-  copies remain independent. Update only JointOperationBoundaryTests and
-  JointCompletedProofReadTests selected consumers; Windows default unchanged.
+  copies remain independent. Update JointOperationBoundaryTests,
+  JointCompletedProofReadTests and the selected JointAppliedStoryComponentTests
+  phase-reader consumer; Windows default unchanged.
 - [ ] T557 JointBundleComponentTests.LinuxApplied.cs LinuxAppliedData_PublishesCurrent-
   MinimalTemplate uses existing private Fixture in samepartialclass. Genuine bound
   commonplan/cache -> exactpreflightfingerprints -> normalizerCommitted using genuine

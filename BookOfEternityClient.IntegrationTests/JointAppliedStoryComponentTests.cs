@@ -87,15 +87,14 @@ public sealed class JointAppliedStoryComponentTests
         var owned = Path.Combine(Path.GetTempPath(), "boe-applied-story-component-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(owned);
         using var cleanup = new CleanupOwnedFixture(owned, _output.WriteLine);
-        var template = Path.Combine(TestRepoPaths.RepoRoot, "specs", "1536-complete-wound-materialization", "fixtures", "joint-applied-data");
-        var sourceRecord = JsonNode.Parse(File.ReadAllText(Path.Combine(template, "source-record.json")))!.AsObject();
-        var archive = Path.Combine(template, sourceRecord["Archive"]!.GetValue<string>());
+        var appliedSource = JointAppliedDataTemplate.ResolveCurrent();
+        var archive = appliedSource.ArchivePath;
         var archiveBefore = File.ReadAllBytes(archive);
         try
         {
             var setup = Stopwatch.StartNew();
             var root = Path.Combine(owned, "copy");
-            var manifest = JointAppliedDataTemplate.Materialize(archive, sourceRecord["ArchiveSHA256"]!.GetValue<string>(), root);
+            var manifest = JointAppliedDataTemplate.Materialize(appliedSource, root);
             var sourceReads = 0;
             var readbackStarted = false;
             var injectedReadbackDrift = false;
@@ -134,7 +133,7 @@ public sealed class JointAppliedStoryComponentTests
             await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
             var generation = files.GetOrCreateSessionGeneration(lease);
             raw.WriteLine(JsonSerializer.Serialize(new { Boundary = "joint_component_setup", Operation = "Component.MaterializeAndAcquireLease",
-                Milliseconds = setup.Elapsed.TotalMilliseconds, Root = root, SourceArchiveSha256 = sourceRecord["ArchiveSHA256"]!.GetValue<string>(),
+                Milliseconds = setup.Elapsed.TotalMilliseconds, Root = root, SourceArchiveSha256 = appliedSource.ArchiveSha256,
                 CopiedFiles = manifest["Files"]!.AsArray().Count, GameEngineConstructed = false }));
             await SessionOperationContext.RunBoundAsync(files, generation, lease, async () =>
             {
