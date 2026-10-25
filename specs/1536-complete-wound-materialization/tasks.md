@@ -3,9 +3,9 @@
 Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536.
 Spec OPT1..6 / plan.md; standing autonomous specification-review-wait waiver.
 
-- [ ] T547 Establish canonical r73 artifacts, prerequisite/consistency checks,
+- [x] T547 Establish canonical r73 artifacts, prerequisite/consistency checks,
   present links and publish source-only checkpoint on the existing task branch.
-- [ ] T548 [US1,US2] Mandatory root optimization rule and docs/performance.md;
+- [x] T548 [US1,US2] Mandatory root optimization rule and docs/performance.md;
   workflow/testing integration, current Linux handoff and quickstart entry point.
 - [ ] T549 [US1,US2] Verify source/API/facts/links and exact Markdown diff;
   separate Sol6.1/xhigh review, inspect findings and resolve validated defects.

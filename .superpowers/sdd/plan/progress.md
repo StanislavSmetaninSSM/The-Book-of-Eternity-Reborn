@@ -1,4 +1,4 @@
-# r73 optimization policy and Linux handoff — planning checkpoint
+# r73 optimization policy and Linux handoff — implemented, review pending
 
 2026-10-25, issue#1536, OPT1..6/T547..550. User requests all accumulated code for
 Astra, refreshed handoff and mandatory optimization rules. Base/published remote
@@ -12,9 +12,20 @@ needed or claimed. Written spec/plan/tasks presented under standing review-wait
 waiver. Parent owns inline block; one Sol6.1/xhigh independent docs review planned.
 Reuse existing isolation by user preference; optional automatic broad commit/
 agent-context hooks skipped, canonical context maintained explicitly.
-Next: T548 root mandate/detailed guide/workflow/testing/current handoff; verify
-links/source claims, independently review coherent block, publish and verify a
-fresh GitHub-only recovery. No raw diagnostic Git content, Linux runtimeUNRUN.
+Planning checkpoint3aacbd44d00d57c57e805ccbd89434d7ff29b371 published/ref verified.
+T547/T548 complete: root mandatory cacheability rule; normative performance.md
+documents existing repository/storage/backend/operation APIs, exact keys/deps,
+lifetimes/invalidation/detachment/fresh authority/failure/fixture/measurement rules.
+Workflow/testing enforce planning/checkpoint/review assessment; touched obsolete
+standing model clauses aligned with owner's2026-10-07 policy. Handoff/quickstart
+now start at r73: exactbranch/source, latest cut0 pair vs oldall5, freshLinuxPREP/
+affected-cache/NativeLineage/ordinary5, Windows-onlycarrier caveat anduncapped
+local-onlydiagnostics. No runtime/source changes after0b qualification.
+Initial targeted verifierPASS:30existing relative links acrossactivecontent,
+8API names/current6categoryIDs, ancestor/Markdown-only/diffwhitespace checks.
+Full verification outputD:/BoeDiagnostics/handoff-r73-20261025, neverGit.
+Next:T549 separate Sol6.1/xhigh coherent documentation review/fixes, thenT550
+final push/exactref/freshGitHub-onlyrecovery. Linux runtimeUNRUN; no C# rerun.
 
 # r72 common source-validation directory DATA — complete, both pairs analyzed
 

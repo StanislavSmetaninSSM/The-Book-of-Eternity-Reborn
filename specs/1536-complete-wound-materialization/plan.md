@@ -12,9 +12,9 @@ Stack: Markdown, current C# sources as reference, Git/PowerShell 7/Python for
 bounded document/link/source/remote checks. No executable behavior change/TDD run.
 Spec: [r73 requirements](spec.md). Existing dedicated checkout/branch retained.
 
-- [ ] T547 Canonical spec/plan/tasks, prerequisite scripts and consistency check;
+- [x] T547 Canonical spec/plan/tasks, prerequisite scripts and consistency check;
   present written links under standing review-wait waiver and publish checkpoint.
-- [ ] T548 [US1,US2] Implement AGENTS.md, docs/performance.md,
+- [x] T548 [US1,US2] Implement AGENTS.md, docs/performance.md,
   docs/development-workflow.md, docs/testing.md, recovery/crash5/linux-handoff.md
   and quickstart.md entry point. Check APIs against current source and r72 report.
   Root/workflow make cacheability rationale and integrity/effect evidence required.

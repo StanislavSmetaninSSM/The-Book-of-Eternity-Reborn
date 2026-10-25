@@ -1,4 +1,157 @@
-# Актуальное состояние — spec15 revision35 / plan13 revision35
+# Актуальная передача Астре — r73, код и результаты r72
+
+Дата: 2026-10-25. Задача: [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536).
+Репозиторий: [The-Book-of-Eternity-Reborn](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn).
+Ветка со **всеми накопленными изменениями**:
+`1536-crash5-linux-windows-spec-20261019`. Брать эту ветку, а не main или старый
+облачный checkout. Перед изменениями прочитать [AGENTS.md](../../../../AGENTS.md),
+[процесс](../../../../docs/development-workflow.md), обязательные
+[правила оптимизации](../../../../docs/performance.md),
+[тестирование](../../../../docs/testing.md), текущие [spec](../../spec.md),
+[plan](../../plan.md), [tasks](../../tasks.md) и
+[checkpoint](../../../../.superpowers/sdd/plan/progress.md).
+
+## Получение полной версии
+
+Код квалифицирован на **`0b648cd21ae49e757eb37b0c545075fd0dafcf5c`**.
+Последняя опубликованная точка перед этим документационным блоком:
+`ea2cb0fbc604f07312c27369199e840e01e04be3`. r73 меняет только Markdown;
+последний SHA публикации handoff взять из сообщения передачи/удалённого ref и
+сверить с полученным HEAD. SHA сборки и SHA последующей документации различаются.
+
+В новой пустой директории Linux (не поверх старого незавершённого checkout):
+
+```sh
+git clone --single-branch --branch 1536-crash5-linux-windows-spec-20261019 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git boe-crash5-linux
+cd boe-crash5-linux
+git rev-parse HEAD
+git status --porcelain
+git ls-remote --heads origin refs/heads/1536-crash5-linux-windows-spec-20261019
+git merge-base --is-ancestor 0b648cd21ae49e757eb37b0c545075fd0dafcf5c HEAD
+```
+
+Проверить exit каждой команды, совпадение ожидаемого полного SHA и чистоту.
+Если ref сдвинулся, записать оба SHA и установить версию, а не объявлять чужой
+HEAD проверенным. Изменения и тесты остаются на существующей задаче #1536.
+Новый Linux PREP/selection/results оформить в её канонических артефактах до
+исполнения. Не считать локальные Windows сборки или текст handoff сборкой Linux.
+
+## Что уже реализовано и проверено на Windows
+
+Перенесён общий сервис-репозиторий/кэш и подключены операционные DATA-кэши
+восстановления: файловые данные/проверки, progression, QTE, GameState,
+completed-proof/history, каталоги admission, ClientOwnedControlFiles и
+RealmSegregation. Последний r72 добавляет общий SourceValidationBatch для
+положительных directory DATA в одном source-чтении или serial fresh-source цикле.
+Полный состав изменения определяется исходниками ветки, а не этим перечнем.
+Owner/lease/version/source/effect/closing fences сохранены; это основной код игры,
+а не отдельная тестовая реализация. Последние блоки не меняют NativeLineage и C
+supervisor. Правила применения и продления кэша — в performance.md.
+
+Принятый итог: [T546-source-validation-batch.md](../../T546-source-validation-batch.md).
+Финальные адресные Windows-проверки: **584 distinct PASS, 22 категории,
+25 descriptors**, свежие XML-сборки обоих test-проектов и 8 согласованных DLL;
+discovery 12462 methods /936 categories /0 unmapped/stale, PlanOnly без исполнения.
+Это исторические counts данной Windows-квалификации, не ожидаемые counts Linux.
+
+Последний замер — исходное тело **cut0**, fixture-backed Windows-обёртка,
+одинаковые DLL и новый genuine source42 INPUT, остальные кэши включены:
+
+| Метрика | SourceValidationBatch OFF | ON |
+|---|---:|---:|
+| Полный тест / TRX, с |269.7758544|247.4158425|
+| Первый recovery, с |167.8579042|147.9249174|
+| Producer, с |89.7764652|87.1758916|
+| GetAttributes attempts / первый recovery |914435|645877|
+| Сумма GetAttributes, с |54.1063487|36.7565503|
+
+Выигрыш recovery19.9329868с/whole22.3600119с — одна последовательная пара,
+не статистическая гарантия. Обе завершены PASS с исходными игровыми assertions,
+producer73/resumer0, identity, EOF/join и обеими owned cleanup. В timed-first
+ON delta6222 batches/773169 requests/198090 source attempts/575079 hits; OFF0.
+Hits не равны сэкономленным GetAttributes. Диагностика без квот; её отдельная
+доля времени не измерена. Windows бюджеты600 child/820 shared/15min category
+не переносятся на Linux и не меняют его текущую политику ожиданий.
+
+На старом source `9c401c7d85c2a3776ff2228bdb5a3c3ee611dbee` T381 выполнил
+все пять исходных сценариев через Windows-обёртки; это отдельно от последнего
+cut0 и **не** новый all-five PASS на r72. Native Linux runtime текущей версии
+**UNRUN**. Историческая причина облачного отказа/таймаута не установлена.
+
+## Следующая работа на Linux: PREP → controls → исходные пять
+
+1. Зафиксировать ОС/архитектуру, SDK10, .NET8 runtime, PowerShell7, `cc`/`readelf`
+   и штатные native prerequisites. Использовать инструкции подготовки из
+   [quickstart](../../quickstart.md), раздел «Linux: подготовка package и собственных
+   свежих DLL». Не менять настройки безопасности среды; фиксировать конкретный отказ.
+2. Для диагностики выбрать абсолютный локальный каталог **вне checkout**, записать
+   его и установить command-scope `BOE_TEST_DIAGNOSTIC_ROOT` до runner. На Windows
+   это `D:\BoeDiagnostics`; в Linux использовать доступный локальный носитель.
+   Сохранить прежние environment и восстановить в `finally`. Вывод подготовки и
+   raw результатов хранить там без квот; в Git только код и краткие выводы.
+3. Собрать новый package через `scripts/build-linux-supervisor.ps1` с
+   `-IncludeHostGuardian -IncludeTerminalFixture`; задать
+   `BOE_CRASH5_NATIVE_PACKAGE`, собрать оба C# test-проекта с XML,
+   `BoeNativePackageDirectory` и `BoeRequireNativePackage=true`. Записать commit,
+   native/source/package/DLL hashes и exit codes. Missing/incompatible package
+   должен отказать, а не включить иной launcher. `-NoBuild` только после успеха.
+4. Выполнить discovery/ValidateCatalog и PlanOnly. Составить и проверить отдельный
+   Linux impact-selection накопленных общих кэшей по `tests/categories.json`.
+   Начать с `core-service-cache`, `core-repository-cache`,
+   `core-operation-validation-cache`, `core-recovery-file-validation`,
+   `core-source-validation-batch` и затронутых consumers из `tests/selection.json`.
+   Последний файл — Windows r72 selection, не готовая квалификация всей Linux-ветки;
+   в нём есть Windows-only owners. Проверить платформенные guards, negative/cold
+   coverage и точный planned/completed/skip состав. Не запускать весь каталог.
+5. После независимого Linux PREP выполнить выбранные дешёвые общие контракты,
+   затем отдельно `tests/selections/1536-crash5-linux-controls.json`. Это finite
+   pipe, pool host, bootstrap output, owner retention, owned terminal и main-systemd
+   controls. При fail/skip/неполном capture сначала установить причину; Windows
+   PASS и намеренный negative Uncertain не заменяют положительный native gate.
+6. После успешных gates запустить только
+   `./scripts/test-csharp.ps1 -Category fr063-joint-interface-crash-current -NoBuild`.
+   Ordinary PlanOnly должен показать исходную Theory/пять cases; подтвердить
+   реальный body и исходные игровые oracles, producer73/resumer0, независимую
+   identity, stop/status, EOF/Dispose/cleanup. Counts, время и все неполные/ошибочные
+   исходы записать отдельно. Не увеличивать budgets для маскировки зависания.
+
+Linux ordinary путь: `JointInterfaceCrashProcessSupport.RunNativeAsync` →
+`NativeLineageOwner.StartFinitePipeAsync` → `StopAndObserveAsync`, существующий
+`native/linux/boe-lineage-supervisor.c`. Оригинальный owner удерживается до
+подтверждённого завершения. При Uncertain сохранять owner/root/status/output;
+не удалять неизвестные ресурсы и не повторять запуск, пока исход не установлен.
+Windows-only source42/five-v2 package и DLL не являются переносимым Linux INPUT,
+источником authority или prerequisite ordinary5. При необходимости отдельного
+Linux fixture-carrier сначала спроектировать/проверить его provenance, без
+перепривязки Windows manifest к другим сборкам.
+
+## Остаток оптимизации и диагностика
+
+В текущем Windows ON остаются включённые друг в друга GetAttributes36.76с,
+Windows metadata20.05с, main guard28.85с, fresh fences11.21/6.24с. Не складывать
+их и не считать все147.92с доступными кэшированию. Следующий кандидат — directory
+DATA в устойчивых prepared publication/cleanup окнах через существующий точный
+CleanupProofReadWindow; размер безопасного выигрыша не установлен. Не расширять
+кэш на активные мутации по одному лишь совпадению recovery-operation.
+Крупный дальнейший cache-win пока не доказан; Linux qualification можно продолжать.
+
+Последний полный raw хранится только на Windows D, в
+`D:\BoeDiagnostics\source-validation-batch-r72-20261025`: T545b OFF/ON ZIP и
+T546b cheap-verification ZIP. Это локальные свидетельства, не файлы GitHub и
+не обязательный облачный INPUT. Старый raw заменён по правилам retention;
+ссылки на удалённые JSON/архивы в истории ниже не означают их доступность.
+INPUT/CPU-GC/instrumentation/wrappers/binary backups сохранены. Отложенный sealed
+read-event recorder r72 может потерять pending tail при forced kill до drain;
+полный callback-режим сохранён, эквивалентная живая crash-диагностика не обещается.
+
+Ниже только история. Её старые «текущие» SHA, отборы, квоты записей и standing
+model instructions не задают новый запуск. Действуют начало этого файла,
+performance.md, актуальный каталог и новый Linux PREP. Сам документ не отправляет
+сообщений в другие чаты, не запускает G01/G02, CI/full suite или живой мостик.
+
+---
+
+# История — spec15 revision35 / plan13 revision35
 
 Windows: все пять исходных сценариев проверены через отдельные fixture-backed обёртки на одной сборке `9c401c7d85c2a3776ff2228bdb5a3c3ee611dbee` и одном независимо принятом genuine source42 five-v2. [Общий результат и полная диагностика](T381-five-case-summary.json), [выводы](T381-five-case-findings.md). Cut0 принят отдельным Astra/high ([ревью](T380-fixture-cut0-final-review.json)); согласованная независимая проверка остальных четырёх принята без замечаний ([T381](T381-final-review.json)). Старые неизменённые Fact-идентификаторы не выдаются за исполненные; используются те же исходные тела сценариев и проверки.
 

@@ -8,6 +8,34 @@ reasoning effort, verification, checkpoints, and process revisions. Re-read afte
 context recovery when the current policy is not retained; avoid repeated reads of
 unchanged text within a block. This applies to documentation and configuration too.
 
+## Mandatory performance and caching policy
+
+Before designing or changing production code, tests or their preparation, read
+[docs/performance.md](docs/performance.md). Apply it during planning, implementation,
+independent review and completion. Optimization is part of correctness and design.
+
+- Inspect the complete operation and existing consumers for repeated file reads,
+  validation, parsing, reconstruction and expensive fixture setup. Reuse already
+  computed stable DATA through the existing service/repository/cache architecture.
+  Do not add a separate dictionary, static cache or duplicate caching framework.
+- State the cache owner, complete input/dependency identity, lifetime, mutation
+  invalidation and remaining fresh checks before implementing reuse. Prefer a
+  disposable whole-operation context; prove any narrower or longer lifetime.
+  Cached DATA never substitutes for current ownership or permission to publish,
+  mutate, accept a turn or clean up. Time-based expiry alone proves no freshness.
+- When repeated expensive work is safely cacheable, use the existing service.
+  When reuse is unsafe or adds no worthwhile benefit, record the concrete reason.
+  Do not require a cache for trivial work or trade integrity for fewer checks.
+- Prove fewer actual source computations/reads with cheap independent typed
+  fixtures, including invalidation and failure cases. Measure large named sections
+  and the actual production path before claiming a speedup. Keep required cold,
+  integration, generation, source and effect coverage.
+- Every affected change's checkpoint and independent review must contain an
+  optimization assessment: reused data or reason for fresh work, integrity proof,
+  verification and measured costs where applicable. Unexamined repeated expensive
+  work is a review finding. Diagnostic collection has no record/byte quotas;
+  diagnostic artifacts remain outside Git under the retention policy below.
+
 ## Remote persistence and recovery guardrail
 
 GitHub is the durable source of work and recovery instructions; a local checkout,

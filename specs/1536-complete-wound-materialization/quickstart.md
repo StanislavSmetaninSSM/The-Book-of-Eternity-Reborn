@@ -1,4 +1,17 @@
-# Revision57 — verify repeated QTE DATA
+# Точка входа r73 — Linux-передача и обязательная оптимизация
+
+Актуальное состояние накопленного кода, точные source/qualification границы,
+результаты r72 и следующий Linux PREP:
+[linux-handoff.md](recovery/crash5/linux-handoff.md). До любых изменений прочитайте
+[AGENTS.md](../../AGENTS.md) и [правила оптимизации](../../docs/performance.md).
+Исходники брать из `1536-crash5-linux-windows-spec-20261019` с проверкой полного
+удалённого SHA. Linux runtime текущего кода UNRUN; Windows source42/five-v2
+не является Linux carrier. Рецепт Linux package/build/controls внизу остаётся
+техническим ориентиром, но selection/counts/PREP устанавливаются заново по
+актуальному каталогу и handoff. Старые статусы и бюджеты ниже — история,
+не текущий результат и не разрешение повторять старый expensive probe.
+
+# История revision57 — verify repeated QTE DATA
 
 Issue1536/T466..470. Read current spec/plan/tasks. First compile and run causal
 RED/cheap GREEN for QTE DATA/observation/structural/registry controls using selected
