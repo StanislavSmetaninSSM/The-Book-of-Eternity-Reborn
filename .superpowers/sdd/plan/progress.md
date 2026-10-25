@@ -1,4 +1,17 @@
-# T584 live N source contribution — corrected live3 PASS, cold2 next
+# T584 live N source contribution — Prepared cold0 PASS, Published2 next
+
+Ordinary NativeLinux Prepared cut0 PASS1/1/0skip at runtime
+`26898638b0094e1adbb0987729a990d1dfa61fe3`: category164.575115s /
+runner180.4393636s, no timeout/both cleanups true. Root independently verified
+producer73/resumer0, two distinct actual PID/birth/native-run identities, nonce,
+four complete stdout/stderr files and both capture manifests, exact retained
+report bytes/hash versus parent ResultRaw, EOF/join/scoped cleanup and ended
+processes/removed owned root. Frozen I binding/images/normalization/fallback/
+timestamp/issues/result fingerprint match; Prepared finishes exactly one I write.
+Completed child executes/passes HistoricalNUnavailable assertion; no historical
+N or fullNI claim is invented. All33 current artifacts unchanged. Full evidence:
+external `live-n-implementation/actual-prepared-cold0-1/root-native-verification.json`
+and original streams/TRX. Next Published cut2 only; currently UNRUN.
 
 Unchanged genuine control PASS1/1/0skip at runtime
 `3e2ea98a51b09a3b131797d07f8de8e08f6e73bd`: framework154.6745367s,
