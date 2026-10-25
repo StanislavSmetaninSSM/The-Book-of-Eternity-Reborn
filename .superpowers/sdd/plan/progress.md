@@ -1,3 +1,29 @@
+# Genuine Linux applied DATA generator GREEN — verified provenance, outcome review pending
+
+Source3c7284/checkpoint9ed8:run093217-839-29546-9ed3e6227574405f87ef83d49d5a506c,
+1planned/completed/PASS,0skip/fail/duplicates, category199.2209387s<initial5min,
+overall03:39.5030240, no timeout/owned+runtimecleanupcomplete. Actualcanonical
+Committed->unapplied->realApplied(capability+witness)->freshapplied assertionspassed.
+Source/recovery scopes, reservation/audio/leaseclosedbeforecapture; selectable
+recordcreatedonlyafter normalfixtureclosing/ownedroot20c7c3c4785a4e2b8e83300ac8322796absent.
+
+Externalimmutablearchive applied-cb45b00a188148c7924e30ca33e7be77.zip120868bytes,
+SHA84706E6F096818C56C9003A14AC9488EC1D252D7856B62DA84FA67C65366D33A,
+82payloadfiles/46directories/fullhashesverified. RoleAppliedBeforeStory/PlatformLinux/
+Generatorlinux-minimal-applied-v1/OperationCanonicalCommittedAndProgressionApplied,
+GrantsAuthority=false/RecoveryQualified=false; tuplegenuinenativeOriginal44. Marker
+progressionapplied confirmed. ProducerproductionF6D611F7/testEF17EEEF/source3c/
+TestSupport2728AD02pins matchfreshassemblies. Recordat external linux-applied-template/
+source-record.json; no archive, record or raw uploaded.
+
+Full componentcapture1376504452bytes/3765804timingrows, attempted=stored, writerclosed/
+diagnosticcomplete, SHA5171636206baf4e29f1b9a2844f912117365c3e787b36272f76e411f0e00cb33
+independentlyrecomputed. Publisher63.410202s/wholecallback116.7741158s inclusive,
+notasummedbenchmark/speedupclaim. Smallverificationpacketexternal
+linux-applied-generation-verification.json. SeparateAstraoutcomereviewpending;
+thenboundary6+46remaining, native40 thenoriginal5. Cache454retained unchanged.
+HistoricalWindowsCRLF->LinuxFAIL and productcompatibilityquestionremainOPEN.
+
 # Linux applied input/transport controls GREEN — genuine generator next
 
 Code3c7284/checkpointfeb019:run092902-464-29095-b86b45bf171a4cd0b85fb03471ebe769,
