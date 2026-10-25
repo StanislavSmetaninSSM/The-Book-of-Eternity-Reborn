@@ -1,3 +1,22 @@
+# Linux selected-original take-fence GREEN — final198cache cases next
+
+Codef8b635/currentcheckpoint72a65:run083051-175-23324-4bfb877833d44c9fac34a534561a2070
+1planned/completed/PASS,0skip/fail/duplicates, no timeout, category145.3019631s<3min,
+overall02:43.5622401, process+fixture closing successful/ownedgameroot removed.
+Warmfacts:Continuation/Mechanical each1source+1reuse; actualfresh take each1source+
+0reuse, exact source_changed/WorldMapPath/SelectedOriginal observation48 refusal,
+inventoryacceptance/bothoriginalslots preserved and originalbytes restored.
+Read-only prep119sources209genericreuses119fresh closing sources stillconfirmed.
+Full uncapped external captureea606c57e4b745e0a2f88a508bf66091:1,355,906,823bytes/
+3,715,452timingrows,attempted=stored,DiagnosticComplete/TimingComplete/WriterClosed,
+SHA256 independently recomputed and matched. No complete baseline speedup claim.
+
+Distinct retained cachePASS308; final17categories18descriptors198cases next via
+externalcache-unrun-after-take-selection.json, allpreviouspassingcategoriesexcluded.
+Independent takeoutcome review pending while unrelated remainingcacheexecutes.
+Native40/original5 stillUNRUN, only after successfulfullcachegate. No production/
+native/limitschanges. Raw verificationandalllogsoutsidecheckout; nothingdeleted.
+
 # Linux selected-original fixture SOURCE/PREP ACCEPTED — target runtime next
 
 Sourcef8b635d37fe26cf0e6fb7649bf0fe5df6d1dd2c2 accepted by separate Astra/high:
