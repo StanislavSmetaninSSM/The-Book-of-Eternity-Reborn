@@ -1,3 +1,27 @@
+# Ordinary NativeLinux cut0 complete PASS — original Theory5 PREP next
+
+Cache514/full-three outcome independently accepted; separate Astra/high PREP
+admitted oneordinaryNativeLinuxcut0. Run173106-602-68148-b9316892d34047eb9a17333462d377f7:
+1planned/executed/PASS,exit0,no timeout/skip/duplicate,bothcleanupcomplete,
+wall4:02.9897079/category225.6229666s<15m. Child220+stop10+EOF10 unchanged.
+Actualnative rootproducer73/resumer0, distinctrun/birthticks with sharedfresh
+nonce389b14fecabe4944ab56b838d401535c. Bothfullstdout/stderr exactbytes/SHA,
+EOF/join/scopedretirement, endedroot/supervisorPIDs, deletedownedroots verified.
+Retainedreport a8a7e1a0268c4b77835edb99d2b38778.json5679237bytes,
+SHAE74E40C47A3F24D8FC97031B26C4DABCA216091C454280C82E063C32B6E6560A,
+exactlymatchesparentResultRaw. Completedtrue/Heldfalse/FailureFaultnull,
+NewChangingICommits1, inertrepeatbytes equal, freshauthorityabsentbeforeentry.
+Full observer/defaultordinaryflags preserved; noG01/DirectLinux orWindowscarrier.
+Current11DLL/PDBunchanged. Evidence passive-cold-cut0-verification.json.
+This is onecausalregressionPASS, never substitutes for originalTheory5.
+
+Original NoBuildPlan run174058-399-68518-f24d7d2ca8634f84be29068b232ebaef:
+1Theorydescriptor/5cases/0executed,exit0/no timeout/bothcleanupscomplete,
+15mcategory and220/10/10child policy. Actual5runtime remainsUNRUN onF9;
+oldall5 mixed3FAIL/2PASS preserved. Next independentcoldOUTCOME/original5PREP,
+then exactcategory fr063-joint-interface-crash-current -NoBuild once.
+NoCodechanges after483; native40 acceptedretention and historical15s failureOPEN.
+
 # Exact three full captures verified — canonical514 union complete, outcome/PREP next
 
 Separate Astra/high accepted GEN outcome and admitted exact3 on unchanged limits.
