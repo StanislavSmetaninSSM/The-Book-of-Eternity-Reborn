@@ -79,6 +79,10 @@ internal sealed class FileSystemManagerHooks
     /// </summary>
     internal CanonicalReadActivityAccumulator? PassiveCanonicalReads { get; init; }
     /// <summary>
+    /// Collects typed canonical/exact activity DATA without callbacks; <see langword="null"/> omits this recording.
+    /// </summary>
+    internal PassiveReadActivityAccumulator? PassiveReadActivities { get; init; }
+    /// <summary>
     /// Observes an actual exact physical read after initial validation; null disables observation.
     /// The receiver must not mutate storage or authority. Receiver faults are ignored and diagnostic reads bypass reuse.
     /// </summary>

@@ -814,6 +814,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var fixtureExports = new JsonArray();
         var stages = JointInterfaceCrashStageReport.CreateForOrdinary(parent, cut);
         var resumeActivity = OperatingSystem.IsWindows() && stages != null ? new JointInterfaceResumeActivity(stages) : null;
+        var resumeReadBindings = resumeActivity?.CreateReadBindings(observationMode == JointInterfaceObservationMode.Off);
         var operationTimings = OperatingSystem.IsWindows() && stages != null &&
             observationMode == JointInterfaceObservationMode.Full ? new JointOperationTimings() : null;
         var atCut = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "cut.json")))!.AsObject();
@@ -883,8 +884,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 Boundary = "recovery_validation_metrics", Metrics = metrics
             })),
-            CanonicalReadActivityObserver = resumeActivity is null ? null : _ => resumeActivity.Observe(JointResumeObservation.CanonicalInitial),
-            ExactPhysicalReadActivityObserver = resumeActivity is null ? null : _ => resumeActivity.Observe(JointResumeObservation.ExactInitial),
+            CanonicalReadActivityObserver = resumeReadBindings?.CanonicalObserver,
+            ExactPhysicalReadActivityObserver = resumeReadBindings?.ExactObserver,
+            PassiveReadActivities = resumeReadBindings?.Passive,
             AfterCanonicalWriteLockOpenedAsync = resumeActivity is null ? null : () => { resumeActivity.Observe(JointResumeObservation.CanonicalOpened); return Task.CompletedTask; },
             CanonicalWriteLockContendedAsync = resumeActivity is null ? null : () => { resumeActivity.Observe(JointResumeObservation.CanonicalContended); return Task.CompletedTask; },
             MainOwnerLockContendedAsync = resumeActivity is null ? null : () => { resumeActivity.Observe(JointResumeObservation.MainContended); return Task.CompletedTask; },

@@ -59,6 +59,19 @@ internal sealed class JointInterfaceResumeActivity
     }
 
     /// <summary>
+    /// Selects the actual resumer's read-activity bindings before its manager is constructed.
+    /// </summary>
+    /// <param name="passive">
+    /// Whether ordinary observation requests callback-free read DATA rather than the detailed live observer route.
+    /// </param>
+    /// <returns>
+    /// Bindings retaining separate canonical and exact observation populations.
+    /// </returns>
+    internal JointResumeReadBindings CreateReadBindings(bool passive) => new(
+        _ => Observe(JointResumeObservation.CanonicalInitial),
+        _ => Observe(JointResumeObservation.ExactInitial), null);
+
+    /// <summary>
     /// Counts one existing hook invocation without asserting successful I/O.
     /// </summary>
     /// <param name="observation">
@@ -148,6 +161,21 @@ internal sealed class JointInterfaceResumeActivity
             _counts[4], _counts[5], _counts[6], _publication, _recovery, false));
     }
 }
+
+/// <summary>
+/// Carries the selected read diagnostics without changing unrelated resumer hooks.
+/// </summary>
+/// <param name="CanonicalObserver">
+/// Original canonical callback, or <see langword="null"/> for passive recording.
+/// </param>
+/// <param name="ExactObserver">
+/// Original exact-physical callback, or <see langword="null"/> for passive recording.
+/// </param>
+/// <param name="Passive">
+/// Sealed read DATA, or <see langword="null"/> for original callback observations.
+/// </param>
+internal sealed record JointResumeReadBindings(Action<string>? CanonicalObserver,
+    Action<string>? ExactObserver, PassiveReadActivityAccumulator? Passive);
 
 /// <summary>
 /// Carries only scalar lower-bound callback observations for one named interval.
