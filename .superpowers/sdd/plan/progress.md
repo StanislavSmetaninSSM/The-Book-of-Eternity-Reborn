@@ -46,6 +46,19 @@ Result413F3916...3C6B, package8AC19A8F...2775A/320381B; no rebind. Original
 admission/frozen ready pending; no original launched. Latest r71 raw protected.
 All diagnostics uncapped D-only; r71raw/INPUT/CPU-GC/instrument/backups protected.
 
+
+T544 frozen admission Accepted8428D41C...E149F/128pins; metadata5d9e89c70
+remote-only94blobs47.9324s exact. First T545 pair bothPASS263.4663568/262.2500806s,
+first163.9209606/161.212649s; 565scopes each, native/oracles/cleanup intact.
+Critical coverage observation: resumer newbatch0invocations/0hits in BOTH stages;
+producer177batches/9017hits only. No recovery cache speedup attributed. Exactcause
+manual resumer CanonicalReadActivityObserver/ExactPhysicalReadActivityObserver
+at JointInterfaceCrash.cs886/887 remain arbitrary Actions even modeoff. T543
+reopened/BATCH8 correction recorded: sealed timestamped queue for ordinary
+resumer diagnostics, all events/noquotas, replay original due-sample populations
+before checkpoints/final/error; writer times remain current, deferred/forcedkill
+tail limitation explicit. New actualbindingRED/GREEN/currentqualification/new
+INPUT/secondoriginalpair required. First pair/raw and priorr71raw all retained.
 # r71 initial ordinary/main-admission directory DATA — code gate accepted
 
 Canonical specs/1536-complete-wound-materialization plan/spec FUSE1..7, T535..540,

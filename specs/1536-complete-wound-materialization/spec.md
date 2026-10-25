@@ -48,6 +48,24 @@ US2(P2): measure the complete qualified implementation without weakened fences.
   Source-only checkpoints/push/verified remote-only recovery. Preserve latest
   accepted raw until complete accepted replacement; keep INPUT/CPU-GC/instrument/
   wrappers/binary backups. No raw Git content, GM/schema/native/process changes.
+- BATCH8 (coverage correction after first full pair): require positive actual
+  resumer batch invocations/hits before claiming recovery cache effect. First
+  T545 pair passed but resumer coverage0: its manual Canonical/Exact activity
+  delegates bypassed the sealed lifecycle counter change. Preserve that pair as
+  a coverage probe; its163.9209606->161.212649s is not attributed to caching.
+  Replace only ordinary resumer read-activity delegates with a sealed timestamped
+  scalar event queue; original arbitrary/full-diagnostic callbacks keep fallback.
+  Record every event at the same initial-validation boundary, no quotas/delegates
+  or filesystem access in recording. Replay before all activity/publication/both
+  checkpoint transitions/normal and error-final close, using captured event time
+  for old15s due samples and current writer time for monotonic stage delivery.
+  Preserve all drained counts, populations, phase partition and Limited=false;
+  delivery may be delayed and forced termination before drain can lose a pending
+  tail (no equivalent live crash observability claimed). Existing named timing,
+  original gameplay/native/cleanup checks stay. Cheap actual resumer-binding RED/
+  GREEN plus replay/phase/error-tail tests, current affected qualification/review,
+  genuine new INPUT and second frozen same-DLL/INPUT pair are required.
+
 
 Alternatives: choose explicit bounded directory DATA; reject whole-owner cache
 across consumer returns (arbitrary raw changes need not rotate epoch), cached

@@ -4,7 +4,7 @@
 > separate complex independent review. Canonical Spec Kit, issue#1536.
 
 Goal: share positive directory DATA during bounded source work, retain all fresh
-source/authority/effect fences. Spec BATCH1..7. Base6921f8838, qualified1d2bd1220.
+source/authority/effect fences. Spec BATCH1..8. Base6921f8838, qualified1d2bd1220.
 Architecture: IReadPathObservations common explicit interface; old synchronous
 phase unchanged. SourceValidationBatch owns existing service DATA and exact owner/
 lease/registration/entry/root proof through async serial work. Ordinary helpers
@@ -17,7 +17,7 @@ Stack: C#/.NET8/current SDK, PowerShell7 bounded categories, Python D-local tool
 - [x] T542 [US1] IntegrationTests/SourceValidationBatchTests.cs real ten-file
   source/reserved sync/async metadata RED (minimal bool comparison seam only),
   category ownership. Named actual GetAttributes/native/main/source observations.
-- [x] T543 [US1] Core/IReadPathObservations.cs and SourceValidationBatch.cs;
+- [ ] T543 [US1] Core/IReadPathObservations.cs and SourceValidationBatch.cs;
   SourceDataOperation/ValidationReadSet owner gates and bounded lifecycle,
   OrdinaryReads+FileSystemManager/MainRunFence/AdmissionDirectoryObservations
   explicit classifier plumbing, sealed source-count accumulator replacing lifecycle Action. GREEN reduction/equal bytes/mtime/fresh sources;
@@ -36,6 +36,17 @@ T541->542->543->544->545->546. BATCH1/2/3/4->542/543/544;
 BATCH5->542/543/544; BATCH6->541/544/545; BATCH7->541/546.
 Constitution: trusted-local single-player, no OS privilege; active mutations fresh,
 accepted-turn/source/receipt/state integrity unchanged, pre-release no migration.
+Coverage correction: original T545 off/on bothPASS263.4663568/262.2500806s,
+first163.9209606/161.212649s but resumer batch coverage0/0; no causal gain claim.
+T543 add Core/PassiveReadActivityAccumulator.cs and resumer read-binding factory,
+actual binding RED then sealed queue GREEN; replay all timestamped events with
+old due sampling before phase reset and finally-error tail. Add finite queue/
+reporting and tiny actual manager positive-coverage tests. T544b current XML,
+affected/catalog/PlanOnly/complex review/newsource42/frozenadmission, T545b second
+same-source off/on pair; do not overwrite first evidence/helpers. T546 compare
+both rounds honestly and retire old raw only after accepted replacement.
+BATCH8->T543/544/545/546. Delayed diagnostic delivery/forced-kill tail limitation
+is explicit; no background timer or arbitrary callback added to live batches.
 Review focus: first-source DATA leaking into final epoch; async foreign/sibling
 borrower; arbitrary passive callbacks; prepared mutations mistaken for quiescent;
 leaf or negative DATA accidentally retained. Tests assigned T542/543, review544.

@@ -6,8 +6,10 @@ Issue#1536; spec BATCH1..7 / plan.md, autonomous specification-review-wait waive
   source-only checkpoint/recovery and qualified1d2 eight-DLL backup.
 - [x] T542 [US1] Cheap real source/reserved sync/async metadata reduction RED,
   category ownership and minimal off/on seam; unchanged bytes/native/source checks.
-- [x] T543 [US1] Explicit existing-service bounded batch/owner gates/ordinary
+- [ ] T543 [US1] Explicit existing-service bounded batch/owner gates/ordinary
   classifier plumbing/strict original control/counters; GREEN and integrity coverage.
+  Reopened for actual resumer passive-event queue and positive-coverage RED/GREEN;
+  first full pair is complete coverage probe, not successful recovery-cache proof.
 - [ ] T544 [US1] Complex independent coherent review/fixes, bounded affected tests,
   catalog/PlanOnly/XMLuniform8; conditional genuine source42/twoimports/admission.
 - [ ] T545 [US2] Conditional same-DLL/INPUT600/820/15 off/on originals with frozen
@@ -15,7 +17,7 @@ Issue#1536; spec BATCH1..7 / plan.md, autonomous specification-review-wait waive
 - [ ] T546 [US2] T546-source-validation-batch.md honest measurements/limits,
   independent outcome/exact retention, source-only final publication/recovery.
 
-BATCH1/2/3/4->542/543/544; BATCH5->542/543/544; BATCH6->541/544/545;
+BATCH8->543/544/545/546; BATCH1/2/3/4->542/543/544; BATCH5->542/543/544; BATCH6->541/544/545;
 BATCH7->541/546. T541->542->543->544->545->546. No whole-owner/verdict cache.
 
 # CRASH5 — revision71 shared preparation/main-admission directory DATA
