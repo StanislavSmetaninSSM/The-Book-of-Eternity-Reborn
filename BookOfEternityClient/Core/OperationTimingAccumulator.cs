@@ -28,9 +28,7 @@ internal sealed class OperationTimingAccumulator
     /// </returns>
     internal Window StartWindow(bool captureEvents)
     {
-        // Aggregate-only scaffold: the causal controls must fail before capture is implemented.
-        _ = captureEvents;
-        var window = new Window(this);
+        var window = new Window(this, captureEvents);
         if (Interlocked.CompareExchange(ref _active, window, null) is not null)
             throw new InvalidOperationException("This recorder already has an active window.");
         return window;
@@ -56,6 +54,9 @@ internal sealed class OperationTimingAccumulator
         private readonly object _gate = new();
         private readonly Dictionary<string, Counter> _rows = new(StringComparer.Ordinal);
         private readonly long _started = Stopwatch.GetTimestamp();
+        private readonly bool _captureEvents;
+        private Queue<NamedEvent>? _events;
+        private long _nextScopeId, _eventAttempted, _eventEnqueued, _eventDrained, _eventFailed;
         private long _stopped, _open, _late;
         private bool _closed;
 
@@ -65,7 +66,18 @@ internal sealed class OperationTimingAccumulator
         /// <param name="owner">
         /// The recorder whose active slot this window releases on close.
         /// </param>
-        internal Window(OperationTimingAccumulator owner) => _owner = owner;
+        internal Window(OperationTimingAccumulator owner) : this(owner, captureEvents: false) { }
+
+        /// <summary>
+        /// Creates a window with optional original scalar events and no eagerly allocated event buffer.
+        /// </summary>
+        /// <param name="owner">The recorder whose active slot this window releases on close.</param>
+        /// <param name="captureEvents">Whether to retain each original named boundary.</param>
+        internal Window(OperationTimingAccumulator owner, bool captureEvents)
+        {
+            _owner = owner;
+            _captureEvents = captureEvents;
+        }
 
         /// <summary>
         /// Registers a scope only while this window remains open.
@@ -85,7 +97,7 @@ internal sealed class OperationTimingAccumulator
                 if (!_rows.TryGetValue(name, out var counter)) _rows.Add(name, counter = new());
                 counter.Started++;
                 _open++;
-                return new Scope(this, counter);
+                return new Scope(this, counter, name, _captureEvents ? ++_nextScopeId : 0);
             }
         }
 
@@ -126,7 +138,20 @@ internal sealed class OperationTimingAccumulator
         /// <returns>
         /// Every event pending at the drain boundary, or an empty array when capture is disabled.
         /// </returns>
-        internal NamedEvent[] DrainEvents() => Array.Empty<NamedEvent>();
+        /// <exception cref="OutOfMemoryException">
+        /// The detached batch could not be allocated; all pending events and accounting remain intact.
+        /// </exception>
+        internal NamedEvent[] DrainEvents()
+        {
+            lock (_gate)
+            {
+                if (_events is null || _events.Count == 0) return Array.Empty<NamedEvent>();
+                var batch = _events.ToArray();
+                _events.Clear();
+                _eventDrained += batch.LongLength;
+                return batch;
+            }
+        }
 
         /// <summary>
         /// Copies event capture accounting independently of aggregate completeness.
@@ -134,7 +159,38 @@ internal sealed class OperationTimingAccumulator
         /// <returns>
         /// Capture selection and counts; failed capture cannot qualify a complete diagnostic trace.
         /// </returns>
-        internal EventStatus CaptureEventStatus() => new(false, 0, 0, 0, 0, 0);
+        internal EventStatus CaptureEventStatus()
+        {
+            lock (_gate)
+                return new(_captureEvents, _eventAttempted, _eventEnqueued, _eventDrained,
+                    _eventEnqueued - _eventDrained, _eventFailed);
+        }
+
+        /// <summary>
+        /// Retains an original scalar boundary under the existing window gate without external code.
+        /// Buffer allocation failure remains explicit while leaving the measured operation unchanged.
+        /// </summary>
+        /// <param name="scopeId">The identity pairing this scope's two original boundaries.</param>
+        /// <param name="name">The unchanged section name.</param>
+        /// <param name="state">The original begin or end boundary.</param>
+        /// <param name="timestamp">The original absolute Stopwatch timestamp.</param>
+        /// <param name="ticks">Zero at begin, or the original inclusive duration at end.</param>
+        /// <param name="late">Whether the boundary registered after window close.</param>
+        private void RecordEvent(long scopeId, string name, string state, long timestamp, long ticks, bool late)
+        {
+            if (!_captureEvents) return;
+            var sequence = ++_eventAttempted;
+            try
+            {
+                _events ??= new Queue<NamedEvent>();
+                _events.Enqueue(new(sequence, scopeId, name, state, timestamp, ticks, late));
+                _eventEnqueued++;
+            }
+            catch (OutOfMemoryException)
+            {
+                _eventFailed++;
+            }
+        }
 
         /// <summary>
         /// Completes an already registered scope without calling external code.
@@ -142,10 +198,13 @@ internal sealed class OperationTimingAccumulator
         /// <param name="counter">
         /// The exact counter selected at registration.
         /// </param>
+        /// <param name="name">The unchanged original section name.</param>
+        /// <param name="scopeId">The identity pairing this scope's original boundaries.</param>
+        /// <param name="timestamp">The absolute end timestamp captured before acquiring the gate.</param>
         /// <param name="ticks">
         /// Monotonic inclusive duration captured before updating aggregate state.
         /// </param>
-        private void End(Counter counter, long ticks)
+        private void End(Counter counter, string name, long scopeId, long timestamp, long ticks)
         {
             lock (_gate)
             {
@@ -154,6 +213,7 @@ internal sealed class OperationTimingAccumulator
                 counter.MaxTicks = Math.Max(counter.MaxTicks, ticks);
                 _open--;
                 if (_closed) _late++;
+                RecordEvent(scopeId, name, "end", timestamp, ticks, _closed);
             }
         }
 
@@ -168,24 +228,39 @@ internal sealed class OperationTimingAccumulator
         /// <summary>
         /// Completes its original window's counter once, even after that window closes.
         /// </summary>
-        /// <param name="window">
-        /// The window which registered this scope.
-        /// </param>
-        /// <param name="counter">
-        /// The registered name's counter.
-        /// </param>
-        private sealed class Scope(Window window, Counter counter) : IDisposable
+        private sealed class Scope : IDisposable
         {
-            private readonly long _started = Stopwatch.GetTimestamp();
+            private readonly Window _window;
+            private readonly Counter _counter;
+            private readonly string _name;
+            private readonly long _scopeId, _started;
             private int _closed;
+
+            /// <summary>
+            /// Captures the original start clock while registering its optional begin under the window gate.
+            /// </summary>
+            /// <param name="window">The window which registered this scope.</param>
+            /// <param name="counter">The registered name's aggregate counter.</param>
+            /// <param name="name">The unchanged section name retained for its original end.</param>
+            /// <param name="scopeId">The window-local identity pairing its original boundaries.</param>
+            internal Scope(Window window, Counter counter, string name, long scopeId)
+            {
+                _window = window;
+                _counter = counter;
+                _name = name;
+                _scopeId = scopeId;
+                _started = Stopwatch.GetTimestamp();
+                window.RecordEvent(scopeId, name, "begin", _started, 0, late: false);
+            }
 
             /// <summary>
             /// Captures duration once and retains any late completion in the original window.
             /// </summary>
             public void Dispose()
             {
-                if (Interlocked.Exchange(ref _closed, 1) == 0)
-                    window.End(counter, Stopwatch.GetTimestamp() - _started);
+                if (Interlocked.Exchange(ref _closed, 1) != 0) return;
+                var timestamp = Stopwatch.GetTimestamp();
+                _window.End(_counter, _name, _scopeId, timestamp, timestamp - _started);
             }
         }
     }

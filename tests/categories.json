@@ -2,6 +2,42 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "core-passive-named-transport",
+  "responsibility": "Nine small controls of original full named-event transport, closed queue/aggregate/write accounting, incomplete and failed storage refusal, real metadata reduction versus legacy and aggregate modes, and same-timestamp source drift.",
+  "excludes": "No game world, genuine applied DATA generation, gameplay authority, diagnostic quota or expensive three-fixture qualification.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/PassiveNamedTimingTransportTests.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointOperationTimings.cs",
+    "BookOfEternityClient.IntegrationTests/JointCleanupProfileDiagnosticCapture.cs",
+    "BookOfEternityClient.IntegrationTests/JointBundleDiagnosticOutput.cs"
+  ],
+  "related": [
+    {
+      "id": "core-passive-named-events",
+      "when": "Original recorder FIFO, clocks and concurrent accounting change."
+    },
+    {
+      "id": "core-passive-recovery-timing",
+      "when": "Preserve existing default aggregates and cache eligibility."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.PassiveNamedTimingTransportTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "core-passive-named-events",
   "responsibility": "Opt-in scalar named timing events in the existing sealed recorder: original clocks and scope pairing, detached atomic drains, concurrency, independent windows, open/late and failed-body accounting, without callback or IO in recording.",
   "excludes": "No game world, gameplay authority, synthetic timing replay, diagnostic quota or full qualification claim from these memory-only contracts.",

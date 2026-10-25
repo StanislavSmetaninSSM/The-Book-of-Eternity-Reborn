@@ -75,14 +75,18 @@ public sealed partial class JointBundleComponentTests
         {
             using var timing = Files.MeasureOperation("JointBundleFixture.PrepareBoundJoint");
             var source = await PrepareOriginalAsync(43);
+            FlushPassiveTimings();
             await PreparePhysicalOccurrenceAsync(source);
+            FlushPassiveTimings();
             await Files.WriteFileAtomicAsync(Lease, "game_state/player/stat_points.json",
                 new JsonObject { ["levelUpStatPointsAwardedThroughLevel"] = 1, ["unspentStatPoints"] = 0 }.ToJsonString());
             var original = await PrepareOriginalAsync(44);
+            FlushPassiveTimings();
             MortalJointRepairCheckpoint.RejectedCapture capture;
             try
             {
                 await PrepareHeldRepairOutputsAsync(original);
+                FlushPassiveTimings();
                 using (Files.MeasureOperation("JointBundleFixture.RotateTreatmentLease"))
                 {
                     var previousLease = Lease;
@@ -99,6 +103,7 @@ public sealed partial class JointBundleComponentTests
                     Assert.True(Files.IsCurrentSessionGeneration(Lease, original.Generation));
                 }
                 capture = await CaptureCorrectedJointRepairAsync(original);
+                FlushPassiveTimings();
             }
             catch (CoordinatedStatePublicationUncertainException) { _retained = true; throw; }
             using var preparationValidation = Files.BeginRecoveryValidation(Lease);
@@ -106,6 +111,7 @@ public sealed partial class JointBundleComponentTests
             using (Files.MeasureOperation("JointBundleFixture.CreateJointPreparation"))
                 preparation = await WoundAcceptedTurnPlanner.CreateJointRepairPreparationAsync(Files, Lease, capture);
             Assert.True(preparation.IsValid, JsonSerializer.Serialize(preparation.Issues));
+            FlushPassiveTimings();
             var continuation = preparation.Authority!;
             object reservation;
             using (Files.MeasureOperation("JointBundleFixture.ReserveJointPublication"))
@@ -116,6 +122,7 @@ public sealed partial class JointBundleComponentTests
                     MortalWoundTreatmentPublicationReservationStatus.Exact, JsonSerializer.Serialize(reserved));
                 reservation = reserved.Authority!;
             }
+            FlushPassiveTimings();
             try
             {
                 AcceptedMechanicsWoundStageBundle bundle;
@@ -133,6 +140,7 @@ public sealed partial class JointBundleComponentTests
                     Assert.True(final.Success, JsonSerializer.Serialize(final.Issues));
                     bundle = new AcceptedMechanicsWoundStageBundle(preparation.Input!, prepared.Plan!, effects.Plan!, final.Plan!);
                 }
+                FlushPassiveTimings();
                 if (!includeCommonBinding)
                 {
                     _jointOriginal = original;
@@ -159,10 +167,12 @@ public sealed partial class JointBundleComponentTests
                     baseline = await WoundAcceptedTurnPlanner.CreateJointRepairCommonBaselineAsync(
                         Files, Lease, mechanical, bundle, anchors.Plan!, continuation, reservation);
                 Assert.True(baseline.IsValid, JsonSerializer.Serialize(baseline.Issues));
+                FlushPassiveTimings();
                 WoundAcceptedTurnPlanner.JointResourcePublicationBuildResult resources;
                 using (Files.MeasureOperation("JointBundleFixture.CreateResourcePublication"))
                     resources = await WoundAcceptedTurnPlanner.CreateJointRepairResourcePublicationAsync(Files, Lease, baseline.Authority!);
                 Assert.True(resources.IsValid, JsonSerializer.Serialize(resources.Issues));
+                FlushPassiveTimings();
                 var progression = await Runtime.Engine.CaptureJointProgressionForComponentAsync(Lease, original);
                 using (Files.MeasureOperation("JointBundleFixture.BindCommonInput"))
                 {

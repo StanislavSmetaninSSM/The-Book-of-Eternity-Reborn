@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "core-passive-named-events",
+      "reason": "Nine causal scalar queue contracts: clocks, scope pairing, independent windows, concurrency, open and late accounting; default aggregate ABI retained.",
+      "contracts": [
+        "#1536 LINUXTIMING1..5 / T576-T580"
+      ]
+    },
+    {
+      "category": "core-passive-named-transport",
+      "reason": "Nine real detached transport controls, original source clocks, uncapped exact byte hash, incomplete/failure refusal and actual metadata/source/freshness comparisons.",
+      "contracts": [
+        "#1536 LINUXTIMING1..5 / T576-T580"
+      ]
+    },
+    {
+      "category": "core-passive-recovery-timing",
+      "reason": "Existing aggregate recorder and real cache-eligible consumers; original callback fallback unchanged.",
+      "contracts": [
+        "#1536 LINUXTIMING1..5 / T576-T580"
+      ]
+    },
+    {
+      "category": "core-source-validation-batch",
+      "reason": "Actual source directory DATA reuse, ownership and fresh negative fences with passive recording.",
+      "contracts": [
+        "#1536 LINUXTIMING1..5 / T576-T580"
+      ]
+    },
+    {
+      "category": "fr063-joint-component-diagnostics",
+      "reason": "Existing durable output and deferred observer storage refusal share the changed completion/report collector.",
+      "contracts": [
+        "#1536 LINUXTIMING1..5 / T576-T580"
+      ]
+    },
+    {
+      "category": "fr063-joint-cleanup-profile-diagnostic-controls",
+      "reason": "Existing deferred timing writer/clock/report failures share the changed typed transport implementation.",
+      "contracts": [
+        "#1536 LINUXTIMING1..5 / T576-T580"
+      ]
+    },
+    {
+      "category": "crash5-named-timing-output",
+      "reason": "Existing named collector sequence, full output and old payload compatibility share its serializer.",
+      "contracts": [
+        "#1536 LINUXTIMING1..5 / T576-T580"
+      ]
+    },
+    {
+      "category": "fr063-joint-producer-timing-controls",
+      "reason": "Actual adopted producer sync/async/default-null hooks retain original complete nesting and sequence.",
+      "contracts": [
+        "#1536 LINUXTIMING1..5 / T576-T580"
+      ]
+    }
+  ]
+}

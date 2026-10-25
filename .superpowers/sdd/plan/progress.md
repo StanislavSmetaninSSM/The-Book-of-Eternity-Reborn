@@ -1,3 +1,30 @@
+# Full passive timing implementation WIP — causal RED verified, coherent SOURCE next
+
+Actual causal RED run161325-202-62100-95c5a9ec365748cb858885b866d4094f on
+CCD scaffold:9planned/executed,7FAIL+2defaultPASS,0skip/duplicate,exit1/no timeout,
+48.5374242s wall and owned cleanup complete. Seven failures are exactly missing
+queue/status (0 original events); both default aggregate modes pass. Selected
+GameB5/Unit5BF compiledCCD and four source/PDB pairs were verified; independent
+Astra PREP accepted that exact unit-only RED. No game runtime on mixed outputs.
+
+Sol6.1/high implementer now supplies the existing recorder's opt-in scalar FIFO,
+original Stopwatch clocks and paired scope IDs, atomic detached drains, explicit
+late/failed/pending counters. Noarg/default aggregates retained; no IO/callback
+or source-authority change. Allocation failure in enqueue is explicit incomplete
+accounting; drain allocation failure leaves its buffer intact. OOM path is source
+review only, no allocator fault injection coverage claimed.
+Root's disjoint full transport uses original events, complete closed-window /
+aggregate / queue / attempted-write / stored-write equality, and refuses missing,
+open, late, undrained or failed receipts. Nine small Integration cases cover full
+Unicode/clock/hash transport and independent actual metadata/source/fresh guards
+comparisons; no expensive runtime has run on this new implementation.
+Only Take/Qte/Semantic explicitly select full events; GEN and all other fixtures
+retain legacy mode. Detached writes occur at completed preparation boundaries,
+slice boundaries and after resource closing, preserving uncapped full trace.
+All old limits/fixtures/failed raw and source/effect fences remain unchanged.
+SOURCE review and coherent fresh builds/cheap GREEN/PREP/current DATA remain UNRUN.
+Next: independent coherent SOURCE review, then freeze one build SHA.
+
 # Passive scaffold fresh RED preparation verified — independent PREP pending
 
 Accepted scaffold ccd3980238c9560f04f35bbe70055e5d8cc41a1f freshly compiled:
