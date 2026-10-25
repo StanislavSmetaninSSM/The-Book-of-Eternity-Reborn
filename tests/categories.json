@@ -2,6 +2,36 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "core-operation-source-data-linux",
+  "responsibility": "Real Linux replacement leases without Windows legacy recovery: eligible cross-lease provisional DATA reuse with fresh first-adapter admission, raw source drift refusing effect/success, and fresh generation binding before DATA.",
+  "excludes": "Windows legacy recovery transitions, world/game preparation, native process qualification and authority caching.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.SourceDataOperation.cs",
+    "BookOfEternityClient.Tests/SourceDataOperationLinuxTests.cs"
+  ],
+  "related": [
+    {
+      "id": "core-operation-source-data",
+      "when": "Shared source adapter/fresh fence contracts change."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SourceDataOperationLinuxTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "test-diagnostic-paths",
   "responsibility": "Pure diagnostic root configuration: explicit absolute root, legacy per-call repository fallback and invalid settings refused before filesystem output.",
   "excludes": "No environment mutation, game setup, process launch, diagnostic volume limits or runtime ownership assertions.",

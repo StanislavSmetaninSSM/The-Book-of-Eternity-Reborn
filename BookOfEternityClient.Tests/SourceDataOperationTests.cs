@@ -448,9 +448,10 @@ public sealed class SourceDataOperationTests(ITestOutputHelper output)
 
     /// <summary>
     /// Admits a replacement physical lease freshly and never revives a prior lease's source receipt.
+    /// Stable provisional DATA may remain reusable across the separately admitted adapters.
     /// </summary>
     /// <returns>
-    /// Completion after observing changed physical bytes and requiring a new pre-write fence.
+    /// Completion after requiring a new pre-write fence and observing a supported mutation's new bytes.
     /// </returns>
     [Fact]
     public async Task ReplacementLeaseRequiresNewDataAndVerification()
@@ -465,9 +466,8 @@ public sealed class SourceDataOperationTests(ITestOutputHelper output)
             Assert.Equal("original", await files.ReadFileAsync(first, "present.txt"));
             await operation.VerifyAsync(first);
         }
-        File.WriteAllText(fixture.PresentPath, "modified");
         await using var second = await files.AcquireCanonicalWriteLeaseAsync();
-        Assert.Equal("modified", await files.ReadFileAsync(second, "present.txt"));
+        Assert.Equal("original", await files.ReadFileAsync(second, "present.txt"));
         await Assert.ThrowsAsync<InvalidOperationException>(() => files.WriteFileAtomicAsync(second, "effect.txt", "forbidden"));
         await operation.VerifyAsync(second);
         await files.WriteFileAtomicAsync(second, "present.txt", "final");
@@ -857,7 +857,7 @@ public sealed class SourceDataOperationTests(ITestOutputHelper output)
     /// <summary>
     /// Owns tiny real files, actual source counters and complete passive timing output.
     /// </summary>
-    private sealed class SourceOperationFixture : IDisposable
+    internal sealed class SourceOperationFixture : IDisposable
     {
         private readonly ITestOutputHelper _output;
         private readonly string _nonce = Guid.NewGuid().ToString("N");
@@ -924,6 +924,17 @@ public sealed class SourceDataOperationTests(ITestOutputHelper output)
         /// Gets the number of actual present-file read activity events while recording.
         /// </summary>
         internal int PresentSources => Volatile.Read(ref _presentSources);
+
+        /// <summary>
+        /// Counts completed named observations without changing source reads or fixture ownership.
+        /// </summary>
+        /// <param name="name">
+        /// The exact existing production section name.
+        /// </param>
+        /// <returns>
+        /// The completed observations captured so far by this fixture's existing receiver.
+        /// </returns>
+        internal int CompletedOperations(string name) => _rows.Count(row => row.Name == name && row.Boundary == "end");
 
         /// <summary>
         /// Deletes only the verified owned root and emits all observations without a record quota.

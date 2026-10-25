@@ -245,6 +245,13 @@
       "contracts": [
         "#1536 r73 Linux handoff / T551-T552"
       ]
+    },
+    {
+      "category": "core-operation-source-data-linux",
+      "reason": "Correct platform-specific fixture expectation using the accepted FILEOP-2 provisional DATA contract; prove real Linux reuse and fresh refusal boundaries without early-return PASS.",
+      "contracts": [
+        "#1536 FILEOP-1..4 / Linux T552 fixture correction"
+      ]
     }
   ]
 }

@@ -1,3 +1,43 @@
+# Linux T552 first runtime FAIL — accepted-contract fixture correction WIP
+
+Actual cache run064208-198-9886-9839820ed41f439eb4e86cfc232dabe7:166/504cases,
+165PASS/1FAIL/0skip,8/36descriptors,02:44.5424788, no timeout, cleanup complete.
+Failed ReplacementLeaseRequiresNewDataAndVerification expected raw-modified bytes
+immediately on replacement; physical closing fresh fence correctly rejected
+Operation source changed:present.txt, masking the earlier read assertion.
+
+Ruling: preserve provisional cross-lease DATA. Accepted r53FILEOP-1..4/spec and
+plan expressly permit DATA after fresh replacement admission, with fresh fences
+before effect/success. r54 forbids the first-adapter fast shortcut, not the later
+service hit inside full admission. Windows legacy independent fresh recovery may
+retire DATA; its immediate physical read is not a Linux contract. Separate
+Astra/high design reviewer initially suggested blanket retirement, then withdrew
+that advice after the exact spec/plan evidence. No production bug established;
+no ForceFresh/lease-close or integrity/budget change is justified.
+
+Bounded test-only correction: positive real replacement fixture keeps unchanged
+input, retains pre-fence writer refusal, fresh verification, supported final write
+and owning completion. New Linux-only3cases retain the original raw-drift case
+as explicit safety-negative (capture expected fence error before disposal), prove
+zero functional source reads after fresh replacement admission and two physical
+fresh fences, and fresh generation bytes before returning DATA. No reflection/
+world/bootstrap; independent per-test tiny fixture and existing named observations.
+Current production/native sources remain unchanged fromb377. New category has
+actual Linux Assert, no early-return/skip; Windows owner remains separate.
+
+Optimization assessment: full operation service/ordinal family keys and exact
+manager/root/lease registration/version/generation rules retained. Closing adapter
+clears authority/receipt/routes; stable provisional DATA is not permission. Full
+source/authority/effect/exit checks stay. Blanket physical-close clearing would
+lose accepted reuse; cheap source counts establish the intended effect instead.
+Source-only test WIP to publish before fresh unit build; integration/shared inputs
+unchanged, so no repeat integration build/diagnostic31. Old unit DLL/PDB retained
+outside checkout solely for binding proof, never selected for new execution.
+Next: fresh unit XML, exact category discovery, source37+Linux3 qualification,
+independent coherent review and remaining unrun cache contracts. Prior seven
+unaffected categories129PASS remain distinct evidence; failed category reruns
+because its fixture changed. Native40/original5 stillUNRUN, no Linux gamePASS.
+
 # Linux T551 SOURCE/PREP ACCEPTED — T552 cache runtime next
 
 2026-10-25; separate gpt-6.1-sol/xhigh context linux_prep_review accepted code9a6c93cd5 /

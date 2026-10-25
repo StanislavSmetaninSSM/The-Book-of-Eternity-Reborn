@@ -1,3 +1,15 @@
+# Linux T552 fixture correction — existing FILEOP contract, no production change
+
+Issue#1536, observed Linux source37 category failure. r53FILEOP-2 permits provisional
+DATA on a freshly admitted replacement lease; mandatory source/effect/exit fences
+remain. Positive replacement test must use stable input; separate real Linux
+controls prove cross-lease reuse, raw-drift refusal and fresh generation bytes.
+No cache retirement, authority change, larger budget or new feature. Existing
+minimal fixture gets a typed named-counter accessor; mutable roots remain per-test.
+Fresh unit-only XML/discovery and affected source categories precede independent
+complex review; retain unaffected passed categories and run only remaining scope.
+The original cold/native runtime gates remain after successful cache qualification.
+
 # Linux qualification PREP accepted — 2026-10-25
 
 T551 accepted by separate gpt-6.1-sol/xhigh after coherent source/PDB/selection/
