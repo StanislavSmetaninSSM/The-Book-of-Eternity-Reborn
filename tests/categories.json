@@ -36,11 +36,12 @@
 },
 {
   "id": "portable-linux-cache-read-consumers",
-  "responsibility": "Linux affected common read and canonical confinement consumers: optional-directory/intermediate-file refusal and fresh link checks at read, write and root admission boundaries.",
-  "excludes": "Windows junction-specific assertions, Windows metadata adapters, world bootstrap and full save/load scenarios.",
+  "responsibility": "Linux affected common reads and trusted-local directory DATA consumers: optional-directory/intermediate-file refusal, linked leaf/ancestor refusal and fresh root revalidation without platform early returns.",
+  "excludes": "Windows runtime-root/lock handle qualification, optional link-creation helpers, Windows metadata adapters, world bootstrap and full save/load scenarios.",
   "changeHints": [
     "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
-    "BookOfEternityClient/Core/FileSystemManager.cs"
+    "BookOfEternityClient/Core/FileSystemManager.cs",
+    "BookOfEternityClient/Core/TrustedLocalFileScope.cs"
   ],
   "related": [],
   "requirements": {
@@ -57,11 +58,15 @@
         "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_DirectoryAtOptionalFileBoundaryFailsClosed",
         "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileSync_DirectoryAtOptionalFileBoundaryFailsClosed",
         "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_RegularFileAtIntermediateParentFailsClosed",
-        "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileSync_RegularFileAtIntermediateParentFailsClosed",
-        "BookOfEternityClient.Tests.FileSystemManagerTests.CanonicalFileOperations_RejectExistingReparsePointAncestor",
-        "BookOfEternityClient.Tests.FileSystemManagerTests.AtomicWrite_RechecksReparseConfinementAtMutationBoundary",
-        "BookOfEternityClient.Tests.FileSystemManagerTests.AcquireCanonicalWriteLease_RejectsRuntimeRootReparsePoint",
-        "BookOfEternityClient.Tests.FileSystemManagerTests.AcquireCanonicalWriteLease_RejectsRuntimeLockDirectoryReparsePoint"
+        "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileSync_RegularFileAtIntermediateParentFailsClosed"
+      ]
+    },
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.TrustedLocalFileScopeTests.ValidateFile_RejectsLinkedAncestor",
+        "BookOfEternityClient.Tests.TrustedLocalFileScopeTests.ValidateFile_RevalidatesRootAfterConstruction",
+        "BookOfEternityClient.Tests.TrustedLocalFileScopeTests.ValidateFile_RejectsExistingAndDanglingSymbolicLinks"
       ]
     }
   ]

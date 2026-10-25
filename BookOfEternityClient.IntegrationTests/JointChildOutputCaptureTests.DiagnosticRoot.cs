@@ -15,6 +15,10 @@ public sealed partial class JointChildOutputCaptureTests
     {
         using var fixture = new OutputTestFixture();
         using var artifacts = new OutputTestFixture();
+        var configuredRoot = Environment.GetEnvironmentVariable("BOE_TEST_DIAGNOSTIC_ROOT")
+            ?? Path.Combine(TestRepoPaths.RepoRoot, "TestResults");
+        Assert.Equal(Path.GetFullPath(Path.Combine(configuredRoot, "joint-child-fixtures")),
+            Path.GetDirectoryName(artifacts.Path));
         var capture = new JointChildOutputCapture(fixture.Path, new { Role = "explicit-parent-control" }, artifacts.Path);
         var output = await BookOfEternityClient.Services.GmWorkers.FinitePipeOutput.DrainAsync(new StringReader("all-output"), capture.StandardOutput);
         var error = await BookOfEternityClient.Services.GmWorkers.FinitePipeOutput.DrainAsync(new StringReader("all-error"), capture.StandardError);

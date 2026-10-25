@@ -1,3 +1,21 @@
+# Linux PREP review corrections — runtime gates still UNRUN
+
+Independent gpt-6.1-sol/xhigh coherent review of frozen637 identified two concrete
+issues before execution: transport-only OutputTestFixture still used repo/TestResults
+as explicit artifactParent; new Linux owner included2Windows early-return and2
+optional-link methods. Corrected transport fixture through existing shared resolver
+and added actual configured-parent assertion without weakening explicit priority.
+Selection now uses4 genuine wrong-type read methods plus3 strict typed linked
+leaf/ancestor/root methods (no platform/fixture early return); runtime-lock Windows
+handle qualification is excluded explicitly. No new gameplay/native/cache changes.
+
+Unit/shared final XML build is on frozen637 source and still running. This delta
+changes only integration test sources, catalog/selection and checkpoint; those
+unchanged freshly built unit/shared projects will not be recompiled solely for a
+later metadata revision. Integration will receive its own fresh XML build after
+this source-only checkpoint, with exact distinct assembly/PDB/source bindings.
+GREEN and final PREP remain pending; no blocked or early-return result is PASS.
+
 # Linux qualification — diagnostic routing causal RED, fix awaiting GREEN
 
 2026-10-25/T551. Original native package PASS; fresh unit XML build exit0,

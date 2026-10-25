@@ -310,9 +310,9 @@ public sealed partial class JointChildOutputCaptureTests
     private sealed class OutputTestFixture : IDisposable
     {
         /// <summary>
-        /// Gets the exclusive fixture path under the repository test-results directory.
+        /// Gets the exclusive transport fixture path under the configured diagnostic root.
         /// </summary>
-        internal string Path { get; } = System.IO.Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "joint-child-fixtures", Guid.NewGuid().ToString("N"));
+        internal string Path { get; } = System.IO.Path.Combine(TestDiagnosticPaths.Root, "joint-child-fixtures", Guid.NewGuid().ToString("N"));
         /// <summary>
         /// Creates only this fixture's exclusive directory.
         /// </summary>
