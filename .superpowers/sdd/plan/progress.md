@@ -1,4 +1,15 @@
-# T584 live N source contribution — fresh builds verified, PREP pending
+# T584 live N source contribution — PREP accepted, first 29 controls next
+
+Independent Astra/high PREP ACCEPT at clean remote
+`7add12363c5dcc629c2708569099abe117815d34`: no blocking findings. It independently
+checked actual build logs, 33 DLL/PDB/XML files, eleven PE/PDB identities, 26
+accepted-source/PDB hashes, discovery and all staged plans. Root also directly
+re-read PE/PDB metadata; its complete recapture matches the preparation manifest.
+Accepted first actual is exactly `fr063-narrative-policy-pass-sources -NoBuild`
+(29 cases), followed conditionally by remaining 101 cheap cases, three live
+singletons and two cold singletons. No runtime result exists yet. Detailed review
+is external under the preparation directory below. Code source and binary pins
+remain unchanged by these Markdown-only checkpoints.
 
 Fresh Linux XML builds completed at informational/source-checkpoint
 `b7c4ddee32f644262b243d3c805f4356762fa681`, with accepted C# source
