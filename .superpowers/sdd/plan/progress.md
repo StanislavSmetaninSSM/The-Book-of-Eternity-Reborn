@@ -1,4 +1,27 @@
-# T584 live N source contribution — strict test-only inverse correction frozen
+# T584 live N source contribution — inverse Unit build verified, PREP pending
+
+Independent Astra/high accepted `8e590c549cb9c47573b470fd2cf4236ce20a5096`
+for the test-only historical composition; no material findings. Fresh Unit XML
+build passed on that exact source: 1:56.70, zero errors / 26 original warnings.
+Root verified new Unit DLL/PDB/XML, all 30 non-Unit files unchanged from compiled
+3cf, eleven PE/PDB pairs, all 26 exact current/Git/PDB source documents and shared
+copy consistency. This is an explicit mixed build: Unit informational8e, the
+unchanged other four assemblies informational3cf. No new all-assemblies8e claim.
+Exact prior Unit3cf artifacts are retained externally for earlier29+48 provenance,
+with no reuse as future runtime inputs. GitHub recovery of8e is clean/byte-checked.
+
+Fresh PlanOnly confirms six descriptors / 53 cases: the failed source singleton
+is FIRST, followed by exactly the previously unrun52. One ordered selected run
+uses the existing fail-stop runner (already demonstrated by the49/101 attempt),
+so those52 execute only if the source singleton passes. This preserves the gate
+while avoiding duplicate discovery. Category/child/cleanup budgets stay unchanged;
+no retained29/48 replay. Fresh PREP review then this bounded actual53 are next.
+Source-identity/catalog files are unchanged; previous catalog VALID952 remains at
+its actual provenance, with current subset membership freshly discovered. No
+production/GM contract, cache or source preparation changed. Deterministic text
+inverse work is small and fresh; it needs no additional caching mechanism.
+Evidence remains external under `live-n-implementation/preparation-sourceguard`
+and `build-sourceguard`; actual53 and all live/cold scenarios remain UNRUN.
 
 Source-guard cause reproduced exactly: after the new T587 inverse reached c6e,
 two previously accepted original-lookup amendments (`31c961d` and `2cdd2273`)
