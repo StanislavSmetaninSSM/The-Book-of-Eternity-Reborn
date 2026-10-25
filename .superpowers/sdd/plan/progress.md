@@ -1,4 +1,22 @@
-# r72 common source-validation directory DATA — final code qualified, second pair pending
+# r73 optimization policy and Linux handoff — planning checkpoint
+
+2026-10-25, issue#1536, OPT1..6/T547..550. User requests all accumulated code for
+Astra, refreshed handoff and mandatory optimization rules. Base/published remote
+ea2cb0fbc604f07312c27369199e840e01e04be3 verified; clean dedicated task branch.
+Qualified executable source remains0b648cd21ae49e757eb37b0c545075fd0dafcf5c.
+Brainstorming/bridge/writing-plans and project speckit-plan/tasks/analyze applied
+to these canonical artifacts; setup-plan/setup-tasks/check-prerequisites succeeded.
+Manual read-only consistency: OPT1..6 fully mapped toT547..550, no ambiguity,
+coverage gap or constitution conflict. All new work Markdown only; no C# tests
+needed or claimed. Written spec/plan/tasks presented under standing review-wait
+waiver. Parent owns inline block; one Sol6.1/xhigh independent docs review planned.
+Reuse existing isolation by user preference; optional automatic broad commit/
+agent-context hooks skipped, canonical context maintained explicitly.
+Next: T548 root mandate/detailed guide/workflow/testing/current handoff; verify
+links/source claims, independently review coherent block, publish and verify a
+fresh GitHub-only recovery. No raw diagnostic Git content, Linux runtimeUNRUN.
+
+# r72 common source-validation directory DATA — complete, both pairs analyzed
 
 Issue#1536, canonical BATCH1..8/T541..546; autonomy/specification-review wait waived.
 Base6921f8838. Qualified source0b648cd21ae49e757eb37b0c545075fd0dafcf5c; no

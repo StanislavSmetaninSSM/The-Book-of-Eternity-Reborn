@@ -1,3 +1,51 @@
+# r73 — Linux handoff and mandatory optimization policy
+
+Source issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536.
+User requests all accumulated code for Astra, a current handoff and a substantial
+mandatory project policy for efficient development through the existing cache.
+Standing autonomous execution and specification-review-wait waiver remain active.
+US1(P1): every agent encounters and follows the optimization contract.
+US2(P1): the Linux implementer can obtain the complete current code and distinguish
+its actual qualification from historical Windows evidence and Linux UNRUN.
+
+- OPT1: Root AGENTS.md requires reading docs/performance.md before changes.
+  That document defines an obligatory design/review workflow for production and
+  tests: inspect existing reuse, avoid repeated expensive work, state cacheability
+  and a reason when a cache is inappropriate. Do not require pointless caches.
+- OPT2: Document the actual service/repository/storage/backend architecture and
+  operation API, complete keys/dependencies, lifetimes, invalidation, defensive
+  copies, asynchronous ownership and failure semantics. Reuse/extend the existing
+  service; TTL, path/mtime or a prior success alone cannot establish authority.
+  Preserve all required live ownership, generation, source and effect fences.
+- OPT3: Require cheap typed independent fixtures and real source-attempt counters
+  before expensive integration; measure large nested sections, actual hit coverage,
+  total costs and diagnostic overhead separately where established. No diagnostic
+  collection quotas or raw diagnostic Git uploads; preserve current retention.
+- OPT4: Update development-workflow.md/testing.md entry points and a concrete
+  completion/review checklist. Synchronize only the touched obsolete standing
+  model/reviewer instructions with the owner's supplied 2026-10-07 policy.
+- OPT5: Replace authoritative Linux handoff state with r72 findings, exact branch,
+  frozen qualified source 0b648cd21ae49e757eb37b0c545075fd0dafcf5c and published
+  baseline ea2cb0fbc604f07312c27369199e840e01e04be3. Explain obtaining the later
+  documentation commit from the branch; Linux fresh native/managed preparation,
+  impact-selected cache contracts, NativeLineage controls and original five.
+  Windows fixture data/DLLs are not Linux qualification; all-five old evidence
+  and latest cut0 performance pair remain distinct. Keep historical records marked.
+- OPT6: Independently review this coherent documentation block, verify links,
+  source/API statements, Git diff and remote retrieval. Publish source/docs only
+  to the existing branch and verify recovery from GitHub into a fresh directory.
+  Do not send another chat a message or claim Linux execution in this block.
+
+Acceptance: policy reachable directly from AGENTS.md and mandatory in planning,
+review and completion; concrete cache API/lifecycle/integrity/measurement guidance;
+current actionable handoff with honest results and no stale active instructions;
+review findings resolved, exact remote commit retrievable with accumulated code.
+No runtime/test behavior, schema, GM, native protocol or budgets change; no new
+performance run, broad suite, merge or migration. No unresolved design decision.
+Chosen structure: short root mandate plus one detailed normative guide, linked
+from workflow/testing/handoff. Reject a handoff-only rule (future agents miss it)
+and duplicated architecture guides (contracts drift). Research/contracts stay here.
+
 # r72 — Common source-validation directory DATA batch
 
 Issue #1536; user explicitly requests shared source checks through the existing

@@ -1,3 +1,42 @@
+# r73 Optimization Policy and Linux Handoff Implementation Plan
+
+> Inline superpowers:executing-plans; separate independent review of the coherent
+> documentation block. Canonical Spec Kit, issue #1536, spec OPT1..6.
+
+Goal: make optimization an obligatory engineering concern and publish an accurate
+entry point to the complete accumulated implementation for Astra's Linux work.
+Architecture: root mandate in AGENTS.md; one normative docs/performance.md with
+actual service contracts; workflow/testing links and review checklist; current
+handoff and quickstart entry point. Preserve historical evidence as historical.
+Stack: Markdown, current C# sources as reference, Git/PowerShell 7/Python for
+bounded document/link/source/remote checks. No executable behavior change/TDD run.
+Spec: [r73 requirements](spec.md). Existing dedicated checkout/branch retained.
+
+- [ ] T547 Canonical spec/plan/tasks, prerequisite scripts and consistency check;
+  present written links under standing review-wait waiver and publish checkpoint.
+- [ ] T548 [US1,US2] Implement AGENTS.md, docs/performance.md,
+  docs/development-workflow.md, docs/testing.md, recovery/crash5/linux-handoff.md
+  and quickstart.md entry point. Check APIs against current source and r72 report.
+  Root/workflow make cacheability rationale and integrity/effect evidence required.
+- [ ] T549 [US1,US2] Targeted link/contract/facts/diff checks and independent
+  Sol6.1/xhigh documentation review; inspect actual findings and fix validated gaps.
+  If review uncovers an unresolved persistence/ownership design, consult Astra/high
+  for that concrete risk rather than silently expanding this documentation block.
+- [ ] T550 [US2] Source-only final commit/push, exact remote SHA, fresh remote-only
+  retrieval and clean restored checkout; record actual verification scope/results
+  and provide the code/handoff entry point. No raw artifacts or extra C# run.
+
+T547->548->549->550; OPT1/2->548/549; OPT3/4->548/549; OPT5->548/549/550;
+OPT6->547/549/550. No parallel implementation/shared file edits required.
+Constitution: existing #1536, no gameplay/GM/schema/authority changes, preserves
+trusted local single-player model and selected-category-only verification.
+Review focus: accidental cached authority; incomplete mutation/async lifetime;
+confusing bool/default/absence; obsolete platform/budget claims; raw D-only
+evidence mistaken for available cloud inputs. Verify all in T549 against source.
+Optional extension auto-commit/context hooks are not used: exact source-only
+checkpoint staging and manual canonical context updates prevent broad staging.
+No new data model, API or duplicate research/contract documents are necessary.
+
 # r72 Common Source-Validation Batch Implementation Plan
 
 > Inline Superpowers executing-plans/TDD/systematic-debugging; parent owns block,

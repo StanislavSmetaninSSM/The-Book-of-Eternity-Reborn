@@ -1,3 +1,20 @@
+# CRASH5 — revision73 optimization policy and Linux handoff
+
+Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536.
+Spec OPT1..6 / plan.md; standing autonomous specification-review-wait waiver.
+
+- [ ] T547 Establish canonical r73 artifacts, prerequisite/consistency checks,
+  present links and publish source-only checkpoint on the existing task branch.
+- [ ] T548 [US1,US2] Mandatory root optimization rule and docs/performance.md;
+  workflow/testing integration, current Linux handoff and quickstart entry point.
+- [ ] T549 [US1,US2] Verify source/API/facts/links and exact Markdown diff;
+  separate Sol6.1/xhigh review, inspect findings and resolve validated defects.
+- [ ] T550 [US2] Publish all docs with accumulated code, verify remote SHA and
+  fresh GitHub-only recovery, record scope/results and provide handoff link.
+
+T547->548->549->550; OPT1/2/3/4->548/549; OPT5->548/549/550;
+OPT6->547/549/550. Documentation only: no new C#/native build, test or Linux run.
+
 # CRASH5 — revision72 common source-validation directory DATA batch
 
 Issue#1536; spec BATCH1..7 / plan.md, autonomous specification-review-wait waiver.
