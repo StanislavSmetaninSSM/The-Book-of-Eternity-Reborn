@@ -15,7 +15,7 @@ Canonical handoff r73; source b377c9d1d0c6cfa5ce20b383d84eac069b8d2991.
 - [ ] T553 Separate original NativeLineage Linux controls and complete evidence.
   - [ ] T564 Output-audit native-stop-before-channel-close fixture correction.
   - [ ] T565 Existing namedtimers and primary terminal failure before cleanup.
-  - [ ] T566 Grouped SOURCE/fresh affected managed builds/PDB/catalog/PREP.
+  - [x] T566 Grouped SOURCE/fresh affected managed builds/PDB/catalog/PREP (original effective budgets).
   - [ ] T567 Causal host8/main4/terminal12 and complete reviewed native40.
 - [ ] T554 Original five only after gates, unchanged current budgets/oracles.
 - [ ] T555 Independent outcome review, compact findings/remote checkpoint.

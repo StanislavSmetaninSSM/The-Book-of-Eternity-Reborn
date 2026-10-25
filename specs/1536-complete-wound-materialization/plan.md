@@ -9,7 +9,7 @@ lost terminal primary failure. No production root cause is asserted for terminal
 - [ ] T565 Add a small fixture journal using existing named timer scopes; primary
   failure and actual RPC response before cleanup; phase begin persisted immediately.
   Receiver context never spans await. Scope only terminal-fence/terminal-bridge.
-- [ ] T566 Independent coherent SOURCE, backup current producer bindings, fresh
+- [x] T566 Independent coherent SOURCE, backup current producer bindings, fresh
   TestSupport/unit/integration with unchanged production bytes, catalog/PDB/PREP.
   No game/native rebuild or genuine-input regeneration if game pin remains41C0.
 - [ ] T567 Host8 causal regression, main4/terminal12 diagnostic outcomes and cause

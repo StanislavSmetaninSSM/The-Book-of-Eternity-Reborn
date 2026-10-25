@@ -1,3 +1,19 @@
+# Native fixture PREP ACCEPTED — original nonterminal24 composition restored
+
+PREP found a derived-budget mismatch in the unexecuted pending24 plan: host
+became3min after overlapping bootstrap/retention categories were omitted, although
+catalog/source were unchanged. That plan was NOT executed and is superseded.
+Exact previous native-nonterminal-24-selection.json preserves all original filters,
+counts and budgets: bootstrap3/2min,finite12/3min,retention1/2min,host8/2min.
+Fresh PlanOnly115638-708-42178-3d2f11ca15534bd2af71871428602a00 confirms24cases/
+4descriptors,exit0/0executed/cleanup. Separate Astra/high accepted this PREP and
+closed budget finding. No runner/catalog/timeout override was introduced.
+
+Execute exact nonterminal24 on newSupport72/unitF1; repeating prior16 is justified
+by strict budget composition and current-binary coverage. Then Main4 diagnostics
+with its original3min category and15s guardian. Terminal root cause UNKNOWN;
+terminal12 and original5 remain unqualified. All prior raw/roots retained.
+
 # Native fixture SOURCE ACCEPTED — fresh affected builds/planning, PREP pending
 
 Independent Astra/high accepted grouped source3b97be1506ca453fd0a70d270ac35f71b39e9447.
