@@ -1,3 +1,13 @@
+# Source-adapter PREP accepted — cheap166 next
+
+Separate Astra/high accepted actual5builds/11DLL+11PDB/18source checks, exact
+plans/catalog and unchanged3native source/binary pairs without findings. Cheap
+controls9/166 admitted with NoBuild; fourintegration tiny fixtures do not require
+the applied archive. After166GREEN, genuinegenerator1 admitted; integration6/16
+requires full verification of its NEW E035-bound record/archive. Retain332 and
+native40 with prior pins. Cold ordinarycut0/original5 await actual OUTCOME gate.
+No runtimeGREEN claimed by PREP; original5 baseline remains2PASS3FAIL.
+
 # Source-adapter preparation verified — independent PREP pending
 
 Catalog discovery exit0:12480methods/944categories, no unmapped/stale ownership.
