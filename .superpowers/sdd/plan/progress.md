@@ -1,4 +1,13 @@
-# T584 live N source contribution — scoped Integration build verified, PREP pending
+# T584 live N source contribution — corrected probe PREP accepted, live3 next
+
+Independent Astra/high corrected-probe PREP ACCEPT at clean remote checkpoint
+`2f00ba7e67c43312a3491b6645d05c7f18476136`, no material findings. It checked all33
+artifacts/30 unchanged non-Integration, eleven PE/PDB pairs, 26 source hashes,
+old Integration3cf evidence, fresh5-case plan and three native pairs. Mixed
+versions/cheap130 retention/noGEN remain accepted. Release is first corrected
+before-FIRST-I, then after-capture, unchanged, Prepared0 and Published2, each
+only after the previous semantic/capture/cleanup gate. No corrected-probe
+runtime result exists at this checkpoint.
 
 Independent Astra/high SOURCE ACCEPT `83f7d22f2ca46a1a087ed795eaa79109ec571898`,
 no material findings. Fresh Integration-only XML build on that exact source passed
