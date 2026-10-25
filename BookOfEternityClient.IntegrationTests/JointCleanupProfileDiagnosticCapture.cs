@@ -1,3 +1,5 @@
+using BookOfEternityClient.Core;
+
 namespace BookOfEternityClient.Tests;
 
 /// <summary>
@@ -95,6 +97,17 @@ internal sealed class JointCleanupProfileDiagnosticCapture
     /// The production timer's elapsed interval, or zero at begin.
     /// </param>
     internal void Observe(string name, string boundary, TimeSpan elapsed)
+        => ObserveCore(name, boundary, elapsed, null);
+
+    /// <summary>
+    /// Accounts for full original passive event transport without reconstructing events from aggregates.
+    /// </summary>
+    /// <param name="recorded">One detached source-clock event.</param>
+    internal void ObserveRecorded(OperationTimingAccumulator.NamedEvent recorded)
+        => ObserveCore(recorded.Name, recorded.State, TimeSpan.Zero, recorded);
+
+    private void ObserveCore(string name, string boundary, TimeSpan elapsed,
+        OperationTimingAccumulator.NamedEvent? recorded)
     {
         lock (_gate)
         {
@@ -106,7 +119,11 @@ internal sealed class JointCleanupProfileDiagnosticCapture
             catch (Exception error) { startFailure = error; }
             try
             {
-                try { _timings.Observe(name, boundary, elapsed); }
+                try
+                {
+                    if (recorded is { } original) _timings.ObserveRecorded(original);
+                    else _timings.Observe(name, boundary, elapsed);
+                }
                 finally
                 {
                     try { ended = _clock.GetTimestamp(); }

@@ -15,7 +15,7 @@ public sealed partial class JointBundleComponentTests
     [Fact]
     public async Task JointQteData_ReusesActualReconstructionAndRetainsFreshProofs()
     {
-        await using var fixture = new Fixture(_output, nameof(JointQteData_ReusesActualReconstructionAndRetainsFreshProofs));
+        await using var fixture = new Fixture(_output, nameof(JointQteData_ReusesActualReconstructionAndRetainsFreshProofs), passiveTimingEvents: true);
         await fixture.InitializeAsync();
         var bound = await fixture.PrepareBoundJointAsync(fixture.AssertQteDataReuseAsync, reuseStableData: true);
         Assert.True(bound.Success, JsonSerializer.Serialize(bound.Issues));

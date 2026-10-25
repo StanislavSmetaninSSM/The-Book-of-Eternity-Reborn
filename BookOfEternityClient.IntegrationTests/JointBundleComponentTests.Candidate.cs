@@ -96,6 +96,7 @@ public sealed partial class JointBundleComponentTests
         /// </returns>
         internal int ResetCandidateCapture(string phase)
         {
+            FlushPassiveTimings();
             var offset = _observations.Count;
             _output.WriteLine(JsonSerializer.Serialize(new { Kind = "CandidateCaptureReset", Phase = phase, Offset = offset }));
             return offset;
@@ -115,6 +116,7 @@ public sealed partial class JointBundleComponentTests
         /// </returns>
         internal Dictionary<string, int> CompleteCandidateCapture(string phase, int offset)
         {
+            FlushPassiveTimings();
             var rows = _observations.Skip(offset).ToArray();
             var groups = rows.Where(row => row.Boundary == "end").GroupBy(row => row.Name).ToArray();
             var counts = groups.ToDictionary(group => group.Key, group => group.Count(), StringComparer.Ordinal);
@@ -123,7 +125,9 @@ public sealed partial class JointBundleComponentTests
                 Kind = "CandidateCaptureCompleted", Phase = phase, Offset = offset, EndOffset = _observations.Count,
                 Operations = groups.Select(group => new { Name = group.Key, Count = group.Count(),
                     InclusiveMilliseconds = group.Sum(row => row.Milliseconds) }).ToArray(),
-                Observer = "Uncapped AutoFlush JSONL with measured timing-write costs; observer overhead and this small fixture limit attribution to larger runs."
+                Observer = _passiveWindow is null
+                    ? "Uncapped AutoFlush JSONL with measured timing-write costs; observer overhead and this small fixture limit attribution to larger runs."
+                    : "Full sealed passive events with original clocks and detached uncapped transport; inclusive durations overlap and total case time includes transport."
             }));
             return counts;
         }

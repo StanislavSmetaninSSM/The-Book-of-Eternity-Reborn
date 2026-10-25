@@ -15,7 +15,7 @@ public sealed partial class JointBundleComponentTests
     [Fact]
     public async Task JointSemanticData_ReusesStageSourcesAndPreservesRefusals()
     {
-        await using var fixture = new Fixture(_output, nameof(JointSemanticData_ReusesStageSourcesAndPreservesRefusals));
+        await using var fixture = new Fixture(_output, nameof(JointSemanticData_ReusesStageSourcesAndPreservesRefusals), passiveTimingEvents: true);
         await fixture.InitializeAsync();
         _ = await fixture.PrepareJointStagesAsync();
         await fixture.AssertSemanticStageReuseAsync();

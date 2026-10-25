@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
+using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Tests;
 
@@ -46,18 +47,50 @@ public sealed partial class GameEngineTurnLifecycleTests
         /// Inclusive monotonic duration supplied by the operation, or zero at its begin boundary.
         /// </param>
         public void Observe(string name, string boundary, TimeSpan elapsed)
+            => ObserveCore(name, boundary, elapsed.TotalMilliseconds, null);
+
+        /// <summary>
+        /// Persists an original detached passive event with its source clock rather than replay time.
+        /// </summary>
+        /// <param name="recorded">The scalar event produced by the sealed recorder.</param>
+        internal void ObserveRecorded(OperationTimingAccumulator.NamedEvent recorded)
+        {
+            if (recorded.Sequence <= 0 || recorded.ScopeId <= 0 || recorded.TimestampTicks < _started ||
+                recorded.ElapsedTicks < 0 || recorded.State is not ("begin" or "end") ||
+                recorded.State == "begin" && recorded.ElapsedTicks != 0)
+                throw new InvalidDataException("Invalid original passive timing event.");
+            ArgumentException.ThrowIfNullOrEmpty(recorded.Name);
+            ObserveCore(recorded.Name, recorded.State, recorded.ElapsedTicks * 1000d / Stopwatch.Frequency, recorded);
+        }
+
+        /// <summary>
+        /// Serializes one real boundary; deferred transport costs remain distinct from its original clock.
+        /// </summary>
+        private void ObserveCore(string name, string boundary, double milliseconds,
+            OperationTimingAccumulator.NamedEvent? recorded)
         {
             var requested = Stopwatch.GetTimestamp();
             lock (_gate)
             {
                 var entered = Stopwatch.GetTimestamp();
                 var buildStarted = Stopwatch.GetTimestamp();
-                var record = JsonSerializer.Serialize(new
+                object payload = recorded is { } original ? new
+                {
+                    Boundary = "joint_operation_timing", Operation = name, State = boundary,
+                    Milliseconds = milliseconds, Sequence = ++_sequence, PID = Environment.ProcessId,
+                    TotalElapsedMilliseconds = Stopwatch.GetElapsedTime(_started, original.TimestampTicks).TotalMilliseconds,
+                    Transport = "sealed-passive-events-v1", PassiveSequence = original.Sequence,
+                    original.ScopeId, original.TimestampTicks, original.ElapsedTicks, original.Late,
+                    ObserverCompletedBefore = _completedObservations,
+                    ObserverGateMillisecondsBefore = _gateWaitTicks * 1000d / Stopwatch.Frequency,
+                    ObserverBuildSerializeMillisecondsBefore = _buildAndSerializeTicks * 1000d / Stopwatch.Frequency,
+                    ObserverWriteMillisecondsBefore = _writeTicks * 1000d / Stopwatch.Frequency
+                } : new
                 {
                     Boundary = "joint_operation_timing",
                     Operation = name,
                     State = boundary,
-                    Milliseconds = elapsed.TotalMilliseconds,
+                    Milliseconds = milliseconds,
                     Sequence = ++_sequence,
                     PID = Environment.ProcessId,
                     TotalElapsedMilliseconds = Stopwatch.GetElapsedTime(_started).TotalMilliseconds,
@@ -65,7 +98,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                     ObserverGateMillisecondsBefore = _gateWaitTicks * 1000d / Stopwatch.Frequency,
                     ObserverBuildSerializeMillisecondsBefore = _buildAndSerializeTicks * 1000d / Stopwatch.Frequency,
                     ObserverWriteMillisecondsBefore = _writeTicks * 1000d / Stopwatch.Frequency
-                });
+                };
+                var record = JsonSerializer.Serialize(payload);
                 var writeStarted = Stopwatch.GetTimestamp();
                 _output.WriteLine(record);
                 var written = Stopwatch.GetTimestamp();

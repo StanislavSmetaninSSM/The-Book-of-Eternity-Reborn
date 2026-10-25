@@ -78,10 +78,22 @@ public sealed partial class JointBundleComponentTests
         /// <param name="caseName">
         /// The actual nonempty test case name registered before allocating game files.
         /// </param>
-        internal Fixture(ITestOutputHelper output, string caseName)
+        /// <param name="passiveTimingEvents">
+        /// Whether this explicit expensive control captures every original named event through the sealed recorder.
+        /// </param>
+        internal Fixture(ITestOutputHelper output, string caseName, bool passiveTimingEvents = false)
         {
             var started = Stopwatch.GetTimestamp();
             _output = new JointBundleDiagnosticOutput(caseName, output);
+            if (passiveTimingEvents)
+            {
+                _passiveTimings = new OperationTimingAccumulator();
+                _passiveWindow = _passiveTimings.StartWindow(captureEvents: true);
+                _output.RequirePassiveTiming();
+                _output.WriteLine(JsonSerializer.Serialize(new { Kind = "PassiveNamedTimingMode",
+                    Mode = "sealed-passive-events-v1", ClockFrequency = Stopwatch.Frequency,
+                    OriginalEvents = true, Quota = false }));
+            }
             _nonce = _output.FixtureNonce;
             _parent = Path.GetFullPath(Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "joint-bundle-component"));
             Directory.CreateDirectory(_parent);
@@ -93,7 +105,8 @@ public sealed partial class JointBundleComponentTests
             Directory.CreateDirectory(game);
             Files = new FileSystemManager(game, NullLogger<FileSystemManager>.Instance,
                 PhysicalLoadTransactionOperations.Instance,
-                new FileSystemManagerHooks { OperationTimingObserver = Observe });
+                new FileSystemManagerHooks { OperationTimingObserver = passiveTimingEvents ? null : Observe,
+                    PassiveOperationTimings = _passiveTimings });
             _output.WriteLine(JsonSerializer.Serialize(new
             {
                 Name = "JointBundleFixture.AllocateNamespace", Milliseconds = Stopwatch.GetElapsedTime(started).TotalMilliseconds,
@@ -231,6 +244,12 @@ public sealed partial class JointBundleComponentTests
             catch (Exception failure) { failures.Add(failure); _retained = true; }
             try { if (_lease is not null) await _lease.DisposeAsync(); }
             catch (Exception failure) { failures.Add(failure); _retained = true; }
+            try { CompletePassiveTimings(); }
+            catch (Exception failure)
+            {
+                failures.Add(failure); _retained = true;
+                _output.Timings.RecordDiagnosticFailure(failure, "passive-timing-close");
+            }
             try { _output.Finish(); }
             catch (Exception failure) { failures.Add(failure); _retained = true; }
             try

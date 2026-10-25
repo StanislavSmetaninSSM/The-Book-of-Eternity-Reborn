@@ -28,6 +28,9 @@ internal sealed class JointBundleDiagnosticOutput : ITestOutputHelper, IDisposab
     private long? _bytes;
     private string? _sha256;
     private object? _fixtureClosing;
+    private bool _passiveTimingRequired;
+    private bool _passiveTimingComplete;
+    private object? _passiveTimingCompletion;
 
     /// <summary>
     /// Creates exclusive diagnostic files and registers identity before any game fixture is allocated.
@@ -130,6 +133,47 @@ internal sealed class JointBundleDiagnosticOutput : ITestOutputHelper, IDisposab
     internal JointCleanupProfileDiagnosticCapture Timings { get; }
 
     /// <summary>
+    /// Declares a required full passive trace before work starts, so missing final accounting cannot appear complete.
+    /// </summary>
+    internal void RequirePassiveTiming()
+    {
+        lock (_gate)
+        {
+            if (_finished || _passiveTimingRequired) throw new InvalidOperationException("Passive timing mode was already selected or closed.");
+            _passiveTimingRequired = true;
+        }
+    }
+
+    /// <summary>
+    /// Records closed-window scalar accounting after every original event was offered to the persistent capture.
+    /// </summary>
+    /// <param name="snapshot">Detached original aggregate status.</param>
+    /// <param name="events">Detached queue status; it carries no game authority.</param>
+    internal void CompletePassiveTiming(OperationTimingAccumulator.Snapshot snapshot,
+        OperationTimingAccumulator.EventStatus events)
+    {
+        lock (_gate)
+        {
+            if (!_passiveTimingRequired || _finished || _passiveTimingCompletion is not null)
+                throw new InvalidOperationException("Passive timing completion is not available.");
+            var expectedRecords = snapshot.Rows.Sum(row => row.Started + row.Completed);
+            _passiveTimingComplete = snapshot.Complete && events.Enabled && events.Failed == 0 &&
+                events.Pending == 0 && events.Attempted == events.Enqueued && events.Enqueued == events.Drained &&
+                events.Attempted == expectedRecords &&
+                events.Enqueued == Timings.Attempted && events.Enqueued == Timings.Stored;
+            _passiveTimingCompletion = new
+            {
+                Mode = "sealed-passive-events-v1", ClockFrequency = Stopwatch.Frequency,
+                Snapshot = snapshot, Events = events, Complete = _passiveTimingComplete,
+                ExpectedRecords = expectedRecords,
+                TransportAttempted = Timings.Attempted, TransportStored = Timings.Stored
+            };
+            if (!_passiveTimingComplete)
+                Timings.RecordDiagnosticFailure(new InvalidDataException("The full passive named trace is incomplete."), "passive-timing-completion");
+        }
+    }
+
+    /// <summary>
     /// Persists one complete non-timing message without copying its payload into xUnit.
     /// JSON messages retain their root data; other text is stored in a Message field.
     /// </summary>
@@ -199,7 +243,7 @@ internal sealed class JointBundleDiagnosticOutput : ITestOutputHelper, IDisposab
                         _bytes = input.Length;
                         _sha256 = Convert.ToHexString(SHA256.HashData(input));
                     }, "records-hash");
-                if (!Timings.Complete || _attempted != _stored)
+                if (!Timings.Complete || _attempted != _stored || _passiveTimingRequired && !_passiveTimingComplete)
                     Attempt(() => throw new InvalidDataException("Not every diagnostic attempt was stored."), "capture-incomplete");
                 PersistReport();
                 Attempt(() => _referenceOutput.WriteLine(JsonSerializer.Serialize(new
@@ -257,7 +301,8 @@ internal sealed class JointBundleDiagnosticOutput : ITestOutputHelper, IDisposab
     /// This says nothing about test acceptance or process settlement.
     /// </summary>
     private bool IsComplete => _finished && _writerClosed && _sha256 is not null &&
-        _attempted == _stored && Timings.Complete && _finishFailures.Count == 0;
+        _attempted == _stored && Timings.Complete && _finishFailures.Count == 0 &&
+        (!_passiveTimingRequired || _passiveTimingComplete);
 
     /// <summary>
     /// Pins an actually loaded assembly by identity, module and exact file bytes.
@@ -313,6 +358,7 @@ internal sealed class JointBundleDiagnosticOutput : ITestOutputHelper, IDisposab
                     OutputSerializationAndWriteElapsed = _writeElapsed,
                     TimingAttempted = Timings.Attempted, TimingStored = Timings.Stored,
                     TimingComplete = Timings.Complete, TimingWriteCosts = Timings.GetWriteCosts(),
+                    PassiveTimingRequired = _passiveTimingRequired, PassiveTimingCompletion = _passiveTimingCompletion,
                     Failures = Timings.GetFailures().Select(row => new { row.Stage, Error = row.Error.ToString() }).ToArray(),
                     FixtureClosing = _fixtureClosing
                 }, new JsonSerializerOptions { WriteIndented = true }), new UTF8Encoding(false));

@@ -14,7 +14,7 @@ public sealed partial class JointBundleComponentTests
     [Fact]
     public async Task RecoveryTakeFence_RejectsRawSelectedOriginalDriftBeforeBothRealSlotTakes()
     {
-        await using var fixture = new Fixture(_output, nameof(RecoveryTakeFence_RejectsRawSelectedOriginalDriftBeforeBothRealSlotTakes));
+        await using var fixture = new Fixture(_output, nameof(RecoveryTakeFence_RejectsRawSelectedOriginalDriftBeforeBothRealSlotTakes), passiveTimingEvents: true);
         await fixture.InitializeAsync();
         var bound = await fixture.PrepareBoundJointAsync(fixture.AssertWarmTakeRefusesRawSelectedOriginalDriftAsync, reuseStableData: true);
         Assert.True(bound.Success, JsonSerializer.Serialize(bound.Issues));

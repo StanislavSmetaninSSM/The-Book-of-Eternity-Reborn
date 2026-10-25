@@ -1,3 +1,20 @@
+# Passive scaffold fresh RED preparation verified — independent PREP pending
+
+Accepted scaffold ccd3980238c9560f04f35bbe70055e5d8cc41a1f freshly compiled:
+Game exit0/7:24.65/33warnings/0errors, unit exit0/4:23.72/26/0.
+Selected GameB5F17ABF.../Unit5BF2FAE0... bothInfoCCD;4exact selected-source/PDB
+checks match. Unselected Support/Integration/Bridge retain E035-era outputs;
+global shared copies intentionally mixed during causal RED, not qualified as a
+complete stack. No archive/game integration runtime is admitted on this scaffold.
+NoBuild PlanOnly unit1descriptor/9cases/0executed,exit0/no timeout/both cleanups.
+External passive-named-red-prep.json binds actual artifacts; runtime RED pending.
+
+Root's disjoint Integration transport draft now preserves original source ticks,
+scope/sequence and complete queue-vs-aggregate-vs-writer accounting, with explicit
+opt-in only for Take/Qte/Semantic. It is unbuilt/unreviewed WIP and excluded from
+the frozen Core/Unit RED claim. Full queue implementation still waits for actual
+RED. No old fixtures/archives/raw removed, no budget or authority changes.
+
 # Full passive event contracts scaffold — runtime RED preparation next
 
 Independent remaining run153729-204-60274-49846689ecc04760808b3e8956c686df:
