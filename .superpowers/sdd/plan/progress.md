@@ -1,3 +1,22 @@
+# Source-adapter cheap166 GREEN — genuine new Linux DATA next
+
+Independent PREP accepted71716 freshUnitA841/other10unchanged/18PDB and exact
+Linux8 plan. Run142839-246-58564-7361667f7d3f473983bc05b22e31d31d:
+8planned/executed/PASS, exit0/30.7902378s wall, no timeout/skip/duplicate,
+selection and both cleanups complete. Full TRX read; per-call actual File.Exists
+queries implicitasync2+2, implicitsync2+2, explicit1+1. Each preserves present
+functionalSources0/freshFenceSources1. Both rawbyte/absence negatives and prior3
+Linux replacement/generation controls PASS. Causal old source-fence failure no
+longer occurs, without weakened source/authority/version/effect/closing checks.
+
+Verified union88+70+8=166uniquePASS/9descriptorresults, all currentGameE035,
+with explicit Unit6069/A841 provenance (not a single-run assertion). External
+source-adapter-cheap-166-verification.json binds all9TRX hashes/names/counters.
+The earlier93PASS3oracleFAIL run remains intact. Newrecord still absent at
+linux-applied-template-source-adapter/source-record.json. Conditional PREP now
+admits genuinegenerator1 for E035; then verify full new archive/diagnostics/
+ownership before integration16. Cache514/original5 remain unqualified.
+
 # Source-adapter cheap158 verified — fresh Linux8 PREP pending
 
 Remaining run142024-797-57144-f37fa2fec3844e5b8a87a09c74c12be0:
