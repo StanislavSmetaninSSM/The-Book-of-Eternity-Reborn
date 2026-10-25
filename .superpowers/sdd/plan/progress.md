@@ -26,7 +26,14 @@ T543 added rawdrift8/per-readclose/activityfallback2/serviceAPI-role-threadhop/
 retirement5 cheap controls and strict parent/bothchild SourceValidationBatchReuse
 off/on + complete passive counters. D analyzer155purecontrolsPASS, no game runs.
 Affected21 explicit categories selected from changed contracts, no broad suites.
-T544 full XMLuniform8 build/affected/review pending; original not yet admitted.
+T544216793b0a XMLuniform8 passed (Tests96.7239s/Integration60.0903s).
+Affected command stopped207cases198PASS/9FAIL at new batch category: eight
+expected InvalidDataException refusals were asserted as IOException incorrectly;
+one suppression fixture had no active validation routing, so suppression was null.
+Corrected only those test setups/assertions; no runtime defect. Independent complex
+Astra/high preliminary code review found only stale preparation/synchronous XML
+wording; generalized affected API/counter comments. Final qualification pending;
+original not yet admitted.
 All diagnostics uncapped D-only; r71raw/INPUT/CPU-GC/instrument/backups protected.
 
 # r71 initial ordinary/main-admission directory DATA — code gate accepted

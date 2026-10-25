@@ -6,7 +6,7 @@ namespace BookOfEternityClient.Core;
 /// Describes source classification work without granting directory or file authority.
 /// </summary>
 /// <param name="Invocations">
-/// Number of completed or failed synchronous observation lifetimes.
+/// Number of completed or failed observation lifetimes, including serial asynchronous batches.
 /// </param>
 /// <param name="Requests">
 /// Number of classifier requests received by those lifetimes.
@@ -54,7 +54,7 @@ internal sealed class AdmissionDirectoryObservations : IDisposable
     private long _requests, _queries, _hits;
 
     /// <summary>
-    /// Gets the number of observations borrowed from the outer preparation rather than this invocation's cache.
+    /// Gets observations borrowed from an outer bounded read context rather than this invocation's cache.
     /// </summary>
     internal long SharedHits { get; private set; }
 
@@ -71,7 +71,7 @@ internal sealed class AdmissionDirectoryObservations : IDisposable
     /// Whether positive directory observations may be shared in this invocation.
     /// </param>
     /// <param name="sharedReadPhase">
-    /// Optional caller-admitted outer preparation. It is consulted only with the default physical
+    /// Optional caller-admitted bounded read context. It is consulted only with the default physical
     /// classifier and enabled reuse; borrowed DATA is never retained in this invocation's cache.
     /// </param>
     internal AdmissionDirectoryObservations(string root,

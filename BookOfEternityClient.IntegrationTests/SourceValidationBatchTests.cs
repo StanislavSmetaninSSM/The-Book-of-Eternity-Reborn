@@ -133,7 +133,7 @@ public sealed partial class SourceValidationBatchTests(ITestOutputHelper output)
         }
         var failure = await Record.ExceptionAsync(() => reserved ? set!.CompleteAsync() : owner!.CompleteAsync());
         Assert.NotNull(failure);
-        Assert.IsAssignableFrom<IOException>(failure);
+        Assert.IsType<InvalidDataException>(failure);
     }
 
     /// <summary>

@@ -6,7 +6,7 @@ public partial class FileSystemManager
     private long _sharedReadAdmissionHits;
 
     /// <summary>
-    /// Captures completed main admissions' directory hits borrowed from ordinary preparation.
+    /// Captures completed main admissions' directory hits borrowed from explicit bounded read contexts.
     /// </summary>
     /// <returns>
     /// Cumulative borrowed DATA hits, excluding invocation-local cache hits and native authority queries.

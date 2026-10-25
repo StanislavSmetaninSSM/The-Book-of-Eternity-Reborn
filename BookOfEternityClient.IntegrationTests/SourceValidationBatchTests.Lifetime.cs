@@ -82,6 +82,8 @@ public sealed partial class SourceValidationBatchTests
         using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, false);
         await fixture.InitializeAsync();
         await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+        using var diagnosticRouting = loss == "suppression" ? fixture.Files.BeginSourceDataOperationIfNeeded() : null;
+        if (loss == "suppression") Assert.NotNull(diagnosticRouting);
         var owner = new BatchOwner();
         using var batch = new FileSystemManager.SourceValidationBatch(fixture.Files, lease, owner, owner.Work,
             owner.Version, lease.MainAdmission!, lease.AmbientRegistration!);

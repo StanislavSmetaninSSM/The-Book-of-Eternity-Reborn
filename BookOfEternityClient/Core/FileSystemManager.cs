@@ -816,7 +816,7 @@ public partial class FileSystemManager
     /// The original session-relative name, validated before any observation lookup.
     /// </param>
     /// <param name="observations">
-    /// The explicit preparation phase, or <see langword="null"/> for original fresh metadata.
+    /// Explicit bounded read observations, or <see langword="null"/> for original fresh metadata.
     /// </param>
     /// <returns>
     /// The confined absolute path after the unchanged lexical and reparse decisions.
@@ -908,7 +908,7 @@ public partial class FileSystemManager
     /// The authority label retained in existing root and descendant refusal messages.
     /// </param>
     /// <param name="observations">
-    /// Explicit ordinary preparation DATA, or <see langword="null"/> for the original fresh route.
+    /// Explicit bounded read directory DATA, or <see langword="null"/> for the original fresh route.
     /// </param>
     private void EnsureNoExistingReparsePoint(
         string authorityRoot,
@@ -6541,7 +6541,7 @@ public partial class FileSystemManager
     /// The previously selected absolute name which the new resolution must equal.
     /// </param>
     /// <param name="observations">
-    /// Explicit preparation-only DATA, or <see langword="null"/> to freshly inspect paths.
+    /// Explicit bounded read directory DATA, or <see langword="null"/> to freshly inspect paths.
     /// </param>
     private void EnsureCanonicalPathStillSafe(string relativePath, string expectedFullPath,
         IReadPathObservations? observations = null)
