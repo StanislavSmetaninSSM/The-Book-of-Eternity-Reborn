@@ -17,6 +17,7 @@ public sealed class JointResumeDiagnosticReportTests
     {
         var root = NewRoot(); using var cleanup = new CleanupOwnedFixture(root, Console.WriteLine);
         var bytes = Encoding.UTF8.GetBytes("{\"Logs\":\"Ж😀\",\"Line\":\"a\\nb\"}");
+        Assert.Null(JointResumeDiagnosticReport.PublishConfigured(bytes, null, _ => throw new InvalidOperationException("No configured-root callback expected.")));
         var callbacks = 0;
         void Observe(JointResumeDiagnosticReport.Reference reference)
         {
@@ -54,7 +55,8 @@ public sealed class JointResumeDiagnosticReportTests
     [InlineData("checkout")]
     public void InvalidDestinationRefusesBeforeWriting(string kind)
     {
-        var path = kind == "relative" ? "report.json" : Path.Combine(TestRepoPaths.RepoRoot, "report-" + Guid.NewGuid().ToString("N") + ".json");
+        var leaf = "report-" + Guid.NewGuid().ToString("N") + ".json";
+        var path = kind == "relative" ? leaf : Path.Combine(TestRepoPaths.RepoRoot, leaf);
         Assert.Throws<InvalidDataException>(() => JointResumeDiagnosticReport.Publish([], path, _ => throw new InvalidOperationException()));
         Assert.False(File.Exists(path));
     }
@@ -76,6 +78,13 @@ public sealed class JointResumeDiagnosticReportTests
         Assert.Same(primary, observed);
         Assert.Throws<IOException>(() => JointResumeDiagnosticReport.Publish([1], path, _ => throw new Exception()));
         Assert.Equal("original", File.ReadAllText(path));
+        var fresh = Path.Combine(root, "callback.json");
+        var callbackFailure = Assert.Throws<InvalidOperationException>(() =>
+        {
+            try { throw primary; }
+            finally { Assert.Null(JointResumeDiagnosticReport.Publish([7], fresh, _ => throw new IOException("reference pipe"), primary)); }
+        });
+        Assert.Same(primary, callbackFailure); Assert.Equal(new byte[] { 7 }, File.ReadAllBytes(fresh));
     }
 
     private static string NewRoot()

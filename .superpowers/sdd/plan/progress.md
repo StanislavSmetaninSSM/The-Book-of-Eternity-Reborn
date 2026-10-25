@@ -1,3 +1,15 @@
+# Report-retention SOURCE finding corrected — final delta review pending
+
+Separate SOURCE review found unconditional new retention regressed no-env callers:
+legacy diagnostic fallback is checkout/TestResults, correctly refused by the new
+external guard. Additional full-report persistence is now explicitly opt-in to
+configured BOE_TEST_DIAGNOSTIC_ROOT; no-env keeps the existing ordinary output.
+Path resolution stays inside primary-failure protection. No external guard relaxed.
+Transport controls now include no-env no-callback behavior and a genuinely reached
+post-write callback failure preserving the exact primary; relative paths use nonce.
+Five cases unchanged. No builds/runtime executed on the rejected intermediate.
+All known source findings grouped for a final delta review before one build SHA.
+
 # Original Linux5 actual baseline RED — report-retention correction SOURCE WIP
 
 Run122135-213-46387-89be7ff88d2145498573e6b2dd1296b1 on game41/3b97 test stack:

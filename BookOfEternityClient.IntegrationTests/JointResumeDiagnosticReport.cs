@@ -15,6 +15,22 @@ internal static class JointResumeDiagnosticReport
     internal sealed record Reference(string Path, long Bytes, string SHA256);
 
     /// <summary>
+    /// Adds retention only for explicitly configured external diagnostic runs, preserving no-environment callers.
+    /// </summary>
+    /// <param name="payload">Already serialized immutable UTF8 report bytes.</param>
+    /// <param name="configuredRoot">The explicit diagnostic environment value, or null to retain legacy output only.</param>
+    /// <param name="publishReference">Synchronous receiver for the closed-file reference.</param>
+    /// <param name="primaryFailure">An existing failure that diagnostic setup must not replace.</param>
+    /// <returns>The stored reference, or null when disabled or secondary to an existing failure.</returns>
+    internal static Reference? PublishConfigured(byte[] payload, string? configuredRoot,
+        Action<Reference> publishReference, Exception? primaryFailure = null)
+    {
+        if (configuredRoot is null) return null;
+        return PublishCore(payload, () => Path.Combine(TestDiagnosticPaths.ResolveRoot(configuredRoot),
+            "joint-resume-reports", Guid.NewGuid().ToString("N") + ".json"), publishReference, primaryFailure);
+    }
+
+    /// <summary>
     /// Writes exact caller-owned bytes once and publishes the reference only after the physical writer closes.
     /// </summary>
     /// <param name="payload">Already serialized immutable UTF8 report bytes.</param>
@@ -23,10 +39,17 @@ internal static class JointResumeDiagnosticReport
     /// <param name="primaryFailure">An existing failure that secondary diagnostic I/O must not replace.</param>
     /// <returns>The stored reference, or null when a secondary failure accompanies an existing primary.</returns>
     internal static Reference? Publish(byte[] payload, string path, Action<Reference> publishReference,
-        Exception? primaryFailure = null)
+        Exception? primaryFailure = null) => PublishCore(payload, () => path, publishReference, primaryFailure);
+
+    /// <summary>
+    /// Keeps path resolution, physical publication and reference transport under the same primary-failure boundary.
+    /// </summary>
+    private static Reference? PublishCore(byte[] payload, Func<string> resolvePath,
+        Action<Reference> publishReference, Exception? primaryFailure)
     {
         try
         {
+            var path = resolvePath();
             if (!Path.IsPathFullyQualified(path)) throw new InvalidDataException("A resumer report path must be absolute.");
             path = Path.GetFullPath(path);
             var relative = Path.GetRelativePath(TestRepoPaths.RepoRoot, path);

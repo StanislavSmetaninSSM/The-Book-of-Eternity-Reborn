@@ -1187,8 +1187,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Dependencies = MortalArchiveDependencyContext(), Loaded = MortalArchiveLoadedDependencyBindings() }, stages);
             var reportBytes = Encoding.UTF8.GetBytes(finalReport);
             File.WriteAllBytes(output, reportBytes);
-            var reportPath = Path.Combine(TestDiagnosticPaths.Root, "joint-resume-reports", Guid.NewGuid().ToString("N") + ".json");
-            JointResumeDiagnosticReport.Publish(reportBytes, reportPath, reference =>
+            JointResumeDiagnosticReport.PublishConfigured(reportBytes,
+                Environment.GetEnvironmentVariable("BOE_TEST_DIAGNOSTIC_ROOT"), reference =>
             {
                 Console.WriteLine(JointInterfaceCrashProcessSupport.SerializeCurrentIdentity(new
                 { Boundary = "joint_resume_report_reference", Cut = cut, Nonce = parent["Nonce"]!.GetValue<string>(),

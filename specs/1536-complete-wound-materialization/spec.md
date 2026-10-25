@@ -5,6 +5,8 @@ LINUXREPORT1: preserve original baseline5executed/2PASS(cut3,4)/3FAIL(cut0,1,2),
 missing completedProof; its reason is not yet known. Do not weaken that oracle.
 LINUXREPORT2: child finally serializes its full existing report once and writes
 identical bytes to ordinary output and a create-new external diagnostic file.
+Additional retention is opt-in for an explicitly configured external diagnostic
+root; no-environment callers keep their previous ordinary output behavior.
 Emit/flush closed-file reference with SHA/bytes/cut/nonce/child identity. It is
 diagnostic DATA only and cannot authorize recovery. No byte/record quota.
 LINUXREPORT3: preserve an existing primary exception if diagnostic publication
