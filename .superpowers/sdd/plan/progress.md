@@ -1,3 +1,29 @@
+# Completion owner builds and planning verified — independent PREP pending
+
+Compiled C# source b18c2851f16ae216c11f0d48d2769336fa2424c2; documentation
+074a56bb64bbe101387fffb8292ff3e46fdb0e66 has no C#/project delta. Full shared/
+unit XML build succeeded in 00:07:07.02, 10011 warnings/0 errors; the original
+executor response was lost during context recovery, so no observed exit code is
+claimed beyond the verified MSBuild success banner and terminated process.
+Fresh integration XML build: exit0, 00:04:14.32, 6646 warnings/0 errors.
+
+Current production SHA256 41c0f4e3a3bf6c851bd129b2a6bfedfd769d98df0d2b36ac6773aec7ebf14a83;
+integration 8ed63cce6367f5f7f76dae35292e593dd0233f6973cb74dbac52ce4d2c569408.
+All shared DLL copies match; actual informational versions distinguish game/unit
+b18 from TestSupport/GMBridge/integration 074a. Eight PDB source checksums match.
+All three fresh Linux native source/binary pairs still match the existing own
+637 package; native C has not changed. External binding/provenance packets retained.
+
+ValidateCatalog exit0: 12473 methods/942 categories/0 unmapped/stale. Fresh PlanOnly
+exit0 for generator1, cache55/8 descriptors, native40/6, original5/1; all execute0
+and complete runtime/owned cleanup. Cache55 means boundary6+phase1+proof6+42.
+Generator uses a new external linux-applied-template-owner/source-record.json;
+old record/archive remain unchanged. No new runtime PASS is claimed.
+Independent PREP pending, then generator1, affected55, native40, original5.
+Prior454 cache PASS +transport40 remain source-reviewed retained evidence.
+GitHub-only clean recovery at 074a verified 57797 files and exact new source/docs;
+original remote remains b377c9d1d0c6cfa5ce20b383d84eac069b8d2991.
+
 # Narrow completion owner SOURCE ACCEPTED — fresh managed builds in progress
 
 Independent Astra/high accepted complete source/spec/plan/tests at
