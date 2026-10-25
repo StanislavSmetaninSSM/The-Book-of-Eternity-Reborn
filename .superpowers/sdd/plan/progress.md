@@ -1,3 +1,14 @@
+# Linux updated SOURCE/PREP ACCEPTED — remaining T552 runtime admitted
+
+Separate gpt-6-astra/high context lease_boundary_review accepted codeab17 /
+checkpoint8ad8f77b2:11DLL/PDB/native/source pins, both XML builds,40/40TRX,
+0functional/2fresh source proof, catalog12468/939 and disjoint129+40+338 scope.
+No open findings. Production/native remainsb377; no changed runtime/cache rules.
+Next exact external cache-unrun-selection.json:27categories/28descriptors/338cases,
+using required test-csharp runner/NoBuild/currentDLL. Only full success admits
+NativeLineage40; ordinary5 follows that gate. Unaffected129 and40regressions are
+retained with their distinct bindings rather than rerun. Raw root unchanged.
+
 # Linux T552 fixture regressions GREEN — updated PREP review pending
 
 Sourceab17fde032f3bd5525e03d3e4cebb2813e83c0ab. Fresh unit-only XML02:23.41/
