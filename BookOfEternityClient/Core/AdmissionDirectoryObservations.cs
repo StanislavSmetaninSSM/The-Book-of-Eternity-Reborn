@@ -44,7 +44,7 @@ internal sealed class AdmissionDirectoryObservations : IDisposable
     private readonly Func<string, TrustedLocalFileScope.EntryKind> _probe;
     private readonly string _root;
     private readonly bool _enableReuse;
-    private readonly ReadPathObservationPhase? _sharedReadPhase;
+    private readonly IReadPathObservations? _sharedReadPhase;
     private readonly ValidationOperation _operation = new DefaultOperationValidationService().BeginOperation();
     private readonly Dictionary<string, object> _keys = new(StringComparer.Ordinal);
     private static readonly OperationComputation<TrustedLocalFileScope.EntryKind> DirectoryData =
@@ -76,7 +76,7 @@ internal sealed class AdmissionDirectoryObservations : IDisposable
     /// </param>
     internal AdmissionDirectoryObservations(string root,
         Func<string, TrustedLocalFileScope.EntryKind>? probe = null, bool enableReuse = true,
-        ReadPathObservationPhase? sharedReadPhase = null)
+        IReadPathObservations? sharedReadPhase = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
         if (!Path.IsPathFullyQualified(root)) throw new ArgumentException("The root must be absolute.", nameof(root));

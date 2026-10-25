@@ -125,7 +125,7 @@ public partial class FileSystemManager
     /// <summary>
     /// Owns the existing general service storage for one selected source DATA operation.
     /// </summary>
-    internal sealed class SourceDataOperation : IDisposable, IOperationDependency
+    internal sealed partial class SourceDataOperation : IDisposable, IOperationDependency, ISourceValidationBatchOwner
     {
         private readonly FileSystemManager _files;
         private readonly ValidationOperation _operation = new DefaultOperationValidationService().BeginOperation();
@@ -634,7 +634,8 @@ public partial class FileSystemManager
                 {
                     computed = true;
                     using var source = _files.MeasureOperation("OperationFileData.SourceSync");
-                    return Task.FromResult(_files.ReadValidationSource(path, family, declared));
+                    using var batch = BeginDirectoryBatch();
+                    return Task.FromResult(_files.ReadValidationSource(path, family, declared, batch));
                 });
                 if (!task.IsCompleted) throw new InvalidOperationException("A synchronous source computation did not settle synchronously.");
                 var value = task.GetAwaiter().GetResult();
@@ -680,7 +681,8 @@ public partial class FileSystemManager
                     computed = true;
                     using var source = _files.MeasureOperation("OperationFileData.SourceAsync");
                     if (SourceReadBarrierForTests is { } barrier) await barrier.WaitAsync(ct);
-                    return await _files.ReadValidationSourceAsync(path, family, declared, ct);
+                    using var batch = BeginDirectoryBatch();
+                    return await _files.ReadValidationSourceAsync(path, family, declared, ct, batch);
                 }, token);
                 if (!computed) { using var reuse = _files.MeasureOperation("OperationFileData.ReuseAsync"); }
                 RequireOpen();
@@ -744,19 +746,22 @@ public partial class FileSystemManager
                 if (_touched.Count == 0) return;
                 if (!TryRootVersion(out var root) || !ReferenceEquals(root, _rootVersion))
                     throw new InvalidOperationException("Source fence lost its original version.");
-                foreach (var key in _touched)
+                using (var batch = BeginDirectoryBatch())
                 {
-                    // A missing expected cache entry is a refusal, never a newly observed baseline.
-                    var expected = await _operation.GetOrComputeAsync(Snapshot, key, [this], _ =>
-                        throw new InvalidOperationException("Expected source DATA was retired before its fence."));
-                    using var source = _files.MeasureOperation("OperationFileData.FreshSource");
-                    var declared = key.Explicit ? lease : null;
-                    var fresh = key.Family is ValidationSnapshotFamily.OrdinaryAsync or ValidationSnapshotFamily.ProtectedAsync
-                        ? await _files.ReadValidationSourceAsync(key.Path, key.Family, declared, CancellationToken.None)
-                        : _files.ReadValidationSource(key.Path, key.Family, declared);
-                    if ((fresh == null) != (expected == null) || fresh != null &&
-                        (fresh.LastWriteTimeUtc != expected!.LastWriteTimeUtc || !fresh.Content.AsSpan().SequenceEqual(expected.Content)))
-                        throw new InvalidDataException("Operation source changed: " + key.Path);
+                    foreach (var key in _touched)
+                    {
+                        // A missing expected cache entry is a refusal, never a newly observed baseline.
+                        var expected = await _operation.GetOrComputeAsync(Snapshot, key, [this], _ =>
+                            throw new InvalidOperationException("Expected source DATA was retired before its fence."));
+                        using var source = _files.MeasureOperation("OperationFileData.FreshSource");
+                        var declared = key.Explicit ? lease : null;
+                        var fresh = key.Family is ValidationSnapshotFamily.OrdinaryAsync or ValidationSnapshotFamily.ProtectedAsync
+                            ? await _files.ReadValidationSourceAsync(key.Path, key.Family, declared, CancellationToken.None, batch)
+                            : _files.ReadValidationSource(key.Path, key.Family, declared, batch);
+                        if ((fresh == null) != (expected == null) || fresh != null &&
+                            (fresh.LastWriteTimeUtc != expected!.LastWriteTimeUtc || !fresh.Content.AsSpan().SequenceEqual(expected.Content)))
+                            throw new InvalidDataException("Operation source changed: " + key.Path);
+                    }
                 }
                 var generation = _files.ReadLocalGenerationSnapshot(lease);
                 if (generation.Binding != _generation!.Binding || generation.Bytes == null || _generation.Bytes == null ||
@@ -951,6 +956,7 @@ public partial class FileSystemManager
         {
             lock (_gate)
             {
+                _directoryBatchWork = null;
                 _busy = false;
                 if (_closed && _suspended == 0) DropLocalReferences();
             }

@@ -104,11 +104,15 @@ public partial class FileSystemManager
     /// <param name="lease">
     /// Optional original active lease revalidated at the existing boundaries; <see langword="null"/> selects the lease-free path.
     /// </param>
+    /// <param name="batch">
+    /// Explicit bounded source directory DATA, or <see langword="null"/> for original fresh boundary classifiers.
+    /// </param>
     /// <returns>
     /// The opened file's content and timestamp, or <see langword="null"/> for observed absence; original validation and data errors propagate.
     /// </returns>
     private async Task<CanonicalFileReadSnapshot?> ReadOrdinaryFileSnapshotUncachedAsync(
-        string relativePath, CancellationToken cancellationToken, CanonicalWriteLease? lease = null)
+        string relativePath, CancellationToken cancellationToken, CanonicalWriteLease? lease = null,
+        SourceValidationBatch? batch = null)
     {
 #if DEBUG
         var diagnosticOutcome = "fault";
@@ -118,15 +122,16 @@ public partial class FileSystemManager
 #endif
         using var t326Async0 = this.MeasureOperation("OrdinaryRead.Async.Total");
         cancellationToken.ThrowIfCancellationRequested();
-        using var pathPhase = BeginOrdinaryReadPathPhase();
+        using var pathPhase = batch == null ? BeginOrdinaryReadPathPhase() : null;
+        IReadPathObservations? observations = batch ?? (IReadPathObservations?)pathPhase;
         using var t326Async1 = this.MeasureOperation("OrdinaryRead.Async.PrepareScope");
         using var resolveTiming = MeasureOperation("OrdinaryRead.Async.ResolvePath");
-        var expectedPath = ResolvePathForOrdinaryPreparation(relativePath, pathPhase);
+        var expectedPath = ResolvePathForOrdinaryPreparation(relativePath, observations);
         resolveTiming?.Dispose();
         using var scopeTiming = MeasureOperation("OrdinaryRead.Async.CreateScope");
         TrustedLocalFileScope scope;
         using (EnterOperationTimingContext())
-            scope = TrustedLocalFileScope.CreateForOrdinaryRead(GameSessionPath, pathPhase);
+            scope = TrustedLocalFileScope.CreateForOrdinaryRead(GameSessionPath, observations);
         scopeTiming?.Dispose();
         t326Async1?.Dispose();
         FileStream? stream;
@@ -139,18 +144,18 @@ public partial class FileSystemManager
             if (lease != null)
             {
                 using var leaseTiming = MeasureOperation("OrdinaryRead.Async.LeaseAdmission");
-                EnsureValidCanonicalWriteLease(lease, pathPhase);
+                EnsureValidCanonicalWriteLease(lease, observations);
             }
             stream = null;
             try
             {
                 using var t326AsyncAdmission = MeasureOperation("OrdinaryRead.Async.Admission");
                 using (MeasureOperation("OrdinaryRead.Async.Admission.CanonicalSafety"))
-                    EnsureCanonicalPathStillSafe(relativePath, expectedPath, pathPhase);
+                    EnsureCanonicalPathStillSafe(relativePath, expectedPath, observations);
                 string admittedPath;
                 using (MeasureOperation("OrdinaryRead.Async.Admission.ValidateFile"))
                 using (EnterOperationTimingContext())
-                    admittedPath = pathPhase?.Active is { } data
+                    admittedPath = observations?.Active is { } data
                         ? scope.ValidateFile(expectedPath, allowMissing: true, data.ObserveTrusted) : scope.ValidateFile(expectedPath);
                 bool exists;
                 using (MeasureOperation("OrdinaryRead.Async.Admission.FileExists"))
@@ -169,10 +174,10 @@ public partial class FileSystemManager
                 t326AsyncHook?.Dispose();
                 using var t326AsyncOpen = MeasureOperation("OrdinaryRead.Async.ValidateAndOpen");
                 cancellationToken.ThrowIfCancellationRequested();
-                if (lease != null) EnsureValidCanonicalWriteLease(lease);
+                if (lease != null) EnsureValidCanonicalWriteLease(lease, batch);
                 using (MeasureOperation("OrdinaryRead.Async.Open.CanonicalSafety"))
-                    EnsureCanonicalPathStillSafe(relativePath, expectedPath);
-                stream = OpenValidatedOrdinaryFile(scope, expectedPath, asynchronous: true);
+                    EnsureCanonicalPathStillSafe(relativePath, expectedPath, batch);
+                stream = OpenValidatedOrdinaryFile(scope, expectedPath, asynchronous: true, batch);
                 if (stream == null)
                 {
 #if DEBUG
@@ -191,6 +196,7 @@ public partial class FileSystemManager
             catch (Exception ex) when (IsTransientOrdinaryReadOpenException(ex) && attempt < TransientFileAccessRetryCount)
             {
                 pathPhase?.Dispose();
+                batch?.Dispose();
 #if DEBUG
                 BrowserDiagnosticContent(relativePath, "ordinary-async", "retry", "open-fault");
 #endif
@@ -200,6 +206,7 @@ public partial class FileSystemManager
             catch
             {
                 pathPhase?.Dispose();
+                batch?.Dispose();
                 if (stream != null) await stream.DisposeAsync();
                 throw;
             }
@@ -213,8 +220,8 @@ public partial class FileSystemManager
                 try
                 {
                     using var t326AsyncRead = MeasureOperation("OrdinaryRead.Async.ReadOpenedSnapshotAsync");
-                    var snapshot = await ReadOpenedOrdinarySnapshotAsync(stream, scope, relativePath, expectedPath, cancellationToken);
-                    if (lease != null) EnsureValidCanonicalWriteLease(lease);
+                    var snapshot = await ReadOpenedOrdinarySnapshotAsync(stream, scope, relativePath, expectedPath, cancellationToken, batch);
+                    if (lease != null) EnsureValidCanonicalWriteLease(lease, batch);
                     t326AsyncRead?.Dispose();
 #if DEBUG
                     diagnosticOutcome = "present"; diagnosticBytes = snapshot.Content.Length;
@@ -297,11 +304,15 @@ public partial class FileSystemManager
     /// <param name="nullableDataFailure">
     /// Whether the existing World nullable adapter captures qualifying data failures; path and authority checks remain outside those catches.
     /// </param>
+    /// <param name="batch">
+    /// Explicit bounded source directory DATA, or <see langword="null"/> for original fresh boundary classifiers.
+    /// </param>
     /// <returns>
     /// The opened snapshot, or <see langword="null"/> for absence or a captured optional data failure.
     /// </returns>
     private CanonicalFileReadSnapshot? ReadOrdinaryFileSnapshotCore(string relativePath,
-        CanonicalWriteLease? lease, out ExceptionDispatchInfo? dataFailure, bool nullableDataFailure)
+        CanonicalWriteLease? lease, out ExceptionDispatchInfo? dataFailure, bool nullableDataFailure,
+        SourceValidationBatch? batch = null)
     {
 #if DEBUG
         var diagnosticOutcome = "fault";
@@ -310,16 +321,17 @@ public partial class FileSystemManager
         {
 #endif
         using var t326Sync0 = this.MeasureOperation("OrdinaryRead.Sync.Total");
-        using var pathPhase = BeginOrdinaryReadPathPhase();
+        using var pathPhase = batch == null ? BeginOrdinaryReadPathPhase() : null;
+        IReadPathObservations? observations = batch ?? (IReadPathObservations?)pathPhase;
         dataFailure = null;
         using var t326Sync1 = this.MeasureOperation("OrdinaryRead.Sync.PrepareScope");
         using var resolveTiming = MeasureOperation("OrdinaryRead.Sync.ResolvePath");
-        var expectedPath = ResolvePathForOrdinaryPreparation(relativePath, pathPhase);
+        var expectedPath = ResolvePathForOrdinaryPreparation(relativePath, observations);
         resolveTiming?.Dispose();
         using var scopeTiming = MeasureOperation("OrdinaryRead.Sync.CreateScope");
         TrustedLocalFileScope scope;
         using (EnterOperationTimingContext())
-            scope = TrustedLocalFileScope.CreateForOrdinaryRead(GameSessionPath, pathPhase);
+            scope = TrustedLocalFileScope.CreateForOrdinaryRead(GameSessionPath, observations);
         scopeTiming?.Dispose();
         t326Sync1?.Dispose();
         for (var attempt = 0; ; attempt++)
@@ -334,14 +346,14 @@ public partial class FileSystemManager
                 if (lease != null)
                 {
                     using var leaseTiming = MeasureOperation("OrdinaryRead.Sync.Admission.Lease");
-                    EnsureValidCanonicalWriteLease(lease, pathPhase);
+                    EnsureValidCanonicalWriteLease(lease, observations);
                 }
                 using (MeasureOperation("OrdinaryRead.Sync.Admission.CanonicalSafety"))
-                    EnsureCanonicalPathStillSafe(relativePath, expectedPath, pathPhase);
+                    EnsureCanonicalPathStillSafe(relativePath, expectedPath, observations);
                 string admittedPath;
                 using (MeasureOperation("OrdinaryRead.Sync.Admission.ValidateFile"))
                 using (EnterOperationTimingContext())
-                    admittedPath = pathPhase?.Active is { } data
+                    admittedPath = observations?.Active is { } data
                         ? scope.ValidateFile(expectedPath, allowMissing: true, data.ObserveTrusted) : scope.ValidateFile(expectedPath);
                 bool exists;
                 using (MeasureOperation("OrdinaryRead.Sync.Admission.FileExists"))
@@ -357,15 +369,15 @@ public partial class FileSystemManager
                 pathPhase?.Dispose();
                 using var t326SyncOpen = MeasureOperation("OrdinaryRead.Sync.ValidateAndOpen");
                 using var stream = OpenValidatedOrdinaryFile(scope, expectedPath, asynchronous: false,
-                    out dataFailure, nullableDataFailure, attempt >= TransientFileAccessRetryCount);
+                    out dataFailure, nullableDataFailure, attempt >= TransientFileAccessRetryCount, batch);
                 if (stream == null)
                 {
                     // Open failures still prove neither data nor absence. Recheck
                     // authority and namespace outside the FileStream-only catch.
                     if (dataFailure != null)
                     {
-                        if (lease != null) EnsureValidCanonicalWriteLease(lease);
-                        CompleteOrdinaryRead(scope, relativePath, expectedPath);
+                        if (lease != null) EnsureValidCanonicalWriteLease(lease, batch);
+                        CompleteOrdinaryRead(scope, relativePath, expectedPath, batch);
                     }
 #if DEBUG
                     diagnosticOutcome = dataFailure == null ? "missing" : "data-fault";
@@ -385,8 +397,8 @@ public partial class FileSystemManager
                     stream.CopyTo(buffer);
                     t326SyncCopy?.Dispose();
                     using var t326SyncComplete = MeasureOperation("OrdinaryRead.Sync.Complete");
-                    CompleteOrdinaryRead(scope, relativePath, expectedPath);
-                    if (lease != null) EnsureValidCanonicalWriteLease(lease);
+                    CompleteOrdinaryRead(scope, relativePath, expectedPath, batch);
+                    if (lease != null) EnsureValidCanonicalWriteLease(lease, batch);
                     t326SyncComplete?.Dispose();
                     var result = new CanonicalFileReadSnapshot(buffer.ToArray(), timestamp);
 #if DEBUG
@@ -416,8 +428,8 @@ public partial class FileSystemManager
                     return null;
                 }
                 using var t326SyncNullableComplete = MeasureOperation("OrdinaryRead.Sync.NullableComplete");
-                CompleteOrdinaryRead(scope, relativePath, expectedPath);
-                if (lease != null) EnsureValidCanonicalWriteLease(lease);
+                CompleteOrdinaryRead(scope, relativePath, expectedPath, batch);
+                if (lease != null) EnsureValidCanonicalWriteLease(lease, batch);
 #if DEBUG
                 diagnosticOutcome = "present"; diagnosticBytes = snapshot.Content.Length;
 #endif
@@ -427,6 +439,7 @@ public partial class FileSystemManager
                 IsTransientOrdinaryReadOpenException(ex) && attempt < TransientFileAccessRetryCount)
             {
                 pathPhase?.Dispose();
+                batch?.Dispose();
 #if DEBUG
                 BrowserDiagnosticContent(relativePath, "ordinary-sync", "retry", "open-fault");
 #endif
@@ -453,12 +466,15 @@ public partial class FileSystemManager
     /// <param name="asynchronous">
     /// Whether to add <see cref="FileOptions.Asynchronous"/> to the unchanged sequential read options.
     /// </param>
+    /// <param name="batch">
+    /// Explicit bounded source directory DATA, or <see langword="null"/> for original fresh boundary classifiers.
+    /// </param>
     /// <returns>
     /// The stream owned by the caller, or <see langword="null"/> after freshly revalidated absence; other errors propagate.
     /// </returns>
     private FileStream? OpenValidatedOrdinaryFile(
-        TrustedLocalFileScope scope, string expectedPath, bool asynchronous) =>
-        OpenValidatedOrdinaryFile(scope, expectedPath, asynchronous, out _, false, false);
+        TrustedLocalFileScope scope, string expectedPath, bool asynchronous, SourceValidationBatch? batch = null) =>
+        OpenValidatedOrdinaryFile(scope, expectedPath, asynchronous, out _, false, false, batch);
 
     /// <summary>
     /// Performs the shared ordinary open while preserving the original FileStream-only optional data-error catch.
@@ -481,18 +497,22 @@ public partial class FileSystemManager
     /// <param name="retriesExhausted">
     /// Whether the caller's original retry budget permits capturing a transient open error in nullable mode.
     /// </param>
+    /// <param name="batch">
+    /// Explicit bounded source directory DATA, or <see langword="null"/> for original fresh boundary classifiers.
+    /// </param>
     /// <returns>
     /// The caller-owned stream, or <see langword="null"/> for revalidated absence or a captured optional data failure.
     /// </returns>
     private FileStream? OpenValidatedOrdinaryFile(TrustedLocalFileScope scope,
         string expectedPath, bool asynchronous, out ExceptionDispatchInfo? dataFailure,
-        bool nullableDataFailure, bool retriesExhausted)
+        bool nullableDataFailure, bool retriesExhausted, SourceValidationBatch? batch = null)
     {
         dataFailure = null;
         string path;
         using (MeasureOperation("OrdinaryRead.Open.ValidateFile"))
         using (EnterOperationTimingContext())
-            path = scope.ValidateFile(expectedPath);
+            path = batch?.Active is { } data
+                ? scope.ValidateFile(expectedPath, allowMissing: true, data.ObserveTrusted) : scope.ValidateFile(expectedPath);
         try
         {
             using var streamTiming = MeasureOperation("OrdinaryRead.Open.FileStream");
@@ -501,6 +521,7 @@ public partial class FileSystemManager
         }
         catch (FileNotFoundException)
         {
+            batch?.Dispose();
             using (MeasureOperation("OrdinaryRead.Open.RevalidateMissing"))
             using (EnterOperationTimingContext())
                 scope.ValidateFile(path);
@@ -508,6 +529,7 @@ public partial class FileSystemManager
         }
         catch (DirectoryNotFoundException)
         {
+            batch?.Dispose();
             using (MeasureOperation("OrdinaryRead.Open.RevalidateMissing"))
             using (EnterOperationTimingContext())
                 scope.ValidateFile(path);
@@ -522,8 +544,32 @@ public partial class FileSystemManager
         }
     }
 
+    /// <summary>
+    /// Copies the opened source and completes its original file and namespace checks.
+    /// </summary>
+    /// <param name="stream">
+    /// Original opened file stream retained through copying and completion.
+    /// </param>
+    /// <param name="scope">
+    /// Original namespace grants; directory DATA never changes these grants.
+    /// </param>
+    /// <param name="relativePath">
+    /// Original session-relative spelling.
+    /// </param>
+    /// <param name="expectedPath">
+    /// Exact absolute file selected before opening.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Original cancellation token for copying the stream.
+    /// </param>
+    /// <param name="batch">
+    /// Explicit bounded directory DATA, or <see langword="null"/> for original fresh classifiers.
+    /// </param>
+    /// <returns>
+    /// Freshly copied bytes and opened-handle timestamp after completion checks succeed.
+    /// </returns>
     private async Task<CanonicalFileReadSnapshot> ReadOpenedOrdinarySnapshotAsync(FileStream stream,
-        TrustedLocalFileScope scope, string relativePath, string expectedPath, CancellationToken cancellationToken)
+        TrustedLocalFileScope scope, string relativePath, string expectedPath, CancellationToken cancellationToken, SourceValidationBatch? batch = null)
     {
         using var t326Opened0 = this.MeasureOperation("OrdinaryRead.OpenedSnapshot.PrepareBuffer");
         var timestamp = File.GetLastWriteTimeUtc(stream.SafeFileHandle);
@@ -533,7 +579,7 @@ public partial class FileSystemManager
         await stream.CopyToAsync(buffer, cancellationToken);
         t326Opened1?.Dispose();
         using var t326Opened2 = this.MeasureOperation("OrdinaryRead.OpenedSnapshot.Complete");
-        CompleteOrdinaryRead(scope, relativePath, expectedPath);
+        CompleteOrdinaryRead(scope, relativePath, expectedPath, batch);
         t326Opened2?.Dispose();
         return new(buffer.ToArray(), timestamp);
     }
@@ -553,12 +599,17 @@ public partial class FileSystemManager
     /// <param name="expectedPath">
     /// The exact absolute target selected before opening the stream.
     /// </param>
-    private void CompleteOrdinaryRead(TrustedLocalFileScope scope, string relativePath, string expectedPath)
+    /// <param name="batch">
+    /// Explicit bounded source directory DATA, or <see langword="null"/> for original fresh boundary classifiers.
+    /// </param>
+    private void CompleteOrdinaryRead(TrustedLocalFileScope scope, string relativePath, string expectedPath,
+        SourceValidationBatch? batch = null)
     {
         using (MeasureOperation("OrdinaryRead.Complete.ValidateFile"))
         using (EnterOperationTimingContext())
-            scope.ValidateFile(expectedPath, allowMissing: false);
+            if (batch?.Active is { } data) scope.ValidateFile(expectedPath, allowMissing: false, data.ObserveTrusted);
+            else scope.ValidateFile(expectedPath, allowMissing: false);
         using (MeasureOperation("OrdinaryRead.Complete.CanonicalSafety"))
-            EnsureCanonicalPathStillSafe(relativePath, expectedPath);
+            EnsureCanonicalPathStillSafe(relativePath, expectedPath, batch);
     }
 }

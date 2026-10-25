@@ -4,7 +4,7 @@ Issue#1536; spec BATCH1..7 / plan.md, autonomous specification-review-wait waive
 
 - [x] T541 Canonical phases/prerequisites/consistency, written specification links,
   source-only checkpoint/recovery and qualified1d2 eight-DLL backup.
-- [ ] T542 [US1] Cheap real source/reserved sync/async metadata reduction RED,
+- [x] T542 [US1] Cheap real source/reserved sync/async metadata reduction RED,
   category ownership and minimal off/on seam; unchanged bytes/native/source checks.
 - [ ] T543 [US1] Explicit existing-service bounded batch/owner gates/ordinary
   classifier plumbing/strict original control/counters; GREEN and integrity coverage.

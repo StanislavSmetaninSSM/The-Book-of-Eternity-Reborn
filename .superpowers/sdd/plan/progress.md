@@ -13,7 +13,9 @@ full authority. T541 actual setup-plan/setup-tasks/prerequisites completed; brid
 read-only consistency7requirements/6tasks/100%coverage/0gaps/conflicts. Written
 links presented under waiver; baseline8DLL ZIP9members verified SHA29F13CA6...DF509.
 T542 causal four-case metadata reduction fixture written, minimal unused policy seam;
-RED build/run pending. No batch implementation yet.
+RED2b981706a four causal FAIL: first queries off=on async448/sync368,
+reserved async600/sync520; fresh read/main/native assertions passed before query assertion.
+T543 explicit new service-backed batch/owner gates wired; GREEN build/run pending.
 All diagnostics uncapped D-only; r71raw/INPUT/CPU-GC/instrument/backups protected.
 
 # r71 initial ordinary/main-admission directory DATA — code gate accepted

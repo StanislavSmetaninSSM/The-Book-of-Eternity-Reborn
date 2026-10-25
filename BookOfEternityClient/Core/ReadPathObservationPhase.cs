@@ -5,7 +5,7 @@ namespace BookOfEternityClient.Core;
 /// <summary>
 /// Owns positive-directory DATA for one explicit synchronous ordinary-read preparation.
 /// </summary>
-internal sealed class ReadPathObservationPhase : IWindowsPathMetadataProvider, IDisposable
+internal sealed class ReadPathObservationPhase : IReadPathObservations, IDisposable
 {
     private readonly Func<string, TrustedLocalFileScope.EntryKind> _probe;
     private readonly IWindowsPathMetadataProvider _windows;
@@ -60,6 +60,19 @@ internal sealed class ReadPathObservationPhase : IWindowsPathMetadataProvider, I
     /// Selects this phase only on its original synchronous flow and unchanged manager version.
     /// </summary>
     internal ReadPathObservationPhase? Active => CanReuse() ? this : null;
+
+    /// <inheritdoc />
+    IReadPathObservations? IReadPathObservations.Active => Active;
+
+    /// <inheritdoc />
+    TrustedLocalFileScope.EntryKind IReadPathObservations.ObserveTrusted(string path) => ObserveTrusted(path);
+
+    /// <inheritdoc />
+    bool IReadPathObservations.CanShareAdmission(FileSystemManager owner) => CanShareAdmission(owner);
+
+    /// <inheritdoc />
+    TrustedLocalFileScope.EntryKind IReadPathObservations.ObserveForAdmission(string path, out bool sourceQueried) =>
+        ObserveForAdmission(path, out sourceQueried);
 
     /// <summary>
     /// Observes the original TrustedScope kind without granting access or file authority.

@@ -371,7 +371,7 @@ public partial class FileSystemManager
         /// Optional same-manager initial ordinary preparation; only positive directory DATA can be
         /// shared. Guard-file, native handle, worker and persistence checks remain fresh.
         /// </param>
-        internal void Validate(CanonicalWriteLease? lease, ReadPathObservationPhase? readPathPhase = null)
+        internal void Validate(CanonicalWriteLease? lease, IReadPathObservations? readPathPhase = null)
         {
             if(_closed || _access==null)throw GmSessionRunPersistence.Invalid();
             if(lease!=null && !ReferenceEquals(lease.WorkerPurpose,_workerPurpose))throw GmSessionRunPersistence.Invalid();

@@ -166,13 +166,17 @@ public partial class FileSystemManager
     /// <param name="lease">
     /// Original declared lease, or <see langword="null"/> for a lease-free read.
     /// </param>
+    /// <param name="batch">
+    /// Explicit bounded directory DATA, or <see langword="null"/> for fresh classifiers; protected readers stay fresh.
+    /// </param>
     /// <returns>
     /// Fresh content and timestamp, or <see langword="null"/> for original observed absence.
     /// </returns>
-    private CanonicalFileReadSnapshot? ReadValidationSource(string path, ValidationSnapshotFamily family, CanonicalWriteLease? lease) =>
+    private CanonicalFileReadSnapshot? ReadValidationSource(string path, ValidationSnapshotFamily family, CanonicalWriteLease? lease,
+        SourceValidationBatch? batch = null) =>
         family switch
         {
-            ValidationSnapshotFamily.OrdinarySync => ReadOrdinaryFileSnapshotCore(path, lease, out _, nullableDataFailure: false),
+            ValidationSnapshotFamily.OrdinarySync => ReadOrdinaryFileSnapshotCore(path, lease, out _, nullableDataFailure: false, batch),
             ValidationSnapshotFamily.ProtectedSync => ReadFileSnapshotUncached(path),
             _ => throw new ArgumentOutOfRangeException(nameof(family))
         };
@@ -192,14 +196,17 @@ public partial class FileSystemManager
     /// <param name="token">
     /// Original cancellation token, also observed before any reused result.
     /// </param>
+    /// <param name="batch">
+    /// Explicit bounded directory DATA, or <see langword="null"/> for fresh classifiers; protected readers stay fresh.
+    /// </param>
     /// <returns>
     /// Fresh content and timestamp, or <see langword="null"/> for original observed absence.
     /// </returns>
     private Task<CanonicalFileReadSnapshot?> ReadValidationSourceAsync(string path, ValidationSnapshotFamily family,
-        CanonicalWriteLease? lease, CancellationToken token) =>
+        CanonicalWriteLease? lease, CancellationToken token, SourceValidationBatch? batch = null) =>
         family switch
         {
-            ValidationSnapshotFamily.OrdinaryAsync => ReadOrdinaryFileSnapshotUncachedAsync(path, token, lease),
+            ValidationSnapshotFamily.OrdinaryAsync => ReadOrdinaryFileSnapshotUncachedAsync(path, token, lease, batch),
             ValidationSnapshotFamily.ProtectedAsync => ReadFileSnapshotUncachedAsync(path, token),
             _ => throw new ArgumentOutOfRangeException(nameof(family))
         };
@@ -207,7 +214,7 @@ public partial class FileSystemManager
     /// <summary>
     /// Retains private source DATA for one exact reserved owner and proves every dependency freshly before success.
     /// </summary>
-    internal sealed partial class ReservedValidationReadSet : IAsyncDisposable
+    internal sealed partial class ReservedValidationReadSet : IAsyncDisposable, ISourceValidationBatchOwner
     {
         private readonly FileSystemManager _files;
         private readonly CanonicalWriteLease _lease;
@@ -328,6 +335,7 @@ public partial class FileSystemManager
         {
             lock (_state)
             {
+                _directoryBatchWork = null;
                 _busy = false;
                 _drained?.TrySetResult();
             }
@@ -422,7 +430,8 @@ public partial class FileSystemManager
                 else if (!_snapshots.TryGetValue(key, out snapshot))
                 {
                     using var source = _files.MeasureOperation("ValidationReadSet.SourceSync");
-                    snapshot = _files.ReadValidationSource(path, family, declaredLease);
+                    using var batch = BeginDirectoryBatch();
+                    snapshot = _files.ReadValidationSource(path, family, declaredLease, batch);
                     _snapshots.Add(key, snapshot); _order.Add(key);
                 }
                 else { using var reuse = _files.MeasureOperation("ValidationReadSet.ReuseSync"); }
@@ -466,7 +475,8 @@ public partial class FileSystemManager
                 else if (!_snapshots.TryGetValue(key, out snapshot))
                 {
                     using var source = _files.MeasureOperation("ValidationReadSet.SourceAsync");
-                    snapshot = await _files.ReadValidationSourceAsync(path, family, declaredLease, token);
+                    using var batch = BeginDirectoryBatch();
+                    snapshot = await _files.ReadValidationSourceAsync(path, family, declaredLease, token, batch);
                     _snapshots.Add(key, snapshot); _order.Add(key);
                 }
                 else { using var reuse = _files.MeasureOperation("ValidationReadSet.ReuseAsync"); }
@@ -503,17 +513,20 @@ public partial class FileSystemManager
                 using var timing = _files.MeasureOperation("ValidationReadSet.ExitProof");
                 lock (_state) _completing = true;
                 RequireAuthority();
-                foreach (var key in _order)
+                using (var batch = BeginDirectoryBatch())
                 {
-                    using var source = _files.MeasureOperation("ValidationReadSet.ExitSource");
-                    var declared = key.Explicit ? _lease : null;
-                    var fresh = key.Family is ValidationSnapshotFamily.OrdinaryAsync or ValidationSnapshotFamily.ProtectedAsync
-                        ? await _files.ReadValidationSourceAsync(key.Path, key.Family, declared, CancellationToken.None)
-                        : _files.ReadValidationSource(key.Path, key.Family, declared);
-                    var original = RetainedSnapshot(key);
-                    if ((fresh == null) != (original == null) || fresh != null &&
-                        (fresh.LastWriteTimeUtc != original!.LastWriteTimeUtc || !fresh.Content.AsSpan().SequenceEqual(original.Content)))
-                        throw new InvalidDataException("Reserved validation source changed: " + key.Path);
+                    foreach (var key in _order)
+                    {
+                        using var source = _files.MeasureOperation("ValidationReadSet.ExitSource");
+                        var declared = key.Explicit ? _lease : null;
+                        var fresh = key.Family is ValidationSnapshotFamily.OrdinaryAsync or ValidationSnapshotFamily.ProtectedAsync
+                            ? await _files.ReadValidationSourceAsync(key.Path, key.Family, declared, CancellationToken.None, batch)
+                            : _files.ReadValidationSource(key.Path, key.Family, declared, batch);
+                        var original = RetainedSnapshot(key);
+                        if ((fresh == null) != (original == null) || fresh != null &&
+                            (fresh.LastWriteTimeUtc != original!.LastWriteTimeUtc || !fresh.Content.AsSpan().SequenceEqual(original.Content)))
+                            throw new InvalidDataException("Reserved validation source changed: " + key.Path);
+                    }
                 }
                 foreach (var key in _presenceOrder)
                 {

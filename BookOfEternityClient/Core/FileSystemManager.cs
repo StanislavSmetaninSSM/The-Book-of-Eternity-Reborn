@@ -817,7 +817,7 @@ public partial class FileSystemManager
     /// <returns>
     /// The confined absolute path after the unchanged lexical and reparse decisions.
     /// </returns>
-    private string ResolvePathForOrdinaryPreparation(string relativePath, ReadPathObservationPhase? observations)
+    private string ResolvePathForOrdinaryPreparation(string relativePath, IReadPathObservations? observations)
     {
         using var operationContext = EnterOperationTimingContext();
         using var operationTiming = MeasureOperation("CanonicalPath.Resolve");
@@ -909,7 +909,7 @@ public partial class FileSystemManager
     private void EnsureNoExistingReparsePoint(
         string authorityRoot,
         string fullPath,
-        string authorityName, ReadPathObservationPhase? observations = null)
+        string authorityName, IReadPathObservations? observations = null)
     {
         if (OperatingSystem.IsWindows())
         {
@@ -4801,7 +4801,7 @@ public partial class FileSystemManager
     /// Optional same-manager synchronous ordinary preparation supplying positive directory DATA
     /// to its initial admission. A <see langword="null"/> phase retains independent classification.
     /// </param>
-    private void EnsureValidCanonicalWriteLease(CanonicalWriteLease writeLease, ReadPathObservationPhase? readPathPhase = null)
+    private void EnsureValidCanonicalWriteLease(CanonicalWriteLease writeLease, IReadPathObservations? readPathPhase = null)
     {
         using var operationContext = EnterOperationTimingContext();
         using var operationTiming = MeasureOperation("Lease.Validate.Total");
@@ -6540,7 +6540,7 @@ public partial class FileSystemManager
     /// Explicit preparation-only DATA, or <see langword="null"/> to freshly inspect paths.
     /// </param>
     private void EnsureCanonicalPathStillSafe(string relativePath, string expectedFullPath,
-        ReadPathObservationPhase? observations = null)
+        IReadPathObservations? observations = null)
     {
         var currentFullPath = ResolvePathForOrdinaryPreparation(relativePath, observations);
         if (!string.Equals(currentFullPath, expectedFullPath, StringComparison.OrdinalIgnoreCase))

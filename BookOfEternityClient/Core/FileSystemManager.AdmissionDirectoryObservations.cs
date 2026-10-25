@@ -38,7 +38,7 @@ public partial class FileSystemManager
     /// <returns>
     /// An invocation-owned context, or null when the original unshared route is required.
     /// </returns>
-    internal AdmissionDirectoryObservations? BeginAdmissionDirectoryObservations(ReadPathObservationPhase? readPathPhase = null)
+    internal AdmissionDirectoryObservations? BeginAdmissionDirectoryObservations(IReadPathObservations? readPathPhase = null)
     {
         if (!CanReuseSourceData || _hooks?.OperationTimingObserver != null ||
             _operationTimingContext?.Observer != null || ValidationReuseSuppression.Value != 0)

@@ -116,7 +116,7 @@ internal sealed class TrustedLocalFileScope
     /// <returns>
     /// An ordinary scope retaining only grants; subsequent operations still validate fresh sources.
     /// </returns>
-    internal static TrustedLocalFileScope CreateForOrdinaryRead(string root, ReadPathObservationPhase? phase) =>
+    internal static TrustedLocalFileScope CreateForOrdinaryRead(string root, IReadPathObservations? phase) =>
         new([root], null, phase?.Active is { } current ? current.ObserveTrusted : Probe);
 
     /// <summary>
