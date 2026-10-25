@@ -4,7 +4,7 @@ Canonical handoff r73; source b377c9d1d0c6cfa5ce20b383d84eac069b8d2991.
 - [x] T551 Fresh Linux native/XML builds, exact impact selection/catalog/PlanOnly,
   hashes and independent PREP review.
 - [ ] T552 Reviewed cheap common cache/affected-consumer Linux contracts.
-  - [ ] T556 Explicit current Linux applied input +8cheaprefusal/copy controls.
+  - [x] T556 Explicit current Linux applied input +8cheaprefusal/copy controls.
   - [ ] T557 Genuine minimal Linux publisher/progression/capture preparation.
   - [ ] T558 Fresh XML/PDB/catalog/PlanOnly and independent PREP, then8+1.
   - [ ] T559 Boundary6+remaining46, disjoint454retainedPASS, outcome review.

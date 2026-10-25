@@ -1,3 +1,18 @@
+# Linux applied input/transport controls GREEN — genuine generator next
+
+Code3c7284/checkpointfeb019:run092902-464-29095-b86b45bf171a4cd0b85fb03471ebe769,
+4descriptors40planned/completed/PASS (11+7+14+8),0skip/fail/duplicates,
+wall00:01:12.9572871, no timeout/owned+runtimecleanupcomplete. Actual40TRX outcomes
+allPassed verified. Currentproduction/TestSupport/unitpins unchanged.
+T556 input selection/negative provenance/copy controls complete; no gamecapability
+claimed by these synthetic transport DATA controls. Source record doesnotexist yet.
+Next separate genuineLinuxAppliedData_PublishesCurrentMinimalTemplate1case under
+initial5minPREPbound, existingfullnamedtimers. No source edits/rebuildneeded.
+Only successfulcanonical/progression/freshapplied/source+leaseclose/capture/fixture
+cleanup permits selectable record. Then52remainingcachecases; native40/original5
+remainUNRUN. CrossOSWindowsDATArefusal/productquestion remainsOPEN and unchanged.
+Rawinputs/outputsarchivesoutsidecheckout andnotuploaded; allcurrentmeasurementskept.
+
 # Linux current applied preparation SOURCE/PREP ACCEPTED — controls40 next
 
 Code3c7284d32280c0751695140511915c77abf1f38a, independentAstra/high accepted:

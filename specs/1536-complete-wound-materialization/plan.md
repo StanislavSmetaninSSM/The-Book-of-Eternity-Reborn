@@ -12,7 +12,7 @@ normalizing/resealinghistoricalZIP would invalidateevidence; generatecurrentLinu
 through realpublishers fits existinghandoff and preservesfreshauthority. Chosenby
 executor under autonomous scope, not a new userfeature or claimed crossOSsupport.
 
-- [ ] T556 Add exact8 input/transport controls and explicit Linux source selection:
+- [x] T556 Add exact8 input/transport controls and explicit Linux source selection:
   JointAppliedDataTemplate.LinuxInput.cs ResolveCurrent()/ResolveLinux(recordPath,
   expectedGameAssemblySha), immutable JointAppliedDataSource; existing Materialize
   overload selects Linux provenance with complete verification beforetargetwrite.
