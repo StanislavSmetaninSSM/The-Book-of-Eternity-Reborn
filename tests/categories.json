@@ -2,6 +2,17 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "core-passive-named-events",
+  "responsibility": "Opt-in scalar named timing events in the existing sealed recorder: original clocks and scope pairing, detached atomic drains, concurrency, independent windows, open/late and failed-body accounting, without callback or IO in recording.",
+  "excludes": "No game world, gameplay authority, synthetic timing replay, diagnostic quota or full qualification claim from these memory-only contracts.",
+  "changeHints": ["BookOfEternityClient/Core/OperationTimingAccumulator.cs", "BookOfEternityClient.Tests/OperationTimingEventQueueTests.cs"],
+  "related": [{"id":"core-passive-recovery-timing","when":"Preserve existing aggregate behavior and cache eligibility."},{"id":"core-source-validation-batch","when":"Verify passive recording preserves real metadata reuse and fresh checks."}],
+  "requirements": {"frontendBuild":false,"exclusive":true,"ciRunner":"ubuntu-24.04"},
+  "timeoutMinutes":1,
+  "expectedSeconds":null,
+  "selectors":[{"project":"unit","tests":["BookOfEternityClient.Tests.OperationTimingEventQueueTests.*"]}]
+},
+{
   "id": "fr063-joint-resume-report-transport",
   "responsibility": "Five small external resumer report transport controls: exact UTF8/hash/independent files, create-new collision, invalid destinations and original failure preservation.",
   "excludes": "No game recovery, process launch, capability or original-five qualification.",

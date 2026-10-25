@@ -9,7 +9,8 @@ explicit opt-in original scalar named events: monotonic timestamp, sequence,
 begin/end, inclusive duration and late status. Default aggregate behavior remains.
 No callback, filesystem IO, authority object or diagnostic quota in recorded path.
 Atomic detached drains must preserve every event exactly once across concurrency.
-LINUXTIMING3: TAKE fixture alone uses the sealed path instead of its arbitrary
+LINUXTIMING3: expensive Take/Qte/Semantic component controls explicitly use the
+sealed path instead of their arbitrary
 callback, so existing directory DATA batches can participate under their original
 guards. Keep full original named trace and source timestamps; never synthesize
 events from aggregates. Transport runs outside functional calls and includes a

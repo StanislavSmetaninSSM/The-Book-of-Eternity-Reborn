@@ -1,3 +1,23 @@
+# Full passive event contracts scaffold — runtime RED preparation next
+
+Independent remaining run153729-204-60274-49846689ecc04760808b3e8956c686df:
+boundary6/progression1/proof6 allPASS; then Qte original2min deadline, exit124/
+335.4004666s wall/no QteTRX, SemanticUNRUN. Keep13whole-category PASS with E035/
+3E00/C0AD pins and full failed Qte capture; no complete15/16 or cache514 claim.
+
+Bounded existing-recorder design independently assessed: aggregates cannot stand
+in for real named events. A separate Sol6.1/high implementer owns only recorder
+and its unit contracts; Astra/high remains independent reviewer. Initial API
+scaffold deliberately preserves aggregate-only behavior: old StartWindow() ABI,
+new bool overload ignored, event drains empty/statusdisabled. Nine new tiny
+contracts must yield runtime RED before event implementation. This scaffold is
+WIP, not an implemented full capture feature or runtime qualification.
+No builds/tests on this scaffold yet. Category core-passive-named-events owns9.
+Root owns transport/defaults/fixture controls; no product/cache/authority changes.
+Full passive transport will be explicit for Take/Qte/Semantic only; all known
+expensive controls share the legacy observer obstacle, other fixtures remain
+unchanged. Default aggregates and all original budgets/full raw stay intact.
+
 # Take-fence timeout preserved — full passive timing preparation design next
 
 Run144629-918-59441-4c1de9c0af52408880f486cbbb6243c3: firsttake body started,

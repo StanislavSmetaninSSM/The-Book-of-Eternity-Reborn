@@ -15,8 +15,21 @@ internal sealed class OperationTimingAccumulator
     /// <returns>
     /// The window to close and inspect; overlapping windows on this recorder are refused.
     /// </returns>
-    internal Window StartWindow()
+    internal Window StartWindow() => StartWindow(captureEvents: false);
+
+    /// <summary>
+    /// Opens an exclusive window with optional original scalar event capture.
+    /// </summary>
+    /// <param name="captureEvents">
+    /// Whether original begin and end boundaries are requested in addition to aggregates.
+    /// </param>
+    /// <returns>
+    /// The window to close, drain and inspect.
+    /// </returns>
+    internal Window StartWindow(bool captureEvents)
     {
+        // Aggregate-only scaffold: the causal controls must fail before capture is implemented.
+        _ = captureEvents;
         var window = new Window(this);
         if (Interlocked.CompareExchange(ref _active, window, null) is not null)
             throw new InvalidOperationException("This recorder already has an active window.");
@@ -108,6 +121,22 @@ internal sealed class OperationTimingAccumulator
         }
 
         /// <summary>
+        /// Atomically removes a detached FIFO batch of original named events.
+        /// </summary>
+        /// <returns>
+        /// Every event pending at the drain boundary, or an empty array when capture is disabled.
+        /// </returns>
+        internal NamedEvent[] DrainEvents() => Array.Empty<NamedEvent>();
+
+        /// <summary>
+        /// Copies event capture accounting independently of aggregate completeness.
+        /// </summary>
+        /// <returns>
+        /// Capture selection and counts; failed capture cannot qualify a complete diagnostic trace.
+        /// </returns>
+        internal EventStatus CaptureEventStatus() => new(false, 0, 0, 0, 0, 0);
+
+        /// <summary>
         /// Completes an already registered scope without calling external code.
         /// </summary>
         /// <param name="counter">
@@ -160,6 +189,31 @@ internal sealed class OperationTimingAccumulator
             }
         }
     }
+
+    /// <summary>
+    /// Holds one original named boundary without callbacks or authority-bearing objects.
+    /// </summary>
+    /// <param name="Sequence">Window-local registration order, independent of clock ordering.</param>
+    /// <param name="ScopeId">Window-local identity pairing a scope's begin and end.</param>
+    /// <param name="Name">The unchanged original section name.</param>
+    /// <param name="State">The original boundary, either begin or end.</param>
+    /// <param name="TimestampTicks">Absolute Stopwatch timestamp captured at the boundary.</param>
+    /// <param name="ElapsedTicks">Zero at begin; original inclusive Stopwatch ticks at end.</param>
+    /// <param name="Late">Whether this boundary registered after its original window closed.</param>
+    internal readonly record struct NamedEvent(long Sequence, long ScopeId, string Name, string State,
+        long TimestampTicks, long ElapsedTicks, bool Late);
+
+    /// <summary>
+    /// Describes original event capture without exposing its mutable buffer.
+    /// </summary>
+    /// <param name="Enabled">Whether original event capture was requested.</param>
+    /// <param name="Attempted">Number of original event enqueue attempts.</param>
+    /// <param name="Enqueued">Number of successfully retained original events.</param>
+    /// <param name="Drained">Number of original events transferred to detached batches.</param>
+    /// <param name="Pending">Successfully retained original events not yet drained.</param>
+    /// <param name="Failed">Original event enqueue attempts that could not be retained.</param>
+    internal readonly record struct EventStatus(bool Enabled, long Attempted, long Enqueued,
+        long Drained, long Pending, long Failed);
 
     /// <summary>
     /// Contains detached aggregate data for one literal section name.

@@ -12,7 +12,7 @@ payloads, callbacks or IO. Close stops new scopes, late completion remains
 explicit. Drains serialize queue removal; consumer storage errors stay incomplete.
 Default non-event windows retain aggregate semantics. No count/byte quota.
 
-TAKE-only opt-in keeps all other component fixture paths unchanged. Drain at
+Explicit Take/Qte/Semantic opt-in keeps all other component fixture paths unchanged. Drain at
 safe case/phase boundaries, preserve original source clock and ordering, final
 resource closing/window close/open0/late0/drain/attempted=stored before Finish.
 Cheap real-file off/on control proves existing SourceValidationBatch reduces
@@ -21,7 +21,7 @@ raw drift still refuses success. Existing service/cache keys/lifetimes unchanged
 
 - [ ] T576 Preserve timeout/phase evidence and independently review bounded design.
 - [ ] T577 Causal cheap event/transport controls, existing sealed recorder opt-in queue.
-- [ ] T578 TAKE-only fixture transport and safe closing; real metadata proof;
+- [ ] T578 Explicit expensive-control fixture transport and safe closing; real metadata proof;
   coherent implementation/tests/docs/selection SOURCE review.
 - [ ] T579 Fresh builds/PDB/catalog/NoBuild plans/PREP; cheap controls and new
   genuine Linux input after any game hash change. Review retained results.
