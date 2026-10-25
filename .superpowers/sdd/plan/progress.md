@@ -1,4 +1,12 @@
-# T584 live N source contribution — inverse Unit build verified, PREP pending
+# T584 live N source contribution — inverse PREP accepted, ordered53 next
+
+Independent Astra/high PREP ACCEPT at clean remote
+`71c78729e7c73c919ca92c901bdcd6fd1d788e02`: one ordered53 NoBuild run, failed
+source singleton first with existing fail-stop before unrun52. It independently
+checked 33 files, 30 unchanged non-Unit files, eleven PE/PDB pairs, 26 source
+hashes, retained Unit3cf evidence and explicit mixed lineage. Retaining29+48 at
+their actual3cf bindings is accepted; no material findings. Heavy5 remain
+conditional on complete cheap qualification. Actual53 still UNRUN here.
 
 Independent Astra/high accepted `8e590c549cb9c47573b470fd2cf4236ce20a5096`
 for the test-only historical composition; no material findings. Fresh Unit XML
