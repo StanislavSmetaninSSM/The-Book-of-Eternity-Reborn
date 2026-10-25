@@ -36,21 +36,27 @@ public sealed class SourceDataOperationLinuxTests(ITestOutputHelper output)
             Assert.Null(await files.ReadFileBytesAsync(first, "missing.txt"));
         }
 
-        var absentSources = 0;
-        fixture.OnRead = path => { if (path == "missing.txt") absentSources++; };
+        // Missing files return before the opened-file activity observer. These
+        // existing scopes each surround one actual File.Exists call instead.
+        var presenceOperation = reader == "implicit-sync"
+            ? "OrdinaryRead.Sync.Admission.FileExists" : "OrdinaryRead.Async.Admission.FileExists";
+        var beforeAbsentQueries = fixture.CompletedOperations(presenceOperation);
         fixture.Recording = true;
         await ReadAbsentWithUnsupportedAdapterAsync(files, reader);
-        var firstAbsentSources = absentSources;
-        Assert.True(firstAbsentSources > 0, "The first unsupported reader must physically observe absence.");
+        var afterFirstAbsentQueries = fixture.CompletedOperations(presenceOperation);
+        Assert.True(afterFirstAbsentQueries > beforeAbsentQueries, "The first unsupported reader must physically query absence.");
         await ReadAbsentWithUnsupportedAdapterAsync(files, reader);
-        Assert.True(absentSources > firstAbsentSources, "The second unsupported reader must independently observe absence.");
+        var afterSecondAbsentQueries = fixture.CompletedOperations(presenceOperation);
+        Assert.True(afterSecondAbsentQueries > afterFirstAbsentQueries, "The second unsupported reader must independently query absence.");
         await using var replacement = await files.AcquireCanonicalWriteLeaseAsync();
         Assert.Equal("original", await files.ReadFileAsync(replacement, "present.txt"));
         Assert.Equal("original", await files.ReadFileAsync(replacement, "present.txt"));
         Assert.Equal(0, fixture.PresentSources);
         await operation.CompleteAsync();
         Assert.Equal(1, fixture.PresentSources);
-        output.WriteLine(JsonSerializer.Serialize(new { reader, absentSources,
+        output.WriteLine(JsonSerializer.Serialize(new { reader, presenceOperation,
+            FirstAbsentQueries = afterFirstAbsentQueries - beforeAbsentQueries,
+            SecondAbsentQueries = afterSecondAbsentQueries - afterFirstAbsentQueries,
             FunctionalPresentSources = 0, FreshFencePresentSources = fixture.PresentSources }));
     }
 

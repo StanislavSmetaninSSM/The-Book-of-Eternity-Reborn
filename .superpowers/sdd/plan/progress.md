@@ -1,3 +1,24 @@
+# Source-adapter cheap gate:88 whole-category PASS, Linux oracle correction WIP
+
+Run141039-793-54719-c2fa001132d24cd0b2b967c3d4ffa8e0:96executed,
+93PASS/3FAIL; exit1/no timeout/skip/duplicate,180.2588162s wall, both cleanups
+complete. Wholecategories cleanup16/control14/GameState21/generalSource37 allPASS
+(88retained). Linux8=5PASS/3FAIL: original3 and new byte/absence drift negatives
+PASS; positives now pass the former source-fence boundary but fail our wrong
+opened-file counter. Remaining4integration/70 unrun, not skipped/PASS. GENblocked.
+
+Confirmed fixture oracle cause: missing readers return immediately after
+File.Exists, before CanonicalReadActivityObserver; that observer cannot count
+absence. Independent review confirmed it and accepted exact existing named
+OrdinaryRead.Async/Sync.Admission.FileExists counters, which directly surround
+the actual physical API. Snapshot before/after each isolated helper call; strict
+increase each, present0functional/1fresh and both drift negatives unchanged.
+Candidate fixes only this test observer; productionE035/source2c unchanged.
+Fresh unit build/PDB and Linux8 remain pending. Independently admitted remaining
+integration70 may run on unchanged3E00/E035; retain88 without repeating them.
+This is one fixture correction, not a weaker freshness requirement or a second
+production workaround. Full diagnostic/TRX evidence retained externally.
+
 # Source-adapter PREP accepted — cheap166 next
 
 Separate Astra/high accepted actual5builds/11DLL+11PDB/18source checks, exact
