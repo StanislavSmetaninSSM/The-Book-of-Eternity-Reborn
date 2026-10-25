@@ -2,6 +2,48 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "core-shared-read-admission-directories-linux",
+  "responsibility": "Genuine Linux shared directory DATA composition, sync/async metadata reduction, owner/thread/lifetime/mutation/refusal controls and current LinuxSupervisor main-record freshness.",
+  "excludes": "Windows native file-handle identity and Windows worker-runs-v1 inventory. Those exact contracts remain owned by core-shared-read-admission-directories on Windows. No world/bootstrap or native-process qualification.",
+  "changeHints": [
+    "BookOfEternityClient/Core/ReadPathObservationPhase.cs",
+    "BookOfEternityClient/Core/AdmissionDirectoryObservations.cs",
+    "BookOfEternityClient/Core/FileSystemManager.AdmissionDirectoryObservations.cs",
+    "BookOfEternityClient.IntegrationTests/SharedReadAdmissionDirectoryTests.cs"
+  ],
+  "related": [
+    {
+      "id": "core-ordinary-read-path-data",
+      "when": "Underlying synchronous phase lifetime, API/role identities and callbacks must remain unchanged."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.SharedReadAdmissionDirectoryTests.ActualClassifierCompositionHasCommonAncestorsAndFreshGuardLeaves",
+        "BookOfEternityClient.Tests.SharedReadAdmissionDirectoryTests.DeclaredOrdinaryReadsReducePhysicalQueriesWithoutChangingData",
+        "BookOfEternityClient.Tests.SharedReadAdmissionDirectoryTests.BorrowedDirectoryCannotSurviveOuterCloseInTheInnerCache",
+        "BookOfEternityClient.Tests.SharedReadAdmissionDirectoryTests.ForeignClosedOrDisabledPhasesRetainFreshClassification",
+        "BookOfEternityClient.Tests.SharedReadAdmissionDirectoryTests.DisablingSharingAfterAHitForcesFreshClassification",
+        "BookOfEternityClient.Tests.SharedReadAdmissionDirectoryTests.CustomClassifierCannotBorrowAnotherProvidersDirectory",
+        "BookOfEternityClient.Tests.SharedReadAdmissionDirectoryTests.SharedSourceFailureRetiresBothContextsAndKeepsItsIdentity",
+        "BookOfEternityClient.Tests.SharedReadAdmissionDirectoryTests.SharedMainAdmissionRefusesChangedRecordOnCurrentBackend",
+        "BookOfEternityClient.Tests.SharedReadAdmissionDirectoryTests.SupportedMutationRetiresBorrowedDirectoryData",
+        "BookOfEternityClient.Tests.SharedReadAdmissionDirectoryTests.ForeignThreadCannotBorrowThePreparation",
+        "BookOfEternityClient.Tests.SharedReadAdmissionDirectoryTests.LaterDeclaredReadsRemainFreshAfterDirectorySharing"
+      ]
+    }
+  ]
+},
+{
   "id": "core-operation-source-data-linux",
   "responsibility": "Real Linux replacement leases without Windows legacy recovery: eligible cross-lease provisional DATA reuse with fresh first-adapter admission, raw source drift refusing effect/success, and fresh generation binding before DATA.",
   "excludes": "Windows legacy recovery transitions, world/game preparation, native process qualification and authority caching.",

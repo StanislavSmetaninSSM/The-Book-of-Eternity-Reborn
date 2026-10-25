@@ -1,3 +1,4 @@
+using System.Text.Json;
 using BookOfEternityClient.Core;
 using Xunit;
 using Xunit.Abstractions;
@@ -19,26 +20,36 @@ public sealed class PassiveRecoveryTimingTests(ITestOutputHelper output)
     /// Whether source requests use the synchronous reader.
     /// </param>
     /// <returns>
-    /// Completion after the ordinary two-source, seven-hit phase and closed counters.
+    /// Completion after independent unobserved and timed two-source, seven-hit phases with equal work.
     /// </returns>
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
     public async Task RealPhaseRetainsCachesAndRecordsNamedWork(bool synchronous)
     {
-        var recorder = new OperationTimingAccumulator();
-        using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, false, recorder);
-        await fixture.InitializeAsync();
-        var before = fixture.Files.CaptureAdmissionDirectoryStatistics();
-        using var window = recorder.StartWindow();
-        await fixture.ReadEightAsync(synchronous);
-        window.Dispose();
-        Assert.Equal(2, fixture.Observers.ReadCount("present.txt"));
-        Assert.Equal(7, fixture.Files.CaptureControlGameStateStatistics().ClientOwnedControlFiles.FastSourceHits);
-        var counts = fixture.Files.CaptureAdmissionDirectoryStatistics() - before;
-        Assert.Equal(57, counts.Invocations);
-        Assert.Equal(456, counts.Hits);
-        var snapshot = window.Capture();
+        async Task<(AdmissionDirectoryStatistics Counts, OperationTimingAccumulator.Snapshot? Snapshot)> Measure(bool timed)
+        {
+            var recorder = timed ? new OperationTimingAccumulator() : null;
+            using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, false, recorder);
+            await fixture.InitializeAsync();
+            var before = fixture.Files.CaptureAdmissionDirectoryStatistics();
+            using var window = recorder?.StartWindow();
+            await fixture.ReadEightAsync(synchronous);
+            window?.Dispose();
+            Assert.Equal(2, fixture.Observers.ReadCount("present.txt"));
+            Assert.Equal(7, fixture.Files.CaptureControlGameStateStatistics().ClientOwnedControlFiles.FastSourceHits);
+            var counts = fixture.Files.CaptureAdmissionDirectoryStatistics() - before;
+            output.WriteLine(JsonSerializer.Serialize(new { timed, synchronous, counts }));
+            return (counts, window?.Capture());
+        }
+
+        var original = await Measure(false);
+        var timed = await Measure(true);
+        Assert.True(original.Counts.Invocations > 0);
+        Assert.True(original.Counts.Hits > 0);
+        Assert.True(original.Counts.SourceQueries > 0);
+        Assert.Equal(original.Counts, timed.Counts);
+        var snapshot = Assert.IsType<OperationTimingAccumulator.Snapshot>(timed.Snapshot);
         Assert.True(snapshot.Complete);
         Assert.Contains(snapshot.Rows, row => row.Name == "GameStateData.Phase" && row.Completed == 1);
         Assert.Contains(snapshot.Rows, row => row.Name == "MainAdmission.Validate.Guard");

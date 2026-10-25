@@ -142,8 +142,8 @@
       ]
     },
     {
-      "category": "core-shared-read-admission-directories",
-      "reason": "Linux accumulated cache qualification: Explicit same-manager synchronous directory DATA sharing between ordinary preparation and its initial main admission, real physical source reduction and fresh guard/source integrity.",
+      "category": "core-shared-read-admission-directories-linux",
+      "reason": "Exact genuine Linux common bodies, including positive/restored main admission and running/malformed/missing record refusals; Windows native-handle and worker-v1 cases remain explicitly excluded.",
       "contracts": [
         "#1536 r73 Linux handoff / T551-T552"
       ]

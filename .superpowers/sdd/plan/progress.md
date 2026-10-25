@@ -1,3 +1,32 @@
+# Linux T552 second runtime finding — passive fixture and exact Linux owner WIP
+
+Run072848-650-15811-8a42b114621a4280b6ba9d6196c54fa2 stopped102/338cases,
+100PASS/2FAIL/0skip,5/28descriptors,01:55.1084551, no timeout, cleanup complete.
+Both RealPhaseRetainsCachesAndRecordsNamedWork rows expected Windows57admissions
+but actualLinux52; exact2source reads/7fast hits already succeeded. Replace global
+Windows constants with independent identical no-recorder/passive-recorder fixtures:
+both2sources/7hits, positive counters and equal full4-field admission delta;
+complete named snapshot and every begin/end conservation retained. Production
+unchanged; no timer/budget/diagnostic quota change, no speedup claim.
+
+Astra/high proactively audited165selected methods/20classes of remaining scope.
+Found2more Windows-only contracts in shared-admission wildcard: native wrong-handle
+identity deliberately absent on Linux, and WindowsJob/worker-runs-v1 record baseline.
+Preserve both Windows cases with explicit OS assertions before fixture setup.
+New exactLinux owner selects all common bodies plus a genuine current-backend main
+record case: healthy baseline, running/malformed/missing refusals, healthy restored
+record. LinuxSupervisor record DATA obtains real guard/main admission; no fake live
+owner/process authority. Namespace/link and generation/effect negatives retained.
+No attempt to count unsupported Windows branches as Linux PASS.
+
+New Linux selection has one fewer case than draft507: omit2Windows contracts, add1
+portable main-record case =>506distinct cache cases. Previous unaffected129 +40source
+regressions +91newly completed cases =260retained; remaining23categories expected246
+cases (exact discovery pending). Failed passive category reruns because its fixture
+changed; no unchanged passing category rerun. Raw fail captures remain outside checkout.
+Next fresh integration-only XML/binding/discovery/source review, then exact remaining
+scope. Unitab17/shared637 sources unchanged and not rebuilt. Native40/five5UNRUN.
+
 # Linux updated SOURCE/PREP ACCEPTED — remaining T552 runtime admitted
 
 Separate gpt-6-astra/high context lease_boundary_review accepted codeab17 /

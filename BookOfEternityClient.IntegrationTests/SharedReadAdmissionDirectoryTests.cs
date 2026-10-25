@@ -240,7 +240,7 @@ public sealed class SharedReadAdmissionDirectoryTests(ITestOutputHelper output)
     }
 
     /// <summary>
-    /// Requires fresh native guard authentication even after common directory DATA has been borrowed.
+    /// Requires fresh Windows native guard authentication after common directory DATA has been borrowed.
     /// </summary>
     /// <returns>
     /// Completion after independent guard streams and the tiny owned session have closed.
@@ -248,6 +248,7 @@ public sealed class SharedReadAdmissionDirectoryTests(ITestOutputHelper output)
     [Fact]
     public async Task BorrowedDirectoriesCannotAuthenticateTheWrongGuardHandle()
     {
+        Assert.True(OperatingSystem.IsWindows(), "Native guard-handle binding is a Windows contract.");
         using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, false);
         await fixture.InitializeAsync();
         var expected = Path.Combine(fixture.Files.GameSessionPath, "expected.lock");
@@ -267,7 +268,7 @@ public sealed class SharedReadAdmissionDirectoryTests(ITestOutputHelper output)
     }
 
     /// <summary>
-    /// Keeps persisted main-record bytes and newly appearing worker inventory fresh on the fused route.
+    /// Keeps Windows persisted main-record bytes and newly appearing worker inventory fresh on the fused route.
     /// </summary>
     /// <returns>
     /// Completion after current main admission and the independent fixture have closed.
@@ -275,6 +276,7 @@ public sealed class SharedReadAdmissionDirectoryTests(ITestOutputHelper output)
     [Fact]
     public async Task SharedMainAdmissionStillRefusesChangedRecordAndNewWorkerInventory()
     {
+        Assert.True(OperatingSystem.IsWindows(), "This worker-inventory contract requires Windows.");
         using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, false);
         await fixture.InitializeAsync();
         var files = fixture.Files;
@@ -313,6 +315,53 @@ public sealed class SharedReadAdmissionDirectoryTests(ITestOutputHelper output)
         Directory.CreateDirectory(inventory);
         try { Assert.Throws<IOException>(ValidateShared); }
         finally { Directory.Delete(inventory); }
+        ValidateShared();
+    }
+
+    /// <summary>
+    /// Keeps main-record bytes fresh on the shared route with the current platform's supported backend.
+    /// </summary>
+    /// <returns>
+    /// Completion after valid admission, running/malformed/missing refusals and restored valid admission.
+    /// </returns>
+    [Fact]
+    public async Task SharedMainAdmissionRefusesChangedRecordOnCurrentBackend()
+    {
+        using var fixture = new LifecycleProducerReadForwarderTests.Fixture(output, false);
+        await fixture.InitializeAsync();
+        var files = fixture.Files;
+        var backend = OperatingSystem.IsWindows() ? GmSessionRunBackend.WindowsJob : GmSessionRunBackend.LinuxSupervisor;
+        var identity = new GmSessionRunIdentity(files.BasePath, Guid.NewGuid().ToString("N"),
+            Guid.Empty.ToString("N"), 1, backend, Guid.NewGuid().ToString("N"), "fixture");
+        var stopped = new GmSessionRunRecord(1, identity, GmSessionRunDisposition.Stopped,
+            new(identity, GmSessionRunStopKind.OwnedScopeEmpty, identity.BootId));
+        var directory = Path.Combine(files.BasePath, ".boe_runtime", "gm-runs");
+        Directory.CreateDirectory(directory);
+        var path = Path.Combine(directory, "main.json");
+        var bytes = GmSessionRunRecordCodec.Encode(stopped);
+        File.WriteAllBytes(path, bytes);
+        using var main = files.BeginMainAdmission();
+        await main.AcquireAsync();
+        void ValidateShared()
+        {
+            using var phase = files.BeginOrdinaryReadPathPhase();
+            Assert.NotNull(phase);
+            TrustedLocalFileScope.CreateForOrdinaryRead(files.GameSessionPath, phase);
+            main.Validate(null, phase);
+        }
+        ValidateShared();
+        Assert.True(files.CaptureSharedReadAdmissionHits() > 0);
+        try
+        {
+            File.WriteAllBytes(path, GmSessionRunRecordCodec.Encode(stopped with
+                { Disposition = GmSessionRunDisposition.Running, StopEvidence = null }));
+            Assert.Throws<IOException>(ValidateShared);
+            File.WriteAllText(path, "{");
+            Assert.Throws<InvalidDataException>(ValidateShared);
+            File.Delete(path);
+            Assert.Throws<FileNotFoundException>(ValidateShared);
+        }
+        finally { File.WriteAllBytes(path, bytes); }
         ValidateShared();
     }
 
