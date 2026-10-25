@@ -1,3 +1,14 @@
+# T592 DFR-prefix design WIP — 2026-10-25
+
+Previous bounded N acceptance receipt is remote
+`265af120cd0e1df812617ba44c07cde4f2b67f6e`; complete GitHub recovery verifies
+all30,900 blobs/772,420,677 bytes, clean tree, receipt-only three Markdown delta.
+Next tracked tasks T592–598 implement the accepted bounded T179-Pd.3e HOT prefix.
+Canonical spec/plan describe current typed transport, original policy, phase owner,
+causal temporal versus source oracles and optimization. Independent design review
+is next; no new implementation/build/runtime has occurred. Full materialization
+and known Windows/guardian/cross-OS/durable-history limits remain open.
+
 # T584/T591 bounded live N contribution accepted — 2026-10-25
 
 Independent Astra/high final OUTCOME and fresh GitHub source-recovery reviews

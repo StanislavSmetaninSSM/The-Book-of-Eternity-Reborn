@@ -1,3 +1,20 @@
+# T179-Pd.3e bounded observed debug-prefix amendment — #1536 / 2026-10-25
+
+DFR-HOT1: existing actual Capturing joint owner consumes the same ordered ordinary
+debug document/scope prefix before CloseCapture/common preparation. Original-null
+policy, conditional freshness read and independent parse read remain distinct.
+DFR-HOT2: closed typed observations retain actual physical/original reads, caught
+faults and the single timestamp diagnostic result; fresh closure and genuine
+FS/G/lease/frame/phase binding are required. Same-attempt reuse never reparses or
+resamples. No caller DATA or prior valid prefix supplies current authority.
+DFR-HOT3: prefix Error diagnostics refuse preparation in original order; Warnings
+alone do not refuse. Nonterminal prefix is NeedsActorDependencies only. Full reasoning/NI/S and durable historical
+N/prefix equivalence remain open; existing v3 dispatcher invents no history.
+DFR-HOT4: causal temporal baseline and separate physical-read disagreement proof,
+cheap negatives, actual consumer controls, optimization/source/selection review,
+fresh affected builds and remote source recovery are required. No new GM-authored
+schema or validation rule is introduced; existing debug contract is enforced earlier.
+
 # Linux full passive timing amendment — #1536 /2026-10-25
 
 LINUXTIMING1: preserve the genuine180s take timeout, incomplete named trace and

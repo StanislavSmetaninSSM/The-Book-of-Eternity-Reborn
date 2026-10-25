@@ -1,3 +1,25 @@
+# T179-Pd.3e observed debug-prefix consumer — #1536 / 2026-10-25
+
+Base `265af120cd0e1df812617ba44c07cde4f2b67f6e`; bounded accepted DFR design,
+current I/N owners preserved. Windows deferred; full family/S remains open.
+- [ ] T592 Freeze current-source prefix interfaces, temporal/source causal oracles,
+  optimization/selection boundaries; independent design review and remote checkpoint.
+- [ ] T593 Actual genuine corrected debug-prefix temporal RED and unchanged control
+  preparation: no missing-API/compile/reflection RED; independent fixture/PREP gate.
+- [ ] T594 Shared ordinary prefix orchestration and closed typed physical/original
+  observations with borrowed actual lease; cheap actual-read disagreement/fault/owner
+  and disposal/reentry controls before expensive integration.
+- [ ] T595 Actual still-Capturing prefix consumer before CloseCapture/preparation,
+  retained same-attempt DATA/fresh fences; terminal diagnostics or NeedsActorDependencies,
+  never Full/S. Coherent SOURCE/optimization/selection review.
+- [ ] T596 Fresh affected XML/PDB builds, catalog/PlanOnly/PREP and selected cheap
+  source/ordinary/N/read-pipeline regressions with exact counts and owned cleanup.
+- [ ] T597 Genuine invalid-prefix refusal, unchanged completion and DFR-specific
+  source-drift integration where required by the reviewed causal fixtures; no native
+  cold or original-five repetition absent a concrete changed contract.
+- [ ] T598 Independent final outcome, compact checkpoint, commit/push/remote SHA
+  and clean GitHub source recovery; continue remaining materialization dependencies.
+
 # Linux qualification 2026-10-25 — #1536
 
 ## Bounded repository diagnostic-copy retirement — #1536 / 2026-10-25

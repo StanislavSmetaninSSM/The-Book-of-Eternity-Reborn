@@ -1,3 +1,133 @@
+# T179-Pd.3e observed debug-prefix implementation plan
+
+> **For agentic workers:** use Superpowers executing-plans for this coherent block;
+> the existing issue/spec/plan/tasks are canonical. Owner explicitly authorized
+> autonomous execution and waived routine specification-review waiting.
+
+**Goal:** the real still-Capturing joint attempt consumes the actual debug document/
+scope prefix before capture closes and before common preparation.
+**Architecture:** retain the existing ordinary kernels and extract only their ordered
+orchestration. Fixed-role observed reads use the actual provided lease and original
+lookup policy. The actual attempt owns one disposable result with fresh source/phase
+checks; valid prefix is NeedsActorDependencies, not Full/S authority.
+**Tech stack:** current C#/.NET8, SDK10, xUnit and PowerShell7 selected-category runner.
+**Spec:** #1536 FR-009/010, T179-Pd.3e and the accepted
+[DFR design](recovery/t179pd-debug-full-reasoning-policy-engineering-design-20261016.md).
+Current I/N implementation supersedes that document's historical missing-3b state.
+
+## Global constraints and review focus
+
+- Preserve original-debug nullable policy lookup, conditional separate freshness
+  current read, independent parse current read, parse catches, single actual timestamp
+  leaf, JSON enumeration and scope/issue order. Ordinary Full continues its original
+  guardian/actor/audit tail, even after a parsed scope has diagnostic errors.
+- Fixed source methods only. No filesystem overlay, arbitrary source callback,
+  fabricated original/issuer, new cache framework, GM schema or native protocol.
+- Actual FS/G/lease/frame/Stage/Ready/checkpoint/attempt binding and Capturing phase
+  must hold before first evaluation and after fresh closure. No inherited lease
+  acquisition/disposal, second normalization, ambient source override or clock replay.
+- A swallowed physical/original fault, changed-then-restored observation, uncovered
+  original versus signed absence, foreign/expired/sealed/replaced owner and reentry
+  are explicit test inputs. Missing evidence never produces a successful closure.
+- Any actual prefix Error refuses common preparation with ordered diagnostics;
+  stale Warnings alone do not refuse. Parsed-scope errors still let ordinary Full
+  run its unchanged dependency tail. A valid prefix is only NeedsActorDependencies; full NI/reasoning/S/B/M3/F1/T197
+  and durable N history remain open. Existing physically authenticated v3 resume
+  does not gain invented historical prefix proof.
+- No timeout increase, complete-suite run, Windows claim, G01/G02 workaround, raw
+  publication/deletion or historical artifact removal. External evidence remains
+  under `/workspace/tboe-linux-evidence-20261025` in a distinct DFR block directory.
+
+## Files and concrete interfaces
+
+- Create `Services/Validation/ValidationService.AcceptedTurnReasoningPrefix.cs`:
+  shared `EvaluateAcceptedReasoningPrefixAsync(DebugPrefixSourceSession? source)`
+  returns private prefix DATA (ordered issues, terminal/NeedsActorDependencies,
+  normalized thoughts/scope/mode/actor type). Ordinary Full consumes the same result
+  and then its unchanged dependency tail; default null retains original IO routes.
+- Create `.AcceptedTurnReasoningSource.cs`: sealed fixed
+  `ReadOriginalDebugAsync`, `ReadDebugForFreshnessAsync`, `ReadDebugForParseAsync`
+  and fresh `RequireCurrentAsync(files, lease)`. Private issuer/result retains
+  actual parse/timestamp observations. No public factory accepting caller evidence.
+- Extend the existing Core physical sink with one sealed closed union
+  `FileReadObservation` containing exactly the existing NarrativeReadObservation
+  or the new DebugPrefixReadObservation. Snapshot/Presence/Fault forward only to
+  those typed sinks; no delegates, role map or alternate reader implementation.
+  Existing N overloads remain adapters to the same sync/async/protected/ordinary
+  pipeline. Null preserves the ordinary path; N's closed roles stay unchanged.
+- Reuse original lookup helpers in `ValidationService.AcceptedTurnAndInkFeathers.cs`
+  through a closed original-lookup observation and explicit supplied-lease core.
+  Existing wrapper/signature/default branch remains; actual manifest/authority/
+  context/rollback/snapshot occurrences, catches and scoped/supplied provenance
+  are preserved. Do not substitute strict current-original reads for nullable policy.
+- Extend `GameEngine.MortalJointPublicationAttempt.cs` with
+  `RequireCapturingFrame(files, lease)` and one privately retained prefix result.
+  Existing RequireActualOwner alone does not prove Capturing. Prefix evaluation/
+  reentry is legal only while Capturing. CloseCapture ends that consumption; retain
+  detached source DATA solely for the existing post-observer fresh sealing fence,
+  with no new evidence/reentry issuance. Expiry/replacement/fault releases it.
+  Independent design review must validate this narrow phase distinction.
+- Create `GameEngine.MortalJointReasoningPrefix.cs` for the actual producer/consumer
+  and ordered diagnostic refusal. Invoke inside CaptureCurrentHotCustodyAsync before
+  CloseCapture, and freshly recheck after the existing pre-preparation observer.
+  Preserve N sticky holds, I before/after authentication and current cold dispatcher.
+- Tests: new typed cheap `DebugPrefixSourceTests.cs`; dedicated
+  `GameEngineTurnLifecycleTests.JointReasoningPrefix.cs` using the existing genuine
+  completion fixture; update only its optional probe plumbing. Extend strict source
+  inverse composition before the N→prior-lookup→historical-reasoning inverses;
+  preserve all frozen historical hashes and kernel partial expectations.
+
+## T592–598 execution
+
+- [ ] T592 Inspect the complete current source mapping, self-review this bounded
+  plan and obtain independent design review of closed transport, original policy,
+  actual phase ownership and diagnostic refusal. Publish WIP before long work.
+- [ ] T593 Add an actual temporal baseline with corrected public debug JSON carrying
+  a valid timestamp and empty gm_thoughts_markdown, authored BEFORE actual N.
+  With no matching skill/quest claims, N is valid and bytes remain unchanged; old
+  common preparation can start before late Full reports missing_gm_thoughts.
+  Assert zero common preparation only after proving real N/I/Capturing reached.
+  Compile failure or a different admission failure is not this causal RED. Preserve
+  an independent unchanged valid-prefix control and all failure/cleanup evidence.
+- [ ] T594 Separately prove actual ordinary Full freshness/parse A→B→A reads can
+  preserve semantic issues while a source closure must reject the inconsistent
+  physical occurrences. Genuine original debug registration and two reads are
+  checked prerequisites. Add typed fresh/foreign/expired/phase/fault/copy negatives;
+  implement minimum shared prefix and source plumbing only after causal evidence.
+- [ ] T595 Integrate actual Capturing consumer/terminal refusal and same-attempt
+  reuse. Coherently review production, cheap/integration fixtures, original/source
+  inverse, GM assessment and exact impacted selection before fresh verification.
+- [ ] T596 Build affected projects sequentially with XML/PDB; catalog discovery and
+  exact NoBuild PlanOnly before independent PREP. Select new prefix contracts plus
+  existing ordinary reasoning/document/source, N-pass and impacted read-pipeline
+  consumers; split by responsibility, keep existing budgets. Record exact methods/
+  counts after discovery. Run cheap controls first; retain unrelated prior results
+  only with explicit source/binary impact proof.
+- [ ] T597 Run genuine invalid-prefix and unchanged completion separately after
+  cheap gates, plus a DFR-specific source intervention if cheap evidence does not
+  prove its actual engine wiring. Inspect complete raw, exact bytes/turn/effects,
+  named evaluation/recheck counts and owned cleanup before outcome claims.
+- [ ] T598 Independent outcome/recovery review and source-only remote checkpoint;
+  then guardian/resident first-pass projection adapters, full reasoning sources/
+  Actor Brain/six audits and remaining S→C→B/M3/F1/T197. No partial epic closure.
+
+## Optimization and GM assessment
+
+Actual prefix parse/scope/ordered diagnostics and timestamp disposition are DATA
+retained once by the actual attempt. Complete identity is validator/files/G,
+physical lease/Main, genuine original frame, checkpoint/iteration/Stage/Ready and
+Capturing phase plus every actual source occurrence. Lifetime ends on source
+fault/drift, owner/phase/lease/frame/G replacement, cancellation, close or expiry.
+Use existing named timers ReasoningPrefix.Evaluate and ReasoningPrefix.Recheck.
+Fresh integrity/authority checks are never cached. Existing source/repository/
+ValidationOperation services retain stable DATA where already eligible; no second
+cache is added for a single result. Cheap counters must prove one evaluation and
+zero parse/timestamp repetition on eligible reentry, with fresh source checks.
+No speedup is claimed from lower counts or differing fixtures. Genuine world setup
+is limited to temporal engine interaction; source/policy tests stay minimal and
+independent. Client-owned enforcement reuses existing GM debug requirements;
+no new GM-authored schema/rule/example is intended, and review must confirm this.
+
 # T584 live narrative source contribution implementation plan
 
 > **For agentic workers:** use Superpowers executing-plans or subagent-driven-development
