@@ -9,11 +9,29 @@ evidence. This maintenance block does not complete the wound-materialization fea
 - [x] T582 Retire only those recoverable tracked raw copies, publish the source
   Git-object index/restore instructions, pin eleven affected evidence links and
   ignore new diagnostic leaves; retain every fixture/save/input and external raw.
-- [ ] T583 Bounded index/fixture/link/catalog integrity and diff review, commit/push
+- [x] T583 Bounded index/fixture/link/catalog integrity and diff review, commit/push
   with checked remote SHA; no history rewrite, GC or qualification runtime replay.
 - [ ] T584 Resume T179-Pd/RP01 owner-produced N-pass source proof and its genuine
   pre-preparation consumer; preserve the already implemented I lifecycle/v3 basis
   and I Capturing consumer, implement/review the remaining bounded N join.
+
+## T584 live narrative source contribution — implementation continuation
+
+- [ ] T585 Freeze current-source bounded contract, including genuine fresh versus
+  physically validated v3 resume and the non-durable N-fault limit; independent design review.
+- [ ] T586 Author causal source-drift and unchanged controls using actual N and
+  Stage/Ready owners; fresh targeted build/discovery/PREP, preserve the first RED.
+- [ ] T587 Retain actual N read/original/policy-null/projector/write/owning-release
+  occurrences in explicit sealed per-invocation plumbing shared with ordinary paths.
+- [ ] T588 Consume/recheck the exact N pass before fresh I Prepared, while Capturing,
+  and after the pre-preparation observer; expire on iteration/owner/G/attempt exit.
+  Preserve physical v3 resume with explicit HistoricalNUnavailable and no new NI/S claim.
+- [ ] T589 Source/optimization/selection review; fresh affected managed builds,
+  catalog/PlanOnly/PREP; cheap negatives and changed-only real writer controls.
+- [ ] T590 Genuine fresh pre-preparation vertical plus narrowly selected current
+  Prepared/Published resume regressions; no second I projector/write/UTC, owned cleanup.
+- [ ] T591 Independent outcome and source persistence review; exact remote SHA,
+  clean GitHub source recovery and compact checkpoint, then next remaining #1536 task.
 
 Canonical handoff r73; source b377c9d1d0c6cfa5ce20b383d84eac069b8d2991.
 - [x] T551 Fresh Linux native/XML builds, exact impact selection/catalog/PlanOnly,

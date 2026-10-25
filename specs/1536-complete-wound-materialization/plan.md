@@ -1,3 +1,112 @@
+# T584 live narrative source contribution implementation plan
+
+> **For agentic workers:** use Superpowers executing-plans or subagent-driven-development
+> for this one coherent implementation block; the existing issue/spec/plan/tasks remain canonical.
+
+**Goal:** contribute the actual pre-intake N invocation's source closure to the
+fresh corrected-treatment owner before I preparation and common effects.
+**Architecture:** explicit sealed per-invocation observations from the real N
+reader/projector/writer, consumed by the actual Capturing attempt. Preserve the
+implemented I lifecycle/v3 graph; no alternate receipt journal or new schema.
+**Tech stack:** existing C#/.NET 8, SDK 10, xUnit and PowerShell selected-category runner.
+**Spec:** #1536 FR-009/010, T179-Pd/RP01, accepted
+[NI-D01 contract](recovery/t179pd-narrative-interface-policy-engineering-design-20261016.md).
+Current source and the bounded fresh/resume decision below supersede that document's
+historical unimplemented-I/child1 description; its frozen bytes remain unchanged.
+
+### Global constraints and bounded decision
+
+- Ordinary N order, repeated reads, nullable-original policy, catches, issues,
+  projection, writer selection and owning-release behavior remain unchanged.
+- Capture is an explicit typed argument to the same reader/core; no ambient/global
+  override, arbitrary callback/map, fabricated original, second N invocation or write.
+- The eleven fixed roles and nine original-capable roles in NI-D01 are closed.
+  Nested manifest/authority/context/rollback operations belong to the actual lookup;
+  faults latch before broad domain/authentication catches turn them into null/empty.
+- Fresh selected production requires its actual completed N pass before the FIRST
+  I Prepared publication, then at Capturing and after the existing pre-preparation
+  observer. Missing, wrong-owner, stale or faulted N does not choose cold resume.
+- Existing Prepared/Published v3 resume is selected only by its existing physically
+  verified dispatcher/graph. It continues unchanged, with HistoricalNUnavailable.
+  Its read-only current N is not reconstructed historical N, NI or S.
+- A live N fault detected after durable I Prepared does not persist across a crash.
+  The existing v3 may then take its qualified current-only continuation. This block
+  proves live refusal before common/effects, NOT a durable operation-wide N veto.
+  Durable N origin/fault disposition, full NI/S/B/M3/F1 and T197 remain open.
+- Keep all current limits and current integrity/authority/effect fences. Windows
+  is UNRUN/deferred; no G01/G02, full-suite run, history rewrite or external raw deletion.
+
+### Review focus and acceptance
+
+1. A read hidden by an achievements catch still makes the contribution unavailable;
+   ordinary diagnostics retain their original behavior.
+2. Repeated reads and public-read followups remain actual occurrences. Observed
+   changed-then-restored data cannot become a successful closure.
+3. Real normalization writer preimage comes from its actual trusted/canonical
+   publication, and Returned includes successful public owning release. A matching
+   final image alone is insufficient; an outer finalization fault stays separate.
+4. N's pre-I interface image may join ONLY the already authenticated same-iteration
+   I before/after transition. No general Ready reseeding or output-drift exemption.
+5. Foreign iteration/frame/Main/G and expired owner refuse. Existing Prepared and
+   Published cold resumes neither invent N history nor re-project/re-sample/re-write I.
+
+### T585–591 execution and interfaces
+
+- [ ] Freeze this contract and source plan, publish WIP, obtain independent design review.
+- [ ] Add real-file/source-drift tests and one genuine Stage/Ready pre-preparation
+  contrast before implementation. The baseline must fail because the omitted N
+  dependency reaches preparation, not because a method is missing. Compile/PREP
+  failures are not causal RED. Use a separate narrow category for the new contracts.
+- [ ] Create `Services/Validation/ValidationService.NarrativeInterfaceInvocation.cs`
+  and `.NarrativeInterfaceSources.cs`: owner-issued `NarrativePolicyPass`, explicit
+  sealed source session, exact role/ordinal/raw/policy-state/error observations,
+  actual issue/projector/write-return DATA. The public API shares the core with
+  capture disabled; the engine's detailed entrypoint returns the same invocation.
+- [ ] Thread the source session through the N core in
+  `ValidationService.AcceptedTurnAndInkFeathers.cs`, achievements in
+  `.MetaCodexAndAchievements.cs`, and the actual original-lookup closure.
+  Observe each physical leaf before callbacks/catches, including public followups;
+  do not replace the nullable policy lookup by a strict ReadObservedCurrent call.
+- [ ] Extend explicit internal reader/writer plumbing in `Core/FileSystemManager.cs`,
+  `.OrdinaryReads.cs`, `.TrustedLocalStorage.cs` and `ReversibleFilePublication.cs`
+  only where needed to retain actual consumed bytes and actual writer preimages.
+  Null observation arguments preserve existing public routes. Retain the genuine
+  trusted outcome before facade handling and canonical destination evidence from
+  its existing opened handle; no guessed preimage reread or WithPublication bypass.
+- [ ] In `GameEngine.MortalJointRepairAdmission.cs` retain a private engine-issued
+  invocation association bound to files/validator/frame/Main/G/iteration and genuine
+  Stage/Ready route. Clear it before every new/skipped N and on exit/failure.
+  In `.MortalJointInterfacePublication.cs` fence fresh N before first I preparation.
+  In `.MortalJointPublicationAttempt.cs` and `.MortalJointRepairCanonicalPublication.cs`
+  consume while Capturing and recheck after the existing observer before preparation.
+  Integrate physically authenticated resume disposition without inferring it from
+  memory absence; leave current codecs/published I behavior unchanged.
+- [ ] Review the whole source/fixture/selection and optimization block; fresh builds,
+  catalog and exact PlanOnly precede independent PREP and actual selected tests.
+  Select existing ordinary-output, real writer/original-reader and I resume consumers
+  by changed contracts; do not replay unchanged cache/native/original-five aggregates.
+- [ ] Verify cheap unchanged/changed normalization, conditional absence/policy-null,
+  swallowed fault, repeated-read order, source drift, foreign/expired association,
+  writer preimage/close failure and exact owned-I transition. Then the genuine fresh
+  vertical and separately selected Prepared/Published resume controls; inspect full
+  raw/cleanup before an outcome claim. Preserve original failures and exact provenance.
+- [ ] Independent outcome review, source-only checkpoint/push/remote SHA and clean
+  GitHub recovery. No GM-authored surface changes are intended; explicitly verify
+  the prompt/docs/example assessment before completion.
+
+### Optimization assessment
+
+Retain the actual computed projection, ordered issues and parse dispositions;
+the consumer does no second semantic evaluation, normalization or clock sample.
+This is request-owned evidence DATA, not a second cache or authority store.
+Use existing repository/source/ValidationOperation services for proven stable DATA;
+do not erase required physical occurrences or cache current permission. Full key is
+actual engine/validator/files, Main/G/frame, stage/Ready/iteration and source version.
+The lifetime ends on changed iteration/frame/G/Main, failure, cancellation or attempt
+expiry. Fresh source/authority checks remain at every stated fence. Cheap counters
+must demonstrate zero consumer re-evaluation/projector/write/sample; no speedup is
+claimed before measurement. All raw and review output remains outside the checkout.
+
 # Bounded diagnostic-copy cleanup before the next product block
 
 Owner explicitly authorized recoverable HEAD-copy retirement after read-only
