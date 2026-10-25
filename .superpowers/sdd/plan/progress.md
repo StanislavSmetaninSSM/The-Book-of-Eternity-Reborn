@@ -1,5 +1,17 @@
 # T584 live N source contribution — PREP accepted, first 29 controls next
 
+First actual new-source category completed on compiled b7 / accepted source33d1,
+clean runtime HEAD `c97a34ab37a0a66dd06f9ca248ca1a53d1f84864`: 29/29 executed,
+26 PASS / 3 FAIL / 0 skip, category 26.499944s and runner 44.8628423s, no timeout.
+Both runner cleanup checks passed; root checked all 29 per-test owned roots absent
+and all 33 DLL/PDB/XML files unchanged. Raw/TRX and root verification are external
+at `live-n-implementation/actual-source29-1` under the evidence root below.
+Failures concern repeated-current read count (2 expected / 1 actual), literal
+achievement parse disposition, and a generation-change fixture attempting rotation
+with an ordinary lease (setup refusal before its target assertion). Causes remain
+under investigation, not yet classified as product versus fixture defects.
+Dependent 101/live/cold gates are UNRUN; no blind retry or budget change.
+
 Independent Astra/high PREP ACCEPT at clean remote
 `7add12363c5dcc629c2708569099abe117815d34`: no blocking findings. It independently
 checked actual build logs, 33 DLL/PDB/XML files, eleven PE/PDB identities, 26
