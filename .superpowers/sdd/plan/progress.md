@@ -1,4 +1,20 @@
-# T584 live N source contribution — narrow fixture corrections, new checks pending
+# T584 live N source contribution — corrected builds verified, fresh PREP pending
+
+Independent Astra/high accepted the narrow corrective diff at
+`3cf5761fe97bdeae8628608263ff58c0b413334d`, with no material findings. All five
+fresh XML builds on that exact clean source/checkpoint passed: Game 3:38.58 /
+33 warnings, Support 42.61s / 23, Bridge 10.07s / 14, Unit 1:52.90 / 26,
+Integration 3:43.81 / 101; zero errors throughout. The eight new XML warnings
+and one new xUnit warning are gone; original warnings remain unsuppressed.
+Root checked 33 new DLL/PDB/XML files, eleven PE/PDB identities, 26 exact
+Git/current/PDB source hashes and all shared-copy/version consistency. Source
+and informational versions pin 3cf5761f above. Fresh catalog VALID 952 / 12,522;
+fresh full PlanOnly confirms 15 descriptors / 135 cases, including exact first
+29, remaining 101 and five singleton cases in the accepted order. Zero runtime
+tests executed by these preparation steps. All receipts are external under
+`live-n-implementation/preparation-corrected` and `builds-corrected`.
+Fresh independent PREP and then exactly one corrected first29 actual are next;
+the first 26 PASS / 3 FAIL evidence remains intact and is not replaced by builds.
 
 The three first-run failures were traced to new fixture assumptions, with no
 production behavior correction required. The conditional skill fixture used
