@@ -116,7 +116,7 @@
 },
 {
   "id": "core-operation-source-data-linux",
-  "responsibility": "Real Linux replacement leases without Windows legacy recovery: eligible cross-lease provisional DATA reuse with fresh first-adapter admission, raw source drift refusing effect/success, and fresh generation binding before DATA.",
+  "responsibility": "Real Linux replacement leases without Windows legacy recovery: eligible cross-lease provisional DATA reuse with fresh first-adapter admission, unsupported public sync/async and explicit quiescence readers staying fresh without rebinding or retiring pending DATA, raw byte/absence drift refusing effect/success, and fresh generation binding before DATA.",
   "excludes": "Windows legacy recovery transitions, world/game preparation, native process qualification and authority caching.",
   "changeHints": [
     "BookOfEternityClient/Core/FileSystemManager.SourceDataOperation.cs",

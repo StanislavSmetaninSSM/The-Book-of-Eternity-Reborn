@@ -1,3 +1,26 @@
+# Linux source-adapter qualification amendment — #1536 /2026-10-25
+
+LINUXADAPTER1: preserve the complete ordinary NativeLinux cut0 replay FAIL and
+its retained report. The actual exception is Source fence lost its original
+version while closing PublicationReadQuiescence during post-publication output
+authority reads. Static cause: the source owner binds an adapter whose purpose
+is explicitly excluded by its unchanged version-capture contract.
+LINUXADAPTER2: establish a cheap causal RED with real ordinary source reads,
+normal lease closing, an absent public read and a replacement ordinary lease.
+Cover sync/async implicit and explicit unsupported readers without GameEngine.
+LINUXADAPTER3: unsupported adapters keep their existing fresh readers and cannot
+become provisional DATA owners. Preserve serial/foreign/closing refusal, original
+source dependency lifetime and full fresh byte/absence/generation/version fences.
+No broader lease eligibility, swallowed refusal, unconditional cache retirement,
+new cache, source normalization, authority or budget change.
+LINUXADAPTER4: prove actual source reuse survives the harmless unsupported read,
+while raw byte/absence drift, generation changes and mutations still refuse
+effect or success. Group known changes and independently review before builds.
+LINUXADAPTER5: fresh affected managed builds and SOURCE/PREP/targeted regressions;
+regenerate genuine Linux DATA if production assembly changes, never rebind an old
+record. Reassess retained gates by impact, then rerun the complete original five
+with unchanged limits. A single-cut outcome cannot qualify the five scenarios.
+
 # Linux original report retention amendment — #1536 /2026-10-25
 
 LINUXREPORT1: preserve original baseline5executed/2PASS(cut3,4)/3FAIL(cut0,1,2),

@@ -1,3 +1,24 @@
+# NativeLinux cut0 report retained — source-adapter mismatch, causal RED next
+
+Run132123-710-49659-26e97331ca2141f281c727a15b792683:1executed/FAIL,
+exit1/no timeout/skip/duplicate,188.9331527s test/200.0210167s category,
+219.1256214s wall; selection and both cleanups complete. Producer73; resumer
+SIGABRT/nullrootexit, exact original native guard and completedProof assertion
+remain. Both child streams complete/hash-verified/EOF/join/scopedcleanup; original
+fixture root removed and both child PIDs absent. No old raw removed.
+
+Full report retained externally: joint-resume-reports/307debcaefcb457f8788a2432dbe5476.json,
+4643543bytes/SHA2562049417818836422a06fbb990162fea65b567e973592e618eb1750b2e851c4cd.
+Closed-file reference/cut/nonce/identity verified; no diagnostic failure. Actual
+Logs: Source fence lost its original version at SourceDataOperation.VerifyCore748,
+closing PublicationReadQuiescence during ValidatePublishedOutputAuthority176.
+Static mismatch independently confirmed: Observe attaches unsupported purpose,
+while unchanged version capture requires SessionMutation; prior touched DATA
+survives the normal eligible lease close. This does not prove an actual epoch
+mutation. T572..575 track tiny causal regression and bounded correction before
+fresh builds/new DATA/affected gates/original5. Production unchanged so far.
+Transport5 OUTCOME independently accepted. Baseline original5 remains2PASS3FAIL.
+
 # Report transport5 GREEN — one exact ordinary NativeLinux cut0 next
 
 Run131623-456-49325-c686e82ecb6f417f8672de1318633c19:5planned/completed/PASS,

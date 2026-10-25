@@ -1,3 +1,27 @@
+# Linux source-adapter qualification plan
+
+Issue1536 T572..575 / LINUXADAPTER1..5. Actual retained report identifies an
+unsupported PublicationReadQuiescence adapter attached to the source DATA owner.
+Keep its ordinary fresh read behavior and the existing eligible SessionMutation
+contract. First add minimal typed real-file RED cases, then choose the smallest
+binding correction after independent causal/ownership review. No game fixture is
+needed to prove the adapter failure. Do not broaden source-version admission.
+
+Optimization: the existing whole-operation service retains previously read DATA
+across normally admitted ordinary leases. Unsupported reads stay fresh; they do
+not create reusable entries or silently discard the entire operation cache.
+Owner/key/dependencies/lifetime/invalidation remain the existing source contract;
+source counters and negative fresh fences must prove this before cold gameplay.
+
+- [ ] T572 Minimal public sync/async and explicit unsupported-adapter causal RED,
+  retained report verification and exact category/selection ownership.
+- [ ] T573 Bounded adapter binding correction and fresh negative controls,
+  coherent independent SOURCE/optimization/selection review.
+- [ ] T574 Fresh managed XML/PDB/native source pins, catalog/PlanOnly/PREP,
+  targeted causal/affected regressions and genuine new Linux DATA if required.
+- [ ] T575 Review retained gates and execute complete original5 unchanged;
+  independent outcome, checkpoint and verified GitHub-only recovery.
+
 # Linux original report retention plan
 
 Task1536 T568..571 / LINUXREPORT1..5; autonomous technical preparation.
