@@ -1,4 +1,4 @@
-# T584 live N source contribution — tests SOURCE/build ready, PREP pending
+# T584 live N source contribution — PREP accepted, first causal actual next
 
 Tests-only source `b08dfadd5b987bc370a9c5452c6a3dac940a1c9d` independently
 SOURCE accepted by Astra/high. Fresh Integration XML build: exit 0, 101 warnings,
@@ -14,8 +14,10 @@ five-minute category budget, exit 0 and complete owned/runtime cleanup. Original
 combined `-File -Category A,B` invocation rejected the literal unknown ID before
 workload; retained as CLI preparation failure, never RED. Exact receipts and full
 logs stay outside checkout in `/workspace/tboe-linux-evidence-20261025/live-n-T586`.
-Independent PREP review pending; actual tests 0, product changes 0. After acceptance
-and checked source recovery, run the separately named drift singleton first. A RED
+Independent Astra/high PREP accepted these exact two singleton selections, all
+eleven loaded DLL/PDB pins, five source pins and unchanged dependency project trees.
+Actual tests 0, product changes 0. After checked source recovery, run the separately
+named drift singleton first, then the separately named unchanged control. A RED
 requires reached genuine corrected N/capture and actual PreparationEntries > 0;
 freeze other failures for diagnosis. Unchanged counterpart remains a separate run.
 
