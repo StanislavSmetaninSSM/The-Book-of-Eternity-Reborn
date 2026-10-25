@@ -1,4 +1,17 @@
-# T584 live N source contribution — both source-drift verticals PASS
+# T584 live N source contribution — corrected live3 PASS, cold2 next
+
+Unchanged genuine control PASS1/1/0skip at runtime
+`3e2ea98a51b09a3b131797d07f8de8e08f6e73bd`: framework154.6745367s,
+category170.0589651s / runner192.7385236s, no timeout/both cleanups true.
+It retains unchanged achievements bytes/JSON, actual N1/1, broad events4/2 and
+two pre-cut fresh checks; common preparation is exactly1. All original full joint
+completion and inert-repeat assertions passed. Owned root absent and all33
+artifacts unchanged. Full raw/TRX/semantic verification external in
+`live-n-implementation/actual-unchanged-corrected-1`.
+Thus all three corrected live scenarios PASS at Integration83f, with negative
+source refusal and full unchanged completion distinguished. No timing speedup
+claim against the differently observed baseline. Next accepted ordinary NativeLinux
+singletons are Prepared cut0, then Published cut2; both still UNRUN here.
 
 Corrected after-capture actual PASS1/1/0skip at runtime
 `55e27426b0e9ca3564b1d5dda56a2d31f898879b`: framework39.8161468s,
