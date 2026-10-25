@@ -1,3 +1,27 @@
+# New E035 Linux DATA verified/accepted — affected integration16 next
+
+Run143308-588-58966-9a53aefa546d4e2cb84c4d39b04d30af:1planned/executed/PASS,
+exit0/190.3318766s wall/no timeout/skip/duplicate/both cleanups complete. Genuine
+current Linux issuers/common publisher/progression yielded applied phase and
+closed lease/reservation before capture and full fixture cleanup before record.
+Record: /workspace/tboe-linux-evidence-20261025/linux-applied-template-source-adapter/source-record.json.
+Archive applied-1c402ef935ec432dab49f103b9cf7410.zip:120810bytes/82files/46dirs,
+SHA256C0AD6DE7B6BD8E8DF963FB5652ADCC19E727CC02CD6EC4A76CC3C0EB0B8ADC31,
+producer GameE035/Integration3E00/Support953, originalturn44/session51e657.
+This is observed DATA, not recovered authority or original5 qualification.
+
+Full diagnostics51e657a419234ed7857b2c135be2e237 verified closed/complete:
+1374541473bytes/3765804timingrows,
+SHA25610b6bb70136d63f5a655b388ed63d3d08c728779d570d8f8105a03d40210934e.
+All payload/manifest/archive/raw hashes and counts checked, newroot/PID59120gone.
+Independent GEN OUTCOME/input gate accepted; integration6/16 admitted on C0AD.
+Old E7 record/archive unchanged. Only previous cf3f.../records.jsonl retired
+after full accepted replacement, oldroot gone/PID34339absent/closedreport; all
+old archives/records/TRX/reports and failed original/native captures retained.
+Retirement receipt remains external. No user saves or tracked fixtures removed.
+Source-adapter cheap166 OUTCOME independently accepted; cold/original5 remain
+after integration16 and final cache514 union/outcome review.
+
 # Source-adapter cheap166 GREEN — genuine new Linux DATA next
 
 Independent PREP accepted71716 freshUnitA841/other10unchanged/18PDB and exact
