@@ -741,9 +741,9 @@ public partial class ValidationService
         }
     }
 
-    private async Task ValidateAchievementUnlockNarrativeMarkersAsync(string responseText, List<ValidationIssue> issues)
+    private async Task ValidateAchievementUnlockNarrativeMarkersAsync(string responseText, List<ValidationIssue> issues, NarrativeInterfaceSourceSession? source = null)
     {
-        var json = await _fs.ReadFileAsync("game_state/meta/achievements.json");
+        var json = await ReadNarrativeSourceTextAsync("game_state/meta/achievements.json", source);
         if (string.IsNullOrWhiteSpace(json))
             return;
 
@@ -754,7 +754,7 @@ public partial class ValidationService
             if (doc.RootElement.ValueKind != JsonValueKind.Object)
                 return;
 
-            var previousJson = await ReadPreTurnTrackedFileAsync("game_state/meta/achievements.json");
+            var previousJson = await ReadPreTurnTrackedFileAsync("game_state/meta/achievements.json", source);
             if (!string.IsNullOrWhiteSpace(previousJson))
             {
                 try

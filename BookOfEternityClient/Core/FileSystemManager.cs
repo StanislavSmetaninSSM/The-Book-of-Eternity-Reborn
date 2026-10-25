@@ -1,3 +1,5 @@
+using NarrativeReadObservation = BookOfEternityClient.Services.ValidationService.NarrativeInterfaceSourceSession.NarrativeReadObservation;
+using NarrativeWriteObservation = BookOfEternityClient.Services.ValidationService.NarrativeInterfaceSourceSession.NarrativeWriteObservation;
 using BookOfEternityClient.Services.GmWorkers;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
@@ -955,10 +957,11 @@ public partial class FileSystemManager
     /// <summary>
     /// Atomic write: write to temp file then rename to prevent partial writes.
     /// </summary>
-    public async Task WriteFileAtomicAsync(string relativePath, string content)
-    {
-        await WriteFileAtomicBytesAsync(relativePath, EncodeUtf8WithPreamble(content));
-    }
+    public Task WriteFileAtomicAsync(string relativePath, string content) => WriteFileAtomicAsync(relativePath, content, null);
+
+    /// <summary>Uses the original ordinary writer while retaining its actual preimage and successful public owning return.</summary>
+    internal Task WriteFileAtomicAsync(string relativePath, string content, NarrativeWriteObservation? observation) =>
+        WriteFileAtomicBytesAsync(relativePath, EncodeUtf8WithPreamble(content), observation);
 
     internal async Task WriteFileAtomicAsync(
         CanonicalWriteLease writeLease,
@@ -1069,11 +1072,14 @@ public partial class FileSystemManager
         return publication;
     }
 
-    public async Task WriteFileAtomicBytesAsync(string relativePath, byte[] content)
+    public Task WriteFileAtomicBytesAsync(string relativePath, byte[] content) => WriteFileAtomicBytesAsync(relativePath, content, null);
+
+    /// <summary>Retains writer DATA after the original ordinary publication and public lease release.</summary>
+    internal async Task WriteFileAtomicBytesAsync(string relativePath, byte[] content, NarrativeWriteObservation? observation)
     {
         var writeLock = await AcquireCanonicalWriteLeaseAsync();
         Exception? publicationUncertainty = null;
-        try { await WriteFileAtomicBytesAsync(writeLock, relativePath, content); }
+        try { await WriteFileAtomicBytesAsync(writeLock, relativePath, content, observation); }
         catch (CoordinatedStatePublicationUncertainException failure)
         {
             publicationUncertainty = failure;
@@ -1084,6 +1090,7 @@ public partial class FileSystemManager
             await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
                 this, writeLock, completed: false, operationFailure: publicationUncertainty);
         }
+        observation?.PublicReturned();
     }
 
     /// <summary>
@@ -1104,7 +1111,7 @@ public partial class FileSystemManager
     internal async Task WriteFileAtomicBytesAsync(
         CanonicalWriteLease writeLease,
         string relativePath,
-        byte[] content)
+        byte[] content, NarrativeWriteObservation? observation = null)
     {
         using var totalTiming = MeasureOperation("OrdinaryWrite.Total");
         using var admissionTiming = MeasureOperation("OrdinaryWrite.Admission");
@@ -1117,7 +1124,7 @@ public partial class FileSystemManager
         {
             selectionTiming?.Dispose();
             using var trustedTiming = MeasureOperation("OrdinaryWrite.TrustedWriter");
-            await WriteTrustedLocalFileAsync(writeLease, relativePath, content);
+            await WriteTrustedLocalFileAsync(writeLease, relativePath, content, observation);
             return;
         }
         selectionTiming?.Dispose();
@@ -1135,13 +1142,15 @@ public partial class FileSystemManager
                 afterPublicationNotCommitted: () =>
                     RecordCanonicalMutationNonPublicationAsync(
                         writeLease,
-                        relativePath));
+                        relativePath),
+                narrativeObservation: observation);
         legacyWriteTiming?.Dispose();
         using var legacyPublicationTiming = MeasureOperation("OrdinaryWrite.LegacyPublication");
         await RecordCanonicalMutationPublicationAsync(
             writeLease,
             relativePath,
             publication);
+        observation?.Published(content);
     }
 
     public async Task AppendFileAtomicAsync(string relativePath, string content)
@@ -1479,13 +1488,13 @@ public partial class FileSystemManager
     private Task<CanonicalMutationPublication> WriteFileAtomicBytesCoreAsync(
         string relativePath,
         byte[] content,
-        Func<Task>? afterPublicationNotCommitted = null) =>
+        Func<Task>? afterPublicationNotCommitted = null, NarrativeWriteObservation? narrativeObservation = null) =>
         WriteFileAtomicBytesCoreAsync(
             relativePath,
             content,
             CancellationToken.None,
             afterPublicationNotCommitted:
-                afterPublicationNotCommitted);
+                afterPublicationNotCommitted, narrativeObservation: narrativeObservation);
 
     /// <summary>
     /// Performs legacy atomic publication under the current physical admission, including retries and cleanup.
@@ -1525,7 +1534,7 @@ public partial class FileSystemManager
         bool allowMissingCurrent = false,
         PhysicalFileAuthority.FileIdentity? expectedDestinationIdentity = null,
         string? expectedDestinationSha256 = null,
-        Func<Task>? afterPublicationNotCommitted = null)
+        Func<Task>? afterPublicationNotCommitted = null, NarrativeWriteObservation? narrativeObservation = null)
     {
         using var validationMutation = BeginValidationMutation();
         cancellationToken.ThrowIfCancellationRequested();
@@ -1600,7 +1609,8 @@ public partial class FileSystemManager
                     expectedDestinationSha256:
                         expectedDestinationSha256,
                     afterPublicationNotCommitted:
-                        afterPublicationNotCommitted);
+                        afterPublicationNotCommitted,
+                    narrativeObservation: narrativeObservation);
             }
             else
             {
@@ -1611,6 +1621,7 @@ public partial class FileSystemManager
                         "Identity-bound conditional canonical replacement requires reversible file publication.");
                 }
 
+                narrativeObservation?.CanonicalBefore(present: false, hash: null);
                 PhysicalFileAuthority.RenameOpenedObjectRelative(
                     stream.SafeFileHandle,
                     parentAuthority,
@@ -1692,7 +1703,10 @@ public partial class FileSystemManager
         }
     }
 
-    public async Task<string?> ReadFileAsync(string relativePath)
+    public Task<string?> ReadFileAsync(string relativePath) => ReadFileAsync(relativePath, null);
+
+    /// <summary>Reads ordinary text while explicitly retaining each actual initial and followup source snapshot.</summary>
+    internal async Task<string?> ReadFileAsync(string relativePath, NarrativeReadObservation? observation)
     {
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "public-text-async", "semantic", "started");
@@ -1701,10 +1715,10 @@ public partial class FileSystemManager
         try
         {
 #endif
-        if (TryReadImplicitGameStateData(relativePath, true, out var cached)) return DecodeFileSnapshot(cached);
+        if (TryReadImplicitGameStateData(relativePath, true, out var cached)) { observation?.Snapshot(cached?.Content, physical: false); return DecodeFileSnapshot(cached); }
         await RecoverPendingFilePublicationsBeforeCanonicalReadAsync(
             CancellationToken.None);
-        var result = await ReadOrdinaryFileCoreAsync(relativePath);
+        var result = await ReadOrdinaryFileCoreAsync(relativePath, observation: observation);
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "public-text-async", "initial", result == null ? "missing" : "present");
 #endif
@@ -1717,7 +1731,7 @@ public partial class FileSystemManager
 #endif
             await using var writeLease =
                 await AcquirePublicationReadQuiescenceLeaseAsync();
-            result = await ReadOrdinaryFileCoreAsync(relativePath);
+            result = await ReadOrdinaryFileCoreAsync(relativePath, observation: observation);
 #if DEBUG
                 BrowserDiagnosticContent(relativePath, "public-text-async", "followup", result == null ? "missing" : "present");
 #endif
@@ -1749,19 +1763,19 @@ public partial class FileSystemManager
     /// </returns>
     internal async Task<string?> ReadFileAsync(
         CanonicalWriteLease writeLease,
-        string relativePath)
+        string relativePath, NarrativeReadObservation? observation = null)
     {
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "explicit-text-async", "semantic", "started");
         try
         {
 #endif
-        if (TryReadDeclaredSourceData(writeLease, relativePath, true, out var cached)) return DecodeFileSnapshot(cached);
+        if (TryReadDeclaredSourceData(writeLease, relativePath, true, out var cached)) { observation?.Snapshot(cached?.Content, physical: false); return DecodeFileSnapshot(cached); }
         EnsureValidCanonicalWriteLease(writeLease);
         var ordinary = UsesTrustedLocalWriter(writeLease, relativePath);
         var result = ordinary
-            ? await ReadOrdinaryFileCoreAsync(relativePath, writeLease)
-            : await ReadFileCoreAsync(relativePath, writeLease);
+            ? await ReadOrdinaryFileCoreAsync(relativePath, writeLease, observation)
+            : await ReadFileCoreAsync(relativePath, writeLease, observation);
 
         RememberDeclaredSourceRoute(writeLease, relativePath, true, ordinary);
 
@@ -1788,11 +1802,12 @@ public partial class FileSystemManager
     /// <returns>
     /// Decoded text or <see langword="null"/> for observed absence.
     /// </returns>
-    private async Task<string?> ReadFileCoreAsync(string relativePath, CanonicalWriteLease? lease = null)
+    private async Task<string?> ReadFileCoreAsync(string relativePath, CanonicalWriteLease? lease = null, NarrativeReadObservation? observation = null)
     {
         var snapshot = await ReadFileSnapshotCoreAsync(
             relativePath,
             CancellationToken.None, lease);
+        ObserveNarrativeProtectedSnapshot(snapshot, observation);
         if (snapshot == null)
             return null;
 
@@ -1810,6 +1825,10 @@ public partial class FileSystemManager
             relativePath,
             CancellationToken.None);
     }
+
+    /// <summary>Observes the existing public bytes reader without changing publication recovery or followups.</summary>
+    internal Task<byte[]?> ReadFileBytesObservedAsync(string relativePath, NarrativeReadObservation observation) =>
+        ReadFileBytesWithPublicationRecoveryAsync(relativePath, CancellationToken.None, observation);
 
     internal async Task<byte[]?> ReadFileBytesAsync(
         string relativePath,
@@ -1835,19 +1854,19 @@ public partial class FileSystemManager
     /// </returns>
     internal async Task<byte[]?> ReadFileBytesAsync(
         CanonicalWriteLease writeLease,
-        string relativePath)
+        string relativePath, NarrativeReadObservation? observation = null)
     {
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "explicit-bytes-async", "semantic", "started");
         try
         {
 #endif
-        if (TryReadDeclaredSourceData(writeLease, relativePath, true, out var cached)) return cached?.Content;
+        if (TryReadDeclaredSourceData(writeLease, relativePath, true, out var cached)) { observation?.Snapshot(cached?.Content, physical: false); return cached?.Content; }
         EnsureValidCanonicalWriteLease(writeLease);
         var ordinary = UsesTrustedLocalWriter(writeLease, relativePath);
         var result = ordinary
-            ? await ReadOrdinaryFileBytesCoreAsync(relativePath, CancellationToken.None, writeLease)
-            : await ReadFileBytesCoreAsync(relativePath, CancellationToken.None, writeLease);
+            ? await ReadOrdinaryFileBytesCoreAsync(relativePath, CancellationToken.None, writeLease, observation)
+            : await ReadFileBytesCoreAsync(relativePath, CancellationToken.None, writeLease, observation);
 
         RememberDeclaredSourceRoute(writeLease, relativePath, true, ordinary);
 
@@ -1904,7 +1923,10 @@ public partial class FileSystemManager
 #endif
     }
 
-    internal string? ReadFileSync(string relativePath)
+    internal string? ReadFileSync(string relativePath) => ReadFileSync(relativePath, null);
+
+    /// <summary>Observes the unchanged synchronous public text route.</summary>
+    internal string? ReadFileSync(string relativePath, NarrativeReadObservation? observation)
     {
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "public-text-sync", "semantic", "started");
@@ -1913,9 +1935,9 @@ public partial class FileSystemManager
         try
         {
 #endif
-        if (TryReadImplicitGameStateData(relativePath, false, out var cached)) return DecodeFileSnapshot(cached);
+        if (TryReadImplicitGameStateData(relativePath, false, out var cached)) { observation?.Snapshot(cached?.Content, physical: false); return DecodeFileSnapshot(cached); }
         RecoverPendingFilePublicationsBeforeCanonicalRead();
-        var snapshot = ReadOrdinaryFileSnapshotCore(relativePath);
+        var snapshot = ReadOrdinaryFileSnapshotCore(relativePath, observation: observation);
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "public-text-sync", "initial", snapshot == null ? "missing" : "present");
 #endif
@@ -1931,7 +1953,7 @@ public partial class FileSystemManager
                 .GetResult();
             try
             {
-                snapshot = ReadOrdinaryFileSnapshotCore(relativePath);
+                snapshot = ReadOrdinaryFileSnapshotCore(relativePath, observation: observation);
 #if DEBUG
                 BrowserDiagnosticContent(relativePath, "public-text-sync", "followup", snapshot == null ? "missing" : "present");
 #endif
@@ -1970,19 +1992,26 @@ public partial class FileSystemManager
     /// </returns>
     internal string? ReadFileSync(
         CanonicalWriteLease writeLease,
-        string relativePath)
+        string relativePath, NarrativeReadObservation? observation = null)
     {
-        if (TryReadDeclaredSourceData(writeLease, relativePath, false, out var cached)) return DecodeFileSnapshot(cached);
+        if (TryReadDeclaredSourceData(writeLease, relativePath, false, out var cached)) { observation?.Snapshot(cached?.Content, physical: false); return DecodeFileSnapshot(cached); }
         EnsureValidCanonicalWriteLease(writeLease);
         // The explicit lease already supplies publication quiescence, even when
         // its ambient execution context did not flow to this synchronous caller.
         var ordinary = UsesTrustedLocalWriter(writeLease, relativePath);
-        var result = DecodeFileSnapshot(ordinary
-            ? ReadOrdinaryFileSnapshotCore(relativePath, writeLease)
-            : ReadFileSnapshotCore(relativePath, writeLease));
+        var snapshot = ordinary
+            ? ReadOrdinaryFileSnapshotCore(relativePath, writeLease, observation)
+            : ReadFileSnapshotCore(relativePath, writeLease);
+        if (!ordinary) ObserveNarrativeProtectedSnapshot(snapshot, observation);
+        var result = DecodeFileSnapshot(snapshot);
         RememberDeclaredSourceRoute(writeLease, relativePath, false, ordinary);
         return result;
     }
+
+    /// <summary>Distinguishes actual protected source DATA from a reused result without inventing a physical occurrence.</summary>
+    private void ObserveNarrativeProtectedSnapshot(CanonicalFileReadSnapshot? snapshot, NarrativeReadObservation? observation) =>
+        observation?.Snapshot(snapshot?.Content, physical: ValidationReuseSuppression.Value != 0 ||
+            (_validationReadSet.Value is null && _sourceDataOperation.Value is null));
 
     private static string? DecodeFileSnapshot(CanonicalFileReadSnapshot? snapshot)
     {
@@ -2015,20 +2044,24 @@ public partial class FileSystemManager
     /// <returns>
     /// The observed content, or <see langword="null"/> for an absent source.
     /// </returns>
-    internal byte[]? ReadFileBytesSync(CanonicalWriteLease writeLease, string relativePath)
+    internal byte[]? ReadFileBytesSync(CanonicalWriteLease writeLease, string relativePath, NarrativeReadObservation? observation = null)
     {
-        if (TryReadDeclaredSourceData(writeLease, relativePath, false, out var cached)) return cached?.Content;
+        if (TryReadDeclaredSourceData(writeLease, relativePath, false, out var cached)) { observation?.Snapshot(cached?.Content, physical: false); return cached?.Content; }
         EnsureValidCanonicalWriteLease(writeLease);
         var ordinary = UsesTrustedLocalWriter(writeLease, relativePath);
         var snapshot = ordinary
-            ? ReadOrdinaryFileSnapshotCore(relativePath, writeLease)
+            ? ReadOrdinaryFileSnapshotCore(relativePath, writeLease, observation)
             : ReadFileSnapshotCore(relativePath, writeLease);
+        if (!ordinary) ObserveNarrativeProtectedSnapshot(snapshot, observation);
         EnsureValidCanonicalWriteLease(writeLease);
         RememberDeclaredSourceRoute(writeLease, relativePath, false, ordinary);
         return snapshot?.Content;
     }
 
-    internal byte[]? ReadFileBytesSync(string relativePath)
+    internal byte[]? ReadFileBytesSync(string relativePath) => ReadFileBytesSync(relativePath, null);
+
+    /// <summary>Observes the unchanged synchronous public bytes route.</summary>
+    internal byte[]? ReadFileBytesSync(string relativePath, NarrativeReadObservation? observation)
     {
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "public-bytes-sync", "semantic", "started");
@@ -2037,9 +2070,9 @@ public partial class FileSystemManager
         try
         {
 #endif
-        if (TryReadImplicitGameStateData(relativePath, false, out var cached)) return cached?.Content;
+        if (TryReadImplicitGameStateData(relativePath, false, out var cached)) { observation?.Snapshot(cached?.Content, physical: false); return cached?.Content; }
         RecoverPendingFilePublicationsBeforeCanonicalRead();
-        var snapshot = ReadOrdinaryFileSnapshotCore(relativePath);
+        var snapshot = ReadOrdinaryFileSnapshotCore(relativePath, observation: observation);
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "public-bytes-sync", "initial", snapshot == null ? "missing" : "present");
 #endif
@@ -2055,7 +2088,7 @@ public partial class FileSystemManager
                 .GetResult();
             try
             {
-                snapshot = ReadOrdinaryFileSnapshotCore(relativePath);
+                snapshot = ReadOrdinaryFileSnapshotCore(relativePath, observation: observation);
 #if DEBUG
                 BrowserDiagnosticContent(relativePath, "public-bytes-sync", "followup", snapshot == null ? "missing" : "present");
 #endif
@@ -2084,7 +2117,7 @@ public partial class FileSystemManager
 
     private async Task<byte[]?> ReadFileBytesWithPublicationRecoveryAsync(
         string relativePath,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken, NarrativeReadObservation? observation = null)
     {
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "public-bytes-async", "semantic", "started");
@@ -2094,12 +2127,12 @@ public partial class FileSystemManager
         {
 #endif
         cancellationToken.ThrowIfCancellationRequested();
-        if (TryReadImplicitGameStateData(relativePath, true, out var cached)) return cached?.Content;
+        if (TryReadImplicitGameStateData(relativePath, true, out var cached)) { observation?.Snapshot(cached?.Content, physical: false); return cached?.Content; }
         await RecoverPendingFilePublicationsBeforeCanonicalReadAsync(
             cancellationToken);
         var result = await ReadOrdinaryFileBytesCoreAsync(
             relativePath,
-            cancellationToken);
+            cancellationToken, observation: observation);
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "public-bytes-async", "initial", result == null ? "missing" : "present");
 #endif
@@ -2115,7 +2148,7 @@ public partial class FileSystemManager
                     cancellationToken);
             result = await ReadOrdinaryFileBytesCoreAsync(
                 relativePath,
-                cancellationToken);
+                cancellationToken, observation: observation);
 #if DEBUG
                 BrowserDiagnosticContent(relativePath, "public-bytes-async", "followup", result == null ? "missing" : "present");
 #endif
@@ -2149,11 +2182,12 @@ public partial class FileSystemManager
     /// </returns>
     private async Task<byte[]?> ReadFileBytesCoreAsync(
         string relativePath,
-        CancellationToken cancellationToken, CanonicalWriteLease? lease = null)
+        CancellationToken cancellationToken, CanonicalWriteLease? lease = null, NarrativeReadObservation? observation = null)
     {
         var snapshot = await ReadFileSnapshotCoreAsync(
             relativePath,
             cancellationToken, lease);
+        ObserveNarrativeProtectedSnapshot(snapshot, observation);
         return snapshot?.Content;
     }
 

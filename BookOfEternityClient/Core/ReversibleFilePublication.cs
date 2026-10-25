@@ -1,3 +1,4 @@
+using NarrativeWriteObservation = BookOfEternityClient.Services.ValidationService.NarrativeInterfaceSourceSession.NarrativeWriteObservation;
 using System.Runtime.ExceptionServices;
 using System.Text.Json;
 using Microsoft.Win32.SafeHandles;
@@ -393,7 +394,7 @@ internal static class ReversibleFilePublication
         bool allowMissingDestination = false,
         PhysicalFileAuthority.FileIdentity? expectedDestinationIdentity = null,
         string? expectedDestinationSha256 = null,
-        Func<Task>? afterPublicationNotCommitted = null)
+        Func<Task>? afterPublicationNotCommitted = null, NarrativeWriteObservation? narrativeObservation = null)
     {
         if (!OperatingSystem.IsWindows())
         {
@@ -460,6 +461,7 @@ internal static class ReversibleFilePublication
                 : PhysicalFileAuthority.ComputeOpenedFileSha256(
                     destinationHandle,
                     authorityName + " prior destination");
+            narrativeObservation?.CanonicalBefore(destinationHandle is not null, destinationSha256);
             if (expectedDestinationIdentity != null)
             {
                 if (destinationIdentity == null ||

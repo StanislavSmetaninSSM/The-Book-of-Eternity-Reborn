@@ -1,3 +1,4 @@
+using NarrativeReadObservation = BookOfEternityClient.Services.ValidationService.NarrativeInterfaceSourceSession.NarrativeReadObservation;
 using System.Runtime.ExceptionServices;
 
 namespace BookOfEternityClient.Core;
@@ -54,12 +55,13 @@ public partial class FileSystemManager
         return FileExistsCore(relativePath);
     }
 
-    private async Task<string?> ReadOrdinaryFileCoreAsync(string relativePath, CanonicalWriteLease? lease = null) =>
-        DecodeFileSnapshot(await ReadOrdinaryFileSnapshotCoreAsync(relativePath, CancellationToken.None, lease));
+    private async Task<string?> ReadOrdinaryFileCoreAsync(string relativePath, CanonicalWriteLease? lease = null,
+        NarrativeReadObservation? observation = null) =>
+        DecodeFileSnapshot(await ReadOrdinaryFileSnapshotCoreAsync(relativePath, CancellationToken.None, lease, observation));
 
     private async Task<byte[]?> ReadOrdinaryFileBytesCoreAsync(string relativePath,
-        CancellationToken cancellationToken, CanonicalWriteLease? lease = null) =>
-        (await ReadOrdinaryFileSnapshotCoreAsync(relativePath, cancellationToken, lease))?.Content;
+        CancellationToken cancellationToken, CanonicalWriteLease? lease = null, NarrativeReadObservation? observation = null) =>
+        (await ReadOrdinaryFileSnapshotCoreAsync(relativePath, cancellationToken, lease, observation))?.Content;
 
     /// <summary>
     /// Classifies ordinary file presence through the existing path and local-scope checks.
@@ -259,12 +261,22 @@ public partial class FileSystemManager
     /// Detached source content and timestamp, or <see langword="null"/> for observed absence.
     /// </returns>
     private CanonicalFileReadSnapshot? ReadOrdinaryFileSnapshotCore(
-        string relativePath, CanonicalWriteLease? lease = null) =>
+        string relativePath, CanonicalWriteLease? lease = null, NarrativeReadObservation? observation = null)
+    {
+        try
+        {
+            var reused = ValidationReuseSuppression.Value == 0 && (_validationReadSet.Value is not null || _sourceDataOperation.Value is not null);
+            var result =
         _validationReadSet.Value is { } phase && ValidationReuseSuppression.Value == 0
             ? phase.Read(relativePath, ValidationSnapshotFamily.OrdinarySync, lease)
             : _sourceDataOperation.Value is { } operation && ValidationReuseSuppression.Value == 0
                 ? operation.Read(relativePath, ValidationSnapshotFamily.OrdinarySync, lease)
                 : ReadOrdinaryFileSnapshotCore(relativePath, lease, out _, nullableDataFailure: false);
+            observation?.Snapshot(result?.Content, physical: !reused);
+            return result;
+        }
+        catch (Exception error) { observation?.Fault(error); throw; }
+    }
 
     /// <summary>
     /// Dispatches an ordinary asynchronous snapshot through an eligible reserved read set or its original fresh reader.
@@ -281,13 +293,24 @@ public partial class FileSystemManager
     /// <returns>
     /// Detached content/timestamp or absence, preserving original source errors.
     /// </returns>
-    private Task<CanonicalFileReadSnapshot?> ReadOrdinaryFileSnapshotCoreAsync(
-        string relativePath, CancellationToken cancellationToken, CanonicalWriteLease? lease = null) =>
+    private async Task<CanonicalFileReadSnapshot?> ReadOrdinaryFileSnapshotCoreAsync(
+        string relativePath, CancellationToken cancellationToken, CanonicalWriteLease? lease = null,
+        NarrativeReadObservation? observation = null)
+    {
+        try
+        {
+            var reused = ValidationReuseSuppression.Value == 0 && (_validationReadSet.Value is not null || _sourceDataOperation.Value is not null);
+            var result = await (
         _validationReadSet.Value is { } phase && ValidationReuseSuppression.Value == 0
             ? phase.ReadAsync(relativePath, ValidationSnapshotFamily.OrdinaryAsync, lease, cancellationToken)
             : _sourceDataOperation.Value is { } operation && ValidationReuseSuppression.Value == 0
                 ? operation.ReadAsync(relativePath, ValidationSnapshotFamily.OrdinaryAsync, lease, cancellationToken)
-                : ReadOrdinaryFileSnapshotUncachedAsync(relativePath, cancellationToken, lease);
+                : ReadOrdinaryFileSnapshotUncachedAsync(relativePath, cancellationToken, lease));
+            observation?.Snapshot(result?.Content, physical: !reused);
+            return result;
+        }
+        catch (Exception error) { observation?.Fault(error); throw; }
+    }
 
     /// <summary>
     /// Reads the original synchronous ordinary snapshot while keeping optional data failures distinct from path authority.

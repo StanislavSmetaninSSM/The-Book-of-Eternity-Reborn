@@ -27,6 +27,8 @@ public partial class GameEngine
         private AcceptedTurnAuthorityRegistry.JointUnattemptedCloseResult? _close;
         private PendingTurnSnapshotReadAuthority? _hotOriginal;
         private PendingTurnSnapshotReader.OriginalReadEvidence? _hotEvidence;
+        private MortalJointNarrativeInvocation? _narrative;
+        private string _narrativeDisposition = "UnavailableNotConsumed";
         internal MortalJointPublicationAttempt(object issuer, GameEngine engine, FileSystemManager files,
             FileSystemManager.CanonicalWriteLease lease, object actualFrame,
             MortalJointRepairCheckpoint.RejectedCapture actualCapture, JsonObject binding, JsonObject custody)
@@ -86,6 +88,20 @@ public partial class GameEngine
             if (!_capturing || _phase != "Capturing") throw new InvalidOperationException("Joint capture cannot reopen.");
             _custody = custody.DeepClone().AsObject(); _capturing = false; _phase = "PreparationStarted";
         }
+        internal void RetainNarrativeContribution(object issuer, MortalJointNarrativeInvocation invocation)
+        {
+            RequireIssuer(issuer); RequireActualOwner(_files, _lease);
+            if (!_capturing || _narrative is not null)
+                throw new InvalidOperationException("N contribution requires the actual open capture once.");
+            _narrative = invocation; _narrativeDisposition = "MatchedLiveN";
+        }
+        internal void RetainHistoricalNarrativeUnavailable(object issuer)
+        {
+            RequireIssuer(issuer); RequireActualOwner(_files, _lease);
+            if (!_capturing || _narrative is not null)
+                throw new InvalidOperationException("Historical N unavailability requires the actual resume capture.");
+            _narrativeDisposition = "HistoricalNUnavailable";
+        }
         internal void RetainStage(object issuer, JointAttemptStage stage, object actualResult)
         {
             RequireIssuer(issuer); RequireActualOwner(_files, _lease);
@@ -122,6 +138,13 @@ public partial class GameEngine
         {
             RequireIssuer(issuer); _expired = true; _capturing = false;
             _hotOriginal = null; _hotEvidence = null;
+            if (_narrative is { } narrative)
+            {
+                if (ReferenceEquals(_engine._mortalJointNarrativeInvocation, narrative))
+                    _engine.ExpireCurrentMortalJointNarrativeInvocation();
+                else narrative.Dispose();
+                _narrative = null;
+            }
         }
         internal JsonObject ExportDiagnostic() => new()
         {
@@ -129,6 +152,7 @@ public partial class GameEngine
             ["delegated"] = _delegated, ["captureCanOpen"] = _capturing && !_expired,
             ["liveCapabilitiesExpired"] = _expired, ["fullSemanticAdmission"] = false,
             ["hasS"] = false, ["hasB"] = false, ["hasM3"] = false,
+            ["narrativeContribution"] = _narrativeDisposition,
             ["binding"] = _binding.DeepClone(), ["custody"] = _custody.DeepClone()
         };
     }
@@ -157,9 +181,10 @@ public partial class GameEngine
     }
 
     private async Task CaptureCurrentHotCustodyAsync(MortalJointPublicationAttempt attempt,
-        FileSystemManager.CanonicalWriteLease lease)
+        FileSystemManager.CanonicalWriteLease lease, ValidatedPendingTurnSnapshotContext frame)
     {
         await ConsumeCurrentMortalJointInterfaceAsync(lease, attempt);
+        await RequireCurrentMortalJointNarrativeAsync(lease, frame, attempt, beforeInterfacePreparation: false);
         var read = _hotRepairReady;
         if (read is { Faulted: false, Status: "ConsumedReadyMatched", ReadyDeleteReturned: true, ReadyReleaseReturned: true })
         {

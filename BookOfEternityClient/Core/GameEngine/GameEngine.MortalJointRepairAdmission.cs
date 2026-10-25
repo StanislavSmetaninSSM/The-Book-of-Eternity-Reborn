@@ -73,6 +73,9 @@ public partial class GameEngine
     private async Task<IReadOnlyList<ValidationIssue>> NormalizeMortalJointNarrativeBeforeIntakeAsync(
         ValidatedPendingTurnSnapshotContext frame, int turn)
     {
+        ExpireCurrentMortalJointNarrativeInvocation();
+        _mortalJointNarrativeDisposition = "UnavailableSkipped";
+        MortalJointNarrativeInvocation? invocation = null;
         await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
         {
             var command = await _fs.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath);
@@ -92,10 +95,30 @@ public partial class GameEngine
             if (publication.State != MortalQteDecisionPublication.CurrentPublicationState.NotCommitted)
                 return JointRepairAdmissionIssue("A completed or conflicted publication cannot normalize its public output.");
             lease.EnsureNoPendingLocalDecision();
+            if (_mortalJointRepairCheckpoint is { UsesInterfacePublication: true } checkpoint)
+            {
+                RequireNoKnownMortalJointNarrativeHold(checkpoint);
+                var generation = _fs.ReadLocalGenerationSnapshot(lease);
+                invocation = new(JointNarrativeIssuer, this, frame, lease.MainAdmission?.Parent,
+                    generation.Binding.Id ?? string.Empty, generation.Bytes);
+                _mortalJointNarrativeInvocation = invocation;
+            }
         }
         // The first ordinary capture and subsequent correction re-read the actual
         // normalized bytes under their own lease and require a projector fixed point.
-        return await _validator.ValidateAcceptedTurnNarrativePayloadAsync();
+        if (invocation is null) return await _validator.ValidateAcceptedTurnNarrativePayloadAsync();
+        try
+        {
+            var pass = await _validator.ValidateAcceptedTurnNarrativePolicyPassAsync();
+            invocation.Complete(JointNarrativeIssuer, pass);
+            return pass.Issues;
+        }
+        catch
+        {
+            ExpireCurrentMortalJointNarrativeInvocation();
+            _mortalJointNarrativeDisposition = "UnavailableInvocationFault";
+            throw;
+        }
     }
 
     private async Task<MortalJointRepairRawAdmission> InspectOrdinaryMortalJointRepairAsync(

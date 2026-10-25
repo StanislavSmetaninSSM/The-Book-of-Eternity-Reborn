@@ -70,9 +70,10 @@ public partial class GameEngine
             try
             {
                 using var namedOperationTimer5 = _fs.MeasureOperation("GameEngine.CaptureCurrentHotCustodyAsync");
-                await CaptureCurrentHotCustodyAsync(attempt, lease);
+                await CaptureCurrentHotCustodyAsync(attempt, lease, frame);
                 namedOperationTimer5?.Dispose();
                 await InvokeSessionFinalizationCheckpointAsync(SessionFinalizationCheckpoint.MortalJointCustodyCaptureCompletedBeforePreparation);
+                await RecheckMortalJointNarrativeBeforePreparationAsync(attempt, lease, frame);
                 using var namedOperationTimer6 = _fs.MeasureOperation("GameEngine.CreateJointRepairPreparationAsync");
                 var preparation = await WoundAcceptedTurnPlanner.CreateJointRepairPreparationAsync(_fs, lease, capture);
                 namedOperationTimer6?.Dispose();

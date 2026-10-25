@@ -1,3 +1,4 @@
+using NarrativeWriteObservation = BookOfEternityClient.Services.ValidationService.NarrativeInterfaceSourceSession.NarrativeWriteObservation;
 using System.Runtime.ExceptionServices;
 using System.Text.Json;
 using System.Text;
@@ -503,14 +504,15 @@ public partial class FileSystemManager
     /// <returns>
     /// Completion after the original publication outcome is required to be committed; original failure mapping is retained.
     /// </returns>
-    private async Task WriteTrustedLocalFileAsync(CanonicalWriteLease lease, string relativePath, byte[]? desired)
+    private async Task WriteTrustedLocalFileAsync(CanonicalWriteLease lease, string relativePath, byte[]? desired, NarrativeWriteObservation? observation = null)
     {
         using var totalTiming = MeasureOperation("TrustedWrite.Total");
         TrustedLocalPublicationOutcome outcome;
         using (MeasureOperation("TrustedWrite.PublishOutcome"))
-            outcome = await PublishOrdinaryFileWithOutcomeAsync(lease, relativePath, desired);
+            outcome = await PublishOrdinaryFileWithOutcomeAsync(lease, relativePath, desired, observation);
         using (MeasureOperation("TrustedWrite.RequireCommitted"))
             RequireCommittedLocalPublication(outcome);
+        if (desired is not null) observation?.Published(desired);
     }
 
     // The ordinary facade and retained script command use the same publication.
@@ -531,7 +533,7 @@ public partial class FileSystemManager
     /// The original committed, rolled-back or uncertain publication outcome.
     /// </returns>
     internal async Task<TrustedLocalPublicationOutcome> PublishOrdinaryFileWithOutcomeAsync(
-        CanonicalWriteLease lease, string relativePath, byte[]? desired)
+        CanonicalWriteLease lease, string relativePath, byte[]? desired, NarrativeWriteObservation? observation = null)
     {
         using var totalTiming = MeasureOperation("OrdinaryPublication.Total");
         using var admissionTiming = MeasureOperation("OrdinaryPublication.Admission");
@@ -544,6 +546,7 @@ public partial class FileSystemManager
         byte[]? before;
         using (MeasureOperation("OrdinaryPublication.ReadBefore"))
             before = await ReadLocalFileBytesAsync(lease, relativePath);
+        observation?.TrustedBefore(before);
         using (MeasureOperation("OrdinaryPublication.PublishLocal"))
             return await PublishLocalFilesAsync(lease, [new(relativePath, before, desired)]);
     }

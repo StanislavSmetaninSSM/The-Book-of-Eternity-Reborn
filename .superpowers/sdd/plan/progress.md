@@ -1,4 +1,17 @@
-# T584 live N source contribution — baseline accepted, implementation next
+# T584 live N source contribution — coherent producer/consumer source WIP
+
+T587/T588 first implementation WIP joins the actual detailed N invocation to a
+private engine registration bound to frame/Main/G/iteration/Stage/Ready, with
+actual shared-core read/original/write observation plumbing. Fresh fences precede
+first I preparation, consume during Capturing and recheck after the observer.
+Existing authenticated v3 resume is explicitly HistoricalNUnavailable; same-engine
+known N hold outlives disposable pass/attempt and blocks repeated entry. Existing
+I codecs and publication state/bytes are not replaced. Pass expiry releases source
+buffers and never disposes borrowed Main/Ready owners or erases the known hold.
+This checkpoint is unfinished: cheap negative tests, exact reverse-source guard,
+complete XML docs, compile, independent SOURCE/PREP and GREEN remain UNRUN.
+No build/runtime after the baseline pair and no new PASS claimed. Source only;
+complete raw and authoring diagnostics remain external.
 
 Independent Astra/high paired T586 OUTCOME ACCEPT: drift causal RED 1/1 FAIL and
 separate unchanged 1/1 PASS, same compiled b08dfadd/product. Unchanged ran at

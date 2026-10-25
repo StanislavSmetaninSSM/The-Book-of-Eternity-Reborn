@@ -611,6 +611,7 @@ public partial class GameEngine
         while (true)
         {
             using var iterationTiming = _fs.MeasureOperation("PlayerTurn.AcceptedValidation.Iteration");
+            ExpireCurrentMortalJointNarrativeInvocation();
             _mortalJointInterfaceValidationIteration++;
             using (_fs.MeasureOperation("PlayerTurn.AcceptedValidation.SystemHealth"))
                 await EnsureClientOwnedSystemFilesHealthyAsync();

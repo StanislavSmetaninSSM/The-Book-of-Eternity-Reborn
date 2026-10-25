@@ -35,6 +35,7 @@ public partial class GameEngine
                     if (pending.ContainsKey(MortalJointInterfacePublication.PendingField)) throw new MortalJointRepairPublicationHoldException();
                     return null; // existing genuine v1 operation, never upgraded
                 }
+                RequireNoKnownMortalJointNarrativeHold(checkpoint);
                 var binding = checkpoint.ToJsonObject();
                 if (pending[MortalJointInterfacePublication.PendingField] is not { } data)
                 {
@@ -54,6 +55,7 @@ public partial class GameEngine
                 throw new InvalidDataException("joint_interface_resume_requires_new_current_original_frame");
             _mortalJointRepairCheckpoint = checkpoint;
             if (!MatchesMortalJointRepairFrame(frame, expectedTurn)) throw new InvalidDataException("joint_interface_resume_frame_changed");
+            ExpireCurrentMortalJointNarrativeInvocation();
             _mortalJointInterfaceValidationIteration++;
             MortalJointInterfacePublication.Record current;
             var lease = await _fs.AcquireCanonicalWriteLeaseAsync(); Exception? failure = null;
@@ -102,6 +104,7 @@ public partial class GameEngine
             // historical return or a revived Ready/attempt from the old process.
             _mortalJointInterfaceData = current;
             _mortalJointInterfaceResumeCheckpoint = checkpoint.ToJsonObject()["fingerprint"]!.GetValue<string>();
+            _mortalJointNarrativeDisposition = "HistoricalNUnavailable";
             _mortalJointInterfacePreparationHeld = false;
             _mortalJointRepairCorrectionReady = true;
             if (_mortalJointRepairCanonicalRefresh is { Disposition: MortalJointRepairPublicationDisposition.PublicationUncertain } diagnostic &&

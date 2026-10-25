@@ -100,6 +100,7 @@ public partial class GameEngine
 
     private void EndHotOrdinaryOriginal(string reason)
     {
+        ExpireCurrentMortalJointNarrativeInvocation();
         if (_hotOrdinaryOriginal is { } origin) origin.State = "Ended";
         _hotRepairReady?.Fail(reason);
     }

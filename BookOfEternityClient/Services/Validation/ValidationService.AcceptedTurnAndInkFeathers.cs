@@ -75,7 +75,7 @@ public partial class ValidationService
         }
     }
 
-    private async Task<List<ValidationIssue>> ValidateAcceptedTurnNarrativePayloadInternalAsync(bool readOnly = false)
+    private async Task<List<ValidationIssue>> ValidateAcceptedTurnNarrativePayloadInternalAsync(bool readOnly = false, NarrativeInterfaceSourceSession? source = null)
     {
         var issues = new List<ValidationIssue>();
         await ValidateAcceptedTurnTransientOutputFreshnessAsync(
@@ -84,8 +84,8 @@ public partial class ValidationService
             "accepted_turn_stale_narrative_response",
             "output/narrative_response.json must be freshly rewritten for the current accepted turn",
             "Не переиспользуй старый output/narrative_response.json. Перезапиши narrative_response.json свежим ответом именно для текущего accepted turn.",
-            issues);
-        var json = await _fs.ReadFileAsync("output/narrative_response.json");
+            issues, source);
+        var json = await ReadNarrativeSourceTextAsync("output/narrative_response.json", source);
         if (string.IsNullOrWhiteSpace(json))
         {
             issues.Add(new ValidationIssue(
@@ -108,7 +108,7 @@ public partial class ValidationService
                     code: "mortal_joint_sealed_narrative_requires_normalization"));
         }
         else
-            json = await NormalizeAcceptedTurnNarrativeLineBreakArtifactsAsync("output/narrative_response.json", json);
+            json = await NormalizeAcceptedTurnNarrativeLineBreakArtifactsAsync("output/narrative_response.json", json, source);
 
         try
         {
@@ -130,8 +130,8 @@ public partial class ValidationService
 
             if (!string.IsNullOrWhiteSpace(responseText))
             {
-                await ValidateAchievementUnlockNarrativeMarkersAsync(responseText, issues);
-                await ValidateAcceptedTurnProseStateDeltasAsync(responseText, issues);
+                await ValidateAchievementUnlockNarrativeMarkersAsync(responseText, issues, source);
+                await ValidateAcceptedTurnProseStateDeltasAsync(responseText, issues, source);
             }
         }
         catch (JsonException)
@@ -164,11 +164,16 @@ public partial class ValidationService
     /// </returns>
     private async Task<string> NormalizeAcceptedTurnNarrativeLineBreakArtifactsAsync(
         string narrativePath,
-        string json)
+        string json, NarrativeInterfaceSourceSession? source = null)
     {
+        source?.Projection();
         var projected = AcceptedTurnOutputProjector.ProjectNarrative(json);
         if (projected.Changed)
-            await _fs.WriteFileAtomicAsync(narrativePath, projected.Json);
+        {
+            var writer = source?.BeginWrite(narrativePath);
+            try { await _fs.WriteFileAtomicAsync(narrativePath, projected.Json, writer); }
+            catch (Exception error) { writer?.Fault(error); throw; }
+        }
         return projected.Json;
     }
 
@@ -198,23 +203,23 @@ public partial class ValidationService
         return false;
     }
 
-    private async Task ValidateAcceptedTurnProseStateDeltasAsync(string narrativeText, List<ValidationIssue> issues)
+    private async Task ValidateAcceptedTurnProseStateDeltasAsync(string narrativeText, List<ValidationIssue> issues, NarrativeInterfaceSourceSession? source = null)
     {
-        var playerFacingText = await BuildAcceptedTurnPlayerFacingTextForDeltaAuditAsync(narrativeText);
+        var playerFacingText = await BuildAcceptedTurnPlayerFacingTextForDeltaAuditAsync(narrativeText, source);
         if (string.IsNullOrWhiteSpace(playerFacingText))
             return;
 
-        var filesModified = await ReadAcceptedTurnFilesModifiedAsync();
-        var noProgressRationaleText = await ReadAcceptedTurnNoProgressRationaleTextAsync();
+        var filesModified = await ReadAcceptedTurnFilesModifiedAsync(source);
+        var noProgressRationaleText = await ReadAcceptedTurnNoProgressRationaleTextAsync(source);
 
-        var knownSkillNames = await ReadCurrentKnownPlayerSkillNamesAsync();
+        var knownSkillNames = await ReadCurrentKnownPlayerSkillNamesAsync(source);
         foreach (var skillName in knownSkillNames.OrderBy(name => name, StringComparer.OrdinalIgnoreCase))
         {
             if (!ContainsSkillUseClaim(playerFacingText, skillName))
                 continue;
 
             var hasDelta = await HasAcceptedTurnStateDeltaAsync(
-                filesModified,
+                filesModified, source,
                 "game_state/player/skill_mastery.json",
                 "game_state/player/skills_active.json",
                 "game_state/player/skills_passive.json");
@@ -232,14 +237,14 @@ public partial class ValidationService
                 repairHint: $"Если '{skillName}' реально помог, добавь узкое изменение mastery/progression в game_state/player/skill_mastery.json или соответствующий skill state delta. Если прогресса быть не должно, добавь в output/debug_logs.json.gm_thoughts_markdown секцию 'Prose State Delta Rationale' с именем навыка и причиной отсутствия прогресса."));
         }
 
-        var activeQuests = await ReadCurrentActiveRegularQuestIdentitiesAsync();
+        var activeQuests = await ReadCurrentActiveRegularQuestIdentitiesAsync(source);
         foreach (var quest in activeQuests.OrderBy(q => q.Title, StringComparer.OrdinalIgnoreCase))
         {
             if (!ContainsQuestClueClaim(playerFacingText, quest.Title))
                 continue;
 
             var hasDelta = await HasAcceptedTurnStateDeltaAsync(
-                filesModified,
+                filesModified, source,
                 "game_state/quests/regular_quests.json",
                 "game_state/quests/quest_history.json",
                 "game_state/quests/plot_outline.json");
@@ -258,10 +263,10 @@ public partial class ValidationService
         }
     }
 
-    private async Task<string> BuildAcceptedTurnPlayerFacingTextForDeltaAuditAsync(string narrativeText)
+    private async Task<string> BuildAcceptedTurnPlayerFacingTextForDeltaAuditAsync(string narrativeText, NarrativeInterfaceSourceSession? source = null)
     {
         var builder = new StringBuilder(narrativeText ?? string.Empty);
-        var interfaceJson = await _fs.ReadFileAsync("output/interface_updates.json");
+        var interfaceJson = await ReadNarrativeSourceTextAsync("output/interface_updates.json", source);
         if (string.IsNullOrWhiteSpace(interfaceJson))
             return builder.ToString();
 
@@ -297,18 +302,18 @@ public partial class ValidationService
         return builder.ToString();
     }
 
-    private async Task<HashSet<string>> ReadCurrentKnownPlayerSkillNamesAsync()
+    private async Task<HashSet<string>> ReadCurrentKnownPlayerSkillNamesAsync(NarrativeInterfaceSourceSession? source = null)
     {
         var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        names.UnionWith(ParsePlayerSkillNames(await _fs.ReadFileAsync("game_state/player/skills_active.json"), "activeSkillChanges"));
-        names.UnionWith(ParsePlayerSkillNames(await _fs.ReadFileAsync("game_state/player/skills_passive.json"), "passiveSkillChanges"));
+        names.UnionWith(ParsePlayerSkillNames(await ReadNarrativeSourceTextAsync("game_state/player/skills_active.json", source), "activeSkillChanges"));
+        names.UnionWith(ParsePlayerSkillNames(await ReadNarrativeSourceTextAsync("game_state/player/skills_passive.json", source), "passiveSkillChanges"));
         return names.Where(name => !string.IsNullOrWhiteSpace(name)).ToHashSet(StringComparer.OrdinalIgnoreCase);
     }
 
-    private async Task<List<ProseQuestIdentity>> ReadCurrentActiveRegularQuestIdentitiesAsync()
+    private async Task<List<ProseQuestIdentity>> ReadCurrentActiveRegularQuestIdentitiesAsync(NarrativeInterfaceSourceSession? source = null)
     {
         var result = new List<ProseQuestIdentity>();
-        var json = await _fs.ReadFileAsync("game_state/quests/regular_quests.json");
+        var json = await ReadNarrativeSourceTextAsync("game_state/quests/regular_quests.json", source);
         if (string.IsNullOrWhiteSpace(json))
             return result;
 
@@ -353,18 +358,21 @@ public partial class ValidationService
         return result;
     }
 
-    private async Task<bool> HasAcceptedTurnStateDeltaAsync(IReadOnlyCollection<string> filesModified, params string[] paths)
+    private Task<bool> HasAcceptedTurnStateDeltaAsync(IReadOnlyCollection<string> filesModified, params string[] paths) =>
+        HasAcceptedTurnStateDeltaAsync(filesModified, null, paths);
+
+    private async Task<bool> HasAcceptedTurnStateDeltaAsync(IReadOnlyCollection<string> filesModified, NarrativeInterfaceSourceSession? source, params string[] paths)
     {
         var hasPreTurnSnapshotEvidence = false;
 
         foreach (var path in paths)
         {
-            var preTurnJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(path);
+            var preTurnJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(path, source);
             if (preTurnJson == null)
                 continue;
 
             hasPreTurnSnapshotEvidence = true;
-            var currentJson = await _fs.ReadFileAsync(path) ?? string.Empty;
+            var currentJson = await ReadNarrativeSourceTextAsync(path, source) ?? string.Empty;
             if (!string.Equals(currentJson, preTurnJson, StringComparison.Ordinal))
                 return true;
         }
@@ -381,9 +389,9 @@ public partial class ValidationService
         return false;
     }
 
-    private async Task<string> ReadAcceptedTurnNoProgressRationaleTextAsync()
+    private async Task<string> ReadAcceptedTurnNoProgressRationaleTextAsync(NarrativeInterfaceSourceSession? source = null)
     {
-        var debugJson = await _fs.ReadFileAsync("output/debug_logs.json");
+        var debugJson = await ReadNarrativeSourceTextAsync("output/debug_logs.json", source);
         if (string.IsNullOrWhiteSpace(debugJson))
             return string.Empty;
 
@@ -734,10 +742,10 @@ public partial class ValidationService
                text.Contains("combat", StringComparison.OrdinalIgnoreCase);
     }
 
-    private async Task<List<string>> ReadAcceptedTurnFilesModifiedAsync()
+    private async Task<List<string>> ReadAcceptedTurnFilesModifiedAsync(NarrativeInterfaceSourceSession? source = null)
     {
         var result = new List<string>();
-        var json = await _fs.ReadFileAsync("ready/turn_complete.json");
+        var json = await ReadNarrativeSourceTextAsync("ready/turn_complete.json", source);
         if (string.IsNullOrWhiteSpace(json))
             return result;
 
@@ -2927,11 +2935,12 @@ public partial class ValidationService
     }
 
     private async Task<ValidationPendingTurnSnapshotManifest?> LoadValidationPendingTurnSnapshotManifestAsync(
-        FileSystemManager.CanonicalWriteLease? writeLease = null)
+        FileSystemManager.CanonicalWriteLease? writeLease = null, NarrativeInterfaceSourceSession? source = null,
+        string narrativeRolePath = "output/narrative_response.json")
     {
         var json = await ReadAcceptedTurnValidationFileAsync(
             PendingTurnSnapshotManifestPath,
-            writeLease);
+            writeLease, source, narrativeRolePath);
         if (string.IsNullOrWhiteSpace(json))
             return null;
 
@@ -2959,9 +2968,9 @@ public partial class ValidationService
         return PendingTurnSnapshotAuthority.ComputeSha256(content);
     }
 
-    private async Task<string?> ReadPreTurnTrackedFileAsync(string relativePath)
+    private async Task<string?> ReadPreTurnTrackedFileAsync(string relativePath, NarrativeInterfaceSourceSession? source = null)
     {
-        return await ReadValidatedCurrentPreTurnTrackedFileAsync(relativePath);
+        return await ReadValidatedCurrentPreTurnTrackedFileAsync(relativePath, source);
     }
 
     private static bool HasValidatedTrackedSnapshotRegistration(
@@ -3009,13 +3018,13 @@ public partial class ValidationService
         string code,
         string expected,
         string repairHint,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues, NarrativeInterfaceSourceSession? source = null)
     {
-        var preTurnContent = await ReadValidatedCurrentPreTurnTrackedFileAsync(relativePath);
+        var preTurnContent = await ReadValidatedCurrentPreTurnTrackedFileAsync(relativePath, source);
         if (preTurnContent == null)
             return;
 
-        var currentContent = await _fs.ReadFileAsync(relativePath) ?? string.Empty;
+        var currentContent = await ReadNarrativeSourceTextAsync(relativePath, source) ?? string.Empty;
         if (!string.Equals(currentContent, preTurnContent, StringComparison.Ordinal))
             return;
 
@@ -3368,12 +3377,18 @@ public partial class ValidationService
         return ReadValidatedCurrentPreTurnTrackedFileSync(relativePath);
     }
 
-    private async Task<string?> ReadValidatedCurrentPreTurnTrackedFileAsync(string relativePath)
+    private async Task<string?> ReadValidatedCurrentPreTurnTrackedFileAsync(string relativePath, NarrativeInterfaceSourceSession? source = null)
     {
-        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
-        return lookup.Status == ValidatedPendingTurnSnapshotStatus.Usable && lookup.Manifest != null
-            ? await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, relativePath)
-            : null;
+        try
+        {
+            var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync(source: source, narrativeRolePath: relativePath);
+            source?.Policy(relativePath, "original-lookup", lookup.Status.ToString());
+            if (lookup.Status == ValidatedPendingTurnSnapshotStatus.Unusable) source?.Unavailable("narrative_policy_original_lookup_unusable");
+            return lookup.Status == ValidatedPendingTurnSnapshotStatus.Usable && lookup.Manifest != null
+                ? await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, relativePath, source: source)
+                : null;
+        }
+        catch (Exception error) { source?.Fault(error); throw; }
     }
 
     private string? ReadValidatedCurrentPreTurnTrackedFileSync(string relativePath)
@@ -3397,13 +3412,15 @@ public partial class ValidationService
     private async Task<string?> ReadValidatedPendingTurnSnapshotFileAsync(
         ValidationPendingTurnSnapshotManifest manifest,
         string relativePath,
-        FileSystemManager.CanonicalWriteLease? writeLease = null)
+        FileSystemManager.CanonicalWriteLease? writeLease = null, NarrativeInterfaceSourceSession? source = null)
     {
         if (manifest.Files == null ||
             !manifest.Files.TryGetValue(relativePath, out var snapshotPath) ||
             string.IsNullOrWhiteSpace(snapshotPath) ||
             !PendingTurnSnapshotAuthority.IsSafeRelativePath(snapshotPath))
         {
+            source?.Policy(relativePath, "original", manifest.OriginalPathPresenceV1?.TryGetValue(relativePath, out var existed) == true && !existed
+                ? "ProvedAbsent" : "Uncovered");
             return null;
         }
 
@@ -3411,20 +3428,30 @@ public partial class ValidationService
             !manifest.SnapshotFileHashes.TryGetValue(relativePath, out var expectedSnapshotHash) ||
             string.IsNullOrWhiteSpace(expectedSnapshotHash))
         {
+            source?.Policy(relativePath, "original", "MissingDeclaredHash");
+            source?.Unavailable("narrative_policy_original_hash_missing");
             return null;
         }
 
-        var snapshotBytes = writeLease == null
-            ? CurrentWorldReadPhase() is { } phase ? await phase.ReadBytesAsync(snapshotPath) : await _fs.ReadFileBytesAsync(snapshotPath)
-            : await _fs.ReadFileBytesAsync(writeLease, snapshotPath);
+        var snapshotBytes = source is null
+            ? writeLease == null
+                ? CurrentWorldReadPhase() is { } phase ? await phase.ReadBytesAsync(snapshotPath) : await _fs.ReadFileBytesAsync(snapshotPath)
+                : await _fs.ReadFileBytesAsync(writeLease, snapshotPath)
+            : await ReadNarrativeOriginalBytesAsync(relativePath, snapshotPath, writeLease, source);
         if (snapshotBytes == null)
+        {
+            source?.Policy(relativePath, "original", "MissingDeclaredArtifact");
+            source?.Unavailable("narrative_policy_original_artifact_missing");
             return null;
+        }
 
         var authorityPayload = await LoadCurrentDetachedPendingTurnSnapshotAuthorityPayloadAsync(
-            writeLease);
+            writeLease, source, relativePath);
         if (authorityPayload == null &&
             !ReferenceEquals(manifest, _prevalidatedPendingTurnSnapshotOverride))
         {
+            source?.Policy(relativePath, "original", "Unauthenticated");
+            source?.Unavailable("narrative_policy_original_unauthenticated");
             return null;
         }
 
@@ -3432,9 +3459,14 @@ public partial class ValidationService
             ? ComputeSha256(DecodePendingSnapshotText(snapshotBytes))
             : PendingTurnSnapshotAuthority.ComputeSnapshotFileHash(authorityPayload, snapshotBytes);
         if (!string.Equals(actualSnapshotHash, expectedSnapshotHash, StringComparison.OrdinalIgnoreCase))
+        {
+            source?.Policy(relativePath, "original", "HashInvalid");
+            source?.Unavailable("narrative_policy_original_hash_invalid");
             return null;
+        }
 
         var snapshotJson = DecodePendingSnapshotText(snapshotBytes);
+        source?.Policy(relativePath, "original", string.IsNullOrWhiteSpace(snapshotJson) ? "EmptyOrWhitespace" : "PresentText");
         return string.IsNullOrWhiteSpace(snapshotJson) ? null : snapshotJson;
     }
 
@@ -3913,9 +3945,12 @@ public partial class ValidationService
     /// </returns>
     private PendingTurnRequestValidationContext? LoadPendingTurnRequestValidationContextSync(
         string requestPath,
-        FileSystemManager.CanonicalWriteLease? writeLease = null)
+        FileSystemManager.CanonicalWriteLease? writeLease = null, NarrativeInterfaceSourceSession? source = null,
+        string narrativeRolePath = "output/narrative_response.json")
     {
-        var json = writeLease == null
+        var json = source is not null
+            ? ReadNarrativeAuxiliaryTextSync(narrativeRolePath, requestPath, writeLease, source)
+            : writeLease == null
             ? CurrentWorldReadPhase() is { } phase ? phase.ReadTextSync(requestPath) : _fs.ReadFileSync(requestPath)
             : _fs.ReadFileAsync(writeLease, requestPath)
                 .GetAwaiter()
@@ -5003,19 +5038,29 @@ public partial class ValidationService
     /// Actual source status and an independent manifest copy when invocation evidence is active.
     /// </returns>
     private async Task<ValidatedPendingTurnSnapshotLookup> LoadValidatedPendingTurnSnapshotLookupAsync(
-        FileSystemManager.CanonicalWriteLease? writeLease = null)
+        FileSystemManager.CanonicalWriteLease? writeLease = null, NarrativeInterfaceSourceSession? source = null,
+        string narrativeRolePath = "output/narrative_response.json")
     {
-        if (CurrentPendingSnapshotLookup(writeLease) is { } scoped) return scoped;
+        if (CurrentPendingSnapshotLookup(writeLease) is { } scoped)
+        {
+            source?.Unavailable("narrative_policy_scoped_lookup_provenance_unavailable");
+            if (scoped.Manifest is { } supplied) RecordNarrativeOriginalContext(source, supplied, "ScopedData");
+            return scoped;
+        }
         if (_prevalidatedPendingTurnSnapshotOverride != null)
+        {
+            RecordNarrativeOriginalContext(source, _prevalidatedPendingTurnSnapshotOverride, "SuppliedPrevalidatedData");
             return new ValidatedPendingTurnSnapshotLookup(ValidatedPendingTurnSnapshotStatus.Usable, _prevalidatedPendingTurnSnapshotOverride);
+        }
 
         var manifestExists = writeLease == null
             ? _fs.FileExists(PendingTurnSnapshotManifestPath)
             : _fs.FileExists(writeLease, PendingTurnSnapshotManifestPath);
-        var manifest = await LoadValidationPendingTurnSnapshotManifestAsync(writeLease);
+        source?.BeginRead(narrativeRolePath, PendingTurnSnapshotManifestPath, "lookup-presence").Presence(manifestExists);
+        var manifest = await LoadValidationPendingTurnSnapshotManifestAsync(writeLease, source, narrativeRolePath);
         var authorityJson = await ReadAcceptedTurnValidationFileAsync(
             PendingTurnSnapshotAuthority.AuthorityPath,
-            writeLease);
+            writeLease, source, narrativeRolePath);
         if (manifest == null)
         {
             return new ValidatedPendingTurnSnapshotLookup(
@@ -5023,28 +5068,32 @@ public partial class ValidationService
                 null);
         }
 
+        RecordNarrativeOriginalContext(source, manifest, "PhysicalLookupData");
         return new ValidatedPendingTurnSnapshotLookup(
             IsValidatedPendingTurnSnapshotManifestUsable(
                 manifest,
                 authorityJson,
-                writeLease)
+                writeLease,
+                source is null ? null : path => ReadNarrativeAuxiliaryBytesSync(narrativeRolePath, path, writeLease, source),
+                source is null ? null : path => ReadNarrativeAuxiliaryTextSync(narrativeRolePath, path, writeLease, source))
                 ? ValidatedPendingTurnSnapshotStatus.Usable
                 : ValidatedPendingTurnSnapshotStatus.Unusable,
             manifest);
     }
 
     private async Task<PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload?> LoadCurrentDetachedPendingTurnSnapshotAuthorityPayloadAsync(
-        FileSystemManager.CanonicalWriteLease? writeLease = null)
+        FileSystemManager.CanonicalWriteLease? writeLease = null, NarrativeInterfaceSourceSession? source = null,
+        string narrativeRolePath = "output/narrative_response.json")
     {
         var authorityJson = await ReadAcceptedTurnValidationFileAsync(
             PendingTurnSnapshotAuthority.AuthorityPath,
-            writeLease);
+            writeLease, source, narrativeRolePath);
         if (!PendingTurnSnapshotAuthority.TryReadDetachedAuthorityPayload(authorityJson, out var payload) || payload == null)
             return null;
 
         return IsCurrentDetachedPendingTurnSnapshotAuthorityPayload(
                 payload,
-                writeLease)
+                writeLease, source, narrativeRolePath)
             ? payload
             : null;
     }
@@ -5147,24 +5196,25 @@ public partial class ValidationService
 
     private bool IsCurrentDetachedPendingTurnSnapshotAuthorityPayload(
         PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload payload,
-        FileSystemManager.CanonicalWriteLease? writeLease = null)
+        FileSystemManager.CanonicalWriteLease? writeLease = null, NarrativeInterfaceSourceSession? source = null,
+        string narrativeRolePath = "output/narrative_response.json")
     {
         const string repairRequestPath = "game_state/control/validation_repair_request.json";
         var repairContext = LoadPendingTurnRequestValidationContextSync(
             repairRequestPath,
-            writeLease);
+            writeLease, source, narrativeRolePath);
         if (DoesPendingTurnRequestValidationContextMatchAuthorityPayload(payload, repairContext))
             return true;
 
         var turnContext = LoadPendingTurnRequestValidationContextSync(
             "input/turn_request.json",
-            writeLease);
+            writeLease, source, narrativeRolePath);
         if (DoesPendingTurnRequestValidationContextMatchAuthorityPayload(payload, turnContext))
             return true;
 
         var completionContext = LoadPendingTurnRequestValidationContextSync(
             "ready/turn_complete.json",
-            writeLease);
+            writeLease, source, narrativeRolePath);
         return DoesPendingTurnRequestValidationContextMatchAuthorityPayload(payload, completionContext);
     }
 
@@ -5189,7 +5239,9 @@ public partial class ValidationService
 
     private Task<string?> ReadAcceptedTurnValidationFileAsync(
         string path,
-        FileSystemManager.CanonicalWriteLease? writeLease) =>
+        FileSystemManager.CanonicalWriteLease? writeLease, NarrativeInterfaceSourceSession? source = null,
+        string narrativeRolePath = "output/narrative_response.json") =>
+        source is not null ? ReadNarrativeAuxiliaryTextAsync(narrativeRolePath, path, writeLease, source) :
         writeLease == null
             ? CurrentWorldReadPhase() is { } phase ? phase.ReadTextAsync(path) : _fs.ReadFileAsync(path)
             : _fs.ReadFileAsync(writeLease, path);

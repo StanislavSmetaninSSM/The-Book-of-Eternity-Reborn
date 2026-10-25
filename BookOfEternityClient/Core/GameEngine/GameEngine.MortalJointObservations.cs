@@ -44,9 +44,14 @@ internal sealed record MortalJointRuntimeIssue(string? Code, string FilePath, st
 /// <param name="PreparationHeld">
 /// Whether the existing interface preparation-held flag is set.
 /// </param>
+/// <param name="NarrativeContribution">
+/// Last detached N contribution disposition, including unavailable historical N on v3 resume.
+/// This text never grants source or publication authority.
+/// </param>
 internal sealed record MortalJointRuntimeObservation(bool CheckpointPresent, bool CorrectionReady,
     bool CanonicalRefreshPresent, string? CanonicalDisposition, IReadOnlyList<MortalJointRuntimeIssue>? Issues,
-    bool FreshCheckpointPresent, bool ReadyPresent, bool FreshConsumed, bool PreparationHeld);
+    bool FreshCheckpointPresent, bool ReadyPresent, bool FreshConsumed, bool PreparationHeld,
+    string NarrativeContribution);
 
 public partial class GameEngine
 {
@@ -65,6 +70,6 @@ public partial class GameEngine
                 Array.AsReadOnly(refresh.Issues.Select(issue => new MortalJointRuntimeIssue(
                     issue.Code, issue.FilePath, issue.Message)).ToArray()),
             _mortalJointInterfaceFreshCheckpoint is not null, _mortalJointInterfaceReady is not null,
-            _mortalJointInterfaceFreshConsumed, _mortalJointInterfacePreparationHeld);
+            _mortalJointInterfaceFreshConsumed, _mortalJointInterfacePreparationHeld, _mortalJointNarrativeDisposition);
     }
 }

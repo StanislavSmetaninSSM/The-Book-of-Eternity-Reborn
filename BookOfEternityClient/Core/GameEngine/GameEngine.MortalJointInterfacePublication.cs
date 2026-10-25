@@ -69,6 +69,7 @@ public partial class GameEngine
                 if (ready is not { Faulted: false, DeleteReturned: true, ReleaseReturned: true })
                     throw new InvalidDataException("joint_interface_fresh_requires_actual_consumed_ready");
                 await RecheckMortalJointInterfaceReadyAsync(lease, ready, requireReadyAbsent: true);
+                await RequireCurrentMortalJointNarrativeAsync(lease, frame, null, beforeInterfacePreparation: true);
                 var source = ready.Source;
                 if (_mortalJointInterfaceValidationIteration <= 0) throw new InvalidDataException("joint_interface_iteration_missing");
                 var binding = new JsonObject
