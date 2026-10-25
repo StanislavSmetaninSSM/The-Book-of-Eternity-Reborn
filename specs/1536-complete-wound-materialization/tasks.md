@@ -20,7 +20,7 @@ Canonical handoff r73; source b377c9d1d0c6cfa5ce20b383d84eac069b8d2991.
 - [ ] T554 Original five only after gates, unchanged current budgets/oracles.
   - [ ] T568 Full external resumer report before native abort/parent cleanup.
   - [ ] T569 Cheap transport5 and exact ordinary NativeLinux single-cut replay.
-  - [ ] T570 Coherent SOURCE/fresh integration/PDB/catalog/PlanOnly/PREP.
+  - [x] T570 Coherent SOURCE/fresh integration/PDB/catalog/PlanOnly/PREP.
   - [ ] T571 Complete diagnostic replay, actual cause and bounded regression plan.
 - [ ] T555 Independent outcome review, compact findings/remote checkpoint.
 T551->T552->T553->T554->T555. Failed or incomplete gates block dependent work.

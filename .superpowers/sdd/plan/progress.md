@@ -1,3 +1,11 @@
+# Report-retention PREP ACCEPTED — transport5 next
+
+Separate Astra/high accepted85478ad2 freshintegration11bindings/16PDBchecks,
+catalog/plans and unchangedother10pins/game41/inputE7. Admitted transport5 first,
+then onlyifGREEN one ordinaryNativeLinuxcut0 with exact original defaults/body/
+220+10+10/category15. DirectLinux/G01/G02 not selected. Baseline5 remains2PASS/
+3FAIL, holdcauseUNKNOWN; replaycannotqualify5. Runtime unrun at this checkpoint.
+
 # Report-retention fresh build/planning verified — PREP pending
 
 Accepted SOURCE7fc812326678666ca3fa812e89b83fab7afe05f8 now freshly compiled:

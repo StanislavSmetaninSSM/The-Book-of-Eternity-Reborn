@@ -8,7 +8,7 @@ SIGABRT nullrootexit prevents parent reading resume.json before owned cleanup.
   byte-identical to normal output, flushed reference; keep primary failure.
 - [ ] T569 Five small transport cases, ordinary NativeLinux cut0 wrapper/category
   with exact original body/defaults/limits, never DirectLinux/G01 or qualification5.
-- [ ] T570 Coherent SOURCE/fresh integration XML/PDB/catalog/PlanOnly/PREP;
+- [x] T570 Coherent SOURCE/fresh integration XML/PDB/catalog/PlanOnly/PREP;
   retain cache509/native40/game41/current DATA only through explicit impact review.
 - [ ] T571 Transport5 then one genuine cold NativeLinux cut0, inspect complete
   Logs and establish actual root cause before production changes/regressions.
