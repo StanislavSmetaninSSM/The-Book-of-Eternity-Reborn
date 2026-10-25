@@ -2,7 +2,7 @@
 
 Issue#1536; spec BATCH1..7 / plan.md, autonomous specification-review-wait waiver.
 
-- [ ] T541 Canonical phases/prerequisites/consistency, written specification links,
+- [x] T541 Canonical phases/prerequisites/consistency, written specification links,
   source-only checkpoint/recovery and qualified1d2 eight-DLL backup.
 - [ ] T542 [US1] Cheap real source/reserved sync/async metadata reduction RED,
   category ownership and minimal off/on seam; unchanged bytes/native/source checks.

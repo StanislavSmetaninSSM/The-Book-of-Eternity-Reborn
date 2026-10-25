@@ -12,7 +12,8 @@ consumer return; fresh fence independent epoch closes before generation/ending
 full authority. T541 actual setup-plan/setup-tasks/prerequisites completed; bridge-equivalent
 read-only consistency7requirements/6tasks/100%coverage/0gaps/conflicts. Written
 links presented under waiver; baseline8DLL ZIP9members verified SHA29F13CA6...DF509.
-Pending RED/GREEN/review/qualification/original/outcome.
+T542 causal four-case metadata reduction fixture written, minimal unused policy seam;
+RED build/run pending. No batch implementation yet.
 All diagnostics uncapped D-only; r71raw/INPUT/CPU-GC/instrument/backups protected.
 
 # r71 initial ordinary/main-admission directory DATA — code gate accepted

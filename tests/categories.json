@@ -2,6 +2,40 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "core-source-validation-batch",
+  "responsibility": "Bounded existing-service directory DATA across serial source readers and fresh verification loops; actual metadata reduction and source/ownership integrity.",
+  "excludes": "No whole-owner cache, protected-source optimization, world bootstrap or new authority.",
+  "changeHints": [
+    "BookOfEternityClient/Core/SourceValidationBatch.cs",
+    "BookOfEternityClient.IntegrationTests/SourceValidationBatchTests.cs"
+  ],
+  "related": [
+    {
+      "id": "core-operation-source-data",
+      "when": "Source ownership/fences and fresh drift refusal remain required."
+    },
+    {
+      "id": "fr063-reserved-validation-read-set",
+      "when": "Exact reservation and completion proof integrity remain required."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "windows-latest"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.SourceValidationBatchTests.*"
+      ]
+    }
+  ]
+},
+{
   "id": "core-shared-read-admission-consumers",
   "responsibility": "Existing cold metadata refusal and held-lease main-record freshness consumers affected by the optional directory DATA parameter.",
   "excludes": "No unrelated terminal/input/native-stop or browser end-to-end lifecycle selections.",

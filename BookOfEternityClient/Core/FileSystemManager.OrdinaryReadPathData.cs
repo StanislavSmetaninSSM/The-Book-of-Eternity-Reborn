@@ -15,6 +15,11 @@ public partial class FileSystemManager
     internal bool OrdinaryReadAdmissionReuseEnabled { get; set; } = true;
 
     /// <summary>
+    /// Selects bounded source-validation directory DATA; disabling retains the original fresh route.
+    /// </summary>
+    internal bool SourceValidationBatchReuseEnabled { get; set; } = true;
+
+    /// <summary>
     /// Captures completed ordinary preparation phases without invoking diagnostic callbacks.
     /// </summary>
     /// <returns>
