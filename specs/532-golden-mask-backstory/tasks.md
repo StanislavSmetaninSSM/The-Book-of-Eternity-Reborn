@@ -6,6 +6,8 @@ T005 — обязательный gate: до него следующие зад�
 После рассмотрения уточнённой spec, деталей D2 и D3/D4 каждый срез конкретизируется до exact schema/signatures,
 определений и test assertions; этот список пока не является executable планом.
 Источник задач: #532 / #1519–#1522 / #1514, ссылки и статус в plan/research.
+GitHub execution epic: [#1560](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1560).
+Номера ниже — каноническое соответствие Spec Kit и Issues, не второй backlog.
 
 ## Phase 1 — исследование и проектирование
 
@@ -14,6 +16,7 @@ T005 — обязательный gate: до него следующие зад�
 - [x] T003 Через Spec Kit подготовить проект `plan.md`, `data-model.md`, `contracts/gameplay.md`, `quickstart.md` и этот `tasks.md` в `specs/532-golden-mask-backstory/`; отметить открытые gates.
 - [x] T004 Проверить согласованность и независимым контекстом проверить первоначальный diff `cbd417223..e2b42e268`; findings/ограничения в `specs/532-golden-mask-backstory/plan.md`. Не заменяет ревью T018.
 - [x] T018 Исследовать уточнённые автором explorable memories для обоих источников и POV владельца: navigation/cast/GM/turn/scheduler/history/recovery и все десять q4. Обновить семь документов этой feature до FR-01–21/AC-01–10; провести consistency и независимое ревью нового блока, опубликовать проверенный remote checkpoint. Evidence: `43205fcb7..ef9b05707`, review/checkpoint в plan; только investigation/documentation, без runtime.
+- [ ] T022 По запросу автора оформить полный пакет GitHub-задач #1560–#1570 с сюжетной важностью, native hierarchy/dependencies и связями с прежними story issues; зарегистрировать отдельный follow-up #1571 из #1536/T148. Сверить полноту, независимое ревью, remote readback и mapping. Никакой runtime-реализации или смены статусов чужих задач.
 
 ## Phase 2 — условия реализации
 
@@ -82,6 +85,31 @@ T016 сопровождает изменяемые срезы; T017 замыка
 state/validator/publication должны иметь одного владельца; ревью — отдельный.
 
 ## Покрытие требований
+
+### GitHub ↔ Spec Kit
+
+| Issue | Объём | Задачи |
+|---|---|---|
+| [#1560](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1560) | Эпик: Маска, память, Новый Порядок | Полный принятый объём |
+| [#1561](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1561) | Точные решения/контракты, авторское рассмотрение | T005, согласование T006 |
+| [#1562](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1562) | Прошлая личность, свидетельства, реакции | T006 (интеграция), T007, T013 |
+| [#1563](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1563) | Единый scene owner, pause/save/resume | T008 |
+| [#1564](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1564) | Исследование, оба клиента, historical actor/role | T019, T021 (контекст) |
+| [#1565](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1565) | Настоящий GM turn, границы настоящего, pilot integration | T020, интеграция T021 |
+| [#1566](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1566) | Постоянное искусство и атомарный grant | T009 |
+| [#1567](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1567) | Десять q4 и личные сценарии | T014, содержание T013/T021 |
+| [#1568](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1568) | Отдельный realm и visit round-trip | T010, T011 |
+| [#1569](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1569) | Presence, торговля, последствия финалов | T012, T015 |
+| [#1570](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1570) | Сквозная приёмка | T016, T017; проверки обязательны и внутри каждого среза |
+
+Отдельная [#1571](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1571)
+фиксирует runtime memory_suppression из SOURCE-аудита #1536/T148. Она связана
+с эпиком, но не дочерняя задача playback и не реализация Элиариного mercy_wound.
+Её регистрация не закрывает #1536/T148/E01 и не меняет план текущего исполнителя.
+Старые #532/#579–#584 и последующие display/audit задачи сохраняют свои статусы;
+новые issues описывают обнаруженные пробелы и согласованное расширение.
+
+### FR и задачи
 
 | Требования | Задачи |
 |---|---|

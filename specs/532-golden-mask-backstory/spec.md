@@ -3,6 +3,8 @@
 Дата: 2026-10-25; исследование дополнено 2026-10-26. Статус: сюжетная основа
 согласована; игровое воплощение и план реализации — проект для рассмотрения.
 Источник линии: [#532](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/532).
+Эпик нового воплощения: [#1560](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1560);
+уточнение/утверждение контрактов: [#1561](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1561).
 Связанная планируемая материализация: [#1519](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1519).
 Это предложение дополнения к сюжету; оно не переоткрывает задачи и не меняет
 их принятые критерии. Реализация в игре и переписывание канонических материалов

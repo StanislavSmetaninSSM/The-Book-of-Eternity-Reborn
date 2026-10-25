@@ -27,6 +27,9 @@ C#/.NET 8, System.Text.Json, файловое canonical state, Spectre.Console,
 [#1514](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1514).
 План не меняет их lifecycle. До runtime-работ нужен явный tracker для принятого
 расширения Маски и согласованные изменения пересекающихся критериев.
+Tracker зарегистрирован: [#1560](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1560)
+и дети #1561–#1570; mapping в [tasks](tasks.md#github--spec-kit). Условие наличия
+задач выполнено; авторское утверждение точной spec и предметные gates сохраняются.
 
 ## Проверка конституции
 
@@ -207,7 +210,8 @@ Native Serena: проект ready, symbolic C#/TS доступ; конфигур
 
 Spec Kit setup-plan/setup-tasks повторно выполнены для той же feature без
 перезаписи шаблонами. Обновлены spec, research, plan, tasks, data-model, contracts,
-quickstart. Текущая ревизия: 3 user stories, 21 FR, 10 AC, 21 задача.
+quickstart. Ревизия исследования на `518be413b`: 3 user stories, 21 FR, 10 AC,
+21 задача. Следующий блок регистрации Issues добавляет T022, не игровые требования.
 Consistency: 21 FR и 10 AC покрыты задачами, IDs уникальны; семь документов и
 13 относительных ссылок проверены, `git diff --check` без ошибок. G1/G2 явно
 остаются открыты; это готовность исследовательского результата, не исполнения.
@@ -246,3 +250,33 @@ T018. Проверка clean restore в новую директорию не в�
 Маршрутизация агентов соответствует политике: два bounded Sol High аудита и
 отдельное Astra High ревью взаимосвязанных контрактов; данных о стоимости или
 выигрыше времени для изменения этой политики в данном блоке нет.
+
+## Регистрация GitHub-задач — 2026-10-26
+
+Запрос автора: до параллельной разработки или передачи Астре создать чёткие
+самодостаточные задачи, отметить сюжетную важность и связать с текущим сюжетом;
+Астра продолжает #1536. База блока `518be413b29ea67bdb7b9a8c8125eb1bbbc01dfd`
+сверена с remote перед изменениями. Runtime не меняется.
+
+Созданы эпик #1560, десять дочерних задач #1561–#1570 и отдельная #1571.
+Каждая содержит scope/non-goals, критерии, источники на immutable SHA, Spec Kit
+mapping, зависимости и правила тестов/performance. Метка `story: important`
+обозначает сюжетную важность, не срочность и не разрешение начать production.
+Существующие story issues прочитаны через GitHub; их статусы не меняются.
+
+Bounded Sol 6.1 High audit параллельности: #1536 — related mechanics baseline,
+не blanket blocker. Безопасны уточнение spec/содержания/трекеры. Turn/profile/
+effect/realm/repair изменения требуют согласованного принятого SHA нужного среза
+и одного владельца общих файлов; неопубликованный WIP Астры не известен.
+В частности, #1565 затрагивает staging/finalizer/snapshot/scheduler и GM helper,
+#1566 — profile/arts/effects, #1568 — realm/resource/repair consumers.
+
+Проверен существующий SOURCE-аудит #1536/T148: historical defeat audit persistence
+не доказывает runtime memory_suppression. Его отдельный подготовленный follow-up
+зарегистрирован как #1571; это не закрытие T148/E01/#1536 и не смешение с playback
+или mercy_wound. Документы/статусы текущей работы по ранам не правятся.
+
+Native sub-issue/dependency readback и независимое ревью пакета пока PENDING.
+Создание Issues выполнено по прямому запросу автора, сообщения Астре не отправлялись,
+назначения исполнителей не сделаны. Дальнейший первый шаг — #1561, не запуск
+неутверждённого runtime. Рабочие исходники, тесты и диагностика в этом блоке не меняются.
