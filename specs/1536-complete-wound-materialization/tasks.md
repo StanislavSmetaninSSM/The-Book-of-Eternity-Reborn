@@ -10,9 +10,9 @@ Issue#1536; spec BATCH1..7 / plan.md, autonomous specification-review-wait waive
   classifier plumbing/strict original control/counters; GREEN and integrity coverage.
   Reopened for actual resumer passive-event queue and positive-coverage RED/GREEN;
   first full pair is complete coverage probe, not successful recovery-cache proof.
-- [ ] T544 [US1] Complex independent coherent review/fixes, bounded affected tests,
+- [x] T544 [US1] Complex independent coherent review/fixes, bounded affected tests,
   catalog/PlanOnly/XMLuniform8; conditional genuine source42/twoimports/admission.
-- [ ] T545 [US2] Conditional same-DLL/INPUT600/820/15 off/on originals with frozen
+- [x] T545 [US2] Conditional same-DLL/INPUT600/820/15 off/on originals with frozen
   uncapped D timings/CPU-GC, original native/oracles/owned cleanup preserved.
 - [ ] T546 [US2] T546-source-validation-batch.md honest measurements/limits,
   independent outcome/exact retention, source-only final publication/recovery.

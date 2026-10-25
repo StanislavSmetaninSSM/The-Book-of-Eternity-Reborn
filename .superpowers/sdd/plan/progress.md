@@ -34,7 +34,23 @@ PlanOnly25/584/0executed. Independent complexAstra/high finalcode accepted45E181
 3157,0unresolved. Remote-only0b source98blobs70.0066s exact. T543 complete again.
 Fresh T544b genuine source42 1PASS180.9589s/twoimports/bothcleanup/clean,82files513712B;
 contractBBC9C603...FC63, result226775F5...CE4B, packageD2ABB83F...B8A1/320331B.
-Second frozen admission/600child820shared15cat pair pending, no repeat originalyet.
+Second frozen admission AcceptedA2C16AC9...7CCB/157pins/metadata3b2e368eb7,
+remote-only98blobs49.3011s exact. T545b same-DLL/INPUT pair bothPASS: wholeTRX
+269.7758544->247.4158425s(-22.3600119); producer89.7764652->87.1758916;
+first167.8579042->147.9249174(-19.9329868);repeat.8399946->.8005552.
+Timedfirstwindow OFF0;ONbefore0/after=delta6222batches773169requests198090queries/
+575079hits. ActualGetAttributes914435->645877(-268558),54.10635->36.75655s;
+WindowsDirectoryRefresh-75632. Main29400/nativehandle65676/lease28334/freshsources
+4782+2449/opencomplete17720 unchanged.565/566names,3882421->3519081completescopes,
+0open/late; all306JSON+4text/native73+0/gameoracles/bothcleanup/runtimeverified.
+FreshFence20.8373->11.2091s/reservedExit9.4540->6.2434s (overlapping). SourceBatch
+Lifetime31.9088s is usefulwork, not standaloneoverhead. CPUresumer181.2813->162.0156s,
+kernel96.6875->75.7031/user84.5938->86.3125. GC3065.365->3198.152ms partialintervals,
+fullpausecoveragefalse. Oneorderedpair/no100s/universalclaim. T544/T545 complete.
+T546 humanreport0D3C728F...AF4F/comparison1215A3B1...841C; exactretentionplan
+DD980E4E...B9FD538Dleaves516684040B/1261protected/10expectedworkspacetransitions,
+currentfull33+33andcheap472members verified. Independentoutcome/retentionreview
+pending; no deletionexecuted, allpriorraw retained untilacceptance.
 All diagnostics uncapped D-only. r71raw and first-r72raw/CPU-GC/INPUT/instrument/
 binarybackups retained; old DLLs verified in T5411d2 and T543b4c9 ZIPs. No raw Git.
 Workflow checkpoint: full probe exposed missed actual consumer binding; independent

@@ -23,10 +23,10 @@ Stack: C#/.NET8/current SDK, PowerShell7 bounded categories, Python D-local tool
   explicit classifier plumbing, sealed source-count accumulator replacing lifecycle Action. GREEN reduction/equal bytes/mtime/fresh sources;
   hook/foreign/close/retry/mutation/overlap/await/refusal and independent fresh
   fence tests. Strict test-only lifecycle control+uncapped batch counters.
-- [ ] T544 [US1] Coherent separate complex review/fixes; affected categories,
+- [x] T544 [US1] Coherent separate complex review/fixes; affected categories,
   catalog/PlanOnly/XMLuniform8 qualification; conditional genuine new source42/
   twoimports, frozen original admission/CPU-GC. No original if cheap gate fails.
-- [ ] T545 [US2] Same qualified DLL/newINPUT off/on original pair,600/820/15,
+- [x] T545 [US2] Same qualified DLL/newINPUT off/on original pair,600/820/15,
   unchanged timings/native/oracles/owned cleanup; no competing heavy work.
 - [ ] T546 [US2] Human findings/counts/full timer union/runtime/current limits,
   independent outcome+exact retention review; verified archive replacement and
