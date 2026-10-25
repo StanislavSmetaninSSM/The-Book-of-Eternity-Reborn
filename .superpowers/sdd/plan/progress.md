@@ -1,4 +1,14 @@
-# T584 live N source contribution — corrected probe PREP accepted, live3 next
+# T584 live N source contribution — corrected before-FIRST-I PASS
+
+Integration83f corrected before-FIRST-I actual PASS1/1/0skip at runtime
+`1a611a43709e42b0279ceb204c066de9e5450a7e`: framework53.1716025s,
+category61.815202s / runner73.6466163s, no timeout/both cleanups true. Distinct
+metrics now show broad initial/public events2/2, actual N evaluation1/1 and
+fresh rechecks0 before the in-N cut. Actual source-A drift refusal is exact;
+I/preparation0, all223 cut/after/repeat images unchanged, turn42 and known hold
+persist. Owned root absent and all33 artifacts unchanged. Full raw/semantic
+verification: external `live-n-implementation/actual-before-first-I-corrected-1`.
+Next corrected after-capture singleton; unchanged/cold2 remain UNRUN.
 
 Independent Astra/high corrected-probe PREP ACCEPT at clean remote checkpoint
 `2f00ba7e67c43312a3491b6645d05c7f18476136`, no material findings. It checked all33
