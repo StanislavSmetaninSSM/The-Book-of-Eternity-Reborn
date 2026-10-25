@@ -25,7 +25,7 @@ raw drift still refuses success. Existing service/cache keys/lifetimes unchanged
   coherent implementation/tests/docs/selection SOURCE review.
 - [x] T579 Fresh builds/PDB/catalog/NoBuild plans/PREP; cheap controls and new
   genuine Linux input after any game hash change. Review retained results.
-- [ ] T580 Original180s take, full raw/owned cleanup/outcome, then cold/original5;
+- [x] T580 Original180s take, full raw/owned cleanup/outcome, then cold/original5;
   compact checkpoints/push/verified clean recovery. No blind repeated run.
 
 # Linux source-adapter qualification plan
@@ -49,7 +49,7 @@ source counters and negative fresh fences must prove this before cold gameplay.
   coherent independent SOURCE/optimization/selection review.
 - [x] T574 Fresh managed XML/PDB/native source pins, catalog/PlanOnly/PREP,
   targeted causal/affected regressions and genuine new Linux DATA if required.
-- [ ] T575 Review retained gates and execute complete original5 unchanged;
+- [x] T575 Review retained gates and execute complete original5 unchanged;
   independent outcome, checkpoint and verified GitHub-only recovery.
 
 Independent SOURCE accepted2c073 without findings. Exact impact selection is

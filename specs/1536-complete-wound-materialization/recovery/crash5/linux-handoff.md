@@ -9,8 +9,8 @@ and Integration/Bridge Info`483befce4e23920c739adb817154e42ea92894c0`.
 All31 source/PDB pairs and11 shared assembly/PDB paths verified. This explicitly
 separates source-content binding from subsequent checkpoint commit SHA.
 
-Current verified results (independent final original-five outcome accepted; fresh
-GitHub-only recovery still pending at this checkpoint):
+Current verified results (independent final original-five outcome and fresh
+GitHub-only source recovery accepted):
 - cache514 exact canonical union,36categories/37descriptorresults:
   476 reviewed retained Linux results +38 fresh; no uniform-build rerun claim.
 - passive regression66/66 PASS,8descriptors, including queue9/transport9,
@@ -58,7 +58,7 @@ Key full evidence: `passive-cache-514-verification.json`,
 No raw logs, TRX, diagnostic JSON or diagnostic archives uploaded to GitHub. Old failed/native/original-five captures
 remain; only reviewed superseded GEN raw retired after complete replacements and
 ended owners. Old clean recovery clone7ff was retired as a disposable source copy;
-final fresh GitHub recovery is required anew. User saves and main tracked fixtures
+final fresh GitHub recovery of `aca4106b268c3bf7506a945971818b0c0bf0330b` was verified anew. User saves and main tracked fixtures
 remain untouched. Largest tracked diagnostic groups/fixture-dependency inventory
 is external `repository-size-inventory.json`; repository cleanup is a separate stage.
 

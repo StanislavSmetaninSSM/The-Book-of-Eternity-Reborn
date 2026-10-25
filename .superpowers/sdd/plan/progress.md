@@ -1,3 +1,33 @@
+# Linux qualification complete — independent full recovery accepted
+
+Runtime original5 and whole statedLinuxscope independently accepted by Astra/high.
+FreshGitHub-only full recovery of frozenaca4106b268c3bf7506a945971818b0c0bf0330b
+accepted independently: /workspace/tboe-linux-final-recovery-20261025,
+HEAD=remote,57806trackedfiles,identicalfulltree/pathlist,cleanincludingignored/
+untracked,noalternates/sparse/no projectbinobj. All31qualifiedsourcehashes and10
+instructions/spec/plan/tasks/checkpoint files match. Networksinglebranch fulltree,
+blob:nonefiltersunneededhistoricalcontent; no oldlocalobjects/source/binariescopied.
+This proves source recovery, not an additional build/runtime pass.
+
+This receipt changes only Markdown/status. Fetch this receipt fromGitHub into
+thatfreshclone and verify actualremoteSHA/cleanfulltree/sourcecontent; the final
+message carries the exactreceiptcommitSHA (a commit cannot contain itsownSHA).
+Runtime source remainsGame/Support/UnitInfoa9f03 andIntegration/BridgeInfo483bef;
+31PDB/contentchecks bind those artifacts to unchanged currentcode. No rerunneeded
+for documentation. New commits audited fromb377 throughfrozencheckpoint: only
+C# sources,humanMarkdown andsourcecatalog/selectionJSON; no rawlog/TRX/diagnostic
+JSON/archive/binary additions inanyintermediatecommit. Currentreceipt alsodocsonly.
+
+Final accepted gates: cache514(476retained+38fresh/37desc/36cats), passive66,
+Native40(sixdesc,recurrence4notdoublecounted), GEN1, Take/Qte/Semantic3,
+causalordinaryNativeLinuxcut0, originalTheory5/5. Full timings/receipts/selection
+in currentlinux-handoff and external /workspace/tboe-linux-evidence-20261025.
+Nativeinitial15sintermittency causeUNKNOWN, crossOSfrozenDATAcompatibilityOPEN,
+WindowsqualificationofnewfixesUNRUN remain. Repositoryweightcleanup is nextstage;
+no trackedfixtures,usersaves,Git history orbranches removed. Only reviewedoldGEN
+raw and disposable7ffrecoverycopyretired perpolicy; currentandfailedrawretained.
+No merge/forcepush/issueclosure. Taskscopecompleted after finalreceiptSHAcheck.
+
 # Independent original5 FINAL OUTCOME accepted — frozen recovery checkpoint
 
 Independent Astra/high accepted actualfivePASS, all20fullstreams/5fullreports

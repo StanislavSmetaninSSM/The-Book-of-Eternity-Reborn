@@ -9,7 +9,7 @@ Canonical handoff r73; source b377c9d1d0c6cfa5ce20b383d84eac069b8d2991.
   - [x] T558 Fresh XML/PDB/catalog/PlanOnly and independent PREP, then8+1.
   - [x] T559 Boundary6+remaining49, disjoint454retainedPASS, outcome review.
   - [x] T560 Narrow completed-proof source owner; generic reservation unchanged.
-  - [x] T561 Preserve strict comparison and add late/nested actual controls (runtime pending T563).
+  - [x] T561 Preserve strict comparison and add late/nested actual controls (verified in T563/T574/T580).
   - [x] T562 Coherent SOURCE/PREP review, fresh managed builds/bindings/discovery.
   - [x] T563 Genuine new Linux DATA after game-hash change and targeted regression.
 - [x] T553 Separate original NativeLineage Linux controls and complete evidence (current40 PASS; historical intermittent OPEN).
@@ -18,20 +18,20 @@ Canonical handoff r73; source b377c9d1d0c6cfa5ce20b383d84eac069b8d2991.
   - [x] T566 Grouped SOURCE/fresh affected managed builds/PDB/catalog/PREP (original effective budgets).
   - [x] T567 Causal host8/main4/terminal12 and complete reviewed native40.
 - [x] T554 Original five only after gates, unchanged current budgets/oracles.
-  - [x] T568 Full external resumer report before native abort/parent cleanup (transport5 PASS; live capture pending T571).
+  - [x] T568 Full external resumer report before native abort/parent cleanup (transport5 PASS; live cut0/original-five report capture verified).
   - [x] T569 Cheap transport5 and exact ordinary NativeLinux single-cut replay preparation.
   - [x] T570 Coherent SOURCE/fresh integration/PDB/catalog/PlanOnly/PREP.
   - [x] T571 Complete diagnostic replay, actual cause and bounded regression plan (cut0 FAIL; retained full report, unsupported adapter mismatch).
   - [x] T572 Minimal source-adapter causal RED (new5 same exception, existing3 PASS), retained report verification and exact selection.
   - [x] T573 Bounded binding correction, fresh negatives and coherent independent SOURCE review (2c073 accepted; current GREEN and cold/original-five verified).
   - [x] T574 Fresh managed builds/PDB/catalog/PREP, targeted regressions and new Linux DATA if required.
-  - [ ] T575 Complete original5 unchanged after affected gates; independent outcome and remote recovery.
+  - [x] T575 Complete original5 unchanged after affected gates; independent outcome and remote recovery.
   - [x] T576 Preserve take timeout and named phase comparison; bound full passive timing design.
   - [x] T577 Opt-in scalar named-event data in existing sealed accumulator, cheap transport/concurrency/late controls.
   - [x] T578 Explicit Take/Qte/Semantic passive wiring, real metadata-count/freshness proof, coherent SOURCE review.
   - [x] T579 Fresh affected builds/PDB/catalog/PREP, cheap gates, current Linux DATA if game hash changes.
-  - [ ] T580 Same180s take and remaining affected/cold gates, full capture/outcome/retention review.
-- [ ] T555 Independent outcome review, compact findings/remote checkpoint.
+  - [x] T580 Same180s take and remaining affected/cold gates, full capture/outcome/retention review.
+- [x] T555 Independent outcome review, compact findings/remote checkpoint.
 T551->T552->T553->T554->T555. Failed or incomplete gates block dependent work.
 
 # CRASH5 — revision73 optimization policy and Linux handoff
