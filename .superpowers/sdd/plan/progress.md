@@ -1,4 +1,31 @@
-# New E035 Linux DATA verified/accepted — affected integration16 next
+# Take-fence timeout preserved — full passive timing preparation design next
+
+Run144629-918-59441-4c1de9c0af52408880f486cbbb6243c3: firsttake body started,
+original180s category deadline fired (category183.8969591s incl stop); exit124,
+228.3498597s wall/TimedOuttrue. No completedTRX/cases; other15UNRUN. Process cleanup
+complete, PID59608ended/Z; ownedgame root retained, no closingreport. Generic
+runner failure text names22min lane umbrella; actual stopping budget remains3min.
+Partialraw60e9d25c5c3a40af909c85edecb97dd3:691237763bytes/1894534timingevents,
+no complete report. Old completeTake ea606c57.../1355906823bytes/145.302s remains.
+This timeout cannot qualify take or replace its last complete measurement.
+
+Existing named-timer analysis parsed each raw once, stored aggregates externally.
+All18 selected phase/sequence pairs match oldPASS. At seq1520965, entering
+RecoveryTake.PrepareCommonPlan: old54.9209s/new113.0513s; the newcapture ends
+inside that phase at seq1894534/165.2793s. Observer serialization/write at the
+same entry: old8.4367/8.6350s, new16.0103/16.1425s. More work from the two
+production patches is not established: independent static audit finds neither
+changed path active before take. Underlying throughput change remains UNKNOWN.
+No blind retry, larger budget, diagnostic truncation or speculative product fix.
+
+Confirmed optimization obstacle: this component's legacy OperationTimingObserver
+disables existing SourceValidationBatch. Existing sealed OperationTimingAccumulator
+permits it but currently stores only aggregates, not original named events.
+Dropping full named trace or reconstructing fake events is unacceptable. T576..580
+will bound an opt-in scalar queue in that existing recorder and TAKE-only wiring,
+with cheap real-query/freshness/complete-transport proofs before another take.
+Other15 remain independent on currentE035/C0AD and may execute without take PASS;
+fullcache514/coldcut0/original5 remain blocked by take. No code changes yet.
 
 Run143308-588-58966-9a53aefa546d4e2cb84c4d39b04d30af:1planned/executed/PASS,
 exit0/190.3318766s wall/no timeout/skip/duplicate/both cleanups complete. Genuine

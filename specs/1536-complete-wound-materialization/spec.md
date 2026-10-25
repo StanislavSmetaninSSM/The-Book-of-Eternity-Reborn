@@ -1,3 +1,31 @@
+# Linux full passive timing amendment — #1536 /2026-10-25
+
+LINUXTIMING1: preserve the genuine180s take timeout, incomplete named trace and
+previous complete145.302s PASS. Same phase sequence counts with slower elapsed
+do not establish extra work from the two production fixes. Never raise the
+budget, cap diagnostics, suppress the oracle or claim an incomplete capture PASS.
+LINUXTIMING2: extend only the existing sealed OperationTimingAccumulator with
+explicit opt-in original scalar named events: monotonic timestamp, sequence,
+begin/end, inclusive duration and late status. Default aggregate behavior remains.
+No callback, filesystem IO, authority object or diagnostic quota in recorded path.
+Atomic detached drains must preserve every event exactly once across concurrency.
+LINUXTIMING3: TAKE fixture alone uses the sealed path instead of its arbitrary
+callback, so existing directory DATA batches can participate under their original
+guards. Keep full original named trace and source timestamps; never synthesize
+events from aggregates. Transport runs outside functional calls and includes a
+final drain after resource close, before diagnostic Finish. Open/late/lost/write
+failures make diagnostics incomplete and cannot produce qualified success.
+LINUXTIMING4: cheap typed controls first: exact event transport, independent
+windows, concurrent drains, late/open/error cases and writer failure; compare
+real metadata attempts, file reads and fresh Main/lease/source/drift checks.
+Legacy callbacks keep their original fresh fallback. Preserve cold genuine
+issuers, independent mutable fixtures and the unchanged complete take oracle.
+LINUXTIMING5: mandatory coherent SOURCE/PREP/outcome, fresh affected managed
+builds and actual pins. A new game hash requires genuinely new Linux input;
+never rebind old archives. Retain only independently reviewed unaffected results.
+Then same180s take and mandatory ordinary NativeLinux/original5 gates. No gameplay,
+native protocol, source authority, cache dependency or GM-authored contract change.
+
 # Linux source-adapter qualification amendment — #1536 /2026-10-25
 
 LINUXADAPTER1: preserve the complete ordinary NativeLinux cut0 replay FAIL and

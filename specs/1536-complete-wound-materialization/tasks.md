@@ -26,6 +26,11 @@ Canonical handoff r73; source b377c9d1d0c6cfa5ce20b383d84eac069b8d2991.
   - [x] T573 Bounded binding correction, fresh negatives and coherent independent SOURCE review (2c073 accepted; GREEN pending T574).
   - [ ] T574 Fresh managed builds/PDB/catalog/PREP, targeted regressions and new Linux DATA if required.
   - [ ] T575 Complete original5 unchanged after affected gates; independent outcome and remote recovery.
+  - [ ] T576 Preserve take timeout and named phase comparison; bound full passive timing design.
+  - [ ] T577 Opt-in scalar named-event data in existing sealed accumulator, cheap transport/concurrency/late controls.
+  - [ ] T578 TAKE-only passive wiring, real metadata-count/freshness proof, coherent SOURCE review.
+  - [ ] T579 Fresh affected builds/PDB/catalog/PREP, cheap gates, current Linux DATA if game hash changes.
+  - [ ] T580 Same180s take and remaining affected/cold gates, full capture/outcome/retention review.
 - [ ] T555 Independent outcome review, compact findings/remote checkpoint.
 T551->T552->T553->T554->T555. Failed or incomplete gates block dependent work.
 
