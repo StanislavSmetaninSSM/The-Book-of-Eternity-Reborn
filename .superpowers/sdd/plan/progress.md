@@ -1,3 +1,40 @@
+# T584/T591 bounded live N contribution accepted — 2026-10-25
+
+Independent Astra/high final OUTCOME and fresh GitHub source-recovery reviews
+accepted frozen `5c207aafd4bad6682c2f5539c248ad237f1a89c8`, no material findings.
+All135 distinct selected cases PASS with per-run provenance preserved. Current
+artifacts are Game/Support/Bridge3cf, Unit8e, Integration83f; retained results
+also include Unit3cf and Integration3cf. This is retained29+48+fresh53 cheap cases,
+corrected live3 and cold2; no single135-run or whole-epic claim.
+The exact scenario durations/captures/cleanup and earlier failures remain below.
+Native cold controls verify four unique runs/eight complete streams/two complete
+retained reports, producer73/resumer0, frozen I and owned cleanup. No raw added.
+
+New GitHub-only filtered full source recovery into
+`/workspace/tboe-live-n-recovery-20261025` verifies all30,900 tracked blobs /
+772,418,243 bytes, 26 qualified PDB source hashes and11 governing/catalog files.
+Remote/HEAD/tree agree; clean including ignored, no bin/obj, sparse or alternates;
+connectivity fsck exit0. This proves source recovery, not rebuilt runtime recovery.
+The final Markdown-only receipt will be fetched/read back there without a new
+build/runtime or a self-referential receipt loop. All external raw remains in
+`/workspace/tboe-linux-evidence-20261025/live-n-implementation`; accepted reports
+are `independent-final-n-outcome-review.md` and
+`independent-final-n-recovery-review.md` in that external directory.
+
+Optimization: actual N projection/issues/source DATA are retained once; consumer
+performs no second projection/normalization/UTC sample. Fresh source/authority
+fences remain. Live scalar timing snapshots are Closed=false/Complete=false
+(before recorder disposal), with observed OpenScopes0/LateCompletions0: these are
+window counters, not closed complete trace reports or a speedup comparison.
+No GM-authored surface/schema changed; the accepted no-new-example rationale
+remains valid. No new cache or diagnostic quota was introduced.
+
+T584/T591 close only this bounded live N join. Durable N origin/fault history,
+fullNI/S/B/M3/F1/T197, Windows, first-guardian intermittence and cross-OS DATA
+compatibility remain open. Next mandatory bounded work is T179-Pd.3e actual
+debug/reasoning-prefix producer/consumer inside Capturing, before CloseCapture
+and preparation; valid prefix yields NeedsActorDependencies, never full S.
+
 # T584 live N source contribution — all selected135 PASS, final review/recovery
 
 Published cut2 PASS1/1/0skip at runtime `2e881d75a1e0ac53910409d7ce602d8fbab07d49`:

@@ -11,7 +11,7 @@ evidence. This maintenance block does not complete the wound-materialization fea
   ignore new diagnostic leaves; retain every fixture/save/input and external raw.
 - [x] T583 Bounded index/fixture/link/catalog integrity and diff review, commit/push
   with checked remote SHA; no history rewrite, GC or qualification runtime replay.
-- [ ] T584 Resume T179-Pd/RP01 owner-produced N-pass source proof and its genuine
+- [x] T584 Resume T179-Pd/RP01 owner-produced N-pass source proof and its genuine
   pre-preparation consumer; preserve the already implemented I lifecycle/v3 basis
   and I Capturing consumer, implement/review the remaining bounded N join.
 
@@ -34,7 +34,7 @@ evidence. This maintenance block does not complete the wound-materialization fea
 - [x] T590 Genuine fresh pre-preparation vertical plus narrowly selected current
   Prepared/Published resume regressions: no repeated projector/UTC or already
   Published I write; Prepared may finish its one frozen publication. Owned cleanup.
-- [ ] T591 Independent outcome and source persistence review; exact remote SHA,
+- [x] T591 Independent outcome and source persistence review; exact remote SHA,
   clean GitHub source recovery and compact checkpoint, then next remaining #1536 task.
 
 Canonical handoff r73; source b377c9d1d0c6cfa5ce20b383d84eac069b8d2991.

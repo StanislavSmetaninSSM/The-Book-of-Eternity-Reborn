@@ -104,7 +104,7 @@ historical unimplemented-I/child1 description; its frozen bytes remain unchanged
   with no new N/I/projector/UTC/common/effects and unchanged durable images. A new
   engine without that memory uses the qualified physical v3 route with
   HistoricalNUnavailable; a different genuine checkpoint/G does not inherit the hold.
-- [ ] Independent outcome review, source-only checkpoint/push/remote SHA and clean
+- [x] Independent outcome review, source-only checkpoint/push/remote SHA and clean
   GitHub recovery. No GM-authored surface changes are intended; explicitly verify
   the prompt/docs/example assessment before completion.
 
