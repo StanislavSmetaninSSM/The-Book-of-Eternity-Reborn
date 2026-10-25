@@ -42,16 +42,23 @@ internal sealed class JointBundleDiagnosticOutput : ITestOutputHelper, IDisposab
     /// When <see langword="true"/>, disposes the actual records writer after registration to exercise deferred storage failure.
     /// Normal component cases leave this <see langword="false"/>.
     /// </param>
+    /// <param name="repositoryRootForControl">
+    /// An absolute per-call repository root for isolated path controls, or <see langword="null"/>
+    /// for the actual repository. This does not change the process-wide repository identity.
+    /// </param>
     internal JointBundleDiagnosticOutput(string caseName, ITestOutputHelper referenceOutput,
-        bool disposeWriterForControl = false)
+        bool disposeWriterForControl = false, string? repositoryRootForControl = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(caseName);
         ArgumentNullException.ThrowIfNull(referenceOutput);
+        var repositoryRoot = repositoryRootForControl ?? TestRepoPaths.RepoRoot;
+        if (!Path.IsPathFullyQualified(repositoryRoot))
+            throw new InvalidDataException("A component control repository root must be absolute.");
         _referenceOutput = referenceOutput;
         FixtureNonce = Guid.NewGuid().ToString("N");
-        DiagnosticDirectory = Path.GetFullPath(Path.Combine(TestRepoPaths.RepoRoot, "TestResults",
+        DiagnosticDirectory = Path.GetFullPath(Path.Combine(repositoryRoot, "TestResults",
             "joint-bundle-component-diagnostics", FixtureNonce));
-        ExpectedOwnedRoot = Path.GetFullPath(Path.Combine(TestRepoPaths.RepoRoot, "TestResults",
+        ExpectedOwnedRoot = Path.GetFullPath(Path.Combine(repositoryRoot, "TestResults",
             "joint-bundle-component", FixtureNonce));
         if (Directory.Exists(DiagnosticDirectory) || File.Exists(DiagnosticDirectory))
             throw new IOException("Diagnostic destination already exists.");

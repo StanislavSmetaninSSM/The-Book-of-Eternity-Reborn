@@ -27,10 +27,13 @@ public sealed class JointBundleDiagnosticOutputTests
     [Fact]
     public void RecordsAreReadableBeforeCloseWithoutDiagnosticQuota()
     {
-        using var output = new JointBundleDiagnosticOutput(
-            nameof(RecordsAreReadableBeforeCloseWithoutDiagnosticQuota), _output);
         var configuredRoot = Environment.GetEnvironmentVariable("BOE_TEST_DIAGNOSTIC_ROOT");
-        var expectedRoot = configuredRoot ?? Path.Combine(TestRepoPaths.RepoRoot, "TestResults");
+        var controlRoot = Path.Combine(configuredRoot ?? Path.GetTempPath(),
+            "component-diagnostic-path-controls", Guid.NewGuid().ToString("N"));
+        using var output = new JointBundleDiagnosticOutput(
+            nameof(RecordsAreReadableBeforeCloseWithoutDiagnosticQuota), _output,
+            repositoryRootForControl: controlRoot);
+        var expectedRoot = configuredRoot ?? Path.Combine(controlRoot, "TestResults");
         Assert.Equal(Path.GetFullPath(Path.Combine(expectedRoot,
             "joint-bundle-component-diagnostics", output.FixtureNonce)), output.DiagnosticDirectory);
         Assert.True(File.Exists(output.InitialPath));
