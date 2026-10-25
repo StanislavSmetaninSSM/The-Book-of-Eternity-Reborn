@@ -1,3 +1,21 @@
+# Linux take-fixture revised SOURCE/PREP ACCEPTED — target runtime next
+
+Codef540406a8d7404ccca025e6d1477e0f8c403699d, separate Astra/high SOURCE/PREP
+accepted with no blocking findings. Fresh integration-only XML03:05.87/6646warnings/
+0errors; integration SHA256a28bb82f54f55bb3b79e4b5710c4fc83ec2aeb2211a7c07081c96a53064ac96b,
+all11DLL/PDB pins/source checksums verified, unitab17/shared637 unchanged.
+PlanOnly081215-163-20788-9b3cc8478f7b4c2aa3f43b9f5c4dfe05:18categories19descriptors199cases,
+exit0/0executed; excludes exactly four newly completed categories36cases.
+Next target1 regression at unchanged3min, then198other pending cases; no passing
+307cases repeated. Full existing named timers remain enabled without quotas.
+
+Important ownership distinction: previous timeout runner's process cleanup succeeded,
+but fixture closing never ran; owned game DATA root TestResults/joint-bundle-component/
+868f727eb6ce41b9b1e90ec751da1fc8 remains. It is not raw diagnostic output and not
+removed. Its partial raw capture remains external, not complete or Linux PASS.
+Reviewer notes alternate fast hit names; actual full observations will expose route
+mix alongside the source/reuse/fresh-source oracle. No production/budget change.
+
 # Linux T552 take-fence category timeout — named-timer cause and bounded fixture WIP
 
 Remaining run075738-689-18827-a8ca489d2c8446ad9589fbdd84d3afed:4/23descriptors,
