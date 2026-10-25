@@ -1,3 +1,26 @@
+# Source-adapter causal RED verified — narrow correction SOURCE WIP
+
+Run134126-680-51756-05970347a83a4bd5afeb3c90f428d9d3:8executed,
+new5FAIL with exact Source fence lost its original version; existing3Linux
+replacement/drift/generation controls PASS. Exit1/no timeout/skip/duplicate,
+50.4617380s wall, selection and both cleanups complete. Actual unit bindings
+Game3F4338/Support5577DF/Unit2CB197 allInfoae3e,18PDB/source checks match;
+production source unchanged for RED. The preceding PlanOnly inadvertently rebuilt
+unit references (exit0/5:23.14/96warnings/0errors); integration remains2352/game41,
+not selected or claimed uniform. All plans after this point use NoBuild following
+fresh explicit builds. Actual bindings and22 provenance-only binary backups remain
+external; no old binaries are runtime inputs.
+
+Candidate correction changes only immutable-purpose adapter binding in Observe
+and EnterRead: unsupported readers keep their existing fresh route before any
+attachment/rebind. Lifetime/overlap/foreign refusal and ClearReceipt precede the
+explicit fallback; ordinary dynamic authority/version loss remains a refusal.
+VerifyCore, mutation/closing/success fences, generation and cross-lease DATA are
+unchanged. No Suspend/blanket retirement on absence. Per-call source observations
+now separately prove both unsupported reads are physical, resolving review's
+small oracle finding. Production correction/GREEN/builds still unqualified;
+independent coherent SOURCE and impact selection review precedes fresh builds.
+
 # NativeLinux cut0 report retained — source-adapter mismatch, causal RED next
 
 Run132123-710-49659-26e97331ca2141f281c727a15b792683:1executed/FAIL,

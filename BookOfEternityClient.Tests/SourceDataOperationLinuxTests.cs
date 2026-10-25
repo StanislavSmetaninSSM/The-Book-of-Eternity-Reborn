@@ -40,8 +40,10 @@ public sealed class SourceDataOperationLinuxTests(ITestOutputHelper output)
         fixture.OnRead = path => { if (path == "missing.txt") absentSources++; };
         fixture.Recording = true;
         await ReadAbsentWithUnsupportedAdapterAsync(files, reader);
+        var firstAbsentSources = absentSources;
+        Assert.True(firstAbsentSources > 0, "The first unsupported reader must physically observe absence.");
         await ReadAbsentWithUnsupportedAdapterAsync(files, reader);
-        Assert.True(absentSources >= 2, "Unsupported readers must physically observe absence on each call.");
+        Assert.True(absentSources > firstAbsentSources, "The second unsupported reader must independently observe absence.");
         await using var replacement = await files.AcquireCanonicalWriteLeaseAsync();
         Assert.Equal("original", await files.ReadFileAsync(replacement, "present.txt"));
         Assert.Equal("original", await files.ReadFileAsync(replacement, "present.txt"));

@@ -22,7 +22,7 @@ Canonical handoff r73; source b377c9d1d0c6cfa5ce20b383d84eac069b8d2991.
   - [x] T569 Cheap transport5 and exact ordinary NativeLinux single-cut replay preparation.
   - [x] T570 Coherent SOURCE/fresh integration/PDB/catalog/PlanOnly/PREP.
   - [x] T571 Complete diagnostic replay, actual cause and bounded regression plan (cut0 FAIL; retained full report, unsupported adapter mismatch).
-  - [ ] T572 Minimal source-adapter causal RED, retained report verification and exact selection.
+  - [x] T572 Minimal source-adapter causal RED (new5 same exception, existing3 PASS), retained report verification and exact selection.
   - [ ] T573 Bounded binding correction, fresh negatives and coherent independent SOURCE review.
   - [ ] T574 Fresh managed builds/PDB/catalog/PREP, targeted regressions and new Linux DATA if required.
   - [ ] T575 Complete original5 unchanged after affected gates; independent outcome and remote recovery.

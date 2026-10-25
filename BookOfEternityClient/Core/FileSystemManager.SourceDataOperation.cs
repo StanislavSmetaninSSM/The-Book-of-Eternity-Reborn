@@ -231,13 +231,16 @@ public partial class FileSystemManager
         }
 
         /// <summary>
-        /// Observes the actual lease without admitting or retaining any new authority.
+        /// Observes an ordinary source-compatible lease without admitting or retaining any new authority.
         /// </summary>
         /// <param name="lease">
         /// Lease supplied by original acquisition or an explicitly admitted reader.
         /// </param>
         internal void Observe(CanonicalWriteLease lease)
         {
+            // Unsupported purposes retain their original fresh reader. They cannot
+            // replace the adapter whose provisional DATA still requires its ordinary fence.
+            if (lease.Purpose != CanonicalWritePurpose.SessionMutation) return;
             lock (_gate)
             {
                 if (_closed || _failed || _completed || _suspended != 0 || _busy || _closingLease != null) return;
@@ -311,6 +314,9 @@ public partial class FileSystemManager
                 {
                     if (_lease != null && _lease.IsActive && !ReferenceEquals(_lease, declared))
                         throw new InvalidOperationException("Source operation supplied a foreign lease.");
+                    // Keep the original fresh route without binding an adapter that
+                    // the unchanged source-version contract deliberately excludes.
+                    if (declared.Purpose != CanonicalWritePurpose.SessionMutation) return false;
                     _lease = declared;
                 }
                 if (_lease != null && !_lease.TryAttachSourceOwner(this))
