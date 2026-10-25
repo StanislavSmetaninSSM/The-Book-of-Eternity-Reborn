@@ -20,8 +20,8 @@ actual metadata attempts while bytes, file sources and fresh guards stay equal;
 raw drift still refuses success. Existing service/cache keys/lifetimes unchanged.
 
 - [x] T576 Preserve timeout/phase evidence and independently review bounded design.
-- [ ] T577 Causal cheap event/transport controls, existing sealed recorder opt-in queue.
-- [ ] T578 Explicit expensive-control fixture transport and safe closing; real metadata proof;
+- [x] T577 Causal cheap event/transport controls, existing sealed recorder opt-in queue.
+- [x] T578 Explicit expensive-control fixture transport and safe closing; real metadata proof;
   coherent implementation/tests/docs/selection SOURCE review.
 - [ ] T579 Fresh builds/PDB/catalog/NoBuild plans/PREP; cheap controls and new
   genuine Linux input after any game hash change. Review retained results.

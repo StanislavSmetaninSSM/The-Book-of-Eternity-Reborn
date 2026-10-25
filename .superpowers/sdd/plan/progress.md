@@ -1,3 +1,30 @@
+# Full passive cheap gate 66/66 PASS — new genuine Linux input next
+
+Independent Astra/high PREP accepted exactselection8 before runtime. Run
+165559-244-65453-93793c98df054a0c8467b7752da20c3d on docsHEADdd8d74b56de8fd6a12edf6997a8f5417c4c0a473:
+8planned/completed descriptors,66planned/executed/PASS,0fail/skip/duplicate,
+exit0/no timeout,2:24.9146127wall,bothcleanupcomplete. Actual categories:
+queue9,transport9,existingpassive11,sourcebatch24,oldcollector1,profilediagnostic6,
+componentdiagnostic2,producer4. Causal queue scaffold RED7FAIL/2PASS nowGREEN9.
+All13 control reports exact storedbytes/SHA verified; expected incomplete/error
+reports remain incomplete. Every11 DLL/PDB file matches prior binding post-run.
+
+Independent real-file sync and async comparisons agree exactly:
+legacy522 GetAttributes vsaggregate322 vsfull-events322; Main guards52,
+lease guards44,file sources2 unchanged. Passive modes retain52 directory
+invocations/572requests/364sourcequeries/208hits. Same-timestamp byte drift and
+existing24 batch negatives PASS. This proves existing cache eligibility effect,
+not elapsed speedup or the whole prior54.92-to113.05 throughput cause (UNKNOWN).
+Retained476 + refreshed35 leaves three current expensive controls for target514.
+New queue9/transport9 and extra diagnostic13 are separate gates, not a new target.
+
+NoBuild catalog946/12494 valid/no stale/unmapped/0executed. Future PlanOnly:
+GEN1/300s; Take1/180s,Qte1/120s,Semantic1/120s; all0executed/exit0/cleanupcomplete.
+GEN stays legacy full diagnostic mode. New GameF9 genuinely new input remains
+UNRUN; C0AD archive/record/raw preserved. Cheap outcome and GEN PREP review next;
+no expensive case/coldcut0/original5 rerun admitted yet. Full external packet:
+passive-full-cheap-verification.json and passive-full-metadata-comparison.json.
+
 # Passive fresh stack verified — catalog/PREP/cheap GREEN next
 
 Independent SOURCE delta accepted483befce4e23920c739adb817154e42ea92894c0,
