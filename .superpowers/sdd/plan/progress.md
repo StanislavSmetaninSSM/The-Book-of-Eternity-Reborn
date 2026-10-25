@@ -1,3 +1,41 @@
+# Linux T551 final evidence ready — independent PREP acceptance pending
+
+2026-10-25; code9a6c93cd5fe3d2da3bd163947be9c9d6ce044a43; unit/shared build
+source637fa003b1db6170d460b7931143f8e84c167770, unchanged unit/shared sources
+through9a. Final native package637/protocol2/linux-x64/glibc2.38 built fresh;
+sourceaf579f12332914628f7fca4657775478d090b1aceccc2e7c3190c527a2074080,
+binary3d263406fb04b041a1530cdf1ce9e39a0117f6dcec3a1768ac0119d32a6c59f4.
+Final XML builds: unit04:57.97/10011warnings/0errors; integration03:04.44/
+6646warnings/0errors. Integration uses BuildProjectReferences=false only because
+all referenced current unit/shared projects were freshly built and unchanged;
+source/PDB/hash binding is explicit. No old/Windows binaries copied.
+Unit DLL157cb4bf3f418831f9525f386f1545784e72ef01781896bd8addd7a4f6050d86
+(source637); integration23bf4458e9cde71c47a29d20507fda27878891f540a56319d9b1d18d8bbdf312
+(source9a). All11pinnedDLLs/PDBs and identical client/TestSupport copies verified.
+Production/native tracked source diff fromb377 is empty.
+
+GREEN diagnostic-regressions selection:3descriptors/31planned=completed=passed,
+0failed/skip/duplicates,57.2892436s, owned/runtime cleanup complete. This includes
+causal component path RED1FAIL->GREEN2PASS, transport24PASS, pure roots5PASS.
+Run063349-678-8461-323fb94c24814fa5abc1bc02d50810a6 under external raw root.
+No checkout/TestResults exists after regression capture. No diagnostic quota.
+Final catalog:12465methods/938categories/0unmapped/stale, exit0/discovery-only.
+Remaining cache qualification35categories/36descriptors/504cases PlanOnly0exit;
+native controls6descriptors/40cases and original Theory1descriptor/5cases also
+PlanOnly0exit/0executed. New stage runs063540..063547 identify exact artifacts.
+All diagnostics/hashes/plan/summary/TRX are local-only in
+/workspace/tboe-linux-evidence-20261025 (managed-binding-final.json and full logs).
+
+Separate gpt-6.1-sol/xhigh review confirmed both PREP findings resolved on76ffe9891
+and no remaining code finding; final hash/discovery/GREEN evidence is now ready
+for its final PREP verdict. T552cache, T553native controls and T554five remainUNRUN.
+Optimization assessment: existing cache source-attempt/invalidation/fresh-fence
+contracts selected, real cold ordinary5 retained; new diagnostic resolver is
+cheap and must read current configuration, so no cache is appropriate. No game,
+GM/schema/native protocol change. Raw/fixtures/saves not removed or uploaded.
+Next after accepted PREP: run cache selection once, investigate actual failures,
+then NativeLineage controls before original five. Current budgets unchanged.
+
 # Linux verification partition — avoid repeating passed regressions
 
 The same38-category impact union is split into explicit diagnostic-regressions3
