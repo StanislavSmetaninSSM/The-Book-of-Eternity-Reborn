@@ -1,3 +1,13 @@
+# Linux cache OUTCOME ACCEPTED — exact NativeLineage40 next
+
+Separate Astra/high reread all37TRX and accepted509distinctPASS/36exactcategories,
+retention461+current48, strict actual cost/source reductions and allnegative fences.
+New full Qte/Semantic reports/closing accepted; all existing raw remains retained.
+T552/T559/T563 complete. Next exact tests/selections/1536-crash5-linux-controls.json:
+6descriptors40cases on own fresh Linux package and current unit/shared binaries.
+Native runtime and original5 remain UNRUN at this checkpoint; original5 requires
+successful native gate first. Budgets/oracles unchanged, cross-OS question OPEN.
+
 # Linux affected cache qualification GREEN — 509 distinct cases, OUTCOME pending
 
 Final run110523-448-36804-360a435061074984a707c2bc87204892, compiled integration

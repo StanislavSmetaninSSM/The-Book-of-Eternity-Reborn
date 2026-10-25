@@ -3,15 +3,15 @@
 Canonical handoff r73; source b377c9d1d0c6cfa5ce20b383d84eac069b8d2991.
 - [x] T551 Fresh Linux native/XML builds, exact impact selection/catalog/PlanOnly,
   hashes and independent PREP review.
-- [ ] T552 Reviewed cheap common cache/affected-consumer Linux contracts.
+- [x] T552 Reviewed cheap common cache/affected-consumer Linux contracts (509 distinct PASS).
   - [x] T556 Explicit current Linux applied input +8cheaprefusal/copy controls.
   - [x] T557 Genuine minimal Linux publisher/progression/capture preparation.
   - [x] T558 Fresh XML/PDB/catalog/PlanOnly and independent PREP, then8+1.
-  - [ ] T559 Boundary6+remaining49, disjoint454retainedPASS, outcome review.
+  - [x] T559 Boundary6+remaining49, disjoint454retainedPASS, outcome review.
   - [x] T560 Narrow completed-proof source owner; generic reservation unchanged.
   - [x] T561 Preserve strict comparison and add late/nested actual controls (runtime pending T563).
   - [x] T562 Coherent SOURCE/PREP review, fresh managed builds/bindings/discovery.
-  - [ ] T563 Genuine new Linux DATA after game-hash change and targeted regression.
+  - [x] T563 Genuine new Linux DATA after game-hash change and targeted regression.
 - [ ] T553 Separate original NativeLineage Linux controls and complete evidence.
 - [ ] T554 Original five only after gates, unchanged current budgets/oracles.
 - [ ] T555 Independent outcome review, compact findings/remote checkpoint.

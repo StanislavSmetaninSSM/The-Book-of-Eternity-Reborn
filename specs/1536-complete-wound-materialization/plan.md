@@ -20,7 +20,7 @@ No newservicecache/key/serializer; existingfullidentity/dependencies/invalidatio
   unlessimpactreviewfindsdependency; selectonlyaddressedconsumerregressions.
 - [x] T562 Groupsourceedits/wholeSOURCEreview beforefreshfullshared/unit/integration
   XMLbuilds/PDB/catalog/PlanOnly. NativepackageCsourcehashunchanged, noWindowsbinary.
-- [ ] T563 NewexternalLinuxrecordpath, genuinegenerator1 onnewproductionbuild, verify
+- [x] T563 NewexternalLinuxrecordpath, genuinegenerator1 onnewproductionbuild, verify
   completearchive/capture/closing. Newactualproof6 +42unrun andimpactedsuccesscases
   only, independentlyverifyunion. Native40thenoriginal5 afterallgates.
 
