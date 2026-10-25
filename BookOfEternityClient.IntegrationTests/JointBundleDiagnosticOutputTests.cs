@@ -29,6 +29,10 @@ public sealed class JointBundleDiagnosticOutputTests
     {
         using var output = new JointBundleDiagnosticOutput(
             nameof(RecordsAreReadableBeforeCloseWithoutDiagnosticQuota), _output);
+        var configuredRoot = Environment.GetEnvironmentVariable("BOE_TEST_DIAGNOSTIC_ROOT");
+        var expectedRoot = configuredRoot ?? Path.Combine(TestRepoPaths.RepoRoot, "TestResults");
+        Assert.Equal(Path.GetFullPath(Path.Combine(expectedRoot,
+            "joint-bundle-component-diagnostics", output.FixtureNonce)), output.DiagnosticDirectory);
         Assert.True(File.Exists(output.InitialPath));
         Assert.False(Directory.Exists(output.ExpectedOwnedRoot));
         const string message = "Unicode: рана 日本語 🩹; quote: \"; slash: \\; newline:\nsecond line\tend";
