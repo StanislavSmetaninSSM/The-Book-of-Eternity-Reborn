@@ -1,3 +1,11 @@
+# Outer-reservation PREP delta ACCEPTED — actual48 next
+
+Separate Astra/high accepted f3caaa4e fresh integration11bindings/8PDBchecks,
+catalog/PlanOnly48 and exact461 retained union. Current game41C0/archiveE7D252E0
+unchanged; original producer8ED DLL/PDB retained with exact provenance, no rebinding.
+Run cache-owner-final-48-selection.json: proof6+42unrun, then OUTCOME review of
+509distinct cases before native40/original5. No new runtime PASS yet.
+
 # Outer-reservation correction SOURCE accepted; fresh integration/PREP evidence
 
 Separate Astra/high accepted d237c0b56da7ecd892a3d476be9f683f25e5f0a9 test-only
