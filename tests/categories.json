@@ -2,6 +2,71 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "test-diagnostic-paths",
+  "responsibility": "Pure diagnostic root configuration: explicit absolute root, legacy per-call repository fallback and invalid settings refused before filesystem output.",
+  "excludes": "No environment mutation, game setup, process launch, diagnostic volume limits or runtime ownership assertions.",
+  "changeHints": [
+    "BookOfEternityClient.TestSupport/TestDiagnosticPaths.cs",
+    "BookOfEternityClient.Tests/TestDiagnosticPathsTests.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-component-diagnostics",
+      "when": "Component raw path routing or failure retention changes."
+    },
+    {
+      "id": "fr063-joint-child-output-transport",
+      "when": "Default child capture root or explicit artifactParent priority changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.TestDiagnosticPathsTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "portable-linux-cache-read-consumers",
+  "responsibility": "Linux affected common read and canonical confinement consumers: optional-directory/intermediate-file refusal and fresh link checks at read, write and root admission boundaries.",
+  "excludes": "Windows junction-specific assertions, Windows metadata adapters, world bootstrap and full save/load scenarios.",
+  "changeHints": [
+    "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+    "BookOfEternityClient/Core/FileSystemManager.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_DirectoryAtOptionalFileBoundaryFailsClosed",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileSync_DirectoryAtOptionalFileBoundaryFailsClosed",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_RegularFileAtIntermediateParentFailsClosed",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileSync_RegularFileAtIntermediateParentFailsClosed",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.CanonicalFileOperations_RejectExistingReparsePointAncestor",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.AtomicWrite_RechecksReparseConfinementAtMutationBoundary",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.AcquireCanonicalWriteLease_RejectsRuntimeRootReparsePoint",
+        "BookOfEternityClient.Tests.FileSystemManagerTests.AcquireCanonicalWriteLease_RejectsRuntimeLockDirectoryReparsePoint"
+      ]
+    }
+  ]
+},
+{
   "id": "core-source-validation-batch",
   "responsibility": "Bounded existing-service directory DATA across serial source readers and fresh verification loops; actual metadata reduction and source/ownership integrity.",
   "excludes": "No whole-owner cache, protected-source optimization, world bootstrap or new authority.",

@@ -118,7 +118,7 @@ public sealed class GmWorkerNativeFinitePipeTests
             ?? throw new InvalidOperationException("Prepare BOE_CRASH5_NATIVE_PACKAGE before native controls.");
         Assert.True(Path.IsPathFullyQualified(package));
         _ = GmWorkerNativePackage.Validate(package);
-        var own = Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "native-finite", Guid.NewGuid().ToString("N"));
+        var own = Path.Combine(TestDiagnosticPaths.Root, "native-finite", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(own);
         var dotnet = Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")
             ?? throw new InvalidOperationException("DOTNET_ROOT is required."), "dotnet");

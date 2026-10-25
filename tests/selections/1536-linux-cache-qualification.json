@@ -252,6 +252,20 @@
       "contracts": [
         "#1536 r73 Linux handoff / T551-T552"
       ]
+    },
+    {
+      "category": "portable-linux-cache-read-consumers",
+      "reason": "Genuine Linux common read/refusal and physical confinement bodies replace mixed Windows junction owners.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "test-diagnostic-paths",
+      "reason": "New common diagnostic resolver must reject invalid input and preserve explicit/default paths without filesystem effects.",
+      "contracts": [
+        "#1536 T551 external raw routing fix"
+      ]
     }
   ]
 }

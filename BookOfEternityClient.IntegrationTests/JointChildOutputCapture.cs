@@ -107,14 +107,7 @@ internal sealed class JointChildOutputCapture
     /// The normalized joint-child-output directory under the selected root.
     /// </returns>
     internal static string ResolveDefaultArtifactParent(string? requestedRoot)
-    {
-        if (requestedRoot is not null &&
-            (string.IsNullOrWhiteSpace(requestedRoot) || !Path.IsPathFullyQualified(requestedRoot)))
-            throw new InvalidDataException("BOE_TEST_DIAGNOSTIC_ROOT must be a nonempty absolute path when provided.");
-        return Path.GetFullPath(requestedRoot is null
-            ? Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "joint-child-output")
-            : Path.Combine(requestedRoot, "joint-child-output"));
-    }
+        => Path.Combine(TestDiagnosticPaths.ResolveRoot(requestedRoot), "joint-child-output");
 
     /// <summary>
     /// Gets the exclusive external artifact directory, including incomplete evidence.

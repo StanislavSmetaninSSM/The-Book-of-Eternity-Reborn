@@ -155,7 +155,7 @@ public sealed class GmWorkerNativeHostTests
     private static async Task<JsonElement> RunScenario(string mode, bool allowGuardianEmergency = false)
     {
         Assert.True(OperatingSystem.IsLinux(), "Actual native host qualification requires Linux.");
-        var evidence = Environment.GetEnvironmentVariable("BOE_NATIVE_EVIDENCE_ROOT") ?? Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "native-host");
+        var evidence = Environment.GetEnvironmentVariable("BOE_NATIVE_EVIDENCE_ROOT") ?? Path.Combine(TestDiagnosticPaths.Root, "native-host");
         var output = Path.Combine(evidence, Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(output);
         var build = new ProcessStartInfo("pwsh") { UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true };

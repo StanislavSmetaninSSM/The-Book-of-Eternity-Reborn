@@ -1,3 +1,41 @@
+# Linux qualification — diagnostic routing causal RED, fix awaiting GREEN
+
+2026-10-25/T551. Original native package PASS; fresh unit XML build exit0,
+04:15.37/10011warnings/0errors. First integration MSB4166 before compile; isolated
+build with explicit .dotnet state access and disabled build-server reuse succeeded,
+06:57.14/10900warnings/0errors. Initial first-use NuGet-Migrations failed on read-only
+home; scoped runtime state preparation resolved startup. These are environment
+preparation failures, not gameplay RED. All raw is under the external evidence root.
+
+37-category/37descriptor/530case Linux draft PlanOnly PASS; catalog12462methods,
+937categories/0unmapped/stale; native controls6descriptors/40cases and ordinary
+Theory1descriptor/5cases PlanOnly PASS, all0executed. New pure resolver controls
+will add their own category/discovery before final PREP. Windows-only and mixed
+junction owners excluded; eight exact portable read/link consumers owned separately.
+
+Confirmed raw-path defects in component diagnostics/native finite/terminal; host
+has a separate explicit evidence override. Both tiny component controls now use
+per-call external roots. Causal RED on compiled ca61ec8:2planned/completed,
+1PASS/1FAIL solely on wrong diagnostic path, no timeout, runner cleanup complete,
+checkout/TestResults absent. First auto-review denied execution for possible raw
+under checkout, known not executed. New independent gpt-6.1-sol/xhigh PE/PDB/source
+binding and all-write-path review established both bodies' external roots; one
+same-action reassessment allowed execution. No workaround/alternate runner used.
+Integration DLL e5c4e0a6c95c086b840e43439f1d01e38676c12c63e8b5d2dc37597071ddce06,
+PDB85d2edb4a80d9fbcecaf97e86aa6c9e92badcca949d8d86fcdebc85c3111fbe1.
+RED raw: test-categories/20261025-061816-428-6986-0fd2e679a75b409b9a9a76df4160f943-categories
+under /workspace/tboe-linux-evidence-20261025. No native/game runtime attempted.
+
+Minimal fix now implemented, UNVERIFIED: shared pure TestDiagnosticPaths resolver,
+component/child capture and native finite/terminal/host default paths. Explicit
+artifactParent and BOE_NATIVE_EVIDENCE_ROOT keep priority; real fixture/repo roots,
+NativeLineage, budgets and game oracles unchanged. Five pure typed root cases added.
+No new cache: resolving current configuration is cheap and must observe current
+settings; no costly source work or authority is cached. No GM/schema change.
+Next: frozen fresh native+both XML builds, diagnostics RED-to-GREEN/regressions,
+updated discovery/PlanOnly and independent code/PREP review, then T552..555 gates.
+All code/runtime acceptance pending; no raw uploaded or old raw/saves removed.
+
 # Linux qualification 2026-10-25 — T551 WIP
 
 Issue#1536; branch1536-linux-qualification-20261025 published at source

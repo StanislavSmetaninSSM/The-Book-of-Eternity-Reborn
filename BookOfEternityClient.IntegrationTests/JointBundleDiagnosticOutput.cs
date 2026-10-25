@@ -56,7 +56,8 @@ internal sealed class JointBundleDiagnosticOutput : ITestOutputHelper, IDisposab
             throw new InvalidDataException("A component control repository root must be absolute.");
         _referenceOutput = referenceOutput;
         FixtureNonce = Guid.NewGuid().ToString("N");
-        DiagnosticDirectory = Path.GetFullPath(Path.Combine(repositoryRoot, "TestResults",
+        DiagnosticDirectory = Path.GetFullPath(Path.Combine(TestDiagnosticPaths.ResolveRoot(
+            Environment.GetEnvironmentVariable("BOE_TEST_DIAGNOSTIC_ROOT"), repositoryRoot),
             "joint-bundle-component-diagnostics", FixtureNonce));
         ExpectedOwnedRoot = Path.GetFullPath(Path.Combine(repositoryRoot, "TestResults",
             "joint-bundle-component", FixtureNonce));
