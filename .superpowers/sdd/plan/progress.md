@@ -1,3 +1,22 @@
+# Native fixture SOURCE ACCEPTED — fresh affected builds/planning, PREP pending
+
+Independent Astra/high accepted grouped source3b97be1506ca453fd0a70d270ac35f71b39e9447.
+No production/native/budget changes; cache509+native16 retained with prior pins.
+Fresh XML builds all exit0/0errors: TestSupport00:00:28.92/82warnings,
+unit00:01:24.43/5743warnings, integration00:03:23.65/6646warnings.
+New TestSupport SHA72f1ea6a753c125b47551f517af53f046880e6a33493d71df861c14d93a25ff0;
+unitf1b64e13282e8662bac9826c71821d81ed49a2287f67172d0936a38916d91ddf;
+integrationdd4e36dfa4f51a0b40575e831003b69b8ee9dcebd2892a6980fda944d93ff513.
+Their actual informational versions3b97; game41C0/b18 and bridge4507/074a unchanged.
+All11DLL/PDB entries/sharedcopies and12source checks match current files.
+
+Discovery12473methods/942categories/0unmapped/stale; pending-native PlanOnly24cases/
+3descriptors (host8/Main4/terminal12), exit0/0executed/cleanup. Current game/input
+archiveE7D252E0 unchanged; producerSupportA2 andintegration8ED backups preserved,
+no record/archive rebinding or generator repeat. External native-fixture-prep-
+verification.json binds exact artifacts. Separate PREP delta pending, then causal
+host8 and diagnostic Main4; terminal root cause still UNKNOWN. Original5 UNRUN.
+
 # Native fixture correction/diagnostic SOURCE WIP — two known findings grouped
 
 Independent subset112246-942-38961-0cec0108bfec43e78504e57ad8d4c3e6:
