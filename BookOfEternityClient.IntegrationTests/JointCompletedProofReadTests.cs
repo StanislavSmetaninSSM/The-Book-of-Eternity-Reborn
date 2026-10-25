@@ -116,14 +116,13 @@ public sealed class JointCompletedProofReadTests(ITestOutputHelper output)
         var own = Path.Combine(Path.GetTempPath(), "boe-proof-component-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(own);
         using var cleanup = new CleanupOwnedFixture(own, output.WriteLine);
-        var template = Path.Combine(TestRepoPaths.RepoRoot, "specs", "1536-complete-wound-materialization", "fixtures", "joint-applied-data");
-        var record = JsonNode.Parse(File.ReadAllText(Path.Combine(template, "source-record.json")))!.AsObject();
-        var archive = Path.Combine(template, record["Archive"]!.GetValue<string>());
+        var input = JointAppliedDataTemplate.ResolveCurrent();
+        var archive = input.ArchivePath;
         var archiveHash = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(archive)));
         try
         {
             var root = Path.Combine(own, "copy");
-            var manifest = JointAppliedDataTemplate.Materialize(archive, record["ArchiveSHA256"]!.GetValue<string>(), root);
+            var manifest = JointAppliedDataTemplate.Materialize(input, root);
             var measuring = false;
             var attributes = 0; var opens = 0; var reuses = 0; var injected = false;
             var sourceReads = new Dictionary<string, int>(StringComparer.Ordinal);

@@ -26,10 +26,14 @@ internal static class JointObservedDataTemplate
     /// <param name="kind">
     /// The explicitly requested provenance kind; no live game authority is imported.
     /// </param>
+    /// <param name="expectedLinuxGameAssemblySha256">
+    /// Current game pin required only by the explicit Linux applied provenance kind.
+    /// </param>
     /// <returns>
     /// The verified detached manifest. Current game authority must be obtained from real production validators.
     /// </returns>
-    internal static JsonObject Materialize(string archivePath, string expectedSha256, string targetRoot, JointObservedDataKind kind)
+    internal static JsonObject Materialize(string archivePath, string expectedSha256, string targetRoot, JointObservedDataKind kind,
+        string? expectedLinuxGameAssemblySha256 = null)
     {
         targetRoot = Path.GetFullPath(targetRoot);
         if (File.Exists(targetRoot) || Directory.Exists(targetRoot)) throw new IOException("Component root already exists.");
@@ -44,7 +48,7 @@ internal static class JointObservedDataTemplate
         JsonObject manifest;
         using (var reader = new StreamReader(metadata.Open())) manifest = JsonNode.Parse(reader.ReadToEnd())!.AsObject();
         Require(manifest["Kind"]!.GetValue<string>() == "joint_cleanup_observed_data_v1" &&
-            !manifest["GrantsAuthority"]!.GetValue<bool>() && HasExpectedProvenance(manifest, kind));
+            !manifest["GrantsAuthority"]!.GetValue<bool>() && HasExpectedProvenance(manifest, kind, expectedLinuxGameAssemblySha256));
         var directories = manifest["Directories"]!.AsArray().Select(node => node!.GetValue<string>()).ToArray();
         var directoryNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var path in directories)
@@ -106,14 +110,27 @@ internal static class JointObservedDataTemplate
     /// <param name="kind">
     /// The exact supported applied-role or ordinary cleanup-entry provenance contract.
     /// </param>
+    /// <param name="expectedLinuxGameAssemblySha256">
+    /// Exact expected game digest for the Linux-generated applied kind.
+    /// </param>
     /// <returns>
     /// <see langword="true"/> only when all selected provenance fields match; otherwise <see langword="false"/>.
     /// </returns>
-    private static bool HasExpectedProvenance(JsonObject manifest, JointObservedDataKind kind)
+    private static bool HasExpectedProvenance(JsonObject manifest, JointObservedDataKind kind, string? expectedLinuxGameAssemblySha256)
     {
         if (manifest["Provenance"] is not JsonObject provenance) return false;
         if (kind == JointObservedDataKind.AppliedBeforeStory)
             return provenance["Role"]?.GetValue<string>() == "AppliedBeforeStory";
+        if (kind == JointObservedDataKind.LinuxAppliedBeforeStory)
+        {
+            var builds = manifest["Builds"]?.AsArray().OfType<JsonObject>()
+                .Where(row => row["Name"]?.GetValue<string>() == "BookOfEternityClient").ToArray() ?? [];
+            return provenance["Role"]?.GetValue<string>() == "AppliedBeforeStory" &&
+                provenance["Platform"]?.GetValue<string>() == "Linux" &&
+                provenance["Generator"]?.GetValue<string>() == JointAppliedDataTemplate.LinuxGenerator &&
+                expectedLinuxGameAssemblySha256 is not null && builds.Length == 1 &&
+                builds[0]["Sha256"]?.GetValue<string>() == expectedLinuxGameAssemblySha256;
+        }
         if (kind != JointObservedDataKind.CleanupEntry || provenance.ContainsKey("Role") || provenance.ContainsKey("Original")) return false;
         return provenance["Operation"] is JsonValue operation && operation.TryGetValue<string>(out var name) &&
             name == "JointStory.CleanupEligibleTerminalAsync" &&
@@ -160,6 +177,10 @@ internal enum JointObservedDataKind
     /// Requires the existing applied-before-story capture role.
     /// </summary>
     AppliedBeforeStory,
+    /// <summary>
+    /// Requires the current Linux generator and exact current game-build evidence pin.
+    /// </summary>
+    LinuxAppliedBeforeStory,
     /// <summary>
     /// Requires the genuine cleanup-entry operation and parent metadata.
     /// </summary>

@@ -9,7 +9,7 @@ namespace BookOfEternityClient.Tests;
 /// <summary>
 /// Copies observed applied DATA into independent component roots without issuing game authority.
 /// </summary>
-internal static class JointAppliedDataTemplate
+internal static partial class JointAppliedDataTemplate
 {
     /// <summary>
     /// Verifies a complete observed archive before copying ordinary DATA into a new root.
@@ -28,4 +28,21 @@ internal static class JointAppliedDataTemplate
     /// </returns>
     internal static JsonObject Materialize(string archivePath, string expectedSha256, string targetRoot) =>
         JointObservedDataTemplate.Materialize(archivePath, expectedSha256, targetRoot, JointObservedDataKind.AppliedBeforeStory);
+
+    /// <summary>
+    /// Copies explicitly selected platform DATA after its complete provenance and transport checks.
+    /// </summary>
+    /// <param name="input">
+    /// Exact immutable input coordinates; Linux sources also retain the current game assembly digest.
+    /// </param>
+    /// <param name="targetRoot">
+    /// Nonexistent independent destination beneath an owned ordinary parent.
+    /// </param>
+    /// <returns>
+    /// Detached manifest DATA; every consumer must obtain fresh production capabilities.
+    /// </returns>
+    internal static JsonObject Materialize(JointAppliedDataSource input, string targetRoot) =>
+        JointObservedDataTemplate.Materialize(input.ArchivePath, input.ArchiveSha256, targetRoot,
+            input.LinuxGameAssemblySha256 is null ? JointObservedDataKind.AppliedBeforeStory : JointObservedDataKind.LinuxAppliedBeforeStory,
+            input.LinuxGameAssemblySha256);
 }

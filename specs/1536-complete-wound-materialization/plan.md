@@ -7,7 +7,7 @@ observedDATA capture/materializer; independentcopies, no product/runtime change.
 Stack: existing .NET8/C#/xUnit/PowerShell runner, external local diagnostic storage.
 Spec: spec.md LINUXDATA1..5, issue1536. User waived technical clarification waits.
 
-Approaches assessed: readerCRLFcompatibility would add unsupported savecompatibility;
+Approaches assessed: readerCRLFcompatibility would change unresolved product behavior outside this amendment;
 normalizing/resealinghistoricalZIP would invalidateevidence; generatecurrentLinuxDATA
 through realpublishers fits existinghandoff and preservesfreshauthority. Chosenby
 executor under autonomous scope, not a new userfeature or claimed crossOSsupport.

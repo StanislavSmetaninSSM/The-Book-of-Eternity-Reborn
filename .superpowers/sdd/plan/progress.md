@@ -1,3 +1,24 @@
+# Linux applied-DATA preparation implementation WIP — fresh build/review next
+
+T556..558 sourcewritten: eight cheap independent source/input controls; explicit
+Linux external record/current production SHA plus inner Linuxgenerator/build
+provenance through existing fulltransport checker BEFOREdestinationwrites. Only
+selected boundary/proof-read consumers useplatformresolver. Windowsinputunchanged.
+No globalcache: immutablearchive identity pinned; materializationchecksbytesfresh,
+physicalnamespace unchanged; inputbuildhash cheapfreshintegrity rather thannewcache.
+
+New partial Fixture generator invokes genuinecommonplan, exactpreflightfingerprints,
+normalizerCommitted, realunapplied->CommitApplied(capability+witness)->freshapplied.
+SourceComplete/Dispose, reservation/audio/lease close before existingDATAcapture;
+create-newsuccessrecordonlyafter normalFixtureDispose/ownedrootcleanup. All raw
+externalviaBOE_TEST_LINUX_APPLIED_RECORD; uniqueunqualifiedarchives survivefailures,
+neveroverwrite qualifiedrecord. NoWindowscarrier/nativeprocess/worldgen/proofreseal.
+Newselection1536-linux-applied-preparation: affectedexistingtransport/capture controls,
+newinput8 thennewprep1; actualdiscoverycountpending. Existinglimitsunchanged; new
+PREPonlyinitial5min reviewed. Production/native unchanged. Cache454retained/52pending;
+no newruntimeclaim. FreshintegrationXML/binding/catalog andsource/PREPreview next.
+PlanwordingnowcorrectlyleavescurrentversioncrossOSproductquestionOPEN.
+
 # Explicit open product question — cross-OS frozen byte replay remains unresolved
 
 Parent clarification honoured: historicalAppliedBeforeStory isObservedDATA only,

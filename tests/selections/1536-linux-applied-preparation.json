@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "fr063-joint-applied-data-transport",
+      "reason": "Shared transport changed: retain all existing exact payload/hash/path/absence/role and independent-copy controls.",
+      "contracts": [
+        "#1536 T556..T559 / LINUXDATA1..5"
+      ]
+    },
+    {
+      "category": "fr063-joint-cleanup-data-capture",
+      "reason": "Existing capture producer reused for a new Linux template; retain exact inert DATA export and role refusals.",
+      "contracts": [
+        "#1536 T556..T559 / LINUXDATA1..5"
+      ]
+    },
+    {
+      "category": "fr063-joint-cleanup-data-transport",
+      "reason": "Shared transport changed: existing cleanup-entry provenance must retain its exact independent meaning.",
+      "contracts": [
+        "#1536 T556..T559 / LINUXDATA1..5"
+      ]
+    },
+    {
+      "category": "fr063-joint-linux-applied-input-controls",
+      "reason": "Cheap Linux source/build/platform/generator/inner-provenance/hash refusals before destination writes.",
+      "contracts": [
+        "#1536 T556..T559 / LINUXDATA1..5"
+      ]
+    },
+    {
+      "category": "fr063-joint-linux-applied-preparation",
+      "reason": "Genuine current Linux DATA preparation through canonical and progression publishers, owner closing and external immutable capture. No cross-OS compatibility claim.",
+      "contracts": [
+        "#1536 T556..T559 / LINUXDATA1..5"
+      ]
+    }
+  ]
+}

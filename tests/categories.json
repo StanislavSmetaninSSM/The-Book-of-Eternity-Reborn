@@ -2,6 +2,55 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-linux-applied-input-controls",
+  "responsibility": "Explicit Linux applied DATA source configuration and current build/platform/generator/archive/inner provenance refusal before destination writes; independent immutable copies.",
+  "excludes": "No game issuer, canonical publication, native process or cross-platform replay qualification.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointAppliedDataTemplate.LinuxInput.cs",
+    "BookOfEternityClient.IntegrationTests/JointObservedDataTemplate.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointAppliedDataSourceTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-linux-applied-preparation",
+  "responsibility": "One genuine current Linux minimal common/canonical/progression publisher chain, fresh applied phase, source/lease closing, external observed DATA capture and success record only after fixture cleanup.",
+  "excludes": "No Windows source42/carrier, world generation, original five, synthetic proof, archive reseal, cross-OS compatibility or shared mutable fixture.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.LinuxApplied.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointBundleComponentTests.LinuxAppliedData_PublishesCurrentMinimalTemplate"
+      ]
+    }
+  ]
+},
+{
   "id": "core-shared-read-admission-directories-linux",
   "responsibility": "Genuine Linux shared directory DATA composition, sync/async metadata reduction, owner/thread/lifetime/mutation/refusal controls and current LinuxSupervisor main-record freshness.",
   "excludes": "Windows native file-handle identity and Windows worker-runs-v1 inventory. Those exact contracts remain owned by core-shared-read-admission-directories on Windows. No world/bootstrap or native-process qualification.",
