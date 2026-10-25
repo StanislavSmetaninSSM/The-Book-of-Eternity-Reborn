@@ -53,6 +53,7 @@ public sealed class AcceptedTurnReasoningPolicyBoundaryTests(ITestOutputHelper o
         var inventory = ReasoningPolicySourceInventory.Read();
         var source = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot,
             inventory["sourcePath"]!.GetValue<string>()));
+        source = NarrativePolicySourceInventory.ReverseIfPresent(source);
         // Require the new extraction, rather than accepting the unchanged baseline branch.
         ReasoningPolicySourceInventory.AssertExtractionAndReverse(source);
     }

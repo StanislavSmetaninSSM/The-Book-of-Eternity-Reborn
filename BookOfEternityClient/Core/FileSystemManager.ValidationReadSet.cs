@@ -1,3 +1,4 @@
+using NarrativeReadObservation = BookOfEternityClient.Services.ValidationService.NarrativeInterfaceSourceSession.NarrativeReadObservation;
 namespace BookOfEternityClient.Core;
 
 public partial class FileSystemManager
@@ -93,7 +94,7 @@ public partial class FileSystemManager
         _hooks?.BeforeRuntimeFileReadOpenAsync == null && _hooks?.AfterRuntimeFileReadOpenedAsync == null &&
         _hooks?.AfterRuntimeFileReadInitialValidationAsync == null && _hooks?.AfterExactPhysicalReadInitialValidationAsync == null &&
         _hooks?.AfterPhysicalFileAuthorityValidatedAsync == null && _hooks?.AfterCanonicalReadAttemptAsync == null &&
-        _hooks?.BeforeCanonicalExistenceFollowUpProbeAsync == null;
+        _hooks?.BeforeCanonicalExistenceFollowUpProbeAsync == null && _hooks?.OrdinaryWriteLeaseCloseContextFactory == null;
 
     /// <summary>
     /// Dispatches protected synchronous snapshot DATA while preserving the original declared lease identity.
@@ -107,12 +108,24 @@ public partial class FileSystemManager
     /// <returns>
     /// Detached content/timestamp or observed absence.
     /// </returns>
-    private CanonicalFileReadSnapshot? ReadFileSnapshotCore(string relativePath, CanonicalWriteLease? lease = null) =>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
+    private CanonicalFileReadSnapshot? ReadFileSnapshotCore(string relativePath, CanonicalWriteLease? lease = null,
+        NarrativeReadObservation? observation = null)
+    {
+        try
+        {
+            var reused = ValidationReuseSuppression.Value == 0 && (_validationReadSet.Value is not null || _sourceDataOperation.Value is not null);
+            var result =
         _validationReadSet.Value is { } phase && ValidationReuseSuppression.Value == 0
             ? phase.Read(relativePath, ValidationSnapshotFamily.ProtectedSync, lease)
             : _sourceDataOperation.Value is { } operation && ValidationReuseSuppression.Value == 0
                 ? operation.Read(relativePath, ValidationSnapshotFamily.ProtectedSync, lease)
-                : ReadFileSnapshotUncached(relativePath);
+                : ReadFileSnapshotUncached(relativePath, observation);
+            if (reused) observation?.Snapshot(result?.Content, physical: false);
+            return result;
+        }
+        catch (Exception error) { observation?.Fault(error); throw; }
+    }
 
     /// <summary>
     /// Dispatches protected asynchronous snapshot DATA while retaining original cancellation and lease identity.
@@ -129,13 +142,36 @@ public partial class FileSystemManager
     /// <returns>
     /// Detached snapshot or observed absence.
     /// </returns>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     private Task<CanonicalFileReadSnapshot?> ReadFileSnapshotCoreAsync(string relativePath,
-        CancellationToken cancellationToken, CanonicalWriteLease? lease = null) =>
+        CancellationToken cancellationToken, CanonicalWriteLease? lease = null, NarrativeReadObservation? observation = null)
+    {
+        if (observation is null)
+            return
         _validationReadSet.Value is { } phase && ValidationReuseSuppression.Value == 0
             ? phase.ReadAsync(relativePath, ValidationSnapshotFamily.ProtectedAsync, lease, cancellationToken)
             : _sourceDataOperation.Value is { } operation && ValidationReuseSuppression.Value == 0
                 ? operation.ReadAsync(relativePath, ValidationSnapshotFamily.ProtectedAsync, lease, cancellationToken)
                 : ReadFileSnapshotUncachedAsync(relativePath, cancellationToken);
+        return ReadObservedAsync();
+
+        async Task<CanonicalFileReadSnapshot?> ReadObservedAsync()
+        {
+            try
+            {
+                var reused = ValidationReuseSuppression.Value == 0 && (_validationReadSet.Value is not null || _sourceDataOperation.Value is not null);
+                var result = await (
+        _validationReadSet.Value is { } phase && ValidationReuseSuppression.Value == 0
+            ? phase.ReadAsync(relativePath, ValidationSnapshotFamily.ProtectedAsync, lease, cancellationToken)
+            : _sourceDataOperation.Value is { } operation && ValidationReuseSuppression.Value == 0
+                ? operation.ReadAsync(relativePath, ValidationSnapshotFamily.ProtectedAsync, lease, cancellationToken)
+                : ReadFileSnapshotUncachedAsync(relativePath, cancellationToken, observation));
+                if (reused) observation.Snapshot(result?.Content, physical: false);
+                return result;
+            }
+            catch (Exception error) { observation.Fault(error); throw; }
+        }
+    }
 
     /// <summary>
     /// Invokes a passive physical-read activity receiver without allowing its reads to join a functional read set.

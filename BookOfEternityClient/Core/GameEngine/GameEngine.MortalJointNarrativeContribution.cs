@@ -104,6 +104,7 @@ public partial class GameEngine
                 !_engine.MatchesMortalJointRepairFrame(_frame, _frame!.TurnNumber) ||
                 !SameMortalJointOriginalFrame(_ready.Frame, _frame, _frame.TurnNumber))
                 throw new InvalidDataException("joint_narrative_frame_ready_or_owning_main_changed");
+            using var freshGeneration = FileSystemManager.SuppressValidationReuse();
             var generation = files.ReadLocalGenerationSnapshot(lease);
             if (generation.Binding.Id != _generation || _generationBytes is null || !HotBytesEqual(generation.Bytes, _generationBytes))
                 throw new InvalidDataException("joint_narrative_generation_changed");
@@ -168,6 +169,7 @@ public partial class GameEngine
             var binding = checkpoint.ToJsonObject();
             _mortalJointNarrativeHold = (binding["fingerprint"]!.GetValue<string>(), binding["sessionGeneration"]!.GetValue<string>());
             _mortalJointNarrativeDisposition = "KnownLiveNHold";
+            ExpireCurrentMortalJointNarrativeInvocation();
             throw;
         }
     }

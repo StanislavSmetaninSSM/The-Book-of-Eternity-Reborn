@@ -547,7 +547,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(1, repairReplies);
         if (narrativeSourceProbe is { ExpectsHeld: true })
         {
-            narrativeSourceProbe.AssertHeld(engine, logger.Describe());
+            await narrativeSourceProbe.AssertHeldAsync(engine, logger.Describe());
             return; // Only the selected live-N source refusal; ordinary completion oracles remain below.
         }
         if (currentCaptureProbe is { StopRequested: true })

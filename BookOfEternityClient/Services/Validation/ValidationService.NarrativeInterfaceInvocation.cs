@@ -38,6 +38,10 @@ public partial class ValidationService
         }
 
         /// <summary>Issues a pass only with the enclosing validator's private invocation token.</summary>
+        /// <param name="issuer">The issuer retained or checked by this operation.</param>
+        /// <param name="validator">The validator retained or checked by this operation.</param>
+        /// <param name="source">Explicit invocation observations, or null for the unchanged ordinary route.</param>
+        /// <param name="issues">The issues retained or checked by this operation.</param>
         internal static NarrativePolicyPass Issue(object issuer, ValidationService validator,
             NarrativeInterfaceSourceSession source, IReadOnlyList<ValidationIssue> issues) => new(issuer, validator, source, issues);
 
@@ -45,6 +49,7 @@ public partial class ValidationService
         internal IReadOnlyList<ValidationIssue> Issues => Array.AsReadOnly(_issues.Select(WoundAcceptedTurnData.CloneIssue).ToArray());
 
         /// <summary>Rejects an expired pass or a different issuing validator.</summary>
+        /// <param name="validator">The validator retained or checked by this operation.</param>
         internal void RequireIssuer(ValidationService validator)
         {
             RequireLive();
@@ -52,6 +57,10 @@ public partial class ValidationService
         }
 
         /// <summary>Matches actual supplied or physically selected original context DATA to the engine's authenticated frame.</summary>
+        /// <param name="sessionId">The session id retained or checked by this operation.</param>
+        /// <param name="requestId">The request id retained or checked by this operation.</param>
+        /// <param name="snapshotToken">The snapshot token retained or checked by this operation.</param>
+        /// <param name="turn">The turn retained or checked by this operation.</param>
         internal void RequireOriginalContext(string sessionId, string requestId, string snapshotToken, int turn)
         {
             RequireLive(); _source.RequireOriginalContext(sessionId, requestId, snapshotToken, turn);
@@ -70,6 +79,7 @@ public partial class ValidationService
         /// <summary>Copies all recorded occurrence and failure diagnostics without returning mutable retained buffers.</summary>
         internal NarrativeSourceDiagnostic CaptureDiagnostic() => _source.CaptureDiagnostic();
 
+        /// <summary>Refuses use after explicit pass disposal.</summary>
         private void RequireLive()
         {
             if (_disposed) throw new InvalidDataException("narrative_policy_pass_expired");

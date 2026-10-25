@@ -52,10 +52,22 @@ public partial class GameEngine
         {
             var result = await PrepareAndPublishWithOwningReleaseAsync();
             _mortalJointInterfaceData = result;
-            if (result.HasErrors) _mortalJointInterfacePreparationHeld = true;
+            if (result.HasErrors)
+            {
+                _mortalJointInterfacePreparationHeld = true;
+                ExpireCurrentMortalJointNarrativeInvocation();
+                _mortalJointNarrativeDisposition = "UnavailableInterfaceErrors";
+            }
             return result;
         }
-        catch { _mortalJointInterfacePreparationHeld = true; throw; }
+        catch
+        {
+            _mortalJointInterfacePreparationHeld = true;
+            ExpireCurrentMortalJointNarrativeInvocation();
+            if (_mortalJointNarrativeDisposition is "CapturedActualN" or "MatchedLiveN")
+                _mortalJointNarrativeDisposition = "UnavailableInterfacePreparation";
+            throw;
+        }
 
         async Task<MortalJointInterfacePublication.Record> PrepareAndPublishWithOwningReleaseAsync()
         {
@@ -81,7 +93,9 @@ public partial class GameEngine
                     ["checkpointFingerprint"] = fingerprint, ["operationKey"] = expected["operationKey"]!.DeepClone(),
                     ["attemptId"] = expected["attemptId"]!.DeepClone(), ["requestFingerprint"] = expected["requestFingerprint"]!.DeepClone()
                 };
+                using var preparationTiming = _fs.MeasureOperation("MortalJointInterface.PrepareResult");
                 var computed = await _validator.PrepareMortalJointInterfaceAsync(lease);
+                preparationTiming?.Dispose();
                 if (!HotBytesEqual(computed.Before, source.Current[MortalJointInterfacePublication.InterfacePath]))
                     throw new InvalidDataException("joint_interface_consumed_input_does_not_match_ready");
                 var pending = await _fs.ReadFileBytesAsync(lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath)

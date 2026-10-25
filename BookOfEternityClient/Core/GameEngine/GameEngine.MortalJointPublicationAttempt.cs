@@ -28,6 +28,7 @@ public partial class GameEngine
         private PendingTurnSnapshotReadAuthority? _hotOriginal;
         private PendingTurnSnapshotReader.OriginalReadEvidence? _hotEvidence;
         private MortalJointNarrativeInvocation? _narrative;
+        private readonly MortalJointNarrativeInvocation? _narrativeCandidate;
         private string _narrativeDisposition = "UnavailableNotConsumed";
         internal MortalJointPublicationAttempt(object issuer, GameEngine engine, FileSystemManager files,
             FileSystemManager.CanonicalWriteLease lease, object actualFrame,
@@ -35,6 +36,7 @@ public partial class GameEngine
         {
             RequireIssuer(issuer);
             _engine = engine; _files = files; _lease = lease; _frame = actualFrame; _capture = actualCapture;
+            _narrativeCandidate = engine._mortalJointNarrativeInvocation;
             _generation = files.ReadLocalGenerationSnapshot(lease).Binding.Id
                 ?? throw new InvalidDataException("Joint attempt requires its existing physical generation.");
             _binding = binding.DeepClone().AsObject(); _custody = custody.DeepClone().AsObject();
@@ -138,7 +140,7 @@ public partial class GameEngine
         {
             RequireIssuer(issuer); _expired = true; _capturing = false;
             _hotOriginal = null; _hotEvidence = null;
-            if (_narrative is { } narrative)
+            if ((_narrative ?? _narrativeCandidate) is { } narrative)
             {
                 if (ReferenceEquals(_engine._mortalJointNarrativeInvocation, narrative))
                     _engine.ExpireCurrentMortalJointNarrativeInvocation();

@@ -112,9 +112,10 @@ public partial class FileSystemManager
     /// <returns>
     /// The opened file's content and timestamp, or <see langword="null"/> for observed absence; original validation and data errors propagate.
     /// </returns>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     private async Task<CanonicalFileReadSnapshot?> ReadOrdinaryFileSnapshotUncachedAsync(
         string relativePath, CancellationToken cancellationToken, CanonicalWriteLease? lease = null,
-        SourceValidationBatch? batch = null)
+        SourceValidationBatch? batch = null, NarrativeReadObservation? observation = null)
     {
 #if DEBUG
         var diagnosticOutcome = "fault";
@@ -167,6 +168,7 @@ public partial class FileSystemManager
 #if DEBUG
                     diagnosticOutcome = "missing";
 #endif
+                    observation?.Snapshot(null);
                     return null;
                 }
                 t326AsyncAdmission?.Dispose();
@@ -185,6 +187,7 @@ public partial class FileSystemManager
 #if DEBUG
                     diagnosticOutcome = "missing";
 #endif
+                    observation?.Snapshot(null);
                     return null;
                 }
                 t326AsyncOpen?.Dispose();
@@ -197,6 +200,7 @@ public partial class FileSystemManager
             }
             catch (Exception ex) when (IsTransientOrdinaryReadOpenException(ex) && attempt < TransientFileAccessRetryCount)
             {
+                observation?.Fault(ex);
                 pathPhase?.Dispose();
                 batch?.Dispose();
 #if DEBUG
@@ -223,6 +227,7 @@ public partial class FileSystemManager
                 {
                     using var t326AsyncRead = MeasureOperation("OrdinaryRead.Async.ReadOpenedSnapshotAsync");
                     var snapshot = await ReadOpenedOrdinarySnapshotAsync(stream, scope, relativePath, expectedPath, cancellationToken, batch);
+                    observation?.Snapshot(snapshot.Content);
                     if (lease != null) EnsureValidCanonicalWriteLease(lease, batch);
                     t326AsyncRead?.Dispose();
 #if DEBUG
@@ -260,6 +265,7 @@ public partial class FileSystemManager
     /// <returns>
     /// Detached source content and timestamp, or <see langword="null"/> for observed absence.
     /// </returns>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     private CanonicalFileReadSnapshot? ReadOrdinaryFileSnapshotCore(
         string relativePath, CanonicalWriteLease? lease = null, NarrativeReadObservation? observation = null)
     {
@@ -271,8 +277,8 @@ public partial class FileSystemManager
             ? phase.Read(relativePath, ValidationSnapshotFamily.OrdinarySync, lease)
             : _sourceDataOperation.Value is { } operation && ValidationReuseSuppression.Value == 0
                 ? operation.Read(relativePath, ValidationSnapshotFamily.OrdinarySync, lease)
-                : ReadOrdinaryFileSnapshotCore(relativePath, lease, out _, nullableDataFailure: false);
-            observation?.Snapshot(result?.Content, physical: !reused);
+                : ReadOrdinaryFileSnapshotCore(relativePath, lease, out _, nullableDataFailure: false, observation: observation);
+            if (reused) observation?.Snapshot(result?.Content, physical: false);
             return result;
         }
         catch (Exception error) { observation?.Fault(error); throw; }
@@ -293,23 +299,35 @@ public partial class FileSystemManager
     /// <returns>
     /// Detached content/timestamp or absence, preserving original source errors.
     /// </returns>
-    private async Task<CanonicalFileReadSnapshot?> ReadOrdinaryFileSnapshotCoreAsync(
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
+    private Task<CanonicalFileReadSnapshot?> ReadOrdinaryFileSnapshotCoreAsync(
         string relativePath, CancellationToken cancellationToken, CanonicalWriteLease? lease = null,
         NarrativeReadObservation? observation = null)
     {
-        try
+        if (observation is null)
+            return _validationReadSet.Value is { } phase && ValidationReuseSuppression.Value == 0
+                ? phase.ReadAsync(relativePath, ValidationSnapshotFamily.OrdinaryAsync, lease, cancellationToken)
+                : _sourceDataOperation.Value is { } operation && ValidationReuseSuppression.Value == 0
+                    ? operation.ReadAsync(relativePath, ValidationSnapshotFamily.OrdinaryAsync, lease, cancellationToken)
+                    : ReadOrdinaryFileSnapshotUncachedAsync(relativePath, cancellationToken, lease);
+        return ReadObservedAsync();
+
+        async Task<CanonicalFileReadSnapshot?> ReadObservedAsync()
         {
-            var reused = ValidationReuseSuppression.Value == 0 && (_validationReadSet.Value is not null || _sourceDataOperation.Value is not null);
-            var result = await (
-        _validationReadSet.Value is { } phase && ValidationReuseSuppression.Value == 0
-            ? phase.ReadAsync(relativePath, ValidationSnapshotFamily.OrdinaryAsync, lease, cancellationToken)
-            : _sourceDataOperation.Value is { } operation && ValidationReuseSuppression.Value == 0
-                ? operation.ReadAsync(relativePath, ValidationSnapshotFamily.OrdinaryAsync, lease, cancellationToken)
-                : ReadOrdinaryFileSnapshotUncachedAsync(relativePath, cancellationToken, lease));
-            observation?.Snapshot(result?.Content, physical: !reused);
-            return result;
+            try
+            {
+                var reused = ValidationReuseSuppression.Value == 0 && (_validationReadSet.Value is not null || _sourceDataOperation.Value is not null);
+                var result = await (
+            _validationReadSet.Value is { } phase && ValidationReuseSuppression.Value == 0
+                ? phase.ReadAsync(relativePath, ValidationSnapshotFamily.OrdinaryAsync, lease, cancellationToken)
+                : _sourceDataOperation.Value is { } operation && ValidationReuseSuppression.Value == 0
+                    ? operation.ReadAsync(relativePath, ValidationSnapshotFamily.OrdinaryAsync, lease, cancellationToken)
+                    : ReadOrdinaryFileSnapshotUncachedAsync(relativePath, cancellationToken, lease, observation: observation));
+                if (reused) observation?.Snapshot(result?.Content, physical: false);
+                return result;
+            }
+            catch (Exception error) { observation?.Fault(error); throw; }
         }
-        catch (Exception error) { observation?.Fault(error); throw; }
     }
 
     /// <summary>
@@ -333,9 +351,10 @@ public partial class FileSystemManager
     /// <returns>
     /// The opened snapshot, or <see langword="null"/> for absence or a captured optional data failure.
     /// </returns>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     private CanonicalFileReadSnapshot? ReadOrdinaryFileSnapshotCore(string relativePath,
         CanonicalWriteLease? lease, out ExceptionDispatchInfo? dataFailure, bool nullableDataFailure,
-        SourceValidationBatch? batch = null)
+        SourceValidationBatch? batch = null, NarrativeReadObservation? observation = null)
     {
 #if DEBUG
         var diagnosticOutcome = "fault";
@@ -386,6 +405,7 @@ public partial class FileSystemManager
 #if DEBUG
                     diagnosticOutcome = "missing";
 #endif
+                    observation?.Snapshot(null);
                     return null;
                 }
                 t326SyncAdmission?.Dispose();
@@ -405,6 +425,8 @@ public partial class FileSystemManager
 #if DEBUG
                     diagnosticOutcome = dataFailure == null ? "missing" : "data-fault";
 #endif
+                    if (dataFailure is not null) observation?.Fault(dataFailure.SourceException);
+                    else observation?.Snapshot(null);
                     return null;
                 }
                 t326SyncOpen?.Dispose();
@@ -424,6 +446,7 @@ public partial class FileSystemManager
                     if (lease != null) EnsureValidCanonicalWriteLease(lease, batch);
                     t326SyncComplete?.Dispose();
                     var result = new CanonicalFileReadSnapshot(buffer.ToArray(), timestamp);
+                    observation?.Snapshot(result.Content);
 #if DEBUG
                     diagnosticOutcome = "present"; diagnosticBytes = result.Content.Length;
 #endif
@@ -440,10 +463,12 @@ public partial class FileSystemManager
                     using var buffer = CreateOrdinaryReadBuffer(stream);
                     stream.CopyTo(buffer);
                     snapshot = new(buffer.ToArray(), timestamp);
+                    observation?.Snapshot(snapshot.Content);
                 }
                 catch (Exception error) when (nullableDataFailure &&
                     (error is IOException or UnauthorizedAccessException))
                 {
+                    observation?.Fault(error);
                     dataFailure = ExceptionDispatchInfo.Capture(error);
 #if DEBUG
                     diagnosticOutcome = "data-fault";
@@ -461,6 +486,7 @@ public partial class FileSystemManager
             catch (Exception ex) when (!initialValidationComplete &&
                 IsTransientOrdinaryReadOpenException(ex) && attempt < TransientFileAccessRetryCount)
             {
+                observation?.Fault(ex);
                 pathPhase?.Dispose();
                 batch?.Dispose();
 #if DEBUG

@@ -461,7 +461,7 @@ internal static class ReversibleFilePublication
                 : PhysicalFileAuthority.ComputeOpenedFileSha256(
                     destinationHandle,
                     authorityName + " prior destination");
-            narrativeObservation?.CanonicalBefore(destinationHandle is not null, destinationSha256);
+            narrativeObservation?.CanonicalBefore(destinationHandle is not null, destinationSha256, destinationIdentity);
             if (expectedDestinationIdentity != null)
             {
                 if (destinationIdentity == null ||

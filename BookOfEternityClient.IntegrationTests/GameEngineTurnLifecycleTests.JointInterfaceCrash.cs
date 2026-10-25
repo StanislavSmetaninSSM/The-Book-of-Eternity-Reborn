@@ -1161,7 +1161,12 @@ public sealed partial class GameEngineTurnLifecycleTests
                 await AssertConfirmedClaimReadImagesAsync(files, lease, after);
             }
             Assert.Equal(fault is null && cut < 2 ? 1 : 0, changingI); Assert.True(actualCaller);
-            if (completed) Assert.False(second!.Value); else Assert.True(engine.CaptureMortalJointRuntimeObservation().PreparationHeld);
+            if (completed)
+            {
+                Assert.False(second!.Value);
+                Assert.Equal("HistoricalNUnavailable", engine.CaptureMortalJointRuntimeObservation().NarrativeContribution);
+            }
+            else Assert.True(engine.CaptureMortalJointRuntimeObservation().PreparationHeld);
         }
         catch (Exception error) { failure = error; throw; }
         finally

@@ -1,4 +1,35 @@
-# T584 live N source contribution — coherent producer/consumer source WIP
+# T584 live N source contribution — full SOURCE candidate, review next
+
+The coherent candidate now includes explicit ordinary/protected physical read and
+retry-fault capture, original/scoped policy provenance, real trusted/canonical writer
+preimage/outcome and owning close, detached N DOM/timestamp/projection DATA, and the
+engine consumer/lifetime/known-hold described below. Domain JSON catches are policy
+observations; they do not invent physical faults. Actual lower read/auth faults
+latch before catches. A test-only close dependency uses the actual public writer's
+existing lease disposal; its arbitrary factory disables DATA reuse and retains
+the current mutation/close boundaries. Null preserves the original normal route.
+
+Authored cheap coverage: 23 methods/29 cases (not discovered or executed counts).
+The current catalog has 952 metadata entries; explicit selection has 14 categories:
+new source contracts, two existing ordinary source guards (including the directly
+affected reasoning inverse), ordinary output consumers, ordinary readers/reserved
+read set, three live singletons and two cold singletons. Exact discovery is UNRUN.
+Live cases cover source drift after capture, unchanged full completion and drift
+at a later actual N read before FIRST I preparation. Passive window now starts at
+corrected readback; baseline timings are not a direct speed comparison. Both live
+refusal cases require same-engine repeat with identical durable images and no new
+named N/I/preparation calls. Cold cut0/cut2 use the existing NativeLineage driver,
+original child/stop/EOF budgets and complete assertions, with explicit historical
+N unavailability. The original five-case Theory is not selected for this block.
+
+The new bounded reverse source helper uses 28 disjoint exact adapters; parsing
+its emitted C# literals independently restores the entire pre-T587 c6e file,
+SHA256 `26d196503099018381cacc2e1c3048feab9ef2922f928040df52431532ac7fa6`.
+The existing Reasoning helper and frozen historical manifest/hash remain unchanged.
+No guard is removed or rebaselined to the new product. Full SOURCE/optimization/
+selection review, all fresh new-product builds/PREP and every GREEN remain UNRUN.
+All C#/test/config source is persisted as WIP before the long independent review;
+raw, TRX, binary inventories and authoring evidence stay outside checkout.
 
 T587/T588 first implementation WIP joins the actual detailed N invocation to a
 private engine registration bound to frame/Main/G/iteration/Stage/Ready, with

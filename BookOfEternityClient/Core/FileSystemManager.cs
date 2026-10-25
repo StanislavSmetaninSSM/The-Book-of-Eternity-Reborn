@@ -48,6 +48,10 @@ internal sealed class FileSystemManagerHooks
     /// </summary>
     internal Action<string>? LoadOperationObserver { get; init; }
     internal Action<TrustedLocalPublicationPhase, int>? LocalPublicationObserver { get; init; }
+
+    /// <summary>Optional test dependency factory for the actual public ordinary-write lease.
+    /// Its arbitrary code requires fresh DATA and mutation invalidation through actual owning release; null preserves normal context selection.</summary>
+    internal Func<IDisposable?>? OrdinaryWriteLeaseCloseContextFactory { get; init; }
     /// <summary>
     /// Observes completed recovery boundaries while the canonical lease is held.
     /// A missing callback leaves normal recovery unchanged.
@@ -957,9 +961,10 @@ public partial class FileSystemManager
     /// <summary>
     /// Atomic write: write to temp file then rename to prevent partial writes.
     /// </summary>
-    public Task WriteFileAtomicAsync(string relativePath, string content) => WriteFileAtomicAsync(relativePath, content, null);
+    public async Task WriteFileAtomicAsync(string relativePath, string content) => await WriteFileAtomicAsync(relativePath, content, null);
 
     /// <summary>Uses the original ordinary writer while retaining its actual preimage and successful public owning return.</summary>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     internal Task WriteFileAtomicAsync(string relativePath, string content, NarrativeWriteObservation? observation) =>
         WriteFileAtomicBytesAsync(relativePath, EncodeUtf8WithPreamble(content), observation);
 
@@ -1075,11 +1080,25 @@ public partial class FileSystemManager
     public Task WriteFileAtomicBytesAsync(string relativePath, byte[] content) => WriteFileAtomicBytesAsync(relativePath, content, null);
 
     /// <summary>Retains writer DATA after the original ordinary publication and public lease release.</summary>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     internal async Task WriteFileAtomicBytesAsync(string relativePath, byte[] content, NarrativeWriteObservation? observation)
     {
+        var contextFactory = _hooks?.OrdinaryWriteLeaseCloseContextFactory;
+        using var freshHookData = contextFactory is null ? null : SuppressValidationReuse();
         var writeLock = await AcquireCanonicalWriteLeaseAsync();
+        IDisposable? hookMutation = null;
         Exception? publicationUncertainty = null;
-        try { await WriteFileAtomicBytesAsync(writeLock, relativePath, content, observation); }
+        try
+        {
+            hookMutation = contextFactory is null ? null : BeginValidationMutation(writeLock);
+            if (contextFactory?.Invoke() is { } context)
+            {
+                if (writeLock.ExternalPublicationContext is not null)
+                    throw new InvalidOperationException("The ordinary writer already has an owning publication context.");
+                writeLock.ExternalPublicationContext = context;
+            }
+            await WriteFileAtomicBytesAsync(writeLock, relativePath, content, observation);
+        }
         catch (CoordinatedStatePublicationUncertainException failure)
         {
             publicationUncertainty = failure;
@@ -1087,8 +1106,12 @@ public partial class FileSystemManager
         }
         finally
         {
-            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
-                this, writeLock, completed: false, operationFailure: publicationUncertainty);
+            try
+            {
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                    this, writeLock, completed: false, operationFailure: publicationUncertainty);
+            }
+            finally { hookMutation?.Dispose(); }
         }
         observation?.PublicReturned();
     }
@@ -1108,6 +1131,7 @@ public partial class FileSystemManager
     /// <returns>
     /// Completion after the operation and its required cleanup finish.
     /// </returns>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     internal async Task WriteFileAtomicBytesAsync(
         CanonicalWriteLease writeLease,
         string relativePath,
@@ -1526,6 +1550,7 @@ public partial class FileSystemManager
     /// <returns>
     /// The original physical publication evidence after the operation and its callbacks complete.
     /// </returns>
+    /// <param name="narrativeObservation">Sealed writer sink receiving the original opened-handle preimage; null omits capture.</param>
     private async Task<CanonicalMutationPublication> WriteFileAtomicBytesCoreAsync(
         string relativePath,
         byte[] content,
@@ -1706,6 +1731,7 @@ public partial class FileSystemManager
     public Task<string?> ReadFileAsync(string relativePath) => ReadFileAsync(relativePath, null);
 
     /// <summary>Reads ordinary text while explicitly retaining each actual initial and followup source snapshot.</summary>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     internal async Task<string?> ReadFileAsync(string relativePath, NarrativeReadObservation? observation)
     {
 #if DEBUG
@@ -1761,6 +1787,7 @@ public partial class FileSystemManager
     /// <returns>
     /// The observed content, or <see langword="null"/> for an absent source.
     /// </returns>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     internal async Task<string?> ReadFileAsync(
         CanonicalWriteLease writeLease,
         string relativePath, NarrativeReadObservation? observation = null)
@@ -1802,12 +1829,12 @@ public partial class FileSystemManager
     /// <returns>
     /// Decoded text or <see langword="null"/> for observed absence.
     /// </returns>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     private async Task<string?> ReadFileCoreAsync(string relativePath, CanonicalWriteLease? lease = null, NarrativeReadObservation? observation = null)
     {
         var snapshot = await ReadFileSnapshotCoreAsync(
             relativePath,
-            CancellationToken.None, lease);
-        ObserveNarrativeProtectedSnapshot(snapshot, observation);
+            CancellationToken.None, lease, observation);
         if (snapshot == null)
             return null;
 
@@ -1827,6 +1854,7 @@ public partial class FileSystemManager
     }
 
     /// <summary>Observes the existing public bytes reader without changing publication recovery or followups.</summary>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     internal Task<byte[]?> ReadFileBytesObservedAsync(string relativePath, NarrativeReadObservation observation) =>
         ReadFileBytesWithPublicationRecoveryAsync(relativePath, CancellationToken.None, observation);
 
@@ -1852,6 +1880,7 @@ public partial class FileSystemManager
     /// <returns>
     /// The observed content, or <see langword="null"/> for an absent source.
     /// </returns>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     internal async Task<byte[]?> ReadFileBytesAsync(
         CanonicalWriteLease writeLease,
         string relativePath, NarrativeReadObservation? observation = null)
@@ -1926,6 +1955,7 @@ public partial class FileSystemManager
     internal string? ReadFileSync(string relativePath) => ReadFileSync(relativePath, null);
 
     /// <summary>Observes the unchanged synchronous public text route.</summary>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     internal string? ReadFileSync(string relativePath, NarrativeReadObservation? observation)
     {
 #if DEBUG
@@ -1990,6 +2020,7 @@ public partial class FileSystemManager
     /// <returns>
     /// The observed content, or <see langword="null"/> for an absent source.
     /// </returns>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     internal string? ReadFileSync(
         CanonicalWriteLease writeLease,
         string relativePath, NarrativeReadObservation? observation = null)
@@ -2001,17 +2032,11 @@ public partial class FileSystemManager
         var ordinary = UsesTrustedLocalWriter(writeLease, relativePath);
         var snapshot = ordinary
             ? ReadOrdinaryFileSnapshotCore(relativePath, writeLease, observation)
-            : ReadFileSnapshotCore(relativePath, writeLease);
-        if (!ordinary) ObserveNarrativeProtectedSnapshot(snapshot, observation);
+            : ReadFileSnapshotCore(relativePath, writeLease, observation);
         var result = DecodeFileSnapshot(snapshot);
         RememberDeclaredSourceRoute(writeLease, relativePath, false, ordinary);
         return result;
     }
-
-    /// <summary>Distinguishes actual protected source DATA from a reused result without inventing a physical occurrence.</summary>
-    private void ObserveNarrativeProtectedSnapshot(CanonicalFileReadSnapshot? snapshot, NarrativeReadObservation? observation) =>
-        observation?.Snapshot(snapshot?.Content, physical: ValidationReuseSuppression.Value != 0 ||
-            (_validationReadSet.Value is null && _sourceDataOperation.Value is null));
 
     private static string? DecodeFileSnapshot(CanonicalFileReadSnapshot? snapshot)
     {
@@ -2044,6 +2069,7 @@ public partial class FileSystemManager
     /// <returns>
     /// The observed content, or <see langword="null"/> for an absent source.
     /// </returns>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     internal byte[]? ReadFileBytesSync(CanonicalWriteLease writeLease, string relativePath, NarrativeReadObservation? observation = null)
     {
         if (TryReadDeclaredSourceData(writeLease, relativePath, false, out var cached)) { observation?.Snapshot(cached?.Content, physical: false); return cached?.Content; }
@@ -2051,8 +2077,7 @@ public partial class FileSystemManager
         var ordinary = UsesTrustedLocalWriter(writeLease, relativePath);
         var snapshot = ordinary
             ? ReadOrdinaryFileSnapshotCore(relativePath, writeLease, observation)
-            : ReadFileSnapshotCore(relativePath, writeLease);
-        if (!ordinary) ObserveNarrativeProtectedSnapshot(snapshot, observation);
+            : ReadFileSnapshotCore(relativePath, writeLease, observation);
         EnsureValidCanonicalWriteLease(writeLease);
         RememberDeclaredSourceRoute(writeLease, relativePath, false, ordinary);
         return snapshot?.Content;
@@ -2061,6 +2086,7 @@ public partial class FileSystemManager
     internal byte[]? ReadFileBytesSync(string relativePath) => ReadFileBytesSync(relativePath, null);
 
     /// <summary>Observes the unchanged synchronous public bytes route.</summary>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     internal byte[]? ReadFileBytesSync(string relativePath, NarrativeReadObservation? observation)
     {
 #if DEBUG
@@ -2180,14 +2206,14 @@ public partial class FileSystemManager
     /// <returns>
     /// Read bytes, or <see langword="null"/> for absence.
     /// </returns>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     private async Task<byte[]?> ReadFileBytesCoreAsync(
         string relativePath,
         CancellationToken cancellationToken, CanonicalWriteLease? lease = null, NarrativeReadObservation? observation = null)
     {
         var snapshot = await ReadFileSnapshotCoreAsync(
             relativePath,
-            cancellationToken, lease);
-        ObserveNarrativeProtectedSnapshot(snapshot, observation);
+            cancellationToken, lease, observation);
         return snapshot?.Content;
     }
 
@@ -2203,9 +2229,10 @@ public partial class FileSystemManager
     /// <returns>
     /// Fresh bytes/timestamp or observed absence.
     /// </returns>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     private async Task<CanonicalFileReadSnapshot?> ReadFileSnapshotUncachedAsync(
         string relativePath,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken, NarrativeReadObservation? observation = null)
     {
         StableReadFile? openedFile = null;
         for (var attempt = 0; ; attempt++)
@@ -2222,12 +2249,16 @@ public partial class FileSystemManager
                 IsTransientReadOpenException(ex) &&
                 attempt < TransientFileAccessRetryCount)
             {
+                observation?.Fault(ex);
                 await Task.Delay(TransientFileAccessRetryDelay, cancellationToken);
             }
         }
 
         if (openedFile == null)
+        {
+            observation?.Snapshot(null);
             return null;
+        }
 
         await using (openedFile)
         {
@@ -2240,10 +2271,10 @@ public partial class FileSystemManager
                     ? new MemoryStream((int)stream.Length)
                     : new MemoryStream();
                 await stream.CopyToAsync(buffer, cancellationToken);
+                var snapshot = new CanonicalFileReadSnapshot(buffer.ToArray(), lastWriteTimeUtc);
+                observation?.Snapshot(snapshot.Content);
                 openedFile.Complete();
-                return new CanonicalFileReadSnapshot(
-                    buffer.ToArray(),
-                    lastWriteTimeUtc);
+                return snapshot;
             }
             catch
             {
@@ -2588,8 +2619,9 @@ public partial class FileSystemManager
     /// <returns>
     /// Fresh bytes/timestamp or observed absence; original path and data refusals propagate.
     /// </returns>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     private CanonicalFileReadSnapshot? ReadFileSnapshotUncached(
-        string relativePath)
+        string relativePath, NarrativeReadObservation? observation = null)
     {
         for (var attempt = 0; ; attempt++)
         {
@@ -2598,7 +2630,10 @@ public partial class FileSystemManager
             {
                 var expectedFullPath = ResolvePath(relativePath);
                 if (!FileExistsCore(relativePath))
+                {
+                    observation?.Snapshot(null);
                     return null;
+                }
 
                 using var parentAuthority = EnsureStableCanonicalParent(
                     relativePath,
@@ -2610,7 +2645,10 @@ public partial class FileSystemManager
                     "Canonical synchronous game-session read",
                     asynchronous: false);
                 if (stream == null)
+                {
+                    observation?.Snapshot(null);
                     return null;
+                }
 
                 initialValidationComplete = true;
                 _hooks?.AfterCanonicalReadInitialValidationAsync
@@ -2624,19 +2662,20 @@ public partial class FileSystemManager
                     ? new MemoryStream((int)stream.Length)
                     : new MemoryStream();
                 stream.CopyTo(buffer);
+                var snapshot = new CanonicalFileReadSnapshot(buffer.ToArray(), lastWriteTimeUtc);
+                observation?.Snapshot(snapshot.Content);
                 PhysicalFileAuthority.EnsureRegularFileHandleMatchesExpectedPath(
                     stream.SafeFileHandle,
                     expectedFullPath,
                     "Canonical synchronous game-session read completion");
-                return new CanonicalFileReadSnapshot(
-                    buffer.ToArray(),
-                    lastWriteTimeUtc);
+                return snapshot;
             }
             catch (Exception ex) when (
                 !initialValidationComplete &&
                 IsTransientReadOpenException(ex) &&
                 attempt < TransientFileAccessRetryCount)
             {
+                observation?.Fault(ex);
                 Thread.Sleep(TransientFileAccessRetryDelay);
             }
         }

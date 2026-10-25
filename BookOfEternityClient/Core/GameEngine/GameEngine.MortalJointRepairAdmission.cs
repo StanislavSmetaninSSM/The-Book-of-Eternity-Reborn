@@ -111,7 +111,13 @@ public partial class GameEngine
         {
             var pass = await _validator.ValidateAcceptedTurnNarrativePolicyPassAsync();
             invocation.Complete(JointNarrativeIssuer, pass);
-            return pass.Issues;
+            var issues = pass.Issues;
+            if (issues.Any(issue => issue.Severity == IssueSeverity.Error))
+            {
+                ExpireCurrentMortalJointNarrativeInvocation();
+                _mortalJointNarrativeDisposition = "UnavailableNarrativeErrors";
+            }
+            return issues;
         }
         catch
         {

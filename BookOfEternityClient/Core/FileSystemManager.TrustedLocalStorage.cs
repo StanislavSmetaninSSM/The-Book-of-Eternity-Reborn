@@ -504,12 +504,14 @@ public partial class FileSystemManager
     /// <returns>
     /// Completion after the original publication outcome is required to be committed; original failure mapping is retained.
     /// </returns>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     private async Task WriteTrustedLocalFileAsync(CanonicalWriteLease lease, string relativePath, byte[]? desired, NarrativeWriteObservation? observation = null)
     {
         using var totalTiming = MeasureOperation("TrustedWrite.Total");
         TrustedLocalPublicationOutcome outcome;
         using (MeasureOperation("TrustedWrite.PublishOutcome"))
             outcome = await PublishOrdinaryFileWithOutcomeAsync(lease, relativePath, desired, observation);
+        observation?.TrustedOutcome(outcome);
         using (MeasureOperation("TrustedWrite.RequireCommitted"))
             RequireCommittedLocalPublication(outcome);
         if (desired is not null) observation?.Published(desired);
@@ -532,6 +534,7 @@ public partial class FileSystemManager
     /// <returns>
     /// The original committed, rolled-back or uncertain publication outcome.
     /// </returns>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     internal async Task<TrustedLocalPublicationOutcome> PublishOrdinaryFileWithOutcomeAsync(
         CanonicalWriteLease lease, string relativePath, byte[]? desired, NarrativeWriteObservation? observation = null)
     {

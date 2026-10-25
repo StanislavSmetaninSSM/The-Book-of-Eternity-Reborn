@@ -2,6 +2,143 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-live-n-before-first-interface",
+  "responsibility": "One genuine corrected Stage/Ready N invocation observes achievements, then its actual later quests-read callback changes only consumed achievements bytes. Require live N closure before FIRST I PrepareResult, with zero I preparation/common/effects and an inert held same-engine repeat.",
+  "excludes": "No synthetic N invocation/Ready/original/owner, new production callback, cold reconstruction, full NI/S/B/M3/F1/T197, Windows or broad replay. Passive window now begins after corrected public readback; prior baseline timing is not a direct performance comparison.",
+  "changeHints": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointNarrativeContribution.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfacePublication.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointNarrativeSource.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-narrative-policy-pass-sources",
+      "when": "Qualify cheap source/parser/writer controls before this real pre-FIRST-I consumer."
+    },
+    {
+      "id": "fr063-joint-live-n-source-drift",
+      "when": "Both before-FIRST-I and after-Capturing fences are required for live N source freshness."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveNarrativeDependencyDriftPreventsFirstInterfacePreparation"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-narrative-policy-pass-sources",
+  "responsibility": "Actual single ordinary N invocation DATA: no-write and changed normalization, genuine supplied/uncovered originals and swallowed original faults, every initial/followup occurrence, sticky drift, copied diagnostics, issuer/files/G/lease/Dispose refusal, explicit partial cached provenance, actual writer preimage/outcome/owning-close and narrow authenticated I transition DATA matching. Engine authority remains separately tested.",
+  "excludes": "No GameEngine world, invented Stage/Ready/original authority, NI/S/B/M3/F1/T197 completion, durable N disposition, native crash or Windows execution. Unit DATA I records do not authenticate engine admission.",
+  "changeHints": [
+    "BookOfEternityClient/Services/Validation/ValidationService.NarrativeInterfaceInvocation.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.NarrativeInterfaceSources.cs",
+    "BookOfEternityClient/Core/FileSystemManager.cs",
+    "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+    "BookOfEternityClient/Core/FileSystemManager.ValidationReadSet.cs",
+    "BookOfEternityClient/Core/ReversibleFilePublication.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-live-n-source-drift",
+      "when": "Actual engine registers and consumes this returned N pass before preparation."
+    },
+    {
+      "id": "fr063-ordinary-output-policy-source",
+      "when": "Explicit nullable source plumbing or passive ordinary N/I scopes change the guarded shared owner."
+    },
+    {
+      "id": "fr063-reserved-validation-read-set",
+      "when": "Shared declared/protected dispatch or non-passive hook eligibility changes."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.NarrativePolicyPassTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-live-n-prepared-resume",
+  "responsibility": "One actual existing NativeLinux Prepared cut0 resume after live N contribution wiring. Preserve frozen I, exact original game/identity/EOF/join/cleanup assertions and explicit HistoricalNUnavailable disposition; existing child/stop/EOF budgets unchanged.",
+  "excludes": "No original Theory5 aggregate, fresh N history reconstruction, repeated projector/UTC or already-Published I rewrite; Prepared may finish its one frozen publication. No Windows/CI execution claim.",
+  "changeHints": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointNarrativeContribution.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointNarrativeSource.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-narrative-policy-pass-sources",
+      "when": "Run only after cheap source/writer gates and independent fresh preparation."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveNarrativePreparedColdResumePreservesFrozenI"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-live-n-published-resume",
+  "responsibility": "One actual existing NativeLinux Published cut2 resume after live N contribution wiring. Preserve frozen I, exact original game/identity/EOF/join/cleanup assertions and explicit HistoricalNUnavailable disposition; existing child/stop/EOF budgets unchanged.",
+  "excludes": "No original Theory5 aggregate, fresh N history reconstruction, repeated projector/UTC or already-Published I rewrite; Prepared may finish its one frozen publication. No Windows/CI execution claim.",
+  "changeHints": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointNarrativeContribution.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointNarrativeSource.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-narrative-policy-pass-sources",
+      "when": "Run only after cheap source/writer gates and independent fresh preparation."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveNarrativePublishedColdResumePreservesFrozenI"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-live-n-source-drift",
   "responsibility": "Causal genuine Stage43/corrected Ready pre-intake N achievements physical-read dependency drift at existing completed capture observer. Refuse before real preparation with held runtime and exact no-effect images; first tests-only RED singleton.",
   "excludes": "No invented N/I/Ready/original, full NI/S/B/M3/F1/T197, cold resume, native crash, Windows qualification or broad fixture replay. Missing API, build, setup or timeout never constitute causal RED.",

@@ -15,14 +15,27 @@ public sealed partial class GameEngineTurnLifecycleTests
     public Task GuaranteedTreatment_UnchangedLiveNarrativeSourceCompletesJointOnce() =>
         RunLiveNarrativeSourceControlAsync(changeSource: false);
 
+    [Fact]
+    public Task GuaranteedTreatment_LiveNarrativeDependencyDriftPreventsFirstInterfacePreparation() =>
+        RunLiveNarrativeSourceControlAsync(changeSource: true, duringNarrative: true);
+
+    [Fact]
+    public Task GuaranteedTreatment_LiveNarrativePreparedColdResumePreservesFrozenI() =>
+        RunJointInterfaceActualProcessLossAsync(0);
+
+    [Fact]
+    public Task GuaranteedTreatment_LiveNarrativePublishedColdResumePreservesFrozenI() =>
+        RunJointInterfaceActualProcessLossAsync(2);
+
     /// <summary>
     /// Runs a fresh genuine Stage/Ready owner with named preparation observations, without sharing mutable fixture state.
     /// </summary>
     /// <param name="changeSource">Whether to change the consumed achievements bytes at the existing capture checkpoint.</param>
+    /// <param name="duringNarrative">Whether a later actual N dependency read triggers the change before the first I preparation.</param>
     /// <returns>Completion after held or original full completion assertions and owned cleanup.</returns>
-    private async Task RunLiveNarrativeSourceControlAsync(bool changeSource)
+    private async Task RunLiveNarrativeSourceControlAsync(bool changeSource, bool duringNarrative = false)
     {
-        using var probe = new JointNarrativeSourceProbe(changeSource);
+        using var probe = new JointNarrativeSourceProbe(changeSource, duringNarrative);
         using var fixture = new GameEngineTurnLifecycleTests(_directGachaOutput, adoptedRoot: null,
             passiveOperationTimings: probe.Timings);
         await fixture.RunJointCompletionControlAsync(false, useLiveCaller: true, narrativeSourceProbe: probe);
@@ -30,7 +43,7 @@ public sealed partial class GameEngineTurnLifecycleTests
 
     // Observations and one public-source intervention only. No fabricated N/I
     // result, original, Ready, lease, registry access or capability is introduced.
-    private sealed class JointNarrativeSourceProbe(bool changeSource) : IDisposable
+    private sealed class JointNarrativeSourceProbe(bool changeSource, bool duringNarrative) : IDisposable
     {
         private const string SourcePath = "game_state/meta/achievements.json";
         private const string PreparationOperation = "GameEngine.CreateJointRepairPreparationAsync";
@@ -45,7 +58,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         private Dictionary<string, byte[]?>? _atCut;
         private byte[]? _sourceRead, _sourceAtCut;
         private bool _armed, _cut;
-        private int _sourceReads, _sourceReturns, _callbacks, _turnAtCut;
+        private int _sourceReads, _sourceReturns, _callbacks, _captureCallbacks, _turnAtCut;
         internal OperationTimingAccumulator Timings { get; } = new();
         private long PreparationEntries => _window?.Capture().Rows.SingleOrDefault(row => row.Name == PreparationOperation)?.Started ?? 0;
         internal bool ExpectsHeld => changeSource;
@@ -74,9 +87,16 @@ public sealed partial class GameEngineTurnLifecycleTests
             fixture._consoleReturnedCanonicalReadObserver = async path =>
             {
                 if (_priorReturnedRead is not null) await _priorReturnedRead(path);
-                if (!_armed || _cut || path != SourcePath) return;
-                _sourceReturns++;
-                _reads.Add(new { Path = path, Returned = true });
+                if (!_armed || _cut) return;
+                if (path == SourcePath)
+                {
+                    _sourceReturns++;
+                    _reads.Add(new { Path = path, Returned = true });
+                }
+                if (duringNarrative && path == "game_state/quests/regular_quests.json" && _sourceReturns > 0 &&
+                    _window!.Capture().Rows.SingleOrDefault(row => row.Name == "NarrativePolicy.Evaluate") is { } evaluation &&
+                    evaluation.Started > evaluation.Completed)
+                    InterveneAtConsumedSource();
             };
             fixture._consoleMutationObserver = path =>
             {
@@ -90,6 +110,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             Assert.False(_armed); _armed = true;
             Assert.False(_cut); Assert.Equal(0, _sourceReads);
+            _window = Timings.StartWindow();
         }
 
         /// <summary>Changes one real N dependency after N returned and Capturing completed, before preparation.</summary>
@@ -97,6 +118,13 @@ public sealed partial class GameEngineTurnLifecycleTests
         internal void ObserveCheckpoint(SessionFinalizationCheckpoint checkpoint)
         {
             if (checkpoint != SessionFinalizationCheckpoint.MortalJointCustodyCaptureCompletedBeforePreparation) return;
+            _captureCallbacks++;
+            if (duringNarrative) return;
+            InterveneAtConsumedSource();
+        }
+
+        private void InterveneAtConsumedSource()
+        {
             Assert.True(_armed); Assert.False(_cut); _callbacks++;
             Assert.True(_sourceReads > 0, "Corrected pre-intake N must actually read achievements before the capture checkpoint.");
             Assert.Equal(_sourceReads, _sourceReturns);
@@ -112,10 +140,10 @@ public sealed partial class GameEngineTurnLifecycleTests
             _turnAtCut = _runtime!.GameLoop.TurnNumber;
             _atCut = PhysicalImages();
             _cut = true;
-            _window = Timings.StartWindow();
             fixture.WritePhysicalInjuryDiagnostic("live_n_actual_dependency_cut", new
             {
-                changeSource, Callback = _callbacks, ActualCorrectedSourceReads = _sourceReads, ActualCorrectedSourceReturns = _sourceReturns,
+                changeSource, duringNarrative, Callback = _callbacks, CaptureCallbacks = _captureCallbacks,
+                ActualCorrectedSourceReads = _sourceReads, ActualCorrectedSourceReturns = _sourceReturns,
                 SourcePath, Before = Raw(before), After = Raw(_sourceAtCut), Reads = _reads,
                 Runtime = _runtime.Engine.CaptureMortalJointRuntimeObservation(), Turn = _turnAtCut,
                 Images = RawImages(_atCut)
@@ -125,7 +153,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         /// <summary>Asserts causal refusal before preparation and exact physical effect preservation.</summary>
         /// <param name="engine">The real engine after its ordinary owner returned.</param>
         /// <param name="diagnostics">Complete existing logger diagnostics.</param>
-        internal void AssertHeld(GameEngine engine, string diagnostics)
+        internal async Task AssertHeldAsync(GameEngine engine, string diagnostics)
         {
             Assert.Same(_runtime!.Engine, engine);
             var after = PhysicalImages();
@@ -142,15 +170,51 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal(0, PreparationEntries);
             Assert.Equal(1, _callbacks); Assert.True(_sourceReads > 0);
             Assert.True(runtime.CheckpointPresent); Assert.True(runtime.CorrectionReady);
-            Assert.True(runtime.CanonicalRefreshPresent);
-            Assert.Equal("PublicationUncertain", runtime.CanonicalDisposition);
-            Assert.NotEmpty(runtime.Issues!);
+            if (duringNarrative)
+            {
+                Assert.Equal(0, _captureCallbacks);
+                Assert.Equal(0, Starts(_window!.Capture(), "MortalJointInterface.PrepareResult"));
+                Assert.False(runtime.CanonicalRefreshPresent);
+                Assert.True(runtime.PreparationHeld);
+            }
+            else
+            {
+                Assert.Equal(1, _captureCallbacks);
+                Assert.True(runtime.CanonicalRefreshPresent);
+                Assert.Equal("PublicationUncertain", runtime.CanonicalDisposition);
+                Assert.NotEmpty(runtime.Issues!);
+            }
             Assert.Equal(_turnAtCut, _runtime.GameLoop.TurnNumber);
             Assert.Empty(_postCutMutations);
             Assert.Equal(_atCut!.Keys, after.Keys);
             foreach (var (path, raw) in _atCut) Assert.Equal(raw, after[path]);
             Assert.Equal(_sourceAtCut, after[SourcePath]);
+            Assert.Equal("KnownLiveNHold", runtime.NarrativeContribution);
+            var beforeRepeat = _window!.Capture();
+            var mutationCount = _postCutMutations.Count;
+            var repeated = await engine.ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync();
+            var repeatedImages = PhysicalImages();
+            var afterRepeat = _window.Capture();
+            var repeatedRuntime = engine.CaptureMortalJointRuntimeObservation();
+            _fixture.WritePhysicalInjuryDiagnostic("live_n_known_hold_same_engine_repeat", new
+            {
+                Repeated = repeated, Runtime = repeatedRuntime, BeforeCounters = beforeRepeat,
+                AfterCounters = afterRepeat, BeforeImages = RawImages(after), AfterImages = RawImages(repeatedImages),
+                PostCutMutations = _postCutMutations, TurnAfter = _runtime.GameLoop.TurnNumber
+            });
+            Assert.Equal("KnownLiveNHold", repeatedRuntime.NarrativeContribution);
+            Assert.True(repeatedRuntime.PreparationHeld);
+            Assert.Equal(mutationCount, _postCutMutations.Count);
+            Assert.Equal(_turnAtCut, _runtime.GameLoop.TurnNumber);
+            Assert.Equal(after.Keys, repeatedImages.Keys);
+            foreach (var (path, raw) in after) Assert.Equal(raw, repeatedImages[path]);
+            foreach (var name in new[] { "NarrativePolicy.Capture", "NarrativePolicy.Evaluate",
+                         "NarrativePolicy.EvaluateInterface", "MortalJointInterface.PrepareResult", PreparationOperation })
+                Assert.Equal(Starts(beforeRepeat, name), Starts(afterRepeat, name));
         }
+
+        private static long Starts(OperationTimingAccumulator.Snapshot snapshot, string name) =>
+            snapshot.Rows.SingleOrDefault(row => row.Name == name)?.Started ?? 0;
 
         /// <summary>Checks the unchanged source contrast after all original full completion and inert-repeat assertions.</summary>
         internal void AssertCompleted()

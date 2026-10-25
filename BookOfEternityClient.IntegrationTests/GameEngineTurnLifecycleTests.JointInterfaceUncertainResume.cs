@@ -92,6 +92,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Interface = ObserveImage(InterfacePath), Mechanical = _mechanicalBefore.Keys.ToDictionary(path => path, ObserveImage),
                 Meaning = "Raw read-only images after new call; ReadError distinguishes unreadable from absent" });
             Assert.NotNull(_currentResumedProof); Assert.Equal(43, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
+            Assert.Equal("HistoricalNUnavailable", engine.CaptureMortalJointRuntimeObservation().NarrativeContribution);
             Assert.Equal(record.ResultFingerprint, _currentResumedProof.ResultFingerprint);
             Assert.True(JsonNode.DeepEquals(record.ToJson(), _currentResumedProof.ToJson()));
             Assert.Equal(record.AfterBytes, ReadPhysical(InterfacePath));

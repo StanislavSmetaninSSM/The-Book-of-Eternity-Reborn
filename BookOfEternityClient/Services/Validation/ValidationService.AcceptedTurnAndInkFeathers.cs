@@ -77,6 +77,7 @@ public partial class ValidationService
 
     private async Task<List<ValidationIssue>> ValidateAcceptedTurnNarrativePayloadInternalAsync(bool readOnly = false, NarrativeInterfaceSourceSession? source = null)
     {
+        using var evaluationTiming = _fs.MeasureOperation("NarrativePolicy.Evaluate");
         var issues = new List<ValidationIssue>();
         await ValidateAcceptedTurnTransientOutputFreshnessAsync(
             "output/narrative_response.json",
@@ -88,6 +89,7 @@ public partial class ValidationService
         var json = await ReadNarrativeSourceTextAsync("output/narrative_response.json", source);
         if (string.IsNullOrWhiteSpace(json))
         {
+            source?.Policy("output/narrative_response.json", "document-kind", "NotReachedMissingOrBlank");
             issues.Add(new ValidationIssue(
                 "output/narrative_response.json",
                 IssueSeverity.Error,
@@ -110,12 +112,17 @@ public partial class ValidationService
         else
             json = await NormalizeAcceptedTurnNarrativeLineBreakArtifactsAsync("output/narrative_response.json", json, source);
 
+        var documentParsed = false;
         try
         {
             using var doc = JsonDocument.Parse(json);
+            documentParsed = true;
+            source?.Policy("output/narrative_response.json", "document-kind", doc.RootElement.ValueKind.ToString());
             if (!EvaluateAcceptedNarrativePrefix(doc.RootElement, issues, out var responseText))
                 return issues;
 
+            var timestampIssueStart = issues.Count;
+            source?.BeginTimestampPolicy();
             ValidateRequiredIsoTimestampField(
                 doc.RootElement,
                 "output/narrative_response.json",
@@ -126,6 +133,7 @@ public partial class ValidationService
                 "narrative_response_invalid_timestamp",
                 "Добавь в output/narrative_response.json поле timestamp в ISO 8601 формате вместе со свежим response для текущего accepted turn.");
 
+            source?.ReturnedTimestampPolicy(issues, timestampIssueStart);
             EvaluateAcceptedNarrativeTail(doc.RootElement, responseText, issues);
 
             if (!string.IsNullOrWhiteSpace(responseText))
@@ -136,6 +144,8 @@ public partial class ValidationService
         }
         catch (JsonException)
         {
+            source?.Policy("output/narrative_response.json", "narrative-domain-catch",
+                documentParsed ? "DownstreamJsonException" : "InvalidJson");
             issues.Add(new ValidationIssue(
                 "output/narrative_response.json",
                 IssueSeverity.Error,
@@ -162,16 +172,23 @@ public partial class ValidationService
     /// <returns>
     /// The normalized JSON when changed; otherwise the exact original text.
     /// </returns>
+    /// <param name="source">Explicit invocation observations, or null for the unchanged ordinary route.</param>
     private async Task<string> NormalizeAcceptedTurnNarrativeLineBreakArtifactsAsync(
         string narrativePath,
         string json, NarrativeInterfaceSourceSession? source = null)
     {
-        source?.Projection();
+        using var projectionTiming = _fs.MeasureOperation("NarrativePolicy.ProjectNarrative");
         var projected = AcceptedTurnOutputProjector.ProjectNarrative(json);
+        projectionTiming?.Dispose();
+        source?.Projection(projected.Json, projected.Changed);
         if (projected.Changed)
         {
             var writer = source?.BeginWrite(narrativePath);
-            try { await _fs.WriteFileAtomicAsync(narrativePath, projected.Json, writer); }
+            try
+            {
+                if (writer is null) await _fs.WriteFileAtomicAsync(narrativePath, projected.Json);
+                else await _fs.WriteFileAtomicAsync(narrativePath, projected.Json, writer);
+            }
             catch (Exception error) { writer?.Fault(error); throw; }
         }
         return projected.Json;
@@ -273,6 +290,7 @@ public partial class ValidationService
         try
         {
             using var doc = JsonDocument.Parse(interfaceJson);
+            source?.Policy("output/interface_updates.json", "document-kind", doc.RootElement.ValueKind.ToString());
             if (doc.RootElement.ValueKind != JsonValueKind.Object)
                 return builder.ToString();
 
@@ -294,8 +312,9 @@ public partial class ValidationService
                 }
             }
         }
-        catch (JsonException)
+        catch (JsonException error)
         {
+            source?.Policy("output/interface_updates.json", "domain-catch", error.GetType().Name);
             // Interface validation reports malformed JSON separately.
         }
 
@@ -320,6 +339,7 @@ public partial class ValidationService
         try
         {
             using var doc = JsonDocument.Parse(json);
+            source?.Policy("game_state/quests/regular_quests.json", "document-kind", doc.RootElement.ValueKind.ToString());
             foreach (var propName in new[] { "quests", "UpdateQuests" })
             {
                 if (!doc.RootElement.TryGetProperty(propName, out var arr) || arr.ValueKind != JsonValueKind.Array)
@@ -350,8 +370,9 @@ public partial class ValidationService
                 }
             }
         }
-        catch (JsonException)
+        catch (JsonException error)
         {
+            source?.Policy("game_state/quests/regular_quests.json", "domain-catch", error.GetType().Name);
             // Generic quest state validation reports malformed JSON separately.
         }
 
@@ -398,6 +419,7 @@ public partial class ValidationService
         try
         {
             using var doc = JsonDocument.Parse(debugJson);
+            source?.Policy("output/debug_logs.json", "document-kind", doc.RootElement.ValueKind.ToString());
             if (doc.RootElement.ValueKind == JsonValueKind.Object &&
                 doc.RootElement.TryGetProperty("gm_thoughts_markdown", out var gmThoughts) &&
                 gmThoughts.ValueKind == JsonValueKind.String)
@@ -405,8 +427,9 @@ public partial class ValidationService
                 return gmThoughts.GetString() ?? string.Empty;
             }
         }
-        catch (JsonException)
+        catch (JsonException error)
         {
+            source?.Policy("output/debug_logs.json", "domain-catch", error.GetType().Name);
             // Debug logs validation reports malformed JSON separately.
         }
 
@@ -526,6 +549,7 @@ public partial class ValidationService
 
     private async Task<List<ValidationIssue>> ValidateAcceptedTurnInterfacePayloadInternalAsync()
     {
+        using var evaluationTiming = _fs.MeasureOperation("NarrativePolicy.EvaluateInterface");
         var issues = new List<ValidationIssue>();
         var interfacePath = "output/interface_updates.json";
         await ValidateAcceptedTurnTransientOutputFreshnessAsync(
@@ -752,6 +776,7 @@ public partial class ValidationService
         try
         {
             using var doc = JsonDocument.Parse(json);
+            source?.Policy("ready/turn_complete.json", "document-kind", doc.RootElement.ValueKind.ToString());
             if (!doc.RootElement.TryGetProperty("filesModified", out var files) ||
                 files.ValueKind != JsonValueKind.Array)
             {
@@ -767,8 +792,9 @@ public partial class ValidationService
                 }
             }
         }
-        catch (JsonException)
+        catch (JsonException error)
         {
+            source?.Policy("ready/turn_complete.json", "domain-catch", error.GetType().Name);
             return result;
         }
 
@@ -2948,8 +2974,9 @@ public partial class ValidationService
         {
             return JsonSerializer.Deserialize<ValidationPendingTurnSnapshotManifest>(json, ManifestJsonOpts);
         }
-        catch
+        catch (Exception error)
         {
+            source?.Policy(narrativeRolePath, "original-manifest-parse", error.GetType().Name);
             return null;
         }
     }
@@ -3415,12 +3442,17 @@ public partial class ValidationService
         FileSystemManager.CanonicalWriteLease? writeLease = null, NarrativeInterfaceSourceSession? source = null)
     {
         if (manifest.Files == null ||
-            !manifest.Files.TryGetValue(relativePath, out var snapshotPath) ||
-            string.IsNullOrWhiteSpace(snapshotPath) ||
-            !PendingTurnSnapshotAuthority.IsSafeRelativePath(snapshotPath))
+            !manifest.Files.TryGetValue(relativePath, out var snapshotPath))
         {
             source?.Policy(relativePath, "original", manifest.OriginalPathPresenceV1?.TryGetValue(relativePath, out var existed) == true && !existed
                 ? "ProvedAbsent" : "Uncovered");
+            return null;
+        }
+
+        if (string.IsNullOrWhiteSpace(snapshotPath) || !PendingTurnSnapshotAuthority.IsSafeRelativePath(snapshotPath))
+        {
+            source?.Policy(relativePath, "original", "InvalidDeclaredArtifact");
+            source?.Unavailable("narrative_policy_original_artifact_invalid");
             return null;
         }
 
@@ -3943,6 +3975,8 @@ public partial class ValidationService
     /// <returns>
     /// Request identity, or null when missing or malformed.
     /// </returns>
+    /// <param name="source">Explicit invocation observations, or null for the unchanged ordinary route.</param>
+    /// <param name="narrativeRolePath">The originating closed narrative logical role for nested authority reads.</param>
     private PendingTurnRequestValidationContext? LoadPendingTurnRequestValidationContextSync(
         string requestPath,
         FileSystemManager.CanonicalWriteLease? writeLease = null, NarrativeInterfaceSourceSession? source = null,
@@ -5037,6 +5071,8 @@ public partial class ValidationService
     /// <returns>
     /// Actual source status and an independent manifest copy when invocation evidence is active.
     /// </returns>
+    /// <param name="source">Explicit invocation observations, or null for the unchanged ordinary route.</param>
+    /// <param name="narrativeRolePath">The originating closed narrative logical role for nested authority reads.</param>
     private async Task<ValidatedPendingTurnSnapshotLookup> LoadValidatedPendingTurnSnapshotLookupAsync(
         FileSystemManager.CanonicalWriteLease? writeLease = null, NarrativeInterfaceSourceSession? source = null,
         string narrativeRolePath = "output/narrative_response.json")
@@ -5089,13 +5125,21 @@ public partial class ValidationService
             PendingTurnSnapshotAuthority.AuthorityPath,
             writeLease, source, narrativeRolePath);
         if (!PendingTurnSnapshotAuthority.TryReadDetachedAuthorityPayload(authorityJson, out var payload) || payload == null)
+        {
+            source?.Policy(narrativeRolePath, "original-authority", "MissingOrInvalid");
+            source?.Unavailable("narrative_policy_original_authority_unavailable");
             return null;
+        }
 
-        return IsCurrentDetachedPendingTurnSnapshotAuthorityPayload(
+        var current = IsCurrentDetachedPendingTurnSnapshotAuthorityPayload(
                 payload,
-                writeLease, source, narrativeRolePath)
-            ? payload
-            : null;
+                writeLease, source, narrativeRolePath);
+        if (!current)
+        {
+            source?.Policy(narrativeRolePath, "original-authority", "WrongContext");
+            source?.Unavailable("narrative_policy_original_authority_context_changed");
+        }
+        return current ? payload : null;
     }
 
     /// <summary>
