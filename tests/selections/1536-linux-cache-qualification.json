@@ -1,0 +1,257 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "core-service-cache",
+      "reason": "Linux accumulated cache qualification: Extensible production cache mechanisms: presence, comparers, lifecycle, backend ownership and controlled-clock TTL/idle timer cleanup.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "core-repository-cache",
+      "reason": "Linux accumulated cache qualification: Production repository-service-cache composition: copies, real source save/delete, failed-write invalidation, shared async serialization and close/reentrant refusal.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "core-operation-validation-cache",
+      "reason": "Linux accumulated cache qualification: General temporary operation computation and validation facts: typed values, exact dependencies, copying, lifecycle and async refusal controls on cheap fixtures.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "core-recovery-file-validation",
+      "reason": "Linux accumulated cache qualification: Real filesystem DATA fact reuse in one original recovery/publication lease: body/attribute counts, epoch invalidation including failed/no-op/absence/writer overlap, exact borrowed QTE reservation, fresh boundaries and close.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "core-source-validation-batch",
+      "reason": "Linux accumulated cache qualification: Bounded existing-service directory DATA across serial source readers and fresh verification loops; actual metadata reduction and source/ownership integrity.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "core-operation-synchronous",
+      "reason": "Linux accumulated cache qualification: Synchronous existing-service computation: reuse, defaults, exact nested dependencies, fresh scopes, copy invalidation, failure, recursion and disposal on tiny in-memory inputs.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "core-operation-lookup",
+      "reason": "Linux accumulated cache qualification: Noncomputing existing service lookup: exact declarations, defaults, copied DATA, dependencies, cancellation and serial ownership.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "core-operation-structural-data",
+      "reason": "Linux accumulated cache qualification: Complete typed structural DATA comparison and never-reused dependency versions: alias changes, restore, ineligible/malformed capture, source drift and capture outside coordinator monitor.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "core-recovery-progression-data",
+      "reason": "Linux accumulated cache qualification: Typed post-recovery DATA reuse on tiny independent real files: source/attribute counts, detached values, exact identity, recovery no-op/mutation/fresh/hook/failure boundaries and owned or borrowed scope closure.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "core-recovery-mutation-bridges",
+      "reason": "Linux accumulated cache qualification: Eight tiny real-file controls directly observe all four directory/session/load mutation envelopes at physical effects and pre-core revalidation, including rollback and failure retirement.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "core-joint-qte-contribution-data",
+      "reason": "Linux accumulated cache qualification: The production QTE calculation boundary reuses detached DATA while preserving exact structural/source observations, live eligibility and fresh entry/exit proofs on tiny independent file fixtures.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "core-joint-qte-registry-eligibility",
+      "reason": "Linux accumulated cache qualification: Fresh typed eligibility for skipping only idempotent joint QTE accepted-state binding and persisted request restoration, with exact owners, recovered sets and publication blockers.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "core-treatment-semantic-data",
+      "reason": "Linux accumulated cache qualification: Actual detached guaranteed treatment agreement and resource finalization source counts with exact immutable INPUT; aliased restored wound mutation, restoration and independent operation lifetimes.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "core-operation-source-data",
+      "reason": "Linux accumulated cache qualification: Whole-operation source DATA through existing cache: physical first/final reads, nested proof reuse, raw drift refusal, actual writer fence and closed child ownership on tiny independent files.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "core-recovery-proof-reads",
+      "reason": "Linux accumulated cache qualification: Stable post-recovery source-read lifecycle: causal first-plus-exit versus eight reads, raw bytes/absence/time/generation/namespace refusal, copies, hook fallback, failure and borrowed ownership on cheap independent files.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "fr063-reserved-validation-read-set",
+      "reason": "Linux accumulated cache qualification: Original32 reserved QTE source/lease/overlap/cancellation/absence and fresh exit-proof controls; healthy borrowed readiness also gates outer recovery DATA reuse. Four inert r46 option-specific cases are retired with saved causal RED.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "core-game-state-data-reuse",
+      "reason": "Linux accumulated cache qualification: Actual selected GameState source lifetimes coalesce repeated implicit reads through the existing service while retaining fresh source and generation fences, detached DATA, independent calls and original unsupported fallback.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "core-game-state-phase-selection",
+      "reason": "Linux accumulated cache qualification: Exact existing GameState phase/state-file selection, ordered issue equivalence and invocation isolation controls affected by source DATA phase integration.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "core-control-game-state-data",
+      "reason": "Linux accumulated cache qualification: Actual ClientOwnedControlFiles and RealmSegregation DATA reuse on tiny signed cohorts: explicit reuse-off issue parity, source reduction, request/control/realm negatives and same-time drift fences.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "core-cleanup-proof-data-reuse",
+      "reason": "Linux accumulated cache qualification: Actual opted-in trusted-local prepared cleanup callback reuses post-recovery completed-proof/history source DATA through the existing service while preserving exact publisher mutations, fresh sources and original outcomes.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "core-shared-read-admission-directories",
+      "reason": "Linux accumulated cache qualification: Explicit same-manager synchronous directory DATA sharing between ordinary preparation and its initial main admission, real physical source reduction and fresh guard/source integrity.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "core-shared-read-admission-consumers",
+      "reason": "Linux accumulated cache qualification: Existing cold metadata refusal and held-lease main-record freshness consumers affected by the optional directory DATA parameter.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "core-ordinary-read-path-data",
+      "reason": "Linux accumulated cache qualification: Explicit ordinary preparation positive-directory DATA reuse through the existing service, exact API/role keys, original failure fallback and actual sync/async physical query reduction.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "core-passive-recovery-timing",
+      "reason": "Linux accumulated cache qualification: Sealed passive timing windows preserve actual source/directory cache eligibility, legacy callback fallback, scoped context restoration, counts/late/failure/concurrency/detached output without quotas.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "core-producer-read-forwarders",
+      "reason": "Linux accumulated cache qualification: Actual adopted lifecycle fixture read hooks: empty-forwarder source/directory reuse control, callback order/delay/errors, fresh byte fence and operation close on tiny independently owned roots.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "fr063-joint-progression-data-integration",
+      "reason": "Linux accumulated cache qualification: One real phase-reader proof/DATA pair on a minimal independent actual-applied-data template: one progression source body instead of two, one general-service reuse, unchanged canonical files and closed empty owned scope.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "fr063-joint-proof-reads-integration",
+      "reason": "Linux accumulated cache qualification: Actual complete joint-proof reader on small independently copied applied DATA: real attribute reduction versus fresh hook fallback, unchanged game images and raw history drift refusal before return.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "fr063-joint-operation-boundaries",
+      "reason": "Linux accumulated cache qualification: Real AlreadyApplied, AlreadyAppended and ExistingVerified owner fences with source reuse and raw drift refusal on independent applied file DATA.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "fr063-joint-qte-data-controls",
+      "reason": "Linux accumulated cache qualification: One genuine common/resource owner proves actual repeated QTE reconstruction sources collapse while both baseline checks and the current reserved source exit proof remain fresh on each call.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "fr063-joint-semantic-data-controls",
+      "reason": "Linux accumulated cache qualification: One genuine source/stage-only issuer fixture repeats preparation and final stages eight times in the existing whole-operation service and retains fresh admission, damaged-history, mutation, constructor and abort refusal controls.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "core-recovery-joint-source-integration",
+      "reason": "Linux accumulated cache qualification: One minimal genuine issued joint fixture compares8real mechanical/continuation wrapper calls with/without DATA reuse; retain every live claim/item/owner guard, reject changed physical bytes and revoked real memory item slot without generating a world.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "core-recovery-joint-take-fence",
+      "reason": "Linux accumulated cache qualification: Actual publication take rejects raw ContextText drift after both genuine DATA facts are warm; unchanged inventory and both real authority slots are verified.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "core-recovery-finalization-fence",
+      "reason": "Linux accumulated cache qualification: Actual engine checkpoint dispatcher keeps nested source reads fresh across await and normal/throwing callbacks, then refuses persistent raw drift.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "fr063-joint-interface-crash-stage-contracts",
+      "reason": "Linux accumulated cache qualification: CRASH5 complete scalar stage writer and resumer activity: fixed identity, monotonic elapsed time, no record/byte truncation, observer failure precedence.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "fr063-joint-component-diagnostics",
+      "reason": "Linux accumulated cache qualification: Two tiny typed controls: complete component diagnostics readable before test completion and observer storage failure refusing a complete report.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    },
+    {
+      "category": "fr063-joint-child-output-transport",
+      "reason": "Linux accumulated cache qualification: Uncapped finite decoded-text artifacts: durable framing, EOF versus persistence, long lines, Unicode, failure precedence and owned evidence retention without gameplay.",
+      "contracts": [
+        "#1536 r73 Linux handoff / T551-T552"
+      ]
+    }
+  ]
+}
