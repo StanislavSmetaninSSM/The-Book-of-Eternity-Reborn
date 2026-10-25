@@ -33,9 +33,17 @@ first admission sourcequeries269500->246475, requests/invocations unchanged;
 borrowed first69075 is not saved IO. All298JSON+4text/native73+0/oracles/runtime/
 cleanup verified; new full ZIP33members each. Current large fresh boundaries still
 20.7063s/38fences and8.8902s/19exitproofs; no cached verdict or wider await batch.
-Report T540-shared-read-admission.md written; independent outcome/retention review
-and exact verified raw cleanup/final source-only publication remain. Latest old
-r69raw retained until review; proposed cleanup preserves CPU/GC/INPUT/backups.
+T540 report2D7DBCE9...6485B/comparisonCC03A197...B37E6 accepted by independent complex
+Astra/high outcome/exact-retention review318D253B...C6FD/0unresolved. All242current
+archive members verified: full33+33, cheap176. Exact209Dleaves169767813B retired;
+all948protected unchanged/current3archives intact, no recursive deletion. Replaced
+only oldr69twoRawZIPs plus current duplicate logs/TRX/captures; all CPU/GC/INPUT/
+instrument/generatedwrappers/binary backups retained. Ten expected qualified workspace
+transitions reconciled: old8DLL in227backup, oldcatalog/selection exact frozenCRLF
+hashes retained from verified Git projection. Source-only T535..540 coherent block
+complete, report unchanged after review. Final metadata-only publication will be
+checked by fresh empty remote-only recovery plus D T540-final-publication.json;
+no extra functional rerun for Markdown.
 All diagnostics D-only/uncapped; old acceptedr69raw/CPU-GC/INPUT/
 instrument/binary backups protected. GM/schema/native/process ownership unchanged.
 
