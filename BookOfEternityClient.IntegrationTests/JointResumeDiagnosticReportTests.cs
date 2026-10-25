@@ -70,20 +70,20 @@ public sealed class JointResumeDiagnosticReportTests
         var root = NewRoot(); using var cleanup = new CleanupOwnedFixture(root, Console.WriteLine);
         var path = Path.Combine(root, "existing.json"); File.WriteAllText(path, "original");
         var primary = new InvalidOperationException("original game failure");
-        var observed = Assert.Throws<InvalidOperationException>(() =>
+        var observed = Assert.Throws<InvalidOperationException>((Action)(() =>
         {
             try { throw primary; }
             finally { Assert.Null(JointResumeDiagnosticReport.Publish([1], path, _ => throw new Exception(), primary)); }
-        });
+        }));
         Assert.Same(primary, observed);
         Assert.Throws<IOException>(() => JointResumeDiagnosticReport.Publish([1], path, _ => throw new Exception()));
         Assert.Equal("original", File.ReadAllText(path));
         var fresh = Path.Combine(root, "callback.json");
-        var callbackFailure = Assert.Throws<InvalidOperationException>(() =>
+        var callbackFailure = Assert.Throws<InvalidOperationException>((Action)(() =>
         {
             try { throw primary; }
             finally { Assert.Null(JointResumeDiagnosticReport.Publish([7], fresh, _ => throw new IOException("reference pipe"), primary)); }
-        });
+        }));
         Assert.Same(primary, callbackFailure); Assert.Equal(new byte[] { 7 }, File.ReadAllBytes(fresh));
     }
 

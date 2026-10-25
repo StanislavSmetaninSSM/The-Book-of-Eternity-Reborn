@@ -1,3 +1,12 @@
+# Report-retention compile correction — tests unrun
+
+SOURCE b1bcee01a accepted independently, then fresh integration build failed
+CS0619 in two always-throwing test lambdas: overload resolution chose obsolete
+Assert.Throws(Func<Task>). Both are now explicitly Action; no behavior/assertion/
+payload/wrapper/budget change. Buildfailure is not causal RED or runtime evidence.
+All transport/replay runtime remains UNRUN. Small SOURCE delta check precedes the
+fresh integration retry; no game/Support/native rebuild or input regeneration.
+
 # Report-retention SOURCE finding corrected — final delta review pending
 
 Separate SOURCE review found unconditional new retention regressed no-env callers:
