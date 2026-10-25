@@ -1,3 +1,29 @@
+# Linux T552 final-cache common input failure —454distinctPASS,52pending
+
+Run083532-095-23735-b57e8e3e2c964a6488fcc1fc508ac186/codef8b635:11/18descriptors,
+152/198completed,146PASS/6FAIL/0skip,03:28.6224974, no timeout/processcleanupcomplete.
+Ten complete categories146cases retained; failed boundary6not countedPASS. Actual
+TRX union verifies454uniquePASS=307+take1+146, no duplicates. In particular genuine
+Linux shared-admission/source-batch/mutation/progression/proof/cache contracts pass.
+Remaining7categories8descriptors52cases:boundary6failed beforetargetoracles +46unrun.
+
+All6ActualNoWriteOwnerRequiresFreshSourceFence(ownerprogression/story/projection,
+driftfalse/true) fail at initial ReadJointProgressionPhase -> RecomposeFrozenMortal-
+Calculation line91: frozen calculation differs from independent raw recomposition.
+Shared input is historical observedAppliedBeforeStory.zip SHAFF09FDD985DB5624DE3DADC8A688830122B9087B7F47C525FA65674C2A018685,
+Windowscapture2026-10-20/code ddadb; this is inputprovenance, not Linuxqualification.
+Two independent readonly source/provenance audits underway to establish exactfield
+cause before any fix/retry. No normalization/reseal/rebinding/fakeauthority permitted.
+No productiondefect yetestablished; budgets unchanged. Native40/original5 remainUNRUN.
+
+Take-fence outcome separatelyACCEPTED byAstra/high: fullsource/bothslots/oracles
+verified. Following verifiedreplacement fullcaptureea606 and terminated oldprocesses,
+removedONLY old868f/e71d records.jsonl (3,822,881,480bytes) outsidecheckout; retain
+initial/report/TRX/smallphaseextract/checkpoints andold868fgamedataroot. PID19882Z
+(terminated/unreaped,FDSize0),PID21278absent. EACCES listingoldprocfd not escalated;
+independent zombie-state proof sufficient. Retirement receipt externaltake-raw-
+retirement.json. No user saves, repositoryfixtures orcurrentcapturedeleted.
+
 # Linux selected-original take-fence GREEN — final198cache cases next
 
 Codef8b635/currentcheckpoint72a65:run083051-175-23324-4bfb877833d44c9fac34a534561a2070
