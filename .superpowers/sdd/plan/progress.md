@@ -1,3 +1,24 @@
+# T603 compatibility/outcome ACCEPT — one existing cost recurrence next
+
+Independent review accepts actual41/41,34 captures,19 complete captures/five strict
+gzip containers,78,856 original events and all33 artifacts at compiled172e. Typed
+full-string/UTF8 and failure semantics pass. The observed service -39.29%/allocation
+-10.24% remains one comparable pair, not a game speedup or old-timeout diagnosis.
+
+Positive remains HOLD: current service/decode/closing evidence does not establish
+credible headroom in the unchanged300-second category. Reviewer requests precisely
+ONE existing managed-cost singleton recurrence, same172e binaries/32768 real scopes/
+65536 events/full Unicode message, no warmup/C# change/budget override. Exact PlanOnly,
+current artifact/source/remote binding and independent bounded PREP precede execution.
+Both candidate samples and the baseline will be retained and assessed without selecting
+the faster run: first-record and warmed cumulative service, producer/backlog/closing,
+flush/decode/allocation and actual full stored/decoded/clock/count/root proof. Unclear
+headroom means HOLD and demonstrated-path investigation, not repeated positive retries.
+
+All raw and evidence-only prior binaries remain external and unchanged. No new cache,
+parallel recorder, quota, limits change, Game/native/GM change or raw deletion. This
+bounded recurrence is preparation for the T601/T603 cost gate, not T602 acceptance.
+
 # T603 actual cheap41 PASS — independent outcome/cost decision pending
 
 Attempt actual-t603-cheap-1 at 053b46b865da3c32874615fa63ea242ab75f6095, compiled172e,
