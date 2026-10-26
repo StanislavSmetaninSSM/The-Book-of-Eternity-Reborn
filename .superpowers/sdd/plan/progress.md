@@ -1,3 +1,19 @@
+# T604 RED fresh build/bindings/catalog/PlanOnly verified — PREP pending
+
+Fresh Integration atd9869825c0b2d4e21d0220bc9b97c6e66b257eda completedexit0 in7:22.43,
+0errors/exact101priorwarning signatures/0introduced. All33 actual artifacts/11PE-PDB
+pairs/52current Git-PDB sources match. Only Integration DLL/PDB/XML changed; other30
+files/four entire project trees remain exact. PEReader confirms restored attached
+Serialization handler/17member writes/typed unboxed callsite,0target execution.
+
+Actualcatalog VALID961categories/12555methods,0unmapped/stale; exact RED PlanOnly
+1descriptor/1method/1case,exclusive1minute,0executed,22.2517135s,exit0/noTimeout/both
+cleanup flags. No16Ki change or actual RED yet. Source-only GitHub recovery d986
+verified30917 blobs/772781951bytes/clean,0PDBclaims/0runtime; qualified52-source recovery
+and independent PREP follow before the one causal singleton. Prerequisites plus final
+strict equality-vs-reduction failure must be independently verified; compile/setup/
+format/ownership/timeout failures are not causalRED. All oldraw/triples retained.
+
 # T604 corrected RED scaffold SOURCE ACCEPT — fresh build next
 
 Independent addendum acceptsa7979410: both fixture findings are closed, exact frozen
