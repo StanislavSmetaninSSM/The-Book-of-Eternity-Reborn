@@ -1,3 +1,41 @@
+# T607 minimal GREEN source WIP frozen — independent delta review pending
+
+Following accepted prerequisite-complete RED, shared explicit factory now constructs
+`new(false, false)`; only its XML and same-owner catalog/selection wording also change.
+All workloads/assertions/prerequisites and other 16 frozen source/configuration paths
+are byte-exact. No rolling pins need changes. GREEN C# is UNCOMPILED/UNRUN.
+Preserved all current causal RED artifacts externally as 15 unique payloads/88,956,339
+bytes, evidence-only. Next independent delta SOURCE, then fresh Support/Unit/Integration
+builds; retained Game/Bridge require complete unchanged input and exact binary proof.
+No runtime or positive admission, cache/authority/timeout/default/cold change or deletion.
+
+# T607 prerequisite-complete causal RED accepted — minimal GREEN source next
+
+One official `t607-red-selection.json -NoBuild` singleton completed on runtime
+`56cdbb819bfa6b748733c74ee20eb8b53a685f59`, compiled `b54a8f4b` (Linux x64).
+Runner exit 1 / 48.5338117 seconds, category 24.7617805 seconds within its original
+one-minute budget, framework 2.3440184 seconds; planned/completed one descriptor and
+one case. No timeout, duplicates or skips; both process-cleanup flags true.
+The only failure is final `Assert.Equal(2, physical.Length)` at line 58: actual eight.
+All byte/copy/eight-return/count/completion prerequisites passed first. Original TRX
+contains 40 ordered events, eight each opened/snapshot/reader-return/nonphysical-DATA/
+leased-return, exact original bytes, Ordinary phase, no fault/cancel/public-return.
+Observation Available/Closed/Pending0; nonce-owned root removed and independently absent.
+Root and independent Astra High rehashed all 33 artifacts/59 sources unchanged.
+
+Independent OUTCOME accepts this as causal RED, not GREEN or a full timeout diagnosis.
+Release only shared-factory `false/false` construction and necessary truthful wording;
+freeze workload/assertions/default/cold/negative policies and every fresh guard.
+Optimization evidence currently proves the old hook projection performs eight real
+sources; two-source GREEN, affected regressions and total-time benefit remain UNRUN.
+No new cache: retain existing owner/key/lifetime/invalidation/fresh closing service.
+Next: publish/freeze minimal GREEN, independent delta SOURCE, fresh affected builds,
+current dependencies/XML/PDB/copies, exact catalog/PlanOnly/recovery/PREP, then cheap
+GREEN/negative stage. Full DFR positive and dependent gates remain HOLD.
+Raw is external `dfr-prefix/actual-t607-reuse-red-1`; original TRX SHA256
+`f71a6ae160242e70e0148c6127970a0ab6263bbbb1e70807f9cf42eb138163ee` (26,831 bytes).
+No raw, saves or earlier incomplete captures deleted; Windows remains deferred.
+
 # T607 sealed observation implementation plan — independent DESIGN ACCEPT
 
 **Goal:** retain the original N read/byte/return/phase evidence without arbitrary

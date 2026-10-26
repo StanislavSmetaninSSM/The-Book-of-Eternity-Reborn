@@ -54,8 +54,8 @@
     },
     {
       "id": "core-lifecycle-sealed-read-reuse",
-      "responsibility": "T607 tests-first causal source-count control using the SAME selected-positive holder projection: eight real logical results, all actual byte/return/ordinary phase prerequisites, then strict two-source expectation. RED keeps original nonnull hook projection and expects actual eight sources; no named timer can fabricate N ownership.",
-      "excludes": "No full world, authority/imported N token, reflection, fabricated events or timing-based phase assignment, new cache, hook-free GREEN policy, quotas, Windows qualification or performance claim.",
+      "responsibility": "T607 causal source-count protection using the SAME selected-positive holder projection: eight real logical results, all actual byte/return/ordinary phase prerequisites, then strict two-source expectation. GREEN disables arbitrary read and closing forwarding only for this explicit sealed-observation projection after accepted prerequisite-complete RED actual eight sources; no named timer can fabricate N ownership.",
+      "excludes": "No full world, authority/imported N token, reflection, fabricated events or timing-based phase assignment, new cache, quotas, Windows qualification or performance claim.",
       "changeHints": [
         "BookOfEternityClient.Tests/LifecycleSealedReadObservationTests.cs",
         "BookOfEternityClient.Tests/LifecycleSealedReadObservationTests.Provenance.cs",

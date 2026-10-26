@@ -30,9 +30,9 @@ internal sealed class LifecycleFixtureReadObservers
         AfterSessionClosingAsync = closingForwardingEnabled ? () => _closing?.Invoke() ?? Task.CompletedTask : null;
     }
 
-    /// <summary>Shares the selected positive construction policy with the real-file mechanism control.</summary>
-    /// <returns>The RED scaffold's unchanged original forwarding policy with passive DATA available alongside it.</returns>
-    internal static LifecycleFixtureReadObservers CreateForSealedSourceObservation() => new();
+    /// <summary>Shares the selected positive sealed-observation policy with the real-file mechanism control.</summary>
+    /// <returns>A holder with arbitrary read and closing forwarding disabled at construction; sealed observation and source counts remain enabled.</returns>
+    internal static LifecycleFixtureReadObservers CreateForSealedSourceObservation() => new(false, false);
 
     /// <summary>Gets the actual optional closing forwarder; existing read-only opt-ins keep it enabled by default.</summary>
     internal Func<Task>? AfterSessionClosingAsync { get; }

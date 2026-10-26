@@ -206,7 +206,7 @@
     },
     {
       "category": "core-lifecycle-sealed-read-reuse",
-      "reason": "T607 RED singleton: SAME actual holder hooks stay nonnull; all eight successful logical reads and source DATA prerequisites precede the strict two-source oracle.",
+      "reason": "T607 source-count singleton: accepted prerequisite-complete RED observed eight sources with original hooks; GREEN uses the SAME explicit sealed-observation holder with read and closing forwarding disabled, preserving eight logical byte results and all prerequisites before the strict two-source oracle.",
       "contracts": [
         "#1536 T607 RED scaffold / sealed observation and original-reader parity"
       ]
