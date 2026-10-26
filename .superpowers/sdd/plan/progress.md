@@ -1,3 +1,21 @@
+# T593 corrected genuine temporal causal RED verified — 2026-10-26
+
+Actual `actual-temporal-red-corrected-1` at runtime7edce02ea/Integration345ee:
+1/1 expected FAIL,0skip, framework105.5561230s / runner130.4425138s, no timeout,
+both cleanups true and owned roots absent. Failure now reaches the intended
+line179: PreparationEntries expected0/actual1. All initial N/I/Capturing/debug/
+frame prerequisites passed. Actual initial N1read/1return; broad2/2 retains late
+ordinary N. I1 completed, genuine capture reached, debug bytes exact throughout,
+turn42. Late Full1 completed with exactly missing_gm_thoughts. Common preparation
+already ran1 before that refusal:223 cut/221 after images and16 mutations retained.
+No-effect assertions after the target were not reached and are not claimed.
+All33 artifacts remain exact. Full19,324,816-byte TRX/raw and Root causal/image/
+cleanup/metadata verification remain external in the named attempt directory.
+This proves the missing EARLY debug-prefix consumer; it does not prove source
+closure, new implementation, Full/S or a speedup. The earlier fixtureFAIL remains
+separate. Independent causal outcome review is next; then the already prepared
+separate unchanged positive, still UNRUN. No production code changed.
+
 # T593 corrected PREP accepted — new temporal actual released
 
 Independent Astra/high PREP accepted39123e091, no material finding. All33 files,
