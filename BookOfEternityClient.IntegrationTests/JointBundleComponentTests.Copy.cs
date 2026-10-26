@@ -45,7 +45,7 @@ public sealed partial class JointBundleComponentTests
             using (Files.EnterOperationTimingContext())
             using (Files.MeasureOperation("JointBundleCandidate.DirectJointCopy"))
                 copy = bundle.DetachedCopy();
-            var end = _observations.Count;
+            var end = CaptureObservationOrdinal();
             var counts = CompleteCandidateCapture("DirectJointCopy", offset);
             Assert.True(counts.GetValueOrDefault("WoundPlanCache.ValidatePreparedResult") > 0);
             Assert.True(counts.GetValueOrDefault("WoundEffect.AcceptEffectResult") > 0);
@@ -110,10 +110,10 @@ public sealed partial class JointBundleComponentTests
                 {
                     Binding = bundle.Input.Binding with { RequestId = "foreign_copy_request_" + _nonce }
                 };
-                var preparedRefusalStart = _observations.Count;
+                var preparedRefusalStart = CaptureObservationOrdinal();
                 var preparedFailure = Assert.Throws<ArgumentException>(() =>
                     new AcceptedMechanicsWoundStageBundle(changed, bundle.PreparedPlan, bundle.EffectBatchPlan, bundle.FinalPlan));
-                var preparedRefusalEnd = _observations.Count;
+                var preparedRefusalEnd = CaptureObservationOrdinal();
                 Assert.Equal("preparedPlan", preparedFailure.ParamName);
                 AssertNoFinalValidationInRecordedRange("Prepared", (preparedRefusalStart, preparedRefusalEnd));
                 var effect = bundle.EffectBatchPlan;
@@ -123,10 +123,10 @@ public sealed partial class JointBundleComponentTests
                 // This is deliberately invalid DATA with genuine unchanged companions, not a new issuer or guard.
                 var changedEffect = WoundEffectBatchAcceptedPlan.Create(bundle.PreparedPlan, changedEffectInput,
                     effect.EffectPlan, effect.ApplicationResults, effect.TerminationResults);
-                var effectRefusalStart = _observations.Count;
+                var effectRefusalStart = CaptureObservationOrdinal();
                 var effectFailure = Assert.Throws<ArgumentException>(() =>
                     new AcceptedMechanicsWoundStageBundle(bundle.Input, bundle.PreparedPlan, changedEffect, bundle.FinalPlan));
-                var effectRefusalEnd = _observations.Count;
+                var effectRefusalEnd = CaptureObservationOrdinal();
                 Assert.Equal("effectBatchPlan", effectFailure.ParamName);
                 AssertNoFinalValidationInRecordedRange("Effect", (effectRefusalStart, effectRefusalEnd));
             }

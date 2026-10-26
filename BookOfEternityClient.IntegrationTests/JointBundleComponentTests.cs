@@ -81,10 +81,11 @@ public sealed partial class JointBundleComponentTests
         /// <param name="passiveTimingEvents">
         /// Whether this explicit expensive control captures every original named event through the sealed recorder.
         /// </param>
-        internal Fixture(ITestOutputHelper output, string caseName, bool passiveTimingEvents = false)
+        /// <param name="gzipRecords">Whether this explicit control uses the existing lossless gzip records sink; ordinary fixtures stay plain.</param>
+        internal Fixture(ITestOutputHelper output, string caseName, bool passiveTimingEvents = false, bool gzipRecords = false)
         {
             var started = Stopwatch.GetTimestamp();
-            _output = new JointBundleDiagnosticOutput(caseName, output);
+            _output = new JointBundleDiagnosticOutput(caseName, output, gzipRecords: gzipRecords);
             if (passiveTimingEvents)
             {
                 _passiveTimings = new OperationTimingAccumulator();

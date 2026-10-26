@@ -308,6 +308,13 @@
       "contracts": [
         "#1536 T608-REUSE / REPLAY-REUSE1..6; immutable expected DATA, complete key, fresh actual admission and original fallback"
       ]
+    },
+    {
+      "category": "core-joint-passive-copy-ranges",
+      "reason": "T608-COPY-RANGE-RED only: ctor-only three-mode real sealed event/storage range proof uses the same five original sample roles with old no-flush semantics; causal final range oracle follows full recorder/output/hash/root closing. No genuine mode change or production edit.",
+      "contracts": [
+        "#1536 T608-COPY-RANGE-RED / COPYOBS2–5; original ordinals/events/defaults/lifetime and complete diagnostics"
+      ]
     }
   ]
 }

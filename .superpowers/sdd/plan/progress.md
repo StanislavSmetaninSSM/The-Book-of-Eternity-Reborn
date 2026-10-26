@@ -1,3 +1,32 @@
+# T608 range scaffold frozen — UNCOMPILED, no actual RED yet
+
+Root verified the six-path inventory and production-empty diff: four Integration
+fixture/test C# paths plus category/selection metadata. The old copy body is exactly
+recoverable by reversing five ordinal-helper substitutions; that helper still returns
+raw count without draining. Genuine copy/candidate modes remain default. Optional
+Fixture gzip defaults false and forwards only the existing output flag.
+
+New ctor-only Theory has three authored modes, seven actual control scopes/fourteen
+probe events, all five boundary roles, pending adjacent events and repeated drains.
+The phase completes after sampled ordinals are saved. Final strict range assertions
+follow real source/window/output/hash/root closing; a setup/storage failure is not RED.
+Expected baseline is one direct PASS and two final passive missing-range failures;
+this is an authored hypothesis, not an executed result.
+
+Static inverse/27 XML blocks/catalog checks pass. Catalog965 preserves all old964
+objects, and cumulative CI45 preserves old44 plus one narrow range owner. Actual
+new discovery, fresh affected compilation/current bindings, warning checks, SOURCE,
+PREP and causal RED/GREEN remain pending. No aggregate, build, runtime, helper GREEN,
+genuine retry, mode opt-in, quota, budget increase or product change is claimed.
+
+Existing67 feature cases and separate cheap transport9 remain accepted at their
+recorded revisions. The original copy TIMEOUT/raw/root and all unmatched full-game
+history remain protected. A read-only inventory found ten duplicate current obj DLL/
+PDB files totalling84,938,752 allocated bytes; none is deleted, and any retirement
+needs exact independent review/immediate no-owner controls. Current free space is
+about315MB. All raw/review/analysis and source inventories remain outside checkout.
+Root publishes this WIP before coherent independent SOURCE; it is not qualification.
+
 # T608 observation DESIGN accepted — tests-first range scaffold next
 
 Independent review accepts the existing cheap transport outcome: nine PASS, six

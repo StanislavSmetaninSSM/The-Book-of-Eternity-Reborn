@@ -2,6 +2,54 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "core-joint-passive-copy-ranges",
+      "responsibility": "T608 tests-first constructor-only copy observation ranges through the actual Fixture and existing sealed recorder/output writer: direct/plain, passive/plain and passive/gzip; five original manual-boundary roles, real test-labelled scopes, exact pair/order/neighbors/repeated drains, full storage/hash and actual fixture closing before strict final ranges.",
+      "excludes": "No Initialize, GameEngine/world/native producer, lease/issuer/authority fabrication, new cache/diagnostic stack, production change, genuine copy/candidate mode opt-in, helper flush GREEN, timeout increase, event quota or full-positive admission. Old raw-count helper should pass direct mode and cause only final missing-range failures in passive modes after complete prerequisites.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.PassiveCopyRanges.cs",
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.PassiveTimings.cs",
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.Copy.cs",
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.cs"
+      ],
+      "related": [
+        {
+          "id": "core-passive-named-transport",
+          "when": "Retain real event/cache/physical metadata comparison and original clock/accounting contract when the later helper/caller GREEN is reviewed."
+        },
+        {
+          "id": "fr063-joint-component-diagnostics",
+          "when": "Actual optional gzip forwarding must preserve existing plain defaults, writer failures and closing."
+        },
+        {
+          "id": "fr063-lifecycle-passive-timing-lifetime",
+          "when": "Shared gzip closed storage/decoded identity, footer and failure behavior is changed or questioned."
+        },
+        {
+          "id": "fr063-joint-bundle-copy-controls",
+          "when": "After accepted cheap RED/GREEN and separate resource admission, retain actual default/null owner and all copy/current-byte/history/abort/range assertions."
+        },
+        {
+          "id": "fr063-joint-bundle-candidate",
+          "when": "Later explicit selected passive/gzip opt-in must retain original candidate owner/miss/hit/fence contracts."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.JointBundleComponentTests.PassiveCopyRanges_RequireTransferredEventsAtAllFiveSamples"
+          ]
+        }
+      ]
+    },
+    {
       "id": "fr063-joint-prepared-expected-replay-source",
       "responsibility": "T608 shared immutable expected preparation DATA: same genuine original/stage/reservation producers and source owner, strict cold warmup one plus zero richer replay sources across eight actual validators, corroborating PrepareCore one/zero and 56 fresh seals. Preserve all five scalars, ordered batch pairs, 58 beforeimages, owner/G/source fence and normal closing. Separate post-eight original-source parity covers an accepted stricter-key mismatch, malformed input and suspended owner.",
       "excludes": "No cached agreement/permission, fake issuer/owner, new world/game loop, private-final-history/handoff claims from the prepared API, eligibility expansion, altered other-family dispatch, timeout increase, diagnostic quota or full-positive admission.",
