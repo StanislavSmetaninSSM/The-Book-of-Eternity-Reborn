@@ -1,3 +1,18 @@
+# T606 one current diagnostic positive PREP ACCEPT — original300s only
+
+Independent second PREP accepts current33/52 bindings/native3, exact original1/1
+exclusive5minute PlanOnly, actual2.827GB disk/~13.95GB arithmetic memory reserve and
+canonical audited purpose. Source d67 clean full recovery verified before retiring
+only its disposable copy; no new full physical restore of later doc-only children
+is claimed. No source/config/Optimize/build/fixture/assertion/budget change.
+
+Release exactly actual-dfr-diagnostic-positive-1 via maintained official Category/
+NoBuild on accepted02a stack. Keep complete uncapped original messages/events/clocks,
+same genuine source42/current fences/realP2/phase reentry/full images/normal cleanup.
+Diagnostic admission is not a fit/PASS promise. Any FAIL/timeout/partial capture remains
+unqualified and fully retained, stops legacy/cold/fullDFR gates, no automatic retry.
+Original no-trace timeout and every baseline/metadata/RED/GREEN raw remain preserved.
+
 # T606 positive PREP packet complete — post-retirement reserve, runtime pending
 
 Actual original-positive PlanOnly atd67d8d4f:1descriptor/1method/1case,exclusive5minutes,
