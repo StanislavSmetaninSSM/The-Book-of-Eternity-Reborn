@@ -1,3 +1,21 @@
+# T603 metadata-only SOURCE WIP frozen — uncompiled/unmeasured
+
+Exactly one attribute changes Serialization→Metadata in RecordedTimingPayload.cs;
+reverse replacement reproduces the prior file byte-exact. All other C#/catalog/test/
+DTO/API/writer/gzip/buffer/clock/legacy bytes remain unchanged. SHA256:
+4c92f4e60b697011ad248911d50f229b6242bb4278b8b66804c6fe7cefa57ad3.
+Independent DESIGN accepts the isolated hypothesis and explicit framework boxing/
+getter/allocation tradeoff; no new performance/compatibility claim. Coherent SOURCE,
+fresh affected Integration build/current source+artifact/metadata/catalog/PlanOnly and
+PREP precede same41 controls. Positive remains HOLD; no additional unchanged cost run.
+
+Independent N-negative pair OUTCOME ACCEPT now confirms both e116/172e actual PASS,
+real source provenance/223 exact images/zero common preparation/no effects/stickyhold/
+root cleanup and original bindings. That accepted pair is retained across this isolated
+recorded-serializer change because both use unchanged ordinary aggregate-only routes.
+It does not closeT597/T598, positive/P2/post-close/fullDFR or releaselegacy/cold.
+No Game/Core/native/GM/buildmode/budget changed; all raw and prior172e binaries external.
+
 # T603 metadata-only DESIGN ACCEPT — bounded implementation next
 
 Independent design review accepts one mode-attribute change, preserving the same DTO/
