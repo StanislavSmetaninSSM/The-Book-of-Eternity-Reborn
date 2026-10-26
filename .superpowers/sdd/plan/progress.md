@@ -1,3 +1,19 @@
+# T607 corrected cheap PREP ACCEPT — one 189-case execution released
+
+Independent Astra High PREP accepts checkpoint
+`1942fae42bb5da1cb57c1a0f6d8afc85e617c45e` with fresh Unit `01d3075f`, retained
+Support/Integration `a760ab5d` and Game/Bridge `b54a8f4b`. Reviewer rehashed all 33
+artifacts and 59 source joins; exact 11-ID / 12-descriptor / 189-case plan, filters,
+original budgets, qualified recovery, retained catalog and two C5 PASS are accepted.
+
+Release exactly one official corrected SelectionFile / NoBuild execution into external
+`actual-t607-cheap-green-corrected-1`. Require all 189 actual cases, no skip, duplicate,
+underfill or timeout, owned/process cleanup, physical two-source/eight-result proof and
+full corrected N-byte/three-segment assertions. Previous failed raw stays preserved.
+No generator, positive, legacy or cold runtime is admitted. No code, source-cache,
+authority, timeout or diagnostic quota changed. Full positive needs separate accepted
+cheap outcome and resource/full-capture PREP in its original 300-second budget.
+
 # T607 corrected Unit preparation verified — 189-case PREP pending
 
 Independent Astra High SOURCE accepts `01d3075fb221edd2788c4f2bf27b2188a4ec6259`:
