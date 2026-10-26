@@ -38,6 +38,8 @@ public sealed partial class LifecycleSealedReadObservationTests
     {
         using var ordinary = new OrdinaryOutputFixture(_output);
         await ordinary.SeedValidAsync();
+        var expectedBytes = File.ReadAllBytes(ordinary.Physical(Source));
+        Assert.Equal(new byte[] { 0xEF, 0xBB, 0xBF, 0x7B, 0x7D }, expectedBytes);
         var reads = new LifecycleFixtureReadObservers(false, false);
         var timing = new OperationTimingAccumulator();
         var files = ordinary.CreateFiles(new FileSystemManagerHooks { PassiveCanonicalReads = reads.CanonicalSources, PassiveOperationTimings = timing });
@@ -58,7 +60,7 @@ public sealed partial class LifecycleSealedReadObservationTests
         Assert.Single(actual, row => row.Phase == CanonicalReadSourcePhase.NarrativeEvaluation);
         Assert.Equal(2, actual.Count(row => row.Phase == CanonicalReadSourcePhase.NarrativeRecheck));
         Assert.Single(actual.Select(row => row.InvocationId).Distinct());
-        Assert.All(actual, row => { Assert.NotNull(row.InvocationId); Assert.True(row.Physical); Assert.Equal(System.Text.Encoding.UTF8.GetBytes("{}"), row.Bytes); });
+        Assert.All(actual, row => { Assert.NotNull(row.InvocationId); Assert.True(row.Physical); Assert.Equal(expectedBytes, row.Bytes); });
         Assert.DoesNotContain(capture.Events, row => row.Phase == CanonicalReadSourcePhase.NarrativeRecheck &&
             row.Kind is CanonicalReadEventKind.PublicInitialAttemptReturned or CanonicalReadEventKind.PublicFinalReturned);
         Assert.Equal(originalOccurrences, pass.CaptureDiagnostic().Occurrences.Length);

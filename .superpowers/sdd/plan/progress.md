@@ -1,3 +1,21 @@
+# T607 grouped fixture correction WIP frozen — Unit build/runtime UNRUN
+
+Only two existing Unit method bodies change after the accepted failed outcome:
+N pins independently authored full BOM-bearing physical seed bytes before observation;
+mutation retains read/write/read workload with exact segment deltas 1/1/1, old/old/new
+bytes, family/path/read-return identities, two logical returns and unchanged generation.
+All other 17 frozen source/configuration paths, causal Fact, shared helpers, product,
+cache/authority boundaries, catalog, pins and budgets are byte-exact. Root rehashed all
+19 frozen paths. Current failed-GREEN binaries remain preserved externally as all
+15 unique payloads; eight reuse verified earlier evidence files, only seven new copies
+(51,611,308 bytes). They are evidence-only, never future runtime inputs.
+Next independent grouped SOURCE/selection, fresh Unit only with exact retained four
+project/shared/four linked input proof, current PDB/copies, discovery/PlanOnly/PREP.
+Proposed next selection is 11 existing IDs / prior-discovered 189 cases: affected
+19-case owner plus 170 unrun; retain two unchanged C5 PASS separately. Ad hoc Filter is
+retired; no runner bypass or artificial catalog split. Counts require fresh PlanOnly.
+New C# is UNCOMPILED/UNRUN; full positive remains HOLD and no raw deletion occurs.
+
 # T607 first cheap GREEN incomplete — two fixture causes confirmed
 
 One actual official attempt `actual-t607-cheap-green-1`, runtime

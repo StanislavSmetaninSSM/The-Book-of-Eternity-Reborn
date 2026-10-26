@@ -77,14 +77,55 @@ public sealed partial class LifecycleSealedReadObservationTests
         using var fixture = new ReadFixture(new LifecycleFixtureReadObservers(false, false), _output);
         await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
         fixture.Files.GetOrCreateSessionGeneration(lease);
+        var generation = fixture.Files.CanonicalReadObservationGeneration;
+        var changedBytes = new byte[] { 0xEF, 0xBB, 0xBF }
+            .Concat(System.Text.Encoding.UTF8.GetBytes("changed")).ToArray();
         using var window = fixture.Timings.StartWindow();
         using var observed = fixture.Reads.CanonicalSources.BeginObservation(fixture.Files, window);
+        var beforeRead = observed.Capture();
         Assert.Equal("original", await fixture.Files.ReadFileAsync(lease, Source));
+        var afterRead = observed.Capture();
+        AssertSourceSegment(beforeRead, afterRead, "physical-async", fixture.Bytes);
         await fixture.Files.WriteFileAtomicAsync(lease, Source, "changed");
+        var afterWrite = observed.Capture();
+        AssertSourceSegment(afterRead, afterWrite, "local-physical-async", fixture.Bytes);
+        Assert.Equal(generation, fixture.Files.CanonicalReadObservationGeneration);
         Assert.Equal("changed", await fixture.Files.ReadFileAsync(lease, Source));
+        var afterChangedRead = observed.Capture();
+        AssertSourceSegment(afterWrite, afterChangedRead, "physical-async", changedBytes);
         observed.CloseCapture();
-        Assert.True(observed.Capture().Available, observed.Capture().Fault);
-        Assert.Equal(2, observed.Capture().Events.Count(row => row.Kind == CanonicalReadEventKind.InitialOpened));
+        var capture = observed.Capture();
+        Assert.True(capture.Available, capture.Fault);
+        Assert.Equal(generation, fixture.Files.CanonicalReadObservationGeneration);
+        Assert.Equal(0, capture.Pending);
+        Assert.Equal(3, fixture.Reads.ReadCount(Source));
+        Assert.Equal(2, capture.Events.Count(row => row.Kind == CanonicalReadEventKind.LeasedReturned));
+        Assert.DoesNotContain(capture.Events, row => row.Kind is CanonicalReadEventKind.Fault or CanonicalReadEventKind.Cancelled or
+            CanonicalReadEventKind.PublicInitialAttemptReturned or CanonicalReadEventKind.PublicFinalReturned);
+
+        static void AssertSourceSegment(CanonicalReadObservationSnapshot before, CanonicalReadObservationSnapshot after,
+            string family, byte[] bytes)
+        {
+            Assert.True(after.Available, after.Fault);
+            var events = after.Events.Skip(before.Events.Length).ToArray();
+            var opened = Assert.Single(events, row => row.Kind == CanonicalReadEventKind.InitialOpened);
+            var snapshot = Assert.Single(events, row => row.Kind == CanonicalReadEventKind.PhysicalSnapshot);
+            var returned = Assert.Single(events, row => row.Kind == CanonicalReadEventKind.ReaderReturned);
+            Assert.All(events, row =>
+            {
+                Assert.Equal(Source, row.Path);
+                Assert.Equal(CanonicalReadSourcePhase.Ordinary, row.Phase);
+                Assert.Null(row.InvocationId);
+            });
+            Assert.All(new[] { opened, snapshot, returned }, row =>
+            {
+                Assert.Equal(family, row.Family);
+                Assert.Equal(opened.ReadId, row.ReadId);
+                Assert.True(row.Physical);
+            });
+            Assert.Equal(bytes, snapshot.Bytes);
+            Assert.True(opened.Ordinal < snapshot.Ordinal && snapshot.Ordinal < returned.Ordinal);
+        }
     }
 
     /// <summary>The actual already-fresh DFR producer remains physical inside an eligible DATA owner and never acquires N ownership.</summary>
