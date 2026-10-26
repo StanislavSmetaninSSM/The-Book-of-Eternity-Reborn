@@ -1,3 +1,15 @@
+# T604 gzip16Ki SOURCE ACCEPT — fresh GREEN preparation next
+
+Independent SOURCE accepts3cd51de2: only gzip factory16Ki-char branch, exact original
+plain/default/ownership/string/flush/capture/fixture behavior. Hashes, inverse and
+unchanged category memberships/selectors/budgets verified. The actual-call causal
+fixture and codec remain exactly the accepted RED bytes. No speedup/cost admission.
+
+GitHub-only clean source recovery3cd51de2 verified30917blobs/772788023bytes,0runtime/
+0PDBclaims. Fresh affected Integration build/current33/52/generated-fast-path/catalog/
+9ID/29method/42case PlanOnly and independent PREP follow. Actual GREEN, same65536-event
+cost and headroom remain UNRUN. Positive/legacy/cold HOLD; all baseline/RED/raw retained.
+
 # T604 gzip16Ki SOURCE WIP frozen — uncompiled/unmeasured
 
 Only the existing factory's gzip branch now requests16*1024characters,AutoFlushfalse;
