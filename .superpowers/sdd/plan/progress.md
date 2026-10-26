@@ -1,3 +1,19 @@
+# T600 grouped correction SOURCE ACCEPT — remaining 21 preparation
+
+Independent Astra/high SOURCE ACCEPT for 206e966de78d04cc12e4a88dbff46fe5a2fed5fd
+confirms the gzip-only no-member guard, honest footer state and real normal zero-event
+regression. The 20-byte bound is necessary structure only, not EOF/CRC certification.
+No new stream stack, fabricated data, plain-path I/O, ordinary source/authority/cache
+or gameplay change was introduced. Earlier two fixture corrections were also accepted.
+
+The independent impact review explicitly retains 17 PASS from the three completed
+plain/capture categories with their original e88/4764574f provenance. Lifetime's
+partial 15 PASS are not retained. Next actual selection is lifetime19 plus cost1 and
+original visibility1 = 21 cases; together with retained17 this would cover38 distinct
+cases, not a fictitious single38 run. All new runtime/cost claims remain UNRUN.
+Fresh Integration XML/PDB/source preparation, exact discovery/PlanOnly and PREP are
+required before that bounded selection. Positive and dependent live/cold remain blocked.
+
 # T600 grouped no-member source candidate frozen — targeted review pending
 
 The minimal gzip-only correction and one typed normal zero-event/no-message Fact
