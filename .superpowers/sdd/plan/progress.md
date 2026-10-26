@@ -1,3 +1,16 @@
+# T593 corrected PREP accepted — new temporal actual released
+
+Independent Astra/high PREP accepted39123e091, no material finding. All33 files,
+31 unchanged including XML,11 PE/PDB pairs,27 source hashes, retained old evidence
+and fresh exact2-case PlanOnly verified. Historical catalog-retention pending
+marker is superseded by completed actual plan, with a new external completed
+receipt; original receipt is preserved. Only corrected temporal singleton is
+released first, separately with NoBuild/original5m budget. Existing positive stays
+conditional on full causal classification. Runtime on correction is still UNRUN
+in this receipt; compiled Integration345ee and current C# bytes remain unchanged.
+Prior first fixtureFAIL/fullraw/binaries remain separate and preserved. No new
+production/native/runner/budget change or permission is involved in this fix.
+
 # T593 corrected temporal PREP ready — runtime UNRUN
 
 Independent Astra/high correction SOURCE accepted345ee154a, no material finding.
