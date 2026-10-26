@@ -55,7 +55,7 @@ public sealed partial class LifecycleSealedReadObservationTests
         var capture = observed.Capture();
         Assert.True(capture.Available, capture.Fault);
         var actual = capture.Events.Where(row => row.Path == Source && row.Kind == CanonicalReadEventKind.PhysicalSnapshot).ToArray();
-        Assert.Single(actual.Where(row => row.Phase == CanonicalReadSourcePhase.NarrativeEvaluation));
+        Assert.Single(actual, row => row.Phase == CanonicalReadSourcePhase.NarrativeEvaluation);
         Assert.Equal(2, actual.Count(row => row.Phase == CanonicalReadSourcePhase.NarrativeRecheck));
         Assert.Single(actual.Select(row => row.InvocationId).Distinct());
         Assert.All(actual, row => { Assert.NotNull(row.InvocationId); Assert.True(row.Physical); Assert.Equal(System.Text.Encoding.UTF8.GetBytes("{}"), row.Bytes); });

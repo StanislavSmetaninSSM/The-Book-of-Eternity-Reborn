@@ -554,7 +554,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             ("BookOfEternityClient/Core/CanonicalValidationEpoch.cs", "FA22C2BDF9B3EFE06DE01630073684742EF8D46B779D11271B6CA47FFD0613A0"),
             ("BookOfEternityClient/Core/FileSystemManager.CleanupProofAdmission.cs", "1280137503498EA1F6BBC1947AA279D84C91AD02C223D8F25B130C93903D65D7"),
             ("BookOfEternityClient/Core/FileSystemManager.CleanupProofDataReads.cs", "79D6837581A8A3F07DAFE49DA6FBDEFC455CD1D3C94324921074BFD2C0E94C3B"),
-            ("BookOfEternityClient/Core/FileSystemManager.ValidationReadSet.cs", "0CDCF57E81E60CAF5F96778B3273D5C91D8AC8A091844F20DE7A9AF2D384B02D"),
+            ("BookOfEternityClient/Core/FileSystemManager.ValidationReadSet.cs", "BE4672598C9DCCACE5B140E71BEDBC0ECD6FCC860095784BC8346628454FD980"),
             ("BookOfEternityClient/Core/FileSystemManager.ValidationReadSet.Observations.cs", "CFF3A0CB4660BFF32D4A96616E82586E5DD343FE7A725387D7BA568EE31EC8BB"),
             ("BookOfEternityClient/Core/FileSystemManager.ValidationReadSet.CleanupData.cs", "4780FE8DE15873C048349CE64E41F324663DDB994F41A8DA68CA858082683597"),
             ("BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs", "58992EEE586C7E4F3A1A3B239ECEC7DEDEC987CB584D3BD21635AA6747066695"),

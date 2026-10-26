@@ -84,8 +84,8 @@ public sealed partial class LifecycleSealedReadObservationTests
         window.Dispose(); // already closed detached DATA remains valid
         Assert.True(capture.Available, capture.Fault);
         Assert.True(observed.Capture().Available, observed.Capture().Fault);
-        Assert.Single(capture.Events.Where(row => row.Kind == CanonicalReadEventKind.InitialOpened));
-        Assert.Equal(fixture.Bytes, Assert.Single(capture.Events.Where(row => row.Kind == CanonicalReadEventKind.PhysicalSnapshot)).Bytes);
+        Assert.Single(capture.Events, row => row.Kind == CanonicalReadEventKind.InitialOpened);
+        Assert.Equal(fixture.Bytes, Assert.Single(capture.Events, row => row.Kind == CanonicalReadEventKind.PhysicalSnapshot).Bytes);
         Assert.Contains(capture.Events, row => row.Kind == CanonicalReadEventKind.ReaderReturned);
         Assert.Equal(leased ? 0 : 1, capture.Events.Count(row => row.Kind == CanonicalReadEventKind.PublicInitialAttemptReturned));
         Assert.Equal(leased ? 0 : 1, capture.Events.Count(row => row.Kind == CanonicalReadEventKind.PublicFinalReturned));

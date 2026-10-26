@@ -1,3 +1,25 @@
+# T607 first managed build complete; exact warning-only correction accepted
+
+Fresh Linux five-project build at `6660963ccc821e953cde4057102c8c9fc7c8d923`
+completed exit 0 throughout: Game 7:40/34 warnings, Support 1:54/23, Bridge 1:04/14,
+Unit 5:13/34, Integration 10:35/101; zero errors. No test runtime or discovery ran.
+All 33 actual DLL/PDB/XML artifacts, 11 PE/PDB pairs and 59 current Git/PDB source
+checks verified; all five revisions fresh. Preserved 15 unique payloads/88,956,255
+bytes externally as evidence-only before another build. Data-only PEReader confirmed
+16 selected outer reader/helper methods have zero newobj/ldftn; no target was loaded.
+
+Actual introduced compiler findings: one missing XML observation-param tag in Game
+and eight xUnit2031 locations in three new test partials. Independent SOURCE addendum
+accepted exact patch cf99b253431f9f9be262c6d1109697cc6731bc7e8a8953a292f2216bbd965447:
+same eight predicates/cardinality assertions, XML tag and two corresponding rolling
+hash rows. Root verified all six proposed hashes after application; other 13 frozen
+files, catalog/selection, factory true/true and runtime semantics remain unchanged.
+
+Next is fresh warning-clean build/current binding verification, not runtime admission.
+Static inverse 13/13 and source inventory 16 methods/20 cases still hold; discovery,
+exact PlanOnly/PREP and actual prerequisite-complete RED remain UNRUN. No warning
+suppression, quota, timeout, cache key or authority guard changed; no raw deletion.
+
 # T607 independent SOURCE ACCEPT — fresh managed preparation next
 
 Independent Astra High accepts exact `38501c42cf625ffaaa9165e0f352216669a255eb`:

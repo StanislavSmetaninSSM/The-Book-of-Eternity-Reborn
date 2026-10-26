@@ -21,9 +21,9 @@ public sealed partial class LifecycleSealedReadObservationTests
         Assert.Equal(2, capture.Events.Count(row => row.Kind == CanonicalReadEventKind.PhysicalAbsence));
         Assert.Equal(2, capture.Events.Where(row => row.Kind == CanonicalReadEventKind.PhysicalAbsence).Select(row => row.ReadId).Distinct().Count());
         Assert.DoesNotContain(capture.Events, row => row.Kind == CanonicalReadEventKind.InitialOpened);
-        Assert.Single(capture.Events.Where(row => row.Kind == CanonicalReadEventKind.OriginalAttemptReturned));
-        Assert.Single(capture.Events.Where(row => row.Kind == CanonicalReadEventKind.PublicInitialAttemptReturned));
-        Assert.Single(capture.Events.Where(row => row.Kind == CanonicalReadEventKind.PublicFinalReturned));
+        Assert.Single(capture.Events, row => row.Kind == CanonicalReadEventKind.OriginalAttemptReturned);
+        Assert.Single(capture.Events, row => row.Kind == CanonicalReadEventKind.PublicInitialAttemptReturned);
+        Assert.Single(capture.Events, row => row.Kind == CanonicalReadEventKind.PublicFinalReturned);
     }
 
     /// <summary>Routed DATA cannot invent physical reads, and changed raw source still refuses the real owner's final fence.</summary>
@@ -40,7 +40,7 @@ public sealed partial class LifecycleSealedReadObservationTests
         Assert.Equal(fixture.Bytes, await fixture.Files.ReadFileBytesAsync(lease, Source));
         Assert.Equal(fixture.Bytes, await fixture.Files.ReadFileBytesAsync(lease, Source));
         var before = observed.Capture();
-        Assert.Single(before.Events.Where(row => row.Path == Source && row.Kind == CanonicalReadEventKind.InitialOpened));
+        Assert.Single(before.Events, row => row.Path == Source && row.Kind == CanonicalReadEventKind.InitialOpened);
         Assert.Contains(before.Events, row => row.Kind == CanonicalReadEventKind.NonPhysicalData && !row.Physical);
         var changed = System.Text.Encoding.UTF8.GetBytes("changed");
         File.WriteAllBytes(fixture.Files.ResolvePath(Source), changed);
@@ -65,7 +65,7 @@ public sealed partial class LifecycleSealedReadObservationTests
         observed.CloseCapture();
         var capture = observed.Capture();
         Assert.False(capture.Available);
-        Assert.Equal(fixture.Bytes, Assert.Single(capture.Events.Where(row => row.Kind == CanonicalReadEventKind.PhysicalSnapshot)).Bytes);
+        Assert.Equal(fixture.Bytes, Assert.Single(capture.Events, row => row.Kind == CanonicalReadEventKind.PhysicalSnapshot).Bytes);
         Assert.DoesNotContain(capture.Events, row => row.Phase is CanonicalReadSourcePhase.NarrativeEvaluation or CanonicalReadSourcePhase.NarrativeRecheck);
         Assert.NotNull(manual.CaptureDiagnostic().Fault);
     }

@@ -242,6 +242,7 @@ public partial class FileSystemManager
     /// <param name="path">
     /// Exact original source spelling supplied by the physical reader.
     /// </param>
+    /// <param name="observation">The optional closed sink for this actual reader activity.</param>
     private void ObserveCanonicalRead(string path, FileReadObservation? observation = null)
     {
         _hooks?.PassiveCanonicalReads?.Record(path);
