@@ -1,3 +1,33 @@
+# T596 fresh DFR preparation ready — independent PREP pending
+
+Accepted source e00bba399790ff2691ccb5e4c5e8d8c3b620a5af. All five initial d9aa
+XML builds completed0errors; the independently accepted four-site Unit-only
+manifest prerequisite correction rebuilt Unit at e00bba3 in2:21.33/0errors/26baseline
+warnings. No introduced warning remains. Game/Support/Bridge/Integration retain
+actual d9aa informational versions and byte-exact project inputs. Current11 PE/PDB
+identity pairs,33 actual DLL/PDB/XML hashes/copy identities and41 current/Git/PDB
+source checks match. Only Unit DLL/PDB changed;31 prior artifacts, including Unit
+XML, remain exact. The external verifier's initial blanket-CS8604 prohibition was
+corrected to the affected file plus exact baseline warning-signature equality;
+existing unrelated CS8604 remains baseline. No source/build/test was altered for it.
+
+Fresh NoBuild catalog valid956categories/12,538methods-files, no unmapped/stale
+selectors. Full20-ID PlanOnly:21descriptors/184cases; cheap12-ID PlanOnly:
+13descriptors/176cases. All three commands exit0/no timeout/both cleanup flags,
+0executed; changed-files0/sourcee00. Exact filters, literal theory rows, existing
+budgets and subset membership verified. External plans/receipts under
+`/workspace/tboe-linux-evidence-20261025/dfr-prefix/preparation-prefix`.
+
+Runtime order after separate independent PREP: new DATA17, remaining cheap159
+(same11 categories/12descriptors), then separate temporal/source-fence/unchanged
+positive/N-before-I/N-after-capture/genuine-schema1 singletons; only after these
+pass, Prepared0 and Published2 cold singletons. Each actual singleton keeps its
+existing5-minute budget. New game hash uses genuine fresh null-seed preparation;
+no old applied archive is rebound. Accepted native C/package hashes remain exact.
+Source acceptance, builds and discovery are not runtime PASS. T594/596/597 remain
+open; no full NI/reasoning/S, Windows or original-five replay/qualification claim.
+Raw/failures/reports stay external, no diagnostic deletion or user-save changes.
+
 # T596 fresh five builds complete — Unit prerequisite correction
 
 All five XML builds at d9aa440e896a66cd875ea264f2b6ab21d8444999 completed0errors:
