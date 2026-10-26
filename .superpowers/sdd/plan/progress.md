@@ -1,3 +1,21 @@
+# T597 independent N-negative pair PASS — independent outcome pending
+
+At runtimee116a12e4ac816b786376ebc397caf8590065ef2, compiled172e:
+- actual-dfr-n-before-i-1:1/1 PASS,framework88.9289079s,runner134.1022091s.
+- actual-dfr-n-source-drift-1:1/1 PASS,framework96.1822578s,runner162.2228554s.
+Both unchanged5-minute categories completed with no timeout/skip/duplicates and both
+process cleanup flags. Root verified genuine reads/whitespace-only source cuts,
+223 exact cut/after/repeat images,turn42,no post-cut effects,zero common preparation,
+sticky inert held repeats,actual root absence and unchanged33 artifacts/51 sources.
+Before-FIRST-I has0I; after-capture has1I and initialPublicationUncertain, then held.
+Its4 source-read attempts/2 returns include genuine fresh checks; no false total-pairing
+claim. Exact TRX/hashes and full semantics are external in the two named attempts.
+
+Independent paired OUTCOME review is pending. Per explicitDFRDIAG6 clarification this
+pair does not release positive/P2/post-close/legacy/cold or closeT597/T598/fullDFR.
+Existing172e Integration triple is retained evidence-only externally before any future
+build; prior3918 and all original raw remain unchanged. No C# changed in this block.
+
 # T597 independent N-negative PREP ACCEPT — exact pair released
 
 Independent PREP accepts current33/51 compiled172e bindings and actual2method/2case
