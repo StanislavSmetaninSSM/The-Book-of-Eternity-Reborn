@@ -1,3 +1,21 @@
+# T600 cheap PREP ACCEPT — bounded runtime released
+
+Independent Astra/high PREP ACCEPT at checkpoint 9dc76b94 confirms actual 33 artifact
+hashes/sizes, 11 PE/PDB identities, 48 current Git/PDB/recovery source checks, exact
+warning equality and 6 descriptors / 37 cases with unchanged category budgets.
+Only the exact six-ID cheap selection is admitted through the ordinary maintained
+PowerShell runner with -NoBuild. No expensive positive or dependent live/cold case
+is admitted. The full GitHub recovery of 9dc76b94 is clean and checks all 30914 blobs
+plus all 48 qualified source inputs; no recovery build/application ran.
+
+The external outcome checker was corrected to classify intentional negative
+incomplete captures by their actual error/tail/container state. Such artifacts do
+not become complete. Every DiagnosticComplete=true capture still requires strict
+full gzip EOF/CRC/footer/no trailing data, exact stored/decoded hashes/counts,
+original event clocks/order/accounting and actual root closing. This analysis-only
+correction changes no C# source, binary, oracle or budget and requires no rebuild.
+Actual cheap results and managed storage/cost remain UNRUN at this checkpoint.
+
 # T600 fresh preparation verified — cheap PREP review next
 
 Fresh Integration build at e88bb8f5fd80287de21f5147d869d52611079c02 completed in
