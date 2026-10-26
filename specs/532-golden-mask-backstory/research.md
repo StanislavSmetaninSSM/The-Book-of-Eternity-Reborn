@@ -188,6 +188,51 @@ enum/формулы не подменяют текущий код. Общая и
 Данные экипировки изучены отдельным Sol 6.1 High; parent проверил арифметику и
 ключевые общие effect-контракты. Tests/builds UNRUN, runtime не менялся.
 
+### Уточнение #1572: обычная игра, духовные владельцы, торговля и обыск
+
+Источник требования — последующее уточнение автора, база чтения
+`cb5855fce29ab01f152628f011049454234cc571`. Это расширяет прежний срез бонусов
+до полного жизненного цикла предмета. Parent проверил торговлю; отдельный
+GPT-6.1 Sol High — materialization/profile/ownership/conflict. Исследование
+read-only, tests/builds UNRUN; языки Serena csharp/typescript/python, C# symbols
+работают. Никаких выводов о готовности механики из одних названий полей.
+
+- `ActorMaterializationContract.cs:45,358–485`: afterlife capabilities содержат
+  canFight/canTeach/canTrade, но проверенный контракт не содержит личного
+  relic inventory/equipment и его evidence. Mortal ownsItems не доказывает
+  поддержку духовных владельцев. Закрытая #1500 — основа для расширения,
+  не свидетельство уже реализованного требуемого поведения.
+- `AfterlifeEntityProfileState.cs:608`: замена профиля сохраняет progression
+  settlement/materialization/resource bindings/effects/wounds; явного сохранения
+  владения реликвиями нет. Нужны правила против исчезновения инвентаря,
+  возвращения отнятых вещей и восстановления их бонусов после profile refresh.
+- `SoulRelicEquipmentService.cs:87` перемещает фактический объект stored→equipped
+  внутри `soul_state.soulRelics`. Это player-specific сервис, не готовый перенос
+  от NPC. `CharacteristicsService.cs:403` — player characteristic consumer.
+- `GuardianTradeService.cs:374–435`: покупка проверяет цену/feathers и свежую
+  область торговли, добавляет clone relicData в stored, ставит soldOut и
+  координированно публикует soul/guardians (+tracker) с rollback.
+- `ShiningTradeService.cs:618–678`: покупка проверяет слот/soldOut/цену/ID,
+  присутствие в faction hall и отсутствие такого ID у игрока, затем меняет
+  stored/soldOut/receipt и публикует soul + shining state. Эти пути дают основу
+  торговли, но не личное снаряжение продавца и не общий реестр владения NPC.
+  Различать личную вещь и товарную позицию; clone при представлении покупки
+  сам по себе ещё не подтверждает полный lifecycle/защиту от двойного владения.
+- `Validation/ValidationService.AfterlifeSpiritualConflict.cs:1599–1635`
+  проверяет валютную награду и повтор conflictId; `:1905–1935` исключает для
+  неё surrender/withdraw/negotiate. Это не правило допуска к предметному
+  обыску. В исследованных conflict/UI/profile путях готовый search/loot
+  перенос реликвий не найден; его требуется спроектировать и реализовать.
+- #1512 остаётся открытой задачей полной материализации Soul Relics, с
+  player-owned scope и исключением последующего equip/unequip. #1572 должна
+  согласовать расширение на духовных владельцев и reuse определения/instance
+  контракта; нельзя объявлять всё это уже покрытым #1512.
+
+Вывод: общий actor-owned путь необходим; одной прибавки в SumDiceAuditModifiers
+недостаточно. SR-01–08/SR-AC1–8 в spec определяют требуемый результат, а не
+состояние текущего runtime. Обычная система не зависит от прохождения Маски;
+Новый Порядок и historical role подключаются своими отдельными интеграциями.
+
 ### Игровой путь и меню
 
 Отдельная команда `/воспоминания` открывает каталог доступных сцен обоих источников.
