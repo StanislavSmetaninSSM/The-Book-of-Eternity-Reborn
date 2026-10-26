@@ -1,5 +1,17 @@
 # T608 measured DATA-copy/seal cost audit — #1536
 
+- [x] T608-COPY-OBS-DESIGN Independent existing cheap9 OUTCOME and bounded sealed
+  observation/range/storage DESIGN; preserve actual owners, all assertions and budgets.
+- [ ] T608-COPY-RANGE-RED Tests-first ctor-only three-mode range scaffold with old
+  manual-count semantics, SOURCE/fresh affected build/bindings/exact discovery/PREP,
+  then meaningful final missing-range RED after complete fixture/diagnostic closing.
+- [ ] T608-COPY-RANGE-GREEN Drain before all five samples, prove exact original-event
+  ranges, nonempty genuine prepared/effect evidence and unchanged null-owner/default
+  contracts; explicit selected existing passive/gzip caller wiring only after RED.
+- [ ] T608-COPY-OBS-QUALIFY Coherent SOURCE, fresh affected owning build/warnings/
+  source/PDB/copies, exact cheap regressions, strict complete storage and resource/PREP
+  before copy then candidate in original bounds. No automatic full-positive release.
+
 - [ ] T608-COPY-CAUSE Establish the persisted direct-copy timeout phase and cause,
   actual source/owner/observer differences and a minimal independent cheap proof.
   No blind runtime repeat, mode change, new cache or budget increase.

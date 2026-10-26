@@ -1,3 +1,26 @@
+# T608 selected copy/candidate observation preparation — #1536
+
+COPYOBS1: after independent DESIGN, reuse the existing sealed original-event recorder
+only for the two selected copy/candidate fixtures. Preserve the default arbitrary
+callback path and all production cache/permission guards. No new source owner may be
+wrapped around caller-side copy work; its actual null semantic lifetime stays explicit.
+COPYOBS2: drain original events before all five manual copy observation samples.
+Keep exact nonempty real validator ranges and every byte/constructor/history/abort/
+copy/timing-tree assertion, including refusal before final validation. Do not fabricate
+production labels, events or issuer/authority data in the cheap range control.
+COPYOBS3: a ctor-only independent range control uses real scopes in direct/plain,
+passive/plain and passive/gzip. Its final causal oracle follows successful recorder,
+writer and fixture closing. Old count semantics must provide a meaningful missing-
+range RED; drain-before-sample must provide GREEN, retaining all original events.
+COPYOBS4: if selected storage needs it, forward only the existing default-false gzip
+flag into the existing writer/serializer. Preserve complete source timestamps/fields,
+lossless bytes/rows, stored and decoded hashes, strict footer/CRC/EOF and closing.
+No quota, truncation, parallel diagnostic stack, new cache or compiler-wide switch.
+COPYOBS5: source review, fresh affected owning build/bindings, exact discovery/PlanOnly,
+cheap causal qualification and independent resource/PREP precede another genuine
+attempt. Copy/candidate retain their original two-minute bounds and execute in that
+order under separate completion/resource conditions. No full-positive admission.
+
 # T608 expected-projection reuse DESIGN scope — #1536
 
 REPLAY-REUSE1: accepted causal RED releases only a separately reviewed design of pure

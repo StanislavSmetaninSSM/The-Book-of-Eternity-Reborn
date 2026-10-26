@@ -1,3 +1,32 @@
+# T608 observation DESIGN accepted — tests-first range scaffold next
+
+Independent review accepts the existing cheap transport outcome: nine PASS, six
+methods, 24.9304097 seconds, no skip/duplicate/underfill/timeout and both cleanup flags.
+In each sync/async real-file comparison, actual GetAttributes is 522 legacy versus
+322 aggregate/full; main guards remain 52, lease guards 44, physical file sources two.
+Full equals aggregate. The original 67 feature cases remain accepted separately.
+This proves one observer/metadata mechanism, not the whole copy timeout or 2-minute fit.
+
+The independent bounded DESIGN selects reuse of the existing sealed recorder and
+optional existing lossless gzip writer for explicit copy/candidate fixtures, with all
+five manual boundaries draining before sampling. Preserve original defaults, actual
+null semantic caller lifetime, every physical/copy/constructor/history/abort assertion,
+and nonempty genuine prepared/effect refusal evidence. No production/cache/permission,
+compiler mode, budget, event quota or cold/live contract change is authorized.
+
+Next scaffold is tests-first: one narrow ctor-only category, no world/native/issuer/
+lease, actual uniquely labelled control scopes, old count helper and causal final
+range oracle AFTER successful recorder/writer/fixture closing. Independent SOURCE,
+fresh affected builds/current bindings, exact discovery/PREP and actual RED precede
+helper GREEN and explicit caller opt-ins. Then coherent source/build/cheap qualification
+and COPY-only resource admission; candidate and full positive remain held.
+
+All diagnostics remain external. The consumed direct-copy TIMEOUT and its full
+680,889,606-byte prefix/actual root remain protected; no test was repeated. Current
+free space is about 331 MB, so resolve build/capture reserve through exact separately
+reviewed duplicate-output or matching-old-measurement controls as needed. This is
+DESIGN acceptance, not code/build/runtime completion. Windows remains postponed.
+
 # T608 copy TIMEOUT consumed — no retry or candidate admission
 
 The original default-direct copy singleton at runtime HEAD2922053e consumed its
