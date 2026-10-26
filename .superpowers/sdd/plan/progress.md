@@ -1,3 +1,20 @@
+# T603 metadata-only DESIGN ACCEPT — bounded implementation next
+
+Independent design review accepts one mode-attribute change, preserving the same DTO/
+17members/typedSerialize/defaults/WriteLine/failure/clock/gzip stack. ActualPE/IL shows
+an attached373-byte generated fast handler in Debuggable0x107 Integration, versus
+optimized framework0x2. This asymmetry is a hypothesis; sampleB write/decode variance
+remains unexplained. Metadata-only may restore framework boxing/getter allocation;
+assess totalservice/closing/allocatedcost honestly, no allocation-free promise.
+
+No C# has changed yet. Current41/same65536-event proof and independent source/fresh
+PREP remain required. New PREP must check generated17-member metadata and absence of
+SerializeHandler fast path. Existingwriter/buffer/projectDebug/native/Game/budgets
+stay unchanged. Positive/legacy/cold HOLD; no further unchanged cost recurrences.
+
+Both independent N-negative PASS are saved at2ab4234c7; pairedOUTCOME review pending.
+The exact172e Integration triple and all original raw are retained evidence-only.
+
 # T597 independent N-negative pair PASS — independent outcome pending
 
 At runtimee116a12e4ac816b786376ebc397caf8590065ef2, compiled172e:

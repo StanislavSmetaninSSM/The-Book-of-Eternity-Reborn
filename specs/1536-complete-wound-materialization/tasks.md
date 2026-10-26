@@ -22,6 +22,9 @@ unchanged positive is incomplete TIMEOUT300s, not phase/functional acceptance.
   buffer reuse; preserve all original fields/events/clocks, output/error accounting,
   cache/authority eligibility and category budgets. Cheap same-work cause/effect proof,
   affected contracts and independent SOURCE/PREP/outcome precede any expensive run.
+  Current independently reviewed hypothesis: change only generated context mode to
+  Metadata, with honest framework boxing/allocation tradeoff; same41 oracles and
+  real65536-event cost control. No broad build-mode or writer-buffer change.
   No payload cache without a complete varying-input key, parallel stack, quotas or
   change to Game/native/GM behavior. This is the T601 performance gate, not a feature.
 

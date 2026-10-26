@@ -1,3 +1,36 @@
+# T603 metadata-only hypothesis test — independent DESIGN ACCEPT
+
+Actual generated-code inspection proves typedSerialize<RecordedTimingPayload> has no
+boxing at the callsite and attaches a373-byte17-member generated serialization handler.
+Integration Debuggable0x107 disables JIT optimization; System.Text.Json8.0.32 Debuggable
+0x2 does not. This is a concrete implementation asymmetry, not proof of the source of
+all elapsed dispersion (framework write/decode also slowed in sampleB).
+
+Change ONLY JsonSourceGenerationOptions GenerationMode.Serialization to Metadata in
+the existing recorded payload context. Keep the same17-member readonly DTO, typed
+Serialize API/default options/common WriteLine(string), all source/observer clocks,
+legacy path, gzip writer/buffer/flush/failure/root/integrity accounting. No Release or
+project configuration change, new encoder/cache/buffer framework, warmup, callbacks,
+schema/budget/Game/native/GM change. Whole varying payloads remain freshly serialized.
+Generated immutable metadata stays owned by the compiled context/type/options lifetime.
+
+The optimized framework object converter may box the value payload and use generated
+object getter delegates. Explicitly assess this CPU/allocation tradeoff; do not claim
+allocation-free or predict a speedup. Repeated expensive metadata construction is not
+the observed defect; existing built-in metadata/buffer reuse remains in place. This
+single candidate tests the hot-loop route; do not mix a writer-buffer change into it.
+
+Preserve the independent old-format UTF8/failure oracle and all41 actual same-work/
+original-event/integrity/lifetime controls, including65536 fresh source events and the
+full original Unicode message. Fresh affected Integration XML/PDB/source/copies,
+catalog/PlanOnly and independent SOURCE/PREP precede execution. Resulting metadata
+must have17 property entries and no attached SerializeHandler fast path; old handler-
+present PREP cannot be reused. Compare baseline and both preserved fast-path samples
+honestly to this distinct candidate, including allocation/service/closing/decode costs.
+Only an accepted net effect and credible current headroom can release one positive
+under the unchanged300-second category. A bad candidate is rejected/reverted, never
+made green by limits or record loss. Positive and dependent legacy/cold remain HOLD.
+
 # T597 independent negative closure while T603 cost gate is held
 
 The two already-selected live N-negative singletons can be qualified independently:
