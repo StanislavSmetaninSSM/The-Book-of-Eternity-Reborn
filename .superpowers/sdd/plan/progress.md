@@ -1,3 +1,23 @@
+# T596 first observed-prefix DATA gate completed — outcome review pending
+
+One actual fr063-debug-prefix-sources run at02293c3fe1395957bd012f96ea57f1298372bb50
+completed17/17PASS/0skip,1/1descriptor, runner51.6321844s, no timeout and both
+cleanup flags true. All18 strict owned reasoning roots physically absent; all33
+DLL/PDB/XML artifacts remain exact to accepted PREP. No retry or limit change.
+Actual ordinary A→B→A control recorded2reads/2returns/1restoration and the unchanged
+single stale-debug issue vector. Same compiled typed controls verified retained
+one timestamp/no reevaluation, detached copy, contradictory/restored source refusal,
+physical-vs-domain faults, nullable/uncovered original, supplied full-context join,
+foreign/expired/disposed lease/pass/validator and genuine generation replacement.
+
+Full TRX381,853bytes SHA2564bd646129e6084b62c373ee3779590107858735c23b30ca320d1f77973919b9c,
+raw and independent root checks remain external in
+`/workspace/tboe-linux-evidence-20261025/dfr-prefix/actual-prefix-sources-1`.
+Independent completed-outcome review precedes the conditional remaining159 cheap
+cases. Those159, six actual lifecycle singletons and cold2 are still UNRUN.
+Do not repeat unchanged first17 or infer actual engine phase/fence/full S from
+DATA-only controls. Earlier failures/raw/saves remain unchanged and retained.
+
 # T596 independent PREP accepted — first DATA17 runtime released
 
 Independent Astra/high PREP review accepts published0456100b2 against sourcee00bba3:
