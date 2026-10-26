@@ -1,3 +1,36 @@
+# T607 selected sealed observation/lifetime amendment — #1536 / 2026-10-26
+
+DFR-OBS1: the owner selected the narrow observation/lifetime route after T606;
+Integration-wide Optimize is not selected. Preserve every existing N/source-byte,
+successful-return/phase, physical-image, actual P2/reentry, held/inert, live/cold and
+owned-close assertion. The prior incomplete captures remain unqualified and retained.
+DFR-OBS2: extend existing sealed read observations/ledger and timing recorder rather
+than introduce an arbitrary callback, parallel cache or diagnostic transport. Retain
+actual source bytes from the original read, distinguish physical source from reused
+DATA, and distinguish successful returns from attempts, faults and cancellation.
+Phase attribution must describe the actual read, not reconstruction after completion.
+No additional physical read may manufacture evidence or replace the original source.
+DFR-OBS3: explicitly construct only the reviewed positive fixture without arbitrary
+read/close forwarding hooks. Late attachment must fail closed; ordinary/default and
+negative callback fixtures retain their current behavior. Do not reclassify arbitrary
+callbacks as passive, remove production eligibility guards or change an already-issued
+owner's eligibility by clearing mutable sinks after the cut.
+DFR-OBS4: diagnostic DATA is detached from authority and has an explicit manager,
+measurement/phase and lifetime. Cover stale/foreign/overlap/late/fault handling and
+immutable snapshots. Every existing Main, generation, lease, source, phase, mutation
+and closing fence remains fresh; DATA reuse uses only the existing service and key/
+owner/invalidation rules. Preserve explicit force-fresh taken-input boundaries.
+DFR-OBS5: independent DESIGN precedes implementation. A cheap real-file causal RED
+must prove complete byte/return/phase observation before its intended source/reuse
+assertion fails; missing APIs, compile/setup errors are not the RED. Then minimal
+implementation, actual source-count reduction, relevant negatives, independent SOURCE,
+fresh affected builds and exact category regression precede new runtime admission.
+DFR-OBS6: only after accepted observation/reuse qualification and fresh resource/
+binding/PlanOnly/recovery/PREP may one materially justified DFR positive run with the
+original 300-second limit and full uncapped existing capture. No blind retry, loss,
+new stack, broad codegen or Windows substitution; dependent gates require complete
+functional/capture/owned PASS. This introduces no GM-authored or player contract.
+
 # Interrupted lifecycle named-timing diagnostic amendment — #1536 / 2026-10-26
 
 DFRDIAG1: preserve accepted cheap176 and actual temporal/source-fence PASS results;

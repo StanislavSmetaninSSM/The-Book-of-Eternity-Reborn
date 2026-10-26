@@ -1,3 +1,14 @@
+# T607 narrow route selected — design and cheap causal proof next
+
+Resume from verified `ed63041e8ab1c6e8b5662ffbfa2cea96602fbc26`, clean tree and no
+active game/build/test runtime. Owner selected observation/lifetime design through
+implementation and qualification; broad Integration Optimize remains unselected.
+Current task: preserve actual bytes/returns/N phase with existing sealed observations,
+retain every physical/P2/live/cold/close oracle and production reuse/freshness guard.
+Independent DESIGN then causal cheap RED/GREEN/source counts precede fresh builds,
+reviewed targeted regressions and any justified positive admission. No new runtime,
+source implementation, raw deletion or acceptance claimed at this design checkpoint.
+
 # T606 persisted-prefix audit complete — TIMEOUT remains unqualified
 
 Runtime `9d65a291` / compiled Integration `02a14a66`: one original unchanged-positive

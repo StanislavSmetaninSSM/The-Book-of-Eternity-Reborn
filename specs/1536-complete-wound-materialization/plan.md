@@ -1,3 +1,24 @@
+# T607 selected observation/lifetime route — DESIGN in progress
+
+Owner selected option 1 after verified `ed63041e8ab1c6e8b5662ffbfa2cea96602fbc26`:
+continue the narrow observation/lifetime contract through implementation/qualification,
+then return to DFR and remaining wound materialization. Optimize is not selected.
+Preflight: clean main tree, exact local/remote SHA, no active game/build/test runtime.
+
+Acceptance: preserve genuine physical bytes, actual N read/return and phase proof
+through existing sealed observations/recorder; preserve ordinary callback fallbacks,
+close negatives and every original live/cold/P2/physical assertion. Construction-time
+hook-free opt-in must reject later arbitrary forwarding attachment. All production
+cache eligibility and authority/freshness guards stay unchanged. No new cache/transport.
+
+First freeze one concrete minimal design and obtain independent DESIGN. Then scaffold
+a cheap real-read causal RED with full observation prerequisites, implement the narrow
+correction, prove actual source-count effect and negatives, review SOURCE, freshly
+build affected projects and run exact reviewed regressions. No positive retry until
+new qualification/resource/binding/PREP evidence. Existing 300-second/full-capture
+requirements remain; T606 failure is not retroactively fixed by any fixture change.
+Raw remains outside checkout; source/checkpoint commits are remotely verified.
+
 # T606 diagnostic TIMEOUT — full persisted-prefix audit, dependent gates stopped
 
 The single admitted attempt `actual-dfr-diagnostic-positive-1` ran on Linux at

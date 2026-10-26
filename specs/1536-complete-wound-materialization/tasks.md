@@ -61,6 +61,20 @@ unchanged positive is incomplete TIMEOUT300s, not phase/functional acceptance.
   proofs, default fallback and fresh guards; otherwise report the unresolved limit.
   Broad Integration Optimize is an explicitly separate unimplemented alternative,
   not an automatic next change. No new diagnostic stack or cache.
+  Owner now selects the narrow route; proceed autonomously after independent DESIGN.
+  - [ ] T607-DESIGN Freeze minimal existing-ledger/recorder byte/return/phase and
+    construction-time hook-free lifetime contract, ownership/invalidation/freshness,
+    cheap causal/source-count and affected-consumer selection; independent review.
+  - [ ] T607-RED Build a compilable real-file scaffold preserving current fallback;
+    prove all observation prerequisites before the intended reuse/source assertion
+    fails. Preserve original raw and exact RED source/binary identity.
+  - [ ] T607-GREEN Implement only the reviewed observation/fixture opt-in; prove
+    actual source-count reduction plus stale/foreign/late/fault/drift/close negatives,
+    ordinary callback fallback and unchanged force-fresh authority boundaries.
+  - [ ] T607-QUALIFY Independent SOURCE, fresh affected builds/current source/PDB
+    bindings, catalog/PlanOnly, selected actual regressions, OUTCOME and remote recovery.
+  - [ ] T607-RETURN Obtain new justified positive PREP under original 300 seconds/
+    full capture, then resume T602/T597/T598 only after complete accepted outcome.
 
 # T179-Pd.3e observed debug-prefix consumer — #1536 / 2026-10-25
 
