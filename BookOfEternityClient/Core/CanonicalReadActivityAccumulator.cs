@@ -13,6 +13,13 @@ internal sealed class CanonicalReadActivityAccumulator
     /// <summary>Gets whether an actual observation epoch remains open, without invoking caller code.</summary>
     internal bool IsObserving => Volatile.Read(ref _observation) is not null;
 
+    /// <summary>Captures this actual observation epoch as immutable provenance, never read permission.</summary>
+    internal object? CaptureEpoch() => Volatile.Read(ref _observation);
+
+    /// <summary>Checks actual epoch/files/window/generation provenance without importing another producer's identity.</summary>
+    internal bool MatchesEpoch(FileSystemManager files, object epoch) =>
+        Volatile.Read(ref _observation) is { } current && ReferenceEquals(current, epoch) && current.MatchesFiles(files);
+
     /// <summary>Retains diagnostic allocation/record failure without replacing the functional result.</summary>
     internal void FailObservation() => Volatile.Read(ref _observation)?.Fail();
 
@@ -79,6 +86,9 @@ internal sealed class CanonicalReadActivityAccumulator
         private bool IsCurrent() => _files.CanonicalReadObservationGeneration == _generation &&
             _files.MatchesCanonicalReadObservation(_owner, _window);
 
+        internal bool MatchesFiles(FileSystemManager files)
+        { lock (_gate) return !_closed && !_disposed && ReferenceEquals(files, _files) && IsCurrent(); }
+
         internal void Record(ReadObservation read, CanonicalReadEventKind kind, byte[]? bytes = null,
             bool physical = true, Exception? error = null)
         {
@@ -143,8 +153,16 @@ internal sealed class CanonicalReadActivityAccumulator
         /// <returns>Current observation validity and every retained event.</returns>
         internal CanonicalReadObservationSnapshot Capture()
         {
-            lock (_gate) return new(_fault is null && !_disposed, _closed, _disposed, _pending, _fault,
-                _events.Select(row => row with { Bytes = row.Bytes?.ToArray() }).ToArray());
+            lock (_gate)
+            {
+                try { return new(_fault is null && !_disposed, _closed, _disposed, _pending, _fault,
+                    _events.Select(row => row with { Bytes = row.Bytes?.ToArray() }).ToArray()); }
+                catch (Exception)
+                {
+                    _fault ??= "diagnostic_read_capture_copy_failed";
+                    return new(false, _closed, _disposed, _pending, _fault, Array.Empty<CanonicalReadEvent>());
+                }
+            }
         }
 
         /// <summary>Ends this epoch once and releases buffers without disposing any functional owner.</summary>
@@ -214,7 +232,7 @@ internal sealed class CanonicalReadActivityAccumulator
 internal enum CanonicalReadEventKind
 {
     InitialOpened, PhysicalSnapshot, PhysicalAbsence, CachedData, ReaderReturned,
-    PublicInitialAttemptReturned, PublicFinalReturned, Fault, Cancelled
+    OriginalAttemptReturned, PublicInitialAttemptReturned, PublicFinalReturned, LeasedReturned, Fault, Cancelled
 }
 
 /// <summary>Source ownership; named timing counts alone never attribute an ordinary read to N.</summary>

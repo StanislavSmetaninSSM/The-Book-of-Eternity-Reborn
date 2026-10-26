@@ -48,9 +48,11 @@ internal sealed class FileReadObservation
             return source;
         }
     }
-    internal void Activity(CanonicalReadEventKind kind) => _activity?.Record(ActivityIssuer, kind);
+    internal bool HasActivity => _activity is not null;
+    internal void Activity(CanonicalReadEventKind kind) => _activity?.Record(ActivityIssuer, kind,
+        physical: kind is CanonicalReadEventKind.InitialOpened or CanonicalReadEventKind.ReaderReturned);
     internal void ActivityFault(Exception error) => _activity?.Record(ActivityIssuer,
-        error is OperationCanceledException ? CanonicalReadEventKind.Cancelled : CanonicalReadEventKind.Fault, error: error);
+        error is OperationCanceledException ? CanonicalReadEventKind.Cancelled : CanonicalReadEventKind.Fault, physical: false, error: error);
     internal void CompleteActivity() => _activity?.Complete(ActivityIssuer);
 
     internal void Snapshot(byte[]? bytes, bool physical = true)

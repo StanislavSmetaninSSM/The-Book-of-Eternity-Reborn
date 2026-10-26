@@ -448,8 +448,27 @@ public partial class FileSystemManager
     // Byte authority for the trusted-local route. The legacy physical reader
     // both accepts Unix special-file attributes and requires one Windows link;
     // neither is the contract of a participating-writer, by-name publication.
-    internal async Task<byte[]?> ReadLocalFileBytesAsync(CanonicalWriteLease lease, string relativePath,
+    internal Task<byte[]?> ReadLocalFileBytesAsync(CanonicalWriteLease lease, string relativePath,
         CancellationToken cancellationToken = default)
+    {
+        var observation = AttachCanonicalReadActivity(relativePath, "local-physical-async", null, out var ownsActivity);
+        if (observation?.HasActivity != true) return ReadLocalFileBytesAsyncT607Original(lease, relativePath, cancellationToken, null);
+        return ObserveAsync();
+        async Task<byte[]?> ObserveAsync()
+        {
+            try
+            {
+                var result = await ReadLocalFileBytesAsyncT607Original(lease, relativePath, cancellationToken, observation);
+                observation!.Activity(CanonicalReadEventKind.ReaderReturned);
+                return result;
+            }
+            catch (Exception error) { observation!.ActivityFault(error); throw; }
+            finally { if (ownsActivity) observation!.CompleteActivity(); }
+        }
+    }
+
+    private async Task<byte[]?> ReadLocalFileBytesAsyncT607Original(CanonicalWriteLease lease, string relativePath,
+        CancellationToken cancellationToken, FileReadObservation? observation)
     {
         VerifyCurrentSessionOperation(lease);
         if (!UsesTrustedLocalWriter(lease, relativePath))
@@ -481,8 +500,9 @@ public partial class FileSystemManager
             {
                 if (_hooks?.AfterCanonicalReadInitialValidationAsync != null)
                     await _hooks.AfterCanonicalReadInitialValidationAsync(relativePath);
-                ObserveCanonicalRead(relativePath);
+                ObserveCanonicalRead(relativePath, observation);
                 var snapshot = await ReadOpenedOrdinarySnapshotAsync(stream, scope, relativePath, expectedPath, cancellationToken);
+                observation?.Snapshot(snapshot.Content);
                 VerifyCurrentSessionOperation(lease);
                 return snapshot.Content;
             }

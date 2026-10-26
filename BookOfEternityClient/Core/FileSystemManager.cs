@@ -1736,7 +1736,26 @@ public partial class FileSystemManager
     /// <summary>Reads ordinary text while explicitly retaining each actual initial and followup source snapshot.</summary>
     /// <param name="relativePath">Original session-relative spelling passed unchanged to the public ordinary reader.</param>
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
-    internal async Task<string?> ReadObservedFileAsyncCore(string relativePath, FileReadObservation? observation)
+    internal Task<string?> ReadObservedFileAsyncCore(string relativePath, FileReadObservation? observation)
+    {
+        observation = AttachCanonicalReadActivity(relativePath, "public-async", observation, out var ownsActivity);
+        if (observation?.HasActivity != true) return ReadObservedFileAsyncCoreT607Original(relativePath, observation);
+        return ObserveAsync();
+
+        async Task<string?> ObserveAsync()
+        {
+            try
+            {
+                var result = await ReadObservedFileAsyncCoreT607Original(relativePath, observation);
+                observation.Activity(CanonicalReadEventKind.PublicFinalReturned);
+                return result;
+            }
+            catch (Exception error) { observation.ActivityFault(error); throw; }
+            finally { if (ownsActivity) observation.CompleteActivity(); }
+        }
+    }
+
+    internal async Task<string?> ReadObservedFileAsyncCoreT607Original(string relativePath, FileReadObservation? observation)
     {
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "public-text-async", "semantic", "started");
@@ -1752,7 +1771,8 @@ public partial class FileSystemManager
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "public-text-async", "initial", result == null ? "missing" : "present");
 #endif
-        await InvokeAfterCanonicalReadAttemptAsync(relativePath);
+        await InvokeAfterCanonicalReadAttemptAsync(relativePath, observation);
+        observation?.Activity(CanonicalReadEventKind.PublicInitialAttemptReturned);
         if (!HasAmbientCanonicalLease() &&
             (result == null || HasPendingFilePublications()))
         {
@@ -1792,7 +1812,28 @@ public partial class FileSystemManager
     /// The observed content, or <see langword="null"/> for an absent source.
     /// </returns>
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
-    internal async Task<string?> ReadObservedFileAsyncCore(
+    internal Task<string?> ReadObservedFileAsyncCore(
+        CanonicalWriteLease writeLease,
+        string relativePath, FileReadObservation? observation)
+    {
+        observation = AttachCanonicalReadActivity(relativePath, "leased-async", observation, out var ownsActivity);
+        if (observation?.HasActivity != true) return ReadObservedFileAsyncCoreT607Original(writeLease, relativePath, observation);
+        return ObserveAsync();
+
+        async Task<string?> ObserveAsync()
+        {
+            try
+            {
+                var result = await ReadObservedFileAsyncCoreT607Original(writeLease, relativePath, observation);
+                observation.Activity(CanonicalReadEventKind.LeasedReturned);
+                return result;
+            }
+            catch (Exception error) { observation.ActivityFault(error); throw; }
+            finally { if (ownsActivity) observation.CompleteActivity(); }
+        }
+    }
+
+    internal async Task<string?> ReadObservedFileAsyncCoreT607Original(
         CanonicalWriteLease writeLease,
         string relativePath, FileReadObservation? observation)
     {
@@ -1886,7 +1927,28 @@ public partial class FileSystemManager
     /// The observed content, or <see langword="null"/> for an absent source.
     /// </returns>
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
-    internal async Task<byte[]?> ReadObservedFileBytesAsyncCore(
+    internal Task<byte[]?> ReadObservedFileBytesAsyncCore(
+        CanonicalWriteLease writeLease,
+        string relativePath, FileReadObservation? observation)
+    {
+        observation = AttachCanonicalReadActivity(relativePath, "leased-async", observation, out var ownsActivity);
+        if (observation?.HasActivity != true) return ReadObservedFileBytesAsyncCoreT607Original(writeLease, relativePath, observation);
+        return ObserveAsync();
+
+        async Task<byte[]?> ObserveAsync()
+        {
+            try
+            {
+                var result = await ReadObservedFileBytesAsyncCoreT607Original(writeLease, relativePath, observation);
+                observation.Activity(CanonicalReadEventKind.LeasedReturned);
+                return result;
+            }
+            catch (Exception error) { observation.ActivityFault(error); throw; }
+            finally { if (ownsActivity) observation.CompleteActivity(); }
+        }
+    }
+
+    internal async Task<byte[]?> ReadObservedFileBytesAsyncCoreT607Original(
         CanonicalWriteLease writeLease,
         string relativePath, FileReadObservation? observation)
     {
@@ -1964,6 +2026,20 @@ public partial class FileSystemManager
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     internal string? ReadObservedFileSyncCore(string relativePath, FileReadObservation? observation)
     {
+        observation = AttachCanonicalReadActivity(relativePath, "public-sync", observation, out var ownsActivity);
+        if (observation?.HasActivity != true) return ReadObservedFileSyncCoreT607Original(relativePath, observation);
+        try
+        {
+            var result = ReadObservedFileSyncCoreT607Original(relativePath, observation);
+            observation.Activity(CanonicalReadEventKind.PublicFinalReturned);
+            return result;
+        }
+        catch (Exception error) { observation.ActivityFault(error); throw; }
+        finally { if (ownsActivity) observation.CompleteActivity(); }
+    }
+
+    internal string? ReadObservedFileSyncCoreT607Original(string relativePath, FileReadObservation? observation)
+    {
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "public-text-sync", "semantic", "started");
 #endif
@@ -1977,7 +2053,8 @@ public partial class FileSystemManager
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "public-text-sync", "initial", snapshot == null ? "missing" : "present");
 #endif
-        InvokeAfterCanonicalReadAttempt(relativePath);
+        InvokeAfterCanonicalReadAttempt(relativePath, observation);
+        observation?.Activity(CanonicalReadEventKind.PublicInitialAttemptReturned);
         if (!HasAmbientCanonicalLease() &&
             (snapshot == null || HasPendingFilePublications()))
         {
@@ -2031,6 +2108,22 @@ public partial class FileSystemManager
         CanonicalWriteLease writeLease,
         string relativePath, FileReadObservation? observation)
     {
+        observation = AttachCanonicalReadActivity(relativePath, "leased-sync", observation, out var ownsActivity);
+        if (observation?.HasActivity != true) return ReadObservedFileSyncCoreT607Original(writeLease, relativePath, observation);
+        try
+        {
+            var result = ReadObservedFileSyncCoreT607Original(writeLease, relativePath, observation);
+            observation.Activity(CanonicalReadEventKind.LeasedReturned);
+            return result;
+        }
+        catch (Exception error) { observation.ActivityFault(error); throw; }
+        finally { if (ownsActivity) observation.CompleteActivity(); }
+    }
+
+    internal string? ReadObservedFileSyncCoreT607Original(
+        CanonicalWriteLease writeLease,
+        string relativePath, FileReadObservation? observation)
+    {
         if (TryReadDeclaredSourceData(writeLease, relativePath, false, out var cached)) { observation?.Snapshot(cached?.Content, physical: false); return DecodeFileSnapshot(cached); }
         EnsureValidCanonicalWriteLease(writeLease);
         // The explicit lease already supplies publication quiescence, even when
@@ -2078,6 +2171,20 @@ public partial class FileSystemManager
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     internal byte[]? ReadObservedFileBytesSyncCore(CanonicalWriteLease writeLease, string relativePath, FileReadObservation? observation)
     {
+        observation = AttachCanonicalReadActivity(relativePath, "leased-sync", observation, out var ownsActivity);
+        if (observation?.HasActivity != true) return ReadObservedFileBytesSyncCoreT607Original(writeLease, relativePath, observation);
+        try
+        {
+            var result = ReadObservedFileBytesSyncCoreT607Original(writeLease, relativePath, observation);
+            observation.Activity(CanonicalReadEventKind.LeasedReturned);
+            return result;
+        }
+        catch (Exception error) { observation.ActivityFault(error); throw; }
+        finally { if (ownsActivity) observation.CompleteActivity(); }
+    }
+
+    internal byte[]? ReadObservedFileBytesSyncCoreT607Original(CanonicalWriteLease writeLease, string relativePath, FileReadObservation? observation)
+    {
         if (TryReadDeclaredSourceData(writeLease, relativePath, false, out var cached)) { observation?.Snapshot(cached?.Content, physical: false); return cached?.Content; }
         EnsureValidCanonicalWriteLease(writeLease);
         var ordinary = UsesTrustedLocalWriter(writeLease, relativePath);
@@ -2096,6 +2203,20 @@ public partial class FileSystemManager
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     internal byte[]? ReadObservedFileBytesSyncCore(string relativePath, FileReadObservation? observation)
     {
+        observation = AttachCanonicalReadActivity(relativePath, "public-sync", observation, out var ownsActivity);
+        if (observation?.HasActivity != true) return ReadObservedFileBytesSyncCoreT607Original(relativePath, observation);
+        try
+        {
+            var result = ReadObservedFileBytesSyncCoreT607Original(relativePath, observation);
+            observation.Activity(CanonicalReadEventKind.PublicFinalReturned);
+            return result;
+        }
+        catch (Exception error) { observation.ActivityFault(error); throw; }
+        finally { if (ownsActivity) observation.CompleteActivity(); }
+    }
+
+    internal byte[]? ReadObservedFileBytesSyncCoreT607Original(string relativePath, FileReadObservation? observation)
+    {
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "public-bytes-sync", "semantic", "started");
 #endif
@@ -2109,7 +2230,8 @@ public partial class FileSystemManager
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "public-bytes-sync", "initial", snapshot == null ? "missing" : "present");
 #endif
-        InvokeAfterCanonicalReadAttempt(relativePath);
+        InvokeAfterCanonicalReadAttempt(relativePath, observation);
+        observation?.Activity(CanonicalReadEventKind.PublicInitialAttemptReturned);
         if (!HasAmbientCanonicalLease() &&
             (snapshot == null || HasPendingFilePublications()))
         {
@@ -2148,7 +2270,28 @@ public partial class FileSystemManager
     private Task<byte[]?> ReadFileBytesCoreAsync(string relativePath) =>
         ReadFileBytesCoreAsync(relativePath, CancellationToken.None);
 
-    private async Task<byte[]?> ReadFileBytesWithPublicationRecoveryAsync(
+    private Task<byte[]?> ReadFileBytesWithPublicationRecoveryAsync(
+        string relativePath,
+        CancellationToken cancellationToken, FileReadObservation? observation = null)
+    {
+        observation = AttachCanonicalReadActivity(relativePath, "public-async", observation, out var ownsActivity);
+        if (observation?.HasActivity != true) return ReadFileBytesWithPublicationRecoveryAsyncT607Original(relativePath, cancellationToken, observation);
+        return ObserveAsync();
+
+        async Task<byte[]?> ObserveAsync()
+        {
+            try
+            {
+                var result = await ReadFileBytesWithPublicationRecoveryAsyncT607Original(relativePath, cancellationToken, observation);
+                observation.Activity(CanonicalReadEventKind.PublicFinalReturned);
+                return result;
+            }
+            catch (Exception error) { observation.ActivityFault(error); throw; }
+            finally { if (ownsActivity) observation.CompleteActivity(); }
+        }
+    }
+
+    private async Task<byte[]?> ReadFileBytesWithPublicationRecoveryAsyncT607Original(
         string relativePath,
         CancellationToken cancellationToken, FileReadObservation? observation = null)
     {
@@ -2169,7 +2312,8 @@ public partial class FileSystemManager
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "public-bytes-async", "initial", result == null ? "missing" : "present");
 #endif
-        await InvokeAfterCanonicalReadAttemptAsync(relativePath);
+        await InvokeAfterCanonicalReadAttemptAsync(relativePath, observation);
+        observation?.Activity(CanonicalReadEventKind.PublicInitialAttemptReturned);
         if (!HasAmbientCanonicalLease() &&
             (result == null || HasPendingFilePublications()))
         {
@@ -2237,7 +2381,28 @@ public partial class FileSystemManager
     /// Fresh bytes/timestamp or observed absence.
     /// </returns>
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
-    private async Task<CanonicalFileReadSnapshot?> ReadFileSnapshotUncachedAsync(
+    private Task<CanonicalFileReadSnapshot?> ReadFileSnapshotUncachedAsync(
+        string relativePath,
+        CancellationToken cancellationToken, FileReadObservation? observation = null)
+    {
+        observation = AttachCanonicalReadActivity(relativePath, "physical-async", observation, out var ownsActivity);
+        if (observation?.HasActivity != true) return ReadFileSnapshotUncachedAsyncT607Original(relativePath, cancellationToken, observation);
+        return ObserveAsync();
+
+        async Task<CanonicalFileReadSnapshot?> ObserveAsync()
+        {
+            try
+            {
+                var result = await ReadFileSnapshotUncachedAsyncT607Original(relativePath, cancellationToken, observation);
+                observation.Activity(CanonicalReadEventKind.ReaderReturned);
+                return result;
+            }
+            catch (Exception error) { observation.ActivityFault(error); throw; }
+            finally { if (ownsActivity) observation.CompleteActivity(); }
+        }
+    }
+
+    private async Task<CanonicalFileReadSnapshot?> ReadFileSnapshotUncachedAsyncT607Original(
         string relativePath,
         CancellationToken cancellationToken, FileReadObservation? observation = null)
     {
@@ -2249,7 +2414,7 @@ public partial class FileSystemManager
             {
                 openedFile = await OpenCanonicalReadStreamAsync(
                     relativePath,
-                    cancellationToken);
+                    cancellationToken, observation);
                 break;
             }
             catch (Exception ex) when (
@@ -2630,6 +2795,21 @@ public partial class FileSystemManager
     private CanonicalFileReadSnapshot? ReadFileSnapshotUncached(
         string relativePath, FileReadObservation? observation = null)
     {
+        observation = AttachCanonicalReadActivity(relativePath, "physical-sync", observation, out var ownsActivity);
+        if (observation?.HasActivity != true) return ReadFileSnapshotUncachedT607Original(relativePath, observation);
+        try
+        {
+            var result = ReadFileSnapshotUncachedT607Original(relativePath, observation);
+            observation.Activity(CanonicalReadEventKind.ReaderReturned);
+            return result;
+        }
+        catch (Exception error) { observation.ActivityFault(error); throw; }
+        finally { if (ownsActivity) observation.CompleteActivity(); }
+    }
+
+    private CanonicalFileReadSnapshot? ReadFileSnapshotUncachedT607Original(
+        string relativePath, FileReadObservation? observation = null)
+    {
         for (var attempt = 0; ; attempt++)
         {
             var initialValidationComplete = false;
@@ -2662,7 +2842,7 @@ public partial class FileSystemManager
                     ?.Invoke(relativePath)
                     .GetAwaiter()
                     .GetResult();
-                ObserveCanonicalRead(relativePath);
+                ObserveCanonicalRead(relativePath, observation);
                 var lastWriteTimeUtc = File.GetLastWriteTimeUtc(
                     stream.SafeFileHandle);
                 using var buffer = stream.Length is > 0 and <= int.MaxValue
@@ -6542,7 +6722,7 @@ public partial class FileSystemManager
 
     private async Task<StableReadFile?> OpenCanonicalReadStreamAsync(
         string relativePath,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default, FileReadObservation? observation = null)
     {
         cancellationToken.ThrowIfCancellationRequested();
         var expectedFullPath = ResolvePath(relativePath);
@@ -6576,7 +6756,7 @@ public partial class FileSystemManager
                 await _hooks.AfterCanonicalReadInitialValidationAsync(
                     relativePath);
             }
-            ObserveCanonicalRead(relativePath);
+            ObserveCanonicalRead(relativePath, observation);
             return new StableReadFile(
                 stream,
                 parentAuthority,
@@ -6602,12 +6782,21 @@ public partial class FileSystemManager
     private Task InvokeBeforeCanonicalReadOpenAsync(string relativePath) =>
         _hooks?.BeforeCanonicalReadOpenAsync?.Invoke(relativePath) ?? Task.CompletedTask;
 
-    private Task InvokeAfterCanonicalReadAttemptAsync(string relativePath) =>
-        _hooks?.AfterCanonicalReadAttemptAsync?.Invoke(relativePath) ??
-        Task.CompletedTask;
+    private Task InvokeAfterCanonicalReadAttemptAsync(string relativePath, FileReadObservation? observation = null)
+    {
+        var original = _hooks?.AfterCanonicalReadAttemptAsync?.Invoke(relativePath) ?? Task.CompletedTask;
+        if (observation?.HasActivity != true && !HasCanonicalReadObservation) return original;
+        return ObserveReturnAsync();
+        async Task ObserveReturnAsync()
+        {
+            await original;
+            if (observation?.HasActivity == true) observation.Activity(CanonicalReadEventKind.OriginalAttemptReturned);
+            else RecordStandaloneCanonicalActivity(relativePath, CanonicalReadEventKind.OriginalAttemptReturned, "attempt-return-only");
+        }
+    }
 
-    private void InvokeAfterCanonicalReadAttempt(string relativePath) =>
-        InvokeAfterCanonicalReadAttemptAsync(relativePath)
+    private void InvokeAfterCanonicalReadAttempt(string relativePath, FileReadObservation? observation = null) =>
+        InvokeAfterCanonicalReadAttemptAsync(relativePath, observation)
             .GetAwaiter()
             .GetResult();
 

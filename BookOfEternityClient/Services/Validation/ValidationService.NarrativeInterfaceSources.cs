@@ -135,6 +135,8 @@ public partial class ValidationService
         private readonly List<ValidationIssue> _timestampIssues = [];
         private NarrativeWriteObservation? _write;
         private readonly Guid _observationInvocation;
+        private readonly object? _observationEpoch;
+        private int _observationInitialClosed, _observationDisposed;
 
         /// <summary>Creates an invocation ledger bound to its actual manager and current logical generation.</summary>
         /// <param name="files">The files retained or checked by this operation.</param>
@@ -143,6 +145,7 @@ public partial class ValidationService
         {
             _files = files;
             _observationInvocation = ReferenceEquals(producerIssuer, NarrativePassIssuer) ? Guid.NewGuid() : Guid.Empty;
+            _observationEpoch = _observationInvocation != Guid.Empty ? files.CaptureCanonicalReadObservationEpoch() : null;
             if (SessionOperationContext.TryGetExpectedGeneration(files.BasePath, out var bound)) _generation = bound;
             else
             {
@@ -236,6 +239,7 @@ public partial class ValidationService
             if (!_occurrences.Any(value => value.Path == "output/narrative_response.json" && (value.State is "Present" or "Absent")))
                 Unavailable("narrative_policy_missing_actual_narrative_read");
             if (!_disposed) _completed = true;
+            Interlocked.Exchange(ref _observationInitialClosed, 1);
         }
         /// <summary>Retains the original computed projector result without evaluating it again.</summary>
         /// <param name="json">The json retained or checked by this operation.</param>
@@ -377,7 +381,7 @@ public partial class ValidationService
         public void Dispose()
         {
             if (_disposed) return;
-            _disposed = true; _occurrences.Clear(); _contexts.Clear(); _timestampIssues.Clear(); _projectionJson = null; _suppliedManifest = null; _write?.Clear(); _write = null;
+            _disposed = true; Interlocked.Exchange(ref _observationDisposed, 1); _occurrences.Clear(); _contexts.Clear(); _timestampIssues.Clear(); _projectionJson = null; _suppliedManifest = null; _write?.Clear(); _write = null;
         }
 
         /// <summary>A sealed sink passed explicitly through the same physical reader, before its public callbacks.</summary>
@@ -415,13 +419,14 @@ public partial class ValidationService
         /// <summary>Actual completed-pass recheck lifetime; it is not appended to the sealed source ledger.</summary>
         internal sealed class ObservationRun : IDisposable
         {
-            internal bool Open { get; private set; } = true;
+            private int _closed;
+            internal bool Open => Volatile.Read(ref _closed) == 0;
             internal ObservationRun(object issuer)
             {
                 if (!ReferenceEquals(issuer, NarrativePassIssuer)) throw new InvalidOperationException("Actual N observation issuer required.");
             }
             /// <summary>Ends only diagnostic provenance, without changing authority DATA or a borrowed lease.</summary>
-            public void Dispose() => Open = false;
+            public void Dispose() => Interlocked.Exchange(ref _closed, 1);
         }
 
         /// <summary>Closed diagnostic-only recheck arm over the same actual completed invocation.</summary>
@@ -450,8 +455,10 @@ public partial class ValidationService
             internal bool TryCapture(FileSystemManager files, out Guid invocation, out bool recheck)
             {
                 invocation = _owner._observationInvocation; recheck = _run is not null;
-                return invocation != Guid.Empty && ReferenceEquals(files, _owner._files) && !_owner._disposed &&
-                    (_run is null ? !_owner._completed : _owner._completed && _run.Open);
+                return invocation != Guid.Empty && ReferenceEquals(files, _owner._files) && Volatile.Read(ref _owner._observationDisposed) == 0 &&
+                    _owner._observationEpoch is not null && files.MatchesCanonicalReadObservationEpoch(_owner._observationEpoch) &&
+                    (_run is null ? Volatile.Read(ref _owner._observationInitialClosed) == 0 :
+                        Volatile.Read(ref _owner._observationInitialClosed) != 0 && _run.Open);
             }
         }
 

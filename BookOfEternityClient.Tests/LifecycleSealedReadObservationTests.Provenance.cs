@@ -7,6 +7,31 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class LifecycleSealedReadObservationTests
 {
+    /// <summary>An actual old pass cannot import its read origin into a new observation epoch on the same timer window.</summary>
+    [Fact]
+    public async Task ActualNarrativeOriginCannotMoveToAnotherObservationEpoch()
+    {
+        using var ordinary = new OrdinaryOutputFixture(_output);
+        await ordinary.SeedValidAsync();
+        var reads = new LifecycleFixtureReadObservers(false, false);
+        var timing = new OperationTimingAccumulator();
+        var files = ordinary.CreateFiles(new FileSystemManagerHooks { PassiveCanonicalReads = reads.CanonicalSources, PassiveOperationTimings = timing });
+        var validator = new ValidationService(files, NullLogger<ValidationService>.Instance);
+        using var window = timing.StartWindow();
+        using var first = reads.CanonicalSources.BeginObservation(files, window);
+        using var pass = await validator.ValidateAcceptedTurnNarrativePolicyPassAsync();
+        Assert.Null(pass.CaptureDiagnostic().Fault);
+        first.CloseCapture();
+        using var next = reads.CanonicalSources.BeginObservation(files, window);
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        await pass.RequireCurrentAsync(files, lease);
+        next.CloseCapture();
+        Assert.False(next.Capture().Available);
+        Assert.DoesNotContain(next.Capture().Events, row => row.Phase is CanonicalReadSourcePhase.NarrativeEvaluation or CanonicalReadSourcePhase.NarrativeRecheck);
+        Assert.Contains(next.Capture().Events, row => row.Phase == CanonicalReadSourcePhase.Unavailable);
+        Assert.Null(pass.CaptureDiagnostic().Fault); // diagnostic expiry does not change N authority semantics
+    }
+
     /// <summary>Actual producer identity survives fresh leased rechecks without appending to its sealed authority ledger.</summary>
     [Fact]
     public async Task ActualNarrativeCaptureAndFreshRechecksKeepOneExplicitOrigin()

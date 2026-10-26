@@ -22,6 +22,16 @@ public partial class FileSystemManager
     /// <summary>Gets whether actual passive observation requires the diagnostic-only recheck arm.</summary>
     internal bool HasCanonicalReadObservation => _hooks?.PassiveCanonicalReads?.IsObserving == true;
 
+    /// <summary>Captures the actual configured observation epoch for a private producer's diagnostic origin.</summary>
+    /// <returns>The current epoch identity, or null before observation starts.</returns>
+    internal object? CaptureCanonicalReadObservationEpoch() => _hooks?.PassiveCanonicalReads?.CaptureEpoch();
+
+    /// <summary>Prevents old producer provenance from being imported into another observation epoch.</summary>
+    /// <param name="epoch">The actual epoch captured at private producer issuance.</param>
+    /// <returns>Whether the same epoch remains selected on these files.</returns>
+    internal bool MatchesCanonicalReadObservationEpoch(object epoch) =>
+        _hooks?.PassiveCanonicalReads?.MatchesEpoch(this, epoch) == true;
+
     /// <summary>Composes one actual reader call with its existing explicit source and optional passive DATA sink.</summary>
     private FileReadObservation? AttachCanonicalReadActivity(string path, string family, FileReadObservation? source, out bool owns) =>
         FileReadObservation.AttachActivity(CanonicalReadDispatchIssuer, this, _hooks?.PassiveCanonicalReads, path, family, source, out owns);
@@ -227,11 +237,21 @@ public partial class FileSystemManager
     /// <param name="path">
     /// Exact original source spelling supplied by the physical reader.
     /// </param>
-    private void ObserveCanonicalRead(string path)
+    private void ObserveCanonicalRead(string path, FileReadObservation? observation = null)
     {
         _hooks?.PassiveCanonicalReads?.Record(path);
+        if (observation?.HasActivity == true) observation.Activity(CanonicalReadEventKind.InitialOpened);
+        else RecordStandaloneCanonicalActivity(path, CanonicalReadEventKind.InitialOpened, "initial-only");
         _hooks?.PassiveReadActivities?.Record(PassiveReadActivityKind.CanonicalInitial);
         ObservePassiveRead(_hooks?.CanonicalReadActivityObserver, path);
+    }
+
+    private void RecordStandaloneCanonicalActivity(string path, CanonicalReadEventKind kind, string family)
+    {
+        var observation = AttachCanonicalReadActivity(path, family, null, out var owns);
+        if (!owns) return;
+        try { observation?.Activity(kind); }
+        finally { observation?.CompleteActivity(); }
     }
 
     /// <summary>

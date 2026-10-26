@@ -112,7 +112,28 @@ public partial class FileSystemManager
     /// The opened file's content and timestamp, or <see langword="null"/> for observed absence; original validation and data errors propagate.
     /// </returns>
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
-    private async Task<CanonicalFileReadSnapshot?> ReadOrdinaryFileSnapshotUncachedAsync(
+    private Task<CanonicalFileReadSnapshot?> ReadOrdinaryFileSnapshotUncachedAsync(
+        string relativePath, CancellationToken cancellationToken, CanonicalWriteLease? lease = null,
+        SourceValidationBatch? batch = null, FileReadObservation? observation = null)
+    {
+        observation = AttachCanonicalReadActivity(relativePath, "physical-async", observation, out var ownsActivity);
+        if (observation?.HasActivity != true) return ReadOrdinaryFileSnapshotUncachedAsyncT607Original(relativePath, cancellationToken, lease, batch, observation);
+        return ObserveAsync();
+
+        async Task<CanonicalFileReadSnapshot?> ObserveAsync()
+        {
+            try
+            {
+                var result = await ReadOrdinaryFileSnapshotUncachedAsyncT607Original(relativePath, cancellationToken, lease, batch, observation);
+                observation.Activity(CanonicalReadEventKind.ReaderReturned);
+                return result;
+            }
+            catch (Exception error) { observation.ActivityFault(error); throw; }
+            finally { if (ownsActivity) observation.CompleteActivity(); }
+        }
+    }
+
+    private async Task<CanonicalFileReadSnapshot?> ReadOrdinaryFileSnapshotUncachedAsyncT607Original(
         string relativePath, CancellationToken cancellationToken, CanonicalWriteLease? lease = null,
         SourceValidationBatch? batch = null, FileReadObservation? observation = null)
     {
@@ -193,7 +214,7 @@ public partial class FileSystemManager
                 using var t326AsyncAfterHook = MeasureOperation("OrdinaryRead.Async.AfterOpenHookAsync");
                 if (_hooks?.AfterCanonicalReadInitialValidationAsync != null)
                     await _hooks.AfterCanonicalReadInitialValidationAsync(relativePath);
-                ObserveCanonicalRead(relativePath);
+                ObserveCanonicalRead(relativePath, observation);
                 t326AsyncAfterHook?.Dispose();
                 break;
             }
@@ -355,6 +376,23 @@ public partial class FileSystemManager
         CanonicalWriteLease? lease, out ExceptionDispatchInfo? dataFailure, bool nullableDataFailure,
         SourceValidationBatch? batch = null, FileReadObservation? observation = null)
     {
+        observation = AttachCanonicalReadActivity(relativePath, "physical-sync", observation, out var ownsActivity);
+        if (observation?.HasActivity != true) return ReadOrdinaryFileSnapshotCoreT607Original(relativePath, lease, out dataFailure, nullableDataFailure, batch, observation);
+        try
+        {
+            var result = ReadOrdinaryFileSnapshotCoreT607Original(relativePath, lease, out dataFailure, nullableDataFailure, batch, observation);
+            if (dataFailure is not null) observation.ActivityFault(dataFailure.SourceException);
+            else observation.Activity(CanonicalReadEventKind.ReaderReturned);
+            return result;
+        }
+        catch (Exception error) { observation.ActivityFault(error); throw; }
+        finally { if (ownsActivity) observation.CompleteActivity(); }
+    }
+
+    private CanonicalFileReadSnapshot? ReadOrdinaryFileSnapshotCoreT607Original(string relativePath,
+        CanonicalWriteLease? lease, out ExceptionDispatchInfo? dataFailure, bool nullableDataFailure,
+        SourceValidationBatch? batch = null, FileReadObservation? observation = null)
+    {
 #if DEBUG
         var diagnosticOutcome = "fault";
         long diagnosticBytes = 0;
@@ -435,7 +473,7 @@ public partial class FileSystemManager
                     using var t326SyncCopy = MeasureOperation("OrdinaryRead.Sync.HookAndCopy");
                     // Preserve the default reader's original data/check/materialization order.
                     _hooks?.AfterCanonicalReadInitialValidationAsync?.Invoke(relativePath).GetAwaiter().GetResult();
-                    ObserveCanonicalRead(relativePath);
+                    ObserveCanonicalRead(relativePath, observation);
                     var timestamp = File.GetLastWriteTimeUtc(stream.SafeFileHandle);
                     using var buffer = CreateOrdinaryReadBuffer(stream);
                     stream.CopyTo(buffer);
@@ -457,7 +495,7 @@ public partial class FileSystemManager
                     using var t326SyncNullableCopy = MeasureOperation("OrdinaryRead.Sync.NullableHookAndCopy");
                     // The existing synchronous reader has only the post-open hook.
                     _hooks?.AfterCanonicalReadInitialValidationAsync?.Invoke(relativePath).GetAwaiter().GetResult();
-                    ObserveCanonicalRead(relativePath);
+                    ObserveCanonicalRead(relativePath, observation);
                     var timestamp = File.GetLastWriteTimeUtc(stream.SafeFileHandle);
                     using var buffer = CreateOrdinaryReadBuffer(stream);
                     stream.CopyTo(buffer);

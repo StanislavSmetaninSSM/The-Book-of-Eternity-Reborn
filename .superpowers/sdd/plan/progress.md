@@ -1,3 +1,21 @@
+# T607 source-only WIP3 — reader adapters written, qualification still UNRUN
+
+Implemented finite observed adapters around the existing public/protected/trusted
+read bodies: physical backend tokens stay separate from logical/cache calls, source
+snapshots remain provisional and successful reader events follow original disposal.
+Public initial-attempt/final return and direct leased boundaries remain distinct in
+the proposed code. Default inactive paths retain direct original tasks. These claims
+still require the coherent SOURCE review/build/actual tests; no acceptance is inferred.
+Private N diagnostic origin now binds the actual observation epoch/window/generation;
+old-epoch recheck has a new real-file negative. Observational run close is atomic.
+
+Static source inventory: 13 paths, 11 authored methods/14 cases, not discovery.
+No build/runtime/GREEN and no positive admission. Shared RED factory remains true/true.
+Remaining coherent scaffold: selected positive observation/parity/lifetime consumption,
+remaining cheap controls, exact catalog/selection and bounded source-inverse/rolling
+pin maintenance, then independent SOURCE and fresh preparation. No raw in Git or
+external raw/retained-root deletion; existing N source-cache refusal stays unchanged.
+
 # T607 source-only WIP2 — explicit N origin added, reader bodies pending
 
 After tests-first WIP1, added private actual-producer N observation origin and a
