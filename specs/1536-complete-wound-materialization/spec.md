@@ -26,7 +26,7 @@ isolated richer zero equals one actual source across the same eight-call probe. 
 all original DATA/fence/closing prerequisites and actual counters. Saved complete RED
 one plus eight supplies the baseline; no zero-or-one allowance or repeated RED needed.
 REPLAY-REUSE6: preserve actual per-call graph/admission boundaries. Proposed warm
-seal count 56 removes only the expected provisional construction check from baseline64;
+seal count 56 removes only the expected provisional construction check from baseline 64;
 actual a/b/c/d/e/g/h checks remain. Final SOURCE verifies the exact finite call graph.
 Key includes demonstrated omitted DefinitionFacts/SourcePaths/order/opaque companions;
 originally accepted stricter-key mismatches use source fallback with original parity.

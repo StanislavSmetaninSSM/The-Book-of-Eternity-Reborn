@@ -1,120 +1,19 @@
-# T608 shared expected-preparation projection implementation plan — DESIGN revision
+# T608 shared projection DESIGN revision — delta review pending
 
-**Goal:** retain one complete immutable expected preparation result for the existing
-private scalar and richer caller-input comparisons in the same eligible operation.
-**Architecture:** upgrade the existing semantic computation to one projection DATA
-value. Keep caller-specific fresh admissions outside lookup; the original preparation
-source determines every unsupported/ineligible/refused path in its original order.
-**Tech stack:** existing C#/.NET 8 semantic service, ValidationOperation, structural
-snapshot/dependency, named timers and uncapped existing component diagnostics.
-**Spec:** REPLAY-REUSE1..6 and T608 tasks in this feature, issue #1536.
+Canonical implementation design is in
+`specs/1536-complete-wound-materialization/plan.md` (current top section); requirements
+REPLAY-REUSE1..6 and tasks remain in the same feature. This progress entry links that
+single plan rather than duplicating its full interfaces and test steps.
 
-## Global constraints and reviewed correction
-
-No new cache/backend or ValidationOperation API, broad PrepareCore refactor, authority
-boolean cache, eligibility expansion, diagnostic format/quota, compiler flag, budget,
-GM capability or schema change. Other preparation families remain on their original
-source. Accepted causal baseline is the saved 9 actual sources, not a new run.
-
-Independent DESIGN review finds one ordering obligation: private baseline preflight
-would otherwise move ahead of original allocation/materialization. FULL STRUCTURAL
-EQUALITY AND MOVED PREFLIGHTS ARE REUSE ELIGIBILITY ONLY. A mismatched/unavailable/
-unsupported capture, refused or throwing moved preflight must invalidate existing
-eligible DATA using the supported operation protocol, then invoke the ORIGINAL source
-in its ORIGINAL order to determine the result/issues/exception. Do not introduce a
-new domain rejection for stricter key equality or return a newly prioritized baseline
-failure. Unsupported/null-operation paths enter that unchanged source before new
-domain preflight. Preserve serial/closed-owner errors and original primary exception;
-cleanup/invalidation must not mask it. No skip-validation flag or new issuer token.
-
-The supplied input is already sealed/init-only with defensive storage/export under
-the supported no-OriginalSourceGuarantee contour. Bind admission, capture and cold
-source to ONE fixed detached supplied-input instance, not a replaceable closure.
-GetStructuralInputIdentity is interning, not a live guard. Existing private companion
-structural dependency remains live; equivalent detached exports share by full values,
-while real private companions retain reference identity. No new mutable-input framework.
-
-## Interfaces and complete DATA boundary
-
-- New focused `ExpectedPreparationReplayProjection` DATA class: five get-only strings
-  (binding/input/preparation, baseline prepared-input, baseline seal), explicit batch
-  count and a privately copied ordered immutable pair array. Only indexed value access
-  or detached export; retain no actual plan, graph, lease, callback or permission.
-  Capture only successful original results; comparison remains ordinal/full/ordered.
-- `MortalWoundTreatmentSemanticData.ReadPreparationProjection(ValidationOperation?,
-  OperationStructuralSnapshot admittedInput, Func<ExpectedPreparationReplayProjection?>)`
-  replaces the joint scalar computation with one descriptor
-  `JointSemantic.ExpectedPreparationProjection` revision 1. Scalar consumer reads its
-  preparation field; FinalReduction and repository/storage implementations stay intact.
-  Refusal carrier/GetOrCompute failure invalidation retain no unavailable result.
-- Meaningful planner route `ReadJointExpectedPreparationProjection` takes the fixed
-  input and same genuine joint authority, with the original source callback. The
-  actual-caller supported path keeps candidate input admission, fresh ValidateInput
-  and private contribution admission before lookup. Private scalar route retains its
-  existing outer checks without adding those two gates on every already valid hit.
-  Extract finite private input/baseline helpers, USED BY THEIR ORIGINAL SOURCE SITES
-  too, with exact short-circuit/issue/exception ordering. Original PrepareCore remains
-  the miss/fallback callback; bounded repeated cold checks are measured explicitly.
-- `WoundAcceptedTurnFingerprints.CapturePreparationReplayInput` yields the complete
-  ordered structural DATA snapshot or unsupported. Add a small partial if needed;
-  original fingerprint field sequence/byte format remains exact, with finite inverse
-  for any mechanical extraction/partial declaration. Do not reset frozen inventories.
-- Key includes full binding/accepted events/frame, ordered opportunities/owner/source/
-  evidence/safe context/trigger/worsening fields, transitions/proposed wounds, all wound
-  and optional effect carrier/identity/history data, null/count/order and algorithm.
-  Expand nested hashed bindings. Explicitly include canonical-omitted DefinitionFacts
-  (all fact fields/ordered targets), diagnosis/route SourcePaths and actual definition/
-  root-binding/entry order for BOTH proposed and worsening wounds. Exclude unsupported
-  supplied/private opaque OriginalSourceGuarantee; hash equality is insufficient.
-- Same genuine continuation SemanticData + same current SourceDataOperation's existing
-  ValidationOperation own the DATA. Include existing live resolution/hidden effects/
-  route/claim values and actual outcome/request/coordinates/mode/resource companions;
-  private continuation/acquisition/treatment/checkpoint/generation identities and the
-  no-batch/no-rematerialization discriminator remain bound. Immutable private buffers
-  may be captured once; changing/restored/unsupported live dependencies rotate versions.
-  Existing ForceFresh/error/overlap/disposal semantics remain; no cold-resume reuse.
-
-## Review focus and executable task order
-
-1. Equivalent fingerprints with changed hidden facts/path/order may still be accepted
-   by the original source: require source-fallback/result parity, not new rejection.
-2. Preflight baseline failure may coexist with earlier source allocation/materialization
-   failure: preserve exact original refusal/exception precedence through fallback.
-3. Input export mutation cannot alter retained input; a reconstructed changed input
-   cannot hit the prior structural key. Private mutation during source/hit invalidates.
-4. Every five-scalar/count/ordered-pair comparison and actual graph/owner/source fence
-   remains fresh; final-history damage stays covered by actual constructor/final tests,
-   not falsely attributed to this prepared-only API.
-5. Null/unsupported/foreign/closed/fresh/refusal/throw/overlap/copy paths cannot retain
-   stale success or extend authority. Test live DATA separately from action permission.
-
-- [ ] Freeze this corrected DESIGN with independent delta review before source edits.
-- [ ] Extend the existing file-free treatment semantic fixture with independent typed
-  projection/counter oracles: cold hit, scalar-first/shared result, caller-first miss,
-  complete-key omissions/order/null, accepted mismatch fallback, refusal/exception
-  parity, exported-copy isolation, private mutation/restore, ForceFresh/close/overlap.
-  Count real source callbacks; no fake issuer, fabricated event or world per negative.
-- [ ] Implement only the shared projection/service and finite orchestration extraction;
-  preserve original fallback and all-family expression. Named source scopes count only
-  actual source execution; separately measure key/admission/copy/cold/net contour cost.
-- [ ] Amend the SAME genuine probe to strict warmup 1 + isolated richer 0 = 1 total,
-  retaining eight validations/exports/full projections/58-byte-set/owner/G/fence/cleanup.
-  Baseline already records 1+8; do not repeat it solely for the stronger oracle. Proposed
-  warm seal count is 56: preserve actual a/b/c/d/e/g/h, omit only expected-provisional f.
-  Final SOURCE must verify this exact map before runtime; do not relax to >=8 or add
-  fake guard calls. Unexplained differences return to review, not oracle adjustment.
-- [ ] Coherent SOURCE/selection, fresh affected managed warning/XML/PE/PDB/source/copies,
-  catalog/PlanOnly/PREP, cheap controls then one genuine GREEN/full PLAIN capture and
-  independent OUTCOME. Existing impact IDs: core-treatment-semantic-data,
-  core-operation-structural-data, core-operation-synchronous,
-  fr063-joint-prepared-expected-replay-source, fr063-joint-semantic-data-controls,
-  fr063-joint-bundle-copy-controls, fr063-joint-bundle-candidate,
-  fr063-wound-bundle-copy-contracts; exact new cheap ownership/counts reviewed at SOURCE.
-
-Small measured source cost (309.576852 ms inside 1300.267342 ms for eight validators)
-may be consumed by key/admission/copy overhead. No whole-game speedup/300-second fit
-claim or broad rewrite is justified. Full positive and dependent gates require later
-separate PREP. All code/catalog remain frozen; this is a pending corrected DESIGN.
+Independent DESIGN requests one narrow correction, now recorded: strict structural
+key equality and moved preflights control reuse eligibility, not new domain refusals.
+Any ineligible/failed/unproved preflight uses supported DATA invalidation then original
+source order/result/exception. Same fixed defensively owned input binds admission/key/
+source; live private dependency remains. No storage API or broad planner rewrite.
+The explicit stronger source oracle is warmup 1 + richer 0 = 1 total; accepted saved
+RED is 1 + 8. Proposed 56 seals omit only expected provisional construction. Exact
+source/guard and original-fallback parity remain mandatory. No source implementation,
+build or runtime is released until independent DESIGN delta acceptance.
 
 # T608 causal RED ACCEPT — bounded expected-projection DESIGN next
 

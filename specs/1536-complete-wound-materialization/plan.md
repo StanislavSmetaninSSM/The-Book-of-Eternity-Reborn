@@ -98,7 +98,7 @@ while real private companions retain reference identity. No new mutable-input fr
   preserve original fallback and all-family expression. Named source scopes count only
   actual source execution; separately measure key/admission/copy/cold/net contour cost.
 - [ ] Amend the SAME genuine probe to strict warmup 1 + isolated richer 0 = 1 total,
-  retaining eight validations/exports/full projections/58-byte-set/owner/G/fence/cleanup.
+  retaining eight validations/exports/full projections/58-path beforeimage set/owner/G/fence/cleanup.
   Baseline already records 1+8; do not repeat it solely for the stronger oracle. Proposed
   warm seal count is 56: preserve actual a/b/c/d/e/g/h, omit only expected-provisional f.
   Final SOURCE must verify this exact map before runtime; do not relax to >=8 or add
