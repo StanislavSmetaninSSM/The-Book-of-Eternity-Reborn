@@ -1,3 +1,12 @@
+# T600 CS9124 source correction independently accepted — final fresh build
+
+Astra/high targeted SOURCE ACCEPT atecf44dd21775d5aca03fb75ef91e4f0cf4db1343
+confirms existing _transportTestOutput is the exact same original receiver. One
+reference changed; identity/order/oracles/signatures/selection remain unchanged,
+and inverse replacement restores the prior file byte-exact. No source blocker
+remains. Fresh rebuild/warning comparison/current PDB binding/discovery/PREP/cheap
+GREEN and positive preparation remain mandatory; runtime still UNRUN.
+
 # T600 first fresh compile / narrow CS9124 correction pending review
 
 First fresh Integration XML compile at5f694635 completed0errors in3:30.36; no
