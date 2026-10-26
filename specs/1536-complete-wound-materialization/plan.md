@@ -1,3 +1,40 @@
+# T608 genuine passive COPY consumed — incomplete TIMEOUT, no retry
+
+The separately reviewed single COPY attempt at runtime checkpoint
+c8cdde4e8b2db04c6e77b518bdaf863c36b119fc / compiled Integration 75e538085837c955ecf9607fd59e947344d2c487
+was consumed. Original category budget remains 2 minutes; actual category 124.4067868s,
+runner 144.9235276s, exit 124/TIMEOUT. Zero completed cases, no TRX and no final report.
+The generic outer-runner 7-minute failure text is not the category limit or elapsed
+measurement. Independent factual OUTCOME accepts incompleteness, never qualification.
+Both process cleanup flags pass and PID 191223 is zombie/ended; physical fixture root
+remains. Current 33/75 bindings match. CANDIDATE/full-positive remain unadmitted.
+
+The entire 94,049,116-byte gzip remains external; the marked fixture is retained
+in its original location.
+Stored SHA256: eb8c82ff43cb5253ee1348be9be84e099603c588c95dd1b6a6467a4b5ab60b11.
+One streaming read returned 877,270,958 decoded bytes and parsed all 1,719,465 complete
+rows: 1,719,449 original 17-field events plus 16 messages, 859,724 matched source pairs,
+one scope open at the persisted prefix, zero schema/sequence/pair/observer issues.
+No completed gzip member/footer/CRC or functional completion is claimed.
+
+Existing named timers show setup 42.954s, direct copy 0.770s, current-byte controls
+0.638s, constructor reference 0.704s and copy-of-copy/mutation 1.833s. Both actual
+prepared/effect refusal messages persist with nonempty validator evidence. The last
+persisted source event is constructor end at 69.731s; this does not locate a hang:
+subsequent retained-history/abort/assertion work has no further passive drain until
+closing. The source tail can be buffered. Completed-before serialization 10.873s and
+write 12.538s are observer contributors, not an additive explanation of 124.407s.
+The original direct TIMEOUT 680,889,606B/raw/root and unmatched full-game evidence
+remain protected; this incomplete attempt replaces none of them.
+
+Evidence: external dfr-prefix/actual-t608-copy-passive-gzip-1 and
+ t608-counter-scaffold/copy-passive-gzip-partial-analysis, with independent PREP/
+factual OUTCOME and source assessment. Cheap 14 and historical 67 feature PASS remain
+accepted at their recorded revisions. Next is a bounded named-phase/source assessment
+of the unobserved tail, cheap causal proof and independent review before any change
+or further runtime. No new cache/owner, compiler setting, budget, quota, deletion,
+Windows PASS or clean-restoration claim follows from this checkpoint.
+
 # T608 observation cheap GREEN accepted — genuine COPY still pending
 
 Independent SOURCE and staged OUTCOME accept source/compiled Integration
