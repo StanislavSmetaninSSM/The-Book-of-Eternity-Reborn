@@ -1,3 +1,22 @@
+# T604 bounded writer-cost DESIGN after rejected metadata experiment
+
+Metadata-mode actual41 passed compatibility/integrity but cost regressed:4.4412831s
+service/5.6977274s total/94575240B on the unchanged65536-event workload. Preserve all
+raw/compiled provenance and both prior fast-path samples; reverse the one mode
+attribute to the earlier fast path after outcome review. No unchanged recurrence.
+T603/positive remain open; neither sample timing nor call-count reduction alone is
+full-current-population feasibility proof.
+
+Read-only independent design now assesses the existing gzip StreamWriter buffer,
+keeping the same synchronized writer/WriteLine(string)/compression/consumer and
+explicit flush every1024events/endbatch/fullmessage. Candidate16K chars may avoid
+large-object buffers while reducing repeated encode/compressor calls. It is not DATA
+reuse or a new cache; writer owns its built-in buffer until Flush/Finish/Dispose.
+Require a cheap real underlying-call counter and full decoded/source data oracle;
+no synthetic/rebased events, new per-row clocks/schema, quotas, plaintext/default
+change or alternative diagnostic stack. Exact source/selection/causal RED/GREEN and
+cost plan must be reviewed/published before implementation. No buffer code changed.
+
 # T603 metadata-only hypothesis test — independent DESIGN ACCEPT
 
 Actual generated-code inspection proves typedSerialize<RecordedTimingPayload> has no

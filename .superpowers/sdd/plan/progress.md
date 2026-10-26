@@ -1,3 +1,26 @@
+# T603 metadata-only actual41 PASS, performance candidate rejected
+
+actual-t603-metadata-cheap-1 at0a4b85e5df35448c7ce6fd5eec3bcb463375ebeb, compiled70b,
+completed41/41PASS/8descriptors in164.2311647s,0skip/fail/timeout,bothprocesscleanup.
+Root verified8TRX/34captures/5strictgzip,full original events/clocks/pairs/counts/
+stored+decoded hashes/owned roots/all33 artifacts/51sources. Both old-format UTF8 and
+string-writer failure oracles pass; independent OUTCOME review is pending.
+
+Metadata cost on the SAME65536-event/full-message workload: total5.6977274s,
+service4.4412831s,closing3.5964797s,decode0.1598275s,allocated94575240B. Preserved
+fast-path A/B service0.9092856/1.4782849s and allocation84659912/84786584B. No speedup
+or pure-CPU attribution; this candidate is unsuitable and will be reversed after
+preserving source/evidence. All four samples remain retained; no recurrence planned.
+Exact70b Integration triple is now evidence-only externally, never runtime input.
+
+NextT604 is a bounded DESIGN/PREP item: restore the prior generated fast path, then
+assess only the existing gzip StreamWriter buffer and a genuine underlying-call count
+causal control. No buffer/source implementation yet; design/selection review required.
+Preserve default plaintext, sameWriteLine/flush points/full data/clocks/finish/integrity/
+failures and all original budgets. No new stack/cache/fields/quotas/projectmode change.
+Positive/legacy/cold/fullDFR remain HOLD. Accepted independent N-negative pair retained.
+Raw:/workspace/tboe-linux-evidence-20261025/dfr-prefix/actual-t603-metadata-cheap-1.
+
 # T603 metadata-only cheap41 PREP ACCEPT — one run released
 
 Independent PREP accepts fresh compiled70b metadata/PDB/source bindings, all33 artifacts/

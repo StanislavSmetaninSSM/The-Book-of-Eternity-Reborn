@@ -28,6 +28,13 @@ unchanged positive is incomplete TIMEOUT300s, not phase/functional acceptance.
   No payload cache without a complete varying-input key, parallel stack, quotas or
   change to Game/native/GM behavior. This is the T601 performance gate, not a feature.
 
+- [ ] T604 Preserve rejected metadata-mode evidence and restore the byte-exact prior
+  generated fast path. Independently design a bounded existing gzip StreamWriter
+  buffer correction with cheap real underlying-call causal proof before optimization;
+  no new stack/cache/schema/clock/quota/budget, plaintext/default/failure change.
+  Fresh affected build/bindings/catalog/selected oracles/cost and outcome are required;
+  a write-call reduction alone does not admit positive. Design not yet implemented.
+
 # T179-Pd.3e observed debug-prefix consumer — #1536 / 2026-10-25
 
 Base `265af120cd0e1df812617ba44c07cde4f2b67f6e`; bounded accepted DFR design,
