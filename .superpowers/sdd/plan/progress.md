@@ -1,3 +1,16 @@
+# T603 cheap41 PREP ACCEPT — bounded runtime released
+
+Independent Astra/high PREP ACCEPT for checkpoint 218c7839 confirms all33 artifacts,
+11 PE/PDB identities, 51 current source checks, compiled generated context and actual
+8 descriptors / 28 methods / 41 cases with unchanged budgets. Only the exact official
+focused -SelectionFile command with -NoBuild is admitted. Positive remains HOLD until
+runtime format/failure/integrity outcome, actual cost reduction and headroom are accepted.
+
+The same real65536-event workload and full original message will run with complete
+external events, gzip/clock/count/hash/root checks and baseline comparison. Existing
+accepted3918/composite38 evidence remains intact. No quota, hidden warmup, budget change,
+new source42/native work, Game/authority/GM change or raw deletion is authorized.
+
 # T603 fresh build/binding/discovery verified — cheap41 PREP pending
 
 Fresh Integration build at 172e77d07eaf0d9e9b648d1325e1e7a7703b9c8d completed in
