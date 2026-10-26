@@ -1,3 +1,31 @@
+# T607 first cheap GREEN incomplete — two fixture causes confirmed
+
+One actual official attempt `actual-t607-cheap-green-1`, runtime
+`02e2233dced7b20ad01e22812b6561625406a7ff` / compiled a760ab5d with exact retained
+Game/Bridge b54, ended exit 1 in 152.9346724 seconds, no timeout. Planned 13 descriptors /
+191 cases; completed 2 / 21: 19 PASS, 2 FAIL, zero skips/duplicates. Source guards 2/2;
+new observation/lifetime 17/19 in 30.2975062 seconds within its original one minute.
+Runner stopped normally; remaining 170, including causal reuse GREEN, are UNRUN.
+Both process-cleanup flags true; all 20 distinct reported fixture roots independently
+absent. Root/reviewer rehashed 33 artifacts/59 sources unchanged after settlement.
+
+Independent Astra High accepts this failed outcome and both exact fixture causes:
+N-origin assertion expects body-only {} while its genuine public writer deliberately
+emits UTF-8 BOM+{}; all three real N/recheck snapshots correctly preserve those bytes.
+Mutation assertion expects two physical reads but the existing ordinary writer performs
+its mandatory trusted-local preimage read between the two explicit reads. No production
+fault is established and no timeout/budget/guard relaxation is needed.
+
+Grouped tests-only correction is released for independent SOURCE: obtain the physical
+seed-byte oracle before arming N observation, retain full-byte equality; mutation must
+prove per-segment read/write/read deltas 1/1/1, exact old/old/new bytes and matching
+reader-return identities, two explicit logical returns and unchanged generation.
+Never normalize/drop BOM or merely change total2 to3. Preserve causal Fact/other tests,
+all producer/source/service/authority/diagnostic behavior. No runtime retry released.
+Next freeze/publish both corrections, delta SOURCE, fresh affected Unit/current retained
+dependency/PDB proof, narrow failed/remaining exact plan and PREP. Full positive stays
+HOLD; all original raw and provenance retained outside checkout/GitHub.
+
 # T607 cheap GREEN PREP ACCEPT — exact one stage released
 
 Independent Astra High PREP accepts source/checkpoint `08f12804269d9c502635dbdc7fe8628322612180`
