@@ -1,3 +1,22 @@
+# T599–602 diagnostic design independently accepted — baseline source next
+
+Independent Astra/high DESIGN ACCEPT of900b80cc: reuse accepted sealed queue,
+ObserveRecorded serializer/cost ledger and external full AutoFlush output. Existing
+post-return drain cannot survive the current long-await kill, so only one narrow
+lifecycle adapter/continuing data-only consumer is new, not a parallel stack.
+SOURCE must enforce single drain/final tail, no ambient ExecutionContext authority,
+actual registered root receipt, primary error precedence and completion idempotence.
+Finish failure must not skip the real cleanup receipt; cancellation may end only
+transport wait and must still account final queued events.
+
+First implement T599 compilable after-return baseline and cheap blocked-await
+real-file visibility causal RED; no missing-API/compile failure counts. Then T600
+continuing consumer/positive-only wiring and typed negatives, fresh affected build/
+controls and separate SOURCE/PREP before any expensive positive. All existing
+functional/P2/full-image oracles and current5-minute category budget remain exact.
+No new runtime is admitted here. Source implementation remains unstarted at this
+checkpoint; current33artifacts/cheap176/twoPASS/timeout and all raw are preserved.
+
 # T599–602 bounded interrupted named-timing plan — no implementation/runtime yet
 
 Independent static and outcome investigations confirm2 actual PASS plus incomplete
