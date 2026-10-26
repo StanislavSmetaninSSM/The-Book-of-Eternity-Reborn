@@ -1,3 +1,12 @@
+# T603 one managed-cost recurrence PREP ACCEPT
+
+Independent PREP accepts exactly the existing1case/1minute exclusive managed-cost
+category through official NoBuild. Actual PlanOnly completed with0tests executed;
+all33 artifacts/51 source bindings match compiled172e. Clean GitHub-only recovery
+of4ef379367 verified all30916 blobs/51 source pins without build/runtime. External
+preregistration retains baseline and both candidate samples; no fastest-sample choice.
+Only actual-t603-cost-1 is released. Positive stays HOLD pending combined outcome/cost.
+
 # T603 compatibility/outcome ACCEPT — one existing cost recurrence next
 
 Independent review accepts actual41/41,34 captures,19 complete captures/five strict
