@@ -315,6 +315,13 @@
       "contracts": [
         "#1536 T608-COPY / COPYOBS2–5; accepted range RED and drain-before-ordinal GREEN, original events/defaults/lifetime and complete diagnostics"
       ]
+    },
+    {
+      "category": "core-joint-passive-copy-tail-visibility",
+      "reason": "T608-COPY-TAIL-RED only: one ctor-only real success/sentinel control saves live gzip prefix before message flush; exact sentinel is checked before separate full closing/source/hash/root prerequisites and only then final missing-event oracle. Existing range14-event workload/defaults/production/genuine wiring unchanged; no retry or explicit flush released.",
+      "contracts": [
+        "#1536 T608-COPY-TAIL-RED / COPYOBS6; finite existing-event persistence and primary-before-close separation"
+      ]
     }
   ]
 }

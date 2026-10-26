@@ -2,6 +2,48 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "core-joint-passive-copy-tail-visibility",
+      "responsibility": "T608-COPY-TAIL-RED constructor-only single control: actual success and sentinel-unwind scopes use the same finite boundary; exact sentinel before close, saved read-only live gzip bytes before any message flush, then complete original source/queue/writer/hash/marked-root prerequisites before final completed-event visibility oracle. Baseline boundary delegates existing transfer/count without explicit flush.",
+      "excludes": "No Initialize, runtime/world/native/lease/issuer/semantic owner, genuine COPY/CANDIDATE tail wiring, explicit writer-flush GREEN, fake/rebased events or product-validator labels, new consumer/cache/transport, range/tree rewrite or timer, production/codegen/schema/budget/quota change, expensive retry or full-positive admission. Missing API/setup/decoder/storage/close failures do not qualify causal RED.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.PassiveCopyTail.cs",
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.PassiveTimings.cs"
+      ],
+      "related": [
+        {
+          "id": "core-joint-passive-copy-ranges",
+          "when": "Existing14-event three-mode range workload must remain exact under boundary reuse."
+        },
+        {
+          "id": "fr063-joint-component-diagnostics",
+          "when": "Existing writer-failure ledger and full plain output/closing contracts remain intact."
+        },
+        {
+          "id": "fr063-joint-bundle-copy-controls",
+          "when": "Only later accepted cheap RED/GREEN and independent resource/PREP may release finite genuine-tail visibility."
+        },
+        {
+          "id": "fr063-joint-bundle-candidate",
+          "when": "Remains held until complete genuine COPY; no wiring or authority change in this scaffold."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.JointBundleComponentTests.PassiveCopyTail_PersistsCompletedPhasesBeforeFinalClose"
+          ]
+        }
+      ]
+    },
+    {
       "id": "core-joint-passive-copy-ranges",
       "responsibility": "T608 constructor-only copy observation range GREEN protection through the actual Fixture and existing sealed recorder/output writer: direct/plain, passive/plain and passive/gzip; drain-before-ordinal at five original manual-boundary roles, real test-labelled scopes, exact pair/order/neighbors/repeated drains, full storage/hash and actual fixture closing before strict final ranges.",
       "excludes": "No Initialize, GameEngine/world/native producer, lease/issuer/authority fabrication, new cache/diagnostic stack, production change, timeout increase, event quota or full-positive admission. This unchanged three-case workload protects the independently accepted direct PASS/two passive final missing-range RED; genuine copy and candidate opt-ins are separately owned and gated.",

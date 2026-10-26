@@ -1,3 +1,26 @@
+# T608 tail RED scaffold frozen — uncompiled and unrun
+
+Four source/catalog paths are frozen: one new ctor-only Fact, the current
+CaptureObservationOrdinal-only boundary delegate, and category/CI appends. All
+production, genuine COPY/CANDIDATE, constructor defaults and the accepted range
+Theory remain byte-exact. All 965 prior category objects/raw bytes and 45 CI entries
+remain exact; inventory is now 966 categories/46 IDs. The new owner is one case,
+one minute. Nine XML blocks and finite inverse/static checks pass.
+
+The control saves actual live gzip bytes before any message flush, checks the same
+sentinel before closing, and requires full four-event/source/hash/queue/root closing
+before its final live-visibility assertion. There is no added explicit writer Flush,
+genuine tail wiring or new assertion timer yet. Coherent SOURCE, fresh affected
+Integration build/bindings, exact discovery/PlanOnly/PREP and actual causal RED remain
+pending. Compilation/setup/decoder/closing failures are not meaningful RED.
+
+One independently reviewed older matching semantic records file was retired after
+immediate full hash/identity/ended-owner checks: 331,460,608 bytes actually reclaimed.
+Its old initial/report/TRX/provenance and the newer complete 403 MB replacement stay.
+All incomplete COPY/full-game captures and roots remain. Exact compiled 75e Integration
+DLL/PDB/XML were retained externally for evidence only, never runtime/copy-back.
+No budget, guard, source owner, product behavior or Windows/recovery claim changed.
+
 # T608 finite tail visibility DESIGN — scaffold pending
 
 The bounded next packet uses the existing recorder, CaptureObservationOrdinal and
