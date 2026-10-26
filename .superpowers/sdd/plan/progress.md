@@ -1,3 +1,18 @@
+# T600 remaining21 PREP ACCEPT — bounded runtime released
+
+Independent Astra/high PREP ACCEPT confirms 33 actual artifacts, 11 PE/PDB identities,
+48 source checks, successful build and exact actual 3 descriptors / 14 methods /
+21 cases at checkpoint 22087ab31. All category budgets and selected inputs remain
+unchanged. The official remaining-selection -NoBuild command is admitted; old17 PASS
+retain their original 476/e88 provenance. Positive remains blocked until the cheap
+outcome and actual managed storage/cost evidence are accepted.
+
+GitHub recovery of 22087ab31 verifies all 30914 tracked blobs, 772709463 logical bytes,
+all 48 qualified source inputs and a clean tree including ignored. No recovery build
+or application ran. Next action is one actual remaining21 attempt with current pins,
+full external records and strict completed-container/count/clock/root verification.
+No repeated old17, new feature, record quota, budget change or old raw deletion.
+
 # T600 grouped correction fresh preparation verified — remaining21 PREP pending
 
 Fresh Integration build at 39187bbe9a55f2292447ed42bb4f2c94877e6e6d completed in
