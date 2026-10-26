@@ -1,3 +1,19 @@
+# T608 shared projection WIP1 preserved — uncompiled, richer route pending
+
+The sole implementer froze seven C# paths at a coherent API boundary: nine file-free
+tests authored first, immutable projection DATA, one upgraded service descriptor,
+complete-input structural partial and private scalar caller migration. Root rechecked
+all seven file hashes and exact changed/untracked paths before staging. Fingerprint
+body remains unchanged apart from the mechanical partial declaration; finite inverse
+and full independent SOURCE are still pending. New C# is UNCOMPILED and UNRUN.
+
+Remaining: actual-caller richer route/finite admission extraction, expanded fallback/
+key negatives, strict genuine 1+0/PrepareCore/56-seal oracle, catalog/CI and final inverse/
+source review. No build or runtime is released by this WIP. Accepted RED evidence and
+all raw/saves remain external/retained. Root owns publication and execution; author
+resumes only after this frozen source block is confirmed remote. No qualification or
+whole-game benefit claim. Last complete qualified restore is 1b; recovery copy absent.
+
 # T608 corrected DESIGN ACCEPT — bounded implementation released
 
 Independent Astra High accepts corrected canonical DESIGN at

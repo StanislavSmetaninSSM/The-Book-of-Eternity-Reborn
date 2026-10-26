@@ -11,7 +11,7 @@ namespace BookOfEternityClient.Tests;
 /// <summary>
 /// Executes real treatment agreement and finalization over detached file-free game DATA.
 /// </summary>
-public sealed class TreatmentSemanticDataTests
+public sealed partial class TreatmentSemanticDataTests
 {
     private readonly ITestOutputHelper _output;
 
@@ -158,14 +158,14 @@ public sealed class TreatmentSemanticDataTests
         using var fixture = new Fixture(_output);
         using var operation = new DefaultOperationValidationService().BeginOperation();
         var sources = 0;
-        string? Refuse() { sources++; return null; }
-        Assert.Null(fixture.Data.ReadPreparationFingerprint(operation, Refuse));
-        Assert.Null(fixture.Data.ReadPreparationFingerprint(operation, Refuse));
+        ExpectedPreparationReplayProjection? Refuse() { sources++; return null; }
+        Assert.Null(fixture.Data.ReadPreparationProjection(operation, new OperationStructuralSnapshot(["refusal"], []), Refuse));
+        Assert.Null(fixture.Data.ReadPreparationProjection(operation, new OperationStructuralSnapshot(["refusal"], []), Refuse));
         Assert.Equal(2, sources);
         Assert.Equal(0, operation.CaptureState().Entries);
         var expected = new FormatException("original preparation failure");
         Assert.Same(expected, Assert.Throws<FormatException>(() =>
-            fixture.Data.ReadPreparationFingerprint(operation, () => throw expected)));
+            fixture.Data.ReadPreparationProjection(operation, new OperationStructuralSnapshot(["refusal"], []), () => throw expected)));
     }
 
     /// <summary>

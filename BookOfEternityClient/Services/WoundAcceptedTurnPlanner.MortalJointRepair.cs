@@ -152,17 +152,37 @@ internal static partial class WoundAcceptedTurnPlanner
         /// </summary>
         internal MortalWoundTreatmentSemanticData SemanticData => _semanticData;
 
-        /// <summary>
-        /// Evaluates the expected preparation seal using this exact continuation's private acquisition input.
-        /// </summary>
-        /// <param name="compute">
-        /// The unchanged deterministic replay source, returning <see langword="null"/> for its original refusal.
-        /// </param>
-        /// <returns>
-        /// The expected successful preparation seal, or <see langword="null"/> for refusal.
-        /// </returns>
-        internal string? ReadPreparationFingerprint(Func<string?> compute) =>
-            _semanticData.ReadPreparationFingerprint(StageReplayOperation, compute);
+        /// <summary>Reads shared expected DATA behind this scalar consumer's existing fresh actual checks.</summary>
+        /// <returns>The expected seal, or the unchanged original source refusal.</returns>
+        internal string? ReadPreparationFingerprint()
+        {
+            var operation = StageReplayOperation;
+            var fixedInput = AcquisitionInput;
+            ExpectedPreparationReplayProjection? Source()
+            {
+                using var replayTiming = FileSystemManager.MeasureCurrentOperation("JointPreparation.Replay");
+                return ExpectedPreparationReplayProjection.Capture(PrepareJointRepairCandidate(fixedInput, this));
+            }
+            if (operation is null) return Source()?.WoundPreparationFingerprint;
+            OperationStructuralSnapshot? input;
+            try
+            {
+                using var keyTiming = FileSystemManager.MeasureCurrentOperation("JointPreparation.Replay.Key");
+                input = WoundAcceptedTurnFingerprints.CapturePreparationReplayInput(fixedInput, ReplayCompanions());
+            }
+            catch (Exception error) when (IsReplayCaptureFailure(error))
+            {
+                return MortalWoundTreatmentSemanticData.ReadPreparationProjectionFallback(operation, Source)?.WoundPreparationFingerprint;
+            }
+            return input is null
+                ? MortalWoundTreatmentSemanticData.ReadPreparationProjectionFallback(operation, Source)?.WoundPreparationFingerprint
+                : _semanticData.ReadPreparationProjection(operation, input, Source)?.WoundPreparationFingerprint;
+        }
+
+        /// <summary>Returns exact stable private companion identities for both expected-DATA consumers.</summary>
+        /// <returns>References only; none grants admission or permission.</returns>
+        internal object?[] ReplayCompanions() => [this, _acquisitionInput, _treatmentInput, Checkpoint,
+            _fingerprintData, Accepted, Request, Resolution, Finalization, _outcome, Generation, Fingerprint];
         /// <summary>
         /// Parses detached effect source roots from the private before-images.
         /// </summary>
@@ -659,6 +679,12 @@ internal static partial class WoundAcceptedTurnPlanner
         if (joint.TreatmentBatch is { } batch) batches.Add(batch);
         return Array.Empty<ValidationIssue>();
     }
+    /// <summary>Identifies domain DATA capture failures that select the original source, never protocol failures.</summary>
+    /// <param name="error">The error from structural capture or moved domain preflight only.</param>
+    /// <returns>True for supported malformed DATA exceptions.</returns>
+    private static bool IsReplayCaptureFailure(Exception error) => error is ArgumentException or InvalidOperationException or
+        System.Text.Json.JsonException or NullReferenceException or OverflowException or NotSupportedException;
+
     private static bool JointExactUnique(IEnumerable<string> values)
     {
         var seen = new HashSet<string>(StringComparer.Ordinal); var aliases = new HashSet<string>(StringComparer.Ordinal);
@@ -701,12 +727,7 @@ internal static partial class WoundAcceptedTurnPlanner
         if (!batchAgrees) return false;
         // Recompute the complete private contribution graph, not just caller-supplied
         // hashes. The deterministic preparation replay also rechecks companion authorities.
-        var expectedFingerprint = joint.ReadPreparationFingerprint(() =>
-        {
-            using var replayTiming = FileSystemManager.MeasureCurrentOperation("JointPreparation.Replay");
-            var replay = PrepareJointRepairCandidate(joint.AcquisitionInput, prepared.JointRepairContinuationAuthority!);
-            return replay.Success && replay.Plan is not null ? replay.Plan.WoundPreparationFingerprint : null;
-        });
+        var expectedFingerprint = joint.ReadPreparationFingerprint();
         return expectedFingerprint is not null && expectedFingerprint == prepared.WoundPreparationFingerprint;
     }
 }

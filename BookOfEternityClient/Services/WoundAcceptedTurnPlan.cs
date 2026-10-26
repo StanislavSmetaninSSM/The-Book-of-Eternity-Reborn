@@ -2163,7 +2163,7 @@ internal static class WoundAcceptedTurnData
                 CopySimpleList(value.IndependentEffectRefs));
 }
 
-internal static class WoundAcceptedTurnFingerprints
+internal static partial class WoundAcceptedTurnFingerprints
 {
     private const string Version = "1";
     private const string BindingDomain = "book_of_eternity.wound.binding";
