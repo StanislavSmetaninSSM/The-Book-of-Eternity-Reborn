@@ -40,8 +40,12 @@ of xUnit; the positive's original receiver still gets every existing message.
   registered actual root; a default component path cannot stand in for it.
 - Body settles and existing resource/fixture disposal happens before probe/window
   close, consumer stop/join/final drain, exact accounting, Finish/hash and closing
-  receipt. A real remaining root is retained/unproven even if Dispose swallowed
-  an exception. Do not fabricate an exception or complete receipt on kill.
+  receipt. A real remaining root entry is retained/unproven even if Dispose
+  swallowed an exception. T600 must check strict entry absence, including file/
+  reparse entries, not only Directory.Exists. Concurrent live JSONL readers may
+  wait on an unfinished final line, while malformed completed lines still fail;
+  do not hide lost/torn completion. Do not fabricate an exception or complete
+  receipt on kill.
 - Diagnostic failure never replaces the primary body error. On otherwise successful
   work, incomplete/failed capture or unproven cleanup fails qualification. Measured
   writer costs remain separate from original inclusive operation clocks.

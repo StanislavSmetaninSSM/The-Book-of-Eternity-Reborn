@@ -1,3 +1,21 @@
+# T599 fixture SOURCE accepted — fresh Integration preparation next
+
+Independent Astra/high SOURCE ACCEPT ofc8593b903f3db0b2f953a1f3dc5cfcd189aa015e:
+after-return baseline has no continuous consumer/live wiring; real source entry,
+body block/finally join, exact final events/clocks/hash/root receipt and source1
+prerequisites all precede the intended final missing-visibility assertion. All956
+old category objects/budgets remain exact; existing component closing caller
+matches the new exact-root guard. Root read the full review/source, not only verdict.
+
+SOURCE allows fresh Integration-only XML/PDB build, catalog/exact PlanOnly and
+separate PREP, not runtime yet. Current44-source manifest uses honest unchanged
+Game/Support/Bridge d9aa and Unit e00 lineage; Integration target will be this
+new frozen checkpoint. T600 must strengthen root-entry absence beyond directory
+existence and make concurrent live JSONL reading tolerate only an unfinished final
+line, never malformed completed records. Those future criteria do not invalidate
+the current no-writer-during-probe baseline. Keep previous cheap176/twoPASS/timeout;
+no production fix, positive retry, source generator or limit change is admitted.
+
 # T599 after-return baseline source frozen — uncompiled/unrun WIP
 
 Five source/catalog paths reuse the existing sink/capture/queue/ObserveRecorded:
