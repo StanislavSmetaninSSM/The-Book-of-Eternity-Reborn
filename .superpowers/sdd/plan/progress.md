@@ -1,3 +1,19 @@
+# T607 independent SOURCE ACCEPT — fresh managed preparation next
+
+Independent Astra High accepts exact `38501c42cf625ffaaa9165e0f352216669a255eb`:
+four findings closed, 19 source hashes, 13 original reader bodies versus Git base,
+guards/original positive assertions, 18 rolling pins and catalog/selection checked.
+Shared RED factory is still true/true. No new material blocker or runtime acceptance.
+The same source checkpoint was fully recovered from GitHub: 30,920 exact blobs,
+772,924,836 logical bytes, clean including ignored files, no copied build outputs.
+
+Next release is ONLY fresh affected managed builds, PE/PDB/current Git source/copy
+bindings, compiler IL/default-route sanity, discovery/catalog/exact singleton PlanOnly,
+qualified recovery and independent PREP. RED/GREEN/positive runtime remains UNRUN and
+requires its separate gate. Preserve existing native package/code/settings; no broad
+Optimize, new cache, timeout change or raw deletion. Source-only recovery is not a
+build/runtime PASS; all actual results will be recorded after completed commands.
+
 # T607 coherent SOURCE candidate frozen — build/discovery/runtime UNRUN
 
 Complete RED scaffold is frozen across 19 source/configuration paths. Static inventory
