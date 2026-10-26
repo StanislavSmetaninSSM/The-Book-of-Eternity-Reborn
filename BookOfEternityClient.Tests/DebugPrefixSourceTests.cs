@@ -173,7 +173,7 @@ public sealed class DebugPrefixSourceTests(ITestOutputHelper output) : IDisposab
     public async Task SuppliedOriginalDataRequiresFullMatchingContextJoin(bool altered)
     {
         await _fixture.SeedValidAsync(); await _fixture.PrepareOriginalAsync();
-        var real = JsonNode.Parse(await _fixture.Files.ReadFileAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath))!.AsObject();
+        var real = JsonNode.Parse(Assert.IsType<string>(await _fixture.Files.ReadFileAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath)))!.AsObject();
         var supplied = real.DeepClone().AsObject();
         if (altered) supplied["playerAction"] = "Same tuple, changed supplied action DATA.";
         using var scope = _fixture.Validator.UsePrevalidatedPendingTurnSnapshotScope(supplied);
@@ -189,7 +189,7 @@ public sealed class DebugPrefixSourceTests(ITestOutputHelper output) : IDisposab
     public async Task SuppliedUnjoinedDataCannotClose()
     {
         await _fixture.SeedValidAsync(); await _fixture.PrepareOriginalAsync();
-        var real = JsonNode.Parse(await _fixture.Files.ReadFileAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath))!.AsObject();
+        var real = JsonNode.Parse(Assert.IsType<string>(await _fixture.Files.ReadFileAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath)))!.AsObject();
         using var scope = _fixture.Validator.UsePrevalidatedPendingTurnSnapshotScope(real);
         await using var lease = await _fixture.Files.AcquireCanonicalWriteLeaseAsync();
         using var pass = await _fixture.Validator.EvaluateObservedDebugPrefixAsync(lease);
@@ -214,7 +214,7 @@ public sealed class DebugPrefixSourceTests(ITestOutputHelper output) : IDisposab
     public async Task SameTupleManifestMutationAfterCaptureCannotJoinRetainedData()
     {
         await _fixture.SeedValidAsync(); await _fixture.PrepareOriginalAsync();
-        var manifest = JsonNode.Parse(await _fixture.Files.ReadFileAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath))!.AsObject();
+        var manifest = JsonNode.Parse(Assert.IsType<string>(await _fixture.Files.ReadFileAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath)))!.AsObject();
         using var scope = _fixture.Validator.UsePrevalidatedPendingTurnSnapshotScope(manifest);
         await using var lease = await _fixture.Files.AcquireCanonicalWriteLeaseAsync();
         using var pass = await _fixture.Validator.EvaluateObservedDebugPrefixAsync(lease);
@@ -249,7 +249,7 @@ public sealed class DebugPrefixSourceTests(ITestOutputHelper output) : IDisposab
             TurnNumber = 2, CurrentRealm = "Mortal World", PlayerAction = "Осмотреть пустую комнату.",
             PreGeneratedDices1d20 = new[] { 14, 8, 17 }
         });
-        var manifest = JsonNode.Parse(await _fixture.Files.ReadFileAsync(prepared.ManifestPath))!.AsObject();
+        var manifest = JsonNode.Parse(Assert.IsType<string>(await _fixture.Files.ReadFileAsync(prepared.ManifestPath)))!.AsObject();
         Assert.Null(manifest["files"]?[Debug]);
         Assert.DoesNotContain(Debug, PendingTurnSnapshotPathPresenceV1.LogicalPaths);
         _fixture.WriteDebugRaw(current);

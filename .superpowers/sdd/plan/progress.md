@@ -1,3 +1,24 @@
+# T596 fresh five builds complete — Unit prerequisite correction
+
+All five XML builds at d9aa440e896a66cd875ea264f2b6ab21d8444999 completed0errors:
+Game3:40.51/33warnings, Support26.42s/23, Bridge34.89s/14, Unit2:03.47/30,
+Integration5:00.46/101. Four Unit CS8604 sites are newly introduced; every other
+project's warning signatures match baseline. Exact initial11 PE/PDB identity pairs,
+33 artifact hashes and41 current/Git/PDB source checks were captured before edits;
+no discovery or tests ran. Full receipts/logs remain external in dfr-prefix.
+
+Bounded correction wraps those four genuine manifest reads in Assert.IsType<string>
+before JSON parsing, strengthening their existence prerequisites. No fake source,
+new fixture, production/call-order/filter/budget change. Independent read-only
+rebuild-selection assessment confirms this file is Unit-only, not linked into
+Integration/Support. Ruling: retain fresh d9aa Game/Support/Bridge/Integration with
+exact unchanged project-input and artifact proof; rebuild only corrected Unit after
+frozen delta SOURCE review. Report mixed actual informational versions honestly,
+never spoof SourceRevisionId. Recheck all loaded copies/PE/PDB/current source after
+rebuild and record zero introduced warnings before catalog/PlanOnly/PREP/runtime.
+This narrow correction supersedes the preliminary all-five-one-HEAD preparation
+assumption; no unchanged recompilation or runtime repeat is required by impact.
+
 # T594–595 coherent SOURCE accepted — fresh preparation next
 
 Independent Astra/high full SOURCE review of b88cbf13 and bounded delta review
