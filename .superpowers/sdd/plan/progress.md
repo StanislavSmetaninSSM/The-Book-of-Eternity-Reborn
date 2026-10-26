@@ -1,3 +1,39 @@
+# T607 full-positive preparation — exact plan and measured reserve
+
+Accepted source checkpoint `14cf63a5463a5a19421a8b5b303f0d2a910d145c` was fully
+recovered from GitHub: 30,920 exact blobs / 772,968,388 logical bytes / 59 qualified
+PDB source pins, clean including ignored, no recovery build/runtime. Official existing
+`fr063-joint-live-n-source-unchanged -NoBuild -PlanOnly` completed exit 0 in 25.4658690
+seconds: exactly one original Fact/descriptor/case, exclusive five-minute category,
+zero tests, no timeout, both cleanup flags true. No budget override is proposed.
+
+Independent exact-target review accepted retirement of only the task-created clean
+`/workspace/tboe-live-n-recovery-20261025`. Immediate inode/HEAD/tree/clean/no-owner
+checks passed; normal deletion completed once. Actual free-space gain 1,247,428,608
+bytes; post-action free 1,805,037,568 bytes, cgroup memory 3,588,493,312 / 17,179,869,184.
+Known restricted infrastructure FDs were recorded; no active accessible task reference
+or runtime owner existed. The disposable clone is now absent; its qualified recovery
+receipt/tree manifest remain external. A later new recovery claim needs actual restore.
+Primary checkout, all raw/TRX/archives/unique compiled provenance, user saves, GitHub
+history/branches and prior incomplete T606 remain untouched. This is not raw retirement.
+
+New material positive-admission evidence is accepted T607 actual source reduction
+8 to 2 with all eight logical results, real closing fence and full byte/return/phase
+observation, plus 191 distinct affected cheap PASS. It uses the same selected factory
+as the real positive and retains every default/negative/fresh authority boundary.
+The full serializer/transport/gzip path remains the accepted existing stack. Historical
+16.4M-event population and overlapping inclusive durations are not an additive veto
+or a prediction of the current mix. Current reserve supports a concrete bounded
+assessment; unknown event count/compression/drain means no guaranteed fit or PASS.
+
+Final independent PREP remains required before ONE full positive. Require original
+functional/P2/late/expiry/physical/held/inert assertions, complete original timestamps/
+events/messages without quotas, lossless gzip footer/CRC/decoded hash/row proof and
+queue/closing/root/process cleanup under the original 300-second category. On failure,
+timeout or incomplete capture, preserve outcome and stop dependent gates; no automatic
+retry or limit increase. Generator is not on this route. Legacy/cold remain conditional
+on complete accepted positive; Windows and remaining materialization are still open.
+
 # T607 cheap qualification ACCEPT — return to full positive preparation
 
 Independent Astra High OUTCOME accepts actual corrected runtime
