@@ -196,6 +196,13 @@
       "contracts": [
         "#1536 T603 / DFRDIAG10; recorded-only typed codec candidate, full compatibility and measured cost gate"
       ]
+    },
+    {
+      "category": "fr063-joint-records-writer-buffer",
+      "reason": "T604 singleton mechanism RED scaffold: actual same-writer factory remains default1024; require real-file exact source/decoded/full-message/flush/close proof before final strict actual GZip-input Write reduction. Prior28 cumulative IDs stay intact; buffer16K and positive remain unauthorized.",
+      "contracts": [
+        "#1536 T604 / DFRDIAG11; exact Serialization restoration and same-writer actual-call causal proof before gzip-only buffering"
+      ]
     }
   ]
 }

@@ -24,7 +24,7 @@ internal readonly record struct RecordedTimingPayload(
 
 // Built-in generated schema metadata only. The first Default access stays in
 // the measured recorded branch; no eager metadata/serializer warmup is added.
-[JsonSourceGenerationOptions(GenerationMode = JsonSourceGenerationMode.Metadata)]
+[JsonSourceGenerationOptions(GenerationMode = JsonSourceGenerationMode.Serialization)]
 [JsonSerializable(typeof(RecordedTimingPayload))]
 internal partial class RecordedTimingJsonContext : JsonSerializerContext
 {

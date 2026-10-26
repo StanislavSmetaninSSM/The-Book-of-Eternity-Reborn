@@ -87,7 +87,7 @@ internal sealed partial class JointBundleDiagnosticOutput : ITestOutputHelper, I
         Stream destination = new FileStream(RecordsPath, FileMode.CreateNew, FileAccess.Write, FileShare.Read);
         if (_gzip) destination = new System.IO.Compression.GZipStream(destination,
             System.IO.Compression.CompressionLevel.Fastest);
-        _stream = new StreamWriter(destination, new UTF8Encoding(false)) { AutoFlush = !_gzip };
+        _stream = CreateRecordsWriter(destination, _gzip);
         _writer = TextWriter.Synchronized(_stream);
         Timings = new JointCleanupProfileDiagnosticCapture(_writer);
         try
@@ -116,6 +116,13 @@ internal sealed partial class JointBundleDiagnosticOutput : ITestOutputHelper, I
             throw;
         }
     }
+
+    /// <summary>Constructs the same owning records writer for actual output and real-file input-call controls.</summary>
+    /// <param name="destination">The already selected plain or compressed destination, owned until writer disposal.</param>
+    /// <param name="gzipRecords">Whether the existing caller explicitly flushes compressed records.</param>
+    /// <returns>The UTF-8 writer with the accepted default buffer and plaintext automatic flushing.</returns>
+    internal static StreamWriter CreateRecordsWriter(Stream destination, bool gzipRecords)
+        => new(destination, new UTF8Encoding(false)) { AutoFlush = !gzipRecords };
 
     /// <summary>
     /// Gets the fresh nonce shared with the expected ordinary fixture namespace.

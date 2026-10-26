@@ -1,3 +1,25 @@
+# T604 causal RED scaffold SOURCE WIP frozen — uncompiled/unrun
+
+Five source/catalog paths are frozen. Serialization restored to exact accepted
+9c84814e3410b3390ffe3c88094108fb1c14ec0868d001713cd625a140b5da86.
+Actual output now calls the shared typed writer factory with the identical accepted
+two-argument default constructor/AutoFlush policy; finite inverse reconstructs the
+accepted writer. NO16Ki buffer change yet; no other serializer/consumer/schema change.
+
+One new Fact/one category:4096 actual sealed events from2048 scopes plus full Unicode
+message, frozen once and replayed as identical strings to two independent realgzip
+files. Source/queue/17fields/six live flushes/closed decoded bytes/hash/rows/fullmessage/
+owned disposal and exact counter bytes precede strict candidateWrites<baselineWrites.
+Both current/default constructors should yield equal calls: that final assertion is
+the intended causalRED. Any earlier error/timeout is not causal evidence. Files and
+receipt survive failure externally, with stream chains/window closed before assertion.
+
+Static961 categories/29 cumulative IDs; future9focused IDs/29methods/42cases authored,
+not discovery. Immediate RED selection is only the new1method/1case with1minute bound.
+Independent SOURCE/fresh Integration/current52-source binding/catalog/PlanOnly/PREP
+must precede actual. No16Ki optimization, new performanceclaim or positive/legacy/cold
+admission. Metadata candidate rejection and every prior raw/binary sample retained.
+
 # T604 writer-buffer DESIGN ACCEPT — restoration/RED scaffold next
 
 Independent metadata OUTCOME accepts41/34captures/5strictgzip/78856complete original

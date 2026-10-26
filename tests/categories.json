@@ -2,6 +2,40 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-records-writer-buffer",
+  "responsibility": "One cheap real-file causal writer control: serialize4096 genuine sealed events once plus one full Unicode message, replay identical immutable rows through independent default baseline and SAME actual writer factory, count actual forwarded GZip input writes/bytes, require exact source fields/live flush visibility/decoded UTF8/hash/rows/owned close before strict write-call reduction. T604 RED scaffold keeps the accepted default buffer on both paths.",
+  "excludes": "No buffer optimization until prerequisite-complete actual RED, timing threshold/speedup or positive admission, fabricated/rebased events, new diagnostic schema/serializer/cache/stack, game/native/world, plaintext/AutoFlush/flush cadence change, raw deletion or budget increase.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointRecordsWriterBufferTests.cs",
+    "BookOfEternityClient.IntegrationTests/JointBundleDiagnosticOutput.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-lifecycle-passive-timing-managed-cost",
+      "when": "Separate unchanged65536-event actual cost gate; fewer compressor-input calls alone does not prove throughput."
+    },
+    {
+      "id": "fr063-joint-component-diagnostics",
+      "when": "Retain default plain identity/live output and deferred storage-failure consumers for shared construction."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointRecordsWriterBufferTests.SameActualRowsReduceGzipInputWritesWithoutChangingDecodedData"
+      ]
+    }
+  ]
+},
+{
   "id": "core-recorded-timing-codec",
   "responsibility": "Two cheap independent old-format codec controls on actual sealed nested/begin/end/late events: exact full strings/UTF8/member order/default escaping/numbers/source identity plus actual WriteLine(string) failure/sequence/success-counter ordering. Expected format is the frozen accepted anonymous-object expression, independent of the candidate DTO/metadata.",
   "excludes": "No fabricated/rebased NamedEvents, reflection, game/native/authority/world, runtime alternate encoder, buffer/cache framework, per-record new clocks, quota, timeout increase or speedup claim. Same-work throughput belongs to the separately selected actual managed-cost control.",
