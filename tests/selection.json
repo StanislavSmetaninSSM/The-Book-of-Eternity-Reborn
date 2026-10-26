@@ -262,7 +262,7 @@
     },
     {
       "category": "core-treatment-semantic-data",
-      "reason": "T608 file-free shared projection source/key/copy/fallback/invalidation controls on real semantic DATA; includes twelve existing agreement/refusal cases and twenty newly authored cases.",
+      "reason": "T608 file-free shared projection source/key/copy/fallback/invalidation controls on real semantic DATA; includes twelve existing agreement/refusal cases and twenty-one newly authored cases.",
       "contracts": [
         "#1536 T608-REUSE / REPLAY-REUSE1..6; immutable expected DATA, complete key, fresh actual admission and original fallback"
       ]

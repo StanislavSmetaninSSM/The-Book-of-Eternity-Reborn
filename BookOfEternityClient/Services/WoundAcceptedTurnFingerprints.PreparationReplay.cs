@@ -20,6 +20,7 @@ internal static partial class WoundAcceptedTurnFingerprints
         for (var i = 0; i < opportunities.Count; i++)
         {
             fields.Add(Number(i)); AppendOpportunity(fields, opportunities[i]);
+            fields.Add(opportunities[i].AcceptedEventsFingerprint);
             AppendReplayWound(fields, opportunities[i].WorseningTarget?.Wound);
         }
         var transitions = input.Transitions;

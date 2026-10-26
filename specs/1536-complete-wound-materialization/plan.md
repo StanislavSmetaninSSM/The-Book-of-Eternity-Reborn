@@ -1,3 +1,25 @@
+# T608 SOURCE findings corrected — targeted delta review pending
+
+The coherent independent SOURCE review found two bounded P2 issues before build:
+complete opportunity key omitted actual AcceptedEventsFingerprint, and file-free
+overlap setup awaited only its entered signal. Root accepted the concrete findings;
+no corrupt plan/permission bypass or actual timeout was demonstrated.
+
+Author grouped the fixes: explicit field in NEW capture only plus independent
+same-old-hash/different-snapshot regression retaining old claimed authority hash;
+Task.WhenAny entered/worker early completion with existing finally join/error/empty
+entry assertions. Original ComputeInput/AppendOpportunity bytes and all budgets stay.
+Only two C# paths and one CI reason count changed; the other nine reviewed paths are
+byte-exact. New authored counts: 17 methods / 21 cases; focused eight IDs now 63 methods /
+69 expected cases, cumulative CI still 44. Static inverse10/4/5, XML109 and diff pass.
+All code remains UNCOMPILED, discovery/build/runtime UNRUN. Source/key/admission/copy
+net cost unmeasured; no cache or whole-game qualification/positive admission.
+
+Root verified all twelve new hashes and the exact three-path delta before this WIP.
+Next review only these two findings/affected dependencies, then fresh full GitHub source
+recovery and all-five owning builds. Old 43 duplicate generated outputs are absent;
+15 unique evidence payloads and all raw/saves retained. No NoBuild until fresh outputs.
+
 # T608 complete source candidate frozen — coherent SOURCE pending
 
 Root verified the final twelve-path inventory: ten C# and two static catalog/selection

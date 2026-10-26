@@ -168,6 +168,29 @@ public sealed partial class TreatmentSemanticDataTests
         Assert.True(snapshot.Matches(WoundAcceptedTurnFingerprints.CapturePreparationReplayInput(WoundAcceptedTurnData.CloneInput(original)!)!));
     }
 
+    /// <summary>Distinguishes actual opportunity event DATA even when both old input and claimed authority hashes stay unchanged.</summary>
+    [Fact]
+    public void PreparationProjection_InputCaptureIncludesOpportunityAcceptedEventsFingerprint()
+    {
+        using var fixture = new Fixture(_output);
+        // DATA-only key proof: construction here grants no actual opportunity or publication authority.
+        var opportunity = new WoundOpportunityAuthority("session", "request", "snapshot", "opportunity", "public",
+            "event", "narrative", "event-authority", "events-before", fixture.Outcome.Before.Owner,
+            "physical", "profile", "narrative", "source", "active", null, 1, null,
+            new("target", "cause", ["anatomical"]), "evidence", "unchanged-claimed-authority");
+        var original = ProjectionInput(fixture.Outcome.Before) with { Opportunities = [opportunity] };
+        var alteredOpportunity = opportunity with { AcceptedEventsFingerprint = "events-after" };
+        var altered = original with { Opportunities = [alteredOpportunity] };
+        Assert.Equal(opportunity.AuthorityFingerprint, alteredOpportunity.AuthorityFingerprint);
+        Assert.NotEqual(opportunity.AcceptedEventsFingerprint, alteredOpportunity.AcceptedEventsFingerprint);
+        Assert.Equal(WoundAcceptedTurnFingerprints.ComputeInput(original), WoundAcceptedTurnFingerprints.ComputeInput(altered));
+        var before = WoundAcceptedTurnFingerprints.CapturePreparationReplayInput(original);
+        var after = WoundAcceptedTurnFingerprints.CapturePreparationReplayInput(altered);
+        Assert.NotNull(before);
+        Assert.NotNull(after);
+        Assert.False(before.Matches(after));
+    }
+
     /// <summary>Checks each scalar independently against actual detached plan DATA, without validating authority.</summary>
     /// <param name="index">The changed scalar in the five-field contract.</param>
     [Theory]
@@ -218,6 +241,7 @@ public sealed partial class TreatmentSemanticDataTests
         })));
         try
         {
+            Assert.Same(entered.Task, await Task.WhenAny(entered.Task, source));
             await entered.Task;
             Assert.ThrowsAny<InvalidOperationException>(() => fixture.Data.ReadPreparationProjection(operation, input, LiteralProjection));
         }
