@@ -10,7 +10,7 @@ positive is interrupted inside a long await, without changing its functional wor
 output/capture. A test-owned single consumer persists detached events independently
 of xUnit; the positive's original receiver still gets every existing message.
 **Tech stack:** current .NET8/SDK10, xUnit, PowerShell7 selected runner; no dependency.
-**Spec:** DFRDIAG1..6 above T179-Pd.3e / #1536, docs/performance.md and testing.md.
+**Spec:** DFRDIAG1..9 above T179-Pd.3e / #1536, docs/performance.md and testing.md.
 
 ## Constraints and design decisions
 
@@ -19,7 +19,7 @@ of xUnit; the positive's original receiver still gets every existing message.
   unchanged. This is test diagnostics, not a product optimization or timeout fix.
 - Existing-code check: component FlushPassiveTimings drains only after the long
   functional call returns, so direct unchanged wiring cannot survive its kill.
-  Reuse its queue/capture/serializer/cost ledger/AutoFlush writer; only the missing
+  Reuse its queue/capture/serializer/cost ledger/writer; only the missing
   lifecycle adapter and continuing drain are new. No second diagnostic stack.
 - Extending existing persistent output is preferred to a second capture framework.
   Its default component namespace must remain exact; lifecycle registration binds
@@ -49,6 +49,36 @@ of xUnit; the positive's original receiver still gets every existing message.
 - Diagnostic failure never replaces the primary body error. On otherwise successful
   work, incomplete/failed capture or unproven cleanup fails qualification. Measured
   writer costs remain separate from original inclusive operation clocks.
+
+
+## Bounded storage correction (DFRDIAG7..9)
+
+Current free disk after exact clean task-created recovery-copy retirement is3.23GB;
+all unique raw and accepted native/managed provenance remain. The old accepted
+aggregate has16,397,232 boundaries but no full captured events; the illustrative
+same-format7.82GB is historical context, not the next-run size. A contiguous real
+16MiB recorded passive-trace prefix compressed to1.87MB (~9:1) using Python/zlib1.3.2
+level1 and1024-line sync flush, with exact decoded hash/count and eof/truncation
+controls. This is only an external storage scout; no .NET/serializer/current-runtime
+claim follows. No tmpfs bulk output or further raw deletion is selected.
+
+Extend only existing JointBundleDiagnosticOutput stream construction with explicit
+opt-in gzip/CompressionLevel.Fastest, plain default unchanged. Same synchronized
+StreamWriter and existing capture serialize every full row. Opt-in buffering flushes
+after each nonempty drain, every1024 events within a large batch, and full original
+messages before forwarding. All flush/close costs are explicit; one consumer remains
+sole drainer, and synchronized message writes cannot race the compressor.
+
+Keep compressed actual bytes/hash separate from streaming decoded64-bit bytes/hash;
+never materialize a full raw intermediate. Integrity requires successful footer close,
+exact stored identity plus decoded validation and existing event accounting. The
+independent outcome verifier must validate the complete gzip container, including
+footer, rather than infer success from .NET decoder EOF or complete JSONL rows.
+Cheap controls cover removed1..8footer bytes, corruption, flushed live prefix with
+no completion, Unicode/large full messages and real fresh named events. A bounded
+external byte replay may measure encoding only; no event synthesis/timestamp rewriting.
+Source review and fresh build/cheap GREEN/PREP must reassess actual disk/headroom and
+managed serializer/write/flush costs before a new unchanged positive is admitted.
 
 ## Files and typed interfaces
 

@@ -1,3 +1,31 @@
+# T600 storage amendment reviewed — consumer source resumes
+
+Remote6dc914fd4978e12e2e60154ad6ae512ebc023cd6 is preserved; GitHub-only clean
+recovery rechecked30911blobs/772638605logicalbytes before retirement. Two exact
+clean task-created source-only recovery copies (83f7d22f/6dc914fd), with no ignored/
+unique files or active application/build/verification owners, released2495053824
+allocated bytes. Actual workspace free3232903168bytes afterwards. Their full source
+remains in GitHub and external compact verification/retirement receipts remain.
+Main checkout, user saves, retained timeout roots, all raw and every accepted
+native/managed binary/provenance were preserved. No GC/history rewrite/tmpfs move.
+A new clean GitHub recovery must be acquired for the next recoverability claim.
+
+Independent Astra/high accepts minimal opt-in GZipStream under the SAME existing
+output/capture, contingent on full original rows/clocks, synchronized flush cadence,
+actual compressed identity plus64-bit decoded proof, real footer/truncation controls
+and measured managed cost/headroom. Existing plain output stays exact. DFRDIAG7..9
+record this correction; no new stack/cache/authority/filter/record limit is introduced.
+Bounded external Python scout replayed only a contiguous16777208byte original prefix
+(33706fullrows/33704sealed events), stored1865170bytes (~8.995:1). Streaming decoded
+hash/count exactly matched; live flushed prefix eof=false, closed eof=true, tail1..8
+truncations eof=false. Encoding/flush/write cost0.138/0.013/0.034s is Python scout only,
+never managed/functional timing or a guarantee for the full current population.
+
+T600 source implementation resumes as one coherent consumer/writer/control/live-wiring
+block. No new build, cheap GREEN or expensive positive yet; all prior outcomes and
+five-minute limit remain. SOURCE/fresh affected provenance/catalog/cheap/PREP and
+actual storage/cost assessment still gate runtime. Application timeout cause UNKNOWN.
+
 # T600 continuing-consumer fragment WIP — storage gate unresolved
 
 One coherent C# file is frozen for remote preservation: LifecyclePassiveTimingDiagnostics

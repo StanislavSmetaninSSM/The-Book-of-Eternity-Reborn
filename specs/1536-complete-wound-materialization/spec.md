@@ -38,6 +38,29 @@ capture does not itself fix or qualify the prior timeout. Use original named sco
 and measured transport costs to localize work; inclusive intervals are not additive.
 Resume dependent live/cold gates only after a complete accepted functional outcome.
 
+
+DFRDIAG7: storage preparation may opt the unchanged positive into lossless streaming
+GZipStream under the SAME external writer/ObserveRecorded/serializer. Default plain
+component output stays unchanged; compressed files use explicit records.jsonl.gz
+and encoding metadata. No uncompressed intermediate, event filtering, quotas,
+aggregate reconstruction or second transport stack. Flush every1024 offered events,
+at each nonempty drain end and each full original message; synchronized flushes are
+visibility cadence, not a recording limit. Account actual write/flush/final-close
+costs separately from original source clocks.
+DFRDIAG8: actual stored compressed byte/hash identity and independent64-bit decoded
+byte/hash identity remain distinct. A successful final compressor close plus exact
+stored/decoded integrity and full event/queue accounting is required; live-prefix
+readability or decoder EOF alone is no complete-container proof. Complete verification
+must reject footer truncation1..8bytes/corruption; preserve real partial bytes on kill
+without repair or invented completion. No ISIZE32-bit wrap can truncate decoded counts.
+DFRDIAG9: assess disk/memory before expensive runtime. Verified task-created clean
+recovery copies may be retired after full Git/blob/owner checks, preserving compact
+receipts and source recovery from GitHub; unique raw/saves/provenance stay intact.
+Do not move a multi-gigabyte capture into RAM-backed tmpfs with unproven OOM headroom.
+Bounded real-byte encoding scouts are storage evidence only. Fresh actual sealed-
+event/managed writer controls and reviewed free-space/throughput evidence precede
+positive admission; a historical ratio/count never guarantees current-run capacity.
+
 # T179-Pd.3e bounded observed debug-prefix amendment — #1536 / 2026-10-25
 
 DFR-HOT1: existing actual Capturing joint owner consumes the same ordered ordinary
