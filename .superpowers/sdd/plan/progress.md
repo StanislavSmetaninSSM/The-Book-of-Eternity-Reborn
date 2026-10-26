@@ -1,3 +1,27 @@
+# T599 baseline fresh preparation ready — independent PREP pending
+
+Integration XML build atc03bbed9e52cb8b1043cf92dd56509f88a9b4ac7 completed3:11.84,
+0errors/101exact-baseline warnings, dotnet receipt0. Outer tool status1 was reproduced
+by harmless login-shell+errexit+explicit-exit0 probes (non-login and no-errexit
+controls0; logout contains clear_console). It was not a compiler failure or RED;
+no build retry/source/credential change. Fresh11 PE/PDB pairs,33current hashes/copies,
+44current/Git/PDB source checks and actual Integration informational version match.
+Only Integration DLL/PDB/XML changed;30previous artifacts and all four other project
+inputs remain exact. Game/Support/Bridge d9aa, Unit e00, Integration c03b lineage.
+
+Fresh catalog957/12,539 VALID, no unmapped/stale selectors. Exact staged3-ID
+transport PlanOnly3descriptors/12cases,0executed; causal owner uniquely selects
+OriginalBeginIsPersistentWhileActualBodyRemainsBlocked,1case/1minute. Both commands
+exit0/no timeout/both cleanup flags/clean c03b revision. Root verified the singleton
+as an exact plan subset; unrelated existing controls remain later staged coverage.
+All receipts/metadata/logs are external in dfr-prefix/t599-build and t599-preparation.
+
+Separate independent PREP must release the one cheap after-return visibility RED.
+No T599 runtime, continuous consumer, live wiring or expensive positive retry yet.
+Current old Integration d9aa triple is retained externally as hashed evidence only;
+future runtime uses the actual freshly built current outputs. Prior cheap176/two
+PASS/positive TIMEOUT and two retained candidate fixture roots remain untouched.
+
 # T599 fixture SOURCE accepted — fresh Integration preparation next
 
 Independent Astra/high SOURCE ACCEPT ofc8593b903f3db0b2f953a1f3dc5cfcd189aa015e:
