@@ -1,3 +1,16 @@
+# T603 metadata-only SOURCE ACCEPT — fresh Integration build next
+
+Independent review accepts the exact9d493043 one-attribute change and unchanged41-case
+selection. Reverse replacement proves the old172e source byte-exact; all other source/
+catalog/oracle/writer/buffer/clock/legacy contracts remain. GitHub-only clean recovery
+verified9d493043:30916 exact blobs,772753379 logicalbytes,0PDB claims/0runtime.
+
+Fresh affected Integration XML/PDB build follows. Unaffected four project trees/30
+artifacts may retain only exact old input/binding proof. Check current51 sources and
+new generated17-member metadata/noSerializeHandler route before bounded PREP/runtime.
+Allocation/boxing/cost and benefit remain UNRUN; no positive/legacy/cold admission.
+Prior172e triple and all baseline/A/B/negative raw remain external evidence-only.
+
 # T603 metadata-only SOURCE WIP frozen — uncompiled/unmeasured
 
 Exactly one attribute changes Serialization→Metadata in RecordedTimingPayload.cs;
