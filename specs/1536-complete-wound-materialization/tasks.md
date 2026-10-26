@@ -22,9 +22,10 @@ unchanged positive is incomplete TIMEOUT300s, not phase/functional acceptance.
   buffer reuse; preserve all original fields/events/clocks, output/error accounting,
   cache/authority eligibility and category budgets. Cheap same-work cause/effect proof,
   affected contracts and independent SOURCE/PREP/outcome precede any expensive run.
-  Current independently reviewed hypothesis: change only generated context mode to
-  Metadata, with honest framework boxing/allocation tradeoff; same41 oracles and
-  real65536-event cost control. No broad build-mode or writer-buffer change.
+  Metadata-mode hypothesis was measured and rejected; accepted fast path restored.
+  T604 same-writer call reduction/42 cases is accepted, but total service headroom is
+  unresolved. Next read-only attribution targets the remaining warm build/serialize
+  route; no new runtime or broad configuration change is released.
   No payload cache without a complete varying-input key, parallel stack, quotas or
   change to Game/native/GM behavior. This is the T601 performance gate, not a feature.
 
@@ -32,12 +33,11 @@ unchanged positive is incomplete TIMEOUT300s, not phase/functional acceptance.
   genuine same-data real-GZip-input causal control: actual1967==1967 calls, final
   assertion only, full prerequisite/strict gzip/source/cleanup proof independently
   accepted at257864ec3 runtime / d986 compiled. This does not close T604/positive.
-- [ ] T604 Preserve rejected metadata-mode evidence and restore the byte-exact prior
-  generated fast path. Independently design a bounded existing gzip StreamWriter
-  buffer correction with cheap real underlying-call causal proof before optimization;
-  no new stack/cache/schema/clock/quota/budget, plaintext/default/failure change.
-  Fresh affected build/bindings/catalog/selected oracles/cost and outcome are required;
-  a write-call reduction alone does not admit positive. Design not yet implemented.
+- [x] T604 Preserve rejected metadata evidence, restore accepted Serialization, prove
+  actual-call causalRED, then implement only existing gzip16Ki-character buffering.
+  Fresh9-ID/42-case GREEN and exact output/lifetime/default/full-source/strict-gzip
+  proof independently accepted;1966→126 real calls with same DATA. Full65536-event cost
+  measured honestly, without throughput/headroom claim. T601/T603/positive remain open.
 
 # T179-Pd.3e observed debug-prefix consumer — #1536 / 2026-10-25
 

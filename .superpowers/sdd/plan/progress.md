@@ -1,3 +1,22 @@
+# T604 GREEN42 OUTCOME ACCEPT — remaining throughput gate HOLD
+
+Actualedf518d7aca527cee7941ad85869f5fa69364d4c / compiled02a14a66 completed42/42PASS,
+9descriptors,162.1961026s,0skip/fail/timeout,bothcleanup. Root and independent outcome
+verified9TRX,34existing captures (19complete/15expected incomplete)/5strictgzip plus
+2new full counter files,all source clocks/pairs/queue/writer/root/33artifacts/52sources.
+CausalGREEN1966→126 actual compressor-input calls (-93.591%),exact same decoded2009652B/
+4097rows/4096original events+full Unicode/six visible flushes/one owned close each.
+
+Same65536-event cost:total1.7981847/service1.2213341/closing1.5957193/decode0.1565075s,
+allocated84927056B. Prior baseline/A/B/rejectedMetadata preserved; current elapsed is
+within prior variability,not robust new throughput/headroom proof. Last build/serialize
+834.261224ms vs write337.565539ms,flush42.8368ms; nested costs are not summed freely.
+T604 mechanism/integrity accepted; T601/T603/positive remain HOLD under300seconds.
+No more buffer increase or unchanged benchmark is justified. Next only read-only warm
+serializer attribution through existing path, then a separately reviewed concrete plan.
+All raw and exact02a Integration triple retained outside checkout; no user saves/raw
+deleted. Legacy/cold/fullDFR acceptance not released, Windows deferred as instructed.
+
 # T604 GREEN42 PREP ACCEPT — one actual run released
 
 Independent PREP acceptsc409 qualified recovery/33 artifacts/52sources/attached fast

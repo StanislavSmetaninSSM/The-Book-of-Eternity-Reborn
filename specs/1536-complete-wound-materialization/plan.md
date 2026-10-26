@@ -1,3 +1,19 @@
+# T604 accepted mechanism; T601/T603 remaining serializer attribution only
+
+GREEN42 atedf518d7/compiled02a14a66 is independently accepted for complete DATA, real
+1966→126 compressor-input calls, unchanged full source/format/visibility/error/default/
+closing/strict gzip contracts. The existing16Ki gzip buffer is retained; plaintext
+and all budgets stay unchanged. This closes the bounded T604 mechanism, not positive.
+
+Measured same65536-event service1.2213341s/total1.7981847s remains within prior elapsed
+variation. Current last build/serialize834.261ms dominates write337.566ms; first/warmed
+segments and all raw samples are retained. No count-to-syscall/speedup conversion,
+new buffer increase or unchanged benchmark. Next read-only inspection of the actual
+cached metadata/property/value-encoding and warm build/serialize path must identify a
+concrete supported correction or limitation before any new implementation plan.
+No project/JIT/global build-mode change is authorized by this attribution step.
+Positive/legacy/cold/fullDFR remain HOLD. Windows after materialization, no raw deletion.
+
 # T604 writer-buffer DESIGN ACCEPT — restore and causal RED scaffold first
 
 Independent outcome accepts metadata-mode41 compatibility/integrity and rejects its
