@@ -5,7 +5,7 @@ feature or timeout allowance. Cheap176 and actual temporal/source-fence PASS ret
 unchanged positive is incomplete TIMEOUT300s, not phase/functional acceptance.
 - [x] T599 Compilable minimal after-return transport baseline and cheap real-file
   blocked-await visibility causal RED; preserve original evidence and root identity.
-- [ ] T600 Existing sealed original-event queue/persistent output, one detached
+- [x] T600 Existing sealed original-event queue/persistent output, one detached
   continuing consumer, actual lifecycle identity, primary/close/failure integrity;
   positive-only wiring/typed controls, bounded lossless storage correction under the
   same writer, and coherent independent SOURCE review.
@@ -15,6 +15,15 @@ unchanged positive is incomplete TIMEOUT300s, not phase/functional acceptance.
 - [ ] T602 One full named diagnostic positive under original5-minute budget; full
   functional/phase/physical assertions, uncapped external evidence and honest outcome
   review. Resolve actual measured cause as needed, then resume T597/T598 dependencies.
+
+
+- [ ] T603 Resolve measured existing named-event build/serialize/write throughput before
+  positive admission: inspect current serializer/ledger and safe existing metadata/
+  buffer reuse; preserve all original fields/events/clocks, output/error accounting,
+  cache/authority eligibility and category budgets. Cheap same-work cause/effect proof,
+  affected contracts and independent SOURCE/PREP/outcome precede any expensive run.
+  No payload cache without a complete varying-input key, parallel stack, quotas or
+  change to Game/native/GM behavior. This is the T601 performance gate, not a feature.
 
 # T179-Pd.3e observed debug-prefix consumer — #1536 / 2026-10-25
 

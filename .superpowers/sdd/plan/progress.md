@@ -1,3 +1,39 @@
+# T600 composite38 OUTCOME ACCEPT — positive HOLD on transport throughput
+
+Actual remaining attempt be5b2358a ran 21/21 PASS, 0 fail/skip, 3/3 descriptors in
+48.5600191s, no timeout and both process cleanup flags. Independent Astra/high OUTCOME
+ACCEPT combines this with the original 17 retained PASS: 38 distinct cases across two
+provenance-bound measurements, not one38 run. Root and reviewer verified 3 TRX,
+19 captures, 10 complete captures, 5 complete gzip members with strict EOF/CRC/no
+trailing data, 69952 original events and unchanged 33 artifacts/current source pins.
+The normal no-member zero-event control is now actually PASS: physical0 bytes,
+footer=false, incomplete/refusal, scalar queue0 complete and real root removed.
+Both gzip/plain blocked-await visibility and malformed-row/link corrections passed.
+T600 semantic/source/control work is accepted; T601 performance admission remains open.
+
+The actual managed control generated 32768 scopes / 65536 events plus one full large
+Unicode message. Through-close2.1202264s; producer/message0.1863902s; closing1.9338361s.
+Stored3117120 bytes, decoded32365051 bytes, 65537 rows, exact hashes. Allocation through
+close94322768 bytes; largest detached batch65289, 3 batches. Measured serializer/write
+1.4977568s, decode0.1943963s, explicit flush0.0285666s and close0.0011252s. Recorded final
+counters split build/serialize1130.866ms from writer325.791ms; first-row JIT28.483ms
+cannot explain all cost. Full actual raw/segments remain external.
+
+Independent positive admission is HOLD. Scaling the historical 16397232 aggregate
+boundaries only illustratively gives about375s measured serializer/write service and
+49s final decode; it is neither a current event prediction nor the prior game-timeout
+cause. The sample compression ratio (~10.38) and sampled free disk~1.91GB do not close
+the cost gate. No expensive positive was launched and no budget was raised.
+
+Next tracked T603 is a narrow investigation/correction inside the existing serializer/
+ledger, with full original data and existing named/cost instrumentation. Examine safe
+existing immutable type metadata/buffer reuse and real allocation/scheduling costs;
+whole event payloads vary by sequence/ticks/ScopeId/counters and cannot share a cache
+entry by name alone. A cheap same-work proof and independent reviewed source/preparation
+must demonstrate sufficient benefit before one positive capture is reconsidered.
+No new diagnostic stack, record quota, bulk tmpfs, gameplay/authority change or raw
+retirement. All old evidence, failed control link and accepted Linux qualification stay.
+
 # T600 remaining21 PREP ACCEPT — bounded runtime released
 
 Independent Astra/high PREP ACCEPT confirms 33 actual artifacts, 11 PE/PDB identities,
