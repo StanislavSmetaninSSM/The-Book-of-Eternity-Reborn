@@ -77,8 +77,8 @@ public sealed class JointRecordsWriterBufferTests
         Directory.CreateDirectory(comparison);
         var baselinePath = Path.Combine(comparison, "baseline.jsonl.gz");
         var candidatePath = Path.Combine(comparison, "candidate.jsonl.gz");
-        var baselineInput = OpenInputCounter(baselinePath);
-        var candidateInput = OpenInputCounter(candidatePath);
+        using var baselineInput = OpenInputCounter(baselinePath);
+        using var candidateInput = OpenInputCounter(candidatePath);
         using var expected = new StringWriter();
         var visibilityChecks = 0;
         // Frozen independent baseline: the accepted two-argument/default-buffer constructor.
@@ -148,7 +148,7 @@ public sealed class JointRecordsWriterBufferTests
 
     private static byte[] Decode(string path)
     {
-        using var stored = File.OpenRead(path);
+        using var stored = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         using var gzip = new GZipStream(stored, CompressionMode.Decompress);
         using var decoded = new MemoryStream();
         gzip.CopyTo(decoded);
@@ -171,6 +171,7 @@ public sealed class JointRecordsWriterBufferTests
     // directly once; it neither buffers, retries, encodes nor invents events.
     private sealed class CountingWriteStream(Stream inner) : Stream
     {
+        private bool _disposed;
         internal long Writes { get; private set; }
         internal long Bytes { get; private set; }
         internal long Flushes { get; private set; }
@@ -190,7 +191,12 @@ public sealed class JointRecordsWriterBufferTests
         public override void SetLength(long value) => inner.SetLength(value);
         protected override void Dispose(bool disposing)
         {
-            if (disposing) { inner.Dispose(); Disposals++; }
+            if (disposing && !_disposed)
+            {
+                _disposed = true;
+                Disposals++;
+                inner.Dispose();
+            }
             base.Dispose(disposing);
         }
     }

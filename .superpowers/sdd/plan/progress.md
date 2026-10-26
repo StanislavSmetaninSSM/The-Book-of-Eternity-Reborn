@@ -1,3 +1,13 @@
+# T604 RED fixture review corrections frozen — uncompiled
+
+Independent SOURCE review found two fixture defects before build: deterministic
+ownership was missing if the second output open failed, and live-prefix read sharing
+conflicted with an active writer on Windows. Only the new fixture changed: immediate
+scoped counter ownership/idempotent inner disposal, and read-only FileShare.ReadWrite.
+Finite inverse reconstructs the initial frozen fixture; all other four source/catalog
+hashes, one Fact, original assertions/factory/defaultbuffer remain unchanged. No new
+case,16Ki change, build/discovery/runtime or Windows run. Bounded SOURCE addendum next.
+
 # T604 causal RED scaffold SOURCE WIP frozen — uncompiled/unrun
 
 Five source/catalog paths are frozen. Serialization restored to exact accepted
