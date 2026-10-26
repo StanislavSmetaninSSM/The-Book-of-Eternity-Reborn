@@ -1,3 +1,18 @@
+# T608 source-only counter WIP preserved — metadata/review/build pending
+
+The accepted scaffold's two source paths are frozen: one fixed existing named scope
+around the original PreparedReplayAgrees family-dispatch expression, disposed before
+comparison; one genuine component Fact with cold eligibility, eight actual prepared
+validations, full projection/byte/owner checks and successful fence/fixture closing
+before final desired one-source oracle. No cache or functional dispatch change.
+New C# is UNCOMPILED / UNRUN. Catalog/CI ownership and static inverse/hash proof remain
+pending, followed by coherent independent SOURCE, fresh affected managed bindings,
+exact discovery/PREP and only then causal runtime. WIP publication is not acceptance.
+Root preserved the accepted T607 matrix's 15 unique artifact payloads outside checkout;
+13 reuse previously hash-verified evidence, only two new payloads (13,159,780 bytes).
+They are historical evidence only and cannot be substituted for the next fresh build.
+Full positive and dependent gates remain HOLD; all raw/user saves remain intact.
+
 # T608 counter scaffold DESIGN ACCEPT — implementation next
 
 Independent Astra High accepts the REPLAY-PROBE1..5 tests-first counter scaffold,

@@ -788,6 +788,9 @@ internal sealed class WoundAcceptedTurnPlanCache
         WoundAcceptedTurnInput input,
         WoundPreparedAcceptedTurnPlan plan)
     {
+        // Measures only the original all-family expected-source dispatch, including its input cloning.
+        // The selected genuine joint control does not change other families or the comparison below.
+        using var expectedSourceTiming = FileSystemManager.MeasureCurrentOperation("WoundPlanCache.PreparedExpectedReplay.Source");
         var replay = plan.JointRepairContinuationAuthority is not null
             ? WoundAcceptedTurnPlanner.PrepareJointRepairCandidate(
                 WoundAcceptedTurnData.CloneInput(input)!, plan.JointRepairContinuationAuthority)
@@ -800,6 +803,7 @@ internal sealed class WoundAcceptedTurnPlanCache
             : WoundAcceptedTurnPlanner.PrepareTreatmentContinuationCandidate(
                 WoundAcceptedTurnData.CloneInput(input)!,
                 plan.TreatmentContinuationAuthority);
+        expectedSourceTiming?.Dispose();
         if (!replay.Success || replay.Plan is not { } expected)
             return false;
         if (!string.Equals(
