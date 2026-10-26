@@ -1,3 +1,14 @@
+# T603 metadata-only cheap41 PREP ACCEPT — one run released
+
+Independent PREP accepts fresh compiled70b metadata/PDB/source bindings, all33 artifacts/
+11 identities/51 source checks, actual17-property metadata/null handler, unchanged
+8descriptors/28methods/41cases and budgets, plus clean GitHub recovery8dbf with all
+30916 blobs/51pins. Fresh byte-identical XML is independently accepted as expected.
+Only one official NoBuild metadata-mode selection is released. Runtime format/UTF8/
+failure/integrity/boxing/allocation/cost remain UNRUN; preserve and compare every prior
+baseline/A/B sample. Positive/legacy/cold remain HOLD until actual accepted evidence.
+No hidden warmup, new stack, buffer change, record loss, limits change or raw deletion.
+
 # T603 metadata-only fresh build/PREP packet verified — runtime UNRUN
 
 Fresh Integration Debug XML/PDB build at70b1d26a8ea60018daaad97e3b3481631a1b5719:
