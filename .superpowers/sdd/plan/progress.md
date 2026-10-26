@@ -1,3 +1,22 @@
+# T604 actual prerequisite-complete causal RED — independent outcome pending
+
+One attempt actual-t604-writer-red-1, runtime257864ec313e61f1bf95d58d209fcf4298b89760,
+compiledd986:1executed/1Failed/0skip,framework2.3889530s,runner50.1423400s,noTimeout,
+both processcleanup and fully settled1descriptor/1case selection. Failed only at final
+strict reduction assertion: baseline1967 inputwrites == candidate1967. The category
+success Completed flag isfalse for this expected failed category; selection iscomplete.
+The external checker now distinguishes those facts rather than demanding a PASS flag.
+
+Root strict proof verifies both closed187245-byte gzip files/EOF/CRC/no trailing,
+identical decoded2010987bytes/SHA/4097rows/4096original source events+full Unicode
+message,6live-prefix checks,source queue4096/4096/4096/pending0/failed0,7flushes/1owned
+dispose per chain,original PID/scope/sequence/ticks and current33 artifacts/52sources.
+Target assertion/TRX5578bytes SHAed0e587dfb6ca2740e12ba387e1d1ebe2f151f5b75c0ba7f3b71ceeebd5ed4ef.
+Both raw files/receipt and exactd986 Integration triple retained externally. This is
+causalRED only, not GREEN/productfailure/speedup/positive admission. Independent outcome
+must accept these prerequisites before the gzip-only16Ki source correction. No repeats,
+limits changes,source changes,raw deletion or dependent legacy/cold/positive run.
+
 # T604 causal singleton PREP ACCEPT — one RED attempt released
 
 Independent PREP accepts freshd986 build/current33 artifacts/52sources/restored fast
