@@ -1,3 +1,22 @@
+# T594–595 coherent SOURCE accepted — fresh preparation next
+
+Independent Astra/high full SOURCE review of b88cbf13 and bounded delta review
+of0c9fe70f4b0f94eff3abce9df1c2d74044905aa5 accept the complete current DFR block.
+The sole P2 finding is closed in source: existing genuine positive now calls the
+same real private-owner consumer after CloseCapture and actual expiry, asserting
+phase/owner refusals with no added evaluation/timestamp/effects; successful fresh
+closed fence/check2 and full completion/inert repeat remain mandatory runtime oracles.
+Retained-only entry cannot issue a first pass; atomic gate releases in finally.
+
+All5 implementer delta hashes match; catalog/selection membership/filters/contracts/
+budgets are unchanged. Direct GitHub recovery of0c9fe70f verified30,909 exact blobs /
+772,576,376bytes, clean including ignored, source-only. Optimization/source inverse
+and native-package retention proofs are external. Runtime correctness is UNRUN.
+Next: freeze this source for five sequential fresh XML/PDB builds on one HEAD,
+41 exact current/Git/PDB source checks, catalog and20-ID PlanOnly, independent PREP,
+then cheap12 categories before actual consumer singletons and required cold2.
+No full reasoning/NI/S, Windows or new original-five PASS is inferred from SOURCE.
+
 # T594–595 SOURCE phase-coverage correction — uncompiled WIP
 
 Independent coherent SOURCE review of b88cbf13 requested one P2 correction:
