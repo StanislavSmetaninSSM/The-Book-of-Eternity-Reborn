@@ -1,3 +1,40 @@
+# T604 writer-buffer DESIGN ACCEPT — restore and causal RED scaffold first
+
+Independent outcome accepts metadata-mode41 compatibility/integrity and rejects its
+performance candidate. The prior Serialization source must be restored byte-exact;
+70b evidence-only binaries/raw stay preserved and never serve as fresh runtime inputs.
+Independent DESIGN accepts only existing gzip StreamWriter16Ki-character buffering,
+not a new stack/cache/format/observer. No buffer optimization is implemented yet.
+
+1. Restore the mode attribute and extract a minimal typed shared writer-construction
+   seam with precisely the current default1024 behavior and unchanged plaintext path.
+   Author one cheap real-file causal control before changing buffer size. Freeze a
+   genuinely produced full sealed-event serialized set plus full Unicode message once;
+   replay exactly the same immutable strings to independent real gzip files using a
+   frozen default baseline and the actual shared current construction path.
+2. A transparent test-only counting Stream at GZip input counts actual forwarded write
+   calls/bytes without double counting and forwards all flush/dispose behavior. Require
+   exact decoded UTF8/hash/long bytes/rows/source fields, actual explicit flush/live
+   visibility and final gzip/closing integrity before the strict reduction assertion.
+   With both paths at the accepted default, current==baseline must cause that final
+   reduction assertion to fail. No compile/setup/format failure is the causal RED.
+3. Publish coherent restoration/scaffold/oracle/catalog ownership/selection, independent
+   SOURCE, fresh affected Integration/current bindings/catalog/PlanOnly/PREP; execute
+   only the new causal singleton once and review the full prerequisite-complete RED.
+4. Then change only gzip buffer16Ki through the same construction seam; plaintext,
+   AutoFlush/WriteLine/string/explicit cadence/consumer/clock/error contracts stay exact.
+   Check BCL buffer sizing honestly; no unsupported total-memory/LOH assertion. Review
+   SOURCE and exact affected selection, fresh build/PREP, causal GREEN plus existing
+   eight categories/same65536-event managed cost. Keep all prior samples; fewer writes
+   alone is not a speedup or positive admission.
+
+The writer owns its small built-in char/byte buffers from construction to Dispose;
+Flush/Finish drain fresh full DATA, no payload reuse/authority cache/invalidation route
+is introduced. This is test-only diagnostic IO, so no GM/docs/example product surface
+changes. No per-record fields/clocks, quotas, truncation, private reflection, Windows
+run, budget increase or unrelated production optimization. Positive/legacy/cold remain
+HOLD pending accepted real throughput/storage/headroom and complete functional result.
+
 # T604 bounded writer-cost DESIGN after rejected metadata experiment
 
 Metadata-mode actual41 passed compatibility/integrity but cost regressed:4.4412831s

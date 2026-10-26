@@ -1,3 +1,15 @@
+# T604 writer-buffer DESIGN ACCEPT — restoration/RED scaffold next
+
+Independent metadata OUTCOME accepts41/34captures/5strictgzip/78856complete original
+events and current33/51; performance candidate is rejected, not rerun. Canonical spec
+DFRDIAG11/plan now bind only the existing gzip writer16Ki candidate. First restore
+Serialization and author the shared-default-construction real-write-count causalRED;
+no buffer optimization until that valid RED is reviewed. Plaintext, original format/
+clocks/fullsource/message/flush/error/integrity/cleanup and budgets remain exact.
+One new causal singleton only is proposed for immediate RED; full41+newcontrol and
+same-work cost belong to reviewed GREEN preparation. No speedup/LOH guarantee or
+positive/legacy/cold/fullDFR claim. All previous raw and both retained triples remain.
+
 # T603 metadata-only actual41 PASS, performance candidate rejected
 
 actual-t603-metadata-cheap-1 at0a4b85e5df35448c7ce6fd5eec3bcb463375ebeb, compiled70b,

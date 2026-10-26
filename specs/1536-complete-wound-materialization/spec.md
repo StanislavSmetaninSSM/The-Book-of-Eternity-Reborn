@@ -80,6 +80,15 @@ buffer framework or varying-event payload cache. Cheap actual same-work compatib
 allocation/cost proof and independent source/preparation/outcome precede positive;
 unchanged5-minute limits and full recording remain. Old game-timeout cause stays unknown.
 
+DFRDIAG11: the existing gzip StreamWriter may use a reviewed fixed16Ki-character
+buffer to reduce actual encoding/compressor write calls. Default plain output, full
+records/format/string dispatch, original clocks, explicit1024event/endbatch/fullmessage
+flush cadence and failure/closing/root contracts remain unchanged. A cheap real-write-
+count causal RED through the actual shared construction path, then exact decoded UTF8/
+row/source/integrity proof precede measured same-work cost assessment. No count reduction
+alone admits positive or changes its five-minute limit. This changes test-only writer
+buffering; no Game/native/GM/authority contract or new diagnostic format is introduced.
+
 # T179-Pd.3e bounded observed debug-prefix amendment — #1536 / 2026-10-25
 
 DFR-HOT1: existing actual Capturing joint owner consumes the same ordered ordinary
