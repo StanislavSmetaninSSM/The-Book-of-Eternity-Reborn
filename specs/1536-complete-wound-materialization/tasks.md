@@ -2,7 +2,7 @@
 
 - [x] T608-COPY-OBS-DESIGN Independent existing cheap9 OUTCOME and bounded sealed
   observation/range/storage DESIGN; preserve actual owners, all assertions and budgets.
-- [ ] T608-COPY-RANGE-RED Tests-first ctor-only three-mode range scaffold with old
+- [x] T608-COPY-RANGE-RED Tests-first ctor-only three-mode range scaffold with old
   manual-count semantics, SOURCE/fresh affected build/bindings/exact discovery/PREP,
   then meaningful final missing-range RED after complete fixture/diagnostic closing.
 - [ ] T608-COPY-RANGE-GREEN Drain before all five samples, prove exact original-event

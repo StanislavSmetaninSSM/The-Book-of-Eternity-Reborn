@@ -1,3 +1,27 @@
+# T608 range RED independently accepted — bounded GREEN source released
+
+Independent review accepts actual direct PASS/two passive final missing-range failures,
+with all producer/recording/storage/root prerequisites complete. Runtime and compiled
+Integration remain10c9e94f; current checkpoints add no C# change. Actual saved direct
+ranges are2–4,6–8,10–12; both passive modes2–2,4–4,8–8. The final loop stops at its
+first mismatch; later empty intervals are independently verified oracle data, not
+claims that all later failing assertions executed. Both cleanup flags and source pins
+pass. Category25.9597919 seconds; no timeout/skip/duplicate/underfill.
+
+Independent tiny-file inspection supplements the root verifier with exact11/17field
+names/order, unique passive ScopeIds, original monotonic ticks, source pairs and all
+snapshot/observer counters. Carry those explicit checks into GREEN verification.
+No repeat is needed to close these bounded analysis gaps.
+
+Release only already designed helper drain-before-ordinal, selected copy/candidate
+passive/existing-gzip plumbing, actual nonempty prepared/effect refusal evidence and
+truthful copy null-owner boundaries. Preserve all original workload/default/guard/
+copy/byte/history/abort/timing-tree assertions and exact cheap range workload. No new
+source owner, cache, serializer, compiler switch, quota or budget. Coherent SOURCE,
+fresh affected build/current metadata/discovery and PREP still precede GREEN runtime;
+genuine copy remains separately held, then candidate, then full positive only by
+its own gates. Existing67 feature/transport9 and protected copy TIMEOUT stay distinct.
+
 # T608 actual range causal RED verified — independent OUTCOME pending
 
 Fresh owning Integration at10c9e94f built with zero errors/101 unchanged warnings;
