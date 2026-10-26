@@ -1,3 +1,21 @@
+# T607 warning-clean managed preparation verified — discovery/PREP next
+
+Fresh five-project build at `b54a8f4ba8e9d28765106fdd1cab3ca34cb8ce20` completed
+exit 0/zero errors throughout. Game 10:19/33 warnings, Support 1:44/23, Bridge 1:02/14,
+Unit 5:55/26, Integration 9:43/101. Exact normalized warning signatures/multiplicities
+equal their retained baselines; zero introduced/removed and no new suppression.
+Root verified all 33 current DLL/PDB/XML artifacts, 11 matching PE/PDB pairs and
+59 current Git/PDB sources; all five build revisions and cross-copy identities match.
+Data-only final PEReader confirms 16 selected outer methods have no newobj/ldftn.
+Three unchanged qualified Linux native source/binary assets rehashed exactly.
+
+This is build/binding preparation, not qualification. Discovery/catalog, exact causal
+singleton PlanOnly, qualified recovery and independent PREP remain next. No RED,
+GREEN, live/cold/positive runtime has run. Shared factory still true/true and all
+original budgets/oracles/fresh guards remain. Current raw/metadata/logs stay under
+`dfr-prefix/t607-build-red-clean-1` and `dfr-prefix/t607-preparation`, outside Git.
+First build evidence remains separately retained; no saves/raw were removed.
+
 # T607 first managed build complete; exact warning-only correction accepted
 
 Fresh Linux five-project build at `6660963ccc821e953cde4057102c8c9fc7c8d923`
