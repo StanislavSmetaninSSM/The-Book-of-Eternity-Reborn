@@ -1,3 +1,27 @@
+# T600 coherent independent SOURCE ACCEPT — fresh preparation next
+
+Independent Astra/high SOURCE ACCEPT covers frozenb1d65e9317bbe20d40f9103ad34f186c018db2e3
+plus3682d979 plan storage clarification. Reviewer rechecked all source/selection
+hashes, single consumer/context/lifetime/primary failures, strict real-root receipt,
+same-writer gzip/plain default, preserved P2/physical oracles/cache eligibility and
+six bounded IDs24methods/37authored cases. No material source blocker remains.
+This is source acceptance only; compile/discovery/cheap GREEN/PREP and managed
+storage/cost remain UNRUN. T600/T601 checkboxes remain open until their full gates.
+
+Next authorized step is one fresh Integration-only XML build with unchanged four
+other project inputs and explicit retained Game/Support/Bridge/Unit metadata; then
+current all33artifact/PE/PDB/source checks, full catalog discovery/no execution and
+exact six-ID PlanOnly. Independent PREP admits cheap37 separately from the expensive
+positive. No new source42/native build is justified for test-only changes. Original
+Game/Core/Services/native source, old176/twoPASS and all old outcomes remain intact.
+
+Strict external full gzip EOF/CRC/footer validation is still required before any
+actual outcome admission; exact closed receipt identity is not a general gzip
+validator. After cheap results, actual free disk, managed serialization/flush/final-
+decode and queue/memory cost must determine positive preparation. Five-minute
+positive/category budgets and full recording remain unchanged. Prior timeout cause
+and dependent live/cold gates remain unresolved; no Windows PASS or fullNI/S claim.
+
 # T600 coherent SOURCE candidate frozen — review/build pending
 
 Eight Integration-only C# paths plus catalog/selection form the full source block:
