@@ -28,6 +28,10 @@ unchanged positive is incomplete TIMEOUT300s, not phase/functional acceptance.
   No payload cache without a complete varying-input key, parallel stack, quotas or
   change to Game/native/GM behavior. This is the T601 performance gate, not a feature.
 
+- [x] T604-RED Restore accepted Serialization/shared default factory and qualify one
+  genuine same-data real-GZip-input causal control: actual1967==1967 calls, final
+  assertion only, full prerequisite/strict gzip/source/cleanup proof independently
+  accepted at257864ec3 runtime / d986 compiled. This does not close T604/positive.
 - [ ] T604 Preserve rejected metadata-mode evidence and restore the byte-exact prior
   generated fast path. Independently design a bounded existing gzip StreamWriter
   buffer correction with cheap real underlying-call causal proof before optimization;

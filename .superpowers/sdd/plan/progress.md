@@ -1,3 +1,17 @@
+# T604 prerequisite-complete causal RED ACCEPT — one gzip buffer SOURCE change next
+
+Independent outcome accepts actual257864ec3/compiledd986: target assertion line142,
+1967==1967 real GZip-input calls, all source/data/six visibility/closed-member/disposal/
+TRX/current33/52 prerequisites independently verified. Qualified clean GitHub recovery
+d292 completed30917 exact blobs/52pins. No repeat is needed and no speedup is claimed.
+
+Next source step is only the existing factory's gzip branch:16Ki characters; the plain
+branch retains the exact old two-argument constructor. AutoFlush/string dispatch/flush
+cadence/fixture/full source/codec/closing/failure contracts remain. Update only catalog/
+selection descriptions to current GREEN intent, no membership/budget change. The new
+fixture is frozen unchanged; full9IDs/42cases/same65536-event cost require independent
+SOURCE/fresh build/PREP/outcome. No positive/legacy/cold release from causal RED alone.
+
 # T604 actual prerequisite-complete causal RED — independent outcome pending
 
 One attempt actual-t604-writer-red-1, runtime257864ec313e61f1bf95d58d209fcf4298b89760,
