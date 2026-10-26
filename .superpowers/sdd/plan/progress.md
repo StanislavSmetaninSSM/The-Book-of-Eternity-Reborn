@@ -1,3 +1,16 @@
+# T593 independent causal RED accepted — unchanged counterpart released
+
+Independent Astra/high accepted the complete corrected temporal RED at d350fb79d:
+intended line179 expected0/actual1 after all prerequisites, no source-closure or
+GREEN claim. Full raw/images/effects/cleanup and all33 current artifact hashes
+were independently checked; category116.6772153s / runner130.4425138s. Root full
+GitHub recovery d350 verifies30,901 blobs/27 qualified sources/clean tree.
+Exactly one separate existing `fr063-joint-live-n-source-unchanged` is now released
+on the same compiled345ee Integration/current dependencies, NoBuild/original5m.
+It must preserve complete genuine full completion and inert-repeat assertions;
+no duplicate new positive Fact or unrelated runtime. Positive still UNRUN in
+this receipt. Production implementation remains untouched pending the pair.
+
 # T593 corrected genuine temporal causal RED verified — 2026-10-26
 
 Actual `actual-temporal-red-corrected-1` at runtime7edce02ea/Integration345ee:
