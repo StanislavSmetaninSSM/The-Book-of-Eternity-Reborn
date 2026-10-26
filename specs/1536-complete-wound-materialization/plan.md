@@ -1,3 +1,37 @@
+# T608 fresh preparation verified — independent PREP pending
+
+All five managed projects freshly built at `7baac1aa06587b40506e73dde12d87db7aa22f6f`:
+Game 8:00.73, Support 0:50.11, Bridge 0:20.50, Unit 3:38.06, Integration 7:46.05.
+Every build exited zero with zero errors. Exact warning signatures/multiplicity match
+baseline: 33/23/14/26/101, no additions/removals or new suppression/Optimize setting.
+Root verified 11 PE/PDB pairs, all 33 current DLL/PDB/XML, five fresh owning revisions
+and 61 current Git/PDB source bindings. Three unchanged native assets remain exact;
+no native runtime repeat. Prior accepted T607 payloads were retained and rehashed.
+
+Official `-ValidateCatalog -NoBuild` passed: 964 categories, 12,572 methods/files,
+zero unmapped/stale selectors. Exact singleton `-SelectionFile .../t608-red-selection.json
+-PlanOnly -NoBuild` is one descriptor/case for
+`JointPreparedReplay_RequiresOneExpectedSourceWithinEligibleOwner`, exclusive two-minute
+category. Both commands executed zero tests, no timeout/duplicates; process cleanup true.
+PlanOnly's outer runner bound is not the per-descriptor two-minute runtime budget.
+
+Fresh GitHub-only shallow single-branch blob-filtered recovery contains the complete
+current tree: 30,921 exact tracked blobs / 773,018,422 logical bytes, clean including
+ignored, no copied binaries/alternates/sparse paths. All 61 qualified source pins join.
+The copy is present. After actual discovery, workspace reserve is approximately 303 MB;
+PREP must assess this actual reserve for the genuine stage-only probe, without quotas.
+Historical comparable cheap writer fixtures are only context, not an upper-size bound.
+No raw, unique evidence, user saves or recovery tree were deleted in this block.
+
+External raw/preparation: `/workspace/tboe-linux-evidence-20261025/dfr-prefix/` under
+`t608-counter-scaffold`. The maintained runner guard was narrowed to this singleton,
+fixed external selection, frozen four-path hashes, current metadata and exact remote.
+`bash -n` caught/corrected one case-parenthesis typo before any wrapper execution;
+verify-only executes no application. Actual causal runtime remains UNRUN. Independent
+PREP must precede one attempt; only final expected one/actual eight after all genuine
+DATA/eligibility/fence/closing prerequisites can be accepted RED. Cache design and
+full-positive retry/dependent gates remain HOLD. No Windows or full-feature acceptance.
+
 # T608 counter scaffold SOURCE ACCEPT — fresh builds next
 
 Independent Astra High SOURCE review accepts the coherent scaffold at
