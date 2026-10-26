@@ -24,8 +24,8 @@ public sealed partial class JointBundleComponentTests
             Kind = "PreparedExpectedReplayFinalOracle", ActualSources = sources,
             LogicalSuccessfulCalls = 8, SourceFenceCompleted = true, FixtureDisposed = true
         }));
-        // RED is only this final count mismatch: all DATA, eligibility, fence and closing prerequisites precede it.
-        Assert.Equal(1, sources);
+        // Accepted baseline was warmup1 + richer8. Shared DATA must give exactly warmup1 + richer0.
+        Assert.Equal(0, sources);
     }
 
     private sealed partial class Fixture
@@ -77,6 +77,7 @@ public sealed partial class JointBundleComponentTests
                     }
                     eligibilityCounts = CompleteCandidateCapture("PreparedExpectedReplayEligibility", eligibilityOffset);
                     Assert.Equal(1, eligibilityCounts.GetValueOrDefault("JointPreparation.Replay"));
+                    Assert.Equal(1, eligibilityCounts.GetValueOrDefault("WoundPreparation.PrepareCore"));
                     Assert.Equal(0, eligibilityCounts.GetValueOrDefault("WoundPlanCache.PreparedExpectedReplay.Source"));
                     var replayOffset = ResetCandidateCapture("PreparedExpectedReplayEightCalls");
                     for (var i = 0; i < 8; i++)
@@ -107,9 +108,11 @@ public sealed partial class JointBundleComponentTests
                     replayCounts = CompleteCandidateCapture("PreparedExpectedReplayEightCalls", replayOffset);
                     Assert.Equal(8, projections.Count);
                     Assert.Equal(8, replayCounts.GetValueOrDefault("WoundPlanCache.ValidatePreparedResult"));
-                    Assert.True(replayCounts.GetValueOrDefault("JointContinuation.ValidateSeal") >= 8);
+                    Assert.Equal(56, replayCounts.GetValueOrDefault("JointContinuation.ValidateSeal"));
                     Assert.Equal(0, replayCounts.GetValueOrDefault("JointPreparation.Replay"));
+                    Assert.Equal(0, replayCounts.GetValueOrDefault("WoundPreparation.PrepareCore"));
                 } // thread-static timing context ends before any await
+                AssertPreparedReplayFallbackParity(bundle, continuation, source, operation);
                 Assert.Equal(expectedBundle, ReadBundleView(bundle));
                 Assert.Equal(expectedInput, WoundAcceptedTurnFingerprints.ComputeInput(bundle.Input));
                 Assert.Same(continuation, _jointContinuation);
@@ -140,6 +143,60 @@ public sealed partial class JointBundleComponentTests
             {
                 _retained = true; // preserve the actual partial namespace on an unexpected prerequisite/fence failure
                 throw;
+            }
+        }
+
+        /// <summary>Checks original accepted-mismatch, malformed-input and suspended-owner paths on the same genuine setup.</summary>
+        /// <param name="bundle">The unchanged issued bundle.</param>
+        /// <param name="continuation">Its same genuine private companion.</param>
+        /// <param name="source">The actual still-open source owner.</param>
+        /// <param name="operation">The actual semantic operation whose stale DATA must be invalidated.</param>
+        private void AssertPreparedReplayFallbackParity(AcceptedMechanicsWoundStageBundle bundle, object continuation,
+            FileSystemManager.SourceDataOperation source, ValidationOperation operation)
+        {
+            using (Files.EnterOperationTimingContext())
+            {
+                var offset = ResetCandidateCapture("PreparedExpectedReplayFallbackParity");
+                var input = bundle.Input;
+                var draft = input.Transitions[0];
+                var wound = draft.ProposedAfter;
+                var alteredWound = wound with { Consequences = wound.Consequences with
+                {
+                    OwnedEffectSources = wound.Consequences.OwnedEffectSources with
+                    {
+                        DefinitionFacts = wound.Consequences.OwnedEffectSources.DefinitionFacts
+                            .Append(new WoundOwnedEffectDefinitionFact("t608_nonserialized_data", "{}", [], false)).ToArray()
+                    }
+                } };
+                var altered = input with { Transitions = input.Transitions.Select((value, i) => i == 0 ? draft with { ProposedAfter = alteredWound } : value).ToArray() };
+                Assert.Equal(WoundAcceptedTurnFingerprints.ComputeInput(input), WoundAcceptedTurnFingerprints.ComputeInput(altered));
+                Assert.False(WoundAcceptedTurnFingerprints.CapturePreparationReplayInput(input)!.Matches(
+                    WoundAcceptedTurnFingerprints.CapturePreparationReplayInput(altered)!));
+                var original = WoundAcceptedTurnPlanner.PrepareJointRepairCandidate(WoundAcceptedTurnData.CloneInput(altered)!, continuation);
+                Assert.True(original.Success, JsonSerializer.Serialize(original.Issues));
+                var expected = ExpectedPreparationReplayProjection.Capture(original);
+                Assert.NotNull(expected);
+                var actual = WoundAcceptedTurnPlanner.ReadJointExpectedPreparationProjection(altered, continuation);
+                Assert.NotNull(actual);
+                Assert.Equal(expected.ExportValues(), actual.ExportValues());
+                Assert.Equal(0, operation.CaptureState().Entries);
+
+                var malformed = input with { PreTurnHistory = new System.Text.Json.Nodes.JsonObject() };
+                var refused = WoundAcceptedTurnPlanner.PrepareJointRepairCandidate(WoundAcceptedTurnData.CloneInput(malformed)!, continuation);
+                Assert.False(refused.Success);
+                Assert.Null(WoundAcceptedTurnPlanner.ReadJointExpectedPreparationProjection(malformed, continuation));
+                using (source.Suspend())
+                {
+                    Assert.Null(Files.GetCurrentSemanticDataOperation());
+                    var uncached = WoundAcceptedTurnPlanner.ReadJointExpectedPreparationProjection(input, continuation);
+                    Assert.NotNull(uncached);
+                    Assert.Equal(PreparedExpectedReplayProjection(bundle.PreparedPlan), uncached.ExportValues());
+                }
+                Assert.Same(operation, Files.GetCurrentSemanticDataOperation());
+                var counts = CompleteCandidateCapture("PreparedExpectedReplayFallbackParity", offset);
+                Assert.Equal(3, counts.GetValueOrDefault("WoundPlanCache.PreparedExpectedReplay.Source"));
+                Output.WriteLine(JsonSerializer.Serialize(new { Kind = "PreparedExpectedReplayFallbackParity", Counts = counts,
+                    AcceptedMismatch = true, OriginalRefusalIssues = refused.Issues, SuspendedOriginalSource = true }));
             }
         }
 

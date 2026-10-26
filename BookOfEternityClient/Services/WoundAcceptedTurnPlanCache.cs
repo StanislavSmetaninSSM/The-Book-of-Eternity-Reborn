@@ -788,6 +788,9 @@ internal sealed class WoundAcceptedTurnPlanCache
         WoundAcceptedTurnInput input,
         WoundPreparedAcceptedTurnPlan plan)
     {
+        if (plan.JointRepairContinuationAuthority is not null)
+            return WoundAcceptedTurnPlanner.ReadJointExpectedPreparationProjection(input,
+                plan.JointRepairContinuationAuthority)?.AgreesWith(plan) == true;
         // Measures only the original all-family expected-source dispatch, including its input cloning.
         // The selected genuine joint control does not change other families or the comparison below.
         using var expectedSourceTiming = FileSystemManager.MeasureCurrentOperation("WoundPlanCache.PreparedExpectedReplay.Source");

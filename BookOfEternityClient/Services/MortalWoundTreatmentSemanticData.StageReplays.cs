@@ -9,6 +9,9 @@ internal sealed partial class MortalWoundTreatmentSemanticData
     private static readonly OperationComputation<WoundAcceptedTurnPlanningResult> FinalReduction = new(
         "JointSemantic.FinalReduction", 1, value => value);
 
+    /// <summary>Reports structural support only, never current graph or action permission.</summary>
+    internal bool CanCapturePreparationProjection => CaptureCurrent() is not null;
+
     /// <summary>Shares the full successful expected preparation DATA within the existing operation.</summary>
     /// <param name="operation">The existing eligible operation, or null for the original source.</param>
     /// <param name="admittedInput">The complete fixed input DATA and private companion identities.</param>

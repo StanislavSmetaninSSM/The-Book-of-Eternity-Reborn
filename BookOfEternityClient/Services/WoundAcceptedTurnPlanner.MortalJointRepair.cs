@@ -648,8 +648,7 @@ internal static partial class WoundAcceptedTurnPlanner
 
     internal static WoundAcceptedTurnPreparationResult PrepareJointRepairCandidate(WoundAcceptedTurnInput input, object authority)
     {
-        if (!TryReadJointRepair(authority, out var joint) ||
-            WoundAcceptedTurnFingerprints.ComputeInput(input) != WoundAcceptedTurnFingerprints.ComputeInput(joint.AcquisitionInput))
+        if (!JointPreparationInputAgrees(input, authority, out _))
             return new(null, JointPreparationFailure("input_invalid", "Joint preparation cannot accept a substituted acquisition input.").Issues);
         return PrepareCore(input, new WoundAcceptedTurnIdentityAllocator(), WoundOperationBeforeData.FromOriginal(input), null, authority);
     }
@@ -661,14 +660,7 @@ internal static partial class WoundAcceptedTurnPlanner
         if (!TryReadJointRepair(value, out var joint) || wounds.Count != 1 || batches.Count != 1 ||
             batches[0].TransitionAuthority.TransitionKind != "create")
             return JointPreparationFailure("prepared_invalid", "The joint contribution requires exactly one validated acquisition.").Issues;
-        var before = joint.Outcome.Before;
-        var transition = joint.Outcome.TransitionId;
-        var history = WoundHistoryState.Parse(joint.AcquisitionInput.PreTurnHistory.ToJsonString(), WoundHistoryState.HistoryPath);
-        var existing = WoundCarrierCatalog.Build(joint.AcquisitionInput.PreTurnCarriers).Occurrences
-            .Where(row => row.WoundId == before.WoundId).ToArray();
-        if (!history.IsValid || existing.Length != 1 ||
-            WoundIdentityState.ComputeSemanticFingerprint(existing[0].Wound) != WoundIdentityState.ComputeSemanticFingerprint(before) ||
-            history.State!.Transitions.Any(row => row.TransitionId == transition))
+        if (!JointPreparationBaselineAgrees(joint, out var before, out var transition))
             return JointPreparationFailure("baseline_invalid", "The independently selected existing treatment wound/history changed.").Issues;
         var applications = joint.TreatmentBatch?.RootApplications.Select(row => row.ApplicationRef).ToArray() ?? [];
         if (!JointExactUnique(woundIds.Append(before.WoundId)) || !JointExactUnique(transitionIds.Append(transition)) ||
@@ -679,11 +671,41 @@ internal static partial class WoundAcceptedTurnPlanner
         if (joint.TreatmentBatch is { } batch) batches.Add(batch);
         return Array.Empty<ValidationIssue>();
     }
+    /// <summary>Preserves the original candidate's private seal and actual-input admission order.</summary>
+    /// <param name="input">The original fixed caller input.</param>
+    /// <param name="authority">The same genuine private continuation.</param>
+    /// <param name="joint">The freshly authenticated companion.</param>
+    /// <returns>The unchanged original input agreement.</returns>
+    private static bool JointPreparationInputAgrees(WoundAcceptedTurnInput input, object authority,
+        out JointRepairContinuationAuthority joint) => TryReadJointRepair(authority, out joint) &&
+        WoundAcceptedTurnFingerprints.ComputeInput(input) == WoundAcceptedTurnFingerprints.ComputeInput(joint.AcquisitionInput);
+
+    /// <summary>Preserves the original append's private baseline/history checks and value order.</summary>
+    /// <param name="joint">The freshly authenticated actual private continuation.</param>
+    /// <param name="before">The original detached private carrier image.</param>
+    /// <param name="transition">The original treatment transition.</param>
+    /// <returns>Whether the original independently selected treatment baseline agrees.</returns>
+    private static bool JointPreparationBaselineAgrees(JointRepairContinuationAuthority joint,
+        out WoundMaterializationEnvelope before, out string transition)
+    {
+        before = joint.Outcome.Before;
+        transition = joint.Outcome.TransitionId;
+        var history = WoundHistoryState.Parse(joint.AcquisitionInput.PreTurnHistory.ToJsonString(), WoundHistoryState.HistoryPath);
+        var beforeId = before.WoundId;
+        var transitionId = transition;
+        var existing = WoundCarrierCatalog.Build(joint.AcquisitionInput.PreTurnCarriers).Occurrences
+            .Where(row => row.WoundId == beforeId).ToArray();
+        return history.IsValid && existing.Length == 1 &&
+            WoundIdentityState.ComputeSemanticFingerprint(existing[0].Wound) == WoundIdentityState.ComputeSemanticFingerprint(before) &&
+            !history.State!.Transitions.Any(row => row.TransitionId == transitionId);
+    }
+
     /// <summary>Identifies domain DATA capture failures that select the original source, never protocol failures.</summary>
     /// <param name="error">The error from structural capture or moved domain preflight only.</param>
     /// <returns>True for supported malformed DATA exceptions.</returns>
     private static bool IsReplayCaptureFailure(Exception error) => error is ArgumentException or InvalidOperationException or
-        System.Text.Json.JsonException or NullReferenceException or OverflowException or NotSupportedException;
+        System.Text.Json.JsonException or NullReferenceException or OverflowException or NotSupportedException or
+        FormatException or InvalidDataException;
 
     private static bool JointExactUnique(IEnumerable<string> values)
     {

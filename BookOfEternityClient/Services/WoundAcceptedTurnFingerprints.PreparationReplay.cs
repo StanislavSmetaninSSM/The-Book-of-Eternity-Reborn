@@ -44,6 +44,8 @@ internal static partial class WoundAcceptedTurnFingerprints
     {
         if (wound is null) { fields.Add(null); return; }
         fields.Add("present");
+        // Mortal canonical treatment reparses/normalizes projection DATA. Retain the actual typed shape too.
+        fields.Add(JsonSerializer.Serialize(wound.Treatment));
         var owned = wound.Consequences.OwnedEffectSources;
         // These sequences are sorted in canonical JSON; INPUT equality must retain their actual order.
         fields.Add(owned.Definitions.Count.ToString(CultureInfo.InvariantCulture));

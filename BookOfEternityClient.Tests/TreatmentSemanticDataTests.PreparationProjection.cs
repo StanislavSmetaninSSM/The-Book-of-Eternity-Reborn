@@ -168,6 +168,159 @@ public sealed partial class TreatmentSemanticDataTests
         Assert.True(snapshot.Matches(WoundAcceptedTurnFingerprints.CapturePreparationReplayInput(WoundAcceptedTurnData.CloneInput(original)!)!));
     }
 
+    /// <summary>Checks each scalar independently against actual detached plan DATA, without validating authority.</summary>
+    /// <param name="index">The changed scalar in the five-field contract.</param>
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
+    public void PreparationProjection_EachActualScalarIsCompared(int index)
+    {
+        var values = new[] { "binding", "input", "preparation", "baseline-input", "baseline" };
+        var projection = new ExpectedPreparationReplayProjection(values[0], values[1], values[2], values[3], values[4], []);
+        WoundPreparedAcceptedTurnPlan Plan() => new(new("session", "request", "snapshot", "mortal_world", 43, [], "events"),
+            values[0], values[1], values[2], [], [], [], [],
+            new(values[3], new(null, null, null, null, null), new JsonObject(), new JsonObject(), values[4]));
+        Assert.True(projection.AgreesWith(Plan()));
+        values[index] += ".changed";
+        Assert.False(projection.AgreesWith(Plan()));
+    }
+
+    /// <summary>Does not retain cancellation as a successful computed value.</summary>
+    [Fact]
+    public void PreparationProjection_CancelledSourceKeepsPrimaryAndClearsData()
+    {
+        using var fixture = new Fixture(_output);
+        using var operation = new DefaultOperationValidationService().BeginOperation();
+        var input = new OperationStructuralSnapshot(["fixed"], []);
+        var primary = new OperationCanceledException("actual source cancellation");
+        Assert.Same(primary, Assert.Throws<OperationCanceledException>(() =>
+            fixture.Data.ReadPreparationProjection(operation, input, () => throw primary)));
+        Assert.Equal(0, operation.CaptureState().Entries);
+        Assert.NotNull(fixture.Data.ReadPreparationProjection(operation, input, LiteralProjection));
+    }
+
+    /// <summary>Rejects overlapping serial flows and joins the real blocked source before fixture closing.</summary>
+    /// <returns>Completion after the originally owned source task has settled.</returns>
+    [Fact]
+    public async Task PreparationProjection_OverlappingFlowCannotImportAResult()
+    {
+        using var fixture = new Fixture(_output);
+        using var operation = new DefaultOperationValidationService().BeginOperation();
+        using var release = new ManualResetEventSlim();
+        var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var input = new OperationStructuralSnapshot(["fixed"], []);
+        var source = Task.Run(() => Record.Exception(() => fixture.Data.ReadPreparationProjection(operation, input, () =>
+        {
+            entered.SetResult(); release.Wait(); return LiteralProjection();
+        })));
+        try
+        {
+            await entered.Task;
+            Assert.ThrowsAny<InvalidOperationException>(() => fixture.Data.ReadPreparationProjection(operation, input, LiteralProjection));
+        }
+        finally
+        {
+            release.Set();
+            var originalError = await source;
+            Assert.IsAssignableFrom<InvalidOperationException>(originalError);
+        }
+        Assert.Equal(0, operation.CaptureState().Entries);
+    }
+
+    /// <summary>Supports neither cached revival after fallback failure nor swallowed closed-owner protocol errors.</summary>
+    [Fact]
+    public void PreparationProjection_FallbackFailureThenRestoreNeedsNewSource()
+    {
+        using var fixture = new Fixture(_output);
+        using var operation = new DefaultOperationValidationService().BeginOperation();
+        var input = new OperationStructuralSnapshot(["fixed"], []);
+        var sources = 0;
+        ExpectedPreparationReplayProjection Source() { sources++; return LiteralProjection(); }
+        Assert.NotNull(fixture.Data.ReadPreparationProjection(operation, input, Source));
+        Assert.Null(MortalWoundTreatmentSemanticData.ReadPreparationProjectionFallback(operation, () => null));
+        Assert.NotNull(fixture.Data.ReadPreparationProjection(operation, input, Source));
+        Assert.Equal(2, sources);
+        operation.Dispose();
+        Assert.Throws<ObjectDisposedException>(() => MortalWoundTreatmentSemanticData.ReadPreparationProjectionFallback(operation, Source));
+        Assert.Equal(2, sources);
+    }
+
+    /// <summary>Compares actual pair contents, count and order independently of scalar equality.</summary>
+    [Fact]
+    public void PreparationProjection_ActualBatchPairsAndOrderAreCompared()
+    {
+        var pairs = new[] { ("source-one", "seal-one"), ("source-two", "seal-two") };
+        var expected = new ExpectedPreparationReplayProjection("binding", "input", "preparation", "baseline-input", "baseline", pairs);
+        WoundPreparedAcceptedTurnPlan Plan(IEnumerable<(string Source, string Seal)> values) => new(
+            new("session", "request", "snapshot", "mortal_world", 43, [], "events"), "binding", "input", "preparation", [], [], [],
+            values.Select(pair => new WoundEffectOperationBatch("local", "wound",
+                new(1, "wound", "id", "ref", "active", true, "mortal_world", new("mortal_world", "player", "player", "path"),
+                    "event", "semantic", "opportunity", "fingerprint", []), [], [], [], pair.Source,
+                new("input", "opportunity", "fingerprint", "operation", "summary", 1, "create", null, null, pair.Seal))).ToArray(),
+            new("baseline-input", new(null, null, null, null, null), new JsonObject(), new JsonObject(), "baseline"));
+        Assert.True(expected.AgreesWith(Plan(pairs)));
+        Assert.False(expected.AgreesWith(Plan(pairs.Take(1))));
+        Assert.False(expected.AgreesWith(Plan(pairs.Reverse())));
+        Assert.False(expected.AgreesWith(Plan(new[] { ("different", "seal-one"), pairs[1] })));
+        Assert.False(expected.AgreesWith(Plan(new[] { ("source-one", "different"), pairs[1] })));
+    }
+
+    /// <summary>Retains actual owned-definition order even though canonical serialization sorts it.</summary>
+    [Fact]
+    public void PreparationProjection_InputCaptureDistinguishesCanonicalSortedOrder()
+    {
+        using var fixture = new Fixture(_output);
+        var wound = fixture.Outcome.Before;
+        var definitions = new[] {
+            System.Text.Json.JsonSerializer.SerializeToElement(new { definitionKey = "one" }),
+            System.Text.Json.JsonSerializer.SerializeToElement(new { definitionKey = "two" }) };
+        WoundAcceptedTurnInput Input(IEnumerable<System.Text.Json.JsonElement> values) => ProjectionInput(wound with
+        {
+            Consequences = wound.Consequences with
+            {
+                OwnedEffectSources = wound.Consequences.OwnedEffectSources with { Definitions = values.ToArray() }
+            }
+        });
+        var a = Input(definitions);
+        var b = Input(definitions.Reverse());
+        Assert.Equal(WoundAcceptedTurnFingerprints.ComputeInput(a), WoundAcceptedTurnFingerprints.ComputeInput(b));
+        Assert.False(WoundAcceptedTurnFingerprints.CapturePreparationReplayInput(a)!.Matches(
+            WoundAcceptedTurnFingerprints.CapturePreparationReplayInput(b)!));
+    }
+
+    /// <summary>Uses original uncached work for the established unsupported two-intent contour.</summary>
+    [Fact]
+    public void PreparationProjection_UnsupportedSemanticContourDoesNotRetain()
+    {
+        using var fixture = new Fixture(_output);
+        using var operation = new DefaultOperationValidationService().BeginOperation();
+        var original = fixture.Resolution;
+        var request = original.RequestAuthority;
+        MortalWoundTreatmentOperation[] declared = [new MortalWoundStabilizeOperation(), new MortalWoundStabilizeOperation()];
+        var intents = declared.Select((value, ordinal) =>
+        {
+            var fingerprint = MortalWoundTreatmentOutcomeIntentComposer.DeclaredFingerprint(ordinal, value);
+            return MortalWoundStabilizeOutcomeIntent.Create(ordinal, fingerprint,
+                MortalWoundTreatmentOutcomeIntentComposer.IntentFingerprint(request.RequestFingerprint, ordinal, value, fingerprint));
+        }).ToArray();
+        var unsupported = MortalWoundTreatmentResolution.Create(original.Mode, original.Coordinates,
+            original.AttemptDisposition, original.ResultCategory, original.SelectedOutcomeIndex, original.Interruption,
+            declared, intents, null, original.ConsumptionTrigger, null, null, null, request,
+            original.ModeEvidence, original.RouteFingerprint, original.RouteCompletion);
+        var data = new MortalWoundTreatmentSemanticData(fixture.Outcome, unsupported);
+        Assert.False(data.CanCapturePreparationProjection);
+        var sources = 0;
+        ExpectedPreparationReplayProjection Source() { sources++; return LiteralProjection(); }
+        var input = new OperationStructuralSnapshot(["fixed"], []);
+        Assert.NotNull(data.ReadPreparationProjection(operation, input, Source));
+        Assert.NotNull(data.ReadPreparationProjection(operation, input, Source));
+        Assert.Equal(2, sources);
+        Assert.Equal(0, operation.CaptureState().Entries);
+    }
+
     /// <summary>Creates independent literal expected DATA, without a forged planner/owner authority.</summary>
     /// <returns>The full ordered scalar and batch-pair vector.</returns>
     private static ExpectedPreparationReplayProjection LiteralProjection() => new("binding", "input", "preparation", "baseline-input", "baseline", [("source", "seal")]);

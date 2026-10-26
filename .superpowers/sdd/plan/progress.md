@@ -1,3 +1,23 @@
+# T608 shared projection WIP2 preserved — coherent C#, metadata pending
+
+Root rechecked the frozen ten-path source inventory. Richer actual-caller route and
+finite shared candidate/private-baseline helpers are authored; PrepareCore/storage
+remain untouched. Ineligible capture/preflight uses original source fallback, with
+protocol handling separate from domain catches. Tests-first cheap partial now has
+16 authored methods / 20 static cases, uncompiled/unexecuted.
+
+The same genuine fixture retains its original eight calls/exports/58 beforeimages/
+owner/G/fence/cleanup, with strict unchanged-window source 1+0, PrepareCore 1/0 and
+predicted 56 seals. A separate POST-eight parity segment adds accepted hidden-fact key
+mismatch, malformed-input refusal and suspended-owner original path on the same owner;
+its extra sources are outside the unchanged measurement window. Whole-case duration
+must not be presented as an equal-work speed comparison to the old RED.
+
+Remaining before coherent SOURCE: catalog/CI ownership, finite inverse receipts,
+source-pin scan and final static self-review. All new C# remains UNCOMPILED/UNRUN;
+no fresh build, runtime, cache qualification or full-positive admission. Root preserves
+this WIP before author resumes the metadata block; no raw is staged or uploaded.
+
 # T608 shared projection WIP1 preserved — uncompiled, richer route pending
 
 The sole implementer froze seven C# paths at a coherent API boundary: nine file-free
