@@ -1,3 +1,20 @@
+# T599 independent PREP accepted — one cheap causal baseline released
+
+Independent Astra/high PREP ACCEPT at9582039e402408b32aa1c5fcf5af4b15980a5f6c:
+33actual artifact hashes/copies,11PE/PDB identities,44current/Git/PDB sources,
+honest mixed lineage, zero introduced warnings and actual catalog/plan rechecked.
+Fresh GitHub recovery is clean,30911exactblobs/772628284bytes/44sourcechecks;
+no recovery build/runtime. Dotnet build receipt is t599-build/build.exit0; outer
+login-errexit status artifact is separately reproduced and does not require rebuild.
+
+Release exactly one Category fr063-lifecycle-passive-timing-visibility NoBuild,
+1case/current1-minute category budget, raw at dfr-prefix/actual-t599-causal-red-1.
+Only the final missing-visible-original-begin assertion after all source/final2event/
+hash/root prerequisites is a causal RED. Any earlier failure or timeout is a
+fixture/outcome investigation, not intended evidence. T600 continuing consumer,
+GREEN/live wiring, expensive positive and remaining DFR gates stay unreleased.
+Keep all previous PASS/timeout/candidate roots/raw; no deletion or limit change.
+
 # T599 baseline fresh preparation ready — independent PREP pending
 
 Integration XML build atc03bbed9e52cb8b1043cf92dd56509f88a9b4ac7 completed3:11.84,
