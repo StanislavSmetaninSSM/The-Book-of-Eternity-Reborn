@@ -53,8 +53,11 @@ of xUnit; the positive's original receiver still gets every existing message.
 
 ## Bounded storage correction (DFRDIAG7..9)
 
-Current free disk after exact clean task-created recovery-copy retirement is3.23GB;
-all unique raw and accepted native/managed provenance remain. The old accepted
+Post-retirement free disk was sampled at3.23GB after exact clean task-created
+recovery-copy retirement; subsequent fresh recovery occupies~1.24GB and the latest
+sample is~1.99GB free. These are historical preparation samples, not a current
+positive admission: PREP must resample and assess any expendable-copy retirement.
+All unique raw and accepted native/managed provenance remain. The old accepted
 aggregate has16,397,232 boundaries but no full captured events; the illustrative
 same-format7.82GB is historical context, not the next-run size. A contiguous real
 16MiB recorded passive-trace prefix compressed to1.87MB (~9:1) using Python/zlib1.3.2
