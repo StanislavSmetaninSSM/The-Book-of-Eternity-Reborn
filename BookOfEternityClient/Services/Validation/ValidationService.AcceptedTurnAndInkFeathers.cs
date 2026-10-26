@@ -5085,7 +5085,7 @@ public partial class ValidationService
     {
         if (CurrentPendingSnapshotLookup(writeLease) is { } scoped)
         {
-            source?.Unavailable("narrative_policy_scoped_lookup_provenance_unavailable");
+            source?.ScopedLookup();
             if (scoped.Manifest is { } supplied) RecordNarrativeOriginalContext(source, supplied, "ScopedData");
             return scoped;
         }
@@ -5095,10 +5095,16 @@ public partial class ValidationService
             return new ValidatedPendingTurnSnapshotLookup(ValidatedPendingTurnSnapshotStatus.Usable, _prevalidatedPendingTurnSnapshotOverride);
         }
 
-        var manifestExists = writeLease == null
-            ? _fs.FileExists(PendingTurnSnapshotManifestPath)
-            : _fs.FileExists(writeLease, PendingTurnSnapshotManifestPath);
-        source?.BeginRead(narrativeRolePath, PendingTurnSnapshotManifestPath, "lookup-presence").Presence(manifestExists);
+        var presence = source?.BeginRead(narrativeRolePath, PendingTurnSnapshotManifestPath, "lookup-presence");
+        bool manifestExists;
+        try
+        {
+            manifestExists = writeLease == null
+                ? _fs.FileExists(PendingTurnSnapshotManifestPath)
+                : _fs.FileExists(writeLease, PendingTurnSnapshotManifestPath);
+            presence?.Presence(manifestExists);
+        }
+        catch (Exception error) { presence?.Fault(error); throw; }
         var manifest = await LoadValidationPendingTurnSnapshotManifestAsync(writeLease, source, narrativeRolePath);
         var authorityJson = await ReadAcceptedTurnValidationFileAsync(
             PendingTurnSnapshotAuthority.AuthorityPath,

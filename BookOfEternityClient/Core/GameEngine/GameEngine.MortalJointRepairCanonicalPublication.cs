@@ -74,6 +74,7 @@ public partial class GameEngine
                 namedOperationTimer5?.Dispose();
                 await InvokeSessionFinalizationCheckpointAsync(SessionFinalizationCheckpoint.MortalJointCustodyCaptureCompletedBeforePreparation);
                 await RecheckMortalJointNarrativeBeforePreparationAsync(attempt, lease, frame);
+                await attempt.RecheckClosedDebugPrefixAsync(JointAttemptIssuer);
                 using var namedOperationTimer6 = _fs.MeasureOperation("GameEngine.CreateJointRepairPreparationAsync");
                 var preparation = await WoundAcceptedTurnPlanner.CreateJointRepairPreparationAsync(_fs, lease, capture);
                 namedOperationTimer6?.Dispose();
@@ -163,6 +164,10 @@ public partial class GameEngine
                     result = Retain(result with { Completed = witness });
                 }
                 lease.EnsureNoPendingLocalDecision();
+            }
+            catch (MortalJointDebugPrefixRejectedException error)
+            {
+                result = Refused(error.Issues);
             }
             catch (Exception error) when (error is not SessionReplacedException &&
                 error is InvalidDataException or IOException or InvalidOperationException or ArgumentException or

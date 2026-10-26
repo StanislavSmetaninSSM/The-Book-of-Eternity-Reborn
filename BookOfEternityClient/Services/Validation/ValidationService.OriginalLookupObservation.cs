@@ -38,6 +38,11 @@ public partial class ValidationService
             if (_narrative is { } narrative) narrative.OriginalContext(session, request, token, turn, provenance, data);
             else _debug!.OriginalContext(session, request, token, turn, provenance, data);
         }
+        internal void ScopedLookup()
+        {
+            _narrative?.Unavailable("narrative_policy_scoped_lookup_provenance_unavailable");
+            _debug?.RequireOriginalJoin();
+        }
         internal void Unavailable(string reason) { _narrative?.Unavailable(reason); _debug?.Unavailable(reason); }
         internal void Fault(Exception error) { _narrative?.Fault(error); _debug?.Fault(error); }
     }

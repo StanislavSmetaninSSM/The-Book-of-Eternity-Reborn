@@ -11,7 +11,7 @@ public partial class GameEngine
     internal enum JointAttemptStage { Preparation, Prepared, Effects, Final, Common, Preflight }
 
     // AR can name and inspect the actual owner, but cannot construct or drive it.
-    internal sealed class MortalJointPublicationAttempt
+    internal sealed partial class MortalJointPublicationAttempt
     {
         private readonly GameEngine _engine;
         private readonly FileSystemManager _files;
@@ -37,8 +37,16 @@ public partial class GameEngine
             RequireIssuer(issuer);
             _engine = engine; _files = files; _lease = lease; _frame = actualFrame; _capture = actualCapture;
             _narrativeCandidate = engine._mortalJointNarrativeInvocation;
-            _generation = files.ReadLocalGenerationSnapshot(lease).Binding.Id
+            var generation = files.ReadLocalGenerationSnapshot(lease);
+            _generation = generation.Binding.Id
                 ?? throw new InvalidDataException("Joint attempt requires its existing physical generation.");
+            _prefixGenerationBytes = generation.Bytes?.ToArray();
+            _prefixMain = lease.MainAdmission;
+            _prefixIteration = engine._mortalJointInterfaceValidationIteration;
+            _prefixReady = engine._mortalJointInterfaceReady; _prefixStage = engine._hotOrdinaryOriginal;
+            _prefixCheckpoint = engine._mortalJointRepairCheckpoint!.ToJsonObject()["fingerprint"]!.GetValue<string>();
+            _prefixResume = engine.IsCurrentMortalJointNarrativeResume(engine._mortalJointRepairCheckpoint);
+            engine._mortalJointReasoningPrefixObservation = null;
             _binding = binding.DeepClone().AsObject(); _custody = custody.DeepClone().AsObject();
         }
         private static void RequireIssuer(object issuer)
@@ -138,7 +146,9 @@ public partial class GameEngine
         }
         internal void Expire(object issuer)
         {
-            RequireIssuer(issuer); _expired = true; _capturing = false;
+            RequireIssuer(issuer);
+            ReleaseDebugPrefix();
+            _expired = true; _capturing = false;
             _hotOriginal = null; _hotEvidence = null;
             if ((_narrative ?? _narrativeCandidate) is { } narrative)
             {
@@ -202,6 +212,9 @@ public partial class GameEngine
                 if (!IsOptionalHotFailure(error)) throw;
             }
         }
+        var prefixIssues = await attempt.ConsumeDebugPrefixAsync(JointAttemptIssuer);
+        if (prefixIssues.Any(issue => issue.Severity == IssueSeverity.Error))
+            throw new MortalJointDebugPrefixRejectedException(prefixIssues);
         attempt.CloseCapture(JointAttemptIssuer, HotCustodyDiagnostic(read));
     }
 

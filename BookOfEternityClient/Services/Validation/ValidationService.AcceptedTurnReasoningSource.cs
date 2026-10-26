@@ -49,8 +49,14 @@ public partial class ValidationService
         {
             if (_disposed || !ReferenceEquals(validator, _validator)) throw new InvalidDataException("debug_prefix_expired_or_foreign_validator");
         }
-        internal void RequireOriginalContext(string session, string request, string token, int turn) =>
-            _source.RequireOriginalContext(session, request, token, turn);
+        internal void RequireOriginalContext(object actualManifest)
+        {
+            RequireIssuer(_validator);
+            var manifest = ConvertToValidationPendingTurnSnapshotManifest(actualManifest)
+                ?? throw new InvalidDataException("debug_prefix_actual_original_missing");
+            _source.JoinOriginalContext(manifest.SessionId, manifest.RequestId, manifest.ManifestPayloadHash,
+                manifest.TurnNumber, JsonSerializer.Serialize(manifest, ManifestHashJsonOpts));
+        }
         internal Task RequireCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
         {
             RequireIssuer(_validator); return _source.RequireCurrentAsync(files, lease);
@@ -77,7 +83,7 @@ public partial class ValidationService
         private readonly List<(string Session, string Request, string Token, int Turn)> _contexts = [];
         private readonly List<ValidationIssue> _timestampIssues = [];
         private string? _fault, _manifestData;
-        private bool _completed, _disposed;
+        private bool _completed, _disposed, _needsOriginalJoin, _originalJoined;
         private int _timestampCalls;
         private long _ordinal;
         internal FileSystemManager.CanonicalWriteLease Lease { get; }
@@ -120,21 +126,22 @@ public partial class ValidationService
         internal void Policy(string role, string route, string state)
         {
             if (role != Debug) { Unavailable("debug_prefix_unsupported_policy_role"); return; }
-            if (state == "Uncovered") Unavailable("debug_prefix_original_uncovered");
             Add(Debug, route, state, null);
         }
         internal void OriginalContext(string session, string request, string token, int turn, string provenance, string data)
         {
-            if (provenance != "PhysicalLookupData") Unavailable("debug_prefix_original_provenance_unavailable: " + provenance);
+            if (provenance != "PhysicalLookupData") RequireOriginalJoin();
             if (_manifestData is not null && _manifestData != data) Unavailable("debug_prefix_original_data_changed");
             _manifestData ??= data; _contexts.Add((session, request, token, turn));
             Policy(Debug, "original-context", provenance);
         }
-        internal void RequireOriginalContext(string session, string request, string token, int turn)
+        internal void RequireOriginalJoin() => _needsOriginalJoin = true;
+        internal void JoinOriginalContext(string session, string request, string token, int turn, string data)
         {
-            RequireUsable();
-            if (_contexts.Count == 0 || _contexts.Any(value => value != (session, request, token, turn)))
-                throw Refuse("debug_prefix_original_context_changed");
+            RequireCompleted();
+            if (_contexts.Count == 0 || _contexts.Any(value => value != (session, request, token, turn)) || _manifestData != data)
+                throw Refuse("debug_prefix_original_context_or_data_changed");
+            _originalJoined = true;
         }
         internal void BeginTimestampPolicy(JsonElement root)
         {
@@ -185,9 +192,14 @@ public partial class ValidationService
             if (_main is not null && (!ReferenceEquals(Lease.MainAdmission, _main) || _main.Closed))
                 throw new InvalidDataException("debug_prefix_main_changed");
         }
-        private void RequireUsable()
+        private void RequireCompleted()
         {
             if (_disposed || !_completed || _fault is not null) throw new InvalidDataException("debug_prefix_unavailable: " + (_fault ?? (_disposed ? "expired" : "incomplete")));
+        }
+        private void RequireUsable()
+        {
+            RequireCompleted();
+            if (_needsOriginalJoin && !_originalJoined) throw new InvalidDataException("debug_prefix_original_join_required");
         }
         private InvalidDataException Refuse(string reason) { Unavailable(reason); return new(reason); }
         internal void Fault(Exception error) => _fault ??= error.GetType().Name + ": " + error.Message;

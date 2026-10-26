@@ -1,3 +1,26 @@
+# T594–595 engine/source continuation WIP — compile/runtime UNRUN
+
+Second coherent fragment after838ad2a1:7 C# paths. Actual private attempt now
+calls the DATA producer with Capturing checks before/after await, retains only
+its own result, preserves ordered Error refusal and runs a refusal-only source
+fence after the existing observer AND fresh N check. Binding includes actual
+Main/physicalG/frame/checkpoint/iteration/Stage/Ready; authenticated v3 current-only
+resume does not invent fresh-memory or historical prefix proof. Scoped/supplied
+DATA is retained and joined by full manifest DATA plus tuple to the actual frame;
+unjoined data refuses, uncovered policy is kept distinct from signed absence.
+Cheap public Full A→B→A/DATA source/context/copy/timestamp/fault/foreign/disposal
+controls are authored, not compiled/executed and no discovered count is claimed.
+
+Integration fence/phase/positive assertions, strict source inverse, rolling source-
+pin review/maintenance, final catalog/selection and coherent SOURCE review remain
+pending. Root audited only the existing World/Meta source-pin declarations against
+immutable pre-DFR76:12unique rolling dependencies were already stale (World10/55,
+Meta11/96), not a new DFR runtime finding. Exact per-file audit/known-snapshot
+origins are external. Refresh proposals need explicit dependency review; frozen
+historical N/reasoning inverse inventories remain unchanged. No broad World/Meta
+runtime or Full/S qualification follows. Current binaries remain pre-DFR and are
+not used to execute these new sources. Preserve all previous raw/failures/saves.
+
 # T594 Services/Core implementation WIP — compile/runtime UNRUN
 
 First coherent source fragment:11 C# paths. Shared ordinary prefix orchestration,
