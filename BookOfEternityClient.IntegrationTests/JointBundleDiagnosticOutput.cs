@@ -49,21 +49,33 @@ internal sealed class JointBundleDiagnosticOutput : ITestOutputHelper, IDisposab
     /// An absolute per-call repository root for isolated path controls, or <see langword="null"/>
     /// for the actual repository. This does not change the process-wide repository identity.
     /// </param>
+    /// <param name="actualFixtureRoot">
+    /// The absolute existing lifecycle fixture root for diagnostic identity only,
+    /// or <see langword="null"/> to preserve the component's ordinary namespace.
+    /// </param>
     internal JointBundleDiagnosticOutput(string caseName, ITestOutputHelper referenceOutput,
-        bool disposeWriterForControl = false, string? repositoryRootForControl = null)
+        bool disposeWriterForControl = false, string? repositoryRootForControl = null,
+        string? actualFixtureRoot = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(caseName);
         ArgumentNullException.ThrowIfNull(referenceOutput);
         var repositoryRoot = repositoryRootForControl ?? TestRepoPaths.RepoRoot;
         if (!Path.IsPathFullyQualified(repositoryRoot))
             throw new InvalidDataException("A component control repository root must be absolute.");
+        if (actualFixtureRoot is not null && (!Path.IsPathFullyQualified(actualFixtureRoot) || !Directory.Exists(actualFixtureRoot)))
+            throw new InvalidDataException("An actual lifecycle diagnostic root must be absolute and already exist.");
         _referenceOutput = referenceOutput;
         FixtureNonce = Guid.NewGuid().ToString("N");
         DiagnosticDirectory = Path.GetFullPath(Path.Combine(TestDiagnosticPaths.ResolveRoot(
             Environment.GetEnvironmentVariable("BOE_TEST_DIAGNOSTIC_ROOT"), repositoryRoot),
             "joint-bundle-component-diagnostics", FixtureNonce));
-        ExpectedOwnedRoot = Path.GetFullPath(Path.Combine(repositoryRoot, "TestResults",
-            "joint-bundle-component", FixtureNonce));
+        ExpectedOwnedRoot = actualFixtureRoot is null
+            ? Path.GetFullPath(Path.Combine(repositoryRoot, "TestResults", "joint-bundle-component", FixtureNonce))
+            : Path.GetFullPath(actualFixtureRoot);
+        if (actualFixtureRoot is not null && (DiagnosticDirectory == ExpectedOwnedRoot ||
+            DiagnosticDirectory.StartsWith(ExpectedOwnedRoot.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar,
+                OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal)))
+            throw new InvalidDataException("Persistent diagnostics must remain outside the actual owned fixture root.");
         if (Directory.Exists(DiagnosticDirectory) || File.Exists(DiagnosticDirectory))
             throw new IOException("Diagnostic destination already exists.");
         Directory.CreateDirectory(DiagnosticDirectory);
@@ -280,6 +292,9 @@ internal sealed class JointBundleDiagnosticOutput : ITestOutputHelper, IDisposab
         lock (_gate)
         {
             if (!_finished) throw new InvalidOperationException("Finish diagnostics before fixture cleanup.");
+            if (!Path.IsPathFullyQualified(ownedRoot) || !string.Equals(Path.GetFullPath(ownedRoot), ExpectedOwnedRoot,
+                    OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
+                throw new InvalidDataException("Fixture closing receipt does not match the registered actual root.");
             _fixtureClosing = new { Owned = ownedRoot, Retained = retained, Closing = removed, Failures = failures };
             Attempt(() => _referenceOutput.WriteLine(JsonSerializer.Serialize(new
             {

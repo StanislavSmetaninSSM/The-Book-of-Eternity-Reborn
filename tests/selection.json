@@ -140,6 +140,27 @@
       "contracts": [
         "#1536 T594–597 / selected-I DFR scope and genuine legacy protocol preservation"
       ]
+    },
+    {
+      "category": "fr063-lifecycle-passive-timing-visibility",
+      "reason": "T599 cheap causal visibility oracle against compilable after-return baseline. Preserve real source/binding/final drain/hash/cleanup prerequisites; continuous consumer and expensive unchanged retry are not authorized here.",
+      "contracts": [
+        "#1536 T599–602 / DFRDIAG1–6; test-only interrupted lifecycle event transport, no product behavior change"
+      ]
+    },
+    {
+      "category": "core-passive-named-transport",
+      "reason": "Affected existing sealed-event/capture/serializer/final-accounting consumers; optional root extension preserves established transport and cache behavior. Execution staged by Root after causal baseline review.",
+      "contracts": [
+        "#1536 T599–602 / DFRDIAG1–6; test-only interrupted lifecycle event transport, no product behavior change"
+      ]
+    },
+    {
+      "category": "fr063-joint-component-diagnostics",
+      "reason": "Affected existing default component output namespace, live-file writes and storage-failure controls; preserve default behavior with optional actual lifecycle root.",
+      "contracts": [
+        "#1536 T599–602 / DFRDIAG1–6; test-only interrupted lifecycle event transport, no product behavior change"
+      ]
     }
   ]
 }

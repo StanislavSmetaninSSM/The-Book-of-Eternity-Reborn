@@ -1,3 +1,28 @@
+# T599 after-return baseline source frozen — uncompiled/unrun WIP
+
+Five source/catalog paths reuse the existing sink/capture/queue/ObserveRecorded:
+new LifecyclePassiveTimingDiagnostics adapter, one real-file blocked-await Fact,
+optional actualFixtureRoot binding/default component preservation and exact closing
+root check, category/selection. Arm deliberately starts no consumer; final drain
+occurs only after body/resource closing. No live wiring, production/Core/native
+change or expensive attempt. New persistent faults defer while original full xUnit
+forwarding remains exact; pre-bind flush does not forward twice. Final completion
+shares one Task and accepts optional primary Exception DATA for precedence.
+
+The authored causal test guards early body failure in its entry handshake, always
+releases/joins in finally, and proves actual source1/bytes, two final original
+events/clocks/queue accounting, root removal/receipt and exact record hash before
+its intended missing-live-begin oracle. One authored Fact is not a discovered case
+or accepted RED. Compile/discovery/runtime remain UNRUN; independent fixture SOURCE
+review precedes fresh affected Integration preparation and the one cheap baseline.
+
+Root matched all five implementer hashes before selection integration. Ruling:
+retain the previous20 DFR IDs for cumulative CI coverage and append the3 diagnostic
+IDs (23 total); actual new transport controls have a separate exact3-ID external
+selection. Every956 old category object/budget remains exact; one new owner957.
+No unchanged cheap176/twoPASS replay or positive release follows. Existing33binaries
+remain old source-bound evidence and cannot execute this new candidate via NoBuild.
+
 # T599–602 diagnostic design independently accepted — baseline source next
 
 Independent Astra/high DESIGN ACCEPT of900b80cc: reuse accepted sealed queue,

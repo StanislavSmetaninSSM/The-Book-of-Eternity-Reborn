@@ -55,8 +55,9 @@ of xUnit; the positive's original receiver still gets every existing message.
 - Create Integration `LifecyclePassiveTimingDiagnostics.cs`: test-owned
   ITestOutputHelper/IAsyncDisposable adapter. BindFixtureRoot(string actualRoot)
   registers its one actual root; Arm(OperationTimingAccumulator.Window window)
-  attaches its one event window after the sink exists; CompleteAsync closes only
-  after the caller has settled functional/resource/fixture lifetime. Its internal
+  attaches its one event window after the sink exists; CompleteAsync(Exception?
+  primaryFailure = null) closes only after the caller has settled functional/
+  resource/fixture lifetime and preserves an original failure object. Its internal
   consumer has no game/authority references. Finish/idempotence/primary-error
   orchestration may be a focused partial; do not duplicate existing serializer.
 - Create `LifecyclePassiveTimingDiagnosticsTests.cs`: minimal independent real-file/

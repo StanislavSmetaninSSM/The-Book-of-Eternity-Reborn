@@ -2,6 +2,41 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-lifecycle-passive-timing-visibility",
+  "responsibility": "One cheap real-file blocked-await causal control: an original sealed named begin must be persistent while its actual body remains blocked. Valid source read, actual root binding, finally release/join/cleanup and exact after-return two-event/hash receipt are prerequisites; T599 baseline deliberately has no continuing consumer.",
+  "excludes": "No GameEngine, native process, world, lease/issuer/authority fabrication, positive fixture replay, production change, timeout increase or record quota. Build/setup/cleanup/timeout failures are not causal RED.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/LifecyclePassiveTimingDiagnostics.cs",
+    "BookOfEternityClient.IntegrationTests/LifecyclePassiveTimingDiagnosticsTests.cs",
+    "BookOfEternityClient.IntegrationTests/JointBundleDiagnosticOutput.cs"
+  ],
+  "related": [
+    {
+      "id": "core-passive-named-transport",
+      "when": "Original event serialization, persistent capture and final accounting remain affected consumers."
+    },
+    {
+      "id": "fr063-joint-component-diagnostics",
+      "when": "Optional actual-root binding must preserve existing default component diagnostics."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.LifecyclePassiveTimingDiagnosticsTests.OriginalBeginIsPersistentWhileActualBodyRemainsBlocked"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-debug-prefix-legacy-live",
   "responsibility": "One existing genuine current schema1 factory/live completion Fact: explicit authenticated non-I protocol remains UnavailableLegacyProtocol with zero DFR producer/source/timestamp work. Preserve original complete joint/marker/I/no-upgrade and inert outcome assertions.",
   "excludes": "No duplicate legacy fixture/body, selected-I fallback, schema upgrade, fabricated historical prefix/S proof, legacy cold or new-ordinary method replay. Missing/changed checkpoint/owner/phase never selects this branch.",
