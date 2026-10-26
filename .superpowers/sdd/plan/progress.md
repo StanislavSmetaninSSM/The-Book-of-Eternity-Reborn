@@ -1,3 +1,18 @@
+# T596 DATA17 independently accepted — remaining cheap159 released
+
+Independent Astra/high OUTCOME review accepts the complete17/17 first DATA result
+at02293c3fe: full TRX/hash and actual A→B→A event,18 absent owned roots, exact
+17case/14method inventory and33 unchanged artifacts were independently verified.
+No broader actual-owner phase/fence/S qualification is inferred. First17 remains
+retained and must not repeat without relevant change or unresolved concern.
+
+Release the exact reviewed cheap-rest selection:11categories/12descriptors159cases,
+NoBuild with original budgets and current accepted mixed d9aa/e00 artifacts.
+Only checkpoint Markdown changed since accepted preparation. Full outcome/raw,
+counts/skip/cleanup and artifact continuity must be checked before dependent live6
+and cold2. Those eight singleton gates remain UNRUN and conditional. New raw root:
+`/workspace/tboe-linux-evidence-20261025/dfr-prefix/actual-cheap-rest-1`.
+
 # T596 first observed-prefix DATA gate completed — outcome review pending
 
 One actual fr063-debug-prefix-sources run at02293c3fe1395957bd012f96ea57f1298372bb50
