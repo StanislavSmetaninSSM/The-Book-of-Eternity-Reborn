@@ -1,3 +1,28 @@
+# T608 semantic OUTCOME accepted — 67 distinct PASS, two remain
+
+Independent Astra High accepts the unchanged genuine semantic singleton: one PASS,
+59.7861481 seconds in its original two-minute category, with complete cleanup.
+Runtime HEAD was 3d3ce2f06ce45d75a3aced63fe0b80b91642e6bd; all five builds/current
+33 artifacts and 69 source/PDB joins remain f6ef4d62 with Markdown-only changes.
+Full PLAIN capture: 402,894,094 bytes, SHA256
+f46d291f3d2576a61d291fcd441fe266c9eaad4885b952e62dd5222c424223e5;
+791,713 rows, 791,706 original events and 395,853 complete scope pairs. Root reused
+the accepted passive verifier with finite actual phase/message count/cost comparison;
+original clocks, source pairs, queue/writer/hash accounting and closing pass. Actual
+SemanticStageSources retains Preparation1 / PrepareCore1 / FinalReduce1 and eight
+fresh handoff/admission calls. All mutation/private-history/copy/abort controls pass;
+loaded assemblies and physically absent owned root/testhost are verified.
+
+The earlier old RED records alone were retired under independent exact-file review
+and unchanged immediate hash/owner checks after the accepted new same-Fact capture.
+Actual reclaimed bytes: 368,541,696. Compact baseline TRX/reports/counts/cost/provenance
+and the entire new373MB capture remain. No other raw or saves were removed.
+Current post-semantic reserve is about617MB. Copy/candidate remain held for a measured
+resource reassessment; an exact old semantic398MB candidate is only prepared, not
+approved/deleted. New403MB semantic and373MB genuine raw remain protected externally.
+Full focused69/T608 qualification and full DFR positive/dependent work remain open.
+No budget, diagnostic mode/quota, compiled source, Windows or gameplay contract change.
+
 # T608 first OUTCOME accepted — 66 distinct PASS, three controls remain
 
 Independent Astra High accepts the complete four-category unit stage (59 methods,
