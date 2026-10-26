@@ -1,3 +1,30 @@
+# T608 actual range causal RED verified — independent OUTCOME pending
+
+Fresh owning Integration at10c9e94f built with zero errors/101 unchanged warnings;
+other four owning revisions remain qualified f6ef4d62. Current33 artifacts,11 PE/PDB
+pairs and73 exact Git/source/PDB joins pass. Discovery965 categories/12,590 methods
+and exact one-descriptor/three-case PlanOnly executed zero tests before PREP.
+
+The sole admitted ctor-only range attempt completed all three cases: direct/plain
+PASS, passive/plain and passive/gzip FAIL only at final strict empty-versus-two-event
+range assertion (source line88), after all body/recorder/output/hash/root prerequisites.
+No skip, duplicate, underfill or timeout; both process cleanup flags pass. Each actual
+capture retains all14 original test-probe events. Stored files:6341B direct,8438B
+passive plain,1718B gzip (8418 decoded bytes). Whole hashes, original mode fields,
+source pairs/queue/writer accounting and physical root absence pass; gzip additionally
+passes strict full EOF/footer/CRC/no trailing data and stored/decoded identity.
+This is meaningful baseline RED, not functional GREEN or a copy qualification.
+
+Root verification and original TRX/oracles are external under t608-counter-scaffold
+and actual-t608-copy-range-red-1. Independent OUTCOME must precede helper correction
+or genuine mode opt-ins. Original copy TIMEOUT/raw/root, accepted67 feature cases,
+separate transport9 and all unmatched full-game evidence remain distinct/preserved.
+No genuine/candidate/full-positive retry, new budget, quota or production change.
+
+Exact reviewed removal of ten obj duplicates reclaimed84,914,176B; all33 bin and
+retained old Integration evidence remain. This does not authorize any further cleanup.
+This human checkpoint changes no compiled source; causal runtime/compiled HEAD10c9.
+
 # T608 range scaffold frozen — UNCOMPILED, no actual RED yet
 
 Root verified the six-path inventory and production-empty diff: four Integration
