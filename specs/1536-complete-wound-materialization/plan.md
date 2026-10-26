@@ -1,3 +1,20 @@
+# T597 independent negative closure while T603 cost gate is held
+
+The two already-selected live N-negative singletons can be qualified independently:
+`fr063-joint-live-n-before-first-interface`, then `fr063-joint-live-n-source-drift`.
+Both use changeSource:true and the ordinary fixture with aggregate-only named timings;
+they never construct the new positive-only gzip adapter. Their pending DFR regressions
+are not evidence of full unchanged completion or T602 admission. No new requirement,
+feature, source/capture mode or budget is introduced. T603 positive remains HOLD.
+
+Preserve existing genuine Linux source42/corrected Stage/Ready, real DFR/N source reads,
+pre-FIRST-I versus after-capture mutations, actual refusal before preparation, full
+held images/exact no-effects and inert same-engine repeat/owned cleanup. Use compiled172e
+only after exact current33 artifacts/51 source bindings, actual two-descriptor PlanOnly,
+unchanged5-minute category budgets and independent PREP. Execute separate official
+singletons sequentially, assess actual TRX/output/roots, no expensive positive retry.
+The prior176 cheap and two current DFR lifecycle PASS remain separately retained.
+
 # T603 existing passive serializer throughput correction
 
 **Scope:** satisfy the measured T601 performance gate before a full positive trace.

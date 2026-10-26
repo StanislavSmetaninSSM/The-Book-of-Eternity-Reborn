@@ -1,3 +1,13 @@
+# T597 two independent N-negative regressions — preparation only
+
+T603 same-work recurrence1PASS is preserved with both samples; positive remainsHOLD.
+Independent source inspection identifies two pending T597 controls that use ordinary
+changeSource:true/aggregate-only routes and cannot incur the new full-event gzip cost.
+Current plan records their bounded sequence: before-FIRST-I, then after-capture drift.
+Exact current172e/33/51 binding, actual2-descriptor PlanOnly and independent PREP must
+precede separate singleton execution. Functional/no-effects/root assertions are unchanged;
+no full DFR/T602 completion claim, new C# work or diagnostic-budget alteration follows.
+
 # T603 single recurrence PASS — combined cost gate remains HOLD
 
 The exactly-one managed-cost recurrence actual-t603-cost-1 at5a50c14cfbc8566c7e85b135fb517b42e65c99b1
