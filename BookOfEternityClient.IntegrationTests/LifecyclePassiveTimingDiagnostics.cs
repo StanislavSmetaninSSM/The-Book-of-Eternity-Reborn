@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Runtime.ExceptionServices;
 using BookOfEternityClient.Core;
 using Xunit.Abstractions;
 
@@ -6,9 +7,10 @@ namespace BookOfEternityClient.Tests;
 
 /// <summary>
 /// Lifecycle output adapter over the existing persistent writer and original-event capture.
-/// T599 baseline deliberately drains only after the caller's resources have closed.
+/// One detached consumer persists original events until caller resources have closed.
 /// </summary>
-internal sealed class LifecyclePassiveTimingDiagnostics(string caseName, ITestOutputHelper original)
+internal sealed class LifecyclePassiveTimingDiagnostics(string caseName, ITestOutputHelper original,
+    LifecycleTimingFaultForControl faultForControl = LifecycleTimingFaultForControl.None)
     : ITestOutputHelper, IAsyncDisposable
 {
     private readonly object _gate = new();
@@ -16,6 +18,15 @@ internal sealed class LifecyclePassiveTimingDiagnostics(string caseName, ITestOu
     private JointBundleDiagnosticOutput? _output;
     private OperationTimingAccumulator.Window? _window;
     private Task? _completion;
+    private Task<DrainReceipt>? _consumer;
+    private readonly CancellationTokenSource _stop = new();
+    private DrainReceipt? _drained;
+
+    // Typed context sentinel for cheap isolation controls only. It is never
+    // populated by lifecycle/game wiring and cannot carry an authority object.
+    internal static AsyncLocal<string?> ContextSentinelForControl { get; } = new();
+    internal bool? ConsumerSawContextSentinel => _drained?.ContextSentinelPresent;
+    internal long? ConsumerBatches => _drained?.Batches;
 
     /// <summary>Gets the one diagnostic root registered after actual fixture allocation.</summary>
     internal string RegisteredRoot => RequireBound().ExpectedOwnedRoot;
@@ -34,7 +45,8 @@ internal sealed class LifecyclePassiveTimingDiagnostics(string caseName, ITestOu
         {
             if (_output is not null || _completion is not null)
                 throw new InvalidOperationException("Lifecycle diagnostic binding is available only once before completion.");
-            _output = new JointBundleDiagnosticOutput(caseName, original, actualFixtureRoot: actualRoot);
+            _output = new JointBundleDiagnosticOutput(caseName, original,
+                disposeWriterForControl: faultForControl == LifecycleTimingFaultForControl.ClosedWriter, actualFixtureRoot: actualRoot);
             _output.RequirePassiveTiming();
             foreach (var message in _beforeBinding) PersistMessage(message);
             _beforeBinding.Clear();
@@ -54,8 +66,16 @@ internal sealed class LifecyclePassiveTimingDiagnostics(string caseName, ITestOu
             if (!window.CaptureEventStatus().Enabled || window.Capture().Closed)
                 throw new InvalidDataException("Lifecycle timing requires an open original-event window.");
             _window = window;
-            // Baseline: the existing component transport also waits for the
-            // functional call to return. No continuing consumer exists in T599.
+            var input = new DrainInput(window, _output!.Timings, _stop.Token,
+                faultForControl == LifecycleTimingFaultForControl.DrainAfterDetach);
+            // Arm runs in an actual functional flow. Do not copy its AsyncLocal
+            // lease/Main/source context into the diagnostic-only consumer.
+            if (ExecutionContext.IsFlowSuppressed()) _consumer = StartConsumer(input);
+            else
+            {
+                using var suppression = ExecutionContext.SuppressFlow();
+                _consumer = StartConsumer(input); // synchronous scheduling only
+            }
         }
     }
 
@@ -97,57 +117,121 @@ internal sealed class LifecyclePassiveTimingDiagnostics(string caseName, ITestOu
     /// <returns>Completion after final accounting, hash and actual-root closing receipt were attempted.</returns>
     internal Task CompleteAsync(Exception? primaryFailure = null)
     {
-        TaskCompletionSource completion;
-        lock (_gate)
-        {
-            if (_completion is not null) return _completion;
-            completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-            _completion = completion.Task;
-        }
-        Exception? closingFailure = null;
-        try { CompleteAfterReturn(); }
-        catch (Exception error) { closingFailure = error; }
-        if ((primaryFailure ?? closingFailure) is { } failure) completion.SetException(failure);
-        else completion.SetResult();
-        return completion.Task;
+        lock (_gate) return _completion ??= CompleteCoreAsync(primaryFailure);
     }
 
-    private void CompleteAfterReturn()
+    private async Task CompleteCoreAsync(Exception? primaryFailure)
     {
-        var output = RequireBound();
         var failures = new List<Exception>();
-        if (_window is { } window)
+        JointBundleDiagnosticOutput? output = null;
+        try
         {
-            window.Dispose();
-            Attempt(() =>
+            output = RequireBound();
+            if (_window is { } window && _consumer is { } consumer)
             {
-                foreach (var row in window.DrainEvents()) output.Timings.ObserveRecorded(row);
-                output.CompletePassiveTiming(window.Capture(), window.CaptureEventStatus());
-            }, "lifecycle-final-drain");
-        }
-        else Attempt(() => throw new InvalidDataException("Lifecycle timing was never armed."), "lifecycle-window-missing");
+                // The caller has already closed functional resources and the
+                // real fixture/probe. End recording before requesting settlement.
+                window.Dispose();
+                _stop.Cancel();
+                try { _drained = await consumer.ConfigureAwait(false); }
+                catch (Exception error) { Record(error, "lifecycle-consumer-join"); }
+                Attempt(() => output.CompletePassiveTiming(window.Capture(), window.CaptureEventStatus()),
+                    "lifecycle-passive-accounting");
+            }
+            else Record(new InvalidDataException("Lifecycle timing was never armed."), "lifecycle-window-missing");
 
-        // Observe the caller's real cleanup outcome. The adapter never deletes
-        // or retries cleanup, and never invents the swallowed disposer exception.
-        var removed = !Directory.Exists(output.ExpectedOwnedRoot);
-        var cleanupNotes = removed ? Array.Empty<string>() :
-            new[] { "Actual registered root remains after caller cleanup; underlying disposer exception is unavailable." };
-        Attempt(output.Finish, "lifecycle-finish");
-        // Finish can throw after writing its report. Still attempt the exact
-        // root receipt, retaining both original failures rather than skipping it.
-        Attempt(() => output.RecordFixtureClosing(output.ExpectedOwnedRoot, retained: !removed, removed, cleanupNotes),
-            "lifecycle-fixture-receipt");
-        if (!removed) failures.Add(new InvalidDataException("Lifecycle fixture removal is unproven; see the actual-root closing receipt."));
+            var removed = false;
+            string[] cleanupNotes;
+            try
+            {
+                // Unlike Exists, the existing non-following probe does not turn
+                // a replacement file, broken link or access error into absence.
+                var entry = TrustedLocalFileScope.Probe(output.ExpectedOwnedRoot);
+                removed = entry == TrustedLocalFileScope.EntryKind.Missing;
+                cleanupNotes = removed ? [] :
+                    ["Actual registered root entry remains (" + entry + "); underlying disposer exception is unavailable."];
+            }
+            catch (Exception error)
+            {
+                cleanupNotes = ["Actual root absence could not be observed: " + error];
+                Record(error, "lifecycle-root-observation");
+            }
+            if (!removed)
+                Record(new InvalidDataException("Lifecycle fixture removal is unproven; see the actual-root closing receipt."),
+                    "lifecycle-root-retained");
+            Attempt(output.Finish, "lifecycle-finish");
+            // Finish may report a fault after closing/hashing. Still persist the
+            // actual receipt; never invent the swallowed disposer exception.
+            Attempt(() => output.RecordFixtureClosing(output.ExpectedOwnedRoot, retained: !removed, removed, cleanupNotes),
+                "lifecycle-fixture-receipt");
+        }
+        catch (Exception error) { Record(error, "lifecycle-completion"); }
+        finally { _stop.Dispose(); }
+        if (primaryFailure is not null) ExceptionDispatchInfo.Capture(primaryFailure).Throw();
         if (failures.Count != 0) throw new AggregateException("Lifecycle diagnostics or fixture closing incomplete.", failures);
 
+        void Record(Exception error, string stage)
+        {
+            failures.Add(error);
+            output?.Timings.RecordDiagnosticFailure(error, stage);
+        }
         void Attempt(Action action, string stage)
         {
             try { action(); }
-            catch (Exception error)
+            catch (Exception error) { Record(error, stage); }
+        }
+    }
+
+    private sealed record DrainInput(OperationTimingAccumulator.Window Window,
+        JointCleanupProfileDiagnosticCapture Capture, CancellationToken Stop, bool FailAfterDetach);
+    private sealed record DrainReceipt(bool ContextSentinelPresent, long Batches);
+
+    private static Task<DrainReceipt> StartConsumer(DrainInput input) =>
+        Task.Factory.StartNew(static state => ConsumeAsync((DrainInput)state!), input,
+            CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default).Unwrap();
+
+    private static async Task<DrainReceipt> ConsumeAsync(DrainInput input)
+    {
+        var contextPresent = ContextSentinelForControl.Value is not null;
+        long batches = 0;
+        var injected = false;
+        try
+        {
+            while (!input.Stop.IsCancellationRequested)
             {
-                failures.Add(error);
-                output.Timings.RecordDiagnosticFailure(error, stage);
+                Drain();
+                try { await Task.Delay(25, input.Stop).ConfigureAwait(false); }
+                catch (OperationCanceledException) when (input.Stop.IsCancellationRequested) { break; }
             }
+        }
+        catch (Exception error)
+        {
+            input.Capture.RecordDiagnosticFailure(error, "lifecycle-continuing-drain");
+            // Preserve the primary functional flow. A real drain failure waits
+            // for the normal stop before its single final-tail attempt.
+            try { await Task.Delay(Timeout.InfiniteTimeSpan, input.Stop).ConfigureAwait(false); }
+            catch (OperationCanceledException) when (input.Stop.IsCancellationRequested) { }
+        }
+        finally
+        {
+            try { Drain(); }
+            catch (Exception error) { input.Capture.RecordDiagnosticFailure(error, "lifecycle-final-drain"); }
+        }
+        return new(contextPresent, batches);
+
+        void Drain()
+        {
+            var batch = input.Window.DrainEvents();
+            if (batch.Length == 0) return;
+            batches++;
+            if (input.FailAfterDetach && !injected)
+            {
+                injected = true;
+                // Closed test-only fault: expose a genuinely detached/lost batch,
+                // never fabricate/requeue events to repair its accounting.
+                throw new IOException("Injected lifecycle drain failure after actual event detach.");
+            }
+            foreach (var row in batch) input.Capture.ObserveRecorded(row);
         }
     }
 
@@ -158,3 +242,6 @@ internal sealed class LifecyclePassiveTimingDiagnostics(string caseName, ITestOu
     /// <returns>The same final-drain/closing result, including any previously retained failure.</returns>
     public ValueTask DisposeAsync() => new(CompleteAsync());
 }
+
+/// <summary>Closed diagnostic-only controls; no callbacks or game authority enter the consumer.</summary>
+internal enum LifecycleTimingFaultForControl { None, ClosedWriter, DrainAfterDetach }

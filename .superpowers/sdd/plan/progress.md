@@ -1,3 +1,31 @@
+# T600 continuing-consumer fragment WIP — storage gate unresolved
+
+One coherent C# file is frozen for remote preservation: LifecyclePassiveTimingDiagnostics
+SHA256f0894ff6cef44207b64d1814446397e9fa4cb6b748e5a7c096783bd9ccf1a356.
+Source-authored static data-only consumer/sole final drain, suppressed startup
+including already-suppressed branch, shared asynchronous completion/stop-join and
+strict existing path-entry observation are present. Cheap controls, startup-failure
+self-review, positive-only wiring, live parser/catalog and complete SOURCE review
+remain pending. Compression is absent. This fragment is UNCOMPILED/UNRUN WIP,
+not SOURCE-ready or a positive retry; no other C# file changed in this fragment.
+
+New concrete preparation evidence: old accepted baseline aggregate has526names /
+16,397,232 Started+Completed boundaries. Its recorded event capture was disabled;
+954bytes/two real T599 JSONL rows gives only a rough historical7,821,479,664byte
+storage estimate, never a current count/trace prediction. Actual workspace free
+738,299,904bytes cannot support that estimate. Separate /tmp tmpfs has9,463,828,480
+available bytes but consumes the shared16GiB cgroup (current~4.49GB before game/
+queue/GC/raw growth), so no safe uncompressed admission is established there either.
+
+Independent storage assessment found no maintained live C# gzip transport to wire
+unchanged; existing gzip paths are finalized archive/fixture helpers. Minimal
+candidate is opt-in lossless GZipStream under the SAME existing writer/ObserveRecorded,
+plain default unchanged, explicit representation and actual compressed/decoded hash/
+count/failure/live-prefix controls. No implementation/admission of that candidate yet:
+ratio/throughput/partial-read/close behavior must be measured cheaply and reviewed.
+No event filter/quota, raw deletion, raised budget, new parallel stack or extra
+writable capacity is assumed. Existing controls/real PASS/timeout and all raw kept.
+
 # T599 causal RED independently accepted — T600 development released
 
 Independent Astra/high OUTCOME ACCEPT confirms final visibility-target RED after
