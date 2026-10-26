@@ -1,3 +1,26 @@
+# T594 ordinary pre-extraction baseline measured — implementation next
+
+Existing `fr063-reasoning-prefix-regression` at runtime5cbf56fef completed all40
+cases:37PASS/3FAIL/0skip, runner42.2819244s, no timeout/both cleanup flags true.
+All40 strict fixture roots physically absent; all33 artifacts remain unchanged.
+Exactly the three GenuinePreparedOriginal theory scenarios fail with
+System.Reflection.TargetParameterCountException in ReadOriginalDebugAsync before
+the public Full target: four possible old helper calls supply one argument to the
+private helper whose current signature has a second optional source argument.
+This is the verified legacy fixture-access defect, not a production policy failure.
+Full raw/TRX/method counts/cleanup/metadata proof stay external in
+`dfr-prefix/actual-ordinary-baseline-1`. The37 passing cases retain original raw/
+order/catch/document/scope behavior; none substitutes for the failed3.
+
+Proceed coherently with T594–595: actual shared prefix DATA producer, closed source/
+original transport, private Capturing consumer and post-close refusal fence. Use a
+meaningful fixed-debug typed API into the same nullable original core to preserve
+the old equality/null assertions; no private reflection/Type.Missing workaround.
+Ordinary shared extraction must keep terminal control separate from diagnostic
+Errors and preserve the whole strict inverse chain. New cheap/source/engine tests,
+selection, optimization and no-new-GM rationale are reviewed together before fresh
+builds/actual GREEN. T596–598 remain open; current production is still unchanged.
+
 # T593 baseline pair accepted; T594 ordinary baseline — 2026-10-26
 
 Independent Astra/high OUTCOME accepted ae7a483b7: complete causal RED1 plus
