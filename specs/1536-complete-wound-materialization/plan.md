@@ -1,4 +1,4 @@
-# T607 sealed observation implementation plan — concrete DESIGN delta pending
+# T607 sealed observation implementation plan — independent DESIGN ACCEPT
 
 **Goal:** retain the original N read/byte/return/phase evidence without arbitrary
 fixture hooks excluding existing stable DATA reuse. **Spec:** DFR-OBS1..7 above the
@@ -88,7 +88,13 @@ Budget/capture/resource/owned-outcome rules and dependent gates remain unchanged
 Optimization assessment: diagnostic DATA uses no new cache; existing source/recovery
 service retains complete key, owner, invalidation and fresh opening/closing authority.
 Tests measure actual source work, not assumed syscall savings or total speedup. Current
-phase-origin refinement is under independent DESIGN; C# implementation remains UNRUN.
+phase-origin refinement is accepted by independent Astra High DESIGN review against
+`62b5a02f972614be56e5dcbe7efb7169022eebef`. The read-only call-graph check preserves
+initial N-before-owner and the existing cached-DATA negative; no N fresh delta is needed.
+Bounded RED scaffold implementation is released, not runtime or positive admission.
+Root first preserved all 33 current artifact references as 15 unique hash-verified
+DLL/PDB/XML payloads (88,804,339 bytes) outside checkout, evidence-only/never runtime.
+No new test result or performance improvement is claimed before actual qualification.
 
 # T607 selected observation/lifetime route — DESIGN in progress
 

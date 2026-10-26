@@ -62,9 +62,11 @@ unchanged positive is incomplete TIMEOUT300s, not phase/functional acceptance.
   Broad Integration Optimize is an explicitly separate unimplemented alternative,
   not an automatic next change. No new diagnostic stack or cache.
   Owner now selects the narrow route; proceed autonomously after independent DESIGN.
-  - [ ] T607-DESIGN Freeze minimal existing-ledger/recorder byte/return/phase and
+  - [x] T607-DESIGN Freeze minimal existing-ledger/recorder byte/return/phase and
     construction-time hook-free lifetime contract, ownership/invalidation/freshness,
     cheap causal/source-count and affected-consumer selection; independent review.
+    Refined private N origin/diagnostic-only recheck accepted at `62b5a02f`; global
+    named counts only corroborate. No N fresh delta/cached-refusal change.
   - [ ] T607-RED Build a compilable real-file scaffold preserving current fallback;
     prove all observation prerequisites before the intended reuse/source assertion
     fails. Preserve original raw and exact RED source/binary identity.

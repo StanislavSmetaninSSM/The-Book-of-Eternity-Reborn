@@ -1,3 +1,17 @@
+# T607 DESIGN ACCEPT — RED scaffold implementation, no runtime release
+
+Independent Astra High accepts refined concrete plan at `62b5a02f`: actual producer-
+private N read origin plus diagnostic-only recheck arm; global timing counts only
+corroborate. Ordinary concurrent reads cannot acquire N phase. Existing initial N
+call order/fresh rechecks/cached-DATA refusal remain; no speculative fresh delta.
+Author now implements coherent source/tests/catalog RED scaffold with original hooks
+retained. Eight logical successes and observation prerequisites must precede the
+intended eight-versus-two real source-count failure. A separate recovery closing-mode
+control is required. Independent SOURCE/fresh affected builds/PREP precede actual RED;
+only accepted prerequisite-complete RED releases the minimal hook-free policy.
+All new C# is UNCOMPILED/UNRUN. Current pre-T607 33 artifact references are preserved
+externally as 15 unique verified payloads, never runtime inputs. No raw deletion.
+
 # T607 narrow route selected — design and cheap causal proof next
 
 Resume from verified `ed63041e8ab1c6e8b5662ffbfa2cea96602fbc26`, clean tree and no
