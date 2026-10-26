@@ -1,3 +1,18 @@
+# T604 GREEN fresh build/current bindings/9x42 PlanOnly verified — PREP pending
+
+Fresh Integration at02a14a66263603a2fe3ad05ba4d556a4326b9c6d completedexit0,4:37.29,
+0errors/exact101prior warning signatures/0introduced. All33 artifacts/11PE-PDB pairs/
+52Git-PDB sources exact; only Integration DLL/PDB/XML changed, other30/four project
+trees retained with exact input proof. Attached fast Serialization handler/17writes/
+unboxed typed callsite match source; no target assembly execution by PEReader.
+
+Actualcatalog VALID961/12555,0unmapped/stale. Actual PlanOnly9descriptors/29methods/
+42cases,0executed,16.9452275s,exit0/noTimeout/bothcleanup,exact prior method/case/
+budget/exclusive contracts. Derived total15minutes includes the one new1minute owner;
+no category allowance or override changed. Future actual GREEN/counter/content/
+managed65536-event cost remain UNRUN. Qualified GitHub52-source recovery and independent
+PREP follow. Positive/legacy/cold HOLD. Every baseline/metadata/RED raw is retained.
+
 # T604 gzip16Ki SOURCE ACCEPT — fresh GREEN preparation next
 
 Independent SOURCE accepts3cd51de2: only gzip factory16Ki-char branch, exact original
