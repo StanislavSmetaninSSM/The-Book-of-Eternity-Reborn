@@ -1,3 +1,54 @@
+# T603 existing passive serializer throughput correction
+
+**Scope:** satisfy the measured T601 performance gate before a full positive trace.
+The accepted composite38 remains evidence at its actual source/build heads. Positive
+HOLD is based on current cheap transport costs, not a diagnosis of the old game timeout.
+No Game/Core/native/GM change, budget increase, record quota or parallel trace stack.
+
+**Measured baseline:** actual 65536 original events plus full Unicode message:
+2.1202264s through close, 1.4977568s measured serializer/write, 1130.866ms cumulative
+build/serialize versus 325.791ms writer, 94322768 allocated bytes. First-record JIT
+28.483ms is only part of the cost. Elapsed costs include possible GC/scheduling/tiering;
+no pure-CPU attribution or full-population completion prediction is established.
+
+## Minimal candidate and preserved contracts
+
+- Change only the recorded/passive payload inside the existing JointOperationTimings
+  serializer: one readonly typed record struct and built-in generated JsonTypeInfo.
+  Remove its anonymous reference payload/object dispatch, preserve every field, order,
+  numeric/default escaping behavior and original source clocks. Keep the existing
+  ObserveRecorded/capture/one consumer/StreamWriter/GZip/report/ledger stack.
+- Keep legacy Observe's original anonymous object and Serialize<object> behavior exact.
+  Preserve common WriteLine(string), clocks and deferred failure ordering. Existing
+  failure writers override that method; switching to a span overload is out of scope.
+- .NET already caches metadata and rents/reuses its JSON writer/byte buffers. Add no
+  dictionary, alternate buffer pool or payload result cache. Generated immutable
+  metadata belongs to its context/assembly lifetime, keyed by compiled payload schema
+  and fixed default serialization options; rebuild/new type/options invalidate it.
+  Each real event remains freshly constructed/serialized with full varying sequence,
+  ScopeId, timestamps, elapsed and prior-cost counters. No event-name cache can supply
+  that identity; no ownership/freshness/permission result is cached.
+
+## Cheap causal proof and admission
+
+- Before editing implementation, freeze the typed compatibility/performance oracle:
+  actual sealed events, independent old-format reference fields/order/escaping/numbers,
+  begin/end/late and original clock values. Do not fabricate or rewrite NamedEvents.
+- Use the same actual 32768-scope workload and full message as the preserved baseline.
+  Check source counts, allocation, recorded warmed segments, queue/batch counts,
+  flush/close/decode/total cost and complete byte/hash/event/root proof. No new per-row
+  clocks or larger diagnostic fields merely to gather more data. Timing benefit is
+  UNRUN until actual measurements; fewer payload allocations require real evidence.
+- Select affected existing passive transport and named timing output/legacy/failure
+  contracts by actual source impact, plus the new typed codec oracle. Review exact
+  selection, finite inverse coverage and retention before one coherent SOURCE block.
+- Persist WIP, independent SOURCE, fresh affected Integration XML/PDB/current source,
+  exact catalog/PlanOnly and PREP before cheap execution. Accept only full source-
+  event/encoding/old failure semantics and measured improvement without relaxed limits.
+- Reassess existing storage/memory and full trace feasibility independently. Only then
+  reconsider one unchanged 5-minute positive. A candidate without sufficient effect
+  is not a speedup and does not release the expensive run; inspect the actual cause.
+
 # T599–602 interrupted lifecycle timing transport implementation plan
 
 > **For agentic workers:** use Superpowers executing-plans for this bounded T597

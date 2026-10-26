@@ -1,3 +1,19 @@
+# T603 narrow design candidate — no implementation or runtime yet
+
+Read-only inspection finds a new anonymous reference payload erased to object on each
+passive event before the existing Serialize<object>/WriteLine(string) route. .NET
+already caches JsonTypeInfo and reuses internal JSON writer/byte buffers, so an extra
+dictionary/buffer cache is not justified. The minimal proposed change is one readonly
+passive payload struct plus built-in generated metadata; legacy Observe stays exact.
+The complete generated schema/options identity is immutable per context/assembly;
+actual event DATA changes on every row and is never cached by operation name.
+
+Canonical T603 plan/spec now state compatibility, real event/allocation/cost proof,
+existing failure writer contract and staged selection/SOURCE/build/PREP/outcome. The
+actual baseline/composite38 remains intact. Independent design review is next; code,
+benchmarks, builds and positive runtime are UNRUN for T603. No new diagnostic scope,
+Game/native/authority behavior, record limit, budget change or raw deletion is proposed.
+
 # T600 composite38 OUTCOME ACCEPT — positive HOLD on transport throughput
 
 Actual remaining attempt be5b2358a ran 21/21 PASS, 0 fail/skip, 3/3 descriptors in

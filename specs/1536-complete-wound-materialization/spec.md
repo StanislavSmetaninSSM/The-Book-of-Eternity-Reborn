@@ -61,6 +61,16 @@ Bounded real-byte encoding scouts are storage evidence only. Fresh actual sealed
 event/managed writer controls and reviewed free-space/throughput evidence precede
 positive admission; a historical ratio/count never guarantees current-run capacity.
 
+
+DFRDIAG10: accepted composite38 does not admit the full positive when measured
+serializer throughput is insufficiently established. T603 may optimize only the
+existing recorded/passive serializer with immutable generated type metadata while
+preserving full original fields/order/encoding/clocks, common WriteLine(string),
+legacy behavior, failure/closing/accounting and cache eligibility. No duplicate cache/
+buffer framework or varying-event payload cache. Cheap actual same-work compatibility,
+allocation/cost proof and independent source/preparation/outcome precede positive;
+unchanged5-minute limits and full recording remain. Old game-timeout cause stays unknown.
+
 # T179-Pd.3e bounded observed debug-prefix amendment — #1536 / 2026-10-25
 
 DFR-HOT1: existing actual Capturing joint owner consumes the same ordered ordinary
