@@ -1,3 +1,37 @@
+# T600 fresh preparation verified — cheap PREP review next
+
+Fresh Integration build at e88bb8f5fd80287de21f5147d869d52611079c02 completed in
+2:43.88 with 0 errors and 101 warnings. Every warning signature exactly matches
+the accepted T599 profile; no introduced warning remains. CS9124 disappeared through
+the reviewed field-reference fix. Only existing CS1591 was suppressed explicitly.
+The XML build used --no-restore --no-incremental -m:1, BuildProjectReferences=false,
+UseSharedCompilation=false, GenerateDocumentationFile=true and NoWarn=1591.
+
+Actual PE/PDB/XML verification confirms 11 pairs / 33 exact files and 48 current
+Git-to-PDB source checks. Only the Integration DLL/PDB/XML changed. All other 30
+files and entire Game/Support/Bridge/Unit project trees remain unchanged at their
+retained build heads (d9aa440e for Game/Support/Bridge; e00bba39 for Unit). No new
+native or Game build is needed for this Integration-only source correction.
+
+Fresh catalog discovery: VALID, 959 categories / 12551 methods, no unmapped or stale
+selectors. Exact six-ID PlanOnly: 6 descriptors / 24 methods / 37 cases, 0 executed.
+Both preparation runs returned 0 with no timeout and both process cleanup flags.
+Five selected category budgets remain 1 minute; the existing direct-capture controls
+retain their original 2 minutes and non-exclusive flag. The selected runner's total
+budget is its ordinary 12 minutes; no category or positive budget was increased.
+
+The source-only GitHub recovery of e88bb8f5 verified all 30914 tracked blobs and
+772695960 logical bytes, clean including ignored, with no application execution.
+All new measurement artifacts remain outside checkout under dfr-prefix in the
+external evidence root. Current metadata and preparation findings are retained there.
+
+Independent PREP must admit only the bounded 37 cheap cases using current metadata
+and exact selection. Runtime/managed compression ratio, queue/memory/flush/decode
+costs and expensive positive remain UNRUN. Full gzip EOF/CRC/footer checks, original
+scope/order/count/hash and real root receipts are mandatory for actual outcome.
+Cheap GREEN and reviewed storage/cost admission still precede one 5-minute positive.
+All prior full raw, accepted outcomes and timeout candidate roots remain intact.
+
 # T600 CS9124 source correction independently accepted — final fresh build
 
 Astra/high targeted SOURCE ACCEPT atecf44dd21775d5aca03fb75ef91e4f0cf4db1343
