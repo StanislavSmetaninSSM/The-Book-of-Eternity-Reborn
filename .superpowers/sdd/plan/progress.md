@@ -1,3 +1,44 @@
+# T608 fresh Linux preparation — runtime pending
+
+The independently accepted shared-projection source is now freshly compiled on Linux
+at f6ef4d62178f74fcd3afe58c66617496cbb9c43f in all five owning projects: Game,
+Support, Bridge, Unit and Integration. Every build has zero errors. Exact normalized
+warning signatures and multiplicity introduce no warning or suppression: counts remain
+33 / 23 / 14 / 26 / 101. Fresh XML, all 33 current DLL/PDB/XML artifacts, eleven PE/PDB
+pairs and cross-copy identities, and 69 exact current Git/source/PDB bindings pass.
+All old qualified payloads remain evidence-only; none was copied back as runtime input.
+
+Official discovery validates 964 categories and 12,589 methods/files. The reviewed
+focused eight IDs resolve exactly to 63 methods / 69 expected cases. PlanOnly executes
+zero tests; no functional, source-reduction, cost, runtime or whole-feature PASS is
+claimed. Next gate is independent PREP for the four file-free categories (65 cases)
+and the exclusive two-minute genuine expected-replay singleton, followed by the three
+remaining affected genuine controls and independent OUTCOME. The stronger warmup one
+plus richer zero, PrepareCore one/zero, 56 fresh seals and complete fallback/protocol/
+byte/fence/closing proofs remain unrun. Compare only the unchanged eight-call window;
+additional negative work prevents an equal-work whole-case timing comparison.
+
+GitHub-only full current-tree recovery at f6ef4d62 verified all 30,925 tracked blobs,
+773,121,592 logical bytes, clean including ignored, with no copied build output,
+alternates or sparse tree. This was source-only before compilation, not a claimed new
+PDB inspection inside that copy. Independent exact-manifest retirement review and an
+immediate identity/tree/no-owner check then removed only the disposable recovery copy.
+A first preflight stopped before deletion on transient timeout/bash owners; both were
+verified ended before the unchanged check passed. Actual reclaimed space was
+1,237,172,224 bytes. The physical recovery copy is now absent; receipts, main source,
+GitHub, all unique evidence/raw and saves remain. Current post-build reserve is about
+1.04 GB; runtime PREP must assess actual full PLAIN capture and stage the selected
+singletons. No quotas, budget increase, old-raw removal or full-positive retry follows.
+
+The existing service owns immutable expected DATA only. Complete input/private
+structural dependencies, operation lifetime/invalidation and fresh actual admission
+remain required. Fewer actual source computations and net key/admission/copy cost
+are still pending measured proof; no new cache layer or whole-game gain is claimed.
+Full DFR positive/dependent acceptance and materialization remain open. Windows is
+postponed; first-guardian intermittency and cross-OS DATA compatibility stay open.
+Full diagnostics and verification/review reports remain external in dfr-prefix/
+t608-counter-scaffold. This checkpoint changes no compiled source or budget.
+
 # T608 coherent SOURCE ACCEPT — fresh Linux preparation released
 
 Independent Astra High accepts the complete implementation at
