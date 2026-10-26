@@ -1,3 +1,30 @@
+# T607 cheap GREEN PREP ACCEPT — exact one stage released
+
+Independent Astra High PREP accepts source/checkpoint `08f12804269d9c502635dbdc7fe8628322612180`
+against fresh Support/Unit/Integration `a760ab5d` and retained exact Game/Bridge `b54a8f4b`.
+All 33 artifacts and 59 source/Git/PDB joins independently rehashed; exact catalog,
+12-ID / 13-descriptor / 191-case PlanOnly, budgets, cleanup, selection and qualified
+recovery reviewed. Release exactly ONE official SelectionFile/NoBuild cheap invocation
+into external `actual-t607-cheap-green-1`; no positive/legacy/cold runtime release.
+Require actual complete counts, actual physical2/eight results plus all negatives,
+no skip/duplicate/timeout/underfill and both process/owned-state cleanup proofs.
+
+Correction to the prior preparation inference: the old Linux applied record is stale,
+but the selected unchanged positive does NOT consume it. `JointNarrativeSource.cs`
+constructs adoptedRoot:null and omits sourceSeed; `JointCompletion.cs` takes the
+RunActualQteStorySourceAsync branch, which creates genuine current sources from
+BaseSessionRoot. No JointAppliedDataTemplate edge exists on this route. A fresh applied
+DATA generator is therefore NOT a prerequisite for this positive. Only its existing
+one-case PlanOnly ran (36.7529390 seconds, exit0/zero tests/both cleanups); no generator
+runtime, input edits or archive reseal occurred. Retain its preparation evidence and
+old inputs; drop the unnecessary generator plan. This corrects Root's inference and
+avoids an unrelated expensive preparation. Future real archive consumers require
+separate path-specific provenance assessment. No product/test/guard change is needed.
+
+Full positive still needs accepted actual cheap effect and separate justified original
+300-second/full-capture/resource PREP. No whole timeout explanation or speedup claim.
+All raw and previous incomplete captures remain outside checkout/GitHub and retained.
+
 # T607 exact GREEN preparation complete — independent PREP pending
 
 At runtime preparation HEAD `68a6196bdf5f52ec34dbf0da032dbe809b41465a`, official
