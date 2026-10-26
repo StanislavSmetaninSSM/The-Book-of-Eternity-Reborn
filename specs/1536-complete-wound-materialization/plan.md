@@ -1,3 +1,28 @@
+# T607 corrected Unit preparation verified — 189-case PREP pending
+
+Independent Astra High SOURCE accepts `01d3075fb221edd2788c4f2bf27b2188a4ec6259`:
+two fixture method corrections only, full bytes/three real read segments preserved.
+Fresh Unit build completed exit0 in 8:54.19, zero errors and exact baseline26warnings;
+no introduced/removed signatures or suppression. Root verified all33 artifacts,
+11PE/PDB pairs and59current source hashes. Unit is now01d3075f; Support/Integration
+retain exacta760ab5d, Game/Bridge exactb54a8f4b. All four project/shared inputs and
+four explicit linked Unit sources are unchanged;15noRestore inputs also byte-exact.
+
+Official corrected SelectionFile/NoBuild/PlanOnly completed exit0 in42.2537339seconds:
+11existingIDs/12descriptors/189cases, zero executed, original budgets/exclusivity,
+no timeout and bothcleanupflags. Selected19-case owner is rerun after its two relevant
+method fixes;170previously unrun cases follow. Retain only the two unchanged C5 PASS
+from runtime02e2233d separately by exact Integration/source proof. Catalog963/12571
+acceptance remains applicable: catalog/selectors and every declaration/attribute/
+InlineData are unchanged; fresh PlanOnly confirms current selected membership.
+Qualified GitHub recovery01d3075f verified all30920blobs/772,958,764logical bytes and
+all59PDB-bound sources, clean including ignored; no recovery build/runtime.
+
+Next independent PREP for one corrected189-case official execution, not blind retry.
+Full source-reuse GREEN/positive remain unqualified until actual complete outcomes.
+Original twoFAIL/19PASS/raw are preserved; no generator/positive/legacy/cold admission,
+codegen/cache/guard/budget change, raw deletion or Windows assertion follows.
+
 # T607 grouped fixture correction WIP frozen — Unit build/runtime UNRUN
 
 Only two existing Unit method bodies change after the accepted failed outcome:
