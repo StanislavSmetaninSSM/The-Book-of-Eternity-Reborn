@@ -1,3 +1,30 @@
+# T603 actual cheap41 PASS — independent outcome/cost decision pending
+
+Attempt actual-t603-cheap-1 at 053b46b865da3c32874615fa63ea242ab75f6095, compiled172e,
+completed 8/8 descriptors and 41/41 PASS, 0 fail/skip, in 134.6657826s. No timeout;
+both process cleanup flags. Root verified 8 TRX, 34 captures, strict complete gzip
+EOF/CRC/no trailing data, original events/clock pairs/counts/hashes/root receipts,
+all33 current artifacts and51 source pins. Whole-string/UTF8 old-format and actual
+string-writer failure oracles passed; no format/behavior loss was found by these checks.
+
+The unchanged real32768-scope/65536-event workload and full Unicode message produced
+65537 rows. Against the accepted3918 sample: through-close2.1202264→1.3477079s (-36.44%),
+measured serializer/write1.4977568→0.9092856s (-39.29%), allocation94322768→84659912bytes
+(-10.24%). Decode0.1943963→0.1338597s; stored3117120→3045704bytes. Decoded bytes differ
+because observer-cost numeric values change; full source/schema oracle remains exact.
+This is one real-work pair, not a game speedup or pure-CPU attribution.
+
+Original cumulative event counters show candidate first-row build20.372ms, at1024
+build70.019/write15.872ms, final build591.453/write278.113ms. Warmed segments and
+allocation/queue/close/decode remain available for independent cost assessment.
+The historical16.397M boundary population is not a current-count prediction; whole
+sample and service-only extrapolations differ and do not by themselves admit positive.
+
+Independent outcome/cost/headroom review is pending; positive remains HOLD. No new
+expensive application run, budget change, quotas, event loss or old raw deletion.
+All baseline/composite38 raw and exact evidence-only binaries remain intact. Next
+step follows the actual independent decision, preserving the original5-minute bound.
+
 # T603 cheap41 PREP ACCEPT — bounded runtime released
 
 Independent Astra/high PREP ACCEPT for checkpoint 218c7839 confirms all33 artifacts,
