@@ -1,3 +1,33 @@
+# T607 minimal GREEN build/binding preparation verified — discovery next
+
+Independent Astra High delta SOURCE accepts `a760ab5dc733479576b8e4cabffd0980daa1de3b`:
+only explicit factory false/false and its truthful same-owner wording; defaults/cold/
+negative paths, all workloads/assertions, source/cache authority and capture unchanged.
+Fresh Support/Unit/Integration builds at that SHA completed exit 0: 1:26.63 / 23 warnings,
+6:26.18 / 26 warnings, 13:08.17 / 101 warnings, zero errors. Exact warning signatures/
+multiplicities match retained baselines; zero introduced/removed, no new suppression.
+
+Root verified all 33 current DLL/PDB/XML, 11 matching PE/PDB pairs, cross-copy identity,
+59 current Git/PDB sources and 15 unchanged noRestore inputs. Mixed build provenance is
+intentional: Game/Bridge remain exact fresh `b54a8f4b`; complete project/shared build
+inputs are unchanged, and both binaries/PDB/XML match all retained copies exactly.
+Three native source/binary assets were freshly rehashed; native protocol/code unchanged.
+The unchanged Game bytes retain the accepted 16-method inactive IL proof, not a new run.
+Source-only GitHub recovery of a760 verified all 30,920 blobs / 772,936,900 logical bytes,
+clean including ignored, no copied outputs; qualified current PDB/recovery join is next.
+
+GREEN C# is now compiled, but runtime is UNRUN. Next official catalog, exact 12-ID
+focused PlanOnly, qualified recovery and independent PREP before cheap GREEN/negatives.
+Full positive requires accepted actual source-count effect plus its separate PREP.
+Read-only input check also found the prior Linux applied DATA record binds old Game
+F9B1F5DB...; current Game is 7C430A8C.... Before positive, run the existing genuine
+`fr063-joint-linux-applied-preparation` singleton under its original five-minute budget
+into a new external location; never edit old provenance/record/archive. Cheap T607 does
+not depend on that input. This is required preparation, not a new product feature.
+All raw remains external in `dfr-prefix/t607-build-green-1` and `t607-preparation`.
+No source-count GREEN, overall speedup, full positive, Windows or full wounds claim.
+No source/history/raw/save deletion; causal RED and incomplete T606 preserved.
+
 # T607 minimal GREEN source WIP frozen — independent delta review pending
 
 Following accepted prerequisite-complete RED, shared explicit factory now constructs
