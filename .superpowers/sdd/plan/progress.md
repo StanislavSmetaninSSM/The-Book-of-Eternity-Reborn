@@ -1,3 +1,36 @@
+# T608 observation cheap GREEN accepted — genuine COPY still pending
+
+Independent SOURCE and staged OUTCOME accept source/compiled Integration
+75e538085837c955ecf9607fd59e947344d2c487. The fresh affected Integration build
+passed with zero errors and101 unchanged warnings in6:56.19; the other four owning
+assemblies remain qualified f6ef4d62178f74fcd3afe58c66617496cbb9c43f. Current33
+DLL/PDB/XML artifacts,11 PE/PDB pairs and75 Git/source/PDB joins agree. Discovery
+965 categories/12,590 methods and exact three-descriptor/fourteen-case PlanOnly
+executed zero tests; catalog membership, original cases and budgets are unchanged.
+
+Two staged actual invocations now pass: range3 and related11, not one combined run.
+All three range modes retain exact2–4/6–8/10–12 slices and all14 original events,
+with closed accounting and roots absent. The gzip mode additionally has strict
+stored/decoded identity and EOF/CRC proof. The related controls pass all11 cases, including
+intentional incomplete/failure reports. Sync and async metadata probes each show
+522 legacy versus322 aggregate/full attributes with identical52 main guards,
+44 lease guards and2 file sources; aggregate equals full. No new cache or owner was
+introduced. The existing passive recorder preserves DATA reuse and full original
+observations; this evidence does not establish whole-copy runtime fit.
+
+Both process cleanup flags, actual ended testhosts and current loaded/source pins
+pass. External evidence remains under dfr-prefix/actual-t608-copy-range-green-1,
+actual-t608-copy-range-related-1 and t608-counter-scaffold, including independent
+SOURCE/PREP/OUTCOME and original TRX. This documentation checkpoint changes no C#.
+
+Genuine COPY and CANDIDATE remain unqualified. Next is exact singleton PlanOnly,
+resource/full-gzip verification preparation and independent COPY-only PREP under
+its original two-minute budget. The old incomplete direct COPY680,889,606B/raw/root
+and unmatched full-positive TIMEOUT300 evidence remain protected. Accepted67 feature
+cases are distinct from these cheap14. No candidate/full-positive admission, timeout
+increase, new deletion or Windows claim follows. New full clean source restoration
+has not yet been performed for this checkpoint; publication is not restoration proof.
+
 # T608 bounded GREEN source frozen — UNCOMPILED/UNRUN
 
 Root verified six changed paths: four Integration partials and catalog/CI wording.
