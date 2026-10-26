@@ -1,3 +1,22 @@
+# T599 causal RED independently accepted — T600 development released
+
+Independent Astra/high OUTCOME ACCEPT confirms final visibility-target RED after
+all real-source1/final-original2event/hash/root prerequisites. Full TRX/records/
+report and strict actual root absence,33artifacts and loaded pins were rechecked.
+T599 is complete; after-return transport cannot expose the original begin during
+the blocked await. This establishes the diagnostic gap, not the application timeout
+cause or a gameplay acceptance. No RED rerun is needed on unchanged baseline.
+
+Release only T600 source development under accepted DFRDIAG design: one detached
+continuing drain/final tail, no ambient context/authority, exact clocks/accounting,
+strict root-entry absence/retained-entry refusal, partial-last-line live reads,
+fault/primary precedence and actual closing receipt, positive-only wiring with
+all old outputs/assertions/measurement boundary/cache eligibility preserved.
+Coherent SOURCE/fresh affected build/cheap GREEN/PREP still precede any new
+expensive positive. Root owns Git/docs/execution; single implementer owns C#/catalog.
+Existing cheap176/two actual PASS/positive TIMEOUT, all raw and candidate roots
+remain unchanged. Source implementation T600 is unstarted at this checkpoint.
+
 # T599 actual causal visibility RED obtained — independent outcome pending
 
 One admitted cheap singleton atf2aef2b4ec95f997f00de009f0b3922559648da6 completed

@@ -80,7 +80,7 @@ of xUnit; the positive's original receiver still gets every existing message.
 
 ## T599–602 steps and acceptance
 
-- [ ] T599 Author a compilable minimal after-return transport scaffold and cheap
+- [x] T599 Author a compilable minimal after-return transport scaffold and cheap
   blocked-await real-file visibility test. It must fail because no original event
   is persistent while the body remains blocked, not because of missing API/build.
   Preserve baseline/frame/timeout evidence, exact selection and owned cleanup.

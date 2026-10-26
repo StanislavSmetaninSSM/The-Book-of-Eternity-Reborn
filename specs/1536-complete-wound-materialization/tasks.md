@@ -3,7 +3,7 @@
 DFRDIAG1..6 / current plan; ordinary autonomous technical continuation, no new game
 feature or timeout allowance. Cheap176 and actual temporal/source-fence PASS retained;
 unchanged positive is incomplete TIMEOUT300s, not phase/functional acceptance.
-- [ ] T599 Compilable minimal after-return transport baseline and cheap real-file
+- [x] T599 Compilable minimal after-return transport baseline and cheap real-file
   blocked-await visibility causal RED; preserve original evidence and root identity.
 - [ ] T600 Existing sealed original-event queue/persistent output, one detached
   continuing consumer, actual lifecycle identity, primary/close/failure integrity;
