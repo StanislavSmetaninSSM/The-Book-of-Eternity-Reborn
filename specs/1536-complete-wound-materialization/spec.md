@@ -1,3 +1,41 @@
+# Interrupted lifecycle named-timing diagnostic amendment — #1536 / 2026-10-26
+
+DFRDIAG1: preserve accepted cheap176 and actual temporal/source-fence PASS results;
+unchanged/full/phase at945e81e70 is incomplete TIMEOUT300.215s with no TRX. Its
+cause and exact slow phase remain unknown. Durable publication is progress only.
+No unchanged retry, limit increase, lost-result PASS or Windows substitution.
+DFRDIAG2: before another expensive positive, prove interruption-safe test transport
+using the existing sealed OperationTimingAccumulator event window, DrainEvents and
+JointCleanupProfileDiagnosticCapture.ObserveRecorded/uncapped external writer.
+One consumer drains detached scalar events during a long await; it carries no game,
+lease, authority or probe reference and invokes no functional code. No production
+callback, new cache/diagnostic framework or event reconstruction from aggregates.
+DFRDIAG3: preserve corrected-readback counter-window boundary and every original
+case/input/assertion/two actual phase calls/full physical diagnostic. Only the
+unchanged positive opts into full event capture. Persist complete existing messages
+and still forward them to xUnit; register actual lifecycle root, case/nonce/process
+birth identity/loaded assembly pins before functional work. Never label the component
+helper's default ExpectedOwnedRoot as this lifecycle root. Source clocks precede
+transport clocks; capture sink must exist before opening the event window.
+DFRDIAG4: actual functional/resource close and real fixture Dispose precede window
+close; then stop/join exactly one consumer, final drain, strict aggregate/event/
+writer accounting, flush/close/hash and actual filesystem closing receipt. Preserve
+primary functional exceptions; diagnostic errors remain secondary and cannot produce
+complete capture. Fixture Dispose can swallow errors: verify real root absence;
+retained root means cleanup unproven, not success. No new root deletion behavior.
+A killed process leaves initial/partial records and no invented complete/final receipt.
+DFRDIAG5: cheap real-file blocked-await visibility causal RED precedes continuing
+consumer implementation; then original clocks/order/exactly-once tail, failure/
+primary precedence, idempotent closing, root identity/default component behavior
+and incomplete/retained-root negatives. Review full source/optimization/selection,
+fresh affected Integration XML/PDB/catalog/PlanOnly and separate PREP before one
+new diagnostic positive with the unchanged5-minute budget. Retain unaffected
+results only with explicit source/binary input proof; no new source42 generator.
+DFRDIAG6: retain all raw outside checkout with no quotas/deletion. Full diagnostic
+capture does not itself fix or qualify the prior timeout. Use original named scopes
+and measured transport costs to localize work; inclusive intervals are not additive.
+Resume dependent live/cold gates only after a complete accepted functional outcome.
+
 # T179-Pd.3e bounded observed debug-prefix amendment — #1536 / 2026-10-25
 
 DFR-HOT1: existing actual Capturing joint owner consumes the same ordered ordinary

@@ -1,3 +1,99 @@
+# T599–602 interrupted lifecycle timing transport implementation plan
+
+> **For agentic workers:** use Superpowers executing-plans for this bounded T597
+> correction. Existing canonical issue/spec/tasks remain authoritative; owner granted
+> autonomous technical work and waived routine specification-review waiting.
+
+**Goal:** retain original named timings and full existing messages if the unchanged
+positive is interrupted inside a long await, without changing its functional work.
+**Architecture:** reuse sealed event recording and existing external diagnostic
+output/capture. A test-owned single consumer persists detached events independently
+of xUnit; the positive's original receiver still gets every existing message.
+**Tech stack:** current .NET8/SDK10, xUnit, PowerShell7 selected runner; no dependency.
+**Spec:** DFRDIAG1..6 above T179-Pd.3e / #1536, docs/performance.md and testing.md.
+
+## Constraints and design decisions
+
+- Current Game/Services/Core/native source, ownership/freshness/cache guards, debug
+  schema, actual P2 calls, full images, cold paths and category5-minute budget stay
+  unchanged. This is test diagnostics, not a product optimization or timeout fix.
+- Extending existing persistent output is preferred to a second capture framework.
+  Its default component namespace must remain exact; lifecycle registration binds
+  an explicit absolute actual fixture root, not the component's fabricated default.
+  Only DATA paths/identity are registered; diagnostic binding cannot delete or
+  authorize game state. Identity is registered after ordinary fixture allocation
+  and before the genuine source42/actual body; that excluded allocation is explicit.
+- An adapter can be constructed before the lifecycle fixture, forward original
+  output, then bind the persistent receiver immediately after constructor. Preserve
+  any pre-bind messages without quota. Sink creation precedes corrected-readback
+  StartWindow(captureEvents:true); keep that measurement boundary/count semantics.
+- One continuing consumer owns all drains, including final tail; no second caller
+  drains concurrently. It holds only Window/capture/scalars/cancellation, never the
+  enclosing probe or game. Background transport is outside functional callbacks.
+- Body settles and existing resource/fixture disposal happens before probe/window
+  close, consumer stop/join/final drain, exact accounting, Finish/hash and closing
+  receipt. A real remaining root is retained/unproven even if Dispose swallowed
+  an exception. Do not fabricate an exception or complete receipt on kill.
+- Diagnostic failure never replaces the primary body error. On otherwise successful
+  work, incomplete/failed capture or unproven cleanup fails qualification. Measured
+  writer costs remain separate from original inclusive operation clocks.
+
+## Files and typed interfaces
+
+- Modify Integration `JointBundleDiagnosticOutput.cs`: optional final actualFixtureRoot
+  argument/explicit lifecycle binding, with unchanged default component behavior,
+  absolute path validation and exact initial/report root identity. Reuse its
+  AutoFlush writer, ObserveRecorded, report/hash/failure ledger and closing API.
+- Create Integration `LifecyclePassiveTimingDiagnostics.cs`: test-owned
+  ITestOutputHelper/IAsyncDisposable adapter. BindFixtureRoot(string actualRoot)
+  registers its one actual root; Arm(OperationTimingAccumulator.Window window)
+  attaches its one event window after the sink exists; CompleteAsync closes only
+  after the caller has settled functional/resource/fixture lifetime. Its internal
+  consumer has no game/authority references. Finish/idempotence/primary-error
+  orchestration may be a focused partial; do not duplicate existing serializer.
+- Create `LifecyclePassiveTimingDiagnosticsTests.cs`: minimal independent real-file/
+  event-window fixtures, no GameEngine/fake authority. Test visible original begin
+  while a body is blocked, exact original clocks and sequence, final tail/once,
+  write/drain/close failure and primary precedence, incomplete/remaining-root and
+  actual root identity versus untouched default component root.
+- Modify existing `GameEngineTurnLifecycleTests.JointNarrativeSource.cs` (focused
+  diagnostic partial if useful): positive-only output/arm/drain/dispose wiring and
+  RunLiveNarrativeSourceControlAsync. Preserve all original assertions/probe order,
+  per-test mutable state, normal N-negative/cold/default behavior. Avoid changing
+  shared gameplay helper unless a demonstrated lifetime need requires it.
+- Catalog/selection own narrow new transport controls plus affected existing
+  passive/output contracts. Preserve old176/twoPASS with explicit impact proof;
+  no automatic original-five/native40/whole suite/Windows run.
+
+## T599–602 steps and acceptance
+
+- [ ] T599 Author a compilable minimal after-return transport scaffold and cheap
+  blocked-await real-file visibility test. It must fail because no original event
+  is persistent while the body remains blocked, not because of missing API/build.
+  Preserve baseline/frame/timeout evidence, exact selection and owned cleanup.
+- [ ] T600 Implement one continuing detached-event consumer and positive-only wiring,
+  real fixture identity and complete close/failure ordering. Cheap controls must
+  prove original clocks/order/no loss or duplicate/late tail and persistent partial
+  visibility, plus failure/primary precedence. Coherent independent SOURCE review.
+- [ ] T601 Fresh affected Integration XML/PDB/copies/current source verification,
+  zero introduced warnings, catalog/exact PlanOnly and cheap GREEN plus necessary
+  existing transport/output controls; remote persistence/recovery and independent
+  PREP. Retain unchanged Game/Support/Bridge/Unit/cheap176/twoPASS only by impact.
+- [ ] T602 One reviewed diagnostic unchanged-positive attempt, same5-minute budget,
+  full old assertions/outputs and existing named trace. Check all actual streams,
+  clocks/counts/status/root/closing/hash, classify PASS/failure/incomplete honestly,
+  independently review outcome. If unresolved, diagnose actual slow sections before
+  any dependent live/cold release; no blind repeated attempt or increased bound.
+
+## Optimization assessment
+
+Reuse existing recorder, diagnostic serializer/cost ledger and per-test fixture;
+no new world or repeated source computation. FIFO drains transfer already recorded
+scalar DATA once; a single consumer avoids reorder/duplicate/racing final tails.
+Fresh source/owner fences and original clocks remain intact. Collection is uncapped;
+writer/copy/CPU costs must be measured, not attributed by guess or hidden by output
+suppression. Current application timeout cause remains unknown until new evidence.
+
 # T179-Pd.3e observed debug-prefix implementation plan
 
 > **For agentic workers:** use Superpowers executing-plans for this coherent block;

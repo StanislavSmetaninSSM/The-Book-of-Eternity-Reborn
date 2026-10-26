@@ -1,3 +1,20 @@
+# T597 interrupted unchanged-positive diagnostics — #1536 / 2026-10-26
+
+DFRDIAG1..6 / current plan; ordinary autonomous technical continuation, no new game
+feature or timeout allowance. Cheap176 and actual temporal/source-fence PASS retained;
+unchanged positive is incomplete TIMEOUT300s, not phase/functional acceptance.
+- [ ] T599 Compilable minimal after-return transport baseline and cheap real-file
+  blocked-await visibility causal RED; preserve original evidence and root identity.
+- [ ] T600 Existing sealed original-event queue/persistent output, one detached
+  continuing consumer, actual lifecycle identity, primary/close/failure integrity;
+  positive-only wiring/typed controls and coherent independent SOURCE review.
+- [ ] T601 Fresh affected XML/PDB/copies/source/catalog/PlanOnly, cheap GREEN and
+  affected existing transport/output controls, exact retained-impact proof, remote
+  checkpoint/recovery and independent PREP before expensive runtime.
+- [ ] T602 One full named diagnostic positive under original5-minute budget; full
+  functional/phase/physical assertions, uncapped external evidence and honest outcome
+  review. Resolve actual measured cause as needed, then resume T597/T598 dependencies.
+
 # T179-Pd.3e observed debug-prefix consumer — #1536 / 2026-10-25
 
 Base `265af120cd0e1df812617ba44c07cde4f2b67f6e`; bounded accepted DFR design,

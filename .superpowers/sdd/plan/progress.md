@@ -1,3 +1,23 @@
+# T599–602 bounded interrupted named-timing plan — no implementation/runtime yet
+
+Independent static and outcome investigations confirm2 actual PASS plus incomplete
+positive TIMEOUT; no demonstrated P2 recursion/lock defect or exact slow phase.
+Confirmed gap: default aggregate window and xUnit-only messages vanish before TRX.
+Current source/checkpoint ee93e1c6 recovered exactly:30,909 blobs/772,590,038bytes,
+41 PDB-bound sources, clean including ignored, no recovery build/runtime. Known
+runtime children are absent or zombies, not live; two candidate fixture roots/raw
+remain retained. Matching turn43 publication is progress only, not completion.
+
+Canonical DFRDIAG1..6 / T599–602 propose a test-only existing sealed-event/ObserveRecorded
+persistent transport with one data-only consumer during long awaits. Preserve old
+outputs/assertions/P2 calls/window boundary, real root/nonce/process/source identity,
+primary error precedence, actual fixture cleanup and complete trace accounting.
+Default component behavior and Game/Services/Core/native source remain unchanged.
+A cheap causal blocked-await RED, SOURCE review, fresh targeted build/controls/PREP
+precede any one new diagnostic positive at the same5-minute budget. No runtime is
+released by this plan. Standing autonomous technical-work waiver applies; no new
+product requirement, budget increase, fixture substitution or user permission loop.
+
 # T597 first two actual gates PASS; unchanged positive TIMEOUT — dependent runtime stopped
 
 At source-bound runtimeHEAD945e81e7082925ae4bd96ed72a503b6d1fde3748:
