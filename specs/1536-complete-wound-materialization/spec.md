@@ -15,6 +15,23 @@ must prove effect and preserved fresh checks. No weakened assertion, misleading 
 counter, broader eligibility, diagnostic format/quota, budget or GM-authored change.
 Small-contour costs do not establish whole-game improvement or release full positive.
 
+REPLAY-REUSE4: complete structural equality and moved preflights are only reuse
+eligibility. Their mismatch/refusal/unavailability or unproved exception ordering
+must select unchanged original source after supported DATA invalidation; no new domain
+refusal or earlier baseline precedence. Null/unsupported operation takes original path.
+Bind admission/key/source to the same fixed defensively owned input instance; existing
+private structural dependency remains live. Do not mask original/protocol exceptions.
+REPLAY-REUSE5: explicitly share warmed preparation work: strict GREEN warmup one plus
+isolated richer zero equals one actual source across the same eight-call probe. Keep
+all original DATA/fence/closing prerequisites and actual counters. Saved complete RED
+one plus eight supplies the baseline; no zero-or-one allowance or repeated RED needed.
+REPLAY-REUSE6: preserve actual per-call graph/admission boundaries. Proposed warm
+seal count 56 removes only the expected provisional construction check from baseline64;
+actual a/b/c/d/e/g/h checks remain. Final SOURCE verifies the exact finite call graph.
+Key includes demonstrated omitted DefinitionFacts/SourcePaths/order/opaque companions;
+originally accepted stricter-key mismatches use source fallback with original parity.
+
+
 # T608 tests-first expected-replay counter amendment — #1536
 
 REPLAY-PROBE1: instrument only the original actual expected-source invocation in
