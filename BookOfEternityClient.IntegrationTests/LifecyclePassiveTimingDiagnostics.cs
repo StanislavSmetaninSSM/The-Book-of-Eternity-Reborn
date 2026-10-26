@@ -27,6 +27,7 @@ internal sealed class LifecyclePassiveTimingDiagnostics(string caseName, ITestOu
     internal static AsyncLocal<string?> ContextSentinelForControl { get; } = new();
     internal bool? ConsumerSawContextSentinel => _drained?.ContextSentinelPresent;
     internal long? ConsumerBatches => _drained?.Batches;
+    internal long? LargestDetachedBatch => _drained?.LargestBatch;
 
     /// <summary>Gets the one diagnostic root registered after actual fixture allocation.</summary>
     internal string RegisteredRoot => RequireBound().ExpectedOwnedRoot;
@@ -125,7 +126,21 @@ internal sealed class LifecyclePassiveTimingDiagnostics(string caseName, ITestOu
     /// <returns>Completion after final accounting, hash and actual-root closing receipt were attempted.</returns>
     internal Task CompleteAsync(Exception? primaryFailure = null)
     {
-        lock (_gate) return _completion ??= CompleteCoreAsync(primaryFailure);
+        TaskCompletionSource signal;
+        lock (_gate)
+        {
+            if (_completion is not null) return _completion;
+            signal = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            _completion = signal.Task; // publish before any writer/reference can reenter
+        }
+        _ = CompleteAndSignalAsync(signal, primaryFailure);
+        return signal.Task;
+    }
+
+    private async Task CompleteAndSignalAsync(TaskCompletionSource signal, Exception? primaryFailure)
+    {
+        try { await CompleteCoreAsync(primaryFailure).ConfigureAwait(false); signal.SetResult(); }
+        catch (Exception error) { signal.SetException(error); }
     }
 
     private async Task CompleteCoreAsync(Exception? primaryFailure)
@@ -192,7 +207,7 @@ internal sealed class LifecyclePassiveTimingDiagnostics(string caseName, ITestOu
 
     private sealed record DrainInput(OperationTimingAccumulator.Window Window,
         JointCleanupProfileDiagnosticCapture Capture, CancellationToken Stop, bool FailAfterDetach);
-    private sealed record DrainReceipt(bool ContextSentinelPresent, long Batches);
+    private sealed record DrainReceipt(bool ContextSentinelPresent, long Batches, long LargestBatch);
 
     private static Task<DrainReceipt> StartConsumer(DrainInput input) =>
         Task.Factory.StartNew(static state => ConsumeAsync((DrainInput)state!), input,
@@ -201,7 +216,7 @@ internal sealed class LifecyclePassiveTimingDiagnostics(string caseName, ITestOu
     private static async Task<DrainReceipt> ConsumeAsync(DrainInput input)
     {
         var contextPresent = ContextSentinelForControl.Value is not null;
-        long batches = 0;
+        long batches = 0, largestBatch = 0;
         var injected = false;
         try
         {
@@ -225,13 +240,14 @@ internal sealed class LifecyclePassiveTimingDiagnostics(string caseName, ITestOu
             try { Drain(); }
             catch (Exception error) { input.Capture.RecordDiagnosticFailure(error, "lifecycle-final-drain"); }
         }
-        return new(contextPresent, batches);
+        return new(contextPresent, batches, largestBatch);
 
         void Drain()
         {
             var batch = input.Window.DrainEvents();
             if (batch.Length == 0) return;
             batches++;
+            largestBatch = Math.Max(largestBatch, batch.LongLength);
             if (input.FailAfterDetach && !injected)
             {
                 injected = true;

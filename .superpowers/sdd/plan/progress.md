@@ -1,3 +1,36 @@
+# T600 coherent SOURCE candidate frozen — review/build pending
+
+Eight Integration-only C# paths plus catalog/selection form the full source block:
+existing event queue/ObserveRecorded/output reused, opt-in same-writer gzip and
+flush/gate-wait/close/decode cost ledger, static context-isolated sole consumer,
+strict real-root/primary/close accounting, positive-only orchestration, cheap
+original clocks/tail/context/fault/root/incomplete/live-prefix/footer/corruption/
+default-identity and32768fresh-scope/full-Unicode controls. Shared completion is
+published before asynchronous closing can reenter; no parallel final drainer.
+No Game/Core/Services/native/GM-authored contract changed; no prompt/example update
+is required for this test-only transport correction. Source diff whitespace passes.
+
+Static source-derived exact transport selection: visibility1method/1case,
+lifetime11/18, managed-cost1/1, existing sealed transport6/9, component output2/2,
+direct capture controls3/6: six IDs /24methods /37cases. These are NOT discovery or
+runtime results. Existing23 CI IDs are retained and3 necessary IDs appended (26);
+old selectors and all category budgets are exact. The original causal visibility
+Fact and its historical accepted RED remain intact; gzip visibility is separate.
+
+All new managed/runtime/cost claims remain UNRUN. Current binaries are still the
+accepted T599 c03b Integration plus unchanged retained projects; they cannot execute
+this candidate via NoBuild. Independent coherent SOURCE, fresh affected Integration
+XML/PDB/all33files/source binding, discovery/PlanOnly, cheap GREEN and separate PREP/
+actual storage-cost admission remain before one5-minute unchanged positive. Previous
+cheap176/two real DFR PASS and incomplete timeout remain. Current application cause
+UNKNOWN; dependent live/cold gates still blocked. No budget or diagnostic limit changed.
+
+Fresh GitHub-only shallow single-branch blob-filtered full-tree recovery ofe2f71f634
+verified30913exactblobs/772668801logicalbytes, clean including ignored,0runtime/PDB
+claims. It occupies~1.24GB and actual free workspace is~1.99GB; it may be retired
+only after current source verification if runtime headroom requires. All unique raw,
+provenance, saves and timeout roots remain. Candidate delta recovery is next.
+
 # T600 same-writer/consumer/live fragment WIP — not SOURCE-ready
 
 Seven C# files frozen coherently fromc42b9f20: same existing opt-in gzip sink with

@@ -15,12 +15,18 @@ public sealed partial class LifecyclePassiveTimingDiagnosticsTests(ITestOutputHe
 
     /// <summary>Requires an original begin on disk before its actual awaited body is released.</summary>
     [Fact]
-    public async Task OriginalBeginIsPersistentWhileActualBodyRemainsBlocked()
+    public Task OriginalBeginIsPersistentWhileActualBodyRemainsBlocked() => RunBlockedVisibilityAsync(gzip: false);
+
+    /// <summary>Proves flushed compressed rows are visible during the same unreleased real await.</summary>
+    [Fact]
+    public Task GzipOriginalBeginIsPersistentWhileActualBodyRemainsBlocked() => RunBlockedVisibilityAsync(gzip: true);
+
+    private async Task RunBlockedVisibilityAsync(bool gzip)
     {
         var root = Path.Combine(Path.GetTempPath(), "boe-lifecycle-timing-control-" + Guid.NewGuid().ToString("N"));
         var source = Path.Combine(root, "source.txt");
         var expected = new byte[] { 1, 3, 7, 19 };
-        var diagnostics = new LifecyclePassiveTimingDiagnostics(nameof(OriginalBeginIsPersistentWhileActualBodyRemainsBlocked), output);
+        var diagnostics = new LifecyclePassiveTimingDiagnostics(nameof(OriginalBeginIsPersistentWhileActualBodyRemainsBlocked) + (gzip ? "-gzip" : "-plain"), output, gzipRecords: gzip);
         var recorder = new OperationTimingAccumulator();
         var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -67,6 +73,7 @@ public sealed partial class LifecyclePassiveTimingDiagnosticsTests(ITestOutputHe
                 if (!visible) await Task.Delay(20);
             } while (!visible && Stopwatch.GetElapsedTime(started) < TimeSpan.FromSeconds(2));
             Assert.False(body.IsCompleted);
+            Assert.False(File.Exists(diagnostics.ReportPath)); // live prefix is explicitly incomplete
         }
         catch (Exception error) { primary = error; }
         finally

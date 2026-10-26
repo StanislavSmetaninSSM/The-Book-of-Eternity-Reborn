@@ -13,7 +13,7 @@ internal sealed class JointCleanupProfileDiagnosticCapture
     private readonly TimeProvider _clock;
     private readonly TextWriter _writer;
     private long _flushAttempted, _flushStored;
-    private TimeSpan _flushElapsed;
+    private TimeSpan _flushElapsed, _flushGateWait;
     private readonly Dictionary<(string Name, string State), WriteCost> _writeCosts = new();
     private readonly List<(Exception Error, string Stage)> _failures = new();
     private long _attempted;
@@ -113,8 +113,10 @@ internal sealed class JointCleanupProfileDiagnosticCapture
     /// <summary>Flushes the same synchronized writer without a callback or separate transport.</summary>
     internal void Flush()
     {
+        var requested = System.Diagnostics.Stopwatch.GetTimestamp();
         lock (_gate)
         {
+            _flushGateWait += System.Diagnostics.Stopwatch.GetElapsedTime(requested);
             _flushAttempted++;
             var started = System.Diagnostics.Stopwatch.GetTimestamp();
             try { _writer.Flush(); _flushStored++; }
@@ -123,10 +125,10 @@ internal sealed class JointCleanupProfileDiagnosticCapture
         }
     }
 
-    /// <summary>Copies actual explicit flush attempts, successful returns and inclusive elapsed cost.</summary>
-    internal (long Attempted, long Stored, TimeSpan Elapsed) GetFlushCosts()
+    /// <summary>Copies explicit flush attempts, successful returns, actual flush cost and separate gate wait.</summary>
+    internal (long Attempted, long Stored, TimeSpan Elapsed, TimeSpan GateWait) GetFlushCosts()
     {
-        lock (_gate) return (_flushAttempted, _flushStored, _flushElapsed);
+        lock (_gate) return (_flushAttempted, _flushStored, _flushElapsed, _flushGateWait);
     }
 
     private void ObserveCore(string name, string boundary, TimeSpan elapsed,

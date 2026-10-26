@@ -101,7 +101,7 @@
     },
     {
       "category": "fr063-joint-live-n-source-unchanged",
-      "reason": "Reuse the independent full positive without another fixture. Exercise two actual engine-owned calls into the SAME consumer after CloseCapture and actual expiry; require exact refusals, no extra Capture/Evaluate/Recheck/timestamp work, unchanged retained result/counters/runtime/full physical images/turn/mutations, while original successful closed fence still yields source check2 and full inert completion.",
+      "reason": "Reuse the independent full positive without another fixture. Exercise two actual engine-owned calls into the SAME consumer after CloseCapture and actual expiry; require exact refusals, no extra Capture/Evaluate/Recheck/timestamp work, unchanged retained result/counters/runtime/full physical images/turn/mutations, while original successful closed fence still yields source check2 and full inert completion. T600 opts only this positive into persistent full original-message/event gzip transport; body/input/P2 assertions/5min remain unchanged. Expensive execution stays behind independent SOURCE/cheap/PREP/storage gates.",
       "contracts": [
         "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
       ]
@@ -143,7 +143,7 @@
     },
     {
       "category": "fr063-lifecycle-passive-timing-visibility",
-      "reason": "T599 cheap causal visibility oracle against compilable after-return baseline. Preserve real source/binding/final drain/hash/cleanup prerequisites; continuous consumer and expensive unchanged retry are not authorized here.",
+      "reason": "Preserve T599 accepted actual RED and run the SAME original blocked-await visibility oracle against the T600 continuing consumer, with actual source/read/root/hash/final-accounting prerequisites.",
       "contracts": [
         "#1536 T599–602 / DFRDIAG1–6; test-only interrupted lifecycle event transport, no product behavior change"
       ]
@@ -160,6 +160,27 @@
       "reason": "Affected existing default component output namespace, live-file writes and storage-failure controls; preserve default behavior with optional actual lifecycle root.",
       "contracts": [
         "#1536 T599–602 / DFRDIAG1–6; test-only interrupted lifecycle event transport, no product behavior change"
+      ]
+    },
+    {
+      "category": "fr063-lifecycle-passive-timing-lifetime",
+      "reason": "T600 single-consumer/context/primary/strict-root/partial-row/gzip integrity controls using real small files and existing recorder/writer only.",
+      "contracts": [
+        "#1536 T599–602 / DFRDIAG1–9; same-writer interrupted lifecycle transport and bounded lossless storage"
+      ]
+    },
+    {
+      "category": "fr063-lifecycle-passive-timing-managed-cost",
+      "reason": "Bounded actual32768scope managed serializer/compression/flush/closing/decode cost and size proof before storage/PREP or any expensive retry; no extrapolated guarantee.",
+      "contracts": [
+        "#1536 T599–602 / DFRDIAG1–9; same-writer interrupted lifecycle transport and bounded lossless storage"
+      ]
+    },
+    {
+      "category": "fr063-joint-cleanup-profile-diagnostic-controls",
+      "reason": "Existing exact capture write-cost/failure/clock consumers are affected by adding same-writer Flush with its existing failure ledger; preserve old Observe/clock semantics.",
+      "contracts": [
+        "#1536 T599–602 / DFRDIAG1–9; same-writer interrupted lifecycle transport and bounded lossless storage"
       ]
     }
   ]

@@ -11,7 +11,7 @@ internal sealed partial class JointBundleDiagnosticOutput
     private object FlushCostData()
     {
         var cost = Timings.GetFlushCosts();
-        return new { cost.Attempted, cost.Stored, cost.Elapsed };
+        return new { cost.Attempted, cost.Stored, cost.Elapsed, cost.GateWait };
     }
 
     // The compressor's successful owning close proves its footer was emitted.
@@ -29,7 +29,13 @@ internal sealed partial class JointBundleDiagnosticOutput
         {
             hash.AppendData(buffer, 0, count);
             bytes = checked(bytes + count);
-            for (var index = 0; index < count; index++) if (buffer[index] == '\n') rows++;
+            var remaining = buffer.AsSpan(0, count);
+            int newline;
+            while ((newline = remaining.IndexOf((byte)'\n')) >= 0)
+            {
+                rows++;
+                remaining = remaining[(newline + 1)..];
+            }
             last = buffer[count - 1];
         }
         if (bytes != 0 && last != '\n') throw new InvalidDataException("Closed JSONL has an unfinished final row.");

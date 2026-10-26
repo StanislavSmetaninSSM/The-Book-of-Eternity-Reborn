@@ -2,8 +2,83 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-lifecycle-passive-timing-lifetime",
+  "responsibility": "Cheap real-file continuing-transport controls: gzip live prefix, exact clocks/sequence/tail/once, concurrent completion, caller context isolation, deferred write/drain/finish faults and primary identity, full message forwarding once, strict retained/file/link root refusal, plain/gzip partial row and closed stored/decoded integrity incl all footer1..8 truncations. No GameEngine/native.",
+  "excludes": "No expensive positive, fabricated events/timestamps/authority, records quota, timeout increase or full-world setup. Decoder EOF or completed rows alone never prove a finished gzip container.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/LifecyclePassiveTimingDiagnostics.cs",
+    "BookOfEternityClient.IntegrationTests/LifecyclePassiveTimingDiagnosticsTests.Lifetime.cs",
+    "BookOfEternityClient.IntegrationTests/LifecyclePassiveTimingDiagnosticsTests.Gzip.cs",
+    "BookOfEternityClient.IntegrationTests/JointBundleDiagnosticOutput.Gzip.cs",
+    "BookOfEternityClient.IntegrationTests/JointCleanupProfileDiagnosticCapture.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-lifecycle-passive-timing-visibility",
+      "when": "Preserve the independently accepted original causal visibility oracle."
+    }
+  ],
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.LifecyclePassiveTimingDiagnosticsTests.GzipOriginalBeginIsPersistentWhileActualBodyRemainsBlocked",
+        "BookOfEternityClient.Tests.LifecyclePassiveTimingDiagnosticsTests.OriginalEventsAndResourceCloseTailHaveOneCompletion",
+        "BookOfEternityClient.Tests.LifecyclePassiveTimingDiagnosticsTests.ConsumerDoesNotInheritCallerContext",
+        "BookOfEternityClient.Tests.LifecyclePassiveTimingDiagnosticsTests.PrebindMessagesForwardOnceAndPersistentFailureDefers",
+        "BookOfEternityClient.Tests.LifecyclePassiveTimingDiagnosticsTests.ActualDiagnosticFailureKeepsPrimaryObjectAndRootReceipt",
+        "BookOfEternityClient.Tests.LifecyclePassiveTimingDiagnosticsTests.RemainingOrReplacedRootCannotBecomeSuccessfulCleanup",
+        "BookOfEternityClient.Tests.LifecyclePassiveTimingDiagnosticsTests.OpenOrLateScopeRefusesCompleteTrace",
+        "BookOfEternityClient.Tests.LifecyclePassiveTimingDiagnosticsTests.LiveReaderRetriesOnlyUnfinishedFinalFragment",
+        "BookOfEternityClient.Tests.LifecyclePassiveTimingDiagnosticsTests.GzipClosedIdentityRefusesEachFooterTruncationAndCorruption",
+        "BookOfEternityClient.Tests.LifecyclePassiveTimingDiagnosticsTests.GzipLiveReaderKeepsCompletePrefixAndRejectsCompletedMalformedRow",
+        "BookOfEternityClient.Tests.LifecyclePassiveTimingDiagnosticsTests.DefaultComponentIdentityAndForeignRootReceiptStayStrict"
+      ]
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null
+},
+{
+  "id": "fr063-lifecycle-passive-timing-managed-cost",
+  "responsibility": "One bounded managed transport control with32768 fresh actual sealed scopes/every65536 original events and one large complete Unicode message through the SAME gzip serializer/writer/capture. Measure producer/drain/flush/close/decode/size costs and preserve exact row/source clocks/queue/stored+decoded hashes; no application speedup or full-run size guarantee.",
+  "excludes": "No synthetic events/timestamp rewriting, game world/native, uncompressed disk intermediate, quota/filter, compressed-ratio guarantee or expensive-positive admission.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/LifecyclePassiveTimingDiagnosticsTests.Gzip.cs",
+    "BookOfEternityClient.IntegrationTests/JointBundleDiagnosticOutput.cs",
+    "BookOfEternityClient.IntegrationTests/JointBundleDiagnosticOutput.Gzip.cs",
+    "BookOfEternityClient.IntegrationTests/JointCleanupProfileDiagnosticCapture.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-lifecycle-passive-timing-lifetime",
+      "when": "Required live-prefix/integrity/failure controls precede any expensive admission."
+    }
+  ],
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.LifecyclePassiveTimingDiagnosticsTests.FreshManagedGzipCostControlKeepsEveryScopeAndLargeUnicodeMessage"
+      ]
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null
+},
+{
   "id": "fr063-lifecycle-passive-timing-visibility",
-  "responsibility": "One cheap real-file blocked-await causal control: an original sealed named begin must be persistent while its actual body remains blocked. Valid source read, actual root binding, finally release/join/cleanup and exact after-return two-event/hash receipt are prerequisites; T599 baseline deliberately has no continuing consumer.",
+  "responsibility": "One cheap real-file blocked-await causal control: an original sealed named begin must be persistent while its actual body remains blocked. Valid source read, actual root binding, finally release/join/cleanup and exact two-event/hash receipt are prerequisites. T599 accepted causal RED is retained; T600 preserves the same oracle with one continuing consumer.",
   "excludes": "No GameEngine, native process, world, lease/issuer/authority fabrication, positive fixture replay, production change, timeout increase or record quota. Build/setup/cleanup/timeout failures are not causal RED.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/LifecyclePassiveTimingDiagnostics.cs",
@@ -331,7 +406,7 @@
 },
 {
   "id": "fr063-joint-live-n-source-unchanged",
-  "responsibility": "Genuine Stage43/corrected Ready unchanged counterpart with original full joint completion/inert repeat. Actual captured DFR NeedsActorDependencies/evaluation1/timestamp1 and successful closed fence check2; two real same-consumer reentry calls after CloseCapture and actual expiry must refuse with unchanged retained DATA/counters and physical effects, zero extra producer/evaluate/timestamp work.",
+  "responsibility": "Genuine Stage43/corrected Ready unchanged counterpart with original full joint completion/inert repeat. Actual captured DFR NeedsActorDependencies/evaluation1/timestamp1 and successful closed fence check2; two real same-consumer reentry calls after CloseCapture and actual expiry must refuse with unchanged retained DATA/counters and physical effects, zero extra producer/evaluate/timestamp work. Positive-only uncapped original events/full-message gzip output persists independently of xUnit under the unchanged five-minute budget.",
   "excludes": "No invented N/I/Ready/original, full NI/S/B/M3/F1/T197, cold resume, native crash, Windows qualification or broad fixture replay. Missing API, build, setup or timeout never constitute causal RED.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointNarrativeSource.cs",

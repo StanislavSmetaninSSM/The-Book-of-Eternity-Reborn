@@ -8,6 +8,8 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class LifecyclePassiveTimingDiagnosticsTests
 {
+    /// <summary>Preserves all real original event pairs and the resource-close tail across concurrent completion calls.</summary>
+    /// <param name="gzip">Whether the same existing writer uses opt-in lossless compression.</param>
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
@@ -55,6 +57,8 @@ public sealed partial class LifecyclePassiveTimingDiagnosticsTests
         AssertComplete(capture);
     }
 
+    /// <summary>Proves caller context is unchanged and absent from the detached consumer.</summary>
+    /// <param name="alreadySuppressed">Whether the caller already suppressed context flow at synchronous startup.</param>
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
@@ -66,6 +70,8 @@ public sealed partial class LifecyclePassiveTimingDiagnosticsTests
         var recorder = new OperationTimingAccumulator();
         var window = recorder.StartWindow(captureEvents: true);
         var previous = LifecyclePassiveTimingDiagnostics.ContextSentinelForControl.Value;
+        Exception? primary = null;
+        string? callerAfterClose = null;
         try
         {
             LifecyclePassiveTimingDiagnostics.ContextSentinelForControl.Value = "caller-only";
@@ -79,15 +85,26 @@ public sealed partial class LifecyclePassiveTimingDiagnosticsTests
             Assert.False(ExecutionContext.IsFlowSuppressed());
             Assert.Equal("caller-only", LifecyclePassiveTimingDiagnostics.ContextSentinelForControl.Value);
             using (recorder.Measure("context.actual")) { }
-            Directory.Delete(root);
-            await capture.CompleteAsync();
-            Assert.False(Assert.IsType<bool>(capture.ConsumerSawContextSentinel));
-            Assert.Equal("caller-only", LifecyclePassiveTimingDiagnostics.ContextSentinelForControl.Value);
-            AssertComplete(capture);
         }
-        finally { LifecyclePassiveTimingDiagnostics.ContextSentinelForControl.Value = previous; }
+        catch (Exception error) { primary = error; }
+        finally
+        {
+            try
+            {
+                try { Directory.Delete(root); }
+                catch (Exception error) { primary ??= error; capture.RecordClosingFailure(error, "context-control-root-close"); }
+                await capture.CompleteAsync(primary);
+                callerAfterClose = LifecyclePassiveTimingDiagnostics.ContextSentinelForControl.Value;
+            }
+            finally { LifecyclePassiveTimingDiagnostics.ContextSentinelForControl.Value = previous; }
+        }
+        Assert.False(Assert.IsType<bool>(capture.ConsumerSawContextSentinel));
+        Assert.Equal("caller-only", callerAfterClose);
+        AssertComplete(capture);
     }
 
+    /// <summary>Preserves pre-bind/full-message forwarding once while new persistent faults remain deferred.</summary>
+    /// <param name="failWriter">Whether the actual existing records writer is disposed before functional work.</param>
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
@@ -121,8 +138,17 @@ public sealed partial class LifecyclePassiveTimingDiagnosticsTests
         using var report = JsonDocument.Parse(File.ReadAllText(capture.ReportPath));
         Assert.True(report.RootElement.GetProperty("FixtureClosing").GetProperty("Closing").GetBoolean());
         Assert.Equal(!failWriter, report.RootElement.GetProperty("DiagnosticComplete").GetBoolean());
+        if (failWriter)
+        {
+            Assert.Contains(report.RootElement.GetProperty("Failures").EnumerateArray(),
+                row => row.GetProperty("Stage").GetString() == "timing-flush");
+            Assert.True(report.RootElement.GetProperty("FlushCosts").GetProperty("Attempted").GetInt64() > 0);
+            Assert.Equal(0, report.RootElement.GetProperty("FlushCosts").GetProperty("Stored").GetInt64());
+        }
     }
 
+    /// <summary>Preserves the actual functional primary object/stack and cleanup receipt after a diagnostic fault.</summary>
+    /// <param name="failureStage">The closed drain or actual completion-reference failure case.</param>
     [Theory]
     [InlineData("drain")]
     [InlineData("finish")]
@@ -137,20 +163,32 @@ public sealed partial class LifecyclePassiveTimingDiagnosticsTests
         var window = recorder.StartWindow(captureEvents: true);
         capture.Arm(window);
         var scope = recorder.Measure("fault.actual");
-        if (failureStage == "drain") await WaitUntilAsync(() => window.CaptureEventStatus().Drained > 0);
-        scope!.Dispose();
-        var primary = Record.Exception(ThrowPrimary)!;
+        Exception? setupFailure = null;
+        try { if (failureStage == "drain") await WaitUntilAsync(() => window.CaptureEventStatus().Drained > 0); }
+        catch (Exception error) { setupFailure = error; }
+        finally { scope!.Dispose(); }
+        var primary = setupFailure ?? Record.Exception(ThrowPrimary)!;
         Directory.Delete(root);
         var failure = await Record.ExceptionAsync(() => capture.CompleteAsync(primary));
-        Assert.Same(primary, failure); Assert.Contains(nameof(ThrowPrimary), failure!.StackTrace);
+        if (setupFailure is not null) System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(setupFailure).Throw();
+        Assert.Same(primary, failure); Assert.Contains(nameof(ThrowPrimary), failure!.StackTrace ?? string.Empty);
         Assert.Same(failure, await Record.ExceptionAsync(() => capture.DisposeAsync().AsTask()));
         using var report = JsonDocument.Parse(File.ReadAllText(capture.ReportPath));
         Assert.False(report.RootElement.GetProperty("DiagnosticComplete").GetBoolean());
         Assert.Equal(root, report.RootElement.GetProperty("FixtureClosing").GetProperty("Owned").GetString());
         Assert.True(report.RootElement.GetProperty("FixtureClosing").GetProperty("Closing").GetBoolean());
         Assert.NotEmpty(report.RootElement.GetProperty("Failures").EnumerateArray());
+        if (failureStage == "drain")
+        {
+            Assert.Equal(2, window.CaptureEventStatus().Drained);
+            Assert.Equal(1, report.RootElement.GetProperty("TimingStored").GetInt64());
+        }
+        else Assert.Contains(report.RootElement.GetProperty("Failures").EnumerateArray(),
+            row => row.GetProperty("Stage").GetString() == "completion-reference");
     }
 
+    /// <summary>Refuses cleanup qualification for a retained directory, replacement file or broken link.</summary>
+    /// <param name="replacement">The actual entry left at the registered root after the caller cleanup boundary.</param>
     [Theory]
     [InlineData("directory")]
     [InlineData("file")]
@@ -186,6 +224,8 @@ public sealed partial class LifecyclePassiveTimingDiagnosticsTests
         }
     }
 
+    /// <summary>Refuses an open scope or a late resource-end boundary rather than fabricating a closed trace.</summary>
+    /// <param name="late">Whether the real scope ends after its window closed.</param>
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
@@ -209,6 +249,7 @@ public sealed partial class LifecyclePassiveTimingDiagnosticsTests
         finally { scope?.Dispose(); }
     }
 
+    /// <summary>Retries only the unfinished physical final row and rejects completed malformed JSON.</summary>
     [Fact]
     public void LiveReaderRetriesOnlyUnfinishedFinalFragment()
     {
@@ -251,12 +292,14 @@ public sealed partial class LifecyclePassiveTimingDiagnosticsTests
     private sealed class OriginalOutput(bool failFinish = false) : ITestOutputHelper
     {
         internal List<string> Messages { get; } = [];
+        /// <inheritdoc />
         public void WriteLine(string message)
         {
             Messages.Add(message);
             if (failFinish && message.Contains("\"Kind\":\"JointBundleDiagnosticFinished\"", StringComparison.Ordinal))
                 throw new IOException("Actual completion reference writer failure.");
         }
+        /// <inheritdoc />
         public void WriteLine(string format, params object[] args) => WriteLine(string.Format(format, args));
     }
 }
