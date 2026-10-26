@@ -1,3 +1,26 @@
+# T599 actual causal visibility RED obtained — independent outcome pending
+
+One admitted cheap singleton atf2aef2b4ec95f997f00de009f0b3922559648da6 completed
+1case/1expectedFAIL/0skip, framework4.4460730s/runner32.2065869s, no timeout and
+both process cleanup flags true. Failure is exactly final missing-visible-original-
+begin Assert.True at compiled test line111; every prior real source1/bytes, blocked
+scope, release/join, final original2events/clocks/queue, report/hash and root-removal
+prerequisite passed. Actual external final trace is complete after return, confirming
+the diagnosed timing-visibility gap; it does not repair the gameplay timeout.
+
+Root independently parsed full TRX/initial/records/report: both source events retain
+original sequence1/2, same ScopeId, exact monotonic elapsed delta, no late events,
+complete2/2queue/write accounting; actual root absent and actual loaded3assembly
+pins/MVIDs/eventPID match accepted PREP. All33 current artifacts remain exact.
+TRX8,136bytes SHA256f24c0b1b4e3f18ebb93d330bac25e19487f71d098a529715291bc0ba333bcd08;
+full external raw at dfr-prefix/actual-t599-causal-red-1. No source/clock/limit or
+fixture substitution, no build/setup/timeout misclassification.
+
+Independent causal OUTCOME acceptance precedes T600 continuing-consumer/positive-
+only wiring. No GREEN implementation or expensive retry is released by this
+checkpoint. Prior cheap176/two actual PASS/positive TIMEOUT remain distinct and
+retained; remaining live/cold still blocked. Original raw/candidate roots untouched.
+
 # T599 independent PREP accepted — one cheap causal baseline released
 
 Independent Astra/high PREP ACCEPT at9582039e402408b32aa1c5fcf5af4b15980a5f6c:
