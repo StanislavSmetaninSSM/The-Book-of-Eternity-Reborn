@@ -1,3 +1,25 @@
+# T593 first actual fixture failure; phase correction WIP — 2026-10-26
+
+Actual `actual-temporal-red-1` at runtimecddf4c179/compiledIntegrationab0a ended
+1/1FAIL,0skip, framework133.0241828s / runner166.5021651s; no timeout, both
+cleanups true and owned roots absent. Failure is prerequisite line139 Expected1/
+Actual2: broad NarrativePolicy.Evaluate includes the initial retained N and later
+ordinary read-only N. Detailed Capture is1/1; cut already has initial Evaluate1/1,
+I1/1 and active Capturing. Whole window has Evaluate2/2, late read-only N1/1,
+preparation1 and late Full1/1 with exact missing_gm_thoughts. Debug remains exact,
+turn42;223 cut/221 after images and16 mutations retained. No-effect assertions
+were not reached. This is NOT causal RED and not a new production finding.
+Full19,317,990-byte TRX/raw and Root verification remain external. All33 artifacts
+unchanged; original Integrationab0a DLL/PDB/XML now retained as evidence only.
+
+Independent Astra/high evidence review confirms the phase-classifier cause.
+Only the probe changes: count actual initial N when BOTH Evaluate and Capture
+are active; preserve broad flags/all rows and add separate broad totals. All39
+original assertions remain verbatim, plus two Capture1/1 assertions; expected1
+and target Prep0 are unchanged. Production/default helper/selection/budgets stay
+unchanged. Corrected SOURCE/fresh Integration/PREP are next before a new temporal
+attempt. Positive remains held; no blind repeat or new runtime occurred here.
+
 # T593 independent PREP accepted — first actual released
 
 Independent Astra/high PREP accepted clean576dc1fe6 with no material finding.

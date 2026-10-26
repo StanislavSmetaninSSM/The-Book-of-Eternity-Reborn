@@ -36,7 +36,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         private Dictionary<string, byte[]?>? _atCut;
         private MortalJointRuntimeObservation? _runtimeAtCut;
         private OperationTimingAccumulator.Snapshot? _operationsAtCut;
-        private int _narrativeReads, _narrativeReturns, _turnAtCut;
+        private int _narrativeReads, _narrativeReturns, _allNarrativeReads, _allNarrativeReturns, _turnAtCut;
 
         internal OperationTimingAccumulator Timings { get; } = new();
 
@@ -78,11 +78,15 @@ public sealed partial class GameEngineTurnLifecycleTests
                 var raw = File.ReadAllBytes(fixture._fs.ResolvePath(path));
                 _observedDebugChanged |= _submitted is null || !_submitted.AsSpan().SequenceEqual(raw);
                 var inNarrative = Active(operations, "NarrativePolicy.Evaluate");
+                var inNarrativeCapture = inNarrative && Active(operations, "NarrativePolicy.Capture");
                 var inCapture = Active(operations, CaptureOperation);
                 var inRecheck = Active(operations, "NarrativePolicy.Recheck");
                 _reads.Add(new { Path = path, Raw = Raw(raw), InNarrative = inNarrative,
-                    InCapture = inCapture, InRecheck = inRecheck });
-                if (inNarrative) { _narrativeReads++; _narrativeRead = raw; }
+                    InNarrativeCapture = inNarrativeCapture, InCapture = inCapture, InRecheck = inRecheck });
+                if (inNarrative) _allNarrativeReads++;
+                // The later ordinary read-only N also uses Evaluate. Only its
+                // actual retained pre-intake invocation is enclosed by Capture.
+                if (inNarrativeCapture) { _narrativeReads++; _narrativeRead = raw; }
                 // The actual N fresh check is inside Capturing after I consumption.
                 // Freeze here so an earlier prefix refusal need not reach the later
                 // completed-capture checkpoint. No source intervention occurs here.
@@ -103,9 +107,13 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 if (_priorReturnedRead is not null) await _priorReturnedRead(path);
                 if (_window is null || path != DebugPath) return;
-                var inNarrative = Active(_window.Capture(), "NarrativePolicy.Evaluate");
-                if (inNarrative) _narrativeReturns++;
-                _reads.Add(new { Path = path, Returned = true, InNarrative = inNarrative });
+                var operations = _window.Capture();
+                var inNarrative = Active(operations, "NarrativePolicy.Evaluate");
+                var inNarrativeCapture = inNarrative && Active(operations, "NarrativePolicy.Capture");
+                if (inNarrative) _allNarrativeReturns++;
+                if (inNarrativeCapture) _narrativeReturns++;
+                _reads.Add(new { Path = path, Returned = true, InNarrative = inNarrative,
+                    InNarrativeCapture = inNarrativeCapture });
             };
             fixture._consoleMutationObserver = path =>
             {
@@ -125,7 +133,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             _fixture!.WritePhysicalInjuryDiagnostic("dfr_actual_prefix_temporal_outcome", new
             {
                 Submitted = Raw(_submitted), NarrativeRead = Raw(_narrativeRead), _observedDebugChanged,
-                _narrativeReads, _narrativeReturns,
+                _narrativeReads, _narrativeReturns, _allNarrativeReads, _allNarrativeReturns,
                 CutReached = _atCut is not null, RuntimeAtCut = _runtimeAtCut,
                 OperationsAtCut = _operationsAtCut, Runtime = runtime, EngineDiagnostics = diagnostics,
                 PreparationEntries = preparationEntries, Operations = operations, Reads = _reads,
@@ -140,6 +148,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal(_narrativeReads, _narrativeReturns);
             Assert.Equal(_submitted, _narrativeRead);
             Assert.False(_observedDebugChanged);
+            Assert.Equal(1, Starts(_operationsAtCut, "NarrativePolicy.Capture"));
+            Assert.Equal(1, Completed(_operationsAtCut, "NarrativePolicy.Capture"));
             Assert.Equal(1, Starts(_operationsAtCut, "NarrativePolicy.Evaluate"));
             Assert.Equal(1, Completed(_operationsAtCut, "NarrativePolicy.Evaluate"));
             Assert.Equal(1, Starts(_operationsAtCut, "MortalJointInterface.PrepareResult"));
