@@ -21,6 +21,15 @@ cheap causal qualification and independent resource/PREP precede another genuine
 attempt. Copy/candidate retain their original two-minute bounds and execute in that
 order under separate completion/resource conditions. No full-positive admission.
 
+COPYOBS6: finite tail diagnostics may transfer and explicitly flush original events
+through the existing recorder/writer after each named history/abort scope closes,
+including its unwind path. Real final assertion work may use fixed test-observation
+names; these never substitute for product validators. The ctor-only causal control
+must preserve the exact functional sentinel before close and independently verify
+successful full closing before its final live-visibility assertion. Existing fixture
+disposal exceptions remain unchanged; no blanket primary-preservation claim follows.
+No omitted events, quota, new owner/cache/transport, tree rewrite or budget change.
+
 # T608 expected-projection reuse DESIGN scope — #1536
 
 REPLAY-REUSE1: accepted causal RED releases only a separately reviewed design of pure

@@ -1,3 +1,20 @@
+# T608 finite tail visibility DESIGN — scaffold pending
+
+The bounded next packet uses the existing recorder, CaptureObservationOrdinal and
+writer Flush, retaining the original COPY workload and two-minute category budget.
+A ctor-only live-prefix control must first reach full source/output/hash/root closing
+before its final expected missing-event RED. The exact sentinel is caught/checked
+before close; existing later DisposeAsync failure policy is preserved separately.
+The accepted three-mode range control remains byte-exact. No production/cache/owner,
+encoder, consumer, range/tree algorithm, quota or compiler change is included.
+
+After independently accepted actual RED only, the existing flush can be added to
+finite completed tail boundaries, including unwind, and two real final assertion
+operations can receive fixed test-observation names. Fresh affected build/bindings,
+exact discovery/PlanOnly and selected cheap GREEN precede any separate diagnostic
+COPY PREP. No faster-run or fit claim, genuine retry, candidate/full-positive release
+or new deletion follows. Independent DESIGN/SOURCE and actual results remain gates.
+
 # T608 genuine passive COPY consumed — incomplete TIMEOUT, no retry
 
 The separately reviewed single COPY attempt at runtime checkpoint
