@@ -1,3 +1,25 @@
+# T603 fresh build/binding/discovery verified — cheap41 PREP pending
+
+Fresh Integration build at 172e77d07eaf0d9e9b648d1325e1e7a7703b9c8d completed in
+4:10.20 with 0 errors and exactly the same 101 warnings; no introduced warning.
+Generated metadata compiled. Current PE/PDB/XML checks confirm 11 pairs / 33 files /
+51 exact current Git-to-PDB source checks. Only Integration DLL/PDB/XML changed;
+the other 30 artifacts and entire four project trees retain their verified inputs.
+No application/test execution occurred during metadata inspection.
+
+Fresh catalog: VALID, 960 categories / 12554 methods, no unmapped/stale selectors.
+Exact focused PlanOnly: 8 descriptors / 28 methods / 41 cases, 0 executed. Both
+preparation runs returned 0, no timeout, and both process cleanup flags. Every
+category/exclusive setting retains its catalog value; ordinary total runner budget
+is 14 minutes (including unchanged direct-capture2min), no timeout override.
+
+Independent PREP must admit only these eight cheap categories. Whole-string/UTF8
+compatibility, runtime behavior and measured allocation/throughput remain UNRUN;
+SOURCE/build success is not a speedup or positive admission. Existing3918 cost baseline
+and composite38 evidence remain untouched; original game timeout cause is unknown.
+Source-only172e recovery is clean with all30916 blobs exact; current51-source qualified
+recovery is next before runtime. All diagnostic raw remains outside checkout/GitHub.
+
 # T603 coherent SOURCE ACCEPT — fresh Integration preparation next
 
 Independent Astra/high SOURCE ACCEPT for d98af5c8a48157980d42998e533b48bc462fa9af
