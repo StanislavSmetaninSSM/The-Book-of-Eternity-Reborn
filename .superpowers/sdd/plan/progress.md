@@ -1,3 +1,16 @@
+# T607 causal singleton PREP ACCEPT — one actual RED released
+
+Independent Astra High PREP accepts current `cf7e8890cb0174ebb1cbecc912e947f88a984bf6`
+against compiled `b54a8f4b`: rehashed all 33 artifacts/59 sources, reviewed five clean
+builds/IL/native3, catalog and exact singleton PlanOnly/recovery. Release exactly one
+official SelectionFile/NoBuild `core-lifecycle-sealed-read-reuse` execution under its
+original exclusive one-minute category. Shared construction remains true/true.
+Valid causal RED requires only final expected physical2/actual8 assertion after all
+byte/eight-return/source/closed observation prerequisites, actual TRX and owned-root/
+process cleanup. Any other failure/timeout/incomplete outcome remains unqualified.
+No other cheap/live/cold/positive runtime or GREEN source change is released yet.
+Actual attempt will be `actual-t607-reuse-red-1`, external raw only; no raw deletion.
+
 # T607 exact causal singleton preparation complete — independent PREP pending
 
 Current source checkpoint `786b6fd432274b83c906a724867824ac48162cef` contains only
