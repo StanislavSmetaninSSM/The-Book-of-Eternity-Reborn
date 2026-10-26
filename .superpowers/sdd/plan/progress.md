@@ -1,3 +1,27 @@
+# T596 affected cheap controls complete — 176 distinct PASS
+
+Exact remaining11-category/12-descriptor selection at93e5870bb completed159/159PASS/
+0skip, runner4:44.8232937, no timeout/both cleanup flags, no duplicates or underfill.
+Combined with independently accepted first17, current cheap coverage is176 distinct
+PASS in two disjoint completed runs, not one176-case invocation. Actual per-category
+counts: source guards2, N sources29, ordinary boundary2/regression33/source1,
+reasoning boundary1/existing2/regression40/source1, reserved read-set32 and portable
+readers16. All40 ordinary reasoning cases passed, including the three prior legacy
+reflection-helper failures now using the shared typed original reader.
+
+Root inspected full12 TRX files/159 actual unique Passed results and source-bound
+assertions. Every64 strict PD3D and41 strict PD3E root in this run is physically
+absent; first17's18 roots remain separately verified. All33 current artifacts are
+unchanged to accepted PREP. Full unbounded raw/TRX/hash receipts remain at
+`/workspace/tboe-linux-evidence-20261025/dfr-prefix/actual-cheap-rest-1`;
+no prior raw/save was deleted or diagnostic artifact staged.
+
+Independent cheap176 OUTCOME review is pending before six separate genuine
+lifecycle gates (temporal GREEN, DFR source fence, unchanged full/phase negatives,
+N before-I, N after-capture, schema1 legacy). Prepared0/Published2 are still later
+conditional cold gates. All eight actual scenarios remain UNRUN for current DFR;
+cheap176 does not establish actual engine phase/fence, full reasoning/S or Windows.
+
 # T596 DATA17 independently accepted — remaining cheap159 released
 
 Independent Astra/high OUTCOME review accepts the complete17/17 first DATA result
