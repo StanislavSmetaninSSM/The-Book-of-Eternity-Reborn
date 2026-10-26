@@ -1,3 +1,20 @@
+# T593 genuine unchanged counterpart PASS — pair outcome review next
+
+`actual-unchanged-baseline-1` at runtime05d1751e5/Integration345ee:1/1PASS,
+0skip, framework147.0563426s / category164.3907053s / runner181.8282873s,
+no timeout, both cleanups true/owned root absent. Existing genuine full joint
+completion and inert-repeat assertions passed. Actual N1read/1return, broad4/2,
+fresh2 before cut, source unchanged and one common preparation. Root checked full
+TRX10,545,282bytes/SHA683dfdf17dec605e032a9662e6891c3da4653e13f3f65d1eb440c6e53ae5374d,
+semantic/capture/cleanup and all33 artifact hashes. Full raw stays external.
+Together with independently accepted temporal RED105.5561230s, this is the actual
+baseline contrast on unchanged production. Initial unrelated fixtureFAIL stays
+separate; no speedup/source-closure/Full/S claim. Independent pair OUTCOME and
+source persistence review is next; T593 remains open until that acceptance.
+Next implementation is T594–595 shared prefix, closed actual source observations
+and private Capturing consumer with refusal-only post-close fence. No production
+code has changed. Windows/native/cold/original-five runtime was not repeated.
+
 # T593 independent causal RED accepted — unchanged counterpart released
 
 Independent Astra/high accepted the complete corrected temporal RED at d350fb79d:
