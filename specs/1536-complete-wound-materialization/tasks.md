@@ -7,11 +7,14 @@
   contract, independent cheap actual-computation counter controls and DESIGN review
   before any implementation. Do not add inclusive intervals or promise whole speedup.
   Full-positive TIMEOUT and original budgets/raw/dependent holds remain unchanged.
-- [ ] T608-REPLAY Compare PreparedReplayAgrees with existing semantic-operation
+- [x] T608-REPLAY Compare PreparedReplayAgrees with existing semantic-operation
   reuse once, with full expected-result inputs/companions and current owner eligibility.
   Preserve all fresh actual-graph/authority checks; propose only a proved pure-DATA
   reuse candidate plus cheap causal counters and independent DESIGN, or record why
   reuse is unsafe. No implementation/runtime is released by this analysis task.
+- [ ] T608-RED-DESIGN Freeze the minimal real expected-replay source-counter scaffold,
+  genuine eligible-owner prerequisites and eight-call final one-versus-eight oracle;
+  independent review before source instrumentation/test changes, no optimization yet.
 
 # T597 interrupted unchanged-positive diagnostics — #1536 / 2026-10-26
 

@@ -1,3 +1,32 @@
+# T608 bounded replay audit saved — tests-first cause proof next
+
+Execution access was rechecked after the 17:12 UTC disconnect notification: actual
+shell/Git/process queries succeeded at 17:13:50 UTC; local and remote
+`03401d8ac56b636a37e9c1604c8d099cd921e9b5` matched, clean tree, no live build/test
+owner. Listed dotnet/csc entries were ended zombies. No operation was restarted.
+
+Read-only comparison identifies a source-proven gap: exclusive-joint
+PreparedReplayAgrees directly reconstructs expected preparation on every successful
+admission, bypassing the existing semantic-operation service. It compares five scalar
+fields plus count and every ordered source-export/transition-seal pair; the current
+fingerprint-only string cache is insufficient. Exact runtime eligibility/hit attribution
+in the full timed-out case remains unknown. OriginalSourceGuarantee is a spiritual
+provenance arm, not Mortal GuaranteedTrigger; no gate expansion is justified.
+Existing pure final-reduction reuse already operates in some contours; 84 replay
+Finalize entries versus five reductions is not a measured hit count or avoidable time.
+
+Minimal next proposal: reuse the existing genuine semantic component fixture and live
+eligible operation, prove support via actual current preparation/reduction controls,
+then eight successful real ValidatePreparedResult calls with full result/projection/
+byte/owner prerequisites. One existing passive named scope around its actual direct
+expected-source invocation provides a real computation counter; strict expected one
+versus current eight is the intended causal RED. No missing-API/setup RED is accepted.
+Independent scaffold DESIGN/SOURCE, fresh affected builds/bindings and exact PREP must
+precede execution. No cache implementation is released by this proposal. A later richer
+immutable projection requires complete actual caller/private-input keys and the SAME
+operation service while every fresh actual-graph/private-history/authority check stays.
+Raw/source audit reports remain external; full positive and dependent gates stay HOLD.
+
 # T608 copy-cost decision — scalar detachment change rejected
 
 Read-only audit and independent Astra High DESIGN/benefit review reject implementing
