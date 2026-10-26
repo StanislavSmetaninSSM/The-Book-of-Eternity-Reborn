@@ -1,3 +1,14 @@
+# T604 GREEN42 PREP ACCEPT — one actual run released
+
+Independent PREP acceptsc409 qualified recovery/33 artifacts/52sources/attached fast
+handler and actual9descriptor/29method/42case plan with unchanged category budgets.
+Only one official SelectionFile/NoBuild actual-t604-green-1 is released. All original
+source/string/format/default/visibility/closing/failure/integrity and actual-write
+counter oracles remain; managed65536-event cost is unchanged and compared to all
+retained samples. No faster-sample selection, hidden warmup or diagnostic limits.
+Actual GREEN/call reduction/throughput remain UNRUN at this checkpoint. Positive,
+legacy/cold and fullDFR stay HOLD until accepted actual cost/storage/headroom review.
+
 # T604 GREEN fresh build/current bindings/9x42 PlanOnly verified — PREP pending
 
 Fresh Integration at02a14a66263603a2fe3ad05ba4d556a4326b9c6d completedexit0,4:37.29,
