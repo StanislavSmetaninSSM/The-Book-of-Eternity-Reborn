@@ -1,3 +1,36 @@
+# T597 first two actual gates PASS; unchanged positive TIMEOUT — dependent runtime stopped
+
+At source-bound runtimeHEAD945e81e7082925ae4bd96ed72a503b6d1fde3748:
+- Temporal causal GREEN1PASS/0skip, framework82.8697689s/runner119.0996530s.
+  Actual initial N/I/Capturing prerequisites, stable debug, missing_gm_thoughts,
+  preparation0/lateFull0,223equal cut/after images, turn42/no post-cut mutation,
+  owned root absent and33unchanged artifacts verified. TRX7,420,995bytes,
+  SHA256a0a47ba133d3b9a45b25a6fef9d140cc137ce8359527332daf05888a19bf6232.
+- Separate actual DFR closed-source fence1PASS/0skip, framework79.3878558s/
+  runner121.0142127s. Actual earlier original snapshot leaf was reached after
+  post-observer N completed; debug received whitespace only, semantic JSON equal.
+  Exact debug_prefix_source_changed refusal, preparation0,223post-intervention
+  images/turn unchanged, owned root absent/all33artifacts exact. Full TRX9,263,636bytes,
+  SHA256cc355949beb1ad281d6effd4492bf192d7ce22582f3f4f8be1a460d001f79d3e.
+
+Third unchanged/full/phase singleton TIMED OUT: category300.2150353s at unchanged
+5-minute budget, runner324.0708413s/exit124, child exit137. Completed0/1descriptor,
+0/1cases, no TRX or framework outcome; this is incomplete TIMEOUT, neither PASS
+nor causal functional failure. Both runner process-cleanup flags true; fixture
+filesystem cleanup is not proven. Two recent candidate /tmp lifecycle roots are
+retained without deletion. All33 artifacts remain exact. Generic failure text
+mentions outer10minutes; actual CategoryResults correctly records5minutes/300s.
+
+All raw/full logs/receipts are external at dfr-prefix/actual-temporal-green-1,
+actual-source-fence-1 and actual-unchanged-prefix-1. Preserve timeout and earlier
+complete baseline147.0561230s; no blind retry, limit increase, diagnostic cap or
+skipped/PASS substitution. Cause/last actual phase are not yet established from
+the retained timeout output. Root investigates retained state; separate implementer
+static P2/control-flow investigation and independent timer/evidence assessment are
+read-only, no competing writer. Existing named-timer machinery must guide any
+needed next diagnostic. N-before-I/N-drift/legacy/cold2 are UNRUN and blocked on
+this gate; cheap176 and two reviewed-by-root PASS outcomes remain preserved.
+
 # T596 cheap176 independently accepted — coherent live6 released
 
 Independent Astra/high OUTCOME review accepts first17 plus disjoint159 PASS,
