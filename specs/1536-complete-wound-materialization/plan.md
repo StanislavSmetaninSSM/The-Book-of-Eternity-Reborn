@@ -1,3 +1,34 @@
+# T607 exact GREEN preparation complete — independent PREP pending
+
+At runtime preparation HEAD `68a6196bdf5f52ec34dbf0da032dbe809b41465a`, official
+`-ValidateCatalog -NoBuild` completed exit 0 / 77.0119479 seconds: 963 categories,
+12,571 methods/files, no unmapped/stale selectors, zero tests, both cleanup flags true.
+Official `t607-green-cheap-selection.json -NoBuild -PlanOnly` completed exit 0 /
+114.4268934 seconds: 12 IDs / 13 descriptors / 191 cases, zero executed, no timeout,
+owned cleanup complete. Original category budgets/exclusivity remain; runner derived
+30 minutes, no override. New owners are reuse 1 and observation/lifetime 19 cases.
+
+Exact selected IDs: `core-lifecycle-sealed-read-reuse`,
+`core-lifecycle-sealed-read-observation`, `core-passive-named-events`,
+`core-passive-recovery-timing`, `core-producer-read-forwarders`,
+`core-operation-source-data`, `core-operation-source-data-linux`,
+`portable-ordinary-readers`, `fr063-reserved-validation-read-set`,
+`fr063-narrative-policy-pass-sources`, `fr063-debug-prefix-sources`,
+`c5-browser-admission-source-guards`. The last is only two rolling source Facts;
+portable ordinary readers owns both one Integration and fifteen Unit cases.
+
+Qualified clean GitHub recovery of 68a6196b verified all 30,920 blobs / 772,941,376
+logical bytes and all 59 current PDB-bound sources; no recovery build/runtime.
+Immediate current binding check reconfirmed 33 artifacts/59 sources; compiled source
+`a760ab5d`, retained Game/Bridge `b54a8f4b`, only two checkpoint Markdown paths newer.
+Free workspace about 694 MB, cgroup memory 4.91/17.18 GB: cheap-stage preparation,
+not full positive capacity admission. No full trace replay or raw deletion.
+Next independent PREP for exactly this cheap stage; GREEN runtime remains UNRUN.
+Require complete 191 actual cases, no skip/duplicate/timeout/underfill, both cleanup
+flags, actual two-source/eight-result DATA and all refusal/phase/lifetime controls.
+A complete cheap outcome alone does not admit full positive: fresh current Linux
+applied DATA generator and separate resource/capture/original-budget PREP remain.
+
 # T607 minimal GREEN build/binding preparation verified — discovery next
 
 Independent Astra High delta SOURCE accepts `a760ab5dc733479576b8e4cabffd0980daa1de3b`:
