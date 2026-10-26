@@ -150,7 +150,7 @@
     },
     {
       "category": "core-passive-named-transport",
-      "reason": "Affected existing sealed-event/capture/serializer/final-accounting consumers; optional root extension preserves established transport and cache behavior. Execution staged by Root after causal baseline review.",
+      "reason": "Affected existing sealed-event/capture/serializer/final-accounting consumers; optional root extension preserves established transport and cache behavior. Execution staged by Root after causal baseline review. T603 directly changes its recorded payload encoder; all original clocks, fields, output failures and cache observations require fresh qualification.",
       "contracts": [
         "#1536 T599–602 / DFRDIAG1–6; test-only interrupted lifecycle event transport, no product behavior change"
       ]
@@ -171,7 +171,7 @@
     },
     {
       "category": "fr063-lifecycle-passive-timing-managed-cost",
-      "reason": "Bounded actual32768scope managed serializer/compression/flush/closing/decode cost and size proof before storage/PREP or any expensive retry; no extrapolated guarantee.",
+      "reason": "Bounded actual32768scope managed serializer/compression/flush/closing/decode cost and size proof before storage/PREP or any expensive retry; no extrapolated guarantee. T603 repeats the identical actual65536-event workload against the accepted2.1202264s/94322768B baseline; throughput/allocation/warmed service effect remains UNRUN and positive stays HOLD.",
       "contracts": [
         "#1536 T599–602 / DFRDIAG1–9; same-writer interrupted lifecycle transport and bounded lossless storage"
       ]
@@ -181,6 +181,20 @@
       "reason": "Existing exact capture write-cost/failure/clock consumers are affected by adding same-writer Flush with its existing failure ledger; preserve old Observe/clock semantics.",
       "contracts": [
         "#1536 T599–602 / DFRDIAG1–9; same-writer interrupted lifecycle transport and bounded lossless storage"
+      ]
+    },
+    {
+      "category": "crash5-named-timing-output",
+      "reason": "T603 direct legacy Observe boundary/sequence output protects its unchanged anonymous object, default Serialize<object> and WriteLine(string) path while only recorded encoding changes.",
+      "contracts": [
+        "#1536 T603 / DFRDIAG10; recorded-only typed codec candidate, full compatibility and measured cost gate"
+      ]
+    },
+    {
+      "category": "core-recorded-timing-codec",
+      "reason": "T603 independent frozen old-format string/UTF8 oracle over real sealed nested/late events and actual string-writer failure; no candidate-derived expected fields or synthetic events.",
+      "contracts": [
+        "#1536 T603 / DFRDIAG10; recorded-only typed codec candidate, full compatibility and measured cost gate"
       ]
     }
   ]

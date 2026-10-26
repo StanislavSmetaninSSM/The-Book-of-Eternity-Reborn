@@ -1,3 +1,26 @@
+# T603 coherent source candidate frozen — uncompiled and unmeasured
+
+Three C# paths plus catalog/selection are frozen for independent SOURCE review.
+The recorded branch creates one readonly typed payload and uses built-in generated
+immutable metadata without boxing; legacy anonymous/object serialization and common
+WriteLine(string), validation, clocks and successful-write/failure accounting remain.
+Metadata Default first access stays inside the measured path; no eager warmup, new
+cache/buffer framework, extra per-row clock or event suppression was introduced.
+
+Two oracle Facts were authored first on actual nested/late sealed events and actual
+string writer failure. They compare full old-format strings/UTF8, source/PID/order/
+clock/cost invariants, exception identity and sequence consumption. Neither expected
+format uses the candidate DTO/context. Source static diff/JSON/inverse checks pass.
+Prior26 cumulative IDs remain and named-output/codec owners append to28; exact focused
+selection and static counts are recorded externally, not discovery/runtime results.
+
+This is UNCOMPILED/UNRUN source WIP. Allocation, throughput benefit and positive
+admission remain unproved. Accepted composite38 and the real65536-event baseline are
+preserved with exact evidence-only3918 binaries. Coherent SOURCE/fresh XML/PDB/current
+source/catalog/PlanOnly/PREP must precede cheap compatibility/performance execution.
+No Game/Core/native/GM/authority/cache eligibility, record quota or budget changed;
+all raw remains outside checkout. Positive and dependent live/cold remain on HOLD.
+
 # T603 independent DESIGN ACCEPT — bounded source implementation next
 
 Independent Astra/high DESIGN ACCEPT for 119b5ecfd confirms one typed passive payload

@@ -74,32 +74,39 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 var entered = Stopwatch.GetTimestamp();
                 var buildStarted = Stopwatch.GetTimestamp();
-                object payload = recorded is { } original ? new
+                string record;
+                if (recorded is { } original)
                 {
-                    Boundary = "joint_operation_timing", Operation = name, State = boundary,
-                    Milliseconds = milliseconds, Sequence = ++_sequence, PID = Environment.ProcessId,
-                    TotalElapsedMilliseconds = Stopwatch.GetElapsedTime(_started, original.TimestampTicks).TotalMilliseconds,
-                    Transport = "sealed-passive-events-v1", PassiveSequence = original.Sequence,
-                    original.ScopeId, original.TimestampTicks, original.ElapsedTicks, original.Late,
-                    ObserverCompletedBefore = _completedObservations,
-                    ObserverGateMillisecondsBefore = _gateWaitTicks * 1000d / Stopwatch.Frequency,
-                    ObserverBuildSerializeMillisecondsBefore = _buildAndSerializeTicks * 1000d / Stopwatch.Frequency,
-                    ObserverWriteMillisecondsBefore = _writeTicks * 1000d / Stopwatch.Frequency
-                } : new
+                    var payload = new RecordedTimingPayload(
+                        Boundary: "joint_operation_timing", Operation: name, State: boundary,
+                        Milliseconds: milliseconds, Sequence: ++_sequence, PID: Environment.ProcessId,
+                        TotalElapsedMilliseconds: Stopwatch.GetElapsedTime(_started, original.TimestampTicks).TotalMilliseconds,
+                        Transport: "sealed-passive-events-v1", PassiveSequence: original.Sequence,
+                        ScopeId: original.ScopeId, TimestampTicks: original.TimestampTicks, ElapsedTicks: original.ElapsedTicks, Late: original.Late,
+                        ObserverCompletedBefore: _completedObservations,
+                        ObserverGateMillisecondsBefore: _gateWaitTicks * 1000d / Stopwatch.Frequency,
+                        ObserverBuildSerializeMillisecondsBefore: _buildAndSerializeTicks * 1000d / Stopwatch.Frequency,
+                        ObserverWriteMillisecondsBefore: _writeTicks * 1000d / Stopwatch.Frequency);
+                    record = JsonSerializer.Serialize(payload, RecordedTimingJsonContext.Default.RecordedTimingPayload);
+                }
+                else
                 {
-                    Boundary = "joint_operation_timing",
-                    Operation = name,
-                    State = boundary,
-                    Milliseconds = milliseconds,
-                    Sequence = ++_sequence,
-                    PID = Environment.ProcessId,
-                    TotalElapsedMilliseconds = Stopwatch.GetElapsedTime(_started).TotalMilliseconds,
-                    ObserverCompletedBefore = _completedObservations,
-                    ObserverGateMillisecondsBefore = _gateWaitTicks * 1000d / Stopwatch.Frequency,
-                    ObserverBuildSerializeMillisecondsBefore = _buildAndSerializeTicks * 1000d / Stopwatch.Frequency,
-                    ObserverWriteMillisecondsBefore = _writeTicks * 1000d / Stopwatch.Frequency
-                };
-                var record = JsonSerializer.Serialize(payload);
+                    object payload = new
+                    {
+                        Boundary = "joint_operation_timing",
+                        Operation = name,
+                        State = boundary,
+                        Milliseconds = milliseconds,
+                        Sequence = ++_sequence,
+                        PID = Environment.ProcessId,
+                        TotalElapsedMilliseconds = Stopwatch.GetElapsedTime(_started).TotalMilliseconds,
+                        ObserverCompletedBefore = _completedObservations,
+                        ObserverGateMillisecondsBefore = _gateWaitTicks * 1000d / Stopwatch.Frequency,
+                        ObserverBuildSerializeMillisecondsBefore = _buildAndSerializeTicks * 1000d / Stopwatch.Frequency,
+                        ObserverWriteMillisecondsBefore = _writeTicks * 1000d / Stopwatch.Frequency
+                    };
+                    record = JsonSerializer.Serialize(payload);
+                }
                 var writeStarted = Stopwatch.GetTimestamp();
                 _output.WriteLine(record);
                 var written = Stopwatch.GetTimestamp();

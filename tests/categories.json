@@ -2,6 +2,42 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "core-recorded-timing-codec",
+  "responsibility": "Two cheap independent old-format codec controls on actual sealed nested/begin/end/late events: exact full strings/UTF8/member order/default escaping/numbers/source identity plus actual WriteLine(string) failure/sequence/success-counter ordering. Expected format is the frozen accepted anonymous-object expression, independent of the candidate DTO/metadata.",
+  "excludes": "No fabricated/rebased NamedEvents, reflection, game/native/authority/world, runtime alternate encoder, buffer/cache framework, per-record new clocks, quota, timeout increase or speedup claim. Same-work throughput belongs to the separately selected actual managed-cost control.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/RecordedTimingCodecTests.cs",
+    "BookOfEternityClient.IntegrationTests/RecordedTimingPayload.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointOperationTimings.cs"
+  ],
+  "related": [
+    {
+      "id": "core-passive-named-transport",
+      "when": "Actual recorded event field/clock/queue and cache behavior remain affected."
+    },
+    {
+      "id": "crash5-named-timing-output",
+      "when": "Preserve the unchanged legacy Observe/string writer branch."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.RecordedTimingCodecTests.ActualNestedAndLateEventsKeepExactAcceptedFormat",
+        "BookOfEternityClient.Tests.RecordedTimingCodecTests.ActualWriterFailureKeepsStringDispatchAndAcceptedCounterOrdering"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-lifecycle-passive-timing-lifetime",
   "responsibility": "Cheap real-file continuing-transport controls: gzip live prefix, exact clocks/sequence/tail/once, concurrent completion, caller context isolation, deferred write/drain/finish faults and primary identity, full message forwarding once, strict retained/file/link root refusal, plain/gzip partial row and closed stored/decoded integrity incl all footer1..8 truncations and normal zero-event/no-message no-member footer/complete refusal. No GameEngine/native.",
   "excludes": "No expensive positive, fabricated events/timestamps/authority, records quota, timeout increase or full-world setup. Decoder EOF or completed rows alone never prove a finished gzip container.",
