@@ -1,3 +1,29 @@
+# T608 counter scaffold SOURCE ACCEPT — fresh builds next
+
+Independent Astra High SOURCE review accepts the coherent scaffold at
+`a92d2e5713bf0b6ab58d986af2cd5b665d605483`, with no material finding.
+Root read the report and independently rechecked the four source/catalog hashes,
+original four-line inverse and preserved accepted T607 artifact evidence. No cache,
+permission, dispatch, comparison, budget or GM-authored contract changed.
+
+Actual environment access was rechecked at 17:42 UTC after context recovery:
+local and remote SHA agree, clean tree, no live build/test owner. The prior push
+completed; no unknown runtime was repeated. The reviewer retained its context.
+Source review releases fresh preparation only, not runtime or cache development.
+
+Next: freeze this source revision and build Game, Support, Bridge, Unit and Integration
+sequentially with the existing Debug/XML flags, no new warning suppression or Optimize.
+Then verify exact warnings, current PE/PDB/copies/source/native bindings, official
+catalog and singleton PlanOnly. Qualified GitHub recovery, actual disk reserve and
+separate PREP remain before the exclusive two-minute causal singleton. The absent
+retired recovery copy is not represented as a current clean restore; approximately
+1.55 GB workspace reserve must be assessed before another allocation. No raw deletion.
+
+C# remains UNCOMPILED; discovery, causal runtime and richer projection-cache design
+remain UNRUN. T607 cheap 191 PASS is retained historical qualification; full positive
+is incomplete TIMEOUT and dependent legacy/cold remain HOLD. Full materialization
+and Windows remain open. All raw/review dumps stay outside checkout/GitHub.
+
 # T608 coherent counter scaffold frozen — independent SOURCE pending
 
 Four source/configuration paths are frozen: the saved two C# paths remain byte-exact,

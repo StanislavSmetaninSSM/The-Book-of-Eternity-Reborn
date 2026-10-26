@@ -15,7 +15,7 @@
 - [x] T608-RED-DESIGN Freeze the minimal real expected-replay source-counter scaffold,
   genuine eligible-owner prerequisites and eight-call final one-versus-eight oracle;
   independent review before source instrumentation/test changes, no optimization yet.
-- [ ] T608-RED-SOURCE Implement/freeze the accepted one-scope real-source counter and
+- [x] T608-RED-SOURCE Implement/freeze the accepted one-scope real-source counter and
   genuine eight-call fixture, complete prerequisites/completion/cleanup and one explicit
   two-minute singleton owner; independent SOURCE, no cache change.
 - [ ] T608-RED-QUALIFY Fresh affected builds/current source/PDB/copies, exact catalog,
