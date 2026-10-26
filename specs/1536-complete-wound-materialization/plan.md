@@ -1,3 +1,30 @@
+# T607 full positive incomplete TIMEOUT — cause analysis in progress
+
+The one admitted `actual-dfr-t607-positive-1` attempt ran at
+`ce872a87ab3898ddb2cbc16b1b9c74a4a2b29bd6` with the accepted mixed build matrix.
+Original five-minute category stopped at 300.1442549 seconds; runner wall 332.9699324
+seconds, exit 124. No completed descriptor/case, TRX or final capture report exists.
+Both process-cleanup flags are true; PID 168258 is ended Z/PPID1. Its fixture root
+`/tmp/boe-gameengine-turnlifecycle-9cbaa3cd44fd43afafefc03d2a2605f4` remains and is
+preserved. Current 33 artifacts/59 sources and three loaded assembly identities match.
+The runner's generic failure string mentions ten minutes, but the factual category
+bound is five minutes; no limit was raised. This is not functional/Linux PASS.
+
+External gzip records are 223,618,386 bytes under the attempt's fixture nonce
+`4f56778fc5c64deb9388cdf63fd29936`. Preserve all raw, old traces and physical fixture.
+Exactly one existing streaming parser is reading the complete saved prefix, without
+repair or second inflation; named timers, markers, original clock/sequence/pair checks,
+full hash and EOF/CRC status will establish actual progress and remaining limits.
+The known TimeSpan origin quantization tolerance is explicitly 100 ns; original ticks
+are unchanged. Analysis and independent final outcome remain pending, not a hang or
+producer-completion claim. Accepted 191 cheap PASS and real source 8-to-2 effect remain;
+they did not establish the whole game-timeout resolution.
+
+The full-positive allowance is consumed. No automatic repeat, budget increase or
+dependent legacy/cold run is admitted. Continue evidence-based ordinary investigation
+within #1536; do not invent a policy blocker. Windows and full materialization remain
+open. Recovery-copy retirement and all prior qualification evidence remain unchanged.
+
 # T607 full-positive PREP ACCEPT — one original-budget attempt released
 
 Independent Astra High accepts checkpoint `216f0685060870e187e0e177a88d3e071d40743b`
