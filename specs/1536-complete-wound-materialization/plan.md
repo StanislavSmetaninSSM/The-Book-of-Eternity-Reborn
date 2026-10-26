@@ -1,3 +1,32 @@
+# T607 full-prefix outcome reviewed — remaining producer cost audit
+
+Independent Astra High accepts the factual incomplete TIMEOUT, not the functional
+positive. The sole complete parser pass (202.4788 seconds) read unchanged raw SHA256
+`5e879ab44ba6ae021aa5a821c0a79ea4e009b8499533f847c83cfdfbff16911a`:
+223,618,386 stored bytes, 2,060,527,015 decoded bytes, 3,969,823 original timing events
+and 33 messages. All complete rows parse; no strict field/sequence/tick/pair faults,
+1,984,907 matched pairs and nine scopes open at the persisted prefix. No gzip member
+EOF/footer/CRC: not a complete trace, even though no decoder error/final fragment exists.
+No second inflation, timestamp repair or raw mutation occurred.
+
+The real selected consumer had LegacyForwarding=false, actual service reuse and 12
+completed fresh fences. Publish completed in 167.474 seconds; RefreshCanonicalState
+completed in 174.047 seconds. Persisted progress reached post-publication late-interface
+validation. Nonexpired phase-refusal marker exists; final/expired/inert/full completion
+and lost tail remain unknown. Open prefix scopes do not prove a hang or drain-only delay.
+Observer build/serialize 37.269 seconds and write 34.918 seconds are cumulative inclusive
+wall costs overlapping producer work; do not add them to those producer intervals.
+
+Next read-only cause audit targets measured repeated immutable DATA work through
+existing consumers/services: WoundBundle.DetachedCopy/Constructor 58 calls, about 40.81
+inclusive seconds, plus related common-authority/seal/fingerprint repetitions. This is
+a candidate, not a proved root cause or permission to skip integrity. Establish exact
+stable inputs/owner/lifetime/copy/invalidation and actual recomputation counters before
+a minimal design, independent review and causal cheap RED/GREEN. No new cache framework,
+limits, codegen, diagnostic stack or product feature is selected. Full positive and
+dependent gates remain HOLD; ordinary autonomous investigation continues under #1536.
+All old/new raw and the retained physical fixture remain; cheap 191 PASS stays accepted.
+
 # T607 full positive incomplete TIMEOUT — cause analysis in progress
 
 The one admitted `actual-dfr-t607-positive-1` attempt ran at
