@@ -453,12 +453,12 @@ public partial class FileSystemManager
     {
         var observation = AttachCanonicalReadActivity(relativePath, "local-physical-async", null, out var ownsActivity);
         if (observation?.HasActivity != true) return ReadLocalFileBytesAsyncT607Original(lease, relativePath, cancellationToken, null);
-        return ObserveAsync();
-        async Task<byte[]?> ObserveAsync()
+        return ObserveAsync(this, lease, relativePath, cancellationToken, observation, ownsActivity);
+        static async Task<byte[]?> ObserveAsync(FileSystemManager files, CanonicalWriteLease lease, string relativePath, CancellationToken cancellationToken, FileReadObservation observation, bool ownsActivity)
         {
             try
             {
-                var result = await ReadLocalFileBytesAsyncT607Original(lease, relativePath, cancellationToken, observation);
+                var result = await files.ReadLocalFileBytesAsyncT607Original(lease, relativePath, cancellationToken, observation);
                 observation!.Activity(CanonicalReadEventKind.ReaderReturned);
                 return result;
             }
@@ -479,7 +479,7 @@ public partial class FileSystemManager
         {
             cancellationToken.ThrowIfCancellationRequested();
             var path = scope.ValidateFile(expectedPath);
-            if (!File.Exists(path)) return null;
+            if (!File.Exists(path)) { observation?.Snapshot(null); return null; }
             await InvokeBeforeCanonicalReadOpenAsync(relativePath);
             cancellationToken.ThrowIfCancellationRequested();
             VerifyCurrentSessionOperation(lease);
@@ -489,10 +489,11 @@ public partial class FileSystemManager
             try
             {
                 stream = OpenValidatedOrdinaryFile(scope, path, asynchronous: true);
-                if (stream == null) return null;
+                if (stream == null) { observation?.Snapshot(null); return null; }
             }
             catch (Exception ex) when (IsTransientOrdinaryReadOpenException(ex) && attempt < TransientFileAccessRetryCount)
             {
+                observation?.Fault(ex);
                 await Task.Delay(TransientFileAccessRetryDelay, cancellationToken);
                 continue;
             }

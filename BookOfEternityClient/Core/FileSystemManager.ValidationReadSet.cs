@@ -33,6 +33,11 @@ public partial class FileSystemManager
         _hooks?.PassiveCanonicalReads?.MatchesEpoch(this, epoch) == true;
 
     /// <summary>Composes one actual reader call with its existing explicit source and optional passive DATA sink.</summary>
+    /// <param name="path">Original source spelling.</param>
+    /// <param name="family">Concrete reader family.</param>
+    /// <param name="source">Existing optional closed source sink.</param>
+    /// <param name="owns">Whether this actual dispatch owns settlement of the DATA token.</param>
+    /// <returns>The original or composed closed sink.</returns>
     private FileReadObservation? AttachCanonicalReadActivity(string path, string family, FileReadObservation? source, out bool owns) =>
         FileReadObservation.AttachActivity(CanonicalReadDispatchIssuer, this, _hooks?.PassiveCanonicalReads, path, family, source, out owns);
 
@@ -246,6 +251,7 @@ public partial class FileSystemManager
         ObservePassiveRead(_hooks?.CanonicalReadActivityObserver, path);
     }
 
+    /// <summary>Preserves an existing initial/attempt-only path boundary without inventing bytes or reader return.</summary>
     private void RecordStandaloneCanonicalActivity(string path, CanonicalReadEventKind kind, string family)
     {
         var observation = AttachCanonicalReadActivity(path, family, null, out var owns);

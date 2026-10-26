@@ -118,13 +118,13 @@ public partial class FileSystemManager
     {
         observation = AttachCanonicalReadActivity(relativePath, "physical-async", observation, out var ownsActivity);
         if (observation?.HasActivity != true) return ReadOrdinaryFileSnapshotUncachedAsyncT607Original(relativePath, cancellationToken, lease, batch, observation);
-        return ObserveAsync();
+        return ObserveAsync(this, relativePath, cancellationToken, lease, batch, observation, ownsActivity);
 
-        async Task<CanonicalFileReadSnapshot?> ObserveAsync()
+        static async Task<CanonicalFileReadSnapshot?> ObserveAsync(FileSystemManager files, string relativePath, CancellationToken cancellationToken, CanonicalWriteLease? lease, SourceValidationBatch? batch, FileReadObservation observation, bool ownsActivity)
         {
             try
             {
-                var result = await ReadOrdinaryFileSnapshotUncachedAsyncT607Original(relativePath, cancellationToken, lease, batch, observation);
+                var result = await files.ReadOrdinaryFileSnapshotUncachedAsyncT607Original(relativePath, cancellationToken, lease, batch, observation);
                 observation.Activity(CanonicalReadEventKind.ReaderReturned);
                 return result;
             }
@@ -330,19 +330,19 @@ public partial class FileSystemManager
                 : _sourceDataOperation.Value is { } operation && ValidationReuseSuppression.Value == 0
                     ? operation.ReadAsync(relativePath, ValidationSnapshotFamily.OrdinaryAsync, lease, cancellationToken)
                     : ReadOrdinaryFileSnapshotUncachedAsync(relativePath, cancellationToken, lease);
-        return ReadObservedAsync();
+        return ReadObservedAsync(this, relativePath, cancellationToken, lease, observation);
 
-        async Task<CanonicalFileReadSnapshot?> ReadObservedAsync()
+        static async Task<CanonicalFileReadSnapshot?> ReadObservedAsync(FileSystemManager files, string relativePath, CancellationToken cancellationToken, CanonicalWriteLease? lease, FileReadObservation observation)
         {
             try
             {
-                var reused = ValidationReuseSuppression.Value == 0 && (_validationReadSet.Value is not null || _sourceDataOperation.Value is not null);
+                var reused = ValidationReuseSuppression.Value == 0 && (files._validationReadSet.Value is not null || files._sourceDataOperation.Value is not null);
                 var result = await (
-            _validationReadSet.Value is { } phase && ValidationReuseSuppression.Value == 0
+            files._validationReadSet.Value is { } phase && ValidationReuseSuppression.Value == 0
                 ? phase.ReadAsync(relativePath, ValidationSnapshotFamily.OrdinaryAsync, lease, cancellationToken)
-                : _sourceDataOperation.Value is { } operation && ValidationReuseSuppression.Value == 0
+                : files._sourceDataOperation.Value is { } operation && ValidationReuseSuppression.Value == 0
                     ? operation.ReadAsync(relativePath, ValidationSnapshotFamily.OrdinaryAsync, lease, cancellationToken)
-                    : ReadOrdinaryFileSnapshotUncachedAsync(relativePath, cancellationToken, lease, observation: observation));
+                    : files.ReadOrdinaryFileSnapshotUncachedAsync(relativePath, cancellationToken, lease, observation: observation));
                 if (reused) observation?.Snapshot(result?.Content, physical: false);
                 return result;
             }

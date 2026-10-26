@@ -88,8 +88,12 @@ public sealed partial class LifecycleSealedReadObservationTests
         using var window = timing.StartWindow();
         using var observed = reads.CanonicalSources.BeginObservation(files, window);
         var actual = validator.ValidateAcceptedTurnNarrativePolicyPassAsync();
+        Exception? primary = null;
+        ValidationService.NarrativePolicyPass? pass = null;
         try
         {
+            await Task.WhenAny(entered.Task, actual);
+            Assert.True(entered.Task.IsCompleted, "The real N source-open cut must be reached before completion.");
             await entered.Task;
             Assert.Equal("{}", await files.ReadFileAsync(Source));
             var unrelated = observed.Capture().Events.Where(row => row.Path == Source && row.Kind == CanonicalReadEventKind.PhysicalSnapshot).ToArray();
@@ -97,8 +101,16 @@ public sealed partial class LifecycleSealedReadObservationTests
             Assert.Equal(CanonicalReadSourcePhase.Ordinary, row.Phase); Assert.Null(row.InvocationId);
             Assert.True(row.EvaluationStarted > row.EvaluationCompleted);
         }
-        finally { release.TrySetResult(); }
-        using var pass = await actual;
+        catch (Exception error) { primary = error; }
+        finally
+        {
+            release.TrySetResult();
+            try { pass = await actual; }
+            catch (Exception error) { primary ??= error; }
+            finally { pass?.Dispose(); }
+        }
+        if (primary is not null) System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(primary).Throw();
+        Assert.NotNull(pass);
         Assert.Null(pass.CaptureDiagnostic().Fault);
         observed.CloseCapture();
         Assert.Contains(observed.Capture().Events, row => row.Path == Source && row.Kind == CanonicalReadEventKind.PhysicalSnapshot &&
@@ -139,25 +151,49 @@ public sealed partial class LifecycleSealedReadObservationTests
         Assert.DoesNotContain(events, row => row.Kind is CanonicalReadEventKind.InitialOpened or CanonicalReadEventKind.PhysicalSnapshot or CanonicalReadEventKind.PublicFinalReturned);
     }
 
-    /// <summary>Already registered reads retain their late tail and incomplete status after the actual cut.</summary>
-    [Fact]
-    public async Task PendingReadAtCutRetainsLateEventsWithoutJoiningAnotherEpoch()
+    /// <summary>Already registered reads and delayed followups retain their late tail without joining a new epoch.</summary>
+    /// <param name="followup">Whether the public missing-file followup starts only after the observation cut.</param>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task PendingReadAtCutRetainsLateEventsWithoutJoiningAnotherEpoch(bool followup)
     {
         var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        using var fixture = new ReadFixture(new LifecycleFixtureReadObservers(false, false), _output,
-            new FileSystemManagerHooks { BeforeCanonicalReadOpenAsync = async _ => { entered.TrySetResult(); await release.Task; } });
+        var reads = new LifecycleFixtureReadObservers(!followup ? false : true, false);
+        if (followup) reads.ReturnedObserver = async _ => { entered.TrySetResult(); await release.Task; };
+        using var fixture = new ReadFixture(reads, _output,
+            followup ? null : new FileSystemManagerHooks
+            { BeforeCanonicalReadOpenAsync = async _ => { entered.TrySetResult(); await release.Task; } });
         using var window = fixture.Timings.StartWindow();
         using var observed = fixture.Reads.CanonicalSources.BeginObservation(fixture.Files, window);
-        var reading = fixture.Files.ReadFileAsync(Source);
-        await entered.Task;
-        observed.CloseCapture();
+        var reading = fixture.Files.ReadFileAsync(followup ? "missing.txt" : Source);
+        CanonicalReadActivityAccumulator.ObservationWindow? next = null;
+        CanonicalReadObservationSnapshot? nextCapture = null;
+        Exception? primary = null;
+        string? returned = null;
+        try
+        {
+            await Task.WhenAny(entered.Task, reading);
+            Assert.True(entered.Task.IsCompleted, "The actual reader must reach the owned cut before returning.");
+            await entered.Task;
+            observed.CloseCapture();
+            Assert.False(observed.Capture().Available);
+            next = fixture.Reads.CanonicalSources.BeginObservation(fixture.Files, window);
+        }
+        catch (Exception error) { primary = error; }
+        finally
+        {
+            release.TrySetResult();
+            try { returned = await reading; }
+            catch (Exception error) { primary ??= error; }
+            finally { nextCapture = next?.Capture(); next?.Dispose(); }
+        }
+        if (primary is not null) System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(primary).Throw();
+        Assert.Equal(followup ? null : "original", returned);
+        Assert.Contains(observed.Capture().Events, row => row.Kind ==
+            (followup ? CanonicalReadEventKind.PhysicalAbsence : CanonicalReadEventKind.PhysicalSnapshot));
         Assert.False(observed.Capture().Available);
-        using var next = fixture.Reads.CanonicalSources.BeginObservation(fixture.Files, window);
-        release.TrySetResult();
-        Assert.Equal("original", await reading);
-        Assert.Contains(observed.Capture().Events, row => row.Kind == CanonicalReadEventKind.PhysicalSnapshot);
-        Assert.False(observed.Capture().Available);
-        Assert.Empty(next.Capture().Events);
+        Assert.NotNull(nextCapture); Assert.Empty(nextCapture.Events);
     }
 }

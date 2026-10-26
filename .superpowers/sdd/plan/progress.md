@@ -1,3 +1,26 @@
+# T607 coherent SOURCE candidate frozen — build/discovery/runtime UNRUN
+
+Complete RED scaffold is frozen across 19 source/configuration paths. Static inventory
+is 16 methods/20 cases: causal reuse owner 1/1, observation owner 15/19. Catalog declares
+963 unique IDs; all 961 old objects retain their exact raw text, only two objects were
+inserted. Cumulative selection keeps prior 29 IDs and adds seven affected owners.
+Root rehashed all 19 frozen files, checked JSON/old-object equality/diff whitespace,
+and inspected the 13/13 finite byte-exact original reader-body reconstruction packet.
+
+First independent SOURCE pass identified four fixes now grouped in this candidate:
+live binding expiry before cut, missing trusted-local absence/retry evidence, late
+followup child importing into a new epoch, and capturing-local allocation on inactive
+paths. Added directed controls/static helpers; final independent delta verdict remains
+pending. Default/cold callback behavior, N cache refusal/fresh scopes and eligibility
+guards remain; shared RED factory still true/true. No GREEN/performance claim.
+
+Rolling guard maintenance is limited to 18 rows/9 affected source paths; historical
+frozen inventories/hashes are unchanged. Full proof/review/raw remain outside checkout
+under `dfr-prefix/t607-implementation` and `dfr-prefix/implementation`. Next: exact
+remote checkpoint, final coherent SOURCE acceptance, fresh affected managed builds,
+current PE/PDB/source bindings and IL sanity, catalog/exact PlanOnly/recovery/PREP,
+then only the intended causal singleton. No actual runtime has been started.
+
 # T607 source-only WIP4 — positive consumer and more cheap controls written
 
 Selected positive now has gated sealed observation/parity consumption at the same

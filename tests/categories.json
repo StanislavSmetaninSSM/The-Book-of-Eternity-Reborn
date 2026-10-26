@@ -1,6 +1,94 @@
 {
     "schemaVersion": 1,
     "categories": [
+    {
+      "id": "core-lifecycle-sealed-read-observation",
+      "responsibility": "T607 independent real-file sealed observation DATA: actual original/public/leased returns, bytes/absence/fault/cancel, distinct source and recovery eligibility, epoch/window/generation/cut/dispose, late public followup, actual N capture and fresh Recheck provenance with unrelated concurrent reads, unchanged cached-N refusal and actual DFR inside eligible owner.",
+      "excludes": "No full world, authority/imported N token, reflection, fabricated events or timing-based phase assignment, new cache, hook-free GREEN policy, quotas, Windows qualification or performance claim.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/LifecycleSealedReadObservationTests.cs",
+        "BookOfEternityClient.Tests/LifecycleSealedReadObservationTests.Provenance.cs",
+        "BookOfEternityClient.Tests/LifecycleSealedReadObservationTests.FailureAndData.cs",
+        "BookOfEternityClient/Core/CanonicalReadActivityAccumulator.cs",
+        "BookOfEternityClient.TestSupport/LifecycleFixtureReadObservers.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-narrative-policy-pass-sources",
+          "when": "Preserve existing cached-DATA refusal and real physical source authority independently of diagnostic observation."
+        },
+        {
+          "id": "core-producer-read-forwarders",
+          "when": "Default arbitrary hooks and closing callbacks retain fallback eligibility."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LifecycleSealedReadObservationTests.MissingPublicReadKeepsOriginalFollowupAndFinalReturn",
+            "BookOfEternityClient.Tests.LifecycleSealedReadObservationTests.SupportedSourceDataAndRawDriftKeepPhysicalEvidenceHonest",
+            "BookOfEternityClient.Tests.LifecycleSealedReadObservationTests.ManualExpiredNarrativeSinkRetainsPassiveBytesWithoutAttestation",
+            "BookOfEternityClient.Tests.LifecycleSealedReadObservationTests.OrdinaryMutationDoesNotExpireObservationGeneration",
+            "BookOfEternityClient.Tests.LifecycleSealedReadObservationTests.ActualDebugPrefixInsideEligibleOwnerRetainsPhysicalSources",
+            "BookOfEternityClient.Tests.LifecycleSealedReadObservationTests.ActualNarrativeOriginCannotMoveToAnotherObservationEpoch",
+            "BookOfEternityClient.Tests.LifecycleSealedReadObservationTests.ActualNarrativeCaptureAndFreshRechecksKeepOneExplicitOrigin",
+            "BookOfEternityClient.Tests.LifecycleSealedReadObservationTests.ConcurrentUnrelatedReadDuringActualNarrativeRemainsOrdinary",
+            "BookOfEternityClient.Tests.LifecycleSealedReadObservationTests.SnapshotThenCallbackFaultDoesNotInventFinalReturn",
+            "BookOfEternityClient.Tests.LifecycleSealedReadObservationTests.CancelledReadHasNoSuccessfulSourceOrPublicReturn",
+            "BookOfEternityClient.Tests.LifecycleSealedReadObservationTests.PendingReadAtCutRetainsLateEventsWithoutJoiningAnotherEpoch",
+            "BookOfEternityClient.Tests.LifecycleSealedReadObservationTests.OriginalReturnsAndActualStreamBytesStayDistinct",
+            "BookOfEternityClient.Tests.LifecycleSealedReadObservationTests.ObservationEpochAndBindingAreNotImportable",
+            "BookOfEternityClient.Tests.LifecycleSealedReadObservationTests.ReadAndCloseForwardingPoliciesRemainIndependent",
+            "BookOfEternityClient.Tests.LifecycleSealedReadObservationTests.ClosingForwardingIsAnIndependentRecoveryEligibilityBoundary"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "core-lifecycle-sealed-read-reuse",
+      "responsibility": "T607 tests-first causal source-count control using the SAME selected-positive holder projection: eight real logical results, all actual byte/return/ordinary phase prerequisites, then strict two-source expectation. RED keeps original nonnull hook projection and expects actual eight sources; no named timer can fabricate N ownership.",
+      "excludes": "No full world, authority/imported N token, reflection, fabricated events or timing-based phase assignment, new cache, hook-free GREEN policy, quotas, Windows qualification or performance claim.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/LifecycleSealedReadObservationTests.cs",
+        "BookOfEternityClient.Tests/LifecycleSealedReadObservationTests.Provenance.cs",
+        "BookOfEternityClient.Tests/LifecycleSealedReadObservationTests.FailureAndData.cs",
+        "BookOfEternityClient/Core/CanonicalReadActivityAccumulator.cs",
+        "BookOfEternityClient.TestSupport/LifecycleFixtureReadObservers.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-narrative-policy-pass-sources",
+          "when": "Preserve existing cached-DATA refusal and real physical source authority independently of diagnostic observation."
+        },
+        {
+          "id": "core-producer-read-forwarders",
+          "when": "Default arbitrary hooks and closing callbacks retain fallback eligibility."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LifecycleSealedReadObservationTests.EightActualReadsKeepAllDataAndReuseOneInitialAndOneFreshSource"
+          ]
+        }
+      ]
+    },
 {
   "id": "fr063-joint-records-writer-buffer",
   "responsibility": "One cheap real-file causal writer control: serialize4096 genuine sealed events once plus one full Unicode message, replay identical immutable rows through independent default baseline and SAME actual writer factory, count actual forwarded GZip input writes/bytes, require exact source fields/live flush visibility/decoded UTF8/hash/rows/owned close before strict write-call reduction. T604 GREEN protection requires fewer actual input writes from gzip-only16K-character buffering after the accepted default1967==1967 causal RED; unchanged flush and full-data prerequisites remain mandatory.",

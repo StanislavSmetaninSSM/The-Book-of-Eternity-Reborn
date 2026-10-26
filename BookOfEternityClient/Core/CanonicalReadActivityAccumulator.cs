@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 namespace BookOfEternityClient.Core;
 
 /// <summary>
-/// Counts canonical source events without invoking caller code or retaining file contents.
+/// Counts canonical sources; an explicit DATA-only epoch optionally retains selected bytes without invoking caller code.
 /// </summary>
 internal sealed class CanonicalReadActivityAccumulator
 {
@@ -39,6 +39,7 @@ internal sealed class CanonicalReadActivityAccumulator
     }
 
     /// <summary>Creates an explicit per-call DATA token only while an actual matching observation is active.</summary>
+    /// <param name="issuer">Private closed read transport token.</param>
     /// <param name="files">Actual reader filesystem.</param>
     /// <param name="path">Original path spelling.</param>
     /// <param name="family">Actual API/reader family.</param>
@@ -63,10 +64,12 @@ internal sealed class CanonicalReadActivityAccumulator
         private bool _closed, _disposed;
         private string? _fault;
 
+        /// <summary>Creates the actual accumulator/files/window/generation DATA lifetime.</summary>
         internal ObservationWindow(CanonicalReadActivityAccumulator owner, FileSystemManager files,
             OperationTimingAccumulator.Window window, long generation)
         { _owner = owner; _files = files; _window = window; _generation = generation; }
 
+        /// <summary>Registers a call only through the actual closed reader transport.</summary>
         internal ReadObservation? BeginRead(object issuer, FileSystemManager files, string path, string family,
             BookOfEternityClient.Services.ValidationService.NarrativeInterfaceSourceSession.ReadOrigin? origin)
         {
@@ -81,14 +84,34 @@ internal sealed class CanonicalReadActivityAccumulator
             }
         }
 
+        /// <summary>Latches diagnostic failure without changing functional source behavior.</summary>
         internal void Fail() { lock (_gate) _fault ??= "diagnostic_read_record_failed"; }
+
+        /// <summary>Registers an actual nested physical read in the already selected epoch, including late tails.</summary>
+        internal ReadObservation? BeginChild(object issuer, ReadObservation parent, FileSystemManager files,
+            string path, string family, BookOfEternityClient.Services.ValidationService.NarrativeInterfaceSourceSession.ReadOrigin? origin)
+        {
+            if (!FileReadObservation.IsActivityIssuer(issuer) || !parent.BelongsTo(this))
+                throw new InvalidOperationException("Actual registered reader dispatch required.");
+            lock (_gate)
+            {
+                if (_disposed) return null;
+                if (!ReferenceEquals(files, _files)) { _fault ??= "foreign_read_files"; return null; }
+                if (_closed) _fault ??= "physical_child_started_after_cut";
+                if (!IsCurrent()) _fault ??= "expired_read_observation_binding";
+                _pending++;
+                return new ReadObservation(issuer, this, ++_nextRead, path, family, origin);
+            }
+        }
 
         private bool IsCurrent() => _files.CanonicalReadObservationGeneration == _generation &&
             _files.MatchesCanonicalReadObservation(_owner, _window);
 
+        /// <summary>Checks this still-open actual files/window/generation identity.</summary>
         internal bool MatchesFiles(FileSystemManager files)
         { lock (_gate) return !_closed && !_disposed && ReferenceEquals(files, _files) && IsCurrent(); }
 
+        /// <summary>Records one actual DATA boundary; diagnostic failure remains incomplete and nonthrowing.</summary>
         internal void Record(ReadObservation read, CanonicalReadEventKind kind, byte[]? bytes = null,
             bool physical = true, Exception? error = null)
         {
@@ -127,6 +150,7 @@ internal sealed class CanonicalReadActivityAccumulator
             }
         }
 
+        /// <summary>Settles one actual registered call once; no functional owner is disposed.</summary>
         internal void Returned(ReadObservation read)
         {
             lock (_gate)
@@ -143,6 +167,7 @@ internal sealed class CanonicalReadActivityAccumulator
             lock (_gate)
             {
                 if (_closed) return;
+                if (!IsCurrent()) _fault ??= "expired_read_observation_binding";
                 _closed = true;
                 if (_pending != 0) _fault ??= "pending_read_at_cut";
             }
@@ -155,6 +180,7 @@ internal sealed class CanonicalReadActivityAccumulator
         {
             lock (_gate)
             {
+                if (!_closed && !_disposed && !IsCurrent()) _fault ??= "expired_read_observation_binding";
                 try { return new(_fault is null && !_disposed, _closed, _disposed, _pending, _fault,
                     _events.Select(row => row with { Bytes = row.Bytes?.ToArray() }).ToArray()); }
                 catch (Exception)
@@ -177,21 +203,33 @@ internal sealed class CanonicalReadActivityAccumulator
     internal sealed class ReadObservation
     {
         private readonly ObservationWindow _owner;
+        /// <summary>Identifies this actual call within its one observation epoch.</summary>
         internal readonly long Id;
+        /// <summary>Retains original source spelling and concrete reader family.</summary>
         internal readonly string Path, Family;
+        /// <summary>Carries only explicit private-producer provenance; no timer can issue it.</summary>
         internal readonly BookOfEternityClient.Services.ValidationService.NarrativeInterfaceSourceSession.ReadOrigin? Origin;
+        /// <summary>Tracks settlement under the owning observation monitor.</summary>
         internal bool Ended;
+        /// <summary>Checks the actual registered DATA owner without exposing a setter.</summary>
+        internal bool BelongsTo(ObservationWindow owner) => ReferenceEquals(_owner, owner);
+        internal ReadObservation? BeginChild(object issuer, FileSystemManager files, string path, string family,
+            BookOfEternityClient.Services.ValidationService.NarrativeInterfaceSourceSession.ReadOrigin? origin) =>
+            _owner.BeginChild(issuer, this, files, path, family, origin);
+        /// <summary>Creates a call only when supplied the private closed transport issuer.</summary>
         internal ReadObservation(object issuer, ObservationWindow owner, long id, string path, string family,
             BookOfEternityClient.Services.ValidationService.NarrativeInterfaceSourceSession.ReadOrigin? origin)
         {
             if (!FileReadObservation.IsActivityIssuer(issuer)) throw new InvalidOperationException("Actual closed read transport required.");
             _owner = owner; Id = id; Path = path; Family = family; Origin = origin;
         }
+        /// <summary>Forwards an actual event only through the private closed transport.</summary>
         internal void Record(object issuer, CanonicalReadEventKind kind, byte[]? bytes = null, bool physical = true, Exception? error = null)
         {
             if (!FileReadObservation.IsActivityIssuer(issuer)) throw new InvalidOperationException("Actual closed read transport required.");
             _owner.Record(this, kind, bytes, physical, error);
         }
+        /// <summary>Settles DATA only through the private closed transport.</summary>
         internal void Complete(object issuer)
         {
             if (!FileReadObservation.IsActivityIssuer(issuer)) throw new InvalidOperationException("Actual closed read transport required.");

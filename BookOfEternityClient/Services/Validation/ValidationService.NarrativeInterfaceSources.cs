@@ -420,7 +420,9 @@ public partial class ValidationService
         internal sealed class ObservationRun : IDisposable
         {
             private int _closed;
+            /// <summary>Observes only the atomic diagnostic recheck-run lifetime.</summary>
             internal bool Open => Volatile.Read(ref _closed) == 0;
+            /// <summary>Opens a run only for the actual private producer issuer.</summary>
             internal ObservationRun(object issuer)
             {
                 if (!ReferenceEquals(issuer, NarrativePassIssuer)) throw new InvalidOperationException("Actual N observation issuer required.");
@@ -432,7 +434,9 @@ public partial class ValidationService
         /// <summary>Closed diagnostic-only recheck arm over the same actual completed invocation.</summary>
         internal sealed class RecheckReadObservation
         {
+            /// <summary>Carries the same actual completed invocation and current recheck run.</summary>
             internal ReadOrigin Origin { get; }
+            /// <summary>Creates diagnostic-only provenance for one actual recheck source call.</summary>
             internal RecheckReadObservation(object issuer, NarrativeInterfaceSourceSession owner, ObservationRun run)
             { Origin = new ReadOrigin(issuer, owner, run); }
         }
@@ -442,6 +446,7 @@ public partial class ValidationService
         {
             private readonly NarrativeInterfaceSourceSession _owner;
             private readonly ObservationRun? _run;
+            /// <summary>Binds the immutable observation identity to the actual private producer and optional recheck run.</summary>
             internal ReadOrigin(object issuer, NarrativeInterfaceSourceSession owner, ObservationRun? run)
             {
                 if (!ReferenceEquals(issuer, NarrativePassIssuer)) throw new InvalidOperationException("Actual N observation issuer required.");

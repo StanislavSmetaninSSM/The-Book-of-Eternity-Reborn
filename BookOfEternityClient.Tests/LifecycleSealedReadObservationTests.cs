@@ -81,7 +81,9 @@ public sealed partial class LifecycleSealedReadObservationTests
         Assert.Equal(fixture.Bytes, bytes);
         observed.CloseCapture();
         var capture = observed.Capture();
+        window.Dispose(); // already closed detached DATA remains valid
         Assert.True(capture.Available, capture.Fault);
+        Assert.True(observed.Capture().Available, observed.Capture().Fault);
         Assert.Single(capture.Events.Where(row => row.Kind == CanonicalReadEventKind.InitialOpened));
         Assert.Equal(fixture.Bytes, Assert.Single(capture.Events.Where(row => row.Kind == CanonicalReadEventKind.PhysicalSnapshot)).Bytes);
         Assert.Contains(capture.Events, row => row.Kind == CanonicalReadEventKind.ReaderReturned);
@@ -115,6 +117,10 @@ public sealed partial class LifecycleSealedReadObservationTests
         Assert.Empty(next.Capture().Events);
         await fixture.Files.ReadFileAsync(Source);
         Assert.NotEmpty(next.Capture().Events);
+        window.Dispose(); // expiry after the final read must be detected before the cut
+        Assert.False(next.Capture().Available);
+        next.CloseCapture();
+        Assert.False(next.Capture().Available);
     }
 
     /// <summary>Read and close callbacks preserve the ordinary default and reject late attachment only in the explicit opt-in.</summary>

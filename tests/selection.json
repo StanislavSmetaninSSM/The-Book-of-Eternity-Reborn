@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "fr063-debug-prefix-sources",
-      "reason": "New typed real-file DATA producer and actual public Full A→B→A contrast; all source/provenance/borrowed lease/copy/expiry negatives stay cheap.",
+      "reason": "New typed real-file DATA producer and actual public Full A→B→A contrast; all source/provenance/borrowed lease/copy/expiry negatives stay cheap. T607 explicit read DATA transport and reviewed rolling source closure affect this existing consumer; retain its original assertions.",
       "contracts": [
         "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
       ]
@@ -59,28 +59,28 @@
     },
     {
       "category": "fr063-narrative-policy-pass-sources",
-      "reason": "The closed physical union and shared original plumbing must preserve actual N occurrences, fault latches, provenance and fresh checks.",
+      "reason": "The closed physical union and shared original plumbing must preserve actual N occurrences, fault latches, provenance and fresh checks. T607 explicit read DATA transport and reviewed rolling source closure affect this existing consumer; retain its original assertions.",
       "contracts": [
         "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
       ]
     },
     {
       "category": "portable-ordinary-readers",
-      "reason": "Both ordinary and protected physical reader families/null facades changed; preserve bytes/absence/opened identity/lease/cancellation/retry behavior.",
+      "reason": "Both ordinary and protected physical reader families/null facades changed; preserve bytes/absence/opened identity/lease/cancellation/retry behavior. T607 explicit read DATA transport and reviewed rolling source closure affect this existing consumer; retain its original assertions.",
       "contracts": [
         "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
       ]
     },
     {
       "category": "fr063-reserved-validation-read-set",
-      "reason": "Shared dispatch must preserve cache DATA provenance, fresh suppression and reserved ownership/failure behavior.",
+      "reason": "Shared dispatch must preserve cache DATA provenance, fresh suppression and reserved ownership/failure behavior. T607 explicit read DATA transport and reviewed rolling source closure affect this existing consumer; retain its original assertions.",
       "contracts": [
         "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
       ]
     },
     {
       "category": "c5-browser-admission-source-guards",
-      "reason": "Only two existing rolling World/Meta source-pin Facts: targeted baseline mismatches and new actual transitive sealed declarations; no broad World/Meta runtime.",
+      "reason": "Only two existing rolling World/Meta source-pin Facts: targeted baseline mismatches and new actual transitive sealed declarations; no broad World/Meta runtime. T607 explicit read DATA transport and reviewed rolling source closure affect this existing consumer; retain its original assertions.",
       "contracts": [
         "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
       ]
@@ -202,6 +202,55 @@
       "reason": "T604 GREEN protection after independently accepted default1967==1967 causal RED: gzip-only16K-character factory must reduce actual GZip-input Write calls after exact source/decoded/full-message/live-flush/owned-close prerequisites. Plain default/AutoFlush, all prior28 cumulative IDs, string encoder/cadence and same65536-event managed-cost gate remain; measured throughput/allocation UNRUN and positive HOLD.",
       "contracts": [
         "#1536 T604 / DFRDIAG11; exact Serialization restoration and same-writer actual-call causal proof before gzip-only buffering"
+      ]
+    },
+    {
+      "category": "core-lifecycle-sealed-read-reuse",
+      "reason": "T607 RED singleton: SAME actual holder hooks stay nonnull; all eight successful logical reads and source DATA prerequisites precede the strict two-source oracle.",
+      "contracts": [
+        "#1536 T607 RED scaffold / sealed observation and original-reader parity"
+      ]
+    },
+    {
+      "category": "core-lifecycle-sealed-read-observation",
+      "reason": "New exact sealed DATA owners and genuine N/DFR/cancel/fault/epoch/followup/concurrency controls; no full world.",
+      "contracts": [
+        "#1536 T607 RED scaffold / sealed observation and original-reader parity"
+      ]
+    },
+    {
+      "category": "core-passive-named-events",
+      "reason": "Active fixed named counter samples corroborate actual origin without creating N phase ownership.",
+      "contracts": [
+        "#1536 T607 RED scaffold / sealed observation and original-reader parity"
+      ]
+    },
+    {
+      "category": "core-passive-recovery-timing",
+      "reason": "Preserve existing passive recorder/cache behavior and closing lifetime.",
+      "contracts": [
+        "#1536 T607 RED scaffold / sealed observation and original-reader parity"
+      ]
+    },
+    {
+      "category": "core-producer-read-forwarders",
+      "reason": "Holder adds independent explicit closing opt-in while all defaults/cold/negative arbitrary callbacks retain original fallback.",
+      "contracts": [
+        "#1536 T607 RED scaffold / sealed observation and original-reader parity"
+      ]
+    },
+    {
+      "category": "core-operation-source-data",
+      "reason": "Actual byte/read-return transport crosses existing source owner; physical/cache provenance and close fence remain independent.",
+      "contracts": [
+        "#1536 T607 RED scaffold / sealed observation and original-reader parity"
+      ]
+    },
+    {
+      "category": "core-operation-source-data-linux",
+      "reason": "Linux actual source owner supports the selected future reuse route without authority or fresh guard changes.",
+      "contracts": [
+        "#1536 T607 RED scaffold / sealed observation and original-reader parity"
       ]
     }
   ]
