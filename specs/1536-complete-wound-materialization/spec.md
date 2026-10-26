@@ -8,7 +8,9 @@ DFRDIAG2: before another expensive positive, prove interruption-safe test transp
 using the existing sealed OperationTimingAccumulator event window, DrainEvents and
 JointCleanupProfileDiagnosticCapture.ObserveRecorded/uncapped external writer.
 One consumer drains detached scalar events during a long await; it carries no game,
-lease, authority or probe reference and invokes no functional code. No production
+lease, authority or probe reference and invokes no functional code. Suppress ambient
+ExecutionContext only during static consumer startup, without awaiting in that
+suppression scope. No production
 callback, new cache/diagnostic framework or event reconstruction from aggregates.
 DFRDIAG3: preserve corrected-readback counter-window boundary and every original
 case/input/assertion/two actual phase calls/full physical diagnostic. Only the

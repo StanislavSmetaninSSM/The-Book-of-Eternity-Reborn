@@ -17,6 +17,10 @@ of xUnit; the positive's original receiver still gets every existing message.
 - Current Game/Services/Core/native source, ownership/freshness/cache guards, debug
   schema, actual P2 calls, full images, cold paths and category5-minute budget stay
   unchanged. This is test diagnostics, not a product optimization or timeout fix.
+- Existing-code check: component FlushPassiveTimings drains only after the long
+  functional call returns, so direct unchanged wiring cannot survive its kill.
+  Reuse its queue/capture/serializer/cost ledger/AutoFlush writer; only the missing
+  lifecycle adapter and continuing drain are new. No second diagnostic stack.
 - Extending existing persistent output is preferred to a second capture framework.
   Its default component namespace must remain exact; lifecycle registration binds
   an explicit absolute actual fixture root, not the component's fabricated default.
@@ -29,7 +33,11 @@ of xUnit; the positive's original receiver still gets every existing message.
   StartWindow(captureEvents:true); keep that measurement boundary/count semantics.
 - One continuing consumer owns all drains, including final tail; no second caller
   drains concurrently. It holds only Window/capture/scalars/cancellation, never the
-  enclosing probe or game. Background transport is outside functional callbacks.
+  enclosing probe or game. Suppress ExecutionContext flow only around synchronous
+  startup of its static task, so Arm cannot leak ambient lease/Main/source context;
+  never await while the SuppressFlow scope is active. Background transport is
+  outside functional callbacks. Validate the cleanup receipt against the exact
+  registered actual root; a default component path cannot stand in for it.
 - Body settles and existing resource/fixture disposal happens before probe/window
   close, consumer stop/join/final drain, exact accounting, Finish/hash and closing
   receipt. A real remaining root is retained/unproven even if Dispose swallowed
