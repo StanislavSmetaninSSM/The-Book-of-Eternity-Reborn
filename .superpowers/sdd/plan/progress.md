@@ -1,3 +1,45 @@
+# T608 first OUTCOME accepted — 66 distinct PASS, three controls remain
+
+Independent Astra High accepts the complete four-category unit stage (59 methods,
+65 cases) and the genuine prepared-replay singleton (one case). Runtime HEAD was
+3d52d2ea66dace2e89725a412dcb85bf98cce808; all five owning builds and 69 source/PDB
+bindings remain at f6ef4d62178f74fcd3afe58c66617496cbb9c43f, with only checkpoint
+Markdown changes since compilation. All 33 artifacts and loaded assembly pins stayed
+exact. No skip, duplicate, underfill, timeout or cleanup failure occurred.
+
+Genuine category: 37.6407887 seconds; framework: 26.7264245 seconds. Strict actual
+warmup one plus richer zero replaces accepted RED one plus eight: nine sources become
+one. PrepareCore remains one/zero; eight actual validators retain 56 fresh seals,
+all five compared scalars and ordered pair, 58 beforeimages, current owner/generation,
+source success fence and closing. Separate accepted-mismatch/refusal/suspended-owner
+fallback parity and the real operation-flow exception/release/join control pass.
+
+Root verified the entire unchanged PLAIN capture: 373,172,328 bytes; SHA256
+1f0d446ac5be28917727bac1a37aced3e0d31921d76ffb5a5f73a43d4d513474;
+733,096 rows = 733,080 original timing events plus 16 messages; 366,540 complete
+scope pairs. Original fields, sequences/ticks and queue/writer/window accounting are
+exact; zero open, late, pending or failed records. This plain artifact makes no gzip
+CRC claim. A root-checker phase/message dictionary collision was reproduced cheaply
+and corrected with separate keys; full reading then completed successfully. No game
+or test was repeated, no assertion weakened and no raw changed.
+
+The unchanged eight-call validator window measured 574.128367 ms against the saved
+RED 1300.267342 ms. New key 58.203018 ms and admission 153.009147 ms are nested costs,
+not additive independent savings. This is one small-contour pair with proved source
+reduction, not statistical or whole-game performance evidence. Extra POST negatives
+make whole-case timing an unequal-work comparison.
+
+Remaining selected genuine controls are joint semantic DATA, joint bundle copy and
+joint candidate. They require exact preparation/resource assessment and complete
+outcomes before the eight-ID / 69-case selection can be accepted. Current disk reserve
+is about 658 MB; all old raw is still preserved. Any old matching measurement may be
+retired only after the new complete verified replacement, ended owners, independent
+exact-manifest review and normal environment controls. No deletion is released here.
+Full DFR positive, dependent legacy/cold and final materialization remain open; no
+full-positive retry, new budget, diagnostic quota, Windows claim or history rewrite.
+External receipts/reviews are in dfr-prefix/t608-counter-scaffold; genuine raw is in
+dfr-prefix/actual-t608-shared-replay-genuine-1. This checkpoint changes no compiled code.
+
 # T608 fresh Linux preparation — runtime pending
 
 The independently accepted shared-projection source is now freshly compiled on Linux
