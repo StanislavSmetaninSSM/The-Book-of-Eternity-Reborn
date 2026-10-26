@@ -1,3 +1,95 @@
+# T607 sealed observation implementation plan — concrete DESIGN delta pending
+
+**Goal:** retain the original N read/byte/return/phase evidence without arbitrary
+fixture hooks excluding existing stable DATA reuse. **Spec:** DFR-OBS1..7 above the
+existing #1536 specification. **Stack:** current C#/.NET 8, Debug/portable PDB, existing
+recorder/closed read transport/repository service; no dependency or build-mode change.
+Use the preserved independent implementer/reviewer workflow and TDD; this plan stays
+in the existing canonical journal rather than creating duplicate planning artifacts.
+
+**Owner/interfaces.** Extend `Core/CanonicalReadActivityAccumulator.cs` with
+`BeginObservation(FileSystemManager, OperationTimingAccumulator.Window)` returning a
+sealed `ObservationWindow`; preserve existing path counters exactly. One active epoch
+owns all armed-to-cut path events, copied achievements bytes only as before, detached
+capture snapshots and explicit close/disposal. Bind actual files, configured recorder/
+window, generation revision and per-read token. No diagnostic token enters cache DATA.
+Compose fixed known sinks through `Core/FileReadObservation.cs`, including a passive
+activity arm; no delegate or caller-selected N phase. Existing authority sinks retain
+their original bytes/faults. Default inactive observation does not allocate read tokens.
+
+**Boundaries/files.** `FileSystemManager.cs`, `.OrdinaryReads.cs`, `.ValidationReadSet.cs`
+and `.TrustedLocalStorage.cs` carry explicit per-read activity at existing dispatch:
+initial opened source, provisional actual snapshot, success only after original
+validation/reader disposal, original public initial-attempt hook return, final public
+return, absence/fault/cancellation and cached DATA are distinct. Leased reads never
+invent public returns; followup/retry ordering stays unchanged. No extra physical read
+creates evidence. Unsupported/foreign/closed provenance is unavailable, never success.
+
+**N phase origin.** `ValidationService.NarrativeInterfaceInvocation.cs` privately
+attests the existing source session/run using the actual producer issuer. Its existing
+`NarrativeReadObservation` carries that origin in `.NarrativeInterfaceSources.cs`.
+Within actual `RequireCurrentAsync`, after its existing guards, a closed diagnostic-only
+recheck arm carries the same invocation identity without adding occurrences to sealed
+authority DATA. End each run at actual return/failure. Manual/read-only/foreign/expired
+origins cannot acquire N phase. `OperationTimingAccumulator.Window.CaptureNamedCounts`
+adds only constant-time corroborating scalar DATA; a concurrent ordinary read while N
+is active remains unattributed. Require a unique actual initial invocation and its
+own rechecks rather than choosing a convenient one. Keep the initial N caller outside
+the later publication owner, existing fresh N/DFR rechecks and low-level reused-DATA
+refusal exactly; no new fresh scope, validation rule or GM surface.
+
+**Fixture/lifetime.** Extend `TestSupport/LifecycleFixtureReadObservers.cs` with an
+independent immutable close-forwarding option defaulting true. Only unchanged positive
+explicitly disables both read and close forwarding before construction; read/close late
+attachment fails. `GameEngineTurnLifecycleTests.cs` uses this holder for close forwarding;
+`.JointNarrativeSource.cs` arms/freezes the sealed observations at the same corrected
+readback/capture cut and consumes them for all existing assertions. Default/cold/native
+`forwardingEnabled:false` callers retain their previous closing behavior. Mutation/
+publication hooks, negative source interventions, two real P2/expired calls, full images,
+inert repeat, full timing/gzip transport and cleanup remain unchanged.
+
+**T607-RED.** First write one real-file reuse-control Fact and prerequisite controls.
+Use the actual lifecycle holder-to-hook projection, existing source/recovery service
+and eight identical successful logical reads; no GameEngine/world/reflection. Scaffold
+keeps the original nonnull forwarding hooks plus the new sealed DATA. Before the final
+source-reduction assertion, prove exact bytes/eight returns, honest physical/cache/
+fault/cut/ownership observations. Ordinary reads never claim N merely from a timer.
+Expected causal failure is eight actual sources against the supported one initial plus
+one fresh closing source; compile/setup/observation failures are not the RED. Existing
+`SourceOperationFixture` already has a passing two-source contract and stays unchanged.
+Separately vary only closing forwarding in a real recovery request/source/reuse control;
+the source cache alone cannot prove recovery eligibility. Freeze prerequisites/test
+bytes before the GREEN change. Independent SOURCE/PREP/outcome surround the RED.
+
+**T607-GREEN/qualification.** Select only the reviewed hook-free construction path,
+then prove actual source reduction while retaining eight successful logical results.
+Controls cover real N outside owner, N rechecks/DFR inside eligible owner, unchanged
+cached-N refusal; unrelated concurrent reads and manual/foreign/expired phase; physical
+snapshot followed by read/close fault, cancellation, copied bytes, missing/followup,
+leased versus public paths, same-path parallel reads, epoch/cut/dispose/reset and
+mutation/generation/namespace/effect invalidation. No fabricated source counts.
+
+New coherent test owners: `core-lifecycle-sealed-read-reuse` (causal mechanism) and
+`core-lifecycle-sealed-read-observation` (DATA/lifetime/provenance). Author/discover actual
+membership; do not claim case counts in advance. Retained affected selection:
+`core-passive-named-events`, `core-passive-recovery-timing`, `core-producer-read-forwarders`,
+`core-operation-source-data`, `core-operation-source-data-linux`, `portable-ordinary-readers`,
+`fr063-reserved-validation-read-set`, `fr063-narrative-policy-pass-sources`,
+`fr063-debug-prefix-sources`, plus affected finite source-inverse/rolling-pin Facts.
+Keep frozen historical inventories/hashes; permit only independently checked inverse
+maintenance. Review final exact selection/catalog before execution. No full suite.
+
+Root publishes source/checkpoint, obtains independent SOURCE, builds affected managed
+projects freshly with current dependencies/XML/PDB/copies, verifies catalog/PlanOnly,
+qualified GitHub recovery and PREP, then executes the exact cheap stage. Only accepted
+GREEN/negatives/actual source effect can justify new original-budget positive PREP.
+Budget/capture/resource/owned-outcome rules and dependent gates remain unchanged.
+
+Optimization assessment: diagnostic DATA uses no new cache; existing source/recovery
+service retains complete key, owner, invalidation and fresh opening/closing authority.
+Tests measure actual source work, not assumed syscall savings or total speedup. Current
+phase-origin refinement is under independent DESIGN; C# implementation remains UNRUN.
+
 # T607 selected observation/lifetime route — DESIGN in progress
 
 Owner selected option 1 after verified `ed63041e8ab1c6e8b5662ffbfa2cea96602fbc26`:

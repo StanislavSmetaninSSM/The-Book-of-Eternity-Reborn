@@ -30,6 +30,12 @@ binding/PlanOnly/recovery/PREP may one materially justified DFR positive run wit
 original 300-second limit and full uncapped existing capture. No blind retry, loss,
 new stack, broad codegen or Windows substitution; dependent gates require complete
 functional/capture/owned PASS. This introduces no GM-authored or player contract.
+DFR-OBS7: a globally active named N timer is corroborating DATA, not read ownership.
+Use the actual N producer's private source identity and per-run explicit observation
+provenance; unrelated concurrent reads remain unattributed. A diagnostic-only arm
+inside the existing fresh recheck must not append to its sealed authority ledger.
+Preserve the current low-level reused-DATA refusal and actual initial N-before-owner
+call order; no speculative producer-wide fresh scope or acceptance change.
 
 # Interrupted lifecycle named-timing diagnostic amendment — #1536 / 2026-10-26
 
