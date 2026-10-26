@@ -77,6 +77,16 @@ T006 не объявляет весь открытый epic уже выполн�
 - [ ] T021 [US2] Сначала `BookOfEternityClient.Tests/MemorySceneActorContextTests.cs` (новый): POV владельца, historical knowledge/actor journals, разговор→перемещение→возврат, способность роли с локальным ресурсом и отсутствие present profile mutation. Затем scene-owned actor context и typed mechanics input/adapters; подготовить одну утверждённую память Маски и один Guardian q4 в story catalog. Полный бой включать по принятому definition, не заявлять готовым от наличия описания abilities; не материализовать исторических акторов в настоящих registries.
 - [ ] T009 [US2] После точного D3 написать `BookOfEternityClient.Tests/GoldenMaskMemoryRewardTests.cs` и `BookOfEternityClient.IntegrationTests/GoldenMaskMemoryPublicationTests.cs` (новые): реальный effect/cost, rejected/recovery/replay, grant только один раз и отказ до него; затем `BookOfEternityClient/Services/GoldenMaskMemoryRewardService.cs` (новый), profile grant route и реальный spiritual-conflict consumer. Связать completion+art одной существующей публикацией, без фиктивного учителя.
 
+Дополнение T009/#1566 совместно с T023/#1572: по завершении всей личной цепочки
+восстановить имеющуюся Расколотую маску в более сильную Золотую Маску. До кода
+уточнить точные эффекты и контракт completion+преобразование одного экземпляра;
+проверить отсутствие раннего/повторного усиления, второй вещи и двойного эффекта
+при replay/retry/reload/recovery. Историческое снаряжение не импортируется.
+Решение автора о восстановлении не утверждает предложенные числа комплекта.
+Для исторического пилота T023 учесть последующее направление автора: заняты
+все пять текущих слотов, для рук предложены две перчатки. Имена/эффекты/числа
+пяти предметов в spec — проект; сначала рассмотрение, затем проверка вклада.
+
 Каждая T007–T009/T019–T021 включает RED→GREEN, relevant selected regressions и worked
 example; T009 завершает первый вертикальный срез. Не отмечать T008/T009
 по результату одного read-only меню или теста, лишь повторяющего реализацию.
