@@ -1,3 +1,20 @@
+# T593 corrected temporal PREP ready — runtime UNRUN
+
+Independent Astra/high correction SOURCE accepted345ee154a, no material finding.
+Fresh Integration XML build on that source passed3:13.58, zero errors/101 prior
+warnings/no new messages. Eleven actual PE/PDB pairs and27 Git/current/PDB source
+hashes verified; all33 artifacts rehashed, only own Integration DLL/PDB changed,
+other31 remain exact including its unchanged XML comments. Integration compiled
+345ee; Game/Support/Bridge3cf/Unit8e stay unchanged. Prior ab0a/83f copies are
+external evidence only. Fresh NoBuild PlanOnly again selects exactly two singleton
+descriptors/cases,0executed, budgets5m each. Catalog953/12,523 retained from actual
+prior discovery with exact unchanged selectors/helper/test-identity proof; no
+redundant full catalog run. Source recovery345ee delta is exact/clean. External
+`dfr-prefix/preparation-temporal-corrected` retains full metadata/plan/source proof.
+Independent corrected PREP is next, then ONLY a new temporal attempt, because the
+first had a fixed classifier failure before target. Positive remains held until
+that outcome is classified; no second runtime has started in this checkpoint.
+
 # T593 first actual fixture failure; phase correction WIP — 2026-10-26
 
 Actual `actual-temporal-red-1` at runtimecddf4c179/compiledIntegrationab0a ended
