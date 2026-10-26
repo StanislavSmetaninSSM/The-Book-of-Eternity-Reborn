@@ -1,3 +1,24 @@
+# T606 positive PREP packet complete — post-retirement reserve, runtime pending
+
+Actual original-positive PlanOnly atd67d8d4f:1descriptor/1method/1case,exclusive5minutes,
+22.6555921s,0executed,noTimeout/bothcleanup. Current33/52 managed guard and three Linux
+native binary/source assets exact; source42/adoptedRoot:null path unchanged. Qualified
+clean GitHub recoveryd67 verified30917blobs/52pins before copy retirement.
+
+Independent exact-manifest review accepted ONLY the task-created clean recovery copy.
+Immediate head/tree/main/origin/ignored/owner recheck passed; removed solely
+/workspace/tboe-live-n-recovery-20261025. Reclaimed1241214976bytes; actual workspacefree
+2827206656bytes (~2.83GB), cgroup memory~3.22GB of16GiB. Infrastructure proc visibility
+limits explicitly recorded; no active task owner/accessible path ref existed. Main
+checkout/all raw/user saves/native and retained managed evidence/provenance unchanged;
+no GC/history/branch action. Receipts remain external; source recoveryd67 was verified,
+not an assertion that this later doc-only checkpoint has a new full physical restore.
+
+Reserve is concrete but not a guaranteed bound for unknown current event population/
+queue/bursts. No quotas/drop/tmpfs bulk/Optimize. Independent second PREP must release
+ONE diagnostically distinct positive in original300seconds; no runtime yet. A failed/
+partial result remains unqualified/fully retained and stops dependent legacy/cold.
+
 # Cost admission audit ACCEPT — T606 one diagnostic PREP, no codegen change
 
 Independent event-mix/admission audits show16.397M is an OPEN109.652s snapshot on
