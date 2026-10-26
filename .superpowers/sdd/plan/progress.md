@@ -1,3 +1,36 @@
+# T608 resource correction resolved — final PREP addendum pending
+
+Independent PREP accepts SOURCE/build/bindings/exact selection but initially HELD
+runtime for concrete disk reserve. This stage-only Fixture uses the existing PLAIN
+`records.jsonl` writer (gzipRecords defaults false); it is not the lifecycle-positive
+gzip opt-in. Its comparable historical genuine semantic fixture recorded 398,755,599
+bytes / 787,046 timing events, exceeding approximately 303 MB free. Tiny writer-control
+sizes were unsuitable context. No source/format/quota/budget change or test was made.
+
+The exact newly recreated disposable GitHub source recovery copy was independently
+reviewed again, not under an earlier permission. Verified HEAD
+`1b972b11afe107c16217b5d4a1db3b53cff3b4cf`, tree
+`19525f7c4d0e1a9557c54c5e198c5a05ba7a1e80`, all 30,921 tracked blobs and 61 PDB-bound
+sources; clean, no build outputs, no accessible cwd/FD/maps/task references. Known
+restricted infrastructure descriptors remain an explicit visibility limit.
+
+After accepted exact manifest and immediate identity/tree/clean/owner recheck, normal
+environment execution retired ONLY `/workspace/tboe-live-n-recovery-20261025` at
+18:19:20 UTC. Actual reclaimed 1,238,310,912 bytes; measured free 1,532,932,096 bytes,
+memory 3,892,490,240 / 17,179,869,184 bytes. No action was denied or left uncertain.
+The recovery copy is now absent. The retained external qualified receipt proves that
+source restore at 1b; later Markdown-only checkpoint publication is not a new restore.
+All raw/plain JSONL/gzip/TRX/archives, main checkout, native/managed unique provenance,
+receipts, test fixtures and user saves remain; no branch/history/GC change.
+
+Full evidence remains in external `dfr-prefix/t608-counter-scaffold`, including
+independent PREP HOLD, exact retirement review/proposal/immediate/result and qualified
+recovery receipt. Final independent resource/PREP addendum plus immediate bindings/
+source/owner/absent-target check precede ONE existing causal singleton: one descriptor,
+one case, exclusive original two-minute category, unchanged full PLAIN capture. Only
+prerequisite-complete final expected one/actual eight is meaningful RED. Runtime is
+still UNRUN; cache design, full positive/dependents, Windows and full feature remain open.
+
 # T608 fresh preparation verified — independent PREP pending
 
 All five managed projects freshly built at `7baac1aa06587b40506e73dde12d87db7aa22f6f`:
