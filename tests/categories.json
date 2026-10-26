@@ -3,8 +3,8 @@
     "categories": [
 {
   "id": "fr063-joint-records-writer-buffer",
-  "responsibility": "One cheap real-file causal writer control: serialize4096 genuine sealed events once plus one full Unicode message, replay identical immutable rows through independent default baseline and SAME actual writer factory, count actual forwarded GZip input writes/bytes, require exact source fields/live flush visibility/decoded UTF8/hash/rows/owned close before strict write-call reduction. T604 RED scaffold keeps the accepted default buffer on both paths.",
-  "excludes": "No buffer optimization until prerequisite-complete actual RED, timing threshold/speedup or positive admission, fabricated/rebased events, new diagnostic schema/serializer/cache/stack, game/native/world, plaintext/AutoFlush/flush cadence change, raw deletion or budget increase.",
+  "responsibility": "One cheap real-file causal writer control: serialize4096 genuine sealed events once plus one full Unicode message, replay identical immutable rows through independent default baseline and SAME actual writer factory, count actual forwarded GZip input writes/bytes, require exact source fields/live flush visibility/decoded UTF8/hash/rows/owned close before strict write-call reduction. T604 GREEN protection requires fewer actual input writes from gzip-only16K-character buffering after the accepted default1967==1967 causal RED; unchanged flush and full-data prerequisites remain mandatory.",
+  "excludes": "No timing threshold, speedup/total-allocation guarantee or positive admission, fabricated/rebased events, new diagnostic schema/serializer/cache/stack, game/native/world, plaintext/AutoFlush/flush cadence change, raw deletion or budget increase.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/JointRecordsWriterBufferTests.cs",
     "BookOfEternityClient.IntegrationTests/JointBundleDiagnosticOutput.cs"

@@ -117,12 +117,14 @@ internal sealed partial class JointBundleDiagnosticOutput : ITestOutputHelper, I
         }
     }
 
-    /// <summary>Constructs the same owning records writer for actual output and real-file input-call controls.</summary>
+    /// <summary>Constructs the owning records writer with gzip-only buffering and unchanged plaintext defaults.</summary>
     /// <param name="destination">The already selected plain or compressed destination, owned until writer disposal.</param>
     /// <param name="gzipRecords">Whether the existing caller explicitly flushes compressed records.</param>
-    /// <returns>The UTF-8 writer with the accepted default buffer and plaintext automatic flushing.</returns>
+    /// <returns>The UTF-8 writer requesting 16K characters for gzip, or the default plaintext buffer with automatic flushing.</returns>
     internal static StreamWriter CreateRecordsWriter(Stream destination, bool gzipRecords)
-        => new(destination, new UTF8Encoding(false)) { AutoFlush = !gzipRecords };
+        => gzipRecords
+            ? new StreamWriter(destination, new UTF8Encoding(false), bufferSize: 16 * 1024) { AutoFlush = false }
+            : new StreamWriter(destination, new UTF8Encoding(false)) { AutoFlush = true };
 
     /// <summary>
     /// Gets the fresh nonce shared with the expected ordinary fixture namespace.

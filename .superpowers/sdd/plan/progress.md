@@ -1,3 +1,19 @@
+# T604 gzip16Ki SOURCE WIP frozen — uncompiled/unmeasured
+
+Only the existing factory's gzip branch now requests16*1024characters,AutoFlushfalse;
+plain branch retains the exact two-argument constructor/true. Actual constructor wiring,
+string dispatch, source codec/clocks/consumer/explicit flushes/closing/failure ledger
+remain unchanged. The causal fixture88ab472c and Serialization codec9c84814e are byte-
+exact to RED. No new source callback/schema/cache/pool or data filtering exists.
+
+Three paths changed: factory plus only new-owner catalog/CI wording for currentGREEN.
+Selectors/budgets/memberships/all old owner objects are unchanged; finite inverse
+recovers all three frozenRED inputs. Static9IDs/29methods/42cases remain UNDISCOVERED.
+Independent SOURCE/fresh affected Integration/current33/52/generated metadata/catalog/
+PlanOnly/PREP precede GREEN42 and the unchanged65536-event same-work cost control.
+Write reduction alone cannot establish speedup/headroom. Allocation/totalmemory/LOH
+benefit UNRUN and not promised. No positive/legacy/cold admission; all raw retained.
+
 # T604 prerequisite-complete causal RED ACCEPT — one gzip buffer SOURCE change next
 
 Independent outcome accepts actual257864ec3/compiledd986: target assertion line142,
