@@ -71,7 +71,7 @@ public sealed partial class LifecyclePassiveTimingDiagnosticsTests
             writer.Write("\"second рана\"}\n"); writer.Flush();
             Assert.Equal(2, ReadRows(path).Length);
             writer.Write("malformed-complete-row\n"); writer.Flush();
-            Assert.Throws<JsonException>(() => ReadRows(path));
+            Assert.ThrowsAny<JsonException>(() => ReadRows(path));
         }
         finally { Directory.Delete(root, recursive: true); }
     }

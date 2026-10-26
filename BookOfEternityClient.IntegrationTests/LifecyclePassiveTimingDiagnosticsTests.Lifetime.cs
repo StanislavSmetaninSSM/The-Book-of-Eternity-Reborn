@@ -220,7 +220,8 @@ public sealed partial class LifecyclePassiveTimingDiagnosticsTests
         {
             // Only the cheap control cleans its own deliberate replacement AFTER
             // the refused receipt; the adapter never retries or requalifies it.
-            if (replacement == "file") File.Delete(root); else Directory.Delete(root);
+            if (replacement == "file" || (replacement == "broken-link" && !OperatingSystem.IsWindows())) File.Delete(root);
+            else Directory.Delete(root, recursive: false);
         }
     }
 
@@ -263,7 +264,7 @@ public sealed partial class LifecyclePassiveTimingDiagnosticsTests
             writer.Write("\"second\"}\n");
             Assert.Equal(2, ReadRows(path).Length);
             writer.Write("malformed-complete-row\n");
-            Assert.Throws<JsonException>(() => ReadRows(path));
+            Assert.ThrowsAny<JsonException>(() => ReadRows(path));
         }
         finally { Directory.Delete(root, recursive: true); }
     }

@@ -1,3 +1,35 @@
+# T600 first cheap run complete — fixture corrections and no-member boundary WIP
+
+Actual attempt actual-t600-cheap-1 at 4764574f completed 35/37 cases across 4/6
+descriptors in 54.1198528s: 32 PASS, 3 FAIL, 2 UNRUN. No timeout; both process cleanup
+flags passed. Root verified all four TRX, 33 actual artifacts, 48 runtime Git/PDB
+source bindings, 93 loaded assembly pins and absence of active capture processes.
+The e88 Integration triple is retained externally as evidence only, never runtime input.
+
+Three failures are test defects: two exact Assert.Throws<JsonException> checks reject
+the actual derived JsonReaderException from completed malformed rows; the parser
+correctly refused them. The third is test-owned Directory.Delete on a dangling Linux
+directory symlink after all Link/Retained/Closing=false refusal assertions passed.
+The two frozen test files use typed ThrowsAny<JsonException> and non-following
+File.Delete only for that non-Windows owned link; adapter/parser/oracles and budgets
+are unchanged. Static diff/inverse checks pass. Fresh review/build/runtime pending.
+The original failed control link b5903e5d remains; root did not delete it or any raw.
+
+Independent outcome review agrees: this is NOT GREEN. The 17 PASS from three full
+unchanged categories are retention candidates; lifetime must rerun and cost/plain
+visibility have not run. Any additional shared-sink delta needs separate impact review.
+
+A further concrete storage boundary was found before the next build: an actual
+zero-byte controlled-failure gzip artifact reports GzipFooterClosed=true although
+independent decoding has no complete member. It remains DiagnosticComplete=false
+due to its failure ledger. Source inspection shows the normal empty-window path can
+also pass 0=0 accounting and decoded EOF without a member; that normal path is UNRUN.
+Independent review confirms a source-contract hole under DFRDIAG8. A minimal same-sink
+no-member refusal plus honest footer state and typed zero-event control are required;
+no dummy row/event/footer or plain-default behavior change. The grouped block remains
+WIP until that boundary, targeted review and fresh preparation are complete. Positive
+and dependent live/cold gates remain blocked; no budget increase or raw deletion.
+
 # T600 cheap PREP ACCEPT — bounded runtime released
 
 Independent Astra/high PREP ACCEPT at checkpoint 9dc76b94 confirms actual 33 artifact
