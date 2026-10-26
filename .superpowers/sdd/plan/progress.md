@@ -1,3 +1,18 @@
+# T608 counter scaffold DESIGN ACCEPT — implementation next
+
+Independent Astra High accepts the REPLAY-PROBE1..5 tests-first counter scaffold,
+not cache implementation/runtime. Reuse genuine component setup without the old
+reservation-aborting helper tail; prove cold existing semantic eligibility, then eight
+actual prepared validations and their full projection/byte/owner prerequisites. Add
+one fixed source-only named scope, preserve the original expression/dispatch/order and
+complete the genuine owner before the sole desired count failure. Keep thread-static
+context synchronous. The API does not perform final-history checks; do not claim them.
+Root saved/reverified a3657ed657970b3e5b50ac86240bb87c1df8d3f1 after access recovery.
+Bounded source development is released under #1536; coherent SOURCE, fresh affected
+builds/current dependencies/PDB, exact discovery and PREP remain before any runtime.
+Full richer immutable-projection/key/lifetime design follows only accepted causal RED.
+No optimization, permission/guard change or new positive allowance is released now.
+
 # T608 bounded replay audit saved — tests-first cause proof next
 
 Execution access was rechecked after the 17:12 UTC disconnect notification: actual

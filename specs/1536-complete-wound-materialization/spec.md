@@ -1,3 +1,25 @@
+# T608 tests-first expected-replay counter amendment — #1536
+
+REPLAY-PROBE1: instrument only the original actual expected-source invocation in
+PreparedReplayAgrees with one fixed existing passive named timing scope, settled
+immediately before comparison. Preserve dispatch, cloning, evaluation order, exceptions
+and original default/off behavior. No cache or output/authority contract changes.
+REPLAY-PROBE2: one genuine existing component fixture and newly owned eligible
+SourceDataOperation must prove cold preparation support in an isolated warmup segment;
+keep its real reservation alive. Do not reuse a helper tail that aborts it.
+REPLAY-PROBE3: isolate eight successful real ValidatePreparedResult calls, independent
+input/plan exports, full five-scalar and ordered batch-pair equality, unchanged canonical
+bytes/input/owner and the fresh checks that this API actually performs. It does not
+establish final-history validation. Thread-static timing context ends before any await.
+REPLAY-PROBE4: complete the actual owner's success fence and preserve fixture cleanup;
+only final expected one/actual eight named SOURCE executions after all prerequisites
+is causal RED. Setup/compile/eligibility/early assertion/timeout/lost result is not RED.
+REPLAY-PROBE5: independent DESIGN accepts scaffold source development only. One explicit
+exclusive two-minute singleton owner, frozen SOURCE review, fresh affected bindings,
+exact catalog/PlanOnly/PREP and actual outcome precede any later projection-cache design.
+No broader cache eligibility/lifetime, changed guards/limits, diagnostic quotas, full
+positive retry or dependent legacy/cold release is implied. No GM-authored surface changes.
+
 # T607 selected sealed observation/lifetime amendment — #1536 / 2026-10-26
 
 DFR-OBS1: the owner selected the narrow observation/lifetime route after T606;
