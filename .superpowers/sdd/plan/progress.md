@@ -1,3 +1,21 @@
+# T603 independent DESIGN ACCEPT — bounded source implementation next
+
+Independent Astra/high DESIGN ACCEPT for 119b5ecfd confirms one typed passive payload
+and generated immutable metadata inside the existing serializer. Required oracle
+compares the complete string/UTF8 against the prior format using real sealed events.
+Legacy anonymous/object serialization, common WriteLine(string), original clocks,
+validation and failure ordering must remain exact. No object boxing, new cache/buffer
+framework or hidden warmup relocation. First-call metadata/JIT costs stay visible.
+
+The seven proposed affected categories (six transport controls plus the one cheap
+crash5 named-output contract) are sufficient, with exact ownership/discovery for new
+codec oracle cases. Full original fields and lossless gzip/closing proofs remain.
+Allocation/throughput benefit is UNRUN until the same real65536-event workload and
+recorded segments demonstrate it. Positive remains HOLD; no Game/native/GM change,
+record quota, time-budget increase, new diagnostic stack or old raw deletion.
+Source implementation may now proceed under tracked T603; save coherent WIP before
+long review/build, then independent SOURCE/fresh affected preparation/cheap outcome.
+
 # T603 narrow design candidate — no implementation or runtime yet
 
 Read-only inspection finds a new anonymous reference payload erased to object on each
