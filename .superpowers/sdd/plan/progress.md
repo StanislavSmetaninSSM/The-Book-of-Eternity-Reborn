@@ -1,3 +1,22 @@
+# T603 coherent SOURCE ACCEPT — fresh Integration preparation next
+
+Independent Astra/high SOURCE ACCEPT for d98af5c8a48157980d42998e533b48bc462fa9af
+confirms the independent old-format oracle, no recorded boxing, exact legacy payload,
+source clocks/common WriteLine(string)/failure ordering and unchanged prior959 catalog
+objects. The bounded selection is eight categories / 28 methods / expected41 cases;
+these remain authored counts until discovery. All five hashes match published bytes.
+
+After the infrastructure capacity interruption, root checked clean local/remote d98,
+completed existing workers/review and no active build/test/game; no uncertain operation
+was repeated. Next is a fresh affected Integration XML/PDB build, current source and
+all33 artifact verification, discovery/PlanOnly and independent PREP. Other projects
+may retain only explicit unchanged-input/binary provenance. New codec correctness and
+allocation/throughput remain UNRUN, and no positive admission follows from SOURCE.
+
+The real3918 baseline and complete composite38 raw/binaries are preserved externally
+for honest same-work comparison. No new buffers/caches, hidden warmup, record quota,
+budget increase, Game/native/authority/GM change or raw deletion has been introduced.
+
 # T603 coherent source candidate frozen — uncompiled and unmeasured
 
 Three C# paths plus catalog/selection are frozen for independent SOURCE review.
