@@ -1,3 +1,20 @@
+# T596 independent PREP accepted — first DATA17 runtime released
+
+Independent Astra/high PREP review accepts published0456100b2 against sourcee00bba3:
+33 actual artifacts,11 PE/PDB pairs,41 exact current/Git/PDB source hashes and
+mixed d9aa/e00 lineage independently rechecked; catalog956/12538 and exact184/
+176 plans match. Native binary/source hashes independently match the retained
+Linux package. No source/build/selection/budget blocker remains for first17.
+
+Released operation is one separate fr063-debug-prefix-sources NoBuild run,
+17cases/current5-minute category budget. Subsequent cheap159, six separate actual
+lifecycle singletons and then Prepared0/Published2 remain conditional on accepted
+preceding full outcomes and cleanup; failure stops dependent runtime for diagnosis.
+No current DFR runtime PASS is claimed here. First attempt/raw will be stored at
+`/workspace/tboe-linux-evidence-20261025/dfr-prefix/actual-prefix-sources-1`.
+All raw and prior failures remain outside Git. This approval changes only compact
+checkpoint text, so accepted compiled C# sources/artifacts remain exact.
+
 # T596 fresh DFR preparation ready — independent PREP pending
 
 Accepted source e00bba399790ff2691ccb5e4c5e8d8c3b620a5af. All five initial d9aa
