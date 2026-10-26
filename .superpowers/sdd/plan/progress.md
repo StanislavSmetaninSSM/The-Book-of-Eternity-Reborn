@@ -1,3 +1,13 @@
+# T604 corrected RED scaffold SOURCE ACCEPT — fresh build next
+
+Independent addendum acceptsa7979410: both fixture findings are closed, exact frozen
+hashes/default factory/restored Serialization and one-case selection confirmed.
+Immediate scoped stream ownership with idempotent underlying disposal and compatible
+read-only live sharing preserve deterministic cleanup without new Facts. No16Ki change.
+Fresh affected Integration XML/PDB/build/source/generated-fast-path/catalog/PlanOnly
+and independent PREP follow; only the causal singleton can be considered for RED.
+Runtime/current52-source PDB proof and call-count result remain UNRUN. Positive HOLD.
+
 # T604 RED fixture review corrections frozen — uncompiled
 
 Independent SOURCE review found two fixture defects before build: deterministic
