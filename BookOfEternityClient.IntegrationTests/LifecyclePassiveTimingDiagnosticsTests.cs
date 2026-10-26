@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text.Json;
 using BookOfEternityClient.Core;
@@ -8,8 +9,10 @@ using Xunit.Abstractions;
 namespace BookOfEternityClient.Tests;
 
 /// <summary>Real-file interruption controls without a game, native process or authority.</summary>
-public sealed class LifecyclePassiveTimingDiagnosticsTests(ITestOutputHelper output)
+public sealed partial class LifecyclePassiveTimingDiagnosticsTests(ITestOutputHelper output)
 {
+    private readonly ITestOutputHelper _transportTestOutput = output;
+
     /// <summary>Requires an original begin on disk before its actual awaited body is released.</summary>
     [Fact]
     public async Task OriginalBeginIsPersistentWhileActualBodyRemainsBlocked()
@@ -106,8 +109,8 @@ public sealed class LifecyclePassiveTimingDiagnosticsTests(ITestOutputHelper out
         Assert.False(receipt.GetProperty("FixtureClosing").GetProperty("Retained").GetBoolean());
         Assert.Equal(Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(diagnostics.RecordsPath))),
             receipt.GetProperty("Sha256").GetString());
-        // Intended causal RED in the valid after-return baseline: the real
-        // source begin exists, but was not persistent during its blocked await.
+        // Preserved causal oracle: T599's after-return baseline failed here;
+        // the same original begin must now be persistent before release.
         Assert.True(visible, "Original begin was not persistent while the actual body remained blocked.");
 
         async Task BodyAsync()
@@ -120,9 +123,25 @@ public sealed class LifecyclePassiveTimingDiagnosticsTests(ITestOutputHelper out
         }
     }
 
-    private static JsonElement[] ReadRows(string path) => File.ReadLines(path).Select(line =>
+    // This is a live-prefix reader, not a gzip-completion validator. It
+    // retries only an unfinished final fragment; every completed malformed row fails.
+    private static JsonElement[] ReadRows(string path)
     {
-        using var document = JsonDocument.Parse(line);
-        return document.RootElement.Clone();
-    }).ToArray();
+        using var input = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
+        using Stream decoded = path.EndsWith(".gz", StringComparison.Ordinal)
+            ? new GZipStream(input, CompressionMode.Decompress) : input;
+        using var bytes = new MemoryStream();
+        decoded.CopyTo(bytes);
+        var raw = bytes.ToArray();
+        var rows = new List<JsonElement>();
+        var start = 0;
+        for (var index = 0; index < raw.Length; index++)
+        {
+            if (raw[index] != '\n') continue;
+            using var document = JsonDocument.Parse(raw.AsMemory(start, index - start));
+            rows.Add(document.RootElement.Clone());
+            start = index + 1;
+        }
+        return rows.ToArray();
+    }
 }

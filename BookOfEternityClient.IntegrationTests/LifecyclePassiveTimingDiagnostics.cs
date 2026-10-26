@@ -10,7 +10,7 @@ namespace BookOfEternityClient.Tests;
 /// One detached consumer persists original events until caller resources have closed.
 /// </summary>
 internal sealed class LifecyclePassiveTimingDiagnostics(string caseName, ITestOutputHelper original,
-    LifecycleTimingFaultForControl faultForControl = LifecycleTimingFaultForControl.None)
+    LifecycleTimingFaultForControl faultForControl = LifecycleTimingFaultForControl.None, bool gzipRecords = false)
     : ITestOutputHelper, IAsyncDisposable
 {
     private readonly object _gate = new();
@@ -46,7 +46,7 @@ internal sealed class LifecyclePassiveTimingDiagnostics(string caseName, ITestOu
             if (_output is not null || _completion is not null)
                 throw new InvalidOperationException("Lifecycle diagnostic binding is available only once before completion.");
             _output = new JointBundleDiagnosticOutput(caseName, original,
-                disposeWriterForControl: faultForControl == LifecycleTimingFaultForControl.ClosedWriter, actualFixtureRoot: actualRoot);
+                disposeWriterForControl: faultForControl == LifecycleTimingFaultForControl.ClosedWriter, actualFixtureRoot: actualRoot, gzipRecords: gzipRecords);
             _output.RequirePassiveTiming();
             foreach (var message in _beforeBinding) PersistMessage(message);
             _beforeBinding.Clear();
@@ -70,11 +70,19 @@ internal sealed class LifecyclePassiveTimingDiagnostics(string caseName, ITestOu
                 faultForControl == LifecycleTimingFaultForControl.DrainAfterDetach);
             // Arm runs in an actual functional flow. Do not copy its AsyncLocal
             // lease/Main/source context into the diagnostic-only consumer.
-            if (ExecutionContext.IsFlowSuppressed()) _consumer = StartConsumer(input);
-            else
+            try
             {
-                using var suppression = ExecutionContext.SuppressFlow();
-                _consumer = StartConsumer(input); // synchronous scheduling only
+                if (ExecutionContext.IsFlowSuppressed()) _consumer = StartConsumer(input);
+                else
+                {
+                    using var suppression = ExecutionContext.SuppressFlow();
+                    _consumer = StartConsumer(input); // synchronous scheduling only
+                }
+            }
+            catch (Exception error)
+            {
+                _output.Timings.RecordDiagnosticFailure(error, "lifecycle-consumer-start");
+                _consumer = Task.FromException<DrainReceipt>(error);
             }
         }
     }
@@ -231,9 +239,20 @@ internal sealed class LifecyclePassiveTimingDiagnostics(string caseName, ITestOu
                 // never fabricate/requeue events to repair its accounting.
                 throw new IOException("Injected lifecycle drain failure after actual event detach.");
             }
-            foreach (var row in batch) input.Capture.ObserveRecorded(row);
+            for (var index = 0; index < batch.Length; index++)
+            {
+                input.Capture.ObserveRecorded(batch[index]);
+                if ((index + 1) % 1024 == 0) input.Capture.Flush();
+            }
+            input.Capture.Flush();
         }
     }
+
+    /// <summary>Retains an actual resource-close failure without replacing the original body error.</summary>
+    /// <param name="error">The actual caught closing exception.</param>
+    /// <param name="stage">The resource whose existing close was attempted.</param>
+    internal void RecordClosingFailure(Exception error, string stage) =>
+        _output?.Timings.RecordDiagnosticFailure(error, stage);
 
     private JointBundleDiagnosticOutput RequireBound() =>
         _output ?? throw new InvalidOperationException("Bind the actual lifecycle fixture before timing or completion.");

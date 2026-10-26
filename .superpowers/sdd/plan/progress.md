@@ -1,3 +1,23 @@
+# T600 same-writer/consumer/live fragment WIP — not SOURCE-ready
+
+Seven C# files frozen coherently fromc42b9f20: same existing opt-in gzip sink with
+explicit encoding/stored identity and measured streaming decoded64/hash/row pass;
+existing capture Flush ledger; one data-only consumer with1024/endbatch cadence,
+startup-failure deferral and sole final drain; unchanged-positive-only actual-root
+orchestration; complete-prefix cheap reader and lifetime/context/primary/root/open-
+tail control sources. No Game/Core/Services/native/shared gameplay-helper changes.
+Source hashes are preserved externally; no raw staged. Original T599 causal RED and
+all earlier functional outcomes remain unchanged, not reinterpreted as new PASS.
+
+This is UNCOMPILED/UNRUN WIP. New controls are not yet fully catalog-owned; gzip
+live/footer1..8/corruption/default identity and fresh32768scope managed-cost controls,
+selection, full static self-review and coherent independent SOURCE are pending.
+Then fresh Integration/PDB/XML/catalog/PlanOnly/cheap GREEN/PREP/storage gates must
+precede one new5-minute positive. No expensive runtime is admitted by this checkpoint.
+Actual free workspace after source-only recovery-copy retirement was3.23GB; all
+unique external raw/provenance and user saves remain. New GitHub-only recovery
+will re-establish current recoverability after this WIP/source boundary.
+
 # T600 storage amendment reviewed — consumer source resumes
 
 Remote6dc914fd4978e12e2e60154ad6ae512ebc023cd6 is preserved; GitHub-only clean

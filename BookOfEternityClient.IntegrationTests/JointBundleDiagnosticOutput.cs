@@ -13,10 +13,13 @@ namespace BookOfEternityClient.Tests;
 /// Persists this component case's complete diagnostics independently of its owned game root.
 /// Direct writer completion does not establish process settlement or pipe EOF.
 /// </summary>
-internal sealed class JointBundleDiagnosticOutput : ITestOutputHelper, IDisposable
+internal sealed partial class JointBundleDiagnosticOutput : ITestOutputHelper, IDisposable
 {
     private readonly ITestOutputHelper _referenceOutput;
     private readonly StreamWriter _stream;
+    private readonly bool _gzip;
+    private DecodedRecords? _decoded;
+    private TimeSpan _closeElapsed, _decodeElapsed;
     private readonly TextWriter _writer;
     private readonly object _gate = new();
     private readonly List<Exception> _finishFailures = new();
@@ -53,9 +56,10 @@ internal sealed class JointBundleDiagnosticOutput : ITestOutputHelper, IDisposab
     /// The absolute existing lifecycle fixture root for diagnostic identity only,
     /// or <see langword="null"/> to preserve the component's ordinary namespace.
     /// </param>
+    /// <param name="gzipRecords">Whether this explicit lifecycle capture losslessly compresses the same JSONL writer.</param>
     internal JointBundleDiagnosticOutput(string caseName, ITestOutputHelper referenceOutput,
         bool disposeWriterForControl = false, string? repositoryRootForControl = null,
-        string? actualFixtureRoot = null)
+        string? actualFixtureRoot = null, bool gzipRecords = false)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(caseName);
         ArgumentNullException.ThrowIfNull(referenceOutput);
@@ -65,6 +69,7 @@ internal sealed class JointBundleDiagnosticOutput : ITestOutputHelper, IDisposab
         if (actualFixtureRoot is not null && (!Path.IsPathFullyQualified(actualFixtureRoot) || !Directory.Exists(actualFixtureRoot)))
             throw new InvalidDataException("An actual lifecycle diagnostic root must be absolute and already exist.");
         _referenceOutput = referenceOutput;
+        _gzip = gzipRecords;
         FixtureNonce = Guid.NewGuid().ToString("N");
         DiagnosticDirectory = Path.GetFullPath(Path.Combine(TestDiagnosticPaths.ResolveRoot(
             Environment.GetEnvironmentVariable("BOE_TEST_DIAGNOSTIC_ROOT"), repositoryRoot),
@@ -79,8 +84,10 @@ internal sealed class JointBundleDiagnosticOutput : ITestOutputHelper, IDisposab
         if (Directory.Exists(DiagnosticDirectory) || File.Exists(DiagnosticDirectory))
             throw new IOException("Diagnostic destination already exists.");
         Directory.CreateDirectory(DiagnosticDirectory);
-        _stream = new StreamWriter(new FileStream(RecordsPath, FileMode.CreateNew, FileAccess.Write, FileShare.Read),
-            new UTF8Encoding(false)) { AutoFlush = true };
+        Stream destination = new FileStream(RecordsPath, FileMode.CreateNew, FileAccess.Write, FileShare.Read);
+        if (_gzip) destination = new System.IO.Compression.GZipStream(destination,
+            System.IO.Compression.CompressionLevel.Fastest);
+        _stream = new StreamWriter(destination, new UTF8Encoding(false)) { AutoFlush = !_gzip };
         _writer = TextWriter.Synchronized(_stream);
         Timings = new JointCleanupProfileDiagnosticCapture(_writer);
         try
@@ -91,6 +98,7 @@ internal sealed class JointBundleDiagnosticOutput : ITestOutputHelper, IDisposab
                 Kind = "joint_bundle_component_initial_v1", Case = caseName, FixtureNonce,
                 PID = Environment.ProcessId, ProcessStartUtc = process.StartTime.ToUniversalTime(),
                 RegisteredUtc = DateTime.UtcNow, ExpectedOwnedRoot, RecordsPath, ReportPath,
+                RecordsEncoding = RecordsEncoding,
                 Assemblies = new[] { Pin(typeof(JointBundleDiagnosticOutput).Assembly), Pin(typeof(GameEngine).Assembly), Pin(typeof(TestRepoPaths).Assembly) }
             };
             using (var initialFile = new FileStream(InitialPath, FileMode.CreateNew, FileAccess.Write, FileShare.Read))
@@ -132,7 +140,7 @@ internal sealed class JointBundleDiagnosticOutput : ITestOutputHelper, IDisposab
     /// <summary>
     /// Gets the uncapped UTF-8 JSONL destination, readable while its writer remains open.
     /// </summary>
-    internal string RecordsPath => Path.Combine(DiagnosticDirectory, "records.jsonl");
+    internal string RecordsPath => Path.Combine(DiagnosticDirectory, _gzip ? "records.jsonl.gz" : "records.jsonl");
 
     /// <summary>
     /// Gets the completion report updated independently with the final fixture closing receipt.
@@ -212,6 +220,7 @@ internal sealed class JointBundleDiagnosticOutput : ITestOutputHelper, IDisposab
                     record = JsonSerializer.Serialize(new { Kind = "component_output", Message = message });
                 }
                 _writer.WriteLine(record);
+                if (_gzip) Timings.Flush(); // full original message before caller forwarding
                 _stored++;
             }
             catch (Exception error)
@@ -246,8 +255,14 @@ internal sealed class JointBundleDiagnosticOutput : ITestOutputHelper, IDisposab
             if (!_finished)
             {
                 _finished = true;
-                Attempt(() => _writer.Flush(), "writer-flush");
-                Attempt(() => { _writer.Dispose(); _writerClosed = true; }, "writer-close");
+                if (_gzip) Timings.Flush();
+                else Attempt(() => _writer.Flush(), "writer-flush");
+                Attempt(() =>
+                {
+                    var closeStarted = Stopwatch.GetTimestamp();
+                    try { _writer.Dispose(); _writerClosed = true; }
+                    finally { _closeElapsed += Stopwatch.GetElapsedTime(closeStarted); }
+                }, "writer-close");
                 if (_writerClosed)
                     Attempt(() =>
                     {
@@ -255,6 +270,18 @@ internal sealed class JointBundleDiagnosticOutput : ITestOutputHelper, IDisposab
                         _bytes = input.Length;
                         _sha256 = Convert.ToHexString(SHA256.HashData(input));
                     }, "records-hash");
+                if (_gzip && _writerClosed)
+                    Attempt(() =>
+                    {
+                        var decodeStarted = Stopwatch.GetTimestamp();
+                        try
+                        {
+                            _decoded = DecodeRecords(RecordsPath);
+                            if (_decoded.Rows != checked(_stored + Timings.Stored))
+                                throw new InvalidDataException("Decoded JSONL rows differ from actual message/event writes.");
+                        }
+                        finally { _decodeElapsed += Stopwatch.GetElapsedTime(decodeStarted); }
+                    }, "decoded-records-validation");
                 if (!Timings.Complete || _attempted != _stored || _passiveTimingRequired && !_passiveTimingComplete)
                     Attempt(() => throw new InvalidDataException("Not every diagnostic attempt was stored."), "capture-incomplete");
                 PersistReport();
@@ -262,6 +289,10 @@ internal sealed class JointBundleDiagnosticOutput : ITestOutputHelper, IDisposab
                 {
                     Kind = "JointBundleDiagnosticFinished", RecordsPath, ReportPath,
                     WriterClosed = _writerClosed, StoredBytes = _bytes, Sha256 = _sha256,
+                    RecordsEncoding = RecordsEncoding, GzipFooterClosed = _gzip && _writerClosed,
+                    DecodedBytes = _decoded?.Bytes, DecodedSha256 = _decoded?.Sha256, DecodedRows = _decoded?.Rows,
+                    DecodedValidationElapsed = _decodeElapsed, WriterCloseElapsed = _closeElapsed,
+                    FlushCosts = FlushCostData(),
                     DiagnosticComplete = IsComplete
                 })), "completion-reference");
                 // A compact-output failure must also remain in the durable report.
@@ -317,7 +348,7 @@ internal sealed class JointBundleDiagnosticOutput : ITestOutputHelper, IDisposab
     /// </summary>
     private bool IsComplete => _finished && _writerClosed && _sha256 is not null &&
         _attempted == _stored && Timings.Complete && _finishFailures.Count == 0 &&
-        (!_passiveTimingRequired || _passiveTimingComplete);
+        (!_passiveTimingRequired || _passiveTimingComplete) && (!_gzip || _decoded is not null);
 
     /// <summary>
     /// Pins an actually loaded assembly by identity, module and exact file bytes.
@@ -369,6 +400,10 @@ internal sealed class JointBundleDiagnosticOutput : ITestOutputHelper, IDisposab
                 {
                     Kind = "joint_bundle_component_report_v1", FixtureNonce, RecordsPath, InitialPath,
                     WriterClosed = _writerClosed, StoredBytes = _bytes, Sha256 = _sha256,
+                    RecordsEncoding = RecordsEncoding, GzipFooterClosed = _gzip && _writerClosed,
+                    DecodedBytes = _decoded?.Bytes, DecodedSha256 = _decoded?.Sha256, DecodedRows = _decoded?.Rows,
+                    DecodedValidationElapsed = _decodeElapsed, WriterCloseElapsed = _closeElapsed,
+                    FlushCosts = FlushCostData(),
                     DiagnosticComplete = IsComplete, OutputAttempted = _attempted, OutputStored = _stored,
                     OutputSerializationAndWriteElapsed = _writeElapsed,
                     TimingAttempted = Timings.Attempted, TimingStored = Timings.Stored,

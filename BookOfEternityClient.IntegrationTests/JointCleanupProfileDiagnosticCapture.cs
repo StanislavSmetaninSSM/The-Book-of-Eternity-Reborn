@@ -11,6 +11,9 @@ internal sealed class JointCleanupProfileDiagnosticCapture
     private readonly GameEngineTurnLifecycleTests.JointOperationTimings _timings;
     private readonly object _gate = new();
     private readonly TimeProvider _clock;
+    private readonly TextWriter _writer;
+    private long _flushAttempted, _flushStored;
+    private TimeSpan _flushElapsed;
     private readonly Dictionary<(string Name, string State), WriteCost> _writeCosts = new();
     private readonly List<(Exception Error, string Stage)> _failures = new();
     private long _attempted;
@@ -27,6 +30,7 @@ internal sealed class JointCleanupProfileDiagnosticCapture
     /// </param>
     internal JointCleanupProfileDiagnosticCapture(TextWriter writer, TimeProvider? timeProvider = null)
     {
+        _writer = writer;
         _timings = new(writer);
         _clock = timeProvider ?? TimeProvider.System;
     }
@@ -105,6 +109,25 @@ internal sealed class JointCleanupProfileDiagnosticCapture
     /// <param name="recorded">One detached source-clock event.</param>
     internal void ObserveRecorded(OperationTimingAccumulator.NamedEvent recorded)
         => ObserveCore(recorded.Name, recorded.State, TimeSpan.Zero, recorded);
+
+    /// <summary>Flushes the same synchronized writer without a callback or separate transport.</summary>
+    internal void Flush()
+    {
+        lock (_gate)
+        {
+            _flushAttempted++;
+            var started = System.Diagnostics.Stopwatch.GetTimestamp();
+            try { _writer.Flush(); _flushStored++; }
+            catch (Exception error) { _failures.Add((error, "timing-flush")); }
+            finally { _flushElapsed += System.Diagnostics.Stopwatch.GetElapsedTime(started); }
+        }
+    }
+
+    /// <summary>Copies actual explicit flush attempts, successful returns and inclusive elapsed cost.</summary>
+    internal (long Attempted, long Stored, TimeSpan Elapsed) GetFlushCosts()
+    {
+        lock (_gate) return (_flushAttempted, _flushStored, _flushElapsed);
+    }
 
     private void ObserveCore(string name, string boundary, TimeSpan elapsed,
         OperationTimingAccumulator.NamedEvent? recorded)

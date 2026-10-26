@@ -36,15 +36,43 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// <returns>Completion after held or original full completion assertions and owned cleanup.</returns>
     private async Task RunLiveNarrativeSourceControlAsync(bool changeSource, bool duringNarrative = false)
     {
-        using var probe = new JointNarrativeSourceProbe(changeSource, duringNarrative);
-        using var fixture = new GameEngineTurnLifecycleTests(_directGachaOutput, adoptedRoot: null,
-            passiveOperationTimings: probe.Timings);
-        await fixture.RunJointCompletionControlAsync(false, useLiveCaller: true, narrativeSourceProbe: probe);
+        if (changeSource)
+        {
+            using var ordinaryProbe = new JointNarrativeSourceProbe(changeSource, duringNarrative);
+            using var ordinaryFixture = new GameEngineTurnLifecycleTests(_directGachaOutput, adoptedRoot: null,
+                passiveOperationTimings: ordinaryProbe.Timings);
+            await ordinaryFixture.RunJointCompletionControlAsync(false, useLiveCaller: true, narrativeSourceProbe: ordinaryProbe);
+            return;
+        }
+        var diagnostics = new LifecyclePassiveTimingDiagnostics(
+            nameof(GuaranteedTreatment_UnchangedLiveNarrativeSourceCompletesJointOnce),
+            _directGachaOutput ?? throw new InvalidOperationException("Unchanged lifecycle diagnostics require the original test output."),
+            gzipRecords: true);
+        var probe = new JointNarrativeSourceProbe(changeSource, duringNarrative, diagnostics);
+        GameEngineTurnLifecycleTests? fixture = null;
+        Exception? primary = null;
+        try
+        {
+            fixture = new GameEngineTurnLifecycleTests(diagnostics, adoptedRoot: null,
+                passiveOperationTimings: probe.Timings);
+            diagnostics.BindFixtureRoot(fixture._rootPath);
+            await fixture.RunJointCompletionControlAsync(false, useLiveCaller: true, narrativeSourceProbe: probe);
+        }
+        catch (Exception error) { primary = error; }
+        finally
+        {
+            try { fixture?.Dispose(); }
+            catch (Exception error) { primary ??= error; diagnostics.RecordClosingFailure(error, "lifecycle-fixture-close"); }
+            try { probe.Dispose(); }
+            catch (Exception error) { primary ??= error; diagnostics.RecordClosingFailure(error, "lifecycle-probe-close"); }
+            await diagnostics.CompleteAsync(primary);
+        }
     }
 
     // Observations and one public-source intervention only. No fabricated N/I
     // result, original, Ready, lease, registry access or capability is introduced.
-    private sealed class JointNarrativeSourceProbe(bool changeSource, bool duringNarrative) : IDisposable
+    private sealed class JointNarrativeSourceProbe(bool changeSource, bool duringNarrative,
+        LifecyclePassiveTimingDiagnostics? diagnostics = null) : IDisposable
     {
         private const string SourcePath = "game_state/meta/achievements.json";
         private const string PreparationOperation = "GameEngine.CreateJointRepairPreparationAsync";
@@ -119,7 +147,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             Assert.False(_armed); _armed = true;
             Assert.False(_cut); Assert.Equal(0, _sourceReads);
-            _window = Timings.StartWindow();
+            _window = Timings.StartWindow(captureEvents: diagnostics is not null);
+            diagnostics?.Arm(_window);
         }
 
         /// <summary>Changes one real N dependency after N returned and Capturing completed, before preparation.</summary>
