@@ -1,3 +1,26 @@
+# T608 coherent SOURCE ACCEPT — fresh Linux preparation released
+
+Independent Astra High accepts the complete implementation at
+`8b491671669a3d0dc8097d035c5845c59d960d74` after targeted verification of both P2
+fixes. All twelve inventory hashes match; unchanged reviewed paths remain exact.
+The actual AcceptedEventsFingerprint is now part of the structural key while original
+fingerprint bytes stay unchanged. Overlap setup handles early worker settlement.
+No open SOURCE finding remains. This is source acceptance, not a compile/test PASS.
+
+Release only fresh preparation: clean complete GitHub source recovery, all-five owning
+managed builds, exact warning/XML/PE-PDB/current copy/source checks, then official
+catalog and focused eight-ID PlanOnly. Static expectation is 63 methods / 69 cases;
+actual discovery/PREP/runtime and key/admission/copy/net-cost qualification remain open.
+No old generated output exists as a runtime fallback; all fifteen historical payloads
+are evidence-only. Native source/package is unchanged, no new native runtime selected.
+
+Resource: exact43duplicate output retirement reclaimed319,467,520bytes; recent reserve
+approximately1.378GB. A full source-only recovery requires finite tree space; verify
+actual reserve and full tree, then retire only a separately reviewed disposable copy
+before builds if necessary. Do not remove raw or saves. Last full qualified restore1b
+remains historical until a new actual restore is recorded. Code/source owners stay
+frozen throughout preparation. No full positive/dependent/Windows admission follows.
+
 # T608 SOURCE findings corrected — targeted delta review pending
 
 The coherent independent SOURCE review found two bounded P2 issues before build:
