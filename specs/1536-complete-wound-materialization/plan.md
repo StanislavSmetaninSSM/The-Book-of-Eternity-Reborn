@@ -39,8 +39,9 @@ cold/full-DFR run, Optimize/codegen/build-mode change, capture reduction or limi
 increase is released. Next bounded work is read-only comparison of these already
 decoded named totals with the existing publication/read/cache call graph, followed
 by an independently reviewed concrete correction or an explicit unresolved-cost
-handoff; no further speculative serializer experiment. Independent final outcome
-review is pending at this checkpoint. No implementation/source/configuration change
+handoff; no further speculative serializer experiment. Independent Astra High final
+OUTCOME/MD review accepts this as incomplete TIMEOUT, not functional qualification.
+No implementation/source/configuration change
 has occurred since the accepted buffered serializer; fresh builds are unnecessary
 for these factual Markdown updates. Optimization assessment: no new cache or reused
 authority; actual repeated source work and freshness boundaries must be proved
@@ -53,6 +54,36 @@ The actual fixture remains
 `/tmp/boe-gameengine-turnlifecycle-f78c6b0712184cf6b5cdc3631fbc0f07`.
 No raw, saves, retained roots or unique evidence were removed. Windows remains
 deferred; earlier guardian intermittency and cross-OS DATA compatibility stay open.
+
+The bounded follow-up found a concrete reuse limitation, not a complete timeout
+cause. The publisher already opens the existing source DATA and recovery-validation
+owners. The fixture installs initial-read, returned-read and session-closing hooks;
+`SupportsRecoveryDataReuse` deliberately excludes all three. Initial/returned hooks
+are genuinely required before the capture cut for physical achievements bytes,
+actual N read/return equality and phase attribution. They remain nonnull afterwards.
+Recovery eligibility is fixed when its owner is constructed, before that cut.
+The session-closing wrapper is a no-op here but required by separate close negatives.
+Persisted Continuation Request/Fresh/Source 41/41/41 is consistent with this fallback;
+it does not prove that every request is redundant or explain the whole timeout.
+
+The existing `forwardingEnabled:false` opt-in refuses these required late callbacks;
+its sealed observer retains only path counts, without bytes, returns or phases.
+Therefore no safe one-line fixture fix is established. Keep all guards/assertions.
+Next decision has two bounded options: (1) a separately reviewed construction-time
+sealed observation/lifetime contract preserving these exact proofs and ordinary
+callback fallback, or (2) the previously assessed broader Integration-only Optimize
+experiment, with fresh affected build/selection and honest whole-assembly impact.
+Neither is implemented or released by this checkpoint; neither promises a speedup.
+Prefer proving the narrower observation boundary before choosing broad codegen.
+External evidence: `t606-preparation/unchanged-hook-necessity-assessment.md` and
+`independent-t606-timeout-outcome-review.md`. No further trace pass was performed.
+
+Checkpoint `6baa442266ff5615f90a05c643d58bbe857c2297` was restored directly from
+GitHub into a new clean shallow single-branch blob-filtered checkout: all 30,917
+tracked blobs (772,807,499 logical bytes) and 52 qualified PDB-bound sources matched,
+including ignored-file cleanliness. This is full current source recovery, not a
+build/runtime in that recovery. The following factual Markdown amendment keeps
+implementation inputs unchanged; its exact remote SHA/recovery is checked separately.
 
 # T606 one current diagnostic positive — preparation only after admission audit
 

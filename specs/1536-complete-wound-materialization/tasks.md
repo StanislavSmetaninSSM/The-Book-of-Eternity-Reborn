@@ -43,7 +43,7 @@ unchanged positive is incomplete TIMEOUT300s, not phase/functional acceptance.
   names/0hot Encode; historical OPEN16.4M is not current workload; overlap/long traces
   invalidate a universal linear veto. Integration-wide compiler option is deferred,
   not selected or implemented. Exact source/event-mix/cost audit retained externally.
-- [ ] T606 Prepare ONE diagnostically distinct existing positive on current accepted
+- [x] T606 Prepare ONE diagnostically distinct existing positive on current accepted
   GREEN stack: actual resource/ownership/reserve, current33/52/native/source bindings,
   exact original1-case/5-minute plan, canonical objective/outcome rules, remote recovery
   and independent PREP. No runtime until accepted; preserve every functional assertion
@@ -51,8 +51,16 @@ unchanged positive is incomplete TIMEOUT300s, not phase/functional acceptance.
   stop dependent gates on non-PASS, no automatic repeat. No Optimize/codegen change.
   Attempt consumed at `9d65a291`: category 300.1412079 seconds, exit 124, zero
   completed/zero TRX; full persisted-prefix parse completed, gzip incomplete.
-  Final independent interpretation and a bounded next decision remain pending;
-  no retry or dependent legacy/cold admission. See the current plan checkpoint.
+  Independent final OUTCOME/MD accepts the factual incomplete result, not full
+  qualification. The one allowance is consumed; no retry or dependent legacy/cold
+  admission. Full functional T602/T597 remain open. See the current plan checkpoint.
+- [ ] T607 Decide the bounded observation/reuse boundary before any new source or
+  runtime: required actual bytes/returns/phases callbacks exclude owner reuse;
+  existing sealed path counts cannot replace them. A narrower construction-time
+  sealed observation/lifetime design must retain all physical/P2/close-negative
+  proofs, default fallback and fresh guards; otherwise report the unresolved limit.
+  Broad Integration Optimize is an explicitly separate unimplemented alternative,
+  not an automatic next change. No new diagnostic stack or cache.
 
 # T179-Pd.3e observed debug-prefix consumer — #1536 / 2026-10-25
 

@@ -18,6 +18,15 @@ Full evidence stays outside checkout in `dfr-prefix/actual-dfr-diagnostic-positi
 and `dfr-prefix/t606-preparation/partial-trace-analysis.{json,md}` beneath the recorded
 Linux evidence root. Current qualification does not close DFR or wound materialization.
 
+Independent Astra High final OUTCOME/MD accepts this factual incomplete result.
+Read-only hook audit is also closed: real bytes/returns/phases callbacks are required
+before the cut and exclude reuse when the recovery owner is created. Existing sealed
+path counts cannot replace their assertions; no safe one-line fix exists. Production
+guards and all hooks/assertions stay unchanged. T607 records the bounded next decision:
+review a preserving observation/lifetime contract, or explicitly assess broader
+Integration Optimize. Neither source/configuration change nor runtime is released.
+Full clean GitHub recovery of `6baa4422` verified 30,917 blobs and 52 source pins.
+
 # T606 one diagnostic outcome TIMEOUT — dependents stopped, partial preserved
 
 actual-dfr-diagnostic-positive-1 at9d65a291afac3417ba972a4ec647375eec932ecb / compiled02a:
