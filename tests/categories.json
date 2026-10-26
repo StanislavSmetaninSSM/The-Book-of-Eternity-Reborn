@@ -2,6 +2,48 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "fr063-joint-prepared-expected-replay-source",
+      "responsibility": "T608 tests-first real expected-source counter: genuine minimal original/stage/reservation producers, one newly owned source DATA lifetime, cold supported preparation reuse prerequisite, then eight actual ValidatePreparedResult calls comparing all five expected scalars and ordered batch pairs. Complete the original source fence and normal fixture closing before strict expected one/current eight richer-source oracle.",
+      "excludes": "No cache or optimization, agreement/authority reuse, fake issuer/owner, game loop or generated world, final-history/handoff claims from the prepared-result API, altered family dispatch, timeout increase, diagnostic quotas or full-positive admission.",
+      "changeHints": [
+        "BookOfEternityClient/Services/WoundAcceptedTurnPlanCache.cs",
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.PreparedReplaySource.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-joint-semantic-data-controls",
+          "when": "A later implementation changes complete expected-stage DATA/key reuse or fresh semantic-admission behavior."
+        },
+        {
+          "id": "fr063-joint-bundle-copy-controls",
+          "when": "Retain full original copy admission, actual private-history and post-abort parity when later optimization affects them."
+        },
+        {
+          "id": "fr063-joint-bundle-candidate",
+          "when": "A later change affects common planning/candidate owner, hit/miss/fence or binding behavior."
+        },
+        {
+          "id": "fr063-wound-bundle-copy-contracts",
+          "when": "Pure stage detachment or cross-swapped-stage behavior changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.JointBundleComponentTests.JointPreparedReplay_RequiresOneExpectedSourceWithinEligibleOwner"
+          ]
+        }
+      ]
+    },
+    {
       "id": "core-lifecycle-sealed-read-observation",
       "responsibility": "T607 independent real-file sealed observation DATA: actual original/public/leased returns, bytes/absence/fault/cancel, distinct source and recovery eligibility, epoch/window/generation/cut/dispose, late public followup, actual N capture and fresh Recheck provenance with unrelated concurrent reads, unchanged cached-N refusal and actual DFR inside eligible owner.",
       "excludes": "No full world, authority/imported N token, reflection, fabricated events or timing-based phase assignment, new cache, hook-free GREEN policy, quotas, Windows qualification or performance claim.",

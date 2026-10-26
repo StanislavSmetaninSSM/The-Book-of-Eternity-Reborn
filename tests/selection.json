@@ -252,6 +252,13 @@
       "contracts": [
         "#1536 T607 RED scaffold / sealed observation and original-reader parity"
       ]
+    },
+    {
+      "category": "fr063-joint-prepared-expected-replay-source",
+      "reason": "T608 causal counter scaffold only: original richer expected-source dispatch is observed without cache changes; prerequisite-complete genuine eight-call workload must reach final one-versus-eight RED after actual source fence and fixture closing.",
+      "contracts": [
+        "#1536 T608-RED-DESIGN / actual richer prepared expected-source computation; fresh actual prepared/owner/source checks unchanged"
+      ]
     }
   ]
 }

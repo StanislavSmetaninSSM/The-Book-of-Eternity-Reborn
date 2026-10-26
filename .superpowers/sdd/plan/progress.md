@@ -1,3 +1,21 @@
+# T608 coherent counter scaffold frozen — independent SOURCE pending
+
+Four source/configuration paths are frozen: the saved two C# paths remain byte-exact,
+and one new catalog owner/CI entry is appended. Static inventory is one new Fact/case,
+`fr063-joint-prepared-expected-replay-source`, exclusive two-minute budget; 964 declared
+categories / 37 CI IDs. All prior 963 raw category objects and 36 CI entries are exact.
+Root verified all four hashes and independently removed only the four instrumentation
+lines to recover the entire original PlanCache file byte-for-byte. No source pins or
+historical inventories change; existing symbol anchors remain. Cache is not implemented.
+
+Genuine cold-owner/two-call eligibility, isolated eight actual validations, full result/
+input/byte/owner prerequisites, real success fence and normal fixture closing precede
+the desired final one-versus-eight count assertion. Thread-static context has no await.
+This remains authored static evidence only: C# UNCOMPILED, discovery/runtime UNRUN.
+Next coherent independent SOURCE; then fresh affected builds/XML/PDB/copies, exact
+catalog/singleton PlanOnly/recovery/PREP and one actual causal RED. Full projection-cache
+DESIGN and any full-positive retry remain held until prerequisite-complete evidence.
+
 # T608 source-only counter WIP preserved — metadata/review/build pending
 
 The accepted scaffold's two source paths are frozen: one fixed existing named scope
