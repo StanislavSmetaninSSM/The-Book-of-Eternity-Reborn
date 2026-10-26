@@ -1,3 +1,24 @@
+# T603 single recurrence PASS — combined cost gate remains HOLD
+
+The exactly-one managed-cost recurrence actual-t603-cost-1 at5a50c14cfbc8566c7e85b135fb517b42e65c99b1
+(same compiled172e) completed1/1 PASS,0skip/fail/timeout,1descriptor,61.3027065s runner
+wall including discovery. Both process cleanup flags. Strict root verification checked
+1TRX/1complete gzip,65536 original events/65537 rows, full EOF/CRC/stored+decoded hashes,
+source clocks/counters/actual owned-root absence and unchanged33 artifacts/51 sources.
+
+All preregistered samples remain retained. Baseline total/service/closing/decode were
+2.1202264/1.4977568/1.9338361/0.1943963s,94322768 allocated bytes. CandidateA:
+1.3477079/0.9092856/1.1982842/0.1338597s,84659912B. CandidateB:
+2.1479906/1.4782849/1.9362474/0.1988202s,84786584B. Both candidates reduce allocation,
+but elapsed dispersion prevents a robust throughput/headroom claim. No fastest-sample
+selection, extra recurrence, gameplay speedup or timeout-cause claim. Complete original
+cumulative warmed counters and close/flush/queue evidence are external for review.
+
+Independent combined outcome/cost and narrow existing-path SOURCE assessment are next.
+Positive remains HOLD under unchanged300seconds. No code/schema/stack/cache expansion,
+limit change, event loss, old raw removal or application retry occurred in this block.
+Raw: /workspace/tboe-linux-evidence-20261025/dfr-prefix/actual-t603-cost-1.
+
 # T603 one managed-cost recurrence PREP ACCEPT
 
 Independent PREP accepts exactly the existing1case/1minute exclusive managed-cost
