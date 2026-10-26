@@ -1,3 +1,26 @@
+# T608 bounded GREEN source frozen — UNCOMPILED/UNRUN
+
+Root verified six changed paths: four Integration partials and catalog/CI wording.
+Production, the three-mode cheap Fact and the existing Fixture constructor/defaults
+are byte-exact. The same ordinal helper now drains original events before count;
+all five caller samples remain on it. Only the explicit copy/candidate Facts select
+existing passive/gzip. No owner is created: actual copy boundary checks require null
+semantic ownership. Genuine refusal ranges now require nonempty actual prepared/
+effect validator begin/end evidence while retaining final-validation absence.
+
+Four finite whole-file inverses recover the accepted baseline; XML18 blocks parse.
+Catalog965/CI45 membership/selectors/requirements/budgets and cheap workload/cases
+are unchanged. No new methods/cases or production feature/permission/cache changes.
+All original copy/current-byte/history/constructor/abort/timing oracles remain.
+
+This is frozen source only, not GREEN or qualification. Independent coherent SOURCE
+must precede fresh affected owning compilation/current PE-PDB/source/copies/warnings,
+exact discovery/PlanOnly and cheap PREP. The same three cases must actually PASS with
+exact ranges, original fields/unique ScopeIds/clocks and complete strict storage/closing.
+Relevant original output/gzip/transport controls are selected at SOURCE/PREP. Original
+copy TIMEOUT/raw/root and all prior accepted evidence remain protected. No genuine
+retry, candidate/full-positive admission, new limits or diagnostics quota follows.
+
 # T608 range RED independently accepted — bounded GREEN source released
 
 Independent review accepts actual direct PASS/two passive final missing-range failures,

@@ -14,7 +14,8 @@ public sealed partial class JointBundleComponentTests
     [Fact]
     public async Task JointCandidate_MissAndHit_PreservePlanAndRotateFence()
     {
-        await using var fixture = new Fixture(_output, nameof(JointCandidate_MissAndHit_PreservePlanAndRotateFence));
+        await using var fixture = new Fixture(_output, nameof(JointCandidate_MissAndHit_PreservePlanAndRotateFence),
+            passiveTimingEvents: true, gzipRecords: true);
         await fixture.InitializeAsync();
         var bound = await fixture.PrepareBoundJointAsync();
         Assert.True(bound.Success, JsonSerializer.Serialize(bound.Issues));

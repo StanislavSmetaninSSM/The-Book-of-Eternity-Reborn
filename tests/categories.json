@@ -3,8 +3,8 @@
     "categories": [
     {
       "id": "core-joint-passive-copy-ranges",
-      "responsibility": "T608 tests-first constructor-only copy observation ranges through the actual Fixture and existing sealed recorder/output writer: direct/plain, passive/plain and passive/gzip; five original manual-boundary roles, real test-labelled scopes, exact pair/order/neighbors/repeated drains, full storage/hash and actual fixture closing before strict final ranges.",
-      "excludes": "No Initialize, GameEngine/world/native producer, lease/issuer/authority fabrication, new cache/diagnostic stack, production change, genuine copy/candidate mode opt-in, helper flush GREEN, timeout increase, event quota or full-positive admission. Old raw-count helper should pass direct mode and cause only final missing-range failures in passive modes after complete prerequisites.",
+      "responsibility": "T608 constructor-only copy observation range GREEN protection through the actual Fixture and existing sealed recorder/output writer: direct/plain, passive/plain and passive/gzip; drain-before-ordinal at five original manual-boundary roles, real test-labelled scopes, exact pair/order/neighbors/repeated drains, full storage/hash and actual fixture closing before strict final ranges.",
+      "excludes": "No Initialize, GameEngine/world/native producer, lease/issuer/authority fabrication, new cache/diagnostic stack, production change, timeout increase, event quota or full-positive admission. This unchanged three-case workload protects the independently accepted direct PASS/two passive final missing-range RED; genuine copy and candidate opt-ins are separately owned and gated.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.PassiveCopyRanges.cs",
         "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.PassiveTimings.cs",
@@ -14,7 +14,7 @@
       "related": [
         {
           "id": "core-passive-named-transport",
-          "when": "Retain real event/cache/physical metadata comparison and original clock/accounting contract when the later helper/caller GREEN is reviewed."
+          "when": "Retain the existing real event/cache/physical metadata comparison and original clock/accounting contract for helper/caller GREEN."
         },
         {
           "id": "fr063-joint-component-diagnostics",
@@ -30,7 +30,7 @@
         },
         {
           "id": "fr063-joint-bundle-candidate",
-          "when": "Later explicit selected passive/gzip opt-in must retain original candidate owner/miss/hit/fence contracts."
+          "when": "Explicit selected passive/gzip opt-in must retain original candidate owner/miss/hit/fence contracts."
         }
       ],
       "requirements": {
@@ -1979,7 +1979,7 @@
 },
 {
   "id": "fr063-joint-bundle-copy-controls",
-  "responsibility": "One genuinely issued joint fixture runs direct-copy, constructor-reference, copy-of-copy, mutation, invalid-stage, current physical-byte refusal/restoration, private-history restoration, normal-abort parity and immutable fingerprint work controls.",
+  "responsibility": "One genuinely issued joint fixture runs direct-copy, constructor-reference, copy-of-copy, mutation, invalid-stage, current physical-byte refusal/restoration, private-history restoration, normal-abort parity and immutable fingerprint work controls. Explicit existing passive timing and lossless gzip retain all original events/messages; actual copy-body null semantic ownership and nonempty real prepared/effect refusal ranges protect the original fresh guards.",
   "excludes": "No candidate miss/hit or Beginning-owner work, game loop/full world/source42/crash/Linux, fake authority, reflection or diagnostic quota. Bounded copy observations do not qualify T383 or original workload speed.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.Copy.cs",
@@ -2036,7 +2036,7 @@
 },
 {
   "id": "fr063-joint-bundle-candidate",
-  "responsibility": "One genuinely issued small joint fixture: actual candidate miss and hit, complete nested timings/counters, retained plan, unchanged canonical bytes, foreign-input refusal and stale-fence controls.",
+  "responsibility": "One genuinely issued small joint fixture: actual candidate miss and hit, complete nested timings/counters, retained plan, unchanged canonical bytes, foreign-input refusal and stale-fence controls. Explicit existing passive timing and lossless gzip preserve full original capture; copy subcontrols retain actual null-owner boundaries without imposing that assertion on candidate-owned phases.",
   "excludes": "No game loop/full world/full Stage42/source42 package/crash five/Linux; no fake authority/reflection/diagnostic quotas. This is diagnostic qualification, not a production optimization.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.Candidate.cs",

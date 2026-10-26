@@ -17,10 +17,12 @@ public sealed partial class JointBundleComponentTests
     [Fact]
     public async Task JointCopy_RetainsAdmissionDetachmentAndRefusalContracts()
     {
-        await using var fixture = new Fixture(_output, nameof(JointCopy_RetainsAdmissionDetachmentAndRefusalContracts));
+        await using var fixture = new Fixture(_output, nameof(JointCopy_RetainsAdmissionDetachmentAndRefusalContracts),
+            passiveTimingEvents: true, gzipRecords: true);
         await fixture.InitializeAsync();
         var bound = await fixture.PrepareBoundJointAsync(reuseStableData: true);
         Assert.True(bound.Success, JsonSerializer.Serialize(bound.Issues));
+        fixture.AssertNoCopySemanticOwner("AfterCommonSetup");
         var directCopy = fixture.AssertDirectJointCopyRetainsAdmissionWithoutFinalReduction();
         await fixture.AssertJointCurrentBytesRefusedAndRestoredAsync();
         fixture.AssertJointCopyContracts(bound.Input!, bound.Authority!);
@@ -40,6 +42,7 @@ public sealed partial class JointBundleComponentTests
         internal (int Start, int End) AssertDirectJointCopyRetainsAdmissionWithoutFinalReduction()
         {
             var bundle = _jointBundle ?? throw new InvalidOperationException("A genuine joint binding is required.");
+            AssertNoCopySemanticOwner("DirectCopy.Before");
             var offset = ResetCandidateCapture("DirectJointCopy");
             AcceptedMechanicsWoundStageBundle copy;
             using (Files.EnterOperationTimingContext())
@@ -56,6 +59,7 @@ public sealed partial class JointBundleComponentTests
             Assert.NotSame(bundle, copy);
             Assert.Equal(bundle.BundleFingerprint, copy.BundleFingerprint);
             Assert.Equal(bundle.WoundFinalPlanFingerprint, copy.WoundFinalPlanFingerprint);
+            AssertNoCopySemanticOwner("DirectCopy.After");
             return (offset, end);
         }
 
@@ -75,6 +79,7 @@ public sealed partial class JointBundleComponentTests
             AcceptedMechanicsInput input, WoundAcceptedTurnPlanner.MortalJointRepairCommonAuthority authority)
         {
             var bundle = _jointBundle ?? throw new InvalidOperationException("A genuine joint binding is required.");
+            AssertNoCopySemanticOwner("CopyContracts.Before");
             using var context = Files.EnterOperationTimingContext();
             var expected = ReadBundleView(bundle);
             var offset = ResetCandidateCapture("InitialConstructorReference");
@@ -176,6 +181,17 @@ public sealed partial class JointBundleComponentTests
                     BundleView = JsonSerializer.Deserialize<JsonElement>(expected)
                 }));
             }
+            AssertNoCopySemanticOwner("CopyContracts.After");
+        }
+
+        /// <summary>Checks the actual caller-side copy boundary without installing or extending a source owner.</summary>
+        /// <param name="boundary">The literal copy boundary recorded after the actual null-owner assertion.</param>
+        internal void AssertNoCopySemanticOwner(string boundary)
+        {
+            var owner = Files.GetCurrentSemanticDataOperation();
+            Assert.Null(owner);
+            _output.WriteLine(JsonSerializer.Serialize(new { Kind = "JointCopySemanticOwner", Boundary = boundary,
+                SemanticOwnerPresent = owner is not null }));
         }
 
         /// <summary>

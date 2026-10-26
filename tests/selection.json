@@ -290,14 +290,14 @@
     },
     {
       "category": "fr063-joint-bundle-copy-controls",
-      "reason": "Actual constructor/copy private-history damage, independent exports, cross-swapped stage and post-abort admission remain fresh outside the cached expected projection.",
+      "reason": "Actual constructor/copy private-history damage, independent exports, cross-swapped stage and post-abort admission remain fresh outside the cached expected projection. Selected passive timing/existing gzip retain full original diagnostics, actual null semantic copy ownership and nonempty real prepared/effect refusal evidence; original two-minute budget and all physical/history/abort assertions remain.",
       "contracts": [
         "#1536 T608-REUSE / REPLAY-REUSE1..6; immutable expected DATA, complete key, fresh actual admission and original fallback"
       ]
     },
     {
       "category": "fr063-joint-bundle-candidate",
-      "reason": "Actual joint candidate miss/hit, source owner and rotating physical fence must remain unchanged under shared replay DATA.",
+      "reason": "Actual joint candidate miss/hit, source owner and rotating physical fence must remain unchanged under shared replay DATA. Only this selected Fact opts into existing passive timing/gzip; copy range drains preserve complete real validator evidence and candidate-owned phases remain unchanged. Runtime remains gated after complete copy outcome.",
       "contracts": [
         "#1536 T608-REUSE / REPLAY-REUSE1..6; immutable expected DATA, complete key, fresh actual admission and original fallback"
       ]
@@ -311,9 +311,9 @@
     },
     {
       "category": "core-joint-passive-copy-ranges",
-      "reason": "T608-COPY-RANGE-RED only: ctor-only three-mode real sealed event/storage range proof uses the same five original sample roles with old no-flush semantics; causal final range oracle follows full recorder/output/hash/root closing. No genuine mode change or production edit.",
+      "reason": "T608 COPY range GREEN protection after accepted direct PASS/two passive final missing-range RED: same ctor-only three-mode workload and all five manual sample roles now require original queue transfer before each ordinal; strict final ranges still follow complete recorder/output/hash/root closing. No production edit or genuine qualification claim.",
       "contracts": [
-        "#1536 T608-COPY-RANGE-RED / COPYOBS2–5; original ordinals/events/defaults/lifetime and complete diagnostics"
+        "#1536 T608-COPY / COPYOBS2–5; accepted range RED and drain-before-ordinal GREEN, original events/defaults/lifetime and complete diagnostics"
       ]
     }
   ]

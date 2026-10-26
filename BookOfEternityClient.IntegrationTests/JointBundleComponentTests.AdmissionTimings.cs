@@ -98,7 +98,7 @@ public sealed partial class JointBundleComponentTests
         }
 
         /// <summary>
-        /// Requires an already recorded failed supplied-stage guard to stop before final validation.
+        /// Requires nonempty actual supplied-stage validator evidence and refusal before final validation.
         /// </summary>
         /// <param name="phase">
         /// The prepared or effect refusal label associated with this recorded constructor call.
@@ -109,11 +109,23 @@ public sealed partial class JointBundleComponentTests
         private void AssertNoFinalValidationInRecordedRange(string phase, (int Start, int End) range)
         {
             var rows = ReadAdmissionTimingRange(range);
+            Assert.NotEmpty(rows);
+            var requiredValidator = phase switch
+            {
+                "Prepared" => "WoundPlanCache.ValidatePreparedResult",
+                "Effect" => "WoundEffect.AcceptEffectResult",
+                _ => throw new ArgumentOutOfRangeException(nameof(phase), phase, "Unknown supplied-stage refusal.")
+            };
+            var validatorBegins = rows.Count(row => row.Name == requiredValidator && row.Boundary == "begin");
+            var validatorEnds = rows.Count(row => row.Name == requiredValidator && row.Boundary == "end");
+            Assert.True(validatorBegins > 0, "The refusal range must contain its actual validator entry.");
+            Assert.True(validatorEnds > 0, "The refusal range must contain its actual validator completion boundary.");
             Assert.DoesNotContain(rows, row => row.Name == "WoundPlanCache.ValidateFinalResult");
             _output.WriteLine(JsonSerializer.Serialize(new
             {
                 Kind = "JointAdmissionRefusalTiming", Phase = phase, range.Start, range.End,
-                Events = rows.Length, FinalValidationAbsent = true
+                Events = rows.Length, RequiredValidator = requiredValidator, ValidatorBegins = validatorBegins,
+                ValidatorEnds = validatorEnds, FinalValidationAbsent = true
             }));
         }
 

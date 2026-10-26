@@ -10,9 +10,13 @@ public sealed partial class JointBundleComponentTests
         private readonly OperationTimingAccumulator? _passiveTimings;
         private readonly OperationTimingAccumulator.Window? _passiveWindow;
 
-        /// <summary>Captures the retained observation ordinal using the original raw-count boundary semantics.</summary>
-        /// <returns>The current transferred row count; this tests-first baseline does not drain pending passive events.</returns>
-        internal int CaptureObservationOrdinal() => _observations.Count;
+        /// <summary>Transfers every pending original passive event before sampling its retained observation ordinal.</summary>
+        /// <returns>The current complete transferred row count; default callback mode retains its original raw count.</returns>
+        internal int CaptureObservationOrdinal()
+        {
+            FlushPassiveTimings();
+            return _observations.Count;
+        }
 
         /// <summary>
         /// Transfers original scalar events only after a functional call has returned; no writer is called by recording.
