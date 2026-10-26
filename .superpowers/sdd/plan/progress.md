@@ -1,3 +1,16 @@
+# T604 causal singleton PREP ACCEPT — one RED attempt released
+
+Independent PREP accepts freshd986 build/current33 artifacts/52sources/restored fast
+handler, VALID961/12555 catalog and exact1method/1case/1minute PlanOnly, with qualified
+clean GitHub recoveryfb40 (30917blobs/52pins). Official NoBuild singleton only. The
+external runner's old cosmetic51 label now accurately says52; its hash checks already
+covered every52 entry. No source/build/selection/budget change follows.
+
+Only actual-t604-writer-red-1 is released. Expected final strict writes-reduction
+failure must occur after all genuine source/queue/full-data/six visibility/closedgzip/
+owned-disposal prerequisites; anything earlier, skipped, lost or timed out is invalid
+causal evidence. Runtime remains UNRUN at this checkpoint. No16Ki/positive/legacy/cold.
+
 # T604 RED fresh build/bindings/catalog/PlanOnly verified — PREP pending
 
 Fresh Integration atd9869825c0b2d4e21d0220bc9b97c6e66b257eda completedexit0 in7:22.43,
