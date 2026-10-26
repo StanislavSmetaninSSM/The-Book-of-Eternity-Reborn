@@ -121,6 +121,40 @@ GM знает всю принятую основу из приватного к�
 
 ## 2. Меню воспоминаний и игровые награды
 
+### Проверка опоры для «Расколотой маски», 2026-10-26
+
+Авторское предложение о стартовой реликвии/бонусах/открытии через первый
+Guardian q4 записано в spec, точные числа и активность ещё не выбраны.
+Read-only аудит GPT-6.1 Sol High и проверка ключевых участков parent установили:
+
+- Canonical Soul Relics — `game_state/meta/soul_state.json`, коллекции
+  `soulRelics.equipped/stored`; `SoulRelicEquipmentService.ReadContextCoreAsync`
+  читает их. `InventoryEquipmentService` читает отдельный mortal inventory;
+  нельзя считать обещание видимости маски в инвентаре выполненным одной записью
+  в soul_state, нужна согласованная пользовательская проекция.
+- `GameEngine.TryCommitSoulRealmTransitionStateAsync` в
+  `Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs:107,166` сохраняет
+  soulRelics при MortalDeathToChaosSea/IncarnationToMortalWorld. Это готовая
+  опора переноса реликвий, не решение автора о жизненном цикле именно маски.
+- `Configuration/GameSettings.cs:233` объявляет `intelligence` и `persuasion`.
+  `CharacteristicsService.CollectSoulRelicBonuses` (`:403`) читает целочисленные
+  `effects.characteristicBonuses` только у equipped-реликвий без привязки к ID
+  смертного мира. Простое stored-владение сейчас такого бонуса не даёт.
+- `GuardianTradeService.GetSellableRelicsAsync` (`:250`) перечисляет stored
+  реликвии, `SellCoreAsync` (`:492`) удаляет выбранную без отдельного запрета
+  продажи предмета. Нужны правила и для предложения, и для принятия продажи.
+  Исключение relicId/questLinks в `NpcTradeService:233` и
+  `MortalItemLocalActionPolicy:38` не защищает от продажи Хранителю.
+- `GameEngine.InitializeChaosSea` в `Core/GameEngine/GameEngine.MainMenu.cs:1052`
+  создаёт пустые relic arrays (`:1101`) и уже вызывает client-owned reward grant
+  (`:1120`) до публикации bootstrap. Это точка для будущего стартового предмета;
+  выдача маски в проверенных runtime-путях ещё не существует.
+
+Пути классов здесь относительны `BookOfEternityClient/`, без указанного каталога —
+к `Services/`. Это факты чтения исходников, tests/runtime UNRUN. Эффективная
+Serena-конфигурация csharp/typescript/python подтверждена, C# symbols доступны;
+конфигурация не менялась. Новая система реликвий или численные бонусы не вводились.
+
 ### Игровой путь и меню
 
 Отдельная команда `/воспоминания` открывает каталог доступных сцен обоих источников.
