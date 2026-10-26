@@ -255,9 +255,58 @@
     },
     {
       "category": "fr063-joint-prepared-expected-replay-source",
-      "reason": "T608 causal counter scaffold only: original richer expected-source dispatch is observed without cache changes; prerequisite-complete genuine eight-call workload must reach final one-versus-eight RED after actual source fence and fixture closing.",
+      "reason": "T608 accepted real baseline warmup1+richer8 now requires strict shared warmup1+richer0 and PrepareCore1/0, 56 actual fresh seals, unchanged eight-call DATA/fence/closing prerequisites and separately scoped original fallback parity.",
       "contracts": [
         "#1536 T608-RED-DESIGN / actual richer prepared expected-source computation; fresh actual prepared/owner/source checks unchanged"
+      ]
+    },
+    {
+      "category": "core-treatment-semantic-data",
+      "reason": "T608 file-free shared projection source/key/copy/fallback/invalidation controls on real semantic DATA; includes twelve existing agreement/refusal cases and twenty newly authored cases.",
+      "contracts": [
+        "#1536 T608-REUSE / REPLAY-REUSE1..6; immutable expected DATA, complete key, fresh actual admission and original fallback"
+      ]
+    },
+    {
+      "category": "core-operation-structural-data",
+      "reason": "Existing structural version/change-restore/input interning and companion identity protocol used by the upgraded descriptor; no storage API change.",
+      "contracts": [
+        "#1536 T608-REUSE / REPLAY-REUSE1..6; immutable expected DATA, complete key, fresh actual admission and original fallback"
+      ]
+    },
+    {
+      "category": "core-operation-synchronous",
+      "reason": "Existing synchronous operation hit/fresh/failure/serial ownership semantics used directly by the new projection reader.",
+      "contracts": [
+        "#1536 T608-REUSE / REPLAY-REUSE1..6; immutable expected DATA, complete key, fresh actual admission and original fallback"
+      ]
+    },
+    {
+      "category": "fr063-joint-semantic-data-controls",
+      "reason": "Actual joint scalar/final consumers must share the upgraded full descriptor without losing fresh handoff, private-history or refusal checks.",
+      "contracts": [
+        "#1536 T608-REUSE / REPLAY-REUSE1..6; immutable expected DATA, complete key, fresh actual admission and original fallback"
+      ]
+    },
+    {
+      "category": "fr063-joint-bundle-copy-controls",
+      "reason": "Actual constructor/copy private-history damage, independent exports, cross-swapped stage and post-abort admission remain fresh outside the cached expected projection.",
+      "contracts": [
+        "#1536 T608-REUSE / REPLAY-REUSE1..6; immutable expected DATA, complete key, fresh actual admission and original fallback"
+      ]
+    },
+    {
+      "category": "fr063-joint-bundle-candidate",
+      "reason": "Actual joint candidate miss/hit, source owner and rotating physical fence must remain unchanged under shared replay DATA.",
+      "contracts": [
+        "#1536 T608-REUSE / REPLAY-REUSE1..6; immutable expected DATA, complete key, fresh actual admission and original fallback"
+      ]
+    },
+    {
+      "category": "fr063-wound-bundle-copy-contracts",
+      "reason": "Pure copied common-stage graph and cross-swapped-stage refusals protect unaffected ordinary and joint envelope contracts.",
+      "contracts": [
+        "#1536 T608-REUSE / REPLAY-REUSE1..6; immutable expected DATA, complete key, fresh actual admission and original fallback"
       ]
     }
   ]

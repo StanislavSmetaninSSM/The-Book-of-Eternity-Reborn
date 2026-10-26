@@ -678,6 +678,13 @@ internal static partial class WoundAcceptedTurnPlanner
     /// <returns>The unchanged original input agreement.</returns>
     private static bool JointPreparationInputAgrees(WoundAcceptedTurnInput input, object authority,
         out JointRepairContinuationAuthority joint) => TryReadJointRepair(authority, out joint) &&
+        JointPreparationInputDataAgrees(input, joint);
+
+    /// <summary>Compares only deterministic input DATA after the actual private gate has succeeded.</summary>
+    /// <param name="input">The same fixed caller input.</param>
+    /// <param name="joint">The freshly authenticated real companion.</param>
+    /// <returns>The original fingerprint equality, never a permission.</returns>
+    private static bool JointPreparationInputDataAgrees(WoundAcceptedTurnInput input, JointRepairContinuationAuthority joint) =>
         WoundAcceptedTurnFingerprints.ComputeInput(input) == WoundAcceptedTurnFingerprints.ComputeInput(joint.AcquisitionInput);
 
     /// <summary>Preserves the original append's private baseline/history checks and value order.</summary>
@@ -691,10 +698,10 @@ internal static partial class WoundAcceptedTurnPlanner
         before = joint.Outcome.Before;
         transition = joint.Outcome.TransitionId;
         var history = WoundHistoryState.Parse(joint.AcquisitionInput.PreTurnHistory.ToJsonString(), WoundHistoryState.HistoryPath);
-        var beforeId = before.WoundId;
+        var selectedBefore = before;
         var transitionId = transition;
         var existing = WoundCarrierCatalog.Build(joint.AcquisitionInput.PreTurnCarriers).Occurrences
-            .Where(row => row.WoundId == beforeId).ToArray();
+            .Where(row => row.WoundId == selectedBefore.WoundId).ToArray();
         return history.IsValid && existing.Length == 1 &&
             WoundIdentityState.ComputeSemanticFingerprint(existing[0].Wound) == WoundIdentityState.ComputeSemanticFingerprint(before) &&
             !history.State!.Transitions.Any(row => row.TransitionId == transitionId);

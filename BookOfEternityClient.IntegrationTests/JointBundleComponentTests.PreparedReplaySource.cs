@@ -111,6 +111,8 @@ public sealed partial class JointBundleComponentTests
                     Assert.Equal(56, replayCounts.GetValueOrDefault("JointContinuation.ValidateSeal"));
                     Assert.Equal(0, replayCounts.GetValueOrDefault("JointPreparation.Replay"));
                     Assert.Equal(0, replayCounts.GetValueOrDefault("WoundPreparation.PrepareCore"));
+                    Assert.Equal(1, eligibilityCounts.GetValueOrDefault("JointPreparation.Replay") +
+                        replayCounts.GetValueOrDefault("WoundPlanCache.PreparedExpectedReplay.Source"));
                 } // thread-static timing context ends before any await
                 AssertPreparedReplayFallbackParity(bundle, continuation, source, operation);
                 Assert.Equal(expectedBundle, ReadBundleView(bundle));
@@ -127,6 +129,7 @@ public sealed partial class JointBundleComponentTests
                 var sources = replayCounts.GetValueOrDefault("WoundPlanCache.PreparedExpectedReplay.Source");
                 source.Dispose();
                 Assert.True(source.CaptureState().Closed);
+                await AssertPreparedReplayProtocolFailureAsync(continuation);
                 Output.WriteLine(JsonSerializer.Serialize(new
                 {
                     Kind = "PreparedExpectedReplaySources", original.SessionId, original.RequestId,
@@ -198,6 +201,53 @@ public sealed partial class JointBundleComponentTests
                 Output.WriteLine(JsonSerializer.Serialize(new { Kind = "PreparedExpectedReplayFallbackParity", Counts = counts,
                     AcceptedMismatch = true, OriginalRefusalIssues = refused.Issues, SuspendedOriginalSource = true }));
             }
+        }
+
+        /// <summary>Requires a real operation-flow failure at the genuine private seal to remain the original failure.</summary>
+        /// <param name="continuation">The same actual private companion after the positive source owner has closed.</param>
+        /// <returns>Completion after releasing/joining the real blocked DATA request and disposing its negative owner.</returns>
+        private async Task AssertPreparedReplayProtocolFailureAsync(object continuation)
+        {
+            using var negativeOwner = Files.BeginSourceDataOperationIfNeeded();
+            Assert.NotNull(negativeOwner);
+            var operation = Assert.IsType<ValidationOperation>(Files.GetCurrentSemanticDataOperation());
+            var computation = new OperationComputation<int>("T608.ProtocolFlowControl", 1, value => value);
+            using var release = new ManualResetEventSlim();
+            var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var work = Task.Run(() => operation.GetOrCompute(computation, new object(), [], () =>
+            {
+                entered.SetResult(); release.Wait(); return 0; // DATA only; never an issuer, lease or fabricated timing event
+            }));
+            try
+            {
+                Assert.Same(entered.Task, await Task.WhenAny(entered.Task, work));
+                await entered.Task;
+                using (Files.EnterOperationTimingContext())
+                {
+                    var offset = ResetCandidateCapture("PreparedExpectedReplayProtocolFailure");
+                    var original = Record.Exception(() => WoundAcceptedTurnPlanner.GetJointRepairContinuationFingerprint(continuation));
+                    var protocol = Assert.IsType<InvalidOperationException>(original);
+                    Assert.Equal("Structural dependencies require the operation's active serial flow.", protocol.Message);
+                    var current = Record.Exception(() => WoundAcceptedTurnPlanner.ReadJointExpectedPreparationProjection(_jointBundle!.Input, continuation));
+                    Assert.NotNull(current);
+                    Assert.Equal(protocol.GetType(), current.GetType());
+                    Assert.Equal(protocol.Message, current.Message);
+                    var counts = CompleteCandidateCapture("PreparedExpectedReplayProtocolFailure", offset);
+                    Assert.Equal(0, counts.GetValueOrDefault("WoundPlanCache.PreparedExpectedReplay.Source"));
+                    Output.WriteLine(JsonSerializer.Serialize(new { Kind = "PreparedExpectedReplayProtocolFailure", Counts = counts,
+                        OriginalType = protocol.GetType().FullName, OriginalMessage = protocol.Message,
+                        ActualType = current.GetType().FullName, ActualMessage = current.Message, OriginalProtocolPreserved = true }));
+                }
+            }
+            finally
+            {
+                release.Set();
+                // Existing protocol lets the first dependency-free DATA computation settle uncached after overlap.
+                Assert.Equal(0, await work);
+            }
+            Assert.Equal(0, operation.CaptureState().Entries);
+            negativeOwner.Dispose();
+            Assert.True(negativeOwner.CaptureState().Closed);
         }
 
         /// <summary>Reads exactly the complete five-scalar and ordered batch-pair comparison contract of PreparedReplayAgrees.</summary>

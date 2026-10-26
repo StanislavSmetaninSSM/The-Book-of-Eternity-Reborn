@@ -8,6 +8,9 @@ internal static partial class WoundAcceptedTurnPlanner
     /// <param name="input">The actual input, detached once for capture, admission and source.</param>
     /// <param name="authority">The same genuinely issued private joint continuation.</param>
     /// <returns>The full expected vector or original source refusal; no actual-plan verdict is retained.</returns>
+    /// <remarks>The optimized same-input contour follows the caller's successful actual prepared-authority and
+    /// input-authority admissions. Direct structural-mismatch/unsupported callers retain the original source.
+    /// A future caller without those successful same-input prerequisites must use the original candidate.</remarks>
     internal static ExpectedPreparationReplayProjection? ReadJointExpectedPreparationProjection(
         WoundAcceptedTurnInput input, object authority)
     {
@@ -41,17 +44,23 @@ internal static partial class WoundAcceptedTurnPlanner
         }
         if (eligible)
         {
-            try
+            using var admissionTiming = FileSystemManager.MeasureCurrentOperation("JointPreparation.Replay.Admission");
+            // These gates can enter the semantic protocol. They must remain outside domain fallback catches.
+            eligible = TryReadJointRepair(authority, out var current);
+            if (eligible)
             {
-                using var admissionTiming = FileSystemManager.MeasureCurrentOperation("JointPreparation.Replay.Admission");
-                // Caller-specific d/e gates. Scalar hits retain only their original outer admissions.
-                eligible = JointPreparationInputAgrees(fixedInput, authority, out _) &&
-                    WoundAcceptedTurnPlannerCore.ValidateInput(fixedInput).Issues.Count == 0 &&
-                    TryReadJointRepair(authority, out var current) && JointPreparationBaselineAgrees(current, out _, out _);
+                try
+                {
+                    eligible = JointPreparationInputDataAgrees(fixedInput, current) &&
+                        WoundAcceptedTurnPlannerCore.ValidateInput(fixedInput).Issues.Count == 0;
+                }
+                catch (Exception error) when (IsReplayCaptureFailure(error)) { eligible = false; }
             }
-            catch (Exception error) when (IsReplayCaptureFailure(error))
+            if (eligible) eligible = TryReadJointRepair(authority, out current);
+            if (eligible)
             {
-                eligible = false; // moved preflight never supplies a newly prioritized refusal
+                try { eligible = JointPreparationBaselineAgrees(current, out _, out _); }
+                catch (Exception error) when (IsReplayCaptureFailure(error)) { eligible = false; }
             }
         }
         if (!eligible)

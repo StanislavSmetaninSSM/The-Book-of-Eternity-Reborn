@@ -1,3 +1,38 @@
+# T608 complete source candidate frozen — coherent SOURCE pending
+
+Root verified the final twelve-path inventory: ten C# and two static catalog/selection
+JSON files. Source includes one shared immutable projection, complete input key,
+caller-specific fresh admissions and original-source fallback, explicit protocol catch
+boundary, tests-first file-free controls and the genuine strict source/guard/parity
+case. All code remains UNCOMPILED, discovery/build/runtime UNRUN. New protocol control
+is authored, not an executed RED. The accepted earlier 1+8 measurement remains intact.
+
+Static inventory: focused eight IDs, 62 methods / 68 expected cases; catalog 964 with
+only two owner descriptions changed, selectors/budgets unchanged; cumulative feature CI
+44 is not the runtime selection. Ten finite inverse splices restore four old files;
+five complete pure/protocol files are unchanged. XML 108 blocks parse statically.
+Independent coherent SOURCE must verify final behavior/key/lifetime/fresh boundaries,
+original fallback/exception order, protocol worker cleanup, exact proposed 1+0/Core1+0/
+56-seal map and selection sufficiency before fresh preparation. Key/admission/copy/net
+cost remains unmeasured; no whole-case equal-work or whole-game speedup is claimed.
+
+Infrastructure loss briefly prevented process creation for WIP2 publication. Root
+checked actual restored access, ten exact hashes/no owners and unchanged remote before
+one retry; WIP2 was saved as 9602b024. No denied policy action or unknown mutation remains.
+Separately, exact independent manifest + immediate identity/hash/evidence/no-owner
+checks authorized removal of ONLY 43 duplicate old generated DLL/PDB/XML files.
+Action at 19:39:52 UTC removed individual files, reclaimed 319,467,520 bytes and measured
+1,380,593,664 bytes free. All fifteen unique old qualified payloads remain evidence-only
+outside checkout; no raw, assets/DATA, fixtures, saves, native package, ref/refint or
+project.assets.json removed. NoBuild is unavailable until fresh owning builds recreate
+and verify current outputs. Last actual qualified GitHub restore is 1b; copy absent.
+
+Next: SOURCE review, full clean GitHub source recovery under actual disk reserve,
+fresh affected all-five managed builds/warnings/XML/PE-PDB/source/copies, exact official
+discovery/PlanOnly/PREP and scoped cheap/genuine outcomes. No retained old binaries as
+runtime input; no full positive, dependent legacy/cold or Windows release. Full raw,
+review/analysis output and exact patch remain external in t608-counter-scaffold.
+
 # T608 shared projection WIP2 preserved — coherent C#, metadata pending
 
 Root rechecked the frozen ten-path source inventory. Richer actual-caller route and
