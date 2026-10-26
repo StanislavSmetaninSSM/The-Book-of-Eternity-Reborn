@@ -210,5 +210,77 @@ public sealed class DebugPrefixSourceTests(ITestOutputHelper output) : IDisposab
         Assert.True(lease.IsActive);
     }
 
+    [Fact]
+    public async Task SameTupleManifestMutationAfterCaptureCannotJoinRetainedData()
+    {
+        await _fixture.SeedValidAsync(); await _fixture.PrepareOriginalAsync();
+        var manifest = JsonNode.Parse(await _fixture.Files.ReadFileAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath))!.AsObject();
+        using var scope = _fixture.Validator.UsePrevalidatedPendingTurnSnapshotScope(manifest);
+        await using var lease = await _fixture.Files.AcquireCanonicalWriteLeaseAsync();
+        using var pass = await _fixture.Validator.EvaluateObservedDebugPrefixAsync(lease);
+        var anchoredData = _fixture.Validator.CaptureAcceptedTurnReasoningOriginalData(manifest);
+        manifest["playerAction"] = "Changed after the actual source invocation, same tuple.";
+        Assert.NotEqual(anchoredData, _fixture.Validator.CaptureAcceptedTurnReasoningOriginalData(manifest));
+        Assert.Throws<InvalidDataException>(() => pass.RequireOriginalContext(manifest));
+    }
+
+    [Fact]
+    public async Task ClosedBorrowedLeaseAndForeignValidatorRefuse()
+    {
+        await _fixture.SeedValidAsync(); await _fixture.PrepareOriginalAsync();
+        await using var lease = await _fixture.Files.AcquireCanonicalWriteLeaseAsync();
+        using var pass = await _fixture.Validator.EvaluateObservedDebugPrefixAsync(lease);
+        var foreign = _fixture.CreateValidator(new FileSystemManagerHooks());
+        Assert.Throws<InvalidDataException>(() => pass.RequireIssuer(foreign));
+        await lease.DisposeAsync();
+        await Assert.ThrowsAsync<InvalidOperationException>(() => pass.RequireCurrentAsync(_fixture.Files, lease));
+        Assert.False(lease.IsActive);
+    }
+
+    [Fact]
+    public async Task GenuineUncoveredOptionalDebugPreservesNullableFreshnessWithoutInventingSignedAbsence()
+    {
+        await _fixture.SeedValidAsync();
+        var current = File.ReadAllBytes(_fixture.Physical(Debug));
+        File.Delete(_fixture.Physical(Debug));
+        var prepared = await new LiveTurnPreparationService(_fixture.Files).PrepareAsync(new LiveTurnPreparationOptions
+        {
+            SessionId = "dfr-uncovered-session", RequestId = "dfr-" + Guid.NewGuid().ToString("N"),
+            TurnNumber = 2, CurrentRealm = "Mortal World", PlayerAction = "Осмотреть пустую комнату.",
+            PreGeneratedDices1d20 = new[] { 14, 8, 17 }
+        });
+        var manifest = JsonNode.Parse(await _fixture.Files.ReadFileAsync(prepared.ManifestPath))!.AsObject();
+        Assert.Null(manifest["files"]?[Debug]);
+        Assert.DoesNotContain(Debug, PendingTurnSnapshotPathPresenceV1.LogicalPaths);
+        _fixture.WriteDebugRaw(current);
+        Assert.Null(await _fixture.Validator.ReadAcceptedTurnReasoningOriginalDebugAsync());
+        Assert.Empty(await _fixture.Validator.ValidateAcceptedTurnReasoningAsync());
+        await using var lease = await _fixture.Files.AcquireCanonicalWriteLeaseAsync();
+        using var pass = await _fixture.Validator.EvaluateObservedDebugPrefixAsync(lease);
+        Assert.Empty(pass.Issues);
+        Assert.Contains(pass.CaptureDiagnostic().Occurrences, row => row.Route == "original" && row.State == "Uncovered");
+        Assert.DoesNotContain(pass.CaptureDiagnostic().Occurrences, row => row.State == "ProvedAbsent");
+        pass.RequireOriginalContext(manifest);
+        await pass.RequireCurrentAsync(_fixture.Files, lease);
+    }
+
+    [Fact]
+    public async Task GenuineGenerationReplacementCannotReuseEarlierBorrowedLeaseData()
+    {
+        await _fixture.SeedValidAsync(); await _fixture.PrepareOriginalAsync();
+        await using var lease = await _fixture.Files.AcquireCanonicalWriteLeaseAsync();
+        using var pass = await _fixture.Validator.EvaluateObservedDebugPrefixAsync(lease);
+        await lease.DisposeAsync();
+        await using (var lifecycle = await _fixture.Files.AcquireSessionLifecycleLeaseAsync())
+        await using (var replacement = await _fixture.Files.AcquireSessionReplacementWriteLeaseAsync(lifecycle))
+        {
+            var before = _fixture.Files.ReadExistingSessionGeneration(replacement);
+            Assert.NotEqual(before, _fixture.Files.RotateSessionGeneration(replacement));
+        }
+        await using var next = await _fixture.Files.AcquireCanonicalWriteLeaseAsync();
+        var error = await Assert.ThrowsAsync<InvalidDataException>(() => pass.RequireCurrentAsync(_fixture.Files, next));
+        Assert.Contains("foreign_files_or_lease", error.Message);
+    }
+
     public void Dispose() => _fixture.Dispose();
 }

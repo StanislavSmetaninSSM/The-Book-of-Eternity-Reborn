@@ -2,6 +2,100 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-debug-prefix-legacy-live",
+  "responsibility": "One existing genuine current schema1 factory/live completion Fact: explicit authenticated non-I protocol remains UnavailableLegacyProtocol with zero DFR producer/source/timestamp work. Preserve original complete joint/marker/I/no-upgrade and inert outcome assertions.",
+  "excludes": "No duplicate legacy fixture/body, selected-I fallback, schema upgrade, fabricated historical prefix/S proof, legacy cold or new-ordinary method replay. Missing/changed checkpoint/owner/phase never selects this branch.",
+  "changeHints": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointReasoningPrefix.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLegacy.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-interface-legacy-current",
+      "when": "Only if separate changed legacy cold/new-ordinary contracts justify their remaining methods."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCompletesWithoutProtocolUpgrade"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-debug-prefix-sources",
+  "responsibility": "T594 actual shared prefix DATA under real borrowed leases and genuine preparer originals: public Full A→B→A issue-vector contrast, physical contradictions, source fault versus domain parse, nullable/uncovered originals, exact supplied-data join, copied buffers, expiry/foreign validator/files/lease/generation and one timestamp across fresh rechecks. No engine authority is manufactured.",
+  "excludes": "No fake original or Capturing owner, private reflection, full reasoning-family/S/B/M3/F1/T197, native/game fixture, arbitrary source callback or runtime qualification. Engine phase/private association and closed fence are separate genuine integration controls.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/DebugPrefixSourceTests.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnReasoningSource.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnReasoningPrefix.cs",
+    "BookOfEternityClient/Core/FileReadObservation.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-reasoning-prefix-source-fence",
+      "when": "Actual post-close owner/fence wiring needs a genuine engine source intervention."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.DebugPrefixSourceTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-reasoning-prefix-source-fence",
+  "responsibility": "T595/597 genuine Stage43/corrected valid prefix: actual captured source coordinate drives debug whitespace change only during the closed DFR recheck after observer and completed N check. Require exact DFR source refusal before preparation, no N-only false proof, exact full physical images/turn and owned cleanup.",
+  "excludes": "No assumed physical manifest, mutation of the opened auth/original leaf, invented owner/original/Ready, new production hook, prefix semantic-error substitute, cold/native crash, full Full/S or Windows qualification. Missing cut/setup is not causal evidence.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointReasoningPrefix.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointReasoningPrefix.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-live-n-source-unchanged",
+      "when": "The existing independent full positive proves one actual prefix capture, NeedsActorDependencies, two source fences and inert completion."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ReasoningSourceDriftAfterPostObserverNRefusesPreparation"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-reasoning-prefix-before-preparation",
   "responsibility": "T593 genuine Stage43/corrected Ready temporal causal baseline: valid timestamp and empty debug thoughts are authored before actual N. Prove completed N/I and actual Capturing before requiring zero common preparation; old product must reach preparation and late Full missing_gm_thoughts. Complete physical images, stable debug, turn and owned cleanup remain required.",
   "excludes": "No source-drift claim (N already observes debug), missing-API/compile/reflection RED, fabricated original/Ready/owner, new production callback, Full/S/B/M3/F1/T197 completion, cold/native crash, Windows or broad fixture replay. T594 source closure is a separate causal oracle.",
@@ -3864,7 +3958,7 @@
 },
 {
   "id": "fr063-joint-interface-legacy-current",
-  "responsibility": "Genuine existing CaptureAsync v1 installs the complete actual held graph with original-backed reconstruction; real engine child1 live/cold consumers; separate actual new Stage44 original covers exact prior marker and generic I ignores old cached DATA.",
+  "responsibility": "Two remaining genuine current controls: retained schema1 committed cold continuation and new ordinary original after joint completion. The existing schema1 live completion Fact is owned separately by fr063-joint-debug-prefix-legacy-live; original assertions and budgets remain.",
   "excludes": "No route downgrade flag, v2 mutation/private authority seeding, old save promise beyond explicit accepted v1/child1 operation contract, or crash qualification.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLegacy.cs",
@@ -3888,7 +3982,6 @@
     {
       "project": "integration",
       "tests": [
-        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCompletesWithoutProtocolUpgrade",
         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCommittedColdKeepsLegacyConsumer",
         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewOrdinaryOriginalUsesPriorMarkerSourceInsteadOfCachedData"
       ]

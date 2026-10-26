@@ -34,6 +34,11 @@ Current I/N implementation supersedes that document's historical missing-3b stat
   run its unchanged dependency tail. A valid prefix is only NeedsActorDependencies; full NI/reasoning/S/B/M3/F1/T197
   and durable N history remain open. Existing physically authenticated v3 resume
   does not gain invented historical prefix proof.
+- Scope is the actually selected I protocol: checkpoint schemaVersion2/current
+  I-v3 basis. Preserve the current authenticated schemaVersion1 producer/consumer
+  dispatch as UnavailableLegacyProtocol with no DFR proof or new history/Full/S
+  claim. Protocol selection and checkpoint fingerprint are actual owner inputs;
+  missing/changed selected-I evidence cannot silently choose legacy.
 - No timeout increase, complete-suite run, Windows claim, G01/G02 workaround, raw
   publication/deletion or historical artifact removal. External evidence remains
   under `/workspace/tboe-linux-evidence-20261025` in a distinct DFR block directory.
@@ -69,6 +74,9 @@ Current I/N implementation supersedes that document's historical missing-3b stat
   are preserved. Do not substitute strict current-original reads for nullable policy.
 - Extend `GameEngine.MortalJointPublicationAttempt.cs` with
   `RequireCapturingFrame(files, lease)` and one privately retained prefix result.
+  Retain an immutable full converted-Manifest DATA anchor at actual attempt start
+  and compare before/after awaits and at the closed fence; tuple/reference alone
+  is not a content-stability proof. This is input DATA, not authority.
   Existing RequireActualOwner alone does not prove Capturing. Prefix evaluation/
   reentry is legal only while Capturing. CloseCapture ends that consumption; retain
   detached source DATA solely for the existing post-observer fresh sealing fence,
@@ -117,7 +125,10 @@ Current I/N implementation supersedes that document's historical missing-3b stat
 - [ ] T597 Run genuine invalid-prefix and unchanged completion separately after
   cheap gates. A DFR-specific source intervention must prove the actual engine
   post-observer fence unless a cheap typed test reaches that genuine owner/fence; Inspect complete raw, exact bytes/turn/effects,
-  named evaluation/recheck counts and owned cleanup before outcome claims.
+  named evaluation/recheck counts and owned cleanup before outcome claims. Add
+  one existing genuine retained-v1 live producer/consumer regression for the explicit
+  legacy dispatch; no new prefix evidence is granted there. Native current-v3 cold
+  controls are selected only if the final call graph changes their consumer.
 - [ ] T598 Independent outcome/recovery review and source-only remote checkpoint;
   then guardian/resident first-pass projection adapters, full reasoning sources/
   Actor Brain/six audits and remaining S→C→B/M3/F1/T197. No partial epic closure.

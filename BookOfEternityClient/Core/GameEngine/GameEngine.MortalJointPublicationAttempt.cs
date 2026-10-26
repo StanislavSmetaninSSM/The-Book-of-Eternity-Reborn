@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
 
@@ -41,11 +42,22 @@ public partial class GameEngine
             _generation = generation.Binding.Id
                 ?? throw new InvalidDataException("Joint attempt requires its existing physical generation.");
             _prefixGenerationBytes = generation.Bytes?.ToArray();
+            var prefixFrame = actualFrame as ValidatedPendingTurnSnapshotContext
+                ?? throw new InvalidDataException("debug_prefix_actual_frame_missing");
             _prefixMain = lease.MainAdmission;
             _prefixIteration = engine._mortalJointInterfaceValidationIteration;
             _prefixReady = engine._mortalJointInterfaceReady; _prefixStage = engine._hotOrdinaryOriginal;
-            _prefixCheckpoint = engine._mortalJointRepairCheckpoint!.ToJsonObject()["fingerprint"]!.GetValue<string>();
-            _prefixResume = engine.IsCurrentMortalJointNarrativeResume(engine._mortalJointRepairCheckpoint);
+            var prefixCheckpoint = engine._mortalJointRepairCheckpoint
+                ?? throw new InvalidDataException("debug_prefix_checkpoint_missing");
+            var prefixBinding = prefixCheckpoint.ToJsonObject();
+            _prefixCheckpoint = prefixBinding["fingerprint"]!.GetValue<string>();
+            _prefixProtocol = prefixBinding["schemaVersion"]!.GetValue<int>();
+            _prefixSelected = prefixCheckpoint.UsesInterfacePublication;
+            if (!_prefixSelected && _prefixProtocol != 1)
+                throw new InvalidDataException("debug_prefix_unknown_protocol");
+            _prefixResume = engine.IsCurrentMortalJointNarrativeResume(prefixCheckpoint);
+            _prefixManifestData = _prefixSelected ? engine._validator.CaptureAcceptedTurnReasoningOriginalData(prefixFrame.Manifest) : string.Empty;
+            _prefixAuthorityData = _prefixSelected ? JsonSerializer.Serialize(prefixFrame.Payload) : string.Empty;
             engine._mortalJointReasoningPrefixObservation = null;
             _binding = binding.DeepClone().AsObject(); _custody = custody.DeepClone().AsObject();
         }
@@ -97,6 +109,8 @@ public partial class GameEngine
             RequireIssuer(issuer); RequireActualOwner(_files, _lease);
             if (!_capturing || _phase != "Capturing") throw new InvalidOperationException("Joint capture cannot reopen.");
             _custody = custody.DeepClone().AsObject(); _capturing = false; _phase = "PreparationStarted";
+            if (_engine._mortalJointReasoningPrefixObservation is { } prefixObservation)
+                _engine._mortalJointReasoningPrefixObservation = prefixObservation with { Phase = _phase };
         }
         internal void RetainNarrativeContribution(object issuer, MortalJointNarrativeInvocation invocation)
         {
@@ -149,6 +163,8 @@ public partial class GameEngine
             RequireIssuer(issuer);
             ReleaseDebugPrefix();
             _expired = true; _capturing = false;
+            if (_engine._mortalJointReasoningPrefixObservation is { } prefixObservation)
+                _engine._mortalJointReasoningPrefixObservation = prefixObservation with { AttemptExpired = true };
             _hotOriginal = null; _hotEvidence = null;
             if ((_narrative ?? _narrativeCandidate) is { } narrative)
             {

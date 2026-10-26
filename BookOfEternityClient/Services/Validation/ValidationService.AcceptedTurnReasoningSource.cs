@@ -7,6 +7,14 @@ public partial class ValidationService
 {
     private static readonly object DebugPrefixIssuer = new();
 
+    /// <summary>Captures complete converted manifest DATA for comparison, never original or publication authority.</summary>
+    internal string CaptureAcceptedTurnReasoningOriginalData(object manifest)
+    {
+        var converted = ConvertToValidationPendingTurnSnapshotManifest(manifest)
+            ?? throw new InvalidDataException("debug_prefix_actual_original_missing");
+        return JsonSerializer.Serialize(converted, ManifestHashJsonOpts);
+    }
+
     /// <summary>Reads the fixed debug original through the ordinary nullable policy; the text is DATA only.</summary>
     internal Task<string?> ReadAcceptedTurnReasoningOriginalDebugAsync() =>
         ReadValidatedCurrentPreTurnTrackedFileCoreAsync("output/debug_logs.json", null, null);
@@ -55,7 +63,7 @@ public partial class ValidationService
             var manifest = ConvertToValidationPendingTurnSnapshotManifest(actualManifest)
                 ?? throw new InvalidDataException("debug_prefix_actual_original_missing");
             _source.JoinOriginalContext(manifest.SessionId, manifest.RequestId, manifest.ManifestPayloadHash,
-                manifest.TurnNumber, JsonSerializer.Serialize(manifest, ManifestHashJsonOpts));
+                manifest.TurnNumber, _validator.CaptureAcceptedTurnReasoningOriginalData(manifest));
         }
         internal Task RequireCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
         {

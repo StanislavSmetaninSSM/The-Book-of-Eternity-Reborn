@@ -213,6 +213,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                         throw new OperationCanceledException("joint applied-before-story test pause");
                     }
                     narrativeSourceProbe?.ObserveCheckpoint(checkpoint);
+                    reasoningPrefixProbe?.ObserveCheckpoint(checkpoint);
                     return Task.CompletedTask;
                 }
             };

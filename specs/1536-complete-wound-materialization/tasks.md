@@ -11,12 +11,14 @@ current I/N owners preserved. Windows deferred; full family/S remains open.
   and disposal/reentry controls before expensive integration.
 - [ ] T595 Actual still-Capturing prefix consumer before CloseCapture/preparation,
   retained same-attempt DATA/fresh fences; terminal diagnostics or NeedsActorDependencies,
-  never Full/S. Coherent SOURCE/optimization/selection review.
+  never Full/S. Full Manifest DATA anchor and explicit authenticated v1 legacy
+  preservation without prefix proof. Coherent SOURCE/optimization/selection review.
 - [ ] T596 Fresh affected XML/PDB builds, catalog/PlanOnly/PREP and selected cheap
   source/ordinary/N/read-pipeline regressions with exact counts and owned cleanup.
 - [ ] T597 Genuine invalid-prefix refusal, unchanged completion and DFR-specific
-  source-drift integration where required by the reviewed causal fixtures; no native
-  cold or original-five repetition absent a concrete changed contract.
+  source-drift integration required for actual DFR fence wiring; one genuine v1
+  dispatch regression. No native cold or original-five repetition absent a concrete
+  changed contract.
 - [ ] T598 Independent final outcome, compact checkpoint, commit/push/remote SHA
   and clean GitHub source recovery; continue remaining materialization dependencies.
 

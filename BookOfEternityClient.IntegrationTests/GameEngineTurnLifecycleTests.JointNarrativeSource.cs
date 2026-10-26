@@ -261,6 +261,14 @@ public sealed partial class GameEngineTurnLifecycleTests
             var currentSource = File.ReadAllBytes(_fixture!._fs.ResolvePath(SourcePath));
             Assert.Equal(_sourceRead, currentSource);
             Assert.Equal(_narrativeSourceRead, currentSource);
+            var prefix = Assert.IsType<MortalJointDebugPrefixObservation>(_runtime!.Engine.CaptureMortalJointReasoningPrefixObservation());
+            Assert.Equal("NeedsActorDependencies", prefix.Disposition);
+            Assert.Equal(1, prefix.Evaluations); Assert.Equal(2, prefix.SourceChecks);
+            Assert.Equal(1, prefix.TimestampCalls); Assert.Null(prefix.Fault);
+            Assert.False(prefix.HistoricalCurrentOnly);
+            Assert.True(prefix.DataDisposed); Assert.True(prefix.AttemptExpired);
+            Assert.Equal(1, Starts(_window!.Capture(), "ReasoningPrefix.Capture"));
+            _fixture.WritePhysicalInjuryDiagnostic("dfr_unchanged_actual_completion", new { Prefix = prefix, Operations = _window.Capture() });
             _fixture.WritePhysicalInjuryDiagnostic("live_n_unchanged_full_completion", new
             { _callbacks, _sourceReads, _sourceReturns, PreparationEntries, Operations = _window!.Capture(), Reads = _reads,
                 _narrativeSourceReads, _narrativeSourceReturns, _freshSourceReads,

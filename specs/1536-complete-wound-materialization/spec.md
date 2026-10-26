@@ -14,6 +14,12 @@ DFR-HOT4: causal temporal baseline and separate physical-read disagreement proof
 cheap negatives, actual consumer controls, optimization/source/selection review,
 fresh affected builds and remote source recovery are required. No new GM-authored
 schema or validation rule is introduced; existing debug contract is enforced earlier.
+DFR-HOT5: contribution applies to the actually selected I protocol (checkpoint
+schemaVersion2 / current I-v3 basis). The existing current producer's authenticated
+schemaVersion1 path retains its explicit legacy dispatch with
+UnavailableLegacyProtocol and no prefix proof. Missing/changed checkpoint or
+missing selected-I DATA never chooses that branch. Full semantic qualification of
+all publication routes remains future work; this is no legacy Full/S exemption.
 
 # Linux full passive timing amendment — #1536 /2026-10-25
 

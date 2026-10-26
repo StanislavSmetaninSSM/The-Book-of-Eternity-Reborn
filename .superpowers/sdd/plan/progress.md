@@ -1,3 +1,30 @@
+# T594–595 coherent SOURCE candidate ready — uncompiled WIP
+
+Complete frozen candidate includes26 source/catalog files plus canonical scope
+clarifications. Shared prefix, actual private Capturing producer/consumer, full
+Manifest/payload DATA anchors, closed source transport, honest scoped/supplied join,
+ordered Error refusal, post-observer/N refusal-only fence, current-v3 cold boundary
+and explicit genuine schema1 legacy dispatch are implemented. One legacy live
+regression reuses the existing genuine current producer without upgrading protocol
+or granting prefix evidence. Legacy semantic/full-route qualification remains open.
+
+Root verified static full inverse11 contextual splices and8 finite shared-prefix
+transformations through every unchanged historical hash; pure partials/inventories
+are exact. All41 original T593 assertions remain, new actual fence/positive/phase/
+disposal checks are authored. All39 proposed rolling rows/21paths match final source;
+other pins are preserved. Catalog has956 unique declared IDs and20 selected IDs,
+not a discovered/runtime result. Authored cheap rows are not execution counts.
+Root added async owned-disposal guards to exactly two manual-close tests and
+verified idempotent lease cleanup; final file hash inventory also matches them.
+
+Source reports, exact26-file hashes, null-route/source-chain/pin checks are external
+in `dfr-prefix/implementation`; no generated diagnostic dump is committed. Coherent
+independent SOURCE/optimization/selection review is next, including legacy guard,
+actual phase/fence sufficiency and conditional I-v3 cold impact. Builds, discovery,
+PlanOnly and runtime of the new source are all UNRUN; old artifacts are evidence
+only and cannot qualify this candidate. No new GM-authored surface/example, full
+NI/reasoning/S/B/M3/F1/T197, Windows or original-five qualification is claimed.
+
 # T594–595 engine/source continuation WIP — compile/runtime UNRUN
 
 Second coherent fragment after838ad2a1:7 C# paths. Actual private attempt now

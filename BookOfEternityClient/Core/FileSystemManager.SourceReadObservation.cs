@@ -14,7 +14,7 @@ public partial class FileSystemManager
         ReadObservedFileAsyncCore(writeLease, relativePath, (FileReadObservation?)observation);
 
     internal Task<byte[]?> ReadFileBytesObservedAsync(string relativePath, NarrativeReadObservation observation) =>
-        ReadObservedFileBytesObservedAsyncCore(relativePath, (FileReadObservation?)observation);
+        ReadObservedFileBytesObservedAsyncCore(relativePath, FileReadObservation.FromNarrative(observation));
 
     internal Task<byte[]?> ReadFileBytesAsync(
         CanonicalWriteLease writeLease,

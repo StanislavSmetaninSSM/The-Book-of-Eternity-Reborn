@@ -1,4 +1,3 @@
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Nodes;
@@ -25,22 +24,17 @@ public sealed class AcceptedTurnNarrativeInterfacePolicyBoundaryTests(ITestOutpu
         fixture.AssertSeedBytesUnchanged();
         output.WriteLine("REAL_ORDINARY_PREREQUISITES_COMPLETE owner=" + owner);
 
-        // Deliberate structural RED: all public-owner prerequisites precede the missing contract.
-        var prefix = typeof(ValidationService).GetMethod("EvaluateAccepted" + owner + "Prefix",
-            BindingFlags.Instance | BindingFlags.NonPublic);
-        Assert.NotNull(prefix);
-        var tail = typeof(ValidationService).GetMethod("EvaluateAccepted" + owner + "Tail",
-            BindingFlags.Instance | BindingFlags.NonPublic);
-        Assert.NotNull(tail);
+        var prefix = "EvaluateAccepted" + owner + "Prefix";
+        var tail = "EvaluateAccepted" + owner + "Tail";
         var source = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot,
             "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs"));
         var start = source.IndexOf("private async Task<List<ValidationIssue>> ValidateAcceptedTurn" + owner + "PayloadInternalAsync", StringComparison.Ordinal);
         Assert.True(start >= 0);
         var end = source.IndexOf("\n    private ", start + 1, StringComparison.Ordinal);
         var body = source[start..end];
-        var first = body.IndexOf(prefix!.Name + "(", StringComparison.Ordinal);
+        var first = body.IndexOf(prefix + "(", StringComparison.Ordinal);
         var timestamp = body.IndexOf("ValidateRequiredIsoTimestampField(", StringComparison.Ordinal);
-        var last = body.IndexOf(tail!.Name + "(", StringComparison.Ordinal);
+        var last = body.IndexOf(tail + "(", StringComparison.Ordinal);
         Assert.True(first >= 0 && first < timestamp && timestamp < last,
             "The actual ordinary owner must consume prefix, the existing ambient timestamp leaf, then tail.");
     }
@@ -56,6 +50,7 @@ public sealed class AcceptedTurnNarrativeInterfacePolicyBoundaryTests(ITestOutpu
         var source = File.ReadAllText(Path.Combine(root, inventory["sourcePath"]!.GetValue<string>()));
         // Reverse only a strict future 3e extraction to the accepted 3d A first;
         // the four original 3d adapters and original6a9 hash below stay unchanged.
+        source = DebugPrefixSourceInventory.ReverseIfPresent(source);
         source = NarrativePolicySourceInventory.ReverseIfPresent(source);
         source = ReasoningPolicySourceInventory.ReverseIfPresent(source);
         var partialPath = Path.Combine(root,

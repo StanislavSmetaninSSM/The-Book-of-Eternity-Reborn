@@ -2,24 +2,143 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "fr063-joint-reasoning-prefix-before-preparation",
-      "reason": "#1536 T593 tests-first temporal causal singleton. Actual corrected empty thoughts precede N; genuine N/I/Capturing and exact late missing_gm_thoughts must precede the expected PreparationStarted>0 versus required0 baseline failure. Fresh Integration build/catalog/PlanOnly and independent SOURCE/PREP are prerequisites; actual remains Root-only.",
+      "category": "fr063-debug-prefix-sources",
+      "reason": "New typed real-file DATA producer and actual public Full A→B→A contrast; all source/provenance/borrowed lease/copy/expiry negatives stay cheap.",
       "contracts": [
-        "#1536 T593 / DFR-HOT1, DFR-HOT3, DFR-HOT4"
+        "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
       ]
     },
     {
-      "category": "fr063-joint-live-n-source-unchanged",
-      "reason": "Independent existing genuine unchanged Stage43/corrected Ready full completion and inert repeat counterpart for T593. Existing valid debug prefix and one preparation are preserved; no duplicate full Fact or new DFR API/count assertion at the tests-only baseline. Actual runs separately under Root gates.",
+      "category": "fr063-reasoning-prefix-boundary",
+      "reason": "Ordinary Full now consumes the shared orchestration and preserves terminal versus parsed-scope-error tail continuation; no private reflection.",
       "contracts": [
-        "#1536 T593 / genuine unchanged positive contrast; DFR-HOT1/DFR-HOT4"
+        "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
+      ]
+    },
+    {
+      "category": "fr063-reasoning-prefix-source",
+      "reason": "New exact outer DFR inverse and shared-body proof precede unchanged N/prior-lookup/reasoning/ordinary hashes.",
+      "contracts": [
+        "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
       ]
     },
     {
       "category": "fr063-reasoning-prefix-regression",
-      "reason": "#1536 T594 pre-extraction ordinary Full baseline: exact13methods40cases for document/scope/read/catch/order/raw-original contracts. Current Game3cf and Unit8e C# trees are byte-unchanged and PDB-bound; no new build is needed. Three genuine-original theory cases may reveal the known static optional-parameter/reflection fixture mismatch; classify actual outcome, preserve failures, then replace with a typed fixed-debug DATA call during the coherent implementation. This category runs separately before source edits.",
+      "reason": "All40 actual ordinary cases are affected by shared orchestration; fixes the three observed reflection setup failures with typed original DATA while preserving all assertions.",
       "contracts": [
-        "#1536 T594 / DFR-HOT1, DFR-HOT2, ordinary Full regression baseline"
+        "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
+      ]
+    },
+    {
+      "category": "fr063-reasoning-prefix-existing",
+      "reason": "Two existing actual Full consumers retain direct-actor/scope behavior beyond the moved prefix.",
+      "contracts": [
+        "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
+      ]
+    },
+    {
+      "category": "fr063-ordinary-output-policy-boundary",
+      "reason": "N/ordinary public owners remain affected by shared original-lookup and physical transport adapters.",
+      "contracts": [
+        "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
+      ]
+    },
+    {
+      "category": "fr063-ordinary-output-policy-source",
+      "reason": "The second existing historical inverse Fact must traverse the new outer DFR inverse without changing frozen inventories.",
+      "contracts": [
+        "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
+      ]
+    },
+    {
+      "category": "fr063-ordinary-output-policy-regression",
+      "reason": "Existing ordered issues, original-null/catch/read/write semantics cover unchanged null/N routes through shared lookup adapters.",
+      "contracts": [
+        "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
+      ]
+    },
+    {
+      "category": "fr063-narrative-policy-pass-sources",
+      "reason": "The closed physical union and shared original plumbing must preserve actual N occurrences, fault latches, provenance and fresh checks.",
+      "contracts": [
+        "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
+      ]
+    },
+    {
+      "category": "portable-ordinary-readers",
+      "reason": "Both ordinary and protected physical reader families/null facades changed; preserve bytes/absence/opened identity/lease/cancellation/retry behavior.",
+      "contracts": [
+        "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
+      ]
+    },
+    {
+      "category": "fr063-reserved-validation-read-set",
+      "reason": "Shared dispatch must preserve cache DATA provenance, fresh suppression and reserved ownership/failure behavior.",
+      "contracts": [
+        "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
+      ]
+    },
+    {
+      "category": "c5-browser-admission-source-guards",
+      "reason": "Only two existing rolling World/Meta source-pin Facts: targeted baseline mismatches and new actual transitive sealed declarations; no broad World/Meta runtime.",
+      "contracts": [
+        "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
+      ]
+    },
+    {
+      "category": "fr063-joint-reasoning-prefix-before-preparation",
+      "reason": "Accepted temporal causal RED must turn GREEN with actual early prefix Error refusal and all original N/I/Capturing/physical assertions.",
+      "contracts": [
+        "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
+      ]
+    },
+    {
+      "category": "fr063-joint-reasoning-prefix-source-fence",
+      "reason": "Separate DFR-specific post-observer source intervention proves closed source fence after successful N recheck, not merely semantic prefix refusal.",
+      "contracts": [
+        "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
+      ]
+    },
+    {
+      "category": "fr063-joint-live-n-source-unchanged",
+      "reason": "Reuse existing independent full positive with actual typed prefix/capture/timestamp/fence/disposal assertions and original inert repeat.",
+      "contracts": [
+        "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
+      ]
+    },
+    {
+      "category": "fr063-joint-live-n-before-first-interface",
+      "reason": "Existing actual N before-FIRST-I refusal remains a direct consumer of the changed source transport and lookup.",
+      "contracts": [
+        "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
+      ]
+    },
+    {
+      "category": "fr063-joint-live-n-source-drift",
+      "reason": "Existing actual N after-Capturing source refusal remains intact with added DFR consumer; no N hold regression.",
+      "contracts": [
+        "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
+      ]
+    },
+    {
+      "category": "fr063-joint-live-n-prepared-resume",
+      "reason": "Conditional SOURCE/PREP review gate: new current-only prefix checks touch the authenticated v3 current resume path; preserve the one frozen I publication and HistoricalNUnavailable without claiming historical prefix.",
+      "contracts": [
+        "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
+      ]
+    },
+    {
+      "category": "fr063-joint-live-n-published-resume",
+      "reason": "Conditional SOURCE/PREP review gate: current-only prefix must not require fresh Stage/Ready memory, rewrite Published I or fabricate historical proof. Existing singleton only, no native original-five replay.",
+      "contracts": [
+        "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
+      ]
+    },
+    {
+      "category": "fr063-joint-debug-prefix-legacy-live",
+      "reason": "Explicit actual-checkpoint protocol snapshot preserves the supported genuine non-I schema1 dispatch. Existing live Fact plus typed UnavailableLegacyProtocol/eval0/check0/timestamp0 assertion; no duplicate fixture, no automatic old cold/new-ordinary replay.",
+      "contracts": [
+        "#1536 T594–597 / selected-I DFR scope and genuine legacy protocol preservation"
       ]
     }
   ]

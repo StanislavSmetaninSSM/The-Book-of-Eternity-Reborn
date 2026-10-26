@@ -1,4 +1,3 @@
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -23,28 +22,24 @@ public sealed class AcceptedTurnReasoningPolicyBoundaryTests(ITestOutputHelper o
         fixture.AssertSeedBytesUnchanged();
         output.WriteLine("REAL_PUBLIC_FULL_PREFIX_PREREQUISITES_COMPLETE");
 
-        // Only this missing structural seam is intended to fail on unchanged product.
-        var document = typeof(ValidationService).GetMethod("EvaluateAcceptedReasoningDocumentPrefix",
-            BindingFlags.Instance | BindingFlags.NonPublic);
-        Assert.NotNull(document);
-        var unknown = typeof(ValidationService).GetMethod("AppendAcceptedReasoningUnknownFields",
-            BindingFlags.Instance | BindingFlags.NonPublic);
-        var scope = typeof(ValidationService).GetMethod("EvaluateAcceptedReasoningScopePrefix",
-            BindingFlags.Instance | BindingFlags.NonPublic);
-        Assert.NotNull(unknown);
-        Assert.NotNull(scope);
-        var source = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot,
+        var root = TestRepoPaths.RepoRoot;
+        var helper = File.ReadAllText(Path.Combine(root,
+            "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnReasoningPrefix.cs"));
+        var prefixAt = helper.IndexOf("EvaluateAcceptedReasoningDocumentPrefix(", StringComparison.Ordinal);
+        var timestampAt = helper.IndexOf("ValidateRequiredIsoTimestampField(", StringComparison.Ordinal);
+        var unknownAt = helper.IndexOf("AppendAcceptedReasoningUnknownFields(", StringComparison.Ordinal);
+        var scopeAt = helper.IndexOf("EvaluateAcceptedReasoningScopePrefix(", StringComparison.Ordinal);
+        Assert.True(prefixAt >= 0 && prefixAt < timestampAt && timestampAt < unknownAt && unknownAt < scopeAt);
+        var source = File.ReadAllText(Path.Combine(root,
             "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs"));
         var start = source.IndexOf("private async Task<List<ValidationIssue>> ValidateAcceptedTurnReasoningInternalAsync(", StringComparison.Ordinal);
         var end = source.IndexOf("\n    private ", start + 1, StringComparison.Ordinal);
         var body = source[start..end];
-        var prefixAt = body.IndexOf(document!.Name + "(", StringComparison.Ordinal);
-        var timestampAt = body.IndexOf("ValidateRequiredIsoTimestampField(", StringComparison.Ordinal);
-        var unknownAt = body.IndexOf(unknown!.Name + "(", StringComparison.Ordinal);
-        var scopeAt = body.IndexOf(scope!.Name + "(", StringComparison.Ordinal);
+        var callAt = body.IndexOf("await EvaluateAcceptedReasoningPrefixAsync(null)", StringComparison.Ordinal);
+        var terminalAt = body.IndexOf("if (prefix.Terminal) return issues;", StringComparison.Ordinal);
         var dependenciesAt = body.IndexOf("await ResolveGuardianPolicyContextAsync()", StringComparison.Ordinal);
-        Assert.True(prefixAt >= 0 && prefixAt < timestampAt && timestampAt < unknownAt &&
-            unknownAt < scopeAt && scopeAt < dependenciesAt);
+        Assert.True(callAt >= 0 && callAt < terminalAt && terminalAt < dependenciesAt);
+        Assert.DoesNotContain("if (prefix.Issues.Any", body);
     }
 
     [Fact]
@@ -53,6 +48,7 @@ public sealed class AcceptedTurnReasoningPolicyBoundaryTests(ITestOutputHelper o
         var inventory = ReasoningPolicySourceInventory.Read();
         var source = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot,
             inventory["sourcePath"]!.GetValue<string>()));
+        source = DebugPrefixSourceInventory.ReverseIfPresent(source);
         source = NarrativePolicySourceInventory.ReverseIfPresent(source);
         // Require the new extraction, rather than accepting the unchanged baseline branch.
         ReasoningPolicySourceInventory.AssertExtractionAndReverse(source);

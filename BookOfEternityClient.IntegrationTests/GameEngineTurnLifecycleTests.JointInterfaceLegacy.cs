@@ -96,6 +96,15 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Null(GetPrivateFieldValue<string?>(_engine!, "_mortalJointInterfaceFreshCheckpoint"));
             Assert.False(GetPrivateFieldValue<bool>(_engine!, "_mortalJointInterfaceFreshConsumed"));
             Assert.Equal(_submitted, _finalInterface);
+            if (scenario == "Legacy")
+            {
+                var prefix = Assert.IsType<MortalJointDebugPrefixObservation>(_engine!.CaptureMortalJointReasoningPrefixObservation());
+                Assert.Equal("UnavailableLegacyProtocol", prefix.Disposition);
+                Assert.Equal(0, prefix.Evaluations); Assert.Equal(0, prefix.SourceChecks);
+                Assert.Equal(0, prefix.TimestampCalls); Assert.Empty(prefix.Sources); Assert.Null(prefix.Fault);
+                Assert.True(prefix.DataDisposed); Assert.True(prefix.AttemptExpired);
+                fixture.WritePhysicalInjuryDiagnostic("dfr_genuine_legacy_protocol_not_upgraded", prefix);
+            }
             fixture.WritePhysicalInjuryDiagnostic("iobs_actual_legacy_completion", new
             { scenario, Version = 1, Pending = Raw(_legacyProducedPending), Common = _firstMarker,
                 Submitted = Raw(_submitted), Final = Raw(_finalInterface), Trace = _publications,

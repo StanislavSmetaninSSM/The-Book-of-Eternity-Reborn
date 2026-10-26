@@ -1,3 +1,4 @@
+using System.Text.Json;
 using BookOfEternityClient.Services;
 
 namespace BookOfEternityClient.Core;
@@ -6,7 +7,7 @@ namespace BookOfEternityClient.Core;
 internal sealed record MortalJointDebugPrefixSource(long Ordinal, string Path, string Route, string State);
 /// <summary>Detached actual prefix/phase counters; no pass, original, owner or mutable source buffer escapes.</summary>
 internal sealed record MortalJointDebugPrefixObservation(string Phase, string Disposition, bool HistoricalCurrentOnly,
-    int Evaluations, int SourceChecks, int TimestampCalls, string? Fault, IReadOnlyList<MortalJointDebugPrefixSource> Sources);
+    int Evaluations, int SourceChecks, int TimestampCalls, string? Fault, IReadOnlyList<MortalJointDebugPrefixSource> Sources, bool DataDisposed, bool AttemptExpired);
 
 public partial class GameEngine
 {
@@ -30,9 +31,31 @@ public partial class GameEngine
         private readonly MortalJointInterfaceReady? _prefixReady;
         private readonly HotOrdinaryOriginal? _prefixStage;
         private readonly string _prefixCheckpoint;
-        private readonly bool _prefixResume;
+        private readonly bool _prefixResume, _prefixSelected;
+        private readonly int _prefixProtocol;
+        private readonly string _prefixManifestData, _prefixAuthorityData;
         private ValidationService.DebugPrefixPass? _prefix;
         private int _prefixEvaluations, _prefixChecks;
+
+        private bool RequireLegacyPrefixDispatch(bool capturing)
+        {
+            if (_prefixSelected) return false;
+            RequireActualOwner(_files, _lease);
+            if (capturing ? !_capturing || _phase != "Capturing" : _capturing || _phase != "PreparationStarted" || _stages.Count != 0)
+                throw new InvalidDataException("debug_prefix_legacy_phase_changed");
+            if (_delegated || _close is not null || _prefixProtocol != 1 ||
+                _engine._mortalJointRepairCheckpoint is not { UsesInterfacePublication: false } checkpoint)
+                throw new InvalidDataException("debug_prefix_legacy_dispatch_changed");
+            var binding = checkpoint.ToJsonObject();
+            if (binding["schemaVersion"]!.GetValue<int>() != _prefixProtocol ||
+                binding["fingerprint"]!.GetValue<string>() != _prefixCheckpoint)
+                throw new InvalidDataException("debug_prefix_legacy_checkpoint_changed");
+            if (_prefix is not null || _prefixEvaluations != 0 || _prefixChecks != 0)
+                throw new InvalidDataException("debug_prefix_legacy_cannot_retain_selected_data");
+            _engine._mortalJointReasoningPrefixObservation = new(_phase, "UnavailableLegacyProtocol", false,
+                _prefixEvaluations, _prefixChecks, 0, null, Array.Empty<MortalJointDebugPrefixSource>(), true, false);
+            return true;
+        }
 
         private ValidatedPendingTurnSnapshotContext RequirePrefixBinding(bool capturing)
         {
@@ -43,8 +66,13 @@ public partial class GameEngine
             if (_delegated || _close is not null || _frame is not ValidatedPendingTurnSnapshotContext frame ||
                 _engine._mortalJointRepairCheckpoint is not { } checkpoint ||
                 checkpoint.ToJsonObject()["fingerprint"]!.GetValue<string>() != _prefixCheckpoint ||
+                checkpoint.ToJsonObject()["schemaVersion"]!.GetValue<int>() != _prefixProtocol ||
+                checkpoint.UsesInterfacePublication != _prefixSelected ||
                 _engine._mortalJointInterfaceValidationIteration != _prefixIteration)
                 throw new InvalidDataException("debug_prefix_attempt_binding_changed");
+            if (_engine._validator.CaptureAcceptedTurnReasoningOriginalData(frame.Manifest) != _prefixManifestData ||
+                JsonSerializer.Serialize(frame.Payload) != _prefixAuthorityData)
+                throw new InvalidDataException("debug_prefix_actual_frame_data_changed");
             var main = _lease.MainAdmission ?? throw new InvalidDataException("debug_prefix_main_missing");
             main.Validate(_lease);
             if (!ReferenceEquals(main, _prefixMain) || _prefixMain is not { Acquired: true, Closed: false })
@@ -76,6 +104,7 @@ public partial class GameEngine
         internal async Task<IReadOnlyList<ValidationIssue>> ConsumeDebugPrefixAsync(object issuer)
         {
             RequireIssuer(issuer);
+            if (RequireLegacyPrefixDispatch(capturing: true)) return Array.Empty<ValidationIssue>();
             var frame = RequirePrefixBinding(capturing: true);
             if (_prefix is { } retained)
             {
@@ -111,6 +140,7 @@ public partial class GameEngine
         internal async Task RecheckClosedDebugPrefixAsync(object issuer)
         {
             RequireIssuer(issuer);
+            if (RequireLegacyPrefixDispatch(capturing: false)) return;
             var frame = RequirePrefixBinding(capturing: false);
             var retained = _prefix ?? throw new InvalidDataException("debug_prefix_closed_source_missing");
             try
@@ -124,7 +154,8 @@ public partial class GameEngine
             }
             catch (Exception error)
             {
-                ObservePrefix(retained, error.Message); retained.Dispose(); _prefix = null; throw;
+                ObservePrefix(retained, error.Message); retained.Dispose(); _prefix = null;
+                MarkPrefixDataDisposed(); throw;
             }
         }
 
@@ -133,11 +164,17 @@ public partial class GameEngine
             var data = value?.CaptureDiagnostic();
             _engine._mortalJointReasoningPrefixObservation = new(_phase, value?.Disposition ?? "Unavailable",
                 _prefixResume, _prefixEvaluations, _prefixChecks, data?.TimestampCalls ?? 0, fault ?? data?.Fault,
-                Array.AsReadOnly(data?.Occurrences.Select(row => new MortalJointDebugPrefixSource(row.Ordinal, row.Path, row.Route, row.State)).ToArray() ?? []));
+                Array.AsReadOnly(data?.Occurrences.Select(row => new MortalJointDebugPrefixSource(row.Ordinal, row.Path, row.Route, row.State)).ToArray() ?? []), false, false);
+        }
+        private void MarkPrefixDataDisposed()
+        {
+            if (_engine._mortalJointReasoningPrefixObservation is { } observation)
+                _engine._mortalJointReasoningPrefixObservation = observation with { DataDisposed = true };
         }
         private void ReleaseDebugPrefix()
         {
             if (_prefix is { } retained) { ObservePrefix(retained); retained.Dispose(); _prefix = null; }
+            MarkPrefixDataDisposed();
             if (_prefixGenerationBytes is not null) Array.Clear(_prefixGenerationBytes);
         }
     }
