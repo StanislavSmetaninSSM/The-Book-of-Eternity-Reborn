@@ -1,3 +1,41 @@
+# T608 actual causal RED captured — independent OUTCOME pending
+
+One admitted singleton ran at `2d0922a1c7d4ec5b09d4fe95b2a867339adb247d`, compiled
+source `7baac1aa06587b40506e73dde12d87db7aa22f6f`. Exact one descriptor/case completed:
+0 PASS / 1 intentional FAIL, only final line-28 expected one / actual eight after the
+final FixtureDisposed marker. No timeout, skip, duplicate or underfill. Category
+84.3726699 seconds within original 120; runner 117.6648159 seconds; framework 65.4881139.
+Both process-cleanup flags true; testhost PID 174084 ended, actual fixture root removed.
+
+Root completed one full strict parse (114.0079 seconds): 368,544,724 PLAIN JSONL bytes,
+SHA256 `a2245ebd714ccfd60a9d7458486f13d221726c24d6315f983e9a9e17997b4fe2`,
+723,634 rows = 723,624 original timing events + 10 full messages, 361,812 exact scope
+pairs. All rows/17 original fields/order/sequence/clocks and aggregate/queue/writer
+accounting agree. Window/writer closed; zero open/late/pending/failed; original source
+clock-total origin spread 99 ticks under the existing 100 ns TimeSpan quantization.
+No repaired timestamps, second parse, gzip/CRC claim or diagnostic quota.
+
+Cold eligibility: one actual JointPreparation.Replay, zero richer-source calls. The
+isolated eight-call segment has eight successful prepared validations/eight richer
+expected sources, 64 fresh continuation-seal calls, zero preparation-service sources,
+eight equal full five-scalar/one-ordered-batch-pair projections and 58 unchanged
+canonical beforeimage paths. Actual source success fence and owner closed before
+fixture disposal/final assertion. Current 33 artifacts/61 sources and three loaded
+assembly identities rehashed exact. This is a causal repeated-source observation,
+not functional GREEN, whole-game speedup or whole-feature/Linux acceptance.
+
+Eight richer-source scopes total 309.576852 inclusive milliseconds; eight validators
+1300.267342 inclusive milliseconds. Costs overlap, cannot be added, and describe only
+this small same-owner contour; no claim this resolves the 300-second game timeout.
+All raw/TRX/report/initial/full parse receipts remain external under
+`dfr-prefix/actual-t608-prepared-replay-red-1`; source/preparation under
+`t608-counter-scaffold`. No raw is staged or uploaded. Recovery copy remains absent;
+last qualified complete source restore is 1b. All prior raw/saves/evidence are retained.
+
+Next independent OUTCOME must accept the full prerequisite-complete RED and actual
+capture/cleanup evidence before any richer immutable projection/key/lifetime DESIGN.
+No cache implementation, retry, full positive, legacy/cold or Windows release.
+
 # T608 resource correction resolved — final PREP addendum pending
 
 Independent PREP accepts SOURCE/build/bindings/exact selection but initially HELD
