@@ -21,6 +21,7 @@ GitHub execution epic: [#1560](https://github.com/StanislavSmetaninSSM/The-Book-
 ## Phase 2 — условия реализации
 
 - [ ] T005 Получить рассмотрение точной версии `specs/532-golden-mask-backstory/spec.md`, деталей D2 и решений D3/D4 (D1 и основной формат D2 приняты); закрепить tracker расширения, согласовать изменения #1514/#1522, конкретизировать schema/signatures/награду/первую пару сцен и повторить consistency check.
+- [ ] T023 По [#1572](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1572) после T005 реализовать общий проверяемый бонус экипированных реликвий к духовным искусствам и исторический комплект Маски: определить эффект/owner/realm/art/stacking, reuse existing relic/effect consumers, UI/GM/audit, invalidation и дешёвые отрицательные фикстуры; затем доказать вклад комплекта в реальном обмене. Точный план/числа ещё согласуются; задача не начата.
 - [ ] T006 Свести зависимости #1520/#1521/#1522 с новым разделом каталога: `BookOfEternityClient/story_content/saref/catalog.json` (планируемый), `BookOfEternityClient/Services/ActorMaterializationContract.cs`, `BookOfEternityClient/Services/SarefMainStoryState.cs`; разрешить 9/10, mercy_wound и deep-victory расхождения, обновить точные bootstrap/fixtures без legacy fallback.
 
 T006 не объявляет весь открытый epic уже выполненным. Перед работой проверить
@@ -101,6 +102,9 @@ example; T009 завершает первый вертикальный срез.
 ## Зависимости и параллельность
 
 T001–T004 + T018 → T005 → T006 → T007 → T008 → T019/T021 → T020 → T009.
+T005 → T023 (#1572); готовая экипировка исторической роли — вход для полной
+приёмки первого эпизода T013/T021 и T017. Независимые части сцены можно уточнять
+параллельно; это не блокировка всего исследования до реализации реликвий.
 T019/T021 можно делать независимо после фиксации общего scene contract T008;
 T020 объединяет их в настоящий ход. T009 завершает награду и первый полный путь.
 Уточнение автора для T008/T009/T014/T020: replay разрешает добор пропущенных
@@ -165,6 +169,7 @@ state/validator/publication должны иметь одного владель�
 | [#1568](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1568) | Отдельный realm и visit round-trip | T010, T011 |
 | [#1569](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1569) | Presence, торговля, последствия финалов | T012, T015 |
 | [#1570](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1570) | Сквозная приёмка | T016, T017; проверки обязательны и внутри каждого среза |
+| [#1572](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1572) | Общие духовные бонусы реликвий и комплект исторического Маски | T005, T023; интеграция T013/T021, приёмка T017 |
 
 Отдельная [#1571](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1571)
 фиксирует runtime memory_suppression из SOURCE-аудита #1536/T148. Она связана
@@ -192,6 +197,7 @@ state/validator/publication должны иметь одного владель�
 | FR-19 | T020, T021 |
 | FR-20 | T008, T019, T020 |
 | FR-21 | T006, T014, T021 |
+| Дополнение spec «Духовные реликвии и снаряжение Маски» / #1572 | T005, T023, T013/T021, T017 |
 
 AC-01→T007/T013; AC-02→T008/T019–T021; AC-03→T009;
 AC-04→T008/T009/T020; AC-05→T010–T012; AC-06→T013–T017;
