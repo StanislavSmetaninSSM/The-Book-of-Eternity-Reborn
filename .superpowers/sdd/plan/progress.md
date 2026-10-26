@@ -1,3 +1,25 @@
+# T603 metadata-only fresh build/PREP packet verified — runtime UNRUN
+
+Fresh Integration Debug XML/PDB build at70b1d26a8ea60018daaad97e3b3481631a1b5719:
+exit0,5:41.07,0errors/exact same101warnings,0introduced warnings. All33 actual artifacts/
+11PE-PDB pairs/51 current Git-PDB sources verified. Only Integration DLL/PDB changed;
+XML was freshly emitted inside the build interval and byte-identical because one
+mode attribute changes no documentation. All other30 artifacts/four project trees
+remain exact. The external checker no longer assumes every fresh XML must change.
+
+PEReader/IL DATA checks (0application execution) bind newDLL CCAFBCF308C182AD59092DC5BE240620AADD04F813ECC285D0B320B6FE0C5008:
+generated17-property metadata/initializer present; no SerializeHandler method; the
+existing setter explicitly receives ldnull. Typed root Serialize callsite remains
+unboxed, while framework boxing/getter/allocation tradeoff is UNRUN. Debug flags
+unchanged. No target assembly Load/Invoke or hidden serializer warmup occurred.
+
+Actual fresh catalog VALID960/12554,0unmapped/stale; exact unchanged8descriptors/
+28methods/41cases PlanOnly,0executed. Catalog46.3362566s,Plan21.4787204s,exit0/noTimeout/
+both process cleanup flags. Same category budgets/exclusivity/membership, no overrides.
+Current metadata-qualified GitHub recovery and independent PREP are next before one
+metadata-mode actual41. Format/failure/integrity/cost remain UNRUN for this candidate;
+positive/legacy/cold HOLD. All baseline/A/B and accepted N-negative evidence retained.
+
 # T603 metadata-only SOURCE ACCEPT — fresh Integration build next
 
 Independent review accepts the exact9d493043 one-attribute change and unchanged41-case
