@@ -1,3 +1,25 @@
+# T596 cheap176 independently accepted — coherent live6 released
+
+Independent Astra/high OUTCOME review accepts first17 plus disjoint159 PASS,
+including all12 new TRX/exact method counts,105 reported strict roots absent,
+33 unchanged artifacts and current source bindings. T596 is complete: fresh
+affected builds, exact catalog/PlanOnly/PREP and selected cheap176 passed. The
+current GitHub recovery atf47a4b31f verified30,909 exact blobs/772,586,292bytes and
+41 compiled source hashes, clean including ignored; no recovery build/runtime.
+
+Release the six separate existing5-minute/NoBuild lifecycle categories in order:
+temporal invalid-prefix GREEN, DFR-specific closed source fence, unchanged full
+completion/two actual phase refusals, N before-FIRST-I refusal, N source drift,
+genuine schema1 preservation. Root must inspect each complete outcome/causal
+prerequisite, uncapped raw, effects/owned cleanup and current artifacts before the
+next. Failure or ambiguity stops dependent steps. One combined live6 independent
+OUTCOME review precedes the still-conditional Prepared0/Published2 cold pair;
+no gratuitous per-PASS review/startup or unchanged cheap repetition is required.
+
+First new raw attempt will be `dfr-prefix/actual-temporal-green-1` under the external
+evidence root. All six current DFR lifecycle outcomes are still UNRUN here.
+Cheap176/source acceptance does not establish actual engine phase/fence/full S.
+
 # T596 affected cheap controls complete — 176 distinct PASS
 
 Exact remaining11-category/12-descriptor selection at93e5870bb completed159/159PASS/

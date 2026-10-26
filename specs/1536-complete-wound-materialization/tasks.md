@@ -13,7 +13,7 @@ current I/N owners preserved. Windows deferred; full family/S remains open.
   retained same-attempt DATA/fresh fences; terminal diagnostics or NeedsActorDependencies,
   never Full/S. Full Manifest DATA anchor and explicit authenticated v1 legacy
   preservation without prefix proof. Coherent SOURCE/optimization/selection review.
-- [ ] T596 Fresh affected XML/PDB builds, catalog/PlanOnly/PREP and selected cheap
+- [x] T596 Fresh affected XML/PDB builds, catalog/PlanOnly/PREP and selected cheap
   source/ordinary/N/read-pipeline regressions with exact counts and owned cleanup.
 - [ ] T597 Genuine invalid-prefix refusal, unchanged completion and DFR-specific
   source-drift integration required for actual DFR fence wiring; one genuine v1

@@ -116,7 +116,7 @@ Current I/N implementation supersedes that document's historical missing-3b stat
 - [ ] T595 Integrate actual Capturing consumer/terminal refusal and same-attempt
   reuse. Coherently review production, cheap/integration fixtures, original/source
   inverse, GM assessment and exact impacted selection before fresh verification.
-- [ ] T596 Build affected projects sequentially with XML/PDB; catalog discovery and
+- [x] T596 Build affected projects sequentially with XML/PDB; catalog discovery and
   exact NoBuild PlanOnly before independent PREP. Select new prefix contracts plus
   existing ordinary reasoning/document/source, N-pass and impacted read-pipeline
   consumers; split by responsibility, keep existing budgets. Record exact methods/
