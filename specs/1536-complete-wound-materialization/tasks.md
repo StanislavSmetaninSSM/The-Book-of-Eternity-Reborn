@@ -70,10 +70,10 @@ unchanged positive is incomplete TIMEOUT300s, not phase/functional acceptance.
   - [x] T607-RED Build a compilable real-file scaffold preserving current fallback;
     prove all observation prerequisites before the intended reuse/source assertion
     fails. Preserve original raw and exact RED source/binary identity.
-  - [ ] T607-GREEN Implement only the reviewed observation/fixture opt-in; prove
+  - [x] T607-GREEN Implement only the reviewed observation/fixture opt-in; prove
     actual source-count reduction plus stale/foreign/late/fault/drift/close negatives,
     ordinary callback fallback and unchanged force-fresh authority boundaries.
-  - [ ] T607-QUALIFY Independent SOURCE, fresh affected builds/current source/PDB
+  - [x] T607-QUALIFY Independent SOURCE, fresh affected builds/current source/PDB
     bindings, catalog/PlanOnly, selected actual regressions, OUTCOME and remote recovery.
   - [ ] T607-RETURN Obtain new justified positive PREP under original 300 seconds/
     full capture, then resume T602/T597/T598 only after complete accepted outcome.

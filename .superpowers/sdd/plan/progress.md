@@ -1,3 +1,31 @@
+# T607 cheap qualification ACCEPT — return to full positive preparation
+
+Independent Astra High OUTCOME accepts actual corrected runtime
+`cd0d66fb4e0947ba6cabe42b45ebfb4acc2182f6`, compiled Unit `01d3075f`, Support/
+Integration `a760ab5d`, Game/Bridge `b54a8f4b`. Exactly 12 TRX / 12 descriptors /
+189 cases completed and PASS in 294.9551936 seconds; no skip, duplicate, underfill or
+timeout, both process-cleanup flags true. Two unchanged C5 PASS retained from actual
+02e2233d with exact current Integration/source proof give 191 distinct accepted PASS;
+17 repeated same-owner cases are not double-counted. First 19 PASS / 2 FAIL preserved.
+Root and reviewer independently verified 33 artifacts, 59 current source pins and all
+132 distinct strict removed-root receipts physically absent (81 generic, 32 PD3D,
+19 PD3E). Raw stays external `dfr-prefix/actual-t607-cheap-green-corrected-1`.
+
+Causal GREEN confirms eight correct logical returns, original bytes and detached DATA,
+exactly two physical sources versus original RED eight, including the fresh completion
+fence. Complete capture has 22 ordered events, available/closed/pending0/fault-null;
+framework 0.7414425 seconds. Observation/lifetime 19/19, N origin/byte/freshness,
+source/recovery/callback/ordinary negatives and both fixture corrections all PASS.
+This measures source work, not every OS syscall or whole-game speedup. Existing service
+keys, owner/lifetime/invalidation and fresh authority/source boundaries are preserved.
+
+T607 GREEN and cheap QUALIFY are accepted. Release only return-to-positive preparation:
+exact existing one-case plan, current bindings/recovery, sufficient disk/memory and
+independent PREP for full uncapped original-event gzip capture under original 300 seconds.
+No positive runtime or dependent legacy/cold admission yet. The stale applied archive
+is not used by this route; no generator is needed or run. All old raw, unique evidence,
+fixture/user saves and incomplete T606 remain. Windows and remaining full wounds open.
+
 # T607 corrected cheap PREP ACCEPT — one 189-case execution released
 
 Independent Astra High PREP accepts checkpoint
