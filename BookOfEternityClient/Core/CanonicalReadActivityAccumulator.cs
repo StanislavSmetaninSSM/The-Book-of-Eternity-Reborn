@@ -231,7 +231,7 @@ internal sealed class CanonicalReadActivityAccumulator
 /// <summary>Distinct actual reader events; a snapshot never implies successful owning return.</summary>
 internal enum CanonicalReadEventKind
 {
-    InitialOpened, PhysicalSnapshot, PhysicalAbsence, CachedData, ReaderReturned,
+    InitialOpened, PhysicalSnapshot, PhysicalAbsence, NonPhysicalData, ReaderReturned,
     OriginalAttemptReturned, PublicInitialAttemptReturned, PublicFinalReturned, LeasedReturned, Fault, Cancelled
 }
 

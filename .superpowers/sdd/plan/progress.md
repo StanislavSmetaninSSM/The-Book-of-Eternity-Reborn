@@ -1,3 +1,18 @@
+# T607 source-only WIP4 — positive consumer and more cheap controls written
+
+Selected positive now has gated sealed observation/parity consumption at the same
+corrected arm/cut. The shared factory still returns original true/true hooks for RED;
+GREEN is not implemented. Added independent DATA/failure/DFR controls; passive bytes
+and errors are retained before an authority sink can refuse them. Nonphysical DATA
+envelopes are labeled honestly rather than asserted to be cache hits.
+Static inventory only: 15 paths, 16 methods/19 authored cases, no discovery or runtime.
+
+Remaining before coherent SOURCE: harden blocked-test finally/join cleanup identified
+statically, finish exact category/selection ownership and rolling source-pin/finite
+inverse/XML checks. New C# remains UNCOMPILED/UNRUN and not accepted. No source-cache
+eligibility, authority, timeout, default/cold meaning or original cached-N refusal is
+relaxed. Continue the bounded scaffold; then freeze/review/build the entire block.
+
 # T607 source-only WIP3 — reader adapters written, qualification still UNRUN
 
 Implemented finite observed adapters around the existing public/protected/trusted

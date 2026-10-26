@@ -31,7 +31,8 @@ internal sealed class FileReadObservation
         if (!files.IsCanonicalReadDispatchIssuer(dispatchIssuer))
             throw new InvalidOperationException("Actual filesystem reader dispatch required.");
         owns = false;
-        if (source?._activity is not null || receiver is null) return source;
+        var physicalReader = family is "physical-async" or "physical-sync" or "local-physical-async";
+        if ((!physicalReader && source?._activity is not null) || receiver is null) return source;
         CanonicalReadActivityAccumulator.ReadObservation? activity = null;
         try
         {
@@ -57,10 +58,10 @@ internal sealed class FileReadObservation
 
     internal void Snapshot(byte[]? bytes, bool physical = true)
     {
-        _narrative?.Snapshot(bytes, physical); _debug?.Snapshot(bytes, physical);
-        _activity?.Record(ActivityIssuer, !physical ? CanonicalReadEventKind.CachedData :
+        _activity?.Record(ActivityIssuer, !physical ? CanonicalReadEventKind.NonPhysicalData :
             bytes is null ? CanonicalReadEventKind.PhysicalAbsence : CanonicalReadEventKind.PhysicalSnapshot, bytes, physical);
+        _narrative?.Snapshot(bytes, physical); _debug?.Snapshot(bytes, physical);
     }
     internal void Presence(bool present) { _narrative?.Presence(present); _debug?.Presence(present); }
-    internal void Fault(Exception error) { _narrative?.Fault(error); _debug?.Fault(error); ActivityFault(error); }
+    internal void Fault(Exception error) { ActivityFault(error); _narrative?.Fault(error); _debug?.Fault(error); }
 }

@@ -54,6 +54,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         try
         {
             fixture = new GameEngineTurnLifecycleTests(diagnostics, adoptedRoot: null,
+                readObservers: LifecycleFixtureReadObservers.CreateForSealedSourceObservation(),
                 passiveOperationTimings: probe.Timings);
             diagnostics.BindFixtureRoot(fixture._rootPath);
             await fixture.RunJointCompletionControlAsync(false, useLiveCaller: true, narrativeSourceProbe: probe);
@@ -79,6 +80,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         private readonly List<object> _reads = [];
         private readonly List<string> _postCutMutations = [];
         private OperationTimingAccumulator.Window? _window;
+        private CanonicalReadActivityAccumulator.ObservationWindow? _readObservation;
+        private CanonicalReadObservationSnapshot? _sealedCutReads;
+        private readonly List<string> _initialReadPaths = [];
         private GameEngineTurnLifecycleTests? _fixture;
         private GameEngineTestRuntime? _runtime;
         private Func<string, Task>? _priorRead;
@@ -103,6 +107,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             _priorRead = fixture._consoleCanonicalReadObserver;
             _priorReturnedRead = fixture._consoleReturnedCanonicalReadObserver;
             _priorMutation = fixture._consoleMutationObserver;
+            if (fixture._readObservers.ForwardingEnabled)
+            {
             fixture._consoleCanonicalReadObserver = async path =>
             {
                 if (_priorRead is not null) await _priorRead(path);
@@ -113,6 +119,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 var operations = path == SourcePath ? _window?.Capture() : null;
                 var inNarrative = IsOperationActive(operations, "NarrativePolicy.Evaluate");
                 var inFreshRecheck = IsOperationActive(operations, "NarrativePolicy.Recheck");
+                _initialReadPaths.Add(path);
                 _reads.Add(new { Path = path, SourceRaw = Raw(raw), InNarrative = inNarrative, InFreshRecheck = inFreshRecheck });
                 if (path != SourcePath) return;
                 _sourceReads++; _sourceRead = raw;
@@ -135,6 +142,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     inNarrative)
                     InterveneAtConsumedSource();
             };
+            }
             fixture._consoleMutationObserver = path =>
             {
                 _priorMutation?.Invoke(path);
@@ -148,6 +156,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.False(_armed); _armed = true;
             Assert.False(_cut); Assert.Equal(0, _sourceReads);
             _window = Timings.StartWindow(captureEvents: diagnostics is not null);
+            if (diagnostics is not null)
+                _readObservation = _fixture!._readObservers.CanonicalSources.BeginObservation(_fixture._fs, _window);
             diagnostics?.Arm(_window);
         }
 
@@ -164,6 +174,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         private void InterveneAtConsumedSource()
         {
             Assert.True(_armed); Assert.False(_cut); _callbacks++;
+            CaptureSealedReadCut();
             Assert.True(_narrativeSourceReads > 0, "Corrected pre-intake N must actually read achievements before the capture checkpoint.");
             Assert.Equal(_narrativeSourceReads, _narrativeSourceReturns);
             // Initial physical hooks also observe explicit leased fresh readers;
@@ -195,6 +206,63 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Runtime = _runtime.Engine.CaptureMortalJointRuntimeObservation(), Turn = _turnAtCut,
                 Images = RawImages(_atCut)
             });
+        }
+
+        /// <summary>Freezes all actual armed-to-cut paths and compares the RED legacy callbacks with sealed read DATA.</summary>
+        private void CaptureSealedReadCut()
+        {
+            if (_readObservation is null) return; // original negative/cold routes
+            _readObservation.CloseCapture();
+            var capture = _readObservation.Capture();
+            Assert.True(capture.Available, capture.Fault);
+            Assert.Equal(0, capture.Pending);
+            _sealedCutReads = capture;
+            var opened = capture.Events.Where(row => row.Kind == CanonicalReadEventKind.InitialOpened).ToArray();
+            var sourceReads = opened.Where(row => row.Path == SourcePath).ToArray();
+            var sourceReturns = capture.Events.Where(row => row.Path == SourcePath && row.Kind == CanonicalReadEventKind.OriginalAttemptReturned).ToArray();
+            var initial = sourceReads.Where(row => row.Phase == CanonicalReadSourcePhase.NarrativeEvaluation).ToArray();
+            var rechecks = sourceReads.Where(row => row.Phase == CanonicalReadSourcePhase.NarrativeRecheck).ToArray();
+            Assert.NotEmpty(initial);
+            Assert.Single(initial.Select(row => row.InvocationId).Distinct());
+            Assert.All(initial.Concat(rechecks), row => Assert.Equal(initial[0].InvocationId, row.InvocationId));
+            byte[] ActualBytes(CanonicalReadEvent read)
+            {
+                var actual = capture.Events.Last(row => row.ReadId == read.ReadId && row.Kind == CanonicalReadEventKind.PhysicalSnapshot);
+                Assert.True(actual.Physical);
+                Assert.Contains(capture.Events, returned => returned.ReadId == read.ReadId && returned.Kind == CanonicalReadEventKind.ReaderReturned);
+                return Assert.IsType<byte[]>(actual.Bytes);
+            }
+            var sourceBytes = ActualBytes(sourceReads[^1]);
+            var narrativeBytes = ActualBytes(initial[^1]);
+            if (_fixture!._readObservers.ForwardingEnabled)
+            {
+                Assert.Equal(_sourceReads, sourceReads.Length);
+                Assert.Equal(_sourceReturns, sourceReturns.Length);
+                Assert.Equal(_narrativeSourceReads, initial.Length);
+                Assert.Equal(_narrativeSourceReturns, sourceReturns.Count(row => row.Phase == CanonicalReadSourcePhase.NarrativeEvaluation));
+                Assert.Equal(_freshSourceReads, rechecks.Length);
+                Assert.Equal(_sourceRead, sourceBytes); Assert.Equal(_narrativeSourceRead, narrativeBytes);
+                Assert.Equal(_initialReadPaths.GroupBy(path => path).OrderBy(row => row.Key).Select(row => (row.Key, row.Count())),
+                    opened.GroupBy(row => row.Path).OrderBy(row => row.Key).Select(row => (row.Key, row.Count())));
+            }
+            else
+            {
+                _sourceReads = sourceReads.Length; _sourceReturns = sourceReturns.Length;
+                _narrativeSourceReads = initial.Length;
+                _narrativeSourceReturns = sourceReturns.Count(row => row.Phase == CanonicalReadSourcePhase.NarrativeEvaluation);
+                _freshSourceReads = rechecks.Length; _sourceRead = sourceBytes; _narrativeSourceRead = narrativeBytes;
+                foreach (var read in capture.Events)
+                {
+                    if (read.Kind == CanonicalReadEventKind.InitialOpened)
+                        _reads.Add(new { Path = read.Path, SourceRaw = read.Path == SourcePath ? Raw(ActualBytes(read)) : null,
+                            InNarrative = read.Phase == CanonicalReadSourcePhase.NarrativeEvaluation,
+                            InFreshRecheck = read.Phase == CanonicalReadSourcePhase.NarrativeRecheck });
+                    else if (read.Path == SourcePath && read.Kind == CanonicalReadEventKind.OriginalAttemptReturned)
+                        _reads.Add(new { Path = read.Path, Returned = true, InNarrative = read.Phase == CanonicalReadSourcePhase.NarrativeEvaluation });
+                }
+            }
+            _fixture.WritePhysicalInjuryDiagnostic("t607_actual_sealed_read_cut", new
+            { LegacyForwarding = _fixture._readObservers.ForwardingEnabled, Capture = capture });
         }
 
         /// <summary>Asserts causal refusal before preparation and exact physical effect preservation.</summary>
@@ -345,6 +413,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         /// <summary>Checks the unchanged source contrast after all original full completion and inert-repeat assertions.</summary>
         internal async Task AssertCompletedAsync()
         {
+            Assert.NotNull(_sealedCutReads);
+            Assert.True(_sealedCutReads.Available, _sealedCutReads.Fault);
             Assert.False(changeSource); Assert.Equal(1, _callbacks); Assert.True(_sourceReads > 0);
             Assert.True(_narrativeSourceReads > 0); Assert.Equal(_narrativeSourceReads, _narrativeSourceReturns);
             Assert.Equal(1, PreparationEntries);
@@ -383,6 +453,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         /// <summary>Restores only the callbacks owned by this independent probe.</summary>
         public void Dispose()
         {
+            _readObservation?.Dispose();
             _window?.Dispose();
             if (_fixture is null) return;
             _fixture._consoleCanonicalReadObserver = _priorRead;
