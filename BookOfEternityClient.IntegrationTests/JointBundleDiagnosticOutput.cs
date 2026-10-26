@@ -276,7 +276,7 @@ internal sealed partial class JointBundleDiagnosticOutput : ITestOutputHelper, I
                         var decodeStarted = Stopwatch.GetTimestamp();
                         try
                         {
-                            _decoded = DecodeRecords(RecordsPath);
+                            _decoded = DecodeRecords(RecordsPath, _bytes);
                             if (_decoded.Rows != checked(_stored + Timings.Stored))
                                 throw new InvalidDataException("Decoded JSONL rows differ from actual message/event writes.");
                         }
@@ -289,7 +289,7 @@ internal sealed partial class JointBundleDiagnosticOutput : ITestOutputHelper, I
                 {
                     Kind = "JointBundleDiagnosticFinished", RecordsPath, ReportPath,
                     WriterClosed = _writerClosed, StoredBytes = _bytes, Sha256 = _sha256,
-                    RecordsEncoding = RecordsEncoding, GzipFooterClosed = _gzip && _writerClosed,
+                    RecordsEncoding = RecordsEncoding, GzipFooterClosed = GzipFooterClosed,
                     DecodedBytes = _decoded?.Bytes, DecodedSha256 = _decoded?.Sha256, DecodedRows = _decoded?.Rows,
                     DecodedValidationElapsed = _decodeElapsed, WriterCloseElapsed = _closeElapsed,
                     FlushCosts = FlushCostData(),
@@ -400,7 +400,7 @@ internal sealed partial class JointBundleDiagnosticOutput : ITestOutputHelper, I
                 {
                     Kind = "joint_bundle_component_report_v1", FixtureNonce, RecordsPath, InitialPath,
                     WriterClosed = _writerClosed, StoredBytes = _bytes, Sha256 = _sha256,
-                    RecordsEncoding = RecordsEncoding, GzipFooterClosed = _gzip && _writerClosed,
+                    RecordsEncoding = RecordsEncoding, GzipFooterClosed = GzipFooterClosed,
                     DecodedBytes = _decoded?.Bytes, DecodedSha256 = _decoded?.Sha256, DecodedRows = _decoded?.Rows,
                     DecodedValidationElapsed = _decodeElapsed, WriterCloseElapsed = _closeElapsed,
                     FlushCosts = FlushCostData(),

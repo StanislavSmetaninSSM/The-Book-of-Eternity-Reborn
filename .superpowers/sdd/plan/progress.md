@@ -1,3 +1,30 @@
+# T600 grouped no-member source candidate frozen — targeted review pending
+
+The minimal gzip-only correction and one typed normal zero-event/no-message Fact
+are frozen together with the earlier reviewed fixture fixes. Captured physical
+member size must be at least 20 bytes before gzip decode can qualify; the honest
+footer flag requires successful own close and that captured lower bound. This is
+structural validity, not a recording quota or full-container certification. Strict
+external EOF/CRC/hash/count verification remains mandatory. No dummy event, row or
+footer, second serializer, new cache or plain-path I/O was introduced.
+
+The real normal empty adapter/window control was authored before the guard and
+requires zero source events, actual empty file, successful root removal and writer
+close, then explicit incomplete/no-footer/refusal. Its runtime remains UNRUN; only
+the previous negative artifact's false footer flag was actually witnessed. Valid
+nonempty gzip and plain default paths are preserved by the intended conditional delta.
+
+Static source selection is now lifetime 12 methods / 19 cases, managed cost 1 / 1,
+original plain visibility 1 / 1: remaining 14 methods / 21 cases, NOT discovery.
+Full bounded transport population is 25 methods / 38 cases including the conditionally
+retained 17 actual PASS. Catalog IDs, 26 cumulative selection IDs and all budgets
+remain stable. The independent reviewer must confirm the gzip-only impact and
+retention before one grouped fresh Integration build and new exact PREP/PlanOnly.
+
+All old raw and failed-link evidence remain intact. Current binaries are still e88;
+they cannot execute this new candidate via NoBuild. No new runtime, cost ratio,
+positive admission, application timeout fix or full materialization claim is made.
+
 # T600 first cheap run complete — fixture corrections and no-member boundary WIP
 
 Actual attempt actual-t600-cheap-1 at 4764574f completed 35/37 cases across 4/6

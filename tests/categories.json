@@ -3,7 +3,7 @@
     "categories": [
 {
   "id": "fr063-lifecycle-passive-timing-lifetime",
-  "responsibility": "Cheap real-file continuing-transport controls: gzip live prefix, exact clocks/sequence/tail/once, concurrent completion, caller context isolation, deferred write/drain/finish faults and primary identity, full message forwarding once, strict retained/file/link root refusal, plain/gzip partial row and closed stored/decoded integrity incl all footer1..8 truncations. No GameEngine/native.",
+  "responsibility": "Cheap real-file continuing-transport controls: gzip live prefix, exact clocks/sequence/tail/once, concurrent completion, caller context isolation, deferred write/drain/finish faults and primary identity, full message forwarding once, strict retained/file/link root refusal, plain/gzip partial row and closed stored/decoded integrity incl all footer1..8 truncations and normal zero-event/no-message no-member footer/complete refusal. No GameEngine/native.",
   "excludes": "No expensive positive, fabricated events/timestamps/authority, records quota, timeout increase or full-world setup. Decoder EOF or completed rows alone never prove a finished gzip container.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/LifecyclePassiveTimingDiagnostics.cs",
@@ -22,6 +22,7 @@
     {
       "project": "integration",
       "tests": [
+        "BookOfEternityClient.Tests.LifecyclePassiveTimingDiagnosticsTests.ZeroEventGzipWithoutMemberCannotClaimClosedFooterOrCompleteCapture",
         "BookOfEternityClient.Tests.LifecyclePassiveTimingDiagnosticsTests.GzipOriginalBeginIsPersistentWhileActualBodyRemainsBlocked",
         "BookOfEternityClient.Tests.LifecyclePassiveTimingDiagnosticsTests.OriginalEventsAndResourceCloseTailHaveOneCompletion",
         "BookOfEternityClient.Tests.LifecyclePassiveTimingDiagnosticsTests.ConsumerDoesNotInheritCallerContext",

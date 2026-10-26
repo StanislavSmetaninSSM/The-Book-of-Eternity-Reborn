@@ -9,6 +9,41 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class LifecyclePassiveTimingDiagnosticsTests
 {
+    /// <summary>Refuses a normal zero-event/no-message gzip capture when the actual writer emitted no member.</summary>
+    [Fact]
+    public async Task ZeroEventGzipWithoutMemberCannotClaimClosedFooterOrCompleteCapture()
+    {
+        var root = CreateRoot();
+        var capture = new LifecyclePassiveTimingDiagnostics(nameof(ZeroEventGzipWithoutMemberCannotClaimClosedFooterOrCompleteCapture),
+            _transportTestOutput, gzipRecords: true);
+        capture.BindFixtureRoot(root);
+        var recorder = new OperationTimingAccumulator();
+        var window = recorder.StartWindow(captureEvents: true);
+        capture.Arm(window); // no dummy scope, row, message or writer-fault control
+        Directory.Delete(root);
+        var failure = await Record.ExceptionAsync(() => capture.CompleteAsync());
+        using var report = JsonDocument.Parse(File.ReadAllText(capture.ReportPath));
+        var receipt = report.RootElement;
+        Assert.Equal(0, new FileInfo(capture.RecordsPath).Length);
+        Assert.Equal(0, receipt.GetProperty("StoredBytes").GetInt64());
+        Assert.Equal(0, window.CaptureEventStatus().Attempted);
+        Assert.Equal(0, window.CaptureEventStatus().Drained);
+        Assert.True(window.Capture().Complete);
+        Assert.True(receipt.GetProperty("PassiveTimingCompletion").GetProperty("Complete").GetBoolean());
+        Assert.True(receipt.GetProperty("WriterClosed").GetBoolean());
+        Assert.True(receipt.GetProperty("FixtureClosing").GetProperty("Closing").GetBoolean());
+        Assert.Equal(root, receipt.GetProperty("FixtureClosing").GetProperty("Owned").GetString());
+        Assert.False(receipt.GetProperty("GzipFooterClosed").GetBoolean());
+        Assert.False(receipt.GetProperty("DiagnosticComplete").GetBoolean());
+        Assert.IsType<AggregateException>(failure);
+        Assert.Equal(JsonValueKind.Null, receipt.GetProperty("DecodedBytes").ValueKind);
+        Assert.Contains(receipt.GetProperty("Failures").EnumerateArray(), row =>
+            row.GetProperty("Stage").GetString() == "decoded-records-validation" &&
+            row.GetProperty("Error").GetString()!.Contains("No complete gzip member", StringComparison.Ordinal));
+        Assert.Throws<InvalidDataException>(() => JointBundleDiagnosticOutput.ValidateClosedGzipIdentity(capture.RecordsPath,
+            0, receipt.GetProperty("Sha256").GetString()!, 0, receipt.GetProperty("Sha256").GetString()!));
+    }
+
     /// <summary>Validates closed stored/decoded identity, then refuses every removed footer byte and corruption.</summary>
     [Fact]
     public async Task GzipClosedIdentityRefusesEachFooterTruncationAndCorruption()

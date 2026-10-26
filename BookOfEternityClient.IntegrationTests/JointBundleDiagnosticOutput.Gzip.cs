@@ -5,6 +5,10 @@ namespace BookOfEternityClient.Tests;
 
 internal sealed partial class JointBundleDiagnosticOutput
 {
+    // Header (10), minimum DEFLATE payload (2), trailer (8). This lower
+    // bound excludes no-member output; it is not a full-container verdict.
+    private const long MinimumGzipMemberBytes = 20;
+    private bool GzipFooterClosed => _gzip && _writerClosed && _bytes is >= MinimumGzipMemberBytes;
     private string RecordsEncoding => _gzip ? "gzip-jsonl-utf8-v1" : "jsonl-utf8-v1";
     private sealed record DecodedRecords(long Bytes, long Rows, string Sha256);
 
@@ -14,10 +18,12 @@ internal sealed partial class JointBundleDiagnosticOutput
         return new { cost.Attempted, cost.Stored, cost.Elapsed, cost.GateWait };
     }
 
-    // The compressor's successful owning close proves its footer was emitted.
-    // This extra read is explicitly measured, never an uncompressed disk copy.
-    private static DecodedRecords DecodeRecords(string path)
+    // Owning close can return without creating a member. Decoder EOF alone
+    // must not qualify that output. This extra read remains explicitly measured.
+    private static DecodedRecords DecodeRecords(string path, long? actualStoredBytes)
     {
+        if (actualStoredBytes is null or < MinimumGzipMemberBytes)
+            throw new InvalidDataException("No complete gzip member exists in stored records.");
         using var stored = File.OpenRead(path);
         using var decoded = new GZipStream(stored, CompressionMode.Decompress);
         using var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
@@ -57,7 +63,7 @@ internal sealed partial class JointBundleDiagnosticOutput
         using (var input = File.OpenRead(path))
             if (input.Length != storedBytes || Convert.ToHexString(SHA256.HashData(input)) != storedSha256)
                 throw new InvalidDataException("Closed gzip stored identity changed; container completeness is unproven.");
-        var decoded = DecodeRecords(path);
+        var decoded = DecodeRecords(path, storedBytes);
         if (decoded.Bytes != decodedBytes || decoded.Sha256 != decodedSha256)
             throw new InvalidDataException("Closed gzip decoded identity changed.");
     }

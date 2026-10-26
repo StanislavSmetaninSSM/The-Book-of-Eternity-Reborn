@@ -164,7 +164,7 @@
     },
     {
       "category": "fr063-lifecycle-passive-timing-lifetime",
-      "reason": "T600 single-consumer/context/primary/strict-root/partial-row/gzip integrity controls using real small files and existing recorder/writer only.",
+      "reason": "T600 single-consumer/context/primary/strict-root/partial-row/gzip integrity controls using real small files and existing recorder/writer only. Includes the normal zero-event/no-message no-member gzip regression; decoder EOF cannot invent footer provenance or successful capture.",
       "contracts": [
         "#1536 T599–602 / DFRDIAG1–9; same-writer interrupted lifecycle transport and bounded lossless storage"
       ]
