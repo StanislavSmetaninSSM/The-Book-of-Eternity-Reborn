@@ -37,6 +37,15 @@ DFRDIAG6: retain all raw outside checkout with no quotas/deletion. Full diagnost
 capture does not itself fix or qualify the prior timeout. Use original named scopes
 and measured transport costs to localize work; inclusive intervals are not additive.
 Resume dependent live/cold gates only after a complete accepted functional outcome.
+For T597, only the separately reviewed `fr063-joint-live-n-before-first-interface`
+and `fr063-joint-live-n-source-drift` regressions may be restaged independently while
+the unchanged positive remains on HOLD. Both use fresh independent fixtures through
+the unchanged `changeSource:true` aggregate-only route, do not construct the positive
+full-trace adapter, and require their original source/refusal/no-effect/image/hold-
+repeat/cleanup oracles. Run them separately in that order after current binding and
+exact PlanOnly/PREP; stop on failure or ambiguous outcome. Their results do not satisfy
+the unchanged-positive/post-close/expiry/P2 acceptance requirement, release remaining
+dependent legacy/cold gates, or qualify full T597/T598.
 
 
 DFRDIAG7: storage preparation may opt the unchanged positive into lossless streaming

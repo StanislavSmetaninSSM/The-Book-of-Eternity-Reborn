@@ -1,3 +1,16 @@
+# T597 independent N-negative PREP ACCEPT — exact pair released
+
+Independent PREP accepts current33/51 compiled172e bindings and actual2method/2case
+PlanOnly, unchanged5-minute exclusive budgets, maintained official singleton guards,
+fresh Linux source42 route and strict original source/refusal/full-image/held-repeat/
+cleanup assertions. Independent sequencing review requires the explicit DFRDIAG6
+clarification now present in canonical spec/tasks: only this pair is independent;
+positive/P2/post-close/fullT597/T598 and remaining legacy/cold are not released.
+
+Execute before-FIRST-I once and verify outcome before the after-capture drift singleton.
+No source/build/budget change or repeat PlanOnly is needed for this Markdown clarification.
+T603 throughput/headroom remains HOLD; no build/cost/application runs will overlap.
+
 # T597 two independent N-negative regressions — preparation only
 
 T603 same-work recurrence1PASS is preserved with both samples; positive remainsHOLD.

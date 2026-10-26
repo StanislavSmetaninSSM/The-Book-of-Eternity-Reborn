@@ -42,7 +42,10 @@ current I/N owners preserved. Windows deferred; full family/S remains open.
   preservation without prefix proof. Coherent SOURCE/optimization/selection review.
 - [x] T596 Fresh affected XML/PDB builds, catalog/PlanOnly/PREP and selected cheap
   source/ordinary/N/read-pipeline regressions with exact counts and owned cleanup.
-- [ ] T597 Genuine invalid-prefix refusal, unchanged completion and DFR-specific
+- [ ] T597 Per the explicit DFRDIAG6 clarification, only before-FIRST-I and source-drift
+  N-negative regressions may run independently during positive cost HOLD. This does
+  not close T597 or release legacy/cold. Genuine invalid-prefix refusal, unchanged
+  completion and DFR-specific
   source-drift integration required for actual DFR fence wiring; one genuine v1
   dispatch regression. Final SOURCE call graph requires existing Prepared0 and
   Published2 cold singletons through the new consumer, preserving one frozen I
