@@ -26,7 +26,7 @@ public sealed partial class LifecyclePassiveTimingDiagnosticsTests(ITestOutputHe
         var root = Path.Combine(Path.GetTempPath(), "boe-lifecycle-timing-control-" + Guid.NewGuid().ToString("N"));
         var source = Path.Combine(root, "source.txt");
         var expected = new byte[] { 1, 3, 7, 19 };
-        var diagnostics = new LifecyclePassiveTimingDiagnostics(nameof(OriginalBeginIsPersistentWhileActualBodyRemainsBlocked) + (gzip ? "-gzip" : "-plain"), output, gzipRecords: gzip);
+        var diagnostics = new LifecyclePassiveTimingDiagnostics(nameof(OriginalBeginIsPersistentWhileActualBodyRemainsBlocked) + (gzip ? "-gzip" : "-plain"), _transportTestOutput, gzipRecords: gzip);
         var recorder = new OperationTimingAccumulator();
         var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);

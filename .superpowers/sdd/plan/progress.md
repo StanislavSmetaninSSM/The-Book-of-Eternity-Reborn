@@ -1,3 +1,23 @@
+# T600 first fresh compile / narrow CS9124 correction pending review
+
+First fresh Integration XML compile at5f694635 completed0errors in3:30.36; no
+runtime/discovery was started. Warning comparison found exactly one new regular
+signature: CS9124 in the cheap visibility helper, because primary-constructor output
+was both captured and used to initialize _transportTestOutput. The frozen one-line
+fix uses that existing same-instance field at the helper's adapter construction;
+no oracle/signature/selector/budget or product behavior changes. Targeted independent
+review precedes the required fresh rebuild; no GREEN claim at this checkpoint.
+
+The explicit documentation-generation command also exposed6552 CS1591 warnings
+from pre-existing public declarations (five unchanged existing Fact signatures in
+the touched narrative file; all other locations in untouched files). Those are
+separate from the new CS9124. Other101 warning signatures match the previous build
+when locations are normalized. The next CLI will explicitly suppress only1591 to
+match the established warning profile, while generating XML and retaining all other
+warnings; this configuration choice does not fix existing missing documentation.
+The CS9124 must disappear through the source change, never warning suppression.
+All compiler/raw analysis remains external. All old source outcomes/raw retained.
+
 # T600 coherent independent SOURCE ACCEPT — fresh preparation next
 
 Independent Astra/high SOURCE ACCEPT covers frozenb1d65e9317bbe20d40f9103ad34f186c018db2e3
