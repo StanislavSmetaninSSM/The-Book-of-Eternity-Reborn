@@ -1,12 +1,17 @@
 # T608 measured DATA-copy/seal cost audit — #1536
 
-- [ ] T608-READONLY Trace repeated WoundBundle copy/constructor/seal/fingerprint work
+- [x] T608-READONLY Trace repeated WoundBundle copy/constructor/seal/fingerprint work
   in the sole T607 persisted-prefix measurement and complete real consumers. Identify
   existing service reuse or prove freshness prevents it; no production edit/runtime yet.
   Define a bounded candidate with full input/owner/lifetime/invalidation/copy/fresh-guard
   contract, independent cheap actual-computation counter controls and DESIGN review
   before any implementation. Do not add inclusive intervals or promise whole speedup.
   Full-positive TIMEOUT and original budgets/raw/dependent holds remain unchanged.
+- [ ] T608-REPLAY Compare PreparedReplayAgrees with existing semantic-operation
+  reuse once, with full expected-result inputs/companions and current owner eligibility.
+  Preserve all fresh actual-graph/authority checks; propose only a proved pure-DATA
+  reuse candidate plus cheap causal counters and independent DESIGN, or record why
+  reuse is unsafe. No implementation/runtime is released by this analysis task.
 
 # T597 interrupted unchanged-positive diagnostics — #1536 / 2026-10-26
 

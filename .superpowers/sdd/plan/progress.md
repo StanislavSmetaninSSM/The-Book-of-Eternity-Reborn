@@ -1,3 +1,21 @@
+# T608 copy-cost decision — scalar detachment change rejected
+
+Read-only audit and independent Astra High DESIGN/benefit review reject implementing
+the scalar-copy candidate as the next timeout remedy. Blind scalar access loses actual
+private-final-history checking. A validation-preserving variant retains the expensive
+admissions and removes only part of the 4.155321-second inclusive detachment/cross-check
+block across 58 copies; it cannot claim a 40.8-second saving. No source edit is selected.
+
+One bounded next comparison is released: PreparedReplayAgrees versus the existing
+semantic preparation/final-reduction operation services, from actual copy/admission
+call sites. Identify richer expected-result fields, complete structural/companion keys,
+actual owner eligibility/lifetime and redundant PURE source computations; keep fresh
+actual prepared/effect/private-final graph checks and live owner/lease/G/registry gates.
+Do not replace richer comparison with a fingerprint-only cache. If the work is required
+fresh integrity rather than duplicate pure replay, record that concrete limitation.
+No cache, implementation or runtime is admitted by this read-only step. Cheap 191 PASS,
+full-positive TIMEOUT, retained raw/root, original budgets and dependent holds stand.
+
 # T607 full-prefix outcome reviewed — remaining producer cost audit
 
 Independent Astra High accepts the factual incomplete TIMEOUT, not the functional
