@@ -1,3 +1,33 @@
+# T606 one current diagnostic positive — preparation only after admission audit
+
+Independent audit corrects the overly strong historical extrapolation rationale:
+16.397M is an OPEN aggregate snapshot on Game3cf/Integration345ee, not currentd9aa/02a
+population/mix. Current total1.798s =producer0.202+closing1.596; service/flush/decode
+are included/overlapping subcosts. Long verified mixed traces8.54–11.31us/event on old
+plain stacks contradict a universal short-control rate, without predicting current fit.
+Current feasibility is unknown, not proved impossible. Optimize/codegen is not selected.
+
+Smallest distinguishing next measurement is the already planned unchanged-positive
+singleton with current42-qualified persistent full-stream transport. Objective: retain
+actual source timestamps/current event population/mix/progress/drain/tail even if the
+same original300s protection interrupts. No promise of PASS, no extra case/benchmark,
+no implicit retry or hidden warmup. Preserve original P2/reentry/physical/full-image/
+completion assertions, source42/native lineage, same current source/binaries and
+uncapped full messages/events/losslessgzip/strict finishing/ownership rules.
+
+PREP first: measure real filesystem/cgroup/process reserve; assess only the known
+clean task-created GitHub recovery copy as expendable if required, after exact clean/
+blob/owner proof and independent deletion-manifest review. Keep maincheckout/user
+saves/all unique raw/provenance; no tmpfs bulk or historical raw deletion. Resource
+uncertainty must be explicit; collection is not capped to manufacture fit.
+Verify current33/52/native package/source bindings and exact1descriptor/1case/5minute
+PlanOnly, save checkpoint/clean GitHub recovery, independent PREP, then at most ONE
+runtime. The old budget and normal runner tree cleanup remain. On failure/timeout,
+retain partials/actual roots/outcome and stop legacy/cold; only full independently
+accepted functional/capture/cleanup PASS can qualify the dependent gates. This is a
+materially changed diagnostic attempt after original no-trace timeout, not a blind
+unchanged repeat. Current SOURCE/fixture/project settings remain unchanged.
+
 # T604 accepted mechanism; T601/T603 remaining serializer attribution only
 
 GREEN42 atedf518d7/compiled02a14a66 is independently accepted for complete DATA, real

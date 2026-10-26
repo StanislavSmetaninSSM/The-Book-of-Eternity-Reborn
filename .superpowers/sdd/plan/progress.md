@@ -1,3 +1,19 @@
+# Cost admission audit ACCEPT — T606 one diagnostic PREP, no codegen change
+
+Independent event-mix/admission audits show16.397M is an OPEN109.652s snapshot on
+Game3cf/Integration345ee, captureoff/526names/39.44%GetAttributes, not current population.
+Current65k is one-name0.202s burst; total includes closing, service/flush/decode nested;
+producer/consumer overlap. Long real mixed traces8.54–11.31us/event have other bindings.
+Thus neither guaranteed fit nor inevitable300s timeout is proved. Earlier linear veto
+was too strong. No additional serializer guesses or Optimize/build-mode change chosen.
+
+CanonicalDFRDIAG12/T606 now permit PREPARATION ONLY for one current diagnostic positive
+on accepted02a/GREEN42 stack, preserving original300s/assertions/full uncapped trace.
+Need resource/binding/PlanOnly/recovery and independent PREP first; any failed/partial
+outcome stops dependent gates and stays fully retained. Current disk~1.59GB/memory4.43
+of16GiB; task-created clean recovery copy~1.24GB may be assessed, not yet retired.
+All source/build/runtime unchanged since9180360, whose qualified recovery is verified.
+
 # T604 GREEN42 OUTCOME ACCEPT — remaining throughput gate HOLD
 
 Actualedf518d7aca527cee7941ad85869f5fa69364d4c / compiled02a14a66 completed42/42PASS,

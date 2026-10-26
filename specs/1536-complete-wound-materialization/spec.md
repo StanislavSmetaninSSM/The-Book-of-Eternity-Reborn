@@ -89,6 +89,20 @@ row/source/integrity proof precede measured same-work cost assessment. No count 
 alone admits positive or changes its five-minute limit. This changes test-only writer
 buffering; no Game/native/GM/authority contract or new diagnostic format is introduced.
 
+DFRDIAG12: the completed admission audit distinguishes the old16.397M OPEN aggregate
+snapshot/older Game/mix from the current closed event population, which is unknown.
+Producer and consumer overlap; service/flush/decode are included subcosts, not extras
+to add to TotalThroughClose. The old linear illustration is risk context, not a new
+runtime lower bound or automatic veto. No Optimize/codegen change is selected.
+After current bindings/exact1-case PlanOnly/ownership/disk-memory reserve and separate
+independent PREP, one diagnostically distinct unchanged-positive execution may measure
+current population/progress/backlog through the accepted full-stream transport under
+the original300-second category. Preserve all original functional/physical assertions,
+full uncapped events/messages/original clocks and normal owned cleanup. This is not
+promised PASS or guaranteed resource fit. Partial/failed/timeout outcomes remain
+unqualified, fully retained and stop dependent gates; no automatic retry or limit/
+quota/schema/stack change. Only a complete accepted outcome can release legacy/cold.
+
 # T179-Pd.3e bounded observed debug-prefix amendment — #1536 / 2026-10-25
 
 DFR-HOT1: existing actual Capturing joint owner consumes the same ordered ordinary

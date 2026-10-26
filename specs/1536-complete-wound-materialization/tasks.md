@@ -39,6 +39,17 @@ unchanged positive is incomplete TIMEOUT300s, not phase/functional acceptance.
   proof independently accepted;1966→126 real calls with same DATA. Full65536-event cost
   measured honestly, without throughput/headroom claim. T601/T603/positive remain open.
 
+- [x] T605-READONLY Audit actual cached serializer path and cost admission:17 cached
+  names/0hot Encode; historical OPEN16.4M is not current workload; overlap/long traces
+  invalidate a universal linear veto. Integration-wide compiler option is deferred,
+  not selected or implemented. Exact source/event-mix/cost audit retained externally.
+- [ ] T606 Prepare ONE diagnostically distinct existing positive on current accepted
+  GREEN stack: actual resource/ownership/reserve, current33/52/native/source bindings,
+  exact original1-case/5-minute plan, canonical objective/outcome rules, remote recovery
+  and independent PREP. No runtime until accepted; preserve every functional assertion
+  and full events/messages. Evaluate actual completed/partial outcome independently;
+  stop dependent gates on non-PASS, no automatic repeat. No Optimize/codegen change.
+
 # T179-Pd.3e observed debug-prefix consumer — #1536 / 2026-10-25
 
 Base `265af120cd0e1df812617ba44c07cde4f2b67f6e`; bounded accepted DFR design,
