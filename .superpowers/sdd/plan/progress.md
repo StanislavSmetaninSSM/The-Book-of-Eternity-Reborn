@@ -1,3 +1,20 @@
+# T606 one diagnostic outcome TIMEOUT — dependents stopped, partial preserved
+
+actual-dfr-diagnostic-positive-1 at9d65a291afac3417ba972a4ec647375eec932ecb / compiled02a:
+category300.1412079s/Budget5minutes,runner322.8878959s,exit124/TimedOut. Planned1/1,
+completed0/0,Tests0,0TRX/report absent. Both process cleanup flags true; testhostPID148390
+isended zombie,actual fixture root retained,so fixturecleanup/fullfunctional/fullcapture
+notproved. The generic lane10minute wording does not replace actual category300.141s.
+Stored partialgzip581682633bytes remains untouched; no footer/report completion invented.
+
+Independent initial outcome agrees TIMEOUT/UNQUALIFIED. All dependent legacy/cold/fullDFR
+gates stopped; no automatic repeat/limit or capture change. ONE source-agent streaming
+parse of the retained partial is running to establish source-clock progress/eventmix/
+unfinished prefix and producer-vs-drain evidence. Root read-only physical state retained
+separately; durable files are progress only. Cause not claimed until full prefix audit.
+No source/build/Optimize/native changes or raw/saves deletion. All previous complete raw
+and current partial/retained fixture remain outside Git; checkpoints contain text only.
+
 # T606 one current diagnostic positive PREP ACCEPT — original300s only
 
 Independent second PREP accepts current33/52 bindings/native3, exact original1/1
