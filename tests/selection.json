@@ -101,7 +101,7 @@
     },
     {
       "category": "fr063-joint-live-n-source-unchanged",
-      "reason": "Reuse existing independent full positive with actual typed prefix/capture/timestamp/fence/disposal assertions and original inert repeat.",
+      "reason": "Reuse the independent full positive without another fixture. Exercise two actual engine-owned calls into the SAME consumer after CloseCapture and actual expiry; require exact refusals, no extra Capture/Evaluate/Recheck/timestamp work, unchanged retained result/counters/runtime/full physical images/turn/mutations, while original successful closed fence still yields source check2 and full inert completion.",
       "contracts": [
         "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
       ]
@@ -122,14 +122,14 @@
     },
     {
       "category": "fr063-joint-live-n-prepared-resume",
-      "reason": "Conditional SOURCE/PREP review gate: new current-only prefix checks touch the authenticated v3 current resume path; preserve the one frozen I publication and HistoricalNUnavailable without claiming historical prefix.",
+      "reason": "Required existing Prepared0 singleton: independent SOURCE call graph confirms physically authenticated I-v3 resume enters the added current-only DFR producer and closed fence without fresh Stage/Ready. Preserve its one frozen I publication and HistoricalNUnavailable; no historical prefix proof, no original-five replay.",
       "contracts": [
         "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
       ]
     },
     {
       "category": "fr063-joint-live-n-published-resume",
-      "reason": "Conditional SOURCE/PREP review gate: current-only prefix must not require fresh Stage/Ready memory, rewrite Published I or fabricate historical proof. Existing singleton only, no native original-five replay.",
+      "reason": "Required existing Published2 singleton: authenticated I-v3 continuation enters the new current-only DFR consumer/fence and must preserve zero Published I rewrite, no fresh Stage/Ready requirement and no invented historical proof. Run after the accepted cheap/actual consumer gates; no original-five replay.",
       "contracts": [
         "#1536 T594–597 / DFR-HOT1–4; actual ordinary/null/N source integrity and real Capturing/closed-fence consumption"
       ]

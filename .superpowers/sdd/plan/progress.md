@@ -1,3 +1,28 @@
+# T594–595 SOURCE phase-coverage correction — uncompiled WIP
+
+Independent coherent SOURCE review of b88cbf13 requested one P2 correction:
+actual consumer calls after CloseCapture and actual expiry were absent; flags alone
+were insufficient. No other confirmed production defect was found. The bounded
+correction extends the existing genuine unchanged positive with those typed calls,
+retained-result/named-counter/physical-tree/turn/effect invariance and successful
+closed-fence completion. No fake issuer/pass/attempt or second expensive fixture.
+The same private actual consumer handles reentry; its restricted entry cannot
+create a first pass, and an atomic operation gate prevents overlapping retention.
+Runtime evidence for this correction remains UNRUN; delta SOURCE review is next.
+
+Final call-graph review requires both existing current-v3 cold singletons:
+Prepared0/Published2 authenticate I then enter the new prefix consumer without
+fresh Stage/Ready. Preserve one frozen I publication versus zero Published rewrite;
+no original-five/native40/Windows expansion. Full five-project XML/PDB preparation,
+exact discovery/PlanOnly and independent PREP still precede changed runtime.
+Accepted Linux native C source and package hashes remain exact; no native rebuild
+or execution was performed for DFR. Current managed binaries remain pre-DFR.
+
+Direct GitHub recovery of b88cbf13 completed:30,909 exact tracked blobs /
+772,567,578 logical bytes, clean including ignored, no copied local sources or
+recovery build/runtime. Complete reports/raw remain external in dfr-prefix; no
+old measurement/save was deleted. Preserve full NI/reasoning/S and prior limits.
+
 # T594–595 coherent SOURCE candidate ready — uncompiled WIP
 
 Complete frozen candidate includes26 source/catalog files plus canonical scope

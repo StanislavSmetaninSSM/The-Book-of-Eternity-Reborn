@@ -17,8 +17,9 @@ current I/N owners preserved. Windows deferred; full family/S remains open.
   source/ordinary/N/read-pipeline regressions with exact counts and owned cleanup.
 - [ ] T597 Genuine invalid-prefix refusal, unchanged completion and DFR-specific
   source-drift integration required for actual DFR fence wiring; one genuine v1
-  dispatch regression. No native cold or original-five repetition absent a concrete
-  changed contract.
+  dispatch regression. Final SOURCE call graph requires existing Prepared0 and
+  Published2 cold singletons through the new consumer, preserving one frozen I
+  publication versus zero rewrite. No original-five/native40/Windows expansion.
 - [ ] T598 Independent final outcome, compact checkpoint, commit/push/remote SHA
   and clean GitHub source recovery; continue remaining materialization dependencies.
 

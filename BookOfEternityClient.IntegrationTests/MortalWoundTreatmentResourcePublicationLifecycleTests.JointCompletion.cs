@@ -214,7 +214,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     }
                     narrativeSourceProbe?.ObserveCheckpoint(checkpoint);
                     reasoningPrefixProbe?.ObserveCheckpoint(checkpoint);
-                    return Task.CompletedTask;
+                    return narrativeSourceProbe?.AssertPrefixPhaseAtCheckpointAsync(checkpoint) ?? Task.CompletedTask;
                 }
             };
         using var runtimeSetupTiming = _fs.MeasureOperation("JointScenario.Runtime.CreateAndConfigure");
@@ -623,7 +623,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Before = MortalArchiveDigests(complete), After = MortalArchiveDigests(repeated), FullBytesEqual = true });
         Assert.False(repeat);
         Assert.Equal(43, runtime.GameLoop.TurnNumber);
-        narrativeSourceProbe?.AssertCompleted();
+        if (narrativeSourceProbe is not null) await narrativeSourceProbe.AssertCompletedAsync();
         interfaceLifecycleProbe?.ObserveCompletionBeforeCleanup();
         if (interfaceLifecycleProbe is not null) await interfaceLifecycleProbe.ObserveNewOrdinaryBeforeCleanupAsync(engine);
 

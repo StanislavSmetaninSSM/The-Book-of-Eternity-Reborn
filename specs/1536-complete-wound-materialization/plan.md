@@ -127,8 +127,10 @@ Current I/N implementation supersedes that document's historical missing-3b stat
   post-observer fence unless a cheap typed test reaches that genuine owner/fence; Inspect complete raw, exact bytes/turn/effects,
   named evaluation/recheck counts and owned cleanup before outcome claims. Add
   one existing genuine retained-v1 live producer/consumer regression for the explicit
-  legacy dispatch; no new prefix evidence is granted there. Native current-v3 cold
-  controls are selected only if the final call graph changes their consumer.
+  legacy dispatch; no new prefix evidence is granted there. Final SOURCE review
+  confirms that both current-v3 cold singletons are required: authenticated
+  Prepared0 and Published2 enter the new prefix consumer without fresh Stage/Ready;
+  retain one frozen I publication versus zero Published rewrite.
 - [ ] T598 Independent outcome/recovery review and source-only remote checkpoint;
   then guardian/resident first-pass projection adapters, full reasoning sources/
   Actor Brain/six audits and remaining S→C→B/M3/F1/T197. No partial epic closure.

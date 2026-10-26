@@ -17,6 +17,18 @@ public partial class GameEngine
     internal MortalJointDebugPrefixObservation? CaptureMortalJointReasoningPrefixObservation() =>
         _mortalJointReasoningPrefixObservation is { } value ? value with { Sources = Array.AsReadOnly(value.Sources.ToArray()) } : null;
 
+    /// <summary>Reconsumes this engine's retained actual prefix through its owner; it cannot import or issue a first pass.</summary>
+    /// <returns>Copied retained diagnostics, or the real consumer's owner/phase refusal.</returns>
+    internal async Task<IReadOnlyList<ValidationIssue>> ReconsumeCurrentMortalJointReasoningPrefixAsync()
+    {
+        var attempt = _mortalJointPublicationAttempt
+            ?? throw new InvalidDataException("debug_prefix_actual_attempt_missing");
+        var issues = await attempt.ConsumeDebugPrefixAsync(JointAttemptIssuer, requireRetained: true);
+        if (!ReferenceEquals(_mortalJointPublicationAttempt, attempt))
+            throw new InvalidDataException("debug_prefix_actual_attempt_replaced");
+        return issues;
+    }
+
     private sealed class MortalJointDebugPrefixRejectedException(IReadOnlyList<ValidationIssue> issues)
         : Exception("Actual debug prefix refused common preparation.")
     {
@@ -35,7 +47,7 @@ public partial class GameEngine
         private readonly int _prefixProtocol;
         private readonly string _prefixManifestData, _prefixAuthorityData;
         private ValidationService.DebugPrefixPass? _prefix;
-        private int _prefixEvaluations, _prefixChecks;
+        private int _prefixEvaluations, _prefixChecks, _prefixConsuming;
 
         private bool RequireLegacyPrefixDispatch(bool capturing)
         {
@@ -101,11 +113,25 @@ public partial class GameEngine
             return frame;
         }
 
-        internal async Task<IReadOnlyList<ValidationIssue>> ConsumeDebugPrefixAsync(object issuer)
+        internal async Task<IReadOnlyList<ValidationIssue>> ConsumeDebugPrefixAsync(object issuer, bool requireRetained = false)
         {
             RequireIssuer(issuer);
+            // The engine-owned reentry surface cannot overlap an in-flight
+            // producer/recheck or replace its retained result after an await.
+            if (Interlocked.CompareExchange(ref _prefixConsuming, 1, 0) != 0)
+                throw new InvalidOperationException("debug_prefix_consumption_already_active");
+            try { return await ConsumeDebugPrefixCoreAsync(requireRetained); }
+            finally { Volatile.Write(ref _prefixConsuming, 0); }
+        }
+
+        private async Task<IReadOnlyList<ValidationIssue>> ConsumeDebugPrefixCoreAsync(bool requireRetained)
+        {
             if (RequireLegacyPrefixDispatch(capturing: true)) return Array.Empty<ValidationIssue>();
             var frame = RequirePrefixBinding(capturing: true);
+            // This restriction follows the SAME owner/phase guard, so late or
+            // expired calls must exercise that guard rather than a probe copy.
+            if (requireRetained && _prefix is null)
+                throw new InvalidDataException("debug_prefix_actual_retained_data_missing");
             if (_prefix is { } retained)
             {
                 await retained.RequireCurrentAsync(_files, _lease);

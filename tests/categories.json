@@ -296,7 +296,7 @@
 },
 {
   "id": "fr063-joint-live-n-source-unchanged",
-  "responsibility": "Genuine Stage43/corrected Ready actual N achievements-read unchanged counterpart. Existing full joint completion and inert repeat remain mandatory; one real preparation.",
+  "responsibility": "Genuine Stage43/corrected Ready unchanged counterpart with original full joint completion/inert repeat. Actual captured DFR NeedsActorDependencies/evaluation1/timestamp1 and successful closed fence check2; two real same-consumer reentry calls after CloseCapture and actual expiry must refuse with unchanged retained DATA/counters and physical effects, zero extra producer/evaluate/timestamp work.",
   "excludes": "No invented N/I/Ready/original, full NI/S/B/M3/F1/T197, cold resume, native crash, Windows qualification or broad fixture replay. Missing API, build, setup or timeout never constitute causal RED.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointNarrativeSource.cs",

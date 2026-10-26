@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Xunit;
@@ -241,6 +242,66 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.Equal(Starts(beforeRepeat, name), Starts(afterRepeat, name));
         }
 
+        private int _closedPrefixRefusals;
+
+        /// <summary>Uses the existing genuine closed-capture checkpoint; no new owner or callback is introduced.</summary>
+        internal async Task AssertPrefixPhaseAtCheckpointAsync(SessionFinalizationCheckpoint checkpoint)
+        {
+            if (changeSource || checkpoint != SessionFinalizationCheckpoint.MortalJointCustodyCaptureCompletedBeforePreparation) return;
+            Assert.Equal(0, _closedPrefixRefusals);
+            await AssertActualPrefixPhaseRefusalAsync(expired: false);
+            _closedPrefixRefusals++;
+        }
+
+        private async Task AssertActualPrefixPhaseRefusalAsync(bool expired)
+        {
+            var engine = _runtime!.Engine;
+            var beforeResult = Assert.IsType<MortalJointDebugPrefixObservation>(engine.CaptureMortalJointReasoningPrefixObservation());
+            var beforeRuntime = engine.CaptureMortalJointRuntimeObservation();
+            var beforeOperations = _window!.Capture();
+            // The checkpoint cut was captured immediately before this awaited
+            // check. Expiry is checked after the full existing inert-repeat proof.
+            var beforeImages = expired ? PhysicalImages() : Assert.IsType<Dictionary<string, byte[]?>>(_atCut);
+            var beforeTurn = _runtime.GameLoop.TurnNumber;
+            var mutationCount = _postCutMutations.Count;
+            Assert.Equal("NeedsActorDependencies", beforeResult.Disposition);
+            Assert.Equal(1, beforeResult.Evaluations); Assert.Equal(1, beforeResult.TimestampCalls);
+            Assert.Equal(expired ? 2 : 1, beforeResult.SourceChecks);
+            Assert.Equal(expired, beforeResult.AttemptExpired);
+            Assert.Equal(expired, beforeResult.DataDisposed);
+            if (!expired) Assert.Equal("PreparationStarted", beforeResult.Phase);
+            var failure = await Record.ExceptionAsync(() => engine.ReconsumeCurrentMortalJointReasoningPrefixAsync());
+            var afterResult = engine.CaptureMortalJointReasoningPrefixObservation();
+            var afterRuntime = engine.CaptureMortalJointRuntimeObservation();
+            var afterOperations = _window.Capture();
+            var afterImages = PhysicalImages();
+            _fixture!.WritePhysicalInjuryDiagnostic("dfr_actual_consumer_phase_refusal", new
+            {
+                Expired = expired, Failure = failure?.ToString(), BeforeResult = beforeResult, AfterResult = afterResult,
+                BeforeRuntime = beforeRuntime, AfterRuntime = afterRuntime,
+                BeforeCounters = beforeOperations, AfterCounters = afterOperations,
+                BeforeImages = RawImages(beforeImages), AfterImages = RawImages(afterImages),
+                BeforeTurn = beforeTurn, AfterTurn = _runtime.GameLoop.TurnNumber,
+                MutationCountBefore = mutationCount, MutationCountAfter = _postCutMutations.Count
+            });
+            var refused = Assert.IsType<InvalidDataException>(failure);
+            Assert.Contains(expired ? "current joint attempt owner" : "debug_prefix_attempt_phase_unavailable", refused.Message);
+            Assert.Equal(JsonSerializer.Serialize(beforeResult), JsonSerializer.Serialize(afterResult));
+            Assert.Equal(JsonSerializer.Serialize(beforeRuntime), JsonSerializer.Serialize(afterRuntime));
+            foreach (var name in new[] { "ReasoningPrefix.Capture", "ReasoningPrefix.Evaluate", "ReasoningPrefix.Recheck" })
+            {
+                Assert.Equal(Starts(beforeOperations, name), Starts(afterOperations, name));
+                Assert.Equal(Completes(beforeOperations, name), Completes(afterOperations, name));
+            }
+            Assert.Equal(beforeTurn, _runtime.GameLoop.TurnNumber);
+            Assert.Equal(mutationCount, _postCutMutations.Count);
+            Assert.Equal(beforeImages.Keys, afterImages.Keys);
+            foreach (var (path, raw) in beforeImages) Assert.Equal(raw, afterImages[path]);
+        }
+
+        private static long Completes(OperationTimingAccumulator.Snapshot snapshot, string name) =>
+            snapshot.Rows.SingleOrDefault(row => row.Name == name)?.Completed ?? 0;
+
         /// <summary>Reads only the existing sealed scalar timing window; it grants no source or publication authority.</summary>
         /// <param name="snapshot">One detached observation reused for the current callback's phase checks.</param>
         /// <param name="name">The existing named operation whose current invocation is observed.</param>
@@ -253,7 +314,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             snapshot.Rows.SingleOrDefault(row => row.Name == name)?.Started ?? 0;
 
         /// <summary>Checks the unchanged source contrast after all original full completion and inert-repeat assertions.</summary>
-        internal void AssertCompleted()
+        internal async Task AssertCompletedAsync()
         {
             Assert.False(changeSource); Assert.Equal(1, _callbacks); Assert.True(_sourceReads > 0);
             Assert.True(_narrativeSourceReads > 0); Assert.Equal(_narrativeSourceReads, _narrativeSourceReturns);
@@ -268,6 +329,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.False(prefix.HistoricalCurrentOnly);
             Assert.True(prefix.DataDisposed); Assert.True(prefix.AttemptExpired);
             Assert.Equal(1, Starts(_window!.Capture(), "ReasoningPrefix.Capture"));
+            Assert.Equal(1, _closedPrefixRefusals);
+            await AssertActualPrefixPhaseRefusalAsync(expired: true);
             _fixture.WritePhysicalInjuryDiagnostic("dfr_unchanged_actual_completion", new { Prefix = prefix, Operations = _window.Capture() });
             _fixture.WritePhysicalInjuryDiagnostic("live_n_unchanged_full_completion", new
             { _callbacks, _sourceReads, _sourceReturns, PreparationEntries, Operations = _window!.Capture(), Reads = _reads,
