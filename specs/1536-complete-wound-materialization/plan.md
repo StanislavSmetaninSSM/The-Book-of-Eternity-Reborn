@@ -91,13 +91,15 @@ Current I/N implementation supersedes that document's historical missing-3b stat
   actual phase ownership and diagnostic refusal. Independent Astra/high DESIGN
   ACCEPT at fc666b9b8; no material blocker. Subsequent SOURCE/PREP/runtime are
   separate gates. Publish WIP before long work.
-- [ ] T593 Add an actual temporal baseline with corrected public debug JSON carrying
+- [x] T593 Add an actual temporal baseline with corrected public debug JSON carrying
   a valid timestamp and empty gm_thoughts_markdown, authored BEFORE actual N.
   With no matching skill/quest claims, N is valid and bytes remain unchanged; old
   common preparation can start before late Full reports missing_gm_thoughts.
   Assert zero common preparation only after proving real N/I/Capturing reached.
   Compile failure or a different admission failure is not this causal RED. Preserve
   an independent unchanged valid-prefix control and all failure/cleanup evidence.
+  Independent Astra/high pair OUTCOME ACCEPT at ae7a483b7: causal RED1 at Prep0
+  (actual1), separate genuine unchanged PASS1; original fixtureFAIL remains separate.
 - [ ] T594 Separately prove actual ordinary Full freshness/parse A→B→A reads can
   preserve semantic issues while a source closure must reject the inconsistent
   physical occurrences. Genuine original debug registration and two reads are

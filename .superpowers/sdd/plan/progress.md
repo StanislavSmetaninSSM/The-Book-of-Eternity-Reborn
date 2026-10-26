@@ -1,3 +1,24 @@
+# T593 baseline pair accepted; T594 ordinary baseline — 2026-10-26
+
+Independent Astra/high OUTCOME accepted ae7a483b7: complete causal RED1 plus
+separate unchanged PASS1, all captures/cleanup/artifact/source persistence checked.
+T593 closes; the DFR consumer/source closure is not implemented or qualified yet.
+The source-only recovery is complete/clean at ae7a. T594–595 now continue.
+
+Before source extraction, exact existing `fr063-reasoning-prefix-regression`
+PlanOnly selects13methods/40cases/one5-minute descriptor,0executed. Eleven actual
+PE/PDB pairs and30 unique Git/current/PDB sources verified, including the unchanged
+ordinary fixture/policy/entry files. Entire Game and Unit C# trees match their
+actual fresh-session compiled3cf/8e commits; Integration remains345ee. No current
+production/test source changed, so this ordinary baseline uses those verified
+NoBuild artifacts. Catalog953/12,523 membership is unchanged. Selection adds this
+contract explicitly; actual command is ONLY this category, not the combined set.
+Three theory cases/four private helper calls have a static reflection/optional-
+argument mismatch candidate; no runtime defect is asserted before measurement.
+Run/classify full40, then use the planned meaningful typed fixed-debug DATA API
+and preserve equality/policy-null/full-issue/cleanup oracles during implementation.
+No new Windows/native/cold/original-five run or production source change here.
+
 # T593 genuine unchanged counterpart PASS — pair outcome review next
 
 `actual-unchanged-baseline-1` at runtime05d1751e5/Integration345ee:1/1PASS,

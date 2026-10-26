@@ -4,7 +4,7 @@ Base `265af120cd0e1df812617ba44c07cde4f2b67f6e`; bounded accepted DFR design,
 current I/N owners preserved. Windows deferred; full family/S remains open.
 - [x] T592 Freeze current-source prefix interfaces, temporal/source causal oracles,
   optimization/selection boundaries; independent design review and remote checkpoint.
-- [ ] T593 Actual genuine corrected debug-prefix temporal RED and unchanged control
+- [x] T593 Actual genuine corrected debug-prefix temporal RED and unchanged control
   preparation: no missing-API/compile/reflection RED; independent fixture/PREP gate.
 - [ ] T594 Shared ordinary prefix orchestration and closed typed physical/original
   observations with borrowed actual lease; cheap actual-read disagreement/fault/owner

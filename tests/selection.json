@@ -14,6 +14,13 @@
       "contracts": [
         "#1536 T593 / genuine unchanged positive contrast; DFR-HOT1/DFR-HOT4"
       ]
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "reason": "#1536 T594 pre-extraction ordinary Full baseline: exact13methods40cases for document/scope/read/catch/order/raw-original contracts. Current Game3cf and Unit8e C# trees are byte-unchanged and PDB-bound; no new build is needed. Three genuine-original theory cases may reveal the known static optional-parameter/reflection fixture mismatch; classify actual outcome, preserve failures, then replace with a typed fixed-debug DATA call during the coherent implementation. This category runs separately before source edits.",
+      "contracts": [
+        "#1536 T594 / DFR-HOT1, DFR-HOT2, ordinary Full regression baseline"
+      ]
     }
   ]
 }
