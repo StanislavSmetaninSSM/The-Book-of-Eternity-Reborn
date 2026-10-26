@@ -1,3 +1,25 @@
+# T607 exact causal singleton preparation complete — independent PREP pending
+
+Current source checkpoint `786b6fd432274b83c906a724867824ac48162cef` contains only
+Markdown after compiled `b54a8f4b`; all current 33 artifacts/59 source pins remain exact.
+Official `-ValidateCatalog -NoBuild` completed exit 0 in 92.3112529 seconds:
+CATALOG-VALID 963 categories / 12,571 methods/files; no tests executed, no timeout,
+owned-tree cleanup complete. No unmapped/stale ownership is accepted implicitly.
+
+Official exact `t607-red-selection.json -NoBuild -PlanOnly` completed exit 0 in
+17.5538856 seconds: `core-lifecycle-sealed-read-reuse-unit-001`, one method/one case,
+exclusive, original category budget one minute (derived runner budget six minutes).
+Method: `LifecycleSealedReadObservationTests.EightActualReadsKeepAllDataAndReuseOneInitialAndOneFreshSource`.
+Zero tests executed; no timeout, owned cleanup complete. This is discovery/plan only.
+
+Full clean GitHub recovery of `786b6fd4` verified 30,920 blobs, 772,928,705 logical
+bytes and all 59 qualified PDB-bound sources; no recovery build/runtime. Current
+source/native/binary preparation and exact plan now go to independent PREP for ONE
+actual causal singleton. Expected RED is solely final physical source count two
+versus actual original-hook eight after all DATA/eight-return/cleanup prerequisites;
+any setup, prior assertion, timeout, lost result or cleanup failure is not that RED.
+Shared factory true/true remains; no GREEN/live/cold/positive release or raw deletion.
+
 # T607 warning-clean managed preparation verified — discovery/PREP next
 
 Fresh five-project build at `b54a8f4ba8e9d28765106fdd1cab3ca34cb8ce20` completed
