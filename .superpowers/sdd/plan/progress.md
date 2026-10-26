@@ -1,3 +1,19 @@
+# T607 source-only WIP1 — uncompiled, reader/provenance plumbing incomplete
+
+Tests authored first: one eight-read real-source causal Fact, public/leased sync/async
+Theory, epoch/binding/copy, independent read/close attachment policy and genuine
+recovery closing eligibility control. Static inventory only: 5 methods/8 cases,
+not discovery or execution. Existing CanonicalReadActivityAccumulator now has sealed
+epoch/token DATA; OperationTimingAccumulator has scalar queries; lifecycle holder has
+independent closing policy. Shared RED factory still returns original true/true hooks.
+
+This four-path WIP is NOT compile-ready: private actual N origin/diagnostic-only
+recheck arm, FileReadObservation composition, real backend/reader-return boundaries,
+additional negative controls and catalog/source-inverse maintenance remain. No build,
+runtime, RED/GREEN or SOURCE acceptance is claimed. No N fresh/acceptance change,
+no cache/eligibility-guard/timeout change, no raw in Git. Continue the coherent scaffold,
+then freeze exact sources for independent SOURCE before fresh preparation.
+
 # T607 DESIGN ACCEPT — RED scaffold implementation, no runtime release
 
 Independent Astra High accepts refined concrete plan at `62b5a02f`: actual producer-

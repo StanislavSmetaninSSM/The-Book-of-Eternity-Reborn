@@ -79,6 +79,22 @@ internal sealed class OperationTimingAccumulator
             _captureEvents = captureEvents;
         }
 
+        /// <summary>Checks this actual active recorder window without acquiring authority or sampling time.</summary>
+        /// <param name="owner">The recorder configured on the actual filesystem.</param>
+        /// <returns>Whether this window remains the configured recorder's active window.</returns>
+        internal bool IsActiveFor(OperationTimingAccumulator owner)
+        {
+            lock (_gate) return ReferenceEquals(_owner, owner) && !_closed && ReferenceEquals(Volatile.Read(ref owner._active), this);
+        }
+
+        /// <summary>Copies one existing named counter without sorting/copying all counters or granting read ownership.</summary>
+        /// <param name="name">The exact existing operation name.</param>
+        /// <returns>Scalar started/completed counts, or zeros before the name was observed.</returns>
+        internal (long Started, long Completed) CaptureNamedCounts(string name)
+        {
+            lock (_gate) return _rows.TryGetValue(name, out var value) ? (value.Started, value.Completed) : (0, 0);
+        }
+
         /// <summary>
         /// Registers a scope only while this window remains open.
         /// </summary>

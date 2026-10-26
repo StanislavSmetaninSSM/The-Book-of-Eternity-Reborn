@@ -11,6 +11,8 @@ internal sealed class LifecycleFixtureReadObservers
     private readonly CanonicalReadActivityAccumulator _sources = new();
     private Func<string, Task>? _initial;
     private Func<string, Task>? _returned;
+    private readonly bool _closingForwardingEnabled;
+    private Func<Task>? _closing;
 
     /// <summary>
     /// Creates stable forwarding delegates for the fixture's lifetime.
@@ -18,11 +20,33 @@ internal sealed class LifecycleFixtureReadObservers
     /// <param name="forwardingEnabled">
     /// Whether read callbacks may be attached, including after construction.
     /// </param>
-    internal LifecycleFixtureReadObservers(bool forwardingEnabled = true)
+    /// <param name="closingForwardingEnabled">Whether session-closing callbacks may be attached; independent of read forwarding.</param>
+    internal LifecycleFixtureReadObservers(bool forwardingEnabled = true, bool closingForwardingEnabled = true)
     {
         _forwardingEnabled = forwardingEnabled;
+        _closingForwardingEnabled = closingForwardingEnabled;
         AfterInitialValidationAsync = forwardingEnabled ? path => _initial?.Invoke(path) ?? Task.CompletedTask : null;
         AfterReadAttemptAsync = forwardingEnabled ? path => _returned?.Invoke(path) ?? Task.CompletedTask : null;
+        AfterSessionClosingAsync = closingForwardingEnabled ? () => _closing?.Invoke() ?? Task.CompletedTask : null;
+    }
+
+    /// <summary>Shares the selected positive construction policy with the real-file mechanism control.</summary>
+    /// <returns>The RED scaffold's unchanged original forwarding policy with passive DATA available alongside it.</returns>
+    internal static LifecycleFixtureReadObservers CreateForSealedSourceObservation() => new();
+
+    /// <summary>Gets the actual optional closing forwarder; existing read-only opt-ins keep it enabled by default.</summary>
+    internal Func<Task>? AfterSessionClosingAsync { get; }
+
+    /// <summary>Attaches an ordinary closing callback only when the immutable construction policy permits it.</summary>
+    internal Func<Task>? ClosingObserver
+    {
+        get => _closing;
+        set
+        {
+            if (!_closingForwardingEnabled && value is not null)
+                throw new InvalidOperationException("Closing observation was disabled before fixture construction.");
+            _closing = value;
+        }
     }
 
     /// <summary>
