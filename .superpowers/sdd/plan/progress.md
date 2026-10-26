@@ -1,3 +1,26 @@
+# T594 Services/Core implementation WIP — compile/runtime UNRUN
+
+First coherent source fragment:11 C# paths. Shared ordinary prefix orchestration,
+DATA-only producer/source ledger, closed N/DFR physical transport, original-lookup
+adapter and typed fixed-debug replacement for the legacy reflection helper are
+written. Original ordinary pure-policy partial bytes are unchanged; old helper
+assertions remain. All current binaries are the preserved pre-DFR versions and
+MUST NOT execute the new source via NoBuild. Fifteen unique baseline DLL/PDB/XML
+files/88,445,004bytes are retained externally as evidence only; all33 current
+runtime files matched before retention. No old raw/save was deleted.
+
+This is intentionally incomplete/unreviewed WIP, not SOURCE-ready or GREEN.
+Engine Capturing wiring, cheap/integration controls, full source inverse, final
+selection/docs and optimization review remain pending. Original scoped/supplied
+DATA joining and uncovered-vs-absence disposition need completion against the
+actual private frame; existence-fault occurrences also remain explicit work.
+Normal validation holds its prevalidated snapshot scope across canonical refresh,
+so supported genuine supplied DATA must not be blanket-refused. No imported DATA
+becomes authority: actual engine frame/lease/source binding is still mandatory.
+After this remote checkpoint, continue the coherent engine/tests/guard block;
+fresh builds/runtime only after SOURCE/selection gates. No Full/S/cold/Windows
+qualification is claimed from this fragment.
+
 # T594 ordinary pre-extraction baseline measured — implementation next
 
 Existing `fr063-reasoning-prefix-regression` at runtime5cbf56fef completed all40

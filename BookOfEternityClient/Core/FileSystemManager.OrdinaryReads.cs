@@ -1,4 +1,3 @@
-using NarrativeReadObservation = BookOfEternityClient.Services.ValidationService.NarrativeInterfaceSourceSession.NarrativeReadObservation;
 using System.Runtime.ExceptionServices;
 
 namespace BookOfEternityClient.Core;
@@ -56,11 +55,11 @@ public partial class FileSystemManager
     }
 
     private async Task<string?> ReadOrdinaryFileCoreAsync(string relativePath, CanonicalWriteLease? lease = null,
-        NarrativeReadObservation? observation = null) =>
+        FileReadObservation? observation = null) =>
         DecodeFileSnapshot(await ReadOrdinaryFileSnapshotCoreAsync(relativePath, CancellationToken.None, lease, observation));
 
     private async Task<byte[]?> ReadOrdinaryFileBytesCoreAsync(string relativePath,
-        CancellationToken cancellationToken, CanonicalWriteLease? lease = null, NarrativeReadObservation? observation = null) =>
+        CancellationToken cancellationToken, CanonicalWriteLease? lease = null, FileReadObservation? observation = null) =>
         (await ReadOrdinaryFileSnapshotCoreAsync(relativePath, cancellationToken, lease, observation))?.Content;
 
     /// <summary>
@@ -115,7 +114,7 @@ public partial class FileSystemManager
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     private async Task<CanonicalFileReadSnapshot?> ReadOrdinaryFileSnapshotUncachedAsync(
         string relativePath, CancellationToken cancellationToken, CanonicalWriteLease? lease = null,
-        SourceValidationBatch? batch = null, NarrativeReadObservation? observation = null)
+        SourceValidationBatch? batch = null, FileReadObservation? observation = null)
     {
 #if DEBUG
         var diagnosticOutcome = "fault";
@@ -267,7 +266,7 @@ public partial class FileSystemManager
     /// </returns>
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     private CanonicalFileReadSnapshot? ReadOrdinaryFileSnapshotCore(
-        string relativePath, CanonicalWriteLease? lease = null, NarrativeReadObservation? observation = null)
+        string relativePath, CanonicalWriteLease? lease = null, FileReadObservation? observation = null)
     {
         try
         {
@@ -302,7 +301,7 @@ public partial class FileSystemManager
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     private Task<CanonicalFileReadSnapshot?> ReadOrdinaryFileSnapshotCoreAsync(
         string relativePath, CancellationToken cancellationToken, CanonicalWriteLease? lease = null,
-        NarrativeReadObservation? observation = null)
+        FileReadObservation? observation = null)
     {
         if (observation is null)
             return _validationReadSet.Value is { } phase && ValidationReuseSuppression.Value == 0
@@ -354,7 +353,7 @@ public partial class FileSystemManager
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     private CanonicalFileReadSnapshot? ReadOrdinaryFileSnapshotCore(string relativePath,
         CanonicalWriteLease? lease, out ExceptionDispatchInfo? dataFailure, bool nullableDataFailure,
-        SourceValidationBatch? batch = null, NarrativeReadObservation? observation = null)
+        SourceValidationBatch? batch = null, FileReadObservation? observation = null)
     {
 #if DEBUG
         var diagnosticOutcome = "fault";

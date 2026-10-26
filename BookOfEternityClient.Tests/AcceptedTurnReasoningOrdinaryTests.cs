@@ -1,4 +1,3 @@
-using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -321,12 +320,8 @@ public sealed class AcceptedTurnReasoningOrdinaryTests(ITestOutputHelper output)
         Assert.Equal("{", File.ReadAllText(_fixture.Physical(OrdinaryReasoningFixture.DebugPath)));
     }
 
-    private static async Task<string?> ReadOriginalDebugAsync(ValidationService validator)
-    {
-        var method = typeof(ValidationService).GetMethod("ReadValidatedCurrentPreTurnTrackedFileAsync", BindingFlags.Instance | BindingFlags.NonPublic);
-        Assert.NotNull(method);
-        return await Assert.IsAssignableFrom<Task<string?>>(method!.Invoke(validator, new object[] { OrdinaryReasoningFixture.DebugPath }));
-    }
+    private static Task<string?> ReadOriginalDebugAsync(ValidationService validator) =>
+        validator.ReadAcceptedTurnReasoningOriginalDebugAsync();
 
     private static string[] SplitCodes(string value) => value.Length == 0 ? Array.Empty<string>() : value.Split(',');
     private static string DescribeIssue(ValidationIssue issue) => JsonSerializer.Serialize(new

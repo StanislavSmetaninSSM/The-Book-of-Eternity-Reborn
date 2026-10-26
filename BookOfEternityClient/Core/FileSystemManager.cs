@@ -1,4 +1,3 @@
-using NarrativeReadObservation = BookOfEternityClient.Services.ValidationService.NarrativeInterfaceSourceSession.NarrativeReadObservation;
 using NarrativeWriteObservation = BookOfEternityClient.Services.ValidationService.NarrativeInterfaceSourceSession.NarrativeWriteObservation;
 using BookOfEternityClient.Services.GmWorkers;
 using Microsoft.Extensions.Logging;
@@ -1737,7 +1736,7 @@ public partial class FileSystemManager
     /// <summary>Reads ordinary text while explicitly retaining each actual initial and followup source snapshot.</summary>
     /// <param name="relativePath">Original session-relative spelling passed unchanged to the public ordinary reader.</param>
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
-    internal async Task<string?> ReadFileAsync(string relativePath, NarrativeReadObservation? observation)
+    internal async Task<string?> ReadObservedFileAsyncCore(string relativePath, FileReadObservation? observation)
     {
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "public-text-async", "semantic", "started");
@@ -1793,9 +1792,9 @@ public partial class FileSystemManager
     /// The observed content, or <see langword="null"/> for an absent source.
     /// </returns>
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
-    internal async Task<string?> ReadFileAsync(
+    internal async Task<string?> ReadObservedFileAsyncCore(
         CanonicalWriteLease writeLease,
-        string relativePath, NarrativeReadObservation? observation = null)
+        string relativePath, FileReadObservation? observation)
     {
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "explicit-text-async", "semantic", "started");
@@ -1835,7 +1834,7 @@ public partial class FileSystemManager
     /// Decoded text or <see langword="null"/> for observed absence.
     /// </returns>
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
-    private async Task<string?> ReadFileCoreAsync(string relativePath, CanonicalWriteLease? lease = null, NarrativeReadObservation? observation = null)
+    private async Task<string?> ReadFileCoreAsync(string relativePath, CanonicalWriteLease? lease = null, FileReadObservation? observation = null)
     {
         var snapshot = await ReadFileSnapshotCoreAsync(
             relativePath,
@@ -1861,7 +1860,7 @@ public partial class FileSystemManager
     /// <summary>Observes the existing public bytes reader without changing publication recovery or followups.</summary>
     /// <param name="relativePath">Original session-relative spelling passed unchanged to the public bytes reader.</param>
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
-    internal Task<byte[]?> ReadFileBytesObservedAsync(string relativePath, NarrativeReadObservation observation) =>
+    internal Task<byte[]?> ReadObservedFileBytesObservedAsyncCore(string relativePath, FileReadObservation observation) =>
         ReadFileBytesWithPublicationRecoveryAsync(relativePath, CancellationToken.None, observation);
 
     internal async Task<byte[]?> ReadFileBytesAsync(
@@ -1887,9 +1886,9 @@ public partial class FileSystemManager
     /// The observed content, or <see langword="null"/> for an absent source.
     /// </returns>
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
-    internal async Task<byte[]?> ReadFileBytesAsync(
+    internal async Task<byte[]?> ReadObservedFileBytesAsyncCore(
         CanonicalWriteLease writeLease,
-        string relativePath, NarrativeReadObservation? observation = null)
+        string relativePath, FileReadObservation? observation)
     {
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "explicit-bytes-async", "semantic", "started");
@@ -1963,7 +1962,7 @@ public partial class FileSystemManager
     /// <summary>Observes the unchanged synchronous public text route.</summary>
     /// <param name="relativePath">Original session-relative spelling passed unchanged to the public synchronous text reader.</param>
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
-    internal string? ReadFileSync(string relativePath, NarrativeReadObservation? observation)
+    internal string? ReadObservedFileSyncCore(string relativePath, FileReadObservation? observation)
     {
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "public-text-sync", "semantic", "started");
@@ -2028,9 +2027,9 @@ public partial class FileSystemManager
     /// The observed content, or <see langword="null"/> for an absent source.
     /// </returns>
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
-    internal string? ReadFileSync(
+    internal string? ReadObservedFileSyncCore(
         CanonicalWriteLease writeLease,
-        string relativePath, NarrativeReadObservation? observation = null)
+        string relativePath, FileReadObservation? observation)
     {
         if (TryReadDeclaredSourceData(writeLease, relativePath, false, out var cached)) { observation?.Snapshot(cached?.Content, physical: false); return DecodeFileSnapshot(cached); }
         EnsureValidCanonicalWriteLease(writeLease);
@@ -2077,7 +2076,7 @@ public partial class FileSystemManager
     /// The observed content, or <see langword="null"/> for an absent source.
     /// </returns>
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
-    internal byte[]? ReadFileBytesSync(CanonicalWriteLease writeLease, string relativePath, NarrativeReadObservation? observation = null)
+    internal byte[]? ReadObservedFileBytesSyncCore(CanonicalWriteLease writeLease, string relativePath, FileReadObservation? observation)
     {
         if (TryReadDeclaredSourceData(writeLease, relativePath, false, out var cached)) { observation?.Snapshot(cached?.Content, physical: false); return cached?.Content; }
         EnsureValidCanonicalWriteLease(writeLease);
@@ -2095,7 +2094,7 @@ public partial class FileSystemManager
     /// <summary>Observes the unchanged synchronous public bytes route.</summary>
     /// <param name="relativePath">Original session-relative spelling passed unchanged to the public synchronous bytes reader.</param>
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
-    internal byte[]? ReadFileBytesSync(string relativePath, NarrativeReadObservation? observation)
+    internal byte[]? ReadObservedFileBytesSyncCore(string relativePath, FileReadObservation? observation)
     {
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "public-bytes-sync", "semantic", "started");
@@ -2151,7 +2150,7 @@ public partial class FileSystemManager
 
     private async Task<byte[]?> ReadFileBytesWithPublicationRecoveryAsync(
         string relativePath,
-        CancellationToken cancellationToken, NarrativeReadObservation? observation = null)
+        CancellationToken cancellationToken, FileReadObservation? observation = null)
     {
 #if DEBUG
         BrowserDiagnosticContent(relativePath, "public-bytes-async", "semantic", "started");
@@ -2217,7 +2216,7 @@ public partial class FileSystemManager
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     private async Task<byte[]?> ReadFileBytesCoreAsync(
         string relativePath,
-        CancellationToken cancellationToken, CanonicalWriteLease? lease = null, NarrativeReadObservation? observation = null)
+        CancellationToken cancellationToken, CanonicalWriteLease? lease = null, FileReadObservation? observation = null)
     {
         var snapshot = await ReadFileSnapshotCoreAsync(
             relativePath,
@@ -2240,7 +2239,7 @@ public partial class FileSystemManager
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     private async Task<CanonicalFileReadSnapshot?> ReadFileSnapshotUncachedAsync(
         string relativePath,
-        CancellationToken cancellationToken, NarrativeReadObservation? observation = null)
+        CancellationToken cancellationToken, FileReadObservation? observation = null)
     {
         StableReadFile? openedFile = null;
         for (var attempt = 0; ; attempt++)
@@ -2629,7 +2628,7 @@ public partial class FileSystemManager
     /// </returns>
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     private CanonicalFileReadSnapshot? ReadFileSnapshotUncached(
-        string relativePath, NarrativeReadObservation? observation = null)
+        string relativePath, FileReadObservation? observation = null)
     {
         for (var attempt = 0; ; attempt++)
         {

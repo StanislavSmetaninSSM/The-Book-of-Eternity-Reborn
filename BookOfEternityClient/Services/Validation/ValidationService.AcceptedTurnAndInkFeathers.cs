@@ -2961,7 +2961,7 @@ public partial class ValidationService
     }
 
     private async Task<ValidationPendingTurnSnapshotManifest?> LoadValidationPendingTurnSnapshotManifestAsync(
-        FileSystemManager.CanonicalWriteLease? writeLease = null, NarrativeInterfaceSourceSession? source = null,
+        FileSystemManager.CanonicalWriteLease? writeLease = null, OriginalLookupObservation? source = null,
         string narrativeRolePath = "output/narrative_response.json")
     {
         var json = await ReadAcceptedTurnValidationFileAsync(
@@ -3045,13 +3045,15 @@ public partial class ValidationService
         string code,
         string expected,
         string repairHint,
-        List<ValidationIssue> issues, NarrativeInterfaceSourceSession? source = null)
+        List<ValidationIssue> issues, OriginalLookupObservation? source = null)
     {
-        var preTurnContent = await ReadValidatedCurrentPreTurnTrackedFileAsync(relativePath, source);
+        var preTurnContent = source is null && relativePath == "output/debug_logs.json"
+            ? await ReadAcceptedTurnReasoningOriginalDebugAsync()
+            : source is null ? await ReadValidatedCurrentPreTurnTrackedFileCoreAsync(relativePath, null, null) : await source.ReadOriginalTextAsync(this, relativePath);
         if (preTurnContent == null)
             return;
 
-        var currentContent = await ReadNarrativeSourceTextAsync(relativePath, source) ?? string.Empty;
+        var currentContent = (source is null ? await _fs.ReadFileAsync(relativePath) : await source.ReadCurrentTextAsync(relativePath)) ?? string.Empty;
         if (!string.Equals(currentContent, preTurnContent, StringComparison.Ordinal))
             return;
 
@@ -3404,15 +3406,19 @@ public partial class ValidationService
         return ReadValidatedCurrentPreTurnTrackedFileSync(relativePath);
     }
 
-    private async Task<string?> ReadValidatedCurrentPreTurnTrackedFileAsync(string relativePath, NarrativeInterfaceSourceSession? source = null)
+    private Task<string?> ReadValidatedCurrentPreTurnTrackedFileAsync(string relativePath, NarrativeInterfaceSourceSession? source = null) =>
+        ReadValidatedCurrentPreTurnTrackedFileCoreAsync(relativePath, null, source);
+
+    private async Task<string?> ReadValidatedCurrentPreTurnTrackedFileCoreAsync(string relativePath,
+        FileSystemManager.CanonicalWriteLease? writeLease, OriginalLookupObservation? source)
     {
         try
         {
-            var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync(source: source, narrativeRolePath: relativePath);
+            var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync(writeLease, source, narrativeRolePath: relativePath);
             source?.Policy(relativePath, "original-lookup", lookup.Status.ToString());
             if (lookup.Status == ValidatedPendingTurnSnapshotStatus.Unusable) source?.Unavailable("narrative_policy_original_lookup_unusable");
             return lookup.Status == ValidatedPendingTurnSnapshotStatus.Usable && lookup.Manifest != null
-                ? await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, relativePath, source: source)
+                ? await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, relativePath, writeLease, source)
                 : null;
         }
         catch (Exception error) { source?.Fault(error); throw; }
@@ -3439,7 +3445,7 @@ public partial class ValidationService
     private async Task<string?> ReadValidatedPendingTurnSnapshotFileAsync(
         ValidationPendingTurnSnapshotManifest manifest,
         string relativePath,
-        FileSystemManager.CanonicalWriteLease? writeLease = null, NarrativeInterfaceSourceSession? source = null)
+        FileSystemManager.CanonicalWriteLease? writeLease = null, OriginalLookupObservation? source = null)
     {
         if (manifest.Files == null ||
             !manifest.Files.TryGetValue(relativePath, out var snapshotPath))
@@ -3979,7 +3985,7 @@ public partial class ValidationService
     /// <param name="narrativeRolePath">The originating closed narrative logical role for nested authority reads.</param>
     private PendingTurnRequestValidationContext? LoadPendingTurnRequestValidationContextSync(
         string requestPath,
-        FileSystemManager.CanonicalWriteLease? writeLease = null, NarrativeInterfaceSourceSession? source = null,
+        FileSystemManager.CanonicalWriteLease? writeLease = null, OriginalLookupObservation? source = null,
         string narrativeRolePath = "output/narrative_response.json")
     {
         var json = source is not null
@@ -5074,7 +5080,7 @@ public partial class ValidationService
     /// <param name="source">Explicit invocation observations, or null for the unchanged ordinary route.</param>
     /// <param name="narrativeRolePath">The originating closed narrative logical role for nested authority reads.</param>
     private async Task<ValidatedPendingTurnSnapshotLookup> LoadValidatedPendingTurnSnapshotLookupAsync(
-        FileSystemManager.CanonicalWriteLease? writeLease = null, NarrativeInterfaceSourceSession? source = null,
+        FileSystemManager.CanonicalWriteLease? writeLease = null, OriginalLookupObservation? source = null,
         string narrativeRolePath = "output/narrative_response.json")
     {
         if (CurrentPendingSnapshotLookup(writeLease) is { } scoped)
@@ -5118,7 +5124,7 @@ public partial class ValidationService
     }
 
     private async Task<PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload?> LoadCurrentDetachedPendingTurnSnapshotAuthorityPayloadAsync(
-        FileSystemManager.CanonicalWriteLease? writeLease = null, NarrativeInterfaceSourceSession? source = null,
+        FileSystemManager.CanonicalWriteLease? writeLease = null, OriginalLookupObservation? source = null,
         string narrativeRolePath = "output/narrative_response.json")
     {
         var authorityJson = await ReadAcceptedTurnValidationFileAsync(
@@ -5240,7 +5246,7 @@ public partial class ValidationService
 
     private bool IsCurrentDetachedPendingTurnSnapshotAuthorityPayload(
         PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload payload,
-        FileSystemManager.CanonicalWriteLease? writeLease = null, NarrativeInterfaceSourceSession? source = null,
+        FileSystemManager.CanonicalWriteLease? writeLease = null, OriginalLookupObservation? source = null,
         string narrativeRolePath = "output/narrative_response.json")
     {
         const string repairRequestPath = "game_state/control/validation_repair_request.json";
@@ -5283,7 +5289,7 @@ public partial class ValidationService
 
     private Task<string?> ReadAcceptedTurnValidationFileAsync(
         string path,
-        FileSystemManager.CanonicalWriteLease? writeLease, NarrativeInterfaceSourceSession? source = null,
+        FileSystemManager.CanonicalWriteLease? writeLease, OriginalLookupObservation? source = null,
         string narrativeRolePath = "output/narrative_response.json") =>
         source is not null ? ReadNarrativeAuxiliaryTextAsync(narrativeRolePath, path, writeLease, source) :
         writeLease == null
@@ -7587,63 +7593,13 @@ public partial class ValidationService
         AcceptedTurnReasoningValidationSelection selection)
     {
         ArgumentNullException.ThrowIfNull(selection);
-        var issues = new List<ValidationIssue>();
-        await ValidateAcceptedTurnTransientOutputFreshnessAsync(
-            "output/debug_logs.json",
-            "gm_thoughts_markdown",
-            "accepted_turn_stale_debug_logs",
-            "output/debug_logs.json must be freshly rewritten for the current accepted turn",
-            "Не переиспользуй старый output/debug_logs.json. Перезапиши debug_logs.json заново для текущего accepted turn вместе с актуальным gm_thoughts_markdown.",
-            issues);
-        var debugJson = await _fs.ReadFileAsync("output/debug_logs.json");
-        if (string.IsNullOrWhiteSpace(debugJson))
-        {
-            issues.Add(new ValidationIssue(
-                "output/debug_logs.json", IssueSeverity.Error,
-                "Отсутствует gm_thoughts_markdown при обязательной проверке actor reasoning scope",
-                code: "missing_gm_thoughts",
-                section: "gm_thoughts_markdown",
-                expected: "gm_thoughts_markdown with NPC scope declaration",
-                actual: "missing or empty",
-                repairHint: "Добавь debug_logs.json.gm_thoughts_markdown с секцией 'Охват NPC-анализа' и reasoning blocks."));
-            return issues;
-        }
-
-        string gmThoughts;
-        try
-        {
-            using var doc = JsonDocument.Parse(debugJson);
-            if (!EvaluateAcceptedReasoningDocumentPrefix(doc.RootElement, issues, out gmThoughts))
-                return issues;
-
-            ValidateRequiredIsoTimestampField(
-                doc.RootElement,
-                "output/debug_logs.json",
-                issues,
-                "timestamp",
-                "gm_thoughts_markdown",
-                "debug_logs_missing_timestamp",
-                "debug_logs_invalid_timestamp",
-                "Добавь в output/debug_logs.json поле timestamp в ISO 8601 формате вместе с актуальным gm_thoughts_markdown.");
-
-            AppendAcceptedReasoningUnknownFields(doc.RootElement, issues);
-        }
-        catch (JsonException ex)
-        {
-            issues.Add(new ValidationIssue(
-                "output/debug_logs.json", IssueSeverity.Error,
-                $"output/debug_logs.json должен быть валидным JSON: {ex.Message}",
-                code: "invalid_debug_logs_json",
-                section: "gm_thoughts_markdown",
-                expected: "valid JSON object with gm_thoughts_markdown and timestamp",
-                actual: "invalid JSON",
-                repairHint: "Исправь output/debug_logs.json и оставь в нём валидный JSON-объект с полями gm_thoughts_markdown и timestamp."));
-            return issues;
-        }
-
-        if (!EvaluateAcceptedReasoningScopePrefix(gmThoughts, issues, out var normalizedThoughts,
-                out var scope, out var scopeMode, out var actorType))
-            return issues;
+        var prefix = await EvaluateAcceptedReasoningPrefixAsync(null);
+        var issues = prefix.Issues;
+        if (prefix.Terminal) return issues;
+        var normalizedThoughts = prefix.NormalizedThoughts!;
+        var scope = prefix.Scope!;
+        var scopeMode = prefix.ScopeMode;
+        var actorType = prefix.ActorType;
 
         var guardianPolicyContext = await ResolveGuardianPolicyContextAsync();
         var guardianIdentityContext = BuildGuardianReasoningIdentityContext(guardianPolicyContext);

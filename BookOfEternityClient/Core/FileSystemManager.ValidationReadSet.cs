@@ -1,4 +1,3 @@
-using NarrativeReadObservation = BookOfEternityClient.Services.ValidationService.NarrativeInterfaceSourceSession.NarrativeReadObservation;
 namespace BookOfEternityClient.Core;
 
 public partial class FileSystemManager
@@ -110,7 +109,7 @@ public partial class FileSystemManager
     /// </returns>
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     private CanonicalFileReadSnapshot? ReadFileSnapshotCore(string relativePath, CanonicalWriteLease? lease = null,
-        NarrativeReadObservation? observation = null)
+        FileReadObservation? observation = null)
     {
         try
         {
@@ -144,7 +143,7 @@ public partial class FileSystemManager
     /// </returns>
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     private Task<CanonicalFileReadSnapshot?> ReadFileSnapshotCoreAsync(string relativePath,
-        CancellationToken cancellationToken, CanonicalWriteLease? lease = null, NarrativeReadObservation? observation = null)
+        CancellationToken cancellationToken, CanonicalWriteLease? lease = null, FileReadObservation? observation = null)
     {
         if (observation is null)
             return

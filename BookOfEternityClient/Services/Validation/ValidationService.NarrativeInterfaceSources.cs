@@ -16,7 +16,7 @@ public partial class ValidationService
     /// <param name="source">Explicit invocation observations, or null for the unchanged ordinary route.</param>
     /// <param name="manifest">The manifest retained or checked by this operation.</param>
     /// <param name="provenance">The actual supplied, scoped or physical lookup disposition.</param>
-    private void RecordNarrativeOriginalContext(NarrativeInterfaceSourceSession? source,
+    private void RecordNarrativeOriginalContext(OriginalLookupObservation? source,
         ValidationPendingTurnSnapshotManifest manifest, string provenance) =>
         source?.OriginalContext(manifest.SessionId, manifest.RequestId, manifest.ManifestPayloadHash, manifest.TurnNumber, provenance, JsonSerializer.Serialize(manifest, ManifestHashJsonOpts));
 
@@ -26,7 +26,7 @@ public partial class ValidationService
     /// <param name="lease">The lease retained or checked by this operation.</param>
     /// <param name="source">Explicit invocation observations, or null for the unchanged ordinary route.</param>
     private async Task<byte[]?> ReadNarrativeOriginalBytesAsync(string role, string path,
-        FileSystemManager.CanonicalWriteLease? lease, NarrativeInterfaceSourceSession source)
+        FileSystemManager.CanonicalWriteLease? lease, OriginalLookupObservation source)
     {
         if (lease is null && CurrentWorldReadPhase() is { } phase)
         {
@@ -41,7 +41,7 @@ public partial class ValidationService
     /// <param name="lease">The lease retained or checked by this operation.</param>
     /// <param name="source">Explicit invocation observations, or null for the unchanged ordinary route.</param>
     private Task<string?> ReadNarrativeAuxiliaryTextAsync(string role, string path,
-        FileSystemManager.CanonicalWriteLease? lease, NarrativeInterfaceSourceSession source)
+        FileSystemManager.CanonicalWriteLease? lease, OriginalLookupObservation source)
     {
         if (lease is null && CurrentWorldReadPhase() is { } phase)
         {
@@ -56,7 +56,7 @@ public partial class ValidationService
     /// <param name="lease">The lease retained or checked by this operation.</param>
     /// <param name="source">Explicit invocation observations, or null for the unchanged ordinary route.</param>
     private string? ReadNarrativeAuxiliaryTextSync(string role, string path,
-        FileSystemManager.CanonicalWriteLease? lease, NarrativeInterfaceSourceSession source)
+        FileSystemManager.CanonicalWriteLease? lease, OriginalLookupObservation source)
     {
         if (lease is null && CurrentWorldReadPhase() is { } phase)
         {
@@ -74,7 +74,7 @@ public partial class ValidationService
     /// <param name="lease">The lease retained or checked by this operation.</param>
     /// <param name="source">Explicit invocation observations, or null for the unchanged ordinary route.</param>
     private byte[]? ReadNarrativeAuxiliaryBytesSync(string role, string path,
-        FileSystemManager.CanonicalWriteLease? lease, NarrativeInterfaceSourceSession source)
+        FileSystemManager.CanonicalWriteLease? lease, OriginalLookupObservation source)
     {
         if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(path)) return null;
         if (lease is null && CurrentWorldReadPhase() is { } phase)
