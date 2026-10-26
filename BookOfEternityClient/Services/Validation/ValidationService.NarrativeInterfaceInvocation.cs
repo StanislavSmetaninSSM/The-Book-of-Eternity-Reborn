@@ -11,7 +11,7 @@ public partial class ValidationService
     internal async Task<NarrativePolicyPass> ValidateAcceptedTurnNarrativePolicyPassAsync()
     {
         using var timing = _fs.MeasureOperation("NarrativePolicy.Capture");
-        var source = new NarrativeInterfaceSourceSession(_fs);
+        var source = new NarrativeInterfaceSourceSession(_fs, NarrativePassIssuer);
         try
         {
             var issues = await ValidateAcceptedTurnNarrativePayloadInternalAsync(source: source);

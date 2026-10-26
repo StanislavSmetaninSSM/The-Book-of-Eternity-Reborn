@@ -1,3 +1,23 @@
+# T607 source-only WIP2 — explicit N origin added, reader bodies pending
+
+After tests-first WIP1, added private actual-producer N observation origin and a
+diagnostic-only fresh-recheck arm; the sealed authority occurrence ledger, cached-DATA
+refusal and existing fresh scopes retain their semantics. Closed FileReadObservation
+composition uses the actual filesystem issuer. Binding uses the existing session-
+generation revision, with no extra physical source read. In-flight post-cut events
+remain retained and mark the observation incomplete; recording/copy faults are latched.
+The fixture close forwarder uses its holder with default behavior preserved; shared
+RED construction policy still returns original read/close forwarding true/true.
+
+Static authored inventory is now 10 methods/13 cases, including real N/fresh recheck,
+concurrent unrelated same-path, callback failure after snapshot, cancellation and
+cut/epoch controls. No discovery/build/runtime has run. The 10-path source-only WIP
+is still NOT compile-ready: actual reader/backend/logical-return bodies, remaining
+controls and catalog/source-inverse maintenance are pending. No SOURCE, causal RED,
+GREEN, speedup or positive admission. Continue that coherent scaffold next.
+WIP1 `46ae9e6d` was fully restored from GitHub: 30,918 exact blobs, clean source tree;
+this explicitly did not qualify PDB/build/runtime for its incomplete new sources.
+
 # T607 source-only WIP1 — uncompiled, reader/provenance plumbing incomplete
 
 Tests authored first: one eight-read real-source causal Fact, public/leased sync/async

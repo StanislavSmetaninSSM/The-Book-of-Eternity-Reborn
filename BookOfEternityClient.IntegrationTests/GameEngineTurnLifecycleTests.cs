@@ -71,7 +71,11 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         get => _readObservers.InitialObserver;
         set => _readObservers.InitialObserver = value;
     }
-    private Func<Task>? _consoleSessionClosingObserver;
+    private Func<Task>? _consoleSessionClosingObserver
+    {
+        get => _readObservers.ClosingObserver;
+        set => _readObservers.ClosingObserver = value;
+    }
     /// <summary>
     /// Attaches the existing returned read sink through the fixture's explicit observation contract.
     /// </summary>
@@ -135,7 +139,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
                 BeforeCanonicalMutationAsync = BeforeCanonicalMutationAsync,
                 PassiveCanonicalReads = readObservers?.CanonicalSources,
                 AfterCanonicalReadInitialValidationAsync = _readObservers.AfterInitialValidationAsync,
-                SessionOperationClosingAsync = () => _consoleSessionClosingObserver?.Invoke() ?? Task.CompletedTask,
+                SessionOperationClosingAsync = _readObservers.AfterSessionClosingAsync,
                 AfterCanonicalReadAttemptAsync = _readObservers.AfterReadAttemptAsync,
                 LocalPublicationObserver = (phase, index) => _consolePublicationObserver?.Invoke(phase, index)
             });

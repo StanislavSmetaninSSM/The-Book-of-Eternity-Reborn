@@ -134,12 +134,15 @@ public partial class ValidationService
         private int _projectorCalls, _writesStarted, _writesReturned, _timestampCalls;
         private readonly List<ValidationIssue> _timestampIssues = [];
         private NarrativeWriteObservation? _write;
+        private readonly Guid _observationInvocation;
 
         /// <summary>Creates an invocation ledger bound to its actual manager and current logical generation.</summary>
         /// <param name="files">The files retained or checked by this operation.</param>
-        internal NarrativeInterfaceSourceSession(FileSystemManager files)
+        /// <param name="producerIssuer">The actual private producer issuer, or null for a manually created unattested session.</param>
+        internal NarrativeInterfaceSourceSession(FileSystemManager files, object? producerIssuer = null)
         {
             _files = files;
+            _observationInvocation = ReferenceEquals(producerIssuer, NarrativePassIssuer) ? Guid.NewGuid() : Guid.Empty;
             if (SessionOperationContext.TryGetExpectedGeneration(files.BasePath, out var bound)) _generation = bound;
             else
             {
@@ -288,6 +291,7 @@ public partial class ValidationService
                 files.EnsureCanonicalWriteLeaseActive(lease);
                 if (!files.IsCurrentSessionGeneration(lease, _generation)) throw new InvalidDataException("narrative_policy_generation_changed");
                 using var fresh = FileSystemManager.SuppressValidationReuse();
+                using var observationRun = new ObservationRun(NarrativePassIssuer);
                 // Preserve every original occurrence. A distinct path needs one
                 // fresh raw check here; repeated original computations are never replayed.
                 var checkedPaths = new HashSet<string>(StringComparer.Ordinal);
@@ -302,7 +306,10 @@ public partial class ValidationService
                     if (!checkedPaths.Add(occurrence.Path)) continue;
                     var expected = occurrence.Bytes;
                     if (_write is { Returned: true } writer && writer.Path == occurrence.Path) expected = writer.After;
-                    var current = await files.ReadFileBytesAsync(lease, occurrence.Path);
+                    var current = files.HasCanonicalReadObservation
+                        ? await files.ReadNarrativeRecheckBytesAsync(lease, occurrence.Path,
+                            new RecheckReadObservation(NarrativePassIssuer, this, observationRun))
+                        : await files.ReadFileBytesAsync(lease, occurrence.Path);
                     if (Same(expected, current)) continue;
                     if (occurrence.Role == NarrativeSourceRole.Interface && occurrence.Path == MortalJointInterfacePublication.InterfacePath &&
                         authenticatedInterface is { State: "Published", HasErrors: false } accepted &&
@@ -381,6 +388,8 @@ public partial class ValidationService
         internal sealed class NarrativeReadObservation(NarrativeInterfaceSourceSession owner, NarrativeSourceRole role, string path, string route)
         {
             private readonly List<Exception> _failures = [];
+            /// <summary>Creates DATA provenance from this actual explicit source sink, never from a global timer.</summary>
+            internal ReadOrigin Origin => new(NarrativePassIssuer, owner, null);
             /// <summary>Retains actual source bytes before later callbacks and distinguishes reused DATA.</summary>
             /// <param name="bytes">The bytes retained or checked by this operation.</param>
             /// <param name="physical">Whether this occurrence came from the actual source rather than reused DATA.</param>
@@ -400,6 +409,49 @@ public partial class ValidationService
                 _failures.Add(error);
                 owner.Add(role, path, route, "SourceFault:" + error.GetType().Name, null);
                 owner.Fault(error);
+            }
+        }
+
+        /// <summary>Actual completed-pass recheck lifetime; it is not appended to the sealed source ledger.</summary>
+        internal sealed class ObservationRun : IDisposable
+        {
+            internal bool Open { get; private set; } = true;
+            internal ObservationRun(object issuer)
+            {
+                if (!ReferenceEquals(issuer, NarrativePassIssuer)) throw new InvalidOperationException("Actual N observation issuer required.");
+            }
+            /// <summary>Ends only diagnostic provenance, without changing authority DATA or a borrowed lease.</summary>
+            public void Dispose() => Open = false;
+        }
+
+        /// <summary>Closed diagnostic-only recheck arm over the same actual completed invocation.</summary>
+        internal sealed class RecheckReadObservation
+        {
+            internal ReadOrigin Origin { get; }
+            internal RecheckReadObservation(object issuer, NarrativeInterfaceSourceSession owner, ObservationRun run)
+            { Origin = new ReadOrigin(issuer, owner, run); }
+        }
+
+        /// <summary>Private-producer provenance; detached observation IDs grant no engine or source authority.</summary>
+        internal sealed class ReadOrigin
+        {
+            private readonly NarrativeInterfaceSourceSession _owner;
+            private readonly ObservationRun? _run;
+            internal ReadOrigin(object issuer, NarrativeInterfaceSourceSession owner, ObservationRun? run)
+            {
+                if (!ReferenceEquals(issuer, NarrativePassIssuer)) throw new InvalidOperationException("Actual N observation issuer required.");
+                _owner = owner; _run = run;
+            }
+            /// <summary>Checks the actual explicit source owner and live capture/recheck run, without reading files.</summary>
+            /// <param name="files">The reader's actual manager.</param>
+            /// <param name="invocation">Receives immutable DATA identity, never an importable owner.</param>
+            /// <param name="recheck">Whether this is the actual completed owner's fresh recheck run.</param>
+            /// <returns>True only for actual producer-attested currently live source work.</returns>
+            internal bool TryCapture(FileSystemManager files, out Guid invocation, out bool recheck)
+            {
+                invocation = _owner._observationInvocation; recheck = _run is not null;
+                return invocation != Guid.Empty && ReferenceEquals(files, _owner._files) && !_owner._disposed &&
+                    (_run is null ? !_owner._completed : _owner._completed && _run.Open);
             }
         }
 

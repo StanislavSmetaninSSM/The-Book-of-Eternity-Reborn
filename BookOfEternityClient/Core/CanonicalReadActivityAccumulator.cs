@@ -10,6 +10,12 @@ internal sealed class CanonicalReadActivityAccumulator
     private readonly ConcurrentDictionary<string, long> _sources = new(StringComparer.Ordinal);
     private ObservationWindow? _observation;
 
+    /// <summary>Gets whether an actual observation epoch remains open, without invoking caller code.</summary>
+    internal bool IsObserving => Volatile.Read(ref _observation) is not null;
+
+    /// <summary>Retains diagnostic allocation/record failure without replacing the functional result.</summary>
+    internal void FailObservation() => Volatile.Read(ref _observation)?.Fail();
+
     /// <summary>Begins one DATA-only source observation epoch on the actual configured files/recorder/window.</summary>
     /// <param name="files">The actual filesystem carrying this accumulator.</param>
     /// <param name="window">Its configured passive recorder's currently active window.</param>
@@ -31,9 +37,11 @@ internal sealed class CanonicalReadActivityAccumulator
     /// <param name="family">Actual API/reader family.</param>
     /// <param name="origin">Optional producer-attested source identity; a timer never creates one.</param>
     /// <returns>The per-call token, or null on the ordinary inactive route.</returns>
-    internal ReadObservation? BeginRead(FileSystemManager files, string path, string family,
+    internal ReadObservation? BeginRead(object issuer, FileSystemManager files, string path, string family,
         BookOfEternityClient.Services.ValidationService.NarrativeInterfaceSourceSession.ReadOrigin? origin) =>
-        Volatile.Read(ref _observation)?.BeginRead(files, path, family, origin);
+        FileReadObservation.IsActivityIssuer(issuer)
+            ? Volatile.Read(ref _observation)?.BeginRead(issuer, files, path, family, origin)
+            : throw new InvalidOperationException("Actual closed read transport required.");
 
     /// <summary>Owns all uncapped path events until the original cut; holds no lease or read/write authority.</summary>
     internal sealed class ObservationWindow : IDisposable
@@ -52,18 +60,21 @@ internal sealed class CanonicalReadActivityAccumulator
             OperationTimingAccumulator.Window window, long generation)
         { _owner = owner; _files = files; _window = window; _generation = generation; }
 
-        internal ReadObservation? BeginRead(FileSystemManager files, string path, string family,
+        internal ReadObservation? BeginRead(object issuer, FileSystemManager files, string path, string family,
             BookOfEternityClient.Services.ValidationService.NarrativeInterfaceSourceSession.ReadOrigin? origin)
         {
+            if (!FileReadObservation.IsActivityIssuer(issuer)) throw new InvalidOperationException("Actual closed read transport required.");
             lock (_gate)
             {
                 if (_closed || _disposed) return null;
                 if (!ReferenceEquals(files, _files)) { _fault ??= "foreign_read_files"; return null; }
                 if (!IsCurrent()) { _fault ??= "expired_read_observation_binding"; return null; }
                 _pending++;
-                return new ReadObservation(this, ++_nextRead, path, family, origin);
+                return new ReadObservation(issuer, this, ++_nextRead, path, family, origin);
             }
         }
+
+        internal void Fail() { lock (_gate) _fault ??= "diagnostic_read_record_failed"; }
 
         private bool IsCurrent() => _files.CanonicalReadObservationGeneration == _generation &&
             _files.MatchesCanonicalReadObservation(_owner, _window);
@@ -71,10 +82,17 @@ internal sealed class CanonicalReadActivityAccumulator
         internal void Record(ReadObservation read, CanonicalReadEventKind kind, byte[]? bytes = null,
             bool physical = true, Exception? error = null)
         {
+            try { RecordCore(read, kind, bytes, physical, error); }
+            catch (Exception) { lock (_gate) _fault ??= "diagnostic_read_record_failed"; }
+        }
+
+        private void RecordCore(ReadObservation read, CanonicalReadEventKind kind, byte[]? bytes,
+            bool physical, Exception? error)
+        {
             lock (_gate)
             {
                 if (_disposed) return;
-                if (_closed) { _fault ??= "read_event_after_cut"; return; }
+                if (_closed) _fault ??= "read_event_after_cut";
                 if (!IsCurrent()) _fault ??= "expired_read_observation_binding";
                 var evaluation = _window.CaptureNamedCounts("NarrativePolicy.Evaluate");
                 var recheck = _window.CaptureNamedCounts("NarrativePolicy.Recheck");
@@ -145,12 +163,22 @@ internal sealed class CanonicalReadActivityAccumulator
         internal readonly string Path, Family;
         internal readonly BookOfEternityClient.Services.ValidationService.NarrativeInterfaceSourceSession.ReadOrigin? Origin;
         internal bool Ended;
-        internal ReadObservation(ObservationWindow owner, long id, string path, string family,
+        internal ReadObservation(object issuer, ObservationWindow owner, long id, string path, string family,
             BookOfEternityClient.Services.ValidationService.NarrativeInterfaceSourceSession.ReadOrigin? origin)
-        { _owner = owner; Id = id; Path = path; Family = family; Origin = origin; }
-        internal void Record(CanonicalReadEventKind kind, byte[]? bytes = null, bool physical = true, Exception? error = null) =>
+        {
+            if (!FileReadObservation.IsActivityIssuer(issuer)) throw new InvalidOperationException("Actual closed read transport required.");
+            _owner = owner; Id = id; Path = path; Family = family; Origin = origin;
+        }
+        internal void Record(object issuer, CanonicalReadEventKind kind, byte[]? bytes = null, bool physical = true, Exception? error = null)
+        {
+            if (!FileReadObservation.IsActivityIssuer(issuer)) throw new InvalidOperationException("Actual closed read transport required.");
             _owner.Record(this, kind, bytes, physical, error);
-        internal void Complete() => _owner.Returned(this);
+        }
+        internal void Complete(object issuer)
+        {
+            if (!FileReadObservation.IsActivityIssuer(issuer)) throw new InvalidOperationException("Actual closed read transport required.");
+            _owner.Returned(this);
+        }
     }
 
     /// <summary>

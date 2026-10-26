@@ -2,6 +2,38 @@ namespace BookOfEternityClient.Core;
 
 public partial class FileSystemManager
 {
+    private static readonly object CanonicalReadDispatchIssuer = new();
+
+    /// <summary>Checks the private reader dispatch token without exporting it.</summary>
+    /// <param name="issuer">The closed transport's supplied token.</param>
+    /// <returns>True only for the actual filesystem reader adapter.</returns>
+    internal bool IsCanonicalReadDispatchIssuer(object issuer) => ReferenceEquals(issuer, CanonicalReadDispatchIssuer);
+
+    /// <summary>Checks configured passive DATA bindings without changing lease/cache eligibility.</summary>
+    /// <param name="receiver">The accumulator actually configured on this manager.</param>
+    /// <param name="window">The currently active configured recorder window.</param>
+    /// <returns>Whether these are the actual configured identities.</returns>
+    internal bool MatchesCanonicalReadObservation(CanonicalReadActivityAccumulator receiver, OperationTimingAccumulator.Window window) =>
+        ReferenceEquals(_hooks?.PassiveCanonicalReads, receiver) && _hooks?.PassiveOperationTimings is { } timing && window.IsActiveFor(timing);
+
+    /// <summary>Gets the existing root generation revision for DATA observation invalidation only.</summary>
+    internal long CanonicalReadObservationGeneration => CanonicalRootAuthorityIdentity.SessionGenerationRevision;
+
+    /// <summary>Gets whether actual passive observation requires the diagnostic-only recheck arm.</summary>
+    internal bool HasCanonicalReadObservation => _hooks?.PassiveCanonicalReads?.IsObserving == true;
+
+    /// <summary>Composes one actual reader call with its existing explicit source and optional passive DATA sink.</summary>
+    private FileReadObservation? AttachCanonicalReadActivity(string path, string family, FileReadObservation? source, out bool owns) =>
+        FileReadObservation.AttachActivity(CanonicalReadDispatchIssuer, this, _hooks?.PassiveCanonicalReads, path, family, source, out owns);
+
+    /// <summary>Uses the unchanged leased bytes reader with diagnostic-only provenance from the real completed N owner.</summary>
+    /// <param name="lease">The actual original active borrowed lease.</param>
+    /// <param name="path">The original selected physical path.</param>
+    /// <param name="observation">The private actual recheck run's DATA-only sink.</param>
+    /// <returns>The original bytes result; no authority ledger event is invented.</returns>
+    internal Task<byte[]?> ReadNarrativeRecheckBytesAsync(CanonicalWriteLease lease, string path,
+        BookOfEternityClient.Services.ValidationService.NarrativeInterfaceSourceSession.RecheckReadObservation observation) =>
+        ReadObservedFileBytesAsyncCore(lease, path, FileReadObservation.FromNarrativeRecheck(observation));
     private readonly AsyncLocal<ReservedValidationReadSet?> _validationReadSet = new();
     private static readonly AsyncLocal<int> ValidationReuseSuppression = new();
     private static readonly AsyncLocal<int> ValidationDiagnosticScopes = new();
