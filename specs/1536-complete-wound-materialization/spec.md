@@ -1,3 +1,20 @@
+# T608 expected-projection reuse DESIGN scope — #1536
+
+REPLAY-REUSE1: accepted causal RED releases only a separately reviewed design of pure
+expected preparation DATA: five compared scalars and every ordered batch pair. Keep
+all actual caller/prepared/effect/private-history and current ownership/source checks.
+Cached expected DATA never substitutes for comparison, integrity or authority.
+REPLAY-REUSE2: use the existing semantic-operation service and complete actual-input/
+private-companion dependencies, algorithm revision, owner/lifetime/invalidation and
+immutable or detached result policy. Consider existing warmed scalar stage work;
+do not add gratuitous duplicate computation or a parallel cache framework. Current
+unsupported/fresh/refusal/error/overlap/closed contours must retain original behavior.
+REPLAY-REUSE3: independent DESIGN precedes implementation. Cheap independent typed
+source-count/changed-input/refusal/invalidation/copy controls and one genuine vertical
+must prove effect and preserved fresh checks. No weakened assertion, misleading source
+counter, broader eligibility, diagnostic format/quota, budget or GM-authored change.
+Small-contour costs do not establish whole-game improvement or release full positive.
+
 # T608 tests-first expected-replay counter amendment — #1536
 
 REPLAY-PROBE1: instrument only the original actual expected-source invocation in

@@ -18,8 +18,22 @@
 - [x] T608-RED-SOURCE Implement/freeze the accepted one-scope real-source counter and
   genuine eight-call fixture, complete prerequisites/completion/cleanup and one explicit
   two-minute singleton owner; independent SOURCE, no cache change.
-- [ ] T608-RED-QUALIFY Fresh affected builds/current source/PDB/copies, exact catalog,
+- [x] T608-RED-QUALIFY Fresh affected builds/current source/PDB/copies, exact catalog,
   singleton PlanOnly/PREP and prerequisite-complete actual causal RED with remote checkpoint.
+
+
+- [ ] T608-REUSE-DESIGN Freeze the complete pure expected-projection/input/dependency/
+  owner/lifetime/copy/invalidation contract through the existing semantic operation;
+  reconcile actual caller versus private retained input and warmed scalar reuse;
+  select cheap actual-source/negative proofs and the genuine vertical. Independent
+  DESIGN is required before implementation, with measured benefit limits explicit.
+- [ ] T608-REUSE-IMPLEMENT After accepted DESIGN, implement only the minimal agreed
+  existing-service reuse and its causal/negative controls. Preserve fresh actual
+  graph/authority/source checks, existing unsupported/refusal paths and full diagnostics.
+- [ ] T608-REUSE-QUALIFY Coherent independent SOURCE, fresh affected build/warning/
+  PE-PDB/source/copy proofs, exact catalog/selection, cheap actual computation counts
+  and genuine component GREEN with full capture/cleanup; independent OUTCOME and
+  remote checkpoint/recovery. Any later full-positive PREP is separate, not automatic.
 
 # T597 interrupted unchanged-positive diagnostics — #1536 / 2026-10-26
 

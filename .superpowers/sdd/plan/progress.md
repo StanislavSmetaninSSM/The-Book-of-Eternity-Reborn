@@ -1,3 +1,30 @@
+# T608 causal RED ACCEPT — bounded expected-projection DESIGN next
+
+Independent Astra High OUTCOME accepts the actual prerequisite-complete intentional
+RED at runtime `2d0922a1c7d4ec5b09d4fe95b2a867339adb247d`, compiled `7baac1aa`.
+Root verified the sole final expected one/actual eight failure, full 368,544,724-byte
+PLAIN capture/723,624 events, fresh guards/fence and real fixture/process cleanup.
+Human outcome checkpoint `eb8bb3ab883ebe8e5cbcf3abd431469702fe6f9e` is verified remote;
+temporary shell/Git latency ended normally without a mutation or runtime retry.
+The independent report remains external in `t608-counter-scaffold`.
+
+Next task is DESIGN only: complete immutable expected replay projection through the
+existing semantic-operation service. Define full actual caller/private input identity,
+all structural and companion dependencies, algorithm revision, owner/lifetime/copy/
+invalidation and every remaining fresh actual prepared/effect/private-history/authority
+check. Inspect existing warmed scalar stage work before adding duplicate computation;
+do not change assertions or counters merely to produce GREEN. Unsupported/refusal/
+fresh/error/overlap/disposal paths retain their current contracts. No Boolean authority
+cache, broader eligibility, new framework, diagnostic format or budget change.
+
+The measured eight-source cost is 309.576852 ms inside 1300.267342 ms validator work
+in this small contour. Source reduction and correctness must be measured independently;
+these nested costs do not prove whole-game savings or 300-second budget sufficiency.
+A read-only implementer proposal is requested; Root then freezes canonical design/
+interfaces, cheap typed causal/negative tests and the one genuine vertical, with
+independent DESIGN before source implementation. Existing accepted T607 qualification
+and all evidence remain; full positive, dependent legacy/cold and Windows stay HOLD.
+
 # T608 actual causal RED captured — independent OUTCOME pending
 
 One admitted singleton ran at `2d0922a1c7d4ec5b09d4fe95b2a867339adb247d`, compiled
