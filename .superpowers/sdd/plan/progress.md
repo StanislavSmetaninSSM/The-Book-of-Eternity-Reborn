@@ -1,3 +1,25 @@
+# T600 grouped correction fresh preparation verified — remaining21 PREP pending
+
+Fresh Integration build at 39187bbe9a55f2292447ed42bb4f2c94877e6e6d completed in
+3:09.50, 0 errors and exactly the same 101 warning signatures; no introduced warning.
+Actual binding verifies 11 PE/PDB pairs, all 33 files and 48 current Git/PDB source
+checks. Only Integration DLL/PDB/XML changed; the other 30 artifacts and entire four
+project trees remain unchanged at their retained build heads. Previous e88 binaries
+remain evidence-only for the original 17 retained PASS, never runtime input.
+
+Fresh discovery is valid: 959 categories / 12552 methods, no unmapped or stale
+selectors. Exact remaining PlanOnly confirms 3 exclusive descriptors / 14 methods /
+21 cases: lifetime19, managed-cost1 and original plain visibility1. Every category
+keeps its 1-minute bound; ordinary total runner budget is 8 minutes. Both discovery
+and PlanOnly returned 0, no timeout, both process cleanup flags and 0 tests executed.
+
+Independent remaining21 PREP is next. New runtime/cost/headroom remain UNRUN; positive
+and dependent live/cold remain blocked. Retained17 plus a future accepted21 is a
+composite of two actual measurements, not a single38 invocation. All old raw, the
+failed broken link and original failed capture are preserved without rewriting.
+The source-only 39187bbe recovery is clean with all 30914 blobs exact; qualified
+recovery against the current48 PDB source inputs is next before runtime admission.
+
 # T600 grouped correction SOURCE ACCEPT — remaining 21 preparation
 
 Independent Astra/high SOURCE ACCEPT for 206e966de78d04cc12e4a88dbff46fe5a2fed5fd
