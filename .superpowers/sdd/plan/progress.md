@@ -1,3 +1,21 @@
+# T607 full-positive PREP ACCEPT — one original-budget attempt released
+
+Independent Astra High accepts checkpoint `216f0685060870e187e0e177a88d3e071d40743b`
+for exactly one existing `fr063-joint-live-n-source-unchanged` positive through the
+maintained wrapper/official NoBuild runner, original exclusive 300-second category.
+Rehashed 33 artifacts/59 source pins, exact plan, current native assets, unchanged
+source/wrapper, 191 distinct cheap PASS and post-retirement approximately 1.8 GB disk
+reserve reviewed. T607's actual source reduction supplies material new evidence;
+fit and success remain uncertain. No generator or codegen change is involved.
+
+Execute once into external `actual-dfr-t607-positive-1`, full original events/messages/
+timestamps and lossless gzip without quotas. All original functional/P2/late/expiry/
+physical/held/inert assertions remain. Preserve actual outcome/raw/owned cleanup.
+Failure, timeout or incomplete capture stops dependent gates with no automatic retry.
+PASS requires strict full footer/CRC/decode/hash/row/queue/source-clock and actual
+TRX/fixture/process verification before acceptance. Legacy/cold remain conditional;
+Windows and full materialization remain open. No raw or user saves are deleted.
+
 # T607 full-positive preparation — exact plan and measured reserve
 
 Accepted source checkpoint `14cf63a5463a5a19421a8b5b303f0d2a910d145c` was fully
