@@ -1,3 +1,27 @@
+# T608 corrected DESIGN ACCEPT — bounded implementation released
+
+Independent Astra High accepts corrected canonical DESIGN at
+`6872c7ec431860a4bf86721f5dd5f30b214fe967`. The sole fallback/precedence finding is
+resolved: complete-key/moved preflight ineligibility uses supported DATA invalidation
+and original source order/result/exception, without a new domain refusal. Same fixed
+defensively owned input and existing live private dependency require no new framework.
+
+Release T608-REUSE-IMPLEMENT only, under the canonical plan below/linked plan and
+REPLAY-REUSE1..6. Preserve saved causal baseline 1+8; exact GREEN target is 1+0 with
+original workload/prerequisites. Also use existing PrepareCore source counters:
+one in warmup, zero in eight calls; no new instrumentation. Proposed56 seal map must
+be confirmed by final SOURCE, preserving all actual checks. No broad planner/storage/
+compiler/format/budget change. Tests precede the minimal production change; the
+accepted actual RED remains the behavioral baseline, not a compile/setup failure.
+
+Root owns Git/checkpoints/builds/runtimes; the existing sole source implementer owns
+the coherent source/test/catalog block and must report a safe WIP boundary for remote
+preservation. All33 compiled artifacts/61 sources from accepted RED are preserved as
+15 unique evidence-only payloads (11 new / 86,019,630 bytes, four prior payloads reused),
+never runtime substitutes. All raw remains external and retained. Coherent SOURCE,
+fresh affected builds/discovery/PREP and cheap/genuine OUTCOME remain before acceptance;
+full positive/dependents and Windows are not admitted. No implementation exists yet.
+
 # T608 shared expected-preparation projection implementation plan — DESIGN revision
 
 **Goal:** retain one complete immutable expected preparation result for the existing

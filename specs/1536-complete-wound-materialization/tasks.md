@@ -22,7 +22,7 @@
   singleton PlanOnly/PREP and prerequisite-complete actual causal RED with remote checkpoint.
 
 
-- [ ] T608-REUSE-DESIGN Freeze the complete pure expected-projection/input/dependency/
+- [x] T608-REUSE-DESIGN Freeze the complete pure expected-projection/input/dependency/
   owner/lifetime/copy/invalidation contract through the existing semantic operation;
   reconcile actual caller versus private retained input and warmed scalar reuse;
   select cheap actual-source/negative proofs and the genuine vertical. Independent
