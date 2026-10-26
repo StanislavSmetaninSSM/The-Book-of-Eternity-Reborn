@@ -49,6 +49,10 @@ unchanged positive is incomplete TIMEOUT300s, not phase/functional acceptance.
   and independent PREP. No runtime until accepted; preserve every functional assertion
   and full events/messages. Evaluate actual completed/partial outcome independently;
   stop dependent gates on non-PASS, no automatic repeat. No Optimize/codegen change.
+  Attempt consumed at `9d65a291`: category 300.1412079 seconds, exit 124, zero
+  completed/zero TRX; full persisted-prefix parse completed, gzip incomplete.
+  Final independent interpretation and a bounded next decision remain pending;
+  no retry or dependent legacy/cold admission. See the current plan checkpoint.
 
 # T179-Pd.3e observed debug-prefix consumer — #1536 / 2026-10-25
 

@@ -1,3 +1,59 @@
+# T606 diagnostic TIMEOUT — full persisted-prefix audit, dependent gates stopped
+
+The single admitted attempt `actual-dfr-diagnostic-positive-1` ran on Linux at
+`9d65a291afac3417ba972a4ec647375eec932ecb`, compiled Integration
+`02a14a66263603a2fe3ad05ba4d556a4326b9c6d`, unchanged Game `d9aa440e`.
+Exact selection: `fr063-joint-live-n-source-unchanged`, one descriptor/method/case,
+official maintained singleton wrapper with `-NoBuild`, original exclusive 5 minutes.
+Category elapsed 300.1412079 seconds, runner 322.8878959 seconds, exit 124/TIMEOUT:
+zero completed cases, zero TRX, no functional PASS. Both process cleanup flags are
+true; actual PID 148390 has ended, but its fixture root is retained and `report.json`
+is absent. Process cleanup does not prove fixture cleanup or capture completion.
+
+One streaming parser read every stored byte once, without repair or an uncompressed
+intermediate: 581,682,633 stored bytes, SHA256
+`8dab54636e8dccf36c012991428c277b1ff2ff85d51fafbe3f6022283ea8b35e`;
+5,420,629,649 decoded bytes, SHA256
+`ad0a312751427a16082e7bca3cdb9ca04757e2f2b30652dd145d77251db4098e`.
+All 10,475,924 complete rows parsed: 10,475,892 original events and 32 messages,
+470 operation names, one original PID, 5,237,941 exact completed scope pairs plus
+10 open at the persisted prefix. Strict row/sequence/PID/pair/source-tick/cost faults:
+zero. The 99 ns reconstructed-origin spread is consistent with 100 ns TimeSpan
+quantization, not a source-clock fault. Gzip EOF/footer/CRC is NOT established;
+zero complete members, no inflater error. Valid JSON rows do not certify a closed
+container. The partial does not replace any previous complete measurement.
+
+Existing named evidence localizes substantial completed work inside canonical
+refresh: RefreshCanonicalState 170.167345 seconds, its nested joint publication
+167.433460 seconds; nested normalization 70.142506 seconds and common-plan creation
+44.020259 seconds. The persisted source-boundary span is 190.644292 seconds.
+Observer cumulative build/serialize 82.470599 seconds and write 67.412791 seconds
+overlap producer work and are inclusive elapsed costs; none may be added to the
+source span as independent wall time. Named post-publication validation/progression/
+projection scopes returned, but final owner-outcome, inert/expired-phase/full-completion
+markers and final queue accounting are absent. Producer completion, a drain-only
+stall, the exact kill-time call and a product defect remain UNPROVED.
+
+The one T606 runtime allowance is consumed. No automatic repeat, dependent legacy/
+cold/full-DFR run, Optimize/codegen/build-mode change, capture reduction or limit
+increase is released. Next bounded work is read-only comparison of these already
+decoded named totals with the existing publication/read/cache call graph, followed
+by an independently reviewed concrete correction or an explicit unresolved-cost
+handoff; no further speculative serializer experiment. Independent final outcome
+review is pending at this checkpoint. No implementation/source/configuration change
+has occurred since the accepted buffered serializer; fresh builds are unnecessary
+for these factual Markdown updates. Optimization assessment: no new cache or reused
+authority; actual repeated source work and freshness boundaries must be proved
+before any production reuse is proposed. GM/player contracts are unchanged.
+
+Full raw, parser packet and review stay outside Git under
+`/workspace/tboe-linux-evidence-20261025/dfr-prefix/`:
+`actual-dfr-diagnostic-positive-1` and `t606-preparation/partial-trace-analysis.{json,md}`.
+The actual fixture remains
+`/tmp/boe-gameengine-turnlifecycle-f78c6b0712184cf6b5cdc3631fbc0f07`.
+No raw, saves, retained roots or unique evidence were removed. Windows remains
+deferred; earlier guardian intermittency and cross-OS DATA compatibility stay open.
+
 # T606 one current diagnostic positive — preparation only after admission audit
 
 Independent audit corrects the overly strong historical extrapolation rationale:

@@ -1,3 +1,23 @@
+# T606 persisted-prefix audit complete — TIMEOUT remains unqualified
+
+Runtime `9d65a291` / compiled Integration `02a14a66`: one original unchanged-positive
+case, category 300.1412079 seconds, runner 322.8878959 seconds, exit 124, zero
+completed/zero TRX. Both process cleanup flags true; actual root retained/report absent.
+One full streaming pass parsed all 10,475,924 complete rows (10,475,892 events,
+32 messages, 470 names), with zero strict sequence/PID/pair/tick/cost faults.
+Raw 581,682,633 bytes and decoded 5,420,629,649 bytes have separate exact hashes in
+the canonical plan. Gzip footer/CRC absent; this is incomplete evidence, never PASS.
+
+Completed canonical refresh 170.167 seconds includes joint publication 167.433
+seconds; source span 190.644 seconds. Observer build 82.471/write 67.413 seconds
+overlap source work; inclusive intervals cannot be summed. Final producer completion,
+drain-only stall and the kill-time call remain unknown. Independent final outcome
+review and a bounded read-only call-graph assessment are next. No source/build/codegen
+changes, repeated runtime, dependent legacy/cold gates or raw/root deletion.
+Full evidence stays outside checkout in `dfr-prefix/actual-dfr-diagnostic-positive-1`
+and `dfr-prefix/t606-preparation/partial-trace-analysis.{json,md}` beneath the recorded
+Linux evidence root. Current qualification does not close DFR or wound materialization.
+
 # T606 one diagnostic outcome TIMEOUT — dependents stopped, partial preserved
 
 actual-dfr-diagnostic-positive-1 at9d65a291afac3417ba972a4ec647375eec932ecb / compiled02a:
