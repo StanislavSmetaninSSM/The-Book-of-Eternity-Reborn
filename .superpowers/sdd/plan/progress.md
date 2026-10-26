@@ -1,3 +1,42 @@
+# T608 copy TIMEOUT consumed — no retry or candidate admission
+
+The original default-direct copy singleton at runtime HEAD2922053e consumed its
+unchanged two-minute category: exit124/TIMEOUT, zero completed cases, no TRX/report.
+Both runner process-cleanup flags pass. Testhost183805 ended; its actual marked fixture
+root and incomplete raw are retained. This is not PASS or a causal RED qualification.
+All compiled source remains f6ef4d62; no code, observer mode or budget was changed.
+
+Root fully parsed the persisted direct prefix: 680,889,606 bytes, 1,869,625 complete
+JSON rows, 1,869,616 original11-field timing records and nine messages. It has twelve
+unfinished named scopes, no final writer/queue/fixture closing proof. Exact prefix
+SHA256: a0f16220809b953d587de5d89167551e313e647616268e3063ad1a74c2d13fdd. Preserve the entire raw and actual failed root.
+Existing named timings localize the run: PrepareBoundJoint62.505s, including
+BindCommonInput24.808s; direct copy2.831s; actual current-byte refusal/restoration
+27.560s; constructor reference6.688s. CopyOfCopyAndReturnedMutation starts at direct
+elapsed104.720s; the last source record is at107.261s. These nested figures are not
+independent additive work or an extrapolated fit prediction. Cumulative synchronous
+observer serialization19.285s/write16.301s contributes cost but does not alone prove
+the whole timeout cause.
+
+A read-only source comparison is checking old scalar versus full projection exports,
+real null/unsupported-owner paths and legacy arbitrary-observer directory reuse.
+Initial inspection refutes extra PrepareCore/constructor/seal calls in the scalar-only
+fallback; mixed export/allocation cost and observer effects require specific proof.
+No speculative mode change, extra cache, full Integration Optimize or budget increase.
+Next establish cause and a cheap independent counter proof, obtain bounded DESIGN/
+SOURCE review for any necessary correction, fresh affected bindings and exact PREP
+before another runtime. Keep all original copy/current-byte/history/constructor/abort
+assertions and full diagnostics. Candidate and full DFR positive remain held.
+
+Accepted65unit + genuine + semantic still total67 distinct PASS; copy/candidate and
+full69 qualification remain open. Exact separately reviewed matching old semantic
+raw retirement completed: reclaimed398,753,792 bytes; old compact findings/TRX/
+reports/provenance preserved. New403MB semantic and373MB genuine full captures, older
+331MB semantic, all full-game evidence and saves remain. After the incomplete681MB
+copy attempt only about331MB is free; resolve resources under the original retention/
+owner rules before future build/runtime. Do not discard this incomplete capture as a
+replacement for any complete measurement. Diagnostics remain external in dfr-prefix.
+
 # T608 semantic OUTCOME accepted — 67 distinct PASS, two remain
 
 Independent Astra High accepts the unchanged genuine semantic singleton: one PASS,

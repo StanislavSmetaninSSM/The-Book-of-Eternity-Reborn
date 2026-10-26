@@ -1,5 +1,13 @@
 # T608 measured DATA-copy/seal cost audit — #1536
 
+- [ ] T608-COPY-CAUSE Establish the persisted direct-copy timeout phase and cause,
+  actual source/owner/observer differences and a minimal independent cheap proof.
+  No blind runtime repeat, mode change, new cache or budget increase.
+- [ ] T608-COPY-QUALIFY After any necessary bounded DESIGN/SOURCE correction,
+  preserve original assertions and full capture, obtain fresh affected bindings,
+  causal cheap proof and exact resource/PREP, then retry only the same original
+  two-minute singleton. Candidate and full positive stay held until their gates.
+
 - [x] T608-READONLY Trace repeated WoundBundle copy/constructor/seal/fingerprint work
   in the sole T607 persisted-prefix measurement and complete real consumers. Identify
   existing service reuse or prove freshness prevents it; no production edit/runtime yet.
