@@ -1,6 +1,36 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
-Current WIP: actual self-request staging is implemented but UNCOMPILED/UNRUN.
+Latest verified bounded result — self-request prerequisite, not a healing session:
+source `33d8aeac818caafe4d695d36ff06e01e16aa5999` freshly built the complete
+selected Unit ownership graph, exit0/75 warnings/0errors in11:40.67. All52 unique
+warning identities match the prior75-warning baseline, with no new/removed
+warnings. Official PlanOnly selected65 methods/136 cases/three descriptors in
+23.3567629s. Actual exact selection completed136/136PASS in134.6426827s total:
+
+- `spiritual-healing-check`:37/37,22.5363811s, original60-second budget.
+- `spiritual-self-treatment-request`:24/24,38.3664165s, original60-second budget.
+- `spiritual-self-treatment-source-controls`:75/75,26.2901887s/120 seconds.
+
+No timeout, skipped case, duplicate ID or underfill; both cleanup flags true.
+Root checked all136 unique test/execution IDs, five DLL/PDB pins before/after,
+matching main assembly in the runtime Unit directory, and clean tested HEAD.
+Main DLL SHA256 `c4dd88db52b8d4da7c0ccfd87322ca17d7bf74ae242d4251a83636c25bfd8f65`.
+Request TRX SHA256 `f1372f6bf4a1b549757907f42253bce2867c3f047bbdda7b1e046acad97e463b`.
+Complete raw remains outside checkout at
+`/workspace/tboe-linux-evidence-20261025/us4-self-healing/request-green-1`;
+fresh build is in `request-implementation-build-2`. Independent Sol SOURCE
+and OUTCOME both accepted. This proves real durable request staging,
+retained draw/byte-identical pending retry, source refusals and no wound/world/
+History mutation during preparation. It does NOT prove signed accepted admission,
+actual wound healing/recovery, cycle advancement, History publication or guided UI.
+Next is the accepted functional continuation using the existing observed signed
+snapshot reader, existing wound/effect/common assembler and atomic cycle publisher.
+T609/full DFR remain parked; no new Windows or full-feature qualification claim.
+
+The paragraphs below retain implementation and historical preparation evidence.
+
+Source implementation now has the bounded136-case result above; accepted-session
+integration remains WIP. The following source assessment preceded that run.
 It reads16 distinct canonical source paths once, shares the parsed profile across
 wound/history/art/effect consumers, calls the extracted detached source preparation
 once, and draws only after eligibility and cycle admission. Existing scheduler

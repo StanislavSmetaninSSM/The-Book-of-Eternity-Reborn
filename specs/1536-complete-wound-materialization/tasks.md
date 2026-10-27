@@ -14403,6 +14403,18 @@ close full source-action/terminal/pending contracts or any top-level story task.
 - [ ] T102 [US4] Add a counterable healing operation and art mapping without making resilience active in `BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs` and `BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs`
 - [ ] T103 [US4] Resolve combat healing cost through `AfterlifeActionCostRules` and typed spiritual-action-point outcomes in `BookOfEternityClient/Services/AfterlifeActionCostRules.cs` and `BookOfEternityClient/Services/AfterlifeSpiritualConflictResourceOutcome.cs`
 - [ ] T104 [US4] Implement exact safe-cycle session/attempt identity, no-OD self/helper treatment, and world-cycle outcome composition in `BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.cs`
+  Current self-request prerequisite (2026-10-27), source
+  `33d8aeac818caafe4d695d36ff06e01e16aa5999`: actual canonical-lease-owned staging,
+  separate retained draw, byte-identical pending retry, exact source/cycle refusal
+  and both-realm prepared-mode guards passed24/24. Combined affected selection
+  is136/136PASS (37 check +24 request +75 source controls), complete/no timeout/
+  skips/duplicates, both cleanup flags true. Fresh selected ownership build
+  exit0/0errors; independent Sol SOURCE + OUTCOME accepted. Full T104
+  remains open: signed accepted admission, wound/effect/natural recovery, actual
+  world advancement, History/common publication and player handler are not done.
+  T108 helper/entity authority is not claimed by this self-only prerequisite.
+  Raw stays outside checkout; exact sources/artifacts/times are in current plan.
+
 - [ ] T105 [US4] Implement universal natural recovery reducer, overflow/reset, per-wound cycle seals, and player/entity eligibility in `BookOfEternityClient/Services/SpiritualWoundRecoveryPlanner.cs`
   User-approved FR-043A (2026-10-27) resolves destination consequences:
   GM-authored weaker graphs, client-verified computed severity/legal graph and
