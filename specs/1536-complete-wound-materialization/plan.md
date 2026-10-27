@@ -1,5 +1,20 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Prebuild38 was HOLD, not run: independent review confirmed the pre-Engine GM
+task lacks the continuous console main-admission established later by
+ProcessPlayerTurn. A separate canonical lease would contend for the held main
+guard (bounded refusal, not proven extra180s hang). The original2e timeout is
+specifically the earlier unsupported publication signal. Grouped test-only
+closure starts the same owned task inside actual TerminalWaitStarted AFTER its
+physical checkpoint lease closes, naturally inheriting the actual issued main
+participation. It never seeds/transfers permissions. Worker lease acquisition
+uses stop.Token. Existing AcceptedOutcomeValidatedBeforeMaterialization checkpoint
+cancels/joins it before successful continuous owner exit; outer finally handles
+early/rejected paths. Fresh real packet read and exact source/no-write/graph checks
+stay unchanged. No production or guard change; correctedSOURCE required before
+one refsfalse build/samecase. No38 runtime or budget change.
+
+
 Graph-repair initial attempt on clean2e96 is UNQUALIFIED timeout, not a healing
 or graph-publication result: runner124/TimedOuttrue189.6846032s, noTRX/completed
 cases UNKNOWN, bothcleanuptrue. Build0errors/105warnings/3:02.29, Main/Support

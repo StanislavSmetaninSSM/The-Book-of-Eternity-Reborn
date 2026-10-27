@@ -39,36 +39,47 @@ public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
         JsonArray? authoredGraphs = null;
         var responseWritten = false;
         var repaired = false;
+        using var stop = new CancellationTokenSource();
+        Task? gmRepair = null;
         var runtime = GameEngineTurnLifecycleTests.CreateGameEngineRuntime(fixture.Files,
             inputSource: input, logger: diagnostics, explorerConsole: console,
             finalizationHooks: new GameEngineSessionFinalizationHooks
             {
                 AtCheckpointAsync = async checkpoint =>
                 {
+                    if (checkpoint == SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization)
+                    {
+                        // Join while the same actual console main participation is still alive.
+                        stop.Cancel();
+                        if (gmRepair is not null) await gmRepair;
+                        return;
+                    }
                     if (checkpoint != SessionFinalizationCheckpoint.TerminalWaitStarted || responseWritten) return;
-                    await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
-                    turn = JsonSerializer.Deserialize<TurnRequest>((await fixture.Files.ReadFileAsync(lease, "input/turn_request.json"))!,
-                        SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
-                    var healing = Assert.IsType<JsonObject>(turn.SpiritualHealing);
-                    Assert.Equal(5, healing["healingTier"]!.GetValue<int>());
-                    Assert.NotEmpty(healing["destinationGraphs"]!.AsArray());
-                    retainedSources = new(StringComparer.Ordinal);
-                    foreach (var path in new[] { "input/turn_request.json", LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
-                                 PendingTurnSnapshotAuthority.AuthorityPath, AcceptedMechanicsPlan.WoundCommandPath })
-                        retainedSources.Add(path, (await fixture.Files.ReadFileBytesAsync(lease, path))!);
-                    retainedRequest = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(
-                        retainedSources[AcceptedMechanicsPlan.WoundCommandPath]))!.AsObject();
-                    Assert.Null(retainedRequest["snapshotToken"]);
-                    Assert.Single(retainedRequest["attempt"]!["roll"]!["values"]!.AsArray());
-                    Assert.True(JsonNode.DeepEquals(retainedRequest["attempt"]!["roll"], healing["roll"]));
-                    // The controlled GM first omits required authored graphs; it never changes the client draw.
-                    await WriteNativeCompletionAsync(fixture.Files, lease, turn);
-                    unpublished = fixture.CaptureMutationRoots();
-                    responseWritten = true;
+                    await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
+                    {
+                        turn = JsonSerializer.Deserialize<TurnRequest>((await fixture.Files.ReadFileAsync(lease, "input/turn_request.json"))!,
+                            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+                        var healing = Assert.IsType<JsonObject>(turn.SpiritualHealing);
+                        Assert.Equal(5, healing["healingTier"]!.GetValue<int>());
+                        Assert.NotEmpty(healing["destinationGraphs"]!.AsArray());
+                        retainedSources = new(StringComparer.Ordinal);
+                        foreach (var path in new[] { "input/turn_request.json", LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+                                     PendingTurnSnapshotAuthority.AuthorityPath, AcceptedMechanicsPlan.WoundCommandPath })
+                            retainedSources.Add(path, (await fixture.Files.ReadFileBytesAsync(lease, path))!);
+                        retainedRequest = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(
+                            retainedSources[AcceptedMechanicsPlan.WoundCommandPath]))!.AsObject();
+                        Assert.Null(retainedRequest["snapshotToken"]);
+                        Assert.Single(retainedRequest["attempt"]!["roll"]!["values"]!.AsArray());
+                        Assert.True(JsonNode.DeepEquals(retainedRequest["attempt"]!["roll"], healing["roll"]));
+                        // The controlled GM first omits required authored graphs; it never changes the client draw.
+                        await WriteNativeCompletionAsync(fixture.Files, lease, turn);
+                        unpublished = fixture.CaptureMutationRoots();
+                        responseWritten = true;
+                    }
+                    gmRepair = Task.Run(RunGmRepairAsync);
                 }
             });
-        using var stop = new CancellationTokenSource();
-        var gmRepair = Task.Run(async () =>
+        async Task RunGmRepairAsync()
         {
             try
             {
@@ -78,7 +89,7 @@ public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
                     // Presence wakes this controlled file-GM; the leased packet read below supplies actual DATA.
                     if (fixture.Files.FileExists(repairPath))
                     {
-                        await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+                        await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync(cancellationToken: stop.Token);
                         var raw = await fixture.Files.ReadFileAsync(lease, repairPath);
                         if (raw is not null && raw != handled)
                         {
@@ -119,7 +130,7 @@ public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
                 input.RequestEscape(); // Let the actual repair wait finish its owned cleanup before surfacing the fixture fault.
                 throw;
             }
-        });
+        }
         try
         {
             runtime.GameLoop.SetSession("session_graph_repair_spiritual_healing", 42);
@@ -128,6 +139,7 @@ public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
             Assert.Equal(WoundApplicationService.ActionText, action);
             await runtime.Engine.ProcessPlayerTurn(action!);
             Assert.True(responseWritten, "The graph-bearing caller did not reach its controlled GM response.");
+            Assert.NotNull(gmRepair);
             stop.Cancel();
             await gmRepair;
             Assert.True(repaired);
@@ -175,7 +187,7 @@ public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
         finally
         {
             stop.Cancel();
-            try { await gmRepair; }
+            try { if (gmRepair is not null) await gmRepair; }
             finally
             {
                 output.WriteLine(diagnostics.Describe());
