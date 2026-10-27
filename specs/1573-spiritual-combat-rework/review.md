@@ -192,4 +192,8 @@ diff-check успешен, все12 Markdown имеют разрешающиес
 
 Документационная фиксация решения, runtime/test/build/balance UNRUN. Изменений
 исполнения или кэша нет; действующие требования reuse DATA/fresh authority остаются.
-Независимое review и проверка удалённого checkpoint выполняются для этого среза.
+Independent review /root/review_art_progression_approval1573, gpt-6.1-sol/xhigh,
+diff46375c7d…a6e299456: P1/P2 нет; узкая атрибуция одобрения, AC15 и gate согласованы.
+Diff-check успешен, Spec Kit prerequisites указывает feature1573. Checkpoint
+a6e299456a795e8b139a087ab3522d5f926b42f1 опубликован; remote SHA и GitHub readback
+spec подтверждены. Это фиксация принципа, не утверждение всей spec или runtime.
