@@ -191,9 +191,7 @@ internal static partial class WoundAcceptedTurnPlanner
         /// </returns>
         internal IReadOnlyDictionary<string, JsonNode?> ReadEffectSourceRoots() =>
             EffectAcceptedTurnInputComposer.SourceAuthorityPaths.ToDictionary(path => path, path =>
-                _fingerprintData.ReadBeforeBytes(path) is not { } bytes ? null : (JsonNode?)StrictJsonAuthority.Deserialize<JsonObject>(
-                    new UTF8Encoding(false, true).GetString(bytes).TrimStart('\uFEFF'),
-                    SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, path), StringComparer.Ordinal);
+                (JsonNode?)_fingerprintData.ReadEffectSourceRoot(path), StringComparer.Ordinal);
         /// <summary>
         /// Parses and checks the captured acquisition command against its original opportunities.
         /// </summary>

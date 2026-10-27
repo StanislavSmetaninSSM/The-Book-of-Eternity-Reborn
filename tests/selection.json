@@ -2,6 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "fr063-joint-private-effect-source-red",
+      "reason": "T609 causal file-free strict-source counter and original detached/error-order prerequisites before any per-root reuse.",
+      "contracts": ["#1536 EFFECTSRC-1–4: original private bytes and strict source remain fresh, preserve actual error/alias/owner behavior"]
+    },
+    {
       "category": "fr063-debug-prefix-sources",
       "reason": "New typed real-file DATA producer and actual public Full A→B→A contrast; all source/provenance/borrowed lease/copy/expiry negatives stay cheap. T607 explicit read DATA transport and reviewed rolling source closure affect this existing consumer; retain its original assertions.",
       "contracts": [

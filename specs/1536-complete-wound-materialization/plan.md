@@ -1,3 +1,32 @@
+# T609 shared-reader RED scaffold — WIP, UNCOMPILED / UNRUN
+
+The original private per-path byte lookup / strict UTF-8 / TrimStart BOM /
+StrictJsonAuthority JsonObject expression is now a shared internal reader on
+JointPrivateFingerprintData. The production live ToDictionary still enumerates
+its original paths in place and calls the same reader without an operation; it
+preserves original null/missing/duplicate/error and detached-map behavior. The
+optional actual ValidationOperation parameter is deliberately ignored in this
+uncached baseline: no production owner selection or cache was added. A named
+passive scope counts actual non-null strict parses after byte lookup.
+
+The single no-world JointPrivateEffectSourceTests Fact constructs real private
+before-images and a real serial operation. Original-reader differential, literal
+contents, alias isolation, missing/null/duplicate/malformed/UTF8 first-error parity,
+operation/window close and equal outputs precede the intended final count oracle.
+Two reads of four present roots should currently parse eight times; only the final
+required-four assertion is intended RED. It also emits bounded synthetic baseline
+parse/read and DeepClone time/allocations, not a full-game performance claim. The
+synthetic payload size approximates a retained post-timeout fixture but is not a
+proof of the captured before-images. Category fr063-joint-private-effect-source-red
+is exactly one Integration case / original one-minute protection; explicit CI
+selection records the affected contract. No user/GM/product function was added.
+
+This source/catalog change is uncompiled, unrun and requires independent SOURCE,
+fresh affected managed builds/bindings, exact discovery/PlanOnly and separate PREP.
+No error, timeout, lost result or compile failure counts as the causal RED. Cache
+GREEN stays on HOLD until faithful error/owner/policy and measured cost proof; full
+DFR/dependent/Windows gates and all previous raw retention conditions are unchanged.
+
 # T609 bounded source extraction — design accepted, code UNRUN
 
 Independent Astra/high DESIGN reviewed per-root private before-image parsing, source

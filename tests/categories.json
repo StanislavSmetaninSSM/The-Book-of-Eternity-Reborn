@@ -2,6 +2,17 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "fr063-joint-private-effect-source-red",
+      "responsibility": "One file-free T609 source fixture exercises the actual shared private before-image strict reader twice with a genuine serial operation; original output, alias isolation, ordered errors and closing precede the final one-parse-per-present-root oracle. Passive named counters observe actual strict parser work.",
+      "excludes": "No fake joint issuer, filesystem reads, canonical writes, cached admission, observer callback, whole-game qualification or timeout increase. Original uncached implementation should fail only its final source-count oracle.",
+      "changeHints": ["BookOfEternityClient/Services/JointPrivateFingerprintData.cs", "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs", "BookOfEternityClient.IntegrationTests/JointPrivateEffectSourceTests.cs"],
+      "related": [{"id": "fr063-joint-private-fingerprint-data", "when": "Retain original immutable byte-owner and alias contracts."}],
+      "requirements": {"frontendBuild": false, "exclusive": true},
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.JointPrivateEffectSourceTests.EqualReadsRequireOneActualParsePerPresentRoot"]}]
+    },
+    {
       "id": "core-joint-candidate-per-call-source",
       "responsibility": "T608 COPYOBS10–12 GREEN source singleton after accepted no-owner Replay/Core [2,2] RED: SAME genuine stage setup and four actual PreparedAgrees reads now require exact per-invocation Replay/Core [1,1], richer-source [0,0], unchanged full projection/current bytes/companion/G and complete source/storage/root prerequisites. Distinct real initially empty owners complete and dispose before return; ownership assertions follow the unchanged strict source oracle.",
       "excludes": "No common binding/registry Miss+Hit setup, fake issuer/owner/NamedEvents or missing-API/setup/noncompile/timeout causal RED, dummy/suspended owner, pre-validator warmup, new cache/service/production/diagnostic stack/timer/codec/limit/quota/GM change or genuine wiring. Actual registry/cold cache/source/authority qualification remains separate; no [1,0], zero or one-source-per-registry-role claim.",

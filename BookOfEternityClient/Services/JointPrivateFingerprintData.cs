@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
@@ -90,6 +91,21 @@ internal sealed class JointPrivateFingerprintData
     /// Fresh bytes, or <see langword="null"/> for a captured absent file.
     /// </returns>
     internal byte[]? ReadBeforeBytes(string path) => _before.ReadBytes(path);
+
+    /// <summary>Reads the original detached effect-source root from the private before-image.</summary>
+    /// <param name="path">The exact current source path, including its original lookup behavior.</param>
+    /// <param name="operation">The existing serial operation; the uncached baseline does not inspect or use it.</param>
+    /// <returns>The original strict parsed object or the original absent/null result.</returns>
+    internal JsonObject? ReadEffectSourceRoot(string path, ValidationOperation? operation = null)
+    {
+        _ = operation;
+        var bytes = ReadBeforeBytes(path);
+        if (bytes is null) return null;
+        using var timing = FileSystemManager.MeasureCurrentOperation("JointEffectInput.PrivateSourceParse");
+        return StrictJsonAuthority.Deserialize<JsonObject>(
+            new UTF8Encoding(false, true).GetString(bytes).TrimStart('\uFEFF'),
+            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, path);
+    }
 
     /// <summary>
     /// Compares current bytes against the retained private bytes without replacing a current-file read.
