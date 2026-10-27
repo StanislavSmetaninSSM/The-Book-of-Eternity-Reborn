@@ -1,5 +1,23 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Actual new replay/graph pair GREEN on clean9c785adb17e5d65c19d51bcbdae15cd068d5edd7:
+test-only Integration build0errors/103warnings/4:50.70, Integration
+70f212258f01dc8009d4ff08f23e827b61d384b06e2bd13027bdf7616b5d158a;
+Main/Support copies retain owning d5cd c2300613…/eb21bbf6… exactly. One introduced
+warning is xUnit2031 at ReplayGraph42; fold predicate-overload cleanup into next
+functional edit, no warning-only gate/build. PlanOnly exact2/2descriptors,
+18.7078816s/0executed. Actual2/2PASS,83.3602334s total; authored graph30.907088s,
+completed replay33.1372237s, each below unchanged120s; no skips/duplicates/timeouts,
+both cleanup flags true. Graph TRX686a7720be8c89f23b1597ddd1e2b56142efcaa9540f2cfec21ee81318528488;
+replay476fc9a2205ee91fb87a1f8496b75792974b2371a6b067d3b686c0045a4adf76.
+Both complete their actual publication/retained-draw/authored intermediate/identity
+and no-cost assertions; replay reopens services in the same PID, not a fresh-process
+qualification. Raw: replay-graphs-build-1/replay-graphs-1 outside checkout. Finite
+Sol OUTCOME requested. Next one connected actual caller/GM/guided self slice with
+typed pending intent and existing staged raw-byte retention/proof; no new admission
+library. Original5 and staging24 qualification retained, Mortal timeout and
+preparation6 remain explicitly unqualified/HOLD. No full-feature/task closure.
+
 Finite two-scenario SOURCE/PREP accepted the c9 scaffold with one strengthened
 oracle: reuse parsed strict persisted stages to assert exactII/I ranks, authored
 intermediate roll/cost1 profiles and actual original/intermediate effect identity
