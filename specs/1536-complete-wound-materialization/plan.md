@@ -1,3 +1,39 @@
+# T608 per-call meaningful source RED accepted — GREEN not implemented
+
+Linux source/runtime/fresh Integration `6f7ed504f44a21225f9a304f0a21f427a3aee135`;
+other four unchanged owners F6. Build: 0 errors / 101 exact baseline warnings, 3:47.55;
+33 artifacts, 11 PE/PDB identities and 84 Git/source/PDB joins; discovery 970 owners / 12,601 methods
+and exact 1-descriptor / 1-case / 2-minute PlanOnly verified. Full clean GitHub source recovery
+at the same SHA: 30,934 files, 773,451,620 logical bytes, every blob/mode checked; no tests
+or copied binaries in recovery. Independent SOURCE and exact RED PREP accepted.
+
+Actual official source singleton completed ONE Failed in 54.6414028 s / 120 s,
+framework 45.3761814 s, exit 1 / no timeout/skip/duplicate/underfill; both process cleanup
+flags true. Failure ONLY current final Replay array oracle, line 70: required [1, 1],
+actual [2, 2]. Independent complete capture verifies actual Replay/Core [2, 2] and
+richer [0, 0] in two isolated real paired-read invocations; four successful real reads,
+original projections and current source/storage/root prerequisites precede failure.
+Null owner/completion states remain unavailable DATA, not fabricated empty/closed
+owners. Stronger GREEN owner assertions are unrun; registry qualification is false.
+
+External actual-t608-candidate-per-call-red-1, nonce b9e3dec7857745cdb40bc2c2bf7ec184,
+PID 219144 ended; marked fixture root removed normally. Full gzip 40,505,392 bytes,
+SHA256 A5F89F980FB3CA2E0DCD071719DF68D9BAB2C196CE1E9E97789F003573C7C81F;
+decoded 377,372,118 bytes, SHA256 14BCFBEDC8E8B67C20E4C187C840EAE4848F7B7981FA0E91CF6C834BF2CBE1A3.
+742,119 rows, 742,110 original events, 371,055 exact pairs, 9 messages; strict EOF/CRC/ISIZE,
+all source/phase/snapshot/writer accounting, current/loaded pins checked in one
+streaming pass. Independent afterimage/frame/G files are unavailable after root
+removal: those earlier typed assertions are source-bound, not invented comparisons.
+
+Verifier SHA256 35d4d26721e4c634bb4e07efeaf4f46892a04e431aa3336eff941424fb824f01;
+external candidate-per-call-red-outcome-verification and independent OUTCOME accepted.
+This releases ONLY the reviewed existing-owner GREEN helper implementation, retaining
+the SAME causal Fact/oracle and fixed adapters, followed by SOURCE / fresh affected
+build/exact source+lifecycle PREP/outcome. No new cache, source validation bypass,
+production/game/GM change, timer/format/limit change or whole speedup claim. Original
+Candidate callsites stay unchanged until cheap GREEN accepted. Genuine 120-second / full
+DFR 300-second/dependent/Windows gates remain held; feature coverage still 68/69.
+
 # T608 per-call RED coherent source frozen — UNCOMPILED / UNRUN
 
 The sole new C# partial remains exactly saved at0a586f5e8, SHA256

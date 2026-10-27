@@ -4,7 +4,7 @@
   fixture contour; reject scalar/private-history bypass; independent bounded
   DESIGN and explicit COPYOBS10–12 technical amendment, preserving all product
   contracts and the earlier null-owner COPY / unsupported fallback coverage.
-- [ ] T608-CANDIDATE-OWNER-RED Implement/freeze the compilable no-owner shared
+- [x] T608-CANDIDATE-OWNER-RED Implement/freeze the compilable no-owner shared
   wrapper and identical genuine two-invocation/four-read source oracle. SOURCE,
   fresh affected build/bindings/discovery/PREP then intended final [2,2] vs [1,1]
   RED after complete applicable source/storage/root prerequisites; owner absence
