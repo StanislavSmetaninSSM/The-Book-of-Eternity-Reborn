@@ -1,3 +1,32 @@
+# T608 real-producer TREE-RED scaffold frozen — uncompiled/unrun
+
+Six source/catalog paths are frozen. The same fixture queue now retains original
+recorded ScopeId; legacy Observe stores unavailable0. Three finite whole-file
+inverses restore the baseline; the old strict global reader BODY and existing marker
+semantics are byte-exact. No returned-phase exception or GREEN interpretation exists.
+
+One new ctor-only Fact invokes actual FileSystemManager BeginOrdinaryReadPathPhase
+and Dispose without Initialize/world/lease/issuer, checks active/closed statistics,
+then successful full source/storage/queue/hash/root closing. Only afterward it calls
+the SAME old reader. Intended RED is the real OpenPhase/Phase mismatch; null phase,
+compile/setup/decoder/closing failure is not accepted RED. Fourteen protected files
+include all genuine bodies and both prior range/tail whole files. Production is exact.
+Twenty-eight XML blocks and static inverses pass. Catalog967/CI47 preserves all prior
+966 objects and46 entries; one new method/case has its own narrow one-minute owner.
+Related unchanged6 are separate; no GREEN negatives or genuine retry is released.
+
+Independent SOURCE, fresh affected build/current bindings, discovery/PlanOnly/PREP
+and actual causal RED remain pending. Existing lexical/source/authority assertions
+must remain strict; this scaffold merely carries already recorded identity DATA.
+No new cache, recorder, writer, scope format, producer clock or budget is introduced.
+
+The separately reviewed older680,889,606-byte direct COPY records file was retired
+after full identity/hash/ended-owner checks; actual reclaimed680,886,272 bytes.
+Its original comparison/initial/summary/provenance and marked root remain. New complete
+failed112.9 MB capture and the other94 MB incomplete COPY remain, as do all unmatched
+full-game evidence and saves. Exact compiled0045 evidence is retained externally and
+forbidden as a future runtime input. This is retention, never a functional PASS claim.
+
 # T608 concrete fixture function/lifetime DESIGN — no implementation yet
 
 The proposed correction addresses the proven global-LIFO fixture error only. Carry

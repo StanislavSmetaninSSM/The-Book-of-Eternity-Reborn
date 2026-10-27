@@ -67,7 +67,7 @@ public sealed partial class JointBundleComponentTests
         private bool _retained;
         private bool _disposed;
         private Exception? _disposeFailure;
-        private readonly System.Collections.Concurrent.ConcurrentQueue<(string Name, string Boundary, double Milliseconds)> _observations = new();
+        private readonly System.Collections.Concurrent.ConcurrentQueue<(string Name, string Boundary, double Milliseconds, long SourceScopeId)> _observations = new();
 
         /// <summary>
         /// Registers independent diagnostics, then allocates an ordinary nonce-owned game container.
@@ -217,7 +217,7 @@ public sealed partial class JointBundleComponentTests
         /// </param>
         private void Observe(string name, string boundary, TimeSpan elapsed)
         {
-            _observations.Enqueue((name, boundary, elapsed.TotalMilliseconds));
+            _observations.Enqueue((name, boundary, elapsed.TotalMilliseconds, 0));
             _output.Timings.Observe(name, boundary, elapsed);
         }
 

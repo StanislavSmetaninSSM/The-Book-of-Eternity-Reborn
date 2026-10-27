@@ -37,7 +37,7 @@ public sealed partial class JointBundleComponentTests
             {
                 foreach (var row in _passiveWindow.DrainEvents())
                 {
-                    _observations.Enqueue((row.Name, row.State, row.ElapsedTicks * 1000d / Stopwatch.Frequency));
+                    _observations.Enqueue((row.Name, row.State, row.ElapsedTicks * 1000d / Stopwatch.Frequency, row.ScopeId));
                     _output.Timings.ObserveRecorded(row);
                 }
             }

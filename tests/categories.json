@@ -2,6 +2,54 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "core-joint-function-lifetime-tree",
+      "responsibility": "T608 TREE-RED tests-first singleton: actual FileSystemManager BeginOrdinaryReadPathPhase and returned Dispose, real active/closed owner state and four original factory/lifetime events, SAME observation queue carrying original ScopeId, full source/tick/queue/writer/gzip/hash/root prerequisites BEFORE final old strict-global-reader OpenPhase/Phase mismatch.",
+      "excludes": "No Initialize, GameEngine/world/native/lease/issuer/fake owner or NamedEvent, no Phase exemption or function/lifetime GREEN marker, no production/cache/authority/recorders/writers/codec/17field/time/budget/quota change, new consumer or general lifetime framework. Null phase/setup/noncompile/storage/closing failure is not causal RED. Real GREEN negatives and genuine COPY/CANDIDATE remain separately gated.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.OrdinaryPhaseTree.cs",
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.cs",
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.PassiveTimings.cs",
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.AdmissionTimings.cs"
+      ],
+      "related": [
+        {
+          "id": "core-joint-passive-copy-ranges",
+          "when": "Preserve unchanged original three-field exports and14-event/three-mode range controls under the queue identity addition."
+        },
+        {
+          "id": "core-joint-passive-copy-tail-visibility",
+          "when": "Preserve existing source4/ordinals/sentinel/live-prefix/closing behavior without changing its Fact."
+        },
+        {
+          "id": "fr063-joint-component-diagnostics",
+          "when": "Default callback/plain and intentional disposed-writer failures retain original behavior."
+        },
+        {
+          "id": "fr063-joint-bundle-copy-controls",
+          "when": "Actual required function chains and all fresh guards remain; no genuine admission before causal proof and corrected reader gates."
+        },
+        {
+          "id": "fr063-joint-bundle-candidate",
+          "when": "Shared observation DATA identity addition must not alter candidate source/owner/fence contracts; runtime remains held after COPY."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.JointBundleComponentTests.OrdinaryReadPathReturnedPhase_PreservesRecordedTreeContract"
+          ]
+        }
+      ]
+    },
+    {
       "id": "core-joint-passive-copy-tail-visibility",
       "responsibility": "T608 copy-tail persistence GREEN protection after accepted prerequisite-complete RED: the same constructor-only success and sentinel-unwind scopes, exact sentinel before close, saved live gzip prefix before message flush and complete original source/queue/writer/hash/marked-root prerequisites before the strict four-event visibility oracle. Boundary transfers original events then flushes the SAME existing writer.",
       "excludes": "No Initialize, runtime/world/native/lease/issuer/semantic owner, fake/rebased events or product-validator labels, new consumer/cache/transport, range/tree rewrite or timer, production/codegen/schema/budget/quota change, expensive retry or full-positive admission. This case does not qualify genuine COPY/CANDIDATE; their finite tail boundaries require separate cheap outcome and resource/PREP gates.",

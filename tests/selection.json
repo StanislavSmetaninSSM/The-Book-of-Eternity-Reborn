@@ -322,6 +322,13 @@
       "contracts": [
         "#1536 T608-COPY-TAIL-GREEN / COPYOBS6; accepted causal RED, same-writer finite visibility and unchanged primary-before-close separation"
       ]
+    },
+    {
+      "category": "core-joint-function-lifetime-tree",
+      "reason": "T608 TREE-RED only: real returned ordinary-read phase producer plus unchanged strict-global tree reader, exact same-window original ScopeIds retained in the existing queue (legacy0 unavailable), complete source4/storage/root prerequisites before final OpenPhase/Phase mismatch. No producer timing/guard/default or genuine functional-body/reader-GREEN change.",
+      "contracts": [
+        "#1536 T608-COPY-TREE-RED / COPYOBS7; actual returned lifetime causal proof before strict-function/lifetime correction"
+      ]
     }
   ]
 }

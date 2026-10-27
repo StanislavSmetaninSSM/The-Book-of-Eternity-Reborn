@@ -138,7 +138,7 @@ public sealed partial class JointBundleComponentTests
         /// <returns>
         /// All observations in that interval, in their original order.
         /// </returns>
-        private (string Name, string Boundary, double Milliseconds)[] ReadAdmissionTimingRange((int Start, int End) range)
+        private (string Name, string Boundary, double Milliseconds, long SourceScopeId)[] ReadAdmissionTimingRange((int Start, int End) range)
         {
             var observations = _observations.ToArray();
             Assert.InRange(range.Start, 0, observations.Length);
@@ -157,7 +157,7 @@ public sealed partial class JointBundleComponentTests
         /// Every node, retaining its direct children for the declared chain checks.
         /// </returns>
         private static IReadOnlyList<AdmissionTimingNode> ReadStrictAdmissionTree(
-            (string Name, string Boundary, double Milliseconds)[] rows)
+            (string Name, string Boundary, double Milliseconds, long SourceScopeId)[] rows)
         {
             var nodes = new List<AdmissionTimingNode>();
             var stack = new Stack<AdmissionTimingNode>();
