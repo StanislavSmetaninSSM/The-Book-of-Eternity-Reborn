@@ -8,7 +8,7 @@
   operation at the single candidate call site. Preserve helper defaults/lifetime,
   caller null-owner and actual cold miss/hit/fence/negative assertions. Retain exact
   qualified service/counter evidence, independent SOURCE and fresh Integration pins.
-- [ ] T608-CANDIDATE-VISIBILITY-DESIGN Map the existing continuing consumer to one
+- [x] T608-CANDIDATE-VISIBILITY-DESIGN Map the existing continuing consumer to one
   ordered observation/write transfer, preserving exact offsets, defaults and lifetime.
   Existing Miss timers need pre-return persistence; no new general stack or runtime.
 - [ ] T608-CANDIDATE-VISIBILITY-PROOF After accepted bounded design, prove a real

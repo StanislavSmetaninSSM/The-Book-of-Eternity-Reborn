@@ -48,6 +48,15 @@ Use unchanged qualified service/counter and true-helper COPY evidence; no new ca
 owner around caller work, diagnostic stack or whole-timeout/speedup claim. Exact
 SOURCE, fresh affected bindings and separate original-budget PREP remain required.
 
+COPYOBS9: pre-return visibility may reuse the existing continuing detached consumer
+through ONE ordered queue/write transfer with exact atomic ordinal/slice/marker
+boundaries. Keep the same recorder/writer/events/clocks and caller defaults; no
+competing drain, new generic stack, capability-bearing worker or genuine timer label.
+Preserve existing resource/window/consumer/accounting close order and each caller's
+error policy. Running, unstarted RED and failed-start states are distinct; no false
+tail/completion claim. A ctor-only blocked-SYNC visibility causal RED/GREEN and bounded
+ordering/context/fault/default regressions precede any separate candidate PREP.
+
 # T608 expected-projection reuse DESIGN scope — #1536
 
 REPLAY-REUSE1: accepted causal RED releases only a separately reviewed design of pure

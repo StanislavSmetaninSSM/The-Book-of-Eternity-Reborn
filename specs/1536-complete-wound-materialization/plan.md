@@ -1,3 +1,13 @@
+# T608 existing-event visibility DESIGN accepted — RED scaffold next
+
+Focused independent Astra/high accepts the external design at SHA256 80ef0cf233a949b038325ce065a7aaad3b866edc99818450a47eed89c0844e7f. The unresolved question is the existing cold-Miss nested timer attribution; saved prefixes omit those events because the component drains only after the synchronous return. No production defect or safe guard removal is established.
+
+Reuse the accepted lifecycle consumer through one ordered transfer owner over the same Window, capture/writer and optional existing observation queue. One gate covers detach, queue and writer publication, reset/count/marker and detached phase snapshot/end-offset/marker. No competing manual drain, new recorder/cache/transport/genuine labels, clock/format change or capability reference in the worker. Keep default/COPY behavior, actual candidate workload/assertions, preparation-only reuse and original budgets.
+
+Startup is last in successful fixture construction. Distinguish running worker, deliberately unstarted RED and scheduling failure; no failed-start tail/join success claim. Resources close before window close, then stop/join/final tail/accounting/Finish. Preserve each caller's existing exception policy: lifecycle primary preservation, component's possible closing AggregateException override. No new failure-recovery framework or whole-fixture concurrent-disposal claim.
+
+Next implement only a compilable RED scaffold: lifecycle loop extraction, shared component transfer/boundaries but no continuing component worker yet, original genuine callsites unchanged, one ctor-only blocked synchronous-call visibility control. Its saved live prefix is read with bounded polling and no manual/message-triggered flush; final missing-begin oracle follows successful full source/storage/root closing. After accepted actual RED, GREEN adds the worker and two finite queue/fault controls. Proposed static GREEN is 7 IDs / 25 methods / 34 cases, pending discovery. Independent SOURCE, fresh affected bindings and exact PREP remain required. No new candidate/full-positive runtime is admitted. External design/review stay in t608-counter-scaffold; no generated report enters Git.
+
 # T608 reused-preparation CANDIDATE still TIMEOUT — ordered visibility DESIGN
 
 The one separately admitted candidate at runtime/compiled Integration 56e002bcad77821c87d796b36c02c8cf57e8f5e4 timed out at category 120.1119989 s, unchanged 120 s budget, exit 124. Zero completed cases/TRX/report; actual fixture root retained. Both process cleanup flags are true and PID 206613 is an ended zombie. There is no candidate PASS or automatic repeat. Feature coverage remains 68/69.
