@@ -4,14 +4,15 @@ Current WIP: actual self-request staging is implemented but UNCOMPILED/UNRUN.
 It reads14 distinct canonical source paths once, shares the parsed profile across
 wound/history/art/effect consumers, calls the extracted detached source preparation
 once, and draws only after eligibility and cycle admission. Existing scheduler
-control construction is reused by a read-only single-cycle binding helper. The
+control and catch-up construction are reused by a read-only single-cycle binding
+helper: a forged false catch-up flag cannot suppress actual current backlog. The
 closed v2 envelope retains its exact attempt, source fingerprint, roll mode and
 vector; exact retry performs no entropy and preserves bytes. All source baselines
 and request absence are checked freshly after arbitrary injected entropy through
 the existing coordinated writer. Readback uncertainty remains an exception, not
 a refusal/redraw. There is no wound/effect/world/History mutation at this stage.
-Six extra current-source/privacy/conflict/pending/mutable-control cases bring the
-request category to14 methods; the37 check cases are selected for the resolver
+Eight extra current-source/privacy/conflict/pending/mutable-control cases bring the
+request category to16 methods; the37 check cases are selected for the resolver
 source-preparation extraction. Fresh source review and owning build are pending.
 The new internal envelope is client-authored only; no GM response/UI capability
 is enabled by this block. Existing v1 accepted command parsing is unchanged.

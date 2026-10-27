@@ -27,7 +27,10 @@ public partial class ProgressionScheduleService
             schedule.PendingShiningAbodeCycles != (realm == "shining_abode" ? 1 : 0) ||
             schedule.PendingShiningFactionCycles != (realm == "shining_abode" ? 1 : 0) ||
             schedule.PendingShiningTradeCycles != (realm == "shining_abode" ? 1 : 0) ||
-            control.AfterlifeCatchupRequired)
+            control.AfterlifeCatchupRequired ||
+            BuildAfterlifeCatchupContext(schedule,
+                realm == "chaos_sea" ? AfterlifeRealmKind.ChaosSea : AfterlifeRealmKind.ShiningAbode,
+                includeShiningContoursInMortalCatchup: false).Required)
             return false;
         var expected = BuildProgressionControl(schedule, 0, 0,
             new AfterlifeCatchupContext(false, 0, "none", 0, Array.Empty<string>()));

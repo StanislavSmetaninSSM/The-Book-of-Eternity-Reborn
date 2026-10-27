@@ -244,6 +244,39 @@ public sealed class SpiritualSelfTreatmentRequestTests
         Assert.Equal(ordinal, root["attempt"]!["cycleOrdinal"]!.GetValue<int>());
     }
 
+    [Fact]
+    public async Task Stage_CurrentCatchupCannotBeHiddenByCallerControl()
+    {
+        await using var f = await Fixture.CreateAsync();
+        await using var lease = await f.Files.AcquireCanonicalWriteLeaseAsync();
+        await f.ChangeRootAsync(lease, ProgressionScheduleService.SchedulePath,
+            root => root["currentWorldTimeInMinutes"] = 1440);
+        f.Context.Progression.CurrentWorldTimeInMinutes = 1440;
+        var draws = 0;
+        var result = await AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(f.Files, lease,
+            f.Context, f.Selection, _ => { draws++; return new[] { 20 }; });
+        Assert.False(result.IsStaged);
+        Assert.Equal("spiritual_self_treatment_cycle_invalid", result.IssueCode);
+        Assert.Equal(0, draws);
+        Assert.Null(await f.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
+    }
+
+    [Fact]
+    public async Task Stage_DuplicateSourcePropertiesCannotBeSilentlyCollapsed()
+    {
+        await using var f = await Fixture.CreateAsync();
+        await using var lease = await f.Files.AcquireCanonicalWriteLeaseAsync();
+        await f.Files.WriteFileAtomicAsync(lease, "game_state/meta/soul_state.json",
+            "{\"currentRealm\":\"Chaos Sea\",\"currentRealm\":\"Shining Abode\"}");
+        var draws = 0;
+        var result = await AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(f.Files, lease,
+            f.Context, f.Selection, _ => { draws++; return new[] { 20 }; });
+        Assert.False(result.IsStaged);
+        Assert.Equal("spiritual_self_treatment_source_invalid", result.IssueCode);
+        Assert.Equal(0, draws);
+        Assert.Null(await f.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
+    }
+
     private sealed class Fixture : IAsyncDisposable
     {
         private readonly string _root;
