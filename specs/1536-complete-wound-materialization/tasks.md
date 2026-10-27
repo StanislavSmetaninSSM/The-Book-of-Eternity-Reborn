@@ -15,7 +15,7 @@
 - [x] T608-COPY-TAIL-RED Add one compilable ctor-only genuine-event visibility
   control with the existing transfer boundary, preserve all closing prerequisites,
   then prove missing live-prefix rows as the sole final causal RED. No game runtime.
-- [ ] T608-COPY-TAIL-GREEN After accepted RED, use the same existing writer Flush
+- [x] T608-COPY-TAIL-GREEN After accepted RED, use the same existing writer Flush
   at finite named tail boundaries; preserve workload, primary-before-close semantics,
   defaults and all assertions. Fresh affected build/cheap proof/review before any
   separate original-budget COPY-only diagnostic PREP.

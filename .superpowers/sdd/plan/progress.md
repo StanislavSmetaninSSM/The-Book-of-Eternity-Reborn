@@ -1,3 +1,35 @@
+# T608 finite tail visibility GREEN accepted — genuine COPY PREP next
+
+Independent SOURCE/PREP/OUTCOME accept six distinct cheap PASS at runtime/compiled
+Integration 0045cb90e3e3f28db07e316c678bed097636452c, in two staged invocations:
+visibility1 and related5 (unchanged ranges3 plus default/fault output2). All planned
+cases completed, no skip/duplicate/underfill/timeout, and both process cleanup flags
+pass. Current33 artifacts/11 PE-PDB pairs/76 source joins and loaded identities match;
+other four owning projects remain F6. Fresh affected build: zero errors,101 unchanged
+warnings,4:40.64. Discovery966/12,591 and exact three-descriptor/six-case PlanOnly pass.
+
+The byte-exact visibility Fact now passes its same final line148 oracle: all four
+original success/sentinel events are visible in the saved pre-close prefix, the same
+sentinel was checked before separate successful closing, and strict complete capture/
+source-pair/queue/writer/hash/root checks pass. The prefix remains incomplete and gets
+no EOF/CRC success claim; the final closed gzip has its own strict integrity proof.
+Related controls preserve all three modes/ranges and intentional failure incompleteness.
+No original COPY functional body, integrity/authority guard, owner or budget changed.
+
+Evidence remains external in actual-t608-copy-tail-green-1,
+actual-t608-copy-tail-related-1 and t608-counter-scaffold, including the independent
+combined review. This accepts the minimal visibility correction, not a faster run or
+the cause/resolution of either incomplete genuine COPY or the full-positive timeout.
+
+Next prepare only the original COPY singleton with complete diagnostics and the
+existing two-minute budget, after exact current resource/owner/binding/PlanOnly and
+independent PREP. The concrete question is whether remaining time is spent in the
+existing history/abort phases or either of the two final assertion checks. Use this
+finite evidence for a causal result or specific fix; no diagnostic-framework expansion.
+CANDIDATE/full-positive remain held, both previous incomplete COPY raw/roots and
+unmatched full-game evidence remain protected. Windows and clean-source restoration
+remain unclaimed at this checkpoint. No new game/GM contract was introduced.
+
 # T608 finite tail GREEN source frozen — uncompiled/unrun
 
 Four source/catalog paths are frozen. The same boundary now transfers original
