@@ -799,6 +799,7 @@ public partial class GameEngine
         int expectedTurnNumber,
         ValidatedPendingTurnSnapshotContext? activeSnapshotContext = null)
     {
+        var snapshotContext = activeSnapshotContext;
         PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload? payload;
         if (activeSnapshotContext != null)
         {
@@ -816,21 +817,25 @@ public partial class GameEngine
             if (manifest.TurnNumber != expectedTurnNumber)
                 return null;
 
-            payload = await LoadValidatedCurrentPendingTurnSnapshotAuthorityPayloadAsync(manifest);
-            if (payload == null)
+            snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
+            if (snapshotContext == null)
                 return null;
+            payload = snapshotContext.Payload;
         }
 
         var canonicalFiles = new HashSet<string>(CanonicalStateNormalizer.CanonicalAccumulatedFiles, StringComparer.OrdinalIgnoreCase);
         canonicalFiles.UnionWith(
             WoundAcceptedTurnSnapshotContract.PublicationAgreementPaths);
+        var requiredWoundBeforeImages = WoundAcceptedTurnSnapshotContract.PublicationAgreementPaths.AsEnumerable();
+        if (snapshotContext is not null && await IsAuthenticatedSpiritualPreparationSnapshotAsync(snapshotContext))
+            requiredWoundBeforeImages = requiredWoundBeforeImages.Where(p => p != AcceptedMechanicsPlan.WoundCommandPath);
         if (_fs.FileExists(AcceptedMechanicsPlan.WoundCommandPath) &&
             !PendingTurnSnapshotAuthority.HasValidatedRollbackSnapshotCoverage(
                 payload,
                 static authorityPayload => authorityPayload.Files,
                 static authorityPayload => authorityPayload.SnapshotFileHashes,
                 static authorityPayload => authorityPayload.RollbackBaselineFiles,
-                WoundAcceptedTurnSnapshotContract.PublicationAgreementPaths,
+                requiredWoundBeforeImages,
                 out _))
         {
             return null;

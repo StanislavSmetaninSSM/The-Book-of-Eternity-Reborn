@@ -1704,10 +1704,18 @@ public partial class GameEngine
                 await using var healingLease = await _fs.AcquireCanonicalWriteLeaseAsync();
                 if (!_fs.IsCurrentSessionGeneration(healingLease, sessionGeneration))
                     throw new SessionReplacedException("Healing selection belongs to a replaced session.", sessionGeneration, actualGeneration: null);
+                var conflictExisted = _fs.FileExists(healingLease, AfterlifeSpiritualConflictState.StatePath);
+                await EnsureAfterlifeSpiritualConflictStateInitializedForSnapshotAsync(healingLease);
+                await RegisterAfterlifeSpiritualConflictRollbackBackupIfInitializedAsync(
+                    healingLease, request, backedUpFiles, conflictExisted);
+                if (!_fs.FileExists(healingLease, AfterlifeSpiritualConflictState.StatePath))
+                    throw new InvalidDataException("Healing preparation requires initialized spiritual conflict state before its draw.");
                 var stagedHealing = await AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(_fs, healingLease,
                     new(request.SessionId, request.RequestId, request.TurnNumber, request.ProgressionControl!), healingSelection);
                 if (!stagedHealing.IsStaged || stagedHealing.GmContext is null)
                     throw new InvalidDataException("Self-treatment selection can no longer be staged: " + stagedHealing.IssueCode);
+                // Signed preparation evidence is distinct from the unchanged pre-turn rollback absence.
+                backedUpFiles.ValidationSnapshotFiles.Add(AcceptedMechanicsPlan.WoundCommandPath);
                 request.SpiritualHealing = stagedHealing.GmContext.DeepClone().AsObject();
             }
             using (_fs.MeasureOperation("PlayerTurn.Stage.AttachDiceAndGacha"))

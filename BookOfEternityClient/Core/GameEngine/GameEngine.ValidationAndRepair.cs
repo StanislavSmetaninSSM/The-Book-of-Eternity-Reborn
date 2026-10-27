@@ -2530,6 +2530,8 @@ public partial class GameEngine
         var requiredSnapshotPaths =
             WoundAcceptedTurnSnapshotContract.BuildRequiredPaths(
                 plan.TouchedPaths);
+        if (snapshotContext is not null && await IsAuthenticatedSpiritualPreparationSnapshotAsync(snapshotContext))
+            requiredSnapshotPaths = requiredSnapshotPaths.Where(p => p != AcceptedMechanicsPlan.WoundCommandPath).ToArray();
         if (snapshotContext == null ||
             snapshotContext.TurnNumber != woundStages.Input.Binding.Turn ||
             !PendingTurnSnapshotAuthority.HasValidatedRollbackSnapshotCoverage(

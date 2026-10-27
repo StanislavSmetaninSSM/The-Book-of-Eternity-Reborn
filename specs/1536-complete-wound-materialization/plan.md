@@ -1,5 +1,32 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Next coherent actual-caller fix WIP (UNCOMPILED/UNRUN): successful actual
+StageSelfTreatment alone registers WoundCommandPath as ValidationSnapshotFiles,
+never BaselineFiles/BackupFiles. A private actual-observed signed-v2 classifier
+checks exact-byte snapshot/hash, originaltoken/IDs/control/closed codec and signed
+absence from rollbackbaseline/backups, then filters ONLY that input at BOTH
+baseline-loader and postpublication wound-coverage callers. Generic coverage API,
+all canonical wound/effect/resource paths and v1 semantics stay strict. Classifier
+only returns read-only snapshot DATA; actual admission/source16/current owner
+checks still apply. No persisted flag/new receipt/cache/admission framework.
+Existing validated private context reused; fresh original observation/evidence under
+its own current lease only for the new nonbaseline command family. Ordinary/v1
+without that exact map role avoids additional observation.
+
+Existing architectural DESIGN accepted exact producer-role boundary. Under same
+healingLease BEFORE source fingerprint/draw, Ensure conflict root and immediately
+reuse RegisterAfterlifeSpiritualConflictRollbackBackupIfInitializedAsync with its
+actual prior-existence flag. Verify presence because Ensure swallows ordinary
+errors. This explicitly RETAINS existing initialized-canonical-baseline semantics:
+empty client conflict root is signed baseline, with identical warm/cold backup,
+not preserved pre-initialization physical absence. Later initializer is idempotent.
+This clarification is required; the earlier top pending note's 'trueabsence' refers
+ONLY newly staged wound command. No broad conflict producer/planner role rewrite.
+Root independently confirmed interpretation; no new user game-rule decision.
+Existing Sol independently accepted prior c6fb contract10/graph1/samePIDreplay1
+outcomes and guided actualphase limits. Next finite SOURCE follows this coherent
+snapshotfix + required current caller/source coverage, not another diagnostic run.
+
 Fresh c6fb owning builds PASS: Integration0errors/137warnings/8:43.29;
 Main46909ecb60481a0f644d304c5b62b2458386e59e1342f4abb453dd14f8a8511e,
 Support937bcded09b21db00b31864143aac4f5e7677d281976149825740bd6e463a57f,
