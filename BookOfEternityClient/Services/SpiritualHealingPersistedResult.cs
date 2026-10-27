@@ -38,6 +38,8 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
                 ["snapshotToken"] = binding.SnapshotToken, ["realm"] = binding.Realm, ["turn"] = binding.Turn },
             ["request"] = owner.Request, ["source"] = owner.PersistenceSource,
             ["control"] = JsonSerializer.SerializeToNode(owner.Control),
+            ["scheduleBeforeJson"] = CanonicalJsonUtf8.DecodeOneOptionalBom(owner.SchedulerMutation.ScheduleBefore.Bytes!),
+            ["progressionReportJson"] = CanonicalJsonUtf8.DecodeOneOptionalBom(owner.SchedulerMutation.ReportBefore.Bytes!),
             ["scheduleAfterJson"] = owner.SchedulerMutation.ScheduleAfterJson,
             ["scheduleAfterFingerprint"] = owner.SchedulerMutation.ScheduleAfter.Fingerprint,
             ["stages"] = new JsonArray(executed.Select(s => (JsonNode)new JsonObject
@@ -63,7 +65,7 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
             var root = StrictJsonAuthority.Deserialize<JsonObject>(element.GetRawText(), new JsonSerializerOptions(), "spiritual healing result")
                 ?? throw new InvalidDataException("Result must be an object.");
             AfterlifeWoundTreatmentAuthority.MaterializeProperties(root);
-            Closed(root, "kind", "schemaVersion", "binding", "request", "source", "control", "scheduleAfterJson", "scheduleAfterFingerprint", "stages", "resultFingerprint");
+            Closed(root, "kind", "schemaVersion", "binding", "request", "source", "control", "scheduleBeforeJson", "progressionReportJson", "scheduleAfterJson", "scheduleAfterFingerprint", "stages", "resultFingerprint");
             if (Text(root, "kind") != "spiritual_healing" || root["schemaVersion"]!.GetValue<int>() != 1 ||
                 Text(root, "resultFingerprint") != WoundHistoryState.ComputeTransitionResultFingerprint(root))
                 throw new InvalidDataException("Spiritual result kind/schema/fingerprint differs.");
@@ -81,12 +83,32 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
             var scheduleJson = Text(root, "scheduleAfterJson");
             var schedule = StrictJsonAuthority.Deserialize<JsonObject>(scheduleJson, new JsonSerializerOptions(), "spiritual schedule result")!;
             var scheduleBytes = Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(scheduleJson)).ToArray();
-            if (Text(root, "scheduleAfterFingerprint") != new CanonicalBeforeImage(true, scheduleBytes).Fingerprint)
+            if (Text(root, "scheduleAfterFingerprint") != new CanonicalBeforeImage(true, scheduleBytes).Fingerprint ||
+                !ProgressionScheduleService.SpiritualPublishedScheduleAgrees(schedule, Text(root, "scheduleBeforeJson"),
+                    Text(root, "progressionReportJson"), control, Text(binding, "sessionId"), Text(binding, "requestId"),
+                    binding["turn"]!.GetValue<int>(), Text(binding, "realm")))
                 throw new InvalidDataException("The complete accepted schedule image differs.");
             var source = root["source"]!.AsObject();
             Closed(source, "healingTier", "complicationModifier", "rollMode", "sourceFingerprint", "rollContributions", "graphResponseFingerprint");
-            if (source["rollContributions"] is not JsonArray || string.IsNullOrWhiteSpace(Text(source, "graphResponseFingerprint")))
+            if (source["rollContributions"] is not JsonArray contributions || contributions.Count > EffectRollContributionResolver.MaximumCapturedRows ||
+                !ResourceMaterializationContract.IsAuthorityFingerprint(Text(source, "graphResponseFingerprint")))
                 throw new InvalidDataException("Missing retained effect/graph-response source diagnostics.");
+            var componentKeys = new HashSet<(string, string)>();
+            var advantage = false; var disadvantage = false;
+            foreach (var item in contributions)
+            {
+                if (item is not JsonObject row) throw new InvalidDataException("Invalid retained roll contribution.");
+                Closed(row, "EffectId", "ComponentId", "Contribution");
+                if (!ResourceMaterializationContract.IsExactIdentifier(Text(row, "EffectId")) ||
+                    !ResourceMaterializationContract.IsExactIdentifier(Text(row, "ComponentId")) ||
+                    !componentKeys.Add((Text(row, "EffectId"), Text(row, "ComponentId"))) ||
+                    Text(row, "Contribution") is not ("advantage" or "disadvantage"))
+                    throw new InvalidDataException("Invalid/duplicate retained roll contribution coordinate.");
+                advantage |= Text(row, "Contribution") == "advantage";
+                disadvantage |= Text(row, "Contribution") == "disadvantage";
+            }
+            if (Text(source, "rollMode") != (advantage == disadvantage ? "normal" : advantage ? "advantage" : "disadvantage"))
+                throw new InvalidDataException("Retained effect contributions do not derive the sealed roll mode.");
             var tier = source["healingTier"]!.GetValue<int>();
             var complicationModifier = source["complicationModifier"]!.GetValue<long>();
             if (tier is < 1 or > 5 || complicationModifier < 0 || !ResourceMaterializationContract.IsAuthorityFingerprint(Text(source, "sourceFingerprint")))

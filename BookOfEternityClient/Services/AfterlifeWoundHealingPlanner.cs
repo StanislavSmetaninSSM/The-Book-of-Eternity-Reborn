@@ -23,6 +23,8 @@ internal static class AfterlifeWoundHealingPlanner
         private readonly AfterlifeWoundTreatmentAuthority.SourceData _data;
         private readonly string _controlJson;
         private readonly CanonicalBeforeImage _responseImage;
+        private readonly IReadOnlyDictionary<string, JsonNode?> _parsedSourceRoots;
+        private string? _composedEffectInputFingerprint;
         private readonly Dictionary<string, WoundWorkingOwnedGraph> _graphs = new(StringComparer.Ordinal);
         private readonly List<WoundExecutedBoundary> _executed = new();
 
@@ -35,7 +37,8 @@ internal static class AfterlifeWoundHealingPlanner
             AfterlifeWoundTreatmentAuthority.SourceData data, WoundAcceptedTurnInput input,
             IReadOnlyList<WoundMaterializationEnvelope> wounds, IReadOnlyList<SpiritualWoundStage> stages,
             ProgressionControl control, ProgressionScheduleService scheduler,
-            ProgressionScheduleService.AcceptedTurnOutcomeMutation schedulerMutation, CanonicalBeforeImage responseImage)
+            ProgressionScheduleService.AcceptedTurnOutcomeMutation schedulerMutation, CanonicalBeforeImage responseImage,
+            IReadOnlyDictionary<string, JsonNode?> parsedSourceRoots)
         {
             _files = files; _lease = lease; _snapshot = snapshot; _original = original;
             _sources = AcceptedMechanicsPlanBinding.CloneReadOnlyBeforeImages(sources);
@@ -44,6 +47,7 @@ internal static class AfterlifeWoundHealingPlanner
             _stages = stages.ToArray(); _data = data; _controlJson = JsonSerializer.Serialize(control);
             Scheduler = scheduler; SchedulerMutation = schedulerMutation;
             _responseImage = new(responseImage.Existed, responseImage.Bytes);
+            _parsedSourceRoots = parsedSourceRoots.ToDictionary(p => p.Key, p => p.Value?.DeepClone(), StringComparer.Ordinal);
             Fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new[]
             {
                 "book_of_eternity.spiritual_self_treatment.continuation", "1", snapshot.SnapshotToken,
@@ -68,9 +72,8 @@ internal static class AfterlifeWoundHealingPlanner
             ["rollContributions"] = JsonSerializer.SerializeToNode(_data.Source.RollContributions),
             ["graphResponseFingerprint"] = _responseImage.Fingerprint
         };
-        internal IReadOnlyDictionary<string, JsonNode?> SourceRoots => _sources.ToDictionary(p => p.Key,
-            p => p.Value.Existed ? JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(p.Value.Bytes!)) : null,
-            StringComparer.Ordinal);
+        internal IReadOnlyDictionary<string, JsonNode?> SourceRoots => _parsedSourceRoots.ToDictionary(
+            p => p.Key, p => p.Value?.DeepClone(), StringComparer.Ordinal);
 
         internal void RequireCurrent(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
         {
@@ -121,6 +124,7 @@ internal static class AfterlifeWoundHealingPlanner
         }
 
         internal void MarkPublished() => _published = true;
+        internal void Close() => _published = true;
         internal void RequireExecutionCurrent() => RequireCurrent(_files, _lease);
 
         internal WoundWorkingOwnedGraph ResolveGraph(WoundMaterializationEnvelope before, SpiritualWoundStage stage)
@@ -175,14 +179,24 @@ internal static class AfterlifeWoundHealingPlanner
         {
             if (!PreparedAgrees(prepared)) throw new InvalidDataException("Foreign spiritual preparation.");
             var input = Input;
-            return EffectAcceptedTurnInputComposer.Compose(input.Binding.SessionId, input.Binding.SnapshotToken,
+            var roots = SourceRoots;
+            var composed = EffectAcceptedTurnInputComposer.Compose(input.Binding.SessionId, input.Binding.SnapshotToken,
                 input.Binding.Turn, new JsonObject(), input.PreTurnEffectCarriers!, input.PreTurnEffectCarriers!,
-                input.PreTurnEffectIdentityIndex, SourceRoots,
+                input.PreTurnEffectIdentityIndex, roots,
                 currentWorldTime: EffectAcceptedTurnInputComposer.ReadCanonicalWorldTime(
-                    SourceRoots[EffectAcceptedTurnInputComposer.WorldTimePath]?.ToJsonString()),
+                    roots[EffectAcceptedTurnInputComposer.WorldTimePath]?.ToJsonString()),
                 publicationCarrierBaselines: input.PreTurnEffectCarriers, realm: input.Binding.Realm,
                 preparedWoundPlan: prepared);
+            var fingerprint = WoundAcceptedTurnFingerprints.ComputeEffectInput(prepared, composed);
+            if (_composedEffectInputFingerprint is not null && _composedEffectInputFingerprint != fingerprint)
+                throw new InvalidDataException("Spiritual effect DATA changed within its owning operation.");
+            _composedEffectInputFingerprint = fingerprint;
+            return composed;
         }
+
+        internal bool EffectInputAgrees(WoundPreparedAcceptedTurnPlan prepared, EffectAcceptedTurnInput input) =>
+            _composedEffectInputFingerprint is not null && PreparedAgrees(prepared) &&
+            _composedEffectInputFingerprint == WoundAcceptedTurnFingerprints.ComputeEffectInput(prepared, input);
 
         internal object CreateRecoveryConsumptionProof(int index, WoundMaterializationEnvelope before,
             WoundMaterializationEnvelope after)
@@ -287,7 +301,7 @@ internal static class AfterlifeWoundHealingPlanner
             var binding = new WoundAcceptedTurnBinding(snapshot.SessionId, snapshot.RequestId, snapshot.SnapshotToken,
                 snapshot.Realm, snapshot.TurnNumber, acceptedEvents.Events, WoundAcceptedEventSetFingerprint.Compute(acceptedEvents.Events));
             var roots = sources.ToDictionary(s => s.Path, s => s.Root, StringComparer.Ordinal);
-            var wounds = WoundCarrierCatalog.Build(data.Carriers).Occurrences.Where(o => o.Wound.Owner == data.Wound.Owner)
+            var wounds = data.Catalog.Occurrences.Where(o => o.Wound.Owner == data.Wound.Owner)
                 .Select(o => o.Wound).OrderBy(w => w.WoundId == data.Wound.WoundId ? 0 : 1)
                 .ThenBy(w => w.WoundId, StringComparer.Ordinal).ToArray();
             var cycleKey = AfterlifeWoundTreatmentAuthority.CycleKey(data.Realm, data.CycleOrdinal);
@@ -312,7 +326,7 @@ internal static class AfterlifeWoundHealingPlanner
             AfterlifeWoundTreatmentAuthority.MaterializeProperties(updates);
             var owner = new Continuation(files, lease, snapshot, evidence, sources.ToDictionary(s => s.Path, s => s.Image,
                 StringComparer.Ordinal), request, data, input, wounds, stages, context.Progression, scheduler, mutation,
-                new(updatesBytes is not null, updatesBytes));
+                new(updatesBytes is not null, updatesBytes), sources.ToDictionary(s => s.Path, s => (JsonNode?)s.Root, StringComparer.Ordinal));
             owner.AdmitGraphs(updates);
             owner.RequireCurrent(files, lease);
             return owner;

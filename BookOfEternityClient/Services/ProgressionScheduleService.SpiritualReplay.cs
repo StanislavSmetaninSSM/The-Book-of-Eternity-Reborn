@@ -9,13 +9,14 @@ public partial class ProgressionScheduleService
 {
     // A verified durable result makes the later ordinary scheduler call inert. DATA is re-read under this operation's lease.
     internal async Task<bool> IsPublishedSpiritualCycleAsync(ProgressionControl control,
-        FileSystemManager.CanonicalWriteLease? existingLease = null)
+        FileSystemManager.CanonicalWriteLease? existingLease = null,
+        string? expectedSnapshotToken = null, JsonObject? expectedRequest = null)
     {
         if (!HasResolvedRealm(control.CurrentRealm) || !IsAfterlifeRealm(control.CurrentRealm)) return false;
         if (existingLease is null)
         {
             await using var owned = await _fs.AcquireCanonicalWriteLeaseAsync();
-            return await IsPublishedSpiritualCycleAsync(control, owned);
+            return await IsPublishedSpiritualCycleAsync(control, owned, expectedSnapshotToken, expectedRequest);
         }
         var lease = existingLease;
         _fs.VerifyCurrentSessionOperation(lease);
@@ -34,6 +35,10 @@ public partial class ProgressionScheduleService
         if (matching.Length == 0) return false;
         if (matching.Length != 1) throw new InvalidDataException("Published spiritual cycle identity is ambiguous.");
         var accepted = matching[0];
+        if (expectedSnapshotToken is not null &&
+            (accepted.Root["binding"]!["snapshotToken"]!.GetValue<string>() != expectedSnapshotToken || expectedRequest is null ||
+             WoundAcceptedTurnFingerprintWriter.CanonicalJson(accepted.Root["request"]!) != WoundAcceptedTurnFingerprintWriter.CanonicalJson(expectedRequest)))
+            throw new InvalidDataException("Published spiritual replay differs from the exact signed original request and snapshot.");
         var suppliedControl = WoundAcceptedTurnFingerprintWriter.CanonicalJson(JsonSerializer.SerializeToNode(control)!);
         if (suppliedControl != WoundAcceptedTurnFingerprintWriter.CanonicalJson(accepted.Root["control"]!) ||
             await _fs.ReadFileBytesAsync(lease, ReportPath) is not null ||

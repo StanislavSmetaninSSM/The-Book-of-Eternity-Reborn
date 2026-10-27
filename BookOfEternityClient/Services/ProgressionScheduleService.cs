@@ -1084,7 +1084,7 @@ public partial class ProgressionScheduleService
             repairHint: repairHint);
     }
 
-    private void ValidateAfterlifeOutcome(
+    private static void ValidateAfterlifeOutcome(
         ProgressionControl control,
         ProgressionReportSnapshot reportSnapshot,
         PendingTurnRequestContext? currentTurnContext,
@@ -1525,7 +1525,7 @@ public partial class ProgressionScheduleService
         }
     }
 
-    private bool ValidateProgressionReportCorrelation(
+    private static bool ValidateProgressionReportCorrelation(
         ProgressionProcessingReport report,
         PendingTurnRequestContext? currentTurnContext,
         List<ValidationIssue> issues)

@@ -118,6 +118,7 @@ public partial class CanonicalStateNormalizer
         var plan = validated.Plan;
         var spiritualHealing = plan.WoundStageBundle?.PreparedPlan.SpiritualHealingContinuationAuthority as AfterlifeWoundHealingPlanner.Continuation;
         spiritualHealing?.RequireCurrent(_fs, _writeLease);
+        var spiritualBatchCommitted = false;
         _mortalQteCommittedChanges = null;
         if (plan.JointRepairCommonAuthority is not null && jointTransaction is null)
             throw new InvalidOperationException("Joint repair common publication requires its distinct owning transaction.");
@@ -323,6 +324,7 @@ public partial class CanonicalStateNormalizer
             retainedPublicationBeforeImages = await CaptureRetainedPublicationAgreementBeforeImagesAsync(plan, writes.Keys, deletePaths);
             await _fs.VerifySourceDataAsync(_writeLease);
             _fs.RequireCommittedLocalPublication(await _fs.PublishLocalFilesAsync(_writeLease, changes));
+            spiritualBatchCommitted = true;
             foreach (var change in changes)
                 if (!ExactBytes(await _fs.ReadFileBytesAsync(_writeLease, change.RelativePath), change.After))
                     throw new InvalidDataException("Spiritual common publication readback differs: " + change.RelativePath);
@@ -425,6 +427,9 @@ public partial class CanonicalStateNormalizer
         }
         catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
         {
+            spiritualHealing?.Close();
+            if (spiritualBatchCommitted)
+                throw new CoordinatedStatePublicationUncertainException(failure);
             // The joint coordinator re-proves its current taken receipt and hold
             // before any rollback. Never run the v1 compensation ahead of it.
             if (jointTransaction is not null) throw;

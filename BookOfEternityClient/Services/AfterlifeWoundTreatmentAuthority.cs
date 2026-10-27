@@ -118,7 +118,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
     internal sealed record SourceData(WoundMaterializationEnvelope Wound,
         SpiritualHealingPreparedSource Source, string Realm, int CycleOrdinal,
         string SourceFingerprint, WoundCarrierCatalogInput Carriers, EffectCarrierCatalog Effects,
-        WoundIdentityState Identities, WoundHistoryState History);
+        WoundIdentityState Identities, WoundHistoryState History, WoundCarrierCatalog Catalog);
     internal sealed record SourceResult(SourceData? Data, string? IssueCode);
     private static SourceResult SourceRefuse(string suffix) => new(null, suffix);
 
@@ -181,7 +181,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
                 JsonSerializer.SerializeToNode(control)!)
         }.Concat(sources.SelectMany(s => new[] { s.Path, s.Image.Fingerprint })));
 
-        return new(new(wound, source, realm, ordinal, sourceFingerprint, carriers, effectCatalog, identities.State!, history.State!), null);
+        return new(new(wound, source, realm, ordinal, sourceFingerprint, carriers, effectCatalog, identities.State!, history.State!, catalog), null);
     }
 
     private static bool ValidateCurrentWoundEffects(WoundMaterializationEnvelope wound,

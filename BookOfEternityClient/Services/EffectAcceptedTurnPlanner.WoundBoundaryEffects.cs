@@ -170,8 +170,11 @@ internal static partial class EffectAcceptedTurnPlanner
         var allocatedByRef = executed.ToDictionary(row => row.Request.Root.ApplicationRef, row => row.Facts.EffectId, StringComparer.Ordinal);
         string RootId(WoundWorkingReference reference) => applicationReferences.TryGetValue(reference, out var app)
             ? allocatedByRef[app] : reference.Value;
-        var entries = graph.Entries.OrderBy(row => RootId(row.Root), StringComparer.Ordinal).ThenBy(row => row.Slot)
-            .Select((row, slot) => new WoundConsequenceEntry(slot + 1, row.ProfileKey, RootId(row.Root), row.ReadableSummary)).ToArray();
+        var orderedEntries = coordinates.IsMortalRecovery || changedSeverity
+            ? graph.Entries.OrderBy(row => RootId(row.Root), StringComparer.Ordinal).ThenBy(row => row.Slot)
+            : graph.Entries.OrderBy(row => row.Slot);
+        var entries = orderedEntries.Select((row, slot) =>
+            new WoundConsequenceEntry(slot + 1, row.ProfileKey, RootId(row.Root), row.ReadableSummary)).ToArray();
         var applicationResults = executed.Select(row => new EffectAcceptedApplicationResult(row.Request.Root.ApplicationRef,
             row.Facts.Disposition, row.Facts.EffectId, row.Facts.TransitionId, row.Facts.CreatedEventRef!, row.Facts.CausalEventRef,
             row.Facts.Source, row.Facts.Target, row.Facts.CarrierCoordinate, new WoundEffectMaterializationAgreement(

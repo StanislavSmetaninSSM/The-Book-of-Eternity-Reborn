@@ -1,4 +1,5 @@
 using System.Text.Json.Nodes;
+using System.Text.Json;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -48,6 +49,21 @@ public sealed class AfterlifeWoundHealingLifecycleTests
         Assert.Single((await f.ReadHistoryAsync()).Transitions.Where(t => t.Terminal));
         await f.AssertOneCycleAndRetainedAttemptAsync();
         f.AssertResourcesUnchanged();
+    }
+
+    [Fact]
+    public async Task SignedSelfRequestCannotBeReplacedByAcceptedV1Commands()
+    {
+        await using var f = await Fixture.CreateAsync(rank: 2, tier: 2, die: 1);
+        await f.AssertV1ReplacementRejectedAsync();
+    }
+
+    [Fact]
+    public async Task CanonicalResourceMutationAfterSignedRequestCannotBecomeItsBaseline()
+    {
+        await using var f = await Fixture.CreateAsync(rank: 2, tier: 2, die: 1);
+        await f.CommitExternalResourceSpendAsync();
+        await f.AssertChangedResourceSourceRejectedAsync();
     }
 
     private sealed class Fixture : IAsyncDisposable
@@ -172,6 +188,18 @@ public sealed class AfterlifeWoundHealingLifecycleTests
         internal async Task PublishAsync()
         {
             await using var lease = await Files.AcquireCanonicalWriteLeaseAsync();
+            await WriteReportAsync(lease);
+            var issues = await new ValidationService(Files, NullLogger<ValidationService>.Instance)
+                .ValidateAcceptedTurnRawResourceMaterializationAsync(lease);
+            var errors = issues.Where(i => i.Severity == IssueSeverity.Error).ToArray();
+            Assert.True(errors.Length == 0, string.Join("\n", errors.Select(i => i.Code + "@" + i.FilePath + ":" + i.Message)));
+            var plan = await new CanonicalStateNormalizer(Files, NullLogger<CanonicalStateNormalizer>.Instance)
+                .BindTo(lease).NormalizeAcceptedMechanicsAsync(backups: null);
+            Assert.NotNull(plan);
+        }
+
+        private async Task WriteReportAsync(FileSystemManager.CanonicalWriteLease lease)
+        {
             await Files.WriteFileAtomicAsync(lease, ProgressionScheduleService.ReportPath, new JsonObject
             {
                 ["progressionProcessingReport"] = new JsonObject
@@ -183,13 +211,84 @@ public sealed class AfterlifeWoundHealingLifecycleTests
                     ["newLastResidentAgencyCycleOrdinal"] = 1
                 }
             }.ToJsonString());
+        }
+
+        internal async Task AssertV1ReplacementRejectedAsync()
+        {
+            await using var lease = await Files.AcquireCanonicalWriteLeaseAsync();
+            await WriteReportAsync(lease);
+            var manifest = await ReadManifestAsync(lease);
+            await Files.WriteFileAtomicAsync(lease, AcceptedMechanicsPlan.WoundCommandPath, new JsonObject
+            {
+                ["schemaVersion"] = 1, ["sessionId"] = SessionId, ["requestId"] = RequestId,
+                ["snapshotToken"] = manifest.ManifestPayloadHash, ["commands"] = new JsonArray()
+            }.ToJsonString());
+            var before = CaptureMutationRoots();
             var issues = await new ValidationService(Files, NullLogger<ValidationService>.Instance)
                 .ValidateAcceptedTurnRawResourceMaterializationAsync(lease);
-            var errors = issues.Where(i => i.Severity == IssueSeverity.Error).ToArray();
-            Assert.True(errors.Length == 0, string.Join("\n", errors.Select(i => i.Code + "@" + i.FilePath + ":" + i.Message)));
-            var plan = await new CanonicalStateNormalizer(Files, NullLogger<CanonicalStateNormalizer>.Instance)
-                .BindTo(lease).NormalizeAcceptedMechanicsAsync(backups: null);
-            Assert.NotNull(plan);
+            Assert.Contains(issues, i => i.Code == "spiritual_self_treatment_admission_invalid" &&
+                i.Actual?.Contains("retained spiritual treatment request changed", StringComparison.Ordinal) == true);
+            AssertMutationRootsUnchanged(before);
+        }
+
+        internal async Task AssertChangedResourceSourceRejectedAsync()
+        {
+            await using var lease = await Files.AcquireCanonicalWriteLeaseAsync();
+            await WriteReportAsync(lease);
+            var before = CaptureMutationRoots();
+            var manifest = await ReadManifestAsync(lease);
+            var failure = await Assert.ThrowsAsync<InvalidDataException>(() =>
+                AfterlifeWoundHealingPlanner.Continuation.AdmitAsync(Files, lease, manifest));
+            Assert.Contains("Spiritual treatment source changed: " + ResourceMaterializationContract.StatePath, failure.Message);
+            AssertMutationRootsUnchanged(before);
+        }
+
+        private async Task<LiveTurnPendingSnapshotManifest> ReadManifestAsync(FileSystemManager.CanonicalWriteLease lease) =>
+            JsonSerializer.Deserialize<LiveTurnPendingSnapshotManifest>(
+                (await Files.ReadFileAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath))!,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+
+        private Dictionary<string, byte[]?> CaptureMutationRoots() => ResourcePaths.Concat(new[]
+        {
+            WoundCarrierCatalog.AfterlifeProfilesPath, WoundIdentityState.StatePath, WoundHistoryState.HistoryPath,
+            EffectIdentityState.StatePath, ProgressionScheduleService.SchedulePath, ProgressionScheduleService.ReportPath,
+            AcceptedMechanicsPlan.WoundCommandPath
+        }).ToDictionary(p => p, p => File.Exists(Files.ResolvePath(p)) ? File.ReadAllBytes(Files.ResolvePath(p)) : null,
+            StringComparer.Ordinal);
+        private void AssertMutationRootsUnchanged(Dictionary<string, byte[]?> before)
+        {
+            var after = CaptureMutationRoots();
+            foreach (var pair in before)
+                Assert.True(pair.Value is null ? after[pair.Key] is null : after[pair.Key] is not null &&
+                    pair.Value.AsSpan().SequenceEqual(after[pair.Key]), "Rejected treatment mutated " + pair.Key);
+        }
+
+        internal async Task CommitExternalResourceSpendAsync()
+        {
+            var definitions = ResourceDefinitionCatalog.ParseCanonical(await Files.ReadFileAsync(ResourceMaterializationContract.DefinitionsPath),
+                allowMissingPristine: false).Catalog!;
+            var ledger = ResourceStateContract.ParseCanonical(await Files.ReadFileAsync(ResourceMaterializationContract.StatePath),
+                definitions, allowMissingPristine: false).Ledger!;
+            var history = ResourceHistoryState.ParseCanonical(await Files.ReadFileAsync(ResourceMaterializationContract.HistoryPath),
+                definitions, allowMissingPristine: false).History!;
+            var before = Assert.Single(ledger.Entries, e => e.Coordinate.OwnerKind == ResourceOwnerKind.AfterlifeActor &&
+                e.Coordinate.ResourceOwnerId == "player_soul" && e.Coordinate.ResourceKey == "spiritual_action_points");
+            Assert.True(before.Current > 0);
+            var prior = history.Transitions.Last(t => ResourceCoordinateComparer.Instance.Equals(t.Coordinate, before.Coordinate));
+            var sequence = history.Transitions.Where(t => t.Turn == Turn).Select(t => t.ExecutionSequence).DefaultIfEmpty(-1).Max() + 1;
+            var transition = new ResourceTransition("resource_transition_external_self_test", "resource_operation_external_self_test",
+                "event_external_self_test", "registered_system_outcome", "external_self_test", ResourceMutationPhase.RegisteredSystemOutcome,
+                60, sequence, before.Coordinate, ResourceTransitionOperation.Spend, 1m, 1m, ResourceTransitionOutcome.Applied, null,
+                before.Snapshot, before.Snapshot with { Current = before.Current - 1m },
+                new("registered_system_outcome", "external_self_test", prior.PolicyFingerprint), prior.PolicyFingerprint, null, Turn);
+            var updatedHistory = ResourceHistoryState.CreateValidated(history.Transitions.Append(transition), definitions);
+            Assert.True(updatedHistory.IsValid, string.Join(";", updatedHistory.Issues));
+            var updatedState = new ResourceStateLedger(ledger.Entries.Select(e => ResourceCoordinateComparer.Instance.Equals(e.Coordinate, before.Coordinate)
+                ? e with { Current = before.Current - 1m, Chronology = e.Chronology with { LastTransitionId = transition.TransitionId,
+                    LastEventRef = transition.EventRef, LastTransitionTurn = Turn } } : e));
+            Assert.Empty(updatedHistory.History!.ValidateStateAgreement(updatedState));
+            await CanonicalResourceQuartetTestFixture.CommitExistingStateAsync(Files, definitions, ledger, history,
+                updatedState, updatedHistory.History);
         }
 
         internal async Task<WoundCarrierCatalog> ReadWoundsAsync()

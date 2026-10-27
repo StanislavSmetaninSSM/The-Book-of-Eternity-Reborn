@@ -23,7 +23,7 @@ internal sealed record EffectRollContributionResolution(
 
 internal static class EffectRollContributionResolver
 {
-    private const int MaximumCapturedRows = 10_000;
+    internal const int MaximumCapturedRows = 10_000;
 
     internal static EffectRollSourceCaptureResult Capture(
         EffectMechanicsSnapshot snapshot)

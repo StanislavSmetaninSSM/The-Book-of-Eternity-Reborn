@@ -28,7 +28,7 @@ public partial class ValidationService
                     "Spiritual replay lost its original signed control.", code: "spiritual_self_treatment_replay_conflict") };
             evidence.RequireCurrent(_fs, lease, signed);
             var scheduler = new ProgressionScheduleService(_fs, Microsoft.Extensions.Logging.Abstractions.NullLogger<ProgressionScheduleService>.Instance);
-            if (await scheduler.IsPublishedSpiritualCycleAsync(frame.ProgressionControl, lease)) return Array.Empty<ValidationIssue>();
+            if (await scheduler.IsPublishedSpiritualCycleAsync(frame.ProgressionControl, lease, signed.SnapshotToken, original)) return Array.Empty<ValidationIssue>();
             return new[] { new ValidationIssue(AcceptedMechanicsPlan.WoundCommandPath, IssueSeverity.Error,
                 "The signed spiritual request is absent without its exact published result.", code: "spiritual_self_treatment_replay_conflict") };
         }
@@ -43,6 +43,8 @@ public partial class ValidationService
         }
         catch (JsonException) { return null; } // The unchanged v1 parser owns malformed unclassified input.
 
+        AfterlifeWoundHealingPlanner.Continuation? owner = null;
+        var retainOwner = false;
         try
         {
             foreach (var path in new[] { ResourceMaterializationContract.CommandPath, EffectAcceptedTurnPlan.CommandPath,
@@ -54,7 +56,7 @@ public partial class ValidationService
             var manifest = StrictJsonAuthority.Deserialize<LiveTurnPendingSnapshotManifest>(manifestJson,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, "spiritual treatment manifest")
                 ?? throw new InvalidDataException("Invalid signed turn manifest.");
-            var owner = await AfterlifeWoundHealingPlanner.Continuation.AdmitAsync(_fs, lease, manifest);
+            owner = await AfterlifeWoundHealingPlanner.Continuation.AdmitAsync(_fs, lease, manifest);
             var prepared = owner.Prepare();
             var effectInput = owner.ComposeEffectInput(prepared);
             var effect = WoundEffectBatchPlanner.Build(prepared, effectInput, new EffectIdentityFactory());
@@ -64,6 +66,8 @@ public partial class ValidationService
             var bundle = new AcceptedMechanicsWoundStageBundle(owner.Input, prepared, effect.Plan!, final.Plan!);
             owner.RequireCurrent(_fs, lease);
             var common = AcceptedMechanicsPlanAuthority.GetOrBuildWoundValidated(_fs, lease, bundle);
+            if (!common.Success && common.Issues.Count == 0) throw new InvalidDataException("Spiritual treatment produced no complete common plan.");
+            retainOwner = common.Success;
             return common.Issues;
         }
         catch (Exception failure) when (failure is JsonException or InvalidDataException or InvalidOperationException or
@@ -73,6 +77,10 @@ public partial class ValidationService
                 "Spiritual self-treatment could not produce one complete accepted contribution.",
                 code: "spiritual_self_treatment_admission_invalid", actual: failure.Message,
                 repairHint: "Keep the original attempt and dice. Correct the exact signed source, progression report or requested destination graphs.") };
+        }
+        finally
+        {
+            if (!retainOwner) owner?.Close();
         }
     }
 }

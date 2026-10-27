@@ -36,8 +36,41 @@
       ]
     },
     {
+      "id": "spiritual-healing-mortal-boundary-controls",
+      "responsibility": "Existing real Mortal recovery controls for the shared wound effect boundary extraction and ordered common membership: all severity generations, interval carry/terminal/cold replay and atomic rollback/retry.",
+      "excludes": "Mortal arithmetic, whole treatment course, source admission matrices, broad DFR and platform qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.WoundBoundaryEffects.cs",
+        "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.MortalRecovery.cs",
+        "BookOfEternityClient/Services/AcceptedMechanicsCarrierAssembler.MortalRecovery.cs"
+      ],
+      "related": [
+        {
+          "id": "spiritual-healing-lifecycle",
+          "when": "The spiritual branch shares actual effect retirement/application and final membership logic."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalWoundRecoveryTests.Publication_AllSeverityTiersRetireIntermediateGenerationsInOneAcceptedTurn",
+            "BookOfEternityClient.Tests.MortalWoundRecoveryTests.Publication_ConsumesEpochDeltasRematerializesAndHealsOnTheNextInterval",
+            "BookOfEternityClient.Tests.MortalWoundRecoveryTests.Publication_LaterWriteFailureRollsBackAndExactRetryHeals"
+          ]
+        }
+      ]
+    },
+    {
       "id": "spiritual-healing-lifecycle",
-      "responsibility": "T096/T099 actual retained self-treatment source through signed turn validation and the common normalizer: active success/failure, one natural tick, world cycle, terminal History and no self cost.",
+      "responsibility": "T096/T099 actual retained self-treatment source through signed turn validation and the common normalizer: active success/failure, one natural tick, world cycle, terminal History and no self cost. Also rejects replacement of a signed v2 source with valid v1 commands and a canonical post-snapshot resource mutation without side effects.",
       "excludes": "Source admission matrix already qualified separately, combat/provider/guided UI, full DFR and Windows qualification.",
       "changeHints": [
         "BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.cs",

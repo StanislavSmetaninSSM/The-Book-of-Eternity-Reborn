@@ -1,5 +1,31 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Finite connected SOURCE review of b3c1801e6 found seven concrete groups:
+mandatory signed-original family dispatch, original resource quartet coverage,
+same-rank spiritual slot ordering, uncertainty after committed union/readback,
+exact original replay token/request, strict complete persisted scheduler/effect
+source diagnostics, and repeated source/catalog parsing. No additional compile-
+reference defect was identified by inspection; all current C# remains UNCOMPILED.
+Grouped correction now preserves Mortal ordering while fixing spiritual same-rank
+slots; retains post-commit failure as existing publication uncertainty; binds raw
+replay to original token/request; rederives complete scheduler after-state using
+its existing report/control rules; validates bounded typed contribution rows; and
+reuses captured parsed roots/catalog with detached exports. No speedup is claimed.
+
+Two original-source guard findings are deliberately still unfixed for one bounded
+owned-temp-fixture causal RED: valid v1 replacement of signed v2 at the real
+ValidationService route, and a canonical quartet Spend committed through the
+existing typed fixture before actual Continuation.AdmitAsync. Neither is a user
+availability/production acceptance claim. The latter must fail on its precise
+resource source guard, before effects, so a separate slot-order failure cannot
+mask the cause. The source selection now has five lifecycle cases; new bounded
+Mortal shared-boundary category selects exactly three existing genuine Facts.
+The directly affected staging24 controls are selected for final follow-through;
+accepted136 is not repeated wholesale. The unchanged preparation6 timeout remains
+unqualified and outside this independent source workload. Next finite correction/
+causal-workload SOURCE review, fresh Integration ownership graph + Unit follow-up,
+PlanOnly and actual five-case causal workload; then close both guards and verify.
+
 Connected functional SOURCE WIP (2026-10-27, following5896ce5e): the signed v2
 request now dispatches to an actual spiritual owner before unchanged v1 parsing;
 private prepared/effect proof, shared real effect executor, ordered wound stages,

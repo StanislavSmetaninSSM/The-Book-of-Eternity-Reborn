@@ -59,8 +59,7 @@ internal static partial class EffectAcceptedTurnPlanner
     {
         if (prepared.SpiritualHealingContinuationAuthority is not AfterlifeWoundHealingPlanner.Continuation owner ||
             !owner.PreparedAgrees(prepared) || !WoundAcceptedTurnPlannerCore.EffectInputAgreesWithPrepared(prepared, input) ||
-            WoundAcceptedTurnFingerprints.ComputeEffectInput(prepared, owner.ComposeEffectInput(prepared)) !=
-            WoundAcceptedTurnFingerprints.ComputeEffectInput(prepared, input))
+            !owner.EffectInputAgrees(prepared, input))
             return Failed(new[] { SpiritualHealingIssue("Foreign or changed spiritual effect preparation.") });
         owner.RequireExecutionCurrent();
         return BuildCore(input, WoundAcceptedTurnFingerprints.ComputeEffectInput(prepared, input), identityFactory,
