@@ -66,7 +66,7 @@ public sealed class AfterlifeWoundHealingLifecycleTests
         await f.AssertChangedResourceSourceRejectedAsync();
     }
 
-    private sealed class Fixture : IAsyncDisposable
+    internal sealed class Fixture : IAsyncDisposable
     {
         private const string WoundId = "wound_spiritual_session";
         private const string SessionId = "session_spiritual_healing";
@@ -100,6 +100,27 @@ public sealed class AfterlifeWoundHealingLifecycleTests
                     rawWound["consequences"]!["entries"]!.AsArray().RemoveAt(1);
                     rawWound["consequences"]!["ownedEffectSources"]!["definitions"]!.AsArray().RemoveAt(1);
                     rawWound["consequences"]!["ownedEffectSources"]!["rootBindings"]!.AsArray().RemoveAt(1);
+                }
+                else if (rank == 3)
+                {
+                    rawWound["severity"]!["rank"] = 3;
+                    rawWound["severity"]!["value"] = "III";
+                    rawWound["severity"]!["maximumAtCreation"] = "III";
+                    rawWound["recovery"]!["currentStepThreshold"] = 6;
+                    rawWound["consequences"]!["slotBudget"] = 3;
+                    rawWound["consequences"]!["slotsUsed"] = 3;
+                    rawWound["consequences"]!["ownedEffectSources"]!["definitions"]![1]!["components"]![0]!["payload"]!["magnitude"] = 2;
+                    var strain = WoundContractTestData.CreateOwnedEffectDefinition(WoundId, "chaos_sea",
+                        "definition_spiritual_strain", "spiritual_strain_burden");
+                    strain["components"]![0]!["componentId"] = "component_spiritual_strain";
+                    strain["components"]![0]!["payload"]!["magnitude"] = 1;
+                    strain["triggers"]![0]!["componentIds"] = new JsonArray("component_spiritual_strain");
+                    rawWound["consequences"]!["ownedEffectSources"]!["definitions"]!.AsArray().Add(strain);
+                    rawWound["consequences"]!["ownedEffectSources"]!["rootBindings"]!.AsArray().Add(new JsonObject
+                    { ["effectId"] = "effect_spiritual_strain", ["definitionKey"] = "definition_spiritual_strain" });
+                    rawWound["consequences"]!["entries"]!.AsArray().Add(new JsonObject
+                    { ["slot"] = 3, ["profileKey"] = "spiritual_strain_burden", ["effectId"] = "effect_spiritual_strain",
+                        ["readableSummary"] = "Духовное напряжение усиливает неудачи." });
                 }
                 var seed = WoundPlayerProjectionTestData.InputInRealm("chaos_sea", rawWound);
                 var profile = AfterlifeActorMaterializationTestFixture.CreateCompleteProfile("player_soul", "player_soul", "Chaos Sea", 42);
@@ -185,7 +206,7 @@ public sealed class AfterlifeWoundHealingLifecycleTests
             catch { DeleteRoot(root); throw; }
         }
 
-        internal async Task PublishAsync()
+        internal async Task<AcceptedMechanicsPlan> PublishAsync()
         {
             await using var lease = await Files.AcquireCanonicalWriteLeaseAsync();
             await WriteReportAsync(lease);
@@ -196,9 +217,10 @@ public sealed class AfterlifeWoundHealingLifecycleTests
             var plan = await new CanonicalStateNormalizer(Files, NullLogger<CanonicalStateNormalizer>.Instance)
                 .BindTo(lease).NormalizeAcceptedMechanicsAsync(backups: null);
             Assert.NotNull(plan);
+            return plan!;
         }
 
-        private async Task WriteReportAsync(FileSystemManager.CanonicalWriteLease lease)
+        internal async Task WriteReportAsync(FileSystemManager.CanonicalWriteLease lease)
         {
             await Files.WriteFileAtomicAsync(lease, ProgressionScheduleService.ReportPath, new JsonObject
             {
@@ -243,21 +265,22 @@ public sealed class AfterlifeWoundHealingLifecycleTests
             AssertMutationRootsUnchanged(before);
         }
 
-        private async Task<LiveTurnPendingSnapshotManifest> ReadManifestAsync(FileSystemManager.CanonicalWriteLease lease) =>
+        internal async Task<LiveTurnPendingSnapshotManifest> ReadManifestAsync(FileSystemManager.CanonicalWriteLease lease) =>
             JsonSerializer.Deserialize<LiveTurnPendingSnapshotManifest>(
                 (await Files.ReadFileAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath))!,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
 
-        private Dictionary<string, byte[]?> CaptureMutationRoots() => ResourcePaths.Concat(new[]
+        internal Dictionary<string, byte[]?> CaptureMutationRoots(IEnumerable<string>? additionalPaths = null) => ResourcePaths.Concat(new[]
         {
             WoundCarrierCatalog.AfterlifeProfilesPath, WoundIdentityState.StatePath, WoundHistoryState.HistoryPath,
             EffectIdentityState.StatePath, ProgressionScheduleService.SchedulePath, ProgressionScheduleService.ReportPath,
             AcceptedMechanicsPlan.WoundCommandPath
-        }).ToDictionary(p => p, p => File.Exists(Files.ResolvePath(p)) ? File.ReadAllBytes(Files.ResolvePath(p)) : null,
+        }).Concat(additionalPaths ?? Array.Empty<string>()).Distinct(StringComparer.Ordinal)
+            .ToDictionary(p => p, p => File.Exists(Files.ResolvePath(p)) ? File.ReadAllBytes(Files.ResolvePath(p)) : null,
             StringComparer.Ordinal);
-        private void AssertMutationRootsUnchanged(Dictionary<string, byte[]?> before)
+        internal void AssertMutationRootsUnchanged(Dictionary<string, byte[]?> before)
         {
-            var after = CaptureMutationRoots();
+            var after = CaptureMutationRoots(before.Keys);
             foreach (var pair in before)
                 Assert.True(pair.Value is null ? after[pair.Key] is null : after[pair.Key] is not null &&
                     pair.Value.AsSpan().SequenceEqual(after[pair.Key]), "Rejected treatment mutated " + pair.Key);

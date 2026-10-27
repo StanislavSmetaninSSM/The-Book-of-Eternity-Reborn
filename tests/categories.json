@@ -36,6 +36,68 @@
       ]
     },
     {
+      "id": "spiritual-healing-completed-replay",
+      "responsibility": "Completed signed self-healing reopens durable DATA through fresh services in the same process, revalidates absent consumed input, returns NoPlan normalization and makes repeated ordinary scheduler calls inert for the complete actual publication member set.",
+      "excludes": "Fresh-process browser accepted/settled cleanup, new turn admission, authored graph changes, Mortal timeout controls and broad DFR.",
+      "changeHints": [
+        "BookOfEternityClient/Services/ProgressionScheduleService.SpiritualReplay.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualSelfTreatment.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeWoundHealingReplayGraphTests.cs"
+      ],
+      "related": [
+        {
+          "id": "spiritual-healing-lifecycle",
+          "when": "The original five-case functional baseline remains separate and unchanged."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeWoundHealingReplayGraphTests.PublishedAttemptReplaysThroughFreshServicesWithoutChangingAnyMember"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "spiritual-healing-authored-graphs",
+      "responsibility": "A real signed rank-III self request retains its attempt and die when required graphs are missing, then explicit GM-authored II/I graphs drive active-before-natural effect generations, wound/History/one-cycle/no-cost publication.",
+      "excludes": "Automatic graph selection, full graph admission matrix, GM request projection/actual guided caller, fresh-process cleanup, helper/entity/combat, Mortal timeout controls and broad DFR.",
+      "changeHints": [
+        "BookOfEternityClient/Services/WoundResponseInputComposer.SpiritualHealing.cs",
+        "BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeWoundHealingReplayGraphTests.cs"
+      ],
+      "related": [
+        {
+          "id": "spiritual-healing-lifecycle",
+          "when": "The original five-case baseline is not broadened by these new scenarios."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeWoundHealingReplayGraphTests.MissingWeakerGraphsRetainAttemptThenAuthoredGraphsApplyBeforeNaturalRecovery"
+          ]
+        }
+      ]
+    },
+    {
       "id": "spiritual-healing-mortal-boundary-controls",
       "responsibility": "Existing real Mortal recovery controls for the shared wound effect boundary extraction and ordered common membership: all severity generations, interval carry/terminal/cold replay and atomic rollback/retry.",
       "excludes": "Mortal arithmetic, whole treatment course, source admission matrices, broad DFR and platform qualification.",

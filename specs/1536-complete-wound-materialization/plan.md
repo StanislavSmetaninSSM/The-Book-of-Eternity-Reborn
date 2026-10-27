@@ -1,5 +1,31 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Affected staging follow-through is qualified24/24 on clean8bd0c9ea9 (only docs
+beyond compiled d5cd). Fresh Unit build0errors/26warnings/3:41.12; Unit
+e541b5a38093615a6de7ad2c609f70cc5553929f6215b9cd7c0dc50ce56c5389,
+Main/Support dependency copies match owning build4. Exact24 PlanOnly22.7040866s,
+actual80.4618996s total/category48.9098287<60, complete/no skip/timeout/duplicate,
+both cleanup flags true; TRX4d0f8cf18039d856ad94a6f90f3dedb708d68cea5cc8e2afe0562e4bc5f60eff.
+Independent Sol OUTCOME accepted. Raw: staging-controls-1, outside checkout.
+Root explicitly holds Mortal instrumentation/diagnostic chain/retry; compatibility
+timeout remains an overall acceptance blocker. No split or budget change.
+
+Next finite functional scaffold has two separate one-case categories, each120s;
+the original five-case wildcard is unchanged. Durable service-reopen (same PID,
+not fresh-process proof) revalidates the completed request, expects NoPlan from a
+fresh normalizer and repeats both ordinary scheduler calls against exact actual
+Touched/Consumed members plus output files. Authored-graph repair retains the
+same signed attempt/die after precise missing-graph refusal, then explicitly
+authors II/I profile graphs for activeIII→II followed by naturalII→I, checking
+effect generations, chosen summary, History and no cost. Each scenario owns an
+independent real signed fixture; existing typed helpers/data are reused. RankIII
+has exactly three distinct registered consequence components; no validator is
+relaxed and no runtime graph survivor is inferred from slot/ID order. No production
+code changes in this scaffold. Current two cases UNCOMPILED/UNRUN pending finite
+SOURCE, Integration-only build with fresh Main/Support and exact2 PlanOnly/runtime.
+GM projection/allowlist/docs, actual GameEngine/typed pending/guided remain next;
+no new admission/diagnostic/cache framework and no complete-task claim.
+
 Independent Sol OUTCOME accepted the exact d5cd functional5 result below.
 The existing three-Fact Mortal boundary selection then planned exactly3/one
 descriptor in39.7461169s/0executed. Actual clean201e6deb4 (documentation-only
