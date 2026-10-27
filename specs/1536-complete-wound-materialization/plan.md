@@ -1,5 +1,28 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Revised graph caller on clean95 is a complete FAIL, not a timeout or accepted
+publication: exact1/1 executed, exit1, total50.9737931s/category40.7064769<180,
+no skips/duplicates, bothcleanuptrue. TRXcbc0a5f1f92177bb3c3af8daeb3670a170f220b0c82f7fc41ff4b51993176146.
+Fresh Integration-only build0errors/105warnings/2:36.94; Main/Support316 unchanged,
+Integrationc3fb012a. OfficialPlanOnly1/1descriptor10.7559914s/0executed. Raw
+actual-graph-repair-build-2/actual-graph-repair-functional-2 retained externally.
+GM task's canonical lease acquisition ultimately throws lock-sharing IOException
+atFS4774 after bounded200x50ms; current capture does NOT identify first versus
+post-ready polling iteration. Existing log retains post-seal error count1 and
+later contract error count2, not the actual ValidationIssue. That post-seal label
+can also wrap initial missing-graph preparation issues; it does NOT establish that
+authored graph repair ran. No production defect or healing PASS is inferred.
+
+After two fixture failures, heavy retries are paused for one bounded independent
+architectural lock/issue-readout assessment plus existing Sol OUTCOME review.
+No new code, budgets, permission changes, diagnostic framework or blind retry.
+The initial Windows-only hook timeout is retained separately;38 was never built.
+Browser/console/owner/direct-graph passes remain qualified. Final33 selection was
+independently accepted but remains conditional, not run; no new Unit build yet.
+Next T105/T106 ordinary natural-cycle functionality remains the following code
+priority after this caller boundary, not a return to Mortal/T609/DFR/Windows work.
+
+
 Prebuild38 was HOLD, not run: independent review confirmed the pre-Engine GM
 task lacks the continuous console main-admission established later by
 ProcessPlayerTurn. A separate canonical lease would contend for the held main
