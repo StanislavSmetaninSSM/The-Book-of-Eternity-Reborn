@@ -128,7 +128,9 @@ internal sealed class EffectAcceptedTurnPlan
     /// Fingerprint of the original carrier authority.
     /// </param>
     /// <param name="sourceAuthorityFingerprint">
-    /// Fingerprint of the admitted source authority.
+    /// Fingerprint of the admitted source authority. A privately executed spiritual
+    /// healing boundary binds its verified final catalog; its original input stays
+    /// sealed separately by <paramref name="inputFingerprint"/>.
     /// </param>
     /// <param name="targetAuthorityFingerprint">
     /// Fingerprint of the admitted target authority.

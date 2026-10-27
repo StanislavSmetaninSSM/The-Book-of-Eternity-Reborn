@@ -1,5 +1,29 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Fresh owning build f603 passed0errors/137warnings in7:23.67. Main/copy
+53b85055f8d693f1b0deb7dbb24d8037436f2534d8c5f846256f1ed252130182,
+Supporta1e04e133c13efb16958fdad486b7a81a126044eb216df1106e6c115f3c22899,
+Integrationf7502b77e8bd517a6d6a42acdeec8c938271d7e10a7ff428b8b5ec7e5ae24b8b.
+Actual unchanged exact5:5/5complete,2PASS3FAIL,total65.6590784s,
+category49.6621288/120s,no skips/duplicates/timeout,both cleanup flags true.
+Both signed-family/resource-quartet guards now pass their exact refusals and
+unchanged maps. Original3 pass authority preflight, then all stop before writes
+at effect source equality: plan retains the verified final source catalog but
+its scalar source fingerprint still identifies the original input catalog;
+independently rebuilt final catalog reports no differences. No successful
+publication or final numerical assertion is claimed. Independent Sol confirmed
+OUTCOME and checked the bounded final/target/copy/common authority path.
+
+The narrow correction binds the final source fingerprint ONLY when actual private
+spiritual execution proof exists; original EffectInputFingerprint/owner source
+guards and the strict independent publication comparison remain. Target canonical
+coordinates and Mortal/ordinary source-header behavior stay unchanged. This uses
+the actual executor's already computed immutable final authority; no new parse,
+cache, proof stack or budget. Current correction UNCOMPILED; delta SOURCE/fresh
+affected owning build/exact5 are next. Raw remains external at functional-build-3
+and functional-green-1. Actual GameEngine/guided/GM/replay/graph follow-through and
+the existing preparation6 timeout remain open; full T101/T104–T108 is not closed.
+
 Owning Integration build at1d10f9f65 passed0errors/137warnings in7:22.05. Main
 and Integration's Main copy hash5cf312c036fc1bfe51d9615c39e9ab765019db0224b3468ea893c26e2f0e5d9b;
 Support9a5a43b416a13f5f175f0ada93c9e320277ae142330bbbbb0fd626e071d37477;

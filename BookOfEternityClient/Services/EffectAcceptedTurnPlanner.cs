@@ -4475,7 +4475,7 @@ internal static partial class EffectAcceptedTurnPlanner
         var completedPlan = new EffectAcceptedTurnPlan(
                 fingerprint,
                 carrierAuthorityFingerprint,
-                input.SourceAuthority.CanonicalFingerprint,
+                healingProof is not null ? finalSourceAuthority.CanonicalFingerprint : input.SourceAuthority.CanonicalFingerprint,
                 targetAuthority.CanonicalFingerprint,
                 combatantIds,
                 identityRoot.AllocatedEffectIds,
