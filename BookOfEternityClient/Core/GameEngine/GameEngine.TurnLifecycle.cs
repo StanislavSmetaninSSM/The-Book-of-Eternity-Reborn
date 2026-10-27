@@ -1716,6 +1716,8 @@ public partial class GameEngine
                     throw new InvalidDataException("Self-treatment selection can no longer be staged: " + stagedHealing.IssueCode);
                 // Signed preparation evidence is distinct from the unchanged pre-turn rollback absence.
                 backedUpFiles.ValidationSnapshotFiles.Add(AcceptedMechanicsPlan.WoundCommandPath);
+                // Capture the prepared cycle while retaining its original schedule rollback bytes/hash.
+                backedUpFiles.ValidationSnapshotFiles.Add(ProgressionScheduleService.SchedulePath);
                 request.SpiritualHealing = stagedHealing.GmContext.DeepClone().AsObject();
             }
             using (_fs.MeasureOperation("PlayerTurn.Stage.AttachDiceAndGacha"))
