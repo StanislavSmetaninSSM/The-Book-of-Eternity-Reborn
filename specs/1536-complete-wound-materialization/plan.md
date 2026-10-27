@@ -1,3 +1,26 @@
+# T609 genuine Compose RED scaffold — SOURCE/build prepared, runtime pending
+
+Source `455396ff907f855eaf4e3f4a6a38827aa12614d9` received separate Sol and
+Astra/high SOURCE ACCEPT. Fresh Integration build exited 0, no errors, exact
+101-warning baseline. The other four current owning builds remain unchanged
+`040aef9f6d0b6b33cc71fbc8986a32d40c0e164b`; their sources and current copies
+were rechecked. Mixed verification matched all 33 artifacts, 11 PE/PDB pairs and
+91 Git/source/PDB bindings with exact five-project warning multisets. Actual
+catalog: 974 categories / 12,609 methods, no unmapped/stale selectors. PlanOnly
+selected one genuine effect-source descriptor/case under its original 120 seconds;
+no test executed, no timeout, both cleanup flags true. External finite RED verifier
+and preflight review, independent PREP and actual prerequisite-complete count RED
+remain pending. Raw will stay outside checkout; production wiring is still absent.
+
+The stage-only fixture uses its existing typed seed, not applied DATA. The existing
+Linux applied-record references a previous game DLL; current 040 game DLL SHA256
+is `D5E3521387710ECA311075691063E5B39ACBF60EE1E1D53ED1DC75F4083BEF51`.
+Do not edit the old record/archive or treat it as current. Before any later full
+DFR, produce and verify a fresh Linux applied-record through the existing publisher
+for the final game assembly; this does not block the independent stage-only proof.
+Both source reports are retained under distinct `-sol-` / `-astra-` names; their
+temporary filename collision was corrected and the Astra report restored byte-exact.
+
 # T609 Compose wiring source control — DESIGN accepted, scaffold WIP
 
 Astra/high accepted a fixed host adapter after byte lookup/null and Compose-only
