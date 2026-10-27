@@ -1,3 +1,11 @@
+# T608 ordered visibility RED package frozen — UNCOMPILED / UNRUN
+
+The coherent eight-path source/catalog package is frozen. Six C# files remain exact to 64af3632a4eb5a11596cfe88b5d4cae27aee4b14; only the new singleton catalog/CI owner was added afterward. Root independently reran finite lifecycle/default/genuine inverses and ten protected-file checks. All old catalog objects/CI IDs are preserved: 968 owners, 48 CI IDs, one new method/case under its exclusive one-minute owner. Fifty-one XML blocks parse; compiler/analyzer results remain unqualified.
+
+The requested component route stays deliberately unscheduled for the causal RED. Genuine Candidate/COPY callsites remain exact; no GREEN worker or extra Facts exist. One actual blocked synchronous file/timing producer is released/joined and complete source/storage/root closing is verified before the sole saved-prefix missing-begin assertion. Same existing queue/window/capture/writer, no new product/authority/cache/format/clock/budget behavior. Whole-case cost and actual Miss cause remain unknown.
+
+Independent coherent SOURCE final verdict, fresh affected Integration/current bindings, catalog discovery, exact PlanOnly/PREP and actual causal RED remain required. External source/hash/inverse/selection packet is t608-counter-scaffold/candidate-visibility-red-*. No generated diagnostics are staged. No genuine/full-positive runtime or raw deletion is admitted by source preservation.
+
 # T608 ordered visibility RED source WIP — unfinished, uncataloged
 
 Six coherent C# paths are frozen for durable preservation: existing lifecycle loop extraction, one shared ordered transfer, optional component/manual boundaries and async close, and one ctor-only blocked-SYNC visibility Fact. The component transfer is deliberately UNSCHEDULED for the causal RED; no GREEN worker or extra controls are implemented. Genuine Candidate/COPY callsites remain unchanged according to the author; full finite inverses/protected review still follow.

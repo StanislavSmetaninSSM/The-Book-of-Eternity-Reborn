@@ -329,6 +329,13 @@
       "contracts": [
         "#1536 T608-COPY-TREE-GREEN / COPYOBS7; strict functions plus exact returned lifetime, all rows retained and consumed"
       ]
+    },
+    {
+      "category": "core-joint-candidate-continuing-visibility",
+      "reason": "T608 COPYOBS9 tests-first RED: one actual blocked synchronous scope must be physically persistent before return through the shared ordered component transfer; all source/ordinal/clocks/storage/root prerequisites close first. Existing after-return policy intentionally remains, genuine CANDIDATE/COPY unchanged; no continuing component worker or runtime admission.",
+      "contracts": [
+        "#1536 T608-CANDIDATE-VISIBILITY-RED / COPYOBS9; single transfer owner, atomic queue/snapshot boundaries, unchanged caller failure policies"
+      ]
     }
   ]
 }
