@@ -1,5 +1,15 @@
 # T609 private effect-source parsing — bounded technical amendment
 
+EFFECTSRC-COST: Before any GREEN, one file-free prototype may compare the same
+private byte lookups, live ordered maps and recursive full-node consumption with
+the existing operation service. Extract the identical strict parse into a shared
+internal helper; production remains uncached. Independently measure four original
+reads versus one cold and three hit reads with equivalent inputs and consumption,
+including structural key, lookup, both cold copies, hit copy, allocation and owner
+closure. Assert results, source counts, detached outputs and completed-only lookup;
+report elapsed costs without thresholds. This synthetic prototype does not establish
+production parser-policy eligibility, genuine workload savings or DFR admission.
+
 EFFECTSRC-1: First extract the original per-path lookup / strict UTF-8 decode /
 TrimStart BOM / StrictJsonAuthority JsonObject parse into the existing private
 fingerprint DATA owner, called by the SAME live SourceAuthorityPaths.ToDictionary

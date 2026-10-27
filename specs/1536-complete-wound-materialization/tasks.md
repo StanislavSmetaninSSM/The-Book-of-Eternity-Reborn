@@ -1,5 +1,9 @@
 # T609 retained effect-source DATA audit — #1536
 
+- [ ] T609-COST Independently review and run one bounded, file-free equal-work
+  prototype with real operation-service key, lookup and copies before deciding
+  whether production reuse merits further work. Preserve the accepted causal RED.
+
 - [x] T609-AUDIT Trace the existing private before-image parsing consumers, complete
   key/dependencies/owner/fallback/detachment/fresh checks and actual source work;
   report if reuse is unsafe or its measured cost too small. Do not alter code.

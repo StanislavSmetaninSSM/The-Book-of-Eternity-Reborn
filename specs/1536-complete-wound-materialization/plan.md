@@ -1,3 +1,15 @@
+# T609 equal-work prototype — DESIGN and SOURCE accepted, UNCOMPILED
+
+The accepted RED exposes duplicate actual parsing but its clone-only comparison
+does not establish savings. Astra admits one file-free test-only prototype with
+actual operation-service key, lookup and copies. Both branches use identical byte
+lookups, ordered maps, full recursive traversal and serialization, with four original
+reads versus one cold and three hits; warmup uses separate owners. Parser extraction
+preserves original order, error, UTF-8 and passive timer. Production reuse, GREEN,
+policy eligibility, genuine workload benefit and full DFR remain unqualified.
+Independent Sol SOURCE accepted after adding separate owner setup and closing
+measurements. Nested lookup and copy intervals overlap and must not be summed.
+
 # T609 actual no-world causal RED — independent OUTCOME accepted
 
 Runtime / Integration source `7ea9297c62e7870e04327a48dcb40c214c5df7d1`;

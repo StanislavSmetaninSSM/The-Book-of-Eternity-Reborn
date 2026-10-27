@@ -2,6 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "fr063-joint-private-effect-source-cost",
+      "reason": "Compare identical fully consumed synthetic inputs under original and test-only real operation-service reuse before any production GREEN.",
+      "contracts": ["#1536 EFFECTSRC-COST: equal-work cold/hit costs and existing owner lifecycle"]
+    },
+    {
       "category": "fr063-joint-private-effect-source-red",
       "reason": "T609 causal file-free strict-source counter and original detached/error-order prerequisites before any per-root reuse.",
       "contracts": ["#1536 EFFECTSRC-1–4: original private bytes and strict source remain fresh, preserve actual error/alias/owner behavior"]

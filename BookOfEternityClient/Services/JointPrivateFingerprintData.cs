@@ -101,6 +101,15 @@ internal sealed class JointPrivateFingerprintData
         _ = operation;
         var bytes = ReadBeforeBytes(path);
         if (bytes is null) return null;
+        return ParseEffectSourceRoot(path, bytes);
+    }
+
+    /// <summary>Applies the original strict effect-source parser to already detached bytes.</summary>
+    /// <param name="path">The original path used for strict diagnostics.</param>
+    /// <param name="bytes">The bytes already obtained by the caller's original lookup.</param>
+    /// <returns>The strictly parsed object or JSON null.</returns>
+    internal static JsonObject? ParseEffectSourceRoot(string path, byte[] bytes)
+    {
         using var timing = FileSystemManager.MeasureCurrentPassiveOperation("JointEffectInput.PrivateSourceParse");
         return StrictJsonAuthority.Deserialize<JsonObject>(
             new UTF8Encoding(false, true).GetString(bytes).TrimStart('\uFEFF'),

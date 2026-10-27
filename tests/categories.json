@@ -2,6 +2,17 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "fr063-joint-private-effect-source-cost",
+      "responsibility": "One file-free synthetic equal-work comparison of original private before-image reads with a test-only existing-operation-service prototype; full recursive traversal, serialization, actual parse counts, cold/hit copies and owner closure are checked.",
+      "excludes": "No production cache wiring, policy eligibility, whole-game or DFR qualification, timing threshold or budget increase.",
+      "changeHints": ["BookOfEternityClient/Services/JointPrivateFingerprintData.cs", "BookOfEternityClient.IntegrationTests/JointPrivateEffectSourceCostTests.cs"],
+      "related": [{"id": "fr063-joint-private-effect-source-red", "when": "The already accepted source-count RED establishes the original duplicate parse and prerequisite contracts."}],
+      "requirements": {"frontendBuild": false, "exclusive": true},
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.JointPrivateEffectSourceCostTests.EqualWorkOriginalColdAndHitCost"]}]
+    },
+    {
       "id": "fr063-joint-private-effect-source-red",
       "responsibility": "One file-free T609 source fixture exercises the actual shared private before-image strict reader twice with a genuine serial operation; original output, alias isolation, ordered errors and closing precede the final one-parse-per-present-root oracle. Passive named counters observe actual strict parser work; an arbitrary-observer control preserves its original precedence without new callbacks.",
       "excludes": "No fake joint issuer, filesystem reads, canonical writes, cached admission, parser-emitted arbitrary observer callback, whole-game qualification or timeout increase; the existing observer path has an explicit positive control. Original uncached implementation should fail only its final source-count oracle.",
