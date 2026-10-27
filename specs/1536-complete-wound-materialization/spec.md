@@ -1,3 +1,43 @@
+# T608 candidate per-invocation DATA owner — bounded consumer correction
+
+COPYOBS10: separately from COPYOBS8's PREPARATION-only experiment, the component
+Candidate may select a NEW existing SourceDataOperation for EACH fixed Miss, Hit,
+ForeignInputRefusal and CachedAfterStaleFence invocation. This explicitly supersedes
+only that earlier block's owner-around-caller exclusion for those four calls.
+Normal production already owns this service lifetime; the fixture uses narrower,
+initially empty scopes. No DATA crosses calls and no owner spans the fixture.
+Common-plan cold/hit/fence behavior and every original assertion remain exact.
+Stale revocation, canonical reads, copy/damage/abort/Beginning-owner controls and
+null-owner COPY boundaries stay outside. No game/GM contract or service changes.
+
+COPYOBS11: one PRIVATE lexical async scope helper has exactly three fixed local
+consumers: typed registry adapter, paired-PreparedAgrees causal adapter and one
+finite no-world lifetime/error probe. Invoke the synchronous body once in the
+original flow; never store/schedule/install it as a storage/timing hook. Require
+no preexisting owner and obtain a real new owner; never replace/dispose a borrowed,
+suspended, failed or closed registration. Await actual CompleteAsync on normal
+return, then dispose before returning. Body failures retain the existing caller /
+disposal policy. Original four timing literals surround ONLY the synchronous
+registry call, with owner creation/completion/disposal outside the span. Full
+original events/clocks and every fresh graph/private-history/authority/source/
+reservation/fence check remain unchanged. Reuse only existing pure expected DATA
+with its complete keys, revisions, companions, invalidation and failure/fresh rules.
+
+COPYOBS12: causal singleton uses ONE existing genuine stage preparation and the
+same helper twice, two actual PreparedAgrees reads per invocation. No owner warmup
+before either interval. Actual Replay/Core vectors RED [2,2] -> GREEN [1,1]; richer
+PreparedExpectedReplay.Source [0,0] both. RED records absent owner as DATA, verifies
+applicable full source/storage/root prerequisites, then fails only the final [1,1]
+source oracle. Only afterward does the SAME Fact assert GREEN's distinct initially
+empty, completed/disposed/closed owners and null entry/exit. No dummy/suspended
+owner, fabricated counter or warm [1,0] allowance. A GREEN-only no-world lifecycle
+Fact proves exactly-once normal/throw behavior and untouched preexisting ownership.
+Retain exact qualified null/unsupported/fresh/mutation/private-history controls;
+actual retained-stage proof does not imply common-baseline clone corruption proof.
+These gates prove shared invocation/source reuse, not registry PASS or whole fit.
+Independent SOURCE, fresh bindings/discovery/PlanOnly/PREP and accepted RED/GREEN
+precede separate genuine wiring and original 120-second/full-capture admission.
+
 # T608 selected copy/candidate observation preparation — #1536
 
 COPYOBS1: after independent DESIGN, reuse the existing sealed original-event recorder

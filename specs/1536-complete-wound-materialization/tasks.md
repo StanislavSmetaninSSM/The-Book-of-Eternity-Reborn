@@ -1,3 +1,24 @@
+# T608 candidate per-call DATA owner — #1536
+
+- [x] T608-CANDIDATE-OWNER-DESIGN Establish the real production owner versus
+  fixture contour; reject scalar/private-history bypass; independent bounded
+  DESIGN and explicit COPYOBS10–12 technical amendment, preserving all product
+  contracts and the earlier null-owner COPY / unsupported fallback coverage.
+- [ ] T608-CANDIDATE-OWNER-RED Implement/freeze the compilable no-owner shared
+  wrapper and identical genuine two-invocation/four-read source oracle. SOURCE,
+  fresh affected build/bindings/discovery/PREP then intended final [2,2] vs [1,1]
+  RED after complete applicable source/storage/root prerequisites; owner absence
+  remains DATA. Genuine Candidate callsites remain unchanged and held.
+- [ ] T608-CANDIDATE-OWNER-GREEN Enable only the accepted lexical existing owner,
+  prove actual Replay/Core [1,1] / richer [0,0], distinct empty/closed owners and
+  null entry/exit after the source oracle; finite no-world lifecycle/error control.
+  Independent SOURCE/PREP/OUTCOME and retained exact negative/freshness lineage.
+- [ ] T608-CANDIDATE-OWNER-WIRE After accepted cheap qualification, replace only
+  the four genuine registry invocations with the fixed typed adapter; preserve
+  original timer meaning/assertions/copy boundaries, fresh affected bindings and
+  separate original 120-second/full-capture PREP and actual outcome. No automatic
+  full DFR positive, dependent runtime or Windows release.
+
 # T608 measured DATA-copy/seal cost audit — #1536
 
 - [x] T608-CANDIDATE-CAUSE Establish the retained timeout prefix's actual limits and

@@ -1,3 +1,40 @@
+# T608 per-call DATA design accepted — explicit technical scope, code UNIMPLEMENTED
+
+Base/checkpoint `017ac2835c6459d142d8d3a35028ed426836726d`, #1536. Fresh clean
+GitHub recovery into /workspace/tboe-clean-recovery-candidate-20261027 verified
+all 30,933 files/modes and Git blobs, clean status; full tree 773,408,948 bytes,
+859,238,400 allocated, shallow single-branch packs 324,030,394 bytes. No binaries
+copied or builds/tests run there. External source recovery receipt is retained.
+
+The existing production source owner encloses canonical publication -> common
+plan -> registry; component preparation disposed its owner before the subjects.
+Independent Astra/high DESIGN accepts only a fixture consumer correction through
+separate NEW existing owners per fixed candidate call. COPYOBS10–12 explicitly
+amend the prior PREPARATION-only exclusion; this is not a new product/GM capability,
+a scalar validation bypass or a new cache. All original cold common-plan cache,
+fence/refusal/current-byte/private-history and null-owner COPY contracts stay.
+No semantic DATA survives from Miss to Hit. Complete keys/dependencies/revisions,
+actual fresh admission and service invalidation/failure behavior remain original.
+
+Frozen external design SHA256
+20e455d7fad9c791ade9eb1b9a8c4839528ec5634355ae0c7e220702328df36b;
+cheap-gate addendum c864b09b42bb7086f1753a428aa9e3d34f3a448f1707ec9e660c3a92287308ef;
+independent DESIGN c3c93309ac1897d8a63b388e8d953866d8cc4e222cdb284f1f0dc5856d04d680.
+All reports/raw remain external in t608-counter-scaffold. No implementation,
+build, new causal outcome or runtime admission is claimed by this checkpoint.
+
+Next is the shared no-owner RED scaffold, original genuine callsites untouched.
+One minimal issued-stage preparation, two fixed invocations with two real reads:
+strict Replay/Core [2,2] RED -> [1,1] GREEN; richer source [0,0]. Actual absent
+RED owner is DATA; full applicable source/storage/root prerequisites precede the
+final source oracle. The SAME Fact's stronger distinct/empty/closed owner checks
+follow that oracle. A second no-world lifetime/error Fact is GREEN-only. Reuse
+qualified unchanged semantic/fresh/private-history evidence with exact lineage,
+never claim common-baseline clone corruption or one source per registry role.
+Fresh affected builds, exact selection and independent SOURCE/PREP/outcome remain
+mandatory. Original Candidate120s and full DFR300s stay fixed and held; Windows
+is deferred. No further transport expansion or unchanged expensive retry.
+
 # T608 actual Candidate visibility result — TIMEOUT retained, phase question resolved
 
 Retention at 2026-10-27 04:53:31 UTC: after independently reviewed exact two-file
