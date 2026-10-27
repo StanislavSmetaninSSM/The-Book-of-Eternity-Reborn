@@ -1,3 +1,35 @@
+# T608 actual returned-phase TREE-RED accepted — GREEN implementation next
+
+Independent SOURCE/PREP/OUTCOME accept the prerequisite-complete real-producer RED
+at runtime/compiled Integration9f3618867e408c78ccadf45c25e2ed8b863a40d1. One ctor-only
+case completed with only the intended old reader failure at line178, reached from
+the final Fact line128 after all prerequisites. Category13.3152939s/framework0.8699559s,
+exit1/not timeout, no skip/duplicate/underfill, both process cleanup flags and root
+removal; actual testhost200217 ended. This is causal RED, not a functional COPY PASS.
+
+Actual callback-free FileSystemManager BeginOrdinaryReadPathPhase returned a nonnull
+active object, Dispose closed it, and real statistics were1 invocation/0 requests/
+0 source queries/0 hits. The full stored906B/decoded2554B gzip has7 rows/4 original
+Open/Phase events,2 exact ScopeId/tick pairs, complete queue/writer/per-name totals,
+strict one-member EOF/CRC/hash and successful closing. Same-queue IDs match original
+records. Only then the unchanged global name-stack reader rejects the legitimate
+factory-return lifetime crossing. No mock issuer, lease, world or fake NamedEvent.
+
+Fresh affected build passed0 errors/101 unchanged warnings in3:13.29; current33
+artifacts/11 PE-PDB/77 source joins and loaded identities match. Other four owning
+projects remain F6. Exact discovery967/12,592 and singleton PlanOnly executed0 tests.
+External evidence: actual-t608-copy-tree-red-1 and t608-counter-scaffold, including
+original TRX/oracle/capture and independent causal outcome.
+
+Release only the accepted test-only GREEN: strict lexical function identity, the
+single documented returned-phase factory/lifetime link, all rows consumed, increasing
+(not contiguous/from1) begin IDs, mixed-ID rejection and unchanged all-zero legacy
+success/crossing behavior. Unknown crossings and malformed/incomplete links must
+still refuse. Preserve all production timing, source/authority and required-chain
+assertions; no generic lifetime registry, cache, recorder, writer, budget or clock
+change. Fresh SOURCE/build/current bindings and cheap negative/causal qualification
+precede any separate genuine COPY PREP; candidate/full-positive remain held.
+
 # T608 real-producer TREE-RED scaffold frozen — uncompiled/unrun
 
 Six source/catalog paths are frozen. The same fixture queue now retains original

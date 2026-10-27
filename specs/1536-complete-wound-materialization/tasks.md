@@ -20,7 +20,7 @@
   defaults and all assertions. Fresh affected build/cheap proof/review before any
   separate original-budget COPY-only diagnostic PREP.
 
-- [ ] T608-COPY-TREE-RED Carry original recorded ScopeId in the same fixture
+- [x] T608-COPY-TREE-RED Carry original recorded ScopeId in the same fixture
   observation DATA (legacy unavailable), preserve old strict reader semantics,
   and qualify a minimal actual returned-phase producer causal RED after complete
   source/storage/root prerequisites. Independent DESIGN/SOURCE first.
