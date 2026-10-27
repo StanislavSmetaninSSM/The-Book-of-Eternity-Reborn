@@ -1,3 +1,9 @@
+# T608 ordered visibility GREEN C# WIP — unfinished, uncataloged
+
+Three C# paths are frozen for remote preservation: the component factory now starts the same recorded transfer, a minimal existing closed drain-after-detach control seam is wired, and two finite queue/boundary/instance plus fault/final-tail/completion-policy Facts are authored. The original complete RED Fact and genuine Candidate/COPY callsites remain exact according to the author; shared lifecycle/consumer loop bodies are unchanged apart from the reviewed component startup policy. Full inverse/protected review still follows.
+
+Catalog membership for the two new Facts, complete static/XML/hash packet and independent SOURCE remain pending. This is UNCOMPILED / UNRUN / UNQUALIFIED WIP. The deliberate fault keeps lost source sequence visible (tail PassiveSequence 3/4 versus writer Sequence 1/2), never repaired into complete capture, and retains the existing component closing-error policy. No genuine runtime, full-positive or further raw deletion is admitted by this preservation boundary. External hashes: t608-counter-scaffold/candidate-visibility-green-wip-hashes.json.
+
 # T608 blocked synchronous visibility RED accepted — bounded GREEN next
 
 Independent SOURCE/PREP/OUTCOME accept the prerequisite-complete causal RED at runtime/compiled Integration 5edd4648a7f7d7ecde5bcfd3f9f70fdf81943f69. Exactly one completed failed case, category 15.1212825 s / framework 2.7854164 s, original one-minute budget, no timeout/skip/duplicate/underfill. The only failure is the final custom missing-begin assertion at source line 182. Both process flags pass, testhost 209852 ended and the marked root is absent.

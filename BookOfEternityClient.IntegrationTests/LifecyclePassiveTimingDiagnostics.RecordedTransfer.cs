@@ -35,15 +35,21 @@ internal sealed partial class LifecyclePassiveTimingDiagnostics
             _window = window; _capture = capture; _observations = observations; _failAfterDetach = failAfterDetach;
         }
 
-        /// <summary>Selects the component scaffold's original after-return policy; no continuing worker starts before actual RED.</summary>
+        /// <summary>Starts the same single continuing worker after all actual component construction has succeeded.</summary>
         /// <param name="window">The component's actual recorder window.</param>
         /// <param name="capture">Its same persistent capture.</param>
         /// <param name="observations">Its existing exact observation queue.</param>
-        /// <returns>One deliberately unstarted normal transfer owner, with ordinary final drain at close.</returns>
+        /// <param name="failAfterDetach">The existing closed diagnostic fault; never a scheduling callback or functional change.</param>
+        /// <returns>One started DATA-only transfer owner; ordinary settlement joins its existing worker-owned final tail.</returns>
         internal static RecordedTransfer CreateForComponent(OperationTimingAccumulator.Window window,
             JointCleanupProfileDiagnosticCapture capture,
-            ConcurrentQueue<(string Name, string Boundary, double Milliseconds, long SourceScopeId)> observations) =>
-            new(window, capture, observations);
+            ConcurrentQueue<(string Name, string Boundary, double Milliseconds, long SourceScopeId)> observations,
+            bool failAfterDetach = false)
+        {
+            var transfer = new RecordedTransfer(window, capture, observations, failAfterDetach);
+            transfer.Start();
+            return transfer;
+        }
 
         /// <summary>Starts at most one existing detached loop without inheriting the caller's execution context.</summary>
         internal void Start()

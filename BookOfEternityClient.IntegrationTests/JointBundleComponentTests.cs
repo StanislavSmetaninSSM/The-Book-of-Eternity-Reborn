@@ -82,12 +82,16 @@ public sealed partial class JointBundleComponentTests
         /// Whether this explicit expensive control captures every original named event through the sealed recorder.
         /// </param>
         /// <param name="gzipRecords">Whether this explicit control uses the existing lossless gzip records sink; ordinary fixtures stay plain.</param>
-        /// <param name="continuingPassiveTimings">Requests the shared component transfer route; RED keeps its original after-return policy.</param>
+        /// <param name="continuingPassiveTimings">Requests the same existing continuing worker; ordinary/manual fixture defaults stay unchanged.</param>
+        /// <param name="passiveTransferFaultForControl">Existing closed drain-after-detach diagnostic control; available only on the explicit shared route.</param>
         internal Fixture(ITestOutputHelper output, string caseName, bool passiveTimingEvents = false, bool gzipRecords = false,
-            bool continuingPassiveTimings = false)
+            bool continuingPassiveTimings = false, LifecycleTimingFaultForControl passiveTransferFaultForControl = LifecycleTimingFaultForControl.None)
         {
             if (continuingPassiveTimings && !passiveTimingEvents)
                 throw new ArgumentException("Shared event transfer requires passive original events.", nameof(continuingPassiveTimings));
+            if (passiveTransferFaultForControl != LifecycleTimingFaultForControl.None &&
+                (!continuingPassiveTimings || passiveTransferFaultForControl != LifecycleTimingFaultForControl.DrainAfterDetach))
+                throw new ArgumentException("Only the existing shared drain-after-detach diagnostic control is supported.", nameof(passiveTransferFaultForControl));
             var started = Stopwatch.GetTimestamp();
             _output = new JointBundleDiagnosticOutput(caseName, output, gzipRecords: gzipRecords);
             if (passiveTimingEvents)
@@ -120,7 +124,8 @@ public sealed partial class JointBundleComponentTests
             // Last successful construction step; no worker can outlive an unreturned fixture.
             if (continuingPassiveTimings)
                 _passiveTransfer = LifecyclePassiveTimingDiagnostics.RecordedTransfer.CreateForComponent(
-                    _passiveWindow!, _output.Timings, _observations);
+                    _passiveWindow!, _output.Timings, _observations,
+                    failAfterDetach: passiveTransferFaultForControl == LifecycleTimingFaultForControl.DrainAfterDetach);
         }
 
         /// <summary>
