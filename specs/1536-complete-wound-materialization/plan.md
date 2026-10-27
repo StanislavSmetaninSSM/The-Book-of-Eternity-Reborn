@@ -1,5 +1,31 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Graph-repair initial attempt on clean2e96 is UNQUALIFIED timeout, not a healing
+or graph-publication result: runner124/TimedOuttrue189.6846032s, noTRX/completed
+cases UNKNOWN, bothcleanuptrue. Build0errors/105warnings/3:02.29, Main/Support
+unchanged316, Integration8472713c; officialPlanOnly1/1desc10.1093021s/0executed.
+Owned fixture retained externally under actual-graph-repair-functional-1/actual/
+retained-fixture before protective termination (live diagnostic copy, not atomic
+authority). Actual native response reached ordinary repair attempt1 at23:30:00Z:
+exact graph-omission issue, fullresubmitfalse, ready absent. Source establishes
+fixture-signalling error: AfterPhysicalFilePublishedAsync is passed only to the
+Windows reversible publisher; Linux create-only branch does not invoke it. The
+GM task therefore never woke; later repair/publication assertions did not execute.
+
+Finite test-only correction WIP, UNCOMPILED/UNRUN: replace that unsupported hook
+with the existing lifecycle-fixture pattern, one owned file-GM task checking only
+repair-file presence every500ms, then acquiring its own lease and reading actual
+packet DATA. No presence is authority. Exact unchanged original/canonical checks
+and authored graph/ready publication stay under that lease. Track first raw
+packet; a second distinct packet fails and signals Escape. Engine always awaited;
+GM task canceled/joined after Engine return and in finally, with original faults
+propagating after actual repair cleanup. Default fixture constructor is restored;
+no FS/Engine/production change, framework, timeout increase or speculative game
+fix. Existing180s category/method unchanged. One fresh Integration-only refsfalse
+build and exactcase attempt require narrow SOURCE first. Final33 gate release
+remains conditional on graph PASS without production fixes; all HOLDs unchanged.
+
+
 Actual graph/repair scaffold WIP, UNCOMPILED/UNRUN. One rankIII/H5 console case
 uses the actual client draw and destinationGraphs from its actual TurnRequest.
 The controlled GM first omits graphs, then authors explicit lawful II roll+cost1
