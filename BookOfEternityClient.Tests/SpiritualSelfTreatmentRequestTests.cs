@@ -190,6 +190,7 @@ public sealed class SpiritualSelfTreatmentRequestTests
                     effect["removal"] = definition["removal"]!.DeepClone();
                     effect["stacking"]!["stackKey"] = definition["stacking"]!["stackKey"]!.DeepClone();
                     effect["chronology"]!["lastTransitionId"] = "seed_effect_" + effects.Count;
+                    effect["chronology"]!["createdEventRef"] = "seed_event_" + binding.EffectId;
                     effects.Add(effect);
                 }
                 profile["activeEffects"] = new JsonArray(effects.Select(e => (JsonNode)e.DeepClone()).ToArray());
@@ -199,7 +200,8 @@ public sealed class SpiritualSelfTreatmentRequestTests
                     entry["owner"]!["carrierPath"] = EffectCarrierCatalog.AfterlifeProfilesPath;
                     entry["transitions"]![0]!["transitionId"] = effects.Single(e =>
                         e["effectId"]!.GetValue<string>() == entry["effectId"]!.GetValue<string>())["chronology"]!["lastTransitionId"]!.DeepClone();
-                    entry["transitions"]![0]!["eventRef"] = "seed_event_" + entry["effectId"]!.GetValue<string>();
+                    entry["transitions"]![0]!["eventRef"] = effects.Single(e =>
+                        e["effectId"]!.GetValue<string>() == entry["effectId"]!.GetValue<string>())["chronology"]!["createdEventRef"]!.DeepClone();
                 }
                 var roots = new Dictionary<string, JsonObject>(StringComparer.Ordinal)
                 {

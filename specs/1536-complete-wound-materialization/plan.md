@@ -8,6 +8,8 @@ true. All eight failed during fixture admission, before StageSelfTreatmentAsync:
 the two seeded effects inherited the same helper eventRef, violating the strict
 identity replay registry. This is setup failure, not functional semantic RED.
 The fixture now assigns each independently seeded effect its own eventRef;
+the runtime chronology and identity transition share that same exact event.
+Sol delta review caught this necessary carrier/index agreement before rebuild.
 production identity validation is unchanged. Exact affected rebuild/run remains
 pending. No healing request, wound/world/History publication is implemented yet.
 Raw remains external at `us4-self-healing/request-red-prep-1` and `request-red-1`.
