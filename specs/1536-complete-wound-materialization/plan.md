@@ -1,5 +1,17 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Independent Sol OUTCOME accepted the exact d5cd functional5 result below.
+The existing three-Fact Mortal boundary selection then planned exactly3/one
+descriptor in39.7461169s/0executed. Actual clean201e6deb4 (documentation-only
+beyond compiled d5cd) exceeded unchanged180s category:180.1294965s,
+total208.3183296s, runner124/TimedOut=true, incomplete, both cleanup flags true.
+No TRX was emitted; reported0completed cases is missing completion evidence,
+not proof of zero execution. The running/completed Fact and section are UNKNOWN.
+Mortal preservation remains UNQUALIFIED. No retry or limit increase. Raw stays
+external at mortal-boundary-controls-1. Review existing timing/startup/section
+evidence for one finite correction while fresh Unit/staging24 proceeds; this
+does not invalidate functional5 or justify another prerequisite/diagnostic stack.
+
 Actual functional baseline now GREEN on clean d5cd372a5251c9c0ff20fd81c2ee6e29db8946ff:
 owning Integration graph build0errors/137warnings/9:10.46, Main/copy
 c2300613e4e1e32025b4738ba63066ddcba43d6d34bf6e1d27de82c31b1e2a02,
