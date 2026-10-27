@@ -1,9 +1,13 @@
 # T608 measured DATA-copy/seal cost audit — #1536
 
-- [ ] T608-CANDIDATE-CAUSE Establish the retained timeout prefix's actual limits and
+- [x] T608-CANDIDATE-CAUSE Establish the retained timeout prefix's actual limits and
   assess existing read-only preparation DATA reuse without changing cold miss/hit,
   caller owner lifetime, fresh authority or any original assertion. Independent
   assessment and bounded causal proof precede a source change or justified retry.
+- [ ] T608-CANDIDATE-PREP-REUSE Select only the existing read-only preparation DATA
+  operation at the single candidate call site. Preserve helper defaults/lifetime,
+  caller null-owner and actual cold miss/hit/fence/negative assertions. Retain exact
+  qualified service/counter evidence, independent SOURCE and fresh Integration pins.
 - [ ] T608-CANDIDATE-QUALIFY Complete any reviewed minimal correction, fresh affected
   bindings and relevant cheap proof, then separate original-budget/full-capture PREP
   and actual candidate outcome. No automatic full-positive or dependent gate release.

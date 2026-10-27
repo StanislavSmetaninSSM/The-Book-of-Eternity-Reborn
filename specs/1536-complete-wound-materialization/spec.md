@@ -39,6 +39,15 @@ receive no fabricated identity proof. Unknown crossings and malformed/incomplete
 links still refuse. No producer clock, recorded event, fresh authority or required
 admission/QTE chain may be dropped or weakened to make the fixture pass.
 
+COPYOBS8: the selected candidate may opt into the existing reuseStableData:true
+read-only common-binding preparation suffix, after all fixture writes. Keep the
+helper default false and its existing successful fresh CompleteAsync/disposal before
+caller controls. Actual candidate cold miss/hit, caller null-owner copy boundaries,
+rotated/current fence, foreign/stale/physical/Beginning-owner assertions stay exact.
+Use unchanged qualified service/counter and true-helper COPY evidence; no new cache,
+owner around caller work, diagnostic stack or whole-timeout/speedup claim. Exact
+SOURCE, fresh affected bindings and separate original-budget PREP remain required.
+
 # T608 expected-projection reuse DESIGN scope — #1536
 
 REPLAY-REUSE1: accepted causal RED releases only a separately reviewed design of pure
