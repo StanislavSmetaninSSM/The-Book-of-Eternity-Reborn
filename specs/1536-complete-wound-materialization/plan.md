@@ -1,5 +1,28 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Actual lifecycle baseline on `b51db6f9137028c222f2f0b37d397a815b9dd8d2`:
+fresh Integration ownership build exit0/137 warnings/0errors in21:22.27;
+Unit-only follow-up exit0/26 warnings/0errors in3:49.57. Official PlanOnly
+selected exactly9 methods/cases/two descriptors in62.9834144s. Actual fail-fast
+run executed the three lifecycle cases, all failed during resource bootstrap
+BEFORE Stage/validation: the fixture mistakenly gave player_soul a non-player
+materialization stamp. The production contract correctly exempts exact player
+soul only without that stamp. This is setup failure, NOT healing semantic RED.
+No validator relaxation or substitution of an NPC owner is justified. Correct the
+fixture's stamp and use existing player-soul mirror authority, then rerun only
+this affected lifecycle baseline. Raw: `us4-self-healing/lifecycle-red-build-1`
+and `lifecycle-red-1`, outside checkout. Actual run129.4248890s, no timeout or
+duplicates, both cleanup flags true; overall9-case selection is incomplete3/9.
+
+The independent preparation selection then executed6/6 assertions successfully,
+but category time60.2055449s exceeded its unchanged60-second bound; runner
+exit124/TimedOut=true, total95.6058776s, both cleanup flags true. This is NOT a
+qualified PASS. Individual TRX durations sum17.6533734s; investigate the recorded
+process/startup/closing cost before deciding a minimal category/fixture correction.
+Do not raise limits, blindly retry or launch an optimization/diagnostic project.
+Raw: `us4-self-healing/lifecycle-preparation-1`. Existing136-case request source
+qualification is unchanged. Actual wound/world/History application is still absent.
+
 Next finite functional block T096/T099/T104–T108 is now active. Three new
 real-filesystem integration cases enter the existing signed validation -> common
 normalizer path: failed active check with one world cycle/natural progress;
