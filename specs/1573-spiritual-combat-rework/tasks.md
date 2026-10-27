@@ -1,5 +1,10 @@
 # Задачи #1573 — полный духовный бой
 
+**Checkpoint v1.2:** обсуждается [полная модель v2](combat-system-proposal.md),
+включая новые D7–D9. Ниже сохранён прежний implementation inventory, не готовая
+декомпозиция нового кандидата. T001 требует утверждения всей текущей spec и
+пересборки plan/tasks/contracts; ни одно старое задание не разрешено исполнять.
+
 [Issue](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1573),
 [spec](spec.md), [plan](plan.md), [gameplay](gameplay.md), [review](review.md).
 Draft v1, 2026-10-27. Spec Kit setup-tasks выполнен для feature1573.
