@@ -28,8 +28,7 @@ public sealed partial class JointBundleComponentTests
 
         var missOffset = fixture.ResetCandidateCapture("Miss");
         AcceptedTurnAuthorityRegistry.JointCommonCandidateResult miss;
-        using (fixture.Files.MeasureOperation("JointBundleCandidate.Miss"))
-            miss = AcceptedTurnAuthorityRegistry.CreateJointRepairCommonCandidate(fixture.Files, fixture.Lease, input, authority);
+        miss = await fixture.CreateCandidateWithFreshDataAsync(input, authority, "JointBundleCandidate.Miss");
         var missCounts = fixture.CompleteCandidateCapture("Miss", missOffset);
         Assert.True(miss.Result.Success, JsonSerializer.Serialize(miss.Result.Issues));
         Assert.NotNull(miss.Fence);
@@ -38,8 +37,7 @@ public sealed partial class JointBundleComponentTests
 
         var hitOffset = fixture.ResetCandidateCapture("Hit");
         AcceptedTurnAuthorityRegistry.JointCommonCandidateResult hit;
-        using (fixture.Files.MeasureOperation("JointBundleCandidate.Hit"))
-            hit = AcceptedTurnAuthorityRegistry.CreateJointRepairCommonCandidate(fixture.Files, fixture.Lease, input, authority);
+        hit = await fixture.CreateCandidateWithFreshDataAsync(input, authority, "JointBundleCandidate.Hit");
         var hitCounts = fixture.CompleteCandidateCapture("Hit", hitOffset);
         Assert.True(hit.Result.Success, JsonSerializer.Serialize(hit.Result.Issues));
         Assert.NotNull(hit.Fence);
@@ -63,15 +61,13 @@ public sealed partial class JointBundleComponentTests
             input.AcceptedEvents, input.ResourceCommands, input.EffectCommands, input.PendingInput, input.InternalInputs,
             input.AuthorityFingerprints, input.BeforeImages, input.ValidationIssues, input.PlanningContext, input.WoundCommands, input.WoundInput);
         AcceptedTurnAuthorityRegistry.JointCommonCandidateResult refused;
-        using (fixture.Files.MeasureOperation("JointBundleCandidate.ForeignInputRefusal"))
-            refused = AcceptedTurnAuthorityRegistry.CreateJointRepairCommonCandidate(fixture.Files, fixture.Lease, foreign, authority);
+        refused = await fixture.CreateCandidateWithFreshDataAsync(foreign, authority, "JointBundleCandidate.ForeignInputRefusal");
         Assert.False(refused.Result.Success);
         Assert.Null(refused.Fence);
         using (fixture.Files.MeasureOperation("JointBundleCandidate.StaleFenceRevocation"))
             AcceptedTurnAuthorityRegistry.RevokeJointRepairCommonCandidate(fixture.Files, fixture.Lease, authority, miss.Fence);
         AcceptedTurnAuthorityRegistry.JointCommonCandidateResult stillCached;
-        using (fixture.Files.MeasureOperation("JointBundleCandidate.CachedAfterStaleFence"))
-            stillCached = AcceptedTurnAuthorityRegistry.CreateJointRepairCommonCandidate(fixture.Files, fixture.Lease, input, authority);
+        stillCached = await fixture.CreateCandidateWithFreshDataAsync(input, authority, "JointBundleCandidate.CachedAfterStaleFence");
         Assert.True(stillCached.Result.Success, JsonSerializer.Serialize(stillCached.Result.Issues));
         Assert.Same(hit.Result.Plan, stillCached.Result.Plan);
         using (fixture.Files.MeasureOperation("JointBundleCandidate.UnchangedCanonicalBytes"))

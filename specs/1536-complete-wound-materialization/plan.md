@@ -1,3 +1,31 @@
+# T608 genuine Candidate wiring frozen — UNCOMPILED / UNRUN
+
+Base accepted cheap GREEN checkpoint `f6bd9a436fba470457d5ee5530574f7ddc2de934`.
+Exactly four callsites in Candidate.cs now await the qualified typed adapter for
+Miss, Hit, ForeignInputRefusal and CachedAfterStaleFence. Original input/authority
+arguments, declarations and timing literals are preserved; the timer remains
+inside the adapter around ONLY the synchronous registry call. Real per-call DATA
+completion/disposal precedes caller continuation. No outer timer spans await.
+
+Whole-file inverse reconstructs the entire baseline. All other workload/assertions,
+preparation reuse, passive/gzip/continuing capture, stale revocation, physical reads,
+Beginning-owner/copy/private-history/abort/null-owner boundaries remain exact and
+outside these owners. Qualified helper SHA634b376b is unchanged. Core, services,
+recorder/writer/codec/defaults, category membership/CI/budgets and GM contracts do
+not change. One-path C# SHA256
+7208528ab51f021bb86d43b968f52a7ae2f98f620e8c656c68ff8c580e40073a.
+Static inverse/protected/F6/XML checks pass; no build or actual genuine result.
+
+External candidate-per-call-wiring-* packet contains exact four splices, hashes,
+selection and retained prior attribution text plus its explicit correction. Terra
+completed only the small mechanical inverse/argument/literal check; coherent SOURCE
+review is assigned to independent Sol. Required Astra/high DESIGN and helper SOURCE
+reviews remain accepted; no review is repeated solely for model selection.
+Next: SOURCE, one fresh affected Integration/current bindings, exact original
+one-case 120-second PlanOnly/resource/PREP, then one changed genuine attempt with
+full diagnostics. No budget increase, blind retry or full DFR/dependent/Windows
+admission. Actual whole-case fit and registry oracles remain unqualified.
+
 # T608 per-call GREEN accepted — source 1 PASS, lifetime 1 PASS
 
 Linux source/runtime/fresh Integration `7cf59bcb1d53a62a04f3c7f565bedd83e6500549`;
