@@ -33,6 +33,7 @@
           "tests": [
             "BookOfEternityClient.Tests.SpiritualHealingGuidedContractTests.*",
             "BookOfEternityClient.Tests.AfterlifeContractRegistryTests.RegistryPathsMatchMachineReadableInventory",
+        "BookOfEternityClient.Tests.AfterlifeContractRegistryTests.RegistryClientOwnedSurfacesAreAcceptedByValidationFilter",
             "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifePendingControlSurfaceInventoryIsMachineReadable",
             "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.WoundTerminalGeneration_PreservesHistoryWithoutEnablingSpiritualTreatment",
             "BookOfEternityClient.Tests.WoundPlayerStatusDocumentationTests.CurrentReadonlyStatusIsSynchronizedForGm"

@@ -1,5 +1,14 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Finite coherent SOURCE corrections: read context now stores the one computed
+projection DATA; its existing Build checks history agreement once, with no permission
+flag/cache or skipped fresh Confirm. New private raw-request registry row is also
+protected at the exact WoundCommandPath in the existing generic JSON/GM repair filter,
+covering client-issued v1/v2 commands without broad registry allowance or relaxing
+raw signed-family admission. The existing affected registry/filter test is selected
+and now calls the meaningful internal classifier directly rather than reflection.
+No runtime has executed on this new production. Narrow delta review follows.
+
 Connected caller/GM/guided SOURCE freeze candidate (all new production UNCOMPILED/
 UNRUN): shared self UI/console one-shot, typed browser pending/phase/raw-byte tuple,
 actual pre-snapshot GameEngine draw and reference packet, strict accepted History

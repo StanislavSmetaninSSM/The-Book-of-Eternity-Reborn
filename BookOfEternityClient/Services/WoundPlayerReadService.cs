@@ -7,10 +7,7 @@ namespace BookOfEternityClient.Services;
 
 /// <summary>Coherent read-only wound status; never issues command or healing authority.</summary>
 internal sealed record WoundPlayerReadContext(WoundPlayerProjectionInput Input, WoundCarrierCatalog Catalog,
-    JsonObject Soul, JsonObject? SpiritualConflict)
-{
-    internal WoundPlayerProjectionResult Projection => WoundPlayerProjection.Build(Input, Catalog);
-}
+    JsonObject Soul, JsonObject? SpiritualConflict, WoundPlayerProjectionResult Projection);
 
 internal static class WoundPlayerReadService
 {
@@ -56,7 +53,7 @@ internal static class WoundPlayerReadService
             var history = WoundHistoryState.Parse(await RequiredText(fs, lease, WoundHistoryState.HistoryPath), WoundHistoryState.HistoryPath);
             if (!identities.IsValid || !history.IsValid) return null;
             var catalog = WoundCarrierCatalog.Build(carriers);
-            if (catalog.Issues.Count != 0 || history.State!.ValidateAgreement(identities.State!, catalog).Count != 0) return null;
+            if (catalog.Issues.Count != 0) return null;
             var soul = (await Root(fs, lease, "game_state/meta/soul_state.json"))!;
             var currentRealm = ExactString(soul["currentRealm"]);
             string realm;
@@ -90,8 +87,10 @@ internal static class WoundPlayerReadService
                 if (path == EffectCarrierCatalog.SpiritualConflictPath) spiritualConflict = parsed;
             }
             var effects = await EffectMechanicsSnapshot.LoadAsync(fs, lease);
-            return new(new(carriers, identities.State!, history.State!, effects,
-                realm, resources.Catalog, names, selfVisible), catalog, soul, spiritualConflict);
+            var input = new WoundPlayerProjectionInput(carriers, identities.State!, history.State!, effects,
+                realm, resources.Catalog, names, selfVisible);
+            var projection = WoundPlayerProjection.Build(input, catalog);
+            return projection.IsAvailable ? new(input, catalog, soul, spiritualConflict, projection) : null;
         }
         catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&
             failure is (IOException or InvalidDataException or UnauthorizedAccessException or JsonException or InvalidOperationException))

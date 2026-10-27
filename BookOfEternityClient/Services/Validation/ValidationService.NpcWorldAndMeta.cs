@@ -4926,9 +4926,11 @@ public partial class ValidationService
     /// <see langword="true"/> when generic GM JSON repair must skip the path;
     /// otherwise, <see langword="false"/>.
     /// </returns>
-    private static bool IsClientOwnedSurfaceValidationPath(string normalizedPath)
+    internal static bool IsClientOwnedSurfaceValidationPath(string normalizedPath)
     {
-        return MortalItemRepairPacketBuilder.IsProtectedClientOwnedTarget(normalizedPath) ||
+        // Both retained v2 and client-issued v1 commands belong to their wound owner,
+        // never the generic JSON repair author. Raw signed-family validation stays mandatory.
+        return normalizedPath.Equals(AcceptedMechanicsPlan.WoundCommandPath, StringComparison.OrdinalIgnoreCase) || MortalItemRepairPacketBuilder.IsProtectedClientOwnedTarget(normalizedPath) ||
                normalizedPath.Equals(MortalQteDecisionPublication.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(SpiritualWoundCaptureCheckpointState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(SpiritualWoundDecisionPendingState.StatePath, StringComparison.OrdinalIgnoreCase) ||

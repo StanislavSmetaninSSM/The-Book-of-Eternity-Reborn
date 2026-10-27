@@ -70,14 +70,9 @@ public sealed class AfterlifeContractRegistryTests
     [Fact]
     public void RegistryClientOwnedSurfacesAreAcceptedByValidationFilter()
     {
-        var method = typeof(ValidationService).GetMethod(
-            "IsClientOwnedSurfaceValidationPath",
-            BindingFlags.NonPublic | BindingFlags.Static);
-        Assert.NotNull(method);
-
         foreach (var surface in AfterlifeContractRegistry.All.Where(surface => surface.IsKnownClientOwnedSurface))
         {
-            var isClientOwned = Assert.IsType<bool>(method.Invoke(null, new object[] { surface.Path }));
+            var isClientOwned = ValidationService.IsClientOwnedSurfaceValidationPath(surface.Path);
             Assert.True(isClientOwned, $"{surface.Path} must be covered by the validation client-owned surface filter.");
         }
     }
