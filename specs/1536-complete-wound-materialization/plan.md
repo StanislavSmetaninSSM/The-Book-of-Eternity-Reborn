@@ -1,5 +1,21 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Corrected source guard now actualPASS on a770: Unit-only fresh build0errors/
+26warnings/1:44.83, Unit6f163aa172a79c56bb5f102baba81eb08d090cef49c793c7b0a073ae1bd3454e,
+Main/Support copies match unchanged owning1d. Cheap2 PlanOnly exact11/2descriptors;
+actual11/11complete10PASS1FAIL21.8152518s, no timeout/duplicates, bothcleanuptrue.
+Source1PASS(TRX82699481fa94c2d5efaeca0e385b8d7f191ee20eff3e2b66f612daeb1e35ba1d);
+contract10=9PASS1FAIL(TRX30a783113b99637cf6dd231e96f013b15ed1a505d86278dfb2ff0166c77f4eaf).
+The sole failure is new test80 oracle: DistributeAsync returns canonical update
+paths, while dedicated WriteOutputFiles executes separately and never adds output
+paths to modifiedFiles. Its await completed; following output-content assertions
+were not reached. Fix only that oracle to read/assert the actual interface output
+and exact graph payload. Production/distributor/collection unchanged; no claimed
+transportPASS yet. Narrow SOURCE + Unit-only rebuild then retry the still-failed
+coherent contract10 selection; source1 and prior35PASS are retained, not repeated.
+No new category/diagnostic framework/budget change. Heavy guided2 stillUNRUN.
+Raw guided-inverse-build-1/guided-cheap-controls-2 remain external.
+
 First cheap gate on docs-only e88/compiled1d: exact46cases/4descriptors planned
 10.3767368s; actual36executed35PASS1FAIL/3completed descriptors,28.5388989s, no
 timeout/duplicates, bothcleanuptrue. Boundary2 and ordinary regression33 PASS;

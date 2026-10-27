@@ -76,9 +76,10 @@ public sealed class SpiritualHealingGuidedContractTests : IDisposable
         const string graphJson = "[{\"stageRef\":\"requested_graph\",\"consequenceDefinitions\":[]}]";
         var response = JsonSerializer.Deserialize<GameResponse>("{\"spiritualHealingGraphs\":" + graphJson + "}")!;
         var distributor = new StateDistributor(_files, NullLogger<StateDistributor>.Instance);
-        var paths = await distributor.DistributeAsync(response);
-        Assert.Contains("output/interface_updates.json", paths);
-        var root = JsonNode.Parse((await _files.ReadFileAsync("output/interface_updates.json"))!)!;
+        await distributor.DistributeAsync(response);
+        var interfaceJson = await _files.ReadFileAsync("output/interface_updates.json");
+        Assert.NotNull(interfaceJson);
+        var root = JsonNode.Parse(interfaceJson)!;
         Assert.True(JsonNode.DeepEquals(JsonNode.Parse(graphJson), root["spiritualHealingGraphs"]));
         Assert.Contains("spiritualHealingGraphs", FileMapping.OutputOnlyResponseFields);
         Assert.False(FileMapping.FieldToFile.ContainsKey("spiritualHealingGraphs"));
