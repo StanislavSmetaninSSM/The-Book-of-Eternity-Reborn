@@ -1,6 +1,8 @@
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Text.Json;
 using Xunit;
 using HealingFixture = BookOfEternityClient.Tests.AfterlifeWoundHealingLifecycleTests.Fixture;
 
@@ -12,10 +14,11 @@ public sealed class AfterlifeWoundHealingPublicationOwnerTests
     [Fact]
     public async Task DeferredRoutingLeavesNoExecutablePlanAndPublicationUsesItsOwnLease()
     {
-        await using var fixture = await HealingFixture.CreateAsync(1, 1, 1);
+        await using var fixture = await HealingFixture.CreateAsync(2, 2, 1);
         var validator = new ValidationService(fixture.Files, NullLogger<ValidationService>.Instance);
         FileSystemManager.CanonicalWriteLease originalLease;
         Dictionary<string, byte[]?> before;
+        AcceptedMechanicsPlan publication;
         await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
         {
             originalLease = lease;
@@ -37,11 +40,14 @@ public sealed class AfterlifeWoundHealingPublicationOwnerTests
             owner.RequireCurrent(fixture.Files, lease);
             Assert.Throws<InvalidDataException>(() => owner.RequireCurrent(fixture.Files, originalLease));
             fixture.AssertMutationRootsUnchanged(before);
-            var published = await new CanonicalStateNormalizer(fixture.Files, NullLogger<CanonicalStateNormalizer>.Instance)
-                .BindTo(lease).NormalizeAcceptedMechanicsAsync(backups: null);
-            Assert.Same(ready.Plan, published);
+            publication = Assert.IsType<AcceptedMechanicsPlan>(await new CanonicalStateNormalizer(fixture.Files,
+                NullLogger<CanonicalStateNormalizer>.Instance).BindTo(lease).NormalizeAcceptedMechanicsAsync(backups: null));
+            Assert.Same(ready.Plan, publication);
         }
-        Assert.Empty((await fixture.ReadWoundsAsync()).Occurrences);
+        var wound = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
+        Assert.Equal(2, wound.Severity.Rank);
+        Assert.Equal(3, wound.Recovery.CurrentStepProgress);
+        await AssertVisibleOutputAsync(fixture, publication, healed: false);
         await fixture.AssertOneCycleAndRetainedAttemptAsync();
         fixture.AssertResourcesUnchanged();
     }
@@ -49,15 +55,15 @@ public sealed class AfterlifeWoundHealingPublicationOwnerTests
     [Fact]
     public async Task MissingOrReplacedSourceCannotFallBackToAnEarlierLeasePlan()
     {
-        var armed = false;
+        string? faultPath = null;
         var uncertainty = new CoordinatedStatePublicationUncertainException(new IOException("owned manifest read fault"));
         var hooks = new FileSystemManagerHooks
         {
             BeforeCanonicalReadOpenAsync = path =>
             {
-                if (armed && path == LiveTurnPreparationService.PendingTurnSnapshotManifestPath)
+                if (faultPath == path)
                 {
-                    armed = false;
+                    faultPath = null;
                     return Task.FromException(uncertainty);
                 }
                 return Task.CompletedTask;
@@ -68,9 +74,12 @@ public sealed class AfterlifeWoundHealingPublicationOwnerTests
         AcceptedMechanicsPlan earlier;
         byte[] original;
         byte[] manifest;
+        AcceptedMechanicsPlan publication;
         await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
         {
             await fixture.WriteReportAsync(lease);
+            await fixture.Files.WriteFileAtomicAsync(lease, "output/narrative_response.json",
+                JsonSerializer.Serialize(new { response = "Духовная рана восстанавливается.", timestamp = DateTime.UtcNow.ToString("o") }));
             AssertNoErrors(await validator.ValidateAcceptedTurnRawResourceMaterializationAsync(lease));
             Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(fixture.Files, lease, out _, out var ready));
             earlier = ready.Plan!;
@@ -116,11 +125,11 @@ public sealed class AfterlifeWoundHealingPublicationOwnerTests
 
             await fixture.Files.WriteFileAtomicBytesAsync(current, AcceptedMechanicsPlan.WoundCommandPath, original);
             var restored = fixture.CaptureMutationRoots();
-            armed = true;
+            faultPath = LiveTurnPreparationService.PendingTurnSnapshotManifestPath;
             var propagated = await Assert.ThrowsAsync<CoordinatedStatePublicationUncertainException>(() =>
                 validator.PrepareSpiritualSelfTreatmentPublicationAsync(current));
             Assert.Same(uncertainty, propagated);
-            Assert.False(armed);
+            Assert.Null(faultPath);
             fixture.AssertMutationRootsUnchanged(restored);
             AssertNoErrors(await validator.PrepareSpiritualSelfTreatmentPublicationAsync(current));
             Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(fixture.Files, current, out _, out var ready));
@@ -128,13 +137,41 @@ public sealed class AfterlifeWoundHealingPublicationOwnerTests
             Assert.NotSame(earlier.SpiritualHealingContinuation, ready.Plan!.SpiritualHealingContinuation);
             ready.Plan.SpiritualHealingContinuation!.RequireCurrent(fixture.Files, current);
             fixture.AssertMutationRootsUnchanged(restored);
-            var published = await new CanonicalStateNormalizer(fixture.Files, NullLogger<CanonicalStateNormalizer>.Instance)
-                .BindTo(current).NormalizeAcceptedMechanicsAsync(backups: null);
-            Assert.Same(ready.Plan, published);
+            publication = Assert.IsType<AcceptedMechanicsPlan>(await new CanonicalStateNormalizer(fixture.Files,
+                NullLogger<CanonicalStateNormalizer>.Instance).BindTo(current).NormalizeAcceptedMechanicsAsync(backups: null));
+            Assert.Same(ready.Plan, publication);
         }
         Assert.Empty((await fixture.ReadWoundsAsync()).Occurrences);
+        await AssertVisibleOutputAsync(fixture, publication, healed: true);
+        var accepted = fixture.CaptureMutationRoots(new[] { "output/narrative_response.json", "output/interface_updates.json" });
+        faultPath = "output/narrative_response.json";
+        Assert.Same(uncertainty, await Assert.ThrowsAsync<CoordinatedStatePublicationUncertainException>(() =>
+            GameEngine.BindPublishedAcceptedWoundOutputAsync(fixture.Files, publication)));
+        Assert.Null(faultPath);
+        fixture.AssertMutationRootsUnchanged(accepted);
         await fixture.AssertOneCycleAndRetainedAttemptAsync();
         fixture.AssertResourcesUnchanged();
+    }
+
+    private static async Task AssertVisibleOutputAsync(HealingFixture fixture, AcceptedMechanicsPlan publication, bool healed)
+    {
+        Assert.True(publication.SpiritualHealingContinuation!.IsClosed);
+        var bundle = publication.WoundStageBundle!;
+        var mutation = Assert.Single(bundle.FinalPlan.CarrierContributions.SelectMany(c => c.Mutations));
+        var unchanged = fixture.CaptureMutationRoots();
+        var rejected = WoundPlayerNotification.ComposeAcceptedSpiritualHealing(bundle,
+            new[] { new WoundCarrierMutation(mutation.Operation, mutation.WoundId, mutation.BeforeWound, mutation.BeforeWound) });
+        Assert.False(rejected.Success);
+        Assert.Empty(rejected.Notifications);
+        fixture.AssertMutationRootsUnchanged(unchanged);
+        var output = await GameEngine.BindPublishedAcceptedWoundOutputAsync(fixture.Files, publication);
+        Assert.True(output.Success, string.Join("\n", output.Issues.Select(issue => issue.Code + ": " + issue.Actual)));
+        var notification = Assert.Single(output.Notifications);
+        Assert.Contains(healed ? "Исцелена духовная рана" : "восстановление 3/4", notification.Text.PlainText);
+        Assert.Equal("/раны", notification.DetailCommand);
+        Assert.DoesNotContain("wound_spiritual_session", notification.Text.PlainText);
+        Assert.DoesNotContain("request_spiritual_healing", notification.Text.PlainText);
+        Assert.DoesNotContain(publication.SpiritualHealingContinuation!.Input.Binding.SnapshotToken, notification.Text.PlainText);
     }
 
     private static void AssertNoErrors(IReadOnlyList<ValidationIssue> issues) =>

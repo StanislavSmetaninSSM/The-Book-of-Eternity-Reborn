@@ -47,7 +47,7 @@ internal static partial class WoundPlayerProjection
     }
 
     private const string EmptyMessage = "Сейчас нет видимых активных ран в текущем царстве.";
-    private static bool Visible(string visibility) => visibility is "public" or "known_to_player";
+    internal static bool Visible(string visibility) => visibility is "public" or "known_to_player";
     private static bool IsSelf(WoundOwnerCoordinate owner, string realm) =>
         owner.Realm == realm && (realm == "mortal_world"
             ? owner.OwnerKind == "player" && owner.OwnerId == "player_current" && owner.CarrierPath == WoundCarrierCatalog.PlayerPath

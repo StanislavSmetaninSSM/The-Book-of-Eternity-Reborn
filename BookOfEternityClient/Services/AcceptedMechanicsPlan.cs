@@ -371,6 +371,12 @@ internal sealed class AcceptedMechanicsWoundStageBundle
     private readonly WoundAcceptedTurnPlan _finalPlan;
     internal AfterlifeWoundHealingPlanner.Continuation? SpiritualHealingContinuation =>
         _preparedPlan.SpiritualHealingContinuationAuthority as AfterlifeWoundHealingPlanner.Continuation;
+
+    /// <summary>Reads detached execution DATA using this bundle's own sealed preparation and effect proof.</summary>
+    /// <param name="stages">Detached chronological stage DATA on success.</param>
+    /// <returns>True only for the exact private spiritual execution; grants no current publication authority.</returns>
+    internal bool TryReadSpiritualHealingExecution(out IReadOnlyList<WoundExecutedBoundary> stages) =>
+        _effectBatchPlan.TryReadSpiritualHealingExecution(_preparedPlan, out stages);
     private readonly Dictionary<string, EffectAcceptedApplicationResult>
         _applicationResults;
     private readonly Dictionary<string, EffectAcceptedTerminationResult>

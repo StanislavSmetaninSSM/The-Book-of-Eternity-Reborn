@@ -1113,6 +1113,14 @@ internal sealed class WoundEffectBatchAcceptedPlan
         WoundAcceptedTurnData.CloneEffectInput(_effectInput);
     internal EffectAcceptedTurnPlan EffectPlan =>
         WoundAcceptedTurnData.CloneEffectPlan(_effectPlan);
+
+    /// <summary>Reads detached spiritual stages through the retained sealed effect proof without cloning its carrier catalog.</summary>
+    /// <param name="prepared">The exact preparation bound by the private execution proof.</param>
+    /// <param name="stages">Detached chronological stage DATA on success.</param>
+    /// <returns>True only when the retained effect payload and preparation still agree.</returns>
+    internal bool TryReadSpiritualHealingExecution(WoundPreparedAcceptedTurnPlan prepared,
+        out IReadOnlyList<WoundExecutedBoundary> stages) =>
+        EffectAcceptedTurnPlanner.TryReadSpiritualHealingExecution(prepared, _effectPlan, out stages);
     internal string WoundPreparationFingerprint { get; }
     internal string EffectInputFingerprint { get; }
     internal string EffectAcceptedTurnPlanFingerprint { get; }

@@ -1572,6 +1572,10 @@ Failure still advances one ordinary safe cycle. Active treatment runs before one
 natural recovery grant to eligible self wounds; client publishes all wound/effect,
 identity, History, scheduler and output members atomically. Healing removes the
 active wound and retains one verified terminal History entry.
+The client derives healing/recovery notifications from the finalized chronological
+stages after publication, including the terminal wound image after carrier removal.
+It preserves wound visibility and does not expose raw wound/effect IDs or snapshot
+tokens. GM does not author an acquisition claim or extra receipt for these notices.
 
 Read `input/turn_request.json.spiritualHealing` and its `destinationGraphs`.
 The client computes active/natural destination ranks and opaque stageRefs from the

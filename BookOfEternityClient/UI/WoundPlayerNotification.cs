@@ -116,6 +116,9 @@ internal sealed record WoundPlayerNotification(
             .SelectMany(static value => value.Mutations)
             .ToArray();
 
+        if (prepared.SpiritualHealingContinuationAuthority is not null)
+            return ComposeAcceptedSpiritualHealing(bundle, mutations);
+
         if (prepared.JointRepairContinuationAuthority is not null)
             return ComposeAcceptedJointRepair(bundle, finalSceneText, mutations);
 
@@ -293,6 +296,49 @@ internal sealed record WoundPlayerNotification(
             ? new([notification], output.Issues)
             : new(Array.Empty<WoundPlayerNotification>(), output.Issues);
     }
+
+    internal static WoundAcceptedTurnOutputBindingResult
+        ComposeAcceptedSpiritualHealing(AcceptedMechanicsWoundStageBundle bundle,
+            IReadOnlyList<WoundCarrierMutation> mutations)
+    {
+        // Publication has already closed the owner. Read only its sealed immutable
+        // execution DATA; this output binding grants no new mutation authority.
+        if (bundle.SpiritualHealingContinuation is not { } owner ||
+            !bundle.TryReadSpiritualHealingExecution(out var stages) ||
+            stages.Count != owner.Stages.Count)
+            return SpiritualHealingBindingFailure("missing complete sealed execution");
+
+        var groups = stages.GroupBy(stage => stage.Before.WoundId, StringComparer.Ordinal).ToArray();
+        if (groups.Length != mutations.Count)
+            return SpiritualHealingBindingFailure("execution/mutation cardinality");
+        var notifications = new List<WoundPlayerNotification>(groups.Length);
+        foreach (var group in groups)
+        {
+            var before = group.First().Before;
+            var after = group.Last().After;
+            var matches = mutations.Where(mutation => mutation.WoundId == before.WoundId).ToArray();
+            var terminal = after.Lifecycle == "healed";
+            if (matches.Length != 1 || before.Classification.Domain != "spiritual" ||
+                after.WoundId != before.WoundId || after.Owner != before.Owner ||
+                after.Lifecycle is not ("active" or "healed") ||
+                matches[0].Operation != (terminal ? "delete" : "update") ||
+                matches[0].BeforeWound is not { } actualBefore ||
+                WoundMaterializationContract.SerializeCanonical(actualBefore) != WoundMaterializationContract.SerializeCanonical(before) ||
+                (terminal ? matches[0].AfterWound is not null : matches[0].AfterWound is not { } actualAfter ||
+                    WoundMaterializationContract.SerializeCanonical(actualAfter) != WoundMaterializationContract.SerializeCanonical(after)))
+                return SpiritualHealingBindingFailure("final carrier differs from chronological execution");
+
+            if (!WoundPlayerProjection.Visible(after.Display.Visibility)) continue;
+            var text = terminal
+                ? $"Исцелена духовная рана: {after.Display.Name}. Подробнее: {Command}"
+                : $"Духовная рана: {after.Display.Name} ({after.Severity.Value}); восстановление {after.Recovery.CurrentStepProgress}/{after.Recovery.CurrentStepThreshold}. Подробнее: {Command}";
+            notifications.Add(new(Project(text), Command));
+        }
+        return new(notifications, Array.Empty<ValidationIssue>());
+    }
+
+    private static WoundAcceptedTurnOutputBindingResult SpiritualHealingBindingFailure(string actual) => new(
+        Array.Empty<WoundPlayerNotification>(), new[] { AcceptedTurnBindingIssue("complete finalized spiritual healing DATA", actual) });
 
     private static WoundAcceptedTurnOutputBindingResult
         ComposeAcceptedTreatmentContinuation(

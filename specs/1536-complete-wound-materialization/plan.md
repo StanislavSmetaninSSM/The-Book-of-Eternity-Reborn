@@ -1,5 +1,44 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Owner-phase dc2b SOURCE/PREP accepted by both existing independent reviewers.
+Fresh owning Integration0errors/165warnings/6:48.42, masters/dependency copies
+match: Main41cf378a, Support67854c4d, Integration9abde63a. OfficialPlanOnly
+4cases/2descriptors20.5015163s/0executed. Owner2actual2/2PASS43.9638973s/
+category32.8813503<120,TRX185bf9c5fb64c5a218abc6bbfc9cb03b96809305fa34baf4cbcdfe3591730bc9.
+Typed proof includes deferred A/no executable, full B publication, lost original,
+source absence/replacement, same-instance uncertainty propagation and restoration.
+No forced-equal-FP/speedup claim. Raw publication-owner-owning-build-1 and
+publication-owner-functional-1 remain external. Independent outcome pending.
+
+Actual guided2 on dc2b completed1PASS cancellation/1FAIL confirmed44.7754939s/
+category34.7205491<180,TRX25d1a9ebf4276b5c78b2f7c1fff9c61db2698c191928dd284cf19202a1bdf134.
+Both runs complete/no timeout/duplicates/bothcleanuptrue. The lease refusal is
+gone: actual generic canonical refresh returns its published plan, then Engine
+BindPublishedAcceptedWoundOutput rejects finalized stages at2457 and outer flow
+rolls back. Source proves missing spiritual-healing dispatch in the create/worsen
+output binder: transitions0/batches0 versus nonzero final mutations. No accepted
+guided healing or terminal final state is claimed from this completed rollback.
+
+Next coherent OUTPUT-only fix WIP, UNCOMPILED/UNRUN: new typed branch reads the
+existing private sealed chronological execution DATA after owner closure and
+matches every first/last wound image to the finalized carrier mutations, including
+terminal delete/AfterWound=null with retained terminal After envelope. Ordinary
+create/worsen/treatment branches and authority/currentness guards stay unchanged;
+there is no existing generic RecoveryContinuation notification branch to reuse,
+and held Mortal runtime is not expanded. Existing visibility and safe text/detail
+projection omit hidden wounds/raw IDs/tokens. Narrative-read uncertainty propagates.
+
+Existing owner2 now checks active II progress3/4 and terminal I visible output,
+altered typed mutation refusal/no notifications/no canonical mutation, closed-owner
+DATA access, and same-instance narrative-read uncertainty via its existing hook.
+No new fixture/Fact/category/budget; original request/source negative controls stay.
+The sealed bundle exports detached stages through its retained proof without two
+full effect/catalog clones; input DATA already read by the composer is not reread.
+No cache/new permission/lifetime extension or measured speedup. GM wound guide
+explains client-derived notices; existing worked graph example/fields unchanged.
+Finite SOURCE then fresh owning Integration, same owner2 before guided2 pending.
+Other open gates, console parity, Mortal/preparation and T609/DFR/Windows HOLD stay.
+
 Final prebuild owner findings grouped (still UNCOMPILED/UNRUN): known v2 losing
 manifest/selected source can no longer return null/ordinary NoPlan. Existing
 prevalidated-context member DATA and a retained open private-self cache entry are

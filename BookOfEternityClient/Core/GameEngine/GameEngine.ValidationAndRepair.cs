@@ -2501,8 +2501,9 @@ public partial class GameEngine
             }
         }
         catch (Exception exception) when (
-            exception is JsonException or InvalidDataException or
-                InvalidOperationException or NotSupportedException)
+            exception is not CoordinatedStatePublicationUncertainException &&
+            exception is (JsonException or InvalidDataException or
+                InvalidOperationException or NotSupportedException))
         {
             finalSceneText = string.Empty;
         }
