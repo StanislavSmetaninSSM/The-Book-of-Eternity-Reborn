@@ -23,7 +23,8 @@ public partial class ValidationService
             var original = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(signed.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath)))!.AsObject();
             if (original["kind"]?.GetValue<string>() != "spiritual_self_treatment_request") return null;
             if (frame.ProgressionControl is null || frame.ManifestPayloadHash != signed.SnapshotToken ||
-                PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(frame) != signed.SnapshotToken)
+                PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(frame, LiveTurnPreparationService.ManifestHashJsonOptions,
+                    static m => m.ManifestPayloadHash, static (m, hash) => m.ManifestPayloadHash = hash) != signed.SnapshotToken)
                 return new[] { new ValidationIssue(AcceptedMechanicsPlan.WoundCommandPath, IssueSeverity.Error,
                     "Spiritual replay lost its original signed control.", code: "spiritual_self_treatment_replay_conflict") };
             evidence.RequireCurrent(_fs, lease, signed);

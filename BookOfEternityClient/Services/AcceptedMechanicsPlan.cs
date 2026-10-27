@@ -1555,7 +1555,7 @@ internal sealed class AcceptedMechanicsPlan
                 nameof(treatmentResourcePublicationAuthority));
         }
         if (_woundStageBundle?.PreparedPlan.SpiritualHealingContinuationAuthority is { } spiritualAuthority &&
-            (_woundAnchorPlan is not null || _directWoundPublicationAuthority is not null || _treatmentResourcePublicationAuthority is not null ||
+            (_woundPublication?.WoundAnchorPlanFingerprint is not null || _directWoundPublicationAuthority is not null || _treatmentResourcePublicationAuthority is not null ||
              spiritualAuthority is not AfterlifeWoundHealingPlanner.Continuation spiritual || !spiritual.PreparedAgrees(_woundStageBundle.PreparedPlan)))
             throw new ArgumentException("Spiritual context requires its actual private wound stages.", nameof(woundStageBundle));
         if (_woundStageBundle?.PreparedPlan.RecoveryContinuationAuthority is { } recoveryAuthority &&

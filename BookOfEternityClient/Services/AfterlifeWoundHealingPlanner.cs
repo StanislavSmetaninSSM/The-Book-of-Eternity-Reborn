@@ -268,7 +268,8 @@ internal static class AfterlifeWoundHealingPlanner
                     string.Join(";", observed.Issues.Select(i => i.Code)));
             if (snapshot.SessionId != manifest.SessionId || snapshot.RequestId != manifest.RequestId ||
                 snapshot.TurnNumber != manifest.TurnNumber || snapshot.SnapshotToken != manifest.ManifestPayloadHash ||
-                PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(manifest) != snapshot.SnapshotToken || manifest.ProgressionControl is null ||
+                PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(manifest, LiveTurnPreparationService.ManifestHashJsonOptions,
+                    static m => m.ManifestPayloadHash, static (m, hash) => m.ManifestPayloadHash = hash) != snapshot.SnapshotToken || manifest.ProgressionControl is null ||
                 !PendingTurnSnapshotAuthority.HasValidatedRollbackSnapshotCoverage(manifest, m => m.Files,
                     m => m.SnapshotFileHashes, m => m.RollbackBaselineFiles, paths, out _))
                 throw new InvalidDataException("Spiritual treatment does not identify the signed current turn.");

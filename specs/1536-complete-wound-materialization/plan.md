@@ -1,5 +1,13 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Fresh owning Integration build of cb29a2a46 exited1 in4:08.11 with12warnings and
+five compile errors across three concrete API mismatches: generic manifest-hash
+arguments, the final common plan's actual anchor-fingerprint field, and the shared
+effect failure helper's List input. Minimal call-site corrections use existing
+serializer/hash APIs and preserve both capability exclusions. No tests ran; this
+is not semantic RED. Raw remains external at us4-self-healing/functional-build-1.
+The same finite SOURCE/PREP/workload applies after delta check and fresh rebuild.
+
 Finite SOURCE/PREP now permits the fresh owning build and exact five-case
 owned-fixture causal workload. Prepared-plan reconstruction is frozen DATA only,
 so detached bundle/getter copies remain valid after the original lease closes;
