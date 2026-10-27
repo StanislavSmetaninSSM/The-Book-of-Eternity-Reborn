@@ -1676,17 +1676,26 @@ Read-only аудит Sol 6.1 High: общее состояние/ОД сторо
 удержания Сарефом способен прервать бой до общей победы. Это следствие явно
 вынесено автору, а не скрыто новой защитой затвора. O2 останавливает только
 новые приношения, не ранее принятую дозу; местная защита отделена.
-Источники: `system_guardians/built_in/lucian/dossier.md` (один слой Разреза),
-`OtherGuides/Saref_Character_Bible.md`, `Afterlife_Combat_Terminology_Glossary.md`
-(матрица/позиция), `ValidationService.AfterlifeSpiritualConflict.cs`
-(sides, incoming actor, сумма модификаторов), `AfterlifeSpiritualConflictState.cs`
-(допуски/resolve), `AfterlifeSpiritualConflictTurnPreviewService.cs` (общие ОД),
-`AfterlifeActionCostRules.cs`, примеры `E_CLI_Afterlife_Turns.txt`.
+Источники: `BookOfEternityClient/system_guardians/built_in/lucian/dossier.md`
+(один слой Разреза), `OtherGuides/Saref_Character_Bible.md`,
+`OtherGuides/Afterlife_Combat_Terminology_Glossary.md` (матрица/позиция),
+`BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs`
+(sides, incoming actor, сумма модификаторов),
+`BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs` (допуски/resolve),
+`BookOfEternityClient/Services/AfterlifeSpiritualConflictTurnPreviewService.cs` (общие ОД),
+`BookOfEternityClient/Services/AfterlifeActionCostRules.cs`,
+примеры `Examples/E_CLI_Afterlife_Turns.txt`.
 Примеры не доказывают универсальную формулу ранга: предложенный breakdown
 и +2 взаимодействия заданы явно. Оковы/Исток/Оплот/Приговор V и историческая
 экипировка Маски сохранены; сердце, армия, бесплатные действия не добавляются.
 Открыты T021, точные параметры ловушки, искусство/награды и полный сценарий.
-Следующие шаги этого среза: parent diff/consistency, WIP push/readback,
-независимый Sol 6.1 XHigh review, исправления и предъявление spec автору.
+WIP `3826c363fde00b4eb0fc844095b5aa13679a23cf` опубликован; remote SHA
+и GitHub readback spec подтверждены. Parent проверил diff/consistency и
+`git diff --check`. Независимый Sol 6.1 XHigh существенных замечаний не нашёл;
+уточнены полные пути источников в этом checkpoint. Цели/профили пока предложения.
+Во время завершения пользователь потребовал исправить общий контроль стороны:
+следующий read-only разбор должен установить реальный путь ограничения акторов
+и подготовить общий игровой контракт исправления, не ограниченный воспоминанием.
+Новый код/пробы до рассмотрения расширенной спецификации не разрешены этим срезом.
 Production/GM-пакеты не меняются, оптимизация исполнения неприменима.
 Builds/tests/gameplay UNRUN; проверка баланса — будущая работа после согласования.
