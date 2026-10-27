@@ -1,5 +1,29 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Existing-logger readout on clean94e8: Integration-only refsfalse build0errors/
+105warnings/3:23.11; Main31a887a8 and Support6d679b7b masters/copies unchanged,
+fresh Integration1e811553. PlanOnly exact2/1descriptor13.5194247s/0executed;
+actual2complete1PASS cancellation/1FAIL confirmed58.8032945s, no timeout/duplicate,
+bothcleanuptrue. TRXf7bdf5043304d2d88001c14f5729c985e30aab4566acd5f71beef11436f561e7.
+Raw caller-refusal-readout-build-1/caller-refusal-readout-1 remain external.
+Full existing logger now proves the actual prepublication exception:
+Continuation.RequireCurrent94 rejects its owner/lease at normalizer Publish120.
+GameEngine raw admission registered the plan under an earlier lease; the actual
+refresh helper acquires a distinct publication lease and reads the retained plan.
+No publication/healing success, speculative source issue or random-roll claim.
+
+Finite architectural finding: InvalidateValidated leaves cached _planningResult;
+scalar/bundle fingerprint equality can still reuse the earlier owner. Blind
+re-admission/rebuild is insufficient and may reallocate random effect IDs. Keep
+ReferenceEquals/currentness and owner-specific execution/scheduler proofs strict.
+Next correction should prepare the one actual executable self contribution under
+the refresh publication lease before preflight, with earlier raw work limited to
+fresh admission/diagnostic DATA and a closed owner. Factor existing sequence;
+do not add lease-transfer permission, duplicate effect algorithm or generic cache.
+Exact caller/fixture/cache seam is being bounded with the retained architectural
+reviewer; source/build/runtime for that correction remain UNRUN. Console parity
+and every other open gate/HOLD remain unchanged.
+
 Prepared-schedule correction a1f7 SOURCE/PREP accepted independently; one owning
 Integration Rebuild0errors/165warnings/6:51.52, three master/dependency pins match.
 Compared prior log:28 additional XML diagnostic identities (CS1572/1573/1587),
