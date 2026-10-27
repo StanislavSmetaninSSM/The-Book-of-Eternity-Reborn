@@ -7,6 +7,31 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class SpiritualHealingCheckTests
 {
     [Theory]
+    [InlineData("inactive")]
+    [InlineData("suppressed")]
+    public void Resolve_CanonicalNonActiveComplicationDoesNotAddDifficulty(string state)
+    {
+        var input = Input();
+        var node = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(input.Before))!.AsObject();
+        node["complications"]!.AsArray().Add(new JsonObject
+        {
+            ["complicationId"] = "comp_inactive", ["kind"] = "spiritual_instability", ["state"] = state,
+            ["displayName"] = "Неактивное осложнение", ["treatmentDifficultyModifier"] = 4,
+            ["ownedEffectIds"] = new JsonArray(), ["visibility"] = "public"
+        });
+        var parsed = WoundMaterializationContract.Parse(node.ToJsonString(), "fixture.canonicalInactiveWound");
+        Assert.True(parsed.IsValid, string.Join(";", parsed.Issues.Select(i => i.Message)));
+        input = input with { Before = parsed.Wound! };
+        var before = WoundMaterializationContract.SerializeCanonical(input.Before);
+        var result = SpiritualHealingResolver.Resolve(input);
+        Assert.True(result.IsValid, string.Join(";", result.Issues.Select(i => i.Code)));
+        Assert.Equal(0, result.Resolution!.Calculation.Input.ComplicationModifier);
+        Assert.Equal(0, result.Resolution.Calculation.Margin);
+        Assert.Equal(SpiritualHealingResultBand.ReduceOne, result.Resolution.Calculation.ResultBand);
+        Assert.Equal(before, WoundMaterializationContract.SerializeCanonical(input.Before));
+    }
+
+    [Theory]
     [InlineData("healer_id", "spiritual_healing_actor_mismatch")]
     [InlineData("healer_realm", "spiritual_healing_target_invalid")]
     [InlineData("healer_carrier", "spiritual_healing_target_invalid")]
@@ -103,7 +128,7 @@ public sealed partial class SpiritualHealingCheckTests
         var input = Input(tier, die);
         if (die == 20)
             input = input with { Before = input.Before with { Complications = Enumerable.Range(1, 3)
-                .Select(i => new WoundComplication("comp_" + i, "strain", "active", "Помеха", 4, [], "public")).ToArray() } };
+                .Select(i => new WoundComplication("comp_" + i, "spiritual_instability", "active", "Помеха", 4, [], "public")).ToArray() } };
         var result = SpiritualHealingResolver.Resolve(input);
         Assert.True(result.IsValid);
         Assert.Equal(band, result.Resolution!.Calculation.ResultBand.ToString());

@@ -55,9 +55,9 @@ public sealed partial class SpiritualHealingCheckTests
         var input = Input(die: 14);
         input = input with { Before = input.Before with { Complications = new[]
         {
-            new WoundComplication("active_a", "strain", "active", "Помеха", 2, [], "public"),
-            new WoundComplication("active_b", "strain", "active", "Помеха", 1, [], "hidden"),
-            new WoundComplication("resolved", "strain", "resolved", "Устранено", 4, [], "public")
+            new WoundComplication("active_a", "spiritual_instability", "active", "Помеха", 2, [], "public"),
+            new WoundComplication("active_b", "spiritual_instability", "active", "Помеха", 1, [], "hidden"),
+            new WoundComplication("resolved", "spiritual_instability", "resolved", "Устранено", 4, [], "public")
         } } };
         var result = SpiritualHealingResolver.Resolve(input);
         Assert.True(result.IsValid);

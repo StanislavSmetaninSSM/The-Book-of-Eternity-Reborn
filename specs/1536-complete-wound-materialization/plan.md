@@ -48,6 +48,16 @@ this is not an executable self-treatment session or completion of T101.
 The exact category retains its original 60 seconds; the current selection covers
 this check. Other functional and owning selections remain pending.
 
+Independent Sol SOURCE review found one concrete schema defect: the resolver
+incorrectly closed complication states to active/resolved although canonical
+state accepts any exact identifier. It also found invalid complication kinds in
+the new typed positive fixtures. Those fixtures now use spiritual_instability;
+two additional canonical-parse inactive/suppressed cases form the targeted
+regression (37 expected cases total). The first implementation build on
+`8bcd2513e045d23d04782b15867f9c537eff146f` exited0, 0 errors/75 warnings,
+6:17.40; this is compilation only. The new regression is UNCOMPILED/UNRUN and
+the production correction has deliberately not been applied before its RED.
+
 Implementation sequence (WIP, no new runtime claim):
 
 - [ ] T094/T101: add the real SpiritualHealingResolver and exact self-target/art,
