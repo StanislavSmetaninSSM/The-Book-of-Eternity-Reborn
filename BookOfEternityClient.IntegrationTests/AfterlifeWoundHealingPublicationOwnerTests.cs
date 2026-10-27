@@ -49,10 +49,25 @@ public sealed class AfterlifeWoundHealingPublicationOwnerTests
     [Fact]
     public async Task MissingOrReplacedSourceCannotFallBackToAnEarlierLeasePlan()
     {
-        await using var fixture = await HealingFixture.CreateAsync(1, 1, 1);
+        var armed = false;
+        var uncertainty = new CoordinatedStatePublicationUncertainException(new IOException("owned manifest read fault"));
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalReadOpenAsync = path =>
+            {
+                if (armed && path == LiveTurnPreparationService.PendingTurnSnapshotManifestPath)
+                {
+                    armed = false;
+                    return Task.FromException(uncertainty);
+                }
+                return Task.CompletedTask;
+            }
+        };
+        await using var fixture = await HealingFixture.CreateAsync(1, 1, 1, hooks: hooks);
         var validator = new ValidationService(fixture.Files, NullLogger<ValidationService>.Instance);
         AcceptedMechanicsPlan earlier;
         byte[] original;
+        byte[] manifest;
         await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
         {
             await fixture.WriteReportAsync(lease);
@@ -60,10 +75,28 @@ public sealed class AfterlifeWoundHealingPublicationOwnerTests
             Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(fixture.Files, lease, out _, out var ready));
             earlier = ready.Plan!;
             original = (await fixture.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath))!;
+            manifest = (await fixture.Files.ReadFileBytesAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath))!;
         }
 
         await using (var current = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
         {
+            fixture.Files.DeleteFile(current, LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
+            fixture.Files.DeleteFile(current, AcceptedMechanicsPlan.WoundCommandPath);
+            var missingProof = fixture.CaptureMutationRoots(new[] { LiveTurnPreparationService.PendingTurnSnapshotManifestPath });
+            var proofIssues = await validator.PrepareSpiritualSelfTreatmentPublicationAsync(current);
+            Assert.Contains(proofIssues, issue => issue.Code == "spiritual_self_treatment_admission_invalid" &&
+                issue.Actual == "Spiritual treatment requires its signed original manifest.");
+            Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(fixture.Files, current));
+            fixture.AssertMutationRootsUnchanged(missingProof);
+
+            await fixture.Files.WriteFileAtomicBytesAsync(current, AcceptedMechanicsPlan.WoundCommandPath, original);
+            var missingManifest = fixture.CaptureMutationRoots(new[] { LiveTurnPreparationService.PendingTurnSnapshotManifestPath });
+            var manifestIssues = await validator.PrepareSpiritualSelfTreatmentPublicationAsync(current);
+            Assert.Contains(manifestIssues, issue => issue.Code == "spiritual_self_treatment_admission_invalid" &&
+                issue.Actual == "Spiritual treatment requires its signed original manifest.");
+            fixture.AssertMutationRootsUnchanged(missingManifest);
+
+            await fixture.Files.WriteFileAtomicBytesAsync(current, LiveTurnPreparationService.PendingTurnSnapshotManifestPath, manifest);
             fixture.Files.DeleteFile(current, AcceptedMechanicsPlan.WoundCommandPath);
             var missing = fixture.CaptureMutationRoots();
             var missingIssues = await validator.PrepareSpiritualSelfTreatmentPublicationAsync(current);
@@ -83,6 +116,12 @@ public sealed class AfterlifeWoundHealingPublicationOwnerTests
 
             await fixture.Files.WriteFileAtomicBytesAsync(current, AcceptedMechanicsPlan.WoundCommandPath, original);
             var restored = fixture.CaptureMutationRoots();
+            armed = true;
+            var propagated = await Assert.ThrowsAsync<CoordinatedStatePublicationUncertainException>(() =>
+                validator.PrepareSpiritualSelfTreatmentPublicationAsync(current));
+            Assert.Same(uncertainty, propagated);
+            Assert.False(armed);
+            fixture.AssertMutationRootsUnchanged(restored);
             AssertNoErrors(await validator.PrepareSpiritualSelfTreatmentPublicationAsync(current));
             Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(fixture.Files, current, out _, out var ready));
             Assert.NotSame(earlier, ready.Plan);

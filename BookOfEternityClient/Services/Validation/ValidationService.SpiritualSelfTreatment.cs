@@ -45,19 +45,33 @@ public partial class ValidationService
         AfterlifeWoundHealingPlanner.Continuation? owner = null;
         var retainOwner = false;
         var spiritualOriginal = false;
+        // These hints can only require refusal when original proof is lost. They
+        // never select an admissible family or substitute for the fresh reader.
+        var sourceExpected = liveCandidate || AcceptedMechanicsPlanAuthority.HasOpenSpiritualSelfTreatment(_fs, lease) ||
+            _prevalidatedPendingTurnSnapshotOverride?.Files.ContainsKey(AcceptedMechanicsPlan.WoundCommandPath) == true;
+        if (phase == SpiritualSelfTreatmentPhase.Publication)
+            AcceptedMechanicsPlanAuthority.InvalidateSpiritualSelfTreatment(_fs, lease);
         try
         {
             var manifestText = await _fs.ReadFileAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
-            if (manifestText is null) return null;
+            if (manifestText is null)
+            {
+                if (sourceExpected) throw new InvalidDataException("Spiritual treatment requires its signed original manifest.");
+                return null;
+            }
             var frame = StrictJsonAuthority.Deserialize<LiveTurnPendingSnapshotManifest>(manifestText,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, "spiritual treatment manifest");
-            if (frame?.Files.ContainsKey(AcceptedMechanicsPlan.WoundCommandPath) != true) return null;
+            if (frame?.Files.ContainsKey(AcceptedMechanicsPlan.WoundCommandPath) != true)
+            {
+                if (sourceExpected) throw new InvalidDataException("Spiritual treatment requires its signed original request member.");
+                return null;
+            }
             // Ordinary v1 needs only its original family classification here. A live
             // v2 candidate shares the full observed source DATA directly with admission.
             var observed = liveCandidate && !deferPublication ? AfterlifeWoundHealingPlanner.ReadOriginalSource(_fs, lease) :
                 PendingTurnSnapshotReader.ReadObservedCurrent(_fs, lease, new[] { AcceptedMechanicsPlan.WoundCommandPath });
             if (!observed.Success || observed.Snapshot is not { } signed || observed.Evidence is not { } evidence)
-                return liveCandidate ? observed.Issues : null;
+                return sourceExpected ? observed.Issues : null;
             var original = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
                 signed.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath)), new JsonSerializerOptions(), "original wound request")!;
             if (original["kind"]?.GetValue<string>() != "spiritual_self_treatment_request") return null;
@@ -69,7 +83,7 @@ public partial class ValidationService
             evidence.RequireCurrent(_fs, lease, signed);
             // A former self entry may retain its full planning result after the
             // generic validated slot was cleared. Its old live owner cannot cross leases.
-            if (phase != SpiritualSelfTreatmentPhase.DirectHeldLease)
+            if (phase == SpiritualSelfTreatmentPhase.DeferredRouting)
                 AcceptedMechanicsPlanAuthority.InvalidateSpiritualSelfTreatment(_fs, lease);
             if (currentBytes is null)
             {
@@ -103,10 +117,11 @@ public partial class ValidationService
             retainOwner = common.Success;
             return common.Issues;
         }
-        catch (Exception failure) when (failure is JsonException or InvalidDataException or InvalidOperationException or
-                                           ArgumentException or OverflowException or KeyNotFoundException or NullReferenceException)
+        catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&
+            failure is (JsonException or InvalidDataException or InvalidOperationException or
+                ArgumentException or OverflowException or KeyNotFoundException or NullReferenceException))
         {
-            if (!spiritualOriginal && !liveCandidate) return null; // Preserve the original v1 parser's failures.
+            if (!spiritualOriginal && !sourceExpected) return null; // Preserve the original v1 parser's failures.
             return new[] { new ValidationIssue(AcceptedMechanicsPlan.WoundCommandPath, IssueSeverity.Error,
                 "Spiritual self-treatment could not produce one complete accepted contribution.",
                 code: "spiritual_self_treatment_admission_invalid", actual: failure.Message,

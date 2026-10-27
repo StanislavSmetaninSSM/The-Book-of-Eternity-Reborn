@@ -80,13 +80,17 @@ public sealed class AfterlifeWoundHealingLifecycleTests
         { _root = root; Files = files; _die = die; _resourceBytes = resourceBytes; }
         internal FileSystemManager Files { get; }
 
-        internal static async Task<Fixture> CreateAsync(int rank, int tier, int die, bool stageRequest = true)
+        internal static async Task<Fixture> CreateAsync(int rank, int tier, int die, bool stageRequest = true,
+            FileSystemManagerHooks? hooks = null)
         {
             var root = Path.Combine(Path.GetTempPath(), "boe-spiritual-healing-lifecycle-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(root);
             try
             {
-                var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+                var files = hooks is null
+                    ? new FileSystemManager(root, NullLogger<FileSystemManager>.Instance)
+                    : new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,
+                        PhysicalLoadTransactionOperations.Instance, hooks);
                 var rawWound = WoundContractTestData.CreateSpiritualActiveWound(woundId: WoundId,
                     ownerId: "player_soul", carrierPath: WoundCarrierCatalog.AfterlifeProfilesPath);
                 if (rank == 1)

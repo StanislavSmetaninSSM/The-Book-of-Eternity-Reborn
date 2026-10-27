@@ -70,6 +70,7 @@ internal static class AfterlifeWoundHealingPlanner
         }
 
         internal string Fingerprint { get; }
+        internal bool IsClosed => _published;
         internal ProgressionControl Control => JsonSerializer.Deserialize<ProgressionControl>(_controlJson)!;
         internal ProgressionScheduleService Scheduler { get; }
         internal ProgressionScheduleService.AcceptedTurnOutcomeMutation SchedulerMutation { get; }

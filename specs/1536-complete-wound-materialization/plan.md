@@ -1,5 +1,26 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Final prebuild owner findings grouped (still UNCOMPILED/UNRUN): known v2 losing
+manifest/selected source can no longer return null/ordinary NoPlan. Existing
+prevalidated-context member DATA and a retained open private-self cache entry are
+refusal-only hints; neither grants admission. Publication retires exact stale
+self slots before reads, then still requires actual authenticated original for
+any executable plan. Closed/completed self entries do not masquerade as pending
+requests; direct-held-lease default is not newly retired. The outer business-error
+catch explicitly excludes CoordinatedStatePublicationUncertainException.
+
+Same negative Fact now covers lost manifest+live source with an earlier open
+plan, live v2 with missing manifest, signed source absence, byte replacement,
+then exact restoration/fresh B publication. Existing FS read hook throws a known
+uncertainty during manifest read; the same exception must propagate without
+writes or Issue conversion. No new Fact/category/budget. The existing fixture
+accepts optional hooks only for this fault test; hooks=null uses the exact prior
+constructor/default preparation path, preserving other callers' behavior.
+Successful restoration proves new owner/plan and actual publication; fresh
+scheduler UTC can change fingerprints, so forced-equal-FP cache reuse is NOT a
+runtime claim. Full cache-slot retirement is also independently source-inspected.
+Finite revised SOURCE required; earlier6b release is superseded until closure.
+
 Publication-owner correction WIP, UNCOMPILED/UNRUN: only actual GameEngine raw
 calls select deferred self preparation. That signed-original route checks exact
 request/control and competing commands using one selected original source, then

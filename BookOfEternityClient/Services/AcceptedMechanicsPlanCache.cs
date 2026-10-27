@@ -556,6 +556,16 @@ internal sealed partial class AcceptedMechanicsPlanCache
         }
     }
 
+    internal bool HasOpenSpiritualSelfTreatment
+    {
+        get
+        {
+            lock (_gate)
+                return _planningResult?.Plan?.SpiritualHealingContinuation is { IsClosed: false } ||
+                    _validatedResult?.Plan?.SpiritualHealingContinuation is { IsClosed: false };
+        }
+    }
+
     internal void InvalidateAll()
     {
         lock (_gate)
@@ -1480,6 +1490,13 @@ internal static class AcceptedMechanicsPlanAuthority
     {
         fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
         AcceptedTurnAuthorityRegistry.InvalidateSpiritualSelfTreatment(fileSystem, writeLease);
+    }
+
+    internal static bool HasOpenSpiritualSelfTreatment(
+        FileSystemManager fileSystem, FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        return AcceptedTurnAuthorityRegistry.HasOpenSpiritualSelfTreatment(fileSystem, writeLease);
     }
 
     internal static bool HasValidated(
