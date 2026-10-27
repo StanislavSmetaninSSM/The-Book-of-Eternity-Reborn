@@ -218,7 +218,11 @@ public sealed class AfterlifeWoundHealingLifecycleTests
         }
         internal void AssertResourcesUnchanged()
         {
-            foreach (var pair in _resourceBytes) Assert.Equal(pair.Value, File.ReadAllBytes(Files.ResolvePath(pair.Key)));
+            foreach (var pair in _resourceBytes)
+                Assert.True(JsonNode.DeepEquals(
+                    JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(pair.Value)),
+                    JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(File.ReadAllBytes(Files.ResolvePath(pair.Key))))),
+                    "Self treatment changed canonical resource values or history: " + pair.Key);
         }
         private async Task<JsonObject> ReadRootAsync(string path) => JsonNode.Parse((await Files.ReadFileAsync(path))!)!.AsObject();
         private static readonly string[] ResourcePaths = [ResourceMaterializationContract.DefinitionsPath,

@@ -86,13 +86,25 @@ internal sealed class LiveTurnPreparationService
     private async Task<LiveTurnPreparationResult> PrepareUnderLeaseAsync(
         FileSystemManager.CanonicalWriteLease writeLease, LiveTurnPreparationOptions options)
     {
+        ProgressionControl? preparedProgression = options.ProgressionControl is { } supplied
+            ? JsonSerializer.Deserialize<ProgressionControl>(JsonSerializer.Serialize(supplied))!
+            : null;
+        string? preparedRealm = null;
+        if (preparedProgression is not null)
+        {
+            preparedRealm = string.IsNullOrWhiteSpace(options.CurrentRealm)
+                ? await ResolveCurrentRealmAsync(writeLease) : options.CurrentRealm!.Trim();
+            if (string.IsNullOrWhiteSpace(preparedProgression.CurrentRealm) ||
+                !string.Equals(preparedProgression.CurrentRealm, preparedRealm, StringComparison.Ordinal))
+                throw new InvalidDataException("Prepared progression control must identify the actual turn realm.");
+        }
         ReadSignedSnapshotInventory(writeLease);
         CleanupPreparedTurnArtifacts(writeLease);
         ClearStalePendingDiceState(writeLease);
 
-        var currentRealm = string.IsNullOrWhiteSpace(options.CurrentRealm)
+        var currentRealm = preparedRealm ?? (string.IsNullOrWhiteSpace(options.CurrentRealm)
             ? await ResolveCurrentRealmAsync(writeLease)
-            : options.CurrentRealm!.Trim();
+            : options.CurrentRealm!.Trim());
         var request = new TurnRequest
         {
             SessionId = string.IsNullOrWhiteSpace(options.SessionId)
@@ -116,13 +128,9 @@ internal sealed class LiveTurnPreparationService
                 Urgency = "medium",
                 ExpectedResponse = "process the live-test player action through the normal GM turn contract"
             },
-            ProgressionControl = options.ProgressionControl is { } preparedControl
-                ? JsonSerializer.Deserialize<ProgressionControl>(JsonSerializer.Serialize(preparedControl))!
-                : new ProgressionControl { CurrentRealm = currentRealm },
+            ProgressionControl = preparedProgression ?? new ProgressionControl { CurrentRealm = currentRealm },
             SystemReminder = "Prepared by the live-test prepare-turn helper. Use this request as an ordinary player turn and keep all writes inside the game session contract."
         };
-        if (!string.Equals(request.ProgressionControl.CurrentRealm, currentRealm, StringComparison.Ordinal))
-            throw new InvalidDataException("Prepared progression control must identify the actual turn realm.");
         request.AfterlifeSpiritualConflictPreview = await new AfterlifeSpiritualConflictTurnPreviewService(_fs)
             .BuildAsync(
                 writeLease,

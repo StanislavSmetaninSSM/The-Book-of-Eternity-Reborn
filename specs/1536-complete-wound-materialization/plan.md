@@ -13,6 +13,17 @@ ProgressionControl DATA input, so signed fixtures preserve the real scheduler
 control and retained source fingerprint. Existing callers keep realm-only defaults.
 This input grants no publication authority and must match the actual realm.
 
+Scaffold review found two finite corrections before its first build: no-cost
+resource checks now compare complete canonical values/history/authority rather
+than formatting bytes, and the changed shared preparation helper includes its
+four existing default consumers plus two explicit clone/realm-refusal controls.
+A provided control is detached before the first await; mismatched realm refuses
+before old snapshot cleanup. The lifecycle fixture keeps actual signed source,
+resource bootstrap and common normalization; no synthetic accepted capability.
+The source selection is now only the new3 lifecycle cases +6 preparation checks,
+UNCOMPILED/UNRUN pending delta review. Accepted136 source prerequisites are not
+repeated because their code is unchanged.
+
 Finite implementation scope: authenticate the signed retained request once;
 apply active treatment before one natural cycle to eligible wounds; require
 GM-authored legal graphs for computed lower active ranks; compose actual effects,

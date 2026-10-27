@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
@@ -91,6 +92,55 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
 
         var authorityJson = await _fs.ReadFileAsync(PendingTurnSnapshotAuthority.AuthorityPath);
         Assert.True(TryValidateReaderAuthority(manifest, authorityJson, out var failureCode), failureCode);
+    }
+
+    [Fact]
+    public async Task PrepareAsync_ExplicitPreparedControlIsDetachedBeforePublicationHook()
+    {
+        await WriteCanonicalAndGeneratedHarnessFilesAsync();
+        var control = new ProgressionControl { CurrentRealm = "Mortal World", WorldCycleMinutes = 240,
+            AfterlifeCatchupContours = new[] { "original_contour" } };
+        var service = new LiveTurnPreparationService(_fs, new LiveTurnPreparationServiceHooks
+        {
+            BeforePublicationAsync = () =>
+            {
+                control.WorldCycleMinutes = 480;
+                control.AfterlifeCatchupContours[0] = "changed_contour";
+                return Task.CompletedTask;
+            }
+        });
+        await service.PrepareAsync(new LiveTurnPreparationOptions
+        {
+            SessionId = "prepared-control-session", RequestId = "prepared-control-request", TurnNumber = 2,
+            PlayerAction = "Продолжить ход", ProgressionControl = control
+        });
+        foreach (var path in new[] { LiveTurnPreparationService.TurnRequestPath, LiveTurnPreparationService.PendingTurnSnapshotManifestPath })
+        {
+            var root = await ReadJsonObjectAsync(path);
+            Assert.Equal(240, root["progressionControl"]!["worldCycleMinutes"]!.GetValue<int>());
+            Assert.Equal("original_contour", root["progressionControl"]!["afterlifeCatchupContours"]![0]!.GetValue<string>());
+        }
+    }
+
+    [Fact]
+    public async Task PrepareAsync_ForeignPreparedRealmRefusesBeforeReplacingExistingSnapshot()
+    {
+        await WriteCanonicalAndGeneratedHarnessFilesAsync();
+        var service = new LiveTurnPreparationService(_fs);
+        await service.PrepareAsync(new LiveTurnPreparationOptions
+        {
+            SessionId = "original-session", RequestId = "original-request", TurnNumber = 2, PlayerAction = "Исходный ход"
+        });
+        var paths = new[] { LiveTurnPreparationService.TurnRequestPath,
+            LiveTurnPreparationService.PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath };
+        var bytes = new Dictionary<string, byte[]>();
+        foreach (var path in paths) bytes[path] = (await _fs.ReadFileBytesAsync(path))!;
+        await Assert.ThrowsAsync<InvalidDataException>(() => service.PrepareAsync(new LiveTurnPreparationOptions
+        {
+            SessionId = "foreign-session", RequestId = "foreign-request", TurnNumber = 3, PlayerAction = "Другой ход",
+            ProgressionControl = new ProgressionControl { CurrentRealm = "Chaos Sea" }
+        }));
+        foreach (var path in paths) Assert.Equal(bytes[path], await _fs.ReadFileBytesAsync(path));
     }
 
     [Fact]

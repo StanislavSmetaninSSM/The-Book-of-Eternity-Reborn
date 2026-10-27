@@ -2,6 +2,40 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "spiritual-healing-preparation",
+      "responsibility": "T104 signed preparation helper default consumers plus detached prepared progression control and foreign-realm refusal before replacement.",
+      "excludes": "Healing arithmetic, request admission matrix, accepted wound/world/History publication and broad turn lifecycle.",
+      "changeHints": [
+        "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+        "BookOfEternityClient.Tests/LiveTurnPreparationServiceTests.cs"
+      ],
+      "related": [
+        {
+          "id": "spiritual-healing-lifecycle",
+          "when": "These helper inputs create its actual signed retained-request fixture."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_AfterlifeActiveConflict_AddsCombatPreviewWithAuthorityAndDiceOutcome",
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_RemovesStalePendingDiceStateSoTurnRequestIsOnlyCurrentDiceAuthority",
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts",
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_ExplicitPreparedControlIsDetachedBeforePublicationHook",
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_ForeignPreparedRealmRefusesBeforeReplacingExistingSnapshot"
+          ]
+        }
+      ]
+    },
+    {
       "id": "spiritual-healing-lifecycle",
       "responsibility": "T096/T099 actual retained self-treatment source through signed turn validation and the common normalizer: active success/failure, one natural tick, world cycle, terminal History and no self cost.",
       "excludes": "Source admission matrix already qualified separately, combat/provider/guided UI, full DFR and Windows qualification.",
