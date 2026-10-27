@@ -116,12 +116,13 @@ internal sealed class LiveTurnPreparationService
                 Urgency = "medium",
                 ExpectedResponse = "process the live-test player action through the normal GM turn contract"
             },
-            ProgressionControl = new ProgressionControl
-            {
-                CurrentRealm = currentRealm
-            },
+            ProgressionControl = options.ProgressionControl is { } preparedControl
+                ? JsonSerializer.Deserialize<ProgressionControl>(JsonSerializer.Serialize(preparedControl))!
+                : new ProgressionControl { CurrentRealm = currentRealm },
             SystemReminder = "Prepared by the live-test prepare-turn helper. Use this request as an ordinary player turn and keep all writes inside the game session contract."
         };
+        if (!string.Equals(request.ProgressionControl.CurrentRealm, currentRealm, StringComparison.Ordinal))
+            throw new InvalidDataException("Prepared progression control must identify the actual turn realm.");
         request.AfterlifeSpiritualConflictPreview = await new AfterlifeSpiritualConflictTurnPreviewService(_fs)
             .BuildAsync(
                 writeLease,
@@ -411,6 +412,8 @@ internal sealed class LiveTurnPreparationOptions
     public string PlayerAction { get; init; } = string.Empty;
     public int[]? PreGeneratedDices1d20 { get; init; }
     public string? CurrentRealm { get; init; }
+    /// <summary>Already prepared scheduler DATA; accepted consumers must independently authenticate its source.</summary>
+    public ProgressionControl? ProgressionControl { get; init; }
     public string? Timestamp { get; init; }
 }
 

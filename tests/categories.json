@@ -2,6 +2,37 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "spiritual-healing-lifecycle",
+      "responsibility": "T096/T099 actual retained self-treatment source through signed turn validation and the common normalizer: active success/failure, one natural tick, world cycle, terminal History and no self cost.",
+      "excludes": "Source admission matrix already qualified separately, combat/provider/guided UI, full DFR and Windows qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.cs",
+        "BookOfEternityClient/Services/SpiritualWoundRecoveryPlanner.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeWoundHealingLifecycleTests.cs"
+      ],
+      "related": [
+        {
+          "id": "spiritual-self-treatment-request",
+          "when": "The retained request, draw and source refusal prerequisite is already qualified."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeWoundHealingLifecycleTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "spiritual-self-treatment-source-controls",
       "responsibility": "T104/T108 existing effect snapshot and persisted wound source composition consumers, shared world-time parsing and ordinary prepared scheduler controls.",
       "excludes": "Full effect planner, training rewards, accepted treatment/world/History execution and OS qualification.",

@@ -1,5 +1,29 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Next finite functional block T096/T099/T104–T108 is now active. Three new
+real-filesystem integration cases enter the existing signed validation -> common
+normalizer path: failed active check with one world cycle/natural progress;
+failed active check followed by natural terminal healing at I; successful active
+healing at I without a second heal. They require retained attempt/die in durable
+History and no self resource spend, rather than another admission-only success.
+The lifecycle implementation is still absent; these cases are UNCOMPILED/UNRUN
+pending fixture/SOURCE review and fresh affected Integration ownership build.
+LiveTurnPreparationService gains only an optional detached already-prepared
+ProgressionControl DATA input, so signed fixtures preserve the real scheduler
+control and retained source fingerprint. Existing callers keep realm-only defaults.
+This input grants no publication authority and must match the actual realm.
+
+Finite implementation scope: authenticate the signed retained request once;
+apply active treatment before one natural cycle to eligible wounds; require
+GM-authored legal graphs for computed lower active ranks; compose actual effects,
+profile/resource companions, scheduler/report, History and output in the existing
+common atomic publisher; prove exact/cold replay and rollback with the same draw.
+Keep fresh ownership/integrity/history guards. Existing source admission is closed
+for its qualified scope; do not reopen its matrix or T609/full DFR as a prerequisite.
+Reuse its operation-owned parsed DATA and the existing observed snapshot reader,
+lineage/effect executor, scheduler mutation and common carrier assembler. No new
+cache, diagnostic stack or general transaction framework is planned.
+
 Latest verified bounded result — self-request prerequisite, not a healing session:
 source `33d8aeac818caafe4d695d36ff06e01e16aa5999` freshly built the complete
 selected Unit ownership graph, exit0/75 warnings/0errors in11:40.67. All52 unique
