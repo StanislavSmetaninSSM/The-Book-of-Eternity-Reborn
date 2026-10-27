@@ -58,8 +58,9 @@ public sealed class ExplorerWoundSelfTreatmentTests
         JsonObject? retainedRequest = null;
         TurnRequest? turn = null;
         var responseWritten = false;
+        var diagnostics = new GameEngineTurnLifecycleTests.SpiritualLifecycleTestLogger();
         var runtime = GameEngineTurnLifecycleTests.CreateGameEngineRuntime(fixture.Files,
-            inputSource: new NoPlayerInput(),
+            inputSource: new NoPlayerInput(diagnostics), logger: diagnostics,
             finalizationHooks: new GameEngineSessionFinalizationHooks
             {
                 AtCheckpointAsync = async checkpoint =>
@@ -168,12 +169,12 @@ public sealed class ExplorerWoundSelfTreatmentTests
             { "output/narrative_response.json", "output/interface_updates.json", "output/debug_logs.json", ProgressionScheduleService.ReportPath } });
     }
 
-    private sealed class NoPlayerInput : IConsoleInputSource
+    private sealed class NoPlayerInput(GameEngineTurnLifecycleTests.SpiritualLifecycleTestLogger diagnostics) : IConsoleInputSource
     {
         public bool IsScripted => true;
         public bool KeyAvailable => false;
-        public ConsoleKeyInfo ReadKey(bool intercept = true) => throw new InvalidOperationException("Unexpected interactive input in browser self-treatment.");
-        public string? ReadLine() => throw new InvalidOperationException("Unexpected interactive input in browser self-treatment.");
+        public ConsoleKeyInfo ReadKey(bool intercept = true) => throw new InvalidOperationException("Unexpected interactive input in browser self-treatment.\n" + diagnostics.Describe());
+        public string? ReadLine() => throw new InvalidOperationException("Unexpected interactive input in browser self-treatment.\n" + diagnostics.Describe());
         public void AssertCompleted() { }
     }
 }

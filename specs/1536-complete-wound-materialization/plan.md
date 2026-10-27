@@ -1,5 +1,16 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+The pre-turn refusal's actual domain issues were discarded by the fixture's
+NullLogger; retained raw/TRX only show the display/input stack, so no field-level
+cause is established. Reuse EXISTING SpiritualLifecycleTestLogger via the actual
+runtime named logger and include its complete Describe() in the existing
+unexpected-input exception. No production, input acceptance, validator, fixture
+seed, budget or selector change. This finite evidence correction needs SOURCE,
+test-only Integration refsfalse build and same guided2 workload to expose the
+original error once; no new diagnostics framework or general audit. Do not seed
+speculative defaults or call a failed setup semanticRED. Source/contract PASS
+and independent backend proof remain retained.
+
 First actual guided2 on clean e6e5/compiled1d completed2/2: cancellationPASS,
 confirmedFAIL before actual staging/nativeGM hook. PlanOnly2/1descriptor8.9110647s;
 actual30.0451778s/category17.4288124<180, no timeout/duplicates, bothcleanuptrue;
