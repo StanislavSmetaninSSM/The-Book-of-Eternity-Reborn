@@ -1,5 +1,20 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+US4 guided contract gate now actualPASS on clean cfb2e8d8: fresh Unit-only
+refsfalse build0errors/26warnings/2:06.40; Unitbefde520899dcf5989b3faa2da60beb7aad216848d9e9ee55c9de12cb67163ef.
+Main/Support master+copies and Integration remain owning1d, unchanged. Independent
+narrow SOURCE/PREP accepted the test-only actual-output oracle correction.
+PlanOnly exact10/1descriptor9.7284917s; actual10/10PASS16.2249444s,
+category7.4997597/120s, no skip/duplicates/timeout, bothcleanuptrue;
+TRXdc46b8f2e1a4c654b2220eebd488d1cc0c9b490e1848ccb55862b67411dd39c9.
+The actual graph output/registry/refresh/ordinary absence assertions now execute.
+Retain prior source1+boundary2+regression33 PASS without repeat; previous oracle
+failure remains recorded. Raw guided-transport-build-1/guided-contract-green-1
+external. Next first actual guided2 on unchanged fresh Integration after exact
+PlanOnly; no provider/freshprocess/console or postpublication graph-I claim.
+Optimization: no production change/recomputation added; corrected oracle reads
+the output actually written by the same awaited distributor operation.
+
 Corrected source guard now actualPASS on a770: Unit-only fresh build0errors/
 26warnings/1:44.83, Unit6f163aa172a79c56bb5f102baba81eb08d090cef49c793c7b0a073ae1bd3454e,
 Main/Support copies match unchanged owning1d. Cheap2 PlanOnly exact11/2descriptors;
