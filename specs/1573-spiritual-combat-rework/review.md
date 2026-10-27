@@ -169,4 +169,15 @@ validator. Ни unlimited mortal mastery, ни старые I–V не пере�
 
 Документационные изменения, без runtime/тестов/новой диагностики. Оптимизация —
 те же immutable definitions и общий operation service; никаких новых исполняемых
-затрат или заявлений об ускорении. Независимое review и consistency среза pending.
+затрат или заявлений об ускорении. Срез57934d7c29968b2cbf9cdca3e0f9aa2105a45543
+опубликован, remote SHA и GitHub readback spec подтверждены. Independent reviewer
+/root/review_combat_system_v2_1573 (gpt-6-astra/high), diffef74754c…57934d7c:
+P1/P2 нет. Review подтвердило правильную атрибуцию решений, отсутствие обязательства
+сохранять старые механики и разделение definition/владения/instance. Открытое
+уточнение личной ревизии развиваемой definition явно записано в кандидате.
+
+Consistency: spec AC14 и актуальный кандидат согласуют свободные действия,
+arts-migration исторический; D6/D7 и gate plan/tasks отражают пересмотр. Старый
+implementation inventory не переобъявлен готовым. Prerequisites указал feature1573,
+diff-check успешен, все12 Markdown имеют разрешающиеся локальные ссылки.
+Новая точная spec не утверждена; runtime/build/balance/clean restore UNRUN.
