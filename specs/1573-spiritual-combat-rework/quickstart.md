@@ -17,6 +17,9 @@
 | Barrier/max HP | Изменение max не лечит; барьер не permanent health |
 | AoE | Base cost один раз, targets до костей, личные defense/reaction/results |
 | Mid-round join/revive | Нет лишнего main/reaction, стабильный порядок/clocks |
+| Duplicate actor / leave-rejoin | Два participantId одного owner отвергнуты; rejoin не сбрасывает прежние слоты |
+| Несколько reaction decisions | Первый response уже занимает слот/AP; второй не резервирует его повторно, reload/отмена не теряют commitment |
+| AoE+cover collision | Уже включённый в AoE protector не принимает второй прямой hit; original/effective targets и контроль Приговора различаются |
 | NPC intent/dice | Нельзя выбрать action/target после просмотра бросков; repair не перебрасывает |
 | Pending reaction | GM segment закончен, урон не применён, обычная команда заблокирована |
 | Duplicate submit | Exact repeat без двойного расхода; changed/stale response отвергнут |

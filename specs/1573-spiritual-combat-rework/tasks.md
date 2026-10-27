@@ -69,6 +69,13 @@ T020–T023 после contracts/lifecycle; console/frontend работа пар
 
 ## Coverage map
 
+Уточнения независимого review (обязательны в соответствующих задачах):
+T009/T010 — duplicate exact actor binding и leave/rejoin без сброса budgets;
+T014/T015 — durable slot/AP commitments, multi-decision/reload/cancellation,
+однократный consume/release без второго ledger;
+T009/T010/T016/T017 — AoE+cover collision, original/effective targets,
+детерминированные attack/defense reservations и контроль Приговора по фактической цели.
+
 AC1 T004–T008/T020–T022; AC2 T009–T011/T016–T017; AC3 T004/T008/T014–T015/T018;
 AC4 T006–T011/T014–T015/T024; AC5 T012–T013/T017–T019;
 AC6 T008/T014–T015/T020–T025; AC7 T020–T023/T026;

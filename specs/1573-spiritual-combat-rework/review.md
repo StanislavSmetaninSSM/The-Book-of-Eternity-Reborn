@@ -44,4 +44,27 @@ Parent consistency по spec/plan/tasks/gameplay/data-model/commands/arts вып
 не автоматическое доказательство смысловой корректности. `git diff --check` успешен.
 Смысловой анализ выполнен чтением и таблицей выше, а не лишь наличием файлов.
 
-Независимое review отдельным Astra/high контекстом — следующий шаг до завершения блока.
+Независимое review: `/root/review_spiritual_combat1573_v1`, явно выбранные
+`gpt-6-astra/high`, отдельный контекст. Exact block
+`874714c558ac250fb2984c471be205ab5b731ca9..a8c24ebc8ea3aad2731a821bd0779ed0d6e18613`.
+Проверены docs и связанные C# через Serena; никаких builds/tests.
+P1 нет; три P2 перед утверждением/реализацией:
+
+1. Duplicate participant IDs одного actor могли дать две очереди — добавлена
+   инъективность owner binding и сохранение spent slots при rejoin/смене стороны.
+2. AoE собирала ответы до оплаты без durable commitment — добавлены канонические
+   обязательства slot/AP, available=current−unpaid commitments, atomic consume/
+   release, reload и запрет оплачивать будущим Gain, без второго resource ledger.
+3. Прикрытие цели AoE уже включённым защитником не имело исхода — кандидат D5
+   явно запрещает collision, хранит original/effective, отличает defense/dice
+   и условие Приговора. Это предложение правил, не их утверждение за автора.
+
+Quickstart/tasks дополнены причинными случаями. Родитель сверил findings и
+изменил docs; scoped recheck поправок ещё ожидается. Reviewer считает draft
+основой для обсуждения, не доказательством runtime readiness.
+
+Checkpoint a8c24ebc8 опубликован; remote SHA и GitHub file readback подтверждены.
+Clean restore не выполнялся. Обновлённая редакция будет опубликована после поправок.
+Оценка маршрутизации: две профильные консультации + одно архитектурное review
+выявили неэквивалентный перенос искусства и три конкретных пробела; данных о
+денежной/токенной экономии нет, ослаблять independent review оснований нет.
