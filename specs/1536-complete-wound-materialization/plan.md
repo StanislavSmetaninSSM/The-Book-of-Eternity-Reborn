@@ -1,3 +1,25 @@
+# Full DFR positive: timeout, partial analysis pending
+
+One independently admitted Linux singleton ran at runtime
+`964c1096bab43c92334546ccbc119ac831e94a77`, compiled Integration 408 and
+four unchanged F6 owners. Exact fr063-joint-live-n-source-unchanged category
+reached 300.1806894 seconds / original 300 seconds, exit 124 / timeout. Runner
+elapsed 325.6537196 seconds; its outer 10-minute lane text is not the category
+budget. Zero completed cases, no TRX, no final report or functional PASS.
+Both official process cleanup flags are true; testhost PID 2463 is ended/zombie.
+The actual marked fixture root remains at
+`/tmp/boe-gameengine-turnlifecycle-b0f70ff160ca427a9a54a709a3d09a71`.
+External `actual-dfr-t608-positive-1` holds original incomplete gzip of 222,784,708
+bytes, initial identity, runner output and summary. Keep this and all prior evidence.
+
+Next is one streaming read-only partial analysis of existing named events, using
+only the accepted T607 analyzer with three path substitutions, then independent
+OUTCOME. The partial prefix cannot prove completed functional assertions, complete
+EOF/CRC, cleanup or the exact operation active when the timeout occurred. Do not
+increase limits, rerun blindly, truncate diagnostics or start legacy/cold dependents.
+The original five-case Linux qualification and 69-case component lineage remain
+separate accepted evidence; full DFR, Windows and overall materialization stay open.
+
 # Full DFR positive preparation — verifier accepted, runtime pending
 
 Runtime base `6264b77003c302bebd78538fe44995109b837f4c`; the accepted
