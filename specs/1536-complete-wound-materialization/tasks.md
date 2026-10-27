@@ -14385,8 +14385,8 @@ close full source-action/terminal/pending contracts or any top-level story task.
   including final wound, one cycle, terminal History, cleanup and no self cost;
   owner/output controls pass2/2. Actual console cancel/confirm/same Engine
   publication and settled repeat now pass1/1 on7b (43.1600290s; controlled native
-  completion, not provider/fresh-process). Full T101 remains open for actual graph-bearing caller/repair,
-  graph-bearing caller/repair and shared NPC/command/roleplay integration;
+  completion, not provider/fresh-process). Full T101 remains open for actual graph-bearing caller/repair
+  and shared NPC/command/roleplay integration;
   same-PID service reopen is not fresh-process replay.
   See current plan for exact source, builds, evidence and limitations.
   The accepted T094-linked prerequisite (`4711d6a8`) adds unused
@@ -14396,7 +14396,7 @@ close full source-action/terminal/pending contracts or any top-level story task.
   and shared self/NPC/command/roleplay/service integration.
   Registration follow-through now implements shared self selection/confirmation,
   console/browser aliases and current self-only help wording with GM transport.
-  Actual browser flow is qualified above; actual console and the existing focused
+  Actual browser and console flows are qualified above; the existing focused
   help assertions remain part of the next finite follow-through. Tier-zero known
   inspection, mastered-tier treatment and combat/out-of-combat cost distinction
   remain separate; helper/entity/combat treatment is not enabled by this self slice.

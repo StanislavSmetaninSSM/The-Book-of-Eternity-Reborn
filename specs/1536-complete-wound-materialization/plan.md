@@ -1,5 +1,27 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Actual graph/repair scaffold WIP, UNCOMPILED/UNRUN. One rankIII/H5 console case
+uses the actual client draw and destinationGraphs from its actual TurnRequest.
+The controlled GM first omits graphs, then authors explicit lawful II roll+cost1
+and/or I roll definitions for exactly requested refs. No automatic client
+survivor choice. A physical publication hook compares its exact resolved repair
+path and only signals a TCS; the GM task acquires its own lease after dispatch,
+reads the real packet, verifies signed request/manifest/authority/turn bytes and
+unchanged prepared canonical state, then writes graphs and matching repair-ready.
+On GM task failure, typed Escape lets the real Engine finish repair-wait cleanup
+before the original failure propagates. Main Engine task is always awaited; GM
+wait is canceled and joined in finally, including early caller return. No detached
+Engine timeout or polling framework. Successful result must retain one attempt/
+draw, exact authored stage summaries/cost1, final wound-or-heal state derived
+from strict retained stages, one cycle, consumed control/report and no cost.
+New exact graph-repair1 category180s; production, default runtime and earlier
+browser/console/direct-graph bodies unchanged. Optimization: one owned real Engine
+fixture is necessary for the missing caller+repair contract; reuses existing
+fixture/completion/typed services. No cache or speedup claim. Finite SOURCE then
+Integration-only refsfalse build, exact new case PlanOnly/actual; existing passed
+gates retained by unchanged dependencies. Final affected regressions remain open.
+
+
 Console7b actual1/1 PASS after independent SOURCE/PREP and fresh Integration-only
 refsfalse build0errors/105warnings/2:45.45; Mainf53b2c2d/Support4d0dc57c and all
 copies unchanged, Integrationdacdb163. OfficialPlanOnly1case/1descriptor/0executed
@@ -10,7 +32,7 @@ console cancel, confirm, actual same-Explorer/Engine publication and settled
 repeat. All final wound/History/retained request/one-cycle/no-cost/one-shot
 assertions executed. This is actual console handler with controlled native-shaped
 GM completion, not external provider or fresh-process qualification. Browser2
-retained by unchanged default path/body/dependencies. Independent OUTCOME pending.
+retained by unchanged default path/body/dependencies. Independent Sol console OUTCOME accepted.
 Next: rankIII/H5 actual graph-bearing caller and ordinary same-attempt repair;
 then selected final affected gates. Mortal/T609/fullDFR/Windows HOLD unchanged.
 

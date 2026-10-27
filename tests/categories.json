@@ -2,6 +2,36 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-healing-actual-graph-repair",
+  "responsibility": "One real rank-III/tier-V console self-treatment caller with a real retained client draw: missing GM-authored destination graphs request ordinary repair; exact original/attempt stays fixed, authored graphs then publish wound/effects/History/one cycle/no cost.",
+  "excludes": "External GM providers, fresh-process recovery, helper/entity/combat treatment, broad admission matrices, performance diagnostics and held Mortal work.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualSelfTreatment.cs"
+  ],
+  "related": [
+    {
+      "id": "spiritual-healing-authored-graphs",
+      "when": "Retain separately qualified direct graph grammar and consumed-source interface semantics unless production dependencies change."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ActualGraphBearingSelfTreatmentRepairsGraphsWithoutChangingItsAttempt"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-healing-console-self",
   "responsibility": "One actual console /лечить cancellation, confirmation and settled repeat through the same Explorer supplied to GameEngine; real pre-snapshot staging, controlled native-shaped completion, wound/History/one-cycle/no-cost publication without a browser queue.",
   "excludes": "Browser qualification, real GM provider, fresh-process recovery, graph-bearing repair, other wound families and held Mortal/performance workloads.",

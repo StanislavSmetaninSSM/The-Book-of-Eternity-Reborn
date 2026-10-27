@@ -20,6 +20,207 @@ public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
     private const string Owner = "wound-guided-client";
 
     [Fact]
+    public async Task ActualGraphBearingSelfTreatmentRepairsGraphsWithoutChangingItsAttempt()
+    {
+        const string repairPath = "game_state/control/validation_repair_request.json";
+        const string readyPath = "game_state/control/validation_repair_ready.json";
+        var repairPublished = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var diagnostics = new GameEngineTurnLifecycleTests.SpiritualLifecycleTestLogger();
+        var input = new RepairPlayerInput(diagnostics);
+        string? physicalRepairPath = null;
+        var repairCount = 0;
+        await using var fixture = await HealingFixture.CreateAsync(3, 5, 20, stageRequest: false,
+            hooks: new FileSystemManagerHooks
+            {
+                AfterPhysicalFilePublishedAsync = path =>
+                {
+                    if (path == physicalRepairPath)
+                    {
+                        if (Interlocked.Increment(ref repairCount) == 1) repairPublished.TrySetResult(true);
+                        else input.RequestEscape();
+                    }
+                    return Task.CompletedTask;
+                }
+            });
+        physicalRepairPath = fixture.Files.ResolvePath(repairPath);
+        var original = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
+        var console = new TestExplorerConsole();
+        console.QueueAnySelection("1. " + WoundPlayerProjection.Text(original.Display.Name) + " — III");
+        console.QueueAnyConfirmResponse(true);
+        TurnRequest? turn = null;
+        JsonObject? retainedRequest = null;
+        Dictionary<string, byte[]>? retainedSources = null;
+        Dictionary<string, byte[]?>? unpublished = null;
+        JsonArray? authoredGraphs = null;
+        var responseWritten = false;
+        var repaired = false;
+        var runtime = GameEngineTurnLifecycleTests.CreateGameEngineRuntime(fixture.Files,
+            inputSource: input, logger: diagnostics, explorerConsole: console,
+            finalizationHooks: new GameEngineSessionFinalizationHooks
+            {
+                AtCheckpointAsync = async checkpoint =>
+                {
+                    if (checkpoint != SessionFinalizationCheckpoint.TerminalWaitStarted || responseWritten) return;
+                    await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+                    turn = JsonSerializer.Deserialize<TurnRequest>((await fixture.Files.ReadFileAsync(lease, "input/turn_request.json"))!,
+                        SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+                    var healing = Assert.IsType<JsonObject>(turn.SpiritualHealing);
+                    Assert.Equal(5, healing["healingTier"]!.GetValue<int>());
+                    Assert.NotEmpty(healing["destinationGraphs"]!.AsArray());
+                    retainedSources = new(StringComparer.Ordinal);
+                    foreach (var path in new[] { "input/turn_request.json", LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+                                 PendingTurnSnapshotAuthority.AuthorityPath, AcceptedMechanicsPlan.WoundCommandPath })
+                        retainedSources.Add(path, (await fixture.Files.ReadFileBytesAsync(lease, path))!);
+                    retainedRequest = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(
+                        retainedSources[AcceptedMechanicsPlan.WoundCommandPath]))!.AsObject();
+                    Assert.Null(retainedRequest["snapshotToken"]);
+                    Assert.Single(retainedRequest["attempt"]!["roll"]!["values"]!.AsArray());
+                    Assert.True(JsonNode.DeepEquals(retainedRequest["attempt"]!["roll"], healing["roll"]));
+                    // The controlled GM first omits required authored graphs; it never changes the client draw.
+                    await WriteNativeCompletionAsync(fixture.Files, lease, turn);
+                    unpublished = fixture.CaptureMutationRoots();
+                    responseWritten = true;
+                }
+            });
+        using var stop = new CancellationTokenSource();
+        var gmRepair = Task.Run(async () =>
+        {
+            try
+            {
+                await repairPublished.Task.WaitAsync(stop.Token);
+                await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+                var repair = JsonNode.Parse((await fixture.Files.ReadFileAsync(lease, repairPath))!)!.AsObject();
+                Assert.NotNull(turn);
+                Assert.Equal(turn!.SessionId, repair["sessionId"]!.GetValue<string>());
+                Assert.Equal(turn.RequestId, repair["requestId"]!.GetValue<string>());
+                Assert.Equal(turn.TurnNumber, repair["turnNumber"]!.GetValue<int>());
+                var issue = Assert.Single(repair["errors"]!.AsArray());
+                Assert.Equal("spiritual_self_treatment_admission_invalid", issue!["code"]!.GetValue<string>());
+                Assert.Contains("GM-authored spiritual destination graphs are required", issue["actual"]!.GetValue<string>());
+                Assert.False(repair["fullTurnResubmissionRequired"]!.GetValue<bool>());
+                foreach (var pair in retainedSources!)
+                    Assert.Equal(pair.Value, await fixture.Files.ReadFileBytesAsync(lease, pair.Key));
+                fixture.AssertMutationRootsUnchanged(unpublished!);
+                authoredGraphs = AuthorRequestedGraphs(original, turn.SpiritualHealing!["destinationGraphs"]!.AsArray());
+                await fixture.Files.WriteFileAtomicAsync(lease, "output/interface_updates.json", new JsonObject
+                {
+                    ["dialogueOptions"] = new JsonArray(), ["spiritualHealingGraphs"] = authoredGraphs.DeepClone(),
+                    ["timestamp"] = DateTime.UtcNow.ToString("o")
+                }.ToJsonString());
+                await fixture.Files.WriteFileAtomicAsync(lease, readyPath, JsonSerializer.Serialize(new
+                {
+                    sessionId = turn.SessionId, requestId = turn.RequestId, turnNumber = turn.TurnNumber,
+                    updatedAtUtc = DateTime.UtcNow.ToString("o"), note = "Добавлены только запрошенные ослабленные последствия."
+                }, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+                repaired = true;
+            }
+            catch (OperationCanceledException) when (stop.IsCancellationRequested) { }
+            catch
+            {
+                input.RequestEscape(); // Let the actual repair wait finish its owned cleanup before surfacing the fixture fault.
+                throw;
+            }
+        });
+        try
+        {
+            runtime.GameLoop.SetSession("session_graph_repair_spiritual_healing", 42);
+            await runtime.StateManager.RefreshGameStateAsync();
+            var action = await runtime.Explorer.TryProcessCommand("/лечить");
+            Assert.Equal(WoundApplicationService.ActionText, action);
+            await runtime.Engine.ProcessPlayerTurn(action!);
+            Assert.True(responseWritten, "The graph-bearing caller did not reach its controlled GM response.");
+            Assert.True(repairPublished.Task.IsCompletedSuccessfully, "The actual caller returned without requesting graph repair.");
+            await gmRepair;
+            Assert.True(repaired);
+            Assert.Equal(1, repairCount);
+            var history = await fixture.ReadHistoryAsync();
+            var attempt = Assert.Single(history.Transitions, t => t.AttemptId is not null);
+            var result = Assert.IsType<SpiritualHealingPersistedResult>(attempt.TransitionResult);
+            Assert.True(JsonNode.DeepEquals(retainedRequest, result.ToCanonicalJson()["request"]));
+            var last = result.Stages[^1].After;
+            var wounds = (await fixture.ReadWoundsAsync()).Occurrences;
+            if (last.Lifecycle == "healed")
+            {
+                Assert.Empty(wounds);
+                Assert.Single(history.Transitions, t => t.Terminal);
+            }
+            else
+            {
+                Assert.Equal(WoundMaterializationContract.SerializeCanonical(last),
+                    WoundMaterializationContract.SerializeCanonical(Assert.Single(wounds).Wound));
+                Assert.DoesNotContain(history.Transitions, t => t.Terminal);
+            }
+            foreach (var graph in authoredGraphs!)
+            {
+                var rank = turn!.SpiritualHealing!["destinationGraphs"]!.AsArray().Single(g =>
+                    g!["stageRef"]!.GetValue<string>() == graph!["stageRef"]!.GetValue<string>())!["severityRank"]!.GetValue<int>();
+                var stage = result.Stages.First(s => s.After.Severity.Rank == rank);
+                Assert.All(stage.After.Consequences.Entries, e => Assert.Equal("Последствие ослаблено Мастером для этой попытки.", e.ReadableSummary));
+                if (rank == 2)
+                {
+                    Assert.Contains(stage.After.Consequences.Entries, e => e.ProfileKey == "spiritual_action_cost_burden");
+                    var cost = stage.After.Consequences.OwnedEffectSources.Definitions
+                        .SelectMany(d => d.GetProperty("components").EnumerateArray())
+                        .Single(c => c.GetProperty("profile").GetString() == "spiritual_action_cost_burden");
+                    Assert.Equal(1m, cost.GetProperty("payload").GetProperty("magnitude").GetDecimal());
+                }
+            }
+            var schedule = JsonNode.Parse((await fixture.Files.ReadFileAsync(ProgressionScheduleService.SchedulePath))!)!;
+            Assert.Equal(1, turn!.ProgressionControl!.ChaosSeaCyclesExpectedThisTurn);
+            Assert.Equal(turn.ProgressionControl.NextChaosSeaTurnOrdinal, schedule["currentChaosSeaTurnOrdinal"]!.GetValue<int>());
+            foreach (var path in new[] { repairPath, readyPath, AcceptedMechanicsPlan.WoundCommandPath, ProgressionScheduleService.ReportPath })
+                Assert.Null(await fixture.Files.ReadFileBytesAsync(path));
+            Assert.Null(await fixture.Files.ReadFileBytesAsync(PendingPlayerActionService.PendingPath));
+            fixture.AssertResourcesUnchanged();
+        }
+        finally
+        {
+            stop.Cancel();
+            try { await gmRepair; }
+            finally
+            {
+                output.WriteLine(diagnostics.Describe());
+                await runtime.AudioService.DisposeAsync();
+            }
+        }
+    }
+
+    private static JsonArray AuthorRequestedGraphs(WoundMaterializationEnvelope original, JsonArray requests)
+    {
+        var graphs = new JsonArray();
+        foreach (var request in requests)
+        {
+            var rank = request!["severityRank"]!.GetValue<int>();
+            Assert.InRange(rank, 1, 2);
+            var definitions = new JsonArray();
+            var profiles = rank == 2
+                ? new[] { "spiritual_roll_hindrance", "spiritual_action_cost_burden" }
+                : new[] { "spiritual_roll_hindrance" };
+            foreach (var profile in profiles)
+            {
+                var rootId = original.Consequences.Entries.First(e => e.ProfileKey == profile).EffectId;
+                var binding = original.Consequences.OwnedEffectSources.RootBindings.Single(b => b.EffectId == rootId);
+                var definition = JsonNode.Parse(original.Consequences.OwnedEffectSources.Definitions.Single(d =>
+                    d.GetProperty("definitionKey").GetString() == binding.DefinitionKey).GetRawText())!.AsObject();
+                definition["links"] = new JsonArray();
+                if (profile == "spiritual_action_cost_burden") definition["components"]![0]!["payload"]!["magnitude"] = 1;
+                definitions.Add(new JsonObject
+                {
+                    ["definitionRef"] = binding.DefinitionKey, ["definition"] = definition,
+                    ["root"] = new JsonObject
+                    {
+                        ["ownership"] = new JsonObject { ["kind"] = "base_wound", ["complicationRef"] = null },
+                        ["slots"] = new JsonArray(new JsonObject { ["profileKey"] = profile,
+                            ["readableSummary"] = "Последствие ослаблено Мастером для этой попытки." })
+                    }
+                });
+            }
+            graphs.Add(new JsonObject { ["stageRef"] = request["stageRef"]!.DeepClone(), ["consequenceDefinitions"] = definitions });
+        }
+        return graphs;
+    }
+
+    [Fact]
     public async Task ConsoleCancellationAndConfirmationUseTheSameExplorerAndActualGameEngine()
     {
         await using var fixture = await HealingFixture.CreateAsync(1, 1, 20, stageRequest: false);
@@ -263,5 +464,19 @@ public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
         public ConsoleKeyInfo ReadKey(bool intercept = true) => throw new InvalidOperationException("Unexpected interactive input in browser self-treatment.\n" + diagnostics.Describe());
         public string? ReadLine() => throw new InvalidOperationException("Unexpected interactive input in browser self-treatment.\n" + diagnostics.Describe());
         public void AssertCompleted() { }
+    }
+
+    private sealed class RepairPlayerInput(GameEngineTurnLifecycleTests.SpiritualLifecycleTestLogger diagnostics) : IConsoleInputSource
+    {
+        private readonly NoPlayerInput _otherwise = new(diagnostics);
+        private int _escape;
+        internal void RequestEscape() => Interlocked.Exchange(ref _escape, 1);
+        public bool IsScripted => true;
+        public bool KeyAvailable => Volatile.Read(ref _escape) != 0;
+        public ConsoleKeyInfo ReadKey(bool intercept = true) => Interlocked.Exchange(ref _escape, 0) != 0
+            ? new ConsoleKeyInfo('\0', ConsoleKey.Escape, false, false, false)
+            : _otherwise.ReadKey(intercept);
+        public string? ReadLine() => _otherwise.ReadLine();
+        public void AssertCompleted() => _otherwise.AssertCompleted();
     }
 }
