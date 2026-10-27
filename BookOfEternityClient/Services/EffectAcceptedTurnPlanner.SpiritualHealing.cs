@@ -57,13 +57,20 @@ internal static partial class EffectAcceptedTurnPlanner
     private static EffectAcceptedTurnPlanningResult BuildSpiritualHealing(EffectAcceptedTurnInput input,
         WoundPreparedAcceptedTurnPlan prepared, EffectIdentityFactory identityFactory)
     {
-        if (prepared.SpiritualHealingContinuationAuthority is not AfterlifeWoundHealingPlanner.Continuation owner ||
-            !owner.PreparedAgrees(prepared) || !WoundAcceptedTurnPlannerCore.EffectInputAgreesWithPrepared(prepared, input) ||
-            !owner.EffectInputAgrees(prepared, input))
-            return Failed(new[] { SpiritualHealingIssue("Foreign or changed spiritual effect preparation.") });
-        owner.RequireExecutionCurrent();
-        return BuildCore(input, WoundAcceptedTurnFingerprints.ComputeEffectInput(prepared, input), identityFactory,
-            Array.Empty<WoundApplicationRequest>(), Array.Empty<WoundTerminalRequest>(), spiritualHealingPrepared: prepared);
+        try
+        {
+            if (prepared.SpiritualHealingContinuationAuthority is not AfterlifeWoundHealingPlanner.Continuation owner ||
+                !owner.PreparedAgrees(prepared) || !WoundAcceptedTurnPlannerCore.EffectInputAgreesWithPrepared(prepared, input) ||
+                !owner.EffectInputAgrees(prepared, input))
+                return Failed(new[] { SpiritualHealingIssue("Foreign or changed spiritual effect preparation.") });
+            owner.RequireExecutionCurrent();
+            return BuildCore(input, WoundAcceptedTurnFingerprints.ComputeEffectInput(prepared, input), identityFactory,
+                Array.Empty<WoundApplicationRequest>(), Array.Empty<WoundTerminalRequest>(), spiritualHealingPrepared: prepared);
+        }
+        catch (Exception failure) when (failure is InvalidDataException or InvalidOperationException or ArgumentException or JsonException or OverflowException)
+        {
+            return Failed(new[] { SpiritualHealingIssue(failure.Message) });
+        }
     }
 
     private static SpiritualHealingExecutionProof? ExecuteSpiritualHealing(EffectAcceptedTurnInput input,

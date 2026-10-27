@@ -110,8 +110,8 @@ internal static class AfterlifeWoundHealingPlanner
 
         internal WoundPreparedAcceptedTurnPlan Prepare()
         {
-            _files.EnsureCanonicalWriteLeaseActive(_lease);
-            _original.RequireOwner(_files, _lease, _snapshot);
+            // Reconstruct frozen DATA for copies as well as initial preparation.
+            // Execution and publication re-prove the actual owner separately.
             var input = Input;
             var fingerprint = WoundAcceptedTurnFingerprints.ComputeInput(input);
             var baseline = WoundAcceptedTurnPlannerCore.CreateBaselineAuthority(fingerprint, input);

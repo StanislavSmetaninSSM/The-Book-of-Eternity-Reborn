@@ -1,5 +1,13 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Finite SOURCE/PREP now permits the fresh owning build and exact five-case
+owned-fixture causal workload. Prepared-plan reconstruction is frozen DATA only,
+so detached bundle/getter copies remain valid after the original lease closes;
+actual effect execution and publication retain fresh owner/source/lease checks.
+Ordinary stale execution errors become the same structured family refusal as
+Mortal. Two retained-source guards below remain intentionally OPEN for causal RED;
+this release does not constitute production acceptance. No build/runtime yet.
+
 Finite connected SOURCE review of b3c1801e6 found seven concrete groups:
 mandatory signed-original family dispatch, original resource quartet coverage,
 same-rank spiritual slot ordering, uncertainty after committed union/readback,
