@@ -3,13 +3,16 @@
     "categories": [
     {
       "id": "core-joint-function-lifetime-tree",
-      "responsibility": "T608 TREE-RED tests-first singleton: actual FileSystemManager BeginOrdinaryReadPathPhase and returned Dispose, real active/closed owner state and four original factory/lifetime events, SAME observation queue carrying original ScopeId, full source/tick/queue/writer/gzip/hash/root prerequisites BEFORE final old strict-global-reader OpenPhase/Phase mismatch.",
-      "excludes": "No Initialize, GameEngine/world/native/lease/issuer/fake owner or NamedEvent, no Phase exemption or function/lifetime GREEN marker, no production/cache/authority/recorders/writers/codec/17field/time/budget/quota change, new consumer or general lifetime framework. Null phase/setup/noncompile/storage/closing failure is not causal RED. Real GREEN negatives and genuine COPY/CANDIDATE remain separately gated.",
+      "responsibility": "T608 TREE-GREEN: actual returned ordinary-read phase factory/disposal, exact same-window source identity, strict lexical function stack plus only the documented linked returned Phase lifetime; independent actual lifetimes, unrelated crossing/incomplete refusal, sliced IDs, original all-zero legacy behavior and finite malformed detached DATA negatives. Full source/tick/queue/writer/gzip/hash/root prerequisites remain.",
+      "excludes": "No Initialize, GameEngine/world/native/lease/issuer/fake owner or NamedEvent, no general lifetime exemption/framework, production/cache/authority/recorder/writer/codec/17field/time/budget/quota changes. Legacy all-zero DATA gains no source identity; mixed IDs and unknown crossings refuse. Genuine COPY/CANDIDATE require separate qualification.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.OrdinaryPhaseTree.cs",
         "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.cs",
         "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.PassiveTimings.cs",
-        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.AdmissionTimings.cs"
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.AdmissionTimings.cs",
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.AdmissionTimingTree.cs",
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.TimingTreeControls.cs",
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.HeavyTimings.cs"
       ],
       "related": [
         {
@@ -44,7 +47,11 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.JointBundleComponentTests.OrdinaryReadPathReturnedPhase_PreservesRecordedTreeContract"
+            "BookOfEternityClient.Tests.JointBundleComponentTests.OrdinaryReadPathReturnedPhase_PreservesRecordedTreeContract",
+            "BookOfEternityClient.Tests.JointBundleComponentTests.TimingTree_IndependentReturnedPhasesKeepExactFactoryLinks",
+            "BookOfEternityClient.Tests.JointBundleComponentTests.TimingTree_ActualFunctionCrossingAndLegacyCrossingStillRefuse",
+            "BookOfEternityClient.Tests.JointBundleComponentTests.TimingTree_IncompleteActualLifetimeRefusesBeforeGuaranteedDispose",
+            "BookOfEternityClient.Tests.JointBundleComponentTests.TimingTree_SlicedIdsLegacyAndMalformedDetachedDataStayStrict"
           ]
         }
       ]

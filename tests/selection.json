@@ -325,9 +325,9 @@
     },
     {
       "category": "core-joint-function-lifetime-tree",
-      "reason": "T608 TREE-RED only: real returned ordinary-read phase producer plus unchanged strict-global tree reader, exact same-window original ScopeIds retained in the existing queue (legacy0 unavailable), complete source4/storage/root prerequisites before final OpenPhase/Phase mismatch. No producer timing/guard/default or genuine functional-body/reader-GREEN change.",
+      "reason": "T608 TREE-GREEN after accepted actual producer RED: same-queue positive source IDs validate strict functions and the one documented returned Phase/factory lifetime; four finite controls preserve unknown crossing/incomplete/mixed-ID refusal, legacy strict behavior and sliced IDs. All original functional chains and fresh guards remain; genuine runs separately gated.",
       "contracts": [
-        "#1536 T608-COPY-TREE-RED / COPYOBS7; actual returned lifetime causal proof before strict-function/lifetime correction"
+        "#1536 T608-COPY-TREE-GREEN / COPYOBS7; strict functions plus exact returned lifetime, all rows retained and consumed"
       ]
     }
   ]

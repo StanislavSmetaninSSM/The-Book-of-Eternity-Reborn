@@ -1,3 +1,13 @@
+# T608 function/lifetime GREEN source frozen — UNCOMPILED / UNRUN
+
+The coherent seven-path block is frozen: five Integration C# paths saved in c55a0e0b1cb46e579bd95178166c9656ef24effd plus only the existing tree owner's catalog/CI metadata. Static proof passes three whole-file inverses to46fcb3970bc01de492b5c27b5c3504f29a785fe6, the byte-exact legacy reader/public producer prerequisites and eight protected whole files. All other category objects and CI IDs remain exact; catalog967/CI47. The existing one-minute tree owner now has five cases; affected unchanged range3/tail1/output2 add six separately staged controls.
+
+Recorded DATA now validates strict function name/ID nesting and only the existing returned OrdinaryReadPath.Phase's exact factory/creation/return/disposal lifetime. Increasing begin IDs need not be contiguous or start at one. All rows and pairs remain required; unknown crossings, mixed/reused/foreign/missing identities, absent factory and early/incomplete close refuse. Legacy all-zero retains its original strict interpretation. Required admission/heavy/QTE chains and all production/default/source/authority/functional guards remain unchanged.
+
+Optimization assessment: reuse the same owned queue/window and original ScopeId scalar, no new cache/recorder/writer or production read. Parsing remains O(n), with value function frames and invocation-local lifetime bookkeeping; the existing added8-byte queue identity and parser allocations have real cost, no speedup or whole-budget fit is claimed. Full original17-field events/clocks and lossless gzip remain. The affected external marker consumer is separately versioned; historical E13 stays frozen. No game/GM contract or prompt/example change.
+
+External source/proof/parser evidence remains in dfr-prefix/t608-counter-scaffold/copy-tree-green-* and verify-copy-passive-gzip-function-capture.py. Independent coherent SOURCE is pending final verdict; fresh affected Integration build/current33 artifacts/all source joins, exact discovery/PlanOnly/PREP and actual cheap11 are UNRUN. Other four owning projects remain qualified F6. No genuine COPY/CANDIDATE/full-positive retry is admitted by this WIP; Windows and fresh clean-source recovery are unclaimed.
+
 # T608 function/lifetime GREEN coherent WIP — unfinished, uncataloged
 
 Five C# paths are frozen for remote preservation: the focused function/lifetime
