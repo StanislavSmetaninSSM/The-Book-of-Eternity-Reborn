@@ -1,5 +1,32 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+OUTPUT slice316ee621 SOURCE/PREP accepted by independent Sol; fresh owning
+Integration0errors/165warnings/5:21.82. Master/dependency copies match:
+Mainf53b2c2d, Support4d0dc57c, Integration2122d934. OfficialPlanOnly exact4cases/
+2descriptors15.0026929s/0executed. Owner2actual2/2PASS49.0361135s/
+category37.8348545<120,TRXec8b92f989370c071ab1395b855d2335dafeda5a0d6477209ee54ddeecd3c133.
+Guided2actual2/2PASS102.8332609s/category90.840094<180,
+TRX44d9120f5a945e2030c3c46615db2b56cd91d9188626d9af6eed30d8df991914.
+Both exact complete selections exit0/no timeout/skips/duplicates/bothcleanuptrue;
+four unique test/execution IDs union. Raw healing-output-owning-build-1 and
+healing-output-functional-1 external; root independently verified summaries/hashes.
+Finite independent OUTCOME requested, no speedup or warning-clean claim.
+
+The real browser confirmed /лечить now completes actual GameEngine staging,
+native-shaped controlled GM hook, common generic normalization/publication,
+typed notification, accepted cleanup and final assertions: rank-I wound removed,
+single terminal History, retained request/die result, one world cycle, consumed
+request/report and unchanged resource quartet. Cancellation also passes. Owner2
+additionally proves activeII3/4 and terminalI output, mutated-stage rejection,
+privacy and narrative-read uncertainty propagation. This is browser qualification
+with a controlled native-shaped fixture, NOT console, external provider or
+fresh-process qualification. Earlier setup/semantic failures/rollbacks stay visible.
+Next functional work is actual console handler parity, then rankIII/H5 actual
+graph-bearing caller and same-attempt repair. Known backend/staging/source/replay
+passes are retained unless their dependencies change; no whole selection or
+Mortal/T609/fullDFR/Windows work. Remaining help/lifecycle/staging/browser-admission
+affected gates should share one final fresh Unit build when their source is final.
+
 Owner-phase dc2b SOURCE/PREP accepted by both existing independent reviewers.
 Fresh owning Integration0errors/165warnings/6:48.42, masters/dependency copies
 match: Main41cf378a, Support67854c4d, Integration9abde63a. OfficialPlanOnly

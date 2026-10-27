@@ -14381,28 +14381,23 @@ close full source-action/terminal/pending contracts or any top-level story task.
   History with5/5 accepted-publication cases on `d5cd372a5`, affected staging24/24
   on `8bd0c9ea9`, and service-reopen/authored-graph2/2 on `9c785adb1`.
   Independent Sol SOURCE + OUTCOME accepted these finite contracts. Full T101
-  remains open for actual GameEngine/guided caller and shared NPC/command/roleplay
-  integration; same-PID service reopen is not fresh-process replay.
+  Actual browser guided/GameEngine rank-I self flow also passes2/2 on316ee621,
+  including final wound, one cycle, terminal History, cleanup and no self cost;
+  owner/output controls pass2/2. Full T101 remains open for actual console,
+  graph-bearing caller/repair and shared NPC/command/roleplay integration;
+  same-PID service reopen is not fresh-process replay.
   See current plan for exact source, builds, evidence and limitations.
   The accepted T094-linked prerequisite (`4711d6a8`) adds unused
   `BookOfEternityClient/Services/SpiritualHealingOutcomeMath.cs`. It returns
   recomputable arithmetic, not accepted healing authority. T101 remains open for
   the single actual resolver, exact target/art/modifier/die proofs, transitions
   and shared self/NPC/command/roleplay/service integration.
-  Registration follow-through for T101/T102/T104 and command integration:
-  `ExplorerAfterlifeCombatCommandResultBuilder` and
-  `ExplorerMode.Afterlife.SpiritualConflict` currently say
-  `Диагностика и лечение духовных ран пока недоступны; искусство уже можно развивать`
-  and label the cost reference `Планируемое правило лечения`. These are
-  provisional registration-only descriptions, not the finished healing UX.
-  When the corresponding diagnosis/treatment paths become executable, update
-  those descriptions and their assertions in `ExplorerModeCommandTests.Afterlife.cs`
-  and `ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns.cs`, plus
-  `ExplorerModeCommandTests.StandardWoundArtAuthority.cs` and
-  `ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns.StandardWoundArtHelp.cs`,
-  together with real handler/command coverage. Preserve the tier-zero diagnosis rule,
-  mastered-tier treatment gate and combat/out-of-combat cost distinction;
-  do not leave the unavailable wording in the completed feature.
+  Registration follow-through now implements shared self selection/confirmation,
+  console/browser aliases and current self-only help wording with GM transport.
+  Actual browser flow is qualified above; actual console and the existing focused
+  help assertions remain part of the next finite follow-through. Tier-zero known
+  inspection, mastered-tier treatment and combat/out-of-combat cost distinction
+  remain separate; helper/entity/combat treatment is not enabled by this self slice.
 - [ ] T102 [US4] Add a counterable healing operation and art mapping without making resilience active in `BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs` and `BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs`
 - [ ] T103 [US4] Resolve combat healing cost through `AfterlifeActionCostRules` and typed spiritual-action-point outcomes in `BookOfEternityClient/Services/AfterlifeActionCostRules.cs` and `BookOfEternityClient/Services/AfterlifeSpiritualConflictResourceOutcome.cs`
 - [ ] T104 [US4] Implement exact safe-cycle session/attempt identity, no-OD self/helper treatment, and world-cycle outcome composition in `BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.cs`
@@ -14414,8 +14409,10 @@ close full source-action/terminal/pending contracts or any top-level story task.
   same-PID service-reopen/authored-weaker-graph2/2 also pass. Mortal3 compatibility
   remains UNKNOWN after its180s timeout/noTRX; explicit HOLD forbids retry or a new
   diagnostic chain now. Preparation6 remains unqualified after its category timeout.
-  Actual GameEngine/guided/GM, fresh-process cleanup and helper/entity follow-through
-  remain open; this does not complete T104 or T105–T108.
+  Actual browser GameEngine/guided self2/2 and owner/output2/2 now pass on316ee621
+  with controlled native-shaped GM completion. Actual console, graph-bearing GM
+  caller/repair, fresh-process cleanup and helper/entity follow-through remain open;
+  this does not complete T104 or T105–T108.
   Current self-request prerequisite (2026-10-27), source
   `33d8aeac818caafe4d695d36ff06e01e16aa5999`: actual canonical-lease-owned staging,
   separate retained draw, byte-identical pending retry, exact source/cycle refusal
@@ -14425,8 +14422,9 @@ close full source-action/terminal/pending contracts or any top-level story task.
   exit0/0errors; independent Sol SOURCE + OUTCOME accepted. Full T104
   remains open beyond the qualified self backend: signed accepted admission,
   wound/effect/natural recovery, one world cycle and History/common publication now
-  work in the finite5+24+2 contracts above; the actual player handler, full GM
-  transport and wider materialization are still in progress.
+  work in the finite5+24+2 contracts above; actual browser handler also completes
+  the real caller. Console, GM graph-bearing caller/repair and wider materialization
+  remain in progress. Exact evidence and independent OUTCOME status are in plan.md.
   T108 helper/entity authority is not claimed by this self-only prerequisite.
   Raw stays outside checkout; exact sources/artifacts/times are in current plan.
 
@@ -14477,6 +14475,9 @@ close full source-action/terminal/pending contracts or any top-level story task.
 - [ ] T119 [US5] Implement typed visibility-safe active/detail/History/result projection and renderer-neutral blocks in `BookOfEternityClient/Services/WoundPlayerProjection.cs`
 - [ ] T120 [US5] Implement Self-first nearby entity discovery, hidden exact bindings, visible disambiguation, and fresh reachability/consent/wound revalidation in `BookOfEternityClient/Services/WoundTargetSelectionService.cs`
 - [ ] T121 [US5] Implement the shared target -> wound/diagnosis -> route/helper -> requirements/quote -> confirmation -> result application workflow in `BookOfEternityClient/Services/WoundApplicationService.cs`
+  Self-only browser selection/confirmation/cancellation and actual GameEngine
+  completion pass2/2 on316ee621; this does not close the wider target/diagnosis/
+  route/helper/quote workflow, console parity or graph-bearing caller repair.
 - [ ] T122 [US5] Implement one-shot exact wound command staging/consumption and stale/replay rejection in `BookOfEternityClient/Services/WoundCommandState.cs`
 - [ ] T123 [US5] Add escaped Russian console list/detail/History/prompts/results using shared blocks in `BookOfEternityClient/UI/ExplorerWoundCommandResultBuilder.cs` and `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Wounds.cs`
 - [ ] T124 [US5] Register all command aliases and route both Mortal/afterlife console actions to the shared handler in `BookOfEternityClient/CommandProtocol/ExplorerCommandCatalog.cs` and `BookOfEternityClient/UI/ExplorerMode.cs`
