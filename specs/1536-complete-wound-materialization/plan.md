@@ -1,3 +1,40 @@
+# Full DFR positive preparation — verifier accepted, runtime pending
+
+Runtime base `6264b77003c302bebd78538fe44995109b837f4c`; the accepted
+component foundation remains 69 distinct cases across retained lineages. Astra/high
+SOURCE accepted the frozen lifecycle verifier: wrapper SHA256
+bccd9df5e555b483f6975285d2af542c6c3542923c51a8e48405d21f0975ad05,
+scanner c6e3de68ad6369660da1bf595c063c41c6fc05c9084e23ad36786e0df9c4f52e.
+The offline control demonstrates mode compatibility and 19 malformed-data refusals;
+no real DFR result follows. It reuses the existing full recorder and verifies
+original fields, source clocks, strict gzip, accounting and actual functional rows.
+No production, cache, event, timing, authority, budget or diagnostic collection changed.
+
+Exact fresh PlanOnly at 6264: fr063-joint-live-n-source-unchanged, one exclusive
+GuaranteedTreatment_UnchangedLiveNarrativeSourceCompletesJointOnce case, original
+300 seconds, zero executed, exit 0. Maintained verify-only wrapper checked clean
+remote HEAD, current source/PDB joins and all 33 DLL/PDB/XML artifacts; Integration 408 and four
+unchanged F6 owners. No rebuild or runtime was performed for this preparation.
+
+Only the independently reviewed expendable source-recovery clone was retired after
+fresh device/inode/inventory comparison. It was clean, source-only and contained no
+user data or test execution. Deletion exited 0 and target absence was verified; free
+space changed from 596,762,624 to 1,840,934,912 bytes. This is a filesystem free-space
+observation, not a claim of exact physical allocation reclaimed. Main checkout, raw,
+remote history and user saves were not removed by this operation.
+
+Both old incomplete DFR captures remain present, 581,682,633 and 223,618,386 bytes,
+with their initial records and ended owners. Their previously recorded temporary
+fixture paths under /tmp are now absent following the environment disconnect/recovery;
+we did not delete them and their disappearance time/cause is unknown. This is not
+proof of successful cleanup, completed capture, or replacement; independent PREP
+must assess the limitation. Preserve the original incomplete evidence.
+
+Next: finish independent PREP with current resource, native, owner and retained-evidence
+checks. If admitted, run exactly one changed full DFR positive at the original 300s,
+complete lossless diagnostics outside checkout and the frozen verifier; no automatic
+retry. Full DFR, dependent legacy/cold, Windows and wound materialization remain open.
+
 # Continuation boundary: component accepted, full DFR preparation WIP
 
 Same environment recovered at 2026-10-27T07:17:53Z. Confirmed clean HEAD 65fa4cfe6ff42ae9a2873337740c1f4d4ad8bdba and no active managed build/test.
@@ -11,7 +48,7 @@ No passing test/review is repeated for model comparison; token/cost data unavail
 External t608-counter-scaffold/verify-lifecycle-full-stream-v1.py is a finite 75ed
 scanner-prefix successor: same gzip/fields/clocks/pairs/cost logic, actual lifecycle
 mode-marker count 0 instead of component 1. Author's offline same 393-byte real source
-control plus 21 malformed-container/event refusal checks pass. No event is injected.
+control and 21 checks total, including 19 malformed-container/event refusals, pass. No event is injected.
 The coherent lifecycle outcome wrapper/pins and independent Astra/high review remain
 in progress; no genuine/full-positive qualification follows from parser checks.
 
