@@ -1,7 +1,7 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
 Current WIP: actual self-request staging is implemented but UNCOMPILED/UNRUN.
-It reads14 distinct canonical source paths once, shares the parsed profile across
+It reads15 distinct canonical source paths once, shares the parsed profile across
 wound/history/art/effect consumers, calls the extracted detached source preparation
 once, and draws only after eligibility and cycle admission. Existing scheduler
 control and catch-up construction are reused by a read-only single-cycle binding
@@ -11,14 +11,27 @@ vector; exact retry performs no entropy and preserves bytes. All source baseline
 and request absence are checked freshly after arbitrary injected entropy through
 the existing coordinated writer. Readback uncertainty remains an exception, not
 a refusal/redraw. There is no wound/effect/world/History mutation at this stage.
-Eight extra current-source/privacy/conflict/pending/mutable-control cases bring the
-request category to16 methods; the37 check cases are selected for the resolver
+Thirteen extra current-source/privacy/conflict/pending/mutable-control cases bring the
+request category to21 methods; the37 check cases are selected for the resolver
 source-preparation extraction. Fresh source review and owning build are pending.
 The new internal envelope is client-authored only; no GM response/UI capability
 is enabled by this block. Existing v1 accepted command parsing is unchanged.
 No speedup is claimed: this operation has no cross-call cache, uses one detached
 source set per call, retains mandatory fresh closing reads and repeats validation
 on a new request/retry. Raw remains outside checkout.
+
+Sol source review found three actual admission omissions before compilation:
+strict selected wound/effect source agreement, numeric scheduler domains and the
+physical world_time.json dependency. The WIP now shares one effect catalog and
+its parsed identity, reuses WoundEffectLineagePlanner.Plan and canonical wound
+source composition/definition policy checks, including valid independently
+terminal roots. Scheduler cadence/current contour domains are checked without
+sanitizing invalid DATA; the actual world-time file is captured and guarded.
+The real time parser is shared with existing scheduler consumers, with11 typed
+absolute/incremental/afterlife rows. A bounded source-control category selects
+those rows, existing effect-snapshot/wound-composer controls and five scheduler
+consumers. All new implementation and correction cases remain UNCOMPILED/UNRUN;
+source re-review pending, no functional session is claimed.
 
 Historical scaffold and causal preparation evidence follows.
 

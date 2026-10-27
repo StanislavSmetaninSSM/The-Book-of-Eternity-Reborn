@@ -277,6 +277,106 @@ public sealed class SpiritualSelfTreatmentRequestTests
         Assert.Null(await f.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
     }
 
+    [Fact]
+    public async Task Stage_MissingBoundEffectIdentitiesCannotDraw()
+    {
+        await using var f = await Fixture.CreateAsync();
+        await using var lease = await f.Files.AcquireCanonicalWriteLeaseAsync();
+        await f.ChangeRootAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath,
+            root => root["profiles"]![0]!["activeEffects"] = new JsonArray());
+        await f.ChangeRootAsync(lease, EffectIdentityState.StatePath, root => root["entries"] = new JsonArray());
+        Assert.True((await f.ReadEffectsAsync(lease)).IsAccepted); // Shape/index agreement alone is insufficient.
+        var draws = 0;
+        var result = await AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(f.Files, lease,
+            f.Context, f.Selection, _ => { draws++; return new[] { 20 }; });
+        Assert.False(result.IsStaged);
+        Assert.Equal("spiritual_self_treatment_source_invalid", result.IssueCode);
+        Assert.Equal(0, draws);
+        Assert.Null(await f.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
+    }
+
+    [Fact]
+    public async Task Stage_RuntimePayloadMustMatchItsCurrentWoundDefinition()
+    {
+        await using var f = await Fixture.CreateAsync();
+        await using var lease = await f.Files.AcquireCanonicalWriteLeaseAsync();
+        await f.ChangeRootAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath,
+            root => root["profiles"]![0]!["activeEffects"]![1]!["components"]![0]!["payload"]!["magnitude"] = 2);
+        Assert.True((await f.ReadEffectsAsync(lease)).IsAccepted); // Still a legal normalized component.
+        var draws = 0;
+        var result = await AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(f.Files, lease,
+            f.Context, f.Selection, _ => { draws++; return new[] { 20 }; });
+        Assert.False(result.IsStaged);
+        Assert.Equal("spiritual_self_treatment_source_invalid", result.IssueCode);
+        Assert.Equal(0, draws);
+        Assert.Null(await f.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
+    }
+
+    [Fact]
+    public async Task Stage_IndependentlyExpiredRootIsNotTreatedAsMissingIdentity()
+    {
+        await using var f = await Fixture.CreateAsync();
+        await using var lease = await f.Files.AcquireCanonicalWriteLeaseAsync();
+        await f.ChangeRootAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath,
+            root => root["profiles"]![0]!["activeEffects"]!.AsArray().RemoveAt(0));
+        await f.ChangeRootAsync(lease, EffectIdentityState.StatePath, root =>
+        {
+            var entry = root["entries"]![0]!;
+            entry["state"] = "expired";
+            entry["transitions"]!.AsArray().Add(new JsonObject
+            {
+                ["transitionId"] = "seed_expired_root", ["kind"] = "expire", ["turn"] = 43,
+                ["eventRef"] = "seed_expired_event", ["sourceEffectIds"] = new JsonArray(entry["effectId"]!.GetValue<string>()),
+                ["resultEffectIds"] = new JsonArray(), ["receiptId"] = null
+            });
+        });
+        var before = f.CanonicalBytes();
+        var draws = 0;
+        var result = await AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(f.Files, lease,
+            f.Context, f.Selection, _ => { draws++; return new[] { 14 }; });
+        Assert.True(result.IsStaged, result.IssueCode);
+        Assert.Equal(1, draws);
+        Assert.Equal(before, f.CanonicalBytes());
+    }
+
+    [Fact]
+    public async Task Stage_InvalidStoredCatchupPeriodCannotSuppressActualBacklog()
+    {
+        await using var f = await Fixture.CreateAsync();
+        await using var lease = await f.Files.AcquireCanonicalWriteLeaseAsync();
+        await f.ChangeRootAsync(lease, ProgressionScheduleService.SchedulePath, root =>
+        {
+            root["afterlifeCatchupCycleEquivalentMinutes"] = 0;
+            root["currentWorldTimeInMinutes"] = 1440;
+        });
+        f.Context.Progression.CurrentWorldTimeInMinutes = 1440;
+        var draws = 0;
+        var result = await AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(f.Files, lease,
+            f.Context, f.Selection, _ => { draws++; return new[] { 20 }; });
+        Assert.False(result.IsStaged);
+        Assert.Equal("spiritual_self_treatment_cycle_invalid", result.IssueCode);
+        Assert.Equal(0, draws);
+        Assert.Null(await f.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
+    }
+
+    [Fact]
+    public async Task Stage_PhysicalWorldTimeChangedDuringEntropyCannotPublish()
+    {
+        await using var f = await Fixture.CreateAsync();
+        await using var lease = await f.Files.AcquireCanonicalWriteLeaseAsync();
+        var result = await AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(f.Files, lease,
+            f.Context, f.Selection, _ =>
+            {
+                var path = f.Files.ResolvePath(EffectAcceptedTurnInputComposer.WorldTimePath);
+                Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+                File.WriteAllText(path, new JsonObject { ["currentTimeInMinutes"] = 1440 }.ToJsonString());
+                return new[] { 14 };
+            });
+        Assert.False(result.IsStaged);
+        Assert.Equal("spiritual_self_treatment_source_changed", result.IssueCode);
+        Assert.Null(await f.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
+    }
+
     private sealed class Fixture : IAsyncDisposable
     {
         private readonly string _root;
@@ -374,6 +474,13 @@ public sealed class SpiritualSelfTreatmentRequestTests
             .Where(path => path != Files.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath))
             .Order(StringComparer.Ordinal).Select(path => Path.GetRelativePath(_root, path) + "\u001f" +
                 Convert.ToBase64String(File.ReadAllBytes(path))).ToArray();
+
+        internal async Task<EffectMechanicsSnapshot> ReadEffectsAsync(FileSystemManager.CanonicalWriteLease lease)
+        {
+            var profiles = JsonNode.Parse((await Files.ReadFileAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath))!)!.AsObject();
+            var index = JsonNode.Parse((await Files.ReadFileAsync(lease, EffectIdentityState.StatePath))!)!.AsObject();
+            return EffectMechanicsSnapshot.Build(new(new(null, null, null, null, profiles, null), index));
+        }
 
         internal async Task ChangeRootAsync(FileSystemManager.CanonicalWriteLease lease, string path, Action<JsonObject> change)
         {

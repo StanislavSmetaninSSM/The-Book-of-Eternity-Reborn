@@ -2,6 +2,47 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "spiritual-self-treatment-source-controls",
+      "responsibility": "T104/T108 existing effect snapshot and persisted wound source composition consumers, shared world-time parsing and ordinary prepared scheduler controls.",
+      "excludes": "Full effect planner, training rewards, accepted treatment/world/History execution and OS qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/EffectMechanicsSnapshot.cs",
+        "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs",
+        "BookOfEternityClient/Services/ProgressionScheduleService.SpiritualTreatment.cs"
+      ],
+      "related": [
+        {
+          "id": "spiritual-self-treatment-request",
+          "when": "Actual request admission consumes these source and scheduler contracts."
+        },
+        {
+          "id": "spiritual-healing-check",
+          "when": "Retain the detached check after source preparation extraction."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.EffectMechanicsSnapshotTests.*",
+            "BookOfEternityClient.Tests.EffectAcceptedTurnInputComposerWoundTests.*",
+            "BookOfEternityClient.Tests.SpiritualSelfTreatmentSchedulerSourceTests.*",
+            "BookOfEternityClient.Tests.ProgressionScheduleServiceTests.BuildControlForNextTurnAsync_AfterlifeIgnoresStaleMortalTimeChange",
+            "BookOfEternityClient.Tests.ProgressionScheduleServiceTests.BuildControlForNextTurnAsync_ZeroChaosBacklogStillCreatesSingleCycle",
+            "BookOfEternityClient.Tests.ProgressionScheduleServiceTests.BuildControlForNextTurnAsync_PreservesAccumulatedChaosBacklog",
+            "BookOfEternityClient.Tests.ProgressionScheduleServiceTests.BuildControlForNextTurnAsync_ShiningAbodeUsesShiningContoursWithoutChaosCycle",
+            "BookOfEternityClient.Tests.ProgressionScheduleServiceTests.BuildControlForNextTurnAsync_LegacyMortalSchedulePreservesElapsedTimeForFirstAfterlifeCatchup"
+          ]
+        }
+      ]
+    },
+    {
       "id": "fr063-joint-effect-source-operation",
       "responsibility": "One genuine stage-only component fixture performs two real Compose calls in a new existing source owner. Exact effect/bundle views, current/claim/generation and fresh physical bytes, owner completion and full passive gzip/ledger/fixture closing precede the sole one-parse-per-present-path oracle. Original unwired RED is 2N; Compose-only wiring must give N.",
       "excludes": "No fake issuer, source-root warmup inside the counted owner, common binding, new world per negative, permission caching, quota, truncated capture, full DFR or budget increase. Compose is not physical admission; existing current/closing and affected Candidate refusals remain required.",

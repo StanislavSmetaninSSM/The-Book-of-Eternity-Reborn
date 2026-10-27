@@ -1362,7 +1362,7 @@ public partial class ValidationService
         }
     }
 
-    private static void ValidateCanonicalSourceDefinitionAgreement(
+    internal static void ValidateCanonicalSourceDefinitionAgreement(
         EffectCarrierOccurrence occurrence,
         EffectSourceAuthorityEntry source,
         EffectSourceAuthority sourceAuthority,

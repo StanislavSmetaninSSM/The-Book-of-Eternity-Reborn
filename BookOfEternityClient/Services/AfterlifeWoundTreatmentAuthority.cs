@@ -68,7 +68,7 @@ internal static class AfterlifeWoundTreatmentAuthority
             if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(String(soul?["currentRealm"]), out var realm))
                 return Refuse("source_invalid");
             if (!ProgressionScheduleService.TryBindPreparedSpiritualCycle(
-                    Root(ProgressionScheduleService.SchedulePath), control, realm, out var ordinal))
+                    Root(ProgressionScheduleService.SchedulePath), Root(EffectAcceptedTurnInputComposer.WorldTimePath), control, realm, out var ordinal))
                 return Refuse("cycle_invalid");
             if (Root(AfterlifeSpiritualConflictState.StatePath) is { } conflict &&
                 conflict["activeConflict"] is not null)
@@ -94,9 +94,14 @@ internal static class AfterlifeWoundTreatmentAuthority
                 .Where(p => WoundCarrierCollectionAuthority.AfterlifeProfileMatches(p, wound.Owner)).ToArray();
             if (profiles is not { Length: 1 } || !AfterlifeProfileVisibility.IsVisibleToPlayer(profiles[0]))
                 return Refuse("target_invalid");
-            var effects = EffectMechanicsSnapshot.Build(new(new(Root(EffectCarrierCatalog.PlayerPath),
+            var effectCatalog = EffectCarrierCatalog.Build(new(Root(EffectCarrierCatalog.PlayerPath),
                 Root(EffectCarrierCatalog.NpcPath), carriers.EnemyCombatants, carriers.AllyCombatants,
-                carriers.AfterlifeProfiles, Root(EffectCarrierCatalog.SpiritualConflictPath)), Root(EffectIdentityState.StatePath)));
+                carriers.AfterlifeProfiles, Root(EffectCarrierCatalog.SpiritualConflictPath)));
+            var effects = EffectMechanicsSnapshot.Build(effectCatalog, Root(EffectIdentityState.StatePath),
+                skillScopeAuthority: null, out var effectIdentities);
+            if (!effects.IsAccepted || effectIdentities is null ||
+                !ValidateCurrentWoundEffects(wound, catalog, effectCatalog, effectIdentities))
+                return Refuse("source_invalid");
             var prepared = SpiritualHealingResolver.PrepareSource(new(wound, wound.Owner, profiles[0], soul, effects));
             if (prepared.Source is not { } source)
                 return Refuse("source_invalid");
@@ -155,6 +160,28 @@ internal static class AfterlifeWoundTreatmentAuthority
         }
     }
 
+    private static bool ValidateCurrentWoundEffects(WoundMaterializationEnvelope wound,
+        WoundCarrierCatalog wounds, EffectCarrierCatalog effects, EffectIdentityState identities)
+    {
+        // Reuse the strict lineage classifier: terminal roots remain in identity
+        // history and need no live carrier; missing roots are not terminal roots.
+        var lineage = WoundEffectLineagePlanner.Plan(wound, identities);
+        if (!lineage.Success) return false;
+        var sources = EffectAcceptedTurnInputComposer.BuildCanonicalWoundSourceAuthority(wounds);
+        if (sources.Issues.Count != 0) return false;
+        var issues = new List<ValidationIssue>();
+        foreach (var effectId in lineage.ActiveOrSuspendedEffectIds)
+        {
+            if (!effects.TryResolveOne(effectId, out var occurrence)) return false;
+            var source = occurrence.Effect["source"]!;
+            var binding = sources.ResolveCanonicalBinding(new(wound.Owner.Realm, "wound", wound.WoundId,
+                String(source["definitionKey"])!), String(occurrence.Effect["target"]!["kind"])!);
+            if (!binding.Success) return false;
+            ValidationService.ValidateCanonicalSourceDefinitionAgreement(occurrence, binding.Source!, sources, issues);
+        }
+        return issues.Count == 0;
+    }
+
     internal static string CycleKey(string realm, int ordinal) =>
         "spiritual_safe_cycle:" + realm + ":" + ordinal.ToString(CultureInfo.InvariantCulture);
 
@@ -166,7 +193,7 @@ internal static class AfterlifeWoundTreatmentAuthority
         WoundIdentityState.StatePath, WoundHistoryState.HistoryPath,
         EffectCarrierCatalog.PlayerPath, EffectCarrierCatalog.NpcPath, EffectIdentityState.StatePath,
         AfterlifeSpiritualConflictState.StatePath, ProgressionScheduleService.SchedulePath,
-        ProgressionScheduleService.ReportPath
+        ProgressionScheduleService.ReportPath, EffectAcceptedTurnInputComposer.WorldTimePath
     ];
 
     private sealed record SourceFile(string Path, CanonicalBeforeImage Image, JsonObject? Root);

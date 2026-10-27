@@ -7,7 +7,7 @@ namespace BookOfEternityClient.Services;
 public partial class ProgressionScheduleService
 {
     /// <summary>Checks detached prepared scheduler DATA without initializing, advancing or rewriting it.</summary>
-    internal static bool TryBindPreparedSpiritualCycle(JsonObject? root, ProgressionControl control,
+    internal static bool TryBindPreparedSpiritualCycle(JsonObject? root, JsonObject? worldTime, ProgressionControl control,
         string realm, out int ordinal)
     {
         ordinal = 0;
@@ -31,6 +31,27 @@ public partial class ProgressionScheduleService
             BuildAfterlifeCatchupContext(schedule,
                 realm == "chaos_sea" ? AfterlifeRealmKind.ChaosSea : AfterlifeRealmKind.ShiningAbode,
                 includeShiningContoursInMortalCatchup: false).Required)
+            return false;
+        var contours = new[] { schedule.LastChaosSeaSimulationOrdinal, schedule.LastGuardianProjectCycleOrdinal,
+            schedule.LastResidentAgencyCycleOrdinal, schedule.LastShiningAbodeCycleOrdinal,
+            schedule.LastShiningFactionCycleOrdinal, schedule.LastShiningTradeCycleOrdinal };
+        if (contours.Any(last => last < 0 || last > schedule.CurrentChaosSeaTurnOrdinal) ||
+            schedule.LastGuardianProjectCycleOrdinal != schedule.CurrentChaosSeaTurnOrdinal ||
+            schedule.LastResidentAgencyCycleOrdinal != schedule.CurrentChaosSeaTurnOrdinal ||
+            (realm == "chaos_sea" && schedule.LastChaosSeaSimulationOrdinal != schedule.CurrentChaosSeaTurnOrdinal) ||
+            (realm == "shining_abode" && (schedule.LastShiningAbodeCycleOrdinal != schedule.CurrentChaosSeaTurnOrdinal ||
+                schedule.LastShiningFactionCycleOrdinal != schedule.CurrentChaosSeaTurnOrdinal ||
+                schedule.LastShiningTradeCycleOrdinal != schedule.CurrentChaosSeaTurnOrdinal)) ||
+            schedule.CurrentWorldTimeInMinutes < 0 || schedule.LastWorldSimulationTimeInMinutes < 0 ||
+            schedule.LastFactionSimulationTimeInMinutes < 0 || schedule.WorldCycleMinutes <= 0 ||
+            schedule.FactionCycleMinutes <= 0 || schedule.ChaosSeaCycleEquivalentHours <= 0 ||
+            schedule.AfterlifeCatchupCycleEquivalentMinutes <= 0 ||
+            !schedule.HasAfterlifeCatchupWorldTimeBaseline || schedule.LastAfterlifeCatchupWorldTimeInMinutes < 0 ||
+            schedule.LastAfterlifeCatchupWorldTimeInMinutes > schedule.CurrentWorldTimeInMinutes)
+            return false;
+        var currentTime = ResolvePreparedWorldTime(worldTime, schedule.CurrentWorldTimeInMinutes,
+            allowIncrementalTimeChange: false);
+        if (!currentTime.HasUnresolvedAbsoluteOverride && currentTime.Minutes != schedule.CurrentWorldTimeInMinutes)
             return false;
         var expected = BuildProgressionControl(schedule, 0, 0,
             new AfterlifeCatchupContext(false, 0, "none", 0, Array.Empty<string>()));

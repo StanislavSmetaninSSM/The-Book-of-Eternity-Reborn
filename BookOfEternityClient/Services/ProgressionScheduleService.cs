@@ -1589,27 +1589,7 @@ public partial class ProgressionScheduleService
 
         try
         {
-            using var doc = JsonDocument.Parse(json);
-            var root = doc.RootElement;
-
-            if (TryReadIntLike(root, "currentTimeInMinutes", out var absolute))
-                return new WorldTimeResolutionResult(absolute, false);
-
-            if (root.TryGetProperty("setWorldTime", out var setWorldTime) &&
-                setWorldTime.ValueKind == JsonValueKind.Object)
-            {
-                if (TryReadIntLike(setWorldTime, "currentTimeInMinutes", out absolute))
-                    return new WorldTimeResolutionResult(absolute, false);
-
-                if (LooksLikeAbsoluteWorldTimeObject(setWorldTime))
-                    return new WorldTimeResolutionResult(fallback, true);
-            }
-
-            if (allowIncrementalTimeChange && TryReadIntLike(root, "timeChange", out var delta))
-                return new WorldTimeResolutionResult(Math.Max(0, fallback + delta), false);
-
-            if (LooksLikeAbsoluteWorldTimeObject(root))
-                return new WorldTimeResolutionResult(fallback, true);
+            return ResolvePreparedWorldTime(JsonNode.Parse(json) as JsonObject, fallback, allowIncrementalTimeChange);
         }
         catch (Exception ex)
         {
@@ -1620,13 +1600,28 @@ public partial class ProgressionScheduleService
         return new WorldTimeResolutionResult(fallback, true);
     }
 
-    private static bool TryReadIntLike(JsonElement root, string propertyName, out int value)
+    internal static WorldTimeResolutionResult ResolvePreparedWorldTime(JsonObject? root, int fallback,
+        bool allowIncrementalTimeChange)
     {
-        value = 0;
-        if (!root.TryGetProperty(propertyName, out var prop))
-            return false;
-
-        return prop.ValueKind == JsonValueKind.Number && prop.TryGetInt32(out value);
+        if (root is null) return new(fallback, true);
+        static bool Read(JsonObject o, string key, out int value)
+        {
+            value = 0;
+            return o[key] is JsonValue v && v.TryGetValue<int>(out value);
+        }
+        static bool Absolute(JsonObject o) => o.ContainsKey("year") && o.ContainsKey("dayOfMonth") &&
+            o["monthName"] is JsonValue month && month.TryGetValue<string>(out var monthName) &&
+            !string.IsNullOrWhiteSpace(monthName) && o["timeOfDay"] is JsonValue time &&
+            time.TryGetValue<string>(out var timeOfDay) && !string.IsNullOrWhiteSpace(timeOfDay);
+        if (Read(root, "currentTimeInMinutes", out var absolute)) return new(absolute, false);
+        if (root["setWorldTime"] is JsonObject set)
+        {
+            if (Read(set, "currentTimeInMinutes", out absolute)) return new(absolute, false);
+            if (Absolute(set)) return new(fallback, true);
+        }
+        if (allowIncrementalTimeChange && Read(root, "timeChange", out var delta))
+            return new(Math.Max(0, fallback + delta), false);
+        return new(fallback, true);
     }
 
     private static int ComputeElapsedCycles(int current, int lastProcessed, int cycleMinutes)
@@ -1635,19 +1630,6 @@ public partial class ProgressionScheduleService
             return 0;
 
         return (current - lastProcessed) / cycleMinutes;
-    }
-
-    private static bool LooksLikeAbsoluteWorldTimeObject(JsonElement root)
-    {
-        return root.ValueKind == JsonValueKind.Object &&
-               root.TryGetProperty("year", out _) &&
-               root.TryGetProperty("dayOfMonth", out _) &&
-               root.TryGetProperty("monthName", out var monthName) &&
-               monthName.ValueKind == JsonValueKind.String &&
-               !string.IsNullOrWhiteSpace(monthName.GetString()) &&
-               root.TryGetProperty("timeOfDay", out var timeOfDay) &&
-               timeOfDay.ValueKind == JsonValueKind.String &&
-               !string.IsNullOrWhiteSpace(timeOfDay.GetString());
     }
 
     private static bool HasResolvedRealm(string? realm) =>

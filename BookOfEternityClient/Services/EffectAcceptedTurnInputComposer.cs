@@ -1691,6 +1691,21 @@ internal static class EffectAcceptedTurnInputComposer
             ReadRoot(roots, WoundCarrierCatalog.EnemiesPath),
             ReadRoot(roots, WoundCarrierCatalog.AlliesPath),
             ReadRoot(roots, WoundCarrierCatalog.AfterlifeProfilesPath)));
+        return CollectCanonicalWoundSources(catalog, sameTurn);
+    }
+
+    /// <summary>Reuses the already parsed canonical wound catalog for source-only checks.</summary>
+    internal static EffectSourceAuthority BuildCanonicalWoundSourceAuthority(WoundCarrierCatalog catalog)
+    {
+        var composed = CollectCanonicalWoundSources(catalog, sameTurn: false);
+        return EffectSourceAuthority.Build(new(composed.Exports, Array.Empty<EffectSourceExport>(),
+            new HashSet<string>(StringComparer.Ordinal), WoundGroups: composed.Groups,
+            CompositionIssues: composed.Issues));
+    }
+
+    private static CanonicalWoundSourceComposition CollectCanonicalWoundSources(
+        WoundCarrierCatalog catalog, bool sameTurn)
+    {
         if (catalog.Issues.Count != 0)
         {
             return new CanonicalWoundSourceComposition(
