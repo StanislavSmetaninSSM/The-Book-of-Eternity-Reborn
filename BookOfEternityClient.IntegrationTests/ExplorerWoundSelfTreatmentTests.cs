@@ -102,7 +102,7 @@ public sealed class ExplorerWoundSelfTreatmentTests
                 Convert.FromBase64String(original!.SpiritualWoundRequestBytesBase64!)));
             Assert.Throws<InvalidDataException>(() => GameEngine.ValidateDetachedBrowserBinding(original with
                 { SpiritualWoundRequestBytesBase64 = Convert.ToBase64String(respelled) }));
-            Assert.Empty((await fixture.ReadWoundsAsync()).Occurrences);
+            Assert.True(!(await fixture.ReadWoundsAsync()).Occurrences.Any(), diagnostics.Describe());
             var history = await fixture.ReadHistoryAsync();
             Assert.Single(history.Transitions, t => t.Terminal);
             var result = Assert.IsType<SpiritualHealingPersistedResult>(Assert.Single(history.Transitions, t => t.AttemptId is not null).TransitionResult);

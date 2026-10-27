@@ -1,5 +1,27 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Prepared-schedule correction a1f7 SOURCE/PREP accepted independently; one owning
+Integration Rebuild0errors/165warnings/6:51.52, three master/dependency pins match.
+Compared prior log:28 additional XML diagnostic identities (CS1572/1573/1587),
+not a warning-clean claim; no compiler error/new warning-driven production edit.
+Exact guided2 PlanOnly15.5050088s/0executed; actual2complete1PASS cancellation/
+1FAIL confirmed43.1023724s/category33.275892<180, no timeout/duplicate,
+bothcleanuptrue. TRX91b9c7b3591f88e3754c728ff4fcd6172d430df1ed07958def92b6d067521aa9.
+Raw prepared-schedule-owning-build-1/prepared-schedule-functional-1 external.
+
+The real caller now returns after native-shaped completion and passes retained
+original/detached-byte/artifact-absence assertions, but final wound stays at its
+original untreated/create42 state. Retained stdout explicitly reports rejected
+world changes and preturn restoration; do not call this accepted publication or
+healing. The underlying refusal is recorded only in the existing in-memory
+SpiritualLifecycleTestLogger; the old final Assert.Empty discarded that DATA on
+failure, and normal fixture cleanup removed its transient diagnostic file.
+Next test-only delta retains the exact empty-wound condition while attaching the
+already captured full Describe() to the assertion. No new collector/framework,
+input fake, validator change, budget change or speculative production fix.
+Fresh Integration refsfalse + same guided2 causal readout pending finite SOURCE.
+The completed rollback outcome and earlier timeout remain preserved separately.
+
 Actual snapshot-role qualification on clean51e07: fresh owning Integration build
 0errors/137warnings/7:09.15 and Unit refsfalse0errors/26warnings/2:07.17;
 all master/dependency pins match. Official PlanOnly supersedes static44 estimate:
