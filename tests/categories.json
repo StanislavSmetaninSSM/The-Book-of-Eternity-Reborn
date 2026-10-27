@@ -2,6 +2,43 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "spiritual-healing-guided-self",
+      "responsibility": "Confirmed browser /лечить selection uses the existing prompt and pending action lifecycle, actual GameEngine pre-snapshot staging and a native-shaped controlled GM completion to publish self wound/effects, one cycle and History; cancellation is inert.",
+      "excludes": "Fresh-process recovery, helper/entity/combat healing, broad pending admission matrices, held Mortal timeout controls and full DFR. The controlled terminal fixture is not a real GM-provider qualification.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.cs",
+        "BookOfEternityClient/Services/PendingPlayerActionService.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "BookOfEternityClient/WebUi/ExplorerWebPromptSessionService.cs"
+      ],
+      "related": [
+        {
+          "id": "spiritual-healing-lifecycle",
+          "when": "The separate original five-case accepted-publication baseline remains unchanged."
+        },
+        {
+          "id": "spiritual-healing-authored-graphs",
+          "when": "Rank-changing GM-authored graphs retain their separate contract."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.ConfirmedBrowserSelfTreatmentStagesAndCompletesThroughActualGameEngine",
+            "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.CancellingBrowserTreatmentLeavesNoIntentDrawOrGameplayChange"
+          ]
+        }
+      ]
+    },
+    {
       "id": "spiritual-healing-preparation",
       "responsibility": "T104 signed preparation helper default consumers plus detached prepared progression control and foreign-realm refusal before replacement.",
       "excludes": "Healing arithmetic, request admission matrix, accepted wound/world/History publication and broad turn lifecycle.",

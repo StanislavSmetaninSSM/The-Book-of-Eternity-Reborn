@@ -1,5 +1,27 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Next connected caller/guided scaffold (WIP, UNCOMPILED/UNRUN): two isolated
+`ExplorerWoundSelfTreatmentTests` use the existing browser prompt API and actual
+GameEngine runtime factory. Confirmed `/лечить` must retain a typed exact selection,
+stage the real v2 request under actual control before snapshot, retain its original
+bytes in the existing phase proof, and complete via a native-shaped controlled GM
+fixture with required actor-free NPC Scope and actual control/report coordinates.
+Cancellation must create neither intent nor draw. This is not a real provider or
+fresh-process qualification. A finite new category owns exactly these2 cases/one
+descriptor with180s including actual ordinary caller work; old5/2 budgets and held
+Mortal3 are unchanged. No detached Task timeout; the official owned process bound
+handles a hang. Source/API fixture checks precede test-only Integration build.
+
+Optimization: reuse the existing canonical wound fixture with optional pre-stage
+skip; each Fact owns independent mutable roots. Reuse one actual runtime and real
+request/control within the completion hook; no second preparation or alternate
+GameEngine/snapshot authority. Production remains unchanged at this scaffold.
+Fresh prompt confirmation, generation, stage source and accepted publication
+checks remain required in implementation; no cross-operation cache is introduced.
+The xUnit2031 predicate cleanup is folded into this test edit. Sol OUTCOME for the
+prior replay/graph pair is accepted. The current first RED should be unsupported
+`/лечить`; setup/compile/policy failures must be reported separately if observed.
+
 Actual new replay/graph pair GREEN on clean9c785adb17e5d65c19d51bcbdae15cd068d5edd7:
 test-only Integration build0errors/103warnings/4:50.70, Integration
 70f212258f01dc8009d4ff08f23e827b61d384b06e2bd13027bdf7616b5d158a;

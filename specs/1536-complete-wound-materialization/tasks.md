@@ -14377,9 +14377,12 @@ close full source-action/terminal/pending contracts or any top-level story task.
   `spiritual-healing-check` selection: 13 methods/37 cases, 37 PASS, no
   timeout/skip/duplicate, both cleanup flags true. Initial 14-case semantic RED
   and review-found canonical inactive-state RED (35 PASS/2 FAIL) are retained
-  outside checkout. Full T101 remains open: source/request authority and the
-  accepted treatment caller, transitions, world cycle and History are not yet
-  implemented. Independent Sol SOURCE + OUTCOME ACCEPT; both findings closed.
+  outside checkout. The self-only signed backend now qualifies actual transitions, world cycle and
+  History with5/5 accepted-publication cases on `d5cd372a5`, affected staging24/24
+  on `8bd0c9ea9`, and service-reopen/authored-graph2/2 on `9c785adb1`.
+  Independent Sol SOURCE + OUTCOME accepted these finite contracts. Full T101
+  remains open for actual GameEngine/guided caller and shared NPC/command/roleplay
+  integration; same-PID service reopen is not fresh-process replay.
   See current plan for exact source, builds, evidence and limitations.
   The accepted T094-linked prerequisite (`4711d6a8`) adds unused
   `BookOfEternityClient/Services/SpiritualHealingOutcomeMath.cs`. It returns
@@ -14407,9 +14410,12 @@ close full source-action/terminal/pending contracts or any top-level story task.
   signed validation/common publication cases: three wound/effect/one-cycle/History/
   no-cost outcomes plus two original-source guards. Fresh owning Integration
   build0errors; complete/no timeout/duplicates and both cleanup flags true.
-  Independent outcome review and existing Mortal/staging controls follow.
-  Cold replay, authored weaker graphs, actual GameEngine/guided/GM and helper/entity
-  follow-through remain open; this does not complete T104 or T105–T108.
+  Independent Sol OUTCOME accepted; affected staging24/24 and separate
+  same-PID service-reopen/authored-weaker-graph2/2 also pass. Mortal3 compatibility
+  remains UNKNOWN after its180s timeout/noTRX; explicit HOLD forbids retry or a new
+  diagnostic chain now. Preparation6 remains unqualified after its category timeout.
+  Actual GameEngine/guided/GM, fresh-process cleanup and helper/entity follow-through
+  remain open; this does not complete T104 or T105–T108.
   Current self-request prerequisite (2026-10-27), source
   `33d8aeac818caafe4d695d36ff06e01e16aa5999`: actual canonical-lease-owned staging,
   separate retained draw, byte-identical pending retry, exact source/cycle refusal
@@ -14417,8 +14423,10 @@ close full source-action/terminal/pending contracts or any top-level story task.
   is136/136PASS (37 check +24 request +75 source controls), complete/no timeout/
   skips/duplicates, both cleanup flags true. Fresh selected ownership build
   exit0/0errors; independent Sol SOURCE + OUTCOME accepted. Full T104
-  remains open: signed accepted admission, wound/effect/natural recovery, actual
-  world advancement, History/common publication and player handler are not done.
+  remains open beyond the qualified self backend: signed accepted admission,
+  wound/effect/natural recovery, one world cycle and History/common publication now
+  work in the finite5+24+2 contracts above; the actual player handler, full GM
+  transport and wider materialization are still in progress.
   T108 helper/entity authority is not claimed by this self-only prerequisite.
   Raw stays outside checkout; exact sources/artifacts/times are in current plan.
 

@@ -80,7 +80,7 @@ public sealed class AfterlifeWoundHealingLifecycleTests
         { _root = root; Files = files; _die = die; _resourceBytes = resourceBytes; }
         internal FileSystemManager Files { get; }
 
-        internal static async Task<Fixture> CreateAsync(int rank, int tier, int die)
+        internal static async Task<Fixture> CreateAsync(int rank, int tier, int die, bool stageRequest = true)
         {
             var root = Path.Combine(Path.GetTempPath(), "boe-spiritual-healing-lifecycle-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(root);
@@ -184,21 +184,24 @@ public sealed class AfterlifeWoundHealingLifecycleTests
                     foreach (var pair in roots) await files.WriteFileAtomicAsync(lease, pair.Key, pair.Value.ToJsonString());
                 await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(files,
                     new(Profiles: profiles, SoulState: soul));
-                var control = await new ProgressionScheduleService(files, NullLogger<ProgressionScheduleService>.Instance)
-                    .BuildControlForNextTurnAsync();
-                await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+                if (stageRequest)
                 {
-                    var staged = await AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(files, lease,
-                        new(SessionId, RequestId, Turn, control),
-                        new(WoundId, WoundIdentityState.ComputeSemanticFingerprint(wound)), _ => new[] { die });
-                    Assert.True(staged.IsStaged, staged.IssueCode);
+                    var control = await new ProgressionScheduleService(files, NullLogger<ProgressionScheduleService>.Instance)
+                        .BuildControlForNextTurnAsync();
+                    await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+                    {
+                        var staged = await AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(files, lease,
+                            new(SessionId, RequestId, Turn, control),
+                            new(WoundId, WoundIdentityState.ComputeSemanticFingerprint(wound)), _ => new[] { die });
+                        Assert.True(staged.IsStaged, staged.IssueCode);
+                    }
+                    await new LiveTurnPreparationService(files).PrepareAsync(new LiveTurnPreparationOptions
+                    {
+                        SessionId = SessionId, RequestId = RequestId, TurnNumber = Turn, CurrentRealm = "Chaos Sea",
+                        PlayerAction = "Лечить собственную духовную рану", ProgressionControl = control,
+                        PreGeneratedDices1d20 = new[] { 7, 11, 16 }
+                    });
                 }
-                await new LiveTurnPreparationService(files).PrepareAsync(new LiveTurnPreparationOptions
-                {
-                    SessionId = SessionId, RequestId = RequestId, TurnNumber = Turn, CurrentRealm = "Chaos Sea",
-                    PlayerAction = "Лечить собственную духовную рану", ProgressionControl = control,
-                    PreGeneratedDices1d20 = new[] { 7, 11, 16 }
-                });
                 var resources = new Dictionary<string, byte[]>(StringComparer.Ordinal);
                 foreach (var path in ResourcePaths) resources.Add(path, File.ReadAllBytes(files.ResolvePath(path)));
                 return new(root, files, die, resources);

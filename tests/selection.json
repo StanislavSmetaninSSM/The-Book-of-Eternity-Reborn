@@ -35,6 +35,13 @@
       "contracts": [
         "#1536 T104/T107 retained completed replay and explicit GM-authored weaker graphs; original five-case boundary unchanged"
       ]
+    },
+    {
+      "category": "spiritual-healing-guided-self",
+      "reason": "The next functional slice connects the public confirmed self-treatment route to actual GameEngine staging/publication. Two isolated fixtures share only immutable setup code; existing backend five/replay/graph categories are not broadened or blindly repeated. Initial source-scaffold run is expected semantic RED before implementation.",
+      "contracts": [
+        "#1536 T104/T108/T121–T125: typed exact selection, prompt cancellation, signed source staging and real caller completion"
+      ]
     }
   ]
 }

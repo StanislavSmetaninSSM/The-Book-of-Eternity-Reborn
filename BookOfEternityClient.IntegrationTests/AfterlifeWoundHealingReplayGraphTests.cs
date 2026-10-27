@@ -39,7 +39,7 @@ public sealed class AfterlifeWoundHealingReplayGraphTests
         }
         fixture.AssertMutationRootsUnchanged(before);
         await fixture.AssertOneCycleAndRetainedAttemptAsync();
-        Assert.Single((await fixture.ReadHistoryAsync()).Transitions.Where(t => t.Terminal));
+        Assert.Single((await fixture.ReadHistoryAsync()).Transitions, t => t.Terminal);
     }
 
     [Fact]
