@@ -12,6 +12,23 @@ internal sealed record SpiritualHealingResolverInput(
     string SealedRollMode,
     IReadOnlyList<int> SealedRolls);
 
+/// <summary>Source-only DATA prepared once before a treatment draw; grants no publication authority.</summary>
+internal sealed record SpiritualHealingSourceInput(
+    WoundMaterializationEnvelope Before, WoundOwnerCoordinate Healer,
+    JsonObject HealerProfile, JsonObject? PlayerSoul, EffectMechanicsSnapshot Effects);
+
+/// <summary>Validated detached check inputs shared by admission and the retained-draw calculation.</summary>
+internal sealed record SpiritualHealingPreparedSource(
+    string WoundId, WoundOwnerCoordinate Target, WoundOwnerCoordinate Healer,
+    int WoundSeverityRank, int HealingTier, long ComplicationModifier, string RollMode,
+    IReadOnlyList<EffectRollContributionEvidence> RollContributions);
+
+internal sealed record SpiritualHealingSourceResult(
+    SpiritualHealingPreparedSource? Source, IReadOnlyList<ValidationIssue> Issues)
+{
+    internal bool IsValid => Source is not null && Issues.Count == 0;
+}
+
 /// <summary>Recomputable healing decision, separate from accepted-turn authority.</summary>
 internal sealed record SpiritualHealingResolution(
     string WoundId,
@@ -38,6 +55,17 @@ internal static class SpiritualHealingResolver
     internal static SpiritualHealingResolutionResult Resolve(SpiritualHealingResolverInput input)
     {
         ArgumentNullException.ThrowIfNull(input);
+        var prepared = PrepareSource(new(input.Before, input.Healer, input.HealerProfile,
+            input.PlayerSoul, input.Effects));
+        return prepared.Source is { } source
+            ? ResolvePrepared(source, input.SealedRollMode, input.SealedRolls)
+            : new(null, prepared.Issues);
+    }
+
+    /// <summary>Validates current detached source DATA once, before any entropy is requested.</summary>
+    internal static SpiritualHealingSourceResult PrepareSource(SpiritualHealingSourceInput input)
+    {
+        ArgumentNullException.ThrowIfNull(input);
         var before = input.Before;
         var healer = input.Healer;
         if (before is null || healer is null || before.Owner is null ||
@@ -51,15 +79,15 @@ internal static class SpiritualHealingResolver
             healer.CarrierPath != WoundCarrierCatalog.AfterlifeProfilesPath ||
             !WoundEffectCarrierAdapter.TryCreateTargetKey(before.Owner, out _) ||
             !WoundEffectCarrierAdapter.TryCreateTargetKey(healer, out var rollActor))
-            return Invalid("spiritual_healing_target_invalid");
+            return InvalidSource("spiritual_healing_target_invalid");
 
         if (input.HealerProfile is null ||
             !WoundCarrierCollectionAuthority.AfterlifeProfileMatches(input.HealerProfile, healer))
-            return Invalid("spiritual_healing_actor_mismatch");
+            return InvalidSource("spiritual_healing_actor_mismatch");
         if (input.HealerProfile["standardArts"] is not JsonObject arts ||
             !TryTier(arts[AfterlifeSpiritualConflictState.SpiritualHealingArtId],
                 out var tier))
-            return Invalid("spiritual_healing_art_invalid");
+            return InvalidSource("spiritual_healing_art_invalid");
         if (healer.OwnerKind == "player_soul")
         {
             if (healer.OwnerId != "player_soul" || input.PlayerSoul is not { } soul ||
@@ -71,14 +99,14 @@ internal static class SpiritualHealingResolver
                 soulProfile["artTiers"] is not JsonObject soulArts ||
                 !TryTier(soulArts[AfterlifeSpiritualConflictState.SpiritualHealingArtId],
                     out var soulTier))
-                return Invalid("spiritual_healing_player_source_invalid");
+                return InvalidSource("spiritual_healing_player_source_invalid");
             if (tier != soulTier)
-                return Invalid("spiritual_healing_player_art_mismatch");
+                return InvalidSource("spiritual_healing_player_art_mismatch");
             tier = soulTier;
         }
 
         if (input.Effects is null)
-            return Invalid("spiritual_healing_effect_source_invalid");
+            return InvalidSource("spiritual_healing_effect_source_invalid");
         // The registered common roll modifier contributes advantage/disadvantage.
         // Standard spiritual arts are not Mortal skill IDs; a scoped Mortal skill
         // modifier cannot grant a healing bonus. No registered flat healing bonus
@@ -87,35 +115,47 @@ internal static class SpiritualHealingResolver
             new EffectRollContext(rollActor.Realm, rollActor.Kind, rollActor.TargetId, "skill_check", null));
         if (!roll.IsValid)
             return new(null, roll.Issues.Select(WoundAcceptedTurnData.CloneIssue).ToArray());
-        if (input.SealedRollMode != roll.RollMode)
+        if (before.Complications is null || before.Complications.Count > 16 ||
+            before.Complications.Any(static value => value is null ||
+                !ResourceMaterializationContract.IsExactIdentifier(value.State) ||
+                value.TreatmentDifficultyModifier is < 0 or > 4))
+            return InvalidSource("spiritual_healing_complications_invalid");
+        long complications = 0;
+        foreach (var complication in before.Complications.Where(static value => value.State == "active"))
+            complications = checked(complications + complication.TreatmentDifficultyModifier);
+        return new(new(before.WoundId, before.Owner, healer, before.Severity.Rank,
+            tier, complications, roll.RollMode, Array.AsReadOnly(roll.Contributions.ToArray())),
+            Array.Empty<ValidationIssue>());
+    }
+
+    /// <summary>Uses one prepared DATA value and retained dice without rebuilding effect sources.</summary>
+    internal static SpiritualHealingResolutionResult ResolvePrepared(
+        SpiritualHealingPreparedSource source, string sealedRollMode, IReadOnlyList<int> sealedRolls)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        if (sealedRollMode != source.RollMode)
             return Invalid("spiritual_healing_roll_mode_mismatch");
-        var requiredDice = roll.RollMode == "normal" ? 1 : 2;
-        if (input.SealedRolls is null || input.SealedRolls.Count != requiredDice ||
-            input.SealedRolls.Any(static value => value is < 1 or > 20))
+        var requiredDice = source.RollMode == "normal" ? 1 : 2;
+        if (sealedRolls is null || sealedRolls.Count != requiredDice ||
+            sealedRolls.Any(static value => value is < 1 or > 20))
             return Invalid("spiritual_healing_draw_invalid");
-        var draws = Array.AsReadOnly(input.SealedRolls.ToArray());
-        var die = roll.RollMode switch
+        var draws = Array.AsReadOnly(sealedRolls.ToArray());
+        var die = source.RollMode switch
         {
             "normal" => draws[0],
             "advantage" => Math.Max(draws[0], draws[1]),
             "disadvantage" => Math.Min(draws[0], draws[1]),
             _ => 0
         };
-        if (before.Complications is null || before.Complications.Count > 16 ||
-            before.Complications.Any(static value => value is null ||
-                !ResourceMaterializationContract.IsExactIdentifier(value.State) ||
-                value.TreatmentDifficultyModifier is < 0 or > 4))
-            return Invalid("spiritual_healing_complications_invalid");
-        long complications = 0;
-        foreach (var complication in before.Complications.Where(static value => value.State == "active"))
-            complications = checked(complications + complication.TreatmentDifficultyModifier);
-        var calculation = SpiritualHealingOutcomeMath.Calculate(new(tier, before.Severity.Rank,
-            die, ValidatedModifiers: 0, complications));
+        var calculation = SpiritualHealingOutcomeMath.Calculate(new(source.HealingTier,
+            source.WoundSeverityRank, die, ValidatedModifiers: 0, source.ComplicationModifier));
         return calculation is null
             ? Invalid("spiritual_healing_calculation_invalid")
-            : new(new(before.WoundId, before.Owner, healer, calculation, draws,
-                Array.AsReadOnly(roll.Contributions.ToArray())), Array.Empty<ValidationIssue>());
+            : new(new(source.WoundId, source.Target, source.Healer, calculation, draws,
+                source.RollContributions), Array.Empty<ValidationIssue>());
     }
+
+    private static SpiritualHealingSourceResult InvalidSource(string code) => new(null, Invalid(code).Issues);
 
     private static bool TryTier(JsonNode? node, out int tier)
     {

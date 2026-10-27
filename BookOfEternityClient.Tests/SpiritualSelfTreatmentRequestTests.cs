@@ -141,6 +141,109 @@ public sealed class SpiritualSelfTreatmentRequestTests
         Assert.Equal(before, f.CanonicalBytes());
     }
 
+    [Fact]
+    public async Task Stage_ActiveConflictCannotBecomeSafeSelfTreatment()
+    {
+        await using var f = await Fixture.CreateAsync();
+        await using var lease = await f.Files.AcquireCanonicalWriteLeaseAsync();
+        await f.Files.WriteFileAtomicAsync(lease, AfterlifeSpiritualConflictState.StatePath,
+            new JsonObject { ["activeConflict"] = new JsonObject { ["conflictId"] = "current_conflict" } }.ToJsonString());
+        var before = f.CanonicalBytes();
+        var draws = 0;
+        var result = await AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(f.Files, lease,
+            f.Context, f.Selection, _ => { draws++; return new[] { 20 }; });
+        Assert.False(result.IsStaged);
+        Assert.Equal("spiritual_self_treatment_conflict_active", result.IssueCode);
+        Assert.Equal(0, draws);
+        Assert.Equal(before, f.CanonicalBytes());
+        Assert.Null(await f.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
+    }
+
+    [Fact]
+    public async Task Stage_HiddenSelfProfileCannotBeSelectedForTreatment()
+    {
+        await using var f = await Fixture.CreateAsync();
+        await using var lease = await f.Files.AcquireCanonicalWriteLeaseAsync();
+        await f.ChangeRootAsync(lease, WoundCarrierCatalog.AfterlifeProfilesPath,
+            root => root["profiles"]![0]!["isHidden"] = true);
+        var draws = 0;
+        var result = await AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(f.Files, lease,
+            f.Context, f.Selection, _ => { draws++; return new[] { 20 }; });
+        Assert.False(result.IsStaged);
+        Assert.Equal("spiritual_self_treatment_target_invalid", result.IssueCode);
+        Assert.Equal(0, draws);
+        Assert.Null(await f.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
+    }
+
+    [Fact]
+    public async Task Stage_InvalidHistoryAgreementCannotDrawOrWrite()
+    {
+        await using var f = await Fixture.CreateAsync();
+        await using var lease = await f.Files.AcquireCanonicalWriteLeaseAsync();
+        await f.Files.WriteFileAtomicAsync(lease, WoundIdentityState.StatePath,
+            new JsonObject { ["schemaVersion"] = 1, ["entries"] = new JsonArray() }.ToJsonString());
+        var draws = 0;
+        var result = await AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(f.Files, lease,
+            f.Context, f.Selection, _ => { draws++; return new[] { 20 }; });
+        Assert.False(result.IsStaged);
+        Assert.Equal("spiritual_self_treatment_source_invalid", result.IssueCode);
+        Assert.Equal(0, draws);
+        Assert.Null(await f.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
+    }
+
+    [Fact]
+    public async Task Stage_PendingDifferentEnvelopeCannotBeOverwritten()
+    {
+        await using var f = await Fixture.CreateAsync();
+        await using var lease = await f.Files.AcquireCanonicalWriteLeaseAsync();
+        var pending = new JsonObject { ["schemaVersion"] = 1, ["sessionId"] = f.Context.SessionId,
+            ["requestId"] = f.Context.RequestId, ["turn"] = f.Context.Turn, ["commands"] = new JsonArray() };
+        await f.Files.WriteFileAtomicAsync(lease, AcceptedMechanicsPlan.WoundCommandPath, pending.ToJsonString());
+        var bytes = await f.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath);
+        var draws = 0;
+        var result = await AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(f.Files, lease,
+            f.Context, f.Selection, _ => { draws++; return new[] { 20 }; });
+        Assert.False(result.IsStaged);
+        Assert.Equal("spiritual_self_treatment_pending_conflict", result.IssueCode);
+        Assert.Equal(0, draws);
+        Assert.Equal(bytes, await f.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
+    }
+
+    [Fact]
+    public async Task Stage_ChangedSourceCannotReplacePendingAttemptOrRedraw()
+    {
+        await using var f = await Fixture.CreateAsync();
+        await using var lease = await f.Files.AcquireCanonicalWriteLeaseAsync();
+        var first = await AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(f.Files, lease,
+            f.Context, f.Selection, _ => new[] { 14 });
+        Assert.True(first.IsStaged, first.IssueCode);
+        var bytes = await f.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath);
+        f.ChangeSoulTierDuringEntropy();
+        var draws = 0;
+        var retry = await AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(f.Files, lease,
+            f.Context, f.Selection, _ => { draws++; return new[] { 20 }; });
+        Assert.False(retry.IsStaged);
+        Assert.Equal(0, draws);
+        Assert.Equal(bytes, await f.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
+    }
+
+    [Fact]
+    public async Task Stage_MutableCallerControlCannotRetargetPreparedAttempt()
+    {
+        await using var f = await Fixture.CreateAsync();
+        await using var lease = await f.Files.AcquireCanonicalWriteLeaseAsync();
+        var ordinal = f.Context.Progression.NextChaosSeaTurnOrdinal;
+        var result = await AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(f.Files, lease,
+            f.Context, f.Selection, _ =>
+            {
+                f.Context.Progression.NextChaosSeaTurnOrdinal += 100;
+                return new[] { 14 };
+            });
+        Assert.True(result.IsStaged, result.IssueCode);
+        var root = await f.ReadRequestAsync(lease);
+        Assert.Equal(ordinal, root["attempt"]!["cycleOrdinal"]!.GetValue<int>());
+    }
+
     private sealed class Fixture : IAsyncDisposable
     {
         private readonly string _root;
@@ -238,6 +341,13 @@ public sealed class SpiritualSelfTreatmentRequestTests
             .Where(path => path != Files.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath))
             .Order(StringComparer.Ordinal).Select(path => Path.GetRelativePath(_root, path) + "\u001f" +
                 Convert.ToBase64String(File.ReadAllBytes(path))).ToArray();
+
+        internal async Task ChangeRootAsync(FileSystemManager.CanonicalWriteLease lease, string path, Action<JsonObject> change)
+        {
+            var root = JsonNode.Parse((await Files.ReadFileAsync(lease, path))!)!.AsObject();
+            change(root);
+            await Files.WriteFileAtomicAsync(lease, path, root.ToJsonString());
+        }
 
         internal void ChangeSoulTierDuringEntropy()
         {

@@ -203,6 +203,27 @@ executable spiritual continuation and response adapter remain implementation WIP
 - provider compensation is processed atomically when applicable;
 - failure still advances the world and applies only ordinary natural recovery once.
 
+### Client-owned request preparation (T104/T108 WIP)
+
+Before signed snapshot capture, the client stages one closed source envelope at
+`game_state/wounds/wound_commands.json` (the existing wound command root).
+This schemaVersion2 `spiritual_self_treatment_request` is intentionally disjoint
+from accepted schemaVersion1 commands: it has no `snapshotToken` or `commands`.
+It contains exact sessionId/requestId/turn, a request fingerprint and one attempt
+with attemptId/woundId/woundFingerprint, realm/cycleOrdinal/cycleKey, complete
+source fingerprint and `roll: {mode, values}`. The retained mode determines one
+normal die or two advantage/disadvantage dice; the actual healer/art/effect check
+is recomputed by the client. A request alone grants no wound or cycle authority.
+
+This is a client-only preparation surface, never GM-authored output. The GM must
+not create or rewrite it. Current implementation is not connected to a player
+handler or accepted publication yet. Snapshot authentication, GM destination
+consequences, actual wound/effect/world/History application and operational GM
+examples remain the following functional block; unavailable UI wording remains.
+Exact pending retry preserves the original bytes and draw; a different request,
+changed source or invalid envelope cannot overwrite it. No currency/item/OD,
+wound, world schedule or History mutation is part of request staging.
+
 ## Natural recovery
 
 Every safe cycle adds `1 + Spiritual Healing tier` points to each eligible active

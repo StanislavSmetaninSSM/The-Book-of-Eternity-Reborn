@@ -1,5 +1,26 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Current WIP: actual self-request staging is implemented but UNCOMPILED/UNRUN.
+It reads14 distinct canonical source paths once, shares the parsed profile across
+wound/history/art/effect consumers, calls the extracted detached source preparation
+once, and draws only after eligibility and cycle admission. Existing scheduler
+control construction is reused by a read-only single-cycle binding helper. The
+closed v2 envelope retains its exact attempt, source fingerprint, roll mode and
+vector; exact retry performs no entropy and preserves bytes. All source baselines
+and request absence are checked freshly after arbitrary injected entropy through
+the existing coordinated writer. Readback uncertainty remains an exception, not
+a refusal/redraw. There is no wound/effect/world/History mutation at this stage.
+Six extra current-source/privacy/conflict/pending/mutable-control cases bring the
+request category to14 methods; the37 check cases are selected for the resolver
+source-preparation extraction. Fresh source review and owning build are pending.
+The new internal envelope is client-authored only; no GM response/UI capability
+is enabled by this block. Existing v1 accepted command parsing is unchanged.
+No speedup is claimed: this operation has no cross-call cache, uses one detached
+source set per call, retains mandatory fresh closing reads and repeats validation
+on a new request/retry. Raw remains outside checkout.
+
+Historical scaffold and causal preparation evidence follows.
+
 On paired fixture source `505bf795effda877fb3a0cdbaaf59e727cffd70f`, the fresh
 Unit-only rebuild (unchanged main assembly verified) exited0/26 warnings/0errors
 in2:34.36. Exact PlanOnly again selected8 cases/one60-second descriptor. Actual
