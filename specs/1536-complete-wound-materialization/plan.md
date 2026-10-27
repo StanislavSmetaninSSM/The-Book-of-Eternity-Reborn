@@ -1,3 +1,65 @@
+# US4 safe self-treatment — active functional work, 2026-10-27
+
+Issue #1536; branch `1536-linux-qualification-20261025`; recovered clean base and
+remote `8c53d9fac8c3810fa1b962eb976122a9a769f3e7`. The same environment is
+available again; no prior owned build/test is running. The user's current order
+is T094/T101, then the self-treatment portion of T096/T099/T104–T108, then the
+guided `/лечить` workflow. **T609-WIRE/RED/GREEN and full DFR are parked.**
+Their previously unrun/failed results remain open for their own route and overall
+acceptance; they are not prerequisites for this independent functional block.
+
+Goal: an eligible player outside spiritual conflict can treat their own exact
+active spiritual wound. One accepted attempt resolves the real tier/die/effect
+and complication check, applies active healing before natural recovery, advances
+one ordinary safe world cycle, and publishes wound/effects/History together.
+Failure still advances the cycle; retry cannot replace the die or heal twice.
+No self-treatment currency, item or OD spend. A resolver alone is not completion.
+
+Existing registration/progression T100, SpiritualHealingOutcomeMath and
+SpiritualWoundRecoveryMath are reused. They currently do not confer treatment
+authority. WoundTransitionReducer already handles typed treatment/recovery/heal,
+but the ordinary accepted command adapter is Mortal-only and spiritual recovery
+III/IV needs a lawful staged transition rather than a Mortal exception.
+
+Implementation sequence (WIP, no new runtime claim):
+
+- [ ] T094/T101: add the real SpiritualHealingResolver and exact self-target/art,
+  current wound/history, complication and accepted roll/effect authority. Preserve
+  tier-before-natural-20, natural-1 precedence, all margin bands and bounded heal.
+  Typed independent tests must reject a different actor/wound/realm, stale state,
+  malformed art and replaced die; exercise actual resolver, not copied arithmetic.
+- [ ] T096/T104/T108: add AfterlifeWoundHealingPlanner and self-authority using the
+  existing canonical lease, signed pending-turn reader and command/pending roots.
+  Bind one exact attempt/wound/scheduler cycle; preserve the die across repair and
+  classify exact replay before any new mutation. Reject conflict and insufficient
+  tier before a treatment attempt is admitted. Diagnosis remains available at 0.
+- [ ] T097/T105/T106: compose natural recovery after active treatment, using the
+  target's accepted tier and existing ProgressionScheduleService cycle identity.
+  Preserve all overflow, severity-I follow-up heal, safe/unsafe suppression and
+  per-wound tick seals. Prove tier-0 IV heals in 20 safe cycles and tier-V in four.
+- [ ] T099/T107: connect the authenticated contribution to existing wound/effect
+  and common accepted-plan assembly, including scheduler/profile/output/History
+  images under the existing transaction. Prove success, failed active treatment,
+  duplicate/changed retry, interrupted publication and no partial resource spend.
+- [ ] T109–T112: synchronize the afterlife matrix, rules/GM TaskGuide, one worked
+  success and failed-session example, manifest and source/documentation guards.
+  Update provisional unavailable UI wording only for an actually executable path.
+- [ ] Fresh affected managed builds, exact discovery/PlanOnly and selected owning
+  unit/integration/documentation controls; independent Sol SOURCE/OUTCOME review.
+  Astra/high receives the specific unresolved authority/staging/atomic-cycle design
+  question. Commit/push compact checkpoints and verify each remote SHA.
+
+Optimization assessment: pure arithmetic needs no cache. Read and validate one
+complete authoritative snapshot per operation, pass stable detached DATA through
+the existing stages and retain it only within that operation. Do not independently
+re-read/reparse the same profile, wound or effect collection in each consumer.
+Current lease/generation/physical before-image, history and authority checks remain
+fresh. Use existing service/repository contexts if repeated costly work is found;
+do not introduce a healing cache or diagnostic stack speculatively. Cheap fixtures
+precede genuine interaction; no full DFR or all-category sequence is selected here.
+All new raw remains outside checkout under `/workspace/tboe-linux-evidence-20261025`.
+No historical or external evidence is deleted. Linux does not establish Windows.
+
 # T609 genuine Compose RED scaffold — SOURCE/build prepared, runtime pending
 
 Source `455396ff907f855eaf4e3f4a6a38827aa12614d9` received separate Sol and
