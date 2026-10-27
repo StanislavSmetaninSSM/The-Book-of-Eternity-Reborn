@@ -1,5 +1,12 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Guided scaffold build1 on8bf7 failed before runtime: one CS1061 at new test108,
+AudioService exposes DisposeAsync rather than Dispose. Actual2:15.44,102warnings/
+1error; no tests started. The fixture now awaits existing DisposeAsync in finally.
+This corrects an actual missed static API check, with no production or test-selector
+change. Narrow SOURCE delta and fresh test-only Integration rebuild precede RED.
+Raw guided-build-1 remains external; first guided semantic outcome is still UNRUN.
+
 Next connected caller/guided scaffold (WIP, UNCOMPILED/UNRUN): two isolated
 `ExplorerWoundSelfTreatmentTests` use the existing browser prompt API and actual
 GameEngine runtime factory. Confirmed `/лечить` must retain a typed exact selection,

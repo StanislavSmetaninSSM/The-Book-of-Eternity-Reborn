@@ -105,7 +105,7 @@ public sealed class ExplorerWoundSelfTreatmentTests
             Assert.Null(await fixture.Files.ReadFileBytesAsync(ProgressionScheduleService.ReportPath));
             fixture.AssertResourcesUnchanged();
         }
-        finally { runtime.AudioService.Dispose(); }
+        finally { await runtime.AudioService.DisposeAsync(); }
     }
 
     [Fact]
