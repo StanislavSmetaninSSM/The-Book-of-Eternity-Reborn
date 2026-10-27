@@ -1,3 +1,14 @@
+# T609 RED fixture corrections — WIP, UNCOMPILED / UNRUN
+
+Independent Sol SOURCE found two prerequisite blockers before any build: the test's
+empty checkpoint lacked the required fingerprint; and constructing FileSystemManager
+performed real filesystem setup despite the file-free design. The fixture now supplies
+a literal fingerprint and selects the EXISTING passive timing context directly via
+its unchanged two-argument overload made internal. No filesystem host, callback or
+new recorder is introduced. Both fixes need narrow independent delta review; the
+entire scaffold remains UNCOMPILED / UNRUN until fresh affected builds and PREP.
+Original source count, parser, timer, test oracle, budgets and all fresh guards remain.
+
 # T609 shared-reader RED scaffold — WIP, UNCOMPILED / UNRUN
 
 The original private per-path byte lookup / strict UTF-8 / TrimStart BOM /

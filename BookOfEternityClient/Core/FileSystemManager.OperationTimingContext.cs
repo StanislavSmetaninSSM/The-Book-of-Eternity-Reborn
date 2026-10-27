@@ -40,7 +40,7 @@ public partial class FileSystemManager
     /// <returns>
     /// A restoring scope confined to the entering synchronous thread, or <see langword="null"/> when unnecessary.
     /// </returns>
-    private static IDisposable? EnterOperationTimingContext(Action<string, string, TimeSpan>? observer,
+    internal static IDisposable? EnterOperationTimingContext(Action<string, string, TimeSpan>? observer,
         OperationTimingAccumulator? recorder)
     {
         if (observer is null && recorder is null && _operationTimingContext is null) return null;

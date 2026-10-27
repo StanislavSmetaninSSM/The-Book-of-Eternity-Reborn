@@ -5,7 +5,6 @@ using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
-using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -33,7 +32,7 @@ public sealed class JointPrivateEffectSourceTests(ITestOutputHelper output)
         };
         var owner = JointPrivateFingerprintData.BeforeImages.Copy(supplied);
         var input = WoundAcceptedTurnTestFixture.CreateNoMechanicsInput();
-        var prefix = JointPrivateFingerprintData.Prefix.Capture(new JsonObject(), input, new JsonObject(), input);
+        var prefix = JointPrivateFingerprintData.Prefix.Capture(new JsonObject { ["fingerprint"] = "checkpoint" }, input, new JsonObject(), input);
         var data = JointPrivateFingerprintData.Capture(prefix, owner);
         supplied["alpha"]![0] = 0;
         var paths = new[] { "alpha", "beta", "gamma", "json-null", "absent" };
@@ -57,8 +56,6 @@ public sealed class JointPrivateEffectSourceTests(ITestOutputHelper output)
         }
 
         var recorder = new OperationTimingAccumulator();
-        var files = new FileSystemManager(TestRepoPaths.RepoRoot, NullLogger<FileSystemManager>.Instance,
-            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks { PassiveOperationTimings = recorder });
         var window = recorder.StartWindow();
         var operation = new DefaultOperationValidationService().BeginOperation();
         Dictionary<string, JsonNode?> first, second;
@@ -66,7 +63,7 @@ public sealed class JointPrivateEffectSourceTests(ITestOutputHelper output)
         try
         {
             Assert.Equal(new ValidationOperationState(0, 0, false), operation.CaptureState());
-            using (files.EnterOperationTimingContext())
+            using (FileSystemManager.EnterOperationTimingContext(null, recorder))
             {
                 var bytesBefore = GC.GetAllocatedBytesForCurrentThread(); var start = Stopwatch.GetTimestamp();
                 first = ReadActual(data, paths, operation);
