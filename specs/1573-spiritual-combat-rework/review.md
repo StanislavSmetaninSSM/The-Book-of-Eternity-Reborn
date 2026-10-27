@@ -94,4 +94,18 @@ Main/Fast и риски Fast recover/break/heal. Это read-only анализ, 
 
 Runtime/builds/balance UNRUN; performance — без новых исполняемых затрат,
 для будущего кода сохраняется operation cache/fresh authority. Диагностики нет.
-Независимое review поправок и source claims — следующий шаг.
+Независимое review `/root/review_mortal_comparison1573`, явно выбранные
+`gpt-6.1-sol/xhigh`, отдельный контекст, diff `a225d594..cb0232c2`:
+P1/P2 нет. Reviewer проверил источники/выборочный C# через Serena, подтвердил
+разделение GM guidance и runtime checks, отсутствие обязательной карты/зон,
+сохранение принятых arts. Результат готов к обсуждению направления B, не к исполнению.
+
+Consistency: актуальная spec фиксирует отказ от spatial model; старый reaction
+candidate помечен в gameplay/data-model/commands/plan/tasks; выбор D4 и пересборка
+единого решения обязательны. 11 Markdown файлов имеют разрешающиеся локальные
+ссылки; diff-check успешен; Spec Kit prerequisites -RequireTasks/-IncludeTasks
+указывает feature1573. Никакой implementation task не отмечен выполненным.
+Checkpoint `cb0232c2caa85590627e33c4b7acdb51478f7546` опубликован; remote SHA
+и exact GitHub readback comparison подтверждены. Issue#1573 обновлена текущими
+ограничениями/ссылками; предыдущий v1 обозначен частично отозванным.
+Clean restore UNRUN. Из review не следует доказательство игрового баланса.
