@@ -1,5 +1,28 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Current source block T104/T108: add the actual filesystem/lease-owned request
+staging entry point and eight typed tests using independent small canonical
+wound/profile/effect/History inputs. The new body is deliberately an unavailable
+semantic RED scaffold: UNCOMPILED/UNRUN; no entropy or canonical writes yet.
+Tests cover one retained separate draw, byte-identical exact pending retry,
+foreign request refusal, insufficient tier/stale wound/backlog refusal before
+entropy, changed source during injected entropy and invalid draw refusal.
+The new exact category `spiritual-self-treatment-request` owns those eight
+Unit methods exclusively and retains a60-second runtime bound. It does not
+claim signed-source reconstruction, accepted healing/recovery, cycle advancement,
+terminal History or guided UI. Source/freshness and fixture review precede its
+first build/run; actual source implementation follows observed semantic RED.
+
+Reuse plan: read each canonical source once, share the parsed profile/wound/effect
+DATA, and prepare the check source once before selecting its mode-dependent draw.
+Retain no entropy callback in any request/cache/authority. The injected entropy
+case must prove fresh exact source guards after arbitrary dependency execution;
+unchanged cached DATA cannot stand in for that closing proof. Use the existing
+secure GameLoop generator and coordinated writer; stage only the closed v2
+source at the existing command path, with no snapshot-token self-reference.
+The accepted GM-graph clarification received Astra/high independent ACCEPT on
+documentation checkpoint6d137cf4764bcaca8f2dea1efa3ba626d10367d0.
+
 Latest bounded result: corrected source
 `dbbec440b7ae8ea6497c011ea8cc7c4a51f3ec8e` freshly built the selected Unit
 ownership graph, exit0/0errors/75 warnings in9:19.05. Official PlanOnly selected

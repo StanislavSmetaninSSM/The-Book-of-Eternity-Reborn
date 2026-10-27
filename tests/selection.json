@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "spiritual-healing-check",
-      "reason": "T094/T101 actual actor/art, retained dice and effect/complication decision; initial semantic RED precedes implementation. Full cycle/publication categories will be added with their production slice.",
+      "category": "spiritual-self-treatment-request",
+      "reason": "T104/T108 actual staged self request, retained separate entropy, exact pending retry and refusal before treatment/world mutation. Initial scaffold semantic RED; accepted cycle/History/UI are pending.",
       "contracts": [
-        "#1536 US4 FR042–045: canonical scalar art, sealed mode-dependent draw, tier gate and real result bands"
+        "#1536 US4 FR042–049: exact selected source, sufficient tier, one ordinary safe cycle identity, retained draw and replay-safe pending request"
       ]
     }
   ]

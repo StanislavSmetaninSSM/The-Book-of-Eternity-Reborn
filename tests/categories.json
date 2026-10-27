@@ -22335,6 +22335,17 @@
             ]
         },
         {
+            "id": "spiritual-self-treatment-request",
+            "responsibility": "Actual owned self-treatment request staging, retained separate dice, exact pending retry and refusal before entropy or canonical mutation.",
+            "excludes": "Accepted healing/recovery effect execution, scheduler advancement, terminal History and guided UI.",
+            "changeHints": ["BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority*"],
+            "related": [],
+            "requirements": { "frontendBuild": false, "exclusive": true },
+            "timeoutMinutes": 1,
+            "expectedSeconds": null,
+            "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.SpiritualSelfTreatmentRequestTests.*"] }]
+        },
+        {
             "id": "spiritual-healing-check",
             "responsibility": "Exact spiritual healing actor/art, retained die, roll-effect and complication decision; detached DATA only.",
             "excludes": "Arithmetic helper matrices, accepted world-cycle publication, combat costs and service UI.",
