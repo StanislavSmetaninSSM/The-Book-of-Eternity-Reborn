@@ -1,5 +1,20 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Finite snapshotfix SOURCE: architectural followthrough fc393 finding-free; Sol
+found no API/lease/authority blocker and selected existing browser-pending-snapshot-
+roundtrip2 (Unit actual InlineData(false)1+Integration1), plus three existing cheap
+PendingTurnSnapshotAuthority generic woundcoverage methods (all present, missing
+path MemberData, signed absence). New focused catalog owner records that existing
+responsibility with60s budget, no new Facts/theory/data or limit increase. Exact
+case count awaits fresh discovery/PlanOnly. Then actual guided2/180s currentcausal.
+Because Unit methods selected, fresh owning Integration+Unit refsfalse justified.
+Retain c6 contract10/graph1/replay1 and prior source1/35: Engine-only wiring does not
+occur in their direct fixture call paths; no repeat solely for assembly hash.
+Root independently confirms finitechoice. Current code/catalognowUNCOMPILED/UNRUN;
+final exactcatalog source-read before owningbuild, no newwholeaudit or diagnosticrun.
+No GM field/grammar/mechanic changes: signed snapshot input role is client-owned
+technical state, documented here; existing GM wound contract remains accurate.
+
 Next coherent actual-caller fix WIP (UNCOMPILED/UNRUN): successful actual
 StageSelfTreatment alone registers WoundCommandPath as ValidationSnapshotFiles,
 never BaselineFiles/BackupFiles. A private actual-observed signed-v2 classifier

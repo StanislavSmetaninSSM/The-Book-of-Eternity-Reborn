@@ -1,6 +1,42 @@
 {
     "schemaVersion": 1,
     "categories": [
+{
+  "id": "spiritual-healing-snapshot-beforeimage-controls",
+  "responsibility": "Three existing generic wound snapshot coverage methods: all-present authority, each missing canonical before-image refusal, and exact signed absence of new surfaces. Keeps the generic authority contract strict while actual signed spiritual preparation input receives its narrow GameEngine role.",
+  "excludes": "No new theory/data matrix; no game-world setup, Mortal recovery timeout workload, broad snapshot suite or spiritual source admission expansion.",
+  "changeHints": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualHealingSnapshot.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs"
+  ],
+  "related": [
+    {
+      "id": "browser-pending-snapshot-roundtrip",
+      "when": "Preserve actual ordinary/browser original snapshot consumers separately."
+    },
+    {
+      "id": "spiritual-healing-guided-self",
+      "when": "Actual v2 caller capture and downstream acceptance use the classified input role."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.HasValidatedRollbackSnapshotCoverage_AllPresentWoundPaths_Accepts",
+        "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.HasValidatedRollbackSnapshotCoverage_PresentPathWithoutSnapshot_FailsClosed",
+        "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.HasValidatedRollbackSnapshotCoverage_SignedAbsenceOfNewSurfaces_Accepts"
+      ]
+    }
+  ]
+} ,
     {
       "id": "spiritual-healing-guided-contract",
       "responsibility": "Five focused typed selection/phase/blob, actual response transport/ordinary absence, unbound graph refusal and GM worked-example contracts, with directly affected existing afterlife inventory and read-only documentation guards.",
