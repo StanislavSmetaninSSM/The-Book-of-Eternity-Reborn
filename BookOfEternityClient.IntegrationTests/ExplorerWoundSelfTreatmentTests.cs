@@ -20,6 +20,85 @@ public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
     private const string Owner = "wound-guided-client";
 
     [Fact]
+    public async Task HandledGraphRepairPacketNeedsNoPhysicalLeaseWhileMainHoldsIt()
+    {
+        const string path = "game_state/control/validation_repair_request.json";
+        var root = Path.Combine(Path.GetTempPath(), "boe-graph-repair-observer-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        var armed = false;
+        var unexpectedOpens = 0;
+        try
+        {
+            var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,
+                PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+                {
+                    BeforeCanonicalWriteLockOpenAsync = () =>
+                    {
+                        if (armed)
+                        {
+                            Interlocked.Increment(ref unexpectedOpens);
+                            throw new InvalidOperationException("An unchanged or refused repair observation must not open another physical lease.");
+                        }
+                        return Task.CompletedTask;
+                    }
+                });
+            files.EnsureDirectoryStructure();
+            await SessionOperationContext.RunParticipatingCurrentSessionAsync(files, async () =>
+            {
+                await files.WriteFileAtomicAsync(path, "{\"revalidationAttempt\":1}");
+                var firstCalls = 0;
+                var handled = await ObserveGraphRepairPacketAsync(files, path, null, (lease, raw) =>
+                {
+                    files.EnsureCanonicalWriteLeaseActive(lease);
+                    Assert.Equal("{\"revalidationAttempt\":1}", CanonicalJsonUtf8.DecodeOneOptionalBom(raw));
+                    firstCalls++;
+                    return Task.CompletedTask;
+                }, CancellationToken.None);
+                Assert.NotNull(handled);
+                Assert.Equal(1, firstCalls);
+                var begin = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+                // Capture actual main participation before the held physical lease exists.
+                var observer = Task.Run(async () =>
+                {
+                    await begin.Task;
+                    return await ObserveGraphRepairPacketAsync(files, path, handled,
+                        (_, _) => throw new InvalidOperationException("An unchanged packet was processed again."), CancellationToken.None);
+                });
+                try
+                {
+                    await using var heldMainLease = await files.AcquireCanonicalWriteLeaseAsync();
+                    armed = true;
+                    begin.SetResult(true);
+                    Assert.Equal(handled, await observer);
+                    Assert.Equal(0, unexpectedOpens);
+                }
+                finally
+                {
+                    armed = false;
+                    begin.TrySetCanceled();
+                    if (!observer.IsCompleted)
+                    {
+                        try { await observer; }
+                        catch (OperationCanceledException) { }
+                    }
+                }
+                files.DeleteFile(path);
+                await files.WriteFileAtomicAsync(path, "{\"revalidationAttempt\":2,\"actual\":\"second_issue_body\"}");
+                armed = true;
+                try
+                {
+                    var failure = await Assert.ThrowsAsync<InvalidDataException>(() => ObserveGraphRepairPacketAsync(files,
+                        path, handled, (_, _) => throw new InvalidOperationException("A second packet was processed."), CancellationToken.None));
+                    Assert.Contains("second_issue_body", failure.Message);
+                    Assert.Equal(0, unexpectedOpens);
+                }
+                finally { armed = false; }
+            });
+        }
+        finally { Directory.Delete(root, recursive: true); }
+    }
+
+    [Fact]
     public async Task ActualGraphBearingSelfTreatmentRepairsGraphsWithoutChangingItsAttempt()
     {
         const string repairPath = "game_state/control/validation_repair_request.json";
@@ -83,44 +162,37 @@ public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
         {
             try
             {
-                string? handled = null;
+                byte[]? handled = null;
                 while (!stop.IsCancellationRequested)
                 {
-                    // Presence wakes this controlled file-GM; the leased packet read below supplies actual DATA.
-                    if (fixture.Files.FileExists(repairPath))
+                    handled = await ObserveGraphRepairPacketAsync(fixture.Files, repairPath, handled, async (lease, raw) =>
                     {
-                        await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync(cancellationToken: stop.Token);
-                        var raw = await fixture.Files.ReadFileAsync(lease, repairPath);
-                        if (raw is not null && raw != handled)
+                        Assert.Equal(1, Interlocked.Increment(ref repairCount));
+                        var repair = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(raw))!.AsObject();
+                        Assert.NotNull(turn);
+                        Assert.Equal(turn!.SessionId, repair["sessionId"]!.GetValue<string>());
+                        Assert.Equal(turn.RequestId, repair["requestId"]!.GetValue<string>());
+                        Assert.Equal(turn.TurnNumber, repair["turnNumber"]!.GetValue<int>());
+                        var issue = Assert.Single(repair["errors"]!.AsArray());
+                        Assert.Equal("spiritual_self_treatment_admission_invalid", issue!["code"]!.GetValue<string>());
+                        Assert.Contains("GM-authored spiritual destination graphs are required", issue["actual"]!.GetValue<string>());
+                        Assert.False(repair["fullTurnResubmissionRequired"]!.GetValue<bool>());
+                        foreach (var pair in retainedSources!)
+                            Assert.Equal(pair.Value, await fixture.Files.ReadFileBytesAsync(lease, pair.Key));
+                        fixture.AssertMutationRootsUnchanged(unpublished!);
+                        authoredGraphs = AuthorRequestedGraphs(original, turn.SpiritualHealing!["destinationGraphs"]!.AsArray());
+                        await fixture.Files.WriteFileAtomicAsync(lease, "output/interface_updates.json", new JsonObject
                         {
-                            handled = raw;
-                            Assert.Equal(1, Interlocked.Increment(ref repairCount));
-                            var repair = JsonNode.Parse(raw)!.AsObject();
-                            Assert.NotNull(turn);
-                            Assert.Equal(turn!.SessionId, repair["sessionId"]!.GetValue<string>());
-                            Assert.Equal(turn.RequestId, repair["requestId"]!.GetValue<string>());
-                            Assert.Equal(turn.TurnNumber, repair["turnNumber"]!.GetValue<int>());
-                            var issue = Assert.Single(repair["errors"]!.AsArray());
-                            Assert.Equal("spiritual_self_treatment_admission_invalid", issue!["code"]!.GetValue<string>());
-                            Assert.Contains("GM-authored spiritual destination graphs are required", issue["actual"]!.GetValue<string>());
-                            Assert.False(repair["fullTurnResubmissionRequired"]!.GetValue<bool>());
-                            foreach (var pair in retainedSources!)
-                                Assert.Equal(pair.Value, await fixture.Files.ReadFileBytesAsync(lease, pair.Key));
-                            fixture.AssertMutationRootsUnchanged(unpublished!);
-                            authoredGraphs = AuthorRequestedGraphs(original, turn.SpiritualHealing!["destinationGraphs"]!.AsArray());
-                            await fixture.Files.WriteFileAtomicAsync(lease, "output/interface_updates.json", new JsonObject
-                            {
-                                ["dialogueOptions"] = new JsonArray(), ["spiritualHealingGraphs"] = authoredGraphs.DeepClone(),
-                                ["timestamp"] = DateTime.UtcNow.ToString("o")
-                            }.ToJsonString());
-                            await fixture.Files.WriteFileAtomicAsync(lease, readyPath, JsonSerializer.Serialize(new
-                            {
-                                sessionId = turn.SessionId, requestId = turn.RequestId, turnNumber = turn.TurnNumber,
-                                updatedAtUtc = DateTime.UtcNow.ToString("o"), note = "Добавлены только запрошенные ослабленные последствия."
-                            }, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-                            repaired = true;
-                        }
-                    }
+                            ["dialogueOptions"] = new JsonArray(), ["spiritualHealingGraphs"] = authoredGraphs.DeepClone(),
+                            ["timestamp"] = DateTime.UtcNow.ToString("o")
+                        }.ToJsonString());
+                        await fixture.Files.WriteFileAtomicAsync(lease, readyPath, JsonSerializer.Serialize(new
+                        {
+                            sessionId = turn.SessionId, requestId = turn.RequestId, turnNumber = turn.TurnNumber,
+                            updatedAtUtc = DateTime.UtcNow.ToString("o"), note = "Добавлены только запрошенные ослабленные последствия."
+                        }, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+                        repaired = true;
+                    }, stop.Token);
                     await Task.Delay(500, stop.Token);
                 }
             }
@@ -194,6 +266,20 @@ public sealed class ExplorerWoundSelfTreatmentTests(ITestOutputHelper output)
                 await runtime.AudioService.DisposeAsync();
             }
         }
+    }
+
+    private async Task<byte[]?> ObserveGraphRepairPacketAsync(FileSystemManager files, string path, byte[]? handled,
+        Func<FileSystemManager.CanonicalWriteLease, byte[], Task> processFirst, CancellationToken stop)
+    {
+        if (!files.FileExists(path)) return handled;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync(cancellationToken: stop);
+        var raw = await files.ReadFileBytesAsync(lease, path);
+        if (raw is null || handled is not null && raw.AsSpan().SequenceEqual(handled)) return handled;
+        output.WriteLine("Observed graph repair packet:\n" + CanonicalJsonUtf8.DecodeOneOptionalBom(raw));
+        if (handled is not null)
+            throw new InvalidDataException("Unexpected further graph repair packet:\n" + CanonicalJsonUtf8.DecodeOneOptionalBom(raw));
+        await processFirst(lease, raw);
+        return raw;
     }
 
     private static JsonArray AuthorRequestedGraphs(WoundMaterializationEnvelope original, JsonArray requests)

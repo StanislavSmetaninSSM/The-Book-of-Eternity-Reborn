@@ -2,6 +2,35 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "spiritual-healing-graph-repair-observer",
+  "responsibility": "One cheap real-main/physical-lease control: the graph fixture must process its first packet under a legitimate fresh lease, skip an unchanged handled packet while Main holds that lease without another lock-open, and refuse a changed second packet with full body before mutation permission.",
+  "excludes": "No GameEngine/world bootstrap, healing publication, broad filesystem matrices, held Mortal runs or diagnostic framework.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/ExplorerWoundSelfTreatmentTests.cs"
+  ],
+  "related": [
+    {
+      "id": "spiritual-healing-actual-graph-repair",
+      "when": "Only after this causal observer control is GREEN, run the real graph-bearing caller separately."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ExplorerWoundSelfTreatmentTests.HandledGraphRepairPacketNeedsNoPhysicalLeaseWhileMainHoldsIt"
+      ]
+    }
+  ]
+},
+{
   "id": "spiritual-healing-actual-graph-repair",
   "responsibility": "One real rank-III/tier-V console self-treatment caller with a real retained client draw: missing GM-authored destination graphs request ordinary repair; exact original/attempt stays fixed, authored graphs then publish wound/effects/History/one cycle/no cost.",
   "excludes": "External GM providers, fresh-process recovery, helper/entity/combat treatment, broad admission matrices, performance diagnostics and held Mortal work.",

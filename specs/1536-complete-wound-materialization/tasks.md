@@ -14412,8 +14412,9 @@ close full source-action/terminal/pending contracts or any top-level story task.
   remains UNKNOWN after its180s timeout/noTRX; explicit HOLD forbids retry or a new
   diagnostic chain now. Preparation6 remains unqualified after its category timeout.
   Actual browser GameEngine/guided self2/2 and owner/output2/2 now pass on316ee621
-  with controlled native-shaped GM completion. Actual console, graph-bearing GM
-  caller/repair, fresh-process cleanup and helper/entity follow-through remain open;
+  with controlled native-shaped GM completion. Actual console cancel/confirm and
+  same-Engine publication also pass1/1 on7b. Graph-bearing GM caller/repair,
+  fresh-process cleanup and helper/entity follow-through remain open;
   this does not complete T104 or T105–T108.
   Current self-request prerequisite (2026-10-27), source
   `33d8aeac818caafe4d695d36ff06e01e16aa5999`: actual canonical-lease-owned staging,
@@ -14425,8 +14426,8 @@ close full source-action/terminal/pending contracts or any top-level story task.
   remains open beyond the qualified self backend: signed accepted admission,
   wound/effect/natural recovery, one world cycle and History/common publication now
   work in the finite5+24+2 contracts above; actual browser handler also completes
-  the real caller. Console, GM graph-bearing caller/repair and wider materialization
-  remain in progress. Exact evidence and independent OUTCOME status are in plan.md.
+  the real browser and console callers. GM graph-bearing caller/repair and wider
+  materialization remain in progress. Exact evidence and independent OUTCOME status are in plan.md.
   T108 helper/entity authority is not claimed by this self-only prerequisite.
   Raw stays outside checkout; exact sources/artifacts/times are in current plan.
 
@@ -14478,8 +14479,9 @@ close full source-action/terminal/pending contracts or any top-level story task.
 - [ ] T120 [US5] Implement Self-first nearby entity discovery, hidden exact bindings, visible disambiguation, and fresh reachability/consent/wound revalidation in `BookOfEternityClient/Services/WoundTargetSelectionService.cs`
 - [ ] T121 [US5] Implement the shared target -> wound/diagnosis -> route/helper -> requirements/quote -> confirmation -> result application workflow in `BookOfEternityClient/Services/WoundApplicationService.cs`
   Self-only browser selection/confirmation/cancellation and actual GameEngine
-  completion pass2/2 on316ee621; this does not close the wider target/diagnosis/
-  route/helper/quote workflow, console parity or graph-bearing caller repair.
+  completion pass2/2 on316ee621; actual console cancel/confirm/same-Engine
+  publication also pass1/1 on7b. This does not close the wider target/diagnosis/
+  route/helper/quote workflow, full console parity or graph-bearing caller repair.
 - [ ] T122 [US5] Implement one-shot exact wound command staging/consumption and stale/replay rejection in `BookOfEternityClient/Services/WoundCommandState.cs`
 - [ ] T123 [US5] Add escaped Russian console list/detail/History/prompts/results using shared blocks in `BookOfEternityClient/UI/ExplorerWoundCommandResultBuilder.cs` and `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Wounds.cs`
 - [ ] T124 [US5] Register all command aliases and route both Mortal/afterlife console actions to the shared handler in `BookOfEternityClient/CommandProtocol/ExplorerCommandCatalog.cs` and `BookOfEternityClient/UI/ExplorerMode.cs`

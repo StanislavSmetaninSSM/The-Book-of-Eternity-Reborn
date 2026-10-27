@@ -1,5 +1,36 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Combined-log inference was narrowed and then independently resolved by root,
+Sol and the bounded architectural reviewer: post-seal count1 alone was ambiguous,
+but the later ValidateCurrentGameStateOrShowErrors log with source обработки хода
+can only occur at1187 after a matching first repair-ready and next refresh.
+Therefore first GM lease, exact packet/original/no-write checks, graphs and ready
+DID execute; the later IOException is a subsequent observer acquisition. Actual
+lock holder/time and the two later world-validation issues remain UNKNOWN.
+Production3690 consumes ready but leaves the original request during validation;
+the fixture reacquired a physical lease solely to discover unchanged handled raw.
+No new game defect or completed healing is claimed.
+
+Causal observer scaffold WIP, UNCOMPILED/UNRUN. Extracted that SAME current
+acquire-before-comparison observation into one narrow private test helper, keeping
+the confirmed defect temporarily for owned causal RED only. New minimal typed
+control uses real SessionOperationContext main admission, legitimate first packet
+handling, then starts the observer from the same main before Main acquires its
+held physical lease. An armed existing lock-open hook fails immediately if the
+observer requests another physical lease; required outcome is unchanged packet,
+zero extra lock-opens. After release, a distinct packet must refuse with its full
+body and no lease. No GameEngine/world bootstrap, new production API, permission
+seed or diagnostics framework. Exact cheap1/60s category; heavy1/180s unchanged.
+Finite SOURCE/PREP then Integration-only refsfalse build and cheap RED only.
+After genuine RED, minimal GREEN will move physical observation-only packet bytes
+before lease, skip unchanged bytes and refuse distinct second packet without
+permission; FIRST authoring still requires current own lease/exact reread and all
+original source fences. Cheap GREEN must pass before another heavy caller.
+Optimization is correctness here: remove one unneeded physical acquisition on
+unchanged/refusal-only observations, not required first mutation authority. Counts
+are tested directly; no timing speedup claim. All previous passed gates retained.
+
+
 Revised graph caller on clean95 is a complete FAIL, not a timeout or accepted
 publication: exact1/1 executed, exit1, total50.9737931s/category40.7064769<180,
 no skips/duplicates, bothcleanuptrue. TRXcbc0a5f1f92177bb3c3af8daeb3670a170f220b0c82f7fc41ff4b51993176146.
