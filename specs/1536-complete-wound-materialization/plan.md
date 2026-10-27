@@ -1,5 +1,17 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+On paired fixture source `505bf795effda877fb3a0cdbaaf59e727cffd70f`, the fresh
+Unit-only rebuild (unchanged main assembly verified) exited0/26 warnings/0errors
+in2:34.36. Exact PlanOnly again selected8 cases/one60-second descriptor. Actual
+run completed8 failures in45.6632125s, no timeout/skip/duplicates, both cleanup
+flags true: five now reach the unavailable staging result assertions (semantic
+RED); three stop in the canonical no-mutation oracle, which incorrectly assumed
+the owned fixture root was the canonical storage root. The byte oracle and
+injected mutation now resolve actual canonical paths through FileSystemManager;
+they retain exact bytes and full namespace coverage. The request remains unimplemented.
+No eight-case semantic-RED claim is made. External evidence is
+`us4-self-healing/request-fixture-build-2` and `request-fixture-red-2`.
+
 Request scaffold evidence on `3dad78af016ca3ec03835685627e4486ed8f5643`:
 fresh owning Unit build exit0/75 warnings/0 errors in7:42.53; official PlanOnly
 selected exactly8 methods/8 cases/one exclusive60-second descriptor. Actual run

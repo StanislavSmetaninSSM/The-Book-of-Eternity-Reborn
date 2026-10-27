@@ -233,15 +233,15 @@ public sealed class SpiritualSelfTreatmentRequestTests
         internal async Task<JsonObject> ReadRequestAsync(FileSystemManager.CanonicalWriteLease lease) =>
             JsonNode.Parse((await Files.ReadFileAsync(lease, AcceptedMechanicsPlan.WoundCommandPath))!)!.AsObject();
 
-        internal string[] CanonicalBytes() => Directory.EnumerateFiles(Path.Combine(_root, "game_state"), "*",
+        internal string[] CanonicalBytes() => Directory.EnumerateFiles(Files.ResolvePath("game_state"), "*",
                 SearchOption.AllDirectories)
-            .Where(path => Path.GetRelativePath(_root, path).Replace(Path.DirectorySeparatorChar, '/') != AcceptedMechanicsPlan.WoundCommandPath)
+            .Where(path => path != Files.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath))
             .Order(StringComparer.Ordinal).Select(path => Path.GetRelativePath(_root, path) + "\u001f" +
                 Convert.ToBase64String(File.ReadAllBytes(path))).ToArray();
 
         internal void ChangeSoulTierDuringEntropy()
         {
-            var path = Path.Combine(_root, "game_state", "meta", "soul_state.json");
+            var path = Files.ResolvePath("game_state/meta/soul_state.json");
             var root = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(File.ReadAllBytes(path)))!.AsObject();
             root["afterlifeCombatProfile"]!["artTiers"]!["spiritual_healing"] = 3;
             File.WriteAllText(path, root.ToJsonString());
