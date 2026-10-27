@@ -1,5 +1,36 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Actual snapshot-role qualification on clean51e07: fresh owning Integration build
+0errors/137warnings/7:09.15 and Unit refsfalse0errors/26warnings/2:07.17;
+all master/dependency pins match. Official PlanOnly supersedes static44 estimate:
+46cases/4descriptors (generic42, browser2, guided2),18.4701074s,0executed.
+Generic beforeimage42/42PASS16.8719320s and browser2/2PASS30.9974996s,
+complete/no timeout/duplicates/bothcleanuptrue. Raw preparation-input-owning-build-1
+and preparation-input-functional-1 remain external. Independent outcome pending.
+
+Guided attempt on51e07 timed out124 at category180.2330555s/180,
+total192.4901655s, noTRX/0reported completed (started/case outcomes UNKNOWN),
+bothcleanuptrue. Generic runner text incorrectly says8minutes; limit unchanged.
+The retained actual fixture proves native-shaped GM completion was reached, then
+ordinary repair waited on the sole admission issue cycle_invalid. Signed schedule
+captured rollback pending0/0/0 while Stage/control use prepared1/1/1. Source16
+comparison:14 exact byte/absence matches; only schedule and lawful new GM report
+differ (report already excluded from source freshness). Preturn initialization
+creates/validates schedule BEFORE backup, so this is an existing baseline with a
+new prepared validation image, not a new rollback-role exception. No performance
+hang inference, additional diagnostic run, reroll or budget increase is justified.
+The complete owned fixture is retained externally under the guided attempt.
+
+Next finite correction: after successful self Stage, register SchedulePath in
+the existing ValidationSnapshotFiles beside the staged wound source. Preserve
+true rollback bytes/hash0, generic coverage, source16 and fresh authority fences.
+This reuses the existing per-turn snapshot owner and incurs no extra reads,
+parsing, cache or lifetime extension; GM grammar/docs remain accurate. Exact
+SOURCE plus fresh owning Integration and guided2 are pending. Retain passed42+2
+and c6 contract10/graph1/samePIDreplay1 on unchanged dependencies, subject to the
+finite independent selection review. Mortal/preparation timeout blockers and
+T609/fullDFR/Windows HOLD remain; actual console/provider/freshprocess unproved.
+
 Finite snapshotfix SOURCE: architectural followthrough fc393 finding-free; Sol
 found no API/lease/authority blocker and selected existing browser-pending-snapshot-
 roundtrip2 (Unit actual InlineData(false)1+Integration1), plus three existing cheap
