@@ -1,4 +1,4 @@
-# T609 equal-work cost control — actual PASS, independent OUTCOME pending
+# T609 equal-work cost control — actual PASS, independent OUTCOME accepted
 
 On Linux, runtime checkpoint `f1855971c9df93a50bad91d6ea862b586d814437`
 used compiled source `73ba6d307132fcf37f3c29a6f0e8307f00d5ef54`; the exact
@@ -20,6 +20,9 @@ Nested key/lookup/copy intervals overlap and must not be summed. Raw remains in
 external `dfr-prefix/actual-t609-effect-source-cost-1`, with verification and
 PREP under `t608-counter-scaffold`. Production parser-policy eligibility, failure
 parity, GREEN and a new full DFR admission remain open; no runtime retry is admitted.
+Independent Sol OUTCOME accepted the exact runtime/provenance/cleanup and this
+bounded checkpoint. The allocation signal supports a limited next design decision;
+elapsed variation does not establish production speedup.
 
 # T609 equal-work prototype — fresh build and PlanOnly, runtime pending
 

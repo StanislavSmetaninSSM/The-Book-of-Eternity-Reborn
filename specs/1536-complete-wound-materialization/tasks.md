@@ -1,6 +1,6 @@
 # T609 retained effect-source DATA audit — #1536
 
-- [ ] T609-COST Independently review and run one bounded, file-free equal-work
+- [x] T609-COST Independently review and run one bounded, file-free equal-work
   prototype with real operation-service key, lookup and copies before deciding
   whether production reuse merits further work. Preserve the accepted causal RED.
 
