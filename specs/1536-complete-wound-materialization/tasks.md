@@ -12,7 +12,7 @@
   source/PDB/copies, exact cheap regressions, strict complete storage and resource/PREP
   before copy then candidate in original bounds. No automatic full-positive release.
 
-- [ ] T608-COPY-TAIL-RED Add one compilable ctor-only genuine-event visibility
+- [x] T608-COPY-TAIL-RED Add one compilable ctor-only genuine-event visibility
   control with the existing transfer boundary, preserve all closing prerequisites,
   then prove missing live-prefix rows as the sole final causal RED. No game runtime.
 - [ ] T608-COPY-TAIL-GREEN After accepted RED, use the same existing writer Flush

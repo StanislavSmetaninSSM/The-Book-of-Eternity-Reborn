@@ -1,3 +1,36 @@
+# T608 tail causal RED accepted — bounded GREEN next
+
+Independent SOURCE/PREP/OUTCOME accept the prerequisite-complete visibility RED at
+runtime/compiled Integration 209bd6016b2e8bc1e7ff17d01594be3715c36921. Exactly one
+ctor-only case completed: one expected final failure at source line 148, no timeout,
+skip, duplicate or underfill; category 11.3335321s, framework 0.6328020s. Both process
+cleanup flags pass, actual testhost 194398 ended and the marked root is absent.
+The exact functional sentinel was checked before successful separate full closing.
+
+Actual live prefix is 301 bytes/two complete message rows/zero timing events and
+is explicitly an incomplete container. Closed gzip is 852 bytes/2,500 decoded bytes,
+seven rows including all four original events/two exact source pairs; strict EOF,
+CRC/ISIZE/no trailing data, stored/decoded identity and queue/writer accounting pass.
+This proves that current transfer alone leaves small completed events buffered until
+close. It establishes visibility cost/behavior only, not the whole COPY timeout cause.
+Original TRX, oracle, prefix and capture are external in actual-t608-copy-tail-red-1;
+compact/full verification and independent reviews remain in t608-counter-scaffold.
+
+The fresh affected build passed zero errors in 5:21.55. Actual warnings are 6,653:
+101 exact previous non-CS1591 warnings plus 6,552 unchanged legacy CS1591 enabled
+because Root omitted the existing NoWarn=1591 flag. Independent exact comparison
+accepts this actual build without a suppression-only repeat; neither changed C# file
+introduces warnings. All current 33 artifacts, 11 PE/PDB pairs and 76 source joins,
+plus actual loaded identities, match. Other four owning projects remain qualified F6.
+Discovery 966/12,591 is fully mapped; exact singleton PlanOnly ran zero tests.
+
+Bounded GREEN may now add only the same existing writer Flush and finite transfers
+at the three existing tail phases, with at most two real final assertion phase names.
+Retain original bodies/defaults/guards/owner/error policy and byte-exact cheap control.
+SOURCE, fresh affected build/current bindings and cheap GREEN precede any separate
+COPY-only PREP. Genuine COPY/CANDIDATE and full-positive remain unqualified/held;
+both incomplete COPY raw/roots and unmatched full-game evidence remain protected.
+
 # T608 tail RED scaffold frozen — uncompiled and unrun
 
 Four source/catalog paths are frozen: one new ctor-only Fact, the current
