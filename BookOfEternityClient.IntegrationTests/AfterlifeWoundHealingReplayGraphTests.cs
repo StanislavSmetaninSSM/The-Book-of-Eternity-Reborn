@@ -101,6 +101,26 @@ public sealed class AfterlifeWoundHealingReplayGraphTests
             .ValidateAcceptedTurnInterfacePayloadAsync();
         Assert.DoesNotContain(interfaceIssues, i => i.Severity == IssueSeverity.Error);
         await fixture.PublishAsync();
+        // The real ordinary caller validates I after the common batch consumes its request.
+        var publishedInterface = new ValidationService(fixture.Files, NullLogger<ValidationService>.Instance);
+        var publishedIssues = await publishedInterface.ValidateAcceptedTurnInterfacePayloadAsync();
+        Assert.True(!publishedIssues.Any(i => i.Severity == IssueSeverity.Error),
+            string.Join("\n", publishedIssues.Select(i => i.Code + ":" + i.Actual)));
+        var interfaceRoot = JsonNode.Parse((await fixture.Files.ReadFileAsync("output/interface_updates.json"))!)!.AsObject();
+        interfaceRoot["dialogueOptions"] = new JsonArray("Тихо продолжить восстановление.");
+        await fixture.Files.WriteFileAtomicAsync("output/interface_updates.json", interfaceRoot.ToJsonString());
+        var normalizedIssues = await publishedInterface.ValidateAcceptedTurnInterfacePayloadAsync();
+        Assert.DoesNotContain(normalizedIssues, i => i.Severity == IssueSeverity.Error);
+        var normalizedInterface = (await fixture.Files.ReadFileAsync("output/interface_updates.json"))!;
+        var normalizedRoot = JsonNode.Parse(normalizedInterface)!.AsObject();
+        Assert.IsType<JsonObject>(Assert.Single(normalizedRoot["dialogueOptions"]!.AsArray()));
+        normalizedRoot["spiritualHealingGraphs"]![0]!["stageRef"] = "foreign_published_graph";
+        var replacedGraph = normalizedRoot.ToJsonString();
+        await fixture.Files.WriteFileAtomicAsync("output/interface_updates.json", replacedGraph);
+        var changedGraphIssues = await publishedInterface.ValidateAcceptedTurnInterfacePayloadAsync();
+        Assert.Contains(changedGraphIssues, i => i.Code == "spiritual_healing_interface_unbound");
+        Assert.Equal(replacedGraph, await fixture.Files.ReadFileAsync("output/interface_updates.json"));
+        await fixture.Files.WriteFileAtomicAsync("output/interface_updates.json", normalizedInterface);
         var after = Assert.Single((await fixture.ReadWoundsAsync()).Occurrences).Wound;
         Assert.Equal(1, after.Severity.Rank);
         Assert.Equal(0, after.Recovery.CurrentStepProgress);

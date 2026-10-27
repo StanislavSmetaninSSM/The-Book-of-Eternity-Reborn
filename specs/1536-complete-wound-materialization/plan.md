@@ -1,5 +1,15 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Same finite test-only build will also carry the accepted known graph-I causal
+question in the EXISTING authored-graph Fact: after real common Publish, public I
+must admit its accepted graphs with consumed source, allow ordinary dialogue
+normalization, and reject a replaced foreign stageRef without rewriting that
+response. Old exact rank/effect-generation/no-cost assertions stay. Current live-
+only adapter is expected to fail the first post-Publish assertion; this is a
+separate semanticRED from guided fixture setup. No new Fact/category/budget or
+Mortal work; one existing authored-graphs singleton120s alongside guided2/180s,
+separate original owning categories, after independent finite SOURCE/PREP.
+
 The pre-turn refusal's actual domain issues were discarded by the fixture's
 NullLogger; retained raw/TRX only show the display/input stack, so no field-level
 cause is established. Reuse EXISTING SpiritualLifecycleTestLogger via the actual
