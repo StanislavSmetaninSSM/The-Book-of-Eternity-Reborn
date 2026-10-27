@@ -1,3 +1,25 @@
+# T608 per-call RED coherent source frozen — UNCOMPILED / UNRUN
+
+The sole new C# partial remains exactly saved at0a586f5e8, SHA256
+70a8d566dc5933dd09c847559abe6ffc2165354a194eb239966f27b186b991d4.
+Catalog/CI now add exactly two owners, with every previous object/budget unchanged:
+core-joint-candidate-per-call-source,1case/2min (RED); and
+core-joint-candidate-per-call-lifetime,1case/1min (GREEN-only). Static catalog970 /
+CI50 are not discovery or an aggregate run command. Genuine Candidate remains
+unwired and byte-exact; all existing C#/projects are unchanged from853e10671.
+
+Static proof passes:21 protected whole files,6 exact F6 semantic guard/test files,
+22 parsed XML blocks,3 fixed private-helper consumers, original inline no-owner
+body and honest unavailable receipts. No-world lifecycle may have zero timing
+events; do not invent scopes or apply a nonnull timing-origin scanner to it.
+Report SHA256 e653d3ef56b5d5ea3020419febc5f811cf24d83faaf9ae705c1271c749000edf;
+external candidate-per-call-red-* packet retains complete diff/hash/proof/selectors.
+No compiler/runtime/causal outcome claim. Next coherent independent SOURCE, fresh
+affected Integration/current bindings/warnings/discovery, exact RED singleton PREP.
+Original genuine120s/full DFR300s remain held; no production/cache/timer/format or
+GM contract change. Prior semantic/private-history evidence is retained exactly,
+not a claim about common-baseline clone corruption or registry source-counts.
+
 # T608 per-call source control — C# WIP, UNCATALOGED / UNCOMPILED / UNRUN
 
 Base `853e106712ff4f64c52f6c85c1212e136d53c734`; accepted COPYOBS10–12 DESIGN.

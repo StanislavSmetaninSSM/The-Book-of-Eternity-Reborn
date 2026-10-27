@@ -2,6 +2,80 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "core-joint-candidate-per-call-source",
+      "responsibility": "T608 COPYOBS10–12 RED source singleton: one existing genuine issued-stage setup, SAME private lexical invocation helper twice with two actual PreparedAgrees reads each, exact real Replay/Core vectors [2,2] baseline versus required [1,1], richer-source [0,0], full input/ordered stage projection/current bytes/companion/G and successful complete storage/root prerequisites BEFORE final source oracle. RED ownership is honestly unavailable; stronger distinct/empty/completed/closed-owner assertions follow the source oracle for later GREEN.",
+      "excludes": "No common binding/registry Miss+Hit setup, fake issuer/owner/NamedEvents or missing-API/setup/noncompile/timeout causal RED, dummy/suspended owner, pre-validator warmup, new cache/service/production/diagnostic stack/timer/codec/limit/quota/GM change or genuine wiring. Actual registry/cold cache/source/authority qualification remains separate; no [1,0], zero or one-source-per-registry-role claim.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.CandidateDataInvocation.cs"
+      ],
+      "related": [
+        {
+          "id": "core-joint-candidate-per-call-lifetime",
+          "when": "GREEN-only no-world owner/error/registration control compiles with the same helper, excluded from no-owner RED execution."
+        },
+        {
+          "id": "fr063-joint-prepared-expected-replay-source",
+          "when": "Existing genuine complete-vector/shared expected-source proof and original fallback/protocol contours stay byte-exact."
+        },
+        {
+          "id": "core-treatment-semantic-data",
+          "when": "Retain exact supported/null/unsupported/fresh/complete-key/mutation/error/owner service foundations, not a new world per negative."
+        },
+        {
+          "id": "fr063-joint-semantic-data-controls",
+          "when": "Existing actual retained stage private-history/copy/abort refusal evidence stays tied to unchanged source, not a separate common-baseline clone claim."
+        },
+        {
+          "id": "fr063-joint-bundle-candidate",
+          "when": "All genuine callsites, original registry timers/cold miss/hit/fences/refusals/physical checks remain unchanged and held until cheap qualification and separate wiring/PREP."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.JointBundleComponentTests.CandidateDataInvocation_TwoFreshCallsRequireIndependentExpectedSources"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "core-joint-candidate-per-call-lifetime",
+      "responsibility": "T608 COPYOBS11–12 GREEN-only compiled no-world singleton: exactly-once normal and structured-refusal return, original throwing-body object/stack, actual fresh owner completion/disposal/null ambient and untouched preexisting registration through the SAME fixed private lexical helper. This case is intentionally NOT part of no-owner RED execution.",
+      "excludes": "No world/runtime/native/lease/issuer/fake authority, source-counter RED claim, scheduling/hook/storage callback framework, production/service/cache/codec/diagnostic/budget change or genuine candidate admission. Does not repair existing caller/disposal exception policy or qualify common-baseline private-history mutation.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.CandidateDataInvocation.cs"
+      ],
+      "related": [
+        {
+          "id": "core-joint-candidate-per-call-source",
+          "when": "Shared no-owner source scaffold must first reach an independently accepted final source-count RED before owner-enabled GREEN/lifetime execution."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.JointBundleComponentTests.CandidateDataInvocation_LifetimeErrorsAndExistingOwnerStayExact"
+          ]
+        }
+      ]
+    },
+    {
       "id": "core-joint-candidate-continuing-visibility",
       "responsibility": "T608 COPYOBS9 GREEN after accepted actual missing-begin RED: same continuing ordered Window/queue/ObserveRecorded transfer, original blocked synchronous visibility Fact byte-exact, actual concurrent repeated boundaries and exact phase snapshots/two-instance isolation, existing drain-after-detach loss/final-tail/shared-completion and original component AggregateException/retained-root policy. Full original events/clocks/fields/writer/storage/closing diagnostics remain; incomplete intentional fault reports never qualify complete capture.",
       "excludes": "No Initialize/world/native/lease/issuer/authority/fake NamedEvents or new genuine timer names; no genuine CANDIDATE/COPY constructor opt-in, new serializer/cache/recorder/writer/codec/schema/quota/time/budget change, scheduling-fault framework or component primary-preservation repair. Only the existing closed drain-after-detach control is exposed to these file-only fixtures. Failed scheduling remains incomplete, no fabricated worker/tail or whole-fixture concurrent-disposal claim.",
