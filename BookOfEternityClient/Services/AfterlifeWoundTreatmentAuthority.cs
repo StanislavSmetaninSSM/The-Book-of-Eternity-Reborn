@@ -18,7 +18,7 @@ internal sealed record SpiritualSelfTreatmentStageResult(
     bool IsStaged, bool AlreadyStaged, string? IssueCode, string? RequestFingerprint);
 
 /// <summary>Owns exact source admission for spiritual treatment requests.</summary>
-internal static class AfterlifeWoundTreatmentAuthority
+internal static partial class AfterlifeWoundTreatmentAuthority
 {
     /// <summary>Stages one retained self-treatment request before ordinary signed snapshot capture.</summary>
     /// <param name="files">The current canonical filesystem.</param>
@@ -63,60 +63,13 @@ internal static class AfterlifeWoundTreatmentAuthority
             var sources = new List<SourceFile>();
             foreach (var path in SourcePaths)
                 sources.Add(await ReadSourceAsync(files, lease, path));
-            JsonObject? Root(string path) => sources.Single(s => s.Path == path).Root;
-            var soul = Root(SoulPath);
-            if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(String(soul?["currentRealm"]), out var realm))
-                return Refuse("source_invalid");
-            if (!ProgressionScheduleService.TryBindPreparedSpiritualCycle(
-                    Root(ProgressionScheduleService.SchedulePath),
-                    sources.Single(s => s.Path == EffectAcceptedTurnInputComposer.WorldTimePath).Image.Bytes,
-                    Root(ShiningAbodeState.StatePath), control, realm, out var ordinal))
-                return Refuse("cycle_invalid");
-            if (Root(AfterlifeSpiritualConflictState.StatePath) is { } conflict &&
-                conflict["activeConflict"] is not null)
-                return Refuse("conflict_active");
-
-            var carriers = new WoundCarrierCatalogInput(Root(WoundCarrierCatalog.PlayerPath),
-                Root(WoundCarrierCatalog.NpcPath), Root(WoundCarrierCatalog.EnemiesPath),
-                Root(WoundCarrierCatalog.AlliesPath), Root(WoundCarrierCatalog.AfterlifeProfilesPath));
-            var catalog = WoundCarrierCatalog.Build(carriers);
-            var identities = WoundIdentityState.Parse(Root(WoundIdentityState.StatePath)?.ToJsonString(), WoundIdentityState.StatePath);
-            var history = WoundHistoryState.Parse(Root(WoundHistoryState.HistoryPath)?.ToJsonString(), WoundHistoryState.HistoryPath);
-            if (catalog.Issues.Count != 0 || !identities.IsValid || !history.IsValid ||
-                history.State!.ValidateAgreement(identities.State!, catalog).Count != 0)
-                return Refuse("source_invalid");
-            var matches = catalog.Occurrences.Where(o => o.WoundId == selection.WoundId).ToArray();
-            if (matches.Length != 1 || matches[0].Wound is not { Lifecycle: "active" } wound ||
-                WoundIdentityState.ComputeSemanticFingerprint(wound) != selection.ExpectedWoundFingerprint)
-                return Refuse("wound_changed");
-            if (wound.Owner != new WoundOwnerCoordinate(realm, "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath) ||
-                wound.Display.Visibility is not ("public" or "known_to_player"))
-                return Refuse("target_invalid");
-            var profiles = (carriers.AfterlifeProfiles?["profiles"] as JsonArray)?.OfType<JsonObject>()
-                .Where(p => WoundCarrierCollectionAuthority.AfterlifeProfileMatches(p, wound.Owner)).ToArray();
-            if (profiles is not { Length: 1 } || !AfterlifeProfileVisibility.IsVisibleToPlayer(profiles[0]))
-                return Refuse("target_invalid");
-            var effectCatalog = EffectCarrierCatalog.Build(new(Root(EffectCarrierCatalog.PlayerPath),
-                Root(EffectCarrierCatalog.NpcPath), carriers.EnemyCombatants, carriers.AllyCombatants,
-                carriers.AfterlifeProfiles, Root(EffectCarrierCatalog.SpiritualConflictPath)));
-            var effects = EffectMechanicsSnapshot.Build(effectCatalog, Root(EffectIdentityState.StatePath),
-                skillScopeAuthority: null, out var effectIdentities);
-            if (!effects.IsAccepted || effectIdentities is null ||
-                !ValidateCurrentWoundEffects(wound, catalog, effectCatalog, effectIdentities))
-                return Refuse("source_invalid");
-            var prepared = SpiritualHealingResolver.PrepareSource(new(wound, wound.Owner, profiles[0], soul, effects));
-            if (prepared.Source is not { } source)
-                return Refuse("source_invalid");
-            if (source.HealingTier < source.WoundSeverityRank)
-                return Refuse("tier_insufficient");
-            var cycleKey = CycleKey(realm, ordinal);
-            if (history.State.Transitions.Any(t => t.WoundId == wound.WoundId && t.AttemptId is not null && t.CycleKey == cycleKey))
-                return Refuse("attempt_already_accepted");
-            var sourceFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new[]
-            {
-                "spiritual_self_treatment_source", "1", WoundAcceptedTurnFingerprintWriter.CanonicalJson(
-                    JsonSerializer.SerializeToNode(control)!)
-            }.Concat(sources.SelectMany(s => new[] { s.Path, s.Image.Fingerprint })));
+            var admitted = PrepareSourceData(context with { Progression = control }, selection, sources);
+            if (admitted.Data is not { } data)
+                return Refuse(admitted.IssueCode!);
+            var source = data.Source;
+            var realm = data.Realm;
+            var ordinal = data.CycleOrdinal;
+            var sourceFingerprint = data.SourceFingerprint;
 
             var existingRoot = pending.Root;
             if (pending.Image.Existed)
@@ -162,6 +115,75 @@ internal static class AfterlifeWoundTreatmentAuthority
         }
     }
 
+    internal sealed record SourceData(WoundMaterializationEnvelope Wound,
+        SpiritualHealingPreparedSource Source, string Realm, int CycleOrdinal,
+        string SourceFingerprint, WoundCarrierCatalogInput Carriers, EffectCarrierCatalog Effects,
+        WoundIdentityState Identities, WoundHistoryState History);
+    internal sealed record SourceResult(SourceData? Data, string? IssueCode);
+    private static SourceResult SourceRefuse(string suffix) => new(null, suffix);
+
+    internal static SourceResult PrepareSourceData(SpiritualSelfTreatmentStageContext context,
+        SpiritualSelfTreatmentSelection selection, IReadOnlyList<SourceFile> sources)
+    {
+        var control = context.Progression;
+        JsonObject? Root(string path) => sources.Single(s => s.Path == path).Root;
+        var soul = Root(SoulPath);
+        if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(String(soul?["currentRealm"]), out var realm))
+            return SourceRefuse("source_invalid");
+        if (!ProgressionScheduleService.TryBindPreparedSpiritualCycle(
+                Root(ProgressionScheduleService.SchedulePath),
+                sources.Single(s => s.Path == EffectAcceptedTurnInputComposer.WorldTimePath).Image.Bytes,
+                Root(ShiningAbodeState.StatePath), control, realm, out var ordinal))
+            return SourceRefuse("cycle_invalid");
+        if (Root(AfterlifeSpiritualConflictState.StatePath) is { } conflict &&
+            conflict["activeConflict"] is not null)
+            return SourceRefuse("conflict_active");
+
+        var carriers = new WoundCarrierCatalogInput(Root(WoundCarrierCatalog.PlayerPath),
+            Root(WoundCarrierCatalog.NpcPath), Root(WoundCarrierCatalog.EnemiesPath),
+            Root(WoundCarrierCatalog.AlliesPath), Root(WoundCarrierCatalog.AfterlifeProfilesPath));
+        var catalog = WoundCarrierCatalog.Build(carriers);
+        var identities = WoundIdentityState.Parse(Root(WoundIdentityState.StatePath)?.ToJsonString(), WoundIdentityState.StatePath);
+        var history = WoundHistoryState.Parse(Root(WoundHistoryState.HistoryPath)?.ToJsonString(), WoundHistoryState.HistoryPath);
+        if (catalog.Issues.Count != 0 || !identities.IsValid || !history.IsValid ||
+            history.State!.ValidateAgreement(identities.State!, catalog).Count != 0)
+            return SourceRefuse("source_invalid");
+        var matches = catalog.Occurrences.Where(o => o.WoundId == selection.WoundId).ToArray();
+        if (matches.Length != 1 || matches[0].Wound is not { Lifecycle: "active" } wound ||
+            WoundIdentityState.ComputeSemanticFingerprint(wound) != selection.ExpectedWoundFingerprint)
+            return SourceRefuse("wound_changed");
+        if (wound.Owner != new WoundOwnerCoordinate(realm, "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath) ||
+            wound.Display.Visibility is not ("public" or "known_to_player"))
+            return SourceRefuse("target_invalid");
+        var profiles = (carriers.AfterlifeProfiles?["profiles"] as JsonArray)?.OfType<JsonObject>()
+            .Where(p => WoundCarrierCollectionAuthority.AfterlifeProfileMatches(p, wound.Owner)).ToArray();
+        if (profiles is not { Length: 1 } || !AfterlifeProfileVisibility.IsVisibleToPlayer(profiles[0]))
+            return SourceRefuse("target_invalid");
+        var effectCatalog = EffectCarrierCatalog.Build(new(Root(EffectCarrierCatalog.PlayerPath),
+            Root(EffectCarrierCatalog.NpcPath), carriers.EnemyCombatants, carriers.AllyCombatants,
+            carriers.AfterlifeProfiles, Root(EffectCarrierCatalog.SpiritualConflictPath)));
+        var effects = EffectMechanicsSnapshot.Build(effectCatalog, Root(EffectIdentityState.StatePath),
+            skillScopeAuthority: null, out var effectIdentities);
+        if (!effects.IsAccepted || effectIdentities is null ||
+            !ValidateCurrentWoundEffects(wound, catalog, effectCatalog, effectIdentities))
+            return SourceRefuse("source_invalid");
+        var prepared = SpiritualHealingResolver.PrepareSource(new(wound, wound.Owner, profiles[0], soul, effects));
+        if (prepared.Source is not { } source)
+            return SourceRefuse("source_invalid");
+        if (source.HealingTier < source.WoundSeverityRank)
+            return SourceRefuse("tier_insufficient");
+        var cycleKey = CycleKey(realm, ordinal);
+        if (history.State.Transitions.Any(t => t.WoundId == wound.WoundId && t.AttemptId is not null && t.CycleKey == cycleKey))
+            return SourceRefuse("attempt_already_accepted");
+        var sourceFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new[]
+        {
+            "spiritual_self_treatment_source", "1", WoundAcceptedTurnFingerprintWriter.CanonicalJson(
+                JsonSerializer.SerializeToNode(control)!)
+        }.Concat(sources.SelectMany(s => new[] { s.Path, s.Image.Fingerprint })));
+
+        return new(new(wound, source, realm, ordinal, sourceFingerprint, carriers, effectCatalog, identities.State!, history.State!), null);
+    }
+
     private static bool ValidateCurrentWoundEffects(WoundMaterializationEnvelope wound,
         WoundCarrierCatalog wounds, EffectCarrierCatalog effects, EffectIdentityState identities)
     {
@@ -188,7 +210,7 @@ internal static class AfterlifeWoundTreatmentAuthority
         "spiritual_safe_cycle:" + realm + ":" + ordinal.ToString(CultureInfo.InvariantCulture);
 
     private const string SoulPath = "game_state/meta/soul_state.json";
-    private static readonly string[] SourcePaths =
+    internal static readonly string[] SourcePaths =
     [
         SoulPath, WoundCarrierCatalog.PlayerPath, WoundCarrierCatalog.NpcPath,
         WoundCarrierCatalog.EnemiesPath, WoundCarrierCatalog.AlliesPath, WoundCarrierCatalog.AfterlifeProfilesPath,
@@ -198,7 +220,7 @@ internal static class AfterlifeWoundTreatmentAuthority
         ProgressionScheduleService.ReportPath, EffectAcceptedTurnInputComposer.WorldTimePath, ShiningAbodeState.StatePath
     ];
 
-    private sealed record SourceFile(string Path, CanonicalBeforeImage Image, JsonObject? Root);
+    internal sealed record SourceFile(string Path, CanonicalBeforeImage Image, JsonObject? Root);
 
     private static async Task<SourceFile> ReadSourceAsync(FileSystemManager files,
         FileSystemManager.CanonicalWriteLease lease, string path)
@@ -215,7 +237,7 @@ internal static class AfterlifeWoundTreatmentAuthority
         return new(path, new(true, bytes), root);
     }
 
-    private static void MaterializeProperties(JsonNode? node)
+    internal static void MaterializeProperties(JsonNode? node)
     {
         if (node is JsonObject obj)
             foreach (var pair in obj) MaterializeProperties(pair.Value);

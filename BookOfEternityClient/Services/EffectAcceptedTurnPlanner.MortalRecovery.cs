@@ -555,157 +555,12 @@ internal static partial class EffectAcceptedTurnPlanner
         }
         issues.AddRange(working.ValidateGraph("mortalRecovery.stageGraph"));
         if (issues.Count != 0) return null;
-        var graph = working.Graph;
-        var complicationIds = graph.Complications.ToDictionary(row => row.Reference, row =>
-            row.Reference.Origin == WoundWorkingReferenceOrigin.Existing ? row.Reference.Value :
-                RecoveryCoordinate("wound_complication", view.Resolution.TickKey, index, row.Reference.Value));
-        WoundRootOwnershipDomain Domain(WoundWorkingReference root)
-        {
-            var owner = graph.Complications.SingleOrDefault(row => row.OwnedRoots.Contains(root));
-            return owner is null ? WoundRootOwnershipDomain.BaseWound :
-                WoundRootOwnershipDomain.ForComplication(complicationIds[owner.Reference]);
-        }
-        if (!WoundEffectCarrierAdapter.TryCreateTargetKey(before.Owner, out var target))
-            throw new InvalidOperationException("Recovery wound owner has no exact effect target.");
-        var localRef = RecoveryCoordinate("wound_ref", view.Resolution.TickKey, index, before.WoundId);
-        var definitions = graph.Definitions.Select(row =>
-        {
-            var body = JsonNode.Parse(row.Definition.GetRawText())!.AsObject();
-            return new WoundEffectSourceDefinition(body["definitionKey"]!.GetValue<string>(), body);
-        }).ToArray();
-        var definitionMap = definitions.ToDictionary(row => row.DefinitionKey, StringComparer.Ordinal);
-        var selectedRoots = boundary.Heal ? Array.Empty<WoundWorkingRoot>() : graph.Roots
-            .Where(row => changedSeverity || row.Reference.Origin != WoundWorkingReferenceOrigin.Existing).ToArray();
-        var applications = new List<WoundRootEffectApplication>();
-        var applicationReferences = new Dictionary<WoundWorkingReference, string>();
-        foreach (var root in selectedRoots)
-        {
-            var definition = definitionMap[root.DefinitionKey].Definition;
-            if (definition["components"] is not JsonArray components ||
-                !WoundEffectCarrierAdapter.TryCreateCarrierCoordinate(before.Owner, target, definition, out var coordinate))
-                throw new InvalidOperationException("Recovery root has no exact materialization coordinate.");
-            var applicationRef = RecoveryCoordinate("wound_application", view.Resolution.TickKey, index, root.Reference.Value);
-            applicationReferences.Add(root.Reference, applicationRef);
-            var key = new EffectSourceKey(before.Owner.Realm, "wound", before.WoundId, root.DefinitionKey);
-            var parameters = new JsonObject();
-            applications.Add(new WoundRootEffectApplication(applicationRef, index + 1, applications.Count + 1,
-                "apply", RecoveryCoordinate("wound_operation", view.Resolution.TickKey, index, root.Reference.Value),
-                root.DefinitionKey, new WoundEffectTargetSelector(target.Kind, target.TargetId, null), target,
-                new WoundEffectSourceSelector(key.Realm, key.Kind, null, localRef, key.DefinitionKey), key, parameters,
-                graph.Entries.Where(row => row.Root == root.Reference).Select(row =>
-                    new WoundEffectSlotAgreement(row.Slot, row.ProfileKey, row.ReadableSummary)).ToArray(),
-                components.Count, WoundEffectMaterializationFingerprint.Compute(key,
-                    definition["schemaVersion"]!.GetValue<int>(), parameters, components),
-                Domain(root.Reference), view.EventRef, coordinate,
-                root.Reference.Origin == WoundWorkingReferenceOrigin.Existing ? root.Reference.Value : null));
-        }
-        var acceptedEvent = view.Input.Binding.AcceptedEvents.Single(row => row.EventRef == view.EventRef);
-        var export = new WoundEffectSourceExport(1, "wound", before.WoundId, localRef, "active", false,
-            before.Owner.Realm, before.Owner, view.EventRef, acceptedEvent.SemanticFingerprint,
-            view.OperationKeys[index], view.Fingerprint, definitions);
-        var currentIdentity = ParseIdentity(identityRoot.ReadSnapshot());
-        issues.AddRange(currentIdentity.Issues);
-        if (currentIdentity.State is null || issues.Count != 0) return null;
-        var terminalRoots = changedSeverity || boundary.Heal
-            ? before.Consequences.OwnedEffectSources.RootBindings.Select(row => row.EffectId).ToArray()
-            : Array.Empty<string>();
-        var terminal = WoundEffectTerminalOperationPlanner.Plan(before, workspace.ToInput(), currentIdentity.State,
-            terminalRoots, view.EventRef, index + 1, applications.Count, view.OperationKeys[index]);
-        issues.AddRange(terminal.Issues);
-        if (issues.Count != 0) return null;
-        var lineage = graph.Roots.Select(root => applicationReferences.TryGetValue(root.Reference, out var app)
-            ? new WoundRootLineageAuthorityRow(app, null, root.DefinitionKey, Domain(root.Reference))
-            : new WoundRootLineageAuthorityRow(null, root.Reference.Value, root.DefinitionKey, Domain(root.Reference))).ToArray();
-        var beforeFingerprint = WoundIdentityState.ComputeSemanticFingerprint(before);
-        var structural = WoundAcceptedTurnFingerprints.ComputeTransitionAuthority(view.Fingerprint, localRef,
-            before.WoundId, view.OperationKeys[index], view.Fingerprint, view.OperationKeys[index],
-            "Mortal wound recovery", before.Severity.Rank, boundary.Heal ? "heal" : "recover", null, beforeFingerprint);
-        var transition = new WoundPreparedTransitionAuthority(view.Fingerprint, view.OperationKeys[index],
-            view.Fingerprint, view.OperationKeys[index], "Mortal wound recovery", before.Severity.Rank,
-            boundary.Heal ? "heal" : "recover", null, beforeFingerprint, structural);
-        var provisional = new WoundEffectOperationBatch(localRef, before.WoundId, export, applications,
-            terminal.Operations, lineage, string.Empty, transition);
-        var batch = new WoundEffectOperationBatch(localRef, before.WoundId, export, applications,
-            terminal.Operations, lineage, WoundAcceptedTurnFingerprints.ComputeSourceExport(provisional), transition);
-        var sourceAuthority = EffectSourceAuthority.Build(new EffectSourceAuthorityInput([], [new EffectSourceExport(
-            export.Realm, "wound", before.WoundId,
-            new JsonArray(definitions.Select(row => (JsonNode)row.Definition).ToArray()),
-            Materializable: false, Active: true, SameTurn: true, SourceRef: localRef,
-            SatisfiedPredicates: new HashSet<string>(StringComparer.Ordinal) { "active" })],
-            new HashSet<string>(StringComparer.Ordinal), WoundGroups: [new WoundSourceGroupAuthority(
-                new EffectIdentitySourceGroup(export.Realm, "wound", before.WoundId), before.Owner, target, true,
-                localRef, batch.SourceExportFingerprint, definitions,
-                lineage.Where(row => row.ApplicationRef is not null).ToArray(),
-                lineage.Where(row => row.EffectId is not null).ToArray())]));
-        issues.AddRange(sourceAuthority.Issues);
-        if (issues.Count != 0) return null;
-        var stageInput = input with { SourceAuthority = sourceAuthority };
-        var events = view.Input.Binding.AcceptedEvents.ToDictionary(row => row.EventRef, StringComparer.Ordinal);
-        var requests = applications.Select(root => PrepareSelectedWoundApplication(stageInput, batch, export,
-            definitionMap[root.DefinitionKey], root, events, "mortalRecovery.stageEffects", issues, null, ownedRecovery: true)).ToArray();
-        var terminalRequests = terminal.Operations.Select(operation =>
-            new WoundTerminalRequest(batch, before, operation, terminalRoots.ToImmutableArray())).ToArray();
-        ValidateWoundTerminalRequests(terminalRequests, EffectCarrierCatalog.Build(workspace.ToInput()),
-            currentIdentity.State, issues);
-        if (issues.Count != 0) return null;
-        var terminations = new List<EffectAcceptedTerminationResult>();
-        foreach (var request in terminalRequests.OrderBy(row => row.Operation.OperationOrdinal))
-        {
-            ApplyWoundTerminalOperation(request, workspace, currentIdentity.State, identityRoot, identityFactory,
-                turn, transitionIds, activeEffects, processedEvents, issues);
-            if (issues.Count != 0) return null;
-            var parsed = ParseIdentity(identityRoot.ReadSnapshot());
-            issues.AddRange(parsed.Issues);
-            if (parsed.State is null || !parsed.State.TryGetEntry(request.Operation.EffectId, out var retired))
-                throw new InvalidOperationException("Recovery terminal identity disappeared.");
-            var actual = retired.Transitions.Last();
-            if (retired.State != "expired" || actual.Kind != "expire" || actual.EventRef != request.Operation.OperationRef)
-                throw new InvalidOperationException("Recovery terminal write differs from its operation.");
-            var operation = request.Operation;
-            terminations.Add(new(operation.OperationRef, "expired", operation.EffectId, actual.TransitionId,
-                actual.EventRef, operation.CausalEventRef, operation.ExpectedSourceKey,
-                operation.ExpectedTargetKey, operation.ExpectedCarrierCoordinate));
-        }
-        var executed = new List<(WoundApplicationRequest Request, ApplicationExecutionFacts Facts)>();
-        foreach (var request in requests)
-        {
-            if (request is null) throw new InvalidOperationException("Recovery application did not validate.");
-            var facts = ApplyApplication(request.Application, input.Realm, input.EventInput, workspace, identityRoot,
-                identityFactory, turn, effectIds, transitionIds, activeEffects, processedEvents, issues,
-                request.Root.PriorRootEffectId is null ? ApplicationProvenance.Direct :
-                    new ApplicationProvenance.SeverityGeneration(request.Root.PriorRootEffectId),
-                skillScopeAuthority: input.SkillScopeAuthority);
-            if (facts is null || issues.Count != 0) return null;
-            ValidateWoundApplicationExecution(request, facts, issues);
-            executed.Add((request, facts));
-            usedSources.Add(request.Application.Source);
-            usedTargets.Add(request.Application.Target);
-            rootBindings.Add(new(request.Root.ApplicationRef, facts.EffectId));
-        }
-        ValidateAfterImages(workspace, identityRoot, activeEffects, issues);
-        var resultingCatalog = EffectCarrierCatalog.Build(workspace.ToInput());
-        var resultingIdentity = ParseIdentity(identityRoot.ReadSnapshot());
-        issues.AddRange(resultingCatalog.Issues);
-        issues.AddRange(resultingIdentity.Issues);
-        if (issues.Count != 0 || resultingIdentity.State is null) return null;
-        foreach (var (_, facts) in executed)
-            if (!resultingCatalog.TryResolveOne(facts.EffectId, out var occurrence) ||
-                !resultingIdentity.State.TryGetEntry(facts.EffectId, out var actualIdentity) ||
-                !JsonNode.DeepEquals(occurrence.Effect, facts.CreatedEffect) ||
-                !JsonNode.DeepEquals(actualIdentity.Raw, facts.CreatedIdentityEntry))
-                throw new InvalidOperationException("Recovery created root did not survive its own boundary exactly.");
-        var allocatedByRef = executed.ToDictionary(row => row.Request.Root.ApplicationRef, row => row.Facts.EffectId, StringComparer.Ordinal);
-        string RootId(WoundWorkingReference reference) => applicationReferences.TryGetValue(reference, out var app)
-            ? allocatedByRef[app] : reference.Value;
-        var entries = graph.Entries.OrderBy(row => RootId(row.Root), StringComparer.Ordinal).ThenBy(row => row.Slot)
-            .Select((row, slot) => new WoundConsequenceEntry(slot + 1, row.ProfileKey, RootId(row.Root), row.ReadableSummary)).ToArray();
-        var applicationResults = executed.Select(row => new EffectAcceptedApplicationResult(row.Request.Root.ApplicationRef,
-            row.Facts.Disposition, row.Facts.EffectId, row.Facts.TransitionId, row.Facts.CreatedEventRef!, row.Facts.CausalEventRef,
-            row.Facts.Source, row.Facts.Target, row.Facts.CarrierCoordinate, new WoundEffectMaterializationAgreement(
-                entries.Where(entry => entry.EffectId == row.Facts.EffectId).Select(entry =>
-                    new WoundEffectSlotAgreement(entry.Slot, entry.ProfileKey, entry.ReadableSummary)).ToArray(),
-                row.Request.Root.ExpectedComponentCount, row.Request.Root.ExpectedMaterializationFingerprint))).ToArray();
-        var definitionBodies = graph.Definitions.Select(row => row.Definition.Clone()).ToArray();
+        var facts = ExecuteWoundBoundaryEffects(input, before, working.Graph, working.Scalars.SlotBudget,
+            new(view.Resolution.TickKey, index, view.EventRef, view.OperationKeys[index], view.Fingerprint,
+                boundary.Heal ? "heal" : "recover", "Mortal wound recovery", view.Input.Binding.AcceptedEvents, true),
+            changedSeverity, boundary.Heal, workspace, identityRoot, identityFactory, turn, effectIds,
+            transitionIds, activeEffects, processedEvents, usedSources, usedTargets, rootBindings, issues);
+        if (facts is null || issues.Count != 0) return null;
         var after = before with
         {
             Severity = working.Scalars.Severity,
@@ -716,18 +571,8 @@ internal static partial class EffectAcceptedTurnPlanner
         if (boundary.Heal)
             after = after with { Lifecycle = "healed", Care = before.Care with { State = "healed", ActiveCourseId = null } };
         else
-            after = after with
-            {
-                Complications = graph.Complications.Select(row => new WoundComplication(complicationIds[row.Reference],
-                    row.Kind, row.State, row.DisplayName, row.TreatmentDifficultyModifier,
-                    row.OwnedRoots.Select(RootId).ToArray(), row.Visibility)).ToArray(),
-                Consequences = new WoundConsequences(working.Scalars.SlotBudget, entries.Length, entries)
-                {
-                    OwnedEffectSources = new WoundOwnedEffectSources(definitionBodies,
-                        graph.Roots.Select(row => new WoundRootEffectBinding(RootId(row.Reference), row.DefinitionKey)).ToArray())
-                    { DefinitionFacts = WoundMaterializationContract.BuildOwnedEffectDefinitionFacts(definitionBodies) }
-                }
-            };
+            after = after with { Complications = facts.Complications, Consequences = facts.Consequences };
+        var beforeFingerprint = WoundIdentityState.ComputeSemanticFingerprint(before);
         var afterFingerprint = WoundIdentityState.ComputeSemanticFingerprint(after);
         WoundTransitionEvidence evidence = boundary.Heal
             ? new WoundHealingEvidence(view.Resolution.AuthorityFingerprint, beforeFingerprint, afterFingerprint,
@@ -742,7 +587,7 @@ internal static partial class EffectAcceptedTurnPlanner
             after.LastTransition.TransitionId, view.OperationKeys[index], view.EventRef, turn, before, after, evidence));
         issues.AddRange(reduced.Issues);
         return reduced.IsValid ? new(before, reduced.ProposedAfter!, view.OperationKeys[index], view.EventRef,
-            tick, applicationResults, terminations, reduced.Intents) : null;
+            tick, facts.Applications, facts.Terminations, reduced.Intents) : null;
     }
 
     /// <summary>

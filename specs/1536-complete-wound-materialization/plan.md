@@ -1,5 +1,18 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Connected implementation WIP after causal RED (2026-10-27): shared detached
+source reconstruction is factored from existing staging; a private signed-reader
+continuation now owns the actual request, scalar active/recovery program and
+scheduler mutation preparation. The existing Mortal boundary's actual effect
+retirement/application/identity/readback algorithm is extracted into one private
+shared effect method; Mortal admission/evidence remain separate. Prepared-stage
+family plumbing is in progress. These connected sources are intentionally
+UNCOMPILED/UNRUN and incomplete: spiritual executor, strict persisted result,
+common publication/cold replay and GM graph adapter are still being connected.
+No functional completion or speedup claim. Existing operation-owned parsed source
+DATA are shared; fresh signed/physical/owner/lease checks remain explicit. This
+checkpoint preserves source WIP before the next connected block; no raw committed.
+
 Actual causal RED at0d03cabf7161c19be8a0b2fb3a2119e5db4e7d77:
 independent Sol SOURCE accepted the exact two-line fixture correction. Fresh
 Integration-only build with BuildProjectReferences=false exited0/0errors/

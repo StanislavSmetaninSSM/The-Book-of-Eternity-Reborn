@@ -813,6 +813,7 @@ internal sealed class WoundPreparedAcceptedTurnPlan
     private readonly object? _treatmentContinuationAuthority;
     private readonly object? _recoveryContinuationAuthority;
     private readonly object? _jointRepairContinuationAuthority;
+    private readonly object? _spiritualHealingContinuationAuthority;
     private readonly object? _cacheAuthorityStateToken;
     private readonly object? _cachePreparedStageToken;
 
@@ -877,8 +878,13 @@ internal sealed class WoundPreparedAcceptedTurnPlan
         object? cachePreparedStageToken = null,
         EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundBeforeAuthority? draftBefore = null,
         object? recoveryContinuationAuthority = null,
-        object? jointRepairContinuationAuthority = null)
+        object? jointRepairContinuationAuthority = null,
+        object? spiritualHealingContinuationAuthority = null)
     {
+        if (spiritualHealingContinuationAuthority is not null &&
+            (treatmentContinuationAuthority is not null || recoveryContinuationAuthority is not null ||
+             jointRepairContinuationAuthority is not null || draftBefore is not null))
+            throw new ArgumentException("Spiritual healing is an exclusive prepared authority family.");
         if (jointRepairContinuationAuthority is not null &&
             (treatmentContinuationAuthority is not null || recoveryContinuationAuthority is not null || draftBefore is not null))
             throw new ArgumentException("Joint repair is an exclusive prepared authority family.");
@@ -900,6 +906,7 @@ internal sealed class WoundPreparedAcceptedTurnPlan
         _treatmentContinuationAuthority = treatmentContinuationAuthority;
         _recoveryContinuationAuthority = recoveryContinuationAuthority;
         _jointRepairContinuationAuthority = jointRepairContinuationAuthority;
+        _spiritualHealingContinuationAuthority = spiritualHealingContinuationAuthority;
         _cacheAuthorityStateToken = cacheAuthorityStateToken;
         _cachePreparedStageToken = cachePreparedStageToken;
         DraftBefore = draftBefore;
@@ -934,6 +941,7 @@ internal sealed class WoundPreparedAcceptedTurnPlan
     internal object? RecoveryContinuationAuthority =>
         _recoveryContinuationAuthority;
     internal object? JointRepairContinuationAuthority => _jointRepairContinuationAuthority;
+    internal object? SpiritualHealingContinuationAuthority => _spiritualHealingContinuationAuthority;
 
     internal WoundPreparedAcceptedTurnPlan BindToCacheAuthority(
         object authorityStateToken,
@@ -956,7 +964,8 @@ internal sealed class WoundPreparedAcceptedTurnPlan
             preparedStageToken,
             DraftBefore,
             _recoveryContinuationAuthority,
-            _jointRepairContinuationAuthority);
+            _jointRepairContinuationAuthority,
+            _spiritualHealingContinuationAuthority);
     }
 
     internal WoundPreparedAcceptedTurnPlan ClonePreservingCacheAuthority() =>
@@ -975,7 +984,8 @@ internal sealed class WoundPreparedAcceptedTurnPlan
             _cachePreparedStageToken,
             DraftBefore,
             _recoveryContinuationAuthority,
-            _jointRepairContinuationAuthority);
+            _jointRepairContinuationAuthority,
+            _spiritualHealingContinuationAuthority);
 
     internal bool HasCacheAuthorityState => _cacheAuthorityStateToken is not null;
 
@@ -2387,6 +2397,11 @@ internal static partial class WoundAcceptedTurnFingerprints
                     terminalIndex,
                     terminalOperations[terminalIndex]);
             }
+        }
+        if (plan.SpiritualHealingContinuationAuthority is AfterlifeWoundHealingPlanner.Continuation spiritual)
+        {
+            fields.Add("spiritual_healing_continuation");
+            fields.Add(spiritual.Fingerprint);
         }
         if (plan.TreatmentContinuationAuthority is not null)
         {

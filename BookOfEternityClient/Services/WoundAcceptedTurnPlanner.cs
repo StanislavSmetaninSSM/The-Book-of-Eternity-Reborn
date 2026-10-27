@@ -181,6 +181,15 @@ internal static class WoundEffectBatchPlanner
                 exception.GetType().Name);
         }
 
+        if (prepared.SpiritualHealingContinuationAuthority is not null)
+        {
+            if (!EffectAcceptedTurnPlanner.TryReadSpiritualHealingExecution(prepared, effectPlan, out var executed))
+                return WoundAcceptedTurnPlannerCore.FailedEffectBatch("spiritual_healing_execution_invalid",
+                    "Spiritual healing lost its private ordered execution proof.", "actual owned execution", "foreign or changed execution");
+            return new WoundEffectBatchPlanningResult(WoundEffectBatchAcceptedPlan.Create(prepared, composedInput,
+                effectPlan, executed.SelectMany(s => s.Applications).ToArray(), executed.SelectMany(s => s.Terminations).ToArray()),
+                Array.Empty<ValidationIssue>());
+        }
         if (prepared.RecoveryContinuationAuthority is not null)
         {
             if (!WoundAcceptedTurnPlanner.RecoveryContinuationEffectInputAgrees(prepared, composedInput) ||
@@ -582,6 +591,8 @@ internal static partial class WoundAcceptedTurnPlannerCore
     {
         var refused = ValidateFinalizationHandoff(prepared, effectResult, out var accepted, out var applications, out var recoveryContinuation);
         if (refused is not null) return refused;
+        if (prepared.SpiritualHealingContinuationAuthority is AfterlifeWoundHealingPlanner.Continuation)
+            return ComposeSpiritualHealingFinalPlan(prepared, accepted!);
         return recoveryContinuation
             ? ComposeRecoveryContinuationFinalPlan(prepared, accepted!)
             : ComposeFinalPlan(prepared, accepted!, applications!);
@@ -713,6 +724,12 @@ internal static partial class WoundAcceptedTurnPlannerCore
         var shapeIssue = ValidateAcceptedResultShape(accepted);
         if (shapeIssue is not null)
             return new WoundAcceptedTurnPlanningResult(null, new[] { shapeIssue });
+
+        if (prepared.SpiritualHealingContinuationAuthority is not null)
+        {
+            recoveryContinuation = true;
+            return null;
+        }
 
         if (prepared.RecoveryContinuationAuthority is not null)
         {
@@ -3022,6 +3039,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 prepared.TreatmentContinuationAuthority is not null;
             var isRecoveryContinuation =
                 prepared.RecoveryContinuationAuthority is not null;
+            var isSpiritualHealing = prepared.SpiritualHealingContinuationAuthority is not null;
             var isJointRepair = prepared.JointRepairContinuationAuthority is not null;
             if (prepared.Binding is null ||
                 prepared.AllocatedWoundIds is null ||
@@ -3031,10 +3049,14 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 prepared.BaselineAuthority is null ||
                 (isTreatmentContinuation && isRecoveryContinuation) ||
                 (isJointRepair && (isTreatmentContinuation || isRecoveryContinuation || prepared.DraftBefore is not null)) ||
-                (!isTreatmentContinuation && !isRecoveryContinuation && !isJointRepair &&
+                (!isTreatmentContinuation && !isRecoveryContinuation && !isJointRepair && !isSpiritualHealing &&
                  (prepared.AllocatedWoundIds.Count != prepared.PreparedWounds.Count ||
                   prepared.AllocatedTransitionIds.Count != prepared.PreparedWounds.Count ||
                   prepared.EffectOperationBatches.Count != prepared.PreparedWounds.Count)) ||
+                (isSpiritualHealing &&
+                 (isTreatmentContinuation || isRecoveryContinuation || isJointRepair || prepared.DraftBefore is not null ||
+                  prepared.SpiritualHealingContinuationAuthority is not AfterlifeWoundHealingPlanner.Continuation spiritual ||
+                  !spiritual.PreparedAgrees(prepared))) ||
                 (isTreatmentContinuation &&
                  !WoundAcceptedTurnPlanner.TreatmentContinuationPreparedAgrees(prepared)) ||
                 (isRecoveryContinuation &&
@@ -3069,7 +3091,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 return PreparedSealFailure("changed prepared baseline authority");
             }
 
-            if (isTreatmentContinuation || isRecoveryContinuation || isJointRepair)
+            if (isTreatmentContinuation || isRecoveryContinuation || isJointRepair || isSpiritualHealing)
                 return Array.Empty<ValidationIssue>();
 
             for (var index = 0; index < prepared.EffectOperationBatches.Count; index++)

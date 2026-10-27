@@ -661,6 +661,13 @@ internal sealed class WoundAcceptedTurnPlanCache
             }
             return true;
         }
+        if (plan.SpiritualHealingContinuationAuthority is not null)
+        {
+            if (transitions.Count != 0 || input.Opportunities.Count != 0 ||
+                plan.SpiritualHealingContinuationAuthority is not AfterlifeWoundHealingPlanner.Continuation spiritual || !spiritual.PreparedAgrees(plan))
+            { mismatch = "spiritual healing continuation authority"; return false; }
+            return true;
+        }
         if (plan.RecoveryContinuationAuthority is not null)
         {
             if (transitions.Count != 0 || input.Opportunities.Count != 0 ||
@@ -797,6 +804,8 @@ internal sealed class WoundAcceptedTurnPlanCache
         var replay = plan.JointRepairContinuationAuthority is not null
             ? WoundAcceptedTurnPlanner.PrepareJointRepairCandidate(
                 WoundAcceptedTurnData.CloneInput(input)!, plan.JointRepairContinuationAuthority)
+            : plan.SpiritualHealingContinuationAuthority is AfterlifeWoundHealingPlanner.Continuation spiritual
+            ? new WoundAcceptedTurnPreparationResult(spiritual.Prepare(), Array.Empty<ValidationIssue>())
             : plan.RecoveryContinuationAuthority is not null
             ? WoundAcceptedTurnPlanner.PrepareRecoveryContinuationCandidate(
                 WoundAcceptedTurnData.CloneInput(input)!, plan.RecoveryContinuationAuthority)
