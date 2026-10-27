@@ -6,6 +6,12 @@
 - [ ] T609-WIRE Separately review actual stage-owner selection after byte lookup;
   qualify one genuine existing consumer's source reduction and unchanged fresh guards
   before considering a new full DFR admission.
+- [ ] T609-WIRE-RED Add/review/build the genuine two-Compose stage-only control;
+  obtain exact PREP and actual intended 2N-versus-N RED only after complete source,
+  result, current/claim/byte, owner and full capture/fixture closing prerequisites.
+- [ ] T609-WIRE-GREEN After accepted genuine RED, activate only the reviewed fixed
+  Compose adapter after byte lookup, qualify the same source oracle and affected
+  existing Candidate miss/hit/foreign/stale/fence/physical refusal behavior.
 
 - [x] T609-COST Independently review and run one bounded, file-free equal-work
   prototype with real operation-service key, lookup and copies before deciding

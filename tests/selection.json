@@ -2,6 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "fr063-joint-effect-source-operation",
+      "reason": "Genuine two-Compose source RED/GREEN must demonstrate actual intended owner usage and unchanged current/byte/result/closing behavior after helper qualification.",
+      "contracts": ["#1536 EFFECTSRC-WIRE: actual present source N, existing owner and fresh physical authority; complete full capture before sole source oracle"]
+    },
+    {
       "category": "fr063-joint-private-effect-source-policy",
       "reason": "New conditional helper requires local-policy callback/error parity and actual owner/fresh/protocol controls before any genuine callsite wiring.",
       "contracts": ["#1536 EFFECTSRC-GREEN / EFFECTSRC1–4: builtin policy eligibility, exact original source/errors, detached DATA and owner lifetime"]

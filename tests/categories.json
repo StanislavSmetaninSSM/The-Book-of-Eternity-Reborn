@@ -2,6 +2,17 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "fr063-joint-effect-source-operation",
+      "responsibility": "One genuine stage-only component fixture performs two real Compose calls in a new existing source owner. Exact effect/bundle views, current/claim/generation and fresh physical bytes, owner completion and full passive gzip/ledger/fixture closing precede the sole one-parse-per-present-path oracle. Original unwired RED is 2N; Compose-only wiring must give N.",
+      "excludes": "No fake issuer, source-root warmup inside the counted owner, common binding, new world per negative, permission caching, quota, truncated capture, full DFR or budget increase. Compose is not physical admission; existing current/closing and affected Candidate refusals remain required.",
+      "changeHints": ["BookOfEternityClient.IntegrationTests/JointBundleComponentTests.EffectSourceOperation.cs", "BookOfEternityClient/Services/JointPrivateFingerprintData.cs", "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs"],
+      "related": [{"id": "fr063-joint-private-effect-source-policy", "when": "Retain qualified helper policy, failure and owner/fresh controls."}, {"id": "fr063-joint-bundle-candidate", "when": "Actual owner activation affects Candidate Compose consumers and their original refusal/fence controls."}],
+      "requirements": {"frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.JointBundleComponentTests.JointEffectSources_TwoComposesRequireOneParsePerPresentPath"]}]
+    },
+    {
       "id": "fr063-joint-private-effect-source-policy",
       "responsibility": "Five file-free actual optional-reader controls qualify naturally frozen builtin policy, independent unsupported collaborator fallback, stateful ReferenceHandler error parity, unrelated/ancestor survival, source/owner/path/null/copy/fresh/closed and overlap behavior.",
       "excludes": "No shared global option mutation, fake validation flag, new cache backend, production owner wiring, game setup, timing threshold or full DFR qualification.",

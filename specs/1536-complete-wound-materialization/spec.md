@@ -1,5 +1,20 @@
 # T609 private effect-source parsing — bounded technical amendment
 
+EFFECTSRC-WIRE: After accepted helper qualification, first qualify one genuine
+stage-only source control on the existing component fixture. Two Compose calls in
+one new real owner must preserve complete effect/bundle views, fresh current/claim/
+generation checks, actual source bytes and successful owner/capture/fixture closing
+before the sole source-count oracle. N counts present captured source bytes,
+including JSON null, bound to fresh physical reads by existing ValidateCurrent.
+Original unwired source gives 2N; the unchanged final oracle requires N. Use the
+existing full passive events/lossless gzip/strict decode/ledger proof, no quotas.
+The new control retains the existing analogous component 120-second bound.
+Only after accepted RED may a fixed host adapter select the current operation
+after byte lookup/null. Compose alone requests reuse through the existing stage
+eligibility; both resource consumers retain the default fresh route. Keep all
+original admission/history/current guards, live path iteration and helper fallback.
+Genuine GREEN and affected Candidate refusal/fence regression precede new DFR PREP.
+
 EFFECTSRC-GREEN: After accepted causal RED, equal-work cost OUTCOME and conditional
 DESIGN, implement only the optional-operation reader. Reuse requires actual readonly
 options, original exact DefaultJsonTypeInfoResolver with readonly empty Modifiers,

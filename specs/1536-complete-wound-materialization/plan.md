@@ -1,3 +1,18 @@
+# T609 Compose wiring source control — DESIGN accepted, scaffold WIP
+
+Astra/high accepted a fixed host adapter after byte lookup/null and Compose-only
+selection through unchanged stage eligibility, leaving resource defaults fresh.
+First add one genuine stage-only Fact using the existing Fixture and full passive
+gzip/ledger writer. Two actual Compose calls share a new real owner, with no source
+warmup inside it; compare against already produced bundle DATA. Fresh validation
+and physical byte comparisons stay outside selected Compose ranges. Current,
+held-claim, generation, semantic views, unchanged bytes, CompleteAsync/Dispose and
+full strict capture/fixture closure must precede the sole N source oracle. N includes
+present JSON null. Unwired baseline should give 2N; actual RED is not yet run.
+The analogous existing stage/Candidate controls and this new category use 120s.
+Source scaffold is UNCOMPILED/UNRUN and requires independent SOURCE, fresh affected
+bindings, exact discovery/PlanOnly and PREP. No production wiring or DFR is released.
+
 # T609 helper controls — actual 10/10 PASS, independent OUTCOME accepted
 
 Linux runtime `640a545788efd3250ada0b0c6e706e7dfc26db74` used fresh compiled
