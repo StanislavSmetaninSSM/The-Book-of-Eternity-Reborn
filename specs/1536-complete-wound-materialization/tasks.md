@@ -5,7 +5,7 @@
 - [x] T608-COPY-RANGE-RED Tests-first ctor-only three-mode range scaffold with old
   manual-count semantics, SOURCE/fresh affected build/bindings/exact discovery/PREP,
   then meaningful final missing-range RED after complete fixture/diagnostic closing.
-- [ ] T608-COPY-RANGE-GREEN Drain before all five samples, prove exact original-event
+- [x] T608-COPY-RANGE-GREEN Drain before all five samples, prove exact original-event
   ranges, nonempty genuine prepared/effect evidence and unchanged null-owner/default
   contracts; explicit selected existing passive/gzip caller wiring only after RED.
 - [ ] T608-COPY-OBS-QUALIFY Coherent SOURCE, fresh affected owning build/warnings/
@@ -33,7 +33,7 @@
 - [ ] T608-COPY-CAUSE Establish the persisted direct-copy timeout phase and cause,
   actual source/owner/observer differences and a minimal independent cheap proof.
   No blind runtime repeat, mode change, new cache or budget increase.
-- [ ] T608-COPY-QUALIFY After any necessary bounded DESIGN/SOURCE correction,
+- [x] T608-COPY-QUALIFY After any necessary bounded DESIGN/SOURCE correction,
   preserve original assertions and full capture, obtain fresh affected bindings,
   causal cheap proof and exact resource/PREP, then retry only the same original
   two-minute singleton. Candidate and full positive stay held until their gates.

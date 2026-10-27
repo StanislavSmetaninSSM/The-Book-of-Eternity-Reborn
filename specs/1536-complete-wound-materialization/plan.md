@@ -1,3 +1,17 @@
+# T608 genuine COPY accepted — CANDIDATE PREP next
+
+Independent PREP/OUTCOME accept the one original COPY at runtime ba0d0f0dcbddfa88088348cd0529ad6e399e4990, compiled Integration 54434f3c0f2166b473e0b344c5b18ab6f3529e03 and four unchanged F6 owning projects. Exactly one PASS, category 106.3844299 s within the original 120 s budget, framework 90.6067923 s; no skip, duplicate, underfill or timeout. Both process cleanup flags pass, testhost 204337 ended and the actual marked root was removed.
+
+The corrected strict-function/returned-lifetime reader reached and passed every original admission/heavy direct-chain, QTE, fingerprint, current-byte, private-history, abort and registry assertion. Genuine prepared/effect refusal ranges are nonempty, null-owner boundaries are exact and all original source/authority checks remain. Current 33 artifacts, 11 PE/PDB pairs, 80 Git/source/PDB joins and three actual loaded assembly identities are exact. This qualifies COPY; feature coverage is 68/69 cases across recorded runs, with the separate cheap 11 retained as supporting controls.
+
+Root performed one full streaming decode: stored 112,576,667 bytes, decoded 1,053,716,425 bytes, 2,065,371 rows including all 2,065,350 original events and 1,032,675 exact source ID/tick pairs. Strict single-member gzip EOF/CRC/ISIZE, stored/decoded hashes, no fragment, full queue/snapshot/per-name/writer/phase accounting and truthful function/lifetime markers pass. Stored SHA256: 71F5FDF79A5954B62A1DABD40BF711E80F3DD231DAA5A6A584293F3FBBAF8D09. Decoded SHA256: F2BA77B3668E139DB3D87AFE246F94E0B2DD3FF88D3569ACBD5FD8F2CE603231. Independent review checked the original receipts and identities without a second full inflate.
+
+The existing complete failed COPY and unmatched incomplete measurements remain retained; this block deletes no raw. Full current evidence is external in dfr-prefix/actual-t608-copy-tree-genuine-1 and t608-counter-scaffold/copy-tree-genuine-*, including the independent outcome. No raw, TRX, generated dump or archive enters Git.
+
+Optimization assessment: no new production change, cache, diagnostic producer or timing clock. Existing DATA reuse and fresh guards remain; validation uses the same queue and invocation-local identity/lifetime bookkeeping. These observed durations are not a controlled speedup comparison or an explanation of earlier whole-game timeouts. No budget changed. No player/GM contract or documentation update is needed for this fixture-only correction.
+
+Next is separate current resource/PlanOnly/PREP for the original CANDIDATE singleton with full diagnostics and its unchanged two-minute budget. It must prove real miss/hit reuse, retained plan, rotated/current fence, foreign input, stale-fence inertness, unchanged canonical bytes and Beginning-owner refusals. Full DFR positive remains held until the final feature gate and separate admission. Windows, fresh clean-source restoration, first-guardian intermittent and cross-OS DATA remain unclaimed/open as recorded.
+
 # T608 function/lifetime GREEN accepted — genuine COPY PREP next
 
 Independent SOURCE/PREP/OUTCOME accept11 distinct PASS in three staged runs at runtime/compiled Integration54434f3c0f2166b473e0b344c5b18ab6f3529e03: real-producer/tree5, prior tail visibility1, then unchanged range3/default-output1/intentional-writer-failure1. All planned descriptors/cases completed, no skip/duplicate/underfill/timeout; original exclusive one-minute category budgets and both process cleanup flags pass. Category times: tree15.1888743s, tail16.0733437s, range25.0710925s, output20.2056015s. These are separate test categories, not an optimization comparison.
@@ -10,7 +24,7 @@ Optimization assessment remains unchanged: same existing owned queue/window, ori
 
 External actuals: dfr-prefix/actual-t608-copy-tree-green-1, actual-t608-copy-tree-related-tail-1 and actual-t608-copy-tree-related-range-output-1; source/build/bindings/strict outcome and independent reviews remain in t608-counter-scaffold. No raw/TRX/generated dump/archive enters Git. No external raw is deleted by this block.
 
-Next is separate current resource/PlanOnly/PREP for only the original two-minute genuine COPY. The unresolved question is whether all original assertions after the corrected reader actually pass in budget; prior complete COPY failed before those remaining checks. Existing full events and two final assertion timers suffice, with no added diagnostic framework. Candidate and full-positive remain held;67/69 feature contracts are not completed by these separate11 controls. Windows, fresh clean-source restoration, first-guardian intermittent and cross-OS DATA remain unclaimed/open as recorded.
+Next is separate current resource/PlanOnly/PREP for only the original two-minute genuine COPY. The unresolved question is whether all original assertions after the corrected reader actually pass in budget; prior complete COPY failed before those remaining checks. Existing full events and two final assertion timers suffice, with no added diagnostic framework. Candidate and full-positive remain held; 67/69 feature cases are not completed by these separate11 controls. Windows, fresh clean-source restoration, first-guardian intermittent and cross-OS DATA remain unclaimed/open as recorded.
 
 # T608 function/lifetime GREEN source frozen — UNCOMPILED / UNRUN
 
