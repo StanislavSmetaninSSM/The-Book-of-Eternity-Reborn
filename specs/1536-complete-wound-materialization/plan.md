@@ -1,5 +1,26 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Actual functional baseline now GREEN on clean d5cd372a5251c9c0ff20fd81c2ee6e29db8946ff:
+owning Integration graph build0errors/137warnings/9:10.46, Main/copy
+c2300613e4e1e32025b4738ba63066ddcba43d6d34bf6e1d27de82c31b1e2a02,
+Supporteb21bbf6454d61085122efd9380114532b69302471519d0dc92377937f3dc4c1,
+Integrationa956e84ddcb450eb5bb051856c7b58b5830953332442c026134d665ac54d2b4b.
+Official unchanged exact5 planned/executed5PASS,101.3354485s total,
+category81.3715775/120s, no skips/timeouts/duplicates, both cleanup flags true.
+The original3 now complete actual common atomic publication and assert failed
+attempt natural progress, failed-I natural terminal heal, successful-I single
+heal, one scheduler cycle, retained attempt/die History, consumed request/report,
+visible healed History and unchanged canonical resource values/History. Both
+signed-original/resource-quartet negative controls pass their precise refusal
+and exact unchanged maps. TRX0a99f50553f8289530ffc906aaca17c0fb2d64abbf92bc67ad58f841c343e0d1.
+Raw remains outside checkout at functional-build-4/functional-green-2. Independent
+Sol OUTCOME requested; next pre-reviewed existing Mortal3 and fresh Unit/staging24.
+This establishes only the finite backend baseline. Safe cold retained repeat,
+lower-rank GM graphs/overflow/failure controls, actual GameEngine source staging,
+guided command and GM synchronization remain active work. Full T101/T104–T108,
+helper/entity authority and the preparation6 timeout remain open. No user command
+availability, complete feature or speedup is claimed.
+
 Fresh owning build f603 passed0errors/137warnings in7:23.67. Main/copy
 53b85055f8d693f1b0deb7dbb24d8037436f2534d8c5f846256f1ed252130182,
 Supporta1e04e133c13efb16958fdad486b7a81a126044eb216df1106e6c115f3c22899,

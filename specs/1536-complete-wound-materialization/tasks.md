@@ -14403,6 +14403,13 @@ close full source-action/terminal/pending contracts or any top-level story task.
 - [ ] T102 [US4] Add a counterable healing operation and art mapping without making resilience active in `BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs` and `BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs`
 - [ ] T103 [US4] Resolve combat healing cost through `AfterlifeActionCostRules` and typed spiritual-action-point outcomes in `BookOfEternityClient/Services/AfterlifeActionCostRules.cs` and `BookOfEternityClient/Services/AfterlifeSpiritualConflictResourceOutcome.cs`
 - [ ] T104 [US4] Implement exact safe-cycle session/attempt identity, no-OD self/helper treatment, and world-cycle outcome composition in `BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.cs`
+  Finite self-only backend baseline on clean `d5cd372a5` now passes5/5 real
+  signed validation/common publication cases: three wound/effect/one-cycle/History/
+  no-cost outcomes plus two original-source guards. Fresh owning Integration
+  build0errors; complete/no timeout/duplicates and both cleanup flags true.
+  Independent outcome review and existing Mortal/staging controls follow.
+  Cold replay, authored weaker graphs, actual GameEngine/guided/GM and helper/entity
+  follow-through remain open; this does not complete T104 or T105–T108.
   Current self-request prerequisite (2026-10-27), source
   `33d8aeac818caafe4d695d36ff06e01e16aa5999`: actual canonical-lease-owned staging,
   separate retained draw, byte-identical pending retry, exact source/cycle refusal
