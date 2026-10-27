@@ -28,12 +28,25 @@ request or an unreserved public-pool index is not die authority. The scheduler
 contribution must prove a valid report and exact one-cycle advance: its existing
 mutation API can return unchanged ordinals on invalid reports. Add ordered spiritual
 stage evidence and player History projection; do not borrow Mortal exceptions.
+The existing v1 command root requires the snapshot token, so its new pre-snapshot
+source form must be strictly disjoint (v2 request, no token/accepted commands),
+then privately bound after capture. V1 parsing remains unchanged. Reuse the
+existing batch publication mechanism: generic common-plan per-file writes alone
+do not establish atomic wound-plus-cycle acceptance.
 
-Current T094/T101 WIP adds a detached resolver API scaffold and 14 typed check
-cases. It still returns an explicit unavailable result: UNCOMPILED/UNRUN, with no
-production authority or accepted-turn caller. New exact unit category is
-`spiritual-healing-check` (60 seconds); current selection is restricted to it for
-the semantic RED. Full functionality and other owning selections remain pending.
+T094/T101 semantic RED was observed on fresh compiled source
+`3b8a3fa8e96a6d95965997620d23ea36d7c13d38`: official PlanOnly selected
+one descriptor / five methods / 14 cases, zero execution; its affected Unit build
+exited 0. One actual `-Category spiritual-healing-check -NoBuild` completed all
+14 expected semantic failures at resolver assertions in 31.5606780s total, no
+timeout/skip/duplicate, both cleanup flags true. Complete raw/TRX remains at
+`us4-self-healing/semantic-red-1` outside checkout. Current WIP implements the
+actor/art/effect/complication/draw decision and adds 21 targeted negative/natural
+controls (35 cases total expected), UNCOMPILED/UNRUN pending independent SOURCE
+and fresh affected builds. The resolver still has no accepted publication caller;
+this is not an executable self-treatment session or completion of T101.
+The exact category retains its original 60 seconds; the current selection covers
+this check. Other functional and owning selections remain pending.
 
 Implementation sequence (WIP, no new runtime claim):
 

@@ -251,7 +251,11 @@ internal static class WoundCarrierCollectionAuthority
             .Where(value => ExactString(value["memberId"], owner.OwnerId));
     }
 
-    private static bool AfterlifeProfileMatches(
+    /// <summary>Matches a canonical afterlife profile to an exact wound-owner coordinate.</summary>
+    /// <param name="profile">The detached canonical actor row.</param>
+    /// <param name="owner">The exact owner, without display-name or array-index lookup.</param>
+    /// <returns>Whether actor kind, identity and normalized realm agree.</returns>
+    internal static bool AfterlifeProfileMatches(
         JsonObject profile,
         WoundOwnerCoordinate owner)
     {

@@ -5,7 +5,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class SpiritualHealingCheckTests
+public sealed partial class SpiritualHealingCheckTests
 {
     [Theory]
     [InlineData(2, "NoImprovement", 0, false)]
