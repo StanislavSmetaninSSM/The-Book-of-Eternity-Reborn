@@ -1,6 +1,9 @@
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization.Metadata;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 
@@ -14,6 +17,8 @@ internal sealed class JointPrivateFingerprintData
     private readonly Prefix _prefix;
     private readonly BeforeImages _before;
     private readonly string?[] _orderedBeforeFields;
+    private static readonly OperationComputation<JsonObject?> EffectSource = new(
+        "JointPrivate.EffectSource", 1, value => (JsonObject?)value?.DeepClone());
 
     /// <summary>
     /// Retains only privately owned data produced by the capture factories.
@@ -94,26 +99,76 @@ internal sealed class JointPrivateFingerprintData
 
     /// <summary>Reads the original detached effect-source root from the private before-image.</summary>
     /// <param name="path">The exact current source path, including its original lookup behavior.</param>
-    /// <param name="operation">The existing serial operation; the uncached baseline does not inspect or use it.</param>
+    /// <param name="operation">An existing serial DATA operation, or null for original parsing.</param>
     /// <returns>The original strict parsed object or the original absent/null result.</returns>
     internal JsonObject? ReadEffectSourceRoot(string path, ValidationOperation? operation = null)
     {
-        _ = operation;
         var bytes = ReadBeforeBytes(path);
         if (bytes is null) return null;
-        return ParseEffectSourceRoot(path, bytes);
+        return ReadEffectSourceCore(path, bytes, operation, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed,
+            SharedJsonOptions.PrettyCamelCaseOriginalResolver);
+    }
+
+    /// <summary>Uses the same reader with an explicit independently owned serializer policy.</summary>
+    /// <param name="path">The original captured path, looked up before policy or operation inspection.</param>
+    /// <param name="operation">The optional existing serial DATA owner.</param>
+    /// <param name="options">The actual options used by the original strict parser.</param>
+    /// <param name="originalResolver">The originally selected builtin resolver identity.</param>
+    /// <returns>A detached root or the original absent/null result.</returns>
+    internal JsonObject? ReadEffectSourceRoot(string path, ValidationOperation? operation,
+        JsonSerializerOptions options, DefaultJsonTypeInfoResolver originalResolver)
+    {
+        var bytes = ReadBeforeBytes(path);
+        return bytes is null ? null : ReadEffectSourceCore(path, bytes, operation, options, originalResolver);
+    }
+
+    /// <summary>Recognizes only a naturally frozen builtin policy without invoking any collaborator.</summary>
+    /// <param name="options">The actual strict-parser options.</param>
+    /// <param name="originalResolver">The original builtin resolver reference.</param>
+    /// <returns>True only when the exact policy is immutable and contains no admitted custom collaborators.</returns>
+    internal static bool HasReusableEffectSourcePolicy(JsonSerializerOptions options,
+        DefaultJsonTypeInfoResolver originalResolver) => options.IsReadOnly &&
+        ReferenceEquals(options.TypeInfoResolver, originalResolver) &&
+        originalResolver.GetType() == typeof(DefaultJsonTypeInfoResolver) &&
+        originalResolver.Modifiers.IsReadOnly && originalResolver.Modifiers.Count == 0 &&
+        options.Converters.Count == 0 && options.ReferenceHandler is null &&
+        ReferenceEquals(options.PropertyNamingPolicy, JsonNamingPolicy.CamelCase) &&
+        options.DictionaryKeyPolicy is null && ReferenceEquals(options.Encoder, JavaScriptEncoder.UnsafeRelaxedJsonEscaping);
+
+    private JsonObject? ReadEffectSourceCore(string path, byte[] bytes, ValidationOperation? operation,
+        JsonSerializerOptions options, DefaultJsonTypeInfoResolver originalResolver)
+    {
+        if (operation is null) return ParseEffectSourceRoot(path, bytes, options);
+        object? key = null;
+        object Key() => operation.GetStructuralInputIdentity(_before,
+            new OperationStructuralSnapshot([path], [options, originalResolver]));
+        if (HasReusableEffectSourcePolicy(options, originalResolver))
+        {
+            key = Key();
+            var pending = operation.TryGetAsync(EffectSource, key, []);
+            if (!pending.IsCompleted)
+                throw new InvalidOperationException("A cache-only effect-source lookup did not settle synchronously.");
+            var found = pending.GetAwaiter().GetResult();
+            if (found.Found && HasReusableEffectSourcePolicy(options, originalResolver)) return found.Value;
+        }
+        // Source errors must not invalidate unrelated DATA or poison an active handled ancestor.
+        var parsed = ParseEffectSourceRoot(path, bytes, options);
+        if (!HasReusableEffectSourcePolicy(options, originalResolver)) return parsed;
+        key ??= Key();
+        return operation.GetOrCompute(EffectSource, key, [], () => parsed);
     }
 
     /// <summary>Applies the original strict effect-source parser to already detached bytes.</summary>
     /// <param name="path">The original path used for strict diagnostics.</param>
     /// <param name="bytes">The bytes already obtained by the caller's original lookup.</param>
+    /// <param name="options">Explicit actual options, or null to use the original shared parser policy.</param>
     /// <returns>The strictly parsed object or JSON null.</returns>
-    internal static JsonObject? ParseEffectSourceRoot(string path, byte[] bytes)
+    internal static JsonObject? ParseEffectSourceRoot(string path, byte[] bytes, JsonSerializerOptions? options = null)
     {
         using var timing = FileSystemManager.MeasureCurrentPassiveOperation("JointEffectInput.PrivateSourceParse");
         return StrictJsonAuthority.Deserialize<JsonObject>(
             new UTF8Encoding(false, true).GetString(bytes).TrimStart('\uFEFF'),
-            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, path);
+            options ?? SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, path);
     }
 
     /// <summary>

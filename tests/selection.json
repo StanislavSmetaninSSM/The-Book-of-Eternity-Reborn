@@ -2,6 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "fr063-joint-private-effect-source-policy",
+      "reason": "New conditional helper requires local-policy callback/error parity and actual owner/fresh/protocol controls before any genuine callsite wiring.",
+      "contracts": ["#1536 EFFECTSRC-GREEN / EFFECTSRC1–4: builtin policy eligibility, exact original source/errors, detached DATA and owner lifetime"]
+    },
+    {
       "category": "fr063-joint-private-effect-source-cost",
       "reason": "Compare identical fully consumed synthetic inputs under original and test-only real operation-service reuse before any production GREEN.",
       "contracts": ["#1536 EFFECTSRC-COST: equal-work cold/hit costs and existing owner lifecycle"]

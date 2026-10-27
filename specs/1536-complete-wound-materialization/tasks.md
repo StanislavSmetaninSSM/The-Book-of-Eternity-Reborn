@@ -1,5 +1,12 @@
 # T609 retained effect-source DATA audit — #1536
 
+- [ ] T609-HELPER Implement/review the accepted conditional optional-operation
+  helper; prove conservative local policy/failure/owner/fresh/protocol controls and
+  causal GREEN, with actual source and allocation evidence. Keep default uncached.
+- [ ] T609-WIRE Separately review actual stage-owner selection after byte lookup;
+  qualify one genuine existing consumer's source reduction and unchanged fresh guards
+  before considering a new full DFR admission.
+
 - [x] T609-COST Independently review and run one bounded, file-free equal-work
   prototype with real operation-service key, lookup and copies before deciding
   whether production reuse merits further work. Preserve the accepted causal RED.

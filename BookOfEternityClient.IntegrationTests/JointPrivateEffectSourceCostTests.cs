@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Xunit;
@@ -83,11 +84,14 @@ public sealed class JointPrivateEffectSourceCostTests(ITestOutputHelper output)
                     var start = Stopwatch.GetTimestamp();
                     var roots = Paths.ToDictionary(path => path, path =>
                     {
-                        if (!prototype) return data.ReadEffectSourceRoot(path, operation);
+                        if (!prototype) return data.ReadEffectSourceRoot(path, null);
                         var bytes = data.ReadBeforeBytes(path);
                         if (bytes is null) return null;
+                        var options = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
+                        var resolver = SharedJsonOptions.PrettyCamelCaseOriginalResolver;
+                        Assert.True(JointPrivateFingerprintData.HasReusableEffectSourcePolicy(options, resolver));
                         var keyStart = Stopwatch.GetTimestamp();
-                        var key = operation.GetStructuralInputIdentity(data, new OperationStructuralSnapshot([path], []));
+                        var key = operation.GetStructuralInputIdentity(data, new OperationStructuralSnapshot([path], [options, resolver]));
                         keyTicks += Stopwatch.GetTimestamp() - keyStart;
                         var lookupStart = Stopwatch.GetTimestamp();
                         var pending = operation.TryGetAsync(rule, key, []);
@@ -95,8 +99,13 @@ public sealed class JointPrivateEffectSourceCostTests(ITestOutputHelper output)
                         var found = pending.GetAwaiter().GetResult();
                         lookupTicks += Stopwatch.GetTimestamp() - lookupStart;
                         lookups++;
-                        if (found.Found) return found.Value;
+                        if (found.Found)
+                        {
+                            Assert.True(JointPrivateFingerprintData.HasReusableEffectSourcePolicy(options, resolver));
+                            return found.Value;
+                        }
                         var parsed = JointPrivateFingerprintData.ParseEffectSourceRoot(path, bytes);
+                        Assert.True(JointPrivateFingerprintData.HasReusableEffectSourcePolicy(options, resolver));
                         return operation.GetOrCompute(rule, key, [], () => parsed);
                     }, StringComparer.Ordinal);
                     var signature = Consume(roots);

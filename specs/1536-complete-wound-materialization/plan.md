@@ -1,3 +1,17 @@
+# T609 optional-operation helper — DESIGN accepted, implementation WIP
+
+Astra/high accepted the bounded helper after accepted Sol cost OUTCOME. Restrict
+reuse to the original readonly builtin JSON policy, including null ReferenceHandler
+and readonly empty resolver Modifiers; unsupported collaborators stay on original
+parse. No GetTypeInfo, freezing, arbitrary hook or policy approval cache is added.
+Use the existing operation service with exact immutable byte-owner/path/policy key,
+parse outside requests, successful insertion only, detached output and original byte
+lookup/null branch. Independent local-options policy/failure/owner/fresh/protocol
+controls and accepted causal source GREEN precede any real owner wiring. Correct the
+cost baseline to explicit null operation. Code is WIP/UNCOMPILED/UNRUN; fresh physical,
+history, authority and complete capture/budget requirements remain. No GM contract
+change occurs; GM docs/examples do not need changes for this internal DATA helper.
+
 # T609 equal-work cost control — actual PASS, independent OUTCOME accepted
 
 On Linux, runtime checkpoint `f1855971c9df93a50bad91d6ea862b586d814437`

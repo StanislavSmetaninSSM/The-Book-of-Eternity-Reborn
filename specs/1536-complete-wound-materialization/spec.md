@@ -1,5 +1,18 @@
 # T609 private effect-source parsing — bounded technical amendment
 
+EFFECTSRC-GREEN: After accepted causal RED, equal-work cost OUTCOME and conditional
+DESIGN, implement only the optional-operation reader. Reuse requires actual readonly
+options, original exact DefaultJsonTypeInfoResolver with readonly empty Modifiers,
+empty Converters, null ReferenceHandler and original builtin/null naming/dictionary/
+encoder identities. Inspect no callbacks and do not freeze options. Original successful
+parse may establish eligibility; recheck before hit/insertion. Key immutable byte owner,
+exact path, immutable options/resolver identities and parser revision. Preserve the
+original per-item byte clone/absence, parse outside requests and detached outputs.
+Local-options typed negatives must preserve original errors and unrelated/ancestor
+entries; test owner/fresh/close/overlap. Null/unsupported policy uses original parsing.
+This releases helper qualification only; genuine StageReplayOperation wiring remains
+separate and must select its owner after byte lookup, with original fresh guards.
+
 EFFECTSRC-COST: Before any GREEN, one file-free prototype may compare the same
 private byte lookups, live ordered maps and recursive full-node consumption with
 the existing operation service. Extract the identical strict parse into a shared
