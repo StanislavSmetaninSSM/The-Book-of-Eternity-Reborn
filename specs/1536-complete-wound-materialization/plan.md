@@ -1,3 +1,27 @@
+# T608 genuine Candidate continuing opt-in — WIP, UNCOMPILED / UNRUN
+
+Base accepted observation checkpoint `716c55b8c417a2af7b714562f108695eaed09972`.
+Exactly one named argument selects `continuingPassiveTimings:true` at the genuine
+Candidate fixture constructor. Reversing it reproduces the whole original file;
+preparation reuse, actual cold Miss/Hit, canonical bytes, foreign/stale/fence,
+Beginning-owner/copy assertions and every workload line remain byte-exact.
+The default remains false. No Core/service/cache/timer/format/budget/compiler or
+GM contract changes. The accepted same sealed queue/window/consumer/writer and
+atomic boundaries preserve original timestamps, full uncapped events and fresh
+integrity/authority checks. No new cache is useful for live event transfer; it is
+ordered current DATA, not reusable permission or a saved source result.
+
+Existing Miss/internal timers were absent from the retained prefix because old
+manual transfer waited for the synchronous return. The new cheap blocked-SYNC
+and two finite controls plus related31 are independently accepted. This opt-in
+only makes those existing events visible; it does not yet explain or fix the
+whole timeout, promise a PASS/speedup, or admit full DFR positive. Source inverse
+proof is external `t608-counter-scaffold/candidate-continuing-optin-source-proof.json`.
+Next: independent SOURCE, fresh affected Integration/current bindings, exact
+single-case 120-second PlanOnly and separate resource/PREP, then one diagnostically
+changed full-capture attempt. Preserve both prior incomplete Candidate measurements,
+accepted COPY and all unmatched raw. Windows and clean-source recovery unclaimed.
+
 # T608 continuing visibility accepted — Linux 34/34, genuine held
 
 Source and compiled Integration: `df0055ae2dfcad7949c93304aae9e8325ede2375` on
