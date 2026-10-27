@@ -22335,6 +22335,17 @@
             ]
         },
         {
+            "id": "spiritual-healing-check",
+            "responsibility": "Exact spiritual healing actor/art, retained die, roll-effect and complication decision; detached DATA only.",
+            "excludes": "Arithmetic helper matrices, accepted world-cycle publication, combat costs and service UI.",
+            "changeHints": ["BookOfEternityClient/Services/SpiritualHealingResolver.cs"],
+            "related": [],
+            "requirements": { "frontendBuild": false, "exclusive": false },
+            "timeoutMinutes": 1,
+            "expectedSeconds": null,
+            "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.SpiritualHealingCheckTests.*"] }]
+        },
+        {
             "id": "spiritual-healing",
             "responsibility": "Spiritual healing arts, wound recovery, and source-of-light healing behavior.",
             "excludes": "Mortal wound treatment and unrelated afterlife politics.",

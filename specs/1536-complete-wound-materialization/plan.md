@@ -21,6 +21,20 @@ authority. WoundTransitionReducer already handles typed treatment/recovery/heal,
 but the ordinary accepted command adapter is Mortal-only and spiritual recovery
 III/IV needs a lawful staged transition rather than a Mortal exception.
 
+Independent Astra/high bounded DESIGN review found no product contradiction. Use a
+client-generated mode-dependent die vector stored once in a closed typed request at
+the existing wound command root BEFORE signed snapshot capture. A mutable turn
+request or an unreserved public-pool index is not die authority. The scheduler
+contribution must prove a valid report and exact one-cycle advance: its existing
+mutation API can return unchanged ordinals on invalid reports. Add ordered spiritual
+stage evidence and player History projection; do not borrow Mortal exceptions.
+
+Current T094/T101 WIP adds a detached resolver API scaffold and 14 typed check
+cases. It still returns an explicit unavailable result: UNCOMPILED/UNRUN, with no
+production authority or accepted-turn caller. New exact unit category is
+`spiritual-healing-check` (60 seconds); current selection is restricted to it for
+the semantic RED. Full functionality and other owning selections remain pending.
+
 Implementation sequence (WIP, no new runtime claim):
 
 - [ ] T094/T101: add the real SpiritualHealingResolver and exact self-target/art,
