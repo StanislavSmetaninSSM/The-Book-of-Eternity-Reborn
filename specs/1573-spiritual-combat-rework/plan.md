@@ -1,6 +1,11 @@
 # План перехода к личной модели духовного боя — #1573
 
 2026-10-27. **Draft v1: исполнение заблокировано D1–D6 и утверждением автора.**
+Поправка v1.1: формальное позиционирование отвергнуто. [Сравнение со смертным
+боем](mortal-combat-comparison.md) рекомендует адаптацию его темпа/действий;
+предыдущие scheduler/reaction stages ниже — инвентарь кандидата v1, не выбранный
+план. После решения автора D4 пересобрать plan/tasks; новые interrupt stages
+не считать обязательными для личного здоровья. Карта/зоны исключены уже сейчас.
 [Issue #1573](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1573),
 [spec](spec.md), [правила](gameplay.md), [задачи](tasks.md), [исследование](research.md).
 Ветка документов: `story/golden-mask-backstory-20261025`.
@@ -51,7 +56,7 @@ Governance exceptions не требуются. Открытые решения �
 | SpiritualCombatContracts | Typed instance/participant/intent/action/decision/outcome, без I/O |
 | SpiritualCombatProfileResolver | Actor profile + arts/equipment/wounds/effects → immutable stats + dependencies |
 | SpiritualCombatRules | Snapshot + admitted intent + assigned dice → events либо typed rejection |
-| SpiritualCombatTargetRules | Battlefield/actors/definition → exact допустимые targets |
+| SpiritualCombatTargetRules | Actors/definition/принятые обстоятельства сцены → exact targets, без геометрического движка |
 | SpiritualCombatScheduler | Очередь/слоты/clocks/eligibility → следующая возможность или итог |
 | SpiritualCombatDecisionService | Current authority + response → continuation input; самостоятельно не пишет файлы |
 
@@ -97,7 +102,7 @@ kernel hit/damage/guard/recover, индивидуальный ноль, state/va
 publication. Cheap RED до кода, затем actual accepted/replay. Это промежуточный
 срез, не готовый групповой бой; старые UI/GM не включать на несовместимую schema.
 
-**2. Группа.** Scheduler/zones, контроль/heal/effects, personal clocks, 1v2/2v2,
+**2. Группа.** Согласованный порядок действий без зон, контроль/heal/effects, personal clocks, 1v2/2v2,
 вступление/выход/смена стороны/частичный итог, wounds и owner projections.
 Доказать отсутствие скрытого lead fallback в accepted и preview.
 

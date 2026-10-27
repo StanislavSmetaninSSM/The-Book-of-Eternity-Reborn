@@ -2,6 +2,8 @@
 
 План будущей проверки, **не отчёт о пройденных тестах**. Ожидания условны до
 утверждения [spec](spec.md)/[gameplay](gameplay.md). Cheap typed fixtures, production APIs.
+Поправка v1.1: нет карты/зон/пространственных слотов. Reaction-specific строки
+условны до решения D4; новый рекомендуемый кандидат — [адаптация смертного боя](mortal-combat-comparison.md).
 
 | Сценарий | Доказательство |
 |---|---|
@@ -32,6 +34,7 @@
 | Relic | Бонус только надетого на этого owner предмета; смена invalidates projection |
 | Hidden actor/effect | Нет утечки через DTO/count/tooltip/preview; parity обоих клиентов |
 | Ранги | Сияние IX допустимо; art VI недопустимо; Просветление/Средоточие отдельно |
+| Повествовательная сцена | Действие/выбор цели допустимы без координат/zoneId; target-count/owner/effect restrictions при этом проверяются |
 
 Сначала RED на старом нарушении либо failing contract test отсутствующей функции;
 затем GREEN через production reducer/kernel, не тестовую копию формул.

@@ -68,7 +68,7 @@ pressure против guard/counter. Он сохранён и в принято�
 break_binding, recover_spiritual_power, force_incarnation/incarnation_resistance,
 champion_coordination, spiritual_resilience/spiritual_healing, soul dissipation,
 поддержку/предметы и особые искусства Хранителей. Для каждого нужна definition:
-main/reaction/passive, actor/targets/range, availability, check/result bands,
+action mode после решения D4, actor/targets, повествовательные условия, check/result bands,
 exact cost, effect/result, source/stack/duration, personal resource/wound consequences.
 Отсутствующее направление не заменяется GM свободным редактированием HP.
 

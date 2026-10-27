@@ -4,6 +4,10 @@
 [spec](spec.md), [plan](plan.md), [gameplay](gameplay.md), [review](review.md).
 Draft v1, 2026-10-27. Spec Kit setup-tasks выполнен для feature1573.
 **Ни одна задача реализации не начата. T001 блокирует все T002–T028.**
+Поправка v1.1: spatial model снята автором; [mortal comparison](mortal-combat-comparison.md)
+содержит новую рекомендацию для выбора. T009–T015/T020–T022 описывают прежний
+неутверждённый reaction candidate и требуют пересборки по решению D4; не исполнять
+их как уже выбранную архитектуру. Formal movement budgets/zone engine удалены.
 Новые filenames ниже — предлагаемые; существующие paths приведены явно.
 US1=личное здоровье, US2=самостоятельные бойцы, US3=частичные исходы,
 US4=единая работающая модель/интерфейсы.
@@ -24,8 +28,8 @@ US4=единая работающая модель/интерфейсы.
 
 ## US2/US3 — группа, часы, контроль и исходы
 
-- [ ] T009 [US2] RED BookOfEternityClient.Tests/SpiritualCombatSchedulerTests.cs, SpiritualCombatControlTests.cs: 1v2/2v2, exact controls, re-entry/join, main/move/reaction budgets, wrong-side/owner restriction, multi-target costs/roll assignments.
-- [ ] T010 [US2] SpiritualCombatScheduler.cs/TargetRules.cs: stable initiative, zones/range, exact opportunities, movement, clocks, multi-target ordering; actor-aware restrictions вместо AfterlifeControlStateRules side snapshot.
+- [ ] T009 [US2] После решения D4 определить RED BookOfEternityClient.Tests/SpiritualCombatSchedulerTests.cs, SpiritualCombatControlTests.cs: 1v2/2v2, exact controls, re-entry/join, принятая экономика действий/защиты, wrong-side/owner restriction, multi-target costs/roll assignments; без spatial budgets.
+- [ ] T010 [US2] SpiritualCombatScheduler.cs/TargetRules.cs по принятому D4: очередь, точные цели/возможности, clocks, multi-target ordering; повествовательная обстановка, без zones/coordinates/pathfinding; actor-aware ограничения вместо side snapshot.
 - [ ] T011 [US2] EffectAcceptedTurnInputComposer.cs/EventTypeCatalog/LifecycleScheduler/Planner и SpiritualWoundConflictContributionProjector.cs: personal effects/barriers/control, source/stack/remove, actor/action/round due boundaries; не tick всем на GM segment. Сохранить provenance/общую причинную обработку.
 - [ ] T012 [US3] RED BookOfEternityClient.Tests/SpiritualCombatOutcomeTests.cs: HP0/revive, сдача/выход/смерть, B продолжает после A, смена стороны/чемпиона, lawful dissipation/incarnation и distinct objective.
 - [ ] T013 [US3] Implement personal outcomes/aggregate objective в kernel/state/validation; HP vs lasting wounds/healing/rest; точные defeat proofs/reward sources. GREEN T009/T012 + общий accepted plan.

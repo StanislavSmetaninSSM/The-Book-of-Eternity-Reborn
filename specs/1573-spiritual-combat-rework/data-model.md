@@ -2,6 +2,10 @@
 
 Draft v1, зависит от [spec](spec.md) и [gameplay](gameplay.md). Имена новых
 типов/полей — предложения. Существующие механизмы перечислены в research.
+Поправка v1.1: карта/зоны исключены. Schedule/reaction/commitment схемы ниже
+сохраняются как исследованный кандидат v1, не выбранная архитектура. После
+[mortal comparison](mortal-combat-comparison.md) рекомендуется иной темп защиты;
+до выбора D4 и обновления контрактов эти части не исполнять.
 
 ## Владение
 
@@ -13,7 +17,6 @@ Draft v1, зависит от [spec](spec.md) и [gameplay](gameplay.md). Име
 | Resource ledger | spiritual_health и spiritual_action_points по exact coordinate | Состояние инициативы/порядка ходов |
 | Effect ledger | конкретный source/target, barrier/control/modifiers, stacking/lifetime | Дубликат mutable combatConditions/controlState |
 | Schedule | round, ordered participant IDs, current slot, spent slots, reaction budgets, phase | Разрешение на любой будущий ход |
-| Battlefield | bounded zones/edges, actor locations, exact tactical relations | Всю карту мира |
 | ActionRecord | actionId, executor/targets, type/mode, trigger, slots, admitted costs, dice refs, result event refs | Право GM переписать accepted HP |
 | PendingCombatDecision | instance/action/revision, responder, admitted options, immutable attacker intent, private dice reservation reference | Произвольный следующий player turn/GM repair |
 | CombatOutcome | individual exits, remaining contenders, objective evidence, aggregate outcome, reward refs | «Упал lead — проиграли все» |
@@ -48,8 +51,9 @@ adapter design в #1563–#1565; никакого hidden fallback на player_so
 Schedule: start → round_open → actor_turn_open → awaiting_action →
 action_declared → awaiting_reaction (если нужно) → resolving → action_complete →
 actor_turn_close → next_actor/round_close → next_round/resolved.
-Movement phase допускается один раз до/после main по gameplay; нельзя использовать
-его повторно через два accepted сегмента одного personal turn.
+Это кандидат очереди/реакций, требующий решения D4 после сравнения со смертным боем.
+Отдельной movement phase/пространственного слота нет. Повествовательное перемещение
+не выдаёт дополнительные основные действия через два принятых сегмента.
 
 На round_open обновить reaction budgets ровно один раз, записать eligible roster.
 На actor_turn_open закрыть эффекты «до начала этого хода», затем проверить
@@ -62,7 +66,7 @@ Movement phase допускается один раз до/после main по 
 
 ## Последовательность разрешения действия
 
-1. Проверить актуальные instance/revision, действующего, слот, цель/дальность,
+1. Проверить актуальные instance/revision, действующего, слот, точную цель,
    способности, ограничения, ресурсы и control/effect sources.
 2. Зафиксировать намерение, targets и назначение клиентских костей до раскрытия.
 3. Принять допустимую реакцию/явный pass; не менять атакующего/приём по новым костям.
@@ -106,7 +110,9 @@ GM-планирование NPC должно предшествовать рас
 нынешний first-pair preview не должен давать выбор из будущих удачных атак.
 
 AoE фиксирует упорядоченный набор targets по стабильным participant IDs после
-геометрического выбора области, до раскрытия костей. Несколько решений реакций
+повествовательного определения затронутых участников в пределах искусства,
+без вычисления геометрии. Дальнейшая схема реакций остаётся кандидатом D4.
+До раскрытия костей несколько решений реакций
 собираются в этом порядке, без показа уже известных серверу будущих результатов.
 Для первоначальной версии предлагается одновременно применять результаты AoE
 к целям после сбора реакций; causal effects получают стабильный порядок событий.
