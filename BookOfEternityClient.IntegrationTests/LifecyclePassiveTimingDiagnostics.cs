@@ -9,7 +9,7 @@ namespace BookOfEternityClient.Tests;
 /// Lifecycle output adapter over the existing persistent writer and original-event capture.
 /// One detached consumer persists original events until caller resources have closed.
 /// </summary>
-internal sealed class LifecyclePassiveTimingDiagnostics(string caseName, ITestOutputHelper original,
+internal sealed partial class LifecyclePassiveTimingDiagnostics(string caseName, ITestOutputHelper original,
     LifecycleTimingFaultForControl faultForControl = LifecycleTimingFaultForControl.None, bool gzipRecords = false)
     : ITestOutputHelper, IAsyncDisposable
 {
@@ -18,8 +18,7 @@ internal sealed class LifecyclePassiveTimingDiagnostics(string caseName, ITestOu
     private JointBundleDiagnosticOutput? _output;
     private OperationTimingAccumulator.Window? _window;
     private Task? _completion;
-    private Task<DrainReceipt>? _consumer;
-    private readonly CancellationTokenSource _stop = new();
+    private RecordedTransfer? _transfer;
     private DrainReceipt? _drained;
 
     // Typed context sentinel for cheap isolation controls only. It is never
@@ -67,24 +66,9 @@ internal sealed class LifecyclePassiveTimingDiagnostics(string caseName, ITestOu
             if (!window.CaptureEventStatus().Enabled || window.Capture().Closed)
                 throw new InvalidDataException("Lifecycle timing requires an open original-event window.");
             _window = window;
-            var input = new DrainInput(window, _output!.Timings, _stop.Token,
-                faultForControl == LifecycleTimingFaultForControl.DrainAfterDetach);
-            // Arm runs in an actual functional flow. Do not copy its AsyncLocal
-            // lease/Main/source context into the diagnostic-only consumer.
-            try
-            {
-                if (ExecutionContext.IsFlowSuppressed()) _consumer = StartConsumer(input);
-                else
-                {
-                    using var suppression = ExecutionContext.SuppressFlow();
-                    _consumer = StartConsumer(input); // synchronous scheduling only
-                }
-            }
-            catch (Exception error)
-            {
-                _output.Timings.RecordDiagnosticFailure(error, "lifecycle-consumer-start");
-                _consumer = Task.FromException<DrainReceipt>(error);
-            }
+            _transfer = new RecordedTransfer(window, _output!.Timings,
+                failAfterDetach: faultForControl == LifecycleTimingFaultForControl.DrainAfterDetach);
+            _transfer.Start();
         }
     }
 
@@ -150,13 +134,12 @@ internal sealed class LifecyclePassiveTimingDiagnostics(string caseName, ITestOu
         try
         {
             output = RequireBound();
-            if (_window is { } window && _consumer is { } consumer)
+            if (_window is { } window && _transfer is { } transfer)
             {
                 // The caller has already closed functional resources and the
                 // real fixture/probe. End recording before requesting settlement.
                 window.Dispose();
-                _stop.Cancel();
-                try { _drained = await consumer.ConfigureAwait(false); }
+                try { _drained = await transfer.StopAndJoinAsync().ConfigureAwait(false); }
                 catch (Exception error) { Record(error, "lifecycle-consumer-join"); }
                 Attempt(() => output.CompletePassiveTiming(window.Capture(), window.CaptureEventStatus()),
                     "lifecycle-passive-accounting");
@@ -189,7 +172,6 @@ internal sealed class LifecyclePassiveTimingDiagnostics(string caseName, ITestOu
                 "lifecycle-fixture-receipt");
         }
         catch (Exception error) { Record(error, "lifecycle-completion"); }
-        finally { _stop.Dispose(); }
         if (primaryFailure is not null) ExceptionDispatchInfo.Capture(primaryFailure).Throw();
         if (failures.Count != 0) throw new AggregateException("Lifecycle diagnostics or fixture closing incomplete.", failures);
 
@@ -202,65 +184,6 @@ internal sealed class LifecyclePassiveTimingDiagnostics(string caseName, ITestOu
         {
             try { action(); }
             catch (Exception error) { Record(error, stage); }
-        }
-    }
-
-    private sealed record DrainInput(OperationTimingAccumulator.Window Window,
-        JointCleanupProfileDiagnosticCapture Capture, CancellationToken Stop, bool FailAfterDetach);
-    private sealed record DrainReceipt(bool ContextSentinelPresent, long Batches, long LargestBatch);
-
-    private static Task<DrainReceipt> StartConsumer(DrainInput input) =>
-        Task.Factory.StartNew(static state => ConsumeAsync((DrainInput)state!), input,
-            CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default).Unwrap();
-
-    private static async Task<DrainReceipt> ConsumeAsync(DrainInput input)
-    {
-        var contextPresent = ContextSentinelForControl.Value is not null;
-        long batches = 0, largestBatch = 0;
-        var injected = false;
-        try
-        {
-            while (!input.Stop.IsCancellationRequested)
-            {
-                Drain();
-                try { await Task.Delay(25, input.Stop).ConfigureAwait(false); }
-                catch (OperationCanceledException) when (input.Stop.IsCancellationRequested) { break; }
-            }
-        }
-        catch (Exception error)
-        {
-            input.Capture.RecordDiagnosticFailure(error, "lifecycle-continuing-drain");
-            // Preserve the primary functional flow. A real drain failure waits
-            // for the normal stop before its single final-tail attempt.
-            try { await Task.Delay(Timeout.InfiniteTimeSpan, input.Stop).ConfigureAwait(false); }
-            catch (OperationCanceledException) when (input.Stop.IsCancellationRequested) { }
-        }
-        finally
-        {
-            try { Drain(); }
-            catch (Exception error) { input.Capture.RecordDiagnosticFailure(error, "lifecycle-final-drain"); }
-        }
-        return new(contextPresent, batches, largestBatch);
-
-        void Drain()
-        {
-            var batch = input.Window.DrainEvents();
-            if (batch.Length == 0) return;
-            batches++;
-            largestBatch = Math.Max(largestBatch, batch.LongLength);
-            if (input.FailAfterDetach && !injected)
-            {
-                injected = true;
-                // Closed test-only fault: expose a genuinely detached/lost batch,
-                // never fabricate/requeue events to repair its accounting.
-                throw new IOException("Injected lifecycle drain failure after actual event detach.");
-            }
-            for (var index = 0; index < batch.Length; index++)
-            {
-                input.Capture.ObserveRecorded(batch[index]);
-                if ((index + 1) % 1024 == 0) input.Capture.Flush();
-            }
-            input.Capture.Flush();
         }
     }
 

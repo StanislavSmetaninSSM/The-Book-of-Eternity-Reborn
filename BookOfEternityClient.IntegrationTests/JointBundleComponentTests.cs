@@ -82,8 +82,12 @@ public sealed partial class JointBundleComponentTests
         /// Whether this explicit expensive control captures every original named event through the sealed recorder.
         /// </param>
         /// <param name="gzipRecords">Whether this explicit control uses the existing lossless gzip records sink; ordinary fixtures stay plain.</param>
-        internal Fixture(ITestOutputHelper output, string caseName, bool passiveTimingEvents = false, bool gzipRecords = false)
+        /// <param name="continuingPassiveTimings">Requests the shared component transfer route; RED keeps its original after-return policy.</param>
+        internal Fixture(ITestOutputHelper output, string caseName, bool passiveTimingEvents = false, bool gzipRecords = false,
+            bool continuingPassiveTimings = false)
         {
+            if (continuingPassiveTimings && !passiveTimingEvents)
+                throw new ArgumentException("Shared event transfer requires passive original events.", nameof(continuingPassiveTimings));
             var started = Stopwatch.GetTimestamp();
             _output = new JointBundleDiagnosticOutput(caseName, output, gzipRecords: gzipRecords);
             if (passiveTimingEvents)
@@ -113,6 +117,10 @@ public sealed partial class JointBundleComponentTests
                 Name = "JointBundleFixture.AllocateNamespace", Milliseconds = Stopwatch.GetElapsedTime(started).TotalMilliseconds,
                 Owned = _owned, Game = game
             }));
+            // Last successful construction step; no worker can outlive an unreturned fixture.
+            if (continuingPassiveTimings)
+                _passiveTransfer = LifecyclePassiveTimingDiagnostics.RecordedTransfer.CreateForComponent(
+                    _passiveWindow!, _output.Timings, _observations);
         }
 
         /// <summary>
@@ -245,7 +253,7 @@ public sealed partial class JointBundleComponentTests
             catch (Exception failure) { failures.Add(failure); _retained = true; }
             try { if (_lease is not null) await _lease.DisposeAsync(); }
             catch (Exception failure) { failures.Add(failure); _retained = true; }
-            try { CompletePassiveTimings(); }
+            try { await CompletePassiveTimingsAsync(); }
             catch (Exception failure)
             {
                 failures.Add(failure); _retained = true;

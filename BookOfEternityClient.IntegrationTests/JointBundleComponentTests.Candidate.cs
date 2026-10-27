@@ -97,6 +97,16 @@ public sealed partial class JointBundleComponentTests
         /// </returns>
         internal int ResetCandidateCapture(string phase)
         {
+            if (_passiveTransfer is { } transfer)
+                lock (transfer.BoundaryGate) return ResetCandidateCaptureCore(phase);
+            return ResetCandidateCaptureCore(phase);
+        }
+
+        /// <summary>Publishes the existing reset marker while the optional transfer boundary is held.</summary>
+        /// <param name="phase">The unchanged literal phase name.</param>
+        /// <returns>The exact already transferred observation ordinal.</returns>
+        private int ResetCandidateCaptureCore(string phase)
+        {
             FlushPassiveTimings();
             var offset = _observations.Count;
             _output.WriteLine(JsonSerializer.Serialize(new { Kind = "CandidateCaptureReset", Phase = phase, Offset = offset }));
@@ -117,13 +127,28 @@ public sealed partial class JointBundleComponentTests
         /// </returns>
         internal Dictionary<string, int> CompleteCandidateCapture(string phase, int offset)
         {
+            if (_passiveTransfer is { } transfer)
+                lock (transfer.BoundaryGate)
+                {
+                    Assert.InRange(offset, 0, _observations.Count);
+                    return CompleteCandidateCaptureCore(phase, offset);
+                }
+            return CompleteCandidateCaptureCore(phase, offset);
+        }
+
+        /// <summary>Detaches only the existing phase slice and publishes counts/end ordinal under the same optional boundary.</summary>
+        /// <param name="phase">The unchanged literal phase name.</param>
+        /// <param name="offset">The original reset ordinal.</param>
+        /// <returns>Actual complete operation counts from that one detached phase snapshot.</returns>
+        private Dictionary<string, int> CompleteCandidateCaptureCore(string phase, int offset)
+        {
             FlushPassiveTimings();
             var rows = _observations.Skip(offset).ToArray();
             var groups = rows.Where(row => row.Boundary == "end").GroupBy(row => row.Name).ToArray();
             var counts = groups.ToDictionary(group => group.Key, group => group.Count(), StringComparer.Ordinal);
             _output.WriteLine(JsonSerializer.Serialize(new
             {
-                Kind = "CandidateCaptureCompleted", Phase = phase, Offset = offset, EndOffset = _observations.Count,
+                Kind = "CandidateCaptureCompleted", Phase = phase, Offset = offset, EndOffset = offset + rows.Length,
                 Operations = groups.Select(group => new { Name = group.Key, Count = group.Count(),
                     InclusiveMilliseconds = group.Sum(row => row.Milliseconds) }).ToArray(),
                 Observer = _passiveWindow is null

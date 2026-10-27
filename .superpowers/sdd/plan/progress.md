@@ -1,3 +1,9 @@
+# T608 ordered visibility RED source WIP — unfinished, uncataloged
+
+Six coherent C# paths are frozen for durable preservation: existing lifecycle loop extraction, one shared ordered transfer, optional component/manual boundaries and async close, and one ctor-only blocked-SYNC visibility Fact. The component transfer is deliberately UNSCHEDULED for the causal RED; no GREEN worker or extra controls are implemented. Genuine Candidate/COPY callsites remain unchanged according to the author; full finite inverses/protected review still follow.
+
+Catalog/CI ownership, complete static proof packet and independent SOURCE are pending. This is UNCOMPILED / UNRUN / UNQUALIFIED WIP. No genuine retry, full positive or raw deletion is admitted. Root preserves this boundary before the same sole writer finishes the package. External six-path hashes: t608-counter-scaffold/candidate-visibility-red-wip-source-hashes.json. No production, new timer/format/cache or budget change is proposed.
+
 # T608 existing-event visibility DESIGN accepted — RED scaffold next
 
 Focused independent Astra/high accepts the external design at SHA256 80ef0cf233a949b038325ce065a7aaad3b866edc99818450a47eed89c0844e7f. The unresolved question is the existing cold-Miss nested timer attribution; saved prefixes omit those events because the component drains only after the synchronous return. No production defect or safe guard removal is established.
