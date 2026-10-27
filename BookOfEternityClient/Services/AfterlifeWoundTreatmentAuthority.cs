@@ -68,7 +68,9 @@ internal static class AfterlifeWoundTreatmentAuthority
             if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(String(soul?["currentRealm"]), out var realm))
                 return Refuse("source_invalid");
             if (!ProgressionScheduleService.TryBindPreparedSpiritualCycle(
-                    Root(ProgressionScheduleService.SchedulePath), Root(EffectAcceptedTurnInputComposer.WorldTimePath), control, realm, out var ordinal))
+                    Root(ProgressionScheduleService.SchedulePath),
+                    sources.Single(s => s.Path == EffectAcceptedTurnInputComposer.WorldTimePath).Image.Bytes,
+                    Root(ShiningAbodeState.StatePath), control, realm, out var ordinal))
                 return Refuse("cycle_invalid");
             if (Root(AfterlifeSpiritualConflictState.StatePath) is { } conflict &&
                 conflict["activeConflict"] is not null)
@@ -193,7 +195,7 @@ internal static class AfterlifeWoundTreatmentAuthority
         WoundIdentityState.StatePath, WoundHistoryState.HistoryPath,
         EffectCarrierCatalog.PlayerPath, EffectCarrierCatalog.NpcPath, EffectIdentityState.StatePath,
         AfterlifeSpiritualConflictState.StatePath, ProgressionScheduleService.SchedulePath,
-        ProgressionScheduleService.ReportPath, EffectAcceptedTurnInputComposer.WorldTimePath
+        ProgressionScheduleService.ReportPath, EffectAcceptedTurnInputComposer.WorldTimePath, ShiningAbodeState.StatePath
     ];
 
     private sealed record SourceFile(string Path, CanonicalBeforeImage Image, JsonObject? Root);

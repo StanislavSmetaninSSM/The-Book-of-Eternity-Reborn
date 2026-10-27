@@ -1,4 +1,3 @@
-using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
 using Xunit;
 
@@ -21,8 +20,8 @@ public sealed class SpiritualSelfTreatmentSchedulerSourceTests
     public void RealWorldTimeParserPreservesAbsoluteIncrementalAndAfterlifeSemantics(
         string? json, bool allowIncrement, int expectedMinutes, bool expectedUnresolved)
     {
-        var result = ProgressionScheduleService.ResolvePreparedWorldTime(
-            json is null ? null : JsonNode.Parse(json)!.AsObject(), 100, allowIncrement);
+        var result = ProgressionScheduleService.ResolveFrozenWorldTime(
+            json is null ? null : System.Text.Encoding.UTF8.GetBytes(json), 100, allowIncrement);
         Assert.Equal(expectedMinutes, result.Minutes);
         Assert.Equal(expectedUnresolved, result.HasUnresolvedAbsoluteOverride);
     }

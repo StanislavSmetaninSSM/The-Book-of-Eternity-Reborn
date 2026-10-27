@@ -7,12 +7,14 @@ namespace BookOfEternityClient.Services;
 public partial class ProgressionScheduleService
 {
     /// <summary>Checks detached prepared scheduler DATA without initializing, advancing or rewriting it.</summary>
-    internal static bool TryBindPreparedSpiritualCycle(JsonObject? root, JsonObject? worldTime, ProgressionControl control,
+    internal static bool TryBindPreparedSpiritualCycle(JsonObject? root, byte[]? worldTime, JsonObject? shiningState, ProgressionControl control,
         string realm, out int ordinal)
     {
         ordinal = 0;
         if (root is null || !AfterlifeEntityProfileState.TryNormalizeEffectRealm(control.CurrentRealm, out var controlRealm) ||
-            controlRealm != realm || realm is not ("chaos_sea" or "shining_abode"))
+            controlRealm != realm || realm is not ("chaos_sea" or "shining_abode") ||
+            (realm == "shining_abode" && ShiningAbodeState.GetPreparedIncarnationPackageMode(shiningState) !=
+                ShiningAbodeState.PreparedIncarnationPackageMode.Absent))
             return false;
         // Canonical scheduler serialization supplies every state field. Refuse
         // malformed/partial DATA instead of applying DTO defaults as authority.
@@ -49,7 +51,7 @@ public partial class ProgressionScheduleService
             !schedule.HasAfterlifeCatchupWorldTimeBaseline || schedule.LastAfterlifeCatchupWorldTimeInMinutes < 0 ||
             schedule.LastAfterlifeCatchupWorldTimeInMinutes > schedule.CurrentWorldTimeInMinutes)
             return false;
-        var currentTime = ResolvePreparedWorldTime(worldTime, schedule.CurrentWorldTimeInMinutes,
+        var currentTime = ResolveFrozenWorldTime(worldTime, schedule.CurrentWorldTimeInMinutes,
             allowIncrementalTimeChange: false);
         if (!currentTime.HasUnresolvedAbsoluteOverride && currentTime.Minutes != schedule.CurrentWorldTimeInMinutes)
             return false;

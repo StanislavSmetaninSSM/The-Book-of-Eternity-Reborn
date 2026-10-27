@@ -377,6 +377,55 @@ public sealed class SpiritualSelfTreatmentRequestTests
         Assert.Null(await f.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
     }
 
+    [Fact]
+    public async Task Stage_ShiningOrdinaryCycleRetainsItsOwnRealmAndDraw()
+    {
+        await using var f = await Fixture.CreateAsync(realm: "shining_abode");
+        await using var lease = await f.Files.AcquireCanonicalWriteLeaseAsync();
+        var before = f.CanonicalBytes();
+        var result = await AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(f.Files, lease,
+            f.Context, f.Selection, _ => new[] { 14 });
+        Assert.True(result.IsStaged, result.IssueCode);
+        var request = await f.ReadRequestAsync(lease);
+        Assert.Equal("shining_abode", request["attempt"]!["realm"]!.GetValue<string>());
+        Assert.Equal(before, f.CanonicalBytes());
+    }
+
+    [Fact]
+    public async Task Stage_ShiningPreparedPackageCannotBecomeOrdinaryTreatmentCycle()
+    {
+        await using var f = await Fixture.CreateAsync(realm: "shining_abode");
+        await using var lease = await f.Files.AcquireCanonicalWriteLeaseAsync();
+        var shining = new JsonObject { ["preparedIncarnationPackage"] = new JsonObject() };
+        Assert.NotEqual(ShiningAbodeState.PreparedIncarnationPackageMode.Absent,
+            ShiningAbodeState.GetPreparedIncarnationPackageMode(shining));
+        await f.Files.WriteFileAtomicAsync(lease, ShiningAbodeState.StatePath, shining.ToJsonString());
+        var draws = 0;
+        var result = await AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(f.Files, lease,
+            f.Context, f.Selection, _ => { draws++; return new[] { 20 }; });
+        Assert.False(result.IsStaged);
+        Assert.Equal("spiritual_self_treatment_cycle_invalid", result.IssueCode);
+        Assert.Equal(0, draws);
+        Assert.Null(await f.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
+    }
+
+    [Fact]
+    public async Task Stage_ShiningPackageChangedDuringEntropyCannotPublish()
+    {
+        await using var f = await Fixture.CreateAsync(realm: "shining_abode");
+        await using var lease = await f.Files.AcquireCanonicalWriteLeaseAsync();
+        var result = await AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(f.Files, lease,
+            f.Context, f.Selection, _ =>
+            {
+                File.WriteAllText(f.Files.ResolvePath(ShiningAbodeState.StatePath),
+                    new JsonObject { ["preparedIncarnationPackage"] = new JsonObject() }.ToJsonString());
+                return new[] { 14 };
+            });
+        Assert.False(result.IsStaged);
+        Assert.Equal("spiritual_self_treatment_source_changed", result.IssueCode);
+        Assert.Null(await f.Files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
+    }
+
     private sealed class Fixture : IAsyncDisposable
     {
         private readonly string _root;
@@ -387,16 +436,16 @@ public sealed class SpiritualSelfTreatmentRequestTests
         internal SpiritualSelfTreatmentStageContext Context { get; }
         internal SpiritualSelfTreatmentSelection Selection { get; }
 
-        internal static async Task<Fixture> CreateAsync(int tier = 2)
+        internal static async Task<Fixture> CreateAsync(int tier = 2, string realm = "chaos_sea")
         {
             var root = Path.Combine(Path.GetTempPath(), "boe-spiritual-self-request-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(root);
             try
             {
                 var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
-                var wound = WoundContractTestData.CreateSpiritualActiveWound(ownerId: "player_soul",
+                var wound = WoundContractTestData.CreateSpiritualActiveWound(realm: realm, ownerId: "player_soul",
                     carrierPath: WoundCarrierCatalog.AfterlifeProfilesPath);
-                var seed = WoundPlayerProjectionTestData.InputInRealm("chaos_sea", wound);
+                var seed = WoundPlayerProjectionTestData.InputInRealm(realm, wound);
                 var profiles = seed.Carriers.AfterlifeProfiles!;
                 var profile = profiles["profiles"]![0]!.AsObject();
                 var arts = AfterlifeSpiritualConflictState.CreateDefaultArtTiers();
@@ -404,7 +453,7 @@ public sealed class SpiritualSelfTreatmentRequestTests
                 profile["standardArts"] = arts.DeepClone();
                 var soulProfile = AfterlifeSpiritualConflictState.CreateDefaultCombatProfile();
                 soulProfile["artTiers"] = arts.DeepClone();
-                var soul = new JsonObject { ["currentRealm"] = "Chaos Sea", ["afterlifeCombatProfile"] = soulProfile };
+                var soul = new JsonObject { ["currentRealm"] = realm == "chaos_sea" ? "Chaos Sea" : "Shining Abode", ["afterlifeCombatProfile"] = soulProfile };
                 var parsed = WoundCarrierCatalog.Build(seed.Carriers);
                 Assert.Empty(parsed.Issues);
                 var current = Assert.Single(parsed.Occurrences).Wound;
@@ -415,7 +464,7 @@ public sealed class SpiritualSelfTreatmentRequestTests
                         d.GetProperty("definitionKey").GetString() == binding.DefinitionKey).GetRawText())!.AsObject();
                     var key = current.Consequences.Entries.Single(e => e.EffectId == binding.EffectId).ProfileKey;
                     var effect = EffectMaterializationTestFixture.CreateSpiritualWoundCanonicalEffect(key,
-                        targetKind: "player", woundId: current.WoundId);
+                        targetKind: "player", realm: realm, woundId: current.WoundId);
                     effect["effectId"] = binding.EffectId;
                     effect["target"]!["targetId"] = "player_soul";
                     effect["source"]!["definitionKey"] = binding.DefinitionKey;
@@ -455,7 +504,8 @@ public sealed class SpiritualSelfTreatmentRequestTests
                 Assert.Empty(seed.History.ValidateAgreement(seed.Identities, WoundCarrierCatalog.Build(seed.Carriers)));
                 var schedule = new ProgressionScheduleService(files, NullLogger<ProgressionScheduleService>.Instance);
                 var control = await schedule.BuildControlForNextTurnAsync();
-                Assert.Equal(1, control.ChaosSeaCyclesExpectedThisTurn);
+                Assert.Equal(realm == "chaos_sea" ? 1 : 0, control.ChaosSeaCyclesExpectedThisTurn);
+                Assert.Equal(realm == "shining_abode" ? 1 : 0, control.ShiningAbodeCyclesExpectedThisTurn);
                 var context = new SpiritualSelfTreatmentStageContext("session_spiritual_self", "request_spiritual_self", 43, control);
                 return new(root, files, context, new(current.WoundId, WoundIdentityState.ComputeSemanticFingerprint(current)));
             }

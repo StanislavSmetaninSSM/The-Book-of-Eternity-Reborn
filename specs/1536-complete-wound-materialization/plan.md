@@ -1,7 +1,7 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
 Current WIP: actual self-request staging is implemented but UNCOMPILED/UNRUN.
-It reads15 distinct canonical source paths once, shares the parsed profile across
+It reads16 distinct canonical source paths once, shares the parsed profile across
 wound/history/art/effect consumers, calls the extracted detached source preparation
 once, and draws only after eligibility and cycle admission. Existing scheduler
 control and catch-up construction are reused by a read-only single-cycle binding
@@ -11,8 +11,8 @@ vector; exact retry performs no entropy and preserves bytes. All source baseline
 and request absence are checked freshly after arbitrary injected entropy through
 the existing coordinated writer. Readback uncertainty remains an exception, not
 a refusal/redraw. There is no wound/effect/world/History mutation at this stage.
-Thirteen extra current-source/privacy/conflict/pending/mutable-control cases bring the
-request category to21 methods; the37 check cases are selected for the resolver
+Sixteen extra current-source/privacy/conflict/pending/mutable-control cases bring the
+request category to24 methods; the37 check cases are selected for the resolver
 source-preparation extraction. Fresh source review and owning build are pending.
 The new internal envelope is client-authored only; no GM response/UI capability
 is enabled by this block. Existing v1 accepted command parsing is unchanged.
@@ -27,11 +27,26 @@ its parsed identity, reuses WoundEffectLineagePlanner.Plan and canonical wound
 source composition/definition policy checks, including valid independently
 terminal roots. Scheduler cadence/current contour domains are checked without
 sanitizing invalid DATA; the actual world-time file is captured and guarded.
-The real time parser is shared with existing scheduler consumers, with11 typed
-absolute/incremental/afterlife rows. A bounded source-control category selects
+The existing frozen time parser is reused with an optional incremental-mode gate
+(default true preserves all old two-argument callers), with11 typed absolute/
+incremental/afterlife rows. The ordinary scheduler parser is unchanged. A second
+decode/parse of this tiny time object uses the existing byte API; no extra file
+read or expensive profile/effect/wound reconstruction is introduced. A bounded source-control category selects
 those rows, existing effect-snapshot/wound-composer controls and five scheduler
 consumers. All new implementation and correction cases remain UNCOMPILED/UNRUN;
 source re-review pending, no functional session is claimed.
+
+Build attempt on frozen `6fb44c92524fa1b42f0dd4f00c97edf133d6b1ad` ended
+exit1/5 CS0103 errors/13 warnings in7:29.22: the first time-parser extraction
+removed two private helpers still used by another partial class. No runtime was
+started. The ordinary scheduler file is restored exactly; the smaller existing
+ResolveFrozenWorldTime reuse above retains both original helpers and old callers.
+Shining preparation now also captures its actual shining_abode_state.json input,
+uses the existing prepared-package classifier and guards absence/presence changes.
+Three real Shining source cases extend the request category to24 methods; no
+ordinary healing session is admitted during prepared/invalid bootstrap packages.
+Final source re-review and fresh owning build/run are pending. Raw remains at
+`us4-self-healing/request-implementation-build-1`, outside checkout/GitHub.
 
 Historical scaffold and causal preparation evidence follows.
 

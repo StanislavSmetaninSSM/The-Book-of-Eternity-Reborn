@@ -164,7 +164,7 @@ public partial class ProgressionScheduleService
         }
         catch (Exception error) when (error is JsonException or InvalidOperationException) { return string.Empty; }
     }
-    internal static WorldTimeResolutionResult ResolveFrozenWorldTime(byte[]? bytes, int fallback)
+    internal static WorldTimeResolutionResult ResolveFrozenWorldTime(byte[]? bytes, int fallback, bool allowIncrementalTimeChange = true)
     {
         if (bytes is null) return new(fallback, true);
         var json = CanonicalJsonUtf8.DecodeOneOptionalBom(bytes);
@@ -179,7 +179,7 @@ public partial class ProgressionScheduleService
                 if (TryReadIntLike(nested, "currentTimeInMinutes", out absolute)) return new(absolute, false);
                 if (LooksLikeAbsoluteWorldTimeObject(nested)) return new(fallback, true);
             }
-            if (TryReadIntLike(root, "timeChange", out var delta)) return new(Math.Max(0, fallback + delta), false);
+            if (allowIncrementalTimeChange && TryReadIntLike(root, "timeChange", out var delta)) return new(Math.Max(0, fallback + delta), false);
             if (LooksLikeAbsoluteWorldTimeObject(root)) return new(fallback, true);
         }
         catch (Exception error) when (error is JsonException or InvalidOperationException) { return new(fallback, true); }
