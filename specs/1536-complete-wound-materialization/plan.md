@@ -1,3 +1,28 @@
+# T608 finite tail GREEN source frozen — uncompiled/unrun
+
+Four source/catalog paths are frozen. The same boundary now transfers original
+events and flushes the existing writer. Finally transfers follow disposal of the
+three existing tail scopes; the two final assertion calls run once each under only
+CopyObservation.AdmissionAssertions and CopyObservation.HeavyAssertions, with finite
+pre/mid/post transfers. The shared midpoint avoids a duplicate flush.
+
+Four finite inverse splices recover the entire original COPY file; one helper
+inverse also matches. All original bodies, five manual samples, physical/history/
+abort/ownership assertions and error/disposal policy remain. Thirteen protected
+files, including both cheap controls, defaults, candidate, writer/serializer and
+range/tree algorithms, are byte-exact. No production or source-count change exists.
+Ten XML blocks pass. Catalog966/CI46 keep exact membership, selectors and budgets;
+only the three affected owners' prose changes. No new method or case is added.
+
+This is source only. Coherent SOURCE, a fresh affected owning build/current bindings,
+exact discovery/PlanOnly and staged cheap6 (one visibility case then related5) remain
+required. Restore the previously established NoWarn=1591 build option; the prior
+actual expanded-warning RED build remains fully recorded. No genuine retry follows
+until independent cheap OUTCOME and separate original-budget COPY PREP. The target
+question remains history/abort work versus the two final assertions, with original
+event visibility; no general diagnostic stack or performance fix is claimed.
+GM prompts/examples are unchanged because only test diagnostics are affected.
+
 # T608 tail causal RED accepted — bounded GREEN next
 
 Independent SOURCE/PREP/OUTCOME accept the prerequisite-complete visibility RED at
@@ -11,8 +36,8 @@ Actual live prefix is 301 bytes/two complete message rows/zero timing events and
 is explicitly an incomplete container. Closed gzip is 852 bytes/2,500 decoded bytes,
 seven rows including all four original events/two exact source pairs; strict EOF,
 CRC/ISIZE/no trailing data, stored/decoded identity and queue/writer accounting pass.
-This proves that current transfer alone leaves small completed events buffered until
-close. It establishes visibility cost/behavior only, not the whole COPY timeout cause.
+This proves that current transfer alone leaves small completed events buffered at the saved
+pre-close boundary. It establishes visibility behavior only, not the whole COPY timeout cause.
 Original TRX, oracle, prefix and capture are external in actual-t608-copy-tail-red-1;
 compact/full verification and independent reviews remain in t608-counter-scaffold.
 

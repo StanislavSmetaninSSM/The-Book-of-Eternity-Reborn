@@ -26,8 +26,20 @@ public sealed partial class JointBundleComponentTests
         var directCopy = fixture.AssertDirectJointCopyRetainsAdmissionWithoutFinalReduction();
         await fixture.AssertJointCurrentBytesRefusedAndRestoredAsync();
         fixture.AssertJointCopyContracts(bound.Input!, bound.Authority!);
-        fixture.AssertJointAdmissionTimingTree(directCopy);
-        fixture.AssertJointHeavyPreparationTimingTree(directCopy);
+        _ = fixture.CaptureCopyPhaseBoundary();
+        try
+        {
+            using (fixture.Files.MeasureOperation("CopyObservation.AdmissionAssertions"))
+                fixture.AssertJointAdmissionTimingTree(directCopy);
+        }
+        finally { _ = fixture.CaptureCopyPhaseBoundary(); }
+        // The preceding completed boundary is also the transfer before the next actual assertion call.
+        try
+        {
+            using (fixture.Files.MeasureOperation("CopyObservation.HeavyAssertions"))
+                fixture.AssertJointHeavyPreparationTimingTree(directCopy);
+        }
+        finally { _ = fixture.CaptureCopyPhaseBoundary(); }
     }
 
     private sealed partial class Fixture
@@ -109,78 +121,90 @@ public sealed partial class JointBundleComponentTests
                 Assert.Equal(expected, ReadBundleView(second));
             }
 
-            using (Files.MeasureOperation("JointBundleCandidate.InvalidSuppliedStages"))
+            try
             {
-                var changed = bundle.Input with
+                using (Files.MeasureOperation("JointBundleCandidate.InvalidSuppliedStages"))
                 {
-                    Binding = bundle.Input.Binding with { RequestId = "foreign_copy_request_" + _nonce }
-                };
-                var preparedRefusalStart = CaptureObservationOrdinal();
-                var preparedFailure = Assert.Throws<ArgumentException>(() =>
-                    new AcceptedMechanicsWoundStageBundle(changed, bundle.PreparedPlan, bundle.EffectBatchPlan, bundle.FinalPlan));
-                var preparedRefusalEnd = CaptureObservationOrdinal();
-                Assert.Equal("preparedPlan", preparedFailure.ParamName);
-                AssertNoFinalValidationInRecordedRange("Prepared", (preparedRefusalStart, preparedRefusalEnd));
-                var effect = bundle.EffectBatchPlan;
-                var commands = effect.EffectInput.RawCommands.DeepClone().AsObject();
-                commands["component_invalid"] = true;
-                var changedEffectInput = effect.EffectInput with { RawCommands = commands };
-                // This is deliberately invalid DATA with genuine unchanged companions, not a new issuer or guard.
-                var changedEffect = WoundEffectBatchAcceptedPlan.Create(bundle.PreparedPlan, changedEffectInput,
-                    effect.EffectPlan, effect.ApplicationResults, effect.TerminationResults);
-                var effectRefusalStart = CaptureObservationOrdinal();
-                var effectFailure = Assert.Throws<ArgumentException>(() =>
-                    new AcceptedMechanicsWoundStageBundle(bundle.Input, bundle.PreparedPlan, changedEffect, bundle.FinalPlan));
-                var effectRefusalEnd = CaptureObservationOrdinal();
-                Assert.Equal("effectBatchPlan", effectFailure.ParamName);
-                AssertNoFinalValidationInRecordedRange("Effect", (effectRefusalStart, effectRefusalEnd));
-            }
-
-            using (Files.MeasureOperation("JointBundleCandidate.RetainedHistoryCorruption"))
-            {
-                try
-                {
-                    using (bundle.DamageRetainedFinalHistoryForComponent())
+                    var changed = bundle.Input with
                     {
-                        var referenceFailure = Assert.Throws<ArgumentException>(() =>
-                            new AcceptedMechanicsWoundStageBundle(bundle.Input, bundle.PreparedPlan, bundle.EffectBatchPlan, bundle.FinalPlan));
-                        var copyFailure = Assert.Throws<ArgumentException>(() => bundle.DetachedCopy());
-                        Assert.Equal("finalPlan", referenceFailure.ParamName);
-                        Assert.Equal(referenceFailure.ParamName, copyFailure.ParamName);
-                        Assert.Equal(referenceFailure.Message, copyFailure.Message);
-                    }
+                        Binding = bundle.Input.Binding with { RequestId = "foreign_copy_request_" + _nonce }
+                    };
+                    var preparedRefusalStart = CaptureObservationOrdinal();
+                    var preparedFailure = Assert.Throws<ArgumentException>(() =>
+                        new AcceptedMechanicsWoundStageBundle(changed, bundle.PreparedPlan, bundle.EffectBatchPlan, bundle.FinalPlan));
+                    var preparedRefusalEnd = CaptureObservationOrdinal();
+                    Assert.Equal("preparedPlan", preparedFailure.ParamName);
+                    AssertNoFinalValidationInRecordedRange("Prepared", (preparedRefusalStart, preparedRefusalEnd));
+                    var effect = bundle.EffectBatchPlan;
+                    var commands = effect.EffectInput.RawCommands.DeepClone().AsObject();
+                    commands["component_invalid"] = true;
+                    var changedEffectInput = effect.EffectInput with { RawCommands = commands };
+                    // This is deliberately invalid DATA with genuine unchanged companions, not a new issuer or guard.
+                    var changedEffect = WoundEffectBatchAcceptedPlan.Create(bundle.PreparedPlan, changedEffectInput,
+                        effect.EffectPlan, effect.ApplicationResults, effect.TerminationResults);
+                    var effectRefusalStart = CaptureObservationOrdinal();
+                    var effectFailure = Assert.Throws<ArgumentException>(() =>
+                        new AcceptedMechanicsWoundStageBundle(bundle.Input, bundle.PreparedPlan, changedEffect, bundle.FinalPlan));
+                    var effectRefusalEnd = CaptureObservationOrdinal();
+                    Assert.Equal("effectBatchPlan", effectFailure.ParamName);
+                    AssertNoFinalValidationInRecordedRange("Effect", (effectRefusalStart, effectRefusalEnd));
                 }
-                catch { _retained = true; throw; }
-                Assert.Equal(expected, ReadBundleView(bundle));
-                Assert.Equal(expected, ReadBundleView(bundle.DetachedCopy()));
             }
+            finally { _ = CaptureCopyPhaseBoundary(); }
 
-            using (Files.MeasureOperation("JointBundleCandidate.AbortedReservationParity"))
+            try
             {
-                CloseJointReservation();
-                AcceptedMechanicsWoundStageBundle? fullAfterAbort = null, copyAfterAbort = null;
-                var referenceFailure = Record.Exception(() => fullAfterAbort =
-                    new(bundle.Input, bundle.PreparedPlan, bundle.EffectBatchPlan, bundle.FinalPlan));
-                var copyFailure = Record.Exception(() => copyAfterAbort = bundle.DetachedCopy());
-                Assert.Equal(referenceFailure?.GetType(), copyFailure?.GetType());
-                Assert.Equal(referenceFailure?.Message, copyFailure?.Message);
-                if (referenceFailure is null)
+                using (Files.MeasureOperation("JointBundleCandidate.RetainedHistoryCorruption"))
                 {
-                    Assert.Equal(expected, ReadBundleView(fullAfterAbort!));
-                    Assert.Equal(expected, ReadBundleView(copyAfterAbort!));
+                    try
+                    {
+                        using (bundle.DamageRetainedFinalHistoryForComponent())
+                        {
+                            var referenceFailure = Assert.Throws<ArgumentException>(() =>
+                                new AcceptedMechanicsWoundStageBundle(bundle.Input, bundle.PreparedPlan, bundle.EffectBatchPlan, bundle.FinalPlan));
+                            var copyFailure = Assert.Throws<ArgumentException>(() => bundle.DetachedCopy());
+                            Assert.Equal("finalPlan", referenceFailure.ParamName);
+                            Assert.Equal(referenceFailure.ParamName, copyFailure.ParamName);
+                            Assert.Equal(referenceFailure.Message, copyFailure.Message);
+                        }
+                    }
+                    catch { _retained = true; throw; }
+                    Assert.Equal(expected, ReadBundleView(bundle));
+                    Assert.Equal(expected, ReadBundleView(bundle.DetachedCopy()));
                 }
-                var refused = AcceptedTurnAuthorityRegistry.CreateJointRepairCommonCandidate(Files, Lease, input, authority);
-                Assert.False(refused.Result.Success);
-                Assert.Null(refused.Fence);
-                _output.WriteLine(JsonSerializer.Serialize(new
-                {
-                    Kind = "JointCopyContracts", CopyOfCopy = true, ReturnedMutationIsolated = true,
-                    InitialConstructorReplayed = true, SuppliedStagesRefused = true, PrivateHistoryRestored = true,
-                    ReservationAborted = true, ReferenceAfterAbort = referenceFailure?.ToString(),
-                    CopyAfterAbort = copyFailure?.ToString(), RegistryRefused = true, refused.Result.Issues,
-                    BundleView = JsonSerializer.Deserialize<JsonElement>(expected)
-                }));
             }
+            finally { _ = CaptureCopyPhaseBoundary(); }
+
+            try
+            {
+                using (Files.MeasureOperation("JointBundleCandidate.AbortedReservationParity"))
+                {
+                    CloseJointReservation();
+                    AcceptedMechanicsWoundStageBundle? fullAfterAbort = null, copyAfterAbort = null;
+                    var referenceFailure = Record.Exception(() => fullAfterAbort =
+                        new(bundle.Input, bundle.PreparedPlan, bundle.EffectBatchPlan, bundle.FinalPlan));
+                    var copyFailure = Record.Exception(() => copyAfterAbort = bundle.DetachedCopy());
+                    Assert.Equal(referenceFailure?.GetType(), copyFailure?.GetType());
+                    Assert.Equal(referenceFailure?.Message, copyFailure?.Message);
+                    if (referenceFailure is null)
+                    {
+                        Assert.Equal(expected, ReadBundleView(fullAfterAbort!));
+                        Assert.Equal(expected, ReadBundleView(copyAfterAbort!));
+                    }
+                    var refused = AcceptedTurnAuthorityRegistry.CreateJointRepairCommonCandidate(Files, Lease, input, authority);
+                    Assert.False(refused.Result.Success);
+                    Assert.Null(refused.Fence);
+                    _output.WriteLine(JsonSerializer.Serialize(new
+                    {
+                        Kind = "JointCopyContracts", CopyOfCopy = true, ReturnedMutationIsolated = true,
+                        InitialConstructorReplayed = true, SuppliedStagesRefused = true, PrivateHistoryRestored = true,
+                        ReservationAborted = true, ReferenceAfterAbort = referenceFailure?.ToString(),
+                        CopyAfterAbort = copyFailure?.ToString(), RegistryRefused = true, refused.Result.Issues,
+                        BundleView = JsonSerializer.Deserialize<JsonElement>(expected)
+                    }));
+                }
+            }
+            finally { _ = CaptureCopyPhaseBoundary(); }
             AssertNoCopySemanticOwner("CopyContracts.After");
         }
 

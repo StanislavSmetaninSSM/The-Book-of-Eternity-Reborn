@@ -18,9 +18,14 @@ public sealed partial class JointBundleComponentTests
             return _observations.Count;
         }
 
-        /// <summary>Transfers completed copy-phase events and returns their retained boundary without an extra writer flush.</summary>
-        /// <returns>The existing ordinal; persistent pre-close visibility remains the tests-first missing behavior.</returns>
-        internal int CaptureCopyPhaseBoundary() => CaptureObservationOrdinal();
+        /// <summary>Transfers completed original copy-phase events, then flushes the same writer for pre-close visibility.</summary>
+        /// <returns>The retained ordinal; ordinary drain/write failures remain deferred in the existing diagnostic ledger.</returns>
+        internal int CaptureCopyPhaseBoundary()
+        {
+            var ordinal = CaptureObservationOrdinal();
+            _output.Timings.Flush();
+            return ordinal;
+        }
 
         /// <summary>
         /// Transfers original scalar events only after a functional call has returned; no writer is called by recording.

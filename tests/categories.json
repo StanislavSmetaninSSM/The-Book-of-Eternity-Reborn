@@ -3,8 +3,8 @@
     "categories": [
     {
       "id": "core-joint-passive-copy-tail-visibility",
-      "responsibility": "T608-COPY-TAIL-RED constructor-only single control: actual success and sentinel-unwind scopes use the same finite boundary; exact sentinel before close, saved read-only live gzip bytes before any message flush, then complete original source/queue/writer/hash/marked-root prerequisites before final completed-event visibility oracle. Baseline boundary delegates existing transfer/count without explicit flush.",
-      "excludes": "No Initialize, runtime/world/native/lease/issuer/semantic owner, genuine COPY/CANDIDATE tail wiring, explicit writer-flush GREEN, fake/rebased events or product-validator labels, new consumer/cache/transport, range/tree rewrite or timer, production/codegen/schema/budget/quota change, expensive retry or full-positive admission. Missing API/setup/decoder/storage/close failures do not qualify causal RED.",
+      "responsibility": "T608 copy-tail persistence GREEN protection after accepted prerequisite-complete RED: the same constructor-only success and sentinel-unwind scopes, exact sentinel before close, saved live gzip prefix before message flush and complete original source/queue/writer/hash/marked-root prerequisites before the strict four-event visibility oracle. Boundary transfers original events then flushes the SAME existing writer.",
+      "excludes": "No Initialize, runtime/world/native/lease/issuer/semantic owner, fake/rebased events or product-validator labels, new consumer/cache/transport, range/tree rewrite or timer, production/codegen/schema/budget/quota change, expensive retry or full-positive admission. This case does not qualify genuine COPY/CANDIDATE; their finite tail boundaries require separate cheap outcome and resource/PREP gates.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.PassiveCopyTail.cs",
         "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.PassiveTimings.cs"
@@ -2021,7 +2021,7 @@
 },
 {
   "id": "fr063-joint-bundle-copy-controls",
-  "responsibility": "One genuinely issued joint fixture runs direct-copy, constructor-reference, copy-of-copy, mutation, invalid-stage, current physical-byte refusal/restoration, private-history restoration, normal-abort parity and immutable fingerprint work controls. Explicit existing passive timing and lossless gzip retain all original events/messages; actual copy-body null semantic ownership and nonempty real prepared/effect refusal ranges protect the original fresh guards.",
+  "responsibility": "One genuinely issued joint fixture runs direct-copy, constructor-reference, copy-of-copy, mutation, invalid-stage, current physical-byte refusal/restoration, private-history restoration, normal-abort parity and immutable fingerprint work controls. Explicit existing passive timing and lossless gzip retain all original events/messages; actual copy-body null semantic ownership and nonempty real prepared/effect refusal ranges protect the original fresh guards. Finite finally boundaries persist the three existing invalid-stage/history/abort scopes, with only CopyObservation.AdmissionAssertions and CopyObservation.HeavyAssertions for the two final real assertion calls; original bodies, saved ranges and two-minute budget stay exact.",
   "excludes": "No candidate miss/hit or Beginning-owner work, game loop/full world/source42/crash/Linux, fake authority, reflection or diagnostic quota. Bounded copy observations do not qualify T383 or original workload speed.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.Copy.cs",
@@ -2078,7 +2078,7 @@
 },
 {
   "id": "fr063-joint-bundle-candidate",
-  "responsibility": "One genuinely issued small joint fixture: actual candidate miss and hit, complete nested timings/counters, retained plan, unchanged canonical bytes, foreign-input refusal and stale-fence controls. Explicit existing passive timing and lossless gzip preserve full original capture; copy subcontrols retain actual null-owner boundaries without imposing that assertion on candidate-owned phases.",
+  "responsibility": "One genuinely issued small joint fixture: actual candidate miss and hit, complete nested timings/counters, retained plan, unchanged canonical bytes, foreign-input refusal and stale-fence controls. Explicit existing passive timing and lossless gzip preserve full original capture; copy subcontrols retain actual null-owner boundaries without imposing that assertion on candidate-owned phases. Shared copy subcontrols persist their existing three tail-phase ends via finite finally boundaries; no candidate miss/hit/fence source or owner lifetime changes.",
   "excludes": "No game loop/full world/full Stage42/source42 package/crash five/Linux; no fake authority/reflection/diagnostic quotas. This is diagnostic qualification, not a production optimization.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.Candidate.cs",
