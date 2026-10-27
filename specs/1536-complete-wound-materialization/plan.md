@@ -1,5 +1,19 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Guided first semanticRED on clean78077e23adb48d6540816fecb21f841624cd1c7b:
+fresh Integration-only build2 exit0/102warnings/0errors3:02.06; Mainc2300613…/
+Supporteb21bbf6… copies match owning originals, Integrationc85a481c28740e52627b1d64
+bbd62ddc7c7e6cfe2aaac9ef2d0384c63698bced. PlanOnly exact2/one descriptor14.4509566s,
+zero executed. Actual2/2complete0PASS2FAIL23.7815069s total/category9.4376308<180s;
+no timeout/skips/duplicates, bothcleanuptrue. Both canonical setups complete and
+first public `/лечить` calls fail StateFailed versus RequiresInput (test29/118).
+TRXc1e9d960fa2d6f717ecc708e1a37a7c5fbad669514ad62648dcf2d83efd0af5e.
+This proves missing command behavior, not downstream full-caller fixture health.
+Raw guided-build-2/guided-causal-1 remain external; finite Sol OUTCOME requested.
+Next implement one connected shared guided selection→pending→actual stage→GM→
+accepted result slice under the already accepted typed-selection/raw-byte design.
+Mortal HOLD unchanged.
+
 Guided scaffold build1 on8bf7 failed before runtime: one CS1061 at new test108,
 AudioService exposes DisposeAsync rather than Dispose. Actual2:15.44,102warnings/
 1error; no tests started. The fixture now awaits existing DisposeAsync in finally.
