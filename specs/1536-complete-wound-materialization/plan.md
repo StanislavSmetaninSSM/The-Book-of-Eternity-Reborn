@@ -1,3 +1,53 @@
+# T608 actual Candidate visibility result — TIMEOUT retained, phase question resolved
+
+Retention at 2026-10-27 04:53:31 UTC: after independently reviewed exact two-file
+manifest, complete newer same-case source scans/PASS/TRXs and ended owners, removed
+only the older external TakeFence ea606c57/records.jsonl (1,355,906,823 bytes) and
+QteData 5352f50e/records.jsonl (727,596,414 bytes). All sidecars/provenance and newer
+81a94500/1304e573 complete raw remain. Current free space 2,282,319,872 bytes.
+Receipt: external older-matching-linux-raw-retirement-result.json. Protected execution
+infrastructure FD/maps were inaccessible and explicitly uninspected; no global FD
+proof is claimed. Exact measurement ownership/identity/hash/replacement conditions
+passed. No saves, fixtures, unmatched raw, checkout or Git history were deleted.
+
+Linux runtime / fresh Integration `31169d5dcc11d8c8d861a65eaa3f804e1bc4bb29`;
+other four owners remain F6. Fresh build 0 errors / 101 unchanged warnings, 2:54.18;
+current 33 artifacts / 83 Git/source/PDB joins and exact original singleton PlanOnly
+verified. Independent SOURCE/PREP accepted the one continuing-visibility opt-in.
+Actual Candidate category: 120.2549333 s / original 120 s, exit 124, zero completed
+cases and TRX, both process cleanup flags true. PID 214940 ended; marked fixture
+bb55797edaa14a98913bf9ac8f820082 remains, no final report. This is not PASS.
+
+One unchanged read-only analyzer consumed the complete stored prefix once:
+366,086,531 bytes, SHA256 d584244681e1ddebfad5fe733b1590f453486024f0e038778867568c1b294a93;
+3,444,142,038 decoded bytes, 6,719,971 original events / 3,359,979 exact pairs,
+14 messages, no schema/sequence/pair/tick/cost issues. Thirteen prefix scopes and
+185 final fragment bytes remain; no footer/EOF/CRC or full completion claim.
+Raw remains external under dfr-prefix/actual-t608-candidate-continuing-1; analysis
+and independent timeout assessment remain in t608-counter-scaffold/. The retained
+actual fixture root is checkout/TestResults/joint-bundle-component/
+bb55797edaa14a98913bf9ac8f820082; it was not moved or removed.
+
+The existing events now prove Miss returned in 23.561644251 s and Hit in
+17.213283222 s, with ordered completion markers and SamePlan/RotatedFence results.
+Foreign refusal and stale revocation progressed; CachedAfterStaleFence began at
+105.7833191 s. Last persisted source time 113.2107878 s is under Registry.LockWork /
+MatchesInput / ContextGetter / DetachedCopy / ValidateFinalResult. Exact kill phase
+and lost tail remain unknown. Prefix lock-wait durations do not indicate contention.
+No further transport expansion or unchanged retry is justified. Feature coverage
+remains 68/69 across accepted runs; source/diagnostic controls do not fill the gap.
+
+Independent OUTCOME accepts only this factual incomplete result. Next is bounded
+read-only assessment of repeated private-bundle/context reconstruction inside current
+validation, using existing services and the retained named evidence. Any safe DATA
+reuse needs a complete dependency/owner/lifetime/invalidation contract, preservation
+of every fresh actual-graph/authority/private-history refusal. Cheap real source
+counter causal RED precedes optimization implementation; GREEN follows it before
+any later separately admitted runtime. No summed inclusive savings,
+whole speedup, new cache/diagnostic framework, budget change or product/GM change.
+Full DFR positive/dependent gates remain held; Windows deferred and fresh clean-source
+recovery unclaimed. The accepted observation proof at 716c55b8c remains intact.
+
 # T608 genuine Candidate continuing opt-in — WIP, UNCOMPILED / UNRUN
 
 Base accepted observation checkpoint `716c55b8c417a2af7b714562f108695eaed09972`.
