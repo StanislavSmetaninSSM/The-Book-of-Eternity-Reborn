@@ -1,3 +1,22 @@
+# T609 passive-only timing correction — WIP
+
+Astra identified a concrete diagnostic observer side effect: the newly named parse
+scope uses MeasureCurrentOperation, which would invoke an arbitrary timing observer
+before parsing where the original reader had none. A callback could reenter or
+mutate later inputs/options even though callback exceptions are swallowed. Preserve
+all existing timers and use a passive-only scope for this new counter, using the
+same existing sealed recorder; when an arbitrary observer is configured, do not
+invoke it for the new scope. Add bounded passive / callback+recorder controls.
+
+The managed build at 94a2 completed its first client project with 0 errors and
+33 warnings, then stopped at the dirty-worktree boundary before the next project.
+It cannot qualify the corrected source. The new named scope now uses only the
+existing passive recorder. A file-free positive-control observer exercises the old
+observer path while proving that the new scope emits no callback and cannot mutate
+the next live path; passive counts remain the causal source oracle. This correction
+is UNCOMPILED / UNRUN and needs narrow independent review and a fresh affected build.
+No RED or full DFR runtime has started.
+
 # T609 RED fixture corrections — WIP, UNCOMPILED / UNRUN
 
 Independent Sol SOURCE found two prerequisite blockers before any build: the test's

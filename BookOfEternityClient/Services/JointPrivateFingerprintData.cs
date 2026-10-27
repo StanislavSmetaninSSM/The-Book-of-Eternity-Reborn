@@ -101,7 +101,7 @@ internal sealed class JointPrivateFingerprintData
         _ = operation;
         var bytes = ReadBeforeBytes(path);
         if (bytes is null) return null;
-        using var timing = FileSystemManager.MeasureCurrentOperation("JointEffectInput.PrivateSourceParse");
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("JointEffectInput.PrivateSourceParse");
         return StrictJsonAuthority.Deserialize<JsonObject>(
             new UTF8Encoding(false, true).GetString(bytes).TrimStart('\uFEFF'),
             SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, path);

@@ -3,7 +3,7 @@
     "categories": [
     {
       "id": "fr063-joint-private-effect-source-red",
-      "responsibility": "One file-free T609 source fixture exercises the actual shared private before-image strict reader twice with a genuine serial operation; original output, alias isolation, ordered errors and closing precede the final one-parse-per-present-root oracle. Passive named counters observe actual strict parser work.",
+      "responsibility": "One file-free T609 source fixture exercises the actual shared private before-image strict reader twice with a genuine serial operation; original output, alias isolation, ordered errors and closing precede the final one-parse-per-present-root oracle. Passive named counters observe actual strict parser work; an arbitrary-observer control preserves its original precedence without new callbacks.",
       "excludes": "No fake joint issuer, filesystem reads, canonical writes, cached admission, observer callback, whole-game qualification or timeout increase. Original uncached implementation should fail only its final source-count oracle.",
       "changeHints": ["BookOfEternityClient/Services/JointPrivateFingerprintData.cs", "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs", "BookOfEternityClient/Core/FileSystemManager.OperationTimingContext.cs", "BookOfEternityClient.IntegrationTests/JointPrivateEffectSourceTests.cs"],
       "related": [{"id": "fr063-joint-private-fingerprint-data", "when": "Retain original immutable byte-owner and alias contracts."}],

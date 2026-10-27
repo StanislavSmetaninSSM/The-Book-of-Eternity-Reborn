@@ -55,6 +55,28 @@ public sealed class JointPrivateEffectSourceTests(ITestOutputHelper output)
             Assert.Equal(oldError.Message, newError.Message);
         }
 
+        var callbackRecorder = new OperationTimingAccumulator();
+        var callbackWindow = callbackRecorder.StartWindow();
+        var callbackPaths = new[] { "alpha", "beta" };
+        var callbacks = new List<(string Name, string Boundary)>();
+        Action<string, string, TimeSpan> observer = (name, boundary, _) =>
+        {
+            callbacks.Add((name, boundary));
+            if (name == "JointEffectInput.PrivateSourceParse" && boundary == "begin") callbackPaths[1] = "unknown";
+        };
+        using (FileSystemManager.EnterOperationTimingContext(observer, callbackRecorder))
+        {
+            using (FileSystemManager.MeasureCurrentOperation("T609.ObserverPositiveControl")) { }
+            var observed = ReadActual(data, callbackPaths, null);
+            Assert.Equal(new[] { "alpha", "beta" }, observed.Keys);
+            Assert.Equal("é漢", observed["beta"]!["nested"]!["value"]!.GetValue<string>());
+        }
+        callbackWindow.Dispose();
+        Assert.True(callbackWindow.Capture().Complete);
+        Assert.Empty(callbackWindow.Capture().Rows);
+        Assert.Equal(new[] { ("T609.ObserverPositiveControl", "begin"), ("T609.ObserverPositiveControl", "end") }, callbacks);
+        Assert.Equal(new[] { "alpha", "beta" }, callbackPaths);
+
         var recorder = new OperationTimingAccumulator();
         var window = recorder.StartWindow();
         var operation = new DefaultOperationValidationService().BeginOperation();

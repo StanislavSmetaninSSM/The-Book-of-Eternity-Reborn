@@ -62,6 +62,12 @@ public partial class FileSystemManager
         _operationTimingContext?.Observer is { } observer ? new OperationTimer(observer, name) :
         _operationTimingContext?.Recorder?.Measure(name);
 
+    /// <summary>Measures only through the existing passive recorder, never invoking an arbitrary observer.</summary>
+    /// <param name="name">The literal passive operation name.</param>
+    /// <returns>The existing passive scope, or null when an observer takes precedence or no recorder is active.</returns>
+    internal static IDisposable? MeasureCurrentPassiveOperation(string name) =>
+        _operationTimingContext?.Observer is not null ? null : _operationTimingContext?.Recorder?.Measure(name);
+
     /// <summary>
     /// Restores the preceding synchronous receiver without flowing observation to another thread.
     /// </summary>
