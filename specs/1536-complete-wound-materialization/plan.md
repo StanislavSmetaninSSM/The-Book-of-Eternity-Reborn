@@ -36,6 +36,9 @@ The sealed bundle exports detached stages through its retained proof without two
 full effect/catalog clones; input DATA already read by the composer is not reread.
 Finite source review also moved self dispatch ahead of legacy Input/Prepared
 exports, avoiding their unused deep copies on this route without another cache.
+The final bounded copy finding is also closed by a detached mutation-only bundle
+export: self output does not clone the entire final identity/History/intents just
+to compare carrier mutations. Existing contribution/mutation copying stays intact.
 No cache/new permission/lifetime extension or measured speedup. GM wound guide
 explains client-derived notices; existing worked graph example/fields unchanged.
 Finite SOURCE then fresh owning Integration, same owner2 before guided2 pending.

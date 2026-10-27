@@ -377,6 +377,10 @@ internal sealed class AcceptedMechanicsWoundStageBundle
     /// <returns>True only for the exact private spiritual execution; grants no current publication authority.</returns>
     internal bool TryReadSpiritualHealingExecution(out IReadOnlyList<WoundExecutedBoundary> stages) =>
         _effectBatchPlan.TryReadSpiritualHealingExecution(_preparedPlan, out stages);
+
+    /// <summary>Copies final carrier mutation DATA without copying identity, complete History or transition intents.</summary>
+    internal IReadOnlyList<WoundCarrierMutation> FinalMutations => _finalPlan.CarrierContributions
+        .SelectMany(static contribution => contribution.Mutations).ToArray();
     private readonly Dictionary<string, EffectAcceptedApplicationResult>
         _applicationResults;
     private readonly Dictionary<string, EffectAcceptedTerminationResult>

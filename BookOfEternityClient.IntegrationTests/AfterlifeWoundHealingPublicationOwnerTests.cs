@@ -157,7 +157,7 @@ public sealed class AfterlifeWoundHealingPublicationOwnerTests
     {
         Assert.True(publication.SpiritualHealingContinuation!.IsClosed);
         var bundle = publication.WoundStageBundle!;
-        var mutation = Assert.Single(bundle.FinalPlan.CarrierContributions.SelectMany(c => c.Mutations));
+        var mutation = Assert.Single(bundle.FinalMutations);
         var unchanged = fixture.CaptureMutationRoots();
         var rejected = WoundPlayerNotification.ComposeAcceptedSpiritualHealing(bundle,
             new[] { new WoundCarrierMutation(mutation.Operation, mutation.WoundId, mutation.BeforeWound, mutation.BeforeWound) });
