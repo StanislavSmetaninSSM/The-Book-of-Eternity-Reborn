@@ -192,7 +192,7 @@ public sealed class AfterlifeWoundHealingLifecycleTests
             var issues = await new ValidationService(Files, NullLogger<ValidationService>.Instance)
                 .ValidateAcceptedTurnRawResourceMaterializationAsync(lease);
             var errors = issues.Where(i => i.Severity == IssueSeverity.Error).ToArray();
-            Assert.True(errors.Length == 0, string.Join("\n", errors.Select(i => i.Code + "@" + i.FilePath + ":" + i.Message)));
+            Assert.True(errors.Length == 0, string.Join("\n", errors.Select(i => i.Code + "@" + i.FilePath + ":" + i.Message + ":" + i.Actual)));
             var plan = await new CanonicalStateNormalizer(Files, NullLogger<CanonicalStateNormalizer>.Instance)
                 .BindTo(lease).NormalizeAcceptedMechanicsAsync(backups: null);
             Assert.NotNull(plan);

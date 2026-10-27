@@ -356,8 +356,6 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
                     $"{snapshot.SessionId}/{snapshot.RequestId}/{snapshot.SnapshotToken}/{snapshot.Realm}/{snapshot.TurnNumber}"));
                 return new AcceptedMechanicsWoundCommonInputCompositionResult(null, issues);
             }
-            _ = Read(LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
-            _ = Read(PendingTurnSnapshotAuthority.AuthorityPath);
             var worldTimeJson = Read(EffectAcceptedTurnInputComposer.WorldTimePath);
             var currentTime = EffectAcceptedTurnInputComposer.ReadCanonicalWorldTime(
                 worldTimeJson);
@@ -377,6 +375,8 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
 
             }
 
+            _ = Read(LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
+            _ = Read(PendingTurnSnapshotAuthority.AuthorityPath);
             ValidateLiveWoundRoots(Read, bundle.Input, issues);
             var stagedEffectPlan = bundle.EffectBatchPlan.EffectPlan;
             ValidateLiveEffectRoots(Read, stagedEffectPlan, issues);

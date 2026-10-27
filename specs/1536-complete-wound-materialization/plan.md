@@ -1,5 +1,33 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+Owning Integration build at1d10f9f65 passed0errors/137warnings in7:22.05. Main
+and Integration's Main copy hash5cf312c036fc1bfe51d9615c39e9ab765019db0224b3468ea893c26e2f0e5d9b;
+Support9a5a43b416a13f5f175f0ada93c9e320277ae142330bbbbb0fd626e071d37477;
+Integration82426b4908d93f50c9f8c7bdd9ef4cc0abaee5a439bcfa79c59ce1189d2cd1b2.
+Exact initial5 PlanOnly18.0401894s/one descriptor/0executed; actual5/5complete,
+0PASS5FAIL,60.5675363s, category46.3294227/120s, no timeout/duplicates/skips,
+both cleanup flags true. Quartet admission accepted the real canonical Spend;
+v1 replacement reached old Mortal authority instead of mandatory spiritual family
+refusal (not proof of v1 publication). These are the two intended causal RED.
+All original3 passed real validation/effect/History planning, then failed common
+normalizer preflight because the spiritual composer omitted manifest/authority
+before-images. No publication or final numeric assertion ran. Independent Sol
+OUTCOME confirmed the same causes. Raw: functional-build-2/functional-causal-1.
+
+Connected correction now authenticates the original family even for v1/malformed
+live replacement; normal v2 shares the full observed source/evidence with actual
+admission. The same reader additionally owns the signed original resource quartet
+and fresh physical closing guards, without changing Stage's qualified16-path
+fingerprint. Current resource validity does not substitute for original equality.
+The existing common manifest/authority before-image reads now apply to spiritual
+publication too. One operation owns parsed16-root DATA/catalog; no new cache or
+authority stack. Ordinary v1 requires only a fresh original-request classification
+here and retains its existing parser; that narrow read proves family selection.
+Two-pass reading is confined to changed/misclassified live input, not normal v2.
+No speedup claim, guard weakening or budget change. This correction is UNCOMPILED;
+finite delta SOURCE, fresh affected build and exact5 GREEN are next. Unit follow-up
+will precede later staging24, avoiding an unchanged duplicate build before guards.
+
 Fresh owning Integration build of cb29a2a46 exited1 in4:08.11 with12warnings and
 five compile errors across three concrete API mismatches: generic manifest-hash
 arguments, the final common plan's actual anchor-fingerprint field, and the shared

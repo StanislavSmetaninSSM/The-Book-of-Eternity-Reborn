@@ -9,55 +9,62 @@ public partial class ValidationService
     private async Task<IReadOnlyList<ValidationIssue>?> TryPrepareSpiritualSelfTreatmentAsync(
         FileSystemManager.CanonicalWriteLease lease)
     {
-        var json = await _fs.ReadFileAsync(lease, AcceptedMechanicsPlan.WoundCommandPath);
-        if (json is null)
+        var currentBytes = await _fs.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath);
+        var liveCandidate = false;
+        if (currentBytes is not null)
+        {
+            try
+            {
+                using var classifier = JsonDocument.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(currentBytes));
+                var root = classifier.RootElement;
+                liveCandidate = root.ValueKind == JsonValueKind.Object &&
+                    (root.TryGetProperty("schemaVersion", out var version) && version.ValueKind == JsonValueKind.Number && version.TryGetInt32(out var v) && v == 2 ||
+                     root.TryGetProperty("kind", out var kind) && kind.ValueKind == JsonValueKind.String && kind.GetString() == "spiritual_self_treatment_request");
+            }
+            catch (Exception failure) when (failure is JsonException or System.Text.DecoderFallbackException)
+            { } // The authenticated original still selects the family.
+        }
+
+        AfterlifeWoundHealingPlanner.Continuation? owner = null;
+        var retainOwner = false;
+        var spiritualOriginal = false;
+        try
         {
             var manifestText = await _fs.ReadFileAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
             if (manifestText is null) return null;
             var frame = StrictJsonAuthority.Deserialize<LiveTurnPendingSnapshotManifest>(manifestText,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, "spiritual replay manifest");
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, "spiritual treatment manifest");
             if (frame?.Files.ContainsKey(AcceptedMechanicsPlan.WoundCommandPath) != true) return null;
-            var observed = PendingTurnSnapshotReader.ReadObservedCurrent(_fs, lease, new[] { AcceptedMechanicsPlan.WoundCommandPath });
+            // Ordinary v1 needs only its original family classification here. A live
+            // v2 candidate shares the full observed source DATA directly with admission.
+            var observed = liveCandidate ? AfterlifeWoundHealingPlanner.ReadOriginalSource(_fs, lease) :
+                PendingTurnSnapshotReader.ReadObservedCurrent(_fs, lease, new[] { AcceptedMechanicsPlan.WoundCommandPath });
             if (!observed.Success || observed.Snapshot is not { } signed || observed.Evidence is not { } evidence)
-                return observed.Issues;
-            var original = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(signed.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath)))!.AsObject();
+                return liveCandidate ? observed.Issues : null;
+            var original = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
+                signed.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath)), new JsonSerializerOptions(), "original wound request")!;
             if (original["kind"]?.GetValue<string>() != "spiritual_self_treatment_request") return null;
+            spiritualOriginal = true;
             if (frame.ProgressionControl is null || frame.ManifestPayloadHash != signed.SnapshotToken ||
                 PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(frame, LiveTurnPreparationService.ManifestHashJsonOptions,
                     static m => m.ManifestPayloadHash, static (m, hash) => m.ManifestPayloadHash = hash) != signed.SnapshotToken)
-                return new[] { new ValidationIssue(AcceptedMechanicsPlan.WoundCommandPath, IssueSeverity.Error,
-                    "Spiritual replay lost its original signed control.", code: "spiritual_self_treatment_replay_conflict") };
+                throw new InvalidDataException("Spiritual treatment lost its original signed control.");
             evidence.RequireCurrent(_fs, lease, signed);
-            var scheduler = new ProgressionScheduleService(_fs, Microsoft.Extensions.Logging.Abstractions.NullLogger<ProgressionScheduleService>.Instance);
-            if (await scheduler.IsPublishedSpiritualCycleAsync(frame.ProgressionControl, lease, signed.SnapshotToken, original)) return Array.Empty<ValidationIssue>();
-            return new[] { new ValidationIssue(AcceptedMechanicsPlan.WoundCommandPath, IssueSeverity.Error,
-                "The signed spiritual request is absent without its exact published result.", code: "spiritual_self_treatment_replay_conflict") };
-        }
-        try
-        {
-            using var classifier = JsonDocument.Parse(json);
-            var root = classifier.RootElement;
-            var selected = root.ValueKind == JsonValueKind.Object &&
-                (root.TryGetProperty("schemaVersion", out var version) && version.ValueKind == JsonValueKind.Number && version.TryGetInt32(out var v) && v == 2 ||
-                 root.TryGetProperty("kind", out var kind) && kind.ValueKind == JsonValueKind.String && kind.GetString() == "spiritual_self_treatment_request");
-            if (!selected) return null;
-        }
-        catch (JsonException) { return null; } // The unchanged v1 parser owns malformed unclassified input.
-
-        AfterlifeWoundHealingPlanner.Continuation? owner = null;
-        var retainOwner = false;
-        try
-        {
+            if (currentBytes is null)
+            {
+                var scheduler = new ProgressionScheduleService(_fs, Microsoft.Extensions.Logging.Abstractions.NullLogger<ProgressionScheduleService>.Instance);
+                if (await scheduler.IsPublishedSpiritualCycleAsync(frame.ProgressionControl, lease, signed.SnapshotToken, original)) return Array.Empty<ValidationIssue>();
+                return new[] { new ValidationIssue(AcceptedMechanicsPlan.WoundCommandPath, IssueSeverity.Error,
+                    "The signed spiritual request is absent without its exact published result.", code: "spiritual_self_treatment_replay_conflict") };
+            }
+            if (!currentBytes.AsSpan().SequenceEqual(signed.ReadRequiredBytes(AcceptedMechanicsPlan.WoundCommandPath)))
+                throw new InvalidDataException("The retained spiritual treatment request changed.");
             foreach (var path in new[] { ResourceMaterializationContract.CommandPath, EffectAcceptedTurnPlan.CommandPath,
                          ResourcePendingResolutionState.PendingPath })
                 if (await _fs.ReadFileBytesAsync(lease, path) is not null)
                     throw new InvalidDataException("Concurrent resource/effect/pending work requires its ordinary owner: " + path);
-            var manifestJson = await _fs.ReadFileAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath)
-                ?? throw new InvalidDataException("Missing signed turn manifest.");
-            var manifest = StrictJsonAuthority.Deserialize<LiveTurnPendingSnapshotManifest>(manifestJson,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, "spiritual treatment manifest")
-                ?? throw new InvalidDataException("Invalid signed turn manifest.");
-            owner = await AfterlifeWoundHealingPlanner.Continuation.AdmitAsync(_fs, lease, manifest);
+            owner = await AfterlifeWoundHealingPlanner.Continuation.AdmitAsync(_fs, lease, frame,
+                liveCandidate ? observed : null);
             var prepared = owner.Prepare();
             var effectInput = owner.ComposeEffectInput(prepared);
             var effect = WoundEffectBatchPlanner.Build(prepared, effectInput, new EffectIdentityFactory());
@@ -74,6 +81,7 @@ public partial class ValidationService
         catch (Exception failure) when (failure is JsonException or InvalidDataException or InvalidOperationException or
                                            ArgumentException or OverflowException or KeyNotFoundException or NullReferenceException)
         {
+            if (!spiritualOriginal && !liveCandidate) return null; // Preserve the original v1 parser's failures.
             return new[] { new ValidationIssue(AcceptedMechanicsPlan.WoundCommandPath, IssueSeverity.Error,
                 "Spiritual self-treatment could not produce one complete accepted contribution.",
                 code: "spiritual_self_treatment_admission_invalid", actual: failure.Message,

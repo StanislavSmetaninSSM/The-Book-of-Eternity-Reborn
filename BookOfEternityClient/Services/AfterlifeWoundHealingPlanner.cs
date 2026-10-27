@@ -8,6 +8,19 @@ namespace BookOfEternityClient.Services;
 /// <summary>Owns one signed, unpublished self-treatment contribution in the existing turn pipeline.</summary>
 internal static class AfterlifeWoundHealingPlanner
 {
+    // The qualified staging fingerprint remains its original sixteen source paths.
+    // Acceptance also owns the signed no-cost resource baseline, through the same reader.
+    private static readonly string[] ResourceSourcePaths =
+    [
+        ResourceMaterializationContract.DefinitionsPath, ResourceMaterializationContract.StatePath,
+        ResourceMaterializationContract.HistoryPath, CanonicalResourceOwnerAuthorityComposer.AuthorityPath
+    ];
+
+    internal static PendingTurnSnapshotObservedReadResult ReadOriginalSource(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease) => PendingTurnSnapshotReader.ReadObservedCurrent(files, lease,
+            new PendingTurnSnapshotPathSelection(new[] { AcceptedMechanicsPlan.WoundCommandPath }.Concat(ResourceSourcePaths).ToArray(),
+                AfterlifeWoundTreatmentAuthority.SourcePaths));
+
     internal sealed class Continuation
     {
         private readonly FileSystemManager _files;
@@ -258,11 +271,11 @@ internal static class AfterlifeWoundHealingPlanner
         }
 
         internal static async Task<Continuation> AdmitAsync(FileSystemManager files,
-            FileSystemManager.CanonicalWriteLease lease, LiveTurnPendingSnapshotManifest manifest)
+            FileSystemManager.CanonicalWriteLease lease, LiveTurnPendingSnapshotManifest manifest,
+            PendingTurnSnapshotObservedReadResult? observedSource = null)
         {
             var paths = AfterlifeWoundTreatmentAuthority.SourcePaths;
-            var observed = PendingTurnSnapshotReader.ReadObservedCurrent(files, lease,
-                new PendingTurnSnapshotPathSelection(new[] { AcceptedMechanicsPlan.WoundCommandPath }, paths));
+            var observed = observedSource ?? ReadOriginalSource(files, lease);
             if (!observed.Success || observed.Snapshot is not { } snapshot || observed.Evidence is not { } evidence)
                 throw new InvalidDataException("Signed spiritual treatment source is unavailable: " +
                     string.Join(";", observed.Issues.Select(i => i.Code)));
@@ -271,8 +284,11 @@ internal static class AfterlifeWoundHealingPlanner
                 PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(manifest, LiveTurnPreparationService.ManifestHashJsonOptions,
                     static m => m.ManifestPayloadHash, static (m, hash) => m.ManifestPayloadHash = hash) != snapshot.SnapshotToken || manifest.ProgressionControl is null ||
                 !PendingTurnSnapshotAuthority.HasValidatedRollbackSnapshotCoverage(manifest, m => m.Files,
-                    m => m.SnapshotFileHashes, m => m.RollbackBaselineFiles, paths, out _))
+                    m => m.SnapshotFileHashes, m => m.RollbackBaselineFiles, paths.Concat(ResourceSourcePaths).ToArray(), out _))
                 throw new InvalidDataException("Spiritual treatment does not identify the signed current turn.");
+            evidence.RequireCurrent(files, lease, snapshot);
+            var resourceImages = ResourceSourcePaths.ToDictionary(path => path,
+                path => new CanonicalBeforeImage(true, snapshot.ReadRequiredBytes(path)), StringComparer.Ordinal);
             var sources = new List<AfterlifeWoundTreatmentAuthority.SourceFile>();
             foreach (var path in paths)
             {
@@ -325,8 +341,10 @@ internal static class AfterlifeWoundHealingPlanner
             var updates = updatesBytes is null ? null : StrictJsonAuthority.Deserialize<JsonObject>(
                 CanonicalJsonUtf8.DecodeOneOptionalBom(updatesBytes), new JsonSerializerOptions(), "spiritual treatment graph response");
             AfterlifeWoundTreatmentAuthority.MaterializeProperties(updates);
-            var owner = new Continuation(files, lease, snapshot, evidence, sources.ToDictionary(s => s.Path, s => s.Image,
-                StringComparer.Ordinal), request, data, input, wounds, stages, context.Progression, scheduler, mutation,
+            var sourceImages = sources.ToDictionary(s => s.Path, s => s.Image, StringComparer.Ordinal);
+            foreach (var resource in resourceImages) sourceImages.Add(resource.Key, resource.Value);
+            var owner = new Continuation(files, lease, snapshot, evidence, sourceImages,
+                request, data, input, wounds, stages, context.Progression, scheduler, mutation,
                 new(updatesBytes is not null, updatesBytes), sources.ToDictionary(s => s.Path, s => (JsonNode?)s.Root, StringComparer.Ordinal));
             owner.AdmitGraphs(updates);
             owner.RequireCurrent(files, lease);
