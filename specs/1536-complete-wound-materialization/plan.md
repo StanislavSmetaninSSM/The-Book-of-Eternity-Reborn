@@ -1,5 +1,19 @@
 # US4 safe self-treatment — active functional work, 2026-10-27
 
+First actual guided2 on clean e6e5/compiled1d completed2/2: cancellationPASS,
+confirmedFAIL before actual staging/nativeGM hook. PlanOnly2/1descriptor8.9110647s;
+actual30.0451778s/category17.4288124<180, no timeout/duplicates, bothcleanuptrue;
+TRXaf0fe2e506c4984ce093f9f6bb5eb5ec3a25156c35fe7fe6eddd116314d8349a.
+Public selection+confirmation+queued typed action complete, then real
+StagePlayerTurnBody1664 pre-turn ValidateGameState refuses; error display hits
+NoPlayerInput.ReadKey. This is a general fixture precondition failure, not proof
+of healing failure or success. No snapshot/draw/native completion/final wound
+assertion reached. Keep strict validators and unexpected-input refusal. Investigate
+minimal current canonical fixture contract using existing bootstrap DATA; no
+bypass, new diagnostics framework or blind retry. Raw guided-self-green-1 external.
+Postpublication graph-I, Mortal/preparation timeout and console/freshprocess/provider
+limits remain OPEN. Contract10 independent OUTCOME accepted on existing evidence.
+
 US4 guided contract gate now actualPASS on clean cfb2e8d8: fresh Unit-only
 refsfalse build0errors/26warnings/2:06.40; Unitbefde520899dcf5989b3faa2da60beb7aad216848d9e9ee55c9de12cb67163ef.
 Main/Support master+copies and Integration remain owning1d, unchanged. Independent
