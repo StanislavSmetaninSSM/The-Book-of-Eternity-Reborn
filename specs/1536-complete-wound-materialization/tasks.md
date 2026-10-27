@@ -1,6 +1,6 @@
 # T609 retained effect-source DATA audit — #1536
 
-- [ ] T609-HELPER Implement/review the accepted conditional optional-operation
+- [x] T609-HELPER Implement/review the accepted conditional optional-operation
   helper; prove conservative local policy/failure/owner/fresh/protocol controls and
   causal GREEN, with actual source and allocation evidence. Keep default uncached.
 - [ ] T609-WIRE Separately review actual stage-owner selection after byte lookup;
@@ -16,10 +16,11 @@
   report if reuse is unsafe or its measured cost too small. Do not alter code.
 - [x] T609-DESIGN Independent bounded design review of any worthwhile safe reuse;
   preserve current authority, mutable-input, path/error/order and cache lifetimes.
-- [ ] T609-CAUSAL If design supports it, prove actual parse-source counts, detached
+- [x] T609-CAUSAL If design supports it, prove actual parse-source counts, detached
   results and applicable mutation/failure/freshness controls cheaply before a change;
   then implement/review only the accepted existing-service change and regression.
   Full DFR needs a new justified separate PREP and retains the original budget.
+  Accepted scope is the optional helper; genuine activation remains T609-WIRE.
 
 # T608 candidate per-call DATA owner — #1536
 

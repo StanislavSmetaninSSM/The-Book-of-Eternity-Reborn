@@ -1,4 +1,4 @@
-# T609 helper controls — actual 10/10 PASS, independent OUTCOME pending
+# T609 helper controls — actual 10/10 PASS, independent OUTCOME accepted
 
 Linux runtime `640a545788efd3250ada0b0c6e706e7dfc26db74` used fresh compiled
 source `040aef9f6d0b6b33cc71fbc8986a32d40c0e164b`; exact plan-only delta and
@@ -22,9 +22,11 @@ speedup/DFR fit are unproved. Full four-TRX/summary/counter proof is external at
 `dfr-prefix/actual-t609-effect-source-helper-1`, with verified receipts under
 `t608-counter-scaffold`. Source GREEN TRX SHA256:
 `19169f0831b5666fc6485ce941893f7a651202ea64d080d0a9f7f5aa0247dc0a`.
-Independent OUTCOME and acceptance pending. Existing genuine callers remain null/
-uncached; actual StageReplayOperation wiring and one genuine consumer proof are
-the next bounded task after helper acceptance. No full DFR repeat is admitted.
+Independent Sol OUTCOME accepted the exact ten-case runtime, unchanged causal
+oracle, complete TRX/cleanup and this checkpoint. Helper qualification is accepted.
+Existing genuine callers remain null/uncached; bounded fixed-adapter wiring design
+and one actual stage consumer's causal source proof are next under T609-WIRE.
+No full DFR repeat is admitted.
 
 # T609 optional-operation helper — SOURCE/build accepted, runtime pending
 
