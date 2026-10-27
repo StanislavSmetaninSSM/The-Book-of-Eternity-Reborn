@@ -1,3 +1,45 @@
+# T608 per-call GREEN accepted — source 1 PASS, lifetime 1 PASS
+
+Linux source/runtime/fresh Integration `7cf59bcb1d53a62a04f3c7f565bedd83e6500549`;
+other four unchanged owners F6. Build: 0 errors / 101 exact baseline warnings,
+4:27.88; current 33 artifacts, 11 PE/PDB identities and 84 Git/source/PDB joins.
+Fresh exact two-case PlanOnly and retained unchanged 970-owner / 12,601-method
+discovery verified. Clean remote source recovery at the same SHA checked every
+one of 30,934 files/modes, 773,457,128 logical bytes; no binaries copied or runs
+in recovery. Independent SOURCE and conditional staged PREP accepted.
+
+Official separate source singleton: 1 PASS, 85.556092 s / 120 s, framework
+51.9421522 s. The SAME accepted RED Fact/oracle now proves Replay/Core [1, 1],
+richer [0, 0], four successful real reads and two distinct initially empty owners,
+actual completion/disposal, closed zero-entry states and null caller entry/exit.
+Actual source computations fall from 4 to 2 within those reads. No whole-case
+speedup is inferred: RED/GREEN wall times vary and include other work/transport.
+
+Only after full source verification and fresh guards, no-world lifetime singleton:
+1 PASS, 24.3952346 s / 60 s, framework 1.2368042 s. Normal/refusal/throw bodies run
+once, actual owners close, original body object/stack and preexisting registration
+are preserved. Both cases have complete selection, no skip/timeout/duplicate or
+underfill, ended PIDs 221443 / 221739, both process cleanup flags true and marked
+roots removed. Object-identity/error/frame facts remain source-bound where not
+serialized; no independent afterimage or common-baseline clone claim is made.
+
+Source full gzip: 39,887,876 stored / 370,865,694 decoded bytes, 728,927 rows,
+728,918 original events / 364,459 exact pairs, strict EOF/CRC/ISIZE and all original
+source/phase/snapshot/writer accounting. Stored SHA256
+47F5EE90EF8983E29A1EFF8C7A06F0B67F474E1C08F4C55B4781131CFEA8F289.
+Lifetime full gzip: 309 stored / 453 decoded bytes, two original constructor
+messages and zero timing events; honest zero accounting, no invented origin/pair
+proof. Both external roots actual-t608-candidate-per-call-green-source-1 and
+actual-t608-candidate-per-call-green-lifetime-1 plus full proofs remain retained.
+
+Independent combined OUTCOME accepts only this shared invocation/source/lifetime
+proof. Next is exactly four genuine Candidate callsite splices to the qualified
+typed adapter, original literal registry timer spans and all other workload /
+assertions intact. No production/cache/guard/diagnostic/format/budget/GM change.
+Wiring needs its own SOURCE, fresh affected bindings and exact original 120-second
+PREP. Genuine/full DFR/dependent gates and Windows remain unqualified/held; feature
+coverage remains 68/69. No accepted review is repeated merely for model selection.
+
 # T608 per-call GREEN source frozen — UNCOMPILED / UNRUN
 
 Accepted RED checkpoint `59a78ef1ce69d223c4e99d8a47d4817b8fec9bc9`. Only the

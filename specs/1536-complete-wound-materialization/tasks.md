@@ -9,7 +9,7 @@
   fresh affected build/bindings/discovery/PREP then intended final [2,2] vs [1,1]
   RED after complete applicable source/storage/root prerequisites; owner absence
   remains DATA. Genuine Candidate callsites remain unchanged and held.
-- [ ] T608-CANDIDATE-OWNER-GREEN Enable only the accepted lexical existing owner,
+- [x] T608-CANDIDATE-OWNER-GREEN Enable only the accepted lexical existing owner,
   prove actual Replay/Core [1,1] / richer [0,0], distinct empty/closed owners and
   null entry/exit after the source oracle; finite no-world lifecycle/error control.
   Independent SOURCE/PREP/OUTCOME and retained exact negative/freshness lineage.
